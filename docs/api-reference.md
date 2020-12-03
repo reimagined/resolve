@@ -489,8 +489,8 @@ await eventStoreAdapter.saveEvent({
   type: 'USER_CREATED',
   timestamp: Date.now(),
   payload: {
-    name: 'user-name'
-  }
+    name: 'user-name',
+  },
 })
 ```
 
@@ -1276,8 +1276,8 @@ const { execute: toggleItem } = useReduxCommand({
   aggregateId: shoppingListId,
   aggregateName: 'ShoppingList',
   payload: {
-    id: 'shopping-list-id'
-  }
+    id: 'shopping-list-id',
+  },
 })
 ```
 
@@ -1293,8 +1293,8 @@ const { request: getLists, selector: allLists } = useReduxReadModel(
     name: 'ShoppingLists',
     resolver: 'all',
     args: {
-      filter: 'none'
-    }
+      filter: 'none',
+    },
   },
   []
 )
@@ -1312,12 +1312,12 @@ const { request: getLists, selector: allLists } = useReduxReadModel(
     name: 'ShoppingLists',
     resolver: 'all',
     args: {
-      filter: 'none'
-    }
+      filter: 'none',
+    },
   },
   [],
   {
-    selectorId: 'all-user-lists'
+    selectorId: 'all-user-lists',
   }
 )
 
@@ -1331,7 +1331,7 @@ Creates a hook to receive a View Model's state updates and reactive events.
 ```js
 const { connect, dispose, selector: thisList } = useReduxViewModel({
   name: 'shoppingList',
-  aggregateIds: ['my-list']
+  aggregateIds: ['my-list'],
 })
 
 const { data, status } = useSelector(thisList)
@@ -1352,10 +1352,10 @@ Creates a hook to access a view model's local state. This hook queries the View 
 const { connect, dispose, selector: thisList } = useReduxViewModel(
   {
     name: 'shoppingList',
-    aggregateIds: ['my-list']
+    aggregateIds: ['my-list'],
   },
   {
-    selectorId: 'this-list'
+    selectorId: 'this-list',
   }
 )
 
@@ -1374,7 +1374,7 @@ export const mapStateToOptions = (state, ownProps) => {
 
   return {
     viewModelName: 'ShoppingList',
-    aggregateIds: [aggregateId]
+    aggregateIds: [aggregateId],
   }
 }
 
@@ -1382,14 +1382,14 @@ export const mapStateToProps = (state, ownProps) => {
   const aggregateId = ownProps.match.params.id
 
   return {
-    aggregateId
+    aggregateId,
   }
 }
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      replaceUrl: routerActions.replace
+      replaceUrl: routerActions.replace,
     },
     dispatch
   )
@@ -1412,17 +1412,17 @@ import { bindActionCreators } from 'redux'
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
-  resolverArgs: {}
+  resolverArgs: {},
 })
 
 export const mapStateToProps = (state, ownProps) => ({
-  lists: ownProps.data
+  lists: ownProps.data,
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+      createStory: sendAggregateAction.bind(null, 'Story', 'createStory'),
     },
     dispatch
   )
@@ -1487,9 +1487,9 @@ client.command(
     aggregateName: 'Chat',
     type: 'postMessage',
     aggregateId: userName,
-    payload: message
+    payload: message,
   },
-  err => {
+  (err) => {
     if (err) {
       console.warn(`Error while sending command: ${err}`)
     }
@@ -1506,7 +1506,7 @@ Queries a Read Model.
 ```js
 const { data } = await client.query({
   name: 'chat',
-  aggregateIds: '*'
+  aggregateIds: '*',
 })
 ```
 
@@ -1537,7 +1537,7 @@ Subscribes to View Model updates. Returns a promise that resolves to a **subscri
 ##### Example
 
 ```js
-const chatViewModelUpdater = event => {
+const chatViewModelUpdater = (event) => {
   const eventType = event != null && event.type != null ? event.type : null
   const eventHandler = chatViewModel.projection[eventType]
 
@@ -1733,32 +1733,35 @@ var commandApiPath = resolver('/api/commands')
 
 ### Request Middleware
 
-The [resolve-client](#resolve-client-library) and [resolve-react-hooks](#resolve-react-hooks-library) libraries allow you to use request middleware to extend the client's functionality. A middleware implements intermediate logic that can tweak the response object or handle errors before they are passed to the callback function.
+The [resolve-client](#resolve-client-library) and [resolve-react-hooks](#resolve-react-hooks-library) libraries allow you to use request middleware to extend the client's functionality. Middleware implements intermediate logic that can modify the response object or handle errors before they are passed to the callback function.
 
-Middleware is specified within the `middleware` option for command, query or a corresponding hook in the resolve-react-hooks library.
+Use a command's or query's `middleware` option to specify middleware:
 
 #### resolve-client:
 
 ```js
-client.query({
-  name: "MyReadModel",
-  resolver: "all"
-}, {
-  middleware: {
-    response: [
-      // An array of middleware that runs on server response
-      createMyResponseMiddleware({
-        // Middleware options
-      }),
-      ...
-    },
-    error: {
-      // An array of middleware that runs on server error
-      createMyErrorMiddleware({
-        // Middleware options
-      }),
-      ...
-    ]
+client.query(
+  {
+    name: "MyReadModel",
+    resolver: "all"
+  },
+  {
+    middleware: {
+      response: [
+        // An array of middleware that runs on server response
+        createMyResponseMiddleware({
+          // Middleware options
+        }),
+        ...
+      ],
+      error: [
+        // An array of middleware that runs on server error
+        createMyErrorMiddleware({
+          // Middleware options
+        }),
+        ...
+      ]
+    }
   },
   (error, result) => {
     ...
@@ -1775,32 +1778,33 @@ const myQuery = useQuery(
     resolver: 'all'
   },
   {
-  middleware: {
-    response: [
-      // An array of middleware that runs on server response
-      createMyResponseMiddleware({
-        // Middleware options
-      }),
-      ...
-    },
-    error: {
-      // An array of middleware that runs on server error
-      createMyErrorMiddleware({
-        // Middleware options
-      }),
-      ...
-    ]
+    middleware: {
+      response: [
+        // An array of middleware that runs on server response
+        createMyResponseMiddleware({
+          // Middleware options
+        }),
+        ...
+      ]
+      error: [
+        // An array of middleware that runs on server error
+        createMyErrorMiddleware({
+          // Middleware options
+        }),
+        ...
+      ]
+    }
   },
   (error, result) => {
     ...
   }
 ```
 
-If multiple middlewares are used, they are chained together in the order that they are specified in the options object.
+If you use multiple middleware functions, they run in the order that they are specified in the options object.
 
 #### Available Middlewares
 
-This section lists request middlewares that are shipped with the resolve-client package. The following middlewares are available:
+This section lists request middleware included into the resolve-client package. The following middleware is available:
 
 | Name                | Description                                                 |
 | ------------------- | ----------------------------------------------------------- |
@@ -1879,11 +1883,15 @@ client.command(
 
 ##### waitForResponse
 
-Validates the response and retries if the validation fails. This can be useful when you expect a Read Model's resolver to return data that might not have been generated by the projection yet. Initialized by the `createWaitForResponseMiddleware` factory function.
+Validates the response and retries if the validation fails. This allows you to check whether the response contains the latest data and, if it does not, wait for a Read Model to update.
+
+Initialized by the `createWaitForResponseMiddleware` factory function.
+
+The `waitForResponse` middleware takes the following options:
 
 | Option Name | Description                                                          |
 | ----------- | -------------------------------------------------------------------- |
-| attempts    | The number of retries on error.                                      |
+| attempts    | The number of retries on validation error.                           |
 | debug       | If set to `true`, the middleware logs errors to the browser console. |
 | period      | A time period to wait between retries specified in milliseconds.     |
 | validator   | An async function that validates the response.                       |
@@ -1924,8 +1932,6 @@ const { data } = await client.query(
 )
 ```
 
-The `middleware` request option specifies middleware to run on server response and on error.
-
 #### Implement Custom Middleware
 
 You can define custom middleware as follows:
@@ -1934,13 +1940,14 @@ You can define custom middleware as follows:
 const myMiddleware = async (
   options, // Options passed to the factory function.
   response, // The second argument is either a response or error.
-  params // Contains API that you can use in your middleware implementation.
+  params // Contains API that you can use in your middleware implementation. See the API table below.
 ) => {
   // Put your middleware logic here
 }
 
 // Export the factory function.
-export const createMyMiddleware = options => waitForResponse.bind(null, options)
+export const createMyMiddleware = (options) =>
+  waitForResponse.bind(null, options)
 ```
 
 The `params` object exposes the following API:
@@ -1952,6 +1959,6 @@ The `params` object exposes the following API:
 | init         | An object that is the fetch function's `init` parameter.                         |
 | repeat       | A function that you can call to repeat the current request.                      |
 | end          | Call this function to commit the middleware execution result or error.           |
-| state        | A state object passed between middlewares.                                       |
-| deserializer | Given a string returns a deserealized object.                                    |
+| state        | A state object passed between middleware functions.                              |
+| deserializer | Given a string, returns a deserealized object.                                   |
 | jwtProvider  | Used to get and set the JSON Web Token.                                          |
