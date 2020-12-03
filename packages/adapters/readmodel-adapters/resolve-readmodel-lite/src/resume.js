@@ -3,6 +3,7 @@ const resume = async (pool, readModelName, next) => {
     PassthroughError,
     inlineLedgerRunQuery,
     tablePrefix,
+    fullJitter,
     escapeId,
     escape,
   } = pool
@@ -12,7 +13,7 @@ const resume = async (pool, readModelName, next) => {
   while (true) {
     try {
       await inlineLedgerRunQuery(
-        `BEGIN EXCLUSIVE;
+        `BEGIN IMMEDIATE;
         
          UPDATE ${ledgerTableNameAsId}
          SET "IsPaused" = 0
@@ -23,10 +24,20 @@ const resume = async (pool, readModelName, next) => {
         true
       )
       break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
       }
+
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+
+      await fullJitter(0)
     }
   }
 

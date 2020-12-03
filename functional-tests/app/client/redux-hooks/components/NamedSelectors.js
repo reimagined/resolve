@@ -1,13 +1,18 @@
 import React, { useEffect } from 'react'
-import { v4 as uuid } from 'uuid'
 import {
   useReduxViewModel,
+  useReduxReadModel,
   useReduxCommand,
   useReduxViewModelSelector,
+  useReduxReadModelSelector,
 } from 'resolve-redux'
 
-const NamedSelectors = () => {
-  const userId = uuid()
+const NamedSelectors = ({
+  match: {
+    params: { userId },
+  },
+}) => {
+  const selectorId = 'cumulative-likes-named-selector'
 
   const { connect, dispose } = useReduxViewModel(
     {
@@ -15,10 +20,32 @@ const NamedSelectors = () => {
       aggregateIds: [userId],
       args: {},
     },
+    { selectorId }
+  )
+
+  const { request } = useReduxReadModel(
     {
-      selectorId: 'cumulative-likes-named-selector',
+      name: 'users',
+      resolver: 'profile',
+      args: {
+        userId,
+      },
+    },
+    {
+      userId,
+      profile: {
+        name: 'unknown user',
+      },
+    },
+    {
+      selectorId: 'user-selector',
     }
   )
+
+  useEffect(() => {
+    connect()
+    return dispose
+  }, [])
 
   const { execute: register } = useReduxCommand({
     type: 'register',
@@ -38,18 +65,19 @@ const NamedSelectors = () => {
 
   const {
     data: { likes },
-  } = useReduxViewModelSelector('cumulative-likes-named-selector')
+  } = useReduxViewModelSelector(selectorId)
 
-  useEffect(() => {
-    connect()
-    return dispose
-  })
+  const {
+    data: { profile: userProfile },
+  } = useReduxReadModelSelector('user-selector')
 
   return (
     <div>
       <button onClick={register}>Register</button>
       <button onClick={like}>Like</button>
+      <button onClick={request}>Profile</button>
       <div id="likeCounter">{likes}</div>
+      <div id="userName">{userProfile.name}</div>
     </div>
   )
 }

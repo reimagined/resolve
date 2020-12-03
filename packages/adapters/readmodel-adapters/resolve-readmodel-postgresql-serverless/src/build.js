@@ -122,10 +122,17 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
   }
 }
 
-const buildEvents = async (pool, readModelName, store, projection, next) => {
+export const buildEvents = async (
+  pool,
+  readModelName,
+  store,
+  projection,
+  next
+) => {
   const {
     PassthroughError,
     getVacantTimeInMillis,
+    getEncryption,
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
     rdsDataService,
@@ -212,6 +219,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     saveTrxIdPromise,
     acquireTrxPromise,
   ])
+  const executeEncryption = await getEncryption()
 
   while (true) {
     if (events.length === 0) {
@@ -248,7 +256,11 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
               `SAVEPOINT ${savePointId}`,
               transactionId
             )
-            await projection[event.type](store, event)
+            await projection[event.type](
+              store,
+              event,
+              await executeEncryption(event)
+            )
             await inlineLedgerExecuteStatement(
               pool,
               `RELEASE SAVEPOINT ${savePointId}`,
@@ -431,7 +443,8 @@ const build = async (
   projection,
   next,
   getVacantTimeInMillis,
-  provideLedger
+  provideLedger,
+  getEncryption
 ) => {
   const {
     PassthroughError,
@@ -519,6 +532,7 @@ const build = async (
 
     Object.assign(pool, {
       getVacantTimeInMillis,
+      getEncryption,
       databaseNameAsId,
       ledgerTableNameAsId,
       trxTableNameAsId,

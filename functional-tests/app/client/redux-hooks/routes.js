@@ -12,9 +12,8 @@ export default [
         exact: true,
       },
       {
-        path: '/redux-hooks/named-selectors',
+        path: '/redux-hooks/named-selectors/:userId',
         component: NamedSelectors,
-        exact: true,
       },
     ],
   },

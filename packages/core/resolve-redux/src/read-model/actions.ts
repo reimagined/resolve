@@ -5,6 +5,7 @@ import {
   DROP_READMODEL_STATE,
   CONNECT_READMODEL,
   DISCONNECT_READMODEL,
+  INIT_READMODEL,
 } from '../internal/action-types'
 import { ReadModelQuery } from 'resolve-client'
 
@@ -91,4 +92,19 @@ export const disconnectReadModel = (
 ): DisconnectReadModelAction => ({
   type: DISCONNECT_READMODEL,
   query,
+})
+
+export type InitReadModelAction = {
+  type: typeof INIT_READMODEL
+  initialState: any
+} & ReadModelAction
+export const initReadModel = (
+  initialState: any,
+  query?: ReadModelQuery,
+  selectorId?: string
+) => ({
+  type: INIT_READMODEL,
+  query,
+  selectorId,
+  initialState,
 })

@@ -11,6 +11,7 @@ describe('resolve-readmodel-mysql', () => {
       user: 'customUser',
       password: 'customPassword',
       database: 'customDatabaseName',
+      preferEventBusLedger: true,
     })
   })
 

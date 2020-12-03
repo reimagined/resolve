@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid'
 import { Selector } from 'testcafe'
-import { getTargetURL, getClient } from '../utils/utils'
+import { getTargetURL, getClient } from '../../utils/utils'
 
 const root = `${getTargetURL()}/hoc`
 const client = getClient()

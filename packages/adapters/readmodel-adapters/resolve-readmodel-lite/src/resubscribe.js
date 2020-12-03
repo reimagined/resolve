@@ -4,6 +4,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     inlineLedgerRunQuery,
     dropReadModel,
     tablePrefix,
+    fullJitter,
     escapeId,
     escape,
   } = pool
@@ -12,7 +13,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
 
   try {
     await inlineLedgerRunQuery(
-      `
+      `BEGIN IMMEDIATE;
       CREATE TABLE IF NOT EXISTS ${ledgerTableNameAsId}(
         "EventSubscriber" VARCHAR(190) NOT NULL,
         "IsPaused" TINYINT NOT NULL,
@@ -27,16 +28,21 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         "Schema" JSON NULL,
         PRIMARY KEY("EventSubscriber")
       );
+      COMMIT;
     `,
       true
     )
-  } catch (e) {}
+  } catch (err) {
+    try {
+      await inlineLedgerRunQuery(`ROLLBACK;`, true)
+    } catch (e) {}
+  }
 
   while (true) {
     try {
       await inlineLedgerRunQuery(
         `
-        BEGIN EXCLUSIVE;
+        BEGIN IMMEDIATE;
 
         UPDATE ${ledgerTableNameAsId}
         SET "Cursor" = NULL,
@@ -52,10 +58,20 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
       )
 
       break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
       }
+
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+
+      await fullJitter(0)
     }
   }
 
@@ -65,7 +81,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     try {
       await inlineLedgerRunQuery(
         `
-        BEGIN EXCLUSIVE;
+        BEGIN IMMEDIATE;
 
         INSERT OR REPLACE INTO ${ledgerTableNameAsId}(
           "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused", "Properties",
@@ -109,10 +125,20 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         true
       )
       break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
       }
+
+      try {
+        await inlineLedgerRunQuery(`ROLLBACK`, true)
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
+      }
+
+      await fullJitter(0)
     }
   }
 }

@@ -7,7 +7,10 @@ const SQLITE_BUSY = 'SQLITE_BUSY'
 
 const randRange = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min
-const fullJitter = (retries) => randRange(0, Math.min(100, 2 * 2 ** retries))
+const fullJitter = (retries) =>
+  new Promise((resolve) =>
+    setTimeout(resolve, randRange(0, Math.min(500, 2 * 2 ** retries)))
+  )
 
 const commonRunQuery = async (
   pool,
@@ -34,7 +37,7 @@ const commonRunQuery = async (
       )
       const isSqliteBusy = error != null && error.code === SQLITE_BUSY
       if (!isInlineLedger && isSqliteBusy) {
-        await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))
+        await fullJitter(retry)
       } else if (isInlineLedger && isPassthroughError) {
         const isRuntime = !PassthroughError.isPassthroughError(error, false)
         throw new PassthroughError(isRuntime)
@@ -71,6 +74,7 @@ const connect = async (imports, pool, options) => {
   let {
     tablePrefix,
     databaseFile,
+    preferEventBusLedger,
     performanceTracer,
     ...connectionOptions
   } = options
@@ -80,6 +84,7 @@ const connect = async (imports, pool, options) => {
   Object.assign(pool, {
     inlineLedgerRunQuery: commonRunQuery.bind(null, pool, true),
     runQuery: commonRunQuery.bind(null, pool, false),
+    fullJitter,
     connectionOptions,
     performanceTracer,
     tablePrefix,
@@ -92,7 +97,6 @@ const connect = async (imports, pool, options) => {
 
   const { SQLite, fs, os, tmp } = imports
 
-  let connector = null
   if (databaseFile === ':memory:') {
     if (process.env.RESOLVE_LAUNCH_ID != null) {
       const tmpName = `${os.tmpdir()}/read-model-${+process.env
@@ -123,32 +127,52 @@ const connect = async (imports, pool, options) => {
       })
     }
 
-    connector = SQLite.open.bind(SQLite, pool.memoryStore.name)
+    pool.connectionUri = pool.memoryStore.name
   } else {
-    connector = SQLite.open.bind(SQLite, databaseFile)
+    pool.connectionUri = databaseFile
   }
 
   for (let retry = 0; ; retry++) {
     try {
-      pool.connection = await connector()
+      pool.connection = await SQLite.open(pool.connectionUri)
       break
     } catch (error) {
       if (error != null && error.code === SQLITE_BUSY) {
-        await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))
+        await fullJitter(retry)
       } else {
         throw error
       }
     }
   }
 
-  await pool.runQuery(`PRAGMA busy_timeout=0`)
-  await pool.runQuery(`PRAGMA encoding=${escape('UTF-8')}`)
-  await pool.runQuery(`PRAGMA synchronous=EXTRA`)
+  await pool.connection.configure('busyTimeout', 0)
 
-  if (databaseFile === ':memory:') {
-    await pool.runQuery(`PRAGMA journal_mode=MEMORY`)
+  const configureSql = `
+    PRAGMA busy_timeout=0;
+    PRAGMA encoding=${escape('UTF-8')};
+    PRAGMA synchronous=EXTRA;
+    ${
+      databaseFile === ':memory:'
+        ? `PRAGMA journal_mode=MEMORY`
+        : `PRAGMA journal_mode=DELETE`
+    };
+  `
+
+  if (!preferEventBusLedger) {
+    while (true) {
+      try {
+        await pool.inlineLedgerRunQuery(configureSql, true)
+        break
+      } catch (error) {
+        if (!(error instanceof pool.PassthroughError)) {
+          throw error
+        }
+
+        await fullJitter(0)
+      }
+    }
   } else {
-    await pool.runQuery(`PRAGMA journal_mode=DELETE`)
+    await pool.runQuery(configureSql, true)
   }
 }
 

@@ -81,6 +81,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
   const {
     PassthroughError,
     getVacantTimeInMillis,
+    getEncryption,
     inlineLedgerRunQuery,
     generateGuid,
     eventstoreAdapter,
@@ -126,6 +127,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
   )
 
   let events = await eventsPromise
+  const executeEncryption = await getEncryption()
 
   while (true) {
     if (events.length === 0) {
@@ -149,7 +151,11 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
         try {
           if (typeof projection[event.type] === 'function') {
             await inlineLedgerRunQuery(`SAVEPOINT ${savePointId}`)
-            await projection[event.type](store, event)
+            await projection[event.type](
+              store,
+              event,
+              await executeEncryption(event)
+            )
             await inlineLedgerRunQuery(`RELEASE SAVEPOINT ${savePointId}`)
             lastSuccessEvent = event
           }
@@ -290,7 +296,8 @@ const build = async (
   projection,
   next,
   getVacantTimeInMillis,
-  provideLedger
+  provideLedger,
+  getEncryption
 ) => {
   const {
     PassthroughError,
@@ -368,6 +375,7 @@ const build = async (
 
     Object.assign(pool, {
       getVacantTimeInMillis,
+      getEncryption,
       ledgerTableNameAsId,
       trxTableNameAsId,
       xaKey,

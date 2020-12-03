@@ -27,7 +27,7 @@ const ssrHandler = async (serverContext, req, res) => {
     const markup = ReactDOM.renderToStaticMarkup(
       <ResolveProvider context={resolveContext}>
         <Layout>
-          <App {...serverContext.localS3Constants} />
+          <App {...serverContext.uploader} />
         </Layout>
       </ResolveProvider>
     )
