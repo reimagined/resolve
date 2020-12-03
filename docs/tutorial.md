@@ -84,16 +84,16 @@ export default {
   createShoppingList: (state, { payload: { name } }) => {
     return {
       type: SHOPPING_LIST_CREATED,
-      payload: { name }
+      payload: { name },
     }
   },
   // The "createShoppingItem" command's payload contains an item's ID and display text.
   createShoppingItem: (state, { payload: { id, text } }) => {
     return {
       type: SHOPPING_ITEM_CREATED,
-      payload: { id, text }
+      payload: { id, text },
     }
-  }
+  },
 }
 ```
 
@@ -414,12 +414,12 @@ import { SHOPPING_LIST_CREATED } from '../eventTypes'
 
 export default {
   // The 'Init' function initializes the store (defines tables and their fields).
-  Init: async store => {
+  Init: async (store) => {
     await store.defineTable('ShoppingLists', {
       indexes: {
-        id: 'string'
+        id: 'string',
       },
-      fields: ['createdAt', 'name']
+      fields: ['createdAt', 'name'],
     })
   },
   // A projection function runs once for every event of the specified type.
@@ -431,11 +431,11 @@ export default {
     const shoppingList = {
       id: aggregateId,
       name,
-      createdAt: timestamp
+      createdAt: timestamp,
     }
     // Save the data item to the store's table 'ShoppingLists' table.
     await store.insert('ShoppingLists', shoppingList)
-  }
+  },
 }
 ```
 
@@ -458,9 +458,9 @@ const devConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-models.db'
-      }
-    }
+        databaseFile: 'data/read-models.db',
+      },
+    },
     // You can reconfigure the connector to use other database types:
     /*
       default: {
@@ -474,7 +474,7 @@ const devConfig = {
         }
       }
     */
-  }
+  },
 }
 ```
 
@@ -489,9 +489,9 @@ You also need to implement a query resolver to answer data queries based on the 
 ```js
 export default {
   // The 'all' resolver returns all entries from the 'ShoppingLists' table.
-  all: async store => {
+  all: async (store) => {
     return await store.find('ShoppingLists', {}, null, { createdAt: 1 })
-  }
+  },
 }
 ```
 
@@ -668,10 +668,10 @@ export default [
       {
         path: '/',
         component: MyLists,
-        exact: true
-      }
-    ]
-  }
+        exact: true,
+      },
+    ],
+  },
 ]
 ```
 
@@ -690,7 +690,7 @@ import routes from './routes'
 
 // The 'conext' object contains data required by the 'resolve-react-hooks'.
 // library to communicate with the reSolve backend.
-const entryPoint = context => {
+const entryPoint = (context) => {
   const appContainer = document.createElement('div')
   document.body.appendChild(appContainer)
   render(
@@ -746,7 +746,7 @@ export default {
   Init: () => ({
     id: 'id',
     name: 'unnamed',
-    list: []
+    list: [],
   }),
   // Below is a projection function. It runs on every event of the specified type, whose aggregate Id matches one of the Ids specified in the query.
   // A View Model projection takes the response object and returns its updated version based on the event data.
@@ -754,7 +754,7 @@ export default {
     // Assign the actual aggregate ID and name to the response.
     id: aggregateId,
     name,
-    list: []
+    list: [],
   }),
   [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
     ...state,
@@ -764,10 +764,10 @@ export default {
       {
         id,
         text,
-        checked: false
-      }
-    ]
-  })
+        checked: false,
+      },
+    ],
+  }),
 }
 ```
 
@@ -860,7 +860,7 @@ import {
   ListGroup,
   FormControl,
   FormGroup,
-  ControlLabel
+  ControlLabel,
 } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
@@ -868,13 +868,13 @@ import ShoppingListItem from './ShoppingListItem'
 // The shopping list populated with items obtained from the ShoppingList View Model.
 const ShoppingList = ({
   match: {
-    params: { id: aggregateId }
-  }
+    params: { id: aggregateId },
+  },
 }) => {
   const [shoppingList, setShoppingList] = useState({
     name: '',
     id: null,
-    list: []
+    list: [],
   })
   // The UseViewModel hook connects the component to a View Model
   // and reactively updates the component's state when the View Model's
@@ -942,11 +942,25 @@ const ShoppingLists = ({ lists }) => {
 }
 ```
 
-Run the application to see the result.
+Run the application and click a shopping list's name view the result. To test the View Model's reactiveness, keep the page opened and use the following console input to add a shopping list item:
 
-[TODO] Test Reactive Updates
+```bash
+curl -i http://localhost:3000/api/commands/ \
+--header "Content-Type: application/json" \
+--data '
+{
+    "aggregateName": "ShoppingList",
+    "aggregateId": <your_shopping_list`s_aggregate_id>,
+    "type": "createShoppingItem",
+    "payload": {
+        "id": "1",
+        "text": "Milk"
+    }
+}
+'
+```
 
----
+The page is automatically updated to display the new item.
 
 ## **Lesson 5** - Enable Editing
 
@@ -1109,8 +1123,8 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
       aggregateId: uuid(),
       aggregateName: 'ShoppingList',
       payload: {
-        name: shoppingListName || `Shopping List ${lists.length + 1}`
-      }
+        name: shoppingListName || `Shopping List ${lists.length + 1}`,
+      },
     },
     (err, result) => {
       setShoppingListName('')
@@ -1119,11 +1133,11 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
     }
   )
 
-  const updateShoppingListName = event => {
+  const updateShoppingListName = (event) => {
     setShoppingListName(event.target.value)
   }
 
-  const onShoppingListNamePressEnter = event => {
+  const onShoppingListNamePressEnter = (event) => {
     if (event.charCode === 13) {
       event.preventDefault()
       createShoppingListCommand()
@@ -1201,7 +1215,7 @@ const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
     {
       type: 'removeShoppingList',
       aggregateId: shoppingListId,
-      aggregateName: 'ShoppingList'
+      aggregateName: 'ShoppingList',
     },
     onRemoveSuccess
   )
@@ -1289,20 +1303,20 @@ import {
   InputGroup,
   FormControl,
   FormGroup,
-  ControlLabel
+  ControlLabel,
 } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
 
 const ShoppingList = ({
   match: {
-    params: { id: aggregateId }
-  }
+    params: { id: aggregateId },
+  },
 }) => {
   const [shoppingList, setShoppingList] = useState({
     name: '',
     id: null,
-    list: []
+    list: [],
   })
   const { connect, dispose } = useViewModel(
     'shoppingList',
@@ -1314,22 +1328,22 @@ const ShoppingList = ({
 
   // The useCommandBuilder hook creates a function that generates commands based on a parameter
   const createShoppingItem = useCommandBuilder(
-    text => ({
+    (text) => ({
       type: 'createShoppingItem',
       aggregateId,
       aggregateName: 'ShoppingList',
       payload: {
         text,
-        id: Date.now().toString()
-      }
+        id: Date.now().toString(),
+      },
     }),
     clearItemText
   )
 
-  const updateItemText = event => {
+  const updateItemText = (event) => {
     setItemText(event.target.value)
   }
-  const onItemTextPressEnter = event => {
+  const onItemTextPressEnter = (event) => {
     if (event.charCode === 13) {
       event.preventDefault()
       createShoppingItem(itemText)
@@ -1404,16 +1418,16 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
     aggregateId: shoppingListId,
     aggregateName: 'ShoppingList',
     payload: {
-      id
-    }
+      id,
+    },
   })
   const removeItem = useCommand({
     type: 'removeShoppingItem',
     aggregateId: shoppingListId,
     aggregateName: 'ShoppingList',
     payload: {
-      id
-    }
+      id,
+    },
   })
   return (
     <ListGroupItem key={id}>
