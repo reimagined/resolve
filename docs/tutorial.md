@@ -61,7 +61,7 @@ This lesson describes how to implement a basic write side for a reSolve applicat
 
 Define types of events that the write side can produce. Create an **eventTypes.js** file in the project's **common** folder and add the following content to it:
 
-**common/eventTypes.js:**
+**common/eventTypes.js**
 
 ```js
 export const SHOPPING_LIST_CREATED = 'SHOPPING_LIST_CREATED' // Indicates the creation of a shopping list
@@ -71,7 +71,7 @@ export const SHOPPING_ITEM_CREATED = 'SHOPPING_ITEM_CREATED' // Indicates the cr
 
 Next, define an aggregate that handles commands and produces the defined events as the result. Create a **shopping_list.commands.js** file in the **common/aggregates** and add the following code to it:
 
-**common/aggregates/shopping_list.commands.js:**
+**common/aggregates/shopping_list.commands.js**
 
 ```js
 import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
@@ -109,7 +109,7 @@ The reSolve framework saves produced events to a persistent **[event store](writ
 
 The last step is to register the implemented aggregate in the application's configuration file. To do this, open the **config.app.js** file and specify the following settings in the **aggregates** configuration section:
 
-**config.app.js:**
+**config.app.js**
 
 ```js
 ...
@@ -240,7 +240,7 @@ Your application's write side currently does not perform any input validation. T
 
 To overcome the first issue, add checks at the beginning of each command handler:
 
-**common/aggregates/shopping_list.commands.js:**
+**common/aggregates/shopping_list.commands.js**
 
 ```js
 createShoppingList: (state, { payload: { name } }) => {
@@ -256,7 +256,7 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 
 To overcome the second and third issues, you need to have an **aggregate state** object that keeps track of what shopping lists were already created. Such object can be assembled on the fly by an aggregate **projection** from previously created events with the same aggregate ID. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
 
-**common/aggregates/shopping_list.projection.js:**
+**common/aggregates/shopping_list.projection.js**
 
 <!-- prettier-ignore-start -->
 
@@ -281,7 +281,7 @@ export default {
 
 Register the create projection in the application's configuration file:
 
-**config.app.js:**
+**config.app.js**
 
 <!-- prettier-ignore-start -->
 
@@ -301,7 +301,7 @@ Register the create projection in the application's configuration file:
 
 The state assembled by a projection the write side to find out whether and when a shopping list was created for the current aggregate instance (an instance that the current aggregate ID identifies).
 
-**common/aggregates/shopping_list.commands.js:**
+**common/aggregates/shopping_list.commands.js**
 
 ```js
   createShoppingList: (state, { payload: { name } }) => {
@@ -406,7 +406,7 @@ Follow the steps below to implement a **ShoppingLists** Read Model.
 
 First, define a Read Model **[projection](read-side.md#updating-a-read-model-via-projection-functions)**. Create a **shopping_list.projection.js** file in the **read-models** folder and add the following code to this file:
 
-**common/read-models/shopping_lists.projection.js:**
+**common/read-models/shopping_lists.projection.js**
 
 ```js
 // A Read Model projection describes logick used to collect data from incoming events.
@@ -447,7 +447,7 @@ export default {
 
 The type of the physical store used to save data is defined by a Read Model connector:
 
-**config.dev.js:**
+**config.dev.js**
 
 ```js
 // The 'config.dev.js' file defines setting used only in the development environment.
@@ -484,7 +484,7 @@ const devConfig = {
 
 You also need to implement a query resolver to answer data queries based on the data from the store.
 
-**common/read-models/shopping_lists.resolvers.js:**
+**common/read-models/shopping_lists.resolvers.js**
 
 ```js
 export default {
@@ -561,6 +561,8 @@ This lesson provides information on how to display a Read Model's data in the cl
 
 The frontend's source files are located in the **client** folder. Create a **ShoppingLists.js** file in the **client/components** folder. In this file, implement a React component that renders a list of shopping list names:
 
+**client/components/ShoppingLists.js**
+
 ```jsx
 import React from 'react'
 import { ControlLabel, Table } from 'react-bootstrap'
@@ -592,7 +594,9 @@ const ShoppingLists = ({ lists }) => {
 export default ShoppingLists
 ```
 
-Add a new component named **MyLists** this component obtains shopping list data from reSolve and use the **ShoppingLists** component to display this data. To obtain the data, use the **resolve-react-hooks** library's `useQuery` hook:
+Add a new component named **MyLists**. This component obtains shopping list data from reSolve and use the **ShoppingLists** component to display this data. To obtain the data, use the **resolve-react-hooks** library's `useQuery` hook:
+
+**client/components/MyLists.js**
 
 ```js
 import React, { useState, useEffect } from 'react'
@@ -632,6 +636,8 @@ export default MyLists
 
 Add the client application's root component that defines the HEAD section and renders routes:
 
+**client/components/App.js**
+
 ```jsx
 import React from 'react'
 import { renderRoutes } from 'react-router-config'
@@ -657,6 +663,8 @@ export default App
 
 The routes are defined as follows:
 
+**client/routes.js**
+
 ```jsx
 import App from './components/App'
 import MyLists from './components/MyLists'
@@ -678,6 +686,8 @@ export default [
 ### Configure the Entry Point
 
 A client entry point is a function that takes a `context` object as a parameter. You can pass this object to the resolve-react-hooks library to connect it your reSolve backend. You can implement the entry point as shown below:
+
+**client/index.js**
 
 ```jsx
 import React from 'react'
@@ -708,6 +718,8 @@ export default entryPoint
 
 Register the client entry point in the application's configuration file as shown below:
 
+**config.app.js**
+
 ```js
 const appConfig = {
   ...
@@ -736,6 +748,8 @@ The downside is that View Models do not have persistent state and should be rebu
 ### Create a Shopping List View Model
 
 Add a **shopping_list.projection.js** file in the **common/view-models** directory. Add the following code to this file:
+
+**common/view-models/shopping_list.projection.js**
 
 ```js
 import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
@@ -772,6 +786,8 @@ export default {
 ```
 
 Register the View Model in the application configuration file:
+
+**config.app.js**
 
 ```js
 const appConfig = {
@@ -832,7 +848,7 @@ Connection: keep-alive
 
 Add the following React components to your client application to display shopping list items:
 
-##### client/components/ShoppingListItem.js:
+**client/components/ShoppingListItem.js:**
 
 ```jsx
 import React from 'react'
@@ -850,7 +866,7 @@ const ShoppingListItem = ({ item: { id, text } }) => {
 export default ShoppingListItem
 ```
 
-##### client/components/ShoppingList.js:
+**client/components/ShoppingList.js:**
 
 ```jsx
 import React, { useState, useEffect } from 'react'
@@ -919,7 +935,7 @@ export default ShoppingList
 
 Modify the **ShoppingLists** component's layout as shown below to render links to shopping lists.
 
-##### client/components/ShoppingLists.js:
+**client/components/ShoppingLists.js:**
 
 ```jsx
 const ShoppingLists = ({ lists }) => {
@@ -978,7 +994,7 @@ To implement the missing functionality, you need to add data editing events, mod
 
 Define events related to data editing in the **common/eventTypes.js** file.
 
-##### common/eventTypes.js:
+**common/eventTypes.js:**
 
 ```js
 ...
@@ -991,7 +1007,7 @@ export const SHOPPING_ITEM_REMOVED = 'SHOPPING_ITEM_REMOVED' // Indicates that a
 
 Add the following command handlers to the ShoppingList aggregate to validate the commands and produce the corresponding events:
 
-##### common/aggregates/shopping_lists.commands.js
+**common/aggregates/shopping_lists.commands.js**
 
 ```js
 import {
@@ -1047,7 +1063,7 @@ import {
 
 Define a projection function for the 'SHOPPING_LIST_REMOVED' event in the ShoppingLists Read Model's projection:
 
-##### common/read-models/shopping_lists.projection.js
+**common/read-models/shopping_lists.projection.js**
 
 ```js
 import {
@@ -1068,7 +1084,7 @@ import {
 
 In the ShoppingList View Model projection, add the following projection functions:
 
-##### common/view-models/shopping_list.projection.js
+**common/view-models/shopping_list.projection.js**
 
 ```js
 import {
@@ -1105,7 +1121,7 @@ export default {
 
 Add a React component that creates shopping lists. The component renders a text input for a shopping list's name and an 'Add Shopping List' button.
 
-##### client/components/ShoppingListCreator.js
+**client/components/ShoppingListCreator.js**
 
 ```jsx
 import React, { useState } from 'react'
@@ -1175,7 +1191,7 @@ export default ShoppingListCreator
 
 You can render this component within 'MyLists' as shown below:
 
-##### client/components/MyLists.js
+**client/components/MyLists.js**
 
 ```jsx
 const MyLists = () => {
@@ -1202,7 +1218,7 @@ const MyLists = () => {
 
 The following component implements a **Delete** button for a shopping list:
 
-##### client/components/ShoppingListRemover.js
+**client/components/ShoppingListRemover.js**
 
 ```jsx
 import React from 'react'
@@ -1232,7 +1248,7 @@ export default ShoppingListRemover
 
 Add this component each item in the ShoppingLists component's layout:
 
-##### client/components/ShoppingLists.js
+**client/components/ShoppingLists.js**
 
 ```jsx
 const ShoppingLists = ({ lists, onRemoveSuccess }) => {
@@ -1265,7 +1281,7 @@ export default ShoppingLists
 
 Also add an `onRemoveSuccess` handler to MyLists:
 
-##### client/components/MyLists.js
+**client/components/MyLists.js**
 
 ```jsx
 const MyLists = () => {
@@ -1289,7 +1305,7 @@ const MyLists = () => {
 
 The code below demonstrates how to implement data editing for the ShoppingList component:
 
-##### client/components/ShoppingList.js
+**client/components/ShoppingList.js**
 
 ```jsx
 import React, { useState, useEffect } from 'react'
@@ -1405,7 +1421,7 @@ export default ShoppingList
 
 Modify the ShoppingListItem component to support item checking and deletion.
 
-##### client/components/ShoppingListItem.js
+**client/components/ShoppingListItem.js**
 
 ```jsx
 import React from 'react'
