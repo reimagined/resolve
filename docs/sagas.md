@@ -180,7 +180,7 @@ The following side effect functions are available by default:
 
 #### Side Effect Starting Timestamp
 
-Each saga stores a `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP` property. This property's value is a timestamp that defines the latest point in time for which side effects are allowed. If an event is older than this timestamp, all side effect functions for the current event handler are replaced with stub functions that do nothing. This is required to guarantee that side effect logic is never invoked more than once for a given event even if the Saga's persistent state is reset.
+Each saga stores a `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP` property. This property's value is a timestamp that defines the latest point in time for which side effects are allowed. If an event is older than this timestamp, all side effect functions for the current event handler are replaced with stub functions that do nothing. This is required to guarantee that side effect logic is never invoked more than once for a given event. Note that if you reset the Saga, the timestamp is preserved and side effects are not re-invoked as the saga rebuilds its state.
 
 The `sideEffects` object's `isEnabled` field indicates whether or not side effects are enabled for the processed event.
 
