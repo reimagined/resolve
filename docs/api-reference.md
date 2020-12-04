@@ -1816,7 +1816,7 @@ This section lists request middleware included into the resolve-client package. 
 
 Deserializes the response data if it contains valid JSON. If the data is not JSON, the original string is kept. Initialized by the `createParseResponseMiddleware` factory function.
 
-This middleware takes no options. You can add it to a request as shown below:
+This middleware has no options. You can add it to a request as shown below:
 
 ```js
 import { createParseResponseMiddleware } from 'resolve-client'
@@ -1839,7 +1839,7 @@ const { data } = await client.query(
 
 Retries the request if the server responds with an error. Initialized by the `createRetryOnErrorMiddleware` factory function.
 
-The `retryOnError` middleware takes the following options:
+The `retryOnError` middleware has the following options:
 
 | Option Name | Description                                                          |
 | ----------- | -------------------------------------------------------------------- |
@@ -1887,7 +1887,7 @@ Validates the response and retries if the validation fails. This allows you to c
 
 Initialized by the `createWaitForResponseMiddleware` factory function.
 
-The `waitForResponse` middleware takes the following options:
+The `waitForResponse` middleware has the following options:
 
 | Option Name | Description                                                          |
 | ----------- | -------------------------------------------------------------------- |
