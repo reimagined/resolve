@@ -1806,11 +1806,11 @@ Multiple middleware functions are run in the order they are specified in the opt
 
 This section lists request middleware included into the resolve-client package. The following middleware is available:
 
-| Name                | Description                                                 |
-| ------------------- | ----------------------------------------------------------- |
-| [parseResponse]()   | Deserializes the response data if it contains valid JSON.   |
-| [retryOnError]()    | Retries the request if the server responds with an error.   |
-| [waitForResponse]() | Validates the response and retries if validation fails. |
+| Name                | Description                                               |
+| ------------------- | --------------------------------------------------------- |
+| [parseResponse]()   | Deserializes the response data if it contains valid JSON. |
+| [retryOnError]()    | Retries the request if the server responds with an error. |
+| [waitForResponse]() | Validates the response and retries if validation fails.   |
 
 ##### parseResponse
 
@@ -1845,8 +1845,8 @@ The `retryOnError` middleware has the following options:
 | ----------- | -------------------------------------------------------------------- |
 | attempts    | The number of retries on error.                                      |
 | errors      | An array of error codes that are allowed to trigger a retry.         |
-| debug       | If set to `true`, the middleware logs errors to the browser console. |
-| period      | A time period to wait between retries specified in milliseconds.     |
+| debug       | If set to `true`, the middleware logs errors in the browser console. |
+| period      | The time between retries specified in milliseconds.                  |
 
 You can add the `retryOnError` middleware to a request as shown below:
 
@@ -1893,7 +1893,7 @@ The `waitForResponse` middleware has the following options:
 | ----------- | -------------------------------------------------------------------- |
 | attempts    | The number of retries on validation error.                           |
 | debug       | If set to `true`, the middleware logs errors in the browser console. |
-| period      | The time between retries specified in milliseconds.     |
+| period      | The time between retries specified in milliseconds.                  |
 | validator   | An async function that validates the response.                       |
 
 You can add the `retryOnError` middleware to a request as shown below:
@@ -1952,13 +1952,13 @@ export const createMyMiddleware = (options) =>
 
 The `params` object exposes the following API:
 
-| Field Name   | Description                                                                      |
-| ------------ | -------------------------------------------------------------------------------- |
+| Field Name   | Description                                                                 |
+| ------------ | --------------------------------------------------------------------------- |
 | fetch        | A JavaScript fetch function you can use to perform arbitrary HTTP requests. |
-| info         | An object that describes the current request.                                    |
-| init         | An object that is the fetch function's `init` parameter.                         |
+| info         | An object that describes the current request.                               |
+| init         | An object that is the fetch function's `init` parameter.                    |
 | repeat       | A function you can call to repeat the current request.                      |
-| end          | Call this function to commit the middleware execution result or error.           |
-| state        | A state object passed between middleware functions.                              |
-| deserializer | Returns a deserealized object from a string.                                   |
-| jwtProvider  | Used to get and set the JSON Web Token.                                          |
+| end          | Call this function to commit the middleware execution result or error.      |
+| state        | A state object passed between middleware functions.                         |
+| deserializer | Returns a deserealized object from a string.                                |
+| jwtProvider  | Used to get and set the JSON Web Token.                                     |
