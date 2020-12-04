@@ -1755,7 +1755,7 @@ client.query(
         ...
       ],
       error: [
-        // An array of middleware that runs on server error
+        // An array of middleware that runs when there is a server error
         createMyErrorMiddleware({
           // Middleware options
         }),
@@ -1800,7 +1800,7 @@ const myQuery = useQuery(
   }
 ```
 
-If you use multiple middleware functions, they run in the order that they are specified in the options object.
+Multiple middleware functions are run in the order they are specified in the options object.
 
 #### Available Middlewares
 
@@ -1810,7 +1810,7 @@ This section lists request middleware included into the resolve-client package. 
 | ------------------- | ----------------------------------------------------------- |
 | [parseResponse]()   | Deserializes the response data if it contains valid JSON.   |
 | [retryOnError]()    | Retries the request if the server responds with an error.   |
-| [waitForResponse]() | Validates the response and retries if the validation fails. |
+| [waitForResponse]() | Validates the response and retries if validation fails. |
 
 ##### parseResponse
 
@@ -1892,8 +1892,8 @@ The `waitForResponse` middleware has the following options:
 | Option Name | Description                                                          |
 | ----------- | -------------------------------------------------------------------- |
 | attempts    | The number of retries on validation error.                           |
-| debug       | If set to `true`, the middleware logs errors to the browser console. |
-| period      | A time period to wait between retries specified in milliseconds.     |
+| debug       | If set to `true`, the middleware logs errors in the browser console. |
+| period      | The time between retries specified in milliseconds.     |
 | validator   | An async function that validates the response.                       |
 
 You can add the `retryOnError` middleware to a request as shown below:
@@ -1940,7 +1940,7 @@ You can define custom middleware as follows:
 const myMiddleware = async (
   options, // Options passed to the factory function.
   response, // The second argument is either a response or error.
-  params // Contains API that you can use in your middleware implementation. See the API table below.
+  params // Contains API you can use in your middleware implementation. See the API table below.
 ) => {
   // Put your middleware logic here
 }
@@ -1954,11 +1954,11 @@ The `params` object exposes the following API:
 
 | Field Name   | Description                                                                      |
 | ------------ | -------------------------------------------------------------------------------- |
-| fetch        | A JavaScript fetch function that you can use to perform arbitrary HTTP requests. |
+| fetch        | A JavaScript fetch function you can use to perform arbitrary HTTP requests. |
 | info         | An object that describes the current request.                                    |
 | init         | An object that is the fetch function's `init` parameter.                         |
-| repeat       | A function that you can call to repeat the current request.                      |
+| repeat       | A function you can call to repeat the current request.                      |
 | end          | Call this function to commit the middleware execution result or error.           |
 | state        | A state object passed between middleware functions.                              |
-| deserializer | Given a string, returns a deserealized object.                                   |
+| deserializer | Returns a deserealized object from a string.                                   |
 | jwtProvider  | Used to get and set the JSON Web Token.                                          |

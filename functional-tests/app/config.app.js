@@ -147,7 +147,7 @@ const appConfig = {
       },
     ],
     [
-      'client/ssr-hoc.js',
+      'client/ssr-redux-hooks.js',
       {
         outputFile: 'common/cloud-entry/ssr-redux-hooks.js',
         moduleType: 'commonjs',

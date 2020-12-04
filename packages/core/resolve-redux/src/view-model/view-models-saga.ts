@@ -23,8 +23,8 @@ const viewModelsSaga = function* (sagaArgs: any): any {
 
     switch (action.type) {
       case CONNECT_VIEWMODEL: {
-        const { query } = action
-        const sagaKey = getHash(query)
+        const { query, selectorId } = action
+        const sagaKey = selectorId || getHash(query)
         yield* sagaManager.start(
           `${CONNECT_VIEWMODEL}${sagaKey}`,
           connectViewModelSaga,
@@ -38,8 +38,8 @@ const viewModelsSaga = function* (sagaArgs: any): any {
         break
       }
       case DISCONNECT_VIEWMODEL: {
-        const { query } = action
-        const sagaKey = getHash(query)
+        const { query, selectorId } = action
+        const sagaKey = selectorId || getHash(query)
         yield* sagaManager.start(
           `${DISCONNECT_VIEWMODEL}${sagaKey}`,
           disconnectViewModelSaga,

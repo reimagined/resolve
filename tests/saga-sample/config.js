@@ -30,6 +30,7 @@ const devConfig = {
       module: 'resolve-readmodel-lite',
       options: {
         databaseFile: ':memory:',
+        preferEventBusLedger: true,
       },
     },
     /*

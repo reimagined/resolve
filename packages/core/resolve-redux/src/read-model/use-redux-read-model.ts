@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { AnyAction } from 'redux'
 import { useDispatch } from 'react-redux'
 import { firstOfType } from 'resolve-core'
@@ -10,6 +10,7 @@ import {
 } from 'resolve-client'
 import { useQueryBuilder, QueryBuilder } from 'resolve-react-hooks'
 import {
+  initReadModel,
   queryReadModelFailure,
   QueryReadModelFailureAction,
   queryReadModelRequest,
@@ -18,7 +19,7 @@ import {
   QueryReadModelSuccessAction,
 } from './actions'
 import { isDependencies, isOptions } from '../helpers'
-import { ReduxState, ResultStatus } from '../types'
+import { ReduxState } from '../types'
 import { badSelectorDrain, getEntry } from './read-model-reducer'
 
 type HookData<TArgs extends any[]> = {
@@ -171,6 +172,16 @@ function useReduxReadModel<TArgs extends any[], TQuery extends ReadModelQuery>(
         callback
       )
 
+  const initialStateDispatched = useRef(false)
+  if (!initialStateDispatched.current) {
+    if (selectorId) {
+      dispatch(initReadModel(initialState, undefined, selectorId))
+    } else if (!isBuilder(query)) {
+      dispatch(initReadModel(initialState, query, undefined))
+    }
+    initialStateDispatched.current = true
+  }
+
   return useMemo(
     () => ({
       request: (...args: TArgs): void => {
@@ -193,11 +204,7 @@ function useReduxReadModel<TArgs extends any[], TQuery extends ReadModelQuery>(
               ? {
                   query,
                 }
-              : badSelectorDrain),
-          {
-            status: ResultStatus.Initial,
-            data: initialState,
-          }
+              : badSelectorDrain)
         ),
     }),
     [executor, dispatch]

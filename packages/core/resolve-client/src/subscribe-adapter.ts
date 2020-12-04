@@ -93,7 +93,7 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
         status !== SubscriptionAdapterStatus.Connecting &&
         status !== SubscriptionAdapterStatus.Connected
       ) {
-        throw new Error(subscriptionAdapterNotInitialized)
+        throw new Error(`${subscriptionAdapterNotInitialized}: ${status}`)
       }
       status = SubscriptionAdapterStatus.Closed
       if (client != null) {

@@ -108,6 +108,9 @@ const execResolveCloud = (appDir, args, stdio = 'pipe') =>
   execSync(`yarn --silent resolve-cloud ${args}`, {
     cwd: appDir,
     stdio,
+    env: {
+      ...process.env,
+    },
   })
 
 const toTable = (tableOutput) => {

@@ -1,38 +1,36 @@
 {
   "name": "with-postcss",
-  "version": "0.25.18",
-  "description": "shows how to work with postCSS",
+  "version": "0.26.2",
   "private": true,
+  "description": "shows how to work with postCSS",
   "scripts": {
     "build": "babel-node ./run.js build",
     "cloud": "babel-node ./run.js cloud",
     "dev": "babel-node ./run.js dev",
+    "export-event-store": "babel-node ./run.js export-event-store",
+    "import-event-store": "babel-node ./run.js import-event-store",
     "start": "babel-node ./run.js start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:e2e": "babel-node ./run.js test:e2e",
-    "import-event-store": "babel-node ./run.js import-event-store",
-    "export-event-store": "babel-node ./run.js export-event-store"
+    "test:e2e": "babel-node ./run.js test:e2e"
   },
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
     "history": "4.10.1",
     "react": "16.13.1",
-    "react-dom": "16.13.1",
     "react-bootstrap": "1.4.0",
+    "react-dom": "16.13.1",
     "react-helmet": "6.0.0",
     "react-router": "5.1.2",
     "react-router-dom": "5.1.2",
-    "resolve-scripts": "0.25.18",
-    "resolve-react-hooks": "0.25.18",
-    "resolve-eventstore-postgresql-serverless": "0.25.18",
-    "resolve-eventstore-lite": "0.25.18",
-    "resolve-readmodel-lite": "0.25.18",
-    "resolve-readmodel-postgresql-serverless": "0.25.18"
+    "resolve-eventstore-lite": "0.26.2",
+    "resolve-eventstore-postgresql-serverless": "0.26.2",
+    "resolve-react-hooks": "0.26.2",
+    "resolve-readmodel-lite": "0.26.2",
+    "resolve-readmodel-postgresql-serverless": "0.26.2",
+    "resolve-scripts": "0.26.2"
   },
   "devDependencies": {
-    "aws-sdk": "2.631.0",
-    "aws-xray-sdk-core": "2.5.0",
     "@babel/core": "7.9.6",
     "@babel/plugin-proposal-class-properties": "7.8.3",
     "@babel/plugin-proposal-export-default-from": "7.8.3",
@@ -41,17 +39,19 @@
     "@babel/preset-env": "7.9.6",
     "@babel/preset-react": "7.9.4",
     "autoprefixer": "8.6.5",
+    "aws-sdk": "2.631.0",
+    "aws-xray-sdk-core": "2.5.0",
     "babel-jest": "26.0.1",
     "css-loader": "1.0.0",
-    "mini-css-extract-plugin": "0.9.0",
     "jest": "26.0.1",
     "jest-css-modules-transform": "2.0.0",
+    "mini-css-extract-plugin": "0.9.0",
     "postcss-import": "12.0.1",
     "postcss-loader": "2.1.5",
     "react-test-renderer": "16.13.1",
+    "resolve-cloud": "*",
     "style-loader": "0.21.0",
     "testcafe": "1.8.5",
-    "webpack": "4.42.0",
-    "resolve-cloud": "*"
+    "webpack": "4.42.0"
   }
 }
