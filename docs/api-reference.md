@@ -1843,7 +1843,7 @@ The `retryOnError` middleware has the following options:
 
 | Option Name | Description                                                          |
 | ----------- | -------------------------------------------------------------------- |
-| attempts    | The number of retries on error.                                      |
+| attempts    | The number of retries if the server responds with an error.          |
 | errors      | An array of error codes that are allowed to trigger a retry.         |
 | debug       | If set to `true`, the middleware logs errors in the browser console. |
 | period      | The time between retries specified in milliseconds.                  |
@@ -1891,7 +1891,7 @@ The `waitForResponse` middleware has the following options:
 
 | Option Name | Description                                                          |
 | ----------- | -------------------------------------------------------------------- |
-| attempts    | The number of retries on validation error.                           |
+| attempts    | The number of retries if validation fails.                           |
 | debug       | If set to `true`, the middleware logs errors in the browser console. |
 | period      | The time between retries specified in milliseconds.                  |
 | validator   | An async function that validates the response.                       |
