@@ -1,22 +1,7 @@
 {
   "name": "resolve-readmodel-postgresql-serverless",
-  "version": "0.26.1",
+  "version": "0.26.2",
   "description": "This package serves as a resolve-query adapter for storing a read model in postgres",
-  "engines": {
-    "node": ">=10.9"
-  },
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
-  "bugs": {
-    "url": "https://github.com/reimagined/resolve/issues"
-  },
-  "scripts": {
-    "test": "jest --config=../../../../jest.config.js --verbose",
-    "testw": "jest --config=../../../../jest.config.js --watchAll"
-  },
-  "repository": "https://github.com/reimagined/resolve.git",
-  "author": "reimagined team",
-  "license": "MIT",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -24,10 +9,22 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters/resolve-readmodel-postgres#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "scripts": {
+    "test": "jest --config=../../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../../jest.config.js --watchAll"
+  },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-readmodel-base": "0.26.1",
-    "resolve-debug-levels": "0.26.1"
+    "resolve-debug-levels": "0.26.2",
+    "resolve-readmodel-base": "0.26.2"
   },
   "devDependencies": {
     "jest": "26.0.1",
@@ -35,6 +32,9 @@
   },
   "peerDependencies": {
     "aws-sdk": "*"
+  },
+  "engines": {
+    "node": ">=10.9"
   },
   "babelCompile": [
     {

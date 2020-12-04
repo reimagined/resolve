@@ -16037,40 +16037,9 @@ resolve-cloud-common@0.0.37:
     lodash.isequal "^4.5.0"
 
 resolve-cloud@*:
-  version "0.16.2"
-  resolved "https://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.16.2.tgz#0452ba9588e6adae9b61f1368d46be847a7d2ce0"
-  integrity sha512-GiCeg5KAsdwgMAlA2wrJFeeSq2hg1hYJ3G4duDogD9cQH+C7fMcPzEaR3XEFDkmULS8OvwRKMYNB2oEfEpFMhA==
-  dependencies:
-    amazon-cognito-identity-js "^3.0.15"
-    archiver "^3.0.0"
-    axios "^0.19.0"
-    chalk "^2.4.1"
-    columnify "^1.5.4"
-    consola "^2.10.1"
-    dateformat "^3.0.3"
-    dotenv "^8.0.0"
-    form-data "^2.3.2"
-    fs-extra "^8.0.1"
-    inquirer "^7.0.0"
-    latest-version "^5.1.0"
-    lodash.get "^4.4.2"
-    lodash.isempty "^4.4.0"
-    lodash.omit "^4.5.0"
-    lodash.set "^4.3.2"
-    lodash.unset "^4.5.2"
-    nanoid "^2.0.3"
-    node-fetch "^2.2.0"
-    parse-domain "^2.3.2"
-    qrcode-terminal "^0.12.0"
-    rc "^1.2.8"
-    readable-stream "^3.0.2"
-    semver "^6.3.0"
-    yargs "^14.0.0"
-
-resolve-cloud@0.16.1:
-  version "0.16.1"
-  resolved "https://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.16.1.tgz#d2d8594679b4d35156d6e800f269963582a96b15"
-  integrity sha512-7WdFpMEcKeImEKEimQx1EUBlRqu/mDlEu3Cx+jA2GwvI36bi5gofmHHmhzrGmBMHveTVgBFX1Uu2PDWq13vrbQ==
+  version "0.16.5"
+  resolved "http://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.16.5.tgz#d8300643d7586756eb46230f6a7ff1da24c79895"
+  integrity sha512-yAm3vKujwHQn4YbHSw1Y8Wx6c/xUjYHA4GTgoQF+ALXO+U+Kwz9CxsNvxLUHcedLkIAseAiAl+zsUMdYrv0Nyw==
   dependencies:
     amazon-cognito-identity-js "^3.0.15"
     archiver "^3.0.0"

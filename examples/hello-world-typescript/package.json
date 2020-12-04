@@ -1,37 +1,34 @@
 {
   "name": "hello-world-typescript",
-  "version": "0.26.1",
-  "description": "used as a template for new reSolve applications",
+  "version": "0.26.2",
   "private": true,
+  "description": "used as a template for new reSolve applications",
   "scripts": {
-    "type-check": "tsc",
     "build": "tsc && babel-node --extensions=.ts,.tsx run.ts build",
     "dev": "tsc && babel-node --extensions=.ts,.tsx run.ts dev",
     "start": "tsc && babel-node --extensions=.ts,.tsx run.ts start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose --passWithNoTests",
-    "test:e2e": "tsc && babel-node --extensions=.ts,.tsx run.ts test:e2e"
+    "test:e2e": "tsc && babel-node --extensions=.ts,.tsx run.ts test:e2e",
+    "type-check": "tsc"
   },
   "dependencies": {
-    "babel-loader": "8.1.0",
-    "@babel/preset-typescript": "7.9.0",
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
+    "@babel/preset-typescript": "7.9.0",
+    "babel-loader": "8.1.0",
     "react": "16.13.1",
-    "react-dom": "16.13.1",
     "react-bootstrap": "1.4.0",
+    "react-dom": "16.13.1",
     "react-helmet": "6.1.0",
-    "resolve-react-hooks": "0.26.1",
-    "resolve-scripts": "0.26.1",
-    "resolve-readmodel-base": "0.26.1",
-    "resolve-eventstore-lite": "0.26.1",
-    "resolve-readmodel-lite": "0.26.1",
-    "resolve-eventstore-postgresql-serverless": "0.26.1",
-    "resolve-readmodel-postgresql-serverless": "0.26.1"
+    "resolve-eventstore-lite": "0.26.2",
+    "resolve-eventstore-postgresql-serverless": "0.26.2",
+    "resolve-react-hooks": "0.26.2",
+    "resolve-readmodel-base": "0.26.2",
+    "resolve-readmodel-lite": "0.26.2",
+    "resolve-readmodel-postgresql-serverless": "0.26.2",
+    "resolve-scripts": "0.26.2"
   },
   "devDependencies": {
-    "@types/node": "^12.7.4",
-    "@types/react": "^16.8.8",
-    "@types/react-dom": "^16.9.5",
     "@babel/core": "7.9.6",
     "@babel/plugin-proposal-class-properties": "7.8.3",
     "@babel/plugin-proposal-export-default-from": "7.8.3",
@@ -39,10 +36,13 @@
     "@babel/plugin-transform-runtime": "7.9.6",
     "@babel/preset-env": "7.9.6",
     "@babel/preset-react": "7.9.4",
+    "@types/node": "^12.7.4",
+    "@types/react": "^16.8.8",
+    "@types/react-dom": "^16.9.5",
     "babel-jest": "26.0.1",
     "jest": "26.0.1",
     "react-test-renderer": "16.13.1",
-    "testcafe": "1.8.5",
-    "resolve-cloud": "*"
+    "resolve-cloud": "*",
+    "testcafe": "1.8.5"
   }
 }
