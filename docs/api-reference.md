@@ -1883,7 +1883,7 @@ client.command(
 
 ##### waitForResponse
 
-Validates the response and retries if the validation fails. This allows you to check whether the response contains the latest data and, if it does not, wait for a Read Model to update.
+Validates the response and retries if validation fails. This allows you to check whether the response contains the latest data or wait for the Read Model to update.
 
 Initialized by the `createWaitForResponseMiddleware` factory function.
 
