@@ -22,7 +22,7 @@ export function ResourceNotExistError(message) {
     this.stack = new Error().stack
   }
 }
-ResourceAlreadyExistError.name = 'ResourceAlreadyExistError'
+ResourceNotExistError.name = 'ResourceNotExistError'
 
 ResourceAlreadyExistError.prototype = Object.create(Error.prototype)
 
