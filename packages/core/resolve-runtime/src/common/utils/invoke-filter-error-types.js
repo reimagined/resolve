@@ -12,7 +12,11 @@ const invokeFilterErrorTypes = async (
   } catch (error) {
     let isFatal = true
     for (const ErrorConstructor of whiteListErrors) {
-      if (error instanceof ErrorConstructor) {
+      if (
+        error instanceof ErrorConstructor ||
+        (typeof ErrorConstructor.is === 'function' &&
+          ErrorConstructor.is(error))
+      ) {
         isFatal = false
         break
       }
