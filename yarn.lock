@@ -6232,11 +6232,6 @@ crypto-md5@^1.0.0:
   resolved "https://registry.yarnpkg.com/crypto-md5/-/crypto-md5-1.0.0.tgz#ccc8da750c753c7edcbabc542967472a384e86bb"
   integrity sha1-zMjadQx1PH7curxUKWdHKjhOhrs=
 
-crypto@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
-  integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
-
 css-color-keywords@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/css-color-keywords/-/css-color-keywords-1.0.0.tgz#fea2616dc676b2962686b3af8dbdbe180b244e05"
@@ -12674,7 +12669,7 @@ mime-types@2.1.25:
   dependencies:
     mime-db "1.42.0"
 
-mime-types@^2.1.12, mime-types@^2.1.26, mime-types@~2.1.19, mime-types@~2.1.24:
+mime-types@^2.1.12, mime-types@~2.1.19, mime-types@~2.1.24:
   version "2.1.27"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.27.tgz#47949f98e279ea53119f5722e0f34e529bec009f"
   integrity sha512-JIhqnCasI9yD+SsmkquHBxTSEuZdQX5BuQnS2Vc7puQQQ+8yiP5AY5uWhpdv4YL4VM5c6iliiYWPgJ/nJQLp7w==
@@ -16042,40 +16037,9 @@ resolve-cloud-common@0.0.37:
     lodash.isequal "^4.5.0"
 
 resolve-cloud@*:
-  version "0.16.2"
-  resolved "https://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.16.2.tgz#0452ba9588e6adae9b61f1368d46be847a7d2ce0"
-  integrity sha512-GiCeg5KAsdwgMAlA2wrJFeeSq2hg1hYJ3G4duDogD9cQH+C7fMcPzEaR3XEFDkmULS8OvwRKMYNB2oEfEpFMhA==
-  dependencies:
-    amazon-cognito-identity-js "^3.0.15"
-    archiver "^3.0.0"
-    axios "^0.19.0"
-    chalk "^2.4.1"
-    columnify "^1.5.4"
-    consola "^2.10.1"
-    dateformat "^3.0.3"
-    dotenv "^8.0.0"
-    form-data "^2.3.2"
-    fs-extra "^8.0.1"
-    inquirer "^7.0.0"
-    latest-version "^5.1.0"
-    lodash.get "^4.4.2"
-    lodash.isempty "^4.4.0"
-    lodash.omit "^4.5.0"
-    lodash.set "^4.3.2"
-    lodash.unset "^4.5.2"
-    nanoid "^2.0.3"
-    node-fetch "^2.2.0"
-    parse-domain "^2.3.2"
-    qrcode-terminal "^0.12.0"
-    rc "^1.2.8"
-    readable-stream "^3.0.2"
-    semver "^6.3.0"
-    yargs "^14.0.0"
-
-resolve-cloud@0.16.1:
-  version "0.16.1"
-  resolved "https://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.16.1.tgz#d2d8594679b4d35156d6e800f269963582a96b15"
-  integrity sha512-7WdFpMEcKeImEKEimQx1EUBlRqu/mDlEu3Cx+jA2GwvI36bi5gofmHHmhzrGmBMHveTVgBFX1Uu2PDWq13vrbQ==
+  version "0.16.5"
+  resolved "http://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.16.5.tgz#d8300643d7586756eb46230f6a7ff1da24c79895"
+  integrity sha512-yAm3vKujwHQn4YbHSw1Y8Wx6c/xUjYHA4GTgoQF+ALXO+U+Kwz9CxsNvxLUHcedLkIAseAiAl+zsUMdYrv0Nyw==
   dependencies:
     amazon-cognito-identity-js "^3.0.15"
     archiver "^3.0.0"

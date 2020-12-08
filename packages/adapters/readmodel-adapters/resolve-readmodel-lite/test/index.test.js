@@ -35,6 +35,7 @@ describe('resolve-readmodel-lite', () => {
       beforeEach(() => {
         adapter = createReadModelAdapter({
           databaseFile,
+          preferEventBusLedger: true,
         })
       })
 
