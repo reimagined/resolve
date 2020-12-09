@@ -1,6 +1,6 @@
 {
   "name": "cli-uploader",
-  "version": "0.26.2",
+  "version": "0.26.3",
   "private": true,
   "description": "used as a template for new reSolve applications",
   "scripts": {
@@ -31,15 +31,15 @@
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "1.0.5",
     "request": "2.88.0",
-    "resolve-eventstore-lite": "0.26.2",
-    "resolve-eventstore-postgresql-serverless": "0.26.2",
-    "resolve-module-auth": "0.26.2",
-    "resolve-module-uploader": "0.26.2",
-    "resolve-react-hooks": "0.26.2",
-    "resolve-readmodel-lite": "0.26.2",
-    "resolve-readmodel-postgresql-serverless": "0.26.2",
-    "resolve-redux": "0.26.2",
-    "resolve-scripts": "0.26.2",
+    "resolve-eventstore-lite": "0.26.3",
+    "resolve-eventstore-postgresql-serverless": "0.26.3",
+    "resolve-module-auth": "0.26.3",
+    "resolve-module-uploader": "0.26.3",
+    "resolve-react-hooks": "0.26.3",
+    "resolve-readmodel-lite": "0.26.3",
+    "resolve-readmodel-postgresql-serverless": "0.26.3",
+    "resolve-redux": "0.26.3",
+    "resolve-scripts": "0.26.3",
     "uuid": "8.3.1"
   },
   "devDependencies": {

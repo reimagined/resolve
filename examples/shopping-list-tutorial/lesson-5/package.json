@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-tutorial/lesson-5",
-  "version": "0.26.2",
+  "version": "0.26.3",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -24,8 +24,8 @@
     "react-router-dom": "5.1.2",
     "redux": "4.0.5",
     "redux-saga": "1.0.5",
-    "resolve-redux": "0.26.2",
-    "resolve-scripts": "0.26.2"
+    "resolve-redux": "0.26.3",
+    "resolve-scripts": "0.26.3"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
