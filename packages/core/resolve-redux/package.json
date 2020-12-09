@@ -1,6 +1,6 @@
 {
   "name": "resolve-redux",
-  "version": "0.26.2",
+  "version": "0.26.3",
   "description": "Provides tools that you can use to connect a React/Redux frontend to reSolve.",
   "keywords": [
     "cqrs",
@@ -47,9 +47,9 @@
     "lodash.set": "4.3.2",
     "lodash.unset": "4.5.2",
     "query-string": "^5.1.1",
-    "resolve-client": "0.26.2",
-    "resolve-core": "0.26.2",
-    "resolve-react-hooks": "0.26.2",
+    "resolve-client": "0.26.3",
+    "resolve-core": "0.26.3",
+    "resolve-react-hooks": "0.26.3",
     "unfetch": "^4.0.1",
     "uuid": "8.3.1"
   },
