@@ -1,6 +1,13 @@
 import 'source-map-support/register'
 
 import debugLevels from 'resolve-debug-levels'
+import {
+  escapeId,
+  escapeStr,
+  executeStatement,
+} from 'resolve-cloud-common/postgres'
+import { invokeFunction } from 'resolve-cloud-common/lambda'
+import { errorBoundary } from 'resolve-cloud-common/utils'
 
 import initAwsClients from './init-aws-clients'
 import initBroker from './init-broker'
@@ -43,13 +50,58 @@ const index = async ({ assemblies, constants, domain }) => {
     await initUploader(resolve)
 
     resolve.sendReactiveEvent = async (event) => {
-      const eventDescriptor = {
-        topic: `${process.env.RESOLVE_DEPLOYMENT_ID}/${event.type}/${event.aggregateId}`,
-        payload: JSON.stringify(event),
-        qos: 1,
-      }
+      const { aggregateId, type } = event
+      const databaseNameAsId = escapeId(
+        process.env.RESOLVE_EVENT_BUS_DATABASE_NAME
+      )
+      const subscriptionsTableNameAsId = escapeId(
+        process.env.RESOLVE_SUBSCRIPTIONS_TABLE_NAME
+      )
 
-      await resolve.mqtt.publish(eventDescriptor).promise()
+      const connectionIdsResult = await executeStatement({
+        Region: process.env.AWS_REGION,
+        ResourceArn: process.env.RESOLVE_EVENT_STORE_CLUSTER_ARN,
+        SecretArn: process.env.RESOLVE_USER_SECRET_ARN,
+        Sql: `SELECT "connectionId" FROM ${databaseNameAsId}.${subscriptionsTableNameAsId}
+          WHERE (
+             ${databaseNameAsId}.${subscriptionsTableNameAsId}."eventTypes" #>
+             ${escapeStr(`{${JSON.stringify(type)}}`)} =
+             CAST('true' AS jsonb)
+            OR
+             ${databaseNameAsId}.${subscriptionsTableNameAsId}."eventTypes" #> '{}' =
+             CAST('null' AS jsonb) 
+            ) AND (
+             ${databaseNameAsId}.${subscriptionsTableNameAsId}."aggregateIds" #>
+             ${escapeStr(`{${JSON.stringify(aggregateId)}}`)} =
+             CAST('true' AS jsonb)
+            OR
+             ${databaseNameAsId}.${subscriptionsTableNameAsId}."aggregateIds" #> '{}' =
+             CAST('null' AS jsonb) 
+          )`,
+      })
+
+      const errors = []
+
+      await Promise.all(
+        connectionIdsResult.map(({ connectionId }) =>
+          invokeFunction({
+            Region: process.env.AWS_REGION,
+            FunctionName: process.env.RESOLVE_WEBSOCKET_LAMBDA_ARN,
+            Payload: {
+              type: 'send',
+              connectionId,
+              data: {
+                type: 'event',
+                event,
+                connectionIdsResult,
+              },
+            },
+          }).catch(errorBoundary(errors))
+        )
+      )
+      if (errors.length > 0) {
+        log.warn(`Failed push event to websocket. ${errors}`)
+      }
     }
 
     log.debug(`lambda 'cold start' succeeded`)

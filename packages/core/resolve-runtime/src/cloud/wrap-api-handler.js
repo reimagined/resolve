@@ -2,6 +2,7 @@ import binaryCase from 'binary-case'
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
 import { parse as parseQuery } from 'query-string'
+import { getReasonPhrase } from 'http-status-codes'
 
 const COOKIE_CLEAR_DATE = new Date(0)
 const INTERNAL = Symbol('INTERNAL')
@@ -83,9 +84,14 @@ const prepareBody = (body, isLambdaEdgeRequest) => {
   return isLambdaEdgeRequest ? Buffer.from(body, 'base64').toString() : body
 }
 
+const preparePath = ({ path, uri }, isLambdaEdgeRequest) => {
+  return isLambdaEdgeRequest ? uri : path
+}
+
 const createRequest = async (lambdaEvent, customParameters) => {
   let {
-    path,
+    path: rawPath,
+    uri,
     httpMethod,
     headers: rawHeaders,
     multiValueQueryStringParameters,
@@ -104,6 +110,8 @@ const createRequest = async (lambdaEvent, customParameters) => {
   )
 
   const body = prepareBody(rawBody, isLambdaEdgeRequest)
+
+  let path = preparePath({ path: rawPath, uri }, isLambdaEdgeRequest)
 
   const {
     'x-proxy-headers': proxyHeadersString,
@@ -307,6 +315,7 @@ const wrapApiHandler = (
   onError = async () => void 0
 ) => async (lambdaEvent, lambdaContext, lambdaCallback) => {
   let result
+  let isLambdaEdgeRequest
   try {
     const customParameters =
       typeof getCustomParameters === 'function'
@@ -318,6 +327,8 @@ const wrapApiHandler = (
 
     await handler(req, res)
 
+    isLambdaEdgeRequest = req.isLambdaEdgeRequest
+
     const { status: statusCode, headers, cookies, body: bodyBuffer } = res[
       INTERNAL
     ]
@@ -327,14 +338,22 @@ const wrapApiHandler = (
       headers[binaryCase('Set-cookie', idx)] = cookies[idx]
     }
 
-    result = {
-      statusCode,
-      headers: req.isLambdaEdgeRequest
-        ? Object.entries(headers).map(([key, value]) => ({ key, value }))
-        : headers,
-      body: req.isLambdaEdgeRequest
-        ? Buffer.from(bodyBuffer).toString('base64')
-        : body,
+    if (isLambdaEdgeRequest) {
+      result = {
+        httpStatus: statusCode,
+        httpStatusText: getReasonPhrase(statusCode),
+        headers: Object.entries(headers).map(([key, value]) => ({
+          key,
+          value,
+        })),
+        body: Buffer.from(bodyBuffer).toString('base64'),
+      }
+    } else {
+      result = {
+        statusCode,
+        headers,
+        body,
+      }
     }
   } catch (error) {
     const outError =
@@ -347,9 +366,18 @@ const wrapApiHandler = (
     // eslint-disable-next-line no-console
     console.error(outError)
 
-    result = {
-      statusCode: 500,
-      body: '',
+    if (isLambdaEdgeRequest) {
+      result = {
+        httpStatus: 500,
+        httpStatusText: getReasonPhrase(500),
+        headers: [],
+        body: '',
+      }
+    } else {
+      result = {
+        statusCode: 500,
+        body: '',
+      }
     }
   }
 

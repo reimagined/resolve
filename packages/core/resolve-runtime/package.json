@@ -41,7 +41,7 @@
     "request": "^2.88.2",
     "resolve-core": "0.26.1",
     "resolve-command": "0.26.1",
-    "resolve-cloud-common": "0.0.37",
+    "resolve-cloud-common": "0.0.106",
     "resolve-local-event-broker": "0.26.1",
     "resolve-query": "0.26.1",
     "resolve-saga": "0.26.1",
@@ -61,7 +61,8 @@
     "file-type": "^12.4.0",
     "mime-types": "2.1.25",
     "raw-body": "2.3.3",
-    "query-string": "6.13.7"
+    "query-string": "6.13.7",
+    "http-status-codes": "2.1.4"
   },
   "peerDependencies": {
     "aws-sdk": "*",

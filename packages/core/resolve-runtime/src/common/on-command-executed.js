@@ -57,6 +57,7 @@ const onCommandExecuted = async (resolve, event) => {
   await resolve.publisher.publish({ event })
 
   await notifyInlineLedgers(resolve)
+  await resolve.sendReactiveEvent(event)
 }
 
 const createOnCommandExecuted = (resolve) => {
