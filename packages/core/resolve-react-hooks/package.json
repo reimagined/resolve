@@ -2,24 +2,6 @@
   "name": "resolve-react-hooks",
   "version": "0.26.2",
   "description": "reSolve client wrapper for using in React hooks projects.",
-  "engines": {
-    "node": ">=10.9"
-  },
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
-  "types": "./types/index.d.ts",
-  "bugs": {
-    "url": "https://github.com/reimagined/resolve/issues"
-  },
-  "scripts": {
-    "build": "tsc",
-    "test": "jest --config=../../../jest.config.js --verbose",
-    "testw": "echo || exit 0",
-    "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'"
-  },
-  "repository": "https://github.com/reimagined/resolve.git",
-  "author": "reimagined team",
-  "license": "MIT",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -27,12 +9,39 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-api#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'",
+    "test": "jest --config=../../../jest.config.js --verbose",
+    "testw": "echo || exit 0"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>"
+    ],
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/test/**/*.test.[jt]s?(x)"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "verbose": true
+  },
   "dependencies": {
     "resolve-client": "0.26.2",
     "resolve-core": "0.26.2"
   },
   "devDependencies": {
-    "react": "16.13.1",
     "@testing-library/jest-dom": "^5.1.1",
     "@testing-library/react": "^9.4.1",
     "@testing-library/react-hooks": "^3.2.1",
@@ -41,26 +50,16 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "jest": "26.0.1",
+    "react": "16.13.1",
     "react-test-renderer": "16.13.1",
     "ts-jest": "26.0.0"
   },
   "peerDependencies": {
     "react": "^16.13.0"
   },
-  "jest": {
-    "verbose": true,
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testMatch": [
-      "**/test/**/*.test.[jt]s?(x)"
-    ],
-    "roots": [
-      "<rootDir>"
-    ]
+  "engines": {
+    "node": ">=10.9"
   },
-  "sourceType": "ts",
   "babelCompile": [
     {
       "moduleType": "cjs",
@@ -74,5 +73,6 @@
       "inputDir": "./src",
       "outDir": "./es"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }

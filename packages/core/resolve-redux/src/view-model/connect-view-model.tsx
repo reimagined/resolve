@@ -1,4 +1,5 @@
 import React from 'react'
+import { v4 as uuid } from 'uuid'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import hoistNonReactStatic from 'hoist-non-react-statics'
@@ -59,6 +60,7 @@ export const mapStateToConnectorProps = (
 const connectViewModel = (
   mapStateToOptions: ViewModelConnectorOptionsMapper
 ): any => (Component: any): any => {
+  const selectorId = uuid()
   class ViewModelContainer extends React.PureComponent<any> {
     componentDidMount() {
       const {
@@ -67,11 +69,14 @@ const connectViewModel = (
         aggregateArgs,
       } = this.props.connectorOptions
 
-      this.props.connectViewModel({
-        name: viewModelName,
-        aggregateIds: aggregateIds,
-        args: aggregateArgs,
-      })
+      this.props.connectViewModel(
+        {
+          name: viewModelName,
+          aggregateIds: aggregateIds,
+          args: aggregateArgs,
+        },
+        selectorId
+      )
     }
 
     componentWillUnmount() {
@@ -81,11 +86,14 @@ const connectViewModel = (
         aggregateArgs,
       } = this.props.connectorOptions
 
-      this.props.disconnectViewModel({
-        name: viewModelName,
-        aggregateIds: aggregateIds,
-        args: aggregateArgs,
-      })
+      this.props.disconnectViewModel(
+        {
+          name: viewModelName,
+          aggregateIds: aggregateIds,
+          args: aggregateArgs,
+        },
+        selectorId
+      )
     }
 
     componentDidUpdate(prevProps: any) {

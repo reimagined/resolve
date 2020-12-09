@@ -1,15 +1,15 @@
 {
   "name": "@internal/helpers",
-  "private": true,
   "version": "0.26.2",
-  "bin": "./bin/index.js",
+  "private": true,
   "main": "./index.js",
+  "bin": "./bin/index.js",
+  "scripts": {
+    "test": "echo || exit 0"
+  },
   "dependencies": {
     "glob": "7.1.6",
     "minimist": "1.2.3",
     "semver": "5.6.0"
-  },
-  "scripts": {
-    "test": "echo || exit 0"
   }
 }

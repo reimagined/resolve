@@ -18,7 +18,7 @@ const useRetryOnCommandErrorScenario = (runId) => {
       middleware: {
         error: [
           createRetryOnErrorMiddleware({
-            attempts: 3,
+            attempts: 20,
             errors: [500],
             debug: true,
             period: 500,
@@ -68,7 +68,7 @@ const useRetryOnQueryErrorScenario = (runId) => {
     {
       middleware: {
         error: createRetryOnErrorMiddleware({
-          attempts: 3,
+          attempts: 20,
           errors: [500],
           debug: true,
           period: 500,
@@ -131,7 +131,7 @@ const useRetryOnViewModelErrorScenario = (runId) => {
     {
       middleware: {
         error: createRetryOnErrorMiddleware({
-          attempts: 3,
+          attempts: 20,
           errors: [500],
           debug: true,
           period: 500,

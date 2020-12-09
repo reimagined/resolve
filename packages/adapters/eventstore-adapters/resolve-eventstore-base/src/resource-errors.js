@@ -9,6 +9,8 @@ export function ResourceAlreadyExistError(message) {
     this.stack = new Error().stack
   }
 }
+ResourceAlreadyExistError.is = (error) =>
+  error != null && error.name === 'ResourceAlreadyExistError'
 
 export function ResourceNotExistError(message) {
   Error.call(this)
@@ -21,6 +23,8 @@ export function ResourceNotExistError(message) {
     this.stack = new Error().stack
   }
 }
+ResourceNotExistError.is = (error) =>
+  error != null && error.name === 'ResourceNotExistError'
 
 ResourceAlreadyExistError.prototype = Object.create(Error.prototype)
 
