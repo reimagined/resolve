@@ -7,7 +7,7 @@ const databaseName = 'databaseName'
 const eventsTableName = 'eventsTableName'
 
 test('loadEventsByTimestamp has correct filters', async () => {
-  const executeStatement = jest.fn(() => [])
+  const executeStatement = jest.fn().mockImplementation(() => [])
 
   const pool = {
     escape,
