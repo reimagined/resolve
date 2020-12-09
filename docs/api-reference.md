@@ -14,55 +14,55 @@ This section describes interfaces that you can implement to create a valid Read 
 
 Depending on the type that you want to implement, your connector implementations should expose different sets of API functions. The subsections below describe these APIs in greater detail.
 
-API### Inline Ledger
+### Inline Ledger
 
-| Function Name  | Description |
-| -------------- | ----------- |
-| connect        |             |
-| disconnect     |             |
-| subscribe      |             |
-| resubscribe    |             |
-| unsubscribe    |             |
-| deleteProperty |             |
-| getProperty    |             |
-| listProperties |             |
-| setProperty    |             |
-| reset          |             |
-| pause          |             |
-| resume         |             |
-| status         |             |
-| build          |             |
+| Function Name  | Description                                          |
+| -------------- | ---------------------------------------------------- |
+| connect        | Connect to the database.                             |
+| disconnect     | Disconnect from the database.                        |
+| subscribe      | Subscribe to events.                                 |
+| resubscribe    | Resubscribe to events.                               |
+| unsubscribe    | Unsubscribe from events.                             |
+| deleteProperty | Delete a saga property.                              |
+| getProperty    | Get a saga property.                                 |
+| listProperties | Get a list of saga properties.                       |
+| setProperty    | Set a property value.                                |
+| reset          | Reset the Read Model's state.                        |
+| pause          | Stop processing events.                              |
+| resume         | Resume processing events.                            |
+| status         | Get the Read Model status.                           |
+| build          | Build the Read Model state based on existing events. |
 
 ### XA eventbus ledger
 
-| Function Name         | Description |
-| --------------------- | ----------- |
-| connect               |             |
-| disconnect            |             |
-| beginXATransaction    |             |
-| beginEvent            |             |
-| commitXATransaction   |             |
-| commitEvent           |             |
-| rollbackXATransaction |             |
-| rollbackEvent         |             |
-| dropReadModel         |             |
+| Function Name         | Description                                       |
+| --------------------- | ------------------------------------------------- |
+| connect               | Connect to the database.                          |
+| disconnect            | Disconnect from the database.                     |
+| beginXATransaction    | Start a new transaction.                          |
+| beginEvent            | Add an event to the transaction.                  |
+| commitXATransaction   | Commit the transaction.                           |
+| commitEvent           | Commit an event to the transaction.               |
+| rollbackXATransaction | Cancel the transaction and roll back all changes. |
+| rollbackEvent         | Remove an event from the transaction.             |
+| dropReadModel         | Remove the Read Model's data from the database.   |
 
 ### Transactional eventbus ledger
 
-| Function Name       | Description |
-| ------------------- | ----------- |
-| connect             |             |
-| disconnect          |             |
-| beginTransaction    |             |
-| commitTransaction   |             |
-| rollbackTransaction |             |
+| Function Name       | Description                                       |
+| ------------------- | ------------------------------------------------- |
+| connect             | Connect to the database.                          |
+| disconnect          | Disconnect from the database.                     |
+| beginTransaction    | Start a new transaction.                          |
+| commitTransaction   | Commit the transaction.                           |
+| rollbackTransaction | Cancel the transaction and roll back all changes. |
 
 ### Non-transactional eventbus ledger
 
-| Function Name | Description |
-| ------------- | ----------- |
-| connect       |             |
-| disconnect    |             |
+| Function Name | Description                   |
+| ------------- | ----------------------------- |
+| connect       | Connect to the database.      |
+| disconnect    | Disconnect from the database. |
 
 ---
 
