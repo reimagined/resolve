@@ -1,25 +1,7 @@
 {
   "name": "create-resolve-app",
-  "version": "0.26.0",
+  "version": "0.26.2",
   "description": "A tool that generates boilerplate web applications based on the reSolve framework",
-  "engines": {
-    "node": ">=10.9"
-  },
-  "bin": {
-    "create-resolve-app": "./bin/index.js"
-  },
-  "main": "./lib/index.js",
-  "bugs": {
-    "url": "https://github.com/reimagined/resolve/issues"
-  },
-  "scripts": {
-    "build": "yarn workspace @internal/babel-compile start --name=create-resolve-app",
-    "test": "echo || exit 0",
-    "testw": "echo || exit 0"
-  },
-  "repository": "https://github.com/reimagined/resolve.git",
-  "author": "reimagined team",
-  "license": "MIT",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -27,17 +9,35 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/create-resolve-app#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "bin": {
+    "create-resolve-app": "./bin/index.js"
+  },
+  "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=create-resolve-app",
+    "test": "echo || exit 0",
+    "testw": "echo || exit 0"
+  },
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "adm-zip": "^0.4.11",
+    "boxen": "^4.2.0",
     "chalk": "^2.4.1",
     "command-line-args": "^5.0.2",
     "fs-extra": "^7.0.1",
-    "validate-npm-package-name": "^3.0.0",
-    "source-map-support": "^0.5.9",
-    "resolve-debug-levels": "0.26.0",
     "progress": "2.0.3",
-    "boxen": "^4.2.0"
+    "resolve-debug-levels": "0.26.2",
+    "source-map-support": "^0.5.9",
+    "validate-npm-package-name": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=10.9"
   },
   "babelCompile": [
     {

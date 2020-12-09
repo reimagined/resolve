@@ -1,13 +1,13 @@
 {
   "name": "@internal/build-packages",
+  "version": "0.26.2",
   "private": true,
-  "version": "0.26.0",
   "bin": "./bin/index.js",
-  "dependencies": {
-    "@internal/helpers": "0.26.0"
-  },
   "scripts": {
     "start": "node ./bin/index.js",
     "test": "echo || exit 0"
+  },
+  "dependencies": {
+    "@internal/helpers": "0.26.2"
   }
 }

@@ -1,3 +1,5 @@
+import { HttpError } from 'resolve-client'
+
 export default {
   get: async (store, { userId }) => {
     const plainEntry = await store.findOne('PersonalDataPlain', {
@@ -7,8 +9,11 @@ export default {
       id: userId,
     })
 
-    if (plainEntry == null || encryptedEntry == null) {
-      return null
+    if (plainEntry == null) {
+      throw new HttpError(404, 'plain personal data entry not found')
+    }
+    if (encryptedEntry == null) {
+      throw new HttpError(404, 'encrypted personal data entry not found')
     }
 
     return {

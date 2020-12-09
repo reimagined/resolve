@@ -1,22 +1,7 @@
 {
   "name": "resolve-module-comments",
-  "version": "0.26.0",
+  "version": "0.26.2",
   "description": "A reSolve module that allows an application's users to post comments.",
-  "engines": {
-    "node": ">=10.9"
-  },
-  "main": "./lib/common/index.js",
-  "browser": "./lib/client/index.js",
-  "bugs": {
-    "url": "https://github.com/reimagined/resolve/issues"
-  },
-  "scripts": {
-    "test": "jest --config=../../../jest.config.js --verbose",
-    "testw": "jest --config=../../../jest.config.js --watchAll"
-  },
-  "repository": "https://github.com/reimagined/resolve.git",
-  "author": "reimagined team",
-  "license": "MIT",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -24,15 +9,27 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-comments#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/common/index.js",
+  "browser": "./lib/client/index.js",
+  "scripts": {
+    "test": "jest --config=../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../jest.config.js --watchAll"
+  },
   "dependencies": {
     "@babel/runtime": "7.9.6"
   },
   "devDependencies": {
-    "react": "16.13.1",
-    "redux": "4.0.5",
-    "react-redux": "7.2.0",
-    "resolve-redux": "0.26.0",
     "jest": "26.0.1",
+    "react": "16.13.1",
+    "react-redux": "7.2.0",
+    "redux": "4.0.5",
+    "resolve-redux": "0.26.2",
     "sinon": "7.2.2"
   },
   "peerDependencies": {
@@ -40,6 +37,9 @@
     "react-redux": "*",
     "redux": "*",
     "resolve-redux": "0.24.23"
+  },
+  "engines": {
+    "node": ">=10.9"
   },
   "babelCompile": [
     {

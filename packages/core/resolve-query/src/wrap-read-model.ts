@@ -19,8 +19,8 @@ const wrapConnection = async (
 
   log.debug(`retrieving event store secrets manager`)
   const secretsManager =
-    typeof pool.getSecretsManager === 'function'
-      ? await pool.getSecretsManager()
+    typeof pool.eventstoreAdapter.getSecretsManager === 'function'
+      ? await pool.eventstoreAdapter.getSecretsManager()
       : null
 
   try {
@@ -410,7 +410,7 @@ const read = async (
   pool: ReadModelPool,
   { jwt, ...params }: any
 ): Promise<any> => {
-  const { getSecretsManager, isDisposed, readModel, performanceTracer } = pool
+  const { eventstoreAdapter, isDisposed, readModel, performanceTracer } = pool
   const readModelName = readModel.name
 
   const [resolverName, resolverArgs] = parseReadOptions(params)
@@ -466,8 +466,8 @@ const read = async (
               resolverArgs,
               {
                 secretsManager:
-                  typeof getSecretsManager === 'function'
-                    ? await getSecretsManager()
+                  typeof eventstoreAdapter.getSecretsManager === 'function'
+                    ? await eventstoreAdapter.getSecretsManager()
                     : null,
                 jwt,
               }
@@ -584,8 +584,8 @@ const provideLedger = async (
 
 const getEncryption = async (pool: any) => {
   const secretsManager =
-    typeof pool.getSecretsManager === 'function'
-      ? await pool.getSecretsManager()
+    typeof pool.eventstoreAdapter.getSecretsManager === 'function'
+      ? await pool.eventstoreAdapter.getSecretsManager()
       : null
   return async (event: any) => {
     const encryption =
@@ -787,7 +787,6 @@ const wrapReadModel = ({
   onError = async () => void 0,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
-  const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
 
   log.debug(`wrapping read-model`)
   const connector = readModelConnectors[readModel.connectorName]
@@ -805,7 +804,6 @@ const wrapReadModel = ({
     connector,
     isDisposed: false,
     performanceTracer,
-    getSecretsManager,
     getVacantTimeInMillis,
     performAcknowledge,
     onError,

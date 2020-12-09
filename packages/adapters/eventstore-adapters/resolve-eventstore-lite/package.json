@@ -1,22 +1,7 @@
 {
   "name": "resolve-eventstore-lite",
-  "version": "0.26.0",
+  "version": "0.26.2",
   "description": "An adapter reSolve uses to store events in a file or memory.",
-  "engines": {
-    "node": ">=10.9"
-  },
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
-  "bugs": {
-    "url": "https://github.com/reimagined/resolve/issues"
-  },
-  "scripts": {
-    "test": "jest --config=../../../../jest.config.js --verbose",
-    "testw": "jest --config=../../../../jest.config.js --watchAll"
-  },
-  "repository": "https://github.com/reimagined/resolve.git",
-  "author": "reimagined team",
-  "license": "MIT",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -24,11 +9,23 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/eventstore-adapters/resolve-eventstore-lite#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "scripts": {
+    "test": "jest --config=../../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../../jest.config.js --watchAll"
+  },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-core": "0.26.0",
-    "resolve-debug-levels": "0.26.0",
-    "resolve-eventstore-base": "0.26.0",
+    "resolve-core": "0.26.2",
+    "resolve-debug-levels": "0.26.2",
+    "resolve-eventstore-base": "0.26.2",
     "sqlite": "^3.0.2",
     "tmp": "^0.1.0"
   },
@@ -37,7 +34,9 @@
     "sinon": "7.2.2",
     "ts-jest": "26.1.0"
   },
-  "sourceType": "ts",
+  "engines": {
+    "node": ">=10.9"
+  },
   "babelCompile": [
     {
       "moduleType": "es",
@@ -51,5 +50,6 @@
       "inputDir": "./src",
       "outDir": "./lib"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }

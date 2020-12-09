@@ -127,6 +127,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
   )
 
   let events = await eventsPromise
+  const executeEncryption = await getEncryption()
 
   while (true) {
     if (events.length === 0) {
@@ -153,7 +154,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
             await projection[event.type](
               store,
               event,
-              await getEncryption(event)
+              await executeEncryption(event)
             )
             await inlineLedgerRunQuery(`RELEASE SAVEPOINT ${savePointId}`)
             lastSuccessEvent = event
