@@ -14,6 +14,56 @@ This section describes interfaces that you can implement to create a valid Read 
 
 Depending on the type that you want to implement, your connector implementations should expose different sets of API functions. The subsections below describe these APIs in greater detail.
 
+API### Inline Ledger
+
+| Function Name  | Description |
+| -------------- | ----------- |
+| connect        |             |
+| disconnect     |             |
+| subscribe      |             |
+| resubscribe    |             |
+| unsubscribe    |             |
+| deleteProperty |             |
+| getProperty    |             |
+| listProperties |             |
+| setProperty    |             |
+| reset          |             |
+| pause          |             |
+| resume         |             |
+| status         |             |
+| build          |             |
+
+### XA eventbus ledger
+
+| Function Name         | Description |
+| --------------------- | ----------- |
+| connect               |             |
+| disconnect            |             |
+| beginXATransaction    |             |
+| beginEvent            |             |
+| commitXATransaction   |             |
+| commitEvent           |             |
+| rollbackXATransaction |             |
+| rollbackEvent         |             |
+| dropReadModel         |             |
+
+### Transactional eventbus ledger
+
+| Function Name       | Description |
+| ------------------- | ----------- |
+| connect             |             |
+| disconnect          |             |
+| beginTransaction    |             |
+| commitTransaction   |             |
+| rollbackTransaction |             |
+
+### Non-transactional eventbus ledger
+
+| Function Name | Description |
+| ------------- | ----------- |
+| connect       |             |
+| disconnect    |             |
+
 ---
 
 | Function Name             | Description                                      |
