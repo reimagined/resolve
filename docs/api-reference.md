@@ -16,6 +16,8 @@ Depending on the type that you want to implement, your connector implementations
 
 ### Inline Ledger
 
+This interface allows you to implement a Read Model connector with an inbuilt ledger that does not rely on the ledger provided by the event bus. This is the most flexible option that is suitable for complex use-case scenarios.
+
 | Function Name  | Description                                          |
 | -------------- | ---------------------------------------------------- |
 | connect        | Connect to the database.                             |
@@ -34,6 +36,8 @@ Depending on the type that you want to implement, your connector implementations
 | build          | Build the Read Model state based on existing events. |
 
 ### XA eventbus ledger
+
+Use this interface to implement a Read Model connector that supports two-phase transactions. With this approach, each event is prepared for the transaction can be committed. A transaction can be committed after each node of a distributed system reported that it is ready to commit.
 
 | Function Name         | Description                                       |
 | --------------------- | ------------------------------------------------- |
