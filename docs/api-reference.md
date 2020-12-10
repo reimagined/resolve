@@ -7,10 +7,10 @@ title: API Reference
 
 This section describes interfaces that you can implement to create a valid Read Model connector. The following connector types are available:
 
-- Inline ledger - The connector itself implements the ledger API.
-- XA eventbus ledger - The connector implements the two-phase transaction logic.
-- Transactional eventbus ledger - The connector implements simple transaction.
-- Non-transactional eventbus ledger - The connector does not use transactions.
+- [Inline ledger](#inline-ledger) - The connector itself implements the ledger API.
+- [XA eventbus ledger](#xa-eventbus-ledger) - The connector implements the two-phase transaction logic.
+- [Transactional eventbus ledger](#transactional-eventbus-ledger) - The connector implements simple transaction.
+- [Non-transactional eventbus ledger](#non-transactional-eventbus-ledger) - The connector does not use transactions.
 
 Depending on the type that you want to implement, your connector implementations should expose different sets of API functions. The subsections below describe these APIs in greater detail.
 
