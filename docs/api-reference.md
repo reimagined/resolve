@@ -49,6 +49,8 @@ Depending on the type that you want to implement, your connector implementations
 
 ### Transactional eventbus ledger
 
+Use this interface to implement a a Read Model connector that supports basic single-phase transactions. Use this style of connectors in a system with a single database. For distributed systems, consider two-phase transactions.
+
 | Function Name       | Description                                       |
 | ------------------- | ------------------------------------------------- |
 | connect             | Connect to the database.                          |
@@ -59,7 +61,7 @@ Depending on the type that you want to implement, your connector implementations
 
 ### Non-transactional eventbus ledger
 
-Use this interface to implement a Read Model connector that does not use transaction mechanisms. This style of connectors requires you to make a compromise between the storage's flexibility and data integrity. For example, it is good for upsert-only storages but operations that require multiple queries can compromise data consistency.
+Use this interface to implement a Read Model connector that does not use transaction mechanisms. This style of connectors requires you to make a compromise between the storage's flexibility and data integrity. For example, it is good for upsert-only storages but operations that require multiple queries can compromise data integrity.
 
 | Function Name | Description                   |
 | ------------- | ----------------------------- |
