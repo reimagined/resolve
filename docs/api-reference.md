@@ -59,6 +59,8 @@ Depending on the type that you want to implement, your connector implementations
 
 ### Non-transactional eventbus ledger
 
+Use this interface to implement a Read Model connector that does not use transaction mechanisms. This style of connectors requires you to make a compromise between the storage's flexibility and data integrity. For example, it is good for upsert-only storages but operations that require multiple queries can compromise data consistency.
+
 | Function Name | Description                   |
 | ------------- | ----------------------------- |
 | connect       | Connect to the database.      |
