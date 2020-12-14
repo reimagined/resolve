@@ -103,7 +103,7 @@ const putDataMetrics = async (dataMap, commonMap, errorMap) => {
   const log = debugLevels('resolve:resolve-runtime:cloud-entry:putDataMetrics')
   const cw = new CloudWatch()
 
-  if (dataMap.deploymentId == null) {
+  if (dataMap.DeploymentId == null) {
     log.warn('Deployment ID not found')
     return
   }
@@ -114,7 +114,7 @@ const putDataMetrics = async (dataMap, commonMap, errorMap) => {
   const metricData = commonMap.map((dimensionNames) => ({
     MetricName: metricName,
     Timestamp: now,
-    Unit: 'count',
+    Unit: 'Count',
     Value: 1,
     Dimensions: dimensionNames.map((name) => ({
       Name: name,
@@ -127,7 +127,7 @@ const putDataMetrics = async (dataMap, commonMap, errorMap) => {
       ...errorMap.map((dimensionNames) => ({
         MetricName: 'Errors',
         Timestamp: now,
-        Unit: 'count',
+        Unit: 'Count',
         Value: 1,
         Dimensions: dimensionNames.map((name) => ({
           Name: name,
@@ -258,38 +258,6 @@ export const putReadModelResolverMetrics = async (
   )
 }
 
-export const putReadModelResolverMetrics = async (
-  readModelName,
-  resolverName,
-  error
-) => {
-  const metricDataMap = {
-    DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
-    Part: 'ReadModelResolver',
-    ReadModel: readModelName,
-    Resolver: resolverName,
-  }
-
-  if (error != null) {
-    metricDataMap.Error = getErrorMessage(error)
-  }
-
-  return putDataMetrics(
-    metricDataMap,
-    [
-      ['DeploymentId'],
-      ['DeploymentId', 'Part'],
-      ['DeploymentId', 'Part', 'ReadModel'],
-      ['DeploymentId', 'Part', 'ReadModel', 'Resolver'],
-    ],
-    [
-      ['DeploymentId', 'Error'],
-      ['DeploymentId', 'Part', 'Error'],
-      ['DeploymentId', 'Part', 'ReadModel', 'Resolver', 'Error'],
-    ]
-  )
-}
-
 export const putViewModelProjectionMetrics = async (
   viewModelName,
   eventType,
@@ -322,10 +290,7 @@ export const putViewModelProjectionMetrics = async (
   )
 }
 
-export const putViewModelResolverMetrics = async (
-  viewModelName,
-  error
-) => {
+export const putViewModelResolverMetrics = async (viewModelName, error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Part: 'ViewModelResolver',
@@ -351,11 +316,33 @@ export const putViewModelResolverMetrics = async (
   )
 }
 
-export const putSagaMetrics = async (
-  sagaName,
-  eventType,
-  error
-) => {
+export const putApiHandlerMetrics = async (apiHandlerPath, error) => {
+  const metricDataMap = {
+    DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
+    Part: 'ViewModelResolver',
+    Path: apiHandlerPath,
+  }
+
+  if (error != null) {
+    metricDataMap.Error = getErrorMessage(error)
+  }
+
+  return putDataMetrics(
+    metricDataMap,
+    [
+      ['DeploymentId'],
+      ['DeploymentId', 'Part'],
+      ['DeploymentId', 'Part', 'Path'],
+    ],
+    [
+      ['DeploymentId', 'Error'],
+      ['DeploymentId', 'Part', 'Error'],
+      ['DeploymentId', 'Part', 'Path', 'Error'],
+    ]
+  )
+}
+
+export const putSagaMetrics = async (sagaName, eventType, error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Part: 'ViewModelResolver',
@@ -382,106 +369,15 @@ export const putSagaMetrics = async (
   )
 }
 
-export const putInternalError = async (
-  error
-) => {
+export const putInternalError = async (error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Part: 'Internal',
-    Error: getErrorMessage(error)
+    Error: getErrorMessage(error),
   }
 
-  return putDataMetrics(
-    metricDataMap,
-    [
-      ['DeploymentId', 'Error'],
-      ['DeploymentId', 'Part', 'Error'],
-    ]
-  )
-}
-
-export const putErrorMetrics = async (error, part) => {
-  const cw = new CloudWatch()
-  const log = debugLevels('resolve:resolve-runtime:cloud-entry:putErrorMetrics')
-
-  const deploymentId = process.env.RESOLVE_DEPLOYMENT_ID
-
-  if (deploymentId == null) {
-    log.warn('Deployment ID not found')
-    return
-  }
-
-  try {
-    const now = new Date()
-    let errorMessage = error.message
-
-    if (errorMessage.length > MAX_METRICS_DIMENSION_VALUE_LENGTH) {
-      const messageEnd = '...'
-      errorMessage = `${errorMessage.slice(
-        0,
-        MAX_METRICS_DIMENSION_VALUE_LENGTH - messageEnd.length
-      )}${messageEnd}`
-    }
-
-    await cw
-      .putMetricData({
-        Namespace: 'RESOLVE_METRICS',
-        MetricData: [
-          {
-            MetricName: 'Errors',
-            Timestamp: now,
-            Unit: 'Count',
-            Value: 1,
-            Dimensions: [
-              {
-                Name: 'DeploymentId',
-                Value: deploymentId,
-              },
-              {
-                Name: 'Part',
-                Value: part,
-              },
-              {
-                Name: 'Error',
-                Value: errorMessage,
-              },
-            ],
-          },
-          {
-            MetricName: 'Errors',
-            Timestamp: now,
-            Unit: 'Count',
-            Value: 1,
-            Dimensions: [
-              {
-                Name: 'DeploymentId',
-                Value: deploymentId,
-              },
-              {
-                Name: 'Part',
-                Value: part,
-              },
-            ],
-          },
-          {
-            MetricName: 'Errors',
-            Timestamp: now,
-            Unit: 'Count',
-            Value: 1,
-            Dimensions: [
-              {
-                Name: 'DeploymentId',
-                Value: deploymentId,
-              },
-            ],
-          },
-        ],
-      })
-      .promise()
-
-    log.verbose('Put metrics succeeded')
-  } catch (e) {
-    log.verbose('Put metrics failed')
-    log.warn(e)
-  }
+  return putDataMetrics(metricDataMap, [
+    ['DeploymentId', 'Error'],
+    ['DeploymentId', 'Part', 'Error'],
+  ])
 }

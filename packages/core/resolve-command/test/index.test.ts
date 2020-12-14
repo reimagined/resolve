@@ -1958,8 +1958,8 @@ describe('dispose', () => {
   })
 })
 
-describe('onError', () => {
-  test('calls onError when command error is thrown', async () => {
+describe('onCommandFailed', () => {
+  test('calls onCommandFailed when command error is thrown', async () => {
     const aggregate = makeAggregateMeta({
       encryption: () => Promise.resolve({}),
       name: 'empty',
@@ -1970,13 +1970,13 @@ describe('onError', () => {
       },
     })
 
-    const onError = jest.fn()
+    const onCommandFailed = jest.fn()
 
     const executeCommand = createCommandExecutor({
       eventstoreAdapter,
       onCommandExecuted,
       aggregates: [aggregate],
-      onError,
+      onCommandFailed,
     })
 
     try {
@@ -1988,11 +1988,15 @@ describe('onError', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      expect(onError).toBeCalledWith(e, 'command')
+      expect(onCommandFailed).toBeCalledWith(e, {
+        aggregateName: 'empty',
+        aggregateId: 'aggregateId',
+        type: 'emptyCommand',
+      })
     }
   })
 
-  test('does not affect command workflow if onError is failed', async () => {
+  test('calls onCommandFailed if command is absent', async () => {
     const aggregate = makeAggregateMeta({
       encryption: () => Promise.resolve({}),
       name: 'empty',
@@ -2003,15 +2007,89 @@ describe('onError', () => {
       },
     })
 
-    const onError = () => {
-      throw new Error('onError failed')
+    const onCommandFailed = jest.fn()
+
+    const executeCommand = createCommandExecutor({
+      eventstoreAdapter,
+      onCommandExecuted,
+      aggregates: [aggregate],
+      onCommandFailed,
+    })
+
+    try {
+      await executeCommand({
+        aggregateName: 'empty',
+        aggregateId: 'aggregateId',
+        type: 'unknownCommand',
+      })
+
+      throw new Error('Test must be failed')
+    } catch (e) {
+      expect(onCommandFailed).toBeCalledWith(e, {
+        aggregateName: 'empty',
+        aggregateId: 'aggregateId',
+        type: 'unknownCommand',
+      })
+    }
+  })
+
+  test('calls onCommandFailed if aggregate is absent', async () => {
+    const aggregate = makeAggregateMeta({
+      encryption: () => Promise.resolve({}),
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          throw new Error('Empty command failed')
+        },
+      },
+    })
+
+    const onCommandFailed = jest.fn()
+
+    const executeCommand = createCommandExecutor({
+      eventstoreAdapter,
+      onCommandExecuted,
+      aggregates: [aggregate],
+      onCommandFailed,
+    })
+
+    try {
+      await executeCommand({
+        aggregateName: 'unknown',
+        aggregateId: 'aggregateId',
+        type: 'unknownCommand',
+      })
+
+      throw new Error('Test must be failed')
+    } catch (e) {
+      expect(onCommandFailed).toBeCalledWith(e, {
+        aggregateName: 'unknown',
+        aggregateId: 'aggregateId',
+        type: 'unknownCommand',
+      })
+    }
+  })
+
+  test('does not affect command workflow if onCommandFailed is failed', async () => {
+    const aggregate = makeAggregateMeta({
+      encryption: () => Promise.resolve({}),
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          throw new Error('Empty command failed')
+        },
+      },
+    })
+
+    const onCommandFailed = () => {
+      throw new Error('onCommandFailed failed')
     }
 
     const executeCommand = createCommandExecutor({
       eventstoreAdapter,
       onCommandExecuted,
       aggregates: [aggregate],
-      onError,
+      onCommandFailed,
     })
 
     try {
@@ -2027,7 +2105,7 @@ describe('onError', () => {
     }
   })
 
-  test('does not affect command workflow if onError is absent', async () => {
+  test('does not affect command workflow if onCommandFailed is absent', async () => {
     const aggregate = makeAggregateMeta({
       encryption: () => Promise.resolve({}),
       name: 'empty',

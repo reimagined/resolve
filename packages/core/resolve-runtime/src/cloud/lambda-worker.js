@@ -5,7 +5,8 @@ import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
 import initScheduler from './init-scheduler'
-import { putDurationMetrics, putErrorMetrics } from './metrics'
+import initMetricsCollection from './init-metrics-collection'
+import { putDurationMetrics, putInternalError } from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
@@ -60,9 +61,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     })
   }
 
-  resolveBase.onError = async (error, part) => {
-    await putErrorMetrics(error, part)
-  }
+  initMetricsCollection(resolveBase)
 
   const resolve = Object.create(resolveBase)
   resolve.getVacantTimeInMillis = getVacantTimeInMillis.bind(
@@ -145,7 +144,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   } catch (error) {
     log.error('top-level event handler execution error!')
 
-    await putErrorMetrics(error, 'lambda-worker')
+    await putInternalError(error)
 
     if (error instanceof Error) {
       log.error('error', error.message)

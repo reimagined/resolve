@@ -9,7 +9,25 @@ export type CreateQueryOptions = {
   eventstoreAdapter: any
   getVacantTimeInMillis: any
   performAcknowledge: any
-  onError?: (error: Error, part: string) => Promise<void>
+  onReadModelProjectionError?: (
+    error: Error,
+    readModelName: string,
+    eventType: string
+  ) => Promise<void>
+  onReadModelResolverError?: (
+    error: Error,
+    readModelName: string,
+    resolverName: string
+  ) => Promise<void>
+  onViewModelProjectionError?: (
+    error: Error,
+    viewModelName: string,
+    eventType: string
+  ) => Promise<void>
+  onViewModelResolverError?: (
+    error: Error,
+    readModelName: string
+  ) => Promise<void>
 }
 
 type WrapModelOptions = Omit<
@@ -60,7 +78,16 @@ export type ReadModelPool = {
   invokeEventBusAsync: Function
   performAcknowledge: Function
   getVacantTimeInMillis: Function
-  onError: (error: Error, part: string) => Promise<void>
+  onResolverError: (
+    error: Error,
+    readModelName: string,
+    resolverName: string
+  ) => Promise<void>
+  onProjectionError: (
+    error: Error,
+    readModelName: string,
+    eventType: string
+  ) => Promise<void>
 }
 
 export type ViewModelMeta = {
@@ -79,7 +106,12 @@ export type ViewModelPool = {
   getSecretsManager: Function
   performanceTracer: any
   isDisposed: boolean
-  onError: (error: Error, part: string) => Promise<void>
+  onResolverError: (error: Error, viewModelName: string) => Promise<void>
+  onProjectionError: (
+    error: Error,
+    viewModelName: string,
+    eventType: string
+  ) => Promise<void>
 }
 
 export type BuildViewModelQuery = {

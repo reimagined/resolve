@@ -6,6 +6,7 @@ import { SecretsManager } from 'resolve-core'
 import getLog from './get-log'
 import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
+import { createSafeHandler } from './utils'
 
 const wrapConnection = async (
   pool: ReadModelPool,
@@ -218,14 +219,11 @@ const sendEvents = async (
         log.error(error.message)
         log.verbose(error.stack)
         lastFailedEvent = event
-
-        try {
-          await pool.onError(error, 'read-model-projection')
-        } catch (e) {
-          log.verbose('onError function call failed')
-          log.verbose(e.stack)
-        }
-
+        await pool.onProjectionError(
+          error,
+          readModelName,
+          event != null ? event.type : 'unknown'
+        )
         throw error
       }
     }
@@ -437,11 +435,7 @@ const read = async (
         `Resolver "${resolverName}" does not exist`
       ) as any
       error.code = 422
-
-      try {
-        await pool.onError(error, 'read-model-resolver')
-      } catch (e) {}
-
+      await pool.onResolverError(error, readModelName, resolverName)
       throw error
     }
 
@@ -477,10 +471,7 @@ const read = async (
           if (subSegment != null) {
             subSegment.addError(error)
           }
-          try {
-            await pool.onError(error, 'read-model-resolver')
-          } catch (e) {}
-
+          await pool.onResolverError(error, readModelName, resolverName)
           throw error
         } finally {
           if (subSegment != null) {
@@ -494,10 +485,7 @@ const read = async (
       subSegment.addError(error)
     }
 
-    try {
-      await pool.onError(error, 'read-model-resolver')
-    } catch (e) {}
-
+    await pool.onResolverError(error, readModelName, resolverName)
     throw error
   } finally {
     if (subSegment != null) {
@@ -784,7 +772,8 @@ const wrapReadModel = ({
   performanceTracer,
   getVacantTimeInMillis,
   performAcknowledge,
-  onError = async () => void 0,
+  onReadModelResolverError = async () => void 0,
+  onReadModelProjectionError = async () => void 0,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
 
@@ -806,7 +795,8 @@ const wrapReadModel = ({
     performanceTracer,
     getVacantTimeInMillis,
     performAcknowledge,
-    onError,
+    onResolverError: createSafeHandler(onReadModelResolverError),
+    onProjectionError: createSafeHandler(onReadModelProjectionError),
   }
 
   const api = {

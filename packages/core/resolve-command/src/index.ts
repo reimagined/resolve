@@ -35,8 +35,8 @@ type AggregateMeta = {
 }
 
 type CommandPool = {
-  onCommandExecuted: (event: any) => Promise<void>
-  onError: (error: Error, part: string) => Promise<void>
+  onCommandExecuted: (event: Event, command: Command) => Promise<void>
+  onCommandFailed: (error: Error, command: Command) => Promise<void>
   performanceTracer: any
   aggregateName: string
   isDisposed: boolean
@@ -62,8 +62,8 @@ export type CommandExecutor = {
 }
 
 export type CommandExecutorBuilder = (context: {
-  onCommandExecuted: (event: any) => Promise<void>
-  onError?: (error: Error, part: string) => Promise<void>
+  onCommandExecuted: (event: Event, command: Command) => Promise<void>
+  onCommandFailed?: (error: Error, command: Command) => Promise<void>
   aggregates: AggregateMeta[]
   performanceTracer?: any
   eventstoreAdapter: EventstoreAdapter
@@ -398,8 +398,9 @@ const isString = (val: any): val is string =>
   val != null && val.constructor === String
 
 const saveEvent = async (
-  onCommandExecuted: (event: any) => Promise<void>,
-  event: Event
+  onCommandExecuted: (event: Event, command: Command) => Promise<void>,
+  event: Event,
+  command: Command
 ): Promise<any> => {
   if (!isString(event.type)) {
     throw generateCommandError(`Event "type" field is invalid`)
@@ -416,7 +417,7 @@ const saveEvent = async (
 
   event.aggregateId = String(event.aggregateId)
 
-  await onCommandExecuted(event)
+  await onCommandExecuted(event, command)
 
   return event
 }
@@ -451,7 +452,7 @@ const executeCommand = async (
       const error = generateCommandError(
         `Aggregate "${aggregateName}" does not exist`
       )
-      await pool.onError(error, 'command')
+      await pool.onCommandFailed(error, command)
       throw error
     }
 
@@ -467,7 +468,7 @@ const executeCommand = async (
         `Command type "${type}" does not exist`
       )
 
-      await pool.onError(error, 'command')
+      await pool.onCommandFailed(error, command)
       throw error
     }
 
@@ -492,7 +493,7 @@ const executeCommand = async (
         if (subSegment != null) {
           subSegment.addError(error)
         }
-        await pool.onError(error, 'command')
+        await pool.onCommandFailed(error, command)
         throw error
       } finally {
         if (subSegment != null) {
@@ -525,7 +526,7 @@ const executeCommand = async (
 
     if (!checkOptionShape(event.type, [String])) {
       const error = generateCommandError('Event "type" is required')
-      await pool.onError(error, 'command')
+      await pool.onCommandFailed(error, command)
       throw error
     }
 
@@ -540,7 +541,7 @@ const executeCommand = async (
         'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
       )
 
-      await pool.onError(error, 'command')
+      await pool.onCommandFailed(error, command)
       throw error
     }
 
@@ -562,12 +563,12 @@ const executeCommand = async (
       const subSegment = segment ? segment.addNewSubsegment('saveEvent') : null
 
       try {
-        return await saveEvent(pool.onCommandExecuted, processedEvent)
+        return await saveEvent(pool.onCommandExecuted, processedEvent, command)
       } catch (error) {
         if (subSegment != null) {
           subSegment.addError(error)
         }
-        await pool.onError(error, 'command')
+        await pool.onCommandFailed(error, command)
         throw error
       } finally {
         if (subSegment != null) {
@@ -581,7 +582,7 @@ const executeCommand = async (
     if (subSegment != null) {
       subSegment.addError(error)
     }
-    await pool.onError(error, 'command')
+    await pool.onCommandFailed(error, command)
     throw error
   } finally {
     if (subSegment != null) {
@@ -606,7 +607,6 @@ const dispose = async (pool: CommandPool): Promise<void> => {
     if (subSegment != null) {
       subSegment.addError(error)
     }
-    await pool.onError(error, 'command')
     throw error
   } finally {
     if (subSegment != null) {
@@ -620,7 +620,7 @@ const createCommand: CommandExecutorBuilder = ({
   aggregates,
   performanceTracer,
   eventstoreAdapter,
-  onError = async () => void 0,
+  onCommandFailed = async () => void 0,
 }): CommandExecutor => {
   const pool = {
     onCommandExecuted,
@@ -628,9 +628,9 @@ const createCommand: CommandExecutorBuilder = ({
     isDisposed: false,
     performanceTracer,
     eventstoreAdapter,
-    onError: async (error: Error, part: string) => {
+    onCommandFailed: async (error: Error, command: Command) => {
       try {
-        await onError(error, part)
+        await onCommandFailed(error, command)
       } catch (e) {}
     },
   }

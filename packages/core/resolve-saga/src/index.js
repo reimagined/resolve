@@ -32,10 +32,16 @@ const getSchedulersNamesBySagas = (sagas) => {
   return schedulersNames
 }
 
+const createSafeHandler = (fn) => async (...args) => {
+  try {
+    return await fn(...args)
+  } catch (e) {}
+}
+
 const createSaga = ({
-  onError = async () => void 0,
   invokeEventBusAsync,
   onCommandExecuted,
+  onCommandFailed = async () => void 0,
   readModelConnectors,
   sagas,
   executeCommand,
@@ -46,6 +52,10 @@ const createSaga = ({
   getVacantTimeInMillis,
   performAcknowledge,
   scheduler,
+  onReadModelProjectionError = async () => void 0,
+  onReadModelResolverError = async () => void 0,
+  onViewModelProjectionError = async () => void 0,
+  onViewModelResolverError = async () => void 0,
 }) => {
   const onSagaError = async (error) => {
     try {
@@ -64,6 +74,7 @@ const createSaga = ({
       }),
     ],
     onCommandExecuted,
+    onCommandFailed: createSafeHandler(onCommandFailed),
     eventstoreAdapter,
     onError: onSagaError,
   })
@@ -146,7 +157,10 @@ const createSaga = ({
     getVacantTimeInMillis,
     performAcknowledge,
     eventstoreAdapter,
-    onError: onSagaError,
+    onReadModelProjectionError: createSafeHandler(onReadModelProjectionError),
+    onReadModelResolverError: createSafeHandler(onReadModelResolverError),
+    onViewModelProjectionError: createSafeHandler(onViewModelProjectionError),
+    onViewModelResolverError: createSafeHandler(onViewModelResolverError),
   })
 
   const sendEvents = async ({
