@@ -319,7 +319,7 @@ export const putViewModelResolverMetrics = async (viewModelName, error) => {
 export const putApiHandlerMetrics = async (apiHandlerPath, error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
-    Part: 'ViewModelResolver',
+    Part: 'ApiHandler',
     Path: apiHandlerPath,
   }
 
@@ -345,8 +345,9 @@ export const putApiHandlerMetrics = async (apiHandlerPath, error) => {
 export const putSagaMetrics = async (sagaName, eventType, error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
-    Part: 'ViewModelResolver',
+    Part: 'SagaProjection',
     Saga: sagaName,
+    EventType: eventType,
   }
 
   if (error != null) {

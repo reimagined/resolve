@@ -219,11 +219,6 @@ const sendEvents = async (
         log.error(error.message)
         log.verbose(error.stack)
         lastFailedEvent = event
-        await pool.onProjectionError(
-          error,
-          readModelName,
-          event != null ? event.type : 'unknown'
-        )
         throw error
       }
     }
@@ -764,6 +759,24 @@ const dispose = async (pool: ReadModelPool): Promise<void> => {
   await Promise.all(promises)
 }
 
+const wrapProjectionHandler = <T extends Array<any>>(
+  handler: (...args: T) => Promise<any>,
+  errorHandler: (
+    error: Error,
+    readModelName: string,
+    eventType: string
+  ) => Promise<void>,
+  readModelName: string,
+  eventType: string
+) => async (...args: T) => {
+  try {
+    return await handler(...args)
+  } catch (error) {
+    await errorHandler(error, readModelName, eventType)
+    throw error
+  }
+}
+
 const wrapReadModel = ({
   readModel,
   readModelConnectors,
@@ -785,18 +798,39 @@ const wrapReadModel = ({
     )
   }
 
+  const safeProjectionErrorHandler = createSafeHandler(
+    onReadModelProjectionError
+  )
+
   const pool: ReadModelPool = {
     invokeEventBusAsync,
     eventstoreAdapter,
     connections: new Set(),
-    readModel,
+    readModel: {
+      ...readModel,
+      projection:
+        readModel.projection != null
+          ? Object.keys(readModel.projection).reduce(
+              (acc, eventType) => ({
+                ...acc,
+                [eventType]: wrapProjectionHandler(
+                  readModel.projection[eventType],
+                  safeProjectionErrorHandler,
+                  readModel.name,
+                  eventType
+                ),
+              }),
+              {} as typeof readModel.projection
+            )
+          : readModel.projection,
+    },
     connector,
     isDisposed: false,
     performanceTracer,
     getVacantTimeInMillis,
     performAcknowledge,
     onResolverError: createSafeHandler(onReadModelResolverError),
-    onProjectionError: createSafeHandler(onReadModelProjectionError),
+    onProjectionError: safeProjectionErrorHandler,
   }
 
   const api = {

@@ -5,6 +5,7 @@ import {
   putViewModelProjectionMetrics,
   putViewModelResolverMetrics,
   putApiHandlerMetrics,
+  putSagaMetrics,
 } from './metrics'
 
 const createSafeHandler = (fn) => async (...args) => {
@@ -14,14 +15,6 @@ const createSafeHandler = (fn) => async (...args) => {
 }
 
 const initMetricsCollection = (resolve) => {
-  resolve.onCommandExecuted = createSafeHandler(async (event, command) => {
-    await putCommandMetrics(
-      command.aggregateName,
-      command.type,
-      command.aggregateId
-    )
-  })
-
   resolve.onCommandFailed = createSafeHandler(async (error, command) => {
     await putCommandMetrics(
       command.aggregateName,
@@ -58,6 +51,12 @@ const initMetricsCollection = (resolve) => {
   resolve.onApiHandlerError = createSafeHandler(async (error, path) => {
     await putApiHandlerMetrics(path, error)
   })
+
+  resolve.onSagaProjectionError = createSafeHandler(
+    async (error, sagaName, eventType) => {
+      await putSagaMetrics(sagaName, eventType, error)
+    }
+  )
 }
 
 export default initMetricsCollection

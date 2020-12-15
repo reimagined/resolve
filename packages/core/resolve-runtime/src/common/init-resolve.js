@@ -30,6 +30,7 @@ const initResolve = async (resolve) => {
     onReadModelResolverError,
     onViewModelProjectionError,
     onViewModelResolverError,
+    onSagaProjectionError,
   } = resolve
   const eventstoreAdapter = createEventstoreAdapter()
 
@@ -87,10 +88,7 @@ const initResolve = async (resolve) => {
     executeQuery,
     onCommandExecuted,
     onCommandFailed,
-    onReadModelProjectionError,
-    onReadModelResolverError,
-    onViewModelProjectionError,
-    onViewModelResolverError,
+    onSagaProjectionError,
     eventstoreAdapter,
     readModelConnectors,
     sagas,

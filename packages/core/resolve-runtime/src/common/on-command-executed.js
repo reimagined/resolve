@@ -53,13 +53,9 @@ const notifyInlineLedgers = async (resolve) => {
   await Promise.race([timerPromise, inlineLedgerPromise])
 }
 
-const onCommandExecuted = async (resolve, event, command) => {
+const onCommandExecuted = async (resolve, event) => {
   await resolve.publisher.publish({ event })
   await notifyInlineLedgers(resolve)
-
-  if (resolve.onCommandExecuted != null) {
-    await resolve.onCommandExecuted(event, command)
-  }
 }
 
 const createOnCommandExecuted = (resolve) => {

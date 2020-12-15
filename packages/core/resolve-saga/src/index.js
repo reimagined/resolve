@@ -52,17 +52,8 @@ const createSaga = ({
   getVacantTimeInMillis,
   performAcknowledge,
   scheduler,
-  onReadModelProjectionError = async () => void 0,
-  onReadModelResolverError = async () => void 0,
-  onViewModelProjectionError = async () => void 0,
-  onViewModelResolverError = async () => void 0,
+  onSagaProjectionError = async () => void 0,
 }) => {
-  const onSagaError = async (error) => {
-    try {
-      await onError(error, 'saga')
-    } catch (e) {}
-  }
-
   let eventProperties = {}
 
   const executeScheduleCommand = createCommand({
@@ -76,7 +67,6 @@ const createSaga = ({
     onCommandExecuted,
     onCommandFailed: createSafeHandler(onCommandFailed),
     eventstoreAdapter,
-    onError: onSagaError,
   })
 
   const executeCommandOrScheduler = async (...args) => {
@@ -157,10 +147,7 @@ const createSaga = ({
     getVacantTimeInMillis,
     performAcknowledge,
     eventstoreAdapter,
-    onReadModelProjectionError: createSafeHandler(onReadModelProjectionError),
-    onReadModelResolverError: createSafeHandler(onReadModelResolverError),
-    onViewModelProjectionError: createSafeHandler(onViewModelProjectionError),
-    onViewModelResolverError: createSafeHandler(onViewModelResolverError),
+    onReadModelProjectionError: createSafeHandler(onSagaProjectionError),
   })
 
   const sendEvents = async ({

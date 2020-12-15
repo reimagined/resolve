@@ -452,7 +452,6 @@ const executeCommand = async (
       const error = generateCommandError(
         `Aggregate "${aggregateName}" does not exist`
       )
-      await pool.onCommandFailed(error, command)
       throw error
     }
 
@@ -467,8 +466,6 @@ const executeCommand = async (
       const error = generateCommandError(
         `Command type "${type}" does not exist`
       )
-
-      await pool.onCommandFailed(error, command)
       throw error
     }
 
@@ -493,7 +490,6 @@ const executeCommand = async (
         if (subSegment != null) {
           subSegment.addError(error)
         }
-        await pool.onCommandFailed(error, command)
         throw error
       } finally {
         if (subSegment != null) {
@@ -525,9 +521,7 @@ const executeCommand = async (
     })
 
     if (!checkOptionShape(event.type, [String])) {
-      const error = generateCommandError('Event "type" is required')
-      await pool.onCommandFailed(error, command)
-      throw error
+      throw generateCommandError('Event "type" is required')
     }
 
     const runtimeEvent = event as any
@@ -537,12 +531,9 @@ const executeCommand = async (
       runtimeEvent.aggregateVersion != null ||
       runtimeEvent.timestamp != null
     ) {
-      const error = generateCommandError(
+      throw generateCommandError(
         'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
       )
-
-      await pool.onCommandFailed(error, command)
-      throw error
     }
 
     const processedEvent: Event = {
@@ -568,7 +559,6 @@ const executeCommand = async (
         if (subSegment != null) {
           subSegment.addError(error)
         }
-        await pool.onCommandFailed(error, command)
         throw error
       } finally {
         if (subSegment != null) {
