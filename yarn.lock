@@ -16036,9 +16036,9 @@ resolve-cloud-common@0.0.37:
     lodash.differencewith "^4.5.0"
     lodash.isequal "^4.5.0"
 
-resolve-cloud@*, resolve-cloud@0.16.5:
+resolve-cloud@*:
   version "0.16.5"
-  resolved "https://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.16.5.tgz#d8300643d7586756eb46230f6a7ff1da24c79895"
+  resolved "http://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.16.5.tgz#d8300643d7586756eb46230f6a7ff1da24c79895"
   integrity sha512-yAm3vKujwHQn4YbHSw1Y8Wx6c/xUjYHA4GTgoQF+ALXO+U+Kwz9CxsNvxLUHcedLkIAseAiAl+zsUMdYrv0Nyw==
   dependencies:
     amazon-cognito-identity-js "^3.0.15"

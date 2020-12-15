@@ -178,6 +178,24 @@ The following side effect functions are available by default:
 - `executeCommand` - Sends a command with the specified payload to an aggregate.
 - `scheduleCommand` - Similar to `executeCommand`, but delays command execution until a specified moment in time.
 
+#### Side Effect Starting Timestamp
+
+Each saga stores a `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP` property. This property's value is a timestamp that defines the latest point in time for which side effects are allowed. If an event is older than this timestamp, all side effect functions for the current event handler are replaced with stub functions that do nothing. This is required to guarantee that side effect logic is never invoked more than once for a given event. Note that if you reset the Saga, the timestamp is preserved and side effects are not re-invoked as the saga rebuilds its state.
+
+The `sideEffects` object's `isEnabled` field indicates whether or not side effects are enabled for the processed event.
+
+If your need to re-run side effects after you reset a saga's state, use the [resolve-module-admin](https://www.npmjs.com/package/resolve-module-admin) CLI tool to assign the desired timestamp to the `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP` property:
+
+```bash
+npx resolve-module-admin sagas properties set "UserConfirmation" "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP" $(date +%s%3N -d "yesterday")
+```
+
+You can also specify a new timestamp as an option for the `sagas reset` command:
+
+```bash
+npx resolve-module-admin sagas reset UserConfirmation --side-effects-start-timestamp 0000-00-0000:00:00.000
+```
+
 ### Send Aggregate Commands
 
 Use the `executeCommand` side effect function to send aggregate commands as shown below:
@@ -226,8 +244,8 @@ sagas: [
   {
     name: 'UserConfirmation',
     source: 'common/sagas/user-confirmation.saga.js',
-    connectorName: 'default'
-  }
+    connectorName: 'default',
+  },
 ]
 ```
 
@@ -239,8 +257,8 @@ sagas: [
     name: 'UserConfirmation',
     source: 'common/sagas/user-confirmation.handlers.js',
     sideEffects: 'common/sagas/user-confirmation.side-effects.js',
-    connectorName: 'default'
-  }
+    connectorName: 'default',
+  },
 ]
 ```
 
