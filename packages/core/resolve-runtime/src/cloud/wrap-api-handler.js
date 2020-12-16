@@ -197,9 +197,9 @@ const createResponse = () => {
       )
     if (!isValidValue) {
       throw new Error(
-        `Variable "${fieldName}" should be one of following types: ${types.join(
-          ', '
-        )}`
+        `Variable "${fieldName}" should be one of following types: ${types
+          .map((item) => (item === Buffer ? 'Buffer' : `${item}`))
+          .join(', ')}. Received option: ${option}`
       )
     }
   }

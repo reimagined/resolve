@@ -7,9 +7,11 @@ export default {
   eventstoreAdapter: {
     module: 'resolve-eventstore-postgresql-serverless',
     options: {
-      awsSecretStoreArn: declareRuntimeEnv('USER_SECRET_ARN'),
-      dbClusterOrInstanceArn: declareRuntimeEnv('EVENT_STORE_CLUSTER_ARN'),
-      databaseName: declareRuntimeEnv('EVENT_STORE_DATABASE_NAME'),
+      awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
+      dbClusterOrInstanceArn: declareRuntimeEnv(
+        'RESOLVE_EVENT_STORE_CLUSTER_ARN'
+      ),
+      databaseName: declareRuntimeEnv('RESOLVE_EVENT_STORE_DATABASE_NAME'),
       eventsTableName: 'events',
       secretsTableName: 'secrets',
       region: declareRuntimeEnv('AWS_REGION'),
@@ -20,27 +22,33 @@ export default {
     default: {
       module: 'resolve-readmodel-postgresql-serverless',
       options: {
-        dbClusterOrInstanceArn: declareRuntimeEnv('READMODEL_CLUSTER_ARN'),
-        awsSecretStoreArn: declareRuntimeEnv('USER_SECRET_ARN'),
-        databaseName: declareRuntimeEnv('READMODEL_DATABASE_NAME'),
+        dbClusterOrInstanceArn: declareRuntimeEnv(
+          'RESOLVE_READMODEL_CLUSTER_ARN'
+        ),
+        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
+        databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
         region: declareRuntimeEnv('AWS_REGION'),
       },
     },
     hackerNews: {
       module: 'resolve-readmodel-postgresql-serverless',
       options: {
-        dbClusterOrInstanceArn: declareRuntimeEnv('READMODEL_CLUSTER_ARN'),
-        awsSecretStoreArn: declareRuntimeEnv('USER_SECRET_ARN'),
-        databaseName: declareRuntimeEnv('READMODEL_DATABASE_NAME'),
+        dbClusterOrInstanceArn: declareRuntimeEnv(
+          'RESOLVE_READMODEL_CLUSTER_ARN'
+        ),
+        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
+        databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
         region: declareRuntimeEnv('AWS_REGION'),
       },
     },
     comments: {
       module: 'resolve-readmodel-postgresql-serverless',
       options: {
-        dbClusterOrInstanceArn: declareRuntimeEnv('READMODEL_CLUSTER_ARN'),
-        awsSecretStoreArn: declareRuntimeEnv('USER_SECRET_ARN'),
-        databaseName: declareRuntimeEnv('READMODEL_DATABASE_NAME'),
+        dbClusterOrInstanceArn: declareRuntimeEnv(
+          'RESOLVE_READMODEL_CLUSTER_ARN'
+        ),
+        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
+        databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
         region: declareRuntimeEnv('AWS_REGION'),
       },
     },
