@@ -1,24 +1,7 @@
 {
   "name": "resolve-query",
-  "version": "0.26.1",
+  "version": "0.26.3",
   "description": "Provides an interface used to create and querry read models and view models in a reSolve application.",
-  "engines": {
-    "node": ">=10.9"
-  },
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
-  "types": "./types/index.d.ts",
-  "bugs": {
-    "url": "https://github.com/reimagined/resolve/issues"
-  },
-  "scripts": {
-    "build": "yarn workspace @internal/babel-compile start --name=resolve-query",
-    "test": "jest --config=../../../jest.config.js --verbose",
-    "testw": "jest --config=../../../jest.config.js --watchAll"
-  },
-  "repository": "https://github.com/reimagined/resolve.git",
-  "author": "reimagined team",
-  "license": "MIT",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -26,16 +9,32 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-query#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=resolve-query",
+    "test": "jest --config=../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../jest.config.js --watchAll"
+  },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-core": "0.26.1",
-    "resolve-debug-levels": "0.26.1",
-    "resolve-readmodel-base": "0.26.1"
+    "resolve-core": "0.26.3",
+    "resolve-debug-levels": "0.26.3",
+    "resolve-readmodel-base": "0.26.3"
   },
   "devDependencies": {
     "jest": "26.0.1"
   },
-  "sourceType": "ts",
+  "engines": {
+    "node": ">=10.9"
+  },
   "babelCompile": [
     {
       "sourceType": "ts",
@@ -51,5 +50,6 @@
       "inputDir": "./src",
       "outDir": "./lib"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }

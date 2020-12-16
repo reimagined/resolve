@@ -1,34 +1,32 @@
 {
   "name": "with-vanillajs",
-  "version": "0.26.1",
-  "description": "used as a template for new reSolve applications",
+  "version": "0.26.3",
   "private": true,
+  "description": "used as a template for new reSolve applications",
   "scripts": {
+    "build": "echo || exit 0",
     "cloud": "babel-node ./run.js cloud",
     "dev": "babel-node ./run.js dev",
-    "build": "echo || exit 0",
+    "export-event-store": "echo || exit 0",
+    "import-event-store": "echo || exit 0",
     "start": "echo || exit 0",
     "test": "echo || exit 0",
-    "test:e2e": "babel-node ./run.js test:e2e",
-    "import-event-store": "echo || exit 0",
-    "export-event-store": "echo || exit 0"
+    "test:e2e": "babel-node ./run.js test:e2e"
   },
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
     "domready": "1.0.8",
-    "resolve-scripts": "0.26.1",
-    "resolve-eventstore-postgresql-serverless": "0.26.1",
-    "resolve-eventstore-lite": "0.26.1",
-    "resolve-readmodel-lite": "0.26.1",
-    "resolve-readmodel-postgresql-serverless": "0.26.1",
-    "resolve-runtime": "0.26.1",
-    "resolve-client": "0.26.1",
+    "resolve-client": "0.26.3",
+    "resolve-eventstore-lite": "0.26.3",
+    "resolve-eventstore-postgresql-serverless": "0.26.3",
+    "resolve-readmodel-lite": "0.26.3",
+    "resolve-readmodel-postgresql-serverless": "0.26.3",
+    "resolve-runtime": "0.26.3",
+    "resolve-scripts": "0.26.3",
     "unfetch": "4.1.0"
   },
   "devDependencies": {
-    "aws-sdk": "2.631.0",
-    "aws-xray-sdk-core": "2.5.0",
     "@babel/core": "7.9.6",
     "@babel/plugin-proposal-class-properties": "7.8.3",
     "@babel/plugin-proposal-export-default-from": "7.8.3",
@@ -36,9 +34,11 @@
     "@babel/plugin-transform-runtime": "7.9.6",
     "@babel/preset-env": "7.9.6",
     "@babel/preset-react": "7.9.4",
+    "aws-sdk": "2.631.0",
+    "aws-xray-sdk-core": "2.5.0",
     "babel-jest": "26.0.1",
     "jest": "26.0.1",
-    "testcafe": "1.8.5",
-    "resolve-cloud": "*"
+    "resolve-cloud": "*",
+    "testcafe": "1.8.5"
   }
 }

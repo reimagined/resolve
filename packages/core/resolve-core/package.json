@@ -1,23 +1,7 @@
 {
   "name": "resolve-core",
-  "version": "0.26.1",
+  "version": "0.26.3",
   "description": "reSolve core.",
-  "engines": {
-    "node": ">=10.9"
-  },
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
-  "types": "./types/index.d.ts",
-  "bugs": {
-    "url": "https://github.com/reimagined/resolve/issues"
-  },
-  "scripts": {
-    "test": "echo || exit 0",
-    "testw": "echo || exit 0"
-  },
-  "repository": "https://github.com/reimagined/resolve.git",
-  "author": "reimagined team",
-  "license": "MIT",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -25,13 +9,28 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-command#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "test": "echo || exit 0",
+    "testw": "echo || exit 0"
+  },
   "dependencies": {
     "@babel/runtime": "7.9.6"
   },
   "devDependencies": {
     "jest": "26.0.1"
   },
-  "sourceType": "ts",
+  "engines": {
+    "node": ">=10.9"
+  },
   "babelCompile": [
     {
       "moduleType": "cjs",
@@ -39,5 +38,6 @@
       "inputDir": "./src",
       "outDir": "./lib"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }

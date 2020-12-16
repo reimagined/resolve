@@ -52,7 +52,6 @@ export type ReadModelMeta = {
 
 export type ReadModelPool = {
   performanceTracer: any
-  getSecretsManager: any
   eventstoreAdapter: any
   isDisposed: boolean
   connector: any
