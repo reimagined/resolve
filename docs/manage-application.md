@@ -3,7 +3,14 @@ id: manage-aplication
 title: Manage a ReSolve Application
 ---
 
-Use the [resolve-module-admin](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme) utility to manage a reSolve application's sagas and read models. You can use **npx** to run this utility without installation or install it s an application's dependency as the following section describes.
+Use the [resolve-module-admin](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme) utility to manage a reSolve application's sagas and read models. It provides the following functionality:
+
+- List application read models and sagas.
+- Pause and resume read model and saga updates.
+- Reset read model and saga persistent state.
+- Manage saga properties.
+
+You can use **npx** to run this utility without installation or install it s an application's dependency as the following section describes.
 
 ## Installation
 
@@ -33,4 +40,4 @@ The **resolve-module-admin** utility communicates with API handlers exposed by a
 npx resolve-module-admin read-models list
 ```
 
-For the full list of supported commands, refer to the [NPM package's description](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme).
+For the full list of supported commands, refer to the [NPM package's description](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme) or use the `--help` option in the console.
