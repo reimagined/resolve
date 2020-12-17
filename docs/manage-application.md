@@ -26,3 +26,11 @@ Use the steps bellow to add the **resolve-module-admin** utility to a reSolve ap
    ```
 
 ## Usage
+
+The **resolve-module-admin** utility communicates with API handlers exposed by a reSolve application. To use the utility, run the application and execute one of the utility's commands:
+
+```bash
+npx resolve-module-admin read-models list
+```
+
+For the full list of supported commands, refer to the [NPM package's description](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme).
