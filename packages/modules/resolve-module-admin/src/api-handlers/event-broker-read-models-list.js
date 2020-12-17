@@ -1,3 +1,5 @@
+import wrapApiHandler from './wrap-api-handler'
+
 const readModelList = async (req, res) => {
   const statusPromises = []
   for (const { name: eventSubscriber } of req.resolve.readModels) {
@@ -8,4 +10,4 @@ const readModelList = async (req, res) => {
   await res.json(statuses)
 }
 
-export default readModelList
+export default wrapApiHandler(readModelList)
