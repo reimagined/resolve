@@ -7,7 +7,9 @@ Use the [resolve-module-admin](https://github.com/reimagined/resolve/tree/master
 
 ## Installation
 
-1. Install the [resolve-module-admin](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme) package:
+Use the steps bellow to add the **resolve-module-admin** utility to a reSolve application.
+
+1. Install the [resolve-module-admin](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme) NPM package:
 
    ```bash
    yarn add resolve-module-admin
