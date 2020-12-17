@@ -32,16 +32,9 @@ const getSchedulersNamesBySagas = (sagas) => {
   return schedulersNames
 }
 
-const createSafeHandler = (fn) => async (...args) => {
-  try {
-    return await fn(...args)
-  } catch (e) {}
-}
-
 const createSaga = ({
   invokeEventBusAsync,
   onCommandExecuted,
-  onCommandFailed = async () => void 0,
   readModelConnectors,
   sagas,
   executeCommand,
@@ -52,9 +45,20 @@ const createSaga = ({
   getVacantTimeInMillis,
   performAcknowledge,
   scheduler,
-  onSagaProjectionError = async () => void 0,
+  monitoring,
 }) => {
   let eventProperties = {}
+
+  const sagaMonitoring =
+    monitoring != null
+      ? {
+          error: async (error, part, meta) => {
+            if (monitoring.error != null) {
+              await monitoring.error(error, 'sagaProjection', meta)
+            }
+          },
+        }
+      : monitoring
 
   const executeScheduleCommand = createCommand({
     aggregates: [
@@ -65,8 +69,8 @@ const createSaga = ({
       }),
     ],
     onCommandExecuted,
-    onCommandFailed: createSafeHandler(onCommandFailed),
     eventstoreAdapter,
+    monitoring,
   })
 
   const executeCommandOrScheduler = async (...args) => {
@@ -147,7 +151,7 @@ const createSaga = ({
     getVacantTimeInMillis,
     performAcknowledge,
     eventstoreAdapter,
-    onReadModelProjectionError: createSafeHandler(onSagaProjectionError),
+    monitoring: sagaMonitoring,
   })
 
   const sendEvents = async ({

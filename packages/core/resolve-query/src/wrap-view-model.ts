@@ -7,7 +7,6 @@ import {
   BuildViewModelQuery,
 } from './types'
 import parseReadOptions from './parse-read-options'
-import { createSafeHandler } from './utils'
 
 type AggregateIds = string | string[]
 
@@ -118,7 +117,10 @@ const buildViewModel = async (
         subSegment.addError(error)
       }
       log.error(error.message)
-      await pool.onProjectionError(error, viewModelName, event.type)
+      await pool.monitoring?.error?.(error, 'viewModelProjection', {
+        viewModelName,
+        eventType: event.type,
+      })
       throw error
     } finally {
       if (subSegment != null) {
@@ -263,7 +265,9 @@ const read = async (
       subSegment.addError(error)
     }
 
-    await pool.onResolverError(error, viewModelName)
+    await pool.monitoring?.error?.(error, 'viewModelResolver', {
+      viewModelName,
+    })
     throw error
   } finally {
     if (subSegment != null) {
@@ -325,8 +329,7 @@ const wrapViewModel = ({
   viewModel,
   eventstoreAdapter,
   performanceTracer,
-  onViewModelResolverError = async () => void 0,
-  onViewModelProjectionError = async () => void 0,
+  monitoring,
 }: WrapViewModelOptions) => {
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
   const pool: ViewModelPool = {
@@ -335,8 +338,7 @@ const wrapViewModel = ({
     isDisposed: false,
     performanceTracer,
     getSecretsManager,
-    onResolverError: createSafeHandler(onViewModelResolverError),
-    onProjectionError: createSafeHandler(onViewModelProjectionError),
+    monitoring,
   }
 
   return Object.freeze({

@@ -25,13 +25,9 @@ const initResolve = async (resolve) => {
     viewModels,
     uploader,
     scheduler,
-    onCommandFailed,
-    onReadModelProjectionError,
-    onReadModelResolverError,
-    onViewModelProjectionError,
-    onViewModelResolverError,
-    onSagaProjectionError,
+    monitoring,
   } = resolve
+
   const eventstoreAdapter = createEventstoreAdapter()
 
   const readModelConnectors = {}
@@ -64,7 +60,7 @@ const initResolve = async (resolve) => {
     eventstoreAdapter,
     performanceTracer,
     onCommandExecuted,
-    onCommandFailed,
+    monitoring,
   })
 
   const executeQuery = createQueryExecutor({
@@ -76,19 +72,13 @@ const initResolve = async (resolve) => {
     performanceTracer,
     getVacantTimeInMillis,
     performAcknowledge,
-    onReadModelProjectionError,
-    onReadModelResolverError,
-    onViewModelProjectionError,
-    onViewModelResolverError,
+    monitoring,
   })
 
   const executeSaga = createSagaExecutor({
     invokeEventBusAsync,
     executeCommand,
     executeQuery,
-    onCommandExecuted,
-    onCommandFailed,
-    onSagaProjectionError,
     eventstoreAdapter,
     readModelConnectors,
     sagas,
@@ -97,6 +87,7 @@ const initResolve = async (resolve) => {
     performAcknowledge,
     uploader,
     scheduler,
+    monitoring,
   })
 
   const eventBus = createEventBus(resolve)

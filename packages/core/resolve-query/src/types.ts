@@ -1,5 +1,9 @@
 import { IS_BUILT_IN } from 'resolve-core'
 
+export type Monitoring = {
+  error?: (error: Error, part: string, meta: any) => Promise<void>
+}
+
 export type CreateQueryOptions = {
   invokeEventBusAsync: Function
   readModelConnectors: any
@@ -9,25 +13,7 @@ export type CreateQueryOptions = {
   eventstoreAdapter: any
   getVacantTimeInMillis: any
   performAcknowledge: any
-  onReadModelProjectionError?: (
-    error: Error,
-    readModelName: string,
-    eventType: string
-  ) => Promise<void>
-  onReadModelResolverError?: (
-    error: Error,
-    readModelName: string,
-    resolverName: string
-  ) => Promise<void>
-  onViewModelProjectionError?: (
-    error: Error,
-    viewModelName: string,
-    eventType: string
-  ) => Promise<void>
-  onViewModelResolverError?: (
-    error: Error,
-    readModelName: string
-  ) => Promise<void>
+  monitoring?: Monitoring
 }
 
 type WrapModelOptions = Omit<
@@ -78,16 +64,7 @@ export type ReadModelPool = {
   invokeEventBusAsync: Function
   performAcknowledge: Function
   getVacantTimeInMillis: Function
-  onResolverError: (
-    error: Error,
-    readModelName: string,
-    resolverName: string
-  ) => Promise<void>
-  onProjectionError: (
-    error: Error,
-    readModelName: string,
-    eventType: string
-  ) => Promise<void>
+  monitoring?: Monitoring
 }
 
 export type ViewModelMeta = {
@@ -106,12 +83,7 @@ export type ViewModelPool = {
   getSecretsManager: Function
   performanceTracer: any
   isDisposed: boolean
-  onResolverError: (error: Error, viewModelName: string) => Promise<void>
-  onProjectionError: (
-    error: Error,
-    viewModelName: string,
-    eventType: string
-  ) => Promise<void>
+  monitoring?: Monitoring
 }
 
 export type BuildViewModelQuery = {

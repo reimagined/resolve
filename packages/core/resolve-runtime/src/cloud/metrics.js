@@ -122,7 +122,7 @@ const putDataMetrics = async (dataMap, commonMap, errorMap) => {
     })),
   }))
 
-  if (dataMap.Error != null) {
+  if (dataMap.Error != null && errorMap != null) {
     metricData.push(
       ...errorMap.map((dimensionNames) => ({
         MetricName: 'Errors',

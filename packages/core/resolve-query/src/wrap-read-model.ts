@@ -4,9 +4,15 @@ import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
 import { SecretsManager } from 'resolve-core'
 
 import getLog from './get-log'
-import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
+
+import {
+  WrapReadModelOptions,
+  SerializedError,
+  ReadModelPool,
+  Monitoring,
+} from './types'
+
 import parseReadOptions from './parse-read-options'
-import { createSafeHandler } from './utils'
 
 const wrapConnection = async (
   pool: ReadModelPool,
@@ -430,7 +436,10 @@ const read = async (
         `Resolver "${resolverName}" does not exist`
       ) as any
       error.code = 422
-      await pool.onResolverError(error, readModelName, resolverName)
+      await pool.monitoring?.error?.(error, 'readModelResolver', {
+        readModelName,
+        resolverName,
+      })
       throw error
     }
 
@@ -466,7 +475,10 @@ const read = async (
           if (subSegment != null) {
             subSegment.addError(error)
           }
-          await pool.onResolverError(error, readModelName, resolverName)
+          await pool.monitoring?.error?.(error, 'readModelResolver', {
+            readModelName,
+            resolverName,
+          })
           throw error
         } finally {
           if (subSegment != null) {
@@ -480,7 +492,10 @@ const read = async (
       subSegment.addError(error)
     }
 
-    await pool.onResolverError(error, readModelName, resolverName)
+    await pool.monitoring?.error?.(error, 'readModelResolver', {
+      readModelName,
+      resolverName,
+    })
     throw error
   } finally {
     if (subSegment != null) {
@@ -761,18 +776,17 @@ const dispose = async (pool: ReadModelPool): Promise<void> => {
 
 const wrapProjectionHandler = <T extends Array<any>>(
   handler: (...args: T) => Promise<any>,
-  errorHandler: (
-    error: Error,
-    readModelName: string,
-    eventType: string
-  ) => Promise<void>,
   readModelName: string,
-  eventType: string
+  eventType: string,
+  monitoring?: Monitoring
 ) => async (...args: T) => {
   try {
     return await handler(...args)
   } catch (error) {
-    await errorHandler(error, readModelName, eventType)
+    await monitoring?.error?.(error, 'readModelProjection', {
+      readModelName,
+      eventType,
+    })
     throw error
   }
 }
@@ -785,8 +799,7 @@ const wrapReadModel = ({
   performanceTracer,
   getVacantTimeInMillis,
   performAcknowledge,
-  onReadModelResolverError = async () => void 0,
-  onReadModelProjectionError = async () => void 0,
+  monitoring,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
 
@@ -797,10 +810,6 @@ const wrapReadModel = ({
       `connector "${readModel.connectorName}" for read-model "${readModel.name}" does not exist`
     )
   }
-
-  const safeProjectionErrorHandler = createSafeHandler(
-    onReadModelProjectionError
-  )
 
   const pool: ReadModelPool = {
     invokeEventBusAsync,
@@ -815,9 +824,9 @@ const wrapReadModel = ({
                 ...acc,
                 [eventType]: wrapProjectionHandler(
                   readModel.projection[eventType],
-                  safeProjectionErrorHandler,
                   readModel.name,
-                  eventType
+                  eventType,
+                  monitoring
                 ),
               }),
               {} as typeof readModel.projection
@@ -829,8 +838,7 @@ const wrapReadModel = ({
     performanceTracer,
     getVacantTimeInMillis,
     performAcknowledge,
-    onResolverError: createSafeHandler(onReadModelResolverError),
-    onProjectionError: safeProjectionErrorHandler,
+    monitoring,
   }
 
   const api = {

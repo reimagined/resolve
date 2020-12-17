@@ -34,14 +34,18 @@ type AggregateMeta = {
   invariantHash?: string
 }
 
+type Monitoring = {
+  error?: (error: Error, part: string, meta: any) => Promise<void>
+}
+
 type CommandPool = {
   onCommandExecuted: (event: Event, command: Command) => Promise<void>
-  onCommandFailed: (error: Error, command: Command) => Promise<void>
   performanceTracer: any
   aggregateName: string
   isDisposed: boolean
   eventstoreAdapter: EventstoreAdapter
   aggregates: AggregateMeta[]
+  monitoring?: Monitoring
 }
 
 type AggregateInfo = {
@@ -63,10 +67,10 @@ export type CommandExecutor = {
 
 export type CommandExecutorBuilder = (context: {
   onCommandExecuted: (event: Event, command: Command) => Promise<void>
-  onCommandFailed?: (error: Error, command: Command) => Promise<void>
   aggregates: AggregateMeta[]
   performanceTracer?: any
   eventstoreAdapter: EventstoreAdapter
+  monitoring?: Monitoring
 }) => CommandExecutor
 
 // eslint-disable-next-line no-new-func
@@ -572,7 +576,7 @@ const executeCommand = async (
     if (subSegment != null) {
       subSegment.addError(error)
     }
-    await pool.onCommandFailed(error, command)
+    await pool.monitoring?.error?.(error, 'command', { command })
     throw error
   } finally {
     if (subSegment != null) {
@@ -610,7 +614,7 @@ const createCommand: CommandExecutorBuilder = ({
   aggregates,
   performanceTracer,
   eventstoreAdapter,
-  onCommandFailed = async () => void 0,
+  monitoring,
 }): CommandExecutor => {
   const pool = {
     onCommandExecuted,
@@ -618,11 +622,7 @@ const createCommand: CommandExecutorBuilder = ({
     isDisposed: false,
     performanceTracer,
     eventstoreAdapter,
-    onCommandFailed: async (error: Error, command: Command) => {
-      try {
-        await onCommandFailed(error, command)
-      } catch (e) {}
-    },
+    monitoring,
   }
 
   const api = {

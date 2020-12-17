@@ -5,7 +5,7 @@ import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
 import initScheduler from './init-scheduler'
-import initMetricsCollection from './init-metrics-collection'
+import initMonitoring from './init-monitoring'
 import { putDurationMetrics, putInternalError } from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
@@ -61,7 +61,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     })
   }
 
-  initMetricsCollection(resolveBase)
+  initMonitoring(resolveBase)
 
   const resolve = Object.create(resolveBase)
   resolve.getVacantTimeInMillis = getVacantTimeInMillis.bind(
