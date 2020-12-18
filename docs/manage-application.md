@@ -3,18 +3,18 @@ id: manage-aplication
 title: Manage a ReSolve Application
 ---
 
-Use the [resolve-module-admin](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme) utility to manage a reSolve application's sagas and read models. It provides the following functionality:
+Use the [resolve-module-admin](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme) CLI tool to manage a reSolve application's sagas and read models. It provides the following functionality:
 
 - List application read models and sagas.
 - Pause and resume read model and saga updates.
 - Reset read model and saga persistent state.
 - Manage saga properties.
 
-You can use **npx** to run this utility without installation or install it s an application's dependency as the following section describes.
+You can use **npx** to run this tool without installation or install it as an application's dependency. See the [Installation](#installation) section for more information.
 
 ## Installation
 
-Use the steps bellow to add the **resolve-module-admin** utility to a reSolve application.
+Use the steps bellow to add the **resolve-module-admin** tool to a reSolve application.
 
 1. Install the [resolve-module-admin](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme) NPM package:
 
@@ -22,7 +22,7 @@ Use the steps bellow to add the **resolve-module-admin** utility to a reSolve ap
    yarn add resolve-module-admin
    ```
 
-2. Register a script that runs the **resolve-module-admin** utility in the application's **package.json** file:
+2. Register a script that runs the **resolve-module-admin** tool in the application's **package.json** file:
 
    ```js
    "scripts": {
@@ -34,10 +34,20 @@ Use the steps bellow to add the **resolve-module-admin** utility to a reSolve ap
 
 ## Usage
 
-The **resolve-module-admin** utility communicates with API handlers exposed by a reSolve application. To use the utility, run the application and execute one of the utility's commands:
+The **resolve-module-admin** tool communicates with API handlers exposed by a reSolve application. To use the tool, you need to start your application. Then, you can execute **resolve-module-admin** with the required command:
 
 ```bash
-npx resolve-module-admin read-models list
+yarn resolve-module-admin read-models reset ShoppingList
 ```
 
-For the full list of supported commands, refer to the [NPM package's description](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme) or use the `--help` option in the console.
+The default URL that **resolve-module-admin** uses to access a reSolve application's API is `http://localhost:3000/api`. Use the `--api-url` option to specify other URL:
+
+```bash
+yarn resolve-module-admin --api-url "https://127.0.0.1:2000/api" read-models reset ShoppingList
+```
+
+For the full list of supported commands, refer to the [NPM package's description](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme) or use the inbuilt help:
+
+```bash
+yarn resolve-module-admin --help
+```
