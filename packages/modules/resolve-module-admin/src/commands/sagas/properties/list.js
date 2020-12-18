@@ -3,7 +3,7 @@ import columnify from 'columnify'
 
 export const handler = async ({ url, saga }) => {
   const response = await fetch(
-    `${url}/event-broker/list-properties?listenerId=${saga}`
+    `${url}/event-broker/list-properties?eventSubscriber=${saga}`
   )
   const result = await response.json()
   if (result.hasOwnProperty('RESOLVE_SIDE_EFFECTS_START_TIMESTAMP')) {
