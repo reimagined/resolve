@@ -1,4 +1,8 @@
-const beginTransaction = async ({ runQuery }) => {
+import { RunQuery } from './types'
+
+const beginTransaction = async (pool: { runQuery: RunQuery }) => {
+  const { runQuery } = pool
+
   try {
     await runQuery(`ROLLBACK;`, true)
   } catch (error) {}
