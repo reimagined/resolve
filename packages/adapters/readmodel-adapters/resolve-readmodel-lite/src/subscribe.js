@@ -10,7 +10,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
-  while(true) {
+  while (true) {
     try {
       await inlineLedgerRunQuery(
         `BEGIN IMMEDIATE;

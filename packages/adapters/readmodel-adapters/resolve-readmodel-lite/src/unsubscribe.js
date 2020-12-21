@@ -11,7 +11,7 @@ const unsubscribe = async (pool, readModelName) => {
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
-  while(true) {
+  while (true) {
     try {
       await inlineLedgerRunQuery(
         `BEGIN IMMEDIATE;
