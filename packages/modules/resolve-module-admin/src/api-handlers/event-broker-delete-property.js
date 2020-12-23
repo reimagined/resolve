@@ -1,10 +1,12 @@
+import wrapApiHandler from './wrap-api-handler'
+
 const deleteProperty = async (req, res) => {
-  const { listenerId, key } = req.query
+  const { eventSubscriber, key } = req.query
   await req.resolve.eventBus.deleteProperty({
-    eventSubscriber: listenerId,
+    eventSubscriber,
     key,
   })
-  res.end(`ListenerId = "${listenerId}", Key = "${key}" deleted`)
+  res.end(`EventSubscriber = "${eventSubscriber}", Key = "${key}" deleted`)
 }
 
-export default deleteProperty
+export default wrapApiHandler(deleteProperty)

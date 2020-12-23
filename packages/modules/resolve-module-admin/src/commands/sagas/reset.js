@@ -1,10 +1,12 @@
 import fetch from 'isomorphic-fetch'
 
 export const handler = async ({ url, saga, timestamp }) => {
-  const response = await fetch(`${url}/event-broker/reset?listenerId=${saga}`)
+  const response = await fetch(
+    `${url}/event-broker/reset?eventSubscriber=${saga}`
+  )
   if (timestamp != null) {
     await fetch(
-      `${url}/event-broker/set-property?listenerId=${saga}&key=RESOLVE_SIDE_EFFECTS_START_TIMESTAMP&value=${Date.parse(
+      `${url}/event-broker/set-property?eventSubscriber=${saga}&key=RESOLVE_SIDE_EFFECTS_START_TIMESTAMP&value=${Date.parse(
         timestamp
       )}`
     )

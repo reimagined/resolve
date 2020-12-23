@@ -1,5 +1,5 @@
-const escapeId = (str) => `"${String(str).replace(/(["])/gi, '$1$1')}"`
-const escape = (str) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
+export const escapeId = (str) => `"${String(str).replace(/(["])/gi, '$1$1')}"`
+export const escape = (str) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 const coerceEmptyString = (obj) =>
   (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
 const emptyTransformer = Function('') // eslint-disable-line no-new-func
