@@ -12015,6 +12015,11 @@ lodash.difference@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.difference/-/lodash.difference-4.5.0.tgz#9ccb4e505d486b91651345772885a2df27fd017c"
   integrity sha1-nMtOUF1Ia5FlE0V3KIWi3yf9AXw=
 
+lodash.differencewith@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.differencewith/-/lodash.differencewith-4.5.0.tgz#bafafbc918b55154e179176a00bb0aefaac854b7"
+  integrity sha1-uvr7yRi1UVTheRdqALsK76rIVLc=
+
 lodash.escape@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/lodash.escape/-/lodash.escape-4.0.1.tgz#c9044690c21e04294beaa517712fded1fa88de98"
@@ -16035,14 +16040,15 @@ reselect@^4.0.0:
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
   integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
-resolve-cloud-common@0.0.106:
-  version "0.0.106"
-  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.106.tgz#835a28f5a4862a213c535f337e8bf89a870a2f66"
-  integrity sha512-6+3vkQl70CJaNvrtlHj4Z6xXuMUChzc4DG1u78xbytmJPPQSFdI4Zt95I14jYmnH8bN5ti+WD/exlePfDqXAaQ==
+resolve-cloud-common@0.0.37:
+  version "0.0.37"
+  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.37.tgz#308032a0b60fdecd5f9cf48f22dc03f30a42407f"
+  integrity sha512-Yd5kYqkEp6GNbgPpJvhfzV3BdJLB58HgUb4zL/o2E607DvkVo0NQ7xWW5DVEuGmT0yz4OnmM5/A3i5AprgKRiw==
   dependencies:
     chalk "^4.0.0"
     debug "^4.1.1"
-    uuid "^8.3.1"
+    lodash.differencewith "^4.5.0"
+    lodash.isequal "^4.5.0"
 
 resolve-cloud@*:
   version "0.16.5"
@@ -18926,7 +18932,7 @@ uuid@3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
 
-uuid@8.3.1, uuid@^8.3.1:
+uuid@8.3.1:
   version "8.3.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.1.tgz#2ba2e6ca000da60fce5a196954ab241131e05a31"
   integrity sha512-FOmRr+FmWEIG8uhZv6C2bTgEVXsHk08kE7mPlrBbEe+c3r9pjceVPgupIfNIhc4yx55H69OXANrUaSuu9eInKg==
