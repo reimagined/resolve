@@ -262,13 +262,14 @@ const wrapApiHandler = (
   onError = async () => void 0
 ) => async (lambdaEvent, lambdaContext, lambdaCallback) => {
   let result
+  let req
   try {
     const customParameters =
       typeof getCustomParameters === 'function'
         ? await getCustomParameters(lambdaEvent, lambdaContext, lambdaCallback)
         : {}
 
-    const req = await createRequest(lambdaEvent, customParameters)
+    req = await createRequest(lambdaEvent, customParameters)
     const res = createResponse()
 
     await handler(req, res)
@@ -289,7 +290,9 @@ const wrapApiHandler = (
         ? `${error.stack}`
         : `Unknown error ${error}`
 
-    await onError(error)
+    if (req != null) {
+      await onError(error, req.path)
+    }
 
     // eslint-disable-next-line no-console
     console.error(outError)

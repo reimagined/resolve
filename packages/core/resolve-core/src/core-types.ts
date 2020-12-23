@@ -205,3 +205,7 @@ export type SagaEncryptionFactory = (
   event: Event,
   context: SagaEncryptionContext
 ) => Promise<Encryption | null>
+
+export type Monitoring = {
+  error?: (error: Error, part: string, meta: any) => Promise<void>
+}
