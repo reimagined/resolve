@@ -8,7 +8,9 @@ import {
   Event,
   SecretsManager,
   makeMonitoringSafe,
+  Monitoring,
 } from 'resolve-core'
+
 import getLog from './get-log'
 
 type EventstoreAdapter = {
@@ -33,10 +35,6 @@ type AggregateMeta = {
   deserializeState: Function
   encryption: AggregateEncryptionFactory | null
   invariantHash?: string
-}
-
-type Monitoring = {
-  error?: (error: Error, part: string, meta: any) => Promise<void>
 }
 
 type CommandPool = {
@@ -425,14 +423,6 @@ const saveEvent = async (
   await onCommandExecuted(event, command)
 
   return event
-}
-
-export const createSafeHandler = <T extends Array<any>>(
-  fn: (...args: T) => Promise<void>
-) => async (...args: T): Promise<void> => {
-  try {
-    await fn(...args)
-  } catch (e) {}
 }
 
 const executeCommand = async (
