@@ -73,8 +73,6 @@ const initMonitoring = (resolve) => {
         }
       } catch (error) {
         log.verbose(`Failed to collect error`, error)
-        // TODO: remove it
-        console.error(`Failed to collect error`, error)
       }
     },
   }

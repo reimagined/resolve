@@ -4,6 +4,7 @@ import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
 import { SecretsManager } from 'resolve-core'
 
 import getLog from './get-log'
+import { createSafeHandler } from './utils'
 
 import {
   WrapReadModelOptions,
@@ -811,6 +812,14 @@ const wrapReadModel = ({
     )
   }
 
+  const safeMonitoring =
+    monitoring?.error != null
+      ? {
+          ...monitoring,
+          error: createSafeHandler(monitoring.error),
+        }
+      : monitoring
+
   const pool: ReadModelPool = {
     invokeEventBusAsync,
     eventstoreAdapter,
@@ -826,7 +835,7 @@ const wrapReadModel = ({
                   readModel.projection[eventType],
                   readModel.name,
                   eventType,
-                  monitoring
+                  safeMonitoring
                 ),
               }),
               {} as typeof readModel.projection
@@ -838,7 +847,7 @@ const wrapReadModel = ({
     performanceTracer,
     getVacantTimeInMillis,
     performAcknowledge,
-    monitoring,
+    monitoring: safeMonitoring,
   }
 
   const api = {

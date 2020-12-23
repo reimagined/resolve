@@ -426,6 +426,14 @@ const saveEvent = async (
   return event
 }
 
+export const createSafeHandler = <T extends Array<any>>(
+  fn: (...args: T) => Promise<void>
+) => async (...args: T): Promise<void> => {
+  try {
+    await fn(...args)
+  } catch (e) {}
+}
+
 const executeCommand = async (
   pool: CommandPool,
   command: Command
@@ -622,7 +630,13 @@ const createCommand: CommandExecutorBuilder = ({
     isDisposed: false,
     performanceTracer,
     eventstoreAdapter,
-    monitoring,
+    monitoring:
+      monitoring?.error != null
+        ? {
+            ...monitoring,
+            error: createSafeHandler(monitoring.error),
+          }
+        : monitoring,
   }
 
   const api = {

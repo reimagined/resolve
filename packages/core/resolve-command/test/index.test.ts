@@ -1958,8 +1958,8 @@ describe('dispose', () => {
   })
 })
 
-describe('onCommandFailed', () => {
-  test('calls onCommandFailed when command error is thrown', async () => {
+describe('monitoring', () => {
+  test('calls monitoring.error when command error is thrown', async () => {
     const aggregate = makeAggregateMeta({
       encryption: () => Promise.resolve({}),
       name: 'empty',
@@ -1970,13 +1970,13 @@ describe('onCommandFailed', () => {
       },
     })
 
-    const onCommandFailed = jest.fn()
+    const monitoring = { error: jest.fn() }
 
     const executeCommand = createCommandExecutor({
       eventstoreAdapter,
       onCommandExecuted,
       aggregates: [aggregate],
-      onCommandFailed,
+      monitoring,
     })
 
     try {
@@ -1988,15 +1988,17 @@ describe('onCommandFailed', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      expect(onCommandFailed).toBeCalledWith(e, {
-        aggregateName: 'empty',
-        aggregateId: 'aggregateId',
-        type: 'emptyCommand',
+      expect(monitoring.error).toBeCalledWith(e, 'command', {
+        command: {
+          aggregateName: 'empty',
+          aggregateId: 'aggregateId',
+          type: 'emptyCommand',
+        },
       })
     }
   })
 
-  test('calls onCommandFailed if command is absent', async () => {
+  test('calls monitoring.error if command is absent', async () => {
     const aggregate = makeAggregateMeta({
       encryption: () => Promise.resolve({}),
       name: 'empty',
@@ -2007,13 +2009,13 @@ describe('onCommandFailed', () => {
       },
     })
 
-    const onCommandFailed = jest.fn()
+    const monitoring = { error: jest.fn() }
 
     const executeCommand = createCommandExecutor({
       eventstoreAdapter,
       onCommandExecuted,
       aggregates: [aggregate],
-      onCommandFailed,
+      monitoring,
     })
 
     try {
@@ -2025,15 +2027,17 @@ describe('onCommandFailed', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      expect(onCommandFailed).toBeCalledWith(e, {
-        aggregateName: 'empty',
-        aggregateId: 'aggregateId',
-        type: 'unknownCommand',
+      expect(monitoring.error).toBeCalledWith(e, 'command', {
+        command: {
+          aggregateName: 'empty',
+          aggregateId: 'aggregateId',
+          type: 'unknownCommand',
+        },
       })
     }
   })
 
-  test('calls onCommandFailed if aggregate is absent', async () => {
+  test('calls monitoring.error if aggregate is absent', async () => {
     const aggregate = makeAggregateMeta({
       encryption: () => Promise.resolve({}),
       name: 'empty',
@@ -2044,13 +2048,13 @@ describe('onCommandFailed', () => {
       },
     })
 
-    const onCommandFailed = jest.fn()
+    const monitoring = { error: jest.fn() }
 
     const executeCommand = createCommandExecutor({
       eventstoreAdapter,
       onCommandExecuted,
       aggregates: [aggregate],
-      onCommandFailed,
+      monitoring,
     })
 
     try {
@@ -2062,15 +2066,17 @@ describe('onCommandFailed', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      expect(onCommandFailed).toBeCalledWith(e, {
-        aggregateName: 'unknown',
-        aggregateId: 'aggregateId',
-        type: 'unknownCommand',
+      expect(monitoring.error).toBeCalledWith(e, 'command', {
+        command: {
+          aggregateName: 'unknown',
+          aggregateId: 'aggregateId',
+          type: 'unknownCommand',
+        },
       })
     }
   })
 
-  test('does not affect command workflow if onCommandFailed is failed', async () => {
+  test('does not affect command workflow if monitoring.error is failed', async () => {
     const aggregate = makeAggregateMeta({
       encryption: () => Promise.resolve({}),
       name: 'empty',
@@ -2081,15 +2087,17 @@ describe('onCommandFailed', () => {
       },
     })
 
-    const onCommandFailed = () => {
-      throw new Error('onCommandFailed failed')
+    const monitoring = {
+      error: () => {
+        throw new Error('onCommandFailed failed')
+      },
     }
 
     const executeCommand = createCommandExecutor({
       eventstoreAdapter,
       onCommandExecuted,
       aggregates: [aggregate],
-      onCommandFailed,
+      monitoring,
     })
 
     try {
@@ -2105,7 +2113,7 @@ describe('onCommandFailed', () => {
     }
   })
 
-  test('does not affect command workflow if onCommandFailed is absent', async () => {
+  test('does not affect command workflow if monitoring is absent', async () => {
     const aggregate = makeAggregateMeta({
       encryption: () => Promise.resolve({}),
       name: 'empty',
@@ -2120,6 +2128,37 @@ describe('onCommandFailed', () => {
       eventstoreAdapter,
       onCommandExecuted,
       aggregates: [aggregate],
+    })
+
+    try {
+      await executeCommand({
+        aggregateName: 'empty',
+        aggregateId: 'aggregateId',
+        type: 'emptyCommand',
+      })
+
+      throw new Error('Test must be failed')
+    } catch (e) {
+      expect(e.message).toContain('Empty command failed')
+    }
+  })
+
+  test('does not affect command workflow if monitoring.error is absent', async () => {
+    const aggregate = makeAggregateMeta({
+      encryption: () => Promise.resolve({}),
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          throw new Error('Empty command failed')
+        },
+      },
+    })
+
+    const executeCommand = createCommandExecutor({
+      eventstoreAdapter,
+      onCommandExecuted,
+      aggregates: [aggregate],
+      monitoring: {},
     })
 
     try {

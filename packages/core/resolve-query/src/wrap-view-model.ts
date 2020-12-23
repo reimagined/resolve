@@ -7,6 +7,7 @@ import {
   BuildViewModelQuery,
 } from './types'
 import parseReadOptions from './parse-read-options'
+import { createSafeHandler } from './utils'
 
 type AggregateIds = string | string[]
 
@@ -338,7 +339,13 @@ const wrapViewModel = ({
     isDisposed: false,
     performanceTracer,
     getSecretsManager,
-    monitoring,
+    monitoring:
+      monitoring?.error != null
+        ? {
+            ...monitoring,
+            error: createSafeHandler(monitoring.error),
+          }
+        : monitoring,
   }
 
   return Object.freeze({
