@@ -1,4 +1,4 @@
-import { IS_BUILT_IN } from 'resolve-core'
+import { IS_BUILT_IN, makeMonitoringSafe } from 'resolve-core'
 
 import getLog from './get-log'
 import {
@@ -7,7 +7,6 @@ import {
   BuildViewModelQuery,
 } from './types'
 import parseReadOptions from './parse-read-options'
-import { createSafeHandler } from './utils'
 
 type AggregateIds = string | string[]
 
@@ -340,12 +339,7 @@ const wrapViewModel = ({
     performanceTracer,
     getSecretsManager,
     monitoring:
-      monitoring?.error != null
-        ? {
-            ...monitoring,
-            error: createSafeHandler(monitoring.error),
-          }
-        : monitoring,
+      monitoring != null ? makeMonitoringSafe(monitoring) : monitoring,
   }
 
   return Object.freeze({

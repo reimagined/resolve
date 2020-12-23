@@ -1,8 +1,4 @@
-import { IS_BUILT_IN } from 'resolve-core'
-
-export type Monitoring = {
-  error?: (error: Error, part: string, meta: any) => Promise<void>
-}
+import { IS_BUILT_IN, Monitoring } from 'resolve-core'
 
 export type CreateQueryOptions = {
   invokeEventBusAsync: Function

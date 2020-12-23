@@ -1,18 +1,11 @@
 import { EOL } from 'os'
 // TODO: core cannot reference "top-level" packages, move these to resolve-core
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
-import { SecretsManager } from 'resolve-core'
+import { SecretsManager, makeMonitoringSafe, Monitoring } from 'resolve-core'
 
 import getLog from './get-log'
-import { createSafeHandler } from './utils'
 
-import {
-  WrapReadModelOptions,
-  SerializedError,
-  ReadModelPool,
-  Monitoring,
-} from './types'
-
+import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
 
 const wrapConnection = async (
@@ -813,12 +806,7 @@ const wrapReadModel = ({
   }
 
   const safeMonitoring =
-    monitoring?.error != null
-      ? {
-          ...monitoring,
-          error: createSafeHandler(monitoring.error),
-        }
-      : monitoring
+    monitoring != null ? makeMonitoringSafe(monitoring) : monitoring
 
   const pool: ReadModelPool = {
     invokeEventBusAsync,

@@ -7,6 +7,7 @@ import {
   CommandResult,
   Event,
   SecretsManager,
+  makeMonitoringSafe,
 } from 'resolve-core'
 import getLog from './get-log'
 
@@ -631,12 +632,7 @@ const createCommand: CommandExecutorBuilder = ({
     performanceTracer,
     eventstoreAdapter,
     monitoring:
-      monitoring?.error != null
-        ? {
-            ...monitoring,
-            error: createSafeHandler(monitoring.error),
-          }
-        : monitoring,
+      monitoring != null ? makeMonitoringSafe(monitoring) : monitoring,
   }
 
   const api = {
