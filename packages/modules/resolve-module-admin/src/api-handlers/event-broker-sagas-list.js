@@ -1,13 +1,11 @@
-// FIXME: replace with import from resolve-runtime-interop
-import { getSchedulersNamesBySagas } from 'resolve-saga'
-
+import { DomainSaga } from 'resolve-runtime-interop'
 import wrapApiHandler from './wrap-api-handler'
 
 const sagasList = async (req, res) => {
   const statusPromises = []
   for (const name of [
     ...req.resolve.sagas.map((saga) => saga.name),
-    ...getSchedulersNamesBySagas(req.resolve.sagas),
+    ...DomainSaga.getSchedulersNamesBySagas(req.resolve.sagas),
   ]) {
     statusPromises.push(
       req.resolve.eventBus.status({ eventSubscriber: `${name}` })

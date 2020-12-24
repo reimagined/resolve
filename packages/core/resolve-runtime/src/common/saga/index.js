@@ -1,36 +1,10 @@
+import { DomainSaga } from 'resolve-runtime-interop'
 import createCommand from 'resolve-command'
-import createQuery from 'resolve-query'
+import createQuery from '../query/index'
 
 import createSchedulerAggregate from './create-scheduler-aggregate'
 import createSchedulerSagas from './create-scheduler-sagas'
 import wrapRegularSagas from './wrap-regular-sagas'
-
-const schedulerName = '_SCHEDULER_'
-const schedulerEventTypes = {
-  SCHEDULED_COMMAND_CREATED: `_RESOLVE_SYS_SCHEDULED_COMMAND_CREATED_`,
-  SCHEDULED_COMMAND_EXECUTED: `_RESOLVE_SYS_SCHEDULED_COMMAND_EXECUTED_`,
-  SCHEDULED_COMMAND_SUCCEEDED: `_RESOLVE_SYS_SCHEDULED_COMMAND_SUCCEEDED_`,
-  SCHEDULED_COMMAND_FAILED: `_RESOLVE_SYS_SCHEDULED_COMMAND_FAILED_`,
-}
-const schedulerInvariantHash = 'scheduler-invariant-hash'
-
-const getSchedulersNamesBySagas = (sagas) => {
-  if (!Array.isArray(sagas)) {
-    throw new Error(`Sagas ${sagas} is not array`)
-  }
-  const uniqueSagaConnectorsNames = Array.from(
-    new Set(sagas.map((saga) => saga.connectorName))
-  )
-  const schedulersNames = []
-  for (const connectorName of uniqueSagaConnectorsNames) {
-    // eslint-disable-next-line no-new-wrappers
-    const currentSchedulerName = new String(`${schedulerName}${connectorName}`)
-    currentSchedulerName.connectorName = connectorName
-    schedulersNames.push(currentSchedulerName)
-  }
-
-  return schedulersNames
-}
 
 const createSaga = ({
   invokeEventBusAsync,
@@ -61,13 +35,7 @@ const createSaga = ({
       : monitoring
 
   const executeScheduleCommand = createCommand({
-    aggregates: [
-      createSchedulerAggregate({
-        schedulerName,
-        schedulerEventTypes,
-        schedulerInvariantHash,
-      }),
-    ],
+    aggregates: [createSchedulerAggregate(DomainSaga)],
     onCommandExecuted,
     eventstoreAdapter,
     monitoring,
@@ -89,7 +57,7 @@ const createSaga = ({
     const options = { ...args[0] }
 
     const aggregateName = options.aggregateName
-    if (aggregateName === schedulerName) {
+    if (aggregateName === DomainSaga.schedulerName) {
       return await executeScheduleCommand(options)
     } else {
       return await executeCommand(options)
@@ -123,14 +91,16 @@ const createSaga = ({
     uploader: { get: () => uploader, enumerable: true },
   })
 
-  const regularSagas = wrapRegularSagas({ sagas, schedulerName, sagaProvider })
-  const schedulerSagas = createSchedulerSagas({
-    getSchedulersNamesBySagas,
+  const regularSagas = wrapRegularSagas({
     sagas,
-    schedulerName,
-    schedulerEventTypes,
+    schedulerName: DomainSaga.schedulerName,
+    sagaProvider,
+  })
+  const schedulerSagas = createSchedulerSagas({
+    sagas,
     sagaProvider,
     scheduler,
+    ...DomainSaga,
   })
 
   const sagasAsReadModels = [...regularSagas, ...schedulerSagas].map(
@@ -194,7 +164,5 @@ const createSaga = ({
 
   return executeSaga
 }
-
-export { schedulerName, schedulerEventTypes, getSchedulersNamesBySagas }
 
 export default createSaga
