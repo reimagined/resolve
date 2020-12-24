@@ -89,6 +89,7 @@ const initResolve = async (resolve) => {
     uploader,
     scheduler,
     monitoring,
+    onCommandExecuted,
     domainInterop,
   })
 
