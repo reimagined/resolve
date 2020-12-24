@@ -1,6 +1,6 @@
 {
   "name": "resolve-eventstore-postgresql",
-  "version": "0.26.3",
+  "version": "0.26.4",
   "description": "An adapter reSolve uses to store events in PostgreSQL.",
   "keywords": [
     "cqrs",
@@ -24,9 +24,9 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "pg": "^8.2.1",
-    "resolve-core": "0.26.3",
-    "resolve-debug-levels": "0.26.3",
-    "resolve-eventstore-base": "0.26.3"
+    "resolve-core": "0.26.4",
+    "resolve-debug-levels": "0.26.4",
+    "resolve-eventstore-base": "0.26.4"
   },
   "devDependencies": {
     "@types/pg": "^7.14.3",

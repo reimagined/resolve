@@ -13,7 +13,7 @@ const listProperties = async (pool, readModelName) => {
   )
 
   if (rows.length === 1) {
-    return rows[0].Properties
+    return rows[0].Properties != null ? JSON.parse(rows[0].Properties) : null
   } else {
     return null
   }

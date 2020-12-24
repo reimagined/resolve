@@ -1,6 +1,6 @@
 {
   "name": "create-resolve-app",
-  "version": "0.26.3",
+  "version": "0.26.4",
   "description": "A tool that generates boilerplate web applications based on the reSolve framework",
   "keywords": [
     "cqrs",
@@ -32,7 +32,7 @@
     "command-line-args": "^5.0.2",
     "fs-extra": "^7.0.1",
     "progress": "2.0.3",
-    "resolve-debug-levels": "0.26.3",
+    "resolve-debug-levels": "0.26.4",
     "source-map-support": "^0.5.9",
     "validate-npm-package-name": "^3.0.0"
   },

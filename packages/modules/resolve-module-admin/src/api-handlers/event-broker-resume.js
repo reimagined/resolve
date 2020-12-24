@@ -1,11 +1,13 @@
+import wrapApiHandler from './wrap-api-handler'
+
 const resume = async (req, res) => {
-  const { listenerId } = req.query
+  const { eventSubscriber } = req.query
   try {
-    await req.resolve.eventBus.resume({ eventSubscriber: listenerId })
-    res.end(`ListenerId = "${listenerId}" running`)
+    await req.resolve.eventBus.resume({ eventSubscriber })
+    res.end(`EventSubscriber = "${eventSubscriber}" running`)
   } catch (e) {
-    res.end(`Listener "${listenerId}" does not exist`)
+    res.end(`EventSubscriber "${eventSubscriber}" does not exist`)
   }
 }
 
-export default resume
+export default wrapApiHandler(resume)
