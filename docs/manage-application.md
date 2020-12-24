@@ -6,7 +6,7 @@ title: Manage a ReSolve Application
 Use the [resolve-module-admin](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme) CLI tool to manage a reSolve application's sagas and read models. It provides the following functionality:
 
 - List application read models and sagas.
-- Pause and resume read model and saga updates.
+- Pause and resume updates for read models and sagas.
 - Reset read model and saga persistent state.
 - Manage saga properties.
 
