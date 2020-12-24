@@ -1,0 +1,50 @@
+{
+  "name": "resolve-runtime-interop",
+  "version": "0.26.4",
+  "description": "The reSolve framework's runtime interop interface .",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-runtime-interop#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=resolve-runtime-interop",
+    "test": "jest --config=../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../jest.config.js --watchAll"
+  },
+  "dependencies": {
+    "resolve-core": "0.26.4"
+  },
+  "devDependencies": {
+    "jest": "26.0.1"
+  },
+  "engines": {
+    "node": ">=10.9"
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ],
+  "sourceType": "ts"
+}
