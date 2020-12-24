@@ -1,4 +1,4 @@
-import { schedulerName } from 'resolve-saga'
+import { schedulerName } from '../common/saga'
 
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
