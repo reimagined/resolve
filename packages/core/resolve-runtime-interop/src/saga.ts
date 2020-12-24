@@ -1,12 +1,19 @@
-export const schedulerName = '_SCHEDULER_'
-export const schedulerEventTypes = {
+export type SagaDomain = {
+  schedulerName: string
+  schedulerEventTypes: { [key: string]: string }
+  schedulerInvariantHash: string
+  getSchedulersNamesBySagas: () => any[]
+}
+
+const schedulerName = '_SCHEDULER_'
+const schedulerEventTypes = {
   SCHEDULED_COMMAND_CREATED: `_RESOLVE_SYS_SCHEDULED_COMMAND_CREATED_`,
   SCHEDULED_COMMAND_EXECUTED: `_RESOLVE_SYS_SCHEDULED_COMMAND_EXECUTED_`,
   SCHEDULED_COMMAND_SUCCEEDED: `_RESOLVE_SYS_SCHEDULED_COMMAND_SUCCEEDED_`,
   SCHEDULED_COMMAND_FAILED: `_RESOLVE_SYS_SCHEDULED_COMMAND_FAILED_`,
 }
-export const schedulerInvariantHash = 'scheduler-invariant-hash' // FIXME: does it belongs to the package
-export const getSchedulersNamesBySagas = (sagas: any) => {
+const schedulerInvariantHash = 'scheduler-invariant-hash' // FIXME: does it belongs to the package
+const getSchedulersNamesBySagas = (sagas: any) => {
   if (!Array.isArray(sagas)) {
     throw new Error(`Sagas ${sagas} is not array`)
   }
@@ -24,4 +31,13 @@ export const getSchedulersNamesBySagas = (sagas: any) => {
   }
 
   return schedulersNames
+}
+
+export const initSagaDomain = (sagas: any[]): SagaDomain => {
+  return {
+    schedulerName,
+    schedulerEventTypes,
+    schedulerInvariantHash,
+    getSchedulersNamesBySagas: getSchedulersNamesBySagas.bind(null, sagas),
+  }
 }

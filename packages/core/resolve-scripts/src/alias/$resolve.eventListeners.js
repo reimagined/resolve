@@ -1,10 +1,14 @@
 export default () => `
   import '$resolve.guardOnlyServer'
-  import { DomainSaga } from 'resolve-runtime-interop'
+  import { initDomain } from 'resolve-runtime-interop'
   import readModels from '$resolve.readModels'
   import sagas from '$resolve.sagas'
 
-  const { schedulerEventTypes, schedulerInvariantHash, getSchedulersNamesBySagas } = DomainSaga
+  const { 
+    sagaDomain: { 
+      getSchedulersNamesBySagas, schedulerInvariantHash, schedulerEventTypes 
+    } 
+  } = initDomain({ sagas })
   const eventListeners = new Map()
 
   for (const { name, projection, invariantHash, connectorName } of readModels) {
@@ -27,7 +31,7 @@ export default () => `
     })
   }
 
-  for(const schedulerName of getSchedulersNamesBySagas(sagas)) {
+  for(const schedulerName of getSchedulersNamesBySagas()) {
     eventListeners.set(\`\${schedulerName}\`, {
       name: \`\${schedulerName}\`,
       eventTypes: Object.values(schedulerEventTypes),

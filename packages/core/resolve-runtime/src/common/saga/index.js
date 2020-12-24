@@ -1,4 +1,3 @@
-import { DomainSaga } from 'resolve-runtime-interop'
 import createCommand from 'resolve-command'
 import createQuery from '../query/index'
 
@@ -20,6 +19,7 @@ const createSaga = ({
   performAcknowledge,
   scheduler,
   monitoring,
+  domainInterop: { sagaDomain },
 }) => {
   let eventProperties = {}
 
@@ -35,7 +35,7 @@ const createSaga = ({
       : monitoring
 
   const executeScheduleCommand = createCommand({
-    aggregates: [createSchedulerAggregate(DomainSaga)],
+    aggregates: [createSchedulerAggregate(sagaDomain)],
     onCommandExecuted,
     eventstoreAdapter,
     monitoring,
@@ -57,7 +57,7 @@ const createSaga = ({
     const options = { ...args[0] }
 
     const aggregateName = options.aggregateName
-    if (aggregateName === DomainSaga.schedulerName) {
+    if (aggregateName === sagaDomain.schedulerName) {
       return await executeScheduleCommand(options)
     } else {
       return await executeCommand(options)
@@ -93,14 +93,13 @@ const createSaga = ({
 
   const regularSagas = wrapRegularSagas({
     sagas,
-    schedulerName: DomainSaga.schedulerName,
+    schedulerName: sagaDomain.schedulerName,
     sagaProvider,
   })
   const schedulerSagas = createSchedulerSagas({
-    sagas,
     sagaProvider,
     scheduler,
-    ...DomainSaga,
+    ...sagaDomain,
   })
 
   const sagasAsReadModels = [...regularSagas, ...schedulerSagas].map(

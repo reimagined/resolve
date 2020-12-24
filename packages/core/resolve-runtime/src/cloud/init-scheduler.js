@@ -1,6 +1,5 @@
 import StepFunctions from 'aws-sdk/clients/stepfunctions'
 import debugLevels from 'resolve-debug-levels'
-import { schedulerName } from '../common/saga/index'
 
 const getLog = (name) => debugLevels(`resolve:cloud:scheduler:${name}`)
 
@@ -136,7 +135,7 @@ const initScheduler = (resolve) => {
         await Promise.all(
           entries.map(({ taskId, date, command }) =>
             resolve.executeCommand({
-              aggregateName: schedulerName,
+              aggregateName: resolve.domainInterop.sagaDomain.schedulerName,
               aggregateId: taskId,
               type: 'execute',
               payload: { date, command },

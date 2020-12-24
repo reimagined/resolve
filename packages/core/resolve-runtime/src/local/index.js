@@ -1,5 +1,6 @@
 import 'source-map-support/register'
 import debugLevels from 'resolve-debug-levels'
+import { initDomain } from 'resolve-runtime-interop'
 
 import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'
@@ -23,6 +24,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       ...constants,
       routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
       assemblies,
+      domainInterop: await initDomain(domain),
     }
 
     await initPerformanceTracer(resolve)

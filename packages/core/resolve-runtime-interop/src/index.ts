@@ -1,3 +1,15 @@
-import * as DomainSaga from './saga'
+import { initSagaDomain, SagaDomain } from './saga'
 
-export { DomainSaga }
+type Domain = {
+  sagaDomain: SagaDomain
+}
+
+type DomainMeta = {
+  sagas: any[]
+}
+
+const initDomain = (domainMeta: DomainMeta): Domain => ({
+  sagaDomain: initSagaDomain(domainMeta.sagas),
+})
+
+export { initDomain }

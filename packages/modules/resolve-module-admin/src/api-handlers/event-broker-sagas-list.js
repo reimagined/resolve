@@ -1,11 +1,10 @@
-import { DomainSaga } from 'resolve-runtime-interop'
 import wrapApiHandler from './wrap-api-handler'
 
 const sagasList = async (req, res) => {
   const statusPromises = []
   for (const name of [
     ...req.resolve.sagas.map((saga) => saga.name),
-    ...DomainSaga.getSchedulersNamesBySagas(req.resolve.sagas),
+    ...req.resolve.domainInterop.sagaDomain.getSchedulersNamesBySagas(),
   ]) {
     statusPromises.push(
       req.resolve.eventBus.status({ eventSubscriber: `${name}` })

@@ -6,7 +6,6 @@ import {
   PublisherResourceAlreadyExistError,
   PublisherResourceNotExistError,
 } from 'resolve-local-event-broker'
-import { getSchedulersNamesBySagas } from '../common/saga/index'
 
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 
@@ -17,6 +16,7 @@ const resetDomainHandler = (options) => async (req, res) => {
     publisher,
     readModels,
     sagas,
+    domainInterop: { sagaDomain },
   } = req.resolve
 
   try {
@@ -46,7 +46,7 @@ const resetDomainHandler = (options) => async (req, res) => {
 
     if (dropSagas) {
       for (const { name } of [
-        ...getSchedulersNamesBySagas(sagas).map((schedulerName) => ({
+        ...sagaDomain.getSchedulersNamesBySagas().map((schedulerName) => ({
           name: `${schedulerName}`,
         })),
         ...sagas,

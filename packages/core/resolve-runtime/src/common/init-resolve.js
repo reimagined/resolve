@@ -26,6 +26,7 @@ const initResolve = async (resolve) => {
     uploader,
     scheduler,
     monitoring,
+    domainInterop,
   } = resolve
 
   const eventstoreAdapter = createEventstoreAdapter()
@@ -88,6 +89,7 @@ const initResolve = async (resolve) => {
     uploader,
     scheduler,
     monitoring,
+    domainInterop,
   })
 
   const eventBus = createEventBus(resolve)

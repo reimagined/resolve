@@ -104,7 +104,6 @@ const createSchedulerSagaHandlers = ({
 
 const createSchedulerSagas = ({
   getSchedulersNamesBySagas,
-  sagas,
   schedulerName,
   schedulerEventTypes,
   sagaProvider,
@@ -112,7 +111,7 @@ const createSchedulerSagas = ({
 }) => {
   const sagaReadModels = []
 
-  for (const currentSchedulerName of getSchedulersNamesBySagas(sagas)) {
+  for (const currentSchedulerName of getSchedulersNamesBySagas()) {
     const handlers = createSchedulerSagaHandlers({
       schedulerAggregateName: schedulerName,
       commandsTableName: schedulerName,
