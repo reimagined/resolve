@@ -25,8 +25,9 @@ const initResolve = async (resolve) => {
     viewModels,
     uploader,
     scheduler,
-    onError,
+    monitoring,
   } = resolve
+
   const eventstoreAdapter = createEventstoreAdapter()
 
   const readModelConnectors = {}
@@ -59,7 +60,7 @@ const initResolve = async (resolve) => {
     eventstoreAdapter,
     performanceTracer,
     onCommandExecuted,
-    onError,
+    monitoring,
   })
 
   const executeQuery = createQueryExecutor({
@@ -71,14 +72,13 @@ const initResolve = async (resolve) => {
     performanceTracer,
     getVacantTimeInMillis,
     performAcknowledge,
-    onError,
+    monitoring,
   })
 
   const executeSaga = createSagaExecutor({
     invokeEventBusAsync,
     executeCommand,
     executeQuery,
-    onCommandExecuted,
     eventstoreAdapter,
     readModelConnectors,
     sagas,
@@ -87,7 +87,7 @@ const initResolve = async (resolve) => {
     performAcknowledge,
     uploader,
     scheduler,
-    onError,
+    monitoring,
   })
 
   const eventBus = createEventBus(resolve)

@@ -1,9 +1,11 @@
+import wrapApiHandler from './wrap-api-handler'
+
 const listProperties = async (req, res) => {
-  const { listenerId } = req.query
+  const { eventSubscriber } = req.query
   const listProperties = await req.resolve.eventBus.listProperties({
-    eventSubscriber: listenerId,
+    eventSubscriber,
   })
   res.json(listProperties)
 }
 
-export default listProperties
+export default wrapApiHandler(listProperties)

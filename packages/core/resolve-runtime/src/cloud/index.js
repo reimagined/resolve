@@ -8,6 +8,7 @@ import initPerformanceTracer from './init-performance-tracer'
 import lambdaWorker from './lambda-worker'
 import wrapTrie from '../common/wrap-trie'
 import initUploader from './init-uploader'
+import { putInternalError } from './metrics'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
@@ -58,6 +59,7 @@ const index = async ({ assemblies, constants, domain }) => {
   } catch (error) {
     log.error(`lambda 'cold start' failure`, error)
     subSegment.addError(error)
+    await putInternalError(error)
   } finally {
     if (subSegment != null) {
       subSegment.close()

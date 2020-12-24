@@ -156,7 +156,7 @@ const getSignedPost = async (adapter, dir) =>
 const getCDNUrl = async ({ CDN }) => CDN
 
 const initUploader = async (resolve) => {
-  if (resolve.assemblies.uploader != null) {
+  if (resolve.assemblies.uploadAdapter != null) {
     // TODO: provide support for custom uploader adapter
     const createUploadAdapter = resolve.assemblies.uploadAdapter
     const uploader = createUploader(createUploadAdapter())

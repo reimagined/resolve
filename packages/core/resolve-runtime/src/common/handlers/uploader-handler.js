@@ -21,6 +21,11 @@ const uploaderHandler = async (req, res) => {
       const { dir, uploadId } = req.query
 
       const dirName = path.join(directory, bucket, dir)
+
+      if (path.relative(bucketPath, dirName).startsWith('..')) {
+        throw new Error(`The specified parameter "dir" ${dir} is not valid`)
+      }
+
       if (!fs.existsSync(dirName)) {
         fs.mkdirSync(dirName, { recursive: true })
       }
