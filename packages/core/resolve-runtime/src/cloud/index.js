@@ -9,6 +9,7 @@ import initPerformanceTracer from './init-performance-tracer'
 import lambdaWorker from './lambda-worker'
 import wrapTrie from '../common/wrap-trie'
 import initUploader from './init-uploader'
+import gatherEventListeners from '../common/gather-event-listeners'
 import { putInternalError } from './metrics'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
@@ -17,6 +18,8 @@ const index = async ({ assemblies, constants, domain }) => {
   let subSegment = null
 
   log.debug(`starting lambda 'cold start'`)
+  const domainInterop = initDomain(domain)
+
   try {
     log.debug('configuring reSolve framework')
     const resolve = {
@@ -27,7 +30,8 @@ const index = async ({ assemblies, constants, domain }) => {
       routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
       publisher: {},
       assemblies,
-      domainInterop: await initDomain(domain),
+      domainInterop,
+      eventListeners: gatherEventListeners(domain, domainInterop),
     }
 
     log.debug('preparing performance tracer')

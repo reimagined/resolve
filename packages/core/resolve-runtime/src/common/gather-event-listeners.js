@@ -1,14 +1,12 @@
-export default () => `
-  import '$resolve.guardOnlyServer'
-  import { initDomain } from 'resolve-runtime-interop'
-  import readModels from '$resolve.readModels'
-  import sagas from '$resolve.sagas'
-
-  const { 
-    sagaDomain: { 
-      getSchedulersNamesBySagas, schedulerInvariantHash, schedulerEventTypes 
-    } 
-  } = initDomain({ sagas })
+const gatherEventListeners = (domain, domainInterop) => {
+  const { sagas, readModels } = domain
+  const {
+    sagaDomain: {
+      getSchedulersNamesBySagas,
+      schedulerInvariantHash,
+      schedulerEventTypes,
+    },
+  } = domainInterop
   const eventListeners = new Map()
 
   for (const { name, projection, invariantHash, connectorName } of readModels) {
@@ -17,7 +15,7 @@ export default () => `
       eventTypes: Object.keys(projection),
       invariantHash,
       connectorName,
-      isSaga: false
+      isSaga: false,
     })
   }
 
@@ -27,19 +25,21 @@ export default () => `
       eventTypes: Object.keys(handlers),
       invariantHash,
       connectorName,
-      isSaga: true
+      isSaga: true,
     })
   }
 
-  for(const schedulerName of getSchedulersNamesBySagas()) {
-    eventListeners.set(\`\${schedulerName}\`, {
-      name: \`\${schedulerName}\`,
+  for (const schedulerName of getSchedulersNamesBySagas()) {
+    eventListeners.set(`${schedulerName}`, {
+      name: `${schedulerName}`,
       eventTypes: Object.values(schedulerEventTypes),
       invariantHash: schedulerInvariantHash,
       connectorName: schedulerName.connectorName,
-      isSaga: true
+      isSaga: true,
     })
   }
 
-  export default eventListeners
-`
+  return eventListeners
+}
+
+export default gatherEventListeners

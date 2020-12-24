@@ -11,11 +11,14 @@ import emptyWorker from './empty-worker'
 import wrapTrie from '../common/wrap-trie'
 import initUploader from './init-uploader'
 import initScheduler from './init-scheduler'
+import gatherEventListeners from '../common/gather-event-listeners'
 
 const log = debugLevels('resolve:resolve-runtime:local-entry')
 
 const localEntry = async ({ assemblies, constants, domain }) => {
   try {
+    const domainInterop = await initDomain(domain)
+
     const resolve = {
       instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,
       seedClientEnvs: assemblies.seedClientEnvs,
@@ -24,7 +27,8 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       ...constants,
       routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
       assemblies,
-      domainInterop: await initDomain(domain),
+      domainInterop,
+      eventListeners: gatherEventListeners(domain, domainInterop),
     }
 
     await initPerformanceTracer(resolve)
