@@ -1,6 +1,6 @@
 import StepFunctions from 'aws-sdk/clients/stepfunctions'
 import debugLevels from 'resolve-debug-levels'
-import { schedulerName } from 'resolve-saga'
+import { schedulerName } from '../common/saga/index'
 
 const getLog = (name) => debugLevels(`resolve:cloud:scheduler:${name}`)
 

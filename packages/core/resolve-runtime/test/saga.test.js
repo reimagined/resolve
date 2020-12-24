@@ -1,7 +1,7 @@
 import createSagaExecutor, {
   schedulerName,
   schedulerEventTypes,
-} from '../src/index'
+} from 'resolve-runtime/src/common/saga'
 
 jest.mock('uuid', () => ({
   v4: jest.fn(() => 'guid'),

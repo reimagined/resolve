@@ -20,7 +20,7 @@ const wrapSagaMiddleware = (sagaMiddleware: any): any => {
     const client = getClient(context.resolveContext)
     const queryIdMap = new Map()
 
-    const backCompatibleArgs = {
+    const backCompatibleArgs: { resolveContext?: any } = {
       ...context,
       ...context.resolveContext,
     }

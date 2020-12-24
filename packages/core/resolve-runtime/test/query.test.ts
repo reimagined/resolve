@@ -1,4 +1,4 @@
-import createQuery from '../src'
+import createQuery from '../../resolve-runtime/src/common/query'
 import { IS_BUILT_IN, SecretsManager } from 'resolve-core'
 
 type State = {

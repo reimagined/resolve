@@ -1,6 +1,6 @@
 import createCommandExecutor from 'resolve-command'
-import createQueryExecutor from 'resolve-query'
-import createSagaExecutor from 'resolve-saga'
+import createQueryExecutor from '../common/query/index'
+import createSagaExecutor from '../common/saga/index'
 import crypto from 'crypto'
 
 import createOnCommandExecuted from './on-command-executed'

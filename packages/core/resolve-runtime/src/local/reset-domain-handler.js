@@ -6,7 +6,7 @@ import {
   PublisherResourceAlreadyExistError,
   PublisherResourceNotExistError,
 } from 'resolve-local-event-broker'
-import { getSchedulersNamesBySagas } from 'resolve-saga'
+import { getSchedulersNamesBySagas } from '../common/saga/index'
 
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 

@@ -1,3 +1,4 @@
+// FIXME: replace with import from resolve-runtime-interop
 import { getSchedulersNamesBySagas } from 'resolve-saga'
 
 import wrapApiHandler from './wrap-api-handler'

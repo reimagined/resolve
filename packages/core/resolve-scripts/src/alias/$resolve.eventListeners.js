@@ -1,3 +1,4 @@
+// FIXME: deal with resolve-saga import - import all (except schedulerInvariantHash - its missed) from resolve-runtime-interop
 export default () => `
   import '$resolve.guardOnlyServer'
   import { schedulerEventTypes, schedulerInvariantHash, getSchedulersNamesBySagas } from 'resolve-saga'
