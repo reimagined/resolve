@@ -1,5 +1,5 @@
 ---
-id: manage-aplication
+id: manage-application
 title: Manage a ReSolve Application
 ---
 
