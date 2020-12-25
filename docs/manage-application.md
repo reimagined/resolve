@@ -40,7 +40,7 @@ The **resolve-module-admin** tool communicates with API handlers exposed by a re
 yarn resolve-module-admin read-models reset ShoppingList
 ```
 
-The default URL that **resolve-module-admin** uses to access a reSolve application's API is `http://localhost:3000/api`. Use the `--api-url` option to specify other URL:
+The default URL that **resolve-module-admin** uses to access a reSolve application's API is `http://localhost:3000/api`. Use the `--api-url` option to specify another URL:
 
 ```bash
 yarn resolve-module-admin --api-url "https://127.0.0.1:2000/api" read-models reset ShoppingList
