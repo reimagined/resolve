@@ -1,4 +1,4 @@
-import { IS_BUILT_IN } from 'resolve-core'
+import { IS_BUILT_IN, Monitoring } from 'resolve-core'
 
 export type CreateQueryOptions = {
   invokeEventBusAsync: Function
@@ -9,7 +9,7 @@ export type CreateQueryOptions = {
   eventstoreAdapter: any
   getVacantTimeInMillis: any
   performAcknowledge: any
-  onError?: (error: Error, part: string) => Promise<void>
+  monitoring?: Monitoring
 }
 
 type WrapModelOptions = Omit<
@@ -60,7 +60,7 @@ export type ReadModelPool = {
   invokeEventBusAsync: Function
   performAcknowledge: Function
   getVacantTimeInMillis: Function
-  onError: (error: Error, part: string) => Promise<void>
+  monitoring?: Monitoring
 }
 
 export type ViewModelMeta = {
@@ -79,7 +79,7 @@ export type ViewModelPool = {
   getSecretsManager: Function
   performanceTracer: any
   isDisposed: boolean
-  onError: (error: Error, part: string) => Promise<void>
+  monitoring?: Monitoring
 }
 
 export type BuildViewModelQuery = {

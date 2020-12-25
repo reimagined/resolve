@@ -1,11 +1,15 @@
+import wrapApiHandler from './wrap-api-handler'
+
 const setProperty = async (req, res) => {
-  let { listenerId, key, value } = req.query
+  let { eventSubscriber, key, value } = req.query
   await req.resolve.eventBus.setProperty({
-    eventSubscriber: listenerId,
+    eventSubscriber,
     key: String(key),
     value: String(value),
   })
-  res.end(`ListenerId = "${listenerId}", Key = "${key}", Value = "${value}"`)
+  res.end(
+    `EventSubscriber = "${eventSubscriber}", Key = "${key}", Value = "${value}"`
+  )
 }
 
-export default setProperty
+export default wrapApiHandler(setProperty)

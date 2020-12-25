@@ -26,10 +26,10 @@ const loadEventsByTimestamp = async (
     queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
   if (startTime != null) {
-    queryConditions.push(`"startTime" >= ${injectNumber(startTime)}`)
+    queryConditions.push(`"timestamp" >= ${injectNumber(startTime)}`)
   }
   if (finishTime != null) {
-    queryConditions.push(`"finishTime" <= ${injectNumber(finishTime)}`)
+    queryConditions.push(`"timestamp" <= ${injectNumber(finishTime)}`)
   }
 
   const resultQueryCondition =
