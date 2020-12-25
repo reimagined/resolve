@@ -14,7 +14,7 @@ You can use **npx** to run this tool without installation or install it as an ap
 
 ## Installation
 
-Use the steps bellow to add the **resolve-module-admin** tool to a reSolve application.
+Use the steps below to add the **resolve-module-admin** tool to a reSolve application.
 
 1. Install the [resolve-module-admin](https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-admin#readme) NPM package:
 
