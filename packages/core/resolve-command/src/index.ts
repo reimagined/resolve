@@ -570,7 +570,10 @@ const executeCommand = async (
       }
     })()
 
-    return processedEvent
+    return {
+      payload: null,
+      ...processedEvent,
+    }
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
