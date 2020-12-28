@@ -1,7 +1,7 @@
 import createCommand from 'resolve-command'
 import createQuery from '../query/index'
 
-import createSchedulerSagas from './create-scheduler-sagas'
+//import createSchedulerSagas from './create-scheduler-sagas'
 import wrapRegularSagas from './wrap-regular-sagas'
 
 const createSaga = ({
@@ -95,10 +95,14 @@ const createSaga = ({
     schedulerName: sagaDomain.schedulerName,
     sagaProvider,
   })
-  const schedulerSagas = createSchedulerSagas({
-    sagaProvider,
+
+  const schedulerSagas = sagaDomain.createSchedulersSagas({
+    eventProperties: sagaProvider.eventProperties,
+    executeCommand: sagaProvider.executeCommand,
+    executeQuery: sagaProvider.executeQuery,
+    getSecretsManager: sagaProvider.getSecretsManager,
+    uploader: sagaProvider.uploader,
     scheduler,
-    ...sagaDomain,
   })
 
   const sagasAsReadModels = [...regularSagas, ...schedulerSagas].map(

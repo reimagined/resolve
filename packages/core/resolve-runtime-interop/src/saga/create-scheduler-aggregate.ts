@@ -1,17 +1,4 @@
-import { AggregateMeta } from '../types'
-
-type SchedulerEventTypes = {
-  SCHEDULED_COMMAND_CREATED: string
-  SCHEDULED_COMMAND_EXECUTED: string
-  SCHEDULED_COMMAND_SUCCEEDED: string
-  SCHEDULED_COMMAND_FAILED: string
-}
-
-export type SchedulerAggregateBuilder = (params: {
-  schedulerName: string
-  schedulerEventTypes: SchedulerEventTypes
-  schedulerInvariantHash: string
-}) => AggregateMeta
+import { SchedulerAggregateBuilder } from './types'
 
 export const createSchedulerAggregate: SchedulerAggregateBuilder = ({
   schedulerName,

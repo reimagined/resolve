@@ -1,20 +1,6 @@
-import {
-  createSchedulerAggregate,
-  SchedulerAggregateBuilder,
-} from './create-scheduler-aggregate'
-
-type SchedulerInfo = {
-  name: string
-  connectorName: string
-}
-
-export type SagaDomain = {
-  schedulerName: string
-  schedulerEventTypes: { [key: string]: string }
-  schedulerInvariantHash: string
-  getSagasSchedulersInfo: () => SchedulerInfo[]
-  createSchedulerAggregate: SchedulerAggregateBuilder
-}
+import { createSchedulerAggregate } from './create-scheduler-aggregate'
+import { SagaDomain, SchedulerInfo } from './types'
+import { createSchedulersSagas } from './create-schedulers-sagas'
 
 const schedulerName = '_SCHEDULER_'
 const schedulerEventTypes = {
@@ -24,7 +10,8 @@ const schedulerEventTypes = {
   SCHEDULED_COMMAND_FAILED: `_RESOLVE_SYS_SCHEDULED_COMMAND_FAILED_`,
 }
 const schedulerInvariantHash = 'scheduler-invariant-hash' // FIXME: does it belongs to the package
-const getSagasSchedulersInfo = (sagas: any[]) => {
+
+const getSagasSchedulersInfo = (sagas: any[]): SchedulerInfo[] => {
   if (!Array.isArray(sagas)) {
     throw new Error(`Sagas ${sagas} is not array`)
   }
@@ -38,15 +25,22 @@ const getSagasSchedulersInfo = (sagas: any[]) => {
 }
 
 export const initSagaDomain = (sagas: any[]): SagaDomain => {
+  const appliedGetSagasSchedulerInfo = getSagasSchedulersInfo.bind(null, sagas)
+
   return {
     schedulerName,
     schedulerEventTypes,
     schedulerInvariantHash,
-    getSagasSchedulersInfo: getSagasSchedulersInfo.bind(null, sagas),
+    getSagasSchedulersInfo: appliedGetSagasSchedulerInfo,
     createSchedulerAggregate: createSchedulerAggregate.bind(null, {
       schedulerName,
       schedulerEventTypes,
       schedulerInvariantHash,
+    }),
+    createSchedulersSagas: createSchedulersSagas.bind(null, {
+      getSagasSchedulersInfo: appliedGetSagasSchedulerInfo,
+      schedulerName,
+      schedulerEventTypes,
     }),
   }
 }

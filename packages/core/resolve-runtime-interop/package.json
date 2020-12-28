@@ -24,6 +24,7 @@
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
+    "resolve-debug-levels": "0.26.4",
     "resolve-core": "0.26.4"
   },
   "devDependencies": {
