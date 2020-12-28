@@ -1,6 +1,7 @@
 import { createSchedulerAggregate } from './create-scheduler-aggregate'
 import { SagaDomain, SchedulerInfo } from './types'
 import { createSchedulersSagas } from './create-schedulers-sagas'
+import { createApplicationSagas } from './create-application-sagas'
 
 const schedulerName = '_SCHEDULER_'
 const schedulerEventTypes = {
@@ -41,6 +42,10 @@ export const initSagaDomain = (sagas: any[]): SagaDomain => {
       getSagasSchedulersInfo: appliedGetSagasSchedulerInfo,
       schedulerName,
       schedulerEventTypes,
+    }),
+    createApplicationSagas: createApplicationSagas.bind(null, {
+      sagas,
+      schedulerName,
     }),
   }
 }

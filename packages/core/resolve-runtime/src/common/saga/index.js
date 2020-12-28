@@ -79,7 +79,7 @@ const createSaga = ({
     return await executeQuery(options)
   }
 
-  const sagaProvider = Object.create(Object.prototype, {
+  const runtime = Object.create(Object.prototype, {
     executeCommand: { get: () => executeCommandOrScheduler, enumerable: true },
     executeQuery: { get: () => executeDirectQuery, enumerable: true },
     eventProperties: { get: () => eventProperties, enumerable: true },
@@ -90,20 +90,8 @@ const createSaga = ({
     uploader: { get: () => uploader, enumerable: true },
   })
 
-  const regularSagas = wrapRegularSagas({
-    sagas,
-    schedulerName: sagaDomain.schedulerName,
-    sagaProvider,
-  })
-
-  const schedulerSagas = sagaDomain.createSchedulersSagas({
-    eventProperties: sagaProvider.eventProperties,
-    executeCommand: sagaProvider.executeCommand,
-    executeQuery: sagaProvider.executeQuery,
-    getSecretsManager: sagaProvider.getSecretsManager,
-    uploader: sagaProvider.uploader,
-    scheduler,
-  })
+  const regularSagas = sagaDomain.createApplicationSagas(runtime)
+  const schedulerSagas = sagaDomain.createSchedulersSagas(runtime)
 
   const sagasAsReadModels = [...regularSagas, ...schedulerSagas].map(
     (saga) => ({

@@ -12,13 +12,14 @@ const sagaEventHandler = async (
 ) => {
   const log = getLog(`saga-event-handler`)
 
-  log.debug(`preparing saga event [${eventType}] handler`)
   const eventProperties = sagaProvider.eventProperties
-  const isEnabled = !isNaN(
-    +eventProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
-  )
-    ? +eventProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <= +event.timestamp
-    : true
+  log.debug(`preparing saga event [${eventType}] handler`)
+  const isEnabled =
+    !isNaN(+eventProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP) &&
+    event != null
+      ? +eventProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <=
+        +event.timestamp
+      : true
 
   log.verbose(
     `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: ${+eventProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP}`

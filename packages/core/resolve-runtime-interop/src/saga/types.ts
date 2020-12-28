@@ -60,6 +60,14 @@ export type SchedulersSagasBuilder = (
   runtime: SagaRuntime
 ) => any[]
 
+export type ApplicationSagasBuilder = (
+  domain: {
+    schedulerName: string
+    sagas: any[]
+  },
+  runtime: SagaRuntime
+) => any[]
+
 export type SagaDomain = {
   schedulerName: string
   schedulerEventTypes: { [key: string]: string }
@@ -67,6 +75,7 @@ export type SagaDomain = {
   getSagasSchedulersInfo: () => SchedulerInfo[]
   createSchedulerAggregate: () => AggregateMeta
   createSchedulersSagas: (runtime: SagaRuntime) => any[]
+  createApplicationSagas: (runtime: SagaRuntime) => any[]
 }
 
 export type SagaEventHandler<TSideEffects extends SideEffectsCollection> = (
@@ -80,5 +89,3 @@ export type SagaEventHandler<TSideEffects extends SideEffectsCollection> = (
 export type SagaHandlers<TSideEffects extends SideEffectsCollection> = {
   [key: string]: SagaEventHandler<TSideEffects>
 }
-
-

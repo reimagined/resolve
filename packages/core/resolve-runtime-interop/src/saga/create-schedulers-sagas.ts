@@ -135,6 +135,7 @@ export const createSchedulersSagas: SchedulersSagasBuilder = (
       )
       acc[eventType] = createEventHandler(
         runtime,
+        eventType,
         handlers[eventType],
         runtime.scheduler,
         () => {

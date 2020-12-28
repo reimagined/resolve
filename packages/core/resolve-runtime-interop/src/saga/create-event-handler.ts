@@ -5,12 +5,12 @@ import { SagaRuntime, SideEffectsCollection, SystemSideEffects } from './types'
 
 export const createEventHandler = (
   runtime: SagaRuntime,
+  eventType: string,
   handler: Function,
   sideEffects: SideEffectsCollection,
   scheduleCommand: Function
 ) => async (store: any, event: Event): Promise<void> => {
   const log = getLog(`saga-event-handler`)
-  const { type: eventType } = event
 
   log.debug(`preparing saga event [${eventType}] handler`)
   const sagaProperties = runtime.eventProperties
