@@ -45,15 +45,11 @@ export type SchedulerEventTypes = {
   SCHEDULED_COMMAND_FAILED: string
 }
 
-export type SchedulerAggregateBuilder = (params: {
-  schedulerName: string
-  schedulerEventTypes: SchedulerEventTypes
-  schedulerInvariantHash: string
-}) => AggregateMeta
+export type SchedulerAggregateBuilder = () => AggregateMeta
 
 export type SchedulersSagasBuilder = (
   domain: {
-    getSagasSchedulersInfo: () => SchedulerInfo[]
+    schedulersInfo: SchedulerInfo[]
     schedulerName: string
     schedulerEventTypes: SchedulerEventTypes
   },
@@ -73,9 +69,8 @@ export type SagaDomain = {
   schedulerEventTypes: { [key: string]: string }
   schedulerInvariantHash: string
   getSagasSchedulersInfo: () => SchedulerInfo[]
-  createSchedulerAggregate: () => AggregateMeta
-  createSchedulersSagas: (runtime: SagaRuntime) => any[]
-  createApplicationSagas: (runtime: SagaRuntime) => any[]
+  createSchedulerAggregate: SchedulerAggregateBuilder
+  createSagas: (runtime: SagaRuntime) => any[]
 }
 
 export type SagaEventHandler<TSideEffects extends SideEffectsCollection> = (

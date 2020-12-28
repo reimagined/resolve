@@ -115,10 +115,10 @@ const createSchedulerSagaHandlers = ({
 })
 
 export const createSchedulersSagas: SchedulersSagasBuilder = (
-  { getSagasSchedulersInfo, schedulerName, schedulerEventTypes },
+  { schedulersInfo, schedulerName, schedulerEventTypes },
   runtime
 ): any[] =>
-  getSagasSchedulersInfo().map(({ name, connectorName }) => {
+  schedulersInfo.map(({ name, connectorName }) => {
     const handlers = createSchedulerSagaHandlers({
       schedulerAggregateName: schedulerName,
       commandsTableName: schedulerName,

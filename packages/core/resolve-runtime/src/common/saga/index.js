@@ -87,10 +87,7 @@ const createSaga = ({
     scheduler: { get: () => scheduler, enumerable: true },
   })
 
-  const regularSagas = sagaDomain.createApplicationSagas(runtime)
-  const schedulerSagas = sagaDomain.createSchedulersSagas(runtime)
-
-  const sagasAsReadModels = [...regularSagas, ...schedulerSagas].map(
+  const sagasAsReadModels = [...sagaDomain.createSagas(runtime)].map(
     (saga) => ({
       provideLedger: async (inlineLedger) => {
         eventProperties = inlineLedger.Properties
