@@ -17,7 +17,7 @@ export type Event = {
   timestamp: number
   aggregateId: string
   aggregateVersion: number
-  payload?: SerializableMap
+  payload?: any
 }
 
 // Encryption
@@ -57,14 +57,14 @@ export type Command = {
   type: string
   aggregateId: string
   aggregateName: string
-  payload?: SerializableMap
+  payload: any
   jwt?: string
   jwtToken?: string // deprecated
 }
 
 export type CommandResult = {
   type: string
-  payload?: SerializableMap
+  payload: any
   timestamp?: number
   aggregateId?: string
   aggregateVersion?: number

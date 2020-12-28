@@ -1,3 +1,8 @@
+import {
+  createSchedulerAggregate,
+  SchedulerAggregateBuilder,
+} from './create-scheduler-aggregate'
+
 type SchedulerInfo = {
   name: string
   connectorName: string
@@ -8,6 +13,7 @@ export type SagaDomain = {
   schedulerEventTypes: { [key: string]: string }
   schedulerInvariantHash: string
   getSagasSchedulersInfo: () => SchedulerInfo[]
+  createSchedulerAggregate: SchedulerAggregateBuilder
 }
 
 const schedulerName = '_SCHEDULER_'
@@ -37,5 +43,10 @@ export const initSagaDomain = (sagas: any[]): SagaDomain => {
     schedulerEventTypes,
     schedulerInvariantHash,
     getSagasSchedulersInfo: getSagasSchedulersInfo.bind(null, sagas),
+    createSchedulerAggregate: createSchedulerAggregate.bind(null, {
+      schedulerName,
+      schedulerEventTypes,
+      schedulerInvariantHash,
+    }),
   }
 }

@@ -1,4 +1,19 @@
-const createSchedulerAggregate = ({
+import { AggregateMeta } from '../types'
+
+type SchedulerEventTypes = {
+  SCHEDULED_COMMAND_CREATED: string
+  SCHEDULED_COMMAND_EXECUTED: string
+  SCHEDULED_COMMAND_SUCCEEDED: string
+  SCHEDULED_COMMAND_FAILED: string
+}
+
+export type SchedulerAggregateBuilder = (params: {
+  schedulerName: string
+  schedulerEventTypes: SchedulerEventTypes
+  schedulerInvariantHash: string
+}) => AggregateMeta
+
+export const createSchedulerAggregate: SchedulerAggregateBuilder = ({
   schedulerName,
   schedulerEventTypes: {
     SCHEDULED_COMMAND_CREATED,
@@ -16,7 +31,7 @@ const createSchedulerAggregate = ({
         payload: {
           date,
           command: { aggregateId, aggregateName, type, payload = {} },
-        },
+        } = {},
       }
     ) => {
       if (
@@ -106,14 +121,13 @@ const createSchedulerAggregate = ({
   serializeState: JSON.stringify.bind(JSON),
   deserializeState: JSON.parse.bind(JSON),
   invariantHash: schedulerInvariantHash,
-  encryption: () => ({
-    encrypt: () => {
-      throw Error(`encryption disabled, please check your configuration`)
-    },
-    decrypt: () => {
-      throw Error(`encryption disabled, please check your configuration`)
-    },
-  }),
+  encryption: () =>
+    Promise.resolve({
+      encrypt: () => {
+        throw Error(`encryption disabled, please check your configuration`)
+      },
+      decrypt: () => {
+        throw Error(`encryption disabled, please check your configuration`)
+      },
+    }),
 })
-
-export default createSchedulerAggregate

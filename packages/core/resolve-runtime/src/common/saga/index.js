@@ -1,7 +1,6 @@
 import createCommand from 'resolve-command'
 import createQuery from '../query/index'
 
-import createSchedulerAggregate from './create-scheduler-aggregate'
 import createSchedulerSagas from './create-scheduler-sagas'
 import wrapRegularSagas from './wrap-regular-sagas'
 
@@ -35,7 +34,7 @@ const createSaga = ({
       : monitoring
 
   const executeScheduleCommand = createCommand({
-    aggregates: [createSchedulerAggregate(sagaDomain)],
+    aggregates: [sagaDomain.createSchedulerAggregate()],
     onCommandExecuted,
     eventstoreAdapter,
     monitoring,

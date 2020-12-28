@@ -1,4 +1,4 @@
-import { initSagaDomain, SagaDomain } from './saga'
+import { initSagaDomain, SagaDomain } from './saga/saga'
 
 type Domain = {
   sagaDomain: SagaDomain
