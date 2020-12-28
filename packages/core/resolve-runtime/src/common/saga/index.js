@@ -1,14 +1,10 @@
 import createCommand from 'resolve-command'
 import createQuery from '../query/index'
 
-//import createSchedulerSagas from './create-scheduler-sagas'
-import wrapRegularSagas from './wrap-regular-sagas'
-
 const createSaga = ({
   invokeEventBusAsync,
   onCommandExecuted,
   readModelConnectors,
-  sagas,
   executeCommand,
   executeQuery,
   performanceTracer,
@@ -88,6 +84,7 @@ const createSaga = ({
       enumerable: true,
     },
     uploader: { get: () => uploader, enumerable: true },
+    scheduler: { get: () => scheduler, enumerable: true },
   })
 
   const regularSagas = sagaDomain.createApplicationSagas(runtime)

@@ -118,16 +118,15 @@ export const createSchedulersSagas: SchedulersSagasBuilder = (
   { getSagasSchedulersInfo, schedulerName, schedulerEventTypes },
   runtime
 ): any[] =>
-  getSagasSchedulersInfo().map((currentScheduler) => {
+  getSagasSchedulersInfo().map(({ name, connectorName }) => {
     const handlers = createSchedulerSagaHandlers({
       schedulerAggregateName: schedulerName,
       commandsTableName: schedulerName,
       eventTypes: schedulerEventTypes,
     })
 
-    const eventTypes = Object.keys(handlers)
     // FIXME: replace with read model handler type
-    const projection = eventTypes.reduce<{
+    const projection = Object.keys(handlers).reduce<{
       [key: string]: (store: any, event: Event) => Promise<void>
     }>((acc, eventType) => {
       log.debug(
@@ -147,10 +146,10 @@ export const createSchedulersSagas: SchedulersSagasBuilder = (
     }, {})
 
     return {
-      name: `${currentScheduler.name}`,
+      name,
       projection,
       resolvers: {},
-      connectorName: currentScheduler.connectorName,
+      connectorName,
       encryption: () => Promise.resolve({}),
     }
   })
