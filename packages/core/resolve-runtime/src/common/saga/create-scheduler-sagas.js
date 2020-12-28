@@ -103,7 +103,7 @@ const createSchedulerSagaHandlers = ({
 })
 
 const createSchedulerSagas = ({
-  getSchedulersNamesBySagas,
+  getSagasSchedulersInfo,
   schedulerName,
   schedulerEventTypes,
   sagaProvider,
@@ -111,7 +111,7 @@ const createSchedulerSagas = ({
 }) => {
   const sagaReadModels = []
 
-  for (const currentSchedulerName of getSchedulersNamesBySagas()) {
+  for (const currentScheduler of getSagasSchedulersInfo()) {
     const handlers = createSchedulerSagaHandlers({
       schedulerAggregateName: schedulerName,
       commandsTableName: schedulerName,
@@ -136,10 +136,10 @@ const createSchedulerSagas = ({
     }, {})
 
     const sagaReadModel = {
-      name: `${currentSchedulerName}`,
+      name: `${currentScheduler.name}`,
       projection,
       resolvers: {},
-      connectorName: currentSchedulerName.connectorName,
+      connectorName: currentScheduler.connectorName,
       encryption: () => Promise.resolve({}),
     }
 

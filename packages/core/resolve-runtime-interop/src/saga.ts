@@ -1,8 +1,13 @@
+type SchedulerInfo = {
+  name: string
+  connectorName: string
+}
+
 export type SagaDomain = {
   schedulerName: string
   schedulerEventTypes: { [key: string]: string }
   schedulerInvariantHash: string
-  getSchedulersNamesBySagas: () => any[]
+  getSagasSchedulersInfo: () => SchedulerInfo[]
 }
 
 const schedulerName = '_SCHEDULER_'
@@ -13,24 +18,17 @@ const schedulerEventTypes = {
   SCHEDULED_COMMAND_FAILED: `_RESOLVE_SYS_SCHEDULED_COMMAND_FAILED_`,
 }
 const schedulerInvariantHash = 'scheduler-invariant-hash' // FIXME: does it belongs to the package
-const getSchedulersNamesBySagas = (sagas: any) => {
+const getSagasSchedulersInfo = (sagas: any[]) => {
   if (!Array.isArray(sagas)) {
     throw new Error(`Sagas ${sagas} is not array`)
   }
-  const uniqueSagaConnectorsNames = Array.from(
-    new Set(sagas.map((saga) => saga.connectorName))
-  )
-  const schedulersNames = []
-  for (const connectorName of uniqueSagaConnectorsNames) {
-    // eslint-disable-next-line no-new-wrappers
-    const currentSchedulerName = new String(
-      `${schedulerName}${connectorName}`
-    ) as any
-    currentSchedulerName.connectorName = connectorName
-    schedulersNames.push(currentSchedulerName)
-  }
 
-  return schedulersNames
+  return Array.from(new Set(sagas.map((saga) => saga.connectorName))).map(
+    (connectorName) => ({
+      name: schedulerName,
+      connectorName,
+    })
+  )
 }
 
 export const initSagaDomain = (sagas: any[]): SagaDomain => {
@@ -38,6 +36,6 @@ export const initSagaDomain = (sagas: any[]): SagaDomain => {
     schedulerName,
     schedulerEventTypes,
     schedulerInvariantHash,
-    getSchedulersNamesBySagas: getSchedulersNamesBySagas.bind(null, sagas),
+    getSagasSchedulersInfo: getSagasSchedulersInfo.bind(null, sagas),
   }
 }

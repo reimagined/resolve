@@ -2,7 +2,7 @@ const gatherEventListeners = (domain, domainInterop) => {
   const { sagas, readModels } = domain
   const {
     sagaDomain: {
-      getSchedulersNamesBySagas,
+      getSagasSchedulersInfo,
       schedulerInvariantHash,
       schedulerEventTypes,
     },
@@ -29,12 +29,12 @@ const gatherEventListeners = (domain, domainInterop) => {
     })
   }
 
-  for (const schedulerName of getSchedulersNamesBySagas()) {
-    eventListeners.set(`${schedulerName}`, {
-      name: `${schedulerName}`,
+  for (const scheduler of getSagasSchedulersInfo()) {
+    eventListeners.set(scheduler.name, {
+      name: scheduler.name,
       eventTypes: Object.values(schedulerEventTypes),
       invariantHash: schedulerInvariantHash,
-      connectorName: schedulerName.connectorName,
+      connectorName: scheduler.connectorName,
       isSaga: true,
     })
   }

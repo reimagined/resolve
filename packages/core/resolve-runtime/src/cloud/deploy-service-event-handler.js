@@ -10,8 +10,8 @@ const getReadModelNames = (resolve) =>
 
 const getSagaNames = (resolve) => [
   ...resolve.domainInterop.sagaDomain
-    .getSchedulersNamesBySagas()
-    .map((schedulerName) => `${schedulerName}`),
+    .getSagasSchedulersInfo()
+    .map((scheduler) => scheduler.name),
   ...resolve.sagas.map(({ name }) => name),
 ]
 

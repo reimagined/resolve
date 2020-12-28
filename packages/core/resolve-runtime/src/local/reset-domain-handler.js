@@ -46,8 +46,8 @@ const resetDomainHandler = (options) => async (req, res) => {
 
     if (dropSagas) {
       for (const { name } of [
-        ...sagaDomain.getSchedulersNamesBySagas().map((schedulerName) => ({
-          name: `${schedulerName}`,
+        ...sagaDomain.getSagasSchedulersInfo().map(({ name }) => ({
+          name,
         })),
         ...sagas,
       ]) {
