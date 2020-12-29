@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 
-type Coercer = (
+export type Coercer = (
   value: {
     intValue: number
     stringValue: string
@@ -15,8 +15,26 @@ type Coercer = (
 type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
-export type AdapterPool = {
+export type AdminPool = {
   config?: {
+    dbClusterOrInstanceArn: string
+    awsSecretStoreArn: string
+    databaseName: string
+    eventsTableName: string
+    secretsTableName: string
+    snapshotsTableName: string
+    region?: string
+  }
+  RdsDataService?: RDSDataService
+  escapeId?: EscapeFunction
+  escape?: EscapeFunction
+  fullJitter?: FullJitter
+  executeStatement?: (sql: string) => Promise<any[]>
+  coercer?: Coercer
+}
+
+export type AdapterPool = {
+  config: {
     dbClusterOrInstanceArn: string
     awsSecretStoreArn: string
     databaseName: string
@@ -26,19 +44,28 @@ export type AdapterPool = {
     region?: string
     snapshotBucketSize?: number
   }
-  rdsDataService?: typeof RDSDataService
-  dbClusterOrInstanceArn?: string
-  awsSecretStoreArn?: string
-  databaseName?: string
-  eventsTableName?: string
-  secretsTableName?: string
-  snapshotsTableName?: string
-  fullJitter?: FullJitter
-  coercer?: Coercer
-  executeStatement?: (sql: string) => Promise<any[] | null>
-  escapeId?: EscapeFunction
-  escape?: EscapeFunction
-  bucketSize?: number
+  coerceEmptyString: (obj: any, fallback?: string) => string
+  rdsDataService: RDSDataService
+  dbClusterOrInstanceArn: string
+  awsSecretStoreArn: string
+  databaseName: string
+  eventsTableName: string
+  secretsTableName: string
+  snapshotsTableName: string
+  fullJitter: FullJitter
+  coercer: Coercer
+  executeStatement: (sql: string) => Promise<any[]>
+  escapeId: EscapeFunction
+  escape: EscapeFunction
+  bucketSize: number
+  shapeEvent: (event: any, additionalFields?: any) => any[]
+  isTimeoutError: (error: any) => boolean
+  beginTransaction: (pool: AdapterPool) => Promise<any>
+  commitTransaction: (pool: AdapterPool, transactionId: string) => Promise<void>
+  rollbackTransaction: (
+    pool: AdapterPool,
+    transactionId: string
+  ) => Promise<void>
 }
 
 export type AdapterSpecific = {
@@ -46,7 +73,16 @@ export type AdapterSpecific = {
   fullJitter: FullJitter
   escapeId: EscapeFunction
   escape: EscapeFunction
-  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[] | null>
+  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[]>
+  coercer: Coercer
+}
+
+export type CloudAdapterSpecific = {
+  RDSDataService: typeof RDSDataService
+  fullJitter: FullJitter
+  escapeId: EscapeFunction
+  escape: EscapeFunction
+  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[]>
   coercer: Coercer
 }
 
@@ -57,13 +93,13 @@ export type CloudResource = {
 }
 
 export type CloudResourcePool = {
-  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[] | null>
+  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[]>
   RDSDataService: typeof RDSDataService
   escapeId: EscapeFunction
   escape: EscapeFunction
   fullJitter: FullJitter
   coercer: Coercer
-  shapeEvent: (data: any) => any
+  shapeEvent: (event: any, additionalFields?: any) => any[]
   connect: (pool: AdapterPool, specific: AdapterSpecific) => Promise<any>
   dispose: (pool: AdapterPool) => Promise<any>
 }

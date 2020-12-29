@@ -3,7 +3,34 @@
 exports[`secrets store dropped: drop table with keys 1`] = `
 Array [
   Array [
-    "DROP TABLE IF EXISTS \\"secrets-table-escaped\\"",
+    Object {
+      "config": Object {
+        "databaseFile": "database-file",
+        "eventsTableName": "table-name",
+        "secretsTableName": "secrets-table",
+        "snapshotsTableName": "snapshots-table-name",
+      },
+      "database": Object {
+        "exec": [Function],
+      },
+      "escapeId": [Function],
+      "memoryStore": Object {},
+    },
+  ],
+  Array [
+    Object {
+      "config": Object {
+        "databaseFile": "database-file",
+        "eventsTableName": "table-name",
+        "secretsTableName": "secrets-table",
+        "snapshotsTableName": "snapshots-table-name",
+      },
+      "database": Object {
+        "exec": [Function],
+      },
+      "escapeId": [Function],
+      "memoryStore": Object {},
+    },
   ],
 ]
 `;

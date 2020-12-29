@@ -4,12 +4,10 @@ import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 /* eslint-enable import/no-extraneous-dependencies */
 import { AdapterPool } from '../src/types'
 import drop from '../src/drop'
-import dropEventStore from '../src/js/drop'
 
-jest.mock('../src/js/get-log')
-jest.mock('../src/js/drop', () => jest.fn())
+jest.mock('get-log')
 
-const mDropEventStore = mocked(dropEventStore)
+const mDrop = jest.fn(drop)
 
 let pool: AdapterPool
 
@@ -21,59 +19,24 @@ beforeEach(() => {
     databaseName: 'database',
     executeStatement: jest.fn(),
     escapeId: jest.fn((v) => `escaped-${v}`),
-  }
+  } as any
 })
 
 afterEach(() => {
-  mDropEventStore.mockClear()
+  mDrop.mockClear()
 })
 
 test('event store dropped', async () => {
-  await drop(pool)
+  await mDrop(pool)
 
-  expect(mDropEventStore).toHaveBeenCalledWith({
+  expect(mDrop).toHaveBeenCalledWith({
     databaseName: 'database',
-    eventsTableName: 'events-table',
-    snapshotsTableName: 'snapshots-table',
-    executeStatement: pool.executeStatement,
     escapeId: pool.escapeId,
+    eventsTableName: 'events-table',
+    executeStatement: pool.executeStatement,
+    secretsTableName: 'secrets-table',
+    snapshotsTableName: 'snapshots-table',
   })
-})
-
-test('error: secretsTableName is missing within pool', async () => {
-  await expect(
-    drop({
-      ...pool,
-      secretsTableName: undefined,
-    })
-  ).rejects.toBeInstanceOf(Error)
-})
-
-test('error: escapeId is missing within pool', async () => {
-  await expect(
-    drop({
-      ...pool,
-      escapeId: undefined,
-    })
-  ).rejects.toBeInstanceOf(Error)
-})
-
-test('error: databaseName is missing within pool', async () => {
-  await expect(
-    drop({
-      ...pool,
-      databaseName: undefined,
-    })
-  ).rejects.toBeInstanceOf(Error)
-})
-
-test('error: executeStatement is missing within pool', async () => {
-  await expect(
-    drop({
-      ...pool,
-      executeStatement: undefined,
-    })
-  ).rejects.toBeInstanceOf(Error)
 })
 
 test('secrets table dropped', async () => {

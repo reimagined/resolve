@@ -4,7 +4,7 @@ import { mocked } from 'ts-jest/utils'
 /* eslint-disable import/no-extraneous-dependencies */
 import { AdapterPool, AdapterSpecific } from '../src/types'
 import connect from '../src/connect'
-import executeStatement from '../src/js/execute-statement'
+import executeStatement from '../src/execute-statement'
 
 const mPostgres = mocked(Postgres)
 
@@ -16,7 +16,7 @@ beforeEach(() => {
     config: {
       user: 'user',
       database: 'database',
-      port: 'port',
+      port: 1234,
       host: 'host',
       password: 'password',
       databaseName: 'database-name',
@@ -24,7 +24,8 @@ beforeEach(() => {
       snapshotsTableName: 'snapshots-table-name',
       secretsTableName: 'secrets-table-name',
     },
-  }
+    coerceEmptyString: (obj: any, fallback?: string) => obj,
+  } as any
   specific = {
     Postgres,
     coercer: jest.fn(),
@@ -46,9 +47,15 @@ test('credentials passed to postgres client', async () => {
       connectionTimeoutMillis: 45000,
       database: 'database',
       host: 'host',
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      idle_in_transaction_session_timeout: 45000,
       keepAlive: false,
       password: 'password',
-      port: 'port',
+      port: 1234,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      query_timeout: 45000,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      statement_timeout: 45000,
       user: 'user',
     })
   )

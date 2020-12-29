@@ -1,30 +1,92 @@
-import { EventstoreResourceAlreadyExistError } from './js/base-imports'
-import getLog from './js/get-log'
-import initEventStore from './js/init'
+import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
+import getLog from './get-log'
 import { AdapterPool } from './types'
 import {
-  aggregateIdSqlType,
   longNumberSqlType,
   longStringSqlType,
-} from './js/constants'
+  customObjectSqlType,
+  mediumBlobSqlType,
+  longBlobSqlType,
+  aggregateIdSqlType,
+} from './constants'
 
-const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
+const init = async (pool: AdapterPool): Promise<any> => {
+  const log = getLog('init')
+  log.debug('initializing databases')
   const {
-    secrets: { database, tableName, connection },
+    eventsTableName,
+    snapshotsTableName,
+    secretsTableName,
     escapeId,
+    connection,
+    database,
   } = pool
-  const log = getLog('initSecretsStore')
 
-  log.verbose(`tableName: ${tableName}`)
-  log.verbose(`database: ${database}`)
+  const eventsTableNameAsId = escapeId(eventsTableName)
+  const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
+  const snapshotsTableNameAsId = escapeId(snapshotsTableName)
+  const secretsTableNameAsId = escapeId(secretsTableName)
 
-  log.debug(`initializing secrets store database tables`)
+  log.debug(`building a query`)
+  let query = `CREATE TABLE ${eventsTableNameAsId}(
+        \`threadId\` ${longNumberSqlType},
+        \`threadCounter\` ${longNumberSqlType},
+        \`timestamp\` ${longNumberSqlType},
+        \`aggregateId\` ${aggregateIdSqlType},
+        \`aggregateVersion\` ${longNumberSqlType},
+        \`type\` ${longStringSqlType},
+        \`payload\` ${customObjectSqlType},
+        PRIMARY KEY(\`threadId\`, \`threadCounter\`),
+        UNIQUE KEY \`aggregate\`(\`aggregateId\`, \`aggregateVersion\`),
+        INDEX USING BTREE(\`aggregateId\`),
+        INDEX USING BTREE(\`aggregateVersion\`),
+        INDEX USING BTREE(\`type\`),
+        INDEX USING BTREE(\`timestamp\`)
+      );
+      
+      CREATE TABLE ${threadsTableNameAsId}(
+        \`threadId\` ${longNumberSqlType},
+        \`threadCounter\` ${longNumberSqlType},
+        PRIMARY KEY(\`threadId\`)
+      );
+      
+      CREATE TABLE ${snapshotsTableNameAsId} (
+        \`SnapshotKey\` ${mediumBlobSqlType},
+        \`SnapshotContent\` ${longBlobSqlType},
+        PRIMARY KEY(\`SnapshotKey\`(255))
+      );
+  
+      INSERT INTO ${threadsTableNameAsId}(
+        \`threadId\`,
+        \`threadCounter\`
+      ) VALUES ${Array.from(new Array(256))
+        .map((_, index) => `(${index}, 0)`)
+        .join(',')}
+      ;`
 
-  const secretsTableNameAsId = escapeId(tableName)
+  try {
+    log.debug(`executing query`)
+    log.verbose(query)
+    await connection.query(query)
+    log.debug(`query executed successfully`)
+  } catch (error) {
+    if (error) {
+      let errorToThrow = error
+      if (/Table.*? already exists$/i.test(error.message)) {
+        errorToThrow = new EventstoreResourceAlreadyExistError(
+          `duplicate initialization of the mysql adapter with same events database "${database}" and table "${eventsTableName}" not allowed`
+        )
+      } else {
+        log.error(errorToThrow.message)
+        log.verbose(errorToThrow.stack)
+      }
+      throw errorToThrow
+    }
+  }
 
   log.debug(`building a query`)
 
-  const query = `CREATE TABLE ${secretsTableNameAsId}(
+  query = `CREATE TABLE ${secretsTableNameAsId}(
         \`idx\` ${longNumberSqlType},
         \`id\` ${aggregateIdSqlType},
         \`secret\` ${longStringSqlType},
@@ -41,7 +103,7 @@ const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
       let errorToThrow = error
       if (/Table.*? already exists$/i.test(error.message)) {
         errorToThrow = new EventstoreResourceAlreadyExistError(
-          `duplicate initialization of the mysql adapter with same secrets database "${database}" and table "${tableName}" not allowed`
+          `duplicate initialization of the mysql adapter with same secrets database "${database}" and table "${secretsTableNameAsId}" not allowed`
         )
       } else {
         log.error(errorToThrow.message)
@@ -50,18 +112,8 @@ const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
       throw errorToThrow
     }
   }
-  log.debug(`secrets store database tables are initialized`)
-}
 
-const init = async (pool: AdapterPool): Promise<any> => {
-  const log = getLog('init')
-  log.debug('initializing databases')
-  const result = await Promise.all([
-    initEventStore(pool),
-    initSecretsStore(pool),
-  ])
   log.debug('databases are initialized')
-  return result
 }
 
 export default init

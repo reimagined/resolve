@@ -1,27 +1,32 @@
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
-import getLog from './js/get-log'
-import initEventStore from './js/init'
+import getLog from './get-log'
 import { AdapterPool } from './types'
-import { AGGREGATE_ID_SQL_TYPE } from './js/constants'
+import {
+  AGGREGATE_ID_SQL_TYPE,
+  INT8_SQL_TYPE,
+  JSON_SQL_TYPE,
+  LONG_NUMBER_SQL_TYPE,
+  LONG_STRING_SQL_TYPE,
+  TEXT_SQL_TYPE,
+} from './constants'
 
-const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
-  const { secretsTableName, escapeId, databaseName, executeStatement } = pool
+const init = async ({
+  databaseName,
+  secretsTableName,
+  eventsTableName,
+  snapshotsTableName,
+  executeStatement,
+  escapeId,
+}: AdapterPool): Promise<void> => {
   const log = getLog('initSecretsStore')
-
-  if (!secretsTableName || !escapeId || !databaseName || !executeStatement) {
-    const error = Error(`adapter pool was not initialized properly!`)
-    log.error(error.message)
-    log.verbose(error.stack || error.message)
-    throw error
-  }
 
   log.debug(`initializing secrets store database tables`)
   log.verbose(`secretsTableName: ${secretsTableName}`)
   log.verbose(`databaseName: ${databaseName}`)
 
-  const databaseNameAsId = escapeId(databaseName)
-  const secretsTableNameAsId = escapeId(secretsTableName)
-  const globalIndexName = escapeId(`${secretsTableName}-global`)
+  const databaseNameAsId: string = escapeId(databaseName)
+  const secretsTableNameAsId: string = escapeId(secretsTableName)
+  const globalIndexName: string = escapeId(`${secretsTableName}-global`)
 
   try {
     await executeStatement(
@@ -49,36 +54,84 @@ const initSecretsStore = async (pool: AdapterPool): Promise<any> => {
   }
 
   log.debug(`secrets store database tables are initialized`)
-}
 
-const init = async (pool: AdapterPool): Promise<any> => {
-  const log = getLog('init')
-  log.debug('initializing databases')
+  const eventsTableNameAsId: string = escapeId(eventsTableName)
+  const threadsTableNameAsId: string = escapeId(`${eventsTableName}-threads`)
+  const snapshotsTableNameAsId: string = escapeId(snapshotsTableName)
 
-  const {
-    databaseName,
-    eventsTableName,
-    snapshotsTableName,
-    executeStatement,
-    escapeId,
-  } = pool
+  const aggregateIdAndVersionIndexName: string = escapeId(
+    `${eventsTableName}-aggregateIdAndVersion`
+  )
+  const aggregateIndexName: string = escapeId(`${eventsTableName}-aggregateId`)
+  const aggregateVersionIndexName: string = escapeId(
+    `${eventsTableName}-aggregateVersion`
+  )
+  const typeIndexName: string = escapeId(`${eventsTableName}-type`)
+  const timestampIndexName: string = escapeId(`${eventsTableName}-timestamp`)
 
-  const createInitEventStorePromise = (): Promise<any> =>
-    initEventStore({
-      databaseName,
-      eventsTableName,
-      snapshotsTableName,
-      executeStatement,
-      escapeId,
-    })
+  try {
+    await executeStatement(
+      `CREATE TABLE ${databaseNameAsId}.${eventsTableNameAsId}(
+        "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+        "threadCounter" ${INT8_SQL_TYPE} NOT NULL,
+        "timestamp" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+        "aggregateId" ${AGGREGATE_ID_SQL_TYPE} NOT NULL,
+        "aggregateVersion" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+        "type" ${LONG_STRING_SQL_TYPE} NOT NULL,
+        "payload" ${JSON_SQL_TYPE},
+        "eventSize" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+        PRIMARY KEY("threadId", "threadCounter")
+      );
+      
+      CREATE UNIQUE INDEX ${aggregateIdAndVersionIndexName}
+      ON ${databaseNameAsId}.${eventsTableNameAsId}
+      USING BTREE("aggregateId", "aggregateVersion");
+      
+      CREATE INDEX ${aggregateIndexName}
+      ON ${databaseNameAsId}.${eventsTableNameAsId}
+      USING BTREE("aggregateId");
+      
+      CREATE INDEX ${aggregateVersionIndexName}
+      ON ${databaseNameAsId}.${eventsTableNameAsId}
+      USING BTREE("aggregateVersion");
+      
+      CREATE INDEX ${typeIndexName}
+      ON ${databaseNameAsId}.${eventsTableNameAsId}
+      USING BTREE("type");
+      
+      CREATE INDEX ${timestampIndexName}
+      ON ${databaseNameAsId}.${eventsTableNameAsId}
+      USING BTREE("timestamp");
+      
+      CREATE TABLE ${databaseNameAsId}.${snapshotsTableNameAsId} (
+        "snapshotKey" ${TEXT_SQL_TYPE} NOT NULL,
+        "snapshotContent" ${TEXT_SQL_TYPE},
+        PRIMARY KEY("snapshotKey")
+      );
 
-  const result = await Promise.all([
-    createInitEventStorePromise(),
-    initSecretsStore(pool),
-  ])
+      CREATE TABLE ${databaseNameAsId}.${threadsTableNameAsId}(
+        "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+        "threadCounter" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+      PRIMARY KEY("threadId")
+      );
 
-  log.debug('databases are initialized')
-  return result
+      INSERT INTO ${databaseNameAsId}.${threadsTableNameAsId}(
+        "threadId",
+        "threadCounter"
+      ) VALUES ${Array.from(new Array(256))
+        .map((_, index) => `(${index}, 0)`)
+        .join(',')}
+      ;`
+    )
+  } catch (error) {
+    if (error != null && `${error.code}` === '42P07') {
+      throw new EventstoreResourceAlreadyExistError(
+        `Double-initialize storage-postgresql adapter via "${databaseName}" failed`
+      )
+    } else {
+      throw error
+    }
+  }
 }
 
 export default init

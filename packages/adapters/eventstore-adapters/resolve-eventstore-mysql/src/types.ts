@@ -1,4 +1,4 @@
-type MySQLConnection = {
+export type MySQLConnection = {
   execute: (sql: string) => Promise<never>
   query: (sql: string) => Promise<Array<Array<any>>>
   end: () => Promise<never>
@@ -12,24 +12,19 @@ export type AdapterPool = {
     database: string
     eventsTableName: string
     snapshotsTableName: string
-    secretsDatabase?: string
     secretsTableName?: string
     snapshotBucketSize?: string
   }
-  events: {
-    connection: MySQLConnection
-    eventsTableName: string
-    snapshotsTableName: string
-    database: string
-  }
-  secrets: {
-    connection: MySQLConnection
-    tableName: string
-    database: string
-  }
+  coerceEmptyString: (obj: any, fallback?: string) => string
+  connection: MySQLConnection
+  eventsTableName: string
+  snapshotsTableName: string
+  secretsTableName: string
+  database: string
   escapeId: (val: string) => string
   escape: (val: string) => string
   MySQL: MySQLLib
+  shapeEvent: (event: any) => any
 }
 
 export type AdapterSpecific = {

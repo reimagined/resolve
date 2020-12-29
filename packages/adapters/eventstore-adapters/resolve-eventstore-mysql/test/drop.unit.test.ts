@@ -1,18 +1,11 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import MySQL from 'mysql2/promise'
-import { mocked } from 'ts-jest/utils'
-/* eslint-enable import/no-extraneous-dependencies */
-
 import { AdapterPool } from '../src/types'
 import drop from '../src/drop'
-import dropEventStore from '../src/js/drop'
 
-jest.mock('../src/js/get-log')
-jest.mock('../src/js/drop', () => jest.fn())
+jest.mock('../src/get-log')
+const mDrop = jest.fn(drop)
 
-const mDropEventStore = mocked(dropEventStore)
 const connection = {
-  execute: jest.fn(),
+  execute: jest.fn((sql: string) => Promise.resolve(sql)),
   query: jest.fn(),
   end: jest.fn(),
 }
@@ -28,36 +21,33 @@ beforeEach(() => {
       secretsDatabase: 'secrets-database',
       secretsTableName: 'secrets-table-name',
     },
-    events: {
-      connection: MySQL.connection,
-      eventsTableName: '',
-      snapshotsTableName: '',
-      database: '',
-    },
-    secrets: {
-      connection,
-      tableName: 'secrets-database',
-      database: 'secrets-table-name',
+    connection: {
+      execute: jest.fn((sql: string) => Promise.resolve(sql)),
+      query: jest.fn((sql: any) => Promise.resolve(sql)),
+      end: jest.fn(() => Promise.resolve()),
     },
     escape: jest.fn((v: any) => `"${v}-escaped"`),
     escapeId: jest.fn((v: any) => `"${v}-escaped-id"`),
-    MySQL,
-  }
+    MySQL: {
+      // eslint-disable-next-line @typescript-eslint/camelcase,spellcheck/spell-checker
+      createconnection: jest.fn((options: any) => connection),
+    },
+  } as any
 })
 
 afterEach(() => {
-  mDropEventStore.mockClear()
+  mDrop.mockClear()
   connection.execute.mockClear()
 })
 
 test('event store dropped', async () => {
-  await drop(pool)
+  await mDrop(pool)
 
-  expect(mDropEventStore).toHaveBeenCalledWith(pool)
+  expect(mDrop).toHaveBeenCalledWith(pool)
 })
 
 test('secrets store dropped', async () => {
-  await drop(pool)
+  await mDrop(pool)
 
   expect(connection.execute.mock.calls).toMatchSnapshot('drop table with keys')
 })
