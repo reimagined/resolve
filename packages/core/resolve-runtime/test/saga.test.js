@@ -1,7 +1,4 @@
-import createSagaExecutor, {
-  schedulerName,
-  schedulerEventTypes,
-} from 'resolve-runtime/src/common/saga'
+import createSagaExecutor from 'resolve-runtime/src/common/saga'
 
 jest.mock('uuid', () => ({
   v4: jest.fn(() => 'guid'),
@@ -79,18 +76,23 @@ test('resolve-saga', async () => {
     })
   })
 
-  const sagas = [
-    {
-      name: 'test-saga',
-      connectorName: 'default-connector',
-      handlers: {
-        EVENT_TYPE: eventHandler,
-        Init: jest.fn(),
-      },
-      invariantHash: 'invariantHash',
-      encryption: jest.fn(() => ({})),
+  const domainInterop = {
+    sagaDomain: {
+      createSagas: jest.fn(() => [
+        {
+          name: 'test-saga',
+          connectorName: 'default-connector',
+          handlers: {
+            EVENT_TYPE: eventHandler,
+            Init: jest.fn(),
+          },
+          invariantHash: 'invariantHash',
+          encryption: jest.fn(() => ({})),
+        },
+      ]),
+      createSchedulerAggregate: jest.fn(),
     },
-  ]
+  }
 
   const onCommandExecuted = jest.fn().mockImplementation(async () => {})
   const getVacantTimeInMillis = () => 0x7fffffff
@@ -102,10 +104,10 @@ test('resolve-saga', async () => {
     snapshotAdapter,
     executeCommand,
     executeQuery,
-    sagas,
     performAcknowledge,
     onCommandExecuted,
     scheduler,
+    domainInterop,
   })
 
   const properties = {
@@ -135,54 +137,7 @@ test('resolve-saga', async () => {
     properties,
   })
 
-  const schedulerModelName = `${schedulerName}default-connector`
-  await sagaExecutor.sendEvents({
-    modelName: schedulerModelName,
-    events: [{ type: 'Init' }],
-    getVacantTimeInMillis: () => remainingTime,
-    properties,
-  })
-
-  await sagaExecutor.sendEvents({
-    modelName: schedulerModelName,
-    events: [
-      {
-        type: schedulerEventTypes.SCHEDULED_COMMAND_CREATED,
-        aggregateId: 'guid',
-        payload: {
-          date: 100500,
-          command: {
-            aggregateName: 'Test',
-            aggregateId: 'scheduledId',
-            type: 'scheduledCommand',
-            payload: 'scheduledCommand',
-          },
-        },
-      },
-      {
-        type: schedulerEventTypes.SCHEDULED_COMMAND_EXECUTED,
-        aggregateId: 'guid',
-        payload: {
-          aggregateName: 'Test',
-          aggregateId: 'scheduledId',
-          type: 'scheduledCommand',
-          payload: 'scheduledCommand',
-        },
-      },
-      {
-        type: schedulerEventTypes.SCHEDULED_COMMAND_SUCCEEDED,
-      },
-      {
-        type: schedulerEventTypes.SCHEDULED_COMMAND_FAILED,
-      },
-    ],
-    getVacantTimeInMillis: () => remainingTime,
-    properties,
-  })
-
   await sagaExecutor.drop({ modelName: 'test-saga' })
-
-  await sagaExecutor.drop({ modelName: schedulerModelName })
 
   await sagaExecutor.dispose()
 
