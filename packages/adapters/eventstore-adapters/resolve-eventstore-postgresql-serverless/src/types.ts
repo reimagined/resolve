@@ -54,7 +54,7 @@ export type AdapterPool = {
   snapshotsTableName: string
   fullJitter: FullJitter
   coercer: Coercer
-  executeStatement: (sql: string) => Promise<any[]>
+  executeStatement: (sql: any, transactionId?: string) => Promise<any[]>
   escapeId: EscapeFunction
   escape: EscapeFunction
   bucketSize: number

@@ -43,7 +43,8 @@ const saveSnapshot = async (
             await executeStatement(
               `UPDATE ${databaseNameAsId}.${snapshotsTableNameAsId}
             SET "snapshotContent" = "snapshotContent" || ${escape(chunk)}
-            WHERE "snapshotKey" = ${escape(snapshotKey)}`
+            WHERE "snapshotKey" = ${escape(snapshotKey)}`,
+              transactionId
             )
           } else {
             await executeStatement(
@@ -53,7 +54,8 @@ const saveSnapshot = async (
             )
             VALUES(${escape(snapshotKey)}, ${escape(chunk)})
             ON CONFLICT ("snapshotKey") DO UPDATE
-            SET "snapshotContent" = ${escape(chunk)}`
+            SET "snapshotContent" = ${escape(chunk)}`,
+              transactionId
             )
           }
         }

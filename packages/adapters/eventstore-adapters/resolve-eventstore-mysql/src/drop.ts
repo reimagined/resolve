@@ -14,6 +14,8 @@ const drop = async (pool: AdapterPool): Promise<any> => {
     escapeId,
   } = pool
 
+  log.verbose(`secretsTableName: ${secretsTableName}`)
+
   const eventsTableNameAsId: string = escapeId(eventsTableName)
   const freezeTableNameAsId: string = escapeId(`${eventsTableName}-freeze`)
   const threadsTableNameAsId: string = escapeId(`${eventsTableName}-threads`)
@@ -25,14 +27,18 @@ const drop = async (pool: AdapterPool): Promise<any> => {
     `DROP TABLE ${threadsTableNameAsId}`,
     `DROP TABLE ${eventsTableNameAsId}`,
     `DROP TABLE ${snapshotsTableNameAsId}`,
-    `DROP TABLE IF EXISTS ${secretsTableNameAsId}`,
+    `DROP TABLE ${secretsTableNameAsId}`,
+    `DROP TABLE  ${escapeId(secretsTableName)}`,
   ]
 
   const errors: any[] = []
 
   for (const statement of statements) {
     try {
+      log.debug(`executing query`)
+      log.verbose(statement)
       await connection.execute(statement)
+      log.debug(`query executed successfully`)
     } catch (error) {
       if (error != null) {
         if (/Unknown table/i.test(error.message)) {
@@ -51,6 +57,8 @@ const drop = async (pool: AdapterPool): Promise<any> => {
   if (errors.length > 0) {
     throw new Error(errors.map((error) => error.stack).join(EOL))
   }
+
+  log.debug(`the event store dropped`)
 }
 
 export default drop

@@ -16,7 +16,10 @@ beforeEach(() => {
     },
     database: { exec: (e: any) => e },
     escapeId: (e: any) => e,
-    memoryStore: {},
+    memoryStore: {
+      name: '',
+      drop: jest.fn(),
+    }
   } as any
 })
 

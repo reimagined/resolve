@@ -14,7 +14,35 @@ Array [
         "exec": [Function],
       },
       "escapeId": [Function],
-      "memoryStore": Object {},
+      "memoryStore": Object {
+        "drop": [MockFunction] {
+          "calls": Array [
+            Array [],
+            Array [],
+            Array [],
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        },
+        "name": "",
+      },
     },
   ],
   Array [
@@ -29,7 +57,35 @@ Array [
         "exec": [Function],
       },
       "escapeId": [Function],
-      "memoryStore": Object {},
+      "memoryStore": Object {
+        "drop": [MockFunction] {
+          "calls": Array [
+            Array [],
+            Array [],
+            Array [],
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        },
+        "name": "",
+      },
     },
   ],
 ]

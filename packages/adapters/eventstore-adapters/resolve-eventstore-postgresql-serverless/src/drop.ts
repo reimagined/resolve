@@ -21,34 +21,6 @@ const drop = async ({
   const globalIndexName: string = escapeId(`${secretsTableName}-global`)
   const databaseNameAsId: string = escapeId(databaseName)
 
-  let statements: string[] = [
-    `DROP TABLE ${databaseNameAsId}.${secretsTableNameAsId}`,
-    `DROP INDEX IF EXISTS ${databaseNameAsId}.${globalIndexName}`,
-  ]
-
-  let errors: any[] = []
-
-  for (const statement of statements) {
-    try {
-      await executeStatement(statement)
-    } catch (error) {
-      if (error != null) {
-        log.error(error.message)
-        log.verbose(error.stack)
-        if (/Table.*? does not exist$/i.test(error.message)) {
-          throw new EventstoreResourceNotExistError(
-            `duplicate event store resource drop detected`
-          )
-        }
-        errors.push(error)
-      }
-    }
-  }
-
-  if (errors.length > 0) {
-    throw new Error(errors.map((error) => error.stack).join(EOL))
-  }
-
   log.debug(`secrets store database tables and indices are dropped`)
 
   const eventsTableNameAsId: string = escapeId(eventsTableName)
@@ -66,7 +38,10 @@ const drop = async ({
   const typeIndexName: string = escapeId(`${eventsTableName}-type`)
   const timestampIndexName: string = escapeId(`${eventsTableName}-timestamp`)
 
-  statements = [
+  const statements: string[] = [
+    `DROP TABLE ${databaseNameAsId}.${secretsTableNameAsId}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${globalIndexName}`,
+
     `DROP TABLE ${databaseNameAsId}.${eventsTableNameAsId}`,
 
     `DROP INDEX IF EXISTS ${databaseNameAsId}.${aggregateIdAndVersionIndexName}`,
@@ -81,11 +56,14 @@ const drop = async ({
 
     `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`,
   ]
-  errors = []
+  const errors: any[] = []
 
   for (const statement of statements) {
     try {
+      log.debug(`executing query`)
+      log.verbose(statement)
       await executeStatement(statement)
+      log.debug(`query executed successfully`)
     } catch (error) {
       if (error != null) {
         if (/Table.*? does not exist$/i.test(error.message)) {
@@ -104,6 +82,8 @@ const drop = async ({
   if (errors.length > 0) {
     throw new Error(errors.map((error) => error.stack).join(EOL))
   }
+
+  log.debug(`the event store dropped`)
 }
 
 export default drop
