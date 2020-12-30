@@ -14,9 +14,11 @@ const createSaga = ({
   performAcknowledge,
   scheduler,
   monitoring,
-  domainInterop: { sagaDomain },
+  domainInterop,
 }) => {
   let eventProperties = {}
+
+  const { sagaDomain } = domainInterop
 
   const sagaMonitoring =
     monitoring != null
@@ -106,6 +108,7 @@ const createSaga = ({
     performAcknowledge,
     eventstoreAdapter,
     monitoring: sagaMonitoring,
+    domainInterop,
   })
 
   const sendEvents = async ({

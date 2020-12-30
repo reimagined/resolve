@@ -2,6 +2,7 @@ import { EOL } from 'os'
 // TODO: core cannot reference "top-level" packages, move these to resolve-core
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
 import { SecretsManager, makeMonitoringSafe, Monitoring } from 'resolve-core'
+import { ReadModelInterop } from 'resolve-runtime-interop'
 
 import getLog from './get-log'
 
@@ -401,16 +402,18 @@ const sendEvents = async (
 
 const read = async (
   pool: ReadModelPool,
+  interop: ReadModelInterop,
   { jwt, ...params }: any
 ): Promise<any> => {
-  const { eventstoreAdapter, isDisposed, readModel, performanceTracer } = pool
-  const readModelName = readModel.name
+  const { isDisposed, performanceTracer } = pool
 
-  const [resolverName, resolverArgs] = parseReadOptions(params)
+  const readModelName = interop.name
 
   if (isDisposed) {
     throw new Error(`Read model "${readModelName}" is disposed`)
   }
+
+  const [resolverName, resolverArgs] = parseReadOptions(params)
 
   const segment = performanceTracer ? performanceTracer.getSegment() : null
   const subSegment = segment ? segment.addNewSubsegment('read') : null
@@ -425,62 +428,10 @@ const read = async (
     if (isDisposed) {
       throw new Error(`Read model "${readModelName}" is disposed`)
     }
-    if (typeof pool.readModel.resolvers[resolverName] !== 'function') {
-      const error = new Error(
-        `Resolver "${resolverName}" does not exist`
-      ) as any
-      error.code = 422
-      await pool.monitoring?.error?.(error, 'readModelResolver', {
-        readModelName,
-        resolverName,
-      })
-      throw error
-    }
-
-    return await wrapConnection(
-      pool,
-      async (connection: any): Promise<any> => {
-        const segment = performanceTracer
-          ? performanceTracer.getSegment()
-          : null
-        const subSegment = segment ? segment.addNewSubsegment('resolver') : null
-
-        if (subSegment != null) {
-          subSegment.addAnnotation('readModelName', readModelName)
-          subSegment.addAnnotation('resolverName', resolverName)
-          subSegment.addAnnotation('origin', 'resolve:query:resolver')
-        }
-
-        try {
-          return {
-            data: await readModel.resolvers[resolverName](
-              connection,
-              resolverArgs,
-              {
-                secretsManager:
-                  typeof eventstoreAdapter.getSecretsManager === 'function'
-                    ? await eventstoreAdapter.getSecretsManager()
-                    : null,
-                jwt,
-              }
-            ),
-          }
-        } catch (error) {
-          if (subSegment != null) {
-            subSegment.addError(error)
-          }
-          await pool.monitoring?.error?.(error, 'readModelResolver', {
-            readModelName,
-            resolverName,
-          })
-          throw error
-        } finally {
-          if (subSegment != null) {
-            subSegment.close()
-          }
-        }
-      }
-    )
+    const resolver = await interop.acquireResolver(resolverName, resolverArgs, {
+      jwt,
+    })
+    return await wrapConnection(pool, resolver)
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
@@ -787,6 +738,7 @@ const wrapProjectionHandler = <T extends Array<any>>(
 
 const wrapReadModel = ({
   readModel,
+  interop,
   readModelConnectors,
   eventstoreAdapter,
   invokeEventBusAsync,
@@ -839,7 +791,7 @@ const wrapReadModel = ({
   }
 
   const api = {
-    read: read.bind(null, pool),
+    read: read.bind(null, pool, interop),
     sendEvents: sendEvents.bind(null, pool),
     serializeState: serializeState.bind(null, pool),
     drop: drop.bind(null, pool),

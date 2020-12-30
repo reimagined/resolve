@@ -57,13 +57,27 @@ const createQuery = (params: CreateQueryOptions): any => {
     [key: string]: any
   } = {}
 
+  const { acquireReadModelsInterop } = params.domainInterop.readModelDomain
+
+  const readModelsInterop = acquireReadModelsInterop({
+    getSecretsManager: params.eventstoreAdapter.getSecretsManager,
+    monitoring: {
+      error: params.monitoring?.error,
+      performance: params.performanceTracer,
+    },
+  })
+
   const { readModels, viewModels, ...imports } = params
 
   for (const readModel of readModels) {
     if (models[readModel.name] != null) {
       throw new Error(`Duplicate name for read model: "${readModel.name}"`)
     }
-    models[readModel.name] = wrapReadModel({ readModel, ...imports })
+    models[readModel.name] = wrapReadModel({
+      readModel,
+      interop: readModelsInterop[readModel.name],
+      ...imports,
+    })
   }
 
   for (const viewModel of viewModels) {

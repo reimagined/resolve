@@ -74,6 +74,7 @@ const initResolve = async (resolve) => {
     getVacantTimeInMillis,
     performAcknowledge,
     monitoring,
+    domainInterop,
   })
 
   const executeSaga = createSagaExecutor({
