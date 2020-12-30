@@ -139,7 +139,7 @@ A request body should have the `application/json` content type and contain a JSO
   "type": "createShoppingList",
   "aggregateId": "shopping-list-1",
   "payload": {
-    "text": "Item 1"
+    "name": "Shopping List 1"
   }
 }
 ```
