@@ -16,7 +16,7 @@ export type ReadModelResolverParams = {
 }
 export type ReadModelResolverContext = {
   jwt?: string
-  secretsManager?: SecretsManager
+  secretsManager: SecretsManager | null
 }
 export type ReadModelResolver = (
   connection: any,
@@ -24,7 +24,10 @@ export type ReadModelResolver = (
   context: ReadModelResolverContext
 ) => Promise<any>
 
-export type ReadModelRuntimeResolver = (connection: any) => Promise<any>
+export type ReadModelRuntimeResolver = (
+  connection: any,
+  secretsManager: SecretsManager | null
+) => Promise<any>
 
 export type ReadModelResolverMap = {
   [key: string]: ReadModelResolver
@@ -69,7 +72,6 @@ export type PerformanceTracer = {
 
 export type ReadModelRuntime = {
   monitoring: Monitoring
-  getSecretsManager: () => Promise<SecretsManager>
 }
 
 export type ReadModelInterop = {

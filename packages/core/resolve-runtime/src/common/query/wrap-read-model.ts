@@ -11,9 +11,11 @@ import parseReadOptions from './parse-read-options'
 
 const wrapConnection = async (
   pool: ReadModelPool,
+  interop: ReadModelInterop,
   callback: Function
 ): Promise<any> => {
-  const readModelName = pool.readModel.name
+  console.log(interop)
+  const readModelName = interop.name
   const log = getLog(`wrapConnection:${readModelName}`)
   log.debug(`establishing connection`)
   const connection = await pool.connector.connect(readModelName)
@@ -148,6 +150,7 @@ const serializeError = (
 
 const sendEvents = async (
   pool: ReadModelPool,
+  interop: ReadModelInterop,
   {
     batchId,
     xaTransactionId,
@@ -226,6 +229,7 @@ const sendEvents = async (
 
     await wrapConnection(
       pool,
+      interop,
       async (connection: any, secretsManager: SecretsManager): Promise<any> => {
         const log = getLog(`readModel:wrapConnection`)
         log.debug(
@@ -405,7 +409,7 @@ const read = async (
   interop: ReadModelInterop,
   { jwt, ...params }: any
 ): Promise<any> => {
-  const { isDisposed, performanceTracer } = pool
+  const { isDisposed, performanceTracer, monitoring } = pool
 
   const readModelName = interop.name
 
@@ -431,13 +435,13 @@ const read = async (
     const resolver = await interop.acquireResolver(resolverName, resolverArgs, {
       jwt,
     })
-    return await wrapConnection(pool, resolver)
+    return await wrapConnection(pool, interop, resolver)
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
     }
 
-    await pool.monitoring?.error?.(error, 'readModelResolver', {
+    await monitoring?.error?.(error, 'readModelResolver', {
       readModelName,
       resolverName,
     })
@@ -460,9 +464,13 @@ const doOperation = async (
   operationName: string,
   prepareArguments: Function | null,
   pool: ReadModelPool,
+  interop: ReadModelInterop,
   parameters: any
 ): Promise<any> => {
-  const readModelName = pool.readModel.name
+  if (!interop) {
+    console.log(operationName)
+  }
+  const readModelName = interop.name
 
   if (pool.isDisposed) {
     throw new Error(`read-model "${readModelName}" is disposed`)
@@ -472,6 +480,7 @@ const doOperation = async (
 
   await wrapConnection(
     pool,
+    interop,
     async (connection: any): Promise<any> => {
       const originalArgs = [connection, readModelName, parameters]
 
@@ -747,6 +756,10 @@ const wrapReadModel = ({
   performAcknowledge,
   monitoring,
 }: WrapReadModelOptions) => {
+  if (!interop) {
+    console.log('bad interop on wrap read model')
+  }
+
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
 
   log.debug(`wrapping read-model`)
@@ -792,10 +805,10 @@ const wrapReadModel = ({
 
   const api = {
     read: read.bind(null, pool, interop),
-    sendEvents: sendEvents.bind(null, pool),
-    serializeState: serializeState.bind(null, pool),
-    drop: drop.bind(null, pool),
-    dispose: dispose.bind(null, pool),
+    sendEvents: sendEvents.bind(null, pool, interop),
+    serializeState: serializeState.bind(null, pool, interop),
+    drop: drop.bind(null, pool, interop),
+    dispose: dispose.bind(null, pool, interop),
   }
 
   log.debug(`detecting connector features`)
@@ -809,24 +822,24 @@ const wrapReadModel = ({
     detectedFeatures === FULL_XA_CONNECTOR + FULL_REGULAR_CONNECTOR
   ) {
     Object.assign(api, {
-      beginXATransaction: beginXATransaction.bind(null, pool),
-      commitXATransaction: commitXATransaction.bind(null, pool),
-      rollbackXATransaction: rollbackXATransaction.bind(null, pool),
+      beginXATransaction: beginXATransaction.bind(null, pool, interop),
+      commitXATransaction: commitXATransaction.bind(null, pool, interop),
+      rollbackXATransaction: rollbackXATransaction.bind(null, pool, interop),
     })
   } else if (detectedFeatures === INLINE_LEDGER_CONNECTOR) {
     Object.assign(api, {
-      subscribe: subscribe.bind(null, pool),
-      unsubscribe: unsubscribe.bind(null, pool),
-      resubscribe: resubscribe.bind(null, pool),
-      deleteProperty: deleteProperty.bind(null, pool),
-      getProperty: getProperty.bind(null, pool),
-      listProperties: listProperties.bind(null, pool),
-      setProperty: setProperty.bind(null, pool),
-      resume: resume.bind(null, pool),
-      pause: pause.bind(null, pool),
-      reset: reset.bind(null, pool),
-      status: status.bind(null, pool),
-      build: build.bind(null, pool),
+      subscribe: subscribe.bind(null, pool, interop),
+      unsubscribe: unsubscribe.bind(null, pool, interop),
+      resubscribe: resubscribe.bind(null, pool, interop),
+      deleteProperty: deleteProperty.bind(null, pool, interop),
+      getProperty: getProperty.bind(null, pool, interop),
+      listProperties: listProperties.bind(null, pool, interop),
+      setProperty: setProperty.bind(null, pool, interop),
+      resume: resume.bind(null, pool, interop),
+      pause: pause.bind(null, pool, interop),
+      reset: reset.bind(null, pool, interop),
+      status: status.bind(null, pool, interop),
+      build: build.bind(null, pool, interop),
     })
   }
 

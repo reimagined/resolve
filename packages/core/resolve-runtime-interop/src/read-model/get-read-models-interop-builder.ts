@@ -7,7 +7,7 @@ import {
   ReadModelResolverMap,
   ReadModelInteropMap,
 } from './types'
-import { createHttpError, HttpStatusCodes } from 'resolve-core'
+import { createHttpError, HttpStatusCodes, SecretsManager } from 'resolve-core'
 import { getPerformanceTracerSubsegment } from '../utils'
 
 const makeResolverInvoker = (resolver: ReadModelResolver) => resolver
@@ -26,7 +26,7 @@ const getReadModelInterop = (
   runtime: ReadModelRuntime
 ): ReadModelInterop => {
   const { connectorName, name, resolvers } = readModel
-  const { monitoring, getSecretsManager } = runtime
+  const { monitoring } = runtime
 
   const resolverInvokerMap = Object.keys(resolvers).reduce<
     ReadModelResolverMap
@@ -55,7 +55,7 @@ const getReadModelInterop = (
       )
     }
 
-    return async (connection: any) => {
+    return async (connection: any, secretsManager: SecretsManager | null) => {
       const subSegment = getPerformanceTracerSubsegment(
         monitoring,
         'resolver',
@@ -69,7 +69,7 @@ const getReadModelInterop = (
       try {
         return {
           data: await invoker(connection, args, {
-            secretsManager: await getSecretsManager(),
+            secretsManager,
             jwt: context.jwt,
           }),
         }

@@ -1,6 +1,5 @@
 import { IS_BUILT_IN, Monitoring } from 'resolve-core'
-import { Domain } from 'resolve-runtime-interop'
-import { ReadModelInterop } from 'resolve-runtime-interop'
+import { ReadModelInterop, ReadModelInteropMap } from 'resolve-runtime-interop'
 
 export type CreateQueryOptions = {
   invokeEventBusAsync: Function
@@ -12,7 +11,7 @@ export type CreateQueryOptions = {
   getVacantTimeInMillis: any
   performAcknowledge: any
   monitoring?: Monitoring
-  domainInterop: Domain
+  modelsInteropMap: ReadModelInteropMap
 }
 
 type WrapModelOptions = Omit<

@@ -57,15 +57,7 @@ const createQuery = (params: CreateQueryOptions): any => {
     [key: string]: any
   } = {}
 
-  const { acquireReadModelsInterop } = params.domainInterop.readModelDomain
-
-  const readModelsInterop = acquireReadModelsInterop({
-    getSecretsManager: params.eventstoreAdapter.getSecretsManager,
-    monitoring: {
-      error: params.monitoring?.error,
-      performance: params.performanceTracer,
-    },
-  })
+  const interopMap = params.modelsInteropMap
 
   const { readModels, viewModels, ...imports } = params
 
@@ -75,7 +67,7 @@ const createQuery = (params: CreateQueryOptions): any => {
     }
     models[readModel.name] = wrapReadModel({
       readModel,
-      interop: readModelsInterop[readModel.name],
+      interop: interopMap[readModel.name],
       ...imports,
     })
   }

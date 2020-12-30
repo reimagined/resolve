@@ -1,6 +1,11 @@
 import { SagaDomain } from './saga/types'
 import { initSagaDomain } from './saga/saga'
-import { ReadModelDomain, ReadModelMeta, ReadModelInterop } from './read-model/types'
+import {
+  ReadModelDomain,
+  ReadModelMeta,
+  ReadModelInterop,
+  ReadModelInteropMap,
+} from './read-model/types'
 import { initReadModelDomain } from './read-model/read-model'
 
 export type Domain = {
@@ -18,4 +23,4 @@ const initDomain = (domainMeta: DomainMeta): Domain => ({
   readModelDomain: initReadModelDomain(domainMeta.readModels),
 })
 
-export { initDomain, ReadModelInterop }
+export { initDomain, ReadModelInterop, ReadModelInteropMap }

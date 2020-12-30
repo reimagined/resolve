@@ -74,7 +74,12 @@ const initResolve = async (resolve) => {
     getVacantTimeInMillis,
     performAcknowledge,
     monitoring,
-    domainInterop,
+    modelsInteropMap: domainInterop.readModelDomain.acquireReadModelsInterop({
+      monitoring: {
+        error: monitoring.error,
+        performance: performanceTracer,
+      },
+    }),
   })
 
   const executeSaga = createSagaExecutor({

@@ -7,6 +7,7 @@ import {
   schedulerInvariantHash,
   schedulerName,
 } from './constants'
+import { getReadModelsInteropBuilder } from '../read-model/get-read-models-interop-builder'
 
 const createSagaInfoFetcher = (sagas: any[]) => (): SchedulerInfo[] => {
   if (!Array.isArray(sagas)) {
@@ -43,5 +44,6 @@ export const initSagaDomain = (sagas: any[]): SagaDomain => {
     getSagasSchedulersInfo,
     createSchedulerAggregate,
     createSagas,
+    acquireSagasInterop: getReadModelsInteropBuilder()
   }
 }
