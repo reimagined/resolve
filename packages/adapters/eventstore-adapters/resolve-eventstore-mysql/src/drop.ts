@@ -1,5 +1,4 @@
 import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
-import { EOL } from 'os'
 import getLog from './get-log'
 import { AdapterPool } from './types'
 
@@ -54,9 +53,7 @@ const drop = async (pool: AdapterPool): Promise<any> => {
     }
   }
 
-  if (errors.length > 0) {
-    throw new Error(errors.map((error) => error.stack).join(EOL))
-  }
+  pool.maybeThrowResourceError(errors)
 
   log.debug(`the event store dropped`)
 }

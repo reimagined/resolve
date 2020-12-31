@@ -44,6 +44,7 @@ export type AdapterPool = {
     region?: string
     snapshotBucketSize?: number
   }
+  maybeThrowResourceError: (error: Error[]) => void
   coerceEmptyString: (obj: any, fallback?: string) => string
   rdsDataService: RDSDataService
   dbClusterOrInstanceArn: string

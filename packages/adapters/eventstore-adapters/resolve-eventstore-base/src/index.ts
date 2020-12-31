@@ -11,6 +11,7 @@ import ConcurrentError from './concurrent-error'
 import {
   ResourceAlreadyExistError,
   ResourceNotExistError,
+  maybeThrowResourceError,
 } from './resource-errors'
 import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
@@ -20,6 +21,7 @@ import incrementalImport from './incremental-import'
 import { CursorFilter, EventsWithCursor, EventFilter } from './types'
 
 const wrappedCreateAdapter: (...args: any[]) => any = createAdapter.bind(null, {
+  maybeThrowResourceError,
   importStream,
   exportStream,
   wrapMethod,

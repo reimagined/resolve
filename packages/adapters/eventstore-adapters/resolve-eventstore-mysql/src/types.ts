@@ -15,6 +15,7 @@ export type AdapterPool = {
     secretsTableName?: string
     snapshotBucketSize?: string
   }
+  maybeThrowResourceError: (error: Error[]) => void
   coerceEmptyString: (obj: any, fallback?: string) => string
   connection: MySQLConnection
   eventsTableName: string

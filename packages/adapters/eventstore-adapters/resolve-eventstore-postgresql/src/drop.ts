@@ -1,4 +1,3 @@
-import { EOL } from 'os'
 import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 import getLog from './get-log'
 import { AdapterPool } from './types'
@@ -9,6 +8,7 @@ const drop = async ({
   snapshotsTableName,
   executeStatement,
   escapeId,
+  maybeThrowResourceError,
 }: AdapterPool): Promise<void> => {
   const log = getLog('dropSecretsStore')
 
@@ -72,20 +72,8 @@ const drop = async ({
     }
   }
 
-  if (errors.length > 0) {
-    const error: any = new Error()
-    error.message = errors.map(({ message }) => message).join(EOL)
-    error.stack = errors.map(({ stack }) => stack).join(EOL)
+  maybeThrowResourceError(errors)
 
-    const errorCodes = new Set(
-      errors.map(({ code }) => code).filter((code) => code != null)
-    )
-    if (errorCodes.size === 1) {
-      error.code = [...errorCodes][0]
-    }
-
-    throw error
-  }
   log.debug(`the event store dropped`)
 }
 

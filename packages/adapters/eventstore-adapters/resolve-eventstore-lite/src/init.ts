@@ -1,4 +1,3 @@
-import { EOL } from 'os'
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import { AGGREGATE_ID_SQL_TYPE } from './constants'
 import getLog from './get-log'
@@ -85,9 +84,7 @@ const init = async (pool: AdapterPool): Promise<any> => {
     }
   }
 
-  if (errors.length > 0) {
-    throw new Error(errors.map((error) => error.stack).join(EOL))
-  }
+  pool.maybeThrowResourceError(errors)
 
   log.debug('databases are initialized')
 }

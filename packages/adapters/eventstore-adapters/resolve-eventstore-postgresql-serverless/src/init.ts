@@ -1,4 +1,3 @@
-import { EOL } from 'os'
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import getLog from './get-log'
 import { AdapterPool } from './types'
@@ -18,6 +17,7 @@ const init = async ({
   snapshotsTableName,
   executeStatement,
   escapeId,
+  maybeThrowResourceError,
 }: AdapterPool): Promise<void> => {
   const log = getLog('initSecretsStore')
   log.debug(`initializing secrets store database tables`)
@@ -61,9 +61,7 @@ const init = async ({
     }
   }
 
-  if (errors.length > 0) {
-    throw new Error(errors.map((error) => error.stack).join(EOL))
-  }
+  maybeThrowResourceError(errors)
 
   log.debug(`secrets store database tables are initialized`)
 
@@ -145,9 +143,7 @@ const init = async ({
     }
   }
 
-  if (errors.length > 0) {
-    throw new Error(errors.map((error) => error.stack).join(EOL))
-  }
+  maybeThrowResourceError(errors)
 
   log.debug('databases are initialized')
 }
