@@ -9,6 +9,7 @@ import {
 import { createHttpError, HttpStatusCodes, SecretsManager } from 'resolve-core'
 import { getPerformanceTracerSubsegment } from '../utils'
 import { ReadModelMeta } from '../types'
+import getLog from '../get-log'
 
 const makeResolverInvoker = (resolver: ReadModelResolver) => resolver
 
@@ -40,8 +41,10 @@ const getReadModelInterop = (
     args: any,
     context: { jwt?: string }
   ) => {
+    const log = getLog(`read-model-interop:${name}:acquireResolver:${resolver}`)
     const invoker = resolverInvokerMap[resolver]
     if (invoker == null) {
+      log.error(`unable to find invoker for the resolver`)
       throw await monitoredError(
         runtime,
         createHttpError(
@@ -55,6 +58,8 @@ const getReadModelInterop = (
       )
     }
 
+    log.debug(`invoker found`)
+
     return async (connection: any, secretsManager: SecretsManager | null) => {
       const subSegment = getPerformanceTracerSubsegment(
         monitoring,
@@ -67,13 +72,17 @@ const getReadModelInterop = (
       )
 
       try {
+        log.debug(`invoking the resolver`)
+        const data = await invoker(connection, args, {
+          secretsManager,
+          jwt: context.jwt,
+        })
+        log.verbose(data)
         return {
-          data: await invoker(connection, args, {
-            secretsManager,
-            jwt: context.jwt,
-          }),
+          data,
         }
       } catch (error) {
+        log.error(error)
         if (subSegment != null) {
           subSegment.addError(error)
         }

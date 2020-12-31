@@ -412,6 +412,8 @@ const read = async (
 
   const readModelName = interop.name
 
+  const log = getLog(`read:${readModelName}`)
+
   if (isDisposed) {
     throw new Error(`Read model "${readModelName}" is disposed`)
   }
@@ -434,7 +436,10 @@ const read = async (
     const resolver = await interop.acquireResolver(resolverName, resolverArgs, {
       jwt,
     })
-    return await wrapConnection(pool, interop, resolver)
+    log.debug(`invoking resolver`)
+    const result = await wrapConnection(pool, interop, resolver)
+    log.verbose(result)
+    return result
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
@@ -452,10 +457,7 @@ const read = async (
   }
 }
 
-const serializeState = async (
-  pool: ReadModelPool,
-  { state }: any
-): Promise<string> => {
+const serializeState = async ({ state }: { state: any }): Promise<string> => {
   return JSON.stringify(state, null, 2)
 }
 
@@ -796,9 +798,9 @@ const wrapReadModel = ({
   }
 
   const api = {
+    serializeState,
     read: read.bind(null, pool, interop),
     sendEvents: sendEvents.bind(null, pool, interop),
-    serializeState: serializeState.bind(null, pool, interop),
     drop: drop.bind(null, pool, interop),
     dispose: dispose.bind(null, pool, interop),
   }
