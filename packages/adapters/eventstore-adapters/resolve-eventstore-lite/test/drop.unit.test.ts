@@ -19,7 +19,7 @@ beforeEach(() => {
     memoryStore: {
       name: '',
       drop: jest.fn(),
-    }
+    },
   } as any
 })
 
