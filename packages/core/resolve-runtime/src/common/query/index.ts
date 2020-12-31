@@ -57,9 +57,7 @@ const createQuery = (params: CreateQueryOptions): any => {
     [key: string]: any
   } = {}
 
-  const interopMap = params.modelsInteropMap
-
-  const { readModels, viewModels, ...imports } = params
+  const { readModels, viewModels, modelsInterop, ...imports } = params
 
   for (const readModel of readModels) {
     if (models[readModel.name] != null) {
@@ -67,7 +65,7 @@ const createQuery = (params: CreateQueryOptions): any => {
     }
     models[readModel.name] = wrapReadModel({
       readModel,
-      interop: interopMap[readModel.name],
+      interop: modelsInterop[readModel.name],
       ...imports,
     })
   }

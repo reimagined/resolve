@@ -1,6 +1,5 @@
 import {
   ReadModelsInteropBuilder,
-  ReadModelMeta,
   ReadModelInterop,
   ReadModelResolver,
   ReadModelRuntime,
@@ -9,6 +8,7 @@ import {
 } from './types'
 import { createHttpError, HttpStatusCodes, SecretsManager } from 'resolve-core'
 import { getPerformanceTracerSubsegment } from '../utils'
+import { ReadModelMeta } from '../types'
 
 const makeResolverInvoker = (resolver: ReadModelResolver) => resolver
 

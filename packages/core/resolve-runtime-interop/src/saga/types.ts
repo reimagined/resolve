@@ -1,5 +1,5 @@
 import { SecretsManager, Event } from 'resolve-core'
-import { AggregateMeta } from '../types'
+import { AggregateMeta, SagaMeta } from '../types'
 
 export type SchedulerInfo = {
   name: string
@@ -59,7 +59,7 @@ export type SchedulersSagasBuilder = (
 export type ApplicationSagasBuilder = (
   domain: {
     schedulerName: string
-    sagas: any[]
+    sagas: SagaMeta[]
   },
   runtime: SagaRuntime
 ) => any[]
@@ -71,6 +71,7 @@ export type SagaDomain = {
   getSagasSchedulersInfo: () => SchedulerInfo[]
   createSchedulerAggregate: SchedulerAggregateBuilder
   createSagas: (runtime: SagaRuntime) => any[]
+  acquireSagasInterop: SagasInteropBuilder
 }
 
 export type SagaEventHandler<TSideEffects extends SideEffectsCollection> = (
@@ -84,3 +85,22 @@ export type SagaEventHandler<TSideEffects extends SideEffectsCollection> = (
 export type SagaHandlers<TSideEffects extends SideEffectsCollection> = {
   [key: string]: SagaEventHandler<TSideEffects>
 }
+
+export type SagaInterop = {
+  name: string
+  connectorName: string
+  acquireResolver: (
+    resolver: string,
+    args: any,
+    context: {
+      jwt?: string
+    }
+  ) => Promise<any>
+  //acquireEventHandler: (event: any) => ReadModelRuntimeEventHandler
+}
+
+export type SagaInteropMap = {
+  [key: string]: SagaInterop
+}
+
+export type SagasInteropBuilder = (runtime: SagaRuntime) => SagaInteropMap

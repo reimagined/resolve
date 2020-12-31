@@ -89,6 +89,7 @@ const createSaga = ({
     scheduler: { get: () => scheduler, enumerable: true },
   })
 
+  // FIXME: totally replace this with modelsInterop
   const sagasAsReadModels = [...sagaDomain.createSagas(runtime)].map(
     (saga) => ({
       provideLedger: async (inlineLedger) => {
@@ -108,7 +109,7 @@ const createSaga = ({
     performAcknowledge,
     eventstoreAdapter,
     monitoring: sagaMonitoring,
-    domainInterop,
+    modelsInterop: domainInterop.sagaDomain.acquireSagasInterop(runtime),
   })
 
   const sendEvents = async ({

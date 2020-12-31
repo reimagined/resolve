@@ -1,10 +1,4 @@
-import {
-  Decrypter,
-  Encrypter,
-  ReadModelEncryptionFactory,
-  SecretsManager,
-  Event,
-} from 'resolve-core'
+import { Decrypter, Encrypter, Event, SecretsManager } from 'resolve-core'
 
 export type ReadModelEventHandlerContext = {
   encrypt: Encrypter | null
@@ -43,14 +37,6 @@ export type ReadModelEventHandler = (
   event: Event,
   context: ReadModelEventHandlerContext
 ) => Promise<void>
-
-export type ReadModelMeta = {
-  name: string
-  connectorName: string
-  resolvers: ReadModelResolverMap
-  projection: { [key: string]: ReadModelEventHandler }
-  encryption: ReadModelEncryptionFactory
-}
 
 export type Monitoring = {
   error?: (error: Error, part: string, meta: any) => Promise<void>
@@ -99,3 +85,4 @@ export type ReadModelsInteropBuilder = (
 export type ReadModelDomain = {
   acquireReadModelsInterop: ReadModelsInteropBuilder
 }
+

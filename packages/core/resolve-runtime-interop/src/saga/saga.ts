@@ -2,12 +2,13 @@ import { SagaDomain, SagaRuntime, SchedulerInfo } from './types'
 import { createSchedulerAggregate } from './create-scheduler-aggregate'
 import { createSchedulersSagas } from './create-schedulers-sagas'
 import { createApplicationSagas } from './create-application-sagas'
+import { validateSaga } from './validate-saga'
 import {
   schedulerEventTypes,
   schedulerInvariantHash,
   schedulerName,
 } from './constants'
-import { getReadModelsInteropBuilder } from '../read-model/get-read-models-interop-builder'
+import { getSagasInteropBuilder } from './get-sagas-interop-builder'
 
 const createSagaInfoFetcher = (sagas: any[]) => (): SchedulerInfo[] => {
   if (!Array.isArray(sagas)) {
@@ -22,7 +23,13 @@ const createSagaInfoFetcher = (sagas: any[]) => (): SchedulerInfo[] => {
   )
 }
 
-export const initSagaDomain = (sagas: any[]): SagaDomain => {
+export const initSagaDomain = (rawSagas: any[]): SagaDomain => {
+  if (rawSagas == null) {
+    throw Error(`invalid saga meta`)
+  }
+
+  const sagas = rawSagas.map(validateSaga)
+
   const getSagasSchedulersInfo = createSagaInfoFetcher(sagas)
 
   const createSagas = (runtime: SagaRuntime) => [
@@ -44,6 +51,7 @@ export const initSagaDomain = (sagas: any[]): SagaDomain => {
     getSagasSchedulersInfo,
     createSchedulerAggregate,
     createSagas,
-    acquireSagasInterop: getReadModelsInteropBuilder()
+    // FIXME: temporary, should split to event projections and resolvers interop
+    acquireSagasInterop: getSagasInteropBuilder(sagas, getSagasSchedulersInfo()),
   }
 }

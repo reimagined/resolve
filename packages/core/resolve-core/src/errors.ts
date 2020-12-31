@@ -22,4 +22,5 @@ export const createHttpError = (code: number, message: string) =>
 export const HttpStatusCodes = {
   OK: 200,
   UnprocessableEntity: 422,
+  NotFound: 404,
 }

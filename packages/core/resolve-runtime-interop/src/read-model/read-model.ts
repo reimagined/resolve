@@ -1,15 +1,16 @@
-import { ReadModelDomain, ReadModelMeta } from './types'
+import { ReadModelDomain} from './types'
 import { getReadModelsInteropBuilder } from './get-read-models-interop-builder'
 import { validateReadModel } from './validate-read-model'
+import { ReadModelMeta } from '../types'
 
 export const initReadModelDomain = (
-  readModels: ReadModelMeta[]
+  rawReadModels: ReadModelMeta[]
 ): ReadModelDomain => {
-  if (readModels == null) {
+  if (rawReadModels == null) {
     throw Error(`invalid read model meta`)
   }
 
-  const meta = readModels.map(validateReadModel)
+  const meta = rawReadModels.map(validateReadModel)
 
   return {
     acquireReadModelsInterop: getReadModelsInteropBuilder(meta),

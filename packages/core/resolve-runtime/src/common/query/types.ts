@@ -1,5 +1,10 @@
 import { IS_BUILT_IN, Monitoring } from 'resolve-core'
-import { ReadModelInterop, ReadModelInteropMap } from 'resolve-runtime-interop'
+import {
+  ReadModelInteropMap,
+  SagaInteropMap,
+  SagaInterop,
+} from 'resolve-runtime-interop'
+import { ReadModelInterop } from 'resolve-runtime-interop'
 
 export type CreateQueryOptions = {
   invokeEventBusAsync: Function
@@ -11,17 +16,17 @@ export type CreateQueryOptions = {
   getVacantTimeInMillis: any
   performAcknowledge: any
   monitoring?: Monitoring
-  modelsInteropMap: ReadModelInteropMap
+  modelsInterop: ReadModelInteropMap | SagaInteropMap
 }
 
 type WrapModelOptions = Omit<
   Omit<Omit<CreateQueryOptions, 'readModels'>, 'viewModels'>,
-  'domainInterop'
+  'modelsInterop'
 >
 
 export type WrapReadModelOptions = WrapModelOptions & {
   readModel: any
-  interop: ReadModelInterop
+  interop: ReadModelInterop | SagaInterop
 }
 export type WrapViewModelOptions = WrapModelOptions & { viewModel: any }
 

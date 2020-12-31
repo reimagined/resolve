@@ -2,7 +2,7 @@ import { EOL } from 'os'
 // TODO: core cannot reference "top-level" packages, move these to resolve-core
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
 import { SecretsManager, makeMonitoringSafe, Monitoring } from 'resolve-core'
-import { ReadModelInterop } from 'resolve-runtime-interop'
+import { ReadModelInterop, SagaInterop } from 'resolve-runtime-interop'
 
 import getLog from './get-log'
 
@@ -11,10 +11,9 @@ import parseReadOptions from './parse-read-options'
 
 const wrapConnection = async (
   pool: ReadModelPool,
-  interop: ReadModelInterop,
+  interop: ReadModelInterop | SagaInterop,
   callback: Function
 ): Promise<any> => {
-  console.log(interop)
   const readModelName = interop.name
   const log = getLog(`wrapConnection:${readModelName}`)
   log.debug(`establishing connection`)
@@ -150,7 +149,7 @@ const serializeError = (
 
 const sendEvents = async (
   pool: ReadModelPool,
-  interop: ReadModelInterop,
+  interop: ReadModelInterop | SagaInterop,
   {
     batchId,
     xaTransactionId,
@@ -406,7 +405,7 @@ const sendEvents = async (
 
 const read = async (
   pool: ReadModelPool,
-  interop: ReadModelInterop,
+  interop: ReadModelInterop | SagaInterop,
   { jwt, ...params }: any
 ): Promise<any> => {
   const { isDisposed, performanceTracer, monitoring } = pool
@@ -464,12 +463,9 @@ const doOperation = async (
   operationName: string,
   prepareArguments: Function | null,
   pool: ReadModelPool,
-  interop: ReadModelInterop,
+  interop: ReadModelInterop | SagaInterop,
   parameters: any
 ): Promise<any> => {
-  if (!interop) {
-    console.log(operationName)
-  }
   const readModelName = interop.name
 
   if (pool.isDisposed) {
@@ -756,10 +752,6 @@ const wrapReadModel = ({
   performAcknowledge,
   monitoring,
 }: WrapReadModelOptions) => {
-  if (!interop) {
-    console.log('bad interop on wrap read model')
-  }
-
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
 
   log.debug(`wrapping read-model`)

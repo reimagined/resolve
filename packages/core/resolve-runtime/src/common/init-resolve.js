@@ -74,9 +74,9 @@ const initResolve = async (resolve) => {
     getVacantTimeInMillis,
     performAcknowledge,
     monitoring,
-    modelsInteropMap: domainInterop.readModelDomain.acquireReadModelsInterop({
+    modelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
       monitoring: {
-        error: monitoring.error,
+        error: monitoring?.error,
         performance: performanceTracer,
       },
     }),
