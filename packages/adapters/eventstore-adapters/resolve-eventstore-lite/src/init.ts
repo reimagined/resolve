@@ -71,7 +71,7 @@ const init = async (pool: AdapterPool): Promise<any> => {
     } catch (error) {
       if (error) {
         let errorToThrow = error
-        if (/Table.*? already exists$/i.test(error.message)) {
+        if (/(?:Table|Index).*? already exists$/i.test(error.message)) {
           errorToThrow = new EventstoreResourceAlreadyExistError(
             `duplicate initialization of the sqlite adapter with same events database "${database}" and table "${eventsTableName}" not allowed`
           )

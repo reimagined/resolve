@@ -18,6 +18,7 @@ beforeEach(() => {
     snapshotsTableName: 'snapshots-table',
     databaseName: 'database',
     executeStatement: jest.fn(),
+    maybeThrowResourceError: jest.fn((e: Error[]) => e),
     escapeId: jest.fn((v) => `escaped-${v}`),
   } as any
 })
@@ -34,6 +35,7 @@ test('event store dropped', async () => {
     escapeId: pool.escapeId,
     eventsTableName: 'events-table',
     executeStatement: pool.executeStatement,
+    maybeThrowResourceError: pool.maybeThrowResourceError,
     secretsTableName: 'secrets-table',
     snapshotsTableName: 'snapshots-table',
   })
