@@ -49,7 +49,10 @@ const init = async ({
     } catch (error) {
       if (error) {
         let errorToThrow = error
-        if (/Relation.*? already exists$/i.test(error.message) || /duplicate key value violates unique constraint/i.test(error.message)) {
+        if (
+          /Relation.*? already exists$/i.test(error.message) ||
+          /duplicate key value violates unique constraint/i.test(error.message)
+        ) {
           errorToThrow = new EventstoreResourceAlreadyExistError(
             `duplicate initialization of the postgresql-serverless secrets store with the same parameters not allowed`
           )
@@ -130,7 +133,10 @@ const init = async ({
     } catch (error) {
       if (error) {
         let errorToThrow = error
-        if (/Relation.*? already exists$/i.test(error.message) || /duplicate key value violates unique constraint/i.test(error.message)) {
+        if (
+          /Relation.*? already exists$/i.test(error.message) ||
+          /duplicate key value violates unique constraint/i.test(error.message)
+        ) {
           errorToThrow = new EventstoreResourceAlreadyExistError(
             `duplicate initialization of the postgresql-serverless event store with the same parameters not allowed`
           )

@@ -20,7 +20,7 @@ beforeEach(() => {
       name: '',
       drop: jest.fn(),
     },
-    maybeThrowResourceError: jest.fn((e: Error[]) => e)
+    maybeThrowResourceError: jest.fn((e: Error[]) => e),
   } as any
 })
 

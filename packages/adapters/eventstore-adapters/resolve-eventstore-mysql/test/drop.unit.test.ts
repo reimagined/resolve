@@ -32,7 +32,7 @@ beforeEach(() => {
       // eslint-disable-next-line @typescript-eslint/camelcase,spellcheck/spell-checker
       createconnection: jest.fn((options: any) => connection),
     },
-    maybeThrowResourceError: jest.fn((e: Error[]) => e)
+    maybeThrowResourceError: jest.fn((e: Error[]) => e),
   } as any
 })
 

@@ -19,7 +19,7 @@ beforeEach(() => {
     snapshotsTableName: 'snapshots-table-name',
     executeStatement: jest.fn((sql: any) => Promise.resolve(sql)),
     escapeId: (e: any) => e,
-    maybeThrowResourceError: jest.fn((e: Error[]) => e)
+    maybeThrowResourceError: jest.fn((e: Error[]) => e),
   } as any
 })
 

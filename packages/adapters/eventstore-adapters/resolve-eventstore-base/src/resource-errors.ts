@@ -38,11 +38,11 @@ void ((ResourceNotExistError as any).is = (error: any): boolean =>
   error != null && error.name === 'ResourceNotExistError')
 
 ResourceAlreadyExistError.prototype = Object.create(Error.prototype, {
-  constructor: { enumerable: true, value: ResourceAlreadyExistError }
+  constructor: { enumerable: true, value: ResourceAlreadyExistError },
 })
 
 ResourceNotExistError.prototype = Object.create(Error.prototype, {
-  constructor: { enumerable: true, value: ResourceNotExistError }
+  constructor: { enumerable: true, value: ResourceNotExistError },
 })
 
 const allowedResourceErrorsConstructors = Array.from<Function>([

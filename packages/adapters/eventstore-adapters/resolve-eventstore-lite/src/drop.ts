@@ -33,7 +33,11 @@ const drop = async (pool: AdapterPool): Promise<any> => {
     } catch (error) {
       if (error != null) {
         let errorToThrow = error
-        if (/^SQLITE_ERROR: no such (?:table|(?:Table|Index)).*?$/.test(error.message)) {
+        if (
+          /^SQLITE_ERROR: no such (?:table|(?:Table|Index)).*?$/.test(
+            error.message
+          )
+        ) {
           errorToThrow = new EventstoreResourceNotExistError(
             `sqlite adapter for database "${config.databaseFile}" already dropped`
           )
