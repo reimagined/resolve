@@ -20,6 +20,7 @@
   "types": "./types/index.d.ts",
   "scripts": {
     "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'",
+    "build": "tsc",
     "test": "jest --config=../../../jest.config.js --verbose",
     "test:e2e": "jest --config=./jest.func-config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
@@ -51,7 +52,7 @@
     "express": "^4.17.1",
     "jest": "26.0.1",
     "node-fetch": "^2.6.0",
-    "ts-jest": "26.0.0"
+    "ts-jest": "26.4.4"
   },
   "engines": {
     "node": ">=10.9"

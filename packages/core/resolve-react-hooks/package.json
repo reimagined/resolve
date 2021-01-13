@@ -52,7 +52,7 @@
     "jest": "26.0.1",
     "react": "16.13.1",
     "react-test-renderer": "16.13.1",
-    "ts-jest": "26.0.0"
+    "ts-jest": "26.4.4"
   },
   "peerDependencies": {
     "react": "^16.13.0"

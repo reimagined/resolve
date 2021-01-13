@@ -202,7 +202,7 @@ describe('command', () => {
           if (error != null) {
             callbackError = error
           }
-          resolve()
+          resolve(null)
         }
       )
     )

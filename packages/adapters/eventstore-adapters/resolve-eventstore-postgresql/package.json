@@ -31,7 +31,7 @@
   "devDependencies": {
     "@types/pg": "^7.14.3",
     "jest": "26.0.1",
-    "ts-jest": "26.1.0"
+    "ts-jest": "26.4.4"
   },
   "engines": {
     "node": ">=10.9"

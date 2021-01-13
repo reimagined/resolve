@@ -31,7 +31,7 @@
   "devDependencies": {
     "jest": "26.0.1",
     "sinon": "7.2.2",
-    "ts-jest": "26.1.0"
+    "ts-jest": "26.4.4"
   },
   "engines": {
     "node": ">=10.9"

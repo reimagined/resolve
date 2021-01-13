@@ -57,7 +57,7 @@ export type Command = {
   type: string
   aggregateId: string
   aggregateName: string
-  payload: any
+  payload?: any
   jwt?: string
   jwtToken?: string // deprecated
 }
