@@ -1,4 +1,4 @@
-const parseReadOptions = (options: any): [any, any] => {
+const parseReadOptions = (options: any): Array<any> => {
   const optionsFlags: any = {
     modelOptions: 1 << 0,
     modelArgs: 1 << 1,

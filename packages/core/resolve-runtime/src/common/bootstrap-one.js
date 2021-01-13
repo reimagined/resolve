@@ -4,7 +4,7 @@ import {
   FULL_REGULAR_CONNECTOR,
   FULL_XA_CONNECTOR,
   INLINE_LEDGER_CONNECTOR,
-} from 'resolve-query'
+} from './query'
 
 const bootstrapOne = async ({
   readModelConnectors,

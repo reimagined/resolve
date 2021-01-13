@@ -85,4 +85,3 @@ export type ReadModelsInteropBuilder = (
 export type ReadModelDomain = {
   acquireReadModelsInterop: ReadModelsInteropBuilder
 }
-

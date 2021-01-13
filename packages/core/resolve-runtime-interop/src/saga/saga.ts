@@ -52,6 +52,9 @@ export const initSagaDomain = (rawSagas: any[]): SagaDomain => {
     createSchedulerAggregate,
     createSagas,
     // FIXME: temporary, should split to event projections and resolvers interop
-    acquireSagasInterop: getSagasInteropBuilder(sagas, getSagasSchedulersInfo()),
+    acquireSagasInterop: getSagasInteropBuilder(
+      sagas,
+      getSagasSchedulersInfo()
+    ),
   }
 }

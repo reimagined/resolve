@@ -1,4 +1,4 @@
-import { ReadModelDomain} from './types'
+import { ReadModelDomain } from './types'
 import { getReadModelsInteropBuilder } from './get-read-models-interop-builder'
 import { validateReadModel } from './validate-read-model'
 import { ReadModelMeta } from '../types'
