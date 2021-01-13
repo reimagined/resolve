@@ -27,7 +27,6 @@ const drop = async (pool: AdapterPool): Promise<any> => {
     `DROP TABLE ${eventsTableNameAsId}`,
     `DROP TABLE ${snapshotsTableNameAsId}`,
     `DROP TABLE ${secretsTableNameAsId}`,
-    `DROP TABLE  ${escapeId(secretsTableName)}`,
   ]
 
   const errors: any[] = []
@@ -40,7 +39,7 @@ const drop = async (pool: AdapterPool): Promise<any> => {
       log.debug(`query executed successfully`)
     } catch (error) {
       if (error != null) {
-        if (/Unknown (?:table(?:Table|Index))/i.test(error.message)) {
+        if (/Unknown (?:Table|Index)/i.test(error.message)) {
           throw new EventstoreResourceNotExistError(
             `duplicate event store resource drop detected for database ${database}`
           )

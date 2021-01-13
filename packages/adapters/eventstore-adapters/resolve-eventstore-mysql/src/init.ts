@@ -8,6 +8,11 @@ import {
   mediumBlobSqlType,
   longBlobSqlType,
   aggregateIdSqlType,
+  ER_TABLE_EXISTS,
+  ER_NO_SUCH_TABLE,
+  ER_DUP_ENTRY,
+  ER_LOCK_DEADLOCK,
+  ER_SUBQUERY_NO_1_ROW
 } from './constants'
 
 const init = async (pool: AdapterPool): Promise<any> => {
@@ -79,7 +84,7 @@ const init = async (pool: AdapterPool): Promise<any> => {
     } catch (error) {
       if (error) {
         let errorToThrow = error
-        if (/(?:Table|Index).*? already exists$/i.test(error.message)) {
+        if (Number(errorToThrow) === ER_TABLE_EXISTS || ER_NO_SUCH_TABLE || ER_DUP_ENTRY || ER_LOCK_DEADLOCK || ER_SUBQUERY_NO_1_ROW) {
           errorToThrow = new EventstoreResourceAlreadyExistError(
             `duplicate initialization of the mysql adapter with same events database "${database}" and table "${eventsTableName}" not allowed`
           )
