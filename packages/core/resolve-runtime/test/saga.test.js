@@ -1,4 +1,4 @@
-import createSagaExecutor from 'resolve-runtime/src/common/saga'
+import createSagaExecutor from '../src/common/saga/index'
 
 jest.mock('uuid', () => ({
   v4: jest.fn(() => 'guid'),
@@ -52,37 +52,16 @@ test('resolve-saga', async () => {
   const executeCommand = jest.fn()
   const executeQuery = jest.fn()
 
-  const eventHandler = jest.fn().mockImplementation(async ({ sideEffects }) => {
-    await sideEffects.scheduleCommand(100500, {
-      type: 'scheduledCommand',
-      aggregateName: 'Test',
-      aggregateId: 'scheduledId',
-      payload: 'scheduledCommand',
-    })
-
-    await sideEffects.executeCommand({
-      type: 'executedCommand',
-      aggregateName: 'Test',
-      aggregateId: 'executedId',
-      payload: 'executedCommand',
-    })
-
-    await sideEffects.executeQuery({
-      modelName: 'modelName',
-      resolverName: 'resolverName',
-      resolverArgs: {
-        arg: 'value',
-      },
-    })
-  })
+  const eventHandler = jest.fn()
 
   const domainInterop = {
     sagaDomain: {
+      // FIXME: replace with models interop completely
       createSagas: jest.fn(() => [
         {
           name: 'test-saga',
           connectorName: 'default-connector',
-          handlers: {
+          projection: {
             EVENT_TYPE: eventHandler,
             Init: jest.fn(),
           },
