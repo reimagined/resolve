@@ -19,6 +19,7 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
