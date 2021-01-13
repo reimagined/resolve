@@ -129,7 +129,8 @@ async function main({ name: packageName }) {
         build.config.dependencies.every((dependency) =>
           map.get(dependency)
             ? map.get(dependency).status === 'succeeded'
-            : console.log(`bad dependency`, dependency)
+            : // eslint-disable-next-line no-console
+              console.warn(`Unresolved dependency [${dependency}]`)
         )
       ) {
         preparePendingBuild(build)
