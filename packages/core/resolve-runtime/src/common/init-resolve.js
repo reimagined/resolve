@@ -1,4 +1,4 @@
-import createCommandExecutor from 'resolve-command'
+import createCommandExecutor from '../common/command/index'
 import createQueryExecutor from '../common/query/index'
 import createSagaExecutor from '../common/saga/index'
 import crypto from 'crypto'

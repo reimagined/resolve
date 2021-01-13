@@ -44,7 +44,6 @@
     "raw-body": "2.3.3",
     "request": "^2.88.2",
     "resolve-cloud-common": "0.0.37",
-    "resolve-command": "0.26.4",
     "resolve-core": "0.26.4",
     "resolve-debug-levels": "0.26.4",
     "resolve-eventstore-base": "0.26.4",

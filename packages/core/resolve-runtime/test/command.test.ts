@@ -1,5 +1,5 @@
-import createCommandExecutor from '../src'
-import { CommandError } from '../src'
+import createCommandExecutor from '../../resolve-runtime/src/common/command'
+import { CommandError } from '../../resolve-runtime/src/common/command'
 
 let eventstoreAdapter: any
 let onCommandExecuted: any

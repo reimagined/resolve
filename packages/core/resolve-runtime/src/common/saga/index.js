@@ -1,4 +1,4 @@
-import createCommand from 'resolve-command'
+import createCommand from '../command/index'
 import createQuery from '../query/index'
 
 const createSaga = ({

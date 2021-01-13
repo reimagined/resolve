@@ -16128,6 +16128,16 @@ resolve-cloud@*:
     semver "^6.3.0"
     yargs "^14.0.0"
 
+resolve-command@0.26.4:
+  version "0.26.4"
+  resolved "https://registry.yarnpkg.com/resolve-command/-/resolve-command-0.26.4.tgz#d6bae92994aecc6b94f3e7fcdd2adc5d6484b596"
+  integrity sha512-EaqtK8txPww/Y9ZzcJrX8Nfjni6NwPwlltXeqVBJQuNlPkB4W1iDu+UTUBDWmFiV4tTDC8KLc8s2JvxeaOM0yg==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-core "0.26.4"
+    resolve-debug-levels "0.26.4"
+    resolve-eventstore-base "0.26.4"
+
 resolve-cwd@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-1.0.0.tgz#4eaeea41ed040d1702457df64a42b2b07d246f9f"

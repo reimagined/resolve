@@ -1,5 +1,5 @@
 import { ConcurrentError } from 'resolve-eventstore-base'
-import { CommandError } from 'resolve-command'
+import { CommandError } from '../src/common/command'
 import { executeCommandWithRetryConflicts } from '../src/common/handlers/command-handler'
 
 test('Execute command should retry 10 times and fail with a ConcurrentError', async () => {
