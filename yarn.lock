@@ -1862,7 +1862,7 @@
 
 "@jest/types@^26.6.2":
   version "26.6.2"
-  resolved "http://npm.resolve-dev.ml:10080/@jest%2ftypes/-/types-26.6.2.tgz#bef5a532030e1d88a2f5a6d933f84e97226ed48e"
+  resolved "https://registry.yarnpkg.com/@jest%2ftypes/-/types-26.6.2.tgz#bef5a532030e1d88a2f5a6d933f84e97226ed48e"
   integrity sha512-fC6QCp7Sc5sX6g8Tvbmj4XUTbyrik0akgRy03yjXbQaBWWNWGE7SGtJk98m0N8nzegD/7SggrUlivxo5ax4KWQ==
   dependencies:
     "@types/istanbul-lib-coverage" "^2.0.0"
@@ -2214,6 +2214,11 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.5.tgz#b14efa8852b7768d898906613c23f688713e02cd"
   integrity sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
 
+"@types/diff@4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@types%2fdiff/-/diff-4.0.2.tgz#2e9bb89f9acc3ab0108f0f3dc4dbdcf2fff8a99c"
+  integrity sha512-mIenTfsIe586/yzsyfql69KRnA75S8SVXQbTLpDejRrjH0QSJcpu3AUOi/Vjnt9IOsXKxPhJfGpQUNMueIU1fQ==
+
 "@types/error-stack-parser@^1.3.18":
   version "1.3.18"
   resolved "https://registry.yarnpkg.com/@types/error-stack-parser/-/error-stack-parser-1.3.18.tgz#e01c9f8c85ca83b610320c62258b0c9026ade0f7"
@@ -2325,7 +2330,7 @@
 
 "@types/jest@26.x":
   version "26.0.20"
-  resolved "http://npm.resolve-dev.ml:10080/@types%2fjest/-/jest-26.0.20.tgz#cd2f2702ecf69e86b586e1f5223a60e454056307"
+  resolved "https://registry.yarnpkg.com/@types%2fjest/-/jest-26.0.20.tgz#cd2f2702ecf69e86b586e1f5223a60e454056307"
   integrity sha512-9zi2Y+5USJRxd0FsahERhBwlcvFh6D2GLQnY2FH2BzK8J9s9omvNHIbvABwIluXa0fD8XVKMLTO0aOEuUfACAA==
   dependencies:
     jest-diff "^26.0.0"
@@ -2370,6 +2375,13 @@
   version "4.4.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.get/-/lodash.get-4.4.6.tgz#0c7ac56243dae0f9f09ab6f75b29471e2e777240"
   integrity sha512-E6zzjR3GtNig8UJG/yodBeJeIOtgPkMgsLjDU3CbgCAPC++vJ0eCMnJhVpRZb/ENqEFlov1+3K9TKtY4UdWKtQ==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash.isequal@4.5.5":
+  version "4.5.5"
+  resolved "https://registry.yarnpkg.com/@types%2flodash.isequal/-/lodash.isequal-4.5.5.tgz#4fed1b1b00bef79e305de0352d797e9bb816c8ff"
+  integrity sha512-4IKbinG7MGP131wRfceK6W4E/Qt3qssEFLF30LnJbjYiSfHGGRU/Io8YxXrZX109ir+iDETC8hw8QsDijukUVg==
   dependencies:
     "@types/lodash" "*"
 
@@ -6944,7 +6956,7 @@ diff-sequences@^26.3.0:
 
 diff-sequences@^26.6.2:
   version "26.6.2"
-  resolved "http://npm.resolve-dev.ml:10080/diff-sequences/-/diff-sequences-26.6.2.tgz#48ba99157de1923412eed41db6b6d4aa9ca7c0b1"
+  resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-26.6.2.tgz#48ba99157de1923412eed41db6b6d4aa9ca7c0b1"
   integrity sha512-Mv/TDa3nZ9sbc5soK+OoA74BsS3mL37yixCvUAQkiuA4Wz6YtwP/K47n2rv2ovzHZvoiQeA5FTQOschKkEwB0Q==
 
 diff@^3.5.0:
@@ -10844,7 +10856,7 @@ jest-diff@^25.2.1:
 
 jest-diff@^26.0.0:
   version "26.6.2"
-  resolved "http://npm.resolve-dev.ml:10080/jest-diff/-/jest-diff-26.6.2.tgz#1aa7468b52c3a68d7d5c5fdcdfcd5e49bd164394"
+  resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-26.6.2.tgz#1aa7468b52c3a68d7d5c5fdcdfcd5e49bd164394"
   integrity sha512-6m+9Z3Gv9wN0WFVasqjCL/06+EFCMTqDEUl/b87HYK2rAPTyfz4ZIuSlPhY51PIQRWx5TaxeF1qmXKe9gfN3sA==
   dependencies:
     chalk "^4.0.0"
@@ -11369,7 +11381,7 @@ jest-util@^24.9.0:
 
 jest-util@^26.1.0:
   version "26.6.2"
-  resolved "http://npm.resolve-dev.ml:10080/jest-util/-/jest-util-26.6.2.tgz#907535dbe4d5a6cb4c47ac9b926f6af29576cbc1"
+  resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-26.6.2.tgz#907535dbe4d5a6cb4c47ac9b926f6af29576cbc1"
   integrity sha512-MDW0fKfsn0OI7MS7Euz6h8HNDXVQ0gaM9uW6RjfDmd1DAFcaxX9OqIakHIqhbnmF08Cf2DLDG+ulq8YQQ0Lp0Q==
   dependencies:
     "@jest/types" "^26.6.2"
@@ -14810,7 +14822,7 @@ pretty-format@^25.1.0, pretty-format@^25.2.1, pretty-format@^25.5.0:
 
 pretty-format@^26.0.0, pretty-format@^26.6.2:
   version "26.6.2"
-  resolved "http://npm.resolve-dev.ml:10080/pretty-format/-/pretty-format-26.6.2.tgz#e35c2705f14cb7fe2fe94fa078345b444120fc93"
+  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-26.6.2.tgz#e35c2705f14cb7fe2fe94fa078345b444120fc93"
   integrity sha512-7AeGuCYNGmycyQbCqd/3PWH4eOoX/OiCa0uphp57NVTeAGdJGaAliecxwBDHYQCIvrW7aDBZCYeNTP/WX69mkg==
   dependencies:
     "@jest/types" "^26.6.2"
@@ -15345,7 +15357,7 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.3.2, react-is@^16.6.0, react-
 
 react-is@^17.0.1:
   version "17.0.1"
-  resolved "http://npm.resolve-dev.ml:10080/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
 
 react-lifecycles-compat@^3.0.4:
@@ -16171,27 +16183,13 @@ resolve-pathname@^3.0.0:
 
 resolve-query@0.26.4:
   version "0.26.4"
-  resolved "http://npm.resolve-dev.ml:10080/resolve-query/-/resolve-query-0.26.4.tgz#e91f23f6d5f15b3384d77fdc7ac67251861950c5"
+  resolved "https://registry.yarnpkg.com/resolve-query/-/resolve-query-0.26.4.tgz#e91f23f6d5f15b3384d77fdc7ac67251861950c5"
   integrity sha512-NSdxS+OzTlvPXd5NoWLSBhUOfdi2p6exAiDbIam1ik9WIENmSxqk15MIX2o4sElKWDtU+PKV8pxRByHtRXMHdg==
   dependencies:
     "@babel/runtime" "7.9.6"
     resolve-core "0.26.4"
     resolve-debug-levels "0.26.4"
     resolve-readmodel-base "0.26.4"
-
-resolve-testing-tools@0.26.4:
-  version "0.26.4"
-  resolved "http://npm.resolve-dev.ml:10080/resolve-testing-tools/-/resolve-testing-tools-0.26.4.tgz#631dc542a02e561cdd7bc88503c517427a9bb81d"
-  integrity sha512-Q/oeRNqf96kyMBLQiYGJiUMwtX7rFuK0KJzWyCDT9XKB1oSs5UwXcN8UbjaYx2AfAyrDGQ262Wm6hbSi4XV5XQ==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    colors "^1.4.0"
-    diff "^4.0.2"
-    lodash.isequal "4.5.0"
-    resolve-command "0.26.4"
-    resolve-core "0.26.4"
-    resolve-query "0.26.4"
-    resolve-readmodel-lite "0.26.4"
 
 resolve-url@^0.2.1:
   version "0.2.1"
@@ -18464,7 +18462,7 @@ truncate-utf8-bytes@^1.0.0:
 
 ts-jest@26.4.4:
   version "26.4.4"
-  resolved "http://npm.resolve-dev.ml:10080/ts-jest/-/ts-jest-26.4.4.tgz#61f13fb21ab400853c532270e52cc0ed7e502c49"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-26.4.4.tgz#61f13fb21ab400853c532270e52cc0ed7e502c49"
   integrity sha512-3lFWKbLxJm34QxyVNNCgXX1u4o/RV0myvA2y2Bxm46iGIjKlaY0own9gIckbjZJPn+WaJEnfPPJ20HHGpoq4yg==
   dependencies:
     "@types/jest" "26.x"
@@ -18622,7 +18620,7 @@ typescript@3.9.3:
 
 typescript@4.1.3:
   version "4.1.3"
-  resolved "http://npm.resolve-dev.ml:10080/typescript/-/typescript-4.1.3.tgz#519d582bd94cba0cf8934c7d8e8467e473f53bb7"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.1.3.tgz#519d582bd94cba0cf8934c7d8e8467e473f53bb7"
   integrity sha512-B3ZIOf1IKeH2ixgHhj6la6xdwR9QrLC5d1VKeCSY4tvkqhF2eqd9O7txNlS0PO3GrBAFIdr3L1ndNwteUbZLYg==
 
 typescript@^3.3.3:
@@ -18962,7 +18960,7 @@ uuid@8.3.1:
 
 uuid@8.3.2:
   version "8.3.2"
-  resolved "http://npm.resolve-dev.ml:10080/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 uuid@^3.0.1, uuid@^3.1.0, uuid@^3.3.2:
@@ -19736,7 +19734,7 @@ yamljs@^0.2.1:
 
 yargs-parser@20.x:
   version "20.2.4"
-  resolved "http://npm.resolve-dev.ml:10080/yargs-parser/-/yargs-parser-20.2.4.tgz#b42890f14566796f85ae8e3a25290d205f154a54"
+  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-20.2.4.tgz#b42890f14566796f85ae8e3a25290d205f154a54"
   integrity sha512-WOkpgNhPTlE73h4VFAFsOnomJVaovO8VqLDzy5saChRBFQFBoMYirowyW+Q9HB4HFF4Z7VZTiG3iSzJJA29yRA==
 
 yargs-parser@^13.1.2:

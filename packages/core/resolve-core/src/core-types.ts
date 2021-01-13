@@ -64,7 +64,7 @@ export type Command = {
 
 export type CommandResult = {
   type: string
-  payload: any
+  payload?: any
   timestamp?: number
   aggregateId?: string
   aggregateVersion?: number

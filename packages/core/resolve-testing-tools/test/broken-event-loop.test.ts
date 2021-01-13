@@ -11,11 +11,12 @@ const getReadModelConnector = async () => {
   )
   if (dbFileExists) {
     await new Promise((resolve, reject) =>
-      fs.unlink(databaseFile, (err) => (!err ? resolve() : reject(err)))
+      fs.unlink(databaseFile, (err) =>
+        !err ? resolve(undefined) : reject(err)
+      )
     )
   }
-  const adapter = await createReadModelConnector({ databaseFile })
-  return adapter
+  return await createReadModelConnector({ databaseFile })
 }
 
 const inputEvents = [
