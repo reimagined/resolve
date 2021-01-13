@@ -139,18 +139,6 @@ Array [
     "origin",
     "resolve:query:read",
   ],
-  Array [
-    "readModelName",
-    "readOnlyReadModelName",
-  ],
-  Array [
-    "resolverName",
-    "readFromDatabase",
-  ],
-  Array [
-    "origin",
-    "resolve:query:resolver",
-  ],
 ]
 `;
 
@@ -161,22 +149,17 @@ Array [
   Array [
     "read",
   ],
-  Array [
-    "resolver",
-  ],
 ]
 `;
 
 exports[`with performanceTracer read models "read" should return the resolver result: close 1`] = `
 Array [
   Array [],
-  Array [],
 ]
 `;
 
 exports[`with performanceTracer read models "read" should return the resolver result: getSegment 1`] = `
 Array [
-  Array [],
   Array [],
 ]
 `;

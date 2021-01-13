@@ -1,5 +1,6 @@
 import createQuery from '../../resolve-runtime/src/common/query'
 import { IS_BUILT_IN, SecretsManager } from 'resolve-core'
+import { ReadModelInteropMap } from 'resolve-runtime-interop'
 
 type State = {
   value: number
@@ -81,6 +82,7 @@ for (const { describeName, prepare } of [
   let readModelConnectors: any | null = null
   let query: ResolveQuery | null = null
   let secretsManager: SecretsManager | null = null
+  let modelsInterop: ReadModelInteropMap = {}
 
   // eslint-disable-next-line no-loop-func
   describe(describeName, () => {
@@ -122,6 +124,8 @@ for (const { describeName, prepare } of [
       viewModels = []
       readModels = []
       readModelConnectors = {}
+
+      modelsInterop = {}
 
       prepare()
     })
@@ -262,6 +266,7 @@ for (const { describeName, prepare } of [
             eventstoreAdapter,
             getVacantTimeInMillis,
             performAcknowledge,
+            modelsInterop,
           })
         })
 
@@ -729,6 +734,7 @@ for (const { describeName, prepare } of [
             getVacantTimeInMillis,
             performAcknowledge,
             monitoring,
+            modelsInterop,
           })
 
           try {
@@ -991,6 +997,7 @@ for (const { describeName, prepare } of [
             eventstoreAdapter,
             getVacantTimeInMillis,
             performAcknowledge,
+            modelsInterop,
           })
         })
 
@@ -1479,6 +1486,8 @@ for (const { describeName, prepare } of [
           encrypt,
           decrypt,
         }))
+
+        // FIXME: remove after implementing acquireEventHandler
         readModels = [
           {
             name: 'readModelName',
@@ -1620,6 +1629,79 @@ for (const { describeName, prepare } of [
           },
         }
 
+        modelsInterop = {
+          readModelName: {
+            name: 'readModelName',
+            connectorName: 'default',
+            acquireResolver: async (resolver) => {
+              if (resolver === 'getValue') {
+                return async (store: Store) => {
+                  return await store.get('value')
+                }
+              }
+              return () => {
+                throw Error(`Resolver "${resolver}" does not exist`)
+              }
+            },
+          },
+          readOnlyReadModelName: {
+            name: 'readOnlyReadModelName',
+            connectorName: 'default',
+            acquireResolver: async (resolver) => {
+              if (resolver === 'readFromDatabase') {
+                return async () => {
+                  return 42
+                }
+              }
+              return () => {
+                throw Error(`Resolver "${resolver}" does not exist`)
+              }
+            },
+          },
+          brokenReadModelName: {
+            name: 'brokenReadModelName',
+            connectorName: 'empty',
+            acquireResolver: async (resolver) => {
+              if (resolver === 'failed') {
+                return async () => {
+                  throw new Error('Failed resolver')
+                }
+              }
+              return () => {
+                throw Error(`Resolver "${resolver}" does not exist`)
+              }
+            },
+          },
+          remoteReadModelName: {
+            name: 'remoteReadModelName',
+            connectorName: 'empty',
+            acquireResolver: async (resolver) => {
+              if (resolver === 'getValue') {
+                return async (store: Store) => {
+                  return await store.get('value')
+                }
+              }
+              return () => {
+                throw Error(`Resolver "${resolver}" does not exist`)
+              }
+            },
+          },
+          encryptedReadModel: {
+            name: 'encryptedReadModel',
+            connectorName: 'default',
+            acquireResolver: async (resolver) => {
+              if (resolver === 'getValue') {
+                return async (store: Store) => {
+                  return await store.get('id')
+                }
+              }
+              return () => {
+                throw Error(`Resolver "${resolver}" does not exist`)
+              }
+            },
+          },
+        }
+
         query = createQuery({
           invokeEventBusAsync,
           readModelConnectors,
@@ -1629,6 +1711,7 @@ for (const { describeName, prepare } of [
           eventstoreAdapter,
           getVacantTimeInMillis,
           performAcknowledge,
+          modelsInterop,
         })
       })
 
@@ -1647,7 +1730,7 @@ for (const { describeName, prepare } of [
           resolverArgs: {},
         })
 
-        expect(value).toEqual({ data: 42 })
+        expect(value).toEqual(42)
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -1782,6 +1865,7 @@ for (const { describeName, prepare } of [
           getVacantTimeInMillis,
           performAcknowledge,
           monitoring,
+          modelsInterop,
         })
 
         try {
@@ -1837,9 +1921,7 @@ for (const { describeName, prepare } of [
         expect(encrypt).toHaveBeenCalledWith('data')
         expect(decrypt).toHaveBeenCalledWith('data')
 
-        const {
-          data: { plain, encrypted },
-        } = await query.read({
+        const { plain, encrypted } = await query.read({
           modelName: 'encryptedReadModel',
           resolverName: 'getValue',
           resolverArgs: {},
@@ -2001,6 +2083,7 @@ for (const { describeName, prepare } of [
           getVacantTimeInMillis,
           performAcknowledge,
           monitoring,
+          modelsInterop,
         })
 
         const events = [
@@ -2341,6 +2424,7 @@ for (const { describeName, prepare } of [
               invokeEventBusAsync,
               getVacantTimeInMillis,
               performAcknowledge,
+              modelsInterop,
             }))
         ).toThrow(Error)
       })
@@ -2379,6 +2463,7 @@ for (const { describeName, prepare } of [
               invokeEventBusAsync,
               getVacantTimeInMillis,
               performAcknowledge,
+              modelsInterop,
             }))
         ).toThrow('Duplicate name for read model: "readModelName"')
 
@@ -2422,6 +2507,7 @@ for (const { describeName, prepare } of [
               invokeEventBusAsync,
               getVacantTimeInMillis,
               performAcknowledge,
+              modelsInterop,
             }))
         ).toThrow('Duplicate name for view model: "viewModelName"')
 
@@ -2458,6 +2544,7 @@ for (const { describeName, prepare } of [
           invokeEventBusAsync,
           getVacantTimeInMillis,
           performAcknowledge,
+          modelsInterop,
         })
 
         await expect(

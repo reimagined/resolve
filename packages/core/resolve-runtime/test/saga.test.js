@@ -91,6 +91,9 @@ test('resolve-saga', async () => {
         },
       ]),
       createSchedulerAggregate: jest.fn(),
+      acquireSagasInterop: () => ({
+        'test-saga': {},
+      }),
     },
   }
 

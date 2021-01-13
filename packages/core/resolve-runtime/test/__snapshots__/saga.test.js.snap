@@ -19,12 +19,12 @@ Array [
           "message": "updating by events is prohibited when \\"test-saga\\" projection is not specified",
           "name": "Error",
           "stack": "Error: updating by events is prohibited when \\"test-saga\\" projection is not specified
-    at /Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/wrap-read-model.ts:179:13
+    at /Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/wrap-read-model.ts:182:13
     at Generator.next (<anonymous>)
     at /Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/wrap-read-model.ts:8:71
     at new Promise (<anonymous>)
     at Object.<anonymous>.__awaiter (/Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/wrap-read-model.ts:4:12)
-    at sendEvents (/Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/wrap-read-model.ts:161:19)
+    at sendEvents (/Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/wrap-read-model.ts:164:19)
     at /Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/index.ts:50:24
     at Generator.next (<anonymous>)
     at /Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/index.ts:27:71
@@ -45,12 +45,12 @@ Array [
           "message": "updating by events is prohibited when \\"test-saga\\" projection is not specified",
           "name": "Error",
           "stack": "Error: updating by events is prohibited when \\"test-saga\\" projection is not specified
-    at /Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/wrap-read-model.ts:179:13
+    at /Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/wrap-read-model.ts:182:13
     at Generator.next (<anonymous>)
     at /Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/wrap-read-model.ts:8:71
     at new Promise (<anonymous>)
     at Object.<anonymous>.__awaiter (/Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/wrap-read-model.ts:4:12)
-    at sendEvents (/Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/wrap-read-model.ts:161:19)
+    at sendEvents (/Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/wrap-read-model.ts:164:19)
     at /Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/index.ts:50:24
     at Generator.next (<anonymous>)
     at /Users/max/resolve/resolve/packages/core/resolve-runtime/src/common/query/index.ts:27:71
@@ -68,7 +68,7 @@ Array [
 exports[`resolve-saga: readModelConnectors['default-connector'].connect 1`] = `
 Array [
   Array [
-    "test-saga",
+    undefined,
   ],
 ]
 `;
@@ -82,7 +82,7 @@ Array [
       "find": [MockFunction],
       "insert": [MockFunction],
     },
-    "test-saga",
+    undefined,
   ],
 ]
 `;
@@ -96,7 +96,7 @@ Array [
       "find": [MockFunction],
       "insert": [MockFunction],
     },
-    "test-saga",
+    undefined,
     Object {},
   ],
 ]
