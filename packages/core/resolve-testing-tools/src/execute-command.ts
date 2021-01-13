@@ -1,5 +1,5 @@
 import { SecretsManager, Event, SerializableMap } from 'resolve-core'
-import { CommandExecutorBuilder, CommandExecutor } from 'resolve-command'
+import { CommandExecutorBuilder, CommandExecutor } from 'resolve-runtime'
 import { Phases, symbol } from './constants'
 import { BDDAggregate } from './aggregate'
 import transformEvents from './transform-events'

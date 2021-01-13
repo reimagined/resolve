@@ -102,5 +102,6 @@ export {
   EMPTY_CONNECTOR,
   INLINE_LEDGER_CONNECTOR,
   detectConnectorFeatures,
+  CreateQueryOptions,
 }
 export default createQuery

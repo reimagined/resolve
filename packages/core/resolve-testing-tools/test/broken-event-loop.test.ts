@@ -58,7 +58,7 @@ test('async call during building', async () => {
     .all({ a: 10, b: 20 })
     .as('JWT_TOKEN')
 
-  expect(result.data.items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }])
+  expect(result.items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }])
 })
 
 test('async call before building', async () => {
@@ -73,7 +73,7 @@ test('async call before building', async () => {
     .all({ a: 10, b: 20 })
     .as('JWT_TOKEN')
 
-  expect(result.data.items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }])
+  expect(result.items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }])
 })
 
 test('bug: promise never completes on hard error', async () => {

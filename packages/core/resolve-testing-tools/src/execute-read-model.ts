@@ -1,4 +1,5 @@
 import { Phases, symbol } from './constants'
+import { CreateQueryOptions } from 'resolve-runtime'
 
 export const executeReadModel = async ({
   promise,
@@ -6,7 +7,7 @@ export const executeReadModel = async ({
   transformEvents,
 }: {
   promise: any
-  createQuery: Function
+  createQuery: (options: CreateQueryOptions) => any
   transformEvents: Function
 }): Promise<any> => {
   if (promise[symbol].phase < Phases.RESOLVER) {
@@ -36,11 +37,25 @@ export const executeReadModel = async ({
         ADAPTER_NAME: promise[symbol].adapter,
       },
       getVacantTimeInMillis: () => 0x7fffffff,
-      snapshotAdapter: null,
       eventstoreAdapter: {
         getSecretsManager: (): any => promise[symbol].secretsManager,
       },
       performAcknowledge,
+      modelsInterop: {
+        [promise[symbol].name]: {
+          name: promise[symbol].name,
+          connectorName: 'ADAPTER_NAME',
+          acquireResolver: async (resolver, args, context) => (store: any) =>
+            promise[symbol].resolvers[resolver](store, args, {
+              ...context,
+              secretsManager: promise[symbol].secretsManager,
+            }),
+        },
+      },
+      invokeEventBusAsync: () => {
+        /* empty */
+      },
+      performanceTracer: null,
     })
 
     await queryExecutor.sendEvents({

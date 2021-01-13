@@ -45,13 +45,11 @@ describe('read model', () => {
       .as('JWT_TOKEN')
 
     expect(result).toEqual({
-      data: {
-        items: [{ id: 1 }, { id: 2 }, { id: 3 }],
-        args: { a: 10, b: 20 },
-        context: {
-          jwt: 'JWT_TOKEN',
-          secretsManager: expect.any(Object),
-        },
+      items: [{ id: 1 }, { id: 2 }, { id: 3 }],
+      args: { a: 10, b: 20 },
+      context: {
+        jwt: 'JWT_TOKEN',
+        secretsManager: expect.any(Object),
       },
     })
   })
@@ -94,7 +92,7 @@ describe('read model', () => {
       .all({})
       .as('JWT_TOKEN')
 
-    expect(result.data[0]).toEqual({
+    expect(result[0]).toEqual({
       id: 1,
       data: `plain_data`,
     })
