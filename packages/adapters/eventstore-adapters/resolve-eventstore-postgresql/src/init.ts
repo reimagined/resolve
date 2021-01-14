@@ -17,7 +17,7 @@ const init = async ({
   snapshotsTableName,
   executeStatement,
   escapeId,
-  maybeThrowResourceError,
+  monitoring,
 }: AdapterPool): Promise<void> => {
   const log = getLog('initSecretsStore')
 
@@ -117,7 +117,7 @@ const init = async ({
     }
   }
 
-  maybeThrowResourceError(errors)
+  monitoring(errors)
 
   log.debug('databases are initialized')
 }

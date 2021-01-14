@@ -14,7 +14,7 @@ const coerceEmptyString = (obj: any, fallback?: string): string =>
 
 const createAdapter = (
   {
-    maybeThrowResourceError,
+    monitoring,
     wrapMethod,
     wrapEventFilter,
     wrapSaveEvent,
@@ -85,7 +85,7 @@ const createAdapter = (
     setSecret: wrapMethod(originalPool, setSecret),
     waitConnect: wrapMethod(originalPool, idempotentFunction),
     wrapMethod,
-    maybeThrowResourceError,
+    monitoring,
     coerceEmptyString,
     isFrozen: wrapMethod(originalPool, isFrozen),
     connectPromise,

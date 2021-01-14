@@ -8,19 +8,17 @@ const mDrop = jest.fn(drop)
 
 beforeEach(() => {
   pool = {
-    config: {
-      databaseFile: 'database-file',
-      secretsTableName: 'secrets-table',
-      eventsTableName: 'table-name',
-      snapshotsTableName: 'snapshots-table-name',
-    },
-    database: { exec: (e: any) => e },
-    escapeId: (e: any) => e,
+    databaseFile: 'database-file',
+    secretsTableName: 'secrets-table',
+    eventsTableName: 'table-name',
+    snapshotsTableName: 'snapshots-table-name',
+    database: { exec: jest.fn().mockImplementation((e: any) => e) },
+    escapeId: (e: any) => `ESCAPEID[${e}]`,
     memoryStore: {
       name: '',
       drop: jest.fn(),
     },
-    maybeThrowResourceError: jest.fn((e: Error[]) => e),
+    monitoring: jest.fn((e: Error[]) => e),
   } as any
 })
 
@@ -33,5 +31,5 @@ test('event store dropped', async () => {
 test('secrets store dropped', async () => {
   await mDrop(pool)
 
-  expect(mDrop.mock.calls).toMatchSnapshot('drop table with keys')
+  expect(pool.database.exec.mock.calls).toMatchSnapshot('drop table with keys')
 })

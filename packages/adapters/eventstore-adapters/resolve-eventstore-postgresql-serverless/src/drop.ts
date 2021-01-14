@@ -9,7 +9,7 @@ const drop = async ({
   executeStatement,
   escapeId,
   secretsTableName,
-  maybeThrowResourceError,
+  monitoring,
 }: AdapterPool): Promise<void> => {
   const log = getLog('dropSecretsStore')
 
@@ -79,7 +79,7 @@ const drop = async ({
     }
   }
 
-  maybeThrowResourceError(errors)
+  monitoring(errors)
 
   log.debug(`the event store dropped`)
 }

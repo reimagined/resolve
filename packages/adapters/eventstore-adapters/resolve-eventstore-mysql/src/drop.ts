@@ -4,6 +4,7 @@ import { AdapterPool } from './types'
 
 const drop = async (pool: AdapterPool): Promise<any> => {
   const log = getLog('drop')
+
   const {
     eventsTableName,
     snapshotsTableName,
@@ -11,8 +12,10 @@ const drop = async (pool: AdapterPool): Promise<any> => {
     connection,
     database,
     escapeId,
+    monitoring,
   } = pool
 
+  log.debug(`dropping secrets store database tables`)
   log.verbose(`secretsTableName: ${secretsTableName}`)
 
   const eventsTableNameAsId: string = escapeId(eventsTableName)
@@ -20,6 +23,8 @@ const drop = async (pool: AdapterPool): Promise<any> => {
   const threadsTableNameAsId: string = escapeId(`${eventsTableName}-threads`)
   const snapshotsTableNameAsId: string = escapeId(snapshotsTableName)
   const secretsTableNameAsId: string = escapeId(secretsTableName)
+
+  log.debug(`secrets store database tables are dropped`)
 
   const statements: string[] = [
     `DROP TABLE IF EXISTS ${freezeTableNameAsId}`,
@@ -30,6 +35,8 @@ const drop = async (pool: AdapterPool): Promise<any> => {
   ]
 
   const errors: any[] = []
+
+  log.debug(`dropping the event store`)
 
   for (const statement of statements) {
     try {
@@ -52,7 +59,7 @@ const drop = async (pool: AdapterPool): Promise<any> => {
     }
   }
 
-  pool.maybeThrowResourceError(errors)
+  monitoring(errors)
 
   log.debug(`the event store dropped`)
 }

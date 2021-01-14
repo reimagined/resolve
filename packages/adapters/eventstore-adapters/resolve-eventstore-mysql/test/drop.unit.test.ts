@@ -1,44 +1,34 @@
 import { AdapterPool } from '../src/types'
 import drop from '../src/drop'
+import { mocked } from 'ts-jest/utils'
 
 jest.mock('../src/get-log')
 const mDrop = jest.fn(drop)
-
-const connection = {
-  execute: jest.fn((sql: string) => Promise.resolve(sql)),
-  query: jest.fn(),
-  end: jest.fn(),
-}
-
 let pool: AdapterPool
 
 beforeEach(() => {
   pool = {
-    config: {
-      database: 'database',
-      eventsTableName: 'table-name',
-      snapshotsTableName: 'snapshots-table-name',
-      secretsDatabase: 'secrets-database',
-      secretsTableName: 'secrets-table-name',
-    },
+    database: 'database',
+    eventsTableName: 'table-name',
+    snapshotsTableName: 'snapshots-table-name',
+    secretsDatabase: 'secrets-database',
+    secretsTableName: 'secrets-table-name',
     connection: {
-      execute: jest.fn((sql: string) => Promise.resolve(sql)),
-      query: jest.fn((sql: any) => Promise.resolve(sql)),
-      end: jest.fn(() => Promise.resolve()),
+      execute: jest
+        .fn()
+        .mockImplementation((sql: string) => Promise.resolve(sql)),
+      query: jest.fn().mockImplementation((sql: any) => Promise.resolve(sql)),
+      end: jest.fn().mockImplementation(() => Promise.resolve()),
     },
-    escape: jest.fn((v: any) => `"${v}-escaped"`),
-    escapeId: jest.fn((v: any) => `"${v}-escaped-id"`),
-    MySQL: {
-      // eslint-disable-next-line @typescript-eslint/camelcase,spellcheck/spell-checker
-      createconnection: jest.fn((options: any) => connection),
-    },
-    maybeThrowResourceError: jest.fn((e: Error[]) => e),
+    escapeId: (e: any) => `ESCAPEID[${e}]`,
+    monitoring: jest.fn((e: Error[]) => e),
   } as any
 })
 
 afterEach(() => {
   mDrop.mockClear()
-  connection.execute.mockClear()
+  const execute = mocked(pool.connection.execute)
+  execute.mockClear()
 })
 
 test('event store dropped', async () => {
@@ -49,6 +39,6 @@ test('event store dropped', async () => {
 
 test('secrets store dropped', async () => {
   await mDrop(pool)
-
-  expect(connection.execute.mock.calls).toMatchSnapshot('drop table with keys')
+  const execute = mocked(pool.connection.execute)
+  expect(execute.mock.calls).toMatchSnapshot('drop table with keys')
 })

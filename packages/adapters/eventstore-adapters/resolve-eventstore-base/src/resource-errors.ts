@@ -50,7 +50,7 @@ const allowedResourceErrorsConstructors = Array.from<Function>([
   ResourceNotExistError,
 ])
 
-export const maybeThrowResourceError = (errors: Error[]): void => {
+export const monitoring = (errors: Error[]): void => {
   if (
     !Array.isArray(errors) ||
     !errors.reduce(

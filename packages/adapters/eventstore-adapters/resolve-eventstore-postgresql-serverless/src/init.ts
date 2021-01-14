@@ -17,7 +17,7 @@ const init = async ({
   snapshotsTableName,
   executeStatement,
   escapeId,
-  maybeThrowResourceError,
+  monitoring,
 }: AdapterPool): Promise<void> => {
   const log = getLog('initSecretsStore')
   log.debug(`initializing secrets store database tables`)
@@ -29,44 +29,6 @@ const init = async ({
   const globalIndexName: string = escapeId(`${secretsTableName}-global`)
 
   const errors: any[] = []
-  let statements: string[] = [
-    `CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${secretsTableNameAsId} (
-    "idx" BIGSERIAL,
-    "id" ${AGGREGATE_ID_SQL_TYPE} NOT NULL PRIMARY KEY,
-    "secret" text COLLATE pg_catalog."default"
-    )`,
-    `CREATE UNIQUE INDEX IF NOT EXISTS ${globalIndexName}
-    ON ${databaseNameAsId}.${secretsTableNameAsId}
-    ("idx")`,
-  ]
-
-  for (const statement of statements) {
-    try {
-      log.debug(`executing query`)
-      log.verbose(statement)
-      await executeStatement(statement)
-      log.debug(`query executed successfully`)
-    } catch (error) {
-      if (error) {
-        let errorToThrow = error
-        if (
-          /Relation.*? already exists$/i.test(error.message) ||
-          /duplicate key value violates unique constraint/i.test(error.message)
-        ) {
-          errorToThrow = new EventstoreResourceAlreadyExistError(
-            `duplicate initialization of the postgresql-serverless secrets store with the same parameters not allowed`
-          )
-        }
-        log.error(errorToThrow.message)
-        log.verbose(errorToThrow.stack)
-        errors.push(errorToThrow)
-      }
-    }
-  }
-
-  maybeThrowResourceError(errors)
-
-  log.debug(`secrets store database tables are initialized`)
 
   const eventsTableNameAsId: string = escapeId(eventsTableName)
   const threadsTableNameAsId: string = escapeId(`${eventsTableName}-threads`)
@@ -82,7 +44,7 @@ const init = async ({
   const typeIndexName: string = escapeId(`${eventsTableName}-type`)
   const timestampIndexName: string = escapeId(`${eventsTableName}-timestamp`)
 
-  statements = [
+  const statements = [
     `CREATE TABLE ${databaseNameAsId}.${eventsTableNameAsId}(
       "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
       "threadCounter" ${INT8_SQL_TYPE} NOT NULL,
@@ -125,6 +87,14 @@ const init = async ({
     ) VALUES ${Array.from(new Array(256))
       .map((_, index) => `(${index}, 0)`)
       .join(',')}`,
+    `CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${secretsTableNameAsId} (
+      "idx" BIGSERIAL,
+      "id" ${AGGREGATE_ID_SQL_TYPE} NOT NULL PRIMARY KEY,
+      "secret" text COLLATE pg_catalog."default"
+    )`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS ${globalIndexName}
+    ON ${databaseNameAsId}.${secretsTableNameAsId}
+    ("idx")`,
   ]
 
   for (const statement of statements) {
@@ -149,7 +119,7 @@ const init = async ({
     }
   }
 
-  maybeThrowResourceError(errors)
+  monitoring(errors)
 
   log.debug('databases are initialized')
 }
