@@ -706,6 +706,34 @@ describe('query', () => {
       meta: {},
     })
   })
+
+  test('custom query string options passed to request', async () => {
+    await client.query(
+      {
+        name: 'query-name',
+        resolver: 'query-resolver',
+        args: {
+          name: 'value',
+        },
+      },
+      {
+        queryStringOptions: {
+          arrayFormat: 'comma',
+        },
+      }
+    )
+    expect(mRequest).toHaveBeenCalledWith(
+      mockContext,
+      expect.anything(),
+      expect.anything(),
+      expect.objectContaining({
+        queryStringOptions: {
+          arrayFormat: 'comma',
+        },
+      }),
+      undefined
+    )
+  })
 })
 
 describe('getStaticAssetUrl', () => {
