@@ -32,7 +32,7 @@ beforeEach(() => {
     connection,
     escape: jest.fn(),
     escapeId: jest.fn(),
-    maybeThrowResourceError: jest.fn(),
+    monitoring: jest.fn(),
     MySQL,
     shapeEvent: jest.fn(),
     database: 'database',
