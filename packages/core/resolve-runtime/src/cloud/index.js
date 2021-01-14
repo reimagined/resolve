@@ -1,7 +1,7 @@
 import 'source-map-support/register'
 
 import debugLevels from 'resolve-debug-levels'
-import { initDomain } from 'resolve-runtime-interop'
+import { initDomain } from 'resolve-core'
 
 import initAwsClients from './init-aws-clients'
 import initBroker from './init-broker'

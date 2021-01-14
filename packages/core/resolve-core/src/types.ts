@@ -5,7 +5,7 @@ import {
   AggregateEncryptionFactory,
   AggregateProjection,
   ReadModelEncryptionFactory,
-} from 'resolve-core'
+} from './core-types'
 
 export type AggregateMeta = {
   name: string

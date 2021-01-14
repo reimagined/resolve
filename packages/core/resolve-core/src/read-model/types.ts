@@ -1,4 +1,4 @@
-import { Decrypter, Encrypter, Event, SecretsManager } from 'resolve-core'
+import { Decrypter, Encrypter, Event, SecretsManager } from '../core-types'
 
 export type ReadModelEventHandlerContext = {
   encrypt: Encrypter | null

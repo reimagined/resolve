@@ -24,7 +24,9 @@
     "testw": "echo || exit 0"
   },
   "dependencies": {
-    "@babel/runtime": "7.9.6"
+    "@babel/runtime": "7.9.6",
+    "resolve-debug-levels": "0.26.4",
+    "uuid": "8.3.2"
   },
   "devDependencies": {
     "jest": "26.0.1"

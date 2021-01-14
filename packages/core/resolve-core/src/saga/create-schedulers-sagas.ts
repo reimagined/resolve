@@ -1,4 +1,4 @@
-import { Event } from 'resolve-core'
+import { Event } from '../index'
 import getLog from '../get-log'
 import { createEventHandler } from './create-event-handler'
 import {

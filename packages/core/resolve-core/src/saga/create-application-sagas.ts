@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid'
-import { Command, CommandResult, Event } from 'resolve-core'
+import { Command, CommandResult, Event } from '../index'
 import getLog from '../get-log'
 import { createEventHandler } from './create-event-handler'
 import { ApplicationSagasBuilder } from './types'

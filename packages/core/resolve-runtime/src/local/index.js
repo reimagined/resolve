@@ -1,6 +1,6 @@
 import 'source-map-support/register'
 import debugLevels from 'resolve-debug-levels'
-import { initDomain } from 'resolve-runtime-interop'
+import { initDomain } from 'resolve-core'
 
 import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'

@@ -27,7 +27,6 @@
     "columnify": "^1.5.4",
     "dateformat": "^3.0.3",
     "isomorphic-fetch": "3.0.0",
-    "resolve-runtime-interop": "0.26.4",
     "yargs": "^14.0.0"
   },
   "devDependencies": {

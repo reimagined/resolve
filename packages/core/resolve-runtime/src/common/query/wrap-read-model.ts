@@ -1,8 +1,13 @@
 import { EOL } from 'os'
 // TODO: core cannot reference "top-level" packages, move these to resolve-core
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
-import { SecretsManager, makeMonitoringSafe, Monitoring } from 'resolve-core'
-import { ReadModelInterop, SagaInterop } from 'resolve-runtime-interop'
+import {
+  SecretsManager,
+  makeMonitoringSafe,
+  Monitoring,
+  ReadModelInterop,
+  SagaInterop,
+} from 'resolve-core'
 
 import getLog from './get-log'
 

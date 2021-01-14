@@ -6,7 +6,7 @@ import {
   SagasInteropBuilder,
   SchedulerInfo,
 } from './types'
-import { createHttpError, HttpStatusCodes } from 'resolve-core'
+import { createHttpError, HttpStatusCodes } from '../errors'
 
 const getSagaInterop = (
   saga: { name: string; connectorName: string },

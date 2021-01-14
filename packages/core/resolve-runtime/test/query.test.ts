@@ -1,6 +1,5 @@
 import createQuery from '../../resolve-runtime/src/common/query'
-import { IS_BUILT_IN, SecretsManager } from 'resolve-core'
-import { ReadModelInteropMap } from 'resolve-runtime-interop'
+import { IS_BUILT_IN, SecretsManager, ReadModelInteropMap } from 'resolve-core'
 
 type State = {
   value: number

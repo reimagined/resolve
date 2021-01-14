@@ -6,7 +6,8 @@ import {
   ReadModelResolverMap,
   ReadModelInteropMap,
 } from './types'
-import { createHttpError, HttpStatusCodes, SecretsManager } from 'resolve-core'
+import { SecretsManager } from '../core-types'
+import { createHttpError, HttpStatusCodes } from '../errors'
 import { getPerformanceTracerSubsegment } from '../utils'
 import { ReadModelMeta } from '../types'
 import getLog from '../get-log'

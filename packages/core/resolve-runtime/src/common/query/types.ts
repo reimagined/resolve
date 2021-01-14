@@ -1,10 +1,11 @@
-import { IS_BUILT_IN, Monitoring } from 'resolve-core'
 import {
+  IS_BUILT_IN,
+  Monitoring,
   ReadModelInteropMap,
   SagaInteropMap,
   SagaInterop,
-} from 'resolve-runtime-interop'
-import { ReadModelInterop } from 'resolve-runtime-interop'
+  ReadModelInterop,
+} from 'resolve-core'
 
 export type CreateQueryOptions = {
   invokeEventBusAsync: Function

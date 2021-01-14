@@ -1,4 +1,4 @@
-import { SecretsManager, Event } from 'resolve-core'
+import { SecretsManager, Event } from '../core-types'
 import { AggregateMeta, SagaMeta } from '../types'
 
 export type SchedulerInfo = {
