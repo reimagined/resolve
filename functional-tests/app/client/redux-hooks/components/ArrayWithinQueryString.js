@@ -7,9 +7,9 @@ const ArrayWithQueryString = ({
     params: { runId },
   },
 }) => {
-  const scenario0 = `${runId}-0`
-  const scenario1 = `${runId}-1`
-  const scenario2 = `${runId}-2`
+  const scenario0 = `${runId}0`
+  const scenario1 = `${runId}1`
+  const scenario2 = `${runId}2`
 
   const { execute: addScenario } = useReduxCommand((aggregateId) => ({
     type: 'executeArrayWithingQueryString',
