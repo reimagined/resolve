@@ -27,4 +27,3 @@ test('default query string options', async (t) => {
   await t.click(Selector('button').withText('retrieve all with defaults'))
   await t.expect(Selector('#scenarios-default').innerText).eql('3')
 })
-
