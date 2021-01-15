@@ -32,3 +32,22 @@ export type SagaMeta = EventProjectionMeta & {
   sideEffects: any
   handlers: { [key: string]: Function }
 }
+
+export type Monitoring = {
+  error?: (error: Error, part: string, meta: any) => Promise<void>
+  performance?: PerformanceTracer
+}
+
+export type PerformanceSubsegment = {
+  addAnnotation: (name: string, data: any) => void
+  addError: (error: Error) => void
+  close: () => void
+}
+export type PerformanceSegment = {
+  addNewSubsegment: (name: string) => PerformanceSubsegment
+}
+
+export type PerformanceTracer = {
+  getSegment: () => PerformanceSegment
+}
+
