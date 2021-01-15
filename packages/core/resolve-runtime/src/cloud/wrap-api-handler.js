@@ -1,7 +1,7 @@
 import binaryCase from 'binary-case'
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
-import { parse as parseQuery } from 'query-string'
+import { parse as parseQuery } from 'qs'
 import { getReasonPhrase } from 'http-status-codes'
 
 const COOKIE_CLEAR_DATE = new Date(0)
@@ -60,7 +60,7 @@ const prepareQuery = (
   isLambdaEdgeRequest
 ) => {
   if (isLambdaEdgeRequest) {
-    const query = parseQuery(querystring, { arrayFormat: 'bracket' })
+    const query = parseQuery(querystring)
     return query
   } else {
     const query =
