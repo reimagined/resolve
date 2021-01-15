@@ -60,3 +60,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **url** and **cursor** params in the **subscribe** function
 
 ### Removed
+
+## 0.27.0
+
+### Breaking Changes
+
+#### cloud config
+- Runtime env RESOLVE_ES_SECRET_ARN renamed to RESOLVE_USER_SECRET_ARN
+- Runtime env RESOLVE_ES_CLUSTER_ARN renamed to RESOLVE_EVENT_STORE_CLUSTER_ARN
+- Runtime env RESOLVE_ES_DATABASE renamed to RESOLVE_EVENT_STORE_DATABASE_NAME
+- Runtime env RESOLVE_READMODEL_SECRET_ARN renamed to RESOLVE_USER_SECRET_ARN
+- Runtime env RESOLVE_ES_SECRET_ARN renamed to RESOLVE_USER_SECRET_ARN
+- Runtime env RESOLVE_ES_EVENTS_TABLE removed
+- Runtime env RESOLVE_ES_SECRETS_TABLE removed
