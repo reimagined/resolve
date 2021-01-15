@@ -17,7 +17,6 @@
     "resolve-eventstore-base": "0.26.4",
     "resolve-eventstore-lite": "0.26.4",
     "resolve-eventstore-postgresql-serverless": "0.26.4",
-    "resolve-query": "0.26.4",
     "resolve-readmodel-lite": "0.26.4",
     "resolve-readmodel-mysql": "0.26.4",
     "resolve-readmodel-postgresql-serverless": "0.26.4",
