@@ -7,11 +7,13 @@ export default {
   eventstoreAdapter: {
     module: 'resolve-eventstore-postgresql-serverless',
     options: {
-      awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_ARN'),
-      dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_ES_CLUSTER_ARN'),
-      databaseName: declareRuntimeEnv('RESOLVE_ES_DATABASE'),
-      eventsTableName: declareRuntimeEnv('RESOLVE_ES_EVENTS_TABLE'),
-      secretsTableName: declareRuntimeEnv('RESOLVE_ES_SECRETS_TABLE'),
+      awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
+      dbClusterOrInstanceArn: declareRuntimeEnv(
+        'RESOLVE_EVENT_STORE_CLUSTER_ARN'
+      ),
+      databaseName: declareRuntimeEnv('RESOLVE_EVENT_STORE_DATABASE_NAME'),
+      eventsTableName: 'events',
+      secretsTableName: 'secrets',
       region: declareRuntimeEnv('AWS_REGION'),
       snapshotBucketSize: 100,
     },
@@ -23,7 +25,7 @@ export default {
         dbClusterOrInstanceArn: declareRuntimeEnv(
           'RESOLVE_READMODEL_CLUSTER_ARN'
         ),
-        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_SECRET_ARN'),
+        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
         databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
         region: declareRuntimeEnv('AWS_REGION'),
       },

@@ -77,6 +77,7 @@ const initResolve = async (resolve) => {
 
   const executeSaga = createSagaExecutor({
     invokeEventBusAsync,
+    onCommandExecuted,
     executeCommand,
     executeQuery,
     eventstoreAdapter,

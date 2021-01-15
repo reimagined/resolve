@@ -5,7 +5,7 @@ import { mocked } from 'ts-jest/utils'
 import { AdapterPool, AdapterSpecific } from '../src/types'
 import connect from '../src/connect'
 
-jest.mock('../src/js/get-log')
+jest.mock('get-log')
 
 let rdsRelatedConfig: any
 let pool: AdapterPool
@@ -26,7 +26,17 @@ beforeEach(() => {
       secretsTableName: 'secrets-table',
       ...rdsRelatedConfig,
     },
-  }
+    coerceEmptyString: jest.fn(),
+    beginTransaction: jest.fn(),
+    coercer: jest.fn(),
+    commitTransaction: jest.fn(),
+    escape: jest.fn(),
+    escapeId: jest.fn(),
+    executeStatement: jest.fn(),
+    fullJitter: jest.fn(),
+    isTimeoutError: jest.fn(),
+    rollbackTransaction: jest.fn(),
+  } as any
   specific = {
     coercer: jest.fn(),
     escape: jest.fn(),
@@ -48,11 +58,31 @@ test("cloud config assigned to adapter's pool", async () => {
 
   expect(pool).toEqual(
     expect.objectContaining({
-      dbClusterOrInstanceArn: 'instance-arn',
       awsSecretStoreArn: 'secret-store-arn',
-      eventsTableName: 'table',
-      databaseName: 'database',
-      secretsTableName: 'secrets-table',
+      beginTransaction: pool.beginTransaction,
+      coerceEmptyString: pool.coerceEmptyString,
+      coercer: pool.coercer,
+      commitTransaction: pool.commitTransaction,
+      config: {
+        awsSecretStoreArn: 'secret-store-arn',
+        databaseName: 'database',
+        dbClusterOrInstanceArn: 'instance-arn',
+        eventsTableName: 'table',
+        rdsRelatedOption: 'rds-option',
+        secretsTableName: 'secrets-table',
+      },
+      databaseName: undefined,
+      dbClusterOrInstanceArn: 'instance-arn',
+      escape: pool.escape,
+      escapeId: pool.escapeId,
+      eventsTableName: undefined,
+      executeStatement: pool.executeStatement,
+      fullJitter: pool.fullJitter,
+      isTimeoutError: pool.isTimeoutError,
+      rdsDataService: {},
+      rollbackTransaction: pool.rollbackTransaction,
+      secretsTableName: undefined,
+      snapshotsTableName: undefined,
     })
   )
   expect(pool).toEqual(
