@@ -62,11 +62,8 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
 
     await inlineLedgerRunQuery(
       `UPDATE ${ledgerTableNameAsId}
-       SET \`Errors\` = JSON_insert(
-         COALESCE(\`Errors\`, JSON('[]')),
-         CAST(('{' || JSON_array_length(COALESCE(\`Errors\`, JSON('[]'))) || '}') AS TEXT[]),
-         JSON(${escape(JSON.stringify(serializeError(error)))})
-       ),
+       SET \`Errors\` = JSON_ARRAY_APPEND(COALESCE(\`Errors\`, JSON_ARRAY()), '$',
+       CAST(${escape(JSON.stringify(serializeError(error)))} AS JSON)),
        \`FailedEvent\` = ${escape(JSON.stringify({ type: 'Init' }))},
        \`Cursor\` = ${escape(JSON.stringify(nextCursor))}
        WHERE \`EventSubscriber\` = ${escape(readModelName)};
@@ -228,11 +225,8 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     } else {
       await inlineLedgerRunQuery(
         `UPDATE ${ledgerTableNameAsId}
-         SET \`Errors\` = JSON_insert(
-           COALESCE(\`Errors\`, JSON('[]')),
-           CAST(('{' || JSON_array_length(COALESCE(\`Errors\`, JSON('[]'))) || '}') AS TEXT[]),
-           JSON(${escape(JSON.stringify(serializeError(lastError)))})
-         ),
+         SET \`Errors\` = JSON_ARRAY_APPEND(COALESCE(\`Errors\`, JSON_ARRAY()), '$',
+         CAST(${escape(JSON.stringify(serializeError(lastError)))} AS JSON)),
          ${
            lastFailedEvent != null
              ? `\`FailedEvent\` = ${escape(JSON.stringify(lastFailedEvent))},`
