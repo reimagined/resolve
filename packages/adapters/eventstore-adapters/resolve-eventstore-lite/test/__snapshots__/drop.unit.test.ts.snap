@@ -3,7 +3,16 @@
 exports[`secrets store dropped: drop table with keys 1`] = `
 Array [
   Array [
-    "DROP TABLE IF EXISTS \\"secrets-table-escaped\\"",
+    "DROP TABLE IF EXISTS ESCAPEID[table-name-freeze]",
+  ],
+  Array [
+    "DROP TABLE ESCAPEID[table-name]",
+  ],
+  Array [
+    "DROP TABLE ESCAPEID[snapshots-table-name]",
+  ],
+  Array [
+    "DROP TABLE ESCAPEID[secrets-table]",
   ],
 ]
 `;

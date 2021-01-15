@@ -1,84 +1,86 @@
-import { EOL } from 'os'
 import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
-import getLog from './js/get-log'
-import dropEventStore from './js/drop'
+import getLog from './get-log'
 import { AdapterPool } from './types'
 
-const dropSecretsStore = async (pool: AdapterPool): Promise<any> => {
+const drop = async ({
+  databaseName,
+  eventsTableName,
+  snapshotsTableName,
+  executeStatement,
+  escapeId,
+  secretsTableName,
+  maybeThrowResourceError,
+}: AdapterPool): Promise<void> => {
   const log = getLog('dropSecretsStore')
 
   log.debug(`dropping secrets store database tables`)
-  const { secretsTableName, databaseName, executeStatement, escapeId } = pool
-  log.verbose(`secretsTableName: ${secretsTableName}`)
-
-  if (!secretsTableName || !escapeId || !databaseName || !executeStatement) {
-    const error = Error(`adapter pool was not initialized properly!`)
-    log.error(error.message)
-    log.verbose(error.stack || error.message)
-    throw error
-  }
-
-  log.debug(`dropping secrets store database tables and indices`)
   log.verbose(`secretsTableName: ${secretsTableName}`)
   log.verbose(`databaseName: ${databaseName}`)
 
-  const databaseNameAsId = escapeId(databaseName)
-  const secretsTableNameAsId = escapeId(secretsTableName)
-  const globalIndexName = escapeId(`${secretsTableName}-global`)
+  const secretsTableNameAsId: string = escapeId(secretsTableName)
+  const globalIndexName: string = escapeId(`${secretsTableName}-global`)
+  const databaseNameAsId: string = escapeId(databaseName)
 
-  const statements = [
+  log.debug(`secrets store database tables and indices are dropped`)
+
+  const eventsTableNameAsId: string = escapeId(eventsTableName)
+  const threadsTableNameAsId: string = escapeId(`${eventsTableName}-threads`)
+  const freezeTableNameAsId: string = escapeId(`${eventsTableName}-freeze`)
+  const snapshotsTableNameAsId: string = escapeId(snapshotsTableName)
+
+  const aggregateIdAndVersionIndexName: string = escapeId(
+    `${eventsTableName}-aggregateIdAndVersion`
+  )
+  const aggregateIndexName: string = escapeId(`${eventsTableName}-aggregateId`)
+  const aggregateVersionIndexName: string = escapeId(
+    `${eventsTableName}-aggregateVersion`
+  )
+  const typeIndexName: string = escapeId(`${eventsTableName}-type`)
+  const timestampIndexName: string = escapeId(`${eventsTableName}-timestamp`)
+
+  const statements: string[] = [
     `DROP TABLE ${databaseNameAsId}.${secretsTableNameAsId}`,
     `DROP INDEX IF EXISTS ${databaseNameAsId}.${globalIndexName}`,
-  ]
 
-  const errors = []
+    `DROP TABLE ${databaseNameAsId}.${eventsTableNameAsId}`,
+
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${aggregateIdAndVersionIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${aggregateIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${aggregateVersionIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${typeIndexName}`,
+    `DROP INDEX IF EXISTS ${databaseNameAsId}.${timestampIndexName}`,
+
+    `DROP TABLE ${databaseNameAsId}.${threadsTableNameAsId}`,
+
+    `DROP TABLE ${databaseNameAsId}.${snapshotsTableNameAsId}`,
+
+    `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`,
+  ]
+  const errors: any[] = []
 
   for (const statement of statements) {
     try {
+      log.debug(`executing query`)
+      log.verbose(statement)
       await executeStatement(statement)
+      log.debug(`query executed successfully`)
     } catch (error) {
       if (error != null) {
-        log.error(error.message)
-        log.verbose(error.stack)
         if (/Table.*? does not exist$/i.test(error.message)) {
           throw new EventstoreResourceNotExistError(
             `duplicate event store resource drop detected`
           )
+        } else {
+          log.error(error.message)
+          log.verbose(error.stack)
         }
         errors.push(error)
       }
     }
   }
 
-  if (errors.length > 0) {
-    throw new Error(errors.map((error) => error.stack).join(EOL))
-  }
+  maybeThrowResourceError(errors)
 
-  log.debug(`secrets store database tables and indices are dropped`)
-}
-
-const drop = async (pool: AdapterPool): Promise<any> => {
-  const log = getLog('drop')
-
-  const {
-    databaseName,
-    eventsTableName,
-    snapshotsTableName,
-    executeStatement,
-    escapeId,
-  } = pool
-
-  const createDropEventStorePromise = (): Promise<any> =>
-    dropEventStore({
-      databaseName,
-      eventsTableName,
-      snapshotsTableName,
-      executeStatement,
-      escapeId,
-    })
-
-  log.debug(`dropping the event store`)
-  await Promise.all([createDropEventStorePromise(), dropSecretsStore(pool)])
   log.debug(`the event store dropped`)
 }
 
