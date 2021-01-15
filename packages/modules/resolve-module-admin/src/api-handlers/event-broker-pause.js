@@ -1,11 +1,13 @@
+import wrapApiHandler from './wrap-api-handler'
+
 const pause = async (req, res) => {
-  const { listenerId } = req.query
+  const { eventSubscriber } = req.query
   try {
-    await req.resolve.eventBus.pause({ eventSubscriber: listenerId })
-    res.end(`ListenerId = "${listenerId}" paused`)
+    await req.resolve.eventBus.pause({ eventSubscriber })
+    res.end(`EventSubscriber = "${eventSubscriber}" paused`)
   } catch (e) {
-    res.end(`Listener "${listenerId}" does not exist`)
+    res.end(`EventSubscriber "${eventSubscriber}" does not exist`)
   }
 }
 
-export default pause
+export default wrapApiHandler(pause)
