@@ -1,6 +1,6 @@
 {
   "name": "resolve-saga",
-  "version": "0.26.3",
+  "version": "0.26.4",
   "description": "Provides an interface used to execute sagas",
   "keywords": [
     "cqrs",
@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-command": "0.26.3",
-    "resolve-debug-levels": "0.26.3",
-    "resolve-query": "0.26.3",
+    "resolve-command": "0.26.4",
+    "resolve-debug-levels": "0.26.4",
+    "resolve-query": "0.26.4",
     "uuid": "8.3.1"
   },
   "devDependencies": {

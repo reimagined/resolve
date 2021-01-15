@@ -1,9 +1,10 @@
 import { EOL } from 'os'
 // TODO: core cannot reference "top-level" packages, move these to resolve-core
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
-import { SecretsManager } from 'resolve-core'
+import { SecretsManager, makeMonitoringSafe, Monitoring } from 'resolve-core'
 
 import getLog from './get-log'
+
 import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
 
@@ -218,14 +219,6 @@ const sendEvents = async (
         log.error(error.message)
         log.verbose(error.stack)
         lastFailedEvent = event
-
-        try {
-          await pool.onError(error, 'read-model-projection')
-        } catch (e) {
-          log.verbose('onError function call failed')
-          log.verbose(e.stack)
-        }
-
         throw error
       }
     }
@@ -437,11 +430,10 @@ const read = async (
         `Resolver "${resolverName}" does not exist`
       ) as any
       error.code = 422
-
-      try {
-        await pool.onError(error, 'read-model-resolver')
-      } catch (e) {}
-
+      await pool.monitoring?.error?.(error, 'readModelResolver', {
+        readModelName,
+        resolverName,
+      })
       throw error
     }
 
@@ -477,10 +469,10 @@ const read = async (
           if (subSegment != null) {
             subSegment.addError(error)
           }
-          try {
-            await pool.onError(error, 'read-model-resolver')
-          } catch (e) {}
-
+          await pool.monitoring?.error?.(error, 'readModelResolver', {
+            readModelName,
+            resolverName,
+          })
           throw error
         } finally {
           if (subSegment != null) {
@@ -494,10 +486,10 @@ const read = async (
       subSegment.addError(error)
     }
 
-    try {
-      await pool.onError(error, 'read-model-resolver')
-    } catch (e) {}
-
+    await pool.monitoring?.error?.(error, 'readModelResolver', {
+      readModelName,
+      resolverName,
+    })
     throw error
   } finally {
     if (subSegment != null) {
@@ -776,6 +768,23 @@ const dispose = async (pool: ReadModelPool): Promise<void> => {
   await Promise.all(promises)
 }
 
+const wrapProjectionHandler = <T extends Array<any>>(
+  handler: (...args: T) => Promise<any>,
+  readModelName: string,
+  eventType: string,
+  monitoring?: Monitoring
+) => async (...args: T) => {
+  try {
+    return await handler(...args)
+  } catch (error) {
+    await monitoring?.error?.(error, 'readModelProjection', {
+      readModelName,
+      eventType,
+    })
+    throw error
+  }
+}
+
 const wrapReadModel = ({
   readModel,
   readModelConnectors,
@@ -784,7 +793,7 @@ const wrapReadModel = ({
   performanceTracer,
   getVacantTimeInMillis,
   performAcknowledge,
-  onError = async () => void 0,
+  monitoring,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
 
@@ -796,17 +805,37 @@ const wrapReadModel = ({
     )
   }
 
+  const safeMonitoring =
+    monitoring != null ? makeMonitoringSafe(monitoring) : monitoring
+
   const pool: ReadModelPool = {
     invokeEventBusAsync,
     eventstoreAdapter,
     connections: new Set(),
-    readModel,
+    readModel: {
+      ...readModel,
+      projection:
+        readModel.projection != null
+          ? Object.keys(readModel.projection).reduce(
+              (acc, eventType) => ({
+                ...acc,
+                [eventType]: wrapProjectionHandler(
+                  readModel.projection[eventType],
+                  readModel.name,
+                  eventType,
+                  safeMonitoring
+                ),
+              }),
+              {} as typeof readModel.projection
+            )
+          : readModel.projection,
+    },
     connector,
     isDisposed: false,
     performanceTracer,
     getVacantTimeInMillis,
     performAcknowledge,
-    onError,
+    monitoring: safeMonitoring,
   }
 
   const api = {

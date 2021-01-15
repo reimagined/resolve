@@ -361,7 +361,9 @@ const wrapApiHandler = (
         ? `${error.stack}`
         : `Unknown error ${error}`
 
-    await onError(error)
+    if (req != null) {
+      await onError(error, req.path)
+    }
 
     // eslint-disable-next-line no-console
     console.error(outError)

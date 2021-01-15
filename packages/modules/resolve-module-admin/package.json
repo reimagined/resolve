@@ -1,6 +1,6 @@
 {
   "name": "resolve-module-admin",
-  "version": "0.26.3",
+  "version": "0.26.4",
   "description": "A reSolve module that adds admin commands to an application.",
   "keywords": [
     "cqrs",
@@ -28,7 +28,7 @@
     "dateformat": "^3.0.3",
     "isomorphic-fetch": "3.0.0",
     "yargs": "^14.0.0",
-    "resolve-saga": "0.26.3"
+    "resolve-saga": "0.26.4"
   },
   "devDependencies": {
     "jest": "26.0.1",

@@ -1,52 +1,35 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import { mocked } from 'ts-jest/utils'
-/* eslint-enable import/no-extraneous-dependencies */
-
 import { AdapterPool } from '../src/types'
 import drop from '../src/drop'
-import dropEventStore from '../src/js/drop'
 
-jest.mock('../src/js/get-log')
-jest.mock('../src/js/drop', () => jest.fn())
-
-const mDropEventStore = mocked(dropEventStore)
-const mExec = jest.fn()
-
+jest.mock('../src/get-log')
 let pool: AdapterPool
+
+const mDrop = jest.fn(drop)
 
 beforeEach(() => {
   pool = {
-    config: {
-      databaseFile: 'database-file',
-      secretsFile: 'secret-file',
-      secretsTableName: 'secrets-table',
-      eventsTableName: 'table-name',
-      snapshotsTableName: 'snapshots-table-name',
-    },
-    secretsDatabase: { exec: mExec },
+    databaseFile: 'database-file',
     secretsTableName: 'secrets-table',
-    database: '',
-    eventsTableName: '',
-    snapshotsTableName: '',
-    escape: jest.fn(),
-    escapeId: jest.fn((v: any) => `"${v}-escaped"`),
-    memoryStore: 'memory',
-  }
-})
-
-afterEach(() => {
-  mDropEventStore.mockClear()
-  mExec.mockClear()
+    eventsTableName: 'table-name',
+    snapshotsTableName: 'snapshots-table-name',
+    database: { exec: jest.fn().mockImplementation((e: any) => e) },
+    escapeId: (e: any) => `ESCAPEID[${e}]`,
+    memoryStore: {
+      name: '',
+      drop: jest.fn(),
+    },
+    maybeThrowResourceError: jest.fn((e: Error[]) => e),
+  } as any
 })
 
 test('event store dropped', async () => {
-  await drop(pool)
+  await mDrop(pool)
 
-  expect(mDropEventStore).toHaveBeenCalledWith(pool)
+  expect(mDrop).toHaveBeenCalledWith(pool)
 })
 
 test('secrets store dropped', async () => {
-  await drop(pool)
+  await mDrop(pool)
 
-  expect(mExec.mock.calls).toMatchSnapshot('drop table with keys')
+  expect(pool.database.exec.mock.calls).toMatchSnapshot('drop table with keys')
 })

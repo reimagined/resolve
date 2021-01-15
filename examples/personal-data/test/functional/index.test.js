@@ -104,7 +104,7 @@ test('registered user, posts creation', async (t) => {
 })
 
 test('registered user, posts deletion', async (t) => {
-  await userRegistration(t, generateUser(2))
+  await userRegistration(t, generateUser(3))
   await publishPost(t, generatePost(1))
   await publishPost(t, generatePost(2))
   await publishPost(t, generatePost(3))
@@ -125,7 +125,7 @@ test('registered user, posts deletion', async (t) => {
 })
 
 test('registered user, profile update', async (t) => {
-  await userRegistration(t, generateUser(3))
+  await userRegistration(t, generateUser(4))
 
   await t.navigateTo(`${MAIN_PAGE}/profile`)
 
@@ -141,7 +141,7 @@ test('registered user, profile update', async (t) => {
   await t.navigateTo(MAIN_PAGE)
 
   const fullName = Selector('p').withText(
-    `user-name-3-updated user-lastName-3-updated`
+    `user-name-4-updated user-lastName-4-updated`
   )
 
   await refreshAndWait(t, 'user-profiles', () => fullName.exists, true)
@@ -149,9 +149,9 @@ test('registered user, profile update', async (t) => {
 })
 
 test('registered user, gather personal data', async (t) => {
-  await userRegistration(t, generateUser(4))
+  await userRegistration(t, generateUser(5))
 
-  let nicknameItem = ReactSelector('a').withText('user-nickname-4')
+  let nicknameItem = ReactSelector('a').withText('user-nickname-5')
   await t.click(nicknameItem)
 
   const gatherItem = ReactSelector('button').withText('Gather my personal data')
@@ -162,7 +162,7 @@ test('registered user, gather personal data', async (t) => {
 
   await t.wait(5000).navigateTo(MAIN_PAGE)
 
-  nicknameItem = ReactSelector('a').withText('user-nickname-4')
+  nicknameItem = ReactSelector('a').withText('user-nickname-5')
   await t.click(nicknameItem)
 
   const downloadItem = ReactSelector('a').withText('Download')
@@ -170,9 +170,9 @@ test('registered user, gather personal data', async (t) => {
 })
 
 test('registered user, profile removal', async (t) => {
-  await userRegistration(t, generateUser(5))
+  await userRegistration(t, generateUser(6))
 
-  const nicknameItem = ReactSelector('a').withText('user-nickname-5')
+  const nicknameItem = ReactSelector('a').withText('user-nickname-6')
   await t.click(nicknameItem)
 
   const removeItem = ReactSelector('button').withText('Delete my profile')
