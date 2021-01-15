@@ -60,7 +60,7 @@ const drop = async (pool: AdapterPool): Promise<any> => {
     }
   }
 
-  pool.monitoring(errors)
+  pool.maybeThrowResourceError(errors)
 
   log.debug(`the event store dropped`)
 }

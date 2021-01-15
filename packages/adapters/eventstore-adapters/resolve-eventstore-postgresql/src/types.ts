@@ -26,7 +26,7 @@ export type AdapterPool = {
     snapshotsTableName?: string
     secretsTableName?: string
   }
-  monitoring: (error: Error[]) => void
+  maybeThrowResourceError: (error: Error[]) => void
   coerceEmptyString: (obj: any, fallback?: string) => string
   Postgres: typeof Postgres
   connectionOptions: any

@@ -18,7 +18,7 @@ beforeEach(() => {
       name: '',
       drop: jest.fn(),
     },
-    monitoring: jest.fn((e: Error[]) => e),
+    maybeThrowResourceError: jest.fn((e: Error[]) => e),
   } as any
 })
 

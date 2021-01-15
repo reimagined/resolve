@@ -103,7 +103,7 @@ const init = async (pool: AdapterPool): Promise<any> => {
     }
   }
 
-  pool.monitoring(errors)
+  pool.maybeThrowResourceError(errors)
 
   log.debug('databases are initialized')
 }

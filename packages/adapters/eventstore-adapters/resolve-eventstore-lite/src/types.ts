@@ -13,7 +13,7 @@ export type AdapterPool = {
     eventsTableName: string
     snapshotsTableName: string
   }
-  monitoring: (error: Error[]) => void
+  maybeThrowResourceError: (error: Error[]) => void
   coerceEmptyString: (obj: any, fallback?: string) => string
   database: any
   eventsTableName: string

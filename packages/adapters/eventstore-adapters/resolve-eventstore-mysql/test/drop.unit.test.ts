@@ -21,7 +21,7 @@ beforeEach(() => {
       end: jest.fn().mockImplementation(() => Promise.resolve()),
     },
     escapeId: (e: any) => `ESCAPEID[${e}]`,
-    monitoring: jest.fn((e: Error[]) => e),
+    maybeThrowResourceError: jest.fn((e: Error[]) => e),
   } as any
 })
 
