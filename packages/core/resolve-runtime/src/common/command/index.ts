@@ -9,6 +9,8 @@ import {
   SecretsManager,
   makeMonitoringSafe,
   Monitoring,
+  AggregateInterop,
+  AggregateInteropMap,
 } from 'resolve-core'
 
 import getLog from './get-log'
@@ -70,6 +72,7 @@ export type CommandExecutorBuilder = (context: {
   performanceTracer?: any
   eventstoreAdapter: EventstoreAdapter
   monitoring?: Monitoring
+  aggregateInterop: AggregateInteropMap
 }) => CommandExecutor
 
 // eslint-disable-next-line no-new-func
@@ -617,6 +620,7 @@ const createCommand: CommandExecutorBuilder = ({
   performanceTracer,
   eventstoreAdapter,
   monitoring,
+  aggregateInterop,
 }): CommandExecutor => {
   const pool = {
     onCommandExecuted,
@@ -626,6 +630,7 @@ const createCommand: CommandExecutorBuilder = ({
     eventstoreAdapter,
     monitoring:
       monitoring != null ? makeMonitoringSafe(monitoring) : monitoring,
+    aggregateInterop,
   }
 
   const api = {

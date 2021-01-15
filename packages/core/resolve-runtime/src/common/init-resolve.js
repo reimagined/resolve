@@ -56,12 +56,20 @@ const initResolve = async (resolve) => {
     resolve.publisher
   )
 
+  const domainMonitoring = {
+    error: monitoring?.error,
+    performance: performanceTracer,
+  }
+
   const executeCommand = createCommandExecutor({
-    aggregates,
     eventstoreAdapter,
-    performanceTracer,
     onCommandExecuted,
+    performanceTracer,
+    aggregates,
     monitoring,
+    aggregatesInterop: domainInterop.aggregateDomain.acquireAggregatesInterop({
+      monitoring: domainMonitoring,
+    }),
   })
 
   const executeQuery = createQueryExecutor({
@@ -75,10 +83,7 @@ const initResolve = async (resolve) => {
     performAcknowledge,
     monitoring,
     modelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
-      monitoring: {
-        error: monitoring?.error,
-        performance: performanceTracer,
-      },
+      monitoring: domainMonitoring,
     }),
   })
 
