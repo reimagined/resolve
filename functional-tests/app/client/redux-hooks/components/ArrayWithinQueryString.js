@@ -29,7 +29,10 @@ const ArrayWithQueryString = ({
         scenarioIds: [scenario0, scenario1, scenario2],
       },
     },
-    [],
+    {
+      requested: [],
+      result: [],
+    },
     { selectorId: 'selector-default' },
     []
   )
@@ -45,7 +48,10 @@ const ArrayWithQueryString = ({
         scenarioIds: [scenario0, scenario1, scenario2],
       },
     },
-    [],
+    {
+      requested: [],
+      result: [],
+    },
     {
       queryOptions: { queryStringOptions: { arrayFormat: 'none' } },
       selectorId: 'selector-none',
@@ -67,8 +73,8 @@ const ArrayWithQueryString = ({
         retrieve all with query string none
       </button>
       <br />
-      <div id="scenarios-default">{byDefault.length}</div>
-      <div id="scenarios-none">{byNone.length}</div>
+      <div id="scenarios-default">{`${byDefault.requested.length}-${byDefault.result.length}`}</div>
+      <div id="scenarios-none">{`${byNone.requested.length}-${byNone.result.length}`}</div>
     </div>
   )
 }

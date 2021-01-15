@@ -28,6 +28,9 @@ export default {
       'ExecutedScenarios',
       makeScenariosQuery('array-within-query-string', scenarioIds)
     )
-    return entries.map((entry) => entry.id)
+    return {
+      requested: scenarioIds,
+      result: entries ? entries.map((entry) => entry.id) : [],
+    }
   },
 }
