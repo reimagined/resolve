@@ -316,13 +316,14 @@ const wrapApiHandler = (
 ) => async (lambdaEvent, lambdaContext, lambdaCallback) => {
   let result
   let isLambdaEdgeRequest
+  let req
   try {
     const customParameters =
       typeof getCustomParameters === 'function'
         ? await getCustomParameters(lambdaEvent, lambdaContext, lambdaCallback)
         : {}
 
-    const req = await createRequest(lambdaEvent, customParameters)
+    req = await createRequest(lambdaEvent, customParameters)
     const res = createResponse()
 
     await handler(req, res)
