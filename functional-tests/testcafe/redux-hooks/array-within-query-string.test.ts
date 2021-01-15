@@ -5,7 +5,7 @@ import { getTargetURL } from '../../utils/utils'
 const runId = nanoid()
 const targetUrl = `${getTargetURL()}/redux-hooks/array-within-query-string/${runId}`
 
-fixture`Redux Hooks: named selectors`.only.beforeEach(async (t) => {
+fixture`Redux Hooks: named selectors`.beforeEach(async (t) => {
   await t.setNativeDialogHandler(() => true)
   await t.navigateTo(targetUrl)
 })
