@@ -62,13 +62,17 @@ const initResolve = async (resolve) => {
   }
 
   const executeCommand = createCommandExecutor({
-    eventstoreAdapter,
-    onCommandExecuted,
     performanceTracer,
-    aggregates,
-    monitoring,
     aggregatesInterop: domainInterop.aggregateDomain.acquireAggregatesInterop({
       monitoring: domainMonitoring,
+      secretsManager: await eventstoreAdapter.getSecretsManager(),
+      eventstore: eventstoreAdapter,
+      hooks: {
+        preSaveEvent: async (aggregate, command, event) => {
+          await onCommandExecuted(event, command)
+          return false
+        },
+      },
     }),
   })
 

@@ -8,7 +8,7 @@ import {
 import {
   AggregateDomain,
   AggregateInterop,
-  AggregateInteropMap,
+  AggregatesInterop,
 } from './aggregate/types'
 import { initSagaDomain } from './saga/saga'
 import { initReadModelDomain } from './read-model/read-model'
@@ -39,5 +39,5 @@ export {
   SagaInterop,
   SagaInteropMap,
   AggregateInterop,
-  AggregateInteropMap,
+  AggregatesInterop,
 }
