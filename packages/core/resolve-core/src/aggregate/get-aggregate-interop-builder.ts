@@ -4,6 +4,7 @@ import {
   AggregateInterop,
   AggregateRuntime,
 } from './types'
+import { CommandError } from '../errors'
 import { AggregateMeta } from '../types'
 import getLog from '../get-log'
 import { getPerformanceTracerSubsegment } from '../utils'
@@ -25,27 +26,13 @@ type AggregateData = {
   snapshotKey: string | null
 }
 
-// FIXME: fix me
-// eslint-disable-next-line no-new-func
-const CommandError = Function()
-Object.setPrototypeOf(CommandError.prototype, Error.prototype)
-export { CommandError }
-
 const isInteger = (val: any): val is number =>
   val != null && parseInt(val) === val && val.constructor === Number
 const isString = (val: any): val is string =>
   val != null && val.constructor === String
 
-const generateCommandError = (message: string): Error => {
-  const error = new Error(message)
-  Object.setPrototypeOf(error, CommandError.prototype)
-  Object.defineProperties(error, {
-    name: { value: 'CommandError', enumerable: true },
-    message: { value: error.message, enumerable: true },
-    stack: { value: error.stack, enumerable: true },
-  })
-  return error
-}
+const generateCommandError = (message: string): CommandError =>
+  new CommandError(message)
 
 const checkOptionShape = (option: any, types: any[]): boolean =>
   !(
@@ -518,10 +505,7 @@ const executeCommand = async (
       }
     })()
 
-    return {
-      payload: null,
-      ...processedEvent,
-    }
+    return processedEvent
   } catch (error) {
     subSegment.addError(error)
     await monitoring?.error?.(error, 'command', { command })

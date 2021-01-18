@@ -1,4 +1,9 @@
-import { Command, CommandResult, AggregatesInterop } from 'resolve-core'
+import {
+  Command,
+  CommandResult,
+  AggregatesInterop,
+  CommandError,
+} from 'resolve-core'
 
 type CommandPool = {
   performanceTracer: any
@@ -15,22 +20,6 @@ export type CommandExecutorBuilder = (context: {
   aggregatesInterop: AggregatesInterop
 }) => CommandExecutor
 
-// eslint-disable-next-line no-new-func
-const CommandError = Function()
-Object.setPrototypeOf(CommandError.prototype, Error.prototype)
-export { CommandError }
-
-const generateCommandError = (message: string): Error => {
-  const error = new Error(message)
-  Object.setPrototypeOf(error, CommandError.prototype)
-  Object.defineProperties(error, {
-    name: { value: 'CommandError', enumerable: true },
-    message: { value: error.message, enumerable: true },
-    stack: { value: error.stack, enumerable: true },
-  })
-  return error
-}
-
 const dispose = async (pool: CommandPool): Promise<void> => {
   const segment = pool.performanceTracer
     ? pool.performanceTracer.getSegment()
@@ -39,7 +28,7 @@ const dispose = async (pool: CommandPool): Promise<void> => {
 
   try {
     if (pool.isDisposed) {
-      throw generateCommandError('Command handler is disposed')
+      throw new CommandError('Command handler is disposed')
     }
 
     pool.isDisposed = true
@@ -64,11 +53,13 @@ const createCommand: CommandExecutorBuilder = ({
     performanceTracer,
   }
 
-  const disposableExecutor = (command: Command): Promise<CommandResult> => {
+  const disposableExecutor = async (
+    command: Command
+  ): Promise<CommandResult> => {
     if (pool.isDisposed) {
-      throw generateCommandError('Command handler is disposed')
+      throw new CommandError('Command handler is disposed')
     }
-    return aggregatesInterop.executeCommand(command)
+    return await aggregatesInterop.executeCommand(command)
   }
 
   const api = {

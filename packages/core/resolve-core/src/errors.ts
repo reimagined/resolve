@@ -1,3 +1,12 @@
+export class CommandError extends Error {
+  readonly name: string
+
+  constructor(message: string) {
+    super(message)
+    this.name = 'CommandError'
+  }
+}
+
 export class ApiError extends Error {}
 
 export class GenericError extends ApiError {
