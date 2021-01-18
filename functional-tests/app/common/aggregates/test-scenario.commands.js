@@ -53,4 +53,14 @@ export default {
       },
     }
   },
+  executeArrayWithingQueryString: (state) => {
+    assertNotExecuted(state)
+    return {
+      type: TEST_SCENARIO_EXECUTED,
+      payload: {
+        scenarioName: 'array-within-query-string',
+        state: {},
+      },
+    }
+  },
 }

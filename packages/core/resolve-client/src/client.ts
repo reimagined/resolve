@@ -1,3 +1,4 @@
+import { StringifyOptions } from 'query-string'
 import { IS_BUILT_IN } from 'resolve-core'
 import { Context } from './context'
 import { GenericError } from './errors'
@@ -112,6 +113,7 @@ export type QueryOptions = {
     attempts?: number
   }
   middleware?: ClientMiddlewareOptions
+  queryStringOptions?: StringifyOptions
 }
 export type QueryCallback<T extends Query> = (
   error: Error | null,
@@ -159,6 +161,7 @@ export const query = (
     }
     requestOptions.method = options?.method ?? 'GET'
     requestOptions.middleware = options?.middleware
+    requestOptions.queryStringOptions = options?.queryStringOptions
   }
 
   const actualCallback = determineCallback<QueryCallback<Query>>(

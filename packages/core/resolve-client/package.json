@@ -41,7 +41,7 @@
     "global": "^4.4.0",
     "isomorphic-fetch": "3.0.0",
     "node-fetch": "^2.6.0",
-    "query-string": "^5.1.1",
+    "query-string": "6.13.8",
     "resolve-core": "0.26.4"
   },
   "devDependencies": {
