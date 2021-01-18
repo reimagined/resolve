@@ -344,34 +344,24 @@ const getAggregateState = async (
           await eventHandler(event)
         }
 
-        if (subSegment != null) {
-          subSegment.addAnnotation('eventCount', events.length)
-          subSegment.addAnnotation('origin', 'resolve:loadEvents')
-        }
+        subSegment.addAnnotation('eventCount', events.length)
+        subSegment.addAnnotation('origin', 'resolve:loadEvents')
       } catch (error) {
         log.error(error.message)
-        if (subSegment != null) {
-          subSegment.addError(error)
-        }
+        subSegment.addError(error)
         throw error
       } finally {
-        if (subSegment != null) {
-          subSegment.close()
-        }
+        subSegment.close()
       }
     })()
 
     return aggregateData
   } catch (error) {
     log.error(error.message)
-    if (subSegment != null) {
-      subSegment.addError(error)
-    }
+    subSegment.addError(error)
     throw error
   } finally {
-    if (subSegment != null) {
-      subSegment.close()
-    }
+    subSegment.close()
   }
 }
 
@@ -380,7 +370,7 @@ const executeCommand = async (
   runtime: AggregateRuntime,
   command: Command
 ): Promise<CommandResult> => {
-  const { monitoring, eventstore } = runtime
+  const { monitoring } = runtime
   const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
 
   const jwt = actualJwt || deprecatedJwt
