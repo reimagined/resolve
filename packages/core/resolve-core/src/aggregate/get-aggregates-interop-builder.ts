@@ -189,6 +189,7 @@ const takeSnapshot = async (
     log.verbose(`version: ${data.aggregateVersion}`)
     log.verbose(`minimalTimestamp: ${data.minimalTimestamp}`)
 
+    // FIXME: move snapshot business logic from runtime
     await eventstore.saveSnapshot(
       data.snapshotKey,
       JSON.stringify({
@@ -214,18 +215,10 @@ const getAggregateState = async (
   runtime: AggregateRuntime,
   aggregateId: string
 ): Promise<any> => {
-  const {
-    //aggregateName,
-    //performanceTracer,
-    //isDisposed,
-    //eventstoreAdapter,
-    monitoring,
-    eventstore,
-  } = runtime
+  const { monitoring, eventstore } = runtime
   const {
     name: aggregateName,
     projection,
-    serializeState,
     deserializeState,
     invariantHash = null,
   } = aggregate

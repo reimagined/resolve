@@ -13,7 +13,6 @@ export type Eventstore = {
   saveEvent: (event: any) => Promise<void>
   getNextCursor: Function
   saveSnapshot: Function
-  getSecretsManager: () => Promise<SecretsManager>
   loadSnapshot: (snapshotKey: string) => Promise<string | null>
   loadEvents: (param: {
     aggregateIds: string[]

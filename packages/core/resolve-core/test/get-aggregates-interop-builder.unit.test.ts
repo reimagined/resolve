@@ -1,10 +1,7 @@
-/*
-import createCommandExecutor from '../../resolve-runtime/src/common/command'
-import { CommandError } from '../../resolve-runtime/src/common/command'
-
-let eventstoreAdapter: any
-let onCommandExecuted: any
-let events: any
+import { getAggregatesInteropBuilder } from '../src/aggregate/get-aggregates-interop-builder'
+import { CommandError } from '../src/errors'
+import { AggregateRuntime, Eventstore } from '../src/aggregate/types'
+import { SecretsManager, Event } from '../src/core-types'
 let DateNow: any
 let performanceTracer: any
 let snapshots: any
@@ -24,46 +21,36 @@ const makeAggregateMeta = (params: any) => ({
   projection: params.projection || {},
 })
 
-beforeEach(() => {
-  events = []
-  snapshots = new Map()
+const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
+  const generatedEvents: Event[] = []
 
-  eventstoreAdapter = {
-    loadEvents: jest.fn().mockImplementation(async ({ cursor: prevCursor }) => {
-      return {
-        cursor: `${prevCursor == null ? '' : prevCursor}${events
-          .map((e: any) => Buffer.from(JSON.stringify(e)).toString('base64'))
-          .join(',')}`,
-        events:
-          prevCursor != null
-            ? `${events.map((e: any) =>
-              Buffer.from(JSON.stringify(e)).toString('base64')
-            )}`
-              .substr(prevCursor.length)
-              .split(',')
-              .filter((e) => e != null && e.length > 0)
-              .map((e) => JSON.parse(Buffer.from(e, 'base64').toString()))
-            : events,
-      }
-    }),
-    getNextCursor: jest.fn().mockImplementation((prevCursor, events) => {
-      return `${prevCursor == null ? '' : prevCursor}${events
-        .map((e: any) => Buffer.from(JSON.stringify(e)).toString('base64'))
-        .join(',')}`
-    }),
-    getSecretsManager: jest.fn(),
-    saveSnapshot: jest.fn().mockImplementation((key, value) => {
-      return snapshots.set(key, value)
-    }),
-    loadSnapshot: jest.fn().mockImplementation((key) => {
-      return snapshots.get(key)
-    }),
+  const secretsManager: SecretsManager = {
+    getSecret: jest.fn(),
+    setSecret: jest.fn(),
+    deleteSecret: jest.fn(),
   }
 
-  onCommandExecuted = jest.fn().mockImplementation(async (event) => {
-    events.push(event)
-    return event
-  })
+  const eventstore: Eventstore = {
+    saveEvent: jest.fn(async (event) => {
+      generatedEvents.push(event)
+    }),
+    getNextCursor: jest.fn(),
+    loadEvents: jest.fn(() =>
+      Promise.resolve({ events: [...storedEvents, ...generatedEvents] })
+    ),
+    loadSnapshot: jest.fn(),
+    saveSnapshot: jest.fn(),
+  }
+
+  return {
+    eventstore,
+    secretsManager,
+    monitoring: {},
+  }
+}
+
+beforeEach(() => {
+  snapshots = new Map()
 
   DateNow = Date.now
   const timestamp = Date.now()
@@ -91,168 +78,151 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  eventstoreAdapter = null
-  events = null
   global.Date.now = DateNow
-  performanceTracer = null
-  onCommandExecuted = null
-  snapshots = null
 })
+
+test('should success build aggregate state from empty event list and execute cmd', async () => {
+  const { executeCommand } = getAggregatesInteropBuilder([
+    makeAggregateMeta({
+      encryption: () => Promise.resolve({}),
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          return {
+            type: 'EmptyEvent',
+            payload: {},
+          }
+        },
+      },
+    }),
+  ])(makeTestRuntime())
+
+  const event = await executeCommand({
+    aggregateName: 'empty',
+    aggregateId: 'aggregateId',
+    type: 'emptyCommand',
+  })
+
+  expect(event.aggregateVersion).toEqual(1)
+})
+
+test('should success build aggregate state and execute command', async () => {
+  const { executeCommand } = getAggregatesInteropBuilder([
+    makeAggregateMeta({
+      name: 'Entity',
+      commands: {
+        create: (state: any) => {
+          if (state.created) {
+            throw new Error('Entity already created')
+          }
+          return {
+            type: 'CREATED',
+          }
+        },
+      },
+      projection: {
+        Init: () => {
+          return {
+            created: false,
+          }
+        },
+        CREATED: (state: any) => {
+          return {
+            ...state,
+            created: true,
+          }
+        },
+      },
+      invariantHash: 'Entity-invariantHash',
+    }),
+  ])(makeTestRuntime())
+
+  await executeCommand({
+    aggregateName: 'Entity',
+    aggregateId: 'aggregateId',
+    type: 'create',
+  })
+
+  try {
+    await executeCommand({
+      aggregateName: 'Entity',
+      aggregateId: 'aggregateId',
+      type: 'create',
+    })
+    return Promise.reject(new Error('Test failed'))
+  } catch (error) {
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toEqual('Entity already created')
+  }
+})
+
+test('should pass security context to command handler', async () => {
+  const { executeCommand } = getAggregatesInteropBuilder([
+    makeAggregateMeta({
+      name: 'User',
+      commands: {
+        createUser: (
+          aggregateState: any,
+          command: any,
+          { jwt }: { jwt: string }
+        ) => {
+          if (jwt !== 'valid') {
+            throw new Error('Access denied')
+          }
+
+          return {
+            type: 'USER_CREATED',
+            payload: {
+              id: command.payload.id,
+            },
+          }
+        },
+      },
+      invariantHash: 'User-invariantHash',
+    }),
+  ])(makeTestRuntime())
+
+  const event = await executeCommand({
+    aggregateName: 'User',
+    aggregateId: 'aggregateId',
+    type: 'createUser',
+    payload: {
+      id: 'userId',
+    },
+    jwt: 'valid',
+  })
+
+  expect(event).toEqual({
+    aggregateId: 'aggregateId',
+    aggregateVersion: 1,
+    type: 'USER_CREATED',
+    payload: {
+      id: 'userId',
+    },
+    timestamp: Date.now(),
+  })
+
+  try {
+    await executeCommand({
+      aggregateName: 'User',
+      aggregateId: 'aggregateId',
+      type: 'createUser',
+      payload: {
+        id: 'userId',
+      },
+      jwt: 'invalid',
+    })
+    return Promise.reject(new Error('Test failed'))
+  } catch (error) {
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toEqual('Access denied')
+  }
+})
+
+/*
 
 describe('executeCommand', () => {
   describe('without performance tracer', () => {
-    test('should success build aggregate state from empty event list and execute cmd', async () => {
-      const aggregate = makeAggregateMeta({
-        encryption: () => Promise.resolve({}),
-        name: 'empty',
-        commands: {
-          emptyCommand: () => {
-            return {
-              type: 'EmptyEvent',
-              payload: {},
-            }
-          },
-        },
-      })
-
-      const executeCommand = createCommandExecutor({
-        eventstoreAdapter,
-        onCommandExecuted,
-        aggregates: [aggregate],
-      })
-
-      const event = await executeCommand({
-        aggregateName: 'empty',
-        aggregateId: 'aggregateId',
-        type: 'emptyCommand',
-      })
-
-      expect(event.aggregateVersion).toEqual(1)
-    })
-
-    test('should success build aggregate state and execute command', async () => {
-      const aggregate = makeAggregateMeta({
-        name: 'Entity',
-        commands: {
-          create: (state: any) => {
-            if (state.created) {
-              throw new Error('Entity already created')
-            }
-            return {
-              type: 'CREATED',
-            }
-          },
-        },
-        projection: {
-          Init: () => {
-            return {
-              created: false,
-            }
-          },
-          CREATED: (state: any) => {
-            return {
-              ...state,
-              created: true,
-            }
-          },
-        },
-        invariantHash: 'Entity-invariantHash',
-      })
-
-      const executeCommand = createCommandExecutor({
-        eventstoreAdapter,
-        onCommandExecuted,
-        aggregates: [aggregate],
-      })
-
-      await executeCommand({
-        aggregateName: 'Entity',
-        aggregateId: 'aggregateId',
-        type: 'create',
-      })
-
-      try {
-        await executeCommand({
-          aggregateName: 'Entity',
-          aggregateId: 'aggregateId',
-          type: 'create',
-        })
-        return Promise.reject(new Error('Test failed'))
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error)
-        expect(error.message).toEqual('Entity already created')
-      }
-    })
-
-    test('should pass security context to command handler', async () => {
-      const JWT_TOKEN = Buffer.from('ROOT', 'utf8').toString('base64')
-
-      const aggregate = makeAggregateMeta({
-        name: 'User',
-        commands: {
-          createUser: (
-            aggregateState: any,
-            command: any,
-            { jwt }: { jwt: string }
-          ) => {
-            if (Buffer.from(jwt, 'base64').toString('utf8') !== 'ROOT') {
-              throw new Error('Access denied')
-            }
-
-            return {
-              type: 'USER_CREATED',
-              payload: {
-                id: command.payload.id,
-              },
-            }
-          },
-        },
-        invariantHash: 'User-invariantHash',
-      })
-
-      const executeCommand = createCommandExecutor({
-        eventstoreAdapter,
-        onCommandExecuted,
-        aggregates: [aggregate],
-      })
-
-      const event = await executeCommand({
-        aggregateName: 'User',
-        aggregateId: 'aggregateId',
-        type: 'createUser',
-        payload: {
-          id: 'userId',
-        },
-        jwt: JWT_TOKEN,
-      })
-
-      expect(event).toEqual({
-        aggregateId: 'aggregateId',
-        aggregateVersion: 1,
-        type: 'USER_CREATED',
-        payload: {
-          id: 'userId',
-        },
-        timestamp: Date.now(),
-      })
-
-      try {
-        await executeCommand({
-          aggregateName: 'User',
-          aggregateId: 'aggregateId',
-          type: 'createUser',
-          payload: {
-            id: 'userId',
-          },
-          jwt: 'INCORRECT_JWT_TOKEN',
-        })
-        return Promise.reject(new Error('Test failed'))
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error)
-        expect(error.message).toEqual('Access denied')
-      }
-    })
-
     test('should use snapshots for building state', async () => {
       const aggregate = makeAggregateMeta({
         name: 'Map',
