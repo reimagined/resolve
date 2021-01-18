@@ -1,5 +1,5 @@
 import { AggregateDomain } from './types'
-import { getAggregatesInteropBuilder } from './get-aggregate-interop-builder'
+import { getAggregatesInteropBuilder } from './get-aggregates-interop-builder'
 import { validateAggregate } from './validate-aggregate'
 import { AggregateMeta } from '../types'
 
