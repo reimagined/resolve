@@ -219,6 +219,307 @@ test('should pass security context to command handler', async () => {
   }
 })
 
+test('should throw error when the incorrect order of events', async () => {
+  const storedEvents: Event[] = [
+    {
+      aggregateId: 'aggregateId',
+      aggregateVersion: 2,
+      type: 'SET',
+      timestamp: 2,
+      payload: {
+        key: 'key',
+        value: 'value',
+      },
+    },
+    {
+      aggregateId: 'aggregateId',
+      aggregateVersion: 1,
+      type: 'SET',
+      timestamp: 1,
+      payload: {
+        key: 'key',
+        value: 'value',
+      },
+    },
+  ]
+
+  const { executeCommand } = getAggregatesInteropBuilder([
+    makeAggregateMeta({
+      name: 'Map',
+      commands: {
+        set: (aggregateState: any, command: any) => {
+          return {
+            type: 'SET',
+            payload: {
+              key: command.payload.key,
+              value: command.payload.value,
+            },
+          }
+        },
+      },
+      projection: {
+        SET: (state: any, event: any) => {
+          return {
+            ...state,
+            [event.payload.key]: [event.payload.value],
+          }
+        },
+      },
+      invariantHash: 'Map-invariantHash',
+    }),
+  ])(makeTestRuntime(storedEvents))
+
+  try {
+    await executeCommand({
+      aggregateName: 'Map',
+      aggregateId: 'aggregateId',
+      type: 'set',
+      payload: {
+        key: 'key',
+        value: 'value',
+      },
+    })
+
+    return Promise.reject(new Error('Test failed'))
+  } catch (error) {
+    expect(error.message).toEqual(
+      `Incorrect order of events by aggregateId = "aggregateId"`
+    )
+    expect(error).toBeInstanceOf(CommandError)
+  }
+})
+
+test('should throw error when unknown command', async () => {
+  const { executeCommand } = getAggregatesInteropBuilder([
+    makeAggregateMeta({
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          return {
+            type: 'EmptyEvent',
+            payload: {},
+          }
+        },
+      },
+      invariantHash: 'empty-invariantHash',
+    }),
+  ])(makeTestRuntime())
+
+  try {
+    await executeCommand({
+      aggregateName: 'empty',
+      aggregateId: 'aggregateId',
+      type: 'unknownCommand',
+    })
+
+    return Promise.reject(new Error('Test failed'))
+  } catch (error) {
+    expect(error).toBeInstanceOf(CommandError)
+  }
+})
+
+test('should throw error when the aggregateId is not a string', async () => {
+  const { executeCommand } = getAggregatesInteropBuilder([
+    makeAggregateMeta({
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          return {
+            type: 'EmptyEvent',
+            payload: {},
+          }
+        },
+      },
+      invariantHash: 'empty-invariantHash',
+    }),
+  ])(makeTestRuntime())
+
+  try {
+    await executeCommand({
+      aggregateName: 'empty',
+      aggregateId: 42 as any,
+      type: 'unknownCommand',
+    })
+
+    return Promise.reject(new Error('Test failed'))
+  } catch (error) {
+    expect(error.message).toEqual('The "aggregateId" argument must be a string')
+    expect(error).toBeInstanceOf(CommandError)
+  }
+})
+
+test('should throw error when the aggregateName is not a string', async () => {
+  const { executeCommand } = getAggregatesInteropBuilder([
+    makeAggregateMeta({
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          return {
+            type: 'EmptyEvent',
+            payload: {},
+          }
+        },
+      },
+      invariantHash: 'empty-invariantHash',
+    }),
+  ])(makeTestRuntime())
+
+  try {
+    await executeCommand({
+      aggregateName: 42 as any,
+      aggregateId: 'aggregateId',
+      type: 'emptyCommand',
+    })
+
+    return Promise.reject(new Error('Test failed'))
+  } catch (error) {
+    expect(error).toBeInstanceOf(CommandError)
+    expect(error.message).toEqual(
+      'The "aggregateName" argument must be a string'
+    )
+  }
+})
+
+test('should throw error when the type is not a string', async () => {
+  const { executeCommand } = getAggregatesInteropBuilder([
+    makeAggregateMeta({
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          return {
+            type: 'EmptyEvent',
+            payload: {},
+          }
+        },
+      },
+      invariantHash: 'empty-invariantHash',
+    }),
+  ])(makeTestRuntime())
+
+  try {
+    await executeCommand({
+      aggregateName: 'empty',
+      aggregateId: 'aggregateId',
+      type: 42 as any,
+    })
+
+    return Promise.reject(new Error('Test failed'))
+  } catch (error) {
+    expect(error.message).toEqual('The "type" argument must be a string')
+    expect(error).toBeInstanceOf(CommandError)
+  }
+})
+
+test('should throw error when an aggregate does not exist', async () => {
+  const { executeCommand } = getAggregatesInteropBuilder([])(makeTestRuntime())
+
+  try {
+    await executeCommand({
+      aggregateName: 'empty',
+      aggregateId: 'aggregateId',
+      type: 'emptyCommand',
+    })
+
+    return Promise.reject(new Error('Test failed'))
+  } catch (error) {
+    expect(error.message).toEqual('Aggregate "empty" does not exist')
+    expect(error).toBeInstanceOf(CommandError)
+  }
+})
+
+test('should throw error when an event contains "aggregateId", "aggregateVersion", "timestamp" fields', async () => {
+  const { executeCommand } = getAggregatesInteropBuilder([
+    makeAggregateMeta({
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          return {
+            type: 'EmptyEvent',
+            payload: {},
+
+            aggregateId: 'aggregateId',
+            aggregateVersion: 'aggregateVersion',
+            timestamp: 'timestamp',
+          }
+        },
+      },
+      invariantHash: 'empty-invariantHash',
+    }),
+  ])(makeTestRuntime())
+
+  try {
+    await executeCommand({
+      aggregateName: 'empty',
+      aggregateId: 'aggregateId',
+      type: 'emptyCommand',
+    })
+
+    return Promise.reject(new Error('Test failed'))
+  } catch (error) {
+    expect(error.message).toEqual(
+      'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
+    )
+    expect(error).toBeInstanceOf(CommandError)
+  }
+})
+
+test('should throw error when an event does not contain "type" field', async () => {
+  const { executeCommand } = getAggregatesInteropBuilder([
+    makeAggregateMeta({
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          return {
+            payload: {},
+          }
+        },
+      },
+      invariantHash: 'empty-invariantHash',
+    }),
+  ])(makeTestRuntime())
+
+  try {
+    await executeCommand({
+      aggregateName: 'empty',
+      aggregateId: 'aggregateId',
+      type: 'emptyCommand',
+    })
+
+    return Promise.reject(new Error('Test failed'))
+  } catch (error) {
+    expect(error).toBeInstanceOf(CommandError)
+    expect(error.message).toEqual('Event "type" is required')
+  }
+})
+
+test('should not return payload: undefined if it is not generated by command', async () => {
+  const { executeCommand } = getAggregatesInteropBuilder([
+    makeAggregateMeta({
+      name: 'empty',
+      commands: {
+        emptyCommand: () => {
+          return {
+            type: 'EVENT',
+          }
+        },
+      },
+      invariantHash: 'empty-invariantHash',
+    }),
+  ])(makeTestRuntime())
+
+  await expect(
+    executeCommand({
+      aggregateName: 'empty',
+      aggregateId: 'aggregateId',
+      type: 'emptyCommand',
+    })
+  ).resolves.toEqual(
+    expect.not.objectContaining({
+      payload: undefined,
+    })
+  )
+})
+
 /*
 
 describe('executeCommand', () => {
@@ -397,344 +698,7 @@ describe('executeCommand', () => {
       }
     })
 
-    test('should throw error when the incorrect order of events', async () => {
-      events = [
-        {
-          aggregateId: 'aggregateId',
-          aggregateVersion: 2,
-          eventType: 'SET',
-          timestamp: 2,
-          payload: {
-            key: 'key',
-            value: 'value',
-          },
-        },
-        {
-          aggregateId: 'aggregateId',
-          aggregateVersion: 1,
-          eventType: 'SET',
-          timestamp: 1,
-          payload: {
-            key: 'key',
-            value: 'value',
-          },
-        },
-      ]
-
-      const aggregate = makeAggregateMeta({
-        name: 'Map',
-        commands: {
-          set: (aggregateState: any, command: any) => {
-            return {
-              type: 'SET',
-              payload: {
-                key: command.payload.key,
-                value: command.payload.value,
-              },
-            }
-          },
-        },
-        projection: {
-          SET: (state: any, event: any) => {
-            return {
-              ...state,
-              [event.payload.key]: [event.payload.value],
-            }
-          },
-        },
-        invariantHash: 'Map-invariantHash',
-      })
-
-      const executeCommand = createCommandExecutor({
-        eventstoreAdapter,
-        onCommandExecuted,
-        aggregates: [aggregate],
-      })
-
-      try {
-        await executeCommand({
-          aggregateName: 'Map',
-          aggregateId: 'aggregateId',
-          type: 'set',
-          payload: {
-            key: 'key',
-            value: 'value',
-          },
-        })
-
-        return Promise.reject(new Error('Test failed'))
-      } catch (error) {
-        expect(error.message).toEqual(
-          `Incorrect order of events by aggregateId = "aggregateId"`
-        )
-        expect(error).toBeInstanceOf(CommandError)
-      }
-    })
-
-    test('should throw error when unknown command', async () => {
-      const aggregate = makeAggregateMeta({
-        name: 'empty',
-        commands: {
-          emptyCommand: () => {
-            return {
-              type: 'EmptyEvent',
-              payload: {},
-            }
-          },
-        },
-        invariantHash: 'empty-invariantHash',
-      })
-
-      const executeCommand = createCommandExecutor({
-        eventstoreAdapter,
-        onCommandExecuted,
-        aggregates: [aggregate],
-      })
-
-      try {
-        await executeCommand({
-          aggregateName: 'empty',
-          aggregateId: 'aggregateId',
-          type: 'unknownCommand',
-        })
-
-        return Promise.reject(new Error('Test failed'))
-      } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
-      }
-    })
-
-    test('should throw error when the aggregateId is not a string', async () => {
-      const aggregate = makeAggregateMeta({
-        name: 'empty',
-        commands: {
-          emptyCommand: () => {
-            return {
-              type: 'EmptyEvent',
-              payload: {},
-            }
-          },
-        },
-        invariantHash: 'empty-invariantHash',
-      })
-
-      const executeCommand = createCommandExecutor({
-        eventstoreAdapter,
-        onCommandExecuted,
-        aggregates: [aggregate],
-      })
-
-      try {
-        await executeCommand({
-          aggregateName: 'empty',
-          aggregateId: 42 as any,
-          type: 'unknownCommand',
-        })
-
-        return Promise.reject(new Error('Test failed'))
-      } catch (error) {
-        expect(error.message).toEqual(
-          'The "aggregateId" argument must be a string'
-        )
-        expect(error).toBeInstanceOf(CommandError)
-      }
-    })
-
-    test('should throw error when the aggregateName is not a string', async () => {
-      const aggregate = makeAggregateMeta({
-        name: 'empty',
-        commands: {
-          emptyCommand: () => {
-            return {
-              type: 'EmptyEvent',
-              payload: {},
-            }
-          },
-        },
-        invariantHash: 'empty-invariantHash',
-      })
-
-      const executeCommand = createCommandExecutor({
-        eventstoreAdapter,
-        onCommandExecuted,
-        aggregates: [aggregate],
-      })
-
-      try {
-        await executeCommand({
-          aggregateName: 42 as any,
-          aggregateId: 'aggregateId',
-          type: 'emptyCommand',
-        })
-
-        return Promise.reject(new Error('Test failed'))
-      } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
-        expect(error.message).toEqual(
-          'The "aggregateName" argument must be a string'
-        )
-      }
-    })
-
-    test('should throw error when the type is not a string', async () => {
-      const aggregate = makeAggregateMeta({
-        name: 'empty',
-        commands: {
-          emptyCommand: () => {
-            return {
-              type: 'EmptyEvent',
-              payload: {},
-            }
-          },
-        },
-        invariantHash: 'empty-invariantHash',
-      })
-
-      const executeCommand = createCommandExecutor({
-        eventstoreAdapter,
-        onCommandExecuted,
-        aggregates: [aggregate],
-      })
-
-      try {
-        await executeCommand({
-          aggregateName: 'empty',
-          aggregateId: 'aggregateId',
-          type: 42 as any,
-        })
-
-        return Promise.reject(new Error('Test failed'))
-      } catch (error) {
-        expect(error.message).toEqual('The "type" argument must be a string')
-        expect(error).toBeInstanceOf(CommandError)
-      }
-    })
-
-    test('should throw error when an aggregate does not exist', async () => {
-      const executeCommand = createCommandExecutor({
-        eventstoreAdapter,
-        onCommandExecuted,
-        aggregates: [],
-      })
-
-      try {
-        await executeCommand({
-          aggregateName: 'empty',
-          aggregateId: 'aggregateId',
-          type: 'emptyCommand',
-        })
-
-        return Promise.reject(new Error('Test failed'))
-      } catch (error) {
-        expect(error.message).toEqual('Aggregate "empty" does not exist')
-        expect(error).toBeInstanceOf(CommandError)
-      }
-    })
-
-    test('should throw error when an event contains "aggregateId", "aggregateVersion", "timestamp" fields', async () => {
-      const aggregate = makeAggregateMeta({
-        name: 'empty',
-        commands: {
-          emptyCommand: () => {
-            return {
-              type: 'EmptyEvent',
-              payload: {},
-
-              aggregateId: 'aggregateId',
-              aggregateVersion: 'aggregateVersion',
-              timestamp: 'timestamp',
-            }
-          },
-        },
-        invariantHash: 'empty-invariantHash',
-      })
-
-      const executeCommand = createCommandExecutor({
-        eventstoreAdapter,
-        onCommandExecuted,
-        aggregates: [aggregate],
-      })
-
-      try {
-        await executeCommand({
-          aggregateName: 'empty',
-          aggregateId: 'aggregateId',
-          type: 'emptyCommand',
-        })
-
-        return Promise.reject(new Error('Test failed'))
-      } catch (error) {
-        expect(error.message).toEqual(
-          'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
-        )
-        expect(error).toBeInstanceOf(CommandError)
-      }
-    })
-
-    test('should throw error when an event does not contain "type" field', async () => {
-      const aggregate = makeAggregateMeta({
-        name: 'empty',
-        commands: {
-          emptyCommand: () => {
-            return {
-              payload: {},
-            }
-          },
-        },
-        invariantHash: 'empty-invariantHash',
-      })
-
-      const executeCommand = createCommandExecutor({
-        eventstoreAdapter,
-        onCommandExecuted,
-        aggregates: [aggregate],
-      })
-
-      try {
-        await executeCommand({
-          aggregateName: 'empty',
-          aggregateId: 'aggregateId',
-          type: 'emptyCommand',
-        })
-
-        return Promise.reject(new Error('Test failed'))
-      } catch (error) {
-        expect(error).toBeInstanceOf(CommandError)
-        expect(error.message).toEqual('Event "type" is required')
-      }
-    })
-
-    test('should not return payload: undefined if it is not generated by command', async () => {
-      const aggregate = makeAggregateMeta({
-        name: 'empty',
-        commands: {
-          emptyCommand: () => {
-            return {
-              type: 'EVENT',
-            }
-          },
-        },
-        invariantHash: 'empty-invariantHash',
-      })
-
-      const executeCommand = createCommandExecutor({
-        eventstoreAdapter,
-        onCommandExecuted,
-        aggregates: [aggregate],
-      })
-
-      await expect(
-        executeCommand({
-          aggregateName: 'empty',
-          aggregateId: 'aggregateId',
-          type: 'emptyCommand',
-        })
-      ).resolves.toEqual(
-        expect.not.objectContaining({
-          payload: undefined,
-        })
-      )
-    })
+    
   })
 
   describe('with performance tracer', () => {
