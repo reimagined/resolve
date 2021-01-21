@@ -51,7 +51,7 @@
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
     "style-loader": "0.21.0",
-    "testcafe": "1.9.4",
+    "testcafe": "1.10.1",
     "testcafe-reporter-dashboard": "0.0.16",
     "webpack": "4.42.0"
   }

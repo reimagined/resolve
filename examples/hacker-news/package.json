@@ -72,7 +72,7 @@
     "jest": "26.0.1",
     "resolve-cloud": "*",
     "sinon": "7.2.2",
-    "testcafe": "1.9.4",
+    "testcafe": "1.10.1",
     "testcafe-reporter-dashboard": "0.0.16"
   }
 }
