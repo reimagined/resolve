@@ -77,7 +77,7 @@ void (async () => {
           adjustWebpackConfigs,
           functionalTestsDir: 'test/functional',
           browser: process.argv[3],
-          customArgs: ['--stop-on-first-fail'],
+          customArgs: ['--stop-on-first-fail', '--reporter dashboard'],
         })
         break
       }
