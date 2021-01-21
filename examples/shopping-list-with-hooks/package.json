@@ -50,6 +50,7 @@
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
     "resolve-testing-tools": "0.26.4",
-    "testcafe": "1.8.5"
+    "testcafe": "1.10.1",
+    "testcafe-reporter-dashboard": "0.0.16"
   }
 }
