@@ -92,7 +92,7 @@ void (async () => {
           resolveConfig,
           functionalTestsDir: 'test/functional',
           browser: process.argv[3],
-          customArgs: ['--stop-on-first-fail', '--reporter dashboard'],
+          customArgs: ['--stop-on-first-fail'],
         })
         break
       }

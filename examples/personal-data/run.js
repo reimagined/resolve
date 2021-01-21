@@ -109,11 +109,7 @@ void (async () => {
         resolveConfig,
         functionalTestsDir: 'test/functional',
         browser: process.argv[3],
-        customArgs: [
-          '--skip-js-errors',
-          '--stop-on-first-fail',
-          '--reporter dashboard',
-        ],
+        customArgs: ['--skip-js-errors', '--stop-on-first-fail'],
       })
       break
     }
