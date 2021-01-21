@@ -10,7 +10,7 @@
   "devDependencies": {
     "@babel/runtime": "7.9.6",
     "aws-sdk": "2.631.0",
-    "jest": "26.0.1",
+    "jest": "26.4.2",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "1.6.4",
     "resolve-debug-levels": "0.26.4",

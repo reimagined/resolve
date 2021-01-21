@@ -29,7 +29,7 @@
     "resolve-eventstore-base": "0.26.4"
   },
   "devDependencies": {
-    "jest": "26.0.1",
+    "jest": "26.4.2",
     "resolve-core": "0.26.4"
   },
   "engines": {

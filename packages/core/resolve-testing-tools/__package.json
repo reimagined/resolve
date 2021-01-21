@@ -35,7 +35,7 @@
   "devDependencies": {
     "@types/diff": "4.0.2",
     "@types/lodash.isequal": "4.5.5",
-    "jest": "26.0.1",
+    "jest": "26.4.2",
     "sinon": "7.2.2"
   },
   "engines": {
