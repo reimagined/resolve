@@ -10,7 +10,7 @@ const getReadModelConnector = async () => {
     fs.exists(databaseFile, resolve)
   )
   if (dbFileExists) {
-    await new Promise((resolve, reject) =>
+    await new Promise<void>((resolve, reject) =>
       fs.unlink(databaseFile, (err) => (!err ? resolve() : reject(err)))
     )
   }
