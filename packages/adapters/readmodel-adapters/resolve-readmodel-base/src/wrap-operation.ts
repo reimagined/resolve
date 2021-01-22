@@ -5,11 +5,12 @@ import type {
   CommonAdapterPool,
   BaseAdapterPool,
   ReadModelStore,
+  FunctionLike,
   StoreApi,
   UnPromise
 } from './types'
 
-const operationImpl = async <AdapterPool extends CommonAdapterPool, MethodImpl extends ((...args : any[])=>any)>(
+const operationImpl = async <AdapterPool extends CommonAdapterPool, MethodImpl extends FunctionLike>(
   pool: BaseAdapterPool<AdapterPool>,
   operationFunc: MethodImpl,
   store: ReadModelStore<StoreApi<AdapterPool>>,
@@ -26,7 +27,7 @@ const operationImpl = async <AdapterPool extends CommonAdapterPool, MethodImpl e
 
 const wrapOperation: WrapOperationMethod = <
   AdapterPool extends CommonAdapterPool,
-  MethodImpl extends ((...args : any[])=>any)
+  MethodImpl extends FunctionLike
 >(
   pool: BaseAdapterPool<AdapterPool>,
   operationName: string,

@@ -13,3 +13,5 @@ export default createAdapter.bind(null, {
   wrapOperation
 })
 
+export const OMIT_BATCH = Symbol('OMIT_BATCH')
+export const STOP_BATCH = Symbol('STOP_BATCH')

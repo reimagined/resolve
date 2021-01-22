@@ -177,11 +177,13 @@ export type ReadModelStoreImpl<AdapterPool extends CommonAdapterPool, CurrentSto
   performanceTracer: PerformanceTracerLike
 })
 
+export type FunctionLike = (...args: any[]) => any
+
 export type ReadModelStore<CurrentStoreApi> = CurrentStoreApi extends StoreApi<infer AdapterPool>
   ? ReadModelStoreImpl<AdapterPool, CurrentStoreApi>
   : never
 
-export type WithPerformanceTracerMethod = <AdapterPool extends CommonAdapterPool, MethodImpl extends (...args: any[]) => any>(
+export type WithPerformanceTracerMethod = <AdapterPool extends CommonAdapterPool, MethodImpl extends FunctionLike>(
   pool: BaseAdapterPool<AdapterPool>,
   methodName: string,
   methodImpl: MethodImpl 
@@ -350,12 +352,12 @@ export type WrapDisposeMethod = <AdapterPool extends CommonAdapterPool, AdapterO
   disconnect: AdapterConnection<AdapterPool, AdapterOptions>["disconnect"]
 ) => DisposeMethod
 
-export type WrappedAdapterOperationParameters<AdapterPool extends CommonAdapterPool, Method extends (...args: any[])=> any> =
+export type WrappedAdapterOperationParameters<AdapterPool extends CommonAdapterPool, Method extends FunctionLike> =
   Method extends ((pool: AdapterPool, readModelName: string, ...args: infer Args) => infer Result)
     ? Args
     : never
 
-export type WrapOperationMethod = <AdapterPool extends CommonAdapterPool, MethodImpl extends ((...args : any[])=>any)>(
+export type WrapOperationMethod = <AdapterPool extends CommonAdapterPool, MethodImpl extends FunctionLike>(
   pool: BaseAdapterPool<AdapterPool>,
   operationName: string,
   operationFunc: MethodImpl
@@ -396,18 +398,18 @@ export type AdapterApi<AdapterPool extends CommonAdapterPool> = {
 
 export type AdapterOperationParameters<
   AdapterPool extends CommonAdapterPool,
-  MethodImpl extends (...args: any) => any
+  MethodImpl extends FunctionLike
 > = Parameters<
   (store: ReadModelStore<StoreApi<AdapterPool>>, 
    readModelName: string,
    ...args: WrappedAdapterOperationParameters<AdapterPool, MethodImpl>   
-  ) => any
+  ) => void
 >
 
 export type ObjectKeys<T> = 
   T extends object ? (keyof T)[] :
   T extends number ? [] :
-  T extends Array<any> | string ? string[] :
+  T extends Array<infer R> | string ? string[] :
   never
 
 

@@ -2,12 +2,13 @@ import type {
   WithPerformanceTracerMethod,
   CommonAdapterPool,
   BaseAdapterPool,
+  FunctionLike,
   UnPromise
 } from './types'
 
 const withPerformanceTracerImpl = async <
   AdapterPool extends CommonAdapterPool,
-  MethodImpl extends ((...args: any[]) => any)
+  MethodImpl extends FunctionLike
 >(
   pool: BaseAdapterPool<AdapterPool>,
   methodName: string,
@@ -46,7 +47,7 @@ const withPerformanceTracerImpl = async <
 
 const withPerformanceTracer: WithPerformanceTracerMethod = <
   AdapterPool extends CommonAdapterPool,
-  MethodImpl extends ((...args: any[]) => any)
+  MethodImpl extends FunctionLike
 >(
   pool: BaseAdapterPool<AdapterPool>,
   methodName: string,
