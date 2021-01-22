@@ -9,7 +9,7 @@ const allowedOperatorNames = new Set(['$set', '$unset', '$inc'])
 const updateToSetExpression = (
   expression,
   escapeId,
-  escape,
+  escapeStr,
   makeNestedPath
 ) => {
   const updatingFieldsDescriptors = new Set()
@@ -136,7 +136,7 @@ const updateToSetExpression = (
       updateExprArray.push(
         `${escapeId(baseName)} = ${
           fieldValue != null
-            ? `CAST(${escape(JSON.stringify(fieldValue))} AS JSONB)`
+            ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSONB)`
             : null
         } `
       )
@@ -146,22 +146,22 @@ const updateToSetExpression = (
 
       updateExprArray.push(
         `${escapeId(baseName)} = CAST(( (SELECT CAST(CASE
-          WHEN jsonb_typeof(${inlineTableName}.${escapeId('val')}) = ${escape(
-          'string'
-        )} THEN quote_ident(
+          WHEN jsonb_typeof(${inlineTableName}.${escapeId(
+          'val'
+        )}) = ${escapeStr('string')} THEN quote_ident(
             CAST(${inlineTableName}.${escapeId('val')}  #>> '{}' AS VARCHAR) ||
-            CAST(${escape(fieldValue)} AS VARCHAR)
+            CAST(${escapeStr(fieldValue)} AS VARCHAR)
           )
-          WHEN jsonb_typeof(${inlineTableName}.${escapeId('val')}) = ${escape(
-          'number'
-        )} THEN CAST((
+          WHEN jsonb_typeof(${inlineTableName}.${escapeId(
+          'val'
+        )}) = ${escapeStr('number')} THEN CAST((
             CAST(${inlineTableName}.${escapeId(
           'val'
         )}  #>> '{}' AS DECIMAL(48, 16)) +
             CAST(${+fieldValue} AS DECIMAL(48, 16))
           ) AS VARCHAR)
           ELSE (
-            SELECT ${escape('Invalid JSON type for $inc operation')}
+            SELECT ${escapeStr('Invalid JSON type for $inc operation')}
             FROM ${escapeId('pg_catalog')}.${escapeId('pg_class')}
           )
         END AS JSONB) AS ${escapeId('pg_catalog')} FROM (
@@ -179,7 +179,7 @@ const updateToSetExpression = (
             '${makeNestedPath(nestedPath)}',
             ${
               fieldValue != null
-                ? `CAST(${escape(JSON.stringify(fieldValue))} AS JSONB)`
+                ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSONB)`
                 : null
             }
             ) `
@@ -193,17 +193,17 @@ const updateToSetExpression = (
           )}, '${makeNestedPath(nestedPath)}', CAST(CASE
             WHEN jsonb_typeof(${inlineTableName}.${escapeId(
             'val'
-          )} #> '${makeNestedPath(nestedPath)}' ) = ${escape(
+          )} #> '${makeNestedPath(nestedPath)}' ) = ${escapeStr(
             'string'
           )} THEN quote_ident(
               CAST(${inlineTableName}.${escapeId('val')} #>> '${makeNestedPath(
             nestedPath
           )}' AS VARCHAR) ||
-              CAST(${escape(fieldValue)} AS VARCHAR)
+              CAST(${escapeStr(fieldValue)} AS VARCHAR)
             )
             WHEN jsonb_typeof(${inlineTableName}.${escapeId(
             'val'
-          )} #> '${makeNestedPath(nestedPath)}' ) = ${escape(
+          )} #> '${makeNestedPath(nestedPath)}' ) = ${escapeStr(
             'number'
           )} THEN CAST((
               CAST(${inlineTableName}.${escapeId('val')} #>> '${makeNestedPath(
@@ -212,7 +212,7 @@ const updateToSetExpression = (
               CAST(${+fieldValue} AS DECIMAL(48, 16))
             ) AS VARCHAR)
             ELSE (
-              SELECT ${escape('Invalid JSON type for $inc operation')}
+              SELECT ${escapeStr('Invalid JSON type for $inc operation')}
               FROM ${escapeId('pg_catalog')}.${escapeId('pg_class')}
             )
           END AS JSONB)) AS ${escapeId('pg_catalog')} FROM (

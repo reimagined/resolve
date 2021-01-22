@@ -6,7 +6,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     tablePrefix,
     fullJitter,
     escapeId,
-    escape,
+    escapeStr,
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
@@ -58,7 +58,7 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         "FailedEvent" = NULL,
         "Errors" = NULL,
         "IsPaused" = 1
-        WHERE "EventSubscriber" = ${escape(readModelName)};
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)};
 
         COMMIT;
       `,
@@ -95,37 +95,37 @@ const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
           "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused", "Properties",
           "XaKey", "Cursor", "SuccessEvent", "FailedEvent", "Errors"
         ) VALUES (
-           ${escape(readModelName)},
+           ${escapeStr(readModelName)},
            ${
              eventTypes != null
-               ? escape(JSON.stringify(eventTypes))
-               : escape('null')
+               ? escapeStr(JSON.stringify(eventTypes))
+               : escapeStr('null')
            },
            ${
              aggregateIds != null
-               ? escape(JSON.stringify(aggregateIds))
-               : escape('null')
+               ? escapeStr(JSON.stringify(aggregateIds))
+               : escapeStr('null')
            },
            COALESCE(
             (SELECT "IsPaused" FROM ${ledgerTableNameAsId}
-            WHERE "EventSubscriber" = ${escape(readModelName)}),
+            WHERE "EventSubscriber" = ${escapeStr(readModelName)}),
             0
           ),
           COALESCE(
            (SELECT "Properties" FROM ${ledgerTableNameAsId}
-           WHERE "EventSubscriber" = ${escape(readModelName)}),
+           WHERE "EventSubscriber" = ${escapeStr(readModelName)}),
            JSON('{}')
           ),
           (SELECT "XaKey" FROM ${ledgerTableNameAsId}
-          WHERE "EventSubscriber" = ${escape(readModelName)}),
+          WHERE "EventSubscriber" = ${escapeStr(readModelName)}),
           (SELECT "Cursor" FROM ${ledgerTableNameAsId}
-          WHERE "EventSubscriber" = ${escape(readModelName)}),
+          WHERE "EventSubscriber" = ${escapeStr(readModelName)}),
           (SELECT "SuccessEvent" FROM ${ledgerTableNameAsId}
-          WHERE "EventSubscriber" = ${escape(readModelName)}),
+          WHERE "EventSubscriber" = ${escapeStr(readModelName)}),
           (SELECT "FailedEvent" FROM ${ledgerTableNameAsId}
-          WHERE "EventSubscriber" = ${escape(readModelName)}),
+          WHERE "EventSubscriber" = ${escapeStr(readModelName)}),
           (SELECT "Errors" FROM ${ledgerTableNameAsId}
-          WHERE "EventSubscriber" = ${escape(readModelName)})
+          WHERE "EventSubscriber" = ${escapeStr(readModelName)})
         );
 
         COMMIT;

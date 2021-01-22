@@ -6,7 +6,7 @@ const unsubscribe = async (pool, readModelName) => {
     dropReadModel,
     tablePrefix,
     escapeId,
-    escape,
+    escapeStr,
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
@@ -45,7 +45,7 @@ const unsubscribe = async (pool, readModelName) => {
         `START TRANSACTION;
         
         SELECT * FROM ${ledgerTableNameAsId}
-        WHERE \`EventSubscriber\` = ${escape(readModelName)}
+        WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
         FOR UPDATE NOWAIT;
 
         UPDATE ${ledgerTableNameAsId}
@@ -54,7 +54,7 @@ const unsubscribe = async (pool, readModelName) => {
         \`FailedEvent\` = NULL,
         \`Errors\` = NULL,
         \`IsPaused\` = TRUE
-        WHERE \`EventSubscriber\` = ${escape(readModelName)};
+        WHERE \`EventSubscriber\` = ${escapeStr(readModelName)};
 
         COMMIT;
       `
@@ -78,11 +78,11 @@ const unsubscribe = async (pool, readModelName) => {
         `START TRANSACTION;
         
          SELECT * FROM ${ledgerTableNameAsId}
-         WHERE \`EventSubscriber\` = ${escape(readModelName)}
+         WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
          FOR UPDATE NOWAIT;
 
          DELETE FROM ${ledgerTableNameAsId}
-         WHERE \`EventSubscriber\` = ${escape(readModelName)};
+         WHERE \`EventSubscriber\` = ${escapeStr(readModelName)};
 
          COMMIT;
       `

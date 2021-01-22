@@ -1,10 +1,8 @@
 import MySQL from 'mysql2/promise'
-import { escapeId, escape } from 'mysql2'
+import { escapeId, escape as escapeStr } from 'mysql2'
 import _createAdapter from 'resolve-readmodel-base'
 
-import beginTransaction from './begin-transaction'
 import buildUpsertDocument from './build-upsert-document'
-import commitTransaction from './commit-transaction'
 import _connect from './connect'
 import convertBinaryRow from './convert-binary-row'
 import count from './count'
@@ -15,7 +13,6 @@ import dropReadModel from './drop-read-model'
 import findOne from './find-one'
 import find from './find'
 import insert from './insert'
-import rollbackTransaction from './rollback-transaction'
 import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 import update from './update'
@@ -56,13 +53,10 @@ const internalMethods = {
   inlineLedgerForceStop,
   generateGuid,
   escapeId,
-  escape,
+  escapeStr,
 }
 
 const externalMethods = {
-  beginTransaction,
-  commitTransaction,
-  rollbackTransaction,
   dropReadModel,
   subscribe,
   resubscribe,

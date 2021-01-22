@@ -6,7 +6,7 @@ const unsubscribe = async (pool, readModelName) => {
     tablePrefix,
     fullJitter,
     escapeId,
-    escape,
+    escapeStr,
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
@@ -57,7 +57,7 @@ const unsubscribe = async (pool, readModelName) => {
         "FailedEvent" = NULL,
         "Errors" = NULL,
         "IsPaused" = 1
-        WHERE "EventSubscriber" = ${escape(readModelName)};
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)};
 
         COMMIT;
       `,
@@ -90,7 +90,7 @@ const unsubscribe = async (pool, readModelName) => {
         `BEGIN IMMEDIATE;
 
          DELETE FROM ${ledgerTableNameAsId}
-         WHERE "EventSubscriber" = ${escape(readModelName)};
+         WHERE "EventSubscriber" = ${escapeStr(readModelName)};
 
          COMMIT;
       `,

@@ -5,7 +5,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
     inlineLedgerForceStop,
     tablePrefix,
     escapeId,
-    escape,
+    escapeStr,
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
@@ -45,22 +45,22 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         `START TRANSACTION;
 
          SELECT * FROM ${ledgerTableNameAsId}
-         WHERE \`EventSubscriber\` = ${escape(readModelName)}
+         WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
          FOR UPDATE NOWAIT;
 
          INSERT INTO ${ledgerTableNameAsId}(
           \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`, \`Properties\`
          ) VALUES (
-           ${escape(readModelName)},
+           ${escapeStr(readModelName)},
            ${
              eventTypes != null
-               ? escape(JSON.stringify(eventTypes))
-               : escape('null')
+               ? escapeStr(JSON.stringify(eventTypes))
+               : escapeStr('null')
            },
            ${
              aggregateIds != null
-               ? escape(JSON.stringify(aggregateIds))
-               : escape('null')
+               ? escapeStr(JSON.stringify(aggregateIds))
+               : escapeStr('null')
            },
            0,
            CAST("{}" AS JSON)
@@ -68,13 +68,13 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
          ON DUPLICATE KEY UPDATE
          \`EventTypes\` = ${
            eventTypes != null
-             ? escape(JSON.stringify(eventTypes))
-             : escape('null')
+             ? escapeStr(JSON.stringify(eventTypes))
+             : escapeStr('null')
          },
          \`AggregateIds\` = ${
            aggregateIds != null
-             ? escape(JSON.stringify(aggregateIds))
-             : escape('null')
+             ? escapeStr(JSON.stringify(aggregateIds))
+             : escapeStr('null')
          };
 
          COMMIT;

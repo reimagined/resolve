@@ -3,7 +3,7 @@ const del = async (
     runQuery,
     tablePrefix,
     escapeId,
-    escape,
+    escapeStr,
     searchToWhereExpression,
     makeNestedPath,
   },
@@ -14,7 +14,7 @@ const del = async (
   const searchExpr = searchToWhereExpression(
     searchExpression,
     escapeId,
-    escape,
+    escapeStr,
     makeNestedPath
   )
 

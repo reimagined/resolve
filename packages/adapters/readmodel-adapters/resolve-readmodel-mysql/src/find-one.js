@@ -2,7 +2,7 @@ const findOne = async (
   {
     runQuery,
     escapeId,
-    escape,
+    escapeStr,
     tablePrefix,
     searchToWhereExpression,
     makeNestedPath,
@@ -16,7 +16,7 @@ const findOne = async (
   const searchExpr = searchToWhereExpression(
     searchExpression,
     escapeId,
-    escape,
+    escapeStr,
     makeNestedPath
   )
 

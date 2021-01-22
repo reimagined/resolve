@@ -1,5 +1,5 @@
 const setProperty = async (pool, readModelName, key, value) => {
-  const { schemaName, escapeId, escape, inlineLedgerExecuteStatement } = pool
+  const { schemaName, escapeId, escapeStr, inlineLedgerExecuteStatement } = pool
 
   const databaseNameAsId = escapeId(schemaName)
   const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
@@ -7,10 +7,10 @@ const setProperty = async (pool, readModelName, key, value) => {
   await inlineLedgerExecuteStatement(
     pool,
     `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
-     SET "Properties" = "Properties" || ${escape(
+     SET "Properties" = "Properties" || ${escapeStr(
        JSON.stringify({ [key]: value })
      )}::JSONB 
-     WHERE "EventSubscriber" = ${escape(readModelName)}
+     WHERE "EventSubscriber" = ${escapeStr(readModelName)}
     `
   )
 }

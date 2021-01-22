@@ -1,11 +1,11 @@
 const status = async (pool, readModelName) => {
-  const { inlineLedgerRunQuery, tablePrefix, escapeId, escape } = pool
+  const { inlineLedgerRunQuery, tablePrefix, escapeId, escapeStr } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
   const rows = await inlineLedgerRunQuery(
     `SELECT * FROM ${ledgerTableNameAsId}
-     WHERE \`EventSubscriber\` = ${escape(readModelName)}
+     WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
     `
   )
 

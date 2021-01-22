@@ -1,5 +1,5 @@
 const deleteProperty = async (pool, readModelName, key) => {
-  const { schemaName, escapeId, escape, inlineLedgerExecuteStatement } = pool
+  const { schemaName, escapeId, escapeStr, inlineLedgerExecuteStatement } = pool
 
   const databaseNameAsId = escapeId(schemaName)
   const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
@@ -7,8 +7,8 @@ const deleteProperty = async (pool, readModelName, key) => {
   await inlineLedgerExecuteStatement(
     pool,
     `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
-     SET "Properties" = "Properties" - ${escape(key)} 
-     WHERE "EventSubscriber" = ${escape(readModelName)}
+     SET "Properties" = "Properties" - ${escapeStr(key)} 
+     WHERE "EventSubscriber" = ${escapeStr(readModelName)}
     `
   )
 }

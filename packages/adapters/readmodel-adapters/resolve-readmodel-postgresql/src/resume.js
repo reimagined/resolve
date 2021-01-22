@@ -6,7 +6,7 @@ const resume = async (pool, readModelName, next) => {
     schemaName,
     tablePrefix,
     escapeId,
-    escape,
+    escapeStr,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -20,12 +20,12 @@ const resume = async (pool, readModelName, next) => {
       await inlineLedgerRunQuery(
         `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-         WHERE "EventSubscriber" = ${escape(readModelName)}
+         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
          FOR NO KEY UPDATE NOWAIT
        )
         UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
         SET "IsPaused" = FALSE
-        WHERE "EventSubscriber" = ${escape(readModelName)}
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
       )

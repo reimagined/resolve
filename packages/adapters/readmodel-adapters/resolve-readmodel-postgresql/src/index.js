@@ -1,9 +1,7 @@
 import _createAdapter from 'resolve-readmodel-base'
 import { Client as Postgres } from 'pg'
 
-import beginTransaction from './begin-transaction'
 import buildUpsertDocument from './build-upsert-document'
-import commitTransaction from './commit-transaction'
 import _connect from './connect'
 import convertResultRow from './convert-result-row'
 import count from './count'
@@ -12,11 +10,10 @@ import del from './delete'
 import disconnect from './disconnect'
 import dropReadModel from './drop-read-model'
 import escapeId from './escape-id'
-import escape from './escape'
+import escapeStr from './escape-str'
 import findOne from './find-one'
 import find from './find'
 import insert from './insert'
-import rollbackTransaction from './rollback-transaction'
 import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 import update from './update'
@@ -50,7 +47,7 @@ const store = {
 
 const internalMethods = {
   escapeId,
-  escape,
+  escapeStr,
   buildUpsertDocument,
   convertResultRow,
   searchToWhereExpression,
@@ -61,9 +58,6 @@ const internalMethods = {
 }
 
 const externalMethods = {
-  beginTransaction,
-  commitTransaction,
-  rollbackTransaction,
   dropReadModel,
   subscribe,
   resubscribe,

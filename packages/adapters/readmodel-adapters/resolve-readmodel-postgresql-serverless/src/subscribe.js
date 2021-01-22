@@ -2,7 +2,7 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
   const {
     schemaName,
     escapeId,
-    escape,
+    escapeStr,
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
     PassthroughError,
@@ -20,35 +20,35 @@ const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
         `
         WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-         WHERE "EventSubscriber" = ${escape(readModelName)}
+         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
          FOR UPDATE NOWAIT
         )
          INSERT INTO ${databaseNameAsId}.${ledgerTableNameAsId}(
           "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused"
          ) VALUES (
-           ${escape(readModelName)},
+           ${escapeStr(readModelName)},
            ${
              eventTypes != null
-               ? escape(JSON.stringify(eventTypes))
-               : escape('null')
+               ? escapeStr(JSON.stringify(eventTypes))
+               : escapeStr('null')
            },
            ${
              aggregateIds != null
-               ? escape(JSON.stringify(aggregateIds))
-               : escape('null')
+               ? escapeStr(JSON.stringify(aggregateIds))
+               : escapeStr('null')
            },
            COALESCE(NULLIF((SELECT Count("CTE".*) < 2 FROM "CTE"), TRUE), FALSE)
          )
          ON CONFLICT ("EventSubscriber") DO UPDATE SET
          "EventTypes" = ${
            eventTypes != null
-             ? escape(JSON.stringify(eventTypes))
-             : escape('null')
+             ? escapeStr(JSON.stringify(eventTypes))
+             : escapeStr('null')
          },
          "AggregateIds" = ${
            aggregateIds != null
-             ? escape(JSON.stringify(aggregateIds))
-             : escape('null')
+             ? escapeStr(JSON.stringify(aggregateIds))
+             : escapeStr('null')
          }
       `
       )

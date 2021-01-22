@@ -5,7 +5,7 @@ const pause = async (pool, readModelName) => {
     inlineLedgerForceStop,
     tablePrefix,
     escapeId,
-    escape,
+    escapeStr,
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
@@ -18,12 +18,12 @@ const pause = async (pool, readModelName) => {
         `BEGIN TRANSACTION;
         
          SELECT * FROM ${ledgerTableNameAsId}
-         WHERE \`EventSubscriber\` = ${escape(readModelName)}
+         WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
          FOR UPDATE NOWAIT;
 
          UPDATE ${ledgerTableNameAsId}
          SET \`IsPaused\` = TRUE
-         WHERE \`EventSubscriber\` = ${escape(readModelName)};
+         WHERE \`EventSubscriber\` = ${escapeStr(readModelName)};
 
          COMMIT;
       `

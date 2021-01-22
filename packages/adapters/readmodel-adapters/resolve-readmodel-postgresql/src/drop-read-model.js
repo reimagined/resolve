@@ -1,5 +1,5 @@
 const dropReadModel = async (
-  { runQuery, escapeId, schemaName, escape },
+  { runQuery, escapeId, schemaName, escapeStr },
   readModelName
 ) => {
   const rows = await runQuery(
@@ -19,11 +19,11 @@ const dropReadModel = async (
     ON ${escapeId('CLS')}.${escapeId('relnamespace')} = ${escapeId(
       'NS'
     )}.${escapeId('oid')}
-    WHERE ${escapeId('DESC')}.${escapeId('description')} = ${escape(
+    WHERE ${escapeId('DESC')}.${escapeId('description')} = ${escapeStr(
       `RESOLVE-${readModelName}`
     )}
-    AND ${escapeId('NS')}.${escapeId('nspname')} = ${escape(schemaName)}
-    AND ${escapeId('CLS')}.${escapeId('relkind')} = ${escape('r')}
+    AND ${escapeId('NS')}.${escapeId('nspname')} = ${escapeStr(schemaName)}
+    AND ${escapeId('CLS')}.${escapeId('relkind')} = ${escapeStr('r')}
     ;`
   )
 

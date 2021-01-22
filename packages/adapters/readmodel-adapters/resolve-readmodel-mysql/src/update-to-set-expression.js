@@ -1,7 +1,7 @@
 const updateToSetExpression = (
   expression,
   escapeId,
-  escape,
+  escapeStr,
   makeNestedPath
 ) => {
   const updateExprArray = []
@@ -28,7 +28,7 @@ const updateToSetExpression = (
         case '$set': {
           let updatingInlinedValue =
             fieldValue != null
-              ? `CAST(${escape(JSON.stringify(fieldValue))} AS JSON)`
+              ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSON)`
               : null
 
           if (nestedPath.length > 0) {
@@ -66,7 +66,7 @@ const updateToSetExpression = (
           let updatingInlinedValue = `CAST(CASE
             WHEN JSON_TYPE(${sourceInlinedValue}) = 'STRING' THEN JSON_QUOTE(CONCAT(
               CAST(JSON_UNQUOTE(${sourceInlinedValue}) AS CHAR),
-              CAST(${escape(fieldValue)} AS CHAR)
+              CAST(${escapeStr(fieldValue)} AS CHAR)
             ))
             WHEN JSON_TYPE(${sourceInlinedValue}) = 'INTEGER' THEN (
               CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +

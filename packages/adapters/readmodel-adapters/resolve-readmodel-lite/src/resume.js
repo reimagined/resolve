@@ -5,7 +5,7 @@ const resume = async (pool, readModelName, next) => {
     tablePrefix,
     fullJitter,
     escapeId,
-    escape,
+    escapeStr,
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
@@ -17,7 +17,7 @@ const resume = async (pool, readModelName, next) => {
         
          UPDATE ${ledgerTableNameAsId}
          SET "IsPaused" = 0
-         WHERE "EventSubscriber" = ${escape(readModelName)};
+         WHERE "EventSubscriber" = ${escapeStr(readModelName)};
 
          COMMIT;
       `,

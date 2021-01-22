@@ -10,7 +10,7 @@ const update = async (
     runQuery,
     tablePrefix,
     escapeId,
-    escape,
+    escapeStr,
     searchToWhereExpression,
     updateToSetExpression,
     makeNestedPath,
@@ -38,13 +38,13 @@ const update = async (
   const searchExpr = searchToWhereExpression(
     searchExpression,
     escapeId,
-    escape,
+    escapeStr,
     makeNestedPath
   )
   const updateExprArray = updateToSetExpression(
     updateExpression,
     escapeId,
-    escape,
+    escapeStr,
     makeNestedPath
   )
 

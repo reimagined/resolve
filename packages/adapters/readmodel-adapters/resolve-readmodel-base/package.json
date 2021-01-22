@@ -17,7 +17,7 @@
   "author": "reimagined team",
   "main": "./lib/index.js",
   "module": "./es/index.js",
-  "types": "./index.d.ts",
+  "types": "./types/index.d.ts",
   "scripts": {
     "test": "jest --config=../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../jest.config.js --watchAll"
@@ -27,8 +27,7 @@
     "uuid": "8.3.1"
   },
   "devDependencies": {
-    "jest": "26.0.1",
-    "sinon": "7.2.2"
+    "jest": "26.0.1"
   },
   "engines": {
     "node": ">=10.9"
@@ -46,5 +45,6 @@
       "inputDir": "./src",
       "outDir": "./lib"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }

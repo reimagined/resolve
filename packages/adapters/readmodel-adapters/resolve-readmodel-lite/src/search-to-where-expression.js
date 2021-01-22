@@ -45,7 +45,7 @@ const compareOperatorsMap = new Map([
 const searchToWhereExpression = (
   expression,
   escapeId,
-  escape,
+  escapeStr,
   makeNestedPath
 ) => {
   const searchExprArray = []
@@ -72,8 +72,8 @@ const searchToWhereExpression = (
 
       const compareInlinedValue =
         fieldValue != null
-          ? `json(CAST(${escape(JSON.stringify(fieldValue))} AS BLOB))`
-          : `json(CAST(${escape('null')} AS BLOB))`
+          ? `json(CAST(${escapeStr(JSON.stringify(fieldValue))} AS BLOB))`
+          : `json(CAST(${escapeStr('null')} AS BLOB))`
 
       const resultExpression = compareOperatorsMap.get(fieldOperator)(
         resultFieldName,
@@ -93,7 +93,7 @@ const searchToWhereExpression = (
         const whereExpr = searchToWhereExpression(
           innerExpr,
           escapeId,
-          escape,
+          escapeStr,
           makeNestedPath
         )
         localSearchExprArray.push(whereExpr)
@@ -114,7 +114,7 @@ const searchToWhereExpression = (
       const whereExpr = searchToWhereExpression(
         expression[operatorName],
         escapeId,
-        escape,
+        escapeStr,
         makeNestedPath
       )
 

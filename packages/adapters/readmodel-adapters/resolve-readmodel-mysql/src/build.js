@@ -14,7 +14,7 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
     inlineLedgerRunQuery,
     generateGuid,
     eventstoreAdapter,
-    escape,
+    escapeStr,
     ledgerTableNameAsId,
     xaKey,
   } = pool
@@ -27,8 +27,8 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
      SAVEPOINT ${rootSavePointId};
      WITH \`CTE\` AS (
       SELECT \`XaKey\` FROM ${ledgerTableNameAsId}
-        WHERE \`EventSubscriber\` = ${escape(readModelName)}
-        AND \`XaKey\` = ${escape(xaKey)}
+        WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
+        AND \`XaKey\` = ${escapeStr(xaKey)}
         AND \`IsPaused\` = FALSE
         AND \`Errors\` IS NULL
         FOR UPDATE NOWAIT
@@ -46,9 +46,9 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
 
     await inlineLedgerRunQuery(
       `UPDATE ${ledgerTableNameAsId}
-       SET \`SuccessEvent\` = ${escape(JSON.stringify({ type: 'Init' }))},
-       \`Cursor\` = ${escape(JSON.stringify(nextCursor))}
-       WHERE \`EventSubscriber\` = ${escape(readModelName)};
+       SET \`SuccessEvent\` = ${escapeStr(JSON.stringify({ type: 'Init' }))},
+       \`Cursor\` = ${escapeStr(JSON.stringify(nextCursor))}
+       WHERE \`EventSubscriber\` = ${escapeStr(readModelName)};
 
        COMMIT;
       `
@@ -63,10 +63,10 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
     await inlineLedgerRunQuery(
       `UPDATE ${ledgerTableNameAsId}
        SET \`Errors\` = JSON_ARRAY_APPEND(COALESCE(\`Errors\`, JSON_ARRAY()), '$',
-       CAST(${escape(JSON.stringify(serializeError(error)))} AS JSON)),
-       \`FailedEvent\` = ${escape(JSON.stringify({ type: 'Init' }))},
-       \`Cursor\` = ${escape(JSON.stringify(nextCursor))}
-       WHERE \`EventSubscriber\` = ${escape(readModelName)};
+       CAST(${escapeStr(JSON.stringify(serializeError(error)))} AS JSON)),
+       \`FailedEvent\` = ${escapeStr(JSON.stringify({ type: 'Init' }))},
+       \`Cursor\` = ${escapeStr(JSON.stringify(nextCursor))}
+       WHERE \`EventSubscriber\` = ${escapeStr(readModelName)};
 
        COMMIT;
       `
@@ -82,7 +82,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     inlineLedgerRunQuery,
     generateGuid,
     eventstoreAdapter,
-    escape,
+    escapeStr,
     ledgerTableNameAsId,
     xaKey,
     eventTypes,
@@ -112,8 +112,8 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
      SAVEPOINT ${rootSavePointId};
      WITH \`CTE\` AS (
       SELECT \`XaKey\` FROM ${ledgerTableNameAsId}
-        WHERE \`EventSubscriber\` = ${escape(readModelName)}
-        AND \`XaKey\` = ${escape(xaKey)}
+        WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
+        AND \`XaKey\` = ${escapeStr(xaKey)}
         AND \`IsPaused\` = FALSE
         AND \`Errors\` IS NULL
         FOR UPDATE NOWAIT
@@ -213,11 +213,13 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
         `UPDATE ${ledgerTableNameAsId} SET 
          ${
            lastSuccessEvent != null
-             ? `\`SuccessEvent\` = ${escape(JSON.stringify(lastSuccessEvent))},`
+             ? `\`SuccessEvent\` = ${escapeStr(
+                 JSON.stringify(lastSuccessEvent)
+               )},`
              : ''
          } 
-         \`Cursor\` = ${escape(JSON.stringify(nextCursor))}
-         WHERE \`EventSubscriber\` = ${escape(readModelName)};
+         \`Cursor\` = ${escapeStr(JSON.stringify(nextCursor))}
+         WHERE \`EventSubscriber\` = ${escapeStr(readModelName)};
 
          COMMIT;
         `
@@ -226,19 +228,23 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
       await inlineLedgerRunQuery(
         `UPDATE ${ledgerTableNameAsId}
          SET \`Errors\` = JSON_ARRAY_APPEND(COALESCE(\`Errors\`, JSON_ARRAY()), '$',
-         CAST(${escape(JSON.stringify(serializeError(lastError)))} AS JSON)),
+         CAST(${escapeStr(JSON.stringify(serializeError(lastError)))} AS JSON)),
          ${
            lastFailedEvent != null
-             ? `\`FailedEvent\` = ${escape(JSON.stringify(lastFailedEvent))},`
+             ? `\`FailedEvent\` = ${escapeStr(
+                 JSON.stringify(lastFailedEvent)
+               )},`
              : ''
          }
          ${
            lastSuccessEvent != null
-             ? `\`SuccessEvent\` = ${escape(JSON.stringify(lastSuccessEvent))},`
+             ? `\`SuccessEvent\` = ${escapeStr(
+                 JSON.stringify(lastSuccessEvent)
+               )},`
              : ''
          }
-         \`Cursor\` = ${escape(JSON.stringify(nextCursor))}
-         WHERE \`EventSubscriber\` = ${escape(readModelName)};
+         \`Cursor\` = ${escapeStr(JSON.stringify(nextCursor))}
+         WHERE \`EventSubscriber\` = ${escapeStr(readModelName)};
 
          COMMIT;
         `
@@ -261,8 +267,8 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
         SAVEPOINT ${rootSavePointId};
         WITH \`CTE\` AS (
           SELECT \`XaKey\` FROM ${ledgerTableNameAsId}
-            WHERE \`EventSubscriber\` = ${escape(readModelName)}
-            AND \`XaKey\` = ${escape(xaKey)}
+            WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
+            AND \`XaKey\` = ${escapeStr(xaKey)}
             AND \`IsPaused\` = FALSE
             AND \`Errors\` IS NULL
             FOR UPDATE NOWAIT
@@ -298,7 +304,7 @@ const build = async (
     inlineLedgerRunQuery,
     tablePrefix,
     escapeId,
-    escape,
+    escapeStr,
     generateGuid,
   } = basePool
   const pool = Object.create(basePool)
@@ -316,20 +322,20 @@ const build = async (
       CAST(ROUND(UNIX_TIMESTAMP(SYSDATE(4)) * 1000) AS UNSIGNED INTEGER) - 86400000;
 
       SELECT * FROM ${ledgerTableNameAsId}
-      WHERE \`EventSubscriber\` = ${escape(readModelName)}
+      WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
       AND \`IsPaused\` = FALSE
       AND \`Errors\` IS NULL
       FOR UPDATE NOWAIT;
 
       INSERT INTO ${trxTableNameAsId}(\`Timestamp\`, \`XaKey\`, \`XaValue\`) VALUES (
         CAST(ROUND(UNIX_TIMESTAMP(SYSDATE(4)) * 1000) AS UNSIGNED INTEGER), 
-        ${escape(xaKey)},
+        ${escapeStr(xaKey)},
         CAST(CONNECTION_ID() AS CHAR)
       );
 
       UPDATE ${ledgerTableNameAsId}
-      SET \`XaKey\` = ${escape(xaKey)}
-      WHERE \`EventSubscriber\` = ${escape(readModelName)}
+      SET \`XaKey\` = ${escapeStr(xaKey)}
+      WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
       AND \`IsPaused\` = FALSE
       AND \`Errors\` IS NULL;
 
@@ -339,8 +345,8 @@ const build = async (
 
     const rows = await inlineLedgerRunQuery(
       `SELECT * FROM ${ledgerTableNameAsId}
-      WHERE \`EventSubscriber\` = ${escape(readModelName)}
-      AND \`XaKey\` = ${escape(xaKey)}
+      WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
+      AND \`XaKey\` = ${escapeStr(xaKey)}
       AND \`IsPaused\` = FALSE
       AND \`Errors\` IS NULL
       `

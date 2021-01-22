@@ -1,5 +1,5 @@
 export const escapeId = (str) => `"${String(str).replace(/(["])/gi, '$1$1')}"`
-export const escape = (str) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
+export const escapeStr = (str) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
 const coerceEmptyString = (obj) =>
   (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
 const emptyTransformer = Function('') // eslint-disable-line no-new-func
@@ -91,7 +91,7 @@ const connect = async (imports, pool, options) => {
     databaseFile,
     makeNestedPath,
     escapeId,
-    escape,
+    escapeStr,
     ...imports,
   })
 
@@ -149,7 +149,7 @@ const connect = async (imports, pool, options) => {
 
   const configureSql = `
     PRAGMA busy_timeout=0;
-    PRAGMA encoding=${escape('UTF-8')};
+    PRAGMA encoding=${escapeStr('UTF-8')};
     PRAGMA synchronous=EXTRA;
     ${
       databaseFile === ':memory:'

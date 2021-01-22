@@ -2,7 +2,7 @@ const count = async (
   {
     executeStatement,
     escapeId,
-    escape,
+    escapeStr,
     tablePrefix,
     searchToWhereExpression,
     makeNestedPath,
@@ -15,7 +15,7 @@ const count = async (
   const searchExpr = searchToWhereExpression(
     searchExpression,
     escapeId,
-    escape,
+    escapeStr,
     makeNestedPath
   )
 

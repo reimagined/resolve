@@ -17,7 +17,7 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
     inlineLedgerExecuteStatement,
     generateGuid,
     eventstoreAdapter,
-    escape,
+    escapeStr,
     databaseNameAsId,
     ledgerTableNameAsId,
     trxTableNameAsId,
@@ -42,12 +42,12 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
     ) VALUES (
       CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) + 
       CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT), 
-      ${escape(xaKey)},
-      ${escape(transactionId)}
+      ${escapeStr(xaKey)},
+      ${escapeStr(transactionId)}
     ) ON CONFLICT ("XaKey") DO UPDATE SET
     "Timestamp" = CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) + 
     CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT),
-    "XaValue" = ${escape(transactionId)}
+    "XaValue" = ${escapeStr(transactionId)}
     `
   )
 
@@ -57,8 +57,8 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
      SAVEPOINT ${rootSavePointId};
 	 WITH "CTE" AS (
 	   SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-       WHERE "EventSubscriber" = ${escape(readModelName)}
-       AND "XaKey" = ${escape(xaKey)}
+       WHERE "EventSubscriber" = ${escapeStr(readModelName)}
+       AND "XaKey" = ${escapeStr(xaKey)}
        AND "IsPaused" = FALSE
        AND "Errors" IS NULL
        FOR NO KEY UPDATE NOWAIT
@@ -80,9 +80,9 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
     await inlineLedgerExecuteStatement(
       pool,
       `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
-       SET "SuccessEvent" = ${escape(JSON.stringify({ type: 'Init' }))},
-       "Cursor" = ${escape(JSON.stringify(nextCursor))}
-       WHERE "EventSubscriber" = ${escape(readModelName)}
+       SET "SuccessEvent" = ${escapeStr(JSON.stringify({ type: 'Init' }))},
+       "Cursor" = ${escapeStr(JSON.stringify(nextCursor))}
+       WHERE "EventSubscriber" = ${escapeStr(readModelName)}
       `,
       transactionId
     )
@@ -105,11 +105,11 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
        SET "Errors" = jsonb_insert(
          COALESCE("Errors", jsonb('[]')),
          CAST(('{' || jsonb_array_length(COALESCE("Errors", jsonb('[]'))) || '}') AS TEXT[]),
-         jsonb(${escape(JSON.stringify(serializeError(error)))})
+         jsonb(${escapeStr(JSON.stringify(serializeError(error)))})
        ),
-       "FailedEvent" = ${escape(JSON.stringify({ type: 'Init' }))},
-       "Cursor" = ${escape(JSON.stringify(nextCursor))}
-       WHERE "EventSubscriber" = ${escape(readModelName)}
+       "FailedEvent" = ${escapeStr(JSON.stringify({ type: 'Init' }))},
+       "Cursor" = ${escapeStr(JSON.stringify(nextCursor))}
+       WHERE "EventSubscriber" = ${escapeStr(readModelName)}
       `,
       transactionId
     )
@@ -139,7 +139,7 @@ export const buildEvents = async (
     inlineLedgerExecuteStatement,
     generateGuid,
     eventstoreAdapter,
-    escape,
+    escapeStr,
     databaseNameAsId,
     ledgerTableNameAsId,
     trxTableNameAsId,
@@ -187,12 +187,12 @@ export const buildEvents = async (
     ) VALUES (
       CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) + 
       CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT), 
-      ${escape(xaKey)},
-      ${escape(transactionId)}
+      ${escapeStr(xaKey)},
+      ${escapeStr(transactionId)}
     ) ON CONFLICT ("XaKey") DO UPDATE SET
     "Timestamp" = CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) + 
     CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT),
-    "XaValue" = ${escape(transactionId)}
+    "XaValue" = ${escapeStr(transactionId)}
     `
   )
 
@@ -202,8 +202,8 @@ export const buildEvents = async (
      SAVEPOINT ${rootSavePointId};
 	 WITH "CTE" AS (
 	   SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-       WHERE "EventSubscriber" = ${escape(readModelName)}
-       AND "XaKey" = ${escape(xaKey)}
+       WHERE "EventSubscriber" = ${escapeStr(readModelName)}
+       AND "XaKey" = ${escapeStr(xaKey)}
        AND "IsPaused" = FALSE
        AND "Errors" IS NULL
        FOR NO KEY UPDATE NOWAIT
@@ -330,11 +330,13 @@ export const buildEvents = async (
         `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId} SET 
          ${
            lastSuccessEvent != null
-             ? `"SuccessEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
+             ? `"SuccessEvent" = ${escapeStr(
+                 JSON.stringify(lastSuccessEvent)
+               )},`
              : ''
          } 
-         "Cursor" = ${escape(JSON.stringify(nextCursor))}
-         WHERE "EventSubscriber" = ${escape(readModelName)}
+         "Cursor" = ${escapeStr(JSON.stringify(nextCursor))}
+         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         `,
         transactionId
       )
@@ -345,20 +347,22 @@ export const buildEvents = async (
          SET "Errors" = jsonb_insert(
            COALESCE("Errors", jsonb('[]')),
            CAST(('{' || jsonb_array_length(COALESCE("Errors", jsonb('[]'))) || '}') AS TEXT[]),
-           jsonb(${escape(JSON.stringify(serializeError(lastError)))})
+           jsonb(${escapeStr(JSON.stringify(serializeError(lastError)))})
          ),
          ${
            lastFailedEvent != null
-             ? `"FailedEvent" = ${escape(JSON.stringify(lastFailedEvent))},`
+             ? `"FailedEvent" = ${escapeStr(JSON.stringify(lastFailedEvent))},`
              : ''
          }
          ${
            lastSuccessEvent != null
-             ? `"SuccessEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
+             ? `"SuccessEvent" = ${escapeStr(
+                 JSON.stringify(lastSuccessEvent)
+               )},`
              : ''
          }
-         "Cursor" = ${escape(JSON.stringify(nextCursor))}
-         WHERE "EventSubscriber" = ${escape(readModelName)}
+         "Cursor" = ${escapeStr(JSON.stringify(nextCursor))}
+         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         `,
         transactionId
       )
@@ -394,12 +398,12 @@ export const buildEvents = async (
         ) VALUES (
           CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) + 
           CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT), 
-          ${escape(xaKey)},
-          ${escape(transactionId)}
+          ${escapeStr(xaKey)},
+          ${escapeStr(transactionId)}
         ) ON CONFLICT ("XaKey") DO UPDATE SET
         "Timestamp" = CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) + 
         CAST(COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) AS BIGINT),
-        "XaValue" = ${escape(transactionId)}
+        "XaValue" = ${escapeStr(transactionId)}
         `
       )
 
@@ -409,8 +413,8 @@ export const buildEvents = async (
         SAVEPOINT ${rootSavePointId};
 	    WITH "CTE" AS (
 	      SELECT "XaKey" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-          WHERE "EventSubscriber" = ${escape(readModelName)}
-          AND "XaKey" = ${escape(xaKey)}
+          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
+          AND "XaKey" = ${escapeStr(xaKey)}
           AND "IsPaused" = FALSE
           AND "Errors" IS NULL
           FOR NO KEY UPDATE NOWAIT
@@ -452,7 +456,7 @@ const build = async (
     awsSecretStoreArn,
     schemaName,
     escapeId,
-    escape,
+    escapeStr,
     rdsDataService,
     inlineLedgerExecuteStatement,
     generateGuid,
@@ -470,14 +474,14 @@ const build = async (
       pool,
       `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-         WHERE "EventSubscriber" = ${escape(readModelName)}
+         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
          AND "IsPaused" = FALSE
          AND "Errors" IS NULL
          FOR NO KEY UPDATE NOWAIT
        )
        UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
-       SET "XaKey" = ${escape(xaKey)}
-       WHERE "EventSubscriber" = ${escape(readModelName)}
+       SET "XaKey" = ${escapeStr(xaKey)}
+       WHERE "EventSubscriber" = ${escapeStr(readModelName)}
        AND (SELECT Count("CTE".*) FROM "CTE") = 1
        AND "IsPaused" = FALSE
        AND "Errors" IS NULL

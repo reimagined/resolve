@@ -5,7 +5,7 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
     schemaName,
     tablePrefix,
     escapeId,
-    escape,
+    escapeStr,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -26,7 +26,7 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
         ELSE NULL END FROM ${databaseNameAsId}.${ledgerTableNameAsId} "A"
         LEFT JOIN ${databaseNameAsId}.${trxTableNameAsId} "B"
         ON "A"."XaKey" = "B"."XaKey"
-        WHERE "A"."EventSubscriber" = ${escape(readModelName)}
+        WHERE "A"."EventSubscriber" = ${escapeStr(readModelName)}
         AND COALESCE((SELECT LEAST(Count("CleanTrx".*), 0) FROM "CleanTrx"), 0) = 0
         `
       )

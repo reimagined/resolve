@@ -4,7 +4,7 @@ const getProperty = async (pool, readModelName, key) => {
     schemaName,
     tablePrefix,
     escapeId,
-    escape,
+    escapeStr,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -13,9 +13,9 @@ const getProperty = async (pool, readModelName, key) => {
   )
 
   const rows = await inlineLedgerRunQuery(
-    `SELECT "Properties" -> ${escape(key)} AS "Value"
+    `SELECT "Properties" -> ${escapeStr(key)} AS "Value"
      FROM  ${databaseNameAsId}.${ledgerTableNameAsId}
-     WHERE "EventSubscriber" = ${escape(readModelName)}
+     WHERE "EventSubscriber" = ${escapeStr(readModelName)}
     `
   )
 

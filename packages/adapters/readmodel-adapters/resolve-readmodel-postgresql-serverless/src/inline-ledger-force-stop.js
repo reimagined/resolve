@@ -5,7 +5,7 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
     awsSecretStoreArn,
     schemaName,
     escapeId,
-    escape,
+    escapeStr,
     rdsDataService,
     inlineLedgerExecuteStatement,
   } = pool
@@ -26,7 +26,7 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
         SELECT "B"."XaValue" FROM ${databaseNameAsId}.${ledgerTableNameAsId} "A"
         LEFT JOIN ${databaseNameAsId}.${trxTableNameAsId} "B"
         ON "A"."XaKey" = "B"."XaKey"
-        WHERE "A"."EventSubscriber" = ${escape(readModelName)}
+        WHERE "A"."EventSubscriber" = ${escapeStr(readModelName)}
         AND COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) = 0
         `
       )

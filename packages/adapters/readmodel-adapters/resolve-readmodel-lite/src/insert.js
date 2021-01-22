@@ -1,5 +1,5 @@
 const insert = async (
-  { runQuery, escapeId, escape, tablePrefix },
+  { runQuery, escapeId, escapeStr, tablePrefix },
   readModelName,
   tableName,
   document
@@ -13,7 +13,7 @@ const insert = async (
       VALUES(${Object.keys(document)
         .map(
           (key) =>
-            `json(CAST(${escape(JSON.stringify(document[key]))} AS BLOB))`
+            `json(CAST(${escapeStr(JSON.stringify(document[key]))} AS BLOB))`
         )
         .join(', ')})
     `

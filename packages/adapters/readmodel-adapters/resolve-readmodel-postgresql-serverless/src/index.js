@@ -13,15 +13,12 @@ import find from './find'
 import insert from './insert'
 import update from './update'
 
-import beginTransaction from './begin-transaction'
 import buildUpsertDocument from './build-upsert-document'
-import commitTransaction from './commit-transaction'
 import coercer from './coercer'
 import convertResultRow from './convert-result-row'
 import escapeId from './escape-id'
-import escape from './escape'
+import escapeStr from './escape-str'
 import executeStatement from './execute-statement'
-import rollbackTransaction from './rollback-transaction'
 import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 
@@ -32,6 +29,7 @@ import generateGuid from './generate-guid'
 import isHighloadError from './is-highload-error'
 import isTimeoutError from './is-timeout-error'
 
+import dropReadModel from './drop-read-model'
 import subscribe from './subscribe'
 import resubscribe from './resubscribe'
 import unsubscribe from './unsubscribe'
@@ -44,14 +42,6 @@ import pause from './pause'
 import resume from './resume'
 import status from './status'
 import build from './build'
-
-import beginXATransaction from './begin-xa-transaction'
-import beginEvent from './begin-event'
-import commitXATransaction from './commit-xa-transaction'
-import commitEvent from './commit-event'
-import rollbackXATransaction from './rollback-xa-transaction'
-import rollbackEvent from './rollback-event'
-import dropReadModel from './drop-read-model'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
@@ -69,7 +59,7 @@ const store = {
 
 const internalMethods = {
   escapeId,
-  escape,
+  escapeStr,
   buildUpsertDocument,
   convertResultRow,
   searchToWhereExpression,
@@ -85,15 +75,6 @@ const internalMethods = {
 }
 
 const externalMethods = {
-  beginTransaction,
-  commitTransaction,
-  rollbackTransaction,
-  beginXATransaction,
-  commitXATransaction,
-  rollbackXATransaction,
-  beginEvent,
-  commitEvent,
-  rollbackEvent,
   dropReadModel,
   subscribe,
   resubscribe,
@@ -130,7 +111,7 @@ const pool = {
   connect,
   disconnect,
   escapeId,
-  escape,
+  escapeStr,
 }
 
 const createResource = _createResource.bind(null, pool)

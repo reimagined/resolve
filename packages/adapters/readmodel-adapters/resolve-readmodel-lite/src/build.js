@@ -16,7 +16,7 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
     inlineLedgerRunQuery,
     eventstoreAdapter,
     fullJitter,
-    escape,
+    escapeStr,
     ledgerTableNameAsId,
     xaKey,
   } = pool
@@ -35,8 +35,8 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
             FROM "sqlite_master"
             WHERE (
               SELECT Count(*) FROM ${ledgerTableNameAsId}
-              WHERE "EventSubscriber" = ${escape(readModelName)}
-              AND "XaKey" = ${escape(xaKey)}
+              WHERE "EventSubscriber" = ${escapeStr(readModelName)}
+              AND "XaKey" = ${escapeStr(xaKey)}
               AND "IsPaused" = 0
               AND "Errors" IS NULL
             ) = 0
@@ -75,9 +75,9 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
   if (lastError == null) {
     await inlineLedgerRunQuery(
       `UPDATE ${ledgerTableNameAsId}
-        SET "SuccessEvent" = ${escape(JSON.stringify({ type: 'Init' }))},
-        "Cursor" = ${escape(JSON.stringify(nextCursor))}
-        WHERE "EventSubscriber" = ${escape(readModelName)};
+        SET "SuccessEvent" = ${escapeStr(JSON.stringify({ type: 'Init' }))},
+        "Cursor" = ${escapeStr(JSON.stringify(nextCursor))}
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)};
         `,
       true
     )
@@ -87,11 +87,11 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
         SET "Errors" = JSON_insert(
           COALESCE("Errors", JSON('[]')),
           '$[' || JSON_ARRAY_LENGTH(COALESCE("Errors", JSON('[]'))) || ']',
-          JSON(${escape(JSON.stringify(serializeError(lastError)))})
+          JSON(${escapeStr(JSON.stringify(serializeError(lastError)))})
         ),
-        "FailedEvent" = ${escape(JSON.stringify({ type: 'Init' }))},
-        "Cursor" = ${escape(JSON.stringify(nextCursor))}
-        WHERE "EventSubscriber" = ${escape(readModelName)};
+        "FailedEvent" = ${escapeStr(JSON.stringify({ type: 'Init' }))},
+        "Cursor" = ${escapeStr(JSON.stringify(nextCursor))}
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)};
         `,
       true
     )
@@ -123,7 +123,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     inlineLedgerRunQuery,
     eventstoreAdapter,
     fullJitter,
-    escape,
+    escapeStr,
     ledgerTableNameAsId,
     eventTypes,
     cursor,
@@ -162,8 +162,8 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
           FROM "sqlite_master"
           WHERE (
             SELECT Count(*) FROM ${ledgerTableNameAsId}
-            WHERE "EventSubscriber" = ${escape(readModelName)}
-            AND "XaKey" = ${escape(xaKey)}
+            WHERE "EventSubscriber" = ${escapeStr(readModelName)}
+            AND "XaKey" = ${escapeStr(xaKey)}
             AND "IsPaused" = 0
             AND "Errors" IS NULL
           ) = 0
@@ -269,11 +269,11 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
       `UPDATE ${ledgerTableNameAsId} SET 
         ${
           lastSuccessEvent != null
-            ? `"SuccessEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
+            ? `"SuccessEvent" = ${escapeStr(JSON.stringify(lastSuccessEvent))},`
             : ''
         } 
-        "Cursor" = ${escape(JSON.stringify(nextCursor))}
-        WHERE "EventSubscriber" = ${escape(readModelName)};
+        "Cursor" = ${escapeStr(JSON.stringify(nextCursor))}
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)};
       `,
       true
     )
@@ -283,20 +283,20 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
         SET "Errors" = JSON_insert(
           COALESCE("Errors", JSON('[]')),
           '$[' || JSON_ARRAY_LENGTH(COALESCE("Errors", JSON('[]'))) || ']',
-          JSON(${escape(JSON.stringify(serializeError(lastError)))})
+          JSON(${escapeStr(JSON.stringify(serializeError(lastError)))})
         ),
         ${
           lastFailedEvent != null
-            ? `"FailedEvent" = ${escape(JSON.stringify(lastFailedEvent))},`
+            ? `"FailedEvent" = ${escapeStr(JSON.stringify(lastFailedEvent))},`
             : ''
         }
         ${
           lastSuccessEvent != null
-            ? `"SuccessEvent" = ${escape(JSON.stringify(lastSuccessEvent))},`
+            ? `"SuccessEvent" = ${escapeStr(JSON.stringify(lastSuccessEvent))},`
             : ''
         }
-        "Cursor" = ${escape(JSON.stringify(nextCursor))}
-        WHERE "EventSubscriber" = ${escape(readModelName)};
+        "Cursor" = ${escapeStr(JSON.stringify(nextCursor))}
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)};
       `,
       true
     )
@@ -338,7 +338,7 @@ const build = async (
     fullJitter,
     tablePrefix,
     escapeId,
-    escape,
+    escapeStr,
   } = basePool
   const pool = Object.create(basePool)
 
@@ -351,8 +351,8 @@ const build = async (
         await inlineLedgerRunQuery(
           `BEGIN IMMEDIATE;
            UPDATE ${ledgerTableNameAsId}
-           SET "XaKey" = ${escape(xaKey)}
-           WHERE "EventSubscriber" = ${escape(readModelName)}
+           SET "XaKey" = ${escapeStr(xaKey)}
+           WHERE "EventSubscriber" = ${escapeStr(readModelName)}
            AND "IsPaused" = FALSE
            AND "Errors" IS NULL;
           `,
@@ -378,7 +378,7 @@ const build = async (
 
     const rows = await inlineLedgerRunQuery(
       `SELECT * FROM ${ledgerTableNameAsId}
-      WHERE "EventSubscriber" = ${escape(readModelName)}
+      WHERE "EventSubscriber" = ${escapeStr(readModelName)}
       AND "IsPaused" = 0
       AND "Errors" IS NULL
       `

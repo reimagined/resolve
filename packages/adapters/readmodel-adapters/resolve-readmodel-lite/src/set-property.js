@@ -5,7 +5,7 @@ const setProperty = async (pool, readModelName, key, value) => {
     tablePrefix,
     fullJitter,
     escapeId,
-    escape,
+    escapeStr,
   } = pool
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
@@ -15,7 +15,7 @@ const setProperty = async (pool, readModelName, key, value) => {
         `BEGIN IMMEDIATE;
         
         UPDATE ${ledgerTableNameAsId}
-         SET "Properties" = json_patch("Properties", JSON(${escape(
+         SET "Properties" = json_patch("Properties", JSON(${escapeStr(
            JSON.stringify({
              [key
                .replace(/\u001a/g, '\u001a0')
@@ -23,7 +23,7 @@ const setProperty = async (pool, readModelName, key, value) => {
                .replace(/\./g, '\u001a2')]: value,
            })
          )}))
-         WHERE "EventSubscriber" = ${escape(readModelName)};
+         WHERE "EventSubscriber" = ${escapeStr(readModelName)};
 
          COMMIT;
         `,

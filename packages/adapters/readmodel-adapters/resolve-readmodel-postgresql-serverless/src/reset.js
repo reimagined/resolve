@@ -2,7 +2,7 @@ const reset = async (pool, readModelName) => {
   const {
     schemaName,
     escapeId,
-    escape,
+    escapeStr,
     dropReadModel,
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
@@ -20,7 +20,7 @@ const reset = async (pool, readModelName) => {
         `
         WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-         WHERE "EventSubscriber" = ${escape(readModelName)}
+         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
          FOR NO KEY UPDATE NOWAIT
        )
         UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
@@ -29,7 +29,7 @@ const reset = async (pool, readModelName) => {
         "FailedEvent" = NULL,
         "Errors" = NULL,
         "IsPaused" = TRUE
-        WHERE "EventSubscriber" = ${escape(readModelName)}
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
       )
@@ -51,12 +51,12 @@ const reset = async (pool, readModelName) => {
         `
         WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-         WHERE "EventSubscriber" = ${escape(readModelName)}
+         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
          FOR NO KEY UPDATE NOWAIT
        )
         UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
         SET "IsPaused" = FALSE
-        WHERE "EventSubscriber" = ${escape(readModelName)}
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
       )

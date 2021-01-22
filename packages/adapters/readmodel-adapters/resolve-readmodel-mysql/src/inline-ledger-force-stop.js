@@ -4,7 +4,7 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
     inlineLedgerRunQuery,
     tablePrefix,
     escapeId,
-    escape,
+    escapeStr,
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
@@ -22,7 +22,7 @@ const inlineLedgerForceStop = async (pool, readModelName) => {
         `SELECT \`B\`.\`XaValue\` FROM ${ledgerTableNameAsId} \`A\`
          LEFT JOIN ${trxTableNameAsId} \`B\`
          ON \`A\`.\`XaKey\` = \`B\`.\`XaKey\`
-         WHERE \`A\`.\`EventSubscriber\` = ${escape(readModelName)}
+         WHERE \`A\`.\`EventSubscriber\` = ${escapeStr(readModelName)}
         `
       )
 

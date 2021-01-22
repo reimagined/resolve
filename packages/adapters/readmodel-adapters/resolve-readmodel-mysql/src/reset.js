@@ -6,7 +6,7 @@ const reset = async (pool, readModelName) => {
     dropReadModel,
     tablePrefix,
     escapeId,
-    escape,
+    escapeStr,
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
@@ -18,7 +18,7 @@ const reset = async (pool, readModelName) => {
         `START TRANSACTION;
         
          SELECT * FROM ${ledgerTableNameAsId}
-         WHERE \`EventSubscriber\` = ${escape(readModelName)}
+         WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
          FOR UPDATE NOWAIT;
 
         UPDATE ${ledgerTableNameAsId}
@@ -27,7 +27,7 @@ const reset = async (pool, readModelName) => {
         \`FailedEvent\` = NULL,
         \`Errors\` = NULL,
         \`IsPaused\` = TRUE
-        WHERE \`EventSubscriber\` = ${escape(readModelName)};
+        WHERE \`EventSubscriber\` = ${escapeStr(readModelName)};
 
         COMMIT;
       `
@@ -49,12 +49,12 @@ const reset = async (pool, readModelName) => {
         `START TRANSACTION;
         
          SELECT * FROM ${ledgerTableNameAsId}
-         WHERE \`EventSubscriber\` = ${escape(readModelName)}
+         WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
          FOR UPDATE NOWAIT;
 
          UPDATE ${ledgerTableNameAsId}
          SET \`IsPaused\` = FALSE
-         WHERE \`EventSubscriber\` = ${escape(readModelName)};
+         WHERE \`EventSubscriber\` = ${escapeStr(readModelName)};
 
          COMMIT;
       `
