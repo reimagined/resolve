@@ -52,71 +52,84 @@ jobs:
         env:
           TESTCAFE_DASHBOARD_AUTHENTICATION_TOKEN: ${{ secrets.HACKER_NEWS_DASHBOARD_TOKEN }}
           ENABLE_LOG: true
+          DEBUG: testcafe:*
         run: yarn workspace hacker-news run test:e2e
 
       - name: E2E test hello-world
         env:
           TESTCAFE_DASHBOARD_AUTHENTICATION_TOKEN: ${{ secrets.HELLO_WORLD_DASHBOARD_TOKEN }}
           ENABLE_LOG: true
+          DEBUG: testcafe:*
         run: yarn workspace hello-world run test:e2e
 
       - name: E2E test hello-world-typescript
         env:
           TESTCAFE_DASHBOARD_AUTHENTICATION_TOKEN: ${{ secrets.HELLO_WORLD_TYPESCRIPT_DASHBOARD_TOKEN }}
           ENABLE_LOG: true
+          DEBUG: testcafe:*
         run: yarn workspace hello-world-typescript run test:e2e
 
       - name: E2E test personal-data
         env:
           TESTCAFE_DASHBOARD_AUTHENTICATION_TOKEN: ${{ secrets.PERSONAL_DATA_DASHBOARD_TOKEN }}
           ENABLE_LOG: true
+          DEBUG: testcafe:*
         run: yarn workspace personal-data run test:e2e
 
       - name: E2E test shopping-list
         env:
           TESTCAFE_DASHBOARD_AUTHENTICATION_TOKEN: ${{ secrets.SHOPPING_LIST_DASHBOARD_TOKEN }}
           ENABLE_LOG: true
+          DEBUG: testcafe:*
         run: yarn workspace shopping-list run test:e2e
 
       - name: E2E test shopping-list-with-hooks
         env:
           TESTCAFE_DASHBOARD_AUTHENTICATION_TOKEN: ${{ secrets.SHOPPING_LIST_WITH_HOOKS_DASHBOARD_TOKEN }}
           ENABLE_LOG: true
+          DEBUG: testcafe:*
         run: yarn workspace shopping-list-with-hooks run test:e2e
 
       - name: E2E test shopping-list-with-redux-hooks
         env:
           TESTCAFE_DASHBOARD_AUTHENTICATION_TOKEN: ${{ secrets.SHOPPING_LIST_WITH_REDUX_HOOKS_DASHBOARD_TOKEN }}
           ENABLE_LOG: true
+          DEBUG: testcafe:*
         run: yarn workspace shopping-list-with-redux-hooks run test:e2e
 
       - name: E2E test with-angular
         env:
           TESTCAFE_DASHBOARD_AUTHENTICATION_TOKEN: ${{ secrets.WITH_ANGULAR_DASHBOARD_TOKEN }}
           ENABLE_LOG: true
+          DEBUG: testcafe:*
         run: yarn workspace with-angular run test:e2e
 
       - name: E2E test with-postcss
         env:
           TESTCAFE_DASHBOARD_AUTHENTICATION_TOKEN: ${{ secrets.WITH_POSTCSS_DASHBOARD_TOKEN }}
           ENABLE_LOG: true
+          DEBUG: testcafe:*
         run: yarn workspace with-postcss run test:e2e
 
       - name: E2E test with-styled-components
         env:
           TESTCAFE_DASHBOARD_AUTHENTICATION_TOKEN: ${{ secrets.WITH_STYLED_COMPONENTS_DASHBOARD_TOKEN }}
           ENABLE_LOG: true
+          DEBUG: testcafe:*
         run: yarn workspace with-styled-components run test:e2e
 
       - name: E2E test with-vanillajs
         env:
           TESTCAFE_DASHBOARD_AUTHENTICATION_TOKEN: ${{ secrets.WITH_VANILLAJS_DASHBOARD_TOKEN }}
           ENABLE_LOG: true
+          DEBUG: testcafe:*
         run: yarn workspace with-vanillajs run test:e2e
 
       - name: E2E test with-vue
         env:
           TESTCAFE_DASHBOARD_AUTHENTICATION_TOKEN: ${{ secrets.WITH_VUE_DASHBOARD_TOKEN }}
+          ENABLE_LOG: true
+          DEBUG: testcafe:*
         run: yarn workspace with-vue run test:e2e
 
   publish-dev:
