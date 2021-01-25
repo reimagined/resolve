@@ -45,11 +45,11 @@ const createMockContext = (): Context => ({
 })
 
 beforeAll(() => {
-  ;(global as any).fetch = mFetch
+  void ((global as any).fetch = mFetch)
 })
 
 afterAll(() => {
-  ;(global as any).fetch = undefined
+  void ((global as any).fetch = undefined)
 })
 
 let mockContext: Context

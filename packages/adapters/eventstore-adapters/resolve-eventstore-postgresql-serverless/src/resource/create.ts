@@ -19,6 +19,7 @@ const create = async (
   } = pool
 
   const connect = (_connect as unknown) as typeof _connect extends (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _: infer _,
     ...args: infer Args
   ) => infer R
@@ -26,6 +27,7 @@ const create = async (
     : never
 
   const executeStatement = (_executeStatement as unknown) as typeof _executeStatement extends (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _: infer _,
     ...args: infer Args
   ) => infer R
@@ -33,6 +35,7 @@ const create = async (
     : never
 
   const dispose = (_dispose as unknown) as typeof _dispose extends (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _: infer _,
     ...args: infer Args
   ) => infer R

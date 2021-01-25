@@ -7,11 +7,8 @@ const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
   const connection = new pool.Postgres({
     keepAlive: false,
     connectionTimeoutMillis: 45000,
-    // eslint-disable-next-line @typescript-eslint/camelcase
     idle_in_transaction_session_timeout: 45000,
-    // eslint-disable-next-line @typescript-eslint/camelcase
     query_timeout: 45000,
-    // eslint-disable-next-line @typescript-eslint/camelcase
     statement_timeout: 45000,
     ...pool.connectionOptions,
   })
