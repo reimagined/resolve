@@ -14,7 +14,9 @@ interface LeveledDebugger {
   verbose: Logger
 }
 
-const emptyFunction = Function() as Logger // eslint-disable-line no-new-func
+const emptyFunction: Logger = (): void => {
+  /* no-op */
+}
 
 const debugLevels = (
   debugProvider: Debug,
