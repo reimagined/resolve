@@ -107,11 +107,25 @@ const getReadModelInterop = (
     return { ...encryption }
   }
 
+  const monitoredHandler = (
+    eventType: string,
+    handler: ReadModelRuntimeEventHandler
+  ): ReadModelRuntimeEventHandler => async () => {
+    try {
+      return await handler()
+    } catch (error) {
+      await monitoring?.error?.(error, 'readModelProjection', {
+        readModelName: readModel.name,
+      })
+      throw error
+    }
+  }
+
   const acquireInitHandler = async (
     store: any
   ): Promise<ReadModelRuntimeEventHandler | null> => {
     if (typeof projection.Init === 'function') {
-      return async () => await projection.Init(store)
+      return monitoredHandler('Init', async () => projection.Init(store))
     }
     return null
   }
@@ -121,8 +135,9 @@ const getReadModelInterop = (
     event: Event
   ): Promise<ReadModelRuntimeEventHandler | null> => {
     if (typeof projection[event.type] === 'function') {
-      return async () =>
-        await projection[event.type](store, event, await buildEncryption(event))
+      return monitoredHandler(event.type, async () =>
+        projection[event.type](store, event, await buildEncryption(event))
+      )
     }
     return null
   }

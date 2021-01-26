@@ -759,13 +759,13 @@ const wrapReadModel = ({
   performAcknowledge,
   monitoring,
 }: WrapReadModelOptions) => {
-  const log = getLog(`readModel:wrapReadModel:${readModel.name}`)
+  const log = getLog(`readModel:wrapReadModel:${interop.name}`)
 
   log.debug(`wrapping read-model`)
-  const connector = readModelConnectors[readModel.connectorName]
+  const connector = readModelConnectors[interop.connectorName]
   if (connector == null) {
     throw new Error(
-      `connector "${readModel.connectorName}" for read-model "${readModel.name}" does not exist`
+      `connector "${interop.connectorName}" for read-model "${interop.name}" does not exist`
     )
   }
 
@@ -776,24 +776,7 @@ const wrapReadModel = ({
     invokeEventBusAsync,
     eventstoreAdapter,
     connections: new Set(),
-    readModel: {
-      ...readModel,
-      projection:
-        readModel.projection != null
-          ? Object.keys(readModel.projection).reduce(
-              (acc, eventType) => ({
-                ...acc,
-                [eventType]: wrapProjectionHandler(
-                  readModel.projection[eventType],
-                  readModel.name,
-                  eventType,
-                  safeMonitoring
-                ),
-              }),
-              {} as typeof readModel.projection
-            )
-          : readModel.projection,
-    },
+    readModel,
     connector,
     isDisposed: false,
     performanceTracer,

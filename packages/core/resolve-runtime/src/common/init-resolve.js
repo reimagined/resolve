@@ -19,7 +19,6 @@ const initResolve = async (resolve) => {
 
   const {
     invokeEventBusAsync,
-    aggregates,
     readModels,
     sagas,
     viewModels,
@@ -61,11 +60,13 @@ const initResolve = async (resolve) => {
     performance: performanceTracer,
   }
 
+  const secretsManager = await eventstoreAdapter.getSecretsManager()
+
   const executeCommand = createCommandExecutor({
     performanceTracer,
     aggregatesInterop: domainInterop.aggregateDomain.acquireAggregatesInterop({
       monitoring: domainMonitoring,
-      secretsManager: await eventstoreAdapter.getSecretsManager(),
+      secretsManager,
       eventstore: eventstoreAdapter,
       hooks: {
         preSaveEvent: async (aggregate, command, event) => {
@@ -88,6 +89,7 @@ const initResolve = async (resolve) => {
     monitoring,
     modelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
       monitoring: domainMonitoring,
+      secretsManager,
     }),
   })
 
@@ -96,6 +98,7 @@ const initResolve = async (resolve) => {
     executeCommand,
     executeQuery,
     eventstoreAdapter,
+    secretsManager,
     readModelConnectors,
     sagas,
     performanceTracer,

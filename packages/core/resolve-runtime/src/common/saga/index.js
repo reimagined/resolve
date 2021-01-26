@@ -10,6 +10,7 @@ const createSaga = ({
   performanceTracer,
   uploader,
   eventstoreAdapter,
+  secretsManager,
   getVacantTimeInMillis,
   performAcknowledge,
   scheduler,
@@ -30,7 +31,7 @@ const createSaga = ({
           },
         }
       : monitoring
-
+  //FIXME: not working at all
   const executeScheduleCommand = createCommand({
     aggregates: [sagaDomain.createSchedulerAggregate()],
     onCommandExecuted,
@@ -81,10 +82,7 @@ const createSaga = ({
     executeCommand: { get: () => executeCommandOrScheduler, enumerable: true },
     executeQuery: { get: () => executeDirectQuery, enumerable: true },
     eventProperties: { get: () => eventProperties, enumerable: true },
-    getSecretsManager: {
-      get: () => eventstoreAdapter.getSecretsManager,
-      enumerable: true,
-    },
+    secretsManager,
     uploader: { get: () => uploader, enumerable: true },
     scheduler: { get: () => scheduler, enumerable: true },
   })
