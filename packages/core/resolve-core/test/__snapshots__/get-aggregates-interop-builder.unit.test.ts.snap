@@ -827,7 +827,7 @@ Array [
   ],
   Array [
     "eventType",
-    undefined,
+    "SET",
   ],
   Array [
     "origin",
@@ -847,7 +847,7 @@ Array [
   ],
   Array [
     "eventType",
-    undefined,
+    "SET",
   ],
   Array [
     "origin",
