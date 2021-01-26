@@ -1,6 +1,6 @@
 {
   "name": "resolve-command",
-  "version": "0.26.4",
+  "version": "0.26.5",
   "description": "Creates a function that handles commands in a reSolve application.",
   "keywords": [
     "cqrs",
@@ -24,9 +24,9 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-core": "0.26.4",
-    "resolve-debug-levels": "0.26.4",
-    "resolve-eventstore-base": "0.26.4"
+    "resolve-core": "0.26.5",
+    "resolve-debug-levels": "0.26.5",
+    "resolve-eventstore-base": "0.26.5"
   },
   "devDependencies": {
     "jest": "26.0.1"
