@@ -16,6 +16,7 @@ import {
   CommandResult,
   Event,
 } from '../core-types'
+import { makeMonitoringSafe } from '../helpers'
 
 type AggregateData = {
   aggregateVersion: number
@@ -370,7 +371,7 @@ const executeCommand = async (
   runtime: AggregateRuntime,
   command: Command
 ): Promise<CommandResult> => {
-  const { monitoring } = runtime
+  const monitoring = makeMonitoringSafe(runtime.monitoring)
   const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
 
   const jwt = actualJwt || deprecatedJwt

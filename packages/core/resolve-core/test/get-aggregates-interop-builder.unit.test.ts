@@ -1029,7 +1029,7 @@ describe('Monitoring', () => {
     }
   })
 
-  test.skip('does not affect command workflow if monitoring.error is failed', async () => {
+  test('does not affect command workflow if monitoring.error is failed', async () => {
     const runtime = makeTestRuntime()
     runtime.monitoring.error = () => {
       throw new Error('onCommandFailed failed')
