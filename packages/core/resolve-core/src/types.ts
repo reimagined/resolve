@@ -1,4 +1,5 @@
-import { ReadModelEventHandler, ReadModelResolverMap } from './read-model/types'
+import { ReadModelResolverMap } from './read-model/types'
+import { ReadModel } from './core-types'
 
 import {
   Aggregate,
@@ -25,7 +26,7 @@ export type EventProjectionMeta = {
 
 export type ReadModelMeta = EventProjectionMeta & {
   resolvers: ReadModelResolverMap
-  projection: { [key: string]: ReadModelEventHandler }
+  projection: ReadModel<any>
 }
 
 export type SagaMeta = EventProjectionMeta & {
@@ -50,4 +51,3 @@ export type PerformanceSegment = {
 export type PerformanceTracer = {
   getSegment: () => PerformanceSegment
 }
-

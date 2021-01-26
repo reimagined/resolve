@@ -97,8 +97,8 @@ export type AggregateEncryptionFactory = (
 // Read model
 
 type ReadModelHandlerContext = {
-  encrypt: Encrypter | null
-  decrypt: Decrypter | null
+  encrypt?: Encrypter
+  decrypt?: Decrypter
 }
 type ReadModelInitHandler<TStore> = (store: TStore) => Promise<void>
 type ReadModelEventHandler<TStore> = (

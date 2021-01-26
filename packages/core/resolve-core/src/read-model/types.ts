@@ -1,9 +1,4 @@
-import { Decrypter, Encrypter, Event, SecretsManager } from '../core-types'
-
-export type ReadModelEventHandlerContext = {
-  encrypt: Encrypter | null
-  decrypt: Decrypter | null
-}
+import { SecretsManager, Event } from '../core-types'
 
 export type ReadModelResolverParams = {
   [key: string]: any
@@ -27,16 +22,7 @@ export type ReadModelResolverMap = {
   [key: string]: ReadModelResolver
 }
 
-export type ReadModelRuntimeEventHandler = (
-  connection: any,
-  event: Event
-) => Promise<void>
-
-export type ReadModelEventHandler = (
-  connection: any,
-  event: Event,
-  context: ReadModelEventHandlerContext
-) => Promise<void>
+export type ReadModelRuntimeEventHandler = () => Promise<void>
 
 export type Monitoring = {
   error?: (error: Error, part: string, meta: any) => Promise<void>
@@ -57,6 +43,7 @@ export type PerformanceTracer = {
 }
 
 export type ReadModelRuntime = {
+  secretsManager: SecretsManager
   monitoring: Monitoring
 }
 
@@ -70,7 +57,13 @@ export type ReadModelInterop = {
       jwt?: string
     }
   ) => Promise<ReadModelRuntimeResolver>
-  //acquireEventHandler: (event: any) => ReadModelRuntimeEventHandler
+  acquireInitHandler: (
+    store: any
+  ) => Promise<ReadModelRuntimeEventHandler | null>
+  acquireEventHandler: (
+    store: any,
+    event: Event
+  ) => Promise<ReadModelRuntimeEventHandler | null>
 }
 
 export type ReadModelInteropMap = {

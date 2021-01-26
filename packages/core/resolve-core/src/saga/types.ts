@@ -1,4 +1,5 @@
 import { SecretsManager, Event } from '../core-types'
+import { ReadModelRuntimeEventHandler } from '../read-model/types'
 import { AggregateMeta, SagaMeta } from '../types'
 
 export type SchedulerInfo = {
@@ -33,7 +34,7 @@ export type SagaRuntime = {
   eventProperties: SagaProperties
   executeCommand: Function
   executeQuery: Function
-  getSecretsManager: () => Promise<SecretsManager>
+  secretsManager: SecretsManager
   uploader: any
   scheduler: SchedulerRuntime
 }
@@ -96,7 +97,7 @@ export type SagaInterop = {
       jwt?: string
     }
   ) => Promise<any>
-  //acquireEventHandler: (event: any) => ReadModelRuntimeEventHandler
+  // acquireEventHandler: (event: any) => ReadModelRuntimeEventHandler
 }
 
 export type SagaInteropMap = {

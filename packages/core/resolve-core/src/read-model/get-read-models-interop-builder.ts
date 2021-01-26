@@ -1,18 +1,16 @@
 import {
   ReadModelsInteropBuilder,
   ReadModelInterop,
-  ReadModelResolver,
   ReadModelRuntime,
   ReadModelResolverMap,
   ReadModelInteropMap,
+  ReadModelRuntimeEventHandler,
 } from './types'
-import { SecretsManager } from '../core-types'
+import { SecretsManager, Event } from '../core-types'
 import { createHttpError, HttpStatusCodes } from '../errors'
 import { getPerformanceTracerSubsegment } from '../utils'
 import { ReadModelMeta } from '../types'
 import getLog from '../get-log'
-
-const makeResolverInvoker = (resolver: ReadModelResolver) => resolver
 
 const monitoredError = async (
   runtime: ReadModelRuntime,
@@ -27,13 +25,13 @@ const getReadModelInterop = (
   readModel: ReadModelMeta,
   runtime: ReadModelRuntime
 ): ReadModelInterop => {
-  const { connectorName, name, resolvers } = readModel
+  const { connectorName, name, resolvers, projection } = readModel
   const { monitoring } = runtime
 
   const resolverInvokerMap = Object.keys(resolvers).reduce<
     ReadModelResolverMap
   >((map, resolverName) => {
-    map[resolverName] = makeResolverInvoker(resolvers[resolverName])
+    map[resolverName] = resolvers[resolverName]
     return map
   }, {})
 
@@ -100,10 +98,41 @@ const getReadModelInterop = (
     }
   }
 
+  const buildEncryption = async (event: Event) => {
+    const { secretsManager } = runtime
+    const encryption =
+      typeof readModel.encryption === 'function'
+        ? await readModel.encryption(event, { secretsManager })
+        : null
+    return { ...encryption }
+  }
+
+  const acquireInitHandler = async (
+    store: any
+  ): Promise<ReadModelRuntimeEventHandler | null> => {
+    if (typeof projection.Init === 'function') {
+      return async () => await projection.Init(store)
+    }
+    return null
+  }
+
+  const acquireEventHandler = async (
+    store: any,
+    event: Event
+  ): Promise<ReadModelRuntimeEventHandler | null> => {
+    if (typeof projection[event.type] === 'function') {
+      return async () =>
+        await projection[event.type](store, event, await buildEncryption(event))
+    }
+    return null
+  }
+
   return {
     name,
     connectorName,
     acquireResolver,
+    acquireEventHandler,
+    acquireInitHandler,
   }
 }
 

@@ -23,9 +23,6 @@ export const createEventHandler = (
   )
   log.verbose(`isEnabled: ${isEnabled}`)
 
-  log.debug(`building event store secrets manager`)
-  const secretsManager = await runtime.getSecretsManager()
-
   const userSideEffects =
     sideEffects != null && sideEffects.constructor === Object ? sideEffects : {}
 
@@ -34,7 +31,7 @@ export const createEventHandler = (
     executeQuery: runtime.executeQuery,
     uploader: runtime.uploader,
     scheduleCommand,
-    secretsManager,
+    secretsManager: runtime.secretsManager,
   }
 
   log.debug(`invoking saga event [${eventType}] handler`)
