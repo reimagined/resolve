@@ -9,6 +9,7 @@ import initMonitoring from './init-monitoring'
 import { putDurationMetrics, putInternalError } from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
+import handleWebsocketEvent from './websocket-event-handler'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
@@ -116,6 +117,14 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       log.debug('identified event source: cloud scheduler')
 
       const executorResult = await handleSchedulerEvent(lambdaEvent, resolve)
+
+      log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
+
+      return executorResult
+    } else if (lambdaEvent.resolveSource === 'Websocket') {
+      log.debug('identified event source: websocket')
+
+      const executorResult = await handleWebsocketEvent(lambdaEvent, resolve)
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 

@@ -1,17 +1,13 @@
-import getLog from './js/get-log'
-import disposeEventStore from './js/dispose'
+import getLog from './get-log'
 import { AdapterPool } from './types'
-
-const disposeSecretsStore = (pool: AdapterPool): Promise<any> => {
-  const { secretsDatabase } = pool
-  return secretsDatabase.close()
-}
 
 const dispose = async (pool: AdapterPool): Promise<any> => {
   const log = getLog('dispose')
 
   log.debug(`disposing the event store`)
-  await Promise.all([disposeEventStore(pool), disposeSecretsStore(pool)])
+  const { database } = pool
+  await database.close()
+
   log.debug(`the event store disposed`)
 }
 

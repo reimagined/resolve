@@ -57,7 +57,9 @@
     "url": "^0.11.0",
     "uuid": "8.3.1",
     "websocket-stream": "^5.1.2",
-    "ws": "7.3.1"
+    "ws": "7.3.1",
+    "http-status-codes": "2.1.4",
+    "qs": "6.9.6"
   },
   "devDependencies": {
     "jest": "26.0.1",

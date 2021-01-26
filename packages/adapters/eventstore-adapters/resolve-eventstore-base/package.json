@@ -17,14 +17,15 @@
   "author": "reimagined team",
   "main": "./lib/index.js",
   "module": "./es/index.js",
-  "types": "./index.d.ts",
+  "types": "./types/index.d.ts",
   "scripts": {
     "test": "jest --config=../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../jest.config.js --watchAll"
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-debug-levels": "0.26.5"
+    "resolve-debug-levels": "0.26.5",
+    "resolve-core": "0.26.5"
   },
   "devDependencies": {
     "jest": "26.0.1",
@@ -46,5 +47,6 @@
       "inputDir": "./src",
       "outDir": "./lib"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }
