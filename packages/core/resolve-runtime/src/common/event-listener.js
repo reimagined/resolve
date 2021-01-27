@@ -3,19 +3,6 @@ const performListenerOperation = async (
   operationName,
   { eventSubscriber, ...parameters }
 ) => {
-  // TODO improve reactivity
-  if (
-    operationName === 'sendEvents' &&
-    eventSubscriber === 'websocket' &&
-    parameters.batchId == null &&
-    Array.isArray(parameters.events)
-  ) {
-    for (const event of parameters.events) {
-      await resolve.sendReactiveEvent(event)
-    }
-    return
-  }
-
   const listenerInfo = resolve.eventListeners.get(eventSubscriber)
   if (listenerInfo == null) {
     throw new Error(`Listener ${eventSubscriber} does not exist`)

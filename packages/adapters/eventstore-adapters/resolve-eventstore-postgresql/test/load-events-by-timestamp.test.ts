@@ -1,7 +1,7 @@
-import loadEventsByTimestamp from '../src/js/load-events-by-timestamp'
-import escapeId from '../src/js/escape-id'
-import escape from '../src/js/escape'
-import shapeEvent from '../src/js/shape-event'
+import loadEventsByTimestamp from '../src/load-events-by-timestamp'
+import escapeId from '../src/escape-id'
+import escape from '../src/escape'
+import shapeEvent from '../src/shape-event'
 
 test('method "loadEventsByTimestamp" should execute a correct SQL', async () => {
   const eventsTableName = 'eventsTableName'
@@ -23,8 +23,8 @@ test('method "loadEventsByTimestamp" should execute a correct SQL', async () => 
       eventsTableName,
       databaseName,
       shapeEvent,
-    },
-    { eventTypes, aggregateIds, startTime, finishTime, limit }
+    } as any,
+    { eventTypes, aggregateIds, startTime, finishTime, limit } as any
   )
 
   const sql = executeStatement.mock.calls.join(';')

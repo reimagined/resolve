@@ -12,6 +12,7 @@ export type QueryExecutor<TArgs extends any[]> = HookExecutor<
   QueryResult
 >
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function useQuery<TQuery extends Query>(query: Query): QueryExecutor<void[]>
 function useQuery<TQuery extends Query>(
   query: TQuery,
@@ -35,6 +36,7 @@ function useQuery<TQuery extends Query>(
   options: QueryOptions,
   callback: QueryCallback<TQuery>
 ): QueryExecutor<void[]>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function useQuery<TQuery extends Query>(
   query: Query,
   options: QueryOptions,

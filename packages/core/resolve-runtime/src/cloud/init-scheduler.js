@@ -1,5 +1,7 @@
 import StepFunctions from 'aws-sdk/clients/stepfunctions'
 import debugLevels from 'resolve-debug-levels'
+import { invokeFunction } from 'resolve-cloud-common/lambda'
+import STS from 'aws-sdk/clients/sts'
 
 const getLog = (name) => debugLevels(`resolve:cloud:scheduler:${name}`)
 
@@ -15,20 +17,25 @@ const start = async (entry) => {
   try {
     log.verbose(`entry: ${JSON.stringify(entry)}`)
     log.debug(`starting new execution ${entry.taskId}`)
-    const sf = new StepFunctions()
-    await sf
-      .startExecution({
-        stateMachineArn: stateMachineArn(),
-        name: entry.taskId,
-        input: JSON.stringify({
-          date: new Date(entry.date).toISOString(),
-          event: {
-            resolveSource: 'Scheduler',
-            entry,
-          },
-        }),
-      })
-      .promise()
+
+    await invokeFunction({
+      Region: process.env.AWS_REGION,
+      Payload: {
+        event: {
+          resolveSource: 'Scheduler',
+          entry,
+        },
+        date: new Date(entry.date).toISOString(),
+        principial: {
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+          sessionToken: process.env.AWS_SESSION_TOKEN,
+        },
+        validationRoleArn: await new STS().getCallerIdentity().promise(),
+        functionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
+      },
+    })
+
     log.debug('new execution started successfully')
   } catch (error) {
     if (error.code !== 'ExecutionAlreadyExists') {

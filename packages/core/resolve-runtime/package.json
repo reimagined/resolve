@@ -1,6 +1,6 @@
 {
   "name": "resolve-runtime",
-  "version": "0.26.4",
+  "version": "0.26.5",
   "description": "The reSolve framework's backend server.",
   "keywords": [
     "cqrs",
@@ -44,19 +44,21 @@
     "raw-body": "2.3.3",
     "request": "^2.88.2",
     "resolve-cloud-common": "0.0.37",
-    "resolve-core": "0.26.4",
-    "resolve-debug-levels": "0.26.4",
-    "resolve-eventstore-base": "0.26.4",
-    "resolve-eventstore-lite": "0.26.4",
-    "resolve-local-event-broker": "0.26.4",
-    "resolve-readmodel-base": "0.26.4",
+    "resolve-core": "0.26.5",
+    "resolve-debug-levels": "0.26.5",
+    "resolve-eventstore-base": "0.26.5",
+    "resolve-eventstore-lite": "0.26.5",
+    "resolve-local-event-broker": "0.26.5",
+    "resolve-readmodel-base": "0.26.5",
     "route-trie": "^3.0.0",
     "socket.io": "^2.1.1",
     "source-map-support": "^0.5.9",
     "url": "^0.11.0",
     "uuid": "8.3.1",
     "websocket-stream": "^5.1.2",
-    "ws": "7.3.1"
+    "ws": "7.3.1",
+    "http-status-codes": "2.1.4",
+    "qs": "6.9.6"
   },
   "devDependencies": {
     "jest": "26.4.2",

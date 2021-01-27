@@ -1,4 +1,4 @@
-import getLog from './js/get-log'
+import getLog from './get-log'
 import { AdapterPool, AdapterSpecific } from './types'
 
 const connect = async (
@@ -17,18 +17,26 @@ const connect = async (
     coercer,
   } = specific
 
-  const {
+  let {
     databaseName,
-    eventsTableName = 'events',
-    snapshotsTableName = 'snapshots',
-    secretsTableName = 'secrets',
-  } = pool.config ?? {}
+    eventsTableName,
+    snapshotsTableName,
+    secretsTableName,
+    // eslint-disable-next-line prefer-const
+    ...connectionOptions
+  } = pool.config
+
+  eventsTableName = pool.coerceEmptyString(eventsTableName, 'events')
+  snapshotsTableName = pool.coerceEmptyString(snapshotsTableName, 'snapshots')
+  secretsTableName = pool.coerceEmptyString(secretsTableName, 'default')
+  databaseName = pool.coerceEmptyString(databaseName)
 
   Object.assign(pool, {
     databaseName,
     eventsTableName,
     snapshotsTableName,
     secretsTableName,
+    connectionOptions,
     Postgres,
     fullJitter,
     coercer,

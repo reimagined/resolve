@@ -291,4 +291,52 @@ describe('API handler wrapper for AWS Lambda', () => {
       f: ['1'],
     })
   })
+
+  it('should correctly parsing "param=1&param=2&param=3" query from lambda edge', async () => {
+    const wrappedHandler = wrapApiHandler(
+      apiReturnRequestHandler,
+      getCustomParams
+    )
+    const customEvent = {
+      ...lambdaEvent,
+      headers: [],
+      querystring: 'param=1&param=2&param=3',
+    }
+    const { body } = await wrappedHandler(customEvent, lambdaContext)
+    const query = JSON.parse(Buffer.from(body, 'base64').toString()).query
+
+    expect(query).toEqual({ param: ['1', '2', '3'] })
+  })
+
+  it('should correctly parsing "param[]=1&param[]=2&param[]=3" query from lambda edge', async () => {
+    const wrappedHandler = wrapApiHandler(
+      apiReturnRequestHandler,
+      getCustomParams
+    )
+    const customEvent = {
+      ...lambdaEvent,
+      headers: [],
+      querystring: 'param[]=1&param[]=2&param[]=3',
+    }
+    const { body } = await wrappedHandler(customEvent, lambdaContext)
+    const query = JSON.parse(Buffer.from(body, 'base64').toString()).query
+
+    expect(query).toEqual({ param: ['1', '2', '3'] })
+  })
+
+  it('should correctly parsing "param[0]=1&param[1]=2&param[2]=3" query from lambda edge', async () => {
+    const wrappedHandler = wrapApiHandler(
+      apiReturnRequestHandler,
+      getCustomParams
+    )
+    const customEvent = {
+      ...lambdaEvent,
+      headers: [],
+      querystring: 'param[0]=1&param[1]=2&param[2]=3',
+    }
+    const { body } = await wrappedHandler(customEvent, lambdaContext)
+    const query = JSON.parse(Buffer.from(body, 'base64').toString()).query
+
+    expect(query).toEqual({ param: ['1', '2', '3'] })
+  })
 })
