@@ -17,7 +17,7 @@ import {
   SchedulerInfo,
 } from './types'
 import { createHttpError, HttpStatusCodes } from '../errors'
-import uuid from 'uuid'
+import { v4 as uuid } from 'uuid'
 import { createEventHandler, createInitHandler } from './create-event-handler'
 import { buildSchedulerProjection } from './build-scheduler-projection'
 
@@ -82,17 +82,25 @@ const getInterop = (
     store: any,
     event: Event
   ): Promise<SagaRuntimeEventHandler | null> => {
+    const log = getLog(`saga:${name}:acquire-event-handler:${event.type}`)
     if (typeof handlers[event.type] === 'function') {
-      const handler = createEventHandler(
-        runtime,
-        event.type,
-        handlers[event.type],
-        sideEffects,
-        await buildEncryption(event)
-      )
+      log.debug(`building handler`)
 
-      return monitoredHandler(event.type, async () => handler(store, event))
+      try {
+        const handler = createEventHandler(
+          runtime,
+          event.type,
+          handlers[event.type],
+          sideEffects,
+          await buildEncryption(event)
+        )
+
+        return monitoredHandler(event.type, async () => handler(store, event))
+      } catch (error) {
+        log.error(error)
+      }
     }
+    log.debug(`handler not found, returning null`)
     return null
   }
 

@@ -64,22 +64,29 @@ export const createEventHandler = (
   const log = getLog(`saga-event-handler`)
 
   log.debug(`preparing saga event [${eventType}] handler`)
-  const sagaProperties = runtime.eventProperties
-  const isEnabled = !isNaN(+sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP)
-    ? +sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <= +event.timestamp
-    : true
+  try {
+    const sagaProperties = runtime.eventProperties
+    const isEnabled = !isNaN(
+      +sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
+    )
+      ? +sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <= +event.timestamp
+      : true
 
-  log.verbose(
-    `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: ${+sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP}`
-  )
-  log.verbose(`isEnabled: ${isEnabled}`)
-  log.debug(`invoking saga event [${eventType}] handler`)
-  await handler(
-    {
-      store,
-      sideEffects: buildSideEffects(runtime, sideEffects, isEnabled),
-      ...encryption,
-    },
-    event
-  )
+    log.verbose(
+      `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: ${+sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP}`
+    )
+    log.verbose(`isEnabled: ${isEnabled}`)
+    log.debug(`invoking saga event [${eventType}] handler`)
+    await handler(
+      {
+        store,
+        sideEffects: buildSideEffects(runtime, sideEffects, isEnabled),
+        ...encryption,
+      },
+      event
+    )
+  } catch (error) {
+    log.error(error)
+    throw error
+  }
 }

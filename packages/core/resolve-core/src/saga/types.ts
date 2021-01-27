@@ -1,5 +1,5 @@
 import { SecretsManager, Event, SagaEventHandlers } from '../core-types'
-import { AggregateMeta, Monitoring, SagaMeta } from '../types'
+import { AggregateMeta, Monitoring } from '../types'
 
 export type SchedulerInfo = {
   name: string
@@ -47,27 +47,10 @@ export type SchedulerEventTypes = {
 
 export type SchedulerAggregateBuilder = () => AggregateMeta
 
-export type SchedulersSagasBuilder = (
-  domain: {
-    schedulersInfo: SchedulerInfo[]
-    schedulerName: string
-    schedulerEventTypes: SchedulerEventTypes
-  },
-  runtime: SagaRuntime
-) => any[]
-
 export type SchedulerProjectionBuilder = (
   schedulerName: string,
   schedulerEventTypes: SchedulerEventTypes
 ) => SagaEventHandlers<any, any>
-
-export type ApplicationSagasBuilder = (
-  domain: {
-    schedulerName: string
-    sagas: SagaMeta[]
-  },
-  runtime: SagaRuntime
-) => any[]
 
 export type SagaDomain = {
   schedulerName: string

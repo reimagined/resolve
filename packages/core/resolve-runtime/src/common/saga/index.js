@@ -31,7 +31,7 @@ const createSaga = ({
           },
         }
       : monitoring
-  //FIXME: not working at all
+  //FIXME: not working at all, to fix add createSchedulerAggregateInterop to sagaDomain and pass it here
   const executeScheduleCommand = createCommand({
     aggregates: [sagaDomain.createSchedulerAggregate()],
     onCommandExecuted,
@@ -88,7 +88,7 @@ const createSaga = ({
   })
 
   const provideLedger = async (inlineLedger) => {
-    eventProperties = inlineLedger.properties
+    eventProperties = inlineLedger.Properties
   }
 
   const executeListener = createQuery({
