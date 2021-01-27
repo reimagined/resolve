@@ -67,7 +67,6 @@ export type ReadModelPool = {
   isDisposed: boolean
   connector: any
   connections: Set<any>
-  readModel: ReadModelMeta
   invokeEventBusAsync: Function
   performAcknowledge: Function
   getVacantTimeInMillis: Function

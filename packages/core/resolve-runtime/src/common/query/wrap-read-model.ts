@@ -25,14 +25,8 @@ const wrapConnection = async (
   const connection = await pool.connector.connect(readModelName)
   pool.connections.add(connection)
 
-  log.debug(`retrieving event store secrets manager`)
-  const secretsManager =
-    typeof pool.eventstoreAdapter.getSecretsManager === 'function'
-      ? await pool.eventstoreAdapter.getSecretsManager()
-      : null
-
   try {
-    return await callback(connection, secretsManager)
+    return await callback(connection)
   } finally {
     log.debug(`disconnecting`)
     await pool.connector.disconnect(connection, readModelName)
@@ -168,7 +162,7 @@ const sendEvents = async (
   }
 ): Promise<any> => {
   const { performAcknowledge, getVacantTimeInMillis } = pool
-  const readModelName = pool.readModel.name
+  const readModelName = interop.name
   let result = null
 
   const log = getLog(`sendEvents:${readModelName}`)
@@ -182,18 +176,7 @@ const sendEvents = async (
       throw new Error(`read-model "${readModelName}" is disposed`)
     }
 
-    const projection = pool.readModel.projection
-    if (projection == null) {
-      throw new Error(
-        `updating by events is prohibited when "${readModelName}" projection is not specified`
-      )
-    }
-
-    const handler = async (
-      connection: any,
-      event: any,
-      secretsManager: SecretsManager
-    ): Promise<void> => {
+    const handler = async (connection: any, event: any): Promise<void> => {
       const log = getLog(
         `readModel:${readModelName}:[${event != null ? event.type : 'null'}]`
       )
@@ -204,19 +187,16 @@ const sendEvents = async (
             `read-model "${readModelName}" updating had been interrupted`
           )
         }
-        if (event != null) {
-          if (typeof projection[event.type] === 'function') {
-            log.debug(`building read-model encryption`)
-            const encryption =
-              typeof pool.readModel.encryption === 'function'
-                ? await pool.readModel.encryption(event, {
-                    secretsManager,
-                  })
-                : null
 
+        if (event != null) {
+          const executor =
+            event.type === 'Init'
+              ? await interop.acquireInitHandler(connection)
+              : await interop.acquireEventHandler(connection, event)
+
+          if (executor != null) {
             log.debug(`executing handler`)
-            const executor = projection[event.type]
-            await executor(connection, event, { ...encryption })
+            await executor()
             log.debug(`handler executed successfully`)
             lastSuccessEvent = event
           } else if (event.type === 'Init') {
@@ -234,7 +214,7 @@ const sendEvents = async (
     await wrapConnection(
       pool,
       interop,
-      async (connection: any, secretsManager: SecretsManager): Promise<any> => {
+      async (connection: any): Promise<any> => {
         const log = getLog(`readModel:wrapConnection`)
         log.debug(
           `applying ${events.length} events to read-model "${readModelName}" started`
@@ -251,7 +231,7 @@ const sendEvents = async (
             )
 
             try {
-              await handler(connection, events[0], secretsManager)
+              await handler(connection, events[0])
             } catch (innerError) {
               if (innerError !== STOP_BATCH) {
                 throw innerError
@@ -314,7 +294,7 @@ const sendEvents = async (
               await onBeforeEvent(connection, readModelName, xaTransactionId)
 
               try {
-                await handler(connection, event, secretsManager)
+                await handler(connection, event)
                 await onSuccessEvent(connection, readModelName, xaTransactionId)
               } catch (innerError) {
                 if (innerError === STOP_BATCH) {
@@ -489,7 +469,7 @@ const doOperation = async (
 
       const args =
         prepareArguments != null
-          ? prepareArguments(pool, ...originalArgs)
+          ? prepareArguments(pool, interop, ...originalArgs)
           : originalArgs
 
       result = await pool.connector[operationName](...args)
@@ -557,6 +537,7 @@ const build = doOperation.bind(
   'build',
   (
     pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
     connection: any,
     readModelName: string,
     parameters: {}
@@ -564,7 +545,7 @@ const build = doOperation.bind(
     connection,
     readModelName,
     connection,
-    pool.readModel.projection,
+    interop,
     next.bind(null, pool, readModelName),
     pool.getVacantTimeInMillis,
     provideLedger.bind(null, pool, readModelName),
@@ -717,8 +698,11 @@ const status = doOperation.bind(
   ) => [connection, readModelName]
 )
 
-const dispose = async (pool: ReadModelPool): Promise<void> => {
-  const readModelName = pool.readModel.name
+const dispose = async (
+  pool: ReadModelPool,
+  interop: ReadModelInterop | SagaInterop
+): Promise<void> => {
+  const readModelName = interop.name
   if (pool.isDisposed) {
     throw new Error(`read-model "${readModelName}" is disposed`)
   }
@@ -731,25 +715,7 @@ const dispose = async (pool: ReadModelPool): Promise<void> => {
   await Promise.all(promises)
 }
 
-const wrapProjectionHandler = <T extends Array<any>>(
-  handler: (...args: T) => Promise<any>,
-  readModelName: string,
-  eventType: string,
-  monitoring?: Monitoring
-) => async (...args: T) => {
-  try {
-    return await handler(...args)
-  } catch (error) {
-    await monitoring?.error?.(error, 'readModelProjection', {
-      readModelName,
-      eventType,
-    })
-    throw error
-  }
-}
-
 const wrapReadModel = ({
-  readModel,
   interop,
   readModelConnectors,
   eventstoreAdapter,
@@ -776,7 +742,6 @@ const wrapReadModel = ({
     invokeEventBusAsync,
     eventstoreAdapter,
     connections: new Set(),
-    readModel,
     connector,
     isDisposed: false,
     performanceTracer,
