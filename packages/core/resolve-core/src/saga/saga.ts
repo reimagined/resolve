@@ -1,7 +1,5 @@
 import { SagaDomain, SagaRuntime, SchedulerInfo } from './types'
 import { createSchedulerAggregate } from './create-scheduler-aggregate'
-import { createSchedulersSagas } from './create-schedulers-sagas'
-import { createApplicationSagas } from './create-application-sagas'
 import { validateSaga } from './validate-saga'
 import {
   schedulerEventTypes,
@@ -29,20 +27,7 @@ export const initSagaDomain = (rawSagas: any[]): SagaDomain => {
   }
 
   const sagas = rawSagas.map(validateSaga)
-
   const getSagasSchedulersInfo = createSagaInfoFetcher(sagas)
-
-  const createSagas = (runtime: SagaRuntime) => [
-    ...createSchedulersSagas(
-      {
-        schedulerName,
-        schedulersInfo: getSagasSchedulersInfo(),
-        schedulerEventTypes,
-      },
-      runtime
-    ),
-    ...createApplicationSagas({ sagas, schedulerName }, runtime),
-  ]
 
   return {
     schedulerName,
@@ -50,9 +35,9 @@ export const initSagaDomain = (rawSagas: any[]): SagaDomain => {
     schedulerInvariantHash,
     getSagasSchedulersInfo,
     createSchedulerAggregate,
-    createSagas,
-    // FIXME: temporary, should split to event projections and resolvers interop
     acquireSagasInterop: getSagasInteropBuilder(
+      schedulerName,
+      schedulerEventTypes,
       sagas,
       getSagasSchedulersInfo()
     ),

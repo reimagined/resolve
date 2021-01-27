@@ -1,33 +1,164 @@
+import getLog from '../get-log'
+import {
+  Command,
+  CommandResult,
+  Event,
+  SagaEncryptionFactory,
+  SagaEventHandlers,
+} from '../core-types'
 import { SagaMeta } from '../types'
 import {
   SagaInterop,
   SagaInteropMap,
   SagaRuntime,
-  SagasInteropBuilder,
-  SchedulerInfo,
+  SagaRuntimeEventHandler,
+  SagasInteropBuilder, SchedulerEventTypes,
+  SchedulerInfo
 } from './types'
 import { createHttpError, HttpStatusCodes } from '../errors'
+import uuid from 'uuid'
+import { createEventHandler, createInitHandler } from './create-event-handler'
+import { buildSchedulerProjection } from './build-scheduler-projection'
 
-const getSagaInterop = (
-  saga: { name: string; connectorName: string },
-  runtime: SagaRuntime
+const getInterop = (
+  saga: {
+    name: string
+    connectorName: string
+    handlers: SagaEventHandlers<any, any>
+    encryption?: SagaEncryptionFactory
+  },
+  runtime: SagaRuntime,
+  sideEffects: {
+    scheduleCommand: Function
+  } & { [key: string]: Function }
 ): SagaInterop => {
-  const { name, connectorName } = saga
+  const { name, connectorName, handlers } = saga
+
+  const acquireResolver = () => {
+    throw createHttpError(HttpStatusCodes.NotFound, ``)
+  }
+
+  const buildEncryption = async (event: Event) => {
+    const { secretsManager } = runtime
+    const encryption =
+      typeof saga.encryption === 'function'
+        ? await saga.encryption(event, { secretsManager })
+        : null
+    return { ...encryption }
+  }
+
+  const monitoredHandler = (
+    eventType: string,
+    handler: SagaRuntimeEventHandler
+  ): SagaRuntimeEventHandler => async () => {
+    try {
+      return await handler()
+    } catch (error) {
+      await runtime.monitoring?.error?.(error, 'readModelProjection', {
+        readModelName: saga.name,
+      })
+      throw error
+    }
+  }
+
+  const acquireInitHandler = async (
+    store: any
+  ): Promise<SagaRuntimeEventHandler | null> => {
+    if (typeof handlers.Init === 'function') {
+      const handler = createInitHandler(
+        runtime,
+        'Init',
+        handlers.Init,
+        sideEffects
+      )
+
+      return monitoredHandler('Init', async () => handler(store))
+    }
+    return null
+  }
+
+  const acquireEventHandler = async (
+    store: any,
+    event: Event
+  ): Promise<SagaRuntimeEventHandler | null> => {
+    if (typeof handlers[event.type] === 'function') {
+      const handler = createEventHandler(
+        runtime,
+        event.type,
+        handlers[event.type],
+        sideEffects,
+        await buildEncryption(event)
+      )
+
+      return monitoredHandler(event.type, async () => handler(store, event))
+    }
+    return null
+  }
+
   return {
     name,
     connectorName,
-    acquireResolver: () => {
-      throw createHttpError(HttpStatusCodes.NotFound, ``)
-    },
+    acquireResolver,
+    acquireInitHandler,
+    acquireEventHandler,
   }
 }
 
+const createCommandScheduler = (
+  executeCommand: Function,
+  schedulerName: string
+) => async (date: number, command: Command): Promise<CommandResult> => {
+  const log = getLog('create-command-scheduler')
+  const aggregateId = uuid()
+  log.debug(
+    `creating scheduled command aggregate ${schedulerName} with id ${aggregateId}`
+  )
+  return executeCommand({
+    aggregateName: schedulerName,
+    aggregateId,
+    type: 'create',
+    payload: { date, command },
+  })
+}
+
 export const getSagasInteropBuilder = (
+  schedulerName: string,
+  schedulerEventTypes: SchedulerEventTypes,
   sagas: SagaMeta[],
   schedulers: SchedulerInfo[]
-): SagasInteropBuilder => (runtime) => ({
-  ...[...sagas, ...schedulers].reduce<SagaInteropMap>((map, model) => {
-    map[model.name] = getSagaInterop(model, runtime)
-    return map
-  }, {}),
-})
+): SagasInteropBuilder => (runtime) => {
+  const appSagas = sagas.map((saga) =>
+    getInterop(saga, runtime, {
+      ...saga.sideEffects,
+      scheduleCommand: createCommandScheduler(
+        runtime.executeCommand,
+        schedulerName
+      ),
+    })
+  )
+  const schedulersSagas = schedulers.map((info) =>
+    getInterop(
+      {
+        ...info,
+        handlers: buildSchedulerProjection(schedulerName, schedulerEventTypes),
+      },
+      runtime,
+      {
+        ...runtime.scheduler,
+        scheduleCommand: () => {
+          /* no-op */
+        },
+      }
+    )
+  )
+
+  return {
+    ...[...appSagas, ...schedulersSagas].reduce<SagaInteropMap>(
+      (result, sagaInterop) => {
+        result[sagaInterop.name] = sagaInterop
+        return result
+      },
+      {}
+    ),
+  }
+}

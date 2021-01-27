@@ -1,14 +1,65 @@
-import { Event } from '../index'
+import {
+  Encryption,
+  Event,
+  SagaEventHandler,
+  SagaInitHandler,
+} from '../core-types'
 import getLog from '../get-log'
 import { wrapSideEffects } from './wrap-side-effects'
 import { SagaRuntime, SideEffectsCollection, SystemSideEffects } from './types'
 
+const buildSideEffects = (
+  runtime: SagaRuntime,
+  sideEffects: SideEffectsCollection,
+  isEnabled: boolean
+) => {
+  const sagaProperties = runtime.eventProperties
+
+  const customSideEffects =
+    sideEffects != null && sideEffects.constructor === Object ? sideEffects : {}
+
+  const systemSideEffects: SystemSideEffects = {
+    executeCommand: runtime.executeCommand,
+    executeQuery: runtime.executeQuery,
+    uploader: runtime.uploader,
+    secretsManager: runtime.secretsManager,
+  }
+
+  return {
+    ...wrapSideEffects(
+      sagaProperties,
+      {
+        ...customSideEffects,
+        ...systemSideEffects,
+      },
+      isEnabled
+    ),
+    isEnabled,
+  }
+}
+
+export const createInitHandler = (
+  runtime: SagaRuntime,
+  eventType: string,
+  handler: SagaInitHandler<any, any>,
+  sideEffects: SideEffectsCollection
+) => async (store: any): Promise<void> => {
+  const log = getLog(`saga-init-handler`)
+  log.debug('[Init] handler side effects always enabled')
+  const isEnabled = true
+
+  await handler({
+    store,
+    sideEffects: buildSideEffects(runtime, sideEffects, isEnabled),
+  })
+}
+
 export const createEventHandler = (
   runtime: SagaRuntime,
   eventType: string,
-  handler: Function,
+  handler: SagaEventHandler<any, any>,
   sideEffects: SideEffectsCollection,
-  scheduleCommand: Function
+  encryption: Encryption
 ) => async (store: any, event: Event): Promise<void> => {
   const log = getLog(`saga-event-handler`)
 
@@ -22,33 +73,12 @@ export const createEventHandler = (
     `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: ${+sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP}`
   )
   log.verbose(`isEnabled: ${isEnabled}`)
-
-  const userSideEffects =
-    sideEffects != null && sideEffects.constructor === Object ? sideEffects : {}
-
-  const systemSideEffects: SystemSideEffects = {
-    executeCommand: runtime.executeCommand,
-    executeQuery: runtime.executeQuery,
-    uploader: runtime.uploader,
-    scheduleCommand,
-    secretsManager: runtime.secretsManager,
-  }
-
   log.debug(`invoking saga event [${eventType}] handler`)
   await handler(
     {
       store,
-      sideEffects: {
-        ...wrapSideEffects(
-          sagaProperties,
-          {
-            ...userSideEffects,
-            ...systemSideEffects,
-          },
-          isEnabled
-        ),
-        isEnabled,
-      },
+      sideEffects: buildSideEffects(runtime, sideEffects, isEnabled),
+      ...encryption,
     },
     event
   )

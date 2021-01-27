@@ -1,11 +1,11 @@
 import { ReadModelResolverMap } from './read-model/types'
-import { ReadModel } from './core-types'
+import { ReadModel, SagaEventHandlers } from './core-types'
 
 import {
   Aggregate,
   AggregateEncryptionFactory,
   AggregateProjection,
-  ReadModelEncryptionFactory,
+  EventHandlerEncryptionFactory,
 } from './core-types'
 
 export type AggregateMeta = {
@@ -21,7 +21,7 @@ export type AggregateMeta = {
 export type EventProjectionMeta = {
   name: string
   connectorName: string
-  encryption: ReadModelEncryptionFactory
+  encryption: EventHandlerEncryptionFactory
 }
 
 export type ReadModelMeta = EventProjectionMeta & {
@@ -31,7 +31,7 @@ export type ReadModelMeta = EventProjectionMeta & {
 
 export type SagaMeta = EventProjectionMeta & {
   sideEffects: any
-  handlers: { [key: string]: Function }
+  handlers: SagaEventHandlers<any, any>
 }
 
 export type Monitoring = {

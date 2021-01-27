@@ -1,15 +1,11 @@
-import { Event } from '../index'
+import { SagaEventHandlers } from '../core-types'
 import getLog from '../get-log'
-import { createEventHandler } from './create-event-handler'
 import {
-  SagaHandlers,
   SchedulerEventTypes,
+  SchedulerProjectionBuilder,
   SchedulerSideEffects,
-  SchedulersSagasBuilder,
   SystemSideEffects,
 } from './types'
-
-const log = getLog('wrap-scheduler-sagas')
 
 const createSchedulerSagaHandlers = ({
   schedulerAggregateName,
@@ -24,7 +20,7 @@ const createSchedulerSagaHandlers = ({
   schedulerAggregateName: string
   commandsTableName: string
   eventTypes: SchedulerEventTypes
-}): SagaHandlers<SchedulerSideEffects & SystemSideEffects> => ({
+}): SagaEventHandlers<any, SchedulerSideEffects & SystemSideEffects> => ({
   Init: async ({ store }) => {
     await store.defineTable(commandsTableName, {
       indexes: { taskId: 'string', date: 'number' },
@@ -114,42 +110,12 @@ const createSchedulerSagaHandlers = ({
   },
 })
 
-export const createSchedulersSagas: SchedulersSagasBuilder = (
-  { schedulersInfo, schedulerName, schedulerEventTypes },
-  runtime
-): any[] =>
-  schedulersInfo.map(({ name, connectorName }) => {
-    const handlers = createSchedulerSagaHandlers({
-      schedulerAggregateName: schedulerName,
-      commandsTableName: schedulerName,
-      eventTypes: schedulerEventTypes,
-    })
-
-    // FIXME: replace with read model handler type
-    const projection = Object.keys(handlers).reduce<{
-      [key: string]: (store: any, event: Event) => Promise<void>
-    }>((acc, eventType) => {
-      log.debug(
-        `[wrap-sagas] registering system scheduler saga event handler ${eventType}`
-      )
-      acc[eventType] = createEventHandler(
-        runtime,
-        eventType,
-        handlers[eventType],
-        runtime.scheduler,
-        () => {
-          /* no op */
-        }
-      )
-
-      return acc
-    }, {})
-
-    return {
-      name,
-      projection,
-      resolvers: {},
-      connectorName,
-      encryption: () => Promise.resolve({}),
-    }
+export const buildSchedulerProjection: SchedulerProjectionBuilder = (
+  schedulerName,
+  schedulerEventTypes
+): any =>
+  createSchedulerSagaHandlers({
+    schedulerAggregateName: schedulerName,
+    commandsTableName: schedulerName,
+    eventTypes: schedulerEventTypes,
   })

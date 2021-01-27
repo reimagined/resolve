@@ -123,12 +123,12 @@ type ReadModelResolver<TStore> = (
 export type ReadModelResolvers<TStore> = {
   [key: string]: ReadModelResolver<TStore>
 }
-export type ReadModelEncryptionContext = {
+export type EventHandlerEncryptionContext = {
   secretsManager: SecretsManager
 }
-export type ReadModelEncryptionFactory = (
+export type EventHandlerEncryptionFactory = (
   event: Event,
-  context: ReadModelEncryptionContext
+  context: EventHandlerEncryptionContext
 ) => Promise<Encryption | null>
 
 // Saga
@@ -174,28 +174,30 @@ export type SagaUserSideEffects = {
   [key: string]: SagaUserSideEffect
 }
 
-type SagaContext<TStore, TSideEffects extends SagaUserSideEffects> = {
+export type SagaContext<TStore, TSideEffects> = {
   store: TStore
   sideEffects: SagaSideEffects & TSideEffects
-  encrypt: Encrypter
-  decrypt: Decrypter
+  encrypt?: Encrypter
+  decrypt?: Decrypter
 }
-type SagaInitHandler<TStore, TSideEffects extends SagaUserSideEffects> = (
+
+export type SagaInitHandler<TStore, TSideEffects> = (
   context: SagaContext<TStore, TSideEffects>
 ) => Promise<void>
-type SagaEventHandler<TStore, TSideEffects extends SagaUserSideEffects> = (
+
+export type SagaEventHandler<TStore, TSideEffects> = (
   context: SagaContext<TStore, TSideEffects>,
   event: Event
 ) => Promise<void>
-export type Saga<
-  TStore = never,
-  TSideEffects extends SagaUserSideEffects = {}
-> = {
-  handlers: {
-    [key: string]: SagaEventHandler<TStore, TSideEffects>
-  } & {
-    Init?: SagaInitHandler<TStore, TSideEffects>
-  }
+
+export type SagaEventHandlers<TStore, TSideEffects> = {
+  [key: string]: SagaEventHandler<TStore, TSideEffects>
+} & {
+  Init?: SagaInitHandler<TStore, TSideEffects>
+}
+
+export type Saga<TStore = never, TSideEffects = {}> = {
+  handlers: SagaEventHandlers<TStore, TSideEffects>
   sideEffects?: TSideEffects
 }
 export type SagaEncryptionContext = {

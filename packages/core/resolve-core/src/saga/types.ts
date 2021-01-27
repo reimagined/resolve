@@ -1,6 +1,5 @@
-import { SecretsManager, Event } from '../core-types'
-import { ReadModelRuntimeEventHandler } from '../read-model/types'
-import { AggregateMeta, SagaMeta } from '../types'
+import { SecretsManager, Event, SagaEventHandlers } from '../core-types'
+import { AggregateMeta, Monitoring, SagaMeta } from '../types'
 
 export type SchedulerInfo = {
   name: string
@@ -25,7 +24,6 @@ export type SchedulerSideEffects = SchedulerRuntime
 export type SystemSideEffects = {
   executeCommand: Function
   executeQuery: Function
-  scheduleCommand: Function
   secretsManager: SecretsManager
   uploader: any
 }
@@ -37,6 +35,7 @@ export type SagaRuntime = {
   secretsManager: SecretsManager
   uploader: any
   scheduler: SchedulerRuntime
+  monitoring?: Monitoring
 }
 
 export type SchedulerEventTypes = {
@@ -57,6 +56,11 @@ export type SchedulersSagasBuilder = (
   runtime: SagaRuntime
 ) => any[]
 
+export type SchedulerProjectionBuilder = (
+  schedulerName: string,
+  schedulerEventTypes: SchedulerEventTypes
+) => SagaEventHandlers<any, any>
+
 export type ApplicationSagasBuilder = (
   domain: {
     schedulerName: string
@@ -71,21 +75,10 @@ export type SagaDomain = {
   schedulerInvariantHash: string
   getSagasSchedulersInfo: () => SchedulerInfo[]
   createSchedulerAggregate: SchedulerAggregateBuilder
-  createSagas: (runtime: SagaRuntime) => any[]
   acquireSagasInterop: SagasInteropBuilder
 }
 
-export type SagaEventHandler<TSideEffects extends SideEffectsCollection> = (
-  context: {
-    store: any
-    sideEffects: TSideEffects
-  },
-  event: Event
-) => Promise<void>
-
-export type SagaHandlers<TSideEffects extends SideEffectsCollection> = {
-  [key: string]: SagaEventHandler<TSideEffects>
-}
+export type SagaRuntimeEventHandler = () => Promise<void>
 
 export type SagaInterop = {
   name: string
@@ -97,7 +90,11 @@ export type SagaInterop = {
       jwt?: string
     }
   ) => Promise<any>
-  // acquireEventHandler: (event: any) => ReadModelRuntimeEventHandler
+  acquireInitHandler: (store: any) => Promise<SagaRuntimeEventHandler | null>
+  acquireEventHandler: (
+    store: any,
+    event: Event
+  ) => Promise<SagaRuntimeEventHandler | null>
 }
 
 export type SagaInteropMap = {
