@@ -25,8 +25,6 @@ const wrapSagaMiddleware = (sagaMiddleware: any): any => {
       ...resolveContext,
     }
 
-    delete backCompatibleArgs.resolveContext
-
     sagaMiddleware.run(isClient ? rootSaga : emptySaga, {
       ...backCompatibleArgs,
       queryIdMap,
