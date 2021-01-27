@@ -65,7 +65,7 @@ const buildInit = async (pool, readModelName, store, modelInterop, next) => {
 
   let lastError = null
   try {
-    const handler = modelInterop.acquireInitHandler(store)
+    const handler = await modelInterop.acquireInitHandler(store)
     if (handler != null) {
       await handler()
     }
@@ -194,7 +194,7 @@ const buildEvents = async (pool, readModelName, store, modelInterop, next) => {
   try {
     for (const event of events) {
       try {
-        const handler = modelInterop.acquireEventHandler(store, event)
+        const handler = await modelInterop.acquireEventHandler(store, event)
         if (handler != null) {
           await inlineLedgerRunQuery(`SAVEPOINT E${appliedEventsCount}`, true)
           await handler()
@@ -324,8 +324,7 @@ const build = async (
   modelInterop,
   next,
   getVacantTimeInMillis,
-  provideLedger,
-  getEncryption
+  provideLedger
 ) => {
   const {
     PassthroughError,
@@ -440,7 +439,6 @@ const build = async (
 
     Object.assign(pool, {
       getVacantTimeInMillis,
-      getEncryption,
       ledgerTableNameAsId,
       readModelLedger,
       eventTypes,

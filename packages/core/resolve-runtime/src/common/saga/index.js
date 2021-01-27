@@ -87,26 +87,20 @@ const createSaga = ({
     scheduler: { get: () => scheduler, enumerable: true },
   })
 
-  // FIXME: totally replace this with modelsInterop
-  const sagasAsReadModels = [...sagaDomain.createSagas(runtime)].map(
-    (saga) => ({
-      provideLedger: async (inlineLedger) => {
-        eventProperties = inlineLedger.Properties
-      },
-      ...saga,
-    })
-  )
+  const provideLedger = async (inlineLedger) => {
+    eventProperties = inlineLedger.properties
+  }
 
   const executeListener = createQuery({
     invokeEventBusAsync,
     readModelConnectors,
-    readModels: sagasAsReadModels,
     viewModels: [],
     performanceTracer,
     getVacantTimeInMillis,
     performAcknowledge,
     eventstoreAdapter,
     monitoring: sagaMonitoring,
+    provideLedger,
     modelsInterop: domainInterop.sagaDomain.acquireSagasInterop(runtime),
   })
 

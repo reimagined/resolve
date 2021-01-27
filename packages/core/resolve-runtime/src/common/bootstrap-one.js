@@ -70,7 +70,7 @@ const bootstrapOne = async ({
     // eslint-disable-next-line no-console
     console.warn(`
       Event listener "${eventSubscriber}" can't resume subscription since event bus
-      cannot initiate notification for it because of error "${error}"
+      cannot initiate notification for it because of error "${error.stack}"
     `)
   }
 }

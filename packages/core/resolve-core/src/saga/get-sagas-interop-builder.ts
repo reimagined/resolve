@@ -12,8 +12,9 @@ import {
   SagaInteropMap,
   SagaRuntime,
   SagaRuntimeEventHandler,
-  SagasInteropBuilder, SchedulerEventTypes,
-  SchedulerInfo
+  SagasInteropBuilder,
+  SchedulerEventTypes,
+  SchedulerInfo,
 } from './types'
 import { createHttpError, HttpStatusCodes } from '../errors'
 import uuid from 'uuid'

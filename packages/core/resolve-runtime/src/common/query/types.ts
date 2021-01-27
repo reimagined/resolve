@@ -10,7 +10,6 @@ import {
 export type CreateQueryOptions = {
   invokeEventBusAsync: Function
   readModelConnectors: any
-  readModels: any[]
   viewModels: any[]
   performanceTracer: any
   eventstoreAdapter: any
@@ -18,6 +17,7 @@ export type CreateQueryOptions = {
   performAcknowledge: any
   monitoring?: Monitoring
   modelsInterop: ReadModelInteropMap | SagaInteropMap
+  provideLedger: (ledger: any) => Promise<void>
 }
 
 type WrapModelOptions = Omit<
@@ -26,7 +26,6 @@ type WrapModelOptions = Omit<
 >
 
 export type WrapReadModelOptions = WrapModelOptions & {
-  readModel: any
   interop: ReadModelInterop | SagaInterop
 }
 export type WrapViewModelOptions = WrapModelOptions & { viewModel: any }
@@ -71,6 +70,7 @@ export type ReadModelPool = {
   performAcknowledge: Function
   getVacantTimeInMillis: Function
   monitoring?: Monitoring
+  provideLedger: (ledger: any) => Promise<void>
 }
 
 export type ViewModelMeta = {

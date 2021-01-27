@@ -1,13 +1,7 @@
 import { EOL } from 'os'
 // TODO: core cannot reference "top-level" packages, move these to resolve-core
 import { OMIT_BATCH, STOP_BATCH } from 'resolve-readmodel-base'
-import {
-  SecretsManager,
-  makeMonitoringSafe,
-  Monitoring,
-  ReadModelInterop,
-  SagaInterop,
-} from 'resolve-core'
+import { makeMonitoringSafe, ReadModelInterop, SagaInterop } from 'resolve-core'
 
 import getLog from './get-log'
 
@@ -501,34 +495,19 @@ const next = async (
 }
 
 const provideLedger = async (
-  pool: any,
+  pool: ReadModelPool,
   readModelName: string,
   inlineLedger: any
 ) => {
   try {
-    if (typeof pool.readModel.setProperties === 'function') {
-      await pool.readModel.provideLedger(inlineLedger)
+    if (typeof pool.provideLedger === 'function') {
+      await pool.provideLedger(inlineLedger)
     }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.warn(
       `Provide inline ledger for event listener ${readModelName} failed: ${error}`
     )
-  }
-}
-
-const getEncryption = async (pool: any) => {
-  const secretsManager =
-    typeof pool.eventstoreAdapter.getSecretsManager === 'function'
-      ? await pool.eventstoreAdapter.getSecretsManager()
-      : null
-  return async (event: any) => {
-    const encryption =
-      typeof pool.readModel.encryption === 'function'
-        ? await pool.readModel.encryption(event, { secretsManager })
-        : null
-
-    return { ...encryption }
   }
 }
 
@@ -549,7 +528,6 @@ const build = doOperation.bind(
     next.bind(null, pool, readModelName),
     pool.getVacantTimeInMillis,
     provideLedger.bind(null, pool, readModelName),
-    getEncryption.bind(null, pool),
   ]
 )
 
@@ -558,6 +536,7 @@ const reset = doOperation.bind(
   'reset',
   (
     pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
     connection: any,
     readModelName: string,
     parameters: {}
@@ -569,6 +548,7 @@ const resume = doOperation.bind(
   'resume',
   (
     pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
     connection: any,
     readModelName: string,
     parameters: {}
@@ -579,6 +559,7 @@ const pause = doOperation.bind(
   'pause',
   (
     pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
     connection: any,
     readModelName: string,
     parameters: {}
@@ -590,6 +571,7 @@ const subscribe = doOperation.bind(
   'subscribe',
   (
     pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
     connection: any,
     readModelName: string,
     parameters: {
@@ -611,6 +593,7 @@ const resubscribe = doOperation.bind(
   'resubscribe',
   (
     pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
     connection: any,
     readModelName: string,
     parameters: {
@@ -632,6 +615,7 @@ const unsubscribe = doOperation.bind(
   'unsubscribe',
   (
     pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
     connection: any,
     readModelName: string,
     parameters: {}
@@ -643,6 +627,7 @@ const deleteProperty = doOperation.bind(
   'deleteProperty',
   (
     pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
     connection: any,
     readModelName: string,
     parameters: {
@@ -655,6 +640,7 @@ const getProperty = doOperation.bind(
   'getProperty',
   (
     pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
     connection: any,
     readModelName: string,
     parameters: {
@@ -668,6 +654,7 @@ const listProperties = doOperation.bind(
   'listProperties',
   (
     pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
     connection: any,
     readModelName: string,
     parameters: {}
@@ -678,6 +665,7 @@ const setProperty = doOperation.bind(
   'setProperty',
   (
     pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
     connection: any,
     readModelName: string,
     parameters: {
@@ -692,6 +680,7 @@ const status = doOperation.bind(
   'status',
   (
     pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
     connection: any,
     readModelName: string,
     parameters: {}
@@ -724,6 +713,7 @@ const wrapReadModel = ({
   getVacantTimeInMillis,
   performAcknowledge,
   monitoring,
+  provideLedger,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${interop.name}`)
 
@@ -748,6 +738,7 @@ const wrapReadModel = ({
     getVacantTimeInMillis,
     performAcknowledge,
     monitoring: safeMonitoring,
+    provideLedger,
   }
 
   const api = {

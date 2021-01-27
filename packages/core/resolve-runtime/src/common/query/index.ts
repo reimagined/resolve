@@ -57,15 +57,11 @@ const createQuery = (params: CreateQueryOptions): any => {
     [key: string]: any
   } = {}
 
-  const { readModels, viewModels, modelsInterop, ...imports } = params
+  const { viewModels, modelsInterop, ...imports } = params
 
-  for (const readModel of readModels) {
-    if (models[readModel.name] != null) {
-      throw new Error(`Duplicate name for read model: "${readModel.name}"`)
-    }
-    models[readModel.name] = wrapReadModel({
-      readModel,
-      interop: modelsInterop[readModel.name],
+  for (const model of Object.values(modelsInterop)) {
+    models[model.name] = wrapReadModel({
+      interop: model,
       ...imports,
     })
   }
