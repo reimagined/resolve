@@ -21,11 +21,13 @@ const initResolve = async (resolve) => {
     invokeEventBusAsync,
     aggregates,
     readModels,
-    schedulers,
     sagas,
     viewModels,
     uploader,
+    scheduler,
+    monitoring,
   } = resolve
+
   const eventstoreAdapter = createEventstoreAdapter()
 
   const readModelConnectors = {}
@@ -36,12 +38,17 @@ const initResolve = async (resolve) => {
     })
   }
 
-  if (!resolve.hasOwnProperty('getRemainingTimeInMillis')) {
+  if (resolve.getVacantTimeInMillis == null) {
     const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
-    resolve.getRemainingTimeInMillis = () => endTime - Date.now()
+    resolve.getVacantTimeInMillis = () => endTime - Date.now()
   }
 
-  const getRemainingTimeInMillis = resolve.getRemainingTimeInMillis
+  Object.defineProperties(resolve, {
+    readModelConnectors: { value: readModelConnectors },
+    eventstoreAdapter: { value: eventstoreAdapter },
+  })
+
+  const getVacantTimeInMillis = resolve.getVacantTimeInMillis
   const onCommandExecuted = createOnCommandExecuted(resolve)
 
   const performAcknowledge = resolve.publisher.acknowledge.bind(
@@ -53,6 +60,7 @@ const initResolve = async (resolve) => {
     eventstoreAdapter,
     performanceTracer,
     onCommandExecuted,
+    monitoring,
   })
 
   const executeQuery = createQueryExecutor({
@@ -62,23 +70,25 @@ const initResolve = async (resolve) => {
     readModels,
     viewModels,
     performanceTracer,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     performAcknowledge,
+    monitoring,
   })
 
   const executeSaga = createSagaExecutor({
     invokeEventBusAsync,
+    onCommandExecuted,
     executeCommand,
     executeQuery,
-    onCommandExecuted,
     eventstoreAdapter,
     readModelConnectors,
-    schedulers,
     sagas,
     performanceTracer,
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     performAcknowledge,
     uploader,
+    scheduler,
+    monitoring,
   })
 
   const eventBus = createEventBus(resolve)
@@ -113,8 +123,6 @@ const initResolve = async (resolve) => {
   })
 
   Object.defineProperties(resolve, {
-    readModelConnectors: { value: readModelConnectors },
-    eventstoreAdapter: { value: eventstoreAdapter },
     eventListener: { value: eventListener },
     eventBus: { value: eventBus },
     eventStore: { value: eventStore },

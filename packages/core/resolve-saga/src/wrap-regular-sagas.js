@@ -1,25 +1,24 @@
 import getLog from './get-log'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 
 import sagaEventHandler from './saga-event-handler'
 
 const log = getLog('wrap-regular-sagas')
 
 const scheduleCommand = async (sagaProvider, schedulerName, date, command) => {
-  const aggregateName = schedulerName
   const aggregateId = uuid()
   log.debug(
-    `creating scheduled command aggregate ${aggregateName} with id ${aggregateId}`
+    `creating scheduled command aggregate ${schedulerName} with id ${aggregateId}`
   )
   return sagaProvider.executeCommand({
-    aggregateName,
+    aggregateName: schedulerName,
     aggregateId,
     type: 'create',
     payload: { date, command },
   })
 }
 
-const wrapRegularSagas = (sagas, sagaProvider) => {
+const wrapRegularSagas = ({ sagas, schedulerName, sagaProvider }) => {
   const sagaReadModels = []
 
   for (const {
@@ -27,7 +26,6 @@ const wrapRegularSagas = (sagas, sagaProvider) => {
     handlers,
     sideEffects,
     connectorName,
-    schedulerName,
     encryption,
   } of sagas) {
     const boundScheduleCommand = scheduleCommand.bind(

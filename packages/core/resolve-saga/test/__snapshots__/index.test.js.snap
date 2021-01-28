@@ -14,7 +14,7 @@ Array [
         "defineTable": [MockFunction] {
           "calls": Array [
             Array [
-              "default-scheduler",
+              "_SCHEDULER_",
               Object {
                 "fields": Array [
                   "command",
@@ -36,13 +36,13 @@ Array [
         "delete": [MockFunction] {
           "calls": Array [
             Array [
-              "default-scheduler",
+              "_SCHEDULER_",
               Object {
                 "taskId": undefined,
               },
             ],
             Array [
-              "default-scheduler",
+              "_SCHEDULER_",
               Object {
                 "taskId": undefined,
               },
@@ -63,7 +63,7 @@ Array [
         "insert": [MockFunction] {
           "calls": Array [
             Array [
-              "default-scheduler",
+              "_SCHEDULER_",
               Object {
                 "command": Object {
                   "aggregateId": "scheduledId",
@@ -153,6 +153,19 @@ Array [
         "eventSubscriber": "test-saga",
         "failedEvent": null,
         "successEvent": Object {
+          "type": "Init",
+        },
+      },
+    },
+  ],
+  Array [
+    Object {
+      "batchId": undefined,
+      "result": Object {
+        "error": null,
+        "eventSubscriber": "test-saga",
+        "failedEvent": null,
+        "successEvent": Object {
           "aggregateId": "aggregateId",
           "aggregateVersion": 1,
           "payload": Object {
@@ -169,10 +182,23 @@ Array [
       "batchId": undefined,
       "result": Object {
         "error": null,
-        "eventSubscriber": "default-scheduler",
+        "eventSubscriber": "_SCHEDULER_default-connector",
         "failedEvent": null,
         "successEvent": Object {
-          "type": "_RESOLVE_SYS_SCHEDULED_COMMAND_FAILED_default-scheduler",
+          "type": "Init",
+        },
+      },
+    },
+  ],
+  Array [
+    Object {
+      "batchId": undefined,
+      "result": Object {
+        "error": null,
+        "eventSubscriber": "_SCHEDULER_default-connector",
+        "failedEvent": null,
+        "successEvent": Object {
+          "type": "_RESOLVE_SYS_SCHEDULED_COMMAND_FAILED_",
         },
       },
     },
@@ -186,13 +212,19 @@ Array [
     "test-saga",
   ],
   Array [
-    "default-scheduler",
+    "test-saga",
+  ],
+  Array [
+    "_SCHEDULER_default-connector",
+  ],
+  Array [
+    "_SCHEDULER_default-connector",
   ],
   Array [
     "test-saga",
   ],
   Array [
-    "default-scheduler",
+    "_SCHEDULER_default-connector",
   ],
 ]
 `;
@@ -204,7 +236,7 @@ Array [
       "defineTable": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "fields": Array [
                 "command",
@@ -226,13 +258,13 @@ Array [
       "delete": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "taskId": undefined,
             },
           ],
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "taskId": undefined,
             },
@@ -253,7 +285,7 @@ Array [
       "insert": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "command": Object {
                 "aggregateId": "scheduledId",
@@ -281,7 +313,7 @@ Array [
       "defineTable": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "fields": Array [
                 "command",
@@ -303,90 +335,13 @@ Array [
       "delete": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "taskId": undefined,
             },
           ],
           Array [
-            "default-scheduler",
-            Object {
-              "taskId": undefined,
-            },
-          ],
-        ],
-        "results": Array [
-          Object {
-            "type": "return",
-            "value": undefined,
-          },
-          Object {
-            "type": "return",
-            "value": undefined,
-          },
-        ],
-      },
-      "find": [MockFunction],
-      "insert": [MockFunction] {
-        "calls": Array [
-          Array [
-            "default-scheduler",
-            Object {
-              "command": Object {
-                "aggregateId": "scheduledId",
-                "aggregateName": "Test",
-                "payload": "scheduledCommand",
-                "type": "scheduledCommand",
-              },
-              "date": 100500,
-              "taskId": "guid",
-            },
-          ],
-        ],
-        "results": Array [
-          Object {
-            "type": "return",
-            "value": undefined,
-          },
-        ],
-      },
-    },
-    "default-scheduler",
-  ],
-  Array [
-    Object {
-      "defineTable": [MockFunction] {
-        "calls": Array [
-          Array [
-            "default-scheduler",
-            Object {
-              "fields": Array [
-                "command",
-              ],
-              "indexes": Object {
-                "date": "number",
-                "taskId": "string",
-              },
-            },
-          ],
-        ],
-        "results": Array [
-          Object {
-            "type": "return",
-            "value": undefined,
-          },
-        ],
-      },
-      "delete": [MockFunction] {
-        "calls": Array [
-          Array [
-            "default-scheduler",
-            Object {
-              "taskId": undefined,
-            },
-          ],
-          Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "taskId": undefined,
             },
@@ -407,7 +362,7 @@ Array [
       "insert": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "command": Object {
                 "aggregateId": "scheduledId",
@@ -435,7 +390,7 @@ Array [
       "defineTable": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "fields": Array [
                 "command",
@@ -457,13 +412,13 @@ Array [
       "delete": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "taskId": undefined,
             },
           ],
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "taskId": undefined,
             },
@@ -484,7 +439,7 @@ Array [
       "insert": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "command": Object {
                 "aggregateId": "scheduledId",
@@ -505,7 +460,238 @@ Array [
         ],
       },
     },
-    "default-scheduler",
+    "_SCHEDULER_default-connector",
+  ],
+  Array [
+    Object {
+      "defineTable": [MockFunction] {
+        "calls": Array [
+          Array [
+            "_SCHEDULER_",
+            Object {
+              "fields": Array [
+                "command",
+              ],
+              "indexes": Object {
+                "date": "number",
+                "taskId": "string",
+              },
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "delete": [MockFunction] {
+        "calls": Array [
+          Array [
+            "_SCHEDULER_",
+            Object {
+              "taskId": undefined,
+            },
+          ],
+          Array [
+            "_SCHEDULER_",
+            Object {
+              "taskId": undefined,
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "find": [MockFunction],
+      "insert": [MockFunction] {
+        "calls": Array [
+          Array [
+            "_SCHEDULER_",
+            Object {
+              "command": Object {
+                "aggregateId": "scheduledId",
+                "aggregateName": "Test",
+                "payload": "scheduledCommand",
+                "type": "scheduledCommand",
+              },
+              "date": 100500,
+              "taskId": "guid",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+    },
+    "_SCHEDULER_default-connector",
+  ],
+  Array [
+    Object {
+      "defineTable": [MockFunction] {
+        "calls": Array [
+          Array [
+            "_SCHEDULER_",
+            Object {
+              "fields": Array [
+                "command",
+              ],
+              "indexes": Object {
+                "date": "number",
+                "taskId": "string",
+              },
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "delete": [MockFunction] {
+        "calls": Array [
+          Array [
+            "_SCHEDULER_",
+            Object {
+              "taskId": undefined,
+            },
+          ],
+          Array [
+            "_SCHEDULER_",
+            Object {
+              "taskId": undefined,
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "find": [MockFunction],
+      "insert": [MockFunction] {
+        "calls": Array [
+          Array [
+            "_SCHEDULER_",
+            Object {
+              "command": Object {
+                "aggregateId": "scheduledId",
+                "aggregateName": "Test",
+                "payload": "scheduledCommand",
+                "type": "scheduledCommand",
+              },
+              "date": 100500,
+              "taskId": "guid",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+    },
+    "test-saga",
+  ],
+  Array [
+    Object {
+      "defineTable": [MockFunction] {
+        "calls": Array [
+          Array [
+            "_SCHEDULER_",
+            Object {
+              "fields": Array [
+                "command",
+              ],
+              "indexes": Object {
+                "date": "number",
+                "taskId": "string",
+              },
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "delete": [MockFunction] {
+        "calls": Array [
+          Array [
+            "_SCHEDULER_",
+            Object {
+              "taskId": undefined,
+            },
+          ],
+          Array [
+            "_SCHEDULER_",
+            Object {
+              "taskId": undefined,
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+      "find": [MockFunction],
+      "insert": [MockFunction] {
+        "calls": Array [
+          Array [
+            "_SCHEDULER_",
+            Object {
+              "command": Object {
+                "aggregateId": "scheduledId",
+                "aggregateName": "Test",
+                "payload": "scheduledCommand",
+                "type": "scheduledCommand",
+              },
+              "date": 100500,
+              "taskId": "guid",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      },
+    },
+    "_SCHEDULER_default-connector",
   ],
 ]
 `;
@@ -517,7 +703,7 @@ Array [
       "defineTable": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "fields": Array [
                 "command",
@@ -539,13 +725,13 @@ Array [
       "delete": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "taskId": undefined,
             },
           ],
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "taskId": undefined,
             },
@@ -566,7 +752,7 @@ Array [
       "insert": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "command": Object {
                 "aggregateId": "scheduledId",
@@ -595,7 +781,7 @@ Array [
       "defineTable": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "fields": Array [
                 "command",
@@ -617,13 +803,13 @@ Array [
       "delete": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "taskId": undefined,
             },
           ],
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "taskId": undefined,
             },
@@ -644,7 +830,7 @@ Array [
       "insert": [MockFunction] {
         "calls": Array [
           Array [
-            "default-scheduler",
+            "_SCHEDULER_",
             Object {
               "command": Object {
                 "aggregateId": "scheduledId",
@@ -665,7 +851,7 @@ Array [
         ],
       },
     },
-    "default-scheduler",
+    "_SCHEDULER_default-connector",
     Object {},
   ],
 ]
@@ -674,7 +860,7 @@ Array [
 exports[`resolve-saga: readModelStore.defineTable 1`] = `
 Array [
   Array [
-    "default-scheduler",
+    "_SCHEDULER_",
     Object {
       "fields": Array [
         "command",
@@ -691,13 +877,13 @@ Array [
 exports[`resolve-saga: readModelStore.delete 1`] = `
 Array [
   Array [
-    "default-scheduler",
+    "_SCHEDULER_",
     Object {
       "taskId": undefined,
     },
   ],
   Array [
-    "default-scheduler",
+    "_SCHEDULER_",
     Object {
       "taskId": undefined,
     },
@@ -710,7 +896,7 @@ exports[`resolve-saga: readModelStore.find 1`] = `Array []`;
 exports[`resolve-saga: readModelStore.insert 1`] = `
 Array [
   Array [
-    "default-scheduler",
+    "_SCHEDULER_",
     Object {
       "command": Object {
         "aggregateId": "scheduledId",
@@ -725,20 +911,9 @@ Array [
 ]
 `;
 
-exports[`resolve-saga: schedulerAdapter 1`] = `
-Array [
-  Array [
-    Object {
-      "errorHandler": [Function],
-      "execute": [Function],
-    },
-  ],
-]
-`;
+exports[`resolve-saga: scheduler.addEntries 1`] = `Array []`;
 
-exports[`resolve-saga: schedulerAdapterInstance.addEntries 1`] = `Array []`;
-
-exports[`resolve-saga: schedulerAdapterInstance.clearEntries 1`] = `Array []`;
+exports[`resolve-saga: scheduler.clearEntries 1`] = `Array []`;
 
 exports[`resolve-saga: snapshotAdapter.loadSnapshot 1`] = `Array []`;
 

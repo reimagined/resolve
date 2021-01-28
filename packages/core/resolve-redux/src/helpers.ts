@@ -1,10 +1,10 @@
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 
 const regExpAbsoluteUrl = /:\/\//i
 const regExpLeadingSlash = /^\//i
 
 export function isOptions<T>(x: any): x is T {
-  return x && typeof x === 'object' && !(x instanceof Array) && !x.success
+  return x != null && Object(x) === x && x.success == null
 }
 export function isActionCreators<T>(creators: string[], x: any): x is T {
   return (

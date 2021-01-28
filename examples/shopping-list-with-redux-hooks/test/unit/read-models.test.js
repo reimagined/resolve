@@ -37,11 +37,12 @@ describe('read-models', () => {
     beforeEach(async () => {
       await resetReadModel(
         createReadModelAdapter,
-        { databaseFile: ':memory:' },
+        { databaseFile: ':memory:', preferEventBusLedger: true },
         'ShoppingLists'
       )
       adapter = createReadModelAdapter({
         databaseFile: ':memory:',
+        preferEventBusLedger: true,
       })
     })
 

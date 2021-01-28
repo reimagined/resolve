@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import Splitter from '../components/Splitter'
 import Header from './Header'
 import LoginInfo from './LoginInfo'
-import Image from './Image'
+import { StaticImage } from './StaticImage'
 import Search from './Search'
 
 const ContentRoot = styled.div`
@@ -81,7 +81,7 @@ const App = ({ children }) => (
     <ContentRoot>
       <PageHeader>
         <Link to="/">
-          <Image src="/reSolve-logo.svg" width="18" height="18" alt="" />
+          <StaticImage src="/reSolve-logo.svg" width="18" height="18" alt="" />
         </Link>
         <Link to="/newest">
           <PageTitle>reSolve HN</PageTitle>

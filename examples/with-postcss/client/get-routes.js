@@ -15,6 +15,4 @@ const routes = [
   },
 ]
 
-const getRoutes = () => routes
-
-export default getRoutes
+export const getRoutes = () => routes

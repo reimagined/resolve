@@ -1,5 +1,8 @@
 import { message } from '../constants'
-import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
+import declareRuntimeEnv, {
+  checkRuntimeEnv,
+  injectRuntimeEnv,
+} from '../declare_runtime_env'
 
 const CLIENT_ENV_KEY = '__CLIENT_ENV__'
 
@@ -19,21 +22,23 @@ export default ({ resolveConfig, isClient }) => {
     })
   }
 
-  const clientEnvs = []
+  const clientEnvs = [declareRuntimeEnv('RESOLVE_UPLOADER_CDN_URL')]
 
   const configEnvs = [
     resolveConfig.customConstants,
     resolveConfig.staticPath,
     resolveConfig.rootPath,
     resolveConfig.jwtCookie,
+    ...(Array.isArray(resolveConfig.viewModels)
+      ? resolveConfig.viewModels.map((viewModel) => viewModel.projection)
+      : []),
+    ...(resolveConfig.clientImports != null &&
+    Object(resolveConfig.clientImports) === resolveConfig.clientImports
+      ? Object.keys(resolveConfig.clientImports).map(
+          (key) => resolveConfig.clientImports[key]
+        )
+      : []),
   ]
-
-  if (resolveConfig.uploadAdapter != null) {
-    configEnvs.push(
-      resolveConfig.uploadAdapter.options.CDN,
-      resolveConfig.uploadAdapter.options.deploymentId
-    )
-  }
 
   void JSON.stringify(configEnvs, (key, value) => {
     if (checkRuntimeEnv(value)) {
@@ -41,6 +46,16 @@ export default ({ resolveConfig, isClient }) => {
     }
     return value
   })
+
+  const seededEnvKeys = new Set()
+  for (let index = clientEnvs.length - 1; index >= 0; index--) {
+    const key = `${clientEnvs[index]}`
+    if (seededEnvKeys.has(key)) {
+      clientEnvs.splice(index, 1)
+    } else {
+      seededEnvKeys.add(key)
+    }
+  }
 
   /* eslint-disable no-console */
   if (clientEnvs.length > 0) {

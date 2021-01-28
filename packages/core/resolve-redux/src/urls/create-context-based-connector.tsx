@@ -1,58 +1,61 @@
 import React from 'react'
 
-import { Consumer } from '../internal/resolve-context'
 import { arrayOfString } from '../helpers'
 
-const defaultContext = { origin: '', rootPath: '', staticPath: 'static' }
+class PropsResolver extends React.PureComponent<any> {
+  render() {
+    const {
+      innerRef,
+      propList,
+      TargetComponent,
+      resolver,
+      ...props
+    } = this.props
 
-const createContextBasedConnector = (getContextBasedUrl: Function): any => (
-  propsList: any[]
-): any => (Component: any): any => {
-  arrayOfString(propsList, 'Props list')
+    const propsListSize = propList.length
 
-  const propsListSize = propsList.length
+    const resolvedProps: { [key: string]: any } = {}
 
-  return class ContextBasedComponent extends React.PureComponent<any> {
-    functionAsChildComponent = (context: any): any => {
-      const { innerRef, ...props } = this.props
-
-      const staticBasedProps: { [key: string]: any } = {}
-
-      for (
-        let propertyIndex = 0;
-        propertyIndex < propsListSize;
-        propertyIndex++
-      ) {
-        const propertyName = propsList[propertyIndex]
-        const propertyValue = props[propertyName]
-        if (Array.isArray(propertyValue)) {
-          const subProps = []
-          const subPropertySize = propertyValue.length
-          for (
-            let subPropertyIndex = 0;
-            subPropertyIndex < subPropertySize;
-            subPropertyIndex++
-          ) {
-            subProps[subPropertyIndex] = getContextBasedUrl(
-              context || defaultContext,
-              propertyValue[subPropertyIndex]
-            )
-          }
-          staticBasedProps[propertyName] = subProps
-        } else {
-          staticBasedProps[propertyName] = getContextBasedUrl(
-            context || defaultContext,
-            propertyValue
-          )
+    for (
+      let propertyIndex = 0;
+      propertyIndex < propsListSize;
+      propertyIndex++
+    ) {
+      const propertyName = propList[propertyIndex]
+      const propertyValue = props[propertyName]
+      if (Array.isArray(propertyValue)) {
+        const subProps = []
+        const subPropertySize = propertyValue.length
+        for (
+          let subPropertyIndex = 0;
+          subPropertyIndex < subPropertySize;
+          subPropertyIndex++
+        ) {
+          subProps[subPropertyIndex] = resolver(propertyValue[subPropertyIndex])
         }
+        resolvedProps[propertyName] = subProps
+      } else {
+        resolvedProps[propertyName] = resolver(propertyValue)
       }
-
-      return <Component {...props} {...staticBasedProps} ref={innerRef} />
     }
+    return <TargetComponent {...props} {...resolvedProps} ref={innerRef} />
+  }
+}
 
-    render() {
-      return <Consumer>{this.functionAsChildComponent}</Consumer>
-    }
+const createContextBasedConnector = (hook: Function): any => (
+  propList: any[]
+): any => (Component: any): any => {
+  arrayOfString(propList, 'Prop list')
+  return (props: any) => {
+    const resolver = hook()
+    return (
+      <PropsResolver
+        TargetComponent={Component}
+        propList={propList}
+        resolver={resolver}
+        {...props}
+      />
+    )
   }
 }
 

@@ -2,7 +2,9 @@
 
 ![Styled Components](https://camo.githubusercontent.com/640c2142e506d4b61bdd29513cb2cdbddbd4aa2f/687474703a2f2f692e696d6775722e636f6d2f77554a70636a592e6a7067)
 
-This example demonstrates how to work with [Styled Components](https://www.styled-components.com/docs). Get the example using this command:
+This example demonstrates how to work with [Styled Components](https://www.styled-components.com/docs).
+
+##### Installation:
 
 ```sh
 npx create-resolve-app resolve-with-styled-components-example -e with-styled-components

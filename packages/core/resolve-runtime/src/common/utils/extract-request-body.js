@@ -5,7 +5,7 @@ const convertCodepage = (content, fromEncoding, toEncoding) =>
   iconv.decode(iconv.encode(content, fromEncoding), toEncoding)
 
 const extractRequestBody = (req) => {
-  if (req.body == null) {
+  if (req.body == null || req.body === '') {
     return req.query
   }
   const [contentType, optionsEntry] =

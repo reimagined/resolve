@@ -68,13 +68,6 @@ void (async () => {
       case 'dev': {
         const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(baseConfig, devConfig, moduleAdmin)
-        await reset(resolveConfig, {
-          dropEventStore: false,
-          dropEventBus: true,
-          dropReadModels: true,
-          dropSagas: true,
-        })
-
         await watch(resolveConfig)
         break
       }
@@ -99,7 +92,7 @@ void (async () => {
       case 'reset': {
         const resolveConfig = merge(baseConfig, devConfig)
         await reset(resolveConfig, {
-          dropEventStore: true,
+          dropEventStore: false,
           dropEventBus: true,
           dropReadModels: true,
           dropSagas: true,
@@ -180,7 +173,6 @@ void (async () => {
           ],
         })
         importConfig.readModelConnectors = {}
-        importConfig.schedulers = {}
 
         await build(importConfig)
 

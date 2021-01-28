@@ -1,4 +1,4 @@
-import createQuery from '../src/index'
+import createQuery from '../src'
 import { IS_BUILT_IN, SecretsManager } from 'resolve-core'
 
 type State = {
@@ -35,7 +35,7 @@ type ResolverQuery = {
 let performanceTracer: any | null = null
 
 let invokeEventBusAsync: any = null
-let getRemainingTimeInMillis: any = null
+let getVacantTimeInMillis: any = null
 let performAcknowledge: any = null
 
 for (const { describeName, prepare } of [
@@ -90,7 +90,7 @@ for (const { describeName, prepare } of [
       snapshots = new Map()
 
       invokeEventBusAsync = jest.fn()
-      getRemainingTimeInMillis = jest.fn()
+      getVacantTimeInMillis = jest.fn()
       performAcknowledge = jest.fn()
       const secretsMap = new Map()
       secretsManager = {
@@ -135,7 +135,7 @@ for (const { describeName, prepare } of [
       readModels = null
       readModelConnectors = null
       invokeEventBusAsync = null
-      getRemainingTimeInMillis = null
+      getVacantTimeInMillis = null
       performAcknowledge = null
     })
 
@@ -232,6 +232,20 @@ for (const { describeName, prepare } of [
               }
             },
           },
+          {
+            name: 'viewModelWithErrors',
+            projection: {
+              Init: () => null,
+              Failed: () => {
+                throw new Error('View model is failed')
+              },
+            },
+            invariantHash: 'viewModelName-invariantHash',
+            encryption: () => ({}),
+            resolver: async () => {
+              throw new Error('Resolver failed')
+            },
+          },
         ]
       })
 
@@ -246,7 +260,7 @@ for (const { describeName, prepare } of [
             viewModels,
             performanceTracer,
             eventstoreAdapter,
-            getRemainingTimeInMillis,
+            getVacantTimeInMillis,
             performAcknowledge,
           })
         })
@@ -700,6 +714,43 @@ for (const { describeName, prepare } of [
           }
         })
 
+        test('"read" calls monitoring.error if resolver is failed', async () => {
+          const monitoring = {
+            error: jest.fn(),
+          }
+
+          query = createQuery({
+            invokeEventBusAsync,
+            readModelConnectors,
+            readModels,
+            viewModels,
+            performanceTracer,
+            eventstoreAdapter,
+            getVacantTimeInMillis,
+            performAcknowledge,
+            monitoring,
+          })
+
+          try {
+            await query.read({
+              modelName: 'viewModelWithErrors',
+              aggregateIds: 'id1',
+              aggregateArgs: {},
+            })
+
+            return Promise.reject(new Error('Test failed'))
+          } catch (error) {
+            expect(error).toBeInstanceOf(Error)
+            expect(monitoring.error).toBeCalledWith(
+              error,
+              'viewModelResolver',
+              {
+                viewModelName: 'viewModelWithErrors',
+              }
+            )
+          }
+        })
+
         test('"serializeState" should return JSON by with built-in serializer', async () => {
           if (query == null) {
             throw new Error('Some of test tools are not initialized')
@@ -938,7 +989,7 @@ for (const { describeName, prepare } of [
             viewModels,
             performanceTracer,
             eventstoreAdapter,
-            getRemainingTimeInMillis,
+            getVacantTimeInMillis,
             performAcknowledge,
           })
         })
@@ -1474,7 +1525,11 @@ for (const { describeName, prepare } of [
                 throw error
               },
             },
-            resolvers: {},
+            resolvers: {
+              failed: async () => {
+                throw new Error('Failed resolver')
+              },
+            },
             connectorName: 'empty',
             invariantHash: 'brokenReadModelName-invariantHash',
             encryption,
@@ -1572,7 +1627,7 @@ for (const { describeName, prepare } of [
           viewModels,
           performanceTracer,
           eventstoreAdapter,
-          getRemainingTimeInMillis,
+          getVacantTimeInMillis,
           performAcknowledge,
         })
       })
@@ -1712,6 +1767,40 @@ for (const { describeName, prepare } of [
         }
       })
 
+      test('"read" calls monitoring.error if resolver is failed', async () => {
+        const monitoring = {
+          error: jest.fn(),
+        }
+
+        query = createQuery({
+          invokeEventBusAsync,
+          readModelConnectors,
+          readModels,
+          viewModels,
+          performanceTracer,
+          eventstoreAdapter,
+          getVacantTimeInMillis,
+          performAcknowledge,
+          monitoring,
+        })
+
+        try {
+          await query.read({
+            modelName: 'brokenReadModelName',
+            resolverName: 'failed',
+            resolverArgs: {},
+          })
+
+          return Promise.reject(new Error('Test failed'))
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error)
+          expect(monitoring.error).toBeCalledWith(error, 'readModelResolver', {
+            readModelName: 'brokenReadModelName',
+            resolverName: 'failed',
+          })
+        }
+      })
+
       test('"sendEvents" with encryption', async () => {
         events = [
           {
@@ -1730,7 +1819,15 @@ for (const { describeName, prepare } of [
 
         await query.sendEvents({
           modelName: 'encryptedReadModel',
-          events,
+          events: events.slice(0, 1),
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId',
+        })
+
+        await query.sendEvents({
+          modelName: 'encryptedReadModel',
+          events: events.slice(1),
           xaTransactionId: 'xaTransactionId',
           properties: {},
           batchId: 'batchId',
@@ -1799,13 +1896,21 @@ for (const { describeName, prepare } of [
 
         await query.sendEvents({
           modelName: 'readModelName',
-          events,
+          events: events.slice(0, 1),
           xaTransactionId: 'xaTransactionId',
           properties: {},
           batchId: 'batchId',
         })
 
-        expect(performAcknowledge.mock.calls[0][0].result).toMatchObject({
+        await query.sendEvents({
+          modelName: 'readModelName',
+          events: events.slice(1),
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId',
+        })
+
+        expect(performAcknowledge.mock.calls[1][0].result).toMatchObject({
           error: null,
           successEvent: {
             aggregateId: 'id1',
@@ -1879,6 +1984,53 @@ for (const { describeName, prepare } of [
           )
           expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
         }
+      })
+
+      test('"sendEvents" calls monitoring.error if resolver is failed', async () => {
+        const monitoring = {
+          error: jest.fn(),
+        }
+
+        query = createQuery({
+          invokeEventBusAsync,
+          readModelConnectors,
+          readModels,
+          viewModels,
+          performanceTracer,
+          eventstoreAdapter,
+          getVacantTimeInMillis,
+          performAcknowledge,
+          monitoring,
+        })
+
+        const events = [
+          {
+            aggregateId: 'id1',
+            aggregateVersion: 1,
+            timestamp: 1,
+            type: 'BROKEN',
+            payload: {},
+          },
+        ]
+
+        await query.sendEvents({
+          modelName: 'brokenReadModelName',
+          events,
+          xaTransactionId: 'xaTransactionId',
+          properties: {},
+          batchId: 'batchId',
+        })
+
+        expect(monitoring.error).toBeCalledWith(
+          expect.objectContaining({
+            message: 'BROKEN',
+          }),
+          'readModelProjection',
+          {
+            readModelName: 'brokenReadModelName',
+            eventType: 'BROKEN',
+          }
+        )
       })
 
       test('"sendEvents" should raise error when a projection is not found', async () => {
@@ -2187,7 +2339,7 @@ for (const { describeName, prepare } of [
               eventstoreAdapter,
               performanceTracer,
               invokeEventBusAsync,
-              getRemainingTimeInMillis,
+              getVacantTimeInMillis,
               performAcknowledge,
             }))
         ).toThrow(Error)
@@ -2225,7 +2377,7 @@ for (const { describeName, prepare } of [
               eventstoreAdapter,
               performanceTracer,
               invokeEventBusAsync,
-              getRemainingTimeInMillis,
+              getVacantTimeInMillis,
               performAcknowledge,
             }))
         ).toThrow('Duplicate name for read model: "readModelName"')
@@ -2268,7 +2420,7 @@ for (const { describeName, prepare } of [
               eventstoreAdapter,
               performanceTracer,
               invokeEventBusAsync,
-              getRemainingTimeInMillis,
+              getVacantTimeInMillis,
               performAcknowledge,
             }))
         ).toThrow('Duplicate name for view model: "viewModelName"')
@@ -2304,7 +2456,7 @@ for (const { describeName, prepare } of [
           eventstoreAdapter,
           performanceTracer,
           invokeEventBusAsync,
-          getRemainingTimeInMillis,
+          getVacantTimeInMillis,
           performAcknowledge,
         })
 

@@ -1,15 +1,15 @@
 {
   "name": "@shopping-list-tutorial/lesson-6",
-  "version": "0.25.12",
+  "version": "0.26.5",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
     "dev": "babel-node ./run.js dev",
-    "start": "babel-node ./run.js start",
-    "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:e2e": "babel-node ./run.js test:e2e",
+    "export-event-store": "babel-node ./run.js export-event-store",
     "import-event-store": "babel-node ./run.js import-event-store",
-    "export-event-store": "babel-node ./run.js export-event-store"
+    "start": "babel-node ./run.js start",
+    "test": "jest --testMatch=**/test/unit/*.test.js --verbose --passWithNoTests",
+    "test:e2e": "babel-node ./run.js test:e2e"
   },
   "dependencies": {
     "@babel/node": "7.8.7",
@@ -24,9 +24,9 @@
     "react-router-dom": "5.1.2",
     "redux": "4.0.5",
     "redux-saga": "1.0.5",
-    "resolve-redux": "0.25.12",
-    "resolve-scripts": "0.25.12",
-    "uuid": "3.3.2"
+    "resolve-redux": "0.26.5",
+    "resolve-scripts": "0.26.5",
+    "uuid": "8.3.1"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
@@ -44,7 +44,7 @@
     "jest": "26.0.1",
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
-    "resolve-module-admin": "0.25.12",
+    "resolve-module-admin": "0.26.5",
     "testcafe": "1.8.5"
   }
 }

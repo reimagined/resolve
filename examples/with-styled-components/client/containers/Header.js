@@ -1,13 +1,22 @@
 import React from 'react'
-import { connectStaticBasedUrls } from 'resolve-redux'
-import { Navbar } from 'react-bootstrap'
+import { useStaticResolver } from 'resolve-react-hooks'
+import { Navbar, Nav } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 
-import Image from './Image'
+import { StaticImage } from './StaticImage'
 
 const Header = ({ title, name, css, favicon }) => {
-  const stylesheetLinks = css.map((href) => ({ rel: 'stylesheet', href }))
-  const faviconLink = { rel: 'icon', type: 'image/png', href: favicon }
+  const resolveStatic = useStaticResolver()
+
+  const stylesheetLinks = css.map((href) => ({
+    rel: 'stylesheet',
+    href: resolveStatic(href),
+  }))
+  const faviconLink = {
+    rel: 'icon',
+    type: 'image/png',
+    href: resolveStatic(favicon),
+  }
   const links = [...stylesheetLinks, faviconLink]
   const meta = {
     name: 'viewport',
@@ -18,31 +27,36 @@ const Header = ({ title, name, css, favicon }) => {
     <div>
       <Helmet title={title} link={links} meta={[meta]} />
       <Navbar>
-        <Navbar.Text>
-          <Navbar.Link href="/">
-            <Image src="/resolve-logo.png" /> {name}
-          </Navbar.Link>
-        </Navbar.Text>
-        <Navbar.Collapse>
-          <Navbar.Text pullRight>
-            <Navbar.Link href="https://facebook.com/resolvejs/">
-              <Image src="/fb-logo.png" />
-            </Navbar.Link>
+        <Navbar.Brand href="#home">
+          <StaticImage
+            src="/resolve-logo.png"
+            className="d-inline-block align-top"
+          />
+          {` ${name}`}
+        </Navbar.Brand>
+
+        <Nav className="ml-auto">
+          <Navbar.Text className="navbar-right">
+            <Nav.Link href="https://facebook.com/resolvejs/">
+              <StaticImage src="/fb-logo.png" />
+            </Nav.Link>
           </Navbar.Text>
-          <Navbar.Text pullRight>
-            <Navbar.Link href="https://twitter.com/resolvejs">
-              <Image src="/twitter-logo.png" />
-            </Navbar.Link>
+
+          <Navbar.Text className="navbar-right">
+            <Nav.Link href="https://twitter.com/resolvejs">
+              <StaticImage src="/twitter-logo.png" />
+            </Nav.Link>
           </Navbar.Text>
-          <Navbar.Text pullRight>
-            <Navbar.Link href="https://github.com/reimagined/resolve">
-              <Image src="/github-logo.png" />
-            </Navbar.Link>
+
+          <Navbar.Text className="navbar-right">
+            <Nav.Link href="https://github.com/reimagined/resolve">
+              <StaticImage src="/github-logo.png" />
+            </Nav.Link>
           </Navbar.Text>
-        </Navbar.Collapse>
+        </Nav>
       </Navbar>
     </div>
   )
 }
 
-export default connectStaticBasedUrls(['css', 'favicon'])(Header)
+export { Header }

@@ -1,23 +1,7 @@
 {
   "name": "resolve-testing-tools",
-  "version": "0.25.12",
+  "version": "0.26.5",
   "description": "Tools used to test reSolve applications.",
-  "engines": {
-    "node": ">=10.9"
-  },
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
-  "types": "./types/index.d.ts",
-  "bugs": {
-    "url": "https://github.com/reimagined/resolve/issues"
-  },
-  "scripts": {
-    "test": "jest --config=../../../jest.config.js --verbose",
-    "testw": "jest --config=../../../jest.config.js --watchAll"
-  },
-  "repository": "https://github.com/reimagined/resolve.git",
-  "author": "reimagined team",
-  "license": "MIT",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -25,15 +9,28 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-testing-tools#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "test": "jest --config=../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../jest.config.js --watchAll"
+  },
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "colors": "^1.4.0",
     "diff": "^4.0.2",
     "lodash.isequal": "4.5.0",
-    "resolve-command": "0.25.12",
-    "resolve-core": "0.25.12",
-    "resolve-query": "0.25.12",
-    "resolve-readmodel-lite": "0.25.12"
+    "resolve-command": "0.26.5",
+    "resolve-core": "0.26.5",
+    "resolve-query": "0.26.5",
+    "resolve-readmodel-lite": "0.26.5"
   },
   "devDependencies": {
     "@types/diff": "4.0.2",
@@ -41,7 +38,9 @@
     "jest": "26.0.1",
     "sinon": "7.2.2"
   },
-  "sourceType": "ts",
+  "engines": {
+    "node": ">=10.9"
+  },
   "babelCompile": [
     {
       "moduleType": "cjs",
@@ -55,5 +54,6 @@
       "inputDir": "./src",
       "outDir": "./es"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }

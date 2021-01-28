@@ -1,14 +1,12 @@
+import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
 import { useCommand } from '../src/use-command'
 import { useCommandBuilder } from '../src/use-command-builder'
 import { CommandCallback, CommandOptions } from 'resolve-client'
 
 jest.mock('resolve-client')
-jest.mock('react', () => ({
-  useCallback: jest.fn((cb) => cb),
-}))
 jest.mock('../src/use-command', () => ({
-  useCommand: jest.fn(),
+  useCommand: jest.fn(() => jest.fn()),
 }))
 
 const mockedUseCommand = mocked(useCommand)
@@ -34,14 +32,16 @@ describe('common', () => {
   test('useCommand hook called', () => {
     const commandBuilder = jest.fn()
     const commandOptions: CommandOptions = {}
-    const commandCallback: CommandCallback = jest.fn()
+    const commandCallback: CommandCallback<any> = jest.fn()
     const dependencies: any[] = []
 
-    useCommandBuilder(
-      commandBuilder,
-      commandOptions,
-      commandCallback,
-      dependencies
+    renderHook(() =>
+      useCommandBuilder(
+        commandBuilder,
+        commandOptions,
+        commandCallback,
+        dependencies
+      )
     )
 
     expect(mockedUseCommand).toHaveBeenCalledWith(
@@ -50,5 +50,17 @@ describe('common', () => {
       commandCallback,
       dependencies
     )
+  })
+
+  test('variadic builder generic arguments (compile time)', () => {
+    const executor = useCommandBuilder(
+      (userId: string, commandName: string) => ({
+        aggregateId: userId,
+        aggregateName: 'user',
+        type: commandName,
+      })
+    )
+
+    executor('user-id', 'command-name')
   })
 })

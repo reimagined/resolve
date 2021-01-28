@@ -16,15 +16,6 @@ const testFunctionalConfig = {
       },
     },
   },
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-local',
-        options: {},
-      },
-      connectorName: 'default',
-    },
-  },
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,
@@ -33,10 +24,10 @@ const testFunctionalConfig = {
     module: 'resolve-eventstore-lite',
     options: {
       databaseFile: 'data/event-store-test-functional.db',
+      secretsFile: 'data/secrets-test-functional.db',
     },
   },
   uploadAdapter: {
-    module: 'resolve-upload-local',
     options: {
       directory: 'data',
       bucket: 'files',

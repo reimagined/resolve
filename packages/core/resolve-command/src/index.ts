@@ -7,7 +7,10 @@ import {
   CommandResult,
   Event,
   SecretsManager,
+  makeMonitoringSafe,
+  Monitoring,
 } from 'resolve-core'
+
 import getLog from './get-log'
 
 type EventstoreAdapter = {
@@ -35,12 +38,13 @@ type AggregateMeta = {
 }
 
 type CommandPool = {
-  onCommandExecuted: (event: any) => Promise<void>
+  onCommandExecuted: (event: Event, command: Command) => Promise<void>
   performanceTracer: any
   aggregateName: string
   isDisposed: boolean
   eventstoreAdapter: EventstoreAdapter
   aggregates: AggregateMeta[]
+  monitoring?: Monitoring
 }
 
 type AggregateInfo = {
@@ -61,10 +65,11 @@ export type CommandExecutor = {
 }
 
 export type CommandExecutorBuilder = (context: {
-  onCommandExecuted: (event: any) => Promise<void>
+  onCommandExecuted: (event: Event, command: Command) => Promise<void>
   aggregates: AggregateMeta[]
   performanceTracer?: any
   eventstoreAdapter: EventstoreAdapter
+  monitoring?: Monitoring
 }) => CommandExecutor
 
 // eslint-disable-next-line no-new-func
@@ -396,8 +401,9 @@ const isString = (val: any): val is string =>
   val != null && val.constructor === String
 
 const saveEvent = async (
-  onCommandExecuted: (event: any) => Promise<void>,
-  event: Event
+  onCommandExecuted: (event: Event, command: Command) => Promise<void>,
+  event: Event,
+  command: Command
 ): Promise<any> => {
   if (!isString(event.type)) {
     throw generateCommandError(`Event "type" field is invalid`)
@@ -414,7 +420,7 @@ const saveEvent = async (
 
   event.aggregateId = String(event.aggregateId)
 
-  await onCommandExecuted(event)
+  await onCommandExecuted(event, command)
 
   return event
 }
@@ -446,7 +452,10 @@ const executeCommand = async (
     pool.aggregateName = aggregateName
 
     if (aggregate == null) {
-      throw generateCommandError(`Aggregate "${aggregateName}" does not exist`)
+      const error = generateCommandError(
+        `Aggregate "${aggregateName}" does not exist`
+      )
+      throw error
     }
 
     const { aggregateId, type } = command
@@ -457,7 +466,10 @@ const executeCommand = async (
     } = await getAggregateState(pool, aggregate, aggregateId)
 
     if (!aggregate.commands.hasOwnProperty(type)) {
-      throw generateCommandError(`Command type "${type}" does not exist`)
+      const error = generateCommandError(
+        `Command type "${type}" does not exist`
+      )
+      throw error
     }
 
     const commandHandler: CommandHandler = async (
@@ -545,7 +557,7 @@ const executeCommand = async (
       const subSegment = segment ? segment.addNewSubsegment('saveEvent') : null
 
       try {
-        return await saveEvent(pool.onCommandExecuted, processedEvent)
+        return await saveEvent(pool.onCommandExecuted, processedEvent, command)
       } catch (error) {
         if (subSegment != null) {
           subSegment.addError(error)
@@ -563,6 +575,7 @@ const executeCommand = async (
     if (subSegment != null) {
       subSegment.addError(error)
     }
+    await pool.monitoring?.error?.(error, 'command', { command })
     throw error
   } finally {
     if (subSegment != null) {
@@ -600,6 +613,7 @@ const createCommand: CommandExecutorBuilder = ({
   aggregates,
   performanceTracer,
   eventstoreAdapter,
+  monitoring,
 }): CommandExecutor => {
   const pool = {
     onCommandExecuted,
@@ -607,6 +621,8 @@ const createCommand: CommandExecutorBuilder = ({
     isDisposed: false,
     performanceTracer,
     eventstoreAdapter,
+    monitoring:
+      monitoring != null ? makeMonitoringSafe(monitoring) : monitoring,
   }
 
   const api = {

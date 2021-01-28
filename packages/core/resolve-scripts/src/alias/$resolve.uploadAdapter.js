@@ -1,6 +1,6 @@
 import {
   message,
-  RESOURCE_CONSTRUCTOR_ONLY,
+  RESOURCE_ANY,
   RUNTIME_ENV_ANYWHERE,
   IMPORT_CONSTRUCTOR,
 } from '../constants'
@@ -9,29 +9,32 @@ import importResource from '../import_resource'
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
-      `${message.serverAliasInClientCodeError}$resolve.uploadAdapter`
+      `${message.serverAliasInClientCodeError}$resolve.seedClientEnvs`
     )
   }
 
+  const imports = [`import '$resolve.guardOnlyServer'`]
+  const constants = []
+  const exports = [`export default uploadAdapter`]
+
   if (resolveConfig.hasOwnProperty('uploadAdapter')) {
-    const imports = [`import '$resolve.guardOnlyServer'`]
-    const constants = []
-    const exports = []
+    if (resolveConfig.uploadAdapter.module == null) {
+      resolveConfig.uploadAdapter.module =
+        'resolve-runtime/lib/common/defaults/upload-adapter.js'
+    }
 
     importResource({
-      resourceName: 'uploadAdapter',
+      resourceName: `uploadAdapter`,
       resourceValue: resolveConfig.uploadAdapter,
       runtimeMode: RUNTIME_ENV_ANYWHERE,
-      importMode: RESOURCE_CONSTRUCTOR_ONLY,
+      importMode: RESOURCE_ANY,
       instanceMode: IMPORT_CONSTRUCTOR,
       imports,
       constants,
     })
-
-    exports.push('export default uploadAdapter')
-
-    return [...imports, ...constants, ...exports].join('\r\n')
+  } else {
+    constants.push(`const uploadAdapter = null`)
   }
 
-  return ''
+  return [...imports, ...constants, ...exports].join('\r\n')
 }

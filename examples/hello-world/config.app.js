@@ -23,6 +23,13 @@ const appConfig = {
         'common/view-models/view-model-name.deserialize_state.js',
     },
   ],
+  sagas: [
+    {
+      name: 'saga-name',
+      source: 'common/sagas/saga-name.js',
+      connectorName: 'default',
+    },
+  ],
   clientEntries: ['client/index.js'],
 }
 

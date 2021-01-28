@@ -27,6 +27,22 @@ async function createDatabase({ database: { runRawQuery, escapeId } }) {
   const batchesBatchIdIndexNameAsId = escapeId(`${BATCHES_TABLE_NAME}-batchId`)
 
   try {
+    try {
+      await runRawQuery(`
+        DELETE FROM ${notificationsTableNameAsId};
+        COMMIT;
+        BEGIN IMMEDIATE;
+      `)
+    } catch (e) {}
+
+    try {
+      await runRawQuery(`
+        DELETE FROM ${batchesTableNameAsId};
+        COMMIT;
+        BEGIN IMMEDIATE;
+      `)
+    } catch (e) {}
+
     await runRawQuery(`
       CREATE TABLE IF NOT EXISTS ${notificationsTableNameAsId}(
         "insertionId" ${STRING_SQL_TYPE} NOT NULL,

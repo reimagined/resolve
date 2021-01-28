@@ -489,8 +489,8 @@ await eventStoreAdapter.saveEvent({
   type: 'USER_CREATED',
   timestamp: Date.now(),
   payload: {
-    name: 'user-name'
-  }
+    name: 'user-name',
+  },
 })
 ```
 
@@ -1224,6 +1224,23 @@ $ curl -X POST "http://localhost:3000/api/commands"
 '
 ```
 
+### Client Entry Point
+
+The entry point is a function that is the first to be called when the client script runs. It takes a reSolve context object as a parameter.
+
+##### client/index.js:
+
+```js
+const main = async resolveContext => {
+...
+}
+export default main
+```
+
+The `resolveContext` object contains data used internally by reSolve client libraries to communicate with the backend.
+
+See the [Client Application Entry Point](frontend.md#client-application-entry-point) section of the [Frontend](frontend.md) article for more information.
+
 ### resolve-redux Library
 
 The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library includes both React Hooks and Higher-Order Components (HOCs).
@@ -1259,8 +1276,8 @@ const { execute: toggleItem } = useReduxCommand({
   aggregateId: shoppingListId,
   aggregateName: 'ShoppingList',
   payload: {
-    id: 'shopping-list-id'
-  }
+    id: 'shopping-list-id',
+  },
 })
 ```
 
@@ -1276,8 +1293,8 @@ const { request: getLists, selector: allLists } = useReduxReadModel(
     name: 'ShoppingLists',
     resolver: 'all',
     args: {
-      filter: 'none'
-    }
+      filter: 'none',
+    },
   },
   []
 )
@@ -1295,12 +1312,12 @@ const { request: getLists, selector: allLists } = useReduxReadModel(
     name: 'ShoppingLists',
     resolver: 'all',
     args: {
-      filter: 'none'
-    }
+      filter: 'none',
+    },
   },
   [],
   {
-    selectorId: 'all-user-lists'
+    selectorId: 'all-user-lists',
   }
 )
 
@@ -1314,7 +1331,7 @@ Creates a hook to receive a View Model's state updates and reactive events.
 ```js
 const { connect, dispose, selector: thisList } = useReduxViewModel({
   name: 'shoppingList',
-  aggregateIds: ['my-list']
+  aggregateIds: ['my-list'],
 })
 
 const { data, status } = useSelector(thisList)
@@ -1335,10 +1352,10 @@ Creates a hook to access a view model's local state. This hook queries the View 
 const { connect, dispose, selector: thisList } = useReduxViewModel(
   {
     name: 'shoppingList',
-    aggregateIds: ['my-list']
+    aggregateIds: ['my-list'],
   },
   {
-    selectorId: 'this-list'
+    selectorId: 'this-list',
   }
 )
 
@@ -1357,7 +1374,7 @@ export const mapStateToOptions = (state, ownProps) => {
 
   return {
     viewModelName: 'ShoppingList',
-    aggregateIds: [aggregateId]
+    aggregateIds: [aggregateId],
   }
 }
 
@@ -1365,14 +1382,14 @@ export const mapStateToProps = (state, ownProps) => {
   const aggregateId = ownProps.match.params.id
 
   return {
-    aggregateId
+    aggregateId,
   }
 }
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      replaceUrl: routerActions.replace
+      replaceUrl: routerActions.replace,
     },
     dispatch
   )
@@ -1395,17 +1412,17 @@ import { bindActionCreators } from 'redux'
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
-  resolverArgs: {}
+  resolverArgs: {},
 })
 
 export const mapStateToProps = (state, ownProps) => ({
-  lists: ownProps.data
+  lists: ownProps.data,
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+      createStory: sendAggregateAction.bind(null, 'Story', 'createStory'),
     },
     dispatch
   )
@@ -1449,13 +1466,14 @@ const main = async resolveContext => {
 
 The `getClient` function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
 
-| Function Name                           | Description                                |
-| --------------------------------------- | ------------------------------------------ |
-| [command](#command)                     | Sends an aggregate command to the backend. |
-| [query](#query)                         | Queries a Read Model.                      |
-| [getStaticAssetUrl](#getstaticasseturl) | Gets a static file's full URL.             |
-| [subscribe](#subscribe)                 | Subscribes to View Model updates.          |
-| [unsubscribe](#unsubscribe)             | Unsubscribes from View Model updates.      |
+| Function Name                           | Description                                                                 |
+| --------------------------------------- | --------------------------------------------------------------------------- |
+| [command](#command)                     | Sends an aggregate command to the backend.                                  |
+| [query](#query)                         | Queries a Read Model.                                                       |
+| [getStaticAssetUrl](#getstaticasseturl) | Gets a static file's full URL.                                              |
+| [getOriginPath](#getoriginpath)         | Returns an absolute URL within the application for the given relative path. |
+| [subscribe](#subscribe)                 | Subscribes to View Model updates.                                           |
+| [unsubscribe](#unsubscribe)             | Unsubscribes from View Model updates.                                       |
 
 #### command
 
@@ -1469,9 +1487,9 @@ client.command(
     aggregateName: 'Chat',
     type: 'postMessage',
     aggregateId: userName,
-    payload: message
+    payload: message,
   },
-  err => {
+  (err) => {
     if (err) {
       console.warn(`Error while sending command: ${err}`)
     }
@@ -1488,7 +1506,7 @@ Queries a Read Model.
 ```js
 const { data } = await client.query({
   name: 'chat',
-  aggregateIds: '*'
+  aggregateIds: '*',
 })
 ```
 
@@ -1502,6 +1520,16 @@ Gets a static file's full URL.
 var imagePath = client.getStaticAssetUrl('/account/image.jpg')
 ```
 
+#### getOriginPath
+
+Returns an absolute URL within the application for the given relative path.
+
+##### Example
+
+```js
+var commandsApiPath = client.getOriginPath('/api/commands')
+```
+
 #### subscribe
 
 Subscribes to View Model updates. Returns a promise that resolves to a **subscription** object.
@@ -1509,7 +1537,7 @@ Subscribes to View Model updates. Returns a promise that resolves to a **subscri
 ##### Example
 
 ```js
-const chatViewModelUpdater = event => {
+const chatViewModelUpdater = (event) => {
   const eventType = event != null && event.type != null ? event.type : null
   const eventHandler = chatViewModel.projection[eventType]
 
@@ -1543,6 +1571,7 @@ The **resolve-react-hooks** library provides React hooks that you can use to con
 | [useCommandBuilder](#usecommandbuilder) | Allows a component to generate commands based on input parameters.        |
 | [useViewModel](#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model.               |
 | [useQuery](#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model. |
+| [useOriginResolver](#useoriginresolver) | Resolves a relative path to an absolute URL within the application.       |
 
 #### useCommand
 
@@ -1690,3 +1719,246 @@ const MyLists = () => {
   ...
 }
 ```
+
+#### useOriginResolver
+
+Resolves a relative path to an absolute URL within the application.
+
+##### Example
+
+```js
+var resolver = useOriginResolver()
+var commandApiPath = resolver('/api/commands')
+```
+
+### Request Middleware
+
+The [resolve-client](#resolve-client-library) and [resolve-react-hooks](#resolve-react-hooks-library) libraries allow you to use request middleware to extend the client's functionality. Middleware implements intermediate logic that can modify the response object or handle errors before they are passed to the callback function.
+
+Use a command's or query's `middleware` option to specify middleware:
+
+#### resolve-client:
+
+```js
+client.query(
+  {
+    name: "MyReadModel",
+    resolver: "all"
+  },
+  {
+    middleware: {
+      response: [
+        // An array of middleware that runs on server response
+        createMyResponseMiddleware({
+          // Middleware options
+        }),
+        ...
+      ],
+      error: [
+        // An array of middleware that runs when there is a server error
+        createMyErrorMiddleware({
+          // Middleware options
+        }),
+        ...
+      ]
+    }
+  },
+  (error, result) => {
+    ...
+  }
+})
+```
+
+#### resolve-react-hooks:
+
+```js
+const myQuery = useQuery(
+  {
+    name: 'MyReadModel',
+    resolver: 'all'
+  },
+  {
+    middleware: {
+      response: [
+        // An array of middleware that runs on server response
+        createMyResponseMiddleware({
+          // Middleware options
+        }),
+        ...
+      ]
+      error: [
+        // An array of middleware that runs on server error
+        createMyErrorMiddleware({
+          // Middleware options
+        }),
+        ...
+      ]
+    }
+  },
+  (error, result) => {
+    ...
+  }
+```
+
+Multiple middleware functions are run in the order they are specified in the options object.
+
+#### Available Middlewares
+
+This section lists request middleware included into the resolve-client package. The following middleware is available:
+
+| Name                | Description                                               |
+| ------------------- | --------------------------------------------------------- |
+| [parseResponse]()   | Deserializes the response data if it contains valid JSON. |
+| [retryOnError]()    | Retries the request if the server responds with an error. |
+| [waitForResponse]() | Validates the response and retries if validation fails.   |
+
+##### parseResponse
+
+Deserializes the response data if it contains valid JSON. If the data is not JSON, the original string is kept. Initialized by the `createParseResponseMiddleware` factory function.
+
+This middleware has no options. You can add it to a request as shown below:
+
+```js
+import { createParseResponseMiddleware } from 'resolve-client'
+...
+
+const { data } = await client.query(
+  {
+    name: 'articles',
+    resolver: 'all'
+  },
+  {
+    middleware: {
+      response: [createParseResponseMiddleware()]
+    }
+  }
+)
+```
+
+##### retryOnError
+
+Retries the request if the server responds with an error. Initialized by the `createRetryOnErrorMiddleware` factory function.
+
+The `retryOnError` middleware has the following options:
+
+| Option Name | Description                                                          |
+| ----------- | -------------------------------------------------------------------- |
+| attempts    | The number of retries if the server responds with an error.          |
+| errors      | An array of error codes that are allowed to trigger a retry.         |
+| debug       | If set to `true`, the middleware logs errors in the browser console. |
+| period      | The time between retries specified in milliseconds.                  |
+
+You can add the `retryOnError` middleware to a request as shown below:
+
+```js
+import { createRetryOnErrorMiddleware } from 'resolve-client'
+...
+
+client.command(
+  {
+    aggregateName: 'Chat',
+    type: 'postMessage',
+    aggregateId: userName,
+    payload: message
+  },
+  {
+    middleware: {
+      error: [
+        createRetryOnErrorMiddleware({
+          attempts: 3,
+          errors: [500],
+          debug: true,
+          period: 500
+        })
+      ]
+    }
+  },
+  err => {
+    if (err) {
+      console.warn(`Error while sending command: ${err}`)
+    }
+  }
+)
+```
+
+##### waitForResponse
+
+Validates the response and retries if validation fails. This allows you to check whether the response contains the latest data or wait for the Read Model to update.
+
+Initialized by the `createWaitForResponseMiddleware` factory function.
+
+The `waitForResponse` middleware has the following options:
+
+| Option Name | Description                                                          |
+| ----------- | -------------------------------------------------------------------- |
+| attempts    | The number of retries if validation fails.                           |
+| debug       | If set to `true`, the middleware logs errors in the browser console. |
+| period      | The time between retries specified in milliseconds.                  |
+| validator   | An async function that validates the response.                       |
+
+You can add the `retryOnError` middleware to a request as shown below:
+
+```js
+import { createWaitForResponseMiddleware } from 'resolve-client'
+...
+
+const { data } = await client.query(
+  {
+    name: 'users',
+    resolver: 'userById',
+    args: {
+      id: userId
+    }
+  },
+  {
+    middleware: {
+      response: [
+        createWaitForResponseMiddleware({
+          attempts: 3,
+          debug: true,
+          period: 1,
+          validator: async (response, confirm) => {
+            if (response.ok) {
+              const result = await response.json()
+              if (result.data[userId]) {
+                confirm(result)
+              }
+            }
+          }
+        })
+      ]
+    }
+  }
+)
+```
+
+#### Implement Custom Middleware
+
+You can define custom middleware as follows:
+
+```js
+const myMiddleware = async (
+  options, // Options passed to the factory function.
+  response, // The second argument is either a response or error.
+  params // Contains API you can use in your middleware implementation. See the API table below.
+) => {
+  // Put your middleware logic here
+}
+
+// Export the factory function.
+export const createMyMiddleware = (options) =>
+  waitForResponse.bind(null, options)
+```
+
+The `params` object exposes the following API:
+
+| Field Name   | Description                                                                 |
+| ------------ | --------------------------------------------------------------------------- |
+| fetch        | A JavaScript fetch function you can use to perform arbitrary HTTP requests. |
+| info         | An object that describes the current request.                               |
+| init         | An object that is the fetch function's `init` parameter.                    |
+| repeat       | A function you can call to repeat the current request.                      |
+| end          | Call this function to commit the middleware execution result or error.      |
+| state        | A state object passed between middleware functions.                         |
+| deserializer | Returns a deserealized object from a string.                                |
+| jwtProvider  | Used to get and set the JSON Web Token.                                     |

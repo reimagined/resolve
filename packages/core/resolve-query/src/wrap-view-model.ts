@@ -1,3 +1,5 @@
+import { IS_BUILT_IN, makeMonitoringSafe } from 'resolve-core'
+
 import getLog from './get-log'
 import {
   WrapViewModelOptions,
@@ -5,7 +7,6 @@ import {
   BuildViewModelQuery,
 } from './types'
 import parseReadOptions from './parse-read-options'
-import { IS_BUILT_IN } from 'resolve-core'
 
 type AggregateIds = string | string[]
 
@@ -116,6 +117,10 @@ const buildViewModel = async (
         subSegment.addError(error)
       }
       log.error(error.message)
+      await pool.monitoring?.error?.(error, 'viewModelProjection', {
+        viewModelName,
+        eventType: event.type,
+      })
       throw error
     } finally {
       if (subSegment != null) {
@@ -234,7 +239,6 @@ const read = async (
         if (buildSubSegment != null) {
           buildSubSegment.addError(error)
         }
-
         throw error
       } finally {
         if (buildSubSegment != null) {
@@ -260,6 +264,10 @@ const read = async (
     if (subSegment != null) {
       subSegment.addError(error)
     }
+
+    await pool.monitoring?.error?.(error, 'viewModelResolver', {
+      viewModelName,
+    })
     throw error
   } finally {
     if (subSegment != null) {
@@ -321,6 +329,7 @@ const wrapViewModel = ({
   viewModel,
   eventstoreAdapter,
   performanceTracer,
+  monitoring,
 }: WrapViewModelOptions) => {
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
   const pool: ViewModelPool = {
@@ -329,6 +338,8 @@ const wrapViewModel = ({
     isDisposed: false,
     performanceTracer,
     getSecretsManager,
+    monitoring:
+      monitoring != null ? makeMonitoringSafe(monitoring) : monitoring,
   }
 
   return Object.freeze({

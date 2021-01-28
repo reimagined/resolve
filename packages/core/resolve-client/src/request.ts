@@ -1,14 +1,14 @@
 import isomorphicFetch from 'isomorphic-fetch'
-import qs from 'query-string'
+import qs, { StringifyOptions } from 'query-string'
 import { Context } from './context'
 import { getRootBasedUrl, isString } from './utils'
 import determineOrigin from './determine-origin'
 import { GenericError, HttpError } from './errors'
+import { ClientMiddlewareOptions, requestWithMiddleware } from './middleware'
 
 export const VALIDATED_RESULT = Symbol('VALIDATED_RESULT')
 export type NarrowedResponse = {
   ok: boolean
-  status: number
   headers: {
     get: (name: string) => string | null
   }
@@ -50,23 +50,35 @@ export type RequestOptions = {
     period: number
   }
   debug?: boolean
+  middleware?: ClientMiddlewareOptions
+  queryStringOptions?: StringifyOptions
 }
 
-const stringifyUrl = (url: string, params: any): string => {
+const stringifyUrl = (
+  url: string,
+  params: any,
+  options: StringifyOptions = {}
+): string => {
   if (params) {
     if (isString(params)) {
       return `${url}?${params}`
     }
-    return `${url}?${qs.stringify(params, {
-      arrayFormat: 'bracket',
-    })}`
+    return `${url}?${qs.stringify(
+      params,
+      Object.assign(
+        {
+          arrayFormat: 'bracket',
+        },
+        options
+      )
+    )}`
   }
   return url
 }
 
 const insistentRequest = async (
   fetch: FetchFunction,
-  input: RequestInfo,
+  info: RequestInfo,
   init: RequestInit,
   options?: RequestOptions,
   attempts = {
@@ -77,7 +89,7 @@ const insistentRequest = async (
   let response
 
   try {
-    response = await fetch(input, init)
+    response = await fetch(info, init)
   } catch (error) {
     throw new GenericError(error)
   }
@@ -125,7 +137,7 @@ const insistentRequest = async (
         await new Promise((resolve) => setTimeout(resolve, period))
       }
 
-      return insistentRequest(fetch, input, init, options, {
+      return insistentRequest(fetch, info, init, options, {
         ...attempts,
         response: attempts.response + 1,
       })
@@ -158,7 +170,7 @@ const insistentRequest = async (
       if (typeof period === 'number' && period > 0) {
         await new Promise((resolve) => setTimeout(resolve, period))
       }
-      return insistentRequest(fetch, input, init, options, {
+      return insistentRequest(fetch, info, init, options, {
         ...attempts,
         error: attempts.error + 1,
       })
@@ -179,7 +191,8 @@ export const request = async (
   context: Context,
   url: string,
   requestParams: any,
-  options?: RequestOptions
+  options?: RequestOptions,
+  deserializer?: (state: string) => any
 ): Promise<NarrowedResponse> => {
   const { origin, rootPath, jwtProvider } = context
   const rootBasedUrl = getRootBasedUrl(rootPath, url, determineOrigin(origin))
@@ -194,7 +207,11 @@ export const request = async (
         method: 'GET',
         credentials: 'same-origin',
       }
-      requestUrl = stringifyUrl(rootBasedUrl, requestParams)
+      requestUrl = stringifyUrl(
+        rootBasedUrl,
+        requestParams,
+        options?.queryStringOptions
+      )
       break
     case 'POST':
       init = {
@@ -212,22 +229,58 @@ export const request = async (
       throw new GenericError(`unsupported request method`)
   }
 
-  const token = await jwtProvider?.get()
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`
-  }
+  let response: NarrowedResponse
 
-  init.headers = headers
+  const middlewareFeatureToggle =
+    (options?.retryOnError == null && options?.waitForResponse == null) ||
+    options?.middleware != null
 
-  const response = await insistentRequest(
-    determineFetch(context),
-    requestUrl,
-    init,
-    options
-  )
+  if (middlewareFeatureToggle) {
+    init.headers = headers
 
-  if (jwtProvider && response.headers) {
-    await jwtProvider.set(response.headers.get('x-jwt') ?? '')
+    const middlewareResponse = await requestWithMiddleware(
+      {
+        fetch: determineFetch(context),
+        info: requestUrl,
+        init,
+        jwtProvider,
+        deserializer,
+      },
+      options?.middleware
+    )
+    if (middlewareResponse instanceof Error) {
+      throw middlewareResponse
+    }
+    response = {
+      ok: !(middlewareResponse.result instanceof Error),
+      headers: middlewareResponse.headers,
+      [VALIDATED_RESULT]: middlewareResponse.result,
+      json: () => Promise.resolve(middlewareResponse.result),
+      text: () => Promise.resolve(middlewareResponse.result),
+    }
+  } else {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Using request options waitForResponse or retryOnError is deprecated. Please, migrate to client middleware.`
+    )
+
+    const token = await jwtProvider?.get()
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`
+    }
+
+    init.headers = headers
+
+    response = await insistentRequest(
+      determineFetch(context),
+      requestUrl,
+      init,
+      options
+    )
+
+    if (jwtProvider && response.headers) {
+      await jwtProvider.set(response.headers.get('x-jwt') ?? '')
+    }
   }
 
   return response

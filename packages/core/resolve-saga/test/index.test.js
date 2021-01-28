@@ -1,5 +1,11 @@
-import createEventTypes from '../src/scheduler-event-types'
-import createSagaExecutor from '../src/index'
+import createSagaExecutor, {
+  schedulerName,
+  schedulerEventTypes,
+} from '../src/index'
+
+jest.mock('uuid', () => ({
+  v4: jest.fn(() => 'guid'),
+}))
 
 let originalDateNow
 beforeAll(() => {
@@ -37,7 +43,7 @@ test('resolve-saga', async () => {
     saveSnapshot: jest.fn(),
   }
 
-  const schedulerAdapterInstance = {
+  const scheduler = {
     addEntries: jest.fn(),
     clearEntries: jest.fn(),
   }
@@ -45,8 +51,6 @@ test('resolve-saga', async () => {
   const performAcknowledge = jest
     .fn()
     .mockImplementation(async ({ event }) => event)
-
-  const schedulerAdapter = jest.fn().mockReturnValue(schedulerAdapterInstance)
 
   const executeCommand = jest.fn()
   const executeQuery = jest.fn()
@@ -79,7 +83,6 @@ test('resolve-saga', async () => {
     {
       name: 'test-saga',
       connectorName: 'default-connector',
-      schedulerName: 'default-scheduler',
       handlers: {
         EVENT_TYPE: eventHandler,
         Init: jest.fn(),
@@ -89,30 +92,20 @@ test('resolve-saga', async () => {
     },
   ]
 
-  const schedulers = [
-    {
-      name: 'default-scheduler',
-      connectorName: 'default-connector',
-      adapter: schedulerAdapter,
-      invariantHash: 'invariantHash',
-      encryption: () => ({}),
-    },
-  ]
-
   const onCommandExecuted = jest.fn().mockImplementation(async () => {})
-  const getRemainingTimeInMillis = () => 0x7fffffff
+  const getVacantTimeInMillis = () => 0x7fffffff
 
   const sagaExecutor = createSagaExecutor({
-    getRemainingTimeInMillis,
+    getVacantTimeInMillis,
     eventstoreAdapter,
     readModelConnectors,
     snapshotAdapter,
     executeCommand,
     executeQuery,
     sagas,
-    schedulers,
     performAcknowledge,
     onCommandExecuted,
+    scheduler,
   })
 
   const properties = {
@@ -122,8 +115,14 @@ test('resolve-saga', async () => {
 
   await sagaExecutor.sendEvents({
     modelName: 'test-saga',
+    events: [{ type: 'Init' }],
+    getVacantTimeInMillis: () => remainingTime,
+    properties,
+  })
+
+  await sagaExecutor.sendEvents({
+    modelName: 'test-saga',
     events: [
-      { type: 'Init' },
       {
         type: 'EVENT_TYPE',
         aggregateId: 'aggregateId',
@@ -132,20 +131,23 @@ test('resolve-saga', async () => {
         payload: { content: true },
       },
     ],
-    getRemainingTimeInMillis: () => remainingTime,
+    getVacantTimeInMillis: () => remainingTime,
     properties,
   })
 
-  const schedulerEvents = createEventTypes({
-    schedulerName: 'default-scheduler',
+  const schedulerModelName = `${schedulerName}default-connector`
+  await sagaExecutor.sendEvents({
+    modelName: schedulerModelName,
+    events: [{ type: 'Init' }],
+    getVacantTimeInMillis: () => remainingTime,
+    properties,
   })
 
   await sagaExecutor.sendEvents({
-    modelName: 'default-scheduler',
+    modelName: schedulerModelName,
     events: [
-      { type: 'Init' },
       {
-        type: schedulerEvents.SCHEDULED_COMMAND_CREATED,
+        type: schedulerEventTypes.SCHEDULED_COMMAND_CREATED,
         aggregateId: 'guid',
         payload: {
           date: 100500,
@@ -158,7 +160,7 @@ test('resolve-saga', async () => {
         },
       },
       {
-        type: schedulerEvents.SCHEDULED_COMMAND_EXECUTED,
+        type: schedulerEventTypes.SCHEDULED_COMMAND_EXECUTED,
         aggregateId: 'guid',
         payload: {
           aggregateName: 'Test',
@@ -168,19 +170,19 @@ test('resolve-saga', async () => {
         },
       },
       {
-        type: schedulerEvents.SCHEDULED_COMMAND_SUCCEEDED,
+        type: schedulerEventTypes.SCHEDULED_COMMAND_SUCCEEDED,
       },
       {
-        type: schedulerEvents.SCHEDULED_COMMAND_FAILED,
+        type: schedulerEventTypes.SCHEDULED_COMMAND_FAILED,
       },
     ],
-    getRemainingTimeInMillis: () => remainingTime,
+    getVacantTimeInMillis: () => remainingTime,
     properties,
   })
 
   await sagaExecutor.drop({ modelName: 'test-saga' })
 
-  await sagaExecutor.drop({ modelName: 'default-scheduler' })
+  await sagaExecutor.drop({ modelName: schedulerModelName })
 
   await sagaExecutor.dispose()
 
@@ -222,12 +224,10 @@ test('resolve-saga', async () => {
     'snapshotAdapter.saveSnapshot'
   )
 
-  expect(schedulerAdapter.mock.calls).toMatchSnapshot('schedulerAdapter')
-
-  expect(schedulerAdapterInstance.addEntries.mock.calls).toMatchSnapshot(
-    'schedulerAdapterInstance.addEntries'
+  expect(scheduler.addEntries.mock.calls).toMatchSnapshot(
+    'scheduler.addEntries'
   )
-  expect(schedulerAdapterInstance.clearEntries.mock.calls).toMatchSnapshot(
-    'schedulerAdapterInstance.clearEntries'
+  expect(scheduler.clearEntries.mock.calls).toMatchSnapshot(
+    'scheduler.clearEntries'
   )
 })

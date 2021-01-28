@@ -6,12 +6,11 @@ import {
   viewModelStateUpdate,
   ViewModelStateUpdateAction,
 } from './actions'
-import { ReduxState, ResultStatus, ViewModelReactiveEvent } from '../types'
-import { firstOfType } from 'resolve-core'
-import { isDependencies, isOptions } from '../helpers'
+import { ReduxState, ViewModelReactiveEvent } from '../types'
+import { isOptions } from '../helpers'
 import { useDispatch } from 'react-redux'
 import { useViewModel } from 'resolve-react-hooks'
-import { useCallback } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { getEntry } from './view-model-reducer'
 
 type HookData = {
@@ -34,7 +33,7 @@ type ViewModelReduxActionsCreators = {
   ) => ViewModelEventReceivedAction | AnyAction
 }
 
-type ReduxViewModelHookOptions = {
+export type ReduxViewModelHookOptions = {
   actions?: ViewModelReduxActionsCreators
   queryOptions?: QueryOptions
   selectorId?: string
@@ -43,6 +42,7 @@ type ReduxViewModelHookOptions = {
 const defaultQueryOptions: QueryOptions = {
   method: 'GET',
 }
+const defaultHookOptions: ReduxViewModelHookOptions = {}
 
 const internalActions: ViewModelReduxActionsCreators = {
   stateUpdate: viewModelStateUpdate,
@@ -50,9 +50,10 @@ const internalActions: ViewModelReduxActionsCreators = {
 }
 
 export function useReduxViewModel(query: ViewModelQuery): HookData
+export function useReduxViewModel(query: ViewModelQuery): HookData
 export function useReduxViewModel(
   query: ViewModelQuery,
-  dependencies: any[]
+  options: ReduxViewModelHookOptions
 ): HookData
 export function useReduxViewModel(
   query: ViewModelQuery,
@@ -60,23 +61,13 @@ export function useReduxViewModel(
 ): HookData
 export function useReduxViewModel(
   query: ViewModelQuery,
-  options: ReduxViewModelHookOptions,
-  dependencies: any[]
-): HookData
-export function useReduxViewModel(
-  query: ViewModelQuery,
-  options?: ReduxViewModelHookOptions | any[],
-  dependencies?: any[]
+  options?: ReduxViewModelHookOptions
 ): HookData {
   const actualOptions = isOptions<ReduxViewModelHookOptions>(options)
     ? options
-    : {}
+    : defaultHookOptions
 
   const actualActionCreators = actualOptions.actions || internalActions
-
-  const actualDependencies: any[] =
-    firstOfType<any[]>(isDependencies, options, dependencies, dependencies) ??
-    [query, actualOptions, actualActionCreators].filter((i) => i)
 
   const { stateUpdate, eventReceived } = actualActionCreators
   const { selectorId } = actualOptions
@@ -88,12 +79,12 @@ export function useReduxViewModel(
     if (typeof stateUpdate === 'function') {
       dispatch(stateUpdate(query, state, initial, selectorId))
     }
-  }, actualDependencies)
+  }, [])
   const eventReceivedCallback = useCallback((event: ViewModelReactiveEvent) => {
     if (typeof eventReceived === 'function') {
       dispatch(eventReceived(query, event, selectorId))
     }
-  }, actualDependencies)
+  }, [])
 
   const { connect, dispose, initialState } = useViewModel(
     name,
@@ -104,19 +95,26 @@ export function useReduxViewModel(
     actualOptions.queryOptions || defaultQueryOptions
   )
 
-  return {
-    connect,
-    dispose,
-    selector: (state: ReduxState): any =>
-      getEntry(
-        state.viewModels,
-        selectorId || {
-          query,
-        },
-        {
-          status: ResultStatus.Initial,
-          data: initialState,
-        }
-      ),
+  const initialStateDispatched = useRef(false)
+  if (!initialStateDispatched.current) {
+    if (typeof stateUpdate === 'function') {
+      dispatch(stateUpdate(query, initialState, true, selectorId))
+    }
+    initialStateDispatched.current = true
   }
+
+  return useMemo(
+    () => ({
+      connect,
+      dispose,
+      selector: (state: ReduxState): any =>
+        getEntry(
+          state.viewModels,
+          selectorId || {
+            query,
+          }
+        ),
+    }),
+    [connect, dispose]
+  )
 }

@@ -3,20 +3,9 @@ import { connect } from 'react-redux'
 import { connectViewModel } from 'resolve-redux'
 import { Redirect } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
-import {
-  Row,
-  Col,
-  ListGroup,
-  ListGroupItem,
-  Checkbox,
-  Button,
-  InputGroup,
-  FormControl,
-  FormGroup,
-  ControlLabel,
-} from 'react-bootstrap'
+import { Row, Col, ListGroup, Button, InputGroup, Form } from 'react-bootstrap'
 
-import Image from './Image'
+import { StaticImage } from './StaticImage'
 import NotFound from '../components/NotFound'
 import * as aggregateActions from '../actions/aggregate_actions'
 
@@ -97,15 +86,17 @@ export class ShoppingList extends React.PureComponent {
 
     return (
       <div className="example-wrapper">
-        <ControlLabel>Shopping list name</ControlLabel>
-        <FormGroup bsSize="large">
-          <InputGroup>
-            <InputGroup.Button>
-              <Button bsSize="large" onClick={this.removeShoppingList}>
-                <i className="far fa-trash-alt" />
-              </Button>
-            </InputGroup.Button>
-            <FormControl
+        <Form.Label>Shopping list name</Form.Label>
+        <Form.Group>
+          <InputGroup size="lg">
+            <Button
+              size="lg"
+              variant="danger"
+              onClick={this.removeShoppingList}
+            >
+              <i className="far fa-trash-alt" />
+            </Button>
+            <Form.Control
               type="text"
               value={
                 this.state.shoppingListName == null
@@ -117,33 +108,33 @@ export class ShoppingList extends React.PureComponent {
               onBlur={this.renameShoppingList}
             />
           </InputGroup>
-        </FormGroup>
+        </Form.Group>
         <ListGroup className="example-list">
           {list.map((todo) => (
-            <ListGroupItem key={todo.id}>
-              <Checkbox
+            <ListGroup.Item key={todo.id}>
+              <Form.Check
                 inline
+                type="checkbox"
+                label={todo.text}
                 checked={todo.checked}
                 onChange={toggleShoppingItem.bind(null, aggregateId, {
                   id: todo.id,
                 })}
-              >
-                {todo.text}
-              </Checkbox>
-              <Image
+              />
+              <StaticImage
                 className="example-close-button"
                 src="/close-button.png"
                 onClick={removeShoppingItem.bind(null, aggregateId, {
                   id: todo.id,
                 })}
               />
-            </ListGroupItem>
+            </ListGroup.Item>
           ))}
         </ListGroup>
-        <ControlLabel>Item name</ControlLabel>
+        <Form.Label>Item name</Form.Label>
         <Row>
           <Col md={8}>
-            <FormControl
+            <Form.Control
               className="example-form-control"
               type="text"
               value={this.state.itemText}
@@ -154,7 +145,7 @@ export class ShoppingList extends React.PureComponent {
           <Col md={4}>
             <Button
               className="example-button"
-              bsStyle="success"
+              variant="success"
               onClick={this.createShoppingItem}
             >
               Add Item

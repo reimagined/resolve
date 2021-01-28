@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, ControlLabel, Table } from 'react-bootstrap'
+import { Button, FormLabel, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 class ShoppingLists extends React.PureComponent {
@@ -8,7 +8,7 @@ class ShoppingLists extends React.PureComponent {
 
     return (
       <div>
-        <ControlLabel>My shopping lists</ControlLabel>
+        <FormLabel>My shopping lists</FormLabel>
         <Table responsive>
           <thead>
             <tr>
@@ -26,6 +26,7 @@ class ShoppingLists extends React.PureComponent {
                 </td>
                 <td className="example-table-action">
                   <Button
+                    variant="danger"
                     onClick={() => {
                       this.props.removeShoppingList(id)
                     }}

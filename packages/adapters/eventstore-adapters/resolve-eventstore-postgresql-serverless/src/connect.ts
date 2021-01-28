@@ -1,9 +1,9 @@
-import getLog from './js/get-log'
+import getLog from './get-log'
 import { AdapterPool, AdapterSpecific } from './types'
-import beginTransaction from './js/begin-transaction'
-import commitTransaction from './js/commit-transaction'
-import rollbackTransaction from './js/rollback-transaction'
-import isTimeoutError from './js/is-timeout-error'
+import beginTransaction from './begin-transaction'
+import commitTransaction from './commit-transaction'
+import rollbackTransaction from './rollback-transaction'
+import isTimeoutError from './is-timeout-error'
 
 const connect = async (
   pool: AdapterPool,
@@ -21,15 +21,31 @@ const connect = async (
     coercer,
   } = specific
 
+  let {
+    databaseName,
+    eventsTableName,
+    snapshotsTableName,
+    secretsTableName,
+    // eslint-disable-next-line prefer-const
+    ...connectionOptions
+  } = pool.config
+
+  eventsTableName = pool.coerceEmptyString(eventsTableName, 'events')
+  snapshotsTableName = pool.coerceEmptyString(snapshotsTableName, 'snapshots')
+  secretsTableName = pool.coerceEmptyString(secretsTableName, 'default')
+  databaseName = pool.coerceEmptyString(databaseName)
+
   const {
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
-    databaseName,
-    eventsTableName = 'events',
-    snapshotsTableName = 'snapshots',
-    secretsTableName = 'secrets',
     ...rdsConfig
-  } = pool.config ?? {}
+  } = connectionOptions
+
+  if (dbClusterOrInstanceArn == null || awsSecretStoreArn == null) {
+    throw new Error(
+      `Options "dbClusterOrInstanceArn" and "awsSecretStoreArn" are mandatory`
+    )
+  }
 
   const rdsDataService = new RDSDataService(rdsConfig)
 

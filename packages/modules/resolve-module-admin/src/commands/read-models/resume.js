@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch'
 
 export const handler = async ({ url, readModel }) => {
   const response = await fetch(
-    `${url}/event-broker/resume?listenerId=${readModel}`
+    `${url}/event-broker/resume?eventSubscriber=${readModel}`
   )
   const result = await response.text()
   //eslint-disable-next-line no-console

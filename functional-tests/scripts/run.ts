@@ -26,6 +26,17 @@ enum TestBundle {
 
 const resolveDir = (dir: string): string => path.resolve(process.cwd(), dir)
 
+const sanitizedEnvironment = () => {
+  const env = {
+    ...process.env,
+  }
+  delete env.npm_config_registry
+  delete env.NPM_CONFIG_REGISTRY
+  delete env.RESOLVE_API_URL
+
+  return env
+}
+
 const getNpmTagVersion = (appDir: string, tag: string, registry: string) => {
   log.debug(`trying to figure out tag ${tag} version`)
   const pkg = findKey(
@@ -107,7 +118,7 @@ const publishToPrivateRegistry = async (token: string) => {
     stdio: 'pipe',
     cwd: resolveDir('../'),
     env: {
-      ...process.env,
+      ...sanitizedEnvironment(),
       ...env,
     },
   }).toString()
@@ -210,7 +221,7 @@ const deploy = async ({
     const output = execSync(`node ${deployAction}/index.js`, {
       stdio: 'pipe',
       env: {
-        ...process.env,
+        ...sanitizedEnvironment(),
         ...env,
       },
     }).toString()
@@ -258,7 +269,7 @@ const clean = async ({ deployment }: { deployment: string }) => {
     execSync(`yarn --silent resolve-cloud remove ${deploymentId} --no-wait`, {
       stdio: 'inherit',
       env: {
-        ...process.env,
+        ...sanitizedEnvironment(),
         ...env,
       },
     })
@@ -320,8 +331,8 @@ const runApiTests = async (options: TestBundleOptions) => {
     execSync(`yarn jest --config=${resolveDir('jest.config-api.js')}`, {
       stdio: 'inherit',
       env: {
-        ...process.env,
-        RESOLVE_API_TESTS_TARGET_URL: url,
+        ...sanitizedEnvironment(),
+        RESOLVE_TESTS_TARGET_URL: url,
       },
     })
   } catch (e) {
@@ -367,8 +378,8 @@ const runTestcafeTests = async (options: TestBundleOptions) => {
       {
         stdio: 'inherit',
         env: {
-          ...process.env,
-          RESOLVE_TESTCAFE_TESTS_TARGET_URL: url,
+          ...sanitizedEnvironment(),
+          RESOLVE_TESTS_TARGET_URL: url,
         },
       }
     )

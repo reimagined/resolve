@@ -20,7 +20,6 @@ const idempotentFunction = value => value
 
 const name_0 = \\"Saga\\"
 const connectorName_0 = undefined
-const schedulerName_0 = undefined
 const source_0_original_hash = \\"<INVARIANT_HASH>\\"
 const source_0_original = source_0_original_instance
 const sideEffects_0_original = null
@@ -43,7 +42,6 @@ const sagas = []
 sagas.push({
   name: name_0
 , connectorName: connectorName_0
-, schedulerName: schedulerName_0
 , handlers: handlers_0
 , sideEffects: sideEffects_0
 , invariantHash: invariantHash_0
@@ -74,7 +72,6 @@ const idempotentFunction = value => value
 
 const name_0 = \\"Saga\\"
 const connectorName_0 = undefined
-const schedulerName_0 = undefined
 const source_0_original_hash = \\"<INVARIANT_HASH>\\"
 const source_0_original = source_0_original_instance
 const sideEffects_0_original = null
@@ -97,7 +94,6 @@ const sagas = []
 sagas.push({
   name: name_0
 , connectorName: connectorName_0
-, schedulerName: schedulerName_0
 , handlers: handlers_0
 , sideEffects: sideEffects_0
 , invariantHash: invariantHash_0

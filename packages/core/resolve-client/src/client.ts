@@ -1,3 +1,4 @@
+import { StringifyOptions } from 'query-string'
 import { IS_BUILT_IN } from 'resolve-core'
 import { Context } from './context'
 import { GenericError } from './errors'
@@ -11,7 +12,8 @@ import {
 import { assertLeadingSlash, assertNonEmptyString } from './assertions'
 import { getRootBasedUrl, isAbsoluteUrl } from './utils'
 import determineOrigin from './determine-origin'
-import { ViewModelDeserializer } from './view-model-types'
+import { ViewModelDeserializer } from './types'
+import { ClientMiddlewareOptions } from './middleware'
 
 function determineCallback<T>(options: any, callback: any): T | null {
   if (typeof options === 'function') {
@@ -35,21 +37,25 @@ export type Command = {
   immediateConflict?: boolean
 }
 export type CommandResult = object
-export type CommandCallback = (
+export type CommandCallback<T extends Command> = (
   error: Error | null,
   result: CommandResult | null,
-  command: Command
+  command: T
 ) => void
-export type CommandOptions = {}
-
+export type CommandOptions = {
+  middleware?: ClientMiddlewareOptions
+}
 export const command = (
   context: Context,
   cmd: Command,
-  options?: CommandOptions | CommandCallback,
-  callback?: CommandCallback
+  options?: CommandOptions | CommandCallback<Command>,
+  callback?: CommandCallback<Command>
 ): PromiseOrVoid<CommandResult> => {
   const actualOptions = isOptions<CommandOptions>(options) ? options : undefined
-  const actualCallback = determineCallback<CommandCallback>(options, callback)
+  const actualCallback = determineCallback<CommandCallback<Command>>(
+    options,
+    callback
+  )
 
   const asyncExec = async (): Promise<CommandResult> => {
     const response = await request(context, '/api/commands', cmd, actualOptions)
@@ -68,11 +74,9 @@ export const command = (
   asyncExec()
     .then((result) => {
       actualCallback(null, result, cmd)
-      return result
     })
     .catch((error) => {
       actualCallback(error, null, cmd)
-      throw error
     })
 
   return undefined
@@ -108,24 +112,26 @@ export type QueryOptions = {
     period?: number
     attempts?: number
   }
+  middleware?: ClientMiddlewareOptions
+  queryStringOptions?: StringifyOptions
 }
-export type QueryCallback = (
+export type QueryCallback<T extends Query> = (
   error: Error | null,
   result: QueryResult | null,
-  query: Query
+  query: T
 ) => void
 
 export const query = (
   context: Context,
   qr: Query,
-  options?: QueryOptions | QueryCallback,
-  callback?: QueryCallback
+  options?: QueryOptions | QueryCallback<Query>,
+  callback?: QueryCallback<Query>
 ): PromiseOrVoid<QueryResult> => {
   const requestOptions: RequestOptions = {
     method: 'GET',
   }
 
-  let viewModelDeserializer: ViewModelDeserializer | null = null
+  let viewModelDeserializer: ViewModelDeserializer | undefined
   if (!isReadModelQuery(qr)) {
     const viewModel = context.viewModels.find((model) => model.name === qr.name)
     if (viewModel && !viewModel.deserializeState[IS_BUILT_IN]) {
@@ -154,9 +160,14 @@ export const query = (
       }
     }
     requestOptions.method = options?.method ?? 'GET'
+    requestOptions.middleware = options?.middleware
+    requestOptions.queryStringOptions = options?.queryStringOptions
   }
 
-  const actualCallback = determineCallback<QueryCallback>(options, callback)
+  const actualCallback = determineCallback<QueryCallback<Query>>(
+    options,
+    callback
+  )
 
   let queryRequest: Promise<NarrowedResponse>
 
@@ -166,7 +177,8 @@ export const query = (
       context,
       `/api/query/${name}/${resolver}`,
       args,
-      requestOptions
+      requestOptions,
+      viewModelDeserializer
     )
   } else {
     const { name, aggregateIds, args } = qr
@@ -178,7 +190,8 @@ export const query = (
         args,
         origin: determineOrigin(context.origin),
       },
-      requestOptions
+      requestOptions,
+      viewModelDeserializer
     )
   }
 
@@ -344,18 +357,31 @@ const getStaticAssetUrl = (
   return getRootBasedUrl(rootPath, `/${staticPath}${assetPath}`, origin)
 }
 
+const getOriginPath = ({ rootPath, origin }: Context, path: string): string => {
+  assertNonEmptyString(path, 'path')
+
+  if (isAbsoluteUrl(path)) {
+    return path
+  }
+
+  assertLeadingSlash(path, 'path')
+
+  return getRootBasedUrl(rootPath, path, origin)
+}
+
 export type Client = {
   command: (
     command: Command,
-    options?: CommandOptions | CommandCallback,
-    callback?: CommandCallback
+    options?: CommandOptions | CommandCallback<Command>,
+    callback?: CommandCallback<Command>
   ) => PromiseOrVoid<CommandResult>
   query: (
     query: Query,
-    options?: QueryOptions | QueryCallback,
-    callback?: QueryCallback
+    options?: QueryOptions | QueryCallback<Query>,
+    callback?: QueryCallback<Query>
   ) => PromiseOrVoid<QueryResult>
   getStaticAssetUrl: (assetPath: string) => string
+  getOriginPath: (path: string) => string
   subscribe: (
     url: string,
     cursor: string | null,
@@ -375,6 +401,7 @@ export const getClient = (context: Context): Client => ({
     query(context, qr, options, callback),
   getStaticAssetUrl: (assetPath: string): string =>
     getStaticAssetUrl(context, assetPath),
+  getOriginPath: (path: string): string => getOriginPath(context, path),
   subscribe: (
     url,
     cursor,

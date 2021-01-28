@@ -1,20 +1,14 @@
 import { Middleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
-import { getClient } from 'resolve-client'
+import { getClient, Context } from 'resolve-client'
 
 import rootSaga from './root-saga'
 
 type MiddlewareContext = {
   store: any
-  viewModels: any[]
-  origin: any
-  rootPath: any
-  staticPath: any
-  sessionId: any
-  jwtProvider: any
-  isClient: boolean
+  resolveContext: Context
   customSagas: any[]
-  queryMethod: string
+  sessionId: string
 }
 
 const emptySaga = function* () {
@@ -22,12 +16,17 @@ const emptySaga = function* () {
 }
 
 const wrapSagaMiddleware = (sagaMiddleware: any): any => {
-  const run = (context: MiddlewareContext): void => {
-    const client = getClient(context)
+  const run = (isClient: boolean, context: MiddlewareContext): void => {
+    const client = getClient(context.resolveContext)
     const queryIdMap = new Map()
+    const { resolveContext, ...restContext } = context
+    const backCompatibleArgs = {
+      ...restContext,
+      ...resolveContext,
+    }
 
-    sagaMiddleware.run(context.isClient ? rootSaga : emptySaga, {
-      ...context,
+    sagaMiddleware.run(isClient ? rootSaga : emptySaga, {
+      ...backCompatibleArgs,
       queryIdMap,
       client,
     })
@@ -41,7 +40,7 @@ const wrapSagaMiddleware = (sagaMiddleware: any): any => {
 }
 
 const createResolveMiddleware = (): Middleware & {
-  run: (args: MiddlewareContext) => any
+  run: (isClient: boolean, args: MiddlewareContext) => any
 } => wrapSagaMiddleware(createSagaMiddleware())
 
 export default createResolveMiddleware

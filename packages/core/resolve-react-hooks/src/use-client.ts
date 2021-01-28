@@ -1,12 +1,10 @@
 import { useContext, useMemo } from 'react'
 import { Client, getClient } from 'resolve-client'
-import { ResolveContext } from './context'
+import { assertContext, ResolveContext } from './context'
 
 const useClient = (): Client => {
   const context = useContext(ResolveContext)
-  if (!context) {
-    throw Error('You cannot use reSolve hooks outside Resolve context')
-  }
+  assertContext(context)
   return useMemo(() => getClient(context), [context])
 }
 

@@ -23,8 +23,7 @@ View Models are a Redux-specific extension to these mechanisms. View models are 
 **A**: Implement a [custom Read Model](read-side.md#custom-read-models). Custom Read Models allow you to use custom logic to communicate with a Read Model store.
 
 **Q**: How to send an aggregate command?<br/>
-**A**: To send a command from a client browser, use the [standard HTTP API](curl.md): <br/>
-
+**A**: To send a command from a client browser, use the [standard HTTP API](frontend.md#http-api): <br/>
 
 ```
 $ curl -X POST "http://localhost:3000/api/commands"
@@ -41,7 +40,7 @@ $ curl -X POST "http://localhost:3000/api/commands"
 }
 ```
 
-On the server side, you can [send a command](api-reference.md#executecommand) from an API Handler or Saga:  
+On the server side, you can [send a command](api-reference.md#executecommand) from an API Handler or Saga:
 
 <!-- prettier-ignore-start -->
 
@@ -63,6 +62,6 @@ await sideEffects.executeCommand({
 **Q**: How to implement a frontend?<br/>
 **A**: There are three main approaches to frontend development in reSolve:
 
-- Use the HOCs from the [redux-resolve](frontend.md#resolve-redux-library) library to connect a React components to a reSolve backend.
-- Use the [HTTP API](curl.md) exposed by a reSolve application.
+- Use one of the available client libraries. Refer to the [Frontend](frontend.md) article for more information.
+- Use the [HTTP API](frontend.md#http-api) exposed by a reSolve application.
 - Write your own wrappers for the reSolve HTTP API.
