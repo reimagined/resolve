@@ -20,7 +20,7 @@ const initScheduler = (resolve) => {
               const currentResolve = Object.create(resolve)
               try {
                 await initResolve(currentResolve)
-                await currentResolve.executeCommand({
+                await currentResolve.executeSchedulerCommand({
                   aggregateName: resolve.domainInterop.sagaDomain.schedulerName,
                   aggregateId: entry.taskId,
                   type: 'execute',

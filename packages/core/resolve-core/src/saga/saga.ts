@@ -7,6 +7,7 @@ import {
   schedulerName,
 } from './constants'
 import { getSagasInteropBuilder } from './get-sagas-interop-builder'
+import { getAggregatesInteropBuilder } from '../aggregate/get-aggregates-interop-builder'
 
 const createSagaInfoFetcher = (sagas: any[]) => (): SchedulerInfo[] => {
   if (!Array.isArray(sagas)) {
@@ -34,7 +35,10 @@ export const initSagaDomain = (rawSagas: any[]): SagaDomain => {
     schedulerEventTypes,
     schedulerInvariantHash,
     getSagasSchedulersInfo,
-    createSchedulerAggregate,
+    //createSchedulerAggregate,
+    acquireSchedulerAggregatesInterop: getAggregatesInteropBuilder([
+      createSchedulerAggregate(),
+    ]),
     acquireSagasInterop: getSagasInteropBuilder(
       schedulerName,
       schedulerEventTypes,

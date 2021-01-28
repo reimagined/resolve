@@ -62,19 +62,30 @@ const initResolve = async (resolve) => {
 
   const secretsManager = await eventstoreAdapter.getSecretsManager()
 
+  const aggregateRuntime = {
+    monitoring: domainMonitoring,
+    secretsManager,
+    eventstore: eventstoreAdapter,
+    hooks: {
+      preSaveEvent: async (aggregate, command, event) => {
+        await onCommandExecuted(event, command)
+        return false
+      },
+    },
+  }
+
   const executeCommand = createCommandExecutor({
     performanceTracer,
-    aggregatesInterop: domainInterop.aggregateDomain.acquireAggregatesInterop({
-      monitoring: domainMonitoring,
-      secretsManager,
-      eventstore: eventstoreAdapter,
-      hooks: {
-        preSaveEvent: async (aggregate, command, event) => {
-          await onCommandExecuted(event, command)
-          return false
-        },
-      },
-    }),
+    aggregatesInterop: domainInterop.aggregateDomain.acquireAggregatesInterop(
+      aggregateRuntime
+    ),
+  })
+
+  const executeSchedulerCommand = createCommandExecutor({
+    performanceTracer,
+    aggregatesInterop: domainInterop.sagaDomain.acquireSchedulerAggregatesInterop(
+      aggregateRuntime
+    ),
   })
 
   const executeQuery = createQueryExecutor({
@@ -95,7 +106,6 @@ const initResolve = async (resolve) => {
 
   const executeSaga = createSagaExecutor({
     invokeEventBusAsync,
-    onCommandExecuted,
     executeCommand,
     executeQuery,
     eventstoreAdapter,
@@ -109,6 +119,7 @@ const initResolve = async (resolve) => {
     scheduler,
     monitoring,
     domainInterop,
+    executeSchedulerCommand,
   })
 
   const eventBus = createEventBus(resolve)
@@ -140,6 +151,7 @@ const initResolve = async (resolve) => {
     executeCommand,
     executeQuery,
     executeSaga,
+    executeSchedulerCommand,
   })
 
   Object.defineProperties(resolve, {

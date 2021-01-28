@@ -383,7 +383,11 @@ const executeCommand = async (
 
   try {
     await verifyCommand(command)
+
     const { aggregateName, aggregateId, type } = command
+    const log = getLog(
+      `execute-command:${command.aggregateName}:${command.type}`
+    )
     const aggregate = aggregateMap[aggregateName]
 
     subSegment.addAnnotation('aggregateName', aggregateName)
@@ -391,7 +395,11 @@ const executeCommand = async (
     subSegment.addAnnotation('origin', 'resolve:executeCommand')
 
     if (aggregate == null) {
-      throw generateCommandError(`Aggregate "${aggregateName}" does not exist`)
+      const error = generateCommandError(
+        `Aggregate "${aggregateName}" does not exist`
+      )
+      log.error(error)
+      throw error
     }
 
     const {

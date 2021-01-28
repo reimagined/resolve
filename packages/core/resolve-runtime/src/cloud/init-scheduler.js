@@ -141,7 +141,7 @@ const initScheduler = (resolve) => {
         log.debug(`executing tasks`)
         await Promise.all(
           entries.map(({ taskId, date, command }) =>
-            resolve.executeCommand({
+            resolve.executeSchedulerCommand({
               aggregateName: resolve.domainInterop.sagaDomain.schedulerName,
               aggregateId: taskId,
               type: 'execute',

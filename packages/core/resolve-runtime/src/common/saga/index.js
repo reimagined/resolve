@@ -1,9 +1,7 @@
-import createCommand from '../command/index'
 import createQuery from '../query/index'
 
 const createSaga = ({
   invokeEventBusAsync,
-  onCommandExecuted,
   readModelConnectors,
   executeCommand,
   executeQuery,
@@ -16,6 +14,7 @@ const createSaga = ({
   scheduler,
   monitoring,
   domainInterop,
+  executeSchedulerCommand,
 }) => {
   let eventProperties = {}
 
@@ -31,13 +30,6 @@ const createSaga = ({
           },
         }
       : monitoring
-  //FIXME: not working at all, to fix add createSchedulerAggregateInterop to sagaDomain and pass it here
-  const executeScheduleCommand = createCommand({
-    aggregates: [sagaDomain.createSchedulerAggregate()],
-    onCommandExecuted,
-    eventstoreAdapter,
-    monitoring,
-  })
 
   const executeCommandOrScheduler = async (...args) => {
     if (
@@ -56,7 +48,7 @@ const createSaga = ({
 
     const aggregateName = options.aggregateName
     if (aggregateName === sagaDomain.schedulerName) {
-      return await executeScheduleCommand(options)
+      return await executeSchedulerCommand(options)
     } else {
       return await executeCommand(options)
     }
@@ -123,7 +115,7 @@ const createSaga = ({
 
   const dispose = async () =>
     await Promise.all([
-      executeScheduleCommand.dispose(),
+      executeSchedulerCommand.dispose(),
       executeListener.dispose(),
     ])
 
