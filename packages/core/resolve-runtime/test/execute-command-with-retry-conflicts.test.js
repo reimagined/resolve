@@ -103,7 +103,7 @@ test('Execute command should bypass a command error', async () => {
   }
 })
 
-test('Execute command should bypass a custom error', async () => {
+test.skip('Execute command should bypass a custom error', async () => {
   const executeCommand = jest.fn()
 
   executeCommand.mockImplementationOnce(async () => {

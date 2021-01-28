@@ -1,4 +1,4 @@
-import { IS_BUILT_IN, makeMonitoringSafe, ViewModelInterop } from 'resolve-core'
+import { ViewModelInterop } from 'resolve-core'
 
 import { WrapViewModelOptions, ViewModelPool } from './types'
 import parseReadOptions from './parse-read-options'
@@ -89,7 +89,6 @@ const wrapViewModel = ({
   interop,
   eventstoreAdapter,
   performanceTracer,
-  monitoring,
 }: WrapViewModelOptions) => {
   const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
   const pool: ViewModelPool = {
@@ -97,8 +96,6 @@ const wrapViewModel = ({
     isDisposed: false,
     performanceTracer,
     getSecretsManager,
-    monitoring:
-      monitoring != null ? makeMonitoringSafe(monitoring) : monitoring,
   }
 
   return Object.freeze({

@@ -74,7 +74,7 @@ const createSaga = ({
     executeCommand: { get: () => executeCommandOrScheduler, enumerable: true },
     executeQuery: { get: () => executeDirectQuery, enumerable: true },
     eventProperties: { get: () => eventProperties, enumerable: true },
-    secretsManager,
+    secretsManager: { get: () => secretsManager, enumerable: true },
     uploader: { get: () => uploader, enumerable: true },
     scheduler: { get: () => scheduler, enumerable: true },
   })
@@ -113,11 +113,7 @@ const createSaga = ({
     })
   }
 
-  const dispose = async () =>
-    await Promise.all([
-      executeSchedulerCommand.dispose(),
-      executeListener.dispose(),
-    ])
+  const dispose = async () => await Promise.all([executeListener.dispose()])
 
   const executeSaga = new Proxy(executeListener, {
     get(_, key) {

@@ -2,24 +2,7 @@
 
 exports[`resolve-saga: eventHandler 1`] = `
 Array [
-  Array [
-    Object {
-      "defineTable": [MockFunction],
-      "delete": [MockFunction],
-      "find": [MockFunction],
-      "insert": [MockFunction],
-    },
-    Object {
-      "aggregateId": "aggregateId",
-      "aggregateVersion": 1,
-      "payload": Object {
-        "content": true,
-      },
-      "timestamp": 100,
-      "type": "EVENT_TYPE",
-    },
-    Object {},
-  ],
+  Array [],
 ]
 `;
 
@@ -69,13 +52,13 @@ Array [
 exports[`resolve-saga: readModelConnectors['default-connector'].connect 1`] = `
 Array [
   Array [
-    undefined,
+    "test-saga",
   ],
   Array [
-    undefined,
+    "test-saga",
   ],
   Array [
-    undefined,
+    "test-saga",
   ],
 ]
 `;
@@ -89,7 +72,7 @@ Array [
       "find": [MockFunction],
       "insert": [MockFunction],
     },
-    undefined,
+    "test-saga",
   ],
   Array [
     Object {
@@ -98,7 +81,7 @@ Array [
       "find": [MockFunction],
       "insert": [MockFunction],
     },
-    undefined,
+    "test-saga",
   ],
   Array [
     Object {
@@ -107,7 +90,7 @@ Array [
       "find": [MockFunction],
       "insert": [MockFunction],
     },
-    undefined,
+    "test-saga",
   ],
 ]
 `;
@@ -121,7 +104,7 @@ Array [
       "find": [MockFunction],
       "insert": [MockFunction],
     },
-    undefined,
+    "test-saga",
     Object {},
   ],
 ]

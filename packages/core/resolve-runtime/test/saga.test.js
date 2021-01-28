@@ -56,22 +56,21 @@ test('resolve-saga', async () => {
 
   const domainInterop = {
     sagaDomain: {
-      // FIXME: replace with models interop completely
-      createSagas: jest.fn(() => [
-        {
+      acquireSagasInterop: () => ({
+        'test-saga': {
           name: 'test-saga',
           connectorName: 'default-connector',
-          projection: {
-            EVENT_TYPE: eventHandler,
-            Init: jest.fn(),
+          acquireResolver: () => Promise.resolve(null),
+          acquireInitHandler: () => jest.fn(),
+          acquireEventHandler: (store, event) => {
+            switch (event.type) {
+              case 'EVENT_TYPE':
+                return eventHandler
+              default:
+                return null
+            }
           },
-          invariantHash: 'invariantHash',
-          encryption: jest.fn(() => ({})),
         },
-      ]),
-      createSchedulerAggregate: jest.fn(),
-      acquireSagasInterop: () => ({
-        'test-saga': {},
       }),
     },
   }
