@@ -20,6 +20,9 @@ export type Event = {
   payload?: any
 }
 
+export type Serializer<T> = (data: T) => string
+export type Deserializer<T> = (blob: string) => T
+
 // Encryption
 
 export type PlainData = Serializable
@@ -130,6 +133,36 @@ export type EventHandlerEncryptionFactory = (
   event: Event,
   context: EventHandlerEncryptionContext
 ) => Promise<Encryption | null>
+
+// View model
+export type ViewModelInitHandler<TState> = () => TState
+export type ViewModelEventHandler<TState> = (
+  state: TState,
+  event: Event
+) => TState
+export type ViewModelProjection<TState> = {
+  Init: ViewModelInitHandler<TState>
+} & {
+  [key: string]: ViewModelEventHandler<TState>
+}
+type ViewModelResolverApi = {
+  buildViewModel: Function
+}
+type ViewModelResolverContext = {
+  jwt: string
+  viewModel: {
+    name: string
+    eventTypes: string[]
+  }
+}
+export type ViewModelResolver = (
+  api: ViewModelResolverApi,
+  query: ViewModelQuery,
+  context: ViewModelResolverContext
+) => Promise<any>
+export type ViewModelResolverMap = {
+  [key: string]: ViewModelResolver
+}
 
 // Saga
 

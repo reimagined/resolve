@@ -1,5 +1,12 @@
 import { ReadModelResolverMap } from './read-model/types'
-import { ReadModel, SagaEventHandlers } from './core-types'
+import {
+  Deserializer,
+  ReadModel,
+  SagaEventHandlers,
+  Serializer,
+  ViewModelProjection,
+  ViewModelResolver,
+} from './core-types'
 
 import {
   Aggregate,
@@ -32,6 +39,15 @@ export type ReadModelMeta = EventProjectionMeta & {
 export type SagaMeta = EventProjectionMeta & {
   sideEffects: any
   handlers: SagaEventHandlers<any, any>
+}
+
+export type ViewModelMeta = {
+  name: string
+  projection: ViewModelProjection<any>
+  deserializeState: Deserializer<any>
+  serializeState: Serializer<any>
+  resolver?: ViewModelResolver
+  encryption?: EventHandlerEncryptionFactory
 }
 
 export type Monitoring = {
