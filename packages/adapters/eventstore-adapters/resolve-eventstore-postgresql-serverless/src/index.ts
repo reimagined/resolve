@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
-import _createAdapter from 'resolve-eventstore-base'
+import createAdapter from 'resolve-eventstore-base'
 
 import loadEventsByCursor from './load-events-by-cursor'
 import loadEventsByTimestamp from './load-events-by-timestamp'
@@ -35,40 +35,55 @@ import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
 
-import { CloudResource, CloudResourcePool } from './types'
+import {
+  CloudResource,
+  CloudResourcePool,
+  ConnectionDependencies,
+  PostgresqlAdapterConfig,
+} from './types'
+import { Adapter } from 'resolve-eventstore-base'
 
-const createAdapter: () => any = _createAdapter.bind(null, {
-  connect,
-  loadEventsByCursor,
-  loadEventsByTimestamp,
-  getLatestEvent,
-  saveEvent,
-  init,
-  drop,
-  dispose,
-  freeze,
-  unfreeze,
-  RDSDataService,
-  escapeId,
-  escape,
-  fullJitter,
-  executeStatement,
-  injectEvent,
-  coercer,
-  shapeEvent,
-  deleteSecret,
-  getSecret,
-  setSecret,
-  loadSnapshot,
-  saveSnapshot,
-  dropSnapshot,
-  beginIncrementalImport,
-  commitIncrementalImport,
-  rollbackIncrementalImport,
-  pushIncrementalImport,
-})
+const createPostgresqlServerlessAdapter = (
+  options: PostgresqlAdapterConfig
+): Adapter => {
+  return createAdapter(
+    {
+      connect,
+      loadEventsByCursor,
+      loadEventsByTimestamp,
+      getLatestEvent,
+      saveEvent,
+      init,
+      drop,
+      dispose,
+      freeze,
+      unfreeze,
+      shapeEvent,
+      deleteSecret,
+      getSecret,
+      setSecret,
+      loadSnapshot,
+      saveSnapshot,
+      dropSnapshot,
+      beginIncrementalImport,
+      commitIncrementalImport,
+      rollbackIncrementalImport,
+      pushIncrementalImport,
+      injectEvent,
+    },
+    {
+      RDSDataService,
+      escapeId,
+      escape,
+      fullJitter,
+      executeStatement,
+      coercer,
+    } as ConnectionDependencies,
+    options
+  )
+}
 
-export default createAdapter
+export default createPostgresqlServerlessAdapter
 
 const cloudPool: CloudResourcePool = {
   executeStatement,

@@ -1,5 +1,5 @@
 import {
-  CursorFilter,
+  TimestampFilter,
   EventsWithCursor,
   throwBadCursor,
 } from 'resolve-eventstore-base'
@@ -8,7 +8,7 @@ import { AdapterPool } from './types'
 
 const loadEventsByTimestamp = async (
   pool: AdapterPool,
-  filter: CursorFilter
+  filter: TimestampFilter
 ): Promise<EventsWithCursor> => {
   const { database, escapeId, eventsTableName, shapeEvent } = pool
 

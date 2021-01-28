@@ -1,4 +1,10 @@
 import { Client as Postgres } from 'pg'
+import type {
+  AdapterPoolConnectedProps,
+  AdapterPoolConnected,
+  AdapterPoolPossiblyUnconnected,
+  AdapterConfig,
+} from 'resolve-eventstore-base'
 
 export type Coercer = (
   value: {
@@ -14,20 +20,7 @@ export type Coercer = (
 type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
-export type AdapterPool = {
-  config: {
-    user?: string
-    database?: any
-    port?: number
-    host?: string
-    password?: string
-    databaseName?: string
-    eventsTableName?: string
-    snapshotsTableName?: string
-    secretsTableName?: string
-  }
-  maybeThrowResourceError: (error: Error[]) => void
-  coerceEmptyString: (obj: any, fallback?: string) => string
+export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   Postgres: typeof Postgres
   connectionOptions: any
   databaseName: string
@@ -39,10 +32,30 @@ export type AdapterPool = {
   executeStatement: (sql: string) => Promise<any[]>
   escapeId: EscapeFunction
   escape: EscapeFunction
-  shapeEvent: (event: any, additionalFields?: any) => any[]
 }
 
-export type AdapterSpecific = {
+export type PostgresqlAdapterConfig = AdapterConfig & {
+  user?: string
+  database?: any
+  port?: number
+  host?: string
+  password?: string
+  databaseName?: string
+  eventsTableName?: string
+  snapshotsTableName?: string
+  secretsTableName?: string
+  [key: string]: any
+}
+
+export type AdapterPool = AdapterPoolConnected<
+  PostgresqlAdapterPoolConnectedProps
+>
+
+export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
+  PostgresqlAdapterPoolConnectedProps
+>
+
+export type ConnectionDependencies = {
   Postgres: typeof Postgres
   fullJitter: FullJitter
   escapeId: EscapeFunction

@@ -3,16 +3,16 @@ import { AGGREGATE_ID_SQL_TYPE } from './constants'
 import getLog from './get-log'
 import { AdapterPool } from './types'
 
-const init = async (pool: AdapterPool): Promise<any> => {
+const init = async ({
+  database,
+  eventsTableName,
+  snapshotsTableName,
+  secretsTableName,
+  escapeId,
+  maybeThrowResourceError,
+}: AdapterPool): Promise<any> => {
   const log = getLog('init')
   log.debug('initializing databases')
-  const {
-    database,
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName,
-    escapeId,
-  } = pool
 
   const errors: any[] = []
 
@@ -84,7 +84,7 @@ const init = async (pool: AdapterPool): Promise<any> => {
     }
   }
 
-  pool.maybeThrowResourceError(errors)
+  maybeThrowResourceError(errors)
 
   log.debug('databases are initialized')
 }

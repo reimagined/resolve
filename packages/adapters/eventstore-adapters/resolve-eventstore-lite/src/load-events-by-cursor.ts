@@ -4,10 +4,9 @@ import { AdapterPool } from './types'
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (
-  pool: AdapterPool,
+  { database, escapeId, escape, eventsTableName, shapeEvent }: AdapterPool,
   filter: CursorFilter
 ): Promise<EventsWithCursor> => {
-  const { database, escapeId, escape, eventsTableName, shapeEvent } = pool
   const { eventTypes, aggregateIds, cursor, limit } = filter
   const injectString = (value: any): string => `${escape(value)}`
   const injectNumber = (value: any): string => `${+value}`

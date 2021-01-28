@@ -1,5 +1,15 @@
 import getLog from './get-log'
-import { AdapterPool } from './types'
+import { SecretsManager } from 'resolve-core'
+import {
+  AdapterPoolPrimalProps,
+  AdapterPoolPossiblyUnconnected,
+  AdapterPoolConnected,
+  AdapterPoolConnectedProps,
+  Adapter,
+  AdapterFunctions,
+  CommonAdapterFunctions,
+  AdapterConfig,
+} from './types'
 import { LeveledDebugger } from 'resolve-debug-levels'
 
 // eslint-disable-next-line no-new-func
@@ -12,12 +22,25 @@ const coerceEmptyString = (obj: any, fallback?: string): string =>
       : 'default'
     : obj
 
-const createAdapter = (
+const getSecretsManager = <ConnectedProps extends AdapterPoolConnectedProps>(
+  pool: AdapterPoolConnected<ConnectedProps>
+): SecretsManager => {
+  return {
+    deleteSecret: pool.deleteSecret,
+    getSecret: pool.getSecret,
+    setSecret: pool.setSecret,
+  }
+}
+
+const createAdapter = <
+  ConnectedProps extends AdapterPoolConnectedProps,
+  ConnectionDependencies extends any,
+  Config extends AdapterConfig
+>(
   {
     maybeThrowResourceError,
     wrapMethod,
     wrapEventFilter,
-    wrapSaveEvent,
     wrapDispose,
     validateEventFilter,
     loadEvents,
@@ -25,7 +48,7 @@ const createAdapter = (
     exportStream,
     incrementalImport,
     getNextCursor,
-  }: any,
+  }: CommonAdapterFunctions<ConnectedProps>,
   {
     connect,
     loadEventsByCursor,
@@ -36,7 +59,6 @@ const createAdapter = (
     drop,
     dispose,
     injectEvent,
-    isFrozen,
     freeze,
     unfreeze,
     shapeEvent,
@@ -50,83 +72,93 @@ const createAdapter = (
     getSecret,
     setSecret,
     deleteSecret,
-    ...adapterSpecificArguments
-  }: any,
-  options: any
-): any => {
+  }: AdapterFunctions<ConnectedProps, ConnectionDependencies, Config>,
+  connectionDependencies: ConnectionDependencies,
+  options: Config
+): Adapter => {
   const log: LeveledDebugger & debug.Debugger = getLog(`createAdapter`)
-  const config: any = { ...options }
-  const originalPool: AdapterPool = {
-    config,
-    disposed: false,
-    validateEventFilter,
-  }
+  const config: Config = { ...options }
 
   let bucketSize = 100
   const { snapshotBucketSize } = config
-  if (Number.isSafeInteger(snapshotBucketSize) && snapshotBucketSize > 0) {
+  if (
+    snapshotBucketSize !== undefined &&
+    Number.isSafeInteger(snapshotBucketSize) &&
+    snapshotBucketSize > 0
+  ) {
     bucketSize = snapshotBucketSize
     log.debug(`snapshot bucket size explicitly set to ${bucketSize}`)
   } else {
     log.debug(`snapshot bucket size defaulted to ${bucketSize}`)
   }
 
-  let connectPromiseResolve
-  const connectPromise = new Promise((resolve) => {
-    connectPromiseResolve = resolve.bind(null, null)
-  }).then(connect.bind(null, originalPool, adapterSpecificArguments))
-
-  const pool = Object.assign(originalPool, {
-    injectEvent: wrapMethod(originalPool, injectEvent),
-    loadEventsByCursor: wrapMethod(originalPool, loadEventsByCursor),
-    loadEventsByTimestamp: wrapMethod(originalPool, loadEventsByTimestamp),
-    deleteSecret: wrapMethod(originalPool, deleteSecret),
-    getSecret: wrapMethod(originalPool, getSecret),
-    setSecret: wrapMethod(originalPool, setSecret),
-    waitConnect: wrapMethod(originalPool, idempotentFunction),
-    wrapMethod,
+  const primalProps: AdapterPoolPrimalProps = {
+    disposed: false,
+    validateEventFilter,
+    isInitialized: false,
     maybeThrowResourceError,
     coerceEmptyString,
-    isFrozen: wrapMethod(originalPool, isFrozen),
-    connectPromise,
-    connectPromiseResolve,
-    shapeEvent,
-    counters: new Map(),
     bucketSize,
-  })
-
-  const adapter: any = {
-    loadEvents: wrapMethod(pool, wrapEventFilter(loadEvents)),
-    import: importStream.bind(null, pool),
-    export: exportStream.bind(null, pool),
-    getLatestEvent: wrapMethod(pool, getLatestEvent),
-    saveEvent: wrapMethod(pool, wrapSaveEvent(saveEvent)),
-    init: wrapMethod(pool, init),
-    drop: wrapMethod(pool, drop),
-    dispose: wrapDispose(pool, dispose),
-    isFrozen: wrapMethod(pool, isFrozen),
-    freeze: wrapMethod(pool, freeze),
-    unfreeze: wrapMethod(pool, unfreeze),
     getNextCursor: getNextCursor.bind(null),
-    getSecretsManager: wrapMethod(
-      pool,
-      idempotentFunction.bind(null, {
-        deleteSecret: pool.deleteSecret,
-        getSecret: pool.getSecret,
-        setSecret: pool.setSecret,
-      })
-    ),
-    loadSnapshot: wrapMethod(pool, loadSnapshot),
-    saveSnapshot: wrapMethod(pool, saveSnapshot),
-    dropSnapshot: wrapMethod(pool, dropSnapshot),
-    pushIncrementalImport: wrapMethod(pool, pushIncrementalImport),
-    beginIncrementalImport: wrapMethod(pool, beginIncrementalImport),
-    commitIncrementalImport: wrapMethod(pool, commitIncrementalImport),
-    rollbackIncrementalImport: wrapMethod(pool, rollbackIncrementalImport),
-    incrementalImport: wrapMethod(pool, incrementalImport),
+    counters: new Map(),
   }
 
-  Object.assign(pool, adapter)
+  const emptyProps: Partial<ConnectedProps> = {}
+  const adapterPool: AdapterPoolPossiblyUnconnected<ConnectedProps> = {
+    ...primalProps,
+    ...emptyProps,
+  }
+
+  adapterPool.connectPromise = new Promise((resolve) => {
+    adapterPool.connectPromiseResolve = resolve.bind(null, null)
+  }).then(connect.bind(null, adapterPool, connectionDependencies, config))
+
+  const connectedProps: Partial<ConnectedProps> = {
+    injectEvent: wrapMethod(adapterPool, injectEvent),
+    loadEventsByCursor: wrapMethod(adapterPool, loadEventsByCursor),
+    loadEventsByTimestamp: wrapMethod(adapterPool, loadEventsByTimestamp),
+    deleteSecret: wrapMethod(adapterPool, deleteSecret),
+    getSecret: wrapMethod(adapterPool, getSecret),
+    setSecret: wrapMethod(adapterPool, setSecret),
+    waitConnect: wrapMethod(adapterPool, idempotentFunction),
+    shapeEvent,
+  } as Partial<ConnectedProps>
+
+  Object.assign<
+    AdapterPoolPossiblyUnconnected<ConnectedProps>,
+    Partial<ConnectedProps>
+  >(adapterPool, connectedProps)
+
+  const adapter: Adapter = {
+    loadEvents: wrapMethod(adapterPool, wrapEventFilter(loadEvents)),
+    import: importStream.bind(null, adapterPool),
+    export: exportStream.bind(null, adapterPool),
+    getLatestEvent: wrapMethod(adapterPool, getLatestEvent),
+    saveEvent: wrapMethod(adapterPool, saveEvent),
+    init: wrapMethod(adapterPool, init),
+    drop: wrapMethod(adapterPool, drop),
+    dispose: wrapDispose(adapterPool, dispose),
+    freeze: wrapMethod(adapterPool, freeze),
+    unfreeze: wrapMethod(adapterPool, unfreeze),
+    getNextCursor: getNextCursor.bind(null),
+    getSecretsManager: wrapMethod(adapterPool, getSecretsManager),
+    loadSnapshot: wrapMethod(adapterPool, loadSnapshot),
+    saveSnapshot: wrapMethod(adapterPool, saveSnapshot),
+    dropSnapshot: wrapMethod(adapterPool, dropSnapshot),
+    pushIncrementalImport: wrapMethod(adapterPool, pushIncrementalImport),
+    beginIncrementalImport: wrapMethod(adapterPool, beginIncrementalImport),
+    commitIncrementalImport: wrapMethod(adapterPool, commitIncrementalImport),
+    rollbackIncrementalImport: wrapMethod(
+      adapterPool,
+      rollbackIncrementalImport
+    ),
+    incrementalImport: wrapMethod(adapterPool, incrementalImport),
+  }
+
+  Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(
+    adapterPool,
+    adapter
+  )
 
   return Object.freeze(adapter)
 }
