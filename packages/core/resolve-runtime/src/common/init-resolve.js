@@ -98,8 +98,13 @@ const initResolve = async (resolve) => {
     getVacantTimeInMillis,
     performAcknowledge,
     monitoring,
-    modelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
+    readModelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
       monitoring: domainMonitoring,
+      secretsManager,
+    }),
+    viewModelsInterop: domainInterop.viewModelDomain.acquireViewModelsInterop({
+      monitoring: domainMonitoring,
+      eventstore: eventstoreAdapter,
       secretsManager,
     }),
   })

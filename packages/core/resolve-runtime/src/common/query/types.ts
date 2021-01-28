@@ -5,30 +5,37 @@ import {
   SagaInteropMap,
   SagaInterop,
   ReadModelInterop,
+  ViewModelInteropMap,
+  ViewModelInterop,
 } from 'resolve-core'
 
 export type CreateQueryOptions = {
   invokeEventBusAsync: Function
   readModelConnectors: any
-  viewModels: any[]
   performanceTracer: any
   eventstoreAdapter: any
   getVacantTimeInMillis: any
   performAcknowledge: any
   monitoring?: Monitoring
-  modelsInterop: ReadModelInteropMap | SagaInteropMap
+  readModelsInterop: ReadModelInteropMap | SagaInteropMap
+  viewModelsInterop: ViewModelInteropMap
   provideLedger: (ledger: any) => Promise<void>
 }
 
 type WrapModelOptions = Omit<
-  Omit<Omit<CreateQueryOptions, 'readModels'>, 'viewModels'>,
-  'modelsInterop'
+  Omit<
+    Omit<Omit<CreateQueryOptions, 'readModels'>, 'viewModels'>,
+    'readModelsInterop'
+  >,
+  'viewModelsInterop'
 >
 
 export type WrapReadModelOptions = WrapModelOptions & {
   interop: ReadModelInterop | SagaInterop
 }
-export type WrapViewModelOptions = WrapModelOptions & { viewModel: any }
+export type WrapViewModelOptions = WrapModelOptions & {
+  interop: ViewModelInterop
+}
 
 export type EventStoreAdapter = {
   loadEvents: Function
@@ -84,7 +91,6 @@ export type ViewModelMeta = {
 }
 
 export type ViewModelPool = {
-  viewModel: ViewModelMeta
   eventstoreAdapter: any
   getSecretsManager: Function
   performanceTracer: any

@@ -86,14 +86,14 @@ const createSaga = ({
   const executeListener = createQuery({
     invokeEventBusAsync,
     readModelConnectors,
-    viewModels: [],
     performanceTracer,
     getVacantTimeInMillis,
     performAcknowledge,
     eventstoreAdapter,
     monitoring: sagaMonitoring,
     provideLedger,
-    modelsInterop: domainInterop.sagaDomain.acquireSagasInterop(runtime),
+    readModelsInterop: domainInterop.sagaDomain.acquireSagasInterop(runtime),
+    viewModelsInterop: {},
   })
 
   const sendEvents = async ({

@@ -3,7 +3,7 @@ import { getViewModelsInteropBuilder } from './get-view-models-interop-builder'
 import { validateViewModel } from './validate-view-model'
 import { ViewModelMeta } from '../types'
 
-export const initReadModelDomain = (
+export const initViewModelDomain = (
   rawViewModels: ViewModelMeta[]
 ): ViewModelDomain => {
   if (rawViewModels == null) {

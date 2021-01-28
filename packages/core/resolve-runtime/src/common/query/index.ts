@@ -47,9 +47,7 @@ const interopApi = async (models: any, key: string, ...args: Array<any>) => {
     )
   }
 
-  const result = await method(parameters)
-
-  return result
+  return await method(parameters)
 }
 
 const createQuery = (params: CreateQueryOptions): any => {
@@ -57,20 +55,20 @@ const createQuery = (params: CreateQueryOptions): any => {
     [key: string]: any
   } = {}
 
-  const { viewModels, modelsInterop, ...imports } = params
+  const { viewModelsInterop, readModelsInterop, ...imports } = params
 
-  for (const model of Object.values(modelsInterop)) {
+  for (const model of Object.values(readModelsInterop)) {
     models[model.name] = wrapReadModel({
       interop: model,
       ...imports,
     })
   }
 
-  for (const viewModel of viewModels) {
-    if (models[viewModel.name] != null) {
-      throw new Error(`Duplicate name for view model: "${viewModel.name}"`)
-    }
-    models[viewModel.name] = wrapViewModel({ viewModel, ...imports })
+  for (const model of Object.values(viewModelsInterop)) {
+    models[model.name] = wrapViewModel({
+      interop: model,
+      ...imports,
+    })
   }
 
   const read = interopApi.bind(null, models, 'read') as any

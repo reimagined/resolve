@@ -52,9 +52,7 @@ export type AggregateEventHandler = (
 export type CommandContext = {
   jwt?: string
   aggregateVersion: number
-  encrypt: Encrypter | null
-  decrypt: Decrypter | null
-}
+} & Encryption
 
 export type Command = {
   type: string
@@ -99,10 +97,7 @@ export type AggregateEncryptionFactory = (
 
 // Read model
 
-type ReadModelHandlerContext = {
-  encrypt?: Encrypter
-  decrypt?: Decrypter
-}
+type ReadModelHandlerContext = Encryption
 type ReadModelInitHandler<TStore> = (store: TStore) => Promise<void>
 type ReadModelEventHandler<TStore> = (
   store: TStore,
@@ -135,10 +130,15 @@ export type EventHandlerEncryptionFactory = (
 ) => Promise<Encryption | null>
 
 // View model
+export type ViewModelHandlerContext = {
+  jwt?: string
+} & Encryption
 export type ViewModelInitHandler<TState> = () => TState
 export type ViewModelEventHandler<TState> = (
   state: TState,
-  event: Event
+  event: Event,
+  args: any,
+  context: ViewModelHandlerContext
 ) => TState
 export type ViewModelProjection<TState> = {
   Init: ViewModelInitHandler<TState>
@@ -149,15 +149,19 @@ type ViewModelResolverApi = {
   buildViewModel: Function
 }
 type ViewModelResolverContext = {
-  jwt: string
+  jwt?: string
   viewModel: {
     name: string
     eventTypes: string[]
   }
 }
+export type ViewModelResolverQuery = {
+  aggregateIds: string[]
+  aggregateArgs: any
+}
 export type ViewModelResolver = (
   api: ViewModelResolverApi,
-  query: ViewModelQuery,
+  query: ViewModelResolverQuery,
   context: ViewModelResolverContext
 ) => Promise<any>
 export type ViewModelResolverMap = {

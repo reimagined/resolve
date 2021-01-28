@@ -445,10 +445,7 @@ const executeCommand = async (
           })
         : null
 
-    const { encrypt = null, decrypt = null } = encryption || {
-      encrypt: null,
-      decrypt: null,
-    }
+    const { encrypt, decrypt } = encryption || { }
 
     const event = await commandHandler(aggregateState, command, {
       jwt,

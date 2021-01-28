@@ -3,7 +3,6 @@ import {
   Deserializer,
   ReadModel,
   SagaEventHandlers,
-  Serializer,
   ViewModelProjection,
   ViewModelResolver,
 } from './core-types'
@@ -14,6 +13,7 @@ import {
   AggregateProjection,
   EventHandlerEncryptionFactory,
 } from './core-types'
+import { IS_BUILT_IN } from './symbols'
 
 export type AggregateMeta = {
   name: string
@@ -41,13 +41,16 @@ export type SagaMeta = EventProjectionMeta & {
   handlers: SagaEventHandlers<any, any>
 }
 
+export type ViewModelSerializer = (result: any, jwt?: string) => string
+
 export type ViewModelMeta = {
   name: string
   projection: ViewModelProjection<any>
   deserializeState: Deserializer<any>
-  serializeState: Serializer<any>
-  resolver?: ViewModelResolver
-  encryption?: EventHandlerEncryptionFactory
+  serializeState: ViewModelSerializer & { [IS_BUILT_IN]: boolean }
+  resolver: ViewModelResolver
+  encryption: EventHandlerEncryptionFactory
+  invariantHash: string
 }
 
 export type Monitoring = {
