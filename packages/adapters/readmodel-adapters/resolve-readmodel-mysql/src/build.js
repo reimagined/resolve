@@ -8,7 +8,7 @@ const serializeError = (error) =>
       }
     : null
 
-const buildInit = async (pool, readModelName, store, projection, next) => {
+const buildInit = async (pool, readModelName, store, modelInterop, next) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,
@@ -40,8 +40,9 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
 
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
   try {
-    if (typeof projection.Init === 'function') {
-      await projection.Init(store)
+    const handler = await modelInterop.acquireInitHandler(store)
+    if (handler != null) {
+      await handler()
     }
 
     await inlineLedgerRunQuery(
@@ -74,11 +75,10 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
   }
 }
 
-const buildEvents = async (pool, readModelName, store, projection, next) => {
+const buildEvents = async (pool, readModelName, store, modelInterop, next) => {
   const {
     PassthroughError,
     getVacantTimeInMillis,
-    getEncryption,
     inlineLedgerRunQuery,
     generateGuid,
     eventstoreAdapter,
@@ -124,7 +124,6 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
   )
 
   let events = await eventsPromise
-  const executeEncryption = await getEncryption()
 
   while (true) {
     if (events.length === 0) {
@@ -146,13 +145,10 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
       for (const event of events) {
         const savePointId = generateGuid(xaKey, `${appliedEventsCount}`)
         try {
-          if (typeof projection[event.type] === 'function') {
+          const handler = await modelInterop.acquireEventHandler(store, event)
+          if (handler != null) {
             await inlineLedgerRunQuery(`SAVEPOINT ${savePointId}`)
-            await projection[event.type](
-              store,
-              event,
-              await executeEncryption(event)
-            )
+            await handler()
             await inlineLedgerRunQuery(`RELEASE SAVEPOINT ${savePointId}`)
             lastSuccessEvent = event
           }
@@ -287,11 +283,10 @@ const build = async (
   basePool,
   readModelName,
   store,
-  projection,
+  modelInterop,
   next,
   getVacantTimeInMillis,
-  provideLedger,
-  getEncryption
+  provideLedger
 ) => {
   const {
     PassthroughError,
@@ -369,7 +364,6 @@ const build = async (
 
     Object.assign(pool, {
       getVacantTimeInMillis,
-      getEncryption,
       ledgerTableNameAsId,
       trxTableNameAsId,
       xaKey,
@@ -379,7 +373,7 @@ const build = async (
     })
 
     const buildMethod = cursor == null ? buildInit : buildEvents
-    await buildMethod(pool, readModelName, store, projection, next)
+    await buildMethod(pool, readModelName, store, modelInterop, next)
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
       throw error

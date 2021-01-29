@@ -8,7 +8,7 @@ const serializeError = (error) =>
       }
     : null
 
-const buildInit = async (pool, readModelName, store, projection, next) => {
+const buildInit = async (pool, readModelName, store, modelInterop, next) => {
   const {
     PassthroughError,
     dbClusterOrInstanceArn,
@@ -73,8 +73,9 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
 
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
   try {
-    if (typeof projection.Init === 'function') {
-      await projection.Init(store)
+    const handler = await modelInterop.acquireInitHandler(store)
+    if (handler != null) {
+      await handler()
     }
 
     await inlineLedgerExecuteStatement(
@@ -122,17 +123,10 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
   }
 }
 
-export const buildEvents = async (
-  pool,
-  readModelName,
-  store,
-  projection,
-  next
-) => {
+const buildEvents = async (pool, readModelName, store, modelInterop, next) => {
   const {
     PassthroughError,
     getVacantTimeInMillis,
-    getEncryption,
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
     rdsDataService,
@@ -219,7 +213,6 @@ export const buildEvents = async (
     saveTrxIdPromise,
     acquireTrxPromise,
   ])
-  const executeEncryption = await getEncryption()
 
   while (true) {
     if (events.length === 0) {
@@ -250,17 +243,14 @@ export const buildEvents = async (
       for (const event of events) {
         const savePointId = generateGuid(transactionId, `${appliedEventsCount}`)
         try {
-          if (typeof projection[event.type] === 'function') {
+          const handler = await modelInterop.acquireEventHandler(store, event)
+          if (handler != null) {
             await inlineLedgerExecuteStatement(
               pool,
               `SAVEPOINT ${savePointId}`,
               transactionId
             )
-            await projection[event.type](
-              store,
-              event,
-              await executeEncryption(event)
-            )
+            await handler()
             await inlineLedgerExecuteStatement(
               pool,
               `RELEASE SAVEPOINT ${savePointId}`,
@@ -440,11 +430,10 @@ const build = async (
   basePool,
   readModelName,
   store,
-  projection,
+  modelInterop,
   next,
   getVacantTimeInMillis,
-  provideLedger,
-  getEncryption
+  provideLedger
 ) => {
   const {
     PassthroughError,
@@ -532,7 +521,6 @@ const build = async (
 
     Object.assign(pool, {
       getVacantTimeInMillis,
-      getEncryption,
       databaseNameAsId,
       ledgerTableNameAsId,
       trxTableNameAsId,
@@ -543,7 +531,7 @@ const build = async (
     })
 
     const buildMethod = cursor == null ? buildInit : buildEvents
-    await buildMethod(pool, readModelName, store, projection, next)
+    await buildMethod(pool, readModelName, store, modelInterop, next)
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
       throw error
