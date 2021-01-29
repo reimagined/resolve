@@ -396,7 +396,7 @@ Command error: the shopping list does not exist
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-2)
 
-Currently, your shopping list application has a write side that allows you to create shopping lists and items in these lists. To obtain this data from the application, you need to implement the application's **[read side](resolve-app-structure.md#write-and-read-sides)**.
+Currently, your shopping list application has a write side that allows you to create shopping lists and add items to these lists. To obtain this data from the application, you need to implement the application's **[read side](resolve-app-structure.md#write-and-read-sides)**.
 
 ### Add a Read Model
 
@@ -409,7 +409,7 @@ First, define a Read Model **[projection](read-side.md#updating-a-read-model-via
 **common/read-models/shopping_lists.projection.js**
 
 ```js
-// A Read Model projection describes logick used to collect data from incoming events.
+// A Read Model projection describes logic used to collect data from incoming events.
 import { SHOPPING_LIST_CREATED } from '../eventTypes'
 
 export default {
@@ -461,7 +461,7 @@ const devConfig = {
         databaseFile: 'data/read-models.db',
       },
     },
-    // You can reconfigure the connector to use other database types:
+    // You can reconfigure the connector to use other databases:
     /*
       default: {
         module: 'resolve-readmodel-mysql',
@@ -482,7 +482,7 @@ const devConfig = {
 
 - [readModelConnectors](application-configuration.md#readmodelconnectors)
 
-You also need to implement a query resolver to answer data queries based on the data from the store.
+Next, implement a query resolver to answer data queries based on the data from the store.
 
 **common/read-models/shopping_lists.resolvers.js**
 
@@ -521,7 +521,7 @@ readModels: [
 
 ### Query a Read Model
 
-You can use the HTTP API query the ShoppingLists Read Model:
+Use the reSolve HTTP API to query the ShoppingLists Read Model:
 
 ```sh
 $ curl -X POST \
