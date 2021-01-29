@@ -2216,7 +2216,7 @@
 
 "@types/diff@4.0.2":
   version "4.0.2"
-  resolved "http://npm.resolve-dev.ml:10080/@types%2fdiff/-/diff-4.0.2.tgz#2e9bb89f9acc3ab0108f0f3dc4dbdcf2fff8a99c"
+  resolved "https://registry.yarnpkg.com/@types%2fdiff/-/diff-4.0.2.tgz#2e9bb89f9acc3ab0108f0f3dc4dbdcf2fff8a99c"
   integrity sha512-mIenTfsIe586/yzsyfql69KRnA75S8SVXQbTLpDejRrjH0QSJcpu3AUOi/Vjnt9IOsXKxPhJfGpQUNMueIU1fQ==
 
 "@types/error-stack-parser@^1.3.18":
@@ -2375,7 +2375,7 @@
 
 "@types/lodash.isequal@4.5.5":
   version "4.5.5"
-  resolved "http://npm.resolve-dev.ml:10080/@types%2flodash.isequal/-/lodash.isequal-4.5.5.tgz#4fed1b1b00bef79e305de0352d797e9bb816c8ff"
+  resolved "https://registry.yarnpkg.com/@types%2flodash.isequal/-/lodash.isequal-4.5.5.tgz#4fed1b1b00bef79e305de0352d797e9bb816c8ff"
   integrity sha512-4IKbinG7MGP131wRfceK6W4E/Qt3qssEFLF30LnJbjYiSfHGGRU/Io8YxXrZX109ir+iDETC8hw8QsDijukUVg==
   dependencies:
     "@types/lodash" "*"
@@ -2629,7 +2629,7 @@
 
 "@typescript-eslint/eslint-plugin@4.14.0":
   version "4.14.0"
-  resolved "http://npm.resolve-dev.ml:10080/@typescript-eslint%2feslint-plugin/-/eslint-plugin-4.14.0.tgz#92db8e7c357ed7d69632d6843ca70b71be3a721d"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint%2feslint-plugin/-/eslint-plugin-4.14.0.tgz#92db8e7c357ed7d69632d6843ca70b71be3a721d"
   integrity sha512-IJ5e2W7uFNfg4qh9eHkHRUCbgZ8VKtGwD07kannJvM5t/GU8P8+24NX8gi3Hf5jST5oWPY8kyV1s/WtfiZ4+Ww==
   dependencies:
     "@typescript-eslint/experimental-utils" "4.14.0"
@@ -2643,7 +2643,7 @@
 
 "@typescript-eslint/experimental-utils@4.14.0":
   version "4.14.0"
-  resolved "http://npm.resolve-dev.ml:10080/@typescript-eslint%2fexperimental-utils/-/experimental-utils-4.14.0.tgz#5aa7b006736634f588a69ee343ca959cd09988df"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint%2fexperimental-utils/-/experimental-utils-4.14.0.tgz#5aa7b006736634f588a69ee343ca959cd09988df"
   integrity sha512-6i6eAoiPlXMKRbXzvoQD5Yn9L7k9ezzGRvzC/x1V3650rUk3c3AOjQyGYyF9BDxQQDK2ElmKOZRD0CbtdkMzQQ==
   dependencies:
     "@types/json-schema" "^7.0.3"
@@ -2655,7 +2655,7 @@
 
 "@typescript-eslint/parser@4.14.0":
   version "4.14.0"
-  resolved "http://npm.resolve-dev.ml:10080/@typescript-eslint%2fparser/-/parser-4.14.0.tgz#62d4cd2079d5c06683e9bfb200c758f292c4dee7"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint%2fparser/-/parser-4.14.0.tgz#62d4cd2079d5c06683e9bfb200c758f292c4dee7"
   integrity sha512-sUDeuCjBU+ZF3Lzw0hphTyScmDDJ5QVkyE21pRoBo8iDl7WBtVFS+WDN3blY1CH3SBt7EmYCw6wfmJjF0l/uYg==
   dependencies:
     "@typescript-eslint/scope-manager" "4.14.0"
@@ -2665,7 +2665,7 @@
 
 "@typescript-eslint/scope-manager@4.14.0":
   version "4.14.0"
-  resolved "http://npm.resolve-dev.ml:10080/@typescript-eslint%2fscope-manager/-/scope-manager-4.14.0.tgz#55a4743095d684e1f7b7180c4bac2a0a3727f517"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint%2fscope-manager/-/scope-manager-4.14.0.tgz#55a4743095d684e1f7b7180c4bac2a0a3727f517"
   integrity sha512-/J+LlRMdbPh4RdL4hfP1eCwHN5bAhFAGOTsvE6SxsrM/47XQiPSgF5MDgLyp/i9kbZV9Lx80DW0OpPkzL+uf8Q==
   dependencies:
     "@typescript-eslint/types" "4.14.0"
@@ -2673,12 +2673,12 @@
 
 "@typescript-eslint/types@4.14.0":
   version "4.14.0"
-  resolved "http://npm.resolve-dev.ml:10080/@typescript-eslint%2ftypes/-/types-4.14.0.tgz#d8a8202d9b58831d6fd9cee2ba12f8a5a5dd44b6"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint%2ftypes/-/types-4.14.0.tgz#d8a8202d9b58831d6fd9cee2ba12f8a5a5dd44b6"
   integrity sha512-VsQE4VvpldHrTFuVPY1ZnHn/Txw6cZGjL48e+iBxTi2ksa9DmebKjAeFmTVAYoSkTk7gjA7UqJ7pIsyifTsI4A==
 
 "@typescript-eslint/typescript-estree@4.14.0":
   version "4.14.0"
-  resolved "http://npm.resolve-dev.ml:10080/@typescript-eslint%2ftypescript-estree/-/typescript-estree-4.14.0.tgz#4bcd67486e9acafc3d0c982b23a9ab8ac8911ed7"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint%2ftypescript-estree/-/typescript-estree-4.14.0.tgz#4bcd67486e9acafc3d0c982b23a9ab8ac8911ed7"
   integrity sha512-wRjZ5qLao+bvS2F7pX4qi2oLcOONIB+ru8RGBieDptq/SudYwshveORwCVU4/yMAd4GK7Fsf8Uq1tjV838erag==
   dependencies:
     "@typescript-eslint/types" "4.14.0"
@@ -2692,7 +2692,7 @@
 
 "@typescript-eslint/visitor-keys@4.14.0":
   version "4.14.0"
-  resolved "http://npm.resolve-dev.ml:10080/@typescript-eslint%2fvisitor-keys/-/visitor-keys-4.14.0.tgz#b1090d9d2955b044b2ea2904a22496849acbdf54"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint%2fvisitor-keys/-/visitor-keys-4.14.0.tgz#b1090d9d2955b044b2ea2904a22496849acbdf54"
   integrity sha512-MeHHzUyRI50DuiPgV9+LxcM52FCJFYjJiWHtXlbyC27b80mfOwKeiKI+MHOTEpcpfmoPFm/vvQS88bYIx6PZTA==
   dependencies:
     "@typescript-eslint/types" "4.14.0"
@@ -7871,7 +7871,7 @@ eslint-visitor-keys@^1.0.0, eslint-visitor-keys@^1.1.0:
 
 eslint-visitor-keys@^2.0.0:
   version "2.0.0"
-  resolved "http://npm.resolve-dev.ml:10080/eslint-visitor-keys/-/eslint-visitor-keys-2.0.0.tgz#21fdc8fbcd9c795cc0321f0563702095751511a8"
+  resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-2.0.0.tgz#21fdc8fbcd9c795cc0321f0563702095751511a8"
   integrity sha512-QudtT6av5WXels9WjIM7qz1XD1cWGvX4gGXvp/zBn9nXG02D0utdU3Em2m/QjTnrsk6bBjmCygl3rmj118msQQ==
 
 eslint@6.8.0:
@@ -8347,7 +8347,7 @@ fast-glob@^3.0.3:
 
 fast-glob@^3.1.1:
   version "3.2.5"
-  resolved "http://npm.resolve-dev.ml:10080/fast-glob/-/fast-glob-3.2.5.tgz#7939af2a656de79a4f1901903ee8adcaa7cb9661"
+  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.2.5.tgz#7939af2a656de79a4f1901903ee8adcaa7cb9661"
   integrity sha512-2DtFcgT68wiTTiwZ2hNdJfcHNke9XOfnwmBRWXhmeKM8rF0TGwmC/Qto3S7RoZKp5cilZbxzO5iTNTQsJ+EeDg==
   dependencies:
     "@nodelib/fs.stat" "^2.0.2"
@@ -9174,7 +9174,7 @@ globby@^10.0.1:
 
 globby@^11.0.1:
   version "11.0.2"
-  resolved "http://npm.resolve-dev.ml:10080/globby/-/globby-11.0.2.tgz#1af538b766a3b540ebfb58a32b2e2d5897321d83"
+  resolved "https://registry.yarnpkg.com/globby/-/globby-11.0.2.tgz#1af538b766a3b540ebfb58a32b2e2d5897321d83"
   integrity sha512-2ZThXDvvV8fYFRVIxnrMQBipZQDr7MxKAmQK1vujaj9/7eF0efG7BPUKJ7jP7G5SLF37xKDXvO4S/KKLj/Z0og==
   dependencies:
     array-union "^2.1.0"
@@ -9680,7 +9680,7 @@ http-signature@~1.2.0:
 
 http-status-codes@2.1.4:
   version "2.1.4"
-  resolved "http://npm.resolve-dev.ml:10080/http-status-codes/-/http-status-codes-2.1.4.tgz#453d99b4bd9424254c4f6a9a3a03715923052798"
+  resolved "https://registry.yarnpkg.com/http-status-codes/-/http-status-codes-2.1.4.tgz#453d99b4bd9424254c4f6a9a3a03715923052798"
   integrity sha512-MZVIsLKGVOVE1KEnldppe6Ij+vmemMuApDfjhVSLzyYP+td0bREEYyAoIw9yFePoBXManCuBqmiNP5FqJS5Xkg==
 
 https-browserify@^1.0.0:
@@ -9781,7 +9781,7 @@ ignore@^4.0.3, ignore@^4.0.6:
 
 ignore@^5.1.1, ignore@^5.1.4:
   version "5.1.8"
-  resolved "http://npm.resolve-dev.ml:10080/ignore/-/ignore-5.1.8.tgz#f150a8b50a34289b33e22f5889abd4d8016f0e57"
+  resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.8.tgz#f150a8b50a34289b33e22f5889abd4d8016f0e57"
   integrity sha512-BMpfD7PpiETpBl/A6S498BaIJ6Y/ABT93ETbby2fP00v4EbvPBXWEoaR1UBPKs3iR53pJY7EtZk5KACI57i1Uw==
 
 imagemin-gifsicle@^6.0.1:
@@ -15099,7 +15099,7 @@ qs@6.7.0:
 
 qs@6.9.6:
   version "6.9.6"
-  resolved "http://npm.resolve-dev.ml:10080/qs/-/qs-6.9.6.tgz#26ed3c8243a431b2924aca84cc90471f35d5a0ee"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.9.6.tgz#26ed3c8243a431b2924aca84cc90471f35d5a0ee"
   integrity sha512-TIRk4aqYLNoJUbd+g2lEdz5kLWIuTMRagAXxl78Q0RiVjAOugHmeKNGdd3cwo/ktpf9aL9epCfFqWDEKysUlLQ==
 
 qs@^6.4.0:
@@ -15123,7 +15123,7 @@ query-string@5.1.1, query-string@^5.0.1, query-string@^5.1.1:
 
 query-string@6.13.8:
   version "6.13.8"
-  resolved "http://npm.resolve-dev.ml:10080/query-string/-/query-string-6.13.8.tgz#8cf231759c85484da3cf05a851810d8e825c1159"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-6.13.8.tgz#8cf231759c85484da3cf05a851810d8e825c1159"
   integrity sha512-jxJzQI2edQPE/NPUOusNjO/ZOGqr1o2OBa/3M00fU76FsLXDVbJDv/p7ng5OdQyorKrkRz1oqfwmbe5MAMePQg==
   dependencies:
     decode-uri-component "^0.2.0"
@@ -16213,7 +16213,7 @@ resolve-cwd@^3.0.0:
 
 resolve-debug-levels@0.26.4:
   version "0.26.4"
-  resolved "http://npm.resolve-dev.ml:10080/resolve-debug-levels/-/resolve-debug-levels-0.26.4.tgz#59ffafb0d11a64ed3dbe8e6b767405428e58a197"
+  resolved "https://registry.yarnpkg.com/resolve-debug-levels/-/resolve-debug-levels-0.26.4.tgz#59ffafb0d11a64ed3dbe8e6b767405428e58a197"
   integrity sha512-zZGqYH+iP0MpRVcUsfVSSDitbipHjS/QzAPrM2UqG4cbay+CG/PxTVnNW/8E4u49FYmX3Dz8pzjxf5CwrR3inA==
   dependencies:
     "@babel/runtime" "7.9.6"
@@ -17050,7 +17050,7 @@ spdx-license-ids@^3.0.0:
 
 split-on-first@^1.0.0:
   version "1.1.0"
-  resolved "http://npm.resolve-dev.ml:10080/split-on-first/-/split-on-first-1.1.0.tgz#f610afeee3b12bce1d0c30425e76398b78249a5f"
+  resolved "https://registry.yarnpkg.com/split-on-first/-/split-on-first-1.1.0.tgz#f610afeee3b12bce1d0c30425e76398b78249a5f"
   integrity sha512-43ZssAJaMusuKWL8sKUBQXHWOpq8d6CfN/u1p4gUzfJkM05C8rxTmYrkIPTXapZpORA6LkkzcUulJ8FqA7Uudw==
 
 split-string@^3.0.1, split-string@^3.0.2:
@@ -17277,7 +17277,7 @@ strict-uri-encode@^1.0.0:
 
 strict-uri-encode@^2.0.0:
   version "2.0.0"
-  resolved "http://npm.resolve-dev.ml:10080/strict-uri-encode/-/strict-uri-encode-2.0.0.tgz#b9c7330c7042862f6b142dc274bbcc5866ce3546"
+  resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-2.0.0.tgz#b9c7330c7042862f6b142dc274bbcc5866ce3546"
   integrity sha1-ucczDHBChi9rFC3CdLvMWGbONUY=
 
 string-kit@^0.5.12:
@@ -18685,7 +18685,7 @@ typescript-tuple@^2.2.1:
 
 typescript@4.0.5:
   version "4.0.5"
-  resolved "http://npm.resolve-dev.ml:10080/typescript/-/typescript-4.0.5.tgz#ae9dddfd1069f1cb5beb3ef3b2170dd7c1332389"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.0.5.tgz#ae9dddfd1069f1cb5beb3ef3b2170dd7c1332389"
   integrity sha512-ywmr/VrTVCmNTJ6iV2LwIrfG1P+lv6luD8sUJs+2eI9NLGigaN+nUQc13iHqisq7bra9lnmUSYqbJvegraBOPQ==
 
 typescript@4.1.3:
