@@ -1,24 +1,9 @@
 import createQuery from '../../resolve-runtime/src/common/query'
-import {
-  IS_BUILT_IN,
-  SecretsManager,
-  ReadModelInteropMap,
-  ViewModelInteropMap,
-} from 'resolve-core'
-
-type State = {
-  value: number
-}
+import { ReadModelInteropMap, ViewModelInteropMap } from 'resolve-core'
 
 type Store = {
   set(key: string, value: any): void
   get(key: string): any
-}
-
-type Event = {
-  payload: {
-    value: number
-  }
 }
 
 type ReturnType<T extends (...args: any[]) => any> = T extends (
@@ -68,17 +53,11 @@ for (const { describeName, prepare } of [
   },
 ]) {
   let events: Array<any> | null = null
-  let eventstoreAdapter: any | null = null
-
-  type SnapshotMap = Map<string, any>
-  let snapshots: SnapshotMap | null = null
-
   let readModelConnectors: any | null = null
   let query: ResolveQuery | null = null
-  let secretsManager: SecretsManager | null = null
   let readModelsInterop: ReadModelInteropMap = {}
   let viewModelsInterop: ViewModelInteropMap = {}
-  let provideLedger = async (ledger: any) => {
+  let provideLedger = async () => {
     /* nop */
   }
 
@@ -87,38 +66,9 @@ for (const { describeName, prepare } of [
     beforeEach(() => {
       events = []
 
-      snapshots = new Map()
-
       invokeEventBusAsync = jest.fn()
       getVacantTimeInMillis = jest.fn()
       performAcknowledge = jest.fn()
-      const secretsMap = new Map()
-      secretsManager = {
-        getSecret: async (key: any) => secretsMap.get(key),
-        setSecret: async (key: any, value: any) => {
-          secretsMap.set(key, value)
-        },
-        deleteSecret: async (key: any) => {
-          secretsMap.delete(key)
-        },
-      }
-
-      eventstoreAdapter = {
-        loadEvents: async ({ cursor: prevCursor }: { cursor: string }) => ({
-          events,
-          cursor: `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`,
-        }),
-        getNextCursor: (prevCursor: string) =>
-          `${prevCursor == null ? '' : `${prevCursor}-`}CURSOR`,
-        getSecretsManager: jest.fn(() => secretsManager),
-        loadSnapshot: jest.fn().mockImplementation(async (key) => {
-          return (snapshots as SnapshotMap).get(key)
-        }),
-        saveSnapshot: jest.fn().mockImplementation(async (key, value) => {
-          void (snapshots as SnapshotMap).set(key, value)
-        }),
-      }
-
       readModelConnectors = {}
       readModelsInterop = {}
       viewModelsInterop = {}
@@ -129,8 +79,6 @@ for (const { describeName, prepare } of [
     afterEach(() => {
       query = null
       events = null
-      eventstoreAdapter = null
-      snapshots = null
       readModelConnectors = null
       invokeEventBusAsync = null
       getVacantTimeInMillis = null
@@ -162,7 +110,6 @@ for (const { describeName, prepare } of [
           invokeEventBusAsync,
           readModelConnectors,
           performanceTracer,
-          eventstoreAdapter,
           getVacantTimeInMillis,
           performAcknowledge,
           provideLedger,
@@ -239,7 +186,7 @@ for (const { describeName, prepare } of [
               .mockImplementation(async (store, readModelName) => {
                 readModels.delete(readModelName)
               })
-            const dispose = jest.fn().mockImplementation(async (a: string) => {
+            const dispose = jest.fn().mockImplementation(async () => {
               readModels.clear()
             })
 
@@ -365,7 +312,6 @@ for (const { describeName, prepare } of [
           invokeEventBusAsync,
           readModelConnectors,
           performanceTracer,
-          eventstoreAdapter,
           getVacantTimeInMillis,
           performAcknowledge,
           readModelsInterop,
@@ -518,7 +464,6 @@ for (const { describeName, prepare } of [
           invokeEventBusAsync,
           readModelConnectors,
           performanceTracer,
-          eventstoreAdapter,
           getVacantTimeInMillis,
           performAcknowledge,
           monitoring,
@@ -940,7 +885,6 @@ for (const { describeName, prepare } of [
       test('"read" should raise error when wrong options for read invocation', async () => {
         query = createQuery({
           readModelConnectors,
-          eventstoreAdapter,
           performanceTracer,
           invokeEventBusAsync,
           getVacantTimeInMillis,

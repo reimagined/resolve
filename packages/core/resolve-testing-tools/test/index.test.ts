@@ -1,10 +1,6 @@
 import givenEvents, { BDDAggregate } from '../src/index'
 import createReadModelConnector from 'resolve-readmodel-lite'
-import {
-  SecretsManager,
-  Event,
-  EventHandlerEncryptionContext,
-} from 'resolve-core'
+import { Event, EventHandlerEncryptionContext } from 'resolve-core'
 
 describe('read model', () => {
   test('basic flow', async () => {

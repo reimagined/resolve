@@ -1,6 +1,6 @@
 import { Phases, symbol } from './constants'
 import { CreateQueryOptions } from 'resolve-runtime'
-import { initDomain, SecretsManager } from 'resolve-core'
+import { initDomain } from 'resolve-core'
 
 export const executeReadModel = async ({
   promise,

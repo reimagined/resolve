@@ -1,4 +1,4 @@
-import { SecretsManager, Event, Serializer } from '../core-types'
+import { SecretsManager, Event } from '../core-types'
 import { ViewModelSerializer } from '../types'
 
 export type Eventstore = {
