@@ -87,15 +87,11 @@ const dispose = async (
 
 const wrapViewModel = ({
   interop,
-  eventstoreAdapter,
   performanceTracer,
 }: WrapViewModelOptions) => {
-  const getSecretsManager = eventstoreAdapter.getSecretsManager.bind(null)
   const pool: ViewModelPool = {
-    eventstoreAdapter,
     isDisposed: false,
     performanceTracer,
-    getSecretsManager,
   }
 
   return Object.freeze({

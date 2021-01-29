@@ -707,7 +707,6 @@ const dispose = async (
 const wrapReadModel = ({
   interop,
   readModelConnectors,
-  eventstoreAdapter,
   invokeEventBusAsync,
   performanceTracer,
   getVacantTimeInMillis,
@@ -730,7 +729,6 @@ const wrapReadModel = ({
 
   const pool: ReadModelPool = {
     invokeEventBusAsync,
-    eventstoreAdapter,
     connections: new Set(),
     connector,
     isDisposed: false,

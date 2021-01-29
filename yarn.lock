@@ -2214,6 +2214,11 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.5.tgz#b14efa8852b7768d898906613c23f688713e02cd"
   integrity sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
 
+"@types/diff@4.0.2":
+  version "4.0.2"
+  resolved "http://npm.resolve-dev.ml:10080/@types%2fdiff/-/diff-4.0.2.tgz#2e9bb89f9acc3ab0108f0f3dc4dbdcf2fff8a99c"
+  integrity sha512-mIenTfsIe586/yzsyfql69KRnA75S8SVXQbTLpDejRrjH0QSJcpu3AUOi/Vjnt9IOsXKxPhJfGpQUNMueIU1fQ==
+
 "@types/error-stack-parser@^1.3.18":
   version "1.3.18"
   resolved "https://registry.yarnpkg.com/@types/error-stack-parser/-/error-stack-parser-1.3.18.tgz#e01c9f8c85ca83b610320c62258b0c9026ade0f7"
@@ -2365,6 +2370,13 @@
   version "4.4.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.get/-/lodash.get-4.4.6.tgz#0c7ac56243dae0f9f09ab6f75b29471e2e777240"
   integrity sha512-E6zzjR3GtNig8UJG/yodBeJeIOtgPkMgsLjDU3CbgCAPC++vJ0eCMnJhVpRZb/ENqEFlov1+3K9TKtY4UdWKtQ==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash.isequal@4.5.5":
+  version "4.5.5"
+  resolved "http://npm.resolve-dev.ml:10080/@types%2flodash.isequal/-/lodash.isequal-4.5.5.tgz#4fed1b1b00bef79e305de0352d797e9bb816c8ff"
+  integrity sha512-4IKbinG7MGP131wRfceK6W4E/Qt3qssEFLF30LnJbjYiSfHGGRU/Io8YxXrZX109ir+iDETC8hw8QsDijukUVg==
   dependencies:
     "@types/lodash" "*"
 
@@ -16178,16 +16190,6 @@ resolve-cloud@*:
     semver "^6.3.0"
     yargs "^14.0.0"
 
-resolve-command@0.26.5:
-  version "0.26.5"
-  resolved "http://npm.resolve-dev.ml:10080/resolve-command/-/resolve-command-0.26.5.tgz#80dc96b55f8a73d2104e25acd4719ba400967d3f"
-  integrity sha512-2XgeltNJPx4vncePSwmoche3BAzA5rJImTbm8/fNBcrMe2z4Ac75kaY/5teptey2NmGMeSKaIN0airgRuFLvQw==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    resolve-core "0.26.5"
-    resolve-debug-levels "0.26.5"
-    resolve-eventstore-base "0.26.5"
-
 resolve-cwd@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-1.0.0.tgz#4eaeea41ed040d1702457df64a42b2b07d246f9f"
@@ -16248,30 +16250,6 @@ resolve-pathname@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-3.0.0.tgz#99d02224d3cf263689becbb393bc560313025dcd"
   integrity sha512-C7rARubxI8bXFNB/hqcp/4iUeIXJhJZvFPFPiSPRnhU5UPxzMFIl+2E6yY6c4k9giDJAhtV+enfA+G89N6Csng==
-
-resolve-query@0.26.5:
-  version "0.26.5"
-  resolved "http://npm.resolve-dev.ml:10080/resolve-query/-/resolve-query-0.26.5.tgz#860fcf60f6d971c3970150a647d810a8c4f23f05"
-  integrity sha512-BNKUr0/PFT6mB2TPodHADRxNkAFPpv1AAFlJY39Z38SmretvzyC1OsQznzJjaUQC9X5yW9QIOagw+RhXpfLvuw==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    resolve-core "0.26.5"
-    resolve-debug-levels "0.26.5"
-    resolve-readmodel-base "0.26.5"
-
-resolve-testing-tools@0.26.5:
-  version "0.26.5"
-  resolved "http://npm.resolve-dev.ml:10080/resolve-testing-tools/-/resolve-testing-tools-0.26.5.tgz#af99c97c6eeefcdc47451add2109bf56d8380445"
-  integrity sha512-5gTFywnu0cd2xSG3qfYcVyMMne0y4AWTWGBVzYJIcxRRaJNlnp6FqYCXLmFa51KCX10j5bDtcvsB0h16EO8J1A==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    colors "^1.4.0"
-    diff "^4.0.2"
-    lodash.isequal "4.5.0"
-    resolve-command "0.26.5"
-    resolve-core "0.26.5"
-    resolve-query "0.26.5"
-    resolve-readmodel-lite "0.26.5"
 
 resolve-url@^0.2.1:
   version "0.2.1"

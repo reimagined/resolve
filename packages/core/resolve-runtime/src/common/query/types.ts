@@ -13,7 +13,6 @@ export type CreateQueryOptions = {
   invokeEventBusAsync: Function
   readModelConnectors: any
   performanceTracer: any
-  eventstoreAdapter: any
   getVacantTimeInMillis: any
   performAcknowledge: any
   monitoring?: Monitoring
@@ -69,7 +68,6 @@ export type ReadModelMeta = {
 
 export type ReadModelPool = {
   performanceTracer: any
-  eventstoreAdapter: any
   isDisposed: boolean
   connector: any
   connections: Set<any>
@@ -91,8 +89,6 @@ export type ViewModelMeta = {
 }
 
 export type ViewModelPool = {
-  eventstoreAdapter: any
-  getSecretsManager: Function
   performanceTracer: any
   isDisposed: boolean
   monitoring?: Monitoring

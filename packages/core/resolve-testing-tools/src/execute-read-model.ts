@@ -1,5 +1,6 @@
 import { Phases, symbol } from './constants'
 import { CreateQueryOptions } from 'resolve-runtime'
+import { initDomain, SecretsManager } from 'resolve-core'
 
 export const executeReadModel = async ({
   promise,
@@ -20,42 +21,43 @@ export const executeReadModel = async ({
     (resolve) =>
       (performAcknowledge = async (result: any) => await resolve(result))
   )
+  const provideLedger = async (ledger: any): Promise<void> => {
+    /* nop */
+  }
+  const secretsManager = promise[symbol].secretsManager
+
+  const domain = initDomain({
+    viewModels: [],
+    readModels: [
+      {
+        name: promise[symbol].name,
+        projection: promise[symbol].projection,
+        resolvers: promise[symbol].resolvers,
+        connectorName: 'ADAPTER_NAME',
+        encryption: promise[symbol].encryption,
+      },
+    ],
+    aggregates: [],
+    sagas: [],
+  })
 
   try {
     queryExecutor = createQuery({
-      viewModels: [],
-      readModels: [
-        {
-          name: promise[symbol].name,
-          projection: promise[symbol].projection,
-          resolvers: promise[symbol].resolvers,
-          connectorName: 'ADAPTER_NAME',
-          encryption: promise[symbol].encryption,
-        },
-      ],
       readModelConnectors: {
         ADAPTER_NAME: promise[symbol].adapter,
       },
       getVacantTimeInMillis: () => 0x7fffffff,
-      eventstoreAdapter: {
-        getSecretsManager: (): any => promise[symbol].secretsManager,
-      },
       performAcknowledge,
-      modelsInterop: {
-        [promise[symbol].name]: {
-          name: promise[symbol].name,
-          connectorName: 'ADAPTER_NAME',
-          acquireResolver: async (resolver, args, context) => (store: any) =>
-            promise[symbol].resolvers[resolver](store, args, {
-              ...context,
-              secretsManager: promise[symbol].secretsManager,
-            }),
-        },
-      },
+      readModelsInterop: domain.readModelDomain.acquireReadModelsInterop({
+        secretsManager,
+        monitoring: {},
+      }),
+      viewModelsInterop: {},
       invokeEventBusAsync: () => {
         /* empty */
       },
       performanceTracer: null,
+      provideLedger,
     })
 
     await queryExecutor.sendEvents({
@@ -77,14 +79,14 @@ export const executeReadModel = async ({
       throw error
     }
 
-    const result = await queryExecutor.read({
+    const { data } = await queryExecutor.read({
       modelName: promise[symbol].name,
       resolverName: promise[symbol].resolverName,
       resolverArgs: promise[symbol].resolverArgs,
       jwt: promise[symbol].jwt,
     })
 
-    promise[symbol].resolve(result)
+    promise[symbol].resolve(data)
   } catch (error) {
     promise[symbol].reject(error)
   } finally {
