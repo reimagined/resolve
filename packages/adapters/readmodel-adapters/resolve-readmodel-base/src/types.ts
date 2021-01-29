@@ -412,4 +412,46 @@ export type ObjectKeys<T> =
   T extends Array<infer R> | string ? string[] :
   never
 
+export type ObjectFixedKeys<T extends object> = {
+  [K in keyof T]: string extends K ? never : number extends K ? never : K
+} extends { [_ in keyof T]: infer U } ? U : never;
+
+export type DistributeKeysUnion<U> = U extends (string | number | symbol)
+  ? {[K in U]: any}
+  : never;
+
+export type ObjectDictionaryKeys<T extends object> = Exclude<T, (
+  DistributeKeysUnion<ObjectFixedKeys<T>>
+)>
+
+export type DistributeFixedFieldsUnionLikeObject<
+  U extends object,
+  K extends (keyof any),
+  KS extends (keyof U) = Exclude<ObjectFixedKeys<U>, K>
+> = KS extends any
+  ? { [K in KS]: any }
+  : never;
+
+export type ExtractExactUnionLikeKeyType<U extends object, K extends (keyof any), Q extends object =Exclude<U, DistributeFixedFieldsUnionLikeObject<U, K>  >> = 
+   Extract<Q, { [K in ObjectFixedKeys<Q>]: Q[K] } >[
+     (keyof Extract<Q, { [K in ObjectFixedKeys<Q>]: Q[K] } >)
+   ]
+
+export type DistributeUnionLikeObject<U extends object, KS extends (keyof U) = (ObjectFixedKeys<U>)> = KS extends any
+  ? ExtractExactUnionLikeKeyType<U, KS>
+  : never;
+
+export type ObjectFixedUnionToIntersection<U extends object> = {
+  [K in ObjectFixedKeys<U>]: DistributeUnionLikeObject<U>
+}
+
+export type ObjectFixedUnionToIntersectionByKeys<U extends object, KS extends (keyof any)> = {
+  [K in Extract<KS, ObjectFixedKeys<U>>]: DistributeUnionLikeObject<U, Extract<KS, ObjectFixedKeys<U>>>
+}
+
+export type JsonLike = JsonPrimitive | JsonArray | JsonMap
+
+export type IfEquals<T, U, Y=unknown, N=never> = (<G>() => G extends T ? 1 : 2) extends (<G>() => G extends U ? 1 : 2) ? Y : N;
+
+export type IsTypeLike<T, B> = IfEquals<Extract<T, B>, T>
 

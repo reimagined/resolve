@@ -1,24 +1,26 @@
-export const escapeId = (str) => `"${String(str).replace(/(["])/gi, '$1$1')}"`
-export const escapeStr = (str) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
-const coerceEmptyString = (obj) =>
+import type { CommonRunQueryMethodUnpromiseResult, CommonRunQueryMethod } from './types'
+
+export const escapeId = (str: string) => `"${String(str).replace(/(["])/gi, '$1$1')}"`
+export const escapeStr = (str: string) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
+const coerceEmptyString = (obj: any) =>
   (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
 const emptyTransformer = Function('') // eslint-disable-line no-new-func
 const SQLITE_BUSY = 'SQLITE_BUSY'
 
-const randRange = (min, max) =>
+const randRange = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min
-const fullJitter = (retries) =>
+const fullJitter = (retries: number) =>
   new Promise((resolve) =>
     setTimeout(resolve, randRange(0, Math.min(500, 2 * 2 ** retries)))
   )
 
-const commonRunQuery = async (
-  pool,
-  isInlineLedger,
-  sqlQuery,
-  multiLine = false,
-  passthroughRuntimeErrors = false
-) => {
+const commonRunQuery: CommonRunQueryMethod = async <T extends Parameters<CommonRunQueryMethod>[3]> (
+  pool: Parameters<CommonRunQueryMethod>[0],
+  isInlineLedger: Parameters<CommonRunQueryMethod>[1],
+  sqlQuery: Parameters<CommonRunQueryMethod>[2],
+  multiLine: T = false as T,
+  passthroughRuntimeErrors: Parameters<CommonRunQueryMethod>[4] = false
+): Promise<CommonRunQueryMethodUnpromiseResult<T>> => {
   const PassthroughError = pool.PassthroughError
   const executor = !multiLine
     ? pool.connection.all.bind(pool.connection)
@@ -47,7 +49,7 @@ const commonRunQuery = async (
     }
   }
 
-  return transformer(result)
+  return transformer(result) as CommonRunQueryMethodUnpromiseResult<T>
 }
 
 const makeNestedPath = (nestedPath) => {
@@ -70,11 +72,14 @@ const makeNestedPath = (nestedPath) => {
   return result
 }
 
-const connect = async (imports, pool, options) => {
+const connect = async (
+  imports,
+  pool,
+  options
+) => {
   let {
     tablePrefix,
     databaseFile,
-    preferEventBusLedger,
     performanceTracer,
     ...connectionOptions
   } = options

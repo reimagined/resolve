@@ -1,56 +1,45 @@
-const compareOperatorsMap = new Map([
-  [
-    '$eq',
-    (a, b) => `
+import type {
+  ObjectFixedUnionToIntersectionByKeys,
+  SearchToWhereExpressionMethod, 
+  ObjectDictionaryKeys, 
+  ObjectFixedKeys, 
+  JsonPrimitive
+} from './types'
+
+const compareOperators = {
+  '$eq': (a: string, b: string ) : string => `
     (((${a} = ${b}) and (not (${a} is null)) and (not (${b} is null))) or      
     ((${a} is null) and (${b} is null)))
   `,
-  ],
-  [
-    '$ne',
-    (a, b) => `
+  '$ne': (a: string, b: string ) : string => `
     (((${a} <> ${b}) and (not (${a} is null)) and (not (${b} is null))) or      
     ((${a} is null) and (not (${b} is null)) ) or                           
     ((${b} is null) and (not (${a} is null)) ))
   `,
-  ],
-  [
-    '$lte',
-    (a, b) => `
+  '$lte': (a: string, b: string ) : string => `
     (((${a} <= ${b}) and (not (${a} is null)) and (not (${b} is null))) or
     ((${a} is null) and (${b} is null)))
   `,
-  ],
-  [
-    '$gte',
-    (a, b) => `
+  '$gte': (a: string, b: string ) : string => `
     (((${a} >= ${b}) and (not (${a} is null)) and (not (${b} is null))) or
     ((${a} is null) and (${b} is null)))
   `,
-  ],
-  [
-    '$lt',
-    (a, b) => `
+  '$lt': (a: string, b: string ) : string => `
     (((${a} < ${b}) and (not (${a} is null)) and (not (${b} is null))))
   `,
-  ],
-  [
-    '$gt',
-    (a, b) => `
+  '$gt': (a: string, b: string ) : string => `
     (((${a} > ${b}) and (not (${a} is null)) and (not (${b} is null))))
-  `,
-  ],
-])
+  `
+}
 
-const searchToWhereExpression = (
+const searchToWhereExpression : SearchToWhereExpressionMethod = (
   expression,
   escapeId,
   escapeStr,
   makeNestedPath
 ) => {
-  const searchExprArray = []
-  const isDocumentExpr =
-    expression.$and == null && expression.$or == null && expression.$not == null
+  const searchExprArray: Array<string> = []
+  const isDocumentExpr = !(('$and' in expression) || ('$or' in expression ) || ('$not' in expression))
 
   if (isDocumentExpr) {
     for (let fieldName of Object.keys(expression)) {
@@ -62,12 +51,14 @@ const searchToWhereExpression = (
             )}')`
           : escapeId(baseName)
 
-      let fieldValue = expression[fieldName]
-      let fieldOperator = '$eq'
+      let fieldValue = (expression as ObjectDictionaryKeys<typeof expression>)[fieldName]
+      let fieldOperator: keyof typeof compareOperators = '$eq'
 
       if (fieldValue instanceof Object) {
-        fieldOperator = Object.keys(fieldValue)[0]
-        fieldValue = fieldValue[fieldOperator]
+        fieldOperator = (Object.keys(fieldValue) as Array<ObjectFixedKeys<Exclude<typeof fieldValue, JsonPrimitive>>>)[0]        
+        fieldValue = (fieldValue as 
+          ObjectFixedUnionToIntersectionByKeys<Exclude<typeof fieldValue, JsonPrimitive>, typeof fieldOperator>
+          )[fieldOperator]
       }
 
       const compareInlinedValue =
@@ -75,7 +66,7 @@ const searchToWhereExpression = (
           ? `json(CAST(${escapeStr(JSON.stringify(fieldValue))} AS BLOB))`
           : `json(CAST(${escapeStr('null')} AS BLOB))`
 
-      const resultExpression = compareOperatorsMap.get(fieldOperator)(
+      const resultExpression = compareOperators[fieldOperator](
         resultFieldName,
         compareInlinedValue
       )
@@ -88,8 +79,10 @@ const searchToWhereExpression = (
 
   for (let operatorName of Object.keys(expression)) {
     if (operatorName === '$and' || operatorName === '$or') {
-      const localSearchExprArray = []
-      for (let innerExpr of expression[operatorName]) {
+      const localSearchExprArray: Array<string> = []
+      for (let innerExpr of (expression as 
+        ObjectFixedUnionToIntersectionByKeys<Exclude<typeof expression, JsonPrimitive>, typeof operatorName>
+        )[operatorName]) {
         const whereExpr = searchToWhereExpression(
           innerExpr,
           escapeId,
@@ -112,7 +105,9 @@ const searchToWhereExpression = (
 
     if (operatorName === '$not') {
       const whereExpr = searchToWhereExpression(
-        expression[operatorName],
+        (expression as 
+          ObjectFixedUnionToIntersectionByKeys<Exclude<typeof expression, JsonPrimitive>, typeof operatorName>
+          )[operatorName],
         escapeId,
         escapeStr,
         makeNestedPath

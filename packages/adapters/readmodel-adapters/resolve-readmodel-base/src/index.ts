@@ -4,6 +4,7 @@ import wrapConnect from './wrap-connect'
 import wrapDisconnect from './wrap-disconnect'
 import wrapDispose from './wrap-dispose'
 import wrapOperation from './wrap-operation'
+export * from './types'
 
 export default createAdapter.bind(null, {
   withPerformanceTracer,
