@@ -27,8 +27,8 @@ import init from './init'
 import dispose from './dispose'
 import drop from './drop'
 
-import { Adapter } from 'resolve-eventstore-base'
-import { ConnectionDependencies, MysqlAdapterConfig } from './types'
+import type { Adapter } from 'resolve-eventstore-base'
+import type { ConnectionDependencies, MysqlAdapterConfig } from './types'
 
 const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {
   return createAdapter(

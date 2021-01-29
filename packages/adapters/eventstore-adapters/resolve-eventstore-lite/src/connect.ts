@@ -1,5 +1,5 @@
 import getLog from './get-log'
-import {
+import type {
   AdapterPoolPrimal,
   ConnectionDependencies,
   SqliteAdapterPoolConnectedProps,

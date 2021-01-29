@@ -35,13 +35,13 @@ import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
 
-import {
+import type {
   CloudResource,
   CloudResourcePool,
   ConnectionDependencies,
   PostgresqlAdapterConfig,
 } from './types'
-import { Adapter } from 'resolve-eventstore-base'
+import type { Adapter } from 'resolve-eventstore-base'
 
 const createPostgresqlServerlessAdapter = (
   options: PostgresqlAdapterConfig

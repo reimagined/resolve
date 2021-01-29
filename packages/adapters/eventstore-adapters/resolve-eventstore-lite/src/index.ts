@@ -27,8 +27,8 @@ import setSecret from './set-secret'
 import shapeEvent from './shape-event'
 import unfreeze from './unfreeze'
 
-import { Adapter } from 'resolve-eventstore-base'
-import { ConnectionDependencies, SqliteAdapterConfig } from './types'
+import type { Adapter } from 'resolve-eventstore-base'
+import type { ConnectionDependencies, SqliteAdapterConfig } from './types'
 
 const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
   return createAdapter(

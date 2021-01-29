@@ -30,8 +30,8 @@ import init from './init'
 import drop from './drop'
 import dispose from './dispose'
 
-import { Adapter } from 'resolve-eventstore-base'
-import { ConnectionDependencies, PostgresqlAdapterConfig } from './types'
+import type { Adapter } from 'resolve-eventstore-base'
+import type { ConnectionDependencies, PostgresqlAdapterConfig } from './types'
 
 const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
   return createAdapter(
