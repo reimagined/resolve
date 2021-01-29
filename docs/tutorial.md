@@ -55,7 +55,7 @@ $ yarn run dev
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-1)
 
-This lesson describes how to implement a basic write side for a reSolve application. An application's [write side](resolve-app-structure.md#write-and-read-sides) handles commands, performs input validation, and emits **events** based on valid commands. The framework then saves the emitted events to the **event store**.
+This lesson describes how to implement a write side for a reSolve application. An application's [write side](resolve-app-structure.md#write-and-read-sides) handles commands, validates input data, and emits **events** based on valid commands. The framework then saves the emitted events to the **event store**.
 
 ### Create an Aggregate
 
@@ -69,7 +69,7 @@ export const SHOPPING_LIST_CREATED = 'SHOPPING_LIST_CREATED' // Indicates the cr
 export const SHOPPING_ITEM_CREATED = 'SHOPPING_ITEM_CREATED' // Indicates the creation of an item within a shopping list
 ```
 
-Next, define an aggregate that handles commands and produces the defined events as the result. Create a **shopping_list.commands.js** file in the **common/aggregates** and add the following code to it:
+Next, define an aggregate that handles commands and produces the defined events as a result. Create a **shopping_list.commands.js** file in the **common/aggregates** folder and add the following code to it:
 
 **common/aggregates/shopping_list.commands.js**
 
@@ -102,7 +102,7 @@ A command handler returns an **event** object. This object should contain the fo
 - **type** - specifies the event's type;
 - **payload** - specifies data associated with the event.
 
-The reSolve framework saves produced events to a persistent **[event store](write-side.md#event-store)**. A newly created application is configured to use a SQLite event store. We suggest that you keep this configuration throughout the tutorial. For information on how to use other storage types see the following documentation topics:
+The reSolve framework saves produced events to a persistent **[event store](write-side.md#event-store)**. A newly created application is configured to use a SQLite event store. We suggest that you keep this configuration throughout the tutorial. For information on how to use other storage types, see the following documentation topics:
 
 - [Adapters](https://github.com/reimagined/resolve/blob/master/docs/advanced-techniques.md#adapters)
 - [Configuring Adapters](https://github.com/reimagined/resolve/blob/master/docs/preparing-to-production.md#configuring-adapters)
@@ -126,9 +126,9 @@ aggregates: [
 
 ### Sending Commands to an Aggregate
 
-Now that your application can handle commands, you can use the reSolve framework's HTTP API to send such commands to create shopping lists and populate them with items.
+Now that your application can handle commands, you can use the reSolve framework's HTTP API to create shopping lists and populate them with items.
 
-A request body should have the `application/json` content type and contain a JSON representation of the command:
+A request's body should have the `application/json` content type and contain a JSON representation of a command:
 
 ```
 {
@@ -149,7 +149,7 @@ Run your application and send a POST request to the following URL:
 http://127.0.0.1:3000/api/commands
 ```
 
-You can use any REST client or **curl** to do this. For example, use the following inputs to create a shopping list:
+You can use any REST client or **curl** to do this. For example, use the following console input to create a shopping list:
 
 ```sh
 curl -i http://localhost:3000/api/commands/ \
@@ -182,7 +182,7 @@ Content-Length: 169
 }
 ```
 
-Use the inputs shown below to add an item to the created shopping list:
+Use the console input shown below to add an item to the created shopping list:
 
 ```sh
 curl -i http://localhost:3000/api/commands/ \
@@ -217,7 +217,7 @@ Content-Length: 182
 }
 ```
 
-You can now check the event store database to see the newly created events. To do this, use the [Command Line Shell For SQLite](https://sqlite.org/cli.html) database management tool compatible with SQLite:
+You can now check the event store database to see the newly created events. To do this, use the [Command Line Shell For SQLite](https://sqlite.org/cli.html) or any database management tool compatible with SQLite:
 
 <!-- prettier-ignore-start -->
 
@@ -230,11 +230,11 @@ sqlite> select * from events;
 
 <!-- prettier-ignore-end -->
 
-### Performing Validation
+### Input Validation
 
-Your application's write side currently does not perform any input validation. This results in the following issues:
+Your application's write side currently does not validate input data. This results in the following issues:
 
-- The command handlers do not check whether all required fields are provided in a command's payload.
+- The command handlers do not check whether all required fields are in a command's payload.
 - It is possible to create more then one shopping list with the same aggregate ID.
 - You can create items in a nonexistent shopping list.
 
@@ -254,7 +254,7 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 }
 ```
 
-To overcome the second and third issues, you need to have an **aggregate state** object that keeps track of what shopping lists were already created. Such object can be assembled on the fly by an aggregate **projection** from previously created events with the same aggregate ID. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
+To overcome the second and third issues, you need to have an **aggregate state** object that keeps track of what shopping lists were already created. An aggregate **projection** can assemble such an object from previously created events with the same aggregate ID. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code to this file:
 
 **common/aggregates/shopping_list.projection.js**
 
@@ -269,7 +269,7 @@ export default {
   Init: () => ({}),
   // A projection function updates the state based on events.
   // Each such function is assotiated with a single event type.
-  // It recieves the state and an event and returns the updated state.
+  // A projection function recieves the state and an event and returns the updated state.
   [SHOPPING_LIST_CREATED]: (state, { timestamp }) => ({
     ...state,
     createdAt: timestamp  // Add an event's timestamp to the state.
@@ -279,7 +279,7 @@ export default {
 
 <!-- prettier-ignore-end -->
 
-Register the create projection in the application's configuration file:
+Register the projection in the application's configuration file:
 
 **config.app.js**
 
@@ -299,7 +299,7 @@ Register the create projection in the application's configuration file:
 
 <!-- prettier-ignore-end -->
 
-The state assembled by a projection the write side to find out whether and when a shopping list was created for the current aggregate instance (an instance that the current aggregate ID identifies).
+You can use the state assembled by a projection on the write side to find out whether and when a shopping list was created for the current aggregate instance (an instance that the current aggregate ID identifies).
 
 **common/aggregates/shopping_list.commands.js**
 
@@ -341,7 +341,7 @@ Content-Length: 31
 Command error: name is required
 
 
-# When you create a shopping list that already exists
+# Trying to create a shopping list that already exists
 $ curl -i http://localhost:3000/api/commands/ \
 > --header "Content-Type: application/json" \
 > --data '
@@ -365,7 +365,7 @@ Content-Length: 43
 Command error: the shopping list already exists
 
 
-# Trying to add an item to an inexistent shopping list
+# Trying to add an item to a nonexistent shopping list
 $ curl -i http://localhost:3000/api/commands/ \
 > --header "Content-Type: application/json" \
 > --data '
