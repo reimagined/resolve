@@ -6,7 +6,7 @@ import type { CloudResourceOptions } from 'resolve-eventstore-postgresql-serverl
 
 jest.setTimeout(1000 * 60 * 5)
 
-test('Postgres-serverless eventstore adapter should be able to save and load an event', async () => {
+test.skip('Postgres-serverless eventstore adapter should be able to save and load an event', async () => {
   AWS.config.update({
     credentials: {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
