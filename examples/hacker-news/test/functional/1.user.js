@@ -31,7 +31,9 @@ fixture`User`.beforeEach(async (t /*: TestController */) => {
 test('create', async (t /*: TestController */) => {
   await t.expect(await Selector('a').withText('login').exists).eql(true)
 
-  await t.typeText(await Selector('input[type=text]').nth(2), '123')
+  await t.typeText(await Selector('input[type=text]').nth(2), '123', {
+    paste: true,
+  })
   await t.click(await Selector('input[type=submit]').nth(1))
 
   await waitSelector(t, 'HackerNews', Selector('a').withText('123'))
@@ -54,7 +56,9 @@ test('login', async (t /*: TestController */) => {
 })
 
 test('create: User cannot be created', async (t /*: TestController */) => {
-  await t.typeText(await Selector('input[type=text]').nth(2), '123')
+  await t.typeText(await Selector('input[type=text]').nth(2), '123', {
+    paste: true,
+  })
   await t.click(await Selector('input[type=submit]').nth(1))
 
   await waitSelector(t, 'HackerNews', Selector('a').withText('login'))
