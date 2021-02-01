@@ -2,8 +2,7 @@ import type {
   ObjectFixedUnionToIntersectionByKeys,
   SearchToWhereExpressionMethod, 
   ObjectDictionaryKeys, 
-  ObjectFixedKeys, 
-  JsonPrimitive
+  ObjectFixedKeys
 } from './types'
 
 const compareOperators = {
@@ -55,9 +54,9 @@ const searchToWhereExpression : SearchToWhereExpressionMethod = (
       let fieldOperator: keyof typeof compareOperators = '$eq'
 
       if (fieldValue instanceof Object) {
-        fieldOperator = (Object.keys(fieldValue) as Array<ObjectFixedKeys<Exclude<typeof fieldValue, JsonPrimitive>>>)[0]        
+        fieldOperator = (Object.keys(fieldValue) as Array<ObjectFixedKeys<typeof fieldValue>>)[0]        
         fieldValue = (fieldValue as 
-          ObjectFixedUnionToIntersectionByKeys<Exclude<typeof fieldValue, JsonPrimitive>, typeof fieldOperator>
+          ObjectFixedUnionToIntersectionByKeys<typeof fieldValue, typeof fieldOperator>
           )[fieldOperator]
       }
 
@@ -81,7 +80,7 @@ const searchToWhereExpression : SearchToWhereExpressionMethod = (
     if (operatorName === '$and' || operatorName === '$or') {
       const localSearchExprArray: Array<string> = []
       for (let innerExpr of (expression as 
-        ObjectFixedUnionToIntersectionByKeys<Exclude<typeof expression, JsonPrimitive>, typeof operatorName>
+        ObjectFixedUnionToIntersectionByKeys<typeof expression, typeof operatorName>
         )[operatorName]) {
         const whereExpr = searchToWhereExpression(
           innerExpr,
@@ -106,7 +105,7 @@ const searchToWhereExpression : SearchToWhereExpressionMethod = (
     if (operatorName === '$not') {
       const whereExpr = searchToWhereExpression(
         (expression as 
-          ObjectFixedUnionToIntersectionByKeys<Exclude<typeof expression, JsonPrimitive>, typeof operatorName>
+          ObjectFixedUnionToIntersectionByKeys<typeof expression, typeof operatorName>
           )[operatorName],
         escapeId,
         escapeStr,

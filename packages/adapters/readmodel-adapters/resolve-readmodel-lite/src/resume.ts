@@ -1,4 +1,6 @@
-const resume = async (pool, readModelName, next) => {
+import type { ExternalMethods } from './types'
+
+const resume: ExternalMethods["resume"] = async (pool, readModelName, next) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,

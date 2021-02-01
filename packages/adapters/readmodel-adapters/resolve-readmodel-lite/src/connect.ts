@@ -1,7 +1,16 @@
-import type { CommonRunQueryMethodUnpromiseResult, CommonRunQueryMethod } from './types'
+import type {
+  CommonRunQueryMethodUnpromiseResult,
+  CommonRunQueryMethod,
+  InlineLedgerRunQueryMethod,
+  RunQueryMethod,
+  MakeNestedPathMethod,
+  EscapeableMethod,
+  CurrentConnectMethod
+} from './types'
 
-export const escapeId = (str: string) => `"${String(str).replace(/(["])/gi, '$1$1')}"`
-export const escapeStr = (str: string) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
+export const escapeId: EscapeableMethod = (str) => `"${String(str).replace(/(["])/gi, '$1$1')}"`
+export const escapeStr: EscapeableMethod = (str) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
+
 const coerceEmptyString = (obj: any) =>
   (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
 const emptyTransformer = Function('') // eslint-disable-line no-new-func
@@ -9,7 +18,7 @@ const SQLITE_BUSY = 'SQLITE_BUSY'
 
 const randRange = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min
-const fullJitter = (retries: number) =>
+const fullJitter = (retries: number): Promise<void> =>
   new Promise((resolve) =>
     setTimeout(resolve, randRange(0, Math.min(500, 2 * 2 ** retries)))
   )
@@ -52,7 +61,7 @@ const commonRunQuery: CommonRunQueryMethod = async <T extends Parameters<CommonR
   return transformer(result) as CommonRunQueryMethodUnpromiseResult<T>
 }
 
-const makeNestedPath = (nestedPath) => {
+const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
   let result = '$'
   for (const part of nestedPath) {
     if (part == null || part.constructor !== String) {
@@ -72,7 +81,7 @@ const makeNestedPath = (nestedPath) => {
   return result
 }
 
-const connect = async (
+const connect: CurrentConnectMethod = async (
   imports,
   pool,
   options
@@ -87,8 +96,8 @@ const connect = async (
   databaseFile = coerceEmptyString(databaseFile)
 
   Object.assign(pool, {
-    inlineLedgerRunQuery: commonRunQuery.bind(null, pool, true),
-    runQuery: commonRunQuery.bind(null, pool, false),
+    inlineLedgerRunQuery: commonRunQuery.bind(null, pool, true) as InlineLedgerRunQueryMethod,
+    runQuery: commonRunQuery.bind(null, pool, false) as RunQueryMethod,
     fullJitter,
     connectionOptions,
     performanceTracer,
@@ -163,21 +172,17 @@ const connect = async (
     };
   `
 
-  if (!preferEventBusLedger) {
-    while (true) {
-      try {
-        await pool.inlineLedgerRunQuery(configureSql, true)
-        break
-      } catch (error) {
-        if (!(error instanceof pool.PassthroughError)) {
-          throw error
-        }
-
-        await fullJitter(0)
+  while (true) {
+    try {
+      await pool.inlineLedgerRunQuery(configureSql, true)
+      break
+    } catch (error) {
+      if (!(error instanceof pool.PassthroughError)) {
+        throw error
       }
+
+      await fullJitter(0)
     }
-  } else {
-    await pool.runQuery(configureSql, true)
   }
 }
 

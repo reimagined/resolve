@@ -1,4 +1,7 @@
-const status = async (pool, readModelName) => {
+import { ReadModelRunStatus } from 'resolve-readmodel-base'
+import type { ExternalMethods, ReadModelStatus } from './types'
+
+const status: ExternalMethods["status"] = async (pool, readModelName) => {
   const {
     PassthroughError,
     fullJitter,
@@ -15,10 +18,17 @@ const status = async (pool, readModelName) => {
         `SELECT * FROM ${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         `
-      )
+      ) as Array<{
+        Properties: string | null,
+        SuccessEvent: string | null,
+        FailedEvent: string | null,
+        Errors: string | null,
+        Cursor: string | null,
+        IsPaused: boolean | null
+      }>
 
       if (rows.length === 1) {
-        const result = {
+        const result: ReadModelStatus = {
           eventSubscriber: readModelName,
           properties:
             rows[0].Properties != null ? JSON.parse(rows[0].Properties) : null,
@@ -33,13 +43,13 @@ const status = async (pool, readModelName) => {
               : null,
           errors: rows[0].Errors != null ? JSON.parse(rows[0].Errors) : null,
           cursor: rows[0].Cursor != null ? JSON.parse(rows[0].Cursor) : null,
-          status: 'deliver',
+          status: ReadModelRunStatus.DELIVER,
         }
 
         if (result.errors != null) {
-          result.status = 'error'
+          result.status = ReadModelRunStatus.ERROR
         } else if (rows[0].IsPaused) {
-          result.status = 'skip'
+          result.status = ReadModelRunStatus.SKIP
         }
 
         return result

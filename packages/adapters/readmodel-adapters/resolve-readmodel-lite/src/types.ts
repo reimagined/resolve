@@ -2,19 +2,22 @@ import type {
     CommonAdapterPool,
     CommonAdapterOptions,
     AdapterOperations,
-    ConnectMethod,
-    DisconnectMethod,
+    AdapterConnection,
+    AdapterImplementation,
     StoreApi,
     PerformanceTracerLike,
     ObjectFixedUnionToIntersectionByKeys,
     ObjectDictionaryKeys,
     ObjectFixedKeys,
     ProjectionMethod,
+    ReadModelRunStatus,
+    ReadModelStatus,
     FunctionLike,
     JsonPrimitive,
     JsonArray,
     JsonMap,
     SearchCondition,
+    UpdateCondition,
     JsonLike,
     IfEquals,
     IsTypeLike
@@ -28,19 +31,22 @@ export {
     CommonAdapterPool,
     CommonAdapterOptions,
     AdapterOperations,
-    ConnectMethod,
-    DisconnectMethod,
+    AdapterConnection,
+    AdapterImplementation,
     StoreApi,
     PerformanceTracerLike,
     ObjectFixedUnionToIntersectionByKeys,
     ObjectDictionaryKeys,
     ObjectFixedKeys,
     ProjectionMethod,
+    ReadModelRunStatus,
+    ReadModelStatus,
     FunctionLike,
     JsonPrimitive,
     JsonArray,
     JsonMap,
     SearchCondition,
+    UpdateCondition,
     JsonLike,
     IfEquals,
     IsTypeLike
@@ -53,19 +59,24 @@ export type TmpLib = {
     }
 }
 
+export type MemoryStore = {
+  name: string,
+  drop: () => {}
+}
+
 export type LibDependencies = {
     SQLite: typeof SQLiteLib,
     tmp: TmpLib,
     os: typeof OsLib,
     fs: typeof FsLib,
-    memoryStore: any
+    memoryStore: MemoryStore
   }
 
 
-export type CommonRunQueryMethodUnpromiseResult<T> = IfEquals<(IsTypeLike<T, false>), unknown, Array<object>, (IfEquals<(IsTypeLike<T, true>), unknown, null, never>) >
+export type CommonRunQueryMethodUnpromiseResult<T> = IfEquals<(IsTypeLike<T, false>), unknown, Array<object>, (IfEquals<(IsTypeLike<T, true>), unknown, null, (IfEquals<(IsTypeLike<T, boolean>), unknown, Array<object>, never>)>) >
 export type CommonRunQueryMethodArgs<T, F extends boolean> = F extends true
-  ? [pool: AdapterPool, isInlineLedger: boolean, sqlQuery: string, multiLine: T, passthroughRuntimeErrors: boolean]
-  : [sqlQuery: string, multiLine: T, passthroughRuntimeErrors: boolean]
+  ? [pool: AdapterPool, isInlineLedger: boolean, sqlQuery: string, multiLine?: T, passthroughRuntimeErrors?: boolean]
+  : [sqlQuery: string, multiLine?: T, passthroughRuntimeErrors?: boolean]
 
 
 export type CommonRunQueryMethod = <T extends (true|false)>(...args: CommonRunQueryMethodArgs<T, true>) => Promise<CommonRunQueryMethodUnpromiseResult<T>>
@@ -99,16 +110,47 @@ export type SearchToWhereExpressionMethod = (
 ) => string
 
 
-export type UpdateToSetExpressionMethod = any
-export type PassthroughError = any
-export type GenerateGuidMethod = any
+export type UpdateToSetExpressionMethod  = (
+    expression: UpdateCondition,
+    escapeId: EscapeableMethod,
+    escapeStr: EscapeableMethod,
+    makeNestedPath: MakeNestedPathMethod
+  ) => Array<string>
+  
 
-type AdapterOptions = CommonAdapterOptions & {
+export interface PassthroughErrorInstance extends Error {
+  isRuntimeError: boolean
+  name: string
+}
+
+export type PassthroughErrorFactory = {
+  new (isRuntimeError: boolean): PassthroughErrorInstance
+} & {
+  isPassthroughError: (error: any, includeRuntimeErrors: boolean) => boolean
+}
+
+export type GenerateGuidMethod = (...args: any) => string
+
+export type DropReadModelMethod = (pool: AdapterPool, readModelName: string) => Promise<void>
+
+export type AdapterOptions = CommonAdapterOptions & {
     tablePrefix: string
     databaseFile: string
 }
 
+export type InternalMethods = {
+  buildUpsertDocument: BuildUpsertDocumentMethod,
+  convertBinaryRow: ConvertBinaryRowMethod,
+  searchToWhereExpression: SearchToWhereExpressionMethod,
+  updateToSetExpression: UpdateToSetExpressionMethod,
+  PassthroughError: PassthroughErrorFactory,
+  generateGuid: GenerateGuidMethod,
+  dropReadModel: DropReadModelMethod
+}
+
+
 export type AdapterPool = CommonAdapterPool & {
+    memoryStore: MemoryStore,
     inlineLedgerRunQuery: InlineLedgerRunQueryMethod,
     runQuery: RunQueryMethod,
     fullJitter: FullJitterMethod,
@@ -119,25 +161,35 @@ export type AdapterPool = CommonAdapterPool & {
     makeNestedPath: MakeNestedPathMethod,
     escapeId: EscapeableMethod,
     escapeStr: EscapeableMethod,
-    buildUpsertDocument: BuildUpsertDocumentMethod,
-    convertBinaryRow: ConvertBinaryRowMethod,
-    searchToWhereExpression: SearchToWhereExpressionMethod,
-    updateToSetExpression: UpdateToSetExpressionMethod,
-    PassthroughError: PassthroughError,
-    generateGuid: GenerateGuidMethod,
+    connectionUri: string,
     connection: any
-
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<AdapterPool>[K]
 } & {
     [K in keyof StoreApi<CommonAdapterPool>]: StoreApi<AdapterPool>[K]
-}
+} &
+InternalMethods
+
+export type CurrentAdapterConnection = AdapterConnection<AdapterPool, AdapterOptions>
 
 export type ExternalMethods = {
-    [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterPool[K]
+  [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterPool[K]
 }
 
 export type CurrentStoreApi = {
-    [K in keyof StoreApi<CommonAdapterPool>]: AdapterPool[K]
+  [K in keyof StoreApi<CommonAdapterPool>]: AdapterPool[K]
 }
+
+export type ConnectionDependencies = LibDependencies &
+  InternalMethods &
+  ExternalMethods &
+  CurrentStoreApi
+
+export type CurrentConnectMethod = (imports: ConnectionDependencies,
+  ...args: Parameters<CurrentAdapterConnection["connect"]>) =>
+   ReturnType<CurrentAdapterConnection["connect"]>
+
+export type CurrentDisconnectMethod = CurrentAdapterConnection["disconnect"]
+  
+export type CurrentAdapterImplementation = AdapterImplementation<AdapterPool, AdapterOptions>
 

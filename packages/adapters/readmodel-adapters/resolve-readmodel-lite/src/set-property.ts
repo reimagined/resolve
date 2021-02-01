@@ -1,4 +1,6 @@
-const setProperty = async (pool, readModelName, key, value) => {
+import type { ExternalMethods } from './types'
+
+const setProperty: ExternalMethods["setProperty"] = async (pool, readModelName, key, value) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,

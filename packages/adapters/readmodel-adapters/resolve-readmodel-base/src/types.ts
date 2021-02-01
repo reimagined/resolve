@@ -49,6 +49,21 @@ export type SearchCondition =
         $gt: JsonPrimitive
       }
     }
+
+export type UpdateCondition = {
+    $set: {
+      [member: string]: JsonMap | JsonArray | JsonPrimitive
+    }
+  } | {
+    $unset: {
+      [member: string]: true
+    }
+  } | {
+    $inc: {
+      [member: string]: number | string
+    }
+  }
+
     
 export type ResolveStore = {
   defineTable: (
@@ -87,22 +102,7 @@ export type ResolveStore = {
   update: (
     tableName: string,
     searchCondition: SearchCondition,
-    updateCondition:
-      | {
-          $set: {
-            [member: string]: JsonMap | JsonArray | JsonPrimitive
-          }
-        }
-      | {
-          $unset: {
-            [member: string]: true
-          }
-        }
-      | {
-          $inc: {
-            [member: string]: number | string
-          }
-        },
+    updateCondition: UpdateCondition,
     updateOptions?: {
       upsert?: boolean
     }

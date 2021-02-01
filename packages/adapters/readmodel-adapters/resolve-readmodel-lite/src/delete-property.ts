@@ -1,4 +1,6 @@
-const deleteProperty = async (pool, readModelName, key) => {
+import type { ExternalMethods } from './types'
+
+const deleteProperty: ExternalMethods["deleteProperty"] = async (pool, readModelName, key) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,

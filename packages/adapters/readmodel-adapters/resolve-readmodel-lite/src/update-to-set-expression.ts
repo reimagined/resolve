@@ -1,14 +1,17 @@
-const updateToSetExpression = (
+import type { ObjectFixedUnionToIntersectionByKeys, UpdateToSetExpressionMethod, ObjectFixedKeys } from './types'
+
+const updateToSetExpression: UpdateToSetExpressionMethod = (
   expression,
   escapeId,
   escapeStr,
   makeNestedPath
 ) => {
-  const updateExprArray = []
+  const updateExprArray: Array<string> = []
 
-  for (let operatorName of Object.keys(expression)) {
-    for (let fieldName of Object.keys(expression[operatorName])) {
-      const fieldValue = expression[operatorName][fieldName]
+  for (let operatorName of Object.keys(expression) as Array<ObjectFixedKeys<typeof expression>>) {
+    const extractedExpression = (expression as ObjectFixedUnionToIntersectionByKeys<typeof expression, typeof operatorName> )[operatorName]
+    for (let fieldName of Object.keys(extractedExpression)) {
+      const fieldValue = extractedExpression[fieldName]
       const [baseName, ...nestedPath] = fieldName.split('.')
 
       switch (operatorName) {
@@ -63,34 +66,38 @@ const updateToSetExpression = (
 
           const targetInlinedPostfix = nestedPath.length > 0 ? ')' : ''
 
+          const fieldValueNumberLike = +(fieldValue as number)
+          const fieldValueIsInteger = Number.isInteger(fieldValueNumberLike)
+          const fieldValueStringLike = escapeStr(`${fieldValue}`)
+
           let updatingInlinedValue = `json(CAST(CASE
             WHEN json_type(${sourceInlinedValue}) = 'text' THEN (
               CAST(${sourceInlinedValue} AS TEXT) ||
-              CAST(${escapeStr(fieldValue)} AS TEXT)
+              CAST(${fieldValueStringLike} AS TEXT)
             )
             WHEN (json_type(${sourceInlinedValue}) || ${
-            Number.isInteger(+fieldValue) ? `'-integer'` : `'-real'`
+            fieldValueIsInteger ? `'-integer'` : `'-real'`
           }) = 'integer-integer' THEN (
               CAST(${sourceInlinedValue} AS INTEGER) +
-              CAST(${+fieldValue} AS INTEGER)
+              CAST(${fieldValueNumberLike} AS INTEGER)
             )
             WHEN (json_type(${sourceInlinedValue}) || ${
-            Number.isInteger(+fieldValue) ? `'-integer'` : `'-real'`
+            fieldValueIsInteger ? `'-integer'` : `'-real'`
           }) = 'integer-real' THEN (
               CAST(${sourceInlinedValue} AS REAL) +
-              CAST(${+fieldValue} AS REAL)
+              CAST(${fieldValueNumberLike} AS REAL)
             )
             WHEN (json_type(${sourceInlinedValue}) || ${
-            Number.isInteger(+fieldValue) ? `'-integer'` : `'-real'`
+            fieldValueIsInteger ? `'-integer'` : `'-real'`
           }) = 'real-integer' THEN (
               CAST(${sourceInlinedValue} AS REAL) +
-              CAST(${+fieldValue} AS REAL)
+              CAST(${fieldValueNumberLike} AS REAL)
             )
             WHEN (json_type(${sourceInlinedValue}) || ${
-            Number.isInteger(+fieldValue) ? `'-integer'` : `'-real'`
+            fieldValueIsInteger ? `'-integer'` : `'-real'`
           }) = 'real-real' THEN (
               CAST(${sourceInlinedValue} AS REAL) +
-              CAST(${+fieldValue} AS REAL)
+              CAST(${fieldValueNumberLike} AS REAL)
             )
 
             ELSE (

@@ -4,6 +4,17 @@ import tmp from 'tmp'
 import os from 'os'
 import fs from 'fs'
 
+import type {
+  CurrentAdapterImplementation,
+  InternalMethods,
+  ExternalMethods,
+  CurrentStoreApi,
+  AdapterPool,
+  AdapterOptions,
+  MemoryStore,
+
+} from './types'
+
 import buildUpsertDocument from './build-upsert-document'
 import _connect from './connect'
 import convertBinaryRow from './convert-binary-row'
@@ -35,8 +46,8 @@ import resume from './resume'
 import status from './status'
 import build from './build'
 
-const memoryStore = {}
-const store = {
+const memoryStore: MemoryStore = {} as MemoryStore
+const store: CurrentStoreApi = {
   defineTable,
   find,
   findOne,
@@ -46,17 +57,17 @@ const store = {
   delete: del,
 }
 
-const internalMethods = {
+const internalMethods: InternalMethods = {
   buildUpsertDocument,
   convertBinaryRow,
   searchToWhereExpression,
   updateToSetExpression,
   PassthroughError,
   generateGuid,
+  dropReadModel
 }
 
-const externalMethods = {
-  dropReadModel,
+const externalMethods: ExternalMethods = {
   subscribe,
   resubscribe,
   unsubscribe,
@@ -82,11 +93,15 @@ const connect = _connect.bind(null, {
   ...store,
 })
 
-const createAdapter = _createAdapter.bind(null, {
+const implementation : CurrentAdapterImplementation = {
   ...store,
   ...externalMethods,
   connect,
   disconnect,
-})
+}
+
+const adapter = _createAdapter<AdapterPool, AdapterOptions>(implementation, null! as any)
+
+const createAdapter = _createAdapter.bind(null, implementation)
 
 export default createAdapter
