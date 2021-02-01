@@ -15,13 +15,6 @@ import { LeveledDebugger } from 'resolve-debug-levels'
 // eslint-disable-next-line no-new-func
 const idempotentFunction = Function('obj', 'return obj') as <T>(t: T) => T
 
-const coerceEmptyString = (obj: any, fallback?: string): string =>
-  (obj != null && obj.constructor !== String) || obj == null
-    ? fallback != null && fallback.constructor === String
-      ? fallback
-      : 'default'
-    : obj
-
 const getSecretsManager = <ConnectedProps extends AdapterPoolConnectedProps>(
   pool: AdapterPoolConnected<ConnectedProps>
 ): SecretsManager => {
@@ -97,7 +90,6 @@ const createAdapter = <
     validateEventFilter,
     isInitialized: false,
     maybeThrowResourceError,
-    coerceEmptyString,
     bucketSize,
     getNextCursor: getNextCursor.bind(null),
     counters: new Map(),

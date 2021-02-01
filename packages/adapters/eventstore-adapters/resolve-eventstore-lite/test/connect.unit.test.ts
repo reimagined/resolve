@@ -14,7 +14,6 @@ let config: SqliteAdapterConfig
 
 beforeEach(() => {
   pool = {
-    coerceEmptyString: ((e: any) => e) as any,
     shapeEvent: ((e: any) => e) as any,
   } as any
   connectionDependencies = {

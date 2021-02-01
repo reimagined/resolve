@@ -20,8 +20,8 @@ export type EventsWithCursor = {
 }
 
 type EventFilterCommon = {
-  eventTypes: Array<string> | null
-  aggregateIds: Array<string> | null
+  eventTypes?: Array<string> | null
+  aggregateIds?: Array<string> | null
   limit: number
   eventsSizeLimit?: number
 }
@@ -72,7 +72,6 @@ export type AdapterPoolPrimalProps = {
   connectPromise?: Promise<any>
 
   maybeThrowResourceError: CheckForResourceError
-  coerceEmptyString: (obj: any, fallback?: string) => string
   bucketSize: number
   counters: Map<string, number>
 

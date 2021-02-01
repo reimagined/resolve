@@ -31,10 +31,9 @@ const connect = async (
     ...connectionOptions
   } = config
 
-  eventsTableName = pool.coerceEmptyString(eventsTableName, 'events')
-  snapshotsTableName = pool.coerceEmptyString(snapshotsTableName, 'snapshots')
-  secretsTableName = pool.coerceEmptyString(secretsTableName, 'default')
-  databaseName = pool.coerceEmptyString(databaseName)
+  eventsTableName = eventsTableName ?? 'events'
+  snapshotsTableName = snapshotsTableName ?? 'snapshots'
+  secretsTableName = secretsTableName ?? 'secrets'
 
   Object.assign<
     AdapterPoolPrimal,

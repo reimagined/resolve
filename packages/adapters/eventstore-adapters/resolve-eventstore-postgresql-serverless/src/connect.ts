@@ -35,12 +35,9 @@ const connect = async (
     ...connectionOptions
   } = config
 
-  if (pool.coerceEmptyString !== undefined) {
-    eventsTableName = pool.coerceEmptyString(eventsTableName, 'events')
-    snapshotsTableName = pool.coerceEmptyString(snapshotsTableName, 'snapshots')
-    secretsTableName = pool.coerceEmptyString(secretsTableName, 'default')
-    databaseName = pool.coerceEmptyString(databaseName)
-  }
+  eventsTableName = eventsTableName ?? 'events'
+  snapshotsTableName = snapshotsTableName ?? 'snapshots'
+  secretsTableName = secretsTableName ?? 'secrets'
 
   const {
     dbClusterOrInstanceArn,

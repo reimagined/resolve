@@ -26,7 +26,7 @@ export type MysqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
 }
 
 export type MysqlAdapterConfig = AdapterConfig & {
-  database?: string
+  database: string
   eventsTableName?: string
   snapshotsTableName?: string
   secretsTableName?: string

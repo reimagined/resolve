@@ -55,7 +55,7 @@ export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
 export type PostgresqlAdapterConfig = AdapterConfig & {
   dbClusterOrInstanceArn: string
   awsSecretStoreArn: string
-  databaseName?: string
+  databaseName: string
   eventsTableName?: string
   secretsTableName?: string
   snapshotsTableName?: string
@@ -111,7 +111,6 @@ export type CloudResourceOptions = {
   secretsTableName: string
   snapshotsTableName: string
   userLogin: string
-  awsSecretStoreArn: string
   awsSecretStoreAdminArn: string
   dbClusterOrInstanceArn: string
 }

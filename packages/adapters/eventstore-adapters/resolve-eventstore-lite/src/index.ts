@@ -62,3 +62,4 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
 }
 
 export default createSqliteAdapter
+export type { SqliteAdapterConfig }

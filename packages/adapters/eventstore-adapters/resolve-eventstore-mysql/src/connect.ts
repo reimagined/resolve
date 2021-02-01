@@ -28,10 +28,9 @@ const connect = async (
     ...connectionOptions
   } = config
 
-  eventsTableName = pool.coerceEmptyString(eventsTableName, 'events')
-  snapshotsTableName = pool.coerceEmptyString(snapshotsTableName, 'snapshots')
-  secretsTableName = pool.coerceEmptyString(secretsTableName, 'default')
-  database = pool.coerceEmptyString(database)
+  eventsTableName = eventsTableName ?? 'events'
+  snapshotsTableName = snapshotsTableName ?? 'snapshots'
+  secretsTableName = secretsTableName ?? 'secrets'
 
   log.debug(`establishing connection`)
 

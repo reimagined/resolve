@@ -26,7 +26,6 @@ beforeEach(() => {
     mysqlRelatedOption: 'mysql-option',
   }
   pool = {
-    coerceEmptyString: jest.fn(),
     connection,
     escape: jest.fn(),
     escapeId: jest.fn(),

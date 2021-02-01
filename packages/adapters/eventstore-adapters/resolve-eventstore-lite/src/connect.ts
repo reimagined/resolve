@@ -31,19 +31,10 @@ const connect = async (
 
   log.debug(`connecting to events database`)
 
-  const databaseFile = pool.coerceEmptyString(config.databaseFile)
-  const eventsTableName = pool.coerceEmptyString(
-    config.eventsTableName,
-    'events'
-  )
-  const snapshotsTableName = pool.coerceEmptyString(
-    config.snapshotsTableName,
-    'snapshots'
-  )
-  const secretsTableName = pool.coerceEmptyString(
-    config.secretsTableName,
-    'default'
-  )
+  const databaseFile = config.databaseFile ?? ':memory:'
+  const eventsTableName = config.eventsTableName ?? 'events'
+  const snapshotsTableName = config.snapshotsTableName ?? 'snapshots'
+  const secretsTableName = config.secretsTableName ?? 'secrets'
 
   log.verbose(`databaseFile: ${databaseFile}`)
   log.verbose(`eventsTableName: ${eventsTableName}`)

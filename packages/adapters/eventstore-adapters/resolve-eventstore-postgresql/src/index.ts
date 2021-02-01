@@ -72,3 +72,4 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
 }
 
 export default createPostgresqlAdapter
+export type { PostgresqlAdapterConfig }

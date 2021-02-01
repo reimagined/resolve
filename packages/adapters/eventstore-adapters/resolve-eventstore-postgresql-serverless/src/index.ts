@@ -38,6 +38,7 @@ import _destroyResource from './resource/destroy'
 import type {
   CloudResource,
   CloudResourcePool,
+  CloudResourceOptions,
   ConnectionDependencies,
   PostgresqlAdapterConfig,
 } from './types'
@@ -115,3 +116,5 @@ export {
   disposeResource as dispose,
   destroyResource as destroy,
 }
+
+export type { PostgresqlAdapterConfig, CloudResourcePool, CloudResourceOptions }

@@ -62,3 +62,4 @@ const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {
 }
 
 export default createMysqlAdapter
+export type { MysqlAdapterConfig }

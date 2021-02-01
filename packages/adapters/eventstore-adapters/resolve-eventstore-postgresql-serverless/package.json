@@ -21,7 +21,7 @@
   "scripts": {
     "test": "jest --config=../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../jest.config.js --watchAll",
-    "build": "yarn workspace @internal/babel-compile start --name=resolve-eventstore-postgresql"
+    "build": "yarn workspace @internal/babel-compile start --name=resolve-eventstore-postgresql-serverless"
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
@@ -30,7 +30,8 @@
   },
   "devDependencies": {
     "jest": "26.0.1",
-    "resolve-core": "0.26.5"
+    "resolve-core": "0.26.5",
+    "ts-jest": "26.1.0"
   },
   "engines": {
     "node": ">=10.9"

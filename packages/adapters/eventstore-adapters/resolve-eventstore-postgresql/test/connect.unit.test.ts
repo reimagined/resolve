@@ -17,9 +17,7 @@ let connectionDependencies: ConnectionDependencies
 let config: PostgresqlAdapterConfig
 
 beforeEach(() => {
-  pool = {
-    coerceEmptyString: (obj: any, fallback?: string) => obj,
-  } as any
+  pool = {} as any
   connectionDependencies = {
     Postgres,
     coercer: jest.fn(),

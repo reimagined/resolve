@@ -23,7 +23,6 @@ beforeEach(() => {
     rdsRelatedOption: 'rds-option',
   }
   pool = {
-    coerceEmptyString: (obj: any, fallback?: string) => obj,
     beginTransaction: jest.fn(),
     coercer: jest.fn(),
     commitTransaction: jest.fn(),
@@ -65,7 +64,6 @@ test("cloud config assigned to adapter's pool", async () => {
     expect.objectContaining({
       awsSecretStoreArn: 'secret-store-arn',
       beginTransaction: pool.beginTransaction,
-      coerceEmptyString: pool.coerceEmptyString,
       coercer: pool.coercer,
       commitTransaction: pool.commitTransaction,
       databaseName: 'database',

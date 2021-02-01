@@ -40,7 +40,7 @@ export type PostgresqlAdapterConfig = AdapterConfig & {
   port?: number
   host?: string
   password?: string
-  databaseName?: string
+  databaseName: string
   eventsTableName?: string
   snapshotsTableName?: string
   secretsTableName?: string
