@@ -743,7 +743,7 @@ This lesson describes how you can use a View Model to obtain shopping list items
 
 A View Model is a reactive Read Model that is built on the fly for one or several aggregate IDs. A client can maintain a WebSocket connection with a resolve server to receive View Model data updates in real time.
 
-The downside is that View Models do not have persistent state and should be rebuilt on every query, so they better suited for small data samples.
+The downside is that View Models do not have persistent state and should be rebuilt on every query, so they are better suited for small data samples.
 
 ### Create a Shopping List View Model
 
