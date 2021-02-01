@@ -216,7 +216,7 @@ export interface AdapterFunctions<
 }
 
 export interface Adapter {
-  loadEvents: (filter: EventFilter) => Promise<any>
+  loadEvents: (filter: EventFilter) => Promise<EventsWithCursor>
   import: (options: any) => any
   export: (options: any) => any
   getLatestEvent: (filter: EventFilter) => Promise<any>
