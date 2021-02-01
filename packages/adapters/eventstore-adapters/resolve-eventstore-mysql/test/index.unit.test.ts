@@ -55,7 +55,9 @@ jest.mock('../src/get-secret', () => jest.fn())
 const mGenericCreateAdapter = mocked(genericCreateAdapter)
 
 test('generic createAdapter invoked', () => {
-  createAdapter({})
+  createAdapter({
+    database: 'database',
+  })
   expect(mGenericCreateAdapter).toHaveBeenCalledWith(
     {
       connect,
@@ -82,6 +84,6 @@ test('generic createAdapter invoked', () => {
       setSecret,
     },
     { MySQL, escapeId, escape },
-    {}
+    { database: 'database' }
   )
 })

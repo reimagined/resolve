@@ -84,7 +84,11 @@ const mDisposeResource = mocked(disposeResource)
 const mDestroyResource = mocked(destroyResource)
 
 test('generic createAdapter invoked', () => {
-  createAdapter({ dbClusterOrInstanceArn: '', awsSecretStoreArn: '' })
+  createAdapter({
+    dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
+    awsSecretStoreArn: 'awsSecretStoreArn',
+    databaseName: 'databaseName',
+  })
   expect(mGenericCreateAdapter).toHaveBeenCalledWith(
     {
       connect,
@@ -118,7 +122,11 @@ test('generic createAdapter invoked', () => {
       executeStatement,
       coercer,
     },
-    { dbClusterOrInstanceArn: '', awsSecretStoreArn: '' }
+    {
+      dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
+      awsSecretStoreArn: 'awsSecretStoreArn',
+      databaseName: 'databaseName',
+    }
   )
 })
 
@@ -141,7 +149,6 @@ describe('as cloud resource', () => {
     }
     options = {
       awsSecretStoreAdminArn: 'admin-arn',
-      awsSecretStoreArn: 'user-arn',
       databaseName: 'database',
       dbClusterOrInstanceArn: 'cluster-arn',
       region: 'region',

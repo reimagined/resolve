@@ -64,7 +64,9 @@ jest.mock('../src/push-incremental-import', () => jest.fn())
 const mGenericCreateAdapter = mocked(genericCreateAdapter)
 
 test('generic createAdapter invoked', () => {
-  createAdapter({})
+  createAdapter({
+    databaseName: 'databaseName',
+  })
   expect(mGenericCreateAdapter).toHaveBeenCalledWith(
     {
       connect,
@@ -98,6 +100,8 @@ test('generic createAdapter invoked', () => {
       executeStatement,
       coercer,
     },
-    {}
+    {
+      databaseName: 'databaseName',
+    }
   )
 })
