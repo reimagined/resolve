@@ -1,25 +1,30 @@
 import getLog from './get-log'
-import { AdapterPool, AdapterSpecific } from './types'
+import type {
+  PostgresqlAdapterPoolConnectedProps,
+  ConnectionDependencies,
+  AdapterPool,
+  AdapterPoolPrimal,
+  PostgresqlAdapterConfig,
+} from './types'
 import beginTransaction from './begin-transaction'
 import commitTransaction from './commit-transaction'
 import rollbackTransaction from './rollback-transaction'
 import isTimeoutError from './is-timeout-error'
 
 const connect = async (
-  pool: AdapterPool,
-  specific: AdapterSpecific
-): Promise<any> => {
-  const log = getLog('connect')
-  log.debug('configuring RDS data service client')
-
-  const {
+  pool: AdapterPoolPrimal,
+  {
     RDSDataService,
     escapeId,
     escape,
     fullJitter,
     executeStatement,
     coercer,
-  } = specific
+  }: ConnectionDependencies,
+  config: PostgresqlAdapterConfig
+): Promise<any> => {
+  const log = getLog('connect')
+  log.debug('configuring RDS data service client')
 
   let {
     databaseName,
@@ -28,12 +33,11 @@ const connect = async (
     secretsTableName,
     // eslint-disable-next-line prefer-const
     ...connectionOptions
-  } = pool.config
+  } = config
 
-  eventsTableName = pool.coerceEmptyString(eventsTableName, 'events')
-  snapshotsTableName = pool.coerceEmptyString(snapshotsTableName, 'snapshots')
-  secretsTableName = pool.coerceEmptyString(secretsTableName, 'default')
-  databaseName = pool.coerceEmptyString(databaseName)
+  eventsTableName = eventsTableName ?? 'events'
+  snapshotsTableName = snapshotsTableName ?? 'snapshots'
+  secretsTableName = secretsTableName ?? 'secrets'
 
   const {
     dbClusterOrInstanceArn,
@@ -49,7 +53,10 @@ const connect = async (
 
   const rdsDataService = new RDSDataService(rdsConfig)
 
-  Object.assign(pool, {
+  Object.assign<
+    AdapterPoolPrimal,
+    Partial<PostgresqlAdapterPoolConnectedProps>
+  >(pool, {
     rdsDataService,
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
@@ -59,7 +66,7 @@ const connect = async (
     snapshotsTableName,
     fullJitter,
     coercer,
-    executeStatement: executeStatement.bind(null, pool),
+    executeStatement: executeStatement.bind(null, pool as AdapterPool),
     beginTransaction,
     commitTransaction,
     rollbackTransaction,

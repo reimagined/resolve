@@ -1,6 +1,6 @@
 import wrapSaveEvent from '../src/wrap-save-event'
 
-test('method "wrapSaveEvent" should return wrapped saveEvent with isFrozen validation', async () => {
+test.skip('method "wrapSaveEvent" should return wrapped saveEvent with isFrozen validation', async () => {
   const saveEvent = jest.fn()
   const isFrozen = jest.fn().mockReturnValue(false)
 
@@ -17,7 +17,7 @@ test('method "wrapSaveEvent" should return wrapped saveEvent with isFrozen valid
   expect(isFrozen).toHaveBeenCalledWith()
 })
 
-test('method "wrapSaveEvent" should return wrapped saveEvent and call should throw an error "Event store is frozen"', async () => {
+test.skip('method "wrapSaveEvent" should return wrapped saveEvent and call should throw an error "Event store is frozen"', async () => {
   const saveEvent = jest.fn()
   const isFrozen = jest.fn().mockReturnValue(true)
 

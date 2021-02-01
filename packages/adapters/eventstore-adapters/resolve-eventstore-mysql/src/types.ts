@@ -1,3 +1,10 @@
+import type {
+  AdapterPoolConnectedProps,
+  AdapterPoolConnected,
+  AdapterPoolPossiblyUnconnected,
+  AdapterConfig,
+} from 'resolve-eventstore-base'
+
 export type MySQLConnection = {
   execute: (sql: string) => Promise<never>
   query: (sql: string) => Promise<Array<Array<any>>>
@@ -7,16 +14,7 @@ type MySQLLib = {
   createConnection: (options: any) => MySQLConnection
 }
 
-export type AdapterPool = {
-  config: {
-    database: string
-    eventsTableName: string
-    snapshotsTableName: string
-    secretsTableName?: string
-    snapshotBucketSize?: string
-  }
-  maybeThrowResourceError: (error: Error[]) => void
-  coerceEmptyString: (obj: any, fallback?: string) => string
+export type MysqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   connection: MySQLConnection
   eventsTableName: string
   snapshotsTableName: string
@@ -25,10 +23,22 @@ export type AdapterPool = {
   escapeId: (val: string) => string
   escape: (val: string) => string
   MySQL: MySQLLib
-  shapeEvent: (event: any) => any
 }
 
-export type AdapterSpecific = {
+export type MysqlAdapterConfig = AdapterConfig & {
+  database: string
+  eventsTableName?: string
+  snapshotsTableName?: string
+  secretsTableName?: string
+  [key: string]: any
+}
+
+export type AdapterPool = AdapterPoolConnected<MysqlAdapterPoolConnectedProps>
+export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
+  MysqlAdapterPoolConnectedProps
+>
+
+export type ConnectionDependencies = {
   MySQL: any
   escapeId: (val: string) => string
   escape: (val: string) => string

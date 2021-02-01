@@ -27,33 +27,39 @@ import setSecret from './set-secret'
 import shapeEvent from './shape-event'
 import unfreeze from './unfreeze'
 
-const wrappedCreateAdapter: (...args: any[]) => any = createAdapter.bind(null, {
-  beginIncrementalImport,
-  commitIncrementalImport,
-  connect,
-  deleteSecret,
-  dispose,
-  dropSnapshot,
-  drop,
-  freeze,
-  getLatestEvent,
-  getSecret,
-  init,
-  injectEvent,
-  loadEventsByCursor,
-  loadEventsByTimestamp,
-  loadSnapshot,
-  pushIncrementalImport,
-  rollbackIncrementalImport,
-  saveEvent,
-  saveSnapshot,
-  setSecret,
-  shapeEvent,
-  unfreeze,
-  sqlite,
-  tmp,
-  os,
-  fs,
-})
+import type { Adapter } from 'resolve-eventstore-base'
+import type { ConnectionDependencies, SqliteAdapterConfig } from './types'
 
-export default wrappedCreateAdapter
+const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
+  return createAdapter(
+    {
+      beginIncrementalImport,
+      commitIncrementalImport,
+      connect,
+      deleteSecret,
+      dispose,
+      dropSnapshot,
+      drop,
+      freeze,
+      getLatestEvent,
+      getSecret,
+      init,
+      injectEvent,
+      loadEventsByCursor,
+      loadEventsByTimestamp,
+      loadSnapshot,
+      pushIncrementalImport,
+      rollbackIncrementalImport,
+      saveEvent,
+      saveSnapshot,
+      setSecret,
+      shapeEvent,
+      unfreeze,
+    },
+    { sqlite, tmp, os, fs } as ConnectionDependencies,
+    options
+  )
+}
+
+export default createSqliteAdapter
+export type { SqliteAdapterConfig }

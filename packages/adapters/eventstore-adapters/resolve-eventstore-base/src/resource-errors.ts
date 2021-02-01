@@ -1,3 +1,5 @@
+import { CheckForResourceError } from './types'
+
 interface ResourceError extends Error {
   code: number
   name: string
@@ -52,7 +54,9 @@ const allowedResourceErrorsConstructors = Array.from<Function>([
   ResourceNotExistError,
 ])
 
-export const maybeThrowResourceError = (errors: Error[]): void => {
+export const maybeThrowResourceError: CheckForResourceError = (
+  errors: Error[]
+): void => {
   if (
     !Array.isArray(errors) ||
     !errors.reduce(
