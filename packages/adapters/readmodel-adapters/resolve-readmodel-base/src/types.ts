@@ -406,6 +406,11 @@ export type AdapterOperationParameters<
   ) => void
 >
 
+export type CreateAdapterMethod = <AdapterPool extends CommonAdapterPool, AdapterOptions extends CommonAdapterOptions>(
+  implementation: AdapterImplementation<AdapterPool, AdapterOptions>,
+  options: AdapterOptions
+) => AdapterApi<AdapterPool>
+
 export type ObjectKeys<T> = 
   T extends object ? (keyof T)[] :
   T extends number ? [] :

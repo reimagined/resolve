@@ -12,6 +12,7 @@ import type {
   AdapterPool,
   AdapterOptions,
   MemoryStore,
+  AdapterApi
 
 } from './types'
 
@@ -100,8 +101,6 @@ const implementation : CurrentAdapterImplementation = {
   disconnect,
 }
 
-const adapter = _createAdapter<AdapterPool, AdapterOptions>(implementation, null! as any)
-
-const createAdapter = _createAdapter.bind(null, implementation)
+const createAdapter = _createAdapter.bind<null, CurrentAdapterImplementation, [AdapterOptions], AdapterApi<AdapterPool>>(null, implementation)
 
 export default createAdapter

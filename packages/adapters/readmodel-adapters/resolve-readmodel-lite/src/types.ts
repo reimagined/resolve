@@ -6,19 +6,10 @@ import type {
     AdapterImplementation,
     StoreApi,
     PerformanceTracerLike,
-    ObjectFixedUnionToIntersectionByKeys,
-    ObjectDictionaryKeys,
-    ObjectFixedKeys,
-    ProjectionMethod,
-    ReadModelRunStatus,
-    ReadModelStatus,
-    FunctionLike,
-    JsonPrimitive,
-    JsonArray,
     JsonMap,
     SearchCondition,
     UpdateCondition,
-    JsonLike,
+    AdapterApi,
     IfEquals,
     IsTypeLike
 } from 'resolve-readmodel-base'
@@ -27,30 +18,7 @@ import type SQLiteLib from 'sqlite'
 import type OsLib from 'os'
 import type FsLib from 'fs'
 
-export {
-    CommonAdapterPool,
-    CommonAdapterOptions,
-    AdapterOperations,
-    AdapterConnection,
-    AdapterImplementation,
-    StoreApi,
-    PerformanceTracerLike,
-    ObjectFixedUnionToIntersectionByKeys,
-    ObjectDictionaryKeys,
-    ObjectFixedKeys,
-    ProjectionMethod,
-    ReadModelRunStatus,
-    ReadModelStatus,
-    FunctionLike,
-    JsonPrimitive,
-    JsonArray,
-    JsonMap,
-    SearchCondition,
-    UpdateCondition,
-    JsonLike,
-    IfEquals,
-    IsTypeLike
-}
+export * from 'resolve-readmodel-base'
 
 export type TmpLib = {
     fileSync: () => {

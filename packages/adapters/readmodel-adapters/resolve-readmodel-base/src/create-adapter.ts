@@ -14,7 +14,7 @@ const createAdapter = <AdapterPool extends CommonAdapterPool, AdapterOptions ext
   imports: BaseAdapterImports,
   implementation: AdapterImplementation<AdapterPool, AdapterOptions>,
   options: AdapterOptions
-) => {
+): AdapterApi<AdapterPool> => {
   const {
     withPerformanceTracer,
     wrapConnect,
