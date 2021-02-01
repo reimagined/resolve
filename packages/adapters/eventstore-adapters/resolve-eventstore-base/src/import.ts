@@ -1,4 +1,4 @@
-import stream from 'stream'
+﻿import stream from 'stream'
 import { EOL } from 'os'
 
 import {
@@ -8,6 +8,8 @@ import {
   MAINTENANCE_MODE_MANUAL,
   BATCH_SIZE,
 } from './constants'
+
+import { ResourceNotExistError } from './resource-errors'
 
 const EventStream = function (
   this: any,
@@ -58,7 +60,13 @@ EventStream.prototype._write = async function (
       this.isMaintenanceInProgress === false
     ) {
       this.isMaintenanceInProgress = true
-      await drop()
+      try {
+        await drop()
+      } catch (error) {
+        if (!ResourceNotExistError.is(error)) {
+          throw error
+        }
+      }
       await init()
       await freeze()
     }
