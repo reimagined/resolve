@@ -5,6 +5,7 @@ import { AdapterPool } from './types'
 
 const init = async ({
   database,
+  databaseFile,
   eventsTableName,
   snapshotsTableName,
   secretsTableName,
@@ -73,7 +74,7 @@ const init = async ({
         let errorToThrow = error
         if (/(?:Table|Index).*? already exists$/i.test(error.message)) {
           errorToThrow = new EventstoreResourceAlreadyExistError(
-            `duplicate initialization of the sqlite adapter with same events database "${database}" and table "${eventsTableName}" not allowed`
+            `duplicate initialization of the sqlite adapter with same events database "${databaseFile}" and table "${eventsTableName}" not allowed`
           )
         } else {
           log.error(errorToThrow.message)
