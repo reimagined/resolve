@@ -2,11 +2,7 @@ import * as AWS from 'aws-sdk'
 import createAdapter from 'resolve-eventstore-postgresql-serverless'
 import { create, destroy } from 'resolve-eventstore-postgresql-serverless'
 
-import type {
-  PostgresqlAdapterConfig,
-  CloudResourcePool,
-  CloudResourceOptions,
-} from 'resolve-eventstore-postgresql-serverless'
+import type { CloudResourceOptions } from 'resolve-eventstore-postgresql-serverless'
 
 jest.setTimeout(1000 * 60 * 5)
 
