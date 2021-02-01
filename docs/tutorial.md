@@ -551,15 +551,15 @@ $ curl -X POST \
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-3)
 
-This lesson provides information on how to display a Read Model's data in the client browser. It uses the reSolve framework's **resolve-react-hooks** library to implement a frontend based on React with hooks.
+This lesson describes how to display a Read Model's data in the client browser. The code in this lesson uses the reSolve framework's **resolve-react-hooks** library to implement a frontend based on React with hooks.
 
 > Refer to the [Frontend](frontend.md) article for information on other tools that you can use to implement a frontend.
 
 ### Implement the Client Application
 
-> NOTE: The example code uses **react-bootstrap** to keep the markup simple. This library requires you to link the Bootstrap stylesheet file. The example project's **client/components/Header.js** file demonstrates how to link static resources to your client application.
+> The example code uses **react-bootstrap** to keep the markup simple. To use this library, you should link the Bootstrap stylesheet file to the application's page. The example project's **client/components/Header.js** file demonstrates how to link static resources.
 
-The frontend's source files are located in the **client** folder. Create a **ShoppingLists.js** file in the **client/components** folder. In this file, implement a React component that renders a list of shopping list names:
+First, implement a React component that renders a list of shopping list names. To do this, create a **ShoppingLists.js** file in the **client/components** subfolder and add the following code to this file:
 
 **client/components/ShoppingLists.js**
 
@@ -594,7 +594,7 @@ const ShoppingLists = ({ lists }) => {
 export default ShoppingLists
 ```
 
-Add a new component named **MyLists**. This component obtains shopping list data from reSolve and use the **ShoppingLists** component to display this data. To obtain the data, use the **resolve-react-hooks** library's `useQuery` hook:
+Add a new component named **MyLists**. This component obtains shopping list data from reSolve and uses the **ShoppingLists** component to display this data. To obtain the data, use the **resolve-react-hooks** library's `useQuery` hook:
 
 **client/components/MyLists.js**
 
@@ -612,7 +612,7 @@ const MyLists = () => {
   const getLists = useQuery(
     { name: 'ShoppingLists', resolver: 'all', args: {} },
     (error, result) => {
-      // Obtain the data on the component mount.
+      // Obtain the data on the component's mount.
       setLists(result)
     }
   )
@@ -634,7 +634,7 @@ export default MyLists
 
 - [useQuery](api-reference.md#usequery)
 
-Add the client application's root component that defines the HEAD section and renders routes:
+Add the root component that defines the page's HEAD section and renders routes:
 
 **client/components/App.js**
 
@@ -685,7 +685,7 @@ export default [
 
 ### Configure the Entry Point
 
-A client entry point is a function that takes a `context` object as a parameter. You can pass this object to the resolve-react-hooks library to connect it your reSolve backend. You can implement the entry point as shown below:
+A client entry point is a function that receives a `context` object as a parameter. Pass this object to the resolve-react-hooks library to connect it to a reSolve backend. You can implement an entry point as shown below:
 
 **client/index.js**
 
@@ -698,8 +698,8 @@ import { renderRoutes } from 'react-router-config'
 
 import routes from './routes'
 
-// The 'conext' object contains data required by the 'resolve-react-hooks'.
-// library to communicate with the reSolve backend.
+// The 'conext' object contains metadata required by the 'resolve-react-hooks'
+// library to connect to the reSolve backend.
 const entryPoint = (context) => {
   const appContainer = document.createElement('div')
   document.body.appendChild(appContainer)
