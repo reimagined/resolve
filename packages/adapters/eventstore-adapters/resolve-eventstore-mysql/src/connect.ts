@@ -1,14 +1,18 @@
 import getLog from './get-log'
-import { AdapterPool, AdapterSpecific } from './types'
+import type {
+  ConnectionDependencies,
+  MysqlAdapterPoolConnectedProps,
+  AdapterPoolPrimal,
+  MysqlAdapterConfig,
+} from './types'
 
 const connect = async (
-  pool: AdapterPool,
-  specific: AdapterSpecific
+  pool: AdapterPoolPrimal,
+  { MySQL, escapeId, escape }: ConnectionDependencies,
+  config: MysqlAdapterConfig
 ): Promise<any> => {
   const log = getLog('connect')
   log.debug('connecting to mysql databases')
-
-  const { MySQL, escapeId, escape }: AdapterSpecific = specific
 
   Object.assign(pool, {
     escapeId,
@@ -22,12 +26,11 @@ const connect = async (
     database,
     // eslint-disable-next-line prefer-const
     ...connectionOptions
-  } = pool.config
+  } = config
 
-  eventsTableName = pool.coerceEmptyString(eventsTableName, 'events')
-  snapshotsTableName = pool.coerceEmptyString(snapshotsTableName, 'snapshots')
-  secretsTableName = pool.coerceEmptyString(secretsTableName, 'default')
-  database = pool.coerceEmptyString(database)
+  eventsTableName = eventsTableName ?? 'events'
+  snapshotsTableName = snapshotsTableName ?? 'snapshots'
+  secretsTableName = secretsTableName ?? 'secrets'
 
   log.debug(`establishing connection`)
 
@@ -47,13 +50,16 @@ const connect = async (
 
   log.debug(`connected successfully`)
 
-  Object.assign(pool, {
-    connection,
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName,
-    database,
-  })
+  Object.assign<AdapterPoolPrimal, Partial<MysqlAdapterPoolConnectedProps>>(
+    pool,
+    {
+      connection,
+      eventsTableName,
+      snapshotsTableName,
+      secretsTableName,
+      database,
+    }
+  )
 
   log.debug('mysql databases are connected')
 }

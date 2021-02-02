@@ -1,9 +1,20 @@
-const wrapEventFilter = (loadEvents: any) => async (
-  pool: any,
-  filter: any
-): Promise<any> => {
+import {
+  AdapterPoolConnectedProps,
+  AdapterPoolConnected,
+  EventFilter,
+  EventsWithCursor,
+  isCursorFilter,
+  LoadEvents,
+} from './types'
+
+const wrapEventFilter = <ConnectedProps extends AdapterPoolConnectedProps>(
+  loadEvents: LoadEvents<ConnectedProps>
+): LoadEvents<ConnectedProps> => async (
+  pool: AdapterPoolConnected<any>,
+  filter: EventFilter
+): Promise<EventsWithCursor> => {
   pool.validateEventFilter(filter)
-  if (filter.cursor != null) {
+  if (isCursorFilter(filter) && filter.cursor != null) {
     try {
       if (filter.cursor !== pool.getNextCursor(filter.cursor, [])) {
         // eslint-disable-next-line no-throw-literal
@@ -13,7 +24,7 @@ const wrapEventFilter = (loadEvents: any) => async (
       throw new Error(
         `Event filter field "cursor" is malformed: ${JSON.stringify(
           filter.cursor
-        )}`
+        )}` + (e == null ? '' : ` ${e}`)
       )
     }
   }

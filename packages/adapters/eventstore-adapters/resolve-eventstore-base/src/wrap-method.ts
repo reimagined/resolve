@@ -1,9 +1,18 @@
-const wrappedMethod = async (
-  pool: any,
-  method: any,
-  wrappedArgs: any,
-  ...args: any
-): Promise<any> => {
+import {
+  PromiseResultType,
+  AdapterPoolConnectedProps,
+  AdapterPoolPossiblyUnconnected,
+  AdapterPoolConnected,
+} from './types'
+
+const connectOnDemandAndCall = async <
+  ConnectedProps extends AdapterPoolConnectedProps,
+  M extends (pool: AdapterPoolConnected<ConnectedProps>, ...args: any[]) => any
+>(
+  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+  method: M,
+  ...args: Parameters<M>
+): Promise<PromiseResultType<ReturnType<M>>> => {
   if (pool.disposed) {
     throw new Error('Adapter has been already disposed')
   }
@@ -12,12 +21,15 @@ const wrappedMethod = async (
   pool.connectPromiseResolve()
   await pool.connectPromise
 
-  return await method(pool, ...wrappedArgs, ...args)
+  return await method(pool as AdapterPoolConnected<ConnectedProps>, ...args)
 }
 
-const wrapMethod = (pool: any, method: any, ...wrappedArgs: any): any =>
-  typeof method === 'function'
-    ? wrappedMethod.bind(null, pool, method, wrappedArgs)
+const wrapMethod = <ConnectedProps extends AdapterPoolConnectedProps>(
+  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+  method?: any
+): any =>
+  typeof method !== 'undefined'
+    ? connectOnDemandAndCall.bind(null, pool, method)
     : null
 
 export default wrapMethod

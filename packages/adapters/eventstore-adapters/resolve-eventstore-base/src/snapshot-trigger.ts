@@ -1,7 +1,10 @@
 import getLog from './get-log'
+import { AdapterPoolConnectedProps, AdapterPoolConnected } from './types'
 
-const snapshotTrigger = async (
-  state: any,
+const snapshotTrigger = async <
+  ConnectedProps extends AdapterPoolConnectedProps
+>(
+  state: AdapterPoolConnected<ConnectedProps>,
   snapshotKey: string,
   content: string,
   updateCallback: any
@@ -23,13 +26,15 @@ const snapshotTrigger = async (
     throw error
   }
 
-  if (!counters.has(snapshotKey)) {
+  const snapshotIndex = counters.get(snapshotKey)
+  if (snapshotIndex === undefined) {
     counters.set(snapshotKey, 1)
   } else {
-    counters.set(snapshotKey, counters.get(snapshotKey) + 1)
+    counters.set(snapshotKey, snapshotIndex + 1)
   }
 
-  if (counters.get(snapshotKey) < bucketSize) {
+  const pendingSnapshotIndex = counters.get(snapshotKey)
+  if (pendingSnapshotIndex !== undefined && pendingSnapshotIndex < bucketSize) {
     log.verbose(
       `pending snapshot: (${counters.get(snapshotKey)}/${bucketSize})`
     )

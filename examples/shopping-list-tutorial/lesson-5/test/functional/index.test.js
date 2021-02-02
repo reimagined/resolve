@@ -238,13 +238,13 @@ test('query should works correctly', async () => {
 })
 
 test('create items in second shopping list', async (t) => {
-  await t.typeText(Selector('input[type=text]'), 'Item 1')
+  await t.typeText(Selector('input[type=text]'), 'Item 1', { paste: true })
   await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]'), 'Item 2')
+  await t.typeText(Selector('input[type=text]'), 'Item 2', { paste: true })
   await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]'), 'Item 3')
+  await t.typeText(Selector('input[type=text]'), 'Item 3', { paste: true })
   await t.click(Selector('button').withText('Add Item'))
 
   await t.expect(Selector('label').withText('Item 1').exists).eql(true)

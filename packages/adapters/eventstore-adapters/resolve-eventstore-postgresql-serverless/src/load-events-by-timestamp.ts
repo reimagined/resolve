@@ -1,4 +1,8 @@
-import { CursorFilter, throwBadCursor } from 'resolve-eventstore-base'
+import {
+  TimestampFilter,
+  throwBadCursor,
+  EventsWithCursor,
+} from 'resolve-eventstore-base'
 import { RESPONSE_SIZE_LIMIT } from './constants'
 import { AdapterPool } from './types'
 
@@ -12,8 +16,8 @@ const loadEventsByTimestamp = async (
     shapeEvent,
     isTimeoutError,
   }: AdapterPool,
-  { eventTypes, aggregateIds, startTime, finishTime, limit }: CursorFilter
-): Promise<{ readonly cursor: any; events: any[] }> => {
+  { eventTypes, aggregateIds, startTime, finishTime, limit }: TimestampFilter
+): Promise<EventsWithCursor> => {
   const injectString = (value: any): string => `${escape(value)}`
   const injectNumber = (value: any): string => `${+value}`
   const batchSize = limit != null ? Math.min(limit, 200) : 200
@@ -105,7 +109,7 @@ const loadEventsByTimestamp = async (
 
   return {
     get cursor() {
-      return throwBadCursor()
+      return throwBadCursor() as any
     },
     events,
   }

@@ -1,6 +1,6 @@
 {
   "name": "resolve-query",
-  "version": "0.26.4",
+  "version": "0.26.5",
   "description": "Provides an interface used to create and querry read models and view models in a reSolve application.",
   "keywords": [
     "cqrs",
@@ -25,12 +25,12 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-core": "0.26.4",
-    "resolve-debug-levels": "0.26.4",
-    "resolve-readmodel-base": "0.26.4"
+    "resolve-core": "0.26.5",
+    "resolve-debug-levels": "0.26.5",
+    "resolve-readmodel-base": "0.26.5"
   },
   "devDependencies": {
-    "jest": "26.0.1"
+    "jest": "26.6.3"
   },
   "engines": {
     "node": ">=10.9"

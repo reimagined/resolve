@@ -1,3 +1,9 @@
+import type {
+  AdapterPoolConnectedProps,
+  AdapterPoolConnected,
+  AdapterPoolPossiblyUnconnected,
+  AdapterConfig,
+} from 'resolve-eventstore-base'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 
@@ -16,15 +22,6 @@ type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
 export type AdminPool = {
-  config?: {
-    dbClusterOrInstanceArn: string
-    awsSecretStoreArn: string
-    databaseName: string
-    eventsTableName: string
-    secretsTableName: string
-    snapshotsTableName: string
-    region?: string
-  }
   RdsDataService?: RDSDataService
   escapeId?: EscapeFunction
   escape?: EscapeFunction
@@ -33,19 +30,7 @@ export type AdminPool = {
   coercer?: Coercer
 }
 
-export type AdapterPool = {
-  config: {
-    dbClusterOrInstanceArn: string
-    awsSecretStoreArn: string
-    databaseName: string
-    eventsTableName: string
-    secretsTableName: string
-    snapshotsTableName: string
-    region?: string
-    snapshotBucketSize?: number
-  }
-  maybeThrowResourceError: (error: Error[]) => void
-  coerceEmptyString: (obj: any, fallback?: string) => string
+export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   rdsDataService: RDSDataService
   dbClusterOrInstanceArn: string
   awsSecretStoreArn: string
@@ -58,8 +43,6 @@ export type AdapterPool = {
   executeStatement: (sql: any, transactionId?: string) => Promise<any[]>
   escapeId: EscapeFunction
   escape: EscapeFunction
-  bucketSize: number
-  shapeEvent: (event: any, additionalFields?: any) => any[]
   isTimeoutError: (error: any) => boolean
   beginTransaction: (pool: AdapterPool) => Promise<any>
   commitTransaction: (pool: AdapterPool, transactionId: string) => Promise<void>
@@ -69,7 +52,26 @@ export type AdapterPool = {
   ) => Promise<void>
 }
 
-export type AdapterSpecific = {
+export type PostgresqlAdapterConfig = AdapterConfig & {
+  dbClusterOrInstanceArn: string
+  awsSecretStoreArn: string
+  databaseName: string
+  eventsTableName?: string
+  secretsTableName?: string
+  snapshotsTableName?: string
+  region?: string
+  [key: string]: any
+}
+
+export type AdapterPool = AdapterPoolConnected<
+  PostgresqlAdapterPoolConnectedProps
+>
+
+export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
+  PostgresqlAdapterPoolConnectedProps
+>
+
+export type ConnectionDependencies = {
   RDSDataService: typeof RDSDataService
   fullJitter: FullJitter
   escapeId: EscapeFunction
@@ -78,14 +80,7 @@ export type AdapterSpecific = {
   coercer: Coercer
 }
 
-export type CloudAdapterSpecific = {
-  RDSDataService: typeof RDSDataService
-  fullJitter: FullJitter
-  escapeId: EscapeFunction
-  escape: EscapeFunction
-  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[]>
-  coercer: Coercer
-}
+export type CloudAdapterSpecific = ConnectionDependencies
 
 export type CloudResource = {
   createResource: (options: CloudResourceOptions) => Promise<any>
@@ -101,7 +96,11 @@ export type CloudResourcePool = {
   fullJitter: FullJitter
   coercer: Coercer
   shapeEvent: (event: any, additionalFields?: any) => any[]
-  connect: (pool: AdapterPool, specific: AdapterSpecific) => Promise<any>
+  connect: (
+    pool: AdapterPoolPrimal,
+    connectionDependencies: ConnectionDependencies,
+    config: PostgresqlAdapterConfig
+  ) => Promise<any>
   dispose: (pool: AdapterPool) => Promise<any>
 }
 
@@ -112,7 +111,6 @@ export type CloudResourceOptions = {
   secretsTableName: string
   snapshotsTableName: string
   userLogin: string
-  awsSecretStoreArn: string
   awsSecretStoreAdminArn: string
   dbClusterOrInstanceArn: string
 }

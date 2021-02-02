@@ -1,13 +1,13 @@
 import { AdapterPool } from './types'
 
 const dropSnapshot = async (
-  pool: AdapterPool,
+  { database, escape, escapeId, snapshotsTableName }: AdapterPool,
   snapshotKey: string
 ): Promise<any> => {
-  await pool.database.exec(
-    `DELETE FROM ${pool.escapeId(pool.snapshotsTableName)}
-    WHERE ${pool.escapeId('snapshotKey')}=
-    ${pool.escape(snapshotKey)}`
+  await database.exec(
+    `DELETE FROM ${escapeId(snapshotsTableName)}
+    WHERE ${escapeId('snapshotKey')}=
+    ${escape(snapshotKey)}`
   )
 }
 
