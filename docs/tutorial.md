@@ -4,25 +4,24 @@ title: Step-by-Step Tutorial
 ---
 
 This document provides a step-by-step tutorial for the reSolve framework.
-Throughout this tutorial, you will create a single application. You will modify your application as you learn new concepts, so with every consequent lesson the application will become more and more sophisticated.
+Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
 
-This tutorial will give you an understanding of the reSolve framework and its fundamental concepts. It is recommended that your familiarize yourself with event sourcing and CQRS before you start this tutorial, however it is not strictly required.
+We recommend that your familiarize yourself with basics of event sourcing and CQRS before you start this tutorial. You can find a curated list of resources in the [FAQ](faq.md).
 
 ## Table of Contents
 
-- [Lesson 1 - Create a New reSolve Application](#lesson-1-create-a-new-resolve-application)
-- [Lesson 2 - Write side - Add a List Item](#lesson-2-write-side-add-a-list-item)
-- [Lesson 3 - Read side - Create a View Model to Query List Items](#lesson-3-read-side-create-a-view-model-to-query-list-items)
-- [Lesson 4 - Frontend - Display View Model Data in the Browser](#lesson-4-frontend-display-view-model-data-in-the-browser)
-- [Lesson 5 - Frontend - Enable Data Editing](#lesson-5-frontend-enable-data-editing)
-- [Lesson 6 - Frontend - Support Multiple Shopping Lists](#lesson-6-frontend-support-multiple-shopping-lists)
-- [Lesson 7 - Functionality Enhancements](#lesson-7-functionality-enhancements)
+- [Preparation - Create a New reSolve Application](#preparation---create-a-new-resolve-application)
+- [Lesson 1 - Write side - Add Shopping Lists](#lesson-1---write-side---add-shopping-lists)
+- [Lesson 2 - Read side - Create a Read Model to Query Shopping Lists](#lesson-2---read-side---create-a-read-model-to-query-shopping-lists)
+- [Lesson 3 - Frontend - Display Read Model Data in the Browser](#lesson-3---frontend---display-read-model-data-in-the-browser)
+- [Lesson 4 - Read Side - Create a View Model to Query Shopping List Items](#lesson-4---read-side---create-a-view-model-to-query-shopping-list-items)
+- [Lesson 5 - Enable Editing](#lesson-5---enable-editing)
 
 ---
 
-## **Lesson 1** - Create a New reSolve Application
+## **Preparation** - Create a New reSolve Application
 
-Use the create-resolve-app tool to create a new reSolve app:
+Use the **create-resolve-app** tool to create a new reSolve application:
 
 ##### npm:
 
@@ -52,17 +51,17 @@ $ yarn run dev
 
 ---
 
-## **Lesson 2** - Write side - Add a List Item
+## **Lesson 1** - Write side - Add Shopping Lists
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-2)
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-1)
 
-This lesson describes how to implement a basic write side for a reSolve application. An application's [write side](resolve-app-structure.md#write-and-read-sides) handles commands, performs input validation, and emits **events** based on valid commands. The framework then saves the emitted events to the **event store**.
+This lesson describes how to implement a write side for a reSolve application. An application's [write side](resolve-app-structure.md#write-and-read-sides) handles commands, validates input data, and emits **events** based on valid commands. The framework then saves the emitted events to the **event store**.
 
 ### Create an Aggregate
 
 Define types of events that the write side can produce. Create an **eventTypes.js** file in the project's **common** folder and add the following content to it:
 
-**common/eventTypes.js:**
+**common/eventTypes.js**
 
 ```js
 export const SHOPPING_LIST_CREATED = 'SHOPPING_LIST_CREATED' // Indicates the creation of a shopping list
@@ -70,14 +69,14 @@ export const SHOPPING_LIST_CREATED = 'SHOPPING_LIST_CREATED' // Indicates the cr
 export const SHOPPING_ITEM_CREATED = 'SHOPPING_ITEM_CREATED' // Indicates the creation of an item within a shopping list
 ```
 
-Next, define an aggregate that handles commands and produces the defined events as the result. Create a **shopping_list.commands.js** file in the **common/aggregates** and add the following code to it:
+Next, define an aggregate that handles commands and produces the defined events as a result. Create a **shopping_list.commands.js** file in the **common/aggregates** folder and add the following code to it:
 
-**common/aggregates/shopping_list.commands.js:**
+**common/aggregates/shopping_list.commands.js**
 
 ```js
 import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
 
-// This file exports an object that contains two command handlers
+// This file exports an object that contains two command handlers.
 export default {
   // A command handler receives the aggregate state and a command payload.
   // A payload can contain arbitrary data related to the command.
@@ -85,16 +84,16 @@ export default {
   createShoppingList: (state, { payload: { name } }) => {
     return {
       type: SHOPPING_LIST_CREATED,
-      payload: { name }
+      payload: { name },
     }
   },
   // The "createShoppingItem" command's payload contains an item's ID and display text.
   createShoppingItem: (state, { payload: { id, text } }) => {
     return {
       type: SHOPPING_ITEM_CREATED,
-      payload: { id, text }
+      payload: { id, text },
     }
-  }
+  },
 }
 ```
 
@@ -103,20 +102,22 @@ A command handler returns an **event** object. This object should contain the fo
 - **type** - specifies the event's type;
 - **payload** - specifies data associated with the event.
 
-The reSolve framework saves events that command handlers return to a persistent **[event store](write-side.md#event-store)**. Your application is already configured to use a SQLite event store. We suggest that you keep this configuration throughout the tutorial. For information on how to use other storage types see the following documentation topics:
+The reSolve framework saves produced events to a persistent **[event store](write-side.md#event-store)**. A newly created application is configured to use a SQLite event store. We suggest that you keep this configuration throughout the tutorial. For information on how to use other storage types, see the following documentation topics:
 
 - [Adapters](https://github.com/reimagined/resolve/blob/master/docs/advanced-techniques.md#adapters)
 - [Configuring Adapters](https://github.com/reimagined/resolve/blob/master/docs/preparing-to-production.md#configuring-adapters)
 
-Your shopping list aggregate is now ready. The last step is to register it in the application's configuration file. To do this, open the **config.app.js** file and specify the following settings in the **aggregates** configuration section:
+The last step is to register the implemented aggregate in the application's configuration file. To do this, open the **config.app.js** file and specify the following settings in the **aggregates** configuration section:
 
-**config.app.js:**
+**config.app.js**
 
 ```js
 ...
 aggregates: [
   {
+    // The aggregate name
     name: 'ShoppingList',
+    // A path to the file that defines the aggregate's command handlers
     commands: 'common/aggregates/shopping_list.commands.js',
   }
 ],
@@ -125,9 +126,9 @@ aggregates: [
 
 ### Sending Commands to an Aggregate
 
-Now that your application can handle commands, you can use the reSolve framework's HTTP API to send such commands to create a shopping list and populate it with items.
+Now that your application can handle commands, you can use the reSolve framework's HTTP API to create shopping lists and populate them with items.
 
-A request body should have the `application/json` content type and contain a JSON representation of the command:
+A request's body should have the `application/json` content type and contain a JSON representation of a command:
 
 ```
 {
@@ -148,7 +149,7 @@ Run your application and send a POST request to the following URL:
 http://127.0.0.1:3000/api/commands
 ```
 
-You can use any REST client or **curl** to do this. For example, use the following inputs to create a shopping list:
+You can use any REST client or **curl** to do this. For example, use the following console input to create a shopping list:
 
 ```sh
 curl -i http://localhost:3000/api/commands/ \
@@ -181,7 +182,7 @@ Content-Length: 169
 }
 ```
 
-Use the inputs shown below to add an item to the created shopping list:
+Use the console input shown below to add an item to the created shopping list:
 
 ```sh
 curl -i http://localhost:3000/api/commands/ \
@@ -216,7 +217,7 @@ Content-Length: 182
 }
 ```
 
-You can now check the event store database to see the newly created events. To do this, use the [Command Line Shell For SQLite](https://sqlite.org/cli.html) or any compatible database management tool:
+You can now check the event store database to see the newly created events. To do this, use the [Command Line Shell For SQLite](https://sqlite.org/cli.html) or any database management tool compatible with SQLite:
 
 <!-- prettier-ignore-start -->
 
@@ -229,17 +230,17 @@ sqlite> select * from events;
 
 <!-- prettier-ignore-end -->
 
-### Performing Validation
+### Input Validation
 
-Your application's write side currently does not perform any input validation. This results in the following issues:
+Your application's write side currently does not validate input data. This results in the following issues:
 
-- The command handlers do not check whether all required fields are provided in a command's payload.
+- The command handlers do not check whether all required fields are in a command's payload.
 - It is possible to create more then one shopping list with the same aggregate ID.
 - You can create items in a nonexistent shopping list.
 
 To overcome the first issue, add checks at the beginning of each command handler:
 
-**common/aggregates/shopping_list.commands.js:**
+**common/aggregates/shopping_list.commands.js**
 
 ```js
 createShoppingList: (state, { payload: { name } }) => {
@@ -253,9 +254,9 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 }
 ```
 
-To overcome the second and third issues, you need to have an **aggregate state** object that keeps track of what shopping lists were already created. Such object can be assembled on the fly by an aggregate **projection** from previously created events. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
+To overcome the second and third issues, you need to have an **aggregate state** object that keeps track of what shopping lists were already created. An aggregate **projection** can assemble such an object from previously created events with the same aggregate ID. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code to this file:
 
-**common/aggregates/shopping_list.projection.js:**
+**common/aggregates/shopping_list.projection.js**
 
 <!-- prettier-ignore-start -->
 
@@ -264,19 +265,23 @@ To overcome the second and third issues, you need to have an **aggregate state**
 import { SHOPPING_LIST_CREATED } from "../eventTypes";
 
 export default {
+  // The Init function initializes a state object
   Init: () => ({}),
+  // A projection function updates the state based on events.
+  // Each such function is associated with a single event type.
+  // The projection function recieves the state and an event and returns the updated state.
   [SHOPPING_LIST_CREATED]: (state, { timestamp }) => ({
     ...state,
-    createdAt: timestamp
+    createdAt: timestamp  // Add an event's timestamp to the state.
   })
 };
 ```
 
 <!-- prettier-ignore-end -->
 
-Register the create projection in the application's configuration file:
+Register the projection in the application's configuration file:
 
-**config.app.js:**
+**config.app.js**
 
 <!-- prettier-ignore-start -->
 
@@ -286,6 +291,7 @@ Register the create projection in the application's configuration file:
     {
       name: "ShoppingList",
       commands: "common/aggregates/shopping_list.commands.js",
+      // A path to the file that defines the projection
       projection: "common/aggregates/shopping_list.projection.js"
     }
   ],
@@ -293,14 +299,9 @@ Register the create projection in the application's configuration file:
 
 <!-- prettier-ignore-end -->
 
-The projection object specifies an **Init** function and a set of **projection functions**.
+You can use the state assembled by a projection on the write side to find out whether and when a shopping list was created for the current aggregate instance (an instance that the current aggregate ID identifies).
 
-- The **Init** function initializes the aggregate state. In the example code, it creates a new empty object.
-- Projection functions build the aggregate state based on the aggregate's events. Each such function is associated with a particular event type. The function receives the previous state and an event, and returns a new state based on the input.
-
-In the example code, the SHOPPING_LIST_CREATED projection function adds the SHOPPING_LIST_CREATED event's timestamp to the state. This information can be used on the write side to find out whether and when a shopping list was created for the current aggregate instance (an instance that the current aggregate ID identifies).
-
-**common/aggregates/shopping_list.commands.js:**
+**common/aggregates/shopping_list.commands.js**
 
 ```js
   createShoppingList: (state, { payload: { name } }) => {
@@ -315,7 +316,7 @@ In the example code, the SHOPPING_LIST_CREATED projection function adds the SHOP
   }
 ```
 
-You can send commands to your aggregate to check whether the validation works as intended:
+You can send faulty commands to your aggregate to check whether the validation works as intended:
 
 ```sh
 # Trying to create a shopping list without specifying the name
@@ -340,7 +341,7 @@ Content-Length: 31
 Command error: name is required
 
 
-# When you create a shopping list that already exists
+# Trying to create a shopping list that already exists
 $ curl -i http://localhost:3000/api/commands/ \
 > --header "Content-Type: application/json" \
 > --data '
@@ -364,7 +365,7 @@ Content-Length: 43
 Command error: the shopping list already exists
 
 
-# Trying to add an item to an inexistent shopping list
+# Trying to add an item to a nonexistent shopping list
 $ curl -i http://localhost:3000/api/commands/ \
 > --header "Content-Type: application/json" \
 > --data '
@@ -391,63 +392,76 @@ Command error: the shopping list does not exist
 
 ---
 
-## **Lesson 3** - Read side - Create a Read Model to Query Shopping Lists
+## **Lesson 2** - Read side - Create a Read Model to Query Shopping Lists
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-3)
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-2)
 
-Currently, your shopping list application has a write side that allows you to create shopping lists and items in these lists. To obtain this data from the application, you need to implement the application's **[read side](resolve-app-structure.md#write-and-read-sides)**.
+Currently, your shopping list application has a write side that allows you to create shopping lists and add items to these lists. To obtain this data from the application, you need to implement the application's **[read side](resolve-app-structure.md#write-and-read-sides)**.
 
 ### Add a Read Model
 
-Add a **ShoppingLists** **[Read Model](read-side.md#read-models)** to your application. To do this, create a **shopping_list.projection.js** file in the **read-models** folder and add the following code to this file:
+Add a **ShoppingLists** **[Read Model](read-side.md#read-models)** to your application. A Read Model receives events and populates a persistent store based on event data. It uses the collected data to answer data queries.
 
-**common/read-models/shopping_lists.projection.js:**
+Follow the steps below to implement a **ShoppingLists** Read Model.
+
+First, define a Read Model **[projection](read-side.md#updating-a-read-model-via-projection-functions)**. Create a **shopping_list.projection.js** file in the **read-models** folder and add the following code to this file:
+
+**common/read-models/shopping_lists.projection.js**
 
 ```js
+// A Read Model projection describes logic used to collect data from incoming events.
 import { SHOPPING_LIST_CREATED } from '../eventTypes'
 
 export default {
-  Init: async store => {
+  // The 'Init' function initializes the store (defines tables and their fields).
+  Init: async (store) => {
     await store.defineTable('ShoppingLists', {
       indexes: {
-        id: 'string'
+        id: 'string',
       },
-      fields: ['createdAt', 'name']
+      fields: ['createdAt', 'name'],
     })
   },
-
+  // A projection function runs once for every event of the specified type.
   [SHOPPING_LIST_CREATED]: async (
     store,
     { aggregateId, timestamp, payload: { name } }
   ) => {
+    // Build a data item based on the event data.
     const shoppingList = {
       id: aggregateId,
       name,
-      createdAt: timestamp
+      createdAt: timestamp,
     }
-
+    // Save the data item to the store's table 'ShoppingLists' table.
     await store.insert('ShoppingLists', shoppingList)
-  }
+  },
 }
 ```
 
-This code defines a Read Model **[projection](read-side.md#updating-a-read-model-via-projection-functions)**. A projection function builds a state from incoming events and saves it to a persistent store. The type of the store that is used is defined by a Read Model connector:
+##### Used API:
 
-**config.dev.js:**
+- [store](api-reference.md#read-model-store-interface)
+- [store.defineTable](api-reference.md#definetable)
+- [store.insert](api-reference.md#insert)
+
+The type of the physical store used to save data is defined by a Read Model connector:
+
+**config.dev.js**
 
 ```js
-// This files defines setting used only in the development environment
+// The 'config.dev.js' file defines setting used only in the development environment.
 const devConfig = {
   readModelConnectors: {
     // This is the 'default' Read Model connector.
-    // It connects a Read Model to a SQLite data
+    // It connects a Read Model to a SQLite data.
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: 'data/read-models.db'
-      }
-    }
-    // You can reconfigure the connector to use other database types:
+        databaseFile: 'data/read-models.db',
+      },
+    },
+    // You can reconfigure the connector to use other databases:
     /*
       default: {
         module: 'resolve-readmodel-mysql',
@@ -460,22 +474,30 @@ const devConfig = {
         }
       }
     */
-  }
+  },
 }
 ```
 
-You also need to implement a query resolver to answer data queries based on the data from the store.
+##### Used configuration options:
 
-**common/read-models/shopping_lists.resolvers.js:**
+- [readModelConnectors](application-configuration.md#readmodelconnectors)
+
+Next, implement a query resolver to answer data queries based on the data from the store.
+
+**common/read-models/shopping_lists.resolvers.js**
 
 ```js
 export default {
   // The 'all' resolver returns all entries from the 'ShoppingLists' table.
-  all: async store => {
+  all: async (store) => {
     return await store.find('ShoppingLists', {}, null, { createdAt: 1 })
-  }
+  },
 }
 ```
+
+##### Used API:
+
+- [store.find](api-reference.md#find)
 
 Register the created Read Model in the application configuration file:
 
@@ -485,19 +507,306 @@ Register the created Read Model in the application configuration file:
 ...
 readModels: [
   {
+    // The Read Model's name
     name: 'ShoppingLists',
+    // A path to the file that defines the Read Model projection
     projection: 'common/read-models/shopping_lists.projection.js',
+    // A path to the file that defines the resolvers
     resolvers: 'common/read-models/shopping_lists.resolvers.js',
+    // The name of the connector used to store the state
     connectorName: 'default'
   }
 ],
 ```
 
-### Query a View Model via HTTP API
+### Query a Read Model
 
-You can use the reSolve framework's HTTP API to test the ShoppingLists Read Model's functionality:
+Use the reSolve HTTP API to query the ShoppingLists Read Model:
 
 ```sh
+$ curl -X POST \
+-H "Content-Type: application/json" \
+-d "{}" \
+"http://localhost:3000/api/query/ShoppingLists/all"
+
+% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   186  100   184  100     2    844      9 --:--:-- --:--:-- --:--:--   906[
+  {
+    "id": "shopping-list-1",
+    "name": "List 1",
+    "createdAt": 1543325125945
+  },
+  {
+    "id": "shopping-list-2",
+    "name": "List 2",
+    "createdAt": 1543325129138
+  }
+]
+```
+
+---
+
+## **Lesson 3** - Frontend - Display Read Model Data in the Browser
+
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-3)
+
+This lesson describes how to display a Read Model's data in the client browser. The code in this lesson uses the reSolve framework's **resolve-react-hooks** library to implement a frontend based on React with hooks.
+
+> Refer to the [Frontend](frontend.md) article for information on other tools that you can use to implement a frontend.
+
+### Implement the Client Application
+
+> The example code uses **react-bootstrap** to keep the markup simple. To use this library, you should link the Bootstrap stylesheet file to the application's page. The example project's **client/components/Header.js** file demonstrates how to link static resources.
+
+First, implement a React component that renders a list of shopping list names. To do this, create a **ShoppingLists.js** file in the **client/components** subfolder and add the following code to this file:
+
+**client/components/ShoppingLists.js**
+
+```jsx
+import React from 'react'
+import { ControlLabel, Table } from 'react-bootstrap'
+
+const ShoppingLists = ({ lists }) => {
+  return (
+    <div>
+      <ControlLabel>My shopping lists</ControlLabel>
+      <Table responsive>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Shopping List</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lists.map(({ id, name }, index) => (
+            <tr key={id}>
+              <td>{index + 1}</td>
+              <td>{name}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+  )
+}
+
+export default ShoppingLists
+```
+
+Add a new component named **MyLists**. This component obtains shopping list data from reSolve and uses the **ShoppingLists** component to display this data. To obtain the data, use the **resolve-react-hooks** library's `useQuery` hook:
+
+**client/components/MyLists.js**
+
+```js
+import React, { useState, useEffect } from 'react'
+
+import { useQuery } from 'resolve-react-hooks'
+import ShoppingLists from './ShoppingLists'
+
+const MyLists = () => {
+  const [lists, setLists] = useState({})
+
+  // The 'useQuery' hook is used to querry the 'ShoppingLists' Read Model's 'all' resolver.
+  // The obtained data is stored in the component's state.
+  const getLists = useQuery(
+    { name: 'ShoppingLists', resolver: 'all', args: {} },
+    (error, result) => {
+      // Obtain the data on the component's mount.
+      setLists(result)
+    }
+  )
+  useEffect(() => {
+    getLists()
+  }, [])
+
+  return (
+    <div className="example-wrapper">
+      <ShoppingLists lists={lists ? lists.data || [] : []} />
+    </div>
+  )
+}
+
+export default MyLists
+```
+
+##### Used API:
+
+- [useQuery](api-reference.md#usequery)
+
+Add the root component that defines the page's HEAD section and renders routes:
+
+**client/components/App.js**
+
+```jsx
+import React from 'react'
+import { renderRoutes } from 'react-router-config'
+import Header from './Header'
+
+const App = ({ route, children }) => (
+  <div>
+    {/*Define the HEAD section and register static resources.
+       See the 'client/components/Header' file for implementation details.
+    */}
+    <Header
+      title="ReSolve Shopping List Example"
+      name="Shopping List"
+      css={['/bootstrap.min.css']}
+    />
+    {renderRoutes(route.routes)}
+    {children}
+  </div>
+)
+
+export default App
+```
+
+The routes are defined as follows:
+
+**client/routes.js**
+
+```jsx
+import App from './components/App'
+import MyLists from './components/MyLists'
+
+export default [
+  {
+    component: App,
+    routes: [
+      {
+        path: '/',
+        component: MyLists,
+        exact: true,
+      },
+    ],
+  },
+]
+```
+
+### Configure the Entry Point
+
+A client entry point is a function that receives a `context` object as a parameter. Pass this object to the resolve-react-hooks library to connect it to a reSolve backend. You can implement an entry point as shown below:
+
+**client/index.js**
+
+```jsx
+import React from 'react'
+import { render } from 'react-dom'
+import { ResolveContext } from 'resolve-react-hooks'
+import { BrowserRouter } from 'react-router-dom'
+import { renderRoutes } from 'react-router-config'
+
+import routes from './routes'
+
+// The 'conext' object contains metadata required by the 'resolve-react-hooks'
+// library to connect to the reSolve backend.
+const entryPoint = (context) => {
+  const appContainer = document.createElement('div')
+  document.body.appendChild(appContainer)
+  render(
+    <ResolveContext.Provider value={context}>
+      <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
+    </ResolveContext.Provider>,
+    appContainer
+  )
+}
+
+export default entryPoint
+```
+
+### Register the Entry Point
+
+Register the client entry point in the application's configuration file as shown below:
+
+**config.app.js**
+
+```js
+const appConfig = {
+  ...
+  clientEntries: ['client/index.js'],
+}
+
+export default appConfig
+```
+
+Run your application to view the result:
+
+![result](assets/tutorial/lesson4_result.png)
+
+---
+
+## **Lesson 4** - Read Side - Create a View Model to Query Shopping List Items
+
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4)
+
+This lesson describes how you can use a View Model to obtain shopping list items and display them as a list within the client browser.
+
+A View Model is a reactive Read Model that is built on the fly for one or several aggregate IDs. A client can maintain a WebSocket connection with a resolve server to receive View Model data updates in real time.
+
+The downside is that View Models do not have persistent state and should be rebuilt on every query, so they are better suited for small data samples.
+
+### Create a Shopping List View Model
+
+Add a **shopping_list.projection.js** file in the **common/view-models** directory. Add the following code to this file:
+
+**common/view-models/shopping_list.projection.js**
+
+```js
+import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
+
+// A View Model's projection is defined in a format that is isomorphic with a Redux reducer format.
+export default {
+  // The 'Init' function initializes the View Model's response object.
+  Init: () => ({
+    id: 'id',
+    name: 'unnamed',
+    list: [],
+  }),
+  // Below is a projection function. It runs on every event of the specified type, whose aggregate Id matches one of the Ids specified in the query.
+  // A View Model projection takes the response object and returns its updated version based on the event data.
+  [SHOPPING_LIST_CREATED]: (state, { aggregateId, payload: { name } }) => ({
+    // Assign the actual aggregate ID and name to the response.
+    id: aggregateId,
+    name,
+    list: [],
+  }),
+  [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
+    ...state,
+    // Add a shopping list item to a list within the response object.
+    list: [
+      ...state.list,
+      {
+        id,
+        text,
+        checked: false,
+      },
+    ],
+  }),
+}
+```
+
+Register the View Model in the application configuration file:
+
+**config.app.js**
+
+```js
+const appConfig = {
+  ...
+  viewModels: [
+    {
+      name: 'shoppingList',
+      projection: 'common/view-models/shopping_list.projection.js'
+    }
+  ]
+}
+export default appConfig
+```
+
+### Query A View Model
+
+You can use the reSolve HTTP API to query a View Model:
+
+```bash
 $  curl -i -g -X GET "http://localhost:3000/api/query/shoppingList/shopping-list-1"
 HTTP/1.1 200 OK
 X-Powered-By: Express
@@ -535,1040 +844,626 @@ Connection: keep-alive
 }
 ```
 
----
+### Display View Model Data on the Client
 
-## **Lesson 4** - Frontend - Display View Model Data in the Browser
+Add the following React components to your client application to display shopping list items:
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4)
+**client/components/ShoppingListItem.js:**
 
-This lesson provides information on how to display a View Model's data in the client browser. It uses the reSolve framework's **resolve-redux** library to implement a frontend based on React and Redux.
+```jsx
+import React from 'react'
+import { ListGroupItem, Checkbox } from 'react-bootstrap'
 
-> You can use the standard HTTP API to communicate with a reSolve backend and use any client technology to implement the frontend.
+// The layout of a single item.
+const ShoppingListItem = ({ item: { id, text } }) => {
+  return (
+    <ListGroupItem key={id}>
+      <Checkbox inline>{text}</Checkbox>
+    </ListGroupItem>
+  )
+}
 
-### Implement a React Frontend
+export default ShoppingListItem
+```
 
-The frontend's source files are located in the **client** folder. Create a **ShoppingList.js** file in the **client/containers** folder. In this file, implement a React component that renders a list of values obtained from the **[data](frontend.md#obtain-view-model-data)** prop:
+**client/components/ShoppingList.js:**
 
-**client/containers/ShoppingList.js:**
+```jsx
+import React, { useState, useEffect } from 'react'
+import { useViewModel } from 'resolve-react-hooks'
 
-<!-- prettier-ignore-start -->
+import {
+  ListGroup,
+  FormControl,
+  FormGroup,
+  ControlLabel,
+} from 'react-bootstrap'
 
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /\/\// /^\}/)
-```js
-// The example code uses components from the react-bootstrap library to reduce the markup.
-import { ListGroup, ListGroupItem, Checkbox } from 'react-bootstrap'
+import ShoppingListItem from './ShoppingListItem'
 
-export class ShoppingList extends React.PureComponent {
-  render() {
-    const list = this.props.data.list
-    return (
-      <ListGroup style={{ maxWidth: '500px', margin: 'auto' }}>
-        {list.map(todo => (
-          <ListGroupItem key={todo.id}>
-            <Checkbox inline>{todo.text}</Checkbox>
-          </ListGroupItem>
+// The shopping list populated with items obtained from the ShoppingList View Model.
+const ShoppingList = ({
+  match: {
+    params: { id: aggregateId },
+  },
+}) => {
+  const [shoppingList, setShoppingList] = useState({
+    name: '',
+    id: null,
+    list: [],
+  })
+  // The UseViewModel hook connects the component to a View Model
+  // and reactively updates the component's state when the View Model's
+  // data is updated.
+  const { connect, dispose } = useViewModel(
+    'shoppingList', // The View Model's name.
+    [aggregateId], // The aggregate ID for which to query data.
+    setShoppingList // A callback to call when new data is recieved.
+  )
+
+  useEffect(() => {
+    // Connect to a View Model on component mount and disconnect on unmount.
+    connect()
+    return () => {
+      dispose()
+    }
+  }, [])
+
+  return (
+    <div>
+      <ControlLabel>Shopping list name</ControlLabel>
+      <FormGroup bsSize="large">
+        <FormControl type="text" value={shoppingList.name} readOnly />
+      </FormGroup>
+      <ListGroup>
+        {shoppingList.list.map((item, idx) => (
+          <ShoppingListItem key={idx} item={item} />
         ))}
       </ListGroup>
-    )
-  }
+    </div>
+  )
+}
+
+export default ShoppingList
+```
+
+##### Used API:
+
+- [useViewModel](api-reference.md#useviewmodel)
+
+### Implement Navigation
+
+Modify the **ShoppingLists** component's layout as shown below to render links to shopping lists.
+
+**client/components/ShoppingLists.js:**
+
+```jsx
+const ShoppingLists = ({ lists }) => {
+  return (
+    <div>
+      ...
+      <tbody>
+        {lists.map(({ id, name }, index) => (
+          <tr key={id}>
+            <td>{index + 1}</td>
+            <td>
+              <Link to={`/${id}`}>{name}</Link>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+      ...
+    </div>
+  )
 }
 ```
 
-<!-- prettier-ignore-end -->
+Run the application and click a shopping list's name view the result. To test the View Model's reactiveness, keep the page opened and use the following console input to add a shopping list item:
 
-Use the **resolve-redux** library's **connectViewModel** HOC to bind your component to the **ShoppingList** View Model that you implemented in the previous lesson.
-
-**client/containers/ShoppingList.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /export const mapStateToOptions/ /export default connectViewModel\(mapStateToOptions\)\(ShoppingList\)/)
-```js
-export const mapStateToOptions = (state, ownProps) => {
-  return {
-    viewModelName: 'shoppingList',
-    aggregateIds: ['shopping-list-1']
-  }
-}
-
-export default connectViewModel(mapStateToOptions)(ShoppingList)
-```
-
-<!-- prettier-ignore-end -->
-
-This HOC binds the original component to a reSolve View Model based on options that the **mapStateToOptions** function specifies. This HOC provides the **data** prop in your component's implementation. This prop provides access to the View Model's response object.
-
-```js
+```bash
+curl -i http://localhost:3000/api/commands/ \
+--header "Content-Type: application/json" \
+--data '
 {
-  "id": "shopping-list-1",
-  "name": "List 1",
-  "list": [
-    {
-      "id": "1",
-      "text": "Milk",
-      "checked": false
-    },
-    {
-      "id": "2",
-      "text": "Eggs",
-      "checked": false
-    },
-    {
-      "id": "3",
-      "text": "Canned beans",
-      "checked": false
-    },
-    {
-      "id": "4",
-      "text": "Paper towels",
-      "checked": false
+    "aggregateName": "ShoppingList",
+    "aggregateId": <your_shopping_list`s_aggregate_id>,
+    "type": "createShoppingItem",
+    "payload": {
+        "id": "1",
+        "text": "Milk"
     }
-  ]
 }
+'
 ```
 
-Insert the implemented **ShoppingList** component into the application's root component:
+The page is automatically updated to display the new item.
 
-**client/containers/App.js:**
-
-```js
-const App = () => (
-  <div>
-    ...
-    <ShoppingList />
-  </div>
-)
-```
-
-Run your application to view the result:
-
-![result](assets/tutorial/lesson4_result.png)
-
----
-
-## **Lesson 5** - Frontend - Enable Data Editing
+## **Lesson 5** - Enable Editing
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-5)
 
-This lesson describes how to implement a visual interface that allows you to edit shopping list items.
-
-### Modify Backend Functionality
-
-Apply the following modifications to the server code to allow a user to check and uncheck items:
-
-1. Add a new event type that indicates that an item's checkbox was toggled.
-
-**common/eventTypes.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/common/eventTypes.js /export const SHOPPING_ITEM_TOGGLED/ /\n$/)
-```js
-export const SHOPPING_ITEM_TOGGLED = "SHOPPING_ITEM_TOGGLED";
-```
-
-<!-- prettier-ignore-end -->
-
-2. Add a command handler for the **toggleShoppingItem** command.
-
-**common/aggregates/shopping_list.commands.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/common/aggregates/shopping_list.commands.js /^[[:blank:]]+toggleShoppingItem/   /^[[:blank:]]{2}\}/)
-```js
-  toggleShoppingItem: (state, { payload: { id } }) => {
-    if (!state || !state.createdAt) {
-      throw new Error(`shopping list does not exist`)
-    }
-    if (!id) throw new Error('id is required')
-    return {
-      type: SHOPPING_ITEM_TOGGLED,
-      payload: { id }
-    }
-  }
-```
-
-<!-- prettier-ignore-end -->
-
-The event payload contains the toggled item's ID.
-
-3. Modify the **shoppingList** View Model projection to take **SHOPPING_ITEM_TOGGLED** events into account.
-
-**common/view-models/shopping_list.projection.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/common/view-models/shopping_list.projection.js /^[[:space:]]+\[SHOPPING_ITEM_TOGGLED\]/   /^[[:blank:]]+\}\)/)
-```js
-  [SHOPPING_ITEM_TOGGLED]: (state, { payload: { id } }) => ({
-    ...state,
-    list: state.list.map(item =>
-      item.id === id
-        ? {
-            ...item,
-            checked: !item.checked
-          }
-        : item
-    )
-  })
-```
-
-<!-- prettier-ignore-end -->
-
-### Access Aggregate Commands on Frontend
-
-A component connected to a reSolve View Model receives an array of aggregate actions (Redux actions that send commands to a reSolve aggregate). Use the following code to generate action creators for these actions:
-
-**client/containers/ShoppingList.js:**
-
-<!-- prettier-ignore-start -->
-
-```js
-import { sendAggregateAction } from 'resolve-redux'
-import { bindActionCreators } from 'redux'
-
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(
-    {
-      createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
-    },
-    dispatch
-  )
-
-export default connectViewModel(mapStateToOptions)(
-  connect(
-    null,
-    mapDispatchToProps 
-  )(ShoppingList)
-)
-```
-
-<!-- prettier-ignore-end -->
-
-In this code, the component is first connected to a **Redux** state using the **connect** HOC from the **react-redux** library. Next, the component is connected to a reSolve View Model. The **mapDispatchToProps** function takes the reSolve aggregate actions from the component's payload and wraps every action in a **dispatch** call.
-
-### Implement Data Editing UI
-
-#### Item Creation
-
-Use the **createShoppingItem** action creator to add new shopping list items. The UI markup is shown below.
-
-**client/containers/ShoppingList.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<ControlLabel\>Item name/   /\<\/Row\>/)
-```js
-        <ControlLabel>Item name</ControlLabel>
-        <Row>
-          <Col md={8}>
-            <FormControl
-              className="example-form-control"
-              type="text"
-              value={this.state.itemText}
-              onChange={this.updateItemText}
-              onKeyPress={this.onItemTextPressEnter}
-            />
-          </Col>
-          <Col md={4}>
-            <Button
-              className="example-button"
-              bsStyle="success"
-              onClick={this.createShoppingItem}
-            >
-              Add Item
-            </Button>
-          </Col>
-        </Row>
-```
-
-<!-- prettier-ignore-end -->
-
-This markup uses the following methods to handle UI interactions:
-
-**client/containers/ShoppingList.js:**
-
-```js
-createShoppingItem = () => {
-  this.props.createShoppingItem('shopping-list-1', {
-    text: this.state.itemText,
-    id: Date.now().toString()
-  })
-
-  this.setState({
-    itemText: ''
-  })
-}
-
-updateItemText = event => {
-  this.setState({
-    itemText: event.target.value
-  })
-}
-
-onItemTextPressEnter = event => {
-  if (event.charCode === 13) {
-    event.preventDefault()
-    this.createShoppingItem()
-  }
-}
-```
-
-#### Item Selection
-
-Use the **toggleShoppingItem** action creator to toggle a shopping list item's checkbox.
-
-**client/containers/ShoppingList.js:**
-
-```js
-render() {
-  const toggleShoppingItem = this.props.toggleShoppingItem;
-  ...
-```
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<Checkbox/   /\<\/Checkbox\>/)
-```js
-              <Checkbox
-                inline
-                checked={todo.checked}
-                onChange={toggleShoppingItem.bind(null, 'shopping-list-1', {
-                  id: todo.id
-                })}
-              >
-                {todo.text}
-              </Checkbox>
-```
-
-<!-- prettier-ignore-end -->
-
-After these steps, your application's UI should look as shown below.
-
-![result](assets/tutorial/lesson5_result.png)
-
----
-
-## **Lesson 6** - Frontend - Support Multiple Shopping Lists
-
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-6)
-
-Currently, your Shopping List application's UI only allows users to view and edit one shopping list (**shopping-list-1**). This lesson describes how to create multiple shopping lists and navigate between these lists from the client UI.
-
-### Implement a Shopping Lists Read Model
-
-First, modify the application's backend so it can provide information about all available shopping lists. You can implement a View Model to achieve this goal, but this approach is inefficient.
-
-Consider a situation when your application runs in a production environment for a long time and end-users have created a large number of shopping lists. In such situation, a View Model's projection would apply every event from the store to the response object. This would result in a considerable performance overhead _on every request_.
-
-Use a **[Read Model](read-side.md#read-models)** to overcome this limitation. The code sample below demonstrates the ShoppingLists Read Model's projection.
-
-**common/read-models/shopping_lists.projection.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.projection.js /^/   /\n$/)
-```js
-import { SHOPPING_LIST_CREATED } from '../eventTypes'
-
-export default {
-  Init: async store => {
-    await store.defineTable('ShoppingLists', {
-      indexes: {
-        id: 'string'
-      },
-      fields: ['createdAt', 'name']
-    })
-  },
-
-  [SHOPPING_LIST_CREATED]: async (
-    store,
-    { aggregateId, timestamp, payload: { name } }
-  ) => {
-    const shoppingList = {
-      id: aggregateId,
-      name,
-      createdAt: timestamp
-    }
-
-    await store.insert('ShoppingLists', shoppingList)
-  }
-}
-```
-
-<!-- prettier-ignore-end -->
-
-A Read Model's projection functions apply event data to a persistent store. You also need to implement a **[query resolver](read-side.md#resolvers)** to answer data queries based on the data from the store.
-
-**common/read-models/shopping_lists.resolvers.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.resolvers.js /^/   /\n$/)
-```js
-export default {
-  all: async store => {
-    return await store.find('ShoppingLists', {}, null, { createdAt: 1 })
-  }
-}
-```
-
-<!-- prettier-ignore-end -->
-
-In this example, the **all** resolver returns all available shopping lists.
-
-Next, register the created Read Model in the application's configuration file.
-
-**config.app.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/config.app.js /^[[:blank:]]+readModels:/ /\],/)
-```js
-  readModels: [
-    {
-      name: 'ShoppingLists',
-      projection: 'common/read-models/shopping_lists.projection.js',
-      resolvers: 'common/read-models/shopping_lists.resolvers.js'
-    }
-  ],
-```
-
-<!-- prettier-ignore-end -->
-
-### Query a Read Model Through HTTP API
-
-You can use the standard HTTP API to test the ShoppingLists Read Model's functionality:
-
-```sh
-$ curl -X POST \
--H "Content-Type: application/json" \
--d "{}" \
-"http://localhost:3000/api/query/ShoppingLists/all"
-
-
-% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   186  100   184  100     2    844      9 --:--:-- --:--:-- --:--:--   906[
-  {
-    "id": "shopping-list-1",
-    "name": "List 1",
-    "createdAt": 1543325125945
-  },
-  {
-    "id": "shopping-list-2",
-    "name": "List 2",
-    "createdAt": 1543325129138
-  }
-]
-```
-
-### Implement Client UI
-
-You can now implement the UI to display all available shopping lists and create new shopping lists.
-
-**client/containers/MyLists.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/containers/MyLists.js /class MyLists/ /^}/)
-```js
-class MyLists extends React.PureComponent {
-  render() {
-    const { lists, createShoppingList } = this.props
-    return (
-      <div style={{ maxWidth: '500px', margin: 'auto' }}>
-        <ShoppingLists lists={lists} />
-        <ShoppingListCreator
-          lists={lists}
-          createShoppingList={createShoppingList}
-        />
-      </div>
-    )
-  }
-}
-```
-
-<!-- prettier-ignore-end -->
-
-> Refer to example project's [ShoppingLists.js](https://github.com/reimagined/resolve/blob/master/examples/shopping-list-tutorial/lesson-6/client/components/ShoppingLists.js) and [ShoppingListsCreator.js](https://github.com/reimagined/resolve/blob/master/examples/shopping-list-tutorial/lesson-6/client/components/ShoppingListCreator.j) files to see how you can implement these components.
-
-Connect the MyLists container component to the ShoppingLists Read Model as shown below.
-
-**client/containers/MyLists.js:**
-
-```js
-import { sendAggregateAction } from 'resolve-redux'
-import { bindActionCreators } from 'redux'
-
-export const mapStateToOptions = () => ({
-  readModelName: 'ShoppingLists',
-  resolverName: 'all',
-  resolverArgs: {}
-})
-
-export const mapStateToProps = (state, ownProps) => ({
-  lists: ownProps.data
-})
-
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
-    },
-    dispatch
-  )
-
-export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps, mapDispatchToProps)(MyLists)
-)
-```
-
-Configure the React router to enable navigation between the application pages.
-
-**client/routes.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/routes.js /^/ /\n$/)
-```js
-import App from './containers/App'
-import ShoppingList from './containers/ShoppingList'
-import MyLists from './containers/MyLists'
-
-export default [
-  {
-    component: App,
-    routes: [
-      {
-        path: '/',
-        component: MyLists,
-        exact: true
-      },
-      {
-        path: '/:id',
-        component: ShoppingList
-      }
-    ]
-  }
-]
-```
-
-<!-- prettier-ignore-end -->
-
-Next, modify the **App** component to use the router.
-
-**client/containers/App.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/containers/App.js /^/ /\n$/)
-```js
-import React from 'react'
-
-import Header from './Header.js'
-import ShoppingList from './ShoppingList'
-
-const App = ({
-  children,
-  match: {
-    params: { id }
-  }
-}) => (
-  <div>
-    <Header
-      title="reSolve Shopping List"
-      name="Shopping List"
-      favicon="/favicon.ico"
-      css={['/bootstrap.min.css']}
-    />
-    {children}
-  </div>
-)
-
-export default App
-```
-
-<!-- prettier-ignore-end -->
-
-Additionally, modify the **ShoppingList** component so it obtains the selected shopping list's aggregate ID from the **:id** route parameter.
-
-**client/containers/ShoppingList.js:**
-
-```jsx
-export const mapStateToOptions = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id
-
-  return {
-    viewModelName: 'shoppingList',
-    aggregateIds: [aggregateId]
-  }
-}
-
-export const mapStateToProps = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id
-
-  return {
-    aggregateId
-  }
-}
-```
-
-Run the application and try to create a new shopping list. You will notice that the frontend correctly sends commands to the server, but the created shopping list only appears after you refresh the page. This is an expected behavior because, in contrast to View Models, Read Models are not reactive. This means that components connected to Read Models do not automatically synchronize their Redux state with the Read Model's state on the server.
-
-To overcome this limitation, implement optimistic UI updates as the next section describes.
-
-### Support Optimistic UI Updates
-
-With this approach, a component applies model changes to the Redux state before it sends these changes to the server. Follow the steps below to provide such functionality.
-
-First, define Redux actions that perform state updates.
-
-**client/actions/optimistic_actions.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/actions/optimistic_actions.js /^/ /\n$/)
-```js
-export const OPTIMISTIC_CREATE_SHOPPING_LIST = 'OPTIMISTIC_CREATE_SHOPPING_LIST'
-export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
-```
-
-<!-- prettier-ignore-end -->
-
-Implement an optimistic reducer function that handles these actions to update the corresponding slice of the Redux state.
-
-**client/reducers/optimistic_shopping_lists.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/reducers/optimistic_shopping_lists.js /^/ /\n$/)
-```js
-import { LOCATION_CHANGE } from 'react-router-redux'
-import {
-  OPTIMISTIC_CREATE_SHOPPING_LIST,
-  OPTIMISTIC_SYNC
-} from '../actions/optimistic_actions'
-
-const optimistic_shopping_lists = (state = [], action) => {
-  switch (action.type) {
-    case LOCATION_CHANGE: {
-      return []
-    }
-    case OPTIMISTIC_CREATE_SHOPPING_LIST: {
-      return [
-        ...state,
-        {
-          id: action.payload.id,
-          name: action.payload.name
-        }
-      ]
-    }
-    case OPTIMISTIC_SYNC: {
-      return action.payload.originalLists
-    }
-    default: {
-      return state
-    }
-  }
-}
-
-export default optimistic_shopping_lists
-```
-
-<!-- prettier-ignore-end -->
-
-Provide a saga that intercepts the service actions used for communication between Redux and reSolve.
-
-**client/sagas/optimistic_shopping_lists_saga.js:**
-
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/sagas/optimistic_shopping_lists_saga.js /^/ /\n$/)
-```js
-import { takeEvery, put } from 'redux-saga/effects'
-import { actionTypes } from 'resolve-redux'
-
-import {
-  OPTIMISTIC_CREATE_SHOPPING_LIST,
-  OPTIMISTIC_SYNC
-} from '../actions/optimistic_actions'
-
-const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
-
-export default function* () {
-  yield takeEvery(
-    action =>
-      action.type === SEND_COMMAND_SUCCESS &&
-      action.commandType === 'createShoppingList',
-    function* (action) {
-      yield put({
-        type: OPTIMISTIC_CREATE_SHOPPING_LIST,
-        payload: {
-          id: action.aggregateId,
-          name: action.payload.name
-        }
-      })
-    }
-  )
-
-  yield takeEvery(
-    action =>
-      action.type === LOAD_READMODEL_STATE_SUCCESS,
-    function* (action) {
-      yield put({
-        type: OPTIMISTIC_SYNC,
-        payload: {
-          originalLists: action.result
-        }
-      })
-    }
-  )
-}
-```
-
-<!-- prettier-ignore-end -->
-
-Modify the MyLists component's **mapStateToProps** function to obtain the component's props from the corresponding slice of the Redux state:
-
-```jsx
-export const mapStateToProps = (state, ownProps) => ({
-  lists: state.optimisticShoppingLists || []
-})
-```
-
-Run your application and create a new shopping list to view the result.
-
----
-
-## **Lesson 7** - Functionality Enhancements
-
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-7)
-
-The lesson describes how to expand the Shopping List application's functionality:
-
-- Modify the reSolve backend to provide the complete set of CRUD (create, read, update, delete) operations.
-- Modify the frontend to support all CRUD operations.
-- Add static resources to the frontend.
+This lesson describes how to implement missing data editing functionality on the reSolve backend and enable data editing on the frontend.
 
 ### Modify the Backend
 
-#### Update the Write Side
+Currently your reSolve application can create shopping lists and their items. The application also requires the capability to toggle shopping list items as well as remove and items and entire lists.
 
-Define the following events to implement the full set of CRUD (create, read, update, delete) operations:
+To implement the missing functionality, you need to add data editing events, modify the ShoppingList aggregate to produce these events, and update read and view models so they take these events into account.
 
-**common/event_types.js:**
+#### Add Data Editing Events
 
-```js
-...
-export const SHOPPING_LIST_CREATED = 'SHOPPING_LIST_CREATED'
-export const SHOPPING_LIST_RENAMED = 'SHOPPING_LIST_RENAMED'
-export const SHOPPING_LIST_REMOVED = 'SHOPPING_LIST_REMOVED'
-export const SHOPPING_ITEM_REMOVED = 'SHOPPING_ITEM_REMOVED'
-```
+Define events related to data editing in the **common/eventTypes.js** file.
 
-Modify the aggregate projection to allow you to delete a shopping list.
-
-**common/aggregates/shopping_list.projection.js:**
-
-```js
-[SHOPPING_LIST_REMOVED]: () => ({})
-```
-
-Define command handlers used to edit data.
-
-**common/aggregates/shopping_list.commands.js:**
+**common/eventTypes.js:**
 
 ```js
 ...
+export const SHOPPING_LIST_REMOVED = 'SHOPPING_LIST_REMOVED' // Indicates that a shopping list was removed.
+export const SHOPPING_ITEM_TOGGLED = 'SHOPPING_ITEM_TOGGLED' // Indicates that a list item was toggled.
+export const SHOPPING_ITEM_REMOVED = 'SHOPPING_ITEM_REMOVED' // Indicates that an item was removed.
+```
 
-  renameShoppingList: (state, { payload: { name } }) => {
-    return {
-      type: SHOPPING_LIST_RENAMED,
-      payload: { name }
-    }
-  },
+#### Modify the ShoppingList Aggregate
 
-  removeShoppingList: state => {
-    return {
-      type: SHOPPING_LIST_REMOVED
-    }
-  },
+Add the following command handlers to the ShoppingList aggregate to validate the commands and produce the corresponding events:
 
-  removeShoppingItem: (state, { payload: { id } }) => {
-    return {
-      type: SHOPPING_ITEM_REMOVED,
-      payload: { id }
-    }
+**common/aggregates/shopping_lists.commands.js**
+
+```js
+import {
+    ...
+    SHOPPING_LIST_REMOVED,
+    SHOPPING_ITEM_TOGGLED,
+    SHOPPING_ITEM_REMOVED,
+  } from '../eventTypes'
+
+  export default {
+    ...
+    removeShoppingList: (state) => {
+      if (!state.createdAt) {
+        throw new Error('Shopping List does not exist')
+      }
+
+      return {
+        type: SHOPPING_LIST_REMOVED,
+      }
+    },
+    toggleShoppingItem: (state, { payload: { id } }) => {
+      if (!state.createdAt) {
+        throw new Error('Shopping List does not exist')
+      }
+
+      if (!id) {
+        throw new Error(`The "id" field is required`)
+      }
+
+      return {
+        type: SHOPPING_ITEM_TOGGLED,
+        payload: { id },
+      }
+    },
+    removeShoppingItem: (state, { payload: { id } }) => {
+      if (!state.createdAt) {
+        throw new Error('Shopping List does not exist')
+      }
+
+      if (!id) {
+        throw new Error(`The "id" field is required`)
+      }
+
+      return {
+        type: SHOPPING_ITEM_REMOVED,
+        payload: { id },
+      }
+    },
   }
 ```
 
-#### Update the Read Side
+#### Modify the ShoppingLists Read Model
 
-Modify the ShoppingList View Model projection to handle the new event types.
+Define a projection function for the 'SHOPPING_LIST_REMOVED' event in the ShoppingLists Read Model's projection:
 
-**common/view-models/shopping_list.projection.js:**
+**common/read-models/shopping_lists.projection.js**
 
 ```js
-...
+import {
+    ...
+    SHOPPING_LIST_REMOVED,
+  } from '../eventTypes'
 
-  [SHOPPING_LIST_RENAMED]: (state, { payload: { name } }) => ({
-    ...state,
-    name
-  }),
+  export default {
+    ...
+    [SHOPPING_LIST_REMOVED]: async (store, { aggregateId }) => {
+      await store.delete('ShoppingLists', { id: aggregateId })
+    },
 
+  }
+```
+
+#### Modify the shopping_list View Model
+
+In the ShoppingList View Model projection, add the following projection functions:
+
+**common/view-models/shopping_list.projection.js**
+
+```js
+import {
+  ...
+  SHOPPING_LIST_REMOVED,
+  SHOPPING_ITEM_TOGGLED,
+  SHOPPING_ITEM_REMOVED,
+} from '../eventTypes'
+
+export default {
+  ...
   [SHOPPING_LIST_REMOVED]: () => ({
-    removed: true
+    removed: true,
   }),
-
+  [SHOPPING_ITEM_TOGGLED]: (state, { payload: { id } }) => ({
+    ...state,
+    list: state.list.map((item) =>
+      item.id === id
+        ? {
+            ...item,
+            checked: !item.checked,
+          }
+        : item
+    ),
+  }),
   [SHOPPING_ITEM_REMOVED]: (state, { payload: { id } }) => ({
     ...state,
-    list: state.list.filter(item => item.id !== id)
-  })
-```
-
-Modify the ShoppingLists Read Model projection.
-
-**common/read-models/shopping_lists.projection.js:**
-
-```js
-...
-
-  [SHOPPING_LIST_REMOVED]: async (store, { aggregateId }) => {
-    await store.delete('ShoppingLists', { id: aggregateId })
-  },
-
-  [SHOPPING_LIST_RENAMED]: async (
-    store,
-    { aggregateId, payload: { name } }
-  ) => {
-    await store.update('ShoppingLists', { id: aggregateId }, { $set: { name } })
-  }
+    list: state.list.filter((item) => item.id !== id),
+  }),
+}
 ```
 
 ### Modify the Frontend
 
-#### Use Static Content
+Add a React component that creates shopping lists. The component renders a text input for a shopping list's name and an 'Add Shopping List' button.
 
-Add the static content to the application's **static** folder. The example application uses the following static files:
+**client/components/ShoppingListCreator.js**
 
-- The **Styles.css** file - Contains styles the application's client components use.
-- The **fontawesome.min.css** file an the **webfonts** folder - The standard [Font Awesome](https://fontawesome.com/) distribution.
-- The **close-button.png** image - The Remove Shopping List button's icon.
+```jsx
+import React, { useState } from 'react'
+import { Button, Col, ControlLabel, FormControl, Row } from 'react-bootstrap'
+import { useCommand } from 'resolve-react-hooks'
+import uuid from 'uuid/v4'
 
-#### Update Components
+const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
+  const [shoppingListName, setShoppingListName] = useState('')
 
-Modify the ShoppingLists component to provide a UI for shopping list deletion.
-
-**client/components/ShoppingLists.js:**
-
-```js
-<th className="example-table-action">Action</th>
-...
-
-<td className="example-table-action">
-  <Button
-    onClick={() => {
-      this.props.removeShoppingList(id)
-    }}
-  >
-    <i className="far fa-trash-alt" />
-  </Button>
-</td>
-
-```
-
-```js
-const { lists, createShoppingList, removeShoppingList } = this.props
-...
-<ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />
-```
-
-Modify the ShoppingList component to allow users to rename shopping lists.
-
-**client/containers/ShoppingList.js:**
-
-```js
-state = {
-  shoppingListName: this.props.data && this.props.data.name
-  ...
-}
-
-renameShoppingList = () => {
-  this.props.renameShoppingList(this.props.aggregateId, {
-    name: this.state.shoppingListName
-  })
-}
-
-onShoppingListNamePressEnter = event => {
-  if (event.charCode === 13) {
-    event.preventDefault()
-    this.renameShoppingList()
-  }
-}
-
-updateShoppingListName = event => {
-  this.setState({
-    shoppingListName: event.target.value
-  })
-}
-...
-
-<FormControl
-  type="text"
-  value={this.state.shoppingListName}
-  onChange={this.updateShoppingListName}
-  onKeyPress={this.onShoppingListNamePressEnter}
-  onBlur={this.renameShoppingList}
-/>
-```
-
-Add the list item deletion functionality.
-
-**client/containers/ShoppingList.js:**
-
-```js
-const {
-  ...
-  removeShoppingItem
-} = this.props
-
-<Image
-  className="example-close-button"
-  src="/close-button.png"
-  onClick={removeShoppingItem.bind(null, aggregateId, {
-    id: todo.id
-  })}
-/>
-```
-
-The code below implements the **Image** component.
-
-**client/containers/Image.js:**
-
-```js
-import { Image as BootstrapImage } from 'react-bootstrap'
-import { connectStaticBasedUrls } from 'resolve-redux'
-
-const Image = connectStaticBasedUrls(['src'])(BootstrapImage)
-
-export default Image
-```
-
-#### Link Stylesheets:
-
-Use the React Helmet component to link stylesheets to your application.
-
-**client/containers/Header.js:**
-
-```js
-import {Helmet} from "react-helmet"
-...
-
-<Helmet>
-  {css.map((href, index) => (
-    <link rel="stylesheet" href={href} key={index} />
-  ))}
-  ...
-</Helmet>
-...
-export default connectStaticBasedUrls(['css', 'favicon'])(Header)
-```
-
-**client/containers/App.js:**
-
-```js
-<Header
-  css={['/fontawesome.min.css', '/style.css', ...]}
-  ...
-/>
-```
-
-#### Update the Optimistic Updates Code
-
-Modify the code related to optimistic UI updates to support the shopping list deletion.
-
-**client/actions/optimistic_actions.js:**
-
-```js
-...
-export const OPTIMISTIC_REMOVE_SHOPPING_LIST = 'OPTIMISTIC_REMOVE_SHOPPING_LIST'
-```
-
-**client/reducers/optimistic_shopping_lists.js:**
-
-```js
-import { LOCATION_CHANGE } from 'react-router-redux'
-...
-
-  switch (action.type) {
-    case LOCATION_CHANGE: {
-      return []
+  // The useCommandHook allows you send commands to reSolve.
+  const createShoppingListCommand = useCommand(
+    {
+      type: 'createShoppingList',
+      aggregateId: uuid(),
+      aggregateName: 'ShoppingList',
+      payload: {
+        name: shoppingListName || `Shopping List ${lists.length + 1}`,
+      },
+    },
+    (err, result) => {
+      setShoppingListName('')
+      // A callback user to pass info about a newly created shopping list to the parren component.
+      onCreateSuccess(err, result)
     }
-    case OPTIMISTIC_REMOVE_SHOPPING_LIST: {
-      return state.filter(item => {
-        return item.id !== action.payload.id
-      })
-    }
-    ...
+  )
+
+  const updateShoppingListName = (event) => {
+    setShoppingListName(event.target.value)
   }
+
+  const onShoppingListNamePressEnter = (event) => {
+    if (event.charCode === 13) {
+      event.preventDefault()
+      createShoppingListCommand()
+    }
+  }
+
+  return (
+    <div>
+      <ControlLabel>Shopping list name</ControlLabel>
+      <Row>
+        <Col md={8}>
+          <FormControl
+            type="text"
+            value={shoppingListName}
+            onChange={updateShoppingListName}
+            onKeyPress={onShoppingListNamePressEnter}
+          />
+        </Col>
+        <Col md={4}>
+          <Button bsStyle="success" onClick={createShoppingListCommand}>
+            Add Shopping List
+          </Button>
+        </Col>
+      </Row>
+    </div>
+  )
+}
+
+export default ShoppingListCreator
 ```
 
-**client/sagas/optimistic_shopping_lists_saga.js:**
+##### Used API:
 
-```js
-import { takeEvery, put } from 'redux-saga/effects'
-import { actionTypes } from 'resolve-redux'
+- [useCommand](api-reference.md#usecommand)
+
+You can render this component within 'MyLists' as shown below:
+
+**client/components/MyLists.js**
+
+```jsx
+const MyLists = () => {
+  ...
+  return (
+    <div className="example-wrapper">
+      ...
+      <ShoppingListCreator
+        lists={lists ? lists.data || [] : []}
+        onCreateSuccess={(err, result) => { // Use a callback to handle the creation of new lists
+          const nextLists = { ...lists }
+          nextLists.data.push({
+            name: result.payload.name,
+            createdAt: result.timestamp,
+            id: result.aggregateId,
+          })
+          setLists(nextLists)
+        }}
+      />
+    </div>
+  )
+}
+```
+
+The following component implements a **Delete** button for a shopping list:
+
+**client/components/ShoppingListRemover.js**
+
+```jsx
+import React from 'react'
+import { Button } from 'react-bootstrap'
+import { useCommand } from 'resolve-react-hooks'
+
+const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
+  // A command to remove the list
+  const removeShoppingListCommand = useCommand(
+    {
+      type: 'removeShoppingList',
+      aggregateId: shoppingListId,
+      aggregateName: 'ShoppingList',
+    },
+    onRemoveSuccess
+  )
+
+  return <Button onClick={removeShoppingListCommand}>Delete</Button>
+}
+
+export default ShoppingListRemover
+```
+
+##### Used API:
+
+- [useCommand](api-reference.md#usecommand)
+
+Add this component each item in the ShoppingLists component's layout:
+
+**client/components/ShoppingLists.js**
+
+```jsx
+const ShoppingLists = ({ lists, onRemoveSuccess }) => {
+  return (
+    <div>
+        ...
+        <tbody>
+          {lists.map(({ id, name }, index) => (
+            <tr key={id}>
+              <td>{index + 1}</td>
+              <td>
+                <Link to={`/${id}`}>{name}</Link>
+              </td>
+              <td>
+                <ShoppingListRemover
+                  shoppingListId={id}
+                  onRemoveSuccess={onRemoveSuccess}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+  )
+}
+
+export default ShoppingLists
+```
+
+Also add an `onRemoveSuccess` handler to MyLists:
+
+**client/components/MyLists.js**
+
+```jsx
+const MyLists = () => {
+  ...
+  return (
+    <div className="example-wrapper">
+      <ShoppingLists
+        lists={lists ? lists.data || [] : []}
+        onRemoveSuccess={(err, result) => {
+          setLists({
+          ...lists,
+          data: lists.data.filter((list) => list.id !== result.aggregateId),
+         })
+      }}
+      />
+      ...
+    </div>
+  )
+}
+```
+
+The code below demonstrates how to implement data editing for the ShoppingList component:
+
+**client/components/ShoppingList.js**
+
+```jsx
+import React, { useState, useEffect } from 'react'
+import { useCommandBuilder, useViewModel } from 'resolve-react-hooks'
 
 import {
-  OPTIMISTIC_CREATE_SHOPPING_LIST,
-  OPTIMISTIC_REMOVE_SHOPPING_LIST,
-  OPTIMISTIC_SYNC
-} from '../actions/optimistic_actions'
+  Row,
+  Col,
+  ListGroup,
+  Button,
+  InputGroup,
+  FormControl,
+  FormGroup,
+  ControlLabel,
+} from 'react-bootstrap'
 
-const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
+import ShoppingListItem from './ShoppingListItem'
 
-export default function*() {
-  yield takeEvery(
-    action =>
-      action.type === SEND_COMMAND_SUCCESS &&
-      action.commandType === 'createShoppingList',
-    function*(action) {
-      yield put({
-        type: OPTIMISTIC_CREATE_SHOPPING_LIST,
-        payload: {
-          id: action.aggregateId,
-          name: action.payload.name
-        }
-      })
-    }
+const ShoppingList = ({
+  match: {
+    params: { id: aggregateId },
+  },
+}) => {
+  const [shoppingList, setShoppingList] = useState({
+    name: '',
+    id: null,
+    list: [],
+  })
+  const { connect, dispose } = useViewModel(
+    'shoppingList',
+    [aggregateId],
+    setShoppingList
+  )
+  const [itemText, setItemText] = useState('')
+  const clearItemText = () => setItemText('')
+
+  // The useCommandBuilder hook creates a function that generates commands based on a parameter
+  const createShoppingItem = useCommandBuilder(
+    (text) => ({
+      type: 'createShoppingItem',
+      aggregateId,
+      aggregateName: 'ShoppingList',
+      payload: {
+        text,
+        id: Date.now().toString(),
+      },
+    }),
+    clearItemText
   )
 
-  yield takeEvery(
-    action =>
-      action.type === SEND_COMMAND_SUCCESS &&
-      action.commandType === 'removeShoppingList',
-    function*(action) {
-      yield put({
-        type: OPTIMISTIC_REMOVE_SHOPPING_LIST,
-        payload: {
-          id: action.aggregateId
-        }
-      })
+  const updateItemText = (event) => {
+    setItemText(event.target.value)
+  }
+  const onItemTextPressEnter = (event) => {
+    if (event.charCode === 13) {
+      event.preventDefault()
+      createShoppingItem(itemText)
     }
-  )
+  }
 
-  yield takeEvery(
-    action => action.type === LOAD_READMODEL_STATE_SUCCESS,
-    function*(action) {
-      yield put({
-        type: OPTIMISTIC_SYNC,
-        payload: {
-          originalLists: action.result
-        }
-      })
+  useEffect(() => {
+    connect()
+    return () => {
+      dispose()
     }
+  }, [])
+
+  return (
+    <div>
+      <ControlLabel>Shopping list name</ControlLabel>
+      <FormGroup bsSize="large">
+        <FormControl type="text" value={shoppingList.name} readOnly />
+      </FormGroup>
+      <ListGroup>
+        {shoppingList.list.map((item, idx) => (
+          <ShoppingListItem
+            shoppingListId={aggregateId}
+            key={idx}
+            item={item}
+          />
+        ))}
+      </ListGroup>
+      <ControlLabel>Item name</ControlLabel>
+      <Row>
+        <Col md={8}>
+          <FormControl
+            type="text"
+            value={itemText}
+            onChange={updateItemText}
+            onKeyPress={onItemTextPressEnter}
+          />
+        </Col>
+        <Col md={4}>
+          <Button
+            bsStyle="success"
+            onClick={() => createShoppingItem(itemText)}
+          >
+            Add Item
+          </Button>
+        </Col>
+      </Row>
+    </div>
   )
 }
+
+export default ShoppingList
 ```
+
+##### Used API:
+
+- [useCommandBuilder](api-reference.md#usecommandbuilder)
+- [useViewModel](api-reference.md#useviewmodel)
+
+Modify the ShoppingListItem component to support item checking and deletion.
+
+**client/components/ShoppingListItem.js**
+
+```jsx
+import React from 'react'
+import { ListGroupItem, Checkbox, Button, Clearfix } from 'react-bootstrap'
+import { useCommand } from 'resolve-react-hooks'
+
+const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
+  const toggleItem = useCommand({
+    type: 'toggleShoppingItem',
+    aggregateId: shoppingListId,
+    aggregateName: 'ShoppingList',
+    payload: {
+      id,
+    },
+  })
+  const removeItem = useCommand({
+    type: 'removeShoppingItem',
+    aggregateId: shoppingListId,
+    aggregateName: 'ShoppingList',
+    payload: {
+      id,
+    },
+  })
+  return (
+    <ListGroupItem key={id}>
+      <Clearfix>
+        <Checkbox inline checked={checked} onChange={toggleItem}>
+          {text}
+        </Checkbox>
+        <Button onClick={removeItem} className="pull-right">
+          Delete
+        </Button>
+      </Clearfix>
+    </ListGroupItem>
+  )
+}
+
+export default ShoppingListItem
+```
+
+##### Used API:
+
+- [useCommand](api-reference.md#usecommand)
+
+Run the application to view the result.

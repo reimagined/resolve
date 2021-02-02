@@ -1,4 +1,4 @@
-import uuid from 'uuid'
+import { v4 as uuid } from 'uuid'
 import jwt from 'jsonwebtoken'
 import sinon from 'sinon'
 
@@ -16,7 +16,7 @@ const token = 'token'
 
 describe('aggregates', () => {
   beforeEach(() => {
-    userId = uuid.v4()
+    userId = uuid()
     sandbox = sinon.createSandbox()
     jwt.verify = sandbox.stub().returns({ id: userId })
   })

@@ -44,25 +44,23 @@
 </template>
 
 <script>
-import getStaticBasedPath from 'resolve-runtime/es/common/utils/get-static-based-path'
 import { highlight } from 'vue-highlighter'
 
 export default {
   directives: {
     highlight
   },
-  data: ({ $parent: { rootPath, staticPath } }) => {
-    const makeStaticUrl = getStaticBasedPath.bind(null, rootPath, staticPath)
+  data: ({ $parent: { client } }) => {
     return {
       text: 'Resolve Vue Example',
       word: 'Vue',
       live: true,
       style: {},
       staticUrls: {
-        resolveLogo: makeStaticUrl('resolve-logo.png'),
-        fbLogo: makeStaticUrl('fb-logo.png'),
-        twitterLogo: makeStaticUrl('twitter-logo.png'),
-        githubLogo: makeStaticUrl('github-logo.png')
+        resolveLogo: client.getStaticAssetUrl('/resolve-logo.png'),
+        fbLogo: client.getStaticAssetUrl('/fb-logo.png'),
+        twitterLogo: client.getStaticAssetUrl('/twitter-logo.png'),
+        githubLogo: client.getStaticAssetUrl('/github-logo.png')
       }
     }
   }

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { Button, Col, FormLabel, FormControl, Row } from 'react-bootstrap'
-import uuid from 'uuid/v4'
+import React, { useState, useCallback } from 'react'
+import { Button, Col, Form, Row } from 'react-bootstrap'
+import { v4 as uuid } from 'uuid'
 import { useReduxReadModelSelector, useReduxCommand } from 'resolve-redux'
 import { SHOPPING_LIST_CREATED } from '../actions/optimistic-actions'
 
@@ -8,17 +8,16 @@ export default () => {
   const [shoppingListName, setShoppingListName] = useState('')
 
   const lists = useReduxReadModelSelector('all-user-lists') || []
-  //const lists = useSelector(state => state.optimisticShoppingLists)
 
   const { execute: executeCreateListCommand } = useReduxCommand(
-    {
+    (name) => ({
       type: 'createShoppingList',
       aggregateId: uuid(),
       aggregateName: 'ShoppingList',
       payload: {
-        name: shoppingListName || `Shopping List ${lists.length + 1}`,
+        name: name || `Shopping List ${lists.length + 1}`,
       },
-    },
+    }),
     {
       actions: {
         success: (command) => ({
@@ -32,24 +31,31 @@ export default () => {
     }
   )
 
+  const createShoppingList = useCallback(() => {
+    executeCreateListCommand(shoppingListName)
+    setShoppingListName('')
+  }, [shoppingListName, setShoppingListName])
+
   const updateShoppingListName = (event) => {
     setShoppingListName(event.target.value)
   }
 
-  const onShoppingListNamePressEnter = (event) => {
-    if (event.charCode === 13) {
-      event.preventDefault()
-      executeCreateListCommand()
-      setShoppingListName('')
-    }
-  }
+  const onShoppingListNamePressEnter = useCallback(
+    (event) => {
+      if (event.charCode === 13) {
+        event.preventDefault()
+        createShoppingList()
+      }
+    },
+    [createShoppingList]
+  )
 
   return (
     <div>
-      <FormLabel>Shopping list name</FormLabel>
+      <Form.Label>Shopping list name</Form.Label>
       <Row>
         <Col md={8}>
-          <FormControl
+          <Form.Control
             className="example-form-control"
             type="text"
             value={shoppingListName}
@@ -60,8 +66,8 @@ export default () => {
         <Col md={4}>
           <Button
             className="example-button"
-            bsstyle="success"
-            onClick={executeCreateListCommand}
+            variant="success"
+            onClick={createShoppingList}
           >
             Add Shopping List
           </Button>
