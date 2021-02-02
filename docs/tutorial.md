@@ -268,8 +268,8 @@ export default {
   // The Init function initializes a state object
   Init: () => ({}),
   // A projection function updates the state based on events.
-  // Each such function is associated with a single event type.
-  // The projection function recieves the state and an event and returns the updated state.
+  // Each function is associated with a single event type.
+  // A projection function receives the state and an event, and returns the updated state.
   [SHOPPING_LIST_CREATED]: (state, { timestamp }) => ({
     ...state,
     createdAt: timestamp  // Add an event's timestamp to the state.
