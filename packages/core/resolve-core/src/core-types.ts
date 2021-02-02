@@ -29,7 +29,7 @@ export type PlainData = Serializable
 export type EncryptedBlob = string
 
 export type SecretsManager = {
-  getSecret: (id: string) => Promise<string>
+  getSecret: (id: string) => Promise<string | null>
   setSecret: (id: string, secret: string) => Promise<void>
   deleteSecret: (id: string) => Promise<void>
 }

@@ -1,4 +1,11 @@
-const incrementalImport = async (pool: any, events: any): Promise<void> => {
+import { AdapterPoolConnected, AdapterPoolConnectedProps } from './types'
+
+const incrementalImport = async <
+  ConnectedProps extends AdapterPoolConnectedProps
+>(
+  pool: AdapterPoolConnected<ConnectedProps>,
+  events: any[]
+): Promise<void> => {
   try {
     const importId = await pool.beginIncrementalImport()
     await pool.pushIncrementalImport(events, importId)

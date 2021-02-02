@@ -49,10 +49,10 @@
     "@types/node": "^13.7.0",
     "@types/react": "*",
     "@types/react-dom": "*",
-    "jest": "26.4.2",
+    "jest": "26.6.3",
     "react": "16.13.1",
     "react-test-renderer": "16.13.1",
-    "ts-jest": "26.4.4"
+    "ts-jest": "26.5.0"
   },
   "peerDependencies": {
     "react": "^16.13.0"

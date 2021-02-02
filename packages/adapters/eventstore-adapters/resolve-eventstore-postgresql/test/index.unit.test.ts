@@ -64,35 +64,44 @@ jest.mock('../src/push-incremental-import', () => jest.fn())
 const mGenericCreateAdapter = mocked(genericCreateAdapter)
 
 test('generic createAdapter invoked', () => {
-  createAdapter()
-  expect(mGenericCreateAdapter).toHaveBeenCalledWith({
-    connect,
-    loadEventsByCursor,
-    loadEventsByTimestamp,
-    getLatestEvent,
-    saveEvent,
-    init,
-    drop,
-    dispose,
-    freeze,
-    unfreeze,
-    Postgres,
-    escapeId,
-    escape,
-    fullJitter,
-    executeStatement,
-    injectEvent,
-    coercer,
-    shapeEvent,
-    getSecret,
-    setSecret,
-    deleteSecret,
-    loadSnapshot,
-    saveSnapshot,
-    dropSnapshot,
-    beginIncrementalImport,
-    commitIncrementalImport,
-    rollbackIncrementalImport,
-    pushIncrementalImport,
+  createAdapter({
+    databaseName: 'databaseName',
   })
+  expect(mGenericCreateAdapter).toHaveBeenCalledWith(
+    {
+      connect,
+      loadEventsByCursor,
+      loadEventsByTimestamp,
+      getLatestEvent,
+      saveEvent,
+      init,
+      drop,
+      dispose,
+      freeze,
+      unfreeze,
+      injectEvent,
+      shapeEvent,
+      getSecret,
+      setSecret,
+      deleteSecret,
+      loadSnapshot,
+      saveSnapshot,
+      dropSnapshot,
+      beginIncrementalImport,
+      commitIncrementalImport,
+      rollbackIncrementalImport,
+      pushIncrementalImport,
+    },
+    {
+      Postgres,
+      escapeId,
+      escape,
+      fullJitter,
+      executeStatement,
+      coercer,
+    },
+    {
+      databaseName: 'databaseName',
+    }
+  )
 })

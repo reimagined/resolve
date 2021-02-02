@@ -55,32 +55,35 @@ jest.mock('../src/get-secret', () => jest.fn())
 const mGenericCreateAdapter = mocked(genericCreateAdapter)
 
 test('generic createAdapter invoked', () => {
-  createAdapter()
-  expect(mGenericCreateAdapter).toHaveBeenCalledWith({
-    connect,
-    loadEventsByCursor,
-    loadEventsByTimestamp,
-    getLatestEvent,
-    saveEvent,
-    init,
-    drop,
-    dispose,
-    injectEvent,
-    freeze,
-    unfreeze,
-    loadSnapshot,
-    saveSnapshot,
-    dropSnapshot,
-    shapeEvent,
-    beginIncrementalImport,
-    commitIncrementalImport,
-    rollbackIncrementalImport,
-    pushIncrementalImport,
-    MySQL,
-    escapeId,
-    escape,
-    deleteSecret,
-    getSecret,
-    setSecret,
+  createAdapter({
+    database: 'database',
   })
+  expect(mGenericCreateAdapter).toHaveBeenCalledWith(
+    {
+      connect,
+      loadEventsByCursor,
+      loadEventsByTimestamp,
+      getLatestEvent,
+      saveEvent,
+      init,
+      drop,
+      dispose,
+      injectEvent,
+      freeze,
+      unfreeze,
+      loadSnapshot,
+      saveSnapshot,
+      dropSnapshot,
+      shapeEvent,
+      beginIncrementalImport,
+      commitIncrementalImport,
+      rollbackIncrementalImport,
+      pushIncrementalImport,
+      deleteSecret,
+      getSecret,
+      setSecret,
+    },
+    { MySQL, escapeId, escape },
+    { database: 'database' }
+  )
 })

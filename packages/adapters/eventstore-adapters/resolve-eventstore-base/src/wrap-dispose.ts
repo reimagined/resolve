@@ -1,13 +1,16 @@
-const wrapDispose = (pool: any, dispose: any) => async (
-  options = {}
-): Promise<void> => {
+import {
+  AdapterPoolConnected,
+  AdapterPoolConnectedProps,
+  AdapterPoolPossiblyUnconnected,
+  Dispose,
+} from './types'
+
+const wrapDispose = <ConnectedProps extends AdapterPoolConnectedProps>(
+  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+  dispose: Dispose<ConnectedProps>
+) => async (): Promise<void> => {
   if (pool.disposed) {
     throw new Error('Adapter has been already disposed')
-  }
-  if (options != null && options.constructor !== Object) {
-    throw new Error(
-      'Dispose options should be object or not be passed to use default behaviour'
-    )
   }
   pool.disposed = true
   if (!pool.isInitialized) {
@@ -16,7 +19,7 @@ const wrapDispose = (pool: any, dispose: any) => async (
 
   await pool.connectPromise
 
-  await dispose(pool, options)
+  await dispose(pool as AdapterPoolConnected<ConnectedProps>)
 }
 
 export default wrapDispose

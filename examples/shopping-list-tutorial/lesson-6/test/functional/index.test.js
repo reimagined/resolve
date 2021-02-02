@@ -262,14 +262,18 @@ test('query should works correctly', async () => {
 })
 
 test('create first shopping list', async (t) => {
-  await t.typeText(Selector('input[type=text]'), 'First Shopping List')
+  await t.typeText(Selector('input[type=text]'), 'First Shopping List', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Shopping List'))
 
   await refreshAndWait(t, () => Selector('td > a').count, 2)
 })
 
 test('create second shopping list', async (t) => {
-  await t.typeText(Selector('input[type=text]'), 'Second Shopping List')
+  await t.typeText(Selector('input[type=text]'), 'Second Shopping List', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Shopping List'))
 
   await refreshAndWait(t, () => Selector('td > a').count, 3)
@@ -280,13 +284,13 @@ test('create items in first shopping list', async (t) => {
 
   await waitSelector(t, 'ShoppingLists', Selector('input[type=text]'))
 
-  await t.typeText(Selector('input[type=text]'), 'Item 1')
+  await t.typeText(Selector('input[type=text]'), 'Item 1', { paste: true })
   await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]'), 'Item 2')
+  await t.typeText(Selector('input[type=text]'), 'Item 2', { paste: true })
   await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]'), 'Item 3')
+  await t.typeText(Selector('input[type=text]'), 'Item 3', { paste: true })
   await t.click(Selector('button').withText('Add Item'))
 
   await t.expect(Selector('label').withText('Item 1').exists).eql(true)

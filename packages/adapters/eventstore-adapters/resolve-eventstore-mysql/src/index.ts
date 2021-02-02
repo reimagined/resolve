@@ -27,30 +27,39 @@ import init from './init'
 import dispose from './dispose'
 import drop from './drop'
 
-export default createAdapter.bind(null, {
-  connect,
-  loadEventsByCursor,
-  loadEventsByTimestamp,
-  getLatestEvent,
-  saveEvent,
-  init,
-  drop,
-  dispose,
-  injectEvent,
-  freeze,
-  unfreeze,
-  shapeEvent,
-  saveSnapshot,
-  loadSnapshot,
-  dropSnapshot,
-  beginIncrementalImport,
-  commitIncrementalImport,
-  rollbackIncrementalImport,
-  pushIncrementalImport,
-  deleteSecret,
-  getSecret,
-  setSecret,
-  MySQL,
-  escapeId,
-  escape,
-})
+import type { Adapter } from 'resolve-eventstore-base'
+import type { ConnectionDependencies, MysqlAdapterConfig } from './types'
+
+const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {
+  return createAdapter(
+    {
+      connect,
+      loadEventsByCursor,
+      loadEventsByTimestamp,
+      getLatestEvent,
+      saveEvent,
+      init,
+      drop,
+      dispose,
+      injectEvent,
+      freeze,
+      unfreeze,
+      shapeEvent,
+      saveSnapshot,
+      loadSnapshot,
+      dropSnapshot,
+      beginIncrementalImport,
+      commitIncrementalImport,
+      rollbackIncrementalImport,
+      pushIncrementalImport,
+      deleteSecret,
+      getSecret,
+      setSecret,
+    },
+    { MySQL, escapeId, escape } as ConnectionDependencies,
+    options
+  )
+}
+
+export default createMysqlAdapter
+export type { MysqlAdapterConfig }
