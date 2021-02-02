@@ -7,18 +7,21 @@ import type {
   ReadModelStore,
   FunctionLike,
   StoreApi,
-  UnPromise
+  UnPromise,
 } from './types'
 
-const operationImpl = async <AdapterPool extends CommonAdapterPool, MethodImpl extends FunctionLike>(
+const operationImpl = async <
+  AdapterPool extends CommonAdapterPool,
+  MethodImpl extends FunctionLike
+>(
   pool: BaseAdapterPool<AdapterPool>,
   operationFunc: MethodImpl,
   store: ReadModelStore<StoreApi<AdapterPool>>,
   readModelName: string,
   ...args: WrappedAdapterOperationParameters<AdapterPool, MethodImpl>
-) : Promise<UnPromise<ReturnType<MethodImpl>>> => {
+): Promise<UnPromise<ReturnType<MethodImpl>>> => {
   const adapterPool = pool.adapterPoolMap.get(store)
-  if(adapterPool == null) {
+  if (adapterPool == null) {
     throw new Error(`Read-model adapter pool is null`)
   }
   const result = await operationFunc(adapterPool, readModelName, ...args)
@@ -32,29 +35,25 @@ const wrapOperation: WrapOperationMethod = <
   pool: BaseAdapterPool<AdapterPool>,
   operationName: string,
   operationFunc: MethodImpl
-) : (
+): ((
   store: ReadModelStore<StoreApi<AdapterPool>>,
   readModelName: string,
   ...args: WrappedAdapterOperationParameters<AdapterPool, MethodImpl>
-) => ReturnType<MethodImpl> => pool.withPerformanceTracer(
-  pool,
-  operationName,
-  operationImpl.bind<
-    null,
-    BaseAdapterPool<AdapterPool>,
-    MethodImpl,
-    AdapterOperationParameters<AdapterPool, MethodImpl>,
-    Promise<UnPromise<ReturnType<MethodImpl>>>
-  >(
-    null,
+) => ReturnType<MethodImpl>) =>
+  pool.withPerformanceTracer(
     pool,
-    operationFunc
-  ) as unknown as (
-    ( store: ReadModelStore<StoreApi<AdapterPool>>,
+    operationName,
+    (operationImpl.bind<
+      null,
+      BaseAdapterPool<AdapterPool>,
+      MethodImpl,
+      AdapterOperationParameters<AdapterPool, MethodImpl>,
+      Promise<UnPromise<ReturnType<MethodImpl>>>
+    >(null, pool, operationFunc) as unknown) as (
+      store: ReadModelStore<StoreApi<AdapterPool>>,
       readModelName: string,
       ...args: WrappedAdapterOperationParameters<AdapterPool, MethodImpl>
     ) => ReturnType<MethodImpl>
   )
-)
 
 export default wrapOperation

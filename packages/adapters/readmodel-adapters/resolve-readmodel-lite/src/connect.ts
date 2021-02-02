@@ -5,11 +5,13 @@ import type {
   RunQueryMethod,
   MakeNestedPathMethod,
   EscapeableMethod,
-  CurrentConnectMethod
+  CurrentConnectMethod,
 } from './types'
 
-export const escapeId: EscapeableMethod = (str) => `"${String(str).replace(/(["])/gi, '$1$1')}"`
-export const escapeStr: EscapeableMethod = (str) => `'${String(str).replace(/(['])/gi, '$1$1')}'`
+export const escapeId: EscapeableMethod = (str) =>
+  `"${String(str).replace(/(["])/gi, '$1$1')}"`
+export const escapeStr: EscapeableMethod = (str) =>
+  `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
 const coerceEmptyString = (obj: any) =>
   (obj != null && obj.constructor !== String) || obj == null ? 'default' : obj
@@ -23,7 +25,9 @@ const fullJitter = (retries: number): Promise<void> =>
     setTimeout(resolve, randRange(0, Math.min(500, 2 * 2 ** retries)))
   )
 
-const commonRunQuery: CommonRunQueryMethod = async <T extends Parameters<CommonRunQueryMethod>[3]> (
+const commonRunQuery: CommonRunQueryMethod = async <
+  T extends Parameters<CommonRunQueryMethod>[3]
+>(
   pool: Parameters<CommonRunQueryMethod>[0],
   isInlineLedger: Parameters<CommonRunQueryMethod>[1],
   sqlQuery: Parameters<CommonRunQueryMethod>[2],
@@ -81,11 +85,7 @@ const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
   return result
 }
 
-const connect: CurrentConnectMethod = async (
-  imports,
-  pool,
-  options
-) => {
+const connect: CurrentConnectMethod = async (imports, pool, options) => {
   let {
     tablePrefix,
     databaseFile,
@@ -96,7 +96,11 @@ const connect: CurrentConnectMethod = async (
   databaseFile = coerceEmptyString(databaseFile)
 
   Object.assign(pool, {
-    inlineLedgerRunQuery: commonRunQuery.bind(null, pool, true) as InlineLedgerRunQueryMethod,
+    inlineLedgerRunQuery: commonRunQuery.bind(
+      null,
+      pool,
+      true
+    ) as InlineLedgerRunQueryMethod,
     runQuery: commonRunQuery.bind(null, pool, false) as RunQueryMethod,
     fullJitter,
     connectionOptions,

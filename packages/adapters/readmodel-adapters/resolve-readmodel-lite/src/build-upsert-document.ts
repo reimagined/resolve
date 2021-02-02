@@ -4,7 +4,13 @@ const buildUpsertDocument: BuildUpsertDocumentMethod = (
   searchExpression,
   updateExpression
 ) => {
-  const searchPart = !(('$and' in searchExpression) || ('$or' in searchExpression) || ('$not' in searchExpression)) ? searchExpression : {}  
+  const searchPart = !(
+    '$and' in searchExpression ||
+    '$or' in searchExpression ||
+    '$not' in searchExpression
+  )
+    ? searchExpression
+    : {}
   const updatePart = '$set' in updateExpression ? updateExpression['$set'] : {}
 
   const baseDocument = { ...searchPart, ...updatePart }
@@ -13,13 +19,13 @@ const buildUpsertDocument: BuildUpsertDocumentMethod = (
 
   for (const key of Object.keys(baseDocument)) {
     const nestedKeys = key.split('.')
-    for(const [idx, innerKey] of nestedKeys.entries()) {
-      if(!resultDocument.hasOwnProperty(innerKey)) {
+    for (const [idx, innerKey] of nestedKeys.entries()) {
+      if (!resultDocument.hasOwnProperty(innerKey)) {
         resultDocument[innerKey] = isNaN(Number(nestedKeys[idx + 1]))
-        ? nestedKeys.length - 1 === idx
-          ? baseDocument[key]
-          : {}
-        : []
+          ? nestedKeys.length - 1 === idx
+            ? baseDocument[key]
+            : {}
+          : []
       }
     }
   }

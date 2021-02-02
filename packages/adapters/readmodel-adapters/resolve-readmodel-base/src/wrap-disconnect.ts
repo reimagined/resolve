@@ -5,39 +5,42 @@ import type {
   BaseAdapterPool,
   AdapterConnection,
   ReadModelStore,
-  StoreApi
+  StoreApi,
 } from './types'
 
-const disconnectImpl = async <AdapterPool extends CommonAdapterPool, AdapterOptions extends CommonAdapterOptions>(
+const disconnectImpl = async <
+  AdapterPool extends CommonAdapterPool,
+  AdapterOptions extends CommonAdapterOptions
+>(
   pool: BaseAdapterPool<AdapterPool>,
-  disconnect: AdapterConnection<AdapterPool, AdapterOptions>["disconnect"],
+  disconnect: AdapterConnection<AdapterPool, AdapterOptions>['disconnect'],
   store: ReadModelStore<StoreApi<AdapterPool>>
-) : Promise<void> => {
-    const adapterPool = pool.adapterPoolMap.get(store)
-    if(adapterPool == null) {
-      throw new Error(`Read-model adapter pool is null`)
-    }
-    pool.adapterPoolMap.delete(store)
-    await disconnect(adapterPool)
+): Promise<void> => {
+  const adapterPool = pool.adapterPoolMap.get(store)
+  if (adapterPool == null) {
+    throw new Error(`Read-model adapter pool is null`)
+  }
+  pool.adapterPoolMap.delete(store)
+  await disconnect(adapterPool)
 }
 
-const wrapDisconnect : WrapDisconnectMethod = <AdapterPool extends CommonAdapterPool, AdapterOptions extends CommonAdapterOptions>(
+const wrapDisconnect: WrapDisconnectMethod = <
+  AdapterPool extends CommonAdapterPool,
+  AdapterOptions extends CommonAdapterOptions
+>(
   pool: BaseAdapterPool<AdapterPool>,
-  disconnect: AdapterConnection<AdapterPool, AdapterOptions>["disconnect"],
-) : (store: ReadModelStore<StoreApi<AdapterPool>>) => Promise<void> => pool.withPerformanceTracer(
+  disconnect: AdapterConnection<AdapterPool, AdapterOptions>['disconnect']
+): ((store: ReadModelStore<StoreApi<AdapterPool>>) => Promise<void>) =>
+  pool.withPerformanceTracer(
     pool,
     'disconnect',
     disconnectImpl.bind<
       null,
       BaseAdapterPool<AdapterPool>,
-      AdapterConnection<AdapterPool, AdapterOptions>["disconnect"],
+      AdapterConnection<AdapterPool, AdapterOptions>['disconnect'],
       [ReadModelStore<StoreApi<AdapterPool>>],
       Promise<void>
-    >(
-      null,
-      pool,
-      disconnect
-    )
+    >(null, pool, disconnect)
   )
-  
+
 export default wrapDisconnect

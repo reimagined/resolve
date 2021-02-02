@@ -1,5 +1,6 @@
 import _createAdapter from 'resolve-readmodel-base'
 import SQLite from 'sqlite'
+// @ts-ignore
 import tmp from 'tmp'
 import os from 'os'
 import fs from 'fs'
@@ -12,7 +13,7 @@ import type {
   AdapterPool,
   AdapterOptions,
   MemoryStore,
-  AdapterApi
+  AdapterApi,
 } from './types'
 
 import buildUpsertDocument from './build-upsert-document'
@@ -64,7 +65,7 @@ const internalMethods: InternalMethods = {
   updateToSetExpression,
   PassthroughError,
   generateGuid,
-  dropReadModel
+  dropReadModel,
 }
 
 const externalMethods: ExternalMethods = {
@@ -93,7 +94,7 @@ const connect = _connect.bind(null, {
   ...store,
 })
 
-const implementation : CurrentAdapterImplementation = {
+const implementation: CurrentAdapterImplementation = {
   ...store,
   ...externalMethods,
   connect,

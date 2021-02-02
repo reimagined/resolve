@@ -1,4 +1,6 @@
-const count = async (
+import type { CurrentStoreApi } from './types'
+
+const count: CurrentStoreApi['count'] = async (
   {
     runQuery,
     escapeId,
@@ -21,10 +23,10 @@ const count = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const rows = await runQuery(
+  const rows = (await runQuery(
     `SELECT Count(*) AS Count FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}`
-  )
+  )) as Array<{ Count: number }>
 
   if (
     Array.isArray(rows) &&

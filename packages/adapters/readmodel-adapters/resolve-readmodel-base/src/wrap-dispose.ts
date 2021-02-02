@@ -3,37 +3,40 @@ import type {
   CommonAdapterPool,
   CommonAdapterOptions,
   BaseAdapterPool,
-  AdapterConnection
+  AdapterConnection,
 } from './types'
 
-const disposeImpl = async <AdapterPool extends CommonAdapterPool, AdapterOptions extends CommonAdapterOptions>(
+const disposeImpl = async <
+  AdapterPool extends CommonAdapterPool,
+  AdapterOptions extends CommonAdapterOptions
+>(
   pool: BaseAdapterPool<AdapterPool>,
-  disconnect: AdapterConnection<AdapterPool, AdapterOptions>["disconnect"]
+  disconnect: AdapterConnection<AdapterPool, AdapterOptions>['disconnect']
 ): Promise<void> => {
-    const adapterPools = [...pool.adapterPoolMap.values()]
-    pool.adapterPoolMap.clear()
-    for (const adapterPool of adapterPools) {
-      await disconnect(adapterPool)
-    }
+  const adapterPools = [...pool.adapterPoolMap.values()]
+  pool.adapterPoolMap.clear()
+  for (const adapterPool of adapterPools) {
+    await disconnect(adapterPool)
   }
+}
 
-const wrapDispose : WrapDisposeMethod = <AdapterPool extends CommonAdapterPool, AdapterOptions extends CommonAdapterOptions>(
+const wrapDispose: WrapDisposeMethod = <
+  AdapterPool extends CommonAdapterPool,
+  AdapterOptions extends CommonAdapterOptions
+>(
   pool: BaseAdapterPool<AdapterPool>,
-  disconnect: AdapterConnection<AdapterPool, AdapterOptions>["disconnect"],
-): () => Promise<void> => pool.withPerformanceTracer(
+  disconnect: AdapterConnection<AdapterPool, AdapterOptions>['disconnect']
+): (() => Promise<void>) =>
+  pool.withPerformanceTracer(
     pool,
     'dispose',
     disposeImpl.bind<
-    null,
+      null,
       BaseAdapterPool<AdapterPool>,
-      AdapterConnection<AdapterPool, AdapterOptions>["disconnect"],
+      AdapterConnection<AdapterPool, AdapterOptions>['disconnect'],
       [],
       Promise<void>
-    >(
-      null,
-      pool,
-      disconnect
-    )
+    >(null, pool, disconnect)
   )
 
 export default wrapDispose

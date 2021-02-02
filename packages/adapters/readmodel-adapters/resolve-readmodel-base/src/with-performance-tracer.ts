@@ -3,7 +3,7 @@ import type {
   CommonAdapterPool,
   BaseAdapterPool,
   FunctionLike,
-  UnPromise
+  UnPromise,
 } from './types'
 
 const withPerformanceTracerImpl = async <
@@ -14,18 +14,19 @@ const withPerformanceTracerImpl = async <
   methodName: string,
   methodImpl: MethodImpl,
   ...args: Parameters<MethodImpl>
-) : Promise<UnPromise<ReturnType<MethodImpl>>> => {
-  const segment = pool.performanceTracer != null ? pool.performanceTracer.getSegment() : null
+): Promise<UnPromise<ReturnType<MethodImpl>>> => {
+  const segment =
+    pool.performanceTracer != null ? pool.performanceTracer.getSegment() : null
   const subSegment = segment ? segment.addNewSubsegment(methodName) : null
-  const maybeReadModelName: string | null = 
-      args.length > 1 && args[1] != null && args[1].constructor === String
-    ? String(args[1])
-    : args.length === 1 && args[0] != null && args[0].constructor === String
-    ? String(args[0])
-    : null
+  const maybeReadModelName: string | null =
+    args.length > 1 && args[1] != null && args[1].constructor === String
+      ? String(args[1])
+      : args.length === 1 && args[0] != null && args[0].constructor === String
+      ? String(args[0])
+      : null
 
   if (subSegment != null) {
-    if(maybeReadModelName != null) {
+    if (maybeReadModelName != null) {
       subSegment.addAnnotation('readModelName', maybeReadModelName)
     }
     subSegment.addAnnotation('origin', `resolve:readmodel:${methodName}`)
@@ -52,7 +53,7 @@ const withPerformanceTracer: WithPerformanceTracerMethod = <
   pool: BaseAdapterPool<AdapterPool>,
   methodName: string,
   methodImpl: MethodImpl
-) : MethodImpl => {
+): MethodImpl => {
   return withPerformanceTracerImpl.bind<
     null,
     BaseAdapterPool<CommonAdapterPool>,
@@ -60,12 +61,7 @@ const withPerformanceTracer: WithPerformanceTracerMethod = <
     MethodImpl,
     Parameters<MethodImpl>,
     Promise<UnPromise<ReturnType<MethodImpl>>>
-  >(
-    null,
-    pool,
-    methodName,
-    methodImpl
-  ) as MethodImpl
+  >(null, pool, methodName, methodImpl) as MethodImpl
 }
 
 export default withPerformanceTracer

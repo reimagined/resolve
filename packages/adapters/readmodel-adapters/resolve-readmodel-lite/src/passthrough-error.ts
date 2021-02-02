@@ -1,11 +1,11 @@
 import type {
   PassthroughErrorInstance,
   PassthroughErrorFactory,
-  ExtractNewable
+  ExtractNewable,
 } from './types'
 
 const PassthroughError: PassthroughErrorFactory = Object.assign(
-  function (this: PassthroughErrorInstance, isRuntimeError: boolean): void {
+  (function (this: PassthroughErrorInstance, isRuntimeError: boolean): void {
     Error.call(this)
     this.name = 'PassthroughError'
     this.isRuntimeError = isRuntimeError
@@ -14,9 +14,12 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
     } else {
       this.stack = new Error().stack
     }
-  } as Function as ExtractNewable<PassthroughErrorFactory>,
+  } as Function) as ExtractNewable<PassthroughErrorFactory>,
   {
-    isPassthroughError: (error: Error & { code: string | number }, includeRuntimeErrors: boolean = false): boolean => {
+    isPassthroughError: (
+      error: Error & { code: string | number },
+      includeRuntimeErrors: boolean = false
+    ): boolean => {
       return (
         error != null &&
         (/cannot rollback - no transaction is active/i.test(error.message) ||
@@ -27,7 +30,7 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
           error.code === 'SQLITE_INTERRUPT' ||
           error.code === 'SQLITE_LOCKED')
       )
-    }
+    },
   }
 )
 

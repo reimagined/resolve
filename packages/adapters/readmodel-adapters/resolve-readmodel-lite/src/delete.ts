@@ -1,4 +1,6 @@
-const del = async (
+import type { CurrentStoreApi } from './types'
+
+const del: CurrentStoreApi['delete'] = async (
   {
     runQuery,
     tablePrefix,

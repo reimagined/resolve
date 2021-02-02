@@ -4,13 +4,20 @@ const excludeObjectField = <
   FromType extends object,
   ToType extends object,
   Key extends keyof any
->(input: FromType, key: Key) : ToType => {
+>(
+  input: FromType,
+  key: Key
+): ToType => {
   const { [key]: excludedKey, ...result } = input as any
-  void (excludedKey)
+  void excludedKey
   return result
 }
 
-const convertBinaryRow: ConvertBinaryRowMethod = (inputRow,readModelName, fieldList) => {
+const convertBinaryRow: ConvertBinaryRowMethod = (
+  inputRow,
+  readModelName,
+  fieldList
+) => {
   if (fieldList != null && fieldList.constructor !== Object) {
     throw new Error(
       'Field list should be object with enumerated selected fields'
@@ -33,10 +40,13 @@ const convertBinaryRow: ConvertBinaryRowMethod = (inputRow,readModelName, fieldL
   }
 
   const inclusiveMode = fieldList[fieldNames[0]] === 1
-  const resultRow : RowLike = {}
+  const resultRow: RowLike = {}
 
   for (const key of Object.keys(row)) {
-    if ((inclusiveMode && fieldList.hasOwnProperty(key)) || (!inclusiveMode && !fieldList.hasOwnProperty(key))) {
+    if (
+      (inclusiveMode && fieldList.hasOwnProperty(key)) ||
+      (!inclusiveMode && !fieldList.hasOwnProperty(key))
+    ) {
       resultRow[key] = row[key]
     }
   }

@@ -1,4 +1,6 @@
-const update = async (
+import type { CurrentStoreApi } from './types'
+
+const update: CurrentStoreApi['update'] = async (
   pool,
   readModelName,
   tableName,

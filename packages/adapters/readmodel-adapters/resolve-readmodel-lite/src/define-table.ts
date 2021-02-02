@@ -1,4 +1,6 @@
-const defineTable = async (
+import type { CurrentStoreApi } from './types'
+
+const defineTable: CurrentStoreApi['defineTable'] = async (
   { runQuery, tablePrefix, escapeId },
   readModelName,
   tableName,
@@ -34,7 +36,7 @@ const defineTable = async (
       )
     }
 
-    const baseIndexName = (postfix) =>
+    const baseIndexName = (postfix: string): string =>
       escapeId(`${tablePrefix}${tableName}-${indexName}-${postfix}`)
 
     const indexCategory = +idx === 0 ? 'UNIQUE' : ''

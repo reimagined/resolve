@@ -1,6 +1,10 @@
 import type { ExternalMethods } from './types'
 
-const getProperty: ExternalMethods["getProperty"] = async (pool, readModelName, key) => {
+const getProperty: ExternalMethods['getProperty'] = async (
+  pool,
+  readModelName,
+  key
+) => {
   const {
     PassthroughError,
     fullJitter,
@@ -12,7 +16,7 @@ const getProperty: ExternalMethods["getProperty"] = async (pool, readModelName, 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
   for (let retry = 0; ; retry++) {
     try {
-      const rows = await inlineLedgerRunQuery(
+      const rows = (await inlineLedgerRunQuery(
         `SELECT json_extract("Properties", ${escapeStr(
           `$.${key
             .replace(/\u001a/g, '\u001a0')
@@ -22,7 +26,7 @@ const getProperty: ExternalMethods["getProperty"] = async (pool, readModelName, 
          FROM  ${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         `
-      ) as Array<{ Value: string }>
+      )) as Array<{ Value: string }>
 
       if (rows.length === 1 && rows[0].Value != null) {
         return rows[0].Value

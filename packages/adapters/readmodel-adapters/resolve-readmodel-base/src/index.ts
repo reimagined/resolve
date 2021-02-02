@@ -12,7 +12,7 @@ const createAdapter = _createAdapter.bind(null, {
   wrapConnect,
   wrapDisconnect,
   wrapDispose,
-  wrapOperation
+  wrapOperation,
 }) as CreateAdapterMethod
 
 export default createAdapter

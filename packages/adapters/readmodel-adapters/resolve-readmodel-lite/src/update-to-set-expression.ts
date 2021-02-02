@@ -1,4 +1,8 @@
-import type { ObjectFixedUnionToIntersectionByKeys, UpdateToSetExpressionMethod, ObjectFixedKeys } from './types'
+import type {
+  ObjectFixedUnionToIntersectionByKeys,
+  UpdateToSetExpressionMethod,
+  ObjectFixedKeys,
+} from './types'
 
 const updateToSetExpression: UpdateToSetExpressionMethod = (
   expression,
@@ -8,8 +12,13 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
 ) => {
   const updateExprArray: Array<string> = []
 
-  for (let operatorName of Object.keys(expression) as Array<ObjectFixedKeys<typeof expression>>) {
-    const extractedExpression = (expression as ObjectFixedUnionToIntersectionByKeys<typeof expression, typeof operatorName> )[operatorName]
+  for (let operatorName of Object.keys(expression) as Array<
+    ObjectFixedKeys<typeof expression>
+  >) {
+    const extractedExpression = (expression as ObjectFixedUnionToIntersectionByKeys<
+      typeof expression,
+      typeof operatorName
+    >)[operatorName]
     for (let fieldName of Object.keys(extractedExpression)) {
       const fieldValue = extractedExpression[fieldName]
       const [baseName, ...nestedPath] = fieldName.split('.')

@@ -1,6 +1,9 @@
 import type { ExternalMethods } from './types'
 
-const listProperties:ExternalMethods["listProperties"] = async (pool, readModelName) => {
+const listProperties: ExternalMethods['listProperties'] = async (
+  pool,
+  readModelName
+) => {
   const {
     PassthroughError,
     fullJitter,
@@ -13,10 +16,10 @@ const listProperties:ExternalMethods["listProperties"] = async (pool, readModelN
 
   for (let retry = 0; ; retry++) {
     try {
-      const rows = await inlineLedgerRunQuery(
+      const rows = (await inlineLedgerRunQuery(
         `SELECT "Properties" FROM ${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}`
-      ) as Array<{ Properties: string }>
+      )) as Array<{ Properties: string }>
 
       const properties =
         rows.length === 1 && rows[0].Properties != null

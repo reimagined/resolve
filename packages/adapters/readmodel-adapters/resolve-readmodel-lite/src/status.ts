@@ -1,7 +1,7 @@
 import { ReadModelRunStatus } from 'resolve-readmodel-base'
 import type { ExternalMethods, ReadModelStatus } from './types'
 
-const status: ExternalMethods["status"] = async (pool, readModelName) => {
+const status: ExternalMethods['status'] = async (pool, readModelName) => {
   const {
     PassthroughError,
     fullJitter,
@@ -14,16 +14,16 @@ const status: ExternalMethods["status"] = async (pool, readModelName) => {
 
   for (let retry = 0; ; retry++) {
     try {
-      const rows = await inlineLedgerRunQuery(
+      const rows = (await inlineLedgerRunQuery(
         `SELECT * FROM ${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         `
-      ) as Array<{
-        Properties: string | null,
-        SuccessEvent: string | null,
-        FailedEvent: string | null,
-        Errors: string | null,
-        Cursor: string | null,
+      )) as Array<{
+        Properties: string | null
+        SuccessEvent: string | null
+        FailedEvent: string | null
+        Errors: string | null
+        Cursor: string | null
         IsPaused: boolean | null
       }>
 

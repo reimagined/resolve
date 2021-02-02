@@ -1,6 +1,6 @@
 import type { ExternalMethods } from './types'
 
-const reset: ExternalMethods["reset"] = async (pool, readModelName) => {
+const reset: ExternalMethods['reset'] = async (pool, readModelName) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,

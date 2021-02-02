@@ -10,7 +10,10 @@ import type {
   StoreApi,
 } from './types'
 
-const createAdapter = <AdapterPool extends CommonAdapterPool, AdapterOptions extends CommonAdapterOptions>(
+const createAdapter = <
+  AdapterPool extends CommonAdapterPool,
+  AdapterOptions extends CommonAdapterOptions
+>(
   imports: BaseAdapterImports,
   implementation: AdapterImplementation<AdapterPool, AdapterOptions>,
   options: AdapterOptions
@@ -20,7 +23,7 @@ const createAdapter = <AdapterPool extends CommonAdapterPool, AdapterOptions ext
     wrapConnect,
     wrapDisconnect,
     wrapDispose,
-    wrapOperation
+    wrapOperation,
   } = imports
 
   const {
@@ -48,10 +51,12 @@ const createAdapter = <AdapterPool extends CommonAdapterPool, AdapterOptions ext
     ...restApi
   } = implementation
 
-  if(Object.keys(restApi).length > 0) {
-    throw new Error(`Read-model adapter implementation should not provide extra methods: ${
-      JSON.stringify(Object.keys(restApi))
-    }`)
+  if (Object.keys(restApi).length > 0) {
+    throw new Error(
+      `Read-model adapter implementation should not provide extra methods: ${JSON.stringify(
+        Object.keys(restApi)
+      )}`
+    )
   }
 
   const storeApi: StoreApi<AdapterPool> = {
@@ -61,46 +66,50 @@ const createAdapter = <AdapterPool extends CommonAdapterPool, AdapterOptions ext
     count,
     insert,
     update,
-    delete: del
+    delete: del,
   }
 
   const adapterOperations: AdapterOperations<AdapterPool> = {
-      subscribe,
-      unsubscribe,
-      resubscribe,
-      deleteProperty,
-      getProperty,
-      listProperties,
-      setProperty,
-      resume,
-      pause,
-      reset,
-      status,
-      build,
+    subscribe,
+    unsubscribe,
+    resubscribe,
+    deleteProperty,
+    getProperty,
+    listProperties,
+    setProperty,
+    resume,
+    pause,
+    reset,
+    status,
+    build,
   }
 
-  for(const key of Object.keys(storeApi) as ObjectKeys<StoreApi<AdapterPool>>) {
-    if(typeof storeApi[key] !== 'function') {
+  for (const key of Object.keys(storeApi) as ObjectKeys<
+    StoreApi<AdapterPool>
+  >) {
+    if (typeof storeApi[key] !== 'function') {
       throw new Error(`Store API method ${key} should be function`)
     }
   }
 
-  for(const key of Object.keys(adapterOperations) as ObjectKeys<AdapterOperations<AdapterPool>>) {
-    if(typeof adapterOperations[key] !== 'function') {
+  for (const key of Object.keys(adapterOperations) as ObjectKeys<
+    AdapterOperations<AdapterPool>
+  >) {
+    if (typeof adapterOperations[key] !== 'function') {
       throw new Error(`Adapter operation method ${key} should be function`)
     }
   }
 
   const { eventstoreAdapter, performanceTracer } = options
 
-  const pool : BaseAdapterPool<AdapterPool> = {
-    commonAdapterPool: Object.assign(Object.create(null), { performanceTracer, eventstoreAdapter }),
+  const pool: BaseAdapterPool<AdapterPool> = {
+    commonAdapterPool: { performanceTracer, eventstoreAdapter },
     adapterPoolMap: new Map(),
     withPerformanceTracer,
     performanceTracer,
   }
 
-  const adapter : AdapterApi<AdapterPool> = {
+  const adapter: AdapterApi<AdapterPool> = {
     connect: wrapConnect(pool, connect, storeApi, options),
     disconnect: wrapDisconnect(pool, disconnect),
     dispose: wrapDispose(pool, disconnect),

@@ -5,20 +5,31 @@ import type {
   BaseAdapterPool,
   AdapterConnection,
   ReadModelStore,
-  StoreApi
+  StoreApi,
 } from './types'
 
-const connectImpl = async <AdapterPool extends CommonAdapterPool, AdapterOptions extends CommonAdapterOptions> (
+const connectImpl = async <
+  AdapterPool extends CommonAdapterPool,
+  AdapterOptions extends CommonAdapterOptions
+>(
   pool: BaseAdapterPool<AdapterPool>,
-  connect: AdapterConnection<AdapterPool, AdapterOptions>["connect"],
+  connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],
   storeApi: StoreApi<AdapterPool>,
   options: AdapterOptions,
   readModelName: string
 ): Promise<ReadModelStore<StoreApi<AdapterPool>>> => {
-  const adapterPool: AdapterPool = Object.create(pool.commonAdapterPool)
+  const adapterPool = { ...pool.commonAdapterPool } as AdapterPool
   await connect(adapterPool, options)
 
-  const { defineTable, findOne,find, count, insert, update, delete: del } = storeApi
+  const {
+    defineTable,
+    findOne,
+    find,
+    count,
+    insert,
+    update,
+    delete: del,
+  } = storeApi
   const store: ReadModelStore<StoreApi<AdapterPool>> = {
     defineTable: defineTable.bind(null, adapterPool, readModelName),
     findOne: findOne.bind(null, adapterPool, readModelName),
@@ -27,7 +38,7 @@ const connectImpl = async <AdapterPool extends CommonAdapterPool, AdapterOptions
     insert: insert.bind(null, adapterPool, readModelName),
     update: update.bind(null, adapterPool, readModelName),
     delete: del.bind(null, adapterPool, readModelName),
-    performanceTracer: pool.performanceTracer
+    performanceTracer: pool.performanceTracer,
   }
 
   Object.freeze(store)
@@ -36,29 +47,29 @@ const connectImpl = async <AdapterPool extends CommonAdapterPool, AdapterOptions
   return store
 }
 
-const wrapConnect : WrapConnectMethod = <AdapterPool extends CommonAdapterPool, AdapterOptions extends CommonAdapterOptions>(
+const wrapConnect: WrapConnectMethod = <
+  AdapterPool extends CommonAdapterPool,
+  AdapterOptions extends CommonAdapterOptions
+>(
   pool: BaseAdapterPool<AdapterPool>,
-  connect: AdapterConnection<AdapterPool, AdapterOptions>["connect"],
+  connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],
   storeApi: StoreApi<AdapterPool>,
-  options: AdapterOptions,
-) : (readModelName: string) => Promise<ReadModelStore<StoreApi<AdapterPool>>> => pool.withPerformanceTracer(
-  pool,
-  'connect',
-  connectImpl.bind<
-    null,
-    BaseAdapterPool<AdapterPool>,
-    AdapterConnection<AdapterPool, AdapterOptions>["connect"],
-    StoreApi<AdapterPool>,
-    AdapterOptions,
-    [string],
-    Promise<ReadModelStore<StoreApi<AdapterPool>>>
-  >(
-    null,
+  options: AdapterOptions
+): ((
+  readModelName: string
+) => Promise<ReadModelStore<StoreApi<AdapterPool>>>) =>
+  pool.withPerformanceTracer(
     pool,
-    connect,
-    storeApi,
-    options
+    'connect',
+    connectImpl.bind<
+      null,
+      BaseAdapterPool<AdapterPool>,
+      AdapterConnection<AdapterPool, AdapterOptions>['connect'],
+      StoreApi<AdapterPool>,
+      AdapterOptions,
+      [string],
+      Promise<ReadModelStore<StoreApi<AdapterPool>>>
+    >(null, pool, connect, storeApi, options)
   )
-)
 
 export default wrapConnect

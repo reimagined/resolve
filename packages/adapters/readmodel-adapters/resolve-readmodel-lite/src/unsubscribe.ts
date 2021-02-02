@@ -1,6 +1,9 @@
 import type { ExternalMethods } from './types'
 
-const unsubscribe: ExternalMethods["unsubscribe"] = async (pool, readModelName) => {
+const unsubscribe: ExternalMethods['unsubscribe'] = async (
+  pool,
+  readModelName
+) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,
