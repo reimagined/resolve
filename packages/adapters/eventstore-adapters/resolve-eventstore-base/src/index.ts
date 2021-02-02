@@ -31,6 +31,8 @@ import {
   AdapterPoolPossiblyUnconnected,
   AdapterPoolConnected,
   AdapterConfig,
+  ImportOptions,
+  ExportOptions,
 } from './types'
 
 const wrappedCreateAdapter = <
@@ -89,4 +91,6 @@ export {
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
   AdapterConfig,
+  ImportOptions,
+  ExportOptions,
 }
