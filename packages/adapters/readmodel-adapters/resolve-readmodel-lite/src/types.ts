@@ -9,7 +9,6 @@ import type {
     JsonMap,
     SearchCondition,
     UpdateCondition,
-    AdapterApi,
     IfEquals,
     IsTypeLike
 } from 'resolve-readmodel-base'
@@ -94,7 +93,7 @@ export interface PassthroughErrorInstance extends Error {
 export type PassthroughErrorFactory = {
   new (isRuntimeError: boolean): PassthroughErrorInstance
 } & {
-  isPassthroughError: (error: any, includeRuntimeErrors: boolean) => boolean
+  isPassthroughError: (error: Error & { code: string | number }, includeRuntimeErrors: boolean) => boolean
 }
 
 export type GenerateGuidMethod = (...args: any) => string

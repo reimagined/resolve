@@ -136,12 +136,15 @@ export type ReadModelEvent = {
 
 export type EventstoreAdapterLike = {
   loadEvents(filter:
-    { eventTypes: Array<ReadModelEvent["type"]>,
-      eventsSizeLimit: number,
-      limit: number,
-      cursor: ReadModelCursor
+    { eventTypes: Array<ReadModelEvent["type"]> | null,
+      eventsSizeLimit: number | null,
+      limit: number | null,
+      cursor: ReadModelCursor | null
     }
-  ): Array<ReadModelEvent>,
+  ): Promise<{
+    events: Array<ReadModelEvent>,
+    cursor: ReadModelCursor
+  } >,
   getNextCursor(
     previousCursor: ReadModelCursor,
     appliedEvents: Array<ReadModelEvent>
@@ -178,6 +181,7 @@ export type ReadModelStoreImpl<AdapterPool extends CommonAdapterPool, CurrentSto
 })
 
 export type FunctionLike = (...args: any[]) => any
+export type NewableLike = new (...args: any[]) => any
 
 export type ReadModelStore<CurrentStoreApi> = CurrentStoreApi extends StoreApi<infer AdapterPool>
   ? ReadModelStoreImpl<AdapterPool, CurrentStoreApi>
@@ -223,7 +227,7 @@ export type ReadModelStatus = {
 }
 
 export type ProjectionMethod<AdapterPool extends CommonAdapterPool> = (
-  projectionStore: StoreApi<AdapterPool>,
+  projectionStore: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
   projectionEvent: ReadModelEvent,
   projectionEncryption?: EncryptionLike
 ) => Promise<void>
@@ -301,7 +305,7 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
   build(
     pool: AdapterPool,
     readModelName: string,
-    store: StoreApi<AdapterPool>,
+    store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
     projection: Record<ReadModelEvent["type"], ProjectionMethod<AdapterPool>>,
     next: MethodNext,
     getVacantTimeInMillis: MethodGetRemainingTime,
@@ -459,4 +463,16 @@ export type JsonLike = JsonPrimitive | JsonArray | JsonMap
 export type IfEquals<T, U, Y=unknown, N=never> = (<G>() => G extends T ? 1 : 2) extends (<G>() => G extends U ? 1 : 2) ? Y : N;
 
 export type IsTypeLike<T, B> = IfEquals<Extract<T, B>, T>
+
+export type ExtractNewable<F extends NewableLike> = F extends new (...args: infer Args) => infer Result ?
+  new (...args: Args) => Result : never
+
+export type MakeNewableFunction<F extends FunctionLike> = F extends (this: infer T, ...args: infer Args) => infer Result ?
+   T extends object ?
+  ( IfEquals<Result, T, (new (...args: Args) => T), (IfEquals<Result, null, (new (...args: Args) => T), 
+  (IfEquals<Result, undefined, (new (...args: Args) => T), (IfEquals<Result, boolean, (new (...args: Args) => T), 
+  (IfEquals<Result, string, (new (...args: Args) => T), (IfEquals<Result, number, (new (...args: Args) => T), 
+  (IfEquals<Result, void, (new (...args: Args) => T), never>)>)>)>)>)>)>
+  ) : never
+  : never
 

@@ -1,4 +1,6 @@
-const serializeError = (error) =>
+import type { ExternalMethods, ReadModelEvent } from './types'
+
+const serializeError = (error: Error & { code: number }) =>
   error != null
     ? {
         name: error.name == null ? null : String(error.name),
@@ -10,7 +12,19 @@ const serializeError = (error) =>
 
 const MAX_SEIZE_TIME = 1500 // 1.5 seconds
 
-const buildInit = async (pool, readModelName, store, projection, next) => {
+const buildInit: ExternalMethods["build"]  = async (
+  pool: Parameters<ExternalMethods["build"]>[0] & {
+    getVacantTimeInMillis: Parameters<ExternalMethods["build"]>[5],
+    provideLedger: Parameters<ExternalMethods["build"]>[6],
+    getEncryption: Parameters<ExternalMethods["build"]>[7],
+    ledgerTableNameAsId: string,
+    xaKey: string,
+  },
+  readModelName: Parameters<ExternalMethods["build"]>[1],
+  store: Parameters<ExternalMethods["build"]>[2],
+  projection: Parameters<ExternalMethods["build"]>[3],
+  next: Parameters<ExternalMethods["build"]>[4]
+): Promise<void> => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,
@@ -66,7 +80,7 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
   let lastError = null
   try {
     if (typeof projection.Init === 'function') {
-      await projection.Init(store)
+      await projection.Init(store, null! as ReadModelEvent)
     }
   } catch (error) {
     lastError = error
@@ -115,7 +129,21 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
   }
 }
 
-const buildEvents = async (pool, readModelName, store, projection, next) => {
+const buildEvents = async (
+  pool: Parameters<ExternalMethods["build"]>[0] & {
+    getVacantTimeInMillis: Parameters<ExternalMethods["build"]>[5],
+    provideLedger: Parameters<ExternalMethods["build"]>[6],
+    getEncryption: Parameters<ExternalMethods["build"]>[7],
+    ledgerTableNameAsId: string,
+    xaKey: string,
+    eventTypes: Array<string> | null,
+    cursor: string | null,
+  },
+  readModelName: Parameters<ExternalMethods["build"]>[1],
+  store: Parameters<ExternalMethods["build"]>[2],
+  projection: Parameters<ExternalMethods["build"]>[3],
+  next: Parameters<ExternalMethods["build"]>[4]
+): Promise<void> => {
   const {
     PassthroughError,
     getVacantTimeInMillis,
@@ -134,7 +162,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
   let lastFailedEvent = null
   let lastError = null
 
-  const events = await eventstoreAdapter
+  const events = await (eventstoreAdapter
     .loadEvents({
       eventTypes,
       eventsSizeLimit: 6553600,
@@ -142,9 +170,10 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
       cursor,
     })
     .then((result) => (result != null ? result.events : null))
+    )
 
   if (events.length === 0) {
-    throw new PassthroughError()
+    throw new PassthroughError(false)
   }
   const seizeTimestamp = Date.now()
   const executeEncryption = await getEncryption()
@@ -321,7 +350,7 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
   }
 }
 
-const build = async (
+const build: ExternalMethods["build"] = async (
   basePool,
   readModelName,
   store,
@@ -382,7 +411,16 @@ const build = async (
       AND "IsPaused" = 0
       AND "Errors" IS NULL
       `
-    )
+    ) as Array<{
+      EventTypes: string | null,
+      AggregateIds: string | null,
+      Cursor: string | null,
+      SuccessEvent: string | null,
+      FailedEvent: string | null,
+      Errors: string | null,
+      Properties: string | null,
+      Schema: string | null
+    }>
 
     while (true) {
       try {
@@ -427,7 +465,7 @@ const build = async (
         : null
 
     if (readModelLedger == null || readModelLedger.Errors != null) {
-      throw new PassthroughError()
+      throw new PassthroughError(false)
     }
 
     const { EventTypes: eventTypes, Cursor: cursor } = readModelLedger

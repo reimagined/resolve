@@ -13,7 +13,6 @@ import type {
   AdapterOptions,
   MemoryStore,
   AdapterApi
-
 } from './types'
 
 import buildUpsertDocument from './build-upsert-document'
@@ -101,6 +100,11 @@ const implementation : CurrentAdapterImplementation = {
   disconnect,
 }
 
-const createAdapter = _createAdapter.bind<null, CurrentAdapterImplementation, [AdapterOptions], AdapterApi<AdapterPool>>(null, implementation)
+const createAdapter = _createAdapter.bind<
+  null,
+  CurrentAdapterImplementation,
+  [AdapterOptions],
+  AdapterApi<AdapterPool>
+>(null, implementation)
 
 export default createAdapter
