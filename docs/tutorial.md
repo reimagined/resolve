@@ -557,7 +557,7 @@ This lesson describes how to display a Read Model's data in the client browser. 
 
 ### Implement the Client Application
 
-> The example code uses **react-bootstrap** to keep the markup simple. To use this library, you should link the Bootstrap stylesheet file to the application's page. The example project's **client/components/Header.js** file demonstrates how to link static resources.
+> The example project uses **react-bootstrap** to reduce the size of the markup To use this library, you should link the Bootstrap stylesheet file to the application's page. The example project's **client/components/Header.js** file demonstrates how to link static resources.
 
 First, implement a React component that renders a list of shopping list names. To do this, create a **ShoppingLists.js** file in the **client/components** subfolder and add the following code to this file:
 
