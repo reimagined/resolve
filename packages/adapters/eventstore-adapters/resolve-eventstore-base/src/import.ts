@@ -10,6 +10,11 @@ import {
 } from './constants'
 
 import { ResourceNotExistError } from './resource-errors'
+import {
+  AdapterPoolConnectedProps,
+  AdapterPoolPossiblyUnconnected,
+  ImportOptions,
+} from './types'
 
 const EventStream = function (
   this: any,
@@ -254,10 +259,13 @@ EventStream.prototype._final = async function (callback: any): Promise<void> {
   }
 }
 
-const importStream = (
-  pool: any,
-  { byteOffset = 0, maintenanceMode = MAINTENANCE_MODE_AUTO }: any = {}
-): any => {
+const importStream = <ConnectedProps extends AdapterPoolConnectedProps>(
+  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+  {
+    byteOffset = 0,
+    maintenanceMode = MAINTENANCE_MODE_AUTO,
+  }: Partial<ImportOptions> = {}
+): stream.Writable => {
   switch (maintenanceMode) {
     case MAINTENANCE_MODE_AUTO:
     case MAINTENANCE_MODE_MANUAL:

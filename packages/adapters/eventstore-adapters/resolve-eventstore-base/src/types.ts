@@ -1,4 +1,6 @@
 import { SecretsManager } from 'resolve-core'
+import stream from 'stream'
+import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 
 export type CheckForResourceError = (errors: Error[]) => void
 
@@ -140,6 +142,35 @@ export type Dispose<ConnectedProps extends AdapterPoolConnectedProps> = (
   pool: AdapterPoolConnected<ConnectedProps>
 ) => Promise<void>
 
+type MAINTENANCE_MODE =
+  | typeof MAINTENANCE_MODE_AUTO
+  | typeof MAINTENANCE_MODE_MANUAL
+
+export type ImportOptions = {
+  byteOffset: number
+  maintenanceMode: MAINTENANCE_MODE
+}
+
+export type ExportOptions = {
+  cursor: string | null
+  maintenanceMode: MAINTENANCE_MODE
+  bufferSize: number
+}
+
+export type GetImportStream<
+  ConnectedProps extends AdapterPoolConnectedProps
+> = (
+  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+  options?: Partial<ImportOptions>
+) => stream.Writable
+
+export type GetExportStream<
+  ConnectedProps extends AdapterPoolConnectedProps
+> = (
+  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+  options?: Partial<ExportOptions>
+) => stream.Readable
+
 export interface CommonAdapterFunctions<
   ConnectedProps extends AdapterPoolConnectedProps
 > {
@@ -151,8 +182,8 @@ export interface CommonAdapterFunctions<
   wrapDispose: WrapDispose<ConnectedProps>
   validateEventFilter: ValidateEventFilter
   loadEvents: LoadEvents<ConnectedProps>
-  importStream: any
-  exportStream: any
+  importStream: GetImportStream<ConnectedProps>
+  exportStream: GetExportStream<ConnectedProps>
   incrementalImport: IncrementImport<ConnectedProps>
   getNextCursor: GetNextCursor
 }
@@ -217,8 +248,8 @@ export interface AdapterFunctions<
 
 export interface Adapter {
   loadEvents: (filter: EventFilter) => Promise<EventsWithCursor>
-  import: (options: any) => any
-  export: (options: any) => any
+  import: (options?: Partial<ImportOptions>) => stream.Writable
+  export: (options?: Partial<ExportOptions>) => stream.Readable
   getLatestEvent: (filter: EventFilter) => Promise<any>
   saveEvent: (event: any) => Promise<any>
   init: () => Promise<any>
