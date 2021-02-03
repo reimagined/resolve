@@ -65,6 +65,8 @@ const createAdapter = <
     getSecret,
     setSecret,
     deleteSecret,
+    loadSecrets,
+    injectSecret,
   }: AdapterFunctions<ConnectedProps, ConnectionDependencies, Config>,
   connectionDependencies: ConnectionDependencies,
   options: Config
@@ -145,6 +147,14 @@ const createAdapter = <
       rollbackIncrementalImport
     ),
     incrementalImport: wrapMethod(adapterPool, incrementalImport),
+    loadSecrets:
+      loadSecrets === undefined
+        ? undefined
+        : wrapMethod(adapterPool, loadSecrets),
+    injectSecret:
+      injectSecret === undefined
+        ? undefined
+        : wrapMethod(adapterPool, injectSecret),
   }
 
   Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(

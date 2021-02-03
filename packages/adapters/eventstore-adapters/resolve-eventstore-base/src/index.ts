@@ -33,6 +33,9 @@ import {
   AdapterConfig,
   ImportOptions,
   ExportOptions,
+  SecretFilter,
+  SecretsWithIdx,
+  SecretRecord,
 } from './types'
 
 const wrappedCreateAdapter = <
@@ -93,4 +96,7 @@ export {
   AdapterConfig,
   ImportOptions,
   ExportOptions,
+  SecretFilter,
+  SecretsWithIdx,
+  SecretRecord,
 }

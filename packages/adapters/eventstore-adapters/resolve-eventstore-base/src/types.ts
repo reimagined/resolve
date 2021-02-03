@@ -39,6 +39,22 @@ export type CursorFilter = EventFilterCommon & {
 
 export type EventFilter = TimestampFilter | CursorFilter
 
+export type SecretFilter = {
+  idx?: number | null
+  limit: number
+}
+
+export type SecretsWithIdx = {
+  idx: number | null
+  secrets: SecretRecord[]
+}
+
+export type SecretRecord = {
+  idx: number
+  id: string
+  secret: string
+}
+
 export function isTimestampFilter(
   filter: EventFilter
 ): filter is TimestampFilter {
@@ -244,6 +260,14 @@ export interface AdapterFunctions<
     secret: string
   ) => Promise<void>
   deleteSecret: (pool: AdapterPool, selector: string) => Promise<void>
+  loadSecrets?: (
+    pool: AdapterPool,
+    filter: SecretFilter
+  ) => Promise<SecretsWithIdx>
+  injectSecret?: (
+    pool: AdapterPool,
+    secretRecord: SecretRecord
+  ) => Promise<void>
 }
 
 export interface Adapter {
@@ -270,4 +294,6 @@ export interface Adapter {
   ) => Promise<void>
   rollbackIncrementalImport: () => Promise<void>
   incrementalImport: (events: any[]) => Promise<void>
+  loadSecrets?: (filter: SecretFilter) => Promise<SecretsWithIdx>
+  injectSecret?: (secretRecord: SecretRecord) => Promise<void>
 }
