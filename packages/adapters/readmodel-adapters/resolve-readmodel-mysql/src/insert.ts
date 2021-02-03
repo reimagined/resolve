@@ -1,4 +1,6 @@
-const insert = async (
+import type { CurrentStoreApi } from './types'
+
+const insert: CurrentStoreApi["insert"] = async (
   { runQuery, escapeId, escapeStr, tablePrefix },
   readModelName,
   tableName,

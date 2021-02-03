@@ -1,8 +1,10 @@
+import type { CurrentStoreApi } from './types'
+
 const STRING_INDEX_TYPE =
   'VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
 const NUMBER_INDEX_TYPE = 'BIGINT'
 
-const defineTable = async (
+const defineTable: CurrentStoreApi["defineTable"] = async (
   { runQuery, tablePrefix, escapeId },
   readModelName,
   tableName,

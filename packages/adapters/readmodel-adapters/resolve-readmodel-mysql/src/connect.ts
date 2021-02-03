@@ -1,9 +1,11 @@
-const runQuery = async (pool, querySQL) => {
+import type { MakeNestedPathMethod, CurrentConnectMethod, InlineLedgerRunQueryMethod, RunQueryMethod, AdapterPool } from './types'
+
+const runQuery: (pool: AdapterPool, ...args: Parameters<RunQueryMethod>) => ReturnType<RunQueryMethod> = async (pool, querySQL) => {
   const [rows] = await pool.connection.query(querySQL)
-  return rows
+  return rows as Array<object>
 }
 
-const inlineLedgerRunQuery = async (
+const inlineLedgerRunQuery: (pool: AdapterPool, ...args: Parameters<InlineLedgerRunQueryMethod>) => ReturnType<InlineLedgerRunQueryMethod> = async (
   pool,
   querySQL,
   passthroughRuntimeErrors = false
@@ -28,10 +30,10 @@ const inlineLedgerRunQuery = async (
     rows = JSON.parse(JSON.stringify(rows))
   }
 
-  return rows
+  return rows as Array<object>
 }
 
-const makeNestedPath = (nestedPath) => {
+const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
   let result = '$'
   for (const part of nestedPath) {
     if (part == null || part.constructor !== String) {
@@ -47,15 +49,14 @@ const makeNestedPath = (nestedPath) => {
   return result
 }
 
-const connect = async (imports, pool, options) => {
+const connect: CurrentConnectMethod = async (imports, pool, options) => {
   let {
     tablePrefix,
     performanceTracer,
-    preferEventBusLedger,
     eventstoreAdapter,
     ...connectionOptions
   } = options
-  void (preferEventBusLedger, eventstoreAdapter)
+  void (eventstoreAdapter)
 
   if (
     tablePrefix == null ||
@@ -71,15 +72,16 @@ const connect = async (imports, pool, options) => {
 
   const [[{ version }]] = await connection.query(
     `SELECT version() AS \`version\``
-  )
+  ) as [Array<{ version: string }>, unknown]
+
   const major = +version.split('.')[0]
   if (isNaN(major) || major < 8) {
     throw new Error(`Supported MySQL version 8+, but got ${version}`)
   }
 
   Object.assign(pool, {
-    inlineLedgerRunQuery: inlineLedgerRunQuery.bind(null, pool),
-    runQuery: runQuery.bind(null, pool),
+    inlineLedgerRunQuery: inlineLedgerRunQuery.bind(null, pool) as InlineLedgerRunQueryMethod,
+    runQuery: runQuery.bind(null, pool) as RunQueryMethod,
     performanceTracer,
     tablePrefix,
     makeNestedPath,

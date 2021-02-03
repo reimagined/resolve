@@ -1,4 +1,6 @@
-const resubscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
+import type { ExternalMethods } from './types'
+
+const resubscribe: ExternalMethods["resubscribe"] = async (pool, readModelName, eventTypes, aggregateIds) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,

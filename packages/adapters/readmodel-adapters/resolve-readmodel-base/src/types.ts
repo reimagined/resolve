@@ -151,7 +151,7 @@ export type EventstoreAdapterLike = {
   getNextCursor(
     previousCursor: ReadModelCursor,
     appliedEvents: Array<ReadModelEvent>
-  ): Promise<ReadModelCursor>
+  ): ReadModelCursor
 }
 
 export type CommonAdapterPool = {
@@ -228,6 +228,7 @@ export type ReadModelLedger = {
   Errors: Array<Error> | null
   Properties: Record<string, string> | null
   Schema: Record<string, string> | null
+  IsPaused: boolean
 }
 
 export type MethodNext = () => Promise<void>

@@ -1,4 +1,6 @@
-const getProperty = async (pool, readModelName, key) => {
+import type { ExternalMethods } from './types'
+
+const getProperty: ExternalMethods["getProperty"] = async (pool, readModelName, key) => {
   const { inlineLedgerRunQuery, tablePrefix, escapeId, escapeStr } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
@@ -8,7 +10,7 @@ const getProperty = async (pool, readModelName, key) => {
      FROM  ${ledgerTableNameAsId}
      WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
     `
-  )
+  ) as Array<{ Value: string }>
 
   if (rows.length === 1 && rows[0].Value != null) {
     return rows[0].Value

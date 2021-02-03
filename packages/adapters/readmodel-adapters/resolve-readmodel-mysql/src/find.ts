@@ -1,6 +1,8 @@
+import type { CurrentStoreApi, MarshalledRowLike, JsonMap } from './types'
+
 const MAX_LIMIT_VALUE = 0x0fffffff | 0
 
-const find = async (
+const find: CurrentStoreApi["find"] = async (
   {
     runQuery,
     escapeId,
@@ -35,8 +37,8 @@ const find = async (
           .join(', ')
       : ''
 
-  const skipLimit = `LIMIT ${isFinite(skip) ? skip : 0},${
-    isFinite(limit) ? limit : MAX_LIMIT_VALUE
+  const skipLimit = `LIMIT ${isFinite(+(skip as number)) ? +(skip as number) : 0},${
+    isFinite(+(limit as number)) ? +(limit as number) : MAX_LIMIT_VALUE
   }`
 
   const searchExpr = searchToWhereExpression(
@@ -49,15 +51,17 @@ const find = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const rows = await runQuery(
+  const inputRows = await runQuery(
     `SELECT * FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}
     ${orderExpression}
     ${skipLimit};`
-  )
+  ) as Array<MarshalledRowLike>
+
+  const rows: Array<JsonMap> = []
 
   for (let idx = 0; idx < rows.length; idx++) {
-    rows[idx] = convertBinaryRow(rows[idx], fieldList)
+    rows[idx] = convertBinaryRow(inputRows[idx], fieldList)
   }
 
   return rows

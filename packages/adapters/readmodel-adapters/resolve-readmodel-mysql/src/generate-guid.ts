@@ -1,4 +1,6 @@
-const generateGuid = (...args) => {
+import type { GenerateGuidMethod } from './types'
+
+const generateGuid: GenerateGuidMethod = (...args) => {
   const baseBuffer = Buffer.from(`${args.map(String).join('')}`)
   const resultBuffer = Buffer.alloc(8)
 
