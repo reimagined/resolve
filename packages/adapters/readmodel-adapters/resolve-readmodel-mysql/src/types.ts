@@ -85,8 +85,7 @@ export type DropReadModelMethod = (
 ) => Promise<void>
 
 export type AdapterOptions = CommonAdapterOptions & {
-  tablePrefix: string
-  databaseFile: string
+  tablePrefix?: string
 } & MySQLPromiseLib.ConnectionOptions
 
 export type InternalMethods = {

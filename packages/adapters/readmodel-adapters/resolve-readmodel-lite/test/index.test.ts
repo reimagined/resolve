@@ -4,7 +4,7 @@ import path from 'path'
 import createReadModelAdapter from '../src'
 
 describe('resolve-readmodel-lite', () => {
-  let adapter = null
+  let adapter = null! as ReturnType<typeof createReadModelAdapter>
 
   for (const { describeName, databaseFile, clear } of [
     {
@@ -34,8 +34,8 @@ describe('resolve-readmodel-lite', () => {
     describe(describeName, () => {
       beforeEach(() => {
         adapter = createReadModelAdapter({
+          eventstoreAdapter: null! as any,
           databaseFile,
-          preferEventBusLedger: true,
         })
       })
 
@@ -47,6 +47,7 @@ describe('resolve-readmodel-lite', () => {
         const readModelName = 'readModelName'
 
         const store = await adapter.connect(readModelName)
+        await adapter.subscribe(store, readModelName, null, null)
 
         await store.defineTable('ShoppingLists', {
           indexes: {
@@ -93,13 +94,15 @@ describe('resolve-readmodel-lite', () => {
 
         expect(await store.count('ShoppingLists', {})).toEqual(2)
 
-        await adapter.disconnect(store, readModelName)
+        await adapter.unsubscribe(store, readModelName)
+        await adapter.disconnect(store)
       })
 
       test('methods "defineTable", "insert", "find", "findOne"', async () => {
         const readModelName = 'readModelName'
 
         const store = await adapter.connect(readModelName)
+        await adapter.subscribe(store, readModelName, null, null)
 
         await store.defineTable('Entries', {
           indexes: {
@@ -198,7 +201,9 @@ describe('resolve-readmodel-lite', () => {
           },
         ])
 
-        await adapter.disconnect(store, readModelName)
+        await adapter.unsubscribe(store, readModelName)
+
+        await adapter.disconnect(store)
       })
 
       test('method "drop"', async () => {
@@ -207,6 +212,8 @@ describe('resolve-readmodel-lite', () => {
 
         const store1 = await adapter.connect(readModelName1)
         const store2 = await adapter.connect(readModelName2)
+        await adapter.subscribe(store1, readModelName1, null, null)
+        await adapter.subscribe(store2, readModelName2, null, null)
 
         await store1.defineTable('table1', {
           indexes: {
@@ -251,11 +258,11 @@ describe('resolve-readmodel-lite', () => {
 
         expect(await store2.count('table2', {})).toEqual(3)
 
-        await adapter.drop(store1, readModelName1)
-        await adapter.drop(store2, readModelName2)
+        await adapter.unsubscribe(store1, readModelName1)
+        await adapter.unsubscribe(store2, readModelName2)
 
-        await adapter.disconnect(store1, readModelName1)
-        await adapter.disconnect(store2, readModelName2)
+        await adapter.disconnect(store1)
+        await adapter.disconnect(store2)
       })
 
       test('method "disconnect"', async () => {
@@ -264,6 +271,8 @@ describe('resolve-readmodel-lite', () => {
 
         const store1 = await adapter.connect(readModelName1)
         const store2 = await adapter.connect(readModelName2)
+        await adapter.subscribe(store1, readModelName1, null, null)
+        await adapter.subscribe(store2, readModelName2, null, null)
 
         await store1.defineTable('table1', {
           indexes: {
@@ -308,14 +317,18 @@ describe('resolve-readmodel-lite', () => {
 
         expect(await store2.count('table2', {})).toEqual(3)
 
-        await adapter.disconnect(store1, readModelName1)
-        await adapter.disconnect(store2, readModelName2)
+        await adapter.unsubscribe(store1, readModelName1)
+        await adapter.unsubscribe(store2, readModelName2)
+
+        await adapter.disconnect(store1)
+        await adapter.disconnect(store2)
       })
 
       test('operator "$inc"', async () => {
         const readModelName = 'readModelName'
 
         const store = await adapter.connect(readModelName)
+        await adapter.subscribe(store, readModelName, null, null)
 
         await store.defineTable('values', {
           indexes: {
@@ -473,13 +486,16 @@ describe('resolve-readmodel-lite', () => {
           ],
         })
 
-        await adapter.disconnect(store, readModelName)
+        await adapter.unsubscribe(store, readModelName)
+
+        await adapter.disconnect(store)
       })
 
       test('operator "$set"', async () => {
         const readModelName = 'readModelName'
 
         const store = await adapter.connect(readModelName)
+        await adapter.subscribe(store, readModelName, null, null)
 
         await store.defineTable('SetValues', {
           indexes: {
@@ -529,13 +545,16 @@ describe('resolve-readmodel-lite', () => {
           obj: { value: 2 },
         })
 
-        await adapter.disconnect(store, readModelName)
+        await adapter.unsubscribe(store, readModelName)
+
+        await adapter.disconnect(store)
       })
 
       test('operator "$unset"', async () => {
         const readModelName = 'readModelName'
 
         const store = await adapter.connect(readModelName)
+        await adapter.subscribe(store, readModelName, null, null)
 
         await store.defineTable('UnsetValues', {
           indexes: {
@@ -568,9 +587,9 @@ describe('resolve-readmodel-lite', () => {
           },
           {
             $unset: {
-              value: '',
-              'obj.value': '',
-              'arr.0.value': '',
+              value: true,
+              'obj.value': true,
+              'arr.0.value': true,
             },
           }
         )
@@ -585,7 +604,9 @@ describe('resolve-readmodel-lite', () => {
           obj: {},
         })
 
-        await adapter.disconnect(store, readModelName)
+        await adapter.unsubscribe(store, readModelName)
+
+        await adapter.disconnect(store)
       })
     })
   }

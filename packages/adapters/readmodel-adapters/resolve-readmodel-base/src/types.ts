@@ -155,12 +155,12 @@ export type EventstoreAdapterLike = {
 }
 
 export type CommonAdapterPool = {
-  performanceTracer: PerformanceTracerLike
+  performanceTracer?: PerformanceTracerLike
   eventstoreAdapter: EventstoreAdapterLike
 }
 
 export type CommonAdapterOptions = {
-  performanceTracer: PerformanceTracerLike
+  performanceTracer?: PerformanceTracerLike
   eventstoreAdapter: EventstoreAdapterLike
 }
 
@@ -198,7 +198,7 @@ export type ReadModelStoreImpl<
     CurrentStoreApi[K]
   >
 } & {
-  performanceTracer: PerformanceTracerLike
+  performanceTracer?: PerformanceTracerLike
 }
 
 export type FunctionLike = (...args: any[]) => any
@@ -220,8 +220,8 @@ export type WithPerformanceTracerMethod = <
 ) => MethodImpl
 
 export type ReadModelLedger = {
-  EventTypes: Array<ReadModelEvent['type']>
-  AggregateIds: Array<ReadModelEvent['aggregateId']>
+  EventTypes: Array<ReadModelEvent['type']> | null
+  AggregateIds: Array<ReadModelEvent['aggregateId']> | null
   Cursor: ReadModelCursor
   SuccessEvent: ReadModelEvent | null
   FailedEvent: ReadModelEvent | null
@@ -274,8 +274,8 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
   subscribe(
     pool: AdapterPool,
     readModelName: string,
-    eventTypes: Array<ReadModelEvent['type']>,
-    aggregateIds: Array<ReadModelEvent['aggregateId']>
+    eventTypes: Array<ReadModelEvent['type']> | null,
+    aggregateIds: Array<ReadModelEvent['aggregateId']> | null
   ): Promise<void>
 
   unsubscribe(pool: AdapterPool, readModelName: string): Promise<void>
@@ -283,8 +283,8 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
   resubscribe(
     pool: AdapterPool,
     readModelName: string,
-    eventTypes: Array<ReadModelEvent['type']>,
-    aggregateIds: Array<ReadModelEvent['aggregateId']>
+    eventTypes: Array<ReadModelEvent['type']> | null,
+    aggregateIds: Array<ReadModelEvent['aggregateId']> | null
   ): Promise<void>
 
   deleteProperty(
@@ -349,7 +349,7 @@ export type BaseAdapterPool<AdapterPool extends CommonAdapterPool> = {
   commonAdapterPool: CommonAdapterPool
   adapterPoolMap: Map<ReadModelStore<StoreApi<AdapterPool>>, AdapterPool>
   withPerformanceTracer: WithPerformanceTracerMethod
-  performanceTracer: PerformanceTracerLike
+  performanceTracer?: PerformanceTracerLike
 }
 
 export type UnPromise<T> = T extends Promise<infer R> ? R : T

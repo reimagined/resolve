@@ -124,7 +124,7 @@ export type DropReadModelMethod = (
 ) => Promise<void>
 
 export type AdapterOptions = CommonAdapterOptions & {
-  tablePrefix: string
+  tablePrefix?: string
   databaseFile: string
 }
 

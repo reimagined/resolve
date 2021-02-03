@@ -1,4 +1,4 @@
-import { escape, escapeId } from '../src/connect'
+import { escapeStr, escapeId } from '../src/connect'
 import listProperties from '../src/list-properties'
 
 test('list-properties should work correctly', async () => {
@@ -26,8 +26,8 @@ test('list-properties should work correctly', async () => {
       inlineLedgerRunQuery,
       tablePrefix,
       escapeId,
-      escape,
-    },
+      escapeStr,
+    } as any,
     readModelName
   )
 
