@@ -75,7 +75,7 @@ const setUpTestViewModelResolver = (
 }
 
 describe('View models', () => {
-  test.only('should build state only for passed aggregateIds', async () => {
+  test('should build state only for passed aggregateIds', async () => {
     const resolver = setUpTestViewModelResolver(
       {
         name: 'TestViewModel',
