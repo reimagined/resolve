@@ -66,7 +66,6 @@ void (async () => {
           browser: process.argv[3],
           customArgs: [
             '--stop-on-first-fail',
-            '--reporter dashboard',
             '-r spec,dashboard:dashboard_output.txt',
           ],
         })

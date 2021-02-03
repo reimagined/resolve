@@ -112,7 +112,6 @@ void (async () => {
         customArgs: [
           '--skip-js-errors',
           '--stop-on-first-fail',
-          '--reporter dashboard',
           '-r spec,dashboard:dashboard_output.txt',
         ],
       })
