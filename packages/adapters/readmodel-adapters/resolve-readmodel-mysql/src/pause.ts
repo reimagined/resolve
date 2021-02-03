@@ -1,6 +1,6 @@
 import type { ExternalMethods } from './types'
 
-const pause: ExternalMethods["pause"] = async (pool, readModelName) => {
+const pause: ExternalMethods['pause'] = async (pool, readModelName) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,

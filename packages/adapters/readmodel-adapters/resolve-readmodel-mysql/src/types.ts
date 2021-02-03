@@ -9,7 +9,7 @@ import type {
   JsonMap,
   SearchCondition,
   UpdateCondition,
-  UnPromise
+  UnPromise,
 } from 'resolve-readmodel-base'
 
 import type MySQLPromiseLib from 'mysql2/promise'
@@ -22,14 +22,20 @@ export type LibDependencies = {
   MySQL: typeof MySQLPromiseLib
 }
 
-export type InlineLedgerRunQueryMethod = (querySQL: string,passthroughRuntimeErrors?:boolean) => Promise<Array<object>>
+export type InlineLedgerRunQueryMethod = (
+  querySQL: string,
+  passthroughRuntimeErrors?: boolean
+) => Promise<Array<object>>
 
 export type RunQueryMethod = (querySQL: string) => Promise<Array<object>>
 
 export type FullJitterMethod = (retries: number) => Promise<void>
 export type MakeNestedPathMethod = (nestedPath: Array<string>) => string
 
-export type InlineLedgerForceStopMethod = (pool: AdapterPool, readModelName: string) => Promise<void>
+export type InlineLedgerForceStopMethod = (
+  pool: AdapterPool,
+  readModelName: string
+) => Promise<void>
 
 export type BuildUpsertDocumentMethod = (
   searchExpression: Parameters<StoreApi<CommonAdapterPool>['update']>[3],
@@ -56,7 +62,7 @@ export type UpdateToSetExpressionMethod = (
   escapeId: EscapeableMethod,
   escapeStr: EscapeableMethod,
   makeNestedPath: MakeNestedPathMethod
-) => Array<string>
+) => string
 
 export interface PassthroughErrorInstance extends Error {
   name: string
@@ -84,6 +90,7 @@ export type AdapterOptions = CommonAdapterOptions & {
 } & MySQLPromiseLib.ConnectionOptions
 
 export type InternalMethods = {
+  inlineLedgerForceStop: InlineLedgerForceStopMethod
   buildUpsertDocument: BuildUpsertDocumentMethod
   convertBinaryRow: ConvertBinaryRowMethod
   searchToWhereExpression: SearchToWhereExpressionMethod
@@ -91,10 +98,11 @@ export type InternalMethods = {
   PassthroughError: PassthroughErrorFactory
   generateGuid: GenerateGuidMethod
   dropReadModel: DropReadModelMethod
+  escapeId: EscapeableMethod
+  escapeStr: EscapeableMethod
 }
 
 export type AdapterPool = CommonAdapterPool & {
-  inlineLedgerForceStop: InlineLedgerForceStopMethod,
   inlineLedgerRunQuery: InlineLedgerRunQueryMethod
   runQuery: RunQueryMethod
   fullJitter: FullJitterMethod
@@ -103,8 +111,6 @@ export type AdapterPool = CommonAdapterPool & {
   tablePrefix: string
   databaseFile: string
   makeNestedPath: MakeNestedPathMethod
-  escapeId: EscapeableMethod
-  escapeStr: EscapeableMethod
   connection: MySQLPromiseLib.Connection
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<

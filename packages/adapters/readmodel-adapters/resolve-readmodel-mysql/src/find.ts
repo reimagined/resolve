@@ -2,7 +2,7 @@ import type { CurrentStoreApi, MarshalledRowLike, JsonMap } from './types'
 
 const MAX_LIMIT_VALUE = 0x0fffffff | 0
 
-const find: CurrentStoreApi["find"] = async (
+const find: CurrentStoreApi['find'] = async (
   {
     runQuery,
     escapeId,
@@ -37,9 +37,9 @@ const find: CurrentStoreApi["find"] = async (
           .join(', ')
       : ''
 
-  const skipLimit = `LIMIT ${isFinite(+(skip as number)) ? +(skip as number) : 0},${
-    isFinite(+(limit as number)) ? +(limit as number) : MAX_LIMIT_VALUE
-  }`
+  const skipLimit = `LIMIT ${
+    isFinite(+(skip as number)) ? +(skip as number) : 0
+  },${isFinite(+(limit as number)) ? +(limit as number) : MAX_LIMIT_VALUE}`
 
   const searchExpr = searchToWhereExpression(
     searchExpression,
@@ -51,12 +51,12 @@ const find: CurrentStoreApi["find"] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const inputRows = await runQuery(
+  const inputRows = (await runQuery(
     `SELECT * FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}
     ${orderExpression}
     ${skipLimit};`
-  ) as Array<MarshalledRowLike>
+  )) as Array<MarshalledRowLike>
 
   const rows: Array<JsonMap> = []
 

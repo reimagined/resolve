@@ -1,6 +1,10 @@
 import type { ExternalMethods } from './types'
 
-const deleteProperty: ExternalMethods["deleteProperty"] = async (pool, readModelName, key) => {
+const deleteProperty: ExternalMethods['deleteProperty'] = async (
+  pool,
+  readModelName,
+  key
+) => {
   const { inlineLedgerRunQuery, tablePrefix, escapeId, escapeStr } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)

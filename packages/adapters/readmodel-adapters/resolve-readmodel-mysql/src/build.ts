@@ -1,4 +1,9 @@
-import type { ExternalMethods, ReadModelCursor, ReadModelLedger, ReadModelEvent } from './types'
+import type {
+  ExternalMethods,
+  ReadModelCursor,
+  ReadModelLedger,
+  ReadModelEvent,
+} from './types'
 
 const serializeError = (error: Error & { code: number }) =>
   error != null
@@ -113,7 +118,7 @@ const buildEvents: (
   provideLedger,
   getEncryption
 ) => {
-  void(provideLedger)
+  void provideLedger
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
@@ -166,7 +171,7 @@ const buildEvents: (
 
   while (true) {
     if (events.length === 0) {
-      throw new PassthroughError(false)
+      throw new PassthroughError()
     }
     let nextCursor = eventstoreAdapter.getNextCursor(cursor, events)
 
@@ -322,12 +327,12 @@ const buildEvents: (
         await next()
       }
 
-      throw new PassthroughError(false)
+      throw new PassthroughError()
     }
   }
 }
 
-const build: ExternalMethods["build"] = async (
+const build: ExternalMethods['build'] = async (
   basePool,
   readModelName,
   store,
@@ -389,9 +394,10 @@ const build: ExternalMethods["build"] = async (
       `
     )
 
-    let readModelLedger = rows.length === 1 ? rows[0] as ReadModelLedger : null
+    let readModelLedger =
+      rows.length === 1 ? (rows[0] as ReadModelLedger) : null
     if (readModelLedger == null || readModelLedger.Errors != null) {
-      throw new PassthroughError(false)
+      throw new PassthroughError()
     }
 
     const eventTypes =

@@ -11,7 +11,7 @@ const excludeObjectField = <
   const key = Array.isArray(keyLike) ? keyLike[0] : keyLike
   const { [key]: excludedKey, ...result } = input as any
   void excludedKey
-  if(Array.isArray(keyLike) && keyLike.length > 1) {
+  if (Array.isArray(keyLike) && keyLike.length > 1) {
     return excludeObjectField(result, keyLike.slice(1))
   } else {
     return result
@@ -24,7 +24,10 @@ const convertBinaryRow: ConvertBinaryRowMethod = (inputRow, fieldList) => {
       'Field list should be object with enumerated selected fields'
     )
   }
-  const row: RowLike = excludeObjectField(inputRow, Object.keys(inputRow).filter(key => key.endsWith('\u0004')))
+  const row: RowLike = excludeObjectField(
+    inputRow,
+    Object.keys(inputRow).filter((key) => key.endsWith('\u0004'))
+  )
 
   const fieldNames = fieldList != null ? Object.keys(fieldList) : []
   if (fieldList == null || fieldNames.length === 0) {

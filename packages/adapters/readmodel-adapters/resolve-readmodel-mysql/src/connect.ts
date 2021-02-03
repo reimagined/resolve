@@ -1,11 +1,23 @@
-import type { MakeNestedPathMethod, CurrentConnectMethod, InlineLedgerRunQueryMethod, RunQueryMethod, AdapterPool } from './types'
+import type {
+  MakeNestedPathMethod,
+  CurrentConnectMethod,
+  InlineLedgerRunQueryMethod,
+  RunQueryMethod,
+  AdapterPool,
+} from './types'
 
-const runQuery: (pool: AdapterPool, ...args: Parameters<RunQueryMethod>) => ReturnType<RunQueryMethod> = async (pool, querySQL) => {
+const runQuery: (
+  pool: AdapterPool,
+  ...args: Parameters<RunQueryMethod>
+) => ReturnType<RunQueryMethod> = async (pool, querySQL) => {
   const [rows] = await pool.connection.query(querySQL)
   return rows as Array<object>
 }
 
-const inlineLedgerRunQuery: (pool: AdapterPool, ...args: Parameters<InlineLedgerRunQueryMethod>) => ReturnType<InlineLedgerRunQueryMethod> = async (
+const inlineLedgerRunQuery: (
+  pool: AdapterPool,
+  ...args: Parameters<InlineLedgerRunQueryMethod>
+) => ReturnType<InlineLedgerRunQueryMethod> = async (
   pool,
   querySQL,
   passthroughRuntimeErrors = false
@@ -56,7 +68,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     eventstoreAdapter,
     ...connectionOptions
   } = options
-  void (eventstoreAdapter)
+  void eventstoreAdapter
 
   if (
     tablePrefix == null ||
@@ -70,9 +82,9 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     multipleStatements: true,
   })
 
-  const [[{ version }]] = await connection.query(
+  const [[{ version }]] = (await connection.query(
     `SELECT version() AS \`version\``
-  ) as [Array<{ version: string }>, unknown]
+  )) as [Array<{ version: string }>, unknown]
 
   const major = +version.split('.')[0]
   if (isNaN(major) || major < 8) {
@@ -80,7 +92,10 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
   }
 
   Object.assign(pool, {
-    inlineLedgerRunQuery: inlineLedgerRunQuery.bind(null, pool) as InlineLedgerRunQueryMethod,
+    inlineLedgerRunQuery: inlineLedgerRunQuery.bind(
+      null,
+      pool
+    ) as InlineLedgerRunQueryMethod,
     runQuery: runQuery.bind(null, pool) as RunQueryMethod,
     performanceTracer,
     tablePrefix,

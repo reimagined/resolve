@@ -1,6 +1,6 @@
 import type { CurrentStoreApi, MarshalledRowLike } from './types'
 
-const findOne: CurrentStoreApi["findOne"] = async (
+const findOne: CurrentStoreApi['findOne'] = async (
   {
     runQuery,
     escapeId,
@@ -25,11 +25,11 @@ const findOne: CurrentStoreApi["findOne"] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const rows = await runQuery(
+  const rows = (await runQuery(
     `SELECT * FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}
     LIMIT 0, 1;`
-  ) as Array<MarshalledRowLike>
+  )) as Array<MarshalledRowLike>
 
   if (Array.isArray(rows) && rows.length > 0) {
     return convertBinaryRow(rows[0], fieldList)

@@ -1,4 +1,11 @@
-const subscribe = async (pool, readModelName, eventTypes, aggregateIds) => {
+import { ExternalMethods } from './types'
+
+const subscribe: ExternalMethods['subscribe'] = async (
+  pool,
+  readModelName,
+  eventTypes,
+  aggregateIds
+) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,

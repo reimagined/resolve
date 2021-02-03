@@ -452,7 +452,7 @@ const build: ExternalMethods['build'] = async (
 
     const readModelLedger =
       rows.length === 1
-        ? {
+        ? ({
             EventTypes:
               rows[0].EventTypes != null
                 ? JSON.parse(rows[0].EventTypes)
@@ -476,7 +476,7 @@ const build: ExternalMethods['build'] = async (
                 ? JSON.parse(rows[0].Properties)
                 : null,
             Schema: rows[0].Schema != null ? JSON.parse(rows[0].Schema) : null,
-          }
+          } as ReadModelLedger)
         : null
 
     if (readModelLedger == null || readModelLedger.Errors != null) {

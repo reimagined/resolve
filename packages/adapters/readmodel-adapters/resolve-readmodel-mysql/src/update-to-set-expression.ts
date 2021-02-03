@@ -1,14 +1,26 @@
-const updateToSetExpression = (
+import type {
+  ObjectFixedUnionToIntersectionByKeys,
+  UpdateToSetExpressionMethod,
+  ObjectFixedKeys,
+} from './types'
+
+const updateToSetExpression: UpdateToSetExpressionMethod = (
   expression,
   escapeId,
   escapeStr,
   makeNestedPath
 ) => {
-  const updateExprArray = []
+  const updateExprArray: Array<string> = []
 
-  for (let operatorName of Object.keys(expression)) {
-    for (let fieldName of Object.keys(expression[operatorName])) {
-      const fieldValue = expression[operatorName][fieldName]
+  for (let operatorName of Object.keys(expression) as Array<
+    ObjectFixedKeys<typeof expression>
+  >) {
+    const extractedExpression = (expression as ObjectFixedUnionToIntersectionByKeys<
+      typeof expression,
+      typeof operatorName
+    >)[operatorName]
+    for (let fieldName of Object.keys(extractedExpression)) {
+      const fieldValue = extractedExpression[fieldName]
       const [baseName, ...nestedPath] = fieldName.split('.')
 
       switch (operatorName) {
@@ -63,22 +75,25 @@ const updateToSetExpression = (
 
           const targetInlinedPostfix = nestedPath.length > 0 ? ')' : ''
 
+          const fieldValueNumberLike = +(fieldValue as number)
+          const fieldValueStringLike = escapeStr(`${fieldValue}`)
+
           let updatingInlinedValue = `CAST(CASE
             WHEN JSON_TYPE(${sourceInlinedValue}) = 'STRING' THEN JSON_QUOTE(CONCAT(
               CAST(JSON_UNQUOTE(${sourceInlinedValue}) AS CHAR),
-              CAST(${escapeStr(fieldValue)} AS CHAR)
+              CAST(${fieldValueStringLike} AS CHAR)
             ))
             WHEN JSON_TYPE(${sourceInlinedValue}) = 'INTEGER' THEN (
               CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
-              CAST(${+fieldValue} AS DECIMAL(48, 16))
+              CAST(${fieldValueNumberLike} AS DECIMAL(48, 16))
             )
             WHEN JSON_TYPE(${sourceInlinedValue}) = 'DOUBLE' THEN (
               CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
-              CAST(${+fieldValue} AS DECIMAL(48, 16))
+              CAST(${fieldValueNumberLike} AS DECIMAL(48, 16))
             )
             WHEN JSON_TYPE(${sourceInlinedValue}) = 'DECIMAL' THEN (
               CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
-              CAST(${+fieldValue} AS DECIMAL(48, 16))
+              CAST(${fieldValueNumberLike} AS DECIMAL(48, 16))
             )
             ELSE (
               SELECT 'Invalid JSON type for $inc operation' 

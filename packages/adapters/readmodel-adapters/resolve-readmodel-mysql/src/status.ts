@@ -1,15 +1,20 @@
-import type { ReadModelRunStatus, ExternalMethods, ReadModelStatus, ReadModelLedger } from './types'
+import type {
+  ReadModelRunStatus,
+  ExternalMethods,
+  ReadModelStatus,
+  ReadModelLedger,
+} from './types'
 
-const status: ExternalMethods["status"] = async (pool, readModelName) => {
+const status: ExternalMethods['status'] = async (pool, readModelName) => {
   const { inlineLedgerRunQuery, tablePrefix, escapeId, escapeStr } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
 
-  const rows = await inlineLedgerRunQuery(
+  const rows = (await inlineLedgerRunQuery(
     `SELECT * FROM ${ledgerTableNameAsId}
      WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
     `
-  ) as Array<ReadModelLedger>
+  )) as Array<ReadModelLedger>
 
   if (rows.length === 1) {
     const result: ReadModelStatus = {

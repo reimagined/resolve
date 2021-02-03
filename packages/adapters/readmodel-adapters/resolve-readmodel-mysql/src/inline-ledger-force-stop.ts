@@ -1,6 +1,9 @@
 import type { InlineLedgerForceStopMethod } from './types'
 
-const inlineLedgerForceStop: InlineLedgerForceStopMethod = async (pool, readModelName) => {
+const inlineLedgerForceStop: InlineLedgerForceStopMethod = async (
+  pool,
+  readModelName
+) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,
@@ -20,13 +23,13 @@ const inlineLedgerForceStop: InlineLedgerForceStopMethod = async (pool, readMode
         `
       )
 
-      const rows = await inlineLedgerRunQuery(
+      const rows = (await inlineLedgerRunQuery(
         `SELECT \`B\`.\`XaValue\` FROM ${ledgerTableNameAsId} \`A\`
          LEFT JOIN ${trxTableNameAsId} \`B\`
          ON \`A\`.\`XaKey\` = \`B\`.\`XaKey\`
          WHERE \`A\`.\`EventSubscriber\` = ${escapeStr(readModelName)}
         `
-      ) as Array<{ XaValue: string }>
+      )) as Array<{ XaValue: string }>
 
       if (rows != null && rows.length > 0 && rows[0] != null) {
         const xaValue = +rows[0].XaValue

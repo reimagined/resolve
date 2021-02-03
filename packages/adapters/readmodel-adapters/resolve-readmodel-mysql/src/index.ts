@@ -1,6 +1,17 @@
 import MySQL from 'mysql2/promise'
+// @ts-ignore
 import { escapeId, escape as escapeStr } from 'mysql2'
 import _createAdapter from 'resolve-readmodel-base'
+
+import type {
+  CurrentAdapterImplementation,
+  InternalMethods,
+  ExternalMethods,
+  CurrentStoreApi,
+  AdapterPool,
+  AdapterOptions,
+  AdapterApi,
+} from './types'
 
 import buildUpsertDocument from './build-upsert-document'
 import _connect from './connect'
@@ -34,7 +45,7 @@ import resume from './resume'
 import status from './status'
 import build from './build'
 
-const store = {
+const store: CurrentStoreApi = {
   defineTable,
   find,
   findOne,
@@ -44,7 +55,7 @@ const store = {
   delete: del,
 }
 
-const internalMethods = {
+const internalMethods: InternalMethods = {
   buildUpsertDocument,
   convertBinaryRow,
   searchToWhereExpression,
@@ -52,12 +63,12 @@ const internalMethods = {
   PassthroughError,
   inlineLedgerForceStop,
   generateGuid,
+  dropReadModel,
   escapeId,
   escapeStr,
 }
 
-const externalMethods = {
-  dropReadModel,
+const externalMethods: ExternalMethods = {
   subscribe,
   resubscribe,
   unsubscribe,
@@ -79,11 +90,18 @@ const connect = _connect.bind(null, {
   ...store,
 })
 
-const createAdapter = _createAdapter.bind(null, {
+const implementation: CurrentAdapterImplementation = {
   ...store,
   ...externalMethods,
   connect,
   disconnect,
-})
+}
+
+const createAdapter = _createAdapter.bind<
+  null,
+  CurrentAdapterImplementation,
+  [AdapterOptions],
+  AdapterApi<AdapterPool>
+>(null, implementation)
 
 export default createAdapter
