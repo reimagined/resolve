@@ -112,7 +112,7 @@ void (async () => {
         customArgs: [
           '--skip-js-errors',
           '--stop-on-first-fail',
-          // '-r spec,dashboard:dashboard_output.txt',
+          '-r spec,dashboard-test:dashboard_output.txt',
         ],
       })
       break
