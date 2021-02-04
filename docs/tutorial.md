@@ -988,7 +988,7 @@ This lesson describes how to implement missing data editing functionality on the
 
 Currently your reSolve application can create shopping lists and their items. The application also requires the capability to toggle shopping list items as well as remove and items and entire lists.
 
-To implement the missing functionality, you need to add data editing events, modify the ShoppingList aggregate to produce these events, and update read and view models so they take these events into account.
+To implement the missing functionality, you need to add data editing events, modify the ShoppingList aggregate to produce these events, and update read and view models to take these events into account.
 
 #### Add Data Editing Events
 
