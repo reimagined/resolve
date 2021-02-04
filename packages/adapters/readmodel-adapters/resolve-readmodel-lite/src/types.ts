@@ -9,6 +9,7 @@ import type {
   JsonMap,
   SearchCondition,
   UpdateCondition,
+  OmitObject,
   IfEquals,
   IsTypeLike,
 } from 'resolve-readmodel-base'
@@ -143,7 +144,6 @@ export type AdapterPool = CommonAdapterPool & {
   inlineLedgerRunQuery: InlineLedgerRunQueryMethod
   runQuery: RunQueryMethod
   fullJitter: FullJitterMethod
-  connectionOptions: Omit<Omit<AdapterOptions, 'tablePrefix'>, 'databaseFile'>
   performanceTracer: PerformanceTracerLike
   tablePrefix: string
   databaseFile: string
@@ -151,7 +151,7 @@ export type AdapterPool = CommonAdapterPool & {
   escapeId: EscapeableMethod
   escapeStr: EscapeableMethod
   connectionUri: string
-  connection: any
+  connection: SQLiteLib.Database
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
       AdapterPool
@@ -164,7 +164,7 @@ export type AdapterPool = CommonAdapterPool & {
 
 export type CurrentAdapterConnection = AdapterConnection<
   AdapterPool,
-  AdapterOptions
+  OmitObject<AdapterOptions, CommonAdapterOptions>
 >
 
 export type ExternalMethods = {

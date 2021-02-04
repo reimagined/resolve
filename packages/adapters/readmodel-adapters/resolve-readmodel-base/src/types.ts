@@ -261,9 +261,13 @@ export type ProjectionMethod<AdapterPool extends CommonAdapterPool> = (
   projectionEncryption?: EncryptionLike
 ) => Promise<void>
 
+export type OmitObject<T extends object, U extends object> = {
+  [K in Exclude<keyof T, keyof U>]: T[K]
+}
+
 export type AdapterConnection<
   AdapterPool extends CommonAdapterPool,
-  AdapterOptions extends CommonAdapterOptions
+  AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
 > = {
   connect(pool: AdapterPool, options: AdapterOptions): Promise<void>
 
@@ -341,7 +345,10 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
 export type AdapterImplementation<
   AdapterPool extends CommonAdapterPool,
   AdapterOptions extends CommonAdapterOptions
-> = AdapterConnection<AdapterPool, AdapterOptions> &
+> = AdapterConnection<
+  AdapterPool,
+  OmitObject<AdapterOptions, CommonAdapterOptions>
+> &
   AdapterOperations<AdapterPool> &
   StoreApi<AdapterPool>
 
@@ -360,7 +367,7 @@ export type ConnectMethod<AdapterPool extends CommonAdapterPool> = (
 
 export type WrapConnectMethod = <
   AdapterPool extends CommonAdapterPool,
-  AdapterOptions extends CommonAdapterOptions
+  AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
 >(
   pool: BaseAdapterPool<AdapterPool>,
   connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],

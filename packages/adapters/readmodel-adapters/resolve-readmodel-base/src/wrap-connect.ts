@@ -6,11 +6,12 @@ import type {
   AdapterConnection,
   ReadModelStore,
   StoreApi,
+  OmitObject,
 } from './types'
 
 const connectImpl = async <
   AdapterPool extends CommonAdapterPool,
-  AdapterOptions extends CommonAdapterOptions
+  AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
 >(
   pool: BaseAdapterPool<AdapterPool>,
   connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],
@@ -49,7 +50,7 @@ const connectImpl = async <
 
 const wrapConnect: WrapConnectMethod = <
   AdapterPool extends CommonAdapterPool,
-  AdapterOptions extends CommonAdapterOptions
+  AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
 >(
   pool: BaseAdapterPool<AdapterPool>,
   connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],

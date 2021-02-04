@@ -9,7 +9,7 @@ import type {
   JsonMap,
   SearchCondition,
   UpdateCondition,
-  UnPromise,
+  OmitObject,
 } from 'resolve-readmodel-base'
 
 import type MySQLPromiseLib from 'mysql2/promise'
@@ -123,7 +123,7 @@ export type AdapterPool = CommonAdapterPool & {
 
 export type CurrentAdapterConnection = AdapterConnection<
   AdapterPool,
-  AdapterOptions
+  OmitObject<AdapterOptions, CommonAdapterPool>
 >
 
 export type ExternalMethods = {

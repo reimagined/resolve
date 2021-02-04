@@ -100,7 +100,7 @@ const createAdapter = <
     }
   }
 
-  const { eventstoreAdapter, performanceTracer } = options
+  const { eventstoreAdapter, performanceTracer, ...adapterOptions } = options
 
   const pool: BaseAdapterPool<AdapterPool> = {
     commonAdapterPool: { performanceTracer, eventstoreAdapter },
@@ -110,7 +110,7 @@ const createAdapter = <
   }
 
   const adapter: AdapterApi<AdapterPool> = {
-    connect: wrapConnect(pool, connect, storeApi, options),
+    connect: wrapConnect(pool, connect, storeApi, adapterOptions),
     disconnect: wrapDisconnect(pool, disconnect),
     dispose: wrapDispose(pool, disconnect),
     subscribe: wrapOperation(pool, 'subscribe', subscribe),

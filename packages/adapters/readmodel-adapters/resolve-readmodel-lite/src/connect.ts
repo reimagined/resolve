@@ -86,12 +86,7 @@ const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
 }
 
 const connect: CurrentConnectMethod = async (imports, pool, options) => {
-  let {
-    tablePrefix,
-    databaseFile,
-    performanceTracer,
-    ...connectionOptions
-  } = options
+  let { tablePrefix, databaseFile } = options
   tablePrefix = coerceEmptyString(tablePrefix)
   databaseFile = coerceEmptyString(databaseFile)
 
@@ -103,8 +98,6 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     ) as InlineLedgerRunQueryMethod,
     runQuery: commonRunQuery.bind(null, pool, false) as RunQueryMethod,
     fullJitter,
-    connectionOptions,
-    performanceTracer,
     tablePrefix,
     databaseFile,
     makeNestedPath,

@@ -62,13 +62,7 @@ const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
 }
 
 const connect: CurrentConnectMethod = async (imports, pool, options) => {
-  let {
-    tablePrefix,
-    performanceTracer,
-    eventstoreAdapter,
-    ...connectionOptions
-  } = options
-  void eventstoreAdapter
+  let { tablePrefix, ...connectionOptions } = options
 
   if (
     tablePrefix == null ||
@@ -97,7 +91,6 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
       pool
     ) as InlineLedgerRunQueryMethod,
     runQuery: runQuery.bind(null, pool) as RunQueryMethod,
-    performanceTracer,
     tablePrefix,
     makeNestedPath,
     connection,
