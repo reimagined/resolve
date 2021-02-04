@@ -45,11 +45,19 @@ const refreshAndWait = async (t, eventSubscriber, selector, expectedValue) => {
 const userRegistration = async (t, user) => {
   const { nickname, firstName, lastName, phoneNumber, address } = user
   const registrationForm = ReactSelector('RegistrationForm')
-  await t.typeText(registrationForm.find('#nickname'), nickname)
-  await t.typeText(registrationForm.find('#firstName'), firstName)
-  await t.typeText(registrationForm.find('#lastName'), lastName)
-  await t.typeText(registrationForm.find('#phoneNumber'), phoneNumber)
-  await t.typeText(registrationForm.find('#address'), address)
+  await t.typeText(registrationForm.find('#nickname'), nickname, {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#firstName'), firstName, {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#lastName'), lastName, {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#phoneNumber'), phoneNumber, {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#address'), address, { paste: true })
   await t.click(registrationForm.find('#consent'))
   await t.click(registrationForm.find('button').withText('Sign Up'))
   await refreshAndWait(
@@ -64,8 +72,8 @@ const publishPost = async (t, post) => {
   const { title, content } = post
   const newPostButton = ReactSelector('button').withText('Publish new post')
   await t.click(newPostButton)
-  await t.typeText(Selector('#addPostTitle'), title)
-  await t.typeText(Selector('#addPostContent'), content)
+  await t.typeText(Selector('#addPostTitle'), title, { paste: true })
+  await t.typeText(Selector('#addPostContent'), content, { paste: true })
   const publishPostButton = ReactSelector('button').withText('Publish')
   await t.click(publishPostButton)
 }
@@ -130,10 +138,18 @@ test('registered user, profile update', async (t) => {
   await t.navigateTo(`${MAIN_PAGE}/profile`)
 
   const registrationForm = ReactSelector('RegistrationForm')
-  await t.typeText(registrationForm.find('#firstName'), '-updated')
-  await t.typeText(registrationForm.find('#lastName'), '-updated')
-  await t.typeText(registrationForm.find('#phoneNumber'), '-updated')
-  await t.typeText(registrationForm.find('#address'), '-updated')
+  await t.typeText(registrationForm.find('#firstName'), '-updated', {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#lastName'), '-updated', {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#phoneNumber'), '-updated', {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#address'), '-updated', {
+    paste: true,
+  })
 
   const updateButton = ReactSelector('button').withText('Update')
   await t.click(updateButton)

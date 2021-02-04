@@ -1,4 +1,11 @@
 import type { open } from 'sqlite'
+import type {
+  AdapterPoolConnectedProps,
+  AdapterPoolConnected,
+  AdapterPoolPossiblyUnconnected,
+  AdapterConfig,
+} from 'resolve-eventstore-base'
+
 export type SqliteOpen = typeof open
 
 export type MemoryStore = {
@@ -6,26 +13,30 @@ export type MemoryStore = {
   drop: () => void
 }
 
-export type AdapterPool = {
-  config: {
-    databaseFile: string
-    secretsTableName: string
-    eventsTableName: string
-    snapshotsTableName: string
-  }
-  maybeThrowResourceError: (error: Error[]) => void
-  coerceEmptyString: (obj: any, fallback?: string) => string
+export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   database: any
+  databaseFile: string
   eventsTableName: string
   snapshotsTableName: string
   secretsTableName: string
   escapeId: (source: string) => string
   escape: (source: string) => string
-  memoryStore: MemoryStore
-  shapeEvent: (event: any) => any
+  memoryStore?: MemoryStore
 }
 
-export type AdapterSpecific = {
+export type SqliteAdapterConfig = AdapterConfig & {
+  databaseFile?: string
+  secretsTableName?: string
+  eventsTableName?: string
+  snapshotsTableName?: string
+}
+
+export type AdapterPool = AdapterPoolConnected<SqliteAdapterPoolConnectedProps>
+export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
+  SqliteAdapterPoolConnectedProps
+>
+
+export type ConnectionDependencies = {
   sqlite: { open: SqliteOpen }
   tmp: any
   os: any

@@ -43,8 +43,20 @@ const create = async (
     : never
 
   log.debug(`configuring adapter with environment privileges`)
-  const adminPool: AdminPool = {
-    config: {
+  const adminPool: AdminPool = {}
+
+  log.debug(`connecting the adapter`)
+  await connect(
+    adminPool,
+    {
+      RDSDataService,
+      escapeId,
+      escape,
+      fullJitter,
+      executeStatement,
+      coercer,
+    },
+    {
       region: options.region,
       awsSecretStoreArn: options.awsSecretStoreAdminArn,
       dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
@@ -52,18 +64,8 @@ const create = async (
       eventsTableName: options.eventsTableName,
       secretsTableName: options.secretsTableName,
       snapshotsTableName: options.snapshotsTableName,
-    },
-  }
-
-  log.debug(`connecting the adapter`)
-  await connect(adminPool, {
-    RDSDataService,
-    escapeId,
-    escape,
-    fullJitter,
-    executeStatement,
-    coercer,
-  })
+    }
+  )
 
   log.debug(`building schema and granting privileges to user`)
   await executeStatement(

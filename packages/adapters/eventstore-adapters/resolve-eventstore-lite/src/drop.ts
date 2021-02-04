@@ -2,19 +2,18 @@ import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 import getLog from './get-log'
 import { AdapterPool } from './types'
 
-const drop = async (pool: AdapterPool): Promise<any> => {
+const drop = async ({
+  database,
+  databaseFile,
+  eventsTableName,
+  snapshotsTableName,
+  secretsTableName,
+  escapeId,
+  memoryStore,
+  maybeThrowResourceError,
+}: AdapterPool): Promise<any> => {
   const log = getLog('drop')
   log.debug(`dropping the event store`)
-
-  const {
-    database,
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName,
-    escapeId,
-    memoryStore,
-    config,
-  } = pool
 
   const errors: any[] = []
   const statements: string[] = [
@@ -39,7 +38,7 @@ const drop = async (pool: AdapterPool): Promise<any> => {
           )
         ) {
           errorToThrow = new EventstoreResourceNotExistError(
-            `sqlite adapter for database "${config.databaseFile}" already dropped`
+            `sqlite adapter for database "${databaseFile}" already dropped`
           )
         } else {
           log.error(errorToThrow.message)
@@ -60,7 +59,7 @@ const drop = async (pool: AdapterPool): Promise<any> => {
     }
   }
 
-  pool.maybeThrowResourceError(errors)
+  maybeThrowResourceError(errors)
 
   log.debug(`the event store dropped`)
 }

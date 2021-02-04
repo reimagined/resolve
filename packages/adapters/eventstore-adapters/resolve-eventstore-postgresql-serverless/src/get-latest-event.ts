@@ -1,5 +1,5 @@
 import { AdapterPool } from './types'
-import { EventFilter } from 'resolve-eventstore-base'
+import { EventFilter, isTimestampFilter } from 'resolve-eventstore-base'
 
 const getLatestEvent = async (
   {
@@ -11,8 +11,10 @@ const getLatestEvent = async (
     shapeEvent,
     isTimeoutError,
   }: AdapterPool,
-  { eventTypes, aggregateIds, startTime, finishTime }: EventFilter
+  filter: EventFilter
 ): Promise<any> => {
+  const { eventTypes, aggregateIds } = filter
+
   const injectString = (value: any): string => `${escape(value)}`
   const injectNumber = (value: any): string => `${+value}`
 
@@ -26,11 +28,14 @@ const getLatestEvent = async (
   if (aggregateIds != null) {
     queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
-  if (startTime != null) {
-    queryConditions.push(`"timestamp" > ${injectNumber(startTime)}`)
-  }
-  if (finishTime != null) {
-    queryConditions.push(`"timestamp" < ${injectNumber(finishTime)}`)
+  if (isTimestampFilter(filter)) {
+    const { startTime, finishTime } = filter
+    if (startTime != null) {
+      queryConditions.push(`"timestamp" > ${injectNumber(startTime)}`)
+    }
+    if (finishTime != null) {
+      queryConditions.push(`"timestamp" < ${injectNumber(finishTime)}`)
+    }
   }
 
   const resultQueryCondition: string =

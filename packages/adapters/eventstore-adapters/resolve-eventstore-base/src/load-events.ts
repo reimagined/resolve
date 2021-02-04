@@ -1,5 +1,16 @@
-const loadEvents = async (pool: any, filter: any): Promise<any> => {
-  return filter.startTime != null || filter.finishTime != null
+import {
+  EventFilter,
+  AdapterPoolConnectedProps,
+  AdapterPoolConnected,
+  EventsWithCursor,
+  isTimestampFilter,
+} from './types'
+
+const loadEvents = async <ConnectedProps extends AdapterPoolConnectedProps>(
+  pool: AdapterPoolConnected<ConnectedProps>,
+  filter: EventFilter
+): Promise<EventsWithCursor> => {
+  return isTimestampFilter(filter)
     ? await pool.loadEventsByTimestamp(filter)
     : await pool.loadEventsByCursor(filter)
 }

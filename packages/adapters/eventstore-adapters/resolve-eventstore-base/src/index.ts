@@ -3,7 +3,6 @@ import importStream from './import'
 import exportStream from './export'
 import wrapMethod from './wrap-method'
 import wrapEventFilter from './wrap-event-filter'
-import wrapSaveEvent from './wrap-save-event'
 import wrapDispose from './wrap-dispose'
 import validateEventFilter from './validate-event-filter'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
@@ -18,21 +17,57 @@ import getNextCursor from './get-next-cursor'
 import throwBadCursor from './throw-bad-cursor'
 import snapshotTrigger from './snapshot-trigger'
 import incrementalImport from './incremental-import'
-import { CursorFilter, EventsWithCursor, EventFilter } from './types'
+import {
+  CursorFilter,
+  TimestampFilter,
+  isTimestampFilter,
+  isCursorFilter,
+  EventsWithCursor,
+  EventFilter,
+  Adapter,
+  AdapterFunctions,
+  AdapterPoolConnectedProps,
+  CommonAdapterFunctions,
+  AdapterPoolPossiblyUnconnected,
+  AdapterPoolConnected,
+  AdapterConfig,
+  ImportOptions,
+  ExportOptions,
+} from './types'
 
-const wrappedCreateAdapter: (...args: any[]) => any = createAdapter.bind(null, {
-  maybeThrowResourceError,
-  importStream,
-  exportStream,
-  wrapMethod,
-  wrapEventFilter,
-  wrapSaveEvent,
-  wrapDispose,
-  validateEventFilter,
-  loadEvents,
-  incrementalImport,
-  getNextCursor,
-})
+const wrappedCreateAdapter = <
+  ConnectedProps extends AdapterPoolConnectedProps,
+  ConnectionDependencies extends any,
+  Config extends AdapterConfig
+>(
+  adapterFunctions: AdapterFunctions<
+    ConnectedProps,
+    ConnectionDependencies,
+    Config
+  >,
+  connectionDependencies: ConnectionDependencies,
+  options: Config
+): Adapter => {
+  const commonFunctions: CommonAdapterFunctions<ConnectedProps> = {
+    maybeThrowResourceError,
+    importStream,
+    exportStream,
+    wrapMethod,
+    wrapEventFilter,
+    wrapDispose,
+    validateEventFilter,
+    loadEvents,
+    incrementalImport,
+    getNextCursor,
+  }
+
+  return createAdapter(
+    commonFunctions,
+    adapterFunctions,
+    connectionDependencies,
+    options
+  )
+}
 
 export default wrappedCreateAdapter
 
@@ -46,6 +81,16 @@ export {
   getNextCursor,
   snapshotTrigger,
   CursorFilter,
+  TimestampFilter,
+  isTimestampFilter,
+  isCursorFilter,
   EventsWithCursor,
   EventFilter,
+  Adapter,
+  AdapterPoolConnectedProps,
+  AdapterPoolConnected,
+  AdapterPoolPossiblyUnconnected,
+  AdapterConfig,
+  ImportOptions,
+  ExportOptions,
 }

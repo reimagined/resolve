@@ -1,3 +1,5 @@
+import { CheckForResourceError } from './types'
+
 interface ResourceError extends Error {
   code: number
   name: string
@@ -5,11 +7,12 @@ interface ResourceError extends Error {
 
 export const ResourceAlreadyExistError: {
   new (message: string): ResourceError
+  is: (error: any) => boolean
 } = function (this: ResourceError, message: string): void {
   Error.call(this)
   this.code = 406
-  this.name = 'ResourceAlreadyExistError'
   this.message = message
+  Object.assign(this, { name: 'ResourceAlreadyExistError' })
   if (Error.captureStackTrace) {
     Error.captureStackTrace(this, ResourceAlreadyExistError)
   } else {
@@ -22,11 +25,12 @@ void ((ResourceAlreadyExistError as any).is = (error: any): boolean =>
 
 export const ResourceNotExistError: {
   new (message: string): ResourceError
+  is: (error: any) => boolean
 } = function (this: any, message: string): void {
   Error.call(this)
   this.code = 410
-  this.name = 'ResourceNotExistError'
   this.message = message
+  Object.assign(this, { name: 'ResourceNotExistError' })
   if (Error.captureStackTrace) {
     Error.captureStackTrace(this, ResourceNotExistError)
   } else {
@@ -50,7 +54,9 @@ const allowedResourceErrorsConstructors = Array.from<Function>([
   ResourceNotExistError,
 ])
 
-export const maybeThrowResourceError = (errors: Error[]): void => {
+export const maybeThrowResourceError: CheckForResourceError = (
+  errors: Error[]
+): void => {
   if (
     !Array.isArray(errors) ||
     !errors.reduce(

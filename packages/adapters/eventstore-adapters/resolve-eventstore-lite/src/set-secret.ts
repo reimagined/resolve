@@ -1,14 +1,13 @@
 import getLog from './get-log'
+import { AdapterPool } from './types'
 
 const setSecret = async (
-  pool: any,
+  { database, secretsTableName, escape, escapeId }: AdapterPool,
   selector: string,
   secret: string
 ): Promise<void> => {
   const log = getLog('secretsManager:setSecret')
   log.debug(`setting secret value within database`)
-
-  const { database, secretsTableName, escape, escapeId } = pool
 
   log.verbose(`selector: ${selector}`)
   log.verbose(`database: ${database}`)

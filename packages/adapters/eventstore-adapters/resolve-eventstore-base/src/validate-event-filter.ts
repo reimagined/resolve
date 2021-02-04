@@ -1,7 +1,9 @@
+import { ValidateEventFilter } from './types'
+
 const hasType = (type: any, obj: any): boolean =>
   obj != null && obj.constructor === type
 
-const validateEventFilter = (filter: any): void => {
+const validateEventFilter: ValidateEventFilter = (filter: any): void => {
   if (!hasType(Object, filter)) {
     throw new Error('Event filter should be an object')
   }

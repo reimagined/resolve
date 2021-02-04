@@ -84,37 +84,50 @@ const mDisposeResource = mocked(disposeResource)
 const mDestroyResource = mocked(destroyResource)
 
 test('generic createAdapter invoked', () => {
-  createAdapter()
-  expect(mGenericCreateAdapter).toHaveBeenCalledWith({
-    connect,
-    loadEventsByCursor,
-    loadEventsByTimestamp,
-    getLatestEvent,
-    saveEvent,
-    init,
-    drop,
-    dispose,
-    freeze,
-    unfreeze,
-    RDSDataService,
-    escapeId,
-    escape,
-    fullJitter,
-    executeStatement,
-    injectEvent,
-    coercer,
-    shapeEvent,
-    deleteSecret,
-    getSecret,
-    setSecret,
-    loadSnapshot,
-    saveSnapshot,
-    dropSnapshot,
-    beginIncrementalImport,
-    commitIncrementalImport,
-    rollbackIncrementalImport,
-    pushIncrementalImport,
+  createAdapter({
+    dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
+    awsSecretStoreArn: 'awsSecretStoreArn',
+    databaseName: 'databaseName',
   })
+  expect(mGenericCreateAdapter).toHaveBeenCalledWith(
+    {
+      connect,
+      loadEventsByCursor,
+      loadEventsByTimestamp,
+      getLatestEvent,
+      saveEvent,
+      init,
+      drop,
+      dispose,
+      freeze,
+      unfreeze,
+      injectEvent,
+      shapeEvent,
+      deleteSecret,
+      getSecret,
+      setSecret,
+      loadSnapshot,
+      saveSnapshot,
+      dropSnapshot,
+      beginIncrementalImport,
+      commitIncrementalImport,
+      rollbackIncrementalImport,
+      pushIncrementalImport,
+    },
+    {
+      RDSDataService,
+      escapeId,
+      escape,
+      fullJitter,
+      executeStatement,
+      coercer,
+    },
+    {
+      dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
+      awsSecretStoreArn: 'awsSecretStoreArn',
+      databaseName: 'databaseName',
+    }
+  )
 })
 
 describe('as cloud resource', () => {
@@ -136,7 +149,6 @@ describe('as cloud resource', () => {
     }
     options = {
       awsSecretStoreAdminArn: 'admin-arn',
-      awsSecretStoreArn: 'user-arn',
       databaseName: 'database',
       dbClusterOrInstanceArn: 'cluster-arn',
       region: 'region',

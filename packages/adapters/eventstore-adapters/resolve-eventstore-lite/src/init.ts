@@ -3,16 +3,17 @@ import { AGGREGATE_ID_SQL_TYPE } from './constants'
 import getLog from './get-log'
 import { AdapterPool } from './types'
 
-const init = async (pool: AdapterPool): Promise<any> => {
+const init = async ({
+  database,
+  databaseFile,
+  eventsTableName,
+  snapshotsTableName,
+  secretsTableName,
+  escapeId,
+  maybeThrowResourceError,
+}: AdapterPool): Promise<any> => {
   const log = getLog('init')
   log.debug('initializing databases')
-  const {
-    database,
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName,
-    escapeId,
-  } = pool
 
   const errors: any[] = []
 
@@ -73,7 +74,7 @@ const init = async (pool: AdapterPool): Promise<any> => {
         let errorToThrow = error
         if (/(?:Table|Index).*? already exists$/i.test(error.message)) {
           errorToThrow = new EventstoreResourceAlreadyExistError(
-            `duplicate initialization of the sqlite adapter with same events database "${database}" and table "${eventsTableName}" not allowed`
+            `duplicate initialization of the sqlite adapter with same events database "${databaseFile}" and table "${eventsTableName}" not allowed`
           )
         } else {
           log.error(errorToThrow.message)
@@ -84,7 +85,7 @@ const init = async (pool: AdapterPool): Promise<any> => {
     }
   }
 
-  pool.maybeThrowResourceError(errors)
+  maybeThrowResourceError(errors)
 
   log.debug('databases are initialized')
 }
