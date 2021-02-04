@@ -5,7 +5,7 @@
   "description": "API tests for resolve",
   "scripts": {
     "test": "echo || exit 0",
-    "test:integration": "jest --config=./jest.config.js --testMatch=**/eventstore-lite/*.test.[jt]s"
+    "test:integration": "jest --config=./jest.config.js --testMatch=**/*.test.[jt]s"
   },
   "devDependencies": {
     "@babel/runtime": "7.9.6",
@@ -14,6 +14,7 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "1.6.4",
     "resolve-command": "0.26.5",
+    "resolve-core": "0.26.5",
     "resolve-debug-levels": "0.26.5",
     "resolve-eventstore-base": "0.26.5",
     "resolve-eventstore-lite": "0.26.5",
