@@ -41,6 +41,8 @@ const createAdapter = <
     exportStream,
     incrementalImport,
     getNextCursor,
+    importSecretsStream,
+    exportSecretsStream,
   }: CommonAdapterFunctions<ConnectedProps>,
   {
     connect,
@@ -155,6 +157,8 @@ const createAdapter = <
       injectSecret === undefined
         ? undefined
         : wrapMethod(adapterPool, injectSecret),
+    importSecrets: importSecretsStream.bind(null, adapterPool),
+    exportSecrets: exportSecretsStream.bind(null, adapterPool),
   }
 
   Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(

@@ -1,4 +1,8 @@
-import { SecretFilter, SecretsWithIdx } from 'resolve-eventstore-base'
+import {
+  SecretFilter,
+  SecretsWithIdx,
+  SecretRecord,
+} from 'resolve-eventstore-base'
 import { AdapterPool } from './types'
 
 const loadSecrets = async (
@@ -17,7 +21,7 @@ const loadSecrets = async (
     LIMIT 0, ${+limit}`
   )
 
-  const secrets: any[] = []
+  const secrets: SecretRecord[] = []
   for (const secret of rows) {
     secrets.push({
       secret: secret.secret,

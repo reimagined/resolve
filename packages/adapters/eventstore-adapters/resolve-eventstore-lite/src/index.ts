@@ -26,7 +26,7 @@ import saveSnapshot from './save-snapshot'
 import setSecret from './set-secret'
 import shapeEvent from './shape-event'
 import unfreeze from './unfreeze'
-import loadSecrets from './loadSecrets'
+import loadSecrets from './load-secrets'
 import injectSecret from './inject-secret'
 
 import type { Adapter } from 'resolve-eventstore-base'

@@ -17,6 +17,8 @@ import getNextCursor from './get-next-cursor'
 import throwBadCursor from './throw-bad-cursor'
 import snapshotTrigger from './snapshot-trigger'
 import incrementalImport from './incremental-import'
+import importSecretsStream from './import-secrets'
+import exportSecretsStream from './export-secrets'
 import {
   CursorFilter,
   TimestampFilter,
@@ -62,6 +64,8 @@ const wrappedCreateAdapter = <
     loadEvents,
     incrementalImport,
     getNextCursor,
+    exportSecretsStream,
+    importSecretsStream,
   }
 
   return createAdapter(

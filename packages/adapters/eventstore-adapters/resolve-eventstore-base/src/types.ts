@@ -173,6 +173,10 @@ export type ExportOptions = {
   bufferSize: number
 }
 
+export type ExportSecretsOptions = {
+  idx: number | null
+}
+
 export type GetImportStream<
   ConnectedProps extends AdapterPoolConnectedProps
 > = (
@@ -202,6 +206,13 @@ export interface CommonAdapterFunctions<
   exportStream: GetExportStream<ConnectedProps>
   incrementalImport: IncrementImport<ConnectedProps>
   getNextCursor: GetNextCursor
+  importSecretsStream: (
+    pool: AdapterPoolPossiblyUnconnected<ConnectedProps>
+  ) => stream.Writable
+  exportSecretsStream: (
+    pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+    options?: Partial<ExportSecretsOptions>
+  ) => stream.Readable
 }
 
 export interface AdapterFunctions<
@@ -296,4 +307,6 @@ export interface Adapter {
   incrementalImport: (events: any[]) => Promise<void>
   loadSecrets?: (filter: SecretFilter) => Promise<SecretsWithIdx>
   injectSecret?: (secretRecord: SecretRecord) => Promise<void>
+  importSecrets: () => stream.Writable
+  exportSecrets: (options?: Partial<ExportSecretsOptions>) => stream.Readable
 }
