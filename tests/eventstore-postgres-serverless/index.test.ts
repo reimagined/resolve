@@ -54,7 +54,7 @@ test.skip('Postgres-serverless eventstore adapter should be able to save and loa
     expect(events[0].type).toEqual('TYPE_1')
     expect(events[0].payload).toEqual({ message: 'hello' })
     expect(events[0].timestamp).toBeGreaterThan(0)
-    expect(cursor).toBeInstanceOf(String)
+    expect(typeof cursor).toBe('string')
 
     await adapter.drop()
   } finally {
