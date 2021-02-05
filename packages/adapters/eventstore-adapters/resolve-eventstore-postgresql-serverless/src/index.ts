@@ -30,6 +30,8 @@ import dispose from './dispose'
 import deleteSecret from './delete-secret'
 import setSecret from './set-secret'
 import getSecret from './get-secret'
+import injectSecret from './inject-secret'
+import loadSecrets from './load-secrets'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
@@ -71,6 +73,8 @@ const createPostgresqlServerlessAdapter = (
       rollbackIncrementalImport,
       pushIncrementalImport,
       injectEvent,
+      injectSecret,
+      loadSecrets,
     },
     {
       RDSDataService,

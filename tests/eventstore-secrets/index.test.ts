@@ -1,12 +1,27 @@
 import debugLevels from 'resolve-debug-levels'
-import createAdapter from 'resolve-eventstore-lite'
+import createSqliteAdapter from 'resolve-eventstore-lite'
+import createPostgresqlServerlessAdapter from 'resolve-eventstore-postgresql-serverless'
 import { Adapter } from 'resolve-eventstore-base'
 import { SecretsManager } from 'resolve-core'
+import { create, destroy } from 'resolve-eventstore-postgresql-serverless'
+import type { CloudResourceOptions } from 'resolve-eventstore-postgresql-serverless'
 import { Readable, pipeline } from 'stream'
 import { promisify } from 'util'
+import * as AWS from 'aws-sdk'
 
-const logger = debugLevels('resolve:sqlite:secrets')
-jest.setTimeout(5000)
+const TEST_SERVERLESS = false
+
+const logger = debugLevels('resolve:eventstore:secrets')
+
+let createAdapter: (config: any) => Adapter
+
+if (TEST_SERVERLESS) {
+  jest.setTimeout(1000 * 60 * 5)
+  createAdapter = createPostgresqlServerlessAdapter
+} else {
+  jest.setTimeout(5000)
+  createAdapter = createSqliteAdapter
+}
 
 function streamToString(stream: Readable): Promise<string> {
   const chunks: Buffer[] = []
@@ -25,17 +40,61 @@ function makeIdFromIndex(index: number): string {
   return `id_${index}`
 }
 
-describe('Sqlite eventstore adapter secrets', () => {
+function updateAwsConfig() {
+  AWS.config.update({
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+  })
+}
+
+function getCloudResourceOptions(databaseName: string): CloudResourceOptions {
+  return {
+    eventsTableName: 'events',
+    snapshotsTableName: 'snapshots',
+    secretsTableName: 'secrets',
+    databaseName: databaseName,
+    dbClusterOrInstanceArn: process.env.AWS_RDS_CLUSTER_ARN,
+    awsSecretStoreAdminArn: process.env.AWS_RDS_ADMIN_SECRET_ARN,
+    region: process.env.AWS_REGION ?? 'eu-central-1',
+    userLogin: process.env.AWS_USER_NAME ?? 'master',
+  }
+}
+
+describe('eventstore adapter secrets', () => {
+  if (TEST_SERVERLESS) updateAwsConfig()
+
   const countSecrets = 50
+
+  const options = getCloudResourceOptions('secret_testing')
 
   let adapter: Adapter
   beforeAll(async () => {
-    adapter = createAdapter({})
+    if (TEST_SERVERLESS) {
+      await create(options)
+      adapter = createAdapter({
+        eventsTableName: options.eventsTableName,
+        snapshotsTableName: options.snapshotsTableName,
+        secretsTableName: options.secretsTableName,
+        databaseName: options.databaseName,
+        dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
+        awsSecretStoreArn: options.awsSecretStoreAdminArn,
+        region: options.region,
+      })
+    } else {
+      adapter = createAdapter({})
+    }
     await adapter.init()
   })
 
   afterAll(async () => {
+    await adapter.drop()
     await adapter.dispose()
+
+    if (TEST_SERVERLESS) {
+      await destroy(options)
+    }
   })
 
   test('should load 0 secrets after initialization', async () => {
@@ -125,17 +184,39 @@ describe('Sqlite eventstore adapter secrets', () => {
   })
 })
 
-describe('Sqlite eventstore adapter inject secrets', () => {
+describe('eventstore adapter inject secrets', () => {
+  if (TEST_SERVERLESS) updateAwsConfig()
+
   const countSecrets = 50
+
+  const options = getCloudResourceOptions('inject_secret_testing')
 
   let adapter: Adapter
   beforeAll(async () => {
-    adapter = createAdapter({})
+    if (TEST_SERVERLESS) {
+      await create(options)
+      adapter = createAdapter({
+        eventsTableName: options.eventsTableName,
+        snapshotsTableName: options.snapshotsTableName,
+        secretsTableName: options.secretsTableName,
+        databaseName: options.databaseName,
+        dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
+        awsSecretStoreArn: options.awsSecretStoreAdminArn,
+        region: options.region,
+      })
+    } else {
+      adapter = createAdapter({})
+    }
     await adapter.init()
   })
 
   afterAll(async () => {
+    await adapter.drop()
     await adapter.dispose()
+
+    if (TEST_SERVERLESS) {
+      await destroy(options)
+    }
   })
 
   test('should inject secrets into empty table', async () => {
@@ -158,17 +239,65 @@ describe('Sqlite eventstore adapter inject secrets', () => {
     const secrets = (await adapter.loadSecrets({ limit: countSecrets + 1 }))
       .secrets
     expect(secrets).toHaveLength(countSecrets)
+    for (let i = 1; i < secrets.length; ++i) {
+      expect(secrets[i].idx).toBeGreaterThan(secrets[i - 1].idx)
+    }
   })
 })
 
-describe('Sqlite eventstore adapter import secrets', () => {
-  test('should correctly import exported secrets', async () => {
-    const countSecrets = 50
+describe('eventstore adapter import secrets', () => {
+  if (TEST_SERVERLESS) updateAwsConfig()
 
-    let inputAdapter: Adapter = createAdapter({})
-    let outputAdapter: Adapter = createAdapter({})
+  const inputOptions = getCloudResourceOptions('secret_input_testing')
+  const outputOptions = getCloudResourceOptions('secret_output_testing')
+
+  let inputAdapter: Adapter
+  let outputAdapter: Adapter
+
+  beforeAll(async () => {
+    if (TEST_SERVERLESS) {
+      await create(inputOptions)
+      await create(outputOptions)
+      inputAdapter = createAdapter({
+        eventsTableName: inputOptions.eventsTableName,
+        snapshotsTableName: inputOptions.snapshotsTableName,
+        secretsTableName: inputOptions.secretsTableName,
+        databaseName: inputOptions.databaseName,
+        dbClusterOrInstanceArn: inputOptions.dbClusterOrInstanceArn,
+        awsSecretStoreArn: inputOptions.awsSecretStoreAdminArn,
+        region: inputOptions.region,
+      })
+      outputAdapter = createAdapter({
+        eventsTableName: outputOptions.eventsTableName,
+        snapshotsTableName: outputOptions.snapshotsTableName,
+        secretsTableName: outputOptions.secretsTableName,
+        databaseName: outputOptions.databaseName,
+        dbClusterOrInstanceArn: outputOptions.dbClusterOrInstanceArn,
+        awsSecretStoreArn: outputOptions.awsSecretStoreAdminArn,
+        region: outputOptions.region,
+      })
+    } else {
+      inputAdapter = createAdapter({})
+      outputAdapter = createAdapter({})
+    }
     await inputAdapter.init()
     await outputAdapter.init()
+  })
+
+  afterAll(async () => {
+    await inputAdapter.drop()
+    await inputAdapter.dispose()
+    await outputAdapter.drop()
+    await outputAdapter.dispose()
+
+    if (TEST_SERVERLESS) {
+      await destroy(inputOptions)
+      await destroy(outputOptions)
+    }
+  })
+
+  test('should correctly import exported secrets', async () => {
+    const countSecrets = 50
 
     const secretManager: SecretsManager = await inputAdapter.getSecretsManager()
     for (let secretIndex = 0; secretIndex < countSecrets; secretIndex++) {
