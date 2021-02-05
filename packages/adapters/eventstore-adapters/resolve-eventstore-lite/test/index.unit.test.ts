@@ -31,6 +31,8 @@ import pushIncrementalImport from '../src/push-incremental-import'
 import deleteSecret from '../src/delete-secret'
 import getSecret from '../src/get-secret'
 import setSecret from '../src/set-secret'
+import loadSecrets from '../src/load-secrets'
+import injectSecret from '../src/inject-secret'
 
 jest.mock('../src/load-events-by-cursor', () => jest.fn())
 jest.mock('../src/freeze', () => jest.fn())
@@ -53,6 +55,8 @@ jest.mock('../src/push-incremental-import', () => jest.fn())
 jest.mock('../src/delete-secret', () => jest.fn())
 jest.mock('../src/get-secret', () => jest.fn())
 jest.mock('../src/set-secret', () => jest.fn())
+jest.mock('../src/load-secrets', () => jest.fn())
+jest.mock('../src/inject-secret', () => jest.fn())
 
 const mGenericCreateAdapter = mocked(genericCreateAdapter)
 
@@ -82,6 +86,8 @@ test('generic createAdapter invoked', () => {
       deleteSecret,
       getSecret,
       setSecret,
+      loadSecrets,
+      injectSecret,
     },
     {
       sqlite,

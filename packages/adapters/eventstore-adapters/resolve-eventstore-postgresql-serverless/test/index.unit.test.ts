@@ -31,6 +31,8 @@ import beginIncrementalImport from '../src/begin-incremental-import'
 import commitIncrementalImport from '../src/commit-incremental-import'
 import rollbackIncrementalImport from '../src/rollback-incremental-import'
 import pushIncrementalImport from '../src/push-incremental-import'
+import loadSecrets from '../src/load-secrets'
+import injectSecret from '../src/inject-secret'
 
 import createResource from '../src/resource/create'
 import disposeResource from '../src/resource/dispose'
@@ -73,6 +75,8 @@ jest.mock('../src/begin-incremental-import', () => jest.fn())
 jest.mock('../src/commit-incremental-import', () => jest.fn())
 jest.mock('../src/rollback-incremental-import', () => jest.fn())
 jest.mock('../src/push-incremental-import', () => jest.fn())
+jest.mock('../src/load-secrets', () => jest.fn())
+jest.mock('../src/inject-secret', () => jest.fn())
 
 jest.mock('../src/resource/create', () => jest.fn())
 jest.mock('../src/resource/dispose', () => jest.fn())
@@ -113,6 +117,8 @@ test('generic createAdapter invoked', () => {
       commitIncrementalImport,
       rollbackIncrementalImport,
       pushIncrementalImport,
+      loadSecrets,
+      injectSecret,
     },
     {
       RDSDataService,
