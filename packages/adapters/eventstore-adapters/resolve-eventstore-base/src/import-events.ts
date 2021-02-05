@@ -259,7 +259,7 @@ EventStream.prototype._final = async function (callback: any): Promise<void> {
   }
 }
 
-const importStream = <ConnectedProps extends AdapterPoolConnectedProps>(
+const importEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
   pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
   {
     byteOffset = 0,
@@ -279,4 +279,4 @@ const importStream = <ConnectedProps extends AdapterPoolConnectedProps>(
   }
 }
 
-export default importStream
+export default importEventsStream

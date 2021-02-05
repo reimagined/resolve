@@ -1,6 +1,6 @@
 import createAdapter from './create-adapter'
-import importStream from './import'
-import exportStream from './export'
+import importEventsStream from './import-events'
+import exportEventsStream from './export-events'
 import wrapMethod from './wrap-method'
 import wrapEventFilter from './wrap-event-filter'
 import wrapDispose from './wrap-dispose'
@@ -55,8 +55,8 @@ const wrappedCreateAdapter = <
 ): Adapter => {
   const commonFunctions: CommonAdapterFunctions<ConnectedProps> = {
     maybeThrowResourceError,
-    importStream,
-    exportStream,
+    importEventsStream,
+    exportEventsStream,
     wrapMethod,
     wrapEventFilter,
     wrapDispose,

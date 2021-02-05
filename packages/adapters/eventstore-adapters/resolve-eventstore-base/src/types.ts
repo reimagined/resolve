@@ -202,8 +202,8 @@ export interface CommonAdapterFunctions<
   wrapDispose: WrapDispose<ConnectedProps>
   validateEventFilter: ValidateEventFilter
   loadEvents: LoadEvents<ConnectedProps>
-  importStream: GetImportStream<ConnectedProps>
-  exportStream: GetExportStream<ConnectedProps>
+  importEventsStream: GetImportStream<ConnectedProps>
+  exportEventsStream: GetExportStream<ConnectedProps>
   incrementalImport: IncrementImport<ConnectedProps>
   getNextCursor: GetNextCursor
   importSecretsStream: (
@@ -283,8 +283,8 @@ export interface AdapterFunctions<
 
 export interface Adapter {
   loadEvents: (filter: EventFilter) => Promise<EventsWithCursor>
-  import: (options?: Partial<ImportOptions>) => stream.Writable
-  export: (options?: Partial<ExportOptions>) => stream.Readable
+  importEvents: (options?: Partial<ImportOptions>) => stream.Writable
+  exportEvents: (options?: Partial<ExportOptions>) => stream.Readable
   getLatestEvent: (filter: EventFilter) => Promise<any>
   saveEvent: (event: any) => Promise<any>
   init: () => Promise<any>

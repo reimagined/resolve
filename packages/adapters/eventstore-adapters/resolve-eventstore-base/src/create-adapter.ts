@@ -37,8 +37,8 @@ const createAdapter = <
     wrapDispose,
     validateEventFilter,
     loadEvents,
-    importStream,
-    exportStream,
+    importEventsStream,
+    exportEventsStream,
     incrementalImport,
     getNextCursor,
     importSecretsStream,
@@ -127,8 +127,8 @@ const createAdapter = <
 
   const adapter: Adapter = {
     loadEvents: wrapMethod(adapterPool, wrapEventFilter(loadEvents)),
-    import: importStream.bind(null, adapterPool),
-    export: exportStream.bind(null, adapterPool),
+    importEvents: importEventsStream.bind(null, adapterPool),
+    exportEvents: exportEventsStream.bind(null, adapterPool),
     getLatestEvent: wrapMethod(adapterPool, getLatestEvent),
     saveEvent: wrapMethod(adapterPool, saveEvent),
     init: wrapMethod(adapterPool, init),
