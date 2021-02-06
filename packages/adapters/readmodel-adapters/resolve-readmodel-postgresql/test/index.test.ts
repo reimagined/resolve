@@ -1,14 +1,15 @@
+//@ts-ignore
 import { result } from 'pg'
 import createReadModelAdapter from '../src'
 
 describe('resolve-readmodel-postgresql-serverless', () => {
-  let adapter = null
+  let adapter = null! as ReturnType<typeof createReadModelAdapter>
 
   beforeEach(() => {
     adapter = createReadModelAdapter({
       databaseName: 'databaseName',
       tablePrefix: 'tablePrefix',
-      preferEventBusLedger: true,
+      eventstoreAdapter: null! as any,
     })
   })
 
@@ -20,6 +21,7 @@ describe('resolve-readmodel-postgresql-serverless', () => {
     const readModelName = 'readModelName'
 
     const store = await adapter.connect(readModelName)
+    await adapter.subscribe(store, readModelName, null, null)
 
     await store.defineTable('ShoppingLists', {
       indexes: {
@@ -66,6 +68,9 @@ describe('resolve-readmodel-postgresql-serverless', () => {
 
     await store.count('ShoppingLists', {})
 
+    await adapter.unsubscribe(store, readModelName)
+    await adapter.disconnect(store)
+
     expect(result).toMatchSnapshot()
   })
 
@@ -73,6 +78,7 @@ describe('resolve-readmodel-postgresql-serverless', () => {
     const readModelName = 'readModelName'
 
     const store = await adapter.connect(readModelName)
+    await adapter.subscribe(store, readModelName, null, null)
 
     await store.defineTable('Entries', {
       indexes: {
@@ -119,6 +125,9 @@ describe('resolve-readmodel-postgresql-serverless', () => {
       ],
     })
 
+    await adapter.unsubscribe(store, readModelName)
+    await adapter.disconnect(store)
+
     expect(result).toMatchSnapshot()
   })
 
@@ -128,6 +137,8 @@ describe('resolve-readmodel-postgresql-serverless', () => {
 
     const store1 = await adapter.connect(readModelName1)
     const store2 = await adapter.connect(readModelName2)
+    await adapter.subscribe(store1, readModelName1, null, null)
+    await adapter.subscribe(store2, readModelName2, null, null)
 
     await store1.defineTable('table1', {
       indexes: {
@@ -172,8 +183,11 @@ describe('resolve-readmodel-postgresql-serverless', () => {
 
     await store2.count('table2', {})
 
-    await adapter.drop(store1, readModelName1)
-    await adapter.drop(store2, readModelName2)
+    await adapter.unsubscribe(store1, readModelName1)
+    await adapter.unsubscribe(store2, readModelName2)
+
+    await adapter.disconnect(store1)
+    await adapter.disconnect(store2)
 
     expect(result).toMatchSnapshot()
   })
@@ -182,6 +196,7 @@ describe('resolve-readmodel-postgresql-serverless', () => {
     const readModelName = 'readModelName'
 
     const store = await adapter.connect(readModelName)
+    await adapter.subscribe(store, readModelName, null, null)
 
     await store.defineTable('values', {
       indexes: {
@@ -259,6 +274,9 @@ describe('resolve-readmodel-postgresql-serverless', () => {
       }
     )
 
+    await adapter.unsubscribe(store, readModelName)
+    await adapter.disconnect(store)
+
     expect(result).toMatchSnapshot()
   })
 
@@ -266,6 +284,7 @@ describe('resolve-readmodel-postgresql-serverless', () => {
     const readModelName = 'readModelName'
 
     const store = await adapter.connect(readModelName)
+    await adapter.subscribe(store, readModelName, null, null)
 
     await store.defineTable('values', {
       indexes: {
@@ -295,6 +314,9 @@ describe('resolve-readmodel-postgresql-serverless', () => {
       }
     )
 
+    await adapter.unsubscribe(store, readModelName)
+    await adapter.disconnect(store)
+
     expect(result).toMatchSnapshot()
   })
 
@@ -302,6 +324,7 @@ describe('resolve-readmodel-postgresql-serverless', () => {
     const readModelName = 'readModelName'
 
     const store = await adapter.connect(readModelName)
+    await adapter.subscribe(store, readModelName, null, null)
 
     await store.defineTable('values', {
       indexes: {
@@ -324,12 +347,15 @@ describe('resolve-readmodel-postgresql-serverless', () => {
       },
       {
         $unset: {
-          value: '',
-          'obj.value': '',
-          'arr.0.value': '',
+          value: true,
+          'obj.value': true,
+          'arr.0.value': true,
         },
       }
     )
+
+    await adapter.unsubscribe(store, readModelName)
+    await adapter.disconnect(store)
 
     expect(result).toMatchSnapshot()
   })

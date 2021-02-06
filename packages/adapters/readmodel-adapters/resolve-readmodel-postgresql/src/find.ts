@@ -39,10 +39,8 @@ const find: CurrentStoreApi['find'] = async (
       : ''
 
   const skipLimit = `
-    OFFSET ${
-      isFinite(+(limit as number)) ? +(limit as number) : MAX_LIMIT_VALUE
-    }
-    LIMIT ${isFinite(+(skip as number)) ? +(skip as number) : 0}
+    OFFSET ${isFinite(+(skip as number)) ? +(skip as number) : 0}
+    LIMIT ${isFinite(+(limit as number)) ? +(limit as number) : MAX_LIMIT_VALUE}
   `
 
   const searchExpr = searchToWhereExpression(
