@@ -531,6 +531,10 @@ export type ObjectFixedUnionToIntersectionByKeys<
   >
 }
 
+export type ObjectFixedIntersectionToObject<T extends object> = {
+  [K in ObjectFixedKeys<T>]: ExtractExactUnionLikeKeyType<T, K>
+}
+
 export type JsonLike = JsonPrimitive | JsonArray | JsonMap
 
 export type IfEquals<T, U, Y = unknown, N = never> = (<G>() => G extends T

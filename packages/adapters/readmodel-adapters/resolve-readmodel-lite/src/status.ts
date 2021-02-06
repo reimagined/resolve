@@ -1,5 +1,8 @@
-import { ReadModelRunStatus } from 'resolve-readmodel-base'
-import type { ExternalMethods, ReadModelStatus } from './types'
+import type {
+  ExternalMethods,
+  ReadModelStatus,
+  ReadModelRunStatus,
+} from './types'
 
 const status: ExternalMethods['status'] = async (pool, readModelName) => {
   const {
@@ -43,13 +46,13 @@ const status: ExternalMethods['status'] = async (pool, readModelName) => {
               : null,
           errors: rows[0].Errors != null ? JSON.parse(rows[0].Errors) : null,
           cursor: rows[0].Cursor != null ? JSON.parse(rows[0].Cursor) : null,
-          status: ReadModelRunStatus.DELIVER,
+          status: 'deliver' as ReadModelRunStatus,
         }
 
         if (result.errors != null) {
-          result.status = ReadModelRunStatus.ERROR
+          result.status = 'error' as ReadModelRunStatus
         } else if (rows[0].IsPaused) {
-          result.status = ReadModelRunStatus.SKIP
+          result.status = 'skip' as ReadModelRunStatus
         }
 
         return result
