@@ -17,7 +17,7 @@ const MyLists = () => {
   }, [])
 
   return (
-    <div className="example-wrapper">
+    <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
       <ShoppingLists  
         lists={lists ? lists.data || [] : []} 
         onRemoveSuccess={(err, result) => {

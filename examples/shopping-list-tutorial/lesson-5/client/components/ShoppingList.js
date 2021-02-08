@@ -66,7 +66,7 @@ const ShoppingList = ({
 
 
   return (
-    <div>
+    <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
       <FormLabel>Shopping list name</FormLabel>
       <FormGroup bssize="large">
         <FormControl
