@@ -1,5 +1,6 @@
 import type {
   ObjectFixedIntersectionToObject,
+  ObjectFunctionLikeKeys,
   CommonAdapterPool,
   CommonAdapterOptions,
   AdapterOperations,
@@ -12,21 +13,31 @@ import type {
   UpdateCondition,
   ObjectFixedKeys,
   OmitObject,
+  JsonPrimitive,
+  FunctionLike,
+  UnPromise
 } from 'resolve-readmodel-base'
 
-import type PGLib from 'pg'
+import type RDSDataService from 'aws-sdk/clients/rdsdataservice'
+import type crypto from 'crypto'
 export * from 'resolve-readmodel-base'
 
 export type LibDependencies = {
-  Postgres: typeof PGLib.Client
+  RDSDataService: typeof RDSDataService,
+  crypto: typeof crypto
 }
 
-export type InlineLedgerRunQueryMethod = (
+export type InlineLedgerExecuteStatementMethod = (
+  pool: AdapterPool,
   querySQL: string,
+  transactionId?: string | null,
   passthroughRuntimeErrors?: boolean
 ) => Promise<Array<object>>
 
-export type RunQueryMethod = (querySQL: string) => Promise<Array<object>>
+export type ExecuteStatementMethod = (
+  pool: AdapterPool,
+  querySQL: string
+) => Promise<Array<object>>
 
 export type FullJitterMethod = (retries: number) => Promise<void>
 export type MakeNestedPathMethod = (nestedPath: Array<string>) => string
@@ -66,17 +77,19 @@ export type UpdateToSetExpressionMethod = (
 
 export interface PassthroughErrorInstance extends Error {
   name: string
+  lastTransactionId: string | null | undefined
 }
 
 export type PassthroughErrorFactory = {
-  new (): PassthroughErrorInstance
+  new (lastTransactionId: string | null | undefined): PassthroughErrorInstance
 } & {
   isPassthroughError: (
-    error: Error & { code: string | number },
+    error: Error & { code: string | number, stack: string },
     includeRuntimeErrors: boolean
   ) => boolean
 }
 
+export type IsRdsServiceErrorMethod = (error: Error & { code: string | number, stack: string }) => boolean
 export type GenerateGuidMethod = (...args: any) => string
 
 export type DropReadModelMethod = (
@@ -84,14 +97,62 @@ export type DropReadModelMethod = (
   readModelName: string
 ) => Promise<void>
 
+export type HighloadMethodParameters<
+KS extends ObjectFunctionLikeKeys<InstanceType<LibDependencies['RDSDataService']>>,
+  T extends { [K in KS]: FunctionLike }
+> = T[KS] extends {
+  (params: infer Params, callback: infer Callback): infer Result;
+  (callback: infer _Callback): infer _Result
+} ? Params : never
+
+export type HighloadMethodReturnType<
+KS extends ObjectFunctionLikeKeys<InstanceType<LibDependencies['RDSDataService']>>,
+  T extends { [K in KS]: FunctionLike }
+> = Promise<T[KS] extends {
+  (params: infer Params, callback: infer Callback): infer Result;
+  (callback: infer _Callback): infer _Result
+} ? (
+  Result extends { promise: infer F } ? (
+    F extends FunctionLike ? UnPromise<ReturnType<F>> : never
+  ): never  
+) : never>
+
+export type WrapHighloadMethod = <
+  KS extends ObjectFunctionLikeKeys<InstanceType<LibDependencies['RDSDataService']>>,
+  T extends { [K in KS]: FunctionLike }
+>(
+  isHighloadError: IsRdsServiceErrorMethod,
+  obj: T,
+  method: KS,
+  params: HighloadMethodParameters<KS, T>
+) => HighloadMethodReturnType<KS, T>
+
+export type HighloadRdsMethod<KS extends ObjectFunctionLikeKeys<InstanceType<LibDependencies['RDSDataService']>>> = 
+  (...args: [HighloadMethodParameters<KS, InstanceType<LibDependencies['RDSDataService']>>]) => 
+  HighloadMethodReturnType<KS, InstanceType<LibDependencies['RDSDataService']>>
+
+
+export type HighloadRdsDataService = {
+  executeStatement: HighloadRdsMethod<"executeStatement">
+  beginTransaction: HighloadRdsMethod<"beginTransaction">
+  commitTransaction: HighloadRdsMethod<"commitTransaction">
+  rollbackTransaction: HighloadRdsMethod<"rollbackTransaction">
+}
+
 export type AdapterOptions = CommonAdapterOptions & {
+  dbClusterOrInstanceArn: RDSDataService.Arn
+  awsSecretStoreArn:RDSDataService.Arn,
+  databaseName: RDSDataService.DbName
   tablePrefix?: string
-  databaseName: string
-} & PGLib.ConnectionConfig
+} & RDSDataService.ClientConfiguration
 
 export type InternalMethods = {
+  inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod
+  executeStatement: ExecuteStatementMethod
   inlineLedgerForceStop: InlineLedgerForceStopMethod
   buildUpsertDocument: BuildUpsertDocumentMethod
+  isHighloadError: IsRdsServiceErrorMethod
+  isTimeoutError: IsRdsServiceErrorMethod
   convertResultRow: ConvertResultRowMethod
   searchToWhereExpression: SearchToWhereExpressionMethod
   updateToSetExpression: UpdateToSetExpressionMethod
@@ -100,6 +161,7 @@ export type InternalMethods = {
   dropReadModel: DropReadModelMethod
   escapeId: EscapeableMethod
   escapeStr: EscapeableMethod
+  coercer: CoercerMethod
 }
 
 export type ArrayOrSingleOrNull<T> = Array<T> | T | null
@@ -121,14 +183,25 @@ export type UpdateFieldDescriptor = {
   }>
 }
 
+export type CoercerMethod = (value: {
+  intValue?: number,
+  stringValue?: string,
+  bigIntValue?: number,
+  longValue?: number,
+  booleanValue?: boolean,
+  isNull?: boolean
+}) => JsonPrimitive
+
 export type AdapterPool = CommonAdapterPool & {
-  inlineLedgerRunQuery: InlineLedgerRunQueryMethod
-  runQuery: RunQueryMethod
   performanceTracer: PerformanceTracerLike
-  tablePrefix: string
-  schemaName: string
   makeNestedPath: MakeNestedPathMethod
-  connection: InstanceType<LibDependencies['Postgres']>
+  rdsDataService: HighloadRdsDataService
+  dbClusterOrInstanceArn: RDSDataService.Arn
+  awsSecretStoreArn:RDSDataService.Arn,
+  schemaName: RDSDataService.DbName
+  tablePrefix: string
+  xaTransactionId?: string
+  transactionId?: string
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
       AdapterPool

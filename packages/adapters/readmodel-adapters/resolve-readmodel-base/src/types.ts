@@ -535,6 +535,11 @@ export type ObjectFixedIntersectionToObject<T extends object> = {
   [K in ObjectFixedKeys<T>]: ExtractExactUnionLikeKeyType<T, K>
 }
 
+export type ObjectFunctionLikeKeys<
+  U extends object,
+  KS extends keyof U = ObjectFixedKeys<U>
+> = KS extends any ? (U[KS] extends FunctionLike ? KS : never) : never
+
 export type JsonLike = JsonPrimitive | JsonArray | JsonMap
 
 export type IfEquals<T, U, Y = unknown, N = never> = (<G>() => G extends T
@@ -589,3 +594,4 @@ export type MakeNewableFunction<F extends FunctionLike> = F extends (
       >
     : never
   : never
+
