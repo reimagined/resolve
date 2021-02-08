@@ -1,36 +1,33 @@
 {
   "name": "@shopping-list-tutorial/lesson-3",
-  "version": "0.25.18",
+  "version": "0.26.5",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
     "cloud": "babel-node ./run.js cloud",
     "dev": "babel-node ./run.js dev",
+    "export-event-store": "babel-node ./run.js export-event-store",
+    "import-event-store": "babel-node ./run.js import-event-store",
     "start": "babel-node ./run.js start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose --passWithNoTests",
-    "test:e2e": "babel-node ./run.js test:e2e",
-    "import-event-store": "babel-node ./run.js import-event-store",
-    "export-event-store": "babel-node ./run.js export-event-store"
+    "test:e2e": "babel-node ./run.js test:e2e"
   },
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
-    "history": "4.10.1",
-    "isomorphic-fetch": "3.0.0",
     "react": "16.13.1",
     "react-bootstrap": "1.4.0",
     "react-dom": "16.13.1",
-    "react-helmet": "6.0.0",
+    "react-helmet": "6.1.0",
     "react-router": "5.1.2",
     "react-router-config": "5.1.1",
     "react-router-dom": "5.1.2",
-    "react-bootstrap": "0.32.4",
-    "react-helmet": "6.0.0",
-    "redux": "4.0.5",
-    "react-redux": "7.2.0",
-    "redux-saga": "1.0.5",
-    "resolve-redux": "0.25.18",
-    "resolve-scripts": "0.25.18"
+    "resolve-eventstore-lite": "0.26.5",
+    "resolve-eventstore-postgresql-serverless": "0.26.5",
+    "resolve-react-hooks": "0.26.5",
+    "resolve-readmodel-lite": "0.26.5",
+    "resolve-readmodel-postgresql-serverless": "0.26.5",
+    "resolve-scripts": "0.26.5"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
@@ -46,7 +43,6 @@
     "jest": "26.0.1",
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
-    "resolve-testing-tools": "0.25.18",
     "testcafe": "1.8.5"
   }
 }

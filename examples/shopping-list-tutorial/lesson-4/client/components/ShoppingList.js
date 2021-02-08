@@ -7,7 +7,7 @@ import {
   ListGroup,
   FormControl,
   FormGroup,
-  ControlLabel,
+  FormLabel,
 } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
@@ -38,7 +38,7 @@ const ShoppingList = ({
 
   return (
     <div>
-      <ControlLabel>Shopping list name</ControlLabel>
+      <FormLabel>Shopping list name</FormLabel>
       <FormGroup bsSize="large">
         <FormControl
           type="text"

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ListGroupItem, FormCheck , Button } from 'react-bootstrap'
+import { ListGroupItem, FormCheck, Button } from 'react-bootstrap'
 import { useCommand } from 'resolve-react-hooks'
 
 const ShoppingListItem = ({shoppingListId, item: { id, checked, text } }) => {
@@ -21,13 +21,17 @@ const ShoppingListItem = ({shoppingListId, item: { id, checked, text } }) => {
   })
   return (
     <ListGroupItem key={id}>
+      <FormCheck
+        inline
+        type="checkbox"
+        label={text}
+        checked={checked}
+        onChange={toggleItem}
+      />    
 
-        <FormCheck inline checked={checked} onChange={toggleItem}>
-          {text}
-        </FormCheck>      
-        <Button onClick={removeItem} className="pull-right" >
-          Delete
-        </Button>
+      <Button className="float-right" onClick={removeItem}>
+        Delete
+      </Button>
 
     </ListGroupItem>
   )

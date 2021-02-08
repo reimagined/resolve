@@ -68,7 +68,7 @@ const ShoppingList = ({
   return (
     <div>
       <FormLabel>Shopping list name</FormLabel>
-      <FormGroup bsSize="large">
+      <FormGroup bssize="large">
         <FormControl
           type="text"
           value={shoppingList.name}
@@ -84,7 +84,7 @@ const ShoppingList = ({
           />
         ))}
       </ListGroup>
-      <ControlLabel>Item name</ControlLabel>
+      <FormLabel>Item name</FormLabel>
       <Row>
         <Col md={8}>
           <FormControl
@@ -96,7 +96,7 @@ const ShoppingList = ({
         </Col>
         <Col md={4}>
           <Button
-            bsStyle="success"
+            bsstyle="success"
             onClick={() => createShoppingItem(itemText)}
           >
             Add Item

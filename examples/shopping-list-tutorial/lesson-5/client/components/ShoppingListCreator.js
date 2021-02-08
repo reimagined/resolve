@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Col, FormLabel, FormControl, Row } from 'react-bootstrap'
 import { useCommand } from 'resolve-react-hooks'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 
 const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
   const [shoppingListName, setShoppingListName] = useState('')
@@ -46,7 +46,7 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
         </Col>
         <Col md={4}>
           <Button
-            bsStyle="success"
+            bstyle="success"
             onClick={createShoppingListCommand}
           >
             Add Shopping List
