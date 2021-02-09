@@ -185,7 +185,7 @@ test('inject-events should work correctly', async () => {
         }
       })()
     ),
-    adapter.import()
+    adapter.importEvents()
   )
 
   // const t1 = Date.now()
@@ -321,7 +321,7 @@ test('inject-events should work correctly with retries', async () => {
         }
       })()
     ),
-    adapter.import()
+    adapter.importEvents()
   )
 
   await new Promise((resolve) => setImmediate(resolve))

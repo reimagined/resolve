@@ -58,7 +58,7 @@ EventStream.prototype._write = async function (
   try {
     await this.pool.waitConnect()
 
-    const { drop, init, freeze, injectEvent }: any = this.pool
+    const { dropEvents, initEvents, freeze, injectEvent }: any = this.pool
 
     if (
       this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
@@ -66,13 +66,13 @@ EventStream.prototype._write = async function (
     ) {
       this.isMaintenanceInProgress = true
       try {
-        await drop()
+        await dropEvents()
       } catch (error) {
         if (!ResourceNotExistError.is(error)) {
           throw error
         }
       }
-      await init()
+      await initEvents()
       await freeze()
     }
 
@@ -259,7 +259,7 @@ EventStream.prototype._final = async function (callback: any): Promise<void> {
   }
 }
 
-const importStream = <ConnectedProps extends AdapterPoolConnectedProps>(
+const importEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
   pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
   {
     byteOffset = 0,
@@ -279,4 +279,4 @@ const importStream = <ConnectedProps extends AdapterPoolConnectedProps>(
   }
 }
 
-export default importStream
+export default importEventsStream

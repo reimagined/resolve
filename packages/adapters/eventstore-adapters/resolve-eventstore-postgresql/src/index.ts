@@ -26,8 +26,12 @@ import getSecret from './get-secret'
 import setSecret from './set-secret'
 
 import connect from './connect'
-import init from './init'
-import drop from './drop'
+import initEvents from './init-events'
+import initSecrets from './init-secrets'
+import initFinal from './init-final'
+import dropEvents from './drop-events'
+import dropSecrets from './drop-secrets'
+import dropFinal from './drop-final'
 import dispose from './dispose'
 
 import type { Adapter } from 'resolve-eventstore-base'
@@ -41,8 +45,12 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       loadEventsByTimestamp,
       getLatestEvent,
       saveEvent,
-      init,
-      drop,
+      initEvents,
+      initSecrets,
+      initFinal,
+      dropEvents,
+      dropSecrets,
+      dropFinal,
       dispose,
       freeze,
       unfreeze,

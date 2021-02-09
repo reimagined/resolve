@@ -1,24 +1,24 @@
 import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 import getLog from './get-log'
 import { AdapterPool } from './types'
-const drop = async ({
+import executeSequence from './execute-sequence'
+import { isNotExistError } from './resource-errors'
+
+const dropEvents = async ({
   databaseName,
   secretsTableName,
   eventsTableName,
   snapshotsTableName,
   executeStatement,
   escapeId,
-  maybeThrowResourceError,
-}: AdapterPool): Promise<void> => {
-  const log = getLog('dropSecretsStore')
+}: AdapterPool): Promise<any[]> => {
+  const log = getLog('dropEvents')
 
-  log.debug(`dropping secrets store database tables and indices`)
+  log.debug(`dropping events tables`)
   log.verbose(`secretsTableName: ${secretsTableName}`)
   log.verbose(`databaseName: ${databaseName}`)
 
   const databaseNameAsId: string = escapeId(databaseName)
-  const secretsTableNameAsId: string = escapeId(secretsTableName)
-  const globalIndexName: string = escapeId(`${secretsTableName}-global`)
 
   const eventsTableNameAsId = escapeId(eventsTableName)
   const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
@@ -36,9 +36,6 @@ const drop = async ({
   const timestampIndexName = escapeId(`${eventsTableName}-timestamp`)
 
   const statements: string[] = [
-    `DROP TABLE ${databaseNameAsId}.${secretsTableNameAsId}`,
-    `DROP INDEX IF EXISTS ${databaseNameAsId}.${globalIndexName}`,
-
     `DROP TABLE ${databaseNameAsId}.${eventsTableNameAsId}`,
 
     `DROP INDEX IF EXISTS ${databaseNameAsId}.${aggregateIdAndVersionIndexName}`,
@@ -53,28 +50,22 @@ const drop = async ({
 
     `DROP TABLE ${databaseNameAsId}.${snapshotsTableNameAsId}`,
   ]
-  const errors: any[] = []
-
-  for (const statement of statements) {
-    try {
-      log.debug(`executing query`)
-      log.verbose(statement)
-      await executeStatement(statement)
-      log.debug(`query executed successfully`)
-    } catch (error) {
-      if (error != null && `${error.code}` === '42P01') {
-        throw new EventstoreResourceNotExistError(
-          `duplicate event store resource drop detected`
+  const errors: any[] = await executeSequence(
+    executeStatement,
+    statements,
+    log,
+    (error) => {
+      if (isNotExistError(error)) {
+        return new EventstoreResourceNotExistError(
+          `postgresql adapter for database "${databaseName}" already dropped`
         )
-      } else {
-        errors.push(error)
       }
+      return null
     }
-  }
+  )
 
-  maybeThrowResourceError(errors)
-
-  log.debug(`the event store dropped`)
+  log.debug(`finished dropping events tables`)
+  return errors
 }
 
-export default drop
+export default dropEvents
