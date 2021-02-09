@@ -109,8 +109,6 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     return hmac.digest('hex')
   }
 
-  const executeStatement = imports.executeStatement.bind(null, pool)
-
   Object.assign(pool, {
     rdsDataService,
     dbClusterOrInstanceArn,
@@ -119,9 +117,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     tablePrefix,
     makeNestedPath,
     transactionId: null,
-    readModelName: null,
     ...imports,
-    executeStatement,
     hash512,
   })
 }

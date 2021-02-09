@@ -1,5 +1,5 @@
 import escapeId from '../src/escape-id'
-import escape from '../src/escape'
+import escapeStr from '../src/escape-str'
 import listProperties from '../src/list-properties'
 
 test('list-properties should work correctly', async () => {
@@ -22,9 +22,9 @@ test('list-properties should work correctly', async () => {
     {
       schemaName,
       escapeId,
-      escape,
+      escapeStr,
       inlineLedgerExecuteStatement,
-    },
+    } as any,
     readModelName
   )
 

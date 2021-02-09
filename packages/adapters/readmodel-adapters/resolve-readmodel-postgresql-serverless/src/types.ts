@@ -222,6 +222,7 @@ export type CoercerMethod = (value: {
 }) => JsonPrimitive
 
 export type AdapterPool = CommonAdapterPool & {
+  hash512: (str: string) => string
   performanceTracer: PerformanceTracerLike
   makeNestedPath: MakeNestedPathMethod
   rdsDataService: HighloadRdsDataService
@@ -229,8 +230,8 @@ export type AdapterPool = CommonAdapterPool & {
   awsSecretStoreArn: RDSDataService.Arn
   schemaName: RDSDataService.DbName
   tablePrefix: string
-  xaTransactionId?: string
-  transactionId?: string
+  xaTransactionId?: string | null | undefined
+  transactionId?: string | null | undefined
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
       AdapterPool

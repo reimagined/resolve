@@ -22,26 +22,23 @@ describe('buildEvents', () => {
     ]
 
     const cursor = Array.from(new Array(256)).fill('A').join('')
-
     const next = jest.fn()
-
-    const escape = (str) => str
-
+    const escapeStr = (str: string): string => str
     const store = {
-      set: jest.fn(),
+      update: jest.fn(),
     }
 
-    const projection = {
-      ITEM_CREATED: async (
-        store,
-        { aggregateId, payload: { value } },
-        { decrypt }
-      ) => {
+    const projection: Parameters<typeof buildEvents>[4] = {
+      ITEM_CREATED: async (store, event, encryption) => {
+        const aggregateId = event.aggregateId
+        const value = (event.payload as { value: string }).value
+        //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const decrypt = encryption!.decrypt
         const item = {
-          value: decrypt(value),
+          value: decrypt<string, string>(value),
         }
 
-        await store.set(aggregateId, item)
+        await store.insert('TableName', { aggregateId, ...item })
       },
     }
 
@@ -69,31 +66,37 @@ describe('buildEvents', () => {
     const decrypt = jest.fn()
     const getEncryption = () => () => ({ encrypt, decrypt })
     const PassthroughError = Error
+    const provideLedger = jest.fn()
 
     try {
       await buildEvents(
         {
+          ledgerTableNameAsId,
+          databaseNameAsId,
+          trxTableNameAsId,
+          eventTypes,
+          inputCursor,
+          //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          readModelLedger: null! as any,
+          xaKey,
+        },
+        {
           PassthroughError,
-          getVacantTimeInMillis,
-          getEncryption,
           dbClusterOrInstanceArn,
           awsSecretStoreArn,
           rdsDataService,
           inlineLedgerExecuteStatement,
           generateGuid,
           eventstoreAdapter,
-          escape,
-          databaseNameAsId,
-          ledgerTableNameAsId,
-          trxTableNameAsId,
-          xaKey,
-          eventTypes,
-          cursor: inputCursor,
-        },
+          escapeStr,
+        } as any,
         readModelName,
-        store,
+        store as any,
         projection,
-        next
+        next,
+        getVacantTimeInMillis,
+        provideLedger,
+        getEncryption
       )
       throw new Error('Test failed')
     } catch (error) {
