@@ -2,20 +2,18 @@ import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
 import { AGGREGATE_ID_SQL_TYPE } from './constants'
 import getLog from './get-log'
 import { AdapterPool } from './types'
+import executeSequence from './execute-sequence'
+import { isAlreadyExistsError } from './resource-errors'
 
-const init = async ({
+const initEvents = async ({
   database,
   databaseFile,
   eventsTableName,
   snapshotsTableName,
-  secretsTableName,
   escapeId,
-  maybeThrowResourceError,
-}: AdapterPool): Promise<any> => {
-  const log = getLog('init')
-  log.debug('initializing databases')
-
-  const errors: any[] = []
+}: AdapterPool): Promise<any[]> => {
+  const log = getLog('initEvents')
+  log.debug('initializing events tables')
 
   const statements: string[] = [
     `CREATE TABLE ${escapeId(eventsTableName)}(
@@ -55,39 +53,24 @@ const init = async ({
       ${escapeId('content')} TEXT,
       PRIMARY KEY(${escapeId('snapshotKey')})
       )`,
-    `CREATE TABLE ${escapeId(secretsTableName)} (
-      ${escapeId('idx')} BIG INT NOT NULL,
-      ${escapeId('id')} ${AGGREGATE_ID_SQL_TYPE} NOT NULL,
-      ${escapeId('secret')} text,
-      PRIMARY KEY(${escapeId('id')}, ${escapeId('idx')})
-    )`,
   ]
 
-  for (const statement of statements) {
-    try {
-      log.debug(`executing query`)
-      log.verbose(statement)
-      await database.exec(statement)
-      log.debug(`query executed successfully`)
-    } catch (error) {
-      if (error) {
-        let errorToThrow = error
-        if (/(?:Table|Index).*? already exists$/i.test(error.message)) {
-          errorToThrow = new EventstoreResourceAlreadyExistError(
-            `duplicate initialization of the sqlite adapter with same events database "${databaseFile}" and table "${eventsTableName}" not allowed`
-          )
-        } else {
-          log.error(errorToThrow.message)
-          log.verbose(errorToThrow.stack)
-        }
-        errors.push(errorToThrow)
+  const errors: any[] = await executeSequence(
+    database,
+    statements,
+    log,
+    (error) => {
+      if (isAlreadyExistsError(error.message)) {
+        return new EventstoreResourceAlreadyExistError(
+          `duplicate initialization of the sqlite adapter with same events database "${databaseFile}" and table "${eventsTableName}" is not allowed`
+        )
       }
+      return null
     }
-  }
+  )
 
-  maybeThrowResourceError(errors)
-
-  log.debug('databases are initialized')
+  log.debug('finished initializing events tables')
+  return errors
 }
 
-export default init
+export default initEvents

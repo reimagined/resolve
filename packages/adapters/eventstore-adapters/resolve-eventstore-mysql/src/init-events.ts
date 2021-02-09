@@ -8,20 +8,16 @@ import {
   mediumBlobSqlType,
   longBlobSqlType,
   aggregateIdSqlType,
-  ER_TABLE_EXISTS,
-  ER_NO_SUCH_TABLE,
-  ER_DUP_ENTRY,
-  ER_LOCK_DEADLOCK,
-  ER_SUBQUERY_NO_1_ROW,
 } from './constants'
+import { isAlreadyExistsError } from './resource-errors'
+import executeSequence from './execute-sequence'
 
-const init = async (pool: AdapterPool): Promise<any> => {
-  const log = getLog('init')
-  log.debug('initializing databases')
+const initEvents = async (pool: AdapterPool): Promise<any[]> => {
+  const log = getLog('initEvents')
+  log.debug('initializing events tables')
   const {
     eventsTableName,
     snapshotsTableName,
-    secretsTableName,
     escapeId,
     connection,
     database,
@@ -30,9 +26,7 @@ const init = async (pool: AdapterPool): Promise<any> => {
   const eventsTableNameAsId = escapeId(eventsTableName)
   const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
   const snapshotsTableNameAsId = escapeId(snapshotsTableName)
-  const secretsTableNameAsId = escapeId(secretsTableName)
 
-  log.debug(`building a query`)
   const statements: string[] = [
     `CREATE TABLE ${eventsTableNameAsId}(
       \`threadId\` ${longNumberSqlType},
@@ -65,47 +59,24 @@ const init = async (pool: AdapterPool): Promise<any> => {
     ) VALUES ${Array.from(new Array(256))
       .map((_, index) => `(${index}, 0)`)
       .join(',')}`,
-    `CREATE TABLE ${secretsTableNameAsId}(
-      \`idx\` ${longNumberSqlType},
-      \`id\` ${aggregateIdSqlType},
-      \`secret\` ${longStringSqlType},
-      PRIMARY KEY(\`id\`, \`idx\`)
-    )`,
   ]
 
-  const errors: any[] = []
-
-  for (const statement of statements) {
-    try {
-      log.debug(`executing query`)
-      log.verbose(statement)
-      await connection.query(statement)
-      log.debug(`query executed successfully`)
-    } catch (error) {
-      if (error) {
-        let errorToThrow = error
-        if (
-          Number(errorToThrow) === ER_TABLE_EXISTS ||
-          ER_NO_SUCH_TABLE ||
-          ER_DUP_ENTRY ||
-          ER_LOCK_DEADLOCK ||
-          ER_SUBQUERY_NO_1_ROW
-        ) {
-          errorToThrow = new EventstoreResourceAlreadyExistError(
-            `duplicate initialization of the mysql adapter with same events database "${database}" and table "${eventsTableName}" not allowed`
-          )
-        } else {
-          log.error(errorToThrow.message)
-          log.verbose(errorToThrow.stack)
-        }
-        errors.push(errorToThrow)
+  const errors: any[] = await executeSequence(
+    connection,
+    statements,
+    log,
+    (error) => {
+      if (isAlreadyExistsError(error.message)) {
+        return new EventstoreResourceAlreadyExistError(
+          `duplicate initialization of the mysql adapter with same events database "${database}" and table "${eventsTableName}" is not allowed`
+        )
       }
+      return null
     }
-  }
+  )
 
-  pool.maybeThrowResourceError(errors)
-
-  log.debug('databases are initialized')
+  log.debug('finished initializing events tables')
+  return errors
 }
 
-export default init
+export default initEvents
