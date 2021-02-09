@@ -1,9 +1,9 @@
 import { AdapterPool } from '../src/types'
-import drop from '../src/drop'
+import dropEvents from '../src/drop-events'
 import { mocked } from 'ts-jest/utils'
 
 jest.mock('../src/get-log')
-const mDrop = jest.fn(drop)
+const mDrop = jest.fn(dropEvents)
 let pool: AdapterPool
 
 beforeEach(() => {
@@ -37,8 +37,8 @@ test('event store dropped', async () => {
   expect(mDrop).toHaveBeenCalledWith(pool)
 })
 
-test('secrets store dropped', async () => {
+test('executed statements', async () => {
   await mDrop(pool)
   const execute = mocked(pool.connection.execute)
-  expect(execute.mock.calls).toMatchSnapshot('drop table with keys')
+  expect(execute.mock.calls.length).toBe(4)
 })

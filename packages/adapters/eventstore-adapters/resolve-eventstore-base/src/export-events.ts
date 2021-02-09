@@ -63,7 +63,7 @@ async function* generator(context: any): AsyncGenerator<Buffer, void> {
   }
 }
 
-const exportStream = <ConnectedProps extends AdapterPoolConnectedProps>(
+const exportEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
   pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
   {
     cursor = null,
@@ -100,4 +100,4 @@ const exportStream = <ConnectedProps extends AdapterPoolConnectedProps>(
   return stream
 }
 
-export default exportStream
+export default exportEventsStream
