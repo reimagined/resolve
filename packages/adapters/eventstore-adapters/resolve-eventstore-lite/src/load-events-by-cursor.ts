@@ -79,11 +79,11 @@ const loadEventsByCursor = async (
   let byteIndex = 0
 
   for (const threadCounter of vectorConditions) {
-    const threadCounterBytes = `${threadCounter
-      .substring(2)
-      .match(split2RegExp)}`
-    for (const byteHex of threadCounterBytes) {
-      nextConditionsBuffer[byteIndex++] = Buffer.from(byteHex, 'hex')[0]
+    const threadCounterBytes = threadCounter.substring(2).match(split2RegExp)
+    if (Array.isArray(threadCounterBytes)) {
+      for (const byteHex of threadCounterBytes) {
+        nextConditionsBuffer[byteIndex++] = Buffer.from(byteHex, 'hex')[0]
+      }
     }
   }
 
