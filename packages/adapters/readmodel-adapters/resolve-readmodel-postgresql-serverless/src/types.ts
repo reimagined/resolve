@@ -105,7 +105,9 @@ export type HighloadMethodParameters<
   >,
   T extends { [K in KS]: FunctionLike }
 > = T[KS] extends {
+  //eslint-disable-next-line @typescript-eslint/no-unused-vars
   (params: infer Params, callback: infer Callback): infer Result
+  //eslint-disable-next-line @typescript-eslint/no-unused-vars
   (callback: infer _Callback): infer _Result
 }
   ? Params
@@ -118,7 +120,9 @@ export type HighloadMethodReturnType<
   T extends { [K in KS]: FunctionLike }
 > = Promise<
   T[KS] extends {
+    //eslint-disable-next-line @typescript-eslint/no-unused-vars
     (params: infer Params, callback: infer Callback): infer Result
+    //eslint-disable-next-line @typescript-eslint/no-unused-vars
     (callback: infer _Callback): infer _Result
   }
     ? Result extends { promise: infer F }

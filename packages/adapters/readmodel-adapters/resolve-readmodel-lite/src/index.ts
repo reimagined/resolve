@@ -1,5 +1,6 @@
 import _createAdapter from 'resolve-readmodel-base'
 import SQLite from 'sqlite'
+//eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import tmp from 'tmp'
 import os from 'os'

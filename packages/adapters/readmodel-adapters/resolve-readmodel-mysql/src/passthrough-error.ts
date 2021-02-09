@@ -30,7 +30,7 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
   {
     isPassthroughError(
       error: Error & { errno: string | number },
-      includeRuntimeErrors: boolean = false
+      includeRuntimeErrors = false
     ) {
       return (
         error != null &&

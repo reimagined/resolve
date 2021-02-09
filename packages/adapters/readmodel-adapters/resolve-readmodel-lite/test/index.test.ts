@@ -4,12 +4,14 @@ import path from 'path'
 import createReadModelAdapter from '../src'
 
 describe('resolve-readmodel-lite', () => {
+  //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   let adapter = null! as ReturnType<typeof createReadModelAdapter>
 
   for (const { describeName, databaseFile, clear } of [
     {
       describeName: 'with { databaseFile: ":memory:" }',
       databaseFile: ':memory:',
+      //eslint-disable-next-line @typescript-eslint/no-empty-function
       clear: () => {},
     },
     {
@@ -34,6 +36,7 @@ describe('resolve-readmodel-lite', () => {
     describe(describeName, () => {
       beforeEach(() => {
         adapter = createReadModelAdapter({
+          //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           eventstoreAdapter: null! as any,
           databaseFile,
         })

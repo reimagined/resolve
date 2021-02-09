@@ -105,6 +105,7 @@ const buildInit: (
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
   try {
     if (typeof projection.Init === 'function') {
+      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await projection.Init(store, null! as ReadModelEvent)
     }
 
@@ -197,7 +198,7 @@ export const buildEvents: (
   let lastSuccessEvent: ReadModelEvent | null = null
   let lastFailedEvent: ReadModelEvent | null = null
   let lastError: (Error & { code?: string | number }) | null = null
-  let localContinue: boolean = true
+  let localContinue = true
   let cursor: ReadModelCursor = inputCursor
 
   let transactionIdPromise: Promise<string> = rdsDataService
@@ -302,7 +303,7 @@ export const buildEvents: (
       })
       .then((result) => (result != null ? result.events : []))
 
-    let appliedEventsCount: number = 0
+    let appliedEventsCount = 0
     try {
       for (const event of events) {
         const savePointId = generateGuid(transactionId, `${appliedEventsCount}`)

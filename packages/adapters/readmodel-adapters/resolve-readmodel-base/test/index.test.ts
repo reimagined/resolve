@@ -113,6 +113,7 @@ test('resolve-readmodel-base should wrap descendant adapter', async () => {
     getEncryption
   )
 
+  //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   await projection.Init(store, null! as any)
   expect(implementation.defineTable).toBeCalledWith(
     adapterPool,
@@ -121,6 +122,7 @@ test('resolve-readmodel-base should wrap descendant adapter', async () => {
     { indexes: { id: 'number' }, fields: [] }
   )
 
+  //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   await projection.EventType(store, null! as any)
   expect(implementation.count).toBeCalledWith(
     adapterPool,

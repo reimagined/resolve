@@ -1,8 +1,10 @@
 import createReadModelAdapter from '../src'
+//eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { result } from 'mysql2/promise'
 
 describe('resolve-readmodel-mysql', () => {
+  //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   let adapter = null! as ReturnType<typeof createReadModelAdapter>
 
   beforeEach(() => {
@@ -12,6 +14,7 @@ describe('resolve-readmodel-mysql', () => {
       user: 'customUser',
       password: 'customPassword',
       database: 'customDatabaseName',
+      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       eventstoreAdapter: null! as any,
     })
   })

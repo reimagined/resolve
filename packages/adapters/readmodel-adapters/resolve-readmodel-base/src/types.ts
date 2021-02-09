@@ -404,7 +404,8 @@ export type WrappedAdapterOperationParameters<
   pool: AdapterPool,
   readModelName: string,
   ...args: infer Args
-) => infer Result
+) => // eslint-disable-next-line @typescript-eslint/no-unused-vars
+infer Result
   ? Args
   : never
 
@@ -478,7 +479,8 @@ export type ObjectKeys<T> = T extends object
   ? (keyof T)[]
   : T extends number
   ? []
-  : T extends Array<infer R> | string
+  : // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  T extends Array<infer R> | string
   ? string[]
   : never
 

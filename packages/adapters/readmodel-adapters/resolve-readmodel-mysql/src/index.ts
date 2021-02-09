@@ -1,4 +1,5 @@
 import MySQL from 'mysql2/promise'
+//eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { escapeId, escape as escapeStr } from 'mysql2'
 import _createAdapter from 'resolve-readmodel-base'

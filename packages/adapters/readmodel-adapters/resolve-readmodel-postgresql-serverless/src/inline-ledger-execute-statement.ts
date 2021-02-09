@@ -36,7 +36,7 @@ const inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod = async (
       for (let i = 0; i < columnMetadata.length; i++) {
         const columnName = columnMetadata[i].name
         if (columnName != null) {
-          row[columnName] = pool.coercer(record[i])
+          row[columnName] = coercer(record[i])
         }
       }
       rows.push(row)

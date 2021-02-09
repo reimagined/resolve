@@ -9,6 +9,7 @@ test('list-properties should work correctly', async () => {
   }
 
   const PassthroughError = Error
+  //eslint-disable-next-line @typescript-eslint/no-empty-function
   const fullJitter = () => {}
   const inlineLedgerRunQuery = jest.fn().mockReturnValue([
     {

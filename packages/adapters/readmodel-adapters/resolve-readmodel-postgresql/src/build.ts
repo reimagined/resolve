@@ -67,6 +67,7 @@ const buildInit: (
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
   try {
     if (typeof projection.Init === 'function') {
+      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await projection.Init(store, null! as ReadModelEvent)
     }
 

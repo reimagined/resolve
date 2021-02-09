@@ -1,14 +1,17 @@
+//eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 import { result } from 'pg'
 import createReadModelAdapter from '../src'
 
 describe('resolve-readmodel-postgresql-serverless', () => {
+  //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   let adapter = null! as ReturnType<typeof createReadModelAdapter>
 
   beforeEach(() => {
     adapter = createReadModelAdapter({
       databaseName: 'databaseName',
       tablePrefix: 'tablePrefix',
+      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       eventstoreAdapter: null! as any,
     })
   })
