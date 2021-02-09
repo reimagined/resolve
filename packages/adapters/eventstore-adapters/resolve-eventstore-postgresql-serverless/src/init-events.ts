@@ -9,25 +9,22 @@ import {
   LONG_STRING_SQL_TYPE,
   TEXT_SQL_TYPE,
 } from './constants'
+import { isAlreadyExistsError } from './resource-errors'
+import executeSequence from './execute-sequence'
 
-const init = async ({
+const initEvents = async ({
   databaseName,
-  secretsTableName,
   eventsTableName,
   snapshotsTableName,
   executeStatement,
   escapeId,
-  maybeThrowResourceError,
-}: AdapterPool): Promise<void> => {
-  const log = getLog('initSecretsStore')
-
-  log.debug(`initializing secrets store database tables`)
-  log.verbose(`secretsTableName: ${secretsTableName}`)
+}: AdapterPool): Promise<any[]> => {
+  const log = getLog('initEvents')
+  log.debug(`initializing events tables`)
+  log.verbose(`eventsTableName: ${eventsTableName}`)
   log.verbose(`databaseName: ${databaseName}`)
 
   const databaseNameAsId: string = escapeId(databaseName)
-  const secretsTableNameAsId: string = escapeId(secretsTableName)
-  const globalIndexName: string = escapeId(`${secretsTableName}-global`)
 
   const eventsTableNameAsId: string = escapeId(eventsTableName)
   const threadsTableNameAsId: string = escapeId(`${eventsTableName}-threads`)
@@ -43,17 +40,7 @@ const init = async ({
   const typeIndexName: string = escapeId(`${eventsTableName}-type`)
   const timestampIndexName: string = escapeId(`${eventsTableName}-timestamp`)
 
-  const errors: any[] = []
-
-  const statements: string[] = [
-    `CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${secretsTableNameAsId} (
-      "idx" BIGSERIAL,
-      "id" ${AGGREGATE_ID_SQL_TYPE} NOT NULL PRIMARY KEY,
-      "secret" text COLLATE pg_catalog."default"
-     )`,
-    `CREATE UNIQUE INDEX IF NOT EXISTS ${globalIndexName}
-       ON ${databaseNameAsId}.${secretsTableNameAsId}
-       ("idx")`,
+  const statements = [
     `CREATE TABLE ${databaseNameAsId}.${eventsTableNameAsId}(
       "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
       "threadCounter" ${INT8_SQL_TYPE} NOT NULL,
@@ -80,15 +67,15 @@ const init = async ({
     `CREATE INDEX ${timestampIndexName}
     ON ${databaseNameAsId}.${eventsTableNameAsId}
     USING BTREE("timestamp")`,
-    `CREATE TABLE ${databaseNameAsId}.${snapshotsTableNameAsId} (
-      "snapshotKey" ${TEXT_SQL_TYPE} NOT NULL,
-      "snapshotContent" ${TEXT_SQL_TYPE},
-      PRIMARY KEY("snapshotKey")
-    )`,
     `CREATE TABLE ${databaseNameAsId}.${threadsTableNameAsId}(
       "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
       "threadCounter" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
     PRIMARY KEY("threadId")
+    )`,
+    `CREATE TABLE ${databaseNameAsId}.${snapshotsTableNameAsId} (
+      "snapshotKey" ${TEXT_SQL_TYPE} NOT NULL,
+      "snapshotContent" ${TEXT_SQL_TYPE},
+      PRIMARY KEY("snapshotKey")
     )`,
     `INSERT INTO ${databaseNameAsId}.${threadsTableNameAsId}(
       "threadId",
@@ -98,28 +85,22 @@ const init = async ({
       .join(',')}`,
   ]
 
-  for (const statement of statements) {
-    try {
-      log.debug(`executing query`)
-      log.verbose(statement)
-      await executeStatement(statement)
-      log.debug(`query executed successfully`)
-    } catch (error) {
-      if (error != null && `${error.code}` === '42P07') {
-        throw new EventstoreResourceAlreadyExistError(
-          `Double-initialize storage-postgresql adapter via "${databaseName}" failed`
+  const errors: any[] = await executeSequence(
+    executeStatement,
+    statements,
+    log,
+    (error) => {
+      if (isAlreadyExistsError(error.message)) {
+        return new EventstoreResourceAlreadyExistError(
+          `duplicate initialization of the postgresql-serverless event store on database "${databaseName}" and table ${eventsTableName} is not allowed`
         )
-      } else {
-        log.error(error.message)
-        log.verbose(error.stack)
       }
-      errors.push(error)
+      return null
     }
-  }
+  )
 
-  maybeThrowResourceError(errors)
-
-  log.debug('databases are initialized')
+  log.debug('finished initializing events tables')
+  return errors
 }
 
-export default init
+export default initEvents

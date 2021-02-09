@@ -18,8 +18,12 @@ import escapeId from '../src/escape-id'
 import escape from '../src/escape'
 import shapeEvent from '../src/shape-event'
 import connect from '../src/connect'
-import init from '../src/init'
-import drop from '../src/drop'
+import initEvents from '../src/init-events'
+import initSecrets from '../src/init-secrets'
+import initFinal from '../src/init-final'
+import dropEvents from '../src/drop-events'
+import dropSecrets from '../src/drop-secrets'
+import dropFinal from '../src/drop-final'
 import dispose from '../src/dispose'
 import deleteSecret from '../src/delete-secret'
 import setSecret from '../src/set-secret'
@@ -47,8 +51,12 @@ jest.mock('../src/escape-id', () => jest.fn())
 jest.mock('../src/escape', () => jest.fn())
 jest.mock('../src/shape-event', () => jest.fn())
 jest.mock('../src/connect', () => jest.fn())
-jest.mock('../src/init', () => jest.fn())
-jest.mock('../src/drop', () => jest.fn())
+jest.mock('../src/init-events', () => jest.fn())
+jest.mock('../src/init-secrets', () => jest.fn())
+jest.mock('../src/init-final', () => jest.fn())
+jest.mock('../src/drop-events', () => jest.fn())
+jest.mock('../src/drop-secrets', () => jest.fn())
+jest.mock('../src/drop-final', () => jest.fn())
 jest.mock('../src/dispose', () => jest.fn())
 jest.mock('../src/delete-secret', () => jest.fn())
 jest.mock('../src/set-secret', () => jest.fn())
@@ -74,8 +82,12 @@ test('generic createAdapter invoked', () => {
       loadEventsByTimestamp,
       getLatestEvent,
       saveEvent,
-      init,
-      drop,
+      initEvents,
+      initSecrets,
+      initFinal,
+      dropEvents,
+      dropSecrets,
+      dropFinal,
       dispose,
       freeze,
       unfreeze,

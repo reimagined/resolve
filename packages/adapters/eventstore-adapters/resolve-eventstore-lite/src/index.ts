@@ -10,11 +10,11 @@ import connect from './connect'
 import deleteSecret from './delete-secret'
 import dispose from './dispose'
 import dropSnapshot from './drop-snapshot'
-import drop from './drop'
+import dropEvents from './drop-events'
 import freeze from './freeze'
 import getLatestEvent from './get-latest-event'
 import getSecret from './get-secret'
-import init from './init'
+import initEvents from './init-events'
 import injectEvent from './inject-event'
 import loadEventsByCursor from './load-events-by-cursor'
 import loadEventsByTimestamp from './load-events-by-timestamp'
@@ -28,6 +28,10 @@ import shapeEvent from './shape-event'
 import unfreeze from './unfreeze'
 import loadSecrets from './load-secrets'
 import injectSecret from './inject-secret'
+import initSecrets from './init-secrets'
+import dropSecrets from './drop-secrets'
+import initFinal from './init-final'
+import dropFinal from './drop-final'
 
 import type { Adapter } from 'resolve-eventstore-base'
 import type { ConnectionDependencies, SqliteAdapterConfig } from './types'
@@ -41,11 +45,15 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       deleteSecret,
       dispose,
       dropSnapshot,
-      drop,
+      dropEvents,
+      dropSecrets,
+      dropFinal,
       freeze,
       getLatestEvent,
       getSecret,
-      init,
+      initEvents,
+      initSecrets,
+      initFinal,
       injectEvent,
       loadEventsByCursor,
       loadEventsByTimestamp,

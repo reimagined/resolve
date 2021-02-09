@@ -47,10 +47,18 @@ SecretsStream.prototype._write = async function (
   try {
     await this.pool.waitConnect()
 
-    const { freeze, injectSecret }: any = this.pool
+    const { dropSecrets, initSecrets, freeze, injectSecret }: any = this.pool
 
     if (this.isMaintenanceInProgress === false) {
       this.isMaintenanceInProgress = true
+      try {
+        await dropSecrets()
+      } catch (error) {
+        if (!ResourceNotExistError.is(error)) {
+          throw error
+        }
+      }
+      await initSecrets()
       await freeze()
     }
 

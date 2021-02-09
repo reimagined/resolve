@@ -9,7 +9,7 @@ import { Readable, pipeline } from 'stream'
 import { promisify } from 'util'
 import * as AWS from 'aws-sdk'
 
-const TEST_SERVERLESS = false
+const TEST_SERVERLESS = true
 
 const logger = debugLevels('resolve:eventstore:secrets')
 
@@ -254,6 +254,8 @@ describe('eventstore adapter import secrets', () => {
   let inputAdapter: Adapter
   let outputAdapter: Adapter
 
+  const countEvents = 50
+
   beforeAll(async () => {
     if (TEST_SERVERLESS) {
       await create(inputOptions)
@@ -282,6 +284,17 @@ describe('eventstore adapter import secrets', () => {
     }
     await inputAdapter.init()
     await outputAdapter.init()
+
+    for (let eventIndex = 0; eventIndex < countEvents; ++eventIndex) {
+      const event = {
+        aggregateId: 'aggregateId',
+        aggregateVersion: eventIndex + 1,
+        type: 'EVENT',
+        payload: { eventIndex },
+        timestamp: eventIndex + 1,
+      }
+      await outputAdapter.saveEvent(event)
+    }
   })
 
   afterAll(async () => {
@@ -318,5 +331,10 @@ describe('eventstore adapter import secrets', () => {
     for (let i = 1; i < secrets.length; ++i) {
       expect(secrets[i].idx).toBeGreaterThan(secrets[i - 1].idx)
     }
+  })
+
+  test('importing secrets should not drop events', async () => {
+    const { events } = await outputAdapter.loadEvents({ limit: countEvents })
+    expect(events.length).toEqual(countEvents)
   })
 })

@@ -108,6 +108,13 @@ export type AdapterPoolConnectedProps = Adapter & {
 
   waitConnect: any
   shapeEvent: ShapeEvent
+
+  initEvents: () => Promise<any[]>
+  initSecrets: () => Promise<any[]>
+  initFinal: () => Promise<any[]>
+  dropEvents: () => Promise<any[]>
+  dropSecrets: () => Promise<any[]>
+  dropFinal: () => Promise<any[]>
 }
 
 export type AdapterPoolPossiblyUnconnected<
@@ -213,6 +220,8 @@ export interface CommonAdapterFunctions<
     pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
     options?: Partial<ExportSecretsOptions>
   ) => stream.Readable
+  init: (pool: AdapterPoolConnected<ConnectedProps>) => Promise<void>
+  drop: (pool: AdapterPoolConnected<ConnectedProps>) => Promise<void>
 }
 
 export interface AdapterFunctions<
@@ -234,10 +243,8 @@ export interface AdapterFunctions<
   ) => Promise<any>
   dispose: Dispose<ConnectedProps>
   dropSnapshot: (pool: AdapterPool, snapshotKey: string) => Promise<any>
-  drop: (pool: AdapterPool) => Promise<any>
   freeze: (pool: AdapterPool) => Promise<void>
   getLatestEvent: (pool: AdapterPool, filter: EventFilter) => Promise<any>
-  init: (pool: AdapterPool) => Promise<any>
   injectEvent: (pool: AdapterPool, event: any) => Promise<any>
   loadEventsByCursor: (
     pool: AdapterPool,
@@ -279,6 +286,12 @@ export interface AdapterFunctions<
     pool: AdapterPool,
     secretRecord: SecretRecord
   ) => Promise<void>
+  initEvents: (pool: AdapterPool) => Promise<any[]>
+  initSecrets: (pool: AdapterPool) => Promise<any[]>
+  initFinal: (pool: AdapterPool) => Promise<any[]>
+  dropEvents: (pool: AdapterPool) => Promise<any[]>
+  dropSecrets: (pool: AdapterPool) => Promise<any[]>
+  dropFinal: (pool: AdapterPool) => Promise<any[]>
 }
 
 export interface Adapter {
@@ -287,8 +300,8 @@ export interface Adapter {
   exportEvents: (options?: Partial<ExportOptions>) => stream.Readable
   getLatestEvent: (filter: EventFilter) => Promise<any>
   saveEvent: (event: any) => Promise<any>
-  init: () => Promise<any>
-  drop: () => Promise<any>
+  init: () => Promise<void>
+  drop: () => Promise<void>
   dispose: () => Promise<any>
   freeze: () => Promise<void>
   unfreeze: () => Promise<void>
