@@ -9,7 +9,7 @@ import { Readable, pipeline } from 'stream'
 import { promisify } from 'util'
 import * as AWS from 'aws-sdk'
 
-const TEST_SERVERLESS = true
+const TEST_SERVERLESS = false
 
 const logger = debugLevels('resolve:eventstore:secrets')
 
