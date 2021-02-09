@@ -24,12 +24,18 @@ import rollbackIncrementalImport from './rollback-incremental-import'
 import pushIncrementalImport from './push-incremental-import'
 
 import connect from './connect'
-import init from './init'
-import drop from './drop'
+import initEvents from './init-events'
+import initSecrets from './init-secrets'
+import initFinal from './init-final'
+import dropEvents from './drop-events'
+import dropSecrets from './drop-secrets'
+import dropFinal from './drop-final'
 import dispose from './dispose'
 import deleteSecret from './delete-secret'
 import setSecret from './set-secret'
 import getSecret from './get-secret'
+import injectSecret from './inject-secret'
+import loadSecrets from './load-secrets'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
@@ -54,8 +60,12 @@ const createPostgresqlServerlessAdapter = (
       loadEventsByTimestamp,
       getLatestEvent,
       saveEvent,
-      init,
-      drop,
+      initEvents,
+      initSecrets,
+      initFinal,
+      dropEvents,
+      dropSecrets,
+      dropFinal,
       dispose,
       freeze,
       unfreeze,
@@ -71,6 +81,8 @@ const createPostgresqlServerlessAdapter = (
       rollbackIncrementalImport,
       pushIncrementalImport,
       injectEvent,
+      injectSecret,
+      loadSecrets,
     },
     {
       RDSDataService,

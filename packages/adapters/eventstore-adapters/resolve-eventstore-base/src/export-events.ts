@@ -7,6 +7,12 @@ import {
 } from './constants'
 import getNextCursor from './get-next-cursor'
 
+import {
+  AdapterPoolConnectedProps,
+  AdapterPoolPossiblyUnconnected,
+  ExportOptions,
+} from './types'
+
 async function startProcessEvents({
   pool,
   maintenanceMode,
@@ -57,14 +63,14 @@ async function* generator(context: any): AsyncGenerator<Buffer, void> {
   }
 }
 
-const exportStream = (
-  pool: any,
+const exportEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
+  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
   {
     cursor = null,
     maintenanceMode = MAINTENANCE_MODE_AUTO,
     bufferSize = Number.POSITIVE_INFINITY,
-  }: any = {}
-) => {
+  }: Partial<ExportOptions> = {}
+): Readable => {
   if (
     ![MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL].includes(maintenanceMode)
   ) {
@@ -94,4 +100,4 @@ const exportStream = (
   return stream
 }
 
-export default exportStream
+export default exportEventsStream

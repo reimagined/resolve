@@ -1,6 +1,12 @@
 import Lambda, { setLambdaResult, result } from 'aws-sdk/clients/lambda'
 import initBroker from '../src/cloud/init-broker'
 
+beforeEach(() => {
+  delete process.env.AWS_ACCESS_KEY_ID
+  delete process.env.AWS_SECRET_ACCESS_KEY
+  delete process.env.AWS_SESSION_TOKEN
+})
+
 describe('event-publisher', () => {
   let publisher, lambdaInvoke
   const readModels = [
