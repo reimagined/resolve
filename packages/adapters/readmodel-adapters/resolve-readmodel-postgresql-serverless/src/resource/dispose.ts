@@ -1,4 +1,6 @@
-const dispose = async (pool, options) => {
+import type { UnboundResourceMethod } from '../types'
+
+const dispose: UnboundResourceMethod = async (pool, options) => {
   const { destroyResource, createResource } = pool
 
   await destroyResource(options)

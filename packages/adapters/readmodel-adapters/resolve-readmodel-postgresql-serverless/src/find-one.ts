@@ -1,6 +1,6 @@
 import type { CurrentStoreApi, MarshalledRowLike } from './types'
 
-const findOne: CurrentStoreApi["findOne"] = async (
+const findOne: CurrentStoreApi['findOne'] = async (
   pool,
   readModelName,
   tableName,
@@ -28,7 +28,7 @@ const findOne: CurrentStoreApi["findOne"] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const rows = await executeStatement(
+  const rows = (await executeStatement(
     pool,
     `SELECT * FROM ${escapeId(schemaName)}.${escapeId(
       `${tablePrefix}${tableName}`
@@ -36,7 +36,7 @@ const findOne: CurrentStoreApi["findOne"] = async (
     ${inlineSearchExpr}
     OFFSET 0
     LIMIT 1;`
-  ) as Array<MarshalledRowLike>
+  )) as Array<MarshalledRowLike>
 
   if (Array.isArray(rows) && rows.length > 0) {
     return convertResultRow(rows[0], fieldList)

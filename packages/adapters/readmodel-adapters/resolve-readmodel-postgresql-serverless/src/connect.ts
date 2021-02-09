@@ -1,5 +1,10 @@
-import type { CurrentConnectMethod, MakeNestedPathMethod, WrapHighloadMethod, 
-  HighloadMethodParameters, HighloadMethodReturnType, HighloadRdsDataService
+import type {
+  CurrentConnectMethod,
+  MakeNestedPathMethod,
+  WrapHighloadMethod,
+  HighloadMethodParameters,
+  HighloadMethodReturnType,
+  HighloadRdsDataService,
 } from './types'
 
 const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
@@ -17,7 +22,12 @@ const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
   return `{${jsonPathParts.join(',')}}`
 }
 
-const wrapHighload: WrapHighloadMethod = async (isHighloadError, obj, method, params) => {
+const wrapHighload: WrapHighloadMethod = async (
+  isHighloadError,
+  obj,
+  method,
+  params
+) => {
   while (true) {
     try {
       return await obj[method](params).promise()
@@ -61,12 +71,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
       'executeStatement',
       [HighloadMethodParameters<'executeStatement', typeof rawRdsDataService>],
       HighloadMethodReturnType<'executeStatement', typeof rawRdsDataService>
-    >(
-      null,
-      imports.isHighloadError,
-      rawRdsDataService,
-      'executeStatement'
-    ),
+    >(null, imports.isHighloadError, rawRdsDataService, 'executeStatement'),
     beginTransaction: wrapHighload.bind<
       null,
       typeof imports.isHighloadError,
@@ -74,12 +79,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
       'beginTransaction',
       [HighloadMethodParameters<'beginTransaction', typeof rawRdsDataService>],
       HighloadMethodReturnType<'beginTransaction', typeof rawRdsDataService>
-    >(
-      null,
-      imports.isHighloadError,
-      rawRdsDataService,
-      'beginTransaction'
-    ),
+    >(null, imports.isHighloadError, rawRdsDataService, 'beginTransaction'),
     commitTransaction: wrapHighload.bind<
       null,
       typeof imports.isHighloadError,
@@ -87,25 +87,20 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
       'commitTransaction',
       [HighloadMethodParameters<'commitTransaction', typeof rawRdsDataService>],
       HighloadMethodReturnType<'commitTransaction', typeof rawRdsDataService>
-    >(
-      null,
-      imports.isHighloadError,
-      rawRdsDataService,
-      'commitTransaction'
-    ),
+    >(null, imports.isHighloadError, rawRdsDataService, 'commitTransaction'),
     rollbackTransaction: wrapHighload.bind<
       null,
       typeof imports.isHighloadError,
       typeof rawRdsDataService,
       'rollbackTransaction',
-      [HighloadMethodParameters<'rollbackTransaction', typeof rawRdsDataService>],
+      [
+        HighloadMethodParameters<
+          'rollbackTransaction',
+          typeof rawRdsDataService
+        >
+      ],
       HighloadMethodReturnType<'rollbackTransaction', typeof rawRdsDataService>
-    >(
-      null,
-      imports.isHighloadError,
-      rawRdsDataService,
-      'rollbackTransaction'
-    )
+    >(null, imports.isHighloadError, rawRdsDataService, 'rollbackTransaction'),
   }
 
   const hash512 = (str: string): string => {

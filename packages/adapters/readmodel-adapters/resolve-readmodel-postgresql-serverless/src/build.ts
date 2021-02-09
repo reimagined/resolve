@@ -18,7 +18,6 @@ const serializeError = (error: Error & { code?: number | string }) =>
       }
     : null
 
-
 const buildInit: (
   currentPool: {
     ledgerTableNameAsId: string
@@ -31,7 +30,12 @@ const buildInit: (
   },
   ...args: Parameters<ExternalMethods['build']>
 ) => ReturnType<ExternalMethods['build']> = async (
-  currentPool, basePool, readModelName, store, projection, next
+  currentPool,
+  basePool,
+  readModelName,
+  store,
+  projection,
+  next
 ) => {
   const pool = { ...basePool, ...currentPool }
   const {
@@ -49,7 +53,9 @@ const buildInit: (
     xaKey,
   } = pool
 
-  const { transactionId = RDS_TRANSACTION_FAILED_KEY } = await rdsDataService.beginTransaction({
+  const {
+    transactionId = RDS_TRANSACTION_FAILED_KEY,
+  } = await rdsDataService.beginTransaction({
     resourceArn: dbClusterOrInstanceArn,
     secretArn: awsSecretStoreArn,
     database: 'postgres',
@@ -169,7 +175,7 @@ export const buildEvents: (
   provideLedger,
   getEncryption
 ) => {
-  void (provideLedger)
+  void provideLedger
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
@@ -190,7 +196,7 @@ export const buildEvents: (
 
   let lastSuccessEvent: ReadModelEvent | null = null
   let lastFailedEvent: ReadModelEvent | null = null
-  let lastError: Error & { code?: string | number } | null = null
+  let lastError: (Error & { code?: string | number }) | null = null
   let localContinue: boolean = true
   let cursor: ReadModelCursor = inputCursor
 
@@ -200,7 +206,11 @@ export const buildEvents: (
       secretArn: awsSecretStoreArn,
       database: 'postgres',
     })
-    .then((result) => (result != null && result.transactionId != null ? result.transactionId : RDS_TRANSACTION_FAILED_KEY))
+    .then((result) =>
+      result != null && result.transactionId != null
+        ? result.transactionId
+        : RDS_TRANSACTION_FAILED_KEY
+    )
 
   let eventsPromise: Promise<Array<ReadModelEvent>> = eventstoreAdapter
     .loadEvents({
@@ -272,12 +282,16 @@ export const buildEvents: (
         secretArn: awsSecretStoreArn,
         database: 'postgres',
       })
-      .then((result) => (result != null  && result.transactionId != null
-        ? result.transactionId
-        : RDS_TRANSACTION_FAILED_KEY
-        ))
+      .then((result) =>
+        result != null && result.transactionId != null
+          ? result.transactionId
+          : RDS_TRANSACTION_FAILED_KEY
+      )
 
-    let nextCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(cursor, events)
+    let nextCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(
+      cursor,
+      events
+    )
 
     eventsPromise = eventstoreAdapter
       .loadEvents({
@@ -483,7 +497,7 @@ export const buildEvents: (
   }
 }
 
-const build : ExternalMethods["build"] = async (
+const build: ExternalMethods['build'] = async (
   basePool,
   readModelName,
   store,
@@ -504,7 +518,7 @@ const build : ExternalMethods["build"] = async (
     inlineLedgerExecuteStatement,
     generateGuid,
   } = basePool
-  
+
   try {
     const databaseNameAsId = escapeId(schemaName)
     const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
@@ -512,7 +526,7 @@ const build : ExternalMethods["build"] = async (
 
     const xaKey = generateGuid(`${Date.now()}${Math.random()}${process.pid}`)
 
-    const rows = await inlineLedgerExecuteStatement(
+    const rows = (await inlineLedgerExecuteStatement(
       basePool,
       `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
@@ -529,7 +543,7 @@ const build : ExternalMethods["build"] = async (
        AND "Errors" IS NULL
        RETURNING ${databaseNameAsId}.${ledgerTableNameAsId}.*
       `
-    ) as Array<{
+    )) as Array<{
       EventTypes: string | null
       AggregateIds: string | null
       Cursor: string | null
@@ -566,7 +580,7 @@ const build : ExternalMethods["build"] = async (
                 ? JSON.parse(rows[0].Properties)
                 : null,
             Schema: rows[0].Schema != null ? JSON.parse(rows[0].Schema) : null,
-          }) as ReadModelLedger
+          } as ReadModelLedger)
         : null
 
     if (readModelLedger == null || readModelLedger.Errors != null) {
@@ -594,7 +608,7 @@ const build : ExternalMethods["build"] = async (
       eventTypes,
       xaKey,
     }
-  
+
     const buildMethod = cursor == null ? buildInit : buildEvents
     await buildMethod(
       currentPool,
@@ -605,7 +619,8 @@ const build : ExternalMethods["build"] = async (
       next,
       getVacantTimeInMillis,
       provideLedger,
-      getEncryption)
+      getEncryption
+    )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
       throw error

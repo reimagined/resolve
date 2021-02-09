@@ -1,6 +1,6 @@
-import type { CurrentStoreApi } from './types' 
+import type { CurrentStoreApi } from './types'
 
-const count: CurrentStoreApi["count"] = async (
+const count: CurrentStoreApi['count'] = async (
   pool,
   readModelName,
   tableName,
@@ -25,12 +25,12 @@ const count: CurrentStoreApi["count"] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const rows = await executeStatement(
+  const rows = (await executeStatement(
     pool,
     `SELECT Count(*) AS ${escapeId('Count')}
     FROM ${escapeId(schemaName)}.${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr};`
-  ) as Array<{ Count: number }>
+  )) as Array<{ Count: number }>
 
   if (
     Array.isArray(rows) &&

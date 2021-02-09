@@ -10,6 +10,7 @@ import type {
   AdapterPool,
   AdapterOptions,
   AdapterApi,
+  AdminPool,
 } from './types'
 
 import _connect from './connect'
@@ -129,7 +130,7 @@ const pool = {
   disconnect,
   escapeId,
   escapeStr,
-}
+} as AdminPool
 
 const createResource = _createResource.bind(null, pool)
 const disposeResource = _disposeResource.bind(null, pool)

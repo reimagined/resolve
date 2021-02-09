@@ -1,21 +1,21 @@
 import type {
   ExternalMethods,
   ReadModelStatus,
-  ReadModelRunStatus
+  ReadModelRunStatus,
 } from './types'
 
-const status: ExternalMethods["status"] = async (pool, readModelName) => {
+const status: ExternalMethods['status'] = async (pool, readModelName) => {
   const { schemaName, escapeId, escapeStr, inlineLedgerExecuteStatement } = pool
 
   const databaseNameAsId = escapeId(schemaName)
   const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
 
-  const rows = await inlineLedgerExecuteStatement(
+  const rows = (await inlineLedgerExecuteStatement(
     pool,
     `SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
      WHERE "EventSubscriber" = ${escapeStr(readModelName)}
     `
-  )as Array<{
+  )) as Array<{
     Properties: string | null
     SuccessEvent: string | null
     FailedEvent: string | null
@@ -40,9 +40,9 @@ const status: ExternalMethods["status"] = async (pool, readModelName) => {
     }
 
     if (result.errors != null) {
-      result.status = 'error'  as ReadModelRunStatus
+      result.status = 'error' as ReadModelRunStatus
     } else if (rows[0].IsPaused) {
-      result.status = 'skip'  as ReadModelRunStatus
+      result.status = 'skip' as ReadModelRunStatus
     }
 
     return result

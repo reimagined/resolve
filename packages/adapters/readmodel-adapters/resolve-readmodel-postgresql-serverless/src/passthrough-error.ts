@@ -16,7 +16,10 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
     }
   } as Function) as ExtractNewable<PassthroughErrorFactory>,
   {
-    isPassthroughError(error: Error & { code: string | number, stack: string }, includeRuntimeErrors: boolean = false): boolean {
+    isPassthroughError(
+      error: Error & { code: string | number; stack: string },
+      includeRuntimeErrors: boolean = false
+    ): boolean {
       return (
         error != null &&
         (/Transaction .*? Is Not Found/i.test(error.message) ||
@@ -35,7 +38,7 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
               /division by zero/i.test(error.message) ||
               /division by zero/i.test(error.stack))))
       )
-    }
+    },
   }
 )
 

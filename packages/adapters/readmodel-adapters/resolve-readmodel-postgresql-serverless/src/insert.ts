@@ -1,12 +1,18 @@
 import type { CurrentStoreApi } from './types'
 
-const insert: CurrentStoreApi["insert"] = async (
+const insert: CurrentStoreApi['insert'] = async (
   pool,
   readModelName,
   tableName,
   document
 ) => {
-  const { executeStatement, escapeId, escapeStr, tablePrefix, schemaName } = pool
+  const {
+    executeStatement,
+    escapeId,
+    escapeStr,
+    tablePrefix,
+    schemaName,
+  } = pool
   await executeStatement(
     pool,
     `INSERT INTO ${escapeId(schemaName)}.${escapeId(

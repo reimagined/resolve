@@ -1,6 +1,11 @@
 import type { ExternalMethods } from './types'
 
-const resubscribe: ExternalMethods["resubscribe"] = async (pool, readModelName, eventTypes, aggregateIds) => {
+const resubscribe: ExternalMethods['resubscribe'] = async (
+  pool,
+  readModelName,
+  eventTypes,
+  aggregateIds
+) => {
   const {
     schemaName,
     escapeId,

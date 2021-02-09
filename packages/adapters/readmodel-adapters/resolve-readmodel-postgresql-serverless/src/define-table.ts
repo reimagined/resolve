@@ -1,15 +1,21 @@
-import type { CurrentStoreApi } from './types' 
+import type { CurrentStoreApi } from './types'
 
 const STRING_INDEX_TYPE = 'VARCHAR(190)'
 const NUMBER_INDEX_TYPE = 'BIGINT'
 
-const defineTable: CurrentStoreApi["defineTable"] = async (
+const defineTable: CurrentStoreApi['defineTable'] = async (
   pool,
   readModelName,
   tableName,
   tableDescription
 ) => {
-  const { executeStatement, tablePrefix, escapeId, escapeStr, schemaName } = pool
+  const {
+    executeStatement,
+    tablePrefix,
+    escapeId,
+    escapeStr,
+    schemaName,
+  } = pool
   if (
     tableDescription == null ||
     tableDescription.constructor !== Object ||

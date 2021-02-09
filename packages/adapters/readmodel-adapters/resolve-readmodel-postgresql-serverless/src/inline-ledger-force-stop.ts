@@ -1,6 +1,9 @@
 import type { InlineLedgerForceStopMethod } from './types'
 
-const inlineLedgerForceStop: InlineLedgerForceStopMethod = async (pool, readModelName) => {
+const inlineLedgerForceStop: InlineLedgerForceStopMethod = async (
+  pool,
+  readModelName
+) => {
   const {
     PassthroughError,
     dbClusterOrInstanceArn,
@@ -18,7 +21,7 @@ const inlineLedgerForceStop: InlineLedgerForceStopMethod = async (pool, readMode
 
   while (true) {
     try {
-      const rows = await inlineLedgerExecuteStatement(
+      const rows = (await inlineLedgerExecuteStatement(
         pool,
         `WITH "cte" AS (
           DELETE FROM ${databaseNameAsId}.${trxTableNameAsId}
@@ -31,7 +34,7 @@ const inlineLedgerForceStop: InlineLedgerForceStopMethod = async (pool, readMode
         WHERE "A"."EventSubscriber" = ${escapeStr(readModelName)}
         AND COALESCE((SELECT LEAST(Count("cte".*), 0) FROM "cte"), 0) = 0
         `
-      )
+      )) as Array<{ XaValue: string }>
       if (rows.length < 1) {
         break
       }

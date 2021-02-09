@@ -594,4 +594,3 @@ export type MakeNewableFunction<F extends FunctionLike> = F extends (
       >
     : never
   : never
-

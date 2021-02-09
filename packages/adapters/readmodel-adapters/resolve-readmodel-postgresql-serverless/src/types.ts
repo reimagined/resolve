@@ -15,7 +15,7 @@ import type {
   OmitObject,
   JsonPrimitive,
   FunctionLike,
-  UnPromise
+  UnPromise,
 } from 'resolve-readmodel-base'
 
 import type RDSDataService from 'aws-sdk/clients/rdsdataservice'
@@ -23,7 +23,7 @@ import type crypto from 'crypto'
 export * from 'resolve-readmodel-base'
 
 export type LibDependencies = {
-  RDSDataService: typeof RDSDataService,
+  RDSDataService: typeof RDSDataService
   crypto: typeof crypto
 }
 
@@ -84,12 +84,14 @@ export type PassthroughErrorFactory = {
   new (lastTransactionId: string | null | undefined): PassthroughErrorInstance
 } & {
   isPassthroughError: (
-    error: Error & { code: string | number, stack: string },
+    error: Error & { code: string | number; stack: string },
     includeRuntimeErrors: boolean
   ) => boolean
 }
 
-export type IsRdsServiceErrorMethod = (error: Error & { code: string | number, stack: string }) => boolean
+export type IsRdsServiceErrorMethod = (
+  error: Error & { code: string | number; stack: string }
+) => boolean
 export type GenerateGuidMethod = (...args: any) => string
 
 export type DropReadModelMethod = (
@@ -98,27 +100,39 @@ export type DropReadModelMethod = (
 ) => Promise<void>
 
 export type HighloadMethodParameters<
-KS extends ObjectFunctionLikeKeys<InstanceType<LibDependencies['RDSDataService']>>,
+  KS extends ObjectFunctionLikeKeys<
+    InstanceType<LibDependencies['RDSDataService']>
+  >,
   T extends { [K in KS]: FunctionLike }
 > = T[KS] extends {
-  (params: infer Params, callback: infer Callback): infer Result;
+  (params: infer Params, callback: infer Callback): infer Result
   (callback: infer _Callback): infer _Result
-} ? Params : never
+}
+  ? Params
+  : never
 
 export type HighloadMethodReturnType<
-KS extends ObjectFunctionLikeKeys<InstanceType<LibDependencies['RDSDataService']>>,
+  KS extends ObjectFunctionLikeKeys<
+    InstanceType<LibDependencies['RDSDataService']>
+  >,
   T extends { [K in KS]: FunctionLike }
-> = Promise<T[KS] extends {
-  (params: infer Params, callback: infer Callback): infer Result;
-  (callback: infer _Callback): infer _Result
-} ? (
-  Result extends { promise: infer F } ? (
-    F extends FunctionLike ? UnPromise<ReturnType<F>> : never
-  ): never  
-) : never>
+> = Promise<
+  T[KS] extends {
+    (params: infer Params, callback: infer Callback): infer Result
+    (callback: infer _Callback): infer _Result
+  }
+    ? Result extends { promise: infer F }
+      ? F extends FunctionLike
+        ? UnPromise<ReturnType<F>>
+        : never
+      : never
+    : never
+>
 
 export type WrapHighloadMethod = <
-  KS extends ObjectFunctionLikeKeys<InstanceType<LibDependencies['RDSDataService']>>,
+  KS extends ObjectFunctionLikeKeys<
+    InstanceType<LibDependencies['RDSDataService']>
+  >,
   T extends { [K in KS]: FunctionLike }
 >(
   isHighloadError: IsRdsServiceErrorMethod,
@@ -127,21 +141,32 @@ export type WrapHighloadMethod = <
   params: HighloadMethodParameters<KS, T>
 ) => HighloadMethodReturnType<KS, T>
 
-export type HighloadRdsMethod<KS extends ObjectFunctionLikeKeys<InstanceType<LibDependencies['RDSDataService']>>> = 
-  (...args: [HighloadMethodParameters<KS, InstanceType<LibDependencies['RDSDataService']>>]) => 
-  HighloadMethodReturnType<KS, InstanceType<LibDependencies['RDSDataService']>>
-
+export type HighloadRdsMethod<
+  KS extends ObjectFunctionLikeKeys<
+    InstanceType<LibDependencies['RDSDataService']>
+  >
+> = (
+  ...args: [
+    HighloadMethodParameters<
+      KS,
+      InstanceType<LibDependencies['RDSDataService']>
+    >
+  ]
+) => HighloadMethodReturnType<
+  KS,
+  InstanceType<LibDependencies['RDSDataService']>
+>
 
 export type HighloadRdsDataService = {
-  executeStatement: HighloadRdsMethod<"executeStatement">
-  beginTransaction: HighloadRdsMethod<"beginTransaction">
-  commitTransaction: HighloadRdsMethod<"commitTransaction">
-  rollbackTransaction: HighloadRdsMethod<"rollbackTransaction">
+  executeStatement: HighloadRdsMethod<'executeStatement'>
+  beginTransaction: HighloadRdsMethod<'beginTransaction'>
+  commitTransaction: HighloadRdsMethod<'commitTransaction'>
+  rollbackTransaction: HighloadRdsMethod<'rollbackTransaction'>
 }
 
 export type AdapterOptions = CommonAdapterOptions & {
   dbClusterOrInstanceArn: RDSDataService.Arn
-  awsSecretStoreArn:RDSDataService.Arn,
+  awsSecretStoreArn: RDSDataService.Arn
   databaseName: RDSDataService.DbName
   tablePrefix?: string
 } & RDSDataService.ClientConfiguration
@@ -184,11 +209,11 @@ export type UpdateFieldDescriptor = {
 }
 
 export type CoercerMethod = (value: {
-  intValue?: number,
-  stringValue?: string,
-  bigIntValue?: number,
-  longValue?: number,
-  booleanValue?: boolean,
+  intValue?: number
+  stringValue?: string
+  bigIntValue?: number
+  longValue?: number
+  booleanValue?: boolean
   isNull?: boolean
 }) => JsonPrimitive
 
@@ -197,7 +222,7 @@ export type AdapterPool = CommonAdapterPool & {
   makeNestedPath: MakeNestedPathMethod
   rdsDataService: HighloadRdsDataService
   dbClusterOrInstanceArn: RDSDataService.Arn
-  awsSecretStoreArn:RDSDataService.Arn,
+  awsSecretStoreArn: RDSDataService.Arn
   schemaName: RDSDataService.DbName
   tablePrefix: string
   xaTransactionId?: string
@@ -241,3 +266,28 @@ export type CurrentAdapterImplementation = AdapterImplementation<
   AdapterPool,
   AdapterOptions
 >
+
+export type AdminOptions = {
+  awsSecretStoreAdminArn: AdapterOptions['awsSecretStoreArn']
+  dbClusterOrInstanceArn: AdapterOptions['dbClusterOrInstanceArn']
+  databaseName: AdapterOptions['databaseName']
+  region: AdapterOptions['region']
+  userLogin: string
+}
+
+export type BoundResourceMethod = (options: AdminOptions) => Promise<void>
+
+export type UnboundResourceMethod = (
+  pool: AdminPool,
+  options: AdminOptions
+) => Promise<void>
+
+export type AdminPool = {
+  connect: CurrentAdapterImplementation['connect']
+  disconnect: CurrentAdapterImplementation['disconnect']
+  escapeStr: EscapeableMethod
+  escapeId: EscapeableMethod
+  createResource: BoundResourceMethod
+  disposeResource: BoundResourceMethod
+  destroyResource: BoundResourceMethod
+}

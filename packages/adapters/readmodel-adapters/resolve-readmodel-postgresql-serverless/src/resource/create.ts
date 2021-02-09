@@ -1,15 +1,24 @@
-const create = async (pool, options) => {
+import type {
+  UnboundResourceMethod,
+  CommonAdapterOptions,
+  AdapterOptions,
+  OmitObject,
+  AdapterPool,
+} from '../types'
+
+const create: UnboundResourceMethod = async (pool, options) => {
   const { connect, disconnect, escapeId } = pool
-  const admin = {}
+  const admin = {} as AdapterPool
 
   await connect(admin, {
     awsSecretStoreArn: options.awsSecretStoreAdminArn,
     dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
     databaseName: options.databaseName,
     region: options.region,
-  })
+  } as OmitObject<AdapterOptions, CommonAdapterOptions>)
 
   await admin.executeStatement(
+    admin,
     [
       `CREATE SCHEMA ${escapeId(options.databaseName)}`,
 

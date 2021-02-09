@@ -8,7 +8,7 @@ const convertResultRow: ConvertResultRowMethod = (inputRow, fieldList) => {
   }
   const row: RowLike = { ...inputRow }
   for (const key of Object.keys(row)) {
-    row[key] = row[key] != null ? JSON.parse((row[key]) as string) : null
+    row[key] = row[key] != null ? JSON.parse(row[key] as string) : null
   }
 
   const fieldNames = fieldList != null ? Object.keys(fieldList) : []
@@ -32,4 +32,3 @@ const convertResultRow: ConvertResultRowMethod = (inputRow, fieldList) => {
 }
 
 export default convertResultRow
-  

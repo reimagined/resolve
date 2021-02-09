@@ -35,7 +35,7 @@ const inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod = async (
       const row: Record<string, JsonLike> = {}
       for (let i = 0; i < columnMetadata.length; i++) {
         const columnName = columnMetadata[i].name
-        if(columnName != null) {
+        if (columnName != null) {
           row[columnName] = pool.coercer(record[i])
         }
       }

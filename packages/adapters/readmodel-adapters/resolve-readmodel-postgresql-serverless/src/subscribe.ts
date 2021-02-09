@@ -1,6 +1,11 @@
 import type { ExternalMethods } from './types'
 
-const subscribe: ExternalMethods["subscribe"] = async (pool, readModelName, eventTypes, aggregateIds) => {
+const subscribe: ExternalMethods['subscribe'] = async (
+  pool,
+  readModelName,
+  eventTypes,
+  aggregateIds
+) => {
   const {
     schemaName,
     escapeId,
