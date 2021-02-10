@@ -17,8 +17,12 @@ import loadSnapshot from '../src/load-snapshot'
 import saveSnapshot from '../src/save-snapshot'
 import dropSnapshot from '../src/drop-snapshot'
 import connect from '../src/connect'
-import init from '../src/init'
-import drop from '../src/drop'
+import initEvents from '../src/init-events'
+import initSecrets from '../src/init-secrets'
+import initFinal from '../src/init-final'
+import dropEvents from '../src/drop-events'
+import dropSecrets from '../src/drop-secrets'
+import dropFinal from '../src/drop-final'
 import dispose from '../src/dispose'
 import createAdapter from '../src/index'
 import beginIncrementalImport from '../src/begin-incremental-import'
@@ -41,8 +45,12 @@ jest.mock('../src/load-snapshot', () => jest.fn())
 jest.mock('../src/save-snapshot', () => jest.fn())
 jest.mock('../src/drop-snapshot', () => jest.fn())
 jest.mock('../src/connect', () => jest.fn())
-jest.mock('../src/init', () => jest.fn())
-jest.mock('../src/drop', () => jest.fn())
+jest.mock('../src/init-events', () => jest.fn())
+jest.mock('../src/init-secrets', () => jest.fn())
+jest.mock('../src/init-final', () => jest.fn())
+jest.mock('../src/drop-events', () => jest.fn())
+jest.mock('../src/drop-secrets', () => jest.fn())
+jest.mock('../src/drop-final', () => jest.fn())
 jest.mock('../src/dispose', () => jest.fn())
 jest.mock('../src/begin-incremental-import', () => jest.fn())
 jest.mock('../src/commit-incremental-import', () => jest.fn())
@@ -65,8 +73,12 @@ test('generic createAdapter invoked', () => {
       loadEventsByTimestamp,
       getLatestEvent,
       saveEvent,
-      init,
-      drop,
+      initEvents,
+      initSecrets,
+      initFinal,
+      dropEvents,
+      dropSecrets,
+      dropFinal,
       dispose,
       injectEvent,
       freeze,

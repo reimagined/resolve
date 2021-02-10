@@ -1,6 +1,6 @@
 import createAdapter from './create-adapter'
-import importStream from './import'
-import exportStream from './export'
+import importEventsStream from './import-events'
+import exportEventsStream from './export-events'
 import wrapMethod from './wrap-method'
 import wrapEventFilter from './wrap-event-filter'
 import wrapDispose from './wrap-dispose'
@@ -17,6 +17,11 @@ import getNextCursor from './get-next-cursor'
 import throwBadCursor from './throw-bad-cursor'
 import snapshotTrigger from './snapshot-trigger'
 import incrementalImport from './incremental-import'
+import importSecretsStream from './import-secrets'
+import exportSecretsStream from './export-secrets'
+import init from './init'
+import drop from './drop'
+
 import {
   CursorFilter,
   TimestampFilter,
@@ -33,6 +38,9 @@ import {
   AdapterConfig,
   ImportOptions,
   ExportOptions,
+  SecretFilter,
+  SecretsWithIdx,
+  SecretRecord,
 } from './types'
 
 const wrappedCreateAdapter = <
@@ -50,8 +58,8 @@ const wrappedCreateAdapter = <
 ): Adapter => {
   const commonFunctions: CommonAdapterFunctions<ConnectedProps> = {
     maybeThrowResourceError,
-    importStream,
-    exportStream,
+    importEventsStream,
+    exportEventsStream,
     wrapMethod,
     wrapEventFilter,
     wrapDispose,
@@ -59,6 +67,10 @@ const wrappedCreateAdapter = <
     loadEvents,
     incrementalImport,
     getNextCursor,
+    exportSecretsStream,
+    importSecretsStream,
+    init,
+    drop,
   }
 
   return createAdapter(
@@ -93,4 +105,7 @@ export {
   AdapterConfig,
   ImportOptions,
   ExportOptions,
+  SecretFilter,
+  SecretsWithIdx,
+  SecretRecord,
 }

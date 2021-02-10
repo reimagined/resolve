@@ -23,9 +23,13 @@ import getSecret from './get-secret'
 import setSecret from './set-secret'
 
 import connect from './connect'
-import init from './init'
+import initEvents from './init-events'
+import initSecrets from './init-secrets'
+import initFinal from './init-final'
 import dispose from './dispose'
-import drop from './drop'
+import dropEvents from './drop-events'
+import dropSecrets from './drop-secrets'
+import dropFinal from './drop-final'
 
 import type { Adapter } from 'resolve-eventstore-base'
 import type { ConnectionDependencies, MysqlAdapterConfig } from './types'
@@ -38,8 +42,12 @@ const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {
       loadEventsByTimestamp,
       getLatestEvent,
       saveEvent,
-      init,
-      drop,
+      initEvents,
+      initSecrets,
+      initFinal,
+      dropEvents,
+      dropSecrets,
+      dropFinal,
       dispose,
       injectEvent,
       freeze,

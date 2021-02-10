@@ -9,26 +9,23 @@ import {
   LONG_STRING_SQL_TYPE,
   TEXT_SQL_TYPE,
 } from './constants'
+import executeSequence from './execute-sequence'
+import { isAlreadyExistsError } from './resource-errors'
 
-const init = async ({
+const initEvents = async ({
   databaseName,
   eventsTableName,
-  secretsTableName,
   snapshotsTableName,
   executeStatement,
   escapeId,
-  maybeThrowResourceError,
-}: AdapterPool): Promise<void> => {
-  const log = getLog('initSecretsStore')
-  log.debug(`initializing secrets store database tables`)
-  log.verbose(`secretsTableName: ${secretsTableName}`)
+}: AdapterPool): Promise<any[]> => {
+  const log = getLog('initEvents')
+
+  log.debug(`initializing events tables`)
+  log.verbose(`eventsTableName: ${eventsTableName}`)
   log.verbose(`databaseName: ${databaseName}`)
 
   const databaseNameAsId: string = escapeId(databaseName)
-  const secretsTableNameAsId: string = escapeId(secretsTableName)
-  const globalIndexName: string = escapeId(`${secretsTableName}-global`)
-
-  const errors: any[] = []
 
   const eventsTableNameAsId: string = escapeId(eventsTableName)
   const threadsTableNameAsId: string = escapeId(`${eventsTableName}-threads`)
@@ -44,7 +41,7 @@ const init = async ({
   const typeIndexName: string = escapeId(`${eventsTableName}-type`)
   const timestampIndexName: string = escapeId(`${eventsTableName}-timestamp`)
 
-  const statements = [
+  const statements: string[] = [
     `CREATE TABLE ${databaseNameAsId}.${eventsTableNameAsId}(
       "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
       "threadCounter" ${INT8_SQL_TYPE} NOT NULL,
@@ -71,15 +68,15 @@ const init = async ({
     `CREATE INDEX ${timestampIndexName}
     ON ${databaseNameAsId}.${eventsTableNameAsId}
     USING BTREE("timestamp")`,
-    `CREATE TABLE ${databaseNameAsId}.${threadsTableNameAsId}(
-      "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
-      "threadCounter" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
-    PRIMARY KEY("threadId")
-    )`,
     `CREATE TABLE ${databaseNameAsId}.${snapshotsTableNameAsId} (
       "snapshotKey" ${TEXT_SQL_TYPE} NOT NULL,
       "snapshotContent" ${TEXT_SQL_TYPE},
       PRIMARY KEY("snapshotKey")
+    )`,
+    `CREATE TABLE ${databaseNameAsId}.${threadsTableNameAsId}(
+      "threadId" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+      "threadCounter" ${LONG_NUMBER_SQL_TYPE} NOT NULL,
+    PRIMARY KEY("threadId")
     )`,
     `INSERT INTO ${databaseNameAsId}.${threadsTableNameAsId}(
       "threadId",
@@ -87,41 +84,24 @@ const init = async ({
     ) VALUES ${Array.from(new Array(256))
       .map((_, index) => `(${index}, 0)`)
       .join(',')}`,
-    `CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${secretsTableNameAsId} (
-      "idx" BIGSERIAL,
-      "id" ${AGGREGATE_ID_SQL_TYPE} NOT NULL PRIMARY KEY,
-      "secret" text COLLATE pg_catalog."default"
-    )`,
-    `CREATE UNIQUE INDEX IF NOT EXISTS ${globalIndexName}
-    ON ${databaseNameAsId}.${secretsTableNameAsId}
-    ("idx")`,
   ]
 
-  for (const statement of statements) {
-    try {
-      await executeStatement(statement)
-    } catch (error) {
-      if (error) {
-        let errorToThrow = error
-        if (
-          /Relation.*? already exists$/i.test(error.message) ||
-          /duplicate key value violates unique constraint/i.test(error.message)
-        ) {
-          errorToThrow = new EventstoreResourceAlreadyExistError(
-            `duplicate initialization of the postgresql-serverless event store with the same parameters not allowed`
-          )
-        } else {
-          log.error(errorToThrow.message)
-          log.verbose(errorToThrow.stack)
-        }
-        errors.push(errorToThrow)
+  const errors: any[] = await executeSequence(
+    executeStatement,
+    statements,
+    log,
+    (error) => {
+      if (isAlreadyExistsError(error)) {
+        return new EventstoreResourceAlreadyExistError(
+          `duplicate initialization of the postgresql event store on database "${databaseName}" and table ${eventsTableName} is not allowed`
+        )
       }
+      return null
     }
-  }
+  )
 
-  maybeThrowResourceError(errors)
-
-  log.debug('databases are initialized')
+  log.debug('finished initializing events tables')
+  return errors
 }
 
-export default init
+export default initEvents

@@ -9,7 +9,7 @@ import createStreamBuffer from './create-stream-buffer'
 
 jest.setTimeout(1000 * 60 * 5)
 
-describe('import-export', () => {
+describe('import-export events', () => {
   const eventStorePath = path.join(__dirname, 'es.txt')
 
   afterAll(() => {
@@ -54,8 +54,8 @@ describe('import-export', () => {
     }
 
     await promisify(pipeline)(
-      inputEventstoreAdapter.export(),
-      outputEventstoreAdapter.import()
+      inputEventstoreAdapter.exportEvents(),
+      outputEventstoreAdapter.importEvents()
     )
 
     const { events } = await outputEventstoreAdapter.loadEvents({ limit: 300 })
@@ -101,7 +101,7 @@ describe('import-export', () => {
         databaseFile: eventStorePath,
       })
 
-      const exportStream = eventEventstoreAdapter.export({
+      const exportStream = eventEventstoreAdapter.exportEvents({
         maintenanceMode: MAINTENANCE_MODE_MANUAL,
         bufferSize: 512,
         cursor,
@@ -132,7 +132,7 @@ describe('import-export', () => {
 
     await promisify(pipeline)(
       exportBufferStream,
-      outputEventstoreAdapter.import()
+      outputEventstoreAdapter.importEvents()
     )
 
     const { events } = await outputEventstoreAdapter.loadEvents({ limit: 100 })
@@ -168,7 +168,7 @@ describe('import-export', () => {
     while (true) {
       steps++
 
-      const exportStream = inputEventstoreAdapter.export({ cursor })
+      const exportStream = inputEventstoreAdapter.exportEvents({ cursor })
       const tempStream = createStreamBuffer()
       const pipelinePromise = promisify(pipeline)(
         exportStream,
