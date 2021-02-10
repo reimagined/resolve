@@ -8,11 +8,23 @@ const exportEventStoreHandler = (options) => async (req, res) => {
   const { eventstoreAdapter } = req.resolve
 
   try {
-    const { exportFile } = options
+    const { directory } = options
 
-    const eventStream = eventstoreAdapter.export()
-    const fsStream = fs.createWriteStream(path.join(exportFile))
-    await promisify(pipeline)(eventStream, fsStream)
+    if (!fs.existsSync(directory)) {
+      fs.mkdirSync(directory)
+    }
+
+    const eventsFile = path.join(directory, 'events.db')
+    const secretsFile = path.join(directory, 'secrets.db')
+
+    await promisify(pipeline)(
+      eventstoreAdapter.exportEvents(),
+      fs.createWriteStream(eventsFile)
+    )
+    await promisify(pipeline)(
+      eventstoreAdapter.exportSecrets(),
+      fs.createWriteStream(secretsFile)
+    )
 
     res.end('ok')
   } catch (error) {
