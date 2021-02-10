@@ -4,32 +4,28 @@ import createPostgresqlServerlessAdapter from 'resolve-eventstore-postgresql-ser
 import { Adapter } from 'resolve-eventstore-base'
 import { SecretsManager } from 'resolve-core'
 import { create, destroy } from 'resolve-eventstore-postgresql-serverless'
-import type { CloudResourceOptions } from 'resolve-eventstore-postgresql-serverless'
-import { Readable, pipeline } from 'stream'
+import { pipeline } from 'stream'
 import { promisify } from 'util'
-import * as AWS from 'aws-sdk'
-
-const TEST_SERVERLESS = false
+import {
+  TEST_SERVERLESS,
+  streamToString,
+  updateAwsConfig,
+  getCloudResourceOptions,
+  jestTimeout,
+  cloudResourceOptionsToAdapterConfig,
+  makeTestEvent,
+} from '../eventstore-test-utils'
 
 const logger = debugLevels('resolve:eventstore:secrets')
+
+jest.setTimeout(jestTimeout())
 
 let createAdapter: (config: any) => Adapter
 
 if (TEST_SERVERLESS) {
-  jest.setTimeout(1000 * 60 * 5)
   createAdapter = createPostgresqlServerlessAdapter
 } else {
-  jest.setTimeout(5000)
   createAdapter = createSqliteAdapter
-}
-
-function streamToString(stream: Readable): Promise<string> {
-  const chunks: Buffer[] = []
-  return new Promise((resolve, reject) => {
-    stream.on('data', (chunk) => chunks.push(chunk))
-    stream.on('error', reject)
-    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
-  })
 }
 
 function makeSecretFromIndex(index: number): string {
@@ -38,28 +34,6 @@ function makeSecretFromIndex(index: number): string {
 
 function makeIdFromIndex(index: number): string {
   return `id_${index}`
-}
-
-function updateAwsConfig() {
-  AWS.config.update({
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    },
-  })
-}
-
-function getCloudResourceOptions(databaseName: string): CloudResourceOptions {
-  return {
-    eventsTableName: 'events',
-    snapshotsTableName: 'snapshots',
-    secretsTableName: 'secrets',
-    databaseName: databaseName,
-    dbClusterOrInstanceArn: process.env.AWS_RDS_CLUSTER_ARN,
-    awsSecretStoreAdminArn: process.env.AWS_RDS_ADMIN_SECRET_ARN,
-    region: process.env.AWS_REGION ?? 'eu-central-1',
-    userLogin: process.env.AWS_USER_NAME ?? 'master',
-  }
 }
 
 describe('eventstore adapter secrets', () => {
@@ -73,15 +47,7 @@ describe('eventstore adapter secrets', () => {
   beforeAll(async () => {
     if (TEST_SERVERLESS) {
       await create(options)
-      adapter = createAdapter({
-        eventsTableName: options.eventsTableName,
-        snapshotsTableName: options.snapshotsTableName,
-        secretsTableName: options.secretsTableName,
-        databaseName: options.databaseName,
-        dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
-        awsSecretStoreArn: options.awsSecretStoreAdminArn,
-        region: options.region,
-      })
+      adapter = createAdapter(cloudResourceOptionsToAdapterConfig(options))
     } else {
       adapter = createAdapter({})
     }
@@ -195,15 +161,7 @@ describe('eventstore adapter inject secrets', () => {
   beforeAll(async () => {
     if (TEST_SERVERLESS) {
       await create(options)
-      adapter = createAdapter({
-        eventsTableName: options.eventsTableName,
-        snapshotsTableName: options.snapshotsTableName,
-        secretsTableName: options.secretsTableName,
-        databaseName: options.databaseName,
-        dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
-        awsSecretStoreArn: options.awsSecretStoreAdminArn,
-        region: options.region,
-      })
+      adapter = createAdapter(cloudResourceOptionsToAdapterConfig(options))
     } else {
       adapter = createAdapter({})
     }
@@ -260,24 +218,12 @@ describe('eventstore adapter import secrets', () => {
     if (TEST_SERVERLESS) {
       await create(inputOptions)
       await create(outputOptions)
-      inputAdapter = createAdapter({
-        eventsTableName: inputOptions.eventsTableName,
-        snapshotsTableName: inputOptions.snapshotsTableName,
-        secretsTableName: inputOptions.secretsTableName,
-        databaseName: inputOptions.databaseName,
-        dbClusterOrInstanceArn: inputOptions.dbClusterOrInstanceArn,
-        awsSecretStoreArn: inputOptions.awsSecretStoreAdminArn,
-        region: inputOptions.region,
-      })
-      outputAdapter = createAdapter({
-        eventsTableName: outputOptions.eventsTableName,
-        snapshotsTableName: outputOptions.snapshotsTableName,
-        secretsTableName: outputOptions.secretsTableName,
-        databaseName: outputOptions.databaseName,
-        dbClusterOrInstanceArn: outputOptions.dbClusterOrInstanceArn,
-        awsSecretStoreArn: outputOptions.awsSecretStoreAdminArn,
-        region: outputOptions.region,
-      })
+      inputAdapter = createAdapter(
+        cloudResourceOptionsToAdapterConfig(inputOptions)
+      )
+      outputAdapter = createAdapter(
+        cloudResourceOptionsToAdapterConfig(outputOptions)
+      )
     } else {
       inputAdapter = createAdapter({})
       outputAdapter = createAdapter({})
@@ -286,13 +232,7 @@ describe('eventstore adapter import secrets', () => {
     await outputAdapter.init()
 
     for (let eventIndex = 0; eventIndex < countEvents; ++eventIndex) {
-      const event = {
-        aggregateId: 'aggregateId',
-        aggregateVersion: eventIndex + 1,
-        type: 'EVENT',
-        payload: { eventIndex },
-        timestamp: eventIndex + 1,
-      }
+      const event = makeTestEvent(eventIndex)
       await outputAdapter.saveEvent(event)
     }
   })
