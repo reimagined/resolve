@@ -1402,14 +1402,6 @@
     pirates "^4.0.0"
     source-map-support "^0.5.16"
 
-"@babel/runtime-corejs2@^7.0.0":
-  version "7.11.2"
-  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs2/-/runtime-corejs2-7.11.2.tgz#700a03945ebad0d31ba6690fc8a6bcc9040faa47"
-  integrity sha512-AC/ciV28adSSpEkBglONBWq4/Lvm6GAZuxIoyVtsnUpZMl0bxLtoChEnYAkP+47KyOCayZanojtflUEUJtR/6Q==
-  dependencies:
-    core-js "^2.6.5"
-    regenerator-runtime "^0.13.4"
-
 "@babel/runtime-corejs3@^7.10.2", "@babel/runtime-corejs3@^7.8.3":
   version "7.11.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.11.2.tgz#02c3029743150188edeb66541195f54600278419"
@@ -1417,14 +1409,6 @@
   dependencies:
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
-
-"@babel/runtime@7.0.0-beta.42":
-  version "7.0.0-beta.42"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.0.0-beta.42.tgz#352e40c92e0460d3e82f49bd7e79f6cda76f919f"
-  integrity sha512-iOGRzUoONLOtmCvjUsZv3mZzgCT6ljHQY5fr1qG1QIiJQwtM7zbPWGGpa3QWETq+UqwWyJnoi5XZDZRwZDFciQ==
-  dependencies:
-    core-js "^2.5.3"
-    regenerator-runtime "^0.11.1"
 
 "@babel/runtime@7.9.6":
   version "7.9.6"
@@ -5345,7 +5329,7 @@ caw@^2.0.0, caw@^2.0.1:
     tunnel-agent "^0.6.0"
     url-to-options "^1.0.1"
 
-chai@4.2.0, chai@^4.1.2:
+chai@^4.1.2:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.2.0.tgz#760aa72cf20e3795e84b12877ce0e83737aa29e5"
   integrity sha512-XQU3bhBukrOsQCuwZndwGcCVQHyZi53fQ6Ys1Fym7E4olpIqqZZhhoFJoaKVvV17lWQoXYwgWN2nF5crA8J2jw==
@@ -6052,7 +6036,7 @@ core-js@^1.0.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
   integrity sha1-ZSKUwUZR2yj6k70tX/KYOk8IxjY=
 
-core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.3, core-js@^2.6.5:
+core-js@^2.4.0, core-js@^2.5.0, core-js@^2.6.5:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.11.tgz#38831469f9922bded8ee21c9dc46985e0399308c"
   integrity sha512-5wjnpaT/3dV+XB4borEsnAYQchn00XSgTAWKDkEqv+K8KevjbzmofK6hfJ9TZIlpj2N0xQpazy7PiRQiWHqzWg==
@@ -7458,22 +7442,7 @@ enzyme-adapter-react-16@1.1.1:
     react-reconciler "^0.7.0"
     react-test-renderer "^16.0.0-0"
 
-enzyme-adapter-react-16@^1.2.0:
-  version "1.15.5"
-  resolved "https://registry.yarnpkg.com/enzyme-adapter-react-16/-/enzyme-adapter-react-16-1.15.5.tgz#7a6f0093d3edd2f7025b36e7fbf290695473ee04"
-  integrity sha512-33yUJGT1nHFQlbVI5qdo5Pfqvu/h4qPwi1o0a6ZZsjpiqq92a3HjynDhwd1IeED+Su60HDWV8mxJqkTnLYdGkw==
-  dependencies:
-    enzyme-adapter-utils "^1.13.1"
-    enzyme-shallow-equal "^1.0.4"
-    has "^1.0.3"
-    object.assign "^4.1.0"
-    object.values "^1.1.1"
-    prop-types "^15.7.2"
-    react-is "^16.13.1"
-    react-test-renderer "^16.0.0-0"
-    semver "^5.7.0"
-
-enzyme-adapter-utils@^1.13.1, enzyme-adapter-utils@^1.3.0:
+enzyme-adapter-utils@^1.3.0:
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/enzyme-adapter-utils/-/enzyme-adapter-utils-1.13.1.tgz#59c1b734b0927543e3d8dc477299ec957feb312d"
   integrity sha512-5A9MXXgmh/Tkvee3bL/9RCAAgleHqFnsurTYCbymecO4ohvtNO5zqIhHxV370t7nJAwaCfkgtffarKpC0GPt0g==
@@ -7484,14 +7453,6 @@ enzyme-adapter-utils@^1.13.1, enzyme-adapter-utils@^1.3.0:
     object.fromentries "^2.0.2"
     prop-types "^15.7.2"
     semver "^5.7.1"
-
-enzyme-shallow-equal@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/enzyme-shallow-equal/-/enzyme-shallow-equal-1.0.4.tgz#b9256cb25a5f430f9bfe073a84808c1d74fced2e"
-  integrity sha512-MttIwB8kKxypwHvRynuC3ahyNc+cFbR8mjVIltnmzQ0uKGqmsfO4bfBuLxb0beLNPhjblUEYvEbsg+VSygvF1Q==
-  dependencies:
-    has "^1.0.3"
-    object-is "^1.1.2"
 
 enzyme@3.3.0:
   version "3.3.0"
@@ -10541,14 +10502,6 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
-isomorphic-fetch@2.2.1, isomorphic-fetch@^2.1.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
-  integrity sha1-YRrhrPFPXoH3KVB0coGf6XM1WKk=
-  dependencies:
-    node-fetch "^1.0.1"
-    whatwg-fetch ">=0.10.0"
-
 isomorphic-fetch@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-3.0.0.tgz#0267b005049046d2421207215d45d6a262b8b8b4"
@@ -10556,6 +10509,14 @@ isomorphic-fetch@3.0.0:
   dependencies:
     node-fetch "^2.6.1"
     whatwg-fetch "^3.4.1"
+
+isomorphic-fetch@^2.1.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
+  integrity sha1-YRrhrPFPXoH3KVB0coGf6XM1WKk=
+  dependencies:
+    node-fetch "^1.0.1"
+    whatwg-fetch ">=0.10.0"
 
 isstream@0.1.x, isstream@~0.1.2:
   version "0.1.2"
@@ -11744,7 +11705,7 @@ kebab-case@1.0.0:
   resolved "https://registry.yarnpkg.com/kebab-case/-/kebab-case-1.0.0.tgz#3f9e4990adcad0c686c0e701f7645868f75f91eb"
   integrity sha1-P55JkK3K0MaGwOcB92RYaPdfkes=
 
-keycode@^2.1.2, keycode@^2.2.0:
+keycode@^2.1.2:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.2.0.tgz#3d0af56dc7b8b8e5cba8d0a97f107204eec22b04"
   integrity sha1-PQr1bce4uOXLqNCpfxByBO7CKwQ=
@@ -15155,43 +15116,6 @@ react-bootstrap@0.32.1:
     uncontrollable "^4.1.0"
     warning "^3.0.0"
 
-react-bootstrap@0.32.3:
-  version "0.32.3"
-  resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-0.32.3.tgz#7ac6f3a8ca099b22d2a8ebb091ab2ed7d39050cf"
-  integrity sha512-vik1usdUd13M2MgB3edC0ZA0KiWi9JL0mWDElSp7HhvFIuQFbIhEhd4kaZqmGupYY0k4brl4LyyxKHp4t1idgw==
-  dependencies:
-    "@babel/runtime" "7.0.0-beta.42"
-    classnames "^2.2.5"
-    dom-helpers "^3.2.0"
-    enzyme-adapter-react-16 "^1.2.0"
-    invariant "^2.2.4"
-    keycode "^2.2.0"
-    prop-types "^15.6.1"
-    prop-types-extra "^1.0.1"
-    react-overlays "^0.8.0"
-    react-prop-types "^0.4.0"
-    react-transition-group "^2.0.0"
-    uncontrollable "^5.0.0"
-    warning "^3.0.0"
-
-react-bootstrap@0.32.4:
-  version "0.32.4"
-  resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-0.32.4.tgz#8efc4cbfc4807215d75b7639bee0d324c8d740d1"
-  integrity sha512-xj+JfaPOvnvr3ow0aHC7Y3HaBKZNR1mm361hVxVzVX3fcdJNIrfiodbQ0m9nLBpNxiKG6FTU2lq/SbTDYT2vew==
-  dependencies:
-    "@babel/runtime-corejs2" "^7.0.0"
-    classnames "^2.2.5"
-    dom-helpers "^3.2.0"
-    invariant "^2.2.4"
-    keycode "^2.2.0"
-    prop-types "^15.6.1"
-    prop-types-extra "^1.0.1"
-    react-overlays "^0.8.0"
-    react-prop-types "^0.4.0"
-    react-transition-group "^2.0.0"
-    uncontrollable "^5.0.0"
-    warning "^3.0.0"
-
 react-bootstrap@1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-1.4.0.tgz#806a8b48b065cedfb28c6c5c7b0c0e3c3b53445d"
@@ -15722,7 +15646,7 @@ regenerate@^1.2.1, regenerate@^1.4.0:
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.1.tgz#cad92ad8e6b591773485fbe05a485caf4f457e6f"
   integrity sha512-j2+C8+NtXQgEKWk49MMP5P/u2GhnahTtVkRIHr5R5lVRlbKvmQ+oS+A5aLKWp2ma5VkT8sh6v+v4hbH0YHR66A==
 
-regenerator-runtime@^0.11.0, regenerator-runtime@^0.11.1:
+regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
   integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
@@ -16036,6 +15960,17 @@ reselect@^4.0.0:
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
   integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
+resolve-client@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-client/-/resolve-client-0.26.5.tgz#bd34b5dd0d2c3ef259ebe9310c1167ed72c20e7b"
+  integrity sha512-duZhWxrGj6xR02cwU6wzHmYlaL6eqmAfenFf8dt2+DGgW0HxnWpSqA6CNgvccEy9RAJw/pf9U1yYYpa4UR/7eQ==
+  dependencies:
+    global "^4.4.0"
+    isomorphic-fetch "3.0.0"
+    node-fetch "^2.6.0"
+    query-string "^5.1.1"
+    resolve-core "0.26.5"
+
 resolve-cloud-common@0.0.37:
   version "0.0.37"
   resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.37.tgz#308032a0b60fdecd5f9cf48f22dc03f30a42407f"
@@ -16108,6 +16043,23 @@ resolve-cloud@0.16.1:
     semver "^6.3.0"
     yargs "^14.0.0"
 
+resolve-command@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-command/-/resolve-command-0.26.5.tgz#80dc96b55f8a73d2104e25acd4719ba400967d3f"
+  integrity sha512-2XgeltNJPx4vncePSwmoche3BAzA5rJImTbm8/fNBcrMe2z4Ac75kaY/5teptey2NmGMeSKaIN0airgRuFLvQw==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-core "0.26.5"
+    resolve-debug-levels "0.26.5"
+    resolve-eventstore-base "0.26.5"
+
+resolve-core@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-core/-/resolve-core-0.26.5.tgz#174a5dc780984742e078f1b94ae422069a83fa12"
+  integrity sha512-QsD4eAcBsYmumwABataVhAp9YJL7AnlCMIoGv31xyVj7wUdvtCJwYrJxTU0Z7swMmxK9YwFxs1CC9swiIwFbwQ==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+
 resolve-cwd@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-1.0.0.tgz#4eaeea41ed040d1702457df64a42b2b07d246f9f"
@@ -16129,6 +16081,43 @@ resolve-cwd@^3.0.0:
   dependencies:
     resolve-from "^5.0.0"
 
+resolve-debug-levels@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-debug-levels/-/resolve-debug-levels-0.26.5.tgz#65cdc45c805ea3696afe7fe16ab62df7ab941537"
+  integrity sha512-QoBBhToejucC0UdeETkABeoBnkmlgAUL7Cak78U+R9y1deGlvfkOgpZ2kVYiBkEuHu3scL208kxyhmHuXsBBRw==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    debug "4.1.1"
+
+resolve-eventstore-base@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-eventstore-base/-/resolve-eventstore-base-0.26.5.tgz#8f0b81ecdf28d6d8a3840211245cc2113037073d"
+  integrity sha512-8+rBYheLsWTBHI4ZIjUg9qaXPLc8Xf6ZnLpj1OFG5BJVDLDUcqzBwq687jAIyJErmUcjbImYKavbOhez+98nKQ==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-debug-levels "0.26.5"
+
+resolve-eventstore-lite@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-eventstore-lite/-/resolve-eventstore-lite-0.26.5.tgz#1c56f50c9cc99c0f41cdc727960d9a2cd27a6899"
+  integrity sha512-u/0pS/GmlNDCD5FDXIasRlH2rQfxjLkYyfU6pv1KQrkUJQaYyN3P0vg7jRvQYn68UlPqSaKQEtR4p5IxDfsCcw==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-core "0.26.5"
+    resolve-debug-levels "0.26.5"
+    resolve-eventstore-base "0.26.5"
+    sqlite "^3.0.2"
+    tmp "^0.1.0"
+
+resolve-eventstore-postgresql-serverless@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-eventstore-postgresql-serverless/-/resolve-eventstore-postgresql-serverless-0.26.5.tgz#47c5fcca8fc0e67db8ef82994aa7e87f49621ac8"
+  integrity sha512-+TzeHDzKZUnT+zzNUkdBg4rXjKKsnuy5KX/RWtOaSmtagh3FI6bclEXfHjL3iVySiJ3gACCcYjIhe1XFh4cI+A==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-debug-levels "0.26.5"
+    resolve-eventstore-base "0.26.5"
+
 resolve-from@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-2.0.0.tgz#9480ab20e94ffa1d9e80a804c7ea147611966b57"
@@ -16149,6 +16138,26 @@ resolve-from@^5.0.0:
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-5.0.0.tgz#c35225843df8f776df21c57557bc087e9dfdfc69"
   integrity sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==
 
+resolve-local-event-broker@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-local-event-broker/-/resolve-local-event-broker-0.26.5.tgz#cb0791ec89b8e4d153c14f7185e6e31b3715ad1e"
+  integrity sha512-cBp2NoxIXVTeKawxC1EYof9Em/FmDQo2oQxIBVagN/UveBYpQ2jQg/cw0wLSLDCUQRFFYP3kY8cYdiCiM9FgBA==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-debug-levels "0.26.5"
+    resolve-eventstore-base "0.26.5"
+    resolve-local-rpc "0.26.5"
+    resolve-readmodel-base "0.26.5"
+    sqlite "^3.0.2"
+    tmp "^0.1.0"
+
+resolve-local-rpc@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-local-rpc/-/resolve-local-rpc-0.26.5.tgz#561af971e0567b0cc4849801f4745c6d9596ee8c"
+  integrity sha512-zMFLQyw9jfFto2V+TOdNn9gV/ydlBrILXZ0mpVFpXocBTF838ZNmOiz11xA2Dl5S+W8bMQk6IyWeHcvYJYa9Zw==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+
 resolve-options@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/resolve-options/-/resolve-options-1.1.0.tgz#32bb9e39c06d67338dc9378c0d6d6074566ad131"
@@ -16160,6 +16169,142 @@ resolve-pathname@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-3.0.0.tgz#99d02224d3cf263689becbb393bc560313025dcd"
   integrity sha512-C7rARubxI8bXFNB/hqcp/4iUeIXJhJZvFPFPiSPRnhU5UPxzMFIl+2E6yY6c4k9giDJAhtV+enfA+G89N6Csng==
+
+resolve-query@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-query/-/resolve-query-0.26.5.tgz#860fcf60f6d971c3970150a647d810a8c4f23f05"
+  integrity sha512-BNKUr0/PFT6mB2TPodHADRxNkAFPpv1AAFlJY39Z38SmretvzyC1OsQznzJjaUQC9X5yW9QIOagw+RhXpfLvuw==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-core "0.26.5"
+    resolve-debug-levels "0.26.5"
+    resolve-readmodel-base "0.26.5"
+
+resolve-react-hooks@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-react-hooks/-/resolve-react-hooks-0.26.5.tgz#e84aab68b18a99488d623788cc9b5750053fe350"
+  integrity sha512-7HIHS5RBFA7L5l2tZyqqam95t9otbaap4MmkQQd2Lpvd73PibFmMQzs4A6PWjy+KD0DWd7DN1ovRha2WANfDiQ==
+  dependencies:
+    resolve-client "0.26.5"
+    resolve-core "0.26.5"
+
+resolve-readmodel-base@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-readmodel-base/-/resolve-readmodel-base-0.26.5.tgz#dc62e9a3cfbea794d2adcc0c73fb77eef01626dc"
+  integrity sha512-emOGUoxR6MinG2emy8Q0fy6LCvinkHRkRKlZ5I0uY6rTZXcEWAau0P9zHEOCmJ2uOyk1qDrbM4Zu8BPoIyL/+w==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    uuid "8.3.1"
+
+resolve-readmodel-lite@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-readmodel-lite/-/resolve-readmodel-lite-0.26.5.tgz#6d6b9c8c83c9f32ea54fc47a678e3b7430ca24f6"
+  integrity sha512-UUQe7amFGxzxsFqkUQr1Cl1du4rPi5Ch8Fg2A14aEzzFtHFEU0v2sc/gtP8EY43rJt/1h5FAOS0cZeidAILxww==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-readmodel-base "0.26.5"
+    sqlite "^3.0.2"
+    tmp "^0.1.0"
+    uuid "8.3.1"
+
+resolve-readmodel-postgresql-serverless@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-readmodel-postgresql-serverless/-/resolve-readmodel-postgresql-serverless-0.26.5.tgz#e1aea33100e7d49f52d32bcba3f687048859b8a3"
+  integrity sha512-T8eY4zcKgB6Xu7LDQ/kFTzfmpNBVLEtdPMxpmz5JP1106zI+1dr6iFHAFf5erx6OHIIP7ydmU0EB6UHNQ4Ocww==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-debug-levels "0.26.5"
+    resolve-readmodel-base "0.26.5"
+
+resolve-runtime@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-runtime/-/resolve-runtime-0.26.5.tgz#46c8b9157f81dc554864367dfa25646fbdc99be4"
+  integrity sha512-uFEX3cgl1MfelBHLuVUgqXdjE16Ywz6lQXwofx+T2hzKndeCsJn6SFMsYFJoVJtWmCw/94N/citKc3e6AotTAw==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    aws-signature-v4 "^1.4.0"
+    binary-case "^1.1.4"
+    body-parser "^1.19.0"
+    content-disposition "^0.5.3"
+    cookie "^0.4.1"
+    cors "^2.8.5"
+    cron "^1.5.0"
+    cuid "^2.1.6"
+    express "^4.17.1"
+    file-type "^12.4.0"
+    iconv-lite "^0.5.1"
+    jsonwebtoken "^8.3.0"
+    mime-types "2.1.25"
+    mqtt-connection "^4.0.0"
+    multer "^1.4.2"
+    proper-lockfile "^3.2.0"
+    raw-body "2.3.3"
+    request "^2.88.2"
+    resolve-cloud-common "0.0.37"
+    resolve-command "0.26.5"
+    resolve-core "0.26.5"
+    resolve-debug-levels "0.26.5"
+    resolve-eventstore-base "0.26.5"
+    resolve-eventstore-lite "0.26.5"
+    resolve-local-event-broker "0.26.5"
+    resolve-query "0.26.5"
+    resolve-readmodel-base "0.26.5"
+    resolve-saga "0.26.5"
+    route-trie "^3.0.0"
+    socket.io "^2.1.1"
+    source-map-support "^0.5.9"
+    url "^0.11.0"
+    uuid "8.3.1"
+    websocket-stream "^5.1.2"
+    ws "7.3.1"
+
+resolve-saga@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-saga/-/resolve-saga-0.26.5.tgz#04a2d3e570644ec116297562c7dcf847a495c456"
+  integrity sha512-mMK9e0XFB+1wwEXsJLh0AU2mSRdAtUxyz+sWCDAnzyPoP83PWwkOgcqKzZSc37yzcTGcQc8SScUBDN0QyI3N6g==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-command "0.26.5"
+    resolve-debug-levels "0.26.5"
+    resolve-query "0.26.5"
+    uuid "8.3.1"
+
+resolve-scripts@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-scripts/-/resolve-scripts-0.26.5.tgz#1afb585a2f4a90049430bea576cfe94811006f2d"
+  integrity sha512-M7UXJG3pcw0Rw+ofuTFF8LCQLpwc5RLYObtYmYJ5HyyKm7XOpP9n/yv/xj5JEAXKZ3Zxo8UAi3wH4BZOqtiWBg==
+  dependencies:
+    "@babel/core" "7.9.6"
+    "@babel/plugin-proposal-class-properties" "7.8.3"
+    "@babel/plugin-proposal-export-default-from" "7.8.3"
+    "@babel/plugin-proposal-export-namespace-from" "7.8.3"
+    "@babel/plugin-transform-runtime" "7.9.6"
+    "@babel/preset-env" "7.9.6"
+    "@babel/preset-react" "7.9.4"
+    "@babel/register" "7.9.0"
+    "@babel/runtime" "7.9.6"
+    "@purtuga/esm-webpack-plugin" "^1.1.1"
+    address "^1.1.0"
+    ajv "^6.10.0"
+    babel-loader "8.1.0"
+    babel-plugin-module-resolver "4.0.0"
+    chalk "^2.4.2"
+    deepmerge "^3.2.0"
+    fs-extra "^7.0.1"
+    glob "7.1.6"
+    isomorphic-fetch "3.0.0"
+    loader-utils "^1.2.3"
+    opn "^6.0.0"
+    resolve-debug-levels "0.26.5"
+    resolve-runtime "0.26.5"
+    respawn "^2.6.0"
+    route-trie "^3.0.0"
+    socket.io-client "^2.2.0"
+    testcafe "^1.8.3"
+    testcafe-browser-tools "^2.0.10"
+    uuid "8.3.1"
+    webpack "^4.42.0"
+    webpack-node-externals "^1.7.2"
 
 resolve-url@^0.2.1:
   version "0.2.1"
@@ -18664,13 +18809,6 @@ uncontrollable@^4.1.0:
   dependencies:
     invariant "^2.1.0"
 
-uncontrollable@^5.0.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/uncontrollable/-/uncontrollable-5.1.0.tgz#7e9a1c50ea24e3c78b625e52d21ff3f758c7bd59"
-  integrity sha512-5FXYaFANKaafg4IVZXUNtGyzsnYEvqlr9wQ3WpZxFpEUxl29A3H6Q4G1Dnnorvq9TGOGATBApWR4YpLAh+F5hw==
-  dependencies:
-    invariant "^2.2.4"
-
 uncontrollable@^7.0.0:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/uncontrollable/-/uncontrollable-7.1.1.tgz#f67fed3ef93637126571809746323a9db815d556"
@@ -18963,6 +19101,11 @@ uuid@^8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
   integrity sha512-fX6Z5o4m6XsXBdli9g7DtWgAx+osMsRRZFKma1mIUsLCz6vRvv+pz5VNbyu9UEDzpMWulZfvpgb/cmDXVulYFQ==
+
+uuid@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 v8-compile-cache@^2.0.3:
   version "2.1.1"

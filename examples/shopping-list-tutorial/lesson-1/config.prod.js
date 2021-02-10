@@ -9,12 +9,12 @@ const prodConfig = {
   staticDir: 'static',
   distDir: 'dist',
   readModelConnectors: {
-    default: {
-      module: 'resolve-readmodel-lite',
-      options: {
-        databaseFile: 'data/read-models.db',
-      },
-    },
+    //default: {
+    //  module: 'resolve-readmodel-lite',
+    //  options: {
+    //    databaseFile: 'data/read-models.db',
+    //  },
+    //},
     /*
       default: {
         module: 'resolve-readmodel-mysql',

@@ -9,10 +9,10 @@ import {
   export default {
     createShoppingList: (state, { payload: { name } }) => {
       if (state.createdAt) {
-        throw new Error('Shopping List already exists')
+        throw new Error('Shopping list already exists')
       }
       if (!name) {
-        throw new Error(`The "name" field is required`)
+        throw new Error('The "name" field is required')
       }
   
       return {
@@ -22,7 +22,7 @@ import {
     },
     removeShoppingList: (state) => {
       if (!state.createdAt) {
-        throw new Error('Shopping List does not exist')
+        throw new Error('Shopping list does not exist')
       }
   
       return {
@@ -31,14 +31,14 @@ import {
     },
     createShoppingItem: (state, { payload: { id, text } }) => {
       if (!state.createdAt) {
-        throw new Error('Shopping List does not exist')
+        throw new Error('Shopping list does not exist')
       }
   
       if (!id) {
-        throw new Error(`The "id" field is required`)
+        throw new Error('The "id" field is required')
       }
       if (!text) {
-        throw new Error(`The "text" field is required`)
+        throw new Error('The "text" field is required')
       }
   
       return {
@@ -48,11 +48,11 @@ import {
     },
     toggleShoppingItem: (state, { payload: { id } }) => {
       if (!state.createdAt) {
-        throw new Error('Shopping List does not exist')
+        throw new Error('Shopping list does not exist')
       }
   
       if (!id) {
-        throw new Error(`The "id" field is required`)
+        throw new Error('The "id" field is required')
       }
   
       return {
@@ -62,11 +62,11 @@ import {
     },
     removeShoppingItem: (state, { payload: { id } }) => {
       if (!state.createdAt) {
-        throw new Error('Shopping List does not exist')
+        throw new Error('Shopping list does not exist')
       }
   
       if (!id) {
-        throw new Error(`The "id" field is required`)
+        throw new Error('The "id" field is required')
       }
   
       return {
