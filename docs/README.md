@@ -33,6 +33,7 @@ title: reSolve Documentation
   - [Updating a Read Model via Projection Functions](read-side.md#updating-a-read-model-via-projection-functions)
   - [Resolvers](read-side.md#resolvers)
   - [View Model Specifics](read-side.md#view-model-specifics)
+  - [View Model Resolver](read-side.md#view-model-resolver)
   - [Performing Queries Using HTTP API](read-side.md#performing-queries-using-http-api)
 
 #### Guides
