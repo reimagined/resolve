@@ -4,7 +4,7 @@ import {
   FULL_XA_CONNECTOR,
   EMPTY_CONNECTOR,
   INLINE_LEDGER_CONNECTOR,
-} from 'resolve-query'
+} from './query'
 
 const connectorCapabilities = {
   FULL_REGULAR_CONNECTOR,

@@ -126,8 +126,11 @@ async function main({ name: packageName }) {
         pendingPromises.push(build.promise)
       } else if (
         build.status === 'waiting' &&
-        build.config.dependencies.every(
-          (dependency) => map.get(dependency).status === 'succeeded'
+        build.config.dependencies.every((dependency) =>
+          map.get(dependency)
+            ? map.get(dependency).status === 'succeeded'
+            : // eslint-disable-next-line no-console
+              console.warn(`Unresolved dependency [${dependency}]`)
         )
       ) {
         preparePendingBuild(build)

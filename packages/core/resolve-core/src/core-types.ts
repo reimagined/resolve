@@ -17,8 +17,11 @@ export type Event = {
   timestamp: number
   aggregateId: string
   aggregateVersion: number
-  payload?: SerializableMap
+  payload?: any
 }
+
+export type Serializer<T> = (data: T) => string
+export type Deserializer<T> = (blob: string) => T
 
 // Encryption
 
@@ -49,22 +52,20 @@ export type AggregateEventHandler = (
 export type CommandContext = {
   jwt?: string
   aggregateVersion: number
-  encrypt: Encrypter | null
-  decrypt: Decrypter | null
-}
+} & Encryption
 
 export type Command = {
   type: string
   aggregateId: string
   aggregateName: string
-  payload?: SerializableMap
+  payload?: any
   jwt?: string
   jwtToken?: string // deprecated
 }
 
 export type CommandResult = {
   type: string
-  payload?: SerializableMap
+  payload?: any
   timestamp?: number
   aggregateId?: string
   aggregateVersion?: number
@@ -96,10 +97,7 @@ export type AggregateEncryptionFactory = (
 
 // Read model
 
-type ReadModelHandlerContext = {
-  encrypt: Encrypter | null
-  decrypt: Decrypter | null
-}
+type ReadModelHandlerContext = Encryption
 type ReadModelInitHandler<TStore> = (store: TStore) => Promise<void>
 type ReadModelEventHandler<TStore> = (
   store: TStore,
@@ -123,13 +121,52 @@ type ReadModelResolver<TStore> = (
 export type ReadModelResolvers<TStore> = {
   [key: string]: ReadModelResolver<TStore>
 }
-export type ReadModelEncryptionContext = {
+export type EventHandlerEncryptionContext = {
   secretsManager: SecretsManager
 }
-export type ReadModelEncryptionFactory = (
+export type EventHandlerEncryptionFactory = (
   event: Event,
-  context: ReadModelEncryptionContext
+  context: EventHandlerEncryptionContext
 ) => Promise<Encryption | null>
+
+// View model
+export type ViewModelHandlerContext = {
+  jwt?: string
+} & Encryption
+export type ViewModelInitHandler<TState> = () => TState
+export type ViewModelEventHandler<TState> = (
+  state: TState,
+  event: Event,
+  args: any,
+  context: ViewModelHandlerContext
+) => TState
+export type ViewModelProjection<TState> = {
+  Init: ViewModelInitHandler<TState>
+} & {
+  [key: string]: ViewModelEventHandler<TState>
+}
+type ViewModelResolverApi = {
+  buildViewModel: Function
+}
+type ViewModelResolverContext = {
+  jwt?: string
+  viewModel: {
+    name: string
+    eventTypes: string[]
+  }
+}
+export type ViewModelResolverQuery = {
+  aggregateIds: string[]
+  aggregateArgs: any
+}
+export type ViewModelResolver = (
+  api: ViewModelResolverApi,
+  query: ViewModelResolverQuery,
+  context: ViewModelResolverContext
+) => Promise<any>
+export type ViewModelResolverMap = {
+  [key: string]: ViewModelResolver
+}
 
 // Saga
 
@@ -174,28 +211,30 @@ export type SagaUserSideEffects = {
   [key: string]: SagaUserSideEffect
 }
 
-type SagaContext<TStore, TSideEffects extends SagaUserSideEffects> = {
+export type SagaContext<TStore, TSideEffects> = {
   store: TStore
   sideEffects: SagaSideEffects & TSideEffects
-  encrypt: Encrypter
-  decrypt: Decrypter
+  encrypt?: Encrypter
+  decrypt?: Decrypter
 }
-type SagaInitHandler<TStore, TSideEffects extends SagaUserSideEffects> = (
+
+export type SagaInitHandler<TStore, TSideEffects> = (
   context: SagaContext<TStore, TSideEffects>
 ) => Promise<void>
-type SagaEventHandler<TStore, TSideEffects extends SagaUserSideEffects> = (
+
+export type SagaEventHandler<TStore, TSideEffects> = (
   context: SagaContext<TStore, TSideEffects>,
   event: Event
 ) => Promise<void>
-export type Saga<
-  TStore = never,
-  TSideEffects extends SagaUserSideEffects = {}
-> = {
-  handlers: {
-    [key: string]: SagaEventHandler<TStore, TSideEffects>
-  } & {
-    Init?: SagaInitHandler<TStore, TSideEffects>
-  }
+
+export type SagaEventHandlers<TStore, TSideEffects> = {
+  [key: string]: SagaEventHandler<TStore, TSideEffects>
+} & {
+  Init?: SagaInitHandler<TStore, TSideEffects>
+}
+
+export type Saga<TStore = never, TSideEffects = {}> = {
+  handlers: SagaEventHandlers<TStore, TSideEffects>
   sideEffects?: TSideEffects
 }
 export type SagaEncryptionContext = {

@@ -470,6 +470,8 @@ module.exports = {
           'upvoted',
           'uploader',
           'unhandled',
+          'unprocessable',
+          'invokers',
           'uri',
           'url',
           'urlencoded',

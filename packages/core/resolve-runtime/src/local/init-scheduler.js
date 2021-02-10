@@ -1,5 +1,3 @@
-import { schedulerName } from 'resolve-saga'
-
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
@@ -22,8 +20,8 @@ const initScheduler = (resolve) => {
               const currentResolve = Object.create(resolve)
               try {
                 await initResolve(currentResolve)
-                await currentResolve.executeCommand({
-                  aggregateName: schedulerName,
+                await currentResolve.executeSchedulerCommand({
+                  aggregateName: resolve.domainInterop.sagaDomain.schedulerName,
                   aggregateId: entry.taskId,
                   type: 'execute',
                   payload: { date: entry.date, command: entry.command },

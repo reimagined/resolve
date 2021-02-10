@@ -59,7 +59,7 @@ describe('read-models', () => {
         })
         .all()
 
-      expect(shoppingLists).toEqual({ data: [] })
+      expect(shoppingLists).toEqual([])
     })
 
     // mdis-start read-model-test
@@ -81,7 +81,7 @@ describe('read-models', () => {
         })
         .all()
 
-      expect(shoppingLists.data[0]).toMatchObject({
+      expect(shoppingLists[0]).toMatchObject({
         id: aggregateId,
         name: 'Products',
       })
@@ -113,7 +113,7 @@ describe('read-models', () => {
         })
         .all()
 
-      expect(shoppingLists.data[0]).toMatchObject({
+      expect(shoppingLists[0]).toMatchObject({
         id: aggregateId,
         name: 'Medicines',
       })
@@ -141,7 +141,7 @@ describe('read-models', () => {
         })
         .all()
 
-      expect(shoppingLists.data.length).toEqual(0)
+      expect(shoppingLists.length).toEqual(0)
     })
   })
 })
