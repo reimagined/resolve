@@ -37,10 +37,14 @@ const createAdapter = <
     wrapDispose,
     validateEventFilter,
     loadEvents,
-    importStream,
-    exportStream,
+    importEventsStream,
+    exportEventsStream,
     incrementalImport,
     getNextCursor,
+    importSecretsStream,
+    exportSecretsStream,
+    init,
+    drop,
   }: CommonAdapterFunctions<ConnectedProps>,
   {
     connect,
@@ -48,8 +52,12 @@ const createAdapter = <
     loadEventsByTimestamp,
     getLatestEvent,
     saveEvent,
-    init,
-    drop,
+    initEvents,
+    initSecrets,
+    initFinal,
+    dropEvents,
+    dropSecrets,
+    dropFinal,
     dispose,
     injectEvent,
     freeze,
@@ -65,6 +73,8 @@ const createAdapter = <
     getSecret,
     setSecret,
     deleteSecret,
+    loadSecrets,
+    injectSecret,
   }: AdapterFunctions<ConnectedProps, ConnectionDependencies, Config>,
   connectionDependencies: ConnectionDependencies,
   options: Config
@@ -112,6 +122,12 @@ const createAdapter = <
     deleteSecret: wrapMethod(adapterPool, deleteSecret),
     getSecret: wrapMethod(adapterPool, getSecret),
     setSecret: wrapMethod(adapterPool, setSecret),
+    initEvents: wrapMethod(adapterPool, initEvents),
+    initSecrets: wrapMethod(adapterPool, initSecrets),
+    initFinal: wrapMethod(adapterPool, initFinal),
+    dropEvents: wrapMethod(adapterPool, dropEvents),
+    dropSecrets: wrapMethod(adapterPool, dropSecrets),
+    dropFinal: wrapMethod(adapterPool, dropFinal),
     waitConnect: wrapMethod(adapterPool, idempotentFunction),
     shapeEvent,
   } as Partial<ConnectedProps>
@@ -123,8 +139,8 @@ const createAdapter = <
 
   const adapter: Adapter = {
     loadEvents: wrapMethod(adapterPool, wrapEventFilter(loadEvents)),
-    import: importStream.bind(null, adapterPool),
-    export: exportStream.bind(null, adapterPool),
+    importEvents: importEventsStream.bind(null, adapterPool),
+    exportEvents: exportEventsStream.bind(null, adapterPool),
     getLatestEvent: wrapMethod(adapterPool, getLatestEvent),
     saveEvent: wrapMethod(adapterPool, saveEvent),
     init: wrapMethod(adapterPool, init),
@@ -145,6 +161,16 @@ const createAdapter = <
       rollbackIncrementalImport
     ),
     incrementalImport: wrapMethod(adapterPool, incrementalImport),
+    loadSecrets:
+      loadSecrets === undefined
+        ? undefined
+        : wrapMethod(adapterPool, loadSecrets),
+    injectSecret:
+      injectSecret === undefined
+        ? undefined
+        : wrapMethod(adapterPool, injectSecret),
+    importSecrets: importSecretsStream.bind(null, adapterPool),
+    exportSecrets: exportSecretsStream.bind(null, adapterPool),
   }
 
   Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(
