@@ -4,11 +4,9 @@ import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 
 export type CheckForResourceError = (errors: Error[]) => void
 
-type PropType<TObj, TProp extends keyof TObj> = TObj[TProp]
-
-type DeleteSecret = PropType<SecretsManager, 'deleteSecret'>
-type GetSecret = PropType<SecretsManager, 'getSecret'>
-type SetSecret = PropType<SecretsManager, 'setSecret'>
+type DeleteSecret = SecretsManager['deleteSecret']
+type GetSecret = SecretsManager['getSecret']
+type SetSecret = SecretsManager['setSecret']
 
 type ShapeEvent = (event: any, additionalFields?: any) => any
 
@@ -77,6 +75,22 @@ export type PromiseResultType<T extends any> = T extends Promise<infer R>
   ? R
   : T
 
+export type PoolMethod<
+  ConnectedProps extends AdapterPoolConnectedProps,
+  M extends (...args: any) => any
+> = (
+  pool: AdapterPoolConnected<ConnectedProps>,
+  ...args: Parameters<M>
+) => ReturnType<M>
+
+export type UnconnectedPoolMethod<
+  ConnectedProps extends AdapterPoolConnectedProps,
+  M extends (...args: any) => any
+> = (
+  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+  ...args: Parameters<M>
+) => ReturnType<M>
+
 export type AdapterConfig = {
   snapshotBucketSize?: number
 }
@@ -118,11 +132,12 @@ export type AdapterPoolConnectedProps = Adapter & {
 }
 
 export type AdapterPoolPossiblyUnconnected<
-  ConnectedProps
+  ConnectedProps extends AdapterPoolConnectedProps
 > = AdapterPoolPrimalProps & Partial<ConnectedProps>
 
-export type AdapterPoolConnected<ConnectedProps> = AdapterPoolPrimalProps &
-  ConnectedProps
+export type AdapterPoolConnected<
+  ConnectedProps extends AdapterPoolConnectedProps
+> = AdapterPoolPrimalProps & ConnectedProps
 
 export type WrappedConnectOnDemandAndCall<
   ConnectedProps extends AdapterPoolConnectedProps,
@@ -149,21 +164,8 @@ export type WrapMethod<ConnectedProps extends AdapterPoolConnectedProps> = {
 
 export type WrapDispose<ConnectedProps extends AdapterPoolConnectedProps> = (
   pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
-  dispose: Dispose<ConnectedProps>
+  dispose: PoolMethod<ConnectedProps, Adapter['dispose']>
 ) => () => Promise<void>
-
-export type LoadEvents<ConnectedProps extends AdapterPoolConnectedProps> = (
-  pool: AdapterPoolConnected<ConnectedProps>,
-  filter: EventFilter
-) => Promise<EventsWithCursor>
-
-export type IncrementImport<
-  ConnectedProps extends AdapterPoolConnectedProps
-> = (pool: AdapterPoolConnected<ConnectedProps>, events: any[]) => Promise<void>
-
-export type Dispose<ConnectedProps extends AdapterPoolConnectedProps> = (
-  pool: AdapterPoolConnected<ConnectedProps>
-) => Promise<void>
 
 type MAINTENANCE_MODE =
   | typeof MAINTENANCE_MODE_AUTO
@@ -184,114 +186,112 @@ export type ExportSecretsOptions = {
   idx: number | null
 }
 
-export type GetImportStream<
-  ConnectedProps extends AdapterPoolConnectedProps
-> = (
-  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
-  options?: Partial<ImportOptions>
-) => stream.Writable
-
-export type GetExportStream<
-  ConnectedProps extends AdapterPoolConnectedProps
-> = (
-  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
-  options?: Partial<ExportOptions>
-) => stream.Readable
-
 export interface CommonAdapterFunctions<
   ConnectedProps extends AdapterPoolConnectedProps
 > {
   maybeThrowResourceError: CheckForResourceError
   wrapMethod: WrapMethod<ConnectedProps>
   wrapEventFilter: (
-    loadEvents: LoadEvents<ConnectedProps>
-  ) => LoadEvents<ConnectedProps>
+    loadEvents: PoolMethod<ConnectedProps, Adapter['loadEvents']>
+  ) => PoolMethod<ConnectedProps, Adapter['loadEvents']>
   wrapDispose: WrapDispose<ConnectedProps>
   validateEventFilter: ValidateEventFilter
-  loadEvents: LoadEvents<ConnectedProps>
-  importEventsStream: GetImportStream<ConnectedProps>
-  exportEventsStream: GetExportStream<ConnectedProps>
-  incrementalImport: IncrementImport<ConnectedProps>
+  loadEvents: PoolMethod<ConnectedProps, Adapter['loadEvents']>
+  importEventsStream: UnconnectedPoolMethod<
+    ConnectedProps,
+    Adapter['importEvents']
+  >
+  exportEventsStream: UnconnectedPoolMethod<
+    ConnectedProps,
+    Adapter['exportEvents']
+  >
+  incrementalImport: PoolMethod<ConnectedProps, Adapter['incrementalImport']>
   getNextCursor: GetNextCursor
-  importSecretsStream: (
-    pool: AdapterPoolPossiblyUnconnected<ConnectedProps>
-  ) => stream.Writable
-  exportSecretsStream: (
-    pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
-    options?: Partial<ExportSecretsOptions>
-  ) => stream.Readable
-  init: (pool: AdapterPoolConnected<ConnectedProps>) => Promise<void>
-  drop: (pool: AdapterPoolConnected<ConnectedProps>) => Promise<void>
+  importSecretsStream: UnconnectedPoolMethod<
+    ConnectedProps,
+    Adapter['importSecrets']
+  >
+  exportSecretsStream: UnconnectedPoolMethod<
+    ConnectedProps,
+    Adapter['exportSecrets']
+  >
+  init: PoolMethod<ConnectedProps, Adapter['init']>
+  drop: PoolMethod<ConnectedProps, Adapter['drop']>
 }
 
 export interface AdapterFunctions<
   ConnectedProps extends AdapterPoolConnectedProps,
   ConnectionDependencies extends any,
-  Config extends AdapterConfig,
-  AdapterPool = AdapterPoolConnected<ConnectedProps>
+  Config extends AdapterConfig
 > {
-  beginIncrementalImport: (pool: AdapterPool) => Promise<string>
-  commitIncrementalImport: (
-    pool: AdapterPool,
-    importId: string,
-    validateAfterCommit: any
-  ) => Promise<void>
+  beginIncrementalImport: PoolMethod<
+    ConnectedProps,
+    Adapter['beginIncrementalImport']
+  >
+  commitIncrementalImport: PoolMethod<
+    ConnectedProps,
+    Adapter['commitIncrementalImport']
+  >
   connect: (
     pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
     connectionDependencies: ConnectionDependencies,
     config: Config
-  ) => Promise<any>
-  dispose: Dispose<ConnectedProps>
-  dropSnapshot: (pool: AdapterPool, snapshotKey: string) => Promise<any>
-  freeze: (pool: AdapterPool) => Promise<void>
-  getLatestEvent: (pool: AdapterPool, filter: EventFilter) => Promise<any>
-  injectEvent: (pool: AdapterPool, event: any) => Promise<any>
-  loadEventsByCursor: (
-    pool: AdapterPool,
-    filter: CursorFilter
-  ) => Promise<EventsWithCursor>
-  loadEventsByTimestamp: (
-    pool: AdapterPool,
-    filter: TimestampFilter
-    // eslint-disable-next-line spellcheck/spell-checker
-  ) => Promise<EventsWithCursor>
-  loadSnapshot: (pool: AdapterPool, snapshotKey: string) => Promise<any>
-  pushIncrementalImport: (
-    pool: AdapterPool,
-    events: any[],
-    importId: string
   ) => Promise<void>
-  rollbackIncrementalImport: (pool: AdapterPool) => Promise<void>
-  saveEvent: (pool: AdapterPool, event: any) => Promise<any>
-  saveSnapshot: (
-    pool: AdapterPool,
-    snapshotKey: string,
-    content: string
-  ) => Promise<any>
+  dispose: PoolMethod<ConnectedProps, Adapter['dispose']>
+  dropSnapshot: PoolMethod<ConnectedProps, Adapter['dropSnapshot']>
+  freeze: PoolMethod<ConnectedProps, Adapter['freeze']>
+  getLatestEvent: PoolMethod<ConnectedProps, Adapter['getLatestEvent']>
+  injectEvent: PoolMethod<
+    ConnectedProps,
+    AdapterPoolConnectedProps['injectEvent']
+  >
+  loadEventsByCursor: PoolMethod<
+    ConnectedProps,
+    AdapterPoolConnectedProps['loadEventsByCursor']
+  >
+  loadEventsByTimestamp: PoolMethod<
+    ConnectedProps,
+    AdapterPoolConnectedProps['loadEventsByTimestamp']
+  >
+  loadSnapshot: PoolMethod<ConnectedProps, Adapter['loadSnapshot']>
+  pushIncrementalImport: PoolMethod<
+    ConnectedProps,
+    Adapter['pushIncrementalImport']
+  >
+  rollbackIncrementalImport: PoolMethod<
+    ConnectedProps,
+    Adapter['rollbackIncrementalImport']
+  >
+  saveEvent: PoolMethod<ConnectedProps, Adapter['saveEvent']>
+  saveSnapshot: PoolMethod<ConnectedProps, Adapter['saveSnapshot']>
   shapeEvent: ShapeEvent
-  unfreeze: (pool: AdapterPool) => Promise<void>
-  isFrozen?: () => Promise<boolean>
-  getSecret: (pool: AdapterPool, selector: string) => Promise<string | null>
-  setSecret: (
-    pool: AdapterPool,
-    selector: string,
-    secret: string
-  ) => Promise<void>
-  deleteSecret: (pool: AdapterPool, selector: string) => Promise<void>
-  loadSecrets?: (
-    pool: AdapterPool,
-    filter: SecretFilter
-  ) => Promise<SecretsWithIdx>
-  injectSecret?: (
-    pool: AdapterPool,
-    secretRecord: SecretRecord
-  ) => Promise<void>
-  initEvents: (pool: AdapterPool) => Promise<any[]>
-  initSecrets: (pool: AdapterPool) => Promise<any[]>
-  initFinal: (pool: AdapterPool) => Promise<any[]>
-  dropEvents: (pool: AdapterPool) => Promise<any[]>
-  dropSecrets: (pool: AdapterPool) => Promise<any[]>
-  dropFinal: (pool: AdapterPool) => Promise<any[]>
+  unfreeze: PoolMethod<ConnectedProps, Adapter['unfreeze']>
+  getSecret: PoolMethod<ConnectedProps, GetSecret>
+  setSecret: PoolMethod<ConnectedProps, SetSecret>
+  deleteSecret: PoolMethod<ConnectedProps, DeleteSecret>
+  loadSecrets?: PoolMethod<ConnectedProps, NonNullable<Adapter['loadSecrets']>>
+  injectSecret?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['injectSecret']>
+  >
+  initEvents: PoolMethod<
+    ConnectedProps,
+    AdapterPoolConnectedProps['initEvents']
+  >
+  initSecrets: PoolMethod<
+    ConnectedProps,
+    AdapterPoolConnectedProps['initSecrets']
+  >
+  initFinal: PoolMethod<ConnectedProps, AdapterPoolConnectedProps['initFinal']>
+  dropEvents: PoolMethod<
+    ConnectedProps,
+    AdapterPoolConnectedProps['dropEvents']
+  >
+  dropSecrets: PoolMethod<
+    ConnectedProps,
+    AdapterPoolConnectedProps['dropSecrets']
+  >
+  dropFinal: PoolMethod<ConnectedProps, AdapterPoolConnectedProps['dropFinal']>
 }
 
 export interface Adapter {
@@ -302,7 +302,7 @@ export interface Adapter {
   saveEvent: (event: any) => Promise<any>
   init: () => Promise<void>
   drop: () => Promise<void>
-  dispose: () => Promise<any>
+  dispose: () => Promise<void>
   freeze: () => Promise<void>
   unfreeze: () => Promise<void>
   getNextCursor: (prevCursor: string | null, events: any[]) => string
