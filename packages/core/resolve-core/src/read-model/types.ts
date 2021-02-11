@@ -1,27 +1,10 @@
 import { SecretsManager, Event } from '../type-definitions/core'
 import { Monitoring } from '../type-definitions/runtime'
 
-export type ReadModelResolverParams = {
-  [key: string]: any
-}
-export type ReadModelResolverContext = {
-  jwt?: string
-  secretsManager: SecretsManager | null
-}
-export type ReadModelResolver = (
-  connection: any,
-  params: ReadModelResolverParams,
-  context: ReadModelResolverContext
-) => Promise<any>
-
 export type ReadModelRuntimeResolver = (
   connection: any,
   secretsManager: SecretsManager | null
 ) => Promise<any>
-
-export type ReadModelResolverMap = {
-  [key: string]: ReadModelResolver
-}
 
 export type ReadModelRuntimeEventHandler = () => Promise<void>
 

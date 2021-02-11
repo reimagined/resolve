@@ -63,7 +63,6 @@ export type SagaDomain = {
   schedulerEventTypes: { [key: string]: string }
   schedulerInvariantHash: string
   getSagasSchedulersInfo: () => SchedulerInfo[]
-  //createSchedulerAggregate: SchedulerAggregateBuilder
   acquireSchedulerAggregatesInterop: AggregatesInteropBuilder
   acquireSagasInterop: SagasInteropBuilder
 }

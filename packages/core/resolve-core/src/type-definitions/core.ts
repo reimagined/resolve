@@ -124,8 +124,8 @@ export type ReadModel<TStore> = {
 }
 
 type ReadModelResolverContext = {
-  jwt: string
-  secretsManager: SecretsManager
+  jwt?: string
+  secretsManager: SecretsManager | null
 }
 
 type ReadModelResolver<TStore> = (

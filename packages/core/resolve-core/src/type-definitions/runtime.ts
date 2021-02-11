@@ -1,4 +1,3 @@
-import { ReadModelResolverMap } from '../read-model/types'
 import { IS_BUILT_IN } from '../symbols'
 import {
   Event,
@@ -11,6 +10,7 @@ import {
   AggregateEncryptionFactory,
   AggregateProjection,
   EventHandlerEncryptionFactory,
+  ReadModelResolvers,
 } from './core'
 
 export type PerformanceSubsegment = {
@@ -63,7 +63,7 @@ export type EventProjectionMeta = {
 }
 
 export type ReadModelMeta = EventProjectionMeta & {
-  resolvers: ReadModelResolverMap
+  resolvers: ReadModelResolvers<any>
   projection: ReadModel<any>
 }
 

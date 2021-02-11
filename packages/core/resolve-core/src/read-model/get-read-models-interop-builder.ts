@@ -2,11 +2,14 @@ import {
   ReadModelsInteropBuilder,
   ReadModelInterop,
   ReadModelRuntime,
-  ReadModelResolverMap,
   ReadModelInteropMap,
   ReadModelRuntimeEventHandler,
 } from './types'
-import { SecretsManager, Event } from '../type-definitions/core'
+import {
+  SecretsManager,
+  Event,
+  ReadModelResolvers,
+} from '../type-definitions/core'
 import { createHttpError, HttpStatusCodes } from '../errors'
 import { getPerformanceTracerSubsegment } from '../utils'
 import { ReadModelMeta } from '../type-definitions/runtime'
@@ -29,7 +32,7 @@ const getReadModelInterop = (
   const { monitoring } = runtime
 
   const resolverInvokerMap = Object.keys(resolvers).reduce<
-    ReadModelResolverMap
+    ReadModelResolvers<any>
   >((map, resolverName) => {
     map[resolverName] = resolvers[resolverName]
     return map
