@@ -17,7 +17,7 @@ const connect = async (
   pool: AdapterPoolPrimal,
   { sqlite, tmp, os, fs }: ConnectionDependencies,
   config: SqliteAdapterConfig
-): Promise<any> => {
+): Promise<void> => {
   const log = getLog('connect')
   log.debug('connecting to sqlite databases')
 
