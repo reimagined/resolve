@@ -57,6 +57,6 @@
     "resolve-cloud": "*",
     "resolve-testing-tools": "0.26.5",
     "testcafe": "1.10.1",
-    "testcafe-reporter-dashboard-test": "0.0.20"
+    "testcafe-reporter-dashboard-test": "0.0.21"
   }
 }
