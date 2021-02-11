@@ -1,4 +1,10 @@
-import createQuery from 'resolve-query'
+import createQuery, {
+  detectConnectorFeatures,
+  INLINE_LEDGER_CONNECTOR,
+  EMPTY_CONNECTOR,
+  FULL_REGULAR_CONNECTOR,
+  FULL_XA_CONNECTOR
+} from 'resolve-query'
 import createCommand from 'resolve-command'
 import { SerializableMap, CommandResult } from 'resolve-core'
 import as from './as'
@@ -34,6 +40,13 @@ export default givenEvents.bind(null, {
   setSecretsManager,
   aggregate,
   command,
+  detectConnectorFeatures,
+  connectorModes: {
+    INLINE_LEDGER_CONNECTOR,
+    EMPTY_CONNECTOR,
+    FULL_REGULAR_CONNECTOR,
+    FULL_XA_CONNECTOR
+  }
 }) as (events: any[]) => GivenEventsContext
 
 export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =

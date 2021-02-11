@@ -18,7 +18,8 @@ const resetReadModel = async (
   const adapter = createConnector(connectorOptions)
   try {
     const connection = await adapter.connect(readModelName)
-    await adapter.drop(connection, readModelName)
+    await adapter.unsubscribe(connection, readModelName)
+    await adapter.subscribe(connection, readModelName, null, null)
     await adapter.disconnect(connection, readModelName)
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -35,15 +36,8 @@ describe('read-models', () => {
     let adapter = null
 
     beforeEach(async () => {
-      await resetReadModel(
-        createReadModelAdapter,
-        { databaseFile: ':memory:', preferEventBusLedger: true },
-        'ShoppingLists'
-      )
-      adapter = createReadModelAdapter({
-        databaseFile: ':memory:',
-        preferEventBusLedger: true,
-      })
+      await resetReadModel(createReadModelAdapter, { databaseFile: ':memory:' }, 'ShoppingLists')
+      adapter = createReadModelAdapter({ databaseFile: ':memory:' })
     })
 
     test('resolver "all" should return an empty array', async () => {
