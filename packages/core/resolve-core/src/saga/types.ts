@@ -1,6 +1,11 @@
-import { SecretsManager, Event, SagaEventHandlers } from '../core-types'
-import { AggregateMeta, Monitoring } from '../types'
+import {
+  SecretsManager,
+  Event,
+  SagaEventHandlers,
+} from '../type-definitions/core'
+import { AggregateMeta } from '../type-definitions/runtime'
 import { AggregatesInteropBuilder } from '../aggregate/types'
+import { Monitoring } from '../type-definitions/runtime'
 
 export type SchedulerInfo = {
   name: string

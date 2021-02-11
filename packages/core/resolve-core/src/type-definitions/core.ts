@@ -1,10 +1,13 @@
 // Primitives
 
 export type SerializablePrimitive = string | number | boolean | null
+
 export type SerializableMap = {
   [key: string]: Serializable
 }
+
 export type SerializableArray = Array<Serializable>
+
 export type Serializable =
   | SerializablePrimitive
   | SerializableMap
@@ -21,11 +24,13 @@ export type Event = {
 }
 
 export type Serializer<T> = (data: T) => string
+
 export type Deserializer<T> = (blob: string) => T
 
 // Encryption
 
 export type PlainData = Serializable
+
 export type EncryptedBlob = string
 
 export type SecretsManager = {
@@ -35,7 +40,9 @@ export type SecretsManager = {
 }
 
 export type Encrypter = (data: PlainData) => EncryptedBlob
+
 export type Decrypter = (blob: EncryptedBlob) => PlainData
+
 export type Encryption = {
   encrypt?: Encrypter
   decrypt?: Decrypter
@@ -44,6 +51,7 @@ export type Encryption = {
 // Aggregate
 
 export type AggregateState = any
+
 export type AggregateEventHandler = (
   state: AggregateState,
   event: Event
@@ -86,10 +94,12 @@ export type CommandHandler = (
 export type Aggregate = {
   [key: string]: CommandHandler
 }
+
 export type AggregateEncryptionContext = {
   jwt?: string
   secretsManager: SecretsManager
 }
+
 export type AggregateEncryptionFactory = (
   aggregateId: string,
   context: AggregateEncryptionContext
@@ -98,32 +108,40 @@ export type AggregateEncryptionFactory = (
 // Read model
 
 type ReadModelHandlerContext = Encryption
+
 type ReadModelInitHandler<TStore> = (store: TStore) => Promise<void>
+
 type ReadModelEventHandler<TStore> = (
   store: TStore,
   event: Event,
   context: ReadModelHandlerContext
 ) => Promise<void>
+
 export type ReadModel<TStore> = {
   [key: string]: ReadModelEventHandler<TStore>
 } & {
   Init: ReadModelInitHandler<TStore>
 }
+
 type ReadModelResolverContext = {
   jwt: string
   secretsManager: SecretsManager
 }
+
 type ReadModelResolver<TStore> = (
   store: TStore,
   params: SerializableMap,
   context: ReadModelResolverContext
 ) => Promise<any>
+
 export type ReadModelResolvers<TStore> = {
   [key: string]: ReadModelResolver<TStore>
 }
+
 export type EventHandlerEncryptionContext = {
   secretsManager: SecretsManager
 }
+
 export type EventHandlerEncryptionFactory = (
   event: Event,
   context: EventHandlerEncryptionContext
@@ -133,21 +151,26 @@ export type EventHandlerEncryptionFactory = (
 export type ViewModelHandlerContext = {
   jwt?: string
 } & Encryption
+
 export type ViewModelInitHandler<TState> = () => TState
+
 export type ViewModelEventHandler<TState> = (
   state: TState,
   event: Event,
   args: any,
   context: ViewModelHandlerContext
 ) => TState
+
 export type ViewModelProjection<TState> = {
   Init: ViewModelInitHandler<TState>
 } & {
   [key: string]: ViewModelEventHandler<TState>
 }
+
 type ViewModelResolverApi = {
   buildViewModel: Function
 }
+
 type ViewModelResolverContext = {
   jwt?: string
   viewModel: {
@@ -155,15 +178,18 @@ type ViewModelResolverContext = {
     eventTypes: string[]
   }
 }
+
 export type ViewModelResolverQuery = {
   aggregateIds: string[]
   aggregateArgs: any
 }
+
 export type ViewModelResolver = (
   api: ViewModelResolverApi,
   query: ViewModelResolverQuery,
   context: ViewModelResolverContext
 ) => Promise<any>
+
 export type ViewModelResolverMap = {
   [key: string]: ViewModelResolver
 }
@@ -179,13 +205,17 @@ type ReadModelQuery = {
   jwt?: string
   jwtToken?: string
 }
+
 type ReadModelQueryResult = Serializable
+
 type ViewModelQuery = {
   modelName: string
   aggregateIds: Array<string> | '*'
   aggregateArgs: Serializable
 }
+
 type ViewModelQueryResult = Serializable
+
 type SagaSideEffects = {
   executeCommand: (command: Command) => Promise<CommandResult>
   executeQuery: (
@@ -195,11 +225,13 @@ type SagaSideEffects = {
   secretsManager: SecretsManager
   isEnabled: boolean
 }
+
 type SagaSideEffectProperties = {
   RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: number
 } & {
   [key: string]: SerializablePrimitive
 }
+
 export type SagaUserSideEffect = (
   properties: SagaSideEffectProperties,
   sideEffects: SagaSideEffects,
@@ -237,14 +269,12 @@ export type Saga<TStore = never, TSideEffects = {}> = {
   handlers: SagaEventHandlers<TStore, TSideEffects>
   sideEffects?: TSideEffects
 }
+
 export type SagaEncryptionContext = {
   secretsManager: SecretsManager
 }
+
 export type SagaEncryptionFactory = (
   event: Event,
   context: SagaEncryptionContext
 ) => Promise<Encryption | null>
-
-export type Monitoring = {
-  error?: (error: Error, part: string, meta: any) => Promise<void>
-}

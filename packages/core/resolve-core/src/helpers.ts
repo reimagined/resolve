@@ -1,4 +1,4 @@
-import { Monitoring } from './core-types'
+import { Monitoring } from './type-definitions/runtime'
 
 export function firstOfType<T>(
   selector: (x: any) => x is T,

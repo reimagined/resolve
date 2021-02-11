@@ -5,17 +5,18 @@ import {
   AggregateRuntime,
 } from './types'
 import { CommandError } from '../errors'
-import { AggregateMeta } from '../types'
+import { AggregateMeta } from '../type-definitions/runtime'
 import getLog from '../get-log'
 import { getPerformanceTracerSubsegment } from '../utils'
 import {
+  Event,
   AggregateState,
   Command,
   CommandContext,
   CommandHandler,
   CommandResult,
-  Event,
-} from '../core-types'
+} from '../type-definitions/core'
+
 import { makeMonitoringSafe } from '../helpers'
 
 type AggregateData = {

@@ -3,7 +3,7 @@ import {
   Event,
   SagaEventHandler,
   SagaInitHandler,
-} from '../core-types'
+} from '../type-definitions/core'
 import getLog from '../get-log'
 import { wrapSideEffects } from './wrap-side-effects'
 import { SagaRuntime, SideEffectsCollection, SystemSideEffects } from './types'

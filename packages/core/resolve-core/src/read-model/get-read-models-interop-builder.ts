@@ -6,10 +6,10 @@ import {
   ReadModelInteropMap,
   ReadModelRuntimeEventHandler,
 } from './types'
-import { SecretsManager, Event } from '../core-types'
+import { SecretsManager, Event } from '../type-definitions/core'
 import { createHttpError, HttpStatusCodes } from '../errors'
 import { getPerformanceTracerSubsegment } from '../utils'
-import { ReadModelMeta } from '../types'
+import { ReadModelMeta } from '../type-definitions/runtime'
 import getLog from '../get-log'
 
 const monitoredError = async (

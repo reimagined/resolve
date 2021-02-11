@@ -1,5 +1,6 @@
 export * from './helpers'
-export * from './core-types'
+export * from './type-definitions/core'
+export * from './type-definitions/runtime'
 export * from './symbols'
 export * from './errors'
 export * from './interop'

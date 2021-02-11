@@ -1,11 +1,7 @@
-import { SecretsManager } from '../src/core-types'
+import { SecretsManager } from '../src/type-definitions/core'
 import { getReadModelsInteropBuilder } from '../src/read-model/get-read-models-interop-builder'
-import {
-  Monitoring,
-  ReadModelInterop,
-  ReadModelRuntime,
-} from '../src/read-model/types'
-import { ReadModelMeta } from '../src/types'
+import { ReadModelInterop, ReadModelRuntime } from '../src/read-model/types'
+import { ReadModelMeta, Monitoring } from '../src/type-definitions/runtime'
 
 const dummyEncryption = () => Promise.resolve({})
 

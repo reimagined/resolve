@@ -1,4 +1,4 @@
-import { SagaEventHandlers } from '../core-types'
+import { SagaEventHandlers } from '../type-definitions/core'
 import getLog from '../get-log'
 import {
   SchedulerEventTypes,

@@ -1,9 +1,11 @@
-import { SecretsManager, Event } from '../src/core-types'
-import { ViewModelMeta } from '../src/types'
-import { getViewModelsInteropBuilder } from '../src/view-model/get-view-models-interop-builder'
+import { SecretsManager, Event } from '../src/type-definitions/core'
 import {
+  ViewModelMeta,
   Eventstore,
   Monitoring,
+} from '../src/type-definitions/runtime'
+import { getViewModelsInteropBuilder } from '../src/view-model/get-view-models-interop-builder'
+import {
   ViewModelBuildContext,
   ViewModelBuildParams,
   ViewModelBuildResult,
@@ -32,6 +34,7 @@ const makeTestRuntime = (storedEvents: Event[] = []): ViewModelRuntime => {
   }
 
   const eventstore: Eventstore = {
+    saveEvent: jest.fn(),
     getNextCursor: jest.fn(
       (currentCursor) => (currentCursor && currentCursor + 1) || 1
     ),

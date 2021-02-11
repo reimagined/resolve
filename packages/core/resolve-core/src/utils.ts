@@ -2,7 +2,7 @@ import {
   Monitoring,
   PerformanceSubsegment,
   PerformanceSegment,
-} from './read-model/types'
+} from './type-definitions/runtime'
 
 const addSubSegment = (
   segment: PerformanceSegment | undefined,

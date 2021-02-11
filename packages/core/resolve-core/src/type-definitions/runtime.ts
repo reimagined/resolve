@@ -1,19 +1,50 @@
-import { ReadModelResolverMap } from './read-model/types'
+import { ReadModelResolverMap } from '../read-model/types'
+import { IS_BUILT_IN } from '../symbols'
 import {
+  Event,
   Deserializer,
   ReadModel,
   SagaEventHandlers,
   ViewModelProjection,
   ViewModelResolver,
-} from './core-types'
-
-import {
   Aggregate,
   AggregateEncryptionFactory,
   AggregateProjection,
   EventHandlerEncryptionFactory,
-} from './core-types'
-import { IS_BUILT_IN } from './symbols'
+} from './core'
+
+export type PerformanceSubsegment = {
+  addAnnotation: (name: string, data: any) => void
+  addError: (error: Error) => void
+  close: () => void
+}
+export type PerformanceSegment = {
+  addNewSubsegment: (name: string) => PerformanceSubsegment
+}
+
+export type PerformanceTracer = {
+  getSegment: () => PerformanceSegment
+}
+
+export type Monitoring = {
+  error?: (error: Error, part: string, meta: any) => Promise<void>
+  performance?: PerformanceTracer
+}
+
+export type Eventstore = {
+  saveEvent: (event: any) => Promise<void>
+  saveSnapshot: Function
+  getNextCursor: (cursor: any, events: Event[]) => Promise<any>
+  loadSnapshot: (snapshotKey: string) => Promise<string | null>
+  loadEvents: (param: {
+    aggregateIds: string[]
+    eventTypes?: string[]
+    cursor: null
+    limit: number
+  }) => Promise<{
+    events: any[]
+  }>
+}
 
 export type AggregateMeta = {
   name: string
@@ -51,22 +82,4 @@ export type ViewModelMeta = {
   resolver: ViewModelResolver
   encryption: EventHandlerEncryptionFactory
   invariantHash: string
-}
-
-export type Monitoring = {
-  error?: (error: Error, part: string, meta: any) => Promise<void>
-  performance?: PerformanceTracer
-}
-
-export type PerformanceSubsegment = {
-  addAnnotation: (name: string, data: any) => void
-  addError: (error: Error) => void
-  close: () => void
-}
-export type PerformanceSegment = {
-  addNewSubsegment: (name: string) => PerformanceSubsegment
-}
-
-export type PerformanceTracer = {
-  getSegment: () => PerformanceSegment
 }
