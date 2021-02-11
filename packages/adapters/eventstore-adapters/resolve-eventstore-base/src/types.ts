@@ -148,21 +148,25 @@ export type WrappedConnectOnDemandAndCall<
   ...args: RemoveFirstType<Parameters<M>>
 ) => Promise<PromiseResultType<ReturnType<M>>>
 
-export type WrapMethod<ConnectedProps extends AdapterPoolConnectedProps> = {
-  <
-    M extends (
-      pool: AdapterPoolPrimalProps & ConnectedProps,
-      ...args: any
-    ) => any
-  >(
-    pool: AdapterPoolPrimalProps & Partial<ConnectedProps>,
-    method: M
-  ): WrappedConnectOnDemandAndCall<ConnectedProps, M>
-  (
-    pool: AdapterPoolPrimalProps & Partial<ConnectedProps>,
-    method: undefined
-  ): null
-}
+type IfEquals<T, U, Y = unknown, N = never> = (<G>() => G extends T
+  ? 1
+  : 2) extends <G>() => G extends U ? 1 : 2
+  ? Y
+  : N
+
+export type WrapMethod<ConnectedProps extends AdapterPoolConnectedProps> = <
+  M extends
+    | undefined
+    | ((pool: AdapterPoolConnected<ConnectedProps>, ...args: any) => any)
+>(
+  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+  method: M
+) => IfEquals<
+  M,
+  undefined,
+  undefined,
+  WrappedConnectOnDemandAndCall<ConnectedProps, Exclude<M, undefined>>
+>
 
 export type WrapDispose<ConnectedProps extends AdapterPoolConnectedProps> = (
   pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
@@ -301,7 +305,7 @@ export interface Adapter {
   importEvents: (options?: Partial<ImportOptions>) => stream.Writable
   exportEvents: (options?: Partial<ExportOptions>) => stream.Readable
   getLatestEvent: (filter: EventFilter) => Promise<any>
-  saveEvent: (event: InputEvent) => Promise<any>
+  saveEvent: (event: InputEvent) => Promise<void>
   init: () => Promise<void>
   drop: () => Promise<void>
   dispose: () => Promise<void>

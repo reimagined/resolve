@@ -30,6 +30,6 @@ const wrapMethod = <ConnectedProps extends AdapterPoolConnectedProps>(
 ): any =>
   typeof method !== 'undefined'
     ? connectOnDemandAndCall.bind(null, pool, method)
-    : null
+    : undefined
 
 export default wrapMethod

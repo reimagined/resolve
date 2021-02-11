@@ -18,7 +18,7 @@ const connect = async (
     coercer,
   }: ConnectionDependencies,
   config: PostgresqlAdapterConfig
-): Promise<any> => {
+): Promise<void> => {
   const log = getLog('connect')
   log.debug('configuring postgres client')
 
