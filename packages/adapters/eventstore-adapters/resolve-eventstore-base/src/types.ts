@@ -1,6 +1,8 @@
-import { SecretsManager } from 'resolve-core'
+import { SecretsManager, Event } from 'resolve-core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
+
+export type InputEvent = Event
 
 export type CheckForResourceError = (errors: Error[]) => void
 
@@ -299,7 +301,7 @@ export interface Adapter {
   importEvents: (options?: Partial<ImportOptions>) => stream.Writable
   exportEvents: (options?: Partial<ExportOptions>) => stream.Readable
   getLatestEvent: (filter: EventFilter) => Promise<any>
-  saveEvent: (event: any) => Promise<any>
+  saveEvent: (event: InputEvent) => Promise<any>
   init: () => Promise<void>
   drop: () => Promise<void>
   dispose: () => Promise<void>
