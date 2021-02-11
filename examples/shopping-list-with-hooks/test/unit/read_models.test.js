@@ -10,37 +10,12 @@ import {
   SHOPPING_LIST_RENAMED,
 } from '../../common/event_types'
 
-const resetReadModel = async (
-  createConnector,
-  connectorOptions,
-  readModelName
-) => {
-  const adapter = createConnector(connectorOptions)
-  try {
-    const connection = await adapter.connect(readModelName)
-    await adapter.unsubscribe(connection, readModelName)
-    await adapter.subscribe(connection, readModelName, null, null)
-    await adapter.disconnect(connection, readModelName)
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.warn(error)
-  } finally {
-    await adapter.dispose()
-  }
-}
-
 describe('read-models', () => {
   describe('ShoppingLists', () => {
     const aggregateId = '00000000-0000-0000-0000-000000000000'
 
     let adapter = null
-
     beforeEach(async () => {
-      await resetReadModel(
-        createReadModelAdapter,
-        { databaseFile: ':memory:' },
-        'ShoppingLists'
-      )
       adapter = createReadModelAdapter({ databaseFile: ':memory:' })
     })
 
