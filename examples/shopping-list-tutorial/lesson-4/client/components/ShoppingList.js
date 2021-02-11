@@ -39,7 +39,7 @@ const ShoppingList = ({
   return (
     <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
       <FormLabel>Shopping list name</FormLabel>
-      <FormGroup bsSize="large">
+      <FormGroup bssize="large">
         <FormControl
           type="text"
           value={shoppingList.name}

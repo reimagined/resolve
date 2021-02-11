@@ -24,6 +24,7 @@
     "react-router-dom": "5.1.2",
     "resolve-eventstore-lite": "0.26.5",
     "resolve-eventstore-postgresql-serverless": "0.26.5",
+    "resolve-module-admin": "^0.26.5",
     "resolve-react-hooks": "0.26.5",
     "resolve-readmodel-lite": "0.26.5",
     "resolve-readmodel-postgresql-serverless": "0.26.5",

@@ -16158,6 +16158,18 @@ resolve-local-rpc@0.26.5:
   dependencies:
     "@babel/runtime" "7.9.6"
 
+resolve-module-admin@^0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-module-admin/-/resolve-module-admin-0.26.5.tgz#4ed35680600c66b0b8bb2a19d501772a59e1fcb1"
+  integrity sha512-ysP79Hfj5Lg+4D6ykpB2N2xep3IJOC2KdKvkq8KyIwCikLCbiT3Nk/qmTlGSCU59Rm2PIetHk2Lci6w3dPRupg==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    columnify "^1.5.4"
+    dateformat "^3.0.3"
+    isomorphic-fetch "3.0.0"
+    resolve-saga "0.26.5"
+    yargs "^14.0.0"
+
 resolve-options@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/resolve-options/-/resolve-options-1.1.0.tgz#32bb9e39c06d67338dc9378c0d6d6074566ad131"
