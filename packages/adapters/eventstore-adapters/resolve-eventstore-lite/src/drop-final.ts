@@ -11,7 +11,7 @@ const dropFinal = async ({
 
   if (memoryStore != null) {
     try {
-      await memoryStore.drop()
+      memoryStore.drop()
     } catch (e) {
       log.error(e.message)
       log.verbose(e.stack)
@@ -19,7 +19,7 @@ const dropFinal = async ({
     }
   }
 
-  log.debug(`finished dropping event store in ${databaseFile ?? ':memory:'}`)
+  log.debug(`finished dropping event store in ${databaseFile}`)
   return errors
 }
 
