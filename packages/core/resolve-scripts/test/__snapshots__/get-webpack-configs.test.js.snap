@@ -235,9 +235,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
     },
     \\"plugins\\": [
       {
-        \\"_options\\": {
-          \\"moduleExternals\\": false
-        }
+        \\"MODULE\\": \\"esm-webpack-plugin\\"
       }
     ]
   },
@@ -441,9 +439,30 @@ exports[`should make webpack configs for cloud mode 1`] = `
     },
     \\"externals\\": [
       null,
-      null,
-      null,
-      null
+      [
+        {
+          \\"modulesDir\\": \\"node_modules\\",
+          \\"whitelist\\": [
+            {}
+          ]
+        }
+      ],
+      [
+        {
+          \\"modulesDir\\": \\"../resolve-runtime/node_modules\\",
+          \\"whitelist\\": [
+            {}
+          ]
+        }
+      ],
+      [
+        {
+          \\"modulesDir\\": \\"../../../node_modules\\",
+          \\"whitelist\\": [
+            {}
+          ]
+        }
+      ]
     ],
     \\"plugins\\": [],
     \\"name\\": \\"Server cloud entry point\\",
@@ -652,15 +671,34 @@ exports[`should make webpack configs for cloud mode 1`] = `
     },
     \\"externals\\": [
       null,
-      null,
-      null,
-      null
+      [
+        {
+          \\"modulesDir\\": \\"node_modules\\",
+          \\"whitelist\\": [
+            {}
+          ]
+        }
+      ],
+      [
+        {
+          \\"modulesDir\\": \\"../resolve-runtime/node_modules\\",
+          \\"whitelist\\": [
+            {}
+          ]
+        }
+      ],
+      [
+        {
+          \\"modulesDir\\": \\"../../../node_modules\\",
+          \\"whitelist\\": [
+            {}
+          ]
+        }
+      ]
     ],
     \\"plugins\\": [
       {
-        \\"_options\\": {
-          \\"moduleExternals\\": false
-        }
+        \\"MODULE\\": \\"esm-webpack-plugin\\"
       }
     ],
     \\"name\\": \\"Shared server ESM chunks\\",
@@ -908,9 +946,7 @@ exports[`should make webpack configs for local mode 1`] = `
     },
     \\"plugins\\": [
       {
-        \\"_options\\": {
-          \\"moduleExternals\\": false
-        }
+        \\"MODULE\\": \\"esm-webpack-plugin\\"
       }
     ]
   },
@@ -1114,9 +1150,30 @@ exports[`should make webpack configs for local mode 1`] = `
     },
     \\"externals\\": [
       null,
-      null,
-      null,
-      null
+      [
+        {
+          \\"modulesDir\\": \\"node_modules\\",
+          \\"whitelist\\": [
+            {}
+          ]
+        }
+      ],
+      [
+        {
+          \\"modulesDir\\": \\"../resolve-runtime/node_modules\\",
+          \\"whitelist\\": [
+            {}
+          ]
+        }
+      ],
+      [
+        {
+          \\"modulesDir\\": \\"../../../node_modules\\",
+          \\"whitelist\\": [
+            {}
+          ]
+        }
+      ]
     ],
     \\"plugins\\": [],
     \\"name\\": \\"Server local entry point, local bus broker, local event store\\",
@@ -1326,15 +1383,34 @@ exports[`should make webpack configs for local mode 1`] = `
     },
     \\"externals\\": [
       null,
-      null,
-      null,
-      null
+      [
+        {
+          \\"modulesDir\\": \\"node_modules\\",
+          \\"whitelist\\": [
+            {}
+          ]
+        }
+      ],
+      [
+        {
+          \\"modulesDir\\": \\"../resolve-runtime/node_modules\\",
+          \\"whitelist\\": [
+            {}
+          ]
+        }
+      ],
+      [
+        {
+          \\"modulesDir\\": \\"../../../node_modules\\",
+          \\"whitelist\\": [
+            {}
+          ]
+        }
+      ]
     ],
     \\"plugins\\": [
       {
-        \\"_options\\": {
-          \\"moduleExternals\\": false
-        }
+        \\"MODULE\\": \\"esm-webpack-plugin\\"
       }
     ],
     \\"name\\": \\"Shared server ESM chunks\\",

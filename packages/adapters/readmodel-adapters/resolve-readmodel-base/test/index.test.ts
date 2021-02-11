@@ -107,6 +107,7 @@ test('resolve-readmodel-base should wrap descendant adapter', async () => {
     store,
     projection,
     buildStep,
+    eventstoreAdapter,
     getVacantTimeInMillis,
     provideLedger,
     getEncryption
