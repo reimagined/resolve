@@ -1,4 +1,3 @@
-import debugLevels from 'resolve-debug-levels'
 import createSqliteAdapter from 'resolve-eventstore-lite'
 import createPostgresqlServerlessAdapter from 'resolve-eventstore-postgresql-serverless'
 import { Adapter } from 'resolve-eventstore-base'
@@ -15,8 +14,6 @@ import {
   cloudResourceOptionsToAdapterConfig,
   makeTestEvent,
 } from '../eventstore-test-utils'
-
-const logger = debugLevels('resolve:eventstore:secrets')
 
 jest.setTimeout(jestTimeout())
 
@@ -106,7 +103,7 @@ describe('eventstore adapter secrets', () => {
   test('should correctly export secrets', async () => {
     const exportStream = await adapter.exportSecrets()
     const contents: string = await streamToString(exportStream)
-    const secrets = contents.split('\n').filter((line) => line.length != 0)
+    const secrets = contents.split('\n').filter((line) => line.length !== 0)
     expect(secrets).toHaveLength(countSecrets)
     const parsedSecret: any = JSON.parse(secrets[0])
     expect(parsedSecret.secret).toBeDefined()

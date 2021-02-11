@@ -1,4 +1,3 @@
-import debugLevels from 'resolve-debug-levels'
 import createSqliteAdapter from 'resolve-eventstore-lite'
 import createPostgresqlServerlessAdapter from 'resolve-eventstore-postgresql-serverless'
 import { Adapter } from 'resolve-eventstore-base'
