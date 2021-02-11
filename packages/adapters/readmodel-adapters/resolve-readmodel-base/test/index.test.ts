@@ -34,12 +34,10 @@ test('resolve-readmodel-base should wrap descendant adapter', async () => {
     delete: jest.fn().mockImplementation(async () => void 0),
   }
 
-  const adapterPool = {
-    eventstoreAdapter: {
-      loadEvents: jest.fn().mockResolvedValue({ cursor: 'CURSOR', events: [] }),
-      getNextCursor: jest.fn().mockReturnValue('CURSOR'),
-    },
-    performanceTracer: undefined,
+  const adapterPool = { performanceTracer: undefined }
+  const eventstoreAdapter = {
+    loadEvents: jest.fn().mockResolvedValue({ cursor: 'CURSOR', events: [] }),
+    getNextCursor: jest.fn().mockReturnValue('CURSOR'),
   }
 
   const adapterOptions = {
@@ -96,6 +94,7 @@ test('resolve-readmodel-base should wrap descendant adapter', async () => {
       store,
       projection,
       buildStep,
+      eventstoreAdapter,
       getVacantTimeInMillis,
       provideLedger,
       getEncryption

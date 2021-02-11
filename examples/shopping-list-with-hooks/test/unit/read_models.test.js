@@ -36,7 +36,11 @@ describe('read-models', () => {
     let adapter = null
 
     beforeEach(async () => {
-      await resetReadModel(createReadModelAdapter, { databaseFile: ':memory:' }, 'ShoppingLists')
+      await resetReadModel(
+        createReadModelAdapter,
+        { databaseFile: ':memory:' },
+        'ShoppingLists'
+      )
       adapter = createReadModelAdapter({ databaseFile: ':memory:' })
     })
 

@@ -13,8 +13,6 @@ describe('resolve-readmodel-postgresql-serverless', () => {
       awsSecretStoreArn: 'awsSecretStoreArn',
       databaseName: 'databaseName',
       tablePrefix: 'tablePrefix',
-      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      eventstoreAdapter: null! as any,
     })
   })
 

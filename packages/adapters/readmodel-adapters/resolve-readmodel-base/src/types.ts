@@ -156,12 +156,10 @@ export type EventstoreAdapterLike = {
 
 export type CommonAdapterPool = {
   performanceTracer?: PerformanceTracerLike
-  eventstoreAdapter: EventstoreAdapterLike
 }
 
 export type CommonAdapterOptions = {
   performanceTracer?: PerformanceTracerLike
-  eventstoreAdapter: EventstoreAdapterLike
 }
 
 export type ResolveStoreToStoreApi<
@@ -336,6 +334,7 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
     projection: Record<ReadModelEvent['type'], ProjectionMethod<AdapterPool>>,
     next: MethodNext,
+    eventstoreAdapter: EventstoreAdapterLike,
     getVacantTimeInMillis: MethodGetRemainingTime,
     provideLedger: MethodProvideLedger,
     getEncryption: MethodGetEncryption

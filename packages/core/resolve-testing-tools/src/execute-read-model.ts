@@ -5,7 +5,7 @@ export const executeReadModel = async ({
   createQuery,
   transformEvents,
   detectConnectorFeatures,
-  connectorModes
+  connectorModes,
 }: {
   promise: any
   createQuery: Function
@@ -19,11 +19,24 @@ export const executeReadModel = async ({
 
   let queryExecutor = null
   let performAcknowledge = null
-  const acknowledgePromise: Promise<any> = new Promise(resolve => {
+  const acknowledgePromise: Promise<any> = new Promise((resolve) => {
     performAcknowledge = async (result: any) => await resolve(result)
   })
 
   try {
+    const eventstoreAdapter = {
+      getSecretsManager: (): any => promise[symbol].secretsManager,
+      loadEvents: async () => ({
+        events: transformEvents(promise[symbol].events),
+        get cursor() {
+          throw new Error(
+            'Cursor should not be accessed from resolve-testing-tools'
+          )
+        },
+      }),
+      getNextCursor: () => 'SHIFT_CURSOR',
+    }
+
     queryExecutor = createQuery({
       viewModels: [],
       readModels: [
@@ -40,48 +53,57 @@ export const executeReadModel = async ({
       },
       getVacantTimeInMillis: () => 0x7fffffff,
       invokeEventBusAsync: async () => void 0,
-      eventstoreAdapter: {
-        getSecretsManager: (): any => promise[symbol].secretsManager,
-        loadEvents: async () => ({
-          events: transformEvents(promise[symbol].events),
-          get cursor() {
-            throw new Error('Cursor should not be accessed from resolve-testing-tools')
-          }
-        })
-      },
+      eventstoreAdapter,
       performAcknowledge,
     })
-    const isInlineLedger = (await detectConnectorFeatures(promise[symbol].adapter)) === connectorModes.INLINE_LEDGER_CONNECTOR
+    const isInlineLedger =
+      (await detectConnectorFeatures(promise[symbol].adapter)) ===
+      connectorModes.INLINE_LEDGER_CONNECTOR
     const errors = []
 
     try {
-      if(isInlineLedger) {
+      if (isInlineLedger) {
         await queryExecutor.subscribe({
           modelName: promise[symbol].name,
           subscriptionOptions: {
             eventTypes: null,
-            aggregateIds: null
-          }
+            aggregateIds: null,
+          },
         })
 
         await queryExecutor.build({
-          modelName: promise[symbol].name
+          modelName: promise[symbol].name,
         })
 
         await queryExecutor.build({
-          modelName: promise[symbol].name
+          modelName: promise[symbol].name,
         })
+
+        const status = await queryExecutor.status({
+          modelName: promise[symbol].name,
+        })
+        if (status.status === 'error') {
+          const error = new Error(
+            ...(Array.isArray(status.errors)
+              ? [status.errors.map((err: any) => err.message).join('\n')]
+              : [])
+          )
+          error.stack = Array.isArray(status.errors)
+            ? status.errors.map((err: any) => err.stack).join('\n')
+            : error.stack
+          throw error
+        }
       } else {
         await queryExecutor.sendEvents({
           modelName: promise[symbol].name,
           events: [{ type: 'Init' }],
         })
-    
+
         await queryExecutor.sendEvents({
           modelName: promise[symbol].name,
           events: transformEvents(promise[symbol].events),
         })
-    
+
         const {
           result: { error: projectionError },
         } = await acknowledgePromise
@@ -91,7 +113,7 @@ export const executeReadModel = async ({
           throw error
         }
       }
-    } catch(err) {
+    } catch (err) {
       errors.push(err)
     }
 
@@ -103,27 +125,27 @@ export const executeReadModel = async ({
         resolverArgs: promise[symbol].resolverArgs,
         jwt: promise[symbol].jwt,
       })
-    } catch(err) {
+    } catch (err) {
       errors.push(err)
     }
-    
+
     try {
-      if(isInlineLedger) {
+      if (isInlineLedger) {
         await queryExecutor.unsubscribe({
-          modelName: promise[symbol].name
+          modelName: promise[symbol].name,
         })
       } else {
         await queryExecutor.drop({
-          modelName: promise[symbol].name
+          modelName: promise[symbol].name,
         })
       }
-    } catch(err) {
+    } catch (err) {
       errors.push(err)
     }
-      
-    if(errors.length > 0) {
-      const error = new Error(errors.map(err => err.message).join('\n'))
-      error.stack = errors.map(err => err.stack).join('\n')
+
+    if (errors.length > 0) {
+      const error = new Error(errors.map((err) => err.message).join('\n'))
+      error.stack = errors.map((err) => err.stack).join('\n')
       throw error
     }
 

@@ -603,6 +603,7 @@ const build = doOperation.bind(
     connection,
     pool.readModel.projection,
     next.bind(null, pool, readModelName),
+    pool.eventstoreAdapter,
     pool.getVacantTimeInMillis,
     provideLedger.bind(null, pool, readModelName),
     getEncryption.bind(null, pool),

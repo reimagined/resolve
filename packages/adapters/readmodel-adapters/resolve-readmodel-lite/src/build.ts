@@ -32,13 +32,13 @@ const buildInit: (
   readModelName,
   store,
   projection,
-  next
+  next,
+  eventstoreAdapter
 ) => {
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
     inlineLedgerRunQuery,
-    eventstoreAdapter,
     fullJitter,
     escapeStr,
     ledgerTableNameAsId,
@@ -156,6 +156,7 @@ const buildEvents: (
   store,
   projection,
   next,
+  eventstoreAdapter,
   getVacantTimeInMillis,
   provideLedger,
   getEncryption
@@ -165,7 +166,6 @@ const buildEvents: (
   const {
     PassthroughError,
     inlineLedgerRunQuery,
-    eventstoreAdapter,
     fullJitter,
     escapeStr,
     ledgerTableNameAsId,
@@ -373,6 +373,7 @@ const build: ExternalMethods['build'] = async (
   store,
   projection,
   next,
+  eventstoreAdapter,
   getVacantTimeInMillis,
   provideLedger,
   getEncryption
@@ -512,6 +513,7 @@ const build: ExternalMethods['build'] = async (
       store,
       projection,
       next,
+      eventstoreAdapter,
       getVacantTimeInMillis,
       provideLedger,
       getEncryption

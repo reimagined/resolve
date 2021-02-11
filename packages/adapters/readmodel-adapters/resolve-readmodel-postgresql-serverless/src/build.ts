@@ -35,7 +35,8 @@ const buildInit: (
   readModelName,
   store,
   projection,
-  next
+  next,
+  eventstoreAdapter
 ) => {
   const pool = { ...basePool, ...currentPool }
   const {
@@ -45,7 +46,6 @@ const buildInit: (
     rdsDataService,
     inlineLedgerExecuteStatement,
     generateGuid,
-    eventstoreAdapter,
     escapeStr,
     databaseNameAsId,
     ledgerTableNameAsId,
@@ -172,6 +172,7 @@ export const buildEvents: (
   store,
   projection,
   next,
+  eventstoreAdapter,
   getVacantTimeInMillis,
   provideLedger,
   getEncryption
@@ -185,7 +186,6 @@ export const buildEvents: (
     rdsDataService,
     inlineLedgerExecuteStatement,
     generateGuid,
-    eventstoreAdapter,
     escapeStr,
     databaseNameAsId,
     ledgerTableNameAsId,
@@ -504,6 +504,7 @@ const build: ExternalMethods['build'] = async (
   store,
   projection,
   next,
+  eventstoreAdapter,
   getVacantTimeInMillis,
   provideLedger,
   getEncryption
@@ -618,6 +619,7 @@ const build: ExternalMethods['build'] = async (
       store,
       projection,
       next,
+      eventstoreAdapter,
       getVacantTimeInMillis,
       provideLedger,
       getEncryption

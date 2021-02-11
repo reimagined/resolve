@@ -100,10 +100,10 @@ const createAdapter = <
     }
   }
 
-  const { eventstoreAdapter, performanceTracer, ...adapterOptions } = options
+  const { performanceTracer, ...adapterOptions } = options
 
   const pool: BaseAdapterPool<AdapterPool> = {
-    commonAdapterPool: { performanceTracer, eventstoreAdapter },
+    commonAdapterPool: { performanceTracer },
     adapterPoolMap: new Map(),
     withPerformanceTracer,
     performanceTracer,

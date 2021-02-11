@@ -14,8 +14,6 @@ describe('resolve-readmodel-mysql', () => {
       user: 'customUser',
       password: 'customPassword',
       database: 'customDatabaseName',
-      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      eventstoreAdapter: null! as any,
     })
   })
 

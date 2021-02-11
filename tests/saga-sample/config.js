@@ -29,7 +29,7 @@ const devConfig = {
     default: {
       module: 'resolve-readmodel-lite',
       options: {
-        databaseFile: ':memory:'
+        databaseFile: ':memory:',
       },
     },
     /*

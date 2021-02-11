@@ -3,7 +3,7 @@ import createQuery, {
   INLINE_LEDGER_CONNECTOR,
   EMPTY_CONNECTOR,
   FULL_REGULAR_CONNECTOR,
-  FULL_XA_CONNECTOR
+  FULL_XA_CONNECTOR,
 } from 'resolve-query'
 import createCommand from 'resolve-command'
 import { SerializableMap, CommandResult } from 'resolve-core'
@@ -45,8 +45,8 @@ export default givenEvents.bind(null, {
     INLINE_LEDGER_CONNECTOR,
     EMPTY_CONNECTOR,
     FULL_REGULAR_CONNECTOR,
-    FULL_XA_CONNECTOR
-  }
+    FULL_XA_CONNECTOR,
+  },
 }) as (events: any[]) => GivenEventsContext
 
 export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =

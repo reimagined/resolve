@@ -14,10 +14,7 @@ const getReadModelConnector = async () => {
       fs.unlink(databaseFile, (err) => (!err ? resolve() : reject(err)))
     )
   }
-  const adapter = await createReadModelConnector({
-    eventstoreAdapter: null! as any,
-    databaseFile
-  })
+  const adapter = await createReadModelConnector({ databaseFile })
   return adapter
 }
 

@@ -36,8 +36,6 @@ describe('resolve-readmodel-lite', () => {
     describe(describeName, () => {
       beforeEach(() => {
         adapter = createReadModelAdapter({
-          //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          eventstoreAdapter: null! as any,
           databaseFile,
         })
       })

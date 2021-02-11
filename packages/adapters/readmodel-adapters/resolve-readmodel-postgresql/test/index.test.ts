@@ -11,8 +11,6 @@ describe('resolve-readmodel-postgresql-serverless', () => {
     adapter = createReadModelAdapter({
       databaseName: 'databaseName',
       tablePrefix: 'tablePrefix',
-      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      eventstoreAdapter: null! as any,
     })
   })
 
