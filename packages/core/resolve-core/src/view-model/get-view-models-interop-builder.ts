@@ -1,4 +1,4 @@
-import { ViewModelMeta } from '../types'
+import { ViewModelMeta } from '../types/runtime'
 import {
   ViewModelBuildContext,
   ViewModelBuildParams,

@@ -1,37 +1,5 @@
-import { SecretsManager, Event } from '../core-types'
-import { ViewModelSerializer } from '../types'
-
-export type Eventstore = {
-  getNextCursor: (cursor: any, events: Event[]) => Promise<any>
-  saveSnapshot: Function
-  loadSnapshot: (snapshotKey: string) => Promise<string | null>
-  loadEvents: (param: {
-    aggregateIds: string[]
-    eventTypes: string[]
-    cursor: null
-    limit: number
-  }) => Promise<{
-    events: any[]
-  }>
-}
-
-export type Monitoring = {
-  error?: (error: Error, part: string, meta: any) => Promise<void>
-  performance?: PerformanceTracer
-}
-
-export type PerformanceSubsegment = {
-  addAnnotation: (name: string, data: any) => void
-  addError: (error: Error) => void
-  close: () => void
-}
-export type PerformanceSegment = {
-  addNewSubsegment: (name: string) => PerformanceSubsegment
-}
-
-export type PerformanceTracer = {
-  getSegment: () => PerformanceSegment
-}
+import { SecretsManager } from '../types/core'
+import { Eventstore, Monitoring, ViewModelSerializer } from '../types/runtime'
 
 export type ViewModelBuildParams = {
   aggregateIds: string[]
