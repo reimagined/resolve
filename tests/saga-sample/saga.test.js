@@ -13,7 +13,6 @@ describe('Saga', () => {
     ({ name }) => name === 'UserConfirmation'
   )
   const { name: sagaName, source: sourceModule, connectorName } = currentSaga
-  const schedulerName = getSchedulersNamesBySagas([currentSaga])[0]
   const {
     module: connectorModule,
     options: connectorOptions,
@@ -28,6 +27,7 @@ describe('Saga', () => {
 
   describe('with sideEffects.isEnabled = true', () => {
     beforeEach(async () => {
+      process.env.RESOLVE_LAUNCH_ID = `${Date.now()}${Math.random()}`
       adapter = createConnector(connectorOptions)
       sagaWithAdapter = {
         handlers: source.handlers,
@@ -81,6 +81,7 @@ describe('Saga', () => {
 
   describe('with sideEffects.isEnabled = false', () => {
     beforeEach(async () => {
+      process.env.RESOLVE_LAUNCH_ID = `${Date.now()}${Math.random()}`
       adapter = createConnector(connectorOptions)
       sagaWithAdapter = {
         handlers: source.handlers,

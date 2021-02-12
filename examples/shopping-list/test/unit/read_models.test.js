@@ -10,7 +10,6 @@ import {
   SHOPPING_LIST_RENAMED,
 } from '../../common/event_types'
 
-
 describe('read-models', () => {
   describe('ShoppingLists', () => {
     const aggregateId = '00000000-0000-0000-0000-000000000000'

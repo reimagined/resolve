@@ -11,7 +11,6 @@ jest.setTimeout(1000 * 60 * 5)
 describe('Saga', () => {
   const currentSaga = config.sagas.find(({ name }) => name === 'UpdaterSaga')
   const { name: sagaName, source: sourceModule, connectorName } = currentSaga
-  const schedulerName = getSchedulersNamesBySagas([currentSaga])[0]
   const {
     module: connectorModule,
     options: connectorOptions,
