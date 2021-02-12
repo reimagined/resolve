@@ -493,7 +493,7 @@ $ curl -X POST \
 
 This lesson describes how to display a Read Model's data in the client browser. The code in this lesson uses the reSolve framework's **resolve-react-hooks** library to implement a frontend based on React with hooks.
 
-> Refer to the [Frontend](frontend.md) article for information on other tools that you can use to implement a frontend.
+Refer to the [Frontend](frontend.md) article for information on other tools that you can use to implement a frontend.
 
 ### Implement the Client Application
 
@@ -672,6 +672,8 @@ export default appConfig
 ```
 
 Run your application to view the result:
+
+![result](assets/tutorial/lesson3-result.png)
 
 ---
 
@@ -874,6 +876,8 @@ export default ShoppingList
 
 - [useViewModel](api-reference.md#useviewmodel)
 
+![List Items](assets/tutorial/lesson4-list-items.png)
+
 ### Implement Navigation
 
 Modify the **ShoppingLists** component's layout as shown below to render links to shopping lists.
@@ -901,6 +905,8 @@ const ShoppingLists = ({ lists }) => {
 }
 ```
 
+![List Items](assets/tutorial/lesson4-navigation.png) 
+
 Run the application and click a shopping list's name view the result. To test the View Model's reactiveness, keep the page opened and use the following console input to add a shopping list item:
 
 ```bash
@@ -912,8 +918,8 @@ curl -i http://localhost:3000/api/commands/ \
     "aggregateId": <your_shopping_list`s_aggregate_id>,
     "type": "createShoppingItem",
     "payload": {
-        "id": "1",
-        "text": "Milk"
+        "id": "5",
+        "text": "Bread"
     }
 }
 '
@@ -1087,7 +1093,7 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
     },
     (err, result) => {
       setShoppingListName('')
-      // A callback user to pass info about a newly created shopping list to the parren component.
+      // A callback user to pass info about a newly created shopping list to the parrent component.
       onCreateSuccess(err, result)
     }
   )
@@ -1134,6 +1140,8 @@ export default ShoppingListCreator
 ##### Used API:
 
 - [useCommand](api-reference.md#usecommand)
+
+![Shopping List Creator](assets/tutorial/lesson5-list-creator.png)
 
 You can render this component within 'MyLists' as shown below:
 
@@ -1192,7 +1200,7 @@ export default ShoppingListRemover
 
 - [useCommand](api-reference.md#usecommand)
 
-Add this component each item in the ShoppingLists component's layout:
+Add this component to each item in the ShoppingLists component's layout:
 
 **client/components/ShoppingLists.js**
 
@@ -1248,6 +1256,8 @@ const MyLists = () => {
   )
 }
 ```
+
+![Delete Shopping List](assets/tutorial/lesson5-delete.png)
 
 The code below demonstrates how to implement data editing for the ShoppingList component:
 
@@ -1421,4 +1431,4 @@ export default ShoppingListItem
 
 - [useCommand](api-reference.md#usecommand)
 
-Run the application to view the result.
+![Check List Item](assets/tutorial/lesson5-check-item.png)
