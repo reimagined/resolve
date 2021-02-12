@@ -1,5 +1,5 @@
 {
-  "name": "resolve-local-rpc",
+  "name": "@reimagined/resolve-local-rpc",
   "version": "0.26.5",
   "description": "The reSolve framework's rpc client/server on a local machine.",
   "keywords": [

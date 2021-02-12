@@ -1,5 +1,5 @@
 {
-  "name": "resolve-eventstore-lite",
+  "name": "@reimagined/resolve-eventstore-lite",
   "version": "0.26.5",
   "description": "An adapter reSolve uses to store events in a file or memory.",
   "keywords": [
@@ -19,15 +19,15 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=resolve-eventstore-lite",
     "test": "jest --config=../../../../jest.config.js --verbose",
-    "testw": "jest --config=../../../../jest.config.js --watchAll",
-    "build": "yarn workspace @internal/babel-compile start --name=resolve-eventstore-lite"
+    "testw": "jest --config=../../../../jest.config.js --watchAll"
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-core": "0.26.5",
-    "resolve-debug-levels": "0.26.5",
-    "resolve-eventstore-base": "0.26.5",
+    "@reimagined/resolve-core": "0.26.5",
+    "@reimagined/resolve-debug-levels": "0.26.5",
+    "@reimagined/resolve-eventstore-base": "0.26.5",
     "sqlite": "^3.0.2",
     "tmp": "^0.1.0"
   },

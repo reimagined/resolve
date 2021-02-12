@@ -1,5 +1,5 @@
 {
-  "name": "resolve-client",
+  "name": "@reimagined/resolve-client",
   "version": "0.26.5",
   "description": "Basic reSolve client.",
   "keywords": [
@@ -19,8 +19,8 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'",
     "build": "tsc",
+    "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'",
     "test": "jest --config=../../../jest.config.js --verbose",
     "test:e2e": "jest --config=./jest.func-config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
@@ -39,11 +39,11 @@
     "verbose": true
   },
   "dependencies": {
+    "@reimagined/resolve-core": "0.26.5",
     "global": "^4.4.0",
     "isomorphic-fetch": "3.0.0",
     "node-fetch": "^2.6.0",
-    "query-string": "6.13.8",
-    "resolve-core": "0.26.5"
+    "query-string": "6.13.8"
   },
   "devDependencies": {
     "@types/express": "^4.17.1",

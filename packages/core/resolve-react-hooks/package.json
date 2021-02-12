@@ -1,5 +1,5 @@
 {
-  "name": "resolve-react-hooks",
+  "name": "@reimagined/resolve-react-hooks",
   "version": "0.26.5",
   "description": "reSolve client wrapper for using in React hooks projects.",
   "keywords": [
@@ -38,8 +38,8 @@
     "verbose": true
   },
   "dependencies": {
-    "resolve-client": "0.26.5",
-    "resolve-core": "0.26.5"
+    "@reimagined/resolve-client": "0.26.5",
+    "@reimagined/resolve-core": "0.26.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.1.1",

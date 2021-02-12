@@ -1,5 +1,5 @@
 {
-  "name": "resolve-module-auth",
+  "name": "@reimagined/resolve-module-auth",
   "version": "0.26.5",
   "description": "A reSolve module that adds authentication to an application.",
   "keywords": [

@@ -16,19 +16,19 @@
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
+    "@reimagined/resolve-eventstore-lite": "0.26.5",
+    "@reimagined/resolve-eventstore-postgresql-serverless": "0.26.5",
+    "@reimagined/resolve-react-hooks": "0.26.5",
+    "@reimagined/resolve-readmodel-lite": "0.26.5",
+    "@reimagined/resolve-readmodel-postgresql-serverless": "0.26.5",
+    "@reimagined/resolve-scripts": "0.26.5",
     "history": "4.10.1",
     "react": "16.13.1",
     "react-bootstrap": "1.4.0",
     "react-dom": "16.13.1",
     "react-helmet": "6.0.0",
     "react-router": "5.1.2",
-    "react-router-dom": "5.1.2",
-    "resolve-eventstore-lite": "0.26.5",
-    "resolve-eventstore-postgresql-serverless": "0.26.5",
-    "resolve-react-hooks": "0.26.5",
-    "resolve-readmodel-lite": "0.26.5",
-    "resolve-readmodel-postgresql-serverless": "0.26.5",
-    "resolve-scripts": "0.26.5"
+    "react-router-dom": "5.1.2"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",

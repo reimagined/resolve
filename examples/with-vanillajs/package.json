@@ -16,14 +16,14 @@
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
+    "@reimagined/resolve-client": "0.26.5",
+    "@reimagined/resolve-eventstore-lite": "0.26.5",
+    "@reimagined/resolve-eventstore-postgresql-serverless": "0.26.5",
+    "@reimagined/resolve-readmodel-lite": "0.26.5",
+    "@reimagined/resolve-readmodel-postgresql-serverless": "0.26.5",
+    "@reimagined/resolve-runtime": "0.26.5",
+    "@reimagined/resolve-scripts": "0.26.5",
     "domready": "1.0.8",
-    "resolve-client": "0.26.5",
-    "resolve-eventstore-lite": "0.26.5",
-    "resolve-eventstore-postgresql-serverless": "0.26.5",
-    "resolve-readmodel-lite": "0.26.5",
-    "resolve-readmodel-postgresql-serverless": "0.26.5",
-    "resolve-runtime": "0.26.5",
-    "resolve-scripts": "0.26.5",
     "unfetch": "4.1.0"
   },
   "devDependencies": {

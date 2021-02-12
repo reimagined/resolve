@@ -1,5 +1,5 @@
 {
-  "name": "resolve-module-admin",
+  "name": "@reimagined/resolve-module-admin",
   "version": "0.26.5",
   "description": "A reSolve module that adds admin commands to an application.",
   "keywords": [
