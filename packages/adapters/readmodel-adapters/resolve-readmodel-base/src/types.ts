@@ -332,12 +332,14 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     pool: AdapterPool,
     readModelName: string,
     store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
-    projection: Record<ReadModelEvent['type'], ProjectionMethod<AdapterPool>>,
+    modelInterop: {
+      acquireInitHandler: (store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>) => () => Promise<void>,
+      acquireEventHandler: (store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>, event: ReadModelEvent) => () => Promise<void>,
+    },
     next: MethodNext,
     eventstoreAdapter: EventstoreAdapterLike,
     getVacantTimeInMillis: MethodGetRemainingTime,
-    provideLedger: MethodProvideLedger,
-    getEncryption: MethodGetEncryption
+    provideLedger: MethodProvideLedger
   ): Promise<void>
 }
 

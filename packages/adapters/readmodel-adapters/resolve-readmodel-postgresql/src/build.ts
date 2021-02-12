@@ -68,8 +68,7 @@ const buildInit: (
   try {
     const handler = await modelInterop.acquireInitHandler(store)
     if (handler != null) {
-      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await handler(null! as ReadModelEvent)
+      await handler()
     }
 
     await inlineLedgerRunQuery(
