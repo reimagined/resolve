@@ -28,17 +28,41 @@ describe('buildEvents', () => {
       update: jest.fn(),
     }
 
-    const projection: Parameters<typeof buildEvents>[4] = {
-      ITEM_CREATED: async (store, event, encryption) => {
-        const aggregateId = event.aggregateId
-        const value = (event.payload as { value: string }).value
-        //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const decrypt = encryption!.decrypt
-        const item = {
-          value: decrypt<string, string>(value),
-        }
+    const encrypt = jest.fn()
+    const decrypt = jest.fn()
+    const getEncryption = () => ({ encrypt, decrypt })
+    const PassthroughError = Error
+    const provideLedger = jest.fn()
 
-        await store.insert('TableName', { aggregateId, ...item })
+    const projection: Parameters<typeof buildEvents>[4] = {
+      acquireInitHandler: (
+        ...args: Parameters<
+          Parameters<typeof buildEvents>[4]['acquireInitHandler']
+        >
+      ) => async () => {
+        void args
+      },
+
+      acquireEventHandler: (
+        store: Parameters<
+          Parameters<typeof buildEvents>[4]['acquireEventHandler']
+        >[0],
+        event: Parameters<
+          Parameters<typeof buildEvents>[4]['acquireEventHandler']
+        >[1]
+      ) => {
+        const encryption = getEncryption()
+        return async () => {
+          const aggregateId = event.aggregateId
+          const value = (event.payload as { value: string }).value
+          //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const decrypt = encryption!.decrypt
+          const item = {
+            value: decrypt(value),
+          }
+
+          await store.insert('TableName', { aggregateId, ...item })
+        }
       },
     }
 
@@ -61,12 +85,6 @@ describe('buildEvents', () => {
         .mockReturnValue(Promise.resolve({ transactionId: 'transactionId' })),
       commitTransaction: jest.fn().mockReturnValue(Promise.resolve()),
     }
-
-    const encrypt = jest.fn()
-    const decrypt = jest.fn()
-    const getEncryption = () => () => ({ encrypt, decrypt })
-    const PassthroughError = Error
-    const provideLedger = jest.fn()
 
     try {
       await buildEvents(
@@ -95,8 +113,7 @@ describe('buildEvents', () => {
         next,
         eventstoreAdapter,
         getVacantTimeInMillis,
-        provideLedger,
-        getEncryption
+        provideLedger
       )
       throw new Error('Test failed')
     } catch (error) {

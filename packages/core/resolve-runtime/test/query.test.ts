@@ -20,6 +20,13 @@ let invokeEventBusAsync: any = null
 let getVacantTimeInMillis: any = null
 let performAcknowledge: any = null
 
+const eventstoreAdapter = {
+  loadEvents: jest
+    .fn()
+    .mockImplementation(async () => ({ events: [], cursor: 'NEXT_CURSOR' })),
+  getNextCursor: jest.fn().mockImplementation(() => 'NEXT_CURSOR'),
+}
+
 for (const { describeName, prepare } of [
   {
     describeName: 'with performanceTracer',
@@ -115,6 +122,7 @@ for (const { describeName, prepare } of [
           provideLedger,
           readModelsInterop,
           viewModelsInterop,
+          eventstoreAdapter,
         })
       })
 
@@ -316,6 +324,7 @@ for (const { describeName, prepare } of [
           performAcknowledge,
           readModelsInterop,
           viewModelsInterop: {},
+          eventstoreAdapter,
           provideLedger,
         })
       })
@@ -469,6 +478,7 @@ for (const { describeName, prepare } of [
           monitoring,
           readModelsInterop,
           viewModelsInterop,
+          eventstoreAdapter,
           provideLedger,
         })
 
@@ -898,6 +908,7 @@ for (const { describeName, prepare } of [
               serialize: (val) => val.toString(),
             },
           },
+          eventstoreAdapter,
           provideLedger,
         })
 

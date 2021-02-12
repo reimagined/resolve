@@ -51,16 +51,26 @@ test('resolve-readmodel-base should wrap descendant adapter', async () => {
 
   const getVacantTimeInMillis = jest.fn().mockReturnValue(15000)
   const provideLedger = jest.fn()
-  const getEncryption = jest.fn()
 
-  const projection: Parameters<typeof adapter.build>[3] = {
-    async Init(store) {
+  const modelInterop: Parameters<typeof adapter.build>[3] = {
+    acquireInitHandler: (
+      store: Parameters<
+        Parameters<typeof adapter.build>[3]['acquireInitHandler']
+      >[0]
+    ) => async () => {
       await store.defineTable('TableName', {
         indexes: { id: 'number' },
         fields: [],
       })
     },
-    async EventType(store, event) {
+    acquireEventHandler: (
+      store: Parameters<
+        Parameters<typeof adapter.build>[3]['acquireEventHandler']
+      >[0],
+      event: Parameters<
+        Parameters<typeof adapter.build>[3]['acquireEventHandler']
+      >[1]
+    ) => async () => {
       await store.count('TableName', { key: 'value' })
       await store.findOne('TableName', { key: 'value' })
       await store.find('TableName', { key: 'value' })
@@ -71,6 +81,7 @@ test('resolve-readmodel-base should wrap descendant adapter', async () => {
         { $set: { key: 'value' } }
       )
       await store.delete('TableName', { key: 'value' })
+      void event
     },
   }
 
@@ -92,12 +103,11 @@ test('resolve-readmodel-base should wrap descendant adapter', async () => {
       store,
       readModelName,
       store,
-      projection,
+      modelInterop,
       buildStep,
       eventstoreAdapter,
       getVacantTimeInMillis,
-      provideLedger,
-      getEncryption
+      provideLedger
     )
   })
   await buildStep()
@@ -105,16 +115,14 @@ test('resolve-readmodel-base should wrap descendant adapter', async () => {
     adapterPool,
     readModelName,
     store,
-    projection,
+    modelInterop,
     buildStep,
     eventstoreAdapter,
     getVacantTimeInMillis,
-    provideLedger,
-    getEncryption
+    provideLedger
   )
 
-  //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  await projection.Init(store, null! as any)
+  await modelInterop.acquireInitHandler(store)()
   expect(implementation.defineTable).toBeCalledWith(
     adapterPool,
     readModelName,
@@ -123,7 +131,7 @@ test('resolve-readmodel-base should wrap descendant adapter', async () => {
   )
 
   //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  await projection.EventType(store, null! as any)
+  await modelInterop.acquireEventHandler(store, null! as any)()
   expect(implementation.count).toBeCalledWith(
     adapterPool,
     readModelName,
