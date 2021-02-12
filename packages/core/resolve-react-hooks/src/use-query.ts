@@ -1,8 +1,8 @@
-import { Query, QueryOptions, QueryResult, QueryCallback } from 'resolve-client'
+import { Query, QueryOptions, QueryResult, QueryCallback } from '@reimagined/client'
 import { useCallback } from 'react'
 import { HookExecutor, isCallback, isDependencies, isOptions } from './generic'
 import { useClient } from './use-client'
-import { firstOfType } from 'resolve-core'
+import { firstOfType } from '@reimagined/core'
 
 export type QueryBuilder<TArgs extends any[], TQuery extends Query> = (
   ...data: TArgs

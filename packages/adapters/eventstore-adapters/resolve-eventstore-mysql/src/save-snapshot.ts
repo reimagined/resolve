@@ -1,4 +1,4 @@
-import { snapshotTrigger } from 'resolve-eventstore-base'
+import { snapshotTrigger } from '@reimagined/eventstore-base'
 import getLog from './get-log'
 
 const saveSnapshot = async (

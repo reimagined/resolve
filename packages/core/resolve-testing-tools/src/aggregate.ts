@@ -2,7 +2,7 @@ import {
   Aggregate,
   AggregateEncryptionFactory,
   AggregateProjection,
-} from 'resolve-core'
+} from '@reimagined/core'
 import { symbol, Phases } from './constants'
 import { BDDAggregateAssertion } from './aggregate-assertions'
 

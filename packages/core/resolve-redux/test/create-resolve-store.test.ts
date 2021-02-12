@@ -1,7 +1,7 @@
 import { mocked } from 'ts-jest/utils'
 import { v4 as uuid } from 'uuid'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
-import { Context } from 'resolve-client'
+import { Context } from '@reimagined/client'
 import deserializeInitialState from '../src/internal/deserialize-initial-state'
 import createResolveMiddleware from '../src/create-resolve-middleware'
 import { reducer as viewModelReducer } from '../src/view-model/view-model-reducer'

@@ -1,6 +1,6 @@
 import { INT8_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'
-import { CursorFilter } from 'resolve-eventstore-base'
+import { CursorFilter } from '@reimagined/eventstore-base'
 
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 

@@ -6,7 +6,7 @@ import { Client, getClient } from '../../src/client'
 import { Context } from '../../src/context'
 import { NarrowedResponse, request, VALIDATED_RESULT } from '../../src/request'
 import { ViewModel, ViewModelDeserializer } from '../../src/types'
-import { IS_BUILT_IN } from 'resolve-core'
+import { IS_BUILT_IN } from '@reimagined/core'
 
 jest.mock('../../src/request', () => ({
   request: jest.fn(),

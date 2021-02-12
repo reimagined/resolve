@@ -1,4 +1,4 @@
-import { IS_BUILT_IN } from 'resolve-core'
+import { IS_BUILT_IN } from '@reimagined/core'
 
 function deserializeState(state) {
   return JSON.parse(state)

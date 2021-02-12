@@ -1,6 +1,6 @@
 import MySQL from 'mysql2/promise'
 import { escapeId, escape } from 'mysql2'
-import _createAdapter from 'resolve-readmodel-base'
+import _createAdapter from '@reimagined/readmodel-base'
 
 import beginTransaction from './begin-transaction'
 import buildUpsertDocument from './build-upsert-document'

@@ -1,4 +1,4 @@
-import { ViewModelQuery } from 'resolve-client'
+import { ViewModelQuery } from '@reimagined/client'
 import { ReduxState } from '../types'
 import { getEntry } from './view-model-reducer'
 import { useSelector } from 'react-redux'

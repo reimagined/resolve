@@ -1,4 +1,4 @@
-import debugLevels from 'resolve-debug-levels'
+import debugLevels from '@reimagined/debug-levels'
 
 import extractErrorHttpCode from '../utils/extract-error-http-code'
 import extractRequestBody from '../utils/extract-request-body'

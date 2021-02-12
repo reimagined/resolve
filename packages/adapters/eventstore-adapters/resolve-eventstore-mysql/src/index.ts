@@ -1,7 +1,7 @@
 import MySQL from 'mysql2/promise'
 import { escape, escapeId } from 'mysql2'
 
-import createAdapter from 'resolve-eventstore-base'
+import createAdapter from '@reimagined/eventstore-base'
 
 import loadEventsByCursor from './load-events-by-cursor'
 import loadEventsByTimestamp from './load-events-by-timestamp'
@@ -31,7 +31,7 @@ import dropEvents from './drop-events'
 import dropSecrets from './drop-secrets'
 import dropFinal from './drop-final'
 
-import type { Adapter } from 'resolve-eventstore-base'
+import type { Adapter } from '@reimagined/eventstore-base'
 import type { ConnectionDependencies, MysqlAdapterConfig } from './types'
 
 const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {

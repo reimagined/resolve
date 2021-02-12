@@ -3,7 +3,7 @@ import type {
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
   AdapterConfig,
-} from 'resolve-eventstore-base'
+} from '@reimagined/eventstore-base'
 
 export type MySQLConnection = {
   execute: (sql: string) => Promise<never>

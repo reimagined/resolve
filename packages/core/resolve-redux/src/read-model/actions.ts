@@ -7,7 +7,7 @@ import {
   DISCONNECT_READMODEL,
   INIT_READMODEL,
 } from '../internal/action-types'
-import { ReadModelQuery } from 'resolve-client'
+import { ReadModelQuery } from '@reimagined/client'
 
 export type ReadModelAction = {
   query: ReadModelQuery

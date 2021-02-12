@@ -1,5 +1,5 @@
 import { AnyAction } from 'redux'
-import { QueryOptions, ViewModelQuery } from 'resolve-client'
+import { QueryOptions, ViewModelQuery } from '@reimagined/client'
 import {
   viewModelEventReceived,
   ViewModelEventReceivedAction,
@@ -9,7 +9,7 @@ import {
 import { ReduxState, ViewModelReactiveEvent } from '../types'
 import { isOptions } from '../helpers'
 import { useDispatch } from 'react-redux'
-import { useViewModel } from 'resolve-react-hooks'
+import { useViewModel } from '@reimagined/react-hooks'
 import { useCallback, useMemo, useRef } from 'react'
 import { getEntry } from './view-model-reducer'
 

@@ -1,4 +1,4 @@
-import { SerializableMap } from 'resolve-core'
+import { SerializableMap } from '@reimagined/core'
 
 export type HookExecutor<TData extends any[], TResult> = (
   ...data: TData

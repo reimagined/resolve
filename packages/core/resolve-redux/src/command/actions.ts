@@ -1,4 +1,4 @@
-import { Command } from 'resolve-client'
+import { Command } from '@reimagined/client'
 import {
   SEND_COMMAND_FAILURE,
   SEND_COMMAND_REQUEST,

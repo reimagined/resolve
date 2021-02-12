@@ -1,4 +1,4 @@
-import { useOriginResolver } from 'resolve-react-hooks'
+import { useOriginResolver } from '@reimagined/react-hooks'
 import createContextBasedConnector from './create-context-based-connector'
 
 const connectRootBasedUrls = createContextBasedConnector(useOriginResolver)

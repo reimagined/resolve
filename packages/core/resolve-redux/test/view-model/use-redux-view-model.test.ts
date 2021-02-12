@@ -1,8 +1,8 @@
-import { ViewModelQuery } from 'resolve-client'
+import { ViewModelQuery } from '@reimagined/client'
 import { mocked } from 'ts-jest/utils'
 import { useDispatch } from 'react-redux'
 import { renderHook } from '@testing-library/react-hooks'
-import { useViewModel } from 'resolve-react-hooks'
+import { useViewModel } from '@reimagined/react-hooks'
 import {
   viewModelEventReceived,
   viewModelStateUpdate,

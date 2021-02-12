@@ -1,7 +1,7 @@
 import {
   EventstoreResourceAlreadyExistError,
   EventstoreResourceNotExistError,
-} from 'resolve-eventstore-base'
+} from '@reimagined/eventstore-base'
 import {
   PublisherResourceAlreadyExistError,
   PublisherResourceNotExistError,

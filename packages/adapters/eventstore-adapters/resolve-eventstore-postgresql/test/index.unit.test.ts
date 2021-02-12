@@ -2,7 +2,7 @@
 import { Client as Postgres } from 'pg'
 import { mocked } from 'ts-jest/utils'
 /* eslint-enable import/no-extraneous-dependencies */
-import genericCreateAdapter from 'resolve-eventstore-base'
+import genericCreateAdapter from '@reimagined/eventstore-base'
 
 import loadEventsByCursor from '../src/load-events-by-cursor'
 import loadEventsByTimestamp from '../src/load-events-by-timestamp'

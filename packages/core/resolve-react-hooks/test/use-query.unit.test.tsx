@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
-import { Query, QueryCallback, QueryOptions } from 'resolve-client'
+import { Query, QueryCallback, QueryOptions } from '@reimagined/client'
 import { useClient } from '../src/use-client'
 import { useQuery } from '../src/use-query'
 

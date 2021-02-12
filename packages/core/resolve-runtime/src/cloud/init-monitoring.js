@@ -1,4 +1,4 @@
-import debugLevels from 'resolve-debug-levels'
+import debugLevels from '@reimagined/debug-levels'
 
 import {
   putCommandMetrics,

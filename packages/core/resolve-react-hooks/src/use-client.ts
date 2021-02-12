@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react'
-import { Client, getClient } from 'resolve-client'
+import { Client, getClient } from '@reimagined/client'
 import { assertContext, ResolveContext } from './context'
 
 const useClient = (): Client => {

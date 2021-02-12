@@ -3,7 +3,7 @@ import type {
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
   AdapterConfig,
-} from 'resolve-eventstore-base'
+} from '@reimagined/eventstore-base'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 

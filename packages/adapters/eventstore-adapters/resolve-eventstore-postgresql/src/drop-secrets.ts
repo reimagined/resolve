@@ -1,4 +1,4 @@
-import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
+import { EventstoreResourceNotExistError } from '@reimagined/eventstore-base'
 import getLog from './get-log'
 import { AdapterPool } from './types'
 import executeSequence from './execute-sequence'

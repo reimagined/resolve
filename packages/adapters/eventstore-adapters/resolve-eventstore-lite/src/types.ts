@@ -4,7 +4,7 @@ import type {
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
   AdapterConfig,
-} from 'resolve-eventstore-base'
+} from '@reimagined/eventstore-base'
 
 export type SqliteOpen = typeof open
 

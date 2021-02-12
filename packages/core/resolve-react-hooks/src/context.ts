@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { Context } from 'resolve-client'
+import { Context } from '@reimagined/client'
 
 export const ResolveContext = createContext<Context | null>(null)
 

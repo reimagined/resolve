@@ -1,3 +1,3 @@
-import getLog from 'resolve-debug-levels'
+import getLog from '@reimagined/debug-levels'
 
 export default (scope: string) => getLog(`resolve:resolve-command:${scope}`)

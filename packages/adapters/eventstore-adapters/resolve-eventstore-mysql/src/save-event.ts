@@ -1,4 +1,4 @@
-import { ConcurrentError } from 'resolve-eventstore-base'
+import { ConcurrentError } from '@reimagined/eventstore-base'
 
 import {
   ER_DUP_ENTRY,

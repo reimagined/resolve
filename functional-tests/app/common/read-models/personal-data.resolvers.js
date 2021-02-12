@@ -1,4 +1,4 @@
-import { HttpError } from 'resolve-client'
+import { HttpError } from '@reimagined/client'
 
 export default {
   get: async (store, { userId }) => {

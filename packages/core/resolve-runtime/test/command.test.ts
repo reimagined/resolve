@@ -1,4 +1,4 @@
-import { AggregatesInterop, Command, CommandError } from 'resolve-core'
+import { AggregatesInterop, Command, CommandError } from '@reimagined/core'
 import createCommandExecutor, {
   CommandExecutor,
 } from '../../resolve-runtime/src/common/command'

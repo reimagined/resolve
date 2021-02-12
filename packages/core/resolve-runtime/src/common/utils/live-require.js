@@ -1,5 +1,5 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import debugLevels from 'resolve-debug-levels'
+import debugLevels from '@reimagined/debug-levels'
 import path from 'path'
 
 import entryPointMarker from './entry-point-marker'

@@ -1,4 +1,4 @@
-import { ViewModelInterop } from 'resolve-core'
+import { ViewModelInterop } from '@reimagined/core'
 
 import { WrapViewModelOptions, ViewModelPool } from './types'
 import parseReadOptions from './parse-read-options'

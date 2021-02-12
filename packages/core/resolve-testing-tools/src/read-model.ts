@@ -1,5 +1,5 @@
 import { symbol, Phases } from './constants'
-import { EventHandlerEncryptionFactory } from 'resolve-core'
+import { EventHandlerEncryptionFactory } from '@reimagined/core'
 export interface ReadModelParams {
   name: string
   projection: any

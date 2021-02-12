@@ -1,6 +1,6 @@
 import 'source-map-support/register'
-import debugLevels from 'resolve-debug-levels'
-import { initDomain } from 'resolve-core'
+import debugLevels from '@reimagined/debug-levels'
+import { initDomain } from '@reimagined/core'
 
 import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'

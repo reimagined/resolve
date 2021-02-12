@@ -1,8 +1,8 @@
-import { QueryCallback, ReadModelQuery } from 'resolve-client'
+import { QueryCallback, ReadModelQuery } from '@reimagined/client'
 import { mocked } from 'ts-jest/utils'
 import { useDispatch } from 'react-redux'
 import { renderHook, act } from '@testing-library/react-hooks'
-import { useQueryBuilder } from 'resolve-react-hooks'
+import { useQueryBuilder } from '@reimagined/react-hooks'
 import {
   initReadModel,
   queryReadModelFailure,

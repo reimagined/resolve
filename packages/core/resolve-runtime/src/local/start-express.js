@@ -2,7 +2,7 @@ import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 import bootstrap from '../common/bootstrap'
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
-import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
+import { EventstoreResourceAlreadyExistError } from '@reimagined/eventstore-base'
 import { PublisherResourceAlreadyExistError } from 'resolve-local-event-broker'
 
 const host = '0.0.0.0'

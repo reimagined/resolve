@@ -2,7 +2,7 @@
 import MySQL from 'mysql2/promise'
 import { escape, escapeId } from 'mysql2'
 import { mocked } from 'ts-jest/utils'
-import genericCreateAdapter from 'resolve-eventstore-base'
+import genericCreateAdapter from '@reimagined/eventstore-base'
 /* eslint-enable import/no-extraneous-dependencies */
 
 import loadEventsByCursor from '../src/load-events-by-cursor'

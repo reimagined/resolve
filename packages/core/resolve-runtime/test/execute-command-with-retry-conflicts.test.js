@@ -1,4 +1,4 @@
-import { ConcurrentError } from 'resolve-eventstore-base'
+import { ConcurrentError } from '@reimagined/eventstore-base'
 import { CommandError } from '../src/common/command'
 import { executeCommandWithRetryConflicts } from '../src/common/handlers/command-handler'
 

@@ -1,4 +1,4 @@
-import { CommandCallback, CommandOptions, Command } from 'resolve-client'
+import { CommandCallback, CommandOptions, Command } from '@reimagined/client'
 import { CommandBuilder, CommandExecutor, useCommand } from './use-command'
 
 function useCommandBuilder<TArgs extends any[], TCmd extends Command>(

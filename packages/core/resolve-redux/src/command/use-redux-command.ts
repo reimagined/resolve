@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
 import { AnyAction } from 'redux'
 import { useDispatch } from 'react-redux'
-import { firstOfType } from 'resolve-core'
+import { firstOfType } from '@reimagined/core'
 import {
   Command,
   CommandResult,
   CommandOptions,
   CommandCallback,
-} from 'resolve-client'
-import { useCommandBuilder, CommandBuilder } from 'resolve-react-hooks'
+} from '@reimagined/client'
+import { useCommandBuilder, CommandBuilder } from '@reimagined/react-hooks'
 import { isDependencies, isOptions } from '../helpers'
 import {
   sendCommandFailure,

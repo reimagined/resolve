@@ -7,7 +7,7 @@ import {
   ReadModelInterop,
   ViewModelInteropMap,
   ViewModelInterop,
-} from 'resolve-core'
+} from '@reimagined/core'
 
 export type CreateQueryOptions = {
   invokeEventBusAsync: Function

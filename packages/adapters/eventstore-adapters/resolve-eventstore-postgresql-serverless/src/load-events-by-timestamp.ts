@@ -2,7 +2,7 @@ import {
   TimestampFilter,
   throwBadCursor,
   EventsWithCursor,
-} from 'resolve-eventstore-base'
+} from '@reimagined/eventstore-base'
 import { RESPONSE_SIZE_LIMIT } from './constants'
 import { AdapterPool } from './types'
 

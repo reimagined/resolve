@@ -1,4 +1,4 @@
-import { HttpError } from 'resolve-client'
+import { HttpError } from '@reimagined/client'
 import {
   TEST_SCENARIO_RETRY_ON_ERROR_UNBLOCKED,
   TEST_SCENARIO_EXECUTED,

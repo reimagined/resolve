@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
-import { getClient } from 'resolve-client'
+import { getClient } from '@reimagined/client'
 import { createRenderer } from 'vue-server-renderer'
 import App from './App.vue'
 

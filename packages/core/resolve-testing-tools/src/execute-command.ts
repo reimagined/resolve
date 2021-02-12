@@ -3,7 +3,7 @@ import {
   Event,
   SerializableMap,
   initDomain,
-} from 'resolve-core'
+} from '@reimagined/core'
 import { CommandExecutorBuilder, CommandExecutor } from 'resolve-runtime'
 import { Phases, symbol } from './constants'
 import { BDDAggregate } from './aggregate'

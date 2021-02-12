@@ -37,7 +37,7 @@ yarn add resolve-debug-levels
 To create a logger, pass your module's debugging namespace to the function the `resolve-debug-levels` module exposes:
 
 ```js
-import debugLevels from 'resolve-debug-levels'
+import debugLevels from '@reimagined/debug-levels'
 const log = debugLevels('myapp:api-handlers')
 ...
 ```

@@ -1,4 +1,4 @@
-import { HttpError } from 'resolve-client'
+import { HttpError } from '@reimagined/client'
 
 const makeScenariosQuery = (name, ids) => {
   const query = { name }

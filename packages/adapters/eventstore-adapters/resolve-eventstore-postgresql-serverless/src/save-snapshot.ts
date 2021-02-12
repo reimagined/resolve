@@ -1,5 +1,5 @@
 import getLog from './get-log'
-import { snapshotTrigger } from 'resolve-eventstore-base'
+import { snapshotTrigger } from '@reimagined/eventstore-base'
 import { SAVE_CHUNK_SIZE } from './constants'
 import { AdapterPool } from './types'
 

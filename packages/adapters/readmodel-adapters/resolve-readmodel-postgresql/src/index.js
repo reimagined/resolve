@@ -1,4 +1,4 @@
-import _createAdapter from 'resolve-readmodel-base'
+import _createAdapter from '@reimagined/readmodel-base'
 import { Client as Postgres } from 'pg'
 
 import beginTransaction from './begin-transaction'

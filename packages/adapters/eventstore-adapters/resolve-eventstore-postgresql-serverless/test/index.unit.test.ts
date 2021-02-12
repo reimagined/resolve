@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 import { mocked } from 'ts-jest/utils'
-import genericCreateAdapter from 'resolve-eventstore-base'
+import genericCreateAdapter from '@reimagined/eventstore-base'
 /* eslint-enable import/no-extraneous-dependencies */
 
 import loadEventsByCursor from '../src/load-events-by-cursor'

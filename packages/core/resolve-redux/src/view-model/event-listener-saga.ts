@@ -1,7 +1,7 @@
 import { call, take, cancelled } from 'redux-saga/effects'
 
 import { RootSagaArgs } from '../types'
-import { ViewModelQuery } from 'resolve-client'
+import { ViewModelQuery } from '@reimagined/client'
 import { viewModelStateUpdate } from './actions'
 
 type EventListenerSagaArgs = {

@@ -3,7 +3,7 @@ import {
   Client,
   createRetryOnErrorMiddleware,
   QueryResult,
-} from 'resolve-client'
+} from '@reimagined/client'
 import { getClient } from '../../utils/utils'
 
 let client: Client

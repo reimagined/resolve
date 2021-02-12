@@ -1,4 +1,4 @@
-import { ConcurrentError } from 'resolve-eventstore-base'
+import { ConcurrentError } from '@reimagined/eventstore-base'
 import { AdapterPool } from './types'
 
 const saveEvent = async (pool: AdapterPool, event: any): Promise<any> => {

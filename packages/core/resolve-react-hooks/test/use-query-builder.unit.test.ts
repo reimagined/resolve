@@ -1,5 +1,5 @@
 import { mocked } from 'ts-jest/utils'
-import { QueryCallback, QueryOptions } from 'resolve-client'
+import { QueryCallback, QueryOptions } from '@reimagined/client'
 import { useQuery } from '../src/use-query'
 import { useQueryBuilder } from '../src/use-query-builder'
 

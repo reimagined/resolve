@@ -1,5 +1,5 @@
 import { createQuery, createCommand, CreateQueryOptions } from 'resolve-runtime'
-import { SerializableMap, CommandResult } from 'resolve-core'
+import { SerializableMap, CommandResult } from '@reimagined/core'
 import as from './as'
 import givenEvents from './given-events'
 import { execute } from './execute'

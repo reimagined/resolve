@@ -2,7 +2,7 @@ import React from 'react'
 import renderer from 'react-test-renderer'
 import { ResolveContext } from '../src/context'
 import { ResolveProvider } from '../src/resolve-provider'
-import { Context } from 'resolve-client'
+import { Context } from '@reimagined/client'
 
 test('context passed to children', () => {
   const customContext: Context = {

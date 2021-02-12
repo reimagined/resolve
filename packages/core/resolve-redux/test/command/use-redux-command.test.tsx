@@ -1,14 +1,14 @@
-import { Command } from 'resolve-core'
+import { Command } from '@reimagined/core'
 import { mocked } from 'ts-jest/utils'
 import { useDispatch } from 'react-redux'
 import { renderHook, act } from '@testing-library/react-hooks'
-import { useCommandBuilder } from 'resolve-react-hooks'
+import { useCommandBuilder } from '@reimagined/react-hooks'
 import { sendCommandRequest } from '../../src/command/actions'
 import {
   CommandReduxHookOptions,
   useReduxCommand,
 } from '../../src/command/use-redux-command'
-import { CommandCallback } from 'resolve-client'
+import { CommandCallback } from '@reimagined/client'
 
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),

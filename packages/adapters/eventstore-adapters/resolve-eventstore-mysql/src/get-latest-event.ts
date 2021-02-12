@@ -1,4 +1,4 @@
-import { EventFilter, isTimestampFilter } from 'resolve-eventstore-base'
+import { EventFilter, isTimestampFilter } from '@reimagined/eventstore-base'
 import { AdapterPool } from './types'
 
 const getLatestEvent = async (

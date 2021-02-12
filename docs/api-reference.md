@@ -1457,7 +1457,7 @@ export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 The **resolve-client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
 
 ```js
-import { getClient } from 'resolve-client'
+import { getClient } from '@reimagined/client'
 
 const main = async resolveContext => {
   const client = getClient(resolveContext)
@@ -1819,7 +1819,7 @@ Deserializes the response data if it contains valid JSON. If the data is not JSO
 This middleware has no options. You can add it to a request as shown below:
 
 ```js
-import { createParseResponseMiddleware } from 'resolve-client'
+import { createParseResponseMiddleware } from '@reimagined/client'
 ...
 
 const { data } = await client.query(
@@ -1851,7 +1851,7 @@ The `retryOnError` middleware has the following options:
 You can add the `retryOnError` middleware to a request as shown below:
 
 ```js
-import { createRetryOnErrorMiddleware } from 'resolve-client'
+import { createRetryOnErrorMiddleware } from '@reimagined/client'
 ...
 
 client.command(
@@ -1899,7 +1899,7 @@ The `waitForResponse` middleware has the following options:
 You can add the `retryOnError` middleware to a request as shown below:
 
 ```js
-import { createWaitForResponseMiddleware } from 'resolve-client'
+import { createWaitForResponseMiddleware } from '@reimagined/client'
 ...
 
 const { data } = await client.query(

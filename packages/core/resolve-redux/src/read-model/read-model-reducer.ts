@@ -2,7 +2,7 @@ import setEntry from 'lodash.set'
 import unsetEntry from 'lodash.unset'
 import getByPath from 'lodash.get'
 import cloneDeep from 'lodash.clonedeep'
-import { ReadModelQuery } from 'resolve-client'
+import { ReadModelQuery } from '@reimagined/client'
 import getHash from '../internal/get-hash'
 
 import {

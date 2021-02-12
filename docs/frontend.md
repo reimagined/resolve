@@ -34,7 +34,7 @@ Use the `resolveContext` object to initialize a client library. The code samples
 ##### resolve-client:
 
 ```js
-import { getClient } from 'resolve-client'
+import { getClient } from '@reimagined/client'
 const main = async resolveContext => {
   await new Promise(resolve => domready(resolve))
   const client = getClient(resolveContext)

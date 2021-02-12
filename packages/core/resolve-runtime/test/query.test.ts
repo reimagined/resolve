@@ -1,5 +1,5 @@
 import createQuery from '../../resolve-runtime/src/common/query'
-import { ReadModelInteropMap, ViewModelInteropMap } from 'resolve-core'
+import { ReadModelInteropMap, ViewModelInteropMap } from '@reimagined/core'
 
 type Store = {
   set(key: string, value: any): void

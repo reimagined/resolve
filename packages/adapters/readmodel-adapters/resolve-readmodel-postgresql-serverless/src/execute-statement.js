@@ -1,4 +1,4 @@
-import { OMIT_BATCH } from 'resolve-readmodel-base'
+import { OMIT_BATCH } from '@reimagined/readmodel-base'
 
 const executeStatement = async (pool, sql) => {
   try {

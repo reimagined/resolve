@@ -1,6 +1,6 @@
 import React from 'react'
 import { ResolveReduxProvider } from './resolve-redux-provider'
-import { Context } from 'resolve-client'
+import { Context } from '@reimagined/client'
 
 class AppContainer extends React.PureComponent<any> {
   constructor(props: any) {

@@ -1,7 +1,7 @@
-import debugLevels from 'resolve-debug-levels'
+import debugLevels from '@reimagined/debug-levels'
 import createSqliteAdapter from 'resolve-eventstore-lite'
 import createPostgresqlServerlessAdapter from 'resolve-eventstore-postgresql-serverless'
-import { Adapter } from 'resolve-eventstore-base'
+import { Adapter } from '@reimagined/eventstore-base'
 import { create, destroy } from 'resolve-eventstore-postgresql-serverless'
 import {
   TEST_SERVERLESS,

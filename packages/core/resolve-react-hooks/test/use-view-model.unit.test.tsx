@@ -1,5 +1,5 @@
 import React from 'react'
-import { Context } from 'resolve-client'
+import { Context } from '@reimagined/client'
 import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
 import { ResolveContext } from '../src/context'

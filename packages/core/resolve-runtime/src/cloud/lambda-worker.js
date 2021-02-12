@@ -1,4 +1,4 @@
-import debugLevels from 'resolve-debug-levels'
+import debugLevels from '@reimagined/debug-levels'
 import { invokeFunction } from 'resolve-cloud-common/lambda'
 
 import handleApiGatewayEvent from './api-gateway-handler'

@@ -18,7 +18,7 @@ import {
   ViewModelAction,
   ViewModelStateUpdateAction,
 } from './actions'
-import { ViewModelQuery } from 'resolve-client'
+import { ViewModelQuery } from '@reimagined/client'
 
 type ViewModelActions = DropViewModelStateAction | ViewModelStateUpdateAction
 

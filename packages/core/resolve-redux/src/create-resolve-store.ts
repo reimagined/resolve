@@ -10,7 +10,7 @@ import {
 } from 'redux'
 import { Saga } from 'redux-saga'
 import { v4 as uuid } from 'uuid'
-import { Context } from 'resolve-client'
+import { Context } from '@reimagined/client'
 
 import { reducer as viewModelReducer } from './view-model/view-model-reducer'
 import { reducer as readModelReducer } from './read-model/read-model-reducer'

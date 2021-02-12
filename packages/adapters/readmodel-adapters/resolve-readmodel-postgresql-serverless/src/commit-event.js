@@ -1,5 +1,5 @@
-import debugLevels from 'resolve-debug-levels'
-import { OMIT_BATCH } from 'resolve-readmodel-base'
+import debugLevels from '@reimagined/debug-levels'
+import { OMIT_BATCH } from '@reimagined/readmodel-base'
 
 const log = debugLevels(
   'resolve:resolve-readmodel-postgresql-serverless:commit-event'

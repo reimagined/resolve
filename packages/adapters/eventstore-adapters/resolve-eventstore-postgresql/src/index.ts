@@ -1,5 +1,5 @@
 import { Client as Postgres } from 'pg'
-import createAdapter from 'resolve-eventstore-base'
+import createAdapter from '@reimagined/eventstore-base'
 
 import loadEventsByCursor from './load-events-by-cursor'
 import loadEventsByTimestamp from './load-events-by-timestamp'
@@ -34,7 +34,7 @@ import dropSecrets from './drop-secrets'
 import dropFinal from './drop-final'
 import dispose from './dispose'
 
-import type { Adapter } from 'resolve-eventstore-base'
+import type { Adapter } from '@reimagined/eventstore-base'
 import type { ConnectionDependencies, PostgresqlAdapterConfig } from './types'
 
 const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {

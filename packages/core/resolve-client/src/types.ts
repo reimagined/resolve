@@ -1,4 +1,4 @@
-import { IS_BUILT_IN } from 'resolve-core'
+import { IS_BUILT_IN } from '@reimagined/core'
 
 export type ViewModelInitialize = () => any
 export type ViewModelReducer = (state: any, event: object) => any

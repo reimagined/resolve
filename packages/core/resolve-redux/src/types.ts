@@ -1,5 +1,5 @@
-import { Event } from 'resolve-core'
-import { Client, Context } from 'resolve-client'
+import { Event } from '@reimagined/core'
+import { Client, Context } from '@reimagined/client'
 
 export enum ResultStatus {
   Initial = 'initial',

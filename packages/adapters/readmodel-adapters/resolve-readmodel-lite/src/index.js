@@ -1,4 +1,4 @@
-import _createAdapter from 'resolve-readmodel-base'
+import _createAdapter from '@reimagined/readmodel-base'
 import SQLite from 'sqlite'
 import tmp from 'tmp'
 import os from 'os'

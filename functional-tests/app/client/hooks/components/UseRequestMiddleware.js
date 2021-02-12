@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import { createRetryOnErrorMiddleware } from 'resolve-client'
+import { createRetryOnErrorMiddleware } from '@reimagined/client'
 import { useCommand, useQuery, useViewModel } from 'resolve-react-hooks'
 
 const useRetryOnCommandErrorScenario = (runId) => {
