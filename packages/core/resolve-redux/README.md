@@ -57,7 +57,7 @@ import {
   createReadModelsReducer,
   createJwtReducer,
   createResolveMiddleware
-} from 'resolve-redux'
+} from '@reimagined/redux'
 
 const resolveMiddleware = createResolveMiddleware()
 
@@ -95,7 +95,7 @@ resolveMiddleware.run({
 
 ```js
 import { connect } from 'react-redux'
-import { connectViewModel, sendAggregateAction } from 'resolve-redux'
+import { connectViewModel, sendAggregateAction } from '@reimagined/redux'
 import { bindActionCreators } from 'redux'
 
 const MyComponent = () => { /* React component implementation */ }
@@ -127,7 +127,7 @@ export default connectViewModel(mapStateToOptions)(
 
 ```js
 import { connect } from 'react-redux'
-import { connectReadModel, sendAggregateAction } from 'resolve-redux'
+import { connectReadModel, sendAggregateAction } from '@reimagined/redux'
 import { bindActionCreators } from 'redux'
 
 const MyComponent = () => { /* React component implementation */ }
@@ -164,7 +164,7 @@ A higher-order component (HOC), used to automatically fixes server routes.
 
 ```js
 import React from 'react'
-import { connectRootBasedUrls } from 'resolve-redux'
+import { connectRootBasedUrls } from '@reimagined/redux'
 
 const Form = connectRootBasedUrls(['action'])('form')
 
@@ -188,7 +188,7 @@ A higher-order component (HOC), used to automatically fixes paths for static fil
 ```js
 import React from 'react'
 import { Image as BootstrapImage } from 'react-bootstrap'
-import { connectStaticBasedUrls } from 'resolve-redux'
+import { connectStaticBasedUrls } from '@reimagined/redux'
 
 const Image = connectStaticBasedUrls(['src'])(BootstrapImage)
 

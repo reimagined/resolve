@@ -4,7 +4,7 @@ import { Command, CommandCallback, CommandOptions } from '@reimagined/client'
 import { useClient } from '../src/use-client'
 import { useCommand } from '../src/use-command'
 
-jest.mock('resolve-client')
+jest.mock('@reimagined/client')
 jest.mock('../src/use-client', () => ({
   useClient: jest.fn(),
 }))

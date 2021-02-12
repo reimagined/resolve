@@ -1,4 +1,4 @@
-import { sendAggregateAction } from 'resolve-redux'
+import { sendAggregateAction } from '@reimagined/redux'
 
 export const createStory = sendAggregateAction.bind(
   null,

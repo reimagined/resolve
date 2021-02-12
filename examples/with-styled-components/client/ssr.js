@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/server'
 import { Router } from 'react-router'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 import { createMemoryHistory } from 'history'
-import { ResolveProvider } from 'resolve-react-hooks'
+import { ResolveProvider } from '@reimagined/react-hooks'
 import { Helmet } from 'react-helmet'
 
 import { getRoutes } from './get-routes'

@@ -5,8 +5,8 @@ import {
   merge,
   stop,
   reset,
-} from 'resolve-scripts'
-import resolveModuleAdmin from 'resolve-module-admin'
+} from '@reimagined/scripts'
+import resolveModuleAdmin from '@reimagined/module-admin'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'

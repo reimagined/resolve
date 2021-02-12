@@ -1,5 +1,5 @@
 import givenEvents, { BDDAggregate } from '../src/index'
-import createReadModelConnector from 'resolve-readmodel-lite'
+import createReadModelConnector from '@reimagined/readmodel-lite'
 import { Event, EventHandlerEncryptionContext } from '@reimagined/core'
 
 describe('read model', () => {

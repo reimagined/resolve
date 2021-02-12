@@ -3,7 +3,7 @@ import { QueryCallback, QueryOptions } from '@reimagined/client'
 import { useQuery } from '../src/use-query'
 import { useQueryBuilder } from '../src/use-query-builder'
 
-jest.mock('resolve-client')
+jest.mock('@reimagined/client')
 jest.mock('react', () => ({
   useCallback: jest.fn((cb) => cb),
 }))

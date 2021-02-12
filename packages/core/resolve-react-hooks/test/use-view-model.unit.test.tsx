@@ -6,7 +6,7 @@ import { ResolveContext } from '../src/context'
 import { useClient } from '../src/use-client'
 import { useViewModel } from '../src/use-view-model'
 
-jest.mock('resolve-client')
+jest.mock('@reimagined/client')
 const projectionInitHandler = jest.fn(() => ({ initializedOnClient: true }))
 
 const mockContext: Context = {

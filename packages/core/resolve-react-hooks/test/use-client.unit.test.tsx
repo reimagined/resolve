@@ -5,7 +5,7 @@ import { getClient } from '@reimagined/client'
 import { ResolveContext } from '../src/context'
 import { useClient } from '../src/use-client'
 
-jest.mock('resolve-client')
+jest.mock('@reimagined/client')
 
 const mockedGetClient = mocked(getClient)
 

@@ -8,8 +8,8 @@ Use `resolve-module-auth` in application in following manner.
 Entry point (run.js):
 
 ```js
-import { defaultResolveConfig, build, start, watch, runTestcafe, merge, injectRuntimeEnv } from 'resolve-scripts'
-import createAuthModule from 'resolve-module-auth' // Import authentication module
+import { defaultResolveConfig, build, start, watch, runTestcafe, merge, injectRuntimeEnv } from '@reimagined/scripts'
+import createAuthModule from '@reimagined/module-auth' // Import authentication module
 
 import appConfig from './config.app' // Main application config with defined domain logic
 import devConfig from './config.dev' // Development config. Prod and other configs ommited here for simplify example

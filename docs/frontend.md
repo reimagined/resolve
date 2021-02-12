@@ -49,7 +49,7 @@ const main = async resolveContext => {
 ##### resolve-redux:
 
 ```js
-import { AppContainer, createStore, getOrigin } from 'resolve-redux'
+import { AppContainer, createStore, getOrigin } from '@reimagined/redux'
 
 const entryPoint = ({
   clientImports,
@@ -95,7 +95,7 @@ const entryPoint = ({
 ##### resolve-react-hooks:
 
 ```js
-import { ResolveContext } from 'resolve-react-hooks'
+import { ResolveContext } from '@reimagined/react-hooks'
 ...
 const entryPoint = context => {
   const appContainer = document.createElement('div')

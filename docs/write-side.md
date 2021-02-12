@@ -24,7 +24,7 @@ Aggregate state is explicitly passed to all of these functions as an argument.
 Each aggregate instance should have a unique immutable ID. You should generate an aggregate ID on the client and send it to reSolve with a command that creates a new aggregate:
 
 ```js
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand } from '@reimagined/react-hooks'
 ...
 const createShoppingListCommand = useCommand(
   {

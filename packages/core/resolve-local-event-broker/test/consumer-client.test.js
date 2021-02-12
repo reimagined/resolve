@@ -1,7 +1,7 @@
 import connectConsumer from '../src/consumer-client'
-import { createClient } from 'resolve-local-rpc'
+import { createClient } from '@reimagined/local-rpc'
 
-jest.mock('resolve-local-rpc', () => ({
+jest.mock('@reimagined/local-rpc', () => ({
   createClient: jest.fn(),
 }))
 

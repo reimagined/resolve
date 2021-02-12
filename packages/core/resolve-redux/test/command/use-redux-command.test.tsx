@@ -13,7 +13,7 @@ import { CommandCallback } from '@reimagined/client'
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }))
-jest.mock('resolve-react-hooks', () => ({
+jest.mock('@reimagined/react-hooks', () => ({
   useCommandBuilder: jest.fn(),
 }))
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
-import { connectReadModel, sendAggregateAction } from 'resolve-redux'
+import { connectReadModel, sendAggregateAction } from '@reimagined/redux'
 import { connect } from 'react-redux'
 
 import * as defaults from '../../common/defaults'

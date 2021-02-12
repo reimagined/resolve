@@ -95,7 +95,7 @@ The **resolve-module-uploader** module implements the file upload functionality.
 ##### run.js:
 
 ```js
-import resolveModuleUploader from 'resolve-module-uploader'
+import resolveModuleUploader from '@reimagined/module-uploader'
 const moduleUploader = resolveModuleUploader({ jwtSecret })
 ...
 const baseConfig = merge(
@@ -130,7 +130,7 @@ In the code sample below, a readable stream returned by an event store's `export
 ```js
 import { Readable, pipeline as pipelineC } from 'stream'
 
-import createEventStoreAdapter from 'resolve-eventstore-lite'
+import createEventStoreAdapter from '@reimagined/eventstore-lite'
 
 const pipeline = promisify(pipelineC)
 

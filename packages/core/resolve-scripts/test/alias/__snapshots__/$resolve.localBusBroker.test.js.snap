@@ -4,7 +4,7 @@ exports[`local config works correctly [server] 1`] = `
 "
 
     import '$resolve.guardOnlyServer'
-    import { createAndInitPublisher, connectConsumer } from 'resolve-local-event-broker'
+    import { createAndInitPublisher, connectConsumer } from '@reimagined/local-event-broker'
     import eventBrokerConfig from '$resolve.eventBrokerConfig'
 
     if(module.parent != null) {

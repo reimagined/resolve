@@ -67,7 +67,7 @@ to familiarize yourself with the available adapters, see the **[adapters](https:
 Use the **declareRuntimeEnv** function from the **resolve-scripts** library to bind a configuration setting value to an environment variable:
 
 ```js
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from '@reimagined/scripts'
 export default {
   subscribeAdapter: {
     module: 'resolve-subscribe-mqtt',

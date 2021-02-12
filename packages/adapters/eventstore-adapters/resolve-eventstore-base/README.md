@@ -6,7 +6,7 @@ This base package is a eventstore adapter for storing events.
 ## Usage
 
 ```js
-import createAdapter from 'resolve-eventstore-xxx';
+import createAdapter from '@reimagined/eventstore-xxx';
 
 const adapter = createAdapter({/* options */});
 

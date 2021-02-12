@@ -9,16 +9,16 @@ import {
   reset,
   importEventStore,
   exportEventStore,
-} from 'resolve-scripts'
+} from '@reimagined/scripts'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test-functional'
-import resolveModuleUploader from 'resolve-module-uploader'
+import resolveModuleUploader from '@reimagined/module-uploader'
 import jwtSecret from './common/jwt_secret'
-import resolveModuleAuth from 'resolve-module-auth'
+import resolveModuleAuth from '@reimagined/module-auth'
 
 const launchMode = process.argv[2]
 

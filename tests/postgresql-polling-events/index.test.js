@@ -3,7 +3,7 @@ import debugLevels from '@reimagined/debug-levels'
 import createEventstoreAdapter, {
   create,
   destroy,
-} from 'resolve-eventstore-postgresql-serverless'
+} from '@reimagined/eventstore-postgresql-serverless'
 
 const logger = debugLevels('resolve:postgresql-polling-events')
 

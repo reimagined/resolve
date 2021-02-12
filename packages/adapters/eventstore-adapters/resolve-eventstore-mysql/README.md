@@ -11,7 +11,7 @@ This package is an eventstore adapter for storing events using MySQL 8.0.
 ## Usage
 
 ```js
-import createAdapter from 'resolve-eventstore-mysql'
+import createAdapter from '@reimagined/eventstore-mysql'
 
 const adapter = createAdapter({
   host: 'localhost',

@@ -4,8 +4,8 @@
 ## Usage
 
 ```js
-import { merge } from 'resolve-scripts'
-import createModuleComments from 'resolve-module-comments'
+import { merge } from '@reimagined/scripts'
+import createModuleComments from '@reimagined/module-comments'
 
 merge(
   resolveConfig,
@@ -15,8 +15,8 @@ merge(
 
 #### Customization of module options
 ```js
-import { merge } from 'resolve-scripts'
-import createModuleComments from 'resolve-module-comments'
+import { merge } from '@reimagined/scripts'
+import createModuleComments from '@reimagined/module-comments'
 
 merge(
   resolveConfig,
@@ -93,7 +93,7 @@ import {
   CommentsPaginateRenderless,
   CommentsNotificationRenderless,
   RefreshHelperRenderless
-} from 'resolve-module-comments'
+} from '@reimagined/module-comments'
 
 export const CommentsTree = (props) =>
   <CommentsTreeRenderless

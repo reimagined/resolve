@@ -27,13 +27,13 @@ const factory_s_0 = constructorBindFunction.bind(null,
       factory_s_0_imports
     )
     Object.assign(factory_s_0, factory_s_0_constructor)
-
+    
 const options_s_0 = null
 
       const factory_0 = (...args) => {
-        return wrapReadModelConnector(factory_s_0(...args), options_s_0)
+        return wrapReadModelConnector(factory_s_0(...args), options_s_0) 
       }
-
+    
 const readModelConnectors = {}
 readModelConnectors[name_0] = factory_0
 export default readModelConnectors
@@ -67,13 +67,13 @@ const factory_s_0 = constructorBindFunction.bind(null,
       factory_s_0_imports
     )
     Object.assign(factory_s_0, factory_s_0_constructor)
-
+    
 const options_s_0 = {}
 
       const factory_0 = (...args) => {
-        return wrapReadModelConnector(factory_s_0(...args), options_s_0)
+        return wrapReadModelConnector(factory_s_0(...args), options_s_0) 
       }
-
+    
 const readModelConnectors = {}
 readModelConnectors[name_0] = factory_0
 export default readModelConnectors
@@ -107,13 +107,13 @@ const factory_s_0 = constructorBindFunction.bind(null,
       factory_s_0_imports
     )
     Object.assign(factory_s_0, factory_s_0_constructor)
-
+    
 const options_s_0 = {}
 
       const factory_0 = (...args) => {
-        return wrapReadModelConnector(factory_s_0(...args), options_s_0)
+        return wrapReadModelConnector(factory_s_0(...args), options_s_0) 
       }
-
+    
 const readModelConnectors = {}
 readModelConnectors[name_0] = factory_0
 export default readModelConnectors

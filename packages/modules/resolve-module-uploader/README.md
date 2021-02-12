@@ -4,8 +4,8 @@
 ### Usage
 
 ```js
-import { merge } from 'resolve-scripts'
-import createModuleUploader from 'resolve-module-uploader'
+import { merge } from '@reimagined/scripts'
+import createModuleUploader from '@reimagined/module-uploader'
 
 merge(
   resolveConfig,

@@ -3,7 +3,7 @@ import { mocked } from 'ts-jest/utils'
 import { useClient } from '../src/use-client'
 import { useStaticResolver } from '../src/use-static-resolver'
 
-jest.mock('resolve-client')
+jest.mock('@reimagined/client')
 jest.mock('../src/use-client', () => ({
   useClient: jest.fn(),
 }))

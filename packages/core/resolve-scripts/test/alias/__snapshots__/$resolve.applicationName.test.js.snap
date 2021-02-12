@@ -2,7 +2,7 @@
 
 exports[`works correctly 1`] = `
 "
-const applicationName = \\"resolve-scripts\\"
+const applicationName = \\"@reimagined/scripts\\"
 
 export default applicationName
 "

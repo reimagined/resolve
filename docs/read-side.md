@@ -55,7 +55,7 @@ const devConfig = {
 ##### config.cloud.js:
 
 ```js
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from '@reimagined/scripts'
 const prodConfig = {
   ...
   readModelConnectors: {

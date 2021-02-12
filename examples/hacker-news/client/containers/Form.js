@@ -1,4 +1,4 @@
-import { connectRootBasedUrls } from 'resolve-redux'
+import { connectRootBasedUrls } from '@reimagined/redux'
 
 const Form = connectRootBasedUrls(['action'])('form')
 

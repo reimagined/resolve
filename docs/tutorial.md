@@ -685,7 +685,7 @@ A component connected to a reSolve View Model receives an array of aggregate act
 <!-- prettier-ignore-start -->
 
 ```js
-import { sendAggregateAction } from 'resolve-redux'
+import { sendAggregateAction } from '@reimagined/redux'
 import { bindActionCreators } from 'redux'
 
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
@@ -959,7 +959,7 @@ Connect the MyLists container component to the ShoppingLists Read Model as shown
 **client/containers/MyLists.js:**
 
 ```js
-import { sendAggregateAction } from 'resolve-redux'
+import { sendAggregateAction } from '@reimagined/redux'
 import { bindActionCreators } from 'redux'
 
 export const mapStateToOptions = () => ({
@@ -1148,7 +1148,7 @@ Provide a saga that intercepts the service actions used for communication betwee
 [embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/sagas/optimistic_shopping_lists_saga.js /^/ /\n$/)
 ```js
 import { takeEvery, put } from 'redux-saga/effects'
-import { actionTypes } from 'resolve-redux'
+import { actionTypes } from '@reimagined/redux'
 
 import {
   OPTIMISTIC_CREATE_SHOPPING_LIST,
@@ -1409,7 +1409,7 @@ The code below implements the **Image** component.
 
 ```js
 import { Image as BootstrapImage } from 'react-bootstrap'
-import { connectStaticBasedUrls } from 'resolve-redux'
+import { connectStaticBasedUrls } from '@reimagined/redux'
 
 const Image = connectStaticBasedUrls(['src'])(BootstrapImage)
 
@@ -1479,7 +1479,7 @@ import { LOCATION_CHANGE } from 'react-router-redux'
 
 ```js
 import { takeEvery, put } from 'redux-saga/effects'
-import { actionTypes } from 'resolve-redux'
+import { actionTypes } from '@reimagined/redux'
 
 import {
   OPTIMISTIC_CREATE_SHOPPING_LIST,

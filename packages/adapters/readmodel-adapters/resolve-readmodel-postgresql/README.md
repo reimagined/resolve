@@ -19,7 +19,7 @@ Adapter interface is provided by **resolve-readmodel-base** package.
 ## Usage
 
 ```js
-import createAdapter from 'resolve-readmodel-postgresql'
+import createAdapter from '@reimagined/readmodel-postgresql'
 
 const adapter = createAdapter({
   databaseName,

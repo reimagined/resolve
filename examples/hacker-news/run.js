@@ -9,10 +9,10 @@ import {
   reset,
   importEventStore,
   exportEventStore,
-} from 'resolve-scripts'
-import resolveModuleComments from 'resolve-module-comments'
-import resolveModuleAuth from 'resolve-module-auth'
-import resolveModuleAdmin from 'resolve-module-admin'
+} from '@reimagined/scripts'
+import resolveModuleComments from '@reimagined/module-comments'
+import resolveModuleAuth from '@reimagined/module-auth'
+import resolveModuleAdmin from '@reimagined/module-admin'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'

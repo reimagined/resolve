@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { useQuery } from 'resolve-react-hooks'
+import { useQuery } from '@reimagined/react-hooks'
 import { Button, Alert } from 'reactstrap'
 
 import Feed from './Feed'

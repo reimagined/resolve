@@ -1,13 +1,13 @@
 import fs from 'fs'
 import path from 'path'
 // eslint-disable-next-line
-import createEventStoreLiteAdapter from 'resolve-eventstore-lite'
+import createEventStoreLiteAdapter from '@reimagined/eventstore-lite'
 // eslint-disable-next-line
-import createEventStorePostgreSQLAdapter from 'resolve-eventstore-postgresql'
+import createEventStorePostgreSQLAdapter from '@reimagined/eventstore-postgresql'
 // eslint-disable-next-line
-import createEventStorePostgreSQLServerlessAdapter from 'resolve-eventstore-postgresql-serverless'
+import createEventStorePostgreSQLServerlessAdapter from '@reimagined/eventstore-postgresql-serverless'
 // eslint-disable-next-line
-import createEventStoreMySQLAdapter from 'resolve-eventstore-mysql'
+import createEventStoreMySQLAdapter from '@reimagined/eventstore-mysql'
 
 const createAdapter = () => {
   // return createEventStoreMySQLAdapter({

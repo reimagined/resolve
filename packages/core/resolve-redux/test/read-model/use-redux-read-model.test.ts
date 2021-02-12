@@ -19,7 +19,7 @@ import {
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }))
-jest.mock('resolve-react-hooks', () => ({
+jest.mock('@reimagined/react-hooks', () => ({
   useQueryBuilder: jest.fn(),
 }))
 jest.mock('../../src/read-model/read-model-reducer', () => ({

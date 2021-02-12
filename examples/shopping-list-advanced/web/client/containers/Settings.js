@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { connectReadModel } from 'resolve-redux'
+import { connectReadModel } from '@reimagined/redux'
 import { ControlLabel, FormControl } from 'react-bootstrap'
 
 import requiredAuth from '../decorators/required-auth'

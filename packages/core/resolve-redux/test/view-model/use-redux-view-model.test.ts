@@ -13,7 +13,7 @@ import { useReduxViewModel } from '../../src/view-model/use-redux-view-model'
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }))
-jest.mock('resolve-react-hooks', () => ({
+jest.mock('@reimagined/react-hooks', () => ({
   useViewModel: jest.fn(),
 }))
 jest.mock('../../src/view-model/view-model-reducer', () => ({

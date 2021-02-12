@@ -3,7 +3,7 @@ import disposeResolve from '../common/dispose-resolve'
 import bootstrap from '../common/bootstrap'
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 import { EventstoreResourceAlreadyExistError } from '@reimagined/eventstore-base'
-import { PublisherResourceAlreadyExistError } from 'resolve-local-event-broker'
+import { PublisherResourceAlreadyExistError } from '@reimagined/local-event-broker'
 
 const host = '0.0.0.0'
 const startExpress = async (resolve) => {

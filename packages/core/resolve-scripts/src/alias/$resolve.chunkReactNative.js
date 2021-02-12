@@ -10,7 +10,7 @@ export default ({ resolveConfig }) => {
     `clientGlobalObject.__RESOLVE_RUNTIME_ENV__ = { }`
   )
 
-  exports.push(`import { createActions } from 'resolve-redux'`)
+  exports.push(`import { createActions } from '@reimagined/redux'`)
 
   const clientEnvs = []
   void JSON.stringify(resolveConfig, (key, value) => {

@@ -1,4 +1,4 @@
-import { getModulesDirs } from 'resolve-scripts'
+import { getModulesDirs } from '@reimagined/scripts'
 import path from 'path'
 
 const clientTransformBabelOptions = {

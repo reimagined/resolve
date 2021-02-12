@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-import { connectViewModel } from 'resolve-redux'
+import { connectViewModel } from '@reimagined/redux'
 import { bindActionCreators } from 'redux'
 
 import {

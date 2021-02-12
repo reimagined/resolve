@@ -12,8 +12,8 @@ import {
   DropdownItem,
   Dropdown,
 } from 'reactstrap'
-import { getCDNBasedUrl } from 'resolve-module-uploader'
-import { useStaticResolver, useQuery, useCommand } from 'resolve-react-hooks'
+import { getCDNBasedUrl } from '@reimagined/module-uploader'
+import { useStaticResolver, useQuery, useCommand } from '@reimagined/react-hooks'
 
 import Loading from './Loading'
 import UploaderContext from '../context'

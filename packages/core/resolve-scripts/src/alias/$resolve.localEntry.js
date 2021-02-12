@@ -1,6 +1,6 @@
 export default () => `
   import '$resolve.guardOnlyServer'
-  import { connectPublisher, createAndInitConsumer } from 'resolve-local-event-broker'
+  import { connectPublisher, createAndInitConsumer } from '@reimagined/local-event-broker'
   import serverAssemblies from '$resolve.serverAssemblies'
   import eventBrokerConfig from '$resolve.eventBrokerConfig'
   import localEntry from '@reimagined/runtime/lib/local'

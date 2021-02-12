@@ -1,4 +1,4 @@
-import { merge, defaultResolveConfig, validateConfig } from 'resolve-scripts'
+import { merge, defaultResolveConfig, validateConfig } from '@reimagined/scripts'
 
 const localConfig = {
   mode: 'development',

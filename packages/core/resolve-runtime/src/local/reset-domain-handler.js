@@ -5,7 +5,7 @@ import {
 import {
   PublisherResourceAlreadyExistError,
   PublisherResourceNotExistError,
-} from 'resolve-local-event-broker'
+} from '@reimagined/local-event-broker'
 
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 

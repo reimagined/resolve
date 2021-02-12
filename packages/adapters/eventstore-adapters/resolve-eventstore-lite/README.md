@@ -10,7 +10,7 @@ You can pass the following argument when initializing an adapter:
 ## Usage
 
 ```js
-import createAdapter from 'resolve-eventstore-lite'
+import createAdapter from '@reimagined/eventstore-lite'
 
 const fileAdapter = createAdapter({ 
   databaseFile: './store.db' 

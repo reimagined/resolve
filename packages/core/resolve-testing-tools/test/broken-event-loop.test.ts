@@ -1,4 +1,4 @@
-import createReadModelConnector from 'resolve-readmodel-lite'
+import createReadModelConnector from '@reimagined/readmodel-lite'
 import givenEvents from '../src/index'
 import path from 'path'
 import fs from 'fs'

@@ -2,7 +2,7 @@ import SQLite from 'sqlite'
 import fs from 'fs'
 import os from 'os'
 import tmp from 'tmp'
-import { createServer } from 'resolve-local-rpc'
+import { createServer } from '@reimagined/local-rpc'
 
 // broker
 import subscribe from './broker/subscribe'

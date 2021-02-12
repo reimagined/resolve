@@ -14,7 +14,7 @@ This package is a eventstore adapter for storing events using AWS Aurora Serverl
 ## Usage
 
 ```js
-import createAdapter from 'resolve-eventstore-postgresql-serverless'
+import createAdapter from '@reimagined/eventstore-postgresql-serverless'
 
 const adapter = createAdapter({
   region: 'us-east-1',
@@ -27,7 +27,7 @@ const adapter = createAdapter({
 
 #### As Resource
 ```js
-import { create, dispose, destroy } from 'resolve-eventstore-postgresql-serverless'
+import { create, dispose, destroy } from '@reimagined/eventstore-postgresql-serverless'
 
 await create({ 
   region: 'us-east-1',

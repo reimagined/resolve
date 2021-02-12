@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from '@reimagined/scripts'
 
 const cloudConfig = {
   target: 'cloud',

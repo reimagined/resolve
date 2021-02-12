@@ -17,7 +17,7 @@ This package is a eventstore adapter for storing events using PostgreSQL 10.7.
 ## Usage
 
 ```js
-import createAdapter from 'resolve-eventstore-postgresql'
+import createAdapter from '@reimagined/eventstore-postgresql'
 
 const adapter = createAdapter({
   user: 'user',

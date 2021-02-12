@@ -29,7 +29,7 @@ const clientGlobalObject = ((() => {
     return globalObject[key]
   })())
 clientGlobalObject.__RESOLVE_RUNTIME_ENV__ = { }
-import { createActions } from 'resolve-redux'
+import { createActions } from '@reimagined/redux'
 export const viewModels = interopRequireDefault(require('$resolve.viewModels')).default
 export const rootPath = interopRequireDefault(require('$resolve.rootPath')).default
 export const staticPath = interopRequireDefault(require('$resolve.staticPath')).default

@@ -4,7 +4,7 @@ import { Query, QueryCallback, QueryOptions } from '@reimagined/client'
 import { useClient } from '../src/use-client'
 import { useQuery } from '../src/use-query'
 
-jest.mock('resolve-client')
+jest.mock('@reimagined/client')
 jest.mock('../src/use-client', () => ({
   useClient: jest.fn(),
 }))

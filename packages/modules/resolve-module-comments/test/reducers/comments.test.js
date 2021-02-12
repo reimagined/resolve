@@ -1,4 +1,4 @@
-import { internal } from 'resolve-redux'
+import { internal } from '@reimagined/redux'
 
 import createCommentsReducer from '../../src/client/reducers/comments'
 import {

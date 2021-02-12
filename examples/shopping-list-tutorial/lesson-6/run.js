@@ -7,13 +7,13 @@ import {
   merge,
   stop,
   reset,
-} from 'resolve-scripts'
+} from '@reimagined/scripts'
 
 import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
-import resolveModuleAdmin from 'resolve-module-admin'
+import resolveModuleAdmin from '@reimagined/module-admin'
 
 const launchMode = process.argv[2]
 

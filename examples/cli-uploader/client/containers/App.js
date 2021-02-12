@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectReadModel } from 'resolve-redux'
+import { connectReadModel } from '@reimagined/redux'
 import { Button, Label } from 'reactstrap'
 
 import Login from '../components/Login'

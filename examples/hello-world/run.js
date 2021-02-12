@@ -9,7 +9,7 @@ import {
   reset,
   importEventStore,
   exportEventStore,
-} from 'resolve-scripts'
+} from '@reimagined/scripts'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'

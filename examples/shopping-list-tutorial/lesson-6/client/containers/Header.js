@@ -1,5 +1,5 @@
 import React from 'react'
-import { connectStaticBasedUrls } from 'resolve-redux'
+import { connectStaticBasedUrls } from '@reimagined/redux'
 import { Navbar } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 

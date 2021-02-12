@@ -7,7 +7,7 @@ import {
   merge,
   stop,
   reset,
-} from 'resolve-scripts'
+} from '@reimagined/scripts'
 
 import appConfig from './config.app'
 import devConfig from './config.dev'

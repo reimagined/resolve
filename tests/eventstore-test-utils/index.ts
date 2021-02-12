@@ -2,7 +2,7 @@ import * as AWS from 'aws-sdk'
 import {
   CloudResourceOptions,
   PostgresqlAdapterConfig,
-} from 'resolve-eventstore-postgresql-serverless'
+} from '@reimagined/eventstore-postgresql-serverless'
 import { Readable } from 'stream'
 
 export function updateAwsConfig(): void {

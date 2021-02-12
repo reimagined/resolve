@@ -4,13 +4,13 @@ exports[`works correctly 1`] = `
 "
 
   import '$resolve.guardOnlyServer'
-  import { connectPublisher, createAndInitConsumer } from 'resolve-local-event-broker'
+  import { connectPublisher, createAndInitConsumer } from '@reimagined/local-event-broker'
   import serverAssemblies from '$resolve.serverAssemblies'
   import eventBrokerConfig from '$resolve.eventBrokerConfig'
   import localEntry from '@reimagined/runtime/lib/local'
 
   export { default as entryPointMarker } from '@reimagined/runtime/lib/common/utils/entry-point-marker'
-
+  
   Object.assign(serverAssemblies.assemblies, {
     eventBrokerConfig,
     createAndInitConsumer,

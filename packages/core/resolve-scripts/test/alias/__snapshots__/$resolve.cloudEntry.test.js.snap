@@ -30,6 +30,6 @@ exports[`works correctly 1`] = `
     }
 
     export default handler
-
+  
 "
 `;

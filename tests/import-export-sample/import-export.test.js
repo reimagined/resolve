@@ -3,7 +3,7 @@ import path from 'path'
 import { promisify } from 'util'
 import { Readable, pipeline } from 'stream'
 import { MAINTENANCE_MODE_MANUAL } from '@reimagined/eventstore-base'
-import createEventstoreAdapter from 'resolve-eventstore-lite'
+import createEventstoreAdapter from '@reimagined/eventstore-lite'
 
 import createStreamBuffer from './create-stream-buffer'
 
