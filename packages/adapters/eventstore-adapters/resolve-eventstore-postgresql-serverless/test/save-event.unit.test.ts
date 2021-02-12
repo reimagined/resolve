@@ -12,6 +12,7 @@ const event = {
   aggregateVersion: 1,
   type: 'TEST',
   payload: { key: 'value' },
+  timestamp: 1,
 }
 
 test('method "saveEvent" should save an event', async () => {

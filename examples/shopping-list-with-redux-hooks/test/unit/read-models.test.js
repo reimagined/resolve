@@ -20,7 +20,7 @@ describe('read-models', () => {
     })
 
     test('resolver "all" should return an empty array', async () => {
-      const { data: shoppingLists } = await givenEvents([])
+      const shoppingLists = await givenEvents([])
         .readModel({
           name: 'ShoppingLists',
           projection,
@@ -34,7 +34,7 @@ describe('read-models', () => {
 
     // mdis-start read-model-test
     test('projection "SHOPPING_LIST_CREATED" should create a shopping list', async () => {
-      const { data: shoppingLists } = await givenEvents([
+      const shoppingLists = await givenEvents([
         {
           aggregateId,
           type: SHOPPING_LIST_CREATED,
@@ -59,7 +59,7 @@ describe('read-models', () => {
     // mdis-stop read-model-test
 
     test('projection "SHOPPING_LIST_RENAMED" should rename the shopping list', async () => {
-      const { data: shoppingLists } = await givenEvents([
+      const shoppingLists = await givenEvents([
         {
           aggregateId: aggregateId,
           type: SHOPPING_LIST_CREATED,
@@ -90,7 +90,7 @@ describe('read-models', () => {
     })
 
     test('projection "SHOPPING_LIST_REMOVED" should remove the shopping list', async () => {
-      const { data: shoppingLists } = await givenEvents([
+      const shoppingLists = await givenEvents([
         {
           aggregateId: aggregateId,
           type: SHOPPING_LIST_CREATED,

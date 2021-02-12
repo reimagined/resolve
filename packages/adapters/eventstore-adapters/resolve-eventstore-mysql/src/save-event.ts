@@ -1,4 +1,4 @@
-import { ConcurrentError } from 'resolve-eventstore-base'
+import { ConcurrentError, InputEvent } from 'resolve-eventstore-base'
 
 import {
   ER_DUP_ENTRY,
@@ -7,7 +7,10 @@ import {
 } from './constants'
 import { AdapterPool } from './types'
 
-const saveEvent = async (pool: AdapterPool, event: any): Promise<any> => {
+const saveEvent = async (
+  pool: AdapterPool,
+  event: InputEvent
+): Promise<void> => {
   const { eventsTableName, connection, database, escapeId, escape } = pool
   try {
     const eventsTableNameAsId: string = escapeId(eventsTableName)

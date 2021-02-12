@@ -5,9 +5,9 @@ const getConfig = async (resolveConfig, options) => {
   if (options == null || options.constructor !== Object) {
     throw new Error('Invalid export-event-store options')
   }
-  const { exportFile } = options
-  if (exportFile == null || exportFile.constructor !== String) {
-    throw new Error('Options field "exportFile" must be string')
+  const { directory } = options
+  if (directory == null || directory.constructor !== String) {
+    throw new Error('Options field "directory" must be string')
   }
 
   const config = merge(resolveConfig, {

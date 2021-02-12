@@ -1,11 +1,4 @@
-import createQuery, {
-  detectConnectorFeatures,
-  INLINE_LEDGER_CONNECTOR,
-  EMPTY_CONNECTOR,
-  FULL_REGULAR_CONNECTOR,
-  FULL_XA_CONNECTOR,
-} from 'resolve-query'
-import createCommand from 'resolve-command'
+import { createQuery, createCommand, CreateQueryOptions, detectConnectorFeatures, connectorModes, } from 'resolve-runtime'
 import { SerializableMap, CommandResult } from 'resolve-core'
 import as from './as'
 import givenEvents from './given-events'
@@ -41,12 +34,7 @@ export default givenEvents.bind(null, {
   aggregate,
   command,
   detectConnectorFeatures,
-  connectorModes: {
-    INLINE_LEDGER_CONNECTOR,
-    EMPTY_CONNECTOR,
-    FULL_REGULAR_CONNECTOR,
-    FULL_XA_CONNECTOR,
-  },
+  connectorModes,
 }) as (events: any[]) => GivenEventsContext
 
 export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =
@@ -76,7 +64,7 @@ export const getSchedulersNamesBySagas = (sagas: any): any => {
 
 export interface GivenEventsContext {
   all: any
-  createQuery: any
+  createQuery: (params: CreateQueryOptions) => any
   createCommand: any
   as: (jwt: any) => GivenEventsContext
   readModel: (params: ReadModelParams) => GivenEventsContext

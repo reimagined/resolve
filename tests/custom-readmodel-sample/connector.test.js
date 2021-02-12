@@ -73,6 +73,6 @@ describe('Read-model generic adapter API', () => {
       })
       .read({})
 
-    expect(result.data).toEqual(200)
+    expect(result).toEqual(200)
   })
 })

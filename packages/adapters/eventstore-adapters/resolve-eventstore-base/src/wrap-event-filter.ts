@@ -4,13 +4,14 @@ import {
   EventFilter,
   EventsWithCursor,
   isCursorFilter,
-  LoadEvents,
+  PoolMethod,
+  Adapter,
 } from './types'
 
 const wrapEventFilter = <ConnectedProps extends AdapterPoolConnectedProps>(
-  loadEvents: LoadEvents<ConnectedProps>
-): LoadEvents<ConnectedProps> => async (
-  pool: AdapterPoolConnected<any>,
+  loadEvents: PoolMethod<ConnectedProps, Adapter['loadEvents']>
+): PoolMethod<ConnectedProps, Adapter['loadEvents']> => async (
+  pool: AdapterPoolConnected<ConnectedProps>,
   filter: EventFilter
 ): Promise<EventsWithCursor> => {
   pool.validateEventFilter(filter)

@@ -10,12 +10,13 @@ const getReadModelConnector = async () => {
     fs.exists(databaseFile, resolve)
   )
   if (dbFileExists) {
-    await new Promise<void>((resolve, reject) =>
-      fs.unlink(databaseFile, (err) => (!err ? resolve() : reject(err)))
+    await new Promise((resolve, reject) =>
+      fs.unlink(databaseFile, (err) =>
+        !err ? resolve(undefined) : reject(err)
+      )
     )
   }
-  const adapter = await createReadModelConnector({ databaseFile })
-  return adapter
+  return await createReadModelConnector({ databaseFile })
 }
 
 const inputEvents = [
@@ -57,7 +58,7 @@ test('async call during building', async () => {
     .all({ a: 10, b: 20 })
     .as('JWT_TOKEN')
 
-  expect(result.data.items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }])
+  expect(result.items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }])
 })
 
 test('async call before building', async () => {
@@ -72,7 +73,7 @@ test('async call before building', async () => {
     .all({ a: 10, b: 20 })
     .as('JWT_TOKEN')
 
-  expect(result.data.items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }])
+  expect(result.items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }])
 })
 
 test('bug: promise never completes on hard error', async () => {

@@ -41,6 +41,7 @@ import {
   SecretFilter,
   SecretsWithIdx,
   SecretRecord,
+  InputEvent,
 } from './types'
 
 const wrappedCreateAdapter = <
@@ -108,4 +109,5 @@ export {
   SecretFilter,
   SecretsWithIdx,
   SecretRecord,
+  InputEvent,
 }

@@ -31,7 +31,7 @@ const buildInit: (
   basePool,
   readModelName,
   store,
-  projection,
+  modelInterop,
   next,
   eventstoreAdapter
 ) => {
@@ -89,9 +89,10 @@ const buildInit: (
 
   let lastError = null
   try {
-    if (typeof projection.Init === 'function') {
+    const handler = await modelInterop.acquireInitHandler(store)
+    if (handler != null) {
       //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await projection.Init(store, null! as ReadModelEvent)
+      await handler(null! as ReadModelEvent)
     }
   } catch (error) {
     lastError = error
@@ -154,12 +155,11 @@ const buildEvents: (
   basePool,
   readModelName,
   store,
-  projection,
+  modelInterop,
   next,
   eventstoreAdapter,
   getVacantTimeInMillis,
-  provideLedger,
-  getEncryption
+  provideLedger
 ) => {
   void provideLedger
   const pool = { ...basePool, ...currentPool }
@@ -191,7 +191,6 @@ const buildEvents: (
     throw new PassthroughError(false)
   }
   const seizeTimestamp = Date.now()
-  const executeEncryption = await getEncryption()
 
   for (let retry = 0; ; retry++) {
     try {
@@ -241,13 +240,10 @@ const buildEvents: (
   try {
     for (const event of events) {
       try {
-        if (typeof projection[event.type] === 'function') {
+        const handler = await modelInterop.acquireEventHandler(store, event)
+        if (handler != null) {
           await inlineLedgerRunQuery(`SAVEPOINT E${appliedEventsCount}`, true)
-          await projection[event.type](
-            store,
-            event,
-            await executeEncryption(event)
-          )
+          await handler()
           await inlineLedgerRunQuery(
             `RELEASE SAVEPOINT E${appliedEventsCount}`,
             true
@@ -371,12 +367,11 @@ const build: ExternalMethods['build'] = async (
   basePool,
   readModelName,
   store,
-  projection,
+  modelInterop,
   next,
   eventstoreAdapter,
   getVacantTimeInMillis,
-  provideLedger,
-  getEncryption
+  provideLedger
 ) => {
   const {
     PassthroughError,
@@ -511,12 +506,11 @@ const build: ExternalMethods['build'] = async (
       basePool,
       readModelName,
       store,
-      projection,
+      modelInterop,
       next,
       eventstoreAdapter,
       getVacantTimeInMillis,
-      provideLedger,
-      getEncryption
+      provideLedger
     )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {

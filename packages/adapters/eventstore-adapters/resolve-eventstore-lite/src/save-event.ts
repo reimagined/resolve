@@ -1,7 +1,10 @@
-import { ConcurrentError } from 'resolve-eventstore-base'
+import { ConcurrentError, InputEvent } from 'resolve-eventstore-base'
 import { AdapterPool } from './types'
 
-const saveEvent = async (pool: AdapterPool, event: any): Promise<any> => {
+const saveEvent = async (
+  pool: AdapterPool,
+  event: InputEvent
+): Promise<void> => {
   const { eventsTableName, database, escapeId, escape } = pool
   try {
     const currentThreadId = Math.floor(Math.random() * 256)

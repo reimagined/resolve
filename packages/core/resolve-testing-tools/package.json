@@ -19,6 +19,7 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
@@ -27,9 +28,8 @@
     "colors": "^1.4.0",
     "diff": "^4.0.2",
     "lodash.isequal": "4.5.0",
-    "resolve-command": "0.26.5",
     "resolve-core": "0.26.5",
-    "resolve-query": "0.26.5",
+    "resolve-runtime": "0.26.5",
     "resolve-readmodel-lite": "0.26.5"
   },
   "devDependencies": {

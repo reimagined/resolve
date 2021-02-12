@@ -1,11 +1,11 @@
 import { symbol, Phases } from './constants'
-import { ReadModelEncryptionFactory } from 'resolve-core'
+import { EventHandlerEncryptionFactory } from 'resolve-core'
 export interface ReadModelParams {
   name: string
   projection: any
   resolvers: any
   adapter: any
-  encryption?: ReadModelEncryptionFactory
+  encryption?: EventHandlerEncryptionFactory
 }
 
 const readModel = (

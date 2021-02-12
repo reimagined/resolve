@@ -10,9 +10,9 @@ const init = async <ConnectedProps extends AdapterPoolConnectedProps>({
   const finalErrors = await initFinal()
   const errors: any[] = []
   for (const errorsArray of errorsArrays) {
-    errors.concat(errorsArray)
+    errors.push(...errorsArray)
   }
-  errors.concat(finalErrors)
+  errors.push(...finalErrors)
   maybeThrowResourceError(errors)
 }
 

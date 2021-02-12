@@ -1,4 +1,6 @@
 import { Phases, symbol } from './constants'
+import { CreateQueryOptions } from 'resolve-runtime'
+import { initDomain } from 'resolve-core'
 
 export const executeReadModel = async ({
   promise,
@@ -8,7 +10,7 @@ export const executeReadModel = async ({
   connectorModes,
 }: {
   promise: any
-  createQuery: Function
+  createQuery: (options: CreateQueryOptions) => any
   transformEvents: Function
   detectConnectorFeatures: any
   connectorModes: any
@@ -21,6 +23,24 @@ export const executeReadModel = async ({
   let performAcknowledge = null
   const acknowledgePromise: Promise<any> = new Promise((resolve) => {
     performAcknowledge = async (result: any) => await resolve(result)
+  })
+
+  const provideLedger = async (ledger: any): Promise<void> => void 0
+  const secretsManager = promise[symbol].secretsManager
+
+  const domain = initDomain({
+    viewModels: [],
+    readModels: [
+      {
+        name: promise[symbol].name,
+        projection: promise[symbol].projection,
+        resolvers: promise[symbol].resolvers,
+        connectorName: 'ADAPTER_NAME',
+        encryption: promise[symbol].encryption,
+      },
+    ],
+    aggregates: [],
+    sagas: [],
   })
 
   try {
@@ -38,16 +58,6 @@ export const executeReadModel = async ({
     }
 
     queryExecutor = createQuery({
-      viewModels: [],
-      readModels: [
-        {
-          name: promise[symbol].name,
-          projection: promise[symbol].projection,
-          resolvers: promise[symbol].resolvers,
-          connectorName: 'ADAPTER_NAME',
-          encryption: promise[symbol].encryption,
-        },
-      ],
       readModelConnectors: {
         ADAPTER_NAME: promise[symbol].adapter,
       },
@@ -55,6 +65,13 @@ export const executeReadModel = async ({
       invokeEventBusAsync: async () => void 0,
       eventstoreAdapter,
       performAcknowledge,
+      readModelsInterop: domain.readModelDomain.acquireReadModelsInterop({
+        secretsManager,
+        monitoring: {},
+      }),
+      viewModelsInterop: {},
+      performanceTracer: null,
+      provideLedger,
     })
     const isInlineLedger =
       (await detectConnectorFeatures(promise[symbol].adapter)) ===
@@ -119,12 +136,12 @@ export const executeReadModel = async ({
 
     let result = null
     try {
-      result = await queryExecutor.read({
+      void ({ data: result } = await queryExecutor.read({
         modelName: promise[symbol].name,
         resolverName: promise[symbol].resolverName,
         resolverArgs: promise[symbol].resolverArgs,
         jwt: promise[symbol].jwt,
-      })
+      }))
     } catch (err) {
       errors.push(err)
     }
