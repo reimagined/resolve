@@ -526,6 +526,7 @@ const build = doOperation.bind(
     connection,
     interop,
     next.bind(null, pool, readModelName),
+    pool.eventstoreAdapter,
     pool.getVacantTimeInMillis,
     provideLedger.bind(null, pool, readModelName),
   ]
@@ -713,6 +714,7 @@ const wrapReadModel = ({
   performAcknowledge,
   monitoring,
   provideLedger,
+  eventstoreAdapter,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${interop.name}`)
 
@@ -737,6 +739,7 @@ const wrapReadModel = ({
     performAcknowledge,
     monitoring: safeMonitoring,
     provideLedger,
+    eventstoreAdapter,
   }
 
   const api = {

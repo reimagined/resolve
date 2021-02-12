@@ -17,7 +17,7 @@
   "author": "reimagined team",
   "main": "./lib/index.js",
   "module": "./es/index.js",
-  "types": "./index.d.ts",
+  "types": "./types/index.d.ts",
   "scripts": {
     "test": "jest --config=../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../jest.config.js --watchAll"
@@ -46,5 +46,6 @@
       "inputDir": "./src",
       "outDir": "./lib"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }

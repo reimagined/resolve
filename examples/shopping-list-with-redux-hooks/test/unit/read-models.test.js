@@ -10,40 +10,13 @@ import {
   SHOPPING_LIST_RENAMED,
 } from '../../common/event-types'
 
-const resetReadModel = async (
-  createConnector,
-  connectorOptions,
-  readModelName
-) => {
-  const adapter = createConnector(connectorOptions)
-  try {
-    const connection = await adapter.connect(readModelName)
-    await adapter.drop(connection, readModelName)
-    await adapter.disconnect(connection, readModelName)
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.warn(error)
-  } finally {
-    await adapter.dispose()
-  }
-}
-
 describe('read-models', () => {
   describe('ShoppingLists', () => {
     const aggregateId = '00000000-0000-0000-0000-000000000000'
 
     let adapter = null
-
     beforeEach(async () => {
-      await resetReadModel(
-        createReadModelAdapter,
-        { databaseFile: ':memory:', preferEventBusLedger: true },
-        'ShoppingLists'
-      )
-      adapter = createReadModelAdapter({
-        databaseFile: ':memory:',
-        preferEventBusLedger: true,
-      })
+      adapter = createReadModelAdapter({ databaseFile: ':memory:' })
     })
 
     test('resolver "all" should return an empty array', async () => {
