@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/resolve-module-uploader",
+  "name": "@reimagined/module-uploader",
   "version": "0.26.5",
   "description": "A reSolve module that adds uploader commands to an application.",
   "keywords": [

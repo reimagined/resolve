@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/resolve-runtime",
+  "name": "@reimagined/runtime",
   "version": "0.26.5",
   "description": "The reSolve framework's backend server.",
   "keywords": [
@@ -25,12 +25,12 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@reimagined/resolve-core": "0.26.5",
-    "@reimagined/resolve-debug-levels": "0.26.5",
-    "@reimagined/resolve-eventstore-base": "0.26.5",
-    "@reimagined/resolve-eventstore-lite": "0.26.5",
-    "@reimagined/resolve-local-event-broker": "0.26.5",
-    "@reimagined/resolve-readmodel-base": "0.26.5",
+    "@reimagined/core": "0.26.5",
+    "@reimagined/debug-levels": "0.26.5",
+    "@reimagined/eventstore-base": "0.26.5",
+    "@reimagined/eventstore-lite": "0.26.5",
+    "@reimagined/local-event-broker": "0.26.5",
+    "@reimagined/readmodel-base": "0.26.5",
     "aws-signature-v4": "^1.4.0",
     "binary-case": "^1.1.4",
     "body-parser": "^1.19.0",
@@ -66,7 +66,7 @@
     "sinon": "7.2.2"
   },
   "peerDependencies": {
-    "@reimagined/resolve-local-event-broker": "*",
+    "@reimagined/local-event-broker": "*",
     "aws-sdk": "*",
     "aws-xray-sdk-core": "^2.3.3"
   },

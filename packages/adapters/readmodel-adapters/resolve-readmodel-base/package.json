@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/resolve-readmodel-base",
+  "name": "@reimagined/readmodel-base",
   "version": "0.26.5",
   "description": "A base package for reSolve read model adapters",
   "keywords": [

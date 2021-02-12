@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/resolve-scripts",
+  "name": "@reimagined/scripts",
   "version": "0.26.5",
   "description": "Contains scripts used to initialize a reSolve server.",
   "keywords": [
@@ -32,8 +32,8 @@
     "@babel/register": "7.9.0",
     "@babel/runtime": "7.9.6",
     "@purtuga/esm-webpack-plugin": "^1.1.1",
-    "@reimagined/resolve-debug-levels": "0.26.5",
-    "@reimagined/resolve-runtime": "0.26.5",
+    "@reimagined/debug-levels": "0.26.5",
+    "@reimagined/runtime": "0.26.5",
     "address": "^1.1.0",
     "ajv": "^6.10.0",
     "babel-loader": "8.1.0",

@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/resolve-eventstore-postgresql",
+  "name": "@reimagined/eventstore-postgresql",
   "version": "0.26.5",
   "description": "An adapter reSolve uses to store events in PostgreSQL.",
   "keywords": [
@@ -25,9 +25,9 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@reimagined/resolve-core": "0.26.5",
-    "@reimagined/resolve-debug-levels": "0.26.5",
-    "@reimagined/resolve-eventstore-base": "0.26.5",
+    "@reimagined/core": "0.26.5",
+    "@reimagined/debug-levels": "0.26.5",
+    "@reimagined/eventstore-base": "0.26.5",
     "pg": "^8.2.1"
   },
   "devDependencies": {

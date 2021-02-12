@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/resolve-testing-tools",
+  "name": "@reimagined/testing-tools",
   "version": "0.26.5",
   "description": "Tools used to test reSolve applications.",
   "keywords": [
@@ -25,9 +25,9 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@reimagined/resolve-core": "0.26.5",
-    "@reimagined/resolve-readmodel-lite": "0.26.5",
-    "@reimagined/resolve-runtime": "0.26.5",
+    "@reimagined/core": "0.26.5",
+    "@reimagined/readmodel-lite": "0.26.5",
+    "@reimagined/runtime": "0.26.5",
     "colors": "^1.4.0",
     "diff": "^4.0.2",
     "lodash.isequal": "4.5.0"

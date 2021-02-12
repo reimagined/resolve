@@ -14,7 +14,7 @@
     "@babel/node": "7.10.5",
     "@babel/preset-env": "7.11.5",
     "@internal/helpers": "0.26.5",
-    "@reimagined/resolve-client": "0.26.5",
+    "@reimagined/client": "0.26.5",
     "babel-jest": "26.0.1",
     "commander": "6.1.0",
     "consola": "2.15.0",

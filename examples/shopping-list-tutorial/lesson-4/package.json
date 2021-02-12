@@ -14,8 +14,8 @@
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
-    "@reimagined/resolve-redux": "0.26.5",
-    "@reimagined/resolve-scripts": "0.26.5",
+    "@reimagined/redux": "0.26.5",
+    "@reimagined/scripts": "0.26.5",
     "history": "4.10.1",
     "react": "16.13.1",
     "react-bootstrap": "0.32.4",

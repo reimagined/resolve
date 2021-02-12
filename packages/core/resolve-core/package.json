@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/resolve-core",
+  "name": "@reimagined/core",
   "version": "0.26.5",
   "description": "reSolve core.",
   "keywords": [
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@reimagined/resolve-debug-levels": "0.26.5",
+    "@reimagined/debug-levels": "0.26.5",
     "uuid": "8.3.2"
   },
   "devDependencies": {

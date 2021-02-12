@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/resolve-client",
+  "name": "@reimagined/client",
   "version": "0.26.5",
   "description": "Basic reSolve client.",
   "keywords": [
@@ -39,7 +39,7 @@
     "verbose": true
   },
   "dependencies": {
-    "@reimagined/resolve-core": "0.26.5",
+    "@reimagined/core": "0.26.5",
     "global": "^4.4.0",
     "isomorphic-fetch": "3.0.0",
     "node-fetch": "^2.6.0",

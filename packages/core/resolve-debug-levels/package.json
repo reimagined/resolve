@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/resolve-debug-levels",
+  "name": "@reimagined/debug-levels",
   "version": "0.26.5",
   "description": "Provides the debug-level API for reSolve packages.",
   "keywords": [
