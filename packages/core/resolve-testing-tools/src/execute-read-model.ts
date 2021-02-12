@@ -1,6 +1,6 @@
 import { Phases, symbol } from './constants'
 import { CreateQueryOptions } from 'resolve-runtime'
-import { initDomain } from 'resolve-core'
+import { initDomain, Eventstore } from 'resolve-core'
 
 export const executeReadModel = async ({
   promise,
@@ -44,7 +44,7 @@ export const executeReadModel = async ({
   })
 
   try {
-    const eventstoreAdapter = {
+    const eventstoreAdapter = ({
       getSecretsManager: (): any => promise[symbol].secretsManager,
       loadEvents: async () => ({
         events: transformEvents(promise[symbol].events),
@@ -55,7 +55,7 @@ export const executeReadModel = async ({
         },
       }),
       getNextCursor: () => 'SHIFT_CURSOR',
-    }
+    } as unknown) as Eventstore
 
     queryExecutor = createQuery({
       readModelConnectors: {
