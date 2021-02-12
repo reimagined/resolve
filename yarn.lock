@@ -18897,10 +18897,10 @@ testcafe-react-selectors@^4.0.0:
   resolved "https://registry.yarnpkg.com/testcafe-react-selectors/-/testcafe-react-selectors-4.0.0.tgz#75cb0396ced6121c4562f7fbe809a289664d62d7"
   integrity sha512-di03HvtEqLzCaCkWd4PumWgfhgmz7K8XVduYUY0aCQ1p4zFtO2S1suAte6IvakvG8yAKr1oH5OL0yTdXgcPf6Q==
 
-testcafe-reporter-dashboard@0.0.16:
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/testcafe-reporter-dashboard/-/testcafe-reporter-dashboard-0.0.16.tgz#36bd4bbcf59d4e35618c1decbe234b95f803aab1"
-  integrity sha512-GhUdALUpaCZVozyb2g/y00e94onlNv0srTRfOVfA0U8XM4lu7CEwscLwOgrtDfi7NaSc6vxa4JDWFY3QIurpZg==
+testcafe-reporter-dashboard-test@0.0.22:
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/testcafe-reporter-dashboard-test/-/testcafe-reporter-dashboard-test-0.0.22.tgz#0ffd56b07b0638ac86c7b838b444a22e92d40994"
+  integrity sha512-9ebZLer7wpvN7BcKBZ/fHiMLg5YxkT50VcRBDvh3EtYS1KKcGKv76JNmNFYoIL7hm5nYGxlJkR2rVoW3Hv6X+g==
   dependencies:
     es6-promise "^4.2.8"
     isomorphic-fetch "^3.0.0"
