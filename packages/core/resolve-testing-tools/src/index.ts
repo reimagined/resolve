@@ -1,4 +1,10 @@
-import { createQuery, createCommand, CreateQueryOptions, detectConnectorFeatures, connectorModes, } from 'resolve-runtime'
+import {
+  createQuery,
+  createCommand,
+  CreateQueryOptions,
+  detectConnectorFeatures,
+  connectorModes,
+} from 'resolve-runtime'
 import { SerializableMap, CommandResult } from 'resolve-core'
 import as from './as'
 import givenEvents from './given-events'

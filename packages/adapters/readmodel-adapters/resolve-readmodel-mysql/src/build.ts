@@ -1,9 +1,4 @@
-import type {
-  ExternalMethods,
-  ReadModelCursor,
-  ReadModelLedger,
-  ReadModelEvent,
-} from './types'
+import type { ExternalMethods, ReadModelCursor, ReadModelLedger } from './types'
 
 const serializeError = (error: Error & { code: number }) =>
   error != null
@@ -118,7 +113,7 @@ const buildEvents: (
   next,
   eventstoreAdapter,
   getVacantTimeInMillis,
-  provideLedger,
+  provideLedger
 ) => {
   void provideLedger
   const pool = { ...basePool, ...currentPool }
@@ -431,7 +426,7 @@ const build: ExternalMethods['build'] = async (
       next,
       eventstoreAdapter,
       getVacantTimeInMillis,
-      provideLedger,
+      provideLedger
     )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {

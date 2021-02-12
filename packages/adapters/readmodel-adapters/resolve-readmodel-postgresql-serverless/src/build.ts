@@ -173,7 +173,7 @@ export const buildEvents: (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis,
+  getVacantTimeInMillis
 ) => {
   const pool = { ...basePool, ...currentPool }
   const {
@@ -613,7 +613,7 @@ const build: ExternalMethods['build'] = async (
       next,
       eventstoreAdapter,
       getVacantTimeInMillis,
-      provideLedger,
+      provideLedger
     )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {

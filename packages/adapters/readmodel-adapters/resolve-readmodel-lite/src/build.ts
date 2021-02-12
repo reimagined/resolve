@@ -1,9 +1,4 @@
-import type {
-  ExternalMethods,
-  ReadModelEvent,
-  ReadModelCursor,
-  ReadModelLedger,
-} from './types'
+import type { ExternalMethods, ReadModelCursor, ReadModelLedger } from './types'
 
 const serializeError = (error: Error & { code: number }) =>
   error != null
@@ -157,7 +152,7 @@ const buildEvents: (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis,
+  getVacantTimeInMillis
 ) => {
   const pool = { ...basePool, ...currentPool }
   const {

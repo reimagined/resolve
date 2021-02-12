@@ -333,8 +333,13 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     readModelName: string,
     store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
     modelInterop: {
-      acquireInitHandler: (store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>) => () => Promise<void>,
-      acquireEventHandler: (store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>, event: ReadModelEvent) => () => Promise<void>,
+      acquireInitHandler: (
+        store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>
+      ) => () => Promise<void>
+      acquireEventHandler: (
+        store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
+        event: ReadModelEvent
+      ) => () => Promise<void>
     },
     next: MethodNext,
     eventstoreAdapter: EventstoreAdapterLike,

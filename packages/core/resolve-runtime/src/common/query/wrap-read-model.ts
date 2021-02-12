@@ -714,7 +714,7 @@ const wrapReadModel = ({
   performAcknowledge,
   monitoring,
   provideLedger,
-  eventstoreAdapter
+  eventstoreAdapter,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${interop.name}`)
 
@@ -739,7 +739,7 @@ const wrapReadModel = ({
     performAcknowledge,
     monitoring: safeMonitoring,
     provideLedger,
-    eventstoreAdapter
+    eventstoreAdapter,
   }
 
   const api = {
