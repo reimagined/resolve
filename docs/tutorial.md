@@ -65,7 +65,6 @@ Define types of events that the write side can produce. Create an **eventTypes.j
 
 ```js
 export const SHOPPING_LIST_CREATED = 'SHOPPING_LIST_CREATED' // Indicates the creation of a shopping list
-
 export const SHOPPING_ITEM_CREATED = 'SHOPPING_ITEM_CREATED' // Indicates the creation of an item within a shopping list
 ```
 
@@ -244,12 +243,12 @@ To overcome the first issue, add checks at the beginning of each command handler
 
 ```js
 createShoppingList: (state, { payload: { name } }) => {
-  if (!name) throw new Error("name is required");
+  if (!name) throw new Error('The "name" field is required');
   ...
 },
 createShoppingItem: (state, { payload: { id, text } }) => {
-  if (!id) throw new Error('id is required')
-  if (!text) throw new Error('text is required')
+  if (!id) throw new Error('The "id" field is required')
+  if (!text) throw new Error('The "text" field is required')
   ...
 }
 ```
@@ -258,9 +257,6 @@ To overcome the second and third issues, you need to have an **aggregate state**
 
 **common/aggregates/shopping_list.projection.js**
 
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.projection.js /^/ /\n$/)
 ```js
 import { SHOPPING_LIST_CREATED } from "../eventTypes";
 
@@ -277,43 +273,36 @@ export default {
 };
 ```
 
-<!-- prettier-ignore-end -->
-
 Register the projection in the application's configuration file:
 
 **config.app.js**
 
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/shopping-list-tutorial/lesson-2/config.app.js /^[[:blank:]]+aggregates:/ /\],/)
 ```js
-  aggregates: [
-    {
-      name: "ShoppingList",
-      commands: "common/aggregates/shopping_list.commands.js",
-      // A path to the file that defines the projection
-      projection: "common/aggregates/shopping_list.projection.js"
-    }
-  ],
+aggregates: [
+  {
+    name: "ShoppingList",
+    commands: "common/aggregates/shopping_list.commands.js",
+    // A path to the file that defines the projection
+    projection: "common/aggregates/shopping_list.projection.js"
+  }
+],
 ```
-
-<!-- prettier-ignore-end -->
 
 You can use the state assembled by a projection on the write side to find out whether and when a shopping list was created for the current aggregate instance (an instance that the current aggregate ID identifies).
 
 **common/aggregates/shopping_list.commands.js**
 
 ```js
-  createShoppingList: (state, { payload: { name } }) => {
-    if (state.createdAt) throw new Error("shopping List already exists");
-    ...
-  },
-  createShoppingItem: (state, { payload: { id, text } }) => {
-    if (!state || !state.createdAt) {
-      throw new Error(`shopping list does not exist`);
-    }
-    ...
+createShoppingList: (state, { payload: { name } }) => {
+  if (state.createdAt) throw new Error('Shopping list already exists');
+  ...
+},
+createShoppingItem: (state, { payload: { id, text } }) => {
+  if (!state || !state.createdAt) {
+    throw new Error('Shopping list does not exist');
   }
+  ...
+}
 ```
 
 You can send faulty commands to your aggregate to check whether the validation works as intended:
@@ -339,55 +328,6 @@ Connection: keep-alive
 Content-Length: 31
 
 Command error: name is required
-
-
-# Trying to create a shopping list that already exists
-$ curl -i http://localhost:3000/api/commands/ \
-> --header "Content-Type: application/json" \
-> --data '
-> {
->     "aggregateName": "ShoppingList",
->     "aggregateId": "shopping-list-1",
->     "type": "createShoppingList",
->     "payload": {
->         "name": "List 1"
->     }
-> }
-> '
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   205  100    43  100   162    196    739 --:--:-- --:--:-- --:--:--   798HTTP/1.1 500 Internal Server Error
-X-Powered-By: Express
-Date: Thu, 22 Nov 2018 11:11:18 GMT
-Connection: keep-alive
-Content-Length: 43
-
-Command error: the shopping list already exists
-
-
-# Trying to add an item to a nonexistent shopping list
-$ curl -i http://localhost:3000/api/commands/ \
-> --header "Content-Type: application/json" \
-> --data '
-> {
->     "aggregateName": "ShoppingList",
->     "aggregateId": "shopping-list-4000",
->     "type": "createShoppingItem",
->     "payload": {
->         "id": "5",
->         "text": "Bread"
->     }
-> }
-> '
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   226  100    43  100   183    211    901 --:--:-- --:--:-- --:--:--   901HTTP/1.1 500 Internal Server Error
-X-Powered-By: Express
-Date: Thu, 22 Nov 2018 11:16:56 GMT
-Connection: keep-alive
-Content-Length: 43
-
-Command error: the shopping list does not exist
 ```
 
 ---
@@ -565,12 +505,12 @@ First, implement a React component that renders a list of shopping list names. T
 
 ```jsx
 import React from 'react'
-import { ControlLabel, Table } from 'react-bootstrap'
+import { FormLabel, Table } from 'react-bootstrap'
 
 const ShoppingLists = ({ lists }) => {
   return (
     <div>
-      <ControlLabel>My shopping lists</ControlLabel>
+      <FormLabel>My shopping lists</FormLabel>
       <Table responsive>
         <thead>
           <tr>
@@ -582,7 +522,9 @@ const ShoppingLists = ({ lists }) => {
           {lists.map(({ id, name }, index) => (
             <tr key={id}>
               <td>{index + 1}</td>
-              <td>{name}</td>
+              <td>
+                {name}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -621,8 +563,8 @@ const MyLists = () => {
   }, [])
 
   return (
-    <div className="example-wrapper">
-      <ShoppingLists lists={lists ? lists.data || [] : []} />
+    <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
+      <ShoppingLists  lists={lists ? lists.data || [] : []} />
     </div>
   )
 }
@@ -730,8 +672,6 @@ export default appConfig
 ```
 
 Run your application to view the result:
-
-![result](assets/tutorial/lesson4_result.png)
 
 ---
 
@@ -852,13 +792,16 @@ Add the following React components to your client application to display shoppin
 
 ```jsx
 import React from 'react'
-import { ListGroupItem, Checkbox } from 'react-bootstrap'
+import { ListGroupItem, FormCheck } from 'react-bootstrap'
 
-// The layout of a single item.
 const ShoppingListItem = ({ item: { id, text } }) => {
   return (
     <ListGroupItem key={id}>
-      <Checkbox inline>{text}</Checkbox>
+      <FormCheck
+        inline
+        type="checkbox"
+        label={text}
+      />    
     </ListGroupItem>
   )
 }
@@ -876,7 +819,7 @@ import {
   ListGroup,
   FormControl,
   FormGroup,
-  ControlLabel,
+  FormLabel,
 } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
@@ -910,9 +853,9 @@ const ShoppingList = ({
   }, [])
 
   return (
-    <div>
-      <ControlLabel>Shopping list name</ControlLabel>
-      <FormGroup bsSize="large">
+    <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
+      <FormLabel>Shopping list name</FormLabel>
+      <FormGroup bssize="large">
         <FormControl type="text" value={shoppingList.name} readOnly />
       </FormGroup>
       <ListGroup>
@@ -1034,7 +977,7 @@ import {
       }
 
       if (!id) {
-        throw new Error(`The "id" field is required`)
+        throw new Error('The "id" field is required')
       }
 
       return {
@@ -1048,7 +991,7 @@ import {
       }
 
       if (!id) {
-        throw new Error(`The "id" field is required`)
+        throw new Error('The "id" field is required')
       }
 
       return {
@@ -1125,9 +1068,9 @@ Add a React component that creates shopping lists. The component renders a text 
 
 ```jsx
 import React, { useState } from 'react'
-import { Button, Col, ControlLabel, FormControl, Row } from 'react-bootstrap'
+import { Button, Col, FormLabel, FormControl, Row } from 'react-bootstrap'
 import { useCommand } from 'resolve-react-hooks'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 
 const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
   const [shoppingListName, setShoppingListName] = useState('')
@@ -1162,7 +1105,7 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
 
   return (
     <div>
-      <ControlLabel>Shopping list name</ControlLabel>
+      <FormLabel>Shopping list name</FormLabel>
       <Row>
         <Col md={8}>
           <FormControl
@@ -1173,7 +1116,10 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
           />
         </Col>
         <Col md={4}>
-          <Button bsStyle="success" onClick={createShoppingListCommand}>
+          <Button
+            bstyle="success"
+            onClick={createShoppingListCommand}
+          >
             Add Shopping List
           </Button>
         </Col>
@@ -1197,7 +1143,7 @@ You can render this component within 'MyLists' as shown below:
 const MyLists = () => {
   ...
   return (
-    <div className="example-wrapper">
+    <div>
       ...
       <ShoppingListCreator
         lists={lists ? lists.data || [] : []}
@@ -1287,7 +1233,7 @@ Also add an `onRemoveSuccess` handler to MyLists:
 const MyLists = () => {
   ...
   return (
-    <div className="example-wrapper">
+    <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
       <ShoppingLists
         lists={lists ? lists.data || [] : []}
         onRemoveSuccess={(err, result) => {
@@ -1309,17 +1255,19 @@ The code below demonstrates how to implement data editing for the ShoppingList c
 
 ```jsx
 import React, { useState, useEffect } from 'react'
-import { useCommandBuilder, useViewModel } from 'resolve-react-hooks'
+import {
+  useCommandBuilder,
+  useViewModel,
+} from 'resolve-react-hooks'
 
 import {
   Row,
   Col,
   ListGroup,
   Button,
-  InputGroup,
   FormControl,
   FormGroup,
-  ControlLabel,
+  FormLabel,
 } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
@@ -1373,11 +1321,16 @@ const ShoppingList = ({
     }
   }, [])
 
+
   return (
-    <div>
-      <ControlLabel>Shopping list name</ControlLabel>
-      <FormGroup bsSize="large">
-        <FormControl type="text" value={shoppingList.name} readOnly />
+    <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
+      <FormLabel>Shopping list name</FormLabel>
+      <FormGroup bssize="large">
+        <FormControl
+          type="text"
+          value={shoppingList.name}
+          readOnly
+        />
       </FormGroup>
       <ListGroup>
         {shoppingList.list.map((item, idx) => (
@@ -1388,7 +1341,7 @@ const ShoppingList = ({
           />
         ))}
       </ListGroup>
-      <ControlLabel>Item name</ControlLabel>
+      <FormLabel>Item name</FormLabel>
       <Row>
         <Col md={8}>
           <FormControl
@@ -1400,7 +1353,7 @@ const ShoppingList = ({
         </Col>
         <Col md={4}>
           <Button
-            bsStyle="success"
+            bsstyle="success"
             onClick={() => createShoppingItem(itemText)}
           >
             Add Item
@@ -1425,10 +1378,10 @@ Modify the ShoppingListItem component to support item checking and deletion.
 
 ```jsx
 import React from 'react'
-import { ListGroupItem, Checkbox, Button, Clearfix } from 'react-bootstrap'
+import { ListGroupItem, FormCheck, Button } from 'react-bootstrap'
 import { useCommand } from 'resolve-react-hooks'
 
-const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
+const ShoppingListItem = ({shoppingListId, item: { id, checked, text } }) => {
   const toggleItem = useCommand({
     type: 'toggleShoppingItem',
     aggregateId: shoppingListId,
@@ -1447,14 +1400,16 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   })
   return (
     <ListGroupItem key={id}>
-      <Clearfix>
-        <Checkbox inline checked={checked} onChange={toggleItem}>
-          {text}
-        </Checkbox>
-        <Button onClick={removeItem} className="pull-right">
-          Delete
-        </Button>
-      </Clearfix>
+      <FormCheck
+        inline
+        type="checkbox"
+        label={text}
+        checked={checked}
+        onChange={toggleItem}
+      />    
+      <Button className="float-right" onClick={removeItem}>
+        Delete
+      </Button>
     </ListGroupItem>
   )
 }

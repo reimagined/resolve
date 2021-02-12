@@ -27,12 +27,10 @@ const ShoppingListItem = ({shoppingListId, item: { id, checked, text } }) => {
         label={text}
         checked={checked}
         onChange={toggleItem}
-      />    
-
+      /> 
       <Button className="float-right" onClick={removeItem}>
         Delete
       </Button>
-
     </ListGroupItem>
   )
 }
