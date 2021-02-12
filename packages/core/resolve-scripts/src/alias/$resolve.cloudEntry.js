@@ -1,7 +1,7 @@
 export default () => `
     import '$resolve.guardOnlyServer'
 
-    export { default as entryPointMarker } from 'resolve-runtime/lib/common/utils/entry-point-marker'
+    export { default as entryPointMarker } from '@reimagined/runtime/lib/common/utils/entry-point-marker'
 
     const handler = async (...args) => {
       try {
@@ -12,7 +12,7 @@ export default () => `
             require('$resolve.serverAssemblies')
           ).default
           global.cloudEntry = interopRequireDefault(
-            require('resolve-runtime/lib/cloud')
+            require('@reimagined/runtime/lib/cloud')
           ).default
 
           global.initPromise = cloudEntry(serverAssemblies)

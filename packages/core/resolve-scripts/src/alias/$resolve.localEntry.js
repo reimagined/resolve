@@ -3,9 +3,9 @@ export default () => `
   import { connectPublisher, createAndInitConsumer } from 'resolve-local-event-broker'
   import serverAssemblies from '$resolve.serverAssemblies'
   import eventBrokerConfig from '$resolve.eventBrokerConfig'
-  import localEntry from 'resolve-runtime/lib/local'
+  import localEntry from '@reimagined/runtime/lib/local'
 
-  export { default as entryPointMarker } from 'resolve-runtime/lib/common/utils/entry-point-marker'
+  export { default as entryPointMarker } from '@reimagined/runtime/lib/common/utils/entry-point-marker'
   
   Object.assign(serverAssemblies.assemblies, {
     eventBrokerConfig,

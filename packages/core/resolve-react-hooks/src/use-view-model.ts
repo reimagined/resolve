@@ -1,7 +1,11 @@
 import { useContext, useCallback, useMemo } from 'react'
 import { assertContext, ResolveContext } from './context'
 import { Event, firstOfType, SerializableMap } from '@reimagined/core'
-import { QueryOptions, SubscribeCallback, Subscription } from '@reimagined/client'
+import {
+  QueryOptions,
+  SubscribeCallback,
+  Subscription,
+} from '@reimagined/client'
 import { useClient } from './use-client'
 import { isCallback, isOptions, isSerializableMap } from './generic'
 

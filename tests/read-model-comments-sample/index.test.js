@@ -1,5 +1,5 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents from 'resolve-testing-tools'
+import givenEvents from '@reimagined/testing-tools'
 
 import config from './config'
 import resetReadModel from '../reset-read-model'

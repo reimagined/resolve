@@ -1,4 +1,4 @@
-import givenEvents from 'resolve-testing-tools'
+import givenEvents from '@reimagined/testing-tools'
 import createReadModelAdapter from 'resolve-readmodel-lite'
 
 import projection from '../../common/read-models/shopping-lists.projection'

@@ -1,5 +1,5 @@
 import { Phases, symbol } from './constants'
-import { CreateQueryOptions } from 'resolve-runtime'
+import { CreateQueryOptions } from '@reimagined/runtime'
 import { initDomain } from '@reimagined/core'
 
 export const executeReadModel = async ({

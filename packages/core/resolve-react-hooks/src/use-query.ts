@@ -1,4 +1,9 @@
-import { Query, QueryOptions, QueryResult, QueryCallback } from '@reimagined/client'
+import {
+  Query,
+  QueryOptions,
+  QueryResult,
+  QueryCallback,
+} from '@reimagined/client'
 import { useCallback } from 'react'
 import { HookExecutor, isCallback, isDependencies, isOptions } from './generic'
 import { useClient } from './use-client'

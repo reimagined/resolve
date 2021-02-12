@@ -1,5 +1,7 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents, { getSchedulersNamesBySagas } from 'resolve-testing-tools'
+import givenEvents, {
+  getSchedulersNamesBySagas,
+} from '@reimagined/testing-tools'
 
 import config from './config'
 import resetReadModel from '../reset-read-model'

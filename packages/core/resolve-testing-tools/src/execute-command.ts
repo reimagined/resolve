@@ -4,7 +4,7 @@ import {
   SerializableMap,
   initDomain,
 } from '@reimagined/core'
-import { CommandExecutorBuilder, CommandExecutor } from 'resolve-runtime'
+import { CommandExecutorBuilder, CommandExecutor } from '@reimagined/runtime'
 import { Phases, symbol } from './constants'
 import { BDDAggregate } from './aggregate'
 import transformEvents from './transform-events'
