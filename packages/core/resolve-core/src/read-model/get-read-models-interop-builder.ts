@@ -2,14 +2,13 @@ import {
   ReadModelsInteropBuilder,
   ReadModelInterop,
   ReadModelRuntime,
-  ReadModelResolverMap,
   ReadModelInteropMap,
   ReadModelRuntimeEventHandler,
 } from './types'
-import { SecretsManager, Event } from '../core-types'
+import { SecretsManager, Event, ReadModelResolvers } from '../types/core'
 import { createHttpError, HttpStatusCodes } from '../errors'
 import { getPerformanceTracerSubsegment } from '../utils'
-import { ReadModelMeta } from '../types'
+import { ReadModelMeta } from '../types/runtime'
 import getLog from '../get-log'
 
 const monitoredError = async (
@@ -29,7 +28,7 @@ const getReadModelInterop = (
   const { monitoring } = runtime
 
   const resolverInvokerMap = Object.keys(resolvers).reduce<
-    ReadModelResolverMap
+    ReadModelResolvers<any>
   >((map, resolverName) => {
     map[resolverName] = resolvers[resolverName]
     return map

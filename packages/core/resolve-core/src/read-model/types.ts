@@ -1,46 +1,12 @@
-import { SecretsManager, Event } from '../core-types'
-
-export type ReadModelResolverParams = {
-  [key: string]: any
-}
-export type ReadModelResolverContext = {
-  jwt?: string
-  secretsManager: SecretsManager | null
-}
-export type ReadModelResolver = (
-  connection: any,
-  params: ReadModelResolverParams,
-  context: ReadModelResolverContext
-) => Promise<any>
+import { SecretsManager, Event } from '../types/core'
+import { Monitoring } from '../types/runtime'
 
 export type ReadModelRuntimeResolver = (
   connection: any,
   secretsManager: SecretsManager | null
 ) => Promise<any>
 
-export type ReadModelResolverMap = {
-  [key: string]: ReadModelResolver
-}
-
 export type ReadModelRuntimeEventHandler = () => Promise<void>
-
-export type Monitoring = {
-  error?: (error: Error, part: string, meta: any) => Promise<void>
-  performance?: PerformanceTracer
-}
-
-export type PerformanceSubsegment = {
-  addAnnotation: (name: string, data: any) => void
-  addError: (error: Error) => void
-  close: () => void
-}
-export type PerformanceSegment = {
-  addNewSubsegment: (name: string) => PerformanceSubsegment
-}
-
-export type PerformanceTracer = {
-  getSegment: () => PerformanceSegment
-}
 
 export type ReadModelRuntime = {
   secretsManager: SecretsManager
@@ -74,7 +40,6 @@ export type ReadModelsInteropBuilder = (
   runtime: ReadModelRuntime
 ) => ReadModelInteropMap
 
-// FIXME: replace create with get?
 export type ReadModelDomain = {
   acquireReadModelsInterop: ReadModelsInteropBuilder
 }

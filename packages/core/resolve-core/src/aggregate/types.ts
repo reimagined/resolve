@@ -1,4 +1,4 @@
-import { Monitoring } from '../types'
+import { Eventstore, Monitoring } from '../types/runtime'
 import {
   Event,
   AggregateEncryptionFactory,
@@ -7,21 +7,7 @@ import {
   CommandHandler,
   CommandResult,
   SecretsManager,
-} from '../core-types'
-
-export type Eventstore = {
-  saveEvent: (event: any) => Promise<void>
-  getNextCursor: Function
-  saveSnapshot: Function
-  loadSnapshot: (snapshotKey: string) => Promise<string | null>
-  loadEvents: (param: {
-    aggregateIds: string[]
-    cursor: null
-    limit: number
-  }) => Promise<{
-    events: any[]
-  }>
-}
+} from '../types/core'
 
 export type AggregateInterop = {
   name: string
@@ -68,7 +54,6 @@ export type AggregatesInteropBuilder = (
   runtime: AggregateRuntime
 ) => AggregatesInterop
 
-// FIXME: replace create with get?
 export type AggregateDomain = {
   acquireAggregatesInterop: AggregatesInteropBuilder
 }
