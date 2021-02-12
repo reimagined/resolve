@@ -28,7 +28,7 @@ export default {
       })
     }
   },
-  /* from module "resolve-module-comments" */
+  /* from module "@reimagined/module-comments" */
   COMMENT_CREATED: async (
     es,
     {

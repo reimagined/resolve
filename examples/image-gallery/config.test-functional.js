@@ -7,7 +7,7 @@ const testFunctionalConfig = {
   rootPath: '',
   staticPath: 'static',
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: 'data/event-store-test-functional.db',
     },

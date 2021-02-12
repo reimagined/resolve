@@ -35,7 +35,7 @@ export default ({ resolveConfig, isClient }) => {
 
     if (readModelConnector.module == null) {
       readModelConnector.module =
-        'resolve-runtime/lib/common/defaults/read-model-connector.js'
+        '@reimagined/runtime/lib/common/defaults/read-model-connector.js'
     }
 
     importResource({

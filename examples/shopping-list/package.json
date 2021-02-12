@@ -9,7 +9,7 @@
     "dev": "babel-node ./run.js dev",
     "export-event-store": "babel-node ./run.js export-event-store",
     "import-event-store": "babel-node ./run.js import-event-store",
-    "resolve-module-admin": "resolve-module-admin",
+    "module-admin": "@reimagined/module-admin",
     "start": "babel-node ./run.js start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
     "test:e2e": "babel-node ./run.js test:e2e"

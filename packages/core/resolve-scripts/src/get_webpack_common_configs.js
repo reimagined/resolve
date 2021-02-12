@@ -123,7 +123,7 @@ const getWebpackCommonConfigs = ({
           modulesDir,
           importType: (moduleName) => `((() => {
               const path = require('path')
-              const requireDirs = ['', 'resolve-runtime/node_modules/']
+              const requireDirs = ['', '@reimagined/runtime/node_modules/']
               let modulePath = null
               const moduleName = ${JSON.stringify(moduleName)}
               for(const dir of requireDirs) {
@@ -137,7 +137,7 @@ const getWebpackCommonConfigs = ({
               }
               return require(modulePath)
             })())`,
-          whitelist: [/resolve-runtime/],
+          whitelist: [/@reimagined\/runtime/],
         })
       ),
     ],

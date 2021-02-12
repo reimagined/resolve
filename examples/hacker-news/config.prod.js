@@ -5,7 +5,7 @@ const prodConfig = {
   port: declareRuntimeEnv('PORT', '3000'),
   mode: 'production',
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
@@ -14,20 +14,20 @@ const prodConfig = {
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {
         databaseFile: 'data/read-model-default.db',
         secretsFile: 'data/secrets.db',
       },
     },
     hackerNews: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {
         databaseFile: 'data/read-model-hackerNews.db',
       },
     },
     comments: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {
         databaseFile: 'data/read-model-comments.db',
       },

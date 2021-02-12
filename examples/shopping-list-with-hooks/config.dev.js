@@ -5,7 +5,7 @@ const devConfig = {
   port: declareRuntimeEnv('PORT', '3000'),
   mode: 'development',
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
@@ -14,7 +14,7 @@ const devConfig = {
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {
         databaseFile: 'data/read-models.db',
       },

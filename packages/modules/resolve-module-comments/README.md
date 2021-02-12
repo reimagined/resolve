@@ -1,4 +1,4 @@
-# **resolve-module-comments**
+# **@reimagined/module-comments**
 [![npm version](https://badge.fury.io/js/resolve-module-comments.svg)](https://badge.fury.io/js/resolve-module-comments)
 
 ## Usage

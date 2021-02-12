@@ -66,7 +66,7 @@ export default ({ resolveConfig, isClient }) => {
     `  staticPath: interopRequireDefault(require('$resolve.staticPath')).default,`,
     `  jwtCookie: interopRequireDefault(require('$resolve.jwtCookie')).default,`,
     `  applicationName: interopRequireDefault(require('$resolve.applicationName')).default,`,
-    `  subscriber: interopRequireDefault(require('resolve-client/lib/subscribe-adapter')).default,`,
+    `  subscriber: interopRequireDefault(require('@reimagined/client/lib/subscribe-adapter')).default,`,
     `  customConstants: interopRequireDefault(require('$resolve.customConstants')).default,`,
     `  cdnUrl: interopRequireDefault(require('$resolve.cdnUrl')).default`,
     `}`

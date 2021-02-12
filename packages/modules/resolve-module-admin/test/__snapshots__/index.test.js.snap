@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolve-module-admin read-models list 1`] = `
+exports[`@reimagined/module-admin read-models list 1`] = `
 Array [
   Array [
-    "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR          
+    "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR
 read-model           status               3/18/05 04:58:31 type N\\\\A                  N\\\\A                 ",
   ],
 ]
 `;
 
-exports[`resolve-module-admin read-models pause 1`] = `
+exports[`@reimagined/module-admin read-models pause 1`] = `
 Array [
   Array [
     "ListenerId = \\"readModel\\" paused",
@@ -17,7 +17,7 @@ Array [
 ]
 `;
 
-exports[`resolve-module-admin read-models reset 1`] = `
+exports[`@reimagined/module-admin read-models reset 1`] = `
 Array [
   Array [
     "ListenerId = \\"readModel\\" reset",
@@ -25,7 +25,7 @@ Array [
 ]
 `;
 
-exports[`resolve-module-admin read-models resume 1`] = `
+exports[`@reimagined/module-admin read-models resume 1`] = `
 Array [
   Array [
     "ListenerId = \\"readModel\\" running",
@@ -33,16 +33,16 @@ Array [
 ]
 `;
 
-exports[`resolve-module-admin sagas list 1`] = `
+exports[`@reimagined/module-admin sagas list 1`] = `
 Array [
   Array [
-    "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR          
+    "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR
 saga                 status               3/18/05 04:58:31 type N\\\\A                  N\\\\A                 ",
   ],
 ]
 `;
 
-exports[`resolve-module-admin sagas pause 1`] = `
+exports[`@reimagined/module-admin sagas pause 1`] = `
 Array [
   Array [
     "ListenerId = \\"saga\\" paused",
@@ -50,7 +50,7 @@ Array [
 ]
 `;
 
-exports[`resolve-module-admin sagas properties get 1`] = `
+exports[`@reimagined/module-admin sagas properties get 1`] = `
 Array [
   Array [
     "ListenerId = \\"saga\\", Key = \\"key\\", Value = \\"value\\"",
@@ -58,16 +58,16 @@ Array [
 ]
 `;
 
-exports[`resolve-module-admin sagas properties list 1`] = `
+exports[`@reimagined/module-admin sagas properties list 1`] = `
 Array [
   Array [
-    "NAME                 VALUE               
+    "NAME                 VALUE
 key                  value               ",
   ],
 ]
 `;
 
-exports[`resolve-module-admin sagas properties remove 1`] = `
+exports[`@reimagined/module-admin sagas properties remove 1`] = `
 Array [
   Array [
     "ListenerId = \\"saga\\", Key = \\"key\\" deleted",
@@ -75,7 +75,7 @@ Array [
 ]
 `;
 
-exports[`resolve-module-admin sagas properties set 1`] = `
+exports[`@reimagined/module-admin sagas properties set 1`] = `
 Array [
   Array [
     "ListenerId = \\"saga\\", Key = \\"key\\", Value = \\"value\\"",
@@ -83,7 +83,7 @@ Array [
 ]
 `;
 
-exports[`resolve-module-admin sagas reset 1`] = `
+exports[`@reimagined/module-admin sagas reset 1`] = `
 Array [
   Array [
     "ListenerId = \\"saga\\" reset",
@@ -91,7 +91,7 @@ Array [
 ]
 `;
 
-exports[`resolve-module-admin sagas resume 1`] = `
+exports[`@reimagined/module-admin sagas resume 1`] = `
 Array [
   Array [
     "ListenerId = \\"saga\\" running",

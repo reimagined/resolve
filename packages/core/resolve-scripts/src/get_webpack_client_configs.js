@@ -81,7 +81,7 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
           ],
         },
         {
-          test: /resolve-runtime[\\/](?!node_modules).*?\.js$/,
+          test: /@reimagined\/runtime[\\/](?!node_modules).*?\.js$/,
           use: {
             loader: require.resolve('babel-loader'),
             options: clientTransformBabelOptions,

@@ -48,7 +48,7 @@ export default ({ resolveConfig }) => {
     `export const staticPath = interopRequireDefault(require('$resolve.staticPath')).default`,
     `export const jwtCookie = interopRequireDefault(require('$resolve.jwtCookie')).default`,
     `export const applicationName = interopRequireDefault(require('$resolve.applicationName')).default`,
-    `export const subscriber = interopRequireDefault(require('resolve-client/lib/subscribe-adapter')).default`,
+    `export const subscriber = interopRequireDefault(require('@reimagined/client/lib/subscribe-adapter')).default`,
     `export const customConstants = interopRequireDefault(require('$resolve.customConstants')).default`
   )
 

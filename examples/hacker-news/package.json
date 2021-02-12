@@ -11,7 +11,7 @@
     "import": "babel-node ./run.js import",
     "import-event-store": "babel-node ./run.js import-event-store",
     "reset": "babel-node ./run.js reset",
-    "resolve-module-admin": "resolve-module-admin",
+    "module-admin": "@reimagined/module-admin",
     "start": "babel-node ./run.js start",
     "test": "jest",
     "test:coverage": "jest --coverage",

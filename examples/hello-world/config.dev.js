@@ -10,14 +10,14 @@ const devConfig = {
   distDir: 'dist',
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {
         databaseFile: 'data/read-models.db',
       },
     },
     /*
       default: {
-        module: 'resolve-readmodel-mysql',
+        module: '@reimagined/readmodel-mysql',
         options: {
           host: 'localhost',
           port: 3306,
@@ -29,7 +29,7 @@ const devConfig = {
     */
   },
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
@@ -38,7 +38,7 @@ const devConfig = {
   },
   /*
     {
-      module: 'resolve-eventstore-mysql',
+      module: '@reimagined/eventstore-mysql',
       options: {
         host: 'localhost',
         port: 3306,

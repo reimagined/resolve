@@ -18,7 +18,7 @@ const createUserModule = (strategies) => {
         method,
         path: `/api/${routePath}`,
         handler: {
-          module: 'resolve-module-auth/lib/api_handler_constructor',
+          module: '@reimagined/module-auth/lib/api_handler_constructor',
           options: {
             strategyHash,
             options,
@@ -35,7 +35,7 @@ const createUserModule = (strategies) => {
       apiHandlers.push({
         method: logoutRoute.method,
         path: `/api/${logoutRoute.path}`,
-        handler: 'resolve-module-auth/lib/logout_api_handler',
+        handler: '@reimagined/module-auth/lib/logout_api_handler',
       })
     }
   }

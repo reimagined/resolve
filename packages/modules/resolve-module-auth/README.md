@@ -1,9 +1,9 @@
-# **resolve-module-auth**
+# **@reimagined/module-auth**
 
 Resolve authentication module provides out-of-box support for Passport compatible strategies (https://github.com/jaredhanson/passport-strategy).
-When using `resolve-module-auth` in resolve application, developer should only provide authentication strategy and supply API routes for login, register and other actions.
+When using `@reimagined/module-auth` in resolve application, developer should only provide authentication strategy and supply API routes for login, register and other actions.
 
-Use `resolve-module-auth` in application in following manner.
+Use `@reimagined/module-auth` in application in following manner.
 
 Entry point (run.js):
 
@@ -122,6 +122,6 @@ export default routeRegisterCallback
 ```
 
 
-[![npm version](https://badge.fury.io/js/resolve-module-auth.svg)](https://badge.fury.io/js/resolve-module-auth)
+[![npm version](https://badge.fury.io/js/@reimagined/module-auth.svg)](https://badge.fury.io/js/@reimagined/module-auth)
 
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-module-auth-readme?pixel)
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-@reimagined/module-auth-readme?pixel)

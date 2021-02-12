@@ -7,14 +7,14 @@ const devConfig = {
     'development' /*,
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {
         databaseFile: 'data/read-models.db'
       }
     }
   }*/,
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',

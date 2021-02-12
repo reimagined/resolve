@@ -7,7 +7,7 @@ const prodConfig = {
   rootPath: '',
   staticPath: 'static',
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',

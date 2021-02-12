@@ -40,7 +40,7 @@ export default ({ resolveConfig, isClient }) => {
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       instanceFallback:
-        'resolve-runtime/lib/common/defaults/json-deserialize-state.js',
+        '@reimagined/runtime/lib/common/defaults/json-deserialize-state.js',
       injectRuntimeOptions: isClient ? true : null,
       imports,
       constants,
@@ -63,7 +63,7 @@ export default ({ resolveConfig, isClient }) => {
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
         instanceFallback:
-          'resolve-runtime/lib/common/defaults/json-serialize-state.js',
+          '@reimagined/runtime/lib/common/defaults/json-serialize-state.js',
         imports,
         constants,
       })
@@ -77,7 +77,7 @@ export default ({ resolveConfig, isClient }) => {
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
         instanceFallback:
-          'resolve-runtime/lib/common/defaults/view-model-resolver.js',
+          '@reimagined/runtime/lib/common/defaults/view-model-resolver.js',
         imports,
         constants,
       })
@@ -90,7 +90,8 @@ export default ({ resolveConfig, isClient }) => {
         runtimeMode: RUNTIME_ENV_NOWHERE,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
-        instanceFallback: 'resolve-runtime/lib/common/defaults/encryption.js',
+        instanceFallback:
+          '@reimagined/runtime/lib/common/defaults/encryption.js',
         imports,
         constants,
       })

@@ -5,7 +5,7 @@ export default {
   mode: 'production',
   staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
   eventstoreAdapter: {
-    module: 'resolve-eventstore-postgresql-serverless',
+    module: '@reimagined/eventstore-postgresql-serverless',
     options: {
       awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
       dbClusterOrInstanceArn: declareRuntimeEnv(
@@ -20,7 +20,7 @@ export default {
   },
   readModelConnectors: {
     users: {
-      module: 'resolve-readmodel-postgresql-serverless',
+      module: '@reimagined/readmodel-postgresql-serverless',
       options: {
         dbClusterOrInstanceArn: declareRuntimeEnv(
           'RESOLVE_READMODEL_CLUSTER_ARN'
@@ -31,7 +31,7 @@ export default {
       },
     },
     files: {
-      module: 'resolve-readmodel-postgresql-serverless',
+      module: '@reimagined/readmodel-postgresql-serverless',
       options: {
         dbClusterOrInstanceArn: declareRuntimeEnv(
           'RESOLVE_READMODEL_CLUSTER_ARN'

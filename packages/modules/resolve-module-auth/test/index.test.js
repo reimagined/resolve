@@ -1,1 +1,1 @@
-test('Add tests for resolve-module-auth', async () => {})
+test('Add tests for @reimagined/module-auth', async () => {})

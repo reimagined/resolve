@@ -215,7 +215,7 @@ describe('config with schedulers works correctly', () => {
     schedulers: {
       scheduler: {
         adapter: {
-          module: 'resolve-scheduler-local',
+          module: '@reimagined/scheduler-local',
           options: {},
         },
         connectorName: 'default',

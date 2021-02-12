@@ -28,7 +28,7 @@ const getConfig = async (resolveConfig, options) => {
         method: 'GET',
         path: '/api/reset-domain',
         handler: {
-          module: 'resolve-runtime/lib/local/reset-domain-handler.js',
+          module: '@reimagined/runtime/lib/local/reset-domain-handler.js',
           options,
         },
       },

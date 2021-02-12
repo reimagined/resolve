@@ -5,7 +5,7 @@ const testFunctionalConfig = {
   port: declareRuntimeEnv('PORT', '3000'),
   mode: 'development',
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: 'data/event-store-test-functional.db',
       secretsFile: 'data/secrets-test-functional.db',
