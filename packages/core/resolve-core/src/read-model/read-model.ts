@@ -1,7 +1,7 @@
 import { ReadModelDomain } from './types'
 import { getReadModelsInteropBuilder } from './get-read-models-interop-builder'
 import { validateReadModel } from './validate-read-model'
-import { ReadModelMeta } from '../type-definitions/runtime'
+import { ReadModelMeta } from '../types/runtime'
 
 export const initReadModelDomain = (
   rawReadModels: ReadModelMeta[]

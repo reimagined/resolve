@@ -1,4 +1,4 @@
-import { ViewModelMeta } from '../type-definitions/runtime'
+import { ViewModelMeta } from '../types/runtime'
 
 // FIXME: add validation (io-ts?)
 export const validateViewModel = (viewModel: ViewModelMeta) => viewModel

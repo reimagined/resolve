@@ -5,7 +5,7 @@ import {
   AggregateRuntime,
 } from './types'
 import { CommandError } from '../errors'
-import { AggregateMeta } from '../type-definitions/runtime'
+import { AggregateMeta } from '../types/runtime'
 import getLog from '../get-log'
 import { getPerformanceTracerSubsegment } from '../utils'
 import {
@@ -15,7 +15,7 @@ import {
   CommandContext,
   CommandHandler,
   CommandResult,
-} from '../type-definitions/core'
+} from '../types/core'
 
 import { makeMonitoringSafe } from '../helpers'
 

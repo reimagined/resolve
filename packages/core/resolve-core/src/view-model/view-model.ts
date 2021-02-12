@@ -1,7 +1,7 @@
 import { ViewModelDomain } from './types'
 import { getViewModelsInteropBuilder } from './get-view-models-interop-builder'
 import { validateViewModel } from './validate-view-model'
-import { ViewModelMeta } from '../type-definitions/runtime'
+import { ViewModelMeta } from '../types/runtime'
 
 export const initViewModelDomain = (
   rawViewModels: ViewModelMeta[]

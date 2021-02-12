@@ -1,8 +1,4 @@
-import {
-  AggregateMeta,
-  ReadModelMeta,
-  ViewModelMeta,
-} from './type-definitions/runtime'
+import { AggregateMeta, ReadModelMeta, ViewModelMeta } from './types/runtime'
 import { SagaDomain, SagaInterop, SagaInteropMap } from './saga/types'
 import {
   ReadModelDomain,

@@ -1,8 +1,8 @@
 import { getAggregatesInteropBuilder } from '../src/aggregate/get-aggregates-interop-builder'
 import { CommandError } from '../src/errors'
 import { AggregateRuntime } from '../src/aggregate/types'
-import { SecretsManager, Event } from '../src/type-definitions/core'
-import { Eventstore, Monitoring } from '../src/type-definitions/runtime'
+import { SecretsManager, Event } from '../src/types/core'
+import { Eventstore, Monitoring } from '../src/types/runtime'
 let DateNow: any
 let performanceTracer: any
 let snapshots: any

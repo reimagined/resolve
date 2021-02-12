@@ -1,4 +1,4 @@
-import { Eventstore, Monitoring } from '../type-definitions/runtime'
+import { Eventstore, Monitoring } from '../types/runtime'
 import {
   Event,
   AggregateEncryptionFactory,
@@ -7,7 +7,7 @@ import {
   CommandHandler,
   CommandResult,
   SecretsManager,
-} from '../type-definitions/core'
+} from '../types/core'
 
 export type AggregateInterop = {
   name: string

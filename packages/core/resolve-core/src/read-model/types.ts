@@ -1,5 +1,5 @@
-import { SecretsManager, Event } from '../type-definitions/core'
-import { Monitoring } from '../type-definitions/runtime'
+import { SecretsManager, Event } from '../types/core'
+import { Monitoring } from '../types/runtime'
 
 export type ReadModelRuntimeResolver = (
   connection: any,

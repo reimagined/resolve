@@ -1,9 +1,5 @@
-import { SecretsManager } from '../type-definitions/core'
-import {
-  Eventstore,
-  Monitoring,
-  ViewModelSerializer,
-} from '../type-definitions/runtime'
+import { SecretsManager } from '../types/core'
+import { Eventstore, Monitoring, ViewModelSerializer } from '../types/runtime'
 
 export type ViewModelBuildParams = {
   aggregateIds: string[]

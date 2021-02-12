@@ -1,8 +1,8 @@
-import { SecretsManager } from '../src/type-definitions/core'
+import { SecretsManager } from '../src/types/core'
 import { HttpError } from '../src/errors'
 import { getSagasInteropBuilder } from '../src/saga/get-sagas-interop-builder'
 import { SagaRuntime, SchedulerEventTypes } from '../src/saga/types'
-import { SagaMeta, Monitoring } from '../src/type-definitions/runtime'
+import { SagaMeta, Monitoring } from '../src/types/runtime'
 const dummyEncryption = () => Promise.resolve({})
 
 const makeSagaMeta = (params: any): SagaMeta[] => [

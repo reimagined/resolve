@@ -1,9 +1,5 @@
-import { SecretsManager, Event } from '../src/type-definitions/core'
-import {
-  ViewModelMeta,
-  Eventstore,
-  Monitoring,
-} from '../src/type-definitions/runtime'
+import { SecretsManager, Event } from '../src/types/core'
+import { ViewModelMeta, Eventstore, Monitoring } from '../src/types/runtime'
 import { getViewModelsInteropBuilder } from '../src/view-model/get-view-models-interop-builder'
 import {
   ViewModelBuildContext,
