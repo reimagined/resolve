@@ -1,5 +1,5 @@
-# **resolve-module-uploader**
-[![npm version](https://badge.fury.io/js/resolve-module-uploader.svg)](https://badge.fury.io/js/resolve-module-uploader)
+# **@reimagined/module-uploader**
+[![npm version](https://badge.fury.io/js/@reimagined/module-uploader.svg)](https://badge.fury.io/js/@reimagined/module-uploader)
 
 ### Usage
 
