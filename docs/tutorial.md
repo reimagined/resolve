@@ -258,7 +258,7 @@ To overcome the second and third issues, you need to have an **aggregate state**
 **common/aggregates/shopping_list.projection.js**
 
 ```js
-import { SHOPPING_LIST_CREATED } from "../eventTypes";
+import { SHOPPING_LIST_CREATED } from '../eventTypes'
 
 export default {
   // The Init function initializes a state object
@@ -268,9 +268,9 @@ export default {
   // A projection function receives the state and an event, and returns the updated state.
   [SHOPPING_LIST_CREATED]: (state, { timestamp }) => ({
     ...state,
-    createdAt: timestamp  // Add an event's timestamp to the state.
-  })
-};
+    createdAt: timestamp, // Add an event's timestamp to the state.
+  }),
+}
 ```
 
 Register the projection in the application's configuration file:
@@ -522,9 +522,7 @@ const ShoppingLists = ({ lists }) => {
           {lists.map(({ id, name }, index) => (
             <tr key={id}>
               <td>{index + 1}</td>
-              <td>
-                {name}
-              </td>
+              <td>{name}</td>
             </tr>
           ))}
         </tbody>
@@ -563,8 +561,15 @@ const MyLists = () => {
   }, [])
 
   return (
-    <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
-      <ShoppingLists  lists={lists ? lists.data || [] : []} />
+    <div
+      style={{
+        maxWidth: '580px',
+        margin: '0 auto',
+        paddingLeft: '10px',
+        paddingRight: '10px',
+      }}
+    >
+      <ShoppingLists lists={lists ? lists.data || [] : []} />
     </div>
   )
 }
@@ -799,11 +804,7 @@ import { ListGroupItem, FormCheck } from 'react-bootstrap'
 const ShoppingListItem = ({ item: { id, text } }) => {
   return (
     <ListGroupItem key={id}>
-      <FormCheck
-        inline
-        type="checkbox"
-        label={text}
-      />    
+      <FormCheck inline type="checkbox" label={text} />
     </ListGroupItem>
   )
 }
@@ -817,12 +818,7 @@ export default ShoppingListItem
 import React, { useState, useEffect } from 'react'
 import { useViewModel } from 'resolve-react-hooks'
 
-import {
-  ListGroup,
-  FormControl,
-  FormGroup,
-  FormLabel,
-} from 'react-bootstrap'
+import { ListGroup, FormControl, FormGroup, FormLabel } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
 
@@ -855,7 +851,14 @@ const ShoppingList = ({
   }, [])
 
   return (
-    <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
+    <div
+      style={{
+        maxWidth: '580px',
+        margin: '0 auto',
+        paddingLeft: '10px',
+        paddingRight: '10px',
+      }}
+    >
       <FormLabel>Shopping list name</FormLabel>
       <FormGroup bssize="large">
         <FormControl type="text" value={shoppingList.name} readOnly />
@@ -905,7 +908,7 @@ const ShoppingLists = ({ lists }) => {
 }
 ```
 
-![List Items](assets/tutorial/lesson4-navigation.png) 
+![List Items](assets/tutorial/lesson4-navigation.png)
 
 Run the application and click a shopping list's name view the result. To test the View Model's reactiveness, keep the page opened and use the following console input to add a shopping list item:
 
@@ -1122,10 +1125,7 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
           />
         </Col>
         <Col md={4}>
-          <Button
-            bstyle="success"
-            onClick={createShoppingListCommand}
-          >
+          <Button bstyle="success" onClick={createShoppingListCommand}>
             Add Shopping List
           </Button>
         </Col>
@@ -1265,10 +1265,7 @@ The code below demonstrates how to implement data editing for the ShoppingList c
 
 ```jsx
 import React, { useState, useEffect } from 'react'
-import {
-  useCommandBuilder,
-  useViewModel,
-} from 'resolve-react-hooks'
+import { useCommandBuilder, useViewModel } from 'resolve-react-hooks'
 
 import {
   Row,
@@ -1331,16 +1328,18 @@ const ShoppingList = ({
     }
   }, [])
 
-
   return (
-    <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
+    <div
+      style={{
+        maxWidth: '580px',
+        margin: '0 auto',
+        paddingLeft: '10px',
+        paddingRight: '10px',
+      }}
+    >
       <FormLabel>Shopping list name</FormLabel>
       <FormGroup bssize="large">
-        <FormControl
-          type="text"
-          value={shoppingList.name}
-          readOnly
-        />
+        <FormControl type="text" value={shoppingList.name} readOnly />
       </FormGroup>
       <ListGroup>
         {shoppingList.list.map((item, idx) => (
@@ -1391,7 +1390,7 @@ import React from 'react'
 import { ListGroupItem, FormCheck, Button } from 'react-bootstrap'
 import { useCommand } from 'resolve-react-hooks'
 
-const ShoppingListItem = ({shoppingListId, item: { id, checked, text } }) => {
+const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   const toggleItem = useCommand({
     type: 'toggleShoppingItem',
     aggregateId: shoppingListId,
@@ -1416,7 +1415,7 @@ const ShoppingListItem = ({shoppingListId, item: { id, checked, text } }) => {
         label={text}
         checked={checked}
         onChange={toggleItem}
-      />    
+      />
       <Button className="float-right" onClick={removeItem}>
         Delete
       </Button>

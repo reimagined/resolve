@@ -210,25 +210,20 @@ test('validation should work correctly', async () => {
 })
 
 test('read model query should work correctly', async () => {
-  const response = await fetch(
-    `${MAIN_PAGE}/api/query/ShoppingLists/all`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'GET',
-    }
-  )
+  const response = await fetch(`${MAIN_PAGE}/api/query/ShoppingLists/all`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  })
 
   const result = await response.json()
-  
+
   expect(result.data).to.have.lengthOf(1)
-  expect(result.data[0]).to.include(
-    {
-      'id': 'shopping-list-1',
-      'name': 'List 1'
-    }
-  )
+  expect(result.data[0]).to.include({
+    id: 'shopping-list-1',
+    name: 'List 1',
+  })
 })
 
 test('shopping list is displayed on page', async (t) => {

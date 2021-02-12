@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import {
-  useViewModel,
-} from 'resolve-react-hooks'
+import { useViewModel } from 'resolve-react-hooks'
 
-import {
-  ListGroup,
-  FormControl,
-  FormGroup,
-  FormLabel,
-} from 'react-bootstrap'
+import { ListGroup, FormControl, FormGroup, FormLabel } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
 
@@ -35,23 +28,22 @@ const ShoppingList = ({
     }
   }, [])
 
-
   return (
-    <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
+    <div
+      style={{
+        maxWidth: '580px',
+        margin: '0 auto',
+        paddingLeft: '10px',
+        paddingRight: '10px',
+      }}
+    >
       <FormLabel>Shopping list name</FormLabel>
       <FormGroup bssize="large">
-        <FormControl
-          type="text"
-          value={shoppingList.name}
-          readOnly
-        />
+        <FormControl type="text" value={shoppingList.name} readOnly />
       </FormGroup>
       <ListGroup>
         {shoppingList.list.map((item, idx) => (
-          <ShoppingListItem
-            key={idx}
-            item={item}
-          />
+          <ShoppingListItem key={idx} item={item} />
         ))}
       </ListGroup>
     </div>

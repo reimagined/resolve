@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { useStaticResolver } from 'resolve-react-hooks'
 
-const Header = ({ title, css}) => {
+const Header = ({ title, css }) => {
   const resolveStatic = useStaticResolver()
   const stylesheetLinks = css.map((href) => ({
     rel: 'stylesheet',

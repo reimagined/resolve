@@ -17,8 +17,15 @@ const MyLists = () => {
   }, [])
 
   return (
-    <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
-      <ShoppingLists  lists={lists ? lists.data || [] : []} />
+    <div
+      style={{
+        maxWidth: '580px',
+        margin: '0 auto',
+        paddingLeft: '10px',
+        paddingRight: '10px',
+      }}
+    >
+      <ShoppingLists lists={lists ? lists.data || [] : []} />
     </div>
   )
 }

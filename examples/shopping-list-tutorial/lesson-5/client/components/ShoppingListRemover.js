@@ -12,11 +12,7 @@ const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
     onRemoveSuccess
   )
 
-  return (
-    <Button onClick={removeShoppingListCommand}>
-      Delete
-    </Button>
-  )
+  return <Button onClick={removeShoppingListCommand}>Delete</Button>
 }
 
 export default ShoppingListRemover

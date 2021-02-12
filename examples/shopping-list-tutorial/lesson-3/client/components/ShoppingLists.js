@@ -16,9 +16,7 @@ const ShoppingLists = ({ lists }) => {
           {lists.map(({ id, name }, index) => (
             <tr key={id}>
               <td>{index + 1}</td>
-              <td>
-                {name}
-              </td>
+              <td>{name}</td>
             </tr>
           ))}
         </tbody>

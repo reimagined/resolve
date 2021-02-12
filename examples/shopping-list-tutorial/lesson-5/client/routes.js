@@ -3,18 +3,18 @@ import MyLists from './components/MyLists'
 import ShoppingList from './components/ShoppingList'
 
 export default [
-    {
-        component: App,
-        routes: [
-            {
-                path: '/',
-                component: MyLists,
-                exact: true,
-            },
-            {
-                path: '/:id',
-                component: ShoppingList,
-              },
-        ],
-    },
+  {
+    component: App,
+    routes: [
+      {
+        path: '/',
+        component: MyLists,
+        exact: true,
+      },
+      {
+        path: '/:id',
+        component: ShoppingList,
+      },
+    ],
+  },
 ]

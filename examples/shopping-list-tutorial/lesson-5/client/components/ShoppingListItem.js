@@ -2,7 +2,7 @@ import React from 'react'
 import { ListGroupItem, FormCheck, Button } from 'react-bootstrap'
 import { useCommand } from 'resolve-react-hooks'
 
-const ShoppingListItem = ({shoppingListId, item: { id, checked, text } }) => {
+const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   const toggleItem = useCommand({
     type: 'toggleShoppingItem',
     aggregateId: shoppingListId,
@@ -27,7 +27,7 @@ const ShoppingListItem = ({shoppingListId, item: { id, checked, text } }) => {
         label={text}
         checked={checked}
         onChange={toggleItem}
-      /> 
+      />
       <Button className="float-right" onClick={removeItem}>
         Delete
       </Button>

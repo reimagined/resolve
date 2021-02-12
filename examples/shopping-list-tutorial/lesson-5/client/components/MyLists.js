@@ -17,15 +17,22 @@ const MyLists = () => {
   }, [])
 
   return (
-    <div style={{maxWidth: "580px", margin: "0 auto", paddingLeft: "10px", paddingRight: "10px"}}>
-      <ShoppingLists  
-        lists={lists ? lists.data || [] : []} 
+    <div
+      style={{
+        maxWidth: '580px',
+        margin: '0 auto',
+        paddingLeft: '10px',
+        paddingRight: '10px',
+      }}
+    >
+      <ShoppingLists
+        lists={lists ? lists.data || [] : []}
         onRemoveSuccess={(err, result) => {
           setLists({
-          ...lists,
-          data: lists.data.filter((list) => list.id !== result.aggregateId),
-         })
-      }}
+            ...lists,
+            data: lists.data.filter((list) => list.id !== result.aggregateId),
+          })
+        }}
       />
       <ShoppingListCreator
         lists={lists ? lists.data || [] : []}

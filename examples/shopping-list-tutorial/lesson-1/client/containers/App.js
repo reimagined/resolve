@@ -19,7 +19,7 @@ const App = ({ staticPath }) => {
       <div>
         <Helmet title="reSolve Shopping List" link={links} meta={[meta]} />
         <h1 align="center">Shopping List</h1>
-      </div>      
+      </div>
     </div>
   )
 }

@@ -18,5 +18,3 @@ const entryPoint = (clientContext) => {
 }
 
 export default entryPoint
-
-
