@@ -19,6 +19,7 @@ export type CreateQueryOptions = {
   readModelsInterop: ReadModelInteropMap | SagaInteropMap
   viewModelsInterop: ViewModelInteropMap
   provideLedger: (ledger: any) => Promise<void>
+  eventstoreAdapter: EventStoreAdapter
 }
 
 type WrapModelOptions = Omit<
@@ -76,6 +77,7 @@ export type ReadModelPool = {
   getVacantTimeInMillis: Function
   monitoring?: Monitoring
   provideLedger: (ledger: any) => Promise<void>
+  eventstoreAdapter: EventStoreAdapter
 }
 
 export type ViewModelMeta = {

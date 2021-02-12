@@ -159,9 +159,7 @@ const buildEvents: (
   next,
   eventstoreAdapter,
   getVacantTimeInMillis,
-  provideLedger
 ) => {
-  void provideLedger
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
