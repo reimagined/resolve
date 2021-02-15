@@ -10,8 +10,6 @@ Use the [resolve-module-admin](https://github.com/reimagined/resolve/tree/master
 - Reset read model and saga persistent state.
 - Manage saga properties.
 
-You can use **npx** to run this tool without installation or install it as an application's dependency. See the [Installation](#installation) section for more information.
-
 ## Installation
 
 Use the steps below to add the **resolve-module-admin** tool to a reSolve application.
@@ -32,15 +30,42 @@ Use the steps below to add the **resolve-module-admin** tool to a reSolve applic
    }
    ```
 
+3. Register **resolve-module-admin** as a module the application's **run.js** file:
+
+```js
+import resolveModuleAdmin from 'resolve-module-admin'
+...
+switch (launchMode) {
+  case 'dev': {
+    const moduleAdmin = resolveModuleAdmin()
+    const resolveConfig = merge(
+      defaultResolveConfig,
+      appConfig,
+      devConfig,
+      moduleAdmin
+    )
+  }
+  case 'test:e2e': {
+    const moduleAdmin = resolveModuleAdmin()
+    const resolveConfig = merge(
+      defaultResolveConfig,
+      appConfig,
+      testFunctionalConfig,
+      moduleAdmin
+    )
+  }
+}
+```
+
 ## Usage
 
-The **resolve-module-admin** tool communicates with API handlers exposed by a reSolve application. To use the tool, you need to start your application. Then, you can execute **resolve-module-admin** with the required command:
+The **resolve-module-admin** tool adds API handlers to a reSolve application and sends queries to these handlers to manage the application. To use the tool, you need to start your application. Then, you can execute **resolve-module-admin** with the required command:
 
 ```bash
 yarn resolve-module-admin read-models reset ShoppingList
 ```
 
-The default URL that **resolve-module-admin** uses to access a reSolve application's API is `http://localhost:3000/api`. Use the `--api-url` option to specify another URL:
+The default URL that **resolve-module-admin** uses to access an application's API is `http://localhost:3000/api`. Use the `--api-url` option to specify another URL:
 
 ```bash
 yarn resolve-module-admin --api-url "https://127.0.0.1:2000/api" read-models reset ShoppingList
