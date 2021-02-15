@@ -42,6 +42,7 @@ import {
   SecretsWithIdx,
   SecretRecord,
   InputEvent,
+  SavedEvent,
 } from './types'
 
 const wrappedCreateAdapter = <
@@ -110,4 +111,5 @@ export {
   SecretsWithIdx,
   SecretRecord,
   InputEvent,
+  SavedEvent,
 }
