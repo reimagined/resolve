@@ -6,6 +6,7 @@ import {
   ReadModelInterop,
   ViewModelInteropMap,
   ViewModelInterop,
+  Eventstore,
 } from 'resolve-core'
 
 export type CreateQueryOptions = {
@@ -18,6 +19,7 @@ export type CreateQueryOptions = {
   readModelsInterop: ReadModelInteropMap | SagaInteropMap
   viewModelsInterop: ViewModelInteropMap
   provideLedger: (ledger: any) => Promise<void>
+  eventstoreAdapter: Eventstore
 }
 
 type WrapModelOptions = Omit<
@@ -52,6 +54,7 @@ export type ReadModelPool = {
   getVacantTimeInMillis: Function
   monitoring?: Monitoring
   provideLedger: (ledger: any) => Promise<void>
+  eventstoreAdapter: Eventstore
 }
 
 export type ViewModelPool = {
