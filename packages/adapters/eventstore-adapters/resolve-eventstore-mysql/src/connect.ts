@@ -10,7 +10,7 @@ const connect = async (
   pool: AdapterPoolPrimal,
   { MySQL, escapeId, escape }: ConnectionDependencies,
   config: MysqlAdapterConfig
-): Promise<any> => {
+): Promise<void> => {
   const log = getLog('connect')
   log.debug('connecting to mysql databases')
 

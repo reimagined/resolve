@@ -5,8 +5,8 @@ import {
   Event,
   SagaEncryptionFactory,
   SagaEventHandlers,
-} from '../core-types'
-import { SagaMeta } from '../types'
+} from '../types/core'
+import { SagaMeta } from '../types/runtime'
 import {
   SagaInterop,
   SagaInteropMap,

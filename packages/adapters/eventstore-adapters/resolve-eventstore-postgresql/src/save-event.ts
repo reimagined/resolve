@@ -11,7 +11,7 @@ const saveEvent = async (
     escapeId,
     escape,
   }: AdapterPool,
-  event: any
+  event: InputEvent
 ): Promise<void> => {
   while (true) {
     try {

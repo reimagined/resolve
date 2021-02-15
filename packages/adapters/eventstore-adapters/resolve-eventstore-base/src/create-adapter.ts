@@ -161,14 +161,8 @@ const createAdapter = <
       rollbackIncrementalImport
     ),
     incrementalImport: wrapMethod(adapterPool, incrementalImport),
-    loadSecrets:
-      loadSecrets === undefined
-        ? undefined
-        : wrapMethod(adapterPool, loadSecrets),
-    injectSecret:
-      injectSecret === undefined
-        ? undefined
-        : wrapMethod(adapterPool, injectSecret),
+    loadSecrets: wrapMethod(adapterPool, loadSecrets),
+    injectSecret: wrapMethod(adapterPool, injectSecret),
     importSecrets: importSecretsStream.bind(null, adapterPool),
     exportSecrets: exportSecretsStream.bind(null, adapterPool),
   }

@@ -2,12 +2,13 @@ import {
   AdapterPoolConnected,
   AdapterPoolConnectedProps,
   AdapterPoolPossiblyUnconnected,
-  Dispose,
+  PoolMethod,
+  Adapter,
 } from './types'
 
 const wrapDispose = <ConnectedProps extends AdapterPoolConnectedProps>(
   pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
-  dispose: Dispose<ConnectedProps>
+  dispose: PoolMethod<ConnectedProps, Adapter['dispose']>
 ) => async (): Promise<void> => {
   if (pool.disposed) {
     throw new Error('Adapter has been already disposed')

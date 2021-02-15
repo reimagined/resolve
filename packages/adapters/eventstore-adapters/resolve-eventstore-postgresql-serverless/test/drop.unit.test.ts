@@ -9,7 +9,6 @@ import dropSecrets from '../src/drop-secrets'
 jest.mock('get-log')
 
 const mDrop = jest.fn(dropEvents)
-const mDropSecrets = jest.fn(dropSecrets)
 
 let pool: AdapterPool
 

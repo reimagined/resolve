@@ -1,4 +1,3 @@
-import debugLevels from '@reimagined/debug-levels'
 import createSqliteAdapter from '@reimagined/eventstore-lite'
 import createPostgresqlServerlessAdapter from '@reimagined/eventstore-postgresql-serverless'
 import { Adapter } from '@reimagined/eventstore-base'
