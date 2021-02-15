@@ -46,7 +46,7 @@ test('secrets table dropped', async () => {
   await dropSecrets(pool)
 
   expect(pool.executeStatement).toHaveBeenCalledWith(
-    `DROP TABLE escaped-database.escaped-secrets-table`
+    expect.stringMatching(/escaped-secrets-table/g)
   )
 })
 
@@ -54,7 +54,7 @@ test('secrets stream index dropped', async () => {
   await dropSecrets(pool)
 
   expect(pool.executeStatement).toHaveBeenCalledWith(
-    `DROP INDEX IF EXISTS escaped-database.escaped-secrets-table-global`
+    expect.stringMatching(/escaped-secrets-table-global/g)
   )
 })
 
