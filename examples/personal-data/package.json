@@ -55,7 +55,7 @@
     "resolve-cloud": "*",
     "resolve-module-admin": "0.26.5",
     "testcafe": "1.10.1",
-    "testcafe-reporter-dashboard-test": "0.0.22",
+    "testcafe-reporter-dashboard-test": "0.0.23",
     "testcafe-react-selectors": "^4.0.0"
   }
 }
