@@ -316,7 +316,10 @@ export interface Adapter {
   loadSnapshot: (snapshotKey: string) => Promise<any>
   saveSnapshot: (snapshotKey: string, content: string) => Promise<any>
   dropSnapshot: (snapshotKey: string) => Promise<any>
-  pushIncrementalImport: (events: any[], importId: string) => Promise<void>
+  pushIncrementalImport: (
+    events: InputEvent[],
+    importId: string
+  ) => Promise<void>
   beginIncrementalImport: () => Promise<string>
   commitIncrementalImport: (
     importId: string,
