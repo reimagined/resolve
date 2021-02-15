@@ -1,5 +1,9 @@
 import createQuery from '../../resolve-runtime/src/common/query'
-import { ReadModelInteropMap, ViewModelInteropMap } from 'resolve-core'
+import {
+  ReadModelInteropMap,
+  ViewModelInteropMap,
+  Eventstore,
+} from 'resolve-core'
 
 type Store = {
   set(key: string, value: any): void
@@ -20,12 +24,12 @@ let invokeEventBusAsync: any = null
 let getVacantTimeInMillis: any = null
 let performAcknowledge: any = null
 
-const eventstoreAdapter = {
+const eventstoreAdapter = ({
   loadEvents: jest
     .fn()
     .mockImplementation(async () => ({ events: [], cursor: 'NEXT_CURSOR' })),
   getNextCursor: jest.fn().mockImplementation(() => 'NEXT_CURSOR'),
-}
+} as unknown) as Eventstore
 
 for (const { describeName, prepare } of [
   {
