@@ -1,4 +1,4 @@
-import { SecretsManager } from '@reimagined/core'
+import { SecretsManager, Event } from '@reimagined/core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 

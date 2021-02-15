@@ -1,4 +1,4 @@
-import { ConcurrentError } from '@reimagined/eventstore-base'
+import { ConcurrentError, InputEvent } from '@reimagined/eventstore-base'
 import { AdapterPool } from './types'
 
 const saveEvent = async (
