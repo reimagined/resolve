@@ -1,4 +1,4 @@
-import getLog from './js/get-log'
+import getLog from './get-log'
 
 const dispose = async (): Promise<any> => {
   const log = getLog(`dispose`)

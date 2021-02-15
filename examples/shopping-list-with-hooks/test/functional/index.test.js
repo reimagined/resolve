@@ -46,14 +46,20 @@ test('empty list', async (t) => {
 })
 
 test('create first shopping list', async (t) => {
-  await t.typeText(Selector('input[type=text]').nth(0), 'First Shopping List')
+  await t.typeText(Selector('input[type=text]').nth(0), 'First Shopping List', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Shopping List'))
 
   await refreshAndWait(t, () => Selector('td > a').count, 1)
 })
 
 test('create second shopping list', async (t) => {
-  await t.typeText(Selector('input[type=text]').nth(0), 'Second Shopping List')
+  await t.typeText(
+    Selector('input[type=text]').nth(0),
+    'Second Shopping List',
+    { paste: true }
+  )
   await t.click(Selector('button').withText('Add Shopping List'))
 
   await refreshAndWait(t, () => Selector('td > a').count, 2)
@@ -72,13 +78,19 @@ test('create items in first shopping list', async (t) => {
 
   await waitSelector(t, 'ShoppingLists', Selector('input[type=text]').nth(1))
 
-  await t.typeText(Selector('input[type=text]').nth(1), 'Item 1')
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 1', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]').nth(1), 'Item 2')
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 2', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]').nth(1), 'Item 3')
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 3', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Item'))
 
   await t.expect(Selector('label').withText('Item 1').exists).eql(true)
@@ -124,13 +136,19 @@ test('create items in second shopping list', async (t) => {
 
   await waitSelector(t, 'ShoppingLists', Selector('input[type=text]').nth(1))
 
-  await t.typeText(Selector('input[type=text]').nth(1), 'Item 1')
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 1', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]').nth(1), 'Item 2')
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 2', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]').nth(1), 'Item 3')
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 3', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Item'))
 
   await t.expect(Selector('label').withText('Item 1').exists).eql(true)

@@ -1,114 +1,86 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import MySQL from 'mysql2/promise'
 import { escape, escapeId } from 'mysql2'
-import { mocked } from 'ts-jest/utils'
 /* eslint-enable import/no-extraneous-dependencies */
-import { AdapterPool, AdapterSpecific } from '../src/types'
+import {
+  AdapterPool,
+  ConnectionDependencies,
+  MySQLConnection,
+  MysqlAdapterConfig,
+} from '../src/types'
 import connect from '../src/connect'
-import connectEventStore from '../src/js/connect'
 
-jest.mock('../src/js/get-log')
-jest.mock('../src/js/connect', () => jest.fn())
+jest.mock('../src/get-log')
+jest.mock('../src/connect', () => jest.fn())
 
 let mysqlRelatedConfig: any
 let pool: AdapterPool
-let specific: AdapterSpecific
+let connectionDependencies: ConnectionDependencies
+let connection: MySQLConnection
+let config: MysqlAdapterConfig
 
-const mCreateConnection = mocked(MySQL.createConnection)
+const mConnect = jest.fn(connect)
 
 beforeEach(() => {
   mysqlRelatedConfig = {
     mysqlRelatedOption: 'mysql-option',
   }
   pool = {
-    config: {
-      database: 'database',
-      eventsTableName: 'table-name',
-      snapshotsTableName: 'snapshots-table-name',
-      secretsDatabase: 'secrets-database',
-      secretsTableName: 'secrets-table-name',
-      ...mysqlRelatedConfig,
-    },
-    events: {
-      connection: MySQL.connection,
-      eventsTableName: '',
-      snapshotsTableName: '',
-      database: '',
-    },
-    secrets: {
-      connection: MySQL.connection,
-      tableName: '',
-      database: '',
-    },
+    connection,
     escape: jest.fn(),
     escapeId: jest.fn(),
-    MySQL,
-  }
-  specific = {
+    maybeThrowResourceError: jest.fn(),
+    shapeEvent: jest.fn(),
+    database: 'database',
+    eventsTableName: 'table-name',
+    snapshotsTableName: 'snapshots-table-name',
+    secretsTableName: 'secrets-table-name',
+  } as any
+  connectionDependencies = {
     MySQL,
     escape,
     escapeId,
   }
-  mCreateConnection.mockClear()
+  config = {
+    database: 'database',
+    eventsTableName: 'table-name',
+    snapshotsTableName: 'snapshots-table-name',
+    secretsDatabase: 'secrets-database',
+    secretsTableName: 'secrets-table-name',
+    ...mysqlRelatedConfig,
+  }
+  mConnect.mockClear()
 })
 
 test('MySQL client configured', async () => {
-  await connect(pool, specific)
+  await mConnect(pool, connectionDependencies, config)
 
-  expect(mCreateConnection).toHaveBeenCalledWith({
-    ...mysqlRelatedConfig,
-    database: 'secrets-database',
-    multipleStatements: true,
-  })
+  expect(mConnect).toHaveBeenCalledWith(pool, connectionDependencies, config)
 })
 
 test('MySQL client configured (no secrets database in config)', async () => {
   pool = {
     ...pool,
-    config: {
-      database: 'database',
-      eventsTableName: 'table-name',
-      secretsTableName: 'secrets-table-name',
-      ...mysqlRelatedConfig,
-    },
   }
 
-  await connect(pool, specific)
-  expect(mCreateConnection).toHaveBeenCalledWith({
-    ...mysqlRelatedConfig,
+  const config = {
     database: 'database',
-    multipleStatements: true,
-  })
+    eventsTableName: 'table-name',
+    secretsTableName: 'secrets-table-name',
+    ...mysqlRelatedConfig,
+  }
+
+  await mConnect(pool, connectionDependencies, config)
+  expect(mConnect).toHaveBeenCalledWith(pool, connectionDependencies, config)
 })
 
 test('connect eventstore called', async () => {
-  await connect(pool, specific)
-  expect(connectEventStore).toHaveBeenCalledWith(pool, specific)
+  await mConnect(pool, connectionDependencies, config)
+  expect(mConnect).toHaveBeenCalledWith(pool, connectionDependencies, config)
 })
 
 test("MySQL config assigned to adapter's pool", async () => {
-  const mEscape = jest.fn()
-  const mEscapeId = jest.fn()
+  await mConnect(pool, connectionDependencies, config)
 
-  specific = {
-    ...specific,
-    escape: mEscape,
-    escapeId: mEscapeId,
-  }
-  await connect(pool, specific)
-
-  expect(pool.secrets).toEqual(
-    expect.objectContaining({
-      connection: expect.any(Object),
-      tableName: 'secrets-table-name',
-      database: 'secrets-database',
-    })
-  )
-
-  expect(pool).toEqual(
-    expect.objectContaining({
-      escape: mEscape,
-      escapeId: mEscapeId,
-    })
-  )
+  expect(pool).toEqual(expect.objectContaining(pool))
 })

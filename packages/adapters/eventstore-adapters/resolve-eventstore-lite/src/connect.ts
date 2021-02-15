@@ -1,6 +1,10 @@
-import getLog from './js/get-log'
-import connectEventStore from './js/connect'
-import { AdapterPool, AdapterSpecific } from './types'
+import getLog from './get-log'
+import type {
+  AdapterPoolPrimal,
+  ConnectionDependencies,
+  SqliteAdapterPoolConnectedProps,
+  SqliteAdapterConfig,
+} from './types'
 
 const SQLITE_BUSY = 'SQLITE_BUSY'
 const randRange = (min: number, max: number): number =>
@@ -9,41 +13,80 @@ const randRange = (min: number, max: number): number =>
 const fullJitter = (retries: number): number =>
   randRange(0, Math.min(100, 2 * 2 ** retries))
 
-const connectSecretsStore = async (
-  pool: AdapterPool,
-  specific: AdapterSpecific
+const connect = async (
+  pool: AdapterPoolPrimal,
+  { sqlite, tmp, os, fs }: ConnectionDependencies,
+  config: SqliteAdapterConfig
 ): Promise<void> => {
-  const log = getLog('connectSecretsStore')
+  const log = getLog('connect')
+  log.debug('connecting to sqlite databases')
 
-  log.debug('connecting to secrets store database')
+  const escapeId = (str: string): string =>
+    `"${String(str).replace(/(["])/gi, '$1$1')}"`
+  const escape = (str: string): string =>
+    `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
-  const {
-    escape,
-    config: { secretsTableName = 'default', secretsFile = 'secrets.db' },
-  } = pool
+  pool.escape = escape
+  pool.escapeId = escapeId
 
+  log.debug(`connecting to events database`)
+
+  const databaseFile = config.databaseFile ?? ':memory:'
+  const eventsTableName = config.eventsTableName ?? 'events'
+  const snapshotsTableName = config.snapshotsTableName ?? 'snapshots'
+  const secretsTableName = config.secretsTableName ?? 'secrets'
+
+  log.verbose(`databaseFile: ${databaseFile}`)
+  log.verbose(`eventsTableName: ${eventsTableName}`)
+  log.verbose(`snapshotsTableName: ${snapshotsTableName}`)
   log.verbose(`secretsTableName: ${secretsTableName}`)
-  log.verbose(`secretsFile: ${secretsFile}`)
 
+  let connector
+  if (databaseFile === ':memory:') {
+    log.debug(`using memory connector`)
+    if (process.env.RESOLVE_LAUNCH_ID != null) {
+      const tmpName = `${os.tmpdir()}/storage-${+process.env
+        .RESOLVE_LAUNCH_ID}.db`
+      const removeCallback = () => {
+        if (fs.existsSync(tmpName)) {
+          fs.unlinkSync(tmpName)
+        }
+      }
+
+      if (!fs.existsSync(tmpName)) {
+        fs.writeFileSync(tmpName, '')
+        process.on('SIGINT', removeCallback)
+        process.on('SIGTERM', removeCallback)
+        process.on('beforeExit', removeCallback)
+        process.on('exit', removeCallback)
+      }
+
+      pool.memoryStore = {
+        name: tmpName,
+        drop: removeCallback,
+      }
+    } else {
+      const temporaryFile = tmp.fileSync()
+      pool.memoryStore = {
+        name: temporaryFile.name,
+        drop: temporaryFile.removeCallback.bind(temporaryFile),
+      }
+    }
+
+    connector = sqlite.open.bind(sqlite, pool.memoryStore.name)
+  } else {
+    log.debug(`using disk file connector`)
+    connector = sqlite.open.bind(sqlite, databaseFile)
+  }
+
+  log.debug(`connecting`)
+  let database
   for (let retry = 0; ; retry++) {
     try {
-      const secretsDatabase = await specific.sqlite.open(secretsFile)
-
-      log.debug('adjusting connection')
-      await secretsDatabase.exec(`PRAGMA busy_timeout=1000000`)
-      await secretsDatabase.exec(`PRAGMA encoding=${escape('UTF-8')}`)
-      await secretsDatabase.exec(`PRAGMA synchronous=EXTRA`)
-      await secretsDatabase.exec(`PRAGMA journal_mode=DELETE`)
-
-      Object.assign(pool, {
-        secretsDatabase,
-        secretsTableName,
-      })
-
-      log.debug('secrets store database connected successfully')
-      return
+      database = await connector()
+      break
     } catch (error) {
-      if (error && error.code === SQLITE_BUSY) {
+      if (error != null && error.code === SQLITE_BUSY) {
         log.warn(`received SQLITE_BUSY error code, retrying`)
         await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))
       } else {
@@ -53,29 +96,37 @@ const connectSecretsStore = async (
       }
     }
   }
-}
 
-const connect = async (
-  pool: AdapterPool,
-  specific: AdapterSpecific
-): Promise<any> => {
-  const log = getLog('connect')
-  log.debug('connecting to sqlite databases')
+  log.debug(`adjusting connection`)
 
-  const escapeId = (str: string): string =>
-    `"${String(str).replace(/(["])/gi, '$1$1')}"`
-  const escape = (str: string): string =>
-    `'${String(str).replace(/(['])/gi, '$1$1')}'`
+  log.verbose(`PRAGMA busy_timeout=1000000`)
+  await database.exec(`PRAGMA busy_timeout=1000000`)
 
-  Object.assign(pool, {
-    escapeId,
-    escape,
-  })
+  log.verbose(`PRAGMA encoding=${escape('UTF-8')}`)
+  await database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
 
-  await Promise.all([
-    connectEventStore(pool, specific),
-    connectSecretsStore(pool, specific),
-  ])
+  log.verbose(`PRAGMA synchronous=EXTRA`)
+  await database.exec(`PRAGMA synchronous=EXTRA`)
+
+  if (databaseFile === ':memory:') {
+    log.verbose(`PRAGMA journal_mode=MEMORY`)
+    await database.exec(`PRAGMA journal_mode=MEMORY`)
+  } else {
+    log.verbose(`PRAGMA journal_mode=DELETE`)
+    await database.exec(`PRAGMA journal_mode=DELETE`)
+  }
+
+  Object.assign<AdapterPoolPrimal, Partial<SqliteAdapterPoolConnectedProps>>(
+    pool,
+    {
+      database,
+      databaseFile,
+      eventsTableName,
+      snapshotsTableName,
+      secretsTableName,
+    }
+  )
+
   log.debug('connection to sqlite databases established')
 }
 

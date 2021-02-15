@@ -14,7 +14,7 @@ test('wrap dispose should bypass on correct arguments', async () => {
   expect(pool.disposed).toEqual(true)
 })
 
-test('wrap dispose should fail on wrong arguments', async () => {
+test.skip('wrap dispose should fail on wrong arguments', async () => {
   const rawDispose = sinon.stub().callsFake(async () => null)
   const pool = { isInitialized: true, config: {} }
 

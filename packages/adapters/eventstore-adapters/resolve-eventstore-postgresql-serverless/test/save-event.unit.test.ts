@@ -1,7 +1,8 @@
-import saveEvent from '../src/js/save-event'
-import escapeId from '../src/js/escape-id'
-import escape from '../src/js/escape'
-import isTimeoutError from '../src/js/is-timeout-error'
+import saveEvent from '../src/save-event'
+import escapeId from '../src/escape-id'
+import escape from '../src/escape'
+import isTimeoutError from '../src/is-timeout-error'
+import { AdapterPool } from '../src/types'
 
 const databaseName = 'databaseName'
 const eventsTableName = 'eventsTableName'
@@ -11,19 +12,20 @@ const event = {
   aggregateVersion: 1,
   type: 'TEST',
   payload: { key: 'value' },
+  timestamp: 1,
 }
 
 test('method "saveEvent" should save an event', async () => {
   const executeStatement = jest.fn()
 
-  const pool = {
+  const pool: AdapterPool = {
     databaseName,
     eventsTableName,
     executeStatement,
     isTimeoutError,
     escapeId,
     escape,
-  }
+  } as any
 
   await saveEvent(pool, event)
 
@@ -35,14 +37,14 @@ test('method "saveEvent" should throw an exception "ConcurrentError"', async () 
     .fn()
     .mockRejectedValue(new Error('Conflict "aggregateIdAndVersion"'))
 
-  const pool = {
+  const pool: AdapterPool = {
     databaseName,
     eventsTableName,
     executeStatement,
     isTimeoutError,
     escapeId,
     escape,
-  }
+  } as any
 
   try {
     await saveEvent(pool, event)
@@ -57,14 +59,14 @@ test('method "saveEvent" should throw an exception "Event store is frozen"', asy
     .fn()
     .mockRejectedValue(new Error('subquery used as an expression'))
 
-  const pool = {
+  const pool: AdapterPool = {
     databaseName,
     eventsTableName,
     executeStatement,
     isTimeoutError,
     escapeId,
     escape,
-  }
+  } as any
 
   try {
     await saveEvent(pool, event)
@@ -99,14 +101,14 @@ test('method "saveEvent" should save an event after StatementTimeoutException', 
     }
   })
 
-  const pool = {
+  const pool: AdapterPool = {
     databaseName,
     eventsTableName,
     executeStatement,
     isTimeoutError,
     escapeId,
     escape,
-  }
+  } as any
 
   await saveEvent(pool, event)
 
@@ -138,14 +140,14 @@ test('method "saveEvent" should throw an exception "ConcurrentError" after State
     }
   })
 
-  const pool = {
+  const pool: AdapterPool = {
     databaseName,
     eventsTableName,
     executeStatement,
     isTimeoutError,
     escapeId,
     escape,
-  }
+  } as any
 
   try {
     await saveEvent(pool, event)
@@ -170,14 +172,14 @@ test('method "saveEvent" should throw an exception "Event store is frozen" after
     }
   })
 
-  const pool = {
+  const pool: AdapterPool = {
     databaseName,
     eventsTableName,
     executeStatement,
     isTimeoutError,
     escapeId,
     escape,
-  }
+  } as any
 
   try {
     await saveEvent(pool, event)

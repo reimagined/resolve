@@ -1,7 +1,13 @@
+import type {
+  AdapterPoolConnectedProps,
+  AdapterPoolConnected,
+  AdapterPoolPossiblyUnconnected,
+  AdapterConfig,
+} from 'resolve-eventstore-base'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 
-type Coercer = (
+export type Coercer = (
   value: {
     intValue: number
     stringValue: string
@@ -15,40 +21,66 @@ type Coercer = (
 type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
-export type AdapterPool = {
-  config?: {
-    dbClusterOrInstanceArn: string
-    awsSecretStoreArn: string
-    databaseName: string
-    eventsTableName: string
-    secretsTableName: string
-    snapshotsTableName: string
-    region?: string
-    snapshotBucketSize?: number
-  }
-  rdsDataService?: typeof RDSDataService
-  dbClusterOrInstanceArn?: string
-  awsSecretStoreArn?: string
-  databaseName?: string
+export type AdminPool = {
+  RdsDataService?: RDSDataService
+  escapeId?: EscapeFunction
+  escape?: EscapeFunction
+  fullJitter?: FullJitter
+  executeStatement?: (sql: string) => Promise<any[]>
+  coercer?: Coercer
+}
+
+export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
+  rdsDataService: RDSDataService
+  dbClusterOrInstanceArn: string
+  awsSecretStoreArn: string
+  databaseName: string
+  eventsTableName: string
+  secretsTableName: string
+  snapshotsTableName: string
+  fullJitter: FullJitter
+  coercer: Coercer
+  executeStatement: (sql: any, transactionId?: string) => Promise<any[]>
+  escapeId: EscapeFunction
+  escape: EscapeFunction
+  isTimeoutError: (error: any) => boolean
+  beginTransaction: (pool: AdapterPool) => Promise<any>
+  commitTransaction: (pool: AdapterPool, transactionId: string) => Promise<void>
+  rollbackTransaction: (
+    pool: AdapterPool,
+    transactionId: string
+  ) => Promise<void>
+}
+
+export type PostgresqlAdapterConfig = AdapterConfig & {
+  dbClusterOrInstanceArn: string
+  awsSecretStoreArn: string
+  databaseName: string
   eventsTableName?: string
   secretsTableName?: string
   snapshotsTableName?: string
-  fullJitter?: FullJitter
-  coercer?: Coercer
-  executeStatement?: (sql: string) => Promise<any[] | null>
-  escapeId?: EscapeFunction
-  escape?: EscapeFunction
-  bucketSize?: number
+  region?: string
+  [key: string]: any
 }
 
-export type AdapterSpecific = {
+export type AdapterPool = AdapterPoolConnected<
+  PostgresqlAdapterPoolConnectedProps
+>
+
+export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
+  PostgresqlAdapterPoolConnectedProps
+>
+
+export type ConnectionDependencies = {
   RDSDataService: typeof RDSDataService
   fullJitter: FullJitter
   escapeId: EscapeFunction
   escape: EscapeFunction
-  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[] | null>
+  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[]>
   coercer: Coercer
 }
+
+export type CloudAdapterSpecific = ConnectionDependencies
 
 export type CloudResource = {
   createResource: (options: CloudResourceOptions) => Promise<any>
@@ -57,14 +89,18 @@ export type CloudResource = {
 }
 
 export type CloudResourcePool = {
-  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[] | null>
+  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[]>
   RDSDataService: typeof RDSDataService
   escapeId: EscapeFunction
   escape: EscapeFunction
   fullJitter: FullJitter
   coercer: Coercer
-  shapeEvent: (data: any) => any
-  connect: (pool: AdapterPool, specific: AdapterSpecific) => Promise<any>
+  shapeEvent: (event: any, additionalFields?: any) => any[]
+  connect: (
+    pool: AdapterPoolPrimal,
+    connectionDependencies: ConnectionDependencies,
+    config: PostgresqlAdapterConfig
+  ) => Promise<any>
   dispose: (pool: AdapterPool) => Promise<any>
 }
 
@@ -75,7 +111,6 @@ export type CloudResourceOptions = {
   secretsTableName: string
   snapshotsTableName: string
   userLogin: string
-  awsSecretStoreArn: string
   awsSecretStoreAdminArn: string
   dbClusterOrInstanceArn: string
 }

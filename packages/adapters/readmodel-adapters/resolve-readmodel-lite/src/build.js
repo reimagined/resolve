@@ -10,7 +10,7 @@ const serializeError = (error) =>
 
 const MAX_SEIZE_TIME = 1500 // 1.5 seconds
 
-const buildInit = async (pool, readModelName, store, projection, next) => {
+const buildInit = async (pool, readModelName, store, modelInterop, next) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,
@@ -65,8 +65,9 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
 
   let lastError = null
   try {
-    if (typeof projection.Init === 'function') {
-      await projection.Init(store)
+    const handler = await modelInterop.acquireInitHandler(store)
+    if (handler != null) {
+      await handler()
     }
   } catch (error) {
     lastError = error
@@ -115,11 +116,10 @@ const buildInit = async (pool, readModelName, store, projection, next) => {
   }
 }
 
-const buildEvents = async (pool, readModelName, store, projection, next) => {
+const buildEvents = async (pool, readModelName, store, modelInterop, next) => {
   const {
     PassthroughError,
     getVacantTimeInMillis,
-    getEncryption,
     inlineLedgerRunQuery,
     eventstoreAdapter,
     fullJitter,
@@ -147,7 +147,6 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
     throw new PassthroughError()
   }
   const seizeTimestamp = Date.now()
-  const executeEncryption = await getEncryption()
 
   for (let retry = 0; ; retry++) {
     try {
@@ -195,13 +194,10 @@ const buildEvents = async (pool, readModelName, store, projection, next) => {
   try {
     for (const event of events) {
       try {
-        if (typeof projection[event.type] === 'function') {
+        const handler = await modelInterop.acquireEventHandler(store, event)
+        if (handler != null) {
           await inlineLedgerRunQuery(`SAVEPOINT E${appliedEventsCount}`, true)
-          await projection[event.type](
-            store,
-            event,
-            await executeEncryption(event)
-          )
+          await handler()
           await inlineLedgerRunQuery(
             `RELEASE SAVEPOINT E${appliedEventsCount}`,
             true
@@ -325,11 +321,10 @@ const build = async (
   basePool,
   readModelName,
   store,
-  projection,
+  modelInterop,
   next,
   getVacantTimeInMillis,
-  provideLedger,
-  getEncryption
+  provideLedger
 ) => {
   const {
     PassthroughError,
@@ -444,7 +439,6 @@ const build = async (
 
     Object.assign(pool, {
       getVacantTimeInMillis,
-      getEncryption,
       ledgerTableNameAsId,
       readModelLedger,
       eventTypes,
@@ -454,7 +448,7 @@ const build = async (
     })
 
     const buildMethod = cursor == null ? buildInit : buildEvents
-    await buildMethod(pool, readModelName, store, projection, next)
+    await buildMethod(pool, readModelName, store, modelInterop, next)
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
       throw error

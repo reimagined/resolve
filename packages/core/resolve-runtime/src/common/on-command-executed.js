@@ -4,7 +4,7 @@ import {
   FULL_XA_CONNECTOR,
   EMPTY_CONNECTOR,
   INLINE_LEDGER_CONNECTOR,
-} from 'resolve-query'
+} from './query'
 
 const connectorCapabilities = {
   FULL_REGULAR_CONNECTOR,
@@ -56,6 +56,7 @@ const notifyInlineLedgers = async (resolve) => {
 const onCommandExecuted = async (resolve, event) => {
   await resolve.publisher.publish({ event })
   await notifyInlineLedgers(resolve)
+  await resolve.sendReactiveEvent(event)
 }
 
 const createOnCommandExecuted = (resolve) => {

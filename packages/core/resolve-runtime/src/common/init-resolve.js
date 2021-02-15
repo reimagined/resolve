@@ -1,6 +1,6 @@
-import createCommandExecutor from 'resolve-command'
-import createQueryExecutor from 'resolve-query'
-import createSagaExecutor from 'resolve-saga'
+import createCommandExecutor from '../common/command/index'
+import createQueryExecutor from '../common/query/index'
+import createSagaExecutor from '../common/saga/index'
 import crypto from 'crypto'
 
 import createOnCommandExecuted from './on-command-executed'
@@ -19,13 +19,13 @@ const initResolve = async (resolve) => {
 
   const {
     invokeEventBusAsync,
-    aggregates,
     readModels,
     sagas,
     viewModels,
     uploader,
     scheduler,
     monitoring,
+    domainInterop,
   } = resolve
 
   const eventstoreAdapter = createEventstoreAdapter()
@@ -55,12 +55,37 @@ const initResolve = async (resolve) => {
     resolve.publisher
   )
 
+  const domainMonitoring = {
+    error: monitoring?.error,
+    performance: performanceTracer,
+  }
+
+  const secretsManager = await eventstoreAdapter.getSecretsManager()
+
+  const aggregateRuntime = {
+    monitoring: domainMonitoring,
+    secretsManager,
+    eventstore: eventstoreAdapter,
+    hooks: {
+      preSaveEvent: async (aggregate, command, event) => {
+        await onCommandExecuted(event, command)
+        return false
+      },
+    },
+  }
+
   const executeCommand = createCommandExecutor({
-    aggregates,
-    eventstoreAdapter,
     performanceTracer,
-    onCommandExecuted,
-    monitoring,
+    aggregatesInterop: domainInterop.aggregateDomain.acquireAggregatesInterop(
+      aggregateRuntime
+    ),
+  })
+
+  const executeSchedulerCommand = createCommandExecutor({
+    performanceTracer,
+    aggregatesInterop: domainInterop.sagaDomain.acquireSchedulerAggregatesInterop(
+      aggregateRuntime
+    ),
   })
 
   const executeQuery = createQueryExecutor({
@@ -73,6 +98,15 @@ const initResolve = async (resolve) => {
     getVacantTimeInMillis,
     performAcknowledge,
     monitoring,
+    readModelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
+      monitoring: domainMonitoring,
+      secretsManager,
+    }),
+    viewModelsInterop: domainInterop.viewModelDomain.acquireViewModelsInterop({
+      monitoring: domainMonitoring,
+      eventstore: eventstoreAdapter,
+      secretsManager,
+    }),
   })
 
   const executeSaga = createSagaExecutor({
@@ -80,6 +114,7 @@ const initResolve = async (resolve) => {
     executeCommand,
     executeQuery,
     eventstoreAdapter,
+    secretsManager,
     readModelConnectors,
     sagas,
     performanceTracer,
@@ -88,6 +123,8 @@ const initResolve = async (resolve) => {
     uploader,
     scheduler,
     monitoring,
+    domainInterop,
+    executeSchedulerCommand,
   })
 
   const eventBus = createEventBus(resolve)
@@ -119,6 +156,7 @@ const initResolve = async (resolve) => {
     executeCommand,
     executeQuery,
     executeSaga,
+    executeSchedulerCommand,
   })
 
   Object.defineProperties(resolve, {

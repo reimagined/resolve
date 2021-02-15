@@ -19,10 +19,6 @@ const shutdown = async (resolve, upstream) => {
 
   await Promise.all(promises)
 
-  await resolve.publisher.pause({ eventSubscriber: 'websocket' })
-
-  await resolve.publisher.unsubscribe({ eventSubscriber: 'websocket' })
-
   log.debug('shutdown successful')
 
   return 'ok'

@@ -27,16 +27,6 @@ const bootstrap = async (resolve, upstream) => {
 
   await Promise.all(promises)
 
-  await resolve.publisher.subscribe({
-    eventSubscriber: 'websocket',
-    subscriptionOptions: {
-      credentials: resolve.eventSubscriberCredentials,
-      deliveryStrategy: 'passthrough',
-    },
-  })
-
-  await resolve.publisher.resume({ eventSubscriber: 'websocket' })
-
   log.debug('bootstrap successful')
 
   return 'ok'

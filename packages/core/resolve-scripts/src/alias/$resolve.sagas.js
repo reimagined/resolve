@@ -81,6 +81,8 @@ export default ({ resolveConfig, isClient }) => {
       constants,
     })
 
+    // FIXME: why 'handlers' not 'projection' here?
+
     exports.push(`sagas.push({`, `  name: name_${index}`)
     exports.push(`, connectorName: connectorName_${index}`)
     exports.push(`, handlers: handlers_${index}`)

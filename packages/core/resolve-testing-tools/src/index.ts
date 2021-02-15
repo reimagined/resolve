@@ -1,5 +1,4 @@
-import createQuery from 'resolve-query'
-import createCommand from 'resolve-command'
+import { createQuery, createCommand, CreateQueryOptions } from 'resolve-runtime'
 import { SerializableMap, CommandResult } from 'resolve-core'
 import as from './as'
 import givenEvents from './given-events'
@@ -63,7 +62,7 @@ export const getSchedulersNamesBySagas = (sagas: any): any => {
 
 export interface GivenEventsContext {
   all: any
-  createQuery: any
+  createQuery: (params: CreateQueryOptions) => any
   createCommand: any
   as: (jwt: any) => GivenEventsContext
   readModel: (params: ReadModelParams) => GivenEventsContext

@@ -1,38 +1,53 @@
-import getLog from './js/get-log'
-import { AdapterPool, AdapterSpecific } from './types'
+import getLog from './get-log'
+import type {
+  ConnectionDependencies,
+  PostgresqlAdapterPoolConnectedProps,
+  AdapterPool,
+  AdapterPoolPrimal,
+  PostgresqlAdapterConfig,
+} from './types'
 
 const connect = async (
-  pool: AdapterPool,
-  specific: AdapterSpecific
-): Promise<any> => {
-  const log = getLog('connect')
-  log.debug('configuring postgres client')
-
-  const {
+  pool: AdapterPoolPrimal,
+  {
     Postgres,
     escapeId,
     escape,
     fullJitter,
     executeStatement,
     coercer,
-  } = specific
+  }: ConnectionDependencies,
+  config: PostgresqlAdapterConfig
+): Promise<void> => {
+  const log = getLog('connect')
+  log.debug('configuring postgres client')
 
-  const {
-    databaseName,
-    eventsTableName = 'events',
-    snapshotsTableName = 'snapshots',
-    secretsTableName = 'secrets',
-  } = pool.config ?? {}
-
-  Object.assign(pool, {
+  let {
     databaseName,
     eventsTableName,
     snapshotsTableName,
     secretsTableName,
+    // eslint-disable-next-line prefer-const
+    ...connectionOptions
+  } = config
+
+  eventsTableName = eventsTableName ?? 'events'
+  snapshotsTableName = snapshotsTableName ?? 'snapshots'
+  secretsTableName = secretsTableName ?? 'secrets'
+
+  Object.assign<
+    AdapterPoolPrimal,
+    Partial<PostgresqlAdapterPoolConnectedProps>
+  >(pool, {
+    databaseName,
+    eventsTableName,
+    snapshotsTableName,
+    secretsTableName,
+    connectionOptions,
     Postgres,
     fullJitter,
     coercer,
-    executeStatement: executeStatement.bind(null, pool),
+    executeStatement: executeStatement.bind(null, pool as AdapterPool),
     escapeId,
     escape,
   })
