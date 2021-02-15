@@ -3,7 +3,6 @@ import dropEvents from '../src/drop-events'
 import { mocked } from 'ts-jest/utils'
 
 jest.mock('../src/get-log')
-const mDropEvents = jest.fn(dropEvents)
 let pool: AdapterPool
 
 beforeEach(() => {
@@ -25,20 +24,8 @@ beforeEach(() => {
   } as any
 })
 
-afterEach(() => {
-  mDropEvents.mockClear()
-  const execute = mocked(pool.connection.execute)
-  execute.mockClear()
-})
-
-test('event store dropped', async () => {
-  await mDropEvents(pool)
-
-  expect(mDropEvents).toHaveBeenCalledWith(pool)
-})
-
 test('executed statements', async () => {
-  await mDropEvents(pool)
+  await dropEvents(pool)
   const execute = mocked(pool.connection.execute)
 
   expect(execute).toHaveBeenCalledWith(

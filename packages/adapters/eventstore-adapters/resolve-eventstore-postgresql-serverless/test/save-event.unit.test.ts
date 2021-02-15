@@ -15,23 +15,6 @@ const event = {
   timestamp: 1,
 }
 
-test('method "saveEvent" should save an event', async () => {
-  const executeStatement = jest.fn()
-
-  const pool: AdapterPool = {
-    databaseName,
-    eventsTableName,
-    executeStatement,
-    isTimeoutError,
-    escapeId,
-    escape,
-  } as any
-
-  await saveEvent(pool, event)
-
-  expect(executeStatement).toBeCalledTimes(1)
-})
-
 test('method "saveEvent" should throw an exception "ConcurrentError"', async () => {
   const executeStatement = jest
     .fn()

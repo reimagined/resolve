@@ -27,20 +27,6 @@ afterEach(() => {
   mDropEvents.mockClear()
 })
 
-test('event store dropped', async () => {
-  await mDropEvents(pool)
-
-  expect(mDropEvents).toHaveBeenCalledWith({
-    databaseName: 'data-base-name',
-    secretsTableName: 'secrets-table-name',
-    eventsTableName: 'events-table-name',
-    snapshotsTableName: 'snapshots-table-name',
-    maybeThrowResourceError: pool.maybeThrowResourceError,
-    executeStatement: pool.executeStatement,
-    escapeId: pool.escapeId,
-  })
-})
-
 test('secrets table dropped', async () => {
   await mDropEvents(pool)
 

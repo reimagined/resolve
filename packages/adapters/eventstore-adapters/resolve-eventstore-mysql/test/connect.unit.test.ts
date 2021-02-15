@@ -52,35 +52,8 @@ beforeEach(() => {
   mConnect.mockClear()
 })
 
-test('MySQL client configured', async () => {
-  await mConnect(pool, connectionDependencies, config)
-
-  expect(mConnect).toHaveBeenCalledWith(pool, connectionDependencies, config)
-})
-
-test('MySQL client configured (no secrets database in config)', async () => {
-  pool = {
-    ...pool,
-  }
-
-  const config = {
-    database: 'database',
-    eventsTableName: 'table-name',
-    secretsTableName: 'secrets-table-name',
-    ...mysqlRelatedConfig,
-  }
-
-  await mConnect(pool, connectionDependencies, config)
-  expect(mConnect).toHaveBeenCalledWith(pool, connectionDependencies, config)
-})
-
-test('connect eventstore called', async () => {
-  await mConnect(pool, connectionDependencies, config)
-  expect(mConnect).toHaveBeenCalledWith(pool, connectionDependencies, config)
-})
-
 test("MySQL config assigned to adapter's pool", async () => {
   await mConnect(pool, connectionDependencies, config)
 
-  expect(pool).toEqual(expect.objectContaining(pool))
+  expect(pool.eventsTableName).toEqual('table-name')
 })
