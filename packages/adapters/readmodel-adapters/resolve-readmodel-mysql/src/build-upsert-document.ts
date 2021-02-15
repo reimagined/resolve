@@ -1,4 +1,4 @@
-import type { BuildUpsertDocumentMethod } from './types'
+import type { BuildUpsertDocumentMethod, JsonMap } from './types'
 
 const buildUpsertDocument: BuildUpsertDocumentMethod = (
   searchExpression,
@@ -19,13 +19,15 @@ const buildUpsertDocument: BuildUpsertDocumentMethod = (
 
   for (const key of Object.keys(baseDocument)) {
     const nestedKeys = key.split('.')
+    let currentResultDocument = resultDocument
     for (const [idx, innerKey] of nestedKeys.entries()) {
-      if (!resultDocument.hasOwnProperty(innerKey)) {
-        resultDocument[innerKey] = isNaN(Number(nestedKeys[idx + 1]))
+      if (!currentResultDocument.hasOwnProperty(innerKey)) {
+        currentResultDocument[innerKey] = isNaN(Number(nestedKeys[idx + 1]))
           ? nestedKeys.length - 1 === idx
             ? baseDocument[key]
             : {}
           : []
+        currentResultDocument = currentResultDocument[innerKey] as JsonMap
       }
     }
   }
