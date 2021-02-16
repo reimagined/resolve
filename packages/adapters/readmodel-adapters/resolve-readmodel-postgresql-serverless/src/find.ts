@@ -1,6 +1,47 @@
 import type { CurrentStoreApi, MarshalledRowLike, JsonMap } from './types'
 
 const MAX_LIMIT_VALUE = 0x0fffffff | 0
+const LIMIT_REGEX = /Database returned more than the allowed response size limit/i
+const RETRY_LIMIT = Symbol('RETRY_LIMIT')
+
+const retrieveRows = async (
+  pool: Parameters<CurrentStoreApi['find']>[0],
+  fieldList: Parameters<CurrentStoreApi['find']>[4],
+  query: string,
+  currentSkip: number,
+  currentLimit: number
+): ReturnType<CurrentStoreApi['find']> => {
+  try {
+    const { executeStatement, convertResultRow } = pool
+
+    const inputRows = (await executeStatement(
+      pool,
+      `${query} OFFSET ${currentSkip} LIMIT ${currentLimit}`
+    )) as Array<MarshalledRowLike>
+
+    const rows: Array<JsonMap> = []
+    for (let idx = 0; idx < inputRows.length; idx++) {
+      rows[idx] = convertResultRow(inputRows[idx], fieldList)
+    }
+
+    return rows
+  } catch (error) {
+    if (
+      error == null ||
+      !(
+        LIMIT_REGEX.test(error.message) ||
+        LIMIT_REGEX.test(error.stack) ||
+        LIMIT_REGEX.test(error.code)
+      )
+    ) {
+      throw error
+    }
+    throw RETRY_LIMIT
+  }
+}
+
+const makeRowsLimitError = () =>
+  new Error('Database returned more than the allowed response size limit')
 
 const find: CurrentStoreApi['find'] = async (
   pool,
@@ -9,17 +50,16 @@ const find: CurrentStoreApi['find'] = async (
   searchExpression,
   fieldList,
   sort,
-  skip,
-  limit
+  inputSkip,
+  inputLimit
 ) => {
   const {
+    searchToWhereExpression,
+    makeNestedPath,
     executeStatement,
     escapeId,
     escapeStr,
     tablePrefix,
-    searchToWhereExpression,
-    makeNestedPath,
-    convertResultRow,
     schemaName,
   } = pool
 
@@ -40,11 +80,6 @@ const find: CurrentStoreApi['find'] = async (
           .join(', ')
       : ''
 
-  const skipLimit = `
-    OFFSET ${isFinite(+(skip as number)) ? +(skip as number) : 0}
-    LIMIT ${isFinite(+(limit as number)) ? +(limit as number) : MAX_LIMIT_VALUE}
-  `
-
   const searchExpr = searchToWhereExpression(
     searchExpression,
     escapeId,
@@ -55,23 +90,72 @@ const find: CurrentStoreApi['find'] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const inputRows = (await executeStatement(
-    pool,
-    `SELECT * FROM ${escapeId(schemaName)}.${escapeId(
-      `${tablePrefix}${tableName}`
-    )}
-    ${inlineSearchExpr}
-    ${orderExpression}
-    ${skipLimit};`
-  )) as Array<MarshalledRowLike>
+  const query = `SELECT * FROM ${escapeId(schemaName)}.${escapeId(
+    `${tablePrefix}${tableName}`
+  )}
+  ${inlineSearchExpr}
+  ${orderExpression}
+  `
 
-  const rows: Array<JsonMap> = []
+  const skip = isFinite(+(inputSkip as number)) ? +(inputSkip as number) : 0
+  let limit = isFinite(+(inputLimit as number))
+    ? +(inputLimit as number)
+    : MAX_LIMIT_VALUE
 
-  for (let idx = 0; idx < rows.length; idx++) {
-    rows[idx] = convertResultRow(inputRows[idx], fieldList)
+  try {
+    return await retrieveRows(pool, fieldList, query, skip, limit)
+  } catch (error) {
+    if (error !== RETRY_LIMIT) {
+      throw error
+    }
   }
 
-  return rows
+  try {
+    limit = ((await executeStatement(
+      pool,
+      `WITH "CTE" AS (${query} OFFSET ${skip})
+      SELECT Count("CTE".*) AS "Count" FROM "CTE"
+      `
+    )) as Array<{ Count: number }>)[0].Count
+  } catch (error) {
+    throw makeRowsLimitError()
+  }
+
+  for (
+    let [factor, size]: [number, number] = [2, Math.ceil(limit / 2)];
+    !Number.isNaN(factor);
+    void ([factor, size] = [
+      factor < limit
+        ? Math.ceil(limit / (factor * 2)) * (factor * 2) - limit <=
+          Math.ceil(limit / (factor * 2))
+          ? factor * 2
+          : limit
+        : Number.NaN,
+      Math.ceil(limit / (factor * 2)),
+    ])
+  ) {
+    try {
+      return Array.from<JsonMap>([]).concat(
+        ...(await Promise.all(
+          Array.from<never>({ length: factor }).map((_, index) =>
+            retrieveRows(
+              pool,
+              fieldList,
+              query,
+              skip + index * size,
+              index < factor - 1 ? size : limit - (factor - 1) * size
+            )
+          )
+        ))
+      )
+    } catch (error) {
+      if (error !== RETRY_LIMIT) {
+        throw RETRY_LIMIT
+      }
+    }
+  }
+
+  throw makeRowsLimitError()
 }
 
 export default find
