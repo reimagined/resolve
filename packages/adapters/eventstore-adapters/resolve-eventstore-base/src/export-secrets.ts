@@ -1,6 +1,6 @@
 import { Readable } from 'stream'
 
-import { BATCH_SIZE } from './constants'
+import { BATCH_SIZE, MAINTENANCE_MODE_AUTO } from './constants'
 
 import {
   AdapterPoolConnectedProps,
@@ -11,6 +11,25 @@ import {
 type ExportStreamContext = {
   pool: any
   idx: ExportSecretsOptions['idx']
+  maintenanceMode: ExportSecretsOptions['maintenanceMode']
+}
+
+async function startProcessSecrets({
+  pool,
+  maintenanceMode,
+}: any): Promise<void> {
+  if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
+    await pool.freeze()
+  }
+}
+
+async function endProcessSecrets({
+  pool,
+  maintenanceMode,
+}: any): Promise<void> {
+  if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
+    await pool.unfreeze()
+  }
 }
 
 async function* generator(
@@ -19,6 +38,8 @@ async function* generator(
   const { pool }: any = context
 
   await pool.waitConnect()
+
+  await startProcessSecrets(context)
 
   while (true) {
     const { secrets, idx }: any = await pool.loadSecrets({
@@ -33,6 +54,7 @@ async function* generator(
       context.idx = idx
     }
     if (secrets.length === 0) {
+      await endProcessSecrets(context)
       return
     }
   }
@@ -40,7 +62,10 @@ async function* generator(
 
 const exportSecretsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
   pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
-  { idx = null }: Partial<ExportSecretsOptions> = {}
+  {
+    idx = null,
+    maintenanceMode = MAINTENANCE_MODE_AUTO,
+  }: Partial<ExportSecretsOptions> = {}
 ): Readable => {
   if (pool.loadSecrets === undefined)
     throw new Error('loadSecrets is not defined for this adapter')
@@ -48,6 +73,7 @@ const exportSecretsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
   const context: ExportStreamContext = {
     pool,
     idx,
+    maintenanceMode,
   }
 
   const stream: Readable = Readable.from(generator(context))

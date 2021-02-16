@@ -177,7 +177,7 @@ export type WrapDispose<ConnectedProps extends AdapterPoolConnectedProps> = (
   dispose: PoolMethod<ConnectedProps, Adapter['dispose']>
 ) => () => Promise<void>
 
-type MAINTENANCE_MODE =
+export type MAINTENANCE_MODE =
   | typeof MAINTENANCE_MODE_AUTO
   | typeof MAINTENANCE_MODE_MANUAL
 
@@ -192,8 +192,13 @@ export type ExportOptions = {
   bufferSize: number
 }
 
+export type ImportSecretsOptions = {
+  maintenanceMode: MAINTENANCE_MODE
+}
+
 export type ExportSecretsOptions = {
   idx: number | null
+  maintenanceMode: MAINTENANCE_MODE
 }
 
 export interface CommonAdapterFunctions<
@@ -333,6 +338,6 @@ export interface Adapter {
   incrementalImport: (events: InputEvent[]) => Promise<void>
   loadSecrets?: (filter: SecretFilter) => Promise<SecretsWithIdx>
   injectSecret?: (secretRecord: SecretRecord) => Promise<void>
-  importSecrets: () => stream.Writable
+  importSecrets: (options?: Partial<ImportSecretsOptions>) => stream.Writable
   exportSecrets: (options?: Partial<ExportSecretsOptions>) => stream.Readable
 }

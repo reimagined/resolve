@@ -1,15 +1,30 @@
 import stream from 'stream'
 import { EOL } from 'os'
 
-import { BUFFER_SIZE, PARTIAL_SECRET_FLAG, BATCH_SIZE } from './constants'
+import {
+  BUFFER_SIZE,
+  PARTIAL_SECRET_FLAG,
+  BATCH_SIZE,
+  MAINTENANCE_MODE_AUTO,
+  MAINTENANCE_MODE_MANUAL,
+} from './constants'
 
 import { ResourceNotExistError } from './resource-errors'
 import {
   AdapterPoolConnectedProps,
   AdapterPoolPossiblyUnconnected,
+  ImportSecretsOptions,
 } from './types'
 
-const SecretsStream = function (this: any, { pool }: any): void {
+type ImportStreamContext = {
+  pool: any
+  maintenanceMode: ImportSecretsOptions['maintenanceMode']
+}
+
+const SecretsStream = function (
+  this: any,
+  { pool, maintenanceMode }: ImportStreamContext
+): void {
   stream.Writable.call(this, { objectMode: true })
 
   this.pool = pool
@@ -21,6 +36,7 @@ const SecretsStream = function (this: any, { pool }: any): void {
   this.injectSecretPromiseSet = new Set()
   this.savedErrors = []
   this.maxIdx = 0
+  this.maintenanceMode = maintenanceMode
   this.isMaintenanceInProgress = false
   this.parsedRecordCount = 0
   this.bypassMode = false
@@ -49,7 +65,10 @@ SecretsStream.prototype._write = async function (
 
     const { dropSecrets, initSecrets, freeze, injectSecret }: any = this.pool
 
-    if (this.isMaintenanceInProgress === false) {
+    if (
+      this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
+      this.isMaintenanceInProgress === false
+    ) {
       this.isMaintenanceInProgress = true
       try {
         await dropSecrets()
@@ -219,7 +238,10 @@ SecretsStream.prototype._final = async function (callback: any): Promise<void> {
 
     await Promise.all([...this.injectSecretPromiseSet])
 
-    if (this.isMaintenanceInProgress === true) {
+    if (
+      this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
+      this.isMaintenanceInProgress === true
+    ) {
       this.isMaintenanceInProgress = false
       await unfreeze()
     }
@@ -241,14 +263,24 @@ SecretsStream.prototype._final = async function (callback: any): Promise<void> {
 }
 
 const importSecretsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
-  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>
+  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+  {
+    maintenanceMode = MAINTENANCE_MODE_AUTO,
+  }: Partial<ImportSecretsOptions> = {}
 ): stream.Writable => {
   if (pool.injectSecret === undefined)
     throw new Error('injectSecret is not defined for this adapter')
 
-  return new (SecretsStream as any)({
-    pool,
-  })
+  switch (maintenanceMode) {
+    case MAINTENANCE_MODE_AUTO:
+    case MAINTENANCE_MODE_MANUAL:
+      return new (SecretsStream as any)({
+        pool,
+        maintenanceMode,
+      })
+    default:
+      throw new Error(`Wrong maintenance mode ${String(maintenanceMode)}`)
+  }
 }
 
 export default importSecretsStream
