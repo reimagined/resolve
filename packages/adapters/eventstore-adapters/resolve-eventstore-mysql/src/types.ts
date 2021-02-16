@@ -38,7 +38,7 @@ export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
 >
 
 export type ConnectionDependencies = {
-  MySQL: any
+  MySQL: MySQLLib
   escapeId: (val: string) => string
   escape: (val: string) => string
 }

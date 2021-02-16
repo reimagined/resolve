@@ -1,4 +1,4 @@
-export const EventstoreFrozenError: {
+const EventstoreFrozenError: {
   new (message?: string): Error
   is: (error: any) => boolean
 } = function (this: Error, message?: string): void {
