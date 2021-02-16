@@ -73,6 +73,6 @@
     "resolve-cloud": "*",
     "sinon": "7.2.2",
     "testcafe": "1.10.1",
-    "testcafe-reporter-dashboard-test": "0.0.23"
+    "testcafe-reporter-dashboard-test": "0.0.24"
   }
 }
