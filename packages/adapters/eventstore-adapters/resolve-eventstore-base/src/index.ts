@@ -12,6 +12,7 @@ import {
   ResourceNotExistError,
   maybeThrowResourceError,
 } from './resource-errors'
+import EventstoreFrozenError from './frozen-error'
 import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
 import throwBadCursor from './throw-bad-cursor'
@@ -89,6 +90,7 @@ export {
   ResourceAlreadyExistError as EventstoreResourceAlreadyExistError,
   ResourceNotExistError as EventstoreResourceNotExistError,
   ConcurrentError,
+  EventstoreFrozenError,
   MAINTENANCE_MODE_AUTO,
   MAINTENANCE_MODE_MANUAL,
   throwBadCursor,

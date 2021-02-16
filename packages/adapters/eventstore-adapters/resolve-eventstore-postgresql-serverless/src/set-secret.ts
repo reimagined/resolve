@@ -1,5 +1,6 @@
 import getLog from './get-log'
 import { AdapterPool } from './types'
+import { EventstoreFrozenError } from 'resolve-eventstore-base'
 
 const setSecret = async (
   pool: AdapterPool,
@@ -10,6 +11,7 @@ const setSecret = async (
   log.debug(`setting secret value within database`)
   const {
     databaseName,
+    eventsTableName,
     secretsTableName,
     escape,
     escapeId,
@@ -35,11 +37,24 @@ const setSecret = async (
   log.verbose(`secretsTableName: ${secretsTableName}`)
 
   const databaseNameAsId = escapeId(databaseName)
+  const databaseNameAsString = escape(databaseName)
   const secretsTableNameAsId = escapeId(secretsTableName)
+  const freezeTableNameAsString: string = escape(`${eventsTableName}-freeze`)
 
   // logging of this sql query can lead to security issues
-  const sql = `INSERT INTO ${databaseNameAsId}.${secretsTableNameAsId}("id", "secret") 
-      VALUES (${escape(selector)}, ${escape(secret)})`
+  const sql = `WITH "freeze_check" AS (
+              SELECT '' AS "freeze_empty" WHERE (
+                (SELECT 1 AS "EventStoreIsFrozen")
+              UNION ALL
+                (SELECT 1 AS "EventStoreIsFrozen"
+                FROM "information_schema"."tables"
+                WHERE "table_schema" = ${databaseNameAsString}
+                AND "table_name" = ${freezeTableNameAsString})
+              ) = 1
+            ) INSERT INTO ${databaseNameAsId}.${secretsTableNameAsId}("id", "secret") 
+      VALUES (${escape(selector)}, ${escape(secret)} || (
+        SELECT "freeze_check"."freeze_empty" from "freeze_check" LIMIT 1
+      ))`
 
   try {
     log.debug(`executing SQL query`)
@@ -48,8 +63,15 @@ const setSecret = async (
 
     log.debug(`query executed successfully`)
   } catch (error) {
-    log.error(error.message)
-    log.verbose(error.stack)
+    const errorMessage =
+      error != null && error.message != null ? error.message : ''
+
+    if (errorMessage.indexOf('subquery used as an expression') > -1) {
+      throw new EventstoreFrozenError()
+    } else {
+      log.error(error.message)
+      log.verbose(error.stack)
+    }
     throw error
   }
 }

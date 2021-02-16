@@ -1,24 +1,54 @@
 import createSqliteAdapter from 'resolve-eventstore-lite'
+import createPostgresqlServerlessAdapter, {
+  create,
+  destroy,
+} from 'resolve-eventstore-postgresql-serverless'
+import { Adapter, EventstoreFrozenError } from 'resolve-eventstore-base'
+
 import {
-  Adapter,
-  EventstoreResourceAlreadyExistError,
-  EventstoreResourceNotExistError,
-} from 'resolve-eventstore-base'
+  TEST_SERVERLESS,
+  updateAwsConfig,
+  getCloudResourceOptions,
+  jestTimeout,
+  cloudResourceOptionsToAdapterConfig,
+  makeTestEvent,
+} from '../eventstore-test-utils'
 
-import { makeTestEvent } from '../eventstore-test-utils'
+jest.setTimeout(jestTimeout())
 
-const createAdapter = createSqliteAdapter
+let createAdapter: (config: any) => Adapter
 
-describe('eventstore adapter init and drop', () => {
-  const adapter: Adapter = createAdapter({})
+if (TEST_SERVERLESS) {
+  createAdapter = createPostgresqlServerlessAdapter
+} else {
+  createAdapter = createSqliteAdapter
+}
 
+beforeAll(() => {
+  if (TEST_SERVERLESS) updateAwsConfig()
+})
+
+describe('eventstore adapter freeze and unfreeze', () => {
+  const options = getCloudResourceOptions('freeze_testing')
+
+  let adapter: Adapter
   beforeAll(async () => {
+    if (TEST_SERVERLESS) {
+      await create(options)
+      adapter = createAdapter(cloudResourceOptionsToAdapterConfig(options))
+    } else {
+      adapter = createAdapter({})
+    }
     await adapter.init()
   })
 
   afterAll(async () => {
     await adapter.drop()
     await adapter.dispose()
+
+    if (TEST_SERVERLESS) {
+      await destroy(options)
+    }
   })
 
   test('should not throw when unfreezing not frozen adapter', async () => {
@@ -34,11 +64,28 @@ describe('eventstore adapter init and drop', () => {
   test('should throw on saveEvent when adapter is frozen', async () => {
     await adapter.freeze()
     const event = makeTestEvent(0)
-    await expect(adapter.saveEvent(event)).rejects.toThrow()
+    await expect(adapter.saveEvent(event)).rejects.toThrow(
+      EventstoreFrozenError
+    )
   })
   test('should be able to saveEvent after got unfrozen', async () => {
     await adapter.unfreeze()
     const event = makeTestEvent(0)
     await expect(adapter.saveEvent(event)).resolves.not.toThrow()
+  })
+
+  test('should throw on setSecret when adapter is frozen', async () => {
+    await adapter.freeze()
+    const secretManager = await adapter.getSecretsManager()
+    await expect(
+      secretManager.setSecret('secret_id', 'secret_content')
+    ).rejects.toThrow(EventstoreFrozenError)
+  })
+  test('should be able to setSecret after got unfrozen', async () => {
+    await adapter.unfreeze()
+    const secretManager = await adapter.getSecretsManager()
+    await expect(
+      secretManager.setSecret('secret_id', 'secret_content')
+    ).resolves.not.toThrow()
   })
 })
