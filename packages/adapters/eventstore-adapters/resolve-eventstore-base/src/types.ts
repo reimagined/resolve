@@ -117,7 +117,8 @@ export type AdapterPoolPrimalProps = {
 }
 
 export type AdapterPoolConnectedProps = Adapter & {
-  injectEvent: (event: any) => Promise<any>
+  injectEvent: (event: SavedEvent) => Promise<void>
+  injectSecret?: (secretRecord: SecretRecord) => Promise<void>
 
   loadEventsByTimestamp: (filter: TimestampFilter) => Promise<EventsWithCursor>
   loadEventsByCursor: (filter: CursorFilter) => Promise<EventsWithCursor>
@@ -287,7 +288,7 @@ export interface AdapterFunctions<
   loadSecrets?: PoolMethod<ConnectedProps, NonNullable<Adapter['loadSecrets']>>
   injectSecret?: PoolMethod<
     ConnectedProps,
-    NonNullable<Adapter['injectSecret']>
+    NonNullable<AdapterPoolConnectedProps['injectSecret']>
   >
   initEvents: PoolMethod<
     ConnectedProps,
@@ -337,7 +338,6 @@ export interface Adapter {
   rollbackIncrementalImport: () => Promise<void>
   incrementalImport: (events: InputEvent[]) => Promise<void>
   loadSecrets?: (filter: SecretFilter) => Promise<SecretsWithIdx>
-  injectSecret?: (secretRecord: SecretRecord) => Promise<void>
   importSecrets: (options?: Partial<ImportSecretsOptions>) => stream.Writable
   exportSecrets: (options?: Partial<ExportSecretsOptions>) => stream.Readable
 }

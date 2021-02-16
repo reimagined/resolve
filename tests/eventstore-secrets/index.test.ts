@@ -147,59 +147,6 @@ describe('eventstore adapter secrets', () => {
   })
 })
 
-describe('eventstore adapter inject secrets', () => {
-  if (TEST_SERVERLESS) updateAwsConfig()
-
-  const countSecrets = 50
-
-  const options = getCloudResourceOptions('inject_secret_testing')
-
-  let adapter: Adapter
-  beforeAll(async () => {
-    if (TEST_SERVERLESS) {
-      await create(options)
-      adapter = createAdapter(cloudResourceOptionsToAdapterConfig(options))
-    } else {
-      adapter = createAdapter({})
-    }
-    await adapter.init()
-  })
-
-  afterAll(async () => {
-    await adapter.drop()
-    await adapter.dispose()
-
-    if (TEST_SERVERLESS) {
-      await destroy(options)
-    }
-  })
-
-  test('should inject secrets into empty table', async () => {
-    const secrets = []
-
-    for (let secretIndex = 0; secretIndex < countSecrets; secretIndex++) {
-      secrets.push({
-        id: makeIdFromIndex(secretIndex),
-        secret: makeSecretFromIndex(secretIndex),
-        idx: secretIndex,
-      })
-    }
-
-    for (let secret of secrets) {
-      await adapter.injectSecret(secret)
-    }
-  })
-
-  test('should load injected secrets', async () => {
-    const secrets = (await adapter.loadSecrets({ limit: countSecrets + 1 }))
-      .secrets
-    expect(secrets).toHaveLength(countSecrets)
-    for (let i = 1; i < secrets.length; ++i) {
-      expect(secrets[i].idx).toBeGreaterThan(secrets[i - 1].idx)
-    }
-  })
-})
-
 describe('eventstore adapter import secrets', () => {
   if (TEST_SERVERLESS) updateAwsConfig()
 
