@@ -3,7 +3,12 @@ import createPostgresqlServerlessAdapter, {
   create,
   destroy,
 } from 'resolve-eventstore-postgresql-serverless'
-import { Adapter, EventstoreFrozenError } from 'resolve-eventstore-base'
+import {
+  Adapter,
+  EventstoreFrozenError,
+  EventstoreAlreadyFrozenError,
+  EventstoreAlreadyUnfrozenError,
+} from 'resolve-eventstore-base'
 
 import {
   TEST_SERVERLESS,
@@ -52,12 +57,14 @@ describe('eventstore adapter freeze and unfreeze', () => {
   })
 
   test('should throw when unfreezing not frozen adapter', async () => {
-    await expect(adapter.unfreeze()).rejects.toThrow()
+    await expect(adapter.unfreeze()).rejects.toThrow(
+      EventstoreAlreadyUnfrozenError
+    )
   })
 
   test('should throw when freezing already frozen adapter', async () => {
     await adapter.freeze()
-    await expect(adapter.freeze()).rejects.toThrow()
+    await expect(adapter.freeze()).rejects.toThrow(EventstoreAlreadyFrozenError)
     await adapter.unfreeze()
   })
 
