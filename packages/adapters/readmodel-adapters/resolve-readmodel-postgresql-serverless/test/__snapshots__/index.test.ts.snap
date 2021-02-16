@@ -569,12 +569,9 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "SELECT * FROM \\"databaseName\\".\\"tablePrefixEntries\\"
-    
-    ORDER BY \\"id\\" ASC
-    
-    OFFSET 0
-    LIMIT 268435455
-  ;",
+  
+  ORDER BY \\"id\\" ASC
+   OFFSET 0 LIMIT 268435455",
   },
   "executeStatement",
   Object {
@@ -584,12 +581,9 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "SELECT * FROM \\"databaseName\\".\\"tablePrefixEntries\\"
-    
-    ORDER BY \\"id\\" DESC
-    
-    OFFSET 0
-    LIMIT 268435455
-  ;",
+  
+  ORDER BY \\"id\\" DESC
+   OFFSET 0 LIMIT 268435455",
   },
   "executeStatement",
   Object {
@@ -614,7 +608,7 @@ Array [
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
     "sql": "SELECT * FROM \\"databaseName\\".\\"tablePrefixEntries\\"
-    WHERE (
+  WHERE (
     (((\\"name\\" = CAST('\\"Second entry\\"' AS JSONB)) and (not (\\"name\\" is null)) and (not (CAST('\\"Second entry\\"' AS JSONB) is null))) or      
     ((\\"name\\" is null) and (CAST('\\"Second entry\\"' AS JSONB) is null)))
    AND 
@@ -624,11 +618,8 @@ Array [
     (((\\"id\\" >= CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
   )) 
-    
-    
-    OFFSET 0
-    LIMIT 268435455
-  ;",
+  
+   OFFSET 0 LIMIT 268435455",
   },
   "executeStatement",
   Object {
