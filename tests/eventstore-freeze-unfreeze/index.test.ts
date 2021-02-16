@@ -51,13 +51,13 @@ describe('eventstore adapter freeze and unfreeze', () => {
     }
   })
 
-  test('should not throw when unfreezing not frozen adapter', async () => {
-    await expect(adapter.unfreeze()).resolves.not.toThrow()
+  test('should throw when unfreezing not frozen adapter', async () => {
+    await expect(adapter.unfreeze()).rejects.toThrow()
   })
 
-  test('should not throw when freezing already frozen adapter', async () => {
+  test('should throw when freezing already frozen adapter', async () => {
     await adapter.freeze()
-    await expect(adapter.freeze()).resolves.not.toThrow()
+    await expect(adapter.freeze()).rejects.toThrow()
     await adapter.unfreeze()
   })
 

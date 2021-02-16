@@ -6,7 +6,7 @@ const unfreeze = async ({
   escapeId,
 }: AdapterPool): Promise<void> => {
   await connection.execute(
-    `DROP TABLE IF EXISTS ${escapeId(`${eventsTableName}-freeze`)}`
+    `DROP TABLE ${escapeId(`${eventsTableName}-freeze`)}`
   )
 }
 

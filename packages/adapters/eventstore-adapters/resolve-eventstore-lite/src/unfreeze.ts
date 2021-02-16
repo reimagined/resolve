@@ -5,9 +5,7 @@ const unfreeze = async ({
   eventsTableName,
   escapeId,
 }: AdapterPool): Promise<void> => {
-  await database.exec(
-    `DROP TABLE IF EXISTS ${escapeId(`${eventsTableName}-freeze`)}`
-  )
+  await database.exec(`DROP TABLE ${escapeId(`${eventsTableName}-freeze`)}`)
 }
 
 export default unfreeze
