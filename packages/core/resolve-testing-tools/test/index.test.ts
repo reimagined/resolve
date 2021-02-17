@@ -49,6 +49,11 @@ describe('read model', () => {
       args: { a: 10, b: 20 },
       context: {
         jwt: 'JWT_TOKEN',
+        secretsManager: {
+          getSecret: expect.any(Function),
+          setSecret: expect.any(Function),
+          deleteSecret: expect.any(Function),
+        },
       },
     })
   })
