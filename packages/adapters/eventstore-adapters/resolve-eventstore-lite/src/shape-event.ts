@@ -1,4 +1,6 @@
-const shapeEvent = (event: any, additionalFields?: any): any =>
+import { SavedEvent } from 'resolve-eventstore-base'
+
+const shapeEvent = (event: any, additionalFields?: any): SavedEvent =>
   Object.freeze({
     threadCounter: +event.threadCounter,
     threadId: +event.threadId,

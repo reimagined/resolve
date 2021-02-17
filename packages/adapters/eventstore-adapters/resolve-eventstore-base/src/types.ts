@@ -1,8 +1,12 @@
-import { SecretsManager, Event } from 'resolve-core'
+import { SecretsManager, Event, SerializableMap } from 'resolve-core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 
 export type InputEvent = Event
+export type SavedEvent = Event & {
+  threadCounter: number
+  threadId: number
+} & SerializableMap
 
 export type CheckForResourceError = (errors: Error[]) => void
 
@@ -10,7 +14,7 @@ type DeleteSecret = SecretsManager['deleteSecret']
 type GetSecret = SecretsManager['getSecret']
 type SetSecret = SecretsManager['setSecret']
 
-type ShapeEvent = (event: any, additionalFields?: any) => any
+type ShapeEvent = (event: any, additionalFields?: any) => SavedEvent
 
 export type ValidateEventFilter = (filter: any) => void
 
@@ -18,7 +22,7 @@ export type GetNextCursor = (prevCursor: string | null, events: any[]) => string
 
 export type EventsWithCursor = {
   cursor: string | null
-  events: any[]
+  events: SavedEvent[]
 }
 
 type EventFilterCommon = {
@@ -113,7 +117,8 @@ export type AdapterPoolPrimalProps = {
 }
 
 export type AdapterPoolConnectedProps = Adapter & {
-  injectEvent: (event: any) => Promise<any>
+  injectEvent: (event: SavedEvent) => Promise<void>
+  injectSecret?: (secretRecord: SecretRecord) => Promise<void>
 
   loadEventsByTimestamp: (filter: TimestampFilter) => Promise<EventsWithCursor>
   loadEventsByCursor: (filter: CursorFilter) => Promise<EventsWithCursor>
@@ -173,7 +178,7 @@ export type WrapDispose<ConnectedProps extends AdapterPoolConnectedProps> = (
   dispose: PoolMethod<ConnectedProps, Adapter['dispose']>
 ) => () => Promise<void>
 
-type MAINTENANCE_MODE =
+export type MAINTENANCE_MODE =
   | typeof MAINTENANCE_MODE_AUTO
   | typeof MAINTENANCE_MODE_MANUAL
 
@@ -188,8 +193,13 @@ export type ExportOptions = {
   bufferSize: number
 }
 
+export type ImportSecretsOptions = {
+  maintenanceMode: MAINTENANCE_MODE
+}
+
 export type ExportSecretsOptions = {
   idx: number | null
+  maintenanceMode: MAINTENANCE_MODE
 }
 
 export interface CommonAdapterFunctions<
@@ -278,7 +288,7 @@ export interface AdapterFunctions<
   loadSecrets?: PoolMethod<ConnectedProps, NonNullable<Adapter['loadSecrets']>>
   injectSecret?: PoolMethod<
     ConnectedProps,
-    NonNullable<Adapter['injectSecret']>
+    NonNullable<AdapterPoolConnectedProps['injectSecret']>
   >
   initEvents: PoolMethod<
     ConnectedProps,
@@ -316,16 +326,18 @@ export interface Adapter {
   loadSnapshot: (snapshotKey: string) => Promise<any>
   saveSnapshot: (snapshotKey: string, content: string) => Promise<any>
   dropSnapshot: (snapshotKey: string) => Promise<any>
-  pushIncrementalImport: (events: any[], importId: string) => Promise<void>
+  pushIncrementalImport: (
+    events: InputEvent[],
+    importId: string
+  ) => Promise<void>
   beginIncrementalImport: () => Promise<string>
   commitIncrementalImport: (
     importId: string,
     validateAfterCommit?: any
   ) => Promise<void>
   rollbackIncrementalImport: () => Promise<void>
-  incrementalImport: (events: any[]) => Promise<void>
+  incrementalImport: (events: InputEvent[]) => Promise<void>
   loadSecrets?: (filter: SecretFilter) => Promise<SecretsWithIdx>
-  injectSecret?: (secretRecord: SecretRecord) => Promise<void>
-  importSecrets: () => stream.Writable
+  importSecrets: (options?: Partial<ImportSecretsOptions>) => stream.Writable
   exportSecrets: (options?: Partial<ExportSecretsOptions>) => stream.Readable
 }

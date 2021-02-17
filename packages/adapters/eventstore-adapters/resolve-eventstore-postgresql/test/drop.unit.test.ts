@@ -7,7 +7,7 @@ import dropEvents from '../src/drop-events'
 
 jest.mock('../src/get-log')
 
-const mDrop = jest.fn(dropEvents)
+const mDropEvents = jest.fn(dropEvents)
 
 let pool: AdapterPool
 
@@ -24,61 +24,41 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  mDrop.mockClear()
-})
-
-test('event store dropped', async () => {
-  await mDrop(pool)
-
-  expect(mDrop).toHaveBeenCalledWith({
-    databaseName: 'data-base-name',
-    secretsTableName: 'secrets-table-name',
-    eventsTableName: 'events-table-name',
-    snapshotsTableName: 'snapshots-table-name',
-    maybeThrowResourceError: pool.maybeThrowResourceError,
-    executeStatement: pool.executeStatement,
-    escapeId: pool.escapeId,
-  })
+  mDropEvents.mockClear()
 })
 
 test('secrets table dropped', async () => {
-  await mDrop(pool)
+  await mDropEvents(pool)
 
-  expect(pool.executeStatement).toHaveBeenNthCalledWith(
-    1,
-    `DROP TABLE data-base-name.events-table-name`
+  expect(pool.executeStatement).toHaveBeenCalledWith(
+    expect.stringMatching(/events-table-name/g)
   )
-  expect(pool.executeStatement).toHaveBeenNthCalledWith(
-    2,
-    `DROP INDEX IF EXISTS data-base-name.events-table-name-aggregateIdAndVersion`
+  expect(pool.executeStatement).toHaveBeenCalledWith(
+    expect.stringMatching(/events-table-name-aggregateIdAndVersion/g)
   )
-  expect(pool.executeStatement).toHaveBeenNthCalledWith(
-    3,
-    `DROP INDEX IF EXISTS data-base-name.events-table-name-aggregateId`
+  expect(pool.executeStatement).toHaveBeenCalledWith(
+    expect.stringMatching(/events-table-name-aggregateId/g)
   )
-  expect(pool.executeStatement).toHaveBeenNthCalledWith(
-    4,
-    `DROP INDEX IF EXISTS data-base-name.events-table-name-aggregateVersion`
+  expect(pool.executeStatement).toHaveBeenCalledWith(
+    expect.stringMatching(/events-table-name-aggregateVersion/g)
   )
-  expect(pool.executeStatement).toHaveBeenNthCalledWith(
-    5,
-    `DROP INDEX IF EXISTS data-base-name.events-table-name-type`
+  expect(pool.executeStatement).toHaveBeenCalledWith(
+    expect.stringMatching(/events-table-name-type/g)
   )
-  expect(pool.executeStatement).toHaveBeenNthCalledWith(
-    6,
-    `DROP INDEX IF EXISTS data-base-name.events-table-name-timestamp`
+  expect(pool.executeStatement).toHaveBeenCalledWith(
+    expect.stringMatching(/events-table-name-timestamp/g)
   )
-  expect(pool.executeStatement).toHaveBeenNthCalledWith(
-    7,
-    `DROP TABLE data-base-name.events-table-name-threads`
+  expect(pool.executeStatement).toHaveBeenCalledWith(
+    expect.stringMatching(/events-table-name-threads/g)
   )
-  expect(pool.executeStatement).toHaveBeenNthCalledWith(
-    8,
-    `DROP TABLE IF EXISTS data-base-name.events-table-name-freeze`
+  expect(pool.executeStatement).toHaveBeenCalledWith(
+    expect.stringMatching(/events-table-name-freeze/g)
   )
-  expect(pool.executeStatement).toHaveBeenNthCalledWith(
-    9,
-    `DROP TABLE data-base-name.snapshots-table-name`
+  expect(pool.executeStatement).toHaveBeenCalledWith(
+    expect.stringMatching(/snapshots-table-name/g)
+  )
+  expect(pool.executeStatement).toHaveBeenCalledWith(
+    expect.stringMatching(/events-table-name-incremental-import/g)
   )
 })
 
@@ -89,7 +69,7 @@ test('resource not exist error detection', async () => {
     mocked(pool.executeStatement).mockRejectedValueOnce(error)
   }
 
-  const errors = await mDrop(pool)
+  const errors = await mDropEvents(pool)
   expect(errors).toHaveLength(1)
   expect(errors[0]).toBeInstanceOf(EventstoreResourceNotExistError)
 })

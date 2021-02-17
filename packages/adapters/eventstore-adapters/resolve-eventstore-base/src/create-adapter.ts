@@ -117,6 +117,7 @@ const createAdapter = <
 
   const connectedProps: Partial<ConnectedProps> = {
     injectEvent: wrapMethod(adapterPool, injectEvent),
+    injectSecret: wrapMethod(adapterPool, injectSecret),
     loadEventsByCursor: wrapMethod(adapterPool, loadEventsByCursor),
     loadEventsByTimestamp: wrapMethod(adapterPool, loadEventsByTimestamp),
     deleteSecret: wrapMethod(adapterPool, deleteSecret),
@@ -162,7 +163,6 @@ const createAdapter = <
     ),
     incrementalImport: wrapMethod(adapterPool, incrementalImport),
     loadSecrets: wrapMethod(adapterPool, loadSecrets),
-    injectSecret: wrapMethod(adapterPool, injectSecret),
     importSecrets: importSecretsStream.bind(null, adapterPool),
     exportSecrets: exportSecretsStream.bind(null, adapterPool),
   }

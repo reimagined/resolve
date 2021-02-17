@@ -1,8 +1,9 @@
 import { AdapterPool } from './types'
+import { SavedEvent } from 'resolve-eventstore-base'
 
 const injectEvent = async function (
   { eventsTableName, connection, escapeId, escape }: AdapterPool,
-  event: any
+  event: SavedEvent
 ): Promise<void> {
   const eventsTableNameAsId: string = escapeId(eventsTableName)
   const threadsTableNameAsId: string = escapeId(`${eventsTableName}-threads`)

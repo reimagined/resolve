@@ -22,7 +22,6 @@ export type MysqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   database: string
   escapeId: (val: string) => string
   escape: (val: string) => string
-  MySQL: MySQLLib
 }
 
 export type MysqlAdapterConfig = AdapterConfig & {
@@ -39,7 +38,7 @@ export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
 >
 
 export type ConnectionDependencies = {
-  MySQL: any
+  MySQL: MySQLLib
   escapeId: (val: string) => string
   escape: (val: string) => string
 }

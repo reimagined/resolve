@@ -1,8 +1,15 @@
 import getLog from './get-log'
 import { AdapterPool } from './types'
+import { EventstoreFrozenError } from 'resolve-eventstore-base'
 
 const setSecret = async (
-  { database, secretsTableName, escape, escapeId }: AdapterPool,
+  {
+    database,
+    eventsTableName,
+    secretsTableName,
+    escape,
+    escapeId,
+  }: AdapterPool,
   selector: string,
   secret: string
 ): Promise<void> => {
@@ -14,11 +21,22 @@ const setSecret = async (
   log.verbose(`secretsTableName: ${secretsTableName}`)
 
   const tableId = escapeId(secretsTableName)
+  const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
 
   try {
     log.debug(`executing SQL query`)
     await database.exec(
-      `INSERT INTO ${tableId}(
+      `BEGIN IMMEDIATE;
+
+      SELECT ABS("CTE"."EventStoreIsFrozen") FROM (
+        SELECT 0 AS "EventStoreIsFrozen"
+      UNION ALL
+        SELECT -9223372036854775808 AS "EventStoreIsFrozen"
+        FROM "sqlite_master"
+        WHERE "type" = 'table' AND 
+        "name" = ${freezeTableNameAsString}
+      ) CTE;
+      INSERT INTO ${tableId}(
         "idx", 
         "id", 
         "secret"
@@ -29,13 +47,26 @@ const setSecret = async (
          ),
          ${escape(selector)},
          ${escape(secret)}
-       )`
+       );
+       
+       COMMIT;`
     )
     log.debug(`query executed successfully`)
   } catch (error) {
-    log.error(error.message)
-    log.verbose(error.stack)
-    throw error
+    try {
+      await database.exec('ROLLBACK;')
+    } catch (e) {}
+
+    const errorMessage =
+      error != null && error.message != null ? error.message : ''
+
+    if (errorMessage === 'SQLITE_ERROR: integer overflow') {
+      throw new EventstoreFrozenError()
+    } else {
+      log.error(error.message)
+      log.verbose(error.stack)
+      throw error
+    }
   }
 }
 

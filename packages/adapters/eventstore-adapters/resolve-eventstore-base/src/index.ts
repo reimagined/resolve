@@ -12,6 +12,11 @@ import {
   ResourceNotExistError,
   maybeThrowResourceError,
 } from './resource-errors'
+import {
+  EventstoreFrozenError,
+  AlreadyFrozenError,
+  AlreadyUnfrozenError,
+} from './frozen-errors'
 import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
 import throwBadCursor from './throw-bad-cursor'
@@ -42,6 +47,7 @@ import {
   SecretsWithIdx,
   SecretRecord,
   InputEvent,
+  SavedEvent,
 } from './types'
 
 const wrappedCreateAdapter = <
@@ -88,6 +94,9 @@ export {
   ResourceAlreadyExistError as EventstoreResourceAlreadyExistError,
   ResourceNotExistError as EventstoreResourceNotExistError,
   ConcurrentError,
+  EventstoreFrozenError,
+  AlreadyFrozenError as EventstoreAlreadyFrozenError,
+  AlreadyUnfrozenError as EventstoreAlreadyUnfrozenError,
   MAINTENANCE_MODE_AUTO,
   MAINTENANCE_MODE_MANUAL,
   throwBadCursor,
@@ -110,4 +119,5 @@ export {
   SecretsWithIdx,
   SecretRecord,
   InputEvent,
+  SavedEvent,
 }
