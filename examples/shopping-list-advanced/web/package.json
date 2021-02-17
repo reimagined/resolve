@@ -61,7 +61,7 @@
     "remotedev-server": "0.2.7",
     "redux-devtools-extension": "2.13.7",
     "resolve-module-admin": "0.26.5",
-    "resolve-cloud": "*",
+    "resolve-cloud": "alpha",
     "webpack-node-externals": "1.7.2",
     "isomorphic-fetch": "2.2.1"
   }

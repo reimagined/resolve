@@ -10,7 +10,7 @@ jobs:
   smoke-test:
     runs-on: ubuntu-latest
 
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')))
+    if: 1 == 0 && github.event_name == 'push' || (github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')))
 
     steps:
       - uses: actions/checkout@v2
@@ -40,7 +40,7 @@ jobs:
     needs: [smoke-test]
     runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
 
-    if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
+    if: 1 == 0 && github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
 
     steps:
       - uses: actions/checkout@v2
@@ -81,6 +81,8 @@ jobs:
     needs: [smoke-test, e2e-macOS-test]
     runs-on: ubuntu-latest
     continue-on-error: true
+    env:
+      RESOLVE_API_URL: https://api.prod.resolve.sh
 
     steps:
       - uses: actions/checkout@v2

@@ -49,7 +49,7 @@
     "postcss-import": "12.0.1",
     "postcss-loader": "2.1.5",
     "react-test-renderer": "16.13.1",
-    "resolve-cloud": "*",
+    "resolve-cloud": "alpha",
     "style-loader": "0.21.0",
     "testcafe": "1.8.5",
     "webpack": "4.42.0"
