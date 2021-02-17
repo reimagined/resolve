@@ -64,7 +64,7 @@ const find: CurrentStoreApi['find'] = async (
 
   const rows: Array<JsonMap> = []
 
-  for (let idx = 0; idx < rows.length; idx++) {
+  for (let idx = 0; idx < inputRows.length; idx++) {
     rows[idx] = convertResultRow(inputRows[idx], fieldList)
   }
 
