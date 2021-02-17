@@ -334,7 +334,30 @@ Deletes data items based on the specified search expression.
 }
 ```
 
-The code sample below demonstrates how to use this API to communicate with a store from a Read Model projection and resolver.
+### Search Expression Syntax
+
+A search expression is an object or several objects grouped into a hierarchical structure by operators.
+
+The following operators are supported:
+
+**Comparison operators:**
+
+| Operator | Description              |
+| -------- | ------------------------ |
+| \$eq     | Equal                    |
+| \$ne     | Not equal                |
+| \$lt     | Less then                |
+| \$lte    | Less then or equal to    |
+| \$gt     | Greater then             |
+| \$gte    | Greater then or equal to |
+
+**Logical Operators:**
+
+| Operator | Description |
+| -------- | ----------- |
+| \$and    | And         |
+| \$or     | Or          |
+| \$not    | Not         |
 
 ## Saga API
 
