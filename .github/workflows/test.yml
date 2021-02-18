@@ -29,6 +29,7 @@ jobs:
           token: ${{ secrets.PRIVATE_NPM_TOKEN }}
           version: ${{ github.sha }}
           tag: latest-dev
+          unpublish: true
 
       - name: Checkout resolve-cloud
         uses: actions/checkout@v2
