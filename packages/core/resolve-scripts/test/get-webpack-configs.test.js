@@ -1,6 +1,15 @@
 import getWebpackConfigs from '../src/get_webpack_configs'
 import normalizePaths from './normalize_paths'
 
+jest.mock(
+  '@purtuga/esm-webpack-plugin',
+  () =>
+    function () {
+      this.MODULE = 'esm-webpack-plugin'
+    }
+)
+jest.mock('webpack-node-externals', () => (...args) => args)
+
 const resolveConfig = {
   port: 3000,
   rootPath: '',

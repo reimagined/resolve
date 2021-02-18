@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-mysql",
-  "version": "0.26.3",
+  "version": "0.26.5",
   "description": "An adapter the resolve-query uses to store the read model state in MySQL",
   "keywords": [
     "cqrs",
@@ -17,6 +17,7 @@
   "author": "reimagined team",
   "main": "./lib/index.js",
   "module": "./es/index.js",
+  "types": "./types/index.d.ts",
   "scripts": {
     "test": "jest --config=../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../jest.config.js --watchAll"
@@ -24,11 +25,11 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "mysql2": "^2.1.0",
-    "resolve-readmodel-base": "0.26.3",
+    "resolve-readmodel-base": "0.26.5",
     "uuid": "8.3.1"
   },
   "devDependencies": {
-    "jest": "26.0.1",
+    "jest": "26.6.3",
     "sinon": "7.2.2"
   },
   "engines": {
@@ -47,5 +48,6 @@
       "inputDir": "./src",
       "outDir": "./lib"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }

@@ -1,4 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
+import qs from 'query-string'
 import { mocked } from 'ts-jest/utils'
 import { request, RequestOptions, VALIDATED_RESULT } from '../../src/request'
 import { Context } from '../../src/context'
@@ -10,11 +11,13 @@ import {
   ClientMiddlewareOptions,
 } from '../../src/middleware'
 
+jest.mock('query-string')
 jest.mock('../../src/determine-origin', () =>
   jest.fn((origin): string => origin)
 )
 jest.mock('../../src/utils', () => ({
   getRootBasedUrl: jest.fn(() => 'http://root-based.url'),
+  isString: jest.fn((val) => typeof val === 'string'),
 }))
 jest.mock('../../src/middleware', () => ({
   requestWithMiddleware: jest.fn(() => ({
@@ -29,6 +32,7 @@ const mFetch = jest.fn(() => ({
   },
   text: (): Promise<string> => Promise.resolve('response'),
 }))
+const mQueryString = mocked(qs)
 const mDetermineOrigin = mocked(determineOrigin)
 const mGetRootBasedUrl = mocked(getRootBasedUrl)
 const mRequestWithMiddleware = mocked(requestWithMiddleware)
@@ -41,11 +45,11 @@ const createMockContext = (): Context => ({
 })
 
 beforeAll(() => {
-  ;(global as any).fetch = mFetch
+  void ((global as any).fetch = mFetch)
 })
 
 afterAll(() => {
-  ;(global as any).fetch = undefined
+  void ((global as any).fetch = undefined)
 })
 
 let mockContext: Context
@@ -59,6 +63,7 @@ afterEach(() => {
   mDetermineOrigin.mockClear()
   mGetRootBasedUrl.mockClear()
   mRequestWithMiddleware.mockClear()
+  mQueryString.stringify.mockClear()
 })
 
 describe('common', () => {
@@ -196,16 +201,83 @@ describe('middleware mode', () => {
     })
     expect(mRequestWithMiddleware).toHaveBeenCalled()
   })
+
+  test('query string options support for GET method', async () => {
+    mQueryString.stringify.mockReturnValueOnce(
+      'query-string-with-custom-options'
+    )
+    await request(
+      mockContext,
+      '/request',
+      {
+        array: ['a', 'b'],
+      },
+      {
+        method: 'GET',
+        queryStringOptions: {
+          arrayFormat: 'index',
+        },
+      }
+    )
+    expect(mQueryString.stringify).toHaveBeenCalledWith(
+      {
+        array: ['a', 'b'],
+      },
+      {
+        arrayFormat: 'index',
+      }
+    )
+    expect(mRequestWithMiddleware).toHaveBeenCalledWith(
+      expect.objectContaining({
+        info: 'http://root-based.url?query-string-with-custom-options',
+      }),
+      undefined
+    )
+  })
+
+  test('default query string options for GET method', async () => {
+    mQueryString.stringify.mockReturnValueOnce(
+      'query-string-with-default-options'
+    )
+    await request(
+      mockContext,
+      '/request',
+      {
+        array: ['a', 'b'],
+      },
+      {
+        method: 'GET',
+      }
+    )
+    expect(mQueryString.stringify).toHaveBeenCalledWith(
+      {
+        array: ['a', 'b'],
+      },
+      {
+        arrayFormat: 'bracket',
+      }
+    )
+    expect(mRequestWithMiddleware).toHaveBeenCalledWith(
+      expect.objectContaining({
+        info: 'http://root-based.url?query-string-with-default-options',
+      }),
+      undefined
+    )
+  })
 })
 
 describe('deprecated mode (options)', () => {
-  const deprecatedOptions = (): RequestOptions => ({
-    retryOnError: {
-      attempts: 1,
-      errors: [],
-      period: 1,
-    },
-  })
+  const deprecatedOptions = (override: RequestOptions = {}): RequestOptions =>
+    Object.assign(
+      {
+        retryOnError: {
+          attempts: 1,
+          errors: [],
+          period: 1,
+        },
+      },
+      override
+    )
 
   test('global fetch called', async () => {
     await request(
@@ -506,5 +578,68 @@ describe('deprecated mode (options)', () => {
       )
     ).rejects.toBeInstanceOf(GenericError)
     expect(mFetch).toHaveBeenCalledTimes(2)
+  })
+
+  test('query string options support for GET method', async () => {
+    mQueryString.stringify.mockReturnValueOnce(
+      'query-string-with-custom-options'
+    )
+    await request(
+      mockContext,
+      '/request',
+      {
+        array: ['a', 'b'],
+      },
+      deprecatedOptions({
+        method: 'GET',
+        queryStringOptions: {
+          arrayFormat: 'index',
+        },
+      })
+    )
+    expect(mQueryString.stringify).toHaveBeenCalledWith(
+      {
+        array: ['a', 'b'],
+      },
+      {
+        arrayFormat: 'index',
+      }
+    )
+    expect(mFetch).toHaveBeenCalledWith(
+      'http://root-based.url?query-string-with-custom-options',
+      expect.objectContaining({
+        method: 'GET',
+      })
+    )
+  })
+
+  test('default query string options for GET method', async () => {
+    mQueryString.stringify.mockReturnValueOnce(
+      'query-string-with-default-options'
+    )
+    await request(
+      mockContext,
+      '/request',
+      {
+        array: ['a', 'b'],
+      },
+      deprecatedOptions({
+        method: 'GET',
+      })
+    )
+    expect(mQueryString.stringify).toHaveBeenCalledWith(
+      {
+        array: ['a', 'b'],
+      },
+      {
+        arrayFormat: 'bracket',
+      }
+    )
+    expect(mFetch).toHaveBeenCalledWith(
+      'http://root-based.url?query-string-with-default-options',
+      expect.objectContaining({
+        method: 'GET',
+      })
+    )
   })
 })

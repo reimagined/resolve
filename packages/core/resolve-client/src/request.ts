@@ -1,5 +1,5 @@
 import isomorphicFetch from 'isomorphic-fetch'
-import qs from 'query-string'
+import qs, { StringifyOptions } from 'query-string'
 import { Context } from './context'
 import { getRootBasedUrl, isString } from './utils'
 import determineOrigin from './determine-origin'
@@ -51,16 +51,27 @@ export type RequestOptions = {
   }
   debug?: boolean
   middleware?: ClientMiddlewareOptions
+  queryStringOptions?: StringifyOptions
 }
 
-const stringifyUrl = (url: string, params: any): string => {
+const stringifyUrl = (
+  url: string,
+  params: any,
+  options: StringifyOptions = {}
+): string => {
   if (params) {
     if (isString(params)) {
       return `${url}?${params}`
     }
-    return `${url}?${qs.stringify(params, {
-      arrayFormat: 'bracket',
-    })}`
+    return `${url}?${qs.stringify(
+      params,
+      Object.assign(
+        {
+          arrayFormat: 'bracket',
+        },
+        options
+      )
+    )}`
   }
   return url
 }
@@ -196,7 +207,11 @@ export const request = async (
         method: 'GET',
         credentials: 'same-origin',
       }
-      requestUrl = stringifyUrl(rootBasedUrl, requestParams)
+      requestUrl = stringifyUrl(
+        rootBasedUrl,
+        requestParams,
+        options?.queryStringOptions
+      )
       break
     case 'POST':
       init = {

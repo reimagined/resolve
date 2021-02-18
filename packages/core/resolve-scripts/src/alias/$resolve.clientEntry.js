@@ -51,7 +51,6 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     imports.push(`import serverImports from '$resolve.serverImports'`)
     imports.push(`import seedClientEnvs from '$resolve.seedClientEnvs'`)
     imports.push(`import constants from '$resolve.constants'`)
-    imports.push(`import eventListeners from '$resolve.eventListeners'`)
     imports.push(`import aggregates from '$resolve.aggregates'`)
     imports.push(`import readModels from '$resolve.readModels'`)
     imports.push(`import viewModels from '$resolve.viewModels'`)
@@ -61,7 +60,6 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
       serverImports,
       seedClientEnvs,
       constants,
-      eventListeners,
       aggregates,
       readModels,
       viewModels,

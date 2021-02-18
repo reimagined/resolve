@@ -5,9 +5,11 @@ import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
 import initScheduler from './init-scheduler'
-import { putDurationMetrics, putErrorMetrics } from './metrics'
+import initMonitoring from './init-monitoring'
+import { putDurationMetrics, putInternalError } from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
+import handleWebsocketEvent from './websocket-event-handler'
 
 const log = debugLevels('resolve:resolve-runtime:cloud-entry')
 
@@ -60,9 +62,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     })
   }
 
-  resolveBase.onError = async (error, part) => {
-    await putErrorMetrics(error, part)
-  }
+  initMonitoring(resolveBase)
 
   const resolve = Object.create(resolveBase)
   resolve.getVacantTimeInMillis = getVacantTimeInMillis.bind(
@@ -121,6 +121,14 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
+    } else if (lambdaEvent.resolveSource === 'Websocket') {
+      log.debug('identified event source: websocket')
+
+      const executorResult = await handleWebsocketEvent(lambdaEvent, resolve)
+
+      log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
+
+      return executorResult
     } else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
       log.debug('identified event source: API gateway')
       log.verbose(
@@ -145,7 +153,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   } catch (error) {
     log.error('top-level event handler execution error!')
 
-    await putErrorMetrics(error, 'lambda-worker')
+    await putInternalError(error)
 
     if (error instanceof Error) {
       log.error('error', error.message)

@@ -1,39 +1,62 @@
-import getLog from './js/get-log'
-import { AdapterPool, AdapterSpecific } from './types'
-import beginTransaction from './js/begin-transaction'
-import commitTransaction from './js/commit-transaction'
-import rollbackTransaction from './js/rollback-transaction'
-import isTimeoutError from './js/is-timeout-error'
+import getLog from './get-log'
+import type {
+  PostgresqlAdapterPoolConnectedProps,
+  ConnectionDependencies,
+  AdapterPool,
+  AdapterPoolPrimal,
+  PostgresqlAdapterConfig,
+} from './types'
+import beginTransaction from './begin-transaction'
+import commitTransaction from './commit-transaction'
+import rollbackTransaction from './rollback-transaction'
+import isTimeoutError from './is-timeout-error'
 
 const connect = async (
-  pool: AdapterPool,
-  specific: AdapterSpecific
-): Promise<any> => {
-  const log = getLog('connect')
-  log.debug('configuring RDS data service client')
-
-  const {
+  pool: AdapterPoolPrimal,
+  {
     RDSDataService,
     escapeId,
     escape,
     fullJitter,
     executeStatement,
     coercer,
-  } = specific
+  }: ConnectionDependencies,
+  config: PostgresqlAdapterConfig
+): Promise<void> => {
+  const log = getLog('connect')
+  log.debug('configuring RDS data service client')
+
+  let {
+    databaseName,
+    eventsTableName,
+    snapshotsTableName,
+    secretsTableName,
+    // eslint-disable-next-line prefer-const
+    ...connectionOptions
+  } = config
+
+  eventsTableName = eventsTableName ?? 'events'
+  snapshotsTableName = snapshotsTableName ?? 'snapshots'
+  secretsTableName = secretsTableName ?? 'secrets'
 
   const {
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
-    databaseName,
-    eventsTableName = 'events',
-    snapshotsTableName = 'snapshots',
-    secretsTableName = 'secrets',
     ...rdsConfig
-  } = pool.config ?? {}
+  } = connectionOptions
+
+  if (dbClusterOrInstanceArn == null || awsSecretStoreArn == null) {
+    throw new Error(
+      `Options "dbClusterOrInstanceArn" and "awsSecretStoreArn" are mandatory`
+    )
+  }
 
   const rdsDataService = new RDSDataService(rdsConfig)
 
-  Object.assign(pool, {
+  Object.assign<
+    AdapterPoolPrimal,
+    Partial<PostgresqlAdapterPoolConnectedProps>
+  >(pool, {
     rdsDataService,
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
@@ -43,7 +66,7 @@ const connect = async (
     snapshotsTableName,
     fullJitter,
     coercer,
-    executeStatement: executeStatement.bind(null, pool),
+    executeStatement: executeStatement.bind(null, pool as AdapterPool),
     beginTransaction,
     commitTransaction,
     rollbackTransaction,

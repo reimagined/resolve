@@ -1,6 +1,8 @@
 import binaryCase from 'binary-case'
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
+import { parse as parseQuery } from 'qs'
+import { getReasonPhrase } from 'http-status-codes'
 
 const COOKIE_CLEAR_DATE = new Date(0)
 const INTERNAL = Symbol('INTERNAL')
@@ -44,14 +46,77 @@ const wrapHeadersCaseInsensitive = (headersMap) =>
     }, {})
   )
 
+const prepareHeaders = (headers, isLambdaEdgeRequest) => {
+  return isLambdaEdgeRequest
+    ? headers.reduce((acc, { key, value }) => {
+        acc[key] = value
+        return acc
+      }, {})
+    : headers
+}
+
+const prepareQuery = (
+  { multiValueQueryStringParameters, querystring },
+  isLambdaEdgeRequest
+) => {
+  if (isLambdaEdgeRequest) {
+    const query = parseQuery(querystring)
+    return query
+  } else {
+    const query =
+      multiValueQueryStringParameters != null
+        ? multiValueQueryStringParameters
+        : {}
+
+    for (const [queryKey, queryValue] of Object.entries(query)) {
+      if (isTrailingBracket.test(queryKey)) {
+        delete query[queryKey]
+        query[queryKey.replace(isTrailingBracket, '')] = queryValue
+      } else if (queryValue.length === 1) {
+        query[queryKey] = queryValue[0]
+      }
+    }
+    return query
+  }
+}
+
+const prepareBody = (body, isLambdaEdgeRequest) => {
+  return isLambdaEdgeRequest ? Buffer.from(body, 'base64').toString() : body
+}
+
+const preparePath = ({ path, uri }, isLambdaEdgeRequest) => {
+  return isLambdaEdgeRequest ? uri : path
+}
+
 const createRequest = async (lambdaEvent, customParameters) => {
   let {
-    path,
+    path: rawPath,
+    uri,
     httpMethod,
-    headers: { 'x-proxy-headers': proxyHeadersString, ...originalHeaders },
+    headers: rawHeaders,
     multiValueQueryStringParameters,
-    body,
+    querystring,
+    body: rawBody,
   } = lambdaEvent
+
+  const isLambdaEdgeRequest = Array.isArray(rawHeaders)
+
+  const query = prepareQuery(
+    {
+      multiValueQueryStringParameters,
+      querystring,
+    },
+    isLambdaEdgeRequest
+  )
+
+  const body = prepareBody(rawBody, isLambdaEdgeRequest)
+
+  let path = preparePath({ path: rawPath, uri }, isLambdaEdgeRequest)
+
+  const {
+    'x-proxy-headers': proxyHeadersString,
+    ...originalHeaders
+  } = prepareHeaders(rawHeaders, isLambdaEdgeRequest)
 
   if (proxyHeadersString != null) {
     for (const [headerName, headerValue] of Object.entries(
@@ -82,19 +147,7 @@ const createRequest = async (lambdaEvent, customParameters) => {
       : {}
 
   const req = Object.create(null)
-
-  const query =
-    multiValueQueryStringParameters != null
-      ? multiValueQueryStringParameters
-      : {}
-  for (const [queryKey, queryValue] of Object.entries(query)) {
-    if (isTrailingBracket.test(queryKey)) {
-      delete query[queryKey]
-      query[queryKey.replace(isTrailingBracket, '')] = queryValue
-    } else if (queryValue.length === 1) {
-      query[queryKey] = queryValue[0]
-    }
-  }
+  req.isLambdaEdgeRequest = isLambdaEdgeRequest
 
   const reqProperties = {
     adapter: 'awslambda',
@@ -144,9 +197,9 @@ const createResponse = () => {
       )
     if (!isValidValue) {
       throw new Error(
-        `Variable "${fieldName}" should be one of following types: ${types.join(
-          ', '
-        )}`
+        `Variable "${fieldName}" should be one of following types: ${types
+          .map((item) => (item === Buffer ? 'Buffer' : `${item}`))
+          .join(', ')}. Received option: ${option}`
       )
     }
   }
@@ -262,16 +315,20 @@ const wrapApiHandler = (
   onError = async () => void 0
 ) => async (lambdaEvent, lambdaContext, lambdaCallback) => {
   let result
+  let isLambdaEdgeRequest
+  let req
   try {
     const customParameters =
       typeof getCustomParameters === 'function'
         ? await getCustomParameters(lambdaEvent, lambdaContext, lambdaCallback)
         : {}
 
-    const req = await createRequest(lambdaEvent, customParameters)
+    req = await createRequest(lambdaEvent, customParameters)
     const res = createResponse()
 
     await handler(req, res)
+
+    isLambdaEdgeRequest = req.isLambdaEdgeRequest
 
     const { status: statusCode, headers, cookies, body: bodyBuffer } = res[
       INTERNAL
@@ -282,21 +339,48 @@ const wrapApiHandler = (
       headers[binaryCase('Set-cookie', idx)] = cookies[idx]
     }
 
-    result = { statusCode, headers, body }
+    if (isLambdaEdgeRequest) {
+      result = {
+        httpStatus: statusCode,
+        httpStatusText: getReasonPhrase(statusCode),
+        headers: Object.entries(headers).map(([key, value]) => ({
+          key,
+          value,
+        })),
+        body: Buffer.from(bodyBuffer).toString('base64'),
+      }
+    } else {
+      result = {
+        statusCode,
+        headers,
+        body,
+      }
+    }
   } catch (error) {
     const outError =
       error != null && error.stack != null
         ? `${error.stack}`
         : `Unknown error ${error}`
 
-    await onError(error)
+    if (req != null) {
+      await onError(error, req.path)
+    }
 
     // eslint-disable-next-line no-console
     console.error(outError)
 
-    result = {
-      statusCode: 500,
-      body: '',
+    if (isLambdaEdgeRequest) {
+      result = {
+        httpStatus: 500,
+        httpStatusText: getReasonPhrase(500),
+        headers: [],
+        body: '',
+      }
+    } else {
+      result = {
+        statusCode: 500,
+        body: '',
+      }
     }
   }
 

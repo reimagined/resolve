@@ -4,9 +4,11 @@ import mainHandler from '../common/handlers/main-handler'
 const getCustomParameters = async (resolve) => ({ resolve })
 
 const apiGatewayHandler = async (lambdaEvent, lambdaContext, resolve) => {
-  const onError = async (error) => {
+  const onError = async (error, path) => {
     try {
-      await resolve.onError(error, 'api-handler')
+      await resolve.monitoring.error(error, 'apiHandler', {
+        path,
+      })
     } catch (e) {}
   }
 
@@ -23,7 +25,6 @@ const apiGatewayHandler = async (lambdaEvent, lambdaContext, resolve) => {
     return await executor(lambdaEvent, lambdaContext)
   } catch (error) {
     subSegment.addError(error)
-    await onError(error)
     throw error
   } finally {
     subSegment.close()

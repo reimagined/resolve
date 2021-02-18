@@ -3,13 +3,12 @@ import { mocked } from 'ts-jest/utils'
 import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 /* eslint-enable import/no-extraneous-dependencies */
 import { AdapterPool } from '../src/types'
-import drop from '../src/drop'
-import dropEventStore from '../src/js/drop'
+import dropEvents from '../src/drop-events'
+import dropSecrets from '../src/drop-secrets'
 
-jest.mock('../src/js/get-log')
-jest.mock('../src/js/drop', () => jest.fn())
+jest.mock('get-log')
 
-const mDropEventStore = mocked(dropEventStore)
+const mDrop = jest.fn(dropEvents)
 
 let pool: AdapterPool
 
@@ -20,75 +19,28 @@ beforeEach(() => {
     snapshotsTableName: 'snapshots-table',
     databaseName: 'database',
     executeStatement: jest.fn(),
+    maybeThrowResourceError: jest.fn((e: Error[]) => e),
     escapeId: jest.fn((v) => `escaped-${v}`),
-  }
+  } as any
 })
 
 afterEach(() => {
-  mDropEventStore.mockClear()
-})
-
-test('event store dropped', async () => {
-  await drop(pool)
-
-  expect(mDropEventStore).toHaveBeenCalledWith({
-    databaseName: 'database',
-    eventsTableName: 'events-table',
-    snapshotsTableName: 'snapshots-table',
-    executeStatement: pool.executeStatement,
-    escapeId: pool.escapeId,
-  })
-})
-
-test('error: secretsTableName is missing within pool', async () => {
-  await expect(
-    drop({
-      ...pool,
-      secretsTableName: undefined,
-    })
-  ).rejects.toBeInstanceOf(Error)
-})
-
-test('error: escapeId is missing within pool', async () => {
-  await expect(
-    drop({
-      ...pool,
-      escapeId: undefined,
-    })
-  ).rejects.toBeInstanceOf(Error)
-})
-
-test('error: databaseName is missing within pool', async () => {
-  await expect(
-    drop({
-      ...pool,
-      databaseName: undefined,
-    })
-  ).rejects.toBeInstanceOf(Error)
-})
-
-test('error: executeStatement is missing within pool', async () => {
-  await expect(
-    drop({
-      ...pool,
-      executeStatement: undefined,
-    })
-  ).rejects.toBeInstanceOf(Error)
+  mDrop.mockClear()
 })
 
 test('secrets table dropped', async () => {
-  await drop(pool)
+  await dropSecrets(pool)
 
   expect(pool.executeStatement).toHaveBeenCalledWith(
-    `DROP TABLE escaped-database.escaped-secrets-table`
+    expect.stringMatching(/escaped-secrets-table/g)
   )
 })
 
 test('secrets stream index dropped', async () => {
-  await drop(pool)
+  await dropSecrets(pool)
 
   expect(pool.executeStatement).toHaveBeenCalledWith(
-    `DROP INDEX IF EXISTS escaped-database.escaped-secrets-table-global`
+    expect.stringMatching(/escaped-secrets-table-global/g)
   )
 })
 
@@ -99,7 +51,7 @@ test('resource not exist error detection', async () => {
     )
   }
 
-  await expect(drop(pool)).rejects.toBeInstanceOf(
-    EventstoreResourceNotExistError
-  )
+  const errors = await dropEvents(pool)
+  expect(errors).toHaveLength(1)
+  expect(errors[0]).toBeInstanceOf(EventstoreResourceNotExistError)
 })

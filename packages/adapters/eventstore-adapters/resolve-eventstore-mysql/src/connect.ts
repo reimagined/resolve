@@ -1,70 +1,66 @@
-import getLog from './js/get-log'
-import connectEventStore from './js/connect'
-import { AdapterPool, AdapterSpecific } from './types'
-
-const connectSecretsStore = async (
-  pool: AdapterPool,
-  specific: AdapterSpecific
-): Promise<void> => {
-  const log = getLog('connectSecretsStore')
-
-  log.debug('connecting to secrets store database')
-
-  const { MySQL } = specific
-  const {
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName = 'secrets',
-    secretsDatabase,
-    database,
-    ...connectionOptions
-  } = pool.config
-
-  // MySQL throws warning
-  delete connectionOptions.snapshotBucketSize
-
-  const actualDatabase = secretsDatabase || database
-
-  log.verbose(`secretsDatabase: ${actualDatabase}`)
-  log.verbose(`secretsTableName: ${secretsTableName}`)
-
-  log.debug(`establishing connection`)
-
-  const connection = await MySQL.createConnection({
-    ...connectionOptions,
-    database: secretsDatabase || database,
-    multipleStatements: true,
-  })
-
-  log.debug(`connected successfully`)
-
-  Object.assign(pool, {
-    secrets: {
-      connection,
-      tableName: secretsTableName,
-      database: actualDatabase,
-    },
-  })
-}
+import getLog from './get-log'
+import type {
+  ConnectionDependencies,
+  MysqlAdapterPoolConnectedProps,
+  AdapterPoolPrimal,
+  MysqlAdapterConfig,
+} from './types'
 
 const connect = async (
-  pool: AdapterPool,
-  specific: AdapterSpecific
-): Promise<any> => {
+  pool: AdapterPoolPrimal,
+  { MySQL, escapeId, escape }: ConnectionDependencies,
+  config: MysqlAdapterConfig
+): Promise<void> => {
   const log = getLog('connect')
   log.debug('connecting to mysql databases')
-
-  const { escapeId, escape } = specific
 
   Object.assign(pool, {
     escapeId,
     escape,
   })
 
-  await Promise.all([
-    connectEventStore(pool, specific),
-    connectSecretsStore(pool, specific),
-  ])
+  let {
+    eventsTableName,
+    snapshotsTableName,
+    secretsTableName,
+    database,
+    // eslint-disable-next-line prefer-const
+    ...connectionOptions
+  } = config
+
+  eventsTableName = eventsTableName ?? 'events'
+  snapshotsTableName = snapshotsTableName ?? 'snapshots'
+  secretsTableName = secretsTableName ?? 'secrets'
+
+  log.debug(`establishing connection`)
+
+  const connection: any = await MySQL.createConnection({
+    ...connectionOptions,
+    database,
+    multipleStatements: true,
+  })
+
+  const [[{ version }]] = await connection.query(
+    `SELECT version() AS \`version\``
+  )
+  const major: number = +version.split('.')[0]
+  if (isNaN(major) || major < 8) {
+    throw new Error(`Supported MySQL version 8+, but got ${version}`)
+  }
+
+  log.debug(`connected successfully`)
+
+  Object.assign<AdapterPoolPrimal, Partial<MysqlAdapterPoolConnectedProps>>(
+    pool,
+    {
+      connection,
+      eventsTableName,
+      snapshotsTableName,
+      secretsTableName,
+      database,
+    }
+  )
+
   log.debug('mysql databases are connected')
 }
 
