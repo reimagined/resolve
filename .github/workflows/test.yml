@@ -7,107 +7,14 @@ on:
     branches: [feature/scoped-packages]
 
 jobs:
-  smoke-test:
-    runs-on: ubuntu-latest
-
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')))
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/checkout@v2
-        with:
-          repository: DevExpress/resolve-cloud2
-          token: ${{ secrets.RESOLVE_CLOUD_CI_PAT }}
-          path: resolve-cloud
-
-      - uses: actions/setup-node@v2-beta
-        with:
-          node-version: '10'
-
-      - name: Install
-        run: |
-          yarn install --frozen-lockfile
-          yarn validate-lock-file
-
-      - name: Prettier
-        run: yarn prettier:check
-
-      - name: ESLint
-        run: yarn lint
-
-      - name: Unit test
-        run: yarn test
-
-      - name: Integration test
-        run: yarn test:integration
-
-  e2e-macOS-test:
-    needs: [smoke-test]
-    runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
-
-    if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/checkout@v2
-        with:
-          repository: DevExpress/resolve-cloud2
-          token: ${{ secrets.RESOLVE_CLOUD_CI_PAT }}
-          path: resolve-cloud
-
-      - name: Install
-        run: yarn install --frozen-lockfile
-
-      - name: E2E test
-        run: yarn test:e2e
-
-  publish-dev:
-    needs: [smoke-test]
+  cloud-deploy:
     runs-on: ubuntu-latest
     continue-on-error: true
 
     if: github.event_name == 'push'
 
-    env:
-      NPM_REGISTRY: ${{ secrets.PRIVATE_NPM_REGISTRY }}
-      NPM_TOKEN: ${{ secrets.PRIVATE_NPM_TOKEN }}
-
     steps:
       - uses: actions/checkout@v2
-
-      - uses: actions/checkout@v2
-        with:
-          repository: DevExpress/resolve-cloud2
-          token: ${{ secrets.RESOLVE_CLOUD_CI_PAT }}
-          path: resolve-cloud
-
-      - name: Install & Build
-        run: yarn install --frozen-lockfile
-
-      - name: Publish to private repository
-        uses: ./.github/actions/publish
-        with:
-          npm_registry: ${{ secrets.PRIVATE_NPM_REGISTRY }}
-          npm_token: ${{ secrets.PRIVATE_NPM_TOKEN }}
-          version: ${{ github.sha }}
-          release_type: nightly
-          tag: nightly
-
-  cloud-test:
-    needs: [smoke-test, e2e-macOS-test]
-    runs-on: ubuntu-latest
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/checkout@v2
-        with:
-          repository: DevExpress/resolve-cloud2
-          token: ${{ secrets.RESOLVE_CLOUD_CI_PAT }}
-          path: resolve-cloud
 
       - name: Install & Build
         run: |
@@ -116,14 +23,29 @@ jobs:
 
       - id: publish
         name: Publish to private repository
-        uses: ./.github/actions/publish
+        uses: reimagined/github-actions/publish@v1
         with:
-          npm_registry: ${{ secrets.PRIVATE_NPM_REGISTRY }}
-          npm_token: ${{ secrets.PRIVATE_NPM_TOKEN }}
+          registry: ${{ secrets.PRIVATE_NPM_REGISTRY }}
+          token: ${{ secrets.PRIVATE_NPM_TOKEN }}
           version: ${{ github.sha }}
-          release_type: cloud-test
-          tag: cloud-test
-          unpublish: true
+          tag: latest-dev
+
+      - name: Checkout resolve-cloud
+        uses: actions/checkout@v2
+        with:
+          repository: DevExpress/resolve-cloud2
+          token: ${{ secrets.RESOLVE_CLOUD_CI_PAT }}
+          path: resolve-cloud
+
+      - id: cloud
+        name: Deploy cloud
+        uses: reimagined/github-actions/deploy-cloud@v1
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          stage_name: dev
+          version: ${{ steps.publish.outputs.version }}
+          path: ./resolve-cloud
 
       - name: Prepare test application
         run: |
@@ -137,11 +59,11 @@ jobs:
         name: Deploy test app to the cloud
         uses: ./.github/actions/deploy
         with:
-          resolve_version: ${{ steps.publish.outputs.release_version }}
-          npm_registry: http://npm.resolve-dev.ml:10080
+          resolve_version: ${{ steps.publish.outputs.version }}
+          npm_registry: ${{ steps.publish.outputs.registry_url}}
           app_directory: ${{ env.test_app_dir }}
           generate_app_name: true
-          resolve_api_url: https://api.resolve.sh
+          resolve_api_url: ${{ steps.cloud.outputs.api_url}}
           resolve_user: ${{ secrets.RESOLVE_CLOUD_USER }}
           resolve_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
           deploy_args: --verbosity=debug
