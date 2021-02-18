@@ -336,7 +336,7 @@ Deletes data items based on the specified search expression.
 
 ### Search Expression Syntax
 
-A search expression is an object or several objects grouped into a hierarchical structure by operators.
+A search expression is an object or several objects hierarchically grouped by operators.
 
 The following operators are supported:
 
@@ -358,6 +358,12 @@ The following operators are supported:
 | \$and    | And         |
 | \$or     | Or          |
 | \$not    | Not         |
+
+#### Example
+
+```js
+
+```
 
 ## Saga API
 
