@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
-  "repository": "git://github.com/reimagined/resolve.git",
+  "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
   "author": "reimagined team",
   "main": "./lib/index.js",
