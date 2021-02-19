@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: DevExpress/resolve-cloud2
-          ref: 'dev'
+          ref: 'feature/scoped-packages'
           token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
           path: resolve-cloud
 
