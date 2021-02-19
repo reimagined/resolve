@@ -34,19 +34,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     path.resolve(process.cwd(), resolveConfig.distDir, './client')
   )
 
-  const npmRc = path.resolve(process.cwd(), '.npmrc')
-  if (fs.existsSync(npmRc)) {
-    fs.copyFileSync(
-      npmRc,
-      path.resolve(
-        process.cwd(),
-        resolveConfig.distDir,
-        `./common/${resolveConfig.target}-entry/.npmrc`
-      )
-    )
-  }
-
-  return await new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     compiler.run((err, { stats }) => {
       console.log(' ') // eslint-disable-line no-console
       stats.forEach(showBuildInfo.bind(null, err))
@@ -72,4 +60,16 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
       }
     })
   })
+
+  const npmRc = path.resolve(process.cwd(), '.npmrc')
+  if (fs.existsSync(npmRc)) {
+    fs.copyFileSync(
+      npmRc,
+      path.resolve(
+        process.cwd(),
+        resolveConfig.distDir,
+        `./common/${resolveConfig.target}-entry/.npmrc`
+      )
+    )
+  }
 }
