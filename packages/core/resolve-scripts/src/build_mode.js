@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import webpack from 'webpack'
@@ -32,6 +33,18 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     path.resolve(process.cwd(), resolveConfig.staticDir),
     path.resolve(process.cwd(), resolveConfig.distDir, './client')
   )
+
+  const npmRc = path.resolve(process.cwd(), '.npmrc')
+  if (fs.existsSync(npmRc)) {
+    fs.copyFileSync(
+      npmRc,
+      path.resolve(
+        process.cwd(),
+        resolveConfig.distDir,
+        `./common/${resolveConfig.target}-entry/.npmrc`
+      )
+    )
+  }
 
   return await new Promise((resolve, reject) => {
     compiler.run((err, { stats }) => {

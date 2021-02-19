@@ -288,6 +288,7 @@ module.exports = {
           'noredirect',
           'npm',
           'npmjs',
+          'npmrc',
           'npx',
           'nspname',
           'nullable',
