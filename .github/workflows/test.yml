@@ -30,7 +30,7 @@ jobs:
           version: auto
           build: ${{ github.sha }}
           tag: latest-dev
-          unpublish: true
+          unpublish: false
 
       - name: Checkout resolve-cloud
         uses: actions/checkout@v2
