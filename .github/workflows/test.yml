@@ -49,6 +49,9 @@ jobs:
           stage_name: dev
           version: ${{ steps.publish.outputs.version }}
           path: ./resolve-cloud
+          registry: ${{ steps.publish.outputs.registry_url }}
+          token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
+          scopes: '@reimagined'
 
       - name: Prepare test application
         run: |
