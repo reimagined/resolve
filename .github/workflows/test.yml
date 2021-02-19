@@ -37,7 +37,7 @@ jobs:
         with:
           repository: DevExpress/resolve-cloud2
           ref: 'dev'
-          token: ${{ secrets.RESOLVE_CLOUD_CI_PAT }}
+          token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
           path: resolve-cloud
 
       - id: cloud
