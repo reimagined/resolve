@@ -26,7 +26,7 @@ jobs:
         uses: reimagined/github-actions/publish@v1
         with:
           registry: github
-          token: ${{ secrets.RESOLVE_CLOUD_CI_PAT }}
+          token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
           version: auto
           build: ${{ github.sha }}
           tag: latest-dev
