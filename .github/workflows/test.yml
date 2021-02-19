@@ -40,12 +40,6 @@ jobs:
           token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
           path: resolve-cloud
 
-      - name: Install resolve-cloud packages
-        run: |
-          cd resolve-cloud
-          echo "installing packages for resolve-cloud"
-          yarn
-
       - id: cloud
         name: Deploy cloud
         uses: reimagined/github-actions/deploy-cloud@v1
