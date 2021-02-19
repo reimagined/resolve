@@ -25,8 +25,8 @@ jobs:
         name: Publish to private repository
         uses: reimagined/github-actions/publish@v1
         with:
-          registry: ${{ secrets.PRIVATE_NPM_REGISTRY }}
-          token: ${{ secrets.PRIVATE_NPM_TOKEN }}
+          registry: github
+          token: ${{ secrets.RESOLVE_CLOUD_CI_PAT }}
           version: auto
           build: ${{ github.sha }}
           tag: latest-dev
