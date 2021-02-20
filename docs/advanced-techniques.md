@@ -39,6 +39,147 @@ Note that reSolve does not force you to use adapters. For example, you may need 
 
 To learn more about a particular adapter type, refer to the documentation for the reSolve **[adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters)** package.
 
+## Custom Read Models
+
+To create a custom Read Model, you need to manually implement a Read Model connector. A connector defines functions that manage a custom Read Model's store. The following functions can be defined:
+
+- **connect** - Initializes a connection to a storage.
+- **disconnect** - Closes the storage connection.
+- **drop** - Removes the Read Model's data from storage.
+- **dispose** - Forcefully disposes all unmanaged resources used by Read Models served by this connector.
+
+The code sample below demonstrates how to implement a connector that provides a file-based storage for Read Models.
+
+##### common/read-models/custom-read-model-connector.js:
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/connector.js)
+```js
+import fs from 'fs'
+
+const safeUnlinkSync = filename => {
+  if (fs.existsSync(filename)) {
+    fs.unlinkSync(filename)
+  }
+}
+
+export default options => {
+  const prefix = String(options.prefix)
+  const readModels = new Set()
+  const connect = async readModelName => {
+    fs.writeFileSync(`${prefix}${readModelName}.lock`, true, { flag: 'wx' })
+    readModels.add(readModelName)
+    const store = {
+      get() {
+        return JSON.parse(String(fs.readFileSync(`${prefix}${readModelName}`)))
+      },
+      set(value) {
+        fs.writeFileSync(`${prefix}${readModelName}`, JSON.stringify(value))
+      }
+    }
+    return store
+  }
+  const disconnect = async (store, readModelName) => {
+    safeUnlinkSync(`${prefix}${readModelName}.lock`)
+    readModels.delete(readModelName)
+  }
+  const drop = async (store, readModelName) => {
+    safeUnlinkSync(`${prefix}${readModelName}.lock`)
+    safeUnlinkSync(`${prefix}${readModelName}`)
+  }
+  const dispose = async () => {
+    for (const readModelName of readModels) {
+      safeUnlinkSync(`${prefix}${readModelName}.lock`)
+    }
+    readModels.clear()
+  }
+  return {
+    connect,
+    disconnect,
+    drop,
+    dispose
+  }
+}
+```
+
+<!-- prettier-ignore-end -->
+
+A connector is defined as a function that receives an `options` argument. This argument contains a custom set of options that you can specify in the connector's configuration.
+
+Register the connector in the application's configuration file.
+
+##### config.app.js:
+
+```js
+readModelConnectors: {
+  customReadModelConnector: {
+    module: 'common/read-models/custom-read-model-connector.js',
+    options: {
+      prefix: path.join(__dirname, 'data') + path.sep // Path to a folder that contains custom Read Model store files
+    }
+  }
+}
+```
+
+Now you can assign the custom connector to a Read Model by name as shown below.
+
+##### config.app.js:
+
+```js
+  readModels: [
+    {
+      name: 'CustomReadModel',
+      projection: 'common/read-models/custom-read-model.projection.js',
+      resolvers: 'common/read-models/custom-read-model.resolvers.js',
+      connectorName: 'customReadModelConnector'
+    }
+    ...
+  ]
+```
+
+The code sample below demonstrates how you can use the custom store's API in the Read Model's code.
+
+##### common/read-models/custom-read-model.projection.js:
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/projection.js)
+```js
+const projection = {
+  Init: async store => {
+    await store.set(0)
+  },
+  INCREMENT: async (store, event) => {
+    await store.set((await store.get()) + event.payload)
+  },
+  DECREMENT: async (store, event) => {
+    await store.set((await store.get()) - event.payload)
+  }
+}
+
+export default projection
+```
+
+<!-- prettier-ignore-end -->
+
+##### common/read-models/custom-read-model.resolvers.js:
+
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../tests/custom-readmodel-sample/resolvers.js)
+```js
+const resolvers = {
+  read: async store => {
+    return await store.get()
+  }
+}
+
+export default resolvers
+```
+
+<!-- prettier-ignore-end -->
+
 ## Modules
 
 In reSolve, a module encapsulates a fragment of functionality that can be included by an application. A module can include any structural parts of a reSolve application in any combination.
@@ -135,11 +276,11 @@ import createEventStoreAdapter from 'resolve-eventstore-lite'
 const pipeline = promisify(pipelineC)
 
 const eventStore1 = createEventStoreAdapter({
-  databaseFile: './data/event-store-1.db'
+  databaseFile: './data/event-store-1.db',
 })
 
 const eventStore2 = createEventStoreAdapter({
-  databaseFile: './data/event-store-2.db'
+  databaseFile: './data/event-store-2.db',
 })
 
 await pipeline(eventStore1.export(), eventStore2.import())
@@ -162,7 +303,8 @@ import iconv from 'iconv-lite'
 
 async function handler(req, res) {
   const bodyCharset = (
-    bodyOptions.find(option => option.startsWith('charset=')) || 'charset=utf-8'
+    bodyOptions.find((option) => option.startsWith('charset=')) ||
+    'charset=utf-8'
   ).substring(8)
 
   if (bodyCharset !== 'utf-8') {

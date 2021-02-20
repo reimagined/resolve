@@ -43,6 +43,7 @@ title: reSolve Documentation
   - [Splitting Code Into Chunks](advanced-techniques.md#splitting-code-into-chunks)
   - [Server-Side Rendering](advanced-techniques.md#server-side-rendering)
   - [Adapters](advanced-techniques.md#adapters)
+  - [Custom Read Models](advanced-techniques.md#custom-read-models)
   - [Modules](advanced-techniques.md#modules)
 
 - [API Handlers](api-handlers.md)
