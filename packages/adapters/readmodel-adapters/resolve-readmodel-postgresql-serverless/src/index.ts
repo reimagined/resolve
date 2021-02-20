@@ -29,7 +29,6 @@ import coercer from './coercer'
 import convertResultRow from './convert-result-row'
 import escapeId from './escape-id'
 import escapeStr from './escape-str'
-import executeStatement from './execute-statement'
 import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 
@@ -73,7 +72,6 @@ const internalMethods: InternalMethods = {
   convertResultRow,
   searchToWhereExpression,
   updateToSetExpression,
-  executeStatement,
   coercer,
   generateGuid,
   PassthroughError,
