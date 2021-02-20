@@ -51,24 +51,11 @@ export type CommonRunQueryMethodUnpromiseResult<T> = IfEquals<
     IfEquals<IsTypeLike<T, boolean>, unknown, Array<object>, never>
   >
 >
-export type CommonRunQueryMethodArgs<T, F extends boolean> = F extends true
-  ? [
-      pool: AdapterPool,
-      isInlineLedger: boolean,
-      sqlQuery: string,
-      multiLine?: T,
-      passthroughRuntimeErrors?: boolean
-    ]
-  : [sqlQuery: string, multiLine?: T, passthroughRuntimeErrors?: boolean]
 
-export type CommonRunQueryMethod = <T extends true | false>(
-  ...args: CommonRunQueryMethodArgs<T, true>
-) => Promise<CommonRunQueryMethodUnpromiseResult<T>>
 export type InlineLedgerRunQueryMethod = <T extends true | false>(
-  ...args: CommonRunQueryMethodArgs<T, false>
-) => Promise<CommonRunQueryMethodUnpromiseResult<T>>
-export type RunQueryMethod = <T extends true | false>(
-  ...args: CommonRunQueryMethodArgs<T, false>
+  sqlQuery: string,
+  multiLine?: T,
+  passthroughRuntimeErrors?: boolean
 ) => Promise<CommonRunQueryMethodUnpromiseResult<T>>
 
 export type FullJitterMethod = (retries: number) => Promise<void>
@@ -142,7 +129,6 @@ export type InternalMethods = {
 export type AdapterPool = CommonAdapterPool & {
   memoryStore: MemoryStore
   inlineLedgerRunQuery: InlineLedgerRunQueryMethod
-  runQuery: RunQueryMethod
   fullJitter: FullJitterMethod
   performanceTracer: PerformanceTracerLike
   tablePrefix: string

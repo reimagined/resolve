@@ -1,8 +1,8 @@
 import type { DropReadModelMethod } from './types'
 
 const dropReadModel: DropReadModelMethod = async (pool, readModelName) => {
-  const { executeStatement, escapeId, schemaName, escapeStr } = pool
-  const rows = (await executeStatement(
+  const { inlineLedgerExecuteStatement, escapeId, schemaName, escapeStr } = pool
+  const rows = (await inlineLedgerExecuteStatement(
     pool,
     `SELECT ${escapeId('CLS')}.${escapeId('relname')} AS ${escapeId(
       'tableName'
@@ -29,7 +29,7 @@ const dropReadModel: DropReadModelMethod = async (pool, readModelName) => {
   )) as Array<{ tableName: string }>
 
   for (const { tableName } of rows) {
-    await executeStatement(
+    await inlineLedgerExecuteStatement(
       pool,
       `DROP TABLE ${escapeId(schemaName)}.${escapeId(tableName)};`
     )

@@ -8,7 +8,7 @@ const findOne: CurrentStoreApi['findOne'] = async (
   fieldList
 ) => {
   const {
-    executeStatement,
+    inlineLedgerExecuteStatement,
     escapeId,
     escapeStr,
     tablePrefix,
@@ -28,14 +28,15 @@ const findOne: CurrentStoreApi['findOne'] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const rows = (await executeStatement(
+  const rows = (await inlineLedgerExecuteStatement(
     pool,
     `SELECT * FROM ${escapeId(schemaName)}.${escapeId(
       `${tablePrefix}${tableName}`
     )}
     ${inlineSearchExpr}
     OFFSET 0
-    LIMIT 1;`
+    LIMIT 1;`,
+    inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
   )) as Array<MarshalledRowLike>
 
   if (Array.isArray(rows) && rows.length > 0) {

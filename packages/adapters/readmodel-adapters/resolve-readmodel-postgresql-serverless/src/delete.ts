@@ -7,7 +7,7 @@ const del: CurrentStoreApi['delete'] = async (
   searchExpression
 ) => {
   const {
-    executeStatement,
+    inlineLedgerExecuteStatement,
     tablePrefix,
     escapeId,
     escapeStr,
@@ -25,12 +25,13 @@ const del: CurrentStoreApi['delete'] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  await executeStatement(
+  await inlineLedgerExecuteStatement(
     pool,
     `DELETE FROM ${escapeId(schemaName)}.${escapeId(
       `${tablePrefix}${tableName}`
     )}
-    ${inlineSearchExpr};`
+    ${inlineSearchExpr};`,
+    inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
   )
 }
 

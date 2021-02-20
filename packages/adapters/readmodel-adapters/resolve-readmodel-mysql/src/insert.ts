@@ -1,12 +1,12 @@
 import type { CurrentStoreApi } from './types'
 
 const insert: CurrentStoreApi['insert'] = async (
-  { runQuery, escapeId, escapeStr, tablePrefix },
+  { inlineLedgerRunQuery, escapeId, escapeStr, tablePrefix },
   readModelName,
   tableName,
   document
 ) => {
-  await runQuery(
+  await inlineLedgerRunQuery(
     `INSERT INTO ${escapeId(`${tablePrefix}${tableName}`)}(${Object.keys(
       document
     )
