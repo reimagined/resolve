@@ -1,11 +1,10 @@
 import type {
   CommonRunQueryMethodUnpromiseResult,
-  CommonRunQueryMethod,
   InlineLedgerRunQueryMethod,
-  RunQueryMethod,
   MakeNestedPathMethod,
   EscapeableMethod,
   CurrentConnectMethod,
+  AdapterPool,
 } from './types'
 
 export const escapeId: EscapeableMethod = (str) =>
@@ -25,14 +24,13 @@ const fullJitter = (retries: number): Promise<void> =>
     setTimeout(resolve, randRange(0, Math.min(500, 2 * 2 ** retries)))
   )
 
-const commonRunQuery: CommonRunQueryMethod = async <
-  T extends Parameters<CommonRunQueryMethod>[3]
+const inlineLedgerRunQuery = async <
+  T extends Parameters<InlineLedgerRunQueryMethod>[1]
 >(
-  pool: Parameters<CommonRunQueryMethod>[0],
-  isInlineLedger: Parameters<CommonRunQueryMethod>[1],
-  sqlQuery: Parameters<CommonRunQueryMethod>[2],
+  pool: AdapterPool,
+  sqlQuery: Parameters<InlineLedgerRunQueryMethod>[0],
   multiLine: T = false as T,
-  passthroughRuntimeErrors: Parameters<CommonRunQueryMethod>[4] = false
+  passthroughRuntimeErrors: Parameters<InlineLedgerRunQueryMethod>[2] = false
 ): Promise<CommonRunQueryMethodUnpromiseResult<T>> => {
   const PassthroughError = pool.PassthroughError
   const executor = !multiLine
@@ -50,10 +48,7 @@ const commonRunQuery: CommonRunQueryMethod = async <
         error,
         !!passthroughRuntimeErrors
       )
-      const isSqliteBusy = error != null && error.code === SQLITE_BUSY
-      if (!isInlineLedger && isSqliteBusy) {
-        await fullJitter(retry)
-      } else if (isInlineLedger && isPassthroughError) {
+      if (isPassthroughError) {
         const isRuntime = !PassthroughError.isPassthroughError(error, false)
         throw new PassthroughError(isRuntime)
       } else {
@@ -91,12 +86,12 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
   databaseFile = coerceEmptyString(databaseFile)
 
   Object.assign(pool, {
-    inlineLedgerRunQuery: commonRunQuery.bind(
+    inlineLedgerRunQuery: inlineLedgerRunQuery.bind<
       null,
-      pool,
-      true
-    ) as InlineLedgerRunQueryMethod,
-    runQuery: commonRunQuery.bind(null, pool, false) as RunQueryMethod,
+      AdapterPool,
+      Parameters<InlineLedgerRunQueryMethod>,
+      ReturnType<typeof inlineLedgerRunQuery>
+    >(null, pool) as InlineLedgerRunQueryMethod,
     fullJitter,
     tablePrefix,
     databaseFile,

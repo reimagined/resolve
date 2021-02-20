@@ -22,7 +22,7 @@ const destroy: UnboundResourceMethod = async (pool, options) => {
   let dropSchemaError: Error | null = null
 
   try {
-    await admin.executeStatement(
+    await admin.inlineLedgerExecuteStatement(
       admin,
       `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO SESSION_USER`
     )
@@ -31,7 +31,7 @@ const destroy: UnboundResourceMethod = async (pool, options) => {
   }
 
   try {
-    await admin.executeStatement(
+    await admin.inlineLedgerExecuteStatement(
       admin,
       `DROP SCHEMA ${escapeId(options.databaseName)} CASCADE`
     )
