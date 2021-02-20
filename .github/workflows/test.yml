@@ -42,11 +42,11 @@ jobs:
 
       - id: cloud
         name: Deploy cloud
-        uses: reimagined/github-actions/deploy-cloud@v1
+        uses: reimagined/github-actions/install-cloud@v1
         with:
           aws_access_key_id: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
-          stage_name: dev
+          stage: dev
           version: ${{ steps.publish.outputs.version }}
           path: ./resolve-cloud
           registry: ${{ steps.publish.outputs.registry_url }}
