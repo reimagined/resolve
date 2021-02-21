@@ -1,10 +1,14 @@
-import { EventFilter, isTimestampFilter } from 'resolve-eventstore-base'
+import {
+  EventFilter,
+  isTimestampFilter,
+  SavedEvent,
+} from 'resolve-eventstore-base'
 import { AdapterPool } from './types'
 
 const getLatestEvent = async (
   { connection, eventsTableName, escapeId, escape, shapeEvent }: AdapterPool,
   filter: EventFilter
-): Promise<any> => {
+): Promise<SavedEvent | null> => {
   const { eventTypes, aggregateIds } = filter
 
   const injectString = (value: any): string => `${escape(value)}`
