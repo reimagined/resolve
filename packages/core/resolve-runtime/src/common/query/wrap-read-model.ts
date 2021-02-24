@@ -26,15 +26,6 @@ const wrapConnection = async (
 }
 
 export const detectConnectorFeatures = (connector: any): number =>
-  ((typeof connector.beginTransaction === 'function' ? 1 : 0) << 0) +
-  ((typeof connector.commitTransaction === 'function' ? 1 : 0) << 1) +
-  ((typeof connector.rollbackTransaction === 'function' ? 1 : 0) << 2) +
-  ((typeof connector.beginXATransaction === 'function' ? 1 : 0) << 3) +
-  ((typeof connector.commitXATransaction === 'function' ? 1 : 0) << 4) +
-  ((typeof connector.rollbackXATransaction === 'function' ? 1 : 0) << 5) +
-  ((typeof connector.beginEvent === 'function' ? 1 : 0) << 6) +
-  ((typeof connector.commitEvent === 'function' ? 1 : 0) << 7) +
-  ((typeof connector.rollbackEvent === 'function' ? 1 : 0) << 8) +
   ((typeof connector.subscribe === 'function' ? 1 : 0) << 9) +
   ((typeof connector.unsubscribe === 'function' ? 1 : 0) << 10) +
   ((typeof connector.resubscribe === 'function' ? 1 : 0) << 11) +
@@ -47,83 +38,6 @@ export const detectConnectorFeatures = (connector: any): number =>
   ((typeof connector.reset === 'function' ? 1 : 0) << 18) +
   ((typeof connector.status === 'function' ? 1 : 0) << 19) +
   ((typeof connector.build === 'function' ? 1 : 0) << 20)
-
-export const FULL_XA_CONNECTOR = 504
-export const FULL_REGULAR_CONNECTOR = 7
-export const EMPTY_CONNECTOR = 0
-export const INLINE_LEDGER_CONNECTOR = 2096640
-
-const emptyFunction = Promise.resolve.bind(Promise)
-const emptyEventWrapper = {
-  onBeforeEvent: emptyFunction,
-  onSuccessEvent: emptyFunction,
-  onFailEvent: emptyFunction,
-}
-
-const emptyBatchWrapper = {
-  onBeforeBatch: emptyFunction,
-  onSuccessBatch: emptyFunction,
-  onFailBatch: emptyFunction,
-}
-
-const detectEventWrappers = (connector: any): any => {
-  const log = getLog('detectEventWrappers')
-  const featureDetection = detectConnectorFeatures(connector)
-
-  if (
-    featureDetection === FULL_XA_CONNECTOR ||
-    featureDetection === FULL_REGULAR_CONNECTOR + FULL_XA_CONNECTOR
-  ) {
-    return {
-      onBeforeEvent: connector.beginEvent.bind(connector),
-      onSuccessEvent: connector.commitEvent.bind(connector),
-      onFailEvent: connector.rollbackEvent.bind(connector),
-    }
-  } else if (
-    featureDetection === FULL_REGULAR_CONNECTOR ||
-    featureDetection === INLINE_LEDGER_CONNECTOR ||
-    featureDetection === EMPTY_CONNECTOR
-  ) {
-    return emptyEventWrapper
-  } else {
-    log.warn('Connector provided invalid event batch lifecycle functions set')
-    log.warn(`Lifecycle detection constant is ${featureDetection}`)
-    log.warn(`No-transactional lifecycle set will be used instead`)
-    return emptyEventWrapper
-  }
-}
-
-const detectBatchWrappers = (connector: any): any => {
-  const log = getLog('detectEventWrappers')
-  const featureDetection = detectConnectorFeatures(connector)
-
-  if (
-    featureDetection === FULL_XA_CONNECTOR ||
-    featureDetection === FULL_REGULAR_CONNECTOR + FULL_XA_CONNECTOR
-  ) {
-    return {
-      onBeforeBatch: emptyFunction,
-      onSuccessBatch: emptyFunction,
-      onFailBatch: emptyFunction,
-    }
-  } else if (featureDetection === FULL_REGULAR_CONNECTOR) {
-    return {
-      onBeforeBatch: connector.beginTransaction.bind(connector),
-      onSuccessBatch: connector.commitTransaction.bind(connector),
-      onFailBatch: connector.rollbackTransaction.bind(connector),
-    }
-  } else if (
-    featureDetection === INLINE_LEDGER_CONNECTOR ||
-    featureDetection === EMPTY_CONNECTOR
-  ) {
-    return emptyBatchWrapper
-  } else {
-    log.warn('Connector provided invalid event batch lifecycle functions set')
-    log.warn(`Lifecycle detection constant is ${featureDetection}`)
-    log.warn(`No-transactional lifecycle set will be used instead`)
-    return emptyBatchWrapper
-  }
-}
 
 const serializeError = (
   error: (Error & { code?: number }) | null
@@ -139,20 +53,9 @@ const serializeError = (
 
 const sendEvents = async (
   pool: ReadModelPool,
-  interop: ReadModelInterop | SagaInterop,
-  {
-    batchId,
-    xaTransactionId,
-    properties,
-    events,
-  }: {
-    events: Array<any>
-    xaTransactionId: any
-    properties: any
-    batchId: any
-  }
+  interop: ReadModelInterop | SagaInterop
 ): Promise<any> => {
-  const { performAcknowledge, getVacantTimeInMillis } = pool
+  const { getVacantTimeInMillis } = pool
   const readModelName = interop.name
   let result = null
 
@@ -252,21 +155,8 @@ const sendEvents = async (
           events.length > 0 &&
           events.findIndex((event) => event.type === 'Init') < 0
         ) {
-          const {
-            onBeforeBatch,
-            onSuccessBatch,
-            onFailBatch,
-          } = detectBatchWrappers(pool.connector)
-
-          await onBeforeBatch(connection, readModelName, xaTransactionId)
           for (const event of events) {
             const remainingTime = getVacantTimeInMillis()
-            const {
-              onBeforeEvent,
-              onSuccessEvent,
-              onFailEvent,
-            } = detectEventWrappers(pool.connector)
-
             log.debug(
               `remaining read-model "${readModelName}" feeding time is ${remainingTime} ms`
             )
@@ -282,18 +172,10 @@ const sendEvents = async (
               log.verbose(
                 `Applying "${event.type}" event to read-model "${readModelName}" started`
               )
-              await onBeforeEvent(connection, readModelName, xaTransactionId)
-
               try {
                 await handler(connection, event)
-                await onSuccessEvent(connection, readModelName, xaTransactionId)
               } catch (innerError) {
                 if (innerError === STOP_BATCH) {
-                  await onSuccessEvent(
-                    connection,
-                    readModelName,
-                    xaTransactionId
-                  )
                   break
                 } else {
                   throw innerError
@@ -311,33 +193,9 @@ const sendEvents = async (
               )
               log.error(readModelError.message)
               log.verbose(readModelError.stack)
-              let rollbackError = null
-              try {
-                await onFailEvent(connection, readModelName, xaTransactionId)
-              } catch (error) {
-                rollbackError = error
-              }
-
               const summaryError = new Error()
               summaryError.message = readModelError.message
               summaryError.stack = readModelError.stack
-
-              if (rollbackError != null) {
-                summaryError.message = `${summaryError.message}${EOL}${rollbackError.message}`
-                summaryError.stack = `${summaryError.stack}${EOL}${rollbackError.stack}`
-              }
-
-              rollbackError = null
-              try {
-                await onFailBatch(connection, readModelName, xaTransactionId)
-              } catch (error) {
-                rollbackError = error
-              }
-
-              if (rollbackError != null) {
-                summaryError.message = `${summaryError.message}${EOL}${rollbackError.message}`
-                summaryError.stack = `${summaryError.stack}${EOL}${rollbackError.stack}`
-              }
 
               log.verbose(
                 `Throwing error for feeding read-model "${readModelName}"`,
@@ -346,8 +204,6 @@ const sendEvents = async (
               throw summaryError
             }
           }
-
-          await onSuccessBatch(connection, readModelName, xaTransactionId)
         } else {
           throw new Error(
             `Init-based and event-based batches should be segregated`
@@ -372,11 +228,6 @@ const sendEvents = async (
     failedEvent: lastFailedEvent,
     error: serializeError(lastError),
   }
-
-  await performAcknowledge({
-    result,
-    batchId,
-  })
 }
 
 const read = async (
@@ -488,7 +339,7 @@ const next = async (
   if (args.length > 0) {
     throw new TypeError('Next should be invoked with no arguments')
   }
-  await pool.invokeEventBusAsync(eventListener, 'build')
+  await pool.invokeEventSubscriberAsync(eventListener, 'build')
 }
 
 const provideLedger = async (
@@ -705,10 +556,9 @@ const dispose = async (
 const wrapReadModel = ({
   interop,
   readModelConnectors,
-  invokeEventBusAsync,
+  invokeEventSubscriberAsync,
   performanceTracer,
   getVacantTimeInMillis,
-  performAcknowledge,
   monitoring,
   provideLedger,
   eventstoreAdapter,
@@ -727,13 +577,12 @@ const wrapReadModel = ({
     monitoring != null ? makeMonitoringSafe(monitoring) : monitoring
 
   const pool: ReadModelPool = {
-    invokeEventBusAsync,
+    invokeEventSubscriberAsync,
     connections: new Set(),
     connector,
     isDisposed: false,
     performanceTracer,
     getVacantTimeInMillis,
-    performAcknowledge,
     monitoring: safeMonitoring,
     provideLedger,
     eventstoreAdapter,

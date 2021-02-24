@@ -1,7 +1,7 @@
 import createQuery from '../query/index'
 
 const createSaga = ({
-  invokeEventBusAsync,
+  invokeEventSubscriberAsync,
   readModelConnectors,
   executeCommand,
   executeQuery,
@@ -10,7 +10,6 @@ const createSaga = ({
   eventstoreAdapter,
   secretsManager,
   getVacantTimeInMillis,
-  performAcknowledge,
   scheduler,
   monitoring,
   domainInterop,
@@ -84,11 +83,10 @@ const createSaga = ({
   }
 
   const executeListener = createQuery({
-    invokeEventBusAsync,
+    invokeEventSubscriberAsync,
     readModelConnectors,
     performanceTracer,
     getVacantTimeInMillis,
-    performAcknowledge,
     eventstoreAdapter,
     monitoring: sagaMonitoring,
     provideLedger,

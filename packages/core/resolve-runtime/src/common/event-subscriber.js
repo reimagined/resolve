@@ -1,22 +1,7 @@
-import {
-  detectConnectorFeatures,
-  FULL_REGULAR_CONNECTOR,
-  FULL_XA_CONNECTOR,
-  EMPTY_CONNECTOR,
-  INLINE_LEDGER_CONNECTOR,
-} from './query'
-
-const connectorCapabilities = {
-  FULL_REGULAR_CONNECTOR,
-  FULL_XA_CONNECTOR,
-  EMPTY_CONNECTOR,
-  INLINE_LEDGER_CONNECTOR,
-}
-
-const eventBusMethod = async (resolve, key, ...args) => {
+const eventSubscriberMethod = async (resolve, key, ...args) => {
   if (args.length !== 1 || Object(args[0]) !== args[0]) {
     throw new TypeError(
-      `Invalid EventBus method "${key}" arguments ${JSON.stringify(args)}`
+      `Invalid EventSubscriber method "${key}" arguments ${JSON.stringify(args)}`
     )
   }
 
@@ -34,17 +19,10 @@ const eventBusMethod = async (resolve, key, ...args) => {
     throw new Error(`Listener ${eventSubscriber} does not exist`)
   }
 
-  const connector = resolve.readModelConnectors[listenerInfo.connectorName]
-
-  const isInlineLedger =
-    detectConnectorFeatures(connector) ===
-    connectorCapabilities.INLINE_LEDGER_CONNECTOR
-
-  const method = isInlineLedger
-    ? listenerInfo.isSaga
+  const method = listenerInfo.isSaga
       ? resolve.executeSaga[key]
       : resolve.executeQuery[key]
-    : resolve.publisher[key]
+
 
   if (typeof method != 'function') {
     throw new TypeError(key)
@@ -59,20 +37,20 @@ const eventBusMethod = async (resolve, key, ...args) => {
   return result
 }
 
-const createEventBus = (resolve) => {
-  const eventBus = new Proxy(
+const createEventSubscriber = (resolve) => {
+  const eventSubscriber = new Proxy(
     {},
     {
       get(_, key) {
-        return eventBusMethod.bind(null, resolve, key)
+        return eventSubscriberMethod.bind(null, resolve, key)
       },
       set() {
-        throw new Error(`Event bus API is immutable`)
+        throw new Error(`Event subscriber API is immutable`)
       },
     }
   )
 
-  return eventBus
+  return eventSubscriber
 }
 
-export default createEventBus
+export default createEventSubscriber

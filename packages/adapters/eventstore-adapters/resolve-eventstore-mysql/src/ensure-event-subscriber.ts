@@ -6,9 +6,9 @@ const ensureEventSubscriber = async (
   params: {
   applicationName: string,
   eventSubscriber: string, 
-  destination: any,
-  status: any,
-  updateOnly: boolean
+  destination?: any,
+  status?: any,
+  updateOnly?: boolean
 }) : Promise<boolean> => {
   const { applicationName, eventSubscriber, destination, status, updateOnly } = params
   const { subscribersTableName, connection, escapeId, escape } = pool

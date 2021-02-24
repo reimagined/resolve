@@ -45,10 +45,6 @@ test('resolve-saga', async () => {
     clearEntries: jest.fn(),
   }
 
-  const performAcknowledge = jest
-    .fn()
-    .mockImplementation(async ({ event }) => event)
-
   const executeCommand = jest.fn()
   const executeQuery = jest.fn()
 
@@ -85,7 +81,6 @@ test('resolve-saga', async () => {
     snapshotAdapter,
     executeCommand,
     executeQuery,
-    performAcknowledge,
     onCommandExecuted,
     scheduler,
     domainInterop,
@@ -141,7 +136,8 @@ test('resolve-saga', async () => {
   expect(eventstoreAdapter.loadEvents.mock.calls).toMatchSnapshot(
     'eventstoreAdapter.loadEvents'
   )
-  expect(performAcknowledge.mock.calls).toMatchSnapshot('performAcknowledge')
+  
+  // TODO applyEventsResult
 
   expect(
     readModelConnectors['default-connector'].connect.mock.calls

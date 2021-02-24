@@ -8,6 +8,7 @@ const dropEvents = async ({
   databaseName,
   eventsTableName,
   snapshotsTableName,
+  subscribersTableName,
   executeStatement,
   escapeId,
 }: AdapterPool): Promise<any[]> => {

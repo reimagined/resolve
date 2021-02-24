@@ -10,11 +10,10 @@ import {
 } from 'resolve-core'
 
 export type CreateQueryOptions = {
-  invokeEventBusAsync: Function
+  invokeEventSubscriberAsync: Function
   readModelConnectors: any
   performanceTracer: any
   getVacantTimeInMillis: any
-  performAcknowledge: any
   monitoring?: Monitoring
   readModelsInterop: ReadModelInteropMap | SagaInteropMap
   viewModelsInterop: ViewModelInteropMap
@@ -49,8 +48,7 @@ export type ReadModelPool = {
   isDisposed: boolean
   connector: any
   connections: Set<any>
-  invokeEventBusAsync: Function
-  performAcknowledge: Function
+  invokeEventSubscriberAsync: Function
   getVacantTimeInMillis: Function
   monitoring?: Monitoring
   provideLedger: (ledger: any) => Promise<void>

@@ -1,24 +1,5 @@
-import {
-  detectConnectorFeatures,
-  FULL_REGULAR_CONNECTOR,
-  FULL_XA_CONNECTOR,
-  EMPTY_CONNECTOR,
-  INLINE_LEDGER_CONNECTOR,
-} from './query'
-
-const connectorCapabilities = {
-  FULL_REGULAR_CONNECTOR,
-
-  FULL_XA_CONNECTOR,
-
-  EMPTY_CONNECTOR,
-
-  INLINE_LEDGER_CONNECTOR,
-}
-
-const notifyInlineLedgers = async (resolve) => {
+const notifyEventSubscribers = async (resolve) => {
   const maxDuration = Math.max(resolve.getVacantTimeInMillis() - 15000, 0)
-
   let timerId = null
 
   const timerPromise = new Promise((resolve) => {
@@ -28,19 +9,8 @@ const notifyInlineLedgers = async (resolve) => {
   const inlineLedgerPromise = (async () => {
     const promises = []
 
-    for (const {
-      name: eventListener,
-
-      connectorName,
-    } of resolve.eventListeners.values()) {
-      const connector = resolve.readModelConnectors[connectorName]
-
-      if (
-        detectConnectorFeatures(connector) ===
-        connectorCapabilities.INLINE_LEDGER_CONNECTOR
-      ) {
-        promises.push(resolve.invokeEventBusAsync(eventListener, 'build'))
-      }
+    for (const { name: eventListener } of resolve.eventListeners.values()) {
+        promises.push(resolve.invokeEventSubscriberAsync(eventListener, 'build'))
     }
 
     await Promise.all(promises)
@@ -54,8 +24,7 @@ const notifyInlineLedgers = async (resolve) => {
 }
 
 const onCommandExecuted = async (resolve, event) => {
-  await resolve.publisher.publish({ event })
-  await notifyInlineLedgers(resolve)
+  await notifyEventSubscribers(resolve)
   await resolve.sendReactiveEvent(event)
 }
 

@@ -3,37 +3,18 @@ import disposeResolve from '../common/dispose-resolve'
 import multiplexAsync from '../common/utils/multiplex-async'
 
 const initBroker = async (resolve) => {
-  const {
-    assemblies: { connectPublisher, createAndInitConsumer, eventBrokerConfig },
-    eventListeners,
-  } = resolve
-
-  const publisher = await connectPublisher({
-    address: eventBrokerConfig.publisherAddress,
-    eventListeners,
-  })
-
-  // TODO: improve lifecycle
-  const consumer = await createAndInitConsumer({
-    address: eventBrokerConfig.consumerAddress,
-    baseResolve: resolve,
-    initResolve,
-    disposeResolve,
-    publisher,
-  })
-
-  const invokeEventBusAsync = multiplexAsync.bind(
+  const invokeEventSubscriberAsync = multiplexAsync.bind(
     null,
     async (eventSubscriber, method, parameters) => {
       const currentResolve = Object.create(resolve)
       try {
         await initResolve(currentResolve)
-        const rawMethod = currentResolve.eventBus[method]
+        const rawMethod = currentResolve.eventSubscriber[method]
         if (typeof rawMethod !== 'function') {
           throw new TypeError(method)
         }
 
-        const result = await rawMethod.call(currentResolve.eventBus, {
+        const result = await rawMethod.call(currentResolve.eventSubscriber, {
           eventSubscriber,
           ...parameters,
         })
@@ -46,9 +27,7 @@ const initBroker = async (resolve) => {
   )
 
   Object.assign(resolve, {
-    invokeEventBusAsync,
-    publisher,
-    consumer,
+    invokeEventSubscriberAsync,
   })
 }
 

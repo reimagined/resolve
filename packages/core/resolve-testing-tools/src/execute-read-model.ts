@@ -2,18 +2,10 @@ import { Phases, symbol } from './constants'
 import { CreateQueryOptions } from 'resolve-runtime'
 import { initDomain, Eventstore } from 'resolve-core'
 
-export const executeReadModel = async ({
-  promise,
-  createQuery,
-  transformEvents,
-  detectConnectorFeatures,
-  connectorModes,
-}: {
+export const executeReadModel = async ({ promise, createQuery, transformEvents }: {
   promise: any
   createQuery: (options: CreateQueryOptions) => any
   transformEvents: Function
-  detectConnectorFeatures: any
-  connectorModes: any
 }): Promise<any> => {
   if (promise[symbol].phase < Phases.RESOLVER) {
     throw new TypeError(promise[symbol].phase)
@@ -23,11 +15,6 @@ export const executeReadModel = async ({
   let result = null
 
   try {
-    let performAcknowledge = null
-    const acknowledgePromise: Promise<any> = new Promise((resolve) => {
-      performAcknowledge = async (result: any) => await resolve(result)
-    })
-
     const provideLedger = async (ledger: any): Promise<void> => void 0
     const secretsManager = promise[symbol].secretsManager
 
@@ -83,9 +70,8 @@ export const executeReadModel = async ({
         ADAPTER_NAME: promise[symbol].adapter,
       },
       getVacantTimeInMillis: () => 0x7fffffff,
-      invokeEventBusAsync: async () => void 0,
+      invokeEventSubscriberAsync: async () => void 0,
       eventstoreAdapter,
-      performAcknowledge,
       readModelsInterop: domain.readModelDomain.acquireReadModelsInterop({
         secretsManager,
         monitoring: {},
@@ -94,12 +80,8 @@ export const executeReadModel = async ({
       performanceTracer: null,
       provideLedger,
     })
-    const isInlineLedger =
-      (await detectConnectorFeatures(promise[symbol].adapter)) ===
-      connectorModes.INLINE_LEDGER_CONNECTOR
 
     try {
-      if (isInlineLedger) {
         await queryExecutor.subscribe({
           modelName: promise[symbol].name,
           subscriptionOptions: {
@@ -139,33 +121,6 @@ export const executeReadModel = async ({
             throw liveErrors[liveErrorIndex]
           }
         }
-      } else {
-        await queryExecutor.sendEvents({
-          modelName: promise[symbol].name,
-          events: [{ type: 'Init' }],
-        })
-
-        await queryExecutor.sendEvents({
-          modelName: promise[symbol].name,
-          events: transformEvents(promise[symbol].events),
-        })
-
-        const {
-          result: { error: projectionError },
-        } = await acknowledgePromise
-        if (projectionError != null) {
-          const liveErrorIndex = liveErrors.findIndex(
-            (err) => err.message === projectionError.message
-          )
-          if (liveErrorIndex < 0) {
-            const error = new Error(projectionError.message)
-            error.stack = projectionError.stack
-            throw error
-          } else {
-            throw liveErrors[liveErrorIndex]
-          }
-        }
-      }
     } catch (err) {
       errors.push(err)
     }
@@ -182,15 +137,9 @@ export const executeReadModel = async ({
     }
 
     try {
-      if (isInlineLedger) {
         await queryExecutor.unsubscribe({
           modelName: promise[symbol].name,
         })
-      } else {
-        await queryExecutor.drop({
-          modelName: promise[symbol].name,
-        })
-      }
     } catch (err) {
       errors.push(err)
     }

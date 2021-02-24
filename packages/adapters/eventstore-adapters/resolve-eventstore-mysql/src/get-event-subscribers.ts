@@ -3,7 +3,8 @@ import { AdapterPool } from './types'
 const getEventSubscribers = async (pool: AdapterPool): Promise<Array<{
   applicationName: string,
   eventSubscriber: string, 
-  destination: any
+  destination: any,
+  status: any
   }>> => {
   const { subscribersTableName, connection, escapeId } = pool
   const subscribersTableNameAsId = escapeId(subscribersTableName)  
@@ -13,7 +14,8 @@ const getEventSubscribers = async (pool: AdapterPool): Promise<Array<{
   `))[0] as Array<{
   applicationName: string,
   eventSubscriber: string, 
-  destination: any
+  destination: any,
+  status: any
   }>
 
   return rows

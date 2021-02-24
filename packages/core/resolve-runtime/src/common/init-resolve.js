@@ -5,7 +5,7 @@ import crypto from 'crypto'
 
 import createOnCommandExecuted from './on-command-executed'
 import createEventListener from './event-listener'
-import createEventBus from './event-bus'
+import createEventBus from './event-subscriber'
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
@@ -18,7 +18,7 @@ const initResolve = async (resolve) => {
   } = resolve.assemblies
 
   const {
-    invokeEventBusAsync,
+    invokeEventSubscriberAsync,
     readModels,
     sagas,
     viewModels,
@@ -49,10 +49,6 @@ const initResolve = async (resolve) => {
 
   const getVacantTimeInMillis = resolve.getVacantTimeInMillis
   const onCommandExecuted = createOnCommandExecuted(resolve)
-
-  const performAcknowledge = resolve.publisher.acknowledge.bind(
-    resolve.publisher
-  )
 
   const domainMonitoring = {
     error: monitoring?.error,
@@ -88,14 +84,13 @@ const initResolve = async (resolve) => {
   })
 
   const executeQuery = createQueryExecutor({
-    invokeEventBusAsync,
+    invokeEventSubscriberAsync,
     eventstoreAdapter,
     readModelConnectors,
     readModels,
     viewModels,
     performanceTracer,
     getVacantTimeInMillis,
-    performAcknowledge,
     monitoring,
     readModelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
       monitoring: domainMonitoring,
@@ -109,7 +104,7 @@ const initResolve = async (resolve) => {
   })
 
   const executeSaga = createSagaExecutor({
-    invokeEventBusAsync,
+    invokeEventSubscriberAsync,
     executeCommand,
     executeQuery,
     eventstoreAdapter,
@@ -118,7 +113,6 @@ const initResolve = async (resolve) => {
     sagas,
     performanceTracer,
     getVacantTimeInMillis,
-    performAcknowledge,
     uploader,
     scheduler,
     monitoring,
