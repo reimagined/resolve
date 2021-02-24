@@ -514,6 +514,7 @@ const build: ExternalMethods['build'] = async (
   } = basePool
 
   try {
+    basePool.activePassthrough = true
     const databaseNameAsId = escapeId(schemaName)
     const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
     const trxTableNameAsId = escapeId(`__${schemaName}__TRX__`)
@@ -640,6 +641,8 @@ const build: ExternalMethods['build'] = async (
         }
       }
     }
+  } finally {
+    basePool.activePassthrough = false
   }
 }
 

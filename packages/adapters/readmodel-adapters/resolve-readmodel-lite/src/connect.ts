@@ -44,15 +44,23 @@ const inlineLedgerRunQuery = async <
       result = await executor(sqlQuery)
       break
     } catch (error) {
-      const isPassthroughError = PassthroughError.isPassthroughError(
-        error,
-        !!passthroughRuntimeErrors
-      )
-      if (isPassthroughError) {
-        const isRuntime = !PassthroughError.isPassthroughError(error, false)
-        throw new PassthroughError(isRuntime)
+      if (pool.activePassthrough) {
+        const isPassthroughError = PassthroughError.isPassthroughError(
+          error,
+          !!passthroughRuntimeErrors
+        )
+        if (isPassthroughError) {
+          const isRuntime = !PassthroughError.isPassthroughError(error, false)
+          throw new PassthroughError(isRuntime)
+        } else {
+          throw error
+        }
       } else {
-        throw error
+        if (PassthroughError.isPassthroughError(error, false)) {
+          await fullJitter(retry)
+        } else {
+          throw error
+        }
       }
     }
   }
@@ -98,6 +106,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     makeNestedPath,
     escapeId,
     escapeStr,
+    activePassthrough: false,
     ...imports,
   })
 

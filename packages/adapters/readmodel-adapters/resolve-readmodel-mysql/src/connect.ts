@@ -14,18 +14,29 @@ const inlineLedgerRunQuery: (
   passthroughRuntimeErrors = false
 ) => {
   let rows = null
-  try {
-    void ([rows] = await pool.connection.query(querySQL))
-  } catch (error) {
-    if (
-      pool.PassthroughError.isPassthroughError(
-        error,
-        !!passthroughRuntimeErrors
-      )
-    ) {
-      throw new pool.PassthroughError()
-    } else {
-      throw error
+  for (;;) {
+    try {
+      void ([rows] = await pool.connection.query(querySQL))
+      break
+    } catch (error) {
+      if (pool.activePassthrough) {
+        if (
+          pool.PassthroughError.isPassthroughError(
+            error,
+            !!passthroughRuntimeErrors
+          )
+        ) {
+          throw new pool.PassthroughError()
+        } else {
+          throw error
+        }
+      } else {
+        if (pool.PassthroughError.isPassthroughError(error, false)) {
+          await new Promise((resolve) => setTimeout(resolve, 100))
+        } else {
+          throw error
+        }
+      }
     }
   }
 
@@ -84,6 +95,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     tablePrefix,
     makeNestedPath,
     connection,
+    activePassthrough: false,
     ...imports,
   })
 }
