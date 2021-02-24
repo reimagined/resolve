@@ -8,6 +8,7 @@ import wrapReadModel, {
 import wrapViewModel from './wrap-view-model'
 
 import { CreateQueryOptions } from './types'
+import { OMIT_BATCH, STOP_BATCH } from './batch'
 
 const dispose = async (models: any): Promise<any> => {
   for (const modelName of Object.keys(models)) {
@@ -97,5 +98,7 @@ export {
   INLINE_LEDGER_CONNECTOR,
   detectConnectorFeatures,
   CreateQueryOptions,
+  OMIT_BATCH,
+  STOP_BATCH,
 }
 export default createQuery

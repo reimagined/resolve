@@ -2,6 +2,28 @@ import givenEvents, { BDDAggregate } from '../src/index'
 import createReadModelConnector from 'resolve-readmodel-lite'
 import { Event, EventHandlerEncryptionContext } from 'resolve-core'
 
+const ProjectionError = (function (this: Error, message: string): void {
+  Error.call(this)
+  this.name = 'ProjectionError'
+  this.message = message
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, ProjectionError)
+  } else {
+    this.stack = new Error().stack
+  }
+} as Function) as ErrorConstructor
+
+const ResolverError = (function (this: Error, message: string): void {
+  Error.call(this)
+  this.name = 'ResolverError'
+  this.message = message
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, ResolverError)
+  } else {
+    this.stack = new Error().stack
+  }
+} as Function) as ErrorConstructor
+
 describe('read model', () => {
   test('basic flow', async () => {
     const result = await givenEvents([
@@ -49,6 +71,11 @@ describe('read model', () => {
       args: { a: 10, b: 20 },
       context: {
         jwt: 'JWT_TOKEN',
+        secretsManager: {
+          getSecret: expect.any(Function),
+          setSecret: expect.any(Function),
+          deleteSecret: expect.any(Function),
+        },
       },
     })
   })
@@ -109,7 +136,7 @@ describe('read model', () => {
           },
           resolvers: {
             all: async (store: any, args: any, context: any): Promise<any> => {
-              throw new Error(`Error from resolver`)
+              throw new ResolverError(`Error from resolver`)
             },
           },
           adapter: createReadModelConnector({
@@ -121,7 +148,7 @@ describe('read model', () => {
 
       return Promise.reject('Test failed')
     } catch (error) {
-      expect(error).toBeInstanceOf(Error)
+      expect(error).toBeInstanceOf(ResolverError)
       expect(error.message).toEqual('Error from resolver')
     }
   })
@@ -133,7 +160,7 @@ describe('read model', () => {
           name: 'readModelName',
           projection: {
             Init: async (store: any): Promise<any> => {
-              throw new Error('Error from projection')
+              throw new ProjectionError('Error from projection')
             },
           },
           resolvers: {
@@ -150,7 +177,7 @@ describe('read model', () => {
 
       return Promise.reject('Test failed')
     } catch (error) {
-      expect(error).toBeInstanceOf(Error)
+      expect(error).toBeInstanceOf(ProjectionError)
       expect(error.message).toEqual('Error from projection')
     }
   })

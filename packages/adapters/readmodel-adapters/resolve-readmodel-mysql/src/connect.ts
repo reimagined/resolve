@@ -2,17 +2,8 @@ import type {
   MakeNestedPathMethod,
   CurrentConnectMethod,
   InlineLedgerRunQueryMethod,
-  RunQueryMethod,
   AdapterPool,
 } from './types'
-
-const runQuery: (
-  pool: AdapterPool,
-  ...args: Parameters<RunQueryMethod>
-) => ReturnType<RunQueryMethod> = async (pool, querySQL) => {
-  const [rows] = await pool.connection.query(querySQL)
-  return rows as Array<object>
-}
 
 const inlineLedgerRunQuery: (
   pool: AdapterPool,
@@ -90,7 +81,6 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
       null,
       pool
     ) as InlineLedgerRunQueryMethod,
-    runQuery: runQuery.bind(null, pool) as RunQueryMethod,
     tablePrefix,
     makeNestedPath,
     connection,

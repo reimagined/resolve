@@ -89,7 +89,7 @@ describe('Read models', () => {
     expect(dummyResolver).toBeCalledWith(
       dummyStore,
       {},
-      { jwt: undefined, secretsManager: null }
+      { jwt: undefined, secretsManager }
     )
   })
   test('interop should return nulls for nonexistent handlers', async () => {

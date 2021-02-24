@@ -9,7 +9,7 @@ const update: CurrentStoreApi['update'] = async (
   options
 ) => {
   const {
-    runQuery,
+    inlineLedgerRunQuery,
     tablePrefix,
     escapeId,
     escapeStr,
@@ -54,7 +54,7 @@ const update: CurrentStoreApi['update'] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  await runQuery(
+  await inlineLedgerRunQuery(
     `UPDATE ${escapeId(`${tablePrefix}${tableName}`)}
     SET ${updateExpr} ${inlineSearchExpr};`
   )

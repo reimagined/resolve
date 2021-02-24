@@ -564,6 +564,12 @@ export type ExtractNewable<F extends NewableLike> = F extends new (
   ? new (...args: Args) => Result
   : never
 
+export type ExtractFunction<F extends FunctionLike> = F extends (
+  ...args: infer Args
+) => infer Result
+  ? (...args: Args) => Result
+  : never
+
 export type MakeNewableFunction<F extends FunctionLike> = F extends (
   this: infer T,
   ...args: infer Args

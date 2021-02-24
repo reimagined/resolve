@@ -222,7 +222,7 @@ export const buildEvents: (
   let transactionId: string = await transactionIdPromise
   let rootSavePointId: string = generateGuid(transactionId, 'ROOT')
 
-  basePool.transactionId = transactionId
+  basePool.sharedTransactionId = transactionId
 
   let saveTrxIdPromise = inlineLedgerExecuteStatement(
     basePool,
@@ -436,7 +436,7 @@ export const buildEvents: (
       transactionId = await transactionIdPromise
       rootSavePointId = generateGuid(transactionId, 'ROOT')
 
-      Object.getPrototypeOf(pool).transactionId = transactionId
+      basePool.sharedTransactionId = transactionId
 
       saveTrxIdPromise = inlineLedgerExecuteStatement(
         pool,

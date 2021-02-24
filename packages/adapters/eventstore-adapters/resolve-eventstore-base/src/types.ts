@@ -16,7 +16,7 @@ type SetSecret = SecretsManager['setSecret']
 
 type ShapeEvent = (event: any, additionalFields?: any) => SavedEvent
 
-export type ValidateEventFilter = (filter: any) => void
+export type ValidateEventFilter = (filter: EventFilter) => void
 
 export type GetNextCursor = (prevCursor: string | null, events: any[]) => string
 
@@ -338,7 +338,7 @@ export interface Adapter {
   loadEvents: (filter: EventFilter) => Promise<EventsWithCursor>
   importEvents: (options?: Partial<ImportOptions>) => stream.Writable
   exportEvents: (options?: Partial<ExportOptions>) => stream.Readable
-  getLatestEvent: (filter: EventFilter) => Promise<any>
+  getLatestEvent: (filter: EventFilter) => Promise<SavedEvent | null>
   saveEvent: (event: InputEvent) => Promise<void>
   init: () => Promise<void>
   drop: () => Promise<void>
@@ -347,9 +347,9 @@ export interface Adapter {
   unfreeze: () => Promise<void>
   getNextCursor: (prevCursor: string | null, events: any[]) => string
   getSecretsManager: () => Promise<SecretsManager>
-  loadSnapshot: (snapshotKey: string) => Promise<any>
-  saveSnapshot: (snapshotKey: string, content: string) => Promise<any>
-  dropSnapshot: (snapshotKey: string) => Promise<any>
+  loadSnapshot: (snapshotKey: string) => Promise<string | null>
+  saveSnapshot: (snapshotKey: string, content: string) => Promise<void>
+  dropSnapshot: (snapshotKey: string) => Promise<void>
   pushIncrementalImport: (
     events: InputEvent[],
     importId: string

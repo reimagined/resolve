@@ -1,10 +1,10 @@
 import { DropReadModelMethod } from './types'
 
 const dropReadModel: DropReadModelMethod = async (
-  { runQuery, escapeId, schemaName, escapeStr },
+  { inlineLedgerRunQuery, escapeId, schemaName, escapeStr },
   readModelName
 ) => {
-  const rows = (await runQuery(
+  const rows = (await inlineLedgerRunQuery(
     `SELECT ${escapeId('CLS')}.${escapeId('relname')} AS ${escapeId(
       'tableName'
     )}
@@ -30,7 +30,9 @@ const dropReadModel: DropReadModelMethod = async (
   )) as Array<{ tableName: string }>
 
   for (const { tableName } of rows) {
-    await runQuery(`DROP TABLE ${escapeId(schemaName)}.${escapeId(tableName)};`)
+    await inlineLedgerRunQuery(
+      `DROP TABLE ${escapeId(schemaName)}.${escapeId(tableName)};`
+    )
   }
 }
 

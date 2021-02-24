@@ -7,7 +7,7 @@ const count: CurrentStoreApi['count'] = async (
   searchExpression
 ) => {
   const {
-    executeStatement,
+    inlineLedgerExecuteStatement,
     escapeId,
     escapeStr,
     tablePrefix,
@@ -25,11 +25,12 @@ const count: CurrentStoreApi['count'] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const rows = (await executeStatement(
+  const rows = (await inlineLedgerExecuteStatement(
     pool,
     `SELECT Count(*) AS ${escapeId('Count')}
     FROM ${escapeId(schemaName)}.${escapeId(`${tablePrefix}${tableName}`)}
-    ${inlineSearchExpr};`
+    ${inlineSearchExpr};`,
+    inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
   )) as Array<{ Count: number }>
 
   if (

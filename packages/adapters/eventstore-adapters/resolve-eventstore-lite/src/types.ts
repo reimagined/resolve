@@ -1,4 +1,4 @@
-import type { open } from 'sqlite'
+import type { open, Database } from 'sqlite'
 import type {
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
@@ -14,7 +14,7 @@ export type MemoryStore = {
 }
 
 export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
-  database: any
+  database: Database
   databaseFile: string
   eventsTableName: string
   snapshotsTableName: string
