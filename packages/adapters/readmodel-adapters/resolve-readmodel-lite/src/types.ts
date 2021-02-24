@@ -138,6 +138,7 @@ export type AdapterPool = CommonAdapterPool & {
   escapeStr: EscapeableMethod
   connectionUri: string
   connection: SQLiteLib.Database
+  activePassthrough: boolean
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
       AdapterPool

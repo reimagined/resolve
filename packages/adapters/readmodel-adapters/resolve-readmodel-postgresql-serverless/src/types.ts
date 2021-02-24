@@ -227,6 +227,7 @@ export type AdapterPool = CommonAdapterPool & {
   schemaName: RDSDataService.DbName
   tablePrefix: string
   sharedTransactionId?: string | null | undefined
+  activePassthrough: boolean
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
       AdapterPool

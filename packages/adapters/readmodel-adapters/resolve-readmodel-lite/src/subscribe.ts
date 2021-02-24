@@ -16,11 +16,12 @@ const subscribe: ExternalMethods['subscribe'] = async (
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
-
-  while (true) {
-    try {
-      await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+  try {
+    pool.activePassthrough = true
+    while (true) {
+      try {
+        await inlineLedgerRunQuery(
+          `BEGIN IMMEDIATE;
         CREATE TABLE IF NOT EXISTS ${ledgerTableNameAsId}(
           "EventSubscriber" VARCHAR(190) NOT NULL,
           "IsPaused" TINYINT NOT NULL,
@@ -37,25 +38,25 @@ const subscribe: ExternalMethods['subscribe'] = async (
         );
         COMMIT;
       `,
-        true
-      )
+          true
+        )
 
-      break
-    } catch (error) {
-      try {
-        await inlineLedgerRunQuery(`ROLLBACK;`, true)
-      } catch (e) {}
-
-      if (/^SQLITE_ERROR:.*? already exists$/.test(error.message)) {
         break
+      } catch (error) {
+        try {
+          await inlineLedgerRunQuery(`ROLLBACK;`, true)
+        } catch (e) {}
+
+        if (/^SQLITE_ERROR:.*? already exists$/.test(error.message)) {
+          break
+        }
       }
     }
-  }
 
-  while (true) {
-    try {
-      await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+    while (true) {
+      try {
+        await inlineLedgerRunQuery(
+          `BEGIN IMMEDIATE;
 
          INSERT OR REPLACE INTO ${ledgerTableNameAsId}(
           "EventSubscriber", "EventTypes", "AggregateIds", "IsPaused", "Properties",
@@ -96,24 +97,27 @@ const subscribe: ExternalMethods['subscribe'] = async (
 
          COMMIT;
       `,
-        true
-      )
-      break
-    } catch (error) {
-      if (!(error instanceof PassthroughError)) {
-        throw error
-      }
-
-      try {
-        await inlineLedgerRunQuery(`ROLLBACK`, true)
-      } catch (err) {
-        if (!(err instanceof PassthroughError)) {
-          throw err
+          true
+        )
+        break
+      } catch (error) {
+        if (!(error instanceof PassthroughError)) {
+          throw error
         }
-      }
 
-      await fullJitter(0)
+        try {
+          await inlineLedgerRunQuery(`ROLLBACK`, true)
+        } catch (err) {
+          if (!(err instanceof PassthroughError)) {
+            throw err
+          }
+        }
+
+        await fullJitter(0)
+      }
     }
+  } finally {
+    pool.activePassthrough = false
   }
 }
 

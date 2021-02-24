@@ -15,13 +15,14 @@ const pause: ExternalMethods['pause'] = async (pool, readModelName) => {
   const ledgerTableNameAsId = escapeId(
     `${tablePrefix}__${schemaName}__LEDGER__`
   )
+  try {
+    pool.activePassthrough = true
+    while (true) {
+      try {
+        await inlineLedgerForceStop(pool, readModelName)
 
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
-
-      await inlineLedgerRunQuery(
-        `WITH "CTE" AS (
+        await inlineLedgerRunQuery(
+          `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
          FOR NO KEY UPDATE NOWAIT
@@ -31,14 +32,17 @@ const pause: ExternalMethods['pause'] = async (pool, readModelName) => {
         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
-      )
+        )
 
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
+  } finally {
+    pool.activePassthrough = false
   }
 }
 
