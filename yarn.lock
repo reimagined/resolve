@@ -16339,6 +16339,26 @@ resolve-from@^5.0.0:
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-5.0.0.tgz#c35225843df8f776df21c57557bc087e9dfdfc69"
   integrity sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==
 
+resolve-local-event-broker@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-local-event-broker/-/resolve-local-event-broker-0.26.5.tgz#cb0791ec89b8e4d153c14f7185e6e31b3715ad1e"
+  integrity sha512-cBp2NoxIXVTeKawxC1EYof9Em/FmDQo2oQxIBVagN/UveBYpQ2jQg/cw0wLSLDCUQRFFYP3kY8cYdiCiM9FgBA==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    resolve-debug-levels "0.26.5"
+    resolve-eventstore-base "0.26.5"
+    resolve-local-rpc "0.26.5"
+    resolve-readmodel-base "0.26.5"
+    sqlite "^3.0.2"
+    tmp "^0.1.0"
+
+resolve-local-rpc@0.26.5:
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/resolve-local-rpc/-/resolve-local-rpc-0.26.5.tgz#561af971e0567b0cc4849801f4745c6d9596ee8c"
+  integrity sha512-zMFLQyw9jfFto2V+TOdNn9gV/ydlBrILXZ0mpVFpXocBTF838ZNmOiz11xA2Dl5S+W8bMQk6IyWeHcvYJYa9Zw==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+
 resolve-options@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/resolve-options/-/resolve-options-1.1.0.tgz#32bb9e39c06d67338dc9378c0d6d6074566ad131"

@@ -26,6 +26,7 @@ const dropEvents = async ({
   const incrementalImportTableAsId = escapeId(
     `${eventsTableName}-incremental-import`
   )
+  const subscribersTableNameAsId: string = escapeId(subscribersTableName)
 
   const aggregateIdAndVersionIndexName: string = escapeId(
     `${eventsTableName}-aggregateIdAndVersion`
@@ -52,6 +53,8 @@ const dropEvents = async ({
 
     `DROP TABLE IF EXISTS ${databaseNameAsId}.${freezeTableNameAsId}`,
     `DROP TABLE IF EXISTS ${databaseNameAsId}.${incrementalImportTableAsId}`,
+
+    `DROP TABLE ${databaseNameAsId}.${subscribersTableNameAsId}`
   ]
   const errors: any[] = await executeSequence(
     executeStatement,

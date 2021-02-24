@@ -136,6 +136,24 @@ export type AdapterPoolConnectedProps = Adapter & {
   dropEvents: () => Promise<any[]>
   dropSecrets: () => Promise<any[]>
   dropFinal: () => Promise<any[]>
+
+  ensureEventSubscriber: (params: {
+    applicationName: string,
+    eventSubscriber: string, 
+    destination?: any,
+    status?: any,
+    updateOnly?: boolean
+  }) => Promise<boolean>
+  removeEventSubscriber: (params: {
+    applicationName: string,
+    eventSubscriber: string
+  }) => Promise<void>
+  getEventSubscribers: () => Promise<Array<{
+    applicationName: string,
+    eventSubscriber: string, 
+    destination: any,
+    status: any
+  }>>
 }
 
 export type AdapterPoolPossiblyUnconnected<
@@ -308,6 +326,12 @@ export interface AdapterFunctions<
     AdapterPoolConnectedProps['dropSecrets']
   >
   dropFinal: PoolMethod<ConnectedProps, AdapterPoolConnectedProps['dropFinal']>
+
+  ensureEventSubscriber: PoolMethod<ConnectedProps, AdapterPoolConnectedProps['ensureEventSubscriber']>
+  
+  removeEventSubscriber: PoolMethod<ConnectedProps, AdapterPoolConnectedProps['removeEventSubscriber']>
+
+  getEventSubscribers: PoolMethod<ConnectedProps, AdapterPoolConnectedProps['getEventSubscribers']>
 }
 
 export interface Adapter {
@@ -340,4 +364,22 @@ export interface Adapter {
   loadSecrets?: (filter: SecretFilter) => Promise<SecretsWithIdx>
   importSecrets: (options?: Partial<ImportSecretsOptions>) => stream.Writable
   exportSecrets: (options?: Partial<ExportSecretsOptions>) => stream.Readable
+
+  ensureEventSubscriber: (params: {
+    applicationName: string,
+    eventSubscriber: string, 
+    destination?: any,
+    status?: any,
+    updateOnly?: boolean
+  }) => Promise<boolean>
+  removeEventSubscriber: (params: {
+    applicationName: string,
+    eventSubscriber: string
+  }) => Promise<void>
+  getEventSubscribers: () => Promise<Array<{
+    applicationName: string,
+    eventSubscriber: string, 
+    destination: any,
+    status: any
+  }>>
 }

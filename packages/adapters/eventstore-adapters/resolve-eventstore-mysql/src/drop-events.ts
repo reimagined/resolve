@@ -10,6 +10,7 @@ const dropEvents = async (pool: AdapterPool): Promise<any[]> => {
   const {
     eventsTableName,
     snapshotsTableName,
+    subscribersTableName,
     connection,
     database,
     escapeId,
@@ -25,6 +26,7 @@ const dropEvents = async (pool: AdapterPool): Promise<any[]> => {
   const incrementalImportTableAsId = escapeId(
     `${eventsTableName}-incremental-import`
   )
+  const subscribersTableNameAsId: string = escapeId(subscribersTableName)
 
   const statements: string[] = [
     `DROP TABLE IF EXISTS ${freezeTableNameAsId}`,
@@ -32,6 +34,7 @@ const dropEvents = async (pool: AdapterPool): Promise<any[]> => {
     `DROP TABLE ${eventsTableNameAsId}`,
     `DROP TABLE ${snapshotsTableNameAsId}`,
     `DROP TABLE IF EXISTS ${incrementalImportTableAsId}`,
+    `DROP TABLE ${subscribersTableNameAsId}`
   ]
 
   const errors: any[] = await executeSequence(

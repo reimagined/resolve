@@ -35,11 +35,13 @@ const connect = async (
   const eventsTableName = config.eventsTableName ?? 'events'
   const snapshotsTableName = config.snapshotsTableName ?? 'snapshots'
   const secretsTableName = config.secretsTableName ?? 'secrets'
+  const subscribersTableName = config.subscribersTableName ?? 'subscribers'
 
   log.verbose(`databaseFile: ${databaseFile}`)
   log.verbose(`eventsTableName: ${eventsTableName}`)
   log.verbose(`snapshotsTableName: ${snapshotsTableName}`)
   log.verbose(`secretsTableName: ${secretsTableName}`)
+  log.verbose(`subscribersTableName: ${subscribersTableName}`)
 
   let connector
   if (databaseFile === ':memory:') {
@@ -124,6 +126,7 @@ const connect = async (
       eventsTableName,
       snapshotsTableName,
       secretsTableName,
+      subscribersTableName
     }
   )
 

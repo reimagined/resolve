@@ -16,6 +16,7 @@ const initEvents = async ({
   databaseName,
   eventsTableName,
   snapshotsTableName,
+  subscribersTableName,
   executeStatement,
   escapeId,
 }: AdapterPool): Promise<any[]> => {
@@ -30,6 +31,7 @@ const initEvents = async ({
   const eventsTableNameAsId: string = escapeId(eventsTableName)
   const threadsTableNameAsId: string = escapeId(`${eventsTableName}-threads`)
   const snapshotsTableNameAsId: string = escapeId(snapshotsTableName)
+  const subscribersTableNameAsId: string = escapeId(subscribersTableName)
 
   const aggregateIdAndVersionIndexName: string = escapeId(
     `${eventsTableName}-aggregateIdAndVersion`
@@ -84,6 +86,13 @@ const initEvents = async ({
     ) VALUES ${Array.from(new Array(256))
       .map((_, index) => `(${index}, 0)`)
       .join(',')}`,
+    `CREATE TABLE ${databaseNameAsId}.${subscribersTableNameAsId}(
+      "applicationName" ${LONG_STRING_SQL_TYPE} NOT NULL,
+      "eventSubscriber" ${LONG_STRING_SQL_TYPE} NOT NULL,
+      "destination" ${JSON_SQL_TYPE} NOT NULL, 
+      "status" ${JSON_SQL_TYPE} NOT NULL, 
+      PRIMARY KEY("applicationName", "eventSubscriber")
+    )`,
   ]
 
   const errors: any[] = await executeSequence(

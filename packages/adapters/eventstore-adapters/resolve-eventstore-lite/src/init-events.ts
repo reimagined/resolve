@@ -10,6 +10,7 @@ const initEvents = async ({
   databaseFile,
   eventsTableName,
   snapshotsTableName,
+  subscribersTableName,
   escapeId,
 }: AdapterPool): Promise<any[]> => {
   const log = getLog('initEvents')
@@ -52,7 +53,15 @@ const initEvents = async ({
       ${escapeId('snapshotKey')} TEXT,
       ${escapeId('content')} TEXT,
       PRIMARY KEY(${escapeId('snapshotKey')})
-      )`,
+    )`,
+
+    `CREATE TABLE ${escapeId(subscribersTableName)} (
+      ${escapeId('applicationName')} VARCHAR(700) NOT NULL,
+      ${escapeId('eventSubscriber')} VARCHAR(700) NOT NULL,
+      ${escapeId('destination')} JSON NOT NULL,
+      ${escapeId('status')} JSON NOT NULL,
+      PRIMARY KEY(${escapeId('applicationName')}, ${escapeId('eventSubscriber')})
+    )`,
   ]
 
   const errors: any[] = await executeSequence(

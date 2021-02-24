@@ -39,6 +39,7 @@ export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   eventsTableName: string
   secretsTableName: string
   snapshotsTableName: string
+  subscribersTableName: string
   fullJitter: FullJitter
   coercer: Coercer
   executeStatement: (sql: any, transactionId?: string) => Promise<any[]>
@@ -60,6 +61,7 @@ export type PostgresqlAdapterConfig = AdapterConfig & {
   eventsTableName?: string
   secretsTableName?: string
   snapshotsTableName?: string
+  subscribersTableName?: string
   region?: string
   [key: string]: any
 }
@@ -111,6 +113,7 @@ export type CloudResourceOptions = {
   eventsTableName: string
   secretsTableName: string
   snapshotsTableName: string
+  subscribersTableName: string
   userLogin: string
   awsSecretStoreAdminArn: string
   dbClusterOrInstanceArn: string

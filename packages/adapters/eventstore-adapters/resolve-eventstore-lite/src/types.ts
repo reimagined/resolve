@@ -19,6 +19,7 @@ export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   eventsTableName: string
   snapshotsTableName: string
   secretsTableName: string
+  subscribersTableName: string
   escapeId: (source: string) => string
   escape: (source: string) => string
   memoryStore?: MemoryStore
@@ -29,6 +30,7 @@ export type SqliteAdapterConfig = AdapterConfig & {
   secretsTableName?: string
   eventsTableName?: string
   snapshotsTableName?: string
+  subscribersTableName?: string
 }
 
 export type AdapterPool = AdapterPoolConnected<SqliteAdapterPoolConnectedProps>

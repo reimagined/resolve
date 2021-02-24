@@ -31,6 +31,7 @@ const connect = async (
     eventsTableName,
     snapshotsTableName,
     secretsTableName,
+    subscribersTableName,
     // eslint-disable-next-line prefer-const
     ...connectionOptions
   } = config
@@ -38,6 +39,7 @@ const connect = async (
   eventsTableName = eventsTableName ?? 'events'
   snapshotsTableName = snapshotsTableName ?? 'snapshots'
   secretsTableName = secretsTableName ?? 'secrets'
+  subscribersTableName = subscribersTableName ?? 'subscribers'
 
   const {
     dbClusterOrInstanceArn,

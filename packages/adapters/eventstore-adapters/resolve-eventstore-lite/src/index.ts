@@ -6,6 +6,9 @@ import fs from 'fs'
 
 import beginIncrementalImport from './begin-incremental-import'
 import commitIncrementalImport from './commit-incremental-import'
+import ensureEventSubscriber from './ensure-event-subscriber'
+import removeEventSubscriber from './remove-event-subscriber'
+import getEventSubscribers from './get-event-subscribers'
 import connect from './connect'
 import deleteSecret from './delete-secret'
 import dispose from './dispose'
@@ -41,6 +44,9 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
     {
       beginIncrementalImport,
       commitIncrementalImport,
+      ensureEventSubscriber,
+      removeEventSubscriber,
+      getEventSubscribers,
       connect,
       deleteSecret,
       dispose,
