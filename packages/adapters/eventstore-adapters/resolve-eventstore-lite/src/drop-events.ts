@@ -24,7 +24,7 @@ const dropEvents = async ({
     `DROP TABLE ${escapeId(eventsTableName)}`,
     `DROP TABLE ${escapeId(snapshotsTableName)}`,
     `DROP TABLE IF EXISTS ${incrementalImportTableAsId}`,
-    `DROP TABLE ${escapeId(subscribersTableName)}`
+    `DROP TABLE ${escapeId(subscribersTableName)}`,
   ]
 
   const errors: any[] = await executeSequence(

@@ -4,8 +4,7 @@ import createSagaExecutor from '../common/saga/index'
 import crypto from 'crypto'
 
 import createOnCommandExecuted from './on-command-executed'
-import createEventListener from './event-listener'
-import createEventBus from './event-subscriber'
+import createEventSubscriber from './event-subscriber'
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
@@ -19,6 +18,7 @@ const initResolve = async (resolve) => {
 
   const {
     invokeEventSubscriberAsync,
+    applicationName,
     readModels,
     sagas,
     viewModels,
@@ -85,6 +85,7 @@ const initResolve = async (resolve) => {
 
   const executeQuery = createQueryExecutor({
     invokeEventSubscriberAsync,
+    applicationName,
     eventstoreAdapter,
     readModelConnectors,
     readModels,
@@ -105,6 +106,7 @@ const initResolve = async (resolve) => {
 
   const executeSaga = createSagaExecutor({
     invokeEventSubscriberAsync,
+    applicationName,
     executeCommand,
     executeQuery,
     eventstoreAdapter,
@@ -120,9 +122,7 @@ const initResolve = async (resolve) => {
     executeSchedulerCommand,
   })
 
-  const eventBus = createEventBus(resolve)
-
-  const eventListener = createEventListener(resolve)
+  const eventSubscriber = createEventSubscriber(resolve)
 
   const eventStore = new Proxy(
     {},
@@ -153,8 +153,7 @@ const initResolve = async (resolve) => {
   })
 
   Object.defineProperties(resolve, {
-    eventListener: { value: eventListener },
-    eventBus: { value: eventBus },
+    eventSubscriber: { value: eventSubscriber },
     eventStore: { value: eventStore },
   })
 

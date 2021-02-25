@@ -34,7 +34,7 @@ const dropEvents = async (pool: AdapterPool): Promise<any[]> => {
     `DROP TABLE ${eventsTableNameAsId}`,
     `DROP TABLE ${snapshotsTableNameAsId}`,
     `DROP TABLE IF EXISTS ${incrementalImportTableAsId}`,
-    `DROP TABLE ${subscribersTableNameAsId}`
+    `DROP TABLE ${subscribersTableNameAsId}`,
   ]
 
   const errors: any[] = await executeSequence(

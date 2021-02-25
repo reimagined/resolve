@@ -85,9 +85,5 @@ const createQuery = (params: CreateQueryOptions): any => {
   return api
 }
 
-export {
-  CreateQueryOptions,
-  OMIT_BATCH,
-  STOP_BATCH,
-}
+export { CreateQueryOptions, OMIT_BATCH, STOP_BATCH }
 export default createQuery

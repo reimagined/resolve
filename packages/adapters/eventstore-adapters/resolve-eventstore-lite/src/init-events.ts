@@ -60,7 +60,9 @@ const initEvents = async ({
       ${escapeId('eventSubscriber')} VARCHAR(700) NOT NULL,
       ${escapeId('destination')} JSON NOT NULL,
       ${escapeId('status')} JSON NOT NULL,
-      PRIMARY KEY(${escapeId('applicationName')}, ${escapeId('eventSubscriber')})
+      PRIMARY KEY(${escapeId('applicationName')}, ${escapeId(
+      'eventSubscriber'
+    )})
     )`,
   ]
 

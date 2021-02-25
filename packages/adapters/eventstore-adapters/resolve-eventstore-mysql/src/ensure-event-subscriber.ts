@@ -4,23 +4,37 @@ import { ER_SUBQUERY_NO_1_ROW } from './constants'
 const ensureEventSubscriber = async (
   pool: AdapterPool,
   params: {
-  applicationName: string,
-  eventSubscriber: string, 
-  destination?: any,
-  status?: any,
-  updateOnly?: boolean
-}) : Promise<boolean> => {
-  const { applicationName, eventSubscriber, destination, status, updateOnly } = params
+    applicationName: string
+    eventSubscriber: string
+    destination?: any
+    status?: any
+    updateOnly?: boolean
+  }
+): Promise<boolean> => {
+  const {
+    applicationName,
+    eventSubscriber,
+    destination,
+    status,
+    updateOnly,
+  } = params
   const { subscribersTableName, connection, escapeId, escape } = pool
   const subscribersTableNameAsId = escapeId(subscribersTableName)
-  if((!!updateOnly && destination != null)  || (!updateOnly && destination == null)) {
-    throw new Error(`Parameters "destination" and "updateOnly" are mutual exclusive`)
+  if (
+    (!!updateOnly && destination != null) ||
+    (!updateOnly && destination == null)
+  ) {
+    throw new Error(
+      `Parameters "destination" and "updateOnly" are mutual exclusive`
+    )
   }
 
   try {
     await connection.query(`
       START TRANSACTION;
-      ${updateOnly ? `SELECT 1 FROM \`information_schema\`.\`tables\`
+      ${
+        updateOnly
+          ? `SELECT 1 FROM \`information_schema\`.\`tables\`
       WHERE (
         SELECT 0 AS \`SubscriberNotFound\`
       UNION ALL
@@ -31,7 +45,9 @@ const ensureEventSubscriber = async (
           WHERE \`applicationName\` = ${escape(applicationName)}
           AND \`eventSubscriber\` = ${escape(eventSubscriber)}
         ) = 0
-      ) = 0;` : ''}
+      ) = 0;`
+          : ''
+      }
 
       INSERT INTO ${subscribersTableNameAsId}(
         \`applicationName\`,
@@ -42,19 +58,29 @@ const ensureEventSubscriber = async (
       VALUES(
         ${escape(applicationName)},
         ${escape(eventSubscriber)},
-        ${!updateOnly ? `(CAST(${escape(JSON.parse(destination))} AS JSON)), ` : '' }
+        ${
+          !updateOnly
+            ? `(CAST(${escape(JSON.parse(destination))} AS JSON)), `
+            : ''
+        }
         (CAST(${escape(JSON.parse(status))} AS JSON))
       )
       ON DUPLICATE KEY UPDATE 
-      ${!updateOnly ? `\`destination\` = (CAST(${escape(JSON.parse(destination))} AS JSON)), ` : '' }
+      ${
+        !updateOnly
+          ? `\`destination\` = (CAST(${escape(
+              JSON.parse(destination)
+            )} AS JSON)), `
+          : ''
+      }
       \`status\` = (CAST(${escape(JSON.parse(status))} AS JSON));
 
       COMMIT;
     `)
-  } catch(error) {
+  } catch (error) {
     try {
       await connection.query('ROLLBACK')
-    } catch(err) {}
+    } catch (err) {}
 
     const errno = error != null && error.errno != null ? error.errno : 0
     if (errno === ER_SUBQUERY_NO_1_ROW) {

@@ -136,7 +136,7 @@ test('resolve-saga', async () => {
   expect(eventstoreAdapter.loadEvents.mock.calls).toMatchSnapshot(
     'eventstoreAdapter.loadEvents'
   )
-  
+
   // TODO applyEventsResult
 
   expect(

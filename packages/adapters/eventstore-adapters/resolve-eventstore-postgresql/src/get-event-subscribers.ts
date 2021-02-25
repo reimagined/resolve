@@ -1,22 +1,57 @@
 import { AdapterPool } from './types'
 
-const getEventSubscribers = async (pool: AdapterPool): Promise<Array<{
-  applicationName: string,
-  eventSubscriber: string, 
-  destination: any
-  status: any
-}>> => {
-  const { subscribersTableName, databaseName, executeStatement, escapeId } = pool
+const getEventSubscribers = async (
+  pool: AdapterPool,
+  {
+    applicationName,
+    eventSubscriber,
+  }:
+    | {
+        applicationName?: string
+        eventSubscriber?: string
+      }
+    | undefined = {}
+): Promise<
+  Array<{
+    applicationName: string
+    eventSubscriber: string
+    destination: any
+    status: any
+  }>
+> => {
+  const {
+    subscribersTableName,
+    databaseName,
+    executeStatement,
+    escapeId,
+  } = pool
   const databaseNameAsId = escapeId(databaseName)
   const subscribersTableNameAsId = escapeId(subscribersTableName)
 
-  const rows = await executeStatement(`
+  const rows = (await executeStatement(`
     SELECT * FROM ${databaseNameAsId}.${subscribersTableNameAsId}
-  `) as Array<{
-  applicationName: string,
-  eventSubscriber: string, 
-  destination: any,
-  status: any
+    ${
+      applicationName != null || eventSubscriber != null
+        ? `
+    WHERE ${
+      applicationName != null
+        ? `"applicationName" = ${escape(applicationName)}`
+        : ''
+    }
+    ${applicationName != null && eventSubscriber != null ? ' AND ' : ''}
+    ${
+      eventSubscriber != null
+        ? `"eventSubscriber" = ${escape(eventSubscriber)}`
+        : ''
+    }
+    `
+        : ''
+    }
+  `)) as Array<{
+    applicationName: string
+    eventSubscriber: string
+    destination: any
+    status: any
   }>
 
   return rows

@@ -10,7 +10,7 @@ const notifyEventSubscribers = async (resolve) => {
     const promises = []
 
     for (const { name: eventListener } of resolve.eventListeners.values()) {
-        promises.push(resolve.invokeEventSubscriberAsync(eventListener, 'build'))
+      promises.push(resolve.invokeEventSubscriberAsync(eventListener, 'build'))
     }
 
     await Promise.all(promises)

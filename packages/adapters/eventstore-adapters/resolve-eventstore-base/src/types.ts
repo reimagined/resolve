@@ -138,22 +138,31 @@ export type AdapterPoolConnectedProps = Adapter & {
   dropFinal: () => Promise<any[]>
 
   ensureEventSubscriber: (params: {
-    applicationName: string,
-    eventSubscriber: string, 
-    destination?: any,
-    status?: any,
+    applicationName: string
+    eventSubscriber: string
+    destination?: any
+    status?: any
     updateOnly?: boolean
   }) => Promise<boolean>
   removeEventSubscriber: (params: {
-    applicationName: string,
+    applicationName: string
     eventSubscriber: string
   }) => Promise<void>
-  getEventSubscribers: () => Promise<Array<{
-    applicationName: string,
-    eventSubscriber: string, 
-    destination: any,
-    status: any
-  }>>
+  getEventSubscribers: (
+    params?:
+      | {
+          applicationName?: string
+          eventSubscriber?: string
+        }
+      | undefined
+  ) => Promise<
+    Array<{
+      applicationName: string
+      eventSubscriber: string
+      destination: any
+      status: any
+    }>
+  >
 }
 
 export type AdapterPoolPossiblyUnconnected<
@@ -327,11 +336,20 @@ export interface AdapterFunctions<
   >
   dropFinal: PoolMethod<ConnectedProps, AdapterPoolConnectedProps['dropFinal']>
 
-  ensureEventSubscriber: PoolMethod<ConnectedProps, AdapterPoolConnectedProps['ensureEventSubscriber']>
-  
-  removeEventSubscriber: PoolMethod<ConnectedProps, AdapterPoolConnectedProps['removeEventSubscriber']>
+  ensureEventSubscriber: PoolMethod<
+    ConnectedProps,
+    AdapterPoolConnectedProps['ensureEventSubscriber']
+  >
 
-  getEventSubscribers: PoolMethod<ConnectedProps, AdapterPoolConnectedProps['getEventSubscribers']>
+  removeEventSubscriber: PoolMethod<
+    ConnectedProps,
+    AdapterPoolConnectedProps['removeEventSubscriber']
+  >
+
+  getEventSubscribers: PoolMethod<
+    ConnectedProps,
+    AdapterPoolConnectedProps['getEventSubscribers']
+  >
 }
 
 export interface Adapter {
@@ -366,20 +384,29 @@ export interface Adapter {
   exportSecrets: (options?: Partial<ExportSecretsOptions>) => stream.Readable
 
   ensureEventSubscriber: (params: {
-    applicationName: string,
-    eventSubscriber: string, 
-    destination?: any,
-    status?: any,
+    applicationName: string
+    eventSubscriber: string
+    destination?: any
+    status?: any
     updateOnly?: boolean
   }) => Promise<boolean>
   removeEventSubscriber: (params: {
-    applicationName: string,
+    applicationName: string
     eventSubscriber: string
   }) => Promise<void>
-  getEventSubscribers: () => Promise<Array<{
-    applicationName: string,
-    eventSubscriber: string, 
-    destination: any,
-    status: any
-  }>>
+  getEventSubscribers: (
+    params?:
+      | {
+          applicationName?: string
+          eventSubscriber?: string
+        }
+      | undefined
+  ) => Promise<
+    Array<{
+      applicationName: string
+      eventSubscriber: string
+      destination: any
+      status: any
+    }>
+  >
 }

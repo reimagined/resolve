@@ -24,7 +24,7 @@ let coldStart = true
 const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   log.debug('executing application lambda')
   log.verbose('incoming event', JSON.stringify(lambdaEvent, null, 2))
-  lambdaContext.callbackWaitsForEmptyEventLoop = false 
+  lambdaContext.callbackWaitsForEmptyEventLoop = false
 
   resolveBase.subscriptionsCredentials = {
     applicationLambdaArn: lambdaContext.invokedFunctionArn,

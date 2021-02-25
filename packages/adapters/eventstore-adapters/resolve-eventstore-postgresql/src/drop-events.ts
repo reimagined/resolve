@@ -56,7 +56,7 @@ const dropEvents = async ({
     `DROP TABLE ${databaseNameAsId}.${snapshotsTableNameAsId}`,
     `DROP TABLE IF EXISTS ${databaseNameAsId}.${incrementalImportTableAsId}`,
 
-    `DROP TABLE ${databaseNameAsId}.${subscribersTableNameAsId}`
+    `DROP TABLE ${databaseNameAsId}.${subscribersTableNameAsId}`,
   ]
   const errors: any[] = await executeSequence(
     executeStatement,

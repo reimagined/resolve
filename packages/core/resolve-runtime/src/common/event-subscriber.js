@@ -1,7 +1,9 @@
 const eventSubscriberMethod = async (resolve, key, ...args) => {
   if (args.length !== 1 || Object(args[0]) !== args[0]) {
     throw new TypeError(
-      `Invalid EventSubscriber method "${key}" arguments ${JSON.stringify(args)}`
+      `Invalid EventSubscriber method "${key}" arguments ${JSON.stringify(
+        args
+      )}`
     )
   }
 
@@ -20,9 +22,8 @@ const eventSubscriberMethod = async (resolve, key, ...args) => {
   }
 
   const method = listenerInfo.isSaga
-      ? resolve.executeSaga[key]
-      : resolve.executeQuery[key]
-
+    ? resolve.executeSaga[key]
+    : resolve.executeQuery[key]
 
   if (typeof method != 'function') {
     throw new TypeError(key)

@@ -126,7 +126,7 @@ const connect = async (
       eventsTableName,
       snapshotsTableName,
       secretsTableName,
-      subscribersTableName
+      subscribersTableName,
     }
   )
 

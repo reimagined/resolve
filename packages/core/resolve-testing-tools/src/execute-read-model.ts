@@ -2,7 +2,11 @@ import { Phases, symbol } from './constants'
 import { CreateQueryOptions } from 'resolve-runtime'
 import { initDomain, Eventstore } from 'resolve-core'
 
-export const executeReadModel = async ({ promise, createQuery, transformEvents }: {
+export const executeReadModel = async ({
+  promise,
+  createQuery,
+  transformEvents,
+}: {
   promise: any
   createQuery: (options: CreateQueryOptions) => any
   transformEvents: Function
@@ -82,45 +86,45 @@ export const executeReadModel = async ({ promise, createQuery, transformEvents }
     })
 
     try {
-        await queryExecutor.subscribe({
-          modelName: promise[symbol].name,
-          subscriptionOptions: {
-            eventTypes: null,
-            aggregateIds: null,
-          },
-        })
+      await queryExecutor.subscribe({
+        modelName: promise[symbol].name,
+        subscriptionOptions: {
+          eventTypes: null,
+          aggregateIds: null,
+        },
+      })
 
-        await queryExecutor.build({
-          modelName: promise[symbol].name,
-        })
+      await queryExecutor.build({
+        modelName: promise[symbol].name,
+      })
 
-        await queryExecutor.build({
-          modelName: promise[symbol].name,
-        })
+      await queryExecutor.build({
+        modelName: promise[symbol].name,
+      })
 
-        const status = await queryExecutor.status({
-          modelName: promise[symbol].name,
-        })
-        if (status.status === 'error') {
-          if (!Array.isArray(status.errors)) {
-            throw new Error('Unknown error')
-          }
-          const liveErrorIndex =
-            status.errors.length === 1
-              ? liveErrors.findIndex(
-                  (err) => err.message === status.errors[0].message
-                )
-              : -1
-          if (liveErrorIndex < 0) {
-            const error = new Error(
-              status.errors.map((err: any) => err.message).join('\n')
-            )
-            error.stack = status.errors.map((err: any) => err.stack).join('\n')
-            throw error
-          } else {
-            throw liveErrors[liveErrorIndex]
-          }
+      const status = await queryExecutor.status({
+        modelName: promise[symbol].name,
+      })
+      if (status.status === 'error') {
+        if (!Array.isArray(status.errors)) {
+          throw new Error('Unknown error')
         }
+        const liveErrorIndex =
+          status.errors.length === 1
+            ? liveErrors.findIndex(
+                (err) => err.message === status.errors[0].message
+              )
+            : -1
+        if (liveErrorIndex < 0) {
+          const error = new Error(
+            status.errors.map((err: any) => err.message).join('\n')
+          )
+          error.stack = status.errors.map((err: any) => err.stack).join('\n')
+          throw error
+        } else {
+          throw liveErrors[liveErrorIndex]
+        }
+      }
     } catch (err) {
       errors.push(err)
     }
@@ -137,9 +141,9 @@ export const executeReadModel = async ({ promise, createQuery, transformEvents }
     }
 
     try {
-        await queryExecutor.unsubscribe({
-          modelName: promise[symbol].name,
-        })
+      await queryExecutor.unsubscribe({
+        modelName: promise[symbol].name,
+      })
     } catch (err) {
       errors.push(err)
     }

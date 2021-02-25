@@ -19,6 +19,7 @@ export type CreateQueryOptions = {
   viewModelsInterop: ViewModelInteropMap
   provideLedger: (ledger: any) => Promise<void>
   eventstoreAdapter: Eventstore
+  applicationName: string
 }
 
 type WrapModelOptions = Omit<
@@ -53,6 +54,7 @@ export type ReadModelPool = {
   monitoring?: Monitoring
   provideLedger: (ledger: any) => Promise<void>
   eventstoreAdapter: Eventstore
+  applicationName: string
 }
 
 export type ViewModelPool = {

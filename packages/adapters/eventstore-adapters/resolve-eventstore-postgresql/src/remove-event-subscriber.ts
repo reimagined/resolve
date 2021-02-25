@@ -3,11 +3,17 @@ import { AdapterPool } from './types'
 const removeEventSubscriber = async (
   pool: AdapterPool,
   params: {
-  applicationName: string,
-  eventSubscriber: string, 
+    applicationName: string
+    eventSubscriber: string
   }
-) : Promise<void> => {
-  const { subscribersTableName, databaseName, executeStatement, escapeId, escape } = pool
+): Promise<void> => {
+  const {
+    subscribersTableName,
+    databaseName,
+    executeStatement,
+    escapeId,
+    escape,
+  } = pool
   const { applicationName, eventSubscriber } = params
   const databaseNameAsId = escapeId(databaseName)
   const subscribersTableNameAsId = escapeId(subscribersTableName)
@@ -18,6 +24,5 @@ const removeEventSubscriber = async (
     AND "eventSubscriber" = ${escape(eventSubscriber)}
   `)
 }
-
 
 export default removeEventSubscriber

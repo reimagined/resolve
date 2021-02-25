@@ -171,7 +171,7 @@ const createAdapter = <
 
     ensureEventSubscriber: wrapMethod(adapterPool, ensureEventSubscriber),
     removeEventSubscriber: wrapMethod(adapterPool, removeEventSubscriber),
-    getEventSubscribers: wrapMethod(adapterPool, getEventSubscribers)
+    getEventSubscribers: wrapMethod(adapterPool, getEventSubscribers),
   }
 
   Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(

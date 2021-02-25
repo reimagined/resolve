@@ -2,6 +2,7 @@ import createQuery from '../query/index'
 
 const createSaga = ({
   invokeEventSubscriberAsync,
+  applicationName,
   readModelConnectors,
   executeCommand,
   executeQuery,
@@ -84,6 +85,7 @@ const createSaga = ({
 
   const executeListener = createQuery({
     invokeEventSubscriberAsync,
+    applicationName,
     readModelConnectors,
     performanceTracer,
     getVacantTimeInMillis,

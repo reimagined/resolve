@@ -573,7 +573,7 @@ for (const { describeName, prepare } of [
           eventSubscriber: 'readModelName',
         }
 
-        void (applyEventsResult) // TODO
+        void applyEventsResult // TODO
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -615,10 +615,10 @@ for (const { describeName, prepare } of [
           batchId: 'batchId',
         })
 
-         const applyEventsResult = {
+        const applyEventsResult = {
           message: 'BROKEN',
         }
-        void (applyEventsResult) // TODO
+        void applyEventsResult // TODO
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
@@ -708,7 +708,7 @@ for (const { describeName, prepare } of [
         await result
 
         const applyEventsResult = null
-        void (applyEventsResult) // TODO
+        void applyEventsResult // TODO
 
         if (performanceTracer != null) {
           expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
