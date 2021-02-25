@@ -41,7 +41,7 @@ jobs:
           path: resolve-cloud
 
       - id: cloud
-        name: Deploy cloud
+        name: Install cloud environment
         uses: reimagined/github-actions/install-cloud@v1
         with:
           aws_access_key_id: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
@@ -63,23 +63,25 @@ jobs:
 
       - id: deploy
         name: Deploy test app to the cloud
-        uses: ./.github/actions/deploy
+        uses: reimagined/github-actions/deploy@v1
         with:
-          resolve_version: ${{ steps.publish.outputs.version }}
-          npm_registry: ${{ steps.publish.outputs.registry_url}}
-          app_directory: ${{ env.test_app_dir }}
-          generate_app_name: true
-          resolve_api_url: ${{ steps.cloud.outputs.api_url}}
-          resolve_user: ${{ secrets.RESOLVE_CLOUD_USER }}
-          resolve_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
+          source: ${{ env.test_app_dir }}
+          cloud_api_url: ${{ steps.cloud.outputs.api_url}}
+          cloud_user: ${{ secrets.RESOLVE_CLOUD_USER }}
+          cloud_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
+          framework_version: ${{ steps.publish.outputs.version }}
+          randomize_name: true
+          package_registry: ${{ steps.publish.outputs.registry_url}}
+          package_registry_token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
+          package_registry_scopes: '@reimagined'
           deploy_args: --verbosity=debug
 
       - name: API tests
         run: |
           cd functional-tests
-          yarn run-test api --url=${{ steps.deploy.outputs.app_url }}
+          yarn run-test api --url=${{ steps.deploy.outputs.url }}
 
       - name: Testcafe tests
         run: |
           cd functional-tests
-          yarn run-test testcafe --url=${{ steps.deploy.outputs.app_url }} --testcafe-browser=chrome --ci-mode --testcafe-timeout=10000
+          yarn run-test testcafe --url=${{ steps.deploy.outputs.url }} --testcafe-browser=chrome --ci-mode --testcafe-timeout=10000
