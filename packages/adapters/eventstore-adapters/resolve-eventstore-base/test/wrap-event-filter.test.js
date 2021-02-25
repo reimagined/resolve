@@ -29,7 +29,5 @@ test('wrap load events should fail on wrong filter argument', async () => {
     return Promise.reject('Test failed')
   } catch (error) {
     expect(error).toBeInstanceOf(Error)
-
-    expect(error.message).toEqual('Event filter should be an object')
   }
 })

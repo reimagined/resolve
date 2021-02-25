@@ -61,7 +61,10 @@ describe('import-export events', () => {
       outputEventstoreAdapter.importEvents()
     )
 
-    const { events } = await outputEventstoreAdapter.loadEvents({ limit: 300 })
+    const { events } = await outputEventstoreAdapter.loadEvents({
+      limit: 300,
+      cursor: null,
+    })
 
     expect(events.length).toEqual(inputCountEvents)
   })
@@ -138,7 +141,10 @@ describe('import-export events', () => {
       outputEventstoreAdapter.importEvents()
     )
 
-    const { events } = await outputEventstoreAdapter.loadEvents({ limit: 100 })
+    const { events } = await outputEventstoreAdapter.loadEvents({
+      limit: 100,
+      cursor: null,
+    })
 
     expect(events.length).toEqual(inputCountEvents)
     expect(steps).toBeGreaterThan(1)

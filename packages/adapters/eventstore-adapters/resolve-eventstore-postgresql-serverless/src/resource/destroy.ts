@@ -5,7 +5,7 @@ import { AdminPool, CloudResourceOptions, CloudResourcePool } from '../types'
 const destroy = async (
   pool: CloudResourcePool,
   options: CloudResourceOptions
-): Promise<any> => {
+): Promise<void> => {
   const log = getLog(`resource: destroy`)
 
   const {

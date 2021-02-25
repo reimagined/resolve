@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo || exit 0",
     "test:integration": "jest --config=./jest.config.js --testMatch=**/*.test.[jt]s",
-    "test:eventstore": "jest --config=./jest.config.js --testMatch=**/eventstore-*/*.test.[jt]s"
+    "test:eventstore": "jest --config=./jest.config.js --testMatch=**/eventstore-*/*.test.[jt]s",
+    "test:eventstore-serverless": "env TEST_SERVERLESS=1 jest --config=./jest.config.js --testMatch=**/eventstore-*/*.test.[jt]s"
   },
   "devDependencies": {
     "@babel/runtime": "7.9.6",

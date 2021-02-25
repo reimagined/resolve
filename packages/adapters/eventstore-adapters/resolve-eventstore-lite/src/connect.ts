@@ -5,6 +5,8 @@ import type {
   SqliteAdapterPoolConnectedProps,
   SqliteAdapterConfig,
 } from './types'
+import { SqliteAdapterConfigSchema } from './types'
+import { validate } from 'resolve-eventstore-base'
 
 const SQLITE_BUSY = 'SQLITE_BUSY'
 const randRange = (min: number, max: number): number =>
@@ -30,6 +32,8 @@ const connect = async (
   pool.escapeId = escapeId
 
   log.debug(`connecting to events database`)
+
+  validate(SqliteAdapterConfigSchema, config)
 
   const databaseFile = config.databaseFile ?? ':memory:'
   const eventsTableName = config.eventsTableName ?? 'events'

@@ -5,6 +5,13 @@ import type {
   AdapterConfig,
   SavedEvent,
 } from 'resolve-eventstore-base'
+
+import {
+  AdapterConfigSchema,
+  UnbrandProps,
+  iots as t,
+} from 'resolve-eventstore-base'
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 
@@ -53,14 +60,27 @@ export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   ) => Promise<void>
 }
 
-export type PostgresqlAdapterConfig = AdapterConfig & {
-  dbClusterOrInstanceArn: string
-  awsSecretStoreArn: string
-  databaseName: string
-  eventsTableName?: string
-  secretsTableName?: string
-  snapshotsTableName?: string
-  region?: string
+export const PostgresqlAdapterConfigSchema = t.intersection([
+  AdapterConfigSchema,
+  t.type({
+    dbClusterOrInstanceArn: t.string,
+    awsSecretStoreArn: t.string,
+    databaseName: t.string,
+  }),
+  t.partial({
+    eventsTableName: t.string,
+    secretsTableName: t.string,
+    snapshotsTableName: t.string,
+    region: t.string,
+  }),
+])
+
+type PostgresqlAdapterConfigChecked = t.TypeOf<
+  typeof PostgresqlAdapterConfigSchema
+>
+export type PostgresqlAdapterConfig = UnbrandProps<
+  PostgresqlAdapterConfigChecked
+> & {
   [key: string]: any
 }
 
@@ -80,8 +100,6 @@ export type ConnectionDependencies = {
   executeStatement: (pool: AdapterPool, sql: string) => Promise<any[]>
   coercer: Coercer
 }
-
-export type CloudAdapterSpecific = ConnectionDependencies
 
 export type CloudResource = {
   createResource: (options: CloudResourceOptions) => Promise<any>
@@ -105,13 +123,15 @@ export type CloudResourcePool = {
   dispose: (pool: AdapterPool) => Promise<any>
 }
 
-export type CloudResourceOptions = {
-  region: string
-  databaseName: string
-  eventsTableName: string
-  secretsTableName: string
-  snapshotsTableName: string
-  userLogin: string
-  awsSecretStoreAdminArn: string
-  dbClusterOrInstanceArn: string
-}
+export const CloudResourceOptionsSchema = t.type({
+  region: t.string,
+  databaseName: t.string,
+  eventsTableName: t.string,
+  secretsTableName: t.string,
+  snapshotsTableName: t.string,
+  userLogin: t.string,
+  awsSecretStoreAdminArn: t.string,
+  dbClusterOrInstanceArn: t.string,
+})
+
+export type CloudResourceOptions = t.TypeOf<typeof CloudResourceOptionsSchema>
