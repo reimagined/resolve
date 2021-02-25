@@ -344,6 +344,7 @@ const build: ExternalMethods['build'] = async (
   } = basePool
 
   try {
+    basePool.activePassthrough = true
     const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
     const trxTableNameAsId = escapeId(`${tablePrefix}__TRX__`)
 
@@ -440,6 +441,8 @@ const build: ExternalMethods['build'] = async (
         throw err
       }
     }
+  } finally {
+    basePool.activePassthrough = false
   }
 }
 

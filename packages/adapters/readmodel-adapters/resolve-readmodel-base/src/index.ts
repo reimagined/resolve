@@ -16,6 +16,3 @@ const createAdapter = _createAdapter.bind(null, {
 }) as CreateAdapterMethod
 
 export default createAdapter
-
-export const OMIT_BATCH = Symbol('OMIT_BATCH')
-export const STOP_BATCH = Symbol('STOP_BATCH')

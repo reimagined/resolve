@@ -27,8 +27,6 @@ export type InlineLedgerRunQueryMethod = (
   passthroughRuntimeErrors?: boolean
 ) => Promise<Array<object>>
 
-export type RunQueryMethod = (querySQL: string) => Promise<Array<object>>
-
 export type FullJitterMethod = (retries: number) => Promise<void>
 export type MakeNestedPathMethod = (nestedPath: Array<string>) => string
 
@@ -103,7 +101,6 @@ export type InternalMethods = {
 
 export type AdapterPool = CommonAdapterPool & {
   inlineLedgerRunQuery: InlineLedgerRunQueryMethod
-  runQuery: RunQueryMethod
   fullJitter: FullJitterMethod
   connectionOptions: Omit<Omit<AdapterOptions, 'tablePrefix'>, 'databaseFile'>
   performanceTracer: PerformanceTracerLike
@@ -111,6 +108,7 @@ export type AdapterPool = CommonAdapterPool & {
   databaseFile: string
   makeNestedPath: MakeNestedPathMethod
   connection: MySQLPromiseLib.Connection
+  activePassthrough: boolean
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
       AdapterPool

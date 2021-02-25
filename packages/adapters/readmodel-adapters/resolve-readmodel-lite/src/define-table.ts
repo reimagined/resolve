@@ -1,7 +1,7 @@
 import type { CurrentStoreApi } from './types'
 
 const defineTable: CurrentStoreApi['defineTable'] = async (
-  { runQuery, tablePrefix, escapeId },
+  { inlineLedgerRunQuery, tablePrefix, escapeId },
   readModelName,
   tableName,
   tableDescription
@@ -16,7 +16,7 @@ const defineTable: CurrentStoreApi['defineTable'] = async (
     throw new Error(`Wrong table description ${tableDescription}`)
   }
 
-  await runQuery(
+  await inlineLedgerRunQuery(
     `CREATE TABLE ${escapeId(`${tablePrefix}${tableName}`)} (
     -- RESOLVE READ-MODEL ${escapeId(`${readModelName}`)} OWNED TABLE
       ${tableDescription.fields
@@ -41,7 +41,7 @@ const defineTable: CurrentStoreApi['defineTable'] = async (
 
     const indexCategory = +idx === 0 ? 'UNIQUE' : ''
 
-    await runQuery(
+    await inlineLedgerRunQuery(
       `CREATE ${indexCategory} INDEX ${baseIndexName('type-validation')}
         ON ${escapeId(`${tablePrefix}${tableName}`)}(
           CAST(json_extract(${escapeId(indexName)}, '$') AS ${
@@ -50,14 +50,14 @@ const defineTable: CurrentStoreApi['defineTable'] = async (
         )`
     )
 
-    await runQuery(
+    await inlineLedgerRunQuery(
       `CREATE ${indexCategory} INDEX ${baseIndexName('extracted-field')}
         ON ${escapeId(`${tablePrefix}${tableName}`)}(
           json_extract(${escapeId(indexName)}, '$')
         )`
     )
 
-    await runQuery(
+    await inlineLedgerRunQuery(
       `CREATE ${indexCategory} INDEX ${baseIndexName('full-field')}
         ON ${escapeId(`${tablePrefix}${tableName}`)}(
           ${escapeId(indexName)}

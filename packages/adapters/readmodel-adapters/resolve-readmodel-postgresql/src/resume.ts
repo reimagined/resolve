@@ -15,12 +15,13 @@ const resume: ExternalMethods['resume'] = async (pool, readModelName, next) => {
   const ledgerTableNameAsId = escapeId(
     `${tablePrefix}__${schemaName}__LEDGER__`
   )
-
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
-      await inlineLedgerRunQuery(
-        `WITH "CTE" AS (
+  try {
+    pool.activePassthrough = true
+    while (true) {
+      try {
+        await inlineLedgerForceStop(pool, readModelName)
+        await inlineLedgerRunQuery(
+          `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
          FOR NO KEY UPDATE NOWAIT
@@ -30,16 +31,19 @@ const resume: ExternalMethods['resume'] = async (pool, readModelName, next) => {
         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
-      )
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        )
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
-  }
 
-  await next()
+    await next()
+  } finally {
+    pool.activePassthrough = false
+  }
 }
 
 export default resume

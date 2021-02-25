@@ -2,17 +2,8 @@ import type {
   MakeNestedPathMethod,
   CurrentConnectMethod,
   InlineLedgerRunQueryMethod,
-  RunQueryMethod,
   AdapterPool,
 } from './types'
-
-const runQuery: (
-  pool: AdapterPool,
-  ...args: Parameters<RunQueryMethod>
-) => ReturnType<RunQueryMethod> = async (pool, querySQL) => {
-  const [rows] = await pool.connection.query(querySQL)
-  return rows as Array<object>
-}
 
 const inlineLedgerRunQuery: (
   pool: AdapterPool,
@@ -23,18 +14,29 @@ const inlineLedgerRunQuery: (
   passthroughRuntimeErrors = false
 ) => {
   let rows = null
-  try {
-    void ([rows] = await pool.connection.query(querySQL))
-  } catch (error) {
-    if (
-      pool.PassthroughError.isPassthroughError(
-        error,
-        !!passthroughRuntimeErrors
-      )
-    ) {
-      throw new pool.PassthroughError()
-    } else {
-      throw error
+  for (;;) {
+    try {
+      void ([rows] = await pool.connection.query(querySQL))
+      break
+    } catch (error) {
+      if (pool.activePassthrough) {
+        if (
+          pool.PassthroughError.isPassthroughError(
+            error,
+            !!passthroughRuntimeErrors
+          )
+        ) {
+          throw new pool.PassthroughError()
+        } else {
+          throw error
+        }
+      } else {
+        if (pool.PassthroughError.isPassthroughError(error, false)) {
+          await new Promise((resolve) => setTimeout(resolve, 100))
+        } else {
+          throw error
+        }
+      }
     }
   }
 
@@ -90,10 +92,10 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
       null,
       pool
     ) as InlineLedgerRunQueryMethod,
-    runQuery: runQuery.bind(null, pool) as RunQueryMethod,
     tablePrefix,
     makeNestedPath,
     connection,
+    activePassthrough: false,
     ...imports,
   })
 }
