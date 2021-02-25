@@ -334,9 +334,9 @@ Deletes data items based on the specified search expression.
 }
 ```
 
-### Search Expression Syntax
+### Search Expression Operators
 
-Search expression use operators to express the search logic and group expression clauses.
+Search expression use operators to compare values and group expression clauses.
 
 The following operators are supported:
 
