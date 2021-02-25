@@ -7,19 +7,15 @@ const log = debugLevels('resolve:resolve-runtime:bootstrap')
 const bootstrap = async (resolve, upstream) => {
   log.debug('bootstrap started')
   const promises = []
-  for (const {
-    name: eventSubscriber,
-    eventTypes,
-    connectorName,
-  } of resolve.eventListeners.values()) {
+  for (const { name, eventTypes } of resolve.eventListeners.values()) {
     promises.push(
       bootstrapOne({
-        readModelConnectors: resolve.readModelConnectors,
-        eventBus: resolve.eventBus,
-        eventSubscriber,
+        applicationName: resolve.applicationName,
+        eventstoreAdapter: resolve.eventstoreAdapter,
+        eventSubscriber: resolve.eventSubscriber,
+        name,
         eventTypes,
-        connectorName,
-        credentials: resolve.eventSubscriberCredentials,
+        destination: resolve.eventSubscriberDestination,
         upstream,
       })
     )

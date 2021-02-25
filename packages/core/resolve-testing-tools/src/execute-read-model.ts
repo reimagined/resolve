@@ -70,6 +70,7 @@ export const executeReadModel = async ({
     } as unknown) as Eventstore
 
     queryExecutor = createQuery({
+      applicationName: 'APP_NAME',
       readModelConnectors: {
         ADAPTER_NAME: promise[symbol].adapter,
       },

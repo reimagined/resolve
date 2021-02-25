@@ -402,6 +402,7 @@ const customReadModelMethods = {
       }
     ),
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   subscribe: async () => {},
   resubscribe: async (
     pool: ReadModelPool,
@@ -423,6 +424,8 @@ const customReadModelMethods = {
       parameters
     )
   },
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   unsubscribe: async () => {},
 
   deleteProperty: async (

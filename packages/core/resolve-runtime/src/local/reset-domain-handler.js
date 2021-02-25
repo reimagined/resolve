@@ -2,25 +2,20 @@ import {
   EventstoreResourceAlreadyExistError,
   EventstoreResourceNotExistError,
 } from 'resolve-eventstore-base'
-import {
-  PublisherResourceAlreadyExistError,
-  PublisherResourceNotExistError,
-} from 'resolve-local-event-broker'
 
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 
 const resetDomainHandler = (options) => async (req, res) => {
   const {
     eventstoreAdapter,
-    eventBus,
-    publisher,
+    eventSubscriber,
     readModels,
     sagas,
     domainInterop: { sagaDomain },
   } = req.resolve
 
   try {
-    const { dropEventStore, dropEventBus, dropReadModels, dropSagas } = options
+    const { dropEventStore, dropReadModels, dropSagas } = options
 
     if (dropEventStore) {
       await invokeFilterErrorTypes(
@@ -37,7 +32,7 @@ const resetDomainHandler = (options) => async (req, res) => {
     if (dropReadModels) {
       for (const { name } of readModels) {
         try {
-          await eventBus.reset({ eventSubscriber: name })
+          await eventSubscriber.reset({ eventSubscriber: name })
         } catch (error) {
           dropReadModelsSagasErrors.push(error)
         }
@@ -52,33 +47,10 @@ const resetDomainHandler = (options) => async (req, res) => {
         ...sagas,
       ]) {
         try {
-          await eventBus.reset({ eventSubscriber: name })
+          await eventSubscriber.reset({ eventSubscriber: name })
         } catch (error) {
           dropReadModelsSagasErrors.push(error)
         }
-      }
-    }
-
-    if (dropEventBus) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        dropReadModelsSagasErrors.map((error) => error.message).join('\n')
-      )
-      await invokeFilterErrorTypes(publisher.drop.bind(publisher), [
-        PublisherResourceNotExistError,
-      ])
-      await invokeFilterErrorTypes(publisher.init.bind(publisher), [
-        PublisherResourceAlreadyExistError,
-      ])
-    } else {
-      if (dropReadModelsSagasErrors.length) {
-        const compositeError = new Error(
-          dropReadModelsSagasErrors.map((error) => error.message).join('\n')
-        )
-        compositeError.stack = dropReadModelsSagasErrors
-          .map((error) => error.stack)
-          .join('\n')
-        throw compositeError
       }
     }
 

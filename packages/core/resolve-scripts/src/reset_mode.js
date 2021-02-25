@@ -21,6 +21,7 @@ const getConfig = async (resolveConfig, options) => {
       throw new Error(`Invalid reset options: ${key}`)
     }
   }
+  process.env.SKIP_COMMANDS = 'true'
 
   const config = merge(resolveConfig, {
     apiHandlers: [

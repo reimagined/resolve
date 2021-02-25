@@ -48,7 +48,6 @@
     "resolve-debug-levels": "0.26.5",
     "resolve-eventstore-base": "0.26.5",
     "resolve-eventstore-lite": "0.26.5",
-    "resolve-local-event-broker": "0.26.5",
     "resolve-readmodel-base": "0.26.5",
     "route-trie": "^3.0.0",
     "socket.io": "^2.1.1",
@@ -67,8 +66,7 @@
   },
   "peerDependencies": {
     "aws-sdk": "*",
-    "aws-xray-sdk-core": "^2.3.3",
-    "resolve-local-event-broker": "*"
+    "aws-xray-sdk-core": "^2.3.3"
   },
   "engines": {
     "node": ">=10.9"

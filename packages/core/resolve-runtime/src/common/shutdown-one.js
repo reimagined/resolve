@@ -1,15 +1,25 @@
-const shutdownOne = async ({ eventBus, eventSubscriber, upstream }) => {
+const shutdownOne = async ({
+  applicationName,
+  name,
+  eventstoreAdapter,
+  eventSubscriber,
+  upstream,
+}) => {
   try {
     if (upstream) {
-      await eventBus.pause({ eventSubscriber })
+      await eventSubscriber.pause({ eventSubscriber: name })
     }
 
-    await eventBus.unsubscribe({ eventSubscriber })
+    await eventSubscriber.unsubscribe({ eventSubscriber: name })
+
+    await eventstoreAdapter.removeEventSubscriber({
+      applicationName,
+      eventSubscriber: name,
+    })
   } catch (error) {
     // eslint-disable-next-line no-console
     console.warn(`
-      Event listener "${eventSubscriber}" can't stop subscription since event bus
-      cannot initiate notification for it because of error "${error}"
+      Event subscriber "${name}" can't stop subscription because of error "${error}"
     `)
   }
 }

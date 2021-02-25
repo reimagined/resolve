@@ -29,11 +29,7 @@ const eventSubscriberMethod = async (resolve, key, ...args) => {
     throw new TypeError(key)
   }
 
-  const result = await method(
-    isInlineLedger
-      ? { modelName, ...parameters }
-      : { eventSubscriber, ...parameters }
-  )
+  const result = await method({ modelName, ...parameters })
 
   return result
 }

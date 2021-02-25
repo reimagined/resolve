@@ -17,7 +17,5 @@ Core libraries:
    Provides a function for querying Read and View Models.
 - [resolve-redux](resolve-redux)  
    Provides a Redux storage helper.
-- [resolve-local-event-broker](resolve-local-event-broker)  
-   Provides a local Event Broker
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-core-readme?pixel)

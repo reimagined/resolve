@@ -3,32 +3,21 @@ import disposeResolve from '../common/dispose-resolve'
 import bootstrap from '../common/bootstrap'
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 import { EventstoreResourceAlreadyExistError } from 'resolve-eventstore-base'
-import { PublisherResourceAlreadyExistError } from 'resolve-local-event-broker'
 
 const host = '0.0.0.0'
 const startExpress = async (resolve) => {
-  const {
-    port,
-    server,
-    assemblies: {
-      eventBrokerConfig: { upstream },
-    },
-  } = resolve
-
+  const { port, server, upstream } = resolve
   const currentResolve = Object.create(resolve)
   try {
     await initResolve(currentResolve)
-    const { eventstoreAdapter, publisher } = currentResolve
+    const { eventstoreAdapter } = currentResolve
 
     await invokeFilterErrorTypes(
       eventstoreAdapter.init.bind(eventstoreAdapter),
       [EventstoreResourceAlreadyExistError]
     )
-    await invokeFilterErrorTypes(publisher.init.bind(publisher), [
-      PublisherResourceAlreadyExistError,
-    ])
 
-    await bootstrap(currentResolve, upstream)
+    await bootstrap(currentResolve)
 
     const notReadyListeners = new Set([...resolve.eventListeners.keys()])
 
@@ -38,7 +27,7 @@ const startExpress = async (resolve) => {
           successEvent,
           failedEvent,
           errors,
-        } = await currentResolve.eventBus.status({ eventSubscriber })
+        } = await currentResolve.eventSubscriber.status({ eventSubscriber })
         if (
           successEvent != null ||
           failedEvent != null ||

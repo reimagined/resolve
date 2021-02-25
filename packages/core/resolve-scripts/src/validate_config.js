@@ -170,6 +170,13 @@ const validateConfig = (config) => {
   validateReadModelConnectors(config)
   validateClientEntries(config)
 
+  if (config.eventBroker != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      'Config section "eventBroker" is deprecated and will be removed in next major release'
+    )
+  }
+
   return true
 }
 
