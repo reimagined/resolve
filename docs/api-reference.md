@@ -336,33 +336,38 @@ Deletes data items based on the specified search expression.
 
 ### Search Expression Syntax
 
-A search expression is an object or several objects hierarchically grouped by operators.
+Search expression use operators to express the search logic and group expression clauses.
 
 The following operators are supported:
 
 **Comparison operators:**
 
-| Operator | Description              |
-| -------- | ------------------------ |
-| \$eq     | Equal                    |
-| \$ne     | Not equal                |
-| \$lt     | Less then                |
-| \$lte    | Less then or equal to    |
-| \$gt     | Greater then             |
-| \$gte    | Greater then or equal to |
+| Operator | Description                                                           |
+| -------- | --------------------------------------------------------------------- |
+| \$eq     | Matches values that are equal to the specified value.                 |
+| \$ne     | Matches values that are not equal to the specified value.             |
+| \$lt     | Matches values that are less then the specified value.                |
+| \$lte    | Matches values that are less then or equal to the specified values.   |
+| \$gt     | Matches values that are greater then the specified value.             |
+| \$gte    | Matches values that are greater then or equal to the specified value. |
 
 **Logical Operators:**
 
-| Operator | Description |
-| -------- | ----------- |
-| \$and    | And         |
-| \$or     | Or          |
-| \$not    | Not         |
+| Operator | Description                                      |
+| -------- | ------------------------------------------------ |
+| \$and    | Joins two expressions with an AND operation.     |
+| \$or     | Joins two expressions with an OR operation.      |
+| \$not    | Applies a NOT operation to invert an expression. |
 
 #### Example
 
 ```js
-
+const data = await store.find('Entries', {
+  $or: [
+    { $and: [{ name: 'Second entry', id: 'id-2' }] },
+    { $not: { id: { $gte: 'id-1' } } },
+  ],
+})
 ```
 
 ## Saga API
