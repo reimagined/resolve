@@ -11,11 +11,12 @@ const pause: ExternalMethods['pause'] = async (pool, readModelName) => {
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
-
-  while (true) {
-    try {
-      await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+  try {
+    pool.activePassthrough = true
+    while (true) {
+      try {
+        await inlineLedgerRunQuery(
+          `BEGIN IMMEDIATE;
         
          UPDATE ${ledgerTableNameAsId}
          SET "IsPaused" = 1
@@ -23,25 +24,28 @@ const pause: ExternalMethods['pause'] = async (pool, readModelName) => {
 
          COMMIT;
       `,
-        true
-      )
+          true
+        )
 
-      break
-    } catch (error) {
-      if (!(error instanceof PassthroughError)) {
-        throw error
-      }
-
-      try {
-        await inlineLedgerRunQuery(`ROLLBACK`, true)
-      } catch (err) {
-        if (!(err instanceof PassthroughError)) {
-          throw err
+        break
+      } catch (error) {
+        if (!(error instanceof PassthroughError)) {
+          throw error
         }
-      }
 
-      await fullJitter(0)
+        try {
+          await inlineLedgerRunQuery(`ROLLBACK`, true)
+        } catch (err) {
+          if (!(err instanceof PassthroughError)) {
+            throw err
+          }
+        }
+
+        await fullJitter(0)
+      }
     }
+  } finally {
+    pool.activePassthrough = false
   }
 }
 

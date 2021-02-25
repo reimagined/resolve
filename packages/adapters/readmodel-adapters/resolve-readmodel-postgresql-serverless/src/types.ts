@@ -27,17 +27,14 @@ export type LibDependencies = {
   crypto: typeof crypto
 }
 
-export type InlineLedgerExecuteStatementMethod = (
+export type InlineLedgerExecuteStatementMethod = ((
   pool: AdapterPool,
   querySQL: string,
-  transactionId?: string | null,
+  transactionId?: string | null | symbol,
   passthroughRuntimeErrors?: boolean
-) => Promise<Array<object>>
-
-export type ExecuteStatementMethod = (
-  pool: AdapterPool,
-  querySQL: string
-) => Promise<Array<object>>
+) => Promise<Array<object>>) & {
+  SHARED_TRANSACTION_ID: symbol
+}
 
 export type FullJitterMethod = (retries: number) => Promise<void>
 export type MakeNestedPathMethod = (nestedPath: Array<string>) => string
@@ -177,7 +174,6 @@ export type AdapterOptions = CommonAdapterOptions & {
 
 export type InternalMethods = {
   inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod
-  executeStatement: ExecuteStatementMethod
   inlineLedgerForceStop: InlineLedgerForceStopMethod
   buildUpsertDocument: BuildUpsertDocumentMethod
   isHighloadError: IsRdsServiceErrorMethod
@@ -230,8 +226,8 @@ export type AdapterPool = CommonAdapterPool & {
   awsSecretStoreArn: RDSDataService.Arn
   schemaName: RDSDataService.DbName
   tablePrefix: string
-  xaTransactionId?: string | null | undefined
-  transactionId?: string | null | undefined
+  sharedTransactionId?: string | null | undefined
+  activePassthrough: boolean
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
       AdapterPool

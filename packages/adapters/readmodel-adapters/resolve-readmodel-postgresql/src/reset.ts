@@ -16,12 +16,13 @@ const reset: ExternalMethods['reset'] = async (pool, readModelName) => {
   const ledgerTableNameAsId = escapeId(
     `${tablePrefix}__${schemaName}__LEDGER__`
   )
-
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
-      await inlineLedgerRunQuery(
-        `WITH "CTE" AS (
+  try {
+    pool.activePassthrough = true
+    while (true) {
+      try {
+        await inlineLedgerForceStop(pool, readModelName)
+        await inlineLedgerRunQuery(
+          `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
          FOR NO KEY UPDATE NOWAIT
@@ -35,22 +36,22 @@ const reset: ExternalMethods['reset'] = async (pool, readModelName) => {
         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
-      )
+        )
 
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
-  }
 
-  await dropReadModel(pool, readModelName)
+    await dropReadModel(pool, readModelName)
 
-  while (true) {
-    try {
-      await inlineLedgerRunQuery(
-        `WITH "CTE" AS (
+    while (true) {
+      try {
+        await inlineLedgerRunQuery(
+          `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
          FOR NO KEY UPDATE NOWAIT
@@ -60,14 +61,17 @@ const reset: ExternalMethods['reset'] = async (pool, readModelName) => {
         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
-      )
+        )
 
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
+  } finally {
+    pool.activePassthrough = false
   }
 }
 

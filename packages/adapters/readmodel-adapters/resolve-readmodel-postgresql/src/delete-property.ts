@@ -17,13 +17,17 @@ const deleteProperty: ExternalMethods['deleteProperty'] = async (
   const ledgerTableNameAsId = escapeId(
     `${tablePrefix}__${schemaName}__LEDGER__`
   )
-
-  await inlineLedgerRunQuery(
-    `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
+  try {
+    pool.activePassthrough = true
+    await inlineLedgerRunQuery(
+      `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
      SET "Properties" = "Properties" - ${escapeStr(key)} 
      WHERE "EventSubscriber" = ${escapeStr(readModelName)}
     `
-  )
+    )
+  } finally {
+    pool.activePassthrough = false
+  }
 }
 
 export default deleteProperty

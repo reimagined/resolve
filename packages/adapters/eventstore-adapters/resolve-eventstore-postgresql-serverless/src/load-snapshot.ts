@@ -4,7 +4,7 @@ import { AdapterPool } from './types'
 const loadSnapshot = async (
   pool: AdapterPool,
   snapshotKey: string
-): Promise<any> => {
+): Promise<string | null> => {
   const {
     databaseName,
     snapshotsTableName,

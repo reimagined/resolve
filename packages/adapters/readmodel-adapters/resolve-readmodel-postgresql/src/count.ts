@@ -2,7 +2,7 @@ import type { CurrentStoreApi } from './types'
 
 const count: CurrentStoreApi['count'] = async (
   {
-    runQuery,
+    inlineLedgerRunQuery,
     escapeId,
     escapeStr,
     tablePrefix,
@@ -24,7 +24,7 @@ const count: CurrentStoreApi['count'] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const rows = (await runQuery(
+  const rows = (await inlineLedgerRunQuery(
     `SELECT Count(*) AS ${escapeId('Count')}
     FROM ${escapeId(schemaName)}.${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr};`

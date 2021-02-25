@@ -12,14 +12,15 @@ const pause: ExternalMethods['pause'] = async (pool, readModelName) => {
 
   const databaseNameAsId = escapeId(schemaName)
   const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
+  try {
+    pool.activePassthrough = true
+    while (true) {
+      try {
+        await inlineLedgerForceStop(pool, readModelName)
 
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
-
-      await inlineLedgerExecuteStatement(
-        pool,
-        `
+        await inlineLedgerExecuteStatement(
+          pool,
+          `
         WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
@@ -30,14 +31,17 @@ const pause: ExternalMethods['pause'] = async (pool, readModelName) => {
         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `
-      )
+        )
 
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
+  } finally {
+    pool.activePassthrough = false
   }
 }
 

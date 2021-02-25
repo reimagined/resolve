@@ -25,7 +25,7 @@ const getReadModelInterop = (
   runtime: ReadModelRuntime
 ): ReadModelInterop => {
   const { connectorName, name, resolvers, projection } = readModel
-  const { monitoring } = runtime
+  const { monitoring, secretsManager } = runtime
 
   const resolverInvokerMap = Object.keys(resolvers).reduce<
     ReadModelResolvers<any>
@@ -58,7 +58,7 @@ const getReadModelInterop = (
 
     log.debug(`invoker found`)
 
-    return async (connection: any, secretsManager: SecretsManager | null) => {
+    return async (connection: any) => {
       const subSegment = getPerformanceTracerSubsegment(
         monitoring,
         'resolver',

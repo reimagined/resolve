@@ -9,6 +9,8 @@ import {
   FULL_REGULAR_CONNECTOR,
   EMPTY_CONNECTOR,
   INLINE_LEDGER_CONNECTOR,
+  OMIT_BATCH,
+  STOP_BATCH,
 } from './common/query'
 import {
   default as createCommand,
@@ -32,4 +34,6 @@ export {
   CommandExecutor,
   detectConnectorFeatures,
   connectorModes,
+  OMIT_BATCH,
+  STOP_BATCH,
 }
