@@ -21,61 +21,74 @@ const inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod = Object.
       coercer,
       sharedTransactionId,
     } = pool
-    try {
-      const transactionScope =
-        transactionId != null
-          ? transactionId.constructor === String
-            ? { transactionId }
-            : transactionId === SHARED_TRANSACTION_ID
-            ? sharedTransactionId != null
-              ? { transactionId: sharedTransactionId }
-              : {}
-            : (() => {
-                throw new Error('Invalid transactionId')
-              })()
-          : {}
+    for (;;) {
+      try {
+        const transactionScope =
+          transactionId != null
+            ? transactionId.constructor === String
+              ? { transactionId }
+              : transactionId === SHARED_TRANSACTION_ID
+              ? sharedTransactionId != null
+                ? { transactionId: sharedTransactionId }
+                : {}
+              : (() => {
+                  throw new Error('Invalid transactionId')
+                })()
+            : {}
 
-      const result = await rdsDataService.executeStatement({
-        resourceArn: dbClusterOrInstanceArn,
-        secretArn: awsSecretStoreArn,
-        database: 'postgres',
-        continueAfterTimeout: false,
-        includeResultMetadata: true,
-        ...transactionScope,
-        sql,
-      })
+        const result = await rdsDataService.executeStatement({
+          resourceArn: dbClusterOrInstanceArn,
+          secretArn: awsSecretStoreArn,
+          database: 'postgres',
+          continueAfterTimeout: false,
+          includeResultMetadata: true,
+          ...transactionScope,
+          sql,
+        })
 
-      const { columnMetadata, records } = result
+        const { columnMetadata, records } = result
 
-      if (!Array.isArray(records) || columnMetadata == null) {
-        return []
-      }
+        if (!Array.isArray(records) || columnMetadata == null) {
+          return []
+        }
 
-      const rows: Array<object> = []
-      for (const record of records) {
-        const row: Record<string, JsonLike> = {}
-        for (let i = 0; i < columnMetadata.length; i++) {
-          const columnName = columnMetadata[i].name
-          if (columnName != null) {
-            row[columnName] = coercer(record[i])
+        const rows: Array<object> = []
+        for (const record of records) {
+          const row: Record<string, JsonLike> = {}
+          for (let i = 0; i < columnMetadata.length; i++) {
+            const columnName = columnMetadata[i].name
+            if (columnName != null) {
+              row[columnName] = coercer(record[i])
+            }
+          }
+          rows.push(row)
+        }
+
+        return rows
+      } catch (error) {
+        if (pool.activePassthrough) {
+          if (
+            PassthroughError.isPassthroughError(
+              error,
+              !!passthroughRuntimeErrors
+            )
+          ) {
+            throw new PassthroughError(
+              transactionId != null && transactionId.constructor === String
+                ? transactionId
+                : null
+            )
+          }
+
+          throw error
+        } else {
+          if (PassthroughError.isPassthroughError(error, false)) {
+            await new Promise((resolve) => setTimeout(resolve, 100))
+          } else {
+            throw error
           }
         }
-        rows.push(row)
       }
-
-      return rows
-    } catch (error) {
-      if (
-        PassthroughError.isPassthroughError(error, !!passthroughRuntimeErrors)
-      ) {
-        throw new PassthroughError(
-          transactionId != null && transactionId.constructor === String
-            ? transactionId
-            : null
-        )
-      }
-
-      throw error
     }
   }) as ExtractFunction<InlineLedgerExecuteStatementMethod>,
   {

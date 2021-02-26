@@ -45,18 +45,29 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     passthroughRuntimeErrors = false
   ) => {
     let result = null
-    try {
-      result = await connection.query(sql)
-    } catch (error) {
-      if (
-        imports.PassthroughError.isPassthroughError(
-          error,
-          !!passthroughRuntimeErrors
-        )
-      ) {
-        throw new imports.PassthroughError()
-      } else {
-        throw error
+    for (;;) {
+      try {
+        result = await connection.query(sql)
+        break
+      } catch (error) {
+        if (pool.activePassthrough) {
+          if (
+            imports.PassthroughError.isPassthroughError(
+              error,
+              !!passthroughRuntimeErrors
+            )
+          ) {
+            throw new imports.PassthroughError()
+          } else {
+            throw error
+          }
+        } else {
+          if (imports.PassthroughError.isPassthroughError(error, false)) {
+            await new Promise((resolve) => setTimeout(resolve, 100))
+          } else {
+            throw error
+          }
+        }
       }
     }
     let rows = null
@@ -77,6 +88,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     makeNestedPath,
     inlineLedgerRunQuery,
     connection,
+    activePassthrough: false,
     ...imports,
   })
 }

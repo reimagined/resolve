@@ -11,11 +11,12 @@ const resume: ExternalMethods['resume'] = async (pool, readModelName, next) => {
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
-
-  while (true) {
-    try {
-      await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+  try {
+    pool.activePassthrough = true
+    while (true) {
+      try {
+        await inlineLedgerRunQuery(
+          `BEGIN IMMEDIATE;
         
          UPDATE ${ledgerTableNameAsId}
          SET "IsPaused" = 0
@@ -23,27 +24,30 @@ const resume: ExternalMethods['resume'] = async (pool, readModelName, next) => {
 
          COMMIT;
       `,
-        true
-      )
-      break
-    } catch (error) {
-      if (!(error instanceof PassthroughError)) {
-        throw error
-      }
-
-      try {
-        await inlineLedgerRunQuery(`ROLLBACK`, true)
-      } catch (err) {
-        if (!(err instanceof PassthroughError)) {
-          throw err
+          true
+        )
+        break
+      } catch (error) {
+        if (!(error instanceof PassthroughError)) {
+          throw error
         }
+
+        try {
+          await inlineLedgerRunQuery(`ROLLBACK`, true)
+        } catch (err) {
+          if (!(err instanceof PassthroughError)) {
+            throw err
+          }
+        }
+
+        await fullJitter(0)
       }
-
-      await fullJitter(0)
     }
-  }
 
-  await next()
+    await next()
+  } finally {
+    pool.activePassthrough = false
+  }
 }
 
 export default resume

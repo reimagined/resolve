@@ -108,6 +108,7 @@ export type AdapterPool = CommonAdapterPool & {
   databaseFile: string
   makeNestedPath: MakeNestedPathMethod
   connection: MySQLPromiseLib.Connection
+  activePassthrough: boolean
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
       AdapterPool

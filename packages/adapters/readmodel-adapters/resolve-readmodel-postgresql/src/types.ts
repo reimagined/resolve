@@ -125,6 +125,7 @@ export type AdapterPool = CommonAdapterPool & {
   tablePrefix: string
   schemaName: string
   makeNestedPath: MakeNestedPathMethod
+  activePassthrough: boolean
   connection: InstanceType<LibDependencies['Postgres']>
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
