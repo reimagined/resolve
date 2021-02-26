@@ -12,10 +12,11 @@ const resetDomainHandler = (options) => async (req, res) => {
     readModels,
     sagas,
     domainInterop: { sagaDomain },
+    applicationName
   } = req.resolve
 
   try {
-    const { dropEventStore, dropReadModels, dropSagas } = options
+    const { dropEventStore, dropEventBus, dropReadModels, dropSagas } = options
 
     if (dropEventStore) {
       await invokeFilterErrorTypes(
@@ -51,6 +52,16 @@ const resetDomainHandler = (options) => async (req, res) => {
         } catch (error) {
           dropReadModelsSagasErrors.push(error)
         }
+      }
+    }
+
+    if(dropEventBus) {
+      const eventSubscribers = await eventstoreAdapter.getEventSubscribers({ applicationName })
+      for(const { eventSubscriber } of eventSubscribers) {
+        await eventstoreAdapter.removeEventSubscriber({ 
+          applicationName,
+          eventSubscriber
+        })
       }
     }
 

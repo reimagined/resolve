@@ -62,7 +62,7 @@ const initResolve = async (resolve) => {
     secretsManager,
     eventstore: eventstoreAdapter,
     hooks: {
-      preSaveEvent: async (aggregate, command, event) => {
+      postSaveEvent: async (aggregate, command, event) => {
         await onCommandExecuted(event, command)
         return false
       },
