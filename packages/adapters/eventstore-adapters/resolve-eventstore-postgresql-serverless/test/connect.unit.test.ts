@@ -51,6 +51,16 @@ beforeEach(() => {
   }
 })
 
+test('connect should throw on wrong parameters', async () => {
+  await expect(
+    connect(pool, connectionDependencies, ({
+      databaseName: 42,
+      dbClusterOrInstanceArn: 'AAA',
+      awsSecretStoreArn: 'BBB',
+    } as any) as PostgresqlAdapterConfig)
+  ).rejects.toThrow()
+})
+
 test('RDS client configured', async () => {
   await connect(pool, connectionDependencies, config)
 

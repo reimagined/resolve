@@ -49,7 +49,10 @@ describe('eventstore adapter events', () => {
   })
 
   test('should load 0 events after initialization', async () => {
-    const { events } = await adapter.loadEvents({ limit: countEvents })
+    const { events } = await adapter.loadEvents({
+      limit: countEvents,
+      cursor: null,
+    })
     expect(events).toHaveLength(0)
   })
 
@@ -61,7 +64,10 @@ describe('eventstore adapter events', () => {
   })
 
   test('should load all requested events', async () => {
-    const { events } = await adapter.loadEvents({ limit: countEvents + 1 })
+    const { events } = await adapter.loadEvents({
+      limit: countEvents + 1,
+      cursor: null,
+    })
     expect(events).toHaveLength(countEvents)
   })
 
@@ -69,6 +75,7 @@ describe('eventstore adapter events', () => {
     const { events } = await adapter.loadEvents({
       limit: countEvents,
       eventTypes: ['EVENT'],
+      cursor: null,
     })
     expect(events).toHaveLength(countEvents)
   })
@@ -77,6 +84,7 @@ describe('eventstore adapter events', () => {
     const { events } = await adapter.loadEvents({
       limit: countEvents,
       eventTypes: ['UNKNOWN'],
+      cursor: null,
     })
     expect(events).toHaveLength(0)
   })
@@ -85,6 +93,7 @@ describe('eventstore adapter events', () => {
     const { events } = await adapter.loadEvents({
       limit: countEvents,
       aggregateIds: ['aggregateId'],
+      cursor: null,
     })
     expect(events).toHaveLength(countEvents)
   })
@@ -93,6 +102,7 @@ describe('eventstore adapter events', () => {
     const { events } = await adapter.loadEvents({
       limit: countEvents,
       aggregateIds: ['unknownId'],
+      cursor: null,
     })
     expect(events).toHaveLength(0)
   })
@@ -101,6 +111,7 @@ describe('eventstore adapter events', () => {
     const requestedCount = countEvents / 2
     const { events, cursor } = await adapter.loadEvents({
       limit: requestedCount,
+      cursor: null,
     })
     expect(events).toHaveLength(requestedCount)
 
@@ -163,6 +174,7 @@ describe('eventstore adapter events filtering', () => {
     const { events } = await adapter.loadEvents({
       limit: countEvents,
       eventTypes: ['EVENT_1', 'EVENT_3'],
+      cursor: null,
     })
     expect(events).toHaveLength(countEvents / 2)
     for (let eventIndex = 0; eventIndex < events.length; ++eventIndex) {
@@ -180,6 +192,7 @@ describe('eventstore adapter events filtering', () => {
     const { events } = await adapter.loadEvents({
       limit: countEvents,
       aggregateIds: ['aggregateId_2', 'aggregateId_4'],
+      cursor: null,
     })
     expect(events).toHaveLength((countEvents / aggregateIdCount) * 2)
     for (let eventIndex = 0; eventIndex < events.length; ++eventIndex) {
@@ -201,6 +214,7 @@ describe('eventstore adapter events filtering', () => {
       limit: countEvents,
       aggregateIds: ['aggregateId_3'],
       eventTypes: ['EVENT_2'],
+      cursor: null,
     })
     expect(events).toHaveLength(
       countEvents / (aggregateIdCount * eventTypesCount)
@@ -217,6 +231,7 @@ describe('eventstore adapter events filtering', () => {
       limit: countEvents,
       aggregateIds: ['aggregateId_1', 'aggregateId_5'],
       eventTypes: ['EVENT_1', 'EVENT_4'],
+      cursor: null,
     })
     expect(events).toHaveLength(
       (countEvents / (aggregateIdCount * eventTypesCount)) * 4

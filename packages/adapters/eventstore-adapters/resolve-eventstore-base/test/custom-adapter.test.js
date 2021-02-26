@@ -48,20 +48,6 @@ describe('createCustomAdapter', () => {
         JSON.stringify(args, null, 2)
       )
     }
-    const importStream = async (pool, ...args) => {
-      result.push(
-        'import',
-        JSON.stringify(pool, null, 2),
-        JSON.stringify(args, null, 2)
-      )
-    }
-    const exportStream = async (pool, ...args) => {
-      result.push(
-        'export',
-        JSON.stringify(pool, null, 2),
-        JSON.stringify(args, null, 2)
-      )
-    }
 
     const createCustomAdapter = createAdapter.bind(null, {
       connect,
@@ -70,8 +56,6 @@ describe('createCustomAdapter', () => {
       saveEvent,
       drop,
       dispose,
-      import: importStream,
-      export: exportStream,
     })
 
     const customAdapter = createCustomAdapter({
@@ -82,6 +66,7 @@ describe('createCustomAdapter', () => {
     await customAdapter.loadEvents({
       aggregateIds: ['id1'],
       limit: 200,
+      cursor: null,
     })
   })
 })
