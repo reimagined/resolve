@@ -19,10 +19,7 @@ const devConfig = {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,
-  },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker.db',
-  },
+  },ы
 }
 
 export default devConfig

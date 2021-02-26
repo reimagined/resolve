@@ -18,9 +18,6 @@ const testFunctionalConfig = {
       databaseFile: 'data/event-store-test-functional.db',
     },
   },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker-test-functional.db',
-  },
 }
 
 module.exports = testFunctionalConfig

@@ -32,6 +32,8 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       upstream: !!process.env.SKIP_COMMANDS,
     }
 
+    resolve.eventSubscriberDestination = 'LOCAL' // TODO
+
     await initPerformanceTracer(resolve)
     await initBroker(resolve)
     await initExpress(resolve)

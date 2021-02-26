@@ -20,9 +20,6 @@ const testFunctionalConfig = {
       snapshotBucketSize: 100,
     },
   },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker-test-functional.db',
-  },
 }
 
 export default testFunctionalConfig

@@ -21,9 +21,6 @@ const devConfig = {
       snapshotBucketSize: 100,
     },
   },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker.db',
-  },
 }
 
 export default devConfig

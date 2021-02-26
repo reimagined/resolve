@@ -38,14 +38,6 @@ const resolveConfig = {
   },
   readModelConnectors: {},
   schedulers: {},
-  eventBroker: {
-    launchBroker: true,
-    publisherAddress: 'http://127.0.0.1:3500',
-    consumerAddress: 'http://127.0.0.1:3501',
-    databaseFile: 'data/local-bus-broker.db',
-    batchSize: 100,
-    upstream: true,
-  },
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,

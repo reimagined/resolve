@@ -18,9 +18,6 @@ const testFunctionalConfig = {
     name: 'jwt',
     maxAge: 31536000000,
   },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker-test-functional.db',
-  },
 }
 
 export default testFunctionalConfig

@@ -155,14 +155,6 @@ const getWebpackCommonConfigs = ({
           __dirname,
           `./alias/$resolve.${targetMode}Entry.js`
         ),
-        ...(targetMode === 'local'
-          ? {
-              'common/local-entry/local-bus-broker.js': path.resolve(
-                __dirname,
-                './alias/$resolve.localBusBroker.js'
-              ),
-            }
-          : {}),
       },
       output: {
         ...baseCommonConfig.output,

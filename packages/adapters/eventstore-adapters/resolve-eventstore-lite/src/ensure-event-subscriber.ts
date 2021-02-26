@@ -62,7 +62,7 @@ const ensureEventSubscriber = async (
       ${
         !updateOnly
           ? `INSERT OR IGNORE INTO ${subscribersTableNameAsId}(
-        "applicationName"
+        "applicationName",
         "eventSubscriber",
         "destination",
         "status"

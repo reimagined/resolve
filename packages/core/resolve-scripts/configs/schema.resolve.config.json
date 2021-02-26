@@ -251,30 +251,7 @@
     },
     "eventBroker": {
       "type": "object",
-      "properties": {
-        "launchBroker": {
-          "type": "boolean"
-        },
-        "publisherAddress": {
-          "type": "string"
-        },
-        "consumerAddress": {
-          "type": "string"
-        },
-        "databaseFile": {
-          "type": "string"
-        },
-        "upstream": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "launchBroker",
-        "publisherAddress",
-        "consumerAddress",
-        "databaseFile"
-      ],
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "customConstants": {
       "type": "object",

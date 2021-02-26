@@ -28,9 +28,6 @@ const prodConfig = {
       },
     },
   },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker.db',
-  },
 }
 
 export default prodConfig

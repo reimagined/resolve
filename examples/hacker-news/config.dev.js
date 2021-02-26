@@ -48,9 +48,6 @@ const devConfig = {
     name: 'jwt',
     maxAge: 31536000000,
   },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker.db',
-  },
 }
 
 export default devConfig
