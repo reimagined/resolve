@@ -28,7 +28,7 @@ jobs:
           registry: github
           token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
           version: auto
-          build: ${{ format('{0}{1}{2}{3}{4}{5}', github.sha[0], github.sha[1], github.sha[2], github.sha[3], github.sha[4], github.sha[5] }}
+          build: ${{ format('{0}{1}{2}{3}{4}{5}', github.sha[0], github.sha[1], github.sha[2], github.sha[3], github.sha[4], github.sha[5]) }}
           tag: latest-dev
           unpublish: false
 
