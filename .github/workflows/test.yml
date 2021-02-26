@@ -30,7 +30,7 @@ jobs:
           version: auto
           build: ${{ github.sha }}
           tag: latest-dev
-          unpublish: true
+          unpublish: false
 
       - name: Checkout resolve-cloud
         uses: actions/checkout@v2
@@ -72,9 +72,9 @@ jobs:
           cli_sources: resolve-cloud/cli/resolve-cloud
           framework_version: ${{ steps.publish.outputs.version }}
           randomize_name: true
-          package_registry: ${{ steps.publish.outputs.registry_url}}
+          package_registry: ${{ steps.publish.outputs.registry_url }}
           package_registry_token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
-          package_registry_scopes: '@reimagined'
+          package_registry_scopes: @reimagined
           deploy_args: --verbosity=debug
 
       - name: API tests
