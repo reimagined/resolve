@@ -229,9 +229,9 @@ In the resolver's code, you can use arbitrary logic to check a user's access per
 
 The resolver function should return a built View Model data object and a meta object that contains the following data:
 
-- A cursor returned by the `buildViewModel` function;
-- A list of event types;
-- A list of aggregate IDs.
+- The data cursor used to traverse the events included into the query result set. The initial cursor is returned by the `buildViewModel` function;
+- A list of event types available to the client;
+- A list of aggregate IDs available to the client.
 
 The code sample below demonstrates a View Model resolver implementation:
 
