@@ -203,18 +203,6 @@ eventstoreAdapter: {
 }
 ```
 
-### eventBroker
-
-Specifies settings of the application's event broker. Use these settings to set up a reSolve application in a distributed environment. The configuration object contains the following fields:
-
-| Field            | Description                                                                                                                                            |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| launchBroker     | A boolean value that specifies whether to launch an event broker in the current instance.                                                              |
-| publisherAddress | The URL of the event publisher instance.                                                                                                               |
-| consumerAddress  | The URL of the event consumer instance.                                                                                                                |
-| databaseFile     | The path to a database file used by the event broker.                                                                                                  |
-| upstream         | Specifies whether or not the current instance can produce events. If set to `false`, the instance can only consume events produced by other instances. |
-
 ### jwtCookie
 
 Specifies global settings for the application's JWT cookies. The configuration object contains the following fields:

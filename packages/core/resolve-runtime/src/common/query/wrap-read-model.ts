@@ -414,27 +414,26 @@ const customReadModelMethods = {
       }
     }
   ) => {
-    const { status } = (
+    const entry = (
       await pool.eventstoreAdapter.getEventSubscribers({
         applicationName: pool.applicationName,
         eventSubscriber: readModelName,
       })
-    )[0] ?? { status: null }
-    if (status == null) {
+    )[0]
+    if(entry == null) {
       return
     }
 
-    try {
-      await pool.eventstoreAdapter.ensureEventSubscriber({
-        applicationName: pool.applicationName,
-        eventSubscriber: readModelName,
-        status: {
-          ...status,
-          status: 'deliver',
-        },
-        updateOnly: true,
-      })
-    } catch (err) {}
+    await pool.eventstoreAdapter.ensureEventSubscriber({
+      applicationName: pool.applicationName,
+      eventSubscriber: readModelName,
+      status: {
+        status: 'skip',
+        ...entry.status,
+        ...parameters.subscriptionOptions,
+      },
+      updateOnly: true,
+    })
   },
 
   resubscribe: async (
@@ -449,21 +448,17 @@ const customReadModelMethods = {
       }
     }
   ) => {
-    const { status } = (
-      await pool.eventstoreAdapter.getEventSubscribers({
-        applicationName: pool.applicationName,
-        eventSubscriber: readModelName,
-      })
-    )[0] ?? { status: null }
-
     await pool.eventstoreAdapter.ensureEventSubscriber({
       applicationName: pool.applicationName,
       eventSubscriber: readModelName,
       status: {
-        ...status,
+        ...parameters.subscriptionOptions,
+        status: 'skip',
       },
       updateOnly: true,
     })
+
+    await pool.connector.drop(connection, readModelName)
   },
 
   unsubscribe: async (
@@ -473,34 +468,14 @@ const customReadModelMethods = {
     readModelName: string,
     parameters: {}
   ) => {
-    const { status } = (
-      await pool.eventstoreAdapter.getEventSubscribers({
-        applicationName: pool.applicationName,
-        eventSubscriber: readModelName,
-      })
-    )[0] ?? { status: null }
-    if (status == null) {
-      return
-    }
+    await pool.eventstoreAdapter.ensureEventSubscriber({
+      applicationName: pool.applicationName,
+      eventSubscriber: readModelName,
+      status: null,
+      updateOnly: true,
+    })
 
-    await customReadModelMethods.reset(
-      pool,
-      interop,
-      connection,
-      readModelName,
-      parameters
-    )
-
-    try {
-      await pool.eventstoreAdapter.ensureEventSubscriber({
-        applicationName: pool.applicationName,
-        eventSubscriber: readModelName,
-        status: {
-          eventTypes: status.eventTypes,
-        },
-        updateOnly: true,
-      })
-    } catch (err) {}
+    await pool.connector.drop(connection, readModelName)
   },
 
   deleteProperty: async (

@@ -10,6 +10,7 @@ const getConfig = async (resolveConfig, options) => {
     throw new Error('Options field "directory" must be string')
   }
 
+  process.env.SKIP_COMMANDS = 'true'
   const config = merge(resolveConfig, {
     apiHandlers: [
       {
@@ -21,9 +22,6 @@ const getConfig = async (resolveConfig, options) => {
         },
       },
     ],
-    eventBroker: {
-      upstream: false,
-    },
   })
   Object.assign(config, {
     readModelConnectors: {},

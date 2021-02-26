@@ -24,6 +24,7 @@ const getEventSubscribers = async (
     databaseName,
     executeStatement,
     escapeId,
+    escape
   } = pool
   const databaseNameAsId = escapeId(databaseName)
   const subscribersTableNameAsId = escapeId(subscribersTableName)

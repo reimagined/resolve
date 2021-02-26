@@ -34,9 +34,6 @@ const getConfig = async (resolveConfig, options) => {
         },
       },
     ],
-    eventBroker: {
-      upstream: false,
-    },
   })
 
   return config

@@ -160,7 +160,6 @@ void (async () => {
         })
 
         const importConfig = merge(defaultResolveConfig, devConfig, {
-          eventBroker: { launchBroker: true },
           apiHandlers: [
             {
               method: 'POST',
