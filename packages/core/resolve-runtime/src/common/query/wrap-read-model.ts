@@ -373,7 +373,7 @@ const customReadModelMethods = {
     await updateCustomReadModel(
       pool,
       readModelName,
-      { status: 'resume' },
+      { status: 'deliver' },
       async (status: any) => {
         const isSuccess =
           status.status === 'deliver' || status.status === 'skip'
