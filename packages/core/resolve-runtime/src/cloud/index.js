@@ -39,6 +39,7 @@ const index = async ({ assemblies, constants, domain }) => {
       assemblies,
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
+      upstream: true,
     }
 
     log.debug('preparing performance tracer')

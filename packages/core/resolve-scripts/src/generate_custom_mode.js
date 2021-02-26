@@ -127,9 +127,7 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
         }
       }
 
-      await Promise.all([
-        new Promise((resolve) => server.stop(resolve)),
-      ])
+      await Promise.all([new Promise((resolve) => server.stop(resolve))])
 
       log.debug('Server was stopped')
 

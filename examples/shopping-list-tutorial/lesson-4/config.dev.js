@@ -19,7 +19,7 @@ const devConfig = {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,
-  },ы
+  },
 }
 
 export default devConfig

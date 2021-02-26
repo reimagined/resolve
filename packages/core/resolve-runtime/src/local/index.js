@@ -29,7 +29,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       assemblies,
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
-      upstream: !!process.env.SKIP_COMMANDS,
+      upstream: !process.env.SKIP_COMMANDS,
     }
 
     resolve.eventSubscriberDestination = 'LOCAL' // TODO

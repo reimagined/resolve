@@ -357,7 +357,7 @@ const customReadModelMethods = {
           updateOnly: true,
         })
 
-        await connection.drop()
+        await pool.connector.drop(connection, readModelName)
 
         return true
       }
@@ -565,10 +565,11 @@ const doOperation = async (
     async (connection: any): Promise<any> => {
       const originalArgs = [connection, readModelName, parameters]
 
-      const args =
-        prepareArguments != null
+      const args = useInlineMethod
+        ? prepareArguments != null
           ? prepareArguments(pool, interop, ...originalArgs)
           : originalArgs
+        : [pool, interop, ...originalArgs]
 
       try {
         if (useInlineMethod) {

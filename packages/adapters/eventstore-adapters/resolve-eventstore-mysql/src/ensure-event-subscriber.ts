@@ -60,20 +60,20 @@ const ensureEventSubscriber = async (
         ${escape(eventSubscriber)},
         ${
           !updateOnly
-            ? `(CAST(${escape(JSON.parse(destination))} AS JSON)), `
+            ? `(CAST(${escape(JSON.stringify(destination))} AS JSON)), `
             : ''
         }
-        (CAST(${escape(JSON.parse(status))} AS JSON))
+        (CAST(${escape(JSON.stringify(status))} AS JSON))
       )
       ON DUPLICATE KEY UPDATE 
       ${
         !updateOnly
           ? `\`destination\` = (CAST(${escape(
-              JSON.parse(destination)
+              JSON.stringify(destination)
             )} AS JSON)), `
           : ''
       }
-      \`status\` = (CAST(${escape(JSON.parse(status))} AS JSON));
+      \`status\` = (CAST(${escape(JSON.stringify(status))} AS JSON));
 
       COMMIT;
     `)

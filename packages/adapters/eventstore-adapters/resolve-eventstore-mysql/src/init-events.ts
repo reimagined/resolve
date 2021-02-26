@@ -75,7 +75,7 @@ const initEvents = async (pool: AdapterPool): Promise<any[]> => {
     statements,
     log,
     (error) => {
-      if (isAlreadyExistsError(error.message)) {
+      if (isAlreadyExistsError(error)) {
         return new EventstoreResourceAlreadyExistError(
           `duplicate initialization of the mysql adapter with same events database "${database}" and table "${eventsTableName}" is not allowed`
         )
