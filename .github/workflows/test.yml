@@ -69,6 +69,7 @@ jobs:
           cloud_api_url: ${{ steps.cloud.outputs.api_url}}
           cloud_user: ${{ secrets.RESOLVE_CLOUD_USER }}
           cloud_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
+          cli_sources: resolve-cloud/cli/resolve-cloud
           framework_version: ${{ steps.publish.outputs.version }}
           randomize_name: true
           package_registry: ${{ steps.publish.outputs.registry_url}}
