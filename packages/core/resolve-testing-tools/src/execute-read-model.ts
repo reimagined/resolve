@@ -71,7 +71,7 @@ export const executeReadModel = async ({
         events: transformEvents(promise[symbol].events),
         get cursor() {
           throw new Error(
-            'Cursor should not be accessed from resolve-testing-tools'
+            'Cursor should not be accessed from @reimagined/testing-tools'
           )
         },
       }),

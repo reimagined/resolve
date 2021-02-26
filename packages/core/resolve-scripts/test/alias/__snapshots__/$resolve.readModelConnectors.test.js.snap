@@ -84,7 +84,7 @@ exports[`base config works correctly with options and default module 1`] = `
 "
 import '$resolve.guardOnlyServer'
 import wrapReadModelConnector from '@reimagined/runtime/lib/common/wrap-readmodel-connector'
-import factory_s_0_constructor from \\"resolve-runtime/lib/common/defaults/read-model-connector.js\\"
+import factory_s_0_constructor from \\"@reimagined/runtime/lib/common/defaults/read-model-connector.js\\"
 const constructorBindFunction =
     (
       constructorFunction,

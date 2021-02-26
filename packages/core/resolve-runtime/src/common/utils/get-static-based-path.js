@@ -3,7 +3,7 @@ import Url from 'url'
 
 import getRootBasedUrl from './get-root-based-url'
 
-const log = debugLevels('resolve:resolve-runtime:getStaticBasedPath')
+const log = debugLevels('resolve:runtime:getStaticBasedPath')
 
 const validate = {
   nonEmptyString: (value, name) => {

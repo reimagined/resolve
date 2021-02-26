@@ -7,7 +7,7 @@ import {
 } from 'resolve-cloud-common/postgres'
 import debugLevels from '@reimagined/debug-levels'
 
-const log = debugLevels('resolve:resolve-runtime:websocket-event-handler')
+const log = debugLevels('resolve:runtime:websocket-event-handler')
 
 const region = process.env.AWS_REGION
 const websocketLambdaArn = process.env.RESOLVE_WEBSOCKET_LAMBDA_ARN

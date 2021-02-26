@@ -6,7 +6,7 @@ import fileType from 'file-type'
 
 import extractRequestBody from '../utils/extract-request-body'
 
-const log = debugLevels('resolve:resolve-runtime:uploader-handler')
+const log = debugLevels('resolve:runtime:uploader-handler')
 
 const uploaderHandler = async (req, res) => {
   try {

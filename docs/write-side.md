@@ -190,7 +190,7 @@ You can specify the storage adapter in the **storageAdapter** config section:
 
 ```js
 storageAdapter: {
-  module: 'resolve-eventstore-lite',
+  module: '@reimagined/eventstore-lite',
   options: {
     databaseFile: '../data/event-store.db'
   }
@@ -199,8 +199,8 @@ storageAdapter: {
 
 Adapters for the following storage types are available out of the box:
 
-- [File or memory](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-eventstore-lite)
-- [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-eventstore-mysql)
+- [File or memory](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/@reimagined/eventstore-lite)
+- [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/@reimagined/eventstore-mysql)
 
 You can also add your own storage adapter to store events.
 Refer to the [Adapters](advanced-techniques.md#adapters) section of the reSolve documentation for more information about adapters.

@@ -2,7 +2,7 @@ import debugLevels from '@reimagined/debug-levels'
 
 import bootstrapOne from './bootstrap-one'
 
-const log = debugLevels('resolve:resolve-runtime:bootstrap')
+const log = debugLevels('resolve:runtime:bootstrap')
 
 const bootstrap = async (resolve, upstream) => {
   log.debug('bootstrap started')

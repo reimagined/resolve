@@ -8,12 +8,12 @@ The adapter provides a query API for projection and resolvers. This API is simil
 
 * `...connectionSettings` - see [Connection Settings](https://www.npmjs.com/package/mysql2#first-query) for more information.
 
-Adapter interface is provided by **resolve-readmodel-base** package.
+Adapter interface is provided by **@reimagined/readmodel-base** package.
 
 ## Usage
 
 ```js
-import createAdapter from 'resolve-readmodel-mysql'
+import createAdapter from '@reimagined/readmodel-mysql'
 
 const adapter = createAdapter({
   ...connectionSettings

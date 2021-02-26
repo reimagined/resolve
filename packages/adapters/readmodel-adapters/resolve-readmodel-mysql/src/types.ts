@@ -10,11 +10,11 @@ import type {
   SearchCondition,
   UpdateCondition,
   OmitObject,
-} from 'resolve-readmodel-base'
+} from '@reimagined/readmodel-base'
 
 import type MySQLPromiseLib from 'mysql2/promise'
 import type { escape as _EscapeableMethod } from 'mysql2'
-export * from 'resolve-readmodel-base'
+export * from '@reimagined/readmodel-base'
 
 export type EscapeableMethod = typeof _EscapeableMethod
 

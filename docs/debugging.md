@@ -3,7 +3,7 @@ id: debugging
 title: Debugging
 ---
 
-Resolve uses the [resolve-debug-levels](https://www.npmjs.com/package/resolve-debug-levels) package to log debug information. This package extends the [debug](https://www.npmjs.com/package/debug) library's functionality with the following logging levels:
+Resolve uses the [@reimagined/debug-levels](https://www.npmjs.com/package/@reimagined/debug-levels) package to log debug information. This package extends the [debug](https://www.npmjs.com/package/debug) library's functionality with the following logging levels:
 
 | Level   | Description                                            |
 | ------- | ------------------------------------------------------ |
@@ -28,13 +28,13 @@ The reSolve framework displays **log**, **error**, and **warn** level messages.
 
 ## Debug a ReSolve Application
 
-You can add the `resolve-debug-levels` package to your application's dependencies to use [resolve-debug-levels](https://www.npmjs.com/package/resolve-debug-levels) to debug your reSolve application.
+You can add the `@reimagined/debug-levels` package to your application's dependencies to use [@reimagined/debug-levels](https://www.npmjs.com/package/@reimagined/debug-levels) to debug your reSolve application.
 
 ```
-yarn add resolve-debug-levels
+yarn add @reimagined/debug-levels
 ```
 
-To create a logger, pass your module's debugging namespace to the function the `resolve-debug-levels` module exposes:
+To create a logger, pass your module's debugging namespace to the function the `@reimagined/debug-levels` module exposes:
 
 ```js
 import debugLevels from '@reimagined/debug-levels'

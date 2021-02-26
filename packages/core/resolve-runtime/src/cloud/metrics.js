@@ -100,7 +100,7 @@ const getErrorMessage = (error) => {
 }
 
 const putDataMetrics = async (dataMap, commonMap, errorMap) => {
-  const log = debugLevels('resolve:resolve-runtime:cloud-entry:putDataMetrics')
+  const log = debugLevels('resolve:runtime:cloud-entry:putDataMetrics')
   const cw = new CloudWatch()
 
   if (dataMap.DeploymentId == null) {

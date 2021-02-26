@@ -1,6 +1,6 @@
 import debugLevels from '@reimagined/debug-levels'
 
-const log = debugLevels('resolve:resolve-runtime:fail-handler')
+const log = debugLevels('resolve:runtime:fail-handler')
 
 const failHandler = async (req, res) => {
   const errorText = `Access error: ${req.method} "${req.path}" is not addressable by current executor`

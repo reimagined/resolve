@@ -45,7 +45,7 @@ const devConfig = {
   ...
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {}
     }
   },
@@ -60,7 +60,7 @@ const prodConfig = {
   ...
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-postgresql-serverless',
+      module: '@reimagined/readmodel-postgresql-serverless',
       options: {
         dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_CLUSTER_ARN'),
         awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_SECRET_ARN'),

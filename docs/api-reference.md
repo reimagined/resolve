@@ -825,7 +825,7 @@ Drops an incremental import batch.
 
 ## reSolve Scripts
 
-The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package contains service scripts used to configure, build, and run reSolve applications. The package contains the following scripts:
+The [@reimagined/scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package contains service scripts used to configure, build, and run reSolve applications. The package contains the following scripts:
 
 | Script                                | Description                                                                   |
 | ------------------------------------- | ----------------------------------------------------------------------------- |
@@ -840,7 +840,7 @@ The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages
 | [exportEventStore](#exporteventstore) | Exports events from an application's event store to a file.                   |
 | [validateConfig](#validateconfig)     | Validates a configuration object.                                             |
 
-The resolve-scripts library also exports a `defaultResolveConfig` object that contains default configuration settings. This object is merged with an application's configuration objects to receive a global configuration object:
+The @reimagined/scripts library also exports a `defaultResolveConfig` object that contains default configuration settings. This object is merged with an application's configuration objects to receive a global configuration object:
 
 ```js
 // run.js
@@ -1241,9 +1241,9 @@ The `resolveContext` object contains data used internally by reSolve client libr
 
 See the [Client Application Entry Point](frontend.md#client-application-entry-point) section of the [Frontend](frontend.md) article for more information.
 
-### resolve-redux Library
+### @reimagined/redux Library
 
-The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library includes both React Hooks and Higher-Order Components (HOCs).
+The reSolve framework includes the client **@reimagined/redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library includes both React Hooks and Higher-Order Components (HOCs).
 
 ##### React Hooks:
 
@@ -1452,9 +1452,9 @@ Fixes URLs passed to the specified props to correct the static resource folder p
 export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 ```
 
-### resolve-client Library
+### @reimagined/client Library
 
-The **resolve-client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
+The **@reimagined/client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
 
 ```js
 import { getClient } from '@reimagined/client'
@@ -1561,9 +1561,9 @@ Unsubscribes from View Model updates.
 await client.unsubscribe(subscription)
 ```
 
-### resolve-react-hooks library
+### @reimagined/react-hooks library
 
-The **resolve-react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
+The **@reimagined/react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
 
 | Hook                                    | Description                                                               |
 | --------------------------------------- | ------------------------------------------------------------------------- |
@@ -1733,11 +1733,11 @@ var commandApiPath = resolver('/api/commands')
 
 ### Request Middleware
 
-The [resolve-client](#resolve-client-library) and [resolve-react-hooks](#resolve-react-hooks-library) libraries allow you to use request middleware to extend the client's functionality. Middleware implements intermediate logic that can modify the response object or handle errors before they are passed to the callback function.
+The [@reimagined/client](#resolve-client-library) and [@reimagined/react-hooks](#resolve-react-hooks-library) libraries allow you to use request middleware to extend the client's functionality. Middleware implements intermediate logic that can modify the response object or handle errors before they are passed to the callback function.
 
 Use a command's or query's `middleware` option to specify middleware:
 
-#### resolve-client:
+#### @reimagined/client:
 
 ```js
 client.query(
@@ -1769,7 +1769,7 @@ client.query(
 })
 ```
 
-#### resolve-react-hooks:
+#### @reimagined/react-hooks:
 
 ```js
 const myQuery = useQuery(
@@ -1804,7 +1804,7 @@ Multiple middleware functions are run in the order they are specified in the opt
 
 #### Available Middlewares
 
-This section lists request middleware included into the resolve-client package. The following middleware is available:
+This section lists request middleware included into the @reimagined/client package. The following middleware is available:
 
 | Name                | Description                                               |
 | ------------------- | --------------------------------------------------------- |

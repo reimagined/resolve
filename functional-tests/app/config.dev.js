@@ -38,7 +38,7 @@ const devConfig = {
   },
   /*
     {
-      module: 'resolve-eventstore-mysql',
+      module: '@reimagined/eventstore-mysql',
       options: {
         host: 'localhost',
         port: 3306,

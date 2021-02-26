@@ -1,14 +1,14 @@
-import createSqliteAdapter from 'resolve-eventstore-lite'
+import createSqliteAdapter from '@reimagined/eventstore-lite'
 import createPostgresqlServerlessAdapter, {
   create,
   destroy,
-} from 'resolve-eventstore-postgresql-serverless'
+} from '@reimagined/eventstore-postgresql-serverless'
 import {
   Adapter,
   EventstoreFrozenError,
   EventstoreAlreadyFrozenError,
   EventstoreAlreadyUnfrozenError,
-} from 'resolve-eventstore-base'
+} from '@reimagined/eventstore-base'
 
 import {
   TEST_SERVERLESS,

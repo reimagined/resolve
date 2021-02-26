@@ -10,7 +10,7 @@ import createPubsubManager from './create-pubsub-manager'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
-const log = debugLevels('resolve:resolve-runtime:local-subscribe-adapter')
+const log = debugLevels('resolve:runtime:local-subscribe-adapter')
 
 let eventstoreAdapter = null
 

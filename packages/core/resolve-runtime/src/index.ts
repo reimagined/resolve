@@ -1,4 +1,4 @@
-// FIXME: temporary exposed only from resolve-testing-tools.
+// FIXME: temporary exposed only from @reimagined/testing-tools.
 // This file should be removed.
 import { CommandError } from '@reimagined/core'
 import {
@@ -12,8 +12,6 @@ import {
   OMIT_BATCH,
   STOP_BATCH,
 } from './common/query'
-import { CommandError } from '@reimagined/core'
-import { default as createQuery, CreateQueryOptions } from './common/query'
 import {
   default as createCommand,
   CommandExecutorBuilder,

@@ -19,7 +19,7 @@ import initUploader from './init-uploader'
 import gatherEventListeners from '../common/gather-event-listeners'
 import { putInternalError } from './metrics'
 
-const log = debugLevels('resolve:resolve-runtime:cloud-entry')
+const log = debugLevels('resolve:runtime:cloud-entry')
 
 const index = async ({ assemblies, constants, domain }) => {
   let subSegment = null

@@ -28,7 +28,7 @@ const appConfig = {
 ```js
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: ':memory:'
     }
@@ -36,14 +36,14 @@ const devConfig = {
 
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {
         databaseFile: ':memory:'
       }
     }
     /*
     default: {
-      module: 'resolve-readmodel-mysql',
+      module: '@reimagined/readmodel-mysql',
       options: {
         host: 'localhost',
         port: 3306,
@@ -192,7 +192,7 @@ const appConfig = {
 ```js
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: ':memory:'
     }
@@ -200,14 +200,14 @@ const devConfig = {
 
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {
         databaseFile: ':memory:'
       }
     }
     /*
     default: {
-      module: 'resolve-readmodel-mysql',
+      module: '@reimagined/readmodel-mysql',
       options: {
         host: 'localhost',
         port: 3306,
@@ -419,7 +419,7 @@ const appConfig = {
 ```js
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: ':memory:'
     }
@@ -547,14 +547,14 @@ const appConfig = {
 ```js
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: ':memory:'
     }
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {
         databaseFile: ':memory:'
       }
@@ -657,21 +657,21 @@ const appConfig = {
 ```js
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: ':memory:'
     }
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {
         databaseFile: ':memory:'
       }
     }
     /*
     default: {
-      module: 'resolve-readmodel-mysql',
+      module: '@reimagined/readmodel-mysql',
       options: {
         host: 'localhost',
         port: 3306,

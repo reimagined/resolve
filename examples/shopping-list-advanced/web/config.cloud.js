@@ -1,11 +1,11 @@
-const { declareRuntimeEnv } = require('resolve-scripts')
+const { declareRuntimeEnv } = require('@reimagined/scripts')
 
 const cloudConfig = {
   target: 'cloud',
   mode: 'production',
   staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
   eventstoreAdapter: {
-    module: 'resolve-eventstore-postgresql-serverless',
+    module: '@reimagined/eventstore-postgresql-serverless',
     options: {
       awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
       dbClusterOrInstanceArn: declareRuntimeEnv(
@@ -20,7 +20,7 @@ const cloudConfig = {
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-postgresql-serverless',
+      module: '@reimagined/readmodel-postgresql-serverless',
       options: {
         dbClusterOrInstanceArn: declareRuntimeEnv(
           'RESOLVE_READMODEL_CLUSTER_ARN'

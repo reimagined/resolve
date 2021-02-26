@@ -1,5 +1,5 @@
 # **@reimagined/module-comments**
-[![npm version](https://badge.fury.io/js/resolve-module-comments.svg)](https://badge.fury.io/js/resolve-module-comments)
+[![npm version](https://badge.fury.io/js/@reimagined/module-comments.svg)](https://badge.fury.io/js/@reimagined/module-comments)
 
 ## Usage
 
@@ -24,7 +24,7 @@ merge(
     aggregateName: 'CustomCommentsAggregateName', // default = 'Comments'
     readModelName: 'CustomCommentsReadModelName', // default = 'Comments'
     readModelConnector: {
-      module: 'CustomreadModelConnector', // default = resolve-readmodel-lite'
+      module: 'CustomreadModelConnector', // default = @reimagined/readmodel-lite'
       options: {}                       // default = {}
     },
     commentsTableName: 'CustomCommentsTableName', // default = 'Comments'
@@ -45,7 +45,7 @@ merge(
       allCommentsPaginate: 'customAllCommentsPaginate',   // default = 'allCommentsPaginate'
     },
     maxNestedLevel: 2,                                            // default = undefined
-    verifyCommand: path.join(__dirname, 'customVerifyCommand.js') // default = 'resolve-module-comments/lib/aggregates/verify-command.js'
+    verifyCommand: path.join(__dirname, 'customVerifyCommand.js') // default = '@reimagined/module-comments/lib/aggregates/verify-command.js'
   })
 )
 ```
@@ -61,20 +61,20 @@ const verifyCommand = async (state, command, jwt) => {
 export default verifyCommand
 ```
 
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-module-comments-readme?pixel)
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-@reimagined/module-comments-readme?pixel)
 
 #### Commands 
 ```js
 createComment(aggregateId, {
   authorId,
-  commentId
+  commentId,
   parentCommentId,
   content
 })
 
 updateComment(aggregateId, {
   authorId,
-  commentId
+  commentId,
   content
 })
 

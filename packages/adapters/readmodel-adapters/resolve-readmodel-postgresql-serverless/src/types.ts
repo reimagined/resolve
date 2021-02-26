@@ -16,11 +16,11 @@ import type {
   JsonPrimitive,
   FunctionLike,
   UnPromise,
-} from 'resolve-readmodel-base'
+} from '@reimagined/readmodel-base'
 
 import type RDSDataService from 'aws-sdk/clients/rdsdataservice'
 import type crypto from 'crypto'
-export * from 'resolve-readmodel-base'
+export * from '@reimagined/readmodel-base'
 
 export type LibDependencies = {
   RDSDataService: typeof RDSDataService

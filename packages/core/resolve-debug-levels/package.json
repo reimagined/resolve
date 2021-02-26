@@ -8,7 +8,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-debug-levels#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@reimagined/debug-levels#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },

@@ -1,5 +1,5 @@
-# **resolve-readmodel-postgresql-serverless**
-[![npm version](https://badge.fury.io/js/resolve-readmodel-postgresql-serverless.svg)](https://badge.fury.io/js/resolve-readmodel-postgresql-serverless)
+# **@reimagined/readmodel-postgresql-serverless**
+[![npm version](https://badge.fury.io/js/@reimagined/readmodel-postgresql-serverless.svg)](https://badge.fury.io/js/@reimagined/readmodel-postgresql-serverless)
  
 A **Read Model Adapter** for AWS Aurora [PostgreSQL](https://www.postgresql.org) serverless database via RDS Data API.
 The adapter provides a query API for projection and resolvers. This API is similar to the other reSolve adapters API, which means you can change a **Read Model Adapter** in the configuration file without changing the code.
@@ -12,12 +12,12 @@ The adapter provides a query API for projection and resolvers. This API is simil
 * `tablePrefix` - optional table prefix for read-models server by current adapter instance.
 * `...connectionSettings` - see [RDS Data Service API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/RDSDataService.html) for more information.
 
-Adapter interface is provided by **resolve-readmodel-base** package.
+Adapter interface is provided by **@reimagined/readmodel-base** package.
 
 ## Usage
 
 ```js
-import createAdapter from 'resolve-readmodel-postgresql-serverless'
+import createAdapter from '@reimagined/readmodel-postgresql-serverless'
 
 const adapter = createAdapter({
   databaseName,

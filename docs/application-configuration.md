@@ -40,7 +40,7 @@ import {
 
 <!-- prettier-ignore-end -->
 
-Refer to the [JSON schema](https://github.com/reimagined/resolve/blob/master/packages/core/resolve-scripts/configs/schema.resolve.config.json) file to familiarize yourself with the definition of the configuration object's structure.
+Refer to the [JSON schema](https://github.com/reimagined/resolve/blob/master/packages/core/@reimagined/scripts/configs/schema.resolve.config.json) file to familiarize yourself with the definition of the configuration object's structure.
 
 ## Reference
 
@@ -160,7 +160,7 @@ To serve SSR markup to the client, you need to register the **live-require-handl
 apiHandlers: [
   {
     handler: {
-      module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+      module: '@reimagined/runtime/lib/common/handlers/live-require-handler.js',
       options: {
         modulePath: './ssr.js',
         moduleFactoryImport: false
@@ -196,7 +196,7 @@ Specifies an adapter used to connect to to the application's event store. An ada
 
 ```js
 eventstoreAdapter: {
-  module: 'resolve-eventstore-lite',
+  module: '@reimagined/eventstore-lite',
   options: {
     databaseFile: ':memory:'
   }

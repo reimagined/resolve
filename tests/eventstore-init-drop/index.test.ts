@@ -1,9 +1,9 @@
-import createSqliteAdapter from 'resolve-eventstore-lite'
+import createSqliteAdapter from '@reimagined/eventstore-lite'
 import {
   Adapter,
   EventstoreResourceAlreadyExistError,
   EventstoreResourceNotExistError,
-} from 'resolve-eventstore-base'
+} from '@reimagined/eventstore-base'
 
 const createAdapter = createSqliteAdapter
 

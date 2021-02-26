@@ -1,5 +1,5 @@
 import { AdapterPool } from './types'
-import { SavedEvent } from 'resolve-eventstore-base'
+import { SavedEvent } from '@reimagined/eventstore-base'
 
 const injectEvent = async function (
   { eventsTableName, database, escapeId, escape }: AdapterPool,

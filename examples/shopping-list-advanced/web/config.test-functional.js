@@ -1,4 +1,4 @@
-const { declareRuntimeEnv } = require('resolve-scripts')
+const { declareRuntimeEnv } = require('@reimagined/scripts')
 
 const testFunctionalConfig = {
   target: 'local',
@@ -6,14 +6,14 @@ const testFunctionalConfig = {
   mode: 'development',
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {
         databaseFile: 'data/read-models-test-functional.db',
       },
     },
   },
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: 'data/event-store-test-functional.db',
     },

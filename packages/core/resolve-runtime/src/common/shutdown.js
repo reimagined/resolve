@@ -2,7 +2,7 @@ import debugLevels from '@reimagined/debug-levels'
 
 import shutdownOne from './shutdown-one'
 
-const log = debugLevels('resolve:resolve-runtime:shutdown')
+const log = debugLevels('resolve:runtime:shutdown')
 
 const shutdown = async (resolve, upstream) => {
   log.debug('shutdown started')

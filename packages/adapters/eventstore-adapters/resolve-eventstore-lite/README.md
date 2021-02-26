@@ -1,5 +1,5 @@
-# **resolve-eventstore-lite**
-[![npm version](https://badge.fury.io/js/resolve-eventstore-lite.svg)](https://badge.fury.io/js/resolve-eventstore-lite)
+# **@reimagined/eventstore-lite**
+[![npm version](https://badge.fury.io/js/@reimagined/eventstore-lite.svg)](https://badge.fury.io/js/@reimagined/eventstore-lite)
 
 This package is a eventstore adapter for storing events using a file or memory.
 

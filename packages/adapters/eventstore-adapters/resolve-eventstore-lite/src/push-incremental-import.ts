@@ -1,5 +1,5 @@
 import { AdapterPool } from './types'
-import { InputEvent } from 'resolve-eventstore-base'
+import { InputEvent } from '@reimagined/eventstore-base'
 
 const pushIncrementalImport = async (
   { database, eventsTableName, escapeId, escape }: AdapterPool,

@@ -13,7 +13,7 @@ import initUploader from './init-uploader'
 import initScheduler from './init-scheduler'
 import gatherEventListeners from '../common/gather-event-listeners'
 
-const log = debugLevels('resolve:resolve-runtime:local-entry')
+const log = debugLevels('resolve:runtime:local-entry')
 
 const localEntry = async ({ assemblies, constants, domain }) => {
   try {

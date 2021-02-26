@@ -20,7 +20,7 @@ const prodConfig = {
   mode: 'production',
   readModelConnectors: {
     HackerNews: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {}
     }
   },
@@ -49,7 +49,7 @@ The code below demonstrates how to set up a storage adapter on the example of an
 ```js
 readModelConnectors: {
     HackerNews: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {}
     }
   },
@@ -64,18 +64,18 @@ to familiarize yourself with the available adapters, see the **[adapters](https:
 
 ## Using Environment Variables
 
-Use the **declareRuntimeEnv** function from the **resolve-scripts** library to bind a configuration setting value to an environment variable:
+Use the **declareRuntimeEnv** function from the **@reimagined/scripts** library to bind a configuration setting value to an environment variable:
 
 ```js
 import { declareRuntimeEnv } from '@reimagined/scripts'
 export default {
   subscribeAdapter: {
-    module: 'resolve-subscribe-mqtt',
+    module: '@reimagined/subscribe-mqtt',
     options: {}
   },
   readModelsConnectors: {
     HackerNews: {
-      module: 'resolve-readmodel-postgresql-serverless',
+      module: '@reimagined/readmodel-postgresql-serverless',
       options: {
         dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_CLUSTER_ARN'),
         awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_SECRET_ARN'),

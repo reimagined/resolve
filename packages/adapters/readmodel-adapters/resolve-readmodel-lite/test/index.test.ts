@@ -3,7 +3,7 @@ import path from 'path'
 
 import createReadModelAdapter from '../src'
 
-describe('resolve-readmodel-lite', () => {
+describe('@reimagined/readmodel-lite', () => {
   //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   let adapter = null! as ReturnType<typeof createReadModelAdapter>
 

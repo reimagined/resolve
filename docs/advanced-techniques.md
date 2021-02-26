@@ -22,7 +22,7 @@ All these chunks are used by the target application. Some chunks can include oth
 
 In a cloud/serverless environment, chunks like read model projections & resolvers, SSR renderer, API handlers and REST business logic are distributed to appropriate cloud executors.
 
-When an application runs locally, the `resolve-scripts` utility loads all necessary chunks and combines them with the runtime code.
+When an application runs locally, the `@reimagined/scripts` utility loads all necessary chunks and combines them with the runtime code.
 
 ## Adapters
 
@@ -90,7 +90,7 @@ For an example on how to use modules, see the [Hacker News](https://github.com/r
 
 ## Upload Files
 
-The **resolve-module-uploader** module implements the file upload functionality. You can enable this module as shown below:
+The **@reimagined/module-uploader** module implements the file upload functionality. You can enable this module as shown below:
 
 ##### run.js:
 
@@ -106,7 +106,7 @@ const baseConfig = merge(
 )
 ```
 
-The **resolve-module-uploader** module adds the following API endpoints to an application:
+The **@reimagined/module-uploader** module adds the following API endpoints to an application:
 
 - `/api/uploader/getFormUpload` - Returns an upload path to use in HTTP forms.
 - `/api/uploader/getUploadUrl` - Returns a path used to upload files.

@@ -20,14 +20,14 @@ const appConfig = {
 // mdis-start dev-config
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: ':memory:',
     },
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@reimagined/readmodel-lite',
       options: {
         databaseFile: ':memory:',
       },

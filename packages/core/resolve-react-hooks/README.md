@@ -1,4 +1,4 @@
-# **resolve-react-hooks**
+# **@reimagined/react-hooks**
 
 reSolve React hooks library. A usage example can be found [here](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-with-hooks).
 

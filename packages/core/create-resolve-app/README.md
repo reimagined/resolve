@@ -3,7 +3,7 @@
 
 This package creates an empty application based on the reSolve framework ([`hello-world` example](https://github.com/reimagined/resolve/tree/master/examples/hello-world)). Use the `--example` option to create another sample application. reSolve applications are built on the CQRS and Event Sourcing principles and use [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client side.
 
-**Create reSolve App** allows you to specify application blocks (aggregates, read models, and UI elements (React components)) in a semi-declarative manner. The `resolve-scripts` package deploys API backend and domain services to interact with the client. The `resolve-redux` package automates the client-server interaction.
+**Create reSolve App** allows you to specify application blocks (aggregates, read models, and UI elements (React components)) in a semi-declarative manner. The `@reimagined/scripts` package deploys API backend and domain services to interact with the client. The `@reimagined/redux` package automates the client-server interaction.
 
 Refer to the [React/Redux Links](https://github.com/markerikson/react-redux-links) document for details on subject-related technologies and links to the corresponding resources.
 

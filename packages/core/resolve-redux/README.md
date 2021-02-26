@@ -1,5 +1,5 @@
 # **resolve-redux**
-[![npm version](https://badge.fury.io/js/resolve-redux.svg)](https://badge.fury.io/js/resolve-redux)
+[![npm version](https://badge.fury.io/js/@reimagined/redux.svg)](https://badge.fury.io/js/@reimagined/redux)
 
 This package contains tools for integrating reSolve with [Redux](http://redux.js.org/).
 ## **Table of Contents** 📑

@@ -1,5 +1,5 @@
-# **resolve-readmodel-base**
-[![npm version](https://badge.fury.io/js/resolve-readmodel-base.svg)](https://badge.fury.io/js/resolve-readmodel-base)
+# **@reimagined/readmodel-base**
+[![npm version](https://badge.fury.io/js/@reimagined/readmodel-base.svg)](https://badge.fury.io/js/@reimagined/readmodel-base)
 
 A base package for interchangeable **Read Model Adapters** with the identical query API for projection and resolvers. 
 

@@ -17,7 +17,7 @@ AWS.config.update({
 
 jest.setTimeout(20000000)
 
-describe.skip('resolve-eventstore-mysql-serverless', () => {
+describe.skip('@reimagined/eventstore-mysql-serverless', () => {
   beforeAll.skip(async () => {
     logger.warn('create start')
     const rdsDataApi = new AWS.RDSDataService({

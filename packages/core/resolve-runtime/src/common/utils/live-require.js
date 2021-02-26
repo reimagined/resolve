@@ -4,7 +4,7 @@ import path from 'path'
 
 import entryPointMarker from './entry-point-marker'
 
-const log = debugLevels('resolve:resolve-runtime:liveRequire')
+const log = debugLevels('resolve:runtime:liveRequire')
 
 const pureRequire = __non_webpack_require__ //eslint-disable-line no-undef
 const entryPointDirnamePlaceholder = Symbol('EntryPointDirnamePlaceholder')

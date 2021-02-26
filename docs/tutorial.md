@@ -501,7 +501,7 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4)
 
-This lesson provides information on how to display a View Model's data in the client browser. It uses the reSolve framework's **resolve-redux** library to implement a frontend based on React and Redux.
+This lesson provides information on how to display a View Model's data in the client browser. It uses the reSolve framework's **@reimagined/redux** library to implement a frontend based on React and Redux.
 
 > You can use the standard HTTP API to communicate with a reSolve backend and use any client technology to implement the frontend.
 
@@ -536,7 +536,7 @@ export class ShoppingList extends React.PureComponent {
 
 <!-- prettier-ignore-end -->
 
-Use the **resolve-redux** library's **connectViewModel** HOC to bind your component to the **ShoppingList** View Model that you implemented in the previous lesson.
+Use the **@reimagined/redux** library's **connectViewModel** HOC to bind your component to the **ShoppingList** View Model that you implemented in the previous lesson.
 
 **client/containers/ShoppingList.js:**
 

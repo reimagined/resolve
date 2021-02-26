@@ -2,7 +2,7 @@ import debugLevels from '@reimagined/debug-levels'
 
 import liveRequire from '../utils/live-require'
 
-const log = debugLevels('resolve:resolve-runtime:fail-handler')
+const log = debugLevels('resolve:runtime:fail-handler')
 
 const liveRequireHandler = (moduleOptions, imports) => async (req, res) => {
   try {

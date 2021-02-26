@@ -21,7 +21,7 @@ const appConfig = {
 // mdis-start dev-config
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@reimagined/eventstore-lite',
     options: {
       databaseFile: ':memory:',
     },
@@ -31,7 +31,7 @@ const devConfig = {
     default: {
       module: 'connector.js',
       options: {
-        prefix: 'read-model-database',
+        prefix: '@reimagined/model-database',
       },
     },
   },

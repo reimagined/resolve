@@ -3,7 +3,7 @@ import debugLevels from '@reimagined/debug-levels'
 import bootstrap from '../common/bootstrap'
 import shutdown from '../common/shutdown'
 
-const log = debugLevels('resolve:resolve-runtime:deploy-service-event-handler')
+const log = debugLevels('resolve:runtime:deploy-service-event-handler')
 
 const getReadModelNames = (resolve) =>
   resolve.readModels.map(({ name }) => name)

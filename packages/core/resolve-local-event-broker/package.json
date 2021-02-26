@@ -8,7 +8,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-local-event-broker#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@reimagined/local-event-broker#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },

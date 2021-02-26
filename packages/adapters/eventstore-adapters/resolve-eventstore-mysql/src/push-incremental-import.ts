@@ -1,6 +1,6 @@
 import { ER_NO_SUCH_TABLE, ER_SUBQUERY_NO_1_ROW } from './constants'
 import { AdapterPool } from './types'
-import { InputEvent } from 'resolve-eventstore-base'
+import { InputEvent } from '@reimagined/eventstore-base'
 
 const pushIncrementalImport = async (
   { eventsTableName, connection, database, escapeId, escape }: AdapterPool,

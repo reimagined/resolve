@@ -1,5 +1,5 @@
-# **resolve-scripts**
-[![npm version](https://badge.fury.io/js/resolve-scripts.svg)](https://badge.fury.io/js/resolve-scripts)
+# **@reimagined/scripts**
+[![npm version](https://badge.fury.io/js/@reimagined/scripts.svg)](https://badge.fury.io/js/@reimagined/scripts)
 
 This package includes scripts and configuration for the [create-resolve-app](../create-resolve-app) package.
 

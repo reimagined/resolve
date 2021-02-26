@@ -1,6 +1,6 @@
 import debugLevels from '@reimagined/debug-levels'
 
-const log = debugLevels('resolve:resolve-runtime:dispose-resolve')
+const log = debugLevels('resolve:runtime:dispose-resolve')
 
 const disposeResolve = async (resolve) => {
   try {

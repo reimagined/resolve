@@ -25,11 +25,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The **api** object has been removed and a **client** object (from the resolve-client package) has been added.
 - React native support has been temporary suspended.
 
-#### resolve-runtime
+#### @reimagined/runtime
 
 - **executeQuery** in API handlers now returns a **data** object containing view or read model data and a **meta** object containing query meta data
 
-#### resolve-scripts
+#### @reimagined/scripts
 
 - **subscribeAdapter** option has been removed from config
 
@@ -46,13 +46,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `pushIncrementalImport` - accumulate events for incremental import
   - `commitIncrementalImport` - commit accumulated events to eventstore
   - `rollbackIncrementalImport` - drop accumulated events
-- resolve-client
+- @reimagined/client
   - **meta** object in query response containing meta data
-- resolve-redux
+- @reimagined/redux
   - New redux hook API
   - Added **serializedState** parameter to createStore
-- resolve-query
-  - [view model resolver](docs/read-side.md#view-model-resolver)
 
 ### Changed
 

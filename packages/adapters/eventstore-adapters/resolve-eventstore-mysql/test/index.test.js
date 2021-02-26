@@ -5,7 +5,7 @@ import {
 import createEventstoreAdapter from '../src/index'
 
 // TODO: rewrite tests
-describe.skip('resolve-eventstore-mysql', () => {
+describe.skip('@reimagined/eventstore-mysql', () => {
   let eventstoreAdapter = null
 
   beforeEach(() => {

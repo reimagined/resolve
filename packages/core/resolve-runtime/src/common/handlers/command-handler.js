@@ -4,7 +4,7 @@ import extractErrorHttpCode from '../utils/extract-error-http-code'
 import extractRequestBody from '../utils/extract-request-body'
 import message from '../message'
 
-const log = debugLevels('resolve:resolve-runtime:command-handler')
+const log = debugLevels('resolve:runtime:command-handler')
 
 function isConcurrentError(error) {
   return error.name === 'ConcurrentError'

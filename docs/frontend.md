@@ -6,9 +6,9 @@ title: Frontend
 This document describes approaches that you can use to implement a frontend for a reSolve application. The following approaches are available:
 
 - [HTTP API](#http-api) - An HTTP API exposed by a reSolve server
-- [resolve-client library](#resolve-client-library) - A higher-level JavaScript library used to communicate with a reSolve server
-- [resolve-redux library](#resolve-redux-library) - A library used to connect a React + Redux component to reSolve
-- [resolve-react-hooks library](#resolve-react-hooks-library) - A hook-based library used to connect React components to reSolve
+- [@reimagined/client library](#resolve-client-library) - A higher-level JavaScript library used to communicate with a reSolve server
+- [@reimagined/redux library](#resolve-redux-library) - A library used to connect a React + Redux component to reSolve
+- [@reimagined/react-hooks library](#resolve-react-hooks-library) - A hook-based library used to connect React components to reSolve
 
 ## Client Application Entry Point
 
@@ -31,7 +31,7 @@ clientEntries: ['client/index.js']
 
 Use the `resolveContext` object to initialize a client library. The code samples below demonstrate how to configure the entry point for different client libraries.
 
-##### resolve-client:
+##### @reimagined/client:
 
 ```js
 import { getClient } from '@reimagined/client'
@@ -46,7 +46,7 @@ const main = async resolveContext => {
 }
 ```
 
-##### resolve-redux:
+##### @reimagined/redux:
 
 ```js
 import { AppContainer, createStore, getOrigin } from '@reimagined/redux'
@@ -92,7 +92,7 @@ const entryPoint = ({
 }
 ```
 
-##### resolve-react-hooks:
+##### @reimagined/react-hooks:
 
 ```js
 import { ResolveContext } from '@reimagined/react-hooks'
@@ -166,7 +166,7 @@ To serve SSR markup to the client, you need to register the **live-require-handl
 apiHandlers: [
   {
     handler: {
-      module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+      module: '@reimagined/runtime/lib/common/handlers/live-require-handler.js',
       options: {
         modulePath: './ssr.js',
         moduleFactoryImport: false
@@ -306,9 +306,9 @@ For more information on the HTTP API, refer to the following help topic: [API Re
 
 You can extend a reSolve server's API with API Handlers. Refer to the following help topic for more information: [API Handlers](api-handlers.md).
 
-## resolve-client library
+## @reimagined/client library
 
-The **resolve-client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
+The **@reimagined/client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
 
 | Function                                                | Description                                                                 |
 | ------------------------------------------------------- | --------------------------------------------------------------------------- |
@@ -321,13 +321,13 @@ The **resolve-client** library provides an interface that you can use to communi
 
 #### Example
 
-The [with-vanilajs](https://github.com/reimagined/resolve/tree/master/examples/with-vanillajs) example application demonstrates how to use the **resolve-client** library to implement a frontend for a reSolve application in pure JavaScript.
+The [with-vanilajs](https://github.com/reimagined/resolve/tree/master/examples/with-vanillajs) example application demonstrates how to use the **@reimagined/client** library to implement a frontend for a reSolve application in pure JavaScript.
 
-## resolve-redux library
+## @reimagined/redux library
 
-The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend.
+The reSolve framework includes the client **@reimagined/redux** library used to connect a client React + Redux app to a reSolve-powered backend.
 
-Use the following resolve-redux library's hooks and Higher-Order Components (HOCs) to connect react components to the backend.
+Use the following @reimagined/redux library's hooks and Higher-Order Components (HOCs) to connect react components to the backend.
 
 ##### React Hooks:
 
@@ -350,13 +350,13 @@ Use the following resolve-redux library's hooks and Higher-Order Components (HOC
 
 #### Example
 
-The [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example application demonstrates how to use the **resolve-client** library to implement a react-redux frontend for a reSolve application.
+The [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example application demonstrates how to use the **@reimagined/client** library to implement a react-redux frontend for a reSolve application.
 
 <!-- prettier-ignore-end -->
 
-## resolve-react-hooks library
+## @reimagined/react-hooks library
 
-The **resolve-react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
+The **@reimagined/react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
 
 | Hook                                                    | Description                                                              |
 | ------------------------------------------------------- | ------------------------------------------------------------------------ |
@@ -368,4 +368,4 @@ The **resolve-react-hooks** library provides React hooks that you can use to con
 
 #### Example
 
-The [shopping-list-with-hooks](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-with-hooks) example application demonstrates how to use the **resolve-react-hooks** library to communicate with a reSolve backend.
+The [shopping-list-with-hooks](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-with-hooks) example application demonstrates how to use the **@reimagined/react-hooks** library to communicate with a reSolve backend.

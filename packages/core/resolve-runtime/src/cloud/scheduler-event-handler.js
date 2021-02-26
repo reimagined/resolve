@@ -1,6 +1,6 @@
 import debugLevels from '@reimagined/debug-levels'
 
-const log = debugLevels('resolve:resolve-runtime:scheduler-event-handler')
+const log = debugLevels('resolve:runtime:scheduler-event-handler')
 
 const handleSchedulerEvent = async ({ entry }, resolve) => {
   log.debug(`dispatching lambda event to all available schedulers`)

@@ -3,7 +3,7 @@
 exports[`@reimagined/module-admin read-models list 1`] = `
 Array [
   Array [
-    "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR
+    "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR          
 read-model           status               3/18/05 04:58:31 type N\\\\A                  N\\\\A                 ",
   ],
 ]
@@ -36,7 +36,7 @@ Array [
 exports[`@reimagined/module-admin sagas list 1`] = `
 Array [
   Array [
-    "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR
+    "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR          
 saga                 status               3/18/05 04:58:31 type N\\\\A                  N\\\\A                 ",
   ],
 ]
@@ -61,7 +61,7 @@ Array [
 exports[`@reimagined/module-admin sagas properties list 1`] = `
 Array [
   Array [
-    "NAME                 VALUE
+    "NAME                 VALUE               
 key                  value               ",
   ],
 ]
