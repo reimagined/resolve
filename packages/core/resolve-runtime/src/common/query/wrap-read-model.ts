@@ -149,9 +149,18 @@ const customReadModelMethods = {
           eventSubscriber: readModelName,
         })
       )[0] ?? { status: null })
-      if (status == null || status.status !== 'deliver') {
+      if (status == null || status.status !== 'deliver' || !!status.busy) {
         return
       }
+
+      // This intentionally left as non-atomic operation since custom read model
+      // in non-inline-ledger mode should provide idempotent capacities anyway
+      await pool.eventstoreAdapter.ensureEventSubscriber({
+        applicationName: pool.applicationName,
+        eventSubscriber: readModelName,
+        status: { ...status, busy: true },
+        updateOnly: true,
+      })
 
       const events: Array<any> | null =
         status.cursor != null
@@ -315,6 +324,7 @@ const customReadModelMethods = {
             }
           : null,
       status: isSuccess ? 'deliver' : 'error',
+      busy: false,
     }
 
     await pool.eventstoreAdapter.ensureEventSubscriber({
@@ -353,6 +363,7 @@ const customReadModelMethods = {
           status: {
             ...status,
             status: 'skip',
+            busy: false,
           },
           updateOnly: true,
         })
@@ -373,7 +384,7 @@ const customReadModelMethods = {
     await updateCustomReadModel(
       pool,
       readModelName,
-      { status: 'deliver' },
+      { status: 'deliver', busy: false },
       async (status: any) => {
         const isSuccess =
           status.status === 'deliver' || status.status === 'skip'
@@ -394,7 +405,7 @@ const customReadModelMethods = {
     await updateCustomReadModel(
       pool,
       readModelName,
-      { status: 'skip' },
+      { status: 'skip', busy: false },
       async (status: any) => {
         const isSuccess =
           status.status === 'deliver' || status.status === 'skip'
@@ -420,7 +431,7 @@ const customReadModelMethods = {
         eventSubscriber: readModelName,
       })
     )[0]
-    if(entry == null) {
+    if (entry == null) {
       return
     }
 
@@ -429,6 +440,7 @@ const customReadModelMethods = {
       eventSubscriber: readModelName,
       status: {
         status: 'skip',
+        busy: false,
         ...entry.status,
         ...parameters.subscriptionOptions,
       },
@@ -454,6 +466,7 @@ const customReadModelMethods = {
       status: {
         ...parameters.subscriptionOptions,
         status: 'skip',
+        busy: false,
       },
       updateOnly: true,
     })

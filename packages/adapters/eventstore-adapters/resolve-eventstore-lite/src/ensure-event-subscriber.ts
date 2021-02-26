@@ -30,10 +30,16 @@ const ensureEventSubscriber = async (
 
   try {
     await database.exec(`
-      BEGIN IMMEDIATE;
-      ${
-        updateOnly
-          ? `SELECT ABS("CTE"."SubscriberNotFound") FROM (
+    INSERT OR REPLACE INTO ${subscribersTableNameAsId}(
+      "applicationName",
+      "eventSubscriber",
+      "destination",
+      "status"
+    ) VALUES(
+      ${escape(applicationName)} || ${
+      updateOnly
+        ? `(SELECT '' FROM "sqlite_master" WHERE EXISTS(
+          SELECT ABS("CTE"."SubscriberNotFound") FROM (
         SELECT 0 AS "SubscriberNotFound"
       UNION ALL
         SELECT -9223372036854775808 AS "SubscriberNotFound"
@@ -43,45 +49,22 @@ const ensureEventSubscriber = async (
           WHERE "applicationName" = ${escape(applicationName)}
           AND "eventSubscriber" = ${escape(eventSubscriber)}
         ) = 0
-      ) CTE;`
-          : ''
-      }
-
-      UPDATE ${subscribersTableNameAsId} SET
+      ) CTE
+      ) LIMIT 1)`
+        : `''`
+    },
+      ${escape(eventSubscriber)},
       ${
-        !updateOnly
-          ? `"destination" = json(CAST(${escape(
-              JSON.stringify(destination)
-            )} AS BLOB)),`
-          : ''
-      }
-      "status" = json(CAST(${escape(JSON.stringify(status))} AS BLOB))
-      WHERE "applicationName" = ${escape(applicationName)}
-      AND "eventSubscriber" = ${escape(eventSubscriber)};
-
-      ${
-        !updateOnly
-          ? `INSERT OR IGNORE INTO ${subscribersTableNameAsId}(
-        "applicationName",
-        "eventSubscriber",
-        "destination",
-        "status"
-      ) VALUES(
-        ${escape(applicationName)},
-        ${escape(eventSubscriber)},
-        json(CAST(${escape(JSON.stringify(destination))} AS BLOB)),
-        json(CAST(${escape(JSON.stringify(status))} AS BLOB))
-      );`
-          : ''
-      }
-
-      COMMIT;
+        updateOnly
+          ? `(SELECT "destination" FROM ${subscribersTableNameAsId}
+        WHERE "applicationName" = ${escape(applicationName)}
+        AND "eventSubscriber" = ${escape(eventSubscriber)})`
+          : `json(CAST(${escape(JSON.stringify(destination))} AS BLOB))`
+      },
+      json(CAST(${escape(JSON.stringify(status))} AS BLOB))
+    )
     `)
   } catch (error) {
-    try {
-      await database.exec(`ROLLBACK;`)
-    } catch (err) {}
-
     const errorMessage =
       error != null && error.message != null ? error.message : ''
 
