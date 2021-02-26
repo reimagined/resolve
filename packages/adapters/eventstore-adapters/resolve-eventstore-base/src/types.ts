@@ -24,11 +24,15 @@ export function validate<T extends t.Type<any>>(
   return params
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export type UnbrandProps<T extends any> = {
-  [Property in keyof T]: T[Property] extends t.Branded<infer S, infer B>
-    ? S
+  [Property in keyof T]: T[Property] extends
+    | t.Branded<infer S, infer B>
+    | infer Union
+    ? S | Union
     : T[Property]
 }
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 export type InputEvent = Event
 export type SavedEvent = Event & {
@@ -63,13 +67,6 @@ const EventFilterCommonSchema = t.intersection([
     eventSizeLimit: t.Int,
   }),
 ])
-
-type EventFilterCommon = {
-  eventTypes?: Array<string> | null
-  aggregateIds?: Array<string> | null
-  limit: number
-  eventsSizeLimit?: number
-}
 
 const TimestampFilterFieldsSchema = t.partial({
   startTime: t.Int,

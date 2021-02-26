@@ -3,9 +3,6 @@ import { CloudResourcePool, CloudResourceOptions } from '../src'
 
 /* eslint-disable import/no-extraneous-dependencies */
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
-import { mocked } from 'ts-jest/utils'
-
-const mRDSDataService = mocked(RDSDataService)
 
 test('connect should throw on wrong parameters', async () => {
   const pool = ({

@@ -2,7 +2,6 @@ import type {
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
-  AdapterConfig,
   SavedEvent,
 } from 'resolve-eventstore-base'
 
@@ -73,6 +72,7 @@ export const PostgresqlAdapterConfigSchema = t.intersection([
     snapshotsTableName: t.string,
     region: t.string,
   }),
+  t.UnknownRecord,
 ])
 
 type PostgresqlAdapterConfigChecked = t.TypeOf<
@@ -80,9 +80,7 @@ type PostgresqlAdapterConfigChecked = t.TypeOf<
 >
 export type PostgresqlAdapterConfig = UnbrandProps<
   PostgresqlAdapterConfigChecked
-> & {
-  [key: string]: any
-}
+>
 
 export type AdapterPool = AdapterPoolConnected<
   PostgresqlAdapterPoolConnectedProps
