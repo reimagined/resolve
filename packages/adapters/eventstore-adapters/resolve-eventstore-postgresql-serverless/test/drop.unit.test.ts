@@ -28,25 +28,11 @@ afterEach(() => {
   mDrop.mockClear()
 })
 
-test('event store dropped', async () => {
-  await mDrop(pool)
-
-  expect(mDrop).toHaveBeenCalledWith({
-    databaseName: 'database',
-    escapeId: pool.escapeId,
-    eventsTableName: 'events-table',
-    executeStatement: pool.executeStatement,
-    maybeThrowResourceError: pool.maybeThrowResourceError,
-    secretsTableName: 'secrets-table',
-    snapshotsTableName: 'snapshots-table',
-  })
-})
-
 test('secrets table dropped', async () => {
   await dropSecrets(pool)
 
   expect(pool.executeStatement).toHaveBeenCalledWith(
-    `DROP TABLE escaped-database.escaped-secrets-table`
+    expect.stringMatching(/escaped-secrets-table/g)
   )
 })
 
@@ -54,7 +40,7 @@ test('secrets stream index dropped', async () => {
   await dropSecrets(pool)
 
   expect(pool.executeStatement).toHaveBeenCalledWith(
-    `DROP INDEX IF EXISTS escaped-database.escaped-secrets-table-global`
+    expect.stringMatching(/escaped-secrets-table-global/g)
   )
 })
 

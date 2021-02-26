@@ -1,8 +1,9 @@
 import { AdapterPool } from './types'
+import { InputEvent } from 'resolve-eventstore-base'
 
 const pushIncrementalImport = async (
   { database, eventsTableName, escapeId, escape }: AdapterPool,
-  events: any[],
+  events: InputEvent[],
   importId: string
 ): Promise<void> => {
   try {

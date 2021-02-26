@@ -33,12 +33,6 @@ beforeEach(() => {
 test("config assigned to adapter's pool", async () => {
   await connect(pool, connectionDependencies, config)
 
+  expect(pool.databaseFile).toEqual('database-file')
   expect(pool.secretsTableName).toEqual('secrets-table')
-})
-
-test('eventstore connected', async () => {
-  const _connect = jest.fn().mockImplementation(connect)
-  await _connect(pool, connectionDependencies, config)
-
-  expect(_connect).toHaveBeenCalledWith(pool, connectionDependencies, config)
 })

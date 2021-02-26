@@ -2,7 +2,10 @@ import fs from 'fs'
 import path from 'path'
 import { promisify } from 'util'
 import { Readable, pipeline } from 'stream'
-import { MAINTENANCE_MODE_MANUAL } from '@reimagined/eventstore-base'
+import {
+  EventstoreAlreadyFrozenError,
+  MAINTENANCE_MODE_MANUAL,
+} from '@reimagined/eventstore-base'
 import createEventstoreAdapter from '@reimagined/eventstore-lite'
 
 import createStreamBuffer from './create-stream-buffer'
@@ -168,37 +171,45 @@ describe('import-export events', () => {
     while (true) {
       steps++
 
-      const exportStream = inputEventstoreAdapter.exportEvents({ cursor })
-      const tempStream = createStreamBuffer()
-      const pipelinePromise = promisify(pipeline)(
-        exportStream,
-        tempStream
-      ).then(() => false)
+      try {
+        const exportStream = inputEventstoreAdapter.exportEvents({ cursor })
+        const tempStream = createStreamBuffer()
+        const pipelinePromise = promisify(pipeline)(
+          exportStream,
+          tempStream
+        ).then(() => false)
 
-      const timeoutPromise = new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(true)
-        }, 100)
-      )
+        const timeoutPromise = new Promise((resolve) =>
+          setTimeout(() => {
+            resolve(true)
+          }, 100)
+        )
 
-      const isJsonStreamTimedOut = await Promise.race([
-        timeoutPromise,
-        pipelinePromise,
-      ])
-      isJsonStreamTimedOutOnce =
-        isJsonStreamTimedOutOnce || isJsonStreamTimedOut
+        const isJsonStreamTimedOut = await Promise.race([
+          timeoutPromise,
+          pipelinePromise,
+        ])
+        isJsonStreamTimedOutOnce =
+          isJsonStreamTimedOutOnce || isJsonStreamTimedOut
 
-      exportStream.destroy()
+        exportStream.destroy()
 
-      cursor = exportStream.cursor
+        cursor = exportStream.cursor
 
-      const buffer = tempStream.getBuffer().toString('utf8')
+        const buffer = tempStream.getBuffer().toString('utf8')
 
-      if (buffer === '') {
-        break
+        if (buffer === '') {
+          break
+        }
+
+        exportBuffers.push(buffer)
+      } catch (error) {
+        if (error instanceof EventstoreAlreadyFrozenError) {
+          await inputEventstoreAdapter.unfreeze()
+        } else {
+          throw error
+        }
       }
-
-      exportBuffers.push(buffer)
     }
 
     const outputEvents = exportBuffers

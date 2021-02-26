@@ -2,8 +2,10 @@ import {
   createQuery,
   createCommand,
   CreateQueryOptions,
+  detectConnectorFeatures,
+  connectorModes,
 } from '@reimagined/runtime'
-import { SerializableMap, CommandResult } from '@reimagined/core'
+import { SerializableMap, CommandResult } from 'resolve-core'
 import as from './as'
 import givenEvents from './given-events'
 import { execute } from './execute'
@@ -37,6 +39,8 @@ export default givenEvents.bind(null, {
   setSecretsManager,
   aggregate,
   command,
+  detectConnectorFeatures,
+  connectorModes,
 }) as (events: any[]) => GivenEventsContext
 
 export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =

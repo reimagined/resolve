@@ -14,10 +14,15 @@ const dropEvents = async ({
   const log = getLog('dropEvents')
   log.debug(`dropping events`)
 
+  const incrementalImportTableAsId = escapeId(
+    `${eventsTableName}-incremental-import`
+  )
+
   const statements: string[] = [
     `DROP TABLE IF EXISTS ${escapeId(`${eventsTableName}-freeze`)}`,
     `DROP TABLE ${escapeId(eventsTableName)}`,
     `DROP TABLE ${escapeId(snapshotsTableName)}`,
+    `DROP TABLE IF EXISTS ${incrementalImportTableAsId}`,
   ]
 
   const errors: any[] = await executeSequence(

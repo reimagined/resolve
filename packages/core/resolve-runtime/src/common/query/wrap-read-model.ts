@@ -1,16 +1,9 @@
 import { EOL } from 'os'
-// TODO: core cannot reference "top-level" packages, move these to resolve-core
-import { OMIT_BATCH, STOP_BATCH } from '@reimagined/readmodel-base'
-import {
-  makeMonitoringSafe,
-  ReadModelInterop,
-  SagaInterop,
-} from '@reimagined/core'
-
+import { makeMonitoringSafe, ReadModelInterop, SagaInterop } from '@reimagined/core'
 import getLog from './get-log'
-
 import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
+import { OMIT_BATCH, STOP_BATCH } from './batch'
 
 const wrapConnection = async (
   pool: ReadModelPool,
@@ -530,6 +523,7 @@ const build = doOperation.bind(
     connection,
     interop,
     next.bind(null, pool, readModelName),
+    pool.eventstoreAdapter,
     pool.getVacantTimeInMillis,
     provideLedger.bind(null, pool, readModelName),
   ]
@@ -717,6 +711,7 @@ const wrapReadModel = ({
   performAcknowledge,
   monitoring,
   provideLedger,
+  eventstoreAdapter,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${interop.name}`)
 
@@ -741,6 +736,7 @@ const wrapReadModel = ({
     performAcknowledge,
     monitoring: safeMonitoring,
     provideLedger,
+    eventstoreAdapter,
   }
 
   const api = {

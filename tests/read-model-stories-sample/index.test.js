@@ -2,7 +2,6 @@ import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents from '@reimagined/testing-tools'
 
 import config from './config'
-import resetReadModel from '../reset-read-model'
 
 jest.setTimeout(1000 * 60 * 5)
 
@@ -28,11 +27,9 @@ describe('Read-model sample', () => {
 
   let adapter = null
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = createConnector(connectorOptions)
   })
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = null
   })
 

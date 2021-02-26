@@ -1,11 +1,11 @@
-import { EventFilter } from '@reimagined/eventstore-base'
+import { EventFilter, SavedEvent } from '@reimagined/eventstore-base'
 import createQuery from './create-query'
 import { AdapterPool } from './types'
 
 const getLatestEvent = async (
   pool: AdapterPool,
   filter: EventFilter
-): Promise<any> => {
+): Promise<SavedEvent | null> => {
   const { database, eventsTableName, escapeId, shapeEvent } = pool
 
   const resultQueryCondition = createQuery(pool, filter)

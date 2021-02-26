@@ -1,17 +1,13 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents, {
-  getSchedulersNamesBySagas,
-} from '@reimagined/testing-tools'
+import givenEvents from '@reimagined/testing-tools'
 
 import config from './config'
-import resetReadModel from '../reset-read-model'
 
 jest.setTimeout(1000 * 60 * 5)
 
 describe('Saga', () => {
   const currentSaga = config.sagas.find(({ name }) => name === 'ProcessKiller')
   const { name: sagaName, source: sourceModule, connectorName } = currentSaga
-  const schedulerName = getSchedulersNamesBySagas([currentSaga])[0]
   const {
     module: connectorModule,
     options: connectorOptions,
@@ -41,9 +37,6 @@ describe('Saga', () => {
   let adapter = null
 
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, schedulerName)
-    await resetReadModel(createConnector, connectorOptions, sagaName)
-
     adapter = createConnector(connectorOptions)
     sagaWithAdapter = {
       handlers: source.handlers,
@@ -54,9 +47,6 @@ describe('Saga', () => {
   })
 
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, schedulerName)
-    await resetReadModel(createConnector, connectorOptions, sagaName)
-
     adapter = null
     sagaWithAdapter = null
   })

@@ -1,5 +1,6 @@
 import { ConcurrentError, InputEvent } from '@reimagined/eventstore-base'
 import { AdapterPool } from './types'
+import { EventstoreFrozenError } from 'resolve-eventstore-base'
 
 const saveEvent = async (
   pool: AdapterPool,
@@ -66,7 +67,7 @@ const saveEvent = async (
     } catch (e) {}
 
     if (errorMessage === 'SQLITE_ERROR: integer overflow') {
-      throw new Error('Event store is frozen')
+      throw new EventstoreFrozenError()
     } else if (
       errorCode === 'SQLITE_CONSTRAINT' &&
       errorMessage.indexOf('aggregate') > -1

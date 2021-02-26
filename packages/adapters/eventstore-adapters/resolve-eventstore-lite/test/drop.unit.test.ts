@@ -4,8 +4,6 @@ import dropEvents from '../src/drop-events'
 jest.mock('../src/get-log')
 let pool: AdapterPool
 
-const mDrop = jest.fn(dropEvents)
-
 beforeEach(() => {
   pool = {
     databaseFile: 'database-file',
@@ -22,14 +20,10 @@ beforeEach(() => {
   } as any
 })
 
-test('event store dropped', async () => {
-  await mDrop(pool)
-
-  expect(mDrop).toHaveBeenCalledWith(pool)
-})
-
 test('executed statements', async () => {
-  await mDrop(pool)
+  await dropEvents(pool)
 
-  expect(pool.database.exec.mock.calls.length).toBe(3)
+  expect(pool.database.exec).toHaveBeenCalledWith(
+    expect.stringMatching(/table-name-incremental-import/g)
+  )
 })

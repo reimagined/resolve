@@ -1,5 +1,9 @@
 import { AdapterPool } from './types'
-import { EventFilter, isTimestampFilter } from '@reimagined/eventstore-base'
+import {
+  EventFilter,
+  isTimestampFilter,
+  SavedEvent,
+} from '@reimagined/eventstore-base'
 
 const getLatestEvent = async (
   {
@@ -12,7 +16,7 @@ const getLatestEvent = async (
     isTimeoutError,
   }: AdapterPool,
   filter: EventFilter
-): Promise<any> => {
+): Promise<SavedEvent | null> => {
   const { eventTypes, aggregateIds } = filter
 
   const injectString = (value: any): string => `${escape(value)}`

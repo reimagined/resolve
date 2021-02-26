@@ -1,11 +1,12 @@
 import { snapshotTrigger } from '@reimagined/eventstore-base'
 import getLog from './get-log'
+import { AdapterPool } from './types'
 
 const saveSnapshot = async (
-  pool: any,
+  pool: AdapterPool,
   snapshotKey: string,
-  content: any
-): Promise<any> =>
+  content: string
+): Promise<void> =>
   snapshotTrigger(pool, snapshotKey, content, async () => {
     const log = getLog(`saveSnapshot:${snapshotKey}`)
     const { snapshotsTableName, connection, escapeId, escape } = pool

@@ -6,7 +6,6 @@ The adapter provides a query API for projection and resolvers. This API is simil
 
 ## Available Parameters
 * `databaseFile` - location of database in file system, may be ":memory:" for in-memory temporary storage.
-* `preferEventBusLedger` - store ledger in event bus instead read-model database itself.
 
 Adapter interface is provided by **resolve-readmodel-base** package.
 

@@ -3,6 +3,7 @@ import type {
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
   AdapterConfig,
+  SavedEvent,
 } from '@reimagined/eventstore-base'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
@@ -95,7 +96,7 @@ export type CloudResourcePool = {
   escape: EscapeFunction
   fullJitter: FullJitter
   coercer: Coercer
-  shapeEvent: (event: any, additionalFields?: any) => any[]
+  shapeEvent: (event: any, additionalFields?: any) => SavedEvent
   connect: (
     pool: AdapterPoolPrimal,
     connectionDependencies: ConnectionDependencies,
