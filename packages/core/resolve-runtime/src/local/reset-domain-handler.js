@@ -12,7 +12,7 @@ const resetDomainHandler = (options) => async (req, res) => {
     readModels,
     sagas,
     domainInterop: { sagaDomain },
-    applicationName
+    applicationName,
   } = req.resolve
 
   try {
@@ -55,12 +55,14 @@ const resetDomainHandler = (options) => async (req, res) => {
       }
     }
 
-    if(dropEventBus) {
-      const eventSubscribers = await eventstoreAdapter.getEventSubscribers({ applicationName })
-      for(const { eventSubscriber } of eventSubscribers) {
-        await eventstoreAdapter.removeEventSubscriber({ 
+    if (dropEventBus) {
+      const eventSubscribers = await eventstoreAdapter.getEventSubscribers({
+        applicationName,
+      })
+      for (const { eventSubscriber } of eventSubscribers) {
+        await eventstoreAdapter.removeEventSubscriber({
           applicationName,
-          eventSubscriber
+          eventSubscriber,
         })
       }
     }
