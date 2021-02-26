@@ -402,8 +402,40 @@ const customReadModelMethods = {
       }
     ),
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  subscribe: async () => {},
+  subscribe: async (
+    pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
+    connection: any,
+    readModelName: string,
+    parameters: {
+      subscriptionOptions: {
+        eventTypes: Array<string> | null
+        aggregateIds: Array<string> | null
+      }
+    }) => {
+    const { status } = (
+      await pool.eventstoreAdapter.getEventSubscribers({
+        applicationName: pool.applicationName,
+        eventSubscriber: readModelName,
+      })
+    )[0] ?? { status: null }
+    if(status == null) {
+      return
+    }
+
+    try {
+      await pool.eventstoreAdapter.ensureEventSubscriber({
+        applicationName: pool.applicationName,
+        eventSubscriber: readModelName,
+        status: {
+          ...status,
+          status: 'deliver'
+        },
+        updateOnly: true,
+      })
+    } catch(err) {}
+  },
+
   resubscribe: async (
     pool: ReadModelPool,
     interop: ReadModelInterop | SagaInterop,
@@ -416,6 +448,41 @@ const customReadModelMethods = {
       }
     }
   ) => {
+    const { status } = (
+      await pool.eventstoreAdapter.getEventSubscribers({
+        applicationName: pool.applicationName,
+        eventSubscriber: readModelName,
+      })
+    )[0] ?? { status: null }
+
+    await pool.eventstoreAdapter.ensureEventSubscriber({
+      applicationName: pool.applicationName,
+      eventSubscriber: readModelName,
+      status: {
+        ...status,
+        
+      },
+      updateOnly: true,
+    })
+  },
+
+  unsubscribe: async (
+    pool: ReadModelPool,
+    interop: ReadModelInterop | SagaInterop,
+    connection: any,
+    readModelName: string,
+    parameters: {}
+  ) => {
+    const { status } = (
+      await pool.eventstoreAdapter.getEventSubscribers({
+        applicationName: pool.applicationName,
+        eventSubscriber: readModelName,
+      })
+    )[0] ?? { status: null }
+    if(status == null) {
+      return
+    }
+
     await customReadModelMethods.reset(
       pool,
       interop,
@@ -423,10 +490,18 @@ const customReadModelMethods = {
       readModelName,
       parameters
     )
-  },
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  unsubscribe: async () => {},
+    try {
+      await pool.eventstoreAdapter.ensureEventSubscriber({
+        applicationName: pool.applicationName,
+        eventSubscriber: readModelName,
+        status: {
+          eventTypes: status.eventTypes
+        },
+        updateOnly: true,
+      })
+    } catch(err) {}
+  },
 
   deleteProperty: async (
     pool: ReadModelPool,

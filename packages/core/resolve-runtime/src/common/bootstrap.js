@@ -4,7 +4,7 @@ import bootstrapOne from './bootstrap-one'
 
 const log = debugLevels('resolve:resolve-runtime:bootstrap')
 
-const bootstrap = async (resolve, upstream) => {
+const bootstrap = async (resolve) => {
   log.debug('bootstrap started')
   const promises = []
   for (const { name, eventTypes } of resolve.eventListeners.values()) {
@@ -16,7 +16,7 @@ const bootstrap = async (resolve, upstream) => {
         name,
         eventTypes,
         destination: resolve.eventSubscriberDestination,
-        upstream,
+        upstream: resolve.upstream,
       })
     )
   }

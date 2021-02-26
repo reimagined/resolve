@@ -120,7 +120,7 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent.part) {
     case 'bootstrap': {
       try {
-        return await bootstrap(resolve, true)
+        return await bootstrap(resolve)
       } catch (error) {
         subSegment.addError(error)
         throw error
@@ -130,7 +130,7 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
     }
     case 'shutdown': {
       try {
-        return await shutdown(resolve, true)
+        return await shutdown(resolve)
       } catch (error) {
         subSegment.addError(error)
         throw error
