@@ -183,7 +183,11 @@ Refer to the [Query a Read Model](#query-a-read-model) section for information o
 
 ## View Model Specifics
 
-**View Models** are a special kind of Read Models. They are queried based on aggregate ID and and can automatically provide updates to Redux state on the client. View Models are defined in a special isomorphic format so their code can also be used on the client side to provide reducer logic.
+**View Models** are ephemeral Read Models that are queried based on aggregate ID. They have the following special properties:
+
+- View Models do not store persistent state and are rebuilt on every request.
+- View Models are queried based on aggregate ID and and can automatically provide updates to Redux state on the client.
+- View Models are defined in a format that is isomorphic with Redux reducers so their code can also be used on the client side to provide reducer logic.
 
 Use View Models in the following scenarios:
 
