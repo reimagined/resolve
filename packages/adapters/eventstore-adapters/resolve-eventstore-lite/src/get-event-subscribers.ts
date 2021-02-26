@@ -48,7 +48,14 @@ const getEventSubscribers = async (
     status: any
   }>
 
-  return rows
+  return rows.map(
+    ({ applicationName, eventSubscriber, destination, status }) => ({
+      applicationName,
+      eventSubscriber,
+      destination: JSON.parse(destination),
+      status: JSON.parse(status),
+    })
+  )
 }
 
 export default getEventSubscribers

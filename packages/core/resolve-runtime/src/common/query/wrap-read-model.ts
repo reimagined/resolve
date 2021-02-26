@@ -412,14 +412,15 @@ const customReadModelMethods = {
         eventTypes: Array<string> | null
         aggregateIds: Array<string> | null
       }
-    }) => {
+    }
+  ) => {
     const { status } = (
       await pool.eventstoreAdapter.getEventSubscribers({
         applicationName: pool.applicationName,
         eventSubscriber: readModelName,
       })
     )[0] ?? { status: null }
-    if(status == null) {
+    if (status == null) {
       return
     }
 
@@ -429,11 +430,11 @@ const customReadModelMethods = {
         eventSubscriber: readModelName,
         status: {
           ...status,
-          status: 'deliver'
+          status: 'deliver',
         },
         updateOnly: true,
       })
-    } catch(err) {}
+    } catch (err) {}
   },
 
   resubscribe: async (
@@ -460,7 +461,6 @@ const customReadModelMethods = {
       eventSubscriber: readModelName,
       status: {
         ...status,
-        
       },
       updateOnly: true,
     })
@@ -479,7 +479,7 @@ const customReadModelMethods = {
         eventSubscriber: readModelName,
       })
     )[0] ?? { status: null }
-    if(status == null) {
+    if (status == null) {
       return
     }
 
@@ -496,11 +496,11 @@ const customReadModelMethods = {
         applicationName: pool.applicationName,
         eventSubscriber: readModelName,
         status: {
-          eventTypes: status.eventTypes
+          eventTypes: status.eventTypes,
         },
         updateOnly: true,
       })
-    } catch(err) {}
+    } catch (err) {}
   },
 
   deleteProperty: async (
