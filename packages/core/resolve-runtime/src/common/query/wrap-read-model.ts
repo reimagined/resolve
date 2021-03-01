@@ -132,7 +132,7 @@ const customReadModelMethods = {
     readModelName: string,
     parameters: {}
   ) => {
-    const log = getLog(`sendEvents:${readModelName}`)
+    const log = getLog(`build:${readModelName}`)
     let lastSuccessEvent = null
     let lastFailedEvent = null
     let lastError: any = null

@@ -11,7 +11,6 @@ import { errorBoundary } from 'resolve-cloud-common/utils'
 import { initDomain } from 'resolve-core'
 
 import initAwsClients from './init-aws-clients'
-import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'
 import lambdaWorker from './lambda-worker'
 import wrapTrie from '../common/wrap-trie'
@@ -50,9 +49,6 @@ const index = async ({ assemblies, constants, domain }) => {
 
     log.debug('preparing aws clients')
     await initAwsClients(resolve)
-
-    log.debug('preparing event broker')
-    await initBroker(resolve)
 
     log.debug('preparing uploader')
     await initUploader(resolve)

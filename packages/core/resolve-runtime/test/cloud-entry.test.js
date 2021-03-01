@@ -320,6 +320,7 @@ describe('Cloud entry', () => {
         },
         projection: {
           SET: (state, event) => {
+            console.error('##############', event)
             return {
               ...state,
               [event.payload.key]: [event.payload.value],

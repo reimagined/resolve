@@ -96,30 +96,11 @@ const createSaga = ({
     viewModelsInterop: {},
   })
 
-  const sendEvents = async ({
-    modelName,
-    events,
-    xaTransactionId,
-    properties,
-    batchId,
-  }) => {
-    eventProperties = properties
-    await executeListener.sendEvents({
-      modelName,
-      events,
-      xaTransactionId,
-      properties,
-      batchId,
-    })
-  }
-
   const dispose = async () => await Promise.all([executeListener.dispose()])
 
   const executeSaga = new Proxy(executeListener, {
     get(_, key) {
-      if (key === 'sendEvents') {
-        return sendEvents
-      } else if (key === 'dispose') {
+      if (key === 'dispose') {
         return dispose
       } else {
         return executeListener[key].bind(executeListener)
