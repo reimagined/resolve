@@ -17,14 +17,15 @@ const subscribe: ExternalMethods['subscribe'] = async (
 
   const databaseNameAsId = escapeId(schemaName)
   const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
+  try {
+    pool.activePassthrough = true
+    while (true) {
+      try {
+        await inlineLedgerForceStop(pool, readModelName)
 
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
-
-      await inlineLedgerExecuteStatement(
-        pool,
-        `
+        await inlineLedgerExecuteStatement(
+          pool,
+          `
         WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
@@ -58,13 +59,16 @@ const subscribe: ExternalMethods['subscribe'] = async (
              : escapeStr('null')
          }
       `
-      )
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        )
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
+  } finally {
+    pool.activePassthrough = false
   }
 }
 

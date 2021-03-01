@@ -10,6 +10,8 @@ import beginTransaction from './begin-transaction'
 import commitTransaction from './commit-transaction'
 import rollbackTransaction from './rollback-transaction'
 import isTimeoutError from './is-timeout-error'
+import { PostgresqlAdapterConfigSchema } from './types'
+import { validate } from 'resolve-eventstore-base'
 
 const connect = async (
   pool: AdapterPoolPrimal,
@@ -25,6 +27,8 @@ const connect = async (
 ): Promise<void> => {
   const log = getLog('connect')
   log.debug('configuring RDS data service client')
+
+  validate(PostgresqlAdapterConfigSchema, config)
 
   let {
     databaseName,

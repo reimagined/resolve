@@ -8,7 +8,7 @@ import {
 const dispose = async (
   pool: CloudResourcePool & CloudResource,
   options: CloudResourceOptions
-): Promise<any> => {
+): Promise<void> => {
   const log = getLog(`resource:dispose`)
 
   const { destroyResource, createResource } = pool

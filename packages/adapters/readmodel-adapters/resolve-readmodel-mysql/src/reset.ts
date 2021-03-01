@@ -12,12 +12,13 @@ const reset: ExternalMethods['reset'] = async (pool, readModelName) => {
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
-
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
-      await inlineLedgerRunQuery(
-        `START TRANSACTION;
+  try {
+    pool.activePassthrough = true
+    while (true) {
+      try {
+        await inlineLedgerForceStop(pool, readModelName)
+        await inlineLedgerRunQuery(
+          `START TRANSACTION;
         
          SELECT * FROM ${ledgerTableNameAsId}
          WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
@@ -33,22 +34,22 @@ const reset: ExternalMethods['reset'] = async (pool, readModelName) => {
 
         COMMIT;
       `
-      )
+        )
 
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
-  }
 
-  await dropReadModel(pool, readModelName)
+    await dropReadModel(pool, readModelName)
 
-  while (true) {
-    try {
-      await inlineLedgerRunQuery(
-        `START TRANSACTION;
+    while (true) {
+      try {
+        await inlineLedgerRunQuery(
+          `START TRANSACTION;
         
          SELECT * FROM ${ledgerTableNameAsId}
          WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
@@ -60,14 +61,17 @@ const reset: ExternalMethods['reset'] = async (pool, readModelName) => {
 
          COMMIT;
       `
-      )
+        )
 
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
+  } finally {
+    pool.activePassthrough = false
   }
 }
 

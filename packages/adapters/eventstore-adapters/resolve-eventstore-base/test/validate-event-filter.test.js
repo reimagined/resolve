@@ -6,6 +6,7 @@ describe('validate-event-filter should works correctly with', () => {
       validateEventFilter({
         aggregateIds: null,
         limit: 200,
+        cursor: null,
       })
     ).not.toThrow()
   })
@@ -15,6 +16,7 @@ describe('validate-event-filter should works correctly with', () => {
       validateEventFilter({
         aggregateIds: ['id1', 'id2'],
         limit: 200,
+        cursor: null,
       })
     ).not.toThrow()
   })
