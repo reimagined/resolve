@@ -11,7 +11,7 @@ import commitTransaction from './commit-transaction'
 import rollbackTransaction from './rollback-transaction'
 import isTimeoutError from './is-timeout-error'
 import { PostgresqlAdapterConfigSchema } from './types'
-import { validate } from 'resolve-eventstore-base'
+import { validate } from '@reimagined/eventstore-base'
 
 const connect = async (
   pool: AdapterPoolPrimal,

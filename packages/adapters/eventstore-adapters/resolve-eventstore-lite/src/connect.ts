@@ -6,7 +6,7 @@ import type {
   SqliteAdapterConfig,
 } from './types'
 import { SqliteAdapterConfigSchema } from './types'
-import { validate } from 'resolve-eventstore-base'
+import { validate } from '@reimagined/eventstore-base'
 
 const SQLITE_BUSY = 'SQLITE_BUSY'
 const randRange = (min: number, max: number): number =>

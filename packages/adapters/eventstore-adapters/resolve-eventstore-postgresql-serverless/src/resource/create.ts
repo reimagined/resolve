@@ -5,7 +5,7 @@ import type {
   CloudResourcePool,
 } from '../types'
 import { CloudResourceOptionsSchema } from '../types'
-import { validate } from 'resolve-eventstore-base'
+import { validate } from '@reimagined/eventstore-base'
 
 const create = async (
   pool: CloudResourcePool,

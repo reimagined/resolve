@@ -1,5 +1,5 @@
 import { AdapterPool } from './types'
-import { EventstoreAlreadyFrozenError } from 'resolve-eventstore-base'
+import { EventstoreAlreadyFrozenError } from '@reimagined/eventstore-base'
 
 const freeze = async ({
   executeStatement,
