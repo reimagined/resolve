@@ -24,6 +24,8 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
+    "fp-ts": "2.9.5",
+    "io-ts": "2.2.15",
     "@reimagined/core": "0.26.5",
     "@reimagined/debug-levels": "0.26.5"
   },

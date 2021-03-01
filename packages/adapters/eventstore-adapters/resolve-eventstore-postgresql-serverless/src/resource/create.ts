@@ -1,11 +1,19 @@
 import getLog from '../get-log'
-import { AdminPool, CloudResourceOptions, CloudResourcePool } from '../types'
+import type {
+  AdminPool,
+  CloudResourceOptions,
+  CloudResourcePool,
+} from '../types'
+import { CloudResourceOptionsSchema } from '../types'
+import { validate } from 'resolve-eventstore-base'
 
 const create = async (
   pool: CloudResourcePool,
   options: CloudResourceOptions
-): Promise<any> => {
+): Promise<void> => {
   const log = getLog('resource:create')
+
+  validate(CloudResourceOptionsSchema, options)
 
   const {
     executeStatement: _executeStatement,

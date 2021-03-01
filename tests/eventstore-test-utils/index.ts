@@ -43,7 +43,7 @@ export function cloudResourceOptionsToAdapterConfig(
   }
 }
 
-export const TEST_SERVERLESS = false
+export const TEST_SERVERLESS = process.env.TEST_SERVERLESS === '1'
 
 export function jestTimeout(): number {
   if (TEST_SERVERLESS) {

@@ -218,7 +218,10 @@ describe('eventstore adapter import secrets', () => {
   })
 
   test('importing secrets should not drop events', async () => {
-    const { events } = await outputAdapter.loadEvents({ limit: countEvents })
+    const { events } = await outputAdapter.loadEvents({
+      limit: countEvents,
+      cursor: null,
+    })
     expect(events.length).toEqual(countEvents)
   })
 })
