@@ -55,8 +55,9 @@ const getEventSubscribers = async (
     status: any
   }>
 
-  const rows = inputRows.map(({ destination, ...rest }) => ({
+  const rows = inputRows.map(({ destination, status, ...rest }) => ({
     destination: JSON.parse(destination),
+    status: JSON.parse(status),
     ...rest,
   }))
 
