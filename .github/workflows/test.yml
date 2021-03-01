@@ -27,7 +27,7 @@ jobs:
         with:
           registry: github
           token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
-          version: auto
+          version: 0.27.15
           build: ${{ github.sha }}
           tag: latest-dev
           unpublish: false
