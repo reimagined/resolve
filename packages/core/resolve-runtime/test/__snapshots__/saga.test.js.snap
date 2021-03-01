@@ -19,11 +19,35 @@ Array [
   Array [
     "test-saga",
   ],
+  Array [
+    "test-saga",
+  ],
+  Array [
+    "test-saga",
+  ],
 ]
 `;
 
 exports[`resolve-saga: readModelConnectors['default-connector'].disconnect 1`] = `
 Array [
+  Array [
+    Object {
+      "defineTable": [MockFunction],
+      "delete": [MockFunction],
+      "find": [MockFunction],
+      "insert": [MockFunction],
+    },
+    "test-saga",
+  ],
+  Array [
+    Object {
+      "defineTable": [MockFunction],
+      "delete": [MockFunction],
+      "find": [MockFunction],
+      "insert": [MockFunction],
+    },
+    "test-saga",
+  ],
   Array [
     Object {
       "defineTable": [MockFunction],

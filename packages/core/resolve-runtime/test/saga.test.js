@@ -17,45 +17,65 @@ test('resolve-saga', async () => {
   const eventStoreLocalState = new Map()
 
   const eventstoreAdapter = {
-    loadEvents: jest.fn().mockReturnValueOnce({
-      events: [{ type: 'Init' }],
-      cursor: 'cursor-1'
-    }).mockReturnValueOnce({
-      events: [{
-        type: 'EVENT_TYPE',
-        aggregateId: 'aggregateId',
-        aggregateVersion: 1,
-        timestamp: 100,
-        payload: { content: true },
-      }],
-      cursor: 'cursor-2'
-    }),
-    getSecretsManager: jest.fn(),
-    ensureEventSubscriber: jest.fn().mockImplementation(async ({ applicationName, eventSubscriber, destination, status }) => {
-      eventStoreLocalState.set(`${applicationName}${eventSubscriber}`, {
-        ...(eventStoreLocalState.has(`${applicationName}${eventSubscriber}`) ?
-        eventStoreLocalState.get(`${applicationName}${eventSubscriber}`) :
-        {} 
-        ),
-         ...(destination != null ? { destination } : {}),
-         ...(status != null ? { status } : {}),
+    loadEvents: jest
+      .fn()
+      .mockReturnValueOnce({
+        events: [{ type: 'Init' }],
+        cursor: 'cursor-1',
       })
-  }),
-  removeEventSubscriber: jest.fn().mockImplementation(async ({ applicationName, eventSubscriber }) => {
-    eventStoreLocalState.delete(`${applicationName}${eventSubscriber}`)
-  }),
-  getEventSubscribers: jest.fn().mockImplementation(async ({ applicationName, eventSubscriber } = {}) => {
-    if(applicationName == null && eventSubscriber == null) {
-      return [...eventStoreLocalState.values()]
-    }
-    const result = []
-    for(const [key, {destination, status }] of eventStoreLocalState.entries()) {
-      if(`${applicationName}${eventSubscriber}` === key) {
-        result.push({ applicationName,eventSubscriber,destination, status })
-      }
-    }
-    return result
-  }),
+      .mockReturnValueOnce({
+        events: [
+          {
+            type: 'EVENT_TYPE',
+            aggregateId: 'aggregateId',
+            aggregateVersion: 1,
+            timestamp: 100,
+            payload: { content: true },
+          },
+        ],
+        cursor: 'cursor-2',
+      }),
+    getSecretsManager: jest.fn(),
+    ensureEventSubscriber: jest
+      .fn()
+      .mockImplementation(
+        async ({ applicationName, eventSubscriber, destination, status }) => {
+          eventStoreLocalState.set(`${applicationName}${eventSubscriber}`, {
+            ...(eventStoreLocalState.has(`${applicationName}${eventSubscriber}`)
+              ? eventStoreLocalState.get(`${applicationName}${eventSubscriber}`)
+              : {}),
+            ...(destination != null ? { destination } : {}),
+            ...(status != null ? { status } : {}),
+          })
+        }
+      ),
+    removeEventSubscriber: jest
+      .fn()
+      .mockImplementation(async ({ applicationName, eventSubscriber }) => {
+        eventStoreLocalState.delete(`${applicationName}${eventSubscriber}`)
+      }),
+    getEventSubscribers: jest
+      .fn()
+      .mockImplementation(async ({ applicationName, eventSubscriber } = {}) => {
+        if (applicationName == null && eventSubscriber == null) {
+          return [...eventStoreLocalState.values()]
+        }
+        const result = []
+        for (const [
+          key,
+          { destination, status },
+        ] of eventStoreLocalState.entries()) {
+          if (`${applicationName}${eventSubscriber}` === key) {
+            result.push({
+              applicationName,
+              eventSubscriber,
+              destination,
+              status,
+            })
+          }
+        }
+        return result
+      }),
   }
 
   const readModelStore = {
@@ -125,10 +145,16 @@ test('resolve-saga', async () => {
     domainInterop,
   })
 
-  const properties = {
-    RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0,
-    'test-property': 'content',
-  }
+  await sagaExecutor.setProperty({
+    modelName: 'test-saga',
+    key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
+    value: 0,
+  })
+  await sagaExecutor.setProperty({
+    modelName: 'test-saga',
+    key: 'test-property',
+    value: 'content',
+  })
 
   await sagaExecutor.build({ modelName: 'test-saga' })
   await sagaExecutor.build({ modelName: 'test-saga' })

@@ -23,38 +23,53 @@ let performanceTracer: any | null = null
 let invokeEventSubscriberAsync: any = null
 let getVacantTimeInMillis: any = null
 
-const eventStoreLocalState = new Map<string, { destination: any, status: any }>()
+const eventStoreLocalState = new Map<
+  string,
+  { destination: any; status: any }
+>()
 
 const eventstoreAdapter = ({
   loadEvents: jest
     .fn()
     .mockImplementation(async () => ({ events: [], cursor: 'NEXT_CURSOR' })),
   getNextCursor: jest.fn().mockImplementation(() => 'NEXT_CURSOR'),
-  ensureEventSubscriber: jest.fn().mockImplementation(async ({ applicationName, eventSubscriber, destination, status }) => {
-      eventStoreLocalState.set(`${applicationName}${eventSubscriber}`, {
-        ...(eventStoreLocalState.has(`${applicationName}${eventSubscriber}`) ?
-        eventStoreLocalState.get(`${applicationName}${eventSubscriber}`) as any :
-        {} 
-        ),
-         ...(destination != null ? { destination } : {}),
-         ...(status != null ? { status } : {}),
-      })
-  }),
-  removeEventSubscriber: jest.fn().mockImplementation(async ({ applicationName, eventSubscriber }) => {
-    eventStoreLocalState.delete(`${applicationName}${eventSubscriber}`)
-  }),
-  getEventSubscribers: jest.fn().mockImplementation(async ({ applicationName, eventSubscriber } = {}) => {
-    if(applicationName == null && eventSubscriber == null) {
-      return [...eventStoreLocalState.values()]
-    }
-    const result = []
-    for(const [key, {destination, status }] of eventStoreLocalState.entries()) {
-      if(`${applicationName}${eventSubscriber}` === key) {
-        result.push({ applicationName,eventSubscriber,destination, status })
+  ensureEventSubscriber: jest
+    .fn()
+    .mockImplementation(
+      async ({ applicationName, eventSubscriber, destination, status }) => {
+        eventStoreLocalState.set(`${applicationName}${eventSubscriber}`, {
+          ...(eventStoreLocalState.has(`${applicationName}${eventSubscriber}`)
+            ? (eventStoreLocalState.get(
+                `${applicationName}${eventSubscriber}`
+              ) as any)
+            : {}),
+          ...(destination != null ? { destination } : {}),
+          ...(status != null ? { status } : {}),
+        })
       }
-    }
-    return result
-  }),
+    ),
+  removeEventSubscriber: jest
+    .fn()
+    .mockImplementation(async ({ applicationName, eventSubscriber }) => {
+      eventStoreLocalState.delete(`${applicationName}${eventSubscriber}`)
+    }),
+  getEventSubscribers: jest
+    .fn()
+    .mockImplementation(async ({ applicationName, eventSubscriber } = {}) => {
+      if (applicationName == null && eventSubscriber == null) {
+        return [...eventStoreLocalState.values()]
+      }
+      const result = []
+      for (const [
+        key,
+        { destination, status },
+      ] of eventStoreLocalState.entries()) {
+        if (`${applicationName}${eventSubscriber}` === key) {
+          result.push({ applicationName, eventSubscriber, destination, status })
+        }
+      }
+      return result
+    }),
 } as unknown) as Eventstore
 
 for (const { describeName, prepare } of [
@@ -775,7 +790,7 @@ for (const { describeName, prepare } of [
         try {
           await query.build({ modelName: 'readModelName', events })
           return Promise.reject('Test failed')
-        } catch(error) {
+        } catch (error) {
           expect(error).toBeInstanceOf(Error)
         }
 
@@ -845,7 +860,10 @@ for (const { describeName, prepare } of [
           throw new Error('Some of test tools are not initialized')
         }
 
-        await query.resubscribe({ modelName: 'readModelName', subscriptionOptions: {} })
+        await query.resubscribe({
+          modelName: 'readModelName',
+          subscriptionOptions: {},
+        })
 
         const connector = readModelConnectors['default']
 
@@ -876,7 +894,10 @@ for (const { describeName, prepare } of [
         await query.dispose()
 
         try {
-          await query.resubscribe({ modelName: 'readModelName', subscriptionOptions: {} })
+          await query.resubscribe({
+            modelName: 'readModelName',
+            subscriptionOptions: {},
+          })
 
           return Promise.reject(new Error('Test failed'))
         } catch (error) {
