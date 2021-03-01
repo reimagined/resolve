@@ -66,6 +66,7 @@ const connect = async (
     eventsTableName,
     secretsTableName,
     snapshotsTableName,
+    subscribersTableName,
     fullJitter,
     coercer,
     executeStatement: executeStatement.bind(null, pool as AdapterPool),
