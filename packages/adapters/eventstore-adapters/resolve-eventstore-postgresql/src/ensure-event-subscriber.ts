@@ -45,7 +45,7 @@ const ensureEventSubscriber = async (
           (SELECT 1 AS "SubscriberNotFound"
           FROM "information_schema"."tables"
           WHERE (
-            SELECT Count(*) ${databaseNameAsId}.${subscribersTableNameAsId}
+            SELECT Count(*) FROM ${databaseNameAsId}.${subscribersTableNameAsId}
             WHERE "applicationName" = ${escape(applicationName)}
             AND "eventSubscriber" = ${escape(eventSubscriber)}
           ) = 0)
@@ -55,14 +55,14 @@ const ensureEventSubscriber = async (
       ) INSERT INTO ${databaseNameAsId}.${subscribersTableNameAsId}(
         "applicationName",
         "eventSubscriber",
-        ${!updateOnly ? `"destination", ` : ''}
+        "destination",
         "status"
       ) VALUES (
         ${escape(
           applicationName
         )} || (SELECT "CTE"."SubscriberCheck" FROM "CTE"),
         ${escape(eventSubscriber)},
-        ${!updateOnly ? `${escape(JSON.stringify(destination))},` : ''}
+        ${!updateOnly ? `${escape(JSON.stringify(destination))}` : `'null'`},
         ${escape(JSON.stringify(status))}
       )
       ON CONFLICT ("applicationName", "eventSubscriber") DO UPDATE SET

@@ -46,6 +46,7 @@ const connect = async (
     snapshotsTableName,
     secretsTableName,
     connectionOptions,
+    subscribersTableName,
     Postgres,
     fullJitter,
     coercer,

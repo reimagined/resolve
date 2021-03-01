@@ -642,7 +642,12 @@ const doOperation = async (
         }
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.warn(operationName, readModelName, args, error)
+        console.warn(
+          'Read-model operations error:',
+          operationName,
+          readModelName,
+          error
+        )
         throw error
       }
     }
