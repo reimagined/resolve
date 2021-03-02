@@ -18,8 +18,8 @@ jobs:
 
       - name: Install
         run: |
-          yarn install --frozen-lockfile
           yarn validate-lock-file
+          yarn install --frozen-lockfile
 
       - name: Prettier
         run: yarn prettier:check
