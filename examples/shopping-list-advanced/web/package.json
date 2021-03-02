@@ -55,7 +55,7 @@
     "react-test-renderer": "16.13.1",
     "enzyme": "3.7.0",
     "enzyme-adapter-react-16": "1.7.0",
-    "testcafe": "1.8.5",
+    "testcafe": "^1.9.1",
     "glob": "7.1.6",
     "opn": "5.4.0",
     "remotedev-server": "0.2.7",

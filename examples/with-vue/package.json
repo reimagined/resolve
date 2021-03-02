@@ -51,6 +51,6 @@
     "postcss-loader": "2.1.5",
     "resolve-cloud": "*",
     "style-loader": "0.21.0",
-    "testcafe": "1.8.5"
+    "testcafe": "^1.9.1"
   }
 }
