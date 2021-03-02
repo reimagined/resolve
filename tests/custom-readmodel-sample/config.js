@@ -35,7 +35,7 @@ const devConfig = {
     default: {
       module: 'connector.js',
       options: {
-        prefix: '@reimagined/model-database',
+        prefix: 'read-model-database',
       },
     },
   },
