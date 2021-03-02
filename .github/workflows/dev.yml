@@ -24,17 +24,17 @@ jobs:
           yarn install --frozen-lockfile
           yarn validate-lock-file
 
-#      - name: Prettier
-#        run: yarn prettier:check
+      - name: Prettier
+        run: yarn prettier:check
 
-#      - name: ESLint
-#        run: yarn lint
+      - name: ESLint
+        run: yarn lint
 
-#      - name: Test:unit
-#        run: yarn test
+      - name: Test:unit
+        run: yarn test
 
-#      - name: Test:integration
-#        run: yarn test:integration
+      - name: Test:integration
+        run: yarn test:integration
 
       - name: Test:e2e (ubuntu:chrome-headless)
         env:
