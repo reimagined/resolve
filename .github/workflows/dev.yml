@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
 
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')))
+    if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
 
     steps:
       - uses: actions/checkout@v2
