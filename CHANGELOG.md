@@ -27,6 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Runtime env RESOLVE_ES_EVENTS_TABLE removed
 - Runtime env RESOLVE_ES_SECRETS_TABLE removed
 
+### Changed
+
+#### Folder structure
+
+- Packages folder structure has been changed. The **core** folder contains packages related to framework's core functionality. The **runtime** folder contains runtime-specific adapters, brokers etc. The **tools** folder contains basic scripts and testing tools.
+
 ## 0.25.0
 
 ### Breaking Changes
