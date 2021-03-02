@@ -283,7 +283,7 @@ Specifies the application's Read Model connectors a key-value pairs. A connector
 ```js
 readModelConnectors: {
   default: {
-    module: 'resolve-readmodel-mysql',
+    module: 'readmodel-mysql',
     options: {
       host: 'localhost',
       port: 3306,

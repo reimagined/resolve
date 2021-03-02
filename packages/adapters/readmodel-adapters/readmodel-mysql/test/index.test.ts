@@ -3,7 +3,7 @@ import createReadModelAdapter from '../src'
 // @ts-ignore
 import { result } from 'mysql2/promise'
 
-describe('resolve-readmodel-mysql', () => {
+describe('readmodel-mysql', () => {
   //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   let adapter = null! as ReturnType<typeof createReadModelAdapter>
 

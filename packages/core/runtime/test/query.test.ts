@@ -1,4 +1,4 @@
-import createQuery from '../../resolve-runtime/src/common/query'
+import createQuery from '../src/common/query'
 import {
   ReadModelInteropMap,
   ViewModelInteropMap,

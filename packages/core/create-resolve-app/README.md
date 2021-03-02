@@ -90,7 +90,7 @@ The HTTP server for the serving client bundle and assets is not included.
 ## **User Guide**
 
 * [Project Structure Overview](../../docs/API%20References.md/#project-structure-overview)
-* [JSON Schema ReSolve Config](../resolve-scripts/configs/schema.resolve.config.json)
+* [JSON Schema ReSolve Config](../scripts/configs/schema.resolve.config.json)
 * [Aggregate](../../docs/Aggregate.md)
 * [View Model](../../docs/View%20Model.md)
 * [Read Model](../../docs/Read%20Model.md)

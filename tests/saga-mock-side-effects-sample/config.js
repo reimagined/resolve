@@ -38,7 +38,7 @@ const devConfig = {
     },
     /*
     default: {
-      module: 'resolve-readmodel-mysql',
+      module: 'readmodel-mysql',
       options: {
         host: 'localhost',
         port: 3306,
