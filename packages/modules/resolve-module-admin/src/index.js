@@ -15,17 +15,20 @@ const createModule = () => {
       },
       {
         path: '/api/event-broker/pause',
-        handler: '@reimagined/module-admin/lib/api-handlers/event-broker-pause.js',
+        handler:
+          '@reimagined/module-admin/lib/api-handlers/event-broker-pause.js',
         method: 'GET',
       },
       {
         path: '/api/event-broker/resume',
-        handler: '@reimagined/module-admin/lib/api-handlers/event-broker-resume.js',
+        handler:
+          '@reimagined/module-admin/lib/api-handlers/event-broker-resume.js',
         method: 'GET',
       },
       {
         path: '/api/event-broker/reset',
-        handler: '@reimagined/module-admin/lib/api-handlers/event-broker-reset.js',
+        handler:
+          '@reimagined/module-admin/lib/api-handlers/event-broker-reset.js',
         method: 'GET',
       },
       {

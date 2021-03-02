@@ -5,7 +5,7 @@ import {
   ReadModelInteropMap,
   ReadModelRuntimeEventHandler,
 } from './types'
-import { SecretsManager, Event, ReadModelResolvers } from '../types/core'
+import { Event, ReadModelResolvers } from '../types/core'
 import { createHttpError, HttpStatusCodes } from '../errors'
 import { getPerformanceTracerSubsegment } from '../utils'
 import { ReadModelMeta } from '../types/runtime'

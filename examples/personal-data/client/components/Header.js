@@ -13,7 +13,11 @@ import {
   Dropdown,
 } from 'reactstrap'
 import { getCDNBasedUrl } from '@reimagined/module-uploader'
-import { useStaticResolver, useQuery, useCommand } from '@reimagined/react-hooks'
+import {
+  useStaticResolver,
+  useQuery,
+  useCommand,
+} from '@reimagined/react-hooks'
 
 import Loading from './Loading'
 import UploaderContext from '../context'

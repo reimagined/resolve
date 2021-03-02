@@ -1,5 +1,9 @@
 import { EOL } from 'os'
-import { makeMonitoringSafe, ReadModelInterop, SagaInterop } from '@reimagined/core'
+import {
+  makeMonitoringSafe,
+  ReadModelInterop,
+  SagaInterop,
+} from '@reimagined/core'
 import getLog from './get-log'
 import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
