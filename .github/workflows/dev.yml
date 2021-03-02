@@ -106,7 +106,6 @@ jobs:
           yarn run-test testcafe --url=${{ steps.deploy.outputs.url }} --testcafe-browser=chrome --ci-mode --testcafe-timeout=10000
 
   e2e-mac:
-    needs: [smoke-test]
     runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
 
     if: github.event_name == 'push'
@@ -121,7 +120,6 @@ jobs:
         run: yarn test:e2e
 
   publish-dev:
-    needs: [smoke-test]
     runs-on: ubuntu-latest
     continue-on-error: true
 
