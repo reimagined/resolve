@@ -37,7 +37,7 @@ jobs:
         run: yarn test:integration
 
       - name: Test:e2e (ubuntu)
-        run: yarn test:e2e
+        run: yarn test:e2e chrome
 
       - name: Publish to private repository
         id: publish
