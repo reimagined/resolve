@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.27.0
+
+### Breaking Changes
+
+#### Scoped packages
+
+- reSolve packages are now published under the **@reimagined** scope. You need to update reSolve package names in the dependecies and imports by replacing **'resolve-'** with **'@reimagined/'**. For example, change **resolve-client** to **@reimagined/client**.
+
+#### Testing tools
+
+- When querying read model resolvers from testing tools, the resolver results are returned unwrapped, the **data** property was removed.
+
+#### Cloud config
+
+- Runtime env RESOLVE_ES_SECRET_ARN renamed to RESOLVE_USER_SECRET_ARN
+- Runtime env RESOLVE_ES_CLUSTER_ARN renamed to RESOLVE_EVENT_STORE_CLUSTER_ARN
+- Runtime env RESOLVE_ES_DATABASE renamed to RESOLVE_EVENT_STORE_DATABASE_NAME
+- Runtime env RESOLVE_READMODEL_SECRET_ARN renamed to RESOLVE_USER_SECRET_ARN
+- Runtime env RESOLVE_ES_SECRET_ARN renamed to RESOLVE_USER_SECRET_ARN
+- Runtime env RESOLVE_ES_EVENTS_TABLE removed
+- Runtime env RESOLVE_ES_SECRETS_TABLE removed
+
 ## 0.25.0
 
 ### Breaking Changes
@@ -25,11 +47,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The **api** object has been removed and a **client** object (from the resolve-client package) has been added.
 - React native support has been temporary suspended.
 
-#### @reimagined/runtime
+#### resolve-runtime
 
 - **executeQuery** in API handlers now returns a **data** object containing view or read model data and a **meta** object containing query meta data
 
-#### @reimagined/scripts
+#### resolve-scripts
 
 - **subscribeAdapter** option has been removed from config
 
@@ -46,9 +68,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `pushIncrementalImport` - accumulate events for incremental import
   - `commitIncrementalImport` - commit accumulated events to eventstore
   - `rollbackIncrementalImport` - drop accumulated events
-- @reimagined/client
+- resolve-client
   - **meta** object in query response containing meta data
-- @reimagined/redux
+- resolve-redux
   - New redux hook API
   - Added **serializedState** parameter to createStore
 
@@ -58,16 +80,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **url** and **cursor** params in the **subscribe** function
 
 ### Removed
-
-## 0.27.0
-
-### Breaking Changes
-
-#### cloud config
-- Runtime env RESOLVE_ES_SECRET_ARN renamed to RESOLVE_USER_SECRET_ARN
-- Runtime env RESOLVE_ES_CLUSTER_ARN renamed to RESOLVE_EVENT_STORE_CLUSTER_ARN
-- Runtime env RESOLVE_ES_DATABASE renamed to RESOLVE_EVENT_STORE_DATABASE_NAME
-- Runtime env RESOLVE_READMODEL_SECRET_ARN renamed to RESOLVE_USER_SECRET_ARN
-- Runtime env RESOLVE_ES_SECRET_ARN renamed to RESOLVE_USER_SECRET_ARN
-- Runtime env RESOLVE_ES_EVENTS_TABLE removed
-- Runtime env RESOLVE_ES_SECRETS_TABLE removed
