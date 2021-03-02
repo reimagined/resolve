@@ -11,7 +11,7 @@ import fsExtra from 'fs-extra'
 import showBuildInfo from './show_build_info'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
 import copyEnvToDist from './copy_env_to_dist'
-import getLog from './getLog'
+import getLog from './get-log'
 
 const log = getLog('custom')
 
