@@ -47,15 +47,25 @@ const runAfterLaunch = async (options) => {
   timeout = timeout != null ? timeout : 20000
   customArgs = customArgs != null ? customArgs : []
 
+  const ciMode = ['true', 'yes', '1'].includes(
+    process.env.RESOLVE_E2E_TESTS_CI_MODE
+  )
+
+  log.debug(`ciMode: ${ciMode}`)
   log.debug(`dir: ${functionalTestsDir}`)
   log.debug(`browser: ${browser}`)
   log.debug(`timeout: ${timeout}`)
   log.debug(`custom args: ${customArgs}`)
 
+  const xvfbCommand = ciMode
+    ? `xvfb-run --server-args="-screen 0 1280x720x24"`
+    : ''
+
   try {
     log.info(`executing testcafe runner`)
     return execSync(
       [
+        xvfbCommand,
         `npx testcafe ${browser}`,
         `${functionalTestsDir}`,
         `--app-init-delay ${timeout}`,

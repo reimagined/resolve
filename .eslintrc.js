@@ -511,6 +511,7 @@ module.exports = {
           'xpub',
           'xray',
           'xsub',
+          'xvfb',
           'xyz',
           'yargs',
           'yarnpkg',
