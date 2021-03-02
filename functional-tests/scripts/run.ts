@@ -367,7 +367,7 @@ const runTestcafeTests = async (options: TestBundleOptions) => {
     log.debug(`executing Testcafe runner`)
     execSync(
       [
-        `${xvfbCmd}node node_modules/.bin/testcafe ${browser}`,
+        `${xvfbCmd}npx testcafe ${browser}`,
         `${resolveDir('testcafe')}`,
         `--app-init-delay ${timeout}`,
         `--selector-timeout ${timeout}`,
