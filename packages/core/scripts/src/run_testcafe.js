@@ -45,7 +45,7 @@ const runAfterLaunch = async (options) => {
   let { functionalTestsDir, browser, customArgs, timeout } = options
   browser =
     browser ||
-    process.env.RESOLVE_E2E_TESTS_HEADLESS_MODE ||
+    process.env.RESOLVE_E2E_TESTS_BROWSER ||
     Object.keys(await getInstallations())[0]
   timeout = timeout != null ? timeout : 20000
   customArgs = customArgs != null ? customArgs : []
