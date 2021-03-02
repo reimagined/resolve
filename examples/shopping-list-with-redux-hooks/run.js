@@ -105,7 +105,7 @@ void (async () => {
         await runTestcafe({
           resolveConfig,
           functionalTestsDir: 'test/functional',
-          browser: process.argv[3],
+          browser: process.env.RESOLVE_E2E_TESTS_BROWSER || process.argv[3],
           customArgs: ['--stop-on-first-fail'],
         })
         break
