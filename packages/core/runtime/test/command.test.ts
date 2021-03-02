@@ -1,7 +1,5 @@
 import { AggregatesInterop, Command, CommandError } from '@reimagined/core'
-import createCommandExecutor, {
-  CommandExecutor,
-} from '../src/common/command'
+import createCommandExecutor, { CommandExecutor } from '../src/common/command'
 
 let performanceTracer: any
 let aggregatesInterop: AggregatesInterop
