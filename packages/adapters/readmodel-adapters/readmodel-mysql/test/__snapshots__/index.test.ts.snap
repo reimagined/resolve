@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolve-readmodel-mysql method "drop" 1`] = `
+exports[`readmodel-mysql method "drop" 1`] = `
 Array [
   Array [
     "query",
@@ -383,7 +383,7 @@ INDEX escapeId(id) (escapeId(id)))
 ]
 `;
 
-exports[`resolve-readmodel-mysql methods "defineTable", "insert", "find", "findOne" 1`] = `
+exports[`readmodel-mysql methods "defineTable", "insert", "find", "findOne" 1`] = `
 Array [
   Array [
     "query",
@@ -626,7 +626,7 @@ INDEX escapeId(id) (escapeId(id)))
 ]
 `;
 
-exports[`resolve-readmodel-mysql methods "defineTable", "insert", "update", "count", "delete" 1`] = `
+exports[`readmodel-mysql methods "defineTable", "insert", "update", "count", "delete" 1`] = `
 Array [
   Array [
     "query",
@@ -862,7 +862,7 @@ INDEX escapeId(id) (escapeId(id)))
 ]
 `;
 
-exports[`resolve-readmodel-mysql operator "$inc" 1`] = `
+exports[`readmodel-mysql operator "$inc" 1`] = `
 Array [
   Array [
     "query",
@@ -1328,7 +1328,7 @@ INDEX escapeId(id) (escapeId(id)))
 ]
 `;
 
-exports[`resolve-readmodel-mysql operator "$set" 1`] = `
+exports[`readmodel-mysql operator "$set" 1`] = `
 Array [
   Array [
     "query",
@@ -1518,7 +1518,7 @@ INDEX escapeId(id) (escapeId(id)))
 ]
 `;
 
-exports[`resolve-readmodel-mysql operator "$unset" 1`] = `
+exports[`readmodel-mysql operator "$unset" 1`] = `
 Array [
   Array [
     "query",

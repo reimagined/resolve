@@ -3,7 +3,7 @@
 exports[`base config works correctly [server] 1`] = `
 "
 import '$resolve.guardOnlyServer'
-import source_0_original_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaCronHandlers.js\\"
+import source_0_original_instance from \\"<MONOREPO_DIR>/core/scripts/test/alias/files/testSagaCronHandlers.js\\"
 import encryption_0_instance from \\"@reimagined/runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (
@@ -55,7 +55,7 @@ export default sagas
 exports[`config with schedulers works correctly [server] 1`] = `
 "
 import '$resolve.guardOnlyServer'
-import source_0_original_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaCronHandlers.js\\"
+import source_0_original_instance from \\"<MONOREPO_DIR>/core/scripts/test/alias/files/testSagaCronHandlers.js\\"
 import encryption_0_instance from \\"@reimagined/runtime/lib/common/defaults/encryption.js\\"
 const constructorBindFunction =
     (

@@ -3,7 +3,7 @@
 exports[`base config works correctly [server] 1`] = `
 "
 import '$resolve.guardOnlyServer'
-import handler_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testApiHandler.js\\"
+import handler_0_instance from \\"<MONOREPO_DIR>/core/scripts/test/alias/files/testApiHandler.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
