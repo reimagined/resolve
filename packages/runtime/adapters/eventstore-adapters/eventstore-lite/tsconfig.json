@@ -17,9 +17,8 @@
     "typeRoots": [
       "./typings",
       "./node_modules/@types",
-      "../../../../node_modules/@types"
+      "../../../../../node_modules/@types"
     ]
   },
-  "include": [
-    "src", "typings", "test"]
+  "include": ["src", "typings", "test"]
 }

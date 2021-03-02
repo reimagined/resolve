@@ -20,6 +20,5 @@
       "../../../../../node_modules/@types"
     ]
   },
-  "include": [
-    "src", "typings", "test"]
+  "include": ["src", "typings", "test"]
 }

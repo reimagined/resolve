@@ -1,6 +1,6 @@
 export {
   EventstoreResourceAlreadyExistError,
   EventstoreResourceNotExistError,
-} from 'src/__mocks__/@reimagined/eventstore-base'
+} from '@reimagined/eventstore-base'
 
 export default jest.fn()
