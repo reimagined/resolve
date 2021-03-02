@@ -1,4 +1,4 @@
-name: Dev CI/CD
+name: development
 
 on:
   push:
@@ -7,17 +7,17 @@ on:
     branches: [dev]
 
 jobs:
-  smoke-test:
+  verify-pull-request:
     runs-on: ubuntu-latest
 
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')))
+    if: (github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')))
 
     steps:
       - uses: actions/checkout@v2
 
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: '10'
+          node-version: '12'
 
       - name: Install
         run: |
@@ -30,69 +30,17 @@ jobs:
       - name: ESLint
         run: yarn lint
 
-      - name: Unit test
+      - name: Test:unit
         run: yarn test
 
-      - name: Integration test
+      - name: Test:integration
         run: yarn test:integration
 
-  e2e-macOS-test:
-    needs: [smoke-test]
-    runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
-
-    if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Install
-        run: yarn install --frozen-lockfile
-
-      - name: E2E test
+      - name: Test:e2e (ubuntu)
         run: yarn test:e2e
 
-  publish-dev:
-    needs: [smoke-test]
-    runs-on: ubuntu-latest
-    continue-on-error: true
-
-    if: github.event_name == 'push'
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Install & Build
-        run: |
-          echo "installing packages and building the repository"
-          yarn
-
       - name: Publish to private repository
-        uses: reimagined/github-actions/publish@v1
-        with:
-          registry: github
-          token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
-          version: auto
-          build: ${{ github.sha }}
-          tag: latest-dev
-          unpublish: false
-
-  cloud-test:
-    needs: [smoke-test, e2e-macOS-test]
-    runs-on: ubuntu-latest
-    continue-on-error: true
-
-    if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/'))
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Install & Build
-        run: |
-          echo "installing packages and building the repository"
-          yarn
-
-      - id: publish
-        name: Publish to private repository
+        id: publish
         uses: reimagined/github-actions/publish@v1
         with:
           registry: github
@@ -102,7 +50,7 @@ jobs:
           tag: cloud-test
           unpublish: true
 
-      - name: Checkout resolve-cloud
+      - name: Checkout cloud environment
         uses: actions/checkout@v2
         with:
           repository: DevExpress/resolve-cloud2
@@ -110,8 +58,8 @@ jobs:
           token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
           path: resolve-cloud
 
-      - id: cloud
-        name: Install cloud environment
+      - name: Install cloud environment
+        id: install_cloud
         uses: reimagined/github-actions/install-cloud@v1
         with:
           aws_access_key_id: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
@@ -131,12 +79,12 @@ jobs:
           cd ${test_app_dir}
           rm -rf node_modules
 
-      - id: deploy
-        name: Deploy test app to the cloud
+      - name: Deploy test app to the cloud
+        id: deploy
         uses: reimagined/github-actions/deploy@v1
         with:
           source: ${{ env.test_app_dir }}
-          cloud_api_url: ${{ steps.cloud.outputs.api_url}}
+          cloud_api_url: ${{ steps.install_cloud.outputs.api_url}}
           cloud_user: ${{ secrets.RESOLVE_CLOUD_USER }}
           cloud_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
           cli_sources: resolve-cloud/cli/resolve-cloud
@@ -147,12 +95,53 @@ jobs:
           package_registry_scopes: '@reimagined'
           deploy_args: --verbosity=debug
 
-      - name: API tests
+      - name: Test:functional (API)
         run: |
           cd functional-tests
           yarn run-test api --url=${{ steps.deploy.outputs.url }}
 
-      - name: Testcafe tests
+      - name: Test:functional (TestCafe)
         run: |
           cd functional-tests
           yarn run-test testcafe --url=${{ steps.deploy.outputs.url }} --testcafe-browser=chrome --ci-mode --testcafe-timeout=10000
+
+  e2e-mac:
+    needs: [smoke-test]
+    runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
+
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install
+        run: yarn install --frozen-lockfile
+
+      - name: Test:e2e (Mac)
+        run: yarn test:e2e
+
+  publish-dev:
+    needs: [smoke-test]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install & Build
+        run: |
+          echo "installing packages and building the repository"
+          yarn install --frozen-lockfile
+
+      - name: Publish to private repository
+        uses: reimagined/github-actions/publish@v1
+        with:
+          registry: github
+          token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
+          version: auto
+          build: ${{ github.sha }}
+          tag: latest-dev
+          unpublish: false
+
