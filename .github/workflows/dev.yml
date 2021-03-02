@@ -2,9 +2,9 @@ name: Dev CI/CD
 
 on:
   push:
-    branches: [ dev ]
+    branches: [dev]
   pull_request:
-    branches: [ dev ]
+    branches: [dev]
 
 jobs:
   smoke-test:
@@ -58,29 +58,30 @@ jobs:
 
     if: github.event_name == 'push'
 
-    env:
-      NPM_REGISTRY: ${{ secrets.PRIVATE_NPM_REGISTRY }}
-      NPM_TOKEN: ${{ secrets.PRIVATE_NPM_TOKEN }}
-
     steps:
       - uses: actions/checkout@v2
 
       - name: Install & Build
-        run: yarn install --frozen-lockfile
+        run: |
+          echo "installing packages and building the repository"
+          yarn
 
       - name: Publish to private repository
-        uses: ./.github/actions/publish
+        uses: reimagined/github-actions/publish@v1
         with:
-          npm_registry: ${{ secrets.PRIVATE_NPM_REGISTRY }}
-          npm_token: ${{ secrets.PRIVATE_NPM_TOKEN }}
-          version: ${{ github.sha }}
-          release_type: nightly
-          tag: nightly
+          registry: github
+          token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
+          version: auto
+          build: ${{ github.sha }}
+          tag: latest-dev
+          unpublish: false
 
   cloud-test:
     needs: [smoke-test, e2e-macOS-test]
     runs-on: ubuntu-latest
     continue-on-error: true
+
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && (startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')))
 
     steps:
       - uses: actions/checkout@v2
@@ -92,14 +93,35 @@ jobs:
 
       - id: publish
         name: Publish to private repository
-        uses: ./.github/actions/publish
+        uses: reimagined/github-actions/publish@v1
         with:
-          npm_registry: ${{ secrets.PRIVATE_NPM_REGISTRY }}
-          npm_token: ${{ secrets.PRIVATE_NPM_TOKEN }}
-          version: ${{ github.sha }}
-          release_type: cloud-test
+          registry: github
+          token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
+          version: auto
+          build: ${{ github.sha }}
           tag: cloud-test
           unpublish: true
+
+      - name: Checkout resolve-cloud
+        uses: actions/checkout@v2
+        with:
+          repository: DevExpress/resolve-cloud2
+          ref: 'feature/scoped-packages'
+          token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
+          path: resolve-cloud
+
+      - id: cloud
+        name: Install cloud environment
+        uses: reimagined/github-actions/install-cloud@v1
+        with:
+          aws_access_key_id: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
+          stage: dev
+          version: ${{ steps.publish.outputs.version }}
+          source: ./resolve-cloud
+          registry: ${{ steps.publish.outputs.registry_url }}
+          token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
+          scopes: '@reimagined'
 
       - name: Prepare test application
         run: |
@@ -111,23 +133,26 @@ jobs:
 
       - id: deploy
         name: Deploy test app to the cloud
-        uses: ./.github/actions/deploy
+        uses: reimagined/github-actions/deploy@v1
         with:
-          resolve_version: ${{ steps.publish.outputs.release_version }}
-          npm_registry: http://npm.resolve-dev.ml:10080
-          app_directory: ${{ env.test_app_dir }}
-          generate_app_name: true
-          resolve_api_url: https://api.resolve.sh
-          resolve_user: ${{ secrets.RESOLVE_CLOUD_USER }}
-          resolve_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
+          source: ${{ env.test_app_dir }}
+          cloud_api_url: ${{ steps.cloud.outputs.api_url}}
+          cloud_user: ${{ secrets.RESOLVE_CLOUD_USER }}
+          cloud_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
+          cli_sources: resolve-cloud/cli/resolve-cloud
+          framework_version: ${{ steps.publish.outputs.version }}
+          randomize_name: true
+          package_registry: ${{ steps.publish.outputs.registry_url }}
+          package_registry_token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
+          package_registry_scopes: '@reimagined'
           deploy_args: --verbosity=debug
 
       - name: API tests
         run: |
           cd functional-tests
-          yarn run-test api --url=${{ steps.deploy.outputs.app_url }}
+          yarn run-test api --url=${{ steps.deploy.outputs.url }}
 
       - name: Testcafe tests
         run: |
           cd functional-tests
-          yarn run-test testcafe --url=${{ steps.deploy.outputs.app_url }} --testcafe-browser=chrome --ci-mode --testcafe-timeout=10000
+          yarn run-test testcafe --url=${{ steps.deploy.outputs.url }} --testcafe-browser=chrome --ci-mode --testcafe-timeout=10000
