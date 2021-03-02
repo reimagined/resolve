@@ -1,5 +1,6 @@
 import { getInstallations } from 'testcafe-browser-tools'
 import { execSync } from 'child_process'
+import getLog from './get-log'
 
 import merge from './merge'
 import generateCustomMode from './generate_custom_mode'
@@ -40,12 +41,19 @@ const getConfig = async (resolveConfig, options) => {
 }
 
 const runAfterLaunch = async (options) => {
+  const log = getLog('run-testcafe')
   let { functionalTestsDir, browser, customArgs, timeout } = options
   browser = browser != null ? browser : Object.keys(await getInstallations())[0]
   timeout = timeout != null ? timeout : 20000
   customArgs = customArgs != null ? customArgs : []
 
+  log.debug(`dir: ${functionalTestsDir}`)
+  log.debug(`browser: ${browser}`)
+  log.debug(`timeout: ${timeout}`)
+  log.debug(`custom args: ${customArgs}`)
+
   try {
+    log.info(`executing testcafe runner`)
     return execSync(
       [
         `npx testcafe ${browser}`,
@@ -54,6 +62,7 @@ const runAfterLaunch = async (options) => {
         `--selector-timeout ${timeout}`,
         `--assertion-timeout ${timeout}`,
         `--page-load-timeout ${timeout}`,
+        process.env.DEBUG_LEVEL === 'debug' ? '--dev' : '',
         browser === 'remote' ? ' --qr-code' : '',
         ...customArgs,
       ].join(' '),

@@ -24,21 +24,23 @@ jobs:
           yarn install --frozen-lockfile
           yarn validate-lock-file
 
-      - name: Prettier
-        run: yarn prettier:check
+#      - name: Prettier
+#        run: yarn prettier:check
 
-      - name: ESLint
-        run: yarn lint
+#      - name: ESLint
+#        run: yarn lint
 
-      - name: Test:unit
-        run: yarn test
+#      - name: Test:unit
+#        run: yarn test
 
-      - name: Test:integration
-        run: yarn test:integration
+#      - name: Test:integration
+#        run: yarn test:integration
 
       - name: Test:e2e (ubuntu)
         env:
           RESOLVE_E2E_TESTS_BROWSER: chrome
+          DEBUG: resolve:scripts*
+          DEBUG_LEVEL: debug
         run: yarn test:e2e
 
       - name: Publish to private repository
