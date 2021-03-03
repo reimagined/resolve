@@ -9,7 +9,7 @@ const loadSnapshot = async (
     escape,
   }: AdapterPool,
   snapshotKey: string
-): Promise<any> => {
+): Promise<string | null> => {
   if (snapshotKey == null || snapshotKey.constructor !== String) {
     throw new Error('Snapshot key must be string')
   }

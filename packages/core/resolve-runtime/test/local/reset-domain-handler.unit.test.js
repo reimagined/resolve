@@ -10,6 +10,12 @@ const getMockResolve = () => ({
   eventBus: {
     reset: () => {},
   },
+  domainInterop: {
+    sagaDomain: {
+      createSagas: jest.fn(),
+      getSagasSchedulersInfo: jest.fn(() => []),
+    },
+  },
 })
 const getMockResponse = () => ({
   end: jest.fn(),

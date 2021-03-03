@@ -1,5 +1,12 @@
 import getLog from './get-log'
-import { AdapterPool, AdapterSpecific } from './types'
+import type {
+  AdapterPoolPrimal,
+  ConnectionDependencies,
+  SqliteAdapterPoolConnectedProps,
+  SqliteAdapterConfig,
+} from './types'
+import { SqliteAdapterConfigSchema } from './types'
+import { validate } from 'resolve-eventstore-base'
 
 const SQLITE_BUSY = 'SQLITE_BUSY'
 const randRange = (min: number, max: number): number =>
@@ -9,9 +16,10 @@ const fullJitter = (retries: number): number =>
   randRange(0, Math.min(100, 2 * 2 ** retries))
 
 const connect = async (
-  pool: AdapterPool,
-  specific: AdapterSpecific
-): Promise<any> => {
+  pool: AdapterPoolPrimal,
+  { sqlite, tmp, os, fs }: ConnectionDependencies,
+  config: SqliteAdapterConfig
+): Promise<void> => {
   const log = getLog('connect')
   log.debug('connecting to sqlite databases')
 
@@ -20,27 +28,17 @@ const connect = async (
   const escape = (str: string): string =>
     `'${String(str).replace(/(['])/gi, '$1$1')}'`
 
-  Object.assign(pool, {
-    escapeId,
-    escape,
-  })
+  pool.escape = escape
+  pool.escapeId = escapeId
 
-  const { sqlite, tmp, os, fs } = specific
   log.debug(`connecting to events database`)
 
-  let {
-    databaseFile,
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName,
-    // eslint-disable-next-line prefer-const
-    ...initOptions
-  } = pool.config
+  validate(SqliteAdapterConfigSchema, config)
 
-  databaseFile = pool.coerceEmptyString(databaseFile)
-  eventsTableName = pool.coerceEmptyString(eventsTableName, 'events')
-  snapshotsTableName = pool.coerceEmptyString(snapshotsTableName, 'snapshots')
-  secretsTableName = pool.coerceEmptyString(secretsTableName, 'default')
+  const databaseFile = config.databaseFile ?? ':memory:'
+  const eventsTableName = config.eventsTableName ?? 'events'
+  const snapshotsTableName = config.snapshotsTableName ?? 'snapshots'
+  const secretsTableName = config.secretsTableName ?? 'secrets'
 
   log.verbose(`databaseFile: ${databaseFile}`)
   log.verbose(`eventsTableName: ${eventsTableName}`)
@@ -122,13 +120,16 @@ const connect = async (
     await database.exec(`PRAGMA journal_mode=DELETE`)
   }
 
-  Object.assign(pool, {
-    database,
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName,
-    initOptions,
-  })
+  Object.assign<AdapterPoolPrimal, Partial<SqliteAdapterPoolConnectedProps>>(
+    pool,
+    {
+      database,
+      databaseFile,
+      eventsTableName,
+      snapshotsTableName,
+      secretsTableName,
+    }
+  )
 
   log.debug('connection to sqlite databases established')
 }

@@ -8,11 +8,28 @@ const importEventStoreHandler = (options) => async (req, res) => {
   const { eventstoreAdapter } = req.resolve
 
   try {
-    const { importFile } = options
+    const { directory } = options
 
-    const eventStream = eventstoreAdapter.import()
-    const fsStream = fs.createReadStream(path.join(importFile))
-    await promisify(pipeline)(fsStream, eventStream)
+    const eventsFile = path.join(directory, 'events.db')
+    const secretsFile = path.join(directory, 'secrets.db')
+
+    if (!fs.existsSync(eventsFile)) {
+      throw new Error(`No such file or directory "${eventsFile}"`)
+    }
+
+    if (!fs.existsSync(secretsFile)) {
+      throw new Error(`No such file or directory "${secretsFile}"`)
+    }
+
+    await promisify(pipeline)(
+      fs.createReadStream(eventsFile),
+      eventstoreAdapter.importEvents()
+    )
+
+    await promisify(pipeline)(
+      fs.createReadStream(secretsFile),
+      eventstoreAdapter.importSecrets()
+    )
 
     res.end('ok')
   } catch (error) {

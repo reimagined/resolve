@@ -1,4 +1,4 @@
-import { ConcurrentError } from 'resolve-eventstore-base'
+import { ConcurrentError, InputEvent } from 'resolve-eventstore-base'
 
 import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'
@@ -11,7 +11,7 @@ const saveEvent = async (
     escapeId,
     escape,
   }: AdapterPool,
-  event: any
+  event: InputEvent
 ): Promise<void> => {
   while (true) {
     try {

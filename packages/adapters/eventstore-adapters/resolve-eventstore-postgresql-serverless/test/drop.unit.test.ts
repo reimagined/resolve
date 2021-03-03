@@ -3,11 +3,12 @@ import { mocked } from 'ts-jest/utils'
 import { EventstoreResourceNotExistError } from 'resolve-eventstore-base'
 /* eslint-enable import/no-extraneous-dependencies */
 import { AdapterPool } from '../src/types'
-import drop from '../src/drop'
+import dropEvents from '../src/drop-events'
+import dropSecrets from '../src/drop-secrets'
 
 jest.mock('get-log')
 
-const mDrop = jest.fn(drop)
+const mDrop = jest.fn(dropEvents)
 
 let pool: AdapterPool
 
@@ -27,33 +28,19 @@ afterEach(() => {
   mDrop.mockClear()
 })
 
-test('event store dropped', async () => {
-  await mDrop(pool)
-
-  expect(mDrop).toHaveBeenCalledWith({
-    databaseName: 'database',
-    escapeId: pool.escapeId,
-    eventsTableName: 'events-table',
-    executeStatement: pool.executeStatement,
-    maybeThrowResourceError: pool.maybeThrowResourceError,
-    secretsTableName: 'secrets-table',
-    snapshotsTableName: 'snapshots-table',
-  })
-})
-
 test('secrets table dropped', async () => {
-  await drop(pool)
+  await dropSecrets(pool)
 
   expect(pool.executeStatement).toHaveBeenCalledWith(
-    `DROP TABLE escaped-database.escaped-secrets-table`
+    expect.stringMatching(/escaped-secrets-table/g)
   )
 })
 
 test('secrets stream index dropped', async () => {
-  await drop(pool)
+  await dropSecrets(pool)
 
   expect(pool.executeStatement).toHaveBeenCalledWith(
-    `DROP INDEX IF EXISTS escaped-database.escaped-secrets-table-global`
+    expect.stringMatching(/escaped-secrets-table-global/g)
   )
 })
 
@@ -64,7 +51,7 @@ test('resource not exist error detection', async () => {
     )
   }
 
-  await expect(drop(pool)).rejects.toBeInstanceOf(
-    EventstoreResourceNotExistError
-  )
+  const errors = await dropEvents(pool)
+  expect(errors).toHaveLength(1)
+  expect(errors[0]).toBeInstanceOf(EventstoreResourceNotExistError)
 })

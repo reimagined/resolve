@@ -23,34 +23,51 @@ import getSecret from './get-secret'
 import setSecret from './set-secret'
 
 import connect from './connect'
-import init from './init'
+import initEvents from './init-events'
+import initSecrets from './init-secrets'
+import initFinal from './init-final'
 import dispose from './dispose'
-import drop from './drop'
+import dropEvents from './drop-events'
+import dropSecrets from './drop-secrets'
+import dropFinal from './drop-final'
 
-export default createAdapter.bind(null, {
-  connect,
-  loadEventsByCursor,
-  loadEventsByTimestamp,
-  getLatestEvent,
-  saveEvent,
-  init,
-  drop,
-  dispose,
-  injectEvent,
-  freeze,
-  unfreeze,
-  shapeEvent,
-  saveSnapshot,
-  loadSnapshot,
-  dropSnapshot,
-  beginIncrementalImport,
-  commitIncrementalImport,
-  rollbackIncrementalImport,
-  pushIncrementalImport,
-  deleteSecret,
-  getSecret,
-  setSecret,
-  MySQL,
-  escapeId,
-  escape,
-})
+import type { Adapter } from 'resolve-eventstore-base'
+import type { ConnectionDependencies, MysqlAdapterConfig } from './types'
+
+const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {
+  return createAdapter(
+    {
+      connect,
+      loadEventsByCursor,
+      loadEventsByTimestamp,
+      getLatestEvent,
+      saveEvent,
+      initEvents,
+      initSecrets,
+      initFinal,
+      dropEvents,
+      dropSecrets,
+      dropFinal,
+      dispose,
+      injectEvent,
+      freeze,
+      unfreeze,
+      shapeEvent,
+      saveSnapshot,
+      loadSnapshot,
+      dropSnapshot,
+      beginIncrementalImport,
+      commitIncrementalImport,
+      rollbackIncrementalImport,
+      pushIncrementalImport,
+      deleteSecret,
+      getSecret,
+      setSecret,
+    },
+    { MySQL, escapeId, escape } as ConnectionDependencies,
+    options
+  )
+}
+
+export default createMysqlAdapter
+export type { MysqlAdapterConfig }

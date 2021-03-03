@@ -1,5 +1,5 @@
 import { Client as Postgres } from 'pg'
-import _createAdapter from 'resolve-eventstore-base'
+import createAdapter from 'resolve-eventstore-base'
 
 import loadEventsByCursor from './load-events-by-cursor'
 import loadEventsByTimestamp from './load-events-by-timestamp'
@@ -26,39 +26,58 @@ import getSecret from './get-secret'
 import setSecret from './set-secret'
 
 import connect from './connect'
-import init from './init'
-import drop from './drop'
+import initEvents from './init-events'
+import initSecrets from './init-secrets'
+import initFinal from './init-final'
+import dropEvents from './drop-events'
+import dropSecrets from './drop-secrets'
+import dropFinal from './drop-final'
 import dispose from './dispose'
 
-const createAdapter: () => any = _createAdapter.bind(null, {
-  connect,
-  loadEventsByCursor,
-  loadEventsByTimestamp,
-  getLatestEvent,
-  saveEvent,
-  init,
-  drop,
-  dispose,
-  freeze,
-  unfreeze,
-  shapeEvent,
-  loadSnapshot,
-  saveSnapshot,
-  dropSnapshot,
-  beginIncrementalImport,
-  commitIncrementalImport,
-  rollbackIncrementalImport,
-  pushIncrementalImport,
-  Postgres,
-  escapeId,
-  escape,
-  fullJitter,
-  executeStatement,
-  injectEvent,
-  coercer,
-  deleteSecret,
-  getSecret,
-  setSecret,
-})
+import type { Adapter } from 'resolve-eventstore-base'
+import type { ConnectionDependencies, PostgresqlAdapterConfig } from './types'
 
-export default createAdapter
+const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
+  return createAdapter(
+    {
+      connect,
+      loadEventsByCursor,
+      loadEventsByTimestamp,
+      getLatestEvent,
+      saveEvent,
+      initEvents,
+      initSecrets,
+      initFinal,
+      dropEvents,
+      dropSecrets,
+      dropFinal,
+      dispose,
+      freeze,
+      unfreeze,
+      shapeEvent,
+      loadSnapshot,
+      saveSnapshot,
+      dropSnapshot,
+      beginIncrementalImport,
+      commitIncrementalImport,
+      rollbackIncrementalImport,
+      pushIncrementalImport,
+      injectEvent,
+      deleteSecret,
+      getSecret,
+      setSecret,
+    },
+    {
+      Postgres,
+      escapeId,
+      escape,
+      fullJitter,
+      executeStatement,
+      coercer,
+    } as ConnectionDependencies,
+    options
+  )
+}
+
+export default createPostgresqlAdapter
+export type { PostgresqlAdapterConfig }

@@ -1,7 +1,11 @@
-import { ConcurrentError } from 'resolve-eventstore-base'
+import { ConcurrentError, InputEvent } from 'resolve-eventstore-base'
 import { AdapterPool } from './types'
+import { EventstoreFrozenError } from 'resolve-eventstore-base'
 
-const saveEvent = async (pool: AdapterPool, event: any): Promise<any> => {
+const saveEvent = async (
+  pool: AdapterPool,
+  event: InputEvent
+): Promise<void> => {
   const { eventsTableName, database, escapeId, escape } = pool
   try {
     const currentThreadId = Math.floor(Math.random() * 256)
@@ -63,7 +67,7 @@ const saveEvent = async (pool: AdapterPool, event: any): Promise<any> => {
     } catch (e) {}
 
     if (errorMessage === 'SQLITE_ERROR: integer overflow') {
-      throw new Error('Event store is frozen')
+      throw new EventstoreFrozenError()
     } else if (
       errorCode === 'SQLITE_CONSTRAINT' &&
       errorMessage.indexOf('aggregate') > -1

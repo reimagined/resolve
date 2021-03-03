@@ -10,7 +10,7 @@ const freeze = async ({
   const freezeTableNameAsId = escapeId(`${eventsTableName}-freeze`)
 
   await executeStatement(
-    `CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${freezeTableNameAsId} (
+    `CREATE TABLE ${databaseNameAsId}.${freezeTableNameAsId} (
       "surrogate" BIGINT NOT NULL,
       PRIMARY KEY("surrogate")
     );

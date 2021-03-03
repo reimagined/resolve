@@ -173,11 +173,11 @@ void (async () => {
           authModule
         )
 
-        const importFile = process.argv[3]
+        const directory = process.argv[3]
 
         await importEventStore(
           resolveConfig,
-          { importFile },
+          { directory },
           adjustWebpackConfigs
         )
         break
@@ -191,11 +191,11 @@ void (async () => {
           authModule
         )
 
-        const exportFile = process.argv[3]
+        const directory = process.argv[3]
 
         await exportEventStore(
           resolveConfig,
-          { exportFile },
+          { directory },
           adjustWebpackConfigs
         )
         break

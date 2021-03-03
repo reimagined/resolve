@@ -1,5 +1,10 @@
-import { SecretsManager, Event, SerializableMap } from 'resolve-core'
-import { CommandExecutorBuilder, CommandExecutor } from 'resolve-command'
+import {
+  SecretsManager,
+  Event,
+  SerializableMap,
+  initDomain,
+} from 'resolve-core'
+import { CommandExecutorBuilder, CommandExecutor } from 'resolve-runtime'
 import { Phases, symbol } from './constants'
 import { BDDAggregate } from './aggregate'
 import transformEvents from './transform-events'
@@ -30,25 +35,22 @@ type BDDExecuteCommandContext = {
 }
 
 const makeDummyEventStoreAdapter = ({
-  secretsManager,
   events,
   aggregateId,
-}: BDDExecuteCommandState) => ({
-  getNextCursor: () => Promise.resolve(null),
-  saveSnapshot: () => Promise.resolve(),
-  getSecretsManager: () => Promise.resolve(secretsManager),
-  loadSnapshot: () => Promise.resolve(null),
-  loadEvents: () =>
-    Promise.resolve({
-      events: transformEvents(events, 'aggregate', { aggregateId }),
-    }),
-})
-
-const makeDummyPublisher = () => {
+}: BDDExecuteCommandState) => {
   const savedEvents: Event[] = []
 
-  return async (event: Event) => {
-    savedEvents.push(event)
+  return {
+    getNextCursor: async () => Promise.resolve(null),
+    saveSnapshot: async () => Promise.resolve(),
+    loadSnapshot: async () => Promise.resolve(null),
+    saveEvent: async (event: Event) => {
+      savedEvents.push(event)
+    },
+    loadEvents: async () =>
+      Promise.resolve({
+        events: transformEvents(events, 'aggregate', { aggregateId }),
+      }),
   }
 }
 
@@ -64,26 +66,34 @@ export const executeCommand = async (
     throw new TypeError(`unexpected phase`)
   }
 
+  const domain = initDomain({
+    viewModels: [],
+    readModels: [],
+    aggregates: [
+      {
+        name: state.aggregate.name,
+        projection: state.aggregate.projection,
+        commands: state.aggregate.commands,
+        encryption: state.aggregate.encryption || null,
+        deserializeState: JSON.parse,
+        serializeState: JSON.stringify,
+        invariantHash: 'invariant-hash',
+      },
+    ],
+    sagas: [],
+  })
+
   const { assertion, resolve, reject } = state
   let executor: CommandExecutor | null = null
   try {
-    const onCommandExecuted = makeDummyPublisher()
-
     executor = createCommand({
-      eventstoreAdapter: makeDummyEventStoreAdapter(state),
-      onCommandExecuted,
       performanceTracer: null,
-      aggregates: [
-        {
-          name: state.aggregate.name,
-          projection: state.aggregate.projection,
-          commands: state.aggregate.commands,
-          encryption: state.aggregate.encryption || null,
-          deserializeState: JSON.parse,
-          serializeState: JSON.stringify,
-          invariantHash: 'invariant-hash',
-        },
-      ],
+      aggregatesInterop: domain.aggregateDomain.acquireAggregatesInterop({
+        eventstore: makeDummyEventStoreAdapter(state),
+        secretsManager: state.secretsManager,
+        monitoring: {},
+        hooks: {},
+      }),
     })
 
     const result = await executor({

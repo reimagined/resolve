@@ -24,11 +24,13 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "resolve-debug-levels": "0.26.5",
-    "resolve-core": "0.26.5"
+    "fp-ts": "2.9.5",
+    "io-ts": "2.2.15",
+    "resolve-core": "0.26.5",
+    "resolve-debug-levels": "0.26.5"
   },
   "devDependencies": {
-    "jest": "26.0.1",
+    "jest": "26.6.3",
     "sinon": "7.2.2"
   },
   "engines": {

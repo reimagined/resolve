@@ -1,11 +1,19 @@
 import getLog from '../get-log'
-import { AdminPool, CloudResourceOptions, CloudResourcePool } from '../types'
+import type {
+  AdminPool,
+  CloudResourceOptions,
+  CloudResourcePool,
+} from '../types'
+import { CloudResourceOptionsSchema } from '../types'
+import { validate } from 'resolve-eventstore-base'
 
 const create = async (
   pool: CloudResourcePool,
   options: CloudResourceOptions
-): Promise<any> => {
+): Promise<void> => {
   const log = getLog('resource:create')
+
+  validate(CloudResourceOptionsSchema, options)
 
   const {
     executeStatement: _executeStatement,
@@ -43,8 +51,20 @@ const create = async (
     : never
 
   log.debug(`configuring adapter with environment privileges`)
-  const adminPool: AdminPool = {
-    config: {
+  const adminPool: AdminPool = {}
+
+  log.debug(`connecting the adapter`)
+  await connect(
+    adminPool,
+    {
+      RDSDataService,
+      escapeId,
+      escape,
+      fullJitter,
+      executeStatement,
+      coercer,
+    },
+    {
       region: options.region,
       awsSecretStoreArn: options.awsSecretStoreAdminArn,
       dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
@@ -52,18 +72,8 @@ const create = async (
       eventsTableName: options.eventsTableName,
       secretsTableName: options.secretsTableName,
       snapshotsTableName: options.snapshotsTableName,
-    },
-  }
-
-  log.debug(`connecting the adapter`)
-  await connect(adminPool, {
-    RDSDataService,
-    escapeId,
-    escape,
-    fullJitter,
-    executeStatement,
-    coercer,
-  })
+    }
+  )
 
   log.debug(`building schema and granting privileges to user`)
   await executeStatement(

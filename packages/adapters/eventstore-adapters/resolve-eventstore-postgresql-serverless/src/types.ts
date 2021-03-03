@@ -1,3 +1,16 @@
+import type {
+  AdapterPoolConnectedProps,
+  AdapterPoolConnected,
+  AdapterPoolPossiblyUnconnected,
+  SavedEvent,
+} from 'resolve-eventstore-base'
+
+import {
+  AdapterConfigSchema,
+  UnbrandProps,
+  iots as t,
+} from 'resolve-eventstore-base'
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
 
@@ -16,15 +29,6 @@ type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
 export type AdminPool = {
-  config?: {
-    dbClusterOrInstanceArn: string
-    awsSecretStoreArn: string
-    databaseName: string
-    eventsTableName: string
-    secretsTableName: string
-    snapshotsTableName: string
-    region?: string
-  }
   RdsDataService?: RDSDataService
   escapeId?: EscapeFunction
   escape?: EscapeFunction
@@ -33,19 +37,7 @@ export type AdminPool = {
   coercer?: Coercer
 }
 
-export type AdapterPool = {
-  config: {
-    dbClusterOrInstanceArn: string
-    awsSecretStoreArn: string
-    databaseName: string
-    eventsTableName: string
-    secretsTableName: string
-    snapshotsTableName: string
-    region?: string
-    snapshotBucketSize?: number
-  }
-  maybeThrowResourceError: (error: Error[]) => void
-  coerceEmptyString: (obj: any, fallback?: string) => string
+export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   rdsDataService: RDSDataService
   dbClusterOrInstanceArn: string
   awsSecretStoreArn: string
@@ -58,8 +50,6 @@ export type AdapterPool = {
   executeStatement: (sql: any, transactionId?: string) => Promise<any[]>
   escapeId: EscapeFunction
   escape: EscapeFunction
-  bucketSize: number
-  shapeEvent: (event: any, additionalFields?: any) => any[]
   isTimeoutError: (error: any) => boolean
   beginTransaction: (pool: AdapterPool) => Promise<any>
   commitTransaction: (pool: AdapterPool, transactionId: string) => Promise<void>
@@ -69,16 +59,38 @@ export type AdapterPool = {
   ) => Promise<void>
 }
 
-export type AdapterSpecific = {
-  RDSDataService: typeof RDSDataService
-  fullJitter: FullJitter
-  escapeId: EscapeFunction
-  escape: EscapeFunction
-  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[]>
-  coercer: Coercer
-}
+export const PostgresqlAdapterConfigSchema = t.intersection([
+  AdapterConfigSchema,
+  t.type({
+    dbClusterOrInstanceArn: t.string,
+    awsSecretStoreArn: t.string,
+    databaseName: t.string,
+  }),
+  t.partial({
+    eventsTableName: t.string,
+    secretsTableName: t.string,
+    snapshotsTableName: t.string,
+    region: t.string,
+  }),
+  t.UnknownRecord,
+])
 
-export type CloudAdapterSpecific = {
+type PostgresqlAdapterConfigChecked = t.TypeOf<
+  typeof PostgresqlAdapterConfigSchema
+>
+export type PostgresqlAdapterConfig = UnbrandProps<
+  PostgresqlAdapterConfigChecked
+>
+
+export type AdapterPool = AdapterPoolConnected<
+  PostgresqlAdapterPoolConnectedProps
+>
+
+export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
+  PostgresqlAdapterPoolConnectedProps
+>
+
+export type ConnectionDependencies = {
   RDSDataService: typeof RDSDataService
   fullJitter: FullJitter
   escapeId: EscapeFunction
@@ -100,19 +112,24 @@ export type CloudResourcePool = {
   escape: EscapeFunction
   fullJitter: FullJitter
   coercer: Coercer
-  shapeEvent: (event: any, additionalFields?: any) => any[]
-  connect: (pool: AdapterPool, specific: AdapterSpecific) => Promise<any>
+  shapeEvent: (event: any, additionalFields?: any) => SavedEvent
+  connect: (
+    pool: AdapterPoolPrimal,
+    connectionDependencies: ConnectionDependencies,
+    config: PostgresqlAdapterConfig
+  ) => Promise<any>
   dispose: (pool: AdapterPool) => Promise<any>
 }
 
-export type CloudResourceOptions = {
-  region: string
-  databaseName: string
-  eventsTableName: string
-  secretsTableName: string
-  snapshotsTableName: string
-  userLogin: string
-  awsSecretStoreArn: string
-  awsSecretStoreAdminArn: string
-  dbClusterOrInstanceArn: string
-}
+export const CloudResourceOptionsSchema = t.type({
+  region: t.string,
+  databaseName: t.string,
+  eventsTableName: t.string,
+  secretsTableName: t.string,
+  snapshotsTableName: t.string,
+  userLogin: t.string,
+  awsSecretStoreAdminArn: t.string,
+  dbClusterOrInstanceArn: t.string,
+})
+
+export type CloudResourceOptions = t.TypeOf<typeof CloudResourceOptionsSchema>

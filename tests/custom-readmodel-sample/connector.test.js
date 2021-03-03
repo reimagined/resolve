@@ -4,7 +4,6 @@ import fs from 'fs'
 import path from 'path'
 
 import config from './config'
-import resetReadModel from '../reset-read-model'
 
 jest.setTimeout(1000 * 60 * 5)
 
@@ -36,11 +35,9 @@ describe('Read-model generic adapter API', () => {
 
   let adapter = null
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = createConnector(connectorOptions)
   })
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = null
   })
 
@@ -76,6 +73,6 @@ describe('Read-model generic adapter API', () => {
       })
       .read({})
 
-    expect(result.data).toEqual(200)
+    expect(result).toEqual(200)
   })
 })

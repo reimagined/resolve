@@ -6,7 +6,7 @@ const freeze = async ({
   escapeId,
 }: AdapterPool): Promise<void> => {
   await connection.execute(
-    `CREATE TABLE IF NOT EXISTS ${escapeId(`${eventsTableName}-freeze`)}(
+    `CREATE TABLE ${escapeId(`${eventsTableName}-freeze`)}(
       ${escapeId('surrogate')} BIGINT NOT NULL,
       PRIMARY KEY(${escapeId('surrogate')})
     )

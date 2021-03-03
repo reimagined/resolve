@@ -1,4 +1,5 @@
 import { AdapterPool } from './types'
+import { EventstoreAlreadyFrozenError } from 'resolve-eventstore-base'
 
 const freeze = async ({
   executeStatement,
@@ -9,15 +10,19 @@ const freeze = async ({
   const databaseNameAsId = escapeId(databaseName)
   const freezeTableNameAsId = escapeId(`${eventsTableName}-freeze`)
 
-  await executeStatement(
-    `CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${freezeTableNameAsId} (
+  try {
+    await executeStatement(
+      `CREATE TABLE ${databaseNameAsId}.${freezeTableNameAsId} (
       "surrogate" BIGINT NOT NULL,
       PRIMARY KEY("surrogate")
     );
     COMMENT ON TABLE ${databaseNameAsId}.${freezeTableNameAsId}
     IS 'RESOLVE EVENT STORE ${freezeTableNameAsId} FREEZE MARKER';
     `
-  )
+    )
+  } catch (error) {
+    throw new EventstoreAlreadyFrozenError()
+  }
 }
 
 export default freeze

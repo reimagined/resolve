@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
-import _createAdapter from 'resolve-eventstore-base'
+import createAdapter from 'resolve-eventstore-base'
 
 import loadEventsByCursor from './load-events-by-cursor'
 import loadEventsByTimestamp from './load-events-by-timestamp'
@@ -24,51 +24,79 @@ import rollbackIncrementalImport from './rollback-incremental-import'
 import pushIncrementalImport from './push-incremental-import'
 
 import connect from './connect'
-import init from './init'
-import drop from './drop'
+import initEvents from './init-events'
+import initSecrets from './init-secrets'
+import initFinal from './init-final'
+import dropEvents from './drop-events'
+import dropSecrets from './drop-secrets'
+import dropFinal from './drop-final'
 import dispose from './dispose'
 import deleteSecret from './delete-secret'
 import setSecret from './set-secret'
 import getSecret from './get-secret'
+import injectSecret from './inject-secret'
+import loadSecrets from './load-secrets'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
 
-import { CloudResource, CloudResourcePool } from './types'
+import type {
+  CloudResource,
+  CloudResourcePool,
+  CloudResourceOptions,
+  ConnectionDependencies,
+  PostgresqlAdapterConfig,
+} from './types'
+import type { Adapter } from 'resolve-eventstore-base'
 
-const createAdapter: () => any = _createAdapter.bind(null, {
-  connect,
-  loadEventsByCursor,
-  loadEventsByTimestamp,
-  getLatestEvent,
-  saveEvent,
-  init,
-  drop,
-  dispose,
-  freeze,
-  unfreeze,
-  RDSDataService,
-  escapeId,
-  escape,
-  fullJitter,
-  executeStatement,
-  injectEvent,
-  coercer,
-  shapeEvent,
-  deleteSecret,
-  getSecret,
-  setSecret,
-  loadSnapshot,
-  saveSnapshot,
-  dropSnapshot,
-  beginIncrementalImport,
-  commitIncrementalImport,
-  rollbackIncrementalImport,
-  pushIncrementalImport,
-})
+const createPostgresqlServerlessAdapter = (
+  options: PostgresqlAdapterConfig
+): Adapter => {
+  return createAdapter(
+    {
+      connect,
+      loadEventsByCursor,
+      loadEventsByTimestamp,
+      getLatestEvent,
+      saveEvent,
+      initEvents,
+      initSecrets,
+      initFinal,
+      dropEvents,
+      dropSecrets,
+      dropFinal,
+      dispose,
+      freeze,
+      unfreeze,
+      shapeEvent,
+      deleteSecret,
+      getSecret,
+      setSecret,
+      loadSnapshot,
+      saveSnapshot,
+      dropSnapshot,
+      beginIncrementalImport,
+      commitIncrementalImport,
+      rollbackIncrementalImport,
+      pushIncrementalImport,
+      injectEvent,
+      injectSecret,
+      loadSecrets,
+    },
+    {
+      RDSDataService,
+      escapeId,
+      escape,
+      fullJitter,
+      executeStatement,
+      coercer,
+    } as ConnectionDependencies,
+    options
+  )
+}
 
-export default createAdapter
+export default createPostgresqlServerlessAdapter
 
 const cloudPool: CloudResourcePool = {
   executeStatement,
@@ -100,3 +128,5 @@ export {
   disposeResource as dispose,
   destroyResource as destroy,
 }
+
+export type { PostgresqlAdapterConfig, CloudResourcePool, CloudResourceOptions }

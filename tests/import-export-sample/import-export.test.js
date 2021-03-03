@@ -2,14 +2,17 @@ import fs from 'fs'
 import path from 'path'
 import { promisify } from 'util'
 import { Readable, pipeline } from 'stream'
-import { MAINTENANCE_MODE_MANUAL } from 'resolve-eventstore-base'
+import {
+  EventstoreAlreadyFrozenError,
+  MAINTENANCE_MODE_MANUAL,
+} from 'resolve-eventstore-base'
 import createEventstoreAdapter from 'resolve-eventstore-lite'
 
 import createStreamBuffer from './create-stream-buffer'
 
 jest.setTimeout(1000 * 60 * 5)
 
-describe('import-export', () => {
+describe('import-export events', () => {
   const eventStorePath = path.join(__dirname, 'es.txt')
 
   afterAll(() => {
@@ -54,11 +57,14 @@ describe('import-export', () => {
     }
 
     await promisify(pipeline)(
-      inputEventstoreAdapter.export(),
-      outputEventstoreAdapter.import()
+      inputEventstoreAdapter.exportEvents(),
+      outputEventstoreAdapter.importEvents()
     )
 
-    const { events } = await outputEventstoreAdapter.loadEvents({ limit: 300 })
+    const { events } = await outputEventstoreAdapter.loadEvents({
+      limit: 300,
+      cursor: null,
+    })
 
     expect(events.length).toEqual(inputCountEvents)
   })
@@ -101,7 +107,7 @@ describe('import-export', () => {
         databaseFile: eventStorePath,
       })
 
-      const exportStream = eventEventstoreAdapter.export({
+      const exportStream = eventEventstoreAdapter.exportEvents({
         maintenanceMode: MAINTENANCE_MODE_MANUAL,
         bufferSize: 512,
         cursor,
@@ -132,10 +138,13 @@ describe('import-export', () => {
 
     await promisify(pipeline)(
       exportBufferStream,
-      outputEventstoreAdapter.import()
+      outputEventstoreAdapter.importEvents()
     )
 
-    const { events } = await outputEventstoreAdapter.loadEvents({ limit: 100 })
+    const { events } = await outputEventstoreAdapter.loadEvents({
+      limit: 100,
+      cursor: null,
+    })
 
     expect(events.length).toEqual(inputCountEvents)
     expect(steps).toBeGreaterThan(1)
@@ -168,37 +177,45 @@ describe('import-export', () => {
     while (true) {
       steps++
 
-      const exportStream = inputEventstoreAdapter.export({ cursor })
-      const tempStream = createStreamBuffer()
-      const pipelinePromise = promisify(pipeline)(
-        exportStream,
-        tempStream
-      ).then(() => false)
+      try {
+        const exportStream = inputEventstoreAdapter.exportEvents({ cursor })
+        const tempStream = createStreamBuffer()
+        const pipelinePromise = promisify(pipeline)(
+          exportStream,
+          tempStream
+        ).then(() => false)
 
-      const timeoutPromise = new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(true)
-        }, 100)
-      )
+        const timeoutPromise = new Promise((resolve) =>
+          setTimeout(() => {
+            resolve(true)
+          }, 100)
+        )
 
-      const isJsonStreamTimedOut = await Promise.race([
-        timeoutPromise,
-        pipelinePromise,
-      ])
-      isJsonStreamTimedOutOnce =
-        isJsonStreamTimedOutOnce || isJsonStreamTimedOut
+        const isJsonStreamTimedOut = await Promise.race([
+          timeoutPromise,
+          pipelinePromise,
+        ])
+        isJsonStreamTimedOutOnce =
+          isJsonStreamTimedOutOnce || isJsonStreamTimedOut
 
-      exportStream.destroy()
+        exportStream.destroy()
 
-      cursor = exportStream.cursor
+        cursor = exportStream.cursor
 
-      const buffer = tempStream.getBuffer().toString('utf8')
+        const buffer = tempStream.getBuffer().toString('utf8')
 
-      if (buffer === '') {
-        break
+        if (buffer === '') {
+          break
+        }
+
+        exportBuffers.push(buffer)
+      } catch (error) {
+        if (error instanceof EventstoreAlreadyFrozenError) {
+          await inputEventstoreAdapter.unfreeze()
+        } else {
+          throw error
+        }
       }
-
-      exportBuffers.push(buffer)
     }
 
     const outputEvents = exportBuffers

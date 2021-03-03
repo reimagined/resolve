@@ -5,7 +5,7 @@ import { AdminPool, CloudResourceOptions, CloudResourcePool } from '../types'
 const destroy = async (
   pool: CloudResourcePool,
   options: CloudResourceOptions
-): Promise<any> => {
+): Promise<void> => {
   const log = getLog(`resource: destroy`)
 
   const {
@@ -44,8 +44,20 @@ const destroy = async (
     : never
 
   log.debug(`configuring adapter with environment privileges`)
-  const adminPool: AdminPool = {
-    config: {
+  const adminPool: AdminPool = {}
+
+  log.debug(`connecting the adapter`)
+  await connect(
+    adminPool,
+    {
+      RDSDataService,
+      escapeId,
+      escape,
+      fullJitter,
+      executeStatement,
+      coercer,
+    },
+    {
       region: options.region,
       awsSecretStoreArn: options.awsSecretStoreAdminArn,
       dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
@@ -53,18 +65,8 @@ const destroy = async (
       eventsTableName: options.eventsTableName,
       secretsTableName: options.secretsTableName,
       snapshotsTableName: options.snapshotsTableName,
-    },
-  }
-
-  log.debug(`connecting the adapter`)
-  await connect(adminPool, {
-    RDSDataService,
-    escapeId,
-    escape,
-    fullJitter,
-    executeStatement,
-    coercer,
-  })
+    }
+  )
 
   let alterSchemaError = null
   let dropSchemaError = null

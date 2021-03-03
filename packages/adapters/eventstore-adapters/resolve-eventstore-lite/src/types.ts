@@ -1,4 +1,15 @@
-import type { open } from 'sqlite'
+import type { open, Database } from 'sqlite'
+import type {
+  AdapterPoolConnectedProps,
+  AdapterPoolConnected,
+  AdapterPoolPossiblyUnconnected,
+} from 'resolve-eventstore-base'
+import {
+  AdapterConfigSchema,
+  UnbrandProps,
+  iots as t,
+} from 'resolve-eventstore-base'
+
 export type SqliteOpen = typeof open
 
 export type MemoryStore = {
@@ -6,26 +17,36 @@ export type MemoryStore = {
   drop: () => void
 }
 
-export type AdapterPool = {
-  config: {
-    databaseFile: string
-    secretsTableName: string
-    eventsTableName: string
-    snapshotsTableName: string
-  }
-  maybeThrowResourceError: (error: Error[]) => void
-  coerceEmptyString: (obj: any, fallback?: string) => string
-  database: any
+export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
+  database: Database
+  databaseFile: string
   eventsTableName: string
   snapshotsTableName: string
   secretsTableName: string
   escapeId: (source: string) => string
   escape: (source: string) => string
-  memoryStore: MemoryStore
-  shapeEvent: (event: any) => any
+  memoryStore?: MemoryStore
 }
 
-export type AdapterSpecific = {
+export const SqliteAdapterConfigSchema = t.intersection([
+  AdapterConfigSchema,
+  t.partial({
+    databaseFile: t.string,
+    secretsTableName: t.string,
+    eventsTableName: t.string,
+    snapshotsTableName: t.string,
+  }),
+])
+
+type SqliteAdapterConfigChecked = t.TypeOf<typeof SqliteAdapterConfigSchema>
+export type SqliteAdapterConfig = UnbrandProps<SqliteAdapterConfigChecked>
+
+export type AdapterPool = AdapterPoolConnected<SqliteAdapterPoolConnectedProps>
+export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
+  SqliteAdapterPoolConnectedProps
+>
+
+export type ConnectionDependencies = {
   sqlite: { open: SqliteOpen }
   tmp: any
   os: any

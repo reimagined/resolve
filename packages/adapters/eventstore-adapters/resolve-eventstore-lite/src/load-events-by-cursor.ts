@@ -4,10 +4,9 @@ import { AdapterPool } from './types'
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (
-  pool: AdapterPool,
+  { database, escapeId, escape, eventsTableName, shapeEvent }: AdapterPool,
   filter: CursorFilter
 ): Promise<EventsWithCursor> => {
-  const { database, escapeId, escape, eventsTableName, shapeEvent } = pool
   const { eventTypes, aggregateIds, cursor, limit } = filter
   const injectString = (value: any): string => `${escape(value)}`
   const injectNumber = (value: any): string => `${+value}`
@@ -80,11 +79,11 @@ const loadEventsByCursor = async (
   let byteIndex = 0
 
   for (const threadCounter of vectorConditions) {
-    const threadCounterBytes = `${threadCounter
-      .substring(2)
-      .match(split2RegExp)}`
-    for (const byteHex of threadCounterBytes) {
-      nextConditionsBuffer[byteIndex++] = Buffer.from(byteHex, 'hex')[0]
+    const threadCounterBytes = threadCounter.substring(2).match(split2RegExp)
+    if (Array.isArray(threadCounterBytes)) {
+      for (const byteHex of threadCounterBytes) {
+        nextConditionsBuffer[byteIndex++] = Buffer.from(byteHex, 'hex')[0]
+      }
     }
   }
 

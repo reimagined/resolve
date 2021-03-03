@@ -2,31 +2,23 @@
 import { Client as Postgres } from 'pg'
 import { mocked } from 'ts-jest/utils'
 /* eslint-disable import/no-extraneous-dependencies */
-import { AdapterPool, AdapterSpecific } from '../src/types'
+import {
+  AdapterPool,
+  ConnectionDependencies,
+  PostgresqlAdapterConfig,
+} from '../src/types'
 import connect from '../src/connect'
 import executeStatement from '../src/execute-statement'
 
 const mPostgres = mocked(Postgres)
 
 let pool: AdapterPool
-let specific: AdapterSpecific
+let connectionDependencies: ConnectionDependencies
+let config: PostgresqlAdapterConfig
 
 beforeEach(() => {
-  pool = {
-    config: {
-      user: 'user',
-      database: 'database',
-      port: 1234,
-      host: 'host',
-      password: 'password',
-      databaseName: 'database-name',
-      eventsTableName: 'events-table-name',
-      snapshotsTableName: 'snapshots-table-name',
-      secretsTableName: 'secrets-table-name',
-    },
-    coerceEmptyString: (obj: any, fallback?: string) => obj,
-  } as any
-  specific = {
+  pool = {} as any
+  connectionDependencies = {
     Postgres,
     coercer: jest.fn(),
     escape: jest.fn(),
@@ -34,13 +26,24 @@ beforeEach(() => {
     executeStatement: jest.fn(),
     fullJitter: jest.fn(),
   }
+  config = {
+    user: 'user',
+    database: 'database',
+    port: 1234,
+    host: 'host',
+    password: 'password',
+    databaseName: 'database-name',
+    eventsTableName: 'events-table-name',
+    snapshotsTableName: 'snapshots-table-name',
+    secretsTableName: 'secrets-table-name',
+  }
   mPostgres.mockClear()
 })
 
 test('credentials passed to postgres client', async () => {
-  specific.executeStatement = executeStatement
+  connectionDependencies.executeStatement = executeStatement
 
-  await connect(pool, specific)
+  await connect(pool, connectionDependencies, config)
 
   expect(mPostgres).toHaveBeenCalledWith(
     expect.objectContaining({
@@ -59,30 +62,33 @@ test('credentials passed to postgres client', async () => {
 })
 
 test("utilities were assigned to adapter's pool", async () => {
-  await connect(pool, specific)
+  await connect(pool, connectionDependencies, config)
 
   expect(pool).toEqual(
     expect.objectContaining({
-      fullJitter: specific.fullJitter,
-      coercer: specific.coercer,
-      escape: specific.escape,
-      escapeId: specific.escapeId,
+      fullJitter: connectionDependencies.fullJitter,
+      coercer: connectionDependencies.coercer,
+      escape: connectionDependencies.escape,
+      escapeId: connectionDependencies.escapeId,
     })
   )
 })
 
 test("Postgres client assigned to adapter's pool", async () => {
-  await connect(pool, specific)
+  await connect(pool, connectionDependencies, config)
 
   expect(pool.Postgres).toBe(Postgres)
 })
 
 test("executeStatement bound to adapter's pool", async () => {
-  await connect(pool, specific)
+  await connect(pool, connectionDependencies, config)
 
   expect(pool.executeStatement).toBeDefined()
   if (pool.executeStatement) {
     await pool.executeStatement('test')
-    expect(specific.executeStatement).toHaveBeenCalledWith(pool, 'test')
+    expect(connectionDependencies.executeStatement).toHaveBeenCalledWith(
+      pool,
+      'test'
+    )
   }
 })

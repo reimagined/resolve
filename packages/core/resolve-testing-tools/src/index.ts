@@ -1,5 +1,10 @@
-import createQuery from 'resolve-query'
-import createCommand from 'resolve-command'
+import {
+  createQuery,
+  createCommand,
+  CreateQueryOptions,
+  detectConnectorFeatures,
+  connectorModes,
+} from 'resolve-runtime'
 import { SerializableMap, CommandResult } from 'resolve-core'
 import as from './as'
 import givenEvents from './given-events'
@@ -34,6 +39,8 @@ export default givenEvents.bind(null, {
   setSecretsManager,
   aggregate,
   command,
+  detectConnectorFeatures,
+  connectorModes,
 }) as (events: any[]) => GivenEventsContext
 
 export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =
@@ -63,7 +70,7 @@ export const getSchedulersNamesBySagas = (sagas: any): any => {
 
 export interface GivenEventsContext {
   all: any
-  createQuery: any
+  createQuery: (params: CreateQueryOptions) => any
   createCommand: any
   as: (jwt: any) => GivenEventsContext
   readModel: (params: ReadModelParams) => GivenEventsContext
