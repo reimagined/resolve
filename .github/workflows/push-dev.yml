@@ -40,6 +40,7 @@ jobs:
           token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
           version: auto
           build: ${{ github.sha }}
-          tag: latest-dev
+          tag: dev
           unpublish: false
+          github_target_repository: resolve-js/resolve
 
