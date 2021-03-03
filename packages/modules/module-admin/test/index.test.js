@@ -13,7 +13,7 @@ import { handler as propsRemoveHandler } from '../src/commands/sagas/properties/
 import { handler as propsSetHandler } from '../src/commands/sagas/properties/set'
 
 /* eslint-disable no-console */
-describe('@reimagined/module-admin', () => {
+describe('@resolve-js/module-admin', () => {
   let originalConsole = null
 
   beforeEach(() => {

@@ -1,4 +1,4 @@
-import { IS_BUILT_IN } from '@reimagined/core'
+import { IS_BUILT_IN } from '@resolve-js/core'
 
 function serializeState(state) {
   return JSON.stringify(state, null, 2)

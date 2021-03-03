@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/redux",
+  "name": "@resolve-js/redux",
   "version": "0.26.5",
   "description": "Provides tools that you can use to connect a React/Redux frontend to reSolve.",
   "keywords": [
@@ -8,7 +8,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@reimagined/redux#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@resolve-js/redux#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -38,9 +38,9 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@reimagined/client": "0.26.5",
-    "@reimagined/core": "0.26.5",
-    "@reimagined/react-hooks": "0.26.5",
+    "@resolve-js/client": "0.26.5",
+    "@resolve-js/core": "0.26.5",
+    "@resolve-js/react-hooks": "0.26.5",
     "hoist-non-react-statics": "^3.3.2",
     "json-stable-stringify": "^1.0.1",
     "jwt-decode": "^2.2.0",

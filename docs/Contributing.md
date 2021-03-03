@@ -100,14 +100,14 @@ Follow these guidelines to help maintainers and the community understand your re
 
 ### Issue Labels by Component
 
-| Label name                      | Description                                                                                                                                 |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Component: Documentation`      | Issues related to package descriptions, [docs folder topics](https://github.com/reimagined/resolve/tree/master/docs), and README files      |
-| `Component: Core`               | Issues related to a core part of the framework, installation, etc.                                                                          |
-| `Component: Examples`           | Issues related to [reSolve examples](https://github.com/reimagined/resolve/tree/master/examples)                                            |
-| `Component: @reimagined/redux`      | Issues related to the [@reimagined/redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux) package                |
-| `Component: @reimagined/scripts`    | Issues related to the [@reimagined/scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package            |
-| `Component: storage-adapters`   | Issues related to [storage adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters) packages         |
-| `Component: readmodel-adapters` | Issues related to [Read Model adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters) packages    |
-| `Component: bus-adapters`       | Issues related to the [bus adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters/bus-adapters) packages             |
-| `Component: subscribe-adapters` | Issues related to the [subscribe adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters/subscribe-adapters) packages |
+| Label name                       | Description                                                                                                                                 |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Component: Documentation`       | Issues related to package descriptions, [docs folder topics](https://github.com/reimagined/resolve/tree/master/docs), and README files      |
+| `Component: Core`                | Issues related to a core part of the framework, installation, etc.                                                                          |
+| `Component: Examples`            | Issues related to [reSolve examples](https://github.com/reimagined/resolve/tree/master/examples)                                            |
+| `Component: @resolve-js/redux`   | Issues related to the [@resolve-js/redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux) package            |
+| `Component: @resolve-js/scripts` | Issues related to the [@resolve-js/scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package        |
+| `Component: storage-adapters`    | Issues related to [storage adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters) packages         |
+| `Component: readmodel-adapters`  | Issues related to [Read Model adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters) packages    |
+| `Component: bus-adapters`        | Issues related to the [bus adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters/bus-adapters) packages             |
+| `Component: subscribe-adapters`  | Issues related to the [subscribe adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters/subscribe-adapters) packages |

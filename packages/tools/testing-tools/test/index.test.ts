@@ -1,6 +1,6 @@
 import givenEvents, { BDDAggregate } from '../src/index'
-import createReadModelConnector from '@reimagined/readmodel-lite'
-import { Event, EventHandlerEncryptionContext } from '@reimagined/core'
+import createReadModelConnector from '@resolve-js/readmodel-lite'
+import { Event, EventHandlerEncryptionContext } from '@resolve-js/core'
 
 const ProjectionError = (function (this: Error, message: string): void {
   Error.call(this)

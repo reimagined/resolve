@@ -2,7 +2,7 @@ import {
   TimestampFilter,
   throwBadCursor,
   EventsWithCursor,
-} from '@reimagined/eventstore-base'
+} from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 
 const loadEventsByTimestamp = async (

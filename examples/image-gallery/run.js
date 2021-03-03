@@ -9,14 +9,14 @@ import {
   reset,
   importEventStore,
   exportEventStore,
-} from '@reimagined/scripts'
+} from '@resolve-js/scripts'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test-functional'
-import resolveModuleUploader from '@reimagined/module-uploader'
+import resolveModuleUploader from '@resolve-js/module-uploader'
 
 const launchMode = process.argv[2]
 

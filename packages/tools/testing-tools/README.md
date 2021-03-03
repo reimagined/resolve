@@ -1,5 +1,6 @@
-# **@reimagined/testing-tools**
-[![npm version](https://badge.fury.io/js/@reimagined/testing-tools.svg)](https://badge.fury.io/js/@reimagined/testing-tools)
+# **@resolve-js/testing-tools**
+
+[![npm version](https://badge.fury.io/js/@resolve-js/testing-tools.svg)](https://badge.fury.io/js/@resolve-js/testing-tools)
 
 This package for testing read-models and sagas.
 

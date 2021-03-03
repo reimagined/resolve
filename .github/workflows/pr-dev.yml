@@ -71,7 +71,7 @@ jobs:
           source: ./resolve-cloud
           registry: ${{ steps.publish.outputs.registry_url }}
           token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
-          scopes: '@reimagined'
+          scopes: '@resolve-js'
 
       - name: Prepare test application
         run: |
@@ -94,7 +94,7 @@ jobs:
           randomize_name: true
           package_registry: ${{ steps.publish.outputs.registry_url }}
           package_registry_token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
-          package_registry_scopes: '@reimagined'
+          package_registry_scopes: '@resolve-js'
           deploy_args: --verbosity=debug
 
       - name: Test:functional (API)

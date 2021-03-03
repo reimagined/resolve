@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
-import createAdapter from '@reimagined/eventstore-base'
+import createAdapter from '@resolve-js/eventstore-base'
 
 import loadEventsByCursor from './load-events-by-cursor'
 import loadEventsByTimestamp from './load-events-by-timestamp'
@@ -48,7 +48,7 @@ import type {
   ConnectionDependencies,
   PostgresqlAdapterConfig,
 } from './types'
-import type { Adapter } from '@reimagined/eventstore-base'
+import type { Adapter } from '@resolve-js/eventstore-base'
 
 const createPostgresqlServerlessAdapter = (
   options: PostgresqlAdapterConfig

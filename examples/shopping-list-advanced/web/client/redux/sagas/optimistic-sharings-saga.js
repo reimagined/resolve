@@ -1,5 +1,5 @@
 import { takeEvery, put } from 'redux-saga/effects'
-import { actionTypes } from '@reimagined/redux'
+import { actionTypes } from '@resolve-js/redux'
 
 import {
   OPTIMISTIC_SHARINGS_SYNC,

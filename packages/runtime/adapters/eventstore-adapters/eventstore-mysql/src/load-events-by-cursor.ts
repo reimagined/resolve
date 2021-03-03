@@ -1,5 +1,5 @@
 import { AdapterPool } from './types'
-import { CursorFilter } from '@reimagined/eventstore-base/src/types'
+import { CursorFilter } from '@resolve-js/eventstore-base/src/types'
 
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 

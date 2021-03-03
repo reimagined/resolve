@@ -1,7 +1,7 @@
 import createAndInitConsumer from '../src/consumer-server'
-import { createServer } from '@reimagined/local-rpc'
+import { createServer } from '@resolve-js/local-rpc'
 
-jest.mock('@reimagined/local-rpc', () => ({
+jest.mock('@resolve-js/local-rpc', () => ({
   createServer: jest.fn(),
 }))
 

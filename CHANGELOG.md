@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Scoped packages
 
-- reSolve packages are now published under the **@reimagined** scope. You need to update reSolve package names in the dependecies and imports by replacing **'resolve-'** with **'@reimagined/'**. For example, change **resolve-client** to **@reimagined/client**.
+- reSolve packages are now published under the **@resolve-js** scope. You need to update reSolve package names in the dependecies and imports by replacing **'resolve-'** with **'@resolve-js/'**. For example, change **resolve-client** to **@resolve-js/client**.
 
 #### Testing tools
 

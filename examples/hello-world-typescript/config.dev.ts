@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from '@reimagined/scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const devConfig = {
   target: 'local',
@@ -10,13 +10,13 @@ const devConfig = {
   distDir: 'dist',
   readModelConnectors: {
     default: {
-      module: '@reimagined/readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-models.db',
       },
     },
     /*default: {
-      module: '@reimagined/readmodel-mysql',
+      module: '@resolve-js/readmodel-mysql',
       options: {
         host: 'localhost',
         port: 3306,
@@ -27,7 +27,7 @@ const devConfig = {
     }*/
   },
   eventstoreAdapter: {
-    module: '@reimagined/eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/storage.db',
       secretsFile: 'data/secrets.db',
@@ -35,7 +35,7 @@ const devConfig = {
     },
   },
   /*{
-    module: '@reimagined/eventstore-mysql',
+    module: '@resolve-js/eventstore-mysql',
     options: {
       host: 'localhost',
       port: 3306,

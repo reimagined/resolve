@@ -1,12 +1,12 @@
 import React from 'react'
-import { Context } from '@reimagined/client'
+import { Context } from '@resolve-js/client'
 import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
 import { ResolveContext } from '../src/context'
 import { useClient } from '../src/use-client'
 import { useViewModel } from '../src/use-view-model'
 
-jest.mock('@reimagined/client')
+jest.mock('@resolve-js/client')
 const projectionInitHandler = jest.fn(() => ({ initializedOnClient: true }))
 
 const mockContext: Context = {

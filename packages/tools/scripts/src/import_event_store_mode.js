@@ -16,7 +16,7 @@ const getConfig = async (resolveConfig, options) => {
         method: 'GET',
         path: '/api/import-event-store',
         handler: {
-          module: '@reimagined/runtime/lib/local/import-event-store-handler.js',
+          module: '@resolve-js/runtime/lib/local/import-event-store-handler.js',
           options,
         },
       },

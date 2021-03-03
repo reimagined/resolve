@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/eventstore-postgresql",
+  "name": "@resolve-js/eventstore-postgresql",
   "version": "0.26.5",
   "description": "An adapter reSolve uses to store events in PostgreSQL.",
   "keywords": [
@@ -8,7 +8,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/eventstore-adapters/@reimagined/eventstore-postgresql#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/eventstore-adapters/@resolve-js/eventstore-postgresql#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -19,15 +19,15 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "yarn workspace @internal/babel-compile start --name=@reimagined/eventstore-postgresql",
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/eventstore-postgresql",
     "test": "jest --config=../../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@reimagined/core": "0.26.5",
-    "@reimagined/debug-levels": "0.26.5",
-    "@reimagined/eventstore-base": "0.26.5",
+    "@resolve-js/core": "0.26.5",
+    "@resolve-js/debug-levels": "0.26.5",
+    "@resolve-js/eventstore-base": "0.26.5",
     "pg": "^8.2.1"
   },
   "devDependencies": {

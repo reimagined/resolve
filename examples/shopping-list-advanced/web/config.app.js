@@ -35,7 +35,7 @@ const appConfig = {
     {
       handler: {
         module:
-          '@reimagined/runtime/lib/common/handlers/live-require-handler.js',
+          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
         options: {
           modulePath: './ssr.js',
           moduleFactoryImport: false,

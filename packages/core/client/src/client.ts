@@ -1,5 +1,5 @@
 import { StringifyOptions } from 'query-string'
-import { IS_BUILT_IN } from '@reimagined/core'
+import { IS_BUILT_IN } from '@resolve-js/core'
 import { Context } from './context'
 import { GenericError } from './errors'
 import { connect, disconnect } from './subscribe'

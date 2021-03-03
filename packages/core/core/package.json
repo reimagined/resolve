@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/core",
+  "name": "@resolve-js/core",
   "version": "0.26.5",
   "description": "reSolve core.",
   "keywords": [
@@ -19,13 +19,13 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "yarn workspace @internal/babel-compile start --name=@reimagined/core",
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/core",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@reimagined/debug-levels": "0.26.5",
+    "@resolve-js/debug-levels": "0.26.5",
     "uuid": "8.3.2"
   },
   "devDependencies": {

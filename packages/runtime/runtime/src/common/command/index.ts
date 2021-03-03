@@ -3,7 +3,7 @@ import {
   CommandResult,
   AggregatesInterop,
   CommandError,
-} from '@reimagined/core'
+} from '@resolve-js/core'
 
 type CommandPool = {
   performanceTracer: any

@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/readmodel-postgresql",
+  "name": "@resolve-js/readmodel-postgresql",
   "version": "0.26.5",
   "description": "This package serves as a resolve-query adapter for storing a read model in postgres",
   "keywords": [
@@ -24,8 +24,8 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@reimagined/debug-levels": "0.26.5",
-    "@reimagined/readmodel-base": "0.26.5",
+    "@resolve-js/debug-levels": "0.26.5",
+    "@resolve-js/readmodel-base": "0.26.5",
     "pg": "^8.2.1"
   },
   "devDependencies": {

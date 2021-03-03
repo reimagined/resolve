@@ -1,15 +1,15 @@
-# **@reimagined/module-auth**
+# **@resolve-js/module-auth**
 
 Resolve authentication module provides out-of-box support for Passport compatible strategies (https://github.com/jaredhanson/passport-strategy).
-When using `@reimagined/module-auth` in resolve application, developer should only provide authentication strategy and supply API routes for login, register and other actions.
+When using `@resolve-js/module-auth` in resolve application, developer should only provide authentication strategy and supply API routes for login, register and other actions.
 
-Use `@reimagined/module-auth` in application in following manner.
+Use `@resolve-js/module-auth` in application in following manner.
 
 Entry point (run.js):
 
 ```js
-import { defaultResolveConfig, build, start, watch, runTestcafe, merge, injectRuntimeEnv } from '@reimagined/scripts'
-import createAuthModule from '@reimagined/module-auth' // Import authentication module
+import { defaultResolveConfig, build, start, watch, runTestcafe, merge, injectRuntimeEnv } from '@resolve-js/scripts'
+import createAuthModule from '@resolve-js/module-auth' // Import authentication module
 
 import appConfig from './config.app' // Main application config with defined domain logic
 import devConfig from './config.dev' // Development config. Prod and other configs ommited here for simplify example
@@ -63,24 +63,27 @@ Strategy constructor (auth/create_strategy.js):
 ```js
 import { Strategy as StrategyFactory } from 'passport-local' // Import passport strategy
 
-const createStrategy = options => ({ // Export function which will accept runtime vary options from application config
+const createStrategy = (options) => ({
+  // Export function which will accept runtime vary options from application config
   factory: StrategyFactory, // Re-export passport strategy factory
-  options: { // Custom compile-time options ...
-    failureRedirect: error =>
+  options: {
+    // Custom compile-time options ...
+    failureRedirect: (error) =>
       `/error?text=${encodeURIComponent(error.message)}`,
-    errorRedirect: error => `/error?text=${encodeURIComponent(error.message)}`,
+    errorRedirect: (error) =>
+      `/error?text=${encodeURIComponent(error.message)}`,
     usernameField: 'username',
     passwordField: 'username',
     successRedirect: null,
     // ... plus runtime options, like secret keys
-    ...options
-  }
+    ...options,
+  },
 })
 
 export default createStrategy
 ```
 
-Register API handler (auth/route_register_callback.js) - other handlers are omitted: 
+Register API handler (auth/route_register_callback.js) - other handlers are omitted:
 
 ```js
 import jwt from 'jsonwebtoken'
@@ -121,7 +124,6 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
 export default routeRegisterCallback
 ```
 
+[![npm version](https://badge.fury.io/js/@resolve-js/module-auth.svg)](https://badge.fury.io/js/@resolve-js/module-auth)
 
-[![npm version](https://badge.fury.io/js/@reimagined/module-auth.svg)](https://badge.fury.io/js/@reimagined/module-auth)
-
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-@reimagined/module-auth-readme?pixel)
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-@resolve-js/module-auth-readme?pixel)

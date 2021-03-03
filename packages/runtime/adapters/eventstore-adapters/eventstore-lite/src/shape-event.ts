@@ -1,4 +1,4 @@
-import { SavedEvent } from '@reimagined/eventstore-base'
+import { SavedEvent } from '@resolve-js/eventstore-base'
 
 const shapeEvent = (event: any, additionalFields?: any): SavedEvent =>
   Object.freeze({

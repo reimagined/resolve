@@ -3,7 +3,7 @@ import {
   makeMonitoringSafe,
   ReadModelInterop,
   SagaInterop,
-} from '@reimagined/core'
+} from '@resolve-js/core'
 import getLog from './get-log'
 import { WrapReadModelOptions, SerializedError, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'

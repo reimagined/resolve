@@ -26,11 +26,11 @@ describe('validateReadModelConnectors', () => {
       ],
       readModelConnectors: {
         default: {
-          module: '@reimagined/readmodel-lite',
+          module: '@resolve-js/readmodel-lite',
           options: {},
         },
         custom: {
-          module: '@reimagined/readmodel-mysql',
+          module: '@resolve-js/readmodel-mysql',
           options: {},
         },
       },
@@ -54,7 +54,7 @@ describe('validateReadModelConnectors', () => {
       ],
       readModelConnectors: {
         default: {
-          module: '@reimagined/readmodel-lite',
+          module: '@resolve-js/readmodel-lite',
           options: {},
         },
       },

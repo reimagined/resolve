@@ -1,11 +1,11 @@
 import {
   EventstoreResourceAlreadyExistError,
   EventstoreResourceNotExistError,
-} from '@reimagined/eventstore-base'
+} from '@resolve-js/eventstore-base'
 import {
   PublisherResourceAlreadyExistError,
   PublisherResourceNotExistError,
-} from '@reimagined/local-event-broker'
+} from '@resolve-js/local-event-broker'
 
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 

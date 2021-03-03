@@ -1,5 +1,5 @@
 import React from 'react'
-import { connectViewModel } from '@reimagined/redux'
+import { connectViewModel } from '@resolve-js/redux'
 
 // The example code uses components from the react-bootstrap library to reduce the markup.
 import { ListGroup, ListGroupItem, Checkbox } from 'react-bootstrap'

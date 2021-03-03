@@ -3,8 +3,8 @@ import {
   Event,
   SerializableMap,
   initDomain,
-} from '@reimagined/core'
-import { CommandExecutorBuilder, CommandExecutor } from '@reimagined/runtime'
+} from '@resolve-js/core'
+import { CommandExecutorBuilder, CommandExecutor } from '@resolve-js/runtime'
 import { Phases, symbol } from './constants'
 import { BDDAggregate } from './aggregate'
 import transformEvents from './transform-events'

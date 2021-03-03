@@ -4,7 +4,7 @@ import type {
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
   AdapterConfig,
-} from '@reimagined/eventstore-base'
+} from '@resolve-js/eventstore-base'
 
 export type Coercer = (
   value: {

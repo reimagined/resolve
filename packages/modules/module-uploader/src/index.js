@@ -21,7 +21,7 @@ const createModule = (options) => {
         path: '/api/uploader/getFormUpload',
         handler: {
           module:
-            '@reimagined/module-uploader/lib/api-handlers/getFormUpload.js',
+            '@resolve-js/module-uploader/lib/api-handlers/getFormUpload.js',
           options: apiHandlerOptions,
         },
         method: 'GET',
@@ -30,7 +30,7 @@ const createModule = (options) => {
         path: '/api/uploader/getUploadUrl',
         handler: {
           module:
-            '@reimagined/module-uploader/lib/api-handlers/getUploadUrl.js',
+            '@resolve-js/module-uploader/lib/api-handlers/getUploadUrl.js',
           options: apiHandlerOptions,
         },
         method: 'GET',
@@ -38,7 +38,7 @@ const createModule = (options) => {
       {
         path: '/api/uploader/getToken',
         handler: {
-          module: '@reimagined/module-uploader/lib/api-handlers/getToken.js',
+          module: '@resolve-js/module-uploader/lib/api-handlers/getToken.js',
           options: apiHandlerOptions,
         },
         method: 'GET',

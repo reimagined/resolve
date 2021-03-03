@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { ResolveProvider } from '@reimagined/react-hooks'
+import { ResolveProvider } from '@resolve-js/react-hooks'
 import { Router } from 'react-router'
 import { createBrowserHistory } from 'history'
 import Routes from './hooks/components/Routes'

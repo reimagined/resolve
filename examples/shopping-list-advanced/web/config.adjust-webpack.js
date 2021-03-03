@@ -14,7 +14,7 @@ const adjustWebpackConfigs = (webpackConfigs) => {
       webpackConfig.externals = [
         function (context, request, callback) {
           if (
-            /(@reimagined\/runtime|@reimagined\/debug-levels|@reimagined\/redux|@reimagined\/subscribe-socket\.io)/.test(
+            /(@resolve-js\/runtime|@resolve-js\/debug-levels|@resolve-js\/redux|@resolve-js\/subscribe-socket\.io)/.test(
               request
             )
           ) {

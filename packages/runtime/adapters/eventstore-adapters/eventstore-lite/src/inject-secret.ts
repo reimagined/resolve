@@ -1,4 +1,4 @@
-import { SecretRecord } from '@reimagined/eventstore-base'
+import { SecretRecord } from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 
 const injectSecret = async (

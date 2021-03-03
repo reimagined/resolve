@@ -3,11 +3,11 @@ import {
   QueryOptions,
   QueryResult,
   QueryCallback,
-} from '@reimagined/client'
+} from '@resolve-js/client'
 import { useCallback } from 'react'
 import { HookExecutor, isCallback, isDependencies, isOptions } from './generic'
 import { useClient } from './use-client'
-import { firstOfType } from '@reimagined/core'
+import { firstOfType } from '@resolve-js/core'
 
 export type QueryBuilder<TArgs extends any[], TQuery extends Query> = (
   ...data: TArgs

@@ -1,6 +1,6 @@
 import { Middleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
-import { getClient, Context } from '@reimagined/client'
+import { getClient, Context } from '@resolve-js/client'
 
 import rootSaga from './root-saga'
 

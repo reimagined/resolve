@@ -10,7 +10,7 @@ const writePackageJsonsForAssemblies = (
     fs.readFileSync(path.resolve(process.cwd(), 'package.json'))
   )
 
-  const resolveRuntimePackageJson = require('@reimagined/runtime/package.json')
+  const resolveRuntimePackageJson = require('@resolve-js/runtime/package.json')
 
   for (const [
     packageJsonPath,

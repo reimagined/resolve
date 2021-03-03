@@ -1,6 +1,6 @@
 import { RESERVED_EVENT_SIZE } from './constants'
 import { AdapterPool } from './types'
-import { SavedEvent } from '@reimagined/eventstore-base'
+import { SavedEvent } from '@resolve-js/eventstore-base'
 
 const injectEvent = async function (
   pool: AdapterPool,

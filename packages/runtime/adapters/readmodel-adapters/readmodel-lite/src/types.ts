@@ -12,13 +12,13 @@ import type {
   OmitObject,
   IfEquals,
   IsTypeLike,
-} from '@reimagined/readmodel-base'
+} from '@resolve-js/readmodel-base'
 
 import type SQLiteLib from 'sqlite'
 import type OsLib from 'os'
 import type FsLib from 'fs'
 
-export * from '@reimagined/readmodel-base'
+export * from '@resolve-js/readmodel-base'
 
 export type TmpLib = {
   fileSync: () => {

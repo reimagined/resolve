@@ -16,7 +16,7 @@ export default ({ resolveConfig, isClient }) => {
 
   const imports = [
     `import '$resolve.guardOnlyServer'`,
-    `import wrapReadModelConnector from '@reimagined/runtime/lib/common/wrap-readmodel-connector'`,
+    `import wrapReadModelConnector from '@resolve-js/runtime/lib/common/wrap-readmodel-connector'`,
   ]
   const constants = [``]
   const exports = [`const readModelConnectors = {}`]
@@ -35,7 +35,7 @@ export default ({ resolveConfig, isClient }) => {
 
     if (readModelConnector.module == null) {
       readModelConnector.module =
-        '@reimagined/runtime/lib/common/defaults/read-model-connector.js'
+        '@resolve-js/runtime/lib/common/defaults/read-model-connector.js'
     }
 
     importResource({

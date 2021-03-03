@@ -1,6 +1,6 @@
 import React from 'react'
 import { Image } from 'react-bootstrap'
-import { useStaticResolver } from '@reimagined/react-hooks'
+import { useStaticResolver } from '@resolve-js/react-hooks'
 
 const StaticImage = ({ src, ...otherProps }) => {
   const resolveStatic = useStaticResolver()

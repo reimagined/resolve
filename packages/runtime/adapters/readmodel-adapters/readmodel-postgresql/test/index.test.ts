@@ -3,7 +3,7 @@
 import { result } from 'pg'
 import createReadModelAdapter from '../src'
 
-describe('@reimagined/readmodel-postgresql-serverless', () => {
+describe('@resolve-js/readmodel-postgresql-serverless', () => {
   //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   let adapter = null! as ReturnType<typeof createReadModelAdapter>
 

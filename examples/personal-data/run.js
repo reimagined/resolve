@@ -6,11 +6,11 @@ import {
   runTestcafe,
   merge,
   reset,
-} from '@reimagined/scripts'
+} from '@resolve-js/scripts'
 
-import resolveModuleAuth from '@reimagined/module-auth'
-import resolveModuleAdmin from '@reimagined/module-admin'
-import resolveModuleUploader from '@reimagined/module-uploader'
+import resolveModuleAuth from '@resolve-js/module-auth'
+import resolveModuleAdmin from '@resolve-js/module-admin'
+import resolveModuleUploader from '@resolve-js/module-uploader'
 
 import appConfig from './config.app'
 import devConfig from './config.dev'

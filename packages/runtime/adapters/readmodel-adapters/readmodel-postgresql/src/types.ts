@@ -12,10 +12,10 @@ import type {
   UpdateCondition,
   ObjectFixedKeys,
   OmitObject,
-} from '@reimagined/readmodel-base'
+} from '@resolve-js/readmodel-base'
 
 import type PGLib from 'pg'
-export * from '@reimagined/readmodel-base'
+export * from '@resolve-js/readmodel-base'
 
 export type LibDependencies = {
   Postgres: typeof PGLib.Client

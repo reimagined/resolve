@@ -2,7 +2,7 @@ import {
   merge,
   defaultResolveConfig,
   validateConfig,
-} from '@reimagined/scripts'
+} from '@resolve-js/scripts'
 
 const localConfig = {
   mode: 'development',
@@ -25,7 +25,7 @@ const appConfig = {
 // mdis-start dev-config
 const devConfig = {
   eventstoreAdapter: {
-    module: '@reimagined/eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: ':memory:',
     },
@@ -33,7 +33,7 @@ const devConfig = {
 
   readModelConnectors: {
     default: {
-      module: '@reimagined/readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: ':memory:',
       },

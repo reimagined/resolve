@@ -13,7 +13,7 @@ export default ({ resolveConfig, isClient }) => {
 
   return `
     import '$resolve.guardOnlyServer'
-    import { createAndInitPublisher, connectConsumer } from '@reimagined/local-event-broker'
+    import { createAndInitPublisher, connectConsumer } from '@resolve-js/local-event-broker'
     import eventBrokerConfig from '$resolve.eventBrokerConfig'
 
     if(module.parent != null) {

@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/readmodel-lite",
+  "name": "@resolve-js/readmodel-lite",
   "version": "0.26.5",
   "description": "An adapter the resolve-query uses to store the read model state in memory",
   "keywords": [
@@ -8,7 +8,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters/@reimagined/readmodel-lite#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters/@resolve-js/readmodel-lite#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@reimagined/readmodel-base": "0.26.5",
+    "@resolve-js/readmodel-base": "0.26.5",
     "sqlite": "^3.0.2",
     "tmp": "^0.1.0",
     "uuid": "8.3.1"

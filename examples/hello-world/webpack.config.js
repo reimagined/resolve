@@ -1,4 +1,4 @@
-import { getModulesDirs } from '@reimagined/scripts'
+import { getModulesDirs } from '@resolve-js/scripts'
 import path from 'path'
 
 const clientTransformBabelOptions = {
@@ -48,7 +48,7 @@ const baseConfig = {
         ],
       },
       {
-        test: /@reimagined\/runtime[\\/](?!node_modules).*?\.js$/,
+        test: /@resolve-js\/runtime[\\/](?!node_modules).*?\.js$/,
         use: {
           loader: require.resolve('babel-loader'),
           options: clientTransformBabelOptions,

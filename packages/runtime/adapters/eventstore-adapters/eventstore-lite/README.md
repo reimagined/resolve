@@ -1,23 +1,26 @@
-# **@reimagined/eventstore-lite**
-[![npm version](https://badge.fury.io/js/@reimagined/eventstore-lite.svg)](https://badge.fury.io/js/@reimagined/eventstore-lite)
+# **@resolve-js/eventstore-lite**
+
+[![npm version](https://badge.fury.io/js/@resolve-js/eventstore-lite.svg)](https://badge.fury.io/js/@resolve-js/eventstore-lite)
 
 This package is a eventstore adapter for storing events using a file or memory.
 
 ## Available Parameters
+
 You can pass the following argument when initializing an adapter:
-* `databaseFile` - the path to a file where events are stored. In case ":memory:" all data is lost when an application instance is restarted.
+
+- `databaseFile` - the path to a file where events are stored. In case ":memory:" all data is lost when an application instance is restarted.
 
 ## Usage
 
 ```js
-import createAdapter from '@reimagined/eventstore-lite'
+import createAdapter from '@resolve-js/eventstore-lite'
 
-const fileAdapter = createAdapter({ 
-  databaseFile: './store.db' 
+const fileAdapter = createAdapter({
+  databaseFile: './store.db',
 })
 
-const memoryAdapter = createAdapter({ 
-  databaseFile: ':memory:' 
+const memoryAdapter = createAdapter({
+  databaseFile: ':memory:',
 })
 ```
 

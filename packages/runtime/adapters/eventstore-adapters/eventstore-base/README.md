@@ -1,22 +1,25 @@
-# **@reimagined/eventstore-base**
-[![npm version](https://badge.fury.io/js/@reimagined/eventstore-base.svg)](https://badge.fury.io/js/@reimagined/eventstore-base)
+# **@resolve-js/eventstore-base**
+
+[![npm version](https://badge.fury.io/js/@resolve-js/eventstore-base.svg)](https://badge.fury.io/js/@resolve-js/eventstore-base)
 
 This base package is a eventstore adapter for storing events.
 
 ## Usage
 
 ```js
-import createAdapter from '@reimagined/eventstore-xxx';
+import createAdapter from '@resolve-js/eventstore-xxx'
 
-const adapter = createAdapter({/* options */});
+const adapter = createAdapter({
+  /* options */
+})
 
 await adapter.init()
 
-await loadEvents({ 
+await loadEvents({
   eventTypes: ['TYPE_1', 'TYPE_2'],
   aggregateIds: ['aggregate_1', 'aggregate_2'],
   startTime: 0,
-  finishTime: Date.now()
+  finishTime: Date.now(),
 })
 
 await saveEvent(event)

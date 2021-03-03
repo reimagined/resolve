@@ -1,5 +1,5 @@
 import STS from 'aws-sdk/clients/sts'
-import { ConcurrentError } from '@reimagined/eventstore-base'
+import { ConcurrentError } from '@resolve-js/eventstore-base'
 
 import initCloudEntry from '../src/cloud/index'
 

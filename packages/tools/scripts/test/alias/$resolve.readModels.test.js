@@ -17,7 +17,7 @@ describe('base config works correctly', () => {
     sagas: [],
     readModelConnectors: {
       Todos: {
-        module: '@reimagined/readmodel-lite',
+        module: '@resolve-js/readmodel-lite',
         options: {},
       },
     },
@@ -131,11 +131,11 @@ describe('base(v2) config works correctly', () => {
     sagas: [],
     readModelConnectors: {
       Todos: {
-        module: '@reimagined/readmodel-lite',
+        module: '@resolve-js/readmodel-lite',
         options: {},
       },
       Items: {
-        module: '@reimagined/readmodel-lite',
+        module: '@resolve-js/readmodel-lite',
         options: {},
       },
     },

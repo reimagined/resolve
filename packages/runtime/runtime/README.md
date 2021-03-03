@@ -1,5 +1,6 @@
-# **@reimagined/runtime**
-[![npm version](https://badge.fury.io/js/@reimagined/runtime.svg)](https://badge.fury.io/js/@reimagined/runtime)
+# **@resolve-js/runtime**
+
+[![npm version](https://badge.fury.io/js/@resolve-js/runtime.svg)](https://badge.fury.io/js/@resolve-js/runtime)
 
 This package includes runtime backend server for local and cloud deployments.
 

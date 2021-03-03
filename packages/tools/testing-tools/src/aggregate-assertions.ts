@@ -1,7 +1,7 @@
 import isEqual from 'lodash.isequal'
 import { diffJson } from 'diff'
 import colors from 'colors'
-import { CommandResult } from '@reimagined/core'
+import { CommandResult } from '@resolve-js/core'
 import { Phases, symbol } from './constants'
 
 export type BDDAggregateAssertion = (

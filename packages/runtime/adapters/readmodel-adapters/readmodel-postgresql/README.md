@@ -1,5 +1,5 @@
-# **@reimagined/readmodel-postgresql**
-[![npm version](https://badge.fury.io/js/@reimagined/readmodel-postgresql.svg)](https://badge.fury.io/js/@reimagined/readmodel-postgresql)
+# **@resolve-js/readmodel-postgresql**
+[![npm version](https://badge.fury.io/js/@resolve-js/readmodel-postgresql.svg)](https://badge.fury.io/js/@resolve-js/readmodel-postgresql)
  
 A **Read Model Adapter** for [PostgreSQL 10.7](https://www.postgresql.org) database server.
 The adapter provides a query API for projection and resolvers. This API is similar to the other reSolve adapters API, which means you can change a **Read Model Adapter** in the configuration file without changing the code.
@@ -13,12 +13,12 @@ The adapter provides a query API for projection and resolvers. This API is simil
 * `host` - a host of a database server.
 * `port` - a port of a database server.
 
-Adapter interface is provided by **@reimagined/readmodel-base** package.
+Adapter interface is provided by **@resolve-js/readmodel-base** package.
 
 ## Usage
 
 ```js
-import createAdapter from '@reimagined/readmodel-postgresql'
+import createAdapter from '@resolve-js/readmodel-postgresql'
 
 const adapter = createAdapter({
   databaseName,

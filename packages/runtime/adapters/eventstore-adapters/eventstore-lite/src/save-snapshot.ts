@@ -1,4 +1,4 @@
-import { snapshotTrigger } from '@reimagined/eventstore-base'
+import { snapshotTrigger } from '@resolve-js/eventstore-base'
 import getLog from './get-log'
 import { AdapterPool } from './types'
 

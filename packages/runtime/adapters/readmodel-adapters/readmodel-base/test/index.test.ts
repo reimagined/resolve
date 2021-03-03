@@ -4,7 +4,7 @@ import createReadModelConnector, {
   CommonAdapterOptions,
 } from '../src'
 
-test('@reimagined/readmodel-base should wrap descendant adapter', async () => {
+test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
   const implementation: AdapterImplementation<
     CommonAdapterPool,
     CommonAdapterOptions & { parameter: string }

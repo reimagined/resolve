@@ -6,7 +6,7 @@ import {
   createStore,
   deserializeInitialState,
   getOrigin,
-} from '@reimagined/redux'
+} from '@resolve-js/redux'
 import { Router } from 'react-router'
 
 import getRoutes from './get-routes'

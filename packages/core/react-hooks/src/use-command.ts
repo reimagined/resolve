@@ -3,11 +3,11 @@ import {
   CommandResult,
   CommandOptions,
   CommandCallback,
-} from '@reimagined/client'
+} from '@resolve-js/client'
 import { useCallback } from 'react'
 import { HookExecutor, isCallback, isDependencies, isOptions } from './generic'
 import { useClient } from './use-client'
-import { firstOfType } from '@reimagined/core'
+import { firstOfType } from '@resolve-js/core'
 
 export type CommandBuilder<TArgs extends any[], TCmd extends Command> = (
   ...data: TArgs

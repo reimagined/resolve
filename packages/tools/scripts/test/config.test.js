@@ -4,7 +4,7 @@ import validateConfig from '../src/validate_config'
 const resolveConfigOrigin = {
   ...defaultResolveConfig,
   eventstoreAdapter: {
-    module: '@reimagined/eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {},
   },
 }
@@ -29,7 +29,7 @@ describe('validate schema', () => {
         mode: 'development',
         target: 'local',
         eventstoreAdapter: {
-          module: '@reimagined/eventstore-mysql',
+          module: '@resolve-js/eventstore-mysql',
           options: {
             eventsTableName: 'MyEvents',
           },
@@ -45,7 +45,7 @@ describe('validate schema', () => {
         mode: 'development',
         target: 'local',
         eventstoreAdapter: {
-          module: '@reimagined/bus-rabbitmq',
+          module: '@resolve-js/bus-rabbitmq',
           options: {},
         },
       })

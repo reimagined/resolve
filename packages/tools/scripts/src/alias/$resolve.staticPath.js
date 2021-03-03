@@ -1,4 +1,4 @@
-import validatePath from '@reimagined/runtime/lib/common/utils/validate-path'
+import validatePath from '@resolve-js/runtime/lib/common/utils/validate-path'
 
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
@@ -22,7 +22,7 @@ export default ({ resolveConfig, isClient }) => {
   } else {
     if (!isClient) {
       exports.push(
-        `import validatePath from '@reimagined/runtime/lib/common/utils/validate-path'`
+        `import validatePath from '@resolve-js/runtime/lib/common/utils/validate-path'`
       )
     }
 

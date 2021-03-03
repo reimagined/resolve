@@ -1,5 +1,5 @@
 import React from 'react'
-import { Context } from '@reimagined/client'
+import { Context } from '@resolve-js/client'
 import { ResolveContext } from './context'
 
 export type ResolveProviderProps = {

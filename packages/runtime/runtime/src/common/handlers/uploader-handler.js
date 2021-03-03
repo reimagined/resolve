@@ -1,4 +1,4 @@
-import debugLevels from '@reimagined/debug-levels'
+import debugLevels from '@resolve-js/debug-levels'
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'

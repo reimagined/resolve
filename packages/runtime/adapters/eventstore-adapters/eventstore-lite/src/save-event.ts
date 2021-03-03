@@ -1,6 +1,6 @@
-import { ConcurrentError, InputEvent } from '@reimagined/eventstore-base'
+import { ConcurrentError, InputEvent } from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
-import { EventstoreFrozenError } from '@reimagined/eventstore-base'
+import { EventstoreFrozenError } from '@resolve-js/eventstore-base'
 
 const saveEvent = async (
   pool: AdapterPool,

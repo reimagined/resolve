@@ -3,7 +3,7 @@ import {
   ReadModelInteropMap,
   ViewModelInteropMap,
   Eventstore,
-} from '@reimagined/core'
+} from '@resolve-js/core'
 
 type Store = {
   set(key: string, value: any): void

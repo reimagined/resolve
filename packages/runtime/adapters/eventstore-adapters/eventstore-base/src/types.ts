@@ -1,4 +1,4 @@
-import { SecretsManager, Event, SerializableMap } from '@reimagined/core'
+import { SecretsManager, Event, SerializableMap } from '@resolve-js/core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 

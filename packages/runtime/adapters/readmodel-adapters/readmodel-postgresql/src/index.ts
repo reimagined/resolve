@@ -1,4 +1,4 @@
-import _createAdapter from '@reimagined/readmodel-base'
+import _createAdapter from '@resolve-js/readmodel-base'
 import { Client as Postgres } from 'pg'
 
 import type {

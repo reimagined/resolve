@@ -30,7 +30,7 @@ const getConfig = async (resolveConfig, options) => {
   const config = merge(resolveConfig, {
     apiHandlers: [
       {
-        handler: '@reimagined/runtime/lib/local/query-is-ready-handler.js',
+        handler: '@resolve-js/runtime/lib/local/query-is-ready-handler.js',
         path: '/api/query-is-ready',
         method: 'GET',
       },

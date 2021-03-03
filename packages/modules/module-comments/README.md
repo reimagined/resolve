@@ -1,22 +1,21 @@
-# **@reimagined/module-comments**
-[![npm version](https://badge.fury.io/js/@reimagined/module-comments.svg)](https://badge.fury.io/js/@reimagined/module-comments)
+# **@resolve-js/module-comments**
+
+[![npm version](https://badge.fury.io/js/@resolve-js/module-comments.svg)](https://badge.fury.io/js/@resolve-js/module-comments)
 
 ## Usage
 
 ```js
-import { merge } from '@reimagined/scripts'
-import createModuleComments from '@reimagined/module-comments'
+import { merge } from '@resolve-js/scripts'
+import createModuleComments from '@resolve-js/module-comments'
 
-merge(
-  resolveConfig,
-  createModuleComments()
-)
+merge(resolveConfig, createModuleComments())
 ```
 
 #### Customization of module options
+
 ```js
-import { merge } from '@reimagined/scripts'
-import createModuleComments from '@reimagined/module-comments'
+import { merge } from '@resolve-js/scripts'
+import createModuleComments from '@resolve-js/module-comments'
 
 merge(
   resolveConfig,
@@ -24,15 +23,15 @@ merge(
     aggregateName: 'CustomCommentsAggregateName', // default = 'Comments'
     readModelName: 'CustomCommentsReadModelName', // default = 'Comments'
     readModelConnector: {
-      module: 'CustomreadModelConnector', // default = @reimagined/readmodel-lite'
-      options: {}                       // default = {}
+      module: 'CustomreadModelConnector', // default = @resolve-js/readmodel-lite'
+      options: {}, // default = {}
     },
     commentsTableName: 'CustomCommentsTableName', // default = 'Comments'
-    reducerName: 'CustomReducerName',             // default = 'comments'
+    reducerName: 'CustomReducerName', // default = 'comments'
     eventTypes: {
       COMMENT_CREATED: 'CUSTOM_COMMENT_CREATED', // default = 'COMMENT_CREATED'
       COMMENT_UPDATED: 'CUSTOM_COMMENT_UPDATED', // default = 'COMMENT_UPDATED'
-      COMMENT_REMOVED: 'CUSTOM_COMMENT_REMOVED'  // default = 'COMMENT_REMOVED'
+      COMMENT_REMOVED: 'CUSTOM_COMMENT_REMOVED', // default = 'COMMENT_REMOVED'
     },
     commandTypes: {
       createComment: 'customCreateComment', // default = 'createComment'
@@ -40,17 +39,18 @@ merge(
       removeComment: 'customRemoveComment', // default = 'removeComment'
     },
     resolverNames: {
-      commentsTree: 'customCommentsTree',                 // default = 'commentsTree',
+      commentsTree: 'customCommentsTree', // default = 'commentsTree',
       foreignCommentsCount: 'customForeignCommentsCount', // default = 'foreignCommentsCount',
-      allCommentsPaginate: 'customAllCommentsPaginate',   // default = 'allCommentsPaginate'
+      allCommentsPaginate: 'customAllCommentsPaginate', // default = 'allCommentsPaginate'
     },
-    maxNestedLevel: 2,                                            // default = undefined
-    verifyCommand: path.join(__dirname, 'customVerifyCommand.js') // default = '@reimagined/module-comments/lib/aggregates/verify-command.js'
+    maxNestedLevel: 2, // default = undefined
+    verifyCommand: path.join(__dirname, 'customVerifyCommand.js'), // default = '@resolve-js/module-comments/lib/aggregates/verify-command.js'
   })
 )
 ```
 
 #### Customization of verifyCommand
+
 ```js
 // customVerifyCommand.js
 
@@ -61,30 +61,32 @@ const verifyCommand = async (state, command, jwt) => {
 export default verifyCommand
 ```
 
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-@reimagined/module-comments-readme?pixel)
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-@resolve-js/module-comments-readme?pixel)
 
-#### Commands 
+#### Commands
+
 ```js
 createComment(aggregateId, {
   authorId,
   commentId,
   parentCommentId,
-  content
+  content,
 })
 
 updateComment(aggregateId, {
   authorId,
   commentId,
-  content
+  content,
 })
 
 removeComment(aggregateId, {
   authorId,
-  commentId
+  commentId,
 })
 ```
 
 #### Renderless Connectors
+
 ```js
 import React from 'react'
 
@@ -92,10 +94,10 @@ import {
   CommentsTreeRenderless,
   CommentsPaginateRenderless,
   CommentsNotificationRenderless,
-  RefreshHelperRenderless
-} from '@reimagined/module-comments'
+  RefreshHelperRenderless,
+} from '@resolve-js/module-comments'
 
-export const CommentsTree = (props) =>
+export const CommentsTree = (props) => (
   <CommentsTreeRenderless
     treeId="treeId"
     parentCommentId="parentCommentId"
@@ -107,12 +109,13 @@ export const CommentsTree = (props) =>
       return null
     }}
   </CommentsTreeRenderless>
+)
 
-export const CommentsPaginate = ({ itemsOnPage }) => 
+export const CommentsPaginate = ({ itemsOnPage }) => (
   <CommentsPaginateRenderless
     itemsOnPage
     pageNumber
-    readModelName="customReadModelName"      // default = 'readModelName'
+    readModelName="customReadModelName" // default = 'readModelName'
     resolverName="customAllCommentsPaginate" // default = 'allCommentsPaginate'
   >
     {({ pageNumber, comments }) => {
@@ -124,18 +127,19 @@ export const CommentsPaginate = ({ itemsOnPage }) =>
       return null
     }}
   </CommentsPaginateRenderless>
+)
 
-export const CommentsNotification = (props) =>
+export const CommentsNotification = (props) => (
   <CommentsNotificationRenderless
     treeId="treeId"
     parentCommentId="parentCommentId"
     authorId="authorId"
     readModelName="customReadModelName" // default = 'readModelName'
-    resolverName="customResolverName"   // default = 'foreignCommentsCount'
+    resolverName="customResolverName" // default = 'foreignCommentsCount'
     {...props}
   >
     {({ count, onClick }) => {
-      if(count === 0) return null
+      if (count === 0) return null
       return (
         <div onClick={onClick}>
           Comments had been updated - refresh page to see them
@@ -143,14 +147,11 @@ export const CommentsNotification = (props) =>
       )
     }}
   </CommentsNotificationRenderless>
+)
 
-export const RefreshHelper = () =>
+export const RefreshHelper = () => (
   <RefreshHelperRenderless>
-    {({ refreshId, refresh }) => (
-      <div onClick={refresh}>
-        {refreshId}
-      </div>
-    )}
+    {({ refreshId, refresh }) => <div onClick={refresh}>{refreshId}</div>}
   </RefreshHelperRenderless>
-
+)
 ```

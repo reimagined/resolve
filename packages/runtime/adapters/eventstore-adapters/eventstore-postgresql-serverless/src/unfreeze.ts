@@ -1,5 +1,5 @@
 import { AdapterPool } from './types'
-import { EventstoreAlreadyUnfrozenError } from '@reimagined/eventstore-base'
+import { EventstoreAlreadyUnfrozenError } from '@resolve-js/eventstore-base'
 
 const unfreeze = async ({
   executeStatement,

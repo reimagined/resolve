@@ -31,7 +31,7 @@ const makeConfig = (options, imports) => {
         name: options.aggregateName,
         commands: {
           module:
-            '@reimagined/module-comments/lib/common/aggregates/comments.commands.js',
+            '@resolve-js/module-comments/lib/common/aggregates/comments.commands.js',
           options,
           imports,
         },
@@ -43,13 +43,13 @@ const makeConfig = (options, imports) => {
         connectorName: options.readModelConnectorName,
         projection: {
           module:
-            '@reimagined/module-comments/lib/common/read-models/comments.projection.js',
+            '@resolve-js/module-comments/lib/common/read-models/comments.projection.js',
           options,
           imports,
         },
         resolvers: {
           module:
-            '@reimagined/module-comments/lib/common/read-models/comments.resolvers.js',
+            '@resolve-js/module-comments/lib/common/read-models/comments.resolvers.js',
           options,
           imports,
         },
@@ -57,13 +57,13 @@ const makeConfig = (options, imports) => {
     ],
     clientImports: {
       [options.commentsInstanceName]: {
-        module: '@reimagined/runtime/lib/common/utils/interop-options.js',
+        module: '@resolve-js/runtime/lib/common/utils/interop-options.js',
         options,
       },
     },
     serverImports: {
       [options.commentsInstanceName]: {
-        module: '@reimagined/runtime/lib/common/utils/interop-options.js',
+        module: '@resolve-js/runtime/lib/common/utils/interop-options.js',
         options,
       },
     },
@@ -100,7 +100,7 @@ export default ({
   const imports = {
     verifyCommand:
       verifyCommand == null
-        ? '@reimagined/module-comments/lib/common/aggregates/verify-command.js'
+        ? '@resolve-js/module-comments/lib/common/aggregates/verify-command.js'
         : verifyCommand,
   }
 

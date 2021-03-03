@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/module-uploader",
+  "name": "@resolve-js/module-uploader",
   "version": "0.26.5",
   "description": "A reSolve module that adds uploader commands to an application.",
   "keywords": [
@@ -8,7 +8,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/@reimagined/module-admin#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/@resolve-js/module-admin#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },

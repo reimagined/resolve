@@ -6,7 +6,7 @@ import {
   merge,
   stop,
   reset,
-} from '@reimagined/scripts'
+} from '@resolve-js/scripts'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'

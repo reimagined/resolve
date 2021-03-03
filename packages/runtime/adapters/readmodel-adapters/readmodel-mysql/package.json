@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/readmodel-mysql",
+  "name": "@resolve-js/readmodel-mysql",
   "version": "0.26.5",
   "description": "An adapter the resolve-query uses to store the read model state in MySQL",
   "keywords": [
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@reimagined/readmodel-base": "0.26.5",
+    "@resolve-js/readmodel-base": "0.26.5",
     "mysql2": "^2.1.0",
     "uuid": "8.3.1"
   },

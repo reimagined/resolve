@@ -1,6 +1,6 @@
 import {
   EventstoreResourceNotExistError,
   EventstoreResourceAlreadyExistError,
-} from '@reimagined/eventstore-base'
+} from '@resolve-js/eventstore-base'
 
 export { EventstoreResourceNotExistError, EventstoreResourceAlreadyExistError }

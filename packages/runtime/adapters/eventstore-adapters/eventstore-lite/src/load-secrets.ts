@@ -2,7 +2,7 @@ import {
   SecretFilter,
   SecretsWithIdx,
   SecretRecord,
-} from '@reimagined/eventstore-base'
+} from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 
 const loadSecrets = async (

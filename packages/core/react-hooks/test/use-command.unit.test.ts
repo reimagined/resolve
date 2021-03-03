@@ -1,10 +1,10 @@
 import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
-import { Command, CommandCallback, CommandOptions } from '@reimagined/client'
+import { Command, CommandCallback, CommandOptions } from '@resolve-js/client'
 import { useClient } from '../src/use-client'
 import { useCommand } from '../src/use-command'
 
-jest.mock('@reimagined/client')
+jest.mock('@resolve-js/client')
 jest.mock('../src/use-client', () => ({
   useClient: jest.fn(),
 }))

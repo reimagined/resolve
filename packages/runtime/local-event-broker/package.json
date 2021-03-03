@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/local-event-broker",
+  "name": "@resolve-js/local-event-broker",
   "version": "0.26.5",
   "description": "The reSolve framework's event broker for applications on a local machine.",
   "keywords": [
@@ -8,7 +8,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@reimagined/local-event-broker#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@resolve-js/local-event-broker#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -23,10 +23,10 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@reimagined/debug-levels": "0.26.5",
-    "@reimagined/eventstore-base": "0.26.5",
-    "@reimagined/local-rpc": "0.26.5",
-    "@reimagined/readmodel-base": "0.26.5",
+    "@resolve-js/debug-levels": "0.26.5",
+    "@resolve-js/eventstore-base": "0.26.5",
+    "@resolve-js/local-rpc": "0.26.5",
+    "@resolve-js/readmodel-base": "0.26.5",
     "sqlite": "^3.0.2",
     "tmp": "^0.1.0"
   },

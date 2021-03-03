@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import debugLevels from '@reimagined/debug-levels'
+import debugLevels from '@resolve-js/debug-levels'
 
 const log = debugLevels('resolve-performance-tracer')
 

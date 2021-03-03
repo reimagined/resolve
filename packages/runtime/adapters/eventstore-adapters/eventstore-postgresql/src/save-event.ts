@@ -1,4 +1,4 @@
-import { ConcurrentError, InputEvent } from '@reimagined/eventstore-base'
+import { ConcurrentError, InputEvent } from '@resolve-js/eventstore-base'
 
 import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'

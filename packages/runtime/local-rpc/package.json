@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/local-rpc",
+  "name": "@resolve-js/local-rpc",
   "version": "0.26.5",
   "description": "The reSolve framework's rpc client/server on a local machine.",
   "keywords": [
@@ -8,7 +8,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@reimagined/local-rpc#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@resolve-js/local-rpc#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },

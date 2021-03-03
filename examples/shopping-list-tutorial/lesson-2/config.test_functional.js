@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from '@reimagined/scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const testFunctionalConfig = {
   target: 'local',
@@ -9,7 +9,7 @@ const testFunctionalConfig = {
   staticDir: 'static',
   distDir: 'dist',
   eventstoreAdapter: {
-    module: '@reimagined/eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/event-store-test-functional.db',
     },

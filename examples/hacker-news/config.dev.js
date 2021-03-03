@@ -1,11 +1,11 @@
-import { declareRuntimeEnv } from '@reimagined/scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const devConfig = {
   target: 'local',
   port: declareRuntimeEnv('PORT', '3000'),
   mode: 'development',
   eventstoreAdapter: {
-    module: '@reimagined/eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
@@ -14,19 +14,19 @@ const devConfig = {
   },
   readModelConnectors: {
     default: {
-      module: '@reimagined/readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-model-default.db',
       },
     },
     hackerNews: {
-      module: '@reimagined/readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-model-hackerNews.db',
       },
     },
     comments: {
-      module: '@reimagined/readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-model-comments.db',
       },

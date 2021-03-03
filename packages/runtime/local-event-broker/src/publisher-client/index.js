@@ -1,4 +1,4 @@
-import { createClient } from '@reimagined/local-rpc'
+import { createClient } from '@resolve-js/local-rpc'
 
 const connectPublisher = async (config) => {
   const eventListenerHook = async (args) => {

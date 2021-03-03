@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectReadModel } from '@reimagined/redux'
+import { connectReadModel } from '@resolve-js/redux'
 
 export class CommentCountUpdater extends React.PureComponent {
   componentDidUpdate(prevProps) {

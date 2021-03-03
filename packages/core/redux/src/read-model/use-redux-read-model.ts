@@ -1,14 +1,14 @@
 import { useMemo, useRef } from 'react'
 import { AnyAction } from 'redux'
 import { useDispatch } from 'react-redux'
-import { firstOfType } from '@reimagined/core'
+import { firstOfType } from '@resolve-js/core'
 import {
   QueryCallback,
   QueryOptions,
   QueryResult,
   ReadModelQuery,
-} from '@reimagined/client'
-import { useQueryBuilder, QueryBuilder } from '@reimagined/react-hooks'
+} from '@resolve-js/client'
+import { useQueryBuilder, QueryBuilder } from '@resolve-js/react-hooks'
 import {
   initReadModel,
   queryReadModelFailure,

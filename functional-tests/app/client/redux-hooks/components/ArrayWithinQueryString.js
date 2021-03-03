@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { useReduxReadModel, useReduxCommand } from '@reimagined/redux'
+import { useReduxReadModel, useReduxCommand } from '@resolve-js/redux'
 
 const ArrayWithQueryString = ({
   match: {

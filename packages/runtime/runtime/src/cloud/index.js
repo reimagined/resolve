@@ -1,6 +1,6 @@
 import 'source-map-support/register'
 
-import debugLevels from '@reimagined/debug-levels'
+import debugLevels from '@resolve-js/debug-levels'
 import {
   escapeId,
   escapeStr,
@@ -8,7 +8,7 @@ import {
 } from 'resolve-cloud-common/postgres'
 import { invokeFunction } from 'resolve-cloud-common/lambda'
 import { errorBoundary } from 'resolve-cloud-common/utils'
-import { initDomain } from '@reimagined/core'
+import { initDomain } from '@resolve-js/core'
 
 import initAwsClients from './init-aws-clients'
 import initBroker from './init-broker'

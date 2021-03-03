@@ -1,5 +1,5 @@
 import RDSDataService from 'aws-sdk/clients/rdsdataservice'
-import _createAdapter from '@reimagined/readmodel-base'
+import _createAdapter from '@resolve-js/readmodel-base'
 import crypto from 'crypto'
 
 import type {

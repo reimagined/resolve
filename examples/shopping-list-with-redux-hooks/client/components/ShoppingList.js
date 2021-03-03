@@ -4,7 +4,7 @@ import {
   ResultStatus,
   useReduxCommand,
   useReduxViewModel,
-} from '@reimagined/redux'
+} from '@resolve-js/redux'
 import { Redirect } from 'react-router-dom'
 import { Row, Col, ListGroup, Button, InputGroup, Form } from 'react-bootstrap'
 

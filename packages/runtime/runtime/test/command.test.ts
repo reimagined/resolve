@@ -1,4 +1,4 @@
-import { AggregatesInterop, Command, CommandError } from '@reimagined/core'
+import { AggregatesInterop, Command, CommandError } from '@resolve-js/core'
 import createCommandExecutor, { CommandExecutor } from '../src/common/command'
 
 let performanceTracer: any

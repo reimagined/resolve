@@ -3,12 +3,12 @@ import type {
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
-} from '@reimagined/eventstore-base'
+} from '@resolve-js/eventstore-base'
 import {
   AdapterConfigSchema,
   UnbrandProps,
   iots as t,
-} from '@reimagined/eventstore-base'
+} from '@resolve-js/eventstore-base'
 
 export type SqliteOpen = typeof open
 

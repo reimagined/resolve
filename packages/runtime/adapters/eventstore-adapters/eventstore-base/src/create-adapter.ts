@@ -1,5 +1,5 @@
 import getLog from './get-log'
-import { SecretsManager } from '@reimagined/core'
+import { SecretsManager } from '@resolve-js/core'
 import {
   AdapterPoolPrimalProps,
   AdapterPoolPossiblyUnconnected,
@@ -10,7 +10,7 @@ import {
   CommonAdapterFunctions,
   AdapterConfig,
 } from './types'
-import { LeveledDebugger } from '@reimagined/debug-levels'
+import { LeveledDebugger } from '@resolve-js/debug-levels'
 
 // eslint-disable-next-line no-new-func
 const idempotentFunction = Function('obj', 'return obj') as <T>(t: T) => T

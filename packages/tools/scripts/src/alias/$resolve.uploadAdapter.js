@@ -20,7 +20,7 @@ export default ({ resolveConfig, isClient }) => {
   if (resolveConfig.hasOwnProperty('uploadAdapter')) {
     if (resolveConfig.uploadAdapter.module == null) {
       resolveConfig.uploadAdapter.module =
-        '@reimagined/runtime/lib/common/defaults/upload-adapter.js'
+        '@resolve-js/runtime/lib/common/defaults/upload-adapter.js'
     }
 
     importResource({

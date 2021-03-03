@@ -1,4 +1,4 @@
-import { connectStaticBasedUrls } from '@reimagined/redux'
+import { connectStaticBasedUrls } from '@resolve-js/redux'
 
 const StaticImage = connectStaticBasedUrls(['src'])('img')
 

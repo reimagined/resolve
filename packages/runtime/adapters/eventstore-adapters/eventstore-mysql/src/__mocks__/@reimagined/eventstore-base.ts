@@ -1,6 +1,6 @@
 export {
   EventstoreResourceAlreadyExistError,
   EventstoreResourceNotExistError,
-} from '@reimagined/eventstore-base'
+} from '@resolve-js/eventstore-base'
 
 export default jest.fn()

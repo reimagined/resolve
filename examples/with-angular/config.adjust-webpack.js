@@ -1,6 +1,6 @@
 import { AngularCompilerPlugin } from '@ngtools/webpack'
 import FilterWarningsPlugin from 'webpack-filter-warnings-plugin'
-import { getModulesDirs } from '@reimagined/scripts'
+import { getModulesDirs } from '@resolve-js/scripts'
 import path from 'path'
 
 const adjustClientEntry = (webpackConfig) => {

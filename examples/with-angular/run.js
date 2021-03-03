@@ -7,7 +7,7 @@ import {
   stop,
   reset,
   runTestcafe,
-} from '@reimagined/scripts'
+} from '@resolve-js/scripts'
 
 import appConfig from './config.app'
 import devConfig from './config.dev'

@@ -1,4 +1,4 @@
-import { createServer } from '@reimagined/local-rpc'
+import { createServer } from '@resolve-js/local-rpc'
 
 const getProvider = (host, key) => {
   switch (key) {

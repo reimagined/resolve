@@ -5,7 +5,7 @@ import {
   escapeId,
   escapeStr,
 } from 'resolve-cloud-common/postgres'
-import debugLevels from '@reimagined/debug-levels'
+import debugLevels from '@resolve-js/debug-levels'
 
 const log = debugLevels('resolve:runtime:websocket-event-handler')
 

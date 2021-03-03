@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { CommentsNotificationRenderless } from '@reimagined/module-comments'
+import { CommentsNotificationRenderless } from '@resolve-js/module-comments'
 
 const Container = styled.div`
   text-align: center;

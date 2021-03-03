@@ -1,4 +1,4 @@
-import { EventFilter, SavedEvent } from '@reimagined/eventstore-base'
+import { EventFilter, SavedEvent } from '@resolve-js/eventstore-base'
 import createQuery from './create-query'
 import { AdapterPool } from './types'
 

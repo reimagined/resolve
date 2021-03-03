@@ -1,4 +1,4 @@
-import createAdapter from '@reimagined/eventstore-base'
+import createAdapter from '@resolve-js/eventstore-base'
 import sqlite from 'sqlite'
 import tmp from 'tmp'
 import os from 'os'
@@ -33,7 +33,7 @@ import dropSecrets from './drop-secrets'
 import initFinal from './init-final'
 import dropFinal from './drop-final'
 
-import type { Adapter } from '@reimagined/eventstore-base'
+import type { Adapter } from '@resolve-js/eventstore-base'
 import type { ConnectionDependencies, SqliteAdapterConfig } from './types'
 
 const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {

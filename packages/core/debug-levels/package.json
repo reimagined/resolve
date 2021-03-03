@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/debug-levels",
+  "name": "@resolve-js/debug-levels",
   "version": "0.26.5",
   "description": "Provides the debug-level API for reSolve packages.",
   "keywords": [
@@ -8,7 +8,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@reimagined/debug-levels#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@resolve-js/debug-levels#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },

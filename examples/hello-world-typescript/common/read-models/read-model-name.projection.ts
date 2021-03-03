@@ -1,4 +1,4 @@
-import { ResolveStore } from '@reimagined/readmodel-base'
+import { ResolveStore } from '@resolve-js/readmodel-base'
 
 export default {
   Init: async (store: ResolveStore): Promise<void> => {

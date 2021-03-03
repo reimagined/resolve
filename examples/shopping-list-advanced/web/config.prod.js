@@ -1,11 +1,11 @@
-const { declareRuntimeEnv } = require('@reimagined/scripts')
+const { declareRuntimeEnv } = require('@resolve-js/scripts')
 
 const prodConfig = {
   target: 'local',
   port: declareRuntimeEnv('PORT', '3000'),
   mode: 'production',
   eventstoreAdapter: {
-    module: '@reimagined/eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
@@ -14,7 +14,7 @@ const prodConfig = {
   },
   readModelConnectors: {
     default: {
-      module: '@reimagined/readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-models.db',
       },

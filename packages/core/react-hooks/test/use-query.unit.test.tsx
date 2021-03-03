@@ -1,10 +1,10 @@
 import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
-import { Query, QueryCallback, QueryOptions } from '@reimagined/client'
+import { Query, QueryCallback, QueryOptions } from '@resolve-js/client'
 import { useClient } from '../src/use-client'
 import { useQuery } from '../src/use-query'
 
-jest.mock('@reimagined/client')
+jest.mock('@resolve-js/client')
 jest.mock('../src/use-client', () => ({
   useClient: jest.fn(),
 }))

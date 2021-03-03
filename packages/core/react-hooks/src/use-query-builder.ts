@@ -1,4 +1,4 @@
-import { QueryOptions, QueryCallback, Query } from '@reimagined/client'
+import { QueryOptions, QueryCallback, Query } from '@resolve-js/client'
 import { QueryBuilder, QueryExecutor, useQuery } from './use-query'
 
 function useQueryBuilder<TArgs extends any[], TQuery extends Query>(

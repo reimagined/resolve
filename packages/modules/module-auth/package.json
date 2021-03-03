@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/module-auth",
+  "name": "@resolve-js/module-auth",
   "version": "0.26.5",
   "description": "A reSolve module that adds authentication to an application.",
   "keywords": [
@@ -8,7 +8,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/@reimagined/module-auth#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/@resolve-js/module-auth#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },

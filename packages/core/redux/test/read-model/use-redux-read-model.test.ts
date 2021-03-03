@@ -1,8 +1,8 @@
-import { QueryCallback, ReadModelQuery } from '@reimagined/client'
+import { QueryCallback, ReadModelQuery } from '@resolve-js/client'
 import { mocked } from 'ts-jest/utils'
 import { useDispatch } from 'react-redux'
 import { renderHook, act } from '@testing-library/react-hooks'
-import { useQueryBuilder } from '@reimagined/react-hooks'
+import { useQueryBuilder } from '@resolve-js/react-hooks'
 import {
   initReadModel,
   queryReadModelFailure,
@@ -19,7 +19,7 @@ import {
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }))
-jest.mock('@reimagined/react-hooks', () => ({
+jest.mock('@resolve-js/react-hooks', () => ({
   useQueryBuilder: jest.fn(),
 }))
 jest.mock('../../src/read-model/read-model-reducer', () => ({

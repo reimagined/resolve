@@ -1,4 +1,4 @@
-import { EventstoreResourceAlreadyExistError } from '@reimagined/eventstore-base'
+import { EventstoreResourceAlreadyExistError } from '@resolve-js/eventstore-base'
 import { AGGREGATE_ID_SQL_TYPE } from './constants'
 import getLog from './get-log'
 import { AdapterPool } from './types'

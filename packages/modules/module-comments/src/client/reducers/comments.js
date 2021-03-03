@@ -1,4 +1,4 @@
-import { internal } from '@reimagined/redux'
+import { internal } from '@resolve-js/redux'
 
 import injectDefaults from '../../common/inject-defaults'
 

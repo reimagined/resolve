@@ -58,7 +58,7 @@ import {
   // mdis-start importEventStore
   // mdis-start exportEventStore
   // mdis-start validateConfig
-} from '@reimagined/scripts'
+} from '@resolve-js/scripts'
 // mdis-stop validateConfig
 // mdis-stop exportEventStore
 // mdis-stop importEventStore

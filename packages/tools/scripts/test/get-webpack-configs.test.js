@@ -23,17 +23,17 @@ const resolveConfig = {
   apiHandlers: [],
   index: 'client/index.js',
   eventstoreAdapter: {
-    module: '@reimagined/eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
     },
   },
   subscribeAdapter: {
-    module: '@reimagined/subscribe-socket.io',
+    module: '@resolve-js/subscribe-socket.io',
     options: {},
   },
   snapshotAdapter: {
-    module: '@reimagined/snapshot-lite',
+    module: '@resolve-js/snapshot-lite',
     options: {},
   },
   readModelConnectors: {},

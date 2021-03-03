@@ -1,6 +1,6 @@
 import getLog from './get-log'
 import { AdapterPool } from './types'
-import { EventstoreFrozenError } from '@reimagined/eventstore-base'
+import { EventstoreFrozenError } from '@resolve-js/eventstore-base'
 
 const setSecret = async (
   {

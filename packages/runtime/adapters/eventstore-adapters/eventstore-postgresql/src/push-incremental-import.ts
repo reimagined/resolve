@@ -1,6 +1,6 @@
 import { RESERVED_EVENT_SIZE } from './constants'
 import { AdapterPool } from './types'
-import { InputEvent } from '@reimagined/eventstore-base'
+import { InputEvent } from '@resolve-js/eventstore-base'
 
 const pushIncrementalImport = async (
   {

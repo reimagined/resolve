@@ -8,7 +8,7 @@ import {
   VIEWMODEL_STATE_UPDATE,
   VIEWMODEL_EVENT_RECEIVED,
 } from '../internal/action-types'
-import { ViewModelQuery } from '@reimagined/client'
+import { ViewModelQuery } from '@resolve-js/client'
 import { ViewModelReactiveEvent } from '../types'
 
 export type ViewModelAction = {

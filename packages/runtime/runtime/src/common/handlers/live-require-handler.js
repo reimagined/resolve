@@ -1,4 +1,4 @@
-import debugLevels from '@reimagined/debug-levels'
+import debugLevels from '@resolve-js/debug-levels'
 
 import liveRequire from '../utils/live-require'
 

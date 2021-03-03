@@ -1,4 +1,4 @@
-import { ReadModelQuery } from '@reimagined/client'
+import { ReadModelQuery } from '@resolve-js/client'
 import { ReduxState } from '../types'
 import { getEntry } from './read-model-reducer'
 import { useSelector } from 'react-redux'

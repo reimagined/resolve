@@ -1,5 +1,5 @@
-import givenEvents from '@reimagined/testing-tools'
-import createReadModelAdapter from '@reimagined/readmodel-lite'
+import givenEvents from '@resolve-js/testing-tools'
+import createReadModelAdapter from '@resolve-js/readmodel-lite'
 
 import projection from '../../common/read-models/shopping-lists.projection'
 import resolvers from '../../common/read-models/shopping-lists.resolvers'

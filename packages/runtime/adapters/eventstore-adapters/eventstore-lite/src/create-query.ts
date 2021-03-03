@@ -1,4 +1,4 @@
-import { EventFilter, isTimestampFilter } from '@reimagined/eventstore-base'
+import { EventFilter, isTimestampFilter } from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 
 const injectString = (pool: AdapterPool, value: string): string =>

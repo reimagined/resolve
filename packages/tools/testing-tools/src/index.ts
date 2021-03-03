@@ -4,8 +4,8 @@ import {
   CreateQueryOptions,
   detectConnectorFeatures,
   connectorModes,
-} from '@reimagined/runtime'
-import { SerializableMap, CommandResult } from '@reimagined/core'
+} from '@resolve-js/runtime'
+import { SerializableMap, CommandResult } from '@resolve-js/core'
 import as from './as'
 import givenEvents from './given-events'
 import { execute } from './execute'

@@ -3,7 +3,7 @@ import {
   EventFilter,
   isTimestampFilter,
   SavedEvent,
-} from '@reimagined/eventstore-base'
+} from '@resolve-js/eventstore-base'
 
 const getLatestEvent = async (
   {

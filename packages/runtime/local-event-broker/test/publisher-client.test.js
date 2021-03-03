@@ -1,7 +1,7 @@
 import connectPublisher from '../src/publisher-client'
-import { createClient } from '@reimagined/local-rpc'
+import { createClient } from '@resolve-js/local-rpc'
 
-jest.mock('@reimagined/local-rpc', () => ({
+jest.mock('@resolve-js/local-rpc', () => ({
   createClient: jest.fn(),
 }))
 

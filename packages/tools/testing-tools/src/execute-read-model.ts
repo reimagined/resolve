@@ -1,6 +1,6 @@
 import { Phases, symbol } from './constants'
-import { CreateQueryOptions } from '@reimagined/runtime'
-import { initDomain, Eventstore } from '@reimagined/core'
+import { CreateQueryOptions } from '@resolve-js/runtime'
+import { initDomain, Eventstore } from '@resolve-js/core'
 
 export const executeReadModel = async ({
   promise,
@@ -71,7 +71,7 @@ export const executeReadModel = async ({
         events: transformEvents(promise[symbol].events),
         get cursor() {
           throw new Error(
-            'Cursor should not be accessed from @reimagined/testing-tools'
+            'Cursor should not be accessed from @resolve-js/testing-tools'
           )
         },
       }),

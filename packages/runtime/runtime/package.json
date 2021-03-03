@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined/runtime",
+  "name": "@resolve-js/runtime",
   "version": "0.26.5",
   "description": "The reSolve framework's backend server.",
   "keywords": [
@@ -8,7 +8,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@reimagined/runtime#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@resolve-js/runtime#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -19,18 +19,18 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "yarn workspace @internal/babel-compile start --name=@reimagined/runtime",
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/runtime",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@reimagined/core": "0.26.5",
-    "@reimagined/debug-levels": "0.26.5",
-    "@reimagined/eventstore-base": "0.26.5",
-    "@reimagined/eventstore-lite": "0.26.5",
-    "@reimagined/local-event-broker": "0.26.5",
-    "@reimagined/readmodel-base": "0.26.5",
+    "@resolve-js/core": "0.26.5",
+    "@resolve-js/debug-levels": "0.26.5",
+    "@resolve-js/eventstore-base": "0.26.5",
+    "@resolve-js/eventstore-lite": "0.26.5",
+    "@resolve-js/local-event-broker": "0.26.5",
+    "@resolve-js/readmodel-base": "0.26.5",
     "aws-signature-v4": "^1.4.0",
     "binary-case": "^1.1.4",
     "body-parser": "^1.19.0",
@@ -66,7 +66,7 @@
     "sinon": "7.2.2"
   },
   "peerDependencies": {
-    "@reimagined/local-event-broker": "*",
+    "@resolve-js/local-event-broker": "*",
     "aws-sdk": "*",
     "aws-xray-sdk-core": "^2.3.3"
   },

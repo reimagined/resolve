@@ -1,4 +1,4 @@
-import { EventstoreResourceAlreadyExistError } from '@reimagined/eventstore-base'
+import { EventstoreResourceAlreadyExistError } from '@resolve-js/eventstore-base'
 import getLog from './get-log'
 import { AdapterPool } from './types'
 import {

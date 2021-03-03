@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from '@reimagined/scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const devConfig = {
   target: 'local',
@@ -9,7 +9,7 @@ const devConfig = {
   staticDir: 'static',
   distDir: 'dist',
   eventstoreAdapter: {
-    module: '@reimagined/eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
@@ -18,13 +18,13 @@ const devConfig = {
   },
   readModelConnectors: {
     users: {
-      module: '@reimagined/readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-model-users.db',
       },
     },
     files: {
-      module: '@reimagined/readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-model-files.db',
       },

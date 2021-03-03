@@ -196,7 +196,7 @@ export type ViewModelResolverMap = {
 
 // Saga
 
-// TODO: move types from @reimagined/client here?
+// TODO: move types from @resolve-js/client here?
 
 type ReadModelQuery = {
   modelName: string

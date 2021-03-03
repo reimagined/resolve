@@ -2,7 +2,7 @@ import {
   TimestampFilter,
   EventsWithCursor,
   throwBadCursor,
-} from '@reimagined/eventstore-base'
+} from '@resolve-js/eventstore-base'
 import createQuery from './create-query'
 import { AdapterPool } from './types'
 

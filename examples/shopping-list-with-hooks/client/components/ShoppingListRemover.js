@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from 'react-bootstrap'
-import { useCommand } from '@reimagined/react-hooks'
+import { useCommand } from '@resolve-js/react-hooks'
 
 const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
   const removeShoppingListCommand = useCommand(

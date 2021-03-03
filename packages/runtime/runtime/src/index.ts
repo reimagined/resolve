@@ -1,6 +1,6 @@
-// FIXME: temporary exposed only from @reimagined/testing-tools.
+// FIXME: temporary exposed only from @resolve-js/testing-tools.
 // This file should be removed.
-import { CommandError } from '@reimagined/core'
+import { CommandError } from '@resolve-js/core'
 import {
   default as createQuery,
   CreateQueryOptions,

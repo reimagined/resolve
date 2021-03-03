@@ -1,8 +1,8 @@
-import { ViewModelQuery } from '@reimagined/client'
+import { ViewModelQuery } from '@resolve-js/client'
 import { mocked } from 'ts-jest/utils'
 import { useDispatch } from 'react-redux'
 import { renderHook } from '@testing-library/react-hooks'
-import { useViewModel } from '@reimagined/react-hooks'
+import { useViewModel } from '@resolve-js/react-hooks'
 import {
   viewModelEventReceived,
   viewModelStateUpdate,
@@ -13,7 +13,7 @@ import { useReduxViewModel } from '../../src/view-model/use-redux-view-model'
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }))
-jest.mock('@reimagined/react-hooks', () => ({
+jest.mock('@resolve-js/react-hooks', () => ({
   useViewModel: jest.fn(),
 }))
 jest.mock('../../src/view-model/view-model-reducer', () => ({

@@ -5,7 +5,7 @@ import {
   useReduxCommand,
   useReduxViewModelSelector,
   useReduxReadModelSelector,
-} from '@reimagined/redux'
+} from '@resolve-js/redux'
 
 const NamedSelectors = ({
   match: {

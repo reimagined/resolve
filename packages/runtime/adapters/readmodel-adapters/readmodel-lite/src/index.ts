@@ -1,4 +1,4 @@
-import _createAdapter from '@reimagined/readmodel-base'
+import _createAdapter from '@resolve-js/readmodel-base'
 import SQLite from 'sqlite'
 //eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

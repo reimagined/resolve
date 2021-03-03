@@ -28,12 +28,12 @@
     "react-router": "5.1.2",
     "react-router-dom": "5.1.2",
     "@shopping-list-advanced/ui": "0.26.5",
-    "@reimagined/module-auth": "0.26.5",
-    "@reimagined/readmodel-lite": "0.26.5",
-    "@reimagined/readmodel-postgresql-serverless": "0.26.5",
-    "@reimagined/eventstore-postgresql-serverless": "0.26.5",
-    "@reimagined/scripts": "0.26.5",
-    "@reimagined/redux": "0.26.5",
+    "@resolve-js/module-auth": "0.26.5",
+    "@resolve-js/readmodel-lite": "0.26.5",
+    "@resolve-js/readmodel-postgresql-serverless": "0.26.5",
+    "@resolve-js/eventstore-postgresql-serverless": "0.26.5",
+    "@resolve-js/scripts": "0.26.5",
+    "@resolve-js/redux": "0.26.5",
     "styled-components": "4.4.1"
   },
   "devDependencies": {
@@ -60,7 +60,7 @@
     "opn": "5.4.0",
     "remotedev-server": "0.2.7",
     "redux-devtools-extension": "2.13.7",
-    "@reimagined/module-admin": "0.26.5",
+    "@resolve-js/module-admin": "0.26.5",
     "resolve-cloud": "*",
     "webpack-node-externals": "1.7.2",
     "isomorphic-fetch": "2.2.1"

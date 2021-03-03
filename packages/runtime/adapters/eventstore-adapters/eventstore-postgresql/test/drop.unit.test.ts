@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { mocked } from 'ts-jest/utils'
 /* eslint-disable import/no-extraneous-dependencies */
-import { EventstoreResourceNotExistError } from '@reimagined/eventstore-base'
+import { EventstoreResourceNotExistError } from '@resolve-js/eventstore-base'
 import { AdapterPool } from '../src/types'
 import dropEvents from '../src/drop-events'
 

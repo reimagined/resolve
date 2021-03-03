@@ -1,5 +1,5 @@
 import { symbol, Phases } from './constants'
-import { SerializableMap } from '@reimagined/core'
+import { SerializableMap } from '@resolve-js/core'
 
 type BDDCommandContext = {
   [symbol]: {

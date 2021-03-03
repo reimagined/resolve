@@ -1,4 +1,4 @@
-import debugLevels from '@reimagined/debug-levels'
+import debugLevels from '@resolve-js/debug-levels'
 
 import bootstrap from '../common/bootstrap'
 import shutdown from '../common/shutdown'

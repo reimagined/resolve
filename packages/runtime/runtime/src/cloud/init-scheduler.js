@@ -1,5 +1,5 @@
 import StepFunctions from 'aws-sdk/clients/stepfunctions'
-import debugLevels from '@reimagined/debug-levels'
+import debugLevels from '@resolve-js/debug-levels'
 import { invokeFunction } from 'resolve-cloud-common/lambda'
 import STS from 'aws-sdk/clients/sts'
 

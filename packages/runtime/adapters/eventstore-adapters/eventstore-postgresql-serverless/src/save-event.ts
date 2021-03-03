@@ -2,7 +2,7 @@ import {
   ConcurrentError,
   InputEvent,
   EventstoreFrozenError,
-} from '@reimagined/eventstore-base'
+} from '@resolve-js/eventstore-base'
 
 import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Store } from 'redux'
 import { Provider as ReduxProvider } from 'react-redux'
-import { ResolveProvider, ResolveProviderProps } from '@reimagined/react-hooks'
+import { ResolveProvider, ResolveProviderProps } from '@resolve-js/react-hooks'
 
 type ResolveReduxProviderProps = {
   store: Store

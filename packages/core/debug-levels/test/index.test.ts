@@ -1,6 +1,6 @@
 import createLogger, { debugLevels, Debug } from '../src/index'
 
-test('@reimagined/debug-levels should work with provided DEBUG and DEBUG_LEVELS envs', () => {
+test('@resolve-js/debug-levels should work with provided DEBUG and DEBUG_LEVELS envs', () => {
   const debugPrinter = jest.fn()
   const debugProvider = jest.fn().mockReturnValue(debugPrinter)
   const envProvider = {
@@ -31,7 +31,7 @@ test('@reimagined/debug-levels should work with provided DEBUG and DEBUG_LEVELS 
   expect(debugPrinter).not.toBeCalledWith('Verbose message')
 })
 
-test('@reimagined/debug-levels should set DEBUG_LEVELS="warn" if DEBUG_LEVELS env is not set', () => {
+test('@resolve-js/debug-levels should set DEBUG_LEVELS="warn" if DEBUG_LEVELS env is not set', () => {
   const debugPrinter = jest.fn()
   const debugProvider = jest.fn().mockReturnValue(debugPrinter)
   const envProvider = {
@@ -61,7 +61,7 @@ test('@reimagined/debug-levels should set DEBUG_LEVELS="warn" if DEBUG_LEVELS en
   expect(debugPrinter).not.toBeCalledWith('Verbose message')
 })
 
-test('@reimagined/debug-levels should set DEBUG="resolve:" if DEBUG env is not set', () => {
+test('@resolve-js/debug-levels should set DEBUG="resolve:" if DEBUG env is not set', () => {
   const debugNamespaceEnabler = jest.fn()
   const debugPrinter = jest.fn()
   const debugProvider = jest.fn().mockReturnValue(debugPrinter)
@@ -98,7 +98,7 @@ test('@reimagined/debug-levels should set DEBUG="resolve:" if DEBUG env is not s
   expect(debugPrinter).not.toBeCalledWith('Verbose message')
 })
 
-test('@reimagined/debug-levels should create and invoke logger', () => {
+test('@resolve-js/debug-levels should create and invoke logger', () => {
   const logger = createLogger('resolve:test-namespace')
 
   logger.warn('Warn message')

@@ -9,9 +9,9 @@ const {
   reset,
   importEventStore,
   exportEventStore,
-} = require('@reimagined/scripts')
-const createAuthModule = require('@reimagined/module-auth').default
-const resolveModuleAdmin = require('@reimagined/module-admin').default
+} = require('@resolve-js/scripts')
+const createAuthModule = require('@resolve-js/module-auth').default
+const resolveModuleAdmin = require('@resolve-js/module-admin').default
 const getLocalIp = require('my-local-ip')
 const remotedev = require('remotedev-server')
 const opn = require('opn')

@@ -1,11 +1,11 @@
 import React from 'react'
 import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
-import { getClient } from '@reimagined/client'
+import { getClient } from '@resolve-js/client'
 import { ResolveContext } from '../src/context'
 import { useClient } from '../src/use-client'
 
-jest.mock('@reimagined/client')
+jest.mock('@resolve-js/client')
 
 const mockedGetClient = mocked(getClient)
 

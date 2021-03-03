@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`@reimagined/module-admin read-models list 1`] = `
+exports[`@resolve-js/module-admin read-models list 1`] = `
 Array [
   Array [
     "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR          
@@ -9,7 +9,7 @@ read-model           status               3/18/05 04:58:31 type N\\\\A          
 ]
 `;
 
-exports[`@reimagined/module-admin read-models pause 1`] = `
+exports[`@resolve-js/module-admin read-models pause 1`] = `
 Array [
   Array [
     "ListenerId = \\"readModel\\" paused",
@@ -17,7 +17,7 @@ Array [
 ]
 `;
 
-exports[`@reimagined/module-admin read-models reset 1`] = `
+exports[`@resolve-js/module-admin read-models reset 1`] = `
 Array [
   Array [
     "ListenerId = \\"readModel\\" reset",
@@ -25,7 +25,7 @@ Array [
 ]
 `;
 
-exports[`@reimagined/module-admin read-models resume 1`] = `
+exports[`@resolve-js/module-admin read-models resume 1`] = `
 Array [
   Array [
     "ListenerId = \\"readModel\\" running",
@@ -33,7 +33,7 @@ Array [
 ]
 `;
 
-exports[`@reimagined/module-admin sagas list 1`] = `
+exports[`@resolve-js/module-admin sagas list 1`] = `
 Array [
   Array [
     "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR          
@@ -42,7 +42,7 @@ saga                 status               3/18/05 04:58:31 type N\\\\A          
 ]
 `;
 
-exports[`@reimagined/module-admin sagas pause 1`] = `
+exports[`@resolve-js/module-admin sagas pause 1`] = `
 Array [
   Array [
     "ListenerId = \\"saga\\" paused",
@@ -50,7 +50,7 @@ Array [
 ]
 `;
 
-exports[`@reimagined/module-admin sagas properties get 1`] = `
+exports[`@resolve-js/module-admin sagas properties get 1`] = `
 Array [
   Array [
     "ListenerId = \\"saga\\", Key = \\"key\\", Value = \\"value\\"",
@@ -58,7 +58,7 @@ Array [
 ]
 `;
 
-exports[`@reimagined/module-admin sagas properties list 1`] = `
+exports[`@resolve-js/module-admin sagas properties list 1`] = `
 Array [
   Array [
     "NAME                 VALUE               
@@ -67,7 +67,7 @@ key                  value               ",
 ]
 `;
 
-exports[`@reimagined/module-admin sagas properties remove 1`] = `
+exports[`@resolve-js/module-admin sagas properties remove 1`] = `
 Array [
   Array [
     "ListenerId = \\"saga\\", Key = \\"key\\" deleted",
@@ -75,7 +75,7 @@ Array [
 ]
 `;
 
-exports[`@reimagined/module-admin sagas properties set 1`] = `
+exports[`@resolve-js/module-admin sagas properties set 1`] = `
 Array [
   Array [
     "ListenerId = \\"saga\\", Key = \\"key\\", Value = \\"value\\"",
@@ -83,7 +83,7 @@ Array [
 ]
 `;
 
-exports[`@reimagined/module-admin sagas reset 1`] = `
+exports[`@resolve-js/module-admin sagas reset 1`] = `
 Array [
   Array [
     "ListenerId = \\"saga\\" reset",
@@ -91,7 +91,7 @@ Array [
 ]
 `;
 
-exports[`@reimagined/module-admin sagas resume 1`] = `
+exports[`@resolve-js/module-admin sagas resume 1`] = `
 Array [
   Array [
     "ListenerId = \\"saga\\" running",
