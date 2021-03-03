@@ -51,6 +51,7 @@ jobs:
           build: ${{ github.sha }}
           tag: cloud-test
           unpublish: true
+          github_target_repository: resolve-js/resolve
 
       - name: Checkout cloud environment
         uses: actions/checkout@v2
@@ -66,7 +67,7 @@ jobs:
         with:
           aws_access_key_id: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
-          stage: dev
+          stage: framework-test
           version: ${{ steps.publish.outputs.version }}
           source: ./resolve-cloud
           registry: ${{ steps.publish.outputs.registry_url }}
