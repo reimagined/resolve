@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectViewModel } from 'resolve-redux'
+import { connectViewModel } from '@resolve-js/redux'
 import { bindActionCreators } from 'redux'
 
 import {

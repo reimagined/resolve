@@ -1,8 +1,8 @@
-import createSqliteAdapter from 'resolve-eventstore-lite'
-import createPostgresqlServerlessAdapter from 'resolve-eventstore-postgresql-serverless'
-import { Adapter } from 'resolve-eventstore-base'
-import { SecretsManager } from 'resolve-core'
-import { create, destroy } from 'resolve-eventstore-postgresql-serverless'
+import createSqliteAdapter from '@resolve-js/eventstore-lite'
+import createPostgresqlServerlessAdapter from '@resolve-js/eventstore-postgresql-serverless'
+import { Adapter } from '@resolve-js/eventstore-base'
+import { SecretsManager } from '@resolve-js/core'
+import { create, destroy } from '@resolve-js/eventstore-postgresql-serverless'
 import { pipeline } from 'stream'
 import { promisify } from 'util'
 import {

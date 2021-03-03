@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { v4 as uuid } from 'uuid'
-import { CommentsTreeRenderless } from 'resolve-module-comments'
+import { CommentsTreeRenderless } from '@resolve-js/module-comments'
 
 import ChildrenComments from '../components/ChildrenComments'
 import Comment from '../components/Comment'

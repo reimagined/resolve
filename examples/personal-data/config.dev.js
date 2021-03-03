@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const devConfig = {
   target: 'local',
@@ -10,7 +10,7 @@ const devConfig = {
   distDir: 'dist',
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-models.db',
         secretsFile: 'data/secrets.db',
@@ -18,7 +18,7 @@ const devConfig = {
     },
   },
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/eventstore.db',
       secretsFile: 'data/secrets.db',

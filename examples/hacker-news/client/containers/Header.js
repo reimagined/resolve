@@ -1,5 +1,5 @@
 import React from 'react'
-import { connectStaticBasedUrls } from 'resolve-redux'
+import { connectStaticBasedUrls } from '@resolve-js/redux'
 import { Helmet } from 'react-helmet'
 
 const Header = ({ title, css, favicon }) => {

@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/server'
 import { Helmet } from 'react-helmet'
 import jsonwebtoken from 'jsonwebtoken'
-import { ResolveProvider } from 'resolve-react-hooks'
+import { ResolveProvider } from '@resolve-js/react-hooks'
 
 import { App } from './containers/App'
 import Layout from './components/Layout'

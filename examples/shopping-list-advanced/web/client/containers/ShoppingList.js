@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectViewModel, connectRootBasedUrls } from 'resolve-redux'
+import { connectViewModel, connectRootBasedUrls } from '@resolve-js/redux'
 import { bindActionCreators } from 'redux'
 import { Redirect } from 'react-router-dom'
 import {

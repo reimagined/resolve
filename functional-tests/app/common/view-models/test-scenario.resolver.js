@@ -1,4 +1,4 @@
-import { HttpError } from 'resolve-client'
+import { HttpError } from '@resolve-js/client'
 
 export default async (resolve, query, { viewModel }) => {
   const { data, cursor } = await resolve.buildViewModel(viewModel.name, query)

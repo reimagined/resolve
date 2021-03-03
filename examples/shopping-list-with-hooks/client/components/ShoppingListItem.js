@@ -1,5 +1,5 @@
 import React from 'react'
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand } from '@resolve-js/react-hooks'
 import { ListGroupItem, Form } from 'react-bootstrap'
 
 import { StaticImage } from './StaticImage'

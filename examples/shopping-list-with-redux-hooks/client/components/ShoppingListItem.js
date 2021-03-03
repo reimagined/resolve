@@ -1,5 +1,5 @@
 import React from 'react'
-import { useReduxCommand } from 'resolve-redux'
+import { useReduxCommand } from '@resolve-js/redux'
 import { ListGroupItem, Form } from 'react-bootstrap'
 
 import { StaticImage } from './StaticImage'

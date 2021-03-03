@@ -45,7 +45,7 @@ const devConfig = {
   ...
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {}
     }
   },
@@ -55,12 +55,12 @@ const devConfig = {
 ##### config.cloud.js:
 
 ```js
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 const prodConfig = {
   ...
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-postgresql-serverless',
+      module: '@resolve-js/readmodel-postgresql-serverless',
       options: {
         dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_CLUSTER_ARN'),
         awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_SECRET_ARN'),
@@ -394,8 +394,8 @@ export default async (resolve, query, { jwt: token, viewModel }) => {
     meta: {
       cursor,
       eventTypes: viewModel.eventTypes,
-      aggregateIds: query.aggregateIds
-    }
+      aggregateIds: query.aggregateIds,
+    },
   }
 }
 ```

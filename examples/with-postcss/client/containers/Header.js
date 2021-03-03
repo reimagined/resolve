@@ -1,5 +1,5 @@
 import React from 'react'
-import { useStaticResolver } from 'resolve-react-hooks'
+import { useStaticResolver } from '@resolve-js/react-hooks'
 import { Navbar, Nav } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 
