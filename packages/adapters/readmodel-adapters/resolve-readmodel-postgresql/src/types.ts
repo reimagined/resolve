@@ -26,8 +26,6 @@ export type InlineLedgerRunQueryMethod = (
   passthroughRuntimeErrors?: boolean
 ) => Promise<Array<object>>
 
-export type RunQueryMethod = (querySQL: string) => Promise<Array<object>>
-
 export type FullJitterMethod = (retries: number) => Promise<void>
 export type MakeNestedPathMethod = (nestedPath: Array<string>) => string
 export type EscapeableMethod = (str: string) => string
@@ -123,11 +121,11 @@ export type UpdateFieldDescriptor = {
 
 export type AdapterPool = CommonAdapterPool & {
   inlineLedgerRunQuery: InlineLedgerRunQueryMethod
-  runQuery: RunQueryMethod
   performanceTracer: PerformanceTracerLike
   tablePrefix: string
   schemaName: string
   makeNestedPath: MakeNestedPathMethod
+  activePassthrough: boolean
   connection: InstanceType<LibDependencies['Postgres']>
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<

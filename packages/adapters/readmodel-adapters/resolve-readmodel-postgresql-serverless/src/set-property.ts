@@ -10,16 +10,20 @@ const setProperty: ExternalMethods['setProperty'] = async (
 
   const databaseNameAsId = escapeId(schemaName)
   const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
-
-  await inlineLedgerExecuteStatement(
-    pool,
-    `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
+  try {
+    pool.activePassthrough = true
+    await inlineLedgerExecuteStatement(
+      pool,
+      `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
      SET "Properties" = "Properties" || ${escapeStr(
        JSON.stringify({ [key]: value })
      )}::JSONB 
      WHERE "EventSubscriber" = ${escapeStr(readModelName)}
     `
-  )
+    )
+  } finally {
+    pool.activePassthrough = false
+  }
 }
 
 export default setProperty

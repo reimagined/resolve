@@ -2,6 +2,38 @@ import { SecretsManager, Event, SerializableMap } from 'resolve-core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 
+import * as t from 'io-ts'
+import { isRight } from 'fp-ts/These'
+import { either } from 'fp-ts/Either'
+import { PathReporter } from 'io-ts/lib/PathReporter'
+
+export function validate<T extends t.Type<any>>(
+  schema: T,
+  params: any,
+  errorName?: string
+): t.TypeOf<T> {
+  const validationResult = schema.decode(params)
+  if (!isRight(validationResult)) {
+    const messages = PathReporter.report(validationResult)
+    const error = new Error(messages.join('\r\n'))
+    if (errorName != null) {
+      error.name = errorName
+    }
+    throw error
+  }
+  return params
+}
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
+export type UnbrandProps<T extends any> = {
+  [Property in keyof T]: T[Property] extends
+    | t.Branded<infer S, infer B>
+    | infer Union
+    ? S | Union
+    : T[Property]
+}
+/* eslint-enable @typescript-eslint/no-unused-vars */
+
 export type InputEvent = Event
 export type SavedEvent = Event & {
   threadCounter: number
@@ -16,7 +48,7 @@ type SetSecret = SecretsManager['setSecret']
 
 type ShapeEvent = (event: any, additionalFields?: any) => SavedEvent
 
-export type ValidateEventFilter = (filter: any) => void
+export type ValidateEventFilter = (filter: EventFilter) => void
 
 export type GetNextCursor = (prevCursor: string | null, events: any[]) => string
 
@@ -25,23 +57,81 @@ export type EventsWithCursor = {
   events: SavedEvent[]
 }
 
-type EventFilterCommon = {
-  eventTypes?: Array<string> | null
-  aggregateIds?: Array<string> | null
-  limit: number
-  eventsSizeLimit?: number
-}
+const EventFilterCommonSchema = t.intersection([
+  t.type({
+    limit: t.Int,
+  }),
+  t.partial({
+    eventTypes: t.union([t.array(t.string), t.null]),
+    aggregateIds: t.union([t.array(t.string), t.null]),
+    eventSizeLimit: t.Int,
+  }),
+])
 
-export type TimestampFilter = EventFilterCommon & {
-  startTime?: number
-  finishTime?: number
-}
+const TimestampFilterFieldsSchema = t.partial({
+  startTime: t.Int,
+  finishTime: t.Int,
+})
+const TimestampFilterSchema = t.intersection([
+  EventFilterCommonSchema,
+  TimestampFilterFieldsSchema,
+])
+type TimestampFilterChecked = t.TypeOf<typeof TimestampFilterSchema>
+export type TimestampFilter = UnbrandProps<TimestampFilterChecked>
 
-export type CursorFilter = EventFilterCommon & {
-  cursor: string | null
-}
+const CursorFilterFieldsSchema = t.type({
+  cursor: t.union([t.string, t.null]),
+})
+const CursorFilterSchema = t.intersection([
+  EventFilterCommonSchema,
+  CursorFilterFieldsSchema,
+])
+type CursorFilterChecked = t.TypeOf<typeof CursorFilterSchema>
+export type CursorFilter = UnbrandProps<CursorFilterChecked>
 
-export type EventFilter = TimestampFilter | CursorFilter
+const EventFilterSchemaSimple = t.intersection([
+  EventFilterCommonSchema,
+  TimestampFilterFieldsSchema,
+  t.partial(CursorFilterFieldsSchema.props),
+])
+
+export const EventFilterSchema = new t.Type<EventFilter, EventFilter>(
+  'EventFilterSchema',
+  EventFilterSchemaSimple.is,
+  (u, c) =>
+    either.chain(EventFilterSchemaSimple.validate(u, c), (filter) => {
+      if (isCursorFilter(filter)) {
+        if (isTimestampFilter(filter)) {
+          return t.failure(
+            u,
+            c,
+            'startTime and finishTime are not allowed in cursor filter'
+          )
+        }
+        return t.success(filter)
+      } else if (isTimestampFilter(filter)) {
+        if (filter.startTime !== undefined && filter.finishTime !== undefined) {
+          if (filter.startTime > filter.finishTime) {
+            return t.failure(
+              u,
+              c,
+              `Event filter start time can't be larger than finishTime`
+            )
+          }
+        }
+        return t.success(filter)
+      } else {
+        return t.failure(
+          u,
+          c,
+          'cursor or at least one of startTime or finishTime should be defined'
+        )
+      }
+    }),
+  t.identity
+)
+type EventFilterChecked = t.TypeOf<typeof EventFilterSchemaSimple>
+export type EventFilter = UnbrandProps<EventFilterChecked>
 
 export type SecretFilter = {
   idx?: number | null
@@ -97,9 +187,11 @@ export type UnconnectedPoolMethod<
   ...args: Parameters<M>
 ) => ReturnType<M>
 
-export type AdapterConfig = {
-  snapshotBucketSize?: number
-}
+export const AdapterConfigSchema = t.partial({
+  snapshotBucketSize: t.Int,
+})
+type AdapterConfigChecked = t.TypeOf<typeof AdapterConfigSchema>
+export type AdapterConfig = UnbrandProps<AdapterConfigChecked>
 
 export type AdapterPoolPrimalProps = {
   disposed: boolean
@@ -314,7 +406,7 @@ export interface Adapter {
   loadEvents: (filter: EventFilter) => Promise<EventsWithCursor>
   importEvents: (options?: Partial<ImportOptions>) => stream.Writable
   exportEvents: (options?: Partial<ExportOptions>) => stream.Readable
-  getLatestEvent: (filter: EventFilter) => Promise<any>
+  getLatestEvent: (filter: EventFilter) => Promise<SavedEvent | null>
   saveEvent: (event: InputEvent) => Promise<void>
   init: () => Promise<void>
   drop: () => Promise<void>
@@ -323,9 +415,9 @@ export interface Adapter {
   unfreeze: () => Promise<void>
   getNextCursor: (prevCursor: string | null, events: any[]) => string
   getSecretsManager: () => Promise<SecretsManager>
-  loadSnapshot: (snapshotKey: string) => Promise<any>
-  saveSnapshot: (snapshotKey: string, content: string) => Promise<any>
-  dropSnapshot: (snapshotKey: string) => Promise<any>
+  loadSnapshot: (snapshotKey: string) => Promise<string | null>
+  saveSnapshot: (snapshotKey: string, content: string) => Promise<void>
+  dropSnapshot: (snapshotKey: string) => Promise<void>
   pushIncrementalImport: (
     events: InputEvent[],
     importId: string

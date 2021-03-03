@@ -22,9 +22,10 @@ const resubscribe: ExternalMethods['resubscribe'] = async (
     `${tablePrefix}__${schemaName}__LEDGER__`
   )
   const trxTableNameAsId = escapeId(`${tablePrefix}__${schemaName}__TRX__`)
-
   try {
-    await inlineLedgerRunQuery(`
+    pool.activePassthrough = true
+    try {
+      await inlineLedgerRunQuery(`
       CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${ledgerTableNameAsId}(
         "EventSubscriber" VARCHAR(190) NOT NULL,
         "IsPaused" BOOLEAN NOT NULL,
@@ -47,12 +48,12 @@ const resubscribe: ExternalMethods['resubscribe'] = async (
         PRIMARY KEY("XaKey")
       );
     `)
-  } catch (e) {}
+    } catch (e) {}
 
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
-      await inlineLedgerRunQuery(`
+    while (true) {
+      try {
+        await inlineLedgerForceStop(pool, readModelName)
+        await inlineLedgerRunQuery(`
         WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
@@ -68,21 +69,21 @@ const resubscribe: ExternalMethods['resubscribe'] = async (
         AND (SELECT Count("CTE".*) FROM "CTE") = 1
       `)
 
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
-  }
 
-  await dropReadModel(pool, readModelName)
+    await dropReadModel(pool, readModelName)
 
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
+    while (true) {
+      try {
+        await inlineLedgerForceStop(pool, readModelName)
 
-      await inlineLedgerRunQuery(`
+        await inlineLedgerRunQuery(`
         WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
@@ -116,12 +117,15 @@ const resubscribe: ExternalMethods['resubscribe'] = async (
              : escapeStr('null')
          }
       `)
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
+  } finally {
+    pool.activePassthrough = false
   }
 }
 

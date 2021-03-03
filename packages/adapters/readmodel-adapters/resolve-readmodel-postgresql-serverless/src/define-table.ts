@@ -10,7 +10,7 @@ const defineTable: CurrentStoreApi['defineTable'] = async (
   tableDescription
 ) => {
   const {
-    executeStatement,
+    inlineLedgerExecuteStatement,
     tablePrefix,
     escapeId,
     escapeStr,
@@ -27,7 +27,7 @@ const defineTable: CurrentStoreApi['defineTable'] = async (
   }
   const { fields, indexes } = tableDescription
 
-  await executeStatement(
+  await inlineLedgerExecuteStatement(
     pool,
     `
     CREATE TABLE ${escapeId(schemaName)}.${escapeId(
@@ -76,7 +76,8 @@ const defineTable: CurrentStoreApi['defineTable'] = async (
       `${tablePrefix}${tableName}`
     )}
     IS ${escapeStr(`RESOLVE-${readModelName}`)};
-  `
+  `,
+    inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
   )
 }
 

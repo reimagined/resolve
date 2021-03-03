@@ -1,9 +1,13 @@
-import type { open } from 'sqlite'
+import type { open, Database } from 'sqlite'
 import type {
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
-  AdapterConfig,
+} from 'resolve-eventstore-base'
+import {
+  AdapterConfigSchema,
+  UnbrandProps,
+  iots as t,
 } from 'resolve-eventstore-base'
 
 export type SqliteOpen = typeof open
@@ -14,7 +18,7 @@ export type MemoryStore = {
 }
 
 export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
-  database: any
+  database: Database
   databaseFile: string
   eventsTableName: string
   snapshotsTableName: string
@@ -24,12 +28,18 @@ export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   memoryStore?: MemoryStore
 }
 
-export type SqliteAdapterConfig = AdapterConfig & {
-  databaseFile?: string
-  secretsTableName?: string
-  eventsTableName?: string
-  snapshotsTableName?: string
-}
+export const SqliteAdapterConfigSchema = t.intersection([
+  AdapterConfigSchema,
+  t.partial({
+    databaseFile: t.string,
+    secretsTableName: t.string,
+    eventsTableName: t.string,
+    snapshotsTableName: t.string,
+  }),
+])
+
+type SqliteAdapterConfigChecked = t.TypeOf<typeof SqliteAdapterConfigSchema>
+export type SqliteAdapterConfig = UnbrandProps<SqliteAdapterConfigChecked>
 
 export type AdapterPool = AdapterPoolConnected<SqliteAdapterPoolConnectedProps>
 export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<

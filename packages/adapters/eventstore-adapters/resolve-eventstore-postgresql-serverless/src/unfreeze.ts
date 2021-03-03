@@ -1,4 +1,5 @@
 import { AdapterPool } from './types'
+import { EventstoreAlreadyUnfrozenError } from 'resolve-eventstore-base'
 
 const unfreeze = async ({
   executeStatement,
@@ -9,9 +10,13 @@ const unfreeze = async ({
   const databaseNameAsId: string = escapeId(databaseName)
   const freezeTableNameAsId: string = escapeId(`${eventsTableName}-freeze`)
 
-  await executeStatement(
-    `DROP TABLE ${databaseNameAsId}.${freezeTableNameAsId}`
-  )
+  try {
+    await executeStatement(
+      `DROP TABLE ${databaseNameAsId}.${freezeTableNameAsId}`
+    )
+  } catch (error) {
+    throw new EventstoreAlreadyUnfrozenError()
+  }
 }
 
 export default unfreeze

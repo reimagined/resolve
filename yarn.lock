@@ -8803,6 +8803,11 @@ forwarded@~0.1.2:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
   integrity sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ=
 
+fp-ts@2.9.5:
+  version "2.9.5"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.9.5.tgz#6690cd8b76b84214a38fc77cbbbd04a38f86ea90"
+  integrity sha512-MiHrA5teO6t8zKArE3DdMPT/Db6v2GUt5yfWnhBTrrsVfeCJUUnV6sgFvjGNBKDmEMqVwRFkEePL7wPwqrLKKA==
+
 fragment-cache@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/fragment-cache/-/fragment-cache-0.2.1.tgz#4290fad27f13e89be7f33799c6bc5a0abfff0d19"
@@ -10102,6 +10107,11 @@ invert-kv@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-1.0.0.tgz#104a8e4aaca6d3d8cd157a8ef8bfab2d7a3ffdb6"
   integrity sha1-EEqOSqym09jNFXqO+L+rLXo//bY=
+
+io-ts@2.2.15:
+  version "2.2.15"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.15.tgz#0b0b19a6f8a64f4a524ad5810d56432789428128"
+  integrity sha512-ww2ZPrErx5pjCCI/tWRwjlEIDEndnN9kBIxAylXj+WNIH4ZVgaUqFuabGouehkRuvrmvzO5OnZmLf+o50h4izQ==
 
 ip-regex@^2.1.0:
   version "2.1.0"
@@ -16260,9 +16270,9 @@ resolve-cloud-common@0.0.37:
     lodash.isequal "^4.5.0"
 
 resolve-cloud@*:
-  version "0.16.6"
-  resolved "https://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.16.6.tgz#0594cb02f1e8ab0e2896851d8a4fe635b837a1e2"
-  integrity sha512-2tYwN/+gSfHUkDhlO/XiC9ghFvkHtZd4YUni2i1KnmiYwjz4vtqRpLELaXCQSvjvvfaRSsAFOkG4/d9iswxnaQ==
+  version "0.16.7"
+  resolved "https://registry.yarnpkg.com/resolve-cloud/-/resolve-cloud-0.16.7.tgz#8b9df947c99c049d69c912418e1e295818614330"
+  integrity sha512-4kBRoyFlRX+XJpcI5Ia/dA7w2Fvqq2xgW2DqScL7AtmqF07/J/62vG9bmB5VITslZ6mmzId+cPiz+yxxwQjWYw==
   dependencies:
     amazon-cognito-identity-js "^3.0.15"
     archiver "^3.0.0"

@@ -7,7 +7,7 @@ const saveSnapshot = async (
   pool: AdapterPool,
   snapshotKey: string,
   content: string
-): Promise<any> =>
+): Promise<void> =>
   snapshotTrigger(pool as any, snapshotKey, content, async () => {
     const log = getLog(`saveSnapshot:${snapshotKey}`)
 

@@ -26,8 +26,11 @@ import importSecretsStream from './import-secrets'
 import exportSecretsStream from './export-secrets'
 import init from './init'
 import drop from './drop'
+import * as iots from 'io-ts'
 
 import {
+  validate,
+  UnbrandProps,
   CursorFilter,
   TimestampFilter,
   isTimestampFilter,
@@ -41,6 +44,7 @@ import {
   AdapterPoolPossiblyUnconnected,
   AdapterPoolConnected,
   AdapterConfig,
+  AdapterConfigSchema,
   ImportOptions,
   ExportOptions,
   SecretFilter,
@@ -91,6 +95,8 @@ const wrappedCreateAdapter = <
 export default wrappedCreateAdapter
 
 export {
+  validate,
+  UnbrandProps,
   ResourceAlreadyExistError as EventstoreResourceAlreadyExistError,
   ResourceNotExistError as EventstoreResourceNotExistError,
   ConcurrentError,
@@ -113,6 +119,7 @@ export {
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
   AdapterConfig,
+  AdapterConfigSchema,
   ImportOptions,
   ExportOptions,
   SecretFilter,
@@ -120,4 +127,5 @@ export {
   SecretRecord,
   InputEvent,
   SavedEvent,
+  iots,
 }

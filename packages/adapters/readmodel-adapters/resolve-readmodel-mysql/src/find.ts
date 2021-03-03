@@ -4,7 +4,7 @@ const MAX_LIMIT_VALUE = 0x0fffffff | 0
 
 const find: CurrentStoreApi['find'] = async (
   {
-    runQuery,
+    inlineLedgerRunQuery,
     escapeId,
     escapeStr,
     tablePrefix,
@@ -51,7 +51,7 @@ const find: CurrentStoreApi['find'] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const inputRows = (await runQuery(
+  const inputRows = (await inlineLedgerRunQuery(
     `SELECT * FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}
     ${orderExpression}

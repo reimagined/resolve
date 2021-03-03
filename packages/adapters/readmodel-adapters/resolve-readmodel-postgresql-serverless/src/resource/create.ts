@@ -17,7 +17,7 @@ const create: UnboundResourceMethod = async (pool, options) => {
     region: options.region,
   } as OmitObject<AdapterOptions, CommonAdapterOptions>)
 
-  await admin.executeStatement(
+  await admin.inlineLedgerExecuteStatement(
     admin,
     [
       `CREATE SCHEMA ${escapeId(options.databaseName)}`,
