@@ -37,7 +37,7 @@ const message = {
       ``,
       ...optionsInfo(resolveExamples),
       ``,
-      `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
+      `Run ${chalk.cyan('create-resolve-app --help')} to view all options.`,
     ].join(EOL),
 
   startCreatingApp: ({ EOL, applicationName, exampleName, commit, branch }) =>

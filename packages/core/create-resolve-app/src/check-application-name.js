@@ -4,7 +4,7 @@ const checkApplicationName = (pool) => async () => {
   if (!result.validForNewPackages) {
     let message = `It is impossible to create an application called ${chalk.red(
       `"${applicationName}"`
-    )} because of npm naming restrictions:`
+    )} due to npm naming restrictions:`
 
     message += []
       .concat(result.errors || [])
