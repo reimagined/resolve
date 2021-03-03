@@ -109,7 +109,7 @@ const putDataMetrics = async (dataMap, commonMap, errorMap) => {
   }
 
   const now = new Date()
-  const metricName = dataMap.Error != null ? 'Errors' : 'Executions'
+  const metricName = dataMap.ErrorMessage != null ? 'Errors' : 'Executions'
 
   const metricData = commonMap.map((dimensionNames) => ({
     MetricName: metricName,
@@ -167,7 +167,8 @@ export const putCommandMetrics = async (
   }
 
   if (error != null) {
-    metricDataMap.Error = getErrorMessage(error)
+    metricDataMap.ErrorMessage = getErrorMessage(error)
+    metricDataMap.ErrorName = error.name
   }
 
   return putDataMetrics(
@@ -180,15 +181,26 @@ export const putCommandMetrics = async (
       ['DeploymentId', 'Part', 'AggregateName', 'CommandType', 'AggregateId'],
     ],
     [
-      ['DeploymentId', 'Error'],
-      ['DeploymentId', 'Part', 'Error'],
+      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+      ['DeploymentId', 'ErrorName'],
+      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+      ['DeploymentId', 'Part', 'ErrorName'],
       [
         'DeploymentId',
         'Part',
         'AggregateName',
         'CommandType',
         'AggregateId',
-        'Error',
+        'ErrorName',
+        'ErrorMessage',
+      ],
+      [
+        'DeploymentId',
+        'Part',
+        'AggregateName',
+        'CommandType',
+        'AggregateId',
+        'ErrorName',
       ],
     ]
   )
@@ -207,7 +219,8 @@ export const putReadModelProjectionMetrics = async (
   }
 
   if (error != null) {
-    metricDataMap.Error = getErrorMessage(error)
+    metricDataMap.ErrorMessage = getErrorMessage(error)
+    metricDataMap.ErrorName = error.name
   }
 
   return putDataMetrics(
@@ -219,9 +232,19 @@ export const putReadModelProjectionMetrics = async (
       ['DeploymentId', 'Part', 'ReadModel', 'EventType'],
     ],
     [
-      ['DeploymentId', 'Error'],
-      ['DeploymentId', 'Part', 'Error'],
-      ['DeploymentId', 'Part', 'ReadModel', 'EventType', 'Error'],
+      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+      [
+        'DeploymentId',
+        'Part',
+        'ReadModel',
+        'EventType',
+        'ErrorName',
+        'ErrorMessage',
+      ],
+      ['DeploymentId', 'ErrorName'],
+      ['DeploymentId', 'Part', 'ErrorName'],
+      ['DeploymentId', 'Part', 'ReadModel', 'EventType', 'ErrorName'],
     ]
   )
 }
@@ -239,7 +262,8 @@ export const putReadModelResolverMetrics = async (
   }
 
   if (error != null) {
-    metricDataMap.Error = getErrorMessage(error)
+    metricDataMap.ErrorMessage = getErrorMessage(error)
+    metricDataMap.ErrorName = error.name
   }
 
   return putDataMetrics(
@@ -251,9 +275,19 @@ export const putReadModelResolverMetrics = async (
       ['DeploymentId', 'Part', 'ReadModel', 'Resolver'],
     ],
     [
-      ['DeploymentId', 'Error'],
-      ['DeploymentId', 'Part', 'Error'],
-      ['DeploymentId', 'Part', 'ReadModel', 'Resolver', 'Error'],
+      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+      [
+        'DeploymentId',
+        'Part',
+        'ReadModel',
+        'Resolver',
+        'ErrorName',
+        'ErrorMessage',
+      ],
+      ['DeploymentId', 'ErrorName'],
+      ['DeploymentId', 'Part', 'ErrorName'],
+      ['DeploymentId', 'Part', 'ReadModel', 'Resolver', 'ErrorName'],
     ]
   )
 }
@@ -271,7 +305,8 @@ export const putViewModelProjectionMetrics = async (
   }
 
   if (error != null) {
-    metricDataMap.Error = getErrorMessage(error)
+    metricDataMap.ErrorMessage = getErrorMessage(error)
+    metricDataMap.ErrorName = error.name
   }
 
   return putDataMetrics(
@@ -283,9 +318,19 @@ export const putViewModelProjectionMetrics = async (
       ['DeploymentId', 'Part', 'ViewModel', 'EventType'],
     ],
     [
-      ['DeploymentId', 'Error'],
-      ['DeploymentId', 'Part', 'Error'],
-      ['DeploymentId', 'Part', 'ViewModel', 'EventType', 'Error'],
+      ['DeploymentId', 'ErrorName'],
+      ['DeploymentId', 'Part', 'ErrorName'],
+      ['DeploymentId', 'Part', 'ViewModel', 'EventType', 'ErrorName'],
+      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+      [
+        'DeploymentId',
+        'Part',
+        'ViewModel',
+        'EventType',
+        'ErrorName',
+        'ErrorMessage',
+      ],
     ]
   )
 }
@@ -298,7 +343,8 @@ export const putViewModelResolverMetrics = async (viewModelName, error) => {
   }
 
   if (error != null) {
-    metricDataMap.Error = getErrorMessage(error)
+    metricDataMap.ErrorMessage = getErrorMessage(error)
+    metricDataMap.ErrorName = error.name
   }
 
   return putDataMetrics(
@@ -309,9 +355,12 @@ export const putViewModelResolverMetrics = async (viewModelName, error) => {
       ['DeploymentId', 'Part', 'ViewModel'],
     ],
     [
-      ['DeploymentId', 'Error'],
-      ['DeploymentId', 'Part', 'Error'],
-      ['DeploymentId', 'Part', 'ViewModel', 'Error'],
+      ['DeploymentId', 'ErrorName'],
+      ['DeploymentId', 'Part', 'ErrorName'],
+      ['DeploymentId', 'Part', 'ViewModel', 'ErrorName'],
+      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+      ['DeploymentId', 'Part', 'ViewModel', 'ErrorName', 'ErrorMessage'],
     ]
   )
 }
@@ -324,7 +373,8 @@ export const putApiHandlerMetrics = async (apiHandlerPath, error) => {
   }
 
   if (error != null) {
-    metricDataMap.Error = getErrorMessage(error)
+    metricDataMap.ErrorMessage = getErrorMessage(error)
+    metricDataMap.ErrorName = error.name
   }
 
   return putDataMetrics(
@@ -335,9 +385,12 @@ export const putApiHandlerMetrics = async (apiHandlerPath, error) => {
       ['DeploymentId', 'Part', 'Path'],
     ],
     [
-      ['DeploymentId', 'Error'],
-      ['DeploymentId', 'Part', 'Error'],
-      ['DeploymentId', 'Part', 'Path', 'Error'],
+      ['DeploymentId', 'ErrorName'],
+      ['DeploymentId', 'Part', 'ErrorName'],
+      ['DeploymentId', 'Part', 'Path', 'ErrorName'],
+      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+      ['DeploymentId', 'Part', 'Path', 'ErrorName', 'ErrorMessage'],
     ]
   )
 }
@@ -351,7 +404,8 @@ export const putSagaMetrics = async (sagaName, eventType, error) => {
   }
 
   if (error != null) {
-    metricDataMap.Error = getErrorMessage(error)
+    metricDataMap.ErrorMessage = getErrorMessage(error)
+    metricDataMap.ErrorName = error.name
   }
 
   return putDataMetrics(
@@ -363,9 +417,19 @@ export const putSagaMetrics = async (sagaName, eventType, error) => {
       ['DeploymentId', 'Part', 'Saga', 'EventType'],
     ],
     [
-      ['DeploymentId', 'Error'],
-      ['DeploymentId', 'Part', 'Error'],
-      ['DeploymentId', 'Part', 'Saga', 'EventType', 'Error'],
+      ['DeploymentId', 'ErrorName'],
+      ['DeploymentId', 'Part', 'ErrorName'],
+      ['DeploymentId', 'Part', 'Saga', 'EventType', 'ErrorName'],
+      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+      [
+        'DeploymentId',
+        'Part',
+        'Saga',
+        'EventType',
+        'ErrorName',
+        'ErrorMessage',
+      ],
     ]
   )
 }
@@ -374,11 +438,14 @@ export const putInternalError = async (error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Part: 'Internal',
-    Error: getErrorMessage(error),
+    ErrorMessage: getErrorMessage(error),
+    ErrorName: error.name,
   }
 
   return putDataMetrics(metricDataMap, [
-    ['DeploymentId', 'Error'],
-    ['DeploymentId', 'Part', 'Error'],
+    ['DeploymentId', 'ErrorName'],
+    ['DeploymentId', 'Part', 'ErrorName'],
+    ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+    ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
   ])
 }

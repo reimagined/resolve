@@ -12,11 +12,12 @@ const retrieveRows = async (
   currentLimit: number
 ): ReturnType<CurrentStoreApi['find']> => {
   try {
-    const { executeStatement, convertResultRow } = pool
+    const { inlineLedgerExecuteStatement, convertResultRow } = pool
 
-    const inputRows = (await executeStatement(
+    const inputRows = (await inlineLedgerExecuteStatement(
       pool,
-      `${query} OFFSET ${currentSkip} LIMIT ${currentLimit}`
+      `${query} OFFSET ${currentSkip} LIMIT ${currentLimit}`,
+      inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
     )) as Array<MarshalledRowLike>
 
     const rows: Array<JsonMap> = []
@@ -56,7 +57,7 @@ const find: CurrentStoreApi['find'] = async (
   const {
     searchToWhereExpression,
     makeNestedPath,
-    executeStatement,
+    inlineLedgerExecuteStatement,
     escapeId,
     escapeStr,
     tablePrefix,
@@ -111,11 +112,12 @@ const find: CurrentStoreApi['find'] = async (
   }
 
   try {
-    limit = ((await executeStatement(
+    limit = ((await inlineLedgerExecuteStatement(
       pool,
       `WITH "CTE" AS (${query} OFFSET ${skip})
       SELECT Count("CTE".*) AS "Count" FROM "CTE"
-      `
+      `,
+      inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
     )) as Array<{ Count: number }>)[0].Count
   } catch (error) {
     throw makeRowsLimitError()

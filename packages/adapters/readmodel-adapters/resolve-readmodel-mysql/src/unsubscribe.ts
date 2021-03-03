@@ -16,9 +16,10 @@ const unsubscribe: ExternalMethods['unsubscribe'] = async (
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
   const trxTableNameAsId = escapeId(`${tablePrefix}__TRX__`)
-
   try {
-    await inlineLedgerRunQuery(`
+    pool.activePassthrough = true
+    try {
+      await inlineLedgerRunQuery(`
       CREATE TABLE IF NOT EXISTS ${ledgerTableNameAsId}(
         \`EventSubscriber\` VARCHAR(190) NOT NULL,
         \`IsPaused\` TINYINT NOT NULL,
@@ -41,13 +42,13 @@ const unsubscribe: ExternalMethods['unsubscribe'] = async (
         PRIMARY KEY(\`XaKey\`)
       );
     `)
-  } catch (e) {}
+    } catch (e) {}
 
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
-      await inlineLedgerRunQuery(
-        `START TRANSACTION;
+    while (true) {
+      try {
+        await inlineLedgerForceStop(pool, readModelName)
+        await inlineLedgerRunQuery(
+          `START TRANSACTION;
         
         SELECT * FROM ${ledgerTableNameAsId}
         WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
@@ -63,24 +64,24 @@ const unsubscribe: ExternalMethods['unsubscribe'] = async (
 
         COMMIT;
       `
-      )
+        )
 
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
-  }
 
-  await dropReadModel(pool, readModelName)
+    await dropReadModel(pool, readModelName)
 
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
+    while (true) {
+      try {
+        await inlineLedgerForceStop(pool, readModelName)
 
-      await inlineLedgerRunQuery(
-        `START TRANSACTION;
+        await inlineLedgerRunQuery(
+          `START TRANSACTION;
         
          SELECT * FROM ${ledgerTableNameAsId}
          WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
@@ -91,13 +92,16 @@ const unsubscribe: ExternalMethods['unsubscribe'] = async (
 
          COMMIT;
       `
-      )
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        )
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
+  } finally {
+    pool.activePassthrough = false
   }
 }
 

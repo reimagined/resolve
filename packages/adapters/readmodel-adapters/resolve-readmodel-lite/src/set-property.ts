@@ -15,11 +15,12 @@ const setProperty: ExternalMethods['setProperty'] = async (
     escapeStr,
   } = pool
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
-
-  while (true) {
-    try {
-      await inlineLedgerRunQuery(
-        `BEGIN IMMEDIATE;
+  try {
+    pool.activePassthrough = true
+    while (true) {
+      try {
+        await inlineLedgerRunQuery(
+          `BEGIN IMMEDIATE;
         
         UPDATE ${ledgerTableNameAsId}
          SET "Properties" = json_patch("Properties", JSON(${escapeStr(
@@ -34,24 +35,27 @@ const setProperty: ExternalMethods['setProperty'] = async (
 
          COMMIT;
         `,
-        true
-      )
-      break
-    } catch (error) {
-      if (!(error instanceof PassthroughError)) {
-        throw error
-      }
-
-      try {
-        await inlineLedgerRunQuery(`ROLLBACK`, true)
-      } catch (err) {
-        if (!(err instanceof PassthroughError)) {
-          throw err
+          true
+        )
+        break
+      } catch (error) {
+        if (!(error instanceof PassthroughError)) {
+          throw error
         }
-      }
 
-      await fullJitter(0)
+        try {
+          await inlineLedgerRunQuery(`ROLLBACK`, true)
+        } catch (err) {
+          if (!(err instanceof PassthroughError)) {
+            throw err
+          }
+        }
+
+        await fullJitter(0)
+      }
     }
+  } finally {
+    pool.activePassthrough = false
   }
 }
 

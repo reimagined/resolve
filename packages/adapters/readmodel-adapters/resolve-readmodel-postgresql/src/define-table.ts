@@ -4,7 +4,7 @@ const STRING_INDEX_TYPE = 'VARCHAR(190)'
 const NUMBER_INDEX_TYPE = 'BIGINT'
 
 const defineTable: CurrentStoreApi['defineTable'] = async (
-  { runQuery, tablePrefix, escapeId, escapeStr, schemaName },
+  { inlineLedgerRunQuery, tablePrefix, escapeId, escapeStr, schemaName },
   readModelName,
   tableName,
   tableDescription
@@ -20,7 +20,7 @@ const defineTable: CurrentStoreApi['defineTable'] = async (
   }
   const { fields, indexes } = tableDescription
 
-  await runQuery(`
+  await inlineLedgerRunQuery(`
     CREATE TABLE ${escapeId(schemaName)}.${escapeId(
     `${tablePrefix}${tableName}`
   )} (

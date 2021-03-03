@@ -9,7 +9,7 @@ const update: CurrentStoreApi['update'] = async (
   options
 ) => {
   const {
-    executeStatement,
+    inlineLedgerExecuteStatement,
     tablePrefix,
     escapeId,
     escapeStr,
@@ -55,10 +55,11 @@ const update: CurrentStoreApi['update'] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  await executeStatement(
+  await inlineLedgerExecuteStatement(
     pool,
     `UPDATE ${escapeId(schemaName)}.${escapeId(`${tablePrefix}${tableName}`)}
-    SET ${updateExpr} ${inlineSearchExpr};`
+    SET ${updateExpr} ${inlineSearchExpr};`,
+    inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
   )
 }
 
