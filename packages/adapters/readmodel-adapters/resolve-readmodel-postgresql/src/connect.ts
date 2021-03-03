@@ -2,7 +2,6 @@ import type {
   MakeNestedPathMethod,
   CurrentConnectMethod,
   InlineLedgerRunQueryMethod,
-  RunQueryMethod,
   AdapterPool,
   CommonAdapterPool,
   OmitObject,
@@ -41,34 +40,34 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
   await connection.connect()
   await connection.query('SELECT 0 AS "defunct"')
 
-  const runQuery: RunQueryMethod = async (sql) => {
-    const result = await connection.query(sql)
-    let rows = null
-
-    if (result != null && Array.isArray(result.rows)) {
-      rows = JSON.parse(JSON.stringify(result.rows))
-    }
-
-    return rows
-  }
-
   const inlineLedgerRunQuery: InlineLedgerRunQueryMethod = async (
     sql,
     passthroughRuntimeErrors = false
   ) => {
     let result = null
-    try {
-      result = await connection.query(sql)
-    } catch (error) {
-      if (
-        imports.PassthroughError.isPassthroughError(
-          error,
-          !!passthroughRuntimeErrors
-        )
-      ) {
-        throw new imports.PassthroughError()
-      } else {
-        throw error
+    for (;;) {
+      try {
+        result = await connection.query(sql)
+        break
+      } catch (error) {
+        if (pool.activePassthrough) {
+          if (
+            imports.PassthroughError.isPassthroughError(
+              error,
+              !!passthroughRuntimeErrors
+            )
+          ) {
+            throw new imports.PassthroughError()
+          } else {
+            throw error
+          }
+        } else {
+          if (imports.PassthroughError.isPassthroughError(error, false)) {
+            await new Promise((resolve) => setTimeout(resolve, 100))
+          } else {
+            throw error
+          }
+        }
       }
     }
     let rows = null
@@ -88,8 +87,8 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     tablePrefix,
     makeNestedPath,
     inlineLedgerRunQuery,
-    runQuery,
     connection,
+    activePassthrough: false,
     ...imports,
   })
 }

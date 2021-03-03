@@ -222,7 +222,7 @@ export const buildEvents: (
   let transactionId: string = await transactionIdPromise
   let rootSavePointId: string = generateGuid(transactionId, 'ROOT')
 
-  basePool.transactionId = transactionId
+  basePool.sharedTransactionId = transactionId
 
   let saveTrxIdPromise = inlineLedgerExecuteStatement(
     basePool,
@@ -436,7 +436,7 @@ export const buildEvents: (
       transactionId = await transactionIdPromise
       rootSavePointId = generateGuid(transactionId, 'ROOT')
 
-      Object.getPrototypeOf(pool).transactionId = transactionId
+      basePool.sharedTransactionId = transactionId
 
       saveTrxIdPromise = inlineLedgerExecuteStatement(
         pool,
@@ -514,6 +514,7 @@ const build: ExternalMethods['build'] = async (
   } = basePool
 
   try {
+    basePool.activePassthrough = true
     const databaseNameAsId = escapeId(schemaName)
     const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
     const trxTableNameAsId = escapeId(`__${schemaName}__TRX__`)
@@ -640,6 +641,8 @@ const build: ExternalMethods['build'] = async (
         }
       }
     }
+  } finally {
+    basePool.activePassthrough = false
   }
 }
 

@@ -36,3 +36,11 @@ test("config assigned to adapter's pool", async () => {
   expect(pool.databaseFile).toEqual('database-file')
   expect(pool.secretsTableName).toEqual('secrets-table')
 })
+
+test('connect should throw on wrong parameters', async () => {
+  await expect(
+    connect(pool, connectionDependencies, ({
+      databaseFile: 42,
+    } as any) as SqliteAdapterConfig)
+  ).rejects.toThrow()
+})

@@ -21,9 +21,10 @@ const subscribe: ExternalMethods['subscribe'] = async (
     `${tablePrefix}__${schemaName}__LEDGER__`
   )
   const trxTableNameAsId = escapeId(`${tablePrefix}__${schemaName}__TRX__`)
-
   try {
-    await inlineLedgerRunQuery(`
+    pool.activePassthrough = true
+    try {
+      await inlineLedgerRunQuery(`
       CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${ledgerTableNameAsId}(
         "EventSubscriber" VARCHAR(190) NOT NULL,
         "IsPaused" BOOLEAN NOT NULL,
@@ -46,14 +47,14 @@ const subscribe: ExternalMethods['subscribe'] = async (
         PRIMARY KEY("XaKey")
       );
     `)
-  } catch (e) {}
+    } catch (e) {}
 
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
+    while (true) {
+      try {
+        await inlineLedgerForceStop(pool, readModelName)
 
-      await inlineLedgerRunQuery(
-        `WITH "CTE" AS (
+        await inlineLedgerRunQuery(
+          `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
          WHERE "EventSubscriber" = ${escapeStr(readModelName)}
          FOR UPDATE NOWAIT
@@ -86,13 +87,16 @@ const subscribe: ExternalMethods['subscribe'] = async (
              : escapeStr('null')
          }
       `
-      )
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        )
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
+  } finally {
+    pool.activePassthrough = false
   }
 }
 

@@ -376,6 +376,7 @@ const build: ExternalMethods['build'] = async (
   } = basePool
 
   try {
+    basePool.activePassthrough = true
     const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
     const xaKey = generateGuid(`${Date.now()}${Math.random()}${process.pid}`)
 
@@ -516,6 +517,8 @@ const build: ExternalMethods['build'] = async (
         throw err
       }
     }
+  } finally {
+    basePool.activePassthrough = false
   }
 }
 

@@ -2,7 +2,7 @@ import type { CurrentStoreApi, MarshalledRowLike } from './types'
 
 const findOne: CurrentStoreApi['findOne'] = async (
   {
-    runQuery,
+    inlineLedgerRunQuery,
     escapeId,
     escapeStr,
     tablePrefix,
@@ -26,7 +26,7 @@ const findOne: CurrentStoreApi['findOne'] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const rows = (await runQuery(
+  const rows = (await inlineLedgerRunQuery(
     `SELECT * FROM ${escapeId(schemaName)}.${escapeId(
       `${tablePrefix}${tableName}`
     )}

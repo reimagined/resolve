@@ -9,19 +9,23 @@ const getProperty: ExternalMethods['getProperty'] = async (
 
   const databaseNameAsId = escapeId(schemaName)
   const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
-
-  const rows = (await inlineLedgerExecuteStatement(
-    pool,
-    `SELECT "Properties" -> ${escapeStr(key)} AS "Value"
+  try {
+    pool.activePassthrough = true
+    const rows = (await inlineLedgerExecuteStatement(
+      pool,
+      `SELECT "Properties" -> ${escapeStr(key)} AS "Value"
      FROM  ${databaseNameAsId}.${ledgerTableNameAsId}
      WHERE "EventSubscriber" = ${escapeStr(readModelName)}
     `
-  )) as Array<{ Value: string }>
+    )) as Array<{ Value: string }>
 
-  if (rows.length === 1 && rows[0].Value != null) {
-    return rows[0].Value
-  } else {
-    return null
+    if (rows.length === 1 && rows[0].Value != null) {
+      return rows[0].Value
+    } else {
+      return null
+    }
+  } finally {
+    pool.activePassthrough = false
   }
 }
 

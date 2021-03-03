@@ -18,32 +18,53 @@ export const executeReadModel = async ({
   if (promise[symbol].phase < Phases.RESOLVER) {
     throw new TypeError(promise[symbol].phase)
   }
-
+  const errors = []
   let queryExecutor = null
-  let performAcknowledge = null
-  const acknowledgePromise: Promise<any> = new Promise((resolve) => {
-    performAcknowledge = async (result: any) => await resolve(result)
-  })
-
-  const provideLedger = async (ledger: any): Promise<void> => void 0
-  const secretsManager = promise[symbol].secretsManager
-
-  const domain = initDomain({
-    viewModels: [],
-    readModels: [
-      {
-        name: promise[symbol].name,
-        projection: promise[symbol].projection,
-        resolvers: promise[symbol].resolvers,
-        connectorName: 'ADAPTER_NAME',
-        encryption: promise[symbol].encryption,
-      },
-    ],
-    aggregates: [],
-    sagas: [],
-  })
+  let result = null
 
   try {
+    let performAcknowledge = null
+    const acknowledgePromise: Promise<any> = new Promise((resolve) => {
+      performAcknowledge = async (result: any) => await resolve(result)
+    })
+
+    const provideLedger = async (ledger: any): Promise<void> => void 0
+    const secretsManager = promise[symbol].secretsManager
+
+    const liveErrors: Array<Error> = []
+    const wrapProjectionLiveErrors = <T extends Record<string, Function>>(
+      projection: T
+    ): T =>
+      (Object.keys(projection) as Array<keyof T>).reduce<T>(
+        (acc, key) => ({
+          ...acc,
+          [key]: async (...args: any[]): Promise<any> => {
+            try {
+              return await projection[key](...args)
+            } catch (error) {
+              liveErrors.push(error)
+              throw error
+            }
+          },
+        }),
+        {} as T
+      ) as T
+
+    const domain = initDomain({
+      viewModels: [],
+      readModels: [
+        {
+          name: promise[symbol].name,
+          projection: wrapProjectionLiveErrors(promise[symbol].projection),
+          resolvers: promise[symbol].resolvers,
+          connectorName: 'ADAPTER_NAME',
+          encryption: promise[symbol].encryption,
+        },
+      ],
+      aggregates: [],
+      sagas: [],
+    })
+
     const eventstoreAdapter = ({
       getSecretsManager: (): any => promise[symbol].secretsManager,
       loadEvents: async () => ({
@@ -76,7 +97,6 @@ export const executeReadModel = async ({
     const isInlineLedger =
       (await detectConnectorFeatures(promise[symbol].adapter)) ===
       connectorModes.INLINE_LEDGER_CONNECTOR
-    const errors = []
 
     try {
       if (isInlineLedger) {
@@ -100,15 +120,24 @@ export const executeReadModel = async ({
           modelName: promise[symbol].name,
         })
         if (status.status === 'error') {
-          const error = new Error(
-            ...(Array.isArray(status.errors)
-              ? [status.errors.map((err: any) => err.message).join('\n')]
-              : [])
-          )
-          error.stack = Array.isArray(status.errors)
-            ? status.errors.map((err: any) => err.stack).join('\n')
-            : error.stack
-          throw error
+          if (!Array.isArray(status.errors)) {
+            throw new Error('Unknown error')
+          }
+          const liveErrorIndex =
+            status.errors.length === 1
+              ? liveErrors.findIndex(
+                  (err) => err.message === status.errors[0].message
+                )
+              : -1
+          if (liveErrorIndex < 0) {
+            const error = new Error(
+              status.errors.map((err: any) => err.message).join('\n')
+            )
+            error.stack = status.errors.map((err: any) => err.stack).join('\n')
+            throw error
+          } else {
+            throw liveErrors[liveErrorIndex]
+          }
         }
       } else {
         await queryExecutor.sendEvents({
@@ -125,16 +154,22 @@ export const executeReadModel = async ({
           result: { error: projectionError },
         } = await acknowledgePromise
         if (projectionError != null) {
-          const error = new Error(projectionError.message)
-          error.stack = projectionError.stack
-          throw error
+          const liveErrorIndex = liveErrors.findIndex(
+            (err) => err.message === projectionError.message
+          )
+          if (liveErrorIndex < 0) {
+            const error = new Error(projectionError.message)
+            error.stack = projectionError.stack
+            throw error
+          } else {
+            throw liveErrors[liveErrorIndex]
+          }
         }
       }
     } catch (err) {
       errors.push(err)
     }
 
-    let result = null
     try {
       void ({ data: result } = await queryExecutor.read({
         modelName: promise[symbol].name,
@@ -159,19 +194,29 @@ export const executeReadModel = async ({
     } catch (err) {
       errors.push(err)
     }
-
-    if (errors.length > 0) {
-      const error = new Error(errors.map((err) => err.message).join('\n'))
-      error.stack = errors.map((err) => err.stack).join('\n')
-      throw error
-    }
-
-    promise[symbol].resolve(result)
   } catch (error) {
-    promise[symbol].reject(error)
+    errors.push(error)
   } finally {
     if (queryExecutor != null) {
-      await queryExecutor.dispose()
+      try {
+        await queryExecutor.dispose()
+      } catch (err) {
+        errors.push(err)
+      }
     }
+  }
+
+  if (errors.length === 0) {
+    promise[symbol].resolve(result)
+  } else {
+    let summaryError = errors[0]
+    if (errors.length > 1) {
+      summaryError = new Error(errors.map((err) => err.message).join('\n'))
+      summaryError.stack = errors.map((err) => err.stack).join('\n')
+    }
+    // eslint-disable-next-line no-console
+    console.error(summaryError)
+
+    promise[symbol].reject(errors[0])
   }
 }

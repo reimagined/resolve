@@ -2,7 +2,7 @@ import type { CurrentStoreApi } from './types'
 
 const del: CurrentStoreApi['delete'] = async (
   {
-    runQuery,
+    inlineLedgerRunQuery,
     tablePrefix,
     escapeId,
     escapeStr,
@@ -23,7 +23,7 @@ const del: CurrentStoreApi['delete'] = async (
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  await runQuery(
+  await inlineLedgerRunQuery(
     `DELETE FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr};`
   )

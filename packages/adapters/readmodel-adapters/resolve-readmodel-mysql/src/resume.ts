@@ -11,12 +11,13 @@ const resume: ExternalMethods['resume'] = async (pool, readModelName, next) => {
   } = pool
 
   const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
-
-  while (true) {
-    try {
-      await inlineLedgerForceStop(pool, readModelName)
-      await inlineLedgerRunQuery(
-        `START TRANSACTION;
+  try {
+    pool.activePassthrough = true
+    while (true) {
+      try {
+        await inlineLedgerForceStop(pool, readModelName)
+        await inlineLedgerRunQuery(
+          `START TRANSACTION;
         
          SELECT * FROM ${ledgerTableNameAsId}
          WHERE \`EventSubscriber\` = ${escapeStr(readModelName)}
@@ -28,16 +29,19 @@ const resume: ExternalMethods['resume'] = async (pool, readModelName, next) => {
 
          COMMIT;
       `
-      )
-      break
-    } catch (err) {
-      if (!(err instanceof PassthroughError)) {
-        throw err
+        )
+        break
+      } catch (err) {
+        if (!(err instanceof PassthroughError)) {
+          throw err
+        }
       }
     }
-  }
 
-  await next()
+    await next()
+  } finally {
+    pool.activePassthrough = false
+  }
 }
 
 export default resume

@@ -7,13 +7,13 @@ const insert: CurrentStoreApi['insert'] = async (
   document
 ) => {
   const {
-    executeStatement,
+    inlineLedgerExecuteStatement,
     escapeId,
     escapeStr,
     tablePrefix,
     schemaName,
   } = pool
-  await executeStatement(
+  await inlineLedgerExecuteStatement(
     pool,
     `INSERT INTO ${escapeId(schemaName)}.${escapeId(
       `${tablePrefix}${tableName}`
@@ -25,7 +25,8 @@ const insert: CurrentStoreApi['insert'] = async (
           (key) => `CAST(${escapeStr(JSON.stringify(document[key]))} AS JSONB)`
         )
         .join(', ')});
-    `
+    `,
+    inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
   )
 }
 
