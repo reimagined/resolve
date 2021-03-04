@@ -56,6 +56,11 @@ export const executeReadModel = async ({
       sagas: [],
     })
 
+    const eventStoreLocalState = new Map<
+      string,
+      { destination: any; status: any }
+    >()
+
     const eventstoreAdapter = ({
       getSecretsManager: (): any => promise[symbol].secretsManager,
       loadEvents: async () => ({
@@ -67,6 +72,51 @@ export const executeReadModel = async ({
         },
       }),
       getNextCursor: () => 'SHIFT_CURSOR',
+      ensureEventSubscriber: async ({
+        applicationName,
+        eventSubscriber,
+        destination,
+        status,
+      }: any) => {
+        eventStoreLocalState.set(`${applicationName}${eventSubscriber}`, {
+          ...(eventStoreLocalState.has(`${applicationName}${eventSubscriber}`)
+            ? (eventStoreLocalState.get(
+                `${applicationName}${eventSubscriber}`
+              ) as any)
+            : {}),
+          ...(destination != null ? { destination } : {}),
+          ...(status != null ? { status } : {}),
+        })
+      },
+      removeEventSubscriber: async ({
+        applicationName,
+        eventSubscriber,
+      }: any) => {
+        eventStoreLocalState.delete(`${applicationName}${eventSubscriber}`)
+      },
+      getEventSubscribers: async ({
+        applicationName,
+        eventSubscriber,
+      }: any = {}) => {
+        if (applicationName == null && eventSubscriber == null) {
+          return [...eventStoreLocalState.values()]
+        }
+        const result = []
+        for (const [
+          key,
+          { destination, status },
+        ] of eventStoreLocalState.entries()) {
+          if (`${applicationName}${eventSubscriber}` === key) {
+            result.push({
+              applicationName,
+              eventSubscriber,
+              destination,
+              status,
+            })
+          }
+        }
+        return result
+      },
     } as unknown) as Eventstore
 
     queryExecutor = createQuery({
@@ -87,12 +137,23 @@ export const executeReadModel = async ({
     })
 
     try {
+      await eventstoreAdapter.ensureEventSubscriber({
+        applicationName: 'APP_NAME',
+        eventSubscriber: promise[symbol].name,
+        status: null,
+        destination: 'LOCAL',
+      })
+
       await queryExecutor.subscribe({
         modelName: promise[symbol].name,
         subscriptionOptions: {
           eventTypes: null,
           aggregateIds: null,
         },
+      })
+
+      await queryExecutor.resume({
+        modelName: promise[symbol].name,
       })
 
       await queryExecutor.build({
@@ -144,6 +205,15 @@ export const executeReadModel = async ({
     try {
       await queryExecutor.unsubscribe({
         modelName: promise[symbol].name,
+      })
+    } catch (err) {
+      errors.push(err)
+    }
+
+    try {
+      await eventstoreAdapter.removeEventSubscriber({
+        applicationName: 'APP_NAME',
+        eventSubscriber: promise[symbol].name,
       })
     } catch (err) {
       errors.push(err)
