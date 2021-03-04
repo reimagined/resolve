@@ -2,6 +2,38 @@
 [![npm version](https://badge.fury.io/js/@resolve-js/module-admin.svg)](https://badge.fury.io/js/@resolve-js/module-admin)
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-@resolve-js/module-admin-readme?pixel)
 
+## Manage Application
+
+The `status` command manages the application's launch status.
+
+#### Get an application launch status
+
+```
+npx @resolve-js/module-admin status
+```
+
+#### Wait for an application to finish launching
+
+```
+npx @resolve-js/module-admin status --wait=enabled
+```
+
+## Manage Event Store
+
+The `event-store` command manages the application's eventstore.
+
+#### Freeze an eventstore
+
+```
+npx @resolve-js/module-admin event-store freeze
+```
+
+#### Unfreeze an eventstore
+
+```
+npx @resolve-js/module-admin event-store unfreeze
+```
+
 ## Manage Read Models
 
 The `read-models` command manages the application's read models.

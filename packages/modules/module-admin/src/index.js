@@ -58,18 +58,36 @@ const createModule = () => {
       {
         path: '/api/event-store/freeze',
         handler:
-          'resolve-module-admin/lib/api-handlers/event-store-freeze-handler.js',
+          '@resolve-js/module-admin/lib/api-handlers/event-store-freeze-handler.js',
         method: 'GET',
       },
       {
         path: '/api/event-store/unfreeze',
         handler:
-          'resolve-module-admin/lib/api-handlers/event-store-unfreeze-handler.js',
+          '@resolve-js/module-admin/lib/api-handlers/event-store-unfreeze-handler.js',
+        method: 'GET',
+      },
+      {
+        path: '/api/event-store/import',
+        handler:
+          '@resolve-js/module-admin/lib/api-handlers/event-store-import-handler.js',
+        method: 'GET',
+      },
+      {
+        path: '/api/event-store/export',
+        handler:
+          '@resolve-js/module-admin/lib/api-handlers/event-store-export-handler.js',
+        method: 'GET',
+      },
+      {
+        path: '/api/event-store/incremental-import',
+        handler:
+          '@resolve-js/module-admin/lib/api-handlers/event-store-incremental-import-handler.js',
         method: 'GET',
       },
       {
         path: '/api/status',
-        handler: 'resolve-module-admin/lib/api-handlers/status-handler.js',
+        handler: '@resolve-js/module-admin/lib/api-handlers/status-handler.js',
         method: 'GET',
       },
     ],
