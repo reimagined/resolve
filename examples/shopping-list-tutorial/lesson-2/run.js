@@ -7,7 +7,7 @@ import {
   merge,
   stop,
   reset,
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
 
 import appConfig from './config.app'
 import devConfig from './config.dev'

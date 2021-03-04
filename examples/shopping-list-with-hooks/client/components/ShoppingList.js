@@ -3,7 +3,7 @@ import {
   useCommand,
   useCommandBuilder,
   useViewModel,
-} from 'resolve-react-hooks'
+} from '@resolve-js/react-hooks'
 import { Redirect } from 'react-router-dom'
 
 import { Row, Col, ListGroup, Button, InputGroup, Form } from 'react-bootstrap'

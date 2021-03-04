@@ -1,4 +1,4 @@
-import { HttpError } from 'resolve-client'
+import { HttpError } from '@resolve-js/client'
 import { v4 as uuid } from 'uuid'
 
 export default {

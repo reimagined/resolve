@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly [server] 1`] = `
+"
+import '$resolve.guardOnlyServer'
+import source_0_original_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testSagaCronHandlers.js\\"
+import encryption_0_instance from \\"@resolve-js/runtime/lib/common/defaults/encryption.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
+
+const name_0 = \\"Saga\\"
+const connectorName_0 = undefined
+const source_0_original_hash = \\"<INVARIANT_HASH>\\"
+const source_0_original = source_0_original_instance
+const sideEffects_0_original = null
+const handlers_0 = sideEffects_0_original == null
+      ? source_0_original.handlers
+      : source_0_original
+    
+const sideEffects_0 = sideEffects_0_original == null
+      ? source_0_original.sideEffects
+      : sideEffects_0_original
+    
+const invariantHash_0 = sideEffects_0_original != null
+      ? source_0_original_hash + sideEffects_0_original_hash
+      : source_0_original_hash
+    
+const encryption_0 = encryption_0_instance
+
+const sagas = []
+
+sagas.push({
+  name: name_0
+, connectorName: connectorName_0
+, handlers: handlers_0
+, sideEffects: sideEffects_0
+, invariantHash: invariantHash_0
+, encryption: encryption_0
+})
+
+export default sagas
+"
+`;
+
+exports[`config with schedulers works correctly [server] 1`] = `
+"
+import '$resolve.guardOnlyServer'
+import source_0_original_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testSagaCronHandlers.js\\"
+import encryption_0_instance from \\"@resolve-js/runtime/lib/common/defaults/encryption.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
+
+const name_0 = \\"Saga\\"
+const connectorName_0 = undefined
+const source_0_original_hash = \\"<INVARIANT_HASH>\\"
+const source_0_original = source_0_original_instance
+const sideEffects_0_original = null
+const handlers_0 = sideEffects_0_original == null
+      ? source_0_original.handlers
+      : source_0_original
+    
+const sideEffects_0 = sideEffects_0_original == null
+      ? source_0_original.sideEffects
+      : sideEffects_0_original
+    
+const invariantHash_0 = sideEffects_0_original != null
+      ? source_0_original_hash + sideEffects_0_original_hash
+      : source_0_original_hash
+    
+const encryption_0 = encryption_0_instance
+
+const sagas = []
+
+sagas.push({
+  name: name_0
+, connectorName: connectorName_0
+, handlers: handlers_0
+, sideEffects: sideEffects_0
+, invariantHash: invariantHash_0
+, encryption: encryption_0
+})
+
+export default sagas
+"
+`;

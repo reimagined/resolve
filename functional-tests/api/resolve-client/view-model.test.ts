@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import { Client, QueryResult } from 'resolve-client'
+import { Client, QueryResult } from '@resolve-js/client'
 import { getClient } from '../../utils/utils'
 import deserializeState from '../../app/common/view-models/custom-serializer.deserialize'
 

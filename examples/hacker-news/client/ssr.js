@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/server'
-import { createResolveStore, ResolveReduxProvider } from 'resolve-redux'
+import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
 import { Router } from 'react-router'
 import { Helmet } from 'react-helmet'
 import { StyleSheetManager, ServerStyleSheet } from 'styled-components'

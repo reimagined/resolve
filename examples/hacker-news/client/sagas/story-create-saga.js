@@ -1,5 +1,5 @@
 import { takeEvery, delay } from 'redux-saga/effects'
-import { internal } from 'resolve-redux'
+import { internal } from '@resolve-js/redux'
 
 const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = internal.actionTypes
 

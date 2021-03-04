@@ -184,16 +184,16 @@ Each saga stores a `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP` property. This propert
 
 The `sideEffects` object's `isEnabled` field indicates whether or not side effects are enabled for the processed event.
 
-If your need to re-run side effects after you reset a saga's state, use the [resolve-module-admin](https://www.npmjs.com/package/resolve-module-admin) CLI tool to assign the desired timestamp to the `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP` property:
+If your need to re-run side effects after you reset a saga's state, use the [@resolve-js/module-admin](https://www.npmjs.com/package/@resolve-js/module-admin) CLI tool to assign the desired timestamp to the `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP` property:
 
 ```bash
-npx resolve-module-admin sagas properties set "UserConfirmation" "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP" $(date +%s%3N -d "yesterday")
+npx @resolve-js/module-admin sagas properties set "UserConfirmation" "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP" $(date +%s%3N -d "yesterday")
 ```
 
 You can also specify a new timestamp as an option for the `sagas reset` command:
 
 ```bash
-npx resolve-module-admin sagas reset UserConfirmation --side-effects-start-timestamp 0000-00-0000:00:00.000
+npx @resolve-js/module-admin sagas reset UserConfirmation --side-effects-start-timestamp 0000-00-0000:00:00.000
 ```
 
 ### Send Aggregate Commands
