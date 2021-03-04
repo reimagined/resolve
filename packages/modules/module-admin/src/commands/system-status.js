@@ -1,7 +1,9 @@
 import fetch from 'isomorphic-fetch'
 
 export const handler = async ({ url, waitReady }) => {
-  const wait = waitReady ? 'ready' : 'unknown'
+  const wait = waitReady ?
+    'ready' :
+    'unknown'
   let status = null
 
   for (;;) {
