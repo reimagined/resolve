@@ -1,7 +1,7 @@
 export default () => `
   import '$resolve.guardOnlyServer'
   import serverAssemblies from '$resolve.serverAssemblies'
-  import localEntry from 'resolve-runtime/lib/local'
+  import localEntry from '@resolve-js/runtime/lib/local'
 
   export { default as entryPointMarker } from '@resolve-js/runtime/lib/common/utils/entry-point-marker'
 
