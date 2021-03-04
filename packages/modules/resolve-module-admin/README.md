@@ -82,6 +82,38 @@ npx resolve-module-admin sagas properties list <sagaName>
 npx resolve-module-admin sagas properties remove <sagaName> <propertyName>
 ```
 
+## Manage Event Store
+
+The `event-store` command manages the application's eventstore.
+
+#### Freeze an eventstore
+
+```
+npx resolve-module-admin event-store freeze
+```
+
+#### Unfreeze an eventstore
+
+```
+npx resolve-module-admin event-store unfreeze
+```
+
+## Manage Application
+
+The `status` command manages the application's launch status.
+
+#### Get an application launch status
+
+```
+npx resolve-module-admin status
+```
+
+#### Wait for an application to finish launching
+
+```
+npx resolve-module-admin status --wait=enabled
+```
+
 ## FAQ
 
 ### How to restart saga side effects with custom time
