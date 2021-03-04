@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Router } from 'react-router'
 import { createBrowserHistory } from 'history'
-import { AppContainer, createStore, getOrigin } from 'resolve-redux'
+import { AppContainer, createStore, getOrigin } from '@resolve-js/redux'
 
 import routes from './routes'
 import Routes from './components/Routes'

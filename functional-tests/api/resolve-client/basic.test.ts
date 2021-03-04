@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash'
 import { nanoid } from 'nanoid'
-import { Client } from 'resolve-client'
+import { Client } from '@resolve-js/client'
 import { getClient } from '../../utils/utils'
 
 let client: Client

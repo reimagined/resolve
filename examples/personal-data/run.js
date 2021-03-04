@@ -6,11 +6,11 @@ import {
   runTestcafe,
   merge,
   reset,
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
 
-import resolveModuleAuth from 'resolve-module-auth'
-import resolveModuleAdmin from 'resolve-module-admin'
-import resolveModuleUploader from 'resolve-module-uploader'
+import resolveModuleAuth from '@resolve-js/module-auth'
+import resolveModuleAdmin from '@resolve-js/module-admin'
+import resolveModuleUploader from '@resolve-js/module-uploader'
 
 import appConfig from './config.app'
 import devConfig from './config.dev'

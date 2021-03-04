@@ -3,7 +3,7 @@ import {
   optimisticUnvoteStory,
   optimisticUpvoteStory,
 } from '../actions/optimistic-actions'
-import { internal } from 'resolve-redux'
+import { internal } from '@resolve-js/redux'
 
 const { SEND_COMMAND_SUCCESS } = internal.actionTypes
 

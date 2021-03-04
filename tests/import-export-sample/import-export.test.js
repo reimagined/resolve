@@ -5,8 +5,8 @@ import { Readable, pipeline } from 'stream'
 import {
   EventstoreAlreadyFrozenError,
   MAINTENANCE_MODE_MANUAL,
-} from 'resolve-eventstore-base'
-import createEventstoreAdapter from 'resolve-eventstore-lite'
+} from '@resolve-js/eventstore-base'
+import createEventstoreAdapter from '@resolve-js/eventstore-lite'
 
 import createStreamBuffer from './create-stream-buffer'
 

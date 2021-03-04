@@ -1,4 +1,4 @@
-import { createCommentsReducer } from 'resolve-module-comments'
+import { createCommentsReducer } from '@resolve-js/module-comments'
 
 import optimisticReducer from './reducers/optimistic'
 import optimisticVotingSaga from './sagas/optimistic-voting-saga'
