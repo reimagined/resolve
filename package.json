@@ -1,5 +1,5 @@
 {
-  "name": "resolve",
+  "name": "@resolve-js/resolve",
   "version": "0.26.5",
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
@@ -42,9 +42,11 @@
     "packages": [
       "packages/core/*",
       "packages/modules/*",
+      "packages/tools/*",
       "packages/internal/*",
-      "packages/adapters/eventstore-adapters/*",
-      "packages/adapters/readmodel-adapters/*",
+      "packages/runtime/*",
+      "packages/runtime/adapters/eventstore-adapters/*",
+      "packages/runtime/adapters/readmodel-adapters/*",
       "examples/*",
       "examples/shopping-list-tutorial/*",
       "packages/modules/*",

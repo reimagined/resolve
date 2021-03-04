@@ -9,7 +9,7 @@
     "dev": "babel-node ./run.js dev",
     "export-event-store": "babel-node ./run.js export-event-store",
     "import-event-store": "babel-node ./run.js import-event-store",
-    "resolve-module-admin": "resolve-module-admin",
+    "module-admin": "@resolve-js/module-admin",
     "start": "babel-node ./run.js start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
     "test:e2e": "babel-node ./run.js test:e2e"
@@ -17,6 +17,13 @@
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
+    "@resolve-js/eventstore-lite": "0.26.5",
+    "@resolve-js/eventstore-postgresql-serverless": "0.26.5",
+    "@resolve-js/module-admin": "0.26.5",
+    "@resolve-js/readmodel-lite": "0.26.5",
+    "@resolve-js/readmodel-postgresql-serverless": "0.26.5",
+    "@resolve-js/redux": "0.26.5",
+    "@resolve-js/scripts": "0.26.5",
     "history": "4.10.1",
     "isomorphic-fetch": "3.0.0",
     "jsonwebtoken": "8.5.1",
@@ -30,13 +37,6 @@
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "1.0.5",
-    "resolve-eventstore-lite": "0.26.5",
-    "resolve-eventstore-postgresql-serverless": "0.26.5",
-    "resolve-module-admin": "0.26.5",
-    "resolve-readmodel-lite": "0.26.5",
-    "resolve-readmodel-postgresql-serverless": "0.26.5",
-    "resolve-redux": "0.26.5",
-    "resolve-scripts": "0.26.5",
     "uuid": "8.3.1"
   },
   "devDependencies": {
@@ -47,6 +47,7 @@
     "@babel/plugin-transform-runtime": "7.9.6",
     "@babel/preset-env": "7.9.6",
     "@babel/preset-react": "7.9.4",
+    "@resolve-js/testing-tools": "0.26.5",
     "aws-sdk": "2.631.0",
     "aws-xray-sdk-core": "2.5.0",
     "babel-jest": "26.0.1",
@@ -54,7 +55,6 @@
     "jest": "26.6.3",
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
-    "resolve-testing-tools": "0.26.5",
-    "testcafe": "1.8.5"
+    "testcafe": "^1.9.1"
   }
 }

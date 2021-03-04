@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { Button, CardColumns, CardImg, Card, Form } from 'react-bootstrap'
 import FileUploadProgress from 'react-fileupload-progress'
-import { useQuery, useCommand } from 'resolve-react-hooks'
+import { useQuery, useCommand } from '@resolve-js/react-hooks'
 import {
   getCDNBasedUrl,
   getFormUpload,
   getToken,
-} from 'resolve-module-uploader'
+} from '@resolve-js/module-uploader'
 
 const App = ({ CDNUrl }) => {
   const [form, setForm] = useState({
