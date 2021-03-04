@@ -3,6 +3,9 @@ import createAdapter from '@resolve-js/eventstore-base'
 
 import loadEventsByCursor from './load-events-by-cursor'
 import loadEventsByTimestamp from './load-events-by-timestamp'
+import ensureEventSubscriber from './ensure-event-subscriber'
+import removeEventSubscriber from './remove-event-subscriber'
+import getEventSubscribers from './get-event-subscribers'
 import freeze from './freeze'
 import unfreeze from './unfreeze'
 import getLatestEvent from './get-latest-event'
@@ -43,6 +46,9 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       connect,
       loadEventsByCursor,
       loadEventsByTimestamp,
+      ensureEventSubscriber,
+      removeEventSubscriber,
+      getEventSubscribers,
       getLatestEvent,
       saveEvent,
       initEvents,

@@ -44,6 +44,9 @@ export type Eventstore = {
   }) => Promise<{
     events: any[]
   }>
+  ensureEventSubscriber: Function
+  getEventSubscribers: Function
+  removeEventSubscriber: Function
 }
 
 export type AggregateMeta = {

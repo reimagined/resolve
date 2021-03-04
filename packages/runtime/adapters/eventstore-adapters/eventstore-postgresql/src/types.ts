@@ -26,6 +26,7 @@ export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   databaseName: string
   eventsTableName: string
   snapshotsTableName: string
+  subscribersTableName: string
   secretsTableName: string
   fullJitter: FullJitter
   coercer: Coercer
@@ -43,6 +44,7 @@ export type PostgresqlAdapterConfig = AdapterConfig & {
   databaseName: string
   eventsTableName?: string
   snapshotsTableName?: string
+  subscribersTableName?: string
   secretsTableName?: string
   [key: string]: any
 }

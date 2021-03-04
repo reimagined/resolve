@@ -54,7 +54,11 @@ const inlineLedgerForceStop: InlineLedgerForceStopMethod = async (
           !(
             err != null &&
             (/Transaction .*? Is Not Found/i.test(err.message) ||
-              /Invalid transaction ID/i.test(err.message))
+              /Transaction .*? Is Not Found/i.test(err.stack) ||
+              /Transaction is expired/i.test(err.message) ||
+              /Transaction is expired/i.test(err.stack) ||
+              /Invalid transaction ID/i.test(err.message) ||
+              /Invalid transaction ID/i.test(err.stack))
           )
         ) {
           throw err

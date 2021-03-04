@@ -40,7 +40,7 @@ beforeEach(() => {
   mPostgres.mockClear()
 })
 
-test('credentials passed to postgres client', async () => {
+test('destination passed to postgres client', async () => {
   connectionDependencies.executeStatement = executeStatement
 
   await connect(pool, connectionDependencies, config)
