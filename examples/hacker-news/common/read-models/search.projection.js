@@ -28,7 +28,7 @@ export default {
       })
     }
   },
-  /* from module "resolve-module-comments" */
+  /* from module "@resolve-js/module-comments" */
   COMMENT_CREATED: async (
     es,
     {

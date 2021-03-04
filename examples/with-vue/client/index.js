@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
-import { getClient } from 'resolve-client'
+import { getClient } from '@resolve-js/client'
 import App from './App.vue'
 
 const entryPoint = (clientContext) => {

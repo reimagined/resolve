@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useQuery } from 'resolve-react-hooks'
+import { useQuery } from '@resolve-js/react-hooks'
 
 const SecretsManager = () => {
   const [secretValue, setSecretValue] = useState('unknown')
