@@ -16,7 +16,12 @@ const resetDomainHandler = (options) => async (req, res) => {
   } = req.resolve
 
   try {
-    const { dropEventStore, dropEventBus, dropReadModels, dropSagas } = options
+    const {
+      dropEventStore,
+      dropEventSubscriber,
+      dropReadModels,
+      dropSagas,
+    } = options
 
     if (dropEventStore) {
       await invokeFilterErrorTypes(
@@ -55,7 +60,7 @@ const resetDomainHandler = (options) => async (req, res) => {
       }
     }
 
-    if (dropEventBus) {
+    if (dropEventSubscriber) {
       const eventSubscribers = await eventstoreAdapter.getEventSubscribers({
         applicationName,
       })

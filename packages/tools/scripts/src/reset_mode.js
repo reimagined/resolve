@@ -4,7 +4,7 @@ import generateCustomMode from './generate_custom_mode'
 const validOptions = [
   'dropEventStore',
   'dropReadModels',
-  'dropEventBus',
+  'dropEventSubscriber',
   'dropSagas',
 ]
 

@@ -7,7 +7,7 @@ const getMockResolve = () => ({
   publisher: {},
   readModels: [],
   sagas: [],
-  eventBus: {
+  eventSubscriber: {
     reset: () => {},
   },
   domainInterop: {
@@ -23,10 +23,10 @@ const getMockResponse = () => ({
 })
 
 // https://github.com/reimagined/resolve/issues/1432
-test('bug-fix: permanent 500 error on read-models/sagas reset error if dropEventBus set to false', async () => {
+test('bug-fix: permanent 500 error on read-models/sagas reset error if dropEventSubscriber set to false', async () => {
   const handler = acquireMiddleware({
     dropEventStore: false,
-    dropEventBus: false,
+    dropEventSubscriber: false,
     dropSagas: true,
     dropReadModels: true,
   })
