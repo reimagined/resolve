@@ -123,16 +123,20 @@ export type CloudResourcePool = {
   dispose: (pool: AdapterPool) => Promise<any>
 }
 
-export const CloudResourceOptionsSchema = t.type({
-  region: t.string,
-  databaseName: t.string,
-  eventsTableName: t.string,
-  secretsTableName: t.string,
-  snapshotsTableName: t.string,
-  subscribersTableName: t.string,
-  userLogin: t.string,
-  awsSecretStoreAdminArn: t.string,
-  dbClusterOrInstanceArn: t.string,
-})
+export const CloudResourceOptionsSchema = t.intersection([
+  t.type({
+    region: t.string,
+    databaseName: t.string,
+    eventsTableName: t.string,
+    secretsTableName: t.string,
+    snapshotsTableName: t.string,
+    userLogin: t.string,
+    awsSecretStoreAdminArn: t.string,
+    dbClusterOrInstanceArn: t.string,
+  }),
+  t.partial({
+    subscribersTableName: t.string,
+  }),
+])
 
 export type CloudResourceOptions = t.TypeOf<typeof CloudResourceOptionsSchema>
