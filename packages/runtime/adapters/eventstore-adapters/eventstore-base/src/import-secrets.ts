@@ -182,9 +182,14 @@ SecretsStream.prototype._write = async function (
 
 SecretsStream.prototype._final = async function (callback: any): Promise<void> {
   if (this.bypassMode) {
-    await new Promise((resolve) => setImmediate(resolve))
-    this.buffer = null
-    callback()
+    try {
+      await Promise.all([...this.injectSecretPromiseSet])
+      callback()
+    } catch (err) {
+      callback(err)
+    } finally {
+      this.buffer = null
+    }
     return
   }
 

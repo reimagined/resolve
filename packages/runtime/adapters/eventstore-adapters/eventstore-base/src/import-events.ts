@@ -35,6 +35,7 @@ const EventStream = function (
   this.isMaintenanceInProgress = false
   this.parsedEventsCount = 0
   this.bypassMode = false
+  this.savedEventsCount = 0
 
   this.on('timeout', () => {
     this.externalTimeout = true
@@ -149,9 +150,11 @@ EventStream.prototype._write = async function (
 
       this.timestamp = Math.max(this.timestamp, event.timestamp)
 
-      const saveEventPromise = injectEvent(event).catch(
-        this.saveEventErrors.push.bind(this.saveEventErrors)
-      )
+      const saveEventPromise = injectEvent(event)
+        .then(() => {
+          this.savedEventsCount++
+        })
+        .catch(this.saveEventErrors.push.bind(this.saveEventErrors))
       void saveEventPromise.then(
         this.saveEventPromiseSet.delete.bind(
           this.saveEventPromiseSet,
@@ -177,9 +180,14 @@ EventStream.prototype._write = async function (
 
 EventStream.prototype._final = async function (callback: any): Promise<void> {
   if (this.bypassMode) {
-    await new Promise((resolve) => setImmediate(resolve))
-    this.buffer = null
-    callback()
+    try {
+      await Promise.all([...this.saveEventPromiseSet])
+      callback()
+    } catch (err) {
+      callback(err)
+    } finally {
+      this.buffer = null
+    }
     return
   }
 
@@ -218,9 +226,11 @@ EventStream.prototype._final = async function (callback: any): Promise<void> {
 
         this.byteOffset += eventByteLength
 
-        const saveEventPromise: any = injectEvent(event).catch(
-          this.saveEventErrors.push.bind(this.saveEventErrors)
-        )
+        const saveEventPromise: any = injectEvent(event)
+          .then(() => {
+            this.savedEventsCount++
+          })
+          .catch(this.saveEventErrors.push.bind(this.saveEventErrors))
         void saveEventPromise.then(
           this.saveEventPromiseSet.delete.bind(
             this.saveEventPromiseSet,
