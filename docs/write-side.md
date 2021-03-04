@@ -139,7 +139,7 @@ For the full code sample, refer to the [with-saga](https://github.com/reimagined
 
 ## Aggregate Command Handlers
 
-Aggregate command handlers are grouped into a static object. A command handler receives a command and a state object built by the aggregate [Projection](#aggregate-projection-function). The command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type.
+Aggregate command handlers are grouped into a static object. A command handler receives a command and a state object built by the aggregate [Projection](#aggregate-projection-function). The command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type. Here you can also add arbitrary validation logic that throws an error if the validation fails.
 
 A typical **Commands** object structure:
 
@@ -148,6 +148,10 @@ export default {
   // A command handler
   createStory: (state, command) => {
     const { title, link, text } = command.payload
+    // The validation logic
+    if (!text) {
+      throw new Error('The "text" field is required')
+    }
     // The resulting event object
     return {
       type: 'StoryCreated',
