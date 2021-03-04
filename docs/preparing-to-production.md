@@ -20,7 +20,7 @@ const prodConfig = {
   mode: 'production',
   readModelConnectors: {
     HackerNews: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {}
     }
   },
@@ -49,7 +49,7 @@ The code below demonstrates how to set up a storage adapter on the example of an
 ```js
 readModelConnectors: {
     HackerNews: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {}
     }
   },
@@ -64,26 +64,32 @@ to familiarize yourself with the available adapters, see the **[adapters](https:
 
 ## Using Environment Variables
 
-Use the **declareRuntimeEnv** function from the **resolve-scripts** library to bind a configuration setting value to an environment variable:
+Use the **declareRuntimeEnv** function from the **@resolve-js/scripts** library to bind a configuration setting value to an environment variable:
 
 ```js
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 export default {
   subscribeAdapter: {
-    module: 'resolve-subscribe-mqtt',
-    options: {}
+    module: '@resolve-js/subscribe-mqtt',
+    options: {},
   },
   readModelsConnectors: {
     HackerNews: {
-      module: 'resolve-readmodel-postgresql-serverless',
+      module: '@resolve-js/readmodel-postgresql-serverless',
       options: {
-        dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_CLUSTER_ARN'),
-        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_SECRET_ARN'),
-        databaseName: declareRuntimeEnv('RESOLVE_READMODEL_POSTGRESQL_DATABASE_NAME'),
-        region: declareRuntimeEnv('AWS_REGION')
-      }
-    }
-  }
+        dbClusterOrInstanceArn: declareRuntimeEnv(
+          'RESOLVE_READMODEL_POSTGRESQL_CLUSTER_ARN'
+        ),
+        awsSecretStoreArn: declareRuntimeEnv(
+          'RESOLVE_READMODEL_POSTGRESQL_SECRET_ARN'
+        ),
+        databaseName: declareRuntimeEnv(
+          'RESOLVE_READMODEL_POSTGRESQL_DATABASE_NAME'
+        ),
+        region: declareRuntimeEnv('AWS_REGION'),
+      },
+    },
+  },
 }
 ```
 

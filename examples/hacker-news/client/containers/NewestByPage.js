@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { connectReadModel } from 'resolve-redux'
+import { connectReadModel } from '@resolve-js/redux'
 
 import * as aggregateActions from '../actions/aggregate-actions'
 import Stories from '../components/Stories'

@@ -1,5 +1,5 @@
 import { takeEvery, put } from 'redux-saga/effects'
-import { internal } from 'resolve-redux'
+import { internal } from '@resolve-js/redux'
 
 import {
   OPTIMISTIC_CREATE_SHOPPING_LIST,

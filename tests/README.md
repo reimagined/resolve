@@ -15,9 +15,9 @@ const appConfig = {
       name: 'Stories',
       projection: 'projection.js',
       resolvers: 'resolvers.js',
-      connectorName: 'default'
-    }
-  ]
+      connectorName: 'default',
+    },
+  ],
 }
 ```
 
@@ -28,22 +28,22 @@ const appConfig = {
 ```js
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
-      databaseFile: ':memory:'
-    }
+      databaseFile: ':memory:',
+    },
   },
 
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
-        databaseFile: ':memory:'
-      }
-    }
+        databaseFile: ':memory:',
+      },
+    },
     /*
     default: {
-      module: 'resolve-readmodel-mysql',
+      module: '@resolve-js/readmodel-mysql',
       options: {
         host: 'localhost',
         port: 3306,
@@ -53,7 +53,7 @@ const devConfig = {
       }
     }
     */
-  }
+  },
 }
 ```
 
@@ -63,10 +63,10 @@ const devConfig = {
 
 ```js
 const projection = {
-  Init: async store => {
+  Init: async (store) => {
     await store.defineTable('Stories', {
       indexes: { id: 'string' },
-      fields: ['text', 'version', 'active']
+      fields: ['text', 'version', 'active'],
     })
   },
   STORY_CREATED: async (store, event) => {
@@ -74,22 +74,22 @@ const projection = {
       id: event.aggregateId,
       text: event.payload,
       active: true,
-      version: 0
+      version: 0,
     })
   },
   STORY_UPDATED: async (store, event) => {
     await store.update(
       'Stories',
       {
-        id: event.aggregateId
+        id: event.aggregateId,
       },
       {
         $set: {
-          text: event.payload
+          text: event.payload,
         },
         $inc: {
-          version: 1
-        }
+          version: 1,
+        },
       }
     )
   },
@@ -97,21 +97,21 @@ const projection = {
     await store.update(
       'Stories',
       {
-        id: event.aggregateId
+        id: event.aggregateId,
       },
       {
         $unset: {
-          active: true
-        }
+          active: true,
+        },
       }
     )
   },
   STORY_DELETED: async (store, event) => {
     await store.delete('Stories', {
       id: event.aggregateId,
-      active: { $ne: true }
+      active: { $ne: true },
     })
-  }
+  },
 }
 export default projection
 ```
@@ -127,7 +127,7 @@ const resolvers = {
   },
   getStoriesByIds: async (store, { ids }) => {
     return await store.find('Stories', {
-      $or: ids.map(storyId => ({ id: { $eq: storyId } }))
+      $or: ids.map((storyId) => ({ id: { $eq: storyId } })),
     })
   },
 
@@ -149,8 +149,8 @@ const resolvers = {
     return await store.find('Stories', {
       $and: [
         { version: { [openRange ? '$gte' : '$gt']: minVersion } },
-        { version: { [openRange ? '$lte' : '$lt']: maxVersion } }
-      ]
+        { version: { [openRange ? '$lte' : '$lt']: maxVersion } },
+      ],
     })
   },
 
@@ -158,9 +158,9 @@ const resolvers = {
     const { version } = await store.findOne('Stories', { id }, { version: 1 })
     return version
   },
-  getCountStories: async store => {
+  getCountStories: async (store) => {
     return await store.count('Stories', {})
-  }
+  },
 }
 
 export default resolvers
@@ -179,9 +179,9 @@ const appConfig = {
       name: 'Comments',
       projection: 'projection.js',
       resolvers: 'resolvers.js',
-      connectorName: 'default'
-    }
-  ]
+      connectorName: 'default',
+    },
+  ],
 }
 ```
 
@@ -192,22 +192,22 @@ const appConfig = {
 ```js
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
-      databaseFile: ':memory:'
-    }
+      databaseFile: ':memory:',
+    },
   },
 
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
-        databaseFile: ':memory:'
-      }
-    }
+        databaseFile: ':memory:',
+      },
+    },
     /*
     default: {
-      module: 'resolve-readmodel-mysql',
+      module: '@resolve-js/readmodel-mysql',
       options: {
         host: 'localhost',
         port: 3306,
@@ -217,7 +217,7 @@ const devConfig = {
       }
     }
     */
-  }
+  },
 }
 ```
 
@@ -229,39 +229,39 @@ const devConfig = {
 const treeId = 'tree-id'
 
 const projection = {
-  Init: async store => {
+  Init: async (store) => {
     await store.defineTable('CommentsAsMap', {
       indexes: { treeId: 'string' },
-      fields: ['comments']
+      fields: ['comments'],
     })
 
     await store.defineTable('CommentsAsList', {
       indexes: { treeId: 'string' },
-      fields: ['comments', 'commentsCount']
+      fields: ['comments', 'commentsCount'],
     })
 
     await store.insert('CommentsAsMap', {
       treeId,
-      comments: {}
+      comments: {},
     })
 
     await store.insert('CommentsAsList', {
       treeId,
       comments: [],
-      commentsCount: 0
+      commentsCount: 0,
     })
   },
 
   COMMENT_CREATED: async (store, event) => {
     const {
       aggregateId,
-      payload: { parentId, content }
+      payload: { parentId, content },
     } = event
 
     await store.update(
       'CommentsAsMap',
       {
-        treeId
+        treeId,
       },
       {
         $set: {
@@ -270,9 +270,9 @@ const projection = {
             parentId,
             content,
             children: {},
-            childrenCount: 0
-          }
-        }
+            childrenCount: 0,
+          },
+        },
       }
     )
 
@@ -280,15 +280,15 @@ const projection = {
       await store.update(
         'CommentsAsMap',
         {
-          treeId
+          treeId,
         },
         {
           $set: {
-            [`comments.${parentId}.children.${aggregateId}`]: true
+            [`comments.${parentId}.children.${aggregateId}`]: true,
           },
           $inc: {
-            [`comments.${parentId}.childrenCount`]: 1
-          }
+            [`comments.${parentId}.childrenCount`]: 1,
+          },
         }
       )
     }
@@ -296,10 +296,10 @@ const projection = {
     const { commentsCount } = await store.findOne(
       'CommentsAsList',
       {
-        treeId
+        treeId,
       },
       {
-        commentsCount: 1
+        commentsCount: 1,
       }
     )
 
@@ -308,10 +308,10 @@ const projection = {
         await store.findOne(
           'CommentsAsList',
           {
-            treeId
+            treeId,
           },
           {
-            comments: 1
+            comments: 1,
           }
         )
       ).comments
@@ -323,15 +323,15 @@ const projection = {
       await store.update(
         'CommentsAsList',
         {
-          treeId
+          treeId,
         },
         {
           $set: {
-            [`comments.${parentIndex}.children.${aggregateId}`]: true
+            [`comments.${parentIndex}.children.${aggregateId}`]: true,
           },
           $inc: {
-            [`comments.${parentIndex}.childrenCount`]: 1
-          }
+            [`comments.${parentIndex}.childrenCount`]: 1,
+          },
         }
       )
     }
@@ -339,7 +339,7 @@ const projection = {
     await store.update(
       'CommentsAsList',
       {
-        treeId
+        treeId,
       },
       {
         $set: {
@@ -348,15 +348,15 @@ const projection = {
             parentId,
             content,
             children: {},
-            childrenCount: 0
-          }
+            childrenCount: 0,
+          },
         },
         $inc: {
-          commentsCount: 1
-        }
+          commentsCount: 1,
+        },
       }
     )
-  }
+  },
 }
 
 export default projection
@@ -370,24 +370,24 @@ export default projection
 const treeId = 'tree-id'
 
 const resolvers = {
-  getComments: async store => {
+  getComments: async (store) => {
     const { comments: commentsMap } = await store.findOne('CommentsAsMap', {
-      treeId
+      treeId,
     })
 
     const {
       comments: commentsList,
-      commentsCount: commentsListLength
+      commentsCount: commentsListLength,
     } = await store.findOne('CommentsAsList', {
-      treeId
+      treeId,
     })
 
     return {
       commentsMap,
       commentsListLength,
-      commentsList
+      commentsList,
     }
-  }
+  },
 }
 
 export default resolvers
@@ -406,9 +406,9 @@ const appConfig = {
       name: 'Counter',
       projection: 'projection.js',
       resolvers: 'resolvers.js',
-      connectorName: 'default'
-    }
-  ]
+      connectorName: 'default',
+    },
+  ],
 }
 ```
 
@@ -419,20 +419,20 @@ const appConfig = {
 ```js
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
-      databaseFile: ':memory:'
-    }
+      databaseFile: ':memory:',
+    },
   },
 
   readModelConnectors: {
     default: {
       module: 'connector.js',
       options: {
-        prefix: 'read-model-database'
-      }
-    }
-  }
+        prefix: 'read-model-database',
+      },
+    },
+  },
 }
 ```
 
@@ -443,16 +443,16 @@ const devConfig = {
 ```js
 import fs from 'fs'
 
-const safeUnlinkSync = filename => {
+const safeUnlinkSync = (filename) => {
   if (fs.existsSync(filename)) {
     fs.unlinkSync(filename)
   }
 }
 
-export default options => {
+export default (options) => {
   const prefix = String(options.prefix)
   const readModels = new Set()
-  const connect = async readModelName => {
+  const connect = async (readModelName) => {
     fs.writeFileSync(`${prefix}${readModelName}.lock`, true, { flag: 'wx' })
     readModels.add(readModelName)
     const store = {
@@ -461,7 +461,7 @@ export default options => {
       },
       set(value) {
         fs.writeFileSync(`${prefix}${readModelName}`, JSON.stringify(value))
-      }
+      },
     }
     return store
   }
@@ -483,7 +483,7 @@ export default options => {
     connect,
     disconnect,
     drop,
-    dispose
+    dispose,
   }
 }
 ```
@@ -494,7 +494,7 @@ export default options => {
 
 ```js
 const projection = {
-  Init: async store => {
+  Init: async (store) => {
     await store.set(0)
   },
   INCREMENT: async (store, event) => {
@@ -502,7 +502,7 @@ const projection = {
   },
   DECREMENT: async (store, event) => {
     await store.set((await store.get()) - event.payload)
-  }
+  },
 }
 
 export default projection
@@ -514,9 +514,9 @@ export default projection
 
 ```js
 const resolvers = {
-  read: async store => {
+  read: async (store) => {
     return await store.get()
-  }
+  },
 }
 
 export default resolvers
@@ -534,9 +534,9 @@ const appConfig = {
     {
       name: 'UserConfirmation',
       source: 'saga.js',
-      connectorName: 'default'
-    }
-  ]
+      connectorName: 'default',
+    },
+  ],
 }
 ```
 
@@ -547,21 +547,21 @@ const appConfig = {
 ```js
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
-      databaseFile: ':memory:'
-    }
+      databaseFile: ':memory:',
+    },
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
-        databaseFile: ':memory:'
-      }
-    }
+        databaseFile: ':memory:',
+      },
+    },
     /*
     default: {
-      module: 'resolve-readmodel-mysql',
+      module: 'readmodel-mysql',
       options: {
         host: 'localhost',
         port: 3306,
@@ -571,7 +571,7 @@ const devConfig = {
       }
     }
     */
-  }
+  },
 }
 ```
 
@@ -637,16 +637,16 @@ const appConfig = {
   aggregates: [
     {
       name: 'Process',
-      commands: 'process.commands.js'
-    }
+      commands: 'process.commands.js',
+    },
   ],
   sagas: [
     {
       name: 'ProcessKiller',
       source: 'saga.js',
-      connectorName: 'default'
-    }
-  ]
+      connectorName: 'default',
+    },
+  ],
 }
 ```
 
@@ -657,21 +657,21 @@ const appConfig = {
 ```js
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
-      databaseFile: ':memory:'
-    }
+      databaseFile: ':memory:',
+    },
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
-        databaseFile: ':memory:'
-      }
-    }
+        databaseFile: ':memory:',
+      },
+    },
     /*
     default: {
-      module: 'resolve-readmodel-mysql',
+      module: '@resolve-js/readmodel-mysql',
       options: {
         host: 'localhost',
         port: 3306,
@@ -681,7 +681,7 @@ const devConfig = {
       }
     }
     */
-  }
+  },
 }
 ```
 
@@ -697,13 +697,13 @@ import jwtSecret from './jwt-secret'
 export default {
   createProcess: () => {
     return {
-      type: 'PROCESS_CREATED'
+      type: 'PROCESS_CREATED',
     }
   },
 
   killAllProcesses: () => {
     return {
-      type: 'ALL_PROCESS_KILLED'
+      type: 'ALL_PROCESS_KILLED',
     }
   },
 
@@ -715,9 +715,9 @@ export default {
     }
 
     return {
-      type: 'PROCESS_KILLED'
+      type: 'PROCESS_KILLED',
     }
-  }
+  },
 }
 ```
 
@@ -734,13 +734,13 @@ export const jwt = jsonwebtoken.sign(
   {
     permissions: {
       processes: {
-        kill: true
-      }
-    }
+        kill: true,
+      },
+    },
   },
   jwtSecret,
   {
-    noTimestamp: true
+    noTimestamp: true,
   }
 )
 
@@ -749,13 +749,13 @@ export default {
     Init: async ({ store }) => {
       await store.defineTable('Processes', {
         indexes: { id: 'string' },
-        fields: []
+        fields: [],
       })
     },
 
     PROCESS_CREATED: async ({ store }, event) => {
       await store.insert('Processes', {
-        id: event.aggregateId
+        id: event.aggregateId,
       })
     },
 
@@ -767,15 +767,15 @@ export default {
           aggregateName: 'Process',
           aggregateId: process.id,
           type: 'PROCESS_KILLED',
-          jwt
+          jwt,
         })
 
         await store.delete('Processes', {
-          id: process.id
+          id: process.id,
         })
       }
-    }
-  }
+    },
+  },
 }
 ```
 
@@ -865,17 +865,17 @@ export default {
           aggregateName: 'Counter',
           aggregateId: event.aggregateId,
           type: randomCommandType,
-          payload: 1
+          payload: 1,
         })
       }
-    }
+    },
   },
 
   sideEffects: {
     getRandom: async () => {
       return Math.random()
-    }
-  }
+    },
+  },
 }
 ```
 
@@ -886,8 +886,8 @@ export default {
 ```js
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents, {
-  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
-} from 'resolve-testing-tools'
+  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP,
+} from '@resolve-js/testing-tools'
 
 import config from './config'
 import resetReadModel from '../reset-read-model'
@@ -896,11 +896,11 @@ describe('Saga', () => {
   const {
     name: sagaName,
     source: sourceModule,
-    connectorName
+    connectorName,
   } = config.sagas.find(({ name }) => name === 'UpdaterSaga')
   const {
     module: connectorModule,
-    options: connectorOptions
+    options: connectorOptions,
   } = config.readModelConnectors[connectorName]
 
   const createConnector = interopRequireDefault(require(connectorModule))
@@ -925,7 +925,7 @@ describe('Saga', () => {
         handlers: source.handlers,
         sideEffects: source.sideEffects,
         adapter,
-        name: sagaName
+        name: sagaName,
       }
     })
 
@@ -947,8 +947,8 @@ describe('Saga', () => {
         {
           aggregateId: 'counterId',
           type: 'UPDATE',
-          payload: {}
-        }
+          payload: {},
+        },
       ]).saga(sagaWithAdapter)
 
       expect(result.commands[0][0].type).toEqual('increment')
@@ -961,8 +961,8 @@ describe('Saga', () => {
         {
           aggregateId: 'counterId',
           type: 'UPDATE',
-          payload: {}
-        }
+          payload: {},
+        },
       ]).saga(sagaWithAdapter)
 
       expect(result.commands[0][0].type).toEqual('decrement')
@@ -978,7 +978,7 @@ describe('Saga', () => {
         handlers: source.handlers,
         sideEffects: source.sideEffects,
         adapter,
-        name: sagaName
+        name: sagaName,
       }
     })
 
@@ -994,19 +994,19 @@ describe('Saga', () => {
         {
           aggregateId: 'counterId',
           type: 'UPDATE',
-          payload: {}
-        }
+          payload: {},
+        },
       ])
         .saga(sagaWithAdapter)
         .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE
+          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE,
         })
 
       expect(result).toEqual({
         commands: [],
         scheduleCommands: [],
         sideEffects: [],
-        queries: []
+        queries: [],
       })
     })
   })
@@ -1024,7 +1024,7 @@ import {
   ...
   validateConfig,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     validateConfig(config)
 ```
@@ -1037,7 +1037,7 @@ import {
 import {
   build,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
     ...
@@ -1059,7 +1059,7 @@ import {
   ...
   start,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
       ...
@@ -1080,7 +1080,7 @@ import {
   ...
   watch,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
       ...
@@ -1102,7 +1102,7 @@ import {
   ...
   runTestcafe,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
       ...
@@ -1128,7 +1128,7 @@ import {
   ...
   merge,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
   ...
     const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
 ```
@@ -1142,7 +1142,7 @@ import {
   ...
   stop,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
   ...
   try {
 ```
@@ -1156,7 +1156,7 @@ import {
   ...
   reset,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
       ...
@@ -1183,7 +1183,7 @@ import {
   ...
   importEventStore,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
       ...

@@ -9,7 +9,7 @@ import {
   reset,
   importEventStore,
   exportEventStore,
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
 
 import appConfig from './config.app'
 import devConfig from './config.dev'

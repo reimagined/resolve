@@ -10,8 +10,8 @@ Reset the Read Model's state as shown below.
 #### Local application:
 
 ```bash
-yarn add resolve-module-admin
-yarn resolve-module-admin read-models reset <readModelName>
+yarn add @resolve-js/module-admin
+yarn @resolve-js/module-admin read-models reset <readModelName>
 ```
 
 #### ReSolve Cloud application:

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useQuery } from 'resolve-react-hooks'
+import { useQuery } from '@resolve-js/react-hooks'
 import { Link } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap'
 

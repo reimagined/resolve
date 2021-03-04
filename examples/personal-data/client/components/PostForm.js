@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { FormGroup, Label, Input, Button, FormText } from 'reactstrap'
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand } from '@resolve-js/react-hooks'
 import { v4 as uuid } from 'uuid'
 
 import UserContext from '../userContext'
