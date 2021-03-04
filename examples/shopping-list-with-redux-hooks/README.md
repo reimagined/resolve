@@ -2,7 +2,7 @@
 
 ![shopping-list-react-hooks](https://user-images.githubusercontent.com/37070809/94238710-69a66800-ff19-11ea-94e3-08775f03781b.png)
 
-This example demonstrates how to use the [resolve-redux](https://reimagined.github.io/resolve/docs/frontend#resolve-redux-library) library's React hooks to communicate with a reSolve backend.
+This example demonstrates how to use the [@resolve-js/redux](https://reimagined.github.io/resolve/docs/frontend#@resolve-js/redux-library) library's React hooks to communicate with a reSolve backend.
 
 ##### Installation:
 

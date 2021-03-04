@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/server'
 import { createMemoryHistory } from 'history'
 import jsonwebtoken from 'jsonwebtoken'
-import { createStore, AppContainer } from 'resolve-redux'
+import { createStore, AppContainer } from '@resolve-js/redux'
 import { Helmet } from 'react-helmet'
 import { StyleSheetManager, ServerStyleSheet } from 'styled-components'
 

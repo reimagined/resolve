@@ -1,7 +1,7 @@
-import createSqliteAdapter from 'resolve-eventstore-lite'
-import createPostgresqlServerlessAdapter from 'resolve-eventstore-postgresql-serverless'
-import { Adapter } from 'resolve-eventstore-base'
-import { create, destroy } from 'resolve-eventstore-postgresql-serverless'
+import createSqliteAdapter from '@resolve-js/eventstore-lite'
+import createPostgresqlServerlessAdapter from '@resolve-js/eventstore-postgresql-serverless'
+import { Adapter } from '@resolve-js/eventstore-base'
+import { create, destroy } from '@resolve-js/eventstore-postgresql-serverless'
 import {
   TEST_SERVERLESS,
   updateAwsConfig,

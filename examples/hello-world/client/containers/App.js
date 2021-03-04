@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Navbar, Image, Nav } from 'react-bootstrap'
-import { useStaticResolver } from 'resolve-react-hooks'
+import { useStaticResolver } from '@resolve-js/react-hooks'
 
 const App = () => {
   const resolveStatic = useStaticResolver()

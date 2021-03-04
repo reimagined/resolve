@@ -1,4 +1,4 @@
-import * as resolveRedux from 'resolve-redux'
+import * as resolveRedux from '@resolve-js/redux'
 
 const getNativeChunk = (resolveChunk) => ({ ...resolveChunk, resolveRedux })
 

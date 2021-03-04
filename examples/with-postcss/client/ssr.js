@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/server'
 import { createMemoryHistory } from 'history'
-import { ResolveProvider } from 'resolve-react-hooks'
+import { ResolveProvider } from '@resolve-js/react-hooks'
 import { Helmet } from 'react-helmet'
 
 import { getRoutes } from './get-routes'
