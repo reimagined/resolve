@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectViewModel, sendAggregateAction } from 'resolve-redux'
+import { connectViewModel, sendAggregateAction } from '@resolve-js/redux'
 import { Button } from 'react-bootstrap'
 
 class OneViewModelMountedTwice extends React.PureComponent {

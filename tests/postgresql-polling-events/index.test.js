@@ -1,9 +1,9 @@
 import AWS from 'aws-sdk'
-import debugLevels from 'resolve-debug-levels'
+import debugLevels from '@resolve-js/debug-levels'
 import createEventstoreAdapter, {
   create,
   destroy,
-} from 'resolve-eventstore-postgresql-serverless'
+} from '@resolve-js/eventstore-postgresql-serverless'
 
 const logger = debugLevels('resolve:postgresql-polling-events')
 
@@ -17,7 +17,7 @@ AWS.config.update({
 
 jest.setTimeout(20000000)
 
-describe.skip('resolve-eventstore-mysql-serverless', () => {
+describe.skip('@resolve-js/eventstore-mysql-serverless', () => {
   beforeAll.skip(async () => {
     logger.warn('create start')
     const rdsDataApi = new AWS.RDSDataService({

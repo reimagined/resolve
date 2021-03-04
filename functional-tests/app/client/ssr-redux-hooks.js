@@ -1,4 +1,4 @@
-import getStaticBasedPath from 'resolve-runtime/lib/common/utils/get-static-based-path'
+import getStaticBasedPath from '@resolve-js/runtime/lib/common/utils/get-static-based-path'
 
 const markupHandler = async (resolveContext, req, res) => {
   const {
