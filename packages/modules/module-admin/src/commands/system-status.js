@@ -1,20 +1,18 @@
 import fetch from 'isomorphic-fetch'
 
-export const handler = async ({ url, wait }) => {
-  if (wait !== undefined && wait !== 'enabled' && wait !== 'disabled') {
-    throw new Error(`Incorrect status = "${wait}"`)
-  }
+export const handler = async ({ url, waitReady }) => {
+  const wait = waitReady ? 'ready' : 'unknown'
   let status = null
 
   for (;;) {
     try {
-      const response = await fetch(`${url}/status`)
+      const response = await fetch(`${url}/system-status`)
       await response.text()
 
-      status = 'enabled'
+      status = 'ready'
     } catch (error) {
       if (error != null && error.code == 'ECONNREFUSED') {
-        status = 'disabled'
+        status = 'unknown'
       } else {
         throw error
       }
@@ -31,10 +29,10 @@ export const handler = async ({ url, wait }) => {
   console.log(status)
 }
 
-export const command = 'status'
-export const describe = 'get application status'
+export const command = 'system-status'
+export const describe = 'get the system status'
 export const builder = (yargs) =>
-  yargs.option('wait', {
-    describe: 'expected status',
-    type: 'string',
+  yargs.option('--wait-ready', {
+    describe: 'wait for the system to initialize',
+    type: 'boolean',
   })
