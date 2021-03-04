@@ -73,7 +73,7 @@ export const validateApiHandlers = (resolveConfig) => {
     if (allowedMethods.indexOf(apiHandler.method) < 0) {
       throw new Error(
         [
-          `Incorrect options.apiHandlers[${idx}].method = "${apiHandler.path}"``API handler method should be one from following list ${allowedMethods}`,
+          `Incorrect options.apiHandlers[${idx}].method = "${apiHandler.path}"``API handler method should be from the following list ${allowedMethods}`,
         ].join('\n')
       )
     }
@@ -144,12 +144,12 @@ const validateClientEntries = (config) => {
 
     if (!/^(?:iife|commonjs|esm)$/.test(moduleType)) {
       throw new Error(
-        `Option clientEntries[${idx}].moduleType must be on of "iife", "commonjs", "esm"`
+        `Option clientEntries[${idx}].moduleType must be "iife", "commonjs" or "esm"`
       )
     }
     if (!/^(?:web|node)$/.test(target)) {
       throw new Error(
-        `Option clientEntries[${idx}].target must be on of "web", "node"`
+        `Option clientEntries[${idx}].target must be "web" or "node"`
       )
     }
   }
