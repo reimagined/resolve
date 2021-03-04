@@ -21,7 +21,6 @@ const getConfig = async (resolveConfig, options) => {
       throw new Error(`Invalid reset options: ${key}`)
     }
   }
-  process.env.SKIP_COMMANDS = 'true'
 
   const config = merge(resolveConfig, {
     apiHandlers: [
@@ -32,6 +31,11 @@ const getConfig = async (resolveConfig, options) => {
           module: '@resolve-js/runtime/lib/local/reset-domain-handler.js',
           options,
         },
+      },
+      {
+        method: 'OPTIONS',
+        path: '/SKIP_COMMANDS',
+        handler: '@resolve-js/runtime/lib/common/handlers/fail-handler.js',
       },
     ],
   })

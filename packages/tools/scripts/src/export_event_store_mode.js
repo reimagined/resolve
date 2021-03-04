@@ -10,7 +10,6 @@ const getConfig = async (resolveConfig, options) => {
     throw new Error('Options field "directory" must be string')
   }
 
-  process.env.SKIP_COMMANDS = 'true'
   const config = merge(resolveConfig, {
     apiHandlers: [
       {
@@ -20,6 +19,11 @@ const getConfig = async (resolveConfig, options) => {
           module: '@resolve-js/runtime/lib/local/export-event-store-handler.js',
           options,
         },
+      },
+      {
+        method: 'OPTIONS',
+        path: '/SKIP_COMMANDS',
+        handler: '@resolve-js/runtime/lib/common/handlers/fail-handler.js',
       },
     ],
   })
