@@ -16,6 +16,7 @@ import lambdaWorker from './lambda-worker'
 import wrapTrie from '../common/wrap-trie'
 import initUploader from './init-uploader'
 import gatherEventListeners from '../common/gather-event-listeners'
+import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 import { putInternalError } from './metrics'
 
 const log = debugLevels('resolve:runtime:cloud-entry')
@@ -46,6 +47,12 @@ const index = async ({ assemblies, constants, domain }) => {
 
     const segment = resolve.performanceTracer.getSegment()
     subSegment = segment.addNewSubsegment('initResolve')
+
+    Object.defineProperties(resolve, {
+      getSubscribeAdapterOptions: {
+        value: getSubscribeAdapterOptions,
+      },
+    })
 
     log.debug('preparing aws clients')
     await initAwsClients(resolve)
