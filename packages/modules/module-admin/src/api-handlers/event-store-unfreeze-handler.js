@@ -1,4 +1,5 @@
 import wrapApiHandler from './wrap-api-handler'
+import { EventstoreAlreadyUnfrozenError } from '@resolve-js/eventstore-base'
 
 const pause = async (req, res) => {
   try {
@@ -6,7 +7,7 @@ const pause = async (req, res) => {
     await eventstoreAdapter.unfreeze()
     res.end(`EventStore is unfrozen`)
   } catch (error) {
-    if (error.name === 'AlreadyUnfrozenError') {
+    if (EventstoreAlreadyUnfrozenError.is(error)) {
       res.end(`EventStore is already unfrozen`)
     } else {
       // eslint-disable-next-line no-console

@@ -1,13 +1,25 @@
 import path from 'path'
 import fs from 'fs'
 import { promisify } from 'util'
-
 import { pipeline } from 'stream'
+import {
+  MAINTENANCE_MODE_MANUAL,
+  MAINTENANCE_MODE_AUTO,
+} from '@resolve-js/eventstore-base'
+
+import checkMaintenanceMode from '../utils/checkMaintenanceMode'
 
 const eventStoreImportHandler = async (req, res) => {
   try {
     const { eventstoreAdapter } = req.resolve
     const { directory } = req.query
+
+    checkMaintenanceMode(req.query.maintenanceMode)
+
+    const maintenanceMode =
+      req.query.maintenanceMode === 'manual'
+        ? MAINTENANCE_MODE_MANUAL
+        : MAINTENANCE_MODE_AUTO
 
     const eventsFile = path.join(directory, 'events.db')
     const secretsFile = path.join(directory, 'secrets.db')
@@ -22,12 +34,16 @@ const eventStoreImportHandler = async (req, res) => {
 
     await promisify(pipeline)(
       fs.createReadStream(eventsFile),
-      eventstoreAdapter.importEvents()
+      eventstoreAdapter.importEvents({
+        maintenanceMode,
+      })
     )
 
     await promisify(pipeline)(
       fs.createReadStream(secretsFile),
-      eventstoreAdapter.importSecrets()
+      eventstoreAdapter.importSecrets({
+        maintenanceMode,
+      })
     )
 
     res.end('ok')

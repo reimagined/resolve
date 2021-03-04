@@ -1,13 +1,9 @@
 import fetch from 'isomorphic-fetch'
 
+import checkMaintenanceMode from '../../utils/checkMaintenanceMode'
+
 export const handler = async ({ url, directory, maintenanceMode }) => {
-  if (
-    maintenanceMode !== undefined &&
-    maintenanceMode !== 'auto' &&
-    maintenanceMode !== 'manual'
-  ) {
-    throw new Error(`Incorrect maintenanceMode = ${maintenanceMode}`)
-  }
+  checkMaintenanceMode(maintenanceMode)
 
   const response = await fetch(
     `${url}/event-store/import?directory=${encodeURI(directory)}${
