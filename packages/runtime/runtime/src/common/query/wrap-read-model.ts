@@ -90,9 +90,9 @@ const detectEventWrappers = (connector: any): any => {
   ) {
     return emptyEventWrapper
   } else {
-    log.warn('Connector provided invalid event batch lifecycle functions set')
+    log.warn('Connector provided invalid event batch lifecycle function set')
     log.warn(`Lifecycle detection constant is ${featureDetection}`)
-    log.warn(`No-transactional lifecycle set will be used instead`)
+    log.warn(`Non-transactional lifecycle set will be used instead`)
     return emptyEventWrapper
   }
 }
@@ -122,9 +122,9 @@ const detectBatchWrappers = (connector: any): any => {
   ) {
     return emptyBatchWrapper
   } else {
-    log.warn('Connector provided invalid event batch lifecycle functions set')
+    log.warn('Connector provided invalid event batch lifecycle function set')
     log.warn(`Lifecycle detection constant is ${featureDetection}`)
-    log.warn(`No-transactional lifecycle set will be used instead`)
+    log.warn(`Non-transactional lifecycle set will be used instead`)
     return emptyBatchWrapper
   }
 }

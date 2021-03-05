@@ -26,7 +26,7 @@ const reset = async (pool, payload) => {
     WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
   `)
   if (result == null || result.length !== 1) {
-    throw new Error(`Event subscriber ${eventSubscriber} does not found`)
+    throw new Error(`Event subscriber ${eventSubscriber} not found`)
   }
   const {
     subscriptionId,

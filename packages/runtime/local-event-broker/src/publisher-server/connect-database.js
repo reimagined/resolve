@@ -74,7 +74,7 @@ const runCommonQuery = async (pool, isRegular, querySQL) => {
 
 const disconnect = async (pool) => {
   if (pool.isDisposed) {
-    throw new Error('Event broker SQLite connection already closed')
+    throw new Error('Event broker\'s SQLite connection already closed')
   }
   pool.isDisposed = true
 

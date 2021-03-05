@@ -30,7 +30,7 @@ const resume = async (pool, payload) => {
       WHERE "eventSubscriber" = ${escapeStr(eventSubscriber)}
     `)
     if (result == null || result.length !== 1) {
-      throw new Error(`Event subscriber ${eventSubscriber} does not found`)
+      throw new Error(`Event subscriber ${eventSubscriber} not found`)
     }
     const { status, subscriptionId } = parseSubscription(result[0])
     if (status === SubscriptionStatus.ERROR) {
@@ -39,7 +39,7 @@ const resume = async (pool, payload) => {
       return subscriptionId
     } else if (status === SubscriptionStatus.SKIP && attempt > 10) {
       throw new Error(
-        `Event subscriber ${eventSubscriber} cannot be resumed after ${attempt} attempts - event bus is too busy`
+        `Event subscriber ${eventSubscriber} cannot be resumed after ${attempt} attempts - event bus is busy`
       )
     } else {
       await new Promise((resolve) => setTimeout(resolve, 1000))

@@ -66,7 +66,7 @@ const finalizeAndReportBatch = async (pool, payload) => {
       )
     }
   } else if (isActiveResult) {
-    throw new Error('Delivery result should not be empty object')
+    throw new Error('Delivery result should not be an empty object')
   }
   const notifications = await runQuery(`
       SELECT ${notificationsTableNameAsId}.*,

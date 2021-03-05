@@ -55,7 +55,7 @@ const sendEvents = async (
     throw new Error(`View model "${viewModelName}" is disposed`)
   }
 
-  throw new Error(`View model "${viewModelName}" cannot be updated by events`)
+  throw new Error(`View model "${viewModelName}" cannot be updated with events`)
 }
 
 const drop = async (

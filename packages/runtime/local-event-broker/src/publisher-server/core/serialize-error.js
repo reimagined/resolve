@@ -9,7 +9,7 @@ const serializeError = (error) => {
     return error
   }
   if (!(error instanceof Error)) {
-    throw new Error(`The "${JSON.stringify(error)}" is not instance of Error`)
+    throw new Error(`The "${JSON.stringify(error)}" is not an instance of Error`)
   } else {
     return {
       name: error.name,

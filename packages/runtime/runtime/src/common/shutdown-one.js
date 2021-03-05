@@ -8,8 +8,8 @@ const shutdownOne = async ({ eventBus, eventSubscriber, upstream }) => {
   } catch (error) {
     // eslint-disable-next-line no-console
     console.warn(`
-      Event listener "${eventSubscriber}" can't stop subscription since event bus
-      cannot initiate notification for it because of error "${error}"
+      Event listener "${eventSubscriber}" cannot unsubscribe - event bus
+      is unable to notify the listener due to an error "${error}"
     `)
   }
 }

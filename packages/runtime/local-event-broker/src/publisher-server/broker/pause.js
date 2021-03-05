@@ -25,7 +25,7 @@ const pause = async (pool, payload) => {
 
   if (result == null || result.length !== 1) {
     throw new Error(
-      `Event subscriber ${payload.eventSubscriber} does not found`
+      `Event subscriber ${payload.eventSubscriber} not found`
     )
   }
   const { status, subscriptionId } = parseSubscription(result[0])

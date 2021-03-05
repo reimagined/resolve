@@ -42,7 +42,7 @@ const bootstrapOne = async ({
   if (deliveryStrategy == null) {
     // eslint-disable-next-line no-console
     console.warn(`
-      Event listener "${eventSubscriber}" can't perform subscription since event bus
+      Event listener "${eventSubscriber}" cannot subscribe - event bus
       does not support connector capacities mask "${connectorFeatures}"
     `)
     return
@@ -69,8 +69,8 @@ const bootstrapOne = async ({
   } catch (error) {
     // eslint-disable-next-line no-console
     console.warn(`
-      Event listener "${eventSubscriber}" can't resume subscription since event bus
-      cannot initiate notification for it because of error "${error.stack}"
+      Event listener "${eventSubscriber}" cannot resume subscription - event bus
+      is unable to notify the listener due to an error "${error.stack}"
     `)
   }
 }

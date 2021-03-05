@@ -116,7 +116,7 @@ const createClient = async ({ address, preExecHooks, postExecHooks }) => {
     )
   ) {
     throw new Error(
-      `Either preExecHooks nor postExecHooks should differ from null or object`
+      `Either preExecHooks or postExecHooks should differ from null or object`
     )
   }
 
