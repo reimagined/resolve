@@ -7,7 +7,7 @@ const sagasList = async (req, res) => {
     ...req.resolve.domainInterop.sagaDomain.getSchedulersNamesBySagas(),
   ]) {
     statusPromises.push(
-      req.resolve.eventBus.status({ eventSubscriber: `${name}` })
+      req.resolve.eventSubscriber.status({ eventSubscriber: `${name}` })
     )
   }
   const statuses = await Promise.all(statusPromises)

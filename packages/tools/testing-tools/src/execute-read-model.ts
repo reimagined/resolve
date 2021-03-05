@@ -6,14 +6,10 @@ export const executeReadModel = async ({
   promise,
   createQuery,
   transformEvents,
-  detectConnectorFeatures,
-  connectorModes,
 }: {
   promise: any
   createQuery: (options: CreateQueryOptions) => any
   transformEvents: Function
-  detectConnectorFeatures: any
-  connectorModes: any
 }): Promise<any> => {
   if (promise[symbol].phase < Phases.RESOLVER) {
     throw new TypeError(promise[symbol].phase)
@@ -23,11 +19,6 @@ export const executeReadModel = async ({
   let result = null
 
   try {
-    let performAcknowledge = null
-    const acknowledgePromise: Promise<any> = new Promise((resolve) => {
-      performAcknowledge = async (result: any) => await resolve(result)
-    })
-
     const provideLedger = async (ledger: any): Promise<void> => void 0
     const secretsManager = promise[symbol].secretsManager
 
@@ -65,6 +56,11 @@ export const executeReadModel = async ({
       sagas: [],
     })
 
+    const eventStoreLocalState = new Map<
+      string,
+      { destination: any; status: any }
+    >()
+
     const eventstoreAdapter = ({
       getSecretsManager: (): any => promise[symbol].secretsManager,
       loadEvents: async () => ({
@@ -76,16 +72,61 @@ export const executeReadModel = async ({
         },
       }),
       getNextCursor: () => 'SHIFT_CURSOR',
+      ensureEventSubscriber: async ({
+        applicationName,
+        eventSubscriber,
+        destination,
+        status,
+      }: any) => {
+        eventStoreLocalState.set(`${applicationName}${eventSubscriber}`, {
+          ...(eventStoreLocalState.has(`${applicationName}${eventSubscriber}`)
+            ? (eventStoreLocalState.get(
+                `${applicationName}${eventSubscriber}`
+              ) as any)
+            : {}),
+          ...(destination != null ? { destination } : {}),
+          ...(status != null ? { status } : {}),
+        })
+      },
+      removeEventSubscriber: async ({
+        applicationName,
+        eventSubscriber,
+      }: any) => {
+        eventStoreLocalState.delete(`${applicationName}${eventSubscriber}`)
+      },
+      getEventSubscribers: async ({
+        applicationName,
+        eventSubscriber,
+      }: any = {}) => {
+        if (applicationName == null && eventSubscriber == null) {
+          return [...eventStoreLocalState.values()]
+        }
+        const result = []
+        for (const [
+          key,
+          { destination, status },
+        ] of eventStoreLocalState.entries()) {
+          if (`${applicationName}${eventSubscriber}` === key) {
+            result.push({
+              applicationName,
+              eventSubscriber,
+              destination,
+              status,
+            })
+          }
+        }
+        return result
+      },
     } as unknown) as Eventstore
 
     queryExecutor = createQuery({
+      applicationName: 'APP_NAME',
       readModelConnectors: {
         ADAPTER_NAME: promise[symbol].adapter,
       },
       getVacantTimeInMillis: () => 0x7fffffff,
-      invokeEventBusAsync: async () => void 0,
+      invokeEventSubscriberAsync: async () => void 0,
       eventstoreAdapter,
-      performAcknowledge,
       readModelsInterop: domain.readModelDomain.acquireReadModelsInterop({
         secretsManager,
         monitoring: {},
@@ -94,76 +135,56 @@ export const executeReadModel = async ({
       performanceTracer: null,
       provideLedger,
     })
-    const isInlineLedger =
-      (await detectConnectorFeatures(promise[symbol].adapter)) ===
-      connectorModes.INLINE_LEDGER_CONNECTOR
 
     try {
-      if (isInlineLedger) {
-        await queryExecutor.subscribe({
-          modelName: promise[symbol].name,
-          subscriptionOptions: {
-            eventTypes: null,
-            aggregateIds: null,
-          },
-        })
+      await eventstoreAdapter.ensureEventSubscriber({
+        applicationName: 'APP_NAME',
+        eventSubscriber: promise[symbol].name,
+        status: null,
+        destination: 'LOCAL',
+      })
 
-        await queryExecutor.build({
-          modelName: promise[symbol].name,
-        })
+      await queryExecutor.subscribe({
+        modelName: promise[symbol].name,
+        subscriptionOptions: {
+          eventTypes: null,
+          aggregateIds: null,
+        },
+      })
 
-        await queryExecutor.build({
-          modelName: promise[symbol].name,
-        })
+      await queryExecutor.resume({
+        modelName: promise[symbol].name,
+      })
 
-        const status = await queryExecutor.status({
-          modelName: promise[symbol].name,
-        })
-        if (status.status === 'error') {
-          if (!Array.isArray(status.errors)) {
-            throw new Error('Unknown error')
-          }
-          const liveErrorIndex =
-            status.errors.length === 1
-              ? liveErrors.findIndex(
-                  (err) => err.message === status.errors[0].message
-                )
-              : -1
-          if (liveErrorIndex < 0) {
-            const error = new Error(
-              status.errors.map((err: any) => err.message).join('\n')
-            )
-            error.stack = status.errors.map((err: any) => err.stack).join('\n')
-            throw error
-          } else {
-            throw liveErrors[liveErrorIndex]
-          }
+      await queryExecutor.build({
+        modelName: promise[symbol].name,
+      })
+
+      await queryExecutor.build({
+        modelName: promise[symbol].name,
+      })
+
+      const status = await queryExecutor.status({
+        modelName: promise[symbol].name,
+      })
+      if (status.status === 'error') {
+        if (!Array.isArray(status.errors)) {
+          throw new Error('Unknown error')
         }
-      } else {
-        await queryExecutor.sendEvents({
-          modelName: promise[symbol].name,
-          events: [{ type: 'Init' }],
-        })
-
-        await queryExecutor.sendEvents({
-          modelName: promise[symbol].name,
-          events: transformEvents(promise[symbol].events),
-        })
-
-        const {
-          result: { error: projectionError },
-        } = await acknowledgePromise
-        if (projectionError != null) {
-          const liveErrorIndex = liveErrors.findIndex(
-            (err) => err.message === projectionError.message
+        const liveErrorIndex =
+          status.errors.length === 1
+            ? liveErrors.findIndex(
+                (err) => err.message === status.errors[0].message
+              )
+            : -1
+        if (liveErrorIndex < 0) {
+          const error = new Error(
+            status.errors.map((err: any) => err.message).join('\n')
           )
-          if (liveErrorIndex < 0) {
-            const error = new Error(projectionError.message)
-            error.stack = projectionError.stack
-            throw error
-          } else {
-            throw liveErrors[liveErrorIndex]
-          }
+          error.stack = status.errors.map((err: any) => err.stack).join('\n')
+          throw error
+        } else {
+          throw liveErrors[liveErrorIndex]
         }
       }
     } catch (err) {
@@ -182,15 +203,18 @@ export const executeReadModel = async ({
     }
 
     try {
-      if (isInlineLedger) {
-        await queryExecutor.unsubscribe({
-          modelName: promise[symbol].name,
-        })
-      } else {
-        await queryExecutor.drop({
-          modelName: promise[symbol].name,
-        })
-      }
+      await queryExecutor.unsubscribe({
+        modelName: promise[symbol].name,
+      })
+    } catch (err) {
+      errors.push(err)
+    }
+
+    try {
+      await eventstoreAdapter.removeEventSubscriber({
+        applicationName: 'APP_NAME',
+        eventSubscriber: promise[symbol].name,
+      })
     } catch (err) {
       errors.push(err)
     }

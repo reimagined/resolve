@@ -4,7 +4,7 @@ import generateCustomMode from './generate_custom_mode'
 const validOptions = [
   'dropEventStore',
   'dropReadModels',
-  'dropEventBus',
+  'dropEventSubscriber',
   'dropSagas',
 ]
 
@@ -32,10 +32,12 @@ const getConfig = async (resolveConfig, options) => {
           options,
         },
       },
+      {
+        method: 'OPTIONS',
+        path: '/SKIP_COMMANDS',
+        handler: '@resolve-js/runtime/lib/common/handlers/fail-handler.js',
+      },
     ],
-    eventBroker: {
-      upstream: false,
-    },
   })
 
   return config

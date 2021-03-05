@@ -1,10 +1,4 @@
-import wrapReadModel, {
-  FULL_XA_CONNECTOR,
-  FULL_REGULAR_CONNECTOR,
-  EMPTY_CONNECTOR,
-  INLINE_LEDGER_CONNECTOR,
-  detectConnectorFeatures,
-} from './wrap-read-model'
+import wrapReadModel from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
 
 import { CreateQueryOptions } from './types'
@@ -91,14 +85,5 @@ const createQuery = (params: CreateQueryOptions): any => {
   return api
 }
 
-export {
-  FULL_XA_CONNECTOR,
-  FULL_REGULAR_CONNECTOR,
-  EMPTY_CONNECTOR,
-  INLINE_LEDGER_CONNECTOR,
-  detectConnectorFeatures,
-  CreateQueryOptions,
-  OMIT_BATCH,
-  STOP_BATCH,
-}
+export { CreateQueryOptions, OMIT_BATCH, STOP_BATCH }
 export default createQuery

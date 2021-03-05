@@ -83,7 +83,7 @@ void (async () => {
           resolveConfig,
           {
             dropEventStore: false,
-            dropEventBus: true,
+            dropEventSubscriber: true,
             dropReadModels: true,
             dropSagas: true,
           },
@@ -215,7 +215,7 @@ void (async () => {
           resolveConfig,
           {
             dropEventStore: true,
-            dropEventBus: true,
+            dropEventSubscriber: true,
             dropReadModels: true,
             dropSagas: true,
           },

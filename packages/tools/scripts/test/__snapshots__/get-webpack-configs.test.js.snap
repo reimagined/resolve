@@ -53,7 +53,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.localBusBroker\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\",
         \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -89,7 +88,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -161,14 +159,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   },
                   \\"readModelConnectors\\": {},
                   \\"schedulers\\": {},
-                  \\"eventBroker\\": {
-                    \\"launchBroker\\": true,
-                    \\"publisherAddress\\": \\"http://127.0.0.1:3500\\",
-                    \\"consumerAddress\\": \\"http://127.0.0.1:3501\\",
-                    \\"databaseFile\\": \\"data/local-bus-broker.db\\",
-                    \\"batchSize\\": 100,
-                    \\"upstream\\": true
-                  },
                   \\"jwtCookie\\": {
                     \\"name\\": \\"jwt\\",
                     \\"maxAge\\": 31536000000
@@ -269,7 +259,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.localBusBroker\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\",
         \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -312,7 +301,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -391,14 +379,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   },
                   \\"readModelConnectors\\": {},
                   \\"schedulers\\": {},
-                  \\"eventBroker\\": {
-                    \\"launchBroker\\": true,
-                    \\"publisherAddress\\": \\"http://127.0.0.1:3500\\",
-                    \\"consumerAddress\\": \\"http://127.0.0.1:3501\\",
-                    \\"databaseFile\\": \\"data/local-bus-broker.db\\",
-                    \\"batchSize\\": 100,
-                    \\"upstream\\": true
-                  },
                   \\"jwtCookie\\": {
                     \\"name\\": \\"jwt\\",
                     \\"maxAge\\": 31536000000
@@ -498,7 +478,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.localBusBroker\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\",
         \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -542,7 +521,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -621,14 +599,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   },
                   \\"readModelConnectors\\": {},
                   \\"schedulers\\": {},
-                  \\"eventBroker\\": {
-                    \\"launchBroker\\": true,
-                    \\"publisherAddress\\": \\"http://127.0.0.1:3500\\",
-                    \\"consumerAddress\\": \\"http://127.0.0.1:3501\\",
-                    \\"databaseFile\\": \\"data/local-bus-broker.db\\",
-                    \\"batchSize\\": 100,
-                    \\"upstream\\": true
-                  },
                   \\"jwtCookie\\": {
                     \\"name\\": \\"jwt\\",
                     \\"maxAge\\": 31536000000
@@ -758,7 +728,6 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.localBusBroker\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\",
         \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -794,7 +763,6 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -866,14 +834,6 @@ exports[`should make webpack configs for local mode 1`] = `
                   },
                   \\"readModelConnectors\\": {},
                   \\"schedulers\\": {},
-                  \\"eventBroker\\": {
-                    \\"launchBroker\\": true,
-                    \\"publisherAddress\\": \\"http://127.0.0.1:3500\\",
-                    \\"consumerAddress\\": \\"http://127.0.0.1:3501\\",
-                    \\"databaseFile\\": \\"data/local-bus-broker.db\\",
-                    \\"batchSize\\": 100,
-                    \\"upstream\\": true
-                  },
                   \\"jwtCookie\\": {
                     \\"name\\": \\"jwt\\",
                     \\"maxAge\\": 31536000000
@@ -974,7 +934,6 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.localBusBroker\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\",
         \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -1017,7 +976,6 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -1096,14 +1054,6 @@ exports[`should make webpack configs for local mode 1`] = `
                   },
                   \\"readModelConnectors\\": {},
                   \\"schedulers\\": {},
-                  \\"eventBroker\\": {
-                    \\"launchBroker\\": true,
-                    \\"publisherAddress\\": \\"http://127.0.0.1:3500\\",
-                    \\"consumerAddress\\": \\"http://127.0.0.1:3501\\",
-                    \\"databaseFile\\": \\"data/local-bus-broker.db\\",
-                    \\"batchSize\\": 100,
-                    \\"upstream\\": true
-                  },
                   \\"jwtCookie\\": {
                     \\"name\\": \\"jwt\\",
                     \\"maxAge\\": 31536000000
@@ -1168,8 +1118,7 @@ exports[`should make webpack configs for local mode 1`] = `
     \\"plugins\\": [],
     \\"name\\": \\"Server local entry point, local bus broker, local event store\\",
     \\"entry\\": {
-      \\"common/local-entry/local-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
-      \\"common/local-entry/local-bus-broker.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\"
+      \\"common/local-entry/local-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\"
     }
   },
   {
@@ -1204,7 +1153,6 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.localBusBroker\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\",
         \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -1248,7 +1196,6 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localBusBroker.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -1327,14 +1274,6 @@ exports[`should make webpack configs for local mode 1`] = `
                   },
                   \\"readModelConnectors\\": {},
                   \\"schedulers\\": {},
-                  \\"eventBroker\\": {
-                    \\"launchBroker\\": true,
-                    \\"publisherAddress\\": \\"http://127.0.0.1:3500\\",
-                    \\"consumerAddress\\": \\"http://127.0.0.1:3501\\",
-                    \\"databaseFile\\": \\"data/local-bus-broker.db\\",
-                    \\"batchSize\\": 100,
-                    \\"upstream\\": true
-                  },
                   \\"jwtCookie\\": {
                     \\"name\\": \\"jwt\\",
                     \\"maxAge\\": 31536000000

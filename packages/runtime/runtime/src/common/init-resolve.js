@@ -4,8 +4,7 @@ import createSagaExecutor from '../common/saga/index'
 import crypto from 'crypto'
 
 import createOnCommandExecuted from './on-command-executed'
-import createEventListener from './event-listener'
-import createEventBus from './event-bus'
+import createEventSubscriber from './event-subscriber'
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
@@ -18,7 +17,8 @@ const initResolve = async (resolve) => {
   } = resolve.assemblies
 
   const {
-    invokeEventBusAsync,
+    invokeEventSubscriberAsync,
+    applicationName,
     readModels,
     sagas,
     viewModels,
@@ -50,10 +50,6 @@ const initResolve = async (resolve) => {
   const getVacantTimeInMillis = resolve.getVacantTimeInMillis
   const onCommandExecuted = createOnCommandExecuted(resolve)
 
-  const performAcknowledge = resolve.publisher.acknowledge.bind(
-    resolve.publisher
-  )
-
   const domainMonitoring = {
     error: monitoring?.error,
     performance: performanceTracer,
@@ -66,7 +62,7 @@ const initResolve = async (resolve) => {
     secretsManager,
     eventstore: eventstoreAdapter,
     hooks: {
-      preSaveEvent: async (aggregate, command, event) => {
+      postSaveEvent: async (aggregate, command, event) => {
         await onCommandExecuted(event, command)
         return false
       },
@@ -88,14 +84,14 @@ const initResolve = async (resolve) => {
   })
 
   const executeQuery = createQueryExecutor({
-    invokeEventBusAsync,
+    invokeEventSubscriberAsync,
+    applicationName,
     eventstoreAdapter,
     readModelConnectors,
     readModels,
     viewModels,
     performanceTracer,
     getVacantTimeInMillis,
-    performAcknowledge,
     monitoring,
     readModelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
       monitoring: domainMonitoring,
@@ -109,7 +105,8 @@ const initResolve = async (resolve) => {
   })
 
   const executeSaga = createSagaExecutor({
-    invokeEventBusAsync,
+    invokeEventSubscriberAsync,
+    applicationName,
     executeCommand,
     executeQuery,
     eventstoreAdapter,
@@ -118,7 +115,6 @@ const initResolve = async (resolve) => {
     sagas,
     performanceTracer,
     getVacantTimeInMillis,
-    performAcknowledge,
     uploader,
     scheduler,
     monitoring,
@@ -126,9 +122,7 @@ const initResolve = async (resolve) => {
     executeSchedulerCommand,
   })
 
-  const eventBus = createEventBus(resolve)
-
-  const eventListener = createEventListener(resolve)
+  const eventSubscriber = createEventSubscriber(resolve)
 
   const eventStore = new Proxy(
     {},
@@ -159,8 +153,7 @@ const initResolve = async (resolve) => {
   })
 
   Object.defineProperties(resolve, {
-    eventListener: { value: eventListener },
-    eventBus: { value: eventBus },
+    eventSubscriber: { value: eventSubscriber },
     eventStore: { value: eventStore },
   })
 
