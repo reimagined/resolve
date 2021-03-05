@@ -36,6 +36,8 @@ import dropEvents from './drop-events'
 import dropSecrets from './drop-secrets'
 import dropFinal from './drop-final'
 import dispose from './dispose'
+import injectSecret from './inject-secret'
+import loadSecrets from './load-secrets'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
 import type { ConnectionDependencies, PostgresqlAdapterConfig } from './types'
@@ -72,6 +74,8 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       deleteSecret,
       getSecret,
       setSecret,
+      injectSecret,
+      loadSecrets,
     },
     {
       Postgres,
