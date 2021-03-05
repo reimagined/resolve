@@ -11,6 +11,11 @@ import { handler as propsGetHandler } from '../src/commands/sagas/properties/get
 import { handler as propsListHandler } from '../src/commands/sagas/properties/list'
 import { handler as propsRemoveHandler } from '../src/commands/sagas/properties/remove'
 import { handler as propsSetHandler } from '../src/commands/sagas/properties/set'
+import { handler as eventStoreFreezeHandler } from '../src/commands/event-store/freeze'
+import { handler as eventStoreUnfreezeHandler } from '../src/commands/event-store/unfreeze'
+import { handler as eventStoreImportHandler } from '../src/commands/event-store/import'
+import { handler as eventStoreExportHandler } from '../src/commands/event-store/export'
+import { handler as eventStoreIncrementalImportHandler } from '../src/commands/event-store/incremental-import'
 
 /* eslint-disable no-console */
 describe('@resolve-js/module-admin', () => {
@@ -29,6 +34,107 @@ describe('@resolve-js/module-admin', () => {
     jest.clearAllMocks()
   })
 
+  describe('event-store', () => {
+    test('freeze', async () => {
+      fetch().text.mockReturnValue('ok')
+      await eventStoreFreezeHandler({
+        url: 'url',
+      })
+
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
+    })
+
+    test('unfreeze', async () => {
+      fetch().text.mockReturnValue('ok')
+      await eventStoreUnfreezeHandler({
+        url: 'url',
+      })
+
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
+    })
+
+    test('import', async () => {
+      fetch().text.mockReturnValue('ok')
+      await eventStoreImportHandler({
+        url: 'url',
+        directory: 'directory',
+      })
+
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
+    })
+    test('import: maintenanceMode=manual', async () => {
+      fetch().text.mockReturnValue('ok')
+      await eventStoreImportHandler({
+        url: 'url',
+        directory: 'directory',
+        maintenanceMode: 'manual',
+      })
+
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
+    })
+    test('import: maintenanceMode=auto', async () => {
+      fetch().text.mockReturnValue('ok')
+      await eventStoreImportHandler({
+        url: 'url',
+        directory: 'directory',
+        maintenanceMode: 'auto',
+      })
+
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
+    })
+
+    test('export', async () => {
+      fetch().text.mockReturnValue('ok')
+      await eventStoreExportHandler({
+        url: 'url',
+        directory: 'directory',
+      })
+
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
+    })
+
+    test('export: maintenanceMode=manual', async () => {
+      fetch().text.mockReturnValue('ok')
+      await eventStoreExportHandler({
+        url: 'url',
+        directory: 'directory',
+        maintenanceMode: 'manual',
+      })
+
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
+    })
+
+    test('export: maintenanceMode=auto', async () => {
+      fetch().text.mockReturnValue('ok')
+      await eventStoreExportHandler({
+        url: 'url',
+        directory: 'directory',
+        maintenanceMode: 'auto',
+      })
+
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
+    })
+
+    test('incremental import', async () => {
+      fetch().text.mockReturnValue('ok')
+      await eventStoreIncrementalImportHandler({
+        url: 'url',
+        filePath: 'filePath',
+      })
+
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
+    })
+  })
+
   describe('read-models', () => {
     test('pause', async () => {
       fetch().text.mockReturnValue('ListenerId = "readModel" paused')
@@ -37,7 +143,8 @@ describe('@resolve-js/module-admin', () => {
         readModel: 'readModel',
       })
 
-      expect(console.log.mock.calls).toMatchSnapshot()
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
     })
 
     test('reset', async () => {
@@ -47,7 +154,8 @@ describe('@resolve-js/module-admin', () => {
         readModel: 'readModel',
       })
 
-      expect(console.log.mock.calls).toMatchSnapshot()
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
     })
 
     test('resume', async () => {
@@ -57,7 +165,8 @@ describe('@resolve-js/module-admin', () => {
         readModel: 'readModel',
       })
 
-      expect(console.log.mock.calls).toMatchSnapshot()
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
     })
 
     test('list', async () => {
@@ -82,7 +191,8 @@ describe('@resolve-js/module-admin', () => {
         url: 'url',
       })
 
-      expect(console.log.mock.calls).toMatchSnapshot()
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
     })
   })
 
@@ -94,7 +204,8 @@ describe('@resolve-js/module-admin', () => {
         saga: 'saga',
       })
 
-      expect(console.log.mock.calls).toMatchSnapshot()
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
     })
 
     test('reset', async () => {
@@ -104,7 +215,8 @@ describe('@resolve-js/module-admin', () => {
         saga: 'saga',
       })
 
-      expect(console.log.mock.calls).toMatchSnapshot()
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
     })
 
     test('resume', async () => {
@@ -114,7 +226,8 @@ describe('@resolve-js/module-admin', () => {
         saga: 'saga',
       })
 
-      expect(console.log.mock.calls).toMatchSnapshot()
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
     })
 
     test('list', async () => {
@@ -139,7 +252,8 @@ describe('@resolve-js/module-admin', () => {
         url: 'url',
       })
 
-      expect(console.log.mock.calls).toMatchSnapshot()
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
     })
 
     describe('properties', () => {
@@ -153,7 +267,8 @@ describe('@resolve-js/module-admin', () => {
           key: 'key',
         })
 
-        expect(console.log.mock.calls).toMatchSnapshot()
+        expect(fetch.mock.calls).toMatchSnapshot('fetch')
+        expect(console.log.mock.calls).toMatchSnapshot('console.log')
       })
 
       test('set', async () => {
@@ -167,7 +282,8 @@ describe('@resolve-js/module-admin', () => {
           value: 'value',
         })
 
-        expect(console.log.mock.calls).toMatchSnapshot()
+        expect(fetch.mock.calls).toMatchSnapshot('fetch')
+        expect(console.log.mock.calls).toMatchSnapshot('console.log')
       })
 
       test('remove', async () => {
@@ -178,7 +294,8 @@ describe('@resolve-js/module-admin', () => {
           key: 'key',
         })
 
-        expect(console.log.mock.calls).toMatchSnapshot()
+        expect(fetch.mock.calls).toMatchSnapshot('fetch')
+        expect(console.log.mock.calls).toMatchSnapshot('console.log')
       })
 
       test('list', async () => {
@@ -193,7 +310,8 @@ describe('@resolve-js/module-admin', () => {
           saga: 'saga',
         })
 
-        expect(console.log.mock.calls).toMatchSnapshot()
+        expect(fetch.mock.calls).toMatchSnapshot('fetch')
+        expect(console.log.mock.calls).toMatchSnapshot('console.log')
       })
     })
   })

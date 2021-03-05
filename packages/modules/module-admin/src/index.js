@@ -55,6 +55,42 @@ const createModule = () => {
           '@resolve-js/module-admin/lib/api-handlers/event-broker-delete-property.js',
         method: 'GET',
       },
+      {
+        path: '/api/event-store/freeze',
+        handler:
+          '@resolve-js/module-admin/lib/api-handlers/event-store-freeze-handler.js',
+        method: 'GET',
+      },
+      {
+        path: '/api/event-store/unfreeze',
+        handler:
+          '@resolve-js/module-admin/lib/api-handlers/event-store-unfreeze-handler.js',
+        method: 'GET',
+      },
+      {
+        path: '/api/event-store/import',
+        handler:
+          '@resolve-js/module-admin/lib/api-handlers/event-store-import-handler.js',
+        method: 'GET',
+      },
+      {
+        path: '/api/event-store/export',
+        handler:
+          '@resolve-js/module-admin/lib/api-handlers/event-store-export-handler.js',
+        method: 'GET',
+      },
+      {
+        path: '/api/event-store/incremental-import',
+        handler:
+          '@resolve-js/module-admin/lib/api-handlers/event-store-incremental-import-handler.js',
+        method: 'GET',
+      },
+      {
+        path: '/api/system/status',
+        handler:
+          '@resolve-js/module-admin/lib/api-handlers/system-status-handler.js',
+        method: 'GET',
+      },
     ],
   }
 

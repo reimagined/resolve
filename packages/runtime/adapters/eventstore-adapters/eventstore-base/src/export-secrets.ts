@@ -1,6 +1,7 @@
 import { Readable } from 'stream'
 
 import { BATCH_SIZE, MAINTENANCE_MODE_AUTO } from './constants'
+import { AlreadyFrozenError, AlreadyUnfrozenError } from './frozen-errors'
 
 import {
   AdapterPoolConnectedProps,
@@ -19,7 +20,13 @@ async function startProcessSecrets({
   maintenanceMode,
 }: any): Promise<void> {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
-    await pool.freeze()
+    try {
+      await pool.freeze()
+    } catch (error) {
+      if (!AlreadyFrozenError.is(error)) {
+        throw error
+      }
+    }
   }
 }
 
@@ -28,7 +35,13 @@ async function endProcessSecrets({
   maintenanceMode,
 }: any): Promise<void> {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
-    await pool.unfreeze()
+    try {
+      await pool.unfreeze()
+    } catch (error) {
+      if (!AlreadyUnfrozenError.is(error)) {
+        throw error
+      }
+    }
   }
 }
 
