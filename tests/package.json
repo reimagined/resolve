@@ -17,6 +17,7 @@
     "@resolve-js/debug-levels": "0.26.5",
     "@resolve-js/eventstore-base": "0.26.5",
     "@resolve-js/eventstore-lite": "0.26.5",
+    "@resolve-js/eventstore-postgresql": "0.26.5",
     "@resolve-js/eventstore-postgresql-serverless": "0.26.5",
     "@resolve-js/readmodel-lite": "0.26.5",
     "@resolve-js/readmodel-mysql": "0.26.5",
