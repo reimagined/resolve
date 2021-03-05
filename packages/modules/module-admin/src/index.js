@@ -86,7 +86,7 @@ const createModule = () => {
         method: 'GET',
       },
       {
-        path: '/api/system-status',
+        path: '/api/system/status',
         handler:
           '@resolve-js/module-admin/lib/api-handlers/system-status-handler.js',
         method: 'GET',

@@ -4,23 +4,41 @@
 
 ## Manage Application
 
-The `status` command manages the application's launch status.
+The `system` command manages the application's system.
 
-#### Get an application launch status
+#### Show a system status
 
 ```
-npx @resolve-js/module-admin status
+npx @resolve-js/module-admin system status
 ```
 
 #### Wait for an application to finish launching
 
 ```
-npx @resolve-js/module-admin status --wait=enabled
+npx @resolve-js/module-admin system status --wait-ready 
 ```
 
 ## Manage Event Store
 
 The `event-store` command manages the application's eventstore.
+
+#### Import an eventstore from the directory
+
+```
+npx @resolve-js/module-admin event-store import <directory>
+```
+
+#### Export an eventstore to the directory
+
+```
+npx @resolve-js/module-admin event-store import <directory>
+```
+
+#### Incremental import an eventstore from the file
+
+```
+npx @resolve-js/module-admin event-store incremental-import <file>
+```
 
 #### Freeze an eventstore
 
