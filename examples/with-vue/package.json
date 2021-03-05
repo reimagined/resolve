@@ -1,6 +1,6 @@
 {
   "name": "with-vue",
-  "version": "0.26.5",
+  "version": "0.28.0-alpha.2",
   "private": true,
   "description": "Example shows how to work with Vue framework",
   "scripts": {
@@ -16,12 +16,12 @@
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
-    "@resolve-js/client": "0.26.5",
-    "@resolve-js/eventstore-lite": "0.26.5",
-    "@resolve-js/eventstore-postgresql-serverless": "0.26.5",
-    "@resolve-js/readmodel-lite": "0.26.5",
-    "@resolve-js/readmodel-postgresql-serverless": "0.26.5",
-    "@resolve-js/scripts": "0.26.5",
+    "@resolve-js/client": "0.28.0-alpha.2",
+    "@resolve-js/eventstore-lite": "0.28.0-alpha.2",
+    "@resolve-js/eventstore-postgresql-serverless": "0.28.0-alpha.2",
+    "@resolve-js/readmodel-lite": "0.28.0-alpha.2",
+    "@resolve-js/readmodel-postgresql-serverless": "0.28.0-alpha.2",
+    "@resolve-js/scripts": "0.28.0-alpha.2",
     "bootstrap": "4.3.1",
     "bootstrap-vue": "2.0.4",
     "copy-webpack-plugin": "5.1.2",
