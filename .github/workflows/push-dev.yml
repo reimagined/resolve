@@ -37,7 +37,7 @@ jobs:
         uses: reimagined/github-actions/publish@v1
         with:
           registry: github
-          token: ${{ secrets.PUBLISH_ACCESS_TOKEN }}
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
           version: auto
           build: ${{ github.sha }}
           tag: dev
