@@ -32,6 +32,6 @@ jobs:
           commit: ${{ github.sha }}
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           ssh_private_key: ${{ secrets.RESOLVE_BOT_SSH_PRIVATE_KEY }}
-          release_branch: master-2
+          release_branch: master-test
           development_branch: feature/release-workflow
 
