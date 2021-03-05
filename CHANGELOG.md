@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - reSolve packages are now published under the **@resolve-js** scope. You need to update reSolve package names in the dependecies and imports by replacing **'resolve-'** with **'@resolve-js/'**. For example, change **resolve-client** to **@resolve-js/client**.
 
+#### Removed packages
+
+- resolve-command
+- resolve-query
+- resolve-viewmodel
+- resolve-saga
+
 #### Testing tools
 
 - When querying read model resolvers from testing tools, the resolver results are returned unwrapped, the **data** property was removed.
