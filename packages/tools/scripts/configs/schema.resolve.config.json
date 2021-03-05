@@ -249,10 +249,6 @@
       },
       "required": ["name", "maxAge"]
     },
-    "eventBroker": {
-      "type": "object",
-      "additionalProperties": true
-    },
     "customConstants": {
       "type": "object",
       "additionalProperties": true
@@ -368,9 +364,6 @@
         },
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"
-        },
-        "eventBroker": {
-          "$ref": "#/definitions/eventBroker"
         },
         "mode": {
           "type": "string"
