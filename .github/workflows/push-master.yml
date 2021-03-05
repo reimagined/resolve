@@ -26,7 +26,7 @@ jobs:
           tag: pre-release
           unpublish: false
 
-      - uses: reimagined/github-actions/git-release@feature/release-action
+      - uses: reimagined/github-actions/git-release@v1
         with:
           push_event: ${{ toJSON(github.event) }}
           commit: ${{ github.sha }}
