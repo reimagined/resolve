@@ -37,11 +37,11 @@ export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
 
 export type PostgresqlAdapterConfig = AdapterConfig & {
   user?: string
-  database?: any
+  database: string
   port?: number
   host?: string
   password?: string
-  databaseName: string
+  databaseName?: string
   eventsTableName?: string
   snapshotsTableName?: string
   subscribersTableName?: string
