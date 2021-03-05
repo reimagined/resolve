@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { connectReadModel } from 'resolve-redux'
+import { connectReadModel } from '@resolve-js/redux'
 import { connect } from 'react-redux'
 import SearchResultItem from '../components/SearchResultItem'
 

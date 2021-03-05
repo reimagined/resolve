@@ -1,4 +1,4 @@
-import { USER_CREATED, USER_CONFIRMED } from '../event-types'
+import { USER_CREATED, USER_CONFIRMED, USER_REJECTED } from '../event-types'
 
 export default {
   handlers: {
@@ -30,7 +30,7 @@ export default {
           `Please confirm registration or the user will be deleted during 1 hour`
         )
 
-        await sideEffects.scheduleCommand(timestamp + 3600000, {
+        await sideEffects.scheduleCommand(timestamp + 60000, {
           type: 'rejectUser',
           aggregateName: 'User',
           aggregateId,
@@ -49,6 +49,13 @@ export default {
         name,
         registrationDate: timestamp,
       })
+    },
+    [USER_REJECTED]: async ({ sideEffects }, { aggregateId }) => {
+      await sideEffects.sendEmail(
+        'admin@resolve.sh',
+        `${aggregateId} registration declined`,
+        `No confirmation received.`
+      )
     },
   },
   sideEffects: {

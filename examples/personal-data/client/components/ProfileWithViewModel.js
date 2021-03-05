@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useViewModel } from 'resolve-react-hooks'
+import { useViewModel } from '@resolve-js/react-hooks'
 import { Redirect } from 'react-router-dom'
 import { getDecrypter } from '../../common/encryption-factory'
 import Login from './Login'

@@ -88,15 +88,15 @@ export default {
   createShoppingList: (state, { payload: { name } }) => {
     return {
       type: SHOPPING_LIST_CREATED,
-      payload: { name }
+      payload: { name },
     }
   },
   createShoppingItem: (state, { payload: { id, text } }) => {
     return {
       type: SHOPPING_ITEM_CREATED,
-      payload: { id, text }
+      payload: { id, text },
     }
-  }
+  },
 }
 ```
 
@@ -501,7 +501,7 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4)
 
-This lesson provides information on how to display a View Model's data in the client browser. It uses the reSolve framework's **resolve-redux** library to implement a frontend based on React and Redux.
+This lesson provides information on how to display a View Model's data in the client browser. It uses the reSolve framework's **@resolve-js/redux** library to implement a frontend based on React and Redux.
 
 > You can use the standard HTTP API to communicate with a reSolve backend and use any client technology to implement the frontend.
 
@@ -536,7 +536,7 @@ export class ShoppingList extends React.PureComponent {
 
 <!-- prettier-ignore-end -->
 
-Use the **resolve-redux** library's **connectViewModel** HOC to bind your component to the **ShoppingList** View Model that you implemented in the previous lesson.
+Use the **@resolve-js/redux** library's **connectViewModel** HOC to bind your component to the **ShoppingList** View Model that you implemented in the previous lesson.
 
 **client/containers/ShoppingList.js:**
 
@@ -685,7 +685,7 @@ A component connected to a reSolve View Model receives an array of aggregate act
 <!-- prettier-ignore-start -->
 
 ```js
-import { sendAggregateAction } from 'resolve-redux'
+import { sendAggregateAction } from '@resolve-js/redux'
 import { bindActionCreators } from 'redux'
 
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
@@ -753,21 +753,21 @@ This markup uses the following methods to handle UI interactions:
 createShoppingItem = () => {
   this.props.createShoppingItem('shopping-list-1', {
     text: this.state.itemText,
-    id: Date.now().toString()
+    id: Date.now().toString(),
   })
 
   this.setState({
-    itemText: ''
+    itemText: '',
   })
 }
 
-updateItemText = event => {
+updateItemText = (event) => {
   this.setState({
-    itemText: event.target.value
+    itemText: event.target.value,
   })
 }
 
-onItemTextPressEnter = event => {
+onItemTextPressEnter = (event) => {
   if (event.charCode === 13) {
     event.preventDefault()
     this.createShoppingItem()
@@ -959,23 +959,23 @@ Connect the MyLists container component to the ShoppingLists Read Model as shown
 **client/containers/MyLists.js:**
 
 ```js
-import { sendAggregateAction } from 'resolve-redux'
+import { sendAggregateAction } from '@resolve-js/redux'
 import { bindActionCreators } from 'redux'
 
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
-  resolverArgs: {}
+  resolverArgs: {},
 })
 
 export const mapStateToProps = (state, ownProps) => ({
-  lists: ownProps.data
+  lists: ownProps.data,
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      createStory: sendAggregateAction.bind(null, 'Story', 'createStory')
+      createStory: sendAggregateAction.bind(null, 'Story', 'createStory'),
     },
     dispatch
   )
@@ -1062,7 +1062,7 @@ export const mapStateToOptions = (state, ownProps) => {
 
   return {
     viewModelName: 'shoppingList',
-    aggregateIds: [aggregateId]
+    aggregateIds: [aggregateId],
   }
 }
 
@@ -1070,7 +1070,7 @@ export const mapStateToProps = (state, ownProps) => {
   const aggregateId = ownProps.match.params.id
 
   return {
-    aggregateId
+    aggregateId,
   }
 }
 ```
@@ -1148,7 +1148,7 @@ Provide a saga that intercepts the service actions used for communication betwee
 [embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/sagas/optimistic_shopping_lists_saga.js /^/ /\n$/)
 ```js
 import { takeEvery, put } from 'redux-saga/effects'
-import { actionTypes } from 'resolve-redux'
+import { actionTypes } from '@resolve-js/redux'
 
 import {
   OPTIMISTIC_CREATE_SHOPPING_LIST,
@@ -1194,7 +1194,7 @@ Modify the MyLists component's **mapStateToProps** function to obtain the compon
 
 ```jsx
 export const mapStateToProps = (state, ownProps) => ({
-  lists: state.optimisticShoppingLists || []
+  lists: state.optimisticShoppingLists || [],
 })
 ```
 
@@ -1409,7 +1409,7 @@ The code below implements the **Image** component.
 
 ```js
 import { Image as BootstrapImage } from 'react-bootstrap'
-import { connectStaticBasedUrls } from 'resolve-redux'
+import { connectStaticBasedUrls } from '@resolve-js/redux'
 
 const Image = connectStaticBasedUrls(['src'])(BootstrapImage)
 
@@ -1479,54 +1479,54 @@ import { LOCATION_CHANGE } from 'react-router-redux'
 
 ```js
 import { takeEvery, put } from 'redux-saga/effects'
-import { actionTypes } from 'resolve-redux'
+import { actionTypes } from '@resolve-js/redux'
 
 import {
   OPTIMISTIC_CREATE_SHOPPING_LIST,
   OPTIMISTIC_REMOVE_SHOPPING_LIST,
-  OPTIMISTIC_SYNC
+  OPTIMISTIC_SYNC,
 } from '../actions/optimistic_actions'
 
 const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 
-export default function*() {
+export default function* () {
   yield takeEvery(
-    action =>
+    (action) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.commandType === 'createShoppingList',
-    function*(action) {
+    function* (action) {
       yield put({
         type: OPTIMISTIC_CREATE_SHOPPING_LIST,
         payload: {
           id: action.aggregateId,
-          name: action.payload.name
-        }
+          name: action.payload.name,
+        },
       })
     }
   )
 
   yield takeEvery(
-    action =>
+    (action) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.commandType === 'removeShoppingList',
-    function*(action) {
+    function* (action) {
       yield put({
         type: OPTIMISTIC_REMOVE_SHOPPING_LIST,
         payload: {
-          id: action.aggregateId
-        }
+          id: action.aggregateId,
+        },
       })
     }
   )
 
   yield takeEvery(
-    action => action.type === LOAD_READMODEL_STATE_SUCCESS,
-    function*(action) {
+    (action) => action.type === LOAD_READMODEL_STATE_SUCCESS,
+    function* (action) {
       yield put({
         type: OPTIMISTIC_SYNC,
         payload: {
-          originalLists: action.result
-        }
+          originalLists: action.result,
+        },
       })
     }
   )

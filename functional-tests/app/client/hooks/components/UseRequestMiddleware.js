@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
-import { createRetryOnErrorMiddleware } from 'resolve-client'
-import { useCommand, useQuery, useViewModel } from 'resolve-react-hooks'
+import { createRetryOnErrorMiddleware } from '@resolve-js/client'
+import { useCommand, useQuery, useViewModel } from '@resolve-js/react-hooks'
 
 const useRetryOnCommandErrorScenario = (runId) => {
   const scenarioId = `${runId}-retry-on-command-error`

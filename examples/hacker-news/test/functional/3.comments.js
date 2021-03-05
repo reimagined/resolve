@@ -32,8 +32,10 @@ fixture`Comments`.beforeEach(async (t /*: TestController */) => {
 test('create a story', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/submit`)
 
-  await t.typeText(Selector('input[type=text]').nth(1), 'many comments')
-  await t.typeText('textarea', 'read model connector test')
+  await t.typeText(Selector('input[type=text]').nth(1), 'many comments', {
+    paste: true,
+  })
+  await t.typeText('textarea', 'read model connector test', { paste: true })
   await t.click('button')
 
   await waitSelector(
@@ -47,7 +49,7 @@ test('create a story', async (t /*: TestController */) => {
 
 test('#1541: broken comments pagination', async (t /*: TestController */) => {
   const pushComment = async (text, textArea, button) => {
-    await t.typeText(textarea, text)
+    await t.typeText(textarea, text, { paste: true })
     await t.click(button)
     await t.expect(await Selector('div').withText(text).exists).eql(true)
   }

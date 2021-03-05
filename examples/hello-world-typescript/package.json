@@ -1,6 +1,6 @@
 {
   "name": "hello-world-typescript",
-  "version": "0.26.4",
+  "version": "0.26.5",
   "private": true,
   "description": "used as a template for new reSolve applications",
   "scripts": {
@@ -15,18 +15,18 @@
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
     "@babel/preset-typescript": "7.9.0",
+    "@resolve-js/eventstore-lite": "0.26.5",
+    "@resolve-js/eventstore-postgresql-serverless": "0.26.5",
+    "@resolve-js/react-hooks": "0.26.5",
+    "@resolve-js/readmodel-base": "0.26.5",
+    "@resolve-js/readmodel-lite": "0.26.5",
+    "@resolve-js/readmodel-postgresql-serverless": "0.26.5",
+    "@resolve-js/scripts": "0.26.5",
     "babel-loader": "8.1.0",
     "react": "16.13.1",
     "react-bootstrap": "1.4.0",
     "react-dom": "16.13.1",
-    "react-helmet": "6.1.0",
-    "resolve-eventstore-lite": "0.26.4",
-    "resolve-eventstore-postgresql-serverless": "0.26.4",
-    "resolve-react-hooks": "0.26.4",
-    "resolve-readmodel-base": "0.26.4",
-    "resolve-readmodel-lite": "0.26.4",
-    "resolve-readmodel-postgresql-serverless": "0.26.4",
-    "resolve-scripts": "0.26.4"
+    "react-helmet": "6.1.0"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
@@ -40,9 +40,9 @@
     "@types/react": "^16.8.8",
     "@types/react-dom": "^16.9.5",
     "babel-jest": "26.0.1",
-    "jest": "26.0.1",
+    "jest": "26.6.3",
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
-    "testcafe": "1.8.5"
+    "testcafe": "^1.9.1"
   }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Button, Form, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { useReduxCommand, useReduxReadModel } from 'resolve-redux'
+import { useReduxCommand, useReduxReadModel } from '@resolve-js/redux'
 import { useSelector } from 'react-redux'
 import {
   SHOPPING_LIST_REMOVED,

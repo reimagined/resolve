@@ -6,7 +6,7 @@ const { getResolveDir } = require('./get-resolve-dir')
 const externalDependencies = ['resolve-cloud-common']
 
 const isInternalDependency = (name) =>
-  name.startsWith('resolve-') && !externalDependencies.includes(name)
+  name.startsWith('@resolve-js/') && !externalDependencies.includes(name)
 
 let _configs
 const getCompileConfigs = () => {

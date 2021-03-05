@@ -1,6 +1,6 @@
 {
   "name": "cli-uploader",
-  "version": "0.26.4",
+  "version": "0.26.5",
   "private": true,
   "description": "used as a template for new reSolve applications",
   "scripts": {
@@ -16,6 +16,15 @@
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
+    "@resolve-js/eventstore-lite": "0.26.5",
+    "@resolve-js/eventstore-postgresql-serverless": "0.26.5",
+    "@resolve-js/module-auth": "0.26.5",
+    "@resolve-js/module-uploader": "0.26.5",
+    "@resolve-js/react-hooks": "0.26.5",
+    "@resolve-js/readmodel-lite": "0.26.5",
+    "@resolve-js/readmodel-postgresql-serverless": "0.26.5",
+    "@resolve-js/redux": "0.26.5",
+    "@resolve-js/scripts": "0.26.5",
     "history": "4.10.1",
     "js-cookie": "2.2.1",
     "jsonwebtoken": "8.5.1",
@@ -31,15 +40,6 @@
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "1.0.5",
     "request": "2.88.0",
-    "resolve-eventstore-lite": "0.26.4",
-    "resolve-eventstore-postgresql-serverless": "0.26.4",
-    "resolve-module-auth": "0.26.4",
-    "resolve-module-uploader": "0.26.4",
-    "resolve-react-hooks": "0.26.4",
-    "resolve-readmodel-lite": "0.26.4",
-    "resolve-readmodel-postgresql-serverless": "0.26.4",
-    "resolve-redux": "0.26.4",
-    "resolve-scripts": "0.26.4",
     "uuid": "8.3.1"
   },
   "devDependencies": {
@@ -53,9 +53,9 @@
     "aws-sdk": "2.631.0",
     "aws-xray-sdk-core": "2.5.0",
     "babel-jest": "26.0.1",
-    "jest": "26.0.1",
+    "jest": "26.6.3",
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
-    "testcafe": "1.8.5"
+    "testcafe": "^1.9.1"
   }
 }

@@ -1,6 +1,6 @@
 # reSolve Vanilla JS Example
 
-This example demonstrates how to use the [resolve-client](https://reimagined.github.io/resolve/docs/frontend#resolve-client-library) library to implement the client application in plain JavaScript.
+This example demonstrates how to use the [@resolve-js/client](https://reimagined.github.io/resolve/docs/frontend#resolve-client-library) library to implement the client application in plain JavaScript.
 
 ##### Installation:
 
