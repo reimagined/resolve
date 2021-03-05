@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - resolve-command
 - resolve-query
-- resolve-viewmodel
 - resolve-saga
 
 #### Testing tools
