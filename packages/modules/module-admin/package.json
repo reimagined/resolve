@@ -27,7 +27,8 @@
     "columnify": "^1.5.4",
     "dateformat": "^3.0.3",
     "isomorphic-fetch": "3.0.0",
-    "yargs": "^14.0.0"
+    "yargs": "^14.0.0",
+    "@resolve-js/eventstore-base": "0.26.5"
   },
   "devDependencies": {
     "jest": "26.6.3",
@@ -37,12 +38,6 @@
     "node": ">=10.9"
   },
   "babelCompile": [
-    {
-      "moduleType": "es",
-      "moduleTarget": "server",
-      "inputDir": "./src",
-      "outDir": "./es"
-    },
     {
       "moduleType": "cjs",
       "moduleTarget": "server",
