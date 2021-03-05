@@ -1,6 +1,5 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents from 'resolve-testing-tools'
-import resetReadModel from '../reset-read-model'
+import givenEvents from '@resolve-js/testing-tools'
 
 import config from './config'
 
@@ -28,11 +27,9 @@ describe('Read-model generic adapter API', () => {
 
   let adapter = null
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = createConnector(connectorOptions)
   })
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = null
   })
 

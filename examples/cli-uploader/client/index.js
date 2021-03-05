@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { createResolveStore, ResolveReduxProvider } from 'resolve-redux'
+import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
 import jsCookie from 'js-cookie'
 import jwt from 'jsonwebtoken'
 

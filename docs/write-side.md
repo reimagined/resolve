@@ -24,7 +24,7 @@ Aggregate state is explicitly passed to all of these functions as an argument.
 Each aggregate instance should have a unique immutable ID. You should generate an aggregate ID on the client and send it to reSolve with a command that creates a new aggregate:
 
 ```js
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand } from '@resolve-js/react-hooks'
 ...
 const createShoppingListCommand = useCommand(
   {
@@ -139,7 +139,7 @@ For the full code sample, refer to the [with-saga](https://github.com/reimagined
 
 ## Aggregate Command Handlers
 
-Aggregate command handlers are grouped into a static object. A command handler receives a command and a state object built by the aggregate [Projection](#aggregate-projection-function). The command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type.
+Aggregate command handlers are grouped into a static object. A command handler receives a command and a state object built by the aggregate [Projection](#aggregate-projection-function). The command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type. Here you can also add arbitrary validation logic that throws an error if the validation fails.
 
 A typical **Commands** object structure:
 
@@ -148,6 +148,10 @@ export default {
   // A command handler
   createStory: (state, command) => {
     const { title, link, text } = command.payload
+    // The validation logic
+    if (!text) {
+      throw new Error('The "text" field is required')
+    }
     // The resulting event object
     return {
       type: 'StoryCreated',
@@ -190,7 +194,7 @@ You can specify the storage adapter in the **storageAdapter** config section:
 
 ```js
 storageAdapter: {
-  module: 'resolve-eventstore-lite',
+  module: '@resolve-js/eventstore-lite',
   options: {
     databaseFile: '../data/event-store.db'
   }
@@ -199,8 +203,8 @@ storageAdapter: {
 
 Adapters for the following storage types are available out of the box:
 
-- [File or memory](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-eventstore-lite)
-- [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-eventstore-mysql)
+- [File or memory](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/@resolve-js/eventstore-lite)
+- [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/@resolve-js/eventstore-mysql)
 
 You can also add your own storage adapter to store events.
 Refer to the [Adapters](advanced-techniques.md#adapters) section of the reSolve documentation for more information about adapters.

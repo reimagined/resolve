@@ -2,7 +2,7 @@ import React from 'react'
 import { Navbar } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
-import { useStaticResolver } from 'resolve-react-hooks'
+import { useStaticResolver } from '@resolve-js/react-hooks'
 
 import { StaticImage } from './StaticImage'
 

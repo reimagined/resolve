@@ -1,6 +1,6 @@
 import React from 'react'
 import { Navbar, Nav, NavItem as RawNavItem } from 'react-bootstrap'
-import { connectStaticBasedUrls, connectRootBasedUrls } from 'resolve-redux'
+import { connectStaticBasedUrls, connectRootBasedUrls } from '@resolve-js/redux'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import { Logo } from '@shopping-list-advanced/ui'

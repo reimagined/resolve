@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const testFunctionalConfig = {
   target: 'local',
@@ -6,19 +6,19 @@ const testFunctionalConfig = {
   mode: 'development',
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-model-default-test-functional.db',
       },
     },
     hackerNews: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-model-hackerNews-test-functional.db',
       },
     },
     comments: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-model-comments-test-functional.db',
       },
@@ -37,15 +37,12 @@ const testFunctionalConfig = {
     maxAge: 31536000000,
   },
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/event-store-test-functional.db',
       secretsFile: 'data/secrets-test-functional.db',
       snapshotBucketSize: 100,
     },
-  },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker-test-functional.db',
   },
 }
 
