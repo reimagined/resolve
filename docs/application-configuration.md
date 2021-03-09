@@ -233,7 +233,7 @@ Supported values:
 
 Specifies the application's name.
 
-By default, this option's values is the same as the package's name defined in the application's package.json file.
+By default, the value is the same as the package name defined in the application's package.json file.
 
 ### port
 
