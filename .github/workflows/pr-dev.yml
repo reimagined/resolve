@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
     steps:
+      - name: Cancel previous run (if any)
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
       - uses: actions/checkout@v2
 
       - uses: actions/setup-node@v2-beta
@@ -57,7 +62,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: DevExpress/resolve-cloud2
-          ref: 'feature/scoped-packages'
+          ref: dev
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           path: resolve-cloud
 
