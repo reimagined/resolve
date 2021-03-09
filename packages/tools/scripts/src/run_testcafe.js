@@ -12,19 +12,19 @@ const getConfig = async (resolveConfig, options) => {
 
   const { functionalTestsDir, browser, customArgs, timeout } = options
   if (functionalTestsDir == null || functionalTestsDir.constructor !== String) {
-    throw new Error('Options field "functionalTestsDir" must be string')
+    throw new Error('Options field "functionalTestsDir" must be a string')
   }
 
   if (browser != null && browser.constructor !== String) {
-    throw new Error('Options field "browser" should be string or null')
+    throw new Error('Options field "browser" must be a string or null')
   }
 
   if (timeout != null && timeout.constructor !== Number) {
-    throw new Error('Options field "timeout" should be number or null')
+    throw new Error('Options field "timeout" must be a number or null')
   }
 
   if (customArgs != null && !Array.isArray(customArgs)) {
-    throw new Error('Options field "customArgs" must be array of strings')
+    throw new Error('Options field "customArgs" must be an array of strings')
   }
 
   const config = merge(resolveConfig, {

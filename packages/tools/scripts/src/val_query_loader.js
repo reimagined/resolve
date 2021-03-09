@@ -26,9 +26,9 @@ const valQueryLoader = function (content) {
   if (result == null || result.constructor !== String) {
     this.callback(
       new Error(
-        `The returned result of module ${relPath(
+        `The returned result of the ${relPath(
           this.resource
-        )} is not a string`
+        )} module is not a string`
       )
     )
     return

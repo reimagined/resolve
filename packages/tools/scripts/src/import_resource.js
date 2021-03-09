@@ -236,7 +236,7 @@ const validateConstructorResourceImports = ({
 }) => {
   let imports = resourceValue.imports
   if (imports != null && imports.constructor !== Object) {
-    throwInternalError(`resource ${resourceName}.imports should be an object`)
+    throwInternalError(`resource ${resourceName}.imports must be an object`)
   }
 
   imports = imports != null ? imports : {}
@@ -246,7 +246,7 @@ const validateConstructorResourceImports = ({
 
     if (importValue == null || importValue.constructor !== String) {
       throwInternalError(
-        `resource ${resourceName}.imports.${importKey} should be an string`
+        `resource ${resourceName}.imports.${importKey} must be a string`
       )
     }
 
@@ -265,7 +265,7 @@ const validateConstructorResourceOptions = ({
 }) => {
   let options = resourceValue.options
   if (options != null && options.constructor !== Object) {
-    throwInternalError(`resource ${resourceName}.options should be an object`)
+    throwInternalError(`resource ${resourceName}.options must be an object`)
   }
 
   options = options != null ? options : {}
@@ -273,7 +273,7 @@ const validateConstructorResourceOptions = ({
   void JSON.stringify(options, (key, value) => {
     if (!isPrimitiveType(value)) {
       throwInternalError(
-        `resource ${resourceName}.options.[...].${key} should be primitive type`
+        `resource ${resourceName}.options.[...].${key} must be a primitive type`
       )
     }
 
@@ -295,13 +295,13 @@ const validateConstructorResource = ({
 }) => {
   if (importMode === RESOURCE_INSTANCE_ONLY) {
     throwInternalError(
-      `resource ${resourceName} must be instance, not constructor`
+      `resource ${resourceName} must be an instance, not constructor`
     )
   }
 
   const module = resourceValue.module
   if (module == null || module.constructor !== String) {
-    throwInternalError(`resource ${resourceName}.module should be an string`)
+    throwInternalError(`resource ${resourceName}.module must be a string`)
   }
 
   if (checkRuntimeEnv(module) && runtimeMode !== RUNTIME_ENV_ANYWHERE) {
