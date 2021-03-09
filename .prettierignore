@@ -2,6 +2,7 @@ packages/**/es
 packages/**/lib
 packages/**/dist
 examples/**/dist
+examples/**/dist-replica
 examples/**/lib
 examples/shopping-list-advanced/native/resolve/
 packages/core/zeromq/optional
