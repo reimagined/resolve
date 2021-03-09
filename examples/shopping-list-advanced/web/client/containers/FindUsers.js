@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { connectReadModel } from 'resolve-redux'
+import { connectReadModel } from '@resolve-js/redux'
 import { ControlLabel } from 'react-bootstrap'
 
 import UserList from '../components/UserList'

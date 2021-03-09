@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { RefreshHelperRenderless } from 'resolve-module-comments'
+import { RefreshHelperRenderless } from '@resolve-js/module-comments'
 
 import ConnectedStory from './ConnectedStory'
 import ConnectedComments from './ConnectedComments'

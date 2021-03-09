@@ -1,4 +1,5 @@
-import { HttpError } from 'resolve-client'
+import { HttpError } from '@resolve-js/client'
+import { v4 as uuid } from 'uuid'
 
 export default {
   get: async (store, { userId }) => {
@@ -20,6 +21,17 @@ export default {
       id: userId,
       plainCreditCard: plainEntry.creditCard,
       encryptedCreditCard: encryptedEntry.creditCard,
+    }
+  },
+  assertSecretsManager: async (store, params, { secretsManager }) => {
+    const secretId = uuid()
+
+    await secretsManager.setSecret(secretId, 'secret-value')
+    const secretValue = await secretsManager.getSecret(secretId)
+    await secretsManager.deleteSecret(secretId)
+
+    return {
+      secretValue,
     }
   },
 }

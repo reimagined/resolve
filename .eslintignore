@@ -5,19 +5,19 @@ es
 coverage
 examples/shopping-list-advanced/native/native-chunk*
 website
-packages/core/resolve-zeromq/optional
+packages/core/zeromq/optional
 
-packages/core/resolve-client/**/*.js
-packages/core/resolve-client/**/*.js.map
-packages/core/resolve-client/**/*.mjs
-packages/core/resolve-client/**/*.mjs.map
-packages/core/resolve-client/**/*.d.ts
+packages/core/client/**/*.js
+packages/core/client/**/*.js.map
+packages/core/client/**/*.mjs
+packages/core/client/**/*.mjs.map
+packages/core/client/**/*.d.ts
 
-packages/core/resolve-react-hooks/**/*.js
-packages/core/resolve-react-hooks/**/*.js.map
-packages/core/resolve-react-hooks/**/*.mjs
-packages/core/resolve-react-hooks/**/*.mjs.map
-packages/core/resolve-react-hooks/**/*.d.ts
+packages/core/react-hooks/**/*.js
+packages/core/react-hooks/**/*.js.map
+packages/core/react-hooks/**/*.mjs
+packages/core/react-hooks/**/*.mjs.map
+packages/core/react-hooks/**/*.d.ts
 
 examples/with-angular/client/**/*.js
 examples/with-angular/client/**/*.js.map

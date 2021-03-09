@@ -1,4 +1,4 @@
-import { internal } from 'resolve-redux'
+import { internal } from '@resolve-js/redux'
 import optimisticVotingSagaFactory from '../../../client/sagas/optimistic-voting-saga'
 import {
   optimisticUnvoteStory,

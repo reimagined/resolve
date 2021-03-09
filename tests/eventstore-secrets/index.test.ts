@@ -1,8 +1,10 @@
-import createSqliteAdapter from 'resolve-eventstore-lite'
-import createPostgresqlServerlessAdapter from 'resolve-eventstore-postgresql-serverless'
-import { Adapter } from 'resolve-eventstore-base'
-import { SecretsManager } from 'resolve-core'
-import { create, destroy } from 'resolve-eventstore-postgresql-serverless'
+import createSqliteAdapter from '@resolve-js/eventstore-lite'
+import createPostgresqlServerlessAdapter from '@resolve-js/eventstore-postgresql-serverless'
+import createPostgresAdapter from '@resolve-js/eventstore-postgresql'
+import { PostgresqlAdapterConfig } from '@resolve-js/eventstore-postgresql'
+import { Adapter, AdapterConfig } from '@resolve-js/eventstore-base'
+import { SecretsManager } from '@resolve-js/core'
+import { create, destroy } from '@resolve-js/eventstore-postgresql-serverless'
 import { pipeline } from 'stream'
 import { promisify } from 'util'
 import {
@@ -18,11 +20,44 @@ import {
 jest.setTimeout(jestTimeout())
 
 let createAdapter: (config: any) => Adapter
+let config: AdapterConfig
+let inputConfig: AdapterConfig
+let outputConfig: AdapterConfig
 
 if (TEST_SERVERLESS) {
   createAdapter = createPostgresqlServerlessAdapter
 } else {
-  createAdapter = createSqliteAdapter
+  const testPostgres = false
+  if (testPostgres) {
+    createAdapter = createPostgresAdapter
+    const schema = 'public'
+    const password = 'post'
+
+    const postgresConfig: PostgresqlAdapterConfig = {
+      database: 'db',
+      password: password,
+      databaseName: schema,
+    }
+    const postgresInputConfig: PostgresqlAdapterConfig = {
+      database: 'db-export',
+      password: password,
+      databaseName: schema,
+    }
+    const postgresOutputConfig: PostgresqlAdapterConfig = {
+      database: 'db-import',
+      password: password,
+      databaseName: schema,
+    }
+
+    config = postgresConfig
+    inputConfig = postgresInputConfig
+    outputConfig = postgresOutputConfig
+  } else {
+    createAdapter = createSqliteAdapter
+    config = {}
+    inputConfig = {}
+    outputConfig = {}
+  }
 }
 
 function makeSecretFromIndex(index: number): string {
@@ -46,7 +81,7 @@ describe('eventstore adapter secrets', () => {
       await create(options)
       adapter = createAdapter(cloudResourceOptionsToAdapterConfig(options))
     } else {
-      adapter = createAdapter({})
+      adapter = createAdapter(config)
     }
     await adapter.init()
   })
@@ -147,59 +182,6 @@ describe('eventstore adapter secrets', () => {
   })
 })
 
-describe('eventstore adapter inject secrets', () => {
-  if (TEST_SERVERLESS) updateAwsConfig()
-
-  const countSecrets = 50
-
-  const options = getCloudResourceOptions('inject_secret_testing')
-
-  let adapter: Adapter
-  beforeAll(async () => {
-    if (TEST_SERVERLESS) {
-      await create(options)
-      adapter = createAdapter(cloudResourceOptionsToAdapterConfig(options))
-    } else {
-      adapter = createAdapter({})
-    }
-    await adapter.init()
-  })
-
-  afterAll(async () => {
-    await adapter.drop()
-    await adapter.dispose()
-
-    if (TEST_SERVERLESS) {
-      await destroy(options)
-    }
-  })
-
-  test('should inject secrets into empty table', async () => {
-    const secrets = []
-
-    for (let secretIndex = 0; secretIndex < countSecrets; secretIndex++) {
-      secrets.push({
-        id: makeIdFromIndex(secretIndex),
-        secret: makeSecretFromIndex(secretIndex),
-        idx: secretIndex,
-      })
-    }
-
-    for (let secret of secrets) {
-      await adapter.injectSecret(secret)
-    }
-  })
-
-  test('should load injected secrets', async () => {
-    const secrets = (await adapter.loadSecrets({ limit: countSecrets + 1 }))
-      .secrets
-    expect(secrets).toHaveLength(countSecrets)
-    for (let i = 1; i < secrets.length; ++i) {
-      expect(secrets[i].idx).toBeGreaterThan(secrets[i - 1].idx)
-    }
-  })
-})
-
 describe('eventstore adapter import secrets', () => {
   if (TEST_SERVERLESS) updateAwsConfig()
 
@@ -222,8 +204,8 @@ describe('eventstore adapter import secrets', () => {
         cloudResourceOptionsToAdapterConfig(outputOptions)
       )
     } else {
-      inputAdapter = createAdapter({})
-      outputAdapter = createAdapter({})
+      inputAdapter = createAdapter(inputConfig)
+      outputAdapter = createAdapter(outputConfig)
     }
     await inputAdapter.init()
     await outputAdapter.init()
@@ -271,7 +253,10 @@ describe('eventstore adapter import secrets', () => {
   })
 
   test('importing secrets should not drop events', async () => {
-    const { events } = await outputAdapter.loadEvents({ limit: countEvents })
+    const { events } = await outputAdapter.loadEvents({
+      limit: countEvents,
+      cursor: null,
+    })
     expect(events.length).toEqual(countEvents)
   })
 })

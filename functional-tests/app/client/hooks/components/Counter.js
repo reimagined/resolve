@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useViewModel, useCommand } from 'resolve-react-hooks'
+import { useViewModel, useCommand } from '@resolve-js/react-hooks'
 
 const Counter = ({
   match: {

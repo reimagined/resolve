@@ -9,10 +9,10 @@ import {
   reset,
   importEventStore,
   exportEventStore,
-} from 'resolve-scripts'
-import resolveModuleComments from 'resolve-module-comments'
-import resolveModuleAuth from 'resolve-module-auth'
-import resolveModuleAdmin from 'resolve-module-admin'
+} from '@resolve-js/scripts'
+import resolveModuleComments from '@resolve-js/module-comments'
+import resolveModuleAuth from '@resolve-js/module-auth'
+import resolveModuleAdmin from '@resolve-js/module-admin'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -93,7 +93,7 @@ void (async () => {
         const resolveConfig = merge(baseConfig, devConfig)
         await reset(resolveConfig, {
           dropEventStore: false,
-          dropEventBus: true,
+          dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
         })
@@ -128,7 +128,7 @@ void (async () => {
         )
         await reset(resolveConfig, {
           dropEventStore: true,
-          dropEventBus: true,
+          dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
         })
@@ -154,13 +154,12 @@ void (async () => {
         const config = merge(baseConfig, devConfig)
         await reset(config, {
           dropEventStore: true,
-          dropEventBus: true,
+          dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
         })
 
         const importConfig = merge(defaultResolveConfig, devConfig, {
-          eventBroker: { launchBroker: true },
           apiHandlers: [
             {
               method: 'POST',
