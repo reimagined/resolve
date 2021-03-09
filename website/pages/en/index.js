@@ -110,7 +110,7 @@ const Features = (props) => (
         content: `With reSolve, you don't need to configure build and dev tools, libraries, or frameworks. Your application will be ready-to-go in seconds.`,
         image: imgUrl('everything-you-need-in-one-place.png'),
         imageAlign: 'top',
-        title: 'Everything you need in one place.',
+        title: 'Everything you need in one place',
       },
       {
         content: `With CQRS, Event Sourcing and reSolve, your application will be easier to develop, adapt, maintain and scale. Functional JavaScript code will also be easier to test.`,
