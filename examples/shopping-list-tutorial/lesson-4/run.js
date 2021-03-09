@@ -9,7 +9,7 @@ import {
   reset,
 } from '@resolve-js/scripts'
 
-import resolveModuleAdmin from 'resolve-module-admin'
+import resolveModuleAdmin from '@resolve-js/module-admin'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useCommandBuilder, useViewModel } from 'resolve-react-hooks'
+import { useCommandBuilder, useViewModel } from '@resolve-js/react-hooks'
 
 import {
   Row,

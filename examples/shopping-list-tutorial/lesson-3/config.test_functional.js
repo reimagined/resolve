@@ -10,7 +10,7 @@ const testFunctionalConfig = {
   distDir: 'dist',
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-models-test-functional.db',
       },

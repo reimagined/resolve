@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useViewModel } from 'resolve-react-hooks'
+import { useViewModel } from '@resolve-js/react-hooks'
 
 import { ListGroup, FormControl, FormGroup, FormLabel } from 'react-bootstrap'
 

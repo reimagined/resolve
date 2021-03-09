@@ -10,14 +10,14 @@ const devConfig = {
   distDir: 'dist',
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-models.db',
       },
     },
     /*
       default: {
-        module: 'resolve-readmodel-mysql',
+        module: '@resolve-js/readmodel-mysql',
         options: {
           host: 'localhost',
           port: 3306,
@@ -38,7 +38,7 @@ const devConfig = {
   },
   /*
     {
-      module: 'resolve-eventstore-mysql',
+      module: '@resolve-js/eventstore-mysql',
       options: {
         host: 'localhost',
         port: 3306,

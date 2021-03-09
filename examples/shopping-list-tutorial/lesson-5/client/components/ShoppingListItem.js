@@ -1,6 +1,6 @@
 import React from 'react'
 import { ListGroupItem, FormCheck, Button } from 'react-bootstrap'
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand } from '@resolve-js/react-hooks'
 
 const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   const toggleItem = useCommand({

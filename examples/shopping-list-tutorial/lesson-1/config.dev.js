@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const devConfig = {
   target: 'local',
@@ -29,7 +29,7 @@ const devConfig = {
     */
   },
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
@@ -38,7 +38,7 @@ const devConfig = {
   },
   /*
     {
-      module: 'resolve-eventstore-mysql',
+      module: '@resolve-js/eventstore-mysql',
       options: {
         host: 'localhost',
         port: 3306,

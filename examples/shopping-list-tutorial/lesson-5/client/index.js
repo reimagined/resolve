@@ -1,8 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { Router } from 'react-router'
-import { AppContainer, createStore, getOrigin } from '@resolve-js/redux'
-import { createBrowserHistory } from 'history'
+import { ResolveProvider } from '@resolve-js/react-hooks'
+import { BrowserRouter } from 'react-router-dom'
+import { renderRoutes } from 'react-router-config'
 
 import routes from './routes'
 

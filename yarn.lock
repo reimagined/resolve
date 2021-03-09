@@ -5712,7 +5712,7 @@ caw@^2.0.0, caw@^2.0.1:
     tunnel-agent "^0.6.0"
     url-to-options "^1.0.1"
 
-chai@^4.1.2:
+chai@4.2.0, chai@^4.1.2:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.2.0.tgz#760aa72cf20e3795e84b12877ce0e83737aa29e5"
   integrity sha512-XQU3bhBukrOsQCuwZndwGcCVQHyZi53fQ6Ys1Fym7E4olpIqqZZhhoFJoaKVvV17lWQoXYwgWN2nF5crA8J2jw==
@@ -6427,7 +6427,7 @@ core-js@^1.0.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
   integrity sha1-ZSKUwUZR2yj6k70tX/KYOk8IxjY=
 
-core-js@^2.4.0, core-js@^2.5.3, core-js@^2.6.5:
+core-js@^2.4.0, core-js@^2.6.5:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.11.tgz#38831469f9922bded8ee21c9dc46985e0399308c"
   integrity sha512-5wjnpaT/3dV+XB4borEsnAYQchn00XSgTAWKDkEqv+K8KevjbzmofK6hfJ9TZIlpj2N0xQpazy7PiRQiWHqzWg==
@@ -10942,6 +10942,14 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
+isomorphic-fetch@2.2.1, isomorphic-fetch@^2.1.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
+  integrity sha1-YRrhrPFPXoH3KVB0coGf6XM1WKk=
+  dependencies:
+    node-fetch "^1.0.1"
+    whatwg-fetch ">=0.10.0"
+
 isomorphic-fetch@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-3.0.0.tgz#0267b005049046d2421207215d45d6a262b8b8b4"
@@ -10949,14 +10957,6 @@ isomorphic-fetch@3.0.0:
   dependencies:
     node-fetch "^2.6.1"
     whatwg-fetch "^3.4.1"
-
-isomorphic-fetch@^2.1.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
-  integrity sha1-YRrhrPFPXoH3KVB0coGf6XM1WKk=
-  dependencies:
-    node-fetch "^1.0.1"
-    whatwg-fetch ">=0.10.0"
 
 isstream@0.1.x, isstream@~0.1.2:
   version "0.1.2"
@@ -16494,23 +16494,6 @@ resolve-cloud@*:
     semver "^6.3.0"
     yargs "^14.0.0"
 
-resolve-command@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-command/-/resolve-command-0.26.5.tgz#80dc96b55f8a73d2104e25acd4719ba400967d3f"
-  integrity sha512-2XgeltNJPx4vncePSwmoche3BAzA5rJImTbm8/fNBcrMe2z4Ac75kaY/5teptey2NmGMeSKaIN0airgRuFLvQw==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    resolve-core "0.26.5"
-    resolve-debug-levels "0.26.5"
-    resolve-eventstore-base "0.26.5"
-
-resolve-core@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-core/-/resolve-core-0.26.5.tgz#174a5dc780984742e078f1b94ae422069a83fa12"
-  integrity sha512-QsD4eAcBsYmumwABataVhAp9YJL7AnlCMIoGv31xyVj7wUdvtCJwYrJxTU0Z7swMmxK9YwFxs1CC9swiIwFbwQ==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-
 resolve-cwd@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-1.0.0.tgz#4eaeea41ed040d1702457df64a42b2b07d246f9f"
@@ -16532,43 +16515,6 @@ resolve-cwd@^3.0.0:
   dependencies:
     resolve-from "^5.0.0"
 
-resolve-debug-levels@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-debug-levels/-/resolve-debug-levels-0.26.5.tgz#65cdc45c805ea3696afe7fe16ab62df7ab941537"
-  integrity sha512-QoBBhToejucC0UdeETkABeoBnkmlgAUL7Cak78U+R9y1deGlvfkOgpZ2kVYiBkEuHu3scL208kxyhmHuXsBBRw==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    debug "4.1.1"
-
-resolve-eventstore-base@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-eventstore-base/-/resolve-eventstore-base-0.26.5.tgz#8f0b81ecdf28d6d8a3840211245cc2113037073d"
-  integrity sha512-8+rBYheLsWTBHI4ZIjUg9qaXPLc8Xf6ZnLpj1OFG5BJVDLDUcqzBwq687jAIyJErmUcjbImYKavbOhez+98nKQ==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    resolve-debug-levels "0.26.5"
-
-resolve-eventstore-lite@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-eventstore-lite/-/resolve-eventstore-lite-0.26.5.tgz#1c56f50c9cc99c0f41cdc727960d9a2cd27a6899"
-  integrity sha512-u/0pS/GmlNDCD5FDXIasRlH2rQfxjLkYyfU6pv1KQrkUJQaYyN3P0vg7jRvQYn68UlPqSaKQEtR4p5IxDfsCcw==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    resolve-core "0.26.5"
-    resolve-debug-levels "0.26.5"
-    resolve-eventstore-base "0.26.5"
-    sqlite "^3.0.2"
-    tmp "^0.1.0"
-
-resolve-eventstore-postgresql-serverless@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-eventstore-postgresql-serverless/-/resolve-eventstore-postgresql-serverless-0.26.5.tgz#47c5fcca8fc0e67db8ef82994aa7e87f49621ac8"
-  integrity sha512-+TzeHDzKZUnT+zzNUkdBg4rXjKKsnuy5KX/RWtOaSmtagh3FI6bclEXfHjL3iVySiJ3gACCcYjIhe1XFh4cI+A==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    resolve-debug-levels "0.26.5"
-    resolve-eventstore-base "0.26.5"
-
 resolve-from@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-2.0.0.tgz#9480ab20e94ffa1d9e80a804c7ea147611966b57"
@@ -16589,38 +16535,6 @@ resolve-from@^5.0.0:
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-5.0.0.tgz#c35225843df8f776df21c57557bc087e9dfdfc69"
   integrity sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==
 
-resolve-local-event-broker@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-local-event-broker/-/resolve-local-event-broker-0.26.5.tgz#cb0791ec89b8e4d153c14f7185e6e31b3715ad1e"
-  integrity sha512-cBp2NoxIXVTeKawxC1EYof9Em/FmDQo2oQxIBVagN/UveBYpQ2jQg/cw0wLSLDCUQRFFYP3kY8cYdiCiM9FgBA==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    resolve-debug-levels "0.26.5"
-    resolve-eventstore-base "0.26.5"
-    resolve-local-rpc "0.26.5"
-    resolve-readmodel-base "0.26.5"
-    sqlite "^3.0.2"
-    tmp "^0.1.0"
-
-resolve-local-rpc@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-local-rpc/-/resolve-local-rpc-0.26.5.tgz#561af971e0567b0cc4849801f4745c6d9596ee8c"
-  integrity sha512-zMFLQyw9jfFto2V+TOdNn9gV/ydlBrILXZ0mpVFpXocBTF838ZNmOiz11xA2Dl5S+W8bMQk6IyWeHcvYJYa9Zw==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-
-resolve-module-admin@^0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-module-admin/-/resolve-module-admin-0.26.5.tgz#4ed35680600c66b0b8bb2a19d501772a59e1fcb1"
-  integrity sha512-ysP79Hfj5Lg+4D6ykpB2N2xep3IJOC2KdKvkq8KyIwCikLCbiT3Nk/qmTlGSCU59Rm2PIetHk2Lci6w3dPRupg==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    columnify "^1.5.4"
-    dateformat "^3.0.3"
-    isomorphic-fetch "3.0.0"
-    resolve-saga "0.26.5"
-    yargs "^14.0.0"
-
 resolve-options@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/resolve-options/-/resolve-options-1.1.0.tgz#32bb9e39c06d67338dc9378c0d6d6074566ad131"
@@ -16632,142 +16546,6 @@ resolve-pathname@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-3.0.0.tgz#99d02224d3cf263689becbb393bc560313025dcd"
   integrity sha512-C7rARubxI8bXFNB/hqcp/4iUeIXJhJZvFPFPiSPRnhU5UPxzMFIl+2E6yY6c4k9giDJAhtV+enfA+G89N6Csng==
-
-resolve-query@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-query/-/resolve-query-0.26.5.tgz#860fcf60f6d971c3970150a647d810a8c4f23f05"
-  integrity sha512-BNKUr0/PFT6mB2TPodHADRxNkAFPpv1AAFlJY39Z38SmretvzyC1OsQznzJjaUQC9X5yW9QIOagw+RhXpfLvuw==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    resolve-core "0.26.5"
-    resolve-debug-levels "0.26.5"
-    resolve-readmodel-base "0.26.5"
-
-resolve-react-hooks@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-react-hooks/-/resolve-react-hooks-0.26.5.tgz#e84aab68b18a99488d623788cc9b5750053fe350"
-  integrity sha512-7HIHS5RBFA7L5l2tZyqqam95t9otbaap4MmkQQd2Lpvd73PibFmMQzs4A6PWjy+KD0DWd7DN1ovRha2WANfDiQ==
-  dependencies:
-    resolve-client "0.26.5"
-    resolve-core "0.26.5"
-
-resolve-readmodel-base@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-readmodel-base/-/resolve-readmodel-base-0.26.5.tgz#dc62e9a3cfbea794d2adcc0c73fb77eef01626dc"
-  integrity sha512-emOGUoxR6MinG2emy8Q0fy6LCvinkHRkRKlZ5I0uY6rTZXcEWAau0P9zHEOCmJ2uOyk1qDrbM4Zu8BPoIyL/+w==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    uuid "8.3.1"
-
-resolve-readmodel-lite@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-readmodel-lite/-/resolve-readmodel-lite-0.26.5.tgz#6d6b9c8c83c9f32ea54fc47a678e3b7430ca24f6"
-  integrity sha512-UUQe7amFGxzxsFqkUQr1Cl1du4rPi5Ch8Fg2A14aEzzFtHFEU0v2sc/gtP8EY43rJt/1h5FAOS0cZeidAILxww==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    resolve-readmodel-base "0.26.5"
-    sqlite "^3.0.2"
-    tmp "^0.1.0"
-    uuid "8.3.1"
-
-resolve-readmodel-postgresql-serverless@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-readmodel-postgresql-serverless/-/resolve-readmodel-postgresql-serverless-0.26.5.tgz#e1aea33100e7d49f52d32bcba3f687048859b8a3"
-  integrity sha512-T8eY4zcKgB6Xu7LDQ/kFTzfmpNBVLEtdPMxpmz5JP1106zI+1dr6iFHAFf5erx6OHIIP7ydmU0EB6UHNQ4Ocww==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    resolve-debug-levels "0.26.5"
-    resolve-readmodel-base "0.26.5"
-
-resolve-runtime@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-runtime/-/resolve-runtime-0.26.5.tgz#46c8b9157f81dc554864367dfa25646fbdc99be4"
-  integrity sha512-uFEX3cgl1MfelBHLuVUgqXdjE16Ywz6lQXwofx+T2hzKndeCsJn6SFMsYFJoVJtWmCw/94N/citKc3e6AotTAw==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    aws-signature-v4 "^1.4.0"
-    binary-case "^1.1.4"
-    body-parser "^1.19.0"
-    content-disposition "^0.5.3"
-    cookie "^0.4.1"
-    cors "^2.8.5"
-    cron "^1.5.0"
-    cuid "^2.1.6"
-    express "^4.17.1"
-    file-type "^12.4.0"
-    iconv-lite "^0.5.1"
-    jsonwebtoken "^8.3.0"
-    mime-types "2.1.25"
-    mqtt-connection "^4.0.0"
-    multer "^1.4.2"
-    proper-lockfile "^3.2.0"
-    raw-body "2.3.3"
-    request "^2.88.2"
-    resolve-cloud-common "0.0.37"
-    resolve-command "0.26.5"
-    resolve-core "0.26.5"
-    resolve-debug-levels "0.26.5"
-    resolve-eventstore-base "0.26.5"
-    resolve-eventstore-lite "0.26.5"
-    resolve-local-event-broker "0.26.5"
-    resolve-query "0.26.5"
-    resolve-readmodel-base "0.26.5"
-    resolve-saga "0.26.5"
-    route-trie "^3.0.0"
-    socket.io "^2.1.1"
-    source-map-support "^0.5.9"
-    url "^0.11.0"
-    uuid "8.3.1"
-    websocket-stream "^5.1.2"
-    ws "7.3.1"
-
-resolve-saga@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-saga/-/resolve-saga-0.26.5.tgz#04a2d3e570644ec116297562c7dcf847a495c456"
-  integrity sha512-mMK9e0XFB+1wwEXsJLh0AU2mSRdAtUxyz+sWCDAnzyPoP83PWwkOgcqKzZSc37yzcTGcQc8SScUBDN0QyI3N6g==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    resolve-command "0.26.5"
-    resolve-debug-levels "0.26.5"
-    resolve-query "0.26.5"
-    uuid "8.3.1"
-
-resolve-scripts@0.26.5:
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/resolve-scripts/-/resolve-scripts-0.26.5.tgz#1afb585a2f4a90049430bea576cfe94811006f2d"
-  integrity sha512-M7UXJG3pcw0Rw+ofuTFF8LCQLpwc5RLYObtYmYJ5HyyKm7XOpP9n/yv/xj5JEAXKZ3Zxo8UAi3wH4BZOqtiWBg==
-  dependencies:
-    "@babel/core" "7.9.6"
-    "@babel/plugin-proposal-class-properties" "7.8.3"
-    "@babel/plugin-proposal-export-default-from" "7.8.3"
-    "@babel/plugin-proposal-export-namespace-from" "7.8.3"
-    "@babel/plugin-transform-runtime" "7.9.6"
-    "@babel/preset-env" "7.9.6"
-    "@babel/preset-react" "7.9.4"
-    "@babel/register" "7.9.0"
-    "@babel/runtime" "7.9.6"
-    "@purtuga/esm-webpack-plugin" "^1.1.1"
-    address "^1.1.0"
-    ajv "^6.10.0"
-    babel-loader "8.1.0"
-    babel-plugin-module-resolver "4.0.0"
-    chalk "^2.4.2"
-    deepmerge "^3.2.0"
-    fs-extra "^7.0.1"
-    glob "7.1.6"
-    isomorphic-fetch "3.0.0"
-    loader-utils "^1.2.3"
-    opn "^6.0.0"
-    resolve-debug-levels "0.26.5"
-    resolve-runtime "0.26.5"
-    respawn "^2.6.0"
-    route-trie "^3.0.0"
-    socket.io-client "^2.2.0"
-    testcafe "^1.8.3"
-    testcafe-browser-tools "^2.0.10"
-    uuid "8.3.1"
-    webpack "^4.42.0"
-    webpack-node-externals "^1.7.2"
 
 resolve-url@^0.2.1:
   version "0.2.1"
@@ -19364,11 +19142,6 @@ uuid@^8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
   integrity sha512-fX6Z5o4m6XsXBdli9g7DtWgAx+osMsRRZFKma1mIUsLCz6vRvv+pz5VNbyu9UEDzpMWulZfvpgb/cmDXVulYFQ==
-
-uuid@^8.3.2:
-  version "8.3.2"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
-  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 v8-compile-cache@^2.0.3:
   version "2.1.1"
