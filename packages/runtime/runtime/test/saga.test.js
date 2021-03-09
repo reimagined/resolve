@@ -14,10 +14,68 @@ afterAll(() => {
 })
 
 test('resolve-saga', async () => {
-  const remainingTime = 15 * 60 * 1000
+  const eventStoreLocalState = new Map()
+
   const eventstoreAdapter = {
-    loadEvents: jest.fn().mockReturnValue({ events: [], cursor: null }),
+    loadEvents: jest
+      .fn()
+      .mockReturnValueOnce({
+        events: [{ type: 'Init' }],
+        cursor: 'cursor-1',
+      })
+      .mockReturnValueOnce({
+        events: [
+          {
+            type: 'EVENT_TYPE',
+            aggregateId: 'aggregateId',
+            aggregateVersion: 1,
+            timestamp: 100,
+            payload: { content: true },
+          },
+        ],
+        cursor: 'cursor-2',
+      }),
     getSecretsManager: jest.fn(),
+    ensureEventSubscriber: jest
+      .fn()
+      .mockImplementation(
+        async ({ applicationName, eventSubscriber, destination, status }) => {
+          eventStoreLocalState.set(`${applicationName}${eventSubscriber}`, {
+            ...(eventStoreLocalState.has(`${applicationName}${eventSubscriber}`)
+              ? eventStoreLocalState.get(`${applicationName}${eventSubscriber}`)
+              : {}),
+            ...(destination != null ? { destination } : {}),
+            ...(status != null ? { status } : {}),
+          })
+        }
+      ),
+    removeEventSubscriber: jest
+      .fn()
+      .mockImplementation(async ({ applicationName, eventSubscriber }) => {
+        eventStoreLocalState.delete(`${applicationName}${eventSubscriber}`)
+      }),
+    getEventSubscribers: jest
+      .fn()
+      .mockImplementation(async ({ applicationName, eventSubscriber } = {}) => {
+        if (applicationName == null && eventSubscriber == null) {
+          return [...eventStoreLocalState.values()]
+        }
+        const result = []
+        for (const [
+          key,
+          { destination, status },
+        ] of eventStoreLocalState.entries()) {
+          if (`${applicationName}${eventSubscriber}` === key) {
+            result.push({
+              applicationName,
+              eventSubscriber,
+              destination,
+              status,
+            })
+          }
+        }
+        return result
+      }),
   }
 
   const readModelStore = {
@@ -32,6 +90,7 @@ test('resolve-saga', async () => {
       connect: jest.fn().mockReturnValue(readModelStore),
       disconnect: jest.fn(),
       drop: jest.fn(),
+      dispose: jest.fn(),
     },
   }
 
@@ -44,10 +103,6 @@ test('resolve-saga', async () => {
     addEntries: jest.fn(),
     clearEntries: jest.fn(),
   }
-
-  const performAcknowledge = jest
-    .fn()
-    .mockImplementation(async ({ event }) => event)
 
   const executeCommand = jest.fn()
   const executeQuery = jest.fn()
@@ -85,40 +140,26 @@ test('resolve-saga', async () => {
     snapshotAdapter,
     executeCommand,
     executeQuery,
-    performAcknowledge,
     onCommandExecuted,
     scheduler,
     domainInterop,
   })
 
-  const properties = {
-    RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: 0,
-    'test-property': 'content',
-  }
-
-  await sagaExecutor.sendEvents({
+  await sagaExecutor.setProperty({
     modelName: 'test-saga',
-    events: [{ type: 'Init' }],
-    getVacantTimeInMillis: () => remainingTime,
-    properties,
+    key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
+    value: 0,
+  })
+  await sagaExecutor.setProperty({
+    modelName: 'test-saga',
+    key: 'test-property',
+    value: 'content',
   })
 
-  await sagaExecutor.sendEvents({
-    modelName: 'test-saga',
-    events: [
-      {
-        type: 'EVENT_TYPE',
-        aggregateId: 'aggregateId',
-        aggregateVersion: 1,
-        timestamp: 100,
-        payload: { content: true },
-      },
-    ],
-    getVacantTimeInMillis: () => remainingTime,
-    properties,
-  })
+  await sagaExecutor.build({ modelName: 'test-saga' })
+  await sagaExecutor.build({ modelName: 'test-saga' })
 
-  await sagaExecutor.drop({ modelName: 'test-saga' })
+  await sagaExecutor.resubscribe({ modelName: 'test-saga' })
 
   await sagaExecutor.dispose()
 
@@ -141,7 +182,8 @@ test('resolve-saga', async () => {
   expect(eventstoreAdapter.loadEvents.mock.calls).toMatchSnapshot(
     'eventstoreAdapter.loadEvents'
   )
-  expect(performAcknowledge.mock.calls).toMatchSnapshot('performAcknowledge')
+
+  // TODO applyEventsResult
 
   expect(
     readModelConnectors['default-connector'].connect.mock.calls

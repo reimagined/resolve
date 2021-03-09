@@ -22,6 +22,9 @@ import beginIncrementalImport from './begin-incremental-import'
 import commitIncrementalImport from './commit-incremental-import'
 import rollbackIncrementalImport from './rollback-incremental-import'
 import pushIncrementalImport from './push-incremental-import'
+import ensureEventSubscriber from './ensure-event-subscriber'
+import removeEventSubscriber from './remove-event-subscriber'
+import getEventSubscribers from './get-event-subscribers'
 
 import connect from './connect'
 import initEvents from './init-events'
@@ -80,6 +83,9 @@ const createPostgresqlServerlessAdapter = (
       commitIncrementalImport,
       rollbackIncrementalImport,
       pushIncrementalImport,
+      ensureEventSubscriber,
+      removeEventSubscriber,
+      getEventSubscribers,
       injectEvent,
       injectSecret,
       loadSecrets,

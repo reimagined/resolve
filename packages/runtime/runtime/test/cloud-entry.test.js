@@ -41,6 +41,9 @@ describe('Cloud entry', () => {
     eventstoreAdapter = {
       getSecretsManager: jest.fn().mockReturnValue({}),
       loadEvents: jest.fn().mockReturnValue({ events: [], cursor: null }),
+      ensureEventSubscriber: jest.fn().mockReturnValue(Promise.resolve()),
+      removeEventSubscriber: jest.fn().mockReturnValue(Promise.resolve()),
+      getEventSubscribers: jest.fn().mockReturnValue(Promise.resolve([])),
       getNextCursor: jest.fn(),
       getLatestEvent: jest.fn(),
       saveEvent: jest.fn(),

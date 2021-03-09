@@ -23,6 +23,11 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
       return (
         error != null &&
         (/Transaction .*? Is Not Found/i.test(error.message) ||
+          /Transaction .*? Is Not Found/i.test(error.stack) ||
+          /Transaction is expired/i.test(error.message) ||
+          /Transaction is expired/i.test(error.stack) ||
+          /Invalid transaction ID/i.test(error.message) ||
+          /Invalid transaction ID/i.test(error.stack) ||
           /deadlock detected/i.test(error.message) ||
           /deadlock detected/i.test(error.stack) ||
           /could not obtain lock/i.test(error.message) ||

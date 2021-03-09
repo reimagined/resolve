@@ -18,6 +18,7 @@ const initEvents = async (pool: AdapterPool): Promise<any[]> => {
   const {
     eventsTableName,
     snapshotsTableName,
+    subscribersTableName,
     escapeId,
     connection,
     database,
@@ -26,6 +27,7 @@ const initEvents = async (pool: AdapterPool): Promise<any[]> => {
   const eventsTableNameAsId = escapeId(eventsTableName)
   const threadsTableNameAsId = escapeId(`${eventsTableName}-threads`)
   const snapshotsTableNameAsId = escapeId(snapshotsTableName)
+  const subscribersTableNameAsId = escapeId(subscribersTableName)
 
   const statements: string[] = [
     `CREATE TABLE ${eventsTableNameAsId}(
@@ -59,6 +61,13 @@ const initEvents = async (pool: AdapterPool): Promise<any[]> => {
     ) VALUES ${Array.from(new Array(256))
       .map((_, index) => `(${index}, 0)`)
       .join(',')}`,
+    `CREATE TABLE ${subscribersTableNameAsId} (
+      \`applicationName\` ${longStringSqlType},
+      \`eventSubscriber\` ${longStringSqlType},
+      \`destination\` ${customObjectSqlType},
+      \`status\` ${customObjectSqlType},
+      PRIMARY KEY(\`applicationName\`(127), \`eventSubscriber\`(127))
+    )`,
   ]
 
   const errors: any[] = await executeSequence(
@@ -66,7 +75,7 @@ const initEvents = async (pool: AdapterPool): Promise<any[]> => {
     statements,
     log,
     (error) => {
-      if (isAlreadyExistsError(error.message)) {
+      if (isAlreadyExistsError(error)) {
         return new EventstoreResourceAlreadyExistError(
           `duplicate initialization of the mysql adapter with same events database "${database}" and table "${eventsTableName}" is not allowed`
         )

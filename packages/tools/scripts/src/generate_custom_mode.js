@@ -86,29 +86,6 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
       server.start()
       log.debug(`Server process pid: ${server.pid}`)
 
-      let broker = { stop: (callback) => callback() }
-      if (config.eventBroker.launchBroker) {
-        const brokerPath = path.resolve(
-          process.cwd(),
-          path.join(config.distDir, './common/local-entry/local-bus-broker.js')
-        )
-
-        broker = processRegister(['node', brokerPath], {
-          cwd: process.cwd(),
-          maxRestarts: 0,
-          kill: 5000,
-          stdio: 'inherit',
-          env: {
-            ...process.env,
-            RESOLVE_LAUNCH_ID: resolveLaunchId,
-          },
-        })
-
-        broker.on('crash', reject)
-        broker.start(resolve)
-        log.debug(`Bus broker process pid: ${broker.pid}`)
-      }
-
       const port = Number(
         checkRuntimeEnv(config.port)
           ? // eslint-disable-next-line no-new-func
@@ -130,8 +107,8 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
             const result = await response.text()
             if (result !== 'ok') {
               lastError = [
-                `Error while communication with reSolve HTTP server at port ${port}`,
-                `Maybe multiple instances of reSolve applications trying to run with similar port`,
+                `Error communicating with reSolve HTTP server at port ${port}`,
+                `Multiple instances of reSolve applications may be trying to run on the same port`,
                 `${response.status}: ${response.statusText}`,
                 `${result}`,
               ].join('\n')
@@ -150,13 +127,9 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
         }
       }
 
-      await Promise.all([
-        new Promise((resolve) => server.stop(resolve)),
-        new Promise((resolve) => broker.stop(resolve)),
-      ])
+      await Promise.all([new Promise((resolve) => server.stop(resolve))])
 
       log.debug('Server was stopped')
-      log.debug('Bus broker was stopped')
 
       if (lastError != null) {
         throw lastError

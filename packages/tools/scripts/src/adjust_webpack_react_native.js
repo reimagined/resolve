@@ -103,7 +103,7 @@ const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
           } catch(err) {}
         }
         if(modulePath == null) {
-          throw new Error(\`Module "\${moduleName}" cannot be resolved\`)
+          throw new Error(\`Cannot resolve the module "\${moduleName}"\`)
         }
         return require(modulePath)
       })())`,

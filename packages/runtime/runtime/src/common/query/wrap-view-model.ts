@@ -45,34 +45,6 @@ const serializeState = async (
   { state, jwt }: any
 ): Promise<any> => serialize(state, jwt)
 
-const sendEvents = async (
-  pool: ViewModelPool,
-  interop: ViewModelInterop
-): Promise<any> => {
-  const viewModelName = interop.name
-
-  if (pool.isDisposed) {
-    throw new Error(`View model "${viewModelName}" is disposed`)
-  }
-
-  throw new Error(`View model "${viewModelName}" cannot be updated with events`)
-}
-
-const drop = async (
-  pool: ViewModelPool,
-  interop: ViewModelInterop
-): Promise<any> => {
-  const viewModelName = interop.name
-
-  if (pool.isDisposed) {
-    throw new Error(`View model "${viewModelName}" is disposed`)
-  }
-
-  throw new Error(
-    `Snapshot cleaning for view-model "${viewModelName}" is not implemented`
-  )
-}
-
 const dispose = async (
   pool: ViewModelPool,
   interop: ViewModelInterop
@@ -96,9 +68,7 @@ const wrapViewModel = ({
 
   return Object.freeze({
     read: read.bind(null, pool, interop),
-    sendEvents: sendEvents.bind(null, pool, interop),
     serializeState: serializeState.bind(null, interop),
-    drop: drop.bind(null, pool, interop),
     dispose: dispose.bind(null, pool, interop),
   })
 }

@@ -70,6 +70,7 @@ describe('as cloud resource', () => {
       eventsTableName: 'table',
       userLogin: 'user',
       snapshotsTableName: 'snapshots-table',
+      subscribersTableName: 'subscribers-table-name',
     }
     completePool = {
       ...cloudPool,

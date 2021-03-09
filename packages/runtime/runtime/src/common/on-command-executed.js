@@ -1,24 +1,11 @@
-import {
-  detectConnectorFeatures,
-  FULL_REGULAR_CONNECTOR,
-  FULL_XA_CONNECTOR,
-  EMPTY_CONNECTOR,
-  INLINE_LEDGER_CONNECTOR,
-} from './query'
-
-const connectorCapabilities = {
-  FULL_REGULAR_CONNECTOR,
-
-  FULL_XA_CONNECTOR,
-
-  EMPTY_CONNECTOR,
-
-  INLINE_LEDGER_CONNECTOR,
+const notifyEventSubscriber = async (resolve, destination) => {
+  // TODO notify foreign event subscribers
+  void resolve
+  void destination
 }
 
-const notifyInlineLedgers = async (resolve) => {
+const notifyEventSubscribers = async (resolve) => {
   const maxDuration = Math.max(resolve.getVacantTimeInMillis() - 15000, 0)
-
   let timerId = null
 
   const timerPromise = new Promise((resolve) => {
@@ -27,19 +14,30 @@ const notifyInlineLedgers = async (resolve) => {
 
   const inlineLedgerPromise = (async () => {
     const promises = []
+    for (const { name: eventListener } of resolve.eventListeners.values()) {
+      promises.push(resolve.invokeEventSubscriberAsync(eventListener, 'build'))
+    }
 
+    const eventSubscribers = await resolve.eventstoreAdapter.getEventSubscribers()
     for (const {
-      name: eventListener,
-
-      connectorName,
-    } of resolve.eventListeners.values()) {
-      const connector = resolve.readModelConnectors[connectorName]
-
+      applicationName,
+      eventSubscriber,
+      destination,
+    } of eventSubscribers) {
       if (
-        detectConnectorFeatures(connector) ===
-        connectorCapabilities.INLINE_LEDGER_CONNECTOR
+        resolve.applicationName !== applicationName ||
+        !resolve.eventListeners.has(eventSubscriber)
       ) {
-        promises.push(resolve.invokeEventBusAsync(eventListener, 'build'))
+        promises.push(
+          Promise.resolve()
+            .then(notifyEventSubscriber.bind(null, resolve, destination))
+            .catch((error) => {
+              // eslint-disable-next-line no-console
+              console.warn(
+                `Notify application "${applicationName}" for event subscriber "${eventSubscriber}" failed with error: ${error}`
+              )
+            })
+        )
       }
     }
 
@@ -54,8 +52,7 @@ const notifyInlineLedgers = async (resolve) => {
 }
 
 const onCommandExecuted = async (resolve, event) => {
-  await resolve.publisher.publish({ event })
-  await notifyInlineLedgers(resolve)
+  await notifyEventSubscribers(resolve)
   await resolve.sendReactiveEvent(event)
 }
 

@@ -7,7 +7,7 @@ const getConfig = async (resolveConfig, options) => {
   }
   const { directory } = options
   if (directory == null || directory.constructor !== String) {
-    throw new Error('Options field "directory" must be string')
+    throw new Error('Options field "directory" must be a string')
   }
 
   const config = merge(resolveConfig, {
@@ -20,10 +20,12 @@ const getConfig = async (resolveConfig, options) => {
           options,
         },
       },
+      {
+        method: 'OPTIONS',
+        path: '/SKIP_COMMANDS',
+        handler: '@resolve-js/runtime/lib/common/handlers/fail-handler.js',
+      },
     ],
-    eventBroker: {
-      upstream: false,
-    },
   })
   Object.assign(config, {
     readModelConnectors: {},

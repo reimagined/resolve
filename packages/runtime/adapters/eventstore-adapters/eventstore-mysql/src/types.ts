@@ -19,6 +19,7 @@ export type MysqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   eventsTableName: string
   snapshotsTableName: string
   secretsTableName: string
+  subscribersTableName: string
   database: string
   escapeId: (val: string) => string
   escape: (val: string) => string
@@ -29,6 +30,7 @@ export type MysqlAdapterConfig = AdapterConfig & {
   eventsTableName?: string
   snapshotsTableName?: string
   secretsTableName?: string
+  subscribersTableName?: string
   [key: string]: any
 }
 
