@@ -6,6 +6,7 @@ import {
   MAINTENANCE_MODE_MANUAL,
 } from './constants'
 import getNextCursor from './get-next-cursor'
+import { AlreadyFrozenError, AlreadyUnfrozenError } from './frozen-errors'
 
 import {
   AdapterPoolConnectedProps,
@@ -18,13 +19,25 @@ async function startProcessEvents({
   maintenanceMode,
 }: any): Promise<void> {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
-    await pool.freeze()
+    try {
+      await pool.freeze()
+    } catch (error) {
+      if (!AlreadyFrozenError.is(error)) {
+        throw error
+      }
+    }
   }
 }
 
 async function endProcessEvents({ pool, maintenanceMode }: any): Promise<void> {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
-    await pool.unfreeze()
+    try {
+      await pool.unfreeze()
+    } catch (error) {
+      if (!AlreadyUnfrozenError.is(error)) {
+        throw error
+      }
+    }
   }
 }
 

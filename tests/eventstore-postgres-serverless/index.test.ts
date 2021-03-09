@@ -18,6 +18,7 @@ test.skip('Postgres-serverless eventstore adapter should be able to save and loa
     eventsTableName: 'events',
     snapshotsTableName: 'snapshots',
     secretsTableName: 'secrets',
+    subscribersTableName: 'subscribers',
     databaseName: 'hello_world',
     dbClusterOrInstanceArn: process.env.AWS_RDS_CLUSTER_ARN,
     awsSecretStoreAdminArn: process.env.AWS_RDS_ADMIN_SECRET_ARN,

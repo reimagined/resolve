@@ -11,12 +11,12 @@ import { errorBoundary } from 'resolve-cloud-common/utils'
 import { initDomain } from '@resolve-js/core'
 
 import initAwsClients from './init-aws-clients'
-import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'
 import lambdaWorker from './lambda-worker'
 import wrapTrie from '../common/wrap-trie'
 import initUploader from './init-uploader'
 import gatherEventListeners from '../common/gather-event-listeners'
+import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 import { putInternalError } from './metrics'
 
 const log = debugLevels('resolve:runtime:cloud-entry')
@@ -39,6 +39,7 @@ const index = async ({ assemblies, constants, domain }) => {
       assemblies,
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
+      upstream: true,
     }
 
     log.debug('preparing performance tracer')
@@ -47,11 +48,14 @@ const index = async ({ assemblies, constants, domain }) => {
     const segment = resolve.performanceTracer.getSegment()
     subSegment = segment.addNewSubsegment('initResolve')
 
+    Object.defineProperties(resolve, {
+      getSubscribeAdapterOptions: {
+        value: getSubscribeAdapterOptions,
+      },
+    })
+
     log.debug('preparing aws clients')
     await initAwsClients(resolve)
-
-    log.debug('preparing event broker')
-    await initBroker(resolve)
 
     log.debug('preparing uploader')
     await initUploader(resolve)

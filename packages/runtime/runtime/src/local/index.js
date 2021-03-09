@@ -2,7 +2,6 @@ import 'source-map-support/register'
 import debugLevels from '@resolve-js/debug-levels'
 import { initDomain } from '@resolve-js/core'
 
-import initBroker from './init-broker'
 import initPerformanceTracer from './init-performance-tracer'
 import initExpress from './init-express'
 import initWebsockets from './init-websockets'
@@ -12,6 +11,9 @@ import wrapTrie from '../common/wrap-trie'
 import initUploader from './init-uploader'
 import initScheduler from './init-scheduler'
 import gatherEventListeners from '../common/gather-event-listeners'
+import initResolve from '../common/init-resolve'
+import disposeResolve from '../common/dispose-resolve'
+import multiplexAsync from '../common/utils/multiplex-async'
 
 const log = debugLevels('resolve:runtime:local-entry')
 
@@ -29,10 +31,38 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       assemblies,
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
+      upstream:
+        domain.apiHandlers.findIndex(
+          ({ method, path }) =>
+            method === 'OPTIONS' && path === '/SKIP_COMMANDS'
+        ) < 0,
     }
 
+    resolve.eventSubscriberDestination = 'LOCAL' // TODO
+    resolve.invokeEventSubscriberAsync = multiplexAsync.bind(
+      null,
+      async (eventSubscriber, method, parameters) => {
+        const currentResolve = Object.create(resolve)
+        try {
+          await initResolve(currentResolve)
+          const rawMethod = currentResolve.eventSubscriber[method]
+          if (typeof rawMethod !== 'function') {
+            throw new TypeError(method)
+          }
+
+          const result = await rawMethod.call(currentResolve.eventSubscriber, {
+            eventSubscriber,
+            ...parameters,
+          })
+
+          return result
+        } finally {
+          await disposeResolve(currentResolve)
+        }
+      }
+    )
+
     await initPerformanceTracer(resolve)
-    await initBroker(resolve)
     await initExpress(resolve)
     await initWebsockets(resolve)
     await initUploader(resolve)

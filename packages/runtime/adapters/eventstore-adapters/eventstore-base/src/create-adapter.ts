@@ -50,6 +50,9 @@ const createAdapter = <
     connect,
     loadEventsByCursor,
     loadEventsByTimestamp,
+    ensureEventSubscriber,
+    removeEventSubscriber,
+    getEventSubscribers,
     getLatestEvent,
     saveEvent,
     initEvents,
@@ -165,6 +168,10 @@ const createAdapter = <
     loadSecrets: wrapMethod(adapterPool, loadSecrets),
     importSecrets: importSecretsStream.bind(null, adapterPool),
     exportSecrets: exportSecretsStream.bind(null, adapterPool),
+
+    ensureEventSubscriber: wrapMethod(adapterPool, ensureEventSubscriber),
+    removeEventSubscriber: wrapMethod(adapterPool, removeEventSubscriber),
+    getEventSubscribers: wrapMethod(adapterPool, getEventSubscribers),
   }
 
   Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(

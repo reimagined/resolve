@@ -9,6 +9,7 @@ const dropEvents = async ({
   secretsTableName,
   eventsTableName,
   snapshotsTableName,
+  subscribersTableName,
   executeStatement,
   escapeId,
 }: AdapterPool): Promise<any[]> => {
@@ -37,6 +38,7 @@ const dropEvents = async ({
   )
   const typeIndexName = escapeId(`${eventsTableName}-type`)
   const timestampIndexName = escapeId(`${eventsTableName}-timestamp`)
+  const subscribersTableNameAsId = escapeId(subscribersTableName)
 
   const statements: string[] = [
     `DROP TABLE ${databaseNameAsId}.${eventsTableNameAsId}`,
@@ -53,6 +55,8 @@ const dropEvents = async ({
 
     `DROP TABLE ${databaseNameAsId}.${snapshotsTableNameAsId}`,
     `DROP TABLE IF EXISTS ${databaseNameAsId}.${incrementalImportTableAsId}`,
+
+    `DROP TABLE ${databaseNameAsId}.${subscribersTableNameAsId}`,
   ]
   const errors: any[] = await executeSequence(
     executeStatement,

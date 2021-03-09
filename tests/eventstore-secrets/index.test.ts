@@ -1,6 +1,8 @@
 import createSqliteAdapter from '@resolve-js/eventstore-lite'
 import createPostgresqlServerlessAdapter from '@resolve-js/eventstore-postgresql-serverless'
-import { Adapter } from '@resolve-js/eventstore-base'
+import createPostgresAdapter from '@resolve-js/eventstore-postgresql'
+import { PostgresqlAdapterConfig } from '@resolve-js/eventstore-postgresql'
+import { Adapter, AdapterConfig } from '@resolve-js/eventstore-base'
 import { SecretsManager } from '@resolve-js/core'
 import { create, destroy } from '@resolve-js/eventstore-postgresql-serverless'
 import { pipeline } from 'stream'
@@ -18,11 +20,44 @@ import {
 jest.setTimeout(jestTimeout())
 
 let createAdapter: (config: any) => Adapter
+let config: AdapterConfig
+let inputConfig: AdapterConfig
+let outputConfig: AdapterConfig
 
 if (TEST_SERVERLESS) {
   createAdapter = createPostgresqlServerlessAdapter
 } else {
-  createAdapter = createSqliteAdapter
+  const testPostgres = false
+  if (testPostgres) {
+    createAdapter = createPostgresAdapter
+    const schema = 'public'
+    const password = 'post'
+
+    const postgresConfig: PostgresqlAdapterConfig = {
+      database: 'db',
+      password: password,
+      databaseName: schema,
+    }
+    const postgresInputConfig: PostgresqlAdapterConfig = {
+      database: 'db-export',
+      password: password,
+      databaseName: schema,
+    }
+    const postgresOutputConfig: PostgresqlAdapterConfig = {
+      database: 'db-import',
+      password: password,
+      databaseName: schema,
+    }
+
+    config = postgresConfig
+    inputConfig = postgresInputConfig
+    outputConfig = postgresOutputConfig
+  } else {
+    createAdapter = createSqliteAdapter
+    config = {}
+    inputConfig = {}
+    outputConfig = {}
+  }
 }
 
 function makeSecretFromIndex(index: number): string {
@@ -46,7 +81,7 @@ describe('eventstore adapter secrets', () => {
       await create(options)
       adapter = createAdapter(cloudResourceOptionsToAdapterConfig(options))
     } else {
-      adapter = createAdapter({})
+      adapter = createAdapter(config)
     }
     await adapter.init()
   })
@@ -169,8 +204,8 @@ describe('eventstore adapter import secrets', () => {
         cloudResourceOptionsToAdapterConfig(outputOptions)
       )
     } else {
-      inputAdapter = createAdapter({})
-      outputAdapter = createAdapter({})
+      inputAdapter = createAdapter(inputConfig)
+      outputAdapter = createAdapter(outputConfig)
     }
     await inputAdapter.init()
     await outputAdapter.init()

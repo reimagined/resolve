@@ -20,9 +20,6 @@ const devConfig = {
       },
     },
   },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker.db',
-  },
 }
 
 export default devConfig

@@ -25,26 +25,26 @@ const handleResolveReadModelEvent = async (
     case 'reset': {
       log.debug('operation "reset" started')
       log.debug('resetting event broker')
-      await resolve.eventBus.reset({ eventSubscriber: listenerId })
-      await resolve.eventBus.resume({ eventSubscriber: listenerId })
+      await resolve.eventSubscriber.reset({ eventSubscriber: listenerId })
+      await resolve.eventSubscriber.resume({ eventSubscriber: listenerId })
       log.debug('operation "reset" completed')
       return 'ok'
     }
     case 'pause': {
       log.debug('operation "pause" started')
-      await resolve.eventBus.pause({ eventSubscriber: listenerId })
+      await resolve.eventSubscriber.pause({ eventSubscriber: listenerId })
       log.debug('operation "pause" completed')
       return 'ok'
     }
     case 'resume': {
       log.debug('operation "resume" started')
-      await resolve.eventBus.resume({ eventSubscriber: listenerId })
+      await resolve.eventSubscriber.resume({ eventSubscriber: listenerId })
       log.debug('operation "resume" completed')
       return 'ok'
     }
     case 'listProperties': {
       log.debug('operation "listProperties" started')
-      const result = await resolve.eventBus.listProperties({
+      const result = await resolve.eventSubscriber.listProperties({
         eventSubscriber: listenerId,
       })
       log.debug('operation "listProperties" completed')
@@ -53,7 +53,7 @@ const handleResolveReadModelEvent = async (
     }
     case 'getProperty': {
       log.debug('operation "getProperty" started')
-      const result = await resolve.eventBus.getProperty({
+      const result = await resolve.eventSubscriber.getProperty({
         eventSubscriber: listenerId,
         key,
       })
@@ -63,7 +63,7 @@ const handleResolveReadModelEvent = async (
     }
     case 'setProperty': {
       log.debug('operation "setProperty" started')
-      await resolve.eventBus.setProperty({
+      await resolve.eventSubscriber.setProperty({
         eventSubscriber: listenerId,
         key,
         value,
@@ -73,7 +73,7 @@ const handleResolveReadModelEvent = async (
     }
     case 'deleteProperty': {
       log.debug('operation "deleteProperty" started')
-      await resolve.eventBus.deleteProperty({
+      await resolve.eventSubscriber.deleteProperty({
         eventSubscriber: listenerId,
         key,
       })
@@ -87,7 +87,7 @@ const handleResolveReadModelEvent = async (
       log.debug('operation "list" started')
       const result = await Promise.all(
         listenerIds.map(async (listenerId) => {
-          const status = await resolve.eventBus.status({
+          const status = await resolve.eventSubscriber.status({
             eventSubscriber: listenerId,
           })
           return {
@@ -120,7 +120,7 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent.part) {
     case 'bootstrap': {
       try {
-        return await bootstrap(resolve, true)
+        return await bootstrap(resolve)
       } catch (error) {
         subSegment.addError(error)
         throw error
@@ -130,7 +130,7 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
     }
     case 'shutdown': {
       try {
-        return await shutdown(resolve, true)
+        return await shutdown(resolve)
       } catch (error) {
         subSegment.addError(error)
         throw error

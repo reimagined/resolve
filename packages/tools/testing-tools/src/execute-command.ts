@@ -51,6 +51,9 @@ const makeDummyEventStoreAdapter = ({
       Promise.resolve({
         events: transformEvents(events, 'aggregate', { aggregateId }),
       }),
+    ensureEventSubscriber: async () => Promise.resolve(),
+    removeEventSubscriber: async () => Promise.resolve(),
+    getEventSubscribers: async () => Promise.resolve([]),
   }
 }
 

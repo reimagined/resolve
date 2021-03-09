@@ -10,16 +10,16 @@ import {
 } from '@resolve-js/core'
 
 export type CreateQueryOptions = {
-  invokeEventBusAsync: Function
+  invokeEventSubscriberAsync: Function
   readModelConnectors: any
   performanceTracer: any
   getVacantTimeInMillis: any
-  performAcknowledge: any
   monitoring?: Monitoring
   readModelsInterop: ReadModelInteropMap | SagaInteropMap
   viewModelsInterop: ViewModelInteropMap
   provideLedger: (ledger: any) => Promise<void>
   eventstoreAdapter: Eventstore
+  applicationName: string
 }
 
 type WrapModelOptions = Omit<
@@ -49,12 +49,12 @@ export type ReadModelPool = {
   isDisposed: boolean
   connector: any
   connections: Set<any>
-  invokeEventBusAsync: Function
-  performAcknowledge: Function
+  invokeEventSubscriberAsync: Function
   getVacantTimeInMillis: Function
   monitoring?: Monitoring
   provideLedger: (ledger: any) => Promise<void>
   eventstoreAdapter: Eventstore
+  applicationName: string
 }
 
 export type ViewModelPool = {

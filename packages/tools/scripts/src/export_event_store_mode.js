@@ -20,10 +20,12 @@ const getConfig = async (resolveConfig, options) => {
           options,
         },
       },
+      {
+        method: 'OPTIONS',
+        path: '/SKIP_COMMANDS',
+        handler: '@resolve-js/runtime/lib/common/handlers/fail-handler.js',
+      },
     ],
-    eventBroker: {
-      upstream: false,
-    },
   })
   Object.assign(config, {
     readModelConnectors: {},

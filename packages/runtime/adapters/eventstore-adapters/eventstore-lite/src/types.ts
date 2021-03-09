@@ -23,6 +23,7 @@ export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   eventsTableName: string
   snapshotsTableName: string
   secretsTableName: string
+  subscribersTableName: string
   escapeId: (source: string) => string
   escape: (source: string) => string
   memoryStore?: MemoryStore
@@ -35,6 +36,7 @@ export const SqliteAdapterConfigSchema = t.intersection([
     secretsTableName: t.string,
     eventsTableName: t.string,
     snapshotsTableName: t.string,
+    subscribersTableName: t.string,
   }),
 ])
 
