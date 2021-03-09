@@ -2,7 +2,7 @@ import * as AWS from 'aws-sdk'
 import {
   CloudResourceOptions,
   PostgresqlAdapterConfig,
-} from 'resolve-eventstore-postgresql-serverless'
+} from '@resolve-js/eventstore-postgresql-serverless'
 import { Readable } from 'stream'
 
 export function updateAwsConfig(): void {
@@ -21,6 +21,7 @@ export function getCloudResourceOptions(
     eventsTableName: 'events',
     snapshotsTableName: 'snapshots',
     secretsTableName: 'secrets',
+    subscribersTableName: 'subscribers',
     databaseName: databaseName,
     dbClusterOrInstanceArn: process.env.AWS_RDS_CLUSTER_ARN,
     awsSecretStoreAdminArn: process.env.AWS_RDS_ADMIN_SECRET_ARN,
@@ -36,6 +37,7 @@ export function cloudResourceOptionsToAdapterConfig(
     eventsTableName: options.eventsTableName,
     snapshotsTableName: options.snapshotsTableName,
     secretsTableName: options.secretsTableName,
+    subscribersTableName: options.subscribersTableName,
     databaseName: options.databaseName,
     dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
     awsSecretStoreArn: options.awsSecretStoreAdminArn,
@@ -43,7 +45,7 @@ export function cloudResourceOptionsToAdapterConfig(
   }
 }
 
-export const TEST_SERVERLESS = false
+export const TEST_SERVERLESS = process.env.TEST_SERVERLESS === '1'
 
 export function jestTimeout(): number {
   if (TEST_SERVERLESS) {

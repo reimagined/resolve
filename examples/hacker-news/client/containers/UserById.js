@@ -1,5 +1,5 @@
 import React from 'react'
-import { connectReadModel } from 'resolve-redux'
+import { connectReadModel } from '@resolve-js/redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 

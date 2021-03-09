@@ -1,8 +1,8 @@
 import * as AWS from 'aws-sdk'
-import createAdapter from 'resolve-eventstore-postgresql-serverless'
-import { create, destroy } from 'resolve-eventstore-postgresql-serverless'
+import createAdapter from '@resolve-js/eventstore-postgresql-serverless'
+import { create, destroy } from '@resolve-js/eventstore-postgresql-serverless'
 
-import type { CloudResourceOptions } from 'resolve-eventstore-postgresql-serverless'
+import type { CloudResourceOptions } from '@resolve-js/eventstore-postgresql-serverless'
 
 jest.setTimeout(1000 * 60 * 5)
 
@@ -18,6 +18,7 @@ test.skip('Postgres-serverless eventstore adapter should be able to save and loa
     eventsTableName: 'events',
     snapshotsTableName: 'snapshots',
     secretsTableName: 'secrets',
+    subscribersTableName: 'subscribers',
     databaseName: 'hello_world',
     dbClusterOrInstanceArn: process.env.AWS_RDS_CLUSTER_ARN,
     awsSecretStoreAdminArn: process.env.AWS_RDS_ADMIN_SECRET_ARN,

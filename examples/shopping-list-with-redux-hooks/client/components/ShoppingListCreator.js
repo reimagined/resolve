@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import { v4 as uuid } from 'uuid'
-import { useReduxReadModelSelector, useReduxCommand } from 'resolve-redux'
+import { useReduxReadModelSelector, useReduxCommand } from '@resolve-js/redux'
 import { SHOPPING_LIST_CREATED } from '../actions/optimistic-actions'
 
 export default () => {

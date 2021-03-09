@@ -1,11 +1,11 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const cloudConfig = {
   target: 'cloud',
   mode: 'production',
   staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
   eventstoreAdapter: {
-    module: 'resolve-eventstore-postgresql-serverless',
+    module: '@resolve-js/eventstore-postgresql-serverless',
     options: {
       awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
       dbClusterOrInstanceArn: declareRuntimeEnv(
@@ -18,7 +18,7 @@ const cloudConfig = {
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-postgresql-serverless',
+      module: '@resolve-js/readmodel-postgresql-serverless',
       options: {
         dbClusterOrInstanceArn: declareRuntimeEnv(
           'RESOLVE_READMODEL_CLUSTER_ARN'

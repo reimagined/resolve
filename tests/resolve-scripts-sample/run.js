@@ -58,7 +58,7 @@ import {
   // mdis-start importEventStore
   // mdis-start exportEventStore
   // mdis-start validateConfig
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
 // mdis-stop validateConfig
 // mdis-stop exportEventStore
 // mdis-stop importEventStore
@@ -143,7 +143,7 @@ void (async function () {
         const resolveConfig = merge(baseConfig, devConfig)
         await reset(resolveConfig, {
           dropEventStore: true,
-          dropEventBus: true,
+          dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
         })

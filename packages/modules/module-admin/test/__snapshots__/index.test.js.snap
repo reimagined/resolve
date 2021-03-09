@@ -1,0 +1,361 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@resolve-js/module-admin event-store export: console.log 1`] = `
+Array [
+  Array [
+    "ok",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store export: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-store/export?directory=directory",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store export: maintenanceMode=auto: console.log 1`] = `
+Array [
+  Array [
+    "ok",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store export: maintenanceMode=auto: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-store/export?directory=directory&maintenanceMode=auto",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store export: maintenanceMode=manual: console.log 1`] = `
+Array [
+  Array [
+    "ok",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store export: maintenanceMode=manual: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-store/export?directory=directory&maintenanceMode=manual",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store freeze: console.log 1`] = `
+Array [
+  Array [
+    "ok",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store freeze: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-store/freeze",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store import: console.log 1`] = `
+Array [
+  Array [
+    "ok",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store import: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-store/import?directory=directory",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store import: maintenanceMode=auto: console.log 1`] = `
+Array [
+  Array [
+    "ok",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store import: maintenanceMode=auto: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-store/import?directory=directory&maintenanceMode=auto",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store import: maintenanceMode=manual: console.log 1`] = `
+Array [
+  Array [
+    "ok",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store import: maintenanceMode=manual: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-store/import?directory=directory&maintenanceMode=manual",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store incremental import: console.log 1`] = `
+Array [
+  Array [
+    "ok",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store incremental import: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-store/incremental-import?path=filePath",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store unfreeze: console.log 1`] = `
+Array [
+  Array [
+    "ok",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin event-store unfreeze: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-store/unfreeze",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin read-models list: console.log 1`] = `
+Array [
+  Array [
+    "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR          
+read-model           status               3/18/05 04:58:31 type N\\\\A                  N\\\\A                 ",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin read-models list: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/read-models-list",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin read-models pause: console.log 1`] = `
+Array [
+  Array [
+    "ListenerId = \\"readModel\\" paused",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin read-models pause: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/pause?eventSubscriber=readModel",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin read-models reset: console.log 1`] = `
+Array [
+  Array [
+    "ListenerId = \\"readModel\\" reset",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin read-models reset: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/reset?eventSubscriber=readModel",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin read-models resume: console.log 1`] = `
+Array [
+  Array [
+    "ListenerId = \\"readModel\\" running",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin read-models resume: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/resume?eventSubscriber=readModel",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas list: console.log 1`] = `
+Array [
+  Array [
+    "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR          
+saga                 status               3/18/05 04:58:31 type N\\\\A                  N\\\\A                 ",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas list: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/sagas-list",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas pause: console.log 1`] = `
+Array [
+  Array [
+    "ListenerId = \\"saga\\" paused",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas pause: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/pause?eventSubscriber=saga",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas properties get: console.log 1`] = `
+Array [
+  Array [
+    "ListenerId = \\"saga\\", Key = \\"key\\", Value = \\"value\\"",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas properties get: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/get-property?eventSubscriber=saga&key=key",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas properties list: console.log 1`] = `
+Array [
+  Array [
+    "NAME                 VALUE               
+key                  value               ",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas properties list: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/list-properties?eventSubscriber=saga",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas properties remove: console.log 1`] = `
+Array [
+  Array [
+    "ListenerId = \\"saga\\", Key = \\"key\\" deleted",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas properties remove: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/delete-property?eventSubscriber=saga&key=key",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas properties set: console.log 1`] = `
+Array [
+  Array [
+    "ListenerId = \\"saga\\", Key = \\"key\\", Value = \\"value\\"",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas properties set: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/set-property?eventSubscriber=saga&key=key&value=value",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas reset: console.log 1`] = `
+Array [
+  Array [
+    "ListenerId = \\"saga\\" reset",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas reset: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/reset?eventSubscriber=saga",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas resume: console.log 1`] = `
+Array [
+  Array [
+    "ListenerId = \\"saga\\" running",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas resume: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/resume?eventSubscriber=saga",
+  ],
+]
+`;

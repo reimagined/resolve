@@ -479,7 +479,7 @@ Initializes the database.
 #### Example
 
 ```js
-import createEventStoreAdapter from 'resolve-eventstore-xxx'
+import createEventStoreAdapter from '@resolve-js/eventstore-xxx'
 
 const eventStoreAdapter = createEventStoreAdapter(options)
 
@@ -859,7 +859,7 @@ Drops an incremental import batch.
 
 ## reSolve Scripts
 
-The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package contains service scripts used to configure, build, and run reSolve applications. The package contains the following scripts:
+The [@resolve-js/scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package contains service scripts used to configure, build, and run reSolve applications. The package contains the following scripts:
 
 | Script                                | Description                                                                   |
 | ------------------------------------- | ----------------------------------------------------------------------------- |
@@ -874,7 +874,7 @@ The [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages
 | [exportEventStore](#exporteventstore) | Exports events from an application's event store to a file.                   |
 | [validateConfig](#validateconfig)     | Validates a configuration object.                                             |
 
-The resolve-scripts library also exports a `defaultResolveConfig` object that contains default configuration settings. This object is merged with an application's configuration objects to receive a global configuration object:
+The @resolve-js/scripts library also exports a `defaultResolveConfig` object that contains default configuration settings. This object is merged with an application's configuration objects to receive a global configuration object:
 
 ```js
 // run.js
@@ -896,7 +896,7 @@ Builds an application.
 import {
   build,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
     ...
@@ -925,7 +925,7 @@ import {
   ...
   start,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
       ...
@@ -953,7 +953,7 @@ import {
   ...
   watch,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
       ...
@@ -982,7 +982,7 @@ import {
   ...
   runTestcafe,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
       ...
@@ -1015,7 +1015,7 @@ import {
   ...
   merge,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
   ...
     const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
 ```
@@ -1036,7 +1036,7 @@ import {
   ...
   reset,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
       ...
@@ -1044,7 +1044,7 @@ import {
         const resolveConfig = merge(baseConfig, devConfig)
         await reset(resolveConfig, {
           dropEventStore: true,
-          dropEventBus: true,
+          dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true
         })
@@ -1070,7 +1070,7 @@ import {
   ...
   importEventStore,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
       ...
@@ -1101,7 +1101,7 @@ import {
   ...
   exportEventStore,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
       ...
@@ -1132,7 +1132,7 @@ import {
   ...
   validateConfig,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     validateConfig(config)
 ```
@@ -1275,9 +1275,9 @@ The `resolveContext` object contains data used internally by reSolve client libr
 
 See the [Client Application Entry Point](frontend.md#client-application-entry-point) section of the [Frontend](frontend.md) article for more information.
 
-### resolve-redux Library
+### @resolve-js/redux Library
 
-The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library includes both React Hooks and Higher-Order Components (HOCs).
+The reSolve framework includes the client **@resolve-js/redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library includes both React Hooks and Higher-Order Components (HOCs).
 
 ##### React Hooks:
 
@@ -1440,7 +1440,7 @@ Connects a React component to a reSolve Read Model.
 ##### Example
 
 ```js
-import { sendAggregateAction } from 'resolve-redux'
+import { sendAggregateAction } from '@resolve-js/redux'
 import { bindActionCreators } from 'redux'
 
 export const mapStateToOptions = () => ({
@@ -1486,12 +1486,12 @@ Fixes URLs passed to the specified props to correct the static resource folder p
 export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 ```
 
-### resolve-client Library
+### @resolve-js/client Library
 
-The **resolve-client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
+The **@resolve-js/client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
 
 ```js
-import { getClient } from 'resolve-client'
+import { getClient } from '@resolve-js/client'
 
 const main = async resolveContext => {
   const client = getClient(resolveContext)
@@ -1595,9 +1595,9 @@ Unsubscribes from View Model updates.
 await client.unsubscribe(subscription)
 ```
 
-### resolve-react-hooks library
+### @resolve-js/react-hooks library
 
-The **resolve-react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
+The **@resolve-js/react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
 
 | Hook                                    | Description                                                               |
 | --------------------------------------- | ------------------------------------------------------------------------- |
@@ -1767,11 +1767,11 @@ var commandApiPath = resolver('/api/commands')
 
 ### Request Middleware
 
-The [resolve-client](#resolve-client-library) and [resolve-react-hooks](#resolve-react-hooks-library) libraries allow you to use request middleware to extend the client's functionality. Middleware implements intermediate logic that can modify the response object or handle errors before they are passed to the callback function.
+The [@resolve-js/client](#resolve-client-library) and [@resolve-js/react-hooks](#resolve-react-hooks-library) libraries allow you to use request middleware to extend the client's functionality. Middleware implements intermediate logic that can modify the response object or handle errors before they are passed to the callback function.
 
 Use a command's or query's `middleware` option to specify middleware:
 
-#### resolve-client:
+#### @resolve-js/client:
 
 ```js
 client.query(
@@ -1803,7 +1803,7 @@ client.query(
 })
 ```
 
-#### resolve-react-hooks:
+#### @resolve-js/react-hooks:
 
 ```js
 const myQuery = useQuery(
@@ -1838,7 +1838,7 @@ Multiple middleware functions are run in the order they are specified in the opt
 
 #### Available Middlewares
 
-This section lists request middleware included into the resolve-client package. The following middleware is available:
+This section lists request middleware included into the @resolve-js/client package. The following middleware is available:
 
 | Name                | Description                                               |
 | ------------------- | --------------------------------------------------------- |
@@ -1853,7 +1853,7 @@ Deserializes the response data if it contains valid JSON. If the data is not JSO
 This middleware has no options. You can add it to a request as shown below:
 
 ```js
-import { createParseResponseMiddleware } from 'resolve-client'
+import { createParseResponseMiddleware } from '@resolve-js/client'
 ...
 
 const { data } = await client.query(
@@ -1885,7 +1885,7 @@ The `retryOnError` middleware has the following options:
 You can add the `retryOnError` middleware to a request as shown below:
 
 ```js
-import { createRetryOnErrorMiddleware } from 'resolve-client'
+import { createRetryOnErrorMiddleware } from '@resolve-js/client'
 ...
 
 client.command(
@@ -1933,7 +1933,7 @@ The `waitForResponse` middleware has the following options:
 You can add the `retryOnError` middleware to a request as shown below:
 
 ```js
-import { createWaitForResponseMiddleware } from 'resolve-client'
+import { createWaitForResponseMiddleware } from '@resolve-js/client'
 ...
 
 const { data } = await client.query(

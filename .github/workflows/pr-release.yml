@@ -1,0 +1,29 @@
+name: release-bot
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+    branches:
+      - master*
+
+  pull_request_review:
+    types:
+      - submitted
+      - dismissed
+      - edited
+    branches:
+      - master*
+
+jobs:
+  process:
+    if: startsWith(github.event.pull_request.base.ref, 'master')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: reimagined/github-actions/release-pr-bot@v1
+        with:
+          event: ${{ toJSON(github.event) }}
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          required_reviews: 1

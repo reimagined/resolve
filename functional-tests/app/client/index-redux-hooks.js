@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Router } from 'react-router'
-import { createResolveStore, ResolveReduxProvider } from 'resolve-redux'
+import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
 import { createBrowserHistory } from 'history'
 
 import Routes from './redux-hooks/components/Routes'
