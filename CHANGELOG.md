@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Local config
 
-- Removed **eventBroker** section
+- Removed the **eventBroker** section
 
 #### Cloud config
 
@@ -36,6 +36,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Runtime env RESOLVE_ES_SECRET_ARN renamed to RESOLVE_USER_SECRET_ARN
 - Runtime env RESOLVE_ES_EVENTS_TABLE removed
 - Runtime env RESOLVE_ES_SECRETS_TABLE removed
+
+### Added
+
+#### Local config
+
+- Added the **name** option. By default, it shares its value with the "name" field from package.json.
 
 ### Changed
 
