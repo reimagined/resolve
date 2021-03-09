@@ -75,7 +75,7 @@ const createCommentsCommands = (
 
     if (command.payload.content == null) {
       throw new Error(
-        'A non-null "content" field is required when udating a comment'
+        'A non-null "content" field is required when updating a comment'
       )
     }
 
