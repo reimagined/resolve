@@ -5,6 +5,9 @@ import createAdapter from '@resolve-js/eventstore-base'
 
 import loadEventsByCursor from './load-events-by-cursor'
 import loadEventsByTimestamp from './load-events-by-timestamp'
+import ensureEventSubscriber from './ensure-event-subscriber'
+import removeEventSubscriber from './remove-event-subscriber'
+import getEventSubscribers from './get-event-subscribers'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import injectEvent from './inject-event'
@@ -40,6 +43,9 @@ const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {
       connect,
       loadEventsByCursor,
       loadEventsByTimestamp,
+      ensureEventSubscriber,
+      removeEventSubscriber,
+      getEventSubscribers,
       getLatestEvent,
       saveEvent,
       initEvents,

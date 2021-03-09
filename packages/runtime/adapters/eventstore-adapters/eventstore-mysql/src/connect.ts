@@ -23,6 +23,7 @@ const connect = async (
     eventsTableName,
     snapshotsTableName,
     secretsTableName,
+    subscribersTableName,
     database,
     // eslint-disable-next-line prefer-const
     ...connectionOptions
@@ -31,6 +32,7 @@ const connect = async (
   eventsTableName = eventsTableName ?? 'events'
   snapshotsTableName = snapshotsTableName ?? 'snapshots'
   secretsTableName = secretsTableName ?? 'secrets'
+  subscribersTableName = subscribersTableName ?? 'subscribers'
 
   log.debug(`establishing connection`)
 
@@ -57,6 +59,7 @@ const connect = async (
       eventsTableName,
       snapshotsTableName,
       secretsTableName,
+      subscribersTableName,
       database,
     }
   )

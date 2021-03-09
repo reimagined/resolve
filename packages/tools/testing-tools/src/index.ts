@@ -2,8 +2,6 @@ import {
   createQuery,
   createCommand,
   CreateQueryOptions,
-  detectConnectorFeatures,
-  connectorModes,
 } from '@resolve-js/runtime'
 import { SerializableMap, CommandResult } from '@resolve-js/core'
 import as from './as'
@@ -39,8 +37,6 @@ export default givenEvents.bind(null, {
   setSecretsManager,
   aggregate,
   command,
-  detectConnectorFeatures,
-  connectorModes,
 }) as (events: any[]) => GivenEventsContext
 
 export const RESOLVE_SIDE_EFFECTS_START_TIMESTAMP =

@@ -17,6 +17,8 @@ const GRACEFUL_WORKER_SHUTDOWN_TIME = 30 * 1000
 const getVacantTimeInMillis = (lambdaContext) =>
   lambdaContext.getRemainingTimeInMillis() - GRACEFUL_WORKER_SHUTDOWN_TIME
 
+const EVENT_SUBSCRIBER_DIRECT = 'EventSubscriberDirect'
+
 let coldStart = true
 
 const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
@@ -24,25 +26,14 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   log.verbose('incoming event', JSON.stringify(lambdaEvent, null, 2))
   lambdaContext.callbackWaitsForEmptyEventLoop = false
 
-  resolveBase.eventSubscriberCredentials = {
-    mode: 'internal',
+  resolveBase.eventSubscriberDestination = {
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
-    lambdaEventType: 'EventBus',
-    lambdaEventName: 'resolveSource',
   }
-
-  resolveBase.eventstoreCredentials = {
-    mode: 'internal',
-    applicationLambdaArn: lambdaContext.invokedFunctionArn,
-    lambdaEventType: 'EventStore',
-    lambdaEventName: 'resolveSource',
-  }
-
   resolveBase.subscriptionsCredentials = {
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
   }
 
-  resolveBase.invokeEventBusAsync = async (
+  resolveBase.invokeEventSubscriberAsync = async (
     eventSubscriber,
     method,
     parameters
@@ -52,7 +43,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       InvocationType: 'Event',
       Region: process.env.AWS_REGION,
       Payload: {
-        resolveSource: 'EventBusDirect',
+        resolveSource: EVENT_SUBSCRIBER_DIRECT,
         method,
         payload: {
           eventSubscriber,
@@ -89,26 +80,10 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
-    } else if (lambdaEvent.resolveSource === 'EventBusDirect') {
-      log.debug('identified event source: event-bus-direct')
+    } else if (lambdaEvent.resolveSource === EVENT_SUBSCRIBER_DIRECT) {
+      log.debug('identified event source: event-subscriber-direct')
       const { method, payload } = lambdaEvent
-      const executorResult = await resolve.eventBus[method](payload)
-
-      log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
-
-      return executorResult
-    } else if (lambdaEvent.resolveSource === 'EventBus') {
-      log.debug('identified event source: event-bus')
-      const { method, payload } = lambdaEvent
-      const executorResult = await resolve.eventListener[method](payload)
-
-      log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
-
-      return executorResult
-    } else if (lambdaEvent.resolveSource === 'EventStore') {
-      log.debug('identified event source: event-store')
-      const { method, payload } = lambdaEvent
-      const executorResult = await resolve.eventStore[method](payload)
+      const executorResult = await resolve.eventSubscriber[method](payload)
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 

@@ -1,2 +1,4 @@
-test
 src
+test
+tsconfig*.json
+lib/**/*.map

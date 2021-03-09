@@ -13,7 +13,5 @@ Core libraries:
 
 - [@resolve-js/redux](@resolve-js/redux)  
    Provides a Redux storage helper.
-- [@resolve-js/local-event-broker](@resolve-js/local-event-broker)  
-   Provides a local Event Broker
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-core-readme?pixel)

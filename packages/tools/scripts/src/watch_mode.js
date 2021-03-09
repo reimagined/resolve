@@ -49,28 +49,6 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     },
   })
 
-  let broker = null
-  if (resolveConfig.eventBroker.launchBroker) {
-    const brokerPath = path.resolve(
-      process.cwd(),
-      path.join(
-        resolveConfig.distDir,
-        './common/local-entry/local-bus-broker.js'
-      )
-    )
-
-    broker = processRegister(['node', brokerPath], {
-      cwd: process.cwd(),
-      maxRestarts: 0,
-      kill: 5000,
-      stdio: 'inherit',
-      env: {
-        ...process.env,
-        RESOLVE_LAUNCH_ID: resolveLaunchId,
-      },
-    })
-  }
-
   process.env.RESOLVE_SERVER_FIRST_START = 'true'
   process.env.RESOLVE_SERVER_OPEN_BROWSER = 'true'
 
@@ -124,10 +102,6 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
             process.env.RESOLVE_SERVER_FIRST_START = 'false'
             server.stop(() => server.start())
           } else {
-            if (resolveConfig.eventBroker.launchBroker) {
-              broker.start()
-              log.debug(`Bus broker process pid: ${broker.pid}`)
-            }
             server.start()
             log.debug(`Server process pid: ${server.pid}`)
 

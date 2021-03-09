@@ -49,6 +49,9 @@ const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
     saveSnapshot: jest.fn((snapshotKey, data) => {
       snapshots[snapshotKey] = data
     }),
+    ensureEventSubscriber: jest.fn().mockResolvedValue(null),
+    removeEventSubscriber: jest.fn().mockResolvedValue(null),
+    getEventSubscribers: jest.fn().mockResolvedValue([]),
   }
 
   const monitoring: Monitoring = {

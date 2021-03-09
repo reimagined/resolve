@@ -19,9 +19,6 @@ const testFunctionalConfig = {
       secretsFile: 'data/secrets-test-functional.db',
     },
   },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker-test-functional.db',
-  },
 }
 
 export default testFunctionalConfig

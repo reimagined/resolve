@@ -7,11 +7,13 @@ const log = debugLevels('resolve:runtime:shutdown')
 const shutdown = async (resolve, upstream) => {
   log.debug('shutdown started')
   const promises = []
-  for (const { name: eventSubscriber } of resolve.eventListeners.values()) {
+  for (const { name } of resolve.eventListeners.values()) {
     promises.push(
       shutdownOne({
-        eventBus: resolve.eventBus,
-        eventSubscriber,
+        applicationName: resolve.applicationName,
+        eventstoreAdapter: resolve.eventstoreAdapter,
+        eventSubscriber: resolve.eventSubscriber,
+        name,
         upstream,
       })
     )
