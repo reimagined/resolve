@@ -44,7 +44,8 @@ jobs:
           RESOLVE_E2E_TESTS_HEADLESS_MODE: true
           DEBUG: resolve:scripts*
           DEBUG_LEVEL: debug
-        run: yarn test:e2e
+        run: |
+          yarn test:e2e
 
       - name: Publish to private repository
         id: publish
