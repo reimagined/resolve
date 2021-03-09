@@ -19,7 +19,7 @@ const shutdownOne = async ({
   } catch (error) {
     // eslint-disable-next-line no-console
     console.warn(`
-      Event subscriber "${name}" can't stop subscription because of error "${error}"
+      Event subscriber "${name}" can't stop subscription due to error "${error}"
     `)
   }
 }
