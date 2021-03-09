@@ -9,9 +9,9 @@ const {
   reset,
   importEventStore,
   exportEventStore,
-} = require('resolve-scripts')
-const createAuthModule = require('resolve-module-auth').default
-const resolveModuleAdmin = require('resolve-module-admin').default
+} = require('@resolve-js/scripts')
+const createAuthModule = require('@resolve-js/module-auth').default
+const resolveModuleAdmin = require('@resolve-js/module-admin').default
 const getLocalIp = require('my-local-ip')
 const remotedev = require('remotedev-server')
 const opn = require('opn')
@@ -83,7 +83,7 @@ void (async () => {
           resolveConfig,
           {
             dropEventStore: false,
-            dropEventBus: true,
+            dropEventSubscriber: true,
             dropReadModels: true,
             dropSagas: true,
           },
@@ -173,11 +173,11 @@ void (async () => {
           authModule
         )
 
-        const importFile = process.argv[3]
+        const directory = process.argv[3]
 
         await importEventStore(
           resolveConfig,
-          { importFile },
+          { directory },
           adjustWebpackConfigs
         )
         break
@@ -191,11 +191,11 @@ void (async () => {
           authModule
         )
 
-        const exportFile = process.argv[3]
+        const directory = process.argv[3]
 
         await exportEventStore(
           resolveConfig,
-          { exportFile },
+          { directory },
           adjustWebpackConfigs
         )
         break
@@ -215,7 +215,7 @@ void (async () => {
           resolveConfig,
           {
             dropEventStore: true,
-            dropEventBus: true,
+            dropEventSubscriber: true,
             dropReadModels: true,
             dropSagas: true,
           },

@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const prodConfig = {
   target: 'local',
@@ -10,14 +10,14 @@ const prodConfig = {
   distDir: 'dist',
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-models.db',
       },
     },
     /*
       default: {
-        module: 'resolve-readmodel-mysql',
+        module: '@resolve-js/readmodel-mysql',
         options: {
           host: 'localhost',
           port: 3306,
@@ -29,25 +29,16 @@ const prodConfig = {
     */
   },
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
       snapshotBucketSize: 100,
     },
   },
-  schedulers: {
-    scheduler: {
-      adapter: {
-        module: 'resolve-scheduler-local',
-        options: {},
-      },
-      connectorName: 'default',
-    },
-  },
   /*
     {
-      module: 'resolve-eventstore-mysql',
+      module: '@resolve-js/eventstore-mysql',
       options: {
         host: 'localhost',
         port: 3306,

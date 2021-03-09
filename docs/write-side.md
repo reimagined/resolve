@@ -21,10 +21,27 @@ Aggregate state is explicitly passed to all of these functions as an argument.
 
 ## Aggregate ID
 
-Each aggregate should have a unique ID that is immutable during the aggregate's lifetime. An Aggregate ID should stay unique in the given event store, however we also recommend to keep it
-globally unique. We recommend that you use [UUID v4](https://github.com/kelektiv/node-uuid#version-4) or [cuid](https://github.com/ericelliott/cuid) to generate aggregate IDs for scalable apps.
+Each aggregate instance should have a unique immutable ID. You should generate an aggregate ID on the client and send it to reSolve with a command that creates a new aggregate:
 
-Note that you have to generate a new Aggregate ID and send it with a command that creates a new aggregate.
+```js
+import { useCommand } from '@resolve-js/react-hooks'
+...
+const createShoppingListCommand = useCommand(
+  {
+    type: 'createShoppingList',
+    aggregateId: uuid(),
+    aggregateName: 'ShoppingList',
+    payload: {
+      name: shoppingListName
+    },
+  },
+  (err, result) => {
+    ...
+  }
+)
+```
+
+An Aggregate ID should stay unique across all aggregates in the given event store. You can use [UUID v4](https://github.com/kelektiv/node-uuid#version-4) or [cuid](https://github.com/ericelliott/cuid) to generate aggregate IDs for scalable applications.
 
 ## Configuring Aggregates
 
@@ -54,7 +71,7 @@ You can emit aggregate commands in the following cases:
 
 ### Sending Commands From the Client
 
-The reSolve framework exposes an [HTTP API](api-reference.md#commands-http-api) that you can use to to send commands from the client side. Your application's frontend can use this API directly or through the **Redux** binding mechanism from the **[resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux)** library.
+The reSolve framework exposes an [HTTP API](api-reference.md#commands-http-api) that you can use to to send commands from the client side. Your application's frontend can use this API directly or through one of the available [client libraries](frontend.md).
 
 You can send a command from the client side as a POST request to the following URL:
 
@@ -114,7 +131,7 @@ await resolve.executeCommand({
   type: userWithSameEmail ? 'rejectUserCreation' : 'confirmUserCreation',
   aggregateName: 'user',
   payload: { createdUser },
-  aggregateId
+  aggregateId,
 })
 ```
 
@@ -122,7 +139,7 @@ For the full code sample, refer to the [with-saga](https://github.com/reimagined
 
 ## Aggregate Command Handlers
 
-Aggregate command handlers are grouped into a static object. A command handler receives a command and a state object built by the aggregate [Projection](#aggregate-projection-function). The command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type.
+Aggregate command handlers are grouped into a static object. A command handler receives a command and a state object built by the aggregate [Projection](#aggregate-projection-function). The command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type. Here you can also add arbitrary validation logic that throws an error if the validation fails.
 
 A typical **Commands** object structure:
 
@@ -131,12 +148,16 @@ export default {
   // A command handler
   createStory: (state, command) => {
     const { title, link, text } = command.payload
+    // The validation logic
+    if (!text) {
+      throw new Error('The "text" field is required')
+    }
     // The resulting event object
     return {
       type: 'StoryCreated',
-      payload: { title, text, link, userId, userName }
+      payload: { title, text, link, userId, userName },
     }
-  }
+  },
   // ...
 }
 ```
@@ -173,7 +194,7 @@ You can specify the storage adapter in the **storageAdapter** config section:
 
 ```js
 storageAdapter: {
-  module: 'resolve-eventstore-lite',
+  module: '@resolve-js/eventstore-lite',
   options: {
     databaseFile: '../data/event-store.db'
   }
@@ -182,8 +203,8 @@ storageAdapter: {
 
 Adapters for the following storage types are available out of the box:
 
-- [File or memory](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-eventstore-lite)
-- [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-eventstore-mysql)
+- [File or memory](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/@resolve-js/eventstore-lite)
+- [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/@resolve-js/eventstore-mysql)
 
 You can also add your own storage adapter to store events.
 Refer to the [Adapters](advanced-techniques.md#adapters) section of the reSolve documentation for more information about adapters.

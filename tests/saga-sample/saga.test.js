@@ -1,20 +1,17 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents, {
   RESOLVE_SIDE_EFFECTS_START_TIMESTAMP,
-} from 'resolve-testing-tools'
+} from '@resolve-js/testing-tools'
 
 import config from './config'
-import resetReadModel from '../reset-read-model'
 
 jest.setTimeout(1000 * 60 * 5)
 
 describe('Saga', () => {
-  const {
-    name: sagaName,
-    source: sourceModule,
-    connectorName,
-    schedulerName,
-  } = config.sagas.find(({ name }) => name === 'UserConfirmation')
+  const currentSaga = config.sagas.find(
+    ({ name }) => name === 'UserConfirmation'
+  )
+  const { name: sagaName, source: sourceModule, connectorName } = currentSaga
   const {
     module: connectorModule,
     options: connectorOptions,
@@ -29,8 +26,7 @@ describe('Saga', () => {
 
   describe('with sideEffects.isEnabled = true', () => {
     beforeEach(async () => {
-      await resetReadModel(createConnector, connectorOptions, schedulerName)
-      await resetReadModel(createConnector, connectorOptions, sagaName)
+      process.env.RESOLVE_LAUNCH_ID = `${Date.now()}${Math.random()}`
       adapter = createConnector(connectorOptions)
       sagaWithAdapter = {
         handlers: source.handlers,
@@ -41,8 +37,6 @@ describe('Saga', () => {
     })
 
     afterEach(async () => {
-      await resetReadModel(createConnector, connectorOptions, schedulerName)
-      await resetReadModel(createConnector, connectorOptions, sagaName)
       adapter = null
       sagaWithAdapter = null
     })
@@ -86,8 +80,7 @@ describe('Saga', () => {
 
   describe('with sideEffects.isEnabled = false', () => {
     beforeEach(async () => {
-      await resetReadModel(createConnector, connectorOptions, schedulerName)
-      await resetReadModel(createConnector, connectorOptions, sagaName)
+      process.env.RESOLVE_LAUNCH_ID = `${Date.now()}${Math.random()}`
       adapter = createConnector(connectorOptions)
       sagaWithAdapter = {
         handlers: source.handlers,
@@ -98,8 +91,6 @@ describe('Saga', () => {
     })
 
     afterEach(async () => {
-      await resetReadModel(createConnector, connectorOptions, schedulerName)
-      await resetReadModel(createConnector, connectorOptions, sagaName)
       adapter = null
       sagaWithAdapter = null
     })

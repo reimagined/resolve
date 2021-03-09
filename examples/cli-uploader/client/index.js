@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { createResolveStore, ResolveReduxProvider } from 'resolve-redux'
+import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
 import jsCookie from 'js-cookie'
 import jwt from 'jsonwebtoken'
 
@@ -26,7 +26,7 @@ const entryPoint = (clientContext) => {
   render(
     <ResolveReduxProvider store={store} context={clientContext}>
       <Layout jwt={jwtObject}>
-        <App store={store} CDNUrl={clientContext.localS3Constants.CDNUrl} />
+        <App store={store} CDNUrl={clientContext.cdnUrl} />
       </Layout>
     </ResolveReduxProvider>,
     appContainer

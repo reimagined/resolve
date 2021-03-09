@@ -1,0 +1,37 @@
+name: master (push)
+
+on:
+  push:
+    branches:
+      - master*
+
+jobs:
+  release:
+    if: github.event.head_commit.message != '<auto> merge version branch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+
+      - name: Build packages
+        run: |
+          yarn install --frozen-lockfile
+
+      - uses: reimagined/github-actions/publish@v1
+        with:
+          registry: npm
+          token: ${{ secrets.NPM_RESOLVEJS_TOKEN }}
+          version: source
+          tag: pre-release
+          unpublish: false
+
+      - uses: reimagined/github-actions/git-release@v1
+        with:
+          push_event: ${{ toJSON(github.event) }}
+          commit: ${{ github.sha }}
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          ssh_private_key: ${{ secrets.RESOLVE_BOT_SSH_PRIVATE_KEY }}
+          release_branch: master-test
+          development_branch: dev
+

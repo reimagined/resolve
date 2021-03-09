@@ -1,18 +1,13 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents from 'resolve-testing-tools'
+import givenEvents from '@resolve-js/testing-tools'
 
 import config from './config'
-import resetReadModel from '../reset-read-model'
 
 jest.setTimeout(1000 * 60 * 5)
 
 describe('Saga', () => {
-  const {
-    name: sagaName,
-    source: sourceModule,
-    connectorName,
-    schedulerName,
-  } = config.sagas.find(({ name }) => name === 'ProcessKiller')
+  const currentSaga = config.sagas.find(({ name }) => name === 'ProcessKiller')
+  const { name: sagaName, source: sourceModule, connectorName } = currentSaga
   const {
     module: connectorModule,
     options: connectorOptions,
@@ -42,9 +37,6 @@ describe('Saga', () => {
   let adapter = null
 
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, schedulerName)
-    await resetReadModel(createConnector, connectorOptions, sagaName)
-
     adapter = createConnector(connectorOptions)
     sagaWithAdapter = {
       handlers: source.handlers,
@@ -55,9 +47,6 @@ describe('Saga', () => {
   })
 
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, schedulerName)
-    await resetReadModel(createConnector, connectorOptions, sagaName)
-
     adapter = null
     sagaWithAdapter = null
   })

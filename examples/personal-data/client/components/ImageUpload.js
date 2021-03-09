@@ -9,13 +9,13 @@ import {
 } from 'reactstrap'
 import { v4 as uuid } from 'uuid'
 import FileUploadProgress from 'react-fileupload-progress'
-import { useCommandBuilder } from 'resolve-react-hooks'
+import { useCommandBuilder } from '@resolve-js/react-hooks'
 
 import {
   getCDNBasedUrl,
   getFormUpload,
   getToken,
-} from 'resolve-module-uploader'
+} from '@resolve-js/module-uploader'
 
 import UploaderContext from '../context'
 

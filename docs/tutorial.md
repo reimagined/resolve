@@ -491,7 +491,7 @@ $ curl -X POST \
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-3)
 
-This lesson describes how to display a Read Model's data in the client browser. The code in this lesson uses the reSolve framework's **resolve-react-hooks** library to implement a frontend based on React with hooks.
+This lesson describes how to display a Read Model's data in the client browser. The code in this lesson uses the reSolve framework's **@resolve-js/redux** library to implement a frontend based on React with hooks.
 
 Refer to the [Frontend](frontend.md) article for information on other tools that you can use to implement a frontend.
 

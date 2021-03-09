@@ -1,17 +1,19 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 export default {
   target: 'cloud',
   mode: 'production',
   staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
   eventstoreAdapter: {
-    module: 'resolve-eventstore-postgresql-serverless',
+    module: '@resolve-js/eventstore-postgresql-serverless',
     options: {
-      awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_ARN'),
-      dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_ES_CLUSTER_ARN'),
-      databaseName: declareRuntimeEnv('RESOLVE_ES_DATABASE'),
-      eventsTableName: declareRuntimeEnv('RESOLVE_ES_EVENTS_TABLE'),
-      secretsTableName: declareRuntimeEnv('RESOLVE_ES_SECRETS_TABLE'),
+      awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
+      dbClusterOrInstanceArn: declareRuntimeEnv(
+        'RESOLVE_EVENT_STORE_CLUSTER_ARN'
+      ),
+      databaseName: declareRuntimeEnv('RESOLVE_EVENT_STORE_DATABASE_NAME'),
+      eventsTableName: 'events',
+      secretsTableName: 'secrets',
       region: declareRuntimeEnv('AWS_REGION'),
       snapshotBucketSize: 100,
     },

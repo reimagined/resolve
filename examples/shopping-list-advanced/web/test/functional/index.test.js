@@ -9,8 +9,14 @@ const getRootBasedUrl = (url) => MAIN_PAGE + url
 
 const registerFirstUser = async (t) => {
   await t.navigateTo(getRootBasedUrl('/login'))
-  await t.typeText(await Selector('input[name="username"]'), 'User 1')
-  await t.typeText(await Selector('input[name="password"]'), 'User Password 1')
+  await t.typeText(await Selector('input[name="username"]'), 'User 1', {
+    paste: true,
+  })
+  await t.typeText(
+    await Selector('input[name="password"]'),
+    'User Password 1',
+    { paste: true }
+  )
   await t.click(await Selector('.btn-success'))
 
   // eslint-disable-next-line no-restricted-globals
@@ -19,8 +25,14 @@ const registerFirstUser = async (t) => {
 
 const loginFirstUser = async (t) => {
   await t.navigateTo(getRootBasedUrl('/login'))
-  await t.typeText(await Selector('input[name="username"]'), 'User 1')
-  await t.typeText(await Selector('input[name="password"]'), 'User Password 1')
+  await t.typeText(await Selector('input[name="username"]'), 'User 1', {
+    paste: true,
+  })
+  await t.typeText(
+    await Selector('input[name="password"]'),
+    'User Password 1',
+    { paste: true }
+  )
   await t.click(await Selector('.btn-primary'))
 }
 
@@ -70,7 +82,8 @@ test('create first shopping list', async (t) => {
 
   await t.typeText(
     await Selector('.example-form-control'),
-    'First Shopping List'
+    'First Shopping List',
+    { paste: true }
   )
   await t.click(await Selector('button').withText('Add Shopping List'))
 
@@ -84,7 +97,8 @@ test('create second shopping list', async (t) => {
 
   await t.typeText(
     await Selector('.example-form-control'),
-    'Second Shopping List'
+    'Second Shopping List',
+    { paste: true }
   )
   await t.click(await Selector('button').withText('Add Shopping List'))
 
@@ -104,13 +118,19 @@ test('create items in first shopping list', async (t) => {
 
   await waitSelector(t, 'ShoppingLists', Selector('input[type=text]').nth(1))
 
-  await t.typeText(Selector('input[type=text]').nth(1), 'Item 1')
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 1', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]').nth(1), 'Item 2')
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 2', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]').nth(1), 'Item 3')
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 3', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Item'))
 
   await t.expect(Selector('label').withText('Item 1').exists).eql(true)

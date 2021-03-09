@@ -30,13 +30,13 @@ const appConfig = {
       name: 'UserConfirmation',
       source: 'common/sagas/user-confirmation.saga.js',
       connectorName: 'default',
-      schedulerName: 'scheduler',
     },
   ],
   apiHandlers: [
     {
       handler: {
-        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        module:
+          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
         options: {
           modulePath: './ssr.js',
           moduleFactoryImport: false,

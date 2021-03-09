@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { useQuery } from 'resolve-react-hooks'
+import { useQuery } from '@resolve-js/react-hooks'
 import ShoppingLists from './ShoppingLists'
 import ShoppingListCreator from './ShoppingListCreator'
 

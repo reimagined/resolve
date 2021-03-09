@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works correctly 1`] = `
+"
+import '$resolve.guardOnlyServer'
+const seedClientEnvs = {}
+Object.defineProperty(
+      seedClientEnvs,
+      \\"RESOLVE_UPLOADER_CDN_URL\\",
+      {
+        enumerable: true,
+        get: () => {
+          return (((first, second) => (first != null ? first : second))(process.env[\\"RESOLVE_UPLOADER_CDN_URL\\"], null))
+        }
+      }
+    )
+Object.defineProperty(
+      seedClientEnvs,
+      \\"customConstants\\",
+      {
+        enumerable: true,
+        get: () => {
+          return (((first, second) => (first != null ? first : second))(process.env[\\"customConstants\\"], null))
+        }
+      }
+    )
+Object.defineProperty(
+      seedClientEnvs,
+      \\"staticPath\\",
+      {
+        enumerable: true,
+        get: () => {
+          return (((first, second) => (first != null ? first : second))(process.env[\\"staticPath\\"], null))
+        }
+      }
+    )
+Object.defineProperty(
+      seedClientEnvs,
+      \\"rootPath\\",
+      {
+        enumerable: true,
+        get: () => {
+          return (((first, second) => (first != null ? first : second))(process.env[\\"rootPath\\"], null))
+        }
+      }
+    )
+Object.freeze(seedClientEnvs)
+
+export default seedClientEnvs
+"
+`;

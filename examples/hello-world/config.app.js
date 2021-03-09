@@ -28,7 +28,6 @@ const appConfig = {
       name: 'saga-name',
       source: 'common/sagas/saga-name.js',
       connectorName: 'default',
-      schedulerName: 'scheduler',
     },
   ],
   clientEntries: ['client/index.js'],

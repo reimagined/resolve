@@ -45,11 +45,19 @@ const refreshAndWait = async (t, eventSubscriber, selector, expectedValue) => {
 const userRegistration = async (t, user) => {
   const { nickname, firstName, lastName, phoneNumber, address } = user
   const registrationForm = ReactSelector('RegistrationForm')
-  await t.typeText(registrationForm.find('#nickname'), nickname)
-  await t.typeText(registrationForm.find('#firstName'), firstName)
-  await t.typeText(registrationForm.find('#lastName'), lastName)
-  await t.typeText(registrationForm.find('#phoneNumber'), phoneNumber)
-  await t.typeText(registrationForm.find('#address'), address)
+  await t.typeText(registrationForm.find('#nickname'), nickname, {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#firstName'), firstName, {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#lastName'), lastName, {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#phoneNumber'), phoneNumber, {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#address'), address, { paste: true })
   await t.click(registrationForm.find('#consent'))
   await t.click(registrationForm.find('button').withText('Sign Up'))
   await refreshAndWait(
@@ -64,8 +72,8 @@ const publishPost = async (t, post) => {
   const { title, content } = post
   const newPostButton = ReactSelector('button').withText('Publish new post')
   await t.click(newPostButton)
-  await t.typeText(Selector('#addPostTitle'), title)
-  await t.typeText(Selector('#addPostContent'), content)
+  await t.typeText(Selector('#addPostTitle'), title, { paste: true })
+  await t.typeText(Selector('#addPostContent'), content, { paste: true })
   const publishPostButton = ReactSelector('button').withText('Publish')
   await t.click(publishPostButton)
 }
@@ -104,7 +112,7 @@ test('registered user, posts creation', async (t) => {
 })
 
 test('registered user, posts deletion', async (t) => {
-  await userRegistration(t, generateUser(2))
+  await userRegistration(t, generateUser(3))
   await publishPost(t, generatePost(1))
   await publishPost(t, generatePost(2))
   await publishPost(t, generatePost(3))
@@ -125,15 +133,23 @@ test('registered user, posts deletion', async (t) => {
 })
 
 test('registered user, profile update', async (t) => {
-  await userRegistration(t, generateUser(3))
+  await userRegistration(t, generateUser(4))
 
   await t.navigateTo(`${MAIN_PAGE}/profile`)
 
   const registrationForm = ReactSelector('RegistrationForm')
-  await t.typeText(registrationForm.find('#firstName'), '-updated')
-  await t.typeText(registrationForm.find('#lastName'), '-updated')
-  await t.typeText(registrationForm.find('#phoneNumber'), '-updated')
-  await t.typeText(registrationForm.find('#address'), '-updated')
+  await t.typeText(registrationForm.find('#firstName'), '-updated', {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#lastName'), '-updated', {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#phoneNumber'), '-updated', {
+    paste: true,
+  })
+  await t.typeText(registrationForm.find('#address'), '-updated', {
+    paste: true,
+  })
 
   const updateButton = ReactSelector('button').withText('Update')
   await t.click(updateButton)
@@ -141,7 +157,7 @@ test('registered user, profile update', async (t) => {
   await t.navigateTo(MAIN_PAGE)
 
   const fullName = Selector('p').withText(
-    `user-name-3-updated user-lastName-3-updated`
+    `user-name-4-updated user-lastName-4-updated`
   )
 
   await refreshAndWait(t, 'user-profiles', () => fullName.exists, true)
@@ -149,9 +165,9 @@ test('registered user, profile update', async (t) => {
 })
 
 test('registered user, gather personal data', async (t) => {
-  await userRegistration(t, generateUser(4))
+  await userRegistration(t, generateUser(5))
 
-  let nicknameItem = ReactSelector('a').withText('user-nickname-4')
+  let nicknameItem = ReactSelector('a').withText('user-nickname-5')
   await t.click(nicknameItem)
 
   const gatherItem = ReactSelector('button').withText('Gather my personal data')
@@ -162,7 +178,7 @@ test('registered user, gather personal data', async (t) => {
 
   await t.wait(5000).navigateTo(MAIN_PAGE)
 
-  nicknameItem = ReactSelector('a').withText('user-nickname-4')
+  nicknameItem = ReactSelector('a').withText('user-nickname-5')
   await t.click(nicknameItem)
 
   const downloadItem = ReactSelector('a').withText('Download')
@@ -170,9 +186,9 @@ test('registered user, gather personal data', async (t) => {
 })
 
 test('registered user, profile removal', async (t) => {
-  await userRegistration(t, generateUser(5))
+  await userRegistration(t, generateUser(6))
 
-  const nicknameItem = ReactSelector('a').withText('user-nickname-5')
+  const nicknameItem = ReactSelector('a').withText('user-nickname-6')
   await t.click(nicknameItem)
 
   const removeItem = ReactSelector('button').withText('Delete my profile')
