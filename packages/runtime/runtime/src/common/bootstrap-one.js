@@ -32,7 +32,7 @@ const bootstrapOne = async ({
   } catch (error) {
     // eslint-disable-next-line no-console
     console.warn(`
-      Event subscriber "${name}" can't resume subscription because of error "${error.stack}"
+      Event subscriber "${name}" can't resume subscription due to error "${error.stack}"
     `)
   }
 }

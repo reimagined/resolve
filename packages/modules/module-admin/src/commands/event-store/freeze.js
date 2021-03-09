@@ -9,4 +9,4 @@ export const handler = async ({ url }) => {
 }
 
 export const command = 'freeze'
-export const describe = 'freeze eventstore'
+export const describe = 'freeze event store'

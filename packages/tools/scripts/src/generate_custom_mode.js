@@ -107,8 +107,8 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
             const result = await response.text()
             if (result !== 'ok') {
               lastError = [
-                `Error while communication with reSolve HTTP server at port ${port}`,
-                `Maybe multiple instances of reSolve applications trying to run with similar port`,
+                `Error communicating with reSolve HTTP server at port ${port}`,
+                `Multiple instances of reSolve applications may be trying to run on the same port`,
                 `${response.status}: ${response.statusText}`,
                 `${result}`,
               ].join('\n')
