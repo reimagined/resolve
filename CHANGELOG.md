@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Local config
 
-- Remove "eventBroker" section
+- Removed **eventBroker** section
 
 #### Cloud config
 
