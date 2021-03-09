@@ -1,5 +1,4 @@
 import React from 'react'
-import { Navbar, Image } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 
 const App = ({ staticPath }) => {

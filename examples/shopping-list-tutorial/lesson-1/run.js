@@ -7,6 +7,8 @@ import {
   merge,
   stop,
   reset,
+  importEventStore,
+  exportEventStore,
 } from '@resolve-js/scripts'
 
 import appConfig from './config.app'
@@ -14,7 +16,6 @@ import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
-import resolveModuleAdmin from '@resolve-js/module-admin'
 
 const launchMode = process.argv[2]
 
@@ -24,17 +25,6 @@ void (async () => {
       case 'dev': {
         const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
         await watch(resolveConfig)
-        break
-      }
-
-      case 'reset': {
-        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
-        await reset(resolveConfig, {
-          dropEventStore: false,
-          dropEventSubscriber: true,
-          dropReadModels: true,
-          dropSagas: true,
-        })
         break
       }
 

@@ -32,7 +32,8 @@
     "react-router-config": "5.1.1",
     "react-router-dom": "5.1.2",
     "redux": "4.0.5",
-    "redux-saga": "1.0.5"
+    "redux-saga": "1.0.5",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
