@@ -17,6 +17,7 @@ import resolveModuleAdmin from '@resolve-js/module-admin'
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
+import devReplicaConfig from './config.dev.replica'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test-functional'
 
@@ -68,6 +69,13 @@ void (async () => {
       case 'dev': {
         const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(baseConfig, devConfig, moduleAdmin)
+        await watch(resolveConfig)
+        break
+      }
+
+      case 'dev:replica': {
+        const moduleAdmin = resolveModuleAdmin()
+        const resolveConfig = merge(baseConfig, devReplicaConfig, moduleAdmin)
         await watch(resolveConfig)
         break
       }
