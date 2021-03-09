@@ -26,9 +26,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   log.verbose('incoming event', JSON.stringify(lambdaEvent, null, 2))
   lambdaContext.callbackWaitsForEmptyEventLoop = false
 
-  resolveBase.eventSubscriberDestination = {
-    applicationLambdaArn: lambdaContext.invokedFunctionArn,
-  }
+  resolveBase.eventSubscriberDestination = lambdaContext.invokedFunctionArn
   resolveBase.subscriptionsCredentials = {
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
   }

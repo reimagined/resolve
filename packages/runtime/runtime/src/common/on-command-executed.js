@@ -1,7 +1,38 @@
-const notifyEventSubscriber = async (resolve, destination) => {
-  // TODO notify foreign event subscribers
-  void resolve
-  void destination
+import http from 'http'
+
+const notifyEventSubscriber = async (resolve, destination, eventSubscriber) => {
+  switch (true) {
+    case /^https?:\/\//.test(destination): {
+      await new Promise((resolve, reject) => {
+        const req = http.request(`${destination}/${eventSubscriber}`, (res) => {
+          res.on('data', () => {})
+          res.on('end', resolve)
+          res.on('error', reject)
+        })
+        req.on('error', reject)
+        req.end()
+      })
+      break
+    }
+    case /^arn:aws:lambda:/.test(destination): {
+      await resolve.lambda.invokeFunction({
+        FunctionName: destination,
+        InvocationType: 'Event',
+        Region: destination.split(':')[3],
+        Payload: {
+          resolveSource: 'EventSubscriberDirect',
+          method: 'build',
+          payload: { eventSubscriber },
+        },
+      })
+      break
+    }
+    default: {
+      // eslint-disable-next-line no-console
+      console.warn(`Unknown event subscriber destination`)
+      break
+    }
+  }
 }
 
 const notifyEventSubscribers = async (resolve) => {
@@ -30,7 +61,14 @@ const notifyEventSubscribers = async (resolve) => {
       ) {
         promises.push(
           Promise.resolve()
-            .then(notifyEventSubscriber.bind(null, resolve, destination))
+            .then(
+              notifyEventSubscriber.bind(
+                null,
+                resolve,
+                destination,
+                eventSubscriber
+              )
+            )
             .catch((error) => {
               // eslint-disable-next-line no-console
               console.warn(

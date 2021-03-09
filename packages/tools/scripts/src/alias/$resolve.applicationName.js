@@ -1,8 +1,12 @@
 import resolveFile from '../resolve_file'
 
-export default () => {
-  const { name: applicationName } = require(resolveFile('package.json'))
+export default ({ resolveConfig }) => {
   const exports = []
+
+  const applicationName =
+    resolveConfig.name == null
+      ? require(resolveFile('package.json')).name
+      : resolveConfig.name
 
   exports.push(
     `const applicationName = ${JSON.stringify(applicationName)}`,
