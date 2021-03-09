@@ -6,16 +6,29 @@ const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
 const MAIN_PAGE = `http://${host}:${port}`
 
+const waitSelector = async (t, eventSubscriber, selector) => {
+  while (true) {
+    const res = await fetch(`${MAIN_PAGE}/api/event-broker/read-models-list`)
+
+    const readModel = (await res.json()).find(
+      (readModel) => readModel.eventSubscriber === eventSubscriber
+    )
+
+    if (readModel.status !== 'deliver') {
+      throw new Error(`Test failed. Read-model status "${readModel.status}"`)
+    }
+
+    try {
+      await t.expect((await selector).exists).eql(true)
+      break
+    } catch (e) {}
+  }
+}
+
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`Shopping List`.beforeEach(async (t) => {
   await t.setNativeDialogHandler(() => true)
   await t.navigateTo(MAIN_PAGE)
-})
-
-test('home page', async (t) => {
-  await t
-    .expect(await Selector('h1').withText('Shopping List').exists)
-    .eql(true)
 })
 
 test('createShoppingList', async () => {
@@ -145,7 +158,7 @@ test('createShoppingItems', async () => {
   }
 })
 
-test('validation should works correctly', async () => {
+test('validation should work correctly', async () => {
   const matches = [
     {
       command: {
@@ -154,7 +167,7 @@ test('validation should works correctly', async () => {
         type: 'createShoppingList',
         payload: {},
       },
-      error: 'name is required',
+      error: 'The "name" field is required',
     },
     {
       command: {
@@ -165,7 +178,7 @@ test('validation should works correctly', async () => {
           name: 'List 1',
         },
       },
-      error: 'shopping list already exists',
+      error: 'Shopping list already exists',
     },
     {
       command: {
@@ -177,7 +190,7 @@ test('validation should works correctly', async () => {
           text: 'Bread',
         },
       },
-      error: 'shopping list does not exist',
+      error: 'Shopping list does not exist',
     },
   ]
 
@@ -196,43 +209,33 @@ test('validation should works correctly', async () => {
   }
 })
 
-test('query should works correctly', async () => {
-  const response = await fetch(
-    `${MAIN_PAGE}/api/query/shoppingList/shopping-list-1`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'GET',
-    }
-  )
+test('read model query should work correctly', async () => {
+  const response = await fetch(`${MAIN_PAGE}/api/query/ShoppingLists/all`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  })
 
   const result = await response.json()
 
-  expect(result.data).to.deep.equal({
+  expect(result.data).to.have.lengthOf(1)
+  expect(result.data[0]).to.include({
     id: 'shopping-list-1',
     name: 'List 1',
-    list: [
-      {
-        id: '1',
-        text: 'Milk',
-        checked: false,
-      },
-      {
-        id: '2',
-        text: 'Eggs',
-        checked: false,
-      },
-      {
-        id: '3',
-        text: 'Canned beans',
-        checked: false,
-      },
-      {
-        id: '4',
-        text: 'Paper towels',
-        checked: false,
-      },
-    ],
   })
+})
+
+test('shopping list is displayed on page', async (t) => {
+  await t.expect(Selector('td').withText('1').exists).eql(true)
+  await t.expect(Selector('td').withText('List 1').exists).eql(true)
+})
+
+test('shopping list items are displayed on page', async (t) => {
+  await t.click(Selector('a').withText('List 1'))
+  await waitSelector(t, 'ShoppingLists', Selector('div.list-group-item'))
+  await t.expect(Selector('label').withText('Milk').exists).eql(true)
+  await t.expect(Selector('label').withText('Eggs').exists).eql(true)
+  await t.expect(Selector('label').withText('Canned beans').exists).eql(true)
+  await t.expect(Selector('label').withText('Paper towels').exists).eql(true)
 })
