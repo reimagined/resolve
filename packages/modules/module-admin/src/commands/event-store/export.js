@@ -16,12 +16,12 @@ export const handler = async ({ url, directory, maintenanceMode }) => {
   console.log(result)
 }
 
-export const describe = 'export event-store from the directory'
+export const describe = 'export event store from the specified directory'
 export const command = 'export <directory>'
 export const builder = (yargs) =>
   yargs
     .positional('directory', {
-      describe: 'path to event-store backup directory',
+      describe: 'path to event store backup directory',
       type: 'string',
     })
     .option('maintenance-mode', {
