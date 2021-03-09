@@ -396,7 +396,7 @@ const devConfig = {
     // This is the 'default' Read Model connector.
     // It connects a Read Model to a SQLite data.
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: 'data/read-models.db',
       },
@@ -404,7 +404,7 @@ const devConfig = {
     // You can reconfigure the connector to use other databases:
     /*
       default: {
-        module: 'resolve-readmodel-mysql',
+        module: '@resolve-js/readmodel-mysql',
         options: {
           host: 'localhost',
           port: 3306,
@@ -534,14 +534,14 @@ const ShoppingLists = ({ lists }) => {
 export default ShoppingLists
 ```
 
-Add a new component named **MyLists**. This component obtains shopping list data from reSolve and uses the **ShoppingLists** component to display this data. To obtain the data, use the **resolve-react-hooks** library's `useQuery` hook:
+Add a new component named **MyLists**. This component obtains shopping list data from reSolve and uses the **ShoppingLists** component to display this data. To obtain the data, use the **@resolve-js/react-hooks** library's `useQuery` hook:
 
 **client/components/MyLists.js**
 
 ```js
 import React, { useState, useEffect } from 'react'
 
-import { useQuery } from 'resolve-react-hooks'
+import { useQuery } from '@resolve-js/react-hooks'
 import ShoppingLists from './ShoppingLists'
 
 const MyLists = () => {
@@ -632,20 +632,20 @@ export default [
 
 ### Configure the Entry Point
 
-A client entry point is a function that receives a `context` object as a parameter. Pass this object to the resolve-react-hooks library to connect it to a reSolve backend. You can implement an entry point as shown below:
+A client entry point is a function that receives a `context` object as a parameter. Pass this object to the @resolve-js/react-hooks library to connect it to a reSolve backend. You can implement an entry point as shown below:
 
 **client/index.js**
 
 ```jsx
 import React from 'react'
 import { render } from 'react-dom'
-import { ResolveContext } from 'resolve-react-hooks'
+import { ResolveContext } from '@resolve-js/react-hooks'
 import { BrowserRouter } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 
 import routes from './routes'
 
-// The 'context' object contains metadata required by the 'resolve-react-hooks'
+// The 'context' object contains metadata required by the '@resolve-js/react-hooks'
 // library to connect to the reSolve backend.
 const entryPoint = (context) => {
   const appContainer = document.createElement('div')
@@ -817,7 +817,7 @@ export default ShoppingListItem
 
 ```jsx
 import React, { useState, useEffect } from 'react'
-import { useViewModel } from 'resolve-react-hooks'
+import { useViewModel } from '@resolve-js/react-hooks'
 
 import { ListGroup, FormControl, FormGroup, FormLabel } from 'react-bootstrap'
 
@@ -1079,7 +1079,7 @@ Add a React component that creates shopping lists. The component renders a text 
 ```jsx
 import React, { useState } from 'react'
 import { Button, Col, FormLabel, FormControl, Row } from 'react-bootstrap'
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand } from '@resolve-js/react-hooks'
 import { v4 as uuid } from 'uuid'
 
 const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
@@ -1178,7 +1178,7 @@ The following component implements a **Delete** button for a shopping list:
 ```jsx
 import React from 'react'
 import { Button } from 'react-bootstrap'
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand } from '@resolve-js/react-hooks'
 
 const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
   // A command to remove the list
@@ -1266,7 +1266,7 @@ The code below demonstrates how to implement data editing for the ShoppingList c
 
 ```jsx
 import React, { useState, useEffect } from 'react'
-import { useCommandBuilder, useViewModel } from 'resolve-react-hooks'
+import { useCommandBuilder, useViewModel } from '@resolve-js/react-hooks'
 
 import {
   Row,
@@ -1389,7 +1389,7 @@ Modify the ShoppingListItem component to support item checking and deletion.
 ```jsx
 import React from 'react'
 import { ListGroupItem, FormCheck, Button } from 'react-bootstrap'
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand } from '@resolve-js/react-hooks'
 
 const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
   const toggleItem = useCommand({
