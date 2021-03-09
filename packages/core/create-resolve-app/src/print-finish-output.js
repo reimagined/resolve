@@ -5,7 +5,7 @@ const printFinishOutput = (pool) => async () => {
 
   console.log()
   console.log(`Success! ${applicationName} is created `)
-  console.log('You can run the following commands in this dirrectory:')
+  console.log('You can run the following commands in this directory:')
 
   console.log()
   console.log(chalk.cyan(`  ${displayCommand(false)} dev`))
