@@ -2,7 +2,7 @@ const optionsInfo = (examples) => [
   `Options:`,
   ``,
   `  -e, --example    creates an example application based on an application from the reSolve examples directory`,
-  `      You can choose one of the next examples:`,
+  `      You can choose one of the following examples:`,
   ...examples.map(
     ({ name, description }) => `          * ${name} - ${description}`
   ),
