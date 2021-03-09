@@ -1,6 +1,6 @@
 const emptyWorker = async () => {
   throw new Error(
-    'Guard exception: worker should not be invoked on non-cloud environment'
+    'Guard exception: worker should not be invoked in non-cloud environment'
   )
 }
 

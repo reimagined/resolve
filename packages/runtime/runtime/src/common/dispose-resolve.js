@@ -21,7 +21,7 @@ const disposeResolve = async (resolve) => {
 
     log.info('resolve entries are disposed')
   } catch (error) {
-    log.error('resolve entries disposing error')
+    log.error('error disposing resolve entries')
     log.error(error)
   }
 }
