@@ -229,6 +229,12 @@ Supported values:
 - `production`
 - `none`
 
+### name
+
+Specifies the application's name.
+
+By default, the value is the same as the package name defined in the application's package.json file.
+
 ### port
 
 Specifies the server application's port as an integer or string.

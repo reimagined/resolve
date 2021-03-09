@@ -14,11 +14,33 @@ import gatherEventListeners from '../common/gather-event-listeners'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 import multiplexAsync from '../common/utils/multiplex-async'
+import getRootBasedUrl from '../common/utils/get-root-based-url'
 
 const log = debugLevels('resolve:runtime:local-entry')
 
 const localEntry = async ({ assemblies, constants, domain }) => {
   try {
+    domain.apiHandlers.push({
+      path: '/api/subscribers/:eventSubscriber',
+      method: 'GET',
+      handler: async (req, res) => {
+        try {
+          const baseQueryUrl = getRootBasedUrl(
+            req.resolve.rootPath,
+            '/api/subscribers/'
+          )
+
+          const eventSubscriber = req.path.substring(baseQueryUrl.length)
+          await req.resolve.eventSubscriber.build({ eventSubscriber })
+          await res.end('ok')
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(error)
+          await res.end(error)
+        }
+      },
+    })
+
     const domainInterop = await initDomain(domain)
 
     const resolve = {
@@ -38,7 +60,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
         ) < 0,
     }
 
-    resolve.eventSubscriberDestination = 'LOCAL' // TODO
+    resolve.eventSubscriberDestination = `http://0.0.0.0:${constants.port}/api/subscribers`
     resolve.invokeEventSubscriberAsync = multiplexAsync.bind(
       null,
       async (eventSubscriber, method, parameters) => {
