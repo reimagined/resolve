@@ -35,6 +35,9 @@ title: reSolve Documentation
   - [View Model Specifics](read-side.md#view-model-specifics)
   - [View Model Resolver](read-side.md#view-model-resolver)
   - [Performing Queries Using HTTP API](read-side.md#performing-queries-using-http-api)
+- [Manage a ReSolve Application](manage-application)
+  - [Installation](manage-application#installation)
+  - [Usage](manage-application#usage)
 
 #### Guides
 
