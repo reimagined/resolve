@@ -29,7 +29,7 @@ export const handler = async ({ url, waitReady }) => {
 }
 
 export const command = 'status'
-export const describe = 'get a system status'
+export const describe = "get the system's status"
 export const builder = (yargs) =>
   yargs.option('--wait-ready', {
     describe: 'wait for a system to initialize',

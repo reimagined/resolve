@@ -11,10 +11,10 @@ const createDigestHash = (prefix, content) => {
 
 const declareRuntimeEnv = (envName, defaultValue) => {
   if (envName == null || envName.constructor !== String) {
-    throw new Error('Runtime environment variable should be an string')
+    throw new Error('Runtime environment variable must be a string')
   }
   if (defaultValue != null && defaultValue.constructor !== String) {
-    throw new Error('Default value should be an string or be absent')
+    throw new Error('Default value must be a string or be absent')
   }
 
   // eslint-disable-next-line no-new-wrappers

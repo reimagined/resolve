@@ -13,6 +13,6 @@ export const command = 'pause <readModel>'
 export const describe = 'pause read-model updates'
 export const builder = (yargs) =>
   yargs.positional('readModel', {
-    describe: 'an existing read-model`s name',
+    describe: "an existing read-model's name",
     type: 'string',
   })

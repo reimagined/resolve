@@ -13,6 +13,6 @@ export const command = 'pause <saga>'
 export const describe = 'pause saga updates'
 export const builder = (yargs) =>
   yargs.positional('saga', {
-    describe: 'an existing saga`s name',
+    describe: "an existing saga's name",
     type: 'string',
   })

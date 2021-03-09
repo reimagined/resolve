@@ -21,7 +21,7 @@ export const describe = "reset a saga's state"
 export const builder = (yargs) =>
   yargs
     .positional('saga', {
-      describe: 'an existing saga`s name',
+      describe: "an existing saga's name",
       type: 'string',
     })
     .option('side-effects-start-timestamp', {
