@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - When querying read model resolvers from testing tools, the resolver results are returned unwrapped, the **data** property was removed.
 
+#### Local config
+
+- Remove "eventBroker" section
+
 #### Cloud config
 
 - Runtime env RESOLVE_ES_SECRET_ARN renamed to RESOLVE_USER_SECRET_ARN
