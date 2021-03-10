@@ -70,6 +70,7 @@ async function* generator(context: any): AsyncGenerator<Buffer, void> {
       context.cursor = getNextCursor(context.cursor, [event])
     }
     if (events.length === 0) {
+      context.isEnd = true
       await endProcessEvents(context)
       return
     }
@@ -96,6 +97,7 @@ const exportEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
     cursor,
     bufferSize,
     isBufferOverflow: false,
+    isEnd: false,
   }
 
   const stream: Readable = Readable.from(generator(context))
@@ -107,6 +109,11 @@ const exportEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
   Object.defineProperty(stream, 'isBufferOverflow', {
     get() {
       return context.isBufferOverflow
+    },
+  })
+  Object.defineProperty(stream, 'isEnd', {
+    get() {
+      return context.isEnd
     },
   })
 

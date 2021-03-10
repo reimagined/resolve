@@ -179,6 +179,9 @@ describe('import-export events', () => {
 
       try {
         const exportStream = inputEventstoreAdapter.exportEvents({ cursor })
+        const closePromise = new Promise((resolve) => {
+          exportStream.on('close', resolve)
+        })
         const tempStream = createStreamBuffer()
         const pipelinePromise = promisify(pipeline)(
           exportStream,
@@ -198,13 +201,15 @@ describe('import-export events', () => {
         isJsonStreamTimedOutOnce =
           isJsonStreamTimedOutOnce || isJsonStreamTimedOut
 
-        exportStream.destroy()
+        if (isJsonStreamTimedOut) {
+          exportStream.destroy()
+          await closePromise
+        }
 
         cursor = exportStream.cursor
 
         const buffer = tempStream.getBuffer().toString('utf8')
-
-        if (buffer === '') {
+        if (exportStream.isEnd) {
           break
         }
 
