@@ -3,6 +3,9 @@
   "version": "0.28.1-alpha",
   "private": true,
   "description": "personal user data within events (GDPR compliance)",
+  "resolveJs": {
+    "isAppTemplate": true
+  },
   "scripts": {
     "build": "babel-node ./run.js build",
     "cloud": "babel-node ./run.js cloud",
