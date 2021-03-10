@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    if: github.event.head_commit.message != '<auto> merge version branch'
+    if: !startsWith(github.event.head_commit.message, '<auto>')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-node@v2-beta

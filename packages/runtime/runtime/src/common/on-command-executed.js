@@ -15,16 +15,17 @@ const notifyEventSubscriber = async (resolve, destination, eventSubscriber) => {
       break
     }
     case /^arn:aws:lambda:/.test(destination): {
-      await resolve.lambda.invokeFunction({
-        FunctionName: destination,
-        InvocationType: 'Event',
-        Region: destination.split(':')[3],
-        Payload: {
-          resolveSource: 'EventSubscriberDirect',
-          method: 'build',
-          payload: { eventSubscriber },
-        },
-      })
+      await resolve.lambda
+        .invoke({
+          FunctionName: destination,
+          InvocationType: 'Event',
+          Payload: JSON.stringify({
+            resolveSource: 'EventSubscriberDirect',
+            method: 'build',
+            payload: { eventSubscriber },
+          }),
+        })
+        .promise()
       break
     }
     default: {
