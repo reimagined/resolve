@@ -1,4 +1,4 @@
-name: create-resolve-app testing
+name: Create-resolve-app testing (PR master)
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - master*
 
 jobs:
-  process:
+  create-resolve-app-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
