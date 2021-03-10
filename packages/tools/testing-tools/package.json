@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/testing-tools",
-  "version": "0.28.0-alpha.2",
+  "version": "0.28.1-alpha",
   "description": "Tools used to test reSolve applications.",
   "keywords": [
     "cqrs",
@@ -25,14 +25,14 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@resolve-js/core": "0.28.0-alpha.2",
-    "@resolve-js/runtime": "0.28.0-alpha.2",
+    "@resolve-js/core": "0.28.1-alpha",
+    "@resolve-js/runtime": "0.28.1-alpha",
     "colors": "^1.4.0",
     "diff": "^4.0.2",
     "lodash.isequal": "4.5.0"
   },
   "devDependencies": {
-    "@resolve-js/readmodel-lite": "0.28.0-alpha.2",
+    "@resolve-js/readmodel-lite": "0.28.1-alpha",
     "@types/diff": "4.0.2",
     "@types/lodash.isequal": "4.5.5",
     "jest": "26.6.3",
