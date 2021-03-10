@@ -6,9 +6,9 @@ title: Frontend
 This document describes approaches that you can use to implement a frontend for a reSolve application. The following approaches are available:
 
 - [HTTP API](#http-api) - An HTTP API exposed by a reSolve server
-- [@resolve-js/client library](#resolve-client-library) - A higher-level JavaScript library used to communicate with a reSolve server
-- [@resolve-js/redux library](#resolve-redux-library) - A library used to connect a React + Redux component to reSolve
-- [@resolve-js/react-hooks library](#resolve-react-hooks-library) - A hook-based library used to connect React components to reSolve
+- [@resolve-js/client library](#resolve-jsclient-library) - A higher-level JavaScript library used to communicate with a reSolve server
+- [@resolve-js/redux library](#resolve-jsredux-library) - A library used to connect a React + Redux component to reSolve
+- [@resolve-js/react-hooks library](#resolve-jsreact-hooks-library) - A hook-based library used to connect React components to reSolve
 
 ## Client Application Entry Point
 
