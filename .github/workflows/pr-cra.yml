@@ -1,9 +1,9 @@
 name: create-resolve-app testing
 
 on:
-  pull_request:
+  push:
     branches:
-      - master*
+      - feature/cra-test-workflow
 
 jobs:
   process:
