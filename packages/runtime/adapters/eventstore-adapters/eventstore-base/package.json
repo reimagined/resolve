@@ -23,15 +23,15 @@
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.9.6",
+    "@babel/runtime": "7.13.10",
     "@resolve-js/core": "0.28.1-alpha",
     "@resolve-js/debug-levels": "0.28.1-alpha",
     "fp-ts": "2.9.5",
-    "io-ts": "2.2.15"
+    "io-ts": "2.2.16"
   },
   "devDependencies": {
     "jest": "26.6.3",
-    "sinon": "7.2.2"
+    "sinon": "9.2.4"
   },
   "engines": {
     "node": ">=10.9"

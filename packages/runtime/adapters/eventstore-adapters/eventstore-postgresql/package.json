@@ -24,16 +24,16 @@
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.9.6",
+    "@babel/runtime": "7.13.10",
     "@resolve-js/core": "0.28.1-alpha",
     "@resolve-js/debug-levels": "0.28.1-alpha",
     "@resolve-js/eventstore-base": "0.28.1-alpha",
-    "pg": "^8.2.1"
+    "pg": "8.5.1"
   },
   "devDependencies": {
-    "@types/pg": "^7.14.3",
+    "@types/pg": "7.14.11",
     "jest": "26.6.3",
-    "ts-jest": "26.1.0"
+    "ts-jest": "26.5.3"
   },
   "engines": {
     "node": ">=10.9"
