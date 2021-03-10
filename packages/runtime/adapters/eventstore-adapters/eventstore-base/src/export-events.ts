@@ -73,6 +73,9 @@ async function* generator(context: any): AsyncGenerator<Buffer, void> {
       context.isEnd = true
       await endProcessEvents(context)
       return
+    } else if (context.externalTimeout) {
+      await endProcessEvents(context)
+      return
     }
   }
 }
@@ -98,9 +101,13 @@ const exportEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
     bufferSize,
     isBufferOverflow: false,
     isEnd: false,
+    externalTimeout: false,
   }
 
   const stream: Readable = Readable.from(generator(context))
+  stream.on('timeout', () => {
+    context.externalTimeout = true
+  })
   Object.defineProperty(stream, 'cursor', {
     get() {
       return context.cursor

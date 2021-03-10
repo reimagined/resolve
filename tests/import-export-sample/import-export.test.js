@@ -156,7 +156,7 @@ describe('import-export events', () => {
     })
     await inputEventstoreAdapter.init()
 
-    const inputCountEvents = 1000
+    const inputCountEvents = 1001
 
     for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
       await inputEventstoreAdapter.saveEvent({
@@ -179,9 +179,9 @@ describe('import-export events', () => {
 
       try {
         const exportStream = inputEventstoreAdapter.exportEvents({ cursor })
-        const closePromise = new Promise((resolve) => {
+        /*const closePromise = new Promise((resolve) => {
           exportStream.on('close', resolve)
-        })
+        })*/
         const tempStream = createStreamBuffer()
         const pipelinePromise = promisify(pipeline)(
           exportStream,
@@ -202,18 +202,18 @@ describe('import-export events', () => {
           isJsonStreamTimedOutOnce || isJsonStreamTimedOut
 
         if (isJsonStreamTimedOut) {
-          exportStream.destroy()
-          await closePromise
+          exportStream.emit('timeout')
+          await pipelinePromise
         }
 
         cursor = exportStream.cursor
 
         const buffer = tempStream.getBuffer().toString('utf8')
+
+        exportBuffers.push(buffer)
         if (exportStream.isEnd) {
           break
         }
-
-        exportBuffers.push(buffer)
       } catch (error) {
         if (error instanceof EventstoreAlreadyFrozenError) {
           await inputEventstoreAdapter.unfreeze()
