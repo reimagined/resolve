@@ -1,6 +1,6 @@
 {
   "name": "functional-tests",
-  "version": "0.28.0-alpha.2",
+  "version": "0.28.1-alpha",
   "private": true,
   "scripts": {
     "cleanup": "ts-node --files=true scripts/run.ts clean",
@@ -13,8 +13,8 @@
     "@babel/core": "7.11.6",
     "@babel/node": "7.10.5",
     "@babel/preset-env": "7.11.5",
-    "@internal/helpers": "0.28.0-alpha.2",
-    "@resolve-js/client": "0.28.0-alpha.2",
+    "@internal/helpers": "0.28.1-alpha",
+    "@resolve-js/client": "0.28.1-alpha",
     "babel-jest": "26.0.1",
     "commander": "6.1.0",
     "consola": "2.15.0",

@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "0.28.0-alpha.2",
+  "version": "0.28.1-alpha",
   "private": true,
   "description": "used as a template for new reSolve applications",
   "scripts": {
@@ -16,15 +16,15 @@
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
-    "@resolve-js/eventstore-lite": "0.28.0-alpha.2",
-    "@resolve-js/eventstore-postgresql-serverless": "0.28.0-alpha.2",
-    "@resolve-js/react-hooks": "0.28.0-alpha.2",
-    "@resolve-js/readmodel-lite": "0.28.0-alpha.2",
-    "@resolve-js/readmodel-postgresql-serverless": "0.28.0-alpha.2",
-    "@resolve-js/scripts": "0.28.0-alpha.2",
-    "react": "17.0.1",
+    "@resolve-js/eventstore-lite": "0.28.1-alpha",
+    "@resolve-js/eventstore-postgresql-serverless": "0.28.1-alpha",
+    "@resolve-js/react-hooks": "0.28.1-alpha",
+    "@resolve-js/readmodel-lite": "0.28.1-alpha",
+    "@resolve-js/readmodel-postgresql-serverless": "0.28.1-alpha",
+    "@resolve-js/scripts": "0.28.1-alpha",
+    "react": "16.13.1",
     "react-bootstrap": "1.4.0",
-    "react-dom": "17.0.1",
+    "react-dom": "16.13.1",
     "react-helmet": "6.1.0"
   },
   "devDependencies": {

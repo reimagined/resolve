@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/runtime",
-  "version": "0.28.0-alpha.2",
+  "version": "0.28.1-alpha",
   "description": "The reSolve framework's backend server.",
   "keywords": [
     "cqrs",
@@ -25,11 +25,11 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@resolve-js/core": "0.28.0-alpha.2",
-    "@resolve-js/debug-levels": "0.28.0-alpha.2",
-    "@resolve-js/eventstore-base": "0.28.0-alpha.2",
-    "@resolve-js/eventstore-lite": "0.28.0-alpha.2",
-    "@resolve-js/readmodel-base": "0.28.0-alpha.2",
+    "@resolve-js/core": "0.28.1-alpha",
+    "@resolve-js/debug-levels": "0.28.1-alpha",
+    "@resolve-js/eventstore-base": "0.28.1-alpha",
+    "@resolve-js/eventstore-lite": "0.28.1-alpha",
+    "@resolve-js/readmodel-base": "0.28.1-alpha",
     "aws-signature-v4": "^1.4.0",
     "binary-case": "^1.1.4",
     "body-parser": "^1.19.0",

@@ -1,9 +1,15 @@
-import App from './containers/App'
+import App from './components/App'
+import MyLists from './components/MyLists'
 
 export default [
   {
-    path: '/',
     component: App,
-    exact: true,
+    routes: [
+      {
+        path: '/',
+        component: MyLists,
+        exact: true,
+      },
+    ],
   },
 ]

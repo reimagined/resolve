@@ -859,7 +859,7 @@ Drops an incremental import batch.
 
 ## reSolve Scripts
 
-The [@resolve-js/scripts](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts) package contains service scripts used to configure, build, and run reSolve applications. The package contains the following scripts:
+The [@resolve-js/scripts](https://github.com/reimagined/resolve/tree/master/packages/tools/scripts) package contains service scripts used to configure, build, and run reSolve applications. The package contains the following scripts:
 
 | Script                                | Description                                                                   |
 | ------------------------------------- | ----------------------------------------------------------------------------- |
