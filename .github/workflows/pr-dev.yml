@@ -8,8 +8,12 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
     steps:
+      - name: Cancel previous run (if any)
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
       - uses: actions/checkout@v2
 
       - uses: actions/setup-node@v2-beta
@@ -31,17 +35,21 @@ jobs:
         run: yarn test
 
       - name: Test:integration
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         run: yarn test:integration
 
       - name: Test:e2e (ubuntu:chrome-headless)
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         env:
           RESOLVE_E2E_TESTS_BROWSER: chrome
           RESOLVE_E2E_TESTS_HEADLESS_MODE: true
           DEBUG: resolve:scripts*
           DEBUG_LEVEL: debug
-        run: yarn test:e2e
+        run: |
+          yarn test:e2e
 
       - name: Publish to private repository
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         id: publish
         uses: reimagined/github-actions/publish@v1
         with:
@@ -54,14 +62,16 @@ jobs:
           github_target_repository: resolve-js/resolve
 
       - name: Checkout cloud environment
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         uses: actions/checkout@v2
         with:
           repository: DevExpress/resolve-cloud2
-          ref: 'feature/scoped-packages'
+          ref: dev
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           path: resolve-cloud
 
       - name: Install cloud environment
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         id: install_cloud
         uses: reimagined/github-actions/install-cloud@v1
         with:
@@ -75,6 +85,7 @@ jobs:
           scopes: '@resolve-js'
 
       - name: Prepare test application
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         run: |
           test_app_dir=$(mktemp -d -t test-app-XXXXXXXXX)
           echo "test_app_dir=${test_app_dir}" >> $GITHUB_ENV
@@ -83,6 +94,7 @@ jobs:
           rm -rf node_modules
 
       - name: Deploy test app to the cloud
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         id: deploy
         uses: reimagined/github-actions/deploy@v1
         with:
@@ -99,11 +111,13 @@ jobs:
           deploy_args: --verbosity=debug
 
       - name: Test:functional (API)
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         run: |
           cd functional-tests
           yarn run-test api --url=${{ steps.deploy.outputs.url }}
 
       - name: Test:functional (TestCafe)
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         run: |
           cd functional-tests
           yarn run-test testcafe --url=${{ steps.deploy.outputs.url }} --testcafe-browser=chrome --ci-mode --testcafe-timeout=10000

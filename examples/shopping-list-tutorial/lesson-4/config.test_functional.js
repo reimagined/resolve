@@ -8,6 +8,14 @@ const testFunctionalConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
+  readModelConnectors: {
+    default: {
+      module: '@resolve-js/readmodel-lite',
+      options: {
+        databaseFile: 'data/read-models-test-functional.db',
+      },
+    },
+  },
   eventstoreAdapter: {
     module: '@resolve-js/eventstore-lite',
     options: {

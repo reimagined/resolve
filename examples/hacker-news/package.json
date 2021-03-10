@@ -7,6 +7,7 @@
     "build": "babel-node ./run.js build",
     "cloud": "babel-node ./run.js cloud",
     "dev": "babel-node ./run.js dev",
+    "dev:replica": "babel-node ./run.js dev:replica",
     "export-event-store": "babel-node ./run.js export-event-store",
     "import": "babel-node ./run.js import",
     "import-event-store": "babel-node ./run.js import-event-store",

@@ -6,16 +6,40 @@ const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
 const MAIN_PAGE = `http://${host}:${port}`
 
+const waitSelector = async (t, eventSubscriber, selector) => {
+  while (true) {
+    const res = await fetch(`${MAIN_PAGE}/api/event-broker/read-models-list`)
+
+    const readModel = (await res.json()).find(
+      (readModel) => readModel.eventSubscriber === eventSubscriber
+    )
+
+    if (readModel.status !== 'deliver') {
+      throw new Error(`Test failed. Read-model status "${readModel.status}"`)
+    }
+
+    try {
+      await t.expect((await selector).exists).eql(true)
+      break
+    } catch (e) {}
+  }
+}
+
+const refreshAndWait = async (t, selector, expectedValue) => {
+  while (true) {
+    await t.navigateTo(MAIN_PAGE)
+
+    try {
+      await t.expect(await selector()).eql(expectedValue, { timeout: 1000 })
+      break
+    } catch (e) {}
+  }
+}
+
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`Shopping List`.beforeEach(async (t) => {
   await t.setNativeDialogHandler(() => true)
   await t.navigateTo(MAIN_PAGE)
-})
-
-test('home page', async (t) => {
-  await t
-    .expect(await Selector('h1').withText('Shopping List').exists)
-    .eql(true)
 })
 
 test('createShoppingList', async () => {
@@ -145,7 +169,7 @@ test('createShoppingItems', async () => {
   }
 })
 
-test('validation should works correctly', async () => {
+test('validation should work correctly', async () => {
   const matches = [
     {
       command: {
@@ -154,7 +178,7 @@ test('validation should works correctly', async () => {
         type: 'createShoppingList',
         payload: {},
       },
-      error: 'name is required',
+      error: 'The "name" field is required',
     },
     {
       command: {
@@ -165,7 +189,7 @@ test('validation should works correctly', async () => {
           name: 'List 1',
         },
       },
-      error: 'shopping list already exists',
+      error: 'Shopping list already exists',
     },
     {
       command: {
@@ -177,7 +201,7 @@ test('validation should works correctly', async () => {
           text: 'Bread',
         },
       },
-      error: 'shopping list does not exist',
+      error: 'Shopping list does not exist',
     },
   ]
 
@@ -196,55 +220,100 @@ test('validation should works correctly', async () => {
   }
 })
 
-test('query should works correctly', async () => {
-  const response = await fetch(
-    `${MAIN_PAGE}/api/query/shoppingList/shopping-list-1`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'GET',
-    }
-  )
-
-  const result = await response.json()
-
-  expect(result.data).to.deep.equal({
-    id: 'shopping-list-1',
-    name: 'List 1',
-    list: [
-      {
-        id: '1',
-        text: 'Milk',
-        checked: false,
-      },
-      {
-        id: '2',
-        text: 'Eggs',
-        checked: false,
-      },
-      {
-        id: '3',
-        text: 'Canned beans',
-        checked: false,
-      },
-      {
-        id: '4',
-        text: 'Paper towels',
-        checked: false,
-      },
-    ],
+test('create first shopping list', async (t) => {
+  await t.typeText(Selector('input[type=text]'), 'First Shopping List', {
+    paste: true,
   })
+  await t.click(Selector('button').withText('Add Shopping List'))
+
+  await refreshAndWait(t, () => Selector('td > a').count, 2)
+})
+
+test('create second shopping list', async (t) => {
+  await t.typeText(Selector('input[type=text]'), 'Second Shopping List', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Shopping List'))
+
+  await refreshAndWait(t, () => Selector('td > a').count, 3)
+})
+
+test('create items in first shopping list', async (t) => {
+  await t.click(Selector('a').withText('First Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('input[type=text]').nth(1))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 1', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 2', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 3', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.expect(Selector('label').withText('Item 1').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 2').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 3').exists).eql(true)
+})
+
+test('toggle items in first shopping list', async (t) => {
+  await t.click(Selector('a').withText('First Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('label').withText('Item 1'))
+
+  await t.click(Selector('label').withText('Item 1').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 1').sibling(-1).checked)
+    .eql(true)
+
+  await t.click(Selector('label').withText('Item 2').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 2').sibling(-1).checked)
+    .eql(true)
+
+  await t.click(Selector('label').withText('Item 3').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 3').sibling(-1).checked)
+    .eql(true)
+})
+
+test('remove items in first shopping list', async (t) => {
+  await t.click(Selector('a').withText('First Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('button').withText('Delete'))
+
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+
+  await t.expect(await Selector('td > a').count).eql(0)
 })
 
 test('create items in second shopping list', async (t) => {
-  await t.typeText(Selector('input[type=text]'), 'Item 1', { paste: true })
+  await t.click(Selector('a').withText('Second Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('input[type=text]').nth(1))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 1', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]'), 'Item 2', { paste: true })
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 2', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Item'))
 
-  await t.typeText(Selector('input[type=text]'), 'Item 3', { paste: true })
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 3', {
+    paste: true,
+  })
   await t.click(Selector('button').withText('Add Item'))
 
   await t.expect(Selector('label').withText('Item 1').exists).eql(true)
@@ -253,17 +322,42 @@ test('create items in second shopping list', async (t) => {
 })
 
 test('toggle items in second shopping list', async (t) => {
-  await t.click(Selector('label').withText('Item 1'))
-  await t.click(Selector('label').withText('Item 2'))
-  await t.click(Selector('label').withText('Item 3'))
+  await t.click(Selector('a').withText('Second Shopping List'))
 
+  await waitSelector(t, 'ShoppingLists', Selector('label').withText('Item 1'))
+
+  await t.click(Selector('label').withText('Item 1').sibling(-1))
   await t
-    .expect(Selector('label > input[type=checkbox]').nth(4).checked)
+    .expect(Selector('label').withText('Item 1').sibling(-1).checked)
     .eql(true)
+
+  await t.click(Selector('label').withText('Item 2').sibling(-1))
   await t
-    .expect(Selector('label > input[type=checkbox]').nth(5).checked)
+    .expect(Selector('label').withText('Item 2').sibling(-1).checked)
     .eql(true)
+
+  await t.click(Selector('label').withText('Item 3').sibling(-1))
   await t
-    .expect(Selector('label > input[type=checkbox]').nth(6).checked)
+    .expect(Selector('label').withText('Item 3').sibling(-1).checked)
     .eql(true)
+})
+
+test('remove items in second shopping list', async (t) => {
+  await t.click(Selector('a').withText('Second Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('button').withText('Delete'))
+
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+
+  await t.expect(await Selector('td > a').count).eql(0)
+})
+
+test('remove shopping lists', async (t) => {
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+
+  await t.expect(await Selector('td > a').count).eql(0)
 })

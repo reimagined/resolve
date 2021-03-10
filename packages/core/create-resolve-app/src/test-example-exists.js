@@ -19,7 +19,7 @@ const testExampleExists = (pool) => async () => {
     .map((name) => ` * ${name}`)
 
   throw new Error(
-    `No such example, ${exampleName}. Available examples are: ${EOL}` +
+    `No such example, ${exampleName}. The following examples are available: ${EOL}` +
       examplesDirs.join(EOL)
   )
 }

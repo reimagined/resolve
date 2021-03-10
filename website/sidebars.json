@@ -13,6 +13,7 @@
           "sagas", 
           "api-handlers",
           "frontend",
+          "manage-application",
           "app-structure"
         ]
       },

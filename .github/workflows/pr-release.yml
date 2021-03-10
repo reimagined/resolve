@@ -19,6 +19,7 @@ on:
 
 jobs:
   process:
+    if: startsWith(github.event.pull_request.base.ref, 'master')
     runs-on: ubuntu-latest
     steps:
       - uses: reimagined/github-actions/release-pr-bot@v1

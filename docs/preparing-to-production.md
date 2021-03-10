@@ -60,8 +60,6 @@ readModelConnectors: {
 In addition to storage adapters, you can specify adapters that define how your application communicates with underlying APIs. For example, use the API handler adapters, to define how your application handles API requests.
 You can also provide a bus adapter and subscribe adapter to define how your application sends events and subscribes to events.
 
-to familiarize yourself with the available adapters, see the **[adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters)** package documentation.
-
 ## Using Environment Variables
 
 Use the **declareRuntimeEnv** function from the **@resolve-js/scripts** library to bind a configuration setting value to an environment variable:
