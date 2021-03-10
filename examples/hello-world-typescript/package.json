@@ -44,5 +44,8 @@
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
     "testcafe": "^1.9.1"
+  },
+  "resolutions": {
+    "@types/react": "^16"
   }
 }
