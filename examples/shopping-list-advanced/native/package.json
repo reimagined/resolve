@@ -19,7 +19,7 @@
     "expo-cli": "3.13.3",
     "history": "4.10.1",
     "native-base": "2.13.8",
-    "react": "16.13.1",
+    "react": "17.0.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-gesture-handler": "1.5.6",
     "react-native-elements": "1.2.7",
