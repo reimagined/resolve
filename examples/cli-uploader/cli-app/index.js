@@ -2,6 +2,7 @@
 
 const path = require('path')
 const fs = require('fs')
+// FIXME: this lib completely deprecated
 const request = require('request')
 const util = require('util')
 const mime = require('mime-types')

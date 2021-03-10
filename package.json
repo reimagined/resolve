@@ -47,7 +47,8 @@
     "validate-lock-file": "node validate-lock-file.js"
   },
   "dependencies": {
-    "@yarnpkg/lockfile": "^1.1.0"
+    "@yarnpkg/lockfile": "^1.1.0",
+    "react": "17.0.1"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
