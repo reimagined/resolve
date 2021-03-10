@@ -2,7 +2,7 @@ process.env.TZ = 'Europe/Moscow'
 
 module.exports = {
   testEnvironment: 'node',
-  setupFiles: ['raf/polyfill', '<rootDir>/test/unit/jest-setup.js'],
+  setupFiles: ['<rootDir>/test/unit/jest-setup.js'],
   coveragePathIgnorePatterns: [
     'node_modules/',
     'dist/',
