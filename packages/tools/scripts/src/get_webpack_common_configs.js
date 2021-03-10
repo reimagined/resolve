@@ -137,7 +137,7 @@ const getWebpackCommonConfigs = ({
               }
               return require(modulePath)
             })())`,
-          whitelist: [/@resolve-js\/runtime/],
+          allowlist: [/@resolve-js\/runtime/],
         })
       ),
     ],

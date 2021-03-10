@@ -63,6 +63,7 @@ module.exports = {
         lang: 'en_US',
         skipWordIfMatch: ['^[^A-Za-z_]'],
         skipWords: [
+          'allowlist',
           'aes',
           'acc',
           'ack',
