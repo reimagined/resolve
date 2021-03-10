@@ -6,6 +6,7 @@ const http = require('http')
 const {
   getResolvePackages,
   getLocalRegistryConfig,
+  safeName,
 } = require('@internal/helpers')
 
 const localRegistry = getLocalRegistryConfig()
@@ -20,6 +21,8 @@ http
     )
 
     const resolvePackages = getResolvePackages()
+      .map(safeName)
+      .map((x) => x.replace('.tgz', ''))
 
     if (
       !resolvePackages.includes(fileName.replace(/\.tgz.*$/, '')) ||
