@@ -4,6 +4,7 @@ const fs = require('fs')
 const { execSync } = require('child_process')
 const rm = require('rimraf')
 const log = require('consola')
+const { getResolveExamples } = require('@internal/helpers')
 
 const main = async () => {
   log.info(`Preparing for create-resolve-app testing...`)
@@ -11,22 +12,18 @@ const main = async () => {
   log.info(`Passed params: ${passedParams}`)
 
   const rootDir = path.resolve(__dirname, '../../../../')
-  const examplesDir = path.resolve(rootDir, 'examples')
-  if (!fs.existsSync(examplesDir)) {
-    throw new Error('Examples directory not found')
-  }
-
   const tempDir = path.resolve(rootDir, 'cra-tests')
+
   rm.sync(tempDir)
   fs.mkdirSync(tempDir)
 
-  const exampleNames = fs
-    .readdirSync(examplesDir, { withFileTypes: true })
-    .filter((item) => item.isDirectory())
-    .map((item) => item.name)
-
-  exampleNames.forEach((example) => {
-    log.info(`Using create-resolve-app template: ${example}`)
+  const exampleNames = getResolveExamples().map((item) => item.name)
+  exampleNames.forEach((example, index) => {
+    log.info(
+      `Create-resolve-app template testing ${index + 1} of ${
+        exampleNames.length
+      }: ${example}`
+    )
     execSync(
       `node ${path.resolve(
         rootDir,

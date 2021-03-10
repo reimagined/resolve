@@ -31,8 +31,10 @@ function getResolveExamples() {
       continue
     }
 
-    const { name, description } = require(filePath)
-
+    const { name, description, resolveJs } = require(filePath)
+    if (!resolveJs || !resolveJs.isResolveAppTemplate) {
+      continue
+    }
     if (!description) {
       throw new Error(`Example "${name}" .description must be a string`)
     }

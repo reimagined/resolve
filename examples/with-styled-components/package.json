@@ -3,6 +3,9 @@
   "version": "0.28.1-alpha",
   "private": true,
   "description": "shows how to work with Styled Components",
+  "resolveJs": {
+    "isResolveAppTemplate": true
+  },
   "scripts": {
     "build": "babel-node ./run.js build",
     "cloud": "babel-node ./run.js cloud",
