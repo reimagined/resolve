@@ -16,9 +16,7 @@
   "license": "MIT",
   "author": "reimagined team",
   "main": "./lib/index.js",
-  "bin": {
-    "create-resolve-app": "./bin/index.js"
-  },
+  "bin": "./bin/index.js",
   "scripts": {
     "build": "yarn workspace @internal/babel-compile start --name=create-resolve-app",
     "test": "echo || exit 0",
@@ -31,7 +29,7 @@
     "boxen": "5.0.0",
     "chalk": "4.1.0",
     "command-line-args": "5.1.1",
-    "fs-extra": "9.1.0",
+    "fs-extra": "8.1.0",
     "progress": "2.0.3",
     "source-map-support": "0.5.19",
     "validate-npm-package-name": "3.0.0"
