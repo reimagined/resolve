@@ -4,7 +4,7 @@
   "private": true,
   "description": "Hacker News application clone with CQRS and EventSourcing",
   "resolveJs": {
-    "isResolveAppTemplate": true
+    "isAppTemplate": true
   },
   "scripts": {
     "build": "babel-node ./run.js build",

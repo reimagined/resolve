@@ -4,7 +4,7 @@
   "private": true,
   "description": "Example shows how to work with Vue framework",
   "resolveJs": {
-    "isResolveAppTemplate": true
+    "isAppTemplate": true
   },
   "scripts": {
     "build": "babel-node ./run.js build",

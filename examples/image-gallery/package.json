@@ -4,7 +4,7 @@
   "private": true,
   "description": "used as a template for new reSolve applications",
   "resolveJs": {
-    "isResolveAppTemplate": true
+    "isAppTemplate": true
   },
   "scripts": {
     "build": "babel-node ./run.js build",

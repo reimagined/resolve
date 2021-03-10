@@ -4,7 +4,7 @@
   "private": true,
   "description": "shows how to work with read-models and view-models using redux hooks",
   "resolveJs": {
-    "isResolveAppTemplate": true
+    "isAppTemplate": true
   },
   "scripts": {
     "build": "babel-node ./run.js build",

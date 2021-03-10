@@ -32,7 +32,7 @@ function getResolveExamples() {
     }
 
     const { name, description, resolveJs } = require(filePath)
-    if (!resolveJs || !resolveJs.isResolveAppTemplate) {
+    if (!resolveJs || !resolveJs.isAppTemplate) {
       continue
     }
     if (!description) {

@@ -4,7 +4,7 @@
   "private": true,
   "description": "personal user data within events (GDPR compliance)",
   "resolveJs": {
-    "isResolveAppTemplate": true
+    "isAppTemplate": true
   },
   "scripts": {
     "build": "babel-node ./run.js build",
