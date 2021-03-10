@@ -15,15 +15,11 @@ jobs:
         with:
           node-version: '12'
 
-      - name: Yarn Cache Clean
-        run: yarn cache clean
-
       - name: Install
         run: |
           yarn install --frozen-lockfile
           yarn build-packages
           npm install pm2 -g
-          pm2 delete local-registry || true
           pm2 start packages/internal/local-registry/bin/index.js --name local-registry
 
       - name: Tutorial E2E test
