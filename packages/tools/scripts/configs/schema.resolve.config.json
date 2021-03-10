@@ -286,6 +286,9 @@
           "type": "string",
           "enum": ["local", "cloud"]
         },
+        "name": {
+          "type": ["string"]
+        },
         "port": {
           "type": ["integer", "string"]
         },

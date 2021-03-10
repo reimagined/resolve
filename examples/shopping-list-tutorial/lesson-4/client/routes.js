@@ -1,9 +1,20 @@
-import App from './containers/App'
+import App from './components/App'
+import MyLists from './components/MyLists'
+import ShoppingList from './components/ShoppingList'
 
 export default [
   {
-    path: '/',
     component: App,
-    exact: true,
+    routes: [
+      {
+        path: '/',
+        component: MyLists,
+        exact: true,
+      },
+      {
+        path: '/:id',
+        component: ShoppingList,
+      },
+    ],
   },
 ]

@@ -145,7 +145,7 @@ test('createShoppingItems', async () => {
   }
 })
 
-test('validation should works correctly', async () => {
+test('validation should work correctly', async () => {
   const matches = [
     {
       command: {
@@ -154,7 +154,7 @@ test('validation should works correctly', async () => {
         type: 'createShoppingList',
         payload: {},
       },
-      error: 'name is required',
+      error: 'The "name" field is required',
     },
     {
       command: {
@@ -165,7 +165,7 @@ test('validation should works correctly', async () => {
           name: 'List 1',
         },
       },
-      error: 'shopping list already exists',
+      error: 'Shopping list already exists',
     },
     {
       command: {
@@ -177,7 +177,7 @@ test('validation should works correctly', async () => {
           text: 'Bread',
         },
       },
-      error: 'shopping list does not exist',
+      error: 'Shopping list does not exist',
     },
   ]
 
@@ -194,4 +194,21 @@ test('validation should works correctly', async () => {
 
     expect(event).to.include(match.error)
   }
+})
+
+test('read model query should work correctly', async () => {
+  const response = await fetch(`${MAIN_PAGE}/api/query/ShoppingLists/all`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  })
+
+  const result = await response.json()
+
+  expect(result.data).to.have.lengthOf(1)
+  expect(result.data[0]).to.include({
+    id: 'shopping-list-1',
+    name: 'List 1',
+  })
 })

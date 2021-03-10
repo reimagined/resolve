@@ -6,13 +6,15 @@ const appConfig = {
       projection: 'common/aggregates/shopping_list.projection.js',
     },
   ],
-  readModels: [],
-  viewModels: [
+  readModels: [
     {
-      name: 'shoppingList',
-      projection: 'common/view-models/shopping_list.projection.js',
+      name: 'ShoppingLists',
+      projection: 'common/read-models/shopping_lists.projection.js',
+      resolvers: 'common/read-models/shopping_lists.resolvers.js',
+      connectorName: 'default',
     },
   ],
+  viewModels: [],
   clientEntries: ['client/index.js'],
 }
 
