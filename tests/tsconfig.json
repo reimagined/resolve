@@ -6,7 +6,7 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true,
+    "experimentalDecorators": true
   },
   "exclude": ["node_modules"]
 }
