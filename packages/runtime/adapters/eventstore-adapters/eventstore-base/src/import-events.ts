@@ -14,6 +14,7 @@ import {
   AdapterPoolConnectedProps,
   AdapterPoolPossiblyUnconnected,
   ImportOptions,
+  ImportEventsStream,
 } from './types'
 
 const EventStream = function (
@@ -275,7 +276,7 @@ const importEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
     byteOffset = 0,
     maintenanceMode = MAINTENANCE_MODE_AUTO,
   }: Partial<ImportOptions> = {}
-): stream.Writable => {
+): ImportEventsStream => {
   switch (maintenanceMode) {
     case MAINTENANCE_MODE_AUTO:
     case MAINTENANCE_MODE_MANUAL:

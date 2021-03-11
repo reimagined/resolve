@@ -43,4 +43,10 @@ test('connect should throw on wrong parameters', async () => {
       databaseFile: 42,
     } as any) as SqliteAdapterConfig)
   ).rejects.toThrow()
+
+  await expect(
+    connect(pool, connectionDependencies, {
+      databaseFile: '',
+    })
+  ).rejects.toThrow()
 })
