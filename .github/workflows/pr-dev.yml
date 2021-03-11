@@ -1,0 +1,123 @@
+name: dev (PR)
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel previous run (if any)
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+
+      - name: Install
+        run: |
+          yarn install --frozen-lockfile
+          yarn validate-lock-file
+
+      - name: Prettier
+        run: yarn prettier:check
+
+      - name: ESLint
+        run: yarn lint
+
+      - name: Test:unit
+        run: yarn test
+
+      - name: Test:integration
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        run: yarn test:integration
+
+      - name: Test:e2e (ubuntu:chrome-headless)
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        env:
+          RESOLVE_E2E_TESTS_BROWSER: chrome
+          RESOLVE_E2E_TESTS_HEADLESS_MODE: true
+          DEBUG: resolve:scripts*
+          DEBUG_LEVEL: debug
+        run: |
+          yarn test:e2e
+
+      - name: Publish to private repository
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        id: publish
+        uses: reimagined/github-actions/publish@v1
+        with:
+          registry: github
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          version: auto
+          build: ${{ github.sha }}
+          tag: cloud-test
+          unpublish: true
+          github_target_repository: resolve-js/resolve
+
+      - name: Checkout cloud environment
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        uses: actions/checkout@v2
+        with:
+          repository: DevExpress/resolve-cloud2
+          ref: dev
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          path: resolve-cloud
+
+      - name: Install cloud environment
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        id: install_cloud
+        uses: reimagined/github-actions/install-cloud@v1
+        with:
+          aws_access_key_id: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
+          stage: framework-test
+          version: ${{ steps.publish.outputs.version }}
+          source: ./resolve-cloud
+          registry: ${{ steps.publish.outputs.registry_url }}
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          scopes: '@resolve-js'
+
+      - name: Prepare test application
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        run: |
+          test_app_dir=$(mktemp -d -t test-app-XXXXXXXXX)
+          echo "test_app_dir=${test_app_dir}" >> $GITHUB_ENV
+          cp -rf ./functional-tests/app/. ${test_app_dir}
+          cd ${test_app_dir}
+          rm -rf node_modules
+
+      - name: Deploy test app to the cloud
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        id: deploy
+        uses: reimagined/github-actions/deploy@v1
+        with:
+          source: ${{ env.test_app_dir }}
+          cloud_api_url: ${{ steps.install_cloud.outputs.api_url}}
+          cloud_user: ${{ secrets.RESOLVE_CLOUD_USER }}
+          cloud_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
+          cli_sources: resolve-cloud/cli/resolve-cloud
+          framework_version: ${{ steps.publish.outputs.version }}
+          randomize_name: true
+          package_registry: ${{ steps.publish.outputs.registry_url }}
+          package_registry_token: ${{ secrets.RESOLVE_BOT_PAT }}
+          package_registry_scopes: '@resolve-js'
+          deploy_args: --verbosity=debug
+
+      - name: Test:functional (API)
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        run: |
+          cd functional-tests
+          yarn run-test api --url=${{ steps.deploy.outputs.url }}
+
+      - name: Test:functional (TestCafe)
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        run: |
+          cd functional-tests
+          yarn run-test testcafe --url=${{ steps.deploy.outputs.url }} --testcafe-browser=chrome --ci-mode --testcafe-timeout=10000

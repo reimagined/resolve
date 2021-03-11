@@ -1,4 +1,4 @@
-import getLog from 'resolve-debug-levels'
+import getLog from '@resolve-js/debug-levels'
 
 const log = getLog('resolve:create-resolve-app:install')
 

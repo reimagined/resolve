@@ -22,7 +22,7 @@ All these chunks are used by the target application. Some chunks can include oth
 
 In a cloud/serverless environment, chunks like read model projections & resolvers, SSR renderer, API handlers and REST business logic are distributed to appropriate cloud executors.
 
-When an application runs locally, the `resolve-scripts` utility loads all necessary chunks and combines them with the runtime code.
+When an application runs locally, the `@resolve-js/scripts` utility loads all necessary chunks and combines them with the runtime code.
 
 ## Adapters
 
@@ -36,8 +36,6 @@ ReSolve uses different types of adapters depending on which kind of data needs t
 Resolve comes with a set of adapters covering popular DBMS choices. You can also implement new adapters to store data in any required way.
 
 Note that reSolve does not force you to use adapters. For example, you may need to implement a Read Model on top of some arbitrary system, such as a full-text-search engine, OLAP or a particular SQL database. In such case, you can just work with that system in the code of the projection function and query resolver, without writing a new Read Model adapter.
-
-To learn more about a particular adapter type, refer to the documentation for the reSolve **[adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters)** package.
 
 ## Modules
 
@@ -90,12 +88,12 @@ For an example on how to use modules, see the [Hacker News](https://github.com/r
 
 ## Upload Files
 
-The **resolve-module-uploader** module implements the file upload functionality. You can enable this module as shown below:
+The **@resolve-js/module-uploader** module implements the file upload functionality. You can enable this module as shown below:
 
 ##### run.js:
 
 ```js
-import resolveModuleUploader from 'resolve-module-uploader'
+import resolveModuleUploader from '@resolve-js/module-uploader'
 const moduleUploader = resolveModuleUploader({ jwtSecret })
 ...
 const baseConfig = merge(
@@ -106,7 +104,7 @@ const baseConfig = merge(
 )
 ```
 
-The **resolve-module-uploader** module adds the following API endpoints to an application:
+The **@resolve-js/module-uploader** module adds the following API endpoints to an application:
 
 - `/api/uploader/getFormUpload` - Returns an upload path to use in HTTP forms.
 - `/api/uploader/getUploadUrl` - Returns a path used to upload files.
@@ -130,16 +128,16 @@ In the code sample below, a readable stream returned by an event store's `export
 ```js
 import { Readable, pipeline as pipelineC } from 'stream'
 
-import createEventStoreAdapter from 'resolve-eventstore-lite'
+import createEventStoreAdapter from '@resolve-js/eventstore-lite'
 
 const pipeline = promisify(pipelineC)
 
 const eventStore1 = createEventStoreAdapter({
-  databaseFile: './data/event-store-1.db'
+  databaseFile: './data/event-store-1.db',
 })
 
 const eventStore2 = createEventStoreAdapter({
-  databaseFile: './data/event-store-2.db'
+  databaseFile: './data/event-store-2.db',
 })
 
 await pipeline(eventStore1.export(), eventStore2.import())
@@ -162,7 +160,8 @@ import iconv from 'iconv-lite'
 
 async function handler(req, res) {
   const bodyCharset = (
-    bodyOptions.find(option => option.startsWith('charset=')) || 'charset=utf-8'
+    bodyOptions.find((option) => option.startsWith('charset=')) ||
+    'charset=utf-8'
   ).substring(8)
 
   if (bodyCharset !== 'utf-8') {

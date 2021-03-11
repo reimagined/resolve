@@ -1,7 +1,11 @@
 import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
 
 export default {
-  Init: () => null,
+  Init: () => ({
+    id: 'id',
+    name: 'unnamed',
+    list: [],
+  }),
   [SHOPPING_LIST_CREATED]: (state, { aggregateId, payload: { name } }) => ({
     id: aggregateId,
     name,

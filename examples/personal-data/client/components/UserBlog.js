@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap'
-import { useQuery } from 'resolve-react-hooks'
+import { useQuery } from '@resolve-js/react-hooks'
 
 import FeedByAuthor from './FeedByAuthor'
 import Loading from './Loading'

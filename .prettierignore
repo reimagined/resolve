@@ -2,9 +2,10 @@ packages/**/es
 packages/**/lib
 packages/**/dist
 examples/**/dist
+examples/**/dist-replica
 examples/**/lib
 examples/shopping-list-advanced/native/resolve/
-packages/core/resolve-zeromq/optional
+packages/core/zeromq/optional
 **/*.d.ts
-packages/core/resolve-react-hooks/src/index.ts
+packages/core/react-hooks/src/index.ts
 website/**

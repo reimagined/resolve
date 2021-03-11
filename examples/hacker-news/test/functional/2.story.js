@@ -32,8 +32,10 @@ fixture`Story`.beforeEach(async (t /*: TestController */) => {
 test('create', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/submit`)
 
-  await t.typeText(Selector('input[type=text]').nth(1), 'my ask')
-  await t.typeText('textarea', 'my text')
+  await t.typeText(Selector('input[type=text]').nth(1), 'my ask', {
+    paste: true,
+  })
+  await t.typeText('textarea', 'my text', { paste: true })
   await t.click('button')
 
   await waitSelector(t, 'HackerNews', Selector('a').withText('Ask HN: my ask'))
@@ -55,7 +57,7 @@ test('add comment', async (t /*: TestController */) => {
   await waitSelector(t, 'Comments', Selector('textarea').nth(-1))
 
   const textarea = await Selector('textarea').nth(-1)
-  await t.typeText(textarea, 'first comment')
+  await t.typeText(textarea, 'first comment', { paste: true })
 
   const button = await Selector('button').nth(-1)
   await t.click(button)
@@ -84,7 +86,7 @@ test('add reply', async (t /*: TestController */) => {
     .eql(true)
 
   const textarea = await Selector('textarea').nth(-1)
-  await t.typeText(textarea, 'first reply')
+  await t.typeText(textarea, 'first reply', { paste: true })
 
   const button = await Selector('button').nth(-1)
   await t.click(button)

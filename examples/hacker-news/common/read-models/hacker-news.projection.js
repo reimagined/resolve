@@ -88,7 +88,7 @@ export default {
     await store.insert('Users', user)
   },
 
-  /* from module "resolve-module-comments" */
+  /* from module "@resolve-js/module-comments" */
   COMMENT_CREATED: async (store, { aggregateId }) => {
     await store.update(
       'Stories',
@@ -97,7 +97,7 @@ export default {
     )
   },
 
-  /* from module "resolve-module-comments" */
+  /* from module "@resolve-js/module-comments" */
   COMMENT_REMOVED: async (store, { aggregateId }) => {
     await store.update(
       'Stories',

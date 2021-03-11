@@ -1,4 +1,4 @@
-import { COMMENT_CREATED } from 'resolve-module-comments/lib/common/defaults'
+import { COMMENT_CREATED } from '@resolve-js/module-comments/lib/common/defaults'
 import { v4 as uuid } from 'uuid'
 import { EOL } from 'os'
 

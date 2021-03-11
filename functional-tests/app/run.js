@@ -5,8 +5,8 @@ import {
   merge,
   stop,
   reset,
-} from 'resolve-scripts'
-import resolveModuleAdmin from 'resolve-module-admin'
+} from '@resolve-js/scripts'
+import resolveModuleAdmin from '@resolve-js/module-admin'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -24,7 +24,7 @@ void (async () => {
 
         await reset(resolveConfig, {
           dropEventStore: false,
-          dropEventBus: true,
+          dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
         })

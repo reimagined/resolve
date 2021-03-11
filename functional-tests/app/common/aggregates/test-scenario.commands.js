@@ -1,4 +1,4 @@
-import { HttpError } from 'resolve-client'
+import { HttpError } from '@resolve-js/client'
 import {
   TEST_SCENARIO_RETRY_ON_ERROR_UNBLOCKED,
   TEST_SCENARIO_EXECUTED,
@@ -50,6 +50,16 @@ export default {
         state: {
           blocked: true,
         },
+      },
+    }
+  },
+  executeArrayWithingQueryString: (state) => {
+    assertNotExecuted(state)
+    return {
+      type: TEST_SCENARIO_EXECUTED,
+      payload: {
+        scenarioName: 'array-within-query-string',
+        state: {},
       },
     }
   },

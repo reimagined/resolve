@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand } from '@resolve-js/react-hooks'
 import {
   Row,
   Col,

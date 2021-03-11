@@ -1,6 +1,6 @@
 {
   "name": "shopping-list-advanced",
-  "version": "0.26.5",
+  "version": "0.28.1-alpha",
   "private": true,
   "description": "shows how to work with React-Native",
   "workspaces": {

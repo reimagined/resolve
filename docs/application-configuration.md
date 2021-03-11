@@ -25,7 +25,7 @@ import {
   ...
   watch,
   ...
-} from 'resolve-scripts'
+} from '@resolve-js/scripts'
     ...
     switch (launchMode) {
       ...
@@ -40,7 +40,7 @@ import {
 
 <!-- prettier-ignore-end -->
 
-Refer to the [JSON schema](https://github.com/reimagined/resolve/blob/master/packages/core/resolve-scripts/configs/schema.resolve.config.json) file to familiarize yourself with the definition of the configuration object's structure.
+Refer to the [JSON schema](https://github.com/reimagined/resolve/blob/master/packages/core/@resolve-js/scripts/configs/schema.resolve.config.json) file to familiarize yourself with the definition of the configuration object's structure.
 
 ## Reference
 
@@ -62,8 +62,8 @@ aggregates: [
   {
     name: 'ShoppingList',
     commands: 'common/aggregates/shopping_list.commands.js',
-    projection: 'common/aggregates/shopping_list.projection.js'
-  }
+    projection: 'common/aggregates/shopping_list.projection.js',
+  },
 ]
 ```
 
@@ -84,8 +84,8 @@ apiHandlers: [
   {
     path: '/api/uploader/getFileUrl',
     handler: 'common/api-handlers/getFileUrl.js',
-    method: 'GET'
-  }
+    method: 'GET',
+  },
 ]
 ```
 
@@ -118,17 +118,17 @@ clientEntries: [
     {
       outputFile: 'common/local-entry/ssr.js',
       moduleType: 'commonjs',
-      target: 'node'
-    }
+      target: 'node',
+    },
   ],
   [
     'client/ssr.js',
     {
       outputFile: 'common/cloud-entry/ssr.js',
       moduleType: 'commonjs',
-      target: 'node'
-    }
-  ]
+      target: 'node',
+    },
+  ],
 ]
 ```
 
@@ -160,7 +160,7 @@ To serve SSR markup to the client, you need to register the **live-require-handl
 apiHandlers: [
   {
     handler: {
-      module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+      module: '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
       options: {
         modulePath: './ssr.js',
         moduleFactoryImport: false
@@ -196,24 +196,12 @@ Specifies an adapter used to connect to to the application's event store. An ada
 
 ```js
 eventstoreAdapter: {
-  module: 'resolve-eventstore-lite',
+  module: '@resolve-js/eventstore-lite',
   options: {
     databaseFile: ':memory:'
   }
 }
 ```
-
-### eventBroker
-
-Specifies settings of the application's event broker. Use these settings to set up a reSolve application in a distributed environment. The configuration object contains the following fields:
-
-| Field            | Description                                                                                                                                            |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| launchBroker     | A boolean value that specifies whether to launch an event broker in the current instance.                                                              |
-| publisherAddress | The URL of the event publisher instance.                                                                                                               |
-| consumerAddress  | The URL of the event consumer instance.                                                                                                                |
-| databaseFile     | The path to a database file used by the event broker.                                                                                                  |
-| upstream         | Specifies whether or not the current instance can produce events. If set to `false`, the instance can only consume events produced by other instances. |
 
 ### jwtCookie
 
@@ -241,6 +229,12 @@ Supported values:
 - `production`
 - `none`
 
+### name
+
+Specifies the application's name.
+
+By default, the value is the same as the package name defined in the application's package.json file.
+
 ### port
 
 Specifies the server application's port as an integer or string.
@@ -264,8 +258,8 @@ readModels: [
     name: 'ShoppingLists',
     projection: 'common/read-models/shopping_lists.projection.js',
     resolvers: 'common/read-models/shopping_lists.resolvers.js',
-    connectorName: 'default'
-  }
+    connectorName: 'default',
+  },
 ]
 ```
 
@@ -283,7 +277,7 @@ Specifies the application's Read Model connectors a key-value pairs. A connector
 ```js
 readModelConnectors: {
   default: {
-    module: 'resolve-readmodel-mysql',
+    module: 'readmodel-mysql',
     options: {
       host: 'localhost',
       port: 3306,
@@ -299,12 +293,12 @@ readModelConnectors: {
 
 Specifies an array of the application's Sagas. A Saga configuration object within this array contains the following fields:
 
-| Field         | Description                                                                                 |
-| ------------- | ------------------------------------------------------------------------------------------- |
-| source        | A path to a file that defines the Saga's handlers or both handlers and side effects.        |
-| sideEffects   | A path to a file that defines the Saga's side effects.                                      |
-| connectorName | Defines a Read Model storage used to store the saga's persistent data.                      |
-| encryption    | A path to a file that defines data encryption and decryption logic.                         |
+| Field         | Description                                                                          |
+| ------------- | ------------------------------------------------------------------------------------ |
+| source        | A path to a file that defines the Saga's handlers or both handlers and side effects. |
+| sideEffects   | A path to a file that defines the Saga's side effects.                               |
+| connectorName | Defines a Read Model storage used to store the saga's persistent data.               |
+| encryption    | A path to a file that defines data encryption and decryption logic.                  |
 
 ##### Example:
 
@@ -397,7 +391,7 @@ Specifies an array of the application's View Models. A View Model configuration 
 viewModels: [
   {
     name: 'shoppingList',
-    projection: 'common/view-models/shopping_list.projection.js'
-  }
+    projection: 'common/view-models/shopping_list.projection.js',
+  },
 ]
 ```

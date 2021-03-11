@@ -1,0 +1,48 @@
+{
+  "name": "@resolve-js/module-uploader",
+  "version": "0.28.1-alpha",
+  "description": "A reSolve module that adds uploader commands to an application.",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/@resolve-js/module-admin#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "scripts": {
+    "test": "echo || exit 0",
+    "testw": "echo || exit 0"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.9.6",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "jest": "26.6.3"
+  },
+  "engines": {
+    "node": ">=10.9"
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ]
+}

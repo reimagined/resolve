@@ -1,0 +1,54 @@
+{
+  "name": "@resolve-js/readmodel-lite",
+  "version": "0.28.1-alpha",
+  "description": "An adapter the resolve-query uses to store the read model state in memory",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters/@resolve-js/readmodel-lite#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "test": "jest --config=../../../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../../../jest.config.js --watchAll"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.9.6",
+    "@resolve-js/readmodel-base": "0.28.1-alpha",
+    "sqlite": "^3.0.2",
+    "tmp": "^0.1.0",
+    "uuid": "8.3.1"
+  },
+  "devDependencies": {
+    "jest": "26.6.3",
+    "sinon": "7.2.2"
+  },
+  "engines": {
+    "node": ">=10.9"
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ],
+  "sourceType": "ts"
+}

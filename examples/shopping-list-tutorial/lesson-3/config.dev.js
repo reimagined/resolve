@@ -1,4 +1,4 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const devConfig = {
   target: 'local',
@@ -8,20 +8,51 @@ const devConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
+  readModelConnectors: {
+    default: {
+      module: '@resolve-js/readmodel-lite',
+      options: {
+        databaseFile: 'data/read-models.db',
+      },
+    },
+    /*
+      default: {
+        module: '@resolve-js/readmodel-mysql',
+        options: {
+          host: 'localhost',
+          port: 3306,
+          user: 'customUser',
+          password: 'customPassword',
+          database: 'customDatabaseName'
+        }
+      }
+    */
+  },
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
       secretsFile: 'data/secrets.db',
       snapshotBucketSize: 100,
     },
   },
-  jwtCookie: {
+  /*
+    {
+      module: '@resolve-js/eventstore-mysql',
+      options: {
+        host: 'localhost',
+        port: 3306,
+        user: 'customUser',
+        password: 'customPassword',
+        database: 'customDatabaseName',
+        eventsTableName: 'customTableName',
+        secretsDatabase: 'customSecretsDatabaseName',
+        secretsTableName: 'customSecretsTableName'
+      }
+    }
+  */ jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,
-  },
-  eventBroker: {
-    databaseFile: 'data/local-bus-broker.db',
   },
 }
 
