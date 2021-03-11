@@ -51,9 +51,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### @resolve-js/scripts
 
-- Changed **reset** mode option **dropEventBus** to **dropEventSubscriber**
+- Replaced the **reset** mode's **dropEventBus** option with **dropEventSubscriber**
 
-From: 
+Previously: 
 ```
 await reset(resolveConfig, {
   dropEventStore: false,
@@ -63,7 +63,7 @@ await reset(resolveConfig, {
 })
 ```
 
-To:
+Now:
 ```
 await reset(resolveConfig, {
   dropEventStore: false,
