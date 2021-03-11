@@ -12,6 +12,7 @@ import {
   AdapterPoolConnectedProps,
   AdapterPoolPossiblyUnconnected,
   ExportOptions,
+  ExportEventsStream,
 } from './types'
 
 async function startProcessEvents({
@@ -87,7 +88,7 @@ const exportEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
     maintenanceMode = MAINTENANCE_MODE_AUTO,
     bufferSize = Number.POSITIVE_INFINITY,
   }: Partial<ExportOptions> = {}
-): Readable => {
+): ExportEventsStream => {
   if (
     ![MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL].includes(maintenanceMode)
   ) {
@@ -104,7 +105,9 @@ const exportEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
     externalTimeout: false,
   }
 
-  const stream: Readable = Readable.from(generator(context))
+  const stream: ExportEventsStream = Readable.from(
+    generator(context)
+  ) as ExportEventsStream
   stream.on('timeout', () => {
     context.externalTimeout = true
   })
