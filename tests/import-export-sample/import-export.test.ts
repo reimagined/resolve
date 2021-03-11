@@ -7,6 +7,7 @@ import {
   MAINTENANCE_MODE_MANUAL,
 } from '@resolve-js/eventstore-base'
 import createEventstoreAdapter from '@resolve-js/eventstore-lite'
+import { EventsWithCursor, SavedEvent } from '@resolve-js/eventstore-base'
 
 import createStreamBuffer from './create-stream-buffer'
 
@@ -188,7 +189,7 @@ describe('import-export events', () => {
           tempStream
         ).then(() => false)
 
-        const timeoutPromise = new Promise((resolve) =>
+        const timeoutPromise = new Promise<boolean>((resolve) =>
           setTimeout(() => {
             resolve(true)
           }, 100)
@@ -293,7 +294,7 @@ describe('import-export events', () => {
           importStream
         ).then(() => false)
 
-        const timeoutPromise = new Promise((resolve) =>
+        const timeoutPromise = new Promise<boolean>((resolve) =>
           setTimeout(() => {
             resolve(true)
           }, 100)
@@ -329,13 +330,13 @@ describe('import-export events', () => {
 
     fs.unlinkSync(exportedEventsFileName)
 
-    let allEvents = []
-    let cursor = null
+    let allEvents: SavedEvent[] = []
+    let cursor: string | null = null
     while (true) {
       const {
         events,
         cursor: nextCursor,
-      } = await outputEventstoreAdapter.loadEvents({
+      }: EventsWithCursor = await outputEventstoreAdapter.loadEvents({
         cursor: cursor,
         limit: inputCountEvents,
       })
