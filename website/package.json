@@ -1,6 +1,6 @@
 {
   "name": "website",
-  "version": "0.28.1-alpha",
+  "version": "0.28.2",
   "private": true,
   "scripts": {
     "build": "docusaurus-build",
