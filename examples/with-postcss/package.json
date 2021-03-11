@@ -1,11 +1,8 @@
 {
   "name": "with-postcss",
-  "version": "0.28.1-alpha",
+  "version": "0.28.2",
   "private": true,
   "description": "shows how to work with postCSS",
-  "resolveJs": {
-    "isAppTemplate": true
-  },
   "scripts": {
     "build": "babel-node ./run.js build",
     "cloud": "babel-node ./run.js cloud",
@@ -19,12 +16,12 @@
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
-    "@resolve-js/eventstore-lite": "0.28.1-alpha",
-    "@resolve-js/eventstore-postgresql-serverless": "0.28.1-alpha",
-    "@resolve-js/react-hooks": "0.28.1-alpha",
-    "@resolve-js/readmodel-lite": "0.28.1-alpha",
-    "@resolve-js/readmodel-postgresql-serverless": "0.28.1-alpha",
-    "@resolve-js/scripts": "0.28.1-alpha",
+    "@resolve-js/eventstore-lite": "0.28.2",
+    "@resolve-js/eventstore-postgresql-serverless": "0.28.2",
+    "@resolve-js/react-hooks": "0.28.2",
+    "@resolve-js/readmodel-lite": "0.28.2",
+    "@resolve-js/readmodel-postgresql-serverless": "0.28.2",
+    "@resolve-js/scripts": "0.28.2",
     "history": "4.10.1",
     "react": "16.13.1",
     "react-bootstrap": "1.4.0",
@@ -56,5 +53,8 @@
     "style-loader": "0.21.0",
     "testcafe": "^1.9.1",
     "webpack": "4.42.0"
+  },
+  "resolveJs": {
+    "isAppTemplate": true
   }
 }
