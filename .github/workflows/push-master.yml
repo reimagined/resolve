@@ -3,11 +3,11 @@ name: master (push)
 on:
   push:
     branches:
-      - disabled
+      - master*
 
 jobs:
   release:
-    if: github.event.head_commit.message != '<auto> merge version branch'
+    if: startsWith(github.event.head_commit.message, '<auto>') != true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-node@v2-beta
@@ -34,4 +34,3 @@ jobs:
           ssh_private_key: ${{ secrets.RESOLVE_BOT_SSH_PRIVATE_KEY }}
           release_branch: master
           development_branch: dev
-

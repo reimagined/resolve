@@ -3,6 +3,9 @@
   "version": "0.28.1-alpha",
   "private": true,
   "description": "used as a template for new reSolve applications",
+  "resolveJs": {
+    "isAppTemplate": true
+  },
   "scripts": {
     "build": "tsc && babel-node --extensions=.ts,.tsx run.ts build",
     "dev": "tsc && babel-node --extensions=.ts,.tsx run.ts dev",
@@ -44,5 +47,8 @@
     "react-test-renderer": "16.13.1",
     "resolve-cloud": "*",
     "testcafe": "^1.9.1"
+  },
+  "resolutions": {
+    "@types/react": "^16"
   }
 }
