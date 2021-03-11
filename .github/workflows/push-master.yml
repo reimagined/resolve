@@ -3,7 +3,7 @@ name: master (push)
 on:
   push:
     branches:
-      - master*
+      - disabled
 
 jobs:
   release:
@@ -23,7 +23,7 @@ jobs:
           registry: npm
           token: ${{ secrets.NPM_RESOLVEJS_TOKEN }}
           version: source
-          tag: pre-release
+          tag: latest
           unpublish: false
 
       - uses: reimagined/github-actions/git-release@v1
@@ -32,6 +32,6 @@ jobs:
           commit: ${{ github.sha }}
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           ssh_private_key: ${{ secrets.RESOLVE_BOT_SSH_PRIVATE_KEY }}
-          release_branch: master-test
+          release_branch: master
           development_branch: dev
 
