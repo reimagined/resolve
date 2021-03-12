@@ -237,7 +237,7 @@ const commitIncrementalImport = async (
         /subquery used as an expression/i.test(error.message))
     ) {
       throw new Error(
-        `Either event batch has timestamps from the past nor incremental importId=${importId} does not exist`
+        `Either event batch has timestamps from the past or incremental importId=${importId} does not exist`
       )
     } else {
       throw error
