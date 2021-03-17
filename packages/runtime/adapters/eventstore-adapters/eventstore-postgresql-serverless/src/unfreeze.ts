@@ -1,5 +1,6 @@
 import { AdapterPool } from './types'
 import { EventstoreAlreadyUnfrozenError } from '@resolve-js/eventstore-base'
+import { isNotExistError } from './resource-errors'
 
 const unfreeze = async ({
   executeStatement,
@@ -15,7 +16,9 @@ const unfreeze = async ({
       `DROP TABLE ${databaseNameAsId}.${freezeTableNameAsId}`
     )
   } catch (error) {
-    throw new EventstoreAlreadyUnfrozenError()
+    if (isNotExistError(error.message))
+      throw new EventstoreAlreadyUnfrozenError()
+    else throw error
   }
 }
 

@@ -31,7 +31,7 @@ const debugLevels = (
   }
   if (logLevels.indexOf(logLevel) < 0) {
     debugProvider(namespace)(
-      `Attempted to set unsupported DEBUG_LEVEL="${logLevel}", so fallback to default level "${defaultLogLevel}"`
+      `Attempted to set unsupported DEBUG_LEVEL="${logLevel}", falling back to the default level "${defaultLogLevel}"`
     )
     logLevel = defaultLogLevel
   }

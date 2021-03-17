@@ -13,6 +13,6 @@ export const command = 'resume <readModel>'
 export const describe = 'resume read model updates'
 export const builder = (yargs) =>
   yargs.positional('readModel', {
-    describe: 'an existing read-model`s name',
+    describe: "an existing read-model's name",
     type: 'string',
   })

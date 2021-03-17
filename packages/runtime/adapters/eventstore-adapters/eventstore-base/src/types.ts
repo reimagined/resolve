@@ -50,7 +50,10 @@ type ShapeEvent = (event: any, additionalFields?: any) => SavedEvent
 
 export type ValidateEventFilter = (filter: EventFilter) => void
 
-export type GetNextCursor = (prevCursor: string | null, events: any[]) => string
+export type GetNextCursor = (
+  prevCursor: string | null,
+  events: SavedEvent[]
+) => string
 
 export type EventsWithCursor = {
   cursor: string | null
@@ -306,10 +309,21 @@ export type ImportOptions = {
   maintenanceMode: MAINTENANCE_MODE
 }
 
+export type ImportEventsStream = stream.Writable & {
+  readonly byteOffset: number
+  readonly savedEventsCount: number
+}
+
 export type ExportOptions = {
   cursor: string | null
   maintenanceMode: MAINTENANCE_MODE
   bufferSize: number
+}
+
+export type ExportEventsStream = stream.Readable & {
+  readonly cursor: string | null
+  readonly isBufferOverflow: boolean
+  readonly isEnd: boolean
 }
 
 export type ImportSecretsOptions = {
@@ -446,8 +460,8 @@ export interface AdapterFunctions<
 
 export interface Adapter {
   loadEvents: (filter: EventFilter) => Promise<EventsWithCursor>
-  importEvents: (options?: Partial<ImportOptions>) => stream.Writable
-  exportEvents: (options?: Partial<ExportOptions>) => stream.Readable
+  importEvents: (options?: Partial<ImportOptions>) => ImportEventsStream
+  exportEvents: (options?: Partial<ExportOptions>) => ExportEventsStream
   getLatestEvent: (filter: EventFilter) => Promise<SavedEvent | null>
   saveEvent: (event: InputEvent) => Promise<void>
   init: () => Promise<void>

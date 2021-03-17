@@ -12,7 +12,7 @@ const [operation, workspace] = process.argv.slice(2)
 
 const validateWorkspace = () => {
   if (workspace == null || workspace === '') {
-    throw new Error('The argument "workspace" is required')
+    throw new Error('The "workspace" argument is required')
   }
 }
 

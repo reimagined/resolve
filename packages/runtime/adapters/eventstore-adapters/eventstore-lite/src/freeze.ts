@@ -1,5 +1,6 @@
 import { AdapterPool } from './types'
 import { EventstoreAlreadyFrozenError } from '@resolve-js/eventstore-base'
+import { isAlreadyExistsError } from './resource-errors'
 
 const freeze = async ({
   database,
@@ -15,7 +16,9 @@ const freeze = async ({
     )`
     )
   } catch (error) {
-    throw new EventstoreAlreadyFrozenError()
+    if (isAlreadyExistsError(error.message))
+      throw new EventstoreAlreadyFrozenError()
+    else throw error
   }
 }
 

@@ -6,11 +6,13 @@ import {
   MAINTENANCE_MODE_MANUAL,
 } from './constants'
 import getNextCursor from './get-next-cursor'
+import { AlreadyFrozenError, AlreadyUnfrozenError } from './frozen-errors'
 
 import {
   AdapterPoolConnectedProps,
   AdapterPoolPossiblyUnconnected,
   ExportOptions,
+  ExportEventsStream,
 } from './types'
 
 async function startProcessEvents({
@@ -18,13 +20,25 @@ async function startProcessEvents({
   maintenanceMode,
 }: any): Promise<void> {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
-    await pool.freeze()
+    try {
+      await pool.freeze()
+    } catch (error) {
+      if (!AlreadyFrozenError.is(error)) {
+        throw error
+      }
+    }
   }
 }
 
 async function endProcessEvents({ pool, maintenanceMode }: any): Promise<void> {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
-    await pool.unfreeze()
+    try {
+      await pool.unfreeze()
+    } catch (error) {
+      if (!AlreadyUnfrozenError.is(error)) {
+        throw error
+      }
+    }
   }
 }
 
@@ -57,6 +71,10 @@ async function* generator(context: any): AsyncGenerator<Buffer, void> {
       context.cursor = getNextCursor(context.cursor, [event])
     }
     if (events.length === 0) {
+      context.isEnd = true
+      await endProcessEvents(context)
+      return
+    } else if (context.externalTimeout) {
       await endProcessEvents(context)
       return
     }
@@ -70,7 +88,7 @@ const exportEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
     maintenanceMode = MAINTENANCE_MODE_AUTO,
     bufferSize = Number.POSITIVE_INFINITY,
   }: Partial<ExportOptions> = {}
-): Readable => {
+): ExportEventsStream => {
   if (
     ![MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL].includes(maintenanceMode)
   ) {
@@ -83,9 +101,16 @@ const exportEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
     cursor,
     bufferSize,
     isBufferOverflow: false,
+    isEnd: false,
+    externalTimeout: false,
   }
 
-  const stream: Readable = Readable.from(generator(context))
+  const stream: ExportEventsStream = Readable.from(
+    generator(context)
+  ) as ExportEventsStream
+  stream.on('timeout', () => {
+    context.externalTimeout = true
+  })
   Object.defineProperty(stream, 'cursor', {
     get() {
       return context.cursor
@@ -94,6 +119,11 @@ const exportEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
   Object.defineProperty(stream, 'isBufferOverflow', {
     get() {
       return context.isBufferOverflow
+    },
+  })
+  Object.defineProperty(stream, 'isEnd', {
+    get() {
+      return context.isEnd
     },
   })
 

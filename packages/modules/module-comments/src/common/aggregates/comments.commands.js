@@ -13,7 +13,7 @@ const createCommentsCommands = (
       command.payload.commentId.constructor !== String
     ) {
       throw new Error(
-        'Comment creation should provide "commentId" field as string'
+        'A "commentId" field of the string type is required when creating a comment'
       )
     }
 
@@ -22,7 +22,7 @@ const createCommentsCommands = (
       command.payload.authorId.constructor !== String
     ) {
       throw new Error(
-        'Comment creation should provide "authorId" field as string'
+        'An "authorId" of the string type is required when creating a comment'
       )
     }
 
@@ -31,13 +31,13 @@ const createCommentsCommands = (
       command.payload.parentCommentId.constructor !== String
     ) {
       throw new Error(
-        'Comment creation should provide "parentCommentId" field as string'
+        'A "parentCommentId" field of the string type is required when creating a comment'
       )
     }
 
     if (command.payload.content == null) {
       throw new Error(
-        'Comment creation should provide "content" field as not-null'
+        'A non-null "content" field is required when creating a comment'
       )
     }
 
@@ -60,7 +60,7 @@ const createCommentsCommands = (
       command.payload.commentId.constructor !== String
     ) {
       throw new Error(
-        'Comment update should provide "commentId" field as string'
+        'A "commentId" field of the string type is required when creating a comment'
       )
     }
 
@@ -69,13 +69,13 @@ const createCommentsCommands = (
       command.payload.authorId.constructor !== String
     ) {
       throw new Error(
-        'Comment creation should provide "authorId" field as string'
+        'An "authorId" field of the string type is required when creating a comment'
       )
     }
 
     if (command.payload.content == null) {
       throw new Error(
-        'Comment update should provide "content" field as not-null'
+        'A non-null "content" field is required when updating a comment'
       )
     }
 
@@ -97,7 +97,7 @@ const createCommentsCommands = (
       command.payload.commentId.constructor !== String
     ) {
       throw new Error(
-        'Comment remove should provide "commentId" field as string'
+        'A "commentId" field of the string type is required when removing a comment'
       )
     }
 
@@ -106,7 +106,7 @@ const createCommentsCommands = (
       command.payload.authorId.constructor !== String
     ) {
       throw new Error(
-        'Comment creation should provide "authorId" field as string'
+        'An "authorId" field of the string type is required when removing a comment'
       )
     }
 

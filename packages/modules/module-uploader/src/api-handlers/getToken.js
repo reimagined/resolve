@@ -10,7 +10,9 @@ const getToken = ({ publicDirs, expireTime }) => async (req, res) => {
 
     await res
       .status(403)
-      .end(`Wrong dir! You can use only: ${publicDirs} dirs.`)
+      .end(
+        `Wrong directory! You can only use the following directories: ${publicDirs}`
+      )
   } catch (error) {
     await res.status(405)
     await res.end(error)

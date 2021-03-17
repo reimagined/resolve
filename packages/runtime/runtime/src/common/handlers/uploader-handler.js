@@ -72,7 +72,7 @@ const uploaderHandler = async (req, res) => {
       const { token } = req.query
 
       if (token == null || token === '') {
-        return res.status(403).end('Signature does not found.')
+        return res.status(403).end('Signature not found.')
       }
 
       const [payload, signature] = token.split('*')

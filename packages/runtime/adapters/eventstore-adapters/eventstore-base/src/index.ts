@@ -27,6 +27,7 @@ import exportSecretsStream from './export-secrets'
 import init from './init'
 import drop from './drop'
 import * as iots from 'io-ts'
+import * as iotsTypes from 'io-ts-types'
 
 import {
   validate,
@@ -128,4 +129,5 @@ export {
   InputEvent,
   SavedEvent,
   iots,
+  iotsTypes,
 }

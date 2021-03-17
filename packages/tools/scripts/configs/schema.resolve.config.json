@@ -249,10 +249,6 @@
       },
       "required": ["name", "maxAge"]
     },
-    "eventBroker": {
-      "type": "object",
-      "additionalProperties": true
-    },
     "customConstants": {
       "type": "object",
       "additionalProperties": true
@@ -289,6 +285,9 @@
         "target": {
           "type": "string",
           "enum": ["local", "cloud"]
+        },
+        "name": {
+          "type": ["string"]
         },
         "port": {
           "type": ["integer", "string"]
@@ -368,9 +367,6 @@
         },
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"
-        },
-        "eventBroker": {
-          "$ref": "#/definitions/eventBroker"
         },
         "mode": {
           "type": "string"

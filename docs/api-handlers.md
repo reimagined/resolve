@@ -86,7 +86,7 @@ The configuration object specifies the following options:
 | Handler | The path to the file that contains the handler's definition.                                                                                       |
 | Method  | The HTTP method to handle.                                                                                                                         |
 
-Refer to the [Schema Resolve Config](https://github.com/reimagined/resolve/blob/master/packages/core/@resolve-js/scripts/configs/schema.resolve.config.json) file for more information.
+Refer to the [Application Configuration](application-configuration) topic for more information.
 
 ## Implementation Examples
 

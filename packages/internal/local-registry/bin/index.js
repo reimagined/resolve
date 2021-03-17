@@ -6,6 +6,7 @@ const http = require('http')
 const {
   getResolvePackages,
   getLocalRegistryConfig,
+  safeName,
 } = require('@internal/helpers')
 
 const localRegistry = getLocalRegistryConfig()
@@ -16,15 +17,12 @@ http
 
     const filePath = path.join(
       localRegistry.directory,
-      fileName.replace(/\?hash.*$/, '')
+      fileName.replace(/\?.*$/, '')
     )
 
-    const resolvePackages = getResolvePackages()
+    const resolvePackagesFiles = getResolvePackages().map(safeName)
 
-    if (
-      !resolvePackages.includes(fileName.replace(/\.tgz.*$/, '')) ||
-      !fs.existsSync(filePath)
-    ) {
+    if (!resolvePackagesFiles.includes(fileName) || !fs.existsSync(filePath)) {
       res.writeHead(404, {
         'Content-Type': 'text/plain',
         'Content-Length': 0,

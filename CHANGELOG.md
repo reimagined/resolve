@@ -13,9 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - reSolve packages are now published under the **@resolve-js** scope. You need to update reSolve package names in the dependecies and imports by replacing **'resolve-'** with **'@resolve-js/'**. For example, change **resolve-client** to **@resolve-js/client**.
 
+#### Removed packages
+
+- resolve-command
+- resolve-query
+- resolve-saga
+
 #### Testing tools
 
 - When querying read model resolvers from testing tools, the resolver results are returned unwrapped, the **data** property was removed.
+
+#### Local config
+
+- Removed the **eventBroker** section
 
 #### Cloud config
 
@@ -27,11 +37,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Runtime env RESOLVE_ES_EVENTS_TABLE removed
 - Runtime env RESOLVE_ES_SECRETS_TABLE removed
 
+### Added
+
+#### Local config
+
+- Added the **name** option. By default, it shares its value with the "name" field from package.json.
+
 ### Changed
 
 #### Folder structure
 
 - Packages folder structure has been changed. The **core** folder contains packages related to framework's core functionality. The **runtime** folder contains runtime-specific adapters, brokers etc. The **tools** folder contains basic scripts and testing tools.
+
+#### @resolve-js/scripts
+
+- Replaced the **reset** mode's **dropEventBus** option with **dropEventSubscriber**
+
+Previously: 
+```
+await reset(resolveConfig, {
+  dropEventStore: false,
+  dropEventBus: true,
+  dropReadModels: true,
+  dropSagas: true,
+})
+```
+
+Now:
+```
+await reset(resolveConfig, {
+  dropEventStore: false,
+  dropEventSubscriber: true,
+  dropReadModels: true,
+  dropSagas: true,
+})
+```
 
 ## 0.25.0
 
