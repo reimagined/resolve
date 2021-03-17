@@ -104,6 +104,7 @@ jobs:
           cloud_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
           cli_sources: resolve-cloud/cli/resolve-cloud
           framework_version: ${{ steps.publish.outputs.version }}
+          framework_scope: '@resolve-js'
           randomize_name: true
           package_registry: ${{ steps.publish.outputs.registry_url }}
           package_registry_token: ${{ secrets.RESOLVE_BOT_PAT }}
