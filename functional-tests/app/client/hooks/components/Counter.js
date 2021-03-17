@@ -53,7 +53,9 @@ const Counter = ({
       <div id="counter">{counter}</div>
       <button onClick={decreaseCounter}>-</button>
       <div id="eventCounter">{eventCounter}</div>
-      <div id="lastEvent"><pre>{lastEvent}</pre></div>
+      <div id="lastEvent">
+        <pre>{lastEvent}</pre>
+      </div>
     </div>
   )
 }
