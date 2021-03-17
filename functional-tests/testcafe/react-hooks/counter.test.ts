@@ -42,6 +42,6 @@ test('multiple test counter', async (t) => {
 
 test('#1715: "eventReceived" action creator never called', async (t) => {
   await t.click(Selector('button').withText('+'))
-  await t.expect(Selector('#eventCount').innerText).eql('1')
+  await t.expect(Selector('#eventCounter').innerText).eql('1')
   await t.expect(Selector('#lastEvent').innerText).notEql('')
 })
