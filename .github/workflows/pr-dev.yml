@@ -58,7 +58,7 @@ jobs:
           version: auto
           build: ${{ github.sha }}
           tag: cloud-test
-          unpublish: true
+          unpublish: ${{ secrets.UNPUBLISH_TEST_PACKAGES }}
           github_target_repository: resolve-js/resolve
 
       - name: Checkout cloud environment
