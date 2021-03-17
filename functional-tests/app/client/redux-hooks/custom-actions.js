@@ -13,6 +13,6 @@ export const counterStateUpdate = (id, counter, initial) => ({
   payload: {
     id,
     counter,
-    initial
+    initial,
   },
 })
