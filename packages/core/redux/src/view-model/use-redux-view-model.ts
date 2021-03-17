@@ -76,7 +76,7 @@ export function useReduxViewModel(
   const dispatch = useDispatch()
 
   const stateChangeCallback = useCallback((state: any, initial: boolean) => {
-    if (typeof stateUpdate === 'function' && !initial) {
+    if (typeof stateUpdate === 'function') {
       dispatch(stateUpdate(query, state, initial, selectorId))
     }
   }, [])
