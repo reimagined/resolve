@@ -126,8 +126,8 @@ function useViewModel(
     | EventReceivedCallback
     | undefined = firstOfType<EventReceivedCallback>(
     isCallback,
-    stateChangeCallback,
-    eventReceivedCallback
+    eventReceivedCallback,
+    stateChangeCallback
   )
   actualEventReceivedCallback =
     actualEventReceivedCallback !== actualStateChangeCallback
