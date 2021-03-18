@@ -5,6 +5,8 @@ import type {
   UpdateFieldDescriptor,
 } from './types'
 
+const empty = (Symbol('empty') as unknown) as null
+
 const updateToSetExpression: UpdateToSetExpressionMethod = (
   expression,
   escapeId,
@@ -39,22 +41,23 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
       let updatingFieldDescriptor:
         | UpdateFieldDescriptor
         | null
-        | undefined = null
+        | undefined = empty
 
       for (const partName of [baseName, ...nestedPath]) {
         if (!updatingFieldLevelMap.has(partName)) {
           updatingFieldLevelMap.set(partName, {
             key:
+              updatingFieldDescriptor !== empty &&
               updatingFieldDescriptor != null
                 ? `${updatingFieldDescriptor.key}.${partName}`
                 : partName,
             nestedKey: nestedPath,
             baseName,
-            selectedOperation: null,
+            selectedOperation: empty,
             children: new Map(),
-            $set: null,
-            $unset: null,
-            $inc: null,
+            $set: empty,
+            $unset: empty,
+            $inc: empty,
           })
         }
         updatingFieldDescriptor = updatingFieldLevelMap.get(
@@ -72,9 +75,9 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
   }
 
   for (const descriptor of updatingFieldsDescriptors) {
-    const flagUnset = descriptor['$unset'] != null
-    const flagSet = descriptor['$set'] != null
-    const flagInc = descriptor['$inc'] != null
+    const flagUnset = descriptor['$unset'] !== empty
+    const flagSet = descriptor['$set'] !== empty
+    const flagInc = descriptor['$inc'] !== empty
     const flagChild = descriptor.children.size > 0
 
     if (
@@ -98,18 +101,18 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
     switch (true) {
       case flagUnset:
         descriptor.selectedOperation = '$unset'
-        descriptor['$set'] = null
+        descriptor['$set'] = empty
       // eslint-disable-next-line no-fallthrough
       case flagSet:
         descriptor.selectedOperation =
-          descriptor.selectedOperation != null
+          descriptor.selectedOperation !== empty
             ? descriptor.selectedOperation
             : '$set'
-        descriptor['$inc'] = null
+        descriptor['$inc'] = empty
       // eslint-disable-next-line no-fallthrough
       case flagInc:
         descriptor.selectedOperation =
-          descriptor.selectedOperation != null
+          descriptor.selectedOperation !== empty
             ? descriptor.selectedOperation
             : '$inc'
         descriptor.children.clear()
@@ -127,7 +130,10 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
       descriptor.baseName
     ) as UpdateFieldDescriptor
     const operationName = descriptor.selectedOperation
-    const fieldValue = operationName != null ? descriptor[operationName] : null
+    const fieldValue =
+      operationName !== empty && operationName != null
+        ? descriptor[operationName]
+        : empty
     const operation: {
       operationName: typeof operationName
       fieldValue: typeof fieldValue
