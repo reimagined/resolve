@@ -49,6 +49,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Packages folder structure has been changed. The **core** folder contains packages related to framework's core functionality. The **runtime** folder contains runtime-specific adapters, brokers etc. The **tools** folder contains basic scripts and testing tools.
 
+#### @resolve-js/scripts
+
+- Replaced the **reset** mode's **dropEventBus** option with **dropEventSubscriber**
+
+Previously: 
+```
+await reset(resolveConfig, {
+  dropEventStore: false,
+  dropEventBus: true,
+  dropReadModels: true,
+  dropSagas: true,
+})
+```
+
+Now:
+```
+await reset(resolveConfig, {
+  dropEventStore: false,
+  dropEventSubscriber: true,
+  dropReadModels: true,
+  dropSagas: true,
+})
+```
+
 ## 0.25.0
 
 ### Breaking Changes

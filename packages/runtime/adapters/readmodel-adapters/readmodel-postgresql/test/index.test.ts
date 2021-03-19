@@ -315,6 +315,21 @@ describe('@resolve-js/readmodel-postgresql-serverless', () => {
       }
     )
 
+    await store.update(
+      'values',
+      {
+        id: 'id-1',
+      },
+      {
+        $set: {
+          'obj.a': null,
+          'obj.b': null,
+          a: null,
+          b: null,
+        },
+      }
+    )
+
     await adapter.unsubscribe(store, readModelName)
     await adapter.disconnect(store)
 
