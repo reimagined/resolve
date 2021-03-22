@@ -126,7 +126,7 @@ const commitIncrementalImport = async (
         /^SQLITE_ERROR:.*? not exists$/.test(error.message))
     ) {
       throw new Error(
-        `Either event batch has timestamps from the past no incremental importId=${importId} does not exist`
+        `Either event batch has timestamps from the past or incremental importId=${importId} does not exist`
       )
     } else {
       throw error
