@@ -411,7 +411,7 @@ export type WrappedAdapterOperationParameters<
   readModelName: string,
   ...args: infer Args
 ) => // eslint-disable-next-line @typescript-eslint/no-unused-vars
-infer Result
+infer _Result
   ? Args
   : never
 
@@ -486,7 +486,7 @@ export type ObjectKeys<T> = T extends object
   : T extends number
   ? []
   : // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  T extends Array<infer R> | string
+  T extends Array<infer _R> | string
   ? string[]
   : never
 
@@ -508,26 +508,32 @@ export type ObjectDictionaryKeys<T extends object> = Exclude<
 export type DistributeFixedFieldsUnionLikeObject<
   U extends object,
   K extends keyof any,
-  KS extends keyof U = Exclude<ObjectFixedKeys<U>, K>
-> = KS extends any ? { [K in KS]: any } : never
+  KS = Exclude<ObjectFixedKeys<U>, K>
+> = KS extends keyof any ? { [K in KS]: any } : never
 
 export type ExtractExactUnionLikeKeyType<
   U extends object,
   K extends keyof any,
-  Q extends object = Exclude<U, DistributeFixedFieldsUnionLikeObject<U, K>>
-> = Extract<Q, { [K in ObjectFixedKeys<Q>]: Q[K] }>[keyof Extract<
+  Q extends object = Exclude<U, DistributeFixedFieldsUnionLikeObject<U, K>>,
+  KS = ObjectFixedKeys<Q>
+> = Extract<Q, KS extends keyof Q ? { [K in KS]: Q[K] } : never>[keyof Extract<
   Q,
-  { [K in ObjectFixedKeys<Q>]: Q[K] }
+  KS extends keyof Q ? { [K in KS]: Q[K] } : never
 >]
 
 export type DistributeUnionLikeObject<
   U extends object,
-  KS extends keyof U = ObjectFixedKeys<U>
-> = KS extends any ? ExtractExactUnionLikeKeyType<U, KS> : never
+  KS = ObjectFixedKeys<U>
+> = KS extends keyof any ? ExtractExactUnionLikeKeyType<U, KS> : never
 
-export type ObjectFixedUnionToIntersection<U extends object> = {
-  [K in ObjectFixedKeys<U>]: DistributeUnionLikeObject<U>
-}
+export type ObjectFixedUnionToIntersection<
+  U extends object,
+  KS = ObjectFixedKeys<U>
+> = [KS] extends [keyof any]
+  ? {
+      [K in KS]: DistributeUnionLikeObject<U>
+    }
+  : never
 
 export type ObjectFixedUnionToIntersectionByKeys<
   U extends object,
@@ -539,14 +545,19 @@ export type ObjectFixedUnionToIntersectionByKeys<
   >
 }
 
-export type ObjectFixedIntersectionToObject<T extends object> = {
-  [K in ObjectFixedKeys<T>]: ExtractExactUnionLikeKeyType<T, K>
-}
+export type ObjectFixedIntersectionToObject<
+  T extends object,
+  KS = ObjectFixedKeys<T>
+> = [KS] extends [keyof any]
+  ? {
+      [K in KS]: ExtractExactUnionLikeKeyType<T, K>
+    }
+  : never
 
 export type ObjectFunctionLikeKeys<
   U extends object,
-  KS extends keyof U = ObjectFixedKeys<U>
-> = KS extends any ? (U[KS] extends FunctionLike ? KS : never) : never
+  KS = ObjectFixedKeys<U>
+> = KS extends keyof U ? (U[KS] extends FunctionLike ? KS : never) : never
 
 export type JsonLike = JsonPrimitive | JsonArray | JsonMap
 
