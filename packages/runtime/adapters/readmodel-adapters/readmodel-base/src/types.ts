@@ -136,6 +136,8 @@ export type ReadModelEvent = {
   timestamp: number
   type: string
   payload: JsonMap | JsonArray | JsonPrimitive
+  threadId: number
+  threadCounter: number
 }
 
 export type EventstoreAdapterLike = {

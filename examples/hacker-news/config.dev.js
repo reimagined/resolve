@@ -19,6 +19,29 @@ const devConfig = {
         databaseFile: 'data/read-model-default.db',
       },
     },
+    replicator: {
+      module: './readmodel-replicator-postgresql-serverless/lib/index.js',
+      options: {
+        dbClusterOrInstanceArn: declareRuntimeEnv(
+          'RESOLVE_READMODEL_CLUSTER_ARN'
+        ),
+        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
+        databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
+        region: declareRuntimeEnv('AWS_REGION'),
+        targetEventStore: {
+          dbClusterOrInstanceArn: declareRuntimeEnv(
+            'RESOLVE_READMODEL_CLUSTER_ARN'
+          ),
+          awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
+          databaseName: 'event-store-dev-0.28.2-pxcxz3',
+          // eventsTableName: iotsTypes.NonEmptyString,
+          // secretsTableName: iotsTypes.NonEmptyString,
+          // snapshotsTableName: iotsTypes.NonEmptyString,
+          // subscribersTableName: iotsTypes.NonEmptyString,
+          // region: 'region',
+        },
+      },
+    },
     hackerNews: {
       module: '@resolve-js/readmodel-lite',
       options: {

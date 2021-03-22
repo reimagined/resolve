@@ -2689,43 +2689,6 @@
   resolved "https://registry.yarnpkg.com/@redux-saga/types/-/types-1.1.0.tgz#0e81ce56b4883b4b2a3001ebe1ab298b84237204"
   integrity sha512-afmTuJrylUU/0OtqzaRkbyYFFNgCF73Bvel/sw90pvGrWIZ+vyoIJqA6eMSoA6+nb443kTmulmBtC9NerXboNg==
 
-"@resolve-js/core@0.28.2":
-  version "0.28.2"
-  resolved "https://registry.yarnpkg.com/@resolve-js/core/-/core-0.28.2.tgz#8b9ea322902cf85f3749057ab4a9ac67c2eebad2"
-  integrity sha512-CqMIncSrs6GhYzfVbnV2oB+yWJBmmBTUdUE3TUpJZvjqYEZ2jZpVAsiyil3RJYWg3d413FLoQwtSQTvfv5HG8g==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    "@resolve-js/debug-levels" "0.28.2"
-    uuid "8.3.2"
-
-"@resolve-js/debug-levels@0.28.2":
-  version "0.28.2"
-  resolved "https://registry.yarnpkg.com/@resolve-js/debug-levels/-/debug-levels-0.28.2.tgz#1c49d1a372a28b0e608570fc3afac6efabf7246d"
-  integrity sha512-tyiH+Z29xhNQ/0nX1vcgkrzXIc2/6xB7MzGd9rEY2VF7sKcrL3UkYe89fCu25Ldqz0P79YN/6O/0yFwce1C5Pw==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    debug "4.1.1"
-
-"@resolve-js/eventstore-base@0.28.2":
-  version "0.28.2"
-  resolved "https://registry.yarnpkg.com/@resolve-js/eventstore-base/-/eventstore-base-0.28.2.tgz#6f864cfcf4b58772cd4bf12fa80cd0a4384cbf43"
-  integrity sha512-RQUGtj7Iz3DYiJ8hA9zCYtKl4nAQmJzdfctzrCCzQ1LksDNwAILFXg+nmMBE1hr/gQOLuAvZUoOfMpKaUbg/8w==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    "@resolve-js/core" "0.28.2"
-    "@resolve-js/debug-levels" "0.28.2"
-    fp-ts "2.9.5"
-    io-ts "2.2.15"
-
-"@resolve-js/eventstore-postgresql-serverless@0.28.2":
-  version "0.28.2"
-  resolved "https://registry.yarnpkg.com/@resolve-js/eventstore-postgresql-serverless/-/eventstore-postgresql-serverless-0.28.2.tgz#a3cc839ab43cfd51f24e0578941702438b6ce1c3"
-  integrity sha512-Ig8bzeRJc7KonNNFshbW+syk24wGF6/erSLVGGI2Ogg8IKWk7gIf3sAMQ6Xhe/vjt0kxfT/NHdg7lMH6JDoOdQ==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    "@resolve-js/debug-levels" "0.28.2"
-    "@resolve-js/eventstore-base" "0.28.2"
-
 "@restart/context@^2.1.4":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@restart/context/-/context-2.1.4.tgz#a99d87c299a34c28bd85bb489cb07bfd23149c02"

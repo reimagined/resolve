@@ -19,7 +19,8 @@
       "tests",
       "website",
       "functional-tests",
-      "functional-tests/app"
+      "functional-tests/app",
+      "examples/hacker-news/readmodel-replicator-postgresql-serverless"
     ]
   },
   "scripts": {

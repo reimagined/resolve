@@ -16,11 +16,21 @@ const getCompileConfigs = () => {
 
   const configs = []
 
-  for (const filePath of find('./packages/**/package.json', {
-    cwd: getResolveDir(),
-    absolute: true,
-    ignore: ['**/node_modules/**', './node_modules/**'],
-  })) {
+  for (const filePath of [
+    ...find(
+      './examples/hacker-news/readmodel-replicator-postgresql-serverless/package.json',
+      {
+        cwd: getResolveDir(),
+        absolute: true,
+        ignore: ['**/node_modules/**', './node_modules/**'],
+      }
+    ),
+    ...find('./packages/**/package.json', {
+      cwd: getResolveDir(),
+      absolute: true,
+      ignore: ['**/node_modules/**', './node_modules/**'],
+    }),
+  ]) {
     if (filePath.includes('node_modules')) {
       continue
     }
