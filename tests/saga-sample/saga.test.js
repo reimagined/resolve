@@ -1,7 +1,7 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import givenEvents, {
   RESOLVE_SIDE_EFFECTS_START_TIMESTAMP,
-} from 'resolve-testing-tools'
+} from '@resolve-js/testing-tools'
 
 import config from './config'
 

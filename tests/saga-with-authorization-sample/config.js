@@ -1,4 +1,8 @@
-import { merge, defaultResolveConfig, validateConfig } from 'resolve-scripts'
+import {
+  merge,
+  defaultResolveConfig,
+  validateConfig,
+} from '@resolve-js/scripts'
 
 const localConfig = {
   mode: 'development',
@@ -26,21 +30,21 @@ const appConfig = {
 // mdis-start dev-config
 const devConfig = {
   eventstoreAdapter: {
-    module: 'resolve-eventstore-lite',
+    module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: ':memory:',
     },
   },
   readModelConnectors: {
     default: {
-      module: 'resolve-readmodel-lite',
+      module: '@resolve-js/readmodel-lite',
       options: {
         databaseFile: ':memory:',
       },
     },
     /*
     default: {
-      module: 'resolve-readmodel-mysql',
+      module: 'readmodel-mysql',
       options: {
         host: 'localhost',
         port: 3306,

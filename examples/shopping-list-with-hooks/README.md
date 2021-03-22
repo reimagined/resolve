@@ -2,7 +2,7 @@
 
 ![shopping-list](https://user-images.githubusercontent.com/19663260/44575926-f3613580-a795-11e8-825f-670c36b843dd.png)
 
-This example demonstrates how to use the [resolve-react-hooks](https://reimagined.github.io/resolve/docs/frontend#resolve-react-hooks-library) client library to communicate with a reSolve backend.
+This example demonstrates how to use the [@resolve-js/react-hooks](https://reimagined.github.io/resolve/docs/frontend#@resolve-js/react-hooks-library) client library to communicate with a reSolve backend.
 
 ##### Installation:
 

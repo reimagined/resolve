@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import { Selector } from 'testcafe'
 import { getTargetURL } from '../../utils/utils'
 

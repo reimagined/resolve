@@ -1,8 +1,8 @@
 const optionsInfo = (examples) => [
   `Options:`,
   ``,
-  `  -e, --example    creates an example application base on application from resolve examples directory`,
-  `      Now you can choose one of the next examples:`,
+  `  -e, --example    creates an example application based on an application from the reSolve examples directory`,
+  `      You can choose one of the following examples:`,
   ...examples.map(
     ({ name, description }) => `          * ${name} - ${description}`
   ),
@@ -21,7 +21,7 @@ const message = {
       ``,
       ...optionsInfo(resolveExamples),
       ``,
-      `If you have any problems, you can create an issue:`,
+      `If you have any problems, create an issue:`,
       `  ${chalk.cyan('https://github.com/reimagined/resolve/issues/new')}`,
     ].join(EOL),
 
@@ -37,12 +37,12 @@ const message = {
       ``,
       ...optionsInfo(resolveExamples),
       ``,
-      `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
+      `Run ${chalk.cyan('create-resolve-app --help')} to view all options.`,
     ].join(EOL),
 
   startCreatingApp: ({ EOL, applicationName, exampleName, commit, branch }) =>
     [
-      `Creating ${applicationName} in ./${applicationName} based on ${exampleName} example`,
+      `Creating ${applicationName} in ./${applicationName} based on the ${exampleName} example`,
       commit ? ` (commit SHA:${commit})` : ``,
       branch ? ` (from ${branch} branch)` : ``,
     ].join(EOL),

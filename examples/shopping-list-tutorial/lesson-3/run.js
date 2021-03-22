@@ -7,9 +7,12 @@ import {
   merge,
   stop,
   reset,
-} from 'resolve-scripts'
+  importEventStore,
+  exportEventStore,
+} from '@resolve-js/scripts'
 
 import appConfig from './config.app'
+import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
@@ -25,24 +28,49 @@ void (async () => {
         break
       }
 
-      case 'reset': {
-        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
-        await reset(resolveConfig, {
-          dropEventStore: false,
-          dropEventBus: true,
-          dropReadModels: true,
-          dropSagas: true,
-        })
+      case 'build': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, prodConfig)
+        await build(resolveConfig)
         break
       }
 
-      case 'build': {
-        await build(merge(defaultResolveConfig, appConfig, prodConfig))
+      case 'cloud': {
+        await build(merge(defaultResolveConfig, appConfig, cloudConfig))
         break
       }
 
       case 'start': {
         await start(merge(defaultResolveConfig, appConfig, prodConfig))
+        break
+      }
+
+      case 'reset': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+        await reset(resolveConfig, {
+          dropEventStore: false,
+          dropEventSubscriber: true,
+          dropReadModels: true,
+          dropSagas: true,
+        })
+
+        break
+      }
+
+      case 'import-event-store': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+
+        const importFile = process.argv[3]
+
+        await importEventStore(resolveConfig, { importFile })
+        break
+      }
+
+      case 'export-event-store': {
+        const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
+
+        const exportFile = process.argv[3]
+
+        await exportEventStore(resolveConfig, { exportFile })
         break
       }
 
@@ -55,7 +83,7 @@ void (async () => {
 
         await reset(resolveConfig, {
           dropEventStore: true,
-          dropEventBus: true,
+          dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
         })

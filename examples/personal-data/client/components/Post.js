@@ -8,7 +8,7 @@ import {
   Button,
 } from 'reactstrap'
 import Markdown from 'react-markdown'
-import { useCommand } from 'resolve-react-hooks'
+import { useCommand } from '@resolve-js/react-hooks'
 
 import UserContext from '../userContext'
 
