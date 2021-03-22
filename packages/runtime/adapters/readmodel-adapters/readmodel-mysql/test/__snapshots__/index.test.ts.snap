@@ -1421,6 +1421,14 @@ INDEX escapeId(id) (escapeId(id)))
   ],
   Array [
     "query",
+    "UPDATE escapeId(values)
+    SET escapeId(obj) = JSON_SET(escapeId(obj), '$.\\"a\\"', null) , escapeId(obj) = JSON_SET(escapeId(obj), '$.\\"b\\"', null) , escapeId(a) = null , escapeId(b) = null  WHERE 
+    (((escapeId(id) = CAST(escapeStr(\\"id-1\\") AS JSON)) and (not (escapeId(id) is null)) and (not (CAST(escapeStr(\\"id-1\\") AS JSON) is null))) or      
+    ((escapeId(id) is null) and (CAST(escapeStr(\\"id-1\\") AS JSON) is null)))
+   ;",
+  ],
+  Array [
+    "query",
     "
       CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
         \`EventSubscriber\` VARCHAR(190) NOT NULL,

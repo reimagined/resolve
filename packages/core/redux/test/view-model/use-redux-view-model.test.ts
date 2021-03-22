@@ -9,6 +9,7 @@ import {
 } from '../../src/view-model/actions'
 import { getEntry } from '../../src/view-model/view-model-reducer'
 import { useReduxViewModel } from '../../src/view-model/use-redux-view-model'
+import { VIEWMODEL_STATE_UPDATE } from '../../src/internal/action-types'
 
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
@@ -100,12 +101,6 @@ test('internal actions are dispatched', () => {
 
   const stateChangedCallback = extractStateChangedCallback()
 
-  stateChangedCallback({ data: 'data' }, true)
-  expect(mDispatch).toHaveBeenCalledWith(
-    viewModelStateUpdate(query, { data: 'data' }, true)
-  )
-
-  mDispatch.mockClear()
   stateChangedCallback({ data: 'new-data' }, false)
   expect(mDispatch).toHaveBeenCalledWith(
     viewModelStateUpdate(query, { data: 'new-data' }, false)
@@ -146,13 +141,6 @@ test('internal actions are dispatched (custom selector id)', () => {
 
   expect(mDispatch).toHaveBeenCalledTimes(1)
   mDispatch.mockClear()
-
-  const stateChangedCallback = extractStateChangedCallback()
-
-  stateChangedCallback({ data: 'data' }, true)
-  expect(mDispatch).toHaveBeenCalledWith(
-    viewModelStateUpdate(query, { data: 'data' }, true, 'selector-id')
-  )
 
   const eventReceivedCallback = extractEventReceivedCallback()
 
@@ -208,17 +196,6 @@ test('custom redux actions', () => {
 
   const stateChangedCallback = extractStateChangedCallback()
 
-  stateChangedCallback({ data: 'data' }, true)
-  expect(mDispatch).toHaveBeenCalledWith({
-    type: 'update',
-    query,
-    state: {
-      data: 'data',
-    },
-    initial: true,
-  })
-
-  mDispatch.mockClear()
   stateChangedCallback({ data: 'new-data' }, false)
   expect(mDispatch).toHaveBeenCalledWith({
     type: 'update',
@@ -284,14 +261,14 @@ test('custom redux actions with custom selector id', () => {
 
   const stateChangedCallback = extractStateChangedCallback()
 
-  stateChangedCallback({ data: 'data' }, true)
+  stateChangedCallback({ data: 'data' }, false)
   expect(mDispatch).toHaveBeenCalledWith({
     type: 'update',
     query,
     state: {
       data: 'data',
     },
-    initial: true,
+    initial: false,
     selectorId: 'selector-id',
   })
 
@@ -391,4 +368,24 @@ test('the hook should not dispatch any action if no stateUpdate action created d
   )
 
   expect(mDispatch).toHaveBeenCalledTimes(0)
+})
+
+test('state action creator should be called only once with initial state', () => {
+  const query = makeQuery()
+  renderHook(() => useReduxViewModel(query))
+
+  const emulateStateChange = extractStateChangedCallback()
+
+  emulateStateChange({}, true)
+
+  expect(mDispatch).toHaveBeenCalledTimes(1)
+  expect(mDispatch.mock.calls[0][0]).toEqual({
+    type: VIEWMODEL_STATE_UPDATE,
+    query,
+    state: {
+      initial: 'state',
+    },
+    initial: true,
+    selectorId: undefined,
+  })
 })

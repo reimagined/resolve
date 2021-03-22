@@ -1554,6 +1554,27 @@ Array [
     "includeResultMetadata": true,
     "resourceArn": "dbClusterOrInstanceArn",
     "secretArn": "awsSecretStoreArn",
+    "sql": "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
+    SET \\"obj\\" = jsonb_set(
+            jsonb_set(
+            \\"obj\\",
+            '{\\"a\\"}',
+            null
+            ) ,
+            '{\\"b\\"}',
+            null
+            ) , \\"a\\" = null , \\"b\\" = null  WHERE 
+    (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
+    ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
+   ;",
+  },
+  "executeStatement",
+  Object {
+    "continueAfterTimeout": false,
+    "database": "postgres",
+    "includeResultMetadata": true,
+    "resourceArn": "dbClusterOrInstanceArn",
+    "secretArn": "awsSecretStoreArn",
     "sql": "WITH \\"cte\\" AS (
           DELETE FROM \\"databaseName\\".\\"__databaseName__TRX__\\"
           WHERE \\"Timestamp\\" < CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) - 86400000
