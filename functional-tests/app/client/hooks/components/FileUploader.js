@@ -143,15 +143,16 @@ const FileUploader = () => {
       )}
       {loaded && uploadId != null && (
         <Button
+          id="link"
+          color="link"
           href={getCDNBasedUrl({
             CDNUrl,
             dir: DIRECTORY,
             uploadId: uploadId,
             token,
           })}
-          color="info"
         >
-          Get upload
+          File link
         </Button>
       )}
     </div>

@@ -8,6 +8,15 @@ import extractRequestBody from '../utils/extract-request-body'
 
 const log = debugLevels('resolve:runtime:uploader-handler')
 
+const cors = (res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'
+  )
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization')
+}
+
 const uploaderHandler = async (req, res) => {
   try {
     const { directory, bucket, secretKey } = req.resolve.uploader
@@ -59,6 +68,9 @@ const uploaderHandler = async (req, res) => {
       }
 
       fs.writeFileSync(`${dirName}/${uploadId}`, data, { flag: 'w+' })
+
+      cors(res)
+      res.end()
     } else if (req.method === 'GET') {
       const uploadParams = req.matchedParams.params
       if (uploadParams == null || uploadParams.constructor !== String) {
@@ -111,9 +123,13 @@ const uploaderHandler = async (req, res) => {
 
       const file = fs.readFileSync(path.join(bucketPath, dir, uploadId))
 
+      cors(res)
       res.setHeader('Content-Type', metadata['Content-Type'])
       res.setHeader('Content-Disposition', 'inline')
       res.end(file)
+    } else if (req.method === 'OPTIONS') {
+      cors(res)
+      res.end()
     }
   } catch (err) {
     log.warn('Uploader handler error', err)
