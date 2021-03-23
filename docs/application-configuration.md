@@ -203,6 +203,15 @@ eventstoreAdapter: {
 }
 ```
 
+The following adapters are available:
+
+| Adapter Module                               | Description                                                  |
+| -------------------------------------------- | ------------------------------------------------------------ |
+| @resolve-js/eventstore-lite                  | Used to store events in an SQLite database.                  |
+| @resolve-js/eventstore-mysql                 | Used to store events in a MySQL database.                    |
+| @resolve-js/eventstore-postgresql            | Used to store events in a PostgreSQL database.               |
+| @resolve-js/eventstore-postgresql-serverless | Used to store events in Amazon Aurora PostgreSQL Serverless. |
+
 ### jwtCookie
 
 Specifies global settings for the application's JWT cookies. The configuration object contains the following fields:
@@ -288,6 +297,15 @@ readModelConnectors: {
   }
 }
 ```
+
+The following connectors are available:
+
+| Module Name                                 | Description                                                           |
+| ------------------------------------------- | --------------------------------------------------------------------- |
+| @resolve-js/readmodel-lite                  | Used to store Read Model data in an SQLite database.                  |
+| @resolve-js/readmodel-mysql                 | Used to store Read Model data in a MySQL database.                    |
+| @resolve-js/readmodel-postgresql            | Used to store Read Model data in a PostgreSQL database.               |
+| @resolve-js/readmodel-postgresql-serverless | Used to store Read Model data in Amazon Aurora PostgreSQL Serverless. |
 
 ### sagas
 
