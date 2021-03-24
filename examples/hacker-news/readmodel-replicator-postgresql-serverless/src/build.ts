@@ -128,6 +128,10 @@ const build: ExternalMethods['build'] = async (
     )
   )
 
+  console.log('Input cursor: ', inputCursor)
+
+  let appliedEventsCount = 0
+
   const insertEventToTargetEventStore = async (
     event: ReadModelEvent
   ): Promise<void> => {
@@ -170,12 +174,15 @@ const build: ExternalMethods['build'] = async (
                 )
               `,
       })
+      appliedEventsCount++
     } catch (error) {
       const errorMessage: string = error.message
       if (
         !/duplicate key value violates unique constraint/.test(errorMessage)
       ) {
         throw error
+      } else {
+        console.error('Duplicate error: ', errorMessage)
       }
     }
   }
@@ -184,7 +191,8 @@ const build: ExternalMethods['build'] = async (
   let localContinue = true
   let lastError: Error | null = null
   while (true) {
-    let appliedEventsCount = 0
+    appliedEventsCount = 0
+
     try {
       const { cursor: newCursor, events } = await eventstoreAdapter.loadEvents({
         eventTypes: null,
@@ -200,13 +208,9 @@ const build: ExternalMethods['build'] = async (
       await Promise.all(eventPromises)
 
       nextCursor = newCursor
-      appliedEventsCount = events.length
-      if (getVacantTimeInMillis() < 0) {
-        localContinue = false
-        break
-      }
     } catch (error) {
       lastError = error
+      console.error('Insert error:', lastError)
     }
 
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
