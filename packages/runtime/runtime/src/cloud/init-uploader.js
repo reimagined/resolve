@@ -136,7 +136,15 @@ export const createToken = (
 }
 
 const createUploader = (config) => {
-  const { userId, CDN, encryptedUserId, scope } = config
+  const { CDN, scope } = config
+
+  const userId = process.env['RESOLVE_USER_ID']
+  const encryptedUserId = process.env['RESOLVE_ENCRYPTED_USER_ID']
+
+  Object.assign(config, {
+    userId,
+    encryptedUserId,
+  })
 
   return Object.freeze({
     createPresignedPut: createPresignedPut.bind(null, config),
