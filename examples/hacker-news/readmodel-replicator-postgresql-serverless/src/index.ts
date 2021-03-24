@@ -16,37 +16,13 @@ import type {
 import _connect from './connect'
 import disconnect from './disconnect'
 
-import count from './count'
-import defineTable from './define-table'
-import del from './delete'
-import findOne from './find-one'
-import find from './find'
-import insert from './insert'
-import update from './update'
-
-import buildUpsertDocument from './build-upsert-document'
 import coercer from './coercer'
-import convertResultRow from './convert-result-row'
 import escapeId from './escape-id'
 import escapeStr from './escape-str'
-import searchToWhereExpression from './search-to-where-expression'
-import updateToSetExpression from './update-to-set-expression'
-
-import PassthroughError from './passthrough-error'
-import inlineLedgerExecuteStatement from './inline-ledger-execute-statement'
-import inlineLedgerForceStop from './inline-ledger-force-stop'
-import generateGuid from './generate-guid'
-import isHighloadError from './is-highload-error'
-import isTimeoutError from './is-timeout-error'
 
 import dropReadModel from './drop-read-model'
-import subscribe from './subscribe'
 import resubscribe from './resubscribe'
 import unsubscribe from './unsubscribe'
-import deleteProperty from './delete-property'
-import getProperty from './get-property'
-import listProperties from './list-properties'
-import setProperty from './set-property'
 import reset from './reset'
 import pause from './pause'
 import resume from './resume'
@@ -56,6 +32,28 @@ import build from './build'
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
+
+const defineTable = (async (...args) => {
+  return
+}) as CurrentStoreApi['defineTable']
+const find = (async (...args) => {
+  return []
+}) as CurrentStoreApi['find']
+const findOne = (async (...args) => {
+  return null
+}) as CurrentStoreApi['findOne']
+const count = (async (...args) => {
+  return 0
+}) as CurrentStoreApi['count']
+const insert = (async (...args) => {
+  return
+}) as CurrentStoreApi['insert']
+const update = (async (...args) => {
+  return
+}) as CurrentStoreApi['update']
+const del = (async (...args) => {
+  return
+}) as CurrentStoreApi['delete']
 
 const store: CurrentStoreApi = {
   defineTable,
@@ -68,21 +66,31 @@ const store: CurrentStoreApi = {
 }
 
 const internalMethods: InternalMethods = {
-  buildUpsertDocument,
-  convertResultRow,
-  searchToWhereExpression,
-  updateToSetExpression,
   coercer,
-  generateGuid,
-  PassthroughError,
-  inlineLedgerExecuteStatement,
-  inlineLedgerForceStop,
-  isTimeoutError,
-  isHighloadError,
   dropReadModel,
   escapeId,
   escapeStr,
 }
+
+const getProperty = (async (...args) => {
+  return null
+}) as ExternalMethods['getProperty']
+
+const listProperties = (async (...args) => {
+  return null
+}) as ExternalMethods['listProperties']
+
+const deleteProperty = (async (...args) => {
+  return
+}) as ExternalMethods['deleteProperty']
+
+const setProperty = (async (...args) => {
+  return
+}) as ExternalMethods['setProperty']
+
+const subscribe = (async (...args) => {
+  return
+}) as ExternalMethods['subscribe']
 
 const externalMethods: ExternalMethods = {
   subscribe,

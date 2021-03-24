@@ -1,60 +1,111 @@
-import type {
+import {
   ExternalMethods,
-  ReadModelStatus,
   ReadModelRunStatus,
+  ReadModelStatus,
+  ReadModelEvent,
 } from './types'
+import rawExecuteStatement from './raw-execute-statement'
 
 const status: ExternalMethods['status'] = async (pool, readModelName) => {
-  const { schemaName, escapeId, escapeStr, inlineLedgerExecuteStatement } = pool
+  const {
+    escapeId,
+    escapeStr,
+    targetEventStore,
+    rdsDataService,
+    coercer,
+  } = pool
 
-  const databaseNameAsId = escapeId(schemaName)
-  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
-  try {
-    pool.activePassthrough = true
-    const rows = (await inlineLedgerExecuteStatement(
-      pool,
-      `SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-     WHERE "EventSubscriber" = ${escapeStr(readModelName)}
+  const {
+    dbClusterOrInstanceArn: eventStoreClusterArn,
+    awsSecretStoreArn: eventStoreSecretArn,
+    databaseName: eventStoreDatabaseName,
+    eventsTableName: eventStoreEventsTableName = 'events',
+  } = targetEventStore
+
+  const eventStoreDatabaseNameAsString = escapeStr(eventStoreDatabaseName)
+  const eventStorePauseTableNameAsString: string = escapeStr(
+    `${eventStoreEventsTableName}-pause`
+  )
+  const eventStoreDatabaseNameAsId = escapeId(eventStoreDatabaseName)
+  const eventStoreEventsTableAsId = escapeId(eventStoreEventsTableName)
+
+  const pauseCheckPromise = rawExecuteStatement(
+    rdsDataService,
+    eventStoreClusterArn,
+    eventStoreSecretArn,
+    coercer,
+    `SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE  table_schema = ${eventStoreDatabaseNameAsString}
+          AND    table_name   = ${eventStorePauseTableNameAsString}
+         ) AS "pauseCheck"
     `
-    )) as Array<{
-      Properties: string | null
-      SuccessEvent: string | null
-      FailedEvent: string | null
-      Errors: string | null
-      Cursor: string | null
-      IsPaused: boolean | null
-    }>
+  )
 
-    if (rows.length === 1) {
-      const result: ReadModelStatus = {
-        eventSubscriber: readModelName,
-        properties:
-          rows[0].Properties != null ? JSON.parse(rows[0].Properties) : null,
-        deliveryStrategy: 'inline-ledger',
-        successEvent:
-          rows[0].SuccessEvent != null
-            ? JSON.parse(rows[0].SuccessEvent)
-            : null,
-        failedEvent:
-          rows[0].FailedEvent != null ? JSON.parse(rows[0].FailedEvent) : null,
-        errors: rows[0].Errors != null ? JSON.parse(rows[0].Errors) : null,
-        cursor: rows[0].Cursor != null ? JSON.parse(rows[0].Cursor) : null,
-        status: 'deliver' as ReadModelRunStatus,
-      }
+  const eventsPromise = rawExecuteStatement(
+    rdsDataService,
+    eventStoreClusterArn,
+    eventStoreSecretArn,
+    coercer,
+    `SELECT "threadCounter", "threadId", "type", "timestamp", "aggregateId", "aggregateVersion", "payload"
+        FROM ${eventStoreDatabaseNameAsId}.${eventStoreEventsTableAsId}
+        ORDER BY "timestamp" DESC, "threadCounter" DESC, "threadId" DESC
+        LIMIT 1
+    `
+  )
 
-      if (result.errors != null) {
-        result.status = 'error' as ReadModelRunStatus
-      } else if (rows[0].IsPaused) {
-        result.status = 'skip' as ReadModelRunStatus
-      }
+  const check = (await pauseCheckPromise) as Array<{
+    pauseCheck: boolean
+  }>
 
-      return result
-    } else {
-      return null
+  let status: ReadModelRunStatus = ReadModelRunStatus.DELIVER
+  if (check && check.length && check[0].pauseCheck)
+    status = ReadModelRunStatus.SKIP
+
+  const events = (await eventsPromise) as Array<{
+    threadCounter: number
+    threadId: number
+    type: string
+    timestamp: number
+    aggregateId: string
+    aggregateVersion: number
+    payload: string
+  }>
+
+  let lastEvent: ReadModelEvent
+  if (events.length) {
+    let payload
+    try {
+      payload = JSON.parse(events[0].payload)
+    } catch (error) {
+      payload = {}
     }
-  } finally {
-    pool.activePassthrough = false
+    lastEvent = {
+      threadCounter: events[0].threadCounter,
+      threadId: events[0].threadId,
+      type: events[0].type,
+      timestamp: events[0].timestamp,
+      aggregateId: events[0].aggregateId,
+      aggregateVersion: events[0].aggregateVersion,
+      payload,
+    }
+  } else {
+    lastEvent = {
+      type: 'Init',
+    } as ReadModelEvent
   }
+
+  const result: ReadModelStatus = {
+    eventSubscriber: '',
+    properties: null,
+    deliveryStrategy: 'inline-ledger',
+    successEvent: lastEvent,
+    failedEvent: null,
+    errors: null,
+    cursor: null,
+    status: status,
+  }
+  return result
 }
 
 export default status

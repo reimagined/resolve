@@ -22,23 +22,9 @@ const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
   return `{${jsonPathParts.join(',')}}`
 }
 
-const wrapHighload: WrapHighloadMethod = async (
-  isHighloadError,
-  obj,
-  method,
-  params
-) => {
+const wrapHighload: WrapHighloadMethod = async (obj, method, params) => {
   while (true) {
-    try {
-      return await obj[method](params).promise()
-    } catch (error) {
-      if (isHighloadError(error)) {
-        const jitterDelay = Math.floor(250 + Math.random() * 750)
-        await new Promise((resolve) => setTimeout(resolve, jitterDelay))
-      } else {
-        throw error
-      }
-    }
+    return await obj[method](params).promise()
   }
 }
 
@@ -47,7 +33,6 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
     databaseName,
-    tablePrefix,
     targetEventStore,
     ...connectionOptions
   } = options
@@ -56,77 +41,25 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     throw new Error(`Wrong database name: ${databaseName}`)
   }
 
-  if (tablePrefix != null && tablePrefix.constructor !== String) {
-    throw new Error(`Wrong table prefix: ${tablePrefix}`)
-  } else if (tablePrefix == null) {
-    tablePrefix = ''
-  }
-
   const rawRdsDataService = new imports.RDSDataService(connectionOptions)
 
   const rdsDataService: HighloadRdsDataService = {
     executeStatement: wrapHighload.bind<
       null,
-      typeof imports.isHighloadError,
       typeof rawRdsDataService,
       'executeStatement',
       [HighloadMethodParameters<'executeStatement', typeof rawRdsDataService>],
       HighloadMethodReturnType<'executeStatement', typeof rawRdsDataService>
-    >(null, imports.isHighloadError, rawRdsDataService, 'executeStatement'),
-    beginTransaction: wrapHighload.bind<
-      null,
-      typeof imports.isHighloadError,
-      typeof rawRdsDataService,
-      'beginTransaction',
-      [HighloadMethodParameters<'beginTransaction', typeof rawRdsDataService>],
-      HighloadMethodReturnType<'beginTransaction', typeof rawRdsDataService>
-    >(null, imports.isHighloadError, rawRdsDataService, 'beginTransaction'),
-    commitTransaction: wrapHighload.bind<
-      null,
-      typeof imports.isHighloadError,
-      typeof rawRdsDataService,
-      'commitTransaction',
-      [HighloadMethodParameters<'commitTransaction', typeof rawRdsDataService>],
-      HighloadMethodReturnType<'commitTransaction', typeof rawRdsDataService>
-    >(null, imports.isHighloadError, rawRdsDataService, 'commitTransaction'),
-    rollbackTransaction: wrapHighload.bind<
-      null,
-      typeof imports.isHighloadError,
-      typeof rawRdsDataService,
-      'rollbackTransaction',
-      [
-        HighloadMethodParameters<
-          'rollbackTransaction',
-          typeof rawRdsDataService
-        >
-      ],
-      HighloadMethodReturnType<'rollbackTransaction', typeof rawRdsDataService>
-    >(null, imports.isHighloadError, rawRdsDataService, 'rollbackTransaction'),
-  }
-
-  const exucute2 = rdsDataService.executeStatement
-  rdsDataService.executeStatement = (...args) => {
-    console.log(...args)
-    return exucute2(...args)
-  }
-
-  const hash512 = (str: string): string => {
-    const hmac = imports.crypto.createHmac('sha512', awsSecretStoreArn)
-    hmac.update(str)
-    return hmac.digest('hex')
+    >(null, rawRdsDataService, 'executeStatement'),
   }
 
   Object.assign(pool, {
     rdsDataService,
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
-    schemaName: databaseName,
-    tablePrefix,
     targetEventStore,
     makeNestedPath,
-    transactionId: null,
     ...imports,
-    hash512,
   })
 }
 

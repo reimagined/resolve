@@ -1,48 +1,29 @@
 import type { ExternalMethods } from './types'
 
 const resume: ExternalMethods['resume'] = async (pool, readModelName, next) => {
+  const { escapeId, targetEventStore, rdsDataService } = pool
+
   const {
-    schemaName,
-    escapeId,
-    escapeStr,
-    inlineLedgerForceStop,
-    inlineLedgerExecuteStatement,
-    PassthroughError,
-  } = pool
+    dbClusterOrInstanceArn: eventStoreClusterArn,
+    awsSecretStoreArn: eventStoreSecretArn,
+    databaseName: eventStoreDatabaseName,
+    eventsTableName: eventStoreEventsTableName = 'events',
+  } = targetEventStore
 
-  const databaseNameAsId = escapeId(schemaName)
-  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
+  const databaseNameAsId = escapeId(eventStoreDatabaseName)
+  const pauseTableNameAsId = escapeId(`${eventStoreEventsTableName}-pause`)
+
   try {
-    pool.activePassthrough = true
-    while (true) {
-      try {
-        await inlineLedgerForceStop(pool, readModelName)
-        await inlineLedgerExecuteStatement(
-          pool,
-          `
-        WITH "CTE" AS (
-         SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
-         FOR NO KEY UPDATE NOWAIT
-       )
-        UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
-        SET "IsPaused" = FALSE
-        WHERE "EventSubscriber" = ${escapeStr(readModelName)}
-        AND (SELECT Count("CTE".*) FROM "CTE") = 1
-      `
-        )
-        break
-      } catch (err) {
-        if (!(err instanceof PassthroughError)) {
-          throw err
-        }
-      }
-    }
-
-    await next()
-  } finally {
-    pool.activePassthrough = false
+    await rdsDataService.executeStatement({
+      resourceArn: eventStoreClusterArn,
+      secretArn: eventStoreSecretArn,
+      database: 'postgres',
+      sql: `DROP TABLE ${databaseNameAsId}.${pauseTableNameAsId}`,
+    })
+  } catch (error) {
+    if (!/Table.*? does not exist$/i.test(error.message)) throw error
   }
+  await next()
 }
 
 export default resume

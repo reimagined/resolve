@@ -27,69 +27,9 @@ export type LibDependencies = {
   crypto: typeof crypto
 }
 
-export type InlineLedgerExecuteStatementMethod = ((
-  pool: AdapterPool,
-  querySQL: string,
-  transactionId?: string | null | symbol,
-  passthroughRuntimeErrors?: boolean
-) => Promise<Array<object>>) & {
-  SHARED_TRANSACTION_ID: symbol
-}
-
 export type FullJitterMethod = (retries: number) => Promise<void>
 export type MakeNestedPathMethod = (nestedPath: Array<string>) => string
 export type EscapeableMethod = (str: string) => string
-
-export type InlineLedgerForceStopMethod = (
-  pool: AdapterPool,
-  readModelName: string
-) => Promise<void>
-
-export type BuildUpsertDocumentMethod = (
-  searchExpression: Parameters<StoreApi<CommonAdapterPool>['update']>[3],
-  updateExpression: Parameters<StoreApi<CommonAdapterPool>['update']>[4]
-) => JsonMap
-
-export type RowLike = JsonMap
-export type MarshalledRowLike = RowLike & { marshalled: 'marshalled' }
-
-export type ConvertResultRowMethod = (
-  inputRow: MarshalledRowLike,
-  fieldList: Parameters<StoreApi<CommonAdapterPool>['find']>[4] | null
-) => RowLike
-
-export type SearchToWhereExpressionMethod = (
-  expression: SearchCondition,
-  escapeId: EscapeableMethod,
-  escapeStr: EscapeableMethod,
-  makeNestedPath: MakeNestedPathMethod
-) => string
-
-export type UpdateToSetExpressionMethod = (
-  expression: UpdateCondition,
-  escapeId: EscapeableMethod,
-  escapeStr: EscapeableMethod,
-  makeNestedPath: MakeNestedPathMethod
-) => string
-
-export interface PassthroughErrorInstance extends Error {
-  name: string
-  lastTransactionId: string | null | undefined
-}
-
-export type PassthroughErrorFactory = {
-  new (lastTransactionId: string | null | undefined): PassthroughErrorInstance
-} & {
-  isPassthroughError: (
-    error: Error & { code: string | number; stack: string },
-    includeRuntimeErrors: boolean
-  ) => boolean
-}
-
-export type IsRdsServiceErrorMethod = (
-  error: Error & { code: string | number; stack: string }
-) => boolean
-export type GenerateGuidMethod = (...args: any) => string
 
 export type DropReadModelMethod = (
   pool: AdapterPool,
@@ -136,7 +76,6 @@ export type WrapHighloadMethod = <
   >,
   T extends { [K in KS]: FunctionLike }
 >(
-  isHighloadError: IsRdsServiceErrorMethod,
   obj: T,
   method: KS,
   params: HighloadMethodParameters<KS, T>
@@ -160,30 +99,21 @@ export type HighloadRdsMethod<
 
 export type HighloadRdsDataService = {
   executeStatement: HighloadRdsMethod<'executeStatement'>
-  beginTransaction: HighloadRdsMethod<'beginTransaction'>
-  commitTransaction: HighloadRdsMethod<'commitTransaction'>
-  rollbackTransaction: HighloadRdsMethod<'rollbackTransaction'>
 }
 
 export type AdapterOptions = CommonAdapterOptions & {
   dbClusterOrInstanceArn: RDSDataService.Arn
   awsSecretStoreArn: RDSDataService.Arn
   databaseName: RDSDataService.DbName
-  tablePrefix?: string
-  targetEventStore: any
+  targetEventStore: {
+    dbClusterOrInstanceArn: string
+    awsSecretStoreArn: string
+    databaseName: string
+    eventsTableName?: string
+  }
 } & RDSDataService.ClientConfiguration
 
 export type InternalMethods = {
-  inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod
-  inlineLedgerForceStop: InlineLedgerForceStopMethod
-  buildUpsertDocument: BuildUpsertDocumentMethod
-  isHighloadError: IsRdsServiceErrorMethod
-  isTimeoutError: IsRdsServiceErrorMethod
-  convertResultRow: ConvertResultRowMethod
-  searchToWhereExpression: SearchToWhereExpressionMethod
-  updateToSetExpression: UpdateToSetExpressionMethod
-  PassthroughError: PassthroughErrorFactory
-  generateGuid: GenerateGuidMethod
   dropReadModel: DropReadModelMethod
   escapeId: EscapeableMethod
   escapeStr: EscapeableMethod
@@ -219,17 +149,12 @@ export type CoercerMethod = (value: {
 }) => JsonPrimitive
 
 export type AdapterPool = CommonAdapterPool & {
-  hash512: (str: string) => string
   performanceTracer: PerformanceTracerLike
   makeNestedPath: MakeNestedPathMethod
   rdsDataService: HighloadRdsDataService
   dbClusterOrInstanceArn: RDSDataService.Arn
   awsSecretStoreArn: RDSDataService.Arn
-  schemaName: RDSDataService.DbName
-  tablePrefix: string
   targetEventStore: any
-  sharedTransactionId?: string | null | undefined
-  activePassthrough: boolean
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
       AdapterPool

@@ -1,47 +1,38 @@
 import type { ExternalMethods } from './types'
 
 const pause: ExternalMethods['pause'] = async (pool, readModelName) => {
+  const { escapeId, targetEventStore, rdsDataService } = pool
+
   const {
-    schemaName,
-    escapeId,
-    escapeStr,
-    inlineLedgerForceStop,
-    inlineLedgerExecuteStatement,
-    PassthroughError,
-  } = pool
+    dbClusterOrInstanceArn: eventStoreClusterArn,
+    awsSecretStoreArn: eventStoreSecretArn,
+    databaseName: eventStoreDatabaseName,
+    eventsTableName: eventStoreEventsTableName = 'events',
+  } = targetEventStore
 
-  const databaseNameAsId = escapeId(schemaName)
-  const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
+  const databaseNameAsId = escapeId(eventStoreDatabaseName)
+  const pauseTableNameAsId = escapeId(`${eventStoreEventsTableName}-pause`)
+
   try {
-    pool.activePassthrough = true
-    while (true) {
-      try {
-        await inlineLedgerForceStop(pool, readModelName)
-
-        await inlineLedgerExecuteStatement(
-          pool,
-          `
-        WITH "CTE" AS (
-         SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
-         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
-         FOR NO KEY UPDATE NOWAIT
-       )
-        UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
-        SET "IsPaused" = TRUE
-        WHERE "EventSubscriber" = ${escapeStr(readModelName)}
-        AND (SELECT Count("CTE".*) FROM "CTE") = 1
-      `
-        )
-
-        break
-      } catch (err) {
-        if (!(err instanceof PassthroughError)) {
-          throw err
-        }
-      }
-    }
-  } finally {
-    pool.activePassthrough = false
+    await rdsDataService.executeStatement({
+      resourceArn: eventStoreClusterArn,
+      secretArn: eventStoreSecretArn,
+      database: 'postgres',
+      sql: `CREATE TABLE ${databaseNameAsId}.${pauseTableNameAsId} (
+      "surrogate" BIGINT NOT NULL,
+      PRIMARY KEY("surrogate")
+    );
+    COMMENT ON TABLE ${databaseNameAsId}.${pauseTableNameAsId}
+    IS 'RESOLVE EVENT STORE ${pauseTableNameAsId} PAUSE MARKER';
+    `,
+    })
+  } catch (error) {
+    if (
+      /Relation.*? already exists$/i.test(error.message) ||
+      /duplicate key value violates unique constraint/i.test(error.message)
+    )
+      return
+    else throw error
   }
 }
 
