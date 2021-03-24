@@ -1840,11 +1840,11 @@ Multiple middleware functions are run in the order they are specified in the opt
 
 This section lists request middleware included into the @resolve-js/client package. The following middleware is available:
 
-| Name                | Description                                               |
-| ------------------- | --------------------------------------------------------- |
-| [parseResponse]()   | Deserializes the response data if it contains valid JSON. |
-| [retryOnError]()    | Retries the request if the server responds with an error. |
-| [waitForResponse]() | Validates the response and retries if validation fails.   |
+| Name                                | Description                                               |
+| ----------------------------------- | --------------------------------------------------------- |
+| [parseResponse](#parseresponse)     | Deserializes the response data if it contains valid JSON. |
+| [retryOnError](#retryonerror)       | Retries the request if the server responds with an error. |
+| [waitForResponse](#waitforresponse) | Validates the response and retries if validation fails.   |
 
 ##### parseResponse
 
