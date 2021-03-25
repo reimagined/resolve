@@ -3,6 +3,13 @@ import rawExecuteStatement from './raw-execute-statement'
 
 const RESERVED_EVENT_SIZE = 66 // 3 reserved BIGINT fields with commas
 const BATCH_SIZE = 50
+const MAX_EVENTS_BATCH_BYTE_SIZE = 32768
+
+type EventWithSize = {
+  event: ReadModelEvent
+  size: number
+  serialized: string
+}
 
 const build: ExternalMethods['build'] = async (
   basePool,
@@ -130,11 +137,7 @@ const build: ExternalMethods['build'] = async (
 
   console.log('Input cursor: ', inputCursor)
 
-  let appliedEventsCount = 0
-
-  const insertEventToTargetEventStore = async (
-    event: ReadModelEvent
-  ): Promise<void> => {
+  const calculateEventWithSize = (event: ReadModelEvent): EventWithSize => {
     const serializedEvent = [
       `${escapeStr(event.aggregateId)},`,
       `${+event.aggregateVersion},`,
@@ -144,18 +147,59 @@ const build: ExternalMethods['build'] = async (
 
     const byteLength = Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
+    return {
+      event,
+      size: byteLength,
+      serialized: serializedEvent,
+    }
+  }
+
+  let appliedEventsCount = 0
+
+  const insertEventsBatchToTargetEventStore = async (
+    eventsWithSize: EventWithSize[]
+  ): Promise<void> => {
+    const maxThreadCounters: Record<number, number> = {}
+    for (const eventWithSize of eventsWithSize) {
+      if (maxThreadCounters[eventWithSize.event.threadId] === undefined)
+        maxThreadCounters[eventWithSize.event.threadId] =
+          eventWithSize.event.threadCounter
+      else
+        maxThreadCounters[eventWithSize.event.threadId] = Math.max(
+          maxThreadCounters[eventWithSize.event.threadId],
+          eventWithSize.event.threadCounter
+        )
+    }
+
+    const updateThreadsExpression: string[] = []
+    for (let [threadId, maxThreadCounter] of Object.entries(
+      maxThreadCounters
+    )) {
+      updateThreadsExpression.push(`
+      "cte_${threadId}" AS (
+                  UPDATE ${eventStoreDatabaseNameAsId}.${eventStoreThreadsTableAsId} SET
+                  "threadCounter" = GREATEST("threadCounter", ${maxThreadCounter} + 1)
+                  WHERE "threadId" = ${threadId}
+                  RETURNING "threadId"
+                )`)
+    }
+
+    const inserts: string[] = []
+    for (const eventWithSize of eventsWithSize) {
+      inserts.push(`
+      ((SELECT "threadId" FROM "cte_${eventWithSize.event.threadId}" LIMIT 1),
+                  ${eventWithSize.event.threadCounter},
+                  ${eventWithSize.event.timestamp},
+                  ${eventWithSize.serialized},
+                  ${eventWithSize.size})`)
+    }
+
     try {
       await rdsDataService.executeStatement({
         resourceArn: eventStoreClusterArn,
         secretArn: eventStoreSecretArn,
         database: 'postgres',
-        sql: `
-                WITH "cte" AS (
-                  UPDATE ${eventStoreDatabaseNameAsId}.${eventStoreThreadsTableAsId} SET
-                  "threadCounter" = GREATEST("threadCounter", ${+event.threadCounter} + 1)
-                  WHERE "threadId" = ${+event.threadId}
-                  RETURNING "threadId"
-                )
+        sql: `WITH ${updateThreadsExpression.join(',')}
                 INSERT INTO ${eventStoreDatabaseNameAsId}.${eventStoreEventsTableAsId}(
                 "threadId",
                 "threadCounter",
@@ -165,16 +209,12 @@ const build: ExternalMethods['build'] = async (
                 "type",
                 "payload",
                 "eventSize"
-                ) VALUES (
-                  (SELECT "threadId" FROM "cte" LIMIT 1),
-                  ${+event.threadCounter},
-                  ${+event.timestamp},
-                  ${serializedEvent},
-                  ${byteLength}
-                )
+                ) VALUES 
+                ${inserts.join(',')}
+                ON CONFLICT DO NOTHING
               `,
       })
-      appliedEventsCount++
+      appliedEventsCount += eventsWithSize.length
     } catch (error) {
       const errorMessage: string = error.message
       if (
@@ -200,8 +240,38 @@ const build: ExternalMethods['build'] = async (
       })
 
       const eventPromises: Array<Promise<void>> = []
-      for (const event of events)
-        eventPromises.push(insertEventToTargetEventStore(event))
+
+      let currentBatchSize = 0
+      const currentEventsBatch: EventWithSize[] = []
+
+      for (const event of events) {
+        const eventWithSize = calculateEventWithSize(event)
+
+        if (eventWithSize.size > MAX_EVENTS_BATCH_BYTE_SIZE) {
+          eventPromises.push(
+            insertEventsBatchToTargetEventStore([eventWithSize])
+          )
+          continue
+        }
+
+        const newCurrentBatchSize = currentBatchSize + eventWithSize.size
+        if (newCurrentBatchSize > MAX_EVENTS_BATCH_BYTE_SIZE) {
+          eventPromises.push(
+            insertEventsBatchToTargetEventStore(currentEventsBatch)
+          )
+          currentEventsBatch.length = 0
+          currentBatchSize = 0
+        }
+        currentBatchSize += eventWithSize.size
+        currentEventsBatch.push(eventWithSize)
+      }
+
+      if (currentEventsBatch.length) {
+        eventPromises.push(
+          insertEventsBatchToTargetEventStore(currentEventsBatch)
+        )
+      }
+
       await Promise.all(eventPromises)
 
       nextCursor = newCursor
