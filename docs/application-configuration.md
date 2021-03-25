@@ -233,9 +233,14 @@ Used to store events in a MySQL database.
 
 This adapter supports the following options:
 
-| Option Name        | Description |
-| ------------------ | ----------- |
-| snapshotBucketSize |             |
+| Option Name          | Description |
+| -------------------- | ----------- |
+| snapshotBucketSize   |             |
+| database             |             |
+| eventsTableName      |             |
+| snapshotsTableName   |             |
+| subscribersTableName |             |
+| secretsTableName     |             |
 
 #### eventstore-postgresql
 
@@ -243,9 +248,19 @@ Used to store events in a PostgreSQL database.
 
 This adapter supports the following options:
 
-| Option Name        | Description |
-| ------------------ | ----------- |
-| snapshotBucketSize |             |
+| Option Name          | Description |
+| -------------------- | ----------- |
+| snapshotBucketSize   |             |
+| user                 |             |
+| database             |             |
+| port                 |             |
+| host                 |             |
+| password             |             |
+| databaseName         |             |
+| eventsTableName      |             |
+| snapshotsTableName   |             |
+| subscribersTableName |             |
+| secretsTableName     |             |
 
 #### eventstore-postgresql-serverless
 
@@ -253,9 +268,19 @@ Used to store events in Amazon Aurora PostgreSQL Serverless.
 
 This adapter supports the following options:
 
-| Option Name        | Description |
-| ------------------ | ----------- |
-| snapshotBucketSize |             |
+| Option Name          | Description |
+| -------------------- | ----------- |
+| snapshotBucketSize   |             |
+| user                 |             |
+| database             |             |
+| port                 |             |
+| host                 |             |
+| password             |             |
+| databaseName         |             |
+| eventsTableName      |             |
+| snapshotsTableName   |             |
+| subscribersTableName |             |
+| secretsTableName     |             |
 
 ### jwtCookie
 
@@ -345,12 +370,42 @@ readModelConnectors: {
 
 The following connectors are available:
 
-| Module Name                                 | Description                                                           |
-| ------------------------------------------- | --------------------------------------------------------------------- |
-| @resolve-js/readmodel-lite                  | Used to store Read Model data in an SQLite database.                  |
-| @resolve-js/readmodel-mysql                 | Used to store Read Model data in a MySQL database.                    |
-| @resolve-js/readmodel-postgresql            | Used to store Read Model data in a PostgreSQL database.               |
-| @resolve-js/readmodel-postgresql-serverless | Used to store Read Model data in Amazon Aurora PostgreSQL Serverless. |
+| Module Name                                                                     | Description                                                           |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| [@resolve-js/readmodel-lite](#readmodel-lite)                                   | Used to store Read Model data in an SQLite database.                  |
+| [@resolve-js/readmodel-mysql](#readmodel-mysql)                                 | Used to store Read Model data in a MySQL database.                    |
+| [@resolve-js/readmodel-postgresql](#readmodel-postgresql)                       | Used to store Read Model data in a PostgreSQL database.               |
+| [@resolve-js/readmodel-postgresql-serverless](#readmodel-postgresql-serverless) | Used to store Read Model data in Amazon Aurora PostgreSQL Serverless. |
+
+#### readmodel-lite
+
+Used to store Read Model data in an SQLite database.
+
+This connector supports the following options:
+
+| Connector Name | Description |
+| -------------- | ----------- |
+|                |             |
+|                |             |
+|                |             |
+
+#### readmodel-mysql
+
+Used to store Read Model data in a MySQL database.
+
+This connector supports the following options:
+
+#### readmodel-postgresql
+
+Used to store Read Model data in a PostgreSQL database.
+
+This connector supports the following options:
+
+#### readmodel-postgresql-serverless
+
+Used to store Read Model data in Amazon Aurora PostgreSQL Serverless.
+
+This connector supports the following options:
 
 ### sagas
 
