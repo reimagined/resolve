@@ -74,9 +74,9 @@ const build: ExternalMethods['build'] = async (
     continuous: number
   }>
 
-  const spatialEventsThreadIds: Array<number> = [] //result
-  //.filter((entry) => !entry.continuous)
-  //.map((entry) => entry.threadId)
+  const spatialEventsThreadIds: Array<number> = result
+    .filter((entry) => !entry.continuous)
+    .map((entry) => entry.threadId)
 
   let threadGaps: Array<{
     threadId: number
@@ -84,7 +84,6 @@ const build: ExternalMethods['build'] = async (
   }> = []
 
   if (spatialEventsThreadIds.length) {
-    console.log('Spatial events thread ids:', spatialEventsThreadIds)
     threadGaps = (await rawExecuteStatement(
       rdsDataService,
       eventStoreClusterArn,
@@ -116,16 +115,17 @@ const build: ExternalMethods['build'] = async (
 
   const inputCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(
     null,
-    result.map(
-      (entry) =>
-        ({
-          threadCounter: spatialEventsThreadIds.includes(entry.threadId)
-            ? threadGaps.find((gap) => gap.threadId === entry.threadId)
-                ?.firstThreadCounterGap
-            : entry.threadCounter,
-          threadId: entry.threadId,
-        } as ReadModelEvent)
-    )
+    result
+      .map(
+        (entry) =>
+          ({
+            threadCounter:
+              (threadGaps.find((gap) => gap.threadId === entry.threadId)
+                ?.firstThreadCounterGap ?? entry.threadCounter) - 1,
+            threadId: entry.threadId,
+          } as ReadModelEvent)
+      )
+      .filter((entry) => entry.threadCounter >= 0)
   )
 
   console.log('Input cursor: ', inputCursor)
@@ -181,8 +181,6 @@ const build: ExternalMethods['build'] = async (
         !/duplicate key value violates unique constraint/.test(errorMessage)
       ) {
         throw error
-      } else {
-        console.error('Duplicate error: ', errorMessage)
       }
     }
   }
@@ -202,9 +200,8 @@ const build: ExternalMethods['build'] = async (
       })
 
       const eventPromises: Array<Promise<void>> = []
-      for (const event of events) {
+      for (const event of events)
         eventPromises.push(insertEventToTargetEventStore(event))
-      }
       await Promise.all(eventPromises)
 
       nextCursor = newCursor

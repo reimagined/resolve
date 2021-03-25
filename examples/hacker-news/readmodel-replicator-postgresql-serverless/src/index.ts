@@ -32,6 +32,7 @@ import build from './build'
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
+import isHighloadError from './is-highload-error'
 
 const defineTable = (async (...args) => {
   return
@@ -67,6 +68,7 @@ const store: CurrentStoreApi = {
 
 const internalMethods: InternalMethods = {
   coercer,
+  isHighloadError,
   dropReadModel,
   escapeId,
   escapeStr,

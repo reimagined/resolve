@@ -22,9 +22,23 @@ const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
   return `{${jsonPathParts.join(',')}}`
 }
 
-const wrapHighload: WrapHighloadMethod = async (obj, method, params) => {
+const wrapHighload: WrapHighloadMethod = async (
+  isHighloadError,
+  obj,
+  method,
+  params
+) => {
   while (true) {
-    return await obj[method](params).promise()
+    try {
+      return await obj[method](params).promise()
+    } catch (error) {
+      if (isHighloadError(error)) {
+        const jitterDelay = Math.floor(250 + Math.random() * 750)
+        await new Promise((resolve) => setTimeout(resolve, jitterDelay))
+      } else {
+        throw error
+      }
+    }
   }
 }
 
@@ -46,11 +60,12 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
   const rdsDataService: HighloadRdsDataService = {
     executeStatement: wrapHighload.bind<
       null,
+      typeof imports.isHighloadError,
       typeof rawRdsDataService,
       'executeStatement',
       [HighloadMethodParameters<'executeStatement', typeof rawRdsDataService>],
       HighloadMethodReturnType<'executeStatement', typeof rawRdsDataService>
-    >(null, rawRdsDataService, 'executeStatement'),
+    >(null, imports.isHighloadError, rawRdsDataService, 'executeStatement'),
   }
 
   Object.assign(pool, {

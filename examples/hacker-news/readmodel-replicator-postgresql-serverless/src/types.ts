@@ -31,6 +31,10 @@ export type FullJitterMethod = (retries: number) => Promise<void>
 export type MakeNestedPathMethod = (nestedPath: Array<string>) => string
 export type EscapeableMethod = (str: string) => string
 
+export type IsRdsServiceErrorMethod = (
+  error: Error & { code: string | number; stack: string }
+) => boolean
+
 export type DropReadModelMethod = (
   pool: AdapterPool,
   readModelName: string
@@ -76,6 +80,7 @@ export type WrapHighloadMethod = <
   >,
   T extends { [K in KS]: FunctionLike }
 >(
+  isHighloadError: IsRdsServiceErrorMethod,
   obj: T,
   method: KS,
   params: HighloadMethodParameters<KS, T>
@@ -101,19 +106,22 @@ export type HighloadRdsDataService = {
   executeStatement: HighloadRdsMethod<'executeStatement'>
 }
 
+type TargetEventStore = {
+  dbClusterOrInstanceArn: string
+  awsSecretStoreArn: string
+  databaseName: string
+  eventsTableName?: string
+}
+
 export type AdapterOptions = CommonAdapterOptions & {
   dbClusterOrInstanceArn: RDSDataService.Arn
   awsSecretStoreArn: RDSDataService.Arn
   databaseName: RDSDataService.DbName
-  targetEventStore: {
-    dbClusterOrInstanceArn: string
-    awsSecretStoreArn: string
-    databaseName: string
-    eventsTableName?: string
-  }
+  targetEventStore: TargetEventStore
 } & RDSDataService.ClientConfiguration
 
 export type InternalMethods = {
+  isHighloadError: IsRdsServiceErrorMethod
   dropReadModel: DropReadModelMethod
   escapeId: EscapeableMethod
   escapeStr: EscapeableMethod
@@ -154,7 +162,7 @@ export type AdapterPool = CommonAdapterPool & {
   rdsDataService: HighloadRdsDataService
   dbClusterOrInstanceArn: RDSDataService.Arn
   awsSecretStoreArn: RDSDataService.Arn
-  targetEventStore: any
+  targetEventStore: TargetEventStore
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
       AdapterPool
