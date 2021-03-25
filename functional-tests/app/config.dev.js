@@ -54,6 +54,13 @@ const devConfig = {
     name: 'jwt',
     maxAge: 31536000000,
   },
+  uploadAdapter: {
+    options: {
+      directory: 'data',
+      bucket: 'files',
+      secretKey: 'key',
+    },
+  },
 }
 
 export default devConfig

@@ -33,12 +33,11 @@ export default {
   },
   uploadAdapter: {
     options: {
-      encryptedDeploymentId: declareRuntimeEnv(
-        'RESOLVE_ENCRYPTED_DEPLOYMENT_ID'
-      ),
-      deploymentId: declareRuntimeEnv('RESOLVE_DEPLOYMENT_ID'),
+      encryptedUserId: declareRuntimeEnv('RESOLVE_ENCRYPTED_USER_ID'),
+      userId: declareRuntimeEnv('RESOLVE_USER_ID'),
       CDN: declareRuntimeEnv('RESOLVE_UPLOADER_URL'),
       uploaderArn: declareRuntimeEnv('RESOLVE_UPLOADER_LAMBDA_ARN'),
+      scope: 'image-gallery',
     },
   },
 }

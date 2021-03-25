@@ -17,6 +17,7 @@
     "@resolve-js/eventstore-lite": "0.28.3",
     "@resolve-js/eventstore-postgresql-serverless": "0.28.3",
     "@resolve-js/module-admin": "0.28.3",
+    "@resolve-js/module-uploader": "0.28.3",
     "@resolve-js/react-hooks": "0.28.3",
     "@resolve-js/readmodel-lite": "0.28.3",
     "@resolve-js/readmodel-postgresql-serverless": "0.28.3",
@@ -36,10 +37,12 @@
     "react-router": "5.1.2",
     "react-router-config": "5.1.1",
     "react-router-dom": "5.1.2",
+    "reactstrap": "8.9.0",
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.7",
     "redux-saga": "1.0.5",
-    "uuid": "8.3.1"
+    "uuid": "8.3.1",
+    "react-fileupload-progress": "0.5.0"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
