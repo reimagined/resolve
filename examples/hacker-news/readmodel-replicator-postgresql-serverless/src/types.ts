@@ -202,28 +202,3 @@ export type CurrentAdapterImplementation = AdapterImplementation<
   AdapterPool,
   AdapterOptions
 >
-
-export type AdminOptions = {
-  awsSecretStoreAdminArn: AdapterOptions['awsSecretStoreArn']
-  dbClusterOrInstanceArn: AdapterOptions['dbClusterOrInstanceArn']
-  databaseName: AdapterOptions['databaseName']
-  region: AdapterOptions['region']
-  userLogin: string
-}
-
-export type BoundResourceMethod = (options: AdminOptions) => Promise<void>
-
-export type UnboundResourceMethod = (
-  pool: AdminPool,
-  options: AdminOptions
-) => Promise<void>
-
-export type AdminPool = {
-  connect: CurrentAdapterImplementation['connect']
-  disconnect: CurrentAdapterImplementation['disconnect']
-  escapeStr: EscapeableMethod
-  escapeId: EscapeableMethod
-  createResource: BoundResourceMethod
-  disposeResource: BoundResourceMethod
-  destroyResource: BoundResourceMethod
-}
