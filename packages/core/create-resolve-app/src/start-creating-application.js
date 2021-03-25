@@ -1,7 +1,14 @@
-const startCreatingApplication = (pool) => async () => {
-  const { console, message } = pool
+import message from './message'
 
-  console.log(message.startCreatingApp(pool))
+const startCreatingApplication = async (
+  applicationName,
+  exampleName,
+  commit,
+  branch
+) => {
+  console.log(
+    message.startCreatingApp(applicationName, exampleName, commit, branch)
+  )
 }
 
 export default startCreatingApplication

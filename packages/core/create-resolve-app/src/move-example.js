@@ -1,11 +1,11 @@
-const moveExample = (pool) => async () => {
-  const {
-    fs,
-    path,
-    applicationPath,
-    resolveClonePath,
-    resolveCloneExamplePath,
-  } = pool
+import fs from 'fs-extra'
+import path from 'path'
+
+const moveExample = async (
+  applicationPath,
+  resolveClonePath,
+  resolveCloneExamplePath
+) => {
   for (const resource of fs.readdirSync(resolveCloneExamplePath)) {
     fs.moveSync(
       path.join(resolveCloneExamplePath, resource),

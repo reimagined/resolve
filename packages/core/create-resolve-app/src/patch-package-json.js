@@ -1,18 +1,16 @@
+import chalk from 'chalk'
+import path from 'path'
+import fs from 'fs-extra'
 import { localRegistry as server } from './constants'
+import safeName from './safe-name'
 
-const patchPackageJson = (pool) => async () => {
-  const {
-    console,
-    chalk,
-    path,
-    fs,
-    applicationName,
-    applicationPath,
-    applicationPackageJsonPath,
-    resolvePackages,
-    safeName,
-    localRegistry,
-  } = pool
+const patchPackageJson = async (
+  applicationName,
+  applicationPath,
+  applicationPackageJsonPath,
+  resolvePackages,
+  localRegistry
+) => {
   console.log()
   console.log(chalk.green('Patch package.json'))
 

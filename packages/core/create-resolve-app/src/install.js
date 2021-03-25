@@ -1,9 +1,10 @@
+import { execSync } from 'child_process'
+import chalk from 'chalk'
 import getLog from '@resolve-js/debug-levels'
 
 const log = getLog('resolve:create-resolve-app:install')
 
-const install = (pool) => async () => {
-  const { chalk, console, execSync, applicationPath, useYarn } = pool
+const install = async (applicationPath, useYarn) => {
   console.log()
   console.log(chalk.green('Install dependencies'))
 

@@ -1,20 +1,18 @@
+import fs from 'fs-extra'
+import chalk from 'chalk'
+import https from 'https'
+import AdmZip from 'adm-zip'
+
 import ProgressBar from 'progress'
 import getLog from '@resolve-js/debug-levels'
 
 const log = getLog('resolve:create-resolve-app:download-resolve-repo')
 
-const downloadResolveRepo = (pool) => async () => {
-  const {
-    fs,
-    chalk,
-    https,
-    console,
-    AdmZip,
-    applicationPath,
-    resolveDownloadZipUrl,
-    resolveCloneZipPath,
-    path,
-  } = pool
+const downloadResolveRepo = async (
+  applicationPath,
+  resolveDownloadZipUrl,
+  resolveCloneZipPath
+) => {
   try {
     await new Promise((resolve, reject) => {
       try {
@@ -78,32 +76,33 @@ const downloadResolveRepo = (pool) => async () => {
           const total = response.headers['content-length'] ?? downloadedBytes
           showProgressBar(total, 0)
 
-          const contentDisposition = String(
-            response.headers['content-disposition']
-          )
-          const fileNameLength = 'filename='.length
-          const zipExtLength = '.zip'.length
-          const fileNameIndex =
-            contentDisposition.indexOf('filename=') + fileNameLength
-          if (fileNameIndex > fileNameLength) {
-            const resolveDirName = contentDisposition.substring(
-              fileNameIndex,
-              contentDisposition.length - zipExtLength
-            )
+          //FIXME: WTF is this?
+          // const contentDisposition = String(
+          //   response.headers['content-disposition']
+          // )
+          // const fileNameLength = 'filename='.length
+          // const zipExtLength = '.zip'.length
+          // const fileNameIndex =
+          //   contentDisposition.indexOf('filename=') + fileNameLength
+          // if (fileNameIndex > fileNameLength) {
+          //   const resolveDirName = contentDisposition.substring(
+          //     fileNameIndex,
+          //     contentDisposition.length - zipExtLength
+          //   )
 
-            pool.resolveClonePath = path.join(
-              pool.applicationPath,
-              resolveDirName
-            )
-            pool.resolveCloneExamplesPath = path.join(
-              pool.resolveClonePath,
-              'examples'
-            )
-            pool.resolveCloneExamplePath = path.join(
-              pool.resolveCloneExamplesPath,
-              pool.exampleName
-            )
-          }
+          //   pool.resolveClonePath = path.join(
+          //     pool.applicationPath,
+          //     resolveDirName
+          //   )
+          //   pool.resolveCloneExamplesPath = path.join(
+          //     pool.resolveClonePath,
+          //     'examples'
+          //   )
+          //   pool.resolveCloneExamplePath = path.join(
+          //     pool.resolveCloneExamplesPath,
+          //     pool.exampleName
+          //   )
+          // }
 
           resolveCloneZip.end()
         })

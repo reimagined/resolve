@@ -1,5 +1,12 @@
 import chalk from 'chalk'
 import boxen from 'boxen'
+import path from 'path'
+import https from 'https'
+import commandLineArgs from 'command-line-args'
+
+import isYarnAvailable from './is-yarn-available'
+import safeName from './safe-name'
+import message from './message'
 
 import {
   analyticsUrlBase,
@@ -8,18 +15,7 @@ import {
   resolveExamples,
 } from './constants'
 
-const prepareOptions = async (pool) => {
-  const {
-    path,
-    console,
-    process,
-    commandLineArgs,
-    isYarnAvailable,
-    safeName,
-    message,
-    https,
-  } = pool
-
+const prepareOptions = async () => {
   const cliArgs = commandLineArgs(
     [
       { name: 'example', alias: 'e', type: String },
@@ -35,25 +31,18 @@ const prepareOptions = async (pool) => {
   const unknownCliArgs =
     cliArgs._unknown && cliArgs._unknown.filter((x) => x.startsWith('-'))
 
-  Object.assign(pool, {
-    analyticsUrlBase,
-    resolveVersion,
-    resolvePackages,
-    resolveExamples,
-  })
-
   if (unknownCliArgs && unknownCliArgs.length > 0) {
-    console.error(message.unknownOptions(pool, unknownCliArgs))
+    console.error(message.unknownOptions(unknownCliArgs))
     return process.exit(1)
   } else if (cliArgs.help) {
-    console.log(message.help(pool))
+    console.log(message.help(resolveExamples))
     return process.exit(0)
   } else if (cliArgs.version) {
     console.log(resolveVersion)
     return process.exit(0)
   } else if (!cliArgs._unknown) {
     // eslint-disable-next-line no-console
-    console.error(message.emptyAppNameError(pool))
+    console.error(message.emptyAppNameError(resolveExamples))
     return process.exit(1)
   } else {
     const applicationName = cliArgs._unknown[0]
@@ -85,26 +74,8 @@ const prepareOptions = async (pool) => {
       `${resolveCloneDirName}.zip`
     )
 
-    const useYarn = isYarnAvailable(pool)()
+    const useYarn = isYarnAvailable()
     const localRegistry = cliArgs['local-registry']
-
-    Object.assign(pool, {
-      applicationName,
-      commit,
-      branch,
-      exampleName,
-      revision,
-      resolveCloneDirName,
-      applicationPath,
-      applicationPackageJsonPath,
-      resolveClonePath,
-      resolveCloneExamplesPath,
-      resolveCloneExamplePath,
-      resolveDownloadZipUrl,
-      resolveCloneZipPath,
-      useYarn,
-      localRegistry,
-    })
 
     const masterBranchVersionJsonUrl =
       'https://raw.githubusercontent.com/reimagined/resolve/master/packages/core/create-resolve-app/package.json'
@@ -141,6 +112,25 @@ const prepareOptions = async (pool) => {
           padding: 1,
         })
       )
+    }
+
+    return {
+      analyticsUrlBase,
+      resolveVersion,
+      resolvePackages,
+      applicationName,
+      commit,
+      branch,
+      exampleName,
+      applicationPath,
+      applicationPackageJsonPath,
+      resolveClonePath,
+      resolveCloneExamplesPath,
+      resolveCloneExamplePath,
+      resolveDownloadZipUrl,
+      resolveCloneZipPath,
+      useYarn,
+      localRegistry,
     }
   }
 }

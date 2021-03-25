@@ -1,3 +1,6 @@
+import { EOL } from 'os'
+import chalk from 'chalk'
+
 const optionsInfo = (examples) => [
   `Options:`,
   ``,
@@ -12,9 +15,11 @@ const optionsInfo = (examples) => [
   `  -h, --help       outputs usage information`,
 ]
 
+const formatLines = (lines) => lines.join(EOL)
+
 const message = {
-  help: ({ chalk, EOL, resolveExamples }) =>
-    [
+  help: (resolveExamples) =>
+    formatLines([
       `Usage: create-resolve-app ${chalk.green(
         '<project-directory>'
       )} [options]`,
@@ -23,10 +28,10 @@ const message = {
       ``,
       `If you have any problems, create an issue:`,
       `  ${chalk.cyan('https://github.com/reimagined/resolve/issues/new')}`,
-    ].join(EOL),
+    ]),
 
-  emptyAppNameError: ({ chalk, EOL, resolveExamples }) =>
-    [
+  emptyAppNameError: (resolveExamples) =>
+    formatLines([
       `Specify the project directory:`,
       `  ${chalk.cyan('create-resolve-app')} ${chalk.green(
         `<project-directory> [options]`
@@ -38,23 +43,38 @@ const message = {
       ...optionsInfo(resolveExamples),
       ``,
       `Run ${chalk.cyan('create-resolve-app --help')} to view all options.`,
-    ].join(EOL),
+    ]),
 
-  startCreatingApp: ({ EOL, applicationName, exampleName, commit, branch }) =>
-    [
+  startCreatingApp: (applicationName, exampleName, commit, branch) =>
+    formatLines([
       `Creating ${applicationName} in ./${applicationName} based on the ${exampleName} example`,
       commit ? ` (commit SHA:${commit})` : ``,
       branch ? ` (from ${branch} branch)` : ``,
-    ].join(EOL),
+    ]),
 
-  unknownOptions: ({ EOL, chalk }, options) =>
-    [
+  unknownOptions: (unknownOptions) =>
+    formatLines([
       `You have specified an unsupported option(s): ${chalk.red(
-        options.join(' ')
-      )}` +
-        `` +
-        `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
-    ].join(EOL),
-}
+        unknownOptions.join(' ')
+      )}`,
+      `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
+    ]),
 
+  missingExample: (exampleName, examplesDirs) =>
+    formatLines([
+      `No such example, ${exampleName}. The following examples are available: `,
+      +examplesDirs,
+    ]),
+
+  invalidApplicationName: (applicationName, errors, warnings) => {
+    const message = `It is impossible to create an application called ${chalk.red(
+      `"${applicationName}"`
+    )} due to npm naming restrictions:`
+
+    const details = [...(errors || []), ...(warnings || [])].map(
+      (e) => `  *  ${e}`
+    )
+    return formatLines([message, ...details])
+  },
+}
 export default message
