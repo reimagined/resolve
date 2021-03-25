@@ -205,12 +205,57 @@ eventstoreAdapter: {
 
 The following adapters are available:
 
-| Adapter Module                               | Description                                                  |
-| -------------------------------------------- | ------------------------------------------------------------ |
-| @resolve-js/eventstore-lite                  | Used to store events in an SQLite database.                  |
-| @resolve-js/eventstore-mysql                 | Used to store events in a MySQL database.                    |
-| @resolve-js/eventstore-postgresql            | Used to store events in a PostgreSQL database.               |
-| @resolve-js/eventstore-postgresql-serverless | Used to store events in Amazon Aurora PostgreSQL Serverless. |
+| Adapter Module                                                                    | Description                                                  |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| [@resolve-js/eventstore-lite](#eventstore-lite)                                   | Used to store events in an SQLite database.                  |
+| [@resolve-js/eventstore-mysql](#eventstore-mysql)                                 | Used to store events in a MySQL database.                    |
+| [@resolve-js/eventstore-postgresql](#eventstore-postgresql)                       | Used to store events in a PostgreSQL database.               |
+| [@resolve-js/eventstore-postgresql-serverless](#eventstore-postgresql-serverless) | Used to store events in Amazon Aurora PostgreSQL Serverless. |
+
+#### eventstore-lite
+
+Used to store events in an SQLite database.
+
+This adapter supports the following options:
+
+| Option Name          | Description |
+| -------------------- | ----------- |
+| snapshotBucketSize   |             |
+| databaseFile         |             |
+| secretsTableName     |             |
+| eventsTableName      |             |
+| snapshotsTableName   |             |
+| subscribersTableName |             |
+
+#### eventstore-mysql
+
+Used to store events in a MySQL database.
+
+This adapter supports the following options:
+
+| Option Name        | Description |
+| ------------------ | ----------- |
+| snapshotBucketSize |             |
+
+#### eventstore-postgresql
+
+Used to store events in a PostgreSQL database.
+
+This adapter supports the following options:
+
+| Option Name        | Description |
+| ------------------ | ----------- |
+| snapshotBucketSize |             |
+
+#### eventstore-postgresql-serverless
+
+Used to store events in Amazon Aurora PostgreSQL Serverless.
+
+This adapter supports the following options:
+
+| Option Name        | Description |
+| ------------------ | ----------- |
+| snapshotBucketSize |             |
 
 ### jwtCookie
 
