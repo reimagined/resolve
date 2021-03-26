@@ -185,7 +185,7 @@ Refer to the [Query a Read Model](#query-a-read-model) section for information o
 
 **View Models** are ephemeral Read Models that are queried based on aggregate ID. They have the following properties:
 
-- View Models do not store persistent state and do not use the Read Model store and are rebuilt on every request.
+- View Models are rebuilt on every request. They do not store persistent state and do not use the Read Model store.
 - View Models are queried based on aggregate ID and can maintain a WebSocket connection to push data updates to the client.
 - View Model projections are defined in a format that is isomorphic with Redux reducers so their code can also be used on the client side to define reducer logic.
 
