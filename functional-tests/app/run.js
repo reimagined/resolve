@@ -7,6 +7,7 @@ import {
   reset,
 } from '@resolve-js/scripts'
 import resolveModuleAdmin from '@resolve-js/module-admin'
+import resolveModuleUploader from '@resolve-js/module-uploader'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -16,7 +17,13 @@ const launchMode = process.argv[2]
 
 void (async () => {
   try {
-    const baseConfig = merge(defaultResolveConfig, appConfig)
+    const moduleUploader = resolveModuleUploader({
+      publicDirs: ['images'],
+      expireTime: 604800,
+      jwtSecret: 'SECRETJWT',
+    })
+
+    const baseConfig = merge(defaultResolveConfig, appConfig, moduleUploader)
 
     switch (launchMode) {
       case 'dev': {
