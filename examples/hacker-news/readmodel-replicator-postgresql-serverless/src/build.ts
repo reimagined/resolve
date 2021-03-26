@@ -2,13 +2,20 @@ import type { ExternalMethods, ReadModelCursor, ReadModelEvent } from './types'
 import rawExecuteStatement from './raw-execute-statement'
 
 const RESERVED_EVENT_SIZE = 66 // 3 reserved BIGINT fields with commas
-const BATCH_SIZE = 50
+const BATCH_SIZE = 100
 const MAX_EVENTS_BATCH_BYTE_SIZE = 32768
 
 type EventWithSize = {
   event: ReadModelEvent
   size: number
   serialized: string
+}
+
+const optimizeSql = (sql: string): string => {
+  return sql
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .join('\n')
 }
 
 const build: ExternalMethods['build'] = async (
@@ -199,7 +206,7 @@ const build: ExternalMethods['build'] = async (
         resourceArn: eventStoreClusterArn,
         secretArn: eventStoreSecretArn,
         database: 'postgres',
-        sql: `WITH ${updateThreadsExpression.join(',')}
+        sql: optimizeSql(`WITH ${updateThreadsExpression.join(',')}
                 INSERT INTO ${eventStoreDatabaseNameAsId}.${eventStoreEventsTableAsId}(
                 "threadId",
                 "threadCounter",
@@ -212,7 +219,7 @@ const build: ExternalMethods['build'] = async (
                 ) VALUES 
                 ${inserts.join(',')}
                 ON CONFLICT DO NOTHING
-              `,
+              `),
       })
       appliedEventsCount += eventsWithSize.length
     } catch (error) {
@@ -281,6 +288,8 @@ const build: ExternalMethods['build'] = async (
     }
 
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
+
+    if (!isBuildSuccess) console.error('Build did not succeed!')
 
     if (getVacantTimeInMillis() < 0) {
       localContinue = false

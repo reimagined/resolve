@@ -44,7 +44,7 @@ export default {
             'RESOLVE_READMODEL_CLUSTER_ARN'
           ),
           awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
-          databaseName: 'event-store-dev-0.28.2-p9asm0',
+          databaseName: 'event-store-dev-0.28.2-u1yzmk',
           // eventsTableName: iotsTypes.NonEmptyString,
           // secretsTableName: iotsTypes.NonEmptyString,
           // snapshotsTableName: iotsTypes.NonEmptyString,
