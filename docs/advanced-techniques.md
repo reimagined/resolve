@@ -37,9 +37,9 @@ Resolve comes with a set of adapters covering popular DBMS choices. You can also
 
 Note that reSolve does not force you to use adapters. For example, you may need to implement a Read Model on top of some arbitrary system, such as a full-text-search engine, OLAP or a particular SQL database. In such case, you can just work with that system in the code of the projection function and query resolver, without writing a new Read Model adapter.
 
-## Custom Read Models
+## Custom Read Model Connectors
 
-To create a custom Read Model, you need to manually implement a Read Model connector. A connector defines functions that manage a custom Read Model's store. The following functions can be defined:
+You can implement a custom Read Model connector to define how a Read Model's data is stored. A connector implements the following functions:
 
 - **connect** - Initializes a connection to a storage.
 - **disconnect** - Closes the storage connection.
