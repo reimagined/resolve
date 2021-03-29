@@ -68,7 +68,12 @@ export const createEventHandler = (
       ? +sideEffectsTimestamp <= +event.timestamp
       : true
 
-    await runtime.setSideEffectsTimestamp(+event.timestamp)
+    if (
+      !isNaN(+sideEffectsTimestamp) &&
+      +event.timestamp > +sideEffectsTimestamp
+    ) {
+      await runtime.setSideEffectsTimestamp(+event.timestamp)
+    }
 
     log.verbose(
       `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: ${+sideEffectsTimestamp}`

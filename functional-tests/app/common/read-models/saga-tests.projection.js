@@ -24,7 +24,7 @@ export default {
         },
         {
           $inc: { count: 1 },
-        },
+        }
       )
     }
   },

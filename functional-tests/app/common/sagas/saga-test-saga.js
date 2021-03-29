@@ -3,15 +3,13 @@ export default {
     Init: async ({ store }) => {
       await store.defineTable('SagaTestRecordsInSaga', {
         indexes: { id: 'string' },
+        fields: [],
       })
     },
     SagaTestRequested: async (
-      { store, sideEffects: { isEnabled, executeCommand } },
-      { aggregateId, aggregateVersion, payload: { testId } }
+      { store, sideEffects: { executeCommand } },
+      { aggregateId, payload: { testId } }
     ) => {
-      // TODO: remove it
-      console.log(`${aggregateVersion} side effects enabled: ${isEnabled}`)
-
       await executeCommand({
         type: 'succeedSagaTest',
         aggregateId,
