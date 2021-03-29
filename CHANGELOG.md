@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Cloud config
 
 - `deploymentId` and `encryptedDeploymentId` removed from **uploadAdapter** options
-- `scope` added to **uploadAdapter** options
 
 ### Added
 
