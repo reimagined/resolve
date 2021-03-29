@@ -1,7 +1,12 @@
 export default {
   handlers: {
+    Init: async ({ store }) => {
+      await store.defineTable('SagaTestRecordsInSaga', {
+        indexes: { id: 'string' },
+      })
+    },
     SagaTestRequested: async (
-      { sideEffects: { isEnabled, executeCommand } },
+      { store, sideEffects: { isEnabled, executeCommand } },
       { aggregateId, aggregateVersion, payload: { testId } }
     ) => {
       // TODO: remove it
@@ -11,7 +16,14 @@ export default {
         type: 'succeedSagaTest',
         aggregateId,
         aggregateName: 'saga-test',
-        payload: { testId },
+        payload: {
+          testId,
+          counterId: await store.count('SagaTestRecordsInSaga', {}),
+        },
+      })
+
+      await store.insert('SagaTestRecordsInSaga', {
+        id: testId,
       })
     },
   },

@@ -2,23 +2,30 @@ export default {
   Init: async (store) => {
     await store.defineTable('SagaTestRecords', {
       indexes: { id: 'string' },
-      fields: ['count'],
+      fields: ['count', 'counterId'],
     })
   },
   SagaTestSucceeded: async (store, event) => {
     const {
-      payload: { testId },
+      payload: { testId, counterId },
     } = event
 
-    await store.update(
-      'SagaTestRecords',
-      {
+    try {
+      await store.insert('SagaTestRecords', {
         id: testId,
-      },
-      {
-        $inc: { count: 1 },
-      },
-      { upsert: true }
-    )
+        counterId,
+        count: 1,
+      })
+    } catch (e) {
+      await store.update(
+        'SagaTestRecords',
+        {
+          id: testId,
+        },
+        {
+          $inc: { count: 1 },
+        },
+      )
+    }
   },
 }
