@@ -1,8 +1,14 @@
-import type { ExternalMethods, ReadModelCursor, ReadModelEvent } from './types'
+import type {
+  EventstoreAdapterLike,
+  ExternalMethods,
+  ReadModelCursor,
+  ReadModelEvent,
+} from './types'
 import rawExecuteStatement from './raw-execute-statement'
 
 const RESERVED_EVENT_SIZE = 66 // 3 reserved BIGINT fields with commas
 const BATCH_SIZE = 100
+const BATCH_SIZE_SECRETS = 50
 const MAX_EVENTS_BATCH_BYTE_SIZE = 32768
 
 type EventWithSize = {
@@ -40,6 +46,7 @@ const build: ExternalMethods['build'] = async (
     awsSecretStoreArn: eventStoreSecretArn,
     databaseName: eventStoreDatabaseName,
     eventsTableName: eventStoreEventsTableName = 'events',
+    secretsTableName: eventStoreSecretsTableName = 'secrets',
   } = targetEventStore
 
   const eventStoreDatabaseNameAsId = escapeId(eventStoreDatabaseName)
@@ -51,6 +58,7 @@ const build: ExternalMethods['build'] = async (
   const eventStoreThreadsTableAsId = escapeId(
     `${eventStoreEventsTableName}-threads`
   )
+  const eventStoreSecretsTableNameAsId = escapeId(eventStoreSecretsTableName)
 
   const pauseCheckResult = (await rawExecuteStatement(
     rdsDataService,
@@ -144,6 +152,26 @@ const build: ExternalMethods['build'] = async (
 
   console.log('Input cursor: ', inputCursor)
 
+  const secretsCountResult = (await rawExecuteStatement(
+    rdsDataService,
+    eventStoreClusterArn,
+    eventStoreSecretArn,
+    coercer,
+    `SELECT COUNT(*) AS "secretCount" FROM ${eventStoreDatabaseNameAsId}.${eventStoreSecretsTableNameAsId}`
+  )) as Array<{
+    secretCount: number
+  }>
+
+  let secretsToSkip: number
+  if (secretsCountResult.length && secretsCountResult[0].secretCount != null) {
+    secretsToSkip = secretsCountResult[0].secretCount
+  }
+
+  let inputSecretIdx: number | null = null
+  const { idx } = eventstoreAdapter.loadSecrets({})
+
+  console.log('Input secret idx: ', inputSecretIdx)
+
   const calculateEventWithSize = (event: ReadModelEvent): EventWithSize => {
     const serializedEvent = [
       `${escapeStr(event.aggregateId)},`,
@@ -233,10 +261,12 @@ const build: ExternalMethods['build'] = async (
   }
 
   let nextCursor: ReadModelCursor = inputCursor
+  let nextIdx: typeof inputSecretIdx = inputSecretIdx
   let localContinue = true
   let lastError: Error | null = null
   while (true) {
     appliedEventsCount = 0
+    let appliedSecretsCount = 0
 
     try {
       const { cursor: newCursor, events } = await eventstoreAdapter.loadEvents({
@@ -282,12 +312,41 @@ const build: ExternalMethods['build'] = async (
       await Promise.all(eventPromises)
 
       nextCursor = newCursor
+
+      if (eventstoreAdapter.loadSecrets != null) {
+        const { idx: newIdx, secrets } = await eventstoreAdapter.loadSecrets({
+          idx: nextIdx,
+          limit: BATCH_SIZE_SECRETS,
+        })
+
+        if (secrets.length) {
+          const secretsInserts: string[] = secrets.map(
+            (secret) => `(${escapeStr(secret.id)},${escapeStr(secret.secret)})`
+          )
+
+          await rdsDataService.executeStatement({
+            resourceArn: eventStoreClusterArn,
+            secretArn: eventStoreSecretArn,
+            database: 'postgres',
+            sql: `INSERT INTO ${eventStoreDatabaseNameAsId}.${eventStoreSecretsTableNameAsId}(
+                "id",
+                "secret"
+            ) VALUES
+            ${secretsInserts.join(',')}
+            ON CONFLICT DO NOTHING`,
+          })
+
+          nextIdx = newIdx
+          appliedSecretsCount = secrets.length
+        }
+      }
     } catch (error) {
       lastError = error
-      console.error('Insert error:', lastError)
+      console.error('RDS error:', lastError)
     }
 
-    const isBuildSuccess = lastError == null && appliedEventsCount > 0
+    const isBuildSuccess =
+      lastError == null && (appliedEventsCount > 0 || appliedSecretsCount > 0)
 
     if (!isBuildSuccess) console.error('Build did not succeed!')
 

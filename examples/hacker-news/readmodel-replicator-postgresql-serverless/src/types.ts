@@ -111,6 +111,7 @@ type TargetEventStore = {
   awsSecretStoreArn: string
   databaseName: string
   eventsTableName?: string
+  secretsTableName?: string
 }
 
 export type AdapterOptions = CommonAdapterOptions & {

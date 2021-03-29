@@ -140,6 +140,22 @@ export type ReadModelEvent = {
   threadCounter: number
 }
 
+export type SecretFilter = {
+  idx?: number | null
+  limit: number
+}
+
+export type SecretsWithIdx = {
+  idx: number | null
+  secrets: SecretRecord[]
+}
+
+export type SecretRecord = {
+  idx: number
+  id: string
+  secret: string
+}
+
 export type EventstoreAdapterLike = {
   loadEvents(filter: {
     eventTypes: Array<ReadModelEvent['type']> | null
@@ -154,6 +170,7 @@ export type EventstoreAdapterLike = {
     previousCursor: ReadModelCursor,
     appliedEvents: Array<ReadModelEvent>
   ): ReadModelCursor
+  loadSecrets?: (filter: SecretFilter) => Promise<SecretsWithIdx>
 }
 
 export type CommonAdapterPool = {

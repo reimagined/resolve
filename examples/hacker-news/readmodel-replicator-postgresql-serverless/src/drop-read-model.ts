@@ -14,9 +14,11 @@ const dropReadModel: DropReadModelMethod = async (pool, readModelName) => {
     awsSecretStoreArn: eventStoreSecretArn = awsSecretStoreArn,
     databaseName: eventStoreDatabaseName,
     eventsTableName: eventStoreEventsTableName = 'events',
+    secretsTableName: eventStoreSecretsTableName = 'secrets',
   } = targetEventStore
 
   const eventStoreDatabaseNameAsId = escapeId(eventStoreDatabaseName)
+  const eventStoreSecretsTableNameAsId = escapeId(eventStoreSecretsTableName)
   const eventStoreEventsTableAsId = escapeId(eventStoreEventsTableName)
   const eventStoreThreadsTableAsId = escapeId(
     `${eventStoreEventsTableName}-threads`
@@ -25,6 +27,7 @@ const dropReadModel: DropReadModelMethod = async (pool, readModelName) => {
   const statements = [
     `TRUNCATE ${eventStoreDatabaseNameAsId}.${eventStoreEventsTableAsId}`,
     `TRUNCATE ${eventStoreDatabaseNameAsId}.${eventStoreThreadsTableAsId}`,
+    `TRUNCATE ${eventStoreDatabaseNameAsId}.${eventStoreSecretsTableNameAsId}`,
     `INSERT INTO ${eventStoreDatabaseNameAsId}.${eventStoreThreadsTableAsId}(
       "threadId",
       "threadCounter"
