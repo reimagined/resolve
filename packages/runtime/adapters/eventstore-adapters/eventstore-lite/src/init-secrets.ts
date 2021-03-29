@@ -30,7 +30,7 @@ const initSecrets = async ({
     (error) => {
       if (isAlreadyExistsError(error.message)) {
         return new EventstoreResourceAlreadyExistError(
-          `duplicate initialization of the sqlite adapter with same events database "${databaseFile}" and table "${secretsTableName}" is not allowed`
+          `duplicate initialization of the sqlite adapter with the same event database "${databaseFile}" and table "${secretsTableName}" is not allowed`
         )
       }
       return null
