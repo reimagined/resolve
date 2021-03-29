@@ -99,147 +99,6 @@ const appConfig = {
 
 In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions. Specify the **resolver** option to add a [View Model resolver](#view-model-resolver) to the View Model.
 
-### Custom Read Models
-
-To create a custom Read Model, you need to manually implement a Read Model connector. A connector defines functions that manage a custom Read Model's store. The following functions can be defined:
-
-- **connect** - Initializes a connection to a storage.
-- **disconnect** - Closes the storage connection.
-- **drop** - Removes the Read Model's data from storage.
-- **dispose** - Forcefully disposes all unmanaged resources used by Read Models served by this connector.
-
-The code sample below demonstrates how to implement a connector that provides a file-based storage for Read Models.
-
-##### common/read-models/custom-read-model-connector.js:
-
-<!-- prettier-ignore-start -->
-
-[mdis]:# (../tests/custom-readmodel-sample/connector.js)
-```js
-import fs from 'fs'
-
-const safeUnlinkSync = filename => {
-  if (fs.existsSync(filename)) {
-    fs.unlinkSync(filename)
-  }
-}
-
-export default options => {
-  const prefix = String(options.prefix)
-  const readModels = new Set()
-  const connect = async readModelName => {
-    fs.writeFileSync(`${prefix}${readModelName}.lock`, true, { flag: 'wx' })
-    readModels.add(readModelName)
-    const store = {
-      get() {
-        return JSON.parse(String(fs.readFileSync(`${prefix}${readModelName}`)))
-      },
-      set(value) {
-        fs.writeFileSync(`${prefix}${readModelName}`, JSON.stringify(value))
-      }
-    }
-    return store
-  }
-  const disconnect = async (store, readModelName) => {
-    safeUnlinkSync(`${prefix}${readModelName}.lock`)
-    readModels.delete(readModelName)
-  }
-  const drop = async (store, readModelName) => {
-    safeUnlinkSync(`${prefix}${readModelName}.lock`)
-    safeUnlinkSync(`${prefix}${readModelName}`)
-  }
-  const dispose = async () => {
-    for (const readModelName of readModels) {
-      safeUnlinkSync(`${prefix}${readModelName}.lock`)
-    }
-    readModels.clear()
-  }
-  return {
-    connect,
-    disconnect,
-    drop,
-    dispose
-  }
-}
-```
-
-<!-- prettier-ignore-end -->
-
-A connector is defined as a function that receives an `options` argument. This argument contains a custom set of options that you can specify in the connector's configuration.
-
-Register the connector in the application's configuration file.
-
-##### config.app.js:
-
-```js
-readModelConnectors: {
-  customReadModelConnector: {
-    module: 'common/read-models/custom-read-model-connector.js',
-    options: {
-      prefix: path.join(__dirname, 'data') + path.sep // Path to a folder that contains custom Read Model store files
-    }
-  }
-}
-```
-
-Now you can assign the custom connector to a Read Model by name as shown below.
-
-##### config.app.js:
-
-```js
-  readModels: [
-    {
-      name: 'CustomReadModel',
-      projection: 'common/read-models/custom-read-model.projection.js',
-      resolvers: 'common/read-models/custom-read-model.resolvers.js',
-      connectorName: 'customReadModelConnector'
-    }
-    ...
-  ]
-```
-
-The code sample below demonstrates how you can use the custom store's API in the Read Model's code.
-
-##### common/read-models/custom-read-model.projection.js:
-
-<!-- prettier-ignore-start -->
-
-[mdis]:# (../tests/custom-readmodel-sample/projection.js)
-```js
-const projection = {
-  Init: async store => {
-    await store.set(0)
-  },
-  INCREMENT: async (store, event) => {
-    await store.set((await store.get()) + event.payload)
-  },
-  DECREMENT: async (store, event) => {
-    await store.set((await store.get()) - event.payload)
-  }
-}
-
-export default projection
-```
-
-<!-- prettier-ignore-end -->
-
-##### common/read-models/custom-read-model.resolvers.js:
-
-<!-- prettier-ignore-start -->
-
-[mdis]:# (../tests/custom-readmodel-sample/resolvers.js)
-```js
-const resolvers = {
-  read: async store => {
-    return await store.get()
-  }
-}
-
-export default resolvers
-```
-
-<!-- prettier-ignore-end -->
-
 ## Initialize a Read Model
 
 Each Read Model projection object should define an **Init** function that initializes the Read Model storage.
@@ -324,11 +183,15 @@ Refer to the [Query a Read Model](#query-a-read-model) section for information o
 
 ## View Model Specifics
 
-**View Models** are a special kind of Read Models. They are queried based on aggregate ID and and can automatically provide updates to Redux state on the client. View Models are defined in a special isomorphic format so their code can also be used on the client side to provide reducer logic.
+**View Models** are ephemeral Read Models that are queried based on aggregate ID. They have the following properties:
+
+- View Models are rebuilt on every request. They do not store persistent state and do not use the Read Model store.
+- View Models are queried based on aggregate ID and can maintain a WebSocket connection to push data updates to the client.
+- View Model projections are defined in a format that is isomorphic with Redux reducers so their code can also be used on the client side to define reducer logic.
 
 Use View Models in the following scenarios:
 
-- To create aggregate-centric views. Such views request relatively small portions of data based on aggregate IDs.
+- To create aggregate-centric views that request relatively small portions of data based on aggregate IDs.
 - To create reactive components, whose state is kept up-to date on the client.
 
 A View Model's projection function receives a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it is important to keep View Models small. You can also store snapshots of the View Model state to optimize system resource consumption.
@@ -356,8 +219,6 @@ The code sample below demonstrates a View Model projection function:
 
 Refer to the [Query a View Model](#query-a-view-model) section, for information on how to query a View Model.
 
-Note that a View Model does not use the Read Model store.
-
 ## View Model Resolver
 
 A View Model's **resolver** allows you to restrict a user's access to the View Model's data. A resolver function receives the following parameters:
@@ -370,9 +231,9 @@ In the resolver's code, you can use arbitrary logic to check a user's access per
 
 The resolver function should return a built View Model data object and a meta object that contains the following data:
 
-- A cursor returned by the `buildViewModel` function;
-- A list of event types;
-- A list of aggregate IDs.
+- The data cursor used to traverse the events included into the query result set. The initial cursor is returned by the `buildViewModel` function;
+- A list of event types available to the client;
+- A list of aggregate IDs available to the client.
 
 The code sample below demonstrates a View Model resolver implementation:
 
