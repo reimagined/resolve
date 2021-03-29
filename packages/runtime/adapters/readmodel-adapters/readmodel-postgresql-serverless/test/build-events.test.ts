@@ -32,7 +32,6 @@ describe('buildEvents', () => {
     const decrypt = jest.fn()
     const getEncryption = () => ({ encrypt, decrypt })
     const PassthroughError = Error
-    const provideLedger = jest.fn()
 
     const projection: Parameters<typeof buildEvents>[4] = {
       acquireInitHandler: (
@@ -112,8 +111,7 @@ describe('buildEvents', () => {
         projection,
         next,
         eventstoreAdapter,
-        getVacantTimeInMillis,
-        provideLedger
+        getVacantTimeInMillis
       )
       throw new Error('Test failed')
     } catch (error) {

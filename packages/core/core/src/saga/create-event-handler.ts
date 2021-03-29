@@ -13,8 +13,6 @@ const buildSideEffects = (
   sideEffects: SideEffectsCollection,
   isEnabled: boolean
 ) => {
-  const sagaProperties = runtime.eventProperties
-
   const customSideEffects =
     sideEffects != null && sideEffects.constructor === Object ? sideEffects : {}
 
@@ -27,7 +25,6 @@ const buildSideEffects = (
 
   return {
     ...wrapSideEffects(
-      sagaProperties,
       {
         ...customSideEffects,
         ...systemSideEffects,
@@ -65,15 +62,16 @@ export const createEventHandler = (
 
   log.debug(`preparing saga event [${eventType}] handler`)
   try {
-    const sagaProperties = runtime.eventProperties
-    const isEnabled = !isNaN(
-      +sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
-    )
-      ? +sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <= +event.timestamp
+    const sideEffectsTimestamp = await runtime.getSideEffectsTimestamp()
+
+    const isEnabled = !isNaN(+sideEffectsTimestamp)
+      ? +sideEffectsTimestamp <= +event.timestamp
       : true
 
+    await runtime.setSideEffectsTimestamp(+event.timestamp)
+
     log.verbose(
-      `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: ${+sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP}`
+      `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: ${+sideEffectsTimestamp}`
     )
     log.verbose(`isEnabled: ${isEnabled}`)
     log.debug(`invoking saga event [${eventType}] handler`)

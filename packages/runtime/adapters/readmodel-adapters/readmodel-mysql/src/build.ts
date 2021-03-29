@@ -112,10 +112,8 @@ const buildEvents: (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis,
-  provideLedger
+  getVacantTimeInMillis
 ) => {
-  void provideLedger
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
@@ -331,8 +329,7 @@ const build: ExternalMethods['build'] = async (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis,
-  provideLedger
+  getVacantTimeInMillis
 ) => {
   const {
     PassthroughError,
@@ -407,8 +404,6 @@ const build: ExternalMethods['build'] = async (
       throw new TypeError('cursor')
     }
 
-    await provideLedger(readModelLedger)
-
     const currentPool = {
       ledgerTableNameAsId,
       xaKey,
@@ -426,8 +421,7 @@ const build: ExternalMethods['build'] = async (
       modelInterop,
       next,
       eventstoreAdapter,
-      getVacantTimeInMillis,
-      provideLedger
+      getVacantTimeInMillis
     )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {

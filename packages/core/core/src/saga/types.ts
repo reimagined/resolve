@@ -8,10 +8,6 @@ export type SchedulerInfo = {
   connectorName: string
 }
 
-export type SagaProperties = {
-  [key: string]: string
-}
-
 export type SideEffectsCollection = {
   [key: string]: Function | SideEffectsCollection
 }
@@ -31,9 +27,10 @@ export type SystemSideEffects = {
 }
 
 export type SagaRuntime = {
-  eventProperties: SagaProperties
   executeCommand: Function
   executeQuery: Function
+  getSideEffectsTimestamp: Function
+  setSideEffectsTimestamp: Function
   secretsManager: SecretsManager
   uploader: any
   scheduler: SchedulerRuntime
