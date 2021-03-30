@@ -135,6 +135,15 @@ describe('eventstore adapter secrets', () => {
     }
   })
 
+  test('should load secrets and skip the provided number of rows', async () => {
+    const skip = Math.floor(countSecrets / 3)
+    const { secrets } = await adapter.loadSecrets({
+      limit: countSecrets + 1,
+      skip,
+    })
+    expect(secrets).toHaveLength(countSecrets - skip)
+  })
+
   test('should correctly export secrets', async () => {
     const exportStream = await adapter.exportSecrets()
     const contents: string = await streamToString(exportStream)
@@ -146,7 +155,7 @@ describe('eventstore adapter secrets', () => {
     expect(parsedSecret.idx).toBeDefined()
   })
 
-  test('should be able to load secrets continuously', async () => {
+  test('should be able to load secrets continuously by idx', async () => {
     const requestedCount = countSecrets / 2
     const { secrets, idx } = await adapter.loadSecrets({
       limit: requestedCount,
@@ -161,6 +170,26 @@ describe('eventstore adapter secrets', () => {
     const emptyResult = await adapter.loadSecrets({
       idx: loadResult.idx,
       limit: countSecrets,
+    })
+    expect(emptyResult.secrets).toHaveLength(0)
+  })
+
+  test('should be able to load secrets continuously by skip', async () => {
+    const requestedCount = Math.floor(countSecrets / 3)
+    const { secrets } = await adapter.loadSecrets({
+      limit: requestedCount,
+      skip: 0,
+    })
+    expect(secrets).toHaveLength(requestedCount)
+
+    const loadResult = await adapter.loadSecrets({
+      limit: countSecrets,
+      skip: requestedCount,
+    })
+    expect(loadResult.secrets).toHaveLength(countSecrets - requestedCount)
+    const emptyResult = await adapter.loadSecrets({
+      limit: countSecrets,
+      skip: countSecrets,
     })
     expect(emptyResult.secrets).toHaveLength(0)
   })

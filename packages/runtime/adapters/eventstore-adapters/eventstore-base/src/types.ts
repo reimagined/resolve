@@ -138,6 +138,7 @@ export type EventFilter = UnbrandProps<EventFilterChecked>
 
 export type SecretFilter = {
   idx?: number | null
+  skip?: number
   limit: number
 }
 
