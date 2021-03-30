@@ -1,19 +1,11 @@
 import chalk from 'chalk'
 import boxen from 'boxen'
-import path from 'path'
 import https from 'https'
 import commandLineArgs from 'command-line-args'
 
-import isYarnAvailable from './is-yarn-available'
-import safeName from './safe-name'
 import message from './message'
 
-import {
-  analyticsUrlBase,
-  resolveVersion,
-  resolvePackages,
-  resolveExamples,
-} from './constants'
+import { resolveVersion } from './constants'
 
 const prepareOptions = async () => {
   const cliArgs = commandLineArgs(
@@ -32,49 +24,26 @@ const prepareOptions = async () => {
     cliArgs._unknown && cliArgs._unknown.filter((x) => x.startsWith('-'))
 
   if (unknownCliArgs && unknownCliArgs.length > 0) {
+    // eslint-disable-next-line no-console
     console.error(message.unknownOptions(unknownCliArgs))
     return process.exit(1)
   } else if (cliArgs.help) {
-    console.log(message.help(resolveExamples))
+    // eslint-disable-next-line no-console
+    console.log(message.help())
     return process.exit(0)
   } else if (cliArgs.version) {
+    // eslint-disable-next-line no-console
     console.log(resolveVersion)
     return process.exit(0)
   } else if (!cliArgs._unknown) {
     // eslint-disable-next-line no-console
-    console.error(message.emptyAppNameError(resolveExamples))
+    console.error(message.emptyAppNameError())
     return process.exit(1)
   } else {
     const applicationName = cliArgs._unknown[0]
 
     const { commit, branch, example: exampleName = 'hello-world' } = cliArgs
 
-    const revision = branch ? branch : commit ? commit : `V${resolveVersion}`
-
-    const resolveCloneDirName = `resolve-${safeName(revision)}`
-
-    const applicationPath = path.join(process.cwd(), applicationName)
-    const applicationPackageJsonPath = path.join(
-      process.cwd(),
-      applicationName,
-      'package.json'
-    )
-
-    const resolveClonePath = path.join(applicationPath, resolveCloneDirName)
-    const resolveCloneExamplesPath = path.join(resolveClonePath, 'examples')
-    const resolveCloneExamplePath = path.join(
-      resolveCloneExamplesPath,
-      exampleName
-    )
-
-    const resolveDownloadZipUrl = `https://codeload.github.com/reimagined/resolve/zip/${revision}`
-
-    const resolveCloneZipPath = path.join(
-      applicationPath,
-      `${resolveCloneDirName}.zip`
-    )
-
-    const useYarn = isYarnAvailable()
     const localRegistry = cliArgs['local-registry']
 
     const masterBranchVersionJsonUrl =
@@ -103,6 +72,7 @@ const prepareOptions = async () => {
         Most likely you have package globally installed in npm or yarn, which is highly discouraged
         Run "npm uninstall -g create-resolve-app" or "yarn global remove create-resolve-app" in console`)
 
+      // eslint-disable-next-line no-console
       console.warn(
         boxen(text, {
           borderColor: 'red',
@@ -115,21 +85,10 @@ const prepareOptions = async () => {
     }
 
     return {
-      analyticsUrlBase,
-      resolveVersion,
-      resolvePackages,
       applicationName,
       commit,
       branch,
       exampleName,
-      applicationPath,
-      applicationPackageJsonPath,
-      resolveClonePath,
-      resolveCloneExamplesPath,
-      resolveCloneExamplePath,
-      resolveDownloadZipUrl,
-      resolveCloneZipPath,
-      useYarn,
       localRegistry,
     }
   }

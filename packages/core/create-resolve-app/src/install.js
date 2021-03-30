@@ -1,13 +1,15 @@
 import { execSync } from 'child_process'
 import chalk from 'chalk'
 import getLog from '@resolve-js/debug-levels'
+import isYarnAvailable from './is-yarn-available'
 
 const log = getLog('resolve:create-resolve-app:install')
 
-const install = async (applicationPath, useYarn) => {
-  console.log()
+const install = async (applicationPath) => {
+  // eslint-disable-next-line no-console
   console.log(chalk.green('Install dependencies'))
 
+  const useYarn = isYarnAvailable()
   const command = `${useYarn ? 'yarn --mutex file' : 'npm install'}`
 
   try {

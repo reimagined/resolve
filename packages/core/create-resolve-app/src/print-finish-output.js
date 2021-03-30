@@ -1,8 +1,11 @@
-import chalk from 'chalk'
+/* eslint-disable no-console */
 
-const printFinishOutput = async (applicationName, useYarn) => {
+import chalk from 'chalk'
+import isYarnAvailable from './is-yarn-available'
+
+const printFinishOutput = async (applicationName) => {
   const displayCommand = (isDefaultCmd) =>
-    useYarn ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run'
+    isYarnAvailable() ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run'
 
   console.log()
   console.log(`Success! ${applicationName} is created `)
@@ -41,3 +44,5 @@ const printFinishOutput = async (applicationName, useYarn) => {
 }
 
 export default printFinishOutput
+
+/* eslint-enable no-console */

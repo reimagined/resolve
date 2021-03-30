@@ -1,5 +1,7 @@
 import https from 'https'
-const sendAnalytics = async (analyticsUrlBase, exampleName, resolveVersion) => {
+import { analyticsUrlBase, resolveVersion } from './constants'
+
+const sendAnalytics = async (exampleName) => {
   return await new Promise((resolve, reject) => {
     const analyticsUrl = `${analyticsUrlBase}/${exampleName}/${resolveVersion}`
 

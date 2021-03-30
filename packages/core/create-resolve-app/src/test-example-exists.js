@@ -16,8 +16,6 @@ const testExampleExists = (
     .filter((name) =>
       fs.statSync(path.join(resolveCloneExamplesPath, name)).isDirectory()
     )
-    .map((name) => ` * ${name}`)
-
   throw new Error(message.missingExample(exampleName, examplesDirs))
 }
 

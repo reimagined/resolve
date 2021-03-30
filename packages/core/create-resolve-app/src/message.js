@@ -1,6 +1,8 @@
 import { EOL } from 'os'
 import chalk from 'chalk'
 
+import { resolveExamples } from './constants'
+
 const optionsInfo = (examples) => [
   `Options:`,
   ``,
@@ -18,7 +20,7 @@ const optionsInfo = (examples) => [
 const formatLines = (lines) => lines.join(EOL)
 
 const message = {
-  help: (resolveExamples) =>
+  help: () =>
     formatLines([
       `Usage: create-resolve-app ${chalk.green(
         '<project-directory>'
@@ -30,7 +32,7 @@ const message = {
       `  ${chalk.cyan('https://github.com/reimagined/resolve/issues/new')}`,
     ]),
 
-  emptyAppNameError: (resolveExamples) =>
+  emptyAppNameError: () =>
     formatLines([
       `Specify the project directory:`,
       `  ${chalk.cyan('create-resolve-app')} ${chalk.green(
@@ -63,7 +65,9 @@ const message = {
   missingExample: (exampleName, examplesDirs) =>
     formatLines([
       `No such example, ${exampleName}. The following examples are available: `,
-      +examplesDirs,
+      ...resolveExamples
+        .filter((e) => examplesDirs.includes(e.name))
+        .map(({ name, description }) => `          * ${name} - ${description}`),
     ]),
 
   invalidApplicationName: (applicationName, errors, warnings) => {
