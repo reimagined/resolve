@@ -24,7 +24,8 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "uuid": "8.3.1"
+    "uuid": "8.3.1",
+    "@resolve-js/eventstore-base": "0.29.0"
   },
   "devDependencies": {
     "jest": "26.6.3",

@@ -172,7 +172,10 @@ const buildEvents: (
     if (events.length === 0) {
       throw new PassthroughError()
     }
-    let nextCursor = eventstoreAdapter.getNextCursor(cursor, events)
+    let nextCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(
+      cursor,
+      events
+    )
 
     eventsPromise = eventstoreAdapter
       .loadEvents({
