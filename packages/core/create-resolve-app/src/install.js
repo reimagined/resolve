@@ -5,24 +5,36 @@ import isYarnAvailable from './is-yarn-available'
 
 const log = getLog('resolve:create-resolve-app:install')
 
-const install = async (applicationPath) => {
+const installCloudCli = (cwd, useYarn) => {
   // eslint-disable-next-line no-console
-  console.log(chalk.green('Install dependencies'))
+  console.log(chalk.green('\nInstall resolve-cloud'))
 
-  const useYarn = isYarnAvailable()
+  const command = useYarn
+    ? 'yarn add --dev resolve-cloud'
+    : 'npm install --save-dev resolve-cloud'
+  execSync(command, {
+    stdio: 'inherit',
+    cwd,
+  })
+}
+
+const installDependencies = async (cwd, useYarn) => {
+  // eslint-disable-next-line no-console
+  console.log(chalk.green('\nInstall dependencies'))
+
   const command = `${useYarn ? 'yarn --mutex file' : 'npm install'}`
 
   try {
     execSync(command, {
       stdio: 'inherit',
-      cwd: applicationPath,
+      cwd,
     })
     log.debug('Install succeeded')
   } catch (err) {
     for (let retry = 0; retry < 10; retry++) {
       try {
         execSync(command, {
-          cwd: applicationPath,
+          cwd,
         })
         return
       } catch (error) {
@@ -38,6 +50,17 @@ const install = async (applicationPath) => {
         break
       }
     }
+    log.debug('Install failed')
+    process.exit(1)
+  }
+}
+
+const install = async (applicationPath) => {
+  const useYarn = isYarnAvailable()
+  try {
+    await installDependencies(applicationPath, useYarn)
+    await installCloudCli(applicationPath, useYarn)
+  } catch (err) {
     log.debug('Install failed')
     process.exit(1)
   }
