@@ -14,7 +14,7 @@ const loadSnapshot = async (
     isTimeoutError,
   } = pool
   if (snapshotKey == null || snapshotKey.constructor !== String) {
-    throw new Error('Snapshot key must be string')
+    throw new Error('Snapshot key must be a string')
   }
 
   const databaseNameAsId: string = escapeId(databaseName)
