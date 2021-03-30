@@ -1,6 +1,6 @@
 {
   "name": "@internal/cra-test",
-  "version": "0.28.3",
+  "version": "0.29.0",
   "private": true,
   "bin": "./bin/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "test": "echo || exit 0"
   },
   "dependencies": {
-    "@internal/helpers": "0.28.3",
+    "@internal/helpers": "0.29.0",
     "consola": "^2.15.3",
     "rimraf": "3.0.2"
   }
