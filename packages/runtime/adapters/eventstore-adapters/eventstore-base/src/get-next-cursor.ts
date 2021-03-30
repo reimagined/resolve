@@ -1,10 +1,10 @@
-import { SavedEvent } from './types'
+import { EventThreadData } from './types'
 
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const getNextCursor = (
   prevCursor: string | null,
-  events: SavedEvent[]
+  events: EventThreadData[]
 ): string => {
   const cursorBuffer: Buffer =
     prevCursor != null

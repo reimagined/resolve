@@ -35,10 +35,11 @@ export type UnbrandProps<T extends any> = {
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 export type InputEvent = Event
-export type SavedEvent = Event & {
+export type EventThreadData = {
   threadCounter: number
   threadId: number
-} & SerializableMap
+}
+export type SavedEvent = Event & EventThreadData & SerializableMap
 
 export type CheckForResourceError = (errors: Error[]) => void
 
@@ -50,13 +51,15 @@ type ShapeEvent = (event: any, additionalFields?: any) => SavedEvent
 
 export type ValidateEventFilter = (filter: EventFilter) => void
 
+export type Cursor = string | null
+
 export type GetNextCursor = (
-  prevCursor: string | null,
-  events: SavedEvent[]
+  prevCursor: Cursor,
+  events: EventThreadData[]
 ) => string
 
 export type EventsWithCursor = {
-  cursor: string | null
+  cursor: Cursor
   events: SavedEvent[]
 }
 
@@ -316,13 +319,13 @@ export type ImportEventsStream = stream.Writable & {
 }
 
 export type ExportOptions = {
-  cursor: string | null
+  cursor: Cursor
   maintenanceMode: MAINTENANCE_MODE
   bufferSize: number
 }
 
 export type ExportEventsStream = stream.Readable & {
-  readonly cursor: string | null
+  readonly cursor: Cursor
   readonly isBufferOverflow: boolean
   readonly isEnd: boolean
 }
@@ -470,7 +473,7 @@ export interface Adapter {
   dispose: () => Promise<void>
   freeze: () => Promise<void>
   unfreeze: () => Promise<void>
-  getNextCursor: (prevCursor: string | null, events: any[]) => string
+  getNextCursor: GetNextCursor
   getSecretsManager: () => Promise<SecretsManager>
   loadSnapshot: (snapshotKey: string) => Promise<string | null>
   saveSnapshot: (snapshotKey: string, content: string) => Promise<void>

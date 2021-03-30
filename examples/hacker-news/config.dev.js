@@ -33,12 +33,7 @@ const devConfig = {
             'RESOLVE_READMODEL_CLUSTER_ARN'
           ),
           awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
-          databaseName: 'event-store-dev-0.28.2-p9asm0',
-          // eventsTableName: iotsTypes.NonEmptyString,
-          // secretsTableName: iotsTypes.NonEmptyString,
-          // snapshotsTableName: iotsTypes.NonEmptyString,
-          // subscribersTableName: iotsTypes.NonEmptyString,
-          // region: 'region',
+          databaseName: 'event-store-dev-0.28.2-u1yzmk',
         },
       },
     },

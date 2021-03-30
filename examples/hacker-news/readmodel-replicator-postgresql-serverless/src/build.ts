@@ -5,6 +5,7 @@ import type {
   ReadModelEvent,
 } from './types'
 import rawExecuteStatement from './raw-execute-statement'
+import { EventThreadData } from '@resolve-js/eventstore-base'
 
 const RESERVED_EVENT_SIZE = 66 // 3 reserved BIGINT fields with commas
 const BATCH_SIZE = 100
@@ -145,7 +146,7 @@ const build: ExternalMethods['build'] = async (
               (threadGaps.find((gap) => gap.threadId === entry.threadId)
                 ?.firstThreadCounterGap ?? entry.threadCounter) - 1,
             threadId: entry.threadId,
-          } as ReadModelEvent)
+          } as EventThreadData)
       )
       .filter((entry) => entry.threadCounter >= 0)
   )
@@ -162,15 +163,14 @@ const build: ExternalMethods['build'] = async (
     secretCount: number
   }>
 
-  let secretsToSkip: number
+  console.log('Secrets count result: ', secretsCountResult)
+
+  let secretsToSkip = 0
   if (secretsCountResult.length && secretsCountResult[0].secretCount != null) {
     secretsToSkip = secretsCountResult[0].secretCount
   }
 
-  let inputSecretIdx: number | null = null
-  const { idx } = eventstoreAdapter.loadSecrets({})
-
-  console.log('Input secret idx: ', inputSecretIdx)
+  console.log('Secrets to skip: ', secretsToSkip)
 
   const calculateEventWithSize = (event: ReadModelEvent): EventWithSize => {
     const serializedEvent = [
@@ -229,12 +229,15 @@ const build: ExternalMethods['build'] = async (
                   ${eventWithSize.size})`)
     }
 
-    try {
-      await rdsDataService.executeStatement({
-        resourceArn: eventStoreClusterArn,
-        secretArn: eventStoreSecretArn,
-        database: 'postgres',
-        sql: optimizeSql(`WITH ${updateThreadsExpression.join(',')}
+    let shouldRetry = false
+    do {
+      shouldRetry = false
+      try {
+        await rdsDataService.executeStatement({
+          resourceArn: eventStoreClusterArn,
+          secretArn: eventStoreSecretArn,
+          database: 'postgres',
+          sql: optimizeSql(`WITH ${updateThreadsExpression.join(',')}
                 INSERT INTO ${eventStoreDatabaseNameAsId}.${eventStoreEventsTableAsId}(
                 "threadId",
                 "threadCounter",
@@ -248,20 +251,21 @@ const build: ExternalMethods['build'] = async (
                 ${inserts.join(',')}
                 ON CONFLICT DO NOTHING
               `),
-      })
-      appliedEventsCount += eventsWithSize.length
-    } catch (error) {
-      const errorMessage: string = error.message
-      if (
-        !/duplicate key value violates unique constraint/.test(errorMessage)
-      ) {
-        throw error
+        })
+        appliedEventsCount += eventsWithSize.length
+      } catch (error) {
+        const errorMessage: string = error.message
+        if (/deadlock detected/.test(errorMessage)) {
+          console.error(errorMessage, '... retrying')
+          shouldRetry = true
+        } else {
+          throw error
+        }
       }
-    }
+    } while (shouldRetry)
   }
 
   let nextCursor: ReadModelCursor = inputCursor
-  let nextIdx: typeof inputSecretIdx = inputSecretIdx
   let localContinue = true
   let lastError: Error | null = null
   while (true) {
@@ -314,12 +318,14 @@ const build: ExternalMethods['build'] = async (
       nextCursor = newCursor
 
       if (eventstoreAdapter.loadSecrets != null) {
-        const { idx: newIdx, secrets } = await eventstoreAdapter.loadSecrets({
-          idx: nextIdx,
+        const { secrets } = await eventstoreAdapter.loadSecrets({
+          skip: secretsToSkip,
           limit: BATCH_SIZE_SECRETS,
         })
 
         if (secrets.length) {
+          console.log('Secrets: ', secrets)
+
           const secretsInserts: string[] = secrets.map(
             (secret) => `(${escapeStr(secret.id)},${escapeStr(secret.secret)})`
           )
@@ -332,11 +338,10 @@ const build: ExternalMethods['build'] = async (
                 "id",
                 "secret"
             ) VALUES
-            ${secretsInserts.join(',')}
-            ON CONFLICT DO NOTHING`,
+            ${secretsInserts.join(',')}`,
           })
 
-          nextIdx = newIdx
+          secretsToSkip += secrets.length
           appliedSecretsCount = secrets.length
         }
       }
