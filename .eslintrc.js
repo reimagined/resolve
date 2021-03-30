@@ -521,6 +521,7 @@ module.exports = {
           'zlib',
           'compat',
           'dep',
+          'uniq',
         ],
         minLength: 3,
       },

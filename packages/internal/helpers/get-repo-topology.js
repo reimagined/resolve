@@ -2,6 +2,8 @@ const { execSync } = require('child_process')
 const { DepGraph } = require('dependency-graph')
 const { readFileSync } = require('fs')
 const intersection = require('lodash.intersection')
+const difference = require('lodash.difference')
+const uniq = require('lodash.uniq')
 const path = require('path')
 const repoRoot = path.resolve(__dirname, '../../..')
 
@@ -13,14 +15,32 @@ const workspaceFilter = (workspaces, name) => {
   return !internal
 }
 
-const buildTree = (topology, node) => {
-  const chunk = topology
-    .directDependentsOf(node)
+const buildTree = (topology, name) => {
+  const dependents = topology
+    .directDependentsOf(name)
     .filter(
       (candidate, index, source) =>
         intersection(topology.directDependenciesOf(candidate), source)
           .length === 0
     )
+  return {
+    name,
+    dependents: dependents.map((dep) => buildTree(topology, dep)),
+  }
+}
+
+const getRoots = (topology, name) => {
+  const dependencies = topology.directDependenciesOf(name)
+  const roots = dependencies.filter(
+    (dependency) => topology.directDependenciesOf(dependency).length === 0
+  )
+  return uniq(
+    roots.concat(
+      ...difference(dependencies, roots).map((dependency) =>
+        getRoots(topology, dependency)
+      )
+    )
+  )
 }
 
 const getRepoTopology = () => {
@@ -47,7 +67,15 @@ const getRepoTopology = () => {
     }, new DepGraph())
 
   //console.log(topology.directDependentsOf('@resolve-js/core'))
-  console.log(buildTree(topology, '@resolve-js/core'))
+  //console.log(getRoots(topology, '@resolve-js/eventstore-postgresql'))
+
+  const roots = uniq(
+    topology.entryNodes().flatMap((name) => getRoots(topology, name))
+  )
+
+  console.log(roots)
+
+  const trees = roots.map((name) => buildTree(topology, name))
 
   //console.log(topology.directDependentsOf('@resolve-js/client'))
   //console.log(topology.directDependentsOf('@resolve-js/react-hooks'))
