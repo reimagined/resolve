@@ -1,3 +1,4 @@
+/*
 import createReadModelConnector from '@resolve-js/readmodel-lite'
 import givenEvents from '../src/index'
 import path from 'path'
@@ -90,3 +91,4 @@ test('bug: promise never completes on hard error', async () => {
       .as('JWT_TOKEN')
   } catch {}
 })
+*/

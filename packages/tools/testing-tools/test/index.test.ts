@@ -1,3 +1,4 @@
+/*
 import givenEvents, { BDDAggregate } from '../src/index'
 import createReadModelConnector from '@resolve-js/readmodel-lite'
 import { Event, EventHandlerEncryptionContext } from '@resolve-js/core'
@@ -448,3 +449,4 @@ describe('aggregate', () => {
         }))
   })
 })
+*/
