@@ -21,17 +21,13 @@ const EVENT_SUBSCRIBER_DIRECT = 'EventSubscriberDirect'
 
 let coldStart = true
 
-const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
-  log.debug('executing application lambda')
-  log.verbose('incoming event', JSON.stringify(lambdaEvent, null, 2))
-  lambdaContext.callbackWaitsForEmptyEventLoop = false
-
-  resolveBase.eventSubscriberDestination = lambdaContext.invokedFunctionArn
-  resolveBase.subscriptionsCredentials = {
+const initSubscriber = (resolve, lambdaContext) => {
+  resolve.eventSubscriberDestination = lambdaContext.invokedFunctionArn
+  resolve.subscriptionsCredentials = {
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
   }
 
-  resolveBase.invokeEventSubscriberAsync = async (
+  resolve.invokeEventSubscriberAsync = async (
     eventSubscriber,
     method,
     parameters
@@ -50,6 +46,12 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       },
     })
   }
+}
+
+const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
+  log.debug('executing application lambda')
+  log.verbose('incoming event', JSON.stringify(lambdaEvent, null, 2))
+  lambdaContext.callbackWaitsForEmptyEventLoop = false
 
   initMonitoring(resolveBase)
 
@@ -58,16 +60,18 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     null,
     lambdaContext
   )
-  await initScheduler(resolve)
 
   const lambdaRemainingTimeStart = lambdaContext.getRemainingTimeInMillis()
 
   try {
-    log.debug('initializing reSolve framework')
-    await initResolve(resolve)
-    log.debug('reSolve framework initialized')
-
     if (lambdaEvent.resolveSource === 'DeployService') {
+      initSubscriber(resolveBase, lambdaContext)
+      initScheduler(resolve)
+
+      log.debug('initializing reSolve framework')
+      await initResolve(resolve)
+      log.debug('reSolve framework initialized')
+
       log.debug('identified event source: deployment service')
 
       const executorResult = await handleDeployServiceEvent(
@@ -79,6 +83,13 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
 
       return executorResult
     } else if (lambdaEvent.resolveSource === EVENT_SUBSCRIBER_DIRECT) {
+      initSubscriber(resolveBase, lambdaContext)
+      initScheduler(resolve)
+
+      log.debug('initializing reSolve framework')
+      await initResolve(resolve)
+      log.debug('reSolve framework initialized')
+
       log.debug('identified event source: event-subscriber-direct')
       const { method, payload } = lambdaEvent
       const executorResult = await resolve.eventSubscriber[method](payload)
@@ -87,6 +98,13 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
 
       return executorResult
     } else if (lambdaEvent.resolveSource === 'Scheduler') {
+      initSubscriber(resolveBase, lambdaContext)
+      initScheduler(resolve)
+
+      log.debug('initializing reSolve framework')
+      await initResolve(resolve)
+      log.debug('reSolve framework initialized')
+
       log.debug('identified event source: cloud scheduler')
 
       const executorResult = await handleSchedulerEvent(lambdaEvent, resolve)
@@ -95,6 +113,13 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
 
       return executorResult
     } else if (lambdaEvent.resolveSource === 'Websocket') {
+      initSubscriber(resolveBase, lambdaContext)
+      initScheduler(resolve)
+
+      log.debug('initializing reSolve framework')
+      await initResolve(resolve)
+      log.debug('reSolve framework initialized')
+
       log.debug('identified event source: websocket')
 
       const executorResult = await handleWebsocketEvent(lambdaEvent, resolve)
@@ -103,6 +128,13 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
 
       return executorResult
     } else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
+      initSubscriber(resolveBase, lambdaContext)
+      initScheduler(resolve)
+
+      log.debug('initializing reSolve framework')
+      await initResolve(resolve)
+      log.debug('reSolve framework initialized')
+
       log.debug('identified event source: API gateway')
       log.verbose(
         JSON.stringify(lambdaEvent.httpMethod, null, 2),
@@ -126,7 +158,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   } catch (error) {
     log.error('top-level event handler execution error!')
 
-    await putInternalError(error)
+    putInternalError(error)
 
     if (error instanceof Error) {
       log.error('error', error.message)

@@ -146,6 +146,7 @@ const initResolve = async (resolve) => {
   )
 
   Object.assign(resolve, {
+    isInitialized: true,
     executeCommand,
     executeQuery,
     executeSaga,

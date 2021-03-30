@@ -39,6 +39,7 @@
     "ajv": "^6.10.0",
     "babel-loader": "8.1.0",
     "babel-plugin-module-resolver": "4.0.0",
+    "babel-plugin-transform-import-inline": "^0.0.4",
     "chalk": "^2.4.2",
     "deepmerge": "^3.2.0",
     "fs-extra": "^7.0.1",
