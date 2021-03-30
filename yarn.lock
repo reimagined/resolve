@@ -2689,6 +2689,43 @@
   resolved "https://registry.yarnpkg.com/@redux-saga/types/-/types-1.1.0.tgz#0e81ce56b4883b4b2a3001ebe1ab298b84237204"
   integrity sha512-afmTuJrylUU/0OtqzaRkbyYFFNgCF73Bvel/sw90pvGrWIZ+vyoIJqA6eMSoA6+nb443kTmulmBtC9NerXboNg==
 
+"@resolve-js/core@0.28.2":
+  version "0.28.2"
+  resolved "https://registry.yarnpkg.com/@resolve-js/core/-/core-0.28.2.tgz#8b9ea322902cf85f3749057ab4a9ac67c2eebad2"
+  integrity sha512-CqMIncSrs6GhYzfVbnV2oB+yWJBmmBTUdUE3TUpJZvjqYEZ2jZpVAsiyil3RJYWg3d413FLoQwtSQTvfv5HG8g==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    "@resolve-js/debug-levels" "0.28.2"
+    uuid "8.3.2"
+
+"@resolve-js/debug-levels@0.28.2":
+  version "0.28.2"
+  resolved "https://registry.yarnpkg.com/@resolve-js/debug-levels/-/debug-levels-0.28.2.tgz#1c49d1a372a28b0e608570fc3afac6efabf7246d"
+  integrity sha512-tyiH+Z29xhNQ/0nX1vcgkrzXIc2/6xB7MzGd9rEY2VF7sKcrL3UkYe89fCu25Ldqz0P79YN/6O/0yFwce1C5Pw==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    debug "4.1.1"
+
+"@resolve-js/eventstore-base@0.28.2":
+  version "0.28.2"
+  resolved "https://registry.yarnpkg.com/@resolve-js/eventstore-base/-/eventstore-base-0.28.2.tgz#6f864cfcf4b58772cd4bf12fa80cd0a4384cbf43"
+  integrity sha512-RQUGtj7Iz3DYiJ8hA9zCYtKl4nAQmJzdfctzrCCzQ1LksDNwAILFXg+nmMBE1hr/gQOLuAvZUoOfMpKaUbg/8w==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    "@resolve-js/core" "0.28.2"
+    "@resolve-js/debug-levels" "0.28.2"
+    fp-ts "2.9.5"
+    io-ts "2.2.15"
+
+"@resolve-js/eventstore-postgresql-serverless@0.28.2":
+  version "0.28.2"
+  resolved "https://registry.yarnpkg.com/@resolve-js/eventstore-postgresql-serverless/-/eventstore-postgresql-serverless-0.28.2.tgz#a3cc839ab43cfd51f24e0578941702438b6ce1c3"
+  integrity sha512-Ig8bzeRJc7KonNNFshbW+syk24wGF6/erSLVGGI2Ogg8IKWk7gIf3sAMQ6Xhe/vjt0kxfT/NHdg7lMH6JDoOdQ==
+  dependencies:
+    "@babel/runtime" "7.9.6"
+    "@resolve-js/debug-levels" "0.28.2"
+    "@resolve-js/eventstore-base" "0.28.2"
+
 "@restart/context@^2.1.4":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@restart/context/-/context-2.1.4.tgz#a99d87c299a34c28bd85bb489cb07bfd23149c02"
@@ -7064,6 +7101,11 @@ depd@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
   integrity sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
+
+dependency-graph@0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/dependency-graph/-/dependency-graph-0.11.0.tgz#ac0ce7ed68a54da22165a85e97a01d53f5eb2e27"
+  integrity sha512-JeMq7fEshyepOWDfcfHK06N3MhyPhz++vtqWhMT5O9A3K42rdsEDpfdVqjaqaAhsw6a+ZqeDvQVtD0hFHQWrzg==
 
 dependency-graph@^0.7.2:
   version "0.7.2"
@@ -11906,6 +11948,11 @@ lodash.includes@^4.3.0:
   resolved "https://registry.yarnpkg.com/lodash.includes/-/lodash.includes-4.3.0.tgz#60bb98a87cb923c68ca1e51325483314849f553f"
   integrity sha1-YLuYqHy5I8aMoeUTJUgzFISfVT8=
 
+lodash.intersection@4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/lodash.intersection/-/lodash.intersection-4.4.0.tgz#0a11ba631d0e95c23c7f2f4cbb9a692ed178e705"
+  integrity sha1-ChG6Yx0OlcI8fy9Mu5ppLtF45wU=
+
 lodash.isboolean@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/lodash.isboolean/-/lodash.isboolean-3.0.3.tgz#6c2e171db2a257cd96802fd43b01b20d5f5870f6"
@@ -15281,6 +15328,17 @@ reactstrap@8.7.0:
   integrity sha512-1QqAH8u76AUyukUXVa9Mu9VbScCavOJPr2+h9lGBA4pDjbBPWr1Fc6gfmSbeiquXSIFkyc+Aay/LB9+K3hWPtg==
   dependencies:
     "@babel/runtime" "^7.2.0"
+    classnames "^2.2.3"
+    prop-types "^15.5.8"
+    react-popper "^1.3.6"
+    react-transition-group "^2.3.1"
+
+reactstrap@8.9.0:
+  version "8.9.0"
+  resolved "https://registry.yarnpkg.com/reactstrap/-/reactstrap-8.9.0.tgz#bca4afa3f5cd18899ef9b33d877a141886d5abae"
+  integrity sha512-pmf33YjpNZk1IfrjqpWCUMq9hk6GzSnMWBAofTBNIRJQB1zQ0Au2kzv3lPUAFsBYgWEuI9iYa/xKXHaboSiMkQ==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
     classnames "^2.2.3"
     prop-types "^15.5.8"
     react-popper "^1.3.6"

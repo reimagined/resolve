@@ -56,9 +56,9 @@ async function compilePackage(config) {
       .then(() => {
         // eslint-disable-next-line no-console
         console.log(
-          `↑ [${chalk.green(config.name)}] { moduleType: "${
-            babelConfig.moduleType
-          }", moduleType: "${babelConfig.moduleTarget}" }`
+          `↑ [${chalk.green(config.name)}] ${babelConfig.moduleType}:${
+            babelConfig.moduleTarget
+          }`
         )
       })
       .catch((error) => {
@@ -74,7 +74,7 @@ async function compilePackage(config) {
 }
 
 async function main({ name: packageName }) {
-  const map = new Map()
+  const activeBuilds = new Map()
   let pendingPromises = []
 
   const preparePendingBuild = (build) => {
@@ -98,7 +98,7 @@ async function main({ name: packageName }) {
       continue
     }
     const build = { config, status: 'waiting' }
-    map.set(config.name, build)
+    activeBuilds.set(config.name, build)
 
     if (config.dependencies.length > 0) {
       continue
@@ -121,14 +121,14 @@ async function main({ name: packageName }) {
 
     pendingPromises = []
 
-    for (const [, build] of map.entries()) {
+    for (const [, build] of activeBuilds.entries()) {
       if (build.status === 'building') {
         pendingPromises.push(build.promise)
       } else if (
         build.status === 'waiting' &&
         build.config.dependencies.every((dependency) =>
-          map.get(dependency)
-            ? map.get(dependency).status === 'succeeded'
+          activeBuilds.get(dependency)
+            ? activeBuilds.get(dependency).status === 'succeeded'
             : // eslint-disable-next-line no-console
               console.warn(`Unresolved dependency [${dependency}]`)
         )

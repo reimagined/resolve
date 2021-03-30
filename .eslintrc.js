@@ -520,6 +520,7 @@ module.exports = {
           'zmq',
           'zlib',
           'compat',
+          'dep',
         ],
         minLength: 3,
       },
