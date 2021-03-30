@@ -35,7 +35,6 @@ export default {
     options: {
       CDN: declareRuntimeEnv('RESOLVE_UPLOADER_URL'),
       uploaderArn: declareRuntimeEnv('RESOLVE_UPLOADER_LAMBDA_ARN'),
-      scope: 'image-gallery',
     },
   },
 }
