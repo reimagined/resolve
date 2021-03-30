@@ -20,7 +20,7 @@ const convertBinaryRow: ConvertBinaryRowMethod = (
 ) => {
   if (fieldList != null && fieldList.constructor !== Object) {
     throw new Error(
-      'Field list should be object with enumerated selected fields'
+      'Field list should be an object with enumerated selected fields'
     )
   }
   const row: RowLike = excludeObjectField(inputRow, `RESOLVE-${readModelName}`)

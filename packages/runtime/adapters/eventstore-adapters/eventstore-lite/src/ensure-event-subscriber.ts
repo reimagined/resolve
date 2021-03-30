@@ -24,7 +24,7 @@ const ensureEventSubscriber = async (
     (!updateOnly && destination == null)
   ) {
     throw new Error(
-      `Parameters "destination" and "updateOnly" are mutual exclusive`
+      `Parameters "destination" and "updateOnly" are mutually exclusive`
     )
   }
 

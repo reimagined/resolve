@@ -118,7 +118,7 @@ export const EventFilterSchema = new t.Type<EventFilter, EventFilter>(
             return t.failure(
               u,
               c,
-              `Event filter start time can't be larger than finishTime`
+              `Event filter start time cannot be later than finishTime`
             )
           }
         }
@@ -127,7 +127,7 @@ export const EventFilterSchema = new t.Type<EventFilter, EventFilter>(
         return t.failure(
           u,
           c,
-          'cursor or at least one of startTime or finishTime should be defined'
+          'Cursor or at least one of startTime or finishTime should be defined'
         )
       }
     }),
@@ -138,6 +138,7 @@ export type EventFilter = UnbrandProps<EventFilterChecked>
 
 export type SecretFilter = {
   idx?: number | null
+  skip?: number
   limit: number
 }
 
