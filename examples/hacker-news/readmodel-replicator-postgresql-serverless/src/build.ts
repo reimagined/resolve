@@ -5,7 +5,7 @@ import type {
   ReadModelEvent,
 } from './types'
 import rawExecuteStatement from './raw-execute-statement'
-import { EventThreadData } from '@resolve-js/eventstore-base'
+import { EventThreadData, EventsWithCursor } from '@resolve-js/eventstore-base'
 
 const RESERVED_EVENT_SIZE = 66 // 3 reserved BIGINT fields with commas
 const BATCH_SIZE = 100
@@ -273,12 +273,14 @@ const build: ExternalMethods['build'] = async (
     let appliedSecretsCount = 0
 
     try {
-      const { cursor: newCursor, events } = await eventstoreAdapter.loadEvents({
-        eventTypes: null,
-        eventsSizeLimit: 65536000,
-        limit: BATCH_SIZE,
-        cursor: nextCursor,
-      })
+      const { cursor: newCursor, events } = (await eventstoreAdapter.loadEvents(
+        {
+          eventTypes: null,
+          eventsSizeLimit: 65536000,
+          limit: BATCH_SIZE,
+          cursor: nextCursor,
+        }
+      )) as EventsWithCursor
 
       const eventPromises: Array<Promise<void>> = []
 
