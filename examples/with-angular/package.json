@@ -57,7 +57,6 @@
     "jest-css-modules-transform": "2.0.0",
     "postcss-import": "11.1.0",
     "postcss-loader": "2.1.5",
-    "resolve-cloud": "*",
     "style-loader": "0.21.0",
     "testcafe": "^1.9.1"
   },

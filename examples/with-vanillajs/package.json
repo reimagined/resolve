@@ -38,7 +38,6 @@
     "aws-xray-sdk-core": "2.5.0",
     "babel-jest": "26.0.1",
     "jest": "26.6.3",
-    "resolve-cloud": "*",
     "testcafe": "^1.9.1"
   },
   "resolveJs": {

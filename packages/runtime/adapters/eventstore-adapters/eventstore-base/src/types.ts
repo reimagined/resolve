@@ -1,4 +1,9 @@
-import { SecretsManager, Event, SerializableMap } from '@resolve-js/core'
+import {
+  SecretsManager,
+  Event,
+  SerializableMap,
+  Serializable,
+} from '@resolve-js/core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 
@@ -34,7 +39,7 @@ export type UnbrandProps<T extends any> = {
 }
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
-export type InputEvent = Event
+export type InputEvent = Omit<Event, 'payload'> & { payload?: Serializable }
 export type EventThreadData = {
   threadCounter: number
   threadId: number
@@ -70,7 +75,7 @@ const EventFilterCommonSchema = t.intersection([
   t.partial({
     eventTypes: t.union([t.array(t.string), t.null]),
     aggregateIds: t.union([t.array(t.string), t.null]),
-    eventSizeLimit: t.Int,
+    eventsSizeLimit: t.Int,
   }),
 ])
 
