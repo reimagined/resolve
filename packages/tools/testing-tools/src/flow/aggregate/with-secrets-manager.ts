@@ -36,7 +36,7 @@ export const setSecretsManager = (
 ) => {
   // eslint-disable-next-line no-console
   console.warn(
-    `setSecretsManager deprecated, you should use withSecretsManager instead`
+    `'setSecretsManager' deprecated, you should use withSecretsManager instead`
   )
   return withSecretsManager(context, manager)
 }

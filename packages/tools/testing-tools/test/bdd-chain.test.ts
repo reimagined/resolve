@@ -2,6 +2,16 @@ import givenEvents from '../src/index'
 import { BDDAggregate } from '../types'
 import { AggregateState, SecretsManager } from '@resolve-js/core'
 
+let consoleSpy: jest.SpyInstance
+
+beforeAll(() => {
+  consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => void 0)
+})
+
+afterAll(() => {
+  consoleSpy.mockRestore()
+})
+
 describe('givenEvents', () => {
   test('incomplete test: should provide test object', async () => {
     expect.assertions(1)
@@ -67,6 +77,7 @@ describe('aggregate', () => {
       .aggregate(aggregate)
       .command('test')
       .withSecretsManager(secretsManager)
+      .as('user')
   })
 
   test('init error: setting secrets manager after test execution', async () => {
