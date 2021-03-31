@@ -69,6 +69,7 @@ export type BDDReadModel = {
   projection: any
   resolvers: any
   encryption?: EventHandlerEncryptionFactory
+  adapter: any
 }
 
 export type TestQuery = {
