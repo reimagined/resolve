@@ -5,8 +5,11 @@ import {
   AggregateProjection,
   CommandResult,
   SerializableMap,
+  Serializable,
+  EventHandlerEncryptionFactory,
 } from '@resolve-js/core'
 import { AggregateTestEnvironment } from './flow/aggregate/make-test-environment'
+import { ReadModelTestEnvironment } from './flow/read-model/make-test-environment'
 
 export type OmitFirstArgument<F> = F extends (
   first: any,
@@ -22,6 +25,21 @@ export type TestEvent = Omit<
   timestamp?: number
   aggregateId?: string
 }
+
+export type BDDAggregate = {
+  name: string
+  projection: AggregateProjection
+  commands: Aggregate
+  encryption?: AggregateEncryptionFactory
+}
+
+export type BDDAggregateAssertion = (
+  resolve: Function,
+  reject: Function,
+  result: CommandResult | null,
+  error: any
+) => void
+
 export type TestCommand = {
   name: string
   payload?: SerializableMap
@@ -46,16 +64,25 @@ export type AggregateTestResult = {
   payload?: SerializableMap
 }
 
-export type BDDAggregate = {
+export type BDDReadModel = {
   name: string
-  projection: AggregateProjection
-  commands: Aggregate
-  encryption?: AggregateEncryptionFactory
+  projection: any
+  resolvers: any
+  encryption?: EventHandlerEncryptionFactory
 }
 
-export type BDDAggregateAssertion = (
-  resolve: Function,
-  reject: Function,
-  result: CommandResult | null,
-  error: any
-) => void
+export type TestQuery = {
+  resolver: string
+  args?: SerializableMap
+}
+
+export type QueryTestResult = Serializable
+
+export type ReadModelContext = {
+  readModel: BDDReadModel
+} & GivenEventsContext
+
+export type QueryContext = {
+  query: TestQuery
+  environment: ReadModelTestEnvironment
+} & ReadModelContext
