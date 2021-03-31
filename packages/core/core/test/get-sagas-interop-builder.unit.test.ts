@@ -33,11 +33,12 @@ const makeTestRuntime = (): SagaRuntime => {
   return {
     secretsManager,
     monitoring,
-    eventProperties: {},
     executeCommand: jest.fn(),
     executeQuery: jest.fn(),
     scheduler,
     uploader: {},
+    getSideEffectsTimestamp: jest.fn(),
+    setSideEffectsTimestamp: jest.fn(),
   }
 }
 
@@ -156,10 +157,7 @@ describe('Sagas', () => {
     )
     eventHandler && (await eventHandler())
     expect(sagaParams.sideEffects.dummySideEffect).toHaveBeenCalledTimes(1)
-    expect(sagaParams.sideEffects.dummySideEffect).toBeCalledWith(
-      dummyEvent,
-      {}
-    )
+    expect(sagaParams.sideEffects.dummySideEffect).toBeCalledWith(dummyEvent)
   })
 
   test('scheduler saga should be initialized correctly', async () => {
