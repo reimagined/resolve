@@ -1,4 +1,3 @@
-/*
 import givenEvents, { BDDAggregate } from '../src/index'
 import createReadModelConnector from '@resolve-js/readmodel-lite'
 import { Event, EventHandlerEncryptionContext } from '@resolve-js/core'
@@ -25,6 +24,7 @@ const ResolverError = (function (this: Error, message: string): void {
   }
 } as Function) as ErrorConstructor
 
+/*
 describe('read model', () => {
   test('basic flow', async () => {
     const result = await givenEvents([
@@ -258,6 +258,7 @@ describe('read model', () => {
     expect(secretsManager.deleteSecret).toHaveBeenCalledWith('id')
   })
 })
+*/
 
 describe('aggregate', () => {
   type AggregateState = {
@@ -449,4 +450,3 @@ describe('aggregate', () => {
         }))
   })
 })
-*/

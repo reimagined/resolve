@@ -4,19 +4,23 @@ import {
   AggregateContext,
   AggregateTestResult,
   OmitFirstArgument,
+  TestCommand,
 } from '../../types'
 import { as } from './as'
 import { makeTestEnvironment } from './make-test-environment'
 import { shouldProduceEvent } from './should-produce-event'
 import { shouldThrow } from './should-throw'
+import { setSecretsManager, withSecretsManager } from './with-secrets-manager'
 
 export type AssertionsNode = {
   shouldProduceEvent: OmitFirstArgument<typeof shouldProduceEvent>
   shouldThrow: OmitFirstArgument<typeof shouldThrow>
 }
 
-type CommandNode = {
+export type CommandNode = {
   as: OmitFirstArgument<typeof as>
+  withSecretsManager: OmitFirstArgument<typeof withSecretsManager>
+  setSecretsManager: OmitFirstArgument<typeof setSecretsManager>
 } & AssertionsNode &
   Promise<AggregateTestResult>
 
@@ -25,17 +29,23 @@ export const command = (
   name: string,
   payload?: SerializableMap
 ): CommandNode => {
+  const command: TestCommand = {
+    name,
+    payload,
+  }
   const commandContext = {
     ...context,
-    command: {
-      name,
-      payload,
-    },
-    environment: makeTestEnvironment(context),
+    command,
+    environment: makeTestEnvironment({
+      ...context,
+      command,
+    }),
   }
 
   return Object.assign(commandContext.environment.promise, {
     as: partial(as, commandContext),
+    withSecretsManager: partial(withSecretsManager, commandContext),
+    setSecretsManager: partial(setSecretsManager, commandContext),
     shouldProduceEvent: partial(shouldProduceEvent, commandContext),
     shouldThrow: partial(shouldThrow, commandContext),
   })

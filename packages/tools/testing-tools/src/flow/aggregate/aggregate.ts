@@ -12,11 +12,13 @@ type AggregateNode = {
 
 export const aggregate = (
   context: GivenEventsContext,
-  aggregate: BDDAggregate
+  aggregate: BDDAggregate,
+  aggregateId?: string
 ): AggregateNode => {
   const aggregateContext = {
     ...context,
     aggregate,
+    aggregateId,
   }
 
   return {

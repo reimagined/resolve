@@ -15,8 +15,16 @@ export type OmitFirstArgument<F> = F extends (
   ? (...args: Params) => Result
   : never
 
-export type TestEvent = Omit<Omit<Event, 'timestamp'>, 'aggregateVersion'> & {
+export type TestEvent = Omit<
+  Event,
+  'timestamp' | 'aggregateId' | 'aggregateVersion'
+> & {
   timestamp?: number
+  aggregateId?: string
+}
+export type TestCommand = {
+  name: string
+  payload?: SerializableMap
 }
 
 export type GivenEventsContext = {
@@ -25,17 +33,18 @@ export type GivenEventsContext = {
 
 export type AggregateContext = {
   aggregate: BDDAggregate
+  aggregateId?: string
 } & GivenEventsContext
 
 export type CommandContext = {
-  command: {
-    name: string
-    payload?: SerializableMap
-  }
+  command: TestCommand
   environment: AggregateTestEnvironment
 } & AggregateContext
 
-export type AggregateTestResult = CommandResult
+export type AggregateTestResult = {
+  type: string
+  payload?: SerializableMap
+}
 
 export type BDDAggregate = {
   name: string

@@ -1,10 +1,11 @@
 import partial from 'lodash.partial'
-import { AggregateTestResult, CommandContext } from '../../types'
-import { AssertionsNode } from './command'
+import { CommandContext } from '../../types'
+import { CommandNode } from './command'
 import { shouldProduceEvent } from './should-produce-event'
 import { shouldThrow } from './should-throw'
+import { withSecretsManager, setSecretsManager } from './with-secrets-manager'
 
-type AsNode = AssertionsNode & Promise<AggregateTestResult>
+export type AsNode = Omit<CommandNode, 'as'>
 
 export const as = (context: CommandContext, authToken: string): AsNode => {
   const { environment } = context
@@ -20,5 +21,7 @@ export const as = (context: CommandContext, authToken: string): AsNode => {
   return Object.assign(environment.promise, {
     shouldProduceEvent: partial(shouldProduceEvent, context),
     shouldThrow: partial(shouldThrow, context),
+    withSecretsManager: partial(withSecretsManager, context),
+    setSecretsManager: partial(setSecretsManager, context),
   })
 }
