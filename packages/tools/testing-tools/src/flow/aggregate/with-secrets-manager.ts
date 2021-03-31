@@ -30,6 +30,7 @@ export const withSecretsManager = (
   })
 }
 
+// FIXME: deprecated
 export const setSecretsManager = (
   context: CommandContext,
   manager: SecretsManager

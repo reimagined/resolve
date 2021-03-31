@@ -6,7 +6,7 @@ import {
   CommandResult,
   SerializableMap,
   Serializable,
-  EventHandlerEncryptionFactory,
+  EventHandlerEncryptionFactory, ReadModelResolvers, ReadModel
 } from '@resolve-js/core'
 import { AggregateTestEnvironment } from './flow/aggregate/make-test-environment'
 import { ReadModelTestEnvironment } from './flow/read-model/make-test-environment'
@@ -66,10 +66,11 @@ export type AggregateTestResult = {
 
 export type BDDReadModel = {
   name: string
-  projection: any
-  resolvers: any
+  projection: ReadModel<any>
+  resolvers: ReadModelResolvers<any>
   encryption?: EventHandlerEncryptionFactory
-  adapter: any
+  // FIXME: deprecated
+  adapter?: any
 }
 
 export type TestQuery = {
@@ -81,6 +82,7 @@ export type QueryTestResult = Serializable
 
 export type ReadModelContext = {
   readModel: BDDReadModel
+  adapter?: any
 } & GivenEventsContext
 
 export type QueryContext = {

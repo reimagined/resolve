@@ -6,16 +6,19 @@ import {
   ReadModelContext,
 } from '../../types'
 import { query } from './query'
+import { withAdapter } from './with-adapter'
 
 type DeprecatedResolverMap = {
   [key: string]: Function
 }
 
-type ReadModelNode = {
+export type ReadModelNode = {
   query: OmitFirstArgument<typeof query>
+  withAdapter: OmitFirstArgument<typeof withAdapter>
 } & PromiseLike<never> &
   DeprecatedResolverMap
 
+// FIXME: deprecated
 const makeDeprecatedResolverMap = (
   readModel: BDDReadModel,
   bindResolver: OmitFirstArgument<typeof query>
@@ -43,8 +46,17 @@ export const readModel = (
     readModel,
   }
 
+  if (readModel.adapter != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `'adapter' property of read model deprecated, use 'withAdapter' selector instead.`
+    )
+    withAdapter(context, readModel.adapter)
+  }
+
   return {
     query: partial(query, context),
+    withAdapter: partial(withAdapter, context),
     then: () => {
       throw Error(`Incomplete BDD test configuration! Please, provide a query.`)
     },

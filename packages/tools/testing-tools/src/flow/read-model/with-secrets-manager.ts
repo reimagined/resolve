@@ -26,6 +26,7 @@ export const withSecretsManager = (
   })
 }
 
+// FIXME: deprecated
 export const setSecretsManager = (
   context: QueryContext,
   manager: SecretsManager
