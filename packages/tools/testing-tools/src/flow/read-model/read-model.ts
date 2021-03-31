@@ -7,6 +7,7 @@ import {
 } from '../../types'
 import { query } from './query'
 import { withAdapter } from './with-adapter'
+import { withEncryption } from './with-encryption'
 
 type DeprecatedResolverMap = {
   [key: string]: Function
@@ -15,6 +16,7 @@ type DeprecatedResolverMap = {
 export type ReadModelNode = {
   query: OmitFirstArgument<typeof query>
   withAdapter: OmitFirstArgument<typeof withAdapter>
+  withEncryption: OmitFirstArgument<typeof withEncryption>
 } & PromiseLike<never> &
   DeprecatedResolverMap
 
@@ -46,6 +48,7 @@ export const readModel = (
     readModel,
   }
 
+  // FIXME: deprecated
   if (readModel.adapter != null) {
     // eslint-disable-next-line no-console
     console.warn(
@@ -54,9 +57,19 @@ export const readModel = (
     withAdapter(context, readModel.adapter)
   }
 
+  // FIXME: deprecated
+  if (readModel.encryption != null) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `'encryption' property of read model deprecated, use 'withEncryption' selector instead.`
+    )
+    withEncryption(context, readModel.adapter)
+  }
+
   return {
     query: partial(query, context),
     withAdapter: partial(withAdapter, context),
+    withEncryption: partial(withEncryption, context),
     then: () => {
       throw Error(`Incomplete BDD test configuration! Please, provide a query.`)
     },

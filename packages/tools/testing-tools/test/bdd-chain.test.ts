@@ -1,6 +1,7 @@
 import givenEvents from '../src/index'
 import { BDDAggregate } from '../types'
 import { AggregateState, SecretsManager } from '@resolve-js/core'
+import { BDDReadModel } from '../src/types'
 
 let consoleSpy: jest.SpyInstance
 
@@ -110,8 +111,43 @@ describe('aggregate', () => {
   })
 })
 
-test('read model', async () => {
-  givenEvents().readModel()
+describe('read model', () => {
+  const readModel: BDDReadModel = {
+    name: 'readModelName',
+    projection: {
+      Init: jest.fn(),
+    },
+    resolvers: {
+      profile: jest.fn(),
+    },
+  }
+
+  test('incomplete test: should provide a query', async () => {
+    expect.assertions(1)
+    try {
+      await givenEvents().readModel(readModel)
+    } catch (e) {
+      expect(e.message).toEqual(expect.stringContaining('provide a query'))
+    }
+  })
+
+  test('(deprecated) support direct resolver binding (should not throw)', async () => {
+    await givenEvents().readModel(readModel).profile()
+  })
+
+  test('(deprecated) adapter set within read model', async () => {
+    expect.assertions(1)
+    try {
+      await givenEvents()
+        .readModel({
+          ...readModel,
+          adapter: 'adapter',
+        })
+        .withAdapter('another-adapter')
+    } catch (e) {
+      expect(e.message).toEqual(expect.stringContaining('already assigned'))
+    }
+  })
 })
 
 test('saga', async () => {

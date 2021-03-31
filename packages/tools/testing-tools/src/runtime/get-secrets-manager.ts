@@ -1,6 +1,6 @@
 import { SecretsManager } from '@resolve-js/core'
 
-export const getDummySecretsManager = (): SecretsManager => {
+export const getSecretsManager = (): SecretsManager => {
   const secrets = new Map<string, string>()
   return {
     getSecret: async (id: string): Promise<string | null> => {

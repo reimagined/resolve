@@ -7,8 +7,8 @@ import {
   TestCommand,
   TestEvent,
 } from '../../types'
-import { prepareEvents } from '../../utils/prepare-events'
-import { getDummySecretsManager } from '../../utils/get-dummy-secrets-manager'
+import { getSecretsManager } from '../../runtime/get-secrets-manager'
+import { getEventStore } from '../../runtime/get-event-store'
 
 type AggregateTestContext = {
   aggregate: BDDAggregate
@@ -26,29 +26,6 @@ export type AggregateTestEnvironment = {
   setAssertion: (assertion: BDDAggregateAssertion) => void
   getAssertion: () => BDDAggregateAssertion
   isExecuted: () => boolean
-}
-
-const makeDummyEventStoreAdapter = (
-  events: TestEvent[],
-  aggregateId: string
-) => {
-  const savedEvents: Event[] = []
-
-  return {
-    getNextCursor: async () => Promise.resolve(null),
-    saveSnapshot: async () => Promise.resolve(),
-    loadSnapshot: async () => Promise.resolve(null),
-    saveEvent: async (event: Event) => {
-      savedEvents.push(event)
-    },
-    loadEvents: async () =>
-      Promise.resolve({
-        events: prepareEvents(events, 'aggregate', { aggregateId }),
-      }),
-    ensureEventSubscriber: async () => Promise.resolve(),
-    removeEventSubscriber: async () => Promise.resolve(),
-    getEventSubscribers: async () => Promise.resolve([]),
-  }
 }
 
 const defaultAssertion: BDDAggregateAssertion = (
@@ -70,7 +47,7 @@ export const makeTestEnvironment = (
   let executed = false
   let authToken: string
   let assertion: BDDAggregateAssertion
-  let secretsManager: SecretsManager = getDummySecretsManager()
+  let secretsManager: SecretsManager = getSecretsManager()
   let completeTest: TestCompleteCallback
   let failTest: TestFailureCallback
 
@@ -125,7 +102,7 @@ export const makeTestEnvironment = (
       executor = createCommand({
         performanceTracer: null,
         aggregatesInterop: domain.aggregateDomain.acquireAggregatesInterop({
-          eventstore: makeDummyEventStoreAdapter(events, aggregateId),
+          eventstore: getEventStore(events, { aggregateId }),
           secretsManager,
           monitoring: {},
           hooks: {},

@@ -2,7 +2,6 @@ import { TestEvent } from '../types'
 
 export const prepareEvents = (
   events: TestEvent[],
-  target: 'read-model' | 'aggregate' = 'read-model',
   context?: {
     aggregateId: string
   }
@@ -13,7 +12,9 @@ export const prepareEvents = (
 
   return events.map((testEvent) => {
     const aggregateId =
-      target === 'aggregate' ? context?.aggregateId : testEvent.aggregateId
+      testEvent.aggregateId != null
+        ? testEvent.aggregateId
+        : context?.aggregateId
 
     const aggregateVersion = aggregateVersionsMap.has(aggregateId)
       ? aggregateVersionsMap.get(aggregateId) + 1

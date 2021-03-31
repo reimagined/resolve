@@ -120,7 +120,7 @@ type ReadModelEventHandler<TStore> = (
 export type ReadModel<TStore> = {
   [key: string]: ReadModelEventHandler<TStore>
 } & {
-  Init: ReadModelInitHandler<TStore>
+  Init?: ReadModelInitHandler<TStore>
 }
 
 type ReadModelResolverContext = {

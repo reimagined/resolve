@@ -68,6 +68,7 @@ export type BDDReadModel = {
   name: string
   projection: ReadModel<any>
   resolvers: ReadModelResolvers<any>
+  // FIXME: deprecated
   encryption?: EventHandlerEncryptionFactory
   // FIXME: deprecated
   adapter?: any
@@ -78,11 +79,12 @@ export type TestQuery = {
   args?: SerializableMap
 }
 
-export type QueryTestResult = Serializable
+export type QueryTestResult = any
 
 export type ReadModelContext = {
   readModel: BDDReadModel
   adapter?: any
+  encryption?: EventHandlerEncryptionFactory
 } & GivenEventsContext
 
 export type QueryContext = {

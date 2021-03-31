@@ -1,5 +1,4 @@
 import givenEvents, { BDDAggregate } from '../src/index'
-import createReadModelConnector from '@resolve-js/readmodel-lite'
 import { Event, EventHandlerEncryptionContext } from '@resolve-js/core'
 
 const ProjectionError = (function (this: Error, message: string): void {
@@ -24,7 +23,6 @@ const ResolverError = (function (this: Error, message: string): void {
   }
 } as Function) as ErrorConstructor
 
-/*
 describe('read model', () => {
   test('basic flow', async () => {
     const result = await givenEvents([
@@ -60,11 +58,8 @@ describe('read model', () => {
             }
           },
         },
-        adapter: await createReadModelConnector({
-          databaseFile: ':memory:',
-        }),
       })
-      .all({ a: 10, b: 20 })
+      .query('all', { a: 10, b: 20 })
       .as('JWT_TOKEN')
 
     expect(result).toEqual({
@@ -108,15 +103,12 @@ describe('read model', () => {
             return await store.find('items_2', { id: 1 })
           },
         },
-        adapter: await createReadModelConnector({
-          databaseFile: ':memory:',
-        }),
-        encryption: async () => ({
-          decrypt: decryptMock,
-          encrypt: jest.fn(),
-        }),
       })
-      .all({})
+      .withEncryption(async () => ({
+        decrypt: decryptMock,
+        encrypt: jest.fn(),
+      }))
+      .query('all', {})
       .as('JWT_TOKEN')
 
     expect(result[0]).toEqual({
@@ -140,11 +132,8 @@ describe('read model', () => {
               throw new ResolverError(`Error from resolver`)
             },
           },
-          adapter: createReadModelConnector({
-            databaseFile: ':memory:',
-          }),
         })
-        .all({})
+        .query('all', {})
         .as('JWT_TOKEN')
 
       return Promise.reject('Test failed')
@@ -169,11 +158,8 @@ describe('read model', () => {
               return 'OK'
             },
           },
-          adapter: createReadModelConnector({
-            databaseFile: ':memory:',
-          }),
         })
-        .all({})
+        .query('all', {})
         .as('JWT_TOKEN')
 
       return Promise.reject('Test failed')
@@ -193,25 +179,22 @@ describe('read model', () => {
         projection: {
           PUSH: async (): Promise<any> => Promise.resolve(null),
         },
-        encryption: async (event, { secretsManager }) => {
-          try {
-            await secretsManager.setSecret('id', 'secret')
-            await secretsManager.getSecret('id')
-            await secretsManager.deleteSecret('id')
-          } catch (error) {
-            encryptionError = error
-          }
-
-          return {}
-        },
         resolvers: {
           all: async (): Promise<any> => Promise.resolve({}),
         },
-        adapter: createReadModelConnector({
-          databaseFile: ':memory:',
-        }),
       })
-      .all()
+      .withEncryption(async (event, { secretsManager }) => {
+        try {
+          await secretsManager.setSecret('id', 'secret')
+          await secretsManager.getSecret('id')
+          await secretsManager.deleteSecret('id')
+        } catch (error) {
+          encryptionError = error
+        }
+
+        return {}
+      })
+      .query('all')
       .as('jwt')
 
     expect(encryptionError).toBeNull()
@@ -227,13 +210,17 @@ describe('read model', () => {
     await givenEvents([
       { aggregateId: 'id1', type: 'PUSH', payload: { data: 'data' } },
     ])
-      .setSecretsManager(secretsManager)
       .readModel({
         name: 'readModelName',
         projection: {
           PUSH: async (): Promise<any> => Promise.resolve(null),
         },
-        encryption: async (
+        resolvers: {
+          all: async (): Promise<any> => Promise.resolve({}),
+        },
+      })
+      .withEncryption(
+        async (
           event: Event,
           { secretsManager }: EventHandlerEncryptionContext
         ) => {
@@ -242,15 +229,10 @@ describe('read model', () => {
           await secretsManager.deleteSecret('id')
 
           return {}
-        },
-        resolvers: {
-          all: async (): Promise<any> => Promise.resolve({}),
-        },
-        adapter: createReadModelConnector({
-          databaseFile: ':memory:',
-        }),
-      })
-      .all()
+        }
+      )
+      .query('all')
+      .withSecretsManager(secretsManager)
       .as('jwt')
 
     expect(secretsManager.getSecret).toHaveBeenCalledWith('id')
@@ -258,7 +240,6 @@ describe('read model', () => {
     expect(secretsManager.deleteSecret).toHaveBeenCalledWith('id')
   })
 })
-*/
 
 describe('aggregate', () => {
   type AggregateState = {
