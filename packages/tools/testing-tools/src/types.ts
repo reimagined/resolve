@@ -19,10 +19,6 @@ export type TestEvent = Omit<Omit<Event, 'timestamp'>, 'aggregateVersion'> & {
   timestamp?: number
 }
 
-export type TestContext = {
-  events: TestEvent[]
-}
-
 export type GivenEventsContext = {
   events: TestEvent[]
 }
@@ -30,11 +26,6 @@ export type GivenEventsContext = {
 export type AggregateContext = {
   aggregate: BDDAggregate
 } & GivenEventsContext
-
-export type AggregateTestPromise = Promise<AggregateTestResult> & {
-  setAuthToken: (token: string) => void
-  isCompleted: () => boolean
-}
 
 export type CommandContext = {
   command: {
@@ -52,3 +43,10 @@ export type BDDAggregate = {
   commands: Aggregate
   encryption?: AggregateEncryptionFactory
 }
+
+export type BDDAggregateAssertion = (
+  resolve: Function,
+  reject: Function,
+  result: CommandResult | null,
+  error: any
+) => void

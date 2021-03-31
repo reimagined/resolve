@@ -7,10 +7,18 @@ import {
 } from '../../types'
 import { as } from './as'
 import { makeTestEnvironment } from './make-test-environment'
+import { shouldProduceEvent } from './should-produce-event'
+import { shouldThrow } from './should-throw'
+
+export type AssertionsNode = {
+  shouldProduceEvent: OmitFirstArgument<typeof shouldProduceEvent>
+  shouldThrow: OmitFirstArgument<typeof shouldThrow>
+}
 
 type CommandNode = {
   as: OmitFirstArgument<typeof as>
-} & PromiseLike<AggregateTestResult>
+} & AssertionsNode &
+  Promise<AggregateTestResult>
 
 export const command = (
   context: AggregateContext,
@@ -23,10 +31,12 @@ export const command = (
       name,
       payload,
     },
-    environment: makeTestEnvironment({}),
+    environment: makeTestEnvironment(context),
   }
 
   return Object.assign(commandContext.environment.promise, {
     as: partial(as, commandContext),
+    shouldProduceEvent: partial(shouldProduceEvent, commandContext),
+    shouldThrow: partial(shouldThrow, commandContext),
   })
 }

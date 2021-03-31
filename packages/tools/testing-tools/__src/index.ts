@@ -8,7 +8,7 @@ import as from './as'
 import givenEvents from './given-events'
 import { execute } from './execute'
 import readModel, { ReadModelParams } from './read-model'
-import transformEvents from './transform-events'
+import prepareEvents from '../src/utils/transform-events'
 import { executeReadModel } from './execute-read-model'
 import { executeSaga } from './execute-saga'
 import { executeCommand } from './execute-command'
@@ -30,7 +30,7 @@ export default givenEvents.bind(null, {
   executeReadModel,
   executeCommand,
   readModel,
-  transformEvents,
+  transformEvents: prepareEvents,
   saga,
   properties,
   getDefaultSecretsManager,

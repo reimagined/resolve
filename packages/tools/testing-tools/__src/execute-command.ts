@@ -7,7 +7,7 @@ import {
 import { CommandExecutorBuilder, CommandExecutor } from '@resolve-js/runtime'
 import { Phases, symbol } from './constants'
 import { BDDAggregate } from './aggregate'
-import transformEvents from './transform-events'
+import prepareEvents from '../src/utils/transform-events'
 import { BDDAggregateAssertion } from './aggregate-assertions'
 
 type BDDExecuteCommandState = {
@@ -49,7 +49,7 @@ const makeDummyEventStoreAdapter = ({
     },
     loadEvents: async () =>
       Promise.resolve({
-        events: transformEvents(events, 'aggregate', { aggregateId }),
+        events: prepareEvents(events, 'aggregate', { aggregateId }),
       }),
     ensureEventSubscriber: async () => Promise.resolve(),
     removeEventSubscriber: async () => Promise.resolve(),
