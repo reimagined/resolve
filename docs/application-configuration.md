@@ -205,12 +205,12 @@ eventstoreAdapter: {
 
 The following adapters are available:
 
-| Adapter Module                                                                    | Description                                                  |
-| --------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [@resolve-js/eventstore-lite](#eventstore-lite)                                   | Used to store events in an SQLite database.                  |
-| [@resolve-js/eventstore-mysql](#eventstore-mysql)                                 | Used to store events in a MySQL database.                    |
-| [@resolve-js/eventstore-postgresql](#eventstore-postgresql)                       | Used to store events in a PostgreSQL database.               |
-| [@resolve-js/eventstore-postgresql-serverless](#eventstore-postgresql-serverless) | Used to store events in Amazon Aurora PostgreSQL Serverless. |
+| Adapter Module                                                                    | Description                                               |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| [@resolve-js/eventstore-lite](#eventstore-lite)                                   | Used to store events in an SQLite database.               |
+| [@resolve-js/eventstore-mysql](#eventstore-mysql)                                 | Used to store events in a MySQL database.                 |
+| [@resolve-js/eventstore-postgresql](#eventstore-postgresql)                       | Used to store events in a PostgreSQL database.            |
+| [@resolve-js/eventstore-postgresql-serverless](#eventstore-postgresql-serverless) | Used to store events in AWS Aurora PostgreSQL Serverless. |
 
 #### eventstore-lite
 
@@ -218,29 +218,53 @@ Used to store events in an SQLite database.
 
 This adapter supports the following options:
 
-| Option Name          | Description |
-| -------------------- | ----------- |
-| snapshotBucketSize   |             |
-| databaseFile         |             |
-| secretsTableName     |             |
-| eventsTableName      |             |
-| snapshotsTableName   |             |
-| subscribersTableName |             |
+| Option Name  | Description                                                                                                                                                                  |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| databaseFile | Specifies the path to a database file used to store events. If set to `':memory:'`, all data is stored in memory and is lost when the application is shut down or restarted. |
+
+##### Example
+
+```js
+const prodConfig = {
+  eventstoreAdapter: {
+    module: '@resolve-js/eventstore-lite',
+    options: {
+      databaseFile: 'data/event-store.db'
+      // databaseFile: ':memory:'
+    },
+  },
+  ...
+}
+```
 
 #### eventstore-mysql
 
 Used to store events in a MySQL database.
 
-This adapter supports the following options:
+To configure the database connection for this adapter, specify [MySQL connection setting](https://www.npmjs.com/package/mysql2#first-query) as the adapter's options. Additionally, you can specify the following option:
 
-| Option Name          | Description |
-| -------------------- | ----------- |
-| snapshotBucketSize   |             |
-| database             |             |
-| eventsTableName      |             |
-| snapshotsTableName   |             |
-| subscribersTableName |             |
-| secretsTableName     |             |
+| Option Name     | Description                                        |
+| --------------- | -------------------------------------------------- |
+| eventsTableName | The name of a database table used to store events. |
+
+##### Example
+
+```js
+const prodConfig = {
+  eventstoreAdapter: {
+    module: '@resolve-js/eventstore-mysql',
+    options: {
+      host: 'localhost',
+      port: 3306,
+      user: 'customUser',
+      password: 'customPassword',
+      database: 'customDatabaseName',
+      eventsTableName: 'customTableName',
+    }
+  },
+  ...
+}
+```
 
 #### eventstore-postgresql
 
@@ -248,39 +272,67 @@ Used to store events in a PostgreSQL database.
 
 This adapter supports the following options:
 
-| Option Name          | Description |
-| -------------------- | ----------- |
-| snapshotBucketSize   |             |
-| user                 |             |
-| database             |             |
-| port                 |             |
-| host                 |             |
-| password             |             |
-| databaseName         |             |
-| eventsTableName      |             |
-| snapshotsTableName   |             |
-| subscribersTableName |             |
-| secretsTableName     |             |
+| Option Name     | Description                                          |
+| --------------- | ---------------------------------------------------- |
+| database        | The name of a database.                              |
+| databaseName    | The name of a PostgreSQL database schema.            |
+| eventsTableName | The name of a database table used to store events.   |
+| host            | The database server host name.                       |
+| password        | The user's password.                                 |
+| port            | The database server port number.                     |
+| user            | The user name used to log in to the database server. |
+
+##### Example
+
+```js
+const prodConfig = {
+  eventstoreAdapter: {
+    module: '@resolve-js/eventstore-postgresql',
+    options: {
+      user: 'user',
+      password: 'password',
+      database: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      databaseName: 'public',
+      eventsTableName: 'events',
+    }
+  },
+  ...
+}
+```
 
 #### eventstore-postgresql-serverless
 
-Used to store events in Amazon Aurora PostgreSQL Serverless.
+Used to store events in AWS Aurora PostgreSQL Serverless.
 
 This adapter supports the following options:
 
-| Option Name          | Description |
-| -------------------- | ----------- |
-| snapshotBucketSize   |             |
-| user                 |             |
-| database             |             |
-| port                 |             |
-| host                 |             |
-| password             |             |
-| databaseName         |             |
-| eventsTableName      |             |
-| snapshotsTableName   |             |
-| subscribersTableName |             |
-| secretsTableName     |             |
+| Option Name            | Description                                                      |
+| ---------------------- | ---------------------------------------------------------------- |
+| awsSecretStoreArn      | An AWS secret store's Amazon Resource Name (ARN)                 |
+| databaseName           | The name of a database.                                          |
+| dbClusterOrInstanceArn | An Amazon Resource Name (ARN) of a database cluster or instance. |
+| eventsTableName        | The name of a database table used to store events.               |
+| region                 | An AWS region.                                                   |
+
+##### Example
+
+```js
+const prodConfig = {
+  eventstoreAdapter: {
+    module: '@resolve-js/eventstore-postgresql-serverless',
+    options: {
+      region: 'us-east-1',
+      databaseName: 'databaseName',
+      eventsTableName: 'eventsTableName',
+      awsSecretStoreArn: 'awsSecretStoreArn',
+      dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
+    }
+  },
+  ...
+}
+```
 
 ### jwtCookie
 
@@ -383,17 +435,52 @@ Used to store Read Model data in an SQLite database.
 
 This connector supports the following options:
 
-| Connector Name | Description |
-| -------------- | ----------- |
-|                |             |
-|                |             |
-|                |             |
+| Option Name  | Description                                                                                                                                                                           |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| databaseFile | Specifies the path to a database file used to store Read Model data. If set to `':memory:'`, all data is stored in memory and is lost when the application is shut down or restarted. |
+
+##### Example
+
+```js
+const prodConfig = {
+  readModelConnectors: {
+    default: {
+      module: '@resolve-js/readmodel-lite',
+      options: {
+        databaseFile: 'data/read-models.db'
+        // databaseFile: ':memory:'
+      },
+    },
+  },
+  ...
+}
+```
 
 #### readmodel-mysql
 
 Used to store Read Model data in a MySQL database.
 
-This connector supports the following options:
+To configure the database connection for this adapter, specify [MySQL connection setting](https://www.npmjs.com/package/mysql2#first-query) as the adapter's options.
+
+##### Example
+
+```js
+const prodConfig = {
+  readModelConnectors: {
+    default: {
+      module: '@resolve-js/readmodel-mysql',
+      options: {
+        host: 'localhost',
+        port: 3306,
+        user: 'customUser',
+        password: 'customPassword',
+        database: 'customDatabaseName'
+      }
+    }
+  },
+  ...
+}
+```
 
 #### readmodel-postgresql
 
@@ -401,11 +488,69 @@ Used to store Read Model data in a PostgreSQL database.
 
 This connector supports the following options:
 
+| Option Name  | Description                                          |
+| ------------ | ---------------------------------------------------- |
+| database     | The name of a database.                              |
+| databaseName | The name of a PostgreSQL database schema.            |
+| host         | The database server host name.                       |
+| password     | The user's password.                                 |
+| port         | The database server port number.                     |
+| tablePrefix  | Optional table name prefix.                          |
+| user         | The user name used to log in to the database server. |
+
+##### Example
+
+```js
+const prodConfig = {
+  readModelConnectors: {
+    default: {
+      module: '@resolve-js/readmodel-postgresql',
+      options: {
+        user: 'user',
+        password: 'password',
+        database: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        databaseName: 'public',
+      }
+    }
+  },
+  ...
+}
+```
+
 #### readmodel-postgresql-serverless
 
-Used to store Read Model data in Amazon Aurora PostgreSQL Serverless.
+Used to store Read Model data in AWS Aurora PostgreSQL Serverless.
 
 This connector supports the following options:
+
+| Option Name            | Description                                                      |
+| ---------------------- | ---------------------------------------------------------------- |
+| awsSecretStoreArn      | An AWS secret store's Amazon Resource Name (ARN)                 |
+| databaseName           | The name of a database.                                          |
+| dbClusterOrInstanceArn | An Amazon Resource Name (ARN) of a database cluster or instance. |
+| region                 | An AWS region.                                                   |
+| tablePrefix            | Optional table name prefix.                                      |
+
+#### Example
+
+```js
+const prodConfig = {
+  readModelConnectors: {
+    default: {
+      module: '@resolve-js/readmodel-postgresql-serverless',
+      options: {
+        region: 'us-east-1',
+        databaseName: 'databaseName',
+        awsSecretStoreArn: 'awsSecretStoreArn',
+        dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
+      }
+    }
+  },
+  ...
+}
+```
 
 ### sagas
 
@@ -433,7 +578,7 @@ const appConfig = {
     }
   ]
 }
-```
+````
 
 <!-- prettier-ignore-end -->
 
