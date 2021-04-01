@@ -90,9 +90,11 @@ For an example on how to use modules, see the [Hacker News](https://github.com/r
 
 The reSolve framework provides a mechanism that allows you to use an arbitrary encryption algorithm to encrypt the stored events and Read Model state data.
 
+This functionality is critical when storing user personal data in compliance with General Data Protection Regulation (GDPR)
+
 #### Example
 
-The **personal-data** example demonstrates how to store encrypted user data in compliance with General Data Protection Regulation (GDPR).
+The **personal-data** example demonstrates how to store encrypted user data.
 
 ## Upload Files
 
