@@ -1,4 +1,5 @@
-import { SideEffectsCollection, SagaSideEffects, SideEffectsContext } from '../types/core'
+import { SideEffectsCollection } from '../types/core'
+import { SideEffectsContext } from './types'
 
 const sideEffect = async (
   callback: Function,

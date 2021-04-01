@@ -4,7 +4,7 @@ exports[`Saga with sideEffects.isEnabled = false forgotten registration 1`] = `
 Object {
   "commands": Array [],
   "queries": Array [],
-  "scheduleCommands": Array [],
+  "scheduledCommands": Array [],
   "sideEffects": Array [],
 }
 `;
@@ -13,7 +13,7 @@ exports[`Saga with sideEffects.isEnabled = false success registration 1`] = `
 Object {
   "commands": Array [],
   "queries": Array [],
-  "scheduleCommands": Array [],
+  "scheduledCommands": Array [],
   "sideEffects": Array [],
 }
 `;
@@ -33,7 +33,7 @@ Object {
     ],
   ],
   "queries": Array [],
-  "scheduleCommands": Array [
+  "scheduledCommands": Array [
     Array [
       604800002,
       Object {
@@ -50,7 +50,7 @@ Object {
       "user@example.com",
       "Confirm mail",
       Object {
-        "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP": 0,
+        "sideEffectsStartTimestamp": 1,
       },
     ],
   ],
@@ -72,7 +72,7 @@ Object {
     ],
   ],
   "queries": Array [],
-  "scheduleCommands": Array [
+  "scheduledCommands": Array [
     Array [
       604800002,
       Object {
@@ -89,7 +89,7 @@ Object {
       "user@example.com",
       "Confirm mail",
       Object {
-        "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP": 0,
+        "sideEffectsStartTimestamp": 1,
       },
     ],
   ],

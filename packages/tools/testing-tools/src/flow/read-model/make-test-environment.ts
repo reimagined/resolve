@@ -69,7 +69,7 @@ export const makeTestEnvironment = (
           projection: readModel.projection,
           resolvers: readModel.resolvers,
           connectorName: 'ADAPTER_NAME',
-          encryption: actualEncryption
+          encryption: actualEncryption,
         },
       ],
       aggregates: [],
@@ -105,7 +105,6 @@ export const makeTestEnvironment = (
         }),
         viewModelsInterop: {},
         performanceTracer: null,
-        provideLedger: async () => void 0,
       })
 
       try {

@@ -5,6 +5,7 @@ import { EventHandlerEncryptionFactory } from '@resolve-js/core'
 import { withAdapter } from './with-adapter'
 import { withSecretsManager } from './with-secrets-manager'
 import { allowSideEffects } from './allow-side-effects'
+import { startSideEffectsFrom } from './start-side-effects-from'
 
 type WithEncryption = Omit<SagaNode, 'withEncryption'>
 
@@ -24,5 +25,6 @@ export const withEncryption = (
     withAdapter: partial(withAdapter, context),
     withSecretsManager: partial(withSecretsManager, context),
     allowSideEffects: partial(allowSideEffects, context),
+    startSideEffectsFrom: partial(startSideEffectsFrom, context),
   })
 }

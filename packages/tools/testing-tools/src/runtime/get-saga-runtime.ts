@@ -31,13 +31,21 @@ export const getSagaRuntime = (
   schedulerName: string,
   secretsManager: SecretsManager,
   monitoring: Monitoring,
+  sideEffectsStartTimestamp: number,
   uploader = null
-) => ({
-  secretsManager,
-  monitoring,
-  executeCommand: partial(executeCommand, buffer, schedulerName),
-  executeQuery: partial(executeQuery, buffer),
-  scheduler: makeScheduler(),
-  uploader,
-  eventProperties: {},
-})
+) => {
+  let sideEffectsTimestamp = sideEffectsStartTimestamp
+
+  return {
+    secretsManager,
+    monitoring,
+    executeCommand: partial(executeCommand, buffer, schedulerName),
+    executeQuery: partial(executeQuery, buffer),
+    scheduler: makeScheduler(),
+    uploader,
+    getSideEffectsTimestamp: async () => sideEffectsTimestamp,
+    setSideEffectsTimestamp: async (value: number) => {
+      sideEffectsTimestamp = value
+    },
+  }
+}

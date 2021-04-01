@@ -29,7 +29,7 @@ Object {
     ],
   ],
   "queries": Array [],
-  "scheduleCommands": Array [],
+  "scheduledCommands": Array [],
   "sideEffects": Array [],
 }
 `;

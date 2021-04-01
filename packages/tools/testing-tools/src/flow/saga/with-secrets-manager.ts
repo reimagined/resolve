@@ -5,6 +5,7 @@ import { SagaNode } from './saga'
 import { withAdapter } from './with-adapter'
 import { withEncryption } from './with-encryption'
 import { allowSideEffects } from './allow-side-effects'
+import { startSideEffectsFrom } from './start-side-effects-from'
 
 type WithSecretsManagerNode = Omit<SagaNode, 'withSecretsManager'>
 
@@ -24,5 +25,6 @@ export const withSecretsManager = (
     withAdapter: partial(withAdapter, context),
     withEncryption: partial(withEncryption, context),
     allowSideEffects: partial(allowSideEffects, context),
+    startSideEffectsFrom: partial(startSideEffectsFrom, context),
   })
 }

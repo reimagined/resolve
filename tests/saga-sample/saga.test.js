@@ -123,9 +123,7 @@ describe('Saga', () => {
         { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} },
       ])
         .saga(sagaWithAdapter)
-        .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE,
-        })
+        .startSideEffectsFrom(Number.MAX_VALUE)
 
       expect(result).toMatchSnapshot()
     })
@@ -145,9 +143,7 @@ describe('Saga', () => {
         { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} },
       ])
         .saga(sagaWithAdapter)
-        .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE,
-        })
+        .startSideEffectsFrom(Number.MAX_VALUE)
 
       expect(result).toMatchSnapshot()
     })

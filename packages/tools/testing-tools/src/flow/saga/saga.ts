@@ -10,6 +10,7 @@ import { withAdapter } from './with-adapter'
 import { withEncryption } from './with-encryption'
 import { withSecretsManager } from './with-secrets-manager'
 import { allowSideEffects } from './allow-side-effects'
+import { startSideEffectsFrom } from './start-side-effects-from'
 import { makeTestEnvironment } from './make-test-environment'
 
 export type SagaNode = {
@@ -17,6 +18,7 @@ export type SagaNode = {
   withEncryption: OmitFirstArgument<typeof withEncryption>
   withSecretsManager: OmitFirstArgument<typeof withSecretsManager>
   allowSideEffects: OmitFirstArgument<typeof allowSideEffects>
+  startSideEffectsFrom: OmitFirstArgument<typeof startSideEffectsFrom>
 } & Promise<SagaTestResult>
 
 export const saga = (
@@ -55,5 +57,6 @@ export const saga = (
     withEncryption: partial(withEncryption, context),
     withSecretsManager: partial(withSecretsManager, context),
     allowSideEffects: partial(allowSideEffects, context),
+    startSideEffectsFrom: partial(startSideEffectsFrom, context),
   })
 }

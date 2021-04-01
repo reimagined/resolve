@@ -30,6 +30,7 @@ export type SagaTestEnvironment = {
   promise: Promise<SagaTestResult>
   setSecretsManager: (manager: SecretsManager) => void
   allowSideEffects: () => void
+  setSideEffectsStartTimestamp: (value: number) => void
   isExecuted: () => boolean
 }
 
@@ -38,6 +39,7 @@ export const makeTestEnvironment = (
 ): SagaTestEnvironment => {
   let executed = false
   let useRealSideEffects = false
+  let sideEffectsStartTimestamp = 0
   let secretsManager: SecretsManager = getSecretsManager()
   let completeTest: TestCompleteCallback
   let failTest: TestFailureCallback
@@ -47,6 +49,9 @@ export const makeTestEnvironment = (
   }
   const allowSideEffects = () => {
     useRealSideEffects = true
+  }
+  const setSideEffectsStartTimestamp = (value: number) => {
+    sideEffectsStartTimestamp = value
   }
   const isExecuted = () => executed
   const promise = new Promise<QueryTestResult>((resolve, reject) => {
@@ -119,7 +124,8 @@ export const makeTestEnvironment = (
         result,
         domain.sagaDomain.schedulerName,
         secretsManager,
-        monitoring
+        monitoring,
+        sideEffectsStartTimestamp
       )
 
       executor = createQuery({
@@ -133,7 +139,6 @@ export const makeTestEnvironment = (
         readModelsInterop: domain.sagaDomain.acquireSagasInterop(runtime),
         viewModelsInterop: {},
         performanceTracer: null,
-        provideLedger: async () => void 0,
       })
 
       try {
@@ -239,6 +244,7 @@ export const makeTestEnvironment = (
   return {
     setSecretsManager,
     allowSideEffects,
+    setSideEffectsStartTimestamp,
     isExecuted,
     promise,
   }

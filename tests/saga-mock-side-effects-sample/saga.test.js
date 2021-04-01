@@ -55,7 +55,9 @@ describe('Saga', () => {
           type: 'UPDATE',
           payload: {},
         },
-      ]).saga(sagaWithAdapter)
+      ])
+        .saga(sagaWithAdapter)
+        .allowSideEffects()
 
       expect(result.commands[0][0].type).toEqual('increment')
     })
@@ -69,7 +71,9 @@ describe('Saga', () => {
           type: 'UPDATE',
           payload: {},
         },
-      ]).saga(sagaWithAdapter)
+      ])
+        .saga(sagaWithAdapter)
+        .allowSideEffects()
 
       expect(result.commands[0][0].type).toEqual('decrement')
     })
@@ -100,13 +104,11 @@ describe('Saga', () => {
         },
       ])
         .saga(sagaWithAdapter)
-        .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE,
-        })
+        .startSideEffectsFrom(Number.MAX_VALUE)
 
       expect(result).toEqual({
         commands: [],
-        scheduleCommands: [],
+        scheduledCommands: [],
         sideEffects: [],
         queries: [],
       })
