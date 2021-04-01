@@ -2,7 +2,7 @@ import partial from 'lodash.partial'
 import { OmitFirstArgument, TestEvent } from '../types'
 import { aggregate } from './aggregate/aggregate'
 import { readModel } from './read-model/read-model'
-import { saga } from './saga'
+import { saga } from './saga/saga'
 
 type GivenEventsNode = {
   aggregate: OmitFirstArgument<typeof aggregate>

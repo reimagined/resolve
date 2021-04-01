@@ -5,11 +5,15 @@ import {
   AggregateProjection,
   CommandResult,
   SerializableMap,
-  Serializable,
-  EventHandlerEncryptionFactory, ReadModelResolvers, ReadModel
+  EventHandlerEncryptionFactory,
+  ReadModelResolvers,
+  ReadModel,
+  SagaEventHandlers,
+  SagaSideEffects,
 } from '@resolve-js/core'
 import { AggregateTestEnvironment } from './flow/aggregate/make-test-environment'
 import { ReadModelTestEnvironment } from './flow/read-model/make-test-environment'
+import { SagaTestEnvironment } from './flow/saga/make-test-environment'
 
 export type OmitFirstArgument<F> = F extends (
   first: any,
@@ -91,3 +95,29 @@ export type QueryContext = {
   query: TestQuery
   environment: ReadModelTestEnvironment
 } & ReadModelContext
+
+export type BDDSaga<TSideEffects = any> = {
+  name: string
+  handlers: SagaEventHandlers<any, SagaSideEffects & TSideEffects>
+  sideEffects: SagaSideEffects & TSideEffects
+  // FIXME: deprecated
+  encryption?: EventHandlerEncryptionFactory
+  // FIXME: deprecated
+  adapter?: any
+}
+
+export type SagaTestResult = {
+  commands: any[]
+  scheduledCommands: any[]
+  // FIXME: deprecated
+  scheduleCommands: any[]
+  sideEffects: any[]
+  queries: any[]
+}
+
+export type SagaContext = {
+  saga: BDDSaga
+  adapter?: any
+  encryption?: EventHandlerEncryptionFactory
+  environment: SagaTestEnvironment
+} & GivenEventsContext

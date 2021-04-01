@@ -1,4 +1,4 @@
-import { SagaProperties, SideEffectsCollection } from './types'
+import { SagaProperties, SideEffectsCollection } from '../types/core'
 
 const sideEffect = async (
   sagaProperties: SagaProperties,

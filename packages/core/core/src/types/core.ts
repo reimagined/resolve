@@ -216,7 +216,7 @@ type ViewModelQuery = {
 
 type ViewModelQueryResult = Serializable
 
-type SagaSideEffects = {
+export type SagaSideEffects = {
   executeCommand: (command: Command) => Promise<CommandResult>
   executeQuery: (
     query: ReadModelQuery | ViewModelQuery
@@ -226,21 +226,12 @@ type SagaSideEffects = {
   isEnabled: boolean
 }
 
-type SagaSideEffectProperties = {
-  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: number
-} & {
-  [key: string]: SerializablePrimitive
+export type SagaProperties = {
+  [key: string]: string
 }
 
-export type SagaUserSideEffect = (
-  properties: SagaSideEffectProperties,
-  sideEffects: SagaSideEffects,
-  effectName: string,
-  isEnabled: boolean
-) => Promise<any>
-
-export type SagaUserSideEffects = {
-  [key: string]: SagaUserSideEffect
+export type SideEffectsCollection = {
+  [key: string]: Function | SideEffectsCollection
 }
 
 export type SagaContext<TStore, TSideEffects> = {
@@ -250,8 +241,8 @@ export type SagaContext<TStore, TSideEffects> = {
   decrypt?: Decrypter
 }
 
-export type SagaInitHandler<TStore, TSideEffects> = (
-  context: SagaContext<TStore, TSideEffects>
+export type SagaInitHandler<TStore, TSideEffect> = (
+  context: SagaContext<TStore, TSideEffect>
 ) => Promise<void>
 
 export type SagaEventHandler<TStore, TSideEffects> = (
