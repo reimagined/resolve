@@ -12,7 +12,9 @@ const eventsFilePath = path.join(
 )
 
 const run = () => {
-  fs.unlinkSync(eventsFilePath)
+  if (fs.existsSync(eventsFilePath)) {
+    fs.unlinkSync(eventsFilePath)
+  }
 
   const eventTimestampInterval = 10000
   const now = Date.now()
