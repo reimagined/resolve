@@ -146,6 +146,8 @@ const createRequest = async (lambdaEvent, customParameters) => {
       ? cookie.parse(headers.cookie)
       : {}
 
+  const clientIp = headers['X-Forwarded-For']
+
   const req = Object.create(null)
   req.isLambdaEdgeRequest = isLambdaEdgeRequest
 
@@ -157,6 +159,7 @@ const createRequest = async (lambdaEvent, customParameters) => {
     headers,
     cookies,
     body,
+    clientIp,
     ...customParameters,
   }
 

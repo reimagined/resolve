@@ -185,7 +185,7 @@ const customReadModelMethods = {
       if (events == null) {
         try {
           log.verbose(
-            `Applying "Init" event to read-model "${readModelName}" started`
+            `Started applying the "Init" event to the "${readModelName}" read model`
           )
 
           try {
@@ -205,21 +205,21 @@ const customReadModelMethods = {
             }
           }
           log.debug(
-            `applying "Init" event to read-model "${readModelName}" succeed`
+            `applying "Init" event to the "${readModelName}"  read model succeed`
           )
         } catch (readModelError) {
           if (readModelError === OMIT_BATCH) {
             throw OMIT_BATCH
           }
           log.error(
-            `applying "Init" event to read-model "${readModelName}" failed`
+            `applying "Init" event to the "${readModelName}" read model failed`
           )
           log.error(readModelError.message)
           log.verbose(readModelError.stack)
 
           const summaryError = readModelError
           log.verbose(
-            `Throwing error for "Init" applying to read-model "${readModelName}"`,
+            `Throwing error for applying "Init" to the "${readModelName}" read model`,
             summaryError
           )
           throw summaryError
@@ -230,7 +230,7 @@ const customReadModelMethods = {
         for (const event of events) {
           if (pool.isDisposed) {
             throw new Error(
-              `read-model "${readModelName}" updating had been interrupted`
+              `read model "${readModelName}" updating has been interrupted`
             )
           }
           if (event == null) {
@@ -238,19 +238,19 @@ const customReadModelMethods = {
           }
           const remainingTime = pool.getVacantTimeInMillis()
           log.debug(
-            `remaining read-model "${readModelName}" feeding time is ${remainingTime} ms`
+            `remaining read model "${readModelName}" feeding time is ${remainingTime} ms`
           )
 
           if (remainingTime < 0) {
             log.debug(
-              `stop applying events to read-model "${readModelName}" because of timeout`
+              `stop applying events to the "${readModelName}" read model due to timeout`
             )
             break
           }
 
           try {
             log.verbose(
-              `Applying "${event.type}" event to read-model "${readModelName}" started`
+              `Applying "${event.type}" event to the "${readModelName}" read model started`
             )
             try {
               const executor = await interop.acquireEventHandler(
@@ -274,14 +274,14 @@ const customReadModelMethods = {
               }
             }
             log.debug(
-              `applying "${event.type}" event to read-model "${readModelName}" succeed`
+              `applying "${event.type}" event to the "${readModelName}" read model succeed`
             )
           } catch (readModelError) {
             if (readModelError === OMIT_BATCH) {
               throw OMIT_BATCH
             }
             log.error(
-              `applying "${event.type}" event to read-model "${readModelName}" failed`
+              `applying "${event.type}" event to the "${readModelName}" read model failed`
             )
             log.error(readModelError.message)
             log.verbose(readModelError.stack)
@@ -290,7 +290,7 @@ const customReadModelMethods = {
             summaryError.stack = readModelError.stack
 
             log.verbose(
-              `Throwing error for feeding read-model "${readModelName}"`,
+              `Throwing error for feeding the "${readModelName}" read model`,
               summaryError
             )
             throw summaryError
@@ -523,7 +523,7 @@ const doOperation = async (
 ): Promise<any> => {
   const readModelName = interop.name
   if (pool.isDisposed) {
-    throw new Error(`read-model "${readModelName}" is disposed`)
+    throw new Error(`the "${readModelName}" read model is disposed`)
   }
   let result = null
 
@@ -711,7 +711,7 @@ const dispose = async (
 ): Promise<void> => {
   const readModelName = interop.name
   if (pool.isDisposed) {
-    throw new Error(`read-model "${readModelName}" is disposed`)
+    throw new Error(`read model "${readModelName}" is disposed`)
   }
   pool.isDisposed = true
 
@@ -738,7 +738,7 @@ const wrapReadModel = ({
   const connector = readModelConnectors[interop.connectorName]
   if (connector == null) {
     throw new Error(
-      `connector "${interop.connectorName}" for read-model "${interop.name}" does not exist`
+      `connector "${interop.connectorName}" for read model "${interop.name}" does not exist`
     )
   }
 
@@ -860,7 +860,7 @@ const wrapReadModel = ({
     )
   )
 
-  log.debug(`read-model wrapped successfully`)
+  log.debug(`read model wrapped successfully`)
 
   return Object.freeze(api)
 }

@@ -1,7 +1,7 @@
 const ConcurrentError = (function (this: Error, aggregateId: string): void {
   Error.call(this)
   this.name = 'ConcurrentError'
-  this.message = `Can not save the event because aggregate '${aggregateId}' is not actual at the moment. Please retry later.`
+  this.message = `Cannot save the event because the aggregate '${aggregateId}' is currently out of date. Please retry later.`
 
   if (Error.captureStackTrace) {
     Error.captureStackTrace(this, ConcurrentError)

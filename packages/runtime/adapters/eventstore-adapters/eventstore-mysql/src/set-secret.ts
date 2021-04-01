@@ -33,7 +33,7 @@ const setSecret = async (
       
       COMMIT;`
 
-  log.verbose(`SQL query verbose output hidden due to security`)
+  log.verbose(`SQL query verbose output hidden due to security reasons`)
 
   try {
     log.debug(`executing SQL query`)

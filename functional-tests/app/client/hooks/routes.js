@@ -2,6 +2,7 @@ import { App } from './components/App'
 import { Counter } from './components/Counter'
 import { UseRequestMiddleware } from './components/UseRequestMiddleware'
 import { SecretsManager } from './components/SecretsManager'
+import { FileUploader } from './components/FileUploader'
 
 export default [
   {
@@ -19,6 +20,11 @@ export default [
       {
         path: '/secrets-manager',
         component: SecretsManager,
+        exact: true,
+      },
+      {
+        path: '/file-uploader',
+        component: FileUploader,
         exact: true,
       },
     ],

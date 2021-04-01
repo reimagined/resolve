@@ -49,7 +49,7 @@ const createAdapter = <
 
   if (Object.keys(restApi).length > 0) {
     throw new Error(
-      `Read-model adapter implementation should not provide extra methods: ${JSON.stringify(
+      `Read model adapter implementation should not provide extra methods: ${JSON.stringify(
         Object.keys(restApi)
       )}`
     )
@@ -80,7 +80,7 @@ const createAdapter = <
     StoreApi<AdapterPool>
   >) {
     if (typeof storeApi[key] !== 'function') {
-      throw new Error(`Store API method ${key} should be function`)
+      throw new Error(`Store API method ${key} should be a function`)
     }
   }
 
@@ -88,7 +88,7 @@ const createAdapter = <
     AdapterOperations<AdapterPool>
   >) {
     if (typeof adapterOperations[key] !== 'function') {
-      throw new Error(`Adapter operation method ${key} should be function`)
+      throw new Error(`Adapter operation method ${key} should be a function`)
     }
   }
 
