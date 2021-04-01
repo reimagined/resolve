@@ -2,7 +2,11 @@ import createSqliteAdapter from '@resolve-js/eventstore-lite'
 import createPostgresqlServerlessAdapter from '@resolve-js/eventstore-postgresql-serverless'
 import createPostgresAdapter from '@resolve-js/eventstore-postgresql'
 import { PostgresqlAdapterConfig } from '@resolve-js/eventstore-postgresql'
-import { Adapter, AdapterConfig } from '@resolve-js/eventstore-base'
+import {
+  Adapter,
+  AdapterConfig,
+  SecretRecord,
+} from '@resolve-js/eventstore-base'
 import { SecretsManager } from '@resolve-js/core'
 import { create, destroy } from '@resolve-js/eventstore-postgresql-serverless'
 import { pipeline } from 'stream'
@@ -68,7 +72,7 @@ function makeIdFromIndex(index: number): string {
   return `id_${index}`
 }
 
-describe('eventstore adapter secrets', () => {
+describe.skip('eventstore adapter secrets', () => {
   if (TEST_SERVERLESS) updateAwsConfig()
 
   const countSecrets = 50
@@ -211,7 +215,7 @@ describe('eventstore adapter secrets', () => {
   })
 })
 
-describe('eventstore adapter import secrets', () => {
+describe.skip('eventstore adapter import secrets', () => {
   if (TEST_SERVERLESS) updateAwsConfig()
 
   const inputOptions = getCloudResourceOptions('secret_input_testing')
@@ -287,5 +291,77 @@ describe('eventstore adapter import secrets', () => {
       cursor: null,
     })
     expect(events.length).toEqual(countEvents)
+  })
+})
+
+describe('eventstore adapter secrets experimental', () => {
+  if (TEST_SERVERLESS) updateAwsConfig()
+
+  const countSecrets = 100
+
+  const options = getCloudResourceOptions('serial_testing')
+
+  let adapter: Adapter
+  beforeAll(async () => {
+    if (TEST_SERVERLESS) {
+      await create(options)
+      adapter = createAdapter(cloudResourceOptionsToAdapterConfig(options))
+    } else {
+      adapter = createAdapter(config)
+    }
+    await adapter.init()
+  })
+
+  afterAll(async () => {
+    await adapter.drop()
+    await adapter.dispose()
+
+    if (TEST_SERVERLESS) {
+      await destroy(options)
+    }
+  })
+
+  test('should inject secrets', async () => {
+    const secretsToInject: SecretRecord[] = []
+
+    for (let secretIndex = 0; secretIndex < countSecrets; secretIndex++) {
+      secretsToInject.push({
+        id: makeIdFromIndex(secretIndex),
+        secret: makeSecretFromIndex(secretIndex),
+        idx: secretIndex + 1,
+      })
+    }
+
+    for (let secret of secretsToInject) {
+      await adapter.injectSecret(secret)
+    }
+
+    const { secrets: injectedSecrets } = await adapter.loadSecrets({
+      limit: countSecrets,
+    })
+    expect(injectedSecrets).toHaveLength(countSecrets)
+    for (let i = 0; i < injectedSecrets.length; ++i) {
+      expect(injectedSecrets[i].idx).toEqual(i + 1)
+    }
+
+    const secretsToSave: SecretRecord[] = []
+
+    for (let secretIndex = 0; secretIndex < countSecrets; secretIndex++) {
+      secretsToSave.push({
+        id: makeIdFromIndex(secretIndex + countSecrets),
+        secret: makeSecretFromIndex(secretIndex + countSecrets),
+        idx: secretIndex + countSecrets + 1,
+      })
+    }
+
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+    for (let secret of secretsToSave) {
+      await secretManager.setSecret(secret.id, secret.secret)
+    }
+
+    const { secrets: allSecrets } = await adapter.loadSecrets({
+      limit: countSecrets * 2,
+    })
+    expect(allSecrets).toHaveLength(countSecrets * 2)
   })
 })

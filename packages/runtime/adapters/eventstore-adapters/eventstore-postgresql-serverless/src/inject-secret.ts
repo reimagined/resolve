@@ -9,7 +9,7 @@ const injectSecret = async (
     secretsTableName,
     executeStatement,
   }: AdapterPool,
-  { id, secret }: SecretRecord
+  { id, secret, idx }: SecretRecord
 ): Promise<void> => {
   const databaseNameAsId = escapeId(databaseName)
   const secretsTableAsId = escapeId(secretsTableName)
@@ -17,10 +17,12 @@ const injectSecret = async (
   await executeStatement(
     `INSERT INTO ${databaseNameAsId}.${secretsTableAsId}(
       "id",
-      "secret"
+      "secret",
+      "idx"
     ) VALUES(
       ${escape(id)},
-      ${escape(secret)}
+      ${escape(secret)},
+      ${idx}
     )`
   )
 }

@@ -154,6 +154,7 @@ const createAdapter = <
     unfreeze: wrapMethod(adapterPool, unfreeze),
     getNextCursor: getNextCursor.bind(null),
     getSecretsManager: wrapMethod(adapterPool, getSecretsManager),
+    injectSecret: wrapMethod(adapterPool, injectSecret),
     loadSnapshot: wrapMethod(adapterPool, loadSnapshot),
     saveSnapshot: wrapMethod(adapterPool, saveSnapshot),
     dropSnapshot: wrapMethod(adapterPool, dropSnapshot),

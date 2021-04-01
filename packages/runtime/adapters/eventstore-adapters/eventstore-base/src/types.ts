@@ -480,6 +480,7 @@ export interface Adapter {
   unfreeze: () => Promise<void>
   getNextCursor: GetNextCursor
   getSecretsManager: () => Promise<SecretsManager>
+  injectSecret?: (secretRecord: SecretRecord) => Promise<void>
   loadSnapshot: (snapshotKey: string) => Promise<string | null>
   saveSnapshot: (snapshotKey: string, content: string) => Promise<void>
   dropSnapshot: (snapshotKey: string) => Promise<void>
