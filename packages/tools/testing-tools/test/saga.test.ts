@@ -38,7 +38,11 @@ describe('basic tests', () => {
         aggregateId: 'aggregate-id',
       },
     ]).saga(saga)
-    expect(result.sideEffects).toContainEqual(['failure', 'error', {}])
+    expect(result.sideEffects).toContainEqual([
+      'failure',
+      'error',
+      expect.any(Object),
+    ])
   })
 
   test('allow side effects', async () => {
