@@ -1,12 +1,13 @@
-import { SideEffectsCollection } from './types'
+import { SideEffectsCollection, SideEffectsContext } from './types'
 
 const sideEffect = async (
   callback: Function,
   isEnabled: boolean,
+  sideEffectsContext: SideEffectsContext,
   ...args: any[]
 ) => {
   if (isEnabled) {
-    return await callback(...args)
+    return await callback(...args, sideEffectsContext)
   } else {
     // Explicitly return undefined for disabled side-effects
     return undefined
@@ -15,7 +16,8 @@ const sideEffect = async (
 
 export const wrapSideEffects = (
   sideEffects: SideEffectsCollection,
-  isEnabled: boolean
+  isEnabled: boolean,
+  sideEffectsContext: SideEffectsContext
 ) => {
   return Object.keys(sideEffects).reduce<SideEffectsCollection>(
     (acc, effectName) => {
@@ -24,14 +26,19 @@ export const wrapSideEffects = (
         acc[effectName] = sideEffect.bind(
           null,
           effectOrSubCollection,
-          isEnabled
+          isEnabled,
+          sideEffectsContext
         )
       }
       if (
         typeof effectOrSubCollection === 'object' &&
         effectOrSubCollection !== null
       ) {
-        acc[effectName] = wrapSideEffects(effectOrSubCollection, isEnabled)
+        acc[effectName] = wrapSideEffects(
+          effectOrSubCollection,
+          isEnabled,
+          sideEffectsContext
+        )
       }
       return acc
     },

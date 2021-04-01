@@ -12,11 +12,16 @@ export type SideEffectsCollection = {
   [key: string]: Function | SideEffectsCollection
 }
 
+export type SideEffectsContext = {
+  sideEffectsStartTimestamp: number
+}
+
 export type SchedulerRuntime = {
   addEntries: Function
   clearEntries: Function
   executeEntries: Function
 }
+
 export type SchedulerSideEffects = SchedulerRuntime
 
 export type SystemSideEffects = {
@@ -29,8 +34,8 @@ export type SystemSideEffects = {
 export type SagaRuntime = {
   executeCommand: Function
   executeQuery: Function
-  getSideEffectsTimestamp: Function
-  setSideEffectsTimestamp: Function
+  getSideEffectsTimestamp: () => Promise<number>
+  setSideEffectsTimestamp: (timestamp: number) => Promise<void>
   secretsManager: SecretsManager
   uploader: any
   scheduler: SchedulerRuntime

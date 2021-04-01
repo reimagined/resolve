@@ -6,12 +6,18 @@ import {
 } from '../types/core'
 import getLog from '../get-log'
 import { wrapSideEffects } from './wrap-side-effects'
-import { SagaRuntime, SideEffectsCollection, SystemSideEffects } from './types'
+import {
+  SagaRuntime,
+  SideEffectsCollection,
+  SystemSideEffects,
+  SideEffectsContext,
+} from './types'
 
 const buildSideEffects = (
   runtime: SagaRuntime,
   sideEffects: SideEffectsCollection,
-  isEnabled: boolean
+  isEnabled: boolean,
+  sideEffectsContext: SideEffectsContext
 ) => {
   const customSideEffects =
     sideEffects != null && sideEffects.constructor === Object ? sideEffects : {}
@@ -29,7 +35,8 @@ const buildSideEffects = (
         ...customSideEffects,
         ...systemSideEffects,
       },
-      isEnabled
+      isEnabled,
+      sideEffectsContext
     ),
     isEnabled,
   }
@@ -47,7 +54,9 @@ export const createInitHandler = (
 
   await handler({
     store,
-    sideEffects: buildSideEffects(runtime, sideEffects, isEnabled),
+    sideEffects: buildSideEffects(runtime, sideEffects, isEnabled, {
+      sideEffectsStartTimestamp: 0,
+    }),
   })
 }
 
@@ -83,7 +92,9 @@ export const createEventHandler = (
     await handler(
       {
         store,
-        sideEffects: buildSideEffects(runtime, sideEffects, isEnabled),
+        sideEffects: buildSideEffects(runtime, sideEffects, isEnabled, {
+          sideEffectsStartTimestamp: +sideEffectsTimestamp,
+        }),
         ...encryption,
       },
       event
