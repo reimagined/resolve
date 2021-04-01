@@ -4,7 +4,6 @@ import {
   SagaEventHandlers,
   SagaSideEffects,
   SerializablePrimitive,
-  SagaProperties,
 } from '../types/core'
 import { AggregateMeta } from '../types/runtime'
 import { AggregatesInteropBuilder } from '../aggregate/types'
@@ -15,11 +14,20 @@ export type SchedulerInfo = {
   connectorName: string
 }
 
+export type SideEffectsCollection = {
+  [key: string]: Function | SideEffectsCollection
+}
+
+export type SideEffectsContext = {
+  sideEffectsStartTimestamp: number
+}
+
 export type SchedulerRuntime = {
   addEntries: Function
   clearEntries: Function
   executeEntries: Function
 }
+
 export type SchedulerSideEffects = SchedulerRuntime
 
 export type SystemSideEffects = {
@@ -30,9 +38,10 @@ export type SystemSideEffects = {
 }
 
 export type SagaRuntime = {
-  eventProperties: SagaProperties
   executeCommand: Function
   executeQuery: Function
+  getSideEffectsTimestamp: () => Promise<number>
+  setSideEffectsTimestamp: (timestamp: number) => Promise<void>
   secretsManager: SecretsManager
   uploader: any
   scheduler: SchedulerRuntime

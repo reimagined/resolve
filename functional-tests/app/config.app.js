@@ -15,6 +15,11 @@ const appConfig = {
       commands: 'common/aggregates/test-scenario.commands.js',
       projection: 'common/aggregates/test-scenario.projection.js',
     },
+    {
+      name: 'saga-test',
+      commands: 'common/aggregates/saga-test.commands.js',
+      projection: 'common/aggregates/saga-test.projection.js',
+    },
   ],
   readModels: [
     {
@@ -36,6 +41,12 @@ const appConfig = {
       resolvers: 'common/read-models/test-scenarios.resolvers.js',
       connectorName: 'default',
       encryption: 'common/read-models/encryption.js',
+    },
+    {
+      name: 'saga-tests',
+      projection: 'common/read-models/saga-tests.projection.js',
+      resolvers: 'common/read-models/saga-tests.resolvers.js',
+      connectorName: 'default',
     },
   ],
   viewModels: [
@@ -62,6 +73,13 @@ const appConfig = {
       name: 'test-scenario-view-model',
       projection: 'common/view-models/test-scenario.projection.js',
       resolver: 'common/view-models/test-scenario.resolver.js',
+    },
+  ],
+  sagas: [
+    {
+      name: 'saga-test-saga',
+      source: 'common/sagas/saga-test-saga.js',
+      connectorName: 'default',
     },
   ],
   clientImports: {

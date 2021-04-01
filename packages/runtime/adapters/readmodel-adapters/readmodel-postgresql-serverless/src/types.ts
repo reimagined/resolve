@@ -172,6 +172,8 @@ export type AdapterOptions = CommonAdapterOptions & {
   tablePrefix?: string
 } & RDSDataService.ClientConfiguration
 
+export type MaybeInitMethod = (pool: AdapterPool) => Promise<void>
+
 export type InternalMethods = {
   inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod
   inlineLedgerForceStop: InlineLedgerForceStopMethod
@@ -186,6 +188,7 @@ export type InternalMethods = {
   dropReadModel: DropReadModelMethod
   escapeId: EscapeableMethod
   escapeStr: EscapeableMethod
+  maybeInit: MaybeInitMethod
   coercer: CoercerMethod
 }
 

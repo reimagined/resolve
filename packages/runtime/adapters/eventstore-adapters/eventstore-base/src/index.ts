@@ -53,6 +53,8 @@ import {
   SecretRecord,
   InputEvent,
   SavedEvent,
+  EventThreadData,
+  Cursor,
 } from './types'
 
 const wrappedCreateAdapter = <
@@ -128,6 +130,8 @@ export {
   SecretRecord,
   InputEvent,
   SavedEvent,
+  EventThreadData,
+  Cursor,
   iots,
   iotsTypes,
 }

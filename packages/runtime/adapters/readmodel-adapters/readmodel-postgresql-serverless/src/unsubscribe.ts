@@ -18,6 +18,8 @@ const unsubscribe: ExternalMethods['unsubscribe'] = async (
   const ledgerTableNameAsId = escapeId(`__${schemaName}__LEDGER__`)
   try {
     pool.activePassthrough = true
+    await pool.maybeInit(pool)
+
     while (true) {
       try {
         await inlineLedgerForceStop(pool, readModelName)

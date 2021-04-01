@@ -1,13 +1,13 @@
-import { SagaProperties, SideEffectsCollection } from '../types/core'
+import { SideEffectsCollection, SagaSideEffects, SideEffectsContext } from '../types/core'
 
 const sideEffect = async (
-  sagaProperties: SagaProperties,
   callback: Function,
   isEnabled: boolean,
+  sideEffectsContext: SideEffectsContext,
   ...args: any[]
 ) => {
   if (isEnabled) {
-    return await callback(...args, sagaProperties)
+    return await callback(...args, sideEffectsContext)
   } else {
     // Explicitly return undefined for disabled side-effects
     return undefined
@@ -15,9 +15,9 @@ const sideEffect = async (
 }
 
 export const wrapSideEffects = (
-  sagaProperties: SagaProperties,
   sideEffects: SideEffectsCollection,
-  isEnabled: boolean
+  isEnabled: boolean,
+  sideEffectsContext: SideEffectsContext
 ) => {
   return Object.keys(sideEffects).reduce<SideEffectsCollection>(
     (acc, effectName) => {
@@ -25,9 +25,9 @@ export const wrapSideEffects = (
       if (typeof effectOrSubCollection === 'function') {
         acc[effectName] = sideEffect.bind(
           null,
-          sagaProperties,
           effectOrSubCollection,
-          isEnabled
+          isEnabled,
+          sideEffectsContext
         )
       }
       if (
@@ -35,9 +35,9 @@ export const wrapSideEffects = (
         effectOrSubCollection !== null
       ) {
         acc[effectName] = wrapSideEffects(
-          sagaProperties,
           effectOrSubCollection,
-          isEnabled
+          isEnabled,
+          sideEffectsContext
         )
       }
       return acc
