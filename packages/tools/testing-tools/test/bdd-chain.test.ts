@@ -1,6 +1,10 @@
 import givenEvents from '../src/index'
 import { BDDAggregate } from '../types'
-import { AggregateState, SecretsManager } from '@resolve-js/core'
+import {
+  AggregateState,
+  EventHandlerEncryptionFactory,
+  SecretsManager,
+} from '@resolve-js/core'
 import { BDDReadModel } from '../src/types'
 
 let consoleSpy: jest.SpyInstance
@@ -12,6 +16,12 @@ beforeAll(() => {
 afterAll(() => {
   consoleSpy.mockRestore()
 })
+
+const secretsManager: SecretsManager = {
+  deleteSecret: jest.fn(),
+  getSecret: jest.fn(),
+  setSecret: jest.fn(),
+}
 
 describe('givenEvents', () => {
   test('incomplete test: should provide test object', async () => {
@@ -38,11 +48,6 @@ describe('aggregate', () => {
         payload: {},
       })),
     },
-  }
-  const secretsManager: SecretsManager = {
-    deleteSecret: jest.fn(),
-    getSecret: jest.fn(),
-    setSecret: jest.fn(),
   }
 
   test('incomplete test: should provide a command', async () => {
@@ -122,6 +127,11 @@ describe('read model', () => {
     },
   }
 
+  const makeEncryptionFactory = (): EventHandlerEncryptionFactory => async () => ({
+    decrypt: jest.fn(),
+    encrypt: jest.fn(),
+  })
+
   test('incomplete test: should provide a query', async () => {
     expect.assertions(1)
     try {
@@ -146,6 +156,42 @@ describe('read model', () => {
         .withAdapter('another-adapter')
     } catch (e) {
       expect(e.message).toEqual(expect.stringContaining('already assigned'))
+    }
+  })
+
+  test('(deprecated) encryption set within read model', async () => {
+    expect.assertions(1)
+    try {
+      await givenEvents()
+        .readModel({
+          ...readModel,
+          encryption: makeEncryptionFactory(),
+        })
+        .withEncryption(makeEncryptionFactory())
+    } catch (e) {
+      expect(e.message).toEqual(expect.stringContaining('already assigned'))
+    }
+  })
+
+  test('init error: setting secrets manager after test execution', async () => {
+    const test = givenEvents().readModel(readModel).query('profile')
+    await test
+    expect.assertions(1)
+    try {
+      test.withSecretsManager(secretsManager)
+    } catch (e) {
+      expect(e.message).toEqual(expect.stringContaining(`cannot be assigned`))
+    }
+  })
+
+  test('init error: setting auth after test execution', async () => {
+    const test = givenEvents().readModel(readModel).query('profile')
+    await test
+    expect.assertions(1)
+    try {
+      test.as('user')
+    } catch (e) {
+      expect(e.message).toEqual(expect.stringContaining(`cannot be assigned`))
     }
   })
 })

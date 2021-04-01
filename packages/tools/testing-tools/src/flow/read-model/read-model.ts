@@ -63,7 +63,7 @@ export const readModel = (
     console.warn(
       `'encryption' property of read model deprecated, use 'withEncryption' selector instead.`
     )
-    withEncryption(context, readModel.adapter)
+    withEncryption(context, readModel.encryption)
   }
 
   return {
