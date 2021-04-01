@@ -1,3 +1,5 @@
+import { mocked } from 'ts-jest/utils'
+
 import { SecretsManager } from '../src/types/core'
 import { HttpError } from '../src/errors'
 import { getSagasInteropBuilder } from '../src/saga/get-sagas-interop-builder'
@@ -33,11 +35,12 @@ const makeTestRuntime = (): SagaRuntime => {
   return {
     secretsManager,
     monitoring,
-    eventProperties: {},
     executeCommand: jest.fn(),
     executeQuery: jest.fn(),
     scheduler,
     uploader: {},
+    getSideEffectsTimestamp: jest.fn(),
+    setSideEffectsTimestamp: jest.fn(),
   }
 }
 
@@ -133,19 +136,22 @@ describe('Sagas', () => {
       sideEffects: { dummySideEffect: jest.fn() },
     }
 
+    const runtime = makeTestRuntime()
+    mocked(runtime.getSideEffectsTimestamp).mockResolvedValueOnce(5)
+
     const sagas = await getSagasInteropBuilder(
       'dummyScheduler',
       schedulerEventTypes,
       makeSagaMeta(sagaParams),
       []
-    )(makeTestRuntime())
+    )(runtime)
 
     const dummyEvent = {
       type: 'dummyEvent',
       payload: { text: 'first' },
       aggregateId: 'validAggregateId',
       aggregateVersion: 1,
-      timestamp: 1,
+      timestamp: 10,
     }
 
     const dummyStore = {}
@@ -156,10 +162,9 @@ describe('Sagas', () => {
     )
     eventHandler && (await eventHandler())
     expect(sagaParams.sideEffects.dummySideEffect).toHaveBeenCalledTimes(1)
-    expect(sagaParams.sideEffects.dummySideEffect).toBeCalledWith(
-      dummyEvent,
-      {}
-    )
+    expect(sagaParams.sideEffects.dummySideEffect).toBeCalledWith(dummyEvent, {
+      sideEffectsStartTimestamp: 5,
+    })
   })
 
   test('scheduler saga should be initialized correctly', async () => {

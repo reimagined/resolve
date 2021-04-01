@@ -25,6 +25,7 @@ import defineTable from './define-table'
 import del from './delete'
 import disconnect from './disconnect'
 import dropReadModel from './drop-read-model'
+import maybeInit from './maybe-init'
 import findOne from './find-one'
 import find from './find'
 import insert from './insert'
@@ -38,10 +39,6 @@ import generateGuid from './generate-guid'
 import subscribe from './subscribe'
 import resubscribe from './resubscribe'
 import unsubscribe from './unsubscribe'
-import deleteProperty from './delete-property'
-import getProperty from './get-property'
-import listProperties from './list-properties'
-import setProperty from './set-property'
 import reset from './reset'
 import pause from './pause'
 import resume from './resume'
@@ -67,16 +64,13 @@ const internalMethods: InternalMethods = {
   PassthroughError,
   generateGuid,
   dropReadModel,
+  maybeInit,
 }
 
 const externalMethods: ExternalMethods = {
   subscribe,
   resubscribe,
   unsubscribe,
-  deleteProperty,
-  getProperty,
-  listProperties,
-  setProperty,
   resume,
   pause,
   reset,
