@@ -4,7 +4,12 @@ import * as path from 'path'
 
 import { SAGA_TEST_EVENTS_COUNT, SAGA_TEST_AGGREGATE_ID } from './constants'
 
-const eventsFilePath = path.join(__dirname, '../app/events.txt')
+const appDir = process.env.TEST_APP_DIR || path.join(__dirname, '../app')
+
+const eventsFilePath = path.join(
+  appDir,
+  process.env.EVENTS_FILE_PATH || 'events.txt'
+)
 
 const run = () => {
   fs.unlinkSync(eventsFilePath)

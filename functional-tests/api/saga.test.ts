@@ -41,11 +41,21 @@ test('executes side effects with "live" events only', async () => {
   })
 
   {
-    const result = await client.query({
-      name: 'saga-tests',
-      resolver: 'getSucceededSagaTests',
-      args: {},
-    })
+    const result = await client.query(
+      {
+        name: 'saga-tests',
+        resolver: 'getSucceededSagaTests',
+        args: {},
+      },
+      {
+        waitFor: {
+          validator: (result) =>
+            Array.isArray(result?.data) && result?.data.length === 1,
+          attempts: 5,
+          period: 3000,
+        },
+      }
+    )
 
     if (result == null) {
       throw new Error('Empty query result')
@@ -72,11 +82,21 @@ test('executes side effects with "live" events only', async () => {
   })
 
   {
-    const result = await client.query({
-      name: 'saga-tests',
-      resolver: 'getSucceededSagaTests',
-      args: {},
-    })
+    const result = await client.query(
+      {
+        name: 'saga-tests',
+        resolver: 'getSucceededSagaTests',
+        args: {},
+      },
+      {
+        waitFor: {
+          validator: (result) =>
+            Array.isArray(result?.data) && result?.data.length === 2,
+          attempts: 5,
+          period: 3000,
+        },
+      }
+    )
 
     if (result == null) {
       throw new Error('Empty query result')

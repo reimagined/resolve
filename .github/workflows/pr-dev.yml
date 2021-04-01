@@ -70,6 +70,13 @@ jobs:
           cd ${test_app_dir}
           rm -rf node_modules
 
+      - name: Build initial events
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        with:
+          test_app_dir: ${{ env.test_app_dir }}
+          events_file_path: ./test-events.txt
+        run: yarn ts-node utils/generateEvents.ts
+
       - name: Deploy test app to the cloud
         if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         id: deploy
@@ -87,6 +94,7 @@ jobs:
           package_registry_token: ${{ secrets.RESOLVE_BOT_PAT }}
           package_registry_scopes: '@resolve-js'
           deploy_args: --verbosity=debug
+          events_file_path: ./test-events.txt
 
       - name: Test:functional (API)
         if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
