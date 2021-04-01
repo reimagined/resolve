@@ -86,6 +86,14 @@ A merged module's code is included in the resulting application's bundles.
 
 For an example on how to use modules, see the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) sample application. This application uses the authentication and comments modules from reSolve.
 
+## Encryption
+
+The reSolve framework provides a mechanism that allows you to use an arbitrary encryption algorithm to encrypt the stored events and Read Model state data.
+
+#### Example
+
+The **personal-data** example demonstrates how to store encrypted user data in compliance with General Data Protection Regulation (GDPR).
+
 ## Upload Files
 
 The **@resolve-js/module-uploader** module implements the file upload functionality. You can enable this module as shown below:
