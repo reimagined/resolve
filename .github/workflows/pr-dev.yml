@@ -72,10 +72,11 @@ jobs:
 
       - name: Build initial events
         if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
-        with:
-          test_app_dir: ${{ env.test_app_dir }}
-          events_file_path: ./test-events.txt
-        run: yarn ts-node utils/generateEvents.ts
+        env:
+          TEST_APP_DIR: ${{ env.test_app_dir }}
+          EVENTS_FILE_PATH: ./test-events.txt
+        run: |
+          yarn ts-node utils/generateEvents.ts
 
       - name: Deploy test app to the cloud
         if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
