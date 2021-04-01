@@ -1,3 +1,9 @@
+import {
+  Adapter as EventStoreAdapter,
+  Cursor,
+  SavedEvent,
+} from '@resolve-js/eventstore-base'
+
 export type JsonPrimitive = string | number | boolean | null
 export type JsonMap = {
   [member: string]: JsonPrimitive | JsonArray | JsonMap
@@ -129,29 +135,13 @@ export type PerformanceTracerLike = {
   } | null
 }
 
-export type ReadModelCursor = string | null // TODO brand type
-export type ReadModelEvent = {
-  aggregateId: string
-  aggregateVersion: number
-  timestamp: number
-  type: string
-  payload: JsonMap | JsonArray | JsonPrimitive
-}
+export type ReadModelCursor = Cursor // TODO brand type
+export type ReadModelEvent = SavedEvent
 
 export type EventstoreAdapterLike = {
-  loadEvents(filter: {
-    eventTypes: Array<ReadModelEvent['type']> | null
-    eventsSizeLimit: number | null
-    limit: number | null
-    cursor: ReadModelCursor | null
-  }): Promise<{
-    events: Array<ReadModelEvent>
-    cursor: ReadModelCursor
-  }>
-  getNextCursor(
-    previousCursor: ReadModelCursor,
-    appliedEvents: Array<ReadModelEvent>
-  ): ReadModelCursor
+  loadEvents: EventStoreAdapter['loadEvents']
+  getNextCursor: EventStoreAdapter['getNextCursor']
+  loadSecrets?: EventStoreAdapter['loadSecrets']
 }
 
 export type CommonAdapterPool = {
