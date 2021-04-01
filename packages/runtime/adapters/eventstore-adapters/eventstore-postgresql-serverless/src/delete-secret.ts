@@ -65,7 +65,7 @@ const deleteSecret = async (
     Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
   try {
-    savingSecret: while (true) {
+    deletingSecret: while (true) {
       try {
         // logging of this sql query can lead to security issues
 
@@ -142,7 +142,7 @@ const deleteSecret = async (
                 `
               )
               if (rows[0] == null) {
-                continue savingSecret
+                continue deletingSecret
               }
               break
             } catch (selectError) {
