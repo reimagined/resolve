@@ -8,9 +8,12 @@ const executeCommand = (
   command: Command
 ) => {
   if (command.aggregateName === schedulerName) {
-    buffer.scheduledCommands.push(command.payload)
+    buffer.scheduledCommands.push([
+      command.payload.date,
+      command.payload.command,
+    ])
   } else {
-    buffer.commands.push(command)
+    buffer.commands.push([command])
   }
 }
 const executeQuery = (buffer: SagaTestResult, query: any) => {
@@ -32,7 +35,7 @@ export const getSagaRuntime = (
 ) => ({
   secretsManager,
   monitoring,
-  executeCommand: partial(executeCommand, buffer),
+  executeCommand: partial(executeCommand, buffer, schedulerName),
   executeQuery: partial(executeQuery, buffer),
   scheduler: makeScheduler(),
   uploader,

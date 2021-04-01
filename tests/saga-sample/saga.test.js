@@ -7,6 +7,19 @@ import config from './config'
 
 jest.setTimeout(1000 * 60 * 5)
 
+let warnSpy
+let errorSpy
+
+beforeAll(() => {
+  warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => void 0)
+  errorSpy = jest.spyOn(console, 'error').mockImplementation(() => void 0)
+})
+
+afterAll(() => {
+  warnSpy.mockRestore()
+  errorSpy.mockRestore()
+})
+
 describe('Saga', () => {
   const currentSaga = config.sagas.find(
     ({ name }) => name === 'UserConfirmation'
