@@ -76,7 +76,7 @@ jobs:
           TEST_APP_DIR: ${{ env.test_app_dir }}
           EVENTS_FILE_PATH: ./test-events.txt
         run: |
-          yarn ts-node utils/generateEvents.ts
+          yarn ts-node functional-tests/utils/generateEvents.ts
 
       - name: Deploy test app to the cloud
         if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
