@@ -109,9 +109,6 @@ for (const { describeName, prepare } of [
   let query: ResolveQuery | null = null
   let readModelsInterop: ReadModelInteropMap = {}
   let viewModelsInterop: ViewModelInteropMap = {}
-  let provideLedger = async () => {
-    /* nop */
-  }
 
   // eslint-disable-next-line no-loop-func
   describe(describeName, () => {
@@ -164,7 +161,6 @@ for (const { describeName, prepare } of [
           readModelConnectors,
           performanceTracer,
           getVacantTimeInMillis,
-          provideLedger,
           readModelsInterop,
           viewModelsInterop,
           eventstoreAdapter,
@@ -370,7 +366,6 @@ for (const { describeName, prepare } of [
           readModelsInterop,
           viewModelsInterop: {},
           eventstoreAdapter,
-          provideLedger,
         })
       })
 
@@ -524,7 +519,6 @@ for (const { describeName, prepare } of [
           readModelsInterop,
           viewModelsInterop,
           eventstoreAdapter,
-          provideLedger,
         })
 
         try {
@@ -971,7 +965,6 @@ for (const { describeName, prepare } of [
             },
           },
           eventstoreAdapter,
-          provideLedger,
         })
 
         await expect(

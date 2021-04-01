@@ -362,8 +362,7 @@ const build: ExternalMethods['build'] = async (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis,
-  provideLedger
+  getVacantTimeInMillis
 ) => {
   const {
     PassthroughError,
@@ -423,7 +422,6 @@ const build: ExternalMethods['build'] = async (
       SuccessEvent: string | null
       FailedEvent: string | null
       Errors: string | null
-      Properties: string | null
       Schema: string | null
     }>
 
@@ -461,10 +459,6 @@ const build: ExternalMethods['build'] = async (
                 ? JSON.parse(rows[0].FailedEvent)
                 : null,
             Errors: rows[0].Errors != null ? JSON.parse(rows[0].Errors) : null,
-            Properties:
-              rows[0].Properties != null
-                ? JSON.parse(rows[0].Properties)
-                : null,
             Schema: rows[0].Schema != null ? JSON.parse(rows[0].Schema) : null,
           } as ReadModelLedger)
         : null
@@ -483,8 +477,6 @@ const build: ExternalMethods['build'] = async (
       throw new TypeError('cursor')
     }
 
-    await provideLedger(readModelLedger)
-
     const currentPool = {
       ledgerTableNameAsId,
       readModelLedger,
@@ -502,8 +494,7 @@ const build: ExternalMethods['build'] = async (
       modelInterop,
       next,
       eventstoreAdapter,
-      getVacantTimeInMillis,
-      provideLedger
+      getVacantTimeInMillis
     )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
