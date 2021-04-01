@@ -1,28 +1,26 @@
 import partial from 'lodash.partial'
-import { SecretsManager } from '@resolve-js/core'
 import { SagaContext } from '../../types'
 import { SagaNode } from './saga'
 import { withAdapter } from './with-adapter'
 import { withEncryption } from './with-encryption'
-import { allowSideEffects } from './allow-side-effects'
+import { withSecretsManager } from './with-secrets-manager'
 
-type WithSecretsManagerNode = Omit<SagaNode, 'withSecretsManager'>
+type WithSecretsManagerNode = Omit<SagaNode, 'allowSideEffects'>
 
-export const withSecretsManager = (
-  context: SagaContext,
-  manager: SecretsManager
+export const allowSideEffects = (
+  context: SagaContext
 ): WithSecretsManagerNode => {
   const { environment } = context
 
   if (environment.isExecuted()) {
-    throw Error(`Secrets manager cannot be assigned if the test was executed.`)
+    throw Error(`Side effects cannot be allowed if the test was executed.`)
   }
 
-  environment.setSecretsManager(manager)
+  environment.allowSideEffects()
 
   return Object.assign(environment.promise, {
     withAdapter: partial(withAdapter, context),
     withEncryption: partial(withEncryption, context),
-    allowSideEffects: partial(allowSideEffects, context),
+    withSecretsManager: partial(withSecretsManager, context)
   })
 }

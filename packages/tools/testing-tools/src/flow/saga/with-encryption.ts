@@ -4,6 +4,7 @@ import { SagaNode } from './saga'
 import { EventHandlerEncryptionFactory } from '@resolve-js/core'
 import { withAdapter } from './with-adapter'
 import { withSecretsManager } from './with-secrets-manager'
+import { allowSideEffects } from './allow-side-effects'
 
 type WithEncryption = Omit<SagaNode, 'withEncryption'>
 
@@ -22,5 +23,6 @@ export const withEncryption = (
   return Object.assign(context.environment.promise, {
     withAdapter: partial(withAdapter, context),
     withSecretsManager: partial(withSecretsManager, context),
+    allowSideEffects: partial(allowSideEffects, context),
   })
 }

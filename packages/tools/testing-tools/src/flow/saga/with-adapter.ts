@@ -3,6 +3,7 @@ import { SagaContext } from '../../types'
 import { SagaNode } from './saga'
 import { withEncryption } from './with-encryption'
 import { withSecretsManager } from './with-secrets-manager'
+import { allowSideEffects } from './allow-side-effects'
 
 type WithAdapterNode = Omit<SagaNode, 'withAdapter'>
 
@@ -20,5 +21,6 @@ export const withAdapter = (
   return Object.assign(context.environment.promise, {
     withEncryption: partial(withEncryption, context),
     withSecretsManager: partial(withSecretsManager, context),
+    allowSideEffects: partial(allowSideEffects, context),
   })
 }

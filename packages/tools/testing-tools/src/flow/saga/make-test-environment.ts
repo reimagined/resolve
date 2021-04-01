@@ -29,6 +29,7 @@ type TestFailureCallback = (error: Error) => void
 export type SagaTestEnvironment = {
   promise: Promise<SagaTestResult>
   setSecretsManager: (manager: SecretsManager) => void
+  allowSideEffects: () => void
   isExecuted: () => boolean
 }
 
@@ -36,12 +37,16 @@ export const makeTestEnvironment = (
   context: SagaTestContext
 ): SagaTestEnvironment => {
   let executed = false
+  let useRealSideEffects = false
   let secretsManager: SecretsManager = getSecretsManager()
   let completeTest: TestCompleteCallback
   let failTest: TestFailureCallback
 
   const setSecretsManager = (value: SecretsManager) => {
     secretsManager = value
+  }
+  const allowSideEffects = () => {
+    useRealSideEffects = true
   }
   const isExecuted = () => executed
   const promise = new Promise<QueryTestResult>((resolve, reject) => {
@@ -81,7 +86,9 @@ export const makeTestEnvironment = (
         {
           name: saga.name,
           handlers: saga.handlers,
-          sideEffects: mockSideEffects(result, saga.sideEffects),
+          sideEffects: useRealSideEffects
+            ? saga.sideEffects
+            : mockSideEffects(result, saga.sideEffects),
           connectorName: 'ADAPTER_NAME',
           encryption: actualEncryption,
         },
@@ -225,6 +232,7 @@ export const makeTestEnvironment = (
 
   return {
     setSecretsManager,
+    allowSideEffects,
     isExecuted,
     promise,
   }

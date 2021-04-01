@@ -7,7 +7,8 @@ export const mockSideEffects = (
 ) => {
   return Object.keys(sideEffects).reduce<SideEffectsCollection>(
     (mock, name) => {
-      mock[name] = async (...args: any[]) => buffer.sideEffects.push(args)
+      mock[name] = async (...args: any[]) =>
+        buffer.sideEffects.push([name, ...args])
       return mock
     },
     {}

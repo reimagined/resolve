@@ -99,7 +99,7 @@ export type QueryContext = {
 export type BDDSaga<TSideEffects = any> = {
   name: string
   handlers: SagaEventHandlers<any, SagaSideEffects & TSideEffects>
-  sideEffects: SagaSideEffects & TSideEffects
+  sideEffects: TSideEffects
   // FIXME: deprecated
   encryption?: EventHandlerEncryptionFactory
   // FIXME: deprecated
