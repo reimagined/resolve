@@ -19,7 +19,7 @@ describe('Saga', () => {
     .default
   const source = interopRequireDefault(require(`./${sourceModule}`)).default
 
-  let sagaWithAdapter = null
+  let saga = null
   let adapter = null
 
   describe('with sideEffects.isEnabled = true', () => {
@@ -30,10 +30,9 @@ describe('Saga', () => {
       source.sideEffects.getRandom = jest.fn()
 
       adapter = createConnector(connectorOptions)
-      sagaWithAdapter = {
+      saga = {
         handlers: source.handlers,
         sideEffects: source.sideEffects,
-        adapter,
         name: sagaName,
       }
     })
@@ -43,7 +42,7 @@ describe('Saga', () => {
       originalGetRandom = null
 
       adapter = null
-      sagaWithAdapter = null
+      saga = null
     })
 
     test('success increment', async () => {
@@ -56,7 +55,8 @@ describe('Saga', () => {
           payload: {},
         },
       ])
-        .saga(sagaWithAdapter)
+        .saga(saga)
+        .withAdapter(adapter)
         .allowSideEffects()
 
       expect(result.commands[0][0].type).toEqual('increment')
@@ -72,7 +72,8 @@ describe('Saga', () => {
           payload: {},
         },
       ])
-        .saga(sagaWithAdapter)
+        .saga(saga)
+        .withAdapter(adapter)
         .allowSideEffects()
 
       expect(result.commands[0][0].type).toEqual('decrement')
@@ -82,17 +83,16 @@ describe('Saga', () => {
   describe('with sideEffects.isEnabled = false', () => {
     beforeEach(async () => {
       adapter = createConnector(connectorOptions)
-      sagaWithAdapter = {
+      saga = {
         handlers: source.handlers,
         sideEffects: source.sideEffects,
-        adapter,
         name: sagaName,
       }
     })
 
     afterEach(async () => {
       adapter = null
-      sagaWithAdapter = null
+      saga = null
     })
 
     test('do nothing', async () => {
@@ -103,7 +103,8 @@ describe('Saga', () => {
           payload: {},
         },
       ])
-        .saga(sagaWithAdapter)
+        .saga(saga)
+        .withAdapter(adapter)
         .startSideEffectsFrom(Number.MAX_VALUE)
 
       expect(result).toEqual({
