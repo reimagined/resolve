@@ -16,8 +16,6 @@ const createSaga = ({
   domainInterop,
   executeSchedulerCommand,
 }) => {
-  let eventProperties = {}
-
   const { sagaDomain } = domainInterop
 
   const sagaMonitoring =
@@ -66,24 +64,21 @@ const createSaga = ({
       throw new Error(`Invalid saga query args ${JSON.stringify(args)}`)
     }
 
-    const options = { ...args[0], properties: args[1] }
+    const options = { ...args[0] }
+
     return await executeQuery(options)
   }
 
+  let currentSagaName = null
   const runtime = Object.create(Object.prototype, {
     executeCommand: { get: () => executeCommandOrScheduler, enumerable: true },
     executeQuery: { get: () => executeDirectQuery, enumerable: true },
-    eventProperties: { get: () => eventProperties, enumerable: true },
     secretsManager: { get: () => secretsManager, enumerable: true },
     uploader: { get: () => uploader, enumerable: true },
     scheduler: { get: () => scheduler, enumerable: true },
   })
 
-  const provideLedger = async (inlineLedger) => {
-    eventProperties = inlineLedger.Properties
-  }
-
-  const executeListener = createQuery({
+  const executeSagaListener = createQuery({
     invokeEventSubscriberAsync,
     applicationName,
     readModelConnectors,
@@ -91,19 +86,71 @@ const createSaga = ({
     getVacantTimeInMillis,
     eventstoreAdapter,
     monitoring: sagaMonitoring,
-    provideLedger,
     readModelsInterop: domainInterop.sagaDomain.acquireSagasInterop(runtime),
     viewModelsInterop: {},
   })
 
-  const dispose = async () => await Promise.all([executeListener.dispose()])
+  const sideEffectPropertyName = 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'
 
-  const executeSaga = new Proxy(executeListener, {
+  Object.defineProperties(runtime, {
+    getSideEffectsTimestamp: {
+      get: () => () =>
+        executeSagaListener.getProperty({
+          eventSubscriber: currentSagaName,
+          key: sideEffectPropertyName,
+        }),
+      enumerable: true,
+    },
+    setSideEffectsTimestamp: {
+      get: () => (sideEffectTimestamp) =>
+        executeSagaListener.setProperty({
+          eventSubscriber: currentSagaName,
+          key: sideEffectPropertyName,
+          value: sideEffectTimestamp,
+        }),
+      enumerable: true,
+    },
+  })
+
+  const buildSaga = async (...args) => {
+    if (
+      !(
+        args.length > 0 &&
+        args.length < 3 &&
+        Object(args[0]) === args[0] &&
+        (Object(args[1]) === args[1] || args[1] == null)
+      )
+    ) {
+      throw new Error(`Invalid build saga args ${JSON.stringify(args)}`)
+    }
+
+    try {
+      let { eventSubscriber, modelName, ...parameters } = args[0]
+      if (eventSubscriber == null && modelName == null) {
+        throw new Error(`Either "eventSubscriber" nor "modelName" is null`)
+      } else if (modelName == null) {
+        modelName = eventSubscriber
+      }
+      if (currentSagaName != null) {
+        throw new Error('Concurrent saga interop')
+      }
+      currentSagaName = modelName
+
+      return await executeSagaListener.build({ modelName, ...parameters })
+    } finally {
+      if (currentSagaName == null) {
+        throw new Error('Concurrent saga interop')
+      }
+      currentSagaName = null
+    }
+  }
+
+  const executeSaga = new Proxy(executeSagaListener, {
     get(_, key) {
-      if (key === 'dispose') {
-        return dispose
+      if (key === 'build') {
+        return buildSaga
       } else {
-        return executeListener[key].bind(executeListener)
+        return executeSagaListener[key].bind(executeSagaListener)
       }
     },
     set() {

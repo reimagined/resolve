@@ -135,3 +135,10 @@ export {
   iots,
   iotsTypes,
 }
+
+export {
+  makeSetSecretEvent,
+  makeDeleteSecretEvent,
+  DELETE_SECRET_EVENT_TYPE,
+  SET_SECRET_EVENT_TYPE,
+} from './secret-event'
