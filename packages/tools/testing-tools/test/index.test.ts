@@ -1,5 +1,5 @@
 import givenEvents, { TestAggregate } from '../src/index'
-import { Event, EventHandlerEncryptionContext } from '@resolve-js/core'
+import { Event } from '@resolve-js/core'
 
 const ProjectionError = (function (this: Error, message: string): void {
   Error.call(this)
@@ -22,9 +22,6 @@ const ResolverError = (function (this: Error, message: string): void {
     this.stack = new Error().stack
   }
 } as Function) as ErrorConstructor
-
-describe('read model', () => {
-})
 
 describe('aggregate', () => {
   type AggregateState = {

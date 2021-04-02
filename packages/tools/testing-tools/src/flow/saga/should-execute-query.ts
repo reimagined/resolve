@@ -30,9 +30,7 @@ export const shouldExecuteQuery = (
     }
     return reject(
       new Error(
-        `shouldExecuteQuery assertion failed:\n${stringifyQuery(
-          query
-        )}`
+        `shouldExecuteQuery assertion failed:\n${stringifyQuery(query)}`
       )
     )
   })

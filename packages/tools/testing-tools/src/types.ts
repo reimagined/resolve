@@ -8,7 +8,11 @@ import {
   ReadModelResolvers,
   ReadModel,
   SagaEventHandlers,
-  SagaSideEffects, ReadModelQueryResult, Command, ReadModelQuery, ViewModelQuery
+  SagaSideEffects,
+  ReadModelQueryResult,
+  Command,
+  ReadModelQuery,
+  ViewModelQuery,
 } from '@resolve-js/core'
 import { AggregateTestEnvironment } from './flow/aggregate/make-test-environment'
 import { ReadModelTestEnvironment } from './flow/read-model/make-test-environment'
