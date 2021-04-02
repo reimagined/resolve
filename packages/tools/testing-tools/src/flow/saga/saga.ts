@@ -4,8 +4,8 @@ import {
   GivenEventsContext,
   OmitFirstArgument,
   SagaContext,
-  SagaTestResult,
 } from '../../types'
+import { makeAssertions, SagaAssertionsNode } from './make-assertions'
 import { withAdapter } from './with-adapter'
 import { withEncryption } from './with-encryption'
 import { withSecretsManager } from './with-secrets-manager'
@@ -19,7 +19,7 @@ export type SagaNode = {
   withSecretsManager: OmitFirstArgument<typeof withSecretsManager>
   allowSideEffects: OmitFirstArgument<typeof allowSideEffects>
   startSideEffectsFrom: OmitFirstArgument<typeof startSideEffectsFrom>
-} & Promise<SagaTestResult>
+} & SagaAssertionsNode
 
 export const saga = (
   givenEventsContext: GivenEventsContext,
@@ -52,7 +52,7 @@ export const saga = (
     withEncryption(context, saga.encryption)
   }
 
-  return Object.assign(context.environment.promise, {
+  return Object.assign(makeAssertions(context), {
     withAdapter: partial(withAdapter, context),
     withEncryption: partial(withEncryption, context),
     withSecretsManager: partial(withSecretsManager, context),

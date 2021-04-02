@@ -110,6 +110,8 @@ export type TestSaga<TSideEffects = any> = {
   adapter?: any
 }
 
+export type TestSagaAssertion = TestAssertion<SagaTestResult>
+
 export type SagaTestResult = {
   commands: any[]
   scheduledCommands: any[]

@@ -5,6 +5,7 @@ import { withAdapter } from './with-adapter'
 import { withEncryption } from './with-encryption'
 import { allowSideEffects } from './allow-side-effects'
 import { withSecretsManager } from './with-secrets-manager'
+import { makeAssertions } from './make-assertions'
 
 type StartSideEffectsFromNode = Omit<SagaNode, 'startSideEffectsFrom'>
 
@@ -28,7 +29,7 @@ export const startSideEffectsFrom = (
     environment.setSideEffectsStartTimestamp(date)
   }
 
-  return Object.assign(environment.promise, {
+  return Object.assign(makeAssertions(context), {
     withAdapter: partial(withAdapter, context),
     withEncryption: partial(withEncryption, context),
     allowSideEffects: partial(allowSideEffects, context),

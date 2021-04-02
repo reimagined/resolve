@@ -10,12 +10,15 @@ import {
   QueryTestResult,
   SagaTestResult,
   TestEvent,
+  TestSagaAssertion,
 } from '../../types'
 import { getSecretsManager } from '../../runtime/get-secrets-manager'
 import { getEventStore } from '../../runtime/get-event-store'
 import { getSagaRuntime } from '../../runtime/get-saga-runtime'
 import { mockSideEffects } from '../../runtime/mock-side-effects'
 import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
+import partial from 'lodash.partial'
+import { defaultAssertion } from '../../utils/assertions'
 
 type SagaTestContext = {
   saga: TestSaga
@@ -31,7 +34,23 @@ export type SagaTestEnvironment = {
   setSecretsManager: (manager: SecretsManager) => void
   allowSideEffects: () => void
   setSideEffectsStartTimestamp: (value: number) => void
+  addAssertion: (assertion: TestSagaAssertion) => void
   isExecuted: () => boolean
+}
+
+type PromisedAssertion = (
+  result: SagaTestResult | null,
+  error: Error | null
+) => Promise<SagaTestResult | null>
+
+const promisedAssertion = (
+  assertion: TestSagaAssertion,
+  result: SagaTestResult | null,
+  error: Error | null
+): Promise<SagaTestResult | null> => {
+  return new Promise<SagaTestResult | null>((resolve, reject) =>
+    assertion(resolve, reject, result, error, false)
+  )
 }
 
 export const makeTestEnvironment = (
@@ -40,6 +59,7 @@ export const makeTestEnvironment = (
   let executed = false
   let useRealSideEffects = false
   let sideEffectsStartTimestamp = 0
+  let assertions: PromisedAssertion[] = []
   let secretsManager: SecretsManager = getSecretsManager()
   let completeTest: TestCompleteCallback
   let failTest: TestFailureCallback
@@ -52,6 +72,9 @@ export const makeTestEnvironment = (
   }
   const setSideEffectsStartTimestamp = (value: number) => {
     sideEffectsStartTimestamp = value
+  }
+  const addAssertion = (value: TestSagaAssertion) => {
+    assertions.push(partial(partial(promisedAssertion, value)))
   }
   const isExecuted = () => executed
   const promise = new Promise<QueryTestResult>((resolve, reject) => {
@@ -116,7 +139,7 @@ export const makeTestEnvironment = (
     }
     const eventstoreAdapter = getEventStore(events)
 
-    const errors = []
+    const errors: Error[] = []
     let executor = null
 
     try {
@@ -225,7 +248,18 @@ export const makeTestEnvironment = (
     }
 
     if (errors.length === 0) {
-      completeTest(result)
+      if (assertions.length > 0) {
+        try {
+          await Promise.all(
+            assertions.map((assertion) => assertion(result, null))
+          )
+          completeTest(result)
+        } catch (e) {
+          failTest(e)
+        }
+      } else {
+        defaultAssertion(completeTest, failTest, result, null)
+      }
     } else {
       let summaryError = errors[0]
       if (errors.length > 1) {
@@ -235,7 +269,18 @@ export const makeTestEnvironment = (
       // eslint-disable-next-line no-console
       console.error(summaryError)
 
-      failTest(errors[0])
+      if (assertions.length > 0) {
+        try {
+          await Promise.all(
+            assertions.map((assertion) => assertion(null, errors[0]))
+          )
+          failTest(errors[0])
+        } catch (e) {
+          failTest(e)
+        }
+      } else {
+        defaultAssertion(completeTest, failTest, null, errors[0])
+      }
     }
   }
 
@@ -245,6 +290,7 @@ export const makeTestEnvironment = (
     setSecretsManager,
     allowSideEffects,
     setSideEffectsStartTimestamp,
+    addAssertion,
     isExecuted,
     promise,
   }

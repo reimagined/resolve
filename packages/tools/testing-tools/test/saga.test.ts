@@ -20,8 +20,16 @@ describe('basic tests', () => {
   }> = {
     name: 'TEST-SAGA',
     handlers: {
-      ItemCreated: async ({ sideEffects }): Promise<any> => {
+      ItemCreated: async ({ sideEffects }, { aggregateId }): Promise<any> => {
         await sideEffects.failure('error')
+        await sideEffects.executeCommand({
+          type: 'create',
+          aggregateName: 'user',
+          aggregateId: 'id',
+          payload: {
+            item: aggregateId,
+          },
+        })
       },
     },
     sideEffects: {
@@ -56,5 +64,23 @@ describe('basic tests', () => {
         .saga(saga)
         .allowSideEffects()
     ).rejects.toThrowError('error')
+  })
+
+  test('shouldExecuteCommand assertion', async () => {
+    await givenEvents([
+      {
+        type: 'ItemCreated',
+        aggregateId: 'aggregate-id',
+      },
+    ])
+      .saga(saga)
+      .shouldExecuteCommand({
+        type: 'create',
+        aggregateName: 'user',
+        aggregateId: 'id',
+        payload: {
+          item: 'aggregate-id',
+        },
+      })
   })
 })
