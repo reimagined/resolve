@@ -5,7 +5,12 @@ import type {
   ReadModelEvent,
 } from './types'
 import rawExecuteStatement from './raw-execute-statement'
-import { EventThreadData, EventsWithCursor } from '@resolve-js/eventstore-base'
+import {
+  EventThreadData,
+  EventsWithCursor,
+  SET_SECRET_EVENT_TYPE,
+  DELETE_SECRET_EVENT_TYPE,
+} from '@resolve-js/eventstore-base'
 
 const RESERVED_EVENT_SIZE = 66 // 3 reserved BIGINT fields with commas
 const BATCH_SIZE = 100
@@ -153,25 +158,6 @@ const build: ExternalMethods['build'] = async (
 
   console.log('Input cursor: ', inputCursor)
 
-  const secretsCountResult = (await rawExecuteStatement(
-    rdsDataService,
-    eventStoreClusterArn,
-    eventStoreSecretArn,
-    coercer,
-    `SELECT COUNT(*) AS "secretCount" FROM ${eventStoreDatabaseNameAsId}.${eventStoreSecretsTableNameAsId}`
-  )) as Array<{
-    secretCount: number
-  }>
-
-  console.log('Secrets count result: ', secretsCountResult)
-
-  let secretsToSkip = 0
-  if (secretsCountResult.length && secretsCountResult[0].secretCount != null) {
-    secretsToSkip = secretsCountResult[0].secretCount
-  }
-
-  console.log('Secrets to skip: ', secretsToSkip)
-
   const calculateEventWithSize = (event: ReadModelEvent): EventWithSize => {
     const serializedEvent = [
       `${escapeStr(event.aggregateId)},`,
@@ -282,6 +268,49 @@ const build: ExternalMethods['build'] = async (
         }
       )) as EventsWithCursor
 
+      const insertSecret = async (secretId: string) => {
+        const secret = await secretManager.getSecret(secretId)
+        if (secret) {
+          await rdsDataService.executeStatement({
+            resourceArn: eventStoreClusterArn,
+            secretArn: eventStoreSecretArn,
+            database: 'postgres',
+            sql: `INSERT INTO ${eventStoreDatabaseNameAsId}.${eventStoreSecretsTableNameAsId}(
+                  "id",
+                  "secret"
+                ) VALUES(
+                  ${escapeStr(secretId)},
+                  ${escapeStr(secret)}
+                ) ON CONFLICT DO NOTHING`,
+          })
+        }
+      }
+
+      const deleteSecret = async (secretId: string) => {
+        await rdsDataService.executeStatement({
+          resourceArn: eventStoreClusterArn,
+          secretArn: eventStoreSecretArn,
+          database: 'postgres',
+          sql: `DELETE FROM ${eventStoreDatabaseNameAsId}.${eventStoreSecretsTableNameAsId}
+                WHERE "id"=${escapeStr(secretId)}`,
+        })
+      }
+
+      const secretsToInsert: string[] = []
+      const secretsToDelete: string[] = []
+
+      const secretManager = await eventstoreAdapter.getSecretsManager()
+
+      for (const event of events) {
+        if (event.type === SET_SECRET_EVENT_TYPE) {
+          secretsToInsert.push(event.payload.id)
+        } else if (event.type === DELETE_SECRET_EVENT_TYPE) {
+          secretsToDelete.push(event.payload.id)
+        }
+      }
+      await Promise.all(secretsToInsert.map((id) => insertSecret(id)))
+      await Promise.all(secretsToDelete.map((id) => deleteSecret(id)))
+
       const eventPromises: Array<Promise<void>> = []
 
       let currentBatchSize = 0
@@ -318,35 +347,6 @@ const build: ExternalMethods['build'] = async (
       await Promise.all(eventPromises)
 
       nextCursor = newCursor
-
-      if (eventstoreAdapter.loadSecrets != null) {
-        const { secrets } = await eventstoreAdapter.loadSecrets({
-          skip: secretsToSkip,
-          limit: BATCH_SIZE_SECRETS,
-        })
-
-        if (secrets.length) {
-          console.log('Secrets: ', secrets)
-
-          const secretsInserts: string[] = secrets.map(
-            (secret) => `(${escapeStr(secret.id)},${escapeStr(secret.secret)})`
-          )
-
-          await rdsDataService.executeStatement({
-            resourceArn: eventStoreClusterArn,
-            secretArn: eventStoreSecretArn,
-            database: 'postgres',
-            sql: `INSERT INTO ${eventStoreDatabaseNameAsId}.${eventStoreSecretsTableNameAsId}(
-                "id",
-                "secret"
-            ) VALUES
-            ${secretsInserts.join(',')}`,
-          })
-
-          secretsToSkip += secrets.length
-          appliedSecretsCount = secrets.length
-        }
-      }
     } catch (error) {
       lastError = error
       console.error('RDS error:', lastError)
