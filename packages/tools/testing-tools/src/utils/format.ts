@@ -1,6 +1,6 @@
 import { diffJson } from 'diff'
 import colors from 'colors'
-import { Command } from '@resolve-js/core'
+import { Command, ReadModelQuery } from '@resolve-js/core'
 
 export const stringifyError = (error: any): string =>
   error == null ? 'no error' : error.toString()
@@ -25,3 +25,6 @@ export const stringifyDiff = (expected: any, result: any): string =>
 
 export const stringifyCommand = (command: Command): string =>
   JSON.stringify(command, null, 2)
+
+export const stringifyQuery = (query: ReadModelQuery): string =>
+  JSON.stringify(query, null, 2)

@@ -1,12 +1,12 @@
 import isEqual from 'lodash.isequal'
-import { Command } from '@resolve-js/core'
+import { ReadModelQuery } from '@resolve-js/core'
 import { SagaContext } from '../../types'
 import { makeAssertions, SagaAssertionsNode } from './make-assertions'
-import { stringifyCommand } from '../../utils/format'
+import { stringifyQuery } from '../../utils/format'
 
-export const shouldExecuteCommand = (
+export const shouldExecuteQuery = (
   context: SagaContext,
-  command: Command
+  query: ReadModelQuery
 ): SagaAssertionsNode => {
   const { environment } = context
 
@@ -22,7 +22,7 @@ export const shouldExecuteCommand = (
     }
 
     const index = result
-      ? result.commands.findIndex(([executed]) => isEqual(executed, command))
+      ? result.queries.findIndex((executed) => isEqual(executed, query))
       : -1
 
     if (index >= 0) {
@@ -30,7 +30,9 @@ export const shouldExecuteCommand = (
     }
     return reject(
       new Error(
-        `shouldExecuteCommand assertion failed:\n${stringifyCommand(command)}`
+        `shouldExecuteQuery assertion failed:\n${stringifyQuery(
+          query
+        )}`
       )
     )
   })

@@ -106,7 +106,7 @@ export const makeTestEnvironment = (
 
     const errors = []
     let executor = null
-    let result: QueryTestResult = undefined
+    let result: QueryTestResult | null = null
     const actualAssertion = assertion != null ? assertion : defaultAssertion
 
     try {

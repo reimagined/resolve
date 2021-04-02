@@ -30,6 +30,12 @@ describe('basic tests', () => {
             item: aggregateId,
           },
         })
+        await sideEffects.executeQuery({
+          modelName: 'model',
+          resolverName: 'test',
+          resolverArgs: { test: 'test' },
+          jwt: 'user',
+        })
       },
     },
     sideEffects: {
@@ -81,6 +87,46 @@ describe('basic tests', () => {
         payload: {
           item: 'aggregate-id',
         },
+      })
+  })
+
+  test('shouldExecuteQuery assertion', async () => {
+    await givenEvents([
+      {
+        type: 'ItemCreated',
+        aggregateId: 'aggregate-id',
+      },
+    ])
+      .saga(saga)
+      .shouldExecuteQuery({
+        modelName: 'model',
+        resolverName: 'test',
+        resolverArgs: { test: 'test' },
+        jwt: 'user',
+      })
+  })
+
+  test('shouldExecuteCommand & shouldExecuteQuery simultaneously', async () => {
+    await givenEvents([
+      {
+        type: 'ItemCreated',
+        aggregateId: 'aggregate-id',
+      },
+    ])
+      .saga(saga)
+      .shouldExecuteCommand({
+        type: 'create',
+        aggregateName: 'user',
+        aggregateId: 'id',
+        payload: {
+          item: 'aggregate-id',
+        },
+      })
+      .shouldExecuteQuery({
+        modelName: 'model',
+        resolverName: 'test',
+        resolverArgs: { test: 'test' },
+        jwt: 'user',
       })
   })
 })

@@ -1,7 +1,7 @@
 export function defaultAssertion<TResult>(
-  resolve: (result: TResult | null) => void,
+  resolve: (result: TResult) => void,
   reject: (error: Error) => void,
-  result: TResult | null,
+  result: TResult,
   error: any
 ): void {
   if (error != null) {

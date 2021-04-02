@@ -7,7 +7,6 @@ import {
 import { createQuery } from '@resolve-js/runtime'
 import {
   TestSaga,
-  QueryTestResult,
   SagaTestResult,
   TestEvent,
   TestSagaAssertion,
@@ -26,7 +25,7 @@ type SagaTestContext = {
   adapter?: any
   encryption?: EventHandlerEncryptionFactory
 }
-type TestCompleteCallback = (result: QueryTestResult) => void
+type TestCompleteCallback = (result: SagaTestResult) => void
 type TestFailureCallback = (error: Error) => void
 
 export type SagaTestEnvironment = {
@@ -39,16 +38,16 @@ export type SagaTestEnvironment = {
 }
 
 type PromisedAssertion = (
-  result: SagaTestResult | null,
+  result: SagaTestResult,
   error: Error | null
-) => Promise<SagaTestResult | null>
+) => Promise<SagaTestResult>
 
 const promisedAssertion = (
   assertion: TestSagaAssertion,
-  result: SagaTestResult | null,
+  result: SagaTestResult,
   error: Error | null
-): Promise<SagaTestResult | null> => {
-  return new Promise<SagaTestResult | null>((resolve, reject) =>
+): Promise<SagaTestResult> => {
+  return new Promise<SagaTestResult>((resolve, reject) =>
     assertion(resolve, reject, result, error, false)
   )
 }
@@ -74,10 +73,10 @@ export const makeTestEnvironment = (
     sideEffectsStartTimestamp = value
   }
   const addAssertion = (value: TestSagaAssertion) => {
-    assertions.push(partial(partial(promisedAssertion, value)))
+    assertions.push(partial(promisedAssertion, value))
   }
   const isExecuted = () => executed
-  const promise = new Promise<QueryTestResult>((resolve, reject) => {
+  const promise = new Promise<SagaTestResult>((resolve, reject) => {
     completeTest = resolve
     failTest = reject
   })
@@ -272,14 +271,14 @@ export const makeTestEnvironment = (
       if (assertions.length > 0) {
         try {
           await Promise.all(
-            assertions.map((assertion) => assertion(null, errors[0]))
+            assertions.map((assertion) => assertion(result, errors[0]))
           )
           failTest(errors[0])
         } catch (e) {
           failTest(e)
         }
       } else {
-        defaultAssertion(completeTest, failTest, null, errors[0])
+        defaultAssertion(completeTest, failTest, result, errors[0])
       }
     }
   }

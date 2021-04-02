@@ -8,7 +8,7 @@ import {
   ReadModelResolvers,
   ReadModel,
   SagaEventHandlers,
-  SagaSideEffects,
+  SagaSideEffects, ReadModelQueryResult, Command, ReadModelQuery, ViewModelQuery
 } from '@resolve-js/core'
 import { AggregateTestEnvironment } from './flow/aggregate/make-test-environment'
 import { ReadModelTestEnvironment } from './flow/read-model/make-test-environment'
@@ -30,9 +30,9 @@ export type TestEvent = Omit<
 }
 
 export type TestAssertion<TResult> = (
-  resolve: (result: TResult | null) => void,
+  resolve: (result: TResult) => void,
   reject: (error: Error) => void,
-  result: TResult | null,
+  result: TResult,
   error: any,
   negated: boolean
 ) => void
@@ -85,7 +85,7 @@ export type TestQuery = {
   args?: SerializableMap
 }
 
-export type QueryTestResult = any
+export type QueryTestResult = ReadModelQueryResult
 
 export type TestQueryAssertion = TestAssertion<QueryTestResult>
 
@@ -113,12 +113,12 @@ export type TestSaga<TSideEffects = any> = {
 export type TestSagaAssertion = TestAssertion<SagaTestResult>
 
 export type SagaTestResult = {
-  commands: any[]
+  commands: Array<[Command]>
   scheduledCommands: any[]
   // FIXME: deprecated
   scheduleCommands: any[]
   sideEffects: any[]
-  queries: any[]
+  queries: Array<ReadModelQuery | ViewModelQuery>
 }
 
 export type SagaContext = {

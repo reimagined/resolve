@@ -48,19 +48,25 @@ export type Encryption = {
   decrypt?: Decrypter
 }
 
-// Aggregate
+// TODO: move types from @resolve-js/client here?
 
-export type AggregateState = any
-
-export type AggregateEventHandler = (
-  state: AggregateState,
-  event: Event
-) => AggregateState
-
-export type CommandContext = {
+export type ReadModelQuery = {
+  modelName: string
+  resolverName: string
+  resolverArgs: Serializable
   jwt?: string
-  aggregateVersion: number
-} & Encryption
+  jwtToken?: string
+}
+
+export type ReadModelQueryResult = Serializable
+
+export type ViewModelQuery = {
+  modelName: string
+  aggregateIds: Array<string> | '*'
+  aggregateArgs: Serializable
+}
+
+export type ViewModelQueryResult = Serializable
 
 export type Command = {
   type: string
@@ -78,6 +84,20 @@ export type CommandResult = {
   aggregateId?: string
   aggregateVersion?: number
 }
+
+// Aggregate
+
+export type AggregateState = any
+
+export type AggregateEventHandler = (
+  state: AggregateState,
+  event: Event
+) => AggregateState
+
+export type CommandContext = {
+  jwt?: string
+  aggregateVersion: number
+} & Encryption
 
 export type AggregateProjection = {
   Init?: () => AggregateState
@@ -196,26 +216,6 @@ export type ViewModelResolverMap = {
 
 // Saga
 
-// TODO: move types from @resolve-js/client here?
-
-type ReadModelQuery = {
-  modelName: string
-  resolverName: string
-  resolverArgs: Serializable
-  jwt?: string
-  jwtToken?: string
-}
-
-type ReadModelQueryResult = Serializable
-
-type ViewModelQuery = {
-  modelName: string
-  aggregateIds: Array<string> | '*'
-  aggregateArgs: Serializable
-}
-
-type ViewModelQueryResult = Serializable
-
 export type SagaSideEffects = {
   executeCommand: (command: Command) => Promise<CommandResult>
   executeQuery: (
@@ -224,10 +224,6 @@ export type SagaSideEffects = {
   scheduleCommand: (timestamp: number, command: Command) => Promise<void>
   secretsManager: SecretsManager
   isEnabled: boolean
-}
-
-export type SagaProperties = {
-  [key: string]: string
 }
 
 export type SideEffectsCollection = {
