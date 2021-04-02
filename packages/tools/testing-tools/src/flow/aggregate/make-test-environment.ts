@@ -1,9 +1,10 @@
 import { initDomain, SecretsManager } from '@resolve-js/core'
 import { CommandExecutor, createCommand } from '@resolve-js/runtime'
+import { defaultAssertion } from '../../utils/assertions'
 import {
-  AggregateTestResult,
+  CommandTestResult,
   TestAggregate,
-  TestAggregateAssertion,
+  TestCommandAssertion,
   TestCommand,
   TestEvent,
 } from '../../types'
@@ -16,29 +17,16 @@ type AggregateTestContext = {
   aggregateId?: string
   command: TestCommand
 }
-type TestCompleteCallback = (result: AggregateTestResult) => void
+type TestCompleteCallback = (result: CommandTestResult) => void
 type TestFailureCallback = (error: Error) => void
 
 export type AggregateTestEnvironment = {
-  promise: Promise<AggregateTestResult>
+  promise: Promise<CommandTestResult>
   setAuthToken: (token: string) => void
   setSecretsManager: (manager: SecretsManager) => void
-  setAssertion: (assertion: TestAggregateAssertion) => void
-  getAssertion: () => TestAggregateAssertion
+  setAssertion: (assertion: TestCommandAssertion) => void
+  getAssertion: () => TestCommandAssertion
   isExecuted: () => boolean
-}
-
-const defaultAssertion: TestAggregateAssertion = (
-  resolve,
-  reject,
-  result,
-  error
-) => {
-  if (error != null) {
-    reject(error)
-  } else {
-    resolve(result)
-  }
 }
 
 export const makeTestEnvironment = (
@@ -46,7 +34,7 @@ export const makeTestEnvironment = (
 ): AggregateTestEnvironment => {
   let executed = false
   let authToken: string
-  let assertion: TestAggregateAssertion
+  let assertion: TestCommandAssertion
   let secretsManager: SecretsManager = getSecretsManager()
   let completeTest: TestCompleteCallback
   let failTest: TestFailureCallback
@@ -57,14 +45,14 @@ export const makeTestEnvironment = (
   const setSecretsManager = (value: SecretsManager) => {
     secretsManager = value
   }
-  const setAssertion = (value: TestAggregateAssertion) => {
+  const setAssertion = (value: TestCommandAssertion) => {
     assertion = value
   }
   const getAssertion = () => {
     return assertion
   }
   const isExecuted = () => executed
-  const promise = new Promise<AggregateTestResult>((resolve, reject) => {
+  const promise = new Promise<CommandTestResult>((resolve, reject) => {
     completeTest = resolve
     failTest = reject
   })
@@ -117,7 +105,7 @@ export const makeTestEnvironment = (
         jwt: authToken,
       })
 
-      const testResult: AggregateTestResult = {
+      const testResult: CommandTestResult = {
         type: commandResult.type,
       }
 

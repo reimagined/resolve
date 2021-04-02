@@ -1,14 +1,14 @@
 import isEqual from 'lodash.isequal'
-import { CommandTestResult, CommandContext } from '../../types'
+import { QueryTestResult, QueryContext } from '../../types'
 import { stringifyDiff } from '../../utils/format'
 
-type ShouldProduceEventNode = Promise<CommandTestResult>
-type ExpectedEvent = CommandTestResult
+type ShouldReturnNode = Promise<QueryTestResult>
+type ExpectedResult = QueryTestResult
 
-export const shouldProduceEvent = (
-  context: CommandContext,
-  expectedEvent: ExpectedEvent
-): ShouldProduceEventNode => {
+export const shouldReturn = (
+  context: QueryContext,
+  expectedResult: ExpectedResult
+): ShouldReturnNode => {
   const { environment } = context
 
   if (environment.isExecuted()) {
@@ -21,14 +21,14 @@ export const shouldProduceEvent = (
   environment.setAssertion((resolve, reject, result, error) => {
     if (error) {
       return reject(
-        new Error(`expected an event, but received an error ${error}`)
+        new Error(`expected a value, but received an error ${error}`)
       )
     }
-    if (!isEqual(result, expectedEvent)) {
+    if (!isEqual(result, expectedResult)) {
       return reject(
         new Error(
-          `shouldProduceEvent assertion failed:\n ${stringifyDiff(
-            expectedEvent,
+          `shouldReturn assertion failed:\n ${stringifyDiff(
+            expectedResult,
             result
           )}`
         )

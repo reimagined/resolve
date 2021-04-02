@@ -3,6 +3,7 @@ import partial from 'lodash.partial'
 import { QueryContext } from '../../types'
 import { QueryNode } from './query'
 import { as } from './as'
+import { shouldReturn } from './should-return'
 
 type WithSecretsManagerNode = Omit<
   QueryNode,
@@ -23,6 +24,7 @@ export const withSecretsManager = (
 
   return Object.assign(environment.promise, {
     as: partial(as, context),
+    shouldReturn: partial(shouldReturn, context),
   })
 }
 

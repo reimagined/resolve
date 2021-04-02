@@ -2,7 +2,7 @@ import { SerializableMap } from '@resolve-js/core'
 import partial from 'lodash.partial'
 import {
   AggregateContext,
-  AggregateTestResult,
+  CommandTestResult,
   OmitFirstArgument,
   TestCommand,
 } from '../../types'
@@ -22,7 +22,7 @@ export type CommandNode = {
   withSecretsManager: OmitFirstArgument<typeof withSecretsManager>
   setSecretsManager: OmitFirstArgument<typeof setSecretsManager>
 } & AssertionsNode &
-  Promise<AggregateTestResult>
+  Promise<CommandTestResult>
 
 export const command = (
   context: AggregateContext,

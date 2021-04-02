@@ -10,11 +10,13 @@ import {
 import { as } from './as'
 import { setSecretsManager, withSecretsManager } from './with-secrets-manager'
 import { makeTestEnvironment } from './make-test-environment'
+import { shouldReturn } from './should-return'
 
 export type QueryNode = {
   as: OmitFirstArgument<typeof as>
   withSecretsManager: OmitFirstArgument<typeof withSecretsManager>
   setSecretsManager: OmitFirstArgument<typeof setSecretsManager>
+  shouldReturn: OmitFirstArgument<typeof shouldReturn>
 } & Promise<QueryTestResult>
 
 export const query = (
@@ -39,5 +41,6 @@ export const query = (
     as: partial(as, context),
     withSecretsManager: partial(withSecretsManager, context),
     setSecretsManager: partial(setSecretsManager, context),
+    shouldReturn: partial(shouldReturn, context),
   })
 }

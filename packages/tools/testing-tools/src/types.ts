@@ -3,7 +3,6 @@ import {
   Aggregate,
   AggregateEncryptionFactory,
   AggregateProjection,
-  CommandResult,
   SerializableMap,
   EventHandlerEncryptionFactory,
   ReadModelResolvers,
@@ -30,6 +29,13 @@ export type TestEvent = Omit<
   aggregateId?: string
 }
 
+export type TestAssertion<TResult> = (
+  resolve: (result: TResult | null) => void,
+  reject: (error: Error) => void,
+  result: TResult | null,
+  error: any
+) => void
+
 export type TestAggregate = {
   name: string
   projection: AggregateProjection
@@ -37,17 +43,17 @@ export type TestAggregate = {
   encryption?: AggregateEncryptionFactory
 }
 
-export type TestAggregateAssertion = (
-  resolve: Function,
-  reject: Function,
-  result: CommandResult | null,
-  error: any
-) => void
-
 export type TestCommand = {
   name: string
   payload?: SerializableMap
 }
+
+export type CommandTestResult = {
+  type: string
+  payload?: SerializableMap
+} | null
+
+export type TestCommandAssertion = TestAssertion<CommandTestResult>
 
 export type GivenEventsContext = {
   events: TestEvent[]
@@ -62,11 +68,6 @@ export type CommandContext = {
   command: TestCommand
   environment: AggregateTestEnvironment
 } & AggregateContext
-
-export type AggregateTestResult = {
-  type: string
-  payload?: SerializableMap
-}
 
 export type TestReadModel = {
   name: string
@@ -84,6 +85,8 @@ export type TestQuery = {
 }
 
 export type QueryTestResult = any
+
+export type TestQueryAssertion = TestAssertion<QueryTestResult>
 
 export type ReadModelContext = {
   readModel: TestReadModel

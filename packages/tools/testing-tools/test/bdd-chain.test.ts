@@ -1,5 +1,5 @@
 import givenEvents from '../src/index'
-import { BDDAggregate } from '../types'
+import { TestAggregate } from '../types'
 import {
   AggregateState,
   EventHandlerEncryptionFactory,
@@ -35,7 +35,7 @@ describe('givenEvents', () => {
 })
 
 describe('aggregate', () => {
-  const aggregate: BDDAggregate = {
+  const aggregate: TestAggregate = {
     name: 'user',
     projection: {
       Init: (): AggregateState => ({

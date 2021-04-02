@@ -10,10 +10,12 @@ import {
   QueryTestResult,
   TestEvent,
   TestQuery,
+  TestQueryAssertion,
 } from '../../types'
 import { getSecretsManager } from '../../runtime/get-secrets-manager'
 import { getEventStore } from '../../runtime/get-event-store'
 import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
+import { defaultAssertion } from '../../utils/assertions'
 
 type ReadModelTestContext = {
   readModel: TestReadModel
@@ -29,6 +31,8 @@ export type ReadModelTestEnvironment = {
   promise: Promise<QueryTestResult>
   setAuthToken: (token: string) => void
   setSecretsManager: (manager: SecretsManager) => void
+  setAssertion: (assertion: TestQueryAssertion) => void
+  getAssertion: () => TestQueryAssertion
   isExecuted: () => boolean
 }
 
@@ -37,6 +41,7 @@ export const makeTestEnvironment = (
 ): ReadModelTestEnvironment => {
   let executed = false
   let authToken: string
+  let assertion: TestQueryAssertion
   let secretsManager: SecretsManager = getSecretsManager()
   let completeTest: TestCompleteCallback
   let failTest: TestFailureCallback
@@ -46,6 +51,12 @@ export const makeTestEnvironment = (
   }
   const setSecretsManager = (value: SecretsManager) => {
     secretsManager = value
+  }
+  const setAssertion = (value: TestQueryAssertion) => {
+    assertion = value
+  }
+  const getAssertion = () => {
+    return assertion
   }
   const isExecuted = () => executed
   const promise = new Promise<QueryTestResult>((resolve, reject) => {
@@ -89,6 +100,7 @@ export const makeTestEnvironment = (
     const errors = []
     let executor = null
     let result: QueryTestResult = undefined
+    const actualAssertion = assertion != null ? assertion : defaultAssertion
 
     try {
       executor = createQuery({
@@ -202,7 +214,7 @@ export const makeTestEnvironment = (
     }
 
     if (errors.length === 0) {
-      completeTest(result)
+      return actualAssertion(completeTest, failTest, result, null)
     } else {
       let summaryError = errors[0]
       if (errors.length > 1) {
@@ -212,7 +224,7 @@ export const makeTestEnvironment = (
       // eslint-disable-next-line no-console
       console.error(summaryError)
 
-      failTest(errors[0])
+      return actualAssertion(completeTest, failTest, null, errors[0])
     }
   }
 
@@ -221,6 +233,8 @@ export const makeTestEnvironment = (
   return {
     setAuthToken,
     setSecretsManager,
+    setAssertion,
+    getAssertion,
     isExecuted,
     promise,
   }

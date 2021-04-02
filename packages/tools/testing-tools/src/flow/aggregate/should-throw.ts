@@ -1,8 +1,8 @@
 import isEqual from 'lodash.isequal'
-import { AggregateTestResult, CommandContext } from '../../types'
+import { CommandTestResult, CommandContext } from '../../types'
 import { stringifyError } from '../../utils/format'
 
-type ShouldThrowNode = Promise<AggregateTestResult>
+type ShouldThrowNode = Promise<CommandTestResult>
 
 export const shouldThrow = (
   context: CommandContext,
