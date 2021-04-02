@@ -21,28 +21,26 @@ Object {
 exports[`Saga with sideEffects.isEnabled = true forgotten registration 1`] = `
 Object {
   "commands": Array [
-    Array [
-      Object {
-        "aggregateId": "userId",
-        "aggregateName": "User",
-        "payload": Object {
-          "mail": "user@example.com",
-        },
-        "type": "requestConfirmUser",
+    Object {
+      "aggregateId": "userId",
+      "aggregateName": "User",
+      "payload": Object {
+        "mail": "user@example.com",
       },
-    ],
+      "type": "requestConfirmUser",
+    },
   ],
   "queries": Array [],
   "scheduledCommands": Array [
-    Array [
-      604800002,
-      Object {
+    Object {
+      "command": Object {
         "aggregateId": "userId",
         "aggregateName": "User",
         "payload": Object {},
         "type": "forgetUser",
       },
-    ],
+      "date": 604800002,
+    },
   ],
   "sideEffects": Array [
     Array [
@@ -60,28 +58,26 @@ Object {
 exports[`Saga with sideEffects.isEnabled = true success registration 1`] = `
 Object {
   "commands": Array [
-    Array [
-      Object {
-        "aggregateId": "userId",
-        "aggregateName": "User",
-        "payload": Object {
-          "mail": "user@example.com",
-        },
-        "type": "requestConfirmUser",
+    Object {
+      "aggregateId": "userId",
+      "aggregateName": "User",
+      "payload": Object {
+        "mail": "user@example.com",
       },
-    ],
+      "type": "requestConfirmUser",
+    },
   ],
   "queries": Array [],
   "scheduledCommands": Array [
-    Array [
-      604800002,
-      Object {
+    Object {
+      "command": Object {
         "aggregateId": "userId",
         "aggregateName": "User",
         "payload": Object {},
         "type": "forgetUser",
       },
-    ],
+      "date": 604800002,
+    },
   ],
   "sideEffects": Array [
     Array [

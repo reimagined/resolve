@@ -22,7 +22,7 @@ export const shouldExecuteCommand = (
     }
 
     const index = result
-      ? result.commands.findIndex(([executed]) => isEqual(executed, command))
+      ? result.commands.findIndex((executed) => isEqual(executed, command))
       : -1
 
     if (index >= 0) {

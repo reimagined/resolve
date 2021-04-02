@@ -8,12 +8,13 @@ const executeCommand = (
   command: Command
 ) => {
   if (command.aggregateName === schedulerName) {
-    buffer.scheduledCommands.push([
-      command.payload.date,
-      command.payload.command,
-    ])
+    const payload = command.payload
+    buffer.scheduledCommands.push({
+      date: payload.date,
+      command: payload.command,
+    })
   } else {
-    buffer.commands.push([command])
+    buffer.commands.push(command)
   }
 }
 const executeQuery = (buffer: SagaTestResult, query: any) => {

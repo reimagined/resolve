@@ -59,7 +59,7 @@ describe('Saga', () => {
         .withAdapter(adapter)
         .allowSideEffects()
 
-      expect(result.commands[0][0].type).toEqual('increment')
+      expect(result.commands[0].type).toEqual('increment')
     })
 
     test('success decrement', async () => {
@@ -76,7 +76,7 @@ describe('Saga', () => {
         .withAdapter(adapter)
         .allowSideEffects()
 
-      expect(result.commands[0][0].type).toEqual('decrement')
+      expect(result.commands[0].type).toEqual('decrement')
     })
   })
 

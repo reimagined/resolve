@@ -112,13 +112,18 @@ export type TestSaga<TSideEffects = any> = {
 
 export type TestSagaAssertion = TestAssertion<SagaTestResult>
 
+export type ScheduledCommand = {
+  date: number
+  command: Command
+}
+
 export type SagaTestResult = {
-  commands: Array<[Command]>
-  scheduledCommands: any[]
-  // FIXME: deprecated
-  scheduleCommands: any[]
+  commands: Array<Command>
+  scheduledCommands: Array<ScheduledCommand>
   sideEffects: any[]
   queries: Array<ReadModelQuery | ViewModelQuery>
+  // FIXME: deprecated
+  scheduleCommands: any[]
 }
 
 export type SagaContext = {
