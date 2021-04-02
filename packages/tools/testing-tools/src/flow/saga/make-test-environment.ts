@@ -6,7 +6,7 @@ import {
 } from '@resolve-js/core'
 import { createQuery } from '@resolve-js/runtime'
 import {
-  BDDSaga,
+  TestSaga,
   QueryTestResult,
   SagaTestResult,
   TestEvent,
@@ -18,7 +18,7 @@ import { mockSideEffects } from '../../runtime/mock-side-effects'
 import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
 
 type SagaTestContext = {
-  saga: BDDSaga
+  saga: TestSaga
   events: TestEvent[]
   adapter?: any
   encryption?: EventHandlerEncryptionFactory

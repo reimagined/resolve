@@ -5,7 +5,7 @@ import {
   EventHandlerEncryptionFactory,
   SecretsManager,
 } from '@resolve-js/core'
-import { BDDReadModel } from '../src/types'
+import { TestReadModel } from '../src/types'
 
 let consoleSpy: jest.SpyInstance
 
@@ -117,7 +117,7 @@ describe('aggregate', () => {
 })
 
 describe('read model', () => {
-  const readModel: BDDReadModel = {
+  const readModel: TestReadModel = {
     name: 'readModelName',
     projection: {
       Init: jest.fn(),

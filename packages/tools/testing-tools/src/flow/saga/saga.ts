@@ -1,6 +1,6 @@
 import partial from 'lodash.partial'
 import {
-  BDDSaga,
+  TestSaga,
   GivenEventsContext,
   OmitFirstArgument,
   SagaContext,
@@ -23,7 +23,7 @@ export type SagaNode = {
 
 export const saga = (
   givenEventsContext: GivenEventsContext,
-  saga: BDDSaga
+  saga: TestSaga
 ): SagaNode => {
   const context: SagaContext = {
     ...givenEventsContext,

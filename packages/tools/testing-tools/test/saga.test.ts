@@ -1,4 +1,4 @@
-import { BDDSaga } from '../src/types'
+import { TestSaga } from '../src/types'
 import givenEvents from '../src/index'
 
 let warnSpy: jest.SpyInstance
@@ -15,7 +15,7 @@ afterAll(() => {
 })
 
 describe('basic tests', () => {
-  const saga: BDDSaga<{
+  const saga: TestSaga<{
     failure: (error: string) => Promise<void>
   }> = {
     name: 'TEST-SAGA',

@@ -1,6 +1,6 @@
 import partial from 'lodash.partial'
 import {
-  BDDReadModel,
+  TestReadModel,
   GivenEventsContext,
   OmitFirstArgument,
   ReadModelContext,
@@ -22,7 +22,7 @@ export type ReadModelNode = {
 
 // FIXME: deprecated
 const makeDeprecatedResolverMap = (
-  readModel: BDDReadModel,
+  readModel: TestReadModel,
   bindResolver: OmitFirstArgument<typeof query>
 ) =>
   Object.keys(readModel.resolvers).reduce<DeprecatedResolverMap>(
@@ -41,7 +41,7 @@ const makeDeprecatedResolverMap = (
 
 export const readModel = (
   givenEventsContext: GivenEventsContext,
-  readModel: BDDReadModel
+  readModel: TestReadModel
 ): ReadModelNode => {
   const context: ReadModelContext = {
     ...givenEventsContext,

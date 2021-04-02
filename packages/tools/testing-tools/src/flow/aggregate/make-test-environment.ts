@@ -2,8 +2,8 @@ import { initDomain, SecretsManager } from '@resolve-js/core'
 import { CommandExecutor, createCommand } from '@resolve-js/runtime'
 import {
   AggregateTestResult,
-  BDDAggregate,
-  BDDAggregateAssertion,
+  TestAggregate,
+  TestAggregateAssertion,
   TestCommand,
   TestEvent,
 } from '../../types'
@@ -11,7 +11,7 @@ import { getSecretsManager } from '../../runtime/get-secrets-manager'
 import { getEventStore } from '../../runtime/get-event-store'
 
 type AggregateTestContext = {
-  aggregate: BDDAggregate
+  aggregate: TestAggregate
   events: TestEvent[]
   aggregateId?: string
   command: TestCommand
@@ -23,12 +23,12 @@ export type AggregateTestEnvironment = {
   promise: Promise<AggregateTestResult>
   setAuthToken: (token: string) => void
   setSecretsManager: (manager: SecretsManager) => void
-  setAssertion: (assertion: BDDAggregateAssertion) => void
-  getAssertion: () => BDDAggregateAssertion
+  setAssertion: (assertion: TestAggregateAssertion) => void
+  getAssertion: () => TestAggregateAssertion
   isExecuted: () => boolean
 }
 
-const defaultAssertion: BDDAggregateAssertion = (
+const defaultAssertion: TestAggregateAssertion = (
   resolve,
   reject,
   result,
@@ -46,7 +46,7 @@ export const makeTestEnvironment = (
 ): AggregateTestEnvironment => {
   let executed = false
   let authToken: string
-  let assertion: BDDAggregateAssertion
+  let assertion: TestAggregateAssertion
   let secretsManager: SecretsManager = getSecretsManager()
   let completeTest: TestCompleteCallback
   let failTest: TestFailureCallback
@@ -57,7 +57,7 @@ export const makeTestEnvironment = (
   const setSecretsManager = (value: SecretsManager) => {
     secretsManager = value
   }
-  const setAssertion = (value: BDDAggregateAssertion) => {
+  const setAssertion = (value: TestAggregateAssertion) => {
     assertion = value
   }
   const getAssertion = () => {

@@ -30,14 +30,14 @@ export type TestEvent = Omit<
   aggregateId?: string
 }
 
-export type BDDAggregate = {
+export type TestAggregate = {
   name: string
   projection: AggregateProjection
   commands: Aggregate
   encryption?: AggregateEncryptionFactory
 }
 
-export type BDDAggregateAssertion = (
+export type TestAggregateAssertion = (
   resolve: Function,
   reject: Function,
   result: CommandResult | null,
@@ -54,7 +54,7 @@ export type GivenEventsContext = {
 }
 
 export type AggregateContext = {
-  aggregate: BDDAggregate
+  aggregate: TestAggregate
   aggregateId?: string
 } & GivenEventsContext
 
@@ -68,7 +68,7 @@ export type AggregateTestResult = {
   payload?: SerializableMap
 }
 
-export type BDDReadModel = {
+export type TestReadModel = {
   name: string
   projection: ReadModel<any>
   resolvers: ReadModelResolvers<any>
@@ -86,7 +86,7 @@ export type TestQuery = {
 export type QueryTestResult = any
 
 export type ReadModelContext = {
-  readModel: BDDReadModel
+  readModel: TestReadModel
   adapter?: any
   encryption?: EventHandlerEncryptionFactory
 } & GivenEventsContext
@@ -96,7 +96,7 @@ export type QueryContext = {
   environment: ReadModelTestEnvironment
 } & ReadModelContext
 
-export type BDDSaga<TSideEffects = any> = {
+export type TestSaga<TSideEffects = any> = {
   name: string
   handlers: SagaEventHandlers<any, SagaSideEffects & TSideEffects>
   sideEffects: TSideEffects
@@ -116,7 +116,7 @@ export type SagaTestResult = {
 }
 
 export type SagaContext = {
-  saga: BDDSaga
+  saga: TestSaga
   adapter?: any
   encryption?: EventHandlerEncryptionFactory
   environment: SagaTestEnvironment

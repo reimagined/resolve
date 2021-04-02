@@ -6,7 +6,7 @@ import {
 } from '@resolve-js/core'
 import { createQuery } from '@resolve-js/runtime'
 import {
-  BDDReadModel,
+  TestReadModel,
   QueryTestResult,
   TestEvent,
   TestQuery,
@@ -16,7 +16,7 @@ import { getEventStore } from '../../runtime/get-event-store'
 import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
 
 type ReadModelTestContext = {
-  readModel: BDDReadModel
+  readModel: TestReadModel
   events: TestEvent[]
   query: TestQuery
   adapter?: any

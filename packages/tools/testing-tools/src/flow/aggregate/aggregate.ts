@@ -1,6 +1,6 @@
 import partial from 'lodash.partial'
 import {
-  BDDAggregate,
+  TestAggregate,
   GivenEventsContext,
   OmitFirstArgument,
 } from '../../types'
@@ -12,7 +12,7 @@ type AggregateNode = {
 
 export const aggregate = (
   context: GivenEventsContext,
-  aggregate: BDDAggregate,
+  aggregate: TestAggregate,
   aggregateId?: string
 ): AggregateNode => {
   const aggregateContext = {

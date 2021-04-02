@@ -1,4 +1,4 @@
-import givenEvents, { BDDAggregate } from '../src/index'
+import givenEvents, { TestAggregate } from '../src/index'
 import { Event, EventHandlerEncryptionContext } from '@resolve-js/core'
 
 const ProjectionError = (function (this: Error, message: string): void {
@@ -246,7 +246,7 @@ describe('aggregate', () => {
     exist: boolean
     id?: string
   }
-  const aggregate: BDDAggregate = {
+  const aggregate: TestAggregate = {
     name: 'user',
     projection: {
       Init: (): AggregateState => ({
