@@ -120,7 +120,7 @@ export type ScheduledCommand = {
 export type SagaTestResult = {
   commands: Array<Command>
   scheduledCommands: Array<ScheduledCommand>
-  sideEffects: any[]
+  sideEffects: Array<[string, ...any[]]>
   queries: Array<ReadModelQuery | ViewModelQuery>
   // FIXME: deprecated
   scheduleCommands: any[]

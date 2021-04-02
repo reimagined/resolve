@@ -8,8 +8,10 @@ export const mockSideEffects = (
   if (sideEffects != null) {
     return Object.keys(sideEffects).reduce<SideEffectsCollection>(
       (mock, name) => {
-        mock[name] = async (...args: any[]) =>
+        mock[name] = async (...args: any[]) => {
+          args.pop() // remove context provided by saga
           buffer.sideEffects.push([name, ...args])
+        }
         return mock
       },
       {}

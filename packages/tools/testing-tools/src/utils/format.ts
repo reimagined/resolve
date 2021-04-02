@@ -28,3 +28,7 @@ export const stringifyCommand = (command: Command): string =>
 
 export const stringifyQuery = (query: ReadModelQuery): string =>
   JSON.stringify(query, null, 2)
+
+export const stringifySideEffectInvocation = ([name, ...args]: Array<
+  [string, ...any[]]
+>) => `${name}(${args.map((arg) => JSON.stringify(arg)).join(',')})`
