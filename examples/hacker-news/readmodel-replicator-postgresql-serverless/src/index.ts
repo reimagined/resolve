@@ -70,22 +70,6 @@ const internalMethods: InternalMethods = {
   escapeStr,
 }
 
-const getProperty = (async (...args) => {
-  return null
-}) as ExternalMethods['getProperty']
-
-const listProperties = (async (...args) => {
-  return null
-}) as ExternalMethods['listProperties']
-
-const deleteProperty = (async (...args) => {
-  return
-}) as ExternalMethods['deleteProperty']
-
-const setProperty = (async (...args) => {
-  return
-}) as ExternalMethods['setProperty']
-
 const subscribe = (async (...args) => {
   return
 }) as ExternalMethods['subscribe']
@@ -94,10 +78,6 @@ const externalMethods: ExternalMethods = {
   subscribe,
   resubscribe,
   unsubscribe,
-  deleteProperty,
-  getProperty,
-  listProperties,
-  setProperty,
   resume,
   pause,
   reset,

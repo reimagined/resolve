@@ -97,7 +97,6 @@ const status: ExternalMethods['status'] = async (pool, readModelName) => {
 
   const result: ReadModelStatus = {
     eventSubscriber: '',
-    properties: null,
     deliveryStrategy: 'inline-ledger',
     successEvent: lastEvent,
     failedEvent: null,
