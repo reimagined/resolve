@@ -113,9 +113,9 @@ export const makeTestEnvironment = (
         testResult.payload = commandResult.payload
       }
 
-      return actualAssertion(completeTest, failTest, testResult, null)
+      return actualAssertion(completeTest, failTest, testResult, null, false)
     } catch (error) {
-      return actualAssertion(completeTest, failTest, null, error)
+      return actualAssertion(completeTest, failTest, null, error, false)
     } finally {
       if (executor) {
         await executor.dispose()

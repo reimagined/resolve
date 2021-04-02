@@ -33,7 +33,8 @@ export type TestAssertion<TResult> = (
   resolve: (result: TResult | null) => void,
   reject: (error: Error) => void,
   result: TResult | null,
-  error: any
+  error: any,
+  negated: boolean
 ) => void
 
 export type TestAggregate = {

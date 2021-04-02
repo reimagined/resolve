@@ -94,6 +94,16 @@ describe('basic tests', () => {
       .query('get', { id: 2 })
       .shouldReturn({ name: 'test-name' })
   })
+
+  test('negated shouldReturn assertion', async () => {
+    await givenEvents([
+      { aggregateId: 'id2', type: 'TEST2', payload: { name: 'test-name-1' } },
+    ])
+      .readModel(readModel)
+      .query('get', { id: 2 })
+      .not()
+      .shouldReturn({ name: 'test-name' })
+  })
 })
 
 describe('advanced', () => {

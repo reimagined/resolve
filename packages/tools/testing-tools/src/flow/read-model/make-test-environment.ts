@@ -33,6 +33,8 @@ export type ReadModelTestEnvironment = {
   setSecretsManager: (manager: SecretsManager) => void
   setAssertion: (assertion: TestQueryAssertion) => void
   getAssertion: () => TestQueryAssertion
+  negateAssertion: () => void
+  isAssertionNegated: () => boolean
   isExecuted: () => boolean
 }
 
@@ -42,6 +44,7 @@ export const makeTestEnvironment = (
   let executed = false
   let authToken: string
   let assertion: TestQueryAssertion
+  let assertionNegated = false
   let secretsManager: SecretsManager = getSecretsManager()
   let completeTest: TestCompleteCallback
   let failTest: TestFailureCallback
@@ -58,6 +61,10 @@ export const makeTestEnvironment = (
   const getAssertion = () => {
     return assertion
   }
+  const negateAssertion = () => {
+    assertionNegated = true
+  }
+  const isAssertionNegated = () => assertionNegated
   const isExecuted = () => executed
   const promise = new Promise<QueryTestResult>((resolve, reject) => {
     completeTest = resolve
@@ -214,7 +221,13 @@ export const makeTestEnvironment = (
     }
 
     if (errors.length === 0) {
-      return actualAssertion(completeTest, failTest, result, null)
+      return actualAssertion(
+        completeTest,
+        failTest,
+        result,
+        null,
+        assertionNegated
+      )
     } else {
       let summaryError = errors[0]
       if (errors.length > 1) {
@@ -224,7 +237,13 @@ export const makeTestEnvironment = (
       // eslint-disable-next-line no-console
       console.error(summaryError)
 
-      return actualAssertion(completeTest, failTest, null, errors[0])
+      return actualAssertion(
+        completeTest,
+        failTest,
+        null,
+        errors[0],
+        assertionNegated
+      )
     }
   }
 
@@ -235,6 +254,8 @@ export const makeTestEnvironment = (
     setSecretsManager,
     setAssertion,
     getAssertion,
+    negateAssertion,
+    isAssertionNegated,
     isExecuted,
     promise,
   }
