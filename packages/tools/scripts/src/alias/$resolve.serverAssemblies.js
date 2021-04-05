@@ -1,32 +1,67 @@
-export default () => `
+export default () => ` 
   import '$resolve.guardOnlyServer'
-  import serverImports from '$resolve.serverImports'
-  import seedClientEnvs from '$resolve.seedClientEnvs'
-  import eventstoreAdapter from '$resolve.eventstoreAdapter'
-  import readModelConnectors from '$resolve.readModelConnectors'
+  import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"
   import constants from '$resolve.constants'
-  import apiHandlers from '$resolve.apiHandlers'
-  import aggregates from '$resolve.aggregates'
-  import readModels from '$resolve.readModels'
-  import viewModels from '$resolve.viewModels'
-  import sagas from '$resolve.sagas'
-  import uploadAdapter from '$resolve.uploadAdapter'
 
-  export default {
-    assemblies: {
-      seedClientEnvs,
-      eventstoreAdapter,
-      readModelConnectors,
-      serverImports,
-      uploadAdapter
+  const assemblies = Object.create(null, {
+    seedClientEnvs: { 
+      get() { 
+        return require('$resolve.seedClientEnvs').default
+      }
     },
-    constants,
-    domain: {
-      apiHandlers,
-      aggregates,
-      readModels,
-      viewModels,
-      sagas
+    eventstoreAdapter: {
+      get() { 
+        return require('$resolve.eventstoreAdapter').default
+      } 
+    },
+    readModelConnectors: {
+      get() { 
+        return require('$resolve.readModelConnectors').default
+      }
+    },
+    serverImports: {
+      get() { 
+        return require('$resolve.serverImports').default
+      }
+    },
+    uploadAdapter: {
+      get() { 
+        return require('$resolve.uploadAdapter').default
+      }
     }
-  }
+  })
+  
+  const domain = Object.create(null, {
+    apiHandlers: {
+      get() { 
+        return require('$resolve.apiHandlers').default
+      }
+    },
+    aggregates: {
+      get() { 
+        return require('$resolve.aggregates').default
+      }
+    },
+    readModels: {
+      get() { 
+        return require('$resolve.readModels').default
+      }
+    },
+    viewModels: {
+      get() { 
+        return require('$resolve.viewModels').default
+      }
+    },
+    sagas: {
+      get() { 
+        return require('$resolve.sagas').default
+      }
+    }
+  })
+  
+  export default { 
+    assemblies, 
+    constants, 
+    domain 
+  } 
 `
