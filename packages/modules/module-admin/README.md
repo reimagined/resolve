@@ -1,6 +1,6 @@
 # **@resolve-js/module-admin**
 
-[![npm version](https://badge.fury.io/js/@resolve-js/module-admin.svg)](https://badge.fury.io/js/@resolve-js/module-admin)
+[![npm version](https://badge.fury.io/js/%40resolve-js%2Fmodule-admin.svg)](https://badge.fury.io/js/%40resolve-js%2Fmodule-admin)
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-@resolve-js/module-admin-readme?pixel)
 
 ## Manage Application

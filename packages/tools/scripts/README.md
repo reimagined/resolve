@@ -1,6 +1,6 @@
 # **@resolve-js/scripts**
 
-[![npm version](https://badge.fury.io/js/@resolve-js/scripts.svg)](https://badge.fury.io/js/@resolve-js/scripts)
+[![npm version](https://badge.fury.io/js/%40resolve-js%2Fscripts.svg)](https://badge.fury.io/js/%40resolve-js%2Fscripts)
 
 This package includes scripts and configuration for the [create-resolve-app](../../core/create-resolve-app) package.
 

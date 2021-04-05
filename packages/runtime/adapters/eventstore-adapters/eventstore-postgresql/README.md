@@ -1,6 +1,6 @@
 # **@resolve-js/eventstore-postgresql**
 
-[![npm version](https://badge.fury.io/js/@resolve-js/eventstore-postgresql.svg)](https://badge.fury.io/js/@resolve-js/eventstore-postgresql)
+[![npm version](https://badge.fury.io/js/%40resolve-js%2Feventstore-postgresql.svg)](https://badge.fury.io/js/%40resolve-js%2Feventstore-postgresql)
 
 This package is a eventstore adapter for storing events using PostgreSQL 10.7.
 
