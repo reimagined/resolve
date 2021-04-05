@@ -27,7 +27,10 @@ export type PerformanceTracer = {
 }
 
 export type Monitoring = {
-  error?: (error: Error, part: string, meta: any) => Promise<void>
+  error?: (error: Error, part: string, meta: any) => void
+  time?: (name: string, timestamp?: number) => void
+  timeEnd?: (name: string, timestamp?: number) => void
+  sendSummary?: () => Promise<void>
   performance?: PerformanceTracer
 }
 
