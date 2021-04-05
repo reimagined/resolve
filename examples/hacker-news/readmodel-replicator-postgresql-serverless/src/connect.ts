@@ -1,26 +1,10 @@
 import type {
   CurrentConnectMethod,
-  MakeNestedPathMethod,
   WrapHighloadMethod,
   HighloadMethodParameters,
   HighloadMethodReturnType,
   HighloadRdsDataService,
 } from './types'
-
-const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
-  const jsonPathParts = []
-  for (const part of nestedPath) {
-    if (part == null || part.constructor !== String) {
-      throw new Error('Invalid JSON path')
-    }
-    if (!isNaN(+part)) {
-      jsonPathParts.push(String(+part))
-    } else {
-      jsonPathParts.push(JSON.stringify(part))
-    }
-  }
-  return `{${jsonPathParts.join(',')}}`
-}
 
 const wrapHighload: WrapHighloadMethod = async (
   isHighloadError,
@@ -73,7 +57,6 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     dbClusterOrInstanceArn,
     awsSecretStoreArn,
     targetEventStore,
-    makeNestedPath,
     ...imports,
   })
 }

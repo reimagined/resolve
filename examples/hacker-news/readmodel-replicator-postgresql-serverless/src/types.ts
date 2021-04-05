@@ -28,7 +28,6 @@ export type LibDependencies = {
 }
 
 export type FullJitterMethod = (retries: number) => Promise<void>
-export type MakeNestedPathMethod = (nestedPath: Array<string>) => string
 export type EscapeableMethod = (str: string) => string
 
 export type IsRdsServiceErrorMethod = (
@@ -131,23 +130,6 @@ export type InternalMethods = {
 
 export type ArrayOrSingleOrNull<T> = Array<T> | T | null
 
-export type UpdateFieldDescriptor = {
-  [K in ObjectFixedKeys<ObjectFixedIntersectionToObject<UpdateCondition>>]:
-    | ObjectFixedIntersectionToObject<UpdateCondition>[K][string]
-    | null
-} & {
-  key: string
-  nestedKey: string[]
-  baseName: string
-  selectedOperation: ObjectFixedKeys<UpdateCondition> | null
-  children: Map<string, UpdateFieldDescriptor>
-  operations?: ArrayOrSingleOrNull<{
-    operationName: ObjectFixedKeys<UpdateCondition> | null
-    fieldValue: UpdateFieldDescriptor[ObjectFixedKeys<UpdateCondition>]
-    nestedPath?: string[]
-  }>
-}
-
 export type CoercerMethod = (value: {
   intValue?: number
   stringValue?: string
@@ -159,7 +141,6 @@ export type CoercerMethod = (value: {
 
 export type AdapterPool = CommonAdapterPool & {
   performanceTracer: PerformanceTracerLike
-  makeNestedPath: MakeNestedPathMethod
   rdsDataService: HighloadRdsDataService
   dbClusterOrInstanceArn: RDSDataService.Arn
   awsSecretStoreArn: RDSDataService.Arn

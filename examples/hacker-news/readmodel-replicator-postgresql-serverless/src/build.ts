@@ -14,7 +14,6 @@ import {
 
 const RESERVED_EVENT_SIZE = 66 // 3 reserved BIGINT fields with commas
 const BATCH_SIZE = 100
-const BATCH_SIZE_SECRETS = 50
 const MAX_EVENTS_BATCH_BYTE_SIZE = 32768
 
 type EventWithSize = {
@@ -156,7 +155,7 @@ const build: ExternalMethods['build'] = async (
       .filter((entry) => entry.threadCounter >= 0)
   )
 
-  console.log('Input cursor: ', inputCursor)
+  //console.log('Input cursor: ', inputCursor)
 
   const calculateEventWithSize = (event: ReadModelEvent): EventWithSize => {
     const serializedEvent = [
@@ -242,7 +241,7 @@ const build: ExternalMethods['build'] = async (
       } catch (error) {
         const errorMessage: string = error.message
         if (/deadlock detected/.test(errorMessage)) {
-          console.error(errorMessage, '... retrying')
+          //console.error(errorMessage, '... retrying')
           shouldRetry = true
         } else {
           throw error
@@ -349,13 +348,13 @@ const build: ExternalMethods['build'] = async (
       nextCursor = newCursor
     } catch (error) {
       lastError = error
-      console.error('RDS error:', lastError)
+      //console.error('RDS error:', lastError)
     }
 
     const isBuildSuccess =
       lastError == null && (appliedEventsCount > 0 || appliedSecretsCount > 0)
 
-    if (!isBuildSuccess) console.error('Build did not succeed!')
+    //if (!isBuildSuccess) console.error('Build did not succeed!')
 
     if (getVacantTimeInMillis() < 0) {
       localContinue = false

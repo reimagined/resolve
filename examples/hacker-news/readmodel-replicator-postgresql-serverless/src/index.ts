@@ -10,10 +10,10 @@ import type {
   AdapterPool,
   AdapterOptions,
   AdapterApi,
+  CurrentDisconnectMethod,
 } from './types'
 
 import _connect from './connect'
-import disconnect from './disconnect'
 
 import coercer from './coercer'
 import escapeId from './escape-id'
@@ -92,6 +92,9 @@ const connect = _connect.bind(null, {
   ...externalMethods,
   ...store,
 })
+
+//eslint-disable-next-line @typescript-eslint/no-empty-function
+const disconnect: CurrentDisconnectMethod = async () => {}
 
 const implementation: CurrentAdapterImplementation = {
   ...store,

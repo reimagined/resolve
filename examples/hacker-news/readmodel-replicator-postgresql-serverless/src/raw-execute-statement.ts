@@ -7,7 +7,7 @@ const rawExecuteStatement = async (
   coercer: Function,
   sql: string
 ) => {
-  console.log('SQL:', sql)
+  //console.log('SQL:', sql)
 
   const result = await rdsDataService.executeStatement({
     resourceArn: dbClusterOrInstanceArn,
