@@ -19,7 +19,6 @@ export const executeReadModel = async ({
   let result = null
 
   try {
-    const provideLedger = async (ledger: any): Promise<void> => void 0
     const secretsManager = promise[symbol].secretsManager
 
     const liveErrors: Array<Error> = []
@@ -133,7 +132,6 @@ export const executeReadModel = async ({
       }),
       viewModelsInterop: {},
       performanceTracer: null,
-      provideLedger,
     })
 
     try {

@@ -5,28 +5,27 @@ Array [
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -51,13 +50,12 @@ Array [
          FOR UPDATE NOWAIT;
 
          INSERT INTO escapeId(__LEDGER__)(
-          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`, \`Properties\`
+          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`
          ) VALUES (
            escapeStr(readModelName1),
            escapeStr(null),
            escapeStr(null),
-           0,
-           CAST(\\"{}\\" AS JSON)
+           0
          )
          ON DUPLICATE KEY UPDATE
          \`EventTypes\` = escapeStr(null),
@@ -69,28 +67,27 @@ Array [
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -115,13 +112,12 @@ Array [
          FOR UPDATE NOWAIT;
 
          INSERT INTO escapeId(__LEDGER__)(
-          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`, \`Properties\`
+          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`
          ) VALUES (
            escapeStr(readModelName2),
            escapeStr(null),
            escapeStr(null),
-           0,
-           CAST(\\"{}\\" AS JSON)
+           0
          )
          ON DUPLICATE KEY UPDATE
          \`EventTypes\` = escapeStr(null),
@@ -191,28 +187,27 @@ INDEX escapeId(id) (escapeId(id)))
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -284,28 +279,27 @@ INDEX escapeId(id) (escapeId(id)))
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -388,28 +382,27 @@ Array [
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -434,13 +427,12 @@ Array [
          FOR UPDATE NOWAIT;
 
          INSERT INTO escapeId(__LEDGER__)(
-          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`, \`Properties\`
+          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`
          ) VALUES (
            escapeStr(readModelName),
            escapeStr(null),
            escapeStr(null),
-           0,
-           CAST(\\"{}\\" AS JSON)
+           0
          )
          ON DUPLICATE KEY UPDATE
          \`EventTypes\` = escapeStr(null),
@@ -530,28 +522,27 @@ INDEX escapeId(id) (escapeId(id)))
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -631,28 +622,27 @@ Array [
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -677,13 +667,12 @@ Array [
          FOR UPDATE NOWAIT;
 
          INSERT INTO escapeId(__LEDGER__)(
-          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`, \`Properties\`
+          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`
          ) VALUES (
            escapeStr(readModelName),
            escapeStr(null),
            escapeStr(null),
-           0,
-           CAST(\\"{}\\" AS JSON)
+           0
          )
          ON DUPLICATE KEY UPDATE
          \`EventTypes\` = escapeStr(null),
@@ -766,28 +755,27 @@ INDEX escapeId(id) (escapeId(id)))
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -867,28 +855,27 @@ Array [
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -913,13 +900,12 @@ Array [
          FOR UPDATE NOWAIT;
 
          INSERT INTO escapeId(__LEDGER__)(
-          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`, \`Properties\`
+          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`
          ) VALUES (
            escapeStr(readModelName),
            escapeStr(null),
            escapeStr(null),
-           0,
-           CAST(\\"{}\\" AS JSON)
+           0
          )
          ON DUPLICATE KEY UPDATE
          \`EventTypes\` = escapeStr(null),
@@ -1232,28 +1218,27 @@ INDEX escapeId(id) (escapeId(id)))
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -1333,28 +1318,27 @@ Array [
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -1379,13 +1363,12 @@ Array [
          FOR UPDATE NOWAIT;
 
          INSERT INTO escapeId(__LEDGER__)(
-          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`, \`Properties\`
+          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`
          ) VALUES (
            escapeStr(readModelName),
            escapeStr(null),
            escapeStr(null),
-           0,
-           CAST(\\"{}\\" AS JSON)
+           0
          )
          ON DUPLICATE KEY UPDATE
          \`EventTypes\` = escapeStr(null),
@@ -1430,28 +1413,27 @@ INDEX escapeId(id) (escapeId(id)))
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -1531,28 +1513,27 @@ Array [
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
@@ -1577,13 +1558,12 @@ Array [
          FOR UPDATE NOWAIT;
 
          INSERT INTO escapeId(__LEDGER__)(
-          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`, \`Properties\`
+          \`EventSubscriber\`, \`EventTypes\`, \`AggregateIds\`, \`IsPaused\`
          ) VALUES (
            escapeStr(readModelName),
            escapeStr(null),
            escapeStr(null),
-           0,
-           CAST(\\"{}\\" AS JSON)
+           0
          )
          ON DUPLICATE KEY UPDATE
          \`EventTypes\` = escapeStr(null),
@@ -1620,28 +1600,27 @@ INDEX escapeId(id) (escapeId(id)))
   Array [
     "query",
     "
-      CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
-        \`EventSubscriber\` VARCHAR(190) NOT NULL,
-        \`IsPaused\` TINYINT NOT NULL,
-        \`EventTypes\` JSON NOT NULL,
-        \`AggregateIds\` JSON NOT NULL,
-        \`XaKey\` VARCHAR(190) NULL,
-        \`Cursor\` JSON NULL,
-        \`SuccessEvent\` JSON NULL,
-        \`FailedEvent\` JSON NULL,
-        \`Errors\` JSON NULL,
-        \`Properties\` JSON NOT NULL,
-        \`Schema\` JSON NULL,
-        PRIMARY KEY(\`EventSubscriber\`)
-      );
-      
-      CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
-        \`XaKey\` VARCHAR(190) NOT NULL,
-        \`XaValue\` VARCHAR(190) NOT NULL,
-        \`Timestamp\` BIGINT,
-        PRIMARY KEY(\`XaKey\`)
-      );
-    ",
+    CREATE TABLE IF NOT EXISTS escapeId(__LEDGER__)(
+      \`EventSubscriber\` VARCHAR(190) NOT NULL,
+      \`IsPaused\` TINYINT NOT NULL,
+      \`EventTypes\` JSON NOT NULL,
+      \`AggregateIds\` JSON NOT NULL,
+      \`XaKey\` VARCHAR(190) NULL,
+      \`Cursor\` JSON NULL,
+      \`SuccessEvent\` JSON NULL,
+      \`FailedEvent\` JSON NULL,
+      \`Errors\` JSON NULL,
+      \`Schema\` JSON NULL,
+      PRIMARY KEY(\`EventSubscriber\`)
+    );
+    
+    CREATE TABLE IF NOT EXISTS escapeId(__TRX__)(
+      \`XaKey\` VARCHAR(190) NOT NULL,
+      \`XaValue\` VARCHAR(190) NOT NULL,
+      \`Timestamp\` BIGINT,
+      PRIMARY KEY(\`XaKey\`)
+    );
+  ",
   ],
   Array [
     "query",
