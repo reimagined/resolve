@@ -15,6 +15,7 @@ import {
 const RESERVED_EVENT_SIZE = 66 // 3 reserved BIGINT fields with commas
 const BATCH_SIZE = 100
 const MAX_EVENTS_BATCH_BYTE_SIZE = 32768
+const MAX_SECRETS_BATCH_BYTE_SIZE = 32768
 
 type EventWithSize = {
   event: ReadModelEvent
@@ -267,38 +268,41 @@ const build: ExternalMethods['build'] = async (
         }
       )) as EventsWithCursor
 
-      const insertSecret = async (secretId: string) => {
-        const secret = await secretManager.getSecret(secretId)
-        if (secret) {
-          await rdsDataService.executeStatement({
-            resourceArn: eventStoreClusterArn,
-            secretArn: eventStoreSecretArn,
-            database: 'postgres',
-            sql: `INSERT INTO ${eventStoreDatabaseNameAsId}.${eventStoreSecretsTableNameAsId}(
+      const secretManager = await eventstoreAdapter.getSecretsManager()
+
+      const insertSecrets = async (
+        secretRecords: Array<{ secret: string; id: string }>
+      ) => {
+        await rdsDataService.executeStatement({
+          resourceArn: eventStoreClusterArn,
+          secretArn: eventStoreSecretArn,
+          database: 'postgres',
+          sql: `INSERT INTO ${eventStoreDatabaseNameAsId}.${eventStoreSecretsTableNameAsId}(
                   "id",
                   "secret"
-                ) VALUES(
-                  ${escapeStr(secretId)},
-                  ${escapeStr(secret)}
-                ) ON CONFLICT DO NOTHING`,
-          })
-        }
+                ) VALUES ${secretRecords.map(
+                  (secretRecord) =>
+                    `(${escapeStr(secretRecord.id)},${escapeStr(
+                      secretRecord.secret
+                    )})`
+                )} ON CONFLICT DO NOTHING`,
+        })
       }
 
-      const deleteSecret = async (secretId: string) => {
+      const deleteSecrets = async (secretIds: string[]) => {
         await rdsDataService.executeStatement({
           resourceArn: eventStoreClusterArn,
           secretArn: eventStoreSecretArn,
           database: 'postgres',
           sql: `DELETE FROM ${eventStoreDatabaseNameAsId}.${eventStoreSecretsTableNameAsId}
-                WHERE "id"=${escapeStr(secretId)}`,
+                WHERE "id" IN (${secretIds
+                  .map((secretId) => escapeStr(secretId))
+                  .join(',')})`,
         })
       }
 
       const secretsToInsert: string[] = []
       const secretsToDelete: string[] = []
-
-      const secretManager = await eventstoreAdapter.getSecretsManager()
 
       for (const event of events) {
         if (event.type === SET_SECRET_EVENT_TYPE) {
@@ -307,8 +311,61 @@ const build: ExternalMethods['build'] = async (
           secretsToDelete.push(event.payload.id)
         }
       }
-      await Promise.all(secretsToInsert.map((id) => insertSecret(id)))
-      await Promise.all(secretsToDelete.map((id) => deleteSecret(id)))
+
+      const existingSecrets = (
+        await Promise.all(
+          secretsToInsert.map(async (id) => {
+            const secret = await secretManager.getSecret(id)
+            return {
+              secret,
+              id,
+            }
+          })
+        )
+      ).filter((record) => record.secret !== null) as Array<{
+        secret: string
+        id: string
+      }>
+
+      const insertSecretsPromises: Array<Promise<void>> = []
+      const secretsToInsertBatch: Array<typeof existingSecrets[number]> = []
+      let secretsToInsertBatchSize = 0
+      for (const existingSecret of existingSecrets) {
+        secretsToInsertBatch.push(existingSecret)
+        secretsToInsertBatchSize +=
+          Buffer.byteLength(existingSecret.secret) +
+          Buffer.byteLength(existingSecret.id)
+        if (secretsToInsertBatchSize > MAX_SECRETS_BATCH_BYTE_SIZE) {
+          insertSecretsPromises.push(insertSecrets(secretsToInsertBatch))
+          secretsToInsertBatchSize = 0
+          secretsToInsertBatch.length = 0
+        }
+      }
+      if (secretsToInsertBatch.length) {
+        insertSecretsPromises.push(insertSecrets(secretsToInsertBatch))
+        secretsToInsertBatchSize = 0
+        secretsToInsertBatch.length = 0
+      }
+      await Promise.all(insertSecretsPromises)
+
+      const deleteSecretsPromises: Array<Promise<void>> = []
+      const secretsToDeleteBatch: string[] = []
+      let secretsToDeleteBatchSize = 0
+      for (const secretToDelete of secretsToDelete) {
+        secretsToDeleteBatch.push(secretToDelete)
+        secretsToDeleteBatchSize += Buffer.byteLength(secretToDelete)
+        if (secretsToDeleteBatchSize > MAX_SECRETS_BATCH_BYTE_SIZE) {
+          deleteSecretsPromises.push(deleteSecrets(secretsToDeleteBatch))
+          secretsToDeleteBatchSize = 0
+          secretsToDeleteBatch.length = 0
+        }
+      }
+      if (secretsToDeleteBatch.length) {
+        deleteSecretsPromises.push(deleteSecrets(secretsToDeleteBatch))
+        secretsToDeleteBatchSize = 0
+        secretsToDeleteBatch.length = 0
+      }
+      await Promise.all(deleteSecretsPromises)
 
       const eventPromises: Array<Promise<void>> = []
 
