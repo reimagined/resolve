@@ -6,7 +6,7 @@ import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
 import initScheduler from './init-scheduler'
 import initMonitoring from './init-monitoring'
-import { putDurationMetrics, putInternalError } from './metrics'
+import { putDurationMetrics } from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 import handleWebsocketEvent from './websocket-event-handler'
@@ -126,7 +126,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   } catch (error) {
     log.error('top-level event handler execution error!')
 
-    await putInternalError(error)
+    resolve.monitoring.error('internal', error)
 
     if (error instanceof Error) {
       log.error('error', error.message)
@@ -138,6 +138,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     throw error
   } finally {
     await disposeResolve(resolve)
+
     if (process.env.RESOLVE_PERFORMANCE_MONITORING) {
       await putDurationMetrics(
         lambdaEvent,
@@ -146,6 +147,9 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
         lambdaRemainingTimeStart
       )
     }
+
+    resolve.monitoring.sendMetrics()
+
     coldStart = false
     log.debug('reSolve framework was disposed')
   }

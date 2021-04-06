@@ -99,15 +99,7 @@ const getErrorMessage = (error) => {
   return errorMessage
 }
 
-const putDataMetrics = async (dataMap, commonMap, errorMap) => {
-  const log = debugLevels('resolve:runtime:cloud-entry:putDataMetrics')
-  const cw = new CloudWatch()
-
-  if (dataMap.DeploymentId == null) {
-    log.warn('Deployment ID not found')
-    return
-  }
-
+const buildExecutionMetricData = (dataMap, commonMap, errorMap) => {
   const now = new Date()
   const metricName = dataMap.ErrorMessage != null ? 'Errors' : 'Executions'
 
@@ -137,22 +129,10 @@ const putDataMetrics = async (dataMap, commonMap, errorMap) => {
     )
   }
 
-  try {
-    await cw
-      .putMetricData({
-        Namespace: 'RESOLVE_METRICS',
-        MetricData: metricData,
-      })
-      .promise()
-
-    log.verbose('Put metrics succeeded')
-  } catch (e) {
-    log.verbose('Put metrics failed')
-    log.warn(e)
-  }
+  return metricData
 }
 
-export const putCommandMetrics = async (
+export const buildCommandExecutionMetricData = (
   aggregateName,
   commandType,
   aggregateId,
@@ -171,7 +151,7 @@ export const putCommandMetrics = async (
     metricDataMap.ErrorName = error.name
   }
 
-  return putDataMetrics(
+  return buildCommandExecutionMetricData(
     metricDataMap,
     [
       ['DeploymentId'],
@@ -206,7 +186,7 @@ export const putCommandMetrics = async (
   )
 }
 
-export const putReadModelProjectionMetrics = async (
+export const buildReadModelProjectionExecutionMetricData = (
   readModelName,
   eventType,
   error
@@ -223,7 +203,7 @@ export const putReadModelProjectionMetrics = async (
     metricDataMap.ErrorName = error.name
   }
 
-  return putDataMetrics(
+  return buildExecutionMetricData(
     metricDataMap,
     [
       ['DeploymentId'],
@@ -249,7 +229,7 @@ export const putReadModelProjectionMetrics = async (
   )
 }
 
-export const putReadModelResolverMetrics = async (
+export const buildReadModelResolverMetricData = async (
   readModelName,
   resolverName,
   error
@@ -266,7 +246,7 @@ export const putReadModelResolverMetrics = async (
     metricDataMap.ErrorName = error.name
   }
 
-  return putDataMetrics(
+  return buildExecutionMetricData(
     metricDataMap,
     [
       ['DeploymentId'],
@@ -292,7 +272,7 @@ export const putReadModelResolverMetrics = async (
   )
 }
 
-export const putViewModelProjectionMetrics = async (
+export const buildViewModelProjectionMetricData = async (
   viewModelName,
   eventType,
   error
@@ -309,7 +289,7 @@ export const putViewModelProjectionMetrics = async (
     metricDataMap.ErrorName = error.name
   }
 
-  return putDataMetrics(
+  return buildExecutionMetricData(
     metricDataMap,
     [
       ['DeploymentId'],
@@ -335,7 +315,10 @@ export const putViewModelProjectionMetrics = async (
   )
 }
 
-export const putViewModelResolverMetrics = async (viewModelName, error) => {
+export const buildViewModelResolverMetricData = async (
+  viewModelName,
+  error
+) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Part: 'ViewModelResolver',
@@ -347,7 +330,7 @@ export const putViewModelResolverMetrics = async (viewModelName, error) => {
     metricDataMap.ErrorName = error.name
   }
 
-  return putDataMetrics(
+  return buildExecutionMetricData(
     metricDataMap,
     [
       ['DeploymentId'],
@@ -365,7 +348,7 @@ export const putViewModelResolverMetrics = async (viewModelName, error) => {
   )
 }
 
-export const putApiHandlerMetrics = async (apiHandlerPath, error) => {
+export const buildApiHandlerMetricData = async (apiHandlerPath, error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Part: 'ApiHandler',
@@ -377,7 +360,7 @@ export const putApiHandlerMetrics = async (apiHandlerPath, error) => {
     metricDataMap.ErrorName = error.name
   }
 
-  return putDataMetrics(
+  return buildExecutionMetricData(
     metricDataMap,
     [
       ['DeploymentId'],
@@ -395,7 +378,7 @@ export const putApiHandlerMetrics = async (apiHandlerPath, error) => {
   )
 }
 
-export const putSagaMetrics = async (sagaName, eventType, error) => {
+export const buildSagaMetricData = async (sagaName, eventType, error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Part: 'SagaProjection',
@@ -408,7 +391,7 @@ export const putSagaMetrics = async (sagaName, eventType, error) => {
     metricDataMap.ErrorName = error.name
   }
 
-  return putDataMetrics(
+  return buildExecutionMetricData(
     metricDataMap,
     [
       ['DeploymentId'],
@@ -434,7 +417,7 @@ export const putSagaMetrics = async (sagaName, eventType, error) => {
   )
 }
 
-export const putInternalError = async (error) => {
+export const buildInternalExecutionMetricData = async (error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Part: 'Internal',
@@ -442,7 +425,7 @@ export const putInternalError = async (error) => {
     ErrorName: error.name,
   }
 
-  return putDataMetrics(metricDataMap, [
+  return buildExecutionMetricData(metricDataMap, [
     ['DeploymentId', 'ErrorName'],
     ['DeploymentId', 'Part', 'ErrorName'],
     ['DeploymentId', 'ErrorName', 'ErrorMessage'],

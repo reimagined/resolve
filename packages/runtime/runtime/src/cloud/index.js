@@ -17,7 +17,6 @@ import wrapTrie from '../common/wrap-trie'
 import initUploader from './init-uploader'
 import gatherEventListeners from '../common/gather-event-listeners'
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
-import { putInternalError } from './metrics'
 
 const log = debugLevels('resolve:runtime:cloud-entry')
 
@@ -121,7 +120,6 @@ const index = async ({ assemblies, constants, domain }) => {
   } catch (error) {
     log.error(`lambda 'cold start' failure`, error)
     subSegment.addError(error)
-    await putInternalError(error)
   } finally {
     if (subSegment != null) {
       subSegment.close()
