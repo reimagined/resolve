@@ -139,7 +139,7 @@ const appConfig = {
       resolvers: 'common/read-models/user-profiles.resolvers.js',
       encryption: 'common/read-models/encryption.js',
     },
-    ..
+    ...
   ],
   ...
 }
