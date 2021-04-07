@@ -168,7 +168,6 @@ describe('Read models', () => {
       eventType: 'Init',
     })
   })
-
   test('#1797: error meta within monitored error on event handler ', async () => {
     const readModelInterop = await setUpTestReadModelInterop({
       name: 'TestReadModel',

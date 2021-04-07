@@ -57,6 +57,7 @@ const getInterop = (
     } catch (error) {
       await runtime.monitoring?.error?.(error, 'readModelProjection', {
         readModelName: saga.name,
+        eventType,
       })
       throw error
     }
