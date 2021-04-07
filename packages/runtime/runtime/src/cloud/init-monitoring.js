@@ -111,7 +111,7 @@ const monitoringTimeEndCallback = async (
   }
 }
 
-const monitoringSendSummaryCallback = async (log, monitoringData) => {
+const monitoringPublishCallback = async (log, monitoringData) => {
   try {
     log.verbose(`Metrics data sending`)
     // TODO: delete it
@@ -146,7 +146,7 @@ const initMonitoring = (resolve) => {
     error: monitoringErrorCallback.bind(null, log, monitoringData),
     time: monitoringTimeCallback.bind(null, log, monitoringData),
     timeEnd: monitoringTimeEndCallback(null, log, monitoringData),
-    sendMetrics: monitoringSendSummaryCallback.bind(null, log, monitoringData),
+    publish: monitoringPublishCallback.bind(null, log, monitoringData),
   }
 }
 

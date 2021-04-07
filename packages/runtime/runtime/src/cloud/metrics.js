@@ -1,5 +1,4 @@
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
-import debugLevels from '@resolve-js/debug-levels'
 
 const MAX_METRICS_DIMENSION_VALUE_LENGTH = 256
 
