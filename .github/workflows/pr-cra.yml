@@ -5,6 +5,10 @@ on:
     branches:
       - master*
 
+  push:
+    branches:
+      - fix/relocate-cra-tests
+
 jobs:
   create-resolve-app-tests:
     runs-on: ubuntu-latest
