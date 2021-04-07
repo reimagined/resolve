@@ -3,9 +3,9 @@ import debugLevels from '@resolve-js/debug-levels'
 
 import {
   buildApiHandlerMetricData,
-  buildSagaMetricData,
-  buildCommandExecutionMetricData,
-  buildReadModelProjectionExecutionMetricData,
+  buildSagaProjectionMetricData,
+  buildCommandMetricData,
+  buildReadModelProjectionMetricData,
   buildReadModelResolverMetricData,
   buildViewModelProjectionMetricData,
   buildViewModelResolverMetricData,
@@ -17,7 +17,7 @@ const getLog = (name) => debugLevels(`resolve:cloud:scheduler:${name}`)
 const buildExecutionMetricData = (error, part, meta) => {
   switch (part) {
     case 'command': {
-      return buildCommandExecutionMetricData(
+      return buildCommandMetricData(
         meta.command.aggregateName,
         meta.command.type,
         meta.command.aggregateId,
@@ -25,7 +25,7 @@ const buildExecutionMetricData = (error, part, meta) => {
       )
     }
     case 'readModelProjection': {
-      return buildReadModelProjectionExecutionMetricData(
+      return buildReadModelProjectionMetricData(
         meta.readModelName,
         meta.eventType,
         error
@@ -52,7 +52,7 @@ const buildExecutionMetricData = (error, part, meta) => {
       return buildApiHandlerMetricData(meta.path, error)
     }
     case 'sagaProjection': {
-      return buildSagaMetricData(meta.sagaName, meta.eventType, error)
+      return buildSagaProjectionMetricData(meta.sagaName, meta.eventType, error)
     }
     case 'internal': {
       return buildInternalExecutionMetricData(error)

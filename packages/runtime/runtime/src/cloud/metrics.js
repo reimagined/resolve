@@ -99,7 +99,7 @@ const getErrorMessage = (error) => {
   return errorMessage
 }
 
-const buildExecutionMetricData = (dataMap, commonMap, errorMap) => {
+const buildExecutionMetricData = (config, dataMap, commonMap, errorMap) => {
   const now = new Date()
   const metricName = dataMap.ErrorMessage != null ? 'Errors' : 'Executions'
 
@@ -114,7 +114,7 @@ const buildExecutionMetricData = (dataMap, commonMap, errorMap) => {
     })),
   }))
 
-  if (dataMap.Error != null && errorMap != null) {
+  if (dataMap.ErrorMessage != null && errorMap != null) {
     metricData.push(
       ...errorMap.map((dimensionNames) => ({
         MetricName: 'Errors',
@@ -132,7 +132,13 @@ const buildExecutionMetricData = (dataMap, commonMap, errorMap) => {
   return metricData
 }
 
-export const buildCommandExecutionMetricData = (
+const errorMetricsConfig = {
+  MetricName: 'Error',
+  Unit: 'Count',
+  Value: 1,
+}
+
+export const buildCommandMetricData = (
   aggregateName,
   commandType,
   aggregateId,
@@ -151,7 +157,8 @@ export const buildCommandExecutionMetricData = (
     metricDataMap.ErrorName = error.name
   }
 
-  return buildCommandExecutionMetricData(
+  return buildExecutionMetricData(
+    errorMetricsConfig,
     metricDataMap,
     [
       ['DeploymentId'],
@@ -186,7 +193,7 @@ export const buildCommandExecutionMetricData = (
   )
 }
 
-export const buildReadModelProjectionExecutionMetricData = (
+export const buildReadModelProjectionMetricData = (
   readModelName,
   eventType,
   error
@@ -204,6 +211,7 @@ export const buildReadModelProjectionExecutionMetricData = (
   }
 
   return buildExecutionMetricData(
+    errorMetricsConfig,
     metricDataMap,
     [
       ['DeploymentId'],
@@ -229,7 +237,7 @@ export const buildReadModelProjectionExecutionMetricData = (
   )
 }
 
-export const buildReadModelResolverMetricData = async (
+export const buildReadModelResolverMetricData = (
   readModelName,
   resolverName,
   error
@@ -247,6 +255,7 @@ export const buildReadModelResolverMetricData = async (
   }
 
   return buildExecutionMetricData(
+    errorMetricsConfig,
     metricDataMap,
     [
       ['DeploymentId'],
@@ -272,7 +281,7 @@ export const buildReadModelResolverMetricData = async (
   )
 }
 
-export const buildViewModelProjectionMetricData = async (
+export const buildViewModelProjectionMetricData = (
   viewModelName,
   eventType,
   error
@@ -290,6 +299,7 @@ export const buildViewModelProjectionMetricData = async (
   }
 
   return buildExecutionMetricData(
+    errorMetricsConfig,
     metricDataMap,
     [
       ['DeploymentId'],
@@ -315,10 +325,7 @@ export const buildViewModelProjectionMetricData = async (
   )
 }
 
-export const buildViewModelResolverMetricData = async (
-  viewModelName,
-  error
-) => {
+export const buildViewModelResolverMetricData = (viewModelName, error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Part: 'ViewModelResolver',
@@ -331,6 +338,7 @@ export const buildViewModelResolverMetricData = async (
   }
 
   return buildExecutionMetricData(
+    errorMetricsConfig,
     metricDataMap,
     [
       ['DeploymentId'],
@@ -348,7 +356,7 @@ export const buildViewModelResolverMetricData = async (
   )
 }
 
-export const buildApiHandlerMetricData = async (apiHandlerPath, error) => {
+export const buildApiHandlerMetricData = (apiHandlerPath, error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Part: 'ApiHandler',
@@ -361,6 +369,7 @@ export const buildApiHandlerMetricData = async (apiHandlerPath, error) => {
   }
 
   return buildExecutionMetricData(
+    errorMetricsConfig,
     metricDataMap,
     [
       ['DeploymentId'],
@@ -378,7 +387,7 @@ export const buildApiHandlerMetricData = async (apiHandlerPath, error) => {
   )
 }
 
-export const buildSagaMetricData = async (sagaName, eventType, error) => {
+export const buildSagaProjectionMetricData = (sagaName, eventType, error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Part: 'SagaProjection',
@@ -392,6 +401,7 @@ export const buildSagaMetricData = async (sagaName, eventType, error) => {
   }
 
   return buildExecutionMetricData(
+    errorMetricsConfig,
     metricDataMap,
     [
       ['DeploymentId'],
@@ -417,7 +427,7 @@ export const buildSagaMetricData = async (sagaName, eventType, error) => {
   )
 }
 
-export const buildInternalExecutionMetricData = async (error) => {
+export const buildInternalExecutionMetricData = (error) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Part: 'Internal',
@@ -425,10 +435,19 @@ export const buildInternalExecutionMetricData = async (error) => {
     ErrorName: error.name,
   }
 
-  return buildExecutionMetricData(metricDataMap, [
-    ['DeploymentId', 'ErrorName'],
-    ['DeploymentId', 'Part', 'ErrorName'],
-    ['DeploymentId', 'ErrorName', 'ErrorMessage'],
-    ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
-  ])
+  return buildExecutionMetricData(
+    errorMetricsConfig,
+    metricDataMap,
+    // prettier-ignore
+    [
+      ['DeploymentId'],
+      ['DeploymentId', 'Part']
+    ],
+    [
+      ['DeploymentId', 'ErrorName'],
+      ['DeploymentId', 'Part', 'ErrorName'],
+      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+    ]
+  )
 }
