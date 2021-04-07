@@ -89,6 +89,43 @@ const invokeImportApi = async (body) => {
   ])
 }
 
+const invokeImportSecretApi = async (body) => {
+  let loop = true
+  return Promise.race([
+    new Promise(async (resolve, reject) => {
+      let error
+
+      while (loop) {
+        try {
+          const response = await fetch(
+            `http://localhost:${path.join(
+              process.env.PORT,
+              process.env.ROOT_PATH
+            )}/api/import_secrets`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'same-origin',
+              body: JSON.stringify(body),
+            }
+          )
+          resolve(await response.text())
+          loop = false
+          break
+        } catch (err) {
+          error = err
+          await wait(100)
+        }
+      }
+
+      reject(error)
+    }),
+    wait(timeout).then(() => {
+      loop = false
+    }),
+  ])
+}
+
 const fetchStoryIds = (path) => fetchWithRetry(`${path}.json`)
 
 const fetchItem = (id) => fetchWithRetry(`item/${id}.json`)
@@ -101,4 +138,5 @@ export default {
   fetchStoryIds,
   fetchItems,
   invokeImportApi,
+  invokeImportSecretApi,
 }
