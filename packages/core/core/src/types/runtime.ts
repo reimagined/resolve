@@ -10,7 +10,7 @@ import {
   AggregateEncryptionFactory,
   AggregateProjection,
   EventHandlerEncryptionFactory,
-  ReadModelResolvers,
+  ReadModelResolvers, Command
 } from './core'
 
 export type PerformanceSubsegment = {
@@ -24,11 +24,6 @@ export type PerformanceSegment = {
 
 export type PerformanceTracer = {
   getSegment: () => PerformanceSegment
-}
-
-export type Monitoring = {
-  error?: (error: Error, part: string, meta: any) => Promise<void>
-  performance?: PerformanceTracer
 }
 
 export type Eventstore = {
@@ -85,4 +80,62 @@ export type ViewModelMeta = {
   resolver: ViewModelResolver
   encryption: EventHandlerEncryptionFactory
   invariantHash: string
+}
+
+type MonitoringCommandPart = 'command'
+type MonitoringReadModelProjectionPart = 'readModelProjection'
+type MonitoringReadModelResolverPart = 'readModelResolver'
+type MonitoringViewModelProjectionPart = 'viewModelProjection'
+type MonitoringViewModelResolverPart = 'viewModelResolver'
+
+type MonitoringCommandPartMeta = {
+  command: Command
+}
+type MonitoringProjectionPartMeta = {
+  readModelName: string
+  eventType: string
+}
+type MonitoringReadModelResolverPartMeta = {
+  readModelName: string
+  resolverName: string
+}
+type MonitoringViewModelProjectionMeta = {
+  name: string
+  eventType: string
+}
+type MonitoringViewModelResolverMeta = {
+  name: string
+}
+
+export interface MonitoringErrorHandler {
+  (
+    error: Error,
+    part: MonitoringCommandPart,
+    meta: MonitoringCommandPartMeta
+  ): Promise<void>
+  (
+    error: Error,
+    part: MonitoringReadModelProjectionPart,
+    meta: MonitoringProjectionPartMeta
+  ): Promise<void>
+  (
+    error: Error,
+    part: MonitoringReadModelResolverPart,
+    meta: MonitoringReadModelResolverPartMeta
+  ): Promise<void>
+  (
+    error: Error,
+    part: MonitoringViewModelProjectionPart,
+    meta: MonitoringViewModelProjectionMeta
+  ): Promise<void>
+  (
+    error: Error,
+    part: MonitoringViewModelResolverPart,
+    meta: MonitoringViewModelResolverMeta
+  ): Promise<void>
+}
+
+export type Monitoring = {
+  error?: MonitoringErrorHandler
+  performance?: PerformanceTracer
 }
