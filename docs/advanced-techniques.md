@@ -92,9 +92,62 @@ The reSolve framework provides a mechanism that allows you to use an arbitrary e
 
 This functionality is critical when storing user personal data in compliance with General Data Protection Regulation (GDPR)
 
+Encryption is defined as a file that exports a factory function of the following format:
+
+##### Aggregate Encryption:
+
+```js
+const createEncryption = (aggregateId, context) => {
+  ...
+  return {
+    encrypt: (data) => ..., // A function that takes data and returns it encrypted version
+    decrypt: (blob) => ..., // A function takes an encrypted blob and returns unencrypted data
+  }
+}
+```
+
+##### Read Model Encryption:
+
+```js
+const createEncryption = ( event, context) => {
+  ...
+  return {
+    encrypt: (data) => ..., // A function that takes data and returns it encrypted version
+    decrypt: (blob) => ..., // A function takes an encrypted blob and returns unencrypted data
+  }
+}
+```
+
+You can assign encryption to aggregates and Read Models in the application's configuration file as shown below:
+
+```js
+const appConfig = {
+  aggregates: [
+    {
+      name: 'user-profile',
+      commands: 'common/aggregates/user-profile.commands.js',
+      projection: 'common/aggregates/user-profile.projection.js',
+      encryption: 'common/aggregates/encryption.js',
+    },
+    ...
+  ]
+  readModels: [
+    {
+      name: 'user-profiles',
+      connectorName: 'default',
+      projection: 'common/read-models/user-profiles.projection.js',
+      resolvers: 'common/read-models/user-profiles.resolvers.js',
+      encryption: 'common/read-models/encryption.js',
+    },
+    ..
+  ],
+  ...
+}
+```
+
 #### Example
 
-The **personal-data** example demonstrates how to store encrypted user data.
+The **personal-data** example demonstrates how to store encrypted user data. In this example the encryption logic is implemented in a separate `common/encryption-factory.js` file and reused on both the read and write sides.
 
 ## Upload Files
 
