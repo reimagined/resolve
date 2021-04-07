@@ -5,7 +5,7 @@ import {
   EventHandlerEncryptionFactory,
   SecretsManager,
 } from '@resolve-js/core'
-import { TestReadModel } from '../src/types'
+import { TestReadModel, TestSaga } from '../src/types'
 
 let consoleSpy: jest.SpyInstance
 
@@ -196,6 +196,40 @@ describe('read model', () => {
   })
 })
 
-test('saga', async () => {
-  //givenEvents().saga({})
+describe('saga', () => {
+  const saga: TestSaga = {
+    name: 'TestSaga',
+    handlers: {
+      dummyHandler: async ({ sideEffects }): Promise<any> => {
+        await sideEffects.dummySideEffect()
+      },
+    },
+    sideEffects: {
+      dummySideEffect: async () => void 0,
+    },
+  }
+  const makeEncryptionFactory = (): EventHandlerEncryptionFactory => async () => ({
+    decrypt: jest.fn(),
+    encrypt: jest.fn(),
+  })
+  test('init error: setting encryption after test execution', async () => {
+    const test = givenEvents().saga(saga)
+    await test
+    expect.assertions(1)
+    try {
+      test.withEncryption(makeEncryptionFactory())
+    } catch (e) {
+      expect(e.message).toEqual(expect.stringContaining(`cannot be assigned`))
+    }
+  })
+  test('init error: setting adapter after test execution', async () => {
+    const test = givenEvents().saga(saga)
+    await test
+    expect.assertions(1)
+    try {
+      test.withAdapter('some-adapter')
+    } catch (e) {
+      expect(e.message).toEqual(expect.stringContaining(`cannot be assigned`))
+    }
+  })
 })

@@ -14,11 +14,13 @@ export const withEncryption = (
   context: SagaContext,
   encryption: EventHandlerEncryptionFactory
 ): WithEncryption => {
+  if (context.environment.isExecuted()) {
+    throw Error(`Encryption cannot be assigned if the test was executed.`)
+  }
+
   if (context.encryption != null) {
     throw Error(`Saga encryption already assigned.`)
   }
-
-  // FIXME: check isExecuted
 
   context.encryption = encryption
 

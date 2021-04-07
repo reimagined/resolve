@@ -203,7 +203,7 @@ describe('aggregate', () => {
         .shouldThrow(Error(`aggregate custom-id already exist`)))
 
     // FIXME: something wrong with resolve-command, fix after its relocation
-    test.skip('events without payload support', () =>
+    test('events without payload support', () =>
       givenEvents([])
         .aggregate(aggregate)
         .command('noPayload')

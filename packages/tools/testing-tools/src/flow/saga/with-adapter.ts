@@ -13,10 +13,13 @@ export const withAdapter = (
   context: SagaContext,
   adapter: any
 ): WithAdapterNode => {
+  if (context.environment.isExecuted()) {
+    throw Error(`Adapter cannot be assigned if the test was executed.`)
+  }
+
   if (context.adapter != null) {
     throw Error(`Saga storage adapter already assigned.`)
   }
-  // FIXME: add isExecuted check
 
   context.adapter = adapter
 
