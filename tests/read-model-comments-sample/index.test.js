@@ -99,9 +99,9 @@ describe('Read-model Comments sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getComments({})
+        .withAdapter(adapter)
+        .query('getComments', {})
     ).toMatchSnapshot(`getComments`)
   })
 })
