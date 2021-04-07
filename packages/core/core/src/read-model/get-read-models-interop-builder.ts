@@ -115,6 +115,7 @@ const getReadModelInterop = (
     } catch (error) {
       await monitoring?.error?.(error, 'readModelProjection', {
         readModelName: readModel.name,
+        eventType,
       })
       throw error
     }
