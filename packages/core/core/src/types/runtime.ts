@@ -84,8 +84,13 @@ export type ViewModelMeta = {
 }
 
 export type MonitoringPartMap = {
-  command: { command: Command }
-  readModelProjection: { readModelName: string; eventType: string }
+  command: {
+    command: Command
+  }
+  readModelProjection: {
+    readModelName: string
+    eventType: string
+  }
   readModelResolver: {
     readModelName: string
     resolverName: string
