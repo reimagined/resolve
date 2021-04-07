@@ -1,35 +1,32 @@
-const pipeline = (pool) => {
-  const {
-    chalk,
-    console,
-    process,
-    prepareOptions,
-    startCreatingApplication,
-    checkApplicationName,
-    downloadResolveRepo,
-    testExampleExists,
-    moveExample,
-    patchPackageJson,
-    install,
-    printFinishOutput,
-    sendAnalytics,
-  } = pool
+import chalk from 'chalk'
+import prepareOptions from './prepare-options'
+import createApplication from './create-application'
+import sendAnalytics from './send-analytics'
 
-  prepareOptions(pool)
-    .then(startCreatingApplication(pool))
-    .then(checkApplicationName(pool))
-    .then(downloadResolveRepo(pool))
-    .then(testExampleExists(pool))
-    .then(moveExample(pool))
-    .then(patchPackageJson(pool))
-    .then(install(pool))
-    .then(printFinishOutput(pool))
-    .then(sendAnalytics(pool))
-    .catch((error) => {
-      // eslint-disable-next-line no-console
-      console.error(chalk.red(error))
-      process.exit(1)
-    })
+const pipeline = async () => {
+  try {
+    const {
+      applicationName,
+      exampleName,
+      localRegistry,
+      commit,
+      branch,
+    } = await prepareOptions()
+
+    await createApplication(
+      applicationName,
+      exampleName,
+      localRegistry,
+      commit,
+      branch
+    )
+
+    await sendAnalytics(exampleName)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(chalk.red(error))
+    process.exit(1)
+  }
 }
 
 export default pipeline
