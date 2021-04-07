@@ -83,7 +83,7 @@ export type ViewModelMeta = {
   invariantHash: string
 }
 
-type MonitoringParts = {
+export type MonitoringPartMap = {
   command: { command: Command }
   readModelProjection: { readModelName: string; eventType: string }
   readModelResolver: {
@@ -98,9 +98,13 @@ type MonitoringParts = {
     name: string
   }
 }
+export type MonitoringPart = keyof MonitoringPartMap
+export type MonitoringMeta<
+  TPart extends MonitoringPart
+> = MonitoringPartMap[TPart]
 
 export type Monitoring = {
-  error?: <T extends MonitoringParts, K extends keyof T, U extends T[K]>(
+  error?: <K extends MonitoringPart, U extends MonitoringMeta<K>>(
     error: Error,
     part: K,
     meta: U
