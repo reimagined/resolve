@@ -71,6 +71,17 @@ describe('buildEvents', () => {
         .mockReturnValueOnce(Promise.resolve({ events }))
         .mockReturnValue(Promise.resolve({ events: [] })),
       getNextCursor: jest.fn().mockReturnValue(cursor),
+      getSecretsManager: jest.fn().mockReturnValue({
+        getSecret: async (id: string): Promise<string | null> => {
+          return ''
+        },
+        setSecret: async (id: string, secret: string): Promise<void> => {
+          return
+        },
+        deleteSecret: async (id: string): Promise<void> => {
+          return
+        },
+      }),
     }
 
     const inlineLedgerExecuteStatement = jest
