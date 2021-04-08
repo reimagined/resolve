@@ -59,6 +59,12 @@ const appConfig = {
       resolvers: 'common/read-models/saga-scheduler-tests.resolvers.js',
       connectorName: 'default',
     },
+    {
+      name: 'init-failed',
+      projection: 'common/read-models/init-failed.projection.js',
+      resolvers: 'common/read-models/init-failed.resolvers.js',
+      connectorName: 'default',
+    },
   ],
   viewModels: [
     {
