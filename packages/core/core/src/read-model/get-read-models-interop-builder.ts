@@ -123,8 +123,8 @@ const getReadModelInterop = (
   const acquireInitHandler = async (
     store: any
   ): Promise<ReadModelRuntimeEventHandler | null> => {
-    if (typeof projection.Init === 'function') {
-      return monitoredHandler('Init', async () => projection.Init(store))
+    if (projection.Init != null && typeof projection.Init === 'function') {
+      return monitoredHandler('Init', async () => projection.Init?.(store))
     }
     return null
   }
