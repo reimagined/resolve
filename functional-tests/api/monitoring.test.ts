@@ -150,7 +150,7 @@ const awaitMetricValue = async (
   value: number,
   attempt = 0
 ): Promise<any> => {
-  const metric = await getMetricData(part, dimensions)
+  const metric = await getMetricData(part, ...dimensions)
 
   if (!isEqual(metric, value)) {
     if (attempt >= maxAttempts) {
@@ -176,14 +176,11 @@ test('read model Init handler failed', async () => {
         Value: 'Init',
       },
     ],
-    baseMetrics.Errors.readModelProjection.Init + 1
+    baseMetrics.Errors.readModelProjection.Init
   )
 })
 
 test('read model resolverA failed', async () => {
-  /*
-  baseMetrics.Errors.readModelResolver.resolverA += 2
-
   await expect(
     client.query({
       name: 'monitoring',
@@ -191,7 +188,8 @@ test('read model resolverA failed', async () => {
       args: {},
     })
   ).rejects.toBeInstanceOf(Error)
-  */
+
+  baseMetrics.Errors.readModelResolver.resolverA++
 
   await awaitMetricValue(
     'ReadModelResolver',
@@ -207,12 +205,21 @@ test('read model resolverA failed', async () => {
     ],
     baseMetrics.Errors.readModelResolver.resolverA
   )
+
+  await awaitMetricValue(
+    'ReadModelResolver',
+    [
+      {
+        Name: 'ReadModel',
+        Value: 'monitoring',
+      },
+    ],
+    baseMetrics.Errors.readModelResolver.resolverB +
+      baseMetrics.Errors.readModelResolver.resolverA
+  )
 })
 
 test('read model resolverB failed', async () => {
-  /*
-  baseMetrics.Errors.readModelResolver.resolverB += 2
-
   await expect(
     client.query({
       name: 'monitoring',
@@ -220,7 +227,8 @@ test('read model resolverB failed', async () => {
       args: {},
     })
   ).rejects.toBeInstanceOf(Error)
-  */
+
+  baseMetrics.Errors.readModelResolver.resolverB++
 
   await awaitMetricValue(
     'ReadModelResolver',
@@ -235,6 +243,18 @@ test('read model resolverB failed', async () => {
       },
     ],
     baseMetrics.Errors.readModelResolver.resolverB
+  )
+
+  await awaitMetricValue(
+    'ReadModelResolver',
+    [
+      {
+        Name: 'ReadModel',
+        Value: 'monitoring',
+      },
+    ],
+    baseMetrics.Errors.readModelResolver.resolverB +
+      baseMetrics.Errors.readModelResolver.resolverA
   )
 })
 

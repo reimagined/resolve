@@ -56,7 +56,15 @@ const read = async (
 
   try {
     if (isDisposed) {
-      throw new Error(`Read model "${readModelName}" is disposed`)
+      const error = new Error(`Read model "${readModelName}" is disposed`)
+      await monitoring?.error?.(error, 'readModelResolver', {
+        readModelName,
+        resolverName,
+      })
+      if (subSegment != null) {
+        subSegment.addError(error)
+      }
+      throw error
     }
     const resolver = await interop.acquireResolver(resolverName, resolverArgs, {
       jwt,
@@ -65,16 +73,6 @@ const read = async (
     const result = await wrapConnection(pool, interop, resolver)
     log.verbose(result)
     return result
-  } catch (error) {
-    if (subSegment != null) {
-      subSegment.addError(error)
-    }
-
-    await monitoring?.error?.(error, 'readModelResolver', {
-      readModelName,
-      resolverName,
-    })
-    throw error
   } finally {
     if (subSegment != null) {
       subSegment.close()
