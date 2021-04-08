@@ -2,6 +2,9 @@ import { INT8_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'
 
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
+// Although documentation describes a 1 MB limit, the actual limit is 512 KB
+// https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
+const MAX_RDS_DATA_API_RESPONSE_SIZE = 512000
 
 const loadEventsByCursor = async (
   {
@@ -22,7 +25,9 @@ const loadEventsByCursor = async (
   }: any
 ) => {
   const eventsSizeLimit =
-    inputEventsSizeLimit != null ? inputEventsSizeLimit : 512000
+    inputEventsSizeLimit != null
+      ? inputEventsSizeLimit
+      : MAX_RDS_DATA_API_RESPONSE_SIZE
   const limit = Math.min(inputLimit, 0x7fffffff)
 
   const makeBigIntLiteral = (numStr: any): string =>
@@ -74,7 +79,7 @@ const loadEventsByCursor = async (
   const eventsTableAsId: string = escapeId(eventsTableName)
   const events: any[] = []
 
-  if (eventsSizeLimit > 512000) {
+  if (eventsSizeLimit > MAX_RDS_DATA_API_RESPONSE_SIZE) {
     // prettier-ignore
     const sqlQuery: any =
       `WITH "minimalTimestamp" AS (

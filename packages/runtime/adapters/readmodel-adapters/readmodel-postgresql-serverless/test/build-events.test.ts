@@ -1,5 +1,9 @@
 import { buildEvents } from '../src/build'
 
+// Although documentation describes a 1 MB limit, the actual limit is 512 KB
+// https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
+const MAX_RDS_DATA_API_RESPONSE_SIZE = 512000
+
 describe('buildEvents', () => {
   const readModelName = 'readModelName'
   const inputCursor = null
@@ -225,42 +229,30 @@ describe('buildEvents', () => {
       }
     }
 
-    expect(eventstoreAdapter.getNextCursor.mock.calls.length).toEqual(2)
-
-    expect(eventstoreAdapter.getNextCursor.mock.calls[0][0]).toEqual(null)
-    expect(eventstoreAdapter.getNextCursor.mock.calls[0][1]).toEqual([
-      firstEvent,
-    ])
-
-    expect(eventstoreAdapter.getNextCursor.mock.calls[1][0]).toEqual(
-      firstCursor
-    )
-    expect(eventstoreAdapter.getNextCursor.mock.calls[1][1]).toEqual([
+    expect(eventstoreAdapter.getNextCursor).toBeCalledTimes(2)
+    expect(eventstoreAdapter.getNextCursor).toBeCalledWith(null, [firstEvent])
+    expect(eventstoreAdapter.getNextCursor).toBeCalledWith(firstCursor, [
       secondEvent,
     ])
 
-    expect(eventstoreAdapter.loadEvents.mock.calls.length).toEqual(3)
-
-    expect(eventstoreAdapter.loadEvents.mock.calls[0][0].cursor).toEqual(null)
-    expect(
-      eventstoreAdapter.loadEvents.mock.calls[0][0].eventsSizeLimit
-    ).toEqual(512000)
-    expect(eventstoreAdapter.loadEvents.mock.calls[0][0].limit).toEqual(100)
-
-    expect(eventstoreAdapter.loadEvents.mock.calls[1][0].cursor).toEqual(
-      firstCursor
-    )
-    expect(
-      eventstoreAdapter.loadEvents.mock.calls[1][0].eventsSizeLimit
-    ).toEqual(512000)
-    expect(eventstoreAdapter.loadEvents.mock.calls[1][0].limit).toEqual(1000)
-
-    expect(eventstoreAdapter.loadEvents.mock.calls[2][0].cursor).toEqual(
-      secondCursor
-    )
-    expect(
-      eventstoreAdapter.loadEvents.mock.calls[2][0].eventsSizeLimit
-    ).toEqual(512000)
-    expect(eventstoreAdapter.loadEvents.mock.calls[2][0].limit).toEqual(1000)
+    expect(eventstoreAdapter.loadEvents).toBeCalledTimes(3)
+    expect(eventstoreAdapter.loadEvents).toBeCalledWith({
+      eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
+      cursor: null,
+      limit: 100,
+      eventTypes,
+    })
+    expect(eventstoreAdapter.loadEvents).toBeCalledWith({
+      eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
+      cursor: firstCursor,
+      limit: 1000,
+      eventTypes,
+    })
+    expect(eventstoreAdapter.loadEvents).toBeCalledWith({
+      eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
+      cursor: secondCursor,
+      limit: 1000,
+      eventTypes,
+    })
   })
 })
