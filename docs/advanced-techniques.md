@@ -99,11 +99,13 @@ Encryption is defined as a file that exports a factory function of the following
 ```js
 const createEncryption = (aggregateId, context) => {
   ...
+  // Returns an object that contains an 'encrypt' and 'decrypt' functions
   return {
-    encrypt: (data) => ..., // A function that takes data and returns it encrypted version
+    encrypt: (data) => ..., // A function that takes data and returns its encrypted version
     decrypt: (blob) => ..., // A function takes an encrypted blob and returns unencrypted data
   }
 }
+export default createEncryption
 ```
 
 ##### Read Model Encryption:
@@ -111,11 +113,13 @@ const createEncryption = (aggregateId, context) => {
 ```js
 const createEncryption = ( event, context) => {
   ...
+  // Returns an object that contains an 'encrypt' and 'decrypt' functions
   return {
-    encrypt: (data) => ..., // A function that takes data and returns it encrypted version
+    encrypt: (data) => ..., // A function that takes data and returns its encrypted version
     decrypt: (blob) => ..., // A function takes an encrypted blob and returns unencrypted data
   }
 }
+export default createEncryption
 ```
 
 You can assign encryption to aggregates and Read Models in the application's configuration file as shown below:
@@ -127,7 +131,7 @@ const appConfig = {
       name: 'user-profile',
       commands: 'common/aggregates/user-profile.commands.js',
       projection: 'common/aggregates/user-profile.projection.js',
-      encryption: 'common/aggregates/encryption.js',
+      encryption: 'common/aggregates/encryption.js', // The path to a file that defines aggregate encryption
     },
     ...
   ]
@@ -137,7 +141,7 @@ const appConfig = {
       connectorName: 'default',
       projection: 'common/read-models/user-profiles.projection.js',
       resolvers: 'common/read-models/user-profiles.resolvers.js',
-      encryption: 'common/read-models/encryption.js',
+      encryption: 'common/read-models/encryption.js', // The path to a file that defines Read Model encryption
     },
     ...
   ],
