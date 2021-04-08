@@ -213,7 +213,7 @@ export const buildEvents: (
   let eventsPromise: Promise<Array<ReadModelEvent>> = eventstoreAdapter
     .loadEvents({
       eventTypes,
-      eventsSizeLimit: 6553600,
+      eventsSizeLimit: 512000,
       limit: 100,
       cursor,
     })
@@ -293,7 +293,7 @@ export const buildEvents: (
     eventsPromise = eventstoreAdapter
       .loadEvents({
         eventTypes,
-        eventsSizeLimit: 65536000,
+        eventsSizeLimit: 512000,
         limit: 1000,
         cursor: nextCursor,
       })
