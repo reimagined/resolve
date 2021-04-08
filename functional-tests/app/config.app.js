@@ -65,6 +65,12 @@ const appConfig = {
       resolvers: 'common/read-models/init-failed.resolvers.js',
       connectorName: 'default',
     },
+    {
+      name: 'monitoring',
+      projection: 'common/read-models/monitoring.projection.js',
+      resolvers: 'common/read-models/monitoring.resolvers.js',
+      connectorName: 'default',
+    },
   ],
   viewModels: [
     {

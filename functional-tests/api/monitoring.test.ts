@@ -3,24 +3,30 @@ import { CloudWatch } from '@aws-sdk/client-cloudwatch'
 import { getClient } from '../utils/utils'
 import { isEqual } from 'lodash'
 
+type BaseMetrics = {
+  Errors: {
+    readModelProjection: {
+      Init: number
+      EventHandler: number
+    }
+    readModelResolver: {
+      resolverA: number
+      resolverB: number
+    }
+  }
+}
+
 let cw: CloudWatch
 let client: Client
+let startTime: Date
+let endTime: Date
+let baseMetrics: BaseMetrics
 
-beforeAll(() => {
-  cw = new CloudWatch({})
-  client = getClient()
-})
-
-const maxAttempts = 5
-const attemptPeriod = 5000
-
-const awaitMetricData = async (
+const getMetricData = async (
   part: string,
-  dimensions: Array<any>,
-  values: Array<number>,
-  attempt = 0
-): Promise<any> => {
-  const metric = await cw.getMetricData({
+  ...dimensions: Array<any>
+): Promise<number> => {
+  const data = await cw.getMetricData({
     MetricDataQueries: [
       {
         Id: 'query',
@@ -41,21 +47,114 @@ const awaitMetricData = async (
             ],
           },
           Stat: 'Sum',
-          Period: 60 * 60 * 60 * 60,
+          Period: 31536000, // year
           Unit: 'Count',
         },
       },
     ],
-    StartTime: new Date(2021, 2, 29),
-    EndTime: new Date(2021, 3, 5),
+    StartTime: startTime,
+    EndTime: endTime,
   })
+  const valueCount = data.MetricDataResults?.[0]?.Values?.length ?? 0
 
-  if (!isEqual(metric.MetricDataResults?.[0]?.Values, values)) {
+  if (valueCount === 0) {
+    return 0
+  }
+  if (valueCount === 1) {
+    return data.MetricDataResults?.[0]?.Values?.[0] as number
+  }
+  throw Error(`multiple metric ${part} values received`)
+}
+
+const collectBaseMetrics = async (): Promise<BaseMetrics> => {
+  const metrics = await Promise.all([
+    getMetricData(
+      'ReadModelProjection',
+      {
+        Name: 'ReadModel',
+        Value: 'init-failed',
+      },
+      {
+        Name: 'EventType',
+        Value: 'Init',
+      }
+    ),
+    getMetricData(
+      'ReadModelProjection',
+      {
+        Name: 'ReadModel',
+        Value: 'init-failed',
+      },
+      {
+        Name: 'EventType',
+        Value: 'Init',
+      }
+    ),
+    getMetricData(
+      'ReadModelResolver',
+      {
+        Name: 'ReadModel',
+        Value: 'init-failed',
+      },
+      {
+        Name: 'Resolver',
+        Value: 'resolverA',
+      }
+    ),
+    getMetricData(
+      'ReadModelResolver',
+      {
+        Name: 'ReadModel',
+        Value: 'init-failed',
+      },
+      {
+        Name: 'Resolver',
+        Value: 'resolverB',
+      }
+    ),
+  ])
+
+  return {
+    Errors: {
+      readModelProjection: {
+        Init: metrics[0],
+        EventHandler: metrics[1],
+      },
+      readModelResolver: {
+        resolverA: metrics[2],
+        resolverB: metrics[3],
+      },
+    },
+  }
+}
+
+beforeAll(async () => {
+  cw = new CloudWatch({})
+  client = getClient()
+  endTime = new Date(Date.now() + 3600000)
+  startTime = new Date(Date.now() - 360000 * 24)
+  baseMetrics = await collectBaseMetrics()
+})
+
+const maxAttempts = 5
+const attemptPeriod = 5000
+
+const awaitMetricValue = async (
+  part: string,
+  dimensions: Array<any>,
+  value: number,
+  attempt = 0
+): Promise<any> => {
+  const metric = await getMetricData(part, dimensions)
+
+  if (!isEqual(metric, value)) {
     if (attempt >= maxAttempts) {
-      throw Error(`Metric data mismatch after ${attempt} attempts`)
+      throw Error(
+        `Metric data mismatch after ${attempt} attempts: expected ${value}, received last ${metric}`
+      )
     }
     await new Promise((resolve) => setTimeout(resolve, attemptPeriod))
-    await awaitMetricData(part, dimensions, values, attempt + 1)
+    await awaitMetricValue(part, dimensions, value, attempt + 1)
   }
 }
 
@@ -63,7 +162,7 @@ const awaitMetricData = async (
 const deploymentId = process.env.RESOLVE_TESTS_TARGET_DEPLOYMENT_ID
 
 test('read model Init handler failed', async () => {
-  await awaitMetricData(
+  await awaitMetricValue(
     'ReadModelProjection',
     [
       {
@@ -75,6 +174,6 @@ test('read model Init handler failed', async () => {
         Value: 'Init',
       },
     ],
-    [1]
+    1
   )
 })
