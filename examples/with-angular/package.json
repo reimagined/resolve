@@ -24,6 +24,7 @@
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
     "@ngtools/webpack": "9.0.6",
+    "@resolve-js/client": "0.29.0",
     "@resolve-js/eventstore-lite": "0.29.0",
     "@resolve-js/eventstore-postgresql-serverless": "0.29.0",
     "@resolve-js/readmodel-lite": "0.29.0",
