@@ -3,6 +3,7 @@ import {
   initDomain,
   Monitoring,
   SecretsManager,
+  MonitoringPart,
 } from '@resolve-js/core'
 import { createQuery } from '@resolve-js/runtime'
 import {
@@ -96,7 +97,7 @@ export const makeTestEnvironment = (
 
     const liveErrors: Array<Error> = []
     const monitoring: Monitoring = {
-      error: async (error: Error, part: string) => {
+      error: async (error: Error, part: MonitoringPart) => {
         if (part === 'readModelProjection') {
           liveErrors.push(error)
         }
