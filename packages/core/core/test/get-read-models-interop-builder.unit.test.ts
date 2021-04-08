@@ -21,8 +21,12 @@ const secretsManager: SecretsManager = {
   deleteSecret: jest.fn(),
 }
 
+let monitoring: {
+  error: jest.MockedFunction<NonNullable<Monitoring['error']>>
+}
+
 const makeTestRuntime = (): ReadModelRuntime => {
-  const monitoring: Monitoring = {
+  monitoring = {
     error: jest.fn(),
   }
 
@@ -134,5 +138,71 @@ describe('Read models', () => {
         'Resolver "nonExistentResolver" does not exist'
       )
     }
+  })
+  test('#1797: error meta within monitored error on Init handler ', async () => {
+    const readModelInterop = await setUpTestReadModelInterop({
+      name: 'TestReadModel',
+      projection: {
+        Init: async () => {
+          throw Error('Projection error')
+        },
+      },
+      resolvers: {},
+    })
+
+    const initHandler = await readModelInterop.acquireInitHandler(dummyStore)
+
+    try {
+      if (initHandler != null) {
+        await initHandler()
+      }
+    } catch {}
+
+    expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(monitoring.error.mock.calls[0][0].message).toEqual(
+      'Projection error'
+    )
+    expect(monitoring.error.mock.calls[0][1]).toEqual('readModelProjection')
+    expect(monitoring.error.mock.calls[0][2]).toEqual({
+      readModelName: 'TestReadModel',
+      eventType: 'Init',
+    })
+  })
+  test('#1797: error meta within monitored error on event handler ', async () => {
+    const readModelInterop = await setUpTestReadModelInterop({
+      name: 'TestReadModel',
+      projection: {
+        Failed: async () => {
+          throw Error('Projection error')
+        },
+      },
+      resolvers: {},
+    })
+
+    const eventHandler = await readModelInterop.acquireEventHandler(
+      dummyStore,
+      {
+        type: 'Failed',
+        aggregateId: 'id',
+        aggregateVersion: 1,
+        timestamp: 1,
+      }
+    )
+
+    try {
+      if (eventHandler != null) {
+        await eventHandler()
+      }
+    } catch {}
+
+    expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(monitoring.error.mock.calls[0][0].message).toEqual(
+      'Projection error'
+    )
+    expect(monitoring.error.mock.calls[0][1]).toEqual('readModelProjection')
+    expect(monitoring.error.mock.calls[0][2]).toEqual({
+      readModelName: 'TestReadModel',
+      eventType: 'Failed',
+    })
   })
 })
