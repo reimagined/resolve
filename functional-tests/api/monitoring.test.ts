@@ -18,7 +18,7 @@ type BaseMetrics = {
 }
 
 const nanoid = customAlphabet('0123456789abcdef_', 16)
-const maxAttempts = 2
+const maxAttempts = 5
 const attemptPeriod = 2000
 
 // eslint-disable-next-line spellcheck/spell-checker
@@ -90,11 +90,11 @@ const collectBaseMetrics = async (): Promise<BaseMetrics> => {
       'ReadModelProjection',
       {
         Name: 'ReadModel',
-        Value: 'init-failed',
+        Value: 'monitoring',
       },
       {
         Name: 'EventType',
-        Value: 'Init',
+        Value: 'MONITORING_FAILED_HANDLER',
       }
     ),
     getMetricData(
