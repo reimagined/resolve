@@ -151,7 +151,7 @@ const appConfig = {
 
 ### Storing Secrets
 
-The reSolve framework implements a **secret manager** that you can use to store and access secrets based on aggregate ID in you encryption implementation. The secret manager is available through the reSolve context object:
+The reSolve framework implements a **secrets manager** that you can use to store and access secrets based on aggregate ID in you encryption implementation. The secret manager is available through the reSolve context object:
 
 ```js
 import { generate } from 'generate-password'
@@ -170,7 +170,15 @@ const createEncryption = (aggregateId, context) => {
 }
 ```
 
-By default, reSolve stores secrets in the 'secrets' table within the event store.
+The `secretsManager` object exposes the following functions:
+
+| Function Name  | Description                                                                                                                          |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `getSecret`    | Takes a unique ID as an argument and returns a promise that resolves to a string or null if the secret was not found.                |
+| `setSecret`    | Takes a unique ID and a secret string as arguments and returns a promise that resolves to null if the secret was successfully saved. |
+| `deleteSecret` | Takes a unique ID as an argument and returns a promise that resolves to null if the secret was successfully deleted.                 |
+
+By default, the secrets manager stores secrets in the 'secrets' table within the event store.
 
 #### Example
 
