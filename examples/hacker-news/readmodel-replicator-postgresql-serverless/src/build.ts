@@ -285,7 +285,7 @@ const build: ExternalMethods['build'] = async (
                     `(${escapeStr(secretRecord.id)},${escapeStr(
                       secretRecord.secret
                     )})`
-                )} ON CONFLICT DO NOTHING`,
+                )} ON CONFLICT ("id") DO UPDATE SET "secret" = EXCLUDED.secret`,
         })
       }
 
