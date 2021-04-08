@@ -25,6 +25,10 @@ const appConfig = {
       commands: 'common/aggregates/scheduler-test.commands.js',
       projection: 'common/aggregates/scheduler-test.projection.js',
     },
+    {
+      name: 'monitoring-aggregate',
+      commands: 'common/aggregates/monitoring.commands.js',
+    },
   ],
   readModels: [
     {

@@ -2,6 +2,7 @@ import { Client } from '@resolve-js/client'
 import { CloudWatch } from '@aws-sdk/client-cloudwatch'
 import { getClient } from '../utils/utils'
 import { isEqual } from 'lodash'
+import { customAlphabet } from 'nanoid'
 
 type BaseMetrics = {
   Errors: {
@@ -16,6 +17,12 @@ type BaseMetrics = {
   }
 }
 
+const nanoid = customAlphabet('0123456789abcdef_', 16)
+const maxAttempts = 2
+const attemptPeriod = 2000
+
+// eslint-disable-next-line spellcheck/spell-checker
+let deploymentId: string
 let cw: CloudWatch
 let client: Client
 let startTime: Date
@@ -29,7 +36,7 @@ const getMetricData = async (
   const data = await cw.getMetricData({
     MetricDataQueries: [
       {
-        Id: 'query',
+        Id: `q${nanoid()}`,
         MetricStat: {
           Metric: {
             Namespace: 'RESOLVE_METRICS',
@@ -94,7 +101,7 @@ const collectBaseMetrics = async (): Promise<BaseMetrics> => {
       'ReadModelResolver',
       {
         Name: 'ReadModel',
-        Value: 'init-failed',
+        Value: 'monitoring',
       },
       {
         Name: 'Resolver',
@@ -105,7 +112,7 @@ const collectBaseMetrics = async (): Promise<BaseMetrics> => {
       'ReadModelResolver',
       {
         Name: 'ReadModel',
-        Value: 'init-failed',
+        Value: 'monitoring',
       },
       {
         Name: 'Resolver',
@@ -129,15 +136,13 @@ const collectBaseMetrics = async (): Promise<BaseMetrics> => {
 }
 
 beforeAll(async () => {
+  deploymentId = process.env.RESOLVE_TESTS_TARGET_DEPLOYMENT_ID || ''
   cw = new CloudWatch({})
   client = getClient()
   endTime = new Date(Date.now() + 3600000)
   startTime = new Date(Date.now() - 360000 * 24)
   baseMetrics = await collectBaseMetrics()
 })
-
-const maxAttempts = 5
-const attemptPeriod = 5000
 
 const awaitMetricValue = async (
   part: string,
@@ -158,9 +163,6 @@ const awaitMetricValue = async (
   }
 }
 
-// eslint-disable-next-line spellcheck/spell-checker
-const deploymentId = process.env.RESOLVE_TESTS_TARGET_DEPLOYMENT_ID
-
 test('read model Init handler failed', async () => {
   await awaitMetricValue(
     'ReadModelProjection',
@@ -174,6 +176,88 @@ test('read model Init handler failed', async () => {
         Value: 'Init',
       },
     ],
-    1
+    baseMetrics.Errors.readModelProjection.Init + 1
+  )
+})
+
+test('read model resolverA failed', async () => {
+  /*
+  baseMetrics.Errors.readModelResolver.resolverA += 2
+
+  await expect(
+    client.query({
+      name: 'monitoring',
+      resolver: 'resolverA',
+      args: {},
+    })
+  ).rejects.toBeInstanceOf(Error)
+  */
+
+  await awaitMetricValue(
+    'ReadModelResolver',
+    [
+      {
+        Name: 'ReadModel',
+        Value: 'monitoring',
+      },
+      {
+        Name: 'Resolver',
+        Value: 'resolverA',
+      },
+    ],
+    baseMetrics.Errors.readModelResolver.resolverA
+  )
+})
+
+test('read model resolverB failed', async () => {
+  /*
+  baseMetrics.Errors.readModelResolver.resolverB += 2
+
+  await expect(
+    client.query({
+      name: 'monitoring',
+      resolver: 'resolverB',
+      args: {},
+    })
+  ).rejects.toBeInstanceOf(Error)
+  */
+
+  await awaitMetricValue(
+    'ReadModelResolver',
+    [
+      {
+        Name: 'ReadModel',
+        Value: 'monitoring',
+      },
+      {
+        Name: 'Resolver',
+        Value: 'resolverB',
+      },
+    ],
+    baseMetrics.Errors.readModelResolver.resolverB
+  )
+})
+
+test('read model event handler failed', async () => {
+  await client.command({
+    aggregateId: 'any',
+    aggregateName: 'monitoring-aggregate',
+    type: 'fail',
+    payload: {},
+  })
+
+  await awaitMetricValue(
+    'ReadModelProjection',
+    [
+      {
+        Name: 'ReadModel',
+        Value: 'monitoring',
+      },
+      {
+        Name: 'EventType',
+        Value: 'MONITORING_FAILED_HANDLER',
+      },
+    ],
+    baseMetrics.Errors.readModelProjection.EventHandler + 1
   )
 })
