@@ -3,59 +3,69 @@ export default () => `
   import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"
   import constants from '$resolve.constants'
 
-  const assemblies = Object.create(null, {
+  const assemblies = Object.create(Object.prototype, {
     seedClientEnvs: { 
       get() { 
-        return require('$resolve.seedClientEnvs').default
-      }
+        return interopRequireDefault(require('$resolve.seedClientEnvs')).default
+      },
+      enumerable: true
     },
     eventstoreAdapter: {
       get() { 
-        return require('$resolve.eventstoreAdapter').default
-      } 
+        return interopRequireDefault(require('$resolve.eventstoreAdapter')).default
+      },
+      enumerable: true
     },
     readModelConnectors: {
       get() { 
-        return require('$resolve.readModelConnectors').default
-      }
+        return interopRequireDefault(require('$resolve.readModelConnectors')).default
+      },
+      enumerable: true
     },
     serverImports: {
       get() { 
-        return require('$resolve.serverImports').default
-      }
+        return interopRequireDefault(require('$resolve.serverImports')).default
+      },
+      enumerable: true
     },
     uploadAdapter: {
       get() { 
-        return require('$resolve.uploadAdapter').default
-      }
+        return interopRequireDefault(require('$resolve.uploadAdapter')).default
+      },
+      enumerable: true
     }
   })
   
-  const domain = Object.create(null, {
+  const domain = Object.create(Object.prototype, {
     apiHandlers: {
       get() { 
-        return require('$resolve.apiHandlers').default
-      }
+        return interopRequireDefault(require('$resolve.apiHandlers')).default
+      },
+      enumerable: true
     },
     aggregates: {
       get() { 
-        return require('$resolve.aggregates').default
-      }
+        return interopRequireDefault(require('$resolve.aggregates')).default
+      },
+      enumerable: true
     },
     readModels: {
       get() { 
-        return require('$resolve.readModels').default
-      }
+        return interopRequireDefault(require('$resolve.readModels')).default
+      },
+      enumerable: true
     },
     viewModels: {
       get() { 
-        return require('$resolve.viewModels').default
-      }
+        return interopRequireDefault(require('$resolve.viewModels')).default
+      },
+      enumerable: true
     },
     sagas: {
       get() { 
-        return require('$resolve.sagas').default
-      }
+        return interopRequireDefault(require('$resolve.sagas')).default
+      },
+      enumerable: true
     }
   })
   
