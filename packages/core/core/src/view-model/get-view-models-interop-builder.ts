@@ -111,7 +111,7 @@ const buildViewModel = async (
     } catch (error) {
       subSegment.addError(error)
       log.error(error.message)
-      await monitoring?.error?.(error, 'viewModelProjection', {
+      monitoring?.error?.(error, 'viewModelProjection', {
         name,
         eventType: event.type,
       })
@@ -220,8 +220,8 @@ const getViewModelInterop = (
     } catch (error) {
       subSegment.addError(error)
 
-      await monitoring?.error?.(error, 'viewModelResolver', {
-        name,
+      monitoring?.error?.(error, 'viewModelResolver', {
+        viewModelName: name,
       })
       throw error
     } finally {

@@ -46,7 +46,7 @@ const buildExecutionMetricData = (error, part, meta) => {
       )
     }
     case 'viewModelResolver': {
-      return buildViewModelResolverMetricData(meta.readModelName, error)
+      return buildViewModelResolverMetricData(meta.viewModelName, error)
     }
     case 'apiHandler': {
       return buildApiHandlerMetricData(meta.path, error)

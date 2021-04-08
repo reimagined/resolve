@@ -16,7 +16,7 @@ const monitoredError = async (
   error: Error,
   meta: any
 ) => {
-  await runtime.monitoring?.error?.(error, 'readModelResolver', meta)
+  runtime.monitoring?.error?.(error, 'readModelResolver', meta)
   return error
 }
 
@@ -84,7 +84,7 @@ const getReadModelInterop = (
         if (subSegment != null) {
           subSegment.addError(error)
         }
-        await monitoring?.error?.(error, 'readModelResolver', {
+        monitoring?.error?.(error, 'readModelResolver', {
           readModelName: name,
           resolverName: resolver,
         })
@@ -113,7 +113,7 @@ const getReadModelInterop = (
     try {
       return await handler()
     } catch (error) {
-      await monitoring?.error?.(error, 'readModelProjection', {
+      monitoring?.error?.(error, 'readModelProjection', {
         readModelName: readModel.name,
       })
       throw error

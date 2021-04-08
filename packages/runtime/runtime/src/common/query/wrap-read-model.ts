@@ -70,7 +70,7 @@ const read = async (
       subSegment.addError(error)
     }
 
-    await monitoring?.error?.(error, 'readModelResolver', {
+    monitoring?.error?.(error, 'readModelResolver', {
       readModelName,
       resolverName,
     })

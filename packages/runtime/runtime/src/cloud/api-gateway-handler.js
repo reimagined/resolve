@@ -5,11 +5,9 @@ const getCustomParameters = async (resolve) => ({ resolve })
 
 const apiGatewayHandler = async (lambdaEvent, lambdaContext, resolve) => {
   const onError = async (error, path) => {
-    try {
-      await resolve.monitoring.error(error, 'apiHandler', {
-        path,
-      })
-    } catch (e) {}
+    resolve.monitoring.error(error, 'apiHandler', {
+      path,
+    })
   }
 
   const executor = wrapApiHandler(

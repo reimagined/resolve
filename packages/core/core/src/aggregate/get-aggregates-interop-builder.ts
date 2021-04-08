@@ -498,7 +498,7 @@ const executeCommand = async (
     return processedEvent
   } catch (error) {
     subSegment.addError(error)
-    await monitoring?.error?.(error, 'command', { command })
+    monitoring?.error?.(error, 'command', { command })
     throw error
   } finally {
     subSegment.close()
