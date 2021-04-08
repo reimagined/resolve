@@ -3084,6 +3084,13 @@
   dependencies:
     "@types/lodash" "*"
 
+"@types/lodash.partial@4.2.6":
+  version "4.2.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.partial/-/lodash.partial-4.2.6.tgz#c580f1b3c9b0b8b04fabf760f8a2839bdd76ca23"
+  integrity sha512-xtVjWatf2DcEJCl4e/quYX3tWNtK/wd+YgvEN57qVjBcBx/2C3pKhCbbnf8X3Ja2KK6m06kV5cSV5yBYGMqEIQ==
+  dependencies:
+    "@types/lodash" "*"
+
 "@types/lodash.set@4.3.6":
   version "4.3.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.set/-/lodash.set-4.3.6.tgz#33e635c2323f855359225df6a5c8c6f1f1908264"
@@ -11744,6 +11751,11 @@ lodash.padstart@^4.6.1:
   version "4.6.1"
   resolved "https://registry.yarnpkg.com/lodash.padstart/-/lodash.padstart-4.6.1.tgz#d2e3eebff0d9d39ad50f5cbd1b52a7bce6bb611b"
   integrity sha1-0uPuv/DZ05rVD1y9G1KnvOa7YRs=
+
+lodash.partial@4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/lodash.partial/-/lodash.partial-4.2.1.tgz#49f3d8cfdaa3bff8b3a91d127e923245418961d4"
+  integrity sha1-SfPYz9qjv/izqR0SfpIyRUGJYdQ=
 
 lodash.pick@^4.2.1:
   version "4.4.0"

@@ -1,4 +1,9 @@
-import { AggregateMeta, ReadModelMeta, ViewModelMeta } from './types/runtime'
+import {
+  AggregateMeta,
+  ReadModelMeta,
+  ViewModelMeta,
+  SagaMeta,
+} from './types/runtime'
 import { SagaDomain, SagaInterop, SagaInteropMap } from './saga/types'
 import {
   ReadModelDomain,
@@ -28,7 +33,7 @@ export type Domain = {
 }
 
 export type DomainMeta = {
-  sagas: any[]
+  sagas: SagaMeta[]
   readModels: ReadModelMeta[]
   aggregates: AggregateMeta[]
   viewModels: ViewModelMeta[]

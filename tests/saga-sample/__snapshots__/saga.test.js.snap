@@ -4,7 +4,7 @@ exports[`Saga with sideEffects.isEnabled = false forgotten registration 1`] = `
 Object {
   "commands": Array [],
   "queries": Array [],
-  "scheduleCommands": Array [],
+  "scheduledCommands": Array [],
   "sideEffects": Array [],
 }
 `;
@@ -13,7 +13,7 @@ exports[`Saga with sideEffects.isEnabled = false success registration 1`] = `
 Object {
   "commands": Array [],
   "queries": Array [],
-  "scheduleCommands": Array [],
+  "scheduledCommands": Array [],
   "sideEffects": Array [],
 }
 `;
@@ -21,37 +21,32 @@ Object {
 exports[`Saga with sideEffects.isEnabled = true forgotten registration 1`] = `
 Object {
   "commands": Array [
-    Array [
-      Object {
-        "aggregateId": "userId",
-        "aggregateName": "User",
-        "payload": Object {
-          "mail": "user@example.com",
-        },
-        "type": "requestConfirmUser",
+    Object {
+      "aggregateId": "userId",
+      "aggregateName": "User",
+      "payload": Object {
+        "mail": "user@example.com",
       },
-    ],
+      "type": "requestConfirmUser",
+    },
   ],
   "queries": Array [],
-  "scheduleCommands": Array [
-    Array [
-      604800002,
-      Object {
+  "scheduledCommands": Array [
+    Object {
+      "command": Object {
         "aggregateId": "userId",
         "aggregateName": "User",
         "payload": Object {},
         "type": "forgetUser",
       },
-    ],
+      "date": 604800002,
+    },
   ],
   "sideEffects": Array [
     Array [
       "sendEmail",
       "user@example.com",
       "Confirm mail",
-      Object {
-        "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP": 0,
-      },
     ],
   ],
 }
@@ -60,37 +55,32 @@ Object {
 exports[`Saga with sideEffects.isEnabled = true success registration 1`] = `
 Object {
   "commands": Array [
-    Array [
-      Object {
-        "aggregateId": "userId",
-        "aggregateName": "User",
-        "payload": Object {
-          "mail": "user@example.com",
-        },
-        "type": "requestConfirmUser",
+    Object {
+      "aggregateId": "userId",
+      "aggregateName": "User",
+      "payload": Object {
+        "mail": "user@example.com",
       },
-    ],
+      "type": "requestConfirmUser",
+    },
   ],
   "queries": Array [],
-  "scheduleCommands": Array [
-    Array [
-      604800002,
-      Object {
+  "scheduledCommands": Array [
+    Object {
+      "command": Object {
         "aggregateId": "userId",
         "aggregateName": "User",
         "payload": Object {},
         "type": "forgetUser",
       },
-    ],
+      "date": 604800002,
+    },
   ],
   "sideEffects": Array [
     Array [
       "sendEmail",
       "user@example.com",
       "Confirm mail",
-      Object {
-        "RESOLVE_SIDE_EFFECTS_START_TIMESTAMP": 0,
-      },
     ],
   ],
 }

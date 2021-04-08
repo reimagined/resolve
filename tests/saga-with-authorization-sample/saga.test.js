@@ -33,22 +33,21 @@ describe('Saga', () => {
     return event
   }
 
-  let sagaWithAdapter = null
+  let saga = null
   let adapter = null
 
   beforeEach(async () => {
     adapter = createConnector(connectorOptions)
-    sagaWithAdapter = {
+    saga = {
       handlers: source.handlers,
       sideEffects: source.sideEffects,
-      adapter,
       name: sagaName,
     }
   })
 
   afterEach(async () => {
     adapter = null
-    sagaWithAdapter = null
+    saga = null
   })
 
   test('success registration', async () => {
@@ -73,7 +72,9 @@ describe('Saga', () => {
         aggregateName: 'Process',
         type: 'killAllProcesses',
       }),
-    ]).saga(sagaWithAdapter)
+    ])
+      .saga(saga)
+      .withAdapter(adapter)
 
     expect(result).toMatchSnapshot()
   })
