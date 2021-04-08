@@ -125,6 +125,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-central-1
           RESOLVE_TESTS_TARGET_DEPLOYMENT_ID: ${{ steps.deploy.outputs.id }}
         run: |
           cd functional-tests
