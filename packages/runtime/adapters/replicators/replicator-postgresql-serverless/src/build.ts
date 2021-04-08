@@ -303,7 +303,7 @@ const build: ExternalMethods['build'] = async (
         if (event.type === SET_SECRET_EVENT_TYPE) {
           secretsToInsert.push(event.payload.id)
           const index = secretsToDelete.indexOf(event.payload.id)
-          if (index != -1) {
+          if (index !== -1) {
             secretsToDelete.splice(index, 1)
           }
         } else if (event.type === DELETE_SECRET_EVENT_TYPE) {

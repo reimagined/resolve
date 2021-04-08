@@ -1,5 +1,4 @@
 import type {
-  ObjectFixedIntersectionToObject,
   ObjectFunctionLikeKeys,
   CommonAdapterPool,
   CommonAdapterOptions,
@@ -8,10 +7,6 @@ import type {
   AdapterImplementation,
   StoreApi,
   PerformanceTracerLike,
-  JsonMap,
-  SearchCondition,
-  UpdateCondition,
-  ObjectFixedKeys,
   OmitObject,
   JsonPrimitive,
   FunctionLike,
