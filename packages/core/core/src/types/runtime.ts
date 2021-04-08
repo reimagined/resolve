@@ -11,6 +11,7 @@ import {
   AggregateProjection,
   EventHandlerEncryptionFactory,
   ReadModelResolvers,
+  Command,
 } from './core'
 
 export type PerformanceSubsegment = {
@@ -24,11 +25,6 @@ export type PerformanceSegment = {
 
 export type PerformanceTracer = {
   getSegment: () => PerformanceSegment
-}
-
-export type Monitoring = {
-  error?: (error: Error, part: string, meta: any) => Promise<void>
-  performance?: PerformanceTracer
 }
 
 export type Eventstore = {
@@ -85,4 +81,38 @@ export type ViewModelMeta = {
   resolver: ViewModelResolver
   encryption: EventHandlerEncryptionFactory
   invariantHash: string
+}
+
+export type MonitoringPartMap = {
+  command: {
+    command: Command
+  }
+  readModelProjection: {
+    readModelName: string
+    eventType: string
+  }
+  readModelResolver: {
+    readModelName: string
+    resolverName: string
+  }
+  viewModelProjection: {
+    name: string
+    eventType: string
+  }
+  viewModelResolver: {
+    name: string
+  }
+}
+export type MonitoringPart = keyof MonitoringPartMap
+export type MonitoringMeta<
+  TPart extends MonitoringPart
+> = MonitoringPartMap[TPart]
+
+export type Monitoring = {
+  error?: <K extends MonitoringPart, U extends MonitoringMeta<K>>(
+    error: Error,
+    part: K,
+    meta: U
+  ) => Promise<void>
+  performance?: PerformanceTracer
 }
