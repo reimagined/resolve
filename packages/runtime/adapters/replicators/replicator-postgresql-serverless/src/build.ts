@@ -1,9 +1,4 @@
-import type {
-  EventstoreAdapterLike,
-  ExternalMethods,
-  ReadModelCursor,
-  ReadModelEvent,
-} from './types'
+import type { ExternalMethods, ReadModelCursor, ReadModelEvent } from './types'
 import rawExecuteStatement from './raw-execute-statement'
 import {
   EventThreadData,
