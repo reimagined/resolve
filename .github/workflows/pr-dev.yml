@@ -122,6 +122,10 @@ jobs:
 
       - name: Test:functional (API)
         if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
+          RESOLVE_TESTS_TARGET_DEPLOYMENT_ID: ${{ steps.deploy.outputs.id }}
         run: |
           cd functional-tests
           yarn run-test api --url=${{ steps.deploy.outputs.url }}
