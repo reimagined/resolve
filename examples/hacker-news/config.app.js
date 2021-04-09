@@ -24,6 +24,12 @@ const appConfig = {
       resolvers: 'common/read-models/search.resolvers.js',
       connectorName: 'elasticSearch',
     },
+    /*{
+      name: 'Replicator',
+      projection: 'common/read-models/empty.js',
+      resolvers: 'common/read-models/empty.js',
+      connectorName: 'replicator',
+    },*/
   ],
   sagas: [
     {
