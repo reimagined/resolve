@@ -109,9 +109,6 @@ for (const { describeName, prepare } of [
   let query: ResolveQuery | null = null
   let readModelsInterop: ReadModelInteropMap = {}
   let viewModelsInterop: ViewModelInteropMap = {}
-  let provideLedger = async () => {
-    /* nop */
-  }
 
   // eslint-disable-next-line no-loop-func
   describe(describeName, () => {
@@ -164,7 +161,6 @@ for (const { describeName, prepare } of [
           readModelConnectors,
           performanceTracer,
           getVacantTimeInMillis,
-          provideLedger,
           readModelsInterop,
           viewModelsInterop,
           eventstoreAdapter,
@@ -370,7 +366,6 @@ for (const { describeName, prepare } of [
           readModelsInterop,
           viewModelsInterop: {},
           eventstoreAdapter,
-          provideLedger,
         })
       })
 
@@ -442,39 +437,6 @@ for (const { describeName, prepare } of [
         }
       })
 
-      test('"read" should raise error when a resolver is not found', async () => {
-        if (query == null) {
-          throw new Error('Some of test tools are not initialized')
-        }
-
-        try {
-          await query.read({
-            modelName: 'readModelName',
-            resolverName: 'notFound',
-            resolverArgs: {},
-          })
-          return Promise.reject(new Error('Test failed'))
-        } catch (error) {
-          expect(error).toBeInstanceOf(Error)
-        }
-
-        if (performanceTracer != null) {
-          expect(performanceTracer.getSegment.mock.calls).toMatchSnapshot(
-            'getSegment'
-          )
-          expect(performanceTracer.addNewSubsegment.mock.calls).toMatchSnapshot(
-            'addNewSubsegment'
-          )
-          expect(performanceTracer.addAnnotation.mock.calls).toMatchSnapshot(
-            'addAnnotation'
-          )
-          expect(performanceTracer.addError.mock.calls).toMatchSnapshot(
-            'addError'
-          )
-          expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
-        }
-      })
-
       test('"read" should raise error when query is disposed', async () => {
         if (query == null) {
           throw new Error('Some of test tools are not initialized')
@@ -506,41 +468,6 @@ for (const { describeName, prepare } of [
             'addError'
           )
           expect(performanceTracer.close.mock.calls).toMatchSnapshot('close')
-        }
-      })
-
-      test('"read" calls monitoring.error if resolver is failed', async () => {
-        const monitoring = {
-          error: jest.fn(),
-        }
-
-        query = createQuery({
-          applicationName: 'APPLICATION_NAME',
-          invokeEventSubscriberAsync,
-          readModelConnectors,
-          performanceTracer,
-          getVacantTimeInMillis,
-          monitoring,
-          readModelsInterop,
-          viewModelsInterop,
-          eventstoreAdapter,
-          provideLedger,
-        })
-
-        try {
-          await query.read({
-            modelName: 'brokenReadModelName',
-            resolverName: 'failed',
-            resolverArgs: {},
-          })
-
-          return Promise.reject(new Error('Test failed'))
-        } catch (error) {
-          expect(error).toBeInstanceOf(Error)
-          expect(monitoring.error).toBeCalledWith(error, 'readModelResolver', {
-            readModelName: 'brokenReadModelName',
-            resolverName: 'failed',
-          })
         }
       })
 
@@ -971,7 +898,6 @@ for (const { describeName, prepare } of [
             },
           },
           eventstoreAdapter,
-          provideLedger,
         })
 
         await expect(

@@ -46,9 +46,9 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter,
       })
-      .NON_PARAMETERIZED_RESOLVER_TEST({})
+      .withAdapter(adapter)
+      .query('NON_PARAMETERIZED_RESOLVER_TEST', {})
 
     expect(result).toMatchSnapshot()
   })
@@ -72,9 +72,9 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter,
       })
-      .NON_PARAMETERIZED_RESOLVER_TEST({})
+      .withAdapter(adapter)
+      .query('NON_PARAMETERIZED_RESOLVER_TEST', {})
 
     expect(result).toMatchSnapshot()
   })
@@ -98,9 +98,9 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter,
       })
-      .NON_PARAMETERIZED_RESOLVER_TEST({})
+      .withAdapter(adapter)
+      .query('NON_PARAMETERIZED_RESOLVER_TEST', {})
 
     expect(result).toMatchSnapshot()
   })
@@ -124,9 +124,9 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter,
       })
-      .NON_PARAMETERIZED_RESOLVER_TEST({})
+      .withAdapter(adapter)
+      .query('NON_PARAMETERIZED_RESOLVER_TEST', {})
 
     expect(result).toMatchSnapshot()
   })
@@ -150,10 +150,9 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter,
       })
-
-      .PARAMETRIZED_RESOLVER_TEST({
+      .withAdapter(adapter)
+      .query('PARAMETRIZED_RESOLVER_TEST', {
         firstFieldCondition: 10,
         secondFieldCondition: 2,
         pageNumber: 2,

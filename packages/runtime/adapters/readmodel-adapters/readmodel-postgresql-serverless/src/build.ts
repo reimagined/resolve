@@ -7,6 +7,9 @@ import type {
 } from './types'
 
 const RDS_TRANSACTION_FAILED_KEY = 'RDS_TRANSACTION_FAILED_KEY'
+// Although documentation describes a 1 MB limit, the actual limit is 512 KB
+// https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
+const MAX_RDS_DATA_API_RESPONSE_SIZE = 512000
 
 const serializeError = (error: Error & { code?: number | string }) =>
   error != null
@@ -213,7 +216,7 @@ export const buildEvents: (
   let eventsPromise: Promise<Array<ReadModelEvent>> = eventstoreAdapter
     .loadEvents({
       eventTypes,
-      eventsSizeLimit: 6553600,
+      eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
       limit: 100,
       cursor,
     })
@@ -293,7 +296,7 @@ export const buildEvents: (
     eventsPromise = eventstoreAdapter
       .loadEvents({
         eventTypes,
-        eventsSizeLimit: 65536000,
+        eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
         limit: 1000,
         cursor: nextCursor,
       })
@@ -498,8 +501,7 @@ const build: ExternalMethods['build'] = async (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis,
-  provideLedger
+  getVacantTimeInMillis
 ) => {
   const {
     PassthroughError,
@@ -545,7 +547,6 @@ const build: ExternalMethods['build'] = async (
       SuccessEvent: string | null
       FailedEvent: string | null
       Errors: string | null
-      Properties: string | null
       Schema: string | null
     }>
 
@@ -570,10 +571,6 @@ const build: ExternalMethods['build'] = async (
                 ? JSON.parse(rows[0].FailedEvent)
                 : null,
             Errors: rows[0].Errors != null ? JSON.parse(rows[0].Errors) : null,
-            Properties:
-              rows[0].Properties != null
-                ? JSON.parse(rows[0].Properties)
-                : null,
             Schema: rows[0].Schema != null ? JSON.parse(rows[0].Schema) : null,
           } as ReadModelLedger)
         : null
@@ -591,8 +588,6 @@ const build: ExternalMethods['build'] = async (
     if (cursor != null && cursor.constructor !== String) {
       throw new TypeError('cursor')
     }
-
-    await provideLedger(readModelLedger)
 
     const currentPool = {
       databaseNameAsId,
@@ -613,8 +608,7 @@ const build: ExternalMethods['build'] = async (
       modelInterop,
       next,
       eventstoreAdapter,
-      getVacantTimeInMillis,
-      provideLedger
+      getVacantTimeInMillis
     )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
