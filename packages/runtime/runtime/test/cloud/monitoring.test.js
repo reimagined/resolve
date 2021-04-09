@@ -11,6 +11,7 @@ import {
   buildViewModelProjectionMetricData,
   buildViewModelResolverMetricData,
   buildInternalExecutionMetricData,
+  buildDurationMetricData,
 } from '../../src/cloud/metrics'
 
 jest.mock('../../src/cloud/metrics', () => ({
@@ -22,6 +23,7 @@ jest.mock('../../src/cloud/metrics', () => ({
   buildViewModelProjectionMetricData: jest.fn(),
   buildViewModelResolverMetricData: jest.fn(),
   buildInternalExecutionMetricData: jest.fn(),
+  buildDurationMetricData: jest.fn(),
 }))
 
 afterEach(() => {
@@ -35,6 +37,7 @@ afterEach(() => {
   buildViewModelProjectionMetricData.mockClear()
   buildViewModelResolverMetricData.mockClear()
   buildInternalExecutionMetricData.mockClear()
+  buildDurationMetricData.mockClear()
 })
 
 describe('error', () => {
@@ -237,6 +240,57 @@ describe('error', () => {
     expect(CloudWatch.putMetricData).toBeCalledWith({
       Namespace: 'RESOLVE_METRICS',
       MetricData: ['internal-metric-data'],
+    })
+  })
+})
+
+describe('duration', () => {
+  let originalNow
+
+  beforeEach(() => {
+    originalNow = Date.now
+    Date.now = jest.fn()
+  })
+
+  afterEach(() => {
+    Date.now = originalNow
+  })
+
+  test('sends correct duration metrics with specified timestamps', async () => {
+    const monitoring = createMonitoring()
+
+    buildDurationMetricData.mockReturnValueOnce(['duration-metric-data'])
+
+    monitoring.time('test-label', 3000)
+    monitoring.timeEnd('test-label', 5000)
+
+    await monitoring.publish()
+
+    expect(buildDurationMetricData).toBeCalledWith('test-label', 2000)
+
+    expect(CloudWatch.putMetricData).toBeCalledWith({
+      Namespace: 'RESOLVE_METRICS',
+      MetricData: ['duration-metric-data'],
+    })
+  })
+
+  test('sends correct duration metrics using Date.now', async () => {
+    const monitoring = createMonitoring()
+
+    Date.now.mockReturnValueOnce(15000).mockReturnValueOnce(19500)
+
+    buildDurationMetricData.mockReturnValueOnce(['duration-metric-data'])
+
+    monitoring.time('test-label')
+    monitoring.timeEnd('test-label')
+
+    await monitoring.publish()
+
+    expect(buildDurationMetricData).toBeCalledWith('test-label', 4500)
+
+    expect(CloudWatch.putMetricData).toBeCalledWith({
+      Namespace: 'RESOLVE_METRICS',
+      MetricData: ['duration-metric-data'],
     })
   })
 })

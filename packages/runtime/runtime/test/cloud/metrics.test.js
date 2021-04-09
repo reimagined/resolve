@@ -9,6 +9,7 @@ import {
   buildViewModelProjectionMetricData,
   buildViewModelResolverMetricData,
   buildInternalExecutionMetricData,
+  buildDurationMetricData,
 } from '../../src/cloud/metrics'
 
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
@@ -19,15 +20,27 @@ const lambdaContext = {
 
 const consoleInfoOldHandler = console.info
 
+let originalEnv
+
+beforeAll(() => {
+  originalEnv = process.env
+  process.env = {
+    ...originalEnv,
+    RESOLVE_DEPLOYMENT_ID: 'deployment-id',
+  }
+})
+
+afterAll(() => {
+  process.env = originalEnv
+})
+
 describe('put duration metrics', () => {
   beforeAll(async () => {
     console.info = jest.fn()
-    process.env.RESOLVE_DEPLOYMENT_ID = 'deployment-id'
   })
 
   afterAll(async () => {
     console.info = consoleInfoOldHandler
-    delete process.env.RESOLVE_DEPLOYMENT_ID
   })
 
   beforeEach(async () => {
@@ -283,20 +296,6 @@ describe('put duration metrics', () => {
 })
 
 describe('error metric data', () => {
-  let originalEnv
-
-  beforeAll(() => {
-    originalEnv = process.env
-    process.env = {
-      ...originalEnv,
-      RESOLVE_DEPLOYMENT_ID: 'deployment-id',
-    }
-  })
-
-  afterAll(() => {
-    process.env = originalEnv
-  })
-
   test('buildCommandMetricData', () => {
     class CustomError extends Error {
       name = 'CustomError'
@@ -2085,6 +2084,79 @@ describe('error metric data', () => {
             {
               Name: 'DeploymentId',
               Value: 'deployment-id',
+            },
+          ],
+        }),
+      ])
+    )
+  })
+})
+
+describe('duration metric data', () => {
+  test('buildDurationMetricData', () => {
+    const metricData = buildDurationMetricData('test-label', 15000)
+
+    expect(metricData).toHaveLength(3)
+
+    for (const metricItem of metricData) {
+      expect(metricItem).toEqual(
+        expect.objectContaining({
+          MetricName: 'Duration',
+          Timestamp: expect.any(Date),
+          Unit: 'Milliseconds',
+          Value: 15000,
+        })
+      )
+    }
+
+    expect(metricData).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          Dimensions: [
+            {
+              Name: 'DeploymentId',
+              Value: 'deployment-id',
+            },
+            {
+              Name: 'Version',
+              Value: 'unknown',
+            },
+            {
+              Name: 'Label',
+              Value: 'test-label',
+            },
+          ],
+        }),
+      ])
+    )
+
+    expect(metricData).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          Dimensions: [
+            {
+              Name: 'DeploymentId',
+              Value: 'deployment-id',
+            },
+            {
+              Name: 'Label',
+              Value: 'test-label',
+            },
+          ],
+        }),
+      ])
+    )
+    expect(metricData).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          Dimensions: [
+            {
+              Name: 'Version',
+              Value: 'unknown',
+            },
+            {
+              Name: 'Label',
+              Value: 'test-label',
             },
           ],
         }),

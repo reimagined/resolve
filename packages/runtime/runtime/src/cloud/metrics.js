@@ -100,13 +100,12 @@ const getErrorMessage = (error) => {
 
 const buildExecutionMetricData = (config, dataMap, commonMap, errorMap) => {
   const now = new Date()
-  const metricName = dataMap.ErrorMessage != null ? 'Errors' : 'Executions'
 
   const metricData = commonMap.map((dimensionNames) => ({
-    MetricName: metricName,
+    MetricName: config.MetricName,
     Timestamp: now,
-    Unit: 'Count',
-    Value: 1,
+    Unit: config.Unit,
+    Value: config.Value,
     Dimensions: dimensionNames.map((name) => ({
       Name: name,
       Value: dataMap[name],
@@ -131,12 +130,6 @@ const buildExecutionMetricData = (config, dataMap, commonMap, errorMap) => {
   return metricData
 }
 
-const errorMetricsConfig = {
-  MetricName: 'Error',
-  Unit: 'Count',
-  Value: 1,
-}
-
 export const buildCommandMetricData = (
   aggregateName,
   commandType,
@@ -151,44 +144,54 @@ export const buildCommandMetricData = (
     AggregateId: aggregateId,
   }
 
+  let metricData = []
+
+  const metricConfig = {
+    MetricName: 'Executions',
+    Unit: 'Count',
+    Value: 1,
+  }
+
   if (error != null) {
     metricDataMap.ErrorMessage = getErrorMessage(error)
     metricDataMap.ErrorName = error.name
+    metricConfig.MetricName = 'Errors'
+
+    metricData = metricData.concat(
+      buildExecutionMetricData(metricConfig, metricDataMap, [
+        ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+        ['DeploymentId', 'ErrorName'],
+        ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+        ['DeploymentId', 'Part', 'ErrorName'],
+        [
+          'DeploymentId',
+          'Part',
+          'AggregateName',
+          'CommandType',
+          'AggregateId',
+          'ErrorName',
+          'ErrorMessage',
+        ],
+        [
+          'DeploymentId',
+          'Part',
+          'AggregateName',
+          'CommandType',
+          'AggregateId',
+          'ErrorName',
+        ],
+      ])
+    )
   }
 
-  return buildExecutionMetricData(
-    errorMetricsConfig,
-    metricDataMap,
-    [
+  return metricData.concat(
+    buildExecutionMetricData(metricConfig, metricDataMap, [
       ['DeploymentId'],
       ['DeploymentId', 'Part'],
       ['DeploymentId', 'Part', 'AggregateName'],
       ['DeploymentId', 'Part', 'AggregateName', 'CommandType'],
       ['DeploymentId', 'Part', 'AggregateName', 'CommandType', 'AggregateId'],
-    ],
-    [
-      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
-      ['DeploymentId', 'ErrorName'],
-      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
-      ['DeploymentId', 'Part', 'ErrorName'],
-      [
-        'DeploymentId',
-        'Part',
-        'AggregateName',
-        'CommandType',
-        'AggregateId',
-        'ErrorName',
-        'ErrorMessage',
-      ],
-      [
-        'DeploymentId',
-        'Part',
-        'AggregateName',
-        'CommandType',
-        'AggregateId',
-        'ErrorName',
-      ],
-    ]
+    ])
   )
 }
 
@@ -204,35 +207,45 @@ export const buildReadModelProjectionMetricData = (
     EventType: eventType,
   }
 
+  let metricData = []
+
+  const metricConfig = {
+    MetricName: 'Executions',
+    Unit: 'Count',
+    Value: 1,
+  }
+
   if (error != null) {
     metricDataMap.ErrorMessage = getErrorMessage(error)
     metricDataMap.ErrorName = error.name
+    metricConfig.MetricName = 'Errors'
+
+    metricData = metricData.concat(
+      buildExecutionMetricData(metricConfig, metricDataMap, [
+        ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+        ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+        [
+          'DeploymentId',
+          'Part',
+          'ReadModel',
+          'EventType',
+          'ErrorName',
+          'ErrorMessage',
+        ],
+        ['DeploymentId', 'ErrorName'],
+        ['DeploymentId', 'Part', 'ErrorName'],
+        ['DeploymentId', 'Part', 'ReadModel', 'EventType', 'ErrorName'],
+      ])
+    )
   }
 
-  return buildExecutionMetricData(
-    errorMetricsConfig,
-    metricDataMap,
-    [
+  return metricData.concat(
+    buildExecutionMetricData(metricConfig, metricDataMap, [
       ['DeploymentId'],
       ['DeploymentId', 'Part'],
       ['DeploymentId', 'Part', 'ReadModel'],
       ['DeploymentId', 'Part', 'ReadModel', 'EventType'],
-    ],
-    [
-      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
-      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
-      [
-        'DeploymentId',
-        'Part',
-        'ReadModel',
-        'EventType',
-        'ErrorName',
-        'ErrorMessage',
-      ],
-      ['DeploymentId', 'ErrorName'],
-      ['DeploymentId', 'Part', 'ErrorName'],
-      ['DeploymentId', 'Part', 'ReadModel', 'EventType', 'ErrorName'],
-    ]
+    ])
   )
 }
 
@@ -248,35 +261,45 @@ export const buildReadModelResolverMetricData = (
     Resolver: resolverName,
   }
 
+  let metricData = []
+
+  const metricConfig = {
+    MetricName: 'Executions',
+    Unit: 'Count',
+    Value: 1,
+  }
+
   if (error != null) {
     metricDataMap.ErrorMessage = getErrorMessage(error)
     metricDataMap.ErrorName = error.name
+    metricConfig.MetricName = 'Errors'
+
+    metricData = metricData.concat(
+      buildExecutionMetricData(metricConfig, metricDataMap, [
+        ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+        ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+        [
+          'DeploymentId',
+          'Part',
+          'ReadModel',
+          'Resolver',
+          'ErrorName',
+          'ErrorMessage',
+        ],
+        ['DeploymentId', 'ErrorName'],
+        ['DeploymentId', 'Part', 'ErrorName'],
+        ['DeploymentId', 'Part', 'ReadModel', 'Resolver', 'ErrorName'],
+      ])
+    )
   }
 
-  return buildExecutionMetricData(
-    errorMetricsConfig,
-    metricDataMap,
-    [
+  return metricData.concat(
+    buildExecutionMetricData(metricConfig, metricDataMap, [
       ['DeploymentId'],
       ['DeploymentId', 'Part'],
       ['DeploymentId', 'Part', 'ReadModel'],
       ['DeploymentId', 'Part', 'ReadModel', 'Resolver'],
-    ],
-    [
-      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
-      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
-      [
-        'DeploymentId',
-        'Part',
-        'ReadModel',
-        'Resolver',
-        'ErrorName',
-        'ErrorMessage',
-      ],
-      ['DeploymentId', 'ErrorName'],
-      ['DeploymentId', 'Part', 'ErrorName'],
-      ['DeploymentId', 'Part', 'ReadModel', 'Resolver', 'ErrorName'],
-    ]
+    ])
   )
 }
 
@@ -292,35 +315,45 @@ export const buildViewModelProjectionMetricData = (
     EventType: eventType,
   }
 
+  let metricData = []
+
+  const metricConfig = {
+    MetricName: 'Executions',
+    Unit: 'Count',
+    Value: 1,
+  }
+
   if (error != null) {
     metricDataMap.ErrorMessage = getErrorMessage(error)
     metricDataMap.ErrorName = error.name
+    metricConfig.MetricName = 'Errors'
+
+    metricData = metricData.concat(
+      buildExecutionMetricData(metricConfig, metricDataMap, [
+        ['DeploymentId', 'ErrorName'],
+        ['DeploymentId', 'Part', 'ErrorName'],
+        ['DeploymentId', 'Part', 'ViewModel', 'EventType', 'ErrorName'],
+        ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+        ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+        [
+          'DeploymentId',
+          'Part',
+          'ViewModel',
+          'EventType',
+          'ErrorName',
+          'ErrorMessage',
+        ],
+      ])
+    )
   }
 
-  return buildExecutionMetricData(
-    errorMetricsConfig,
-    metricDataMap,
-    [
+  return metricData.concat(
+    buildExecutionMetricData(metricConfig, metricDataMap, [
       ['DeploymentId'],
       ['DeploymentId', 'Part'],
       ['DeploymentId', 'Part', 'ViewModel'],
       ['DeploymentId', 'Part', 'ViewModel', 'EventType'],
-    ],
-    [
-      ['DeploymentId', 'ErrorName'],
-      ['DeploymentId', 'Part', 'ErrorName'],
-      ['DeploymentId', 'Part', 'ViewModel', 'EventType', 'ErrorName'],
-      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
-      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
-      [
-        'DeploymentId',
-        'Part',
-        'ViewModel',
-        'EventType',
-        'ErrorName',
-        'ErrorMessage',
-      ],
-    ]
+    ])
   )
 }
 
@@ -331,27 +364,37 @@ export const buildViewModelResolverMetricData = (viewModelName, error) => {
     ViewModel: viewModelName,
   }
 
+  let metricData = []
+
+  const metricConfig = {
+    MetricName: 'Executions',
+    Unit: 'Count',
+    Value: 1,
+  }
+
   if (error != null) {
     metricDataMap.ErrorMessage = getErrorMessage(error)
     metricDataMap.ErrorName = error.name
+    metricConfig.MetricName = 'Errors'
+
+    metricData = metricData.concat(
+      buildExecutionMetricData(metricConfig, metricDataMap, [
+        ['DeploymentId', 'ErrorName'],
+        ['DeploymentId', 'Part', 'ErrorName'],
+        ['DeploymentId', 'Part', 'ViewModel', 'ErrorName'],
+        ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+        ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+        ['DeploymentId', 'Part', 'ViewModel', 'ErrorName', 'ErrorMessage'],
+      ])
+    )
   }
 
-  return buildExecutionMetricData(
-    errorMetricsConfig,
-    metricDataMap,
-    [
+  return metricData.concat(
+    buildExecutionMetricData(metricConfig, metricDataMap, [
       ['DeploymentId'],
       ['DeploymentId', 'Part'],
       ['DeploymentId', 'Part', 'ViewModel'],
-    ],
-    [
-      ['DeploymentId', 'ErrorName'],
-      ['DeploymentId', 'Part', 'ErrorName'],
-      ['DeploymentId', 'Part', 'ViewModel', 'ErrorName'],
-      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
-      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
-      ['DeploymentId', 'Part', 'ViewModel', 'ErrorName', 'ErrorMessage'],
-    ]
+    ])
   )
 }
 
@@ -362,27 +405,37 @@ export const buildApiHandlerMetricData = (apiHandlerPath, error) => {
     Path: apiHandlerPath,
   }
 
+  let metricData = []
+
+  const metricConfig = {
+    MetricName: 'Executions',
+    Unit: 'Count',
+    Value: 1,
+  }
+
   if (error != null) {
     metricDataMap.ErrorMessage = getErrorMessage(error)
     metricDataMap.ErrorName = error.name
+    metricConfig.MetricName = 'Errors'
+
+    metricData = metricData.concat(
+      buildExecutionMetricData(metricConfig, metricDataMap, [
+        ['DeploymentId', 'ErrorName'],
+        ['DeploymentId', 'Part', 'ErrorName'],
+        ['DeploymentId', 'Part', 'Path', 'ErrorName'],
+        ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+        ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+        ['DeploymentId', 'Part', 'Path', 'ErrorName', 'ErrorMessage'],
+      ])
+    )
   }
 
-  return buildExecutionMetricData(
-    errorMetricsConfig,
-    metricDataMap,
-    [
+  return metricData.concat(
+    buildExecutionMetricData(metricConfig, metricDataMap, [
       ['DeploymentId'],
       ['DeploymentId', 'Part'],
       ['DeploymentId', 'Part', 'Path'],
-    ],
-    [
-      ['DeploymentId', 'ErrorName'],
-      ['DeploymentId', 'Part', 'ErrorName'],
-      ['DeploymentId', 'Part', 'Path', 'ErrorName'],
-      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
-      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
-      ['DeploymentId', 'Part', 'Path', 'ErrorName', 'ErrorMessage'],
-    ]
+    ])
   )
 }
 
@@ -394,35 +447,45 @@ export const buildSagaProjectionMetricData = (sagaName, eventType, error) => {
     EventType: eventType,
   }
 
+  let metricData = []
+
+  const metricConfig = {
+    MetricName: 'Executions',
+    Unit: 'Count',
+    Value: 1,
+  }
+
   if (error != null) {
     metricDataMap.ErrorMessage = getErrorMessage(error)
     metricDataMap.ErrorName = error.name
+    metricConfig.MetricName = 'Errors'
+
+    metricData = metricData.concat(
+      buildExecutionMetricData(metricConfig, metricDataMap, [
+        ['DeploymentId', 'ErrorName'],
+        ['DeploymentId', 'Part', 'ErrorName'],
+        ['DeploymentId', 'Part', 'Saga', 'EventType', 'ErrorName'],
+        ['DeploymentId', 'ErrorName', 'ErrorMessage'],
+        ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
+        [
+          'DeploymentId',
+          'Part',
+          'Saga',
+          'EventType',
+          'ErrorName',
+          'ErrorMessage',
+        ],
+      ])
+    )
   }
 
-  return buildExecutionMetricData(
-    errorMetricsConfig,
-    metricDataMap,
-    [
+  return metricData.concat(
+    buildExecutionMetricData(metricConfig, metricDataMap, [
       ['DeploymentId'],
       ['DeploymentId', 'Part'],
       ['DeploymentId', 'Part', 'Saga'],
       ['DeploymentId', 'Part', 'Saga', 'EventType'],
-    ],
-    [
-      ['DeploymentId', 'ErrorName'],
-      ['DeploymentId', 'Part', 'ErrorName'],
-      ['DeploymentId', 'Part', 'Saga', 'EventType', 'ErrorName'],
-      ['DeploymentId', 'ErrorName', 'ErrorMessage'],
-      ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
-      [
-        'DeploymentId',
-        'Part',
-        'Saga',
-        'EventType',
-        'ErrorName',
-        'ErrorMessage',
-      ],
-    ]
+    ])
   )
 }
 
@@ -434,19 +497,43 @@ export const buildInternalExecutionMetricData = (error) => {
     ErrorName: error.name,
   }
 
-  return buildExecutionMetricData(
-    errorMetricsConfig,
-    metricDataMap,
-    // prettier-ignore
-    [
+  const metricConfig = {
+    MetricName: 'Errors',
+    Unit: 'Count',
+    Value: 1,
+  }
+
+  return [].concat(
+    buildExecutionMetricData(metricConfig, metricDataMap, [
       ['DeploymentId'],
-      ['DeploymentId', 'Part']
-    ],
-    [
+      ['DeploymentId', 'Part'],
+    ]),
+    buildExecutionMetricData(metricConfig, metricDataMap, [
       ['DeploymentId', 'ErrorName'],
       ['DeploymentId', 'Part', 'ErrorName'],
       ['DeploymentId', 'ErrorName', 'ErrorMessage'],
       ['DeploymentId', 'Part', 'ErrorName', 'ErrorMessage'],
-    ]
+    ])
   )
+}
+
+export const buildDurationMetricData = (label, duration) => {
+  const metricDataMap = {
+    DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
+    Label: label,
+    // TODO: fix it
+    Version: 'unknown',
+  }
+
+  const metricConfig = {
+    MetricName: 'Duration',
+    Unit: 'Milliseconds',
+    Value: duration,
+  }
+
+  return buildExecutionMetricData(metricConfig, metricDataMap, [
+    ['DeploymentId', 'Label'],
+    ['Version', 'Label'],
+    ['DeploymentId', 'Version', 'Label'],
+  ])
 }

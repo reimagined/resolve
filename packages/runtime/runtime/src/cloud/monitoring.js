@@ -10,6 +10,7 @@ import {
   buildViewModelProjectionMetricData,
   buildViewModelResolverMetricData,
   buildInternalExecutionMetricData,
+  buildDurationMetricData,
 } from './metrics'
 
 const getLog = (name) => debugLevels(`resolve:cloud:scheduler:${name}`)
@@ -101,9 +102,7 @@ const monitoringTimeEndCallback = async (
   if (typeof data.timerMap[name] === 'number') {
     const duration = timestamp - data.timerMap[name]
 
-    // TODO: replace by put metrics
-    // eslint-disable-next-line no-console
-    console.log(`${name}: ${duration} ms`)
+    data.metricData.push(...buildDurationMetricData(name, duration))
 
     delete data.timerMap[name]
   } else {
