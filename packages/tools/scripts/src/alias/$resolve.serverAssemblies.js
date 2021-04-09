@@ -11,6 +11,7 @@ export default () => `
   import viewModels from '$resolve.viewModels'
   import sagas from '$resolve.sagas'
   import uploadAdapter from '$resolve.uploadAdapter'
+  import resolveVersion from '$resolve.resolveVersion'
 
   export default {
     assemblies: {
@@ -27,6 +28,7 @@ export default () => `
       readModels,
       viewModels,
       sagas
-    }
+    },
+    resolveVersion
   }
 `

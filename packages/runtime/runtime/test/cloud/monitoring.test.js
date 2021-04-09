@@ -257,7 +257,7 @@ describe('duration', () => {
   })
 
   test('sends correct duration metrics with specified timestamps', async () => {
-    const monitoring = createMonitoring()
+    const monitoring = createMonitoring('1.0.0-test')
 
     buildDurationMetricData.mockReturnValueOnce(['duration-metric-data'])
 
@@ -266,7 +266,7 @@ describe('duration', () => {
 
     await monitoring.publish()
 
-    expect(buildDurationMetricData).toBeCalledWith('test-label', 2000)
+    expect(buildDurationMetricData).toBeCalledWith('test-label', '1.0.0-test', 2000)
 
     expect(CloudWatch.putMetricData).toBeCalledWith({
       Namespace: 'RESOLVE_METRICS',
@@ -275,7 +275,7 @@ describe('duration', () => {
   })
 
   test('sends correct duration metrics using Date.now', async () => {
-    const monitoring = createMonitoring()
+    const monitoring = createMonitoring('1.0.0-test')
 
     Date.now.mockReturnValueOnce(15000).mockReturnValueOnce(19500)
 
@@ -286,7 +286,11 @@ describe('duration', () => {
 
     await monitoring.publish()
 
-    expect(buildDurationMetricData).toBeCalledWith('test-label', 4500)
+    expect(buildDurationMetricData).toBeCalledWith(
+      'test-label',
+      '1.0.0-test',
+      4500
+    )
 
     expect(CloudWatch.putMetricData).toBeCalledWith({
       Namespace: 'RESOLVE_METRICS',

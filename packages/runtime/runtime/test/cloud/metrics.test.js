@@ -2094,7 +2094,11 @@ describe('error metric data', () => {
 
 describe('duration metric data', () => {
   test('buildDurationMetricData', () => {
-    const metricData = buildDurationMetricData('test-label', 15000)
+    const metricData = buildDurationMetricData(
+      'test-label',
+      '1.0.0-test',
+      15000
+    )
 
     expect(metricData).toHaveLength(3)
 
@@ -2118,8 +2122,8 @@ describe('duration metric data', () => {
               Value: 'deployment-id',
             },
             {
-              Name: 'Version',
-              Value: 'unknown',
+              Name: 'ResolveVersion',
+              Value: '1.0.0-test',
             },
             {
               Name: 'Label',
@@ -2151,8 +2155,8 @@ describe('duration metric data', () => {
         expect.objectContaining({
           Dimensions: [
             {
-              Name: 'Version',
-              Value: 'unknown',
+              Name: 'ResolveVersion',
+              Value: '1.0.0-test',
             },
             {
               Name: 'Label',

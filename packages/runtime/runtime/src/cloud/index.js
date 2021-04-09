@@ -20,7 +20,7 @@ import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
 const log = debugLevels('resolve:runtime:cloud-entry')
 
-const index = async ({ assemblies, constants, domain }) => {
+const index = async ({ assemblies, constants, domain, resolveVersion }) => {
   let subSegment = null
 
   log.debug(`starting lambda 'cold start'`)
@@ -39,6 +39,7 @@ const index = async ({ assemblies, constants, domain }) => {
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
       upstream: true,
+      resolveVersion,
     }
 
     log.debug('preparing performance tracer')

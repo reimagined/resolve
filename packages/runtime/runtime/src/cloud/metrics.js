@@ -517,12 +517,11 @@ export const buildInternalExecutionMetricData = (error) => {
   )
 }
 
-export const buildDurationMetricData = (label, duration) => {
+export const buildDurationMetricData = (label, resolveVersion, duration) => {
   const metricDataMap = {
     DeploymentId: process.env.RESOLVE_DEPLOYMENT_ID,
     Label: label,
-    // TODO: fix it
-    Version: 'unknown',
+    ResolveVersion: resolveVersion,
   }
 
   const metricConfig = {
@@ -533,7 +532,7 @@ export const buildDurationMetricData = (label, duration) => {
 
   return buildExecutionMetricData(metricConfig, metricDataMap, [
     ['DeploymentId', 'Label'],
-    ['Version', 'Label'],
-    ['DeploymentId', 'Version', 'Label'],
+    ['ResolveVersion', 'Label'],
+    ['DeploymentId', 'ResolveVersion', 'Label'],
   ])
 }

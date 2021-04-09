@@ -64,7 +64,14 @@ const buildExecutionMetricData = (error, part, meta) => {
   }
 }
 
-const monitoringErrorCallback = async (log, data, error, part, meta) => {
+const monitoringErrorCallback = async (
+  log,
+  data,
+  resolveVersion,
+  error,
+  part,
+  meta
+) => {
   try {
     log.verbose(`Collect error for '${part}' part`)
 
@@ -83,6 +90,7 @@ const monitoringErrorCallback = async (log, data, error, part, meta) => {
 const monitoringTimeCallback = async (
   log,
   data,
+  resolveVersion,
   name,
   timestamp = Date.now()
 ) => {
@@ -96,13 +104,16 @@ const monitoringTimeCallback = async (
 const monitoringTimeEndCallback = async (
   log,
   data,
+  resolveVersion,
   name,
   timestamp = Date.now()
 ) => {
   if (typeof data.timerMap[name] === 'number') {
     const duration = timestamp - data.timerMap[name]
 
-    data.metricData.push(...buildDurationMetricData(name, duration))
+    data.metricData.push(
+      ...buildDurationMetricData(name, resolveVersion, duration)
+    )
 
     delete data.timerMap[name]
   } else {
@@ -129,7 +140,7 @@ const monitoringPublishCallback = async (log, monitoringData) => {
   }
 }
 
-const createMonitoring = () => {
+const createMonitoring = (resolveVersion) => {
   const log = getLog('monitoring')
 
   const monitoringData = {
@@ -138,10 +149,30 @@ const createMonitoring = () => {
   }
 
   return {
-    error: monitoringErrorCallback.bind(null, log, monitoringData),
-    time: monitoringTimeCallback.bind(null, log, monitoringData),
-    timeEnd: monitoringTimeEndCallback.bind(null, log, monitoringData),
-    publish: monitoringPublishCallback.bind(null, log, monitoringData),
+    error: monitoringErrorCallback.bind(
+      null,
+      log,
+      monitoringData,
+      resolveVersion
+    ),
+    time: monitoringTimeCallback.bind(
+      null,
+      log,
+      monitoringData,
+      resolveVersion
+    ),
+    timeEnd: monitoringTimeEndCallback.bind(
+      null,
+      log,
+      monitoringData,
+      resolveVersion
+    ),
+    publish: monitoringPublishCallback.bind(
+      null,
+      log,
+      monitoringData,
+      resolveVersion
+    ),
   }
 }
 
