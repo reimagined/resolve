@@ -65,7 +65,7 @@ jobs:
         if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         uses: actions/checkout@v2
         with:
-          repository: DevExpress/resolve-cloud2
+          repository: DevExpress/resolve-cloud
           ref: dev
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           path: resolve-cloud
