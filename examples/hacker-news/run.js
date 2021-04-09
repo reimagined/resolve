@@ -177,6 +177,14 @@ void (async () => {
                 options: {},
               },
             },
+            {
+              method: 'POST',
+              path: '/api/import_secrets',
+              handler: {
+                module: 'import/import_secret_api_handler.js',
+                options: {},
+              },
+            },
           ],
         })
         importConfig.readModelConnectors = {}

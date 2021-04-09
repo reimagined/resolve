@@ -1,20 +1,24 @@
+import fs from 'fs-extra'
+import chalk from 'chalk'
+import https from 'https'
+import AdmZip from 'adm-zip'
+import path from 'path'
+
 import ProgressBar from 'progress'
 import getLog from '@resolve-js/debug-levels'
+import { resolveVersion } from './constants'
+import safeName from './safe-name'
 
 const log = getLog('resolve:create-resolve-app:download-resolve-repo')
 
-const downloadResolveRepo = (pool) => async () => {
-  const {
-    fs,
-    chalk,
-    https,
-    console,
-    AdmZip,
+const downloadResolveRepo = async (applicationPath, branch, commit) => {
+  const revision = branch ? branch : commit ? commit : `V${resolveVersion}`
+  const resolveDownloadZipUrl = `https://codeload.github.com/reimagined/resolve/zip/${revision}`
+  const resolveCloneZipPath = path.join(
     applicationPath,
-    resolveDownloadZipUrl,
-    resolveCloneZipPath,
-    path,
-  } = pool
+    `resolve-${safeName(revision)}.zip`
+  )
+
   try {
     await new Promise((resolve, reject) => {
       try {
@@ -77,34 +81,6 @@ const downloadResolveRepo = (pool) => async () => {
         response.on('end', () => {
           const total = response.headers['content-length'] ?? downloadedBytes
           showProgressBar(total, 0)
-
-          const contentDisposition = String(
-            response.headers['content-disposition']
-          )
-          const fileNameLength = 'filename='.length
-          const zipExtLength = '.zip'.length
-          const fileNameIndex =
-            contentDisposition.indexOf('filename=') + fileNameLength
-          if (fileNameIndex > fileNameLength) {
-            const resolveDirName = contentDisposition.substring(
-              fileNameIndex,
-              contentDisposition.length - zipExtLength
-            )
-
-            pool.resolveClonePath = path.join(
-              pool.applicationPath,
-              resolveDirName
-            )
-            pool.resolveCloneExamplesPath = path.join(
-              pool.resolveClonePath,
-              'examples'
-            )
-            pool.resolveCloneExamplePath = path.join(
-              pool.resolveCloneExamplesPath,
-              pool.exampleName
-            )
-          }
-
           resolveCloneZip.end()
         })
         response.on('error', (err) => {
@@ -120,9 +96,11 @@ const downloadResolveRepo = (pool) => async () => {
     ) {
       throw error
     }
+    // eslint-disable-next-line no-console
     console.log(
       chalk.red('Referent commit does not exists in resolve repository.')
     )
+    // eslint-disable-next-line no-console
     console.log(
       chalk.red('Maybe you forgot to merge your feature branch with dev branch')
     )
@@ -130,7 +108,6 @@ const downloadResolveRepo = (pool) => async () => {
     // eslint-disable-next-line
     throw 'Repo downloading failed'
   }
-
   try {
     const zip = new AdmZip(resolveCloneZipPath)
     zip.extractAllTo(applicationPath, true)
@@ -141,6 +118,9 @@ const downloadResolveRepo = (pool) => async () => {
   }
 
   fs.removeSync(resolveCloneZipPath)
+
+  const [resolveRepoFolder] = fs.readdirSync(applicationPath)
+  return path.join(applicationPath, resolveRepoFolder)
 }
 
 export default downloadResolveRepo

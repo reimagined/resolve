@@ -1,5 +1,7 @@
-const sendAnalytics = (pool) => async () => {
-  const { https, analyticsUrlBase, exampleName, resolveVersion } = pool
+import https from 'https'
+import { analyticsUrlBase, resolveVersion } from './constants'
+
+const sendAnalytics = async (exampleName) => {
   return await new Promise((resolve, reject) => {
     const analyticsUrl = `${analyticsUrlBase}/${exampleName}/${resolveVersion}`
 

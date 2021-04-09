@@ -20,7 +20,6 @@ const status: ExternalMethods['status'] = async (pool, readModelName) => {
     if (rows.length === 1) {
       const result: ReadModelStatus = {
         eventSubscriber: readModelName,
-        properties: rows[0].Properties,
         deliveryStrategy: 'inline-ledger',
         successEvent: rows[0].SuccessEvent,
         failedEvent: rows[0].FailedEvent,

@@ -2,8 +2,8 @@ export default {
   handlers: {
     UPDATE: async ({ sideEffects }, event) => {
       if (sideEffects.isEnabled) {
-        const randomCommandType =
-          (await sideEffects.getRandom()) > 0.5 ? 'increment' : 'decrement'
+        const random = await sideEffects.getRandom()
+        const randomCommandType = random > 0.5 ? 'increment' : 'decrement'
 
         await sideEffects.executeCommand({
           aggregateName: 'Counter',
