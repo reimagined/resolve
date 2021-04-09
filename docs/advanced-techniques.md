@@ -178,7 +178,20 @@ The `secretsManager` object exposes the following functions:
 | `setSecret`    | Takes a unique ID and a secret string as arguments and returns a promise that resolves to null if the secret was successfully saved. |
 | `deleteSecret` | Takes a unique ID as an argument and returns a promise that resolves to null if the secret was successfully deleted.                 |
 
-By default, the secrets manager stores secrets in the 'secrets' table within the event store.
+The secrets manager stores secrets in the 'secrets' table within the event store. To change the table name, use the event store adapter's `secretsTableName` option:
+
+```js
+// config.prod.js
+const prodConfig = {
+  eventstoreAdapter: {
+    module: '@resolve-js/eventstore-lite',
+    options: {
+      databaseFile: 'data/event-store.db',
+      secretsTableName: 'usersecrets',
+    },
+  },
+}
+```
 
 #### Example
 
