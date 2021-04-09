@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Read-model Store API. Insert store.insert('test', { testId }) 1`] = `
+Array [
+  Object {
+    "key": null,
+    "testId": "root",
+  },
+]
+`;
+
+exports[`Read-model Store API. Insert store.insert('test', { testId, deepObj: { obj: { key: null } } }) 1`] = `
+Array [
+  Object {
+    "deepObj": Object {
+      "obj": Object {
+        "key": null,
+      },
+    },
+    "testId": "root",
+  },
+]
+`;
+
+exports[`Read-model Store API. Insert store.insert('test', { testId, deepObj: { obj: { key: undefined } } }) 1`] = `
+Array [
+  Object {
+    "deepObj": Object {
+      "obj": Object {},
+    },
+    "testId": "root",
+  },
+]
+`;
+
+exports[`Read-model Store API. Insert store.insert('test', { testId, key: null }) 1`] = `
+Array [
+  Object {
+    "key": null,
+    "testId": "root",
+  },
+]
+`;
+
+exports[`Read-model Store API. Insert store.insert('test', { testId, obj: { key: null } }) 1`] = `
+Array [
+  Object {
+    "obj": Object {
+      "key": null,
+    },
+    "testId": "root",
+  },
+]
+`;
+
+exports[`Read-model Store API. Insert store.insert('test', { testId, obj: { key: undefined } }) 1`] = `
+Array [
+  Object {
+    "obj": Object {},
+    "testId": "root",
+  },
+]
+`;

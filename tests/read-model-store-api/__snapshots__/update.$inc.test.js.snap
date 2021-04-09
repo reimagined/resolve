@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Read-model Store API. Update. $inc store.insert('test', { testId, key: 0 })
+      store.update('test', { testId }, { $inc: { ['key']: 1 } } ) 1`] = `
+Array [
+  Object {
+    "key": 1,
+    "testId": "root",
+  },
+]
+`;
+
+exports[`Read-model Store API. Update. $inc store.insert('test', { testId, obj: { key: 0 } })
+      store.update('test', { testId }, { $inc: { ['obj.key']: 1 } } ) 1`] = `
+Array [
+  Object {
+    "obj": Object {
+      "key": 1,
+    },
+    "testId": "root",
+  },
+]
+`;

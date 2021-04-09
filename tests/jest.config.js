@@ -10,4 +10,5 @@ module.exports = {
     '^.+\\.js$': path.resolve(__dirname, '../jest.transform.js'),
     '^.+\\.tsx?$': 'ts-jest',
   },
+  verbose: true
 }
