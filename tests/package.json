@@ -9,7 +9,8 @@
     "test:eventstore": "jest --config=./jest.config.js --testMatch=**/eventstore-*/*.test.[jt]s",
     "test:eventstore-serverless": "env TEST_SERVERLESS=1 jest --config=./jest.config.js --testMatch=**/eventstore-*/*.test.[jt]s",
     "test:import-export": "jest --config=./jest.config.js --testMatch=**/import-export-sample/*.test.ts",
-    "test:secrets": "jest --config=./jest.config.js --testMatch=**/eventstore-secrets/*.test.ts"
+    "test:secrets": "jest --config=./jest.config.js --testMatch=**/eventstore-secrets/*.test.ts",
+    "test:read-model-stroage-api": "jest --config=./jest.config.js --testMatch=**/read-model-storage-api/*.test.ts"
   },
   "devDependencies": {
     "@babel/runtime": "7.9.6",
@@ -21,6 +22,7 @@
     "@resolve-js/eventstore-postgresql-serverless": "0.29.0",
     "@resolve-js/readmodel-lite": "0.29.0",
     "@resolve-js/readmodel-mysql": "0.29.0",
+    "@resolve-js/readmodel-postgresql": "0.29.0",
     "@resolve-js/readmodel-postgresql-serverless": "0.29.0",
     "@resolve-js/scripts": "0.29.0",
     "@resolve-js/testing-tools": "0.29.0",
