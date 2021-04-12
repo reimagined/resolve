@@ -94,7 +94,11 @@ const next = async (
   if (args.length > 0) {
     throw new TypeError('Next should be invoked with no arguments')
   }
-  await pool.invokeEventSubscriberAsync(eventListener, 'build')
+  await pool.invokeEventSubscriberAsync(eventListener, 'build', {
+    initiator: 'read-model-next',
+    notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
+    sendTime: Date.now(),
+  })
 }
 
 const updateCustomReadModel = async (
