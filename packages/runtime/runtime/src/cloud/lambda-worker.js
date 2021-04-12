@@ -81,7 +81,13 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     } else if (lambdaEvent.resolveSource === EVENT_SUBSCRIBER_DIRECT) {
       log.debug('identified event source: event-subscriber-direct')
       const { method, payload } = lambdaEvent
-      const executorResult = await resolve.eventSubscriber[method](payload)
+
+      const actualPayload =
+        method === 'build' ? { ...payload, coldStart } : payload
+
+      const executorResult = await resolve.eventSubscriber[method](
+        actualPayload
+      )
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
