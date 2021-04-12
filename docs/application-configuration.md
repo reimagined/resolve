@@ -218,9 +218,11 @@ Used to store events in an SQLite database.
 
 This adapter supports the following options:
 
-| Option Name  | Description                                                                                                                                                                  |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| databaseFile | Specifies the path to a database file used to store events. If set to `':memory:'`, all data is stored in memory and is lost when the application is shut down or restarted. |
+| Option Name        | Description                                                                                                                                                                  |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| databaseFile       | Specifies the path to a database file used to store events. If set to `':memory:'`, all data is stored in memory and is lost when the application is shut down or restarted. |
+| secretsTableName   | The name of a database table used to store secrets.                                                                                                                          |
+| snapshotBucketSize | The number of events between aggregate snapshots.                                                                                                                            |
 
 ##### Example
 
@@ -241,11 +243,13 @@ const prodConfig = {
 
 Used to store events in a MySQL database.
 
-To configure the database connection for this adapter, specify [MySQL connection setting](https://www.npmjs.com/package/mysql2#first-query) as the adapter's options. Additionally, you can specify the following option:
+To configure the database connection for this adapter, specify [MySQL connection setting](https://www.npmjs.com/package/mysql2#first-query) as the adapter's options. Additionally, you can specify the following options:
 
-| Option Name     | Description                                        |
-| --------------- | -------------------------------------------------- |
-| eventsTableName | The name of a database table used to store events. |
+| Option Name        | Description                                         |
+| ------------------ | --------------------------------------------------- |
+| eventsTableName    | The name of a database table used to store events.  |
+| secretsTableName   | The name of a database table used to store secrets. |
+| snapshotBucketSize | The number of events between aggregate snapshots.   |
 
 ##### Example
 
@@ -272,15 +276,17 @@ Used to store events in a PostgreSQL database.
 
 This adapter supports the following options:
 
-| Option Name     | Description                                          |
-| --------------- | ---------------------------------------------------- |
-| database        | The name of a database.                              |
-| databaseName    | The name of a PostgreSQL database schema.            |
-| eventsTableName | The name of a database table used to store events.   |
-| host            | The database server host name.                       |
-| password        | The user's password.                                 |
-| port            | The database server port number.                     |
-| user            | The user name used to log in to the database server. |
+| Option Name        | Description                                          |
+| ------------------ | ---------------------------------------------------- |
+| database           | The name of a database.                              |
+| databaseName       | The name of a PostgreSQL database schema.            |
+| eventsTableName    | The name of a database table used to store events.   |
+| host               | The database server host name.                       |
+| password           | The user's password.                                 |
+| port               | The database server port number.                     |
+| secretsTableName   | The name of a database table used to store secrets.  |
+| snapshotBucketSize | The number of events between aggregate snapshots.    |
+| user               | The user name used to log in to the database server. |
 
 ##### Example
 
@@ -315,6 +321,8 @@ This adapter supports the following options:
 | dbClusterOrInstanceArn | An Amazon Resource Name (ARN) of a database cluster or instance. |
 | eventsTableName        | The name of a database table used to store events.               |
 | region                 | An AWS region.                                                   |
+| secretsTableName       | The name of a database table used to store secrets.              |
+| snapshotBucketSize     | The number of events between aggregate snapshots.                |
 
 ##### Example
 
