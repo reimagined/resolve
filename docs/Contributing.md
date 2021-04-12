@@ -1,6 +1,7 @@
 ---
 id: contributing
 title: Contributing
+description: This is a set of guidelines for contributing to reSolve and its packages hosted in the ReImagined project on GitHub
 ---
 
 # How to Contribute
