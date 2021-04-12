@@ -1,6 +1,7 @@
 ---
 id: api-handlers
 title: API Handlers
+description: Use API Handlers to provide your reSolve server with the capability to handle arbitrary HTTP requests.
 ---
 
 Use API Handlers to provide your reSolve server with the capability to handle arbitrary HTTP requests.

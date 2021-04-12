@@ -1,6 +1,7 @@
 ---
 id: application-configuration
 title: Application Configuration
+description: This document describes configuration options available for a reSolve application.
 ---
 
 ## Overview
