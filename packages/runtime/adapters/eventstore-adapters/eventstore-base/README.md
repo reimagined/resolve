@@ -1,6 +1,6 @@
 # **@resolve-js/eventstore-base**
 
-[![npm version](https://badge.fury.io/js/@resolve-js/eventstore-base.svg)](https://badge.fury.io/js/@resolve-js/eventstore-base)
+[![npm version](https://badge.fury.io/js/%40resolve-js%2Feventstore-base.svg)](https://badge.fury.io/js/%40resolve-js%2Feventstore-base)
 
 This base package is a eventstore adapter for storing events.
 
