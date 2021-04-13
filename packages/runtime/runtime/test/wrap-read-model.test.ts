@@ -20,3 +20,49 @@ test('resume should call next if read-model status is successful', async () => {
 
   expect(mockCallback.mock.results[0].value).toBe(true)
 })
+
+test('subscribe should set status.name=<read-model-name>', async () => {
+  const pool = ({
+    eventstoreAdapter: {
+      getEventSubscribers: () => [
+        {
+          status: {
+            eventSubscriber: 'eventSubscriber',
+            status: 'deliver',
+          },
+        },
+      ],
+      ensureEventSubscriber: jest.fn(),
+    },
+  } as unknown) as ReadModelPool
+
+  const interop: any = 'interop'
+  const connection: any = 'connection'
+  const readModelName: any = 'readModelName'
+  const parameters = {
+    subscriptionOptions: {
+      eventTypes: [],
+      aggregateIds: [],
+    },
+  }
+
+  await customReadModelMethods.subscribe(
+    pool,
+    interop,
+    connection,
+    readModelName,
+    parameters
+  )
+
+  expect(pool.eventstoreAdapter.ensureEventSubscriber).toBeCalledWith({
+    eventSubscriber: 'readModelName',
+    status: {
+      aggregateIds: [],
+      busy: false,
+      eventSubscriber: 'eventSubscriber',
+      eventTypes: [],
+      status: 'deliver',
+    },
+    updateOnly: true,
+  })
+})
