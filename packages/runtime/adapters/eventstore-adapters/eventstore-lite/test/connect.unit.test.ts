@@ -35,6 +35,8 @@ test("config assigned to adapter's pool", async () => {
 
   expect(pool.databaseFile).toEqual('database-file')
   expect(pool.secretsTableName).toEqual('secrets-table')
+
+  expect((pool.database as any).driver.serialize).toHaveBeenCalled()
 })
 
 test('connect should throw on wrong parameters', async () => {
