@@ -126,7 +126,7 @@ const updateCustomReadModel = async (
   })
 }
 
-const customReadModelMethods = {
+export const customReadModelMethods = {
   build: async (
     pool: ReadModelPool,
     interop: ReadModelInterop | SagaInterop,
@@ -382,20 +382,22 @@ const customReadModelMethods = {
     connection: any,
     readModelName: string,
     parameters: {}
-  ) =>
+  ) => {
+    let isSuccess = false
     await updateCustomReadModel(
       pool,
       readModelName,
       { status: 'deliver', busy: false },
       async (status: any) => {
-        const isSuccess =
-          status.status === 'deliver' || status.status === 'skip'
-        if (isSuccess) {
-          await next(pool, readModelName)
-        }
+        isSuccess = status.status === 'deliver' || status.status === 'skip'
         return isSuccess
       }
-    ),
+    )
+
+    if (isSuccess) {
+      await next(pool, readModelName)
+    }
+  },
 
   pause: async (
     pool: ReadModelPool,
