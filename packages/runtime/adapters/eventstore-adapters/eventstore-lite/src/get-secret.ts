@@ -15,7 +15,7 @@ const getSecret = async (
   log.debug(`executing SQL query`)
   const rows = await database.all(
     `SELECT "secret" FROM ${escapeId(secretsTableName)}
-    WHERE id = ${escape(selector)}
+    WHERE id = ${escape(selector)} AND secret IS NOT NULL
     LIMIT 0, 1`
   )
 

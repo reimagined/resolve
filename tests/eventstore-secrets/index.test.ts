@@ -131,10 +131,22 @@ describe('eventstore adapter secrets', () => {
     expect(events).toHaveLength(countSecrets)
   })
 
-  test('should get secret by id', async () => {
-    const secretManger: SecretsManager = await adapter.getSecretsManager()
+  test('should throw on setting secret with existing id', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
     const randomIndex: number = Math.floor(Math.random() * countSecrets)
-    const secret: string = await secretManger.getSecret(
+
+    await expect(
+      secretManager.setSecret(
+        makeIdFromIndex(randomIndex),
+        makeSecretFromIndex(randomIndex)
+      )
+    ).rejects.toThrow()
+  })
+
+  test('should get secret by id', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+    const randomIndex: number = Math.floor(Math.random() * countSecrets)
+    const secret: string = await secretManager.getSecret(
       makeIdFromIndex(randomIndex)
     )
     expect(secret).toEqual(makeSecretFromIndex(randomIndex))
@@ -208,12 +220,13 @@ describe('eventstore adapter secrets', () => {
     expect(emptyResult.secrets).toHaveLength(0)
   })
 
+  const secretToDeleteIndex: number = Math.floor(Math.random() * countSecrets)
+
   test('should delete secret by id, return null for this id and generate delete secret event', async () => {
-    const secretManger: SecretsManager = await adapter.getSecretsManager()
-    const randomIndex: number = Math.floor(Math.random() * countSecrets)
-    const secretId = makeIdFromIndex(randomIndex)
-    await secretManger.deleteSecret(secretId)
-    const secret: string | null = await secretManger.getSecret(secretId)
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+    const secretId = makeIdFromIndex(secretToDeleteIndex)
+    await secretManager.deleteSecret(secretId)
+    const secret: string | null = await secretManager.getSecret(secretId)
     expect(secret).toBeNull()
 
     const { events } = await adapter.loadEvents({
@@ -229,6 +242,17 @@ describe('eventstore adapter secrets', () => {
     const secrets = (await adapter.loadSecrets({ limit: countSecrets + 1 }))
       .secrets
     expect(secrets).toHaveLength(countSecrets - 1)
+  })
+
+  test('should throw when setting secret with id that belonged to previously deleted secret', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+
+    await expect(
+      secretManager.setSecret(
+        makeIdFromIndex(secretToDeleteIndex),
+        makeSecretFromIndex(secretToDeleteIndex)
+      )
+    ).rejects.toThrow()
   })
 })
 
