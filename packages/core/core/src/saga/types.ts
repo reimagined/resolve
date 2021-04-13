@@ -1,4 +1,10 @@
-import { SecretsManager, Event, SagaEventHandlers } from '../types/core'
+import {
+  SecretsManager,
+  Event,
+  SagaEventHandlers,
+  SagaSideEffects,
+  SerializablePrimitive,
+} from '../types/core'
 import { AggregateMeta } from '../types/runtime'
 import { AggregatesInteropBuilder } from '../aggregate/types'
 import { Monitoring } from '../types/runtime'
@@ -55,6 +61,23 @@ export type SchedulerProjectionBuilder = (
   schedulerName: string,
   schedulerEventTypes: SchedulerEventTypes
 ) => SagaEventHandlers<any, any>
+
+export type SagaSideEffectProperties = {
+  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: number
+} & {
+  [key: string]: SerializablePrimitive
+}
+
+export type SagaUserSideEffect = (
+  properties: SagaSideEffectProperties,
+  sideEffects: SagaSideEffects,
+  effectName: string,
+  isEnabled: boolean
+) => Promise<any>
+
+export type SagaUserSideEffects = {
+  [key: string]: SagaUserSideEffect
+}
 
 export type SagaDomain = {
   schedulerName: string

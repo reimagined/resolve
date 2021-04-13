@@ -20,6 +20,15 @@ const appConfig = {
       commands: 'common/aggregates/saga-test.commands.js',
       projection: 'common/aggregates/saga-test.projection.js',
     },
+    {
+      name: 'scheduler-test',
+      commands: 'common/aggregates/scheduler-test.commands.js',
+      projection: 'common/aggregates/scheduler-test.projection.js',
+    },
+    {
+      name: 'monitoring-aggregate',
+      commands: 'common/aggregates/monitoring.commands.js',
+    },
   ],
   readModels: [
     {
@@ -46,6 +55,24 @@ const appConfig = {
       name: 'saga-tests',
       projection: 'common/read-models/saga-tests.projection.js',
       resolvers: 'common/read-models/saga-tests.resolvers.js',
+      connectorName: 'default',
+    },
+    {
+      name: 'scheduler-tests',
+      projection: 'common/read-models/saga-scheduler-tests.projection.js',
+      resolvers: 'common/read-models/saga-scheduler-tests.resolvers.js',
+      connectorName: 'default',
+    },
+    {
+      name: 'init-failed',
+      projection: 'common/read-models/init-failed.projection.js',
+      resolvers: 'common/read-models/init-failed.resolvers.js',
+      connectorName: 'default',
+    },
+    {
+      name: 'monitoring',
+      projection: 'common/read-models/monitoring.projection.js',
+      resolvers: 'common/read-models/monitoring.resolvers.js',
       connectorName: 'default',
     },
   ],
@@ -79,6 +106,11 @@ const appConfig = {
     {
       name: 'saga-test-saga',
       source: 'common/sagas/saga-test-saga.js',
+      connectorName: 'default',
+    },
+    {
+      name: 'saga-test-scheduler',
+      source: 'common/sagas/saga-test-scheduler.js',
       connectorName: 'default',
     },
   ],

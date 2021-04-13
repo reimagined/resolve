@@ -6,7 +6,7 @@ This package is a eventstore adapter for storing events using PostgreSQL 10.7.
 
 ## Available Parameters
 
-- `databaseName` - a name of a schema storing events.
+- `databaseName` - a name of a [schema](https://www.postgresql.org/docs/10/ddl-schemas.html) storing events.
 - `eventsTableName` - a name of a table storing events.
 - `user` - a name of an user.
 - `password` - a password of an user.

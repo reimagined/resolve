@@ -7,7 +7,7 @@ The adapter provides a query API for projection and resolvers. This API is simil
 
 ## Available Parameters
 
-- `databaseName` - The name of the PostgreSQL [schema](https://www.postgresql.org/docs/10/dl-schemas.html).
+- `databaseName` - The name of the PostgreSQL [schema](https://www.postgresql.org/docs/10/ddl-schemas.html).
 - `tablePrefix` - optional table prefix for read-models server by current adapter instance.
 - `user` - a name of an user.
 - `password` - a password of an user.

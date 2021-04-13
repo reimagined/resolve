@@ -1,6 +1,7 @@
 /* eslint-disable spellcheck/spell-checker */
 const path = require('path')
 const fs = require('fs')
+const os = require('os')
 const { execSync } = require('child_process')
 const rm = require('rimraf')
 const log = require('consola')
@@ -12,7 +13,7 @@ const main = async () => {
   log.info(`Passed params: ${passedParams}`)
 
   const rootDir = path.resolve(__dirname, '../../../../')
-  const tempDir = path.resolve(rootDir, 'cra-tests')
+  const tempDir = path.resolve(os.tmpdir(), 'cra-tests')
 
   rm.sync(tempDir)
   fs.mkdirSync(tempDir)
