@@ -22,20 +22,6 @@ test('resume should call next if read-model status is successful', async () => {
 })
 
 test('subscribe should set status.name=<read-model-name>', async () => {
-  const pool = ({
-    eventstoreAdapter: {
-      getEventSubscribers: () => [
-        {
-          status: {
-            eventSubscriber: 'eventSubscriber',
-            status: 'deliver',
-          },
-        },
-      ],
-      ensureEventSubscriber: jest.fn(),
-    },
-  } as unknown) as ReadModelPool
-
   const interop: any = 'interop'
   const connection: any = 'connection'
   const readModelName: any = 'readModelName'
@@ -45,6 +31,19 @@ test('subscribe should set status.name=<read-model-name>', async () => {
       aggregateIds: [],
     },
   }
+  const pool = ({
+    eventstoreAdapter: {
+      getEventSubscribers: () => [
+        {
+          status: {
+            eventSubscriber: readModelName,
+            status: 'deliver',
+          },
+        },
+      ],
+      ensureEventSubscriber: jest.fn(),
+    },
+  } as unknown) as ReadModelPool
 
   await customReadModelMethods.subscribe(
     pool,
@@ -59,9 +58,50 @@ test('subscribe should set status.name=<read-model-name>', async () => {
     status: {
       aggregateIds: [],
       busy: false,
-      eventSubscriber: 'eventSubscriber',
+      eventSubscriber: 'readModelName',
       eventTypes: [],
       status: 'deliver',
+    },
+    updateOnly: true,
+  })
+})
+
+test('resubscribe should set status.name=<read-model-name>', async () => {
+  const pool = ({
+    eventstoreAdapter: {
+      ensureEventSubscriber: jest.fn(),
+    },
+    connector: {
+      drop: jest.fn(),
+    },
+  } as unknown) as ReadModelPool
+
+  const interop: any = 'interop'
+  const connection: any = 'connection'
+  const readModelName: any = 'readModelName'
+  const parameters = {
+    subscriptionOptions: {
+      eventTypes: [],
+      aggregateIds: [],
+    },
+  }
+
+  await customReadModelMethods.resubscribe(
+    pool,
+    interop,
+    connection,
+    readModelName,
+    parameters
+  )
+
+  expect(pool.eventstoreAdapter.ensureEventSubscriber).toBeCalledWith({
+    eventSubscriber: 'readModelName',
+    status: {
+      aggregateIds: [],
+      busy: false,
+      eventSubscriber: 'readModelName',
+      eventTypes: [],
+      status: 'skip',
     },
     updateOnly: true,
   })
