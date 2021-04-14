@@ -14,12 +14,18 @@ const initSecrets = async ({
   const log = getLog('initSecrets')
   log.debug('initializing secrets table')
 
+  const secretsTableNameAsId = escapeId(secretsTableName)
+
   const statements: string[] = [
-    `CREATE TABLE ${escapeId(secretsTableName)} (
-      ${escapeId('idx')} BIG INT NOT NULL,
-      ${escapeId('id')} ${AGGREGATE_ID_SQL_TYPE} NOT NULL,
-      ${escapeId('secret')} text,
-      PRIMARY KEY(${escapeId('id')}, ${escapeId('idx')})
+    `CREATE TABLE ${secretsTableNameAsId} (
+      ${escapeId('idx')} BIG INT NOT NULL UNIQUE,
+      ${escapeId('id')} ${AGGREGATE_ID_SQL_TYPE} NOT NULL PRIMARY KEY,
+      ${escapeId('secret')} text
+    )`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS ${escapeId(
+      'idx-index'
+    )} ON ${secretsTableNameAsId}(
+      ${escapeId('idx')}
     )`,
   ]
 
@@ -30,7 +36,7 @@ const initSecrets = async ({
     (error) => {
       if (isAlreadyExistsError(error.message)) {
         return new EventstoreResourceAlreadyExistError(
-          `duplicate initialization of the sqlite adapter with same events database "${databaseFile}" and table "${secretsTableName}" is not allowed`
+          `duplicate initialization of the sqlite adapter with the same event database "${databaseFile}" and table "${secretsTableName}" is not allowed`
         )
       }
       return null

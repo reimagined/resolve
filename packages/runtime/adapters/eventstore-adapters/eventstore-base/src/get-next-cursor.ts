@@ -1,6 +1,11 @@
+import { EventThreadData } from './types'
+
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
-const getNextCursor = (prevCursor: string | null, events: any[]): string => {
+const getNextCursor = (
+  prevCursor: string | null,
+  events: EventThreadData[]
+): string => {
   const cursorBuffer: Buffer =
     prevCursor != null
       ? Buffer.from(prevCursor, 'base64')

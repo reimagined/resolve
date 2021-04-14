@@ -59,6 +59,30 @@ test('connect should throw on wrong parameters', async () => {
       awsSecretStoreArn: 'BBB',
     } as any) as PostgresqlAdapterConfig)
   ).rejects.toThrow()
+
+  await expect(
+    connect(pool, connectionDependencies, {
+      databaseName: '',
+      dbClusterOrInstanceArn: 'AAA',
+      awsSecretStoreArn: 'BBB',
+    })
+  ).rejects.toThrow()
+
+  await expect(
+    connect(pool, connectionDependencies, {
+      databaseName: 'name',
+      dbClusterOrInstanceArn: '',
+      awsSecretStoreArn: 'BBB',
+    })
+  ).rejects.toThrow()
+
+  await expect(
+    connect(pool, connectionDependencies, {
+      databaseName: 'name',
+      dbClusterOrInstanceArn: 'AAA',
+      awsSecretStoreArn: '',
+    })
+  ).rejects.toThrow()
 })
 
 test('RDS client configured', async () => {

@@ -546,6 +546,30 @@ describe('@resolve-js/readmodel-lite', () => {
           obj: { value: 2 },
         })
 
+        await store.update(
+          'SetValues',
+          {
+            id: 'id-1',
+          },
+          {
+            $set: {
+              value: null,
+              'obj.value': null,
+              'arr.0.value': null,
+            },
+          }
+        )
+
+        expect(
+          await store.findOne('SetValues', {
+            id: 'id-1',
+          })
+        ).toMatchObject({
+          value: null,
+          arr: [{ value: null }],
+          obj: { value: null },
+        })
+
         await adapter.unsubscribe(store, readModelName)
 
         await adapter.disconnect(store)

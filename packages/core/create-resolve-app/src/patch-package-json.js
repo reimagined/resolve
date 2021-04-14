@@ -1,23 +1,21 @@
-import { localRegistry as server } from './constants'
+import chalk from 'chalk'
+import path from 'path'
+import fs from 'fs-extra'
+import { localRegistry as server, resolvePackages } from './constants'
+import safeName from './safe-name'
 
-const patchPackageJson = (pool) => async () => {
-  const {
-    console,
-    chalk,
-    path,
-    fs,
-    applicationName,
-    applicationPath,
-    applicationPackageJsonPath,
-    resolvePackages,
-    safeName,
-    localRegistry,
-  } = pool
-  console.log()
+const patchPackageJson = async (
+  applicationName,
+  applicationPath,
+  localRegistry
+) => {
+  // eslint-disable-next-line no-console
   console.log(chalk.green('Patch package.json'))
 
   const resolveVersion = require(path.join(__dirname, '..', 'package.json'))
     .version
+
+  const applicationPackageJsonPath = path.join(applicationPath, 'package.json')
 
   const applicationPackageJson = require(applicationPackageJsonPath)
 

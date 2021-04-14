@@ -6,7 +6,7 @@ import crypto from 'crypto'
 import mime from 'mime-types'
 
 const createPresignedPut = async (
-  { uploaderArn, deploymentId, encryptedDeploymentId },
+  { uploaderArn, userId, encryptedUserId },
   dir
 ) => {
   const lambda = new Lambda()
@@ -16,8 +16,8 @@ const createPresignedPut = async (
       FunctionName: uploaderArn,
       Payload: JSON.stringify({
         type: 'put',
-        deploymentId,
-        encryptedDeploymentId,
+        userId,
+        encryptedUserId,
         dir,
       }),
     })
@@ -59,7 +59,7 @@ export const upload = (pool, uploadUrl, filePath) => {
 }
 
 const createPresignedPost = async (
-  { uploaderArn, deploymentId, encryptedDeploymentId },
+  { uploaderArn, userId, encryptedUserId },
   dir
 ) => {
   const lambda = new Lambda()
@@ -69,8 +69,8 @@ const createPresignedPost = async (
       FunctionName: uploaderArn,
       Payload: JSON.stringify({
         type: 'post',
-        deploymentId,
-        encryptedDeploymentId,
+        userId,
+        encryptedUserId,
         dir,
       }),
     })
@@ -111,12 +111,12 @@ export const uploadFormData = (pool, form, filePath) => {
 }
 
 export const createToken = (
-  { encryptedDeploymentId },
+  { encryptedUserId },
   { dir, expireTime = 3600 }
 ) => {
   const payload = Buffer.from(
     JSON.stringify({
-      encryptedDeploymentId,
+      encryptedUserId,
       dir,
       expireTime: Date.now() + expireTime * 1000,
     })
@@ -125,7 +125,7 @@ export const createToken = (
     .replace(/=/g, '')
 
   const signature = crypto
-    .createHmac('md5', encryptedDeploymentId)
+    .createHmac('md5', encryptedUserId)
     .update(payload)
     .digest('hex')
 
@@ -133,7 +133,15 @@ export const createToken = (
 }
 
 const createUploader = (config) => {
-  const { deploymentId, CDN, encryptedDeploymentId } = config
+  const { CDN } = config
+
+  const userId = process.env['RESOLVE_USER_ID']
+  const encryptedUserId = process.env['RESOLVE_ENCRYPTED_USER_ID']
+
+  Object.assign(config, {
+    userId,
+    encryptedUserId,
+  })
 
   return Object.freeze({
     createPresignedPut: createPresignedPut.bind(null, config),
@@ -141,9 +149,9 @@ const createUploader = (config) => {
     createPresignedPost: createPresignedPost.bind(null, config),
     uploadFormData: uploadFormData.bind(null, config),
     createToken: createToken.bind(null, config),
-    deploymentId,
     CDN,
-    encryptedDeploymentId,
+    userId,
+    encryptedUserId,
   })
 }
 
@@ -160,7 +168,7 @@ const initUploader = async (resolve) => {
     // TODO: provide support for custom uploader adapter
     const createUploadAdapter = resolve.assemblies.uploadAdapter
     const uploader = createUploader(createUploadAdapter())
-    process.env.RESOLVE_UPLOADER_CDN_URL = `https://${uploader.CDN}/${uploader.deploymentId}`
+    process.env.RESOLVE_UPLOADER_CDN_URL = `https://${uploader.CDN}/${uploader.userId}`
 
     Object.assign(resolve, {
       uploader: {

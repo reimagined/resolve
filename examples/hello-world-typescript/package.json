@@ -1,6 +1,6 @@
 {
   "name": "hello-world-typescript",
-  "version": "0.28.1-alpha",
+  "version": "0.29.0",
   "private": true,
   "description": "used as a template for new reSolve applications",
   "scripts": {
@@ -11,17 +11,20 @@
     "test:e2e": "tsc && babel-node --extensions=.ts,.tsx run.ts test:e2e",
     "type-check": "tsc"
   },
+  "resolutions": {
+    "@types/react": "^16"
+  },
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
     "@babel/preset-typescript": "7.9.0",
-    "@resolve-js/eventstore-lite": "0.28.1-alpha",
-    "@resolve-js/eventstore-postgresql-serverless": "0.28.1-alpha",
-    "@resolve-js/react-hooks": "0.28.1-alpha",
-    "@resolve-js/readmodel-base": "0.28.1-alpha",
-    "@resolve-js/readmodel-lite": "0.28.1-alpha",
-    "@resolve-js/readmodel-postgresql-serverless": "0.28.1-alpha",
-    "@resolve-js/scripts": "0.28.1-alpha",
+    "@resolve-js/eventstore-lite": "0.29.0",
+    "@resolve-js/eventstore-postgresql-serverless": "0.29.0",
+    "@resolve-js/react-hooks": "0.29.0",
+    "@resolve-js/readmodel-base": "0.29.0",
+    "@resolve-js/readmodel-lite": "0.29.0",
+    "@resolve-js/readmodel-postgresql-serverless": "0.29.0",
+    "@resolve-js/scripts": "0.29.0",
     "babel-loader": "8.1.0",
     "react": "16.13.1",
     "react-bootstrap": "1.4.0",
@@ -42,7 +45,10 @@
     "babel-jest": "26.0.1",
     "jest": "26.6.3",
     "react-test-renderer": "16.13.1",
-    "resolve-cloud": "*",
-    "testcafe": "^1.9.1"
+    "testcafe": "^1.9.1",
+    "typescript": "4.1.3"
+  },
+  "resolveJs": {
+    "isAppTemplate": true
   }
 }

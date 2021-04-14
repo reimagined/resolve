@@ -17,7 +17,6 @@ const status: ExternalMethods['status'] = async (pool, readModelName) => {
      WHERE "EventSubscriber" = ${escapeStr(readModelName)}
     `
     )) as Array<{
-      Properties: string | null
       SuccessEvent: string | null
       FailedEvent: string | null
       Errors: string | null
@@ -28,8 +27,6 @@ const status: ExternalMethods['status'] = async (pool, readModelName) => {
     if (rows.length === 1) {
       const result: ReadModelStatus = {
         eventSubscriber: readModelName,
-        properties:
-          rows[0].Properties != null ? JSON.parse(rows[0].Properties) : null,
         deliveryStrategy: 'inline-ledger',
         successEvent:
           rows[0].SuccessEvent != null

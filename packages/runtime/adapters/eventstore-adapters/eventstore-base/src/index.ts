@@ -27,6 +27,7 @@ import exportSecretsStream from './export-secrets'
 import init from './init'
 import drop from './drop'
 import * as iots from 'io-ts'
+import * as iotsTypes from 'io-ts-types'
 
 import {
   validate,
@@ -52,6 +53,8 @@ import {
   SecretRecord,
   InputEvent,
   SavedEvent,
+  EventThreadData,
+  Cursor,
 } from './types'
 
 const wrappedCreateAdapter = <
@@ -127,5 +130,15 @@ export {
   SecretRecord,
   InputEvent,
   SavedEvent,
+  EventThreadData,
+  Cursor,
   iots,
+  iotsTypes,
 }
+
+export {
+  makeSetSecretEvent,
+  makeDeleteSecretEvent,
+  DELETE_SECRET_EVENT_TYPE,
+  SET_SECRET_EVENT_TYPE,
+} from './secret-event'

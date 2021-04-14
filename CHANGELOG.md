@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.28.0
+
+### Breaking Changes
+
+#### Cloud config
+
+- `deploymentId` and `encryptedDeploymentId` removed from **uploadAdapter** options
+
+### Added
+
+#### resolve runtime
+
+- `clientIp` in request object
+
+
 ## 0.27.0
 
 ### Breaking Changes
@@ -48,6 +63,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Folder structure
 
 - Packages folder structure has been changed. The **core** folder contains packages related to framework's core functionality. The **runtime** folder contains runtime-specific adapters, brokers etc. The **tools** folder contains basic scripts and testing tools.
+
+#### @resolve-js/scripts
+
+- Replaced the **reset** mode's **dropEventBus** option with **dropEventSubscriber**
+
+Previously: 
+```
+await reset(resolveConfig, {
+  dropEventStore: false,
+  dropEventBus: true,
+  dropReadModels: true,
+  dropSagas: true,
+})
+```
+
+Now:
+```
+await reset(resolveConfig, {
+  dropEventStore: false,
+  dropEventSubscriber: true,
+  dropReadModels: true,
+  dropSagas: true,
+})
+```
 
 ## 0.25.0
 

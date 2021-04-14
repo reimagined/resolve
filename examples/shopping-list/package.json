@@ -1,6 +1,6 @@
 {
   "name": "shopping-list",
-  "version": "0.28.1-alpha",
+  "version": "0.29.0",
   "private": true,
   "description": "shows how to work with read-models and view-models",
   "scripts": {
@@ -17,13 +17,13 @@
   "dependencies": {
     "@babel/node": "7.8.7",
     "@babel/polyfill": "7.8.7",
-    "@resolve-js/eventstore-lite": "0.28.1-alpha",
-    "@resolve-js/eventstore-postgresql-serverless": "0.28.1-alpha",
-    "@resolve-js/module-admin": "0.28.1-alpha",
-    "@resolve-js/readmodel-lite": "0.28.1-alpha",
-    "@resolve-js/readmodel-postgresql-serverless": "0.28.1-alpha",
-    "@resolve-js/redux": "0.28.1-alpha",
-    "@resolve-js/scripts": "0.28.1-alpha",
+    "@resolve-js/eventstore-lite": "0.29.0",
+    "@resolve-js/eventstore-postgresql-serverless": "0.29.0",
+    "@resolve-js/module-admin": "0.29.0",
+    "@resolve-js/readmodel-lite": "0.29.0",
+    "@resolve-js/readmodel-postgresql-serverless": "0.29.0",
+    "@resolve-js/redux": "0.29.0",
+    "@resolve-js/scripts": "0.29.0",
     "history": "4.10.1",
     "isomorphic-fetch": "3.0.0",
     "jsonwebtoken": "8.5.1",
@@ -47,14 +47,16 @@
     "@babel/plugin-transform-runtime": "7.9.6",
     "@babel/preset-env": "7.9.6",
     "@babel/preset-react": "7.9.4",
-    "@resolve-js/testing-tools": "0.28.1-alpha",
+    "@resolve-js/testing-tools": "0.29.0",
     "aws-sdk": "2.631.0",
     "aws-xray-sdk-core": "2.5.0",
     "babel-jest": "26.0.1",
     "enzyme": "3.6.0",
     "jest": "26.6.3",
     "react-test-renderer": "16.13.1",
-    "resolve-cloud": "*",
     "testcafe": "^1.9.1"
+  },
+  "resolveJs": {
+    "isAppTemplate": true
   }
 }

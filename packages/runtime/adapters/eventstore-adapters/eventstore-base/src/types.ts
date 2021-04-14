@@ -1,4 +1,9 @@
-import { SecretsManager, Event, SerializableMap } from '@resolve-js/core'
+import {
+  SecretsManager,
+  Event,
+  SerializableMap,
+  Serializable,
+} from '@resolve-js/core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 
@@ -34,11 +39,12 @@ export type UnbrandProps<T extends any> = {
 }
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
-export type InputEvent = Event
-export type SavedEvent = Event & {
+export type InputEvent = Omit<Event, 'payload'> & { payload?: Serializable }
+export type EventThreadData = {
   threadCounter: number
   threadId: number
-} & SerializableMap
+}
+export type SavedEvent = Event & EventThreadData & SerializableMap
 
 export type CheckForResourceError = (errors: Error[]) => void
 
@@ -50,10 +56,15 @@ type ShapeEvent = (event: any, additionalFields?: any) => SavedEvent
 
 export type ValidateEventFilter = (filter: EventFilter) => void
 
-export type GetNextCursor = (prevCursor: string | null, events: any[]) => string
+export type Cursor = string | null
+
+export type GetNextCursor = (
+  prevCursor: Cursor,
+  events: EventThreadData[]
+) => string
 
 export type EventsWithCursor = {
-  cursor: string | null
+  cursor: Cursor
   events: SavedEvent[]
 }
 
@@ -64,7 +75,7 @@ const EventFilterCommonSchema = t.intersection([
   t.partial({
     eventTypes: t.union([t.array(t.string), t.null]),
     aggregateIds: t.union([t.array(t.string), t.null]),
-    eventSizeLimit: t.Int,
+    eventsSizeLimit: t.Int,
   }),
 ])
 
@@ -115,7 +126,7 @@ export const EventFilterSchema = new t.Type<EventFilter, EventFilter>(
             return t.failure(
               u,
               c,
-              `Event filter start time can't be larger than finishTime`
+              `Event filter start time cannot be later than finishTime`
             )
           }
         }
@@ -124,7 +135,7 @@ export const EventFilterSchema = new t.Type<EventFilter, EventFilter>(
         return t.failure(
           u,
           c,
-          'cursor or at least one of startTime or finishTime should be defined'
+          'Cursor or at least one of startTime or finishTime should be defined'
         )
       }
     }),
@@ -135,6 +146,7 @@ export type EventFilter = UnbrandProps<EventFilterChecked>
 
 export type SecretFilter = {
   idx?: number | null
+  skip?: number
   limit: number
 }
 
@@ -306,10 +318,21 @@ export type ImportOptions = {
   maintenanceMode: MAINTENANCE_MODE
 }
 
+export type ImportEventsStream = stream.Writable & {
+  readonly byteOffset: number
+  readonly savedEventsCount: number
+}
+
 export type ExportOptions = {
-  cursor: string | null
+  cursor: Cursor
   maintenanceMode: MAINTENANCE_MODE
   bufferSize: number
+}
+
+export type ExportEventsStream = stream.Readable & {
+  readonly cursor: Cursor
+  readonly isBufferOverflow: boolean
+  readonly isEnd: boolean
 }
 
 export type ImportSecretsOptions = {
@@ -446,8 +469,8 @@ export interface AdapterFunctions<
 
 export interface Adapter {
   loadEvents: (filter: EventFilter) => Promise<EventsWithCursor>
-  importEvents: (options?: Partial<ImportOptions>) => stream.Writable
-  exportEvents: (options?: Partial<ExportOptions>) => stream.Readable
+  importEvents: (options?: Partial<ImportOptions>) => ImportEventsStream
+  exportEvents: (options?: Partial<ExportOptions>) => ExportEventsStream
   getLatestEvent: (filter: EventFilter) => Promise<SavedEvent | null>
   saveEvent: (event: InputEvent) => Promise<void>
   init: () => Promise<void>
@@ -455,7 +478,7 @@ export interface Adapter {
   dispose: () => Promise<void>
   freeze: () => Promise<void>
   unfreeze: () => Promise<void>
-  getNextCursor: (prevCursor: string | null, events: any[]) => string
+  getNextCursor: GetNextCursor
   getSecretsManager: () => Promise<SecretsManager>
   loadSnapshot: (snapshotKey: string) => Promise<string | null>
   saveSnapshot: (snapshotKey: string, content: string) => Promise<void>

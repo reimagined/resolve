@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/readmodel-postgresql",
-  "version": "0.28.1-alpha",
+  "version": "0.29.0",
   "description": "This package serves as a resolve-query adapter for storing a read model in postgres",
   "keywords": [
     "cqrs",
@@ -24,8 +24,8 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@resolve-js/debug-levels": "0.28.1-alpha",
-    "@resolve-js/readmodel-base": "0.28.1-alpha",
+    "@resolve-js/debug-levels": "0.29.0",
+    "@resolve-js/readmodel-base": "0.29.0",
     "pg": "^8.2.1"
   },
   "devDependencies": {

@@ -29,7 +29,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -90,7 +89,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -245,7 +243,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -343,7 +340,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -459,7 +455,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -625,7 +620,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -738,7 +732,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -889,7 +882,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -1002,7 +994,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -1315,7 +1306,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -1428,7 +1418,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -1526,6 +1515,22 @@ Array [
   ],
   Array [
     "query",
+    "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
+    SET \\"obj\\" = jsonb_set(
+            jsonb_set(
+            \\"obj\\",
+            '{\\"a\\"}',
+            null
+            ) ,
+            '{\\"b\\"}',
+            null
+            ) , \\"a\\" = null , \\"b\\" = null  WHERE 
+    (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
+    ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
+   ;",
+  ],
+  Array [
+    "query",
     "
       CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"(
         \\"EventSubscriber\\" VARCHAR(190) NOT NULL,
@@ -1537,7 +1542,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -1650,7 +1654,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
@@ -1751,7 +1754,6 @@ Array [
         \\"SuccessEvent\\" JSONB NULL,
         \\"FailedEvent\\" JSONB NULL,
         \\"Errors\\" JSONB NULL,
-        \\"Properties\\" JSONB DEFAULT '{}'::JSONB,
         \\"Schema\\" JSONB NULL,
         PRIMARY KEY(\\"EventSubscriber\\")
       );
