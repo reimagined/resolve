@@ -153,6 +153,24 @@ Array [
 ]
 `;
 
+exports[`@resolve-js/module-admin read-models list. tolerate to invalid date: console.log 1`] = `
+Array [
+  Array [
+    "NAME                 STATUS               SUCCESS EVENT        FAILED EVENT         LAST ERROR          
+read-model           status               N\\\\A type             N\\\\A type             N\\\\A                 ",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin read-models list. tolerate to invalid date: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/read-models-list",
+  ],
+]
+`;
+
 exports[`@resolve-js/module-admin read-models list: console.log 1`] = `
 Array [
   Array [
@@ -218,6 +236,24 @@ Array [
   Array [],
   Array [
     "url/event-broker/resume?eventSubscriber=readModel",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas list. tolerate to invalid date: console.log 1`] = `
+Array [
+  Array [
+    "NAME                 STATUS               SUCCESS EVENT        FAILED EVENT         LAST ERROR          
+read-model           status               N\\\\A type             N\\\\A type             N\\\\A                 ",
+  ],
+]
+`;
+
+exports[`@resolve-js/module-admin sagas list. tolerate to invalid date: fetch 1`] = `
+Array [
+  Array [],
+  Array [
+    "url/event-broker/sagas-list",
   ],
 ]
 `;
