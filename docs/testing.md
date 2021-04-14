@@ -20,6 +20,21 @@ To write a test, call the `givenEvents` function. This function takes an array o
 
 ## Testing Aggregates
 
+Use the `.aggregate` function to add an aggregate to a test case. Use the following interface to describe the test case for an aggregate:
+
+### Chainable Functions
+
+| Function | Description |
+| -------- | ----------- |
+|          |             |
+
+### Assertions
+
+| Assertion                     | Description                                                          |
+| ----------------------------- | -------------------------------------------------------------------- |
+| `shouldProduceEvent( event )` | Succeeds if the specified event was produced in the given test case. |
+| `shouldThrow( event )`        | Succeeds if the Aggregate throws an exception.                       |
+
 The code sample below demonstrates a **jest** test for an Aggregate:
 
 ```js
@@ -72,14 +87,21 @@ The `aggregate` function's parameter should be an object with the following fiel
 | `commands`               | The definition of command handlers. |
 | `encryption`_(optional)_ | An encryption factory function.     |
 
-When you add an `aggregate` function to the test case, it allows you to use the following assertions:
-
-| Assertion                     | Description                                                          |
-| ----------------------------- | -------------------------------------------------------------------- |
-| `shouldProduceEvent( event )` | Succeeds if the specified event was produced in the given test case. |
-| `shouldThrow( event )`        | Succeeds if the Aggregate throws an exception.                       |
-
 ## Testing Read Models
+
+Use the `.readModel` function to add a Read Model to a test case. Use the following interface to describe the test case for a Read Model:
+
+### Chainable Functions
+
+| Function | Description |
+| -------- | ----------- |
+|          |             |
+
+### Assertions
+
+| Assertion | Description |
+| --------- | ----------- |
+|           |             |
 
 The code sample below demonstrates a **jest** test for a Read Model:
 
@@ -116,6 +138,20 @@ The code sample below demonstrates a **jest** test for a Read Model:
 In this example, the `.all` function called at the end of the call chain is the `ShoppingLists` Read Model's resolver function. It returns a promise that resolves to the resolver's response object.
 
 ## Testing Sagas
+
+Use the `.saga` function to add a saga to a test case. Use the following interface to describe the test case for a saga:
+
+### Chainable Functions
+
+| Function | Description |
+| -------- | ----------- |
+|          |             |
+
+### Assertions
+
+| Assertion | Description |
+| --------- | ----------- |
+|           |             |
 
 The code sample below demonstrates a **jest** test for a Saga:
 
