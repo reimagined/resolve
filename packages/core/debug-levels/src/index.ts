@@ -5,6 +5,8 @@ const defaultLogLevel = logLevels[2]
 
 type Logger = (...args: any[]) => void
 
+type ProcessEnv = typeof process.env
+
 interface LeveledDebugger {
   log: Logger
   error: Logger
@@ -14,17 +16,31 @@ interface LeveledDebugger {
   verbose: Logger
 }
 
-const emptyFunction: Logger = (): void => {
-  /* no-op */
+type LoggerPool = {
+  envProvider: ProcessEnv
+  logLevels: Array<string>
+  debugProvider: Debug
+  namespace: string
+  originalLogger: Debugger
 }
 
-const debugLevels = (
-  debugProvider: Debug,
-  envProvider: { [key: string]: string | undefined },
-  namespace: string
-): LeveledDebugger & Debugger => {
-  let logLevel = defaultLogLevel
+let defaultEnvProvider: ProcessEnv = {}
+try {
+  defaultEnvProvider = process.env
+} catch (error) {}
+
+const cacheLogLevel: { key: string | symbol | undefined; value: string } = {
+  key: Symbol(),
+  value: defaultLogLevel,
+}
+const getLogLevel = ({ envProvider, debugProvider, namespace }: LoggerPool) => {
   const debugLevelEnv = envProvider.DEBUG_LEVEL
+
+  if (cacheLogLevel.key === debugLevelEnv) {
+    return cacheLogLevel.value
+  }
+
+  let logLevel = defaultLogLevel
 
   if (debugLevelEnv != null) {
     logLevel = debugLevelEnv
@@ -36,30 +52,60 @@ const debugLevels = (
     logLevel = defaultLogLevel
   }
 
+  // Update cache
+  cacheLogLevel.key = debugLevelEnv
+  cacheLogLevel.value = logLevel
+
+  return logLevel
+}
+
+const createLogger = (pool: LoggerPool, method: string) => {
+  const { logLevels, originalLogger } = pool
+
+  const methodIndex = logLevels.indexOf(method)
+
+  if (methodIndex === -1) {
+    throw new Error(`Incorrect method "${method}"`)
+  }
+
+  return (formatter: any, ...args: Array<any>) => {
+    const logLevel = getLogLevel(pool)
+
+    if (methodIndex <= logLevels.indexOf(logLevel)) {
+      originalLogger(formatter, ...args)
+    }
+  }
+}
+
+const debugLevels = (
+  debugProvider: Debug,
+  envProvider: { [key: string]: string | undefined },
+  namespace: string
+): LeveledDebugger & Debugger => {
+  const originalLogger = debugProvider(namespace)
+
   if (!envProvider.hasOwnProperty('DEBUG')) {
     debugProvider.enable('resolve:*')
   }
 
-  const allowedLevels = logLevels.slice(0, logLevels.indexOf(logLevel) + 1)
-
-  const originalLogger = debugProvider(namespace)
+  const pool: LoggerPool = {
+    envProvider,
+    logLevels,
+    debugProvider,
+    namespace,
+    originalLogger,
+  }
 
   return Object.assign(originalLogger.bind(null), {
-    log: allowedLevels.indexOf('log') > -1 ? originalLogger : emptyFunction,
-    error: allowedLevels.indexOf('error') > -1 ? originalLogger : emptyFunction,
-    warn: allowedLevels.indexOf('warn') > -1 ? originalLogger : emptyFunction,
-    debug: allowedLevels.indexOf('debug') > -1 ? originalLogger : emptyFunction,
-    info: allowedLevels.indexOf('info') > -1 ? originalLogger : emptyFunction,
-    verbose:
-      allowedLevels.indexOf('verbose') > -1 ? originalLogger : emptyFunction,
+    log: createLogger(pool, 'log'),
+    error: createLogger(pool, 'error'),
+    warn: createLogger(pool, 'warn'),
+    debug: createLogger(pool, 'debug'),
+    info: createLogger(pool, 'info'),
+    verbose: createLogger(pool, 'verbose'),
   })
 }
 
 export { debugLevels, Debug, LeveledDebugger }
 
-let envProvider = {}
-try {
-  envProvider = process.env
-} catch (error) {}
-
-export default debugLevels.bind(null, debug, envProvider)
+export default debugLevels.bind(null, debug, defaultEnvProvider)
