@@ -433,37 +433,12 @@ describe('basic tests', () => {
         .saga(saga)
         .shouldExecuteSideEffect('non-existent-side-effect', 'a', 'b')
     } catch (e) {
-      expect(e.message).toContain(`shouldExecuteSideEffectx assertion failed`)
+      expect(e.message).toContain(`shouldExecuteSideEffect assertion failed`)
       expect(e.message).toContain(
-        stringify({
-          modelName: 'modelA',
-          resolverName: 'model-a-resolver',
-          jwt: 'model-a-jwt',
-          resolverArgs: {
-            modelA: true,
-          },
-        })
+        stringify(['non-existent-side-effect', 'a', 'b'])
       )
-      expect(e.message).toContain(
-        stringify({
-          modelName: 'modelB',
-          resolverName: 'model-b-resolver',
-          jwt: 'model-b-jwt',
-          resolverArgs: {
-            modelB: true,
-          },
-        })
-      )
-      expect(e.message).toContain(
-        stringify({
-          modelName: 'modelC',
-          resolverName: 'model-c-resolver',
-          jwt: 'model-c-jwt',
-          resolverArgs: {
-            modelC: true,
-          },
-        })
-      )
+      expect(e.message).toContain(stringify(['email', 'test', 'email']))
+      expect(e.message).toContain(stringify(['failure', 'side effect error']))
     }
   })
 })

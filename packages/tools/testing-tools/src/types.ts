@@ -121,7 +121,7 @@ export type ScheduledCommand = {
   command: Command
 }
 
-export type ExecutedSideEffect = Array<[string, ...any[]]>
+export type ExecutedSideEffect = [string, ...any[]]
 
 export type SagaTestResult = {
   commands: Array<Command>

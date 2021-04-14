@@ -2,6 +2,7 @@ import { diffJson } from 'diff'
 import colors from 'colors'
 import { Command, ReadModelQuery } from '@resolve-js/core'
 import os from 'os'
+import { ExecutedSideEffect } from '../types'
 
 export const stringifyError = (error: any): string =>
   error == null ? 'no error' : error.toString()
@@ -24,18 +25,23 @@ export const stringifyDiff = (expected: any, result: any): string =>
     })
     .join('')
 
-export function stringify(item: Command | ReadModelQuery): string {
+type ExecutedItem = Command | ReadModelQuery | ExecutedSideEffect
+
+const isExecutedSideEffect = (value: any): value is ExecutedSideEffect =>
+  Array.isArray(value) && value.length > 0 && typeof value[0] === 'string'
+
+export function stringify(item: ExecutedItem): string {
+  if (isExecutedSideEffect(item)) {
+    const [name, ...args] = item
+    return `${name}(${args.map((arg) => JSON.stringify(arg)).join(',')})`
+  }
   return JSON.stringify(item, null, 2)
 }
 
-export const stringifySideEffectInvocation = ([name, ...args]: Array<
-  [string, ...any[]]
->) => `${name}(${args.map((arg) => JSON.stringify(arg)).join(',')})`
-
 const stringifyShouldExecuteFailure = (
   name: string,
-  expected: Command | ReadModelQuery,
-  executed: Array<Command | ReadModelQuery>
+  expected: ExecutedItem,
+  executed: Array<ExecutedItem>
 ) =>
   `${name} assertion failed:${colors.green(
     `${os.EOL}Expected:${os.EOL}${stringify(expected)}`
@@ -63,4 +69,14 @@ export const stringifyShouldExecuteQueryFailure = (
     'shouldExecuteQuery',
     expectedQuery,
     executedQueries
+  )
+
+export const stringifyShouldExecuteSideEffectFailure = (
+  expectedSideEffect: ExecutedSideEffect,
+  executedSideEffects: Array<ExecutedSideEffect>
+): string =>
+  stringifyShouldExecuteFailure(
+    'shouldExecuteSideEffect',
+    expectedSideEffect,
+    executedSideEffects
   )
