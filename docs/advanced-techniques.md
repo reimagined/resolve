@@ -231,13 +231,14 @@ For an example on how to use modules, see the [Hacker News](https://github.com/r
 
 The reSolve framework provides a mechanism that allows you to use an arbitrary encryption algorithm to encrypt the stored events and Read Model state data.
 
-This functionality is critical when storing user personal data in compliance with General Data Protection Regulation (GDPR)
+This functionality is critical when storing user personal data in compliance with General Data Protection Regulation (GDPR).
 
 Encryption is defined as a file that exports a factory function of the following format:
 
 ##### Aggregate Encryption:
 
 ```js
+// common/aggregates/encryption.js
 const createEncryption = (aggregateId, context) => {
   ...
   // Returns an object that contains an 'encrypt' and 'decrypt' functions
@@ -252,6 +253,7 @@ export default createEncryption
 ##### Read Model Encryption:
 
 ```js
+// common/read-models/encryption.js
 const createEncryption = ( event, context) => {
   ...
   // Returns an object that contains an 'encrypt' and 'decrypt' functions
@@ -292,9 +294,10 @@ const appConfig = {
 
 ### Storing Secrets
 
-The reSolve framework implements a **secrets manager** that you can use to store and access secrets based on aggregate ID in you encryption implementation. The secret manager is available through the reSolve context object:
+The reSolve framework implements a **secrets manager** that you can use to store and access secrets based with a unique ID in you encryption implementation. The secret manager is available through the reSolve context object:
 
 ```js
+// common/aggregates/encryption.js
 import { generate } from 'generate-password'
 
 const createEncryption = (aggregateId, context) => {
@@ -313,11 +316,13 @@ const createEncryption = (aggregateId, context) => {
 
 The `secretsManager` object exposes the following functions:
 
-| Function Name  | Description                                                                                                                          |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `getSecret`    | Takes a unique ID as an argument and returns a promise that resolves to a string or null if the secret was not found.                |
-| `setSecret`    | Takes a unique ID and a secret string as arguments and returns a promise that resolves to null if the secret was successfully saved. |
-| `deleteSecret` | Takes a unique ID as an argument and returns a promise that resolves to null if the secret was successfully deleted.                 |
+| Function Name  | Description                                                                                                                                 |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `getSecret`    | Takes a unique ID as an argument and returns a promise that resolves to a string if a secret was found or null if the secret was not found. |
+| `setSecret`    | Takes a unique ID and a secret string as arguments and returns a promise that resolves to null if the secret was successfully saved.        |
+| `deleteSecret` | Takes a unique ID as an argument and returns a promise that resolves to null if the secret was successfully deleted.                        |
+
+> **NOTE:** A secret's unique ID cannot be reused after the secret was deleted.
 
 The secrets manager stores secrets in the 'secrets' table within the event store. To change the table name, use the event store adapter's `secretsTableName` option:
 
