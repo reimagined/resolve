@@ -41,7 +41,8 @@ const deleteSecret = async (
         "name" = ${freezeTableNameAsString}
       ) CTE;
 
-    DELETE FROM ${secretsTableNameAsId} WHERE id=${escape(selector)};
+    UPDATE ${secretsTableNameAsId} SET secret = NULL
+      WHERE id = ${escape(selector)};
 
     INSERT INTO ${eventsTableNameAsId}(
         "threadId",

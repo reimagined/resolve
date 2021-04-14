@@ -40,7 +40,7 @@ const getSecret = async (
   const sql = `
       SELECT "secret" 
       FROM ${databaseNameAsId}.${secretsTableNameAsId} 
-      WHERE "id"=${escape(selector)} LIMIT 1;`
+      WHERE "id"=${escape(selector)} AND "secret" IS NOT NULL LIMIT 1;`
 
   log.debug(`executing SQL query`)
   log.verbose(sql)
