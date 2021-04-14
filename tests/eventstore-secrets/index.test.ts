@@ -2,7 +2,12 @@ import createSqliteAdapter from '@resolve-js/eventstore-lite'
 import createPostgresqlServerlessAdapter from '@resolve-js/eventstore-postgresql-serverless'
 import createPostgresAdapter from '@resolve-js/eventstore-postgresql'
 import { PostgresqlAdapterConfig } from '@resolve-js/eventstore-postgresql'
-import { Adapter, AdapterConfig } from '@resolve-js/eventstore-base'
+import {
+  Adapter,
+  AdapterConfig,
+  SET_SECRET_EVENT_TYPE,
+  DELETE_SECRET_EVENT_TYPE,
+} from '@resolve-js/eventstore-base'
 import { SecretsManager } from '@resolve-js/core'
 import { create, destroy } from '@resolve-js/eventstore-postgresql-serverless'
 import { pipeline } from 'stream'
@@ -117,10 +122,31 @@ describe('eventstore adapter secrets', () => {
     }
   })
 
-  test('should get secret by id', async () => {
-    const secretManger: SecretsManager = await adapter.getSecretsManager()
+  test('should generate set secret events', async () => {
+    const { events } = await adapter.loadEvents({
+      cursor: null,
+      limit: countSecrets,
+      eventTypes: [SET_SECRET_EVENT_TYPE],
+    })
+    expect(events).toHaveLength(countSecrets)
+  })
+
+  test('should throw on setting secret with existing id', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
     const randomIndex: number = Math.floor(Math.random() * countSecrets)
-    const secret: string = await secretManger.getSecret(
+
+    await expect(
+      secretManager.setSecret(
+        makeIdFromIndex(randomIndex),
+        makeSecretFromIndex(randomIndex)
+      )
+    ).rejects.toThrow()
+  })
+
+  test('should get secret by id', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+    const randomIndex: number = Math.floor(Math.random() * countSecrets)
+    const secret: string = await secretManager.getSecret(
       makeIdFromIndex(randomIndex)
     )
     expect(secret).toEqual(makeSecretFromIndex(randomIndex))
@@ -135,6 +161,15 @@ describe('eventstore adapter secrets', () => {
     }
   })
 
+  test('should load secrets and skip the provided number of rows', async () => {
+    const skip = Math.floor(countSecrets / 3)
+    const { secrets } = await adapter.loadSecrets({
+      limit: countSecrets + 1,
+      skip,
+    })
+    expect(secrets).toHaveLength(countSecrets - skip)
+  })
+
   test('should correctly export secrets', async () => {
     const exportStream = await adapter.exportSecrets()
     const contents: string = await streamToString(exportStream)
@@ -146,7 +181,7 @@ describe('eventstore adapter secrets', () => {
     expect(parsedSecret.idx).toBeDefined()
   })
 
-  test('should be able to load secrets continuously', async () => {
+  test('should be able to load secrets continuously by idx', async () => {
     const requestedCount = countSecrets / 2
     const { secrets, idx } = await adapter.loadSecrets({
       limit: requestedCount,
@@ -165,20 +200,59 @@ describe('eventstore adapter secrets', () => {
     expect(emptyResult.secrets).toHaveLength(0)
   })
 
-  test('should delete secret by id and return null secret for get by this id', async () => {
-    const secretManger: SecretsManager = await adapter.getSecretsManager()
-    const randomIndex: number = Math.floor(Math.random() * countSecrets)
-    await secretManger.deleteSecret(makeIdFromIndex(randomIndex))
-    const secret: string | null = await secretManger.getSecret(
-      makeIdFromIndex(randomIndex)
-    )
+  test('should be able to load secrets continuously by skip', async () => {
+    const requestedCount = Math.floor(countSecrets / 3)
+    const { secrets } = await adapter.loadSecrets({
+      limit: requestedCount,
+      skip: 0,
+    })
+    expect(secrets).toHaveLength(requestedCount)
+
+    const loadResult = await adapter.loadSecrets({
+      limit: countSecrets,
+      skip: requestedCount,
+    })
+    expect(loadResult.secrets).toHaveLength(countSecrets - requestedCount)
+    const emptyResult = await adapter.loadSecrets({
+      limit: countSecrets,
+      skip: countSecrets,
+    })
+    expect(emptyResult.secrets).toHaveLength(0)
+  })
+
+  const secretToDeleteIndex: number = Math.floor(Math.random() * countSecrets)
+
+  test('should delete secret by id, return null for this id and generate delete secret event', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+    const secretId = makeIdFromIndex(secretToDeleteIndex)
+    await secretManager.deleteSecret(secretId)
+    const secret: string | null = await secretManager.getSecret(secretId)
     expect(secret).toBeNull()
+
+    const { events } = await adapter.loadEvents({
+      cursor: null,
+      limit: countSecrets,
+      eventTypes: [DELETE_SECRET_EVENT_TYPE],
+    })
+    expect(events).toHaveLength(1)
+    expect(events[0].payload.id).toEqual(secretId)
   })
 
   test('should return 1 less number of secrets after the secret was deleted', async () => {
     const secrets = (await adapter.loadSecrets({ limit: countSecrets + 1 }))
       .secrets
     expect(secrets).toHaveLength(countSecrets - 1)
+  })
+
+  test('should throw when setting secret with id that belonged to previously deleted secret', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+
+    await expect(
+      secretManager.setSecret(
+        makeIdFromIndex(secretToDeleteIndex),
+        makeSecretFromIndex(secretToDeleteIndex)
+      )
+    ).rejects.toThrow()
   })
 })
 

@@ -116,6 +116,8 @@ export type AdapterOptions = CommonAdapterOptions & {
   databaseFile: string
 }
 
+export type MaybeInitMethod = (pool: AdapterPool) => Promise<void>
+
 export type InternalMethods = {
   buildUpsertDocument: BuildUpsertDocumentMethod
   convertBinaryRow: ConvertBinaryRowMethod
@@ -124,6 +126,7 @@ export type InternalMethods = {
   PassthroughError: PassthroughErrorFactory
   generateGuid: GenerateGuidMethod
   dropReadModel: DropReadModelMethod
+  maybeInit: MaybeInitMethod
 }
 
 export type AdapterPool = CommonAdapterPool & {

@@ -674,6 +674,7 @@ describe('Command handlers', () => {
     )
   })
 })
+
 describe('Snapshots', () => {
   test('should use snapshots for building state 2', async () => {
     snapshots['AG;Map-invariantHash;aggregateId'] = JSON.stringify({
@@ -966,6 +967,7 @@ describe('Monitoring', () => {
       })
     }
   })
+
   test('calls monitoring.error if command is absent', async () => {
     const runtime = makeTestRuntime()
     const { executeCommand } = getAggregatesInteropBuilder([
@@ -1037,11 +1039,6 @@ describe('Monitoring', () => {
     runtime.monitoring.error = () => {
       throw new Error('onCommandFailed failed')
     }
-    // const monitoring = {
-    //   error: () => {
-    //     throw new Error('onCommandFailed failed')
-    //   },
-    // }
 
     const { executeCommand } = getAggregatesInteropBuilder([
       makeAggregateMeta({

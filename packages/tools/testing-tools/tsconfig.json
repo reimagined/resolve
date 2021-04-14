@@ -3,6 +3,7 @@
     "target": "es2018",
     "module": "commonjs",
     "moduleResolution": "node",
+    "isolatedModules": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

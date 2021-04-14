@@ -1,7 +1,5 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents, {
-  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP,
-} from '@resolve-js/testing-tools'
+import givenEvents from '@resolve-js/testing-tools'
 
 import config from './config'
 
@@ -19,7 +17,7 @@ describe('Saga', () => {
     .default
   const source = interopRequireDefault(require(`./${sourceModule}`)).default
 
-  let sagaWithAdapter = null
+  let saga = null
   let adapter = null
 
   describe('with sideEffects.isEnabled = true', () => {
@@ -30,10 +28,9 @@ describe('Saga', () => {
       source.sideEffects.getRandom = jest.fn()
 
       adapter = createConnector(connectorOptions)
-      sagaWithAdapter = {
+      saga = {
         handlers: source.handlers,
         sideEffects: source.sideEffects,
-        adapter,
         name: sagaName,
       }
     })
@@ -43,7 +40,7 @@ describe('Saga', () => {
       originalGetRandom = null
 
       adapter = null
-      sagaWithAdapter = null
+      saga = null
     })
 
     test('success increment', async () => {
@@ -55,9 +52,12 @@ describe('Saga', () => {
           type: 'UPDATE',
           payload: {},
         },
-      ]).saga(sagaWithAdapter)
+      ])
+        .saga(saga)
+        .withAdapter(adapter)
+        .allowSideEffects()
 
-      expect(result.commands[0][0].type).toEqual('increment')
+      expect(result.commands[0].type).toEqual('increment')
     })
 
     test('success decrement', async () => {
@@ -69,26 +69,28 @@ describe('Saga', () => {
           type: 'UPDATE',
           payload: {},
         },
-      ]).saga(sagaWithAdapter)
+      ])
+        .saga(saga)
+        .withAdapter(adapter)
+        .allowSideEffects()
 
-      expect(result.commands[0][0].type).toEqual('decrement')
+      expect(result.commands[0].type).toEqual('decrement')
     })
   })
 
   describe('with sideEffects.isEnabled = false', () => {
     beforeEach(async () => {
       adapter = createConnector(connectorOptions)
-      sagaWithAdapter = {
+      saga = {
         handlers: source.handlers,
         sideEffects: source.sideEffects,
-        adapter,
         name: sagaName,
       }
     })
 
     afterEach(async () => {
       adapter = null
-      sagaWithAdapter = null
+      saga = null
     })
 
     test('do nothing', async () => {
@@ -99,14 +101,13 @@ describe('Saga', () => {
           payload: {},
         },
       ])
-        .saga(sagaWithAdapter)
-        .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE,
-        })
+        .saga(saga)
+        .withAdapter(adapter)
+        .startSideEffectsFrom(Number.MAX_VALUE)
 
       expect(result).toEqual({
         commands: [],
-        scheduleCommands: [],
+        scheduledCommands: [],
         sideEffects: [],
         queries: [],
       })

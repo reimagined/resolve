@@ -1,6 +1,6 @@
 # **@resolve-js/debug-levels**
 
-[![npm version](https://badge.fury.io/js/@resolve-js/debug-levels.svg)](https://badge.fury.io/js/@resolve-js/debug-levels)
+[![npm version](https://badge.fury.io/js/%40resolve-js%2Fdebug-levels.svg)](https://badge.fury.io/js/%40resolve-js%2Fdebug-levels)
 
 This package provides debug-level API for reSolve packages.
 

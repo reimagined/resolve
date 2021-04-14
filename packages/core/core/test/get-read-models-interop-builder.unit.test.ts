@@ -21,8 +21,12 @@ const secretsManager: SecretsManager = {
   deleteSecret: jest.fn(),
 }
 
+let monitoring: {
+  error: jest.MockedFunction<NonNullable<Monitoring['error']>>
+}
+
 const makeTestRuntime = (): ReadModelRuntime => {
-  const monitoring: Monitoring = {
+  monitoring = {
     error: jest.fn(),
   }
 
@@ -48,11 +52,13 @@ describe('Read models', () => {
   let dummyEventHandler: any
   let dummyResolver: any
   const dummyStore: any = {}
+
   beforeEach(() => {
     dummyInitHandler = jest.fn()
     dummyEventHandler = jest.fn()
     dummyResolver = jest.fn()
   })
+
   test('interop methods should be called with correct arguments', async () => {
     const readModelInterop = await setUpTestReadModelInterop({
       name: 'TestReadModel',
@@ -92,6 +98,7 @@ describe('Read models', () => {
       { jwt: undefined, secretsManager }
     )
   })
+
   test('interop should return nulls for nonexistent handlers', async () => {
     const readModelInterop = await setUpTestReadModelInterop({
       name: 'TestReadModel',
@@ -120,6 +127,7 @@ describe('Read models', () => {
     )
     expect(eventHandler).toBeNull()
   })
+
   test('interop should throw error when acquiring nonexistent resolver', async () => {
     const readModelInterop = await setUpTestReadModelInterop({
       name: 'TestReadModel',
@@ -134,5 +142,127 @@ describe('Read models', () => {
         'Resolver "nonExistentResolver" does not exist'
       )
     }
+  })
+
+  test('#1797: error meta within monitored error on Init handler ', async () => {
+    const readModelInterop = await setUpTestReadModelInterop({
+      name: 'TestReadModel',
+      projection: {
+        Init: async () => {
+          throw Error('Projection error')
+        },
+      },
+      resolvers: {},
+    })
+
+    const initHandler = await readModelInterop.acquireInitHandler(dummyStore)
+
+    try {
+      if (initHandler != null) {
+        await initHandler()
+      }
+    } catch {}
+
+    expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(monitoring.error.mock.calls[0][0].message).toEqual(
+      'Projection error'
+    )
+    expect(monitoring.error.mock.calls[0][1]).toEqual('readModelProjection')
+    expect(monitoring.error.mock.calls[0][2]).toEqual({
+      readModelName: 'TestReadModel',
+      eventType: 'Init',
+    })
+  })
+
+  test('#1797: error meta within monitored error on event handler ', async () => {
+    const readModelInterop = await setUpTestReadModelInterop({
+      name: 'TestReadModel',
+      projection: {
+        Failed: async () => {
+          throw Error('Projection error')
+        },
+      },
+      resolvers: {},
+    })
+
+    const eventHandler = await readModelInterop.acquireEventHandler(
+      dummyStore,
+      {
+        type: 'Failed',
+        aggregateId: 'id',
+        aggregateVersion: 1,
+        timestamp: 1,
+      }
+    )
+
+    try {
+      if (eventHandler != null) {
+        await eventHandler()
+      }
+    } catch {}
+
+    expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(monitoring.error.mock.calls[0][0].message).toEqual(
+      'Projection error'
+    )
+    expect(monitoring.error.mock.calls[0][1]).toEqual('readModelProjection')
+    expect(monitoring.error.mock.calls[0][2]).toEqual({
+      readModelName: 'TestReadModel',
+      eventType: 'Failed',
+    })
+  })
+
+  test('should register error if resolver not found', async () => {
+    const readModelInterop = await setUpTestReadModelInterop({
+      name: 'TestReadModel',
+      projection: {
+        Init: dummyInitHandler,
+        dummyEvent: dummyEventHandler,
+      },
+      resolvers: {
+        all: dummyResolver,
+      },
+    })
+
+    await expect(
+      readModelInterop.acquireResolver('not-existing-resolver', {}, {})
+    ).rejects.toBeInstanceOf(Error)
+
+    expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(monitoring.error.mock.calls[0][0].message).toEqual(
+      expect.stringContaining(`not-existing-resolver`)
+    )
+    expect(monitoring.error.mock.calls[0][1]).toEqual('readModelResolver')
+    expect(monitoring.error.mock.calls[0][2]).toEqual({
+      readModelName: 'TestReadModel',
+      resolverName: 'not-existing-resolver',
+    })
+  })
+
+  test('should register error or resolver failure', async () => {
+    const readModelInterop = await setUpTestReadModelInterop({
+      name: 'TestReadModel',
+      projection: {
+        Init: dummyInitHandler,
+        dummyEvent: dummyEventHandler,
+      },
+      resolvers: {
+        fail: () => {
+          throw Error('failed resolver')
+        },
+      },
+    })
+
+    const resolver = await readModelInterop.acquireResolver('fail', {}, {})
+
+    await expect(resolver(null, null)).rejects.toBeInstanceOf(Error)
+
+    expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(monitoring.error.mock.calls[0][0].message).toEqual('failed resolver')
+    expect(monitoring.error.mock.calls[0][1]).toEqual('readModelResolver')
+    expect(monitoring.error.mock.calls[0][2]).toEqual({
+      readModelName: 'TestReadModel',
+      resolverName: 'fail',
+    })
   })
 })

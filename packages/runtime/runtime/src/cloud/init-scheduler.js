@@ -1,38 +1,33 @@
-import StepFunctions from 'aws-sdk/clients/stepfunctions'
+import STS from 'aws-sdk/clients/sts'
 import debugLevels from '@resolve-js/debug-levels'
 import { invokeFunction } from 'resolve-cloud-common/lambda'
-import STS from 'aws-sdk/clients/sts'
 
 const getLog = (name) => debugLevels(`resolve:cloud:scheduler:${name}`)
 
-const stateMachineArn = () =>
-  process.env['RESOLVE_CLOUD_SCHEDULER_STEP_FUNCTION_ARN']
-
-const STOP_ERROR_CODE = 'No error'
-const STOP_ERROR_CAUSE = 'Scheduler stopped by user'
-const EXECUTION_LIST_PAGE_SIZE = 100
-
 const start = async (entry) => {
-  const log = getLog(`step-functions-start`)
+  const log = getLog(`start`)
   try {
     log.verbose(`entry: ${JSON.stringify(entry)}`)
     log.debug(`starting new execution ${entry.taskId}`)
 
+    const { Arn } = await new STS().getCallerIdentity().promise()
+
     await invokeFunction({
       Region: process.env.AWS_REGION,
+      FunctionName: process.env.RESOLVE_SCHEDULER_LAMBDA_ARN,
       Payload: {
+        functionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
         event: {
           resolveSource: 'Scheduler',
           entry,
         },
         date: new Date(entry.date).toISOString(),
+        validationRoleArn: Arn,
         principial: {
           accessKeyId: process.env.AWS_ACCESS_KEY_ID,
           secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
           sessionToken: process.env.AWS_SESSION_TOKEN,
         },
-        validationRoleArn: await new STS().getCallerIdentity().promise(),
-        functionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
       },
     })
 
@@ -46,37 +41,27 @@ const start = async (entry) => {
 }
 
 const stopAll = async () => {
-  const processPage = async (token = {}) => {
-    const sf = new StepFunctions()
-    const { executions, nextToken } = await sf
-      .listExecutions(
-        Object.assign(
-          {
-            stateMachineArn: stateMachineArn(),
-            maxResults: EXECUTION_LIST_PAGE_SIZE,
-            statusFilter: 'RUNNING',
-          },
-          token
-        )
-      )
-      .promise()
+  const log = getLog(`stop all`)
 
-    await Promise.all(
-      executions.map(({ executionArn }) =>
-        sf
-          .stopExecution({
-            executionArn,
-            cause: STOP_ERROR_CAUSE,
-            error: STOP_ERROR_CODE,
-          })
-          .promise()
-      )
-    )
+  log.debug('stopping all executions')
 
-    if (nextToken) await processPage({ nextToken })
-  }
+  const { Arn } = await new STS().getCallerIdentity().promise()
 
-  return processPage()
+  await invokeFunction({
+    Region: process.env.AWS_REGION,
+    FunctionName: process.env.RESOLVE_SCHEDULER_LAMBDA_ARN,
+    Payload: {
+      functionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
+      validationRoleArn: Arn,
+      principial: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        sessionToken: process.env.AWS_SESSION_TOKEN,
+      },
+    },
+  })
+
+  log.debug('all executions stopped successfully')
 }
 
 const errorHandler = async (error) => {
