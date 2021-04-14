@@ -13,6 +13,7 @@ import {
   Command,
   ReadModelQuery,
   ViewModelQuery,
+  CommandResult,
 } from '@resolve-js/core'
 import { AggregateTestEnvironment } from './flow/aggregate/make-test-environment'
 import { ReadModelTestEnvironment } from './flow/read-model/make-test-environment'
@@ -139,4 +140,4 @@ export type SagaContext = {
   environment: SagaTestEnvironment
 } & GivenEventsContext
 
-
+export type MockedCommandImplementation = (command: Command) => CommandResult

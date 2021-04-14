@@ -11,6 +11,7 @@ import {
   SagaTestResult,
   TestEvent,
   TestSagaAssertion,
+  MockedCommandImplementation,
 } from '../../types'
 import { getSecretsManager } from '../../runtime/get-secrets-manager'
 import { getEventStore } from '../../runtime/get-event-store'
@@ -19,6 +20,7 @@ import { mockSideEffects } from '../../runtime/mock-side-effects'
 import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
 import partial from 'lodash.partial'
 import { defaultAssertion } from '../../utils/assertions'
+import { getCommandImplementationKey } from '../../runtime/utils'
 
 type SagaTestContext = {
   saga: TestSaga
@@ -36,6 +38,11 @@ export type SagaTestEnvironment = {
   setSideEffectsStartTimestamp: (value: number) => void
   addAssertion: (assertion: TestSagaAssertion) => void
   isExecuted: () => boolean
+  mockCommandImplementation: (
+    aggregateName: string,
+    type: string,
+    implementation: MockedCommandImplementation
+  ) => void
 }
 
 type PromisedAssertion = (
@@ -52,6 +59,11 @@ const promisedAssertion = (
     assertion(resolve, reject, result, error, false)
   )
 }
+
+const mockedCommandImplementations = new Map<
+  string,
+  MockedCommandImplementation
+>()
 
 export const makeTestEnvironment = (
   context: SagaTestContext
@@ -77,6 +89,17 @@ export const makeTestEnvironment = (
     assertions.push(partial(promisedAssertion, value))
   }
   const isExecuted = () => executed
+  const mockCommandImplementation = (
+    aggregateName: string,
+    type: string,
+    implementation: MockedCommandImplementation
+  ) => {
+    mockedCommandImplementations.set(
+      getCommandImplementationKey({ type, aggregateName }),
+      implementation
+    )
+  }
+
   const promise = new Promise<SagaTestResult>((resolve, reject) => {
     completeTest = resolve
     failTest = reject
@@ -145,6 +168,9 @@ export const makeTestEnvironment = (
     try {
       const runtime = getSagaRuntime(
         result,
+        {
+          commands: mockedCommandImplementations
+        },
         domain.sagaDomain.schedulerName,
         secretsManager,
         monitoring,
@@ -293,5 +319,6 @@ export const makeTestEnvironment = (
     addAssertion,
     isExecuted,
     promise,
+    mockCommandImplementation,
   }
 }
