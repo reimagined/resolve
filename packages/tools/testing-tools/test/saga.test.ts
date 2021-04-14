@@ -1,8 +1,14 @@
 import { TestSaga } from '../src/types'
+import { stringify } from '../src/utils/format'
 import givenEvents from '../src/index'
 
 let warnSpy: jest.SpyInstance
 let errorSpy: jest.SpyInstance
+
+jest.mock('colors', () => ({
+  green: jest.fn((value) => value),
+  red: jest.fn((value) => value),
+}))
 
 beforeAll(() => {
   warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => void 0)
@@ -109,6 +115,46 @@ describe('basic tests', () => {
           resolverArgs: { test: 'test' },
           jwt: 'user',
         })
+      },
+      MultipleCommands: async ({ sideEffects }): Promise<any> => {
+        await sideEffects.executeCommand({
+          type: 'commandA',
+          aggregateName: 'command-a-aggregate',
+          aggregateId: 'command-a-id',
+          payload: {
+            commandA: true,
+          },
+        })
+        await sideEffects.executeCommand({
+          type: 'commandB',
+          aggregateName: 'command-b-aggregate',
+          aggregateId: 'command-b-id',
+          payload: {
+            commandB: true,
+          },
+        })
+      },
+      MultipleQueries: async ({ sideEffects }): Promise<any> => {
+        await sideEffects.executeQuery({
+          modelName: 'modelA',
+          resolverName: 'model-a-resolver',
+          jwt: 'model-a-jwt',
+          resolverArgs: {
+            modelA: true,
+          },
+        })
+        await sideEffects.executeQuery({
+          modelName: 'modelB',
+          resolverName: 'model-b-resolver',
+          jwt: 'model-b-jwt',
+          resolverArgs: {
+            modelB: true,
+          },
+        })
+      },
+      MultipleSideEffects: async ({ sideEffects }): Promise<any> => {
+        await sideEffects.email('test', 'email')
+        await sideEffects.failure('side effect error')
       },
     },
     sideEffects: {
@@ -270,5 +316,154 @@ describe('basic tests', () => {
         resolverArgs: { test: 'test' },
         jwt: 'user',
       })
+  })
+
+  test('shouldExecuteCommand failure output should contain all executed commands', async () => {
+    try {
+      await givenEvents([
+        {
+          type: 'MultipleCommands',
+          aggregateId: 'aggregate-id',
+        },
+      ])
+        .saga(saga)
+        .shouldExecuteCommand({
+          type: 'commandC',
+          aggregateName: 'command-c-aggregate',
+          aggregateId: 'command-c-id',
+          payload: {
+            commandC: true,
+          },
+        })
+    } catch (e) {
+      expect(e.message).toContain(`shouldExecuteCommand assertion failed`)
+      expect(e.message).toContain(
+        stringify({
+          type: 'commandA',
+          aggregateName: 'command-a-aggregate',
+          aggregateId: 'command-a-id',
+          payload: {
+            commandA: true,
+          },
+        })
+      )
+      expect(e.message).toContain(
+        stringify({
+          type: 'commandB',
+          aggregateName: 'command-b-aggregate',
+          aggregateId: 'command-b-id',
+          payload: {
+            commandB: true,
+          },
+        })
+      )
+      expect(e.message).toContain(
+        stringify({
+          type: 'commandC',
+          aggregateName: 'command-c-aggregate',
+          aggregateId: 'command-c-id',
+          payload: {
+            commandC: true,
+          },
+        })
+      )
+    }
+  })
+
+  test('shouldExecuteQuery failure output should contain all executed queries', async () => {
+    try {
+      await givenEvents([
+        {
+          type: 'MultipleQueries',
+          aggregateId: 'aggregate-id',
+        },
+      ])
+        .saga(saga)
+        .shouldExecuteQuery({
+          modelName: 'modelC',
+          resolverName: 'model-c-resolver',
+          jwt: 'model-c-jwt',
+          resolverArgs: {
+            modelC: true,
+          },
+        })
+    } catch (e) {
+      expect(e.message).toContain(`shouldExecuteQuery assertion failed`)
+      expect(e.message).toContain(
+        stringify({
+          modelName: 'modelA',
+          resolverName: 'model-a-resolver',
+          jwt: 'model-a-jwt',
+          resolverArgs: {
+            modelA: true,
+          },
+        })
+      )
+      expect(e.message).toContain(
+        stringify({
+          modelName: 'modelB',
+          resolverName: 'model-b-resolver',
+          jwt: 'model-b-jwt',
+          resolverArgs: {
+            modelB: true,
+          },
+        })
+      )
+      expect(e.message).toContain(
+        stringify({
+          modelName: 'modelC',
+          resolverName: 'model-c-resolver',
+          jwt: 'model-c-jwt',
+          resolverArgs: {
+            modelC: true,
+          },
+        })
+      )
+    }
+  })
+
+  test('shouldExecuteSideEffect failure output should contain all executed side effects', async () => {
+    try {
+      await givenEvents([
+        {
+          type: 'MultipleSideEffects',
+          aggregateId: 'aggregate-id',
+        },
+      ])
+        .saga(saga)
+        .shouldExecuteSideEffect('non-existent-side-effect', 'a', 'b')
+    } catch (e) {
+      expect(e.message).toContain(`shouldExecuteSideEffectx assertion failed`)
+      expect(e.message).toContain(
+        stringify({
+          modelName: 'modelA',
+          resolverName: 'model-a-resolver',
+          jwt: 'model-a-jwt',
+          resolverArgs: {
+            modelA: true,
+          },
+        })
+      )
+      expect(e.message).toContain(
+        stringify({
+          modelName: 'modelB',
+          resolverName: 'model-b-resolver',
+          jwt: 'model-b-jwt',
+          resolverArgs: {
+            modelB: true,
+          },
+        })
+      )
+      expect(e.message).toContain(
+        stringify({
+          modelName: 'modelC',
+          resolverName: 'model-c-resolver',
+          jwt: 'model-c-jwt',
+          resolverArgs: {
+            modelC: true,
+          },
+        })
+      )
+    }
   })
 })

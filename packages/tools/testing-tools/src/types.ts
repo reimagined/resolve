@@ -121,11 +121,13 @@ export type ScheduledCommand = {
   command: Command
 }
 
+export type ExecutedSideEffect = Array<[string, ...any[]]>
+
 export type SagaTestResult = {
   commands: Array<Command>
   scheduledCommands: Array<ScheduledCommand>
-  sideEffects: Array<[string, ...any[]]>
-  queries: Array<ReadModelQuery | ViewModelQuery>
+  sideEffects: Array<ExecutedSideEffect>
+  queries: Array<ReadModelQuery>
   // FIXME: deprecated
   scheduleCommands: any[]
 }
@@ -136,3 +138,5 @@ export type SagaContext = {
   encryption?: EventHandlerEncryptionFactory
   environment: SagaTestEnvironment
 } & GivenEventsContext
+
+
