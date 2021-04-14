@@ -103,3 +103,53 @@ test('@resolve-js/debug-levels should create and invoke logger', () => {
 
   logger.warn('Warn message')
 })
+
+test('@resolve-js/debug-levels should tolerate to updating process.env', () => {
+  const debugPrinter = jest.fn()
+  const debugProvider = jest.fn().mockReturnValue(debugPrinter)
+  const envProvider = {
+    DEBUG: 'namespace',
+    DEBUG_LEVEL: 'warn',
+  }
+  const namespace = 'namespace'
+  const logger = debugLevels(
+    (debugProvider as unknown) as Debug,
+    envProvider,
+    namespace
+  )
+
+  logger.log('Log message')
+  logger.error('Error message')
+  logger.warn('Warn message')
+  logger.debug('Debug message')
+  logger.info('Info message')
+  logger.verbose('Verbose message')
+
+  expect(debugProvider).toBeCalledWith('namespace')
+
+  expect(debugPrinter).toBeCalledWith('Log message')
+  expect(debugPrinter).toBeCalledWith('Error message')
+  expect(debugPrinter).toBeCalledWith('Warn message')
+  expect(debugPrinter).not.toBeCalledWith('Debug message')
+  expect(debugPrinter).not.toBeCalledWith('Info message')
+  expect(debugPrinter).not.toBeCalledWith('Verbose message')
+
+  debugProvider.mockClear()
+
+  // Update process.env
+  envProvider.DEBUG_LEVEL = 'verbose'
+
+  logger.log('Log message')
+  logger.error('Error message')
+  logger.warn('Warn message')
+  logger.debug('Debug message')
+  logger.info('Info message')
+  logger.verbose('Verbose message')
+
+  expect(debugPrinter).toBeCalledWith('Log message')
+  expect(debugPrinter).toBeCalledWith('Error message')
+  expect(debugPrinter).toBeCalledWith('Warn message')
+  expect(debugPrinter).toBeCalledWith('Debug message')
+  expect(debugPrinter).toBeCalledWith('Info message')
+  expect(debugPrinter).toBeCalledWith('Verbose message')
+})
