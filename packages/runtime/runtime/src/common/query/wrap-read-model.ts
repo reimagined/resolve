@@ -443,6 +443,7 @@ export const customReadModelMethods = {
       applicationName: pool.applicationName,
       eventSubscriber: readModelName,
       status: {
+        eventSubscriber: readModelName,
         status: 'skip',
         busy: false,
         ...entry.status,
@@ -469,6 +470,7 @@ export const customReadModelMethods = {
       eventSubscriber: readModelName,
       status: {
         ...parameters.subscriptionOptions,
+        eventSubscriber: readModelName,
         status: 'skip',
         busy: false,
       },
