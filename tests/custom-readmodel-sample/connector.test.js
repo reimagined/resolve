@@ -69,9 +69,9 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter: adapter,
       })
-      .read({})
+      .withAdapter(adapter)
+      .query('read', {})
 
     expect(result).toEqual(200)
   })

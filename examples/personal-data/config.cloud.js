@@ -33,7 +33,6 @@ const cloudConfig = {
     options: {
       CDN: declareRuntimeEnv('RESOLVE_UPLOADER_URL'),
       uploaderArn: declareRuntimeEnv('RESOLVE_UPLOADER_LAMBDA_ARN'),
-      scope: 'personal-data',
     },
   },
 }

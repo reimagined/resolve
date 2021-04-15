@@ -1,6 +1,6 @@
 # **@resolve-js/module-uploader**
 
-[![npm version](https://badge.fury.io/js/@resolve-js/module-uploader.svg)](https://badge.fury.io/js/@resolve-js/module-uploader)
+[![npm version](https://badge.fury.io/js/%40resolve-js%2Fmodule-uploader.svg)](https://badge.fury.io/js/%40resolve-js%2Fmodule-uploader)
 
 ### Usage
 

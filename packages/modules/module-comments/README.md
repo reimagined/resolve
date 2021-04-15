@@ -1,6 +1,6 @@
 # **@resolve-js/module-comments**
 
-[![npm version](https://badge.fury.io/js/@resolve-js/module-comments.svg)](https://badge.fury.io/js/@resolve-js/module-comments)
+[![npm version](https://badge.fury.io/js/%40resolve-js%2Fmodule-comments.svg)](https://badge.fury.io/js/%40resolve-js%2Fmodule-comments)
 
 ## Usage
 

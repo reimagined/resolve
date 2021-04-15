@@ -130,6 +130,8 @@ module.exports = {
           'cqrs',
           'cte',
           'cuid',
+          'cumulate',
+          'cumulated',
           'cwd',
           'cryptr',
           'dateformat',

@@ -1,4 +1,6 @@
-const isYarnAvailable = ({ execSync }) => () => {
+import { execSync } from 'child_process'
+
+const isYarnAvailable = () => {
   try {
     execSync('yarn --version', { stdio: 'ignore' })
     return true

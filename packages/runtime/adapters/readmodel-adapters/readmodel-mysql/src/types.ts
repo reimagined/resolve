@@ -86,6 +86,8 @@ export type AdapterOptions = CommonAdapterOptions & {
   tablePrefix?: string
 } & MySQLPromiseLib.ConnectionOptions
 
+export type MaybeInitMethod = (pool: AdapterPool) => Promise<void>
+
 export type InternalMethods = {
   inlineLedgerForceStop: InlineLedgerForceStopMethod
   buildUpsertDocument: BuildUpsertDocumentMethod
@@ -97,6 +99,7 @@ export type InternalMethods = {
   dropReadModel: DropReadModelMethod
   escapeId: EscapeableMethod
   escapeStr: EscapeableMethod
+  maybeInit: MaybeInitMethod
 }
 
 export type AdapterPool = CommonAdapterPool & {

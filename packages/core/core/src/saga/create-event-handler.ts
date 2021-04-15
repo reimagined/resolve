@@ -3,18 +3,18 @@ import {
   Event,
   SagaEventHandler,
   SagaInitHandler,
+  SideEffectsCollection,
 } from '../types/core'
 import getLog from '../get-log'
 import { wrapSideEffects } from './wrap-side-effects'
-import { SagaRuntime, SideEffectsCollection, SystemSideEffects } from './types'
+import { SagaRuntime, SystemSideEffects, SideEffectsContext } from './types'
 
 const buildSideEffects = (
   runtime: SagaRuntime,
   sideEffects: SideEffectsCollection,
-  isEnabled: boolean
+  isEnabled: boolean,
+  sideEffectsContext: SideEffectsContext
 ) => {
-  const sagaProperties = runtime.eventProperties
-
   const customSideEffects =
     sideEffects != null && sideEffects.constructor === Object ? sideEffects : {}
 
@@ -27,12 +27,12 @@ const buildSideEffects = (
 
   return {
     ...wrapSideEffects(
-      sagaProperties,
       {
         ...customSideEffects,
         ...systemSideEffects,
       },
-      isEnabled
+      isEnabled,
+      sideEffectsContext
     ),
     isEnabled,
   }
@@ -50,7 +50,9 @@ export const createInitHandler = (
 
   await handler({
     store,
-    sideEffects: buildSideEffects(runtime, sideEffects, isEnabled),
+    sideEffects: buildSideEffects(runtime, sideEffects, isEnabled, {
+      sideEffectsStartTimestamp: 0,
+    }),
   })
 }
 
@@ -65,22 +67,30 @@ export const createEventHandler = (
 
   log.debug(`preparing saga event [${eventType}] handler`)
   try {
-    const sagaProperties = runtime.eventProperties
-    const isEnabled = !isNaN(
-      +sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP
-    )
-      ? +sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP <= +event.timestamp
+    const sideEffectsTimestamp = await runtime.getSideEffectsTimestamp()
+
+    const isEnabled = !isNaN(+sideEffectsTimestamp)
+      ? +sideEffectsTimestamp <= +event.timestamp
       : true
 
+    if (
+      !isNaN(+sideEffectsTimestamp) &&
+      +event.timestamp > +sideEffectsTimestamp
+    ) {
+      await runtime.setSideEffectsTimestamp(+event.timestamp)
+    }
+
     log.verbose(
-      `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: ${+sagaProperties.RESOLVE_SIDE_EFFECTS_START_TIMESTAMP}`
+      `RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: ${+sideEffectsTimestamp}`
     )
     log.verbose(`isEnabled: ${isEnabled}`)
     log.debug(`invoking saga event [${eventType}] handler`)
     await handler(
       {
         store,
-        sideEffects: buildSideEffects(runtime, sideEffects, isEnabled),
+        sideEffects: buildSideEffects(runtime, sideEffects, isEnabled, {
+          sideEffectsStartTimestamp: +sideEffectsTimestamp,
+        }),
         ...encryption,
       },
       event
