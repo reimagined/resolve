@@ -322,7 +322,9 @@ The `secretsManager` object exposes the following functions:
 | `setSecret`    | Takes a unique ID and a secret string as arguments and returns a promise that resolves if the secret was successfully saved.                |
 | `deleteSecret` | Takes a unique ID as an argument and returns a promise that resolves if the secret was successfully deleted.                                |
 
-> **NOTE:** A secret's unique ID cannot be reused after the secret was deleted. If you pass such ID to the `setSecret` function, an exception is raised.
+> **NOTE:** The unique ID of an existing or deleted secret cannot be reused. If you pass a previously used ID to the `setSecret` function, an exception is raised.
+
+pass such ID to the `setSecret` function, an exception is raised.
 
 The secrets manager stores secrets in the 'secrets' table within the event store. To change the table name, use the event store adapter's `secretsTableName` option:
 
