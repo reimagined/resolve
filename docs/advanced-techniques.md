@@ -254,7 +254,7 @@ export default createEncryption
 
 ```js
 // common/read-models/encryption.js
-const createEncryption = ( event, context) => {
+const createEncryption = (event, context) => {
   ...
   // Returns an object that contains an 'encrypt' and 'decrypt' functions
   return {
