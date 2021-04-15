@@ -4,6 +4,7 @@ import {
   Monitoring,
   MonitoringPart,
   SecretsManager,
+  Serializable,
 } from '@resolve-js/core'
 import { createQuery } from '@resolve-js/runtime'
 import {
@@ -12,6 +13,7 @@ import {
   TestEvent,
   TestSagaAssertion,
   MockedCommandImplementation,
+  MockedQueryImplementation,
 } from '../../types'
 import { getSecretsManager } from '../../runtime/get-secrets-manager'
 import { getEventStore } from '../../runtime/get-event-store'
@@ -20,7 +22,10 @@ import { mockSideEffects } from '../../runtime/mock-side-effects'
 import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
 import partial from 'lodash.partial'
 import { defaultAssertion } from '../../utils/assertions'
-import { getCommandImplementationKey } from '../../runtime/utils'
+import {
+  getCommandImplementationKey,
+  getQueryImplementationKey,
+} from '../../runtime/utils'
 
 type SagaTestContext = {
   saga: TestSaga
@@ -43,6 +48,11 @@ export type SagaTestEnvironment = {
     type: string,
     implementation: MockedCommandImplementation
   ) => void
+  mockQueryImplementation: (
+    modelName: string,
+    resolverName: string,
+    implementation: MockedQueryImplementation
+  ) => void
 }
 
 type PromisedAssertion = (
@@ -60,14 +70,18 @@ const promisedAssertion = (
   )
 }
 
-const mockedCommandImplementations = new Map<
-  string,
-  MockedCommandImplementation
->()
-
 export const makeTestEnvironment = (
   context: SagaTestContext
 ): SagaTestEnvironment => {
+  const mockedCommandImplementations = new Map<
+    string,
+    MockedCommandImplementation
+  >()
+  const mockedQueryImplementations = new Map<
+    string,
+    MockedQueryImplementation
+  >()
+
   let executed = false
   let useRealSideEffects = false
   let sideEffectsStartTimestamp = 0
@@ -96,6 +110,16 @@ export const makeTestEnvironment = (
   ) => {
     mockedCommandImplementations.set(
       getCommandImplementationKey({ type, aggregateName }),
+      implementation
+    )
+  }
+  const mockQueryImplementation = (
+    modelName: string,
+    resolverName: string,
+    implementation: MockedQueryImplementation
+  ) => {
+    mockedQueryImplementations.set(
+      getQueryImplementationKey({ modelName, resolverName }),
       implementation
     )
   }
@@ -169,7 +193,8 @@ export const makeTestEnvironment = (
       const runtime = getSagaRuntime(
         result,
         {
-          commands: mockedCommandImplementations
+          commands: mockedCommandImplementations,
+          queries: mockedQueryImplementations
         },
         domain.sagaDomain.schedulerName,
         secretsManager,
@@ -320,5 +345,6 @@ export const makeTestEnvironment = (
     isExecuted,
     promise,
     mockCommandImplementation,
+    mockQueryImplementation,
   }
 }

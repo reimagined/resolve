@@ -30,7 +30,6 @@ const saga: TestSaga<{
       await sideEffects.failure('error')
     },
     Command: async ({ sideEffects }, { aggregateId }): Promise<any> => {
-      await sideEffects.failure('error')
       await sideEffects.executeCommand({
         type: 'create',
         aggregateName: 'user',
@@ -41,7 +40,6 @@ const saga: TestSaga<{
       })
     },
     Query: async ({ sideEffects }, { aggregateId }): Promise<any> => {
-      await sideEffects.failure('error')
       await sideEffects.executeQuery({
         modelName: 'model',
         resolverName: 'test',
@@ -50,7 +48,7 @@ const saga: TestSaga<{
       })
     },
     CommandQuery: async ({ sideEffects }, { aggregateId }): Promise<any> => {
-      await sideEffects.failure('error')
+      //await sideEffects.failure('error')
       await sideEffects.executeCommand({
         type: 'create',
         aggregateName: 'user',
@@ -486,4 +484,54 @@ test('using mockCommandImplementation should throw unhandled exceptions', async 
   ).rejects.toThrow(error)
 
   expect(mockedCommand).toHaveBeenCalledWith(expectedCommand)
+})
+
+test('using mockQueryImplementation', async () => {
+  const mockedQuery = jest.fn()
+  const expectedQuery = {
+    modelName: 'model',
+    resolverName: 'test',
+    resolverArgs: {
+      test: 'test',
+    },
+    jwt: 'user',
+  }
+  await givenEvents([
+    {
+      type: 'Query',
+      aggregateId: 'aggregate-id',
+    },
+  ])
+    .saga(saga)
+    .mockQueryImplementation('model', 'test', mockedQuery)
+    .shouldExecuteQuery(expectedQuery)
+
+  expect(mockedQuery).toHaveBeenCalledWith(expectedQuery)
+})
+
+test('using mockQueryImplementation should throw unhandled exceptions', async () => {
+  const error = Error('query failure')
+  const mockedQuery = jest.fn(() => {
+    throw error
+  })
+  const expectedQuery = {
+    modelName: 'model',
+    resolverName: 'test',
+    resolverArgs: {
+      test: 'test',
+    },
+    jwt: 'user',
+  }
+  await expect(
+    givenEvents([
+      {
+        type: 'Query',
+        aggregateId: 'aggregate-id',
+      },
+    ])
+      .saga(saga)
+      .mockQueryImplementation('model', 'test', mockedQuery)
+  ).rejects.toThrow(error)
+
+  expect(mockedQuery).toHaveBeenCalledWith(expectedQuery)
 })

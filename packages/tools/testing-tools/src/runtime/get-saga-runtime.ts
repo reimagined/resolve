@@ -1,10 +1,20 @@
 import partial from 'lodash.partial'
-import { Command, Monitoring, SecretsManager } from '@resolve-js/core'
-import { MockedCommandImplementation, SagaTestResult } from '../types'
-import { getCommandImplementationKey } from './utils'
+import {
+  Command,
+  Monitoring,
+  ReadModelQuery,
+  SecretsManager,
+} from '@resolve-js/core'
+import {
+  MockedCommandImplementation,
+  MockedQueryImplementation,
+  SagaTestResult,
+} from '../types'
+import { getCommandImplementationKey, getQueryImplementationKey } from './utils'
 
 type MockedImplementations = {
   commands: Map<string, MockedCommandImplementation>
+  queries: Map<string, MockedQueryImplementation>
 }
 
 const executeCommand = async (
@@ -29,8 +39,18 @@ const executeCommand = async (
     }
   }
 }
-const executeQuery = (buffer: SagaTestResult, query: any) => {
+const executeQuery = async (
+  buffer: SagaTestResult,
+  mockedImplementations: Map<string, MockedQueryImplementation>,
+  query: ReadModelQuery
+) => {
   buffer.queries.push(query)
+  const implementation = mockedImplementations.get(
+    getQueryImplementationKey(query)
+  )
+  if (typeof implementation === 'function') {
+    await implementation(query)
+  }
 }
 
 const makeScheduler = () => ({
@@ -59,7 +79,7 @@ export const getSagaRuntime = (
       schedulerName,
       mockedImplementations.commands
     ),
-    executeQuery: partial(executeQuery, buffer),
+    executeQuery: partial(executeQuery, buffer, mockedImplementations.queries),
     scheduler: makeScheduler(),
     uploader,
     getSideEffectsTimestamp: async () => sideEffectsTimestamp,
