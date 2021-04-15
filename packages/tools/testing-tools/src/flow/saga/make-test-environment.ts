@@ -4,7 +4,6 @@ import {
   Monitoring,
   MonitoringPart,
   SecretsManager,
-  Serializable,
 } from '@resolve-js/core'
 import { createQuery } from '@resolve-js/runtime'
 import {
@@ -194,7 +193,7 @@ export const makeTestEnvironment = (
         result,
         {
           commands: mockedCommandImplementations,
-          queries: mockedQueryImplementations
+          queries: mockedQueryImplementations,
         },
         domain.sagaDomain.schedulerName,
         secretsManager,

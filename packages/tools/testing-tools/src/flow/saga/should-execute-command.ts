@@ -2,9 +2,7 @@ import isEqual from 'lodash.isequal'
 import { Command } from '@resolve-js/core'
 import { SagaContext } from '../../types'
 import { makeAssertions, SagaAssertionsNode } from './make-assertions'
-import {
-  stringifyShouldExecuteCommandFailure,
-} from '../../utils/format'
+import { stringifyShouldExecuteCommandFailure } from '../../utils/format'
 
 export const shouldExecuteCommand = (
   context: SagaContext,
