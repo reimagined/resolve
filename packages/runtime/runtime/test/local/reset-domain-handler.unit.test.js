@@ -5,9 +5,7 @@ const acquireMiddleware = (options) => reset(options)
 const getMockResolve = () => ({
   eventstoreAdapter: {},
   publisher: {},
-  domain: { readModels: [],
-  sagas: []
-  },
+  domain: { readModels: [], sagas: [] },
   eventSubscriber: {
     reset: () => {},
   },
