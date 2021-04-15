@@ -24,16 +24,18 @@ Use the `.aggregate` function to add an aggregate to a test case. Use the follow
 
 ### Chainable Functions
 
-| Function | Description |
-| -------- | ----------- |
-|          |             |
+| Function                      | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `as(jwt)`                     | Specifies a JSON Web Token used for authentication. |
+| `command(name, payload?)`     | Specifies a command to pass to the Aggregate.       |
+| `withSecretsManager(manager)` | Assigns a secrets manager to the aggregate          |
 
 ### Assertions
 
-| Assertion                     | Description                                                          |
-| ----------------------------- | -------------------------------------------------------------------- |
-| `shouldProduceEvent( event )` | Succeeds if the specified event was produced in the given test case. |
-| `shouldThrow( event )`        | Succeeds if the Aggregate throws an exception.                       |
+| Assertion                   | Description                                                          |
+| --------------------------- | -------------------------------------------------------------------- |
+| `shouldProduceEvent(event)` | Succeeds if the specified event was produced in the given test case. |
+| `shouldThrow(event)`        | Succeeds if the Aggregate throws an exception.                       |
 
 The code sample below demonstrates a **jest** test for an Aggregate:
 
@@ -93,15 +95,20 @@ Use the `.readModel` function to add a Read Model to a test case. Use the follow
 
 ### Chainable Functions
 
-| Function | Description |
-| -------- | ----------- |
-|          |             |
+| Function                      | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `as(jwt)`                     | Specifies a JSON Web Token used for authentication. |
+| `not()`                       | Invers the assertions.                              |
+| `query(resolver, args?)`      | Specifies a query to send to the read model.        |
+| `withAdapter(adapter)`        | Specifies a read model adapter to use.              |
+| `withEncryption( encryption)` | Specifies an encryption factory function to use.    |
+| `withSecretsManager(manager)` | Assigns a secrets manager to the aggregate          |
 
 ### Assertions
 
-| Assertion | Description |
-| --------- | ----------- |
-|           |             |
+| Assertion                      | Description                                                                     |
+| ------------------------------ | ------------------------------------------------------------------------------- |
+| `shouldReturn(expectedResult)` | Specifies the result that should be return by a query defined in the test case. |
 
 The code sample below demonstrates a **jest** test for a Read Model:
 
@@ -143,15 +150,21 @@ Use the `.saga` function to add a saga to a test case. Use the following interfa
 
 ### Chainable Functions
 
-| Function | Description |
-| -------- | ----------- |
-|          |             |
+| Function                      | Description                                                          |
+| ----------------------------- | -------------------------------------------------------------------- |
+| `allowSideEffects()`          | Specifies that saga side effects are allowed.                        |
+| `startSideEffectsFrom(date)`  | Specifies the date time from which to start to execute side effects. |
+| `withAdapter(adapter)`        | Specifies a read model adapter to use.                               |
+| `withEncryption( encryption)` | Specifies an encryption factory function to use.                     |
+| `withSecretsManager(manager)` | Assigns a secrets manager to the aggregate                           |
 
 ### Assertions
 
-| Assertion | Description |
-| --------- | ----------- |
-|           |             |
+| Assertion                                    | Description                                                                                 |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `shouldExecuteCommand(shouldExecuteCommand)` | Succeeds if the saga executes the specified command.                                        |
+| `shouldExecuteQuery(query)`                  | Succeeds if the saga executes the specified query.                                          |
+| `shouldExecuteSideEffect(name, ...args)`     | Succeeds if the saga calls the specified side effect function with the specified arguments. |
 
 The code sample below demonstrates a **jest** test for a Saga:
 
