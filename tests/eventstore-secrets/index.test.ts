@@ -165,6 +165,22 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     expect(events).toHaveLength(0)
   })
 
+  test('should return secrets by specified ids', async () => {
+    const ids = [
+      makeIdFromIndex(0),
+      makeIdFromIndex(countSecrets / 2),
+      makeIdFromIndex(countSecrets - 1),
+    ]
+    const { secrets } = await adapter.loadSecrets({
+      limit: countSecrets,
+      ids,
+    })
+    expect(secrets).toHaveLength(ids.length)
+    expect(secrets.map((record) => record.id)).toEqual(
+      expect.arrayContaining(ids)
+    )
+  })
+
   const secretToDeleteIndex: number = Math.floor(Math.random() * countSecrets)
 
   test('should delete secret by id, return null for this id and generate delete secret event', async () => {
@@ -220,6 +236,22 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
         makeSecretFromIndex(secretToDeleteIndex)
       )
     ).rejects.toThrow()
+  })
+
+  test('should gather secrets by events', async () => {
+    const { events } = await adapter.loadEvents({
+      cursor: null,
+      limit: countSecrets * 2,
+      eventTypes: [SET_SECRET_EVENT_TYPE, DELETE_SECRET_EVENT_TYPE],
+    })
+    const {
+      deletedSecrets,
+      existingSecrets,
+    } = await adapter.gatherSecretsFromEvents(events)
+
+    expect(deletedSecrets).toHaveLength(1)
+    expect(deletedSecrets[0]).toEqual(makeIdFromIndex(secretToDeleteIndex))
+    expect(existingSecrets).toHaveLength(countSecrets - 1)
   })
 })
 

@@ -45,6 +45,20 @@ export type EventThreadData = {
   threadId: number
 }
 export type SavedEvent = Event & EventThreadData & SerializableMap
+export type OldSavedEvent = SavedEvent
+
+export type ReplicationStatus =
+  | 'batchInProgress'
+  | 'batchDone'
+  | 'error'
+  | 'notStarted'
+  | 'serviceError'
+export type ReplicationState = {
+  status: ReplicationStatus
+  statusData: SerializableMap | null
+  paused: boolean
+  iterator: SerializableMap | null
+}
 
 export type CheckForResourceError = (errors: Error[]) => void
 
@@ -145,13 +159,14 @@ type EventFilterChecked = t.TypeOf<typeof EventFilterSchemaSimple>
 export type EventFilter = UnbrandProps<EventFilterChecked>
 
 export type SecretFilter = {
-  idx?: number | null
+  idx?: SecretRecord['idx'] | null
   skip?: number
   limit: number
+  ids?: Array<SecretRecord['id']> | null
 }
 
 export type SecretsWithIdx = {
-  idx: number | null
+  idx: SecretRecord['idx'] | null
   secrets: SecretRecord[]
 }
 
@@ -160,6 +175,13 @@ export type SecretRecord = {
   id: string
   secret: string
 }
+
+export type GatheredSecrets = {
+  existingSecrets: SecretRecord[]
+  deletedSecrets: Array<SecretRecord['id']>
+}
+
+export type OldSecretRecord = SecretRecord
 
 export function isTimestampFilter(
   filter: EventFilter
@@ -375,6 +397,10 @@ export interface CommonAdapterFunctions<
   >
   init: PoolMethod<ConnectedProps, Adapter['init']>
   drop: PoolMethod<ConnectedProps, Adapter['drop']>
+  gatherSecretsFromEvents: PoolMethod<
+    ConnectedProps,
+    Adapter['gatherSecretsFromEvents']
+  >
 }
 
 export interface AdapterFunctions<
@@ -524,4 +550,19 @@ export interface Adapter {
       status: any
     }>
   >
+
+  gatherSecretsFromEvents: (events: SavedEvent[]) => Promise<GatheredSecrets>
+
+  setReplicationIterator?: (iterator: SerializableMap) => Promise<void>
+  getLastReplicationIterator?: () => Promise<SerializableMap | null>
+  replicateEvents?: (events: OldSavedEvent[]) => Promise<void>
+  replicateSecrets?: (
+    secretsToSet: OldSecretRecord[],
+    secretsToDelete: Array<OldSecretRecord['id']>
+  ) => Promise<void>
+  getReplicationState?: () => Promise<ReplicationState>
+  setReplicationStatus?: (
+    status: ReplicationStatus,
+    info?: ReplicationState['statusData']
+  ) => Promise<void>
 }

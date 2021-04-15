@@ -26,6 +26,7 @@ import importSecretsStream from './import-secrets'
 import exportSecretsStream from './export-secrets'
 import init from './init'
 import drop from './drop'
+import gatherSecretsFromEvents from './gather-secrets-from-events'
 import * as iots from 'io-ts'
 import * as iotsTypes from 'io-ts-types'
 
@@ -85,6 +86,7 @@ const wrappedCreateAdapter = <
     importSecretsStream,
     init,
     drop,
+    gatherSecretsFromEvents,
   }
 
   return createAdapter(

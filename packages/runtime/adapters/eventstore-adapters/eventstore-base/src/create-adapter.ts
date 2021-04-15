@@ -45,6 +45,7 @@ const createAdapter = <
     exportSecretsStream,
     init,
     drop,
+    gatherSecretsFromEvents,
   }: CommonAdapterFunctions<ConnectedProps>,
   {
     connect,
@@ -172,6 +173,8 @@ const createAdapter = <
     ensureEventSubscriber: wrapMethod(adapterPool, ensureEventSubscriber),
     removeEventSubscriber: wrapMethod(adapterPool, removeEventSubscriber),
     getEventSubscribers: wrapMethod(adapterPool, getEventSubscribers),
+
+    gatherSecretsFromEvents: wrapMethod(adapterPool, gatherSecretsFromEvents),
   }
 
   Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(

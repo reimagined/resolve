@@ -9,7 +9,7 @@ const loadSecrets = async (
   { database, escapeId, escape, secretsTableName }: AdapterPool,
   filter: SecretFilter
 ): Promise<SecretsWithIdx> => {
-  const { idx, limit, skip } = filter
+  const { idx, limit, skip, ids } = filter
 
   const tableNameAsId: string = escapeId(secretsTableName)
   const searchIdx: number = idx == null ? 0 : idx
@@ -18,6 +18,7 @@ const loadSecrets = async (
   const rows = await database.all(
     `SELECT idx, id, secret FROM ${tableNameAsId}
     WHERE secret IS NOT NULL AND idx >= ${+searchIdx}
+    ${ids ? `AND id IN (${ids.map((id) => escape(id)).join(',')})` : ''}
     ORDER BY "idx" ASC
     LIMIT ${+limit} OFFSET ${skipRows}`
   )
