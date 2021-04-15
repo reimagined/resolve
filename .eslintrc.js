@@ -339,6 +339,7 @@ module.exports = {
           'println',
           'proc',
           'processlist',
+          'profiler',
           'promisify',
           'proto',
           'pubsub',

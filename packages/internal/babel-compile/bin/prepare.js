@@ -16,7 +16,7 @@ const exec = (cmd, opts = {}) =>
 const prepare = async ({ directory, sourceType }) => {
   if (sourceType === 'ts') {
     try {
-      return exec(`node "${tscPath}" --project ${configFile}`, {
+      return exec(`tsc --build ${configFile}`, {
         cwd: directory,
       })
     } catch (error) {

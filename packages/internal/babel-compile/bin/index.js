@@ -2,6 +2,7 @@
 
 const minimist = require('minimist')
 const chalk = require('chalk')
+const { createProfiler } = require('./profiler')
 const babel = require('@babel/cli/lib/babel/dir').default
 const { getBabelConfig, getCompileConfigs } = require('@internal/helpers')
 const { prepare } = require('./prepare')
@@ -11,7 +12,10 @@ const configs = getCompileConfigs()
 let isFailed = false
 
 async function compilePackage(config) {
+  const profiler = createProfiler()
+
   try {
+    profiler.start('prepare')
     await prepare(config)
   } catch (e) {
     isFailed = true
@@ -23,8 +27,11 @@ async function compilePackage(config) {
       console.error(e)
     }
     throw e
+  } finally {
+    profiler.finish('prepare')
   }
 
+  let index = 0
   for (const babelConfig of config.babelCompile) {
     const cliOptions = {
       extensions: babelConfig.extensions,
@@ -41,6 +48,10 @@ async function compilePackage(config) {
       }
     }
 
+    const buildMark = `${config.name}-build-${
+      babelConfig.moduleType
+    }-${index++}`
+    profiler.start(buildMark)
     const buildPromise = babel({
       babelOptions: {
         ...getBabelConfig({
@@ -54,11 +65,14 @@ async function compilePackage(config) {
       cliOptions,
     })
       .then(() => {
+        profiler.finish(buildMark)
         // eslint-disable-next-line no-console
         console.log(
           `↑ [${chalk.green(config.name)}] ${babelConfig.moduleType}:${
             babelConfig.moduleTarget
-          }`
+          } { tsc: ${profiler.time('prepare')}, babel: ${profiler.time(
+            buildMark
+          )}, total: ${profiler.time('prepare') + profiler.time(buildMark)} }`
         )
       })
       .catch((error) => {

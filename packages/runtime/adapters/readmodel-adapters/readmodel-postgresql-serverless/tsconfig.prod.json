@@ -1,4 +1,16 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["test"]
+  "exclude": ["test"],
+  "compilerOptions": {
+    "rootDir": "./",
+    "composite": true
+  },
+  "references": [
+    {
+      "path": "../../../../core/debug-levels/tsconfig.prod.json"
+    },
+    {
+      "path": "../readmodel-base/tsconfig.prod.json"
+    }
+  ],
 }

@@ -67,3 +67,4 @@ packages/core/zeromq/optional
 .npmrc
 
 cra-tests
+*.tsbuildinfo
