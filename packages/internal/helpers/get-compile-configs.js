@@ -1,5 +1,5 @@
 const path = require('path')
-const find = require('glob').sync
+const { prepareBuildRegistry } = require('./prepare-build-registry')
 
 const { getResolveDir } = require('./get-resolve-dir')
 
@@ -8,44 +8,11 @@ const externalDependencies = ['resolve-cloud-common']
 const isInternalDependency = (name) =>
   name.startsWith('@resolve-js/') && !externalDependencies.includes(name)
 
-let _configs
 const getCompileConfigs = () => {
-  if (_configs) {
-    return _configs
-  }
+  const registry = prepareBuildRegistry()
 
-  const configs = []
-
-  for (const filePath of [
-    ...find(
-      './examples/hacker-news/readmodel-replicator-postgresql-serverless/package.json',
-      {
-        cwd: getResolveDir(),
-        absolute: true,
-        ignore: ['**/node_modules/**', './node_modules/**'],
-      }
-    ),
-    ...find('./packages/**/package.json', {
-      cwd: getResolveDir(),
-      absolute: true,
-      ignore: ['**/node_modules/**', './node_modules/**'],
-    }),
-  ]) {
-    if (filePath.includes('node_modules')) {
-      continue
-    }
-    if (
-      filePath.includes('packages\\internal') ||
-      filePath.includes('packages/internal')
-    ) {
-      continue
-    }
-    if (
-      filePath.includes(`optional\\${'dependencies'}`) ||
-      filePath.includes(`optional/${'dependencies'}`)
-    ) {
-      continue
-    }
+  registry.map((entry) => {
+    const location = path.resolve(getResolveDir(), entry.location, 'package.json')
 
     const {
       version,
@@ -53,7 +20,7 @@ const getCompileConfigs = () => {
       sourceType,
       babelCompile,
       dependencies = {},
-    } = require(filePath)
+    } = require(location)
 
     if (!Array.isArray(babelCompile)) {
       throw new Error(`[${name}] package.json "babelCompile" must be an array`)
@@ -63,7 +30,7 @@ const getCompileConfigs = () => {
       name,
       version,
       babelCompile,
-      directory: path.dirname(filePath),
+      directory: path.dirname(location),
       sourceType,
       dependencies: Object.keys(dependencies).reduce(
         (acc, dependencyName) =>
@@ -112,12 +79,10 @@ const getCompileConfigs = () => {
       babelConfig.filenames = [babelConfig.inputDir]
     }
 
-    configs.push(config)
-  }
+    entry.config = config
+  })
 
-  _configs = configs
-
-  return configs
+  return registry
 }
 
 module.exports = { getCompileConfigs }
