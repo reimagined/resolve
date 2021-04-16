@@ -79,6 +79,12 @@ const createAdapter = <
     deleteSecret,
     loadSecrets,
     injectSecret,
+    replicateEvents,
+    replicateSecrets,
+    setReplicationIterator,
+    setReplicationPaused,
+    setReplicationStatus,
+    getReplicationState,
   }: AdapterFunctions<ConnectedProps, ConnectionDependencies, Config>,
   connectionDependencies: ConnectionDependencies,
   options: Config
@@ -175,6 +181,13 @@ const createAdapter = <
     getEventSubscribers: wrapMethod(adapterPool, getEventSubscribers),
 
     gatherSecretsFromEvents: wrapMethod(adapterPool, gatherSecretsFromEvents),
+
+    replicateEvents: wrapMethod(adapterPool, replicateEvents),
+    replicateSecrets: wrapMethod(adapterPool, replicateSecrets),
+    setReplicationIterator: wrapMethod(adapterPool, setReplicationIterator),
+    setReplicationPaused: wrapMethod(adapterPool, setReplicationPaused),
+    setReplicationStatus: wrapMethod(adapterPool, setReplicationStatus),
+    getReplicationState: wrapMethod(adapterPool, getReplicationState),
   }
 
   Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(

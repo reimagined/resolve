@@ -37,8 +37,6 @@ import {
   TimestampFilter,
   isTimestampFilter,
   isCursorFilter,
-  EventsWithCursor,
-  EventFilter,
   Adapter,
   AdapterFunctions,
   AdapterPoolConnectedProps,
@@ -47,15 +45,6 @@ import {
   AdapterPoolConnected,
   AdapterConfig,
   AdapterConfigSchema,
-  ImportOptions,
-  ExportOptions,
-  SecretFilter,
-  SecretsWithIdx,
-  SecretRecord,
-  InputEvent,
-  SavedEvent,
-  EventThreadData,
-  Cursor,
 } from './types'
 
 const wrappedCreateAdapter = <
@@ -117,14 +106,17 @@ export {
   TimestampFilter,
   isTimestampFilter,
   isCursorFilter,
-  EventsWithCursor,
-  EventFilter,
   Adapter,
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
   AdapterConfig,
   AdapterConfigSchema,
+  iots,
+  iotsTypes,
+}
+
+export {
   ImportOptions,
   ExportOptions,
   SecretFilter,
@@ -134,9 +126,14 @@ export {
   SavedEvent,
   EventThreadData,
   Cursor,
-  iots,
-  iotsTypes,
-}
+  EventsWithCursor,
+  EventFilter,
+  ReplicationStatus,
+  ReplicationState,
+  OldEvent,
+  OldSecretRecord,
+  getInitialReplicationState,
+} from './types'
 
 export {
   makeSetSecretEvent,

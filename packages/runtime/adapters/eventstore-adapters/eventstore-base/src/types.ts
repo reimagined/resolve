@@ -45,7 +45,7 @@ export type EventThreadData = {
   threadId: number
 }
 export type SavedEvent = Event & EventThreadData & SerializableMap
-export type OldSavedEvent = SavedEvent
+export type OldEvent = Event
 
 export type ReplicationStatus =
   | 'batchInProgress'
@@ -58,6 +58,15 @@ export type ReplicationState = {
   statusData: SerializableMap | null
   paused: boolean
   iterator: SerializableMap | null
+}
+
+export function getInitialReplicationState(): ReplicationState {
+  return {
+    status: 'notStarted',
+    statusData: null,
+    iterator: null,
+    paused: false,
+  }
 }
 
 export type CheckForResourceError = (errors: Error[]) => void
@@ -491,6 +500,32 @@ export interface AdapterFunctions<
     ConnectedProps,
     AdapterPoolConnectedProps['getEventSubscribers']
   >
+
+  replicateEvents?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['replicateEvents']>
+  >
+  replicateSecrets?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['replicateSecrets']>
+  >
+
+  setReplicationStatus?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['setReplicationStatus']>
+  >
+  setReplicationIterator?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['setReplicationIterator']>
+  >
+  setReplicationPaused?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['setReplicationPaused']>
+  >
+  getReplicationState?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['getReplicationState']>
+  >
 }
 
 export interface Adapter {
@@ -553,16 +588,16 @@ export interface Adapter {
 
   gatherSecretsFromEvents: (events: SavedEvent[]) => Promise<GatheredSecrets>
 
-  setReplicationIterator?: (iterator: SerializableMap) => Promise<void>
-  getLastReplicationIterator?: () => Promise<SerializableMap | null>
-  replicateEvents?: (events: OldSavedEvent[]) => Promise<void>
+  replicateEvents?: (events: OldEvent[]) => Promise<void>
   replicateSecrets?: (
-    secretsToSet: OldSecretRecord[],
-    secretsToDelete: Array<OldSecretRecord['id']>
+    existingSecrets: OldSecretRecord[],
+    deletedSecrets: Array<OldSecretRecord['id']>
   ) => Promise<void>
-  getReplicationState?: () => Promise<ReplicationState>
+  setReplicationIterator?: (iterator: SerializableMap) => Promise<void>
   setReplicationStatus?: (
     status: ReplicationStatus,
     info?: ReplicationState['statusData']
   ) => Promise<void>
+  setReplicationPaused?: (pause: boolean) => Promise<void>
+  getReplicationState?: () => Promise<ReplicationState>
 }

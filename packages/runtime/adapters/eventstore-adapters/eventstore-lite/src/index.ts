@@ -35,6 +35,12 @@ import initSecrets from './init-secrets'
 import dropSecrets from './drop-secrets'
 import initFinal from './init-final'
 import dropFinal from './drop-final'
+import replicateEvents from './replicate-events'
+import replicateSecrets from './replicate-secrets'
+import setReplicationStatus from './set-replication-status'
+import setReplicationIterator from './set-replication-iterator'
+import setReplicationPaused from './set-replication-paused'
+import getReplicationState from './get-replication-state'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
 import type { ConnectionDependencies, SqliteAdapterConfig } from './types'
@@ -73,6 +79,12 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       unfreeze,
       loadSecrets,
       injectSecret,
+      replicateEvents,
+      replicateSecrets,
+      setReplicationStatus,
+      setReplicationIterator,
+      setReplicationPaused,
+      getReplicationState,
     },
     { sqlite, tmp, os, fs } as ConnectionDependencies,
     options
