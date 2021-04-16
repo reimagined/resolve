@@ -85,8 +85,8 @@ async function compilePackage(config, batchNumber) {
   }
 }
 
-async function main() {
-  const registry = getCompileConfigs().map((entry) => ({
+async function main({ name: packageName = null }) {
+  const registry = getCompileConfigs(packageName).map((entry) => ({
     ...entry,
     status: 'waiting',
   }))

@@ -22,12 +22,12 @@ const makeBuildRegistry = (topology) =>
     }))
     .sort((a, b) => a.dependencies.length - b.dependencies.length)
 
-const getRepoTopology = () => {
+const getTopology = (filter) => {
   const workspaces = JSON.parse(
     execSync('yarn workspaces --silent info', { stdio: 'pipe' }).toString()
   )
 
-  return Object.keys(workspaces)
+  const topology = Object.keys(workspaces)
     .filter(workspaceFilter.bind(null, workspaces))
     .reduce((topology, name) => {
       const { workspaceDependencies: dependencies, location } = workspaces[name]
@@ -44,8 +44,26 @@ const getRepoTopology = () => {
       })
       return topology
     }, new DepGraph())
+
+  if (filter != null) {
+    const singleNodeTopology = new DepGraph()
+    const copyNode = (name) => {
+      if (!singleNodeTopology.hasNode(name)) {
+        singleNodeTopology.addNode(name, topology.getNodeData(name))
+      }
+      topology.directDependenciesOf(name).map((dependency) => {
+        copyNode(dependency)
+        singleNodeTopology.addDependency(name, dependency)
+      })
+    }
+    copyNode(filter)
+    return singleNodeTopology
+  }
+
+  return topology
 }
-const prepareBuildRegistry = () => makeBuildRegistry(getRepoTopology())
+const prepareBuildRegistry = (filter = null) =>
+  makeBuildRegistry(getTopology(filter))
 
 module.exports = {
   prepareBuildRegistry,

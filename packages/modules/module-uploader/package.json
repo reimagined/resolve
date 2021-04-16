@@ -18,6 +18,7 @@
   "main": "./lib/index.js",
   "module": "./es/index.js",
   "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/module-uploader",
     "test": "echo || exit 0",
     "testw": "echo || exit 0"
   },

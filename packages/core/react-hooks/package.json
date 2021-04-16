@@ -19,7 +19,7 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/react-hooks",
     "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "echo || exit 0"
