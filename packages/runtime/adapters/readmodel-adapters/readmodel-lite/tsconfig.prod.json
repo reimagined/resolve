@@ -4,5 +4,10 @@
   "compilerOptions": {
     "rootDir": "./",
     "composite": true
-  }
+  },
+  "references": [
+    {
+      "path": "../readmodel-base/tsconfig.prod.json"
+    }
+  ]
 }
