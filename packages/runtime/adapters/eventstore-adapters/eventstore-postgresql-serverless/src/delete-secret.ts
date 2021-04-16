@@ -106,7 +106,8 @@ const deleteSecret = async (
               )
               RETURNING *
             ), "delete_secret" AS (
-              DELETE FROM ${databaseNameAsId}.${secretsTableNameAsId} 
+              UPDATE ${databaseNameAsId}.${secretsTableNameAsId} 
+              SET secret = NULL
               WHERE "id"=${escape(selector)}
             ) INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
               "threadId",

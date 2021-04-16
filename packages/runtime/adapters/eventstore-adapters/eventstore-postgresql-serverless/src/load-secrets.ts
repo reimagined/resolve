@@ -24,7 +24,7 @@ const loadSecrets = async (
 
   const sql = `
     SELECT idx, id, secret FROM ${databaseNameAsId}.${secretsTableNameAsId}
-    WHERE idx >= ${+searchIdx}
+    WHERE secret IS NOT NULL AND idx >= ${+searchIdx}
     ORDER BY "idx" ASC
     LIMIT ${+limit} OFFSET ${skipRows}`
 

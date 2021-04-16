@@ -56,7 +56,15 @@ const read = async (
 
   try {
     if (isDisposed) {
-      throw new Error(`Read model "${readModelName}" is disposed`)
+      const error = new Error(`Read model "${readModelName}" is disposed`)
+      await monitoring?.error?.(error, 'readModelResolver', {
+        readModelName,
+        resolverName,
+      })
+      if (subSegment != null) {
+        subSegment.addError(error)
+      }
+      throw error
     }
     const resolver = await interop.acquireResolver(resolverName, resolverArgs, {
       jwt,
@@ -65,16 +73,6 @@ const read = async (
     const result = await wrapConnection(pool, interop, resolver)
     log.verbose(result)
     return result
-  } catch (error) {
-    if (subSegment != null) {
-      subSegment.addError(error)
-    }
-
-    await monitoring?.error?.(error, 'readModelResolver', {
-      readModelName,
-      resolverName,
-    })
-    throw error
   } finally {
     if (subSegment != null) {
       subSegment.close()
@@ -128,7 +126,7 @@ const updateCustomReadModel = async (
   })
 }
 
-const customReadModelMethods = {
+export const customReadModelMethods = {
   build: async (
     pool: ReadModelPool,
     interop: ReadModelInterop | SagaInterop,
@@ -384,20 +382,22 @@ const customReadModelMethods = {
     connection: any,
     readModelName: string,
     parameters: {}
-  ) =>
+  ) => {
+    let isSuccess = false
     await updateCustomReadModel(
       pool,
       readModelName,
       { status: 'deliver', busy: false },
       async (status: any) => {
-        const isSuccess =
-          status.status === 'deliver' || status.status === 'skip'
-        if (isSuccess) {
-          await next(pool, readModelName)
-        }
+        isSuccess = status.status === 'deliver' || status.status === 'skip'
         return isSuccess
       }
-    ),
+    )
+
+    if (isSuccess) {
+      await next(pool, readModelName)
+    }
+  },
 
   pause: async (
     pool: ReadModelPool,
@@ -443,6 +443,7 @@ const customReadModelMethods = {
       applicationName: pool.applicationName,
       eventSubscriber: readModelName,
       status: {
+        eventSubscriber: readModelName,
         status: 'skip',
         busy: false,
         ...entry.status,
@@ -469,6 +470,7 @@ const customReadModelMethods = {
       eventSubscriber: readModelName,
       status: {
         ...parameters.subscriptionOptions,
+        eventSubscriber: readModelName,
         status: 'skip',
         busy: false,
       },
