@@ -19,6 +19,7 @@
   "module": "es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/replicator-postgresql-serverless",
     "test": "node_modules/.bin/jest --config=../../../../../jest.config.js --verbose",
     "testw": "node_modules/.bin/jest --config=../../../../../jest.config.js --watchAll"
   },

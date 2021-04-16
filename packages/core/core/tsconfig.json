@@ -11,15 +11,15 @@
     "resolveJsonModule": true,
     "declaration": true,
     "emitDeclarationOnly": true,
+    "declarationDir": "types",
     "strict": true,
     "jsx": "react",
     "outDir": "lib",
-    "declarationDir": "types",
     "typeRoots": [
       "./typings",
       "./node_modules/@types",
       "../../../node_modules/@types"
     ]
   },
-  "include": ["src", "typings"]
+  "include": ["src", "test"]
 }
