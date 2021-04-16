@@ -25,7 +25,7 @@
   },
   "scripts": {
     "clean": "npm run clean:babel && npm run clean:packages && npx rimraf yarn-error.log && npx oao clean",
-    "clean:babel": "npx oao all \"npx rimraf dist lib es coverage *.db*\" --parallel",
+    "clean:babel": "npx oao all \"npx rimraf dist lib types es coverage *.db* *.tsbuildinfo\" --parallel",
     "clean:packages": "npx rimraf .packages",
     "lint": "eslint . --ext=.js,.jsx,.ts,.tsx",
     "lint:js": "eslint . --ext=.js,.jsx",

@@ -12,7 +12,7 @@ import {
   ReadModelQueryResult,
   Command,
   ReadModelQuery,
-  ViewModelQuery,
+  CommandResult,
 } from '@resolve-js/core'
 import { AggregateTestEnvironment } from './flow/aggregate/make-test-environment'
 import { ReadModelTestEnvironment } from './flow/read-model/make-test-environment'
@@ -121,11 +121,13 @@ export type ScheduledCommand = {
   command: Command
 }
 
+export type ExecutedSideEffect = [string, ...any[]]
+
 export type SagaTestResult = {
   commands: Array<Command>
   scheduledCommands: Array<ScheduledCommand>
-  sideEffects: Array<[string, ...any[]]>
-  queries: Array<ReadModelQuery | ViewModelQuery>
+  sideEffects: Array<ExecutedSideEffect>
+  queries: Array<ReadModelQuery>
   // FIXME: deprecated
   scheduleCommands: any[]
 }
@@ -136,3 +138,8 @@ export type SagaContext = {
   encryption?: EventHandlerEncryptionFactory
   environment: SagaTestEnvironment
 } & GivenEventsContext
+
+export type MockedCommandImplementation = (command: Command) => CommandResult
+export type MockedQueryImplementation = (
+  query: ReadModelQuery
+) => ReadModelQueryResult

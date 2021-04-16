@@ -1,7 +1,7 @@
 import isEqual from 'lodash.isequal'
-import { SagaContext } from '../../types'
+import { ExecutedSideEffect, SagaContext } from '../../types'
 import { makeAssertions, SagaAssertionsNode } from './make-assertions'
-import { stringifySideEffectInvocation } from '../../utils/format'
+import { stringifyShouldExecuteSideEffectFailure } from '../../utils/format'
 
 export const shouldExecuteSideEffect = (
   context: SagaContext,
@@ -21,7 +21,7 @@ export const shouldExecuteSideEffect = (
       )
     }
 
-    const expected = [name, ...args]
+    const expected: ExecutedSideEffect = [name, ...args]
 
     const index = result
       ? result.sideEffects.findIndex((executed) => isEqual(executed, expected))
@@ -32,9 +32,7 @@ export const shouldExecuteSideEffect = (
     }
     return reject(
       new Error(
-        `shouldExecuteSideEffect assertion failed:\n${stringifySideEffectInvocation(
-          expected
-        )}`
+        stringifyShouldExecuteSideEffectFailure(expected, result.sideEffects)
       )
     )
   })
