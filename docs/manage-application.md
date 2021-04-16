@@ -1,6 +1,7 @@
 ---
 id: manage-application
 title: Manage a ReSolve Application
+description: Use the module-admin CLI tool to manage a reSolve application's sagas and read models.
 ---
 
 Use the [module-admin](https://github.com/reimagined/resolve/tree/master/packages/modules/module-admin/README.md) CLI tool to manage a reSolve application's sagas and read models. It includes the following functionality:

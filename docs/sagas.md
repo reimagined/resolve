@@ -1,6 +1,7 @@
 ---
 id: sagas
 title: Sagas
+description: A saga describes a long running process as a sequence of events.
 ---
 
 A saga describes a long running process as a sequence of events.
