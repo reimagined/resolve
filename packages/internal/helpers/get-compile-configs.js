@@ -8,10 +8,8 @@ const externalDependencies = ['resolve-cloud-common']
 const isInternalDependency = (name) =>
   name.startsWith('@resolve-js/') && !externalDependencies.includes(name)
 
-const getCompileConfigs = (filter = null) => {
-  const registry = prepareBuildRegistry(filter)
-
-  registry.map((entry) => {
+const getCompileConfigs = (filter = null) =>
+  prepareBuildRegistry(filter).map((entry) => {
     const location = path.resolve(
       getResolveDir(),
       entry.location,
@@ -84,9 +82,7 @@ const getCompileConfigs = (filter = null) => {
     }
 
     entry.config = config
+    return entry
   })
-
-  return registry
-}
 
 module.exports = { getCompileConfigs }

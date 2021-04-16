@@ -1,6 +1,5 @@
 const { exec: execCallback } = require('child_process')
 
-const tscPath = require.resolve('typescript/bin/tsc')
 const configFile = 'tsconfig.prod.json'
 
 const exec = (cmd, opts = {}) =>

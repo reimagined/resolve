@@ -41,6 +41,7 @@ const getTopology = (filter) => {
           topology.addNode(dependency)
         }
         topology.addDependency(name, dependency)
+        return dependency
       })
       return topology
     }, new DepGraph())
@@ -54,6 +55,7 @@ const getTopology = (filter) => {
       topology.directDependenciesOf(name).map((dependency) => {
         copyNode(dependency)
         singleNodeTopology.addDependency(name, dependency)
+        return dependency
       })
     }
     copyNode(filter)

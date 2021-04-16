@@ -108,6 +108,7 @@ async function main({ name: packageName = null }) {
             node.dependencies = node.dependencies.filter(
               (dependency) => dependency !== entry.name
             )
+            return node
           })
           return executeBatch(number + 1)
         })
