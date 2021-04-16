@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "exclude": ["test"],
   "compilerOptions": {
-    "rootDir": "./",
+    "rootDir": "./src",
     "composite": true
   },
   "references": [
