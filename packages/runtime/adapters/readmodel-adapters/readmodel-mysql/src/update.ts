@@ -19,7 +19,7 @@ const update: CurrentStoreApi['update'] = async (
     searchToWhereExpression,
     updateToSetExpression,
     makeNestedPath,
-    splitNestedPath
+    splitNestedPath,
   } = pool
 
   const isUpsert = options != null ? !!options.upsert : false
@@ -33,7 +33,11 @@ const update: CurrentStoreApi['update'] = async (
     )
 
     if (foundDocumentsCount === 0) {
-      const document = buildUpsertDocument(searchExpression, updateExpression, splitNestedPath)
+      const document = buildUpsertDocument(
+        searchExpression,
+        updateExpression,
+        splitNestedPath
+      )
       await insert(pool, readModelName, tableName, document)
       return
     }

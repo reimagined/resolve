@@ -80,15 +80,19 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
       unset: descriptor['$unset'] !== empty,
       set: descriptor['$set'] !== empty,
       inc: descriptor['$inc'] !== empty,
-      child: descriptor.children.size > 0
+      child: descriptor.children.size > 0,
     }
 
-    if (Object.values(flags).reduce((acc, flag) => ((+flag) + acc), 0) !== 1) {
-      errors.push(new Error([
-        `Updating set for key "${descriptor.key}" came into conflict: `,
-        `either key includes "$set", "$unset", "$inc" simultaneously, `,
-        `either key has children update nodes`
-      ].join('')))
+    if (Object.values(flags).reduce((acc, flag) => +flag + acc, 0) !== 1) {
+      errors.push(
+        new Error(
+          [
+            `Updating set for key "${descriptor.key}" came into conflict: `,
+            `either key includes "$set", "$unset", "$inc" simultaneously, `,
+            `either key has children update nodes`,
+          ].join('')
+        )
+      )
     }
 
     switch (true) {
@@ -127,8 +131,8 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
       operationName !== empty && operationName != null
         ? descriptor[operationName]
         : empty
-    
-    if(fieldValue === empty) {
+
+    if (fieldValue === empty) {
       errors.push(new Error(`Empty field value at ${descriptor.key}`))
     }
 
@@ -180,11 +184,14 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
       } else if (baseOperation.operationName === '$inc') {
         const inlineTableName = escapeId(`inline-table-${inlineTableNameIdx++}`)
         const fieldValue = baseOperation.fieldValue
-        const fieldValueType = escapeStr(fieldValue != null ? (
-          fieldValue.constructor === String ? 'string' :
-          fieldValue.constructor === Number ? 'number' 
-          : 'unknown'
-        ) : 'unknown'
+        const fieldValueType = escapeStr(
+          fieldValue != null
+            ? fieldValue.constructor === String
+              ? 'string'
+              : fieldValue.constructor === Number
+              ? 'number'
+              : 'unknown'
+            : 'unknown'
         )
 
         updateExprArray.push(
@@ -197,7 +204,7 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
             CAST(${inlineTableName}."val" #>> '{}' AS DECIMAL(48, 16)) +
             CAST(${+(fieldValue as number)} AS DECIMAL(48, 16))
           )
-          ELSE to_jsonb(jsonb_typeof((SELECT 'MalformedIncOperataion')::jsonb))
+          ELSE to_jsonb(jsonb_typeof((SELECT 'MalformedIncOperation')::jsonb))
           END FROM (
             SELECT ${escapeId(baseName)} AS "val"
           ) ${inlineTableName})
@@ -215,42 +222,52 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
         if (operationName === '$unset') {
           updateExprArray.push(
             `(SELECT CASE 
-            WHEN jsonb_typeof(${inlineTableName}."val" #> '${makeNestedPath(nestedPath)}') IS NOT NULL THEN 
+            WHEN jsonb_typeof(${inlineTableName}."val" #> '${makeNestedPath(
+              nestedPath
+            )}') IS NOT NULL THEN 
             ${inlineTableName}."val" #- '${makeNestedPath(nestedPath)}'
-            ELSE to_jsonb(jsonb_typeof((SELECT 'MalformedUnsetOperataion')::jsonb))
+            ELSE to_jsonb(jsonb_typeof((SELECT 'MalformedUnsetOperation')::jsonb))
             END FROM (
               SELECT ${updateExpr} AS "val"
             ) ${inlineTableName})
             `
           )
         } else if (operationName === '$set') {
-          const baseNestedPath = makeNestedPath(nestedPath.slice(0,-1))
-          const lastNestedPathElementType = escapeStr(nestedPath[nestedPath.length-1] != null ?
-            (!isNaN(+nestedPath[nestedPath.length-1]) ? 'number' : 'string') :
-            'unknown')
+          const baseNestedPath = makeNestedPath(nestedPath.slice(0, -1))
+          const lastNestedPathElementType = escapeStr(
+            nestedPath[nestedPath.length - 1] != null
+              ? !isNaN(+nestedPath[nestedPath.length - 1])
+                ? 'number'
+                : 'string'
+              : 'unknown'
+          )
 
           updateExprArray.push(
             `(SELECT CASE 
             WHEN ((jsonb_typeof(${inlineTableName}."val" #> '${baseNestedPath}') || '-' || ${lastNestedPathElementType} ) = 'object-string' OR
             jsonb_typeof(${inlineTableName}."val" #> '${baseNestedPath}') || '-' || ${lastNestedPathElementType} ) = 'array-number') THEN
-            jsonb_set(${updateExpr}, '${makeNestedPath(nestedPath)}', ${fieldValue != null
-              ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSONB)`
-              : `CAST('null' AS JSONB)`
+            jsonb_set(${updateExpr}, '${makeNestedPath(nestedPath)}', ${
+              fieldValue != null
+                ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSONB)`
+                : `CAST('null' AS JSONB)`
             })
-            ELSE to_jsonb(jsonb_typeof((SELECT 'MalformedSetOperataion')::jsonb))
+            ELSE to_jsonb(jsonb_typeof((SELECT 'MalformedSetOperation')::jsonb))
             END FROM (
               SELECT ${updateExpr} AS "val"
             ) ${inlineTableName})
             `
           )
         } else if (operationName === '$inc') {
-          const fieldValueType = escapeStr(fieldValue != null ? (
-            fieldValue.constructor === String ? 'string' :
-            fieldValue.constructor === Number ? 'number' 
-            : 'unknown'
-          ) : 'unknown'
+          const fieldValueType = escapeStr(
+            fieldValue != null
+              ? fieldValue.constructor === String
+                ? 'string'
+                : fieldValue.constructor === Number
+                ? 'number'
+                : 'unknown'
+              : 'unknown'
           )
-  
+
           updateExprArray.push(
             `(SELECT CASE 
             WHEN (jsonb_typeof(${inlineTableName}."val" #> '${nestedPath}')) || '-' || ${fieldValueType} ) = 'string-string' THEN to_jsonb(
@@ -261,7 +278,7 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
               CAST(${inlineTableName}."val" #>> '${nestedPath}' AS DECIMAL(48, 16)) +
               CAST(${+(fieldValue as number)} AS DECIMAL(48, 16))
             )
-            ELSE to_jsonb(jsonb_typeof((SELECT 'MalformedIncOperataion')::jsonb))
+            ELSE to_jsonb(jsonb_typeof((SELECT 'MalformedIncOperation')::jsonb))
             END FROM (
               SELECT ${updateExpr} AS "val"
             ) ${inlineTableName})
@@ -274,8 +291,10 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
     }
   }
 
-  if(errors.length > 0) {
-    const summaryError = new Error(errors.map(({ message }) => message).join('\n'))
+  if (errors.length > 0) {
+    const summaryError = new Error(
+      errors.map(({ message }) => message).join('\n')
+    )
     summaryError.stack = errors.map(({ stack }) => stack).join('\n')
     throw summaryError
   }

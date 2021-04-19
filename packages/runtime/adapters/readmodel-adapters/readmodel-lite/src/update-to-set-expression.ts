@@ -28,9 +28,13 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
         case '$unset': {
           if (nestedPath.length > 0) {
             updateExprArray.push(`${escapeId(baseName)} = CASE 
-              WHEN json_type(${escapeId(baseName)}, '${makeNestedPath(nestedPath)}') IS NOT NULL
-              THEN json_remove(${escapeId(baseName)}, '${makeNestedPath(nestedPath)}')
-              ELSE json_type((SELECT 'MalformedUnsetOperataion'))
+              WHEN json_type(${escapeId(baseName)}, '${makeNestedPath(
+              nestedPath
+            )}') IS NOT NULL
+              THEN json_remove(${escapeId(baseName)}, '${makeNestedPath(
+              nestedPath
+            )}')
+              ELSE json_type((SELECT 'MalformedUnsetOperation'))
               END
               `)
           } else {
@@ -46,17 +50,29 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
               : `json(CAST('null' AS BLOB))`
 
           if (nestedPath.length > 0) {
-            const baseNestedPath = makeNestedPath(nestedPath.slice(0,-1))
-              const lastNestedPathElementType = escapeStr(nestedPath[nestedPath.length-1] != null ?
-              (!isNaN(+nestedPath[nestedPath.length-1]) ? 'number' : 'string') :
-              'unknown')
+            const baseNestedPath = makeNestedPath(nestedPath.slice(0, -1))
+            const lastNestedPathElementType = escapeStr(
+              nestedPath[nestedPath.length - 1] != null
+                ? !isNaN(+nestedPath[nestedPath.length - 1])
+                  ? 'number'
+                  : 'string'
+                : 'unknown'
+            )
 
             updateExprArray.push(`${escapeId(baseName)} = CASE
-              WHEN (json_type(${escapeId(baseName)}, '${baseNestedPath}') || '-' || ${lastNestedPathElementType}) = 'object-string' THEN
-              json_set(${escapeId(baseName)}, '${makeNestedPath(nestedPath)}', ${updatingInlinedValue})
-              WHEN (json_type(${escapeId(baseName)}, '${baseNestedPath}') || '-' || ${lastNestedPathElementType}) = 'array-number' THEN
-              json_set(${escapeId(baseName)}, '${makeNestedPath(nestedPath)}', ${updatingInlinedValue})
-              ELSE json_type((SELECT 'MalformedSetOperataion'))
+              WHEN (json_type(${escapeId(
+                baseName
+              )}, '${baseNestedPath}') || '-' || ${lastNestedPathElementType}) = 'object-string' THEN
+              json_set(${escapeId(baseName)}, '${makeNestedPath(
+              nestedPath
+            )}', ${updatingInlinedValue})
+              WHEN (json_type(${escapeId(
+                baseName
+              )}, '${baseNestedPath}') || '-' || ${lastNestedPathElementType}) = 'array-number' THEN
+              json_set(${escapeId(baseName)}, '${makeNestedPath(
+              nestedPath
+            )}', ${updatingInlinedValue})
+              ELSE json_type((SELECT 'MalformedSetOperation'))
               END
               `)
           } else {
@@ -75,8 +91,13 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
                   nestedPath
                 )}')`
               : escapeId(baseName)
-          const sourceInlinedType = nestedPath.length > 0 ? `json_type(${escapeId(baseName)}, '${makeNestedPath(nestedPath)}')` : `json_type(${escapeId(baseName)})`;
-            
+          const sourceInlinedType =
+            nestedPath.length > 0
+              ? `json_type(${escapeId(baseName)}, '${makeNestedPath(
+                  nestedPath
+                )}')`
+              : `json_type(${escapeId(baseName)})`
+
           const targetInlinedPrefix =
             nestedPath.length > 0
               ? `${escapeId(baseName)} = json_set(${escapeId(
@@ -88,12 +109,16 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
 
           const fieldValueNumberLike = +(fieldValue as number)
           const fieldValueStringLike = escapeStr(`${fieldValue}`)
-          const fieldValueType = escapeStr(fieldValue != null ? (
-            fieldValue.constructor === String ? 'string' :
-            fieldValue.constructor === Number ? (
-              Number.isInteger(fieldValueNumberLike) ? 'integer' : 'real'
-            ) : 'unknown'
-          ) : 'unknown'
+          const fieldValueType = escapeStr(
+            fieldValue != null
+              ? fieldValue.constructor === String
+                ? 'string'
+                : fieldValue.constructor === Number
+                ? Number.isInteger(fieldValueNumberLike)
+                  ? 'integer'
+                  : 'real'
+                : 'unknown'
+              : 'unknown'
           )
 
           let updatingInlinedValue = `json(CAST(CASE
@@ -117,7 +142,7 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
               CAST(${sourceInlinedValue} AS REAL) +
               CAST(${fieldValueNumberLike} AS REAL)
             )
-            ELSE json_type((SELECT 'MalformedIncOperataion'))
+            ELSE json_type((SELECT 'MalformedIncOperation'))
           END AS BLOB))`
 
           updateExprArray.push(

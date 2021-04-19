@@ -394,7 +394,9 @@ export type WrapOperationMethod = <
 ) => ReturnType<MethodImpl>
 
 export type PathToolkitLibInstance = {
-  getTokens: (input: string) => { t: Array<string>, simple: number | boolean } | null | undefined
+  getTokens: (
+    input: string
+  ) => { t: Array<string>; simple: number | boolean } | null | undefined
   setOptions: (options: any) => void
 }
 
@@ -402,7 +404,9 @@ export type PathToolkitLib = {
   new (): PathToolkitLibInstance
 }
 
-export type MakeSplitNestedPathMethod = (imports: BaseAdapterImports) => SplitNestedPathMethod
+export type MakeSplitNestedPathMethod = (
+  imports: BaseAdapterImports
+) => SplitNestedPathMethod
 
 export type BaseAdapterImports = {
   PathToolkit: PathToolkitLib

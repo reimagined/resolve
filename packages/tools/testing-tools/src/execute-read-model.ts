@@ -60,7 +60,6 @@ export const executeReadModel = async ({
       { destination: any; status: any }
     >()
 
-
     let currentEvents = [...transformEvents(promise[symbol].events)]
     const eventstoreAdapter = ({
       getSecretsManager: (): any => promise[symbol].secretsManager,

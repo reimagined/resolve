@@ -51,134 +51,131 @@ describe.each([
       databaseFile: ':memory:',
     },
   ],
-])(
-  'Read-model generic adapter API %s',
-  (name, factory, options) => {
-    if (
-      !Object.values(options).reduce(
-        (acc, value) => acc && value != null && value.length > 0,
-        true
-      )
-    ) {
-      console.log(
-        `Skipping ${name} adapter due options absence, provided config: ${JSON.stringify(
-          options
-        )}`
-      )
-      return
-    }
-
-    let adapter: ReturnType<typeof factory> = null! as any
-    beforeEach(async () => {
-      adapter = (factory as any)(options as any) as ReturnType<typeof factory>
-    })
-    afterEach(async () => {
-      adapter = null
-    })
-
-    test('Update set nested fields', async () => {
-      expect(
-        await givenEvents([])
-          .readModel({
-            projection: {
-              Init: async (store) => {
-                await store.defineTable('Table', {
-                  indexes: { id: 'string' },
-                  fields: ['items'],
-                })
-
-                await store.defineTable('Results', {
-                  indexes: { id: 'number' },
-                  fields: ['value'],
-                })
-
-                const aggregateId = 'aggregateId'
-                const itemId = 'itemId'
-                const itemText = 'itemText'
-                await store.insert('Table', {
-                  id: aggregateId,
-                  items: {},
-                })
-
-                await store.insert('Results', {
-                  id: 0,
-                  value: await store.findOne('Table', {}),
-                })
-
-                await store.update(
-                  'Table',
-                  { id: aggregateId },
-                  {
-                    $set: { [`items.${itemId}.itemText`]: itemText },
-                  }
-                )
-
-                await store.insert('Results', {
-                  id: 1,
-                  value: await store.findOne('Table', {}),
-                })
-
-                await store.update(
-                  'Table',
-                  { id: aggregateId },
-                  {
-                    $set: { items: {} },
-                  }
-                )
-
-                await store.insert('Results', {
-                  id: 2,
-                  value: await store.findOne('Table', {}),
-                })
-
-                await store.update(
-                  'Table',
-                  { id: aggregateId },
-                  {
-                    $set: { [`items.${itemId}`]: { itemText } },
-                  }
-                )
-
-                await store.insert('Results', {
-                  id: 3,
-                  value: await store.findOne('Table', {}),
-                })
-
-                await store.update(
-                  'Table',
-                  { id: aggregateId },
-                  {
-                    $set: { [`items.${itemId}.otherField`]: null },
-                  }
-                )
-
-                await store.insert('Results', {
-                  id: 4,
-                  value: await store.findOne('Table', {}),
-                })
-              }
-            },
-            resolvers: {
-              all: async (store) => {
-                return (
-                  await store.find('Results', {}, { value: 1 }, { id: 1 })
-                ).map(({ value }) => value)
-              },
-            },
-            adapter,
-            name,
-          })
-          .all()
-      ).toEqual([
-        { id: 'aggregateId', items: {} },
-        { id: 'aggregateId', items: { itemId: { itemText: 'itemText' } } },
-        { id: 'aggregateId', items: {} },
-        { id: 'aggregateId', items: { itemId: { itemText: 'itemText' } } },
-        {
-          id: 'aggregateId',
-          items: { itemId: { itemText: 'itemText', otherField: null },  },
-        },
-      ])
-    })
+])('Read-model generic adapter API %s', (name, factory, options) => {
+  if (
+    !Object.values(options).reduce(
+      (acc, value) => acc && value != null && value.length > 0,
+      true
+    )
+  ) {
+    console.log(
+      `Skipping ${name} adapter due options absence, provided config: ${JSON.stringify(
+        options
+      )}`
+    )
+    return
   }
-)
+
+  let adapter: ReturnType<typeof factory> = null! as any
+  beforeEach(async () => {
+    adapter = (factory as any)(options as any) as ReturnType<typeof factory>
+  })
+  afterEach(async () => {
+    adapter = null
+  })
+
+  test('Update set nested fields', async () => {
+    expect(
+      await givenEvents([])
+        .readModel({
+          projection: {
+            Init: async (store) => {
+              await store.defineTable('Table', {
+                indexes: { id: 'string' },
+                fields: ['items'],
+              })
+
+              await store.defineTable('Results', {
+                indexes: { id: 'number' },
+                fields: ['value'],
+              })
+
+              const aggregateId = 'aggregateId'
+              const itemId = 'itemId'
+              const itemText = 'itemText'
+              await store.insert('Table', {
+                id: aggregateId,
+                items: {},
+              })
+
+              await store.insert('Results', {
+                id: 0,
+                value: await store.findOne('Table', {}),
+              })
+
+              await store.update(
+                'Table',
+                { id: aggregateId },
+                {
+                  $set: { [`items.${itemId}.itemText`]: itemText },
+                }
+              )
+
+              await store.insert('Results', {
+                id: 1,
+                value: await store.findOne('Table', {}),
+              })
+
+              await store.update(
+                'Table',
+                { id: aggregateId },
+                {
+                  $set: { items: {} },
+                }
+              )
+
+              await store.insert('Results', {
+                id: 2,
+                value: await store.findOne('Table', {}),
+              })
+
+              await store.update(
+                'Table',
+                { id: aggregateId },
+                {
+                  $set: { [`items.${itemId}`]: { itemText } },
+                }
+              )
+
+              await store.insert('Results', {
+                id: 3,
+                value: await store.findOne('Table', {}),
+              })
+
+              await store.update(
+                'Table',
+                { id: aggregateId },
+                {
+                  $set: { [`items.${itemId}.otherField`]: null },
+                }
+              )
+
+              await store.insert('Results', {
+                id: 4,
+                value: await store.findOne('Table', {}),
+              })
+            },
+          },
+          resolvers: {
+            all: async (store) => {
+              return (
+                await store.find('Results', {}, { value: 1 }, { id: 1 })
+              ).map(({ value }) => value)
+            },
+          },
+          adapter,
+          name,
+        })
+        .all()
+    ).toEqual([
+      { id: 'aggregateId', items: {} },
+      { id: 'aggregateId', items: { itemId: { itemText: 'itemText' } } },
+      { id: 'aggregateId', items: {} },
+      { id: 'aggregateId', items: { itemId: { itemText: 'itemText' } } },
+      {
+        id: 'aggregateId',
+        items: { itemId: { itemText: 'itemText', otherField: null } },
+      },
+    ])
+  })
+})

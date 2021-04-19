@@ -8,7 +8,7 @@ const count: CurrentStoreApi['count'] = async (
     tablePrefix,
     searchToWhereExpression,
     makeNestedPath,
-    splitNestedPath
+    splitNestedPath,
   },
   readModelName,
   tableName,

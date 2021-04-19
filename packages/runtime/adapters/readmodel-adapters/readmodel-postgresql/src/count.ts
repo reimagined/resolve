@@ -9,7 +9,7 @@ const count: CurrentStoreApi['count'] = async (
     searchToWhereExpression,
     makeNestedPath,
     schemaName,
-    splitNestedPath
+    splitNestedPath,
   },
   readModelName,
   tableName,

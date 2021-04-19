@@ -8,7 +8,7 @@ const del: CurrentStoreApi['delete'] = async (
     escapeStr,
     searchToWhereExpression,
     makeNestedPath,
-    splitNestedPath
+    splitNestedPath,
   },
   readModelName,
   tableName,
