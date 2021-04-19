@@ -1,3 +1,5 @@
+/* eslint-disable spellcheck/spell-checker */
+
 import type {
   PassthroughErrorInstance,
   ExternalMethods,
@@ -27,6 +29,7 @@ const buildInit: (
     inputCursor: ReadModelCursor
     readModelLedger: ReadModelLedger
     xaKey: string
+    nt: any
   },
   ...args: Parameters<ExternalMethods['build']>
 ) => ReturnType<ExternalMethods['build']> = async (
@@ -51,7 +54,10 @@ const buildInit: (
     ledgerTableNameAsId,
     trxTableNameAsId,
     xaKey,
+    nt,
   } = pool
+
+  nt.buildKind = 'init'
 
   const {
     transactionId = RDS_TRANSACTION_FAILED_KEY,
@@ -163,6 +169,7 @@ export const buildEvents: (
     inputCursor: ReadModelCursor
     readModelLedger: ReadModelLedger
     xaKey: string
+    nt: any
   },
   ...args: Parameters<ExternalMethods['build']>
 ) => ReturnType<ExternalMethods['build']> = async (
@@ -190,7 +197,10 @@ export const buildEvents: (
     xaKey,
     eventTypes,
     inputCursor,
+    nt,
   } = pool
+
+  nt.buildKind = 'events'
 
   let lastSuccessEvent: ReadModelEvent | null = null
   let lastFailedEvent: ReadModelEvent | null = null
@@ -210,6 +220,8 @@ export const buildEvents: (
         : RDS_TRANSACTION_FAILED_KEY
     )
 
+  const tsEp = Date.now()
+
   let eventsPromise: Promise<Array<ReadModelEvent>> = eventstoreAdapter
     .loadEvents({
       eventTypes,
@@ -217,7 +229,10 @@ export const buildEvents: (
       limit: 100,
       cursor,
     })
-    .then((result) => (result != null ? result.events : []))
+    .then((result) => {
+      nt.pureEventLoadTime += Date.now() - tsEp
+      return result != null ? result.events : []
+    })
 
   let transactionId: string = await transactionIdPromise
   let rootSavePointId: string = generateGuid(transactionId, 'ROOT')
@@ -268,8 +283,9 @@ export const buildEvents: (
     acquireTrxPromise,
   ])
 
-  while (true) {
+  for (nt.eventLoopCount = 0; true; nt.eventLoopCount++) {
     if (events.length === 0) {
+      nt.discardReason = 'zero-events'
       throw new PassthroughError(transactionId)
     }
 
@@ -289,7 +305,7 @@ export const buildEvents: (
       cursor,
       events
     )
-
+    const tsEp = Date.now()
     eventsPromise = eventstoreAdapter
       .loadEvents({
         eventTypes,
@@ -297,7 +313,10 @@ export const buildEvents: (
         limit: 1000,
         cursor: nextCursor,
       })
-      .then((result) => (result != null ? result.events : []))
+      .then((result) => {
+        nt.pureEventLoadTime += Date.now() - tsEp
+        return result != null ? result.events : []
+      })
 
     let appliedEventsCount = 0
     try {
@@ -311,7 +330,15 @@ export const buildEvents: (
               `SAVEPOINT ${savePointId}`,
               transactionId
             )
-            await handler()
+            const tsAh = Date.now()
+            try {
+              nt.insideProjection = true
+              await handler()
+            } finally {
+              nt.insideProjection = false
+            }
+            nt.pureProjectionApplyTime += Date.now() - tsAh
+
             await inlineLedgerExecuteStatement(
               pool,
               `RELEASE SAVEPOINT ${savePointId}`,
@@ -483,7 +510,10 @@ export const buildEvents: (
       ]))
     } else {
       if (isBuildSuccess) {
+        nt.discardReason = 'invoke-next-round'
         await next()
+      } else {
+        nt.discardReason = 'error-in-read-model'
       }
 
       throw new PassthroughError(await transactionIdPromise)
@@ -498,8 +528,18 @@ const build: ExternalMethods['build'] = async (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis
+  getVacantTimeInMillis,
+  ...args
 ) => {
+  const nt: any = {
+    ...(args as any)[0],
+    receiveTime: Date.now(),
+    name: 'NTPROFILE',
+    pureEventLoadTime: 0,
+    pureProjectionApplyTime: 0,
+    pureLedgerTime: 0,
+  }
+
   const {
     PassthroughError,
     dbClusterOrInstanceArn,
@@ -508,9 +548,31 @@ const build: ExternalMethods['build'] = async (
     escapeId,
     escapeStr,
     rdsDataService,
-    inlineLedgerExecuteStatement,
+    inlineLedgerExecuteStatement: iles,
     generateGuid,
+    monitoring,
   } = basePool
+
+  const now = Date.now()
+
+  monitoring?.time?.('NotificationToBuildStart', nt.sendTime)
+  monitoring?.timeEnd?.('NotificationToBuildStart', now)
+
+  monitoring?.time?.('NotificationToBuildEnd', now)
+
+  const inlineLedgerExecuteStatement: typeof iles = Object.assign(
+    async (...args: any[]): Promise<any> => {
+      const ilTs = Date.now()
+      try {
+        return await (iles as any)(...args)
+      } finally {
+        if (!nt.insideProjection) {
+          nt.pureLedgerTime += Date.now() - ilTs
+        }
+      }
+    },
+    iles
+  )
 
   try {
     basePool.activePassthrough = true
@@ -546,6 +608,7 @@ const build: ExternalMethods['build'] = async (
       Errors: string | null
       Schema: string | null
     }>
+    nt.fetchLedgerTime = Date.now()
 
     const readModelLedger =
       rows.length === 1
@@ -573,6 +636,7 @@ const build: ExternalMethods['build'] = async (
         : null
 
     if (readModelLedger == null || readModelLedger.Errors != null) {
+      nt.discardReason = 'busy-initial-ledger'
       throw new PassthroughError(null)
     }
 
@@ -594,6 +658,7 @@ const build: ExternalMethods['build'] = async (
       readModelLedger,
       eventTypes,
       xaKey,
+      nt,
     }
 
     const buildMethod = cursor == null ? buildInit : buildEvents
@@ -608,6 +673,11 @@ const build: ExternalMethods['build'] = async (
       getVacantTimeInMillis
     )
   } catch (error) {
+    if (nt.discardReason == null) {
+      nt.discardReason = 'error'
+      nt.error = error
+    }
+
     if (!(error instanceof PassthroughError)) {
       throw error
     }
@@ -638,6 +708,31 @@ const build: ExternalMethods['build'] = async (
     }
   } finally {
     basePool.activePassthrough = false
+
+    if (
+      typeof monitoring?.time !== 'function' ||
+      typeof monitoring?.timeEnd !== 'function'
+    ) {
+      // eslint-disable-next-line no-console
+      console.warn('Monitoring is absent')
+      return
+    }
+
+    try {
+      monitoring.timeEnd('NotificationToBuildEnd')
+
+      monitoring.time('EventLoadTime', 0)
+      monitoring.timeEnd('EventLoadTime', nt.pureEventLoadTime)
+
+      monitoring.time('ProjectionApplyTime', 0)
+      monitoring.timeEnd('ProjectionApplyTime', nt.pureProjectionApplyTime)
+
+      monitoring.time('LedgerTime', 0)
+      monitoring.timeEnd('LedgerTime', nt.pureLedgerTime)
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn('Monitoring error:', e)
+    }
   }
 }
 

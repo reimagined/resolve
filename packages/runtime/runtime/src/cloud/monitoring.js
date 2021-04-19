@@ -94,6 +94,13 @@ const monitoringTimeCallback = async (
   name,
   timestamp = Date.now()
 ) => {
+  if (!Number.isFinite(timestamp)) {
+    log.warn(
+      `Timer '${name}' is not started because timestamp must be a finite number`
+    )
+    return
+  }
+
   if (typeof data.timerMap[name] !== 'number') {
     data.timerMap[name] = timestamp
   } else {
@@ -108,6 +115,13 @@ const monitoringTimeEndCallback = async (
   name,
   timestamp = Date.now()
 ) => {
+  if (!Number.isFinite(timestamp)) {
+    log.warn(
+      `Timer '${name}' is not ended because timestamp must be a finite number`
+    )
+    return
+  }
+
   if (typeof data.timerMap[name] === 'number') {
     const duration = timestamp - data.timerMap[name]
 

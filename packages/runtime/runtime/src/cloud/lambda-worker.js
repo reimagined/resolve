@@ -154,10 +154,12 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       )
     }
 
-    resolve.monitoring.publish()
-
     coldStart = false
-    log.debug('reSolve framework was disposed')
+    log.debug('reSolve framework was disposed. publishing metrics')
+
+    await resolve.monitoring.publish()
+
+    log.debug(`metrics published`)
   }
 }
 
