@@ -8,7 +8,8 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
   expression,
   escapeId,
   escapeStr,
-  makeNestedPath
+  makeNestedPath,
+  splitNestedPath
 ) => {
   const updateExprArray: Array<string> = []
 
@@ -21,7 +22,7 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
     >)[operatorName]
     for (let fieldName of Object.keys(extractedExpression)) {
       const fieldValue = extractedExpression[fieldName]
-      const [baseName, ...nestedPath] = fieldName.split('.')
+      const [baseName, ...nestedPath] = splitNestedPath(fieldName)
 
       switch (operatorName) {
         case '$unset': {
@@ -42,7 +43,7 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
           let updatingInlinedValue =
             fieldValue != null
               ? `json(CAST(${escapeStr(JSON.stringify(fieldValue))} AS BLOB))`
-              : null
+              : `json(CAST('null' AS BLOB))`
 
           if (nestedPath.length > 0) {
             const baseNestedPath = makeNestedPath(nestedPath.slice(0,-1))

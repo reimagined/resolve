@@ -13,13 +13,15 @@ const count: CurrentStoreApi['count'] = async (
     tablePrefix,
     searchToWhereExpression,
     makeNestedPath,
+    splitNestedPath,
     schemaName,
   } = pool
   const searchExpr = searchToWhereExpression(
     searchExpression,
     escapeId,
     escapeStr,
-    makeNestedPath
+    makeNestedPath,
+    splitNestedPath
   )
 
   const inlineSearchExpr =

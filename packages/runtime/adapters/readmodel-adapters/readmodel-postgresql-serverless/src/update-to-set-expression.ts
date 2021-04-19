@@ -11,7 +11,8 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
   expression,
   escapeId,
   escapeStr,
-  makeNestedPath
+  makeNestedPath,
+  splitNestedPath
 ) => {
   const updatingFieldsDescriptors = new Set<UpdateFieldDescriptor>()
   const updatingFields = new Map<string, UpdateFieldDescriptor>()
@@ -36,7 +37,7 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
     >)[operatorName]
     for (let fieldName of Object.keys(extractedExpression)) {
       const fieldValue = extractedExpression[fieldName]
-      const [baseName, ...nestedPath] = fieldName.split('.')
+      const [baseName, ...nestedPath] = splitNestedPath(fieldName)
       let updatingFieldLevelMap = updatingFields
       let updatingFieldDescriptor:
         | UpdateFieldDescriptor

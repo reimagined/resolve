@@ -6,6 +6,7 @@ import type {
   AdapterImplementation,
   StoreApi,
   PerformanceTracerLike,
+  SplitNestedPathMethod,
   JsonMap,
   SearchCondition,
   UpdateCondition,
@@ -64,7 +65,8 @@ export type EscapeableMethod = (str: string) => string
 
 export type BuildUpsertDocumentMethod = (
   searchExpression: Parameters<StoreApi<CommonAdapterPool>['update']>[3],
-  updateExpression: Parameters<StoreApi<CommonAdapterPool>['update']>[4]
+  updateExpression: Parameters<StoreApi<CommonAdapterPool>['update']>[4],
+  splitNestedPath: SplitNestedPathMethod
 ) => JsonMap
 
 export type RowLike = JsonMap
@@ -80,14 +82,16 @@ export type SearchToWhereExpressionMethod = (
   expression: SearchCondition,
   escapeId: EscapeableMethod,
   escapeStr: EscapeableMethod,
-  makeNestedPath: MakeNestedPathMethod
+  makeNestedPath: MakeNestedPathMethod,
+  splitNestedPath: SplitNestedPathMethod
 ) => string
 
 export type UpdateToSetExpressionMethod = (
   expression: UpdateCondition,
   escapeId: EscapeableMethod,
   escapeStr: EscapeableMethod,
-  makeNestedPath: MakeNestedPathMethod
+  makeNestedPath: MakeNestedPathMethod,
+  splitNestedPath: SplitNestedPathMethod
 ) => Array<string>
 
 export interface PassthroughErrorInstance extends Error {

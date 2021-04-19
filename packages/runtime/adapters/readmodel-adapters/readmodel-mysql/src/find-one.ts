@@ -8,6 +8,7 @@ const findOne: CurrentStoreApi['findOne'] = async (
     tablePrefix,
     searchToWhereExpression,
     makeNestedPath,
+    splitNestedPath,
     convertBinaryRow,
   },
   readModelName,
@@ -19,7 +20,8 @@ const findOne: CurrentStoreApi['findOne'] = async (
     searchExpression,
     escapeId,
     escapeStr,
-    makeNestedPath
+    makeNestedPath,
+    splitNestedPath
   )
 
   const inlineSearchExpr =

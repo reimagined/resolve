@@ -2,7 +2,8 @@ import type { BuildUpsertDocumentMethod, JsonMap } from './types'
 
 const buildUpsertDocument: BuildUpsertDocumentMethod = (
   searchExpression,
-  updateExpression
+  updateExpression,
+  splitNestedPath
 ) => {
   const searchPart = !(
     '$and' in searchExpression ||
@@ -18,7 +19,7 @@ const buildUpsertDocument: BuildUpsertDocumentMethod = (
   const resultDocument: ReturnType<BuildUpsertDocumentMethod> = {}
 
   for (const key of Object.keys(baseDocument)) {
-    const nestedKeys = key.split('.')
+    const nestedKeys = splitNestedPath(key)
     let currentResultDocument = resultDocument
     for (const [idx, innerKey] of nestedKeys.entries()) {
       if (!currentResultDocument.hasOwnProperty(innerKey)) {
