@@ -13575,6 +13575,11 @@ path-to-regexp@^1.7.0:
   dependencies:
     isarray "0.0.1"
 
+path-toolkit@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/path-toolkit/-/path-toolkit-1.2.1.tgz#31682357dd4e22ae11b604ee080520526d955ce9"
+  integrity sha512-2CBe9Iq7keR+iY9uerXqGDJiblF/mn65NaKqwhCf/gs7RCwitVjtvEvo7qDOC3jr4KOwfyfqDqGOpgY0DHyQ0A==
+
 path-type@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-1.1.0.tgz#59c44f7ee491da704da415da5a4070ba4f8fe441"

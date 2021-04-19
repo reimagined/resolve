@@ -47,9 +47,8 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
           if (nestedPath.length > 0) {
             const baseNestedPath = makeNestedPath(nestedPath.slice(0,-1))
               const lastNestedPathElementType = escapeStr(nestedPath[nestedPath.length-1] != null ?
-              (nestedPath[nestedPath.length-1].constructor === String ? 'string' :
-              nestedPath[nestedPath.length-1].constructor === Number ? 'number' :
-              'unknown') : 'unknown')
+              (!isNaN(+nestedPath[nestedPath.length-1]) ? 'number' : 'string') :
+              'unknown')
 
             updateExprArray.push(`${escapeId(baseName)} = CASE
               WHEN (json_type(${escapeId(baseName)}, '${baseNestedPath}') || '-' || ${lastNestedPathElementType}) = 'object-string' THEN

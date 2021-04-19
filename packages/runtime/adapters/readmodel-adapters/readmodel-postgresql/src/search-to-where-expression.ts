@@ -35,7 +35,8 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
   expression,
   escapeId,
   escapeStr,
-  makeNestedPath
+  makeNestedPath,
+  splitNestedPath
 ) => {
   const searchExprArray: Array<string> = []
   const isDocumentExpr = !(
@@ -46,7 +47,7 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
 
   if (isDocumentExpr) {
     for (let fieldName of Object.keys(expression)) {
-      const [baseName, ...nestedPath] = fieldName.split('.')
+      const [baseName, ...nestedPath] = splitNestedPath(fieldName)
       const resultFieldName =
         nestedPath.length > 0
           ? `${escapeId(baseName)} #> '${makeNestedPath(nestedPath)}'`
@@ -94,7 +95,8 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
           innerExpr,
           escapeId,
           escapeStr,
-          makeNestedPath
+          makeNestedPath,
+          splitNestedPath
         )
         localSearchExprArray.push(whereExpr)
       }
@@ -118,7 +120,8 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
         >)[operatorName],
         escapeId,
         escapeStr,
-        makeNestedPath
+        makeNestedPath,
+        splitNestedPath
       )
 
       searchExprArray.push(`NOT (${whereExpr})`)
