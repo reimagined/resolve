@@ -9,8 +9,8 @@ export const getSecretsManager = (): SecretsManager => {
     setSecret: async (id: string, secret: string): Promise<void> => {
       secrets.set(id, secret)
     },
-    deleteSecret: async (id: string): Promise<void> => {
-      secrets.delete(id)
+    deleteSecret: async (id: string): Promise<boolean> => {
+      return secrets.delete(id)
     },
   }
 }

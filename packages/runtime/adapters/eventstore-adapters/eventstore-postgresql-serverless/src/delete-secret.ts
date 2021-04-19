@@ -11,7 +11,7 @@ import { LONG_NUMBER_SQL_TYPE, RESERVED_EVENT_SIZE } from './constants'
 const deleteSecret = async (
   pool: AdapterPool,
   selector: string
-): Promise<void> => {
+): Promise<boolean> => {
   const log = getLog('secretsManager:deleteSecret')
 
   log.debug(`removing secret from the database`)
@@ -70,7 +70,7 @@ const deleteSecret = async (
         // logging of this sql query can lead to security issues
 
         // prettier-ignore
-        await executeStatement(
+        const rows = await executeStatement(
           `WITH "freeze_check" AS (
               SELECT 0 AS "freeze_zero" WHERE (
                 (SELECT 1 AS "EventStoreIsFrozen")
@@ -108,7 +108,8 @@ const deleteSecret = async (
             ), "delete_secret" AS (
               UPDATE ${databaseNameAsId}.${secretsTableNameAsId} 
               SET secret = NULL
-              WHERE "id"=${escape(selector)}
+              WHERE "id"=${escape(selector)} AND "secret" IS NOT NULL
+              RETURNING "id"
             ) INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
               "threadId",
               "threadCounter",
@@ -118,7 +119,7 @@ const deleteSecret = async (
               "type",
               "payload",
               "eventSize"
-            ) VALUES (
+            ) SELECT
               (SELECT "threadId" FROM "vector_id" LIMIT 1) +
               (SELECT "freeze_zero" FROM "freeze_check" LIMIT 1),
               (SELECT "threadCounter" FROM "vector_id" LIMIT 1),
@@ -128,9 +129,10 @@ const deleteSecret = async (
               ),
               ${serializedEvent},
               ${byteLength}
-            )`
+            WHERE (SELECT COUNT(*) FROM "delete_secret") = 1
+            RETURNING "threadId", "threadCounter"`
         )
-        break
+        return rows.length === 1
       } catch (error) {
         if (isTimeoutError(error)) {
           while (true) {
