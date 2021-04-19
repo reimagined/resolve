@@ -66,7 +66,8 @@ const buildExecutionMetricData = (error, part, meta) => {
 
 const monitoringErrorCallback = async (
   log,
-  data,
+  monitoringData,
+  groupData,
   resolveVersion,
   error,
   part,
@@ -78,7 +79,7 @@ const monitoringErrorCallback = async (
     const metricData = buildExecutionMetricData(error, part, meta)
 
     if (metricData.length > 0) {
-      data.metricData.push(...metricData)
+      monitoringData.metricData.push(...metricData)
     } else {
       log.verbose(`Unknown error part: ${part}`)
     }
@@ -89,7 +90,8 @@ const monitoringErrorCallback = async (
 
 const monitoringTimeCallback = async (
   log,
-  data,
+  monitoringData,
+  groupData,
   resolveVersion,
   name,
   timestamp = Date.now()
@@ -101,8 +103,8 @@ const monitoringTimeCallback = async (
     return
   }
 
-  if (typeof data.timerMap[name] !== 'number') {
-    data.timerMap[name] = timestamp
+  if (typeof groupData.timerMap[name] !== 'number') {
+    groupData.timerMap[name] = timestamp
   } else {
     log.warn(`Timer '${name}' already exists`)
   }
@@ -110,7 +112,8 @@ const monitoringTimeCallback = async (
 
 const monitoringTimeEndCallback = async (
   log,
-  data,
+  monitoringData,
+  groupData,
   resolveVersion,
   name,
   timestamp = Date.now()
@@ -122,14 +125,23 @@ const monitoringTimeEndCallback = async (
     return
   }
 
-  if (typeof data.timerMap[name] === 'number') {
-    const duration = timestamp - data.timerMap[name]
+  if (typeof groupData.timerMap[name] === 'number') {
+    const duration = timestamp - groupData.timerMap[name]
 
-    data.metricData.push(
-      ...buildDurationMetricData(name, resolveVersion, duration)
+    const durationDimensions = [{ Name: 'Label', Value: name }]
+    const now = Date.now()
+
+    monitoringData.metricData = monitoringData.metricData.concat(
+      groupData.metricDimensions.map((d) => ({
+        MetricName: 'Duration',
+        Timestamp: now,
+        Unit: 'Milliseconds',
+        Value: duration,
+        Dimensions: d.concat(durationDimensions),
+      }))
     )
 
-    delete data.timerMap[name]
+    delete groupData.timerMap[name]
   } else {
     log.warn(`Timer '${name}' does not exist`)
   }
@@ -154,40 +166,92 @@ const monitoringPublishCallback = async (log, monitoringData) => {
   }
 }
 
-const createMonitoring = (resolveVersion) => {
-  const log = getLog('monitoring')
-
-  const monitoringData = {
-    timerMap: {},
-    metricData: [],
-  }
-
+const createMonitoringImplementation = (
+  log,
+  monitoringData,
+  groupData,
+  resolveVersion
+) => {
   return {
+    group: (config) => {
+      const groupDimensions = Object.keys(config).reduce((acc, key) => {
+        if (config[key] != null) {
+          acc.push({
+            Name: key,
+            Value: config[key],
+          })
+        }
+
+        return acc
+      }, [])
+
+      const nextGroupData = {
+        timerMap: {},
+        metricDimensions: groupData.metricDimensions.map((d) =>
+          d.concat(groupDimensions)
+        ),
+      }
+
+      return createMonitoringImplementation(
+        log,
+        monitoringData,
+        nextGroupData,
+        resolveVersion
+      )
+    },
     error: monitoringErrorCallback.bind(
       null,
       log,
       monitoringData,
+      groupData,
       resolveVersion
     ),
     time: monitoringTimeCallback.bind(
       null,
       log,
       monitoringData,
+      groupData,
       resolveVersion
     ),
     timeEnd: monitoringTimeEndCallback.bind(
       null,
       log,
       monitoringData,
+      groupData,
       resolveVersion
     ),
-    publish: monitoringPublishCallback.bind(
-      null,
-      log,
-      monitoringData,
-      resolveVersion
-    ),
+    publish: monitoringPublishCallback.bind(null, log, monitoringData),
   }
+}
+
+const createDeploymentDimensions = (deploymentId, resolveVersion) => [
+  [
+    { Name: 'DeploymentId', Value: deploymentId },
+    { Name: 'ResolveVersion', Value: resolveVersion },
+  ],
+  [{ Name: 'ResolveVersion', Value: resolveVersion }],
+  [{ Name: 'DeploymentId', Value: deploymentId }],
+]
+
+const createMonitoring = ({ deploymentId, resolveVersion }) => {
+  const monitoringData = {
+    timerMap: {},
+    metricData: [],
+    // metricDimensions: dimensions,
+  }
+
+  const monitoringGroupData = {
+    timerMap: {},
+    metricDimensions: createDeploymentDimensions(deploymentId, resolveVersion),
+  }
+
+  return createMonitoringImplementation(
+    getLog('monitoring'),
+    monitoringData,
+    monitoringGroupData,
+    // TODO: remove it
+    resolveVersion
+  )
 }
 
 export default createMonitoring
