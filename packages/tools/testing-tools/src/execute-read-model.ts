@@ -60,10 +60,16 @@ export const executeReadModel = async ({
       { destination: any; status: any }
     >()
 
+
+    let currentEvents = [...transformEvents(promise[symbol].events)]
     const eventstoreAdapter = ({
       getSecretsManager: (): any => promise[symbol].secretsManager,
       loadEvents: async () => ({
-        events: transformEvents(promise[symbol].events),
+        get events() {
+          const resultEvents = currentEvents
+          currentEvents = []
+          return resultEvents
+        },
         get cursor() {
           throw new Error(
             'Cursor should not be accessed from @resolve-js/testing-tools'
