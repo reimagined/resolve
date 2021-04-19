@@ -33,6 +33,7 @@
     "@babel/register": "7.9.0",
     "@babel/runtime": "7.9.6",
     "@purtuga/esm-webpack-plugin": "^1.1.1",
+    "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
     "@resolve-js/debug-levels": "0.29.0",
     "@resolve-js/runtime": "0.29.0",
     "address": "^1.1.0",
@@ -52,7 +53,7 @@
     "testcafe": "^1.9.1",
     "testcafe-browser-tools": "^2.0.10",
     "uuid": "8.3.1",
-    "webpack": "^4.42.0",
+    "webpack": "^4.43.0",
     "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {

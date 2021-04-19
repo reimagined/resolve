@@ -1,5 +1,7 @@
 import path from 'path'
 import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin'
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
+import { HotModuleReplacementPlugin } from 'webpack'
 
 import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
 import getModulesDirs from './get_modules_dirs'
@@ -71,6 +73,7 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
             loader: require.resolve('babel-loader'),
             options: {
               cacheDirectory: true,
+              plugins: ['react-refresh/babel'],
             },
           },
           exclude: [
@@ -115,7 +118,12 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
         libraryTarget: 'var',
         library: '__RESOLVE_ENTRY__',
       },
-      plugins: [...baseClientConfig.plugins, new EsmWebpackPlugin()],
+      plugins: [
+        ...baseClientConfig.plugins,
+        new EsmWebpackPlugin(),
+        new HotModuleReplacementPlugin(),
+        new ReactRefreshWebpackPlugin(),
+      ],
     },
   ]
 

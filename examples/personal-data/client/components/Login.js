@@ -58,7 +58,7 @@ const RegistrationForm = ({ user }) => {
     <React.Fragment>
       <Form method="post" action="/api/register">
         <FormGroup row>
-          <Col>{user ? <h4>Profile update</h4> : <h4>Registration</h4>}</Col>
+          <Col>{user ? <h4>Profile update</h4> : <h4>RRR</h4>}</Col>
         </FormGroup>
         <FormGroup row>
           <Col>
