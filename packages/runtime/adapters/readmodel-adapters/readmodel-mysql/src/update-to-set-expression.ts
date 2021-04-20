@@ -28,9 +28,16 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
         case '$unset': {
           if (nestedPath.length > 0) {
             updateExprArray.push(
-              `${escapeId(baseName)} = JSON_REMOVE(${escapeId(
+              `${escapeId(baseName)} = CASE 
+              WHEN JSON_TYPE(JSON_EXTRACT(${escapeId(
                 baseName
-              )}, '${makeNestedPath(nestedPath)}') `
+              )}, '${makeNestedPath(nestedPath)}')) IS NOT NULL
+              THEN JSON_REMOVE(${escapeId(baseName)}, '${makeNestedPath(
+                nestedPath
+              )}')
+              ELSE JSON_TYPE((SELECT 'MalformedUnsetOperation' FROM information_schema.tables LIMIT 1))
+              END
+              `
             )
           } else {
             updateExprArray.push(`${escapeId(baseName)} = NULL `)
@@ -42,14 +49,34 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
           let updatingInlinedValue =
             fieldValue != null
               ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSON)`
-              : null
+              : `CAST('null' AS JSON)`
 
           if (nestedPath.length > 0) {
-            updateExprArray.push(
-              `${escapeId(baseName)} = JSON_SET(${escapeId(
-                baseName
-              )}, '${makeNestedPath(nestedPath)}', ${updatingInlinedValue}) `
+            const baseNestedPath = makeNestedPath(nestedPath.slice(0, -1))
+            const lastNestedPathElementType = escapeStr(
+              nestedPath[nestedPath.length - 1] != null
+                ? !isNaN(+nestedPath[nestedPath.length - 1])
+                  ? 'number'
+                  : 'string'
+                : 'unknown'
             )
+
+            updateExprArray.push(`${escapeId(baseName)} = CASE
+              WHEN CONCAT(JSON_TYPE(JSON_EXTRACT(${escapeId(
+                baseName
+              )}, '${baseNestedPath}')),  '-', ${lastNestedPathElementType}) = 'object-string' THEN
+              JSON_SET(${escapeId(baseName)}, '${makeNestedPath(
+              nestedPath
+            )}', ${updatingInlinedValue})
+              WHEN CONCAT(JSON_TYPE(JSON_EXTRACT(${escapeId(
+                baseName
+              )}, '${baseNestedPath}')),  '-', ${lastNestedPathElementType}) = 'array-number' THEN
+              JSON_SET(${escapeId(baseName)}, '${makeNestedPath(
+              nestedPath
+            )}', ${updatingInlinedValue})
+              ELSE JSON_TYPE((SELECT 'MalformedUnsetOperation' FROM information_schema.tables LIMIT 1))
+              END
+            `)
           } else {
             updateExprArray.push(
               `${escapeId(baseName)} = ${updatingInlinedValue} `
@@ -66,6 +93,12 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
                   nestedPath
                 )}')`
               : escapeId(baseName)
+          const sourceInlinedType =
+            nestedPath.length > 0
+              ? `JSON_TYPE(JSON_EXTRACT(${escapeId(
+                  baseName
+                )}, '${makeNestedPath(nestedPath)}'))`
+              : `JSON_TYPE(${escapeId(baseName)})`
 
           const targetInlinedPrefix =
             nestedPath.length > 0
@@ -79,28 +112,27 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
           const fieldValueNumberLike = +(fieldValue as number)
           const fieldValueStringLike = escapeStr(`${fieldValue}`)
 
-          let updatingInlinedValue = `CAST(CASE
-            WHEN JSON_TYPE(${sourceInlinedValue}) = 'STRING' THEN JSON_QUOTE(CONCAT(
-              CAST(JSON_UNQUOTE(${sourceInlinedValue}) AS CHAR),
+          const fieldValueType = escapeStr(
+            fieldValue != null
+              ? fieldValue.constructor === String
+                ? 'string'
+                : fieldValue.constructor === Number
+                ? 'number'
+                : 'unknown'
+              : 'unknown'
+          )
+
+          let updatingInlinedValue = `json(CAST(CASE
+            WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'string-string' THEN JSON_QUOTE(
+              CAST(${sourceInlinedValue} AS CHAR) ||
               CAST(${fieldValueStringLike} AS CHAR)
-            ))
-            WHEN JSON_TYPE(${sourceInlinedValue}) = 'INTEGER' THEN (
+            )
+            WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'integer-integer' THEN (
               CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
               CAST(${fieldValueNumberLike} AS DECIMAL(48, 16))
             )
-            WHEN JSON_TYPE(${sourceInlinedValue}) = 'DOUBLE' THEN (
-              CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
-              CAST(${fieldValueNumberLike} AS DECIMAL(48, 16))
-            )
-            WHEN JSON_TYPE(${sourceInlinedValue}) = 'DECIMAL' THEN (
-              CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
-              CAST(${fieldValueNumberLike} AS DECIMAL(48, 16))
-            )
-            ELSE (
-              SELECT 'Invalid JSON type for $inc operation' 
-              FROM information_schema.tables
-            )
-          END AS JSON)`
+            ELSE JSON_TYPE((SELECT 'MalformedIncOperation' FROM information_schema.tables LIMIT 1))
+          END AS BLOB))`
 
           updateExprArray.push(
             `${targetInlinedPrefix} ${updatingInlinedValue} ${targetInlinedPostfix}`
