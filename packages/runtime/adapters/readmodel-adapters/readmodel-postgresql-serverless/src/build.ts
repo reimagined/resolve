@@ -100,6 +100,8 @@ const buildInit: (
     true
   )
 
+  basePool.sharedTransactionId = transactionId
+
   await Promise.all([saveTrxIdPromise, acquireTrxPromise])
 
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
