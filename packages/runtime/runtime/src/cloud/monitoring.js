@@ -1,88 +1,47 @@
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
 import debugLevels from '@resolve-js/debug-levels'
 
-import {
-  buildApiHandlerMetricData,
-  buildSagaProjectionMetricData,
-  buildCommandMetricData,
-  buildReadModelProjectionMetricData,
-  buildReadModelResolverMetricData,
-  buildViewModelProjectionMetricData,
-  buildViewModelResolverMetricData,
-  buildInternalExecutionMetricData,
-  buildDurationMetricData,
-} from './metrics'
-
 const getLog = (name) => debugLevels(`resolve:cloud:scheduler:${name}`)
 
-const buildExecutionMetricData = (error, part, meta) => {
-  switch (part) {
-    case 'command': {
-      return buildCommandMetricData(
-        meta.command.aggregateName,
-        meta.command.type,
-        meta.command.aggregateId,
-        error
-      )
-    }
-    case 'readModelProjection': {
-      return buildReadModelProjectionMetricData(
-        meta.readModelName,
-        meta.eventType,
-        error
-      )
-    }
-    case 'readModelResolver': {
-      return buildReadModelResolverMetricData(
-        meta.readModelName,
-        meta.resolverName,
-        error
-      )
-    }
-    case 'viewModelProjection': {
-      return buildViewModelProjectionMetricData(
-        meta.viewModelName,
-        meta.eventType,
-        error
-      )
-    }
-    case 'viewModelResolver': {
-      return buildViewModelResolverMetricData(meta.viewModelName, error)
-    }
-    case 'apiHandler': {
-      return buildApiHandlerMetricData(meta.path, error)
-    }
-    case 'sagaProjection': {
-      return buildSagaProjectionMetricData(meta.sagaName, meta.eventType, error)
-    }
-    case 'internal': {
-      return buildInternalExecutionMetricData(error)
-    }
-    default: {
-      return []
-    }
-  }
-}
+const createErrorDimensionsList = (error) => [
+  [
+    { Name: 'ErrorName', Value: error.name },
+    { Name: 'ErrorMessage', Value: error.message },
+  ],
+  [{ Name: 'ErrorName', Value: error.name }],
+  [],
+]
 
 const monitoringErrorCallback = async (
   log,
   monitoringData,
   groupData,
-  resolveVersion,
-  error,
-  part,
-  meta
+  error
 ) => {
   try {
-    log.verbose(`Collect error for '${part}' part`)
+    log.verbose(`Collect error`)
 
-    const metricData = buildExecutionMetricData(error, part, meta)
+    const dimensionsList = createErrorDimensionsList(error).reduce(
+      (acc, errorDimensions) =>
+        acc.concat(
+          groupData.errorMetricDimensions.map((groupDimensions) =>
+            groupDimensions.concat(errorDimensions)
+          )
+        ),
+      []
+    )
 
-    if (metricData.length > 0) {
-      monitoringData.metricData.push(...metricData)
-    } else {
-      log.verbose(`Unknown error part: ${part}`)
-    }
+    const now = Date.now()
+
+    monitoringData.metricData = monitoringData.metricData.concat(
+      dimensionsList.map((dimensions) => ({
+        MetricName: 'Errors',
+        Timestamp: now,
+        Unit: 'Count',
+        Value: 1,
+        Dimensions: dimensions,
+      }))
+    )
   } catch (error) {
     log.verbose(`Failed to collect error`, error)
   }
@@ -131,15 +90,17 @@ const monitoringTimeEndCallback = async (
     const durationDimensions = [{ Name: 'Label', Value: name }]
     const now = Date.now()
 
-    monitoringData.metricData = monitoringData.metricData.concat(
-      groupData.metricDimensions.map((d) => ({
-        MetricName: 'Duration',
-        Timestamp: now,
-        Unit: 'Milliseconds',
-        Value: duration,
-        Dimensions: d.concat(durationDimensions),
-      }))
+    const allDimensions = monitoringData.metricDimensions.map((dimensions) =>
+      dimensions.concat(groupData.metricDimensions)
     )
+
+    monitoringData.metricData = allDimensions.map((d) => ({
+      MetricName: 'Duration',
+      Timestamp: now,
+      Unit: 'Milliseconds',
+      Value: duration,
+      Dimensions: d.concat(durationDimensions),
+    }))
 
     delete groupData.timerMap[name]
   } else {
@@ -166,6 +127,18 @@ const monitoringPublishCallback = async (log, monitoringData) => {
   }
 }
 
+const createGroupDimensions = (config) =>
+  Object.keys(config).reduce(
+    (acc, key) =>
+      config[key] != null
+        ? acc.concat({
+            Name: key,
+            Value: config[key],
+          })
+        : acc,
+    []
+  )
+
 const createMonitoringImplementation = (
   log,
   monitoringData,
@@ -174,22 +147,16 @@ const createMonitoringImplementation = (
 ) => {
   return {
     group: (config) => {
-      const groupDimensions = Object.keys(config).reduce((acc, key) => {
-        if (config[key] != null) {
-          acc.push({
-            Name: key,
-            Value: config[key],
-          })
-        }
+      const groupDimensions = createGroupDimensions(config)
 
-        return acc
-      }, [])
+      const nextErrorMetricDimensions = groupData.errorMetricDimensions
+        .map((dimensions) => dimensions.concat(groupDimensions))
+        .concat(groupData.errorMetricDimensions)
 
       const nextGroupData = {
         timerMap: {},
-        metricDimensions: groupData.metricDimensions.map((d) =>
-          d.concat(groupDimensions)
-        ),
+        metricDimensions: groupData.metricDimensions.concat(groupDimensions),
+        errorMetricDimensions: nextErrorMetricDimensions,
       }
 
       return createMonitoringImplementation(
@@ -199,13 +166,7 @@ const createMonitoringImplementation = (
         resolveVersion
       )
     },
-    error: monitoringErrorCallback.bind(
-      null,
-      log,
-      monitoringData,
-      groupData,
-      resolveVersion
-    ),
+    error: monitoringErrorCallback.bind(null, log, monitoringData, groupData),
     time: monitoringTimeCallback.bind(
       null,
       log,
@@ -237,12 +198,23 @@ const createMonitoring = ({ deploymentId, resolveVersion }) => {
   const monitoringData = {
     timerMap: {},
     metricData: [],
-    // metricDimensions: dimensions,
+    metricDimensions: createDeploymentDimensions(deploymentId, resolveVersion),
+    durationMetricDimensions: [
+      [
+        { Name: 'DeploymentId', Value: deploymentId },
+        { Name: 'ResolveVersion', Value: resolveVersion },
+      ],
+      [{ Name: 'ResolveVersion', Value: resolveVersion }],
+      [{ Name: 'DeploymentId', Value: deploymentId }],
+    ],
+    errorMetricDimensions: [[{ Name: 'DeploymentId', Value: deploymentId }]],
   }
 
   const monitoringGroupData = {
     timerMap: {},
-    metricDimensions: createDeploymentDimensions(deploymentId, resolveVersion),
+    metricDimensions: [],
+    durationMetricDimensions: monitoringData.durationMetricDimensions,
+    errorMetricDimensions: monitoringData.errorMetricDimensions,
   }
 
   return createMonitoringImplementation(
