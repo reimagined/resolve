@@ -28,20 +28,13 @@ const initResolve = async (resolve) => {
     domainInterop,
   } = resolve
 
-  const domainMonitoring = {
-    error: monitoring?.error,
-    time: monitoring?.time,
-    timeEnd: monitoring?.timeEnd,
-    performance: performanceTracer,
-  }
-
   const eventstoreAdapter = createEventstoreAdapter()
 
   const readModelConnectors = {}
   for (const name of Object.keys(readModelConnectorsCreators)) {
     readModelConnectors[name] = readModelConnectorsCreators[name]({
       performanceTracer,
-      monitoring: domainMonitoring,
+      monitoring,
     })
   }
 
@@ -61,7 +54,7 @@ const initResolve = async (resolve) => {
   const secretsManager = await eventstoreAdapter.getSecretsManager()
 
   const aggregateRuntime = {
-    monitoring: domainMonitoring,
+    monitoring,
     secretsManager,
     eventstore: eventstoreAdapter,
     hooks: {
@@ -97,11 +90,11 @@ const initResolve = async (resolve) => {
     getVacantTimeInMillis,
     monitoring,
     readModelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
-      monitoring: domainMonitoring,
+      monitoring,
       secretsManager,
     }),
     viewModelsInterop: domainInterop.viewModelDomain.acquireViewModelsInterop({
-      monitoring: domainMonitoring,
+      monitoring,
       eventstore: eventstoreAdapter,
       secretsManager,
     }),

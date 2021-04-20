@@ -111,10 +111,15 @@ const buildViewModel = async (
     } catch (error) {
       subSegment.addError(error)
       log.error(error.message)
-      monitoring?.error?.(error, 'viewModelProjection', {
-        name,
-        eventType: event.type,
-      })
+
+      if (monitoring != null) {
+        const monitoringGroup = monitoring
+          .group({ Part: 'ViewModelProjection' })
+          .group({ ViewModel: name })
+          .group({ EventType: event.type })
+
+        monitoringGroup.error(error)
+      }
       throw error
     } finally {
       subSegment.close()
@@ -220,9 +225,13 @@ const getViewModelInterop = (
     } catch (error) {
       subSegment.addError(error)
 
-      monitoring?.error?.(error, 'viewModelResolver', {
-        viewModelName: name,
-      })
+      if (monitoring != null) {
+        const monitoringGroup = monitoring
+          .group({ Part: 'ViewModelResolver' })
+          .group({ ViewModel: name })
+
+        monitoringGroup.error(error)
+      }
       throw error
     } finally {
       subSegment.close()

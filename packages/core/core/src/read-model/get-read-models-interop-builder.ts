@@ -11,12 +11,20 @@ import { getPerformanceTracerSubsegment } from '../utils'
 import { ReadModelMeta } from '../types/runtime'
 import getLog from '../get-log'
 
-const monitoredError = async (
+const monitoredError = (
   runtime: ReadModelRuntime,
   error: Error,
-  meta: any
+  readModelName: string,
+  resolverName: string
 ) => {
-  runtime.monitoring?.error?.(error, 'readModelResolver', meta)
+  if (runtime.monitoring != null) {
+    const monitoringGroup = runtime.monitoring
+      .group({ Part: 'ReadModelResolver' })
+      .group({ ReadModel: readModelName })
+      .group({ Resolver: resolverName })
+
+    monitoringGroup.error(error)
+  }
   return error
 }
 
@@ -43,16 +51,14 @@ const getReadModelInterop = (
     const invoker = resolverInvokerMap[resolver]
     if (invoker == null) {
       log.error(`unable to find invoker for the resolver`)
-      throw await monitoredError(
+      throw monitoredError(
         runtime,
         createHttpError(
           HttpStatusCodes.UnprocessableEntity,
           `Resolver "${resolver}" does not exist`
         ),
-        {
-          readModelName: name,
-          resolverName: resolver,
-        }
+        name,
+        resolver
       )
     }
 

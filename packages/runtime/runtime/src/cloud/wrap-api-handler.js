@@ -312,11 +312,11 @@ const createResponse = () => {
   return Object.freeze(res)
 }
 
-const wrapApiHandler = (
-  handler,
-  getCustomParameters,
-  onError = async () => void 0
-) => async (lambdaEvent, lambdaContext, lambdaCallback) => {
+const wrapApiHandler = (handler, getCustomParameters, monitoring) => async (
+  lambdaEvent,
+  lambdaContext,
+  lambdaCallback
+) => {
   let result
   let isLambdaEdgeRequest
   let req
@@ -366,7 +366,9 @@ const wrapApiHandler = (
         : `Unknown error ${error}`
 
     if (req != null) {
-      await onError(error, req.path)
+      if (monitoring != null) {
+        monitoring.group({ Path: req.path }).error(error)
+      }
     }
 
     // eslint-disable-next-line no-console

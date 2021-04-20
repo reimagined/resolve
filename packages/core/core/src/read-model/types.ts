@@ -10,7 +10,7 @@ export type ReadModelRuntimeEventHandler = () => Promise<void>
 
 export type ReadModelRuntime = {
   secretsManager: SecretsManager
-  monitoring: Monitoring
+  monitoring?: Monitoring
 }
 
 export type ReadModelInterop = {

@@ -55,9 +55,16 @@ const getInterop = (
     try {
       return await handler()
     } catch (error) {
-      await runtime.monitoring?.error?.(error, 'readModelProjection', {
-        readModelName: saga.name,
-      })
+      if (runtime.monitoring != null) {
+        const monitoringGroup = runtime.monitoring
+          .group({
+            Part: 'SagaProjection',
+          })
+          .group({ Saga: saga.name })
+          .group({ EventType: eventType })
+
+        monitoringGroup.error(error)
+      }
       throw error
     }
   }
