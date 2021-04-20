@@ -4,7 +4,7 @@ const sagasList = async (req, res) => {
   const statuses = []
 
   for (const name of [
-    ...req.resolve.sagas,
+    ...req.resolve.domain.sagas,
     ...req.resolve.domainInterop.sagaDomain.getSagasSchedulersInfo(),
   ].map((saga) => saga.name)) {
     const eventSubscriber = `${name}`
