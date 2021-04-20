@@ -35,6 +35,10 @@ const generateUserEvents = async (name) => {
     aggregateId,
     payload: { name },
   })
+  await api.invokeImportSecretApi({
+    id: aggregateId,
+    secret: aggregateId + Date.now().toString(),
+  })
 
   users[name] = aggregateId
   return aggregateId

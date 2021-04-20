@@ -30,7 +30,7 @@ Use the steps below to add the **module-admin** tool to a reSolve application.
    }
    ```
 
-3. Register **module-admin** as a module the application's **run.js** file:
+3. Register **module-admin** as a module in the application's **run.js** file:
 
 ```js
 import resolveModuleAdmin from '@resolve-js/module-admin'

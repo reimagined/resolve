@@ -3,15 +3,11 @@ import {
   Event,
   SagaEventHandler,
   SagaInitHandler,
+  SideEffectsCollection,
 } from '../types/core'
 import getLog from '../get-log'
 import { wrapSideEffects } from './wrap-side-effects'
-import {
-  SagaRuntime,
-  SideEffectsCollection,
-  SystemSideEffects,
-  SideEffectsContext,
-} from './types'
+import { SagaRuntime, SystemSideEffects, SideEffectsContext } from './types'
 
 const buildSideEffects = (
   runtime: SagaRuntime,

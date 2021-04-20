@@ -1,6 +1,6 @@
 # **@resolve-js/eventstore-postgresql-serverless**
 
-[![npm version](https://badge.fury.io/js/@resolve-js/eventstore-postgresql-serverless.svg)](https://badge.fury.io/js/@resolve-js/eventstore-postgresql-serverless)
+[![npm version](https://badge.fury.io/js/%40resolve-js%2Feventstore-postgresql-serverless.svg)](https://badge.fury.io/js/%40resolve-js%2Feventstore-postgresql-serverless)
 
 This package is a eventstore adapter for storing events using AWS Aurora Serverless PostgreSQL 10.7.
 

@@ -9,6 +9,9 @@ import type {
 } from './types'
 
 const RDS_TRANSACTION_FAILED_KEY = 'RDS_TRANSACTION_FAILED_KEY'
+// Although documentation describes a 1 MB limit, the actual limit is 512 KB
+// https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
+const MAX_RDS_DATA_API_RESPONSE_SIZE = 512000
 
 const serializeError = (error: Error & { code?: number | string }) =>
   error != null
@@ -225,7 +228,7 @@ export const buildEvents: (
   let eventsPromise: Promise<Array<ReadModelEvent>> = eventstoreAdapter
     .loadEvents({
       eventTypes,
-      eventsSizeLimit: 6553600,
+      eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
       limit: 100,
       cursor,
     })
@@ -309,7 +312,7 @@ export const buildEvents: (
     eventsPromise = eventstoreAdapter
       .loadEvents({
         eventTypes,
-        eventsSizeLimit: 65536000,
+        eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
         limit: 1000,
         cursor: nextCursor,
       })

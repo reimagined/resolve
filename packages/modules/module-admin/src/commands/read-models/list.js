@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import columnify from 'columnify'
-import dateFormat from 'dateformat'
+
+import getEventDate from '../../utils/getEventDate'
 
 export const handler = async ({ url }) => {
   const response = await fetch(`${url}/event-broker/read-models-list`)
@@ -22,14 +23,10 @@ export const handler = async ({ url }) => {
       name: eventSubscriber,
       status,
       'success event': successEvent
-        ? `${dateFormat(new Date(successEvent.timestamp), 'm/d/yy HH:MM:ss')} ${
-            successEvent.type
-          }`
+        ? `${getEventDate(successEvent)} ${successEvent.type}`
         : 'N\\A',
       'failed event': failedEvent
-        ? `${dateFormat(new Date(failedEvent.timestamp), 'm/d/yy HH:MM:ss')} ${
-            failedEvent.type
-          }`
+        ? `${getEventDate(failedEvent)} ${failedEvent.type}`
         : 'N\\A',
       'last error': errors ? errors[errors.length - 1].message : 'N\\A',
     })
