@@ -5,7 +5,7 @@ describe('deploy-service-event-handler.test', () => {
 
   beforeEach(() => {
     resolve = {
-      readModels: [],
+      domain: { readModels: [] },
       eventSubscriber: {
         reset: jest.fn(),
         pause: jest.fn(),
@@ -158,7 +158,7 @@ describe('deploy-service-event-handler.test', () => {
         lastEvent: { type: 'TEST2' },
         lastError: null,
       })
-      resolve.readModels.push(
+      resolve.domain.readModels.push(
         { name: 'readModelName1' },
         { name: 'readModelName2' }
       )

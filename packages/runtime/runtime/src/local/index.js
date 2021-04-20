@@ -47,7 +47,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,
       seedClientEnvs: assemblies.seedClientEnvs,
       serverImports: assemblies.serverImports,
-      ...domain,
+      domain,
       ...constants,
       routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
       assemblies,
