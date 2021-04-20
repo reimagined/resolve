@@ -44,7 +44,7 @@ const inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod = Object.
           includeResultMetadata: true,
           ...transactionScope,
           sql,
-        })
+        }).promise()
 
         const { columnMetadata, records } = result
 
@@ -67,20 +67,14 @@ const inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod = Object.
         return rows
       } catch (error) {
         if (pool.activePassthrough) {
-          if (
-            PassthroughError.isPassthroughError(
+          if (PassthroughError.isPassthroughError(error, !!passthroughRuntimeErrors)) {
+            PassthroughError.maybeThrowPassthroughError(
               error,
-              !!passthroughRuntimeErrors
-            )
-          ) {
-            throw new PassthroughError(
               transactionId != null && transactionId.constructor === String
                 ? transactionId
                 : null
             )
           }
-
-          throw error
         } else {
           if (PassthroughError.isPassthroughError(error, false)) {
             await new Promise((resolve) => setTimeout(resolve, 100))

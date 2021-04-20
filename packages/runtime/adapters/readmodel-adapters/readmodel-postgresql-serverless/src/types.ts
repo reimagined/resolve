@@ -1,6 +1,5 @@
 import type {
   ObjectFixedIntersectionToObject,
-  ObjectFunctionLikeKeys,
   CommonAdapterPool,
   CommonAdapterOptions,
   AdapterOperations,
@@ -15,8 +14,7 @@ import type {
   ObjectFixedKeys,
   OmitObject,
   JsonPrimitive,
-  FunctionLike,
-  UnPromise,
+  IfEquals
 } from '@resolve-js/readmodel-base'
 
 import type RDSDataService from 'aws-sdk/clients/rdsdataservice'
@@ -36,6 +34,24 @@ export type InlineLedgerExecuteStatementMethod = ((
 ) => Promise<Array<object>>) & {
   SHARED_TRANSACTION_ID: symbol
 }
+
+export type InlineLedgerExecuteTransactionMethodNames = 'begin' | 'commit' | 'rollback'
+export type InlineLedgerExecuteTransactionMethodParameters<MethodName extends InlineLedgerExecuteTransactionMethodNames> = [
+  pool: AdapterPool,
+  method: MethodName,
+  ...args: IfEquals<MethodName, 'begin', [], IfEquals<MethodName, 'commit', [
+    transactionId: string
+  ], IfEquals<MethodName, 'rollback', [
+    transactionId: string
+  ], never>>>
+]
+export type InlineLedgerExecuteTransactionMethodReturnType<MethodName extends InlineLedgerExecuteTransactionMethodNames> = 
+IfEquals<MethodName, 'begin', string, IfEquals<MethodName, 'commit', null | undefined,
+IfEquals<MethodName, 'rollback', null | undefined, never>>>
+
+export type InlineLedgerExecuteTransactionMethod = <MethodName extends InlineLedgerExecuteTransactionMethodNames>(
+  ...args: InlineLedgerExecuteTransactionMethodParameters<MethodName>
+) => Promise<InlineLedgerExecuteTransactionMethodReturnType<MethodName>>
 
 export type FullJitterMethod = (retries: number) => Promise<void>
 export type MakeNestedPathMethod = (nestedPath: Array<string>) => string
@@ -79,95 +95,34 @@ export type UpdateToSetExpressionMethod = (
 export interface PassthroughErrorInstance extends Error {
   name: string
   lastTransactionId: string | null | undefined
+  isRetryable: boolean
 }
+
+export type PassthougthErrorLike = Error & { code: string | number; stack: string }
 
 export type PassthroughErrorFactory = {
-  new (lastTransactionId: string | null | undefined): PassthroughErrorInstance
+  new (lastTransactionId: string | null | undefined, isRetryable: boolean): PassthroughErrorInstance
 } & {
+  isShortCircuitPassthroughError: (error: PassthougthErrorLike) => boolean,
+  isRetryablePassthroughError: (error: PassthougthErrorLike) => boolean,
+  isRegularFatalPassthroughError: (error: PassthougthErrorLike) => boolean,
+  isRuntimeFatalPassthroughError: (error: PassthougthErrorLike) => boolean,
   isPassthroughError: (
-    error: Error & { code: string | number; stack: string },
+    error: PassthougthErrorLike,
     includeRuntimeErrors: boolean
   ) => boolean
+  maybeThrowPassthroughError: (
+    error: PassthougthErrorLike,
+    transactionId: string | null
+  ) => void
 }
 
-export type IsRdsServiceErrorMethod = (
-  error: Error & { code: string | number; stack: string }
-) => boolean
 export type GenerateGuidMethod = (...args: any) => string
 
 export type DropReadModelMethod = (
   pool: AdapterPool,
   readModelName: string
 ) => Promise<void>
-
-export type HighloadMethodParameters<
-  KS extends ObjectFunctionLikeKeys<
-    InstanceType<LibDependencies['RDSDataService']>
-  >,
-  T extends { [K in KS]: FunctionLike }
-> = T[KS] extends {
-  //eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (params: infer Params, callback: infer Callback): infer Result
-  //eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (callback: infer _Callback): infer _Result
-}
-  ? Params
-  : never
-
-export type HighloadMethodReturnType<
-  KS extends ObjectFunctionLikeKeys<
-    InstanceType<LibDependencies['RDSDataService']>
-  >,
-  T extends { [K in KS]: FunctionLike }
-> = Promise<
-  T[KS] extends {
-    //eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (params: infer Params, callback: infer Callback): infer Result
-    //eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (callback: infer _Callback): infer _Result
-  }
-    ? Result extends { promise: infer F }
-      ? F extends FunctionLike
-        ? UnPromise<ReturnType<F>>
-        : never
-      : never
-    : never
->
-
-export type WrapHighloadMethod = <
-  KS extends ObjectFunctionLikeKeys<
-    InstanceType<LibDependencies['RDSDataService']>
-  >,
-  T extends { [K in KS]: FunctionLike }
->(
-  isHighloadError: IsRdsServiceErrorMethod,
-  obj: T,
-  method: KS,
-  params: HighloadMethodParameters<KS, T>
-) => HighloadMethodReturnType<KS, T>
-
-export type HighloadRdsMethod<
-  KS extends ObjectFunctionLikeKeys<
-    InstanceType<LibDependencies['RDSDataService']>
-  >
-> = (
-  ...args: [
-    HighloadMethodParameters<
-      KS,
-      InstanceType<LibDependencies['RDSDataService']>
-    >
-  ]
-) => HighloadMethodReturnType<
-  KS,
-  InstanceType<LibDependencies['RDSDataService']>
->
-
-export type HighloadRdsDataService = {
-  executeStatement: HighloadRdsMethod<'executeStatement'>
-  beginTransaction: HighloadRdsMethod<'beginTransaction'>
-  commitTransaction: HighloadRdsMethod<'commitTransaction'>
-  rollbackTransaction: HighloadRdsMethod<'rollbackTransaction'>
-}
 
 export type AdapterOptions = CommonAdapterOptions & {
   dbClusterOrInstanceArn: RDSDataService.Arn
@@ -179,11 +134,10 @@ export type AdapterOptions = CommonAdapterOptions & {
 export type MaybeInitMethod = (pool: AdapterPool) => Promise<void>
 
 export type InternalMethods = {
+  inlineLedgerExecuteTransaction: InlineLedgerExecuteTransactionMethod
   inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod
   inlineLedgerForceStop: InlineLedgerForceStopMethod
   buildUpsertDocument: BuildUpsertDocumentMethod
-  isHighloadError: IsRdsServiceErrorMethod
-  isTimeoutError: IsRdsServiceErrorMethod
   convertResultRow: ConvertResultRowMethod
   searchToWhereExpression: SearchToWhereExpressionMethod
   updateToSetExpression: UpdateToSetExpressionMethod
@@ -228,7 +182,7 @@ export type AdapterPool = CommonAdapterPool & {
   hash512: (str: string) => string
   performanceTracer: PerformanceTracerLike
   makeNestedPath: MakeNestedPathMethod
-  rdsDataService: HighloadRdsDataService
+  rdsDataService: InstanceType<LibDependencies["RDSDataService"]>
   dbClusterOrInstanceArn: RDSDataService.Arn
   awsSecretStoreArn: RDSDataService.Arn
   schemaName: RDSDataService.DbName

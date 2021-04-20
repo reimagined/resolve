@@ -33,11 +33,10 @@ import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 
 import PassthroughError from './passthrough-error'
+import inlineLedgerExecuteTransaction from './inline-ledger-execute-transaction'
 import inlineLedgerExecuteStatement from './inline-ledger-execute-statement'
 import inlineLedgerForceStop from './inline-ledger-force-stop'
 import generateGuid from './generate-guid'
-import isHighloadError from './is-highload-error'
-import isTimeoutError from './is-timeout-error'
 import maybeInit from './maybe-init'
 
 import dropReadModel from './drop-read-model'
@@ -72,10 +71,9 @@ const internalMethods: InternalMethods = {
   coercer,
   generateGuid,
   PassthroughError,
+  inlineLedgerExecuteTransaction,
   inlineLedgerExecuteStatement,
   inlineLedgerForceStop,
-  isTimeoutError,
-  isHighloadError,
   dropReadModel,
   maybeInit,
   escapeId,
