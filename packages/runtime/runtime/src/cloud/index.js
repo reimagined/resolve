@@ -32,7 +32,7 @@ const index = async ({ assemblies, constants, domain }) => {
     const resolve = {
       seedClientEnvs: assemblies.seedClientEnvs,
       serverImports: assemblies.serverImports,
-      ...domain,
+      domain,
       ...constants,
       routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
       publisher: {},

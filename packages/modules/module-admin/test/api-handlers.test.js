@@ -7,7 +7,9 @@ describe('@resolve-js/module-admin', () => {
 
     const req = {
       resolve: {
-        readModels: [{ name: 'goodReadModel' }, { name: 'badReadModel' }],
+        domain: {
+          readModels: [{ name: 'goodReadModel' }, { name: 'badReadModel' }],
+        },
         eventSubscriber: {
           status: ({ eventSubscriber }) => {
             if (eventSubscriber === 'badReadModel') {
@@ -51,7 +53,9 @@ describe('@resolve-js/module-admin', () => {
 
     const req = {
       resolve: {
-        sagas: [{ name: 'goodReadModel' }, { name: 'badReadModel' }],
+        domain: {
+          sagas: [{ name: 'goodReadModel' }, { name: 'badReadModel' }],
+        },
         eventSubscriber: {
           status: ({ eventSubscriber }) => {
             if (eventSubscriber === 'badReadModel') {
