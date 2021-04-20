@@ -14,7 +14,7 @@ import type {
   ObjectFixedKeys,
   OmitObject,
   JsonPrimitive,
-  IfEquals
+  IfEquals,
 } from '@resolve-js/readmodel-base'
 
 import type RDSDataService from 'aws-sdk/clients/rdsdataservice'
@@ -35,21 +35,44 @@ export type InlineLedgerExecuteStatementMethod = ((
   SHARED_TRANSACTION_ID: symbol
 }
 
-export type InlineLedgerExecuteTransactionMethodNames = 'begin' | 'commit' | 'rollback'
-export type InlineLedgerExecuteTransactionMethodParameters<MethodName extends InlineLedgerExecuteTransactionMethodNames> = [
+export type InlineLedgerExecuteTransactionMethodNames =
+  | 'begin'
+  | 'commit'
+  | 'rollback'
+export type InlineLedgerExecuteTransactionMethodParameters<
+  MethodName extends InlineLedgerExecuteTransactionMethodNames
+> = [
   pool: AdapterPool,
   method: MethodName,
-  ...args: IfEquals<MethodName, 'begin', [], IfEquals<MethodName, 'commit', [
-    transactionId: string
-  ], IfEquals<MethodName, 'rollback', [
-    transactionId: string
-  ], never>>>
+  ...args: IfEquals<
+    MethodName,
+    'begin',
+    [],
+    IfEquals<
+      MethodName,
+      'commit',
+      [transactionId: string],
+      IfEquals<MethodName, 'rollback', [transactionId: string], never>
+    >
+  >
 ]
-export type InlineLedgerExecuteTransactionMethodReturnType<MethodName extends InlineLedgerExecuteTransactionMethodNames> = 
-IfEquals<MethodName, 'begin', string, IfEquals<MethodName, 'commit', null | undefined,
-IfEquals<MethodName, 'rollback', null | undefined, never>>>
+export type InlineLedgerExecuteTransactionMethodReturnType<
+  MethodName extends InlineLedgerExecuteTransactionMethodNames
+> = IfEquals<
+  MethodName,
+  'begin',
+  string,
+  IfEquals<
+    MethodName,
+    'commit',
+    null | undefined,
+    IfEquals<MethodName, 'rollback', null | undefined, never>
+  >
+>
 
-export type InlineLedgerExecuteTransactionMethod = <MethodName extends InlineLedgerExecuteTransactionMethodNames>(
+export type InlineLedgerExecuteTransactionMethod = <
+  MethodName extends InlineLedgerExecuteTransactionMethodNames
+>(
   ...args: InlineLedgerExecuteTransactionMethodParameters<MethodName>
 ) => Promise<InlineLedgerExecuteTransactionMethodReturnType<MethodName>>
 
@@ -98,15 +121,21 @@ export interface PassthroughErrorInstance extends Error {
   isRetryable: boolean
 }
 
-export type PassthougthErrorLike = Error & { code: string | number; stack: string }
+export type PassthougthErrorLike = Error & {
+  code: string | number
+  stack: string
+}
 
 export type PassthroughErrorFactory = {
-  new (lastTransactionId: string | null | undefined, isRetryable: boolean): PassthroughErrorInstance
+  new (
+    lastTransactionId: string | null | undefined,
+    isRetryable: boolean
+  ): PassthroughErrorInstance
 } & {
-  isShortCircuitPassthroughError: (error: PassthougthErrorLike) => boolean,
-  isRetryablePassthroughError: (error: PassthougthErrorLike) => boolean,
-  isRegularFatalPassthroughError: (error: PassthougthErrorLike) => boolean,
-  isRuntimeFatalPassthroughError: (error: PassthougthErrorLike) => boolean,
+  isShortCircuitPassthroughError: (error: PassthougthErrorLike) => boolean
+  isRetryablePassthroughError: (error: PassthougthErrorLike) => boolean
+  isRegularFatalPassthroughError: (error: PassthougthErrorLike) => boolean
+  isRuntimeFatalPassthroughError: (error: PassthougthErrorLike) => boolean
   isPassthroughError: (
     error: PassthougthErrorLike,
     includeRuntimeErrors: boolean
@@ -182,7 +211,7 @@ export type AdapterPool = CommonAdapterPool & {
   hash512: (str: string) => string
   performanceTracer: PerformanceTracerLike
   makeNestedPath: MakeNestedPathMethod
-  rdsDataService: InstanceType<LibDependencies["RDSDataService"]>
+  rdsDataService: InstanceType<LibDependencies['RDSDataService']>
   dbClusterOrInstanceArn: RDSDataService.Arn
   awsSecretStoreArn: RDSDataService.Arn
   schemaName: RDSDataService.DbName

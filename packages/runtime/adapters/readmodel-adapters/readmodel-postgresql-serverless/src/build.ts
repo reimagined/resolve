@@ -51,7 +51,9 @@ const buildInit: (
     xaKey,
   } = pool
 
-  const transactionId = await inlineLedgerExecuteTransaction(pool, 'begin') ?? RDS_TRANSACTION_FAILED_KEY
+  const transactionId =
+    (await inlineLedgerExecuteTransaction(pool, 'begin')) ??
+    RDS_TRANSACTION_FAILED_KEY
   const rootSavePointId = generateGuid(transactionId, 'ROOT')
 
   const saveTrxIdPromise = inlineLedgerExecuteStatement(
@@ -182,9 +184,10 @@ export const buildEvents: (
   let localContinue = true
   let cursor: ReadModelCursor = inputCursor
 
-  let transactionIdPromise: Promise<string> = inlineLedgerExecuteTransaction(pool, 'begin').then(
-    result => result != null ? result : RDS_TRANSACTION_FAILED_KEY
-  )
+  let transactionIdPromise: Promise<string> = inlineLedgerExecuteTransaction(
+    pool,
+    'begin'
+  ).then((result) => (result != null ? result : RDS_TRANSACTION_FAILED_KEY))
 
   let eventsPromise: Promise<Array<ReadModelEvent>> = eventstoreAdapter
     .loadEvents({
@@ -249,9 +252,10 @@ export const buildEvents: (
       throw new PassthroughError(transactionId, false)
     }
 
-    transactionIdPromise = inlineLedgerExecuteTransaction(pool, 'begin').then(
-      result => result != null ? result : RDS_TRANSACTION_FAILED_KEY
-    )
+    transactionIdPromise = inlineLedgerExecuteTransaction(
+      pool,
+      'begin'
+    ).then((result) => (result != null ? result : RDS_TRANSACTION_FAILED_KEY))
 
     let nextCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(
       cursor,
@@ -577,7 +581,11 @@ const build: ExternalMethods['build'] = async (
 
     if (passthroughError.lastTransactionId != null) {
       try {
-        await inlineLedgerExecuteTransaction(basePool, 'rollback', passthroughError.lastTransactionId)
+        await inlineLedgerExecuteTransaction(
+          basePool,
+          'rollback',
+          passthroughError.lastTransactionId
+        )
       } catch (err) {
         if (
           !(
@@ -595,7 +603,7 @@ const build: ExternalMethods['build'] = async (
       }
     }
 
-    if(passthroughError.isRetryable) {
+    if (passthroughError.isRetryable) {
       await next()
     }
   } finally {
