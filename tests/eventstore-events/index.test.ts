@@ -1,52 +1,19 @@
-import createSqliteAdapter from '@resolve-js/eventstore-lite'
-import createPostgresqlServerlessAdapter from '@resolve-js/eventstore-postgresql-serverless'
-import { Adapter } from '@resolve-js/eventstore-base'
-import { create, destroy } from '@resolve-js/eventstore-postgresql-serverless'
 import {
-  TEST_SERVERLESS,
-  updateAwsConfig,
-  getCloudResourceOptions,
   jestTimeout,
-  cloudResourceOptionsToAdapterConfig,
   makeTestEvent,
+  adapterFactory,
+  adapters,
 } from '../eventstore-test-utils'
 
 jest.setTimeout(jestTimeout())
 
-let createAdapter: (config: any) => Adapter
+describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
+  beforeAll(adapterFactory.create('events_testing'))
+  afterAll(adapterFactory.destroy('events_testing'))
 
-if (TEST_SERVERLESS) {
-  createAdapter = createPostgresqlServerlessAdapter
-} else {
-  createAdapter = createSqliteAdapter
-}
-
-describe('eventstore adapter events', () => {
-  if (TEST_SERVERLESS) updateAwsConfig()
+  const adapter = adapters['events_testing']
 
   const countEvents = 100
-
-  const options = getCloudResourceOptions('events_testing')
-
-  let adapter: Adapter
-  beforeAll(async () => {
-    if (TEST_SERVERLESS) {
-      await create(options)
-      adapter = createAdapter(cloudResourceOptionsToAdapterConfig(options))
-    } else {
-      adapter = createAdapter({})
-    }
-    await adapter.init()
-  })
-
-  afterAll(async () => {
-    await adapter.drop()
-    await adapter.dispose()
-
-    if (TEST_SERVERLESS) {
-      await destroy(options)
-    }
-  })
 
   test('should load 0 events after initialization', async () => {
     const { events } = await adapter.loadEvents({
@@ -128,34 +95,16 @@ describe('eventstore adapter events', () => {
   })
 })
 
-describe('eventstore adapter events filtering', () => {
-  if (TEST_SERVERLESS) updateAwsConfig()
+describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
+  beforeAll(adapterFactory.create('events_filter_testing'))
+  afterAll(adapterFactory.destroy('events_filter_testing'))
+
+  const adapter = adapters['events_filter_testing']
 
   const countEvents = 120
 
-  const options = getCloudResourceOptions('events_filter_testing')
   const eventTypesCount = 4
   const aggregateIdCount = 5
-
-  let adapter: Adapter
-  beforeAll(async () => {
-    if (TEST_SERVERLESS) {
-      await create(options)
-      adapter = createAdapter(cloudResourceOptionsToAdapterConfig(options))
-    } else {
-      adapter = createAdapter({})
-    }
-    await adapter.init()
-  })
-
-  afterAll(async () => {
-    await adapter.drop()
-    await adapter.dispose()
-
-    if (TEST_SERVERLESS) {
-      await destroy(options)
-    }
-  })
 
   test('should save events with different aggregate ids and types', async () => {
     for (let eventIndex = 0; eventIndex < countEvents; eventIndex++) {
