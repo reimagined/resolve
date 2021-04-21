@@ -36,7 +36,7 @@ export type EncryptedBlob = string
 export type SecretsManager = {
   getSecret: (id: string) => Promise<string | null>
   setSecret: (id: string, secret: string) => Promise<void>
-  deleteSecret: (id: string) => Promise<void>
+  deleteSecret: (id: string) => Promise<boolean>
 }
 
 export type Encrypter = (data: PlainData) => EncryptedBlob

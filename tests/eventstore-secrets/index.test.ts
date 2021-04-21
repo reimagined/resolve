@@ -151,12 +151,28 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     expect(emptyResult.secrets).toHaveLength(0)
   })
 
+  test('should not generate delete secret event when deleting secret by non-existing id', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+    const secretId = makeIdFromIndex(countSecrets)
+    const result = await secretManager.deleteSecret(secretId)
+    expect(result).toBe(false)
+
+    const { events } = await adapter.loadEvents({
+      cursor: null,
+      limit: countSecrets,
+      eventTypes: [DELETE_SECRET_EVENT_TYPE],
+    })
+    expect(events).toHaveLength(0)
+  })
+
   const secretToDeleteIndex: number = Math.floor(Math.random() * countSecrets)
 
   test('should delete secret by id, return null for this id and generate delete secret event', async () => {
     const secretManager: SecretsManager = await adapter.getSecretsManager()
     const secretId = makeIdFromIndex(secretToDeleteIndex)
-    await secretManager.deleteSecret(secretId)
+    const result = await secretManager.deleteSecret(secretId)
+    expect(result).toBe(true)
+
     const secret: string | null = await secretManager.getSecret(secretId)
     expect(secret).toBeNull()
 
@@ -167,6 +183,26 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     })
     expect(events).toHaveLength(1)
     expect(events[0].payload.id).toEqual(secretId)
+  })
+
+  test('deleteSecret should return false when asked to delete non-existing or already deleted secret', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+    const secretId = makeIdFromIndex(secretToDeleteIndex)
+    const result = await secretManager.deleteSecret(secretId)
+    expect(result).toBe(false)
+
+    const nonExistingId = makeIdFromIndex(countSecrets)
+    const resultNonExisting = await secretManager.deleteSecret(nonExistingId)
+    expect(resultNonExisting).toBe(false)
+  })
+
+  test('should not generate additional delete secret event if secret has been already deleted', async () => {
+    const { events } = await adapter.loadEvents({
+      cursor: null,
+      limit: countSecrets,
+      eventTypes: [DELETE_SECRET_EVENT_TYPE],
+    })
+    expect(events).toHaveLength(1)
   })
 
   test('should return 1 less number of secrets after the secret was deleted', async () => {
