@@ -525,6 +525,8 @@ module.exports = {
           'compat',
           'dep',
           'uniq',
+          'micromatch',
+          'rimraf',
         ],
         minLength: 3,
       },
