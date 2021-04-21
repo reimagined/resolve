@@ -1,6 +1,6 @@
-import { adapterFactory, adapters } from '../eventstore-test-utils'
+import { adapterFactory, adapters, jestTimeout } from '../eventstore-test-utils'
 
-jest.setTimeout(1000 * 60 * 5)
+jest.setTimeout(jestTimeout())
 
 beforeAll(adapterFactory.create('save_and_load_testing'))
 afterAll(adapterFactory.destroy('save_and_load_testing'))
