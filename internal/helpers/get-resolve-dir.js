@@ -1,5 +1,5 @@
-const path = require('path')
 const minimist = require('minimist')
+const { getRepoRoot } = require('./get-repo-root')
 
 let _resolveDir
 const getResolveDir = () => {
@@ -9,7 +9,7 @@ const getResolveDir = () => {
 
   const { resolveDir } = minimist(process.argv.slice(2))
 
-  _resolveDir = resolveDir || path.join(__dirname, '..', '..', '..')
+  _resolveDir = resolveDir || getRepoRoot()
 
   return _resolveDir
 }

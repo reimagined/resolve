@@ -7,7 +7,7 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
 
   process.env.__RESOLVE_PACKAGES__ = JSON.stringify(resolvePackages)
   process.env.__RESOLVE_EXAMPLES__ = JSON.stringify(resolveExamples)
-  process.env.__RESOLVE_VERSION__ = require('../babel-compile/package').version
+  process.env.__RESOLVE_VERSION__ = require('../babel-compile/package.json').version
 
   let useESModules,
     regenerator,

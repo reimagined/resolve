@@ -5,7 +5,7 @@
   "main": "./index.js",
   "bin": "./bin/index.js",
   "scripts": {
-    "deploy": "node ./bin/index.js",
+    "deploy": "node bin/index.js",
     "test": "echo || exit 0"
   },
   "dependencies": {

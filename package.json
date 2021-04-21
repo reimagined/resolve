@@ -6,14 +6,8 @@
   "license": "MIT",
   "workspaces": {
     "packages": [
-      "packages/core/*",
-      "packages/modules/*",
-      "packages/tools/*",
-      "packages/internal/*",
-      "packages/runtime/*",
-      "packages/runtime/adapters/eventstore-adapters/*",
-      "packages/runtime/adapters/readmodel-adapters/*",
-      "packages/runtime/adapters/replicators/*",
+      "packages/**/*",
+      "internal/*",
       "examples/*",
       "examples/shopping-list-tutorial/*",
       "packages/modules/*",
@@ -42,8 +36,8 @@
     "test:integration": "npx oao all -i \"{examples/**,packages/**,website}\" \"yarn test:integration --color 2>&1\"",
     "tutorial-test:e2e": "npx oao run-script -i \"examples/*\" test:e2e",
     "test:clean-snapshots": "npx oao all -i \"examples/shopping-list-advanced\"  \"yarn test -u --color 2>&1\"",
-    "test:cra": "node packages/internal/cra-test/bin/index.js",
-    "workspace-manager": "node packages/internal/workspace-manager/bin/index.js",
+    "test:cra": "node internal/cra-test/bin/index.js",
+    "workspace-manager": "node internal/workspace-manager/bin/index.js",
     "sla:enable": "yarn workspace-manager add \"examples/shopping-list-advanced/*\"",
     "sla:disable": "yarn workspace-manager rm \"examples/shopping-list-advanced/*\"",
     "validate-lock-file": "node validate-lock-file.js"

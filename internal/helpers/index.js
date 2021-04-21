@@ -1,3 +1,4 @@
+const { getRepoRoot } = require('./get-repo-root')
 const { getBabelConfig } = require('./get-babel-config')
 const { getCompileConfigs } = require('./get-compile-configs')
 const { getLocalRegistryConfig } = require('./get-local-registry-config')
@@ -14,6 +15,7 @@ module.exports = {
   getResolveDir,
   getResolveExamples,
   getResolvePackages,
+  getRepoRoot,
   patchPackageJson,
   safeName,
 }

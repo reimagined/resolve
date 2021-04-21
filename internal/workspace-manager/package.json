@@ -1,15 +1,15 @@
 {
-  "name": "@internal/cra-test",
+  "name": "@internal/workspace-manager",
   "version": "0.29.0",
   "private": true,
   "bin": "./bin/index.js",
   "scripts": {
-    "start": "node ./bin/index.js",
+    "start": "node bin/index.js",
     "test": "echo || exit 0"
   },
   "dependencies": {
+    "@babel/cli": "^7.0.0",
     "@internal/helpers": "0.29.0",
-    "consola": "^2.15.3",
-    "rimraf": "3.0.2"
+    "glob": "7.1.6"
   }
 }

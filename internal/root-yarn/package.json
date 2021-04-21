@@ -4,7 +4,7 @@
   "private": true,
   "bin": "./bin/index.js",
   "scripts": {
-    "start": "node ./bin/index.js",
+    "start": "node bin/index.js",
     "test": "echo || exit 0"
   },
   "dependencies": {

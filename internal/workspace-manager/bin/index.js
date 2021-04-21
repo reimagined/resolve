@@ -2,8 +2,9 @@
 
 const fs = require('fs')
 const path = require('path')
+const { getRepoRoot } = require('@internal/helpers/get-repo-root')
 
-const monorepoDir = path.join(__dirname, '..', '..', '..', '..')
+const monorepoDir = getRepoRoot()
 const packageJsonPath = path.join(monorepoDir, 'package.json')
 
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))

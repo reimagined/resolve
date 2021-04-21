@@ -5,14 +5,14 @@ const os = require('os')
 const { execSync } = require('child_process')
 const rm = require('rimraf')
 const log = require('consola')
-const { getResolveExamples } = require('@internal/helpers')
+const { getResolveExamples, getRepoRoot } = require('@internal/helpers')
 
 const main = async () => {
   log.info(`Preparing for create-resolve-app testing...`)
   const passedParams = process.argv.slice(2).join(' ')
   log.info(`Passed params: ${passedParams}`)
 
-  const rootDir = path.resolve(__dirname, '../../../../')
+  const rootDir = getRepoRoot()
   const tempDir = path.resolve(os.tmpdir(), 'cra-tests')
 
   rm.sync(tempDir)

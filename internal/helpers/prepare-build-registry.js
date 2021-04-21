@@ -2,7 +2,8 @@ const { execSync } = require('child_process')
 const { DepGraph } = require('dependency-graph')
 const { readFileSync } = require('fs')
 const path = require('path')
-const repoRoot = path.resolve(__dirname, '../../..')
+const { getRepoRoot } = require('./get-repo-root')
+const repoRoot = getRepoRoot()
 
 const workspaceFilter = (workspaces, name) => {
   const { location } = workspaces[name]
