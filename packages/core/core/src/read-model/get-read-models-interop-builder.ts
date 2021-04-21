@@ -90,10 +90,15 @@ const getReadModelInterop = (
         if (subSegment != null) {
           subSegment.addError(error)
         }
-        monitoring?.error?.(error, 'readModelResolver', {
-          readModelName: name,
-          resolverName: resolver,
-        })
+
+        if (monitoring) {
+          const monitoringGroup = monitoring
+            .group({ Part: 'ReadModelResolver' })
+            .group({ ReadModel: name })
+            .group({ Resolver: resolver })
+
+          monitoringGroup.error(error)
+        }
         throw error
       } finally {
         if (subSegment != null) {
@@ -119,10 +124,14 @@ const getReadModelInterop = (
     try {
       return await handler()
     } catch (error) {
-      monitoring?.error?.(error, 'readModelProjection', {
-        readModelName: readModel.name,
-        eventType,
-      })
+      if (monitoring != null) {
+        const monitoringGroup = monitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ ReadModel: readModel.name })
+          .group({ EventType: eventType })
+
+        monitoringGroup.error(error)
+      }
       throw error
     }
   }

@@ -372,6 +372,19 @@ const executeCommand = async (
   runtime: AggregateRuntime,
   command: Command
 ): Promise<CommandResult> => {
+  const monitoringGroup =
+    runtime.monitoring != null
+      ? runtime.monitoring
+          .group({ Part: 'Command' })
+          .group({ AggregateName: command.aggregateName })
+          .group({ Type: command.type })
+          .group({ AggregateId: command.aggregateId })
+      : null
+
+  if (monitoringGroup != null) {
+    monitoringGroup.time('Execution')
+  }
+
   const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
 
   const jwt = actualJwt || deprecatedJwt
@@ -482,7 +495,10 @@ const executeCommand = async (
     }
 
     await (async (): Promise<void> => {
-      const subSegment = getPerformanceTracerSubsegment(runtime.monitoring, 'saveEvent')
+      const subSegment = getPerformanceTracerSubsegment(
+        runtime.monitoring,
+        'saveEvent'
+      )
 
       try {
         return await saveEvent(runtime, aggregate, command, processedEvent)
@@ -494,17 +510,15 @@ const executeCommand = async (
       }
     })()
 
+    if (monitoringGroup != null) {
+      monitoringGroup.timeEnd('Execution')
+    }
+
     return processedEvent
   } catch (error) {
     subSegment.addError(error)
 
-    if (runtime.monitoring != null) {
-      const monitoringGroup = runtime.monitoring
-        .group({ Part: 'Command' })
-        .group({ AggregateName: command.aggregateName })
-        .group({ Type: command.type })
-        .group({ AggregateId: command.aggregateId })
-
+    if (monitoringGroup != null) {
       monitoringGroup.error(error)
     }
     throw error

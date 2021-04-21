@@ -57,10 +57,16 @@ const read = async (
   try {
     if (isDisposed) {
       const error = new Error(`Read model "${readModelName}" is disposed`)
-      await monitoring?.error?.(error, 'readModelResolver', {
-        readModelName,
-        resolverName,
-      })
+
+      if (monitoring != null) {
+        const monitoringGroup = monitoring
+          .group({ Part: 'ReadModelResolver' })
+          .group({ ReadModel: readModelName })
+          .group({ Resolver: resolverName })
+
+        monitoringGroup.error(error)
+      }
+
       if (subSegment != null) {
         subSegment.addError(error)
       }
