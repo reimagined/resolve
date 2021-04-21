@@ -1,27 +1,29 @@
 import type {
   PassthroughErrorInstance,
   PassthroughErrorFactory,
-  PassthougthErrorLike,
+  PassthroughErrorLike,
   ExtractNewable,
 } from './types'
 
 const checkFormalError = (
-  error: PassthougthErrorLike,
+  error: PassthroughErrorLike,
   value: string
 ): boolean => error.name === value || error.code === value
-const checkFuzzyError = (error: PassthougthErrorLike, value: RegExp): boolean =>
+const checkFuzzyError = (error: PassthroughErrorLike, value: RegExp): boolean =>
   value.test(error.message) || value.test(error.stack)
 
 const PassthroughError: PassthroughErrorFactory = Object.assign(
   (function (
     this: PassthroughErrorInstance,
     lastTransactionId: string,
-    isRetryable: boolean
+    isRetryable: boolean,
+    isEmptyTransaction: boolean
   ): void {
     Error.call(this)
     this.name = 'PassthroughError'
     this.lastTransactionId = lastTransactionId
     this.isRetryable = isRetryable
+    this.isEmptyTransaction = isEmptyTransaction
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, PassthroughError)
     } else {
@@ -29,7 +31,7 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
     }
   } as Function) as ExtractNewable<PassthroughErrorFactory>,
   {
-    isShortCircuitPassthroughError(error: PassthougthErrorLike): boolean {
+    isShortCircuitPassthroughError(error: PassthroughErrorLike): boolean {
       return (
         error != null &&
         (checkFuzzyError(error, /Request timed out/i) ||
@@ -42,12 +44,18 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
           checkFormalError(error, 'InternalFailure'))
       )
     },
-    isRetryablePassthroughError(error: PassthougthErrorLike): boolean {
+    isEmptyTransactionError(error: PassthroughErrorLike): boolean {
       return (
         error != null &&
         (checkFuzzyError(error, /Transaction .*? Is Not Found/i) ||
           checkFuzzyError(error, /Transaction is expired/i) ||
-          checkFuzzyError(error, /Invalid transaction ID/i) ||
+          checkFuzzyError(error, /Invalid transaction ID/i))
+      )
+    },
+    isRetryablePassthroughError(error: PassthroughErrorLike): boolean {
+      return (
+        error != null &&
+        (PassthroughError.isEmptyTransactionError(error) ||
           checkFuzzyError(error, /deadlock detected/i) ||
           checkFuzzyError(error, /canceling statement due to user request/i) ||
           checkFuzzyError(
@@ -58,10 +66,10 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
           checkFormalError(error, 'StatementTimeoutException'))
       )
     },
-    isRegularFatalPassthroughError(error: PassthougthErrorLike): boolean {
+    isRegularFatalPassthroughError(error: PassthroughErrorLike): boolean {
       return error != null && checkFuzzyError(error, /could not obtain lock/i)
     },
-    isRuntimeFatalPassthroughError(error: PassthougthErrorLike): boolean {
+    isRuntimeFatalPassthroughError(error: PassthroughErrorLike): boolean {
       return (
         error != null &&
         (checkFuzzyError(error, /subquery used as an expression/i) ||
@@ -69,7 +77,7 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
       )
     },
     isPassthroughError(
-      error: PassthougthErrorLike,
+      error: PassthroughErrorLike,
       includeRuntimeErrors = false
     ): boolean {
       return (
@@ -80,18 +88,22 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
         PassthroughError.isRegularFatalPassthroughError(error)
       )
     },
-    maybeThrowPassthroughError: (
-      error: PassthougthErrorLike,
+    maybeThrowPassthroughError(
+      error: PassthroughErrorLike,
       transactionId: string | null
-    ): void => {
+    ): void {
       if (!PassthroughError.isPassthroughError(error, false)) {
         throw error
-      } else if (PassthroughError.isRetryablePassthroughError(error)) {
-        throw new PassthroughError(transactionId, true)
-      } else if (PassthroughError.isShortCircuitPassthroughError(error)) {
-        return
-      } else {
-        throw new PassthroughError(transactionId, false)
+      } else if (!PassthroughError.isShortCircuitPassthroughError(error)) {
+        const isEmptyTransaction = PassthroughError.isEmptyTransactionError(
+          error
+        )
+        const isRetryable = PassthroughError.isRetryablePassthroughError(error)
+        throw new PassthroughError(
+          transactionId,
+          isRetryable,
+          isEmptyTransaction
+        )
       }
     },
   }

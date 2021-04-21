@@ -249,7 +249,7 @@ export const buildEvents: (
 
   while (true) {
     if (events.length === 0) {
-      throw new PassthroughError(transactionId, false)
+      throw new PassthroughError(transactionId, false, false)
     }
 
     transactionIdPromise = inlineLedgerExecuteTransaction(
@@ -454,7 +454,7 @@ export const buildEvents: (
         await next()
       }
 
-      throw new PassthroughError(await transactionIdPromise, false)
+      throw new PassthroughError(await transactionIdPromise, false, false)
     }
   }
 }
@@ -539,7 +539,7 @@ const build: ExternalMethods['build'] = async (
         : null
 
     if (readModelLedger == null || readModelLedger.Errors != null) {
-      throw new PassthroughError(null, false)
+      throw new PassthroughError(null, false, false)
     }
 
     const { EventTypes: eventTypes, Cursor: cursor } = readModelLedger
@@ -587,17 +587,7 @@ const build: ExternalMethods['build'] = async (
           passthroughError.lastTransactionId
         )
       } catch (err) {
-        if (
-          !(
-            err != null &&
-            (/Transaction .*? Is Not Found/i.test(err.message) ||
-              /Transaction .*? Is Not Found/i.test(err.stack) ||
-              /Transaction is expired/i.test(err.message) ||
-              /Transaction is expired/i.test(err.stack) ||
-              /Invalid transaction ID/i.test(err.message) ||
-              /Invalid transaction ID/i.test(err.stack))
-          )
-        ) {
+        if (!(err instanceof PassthroughError && err.isEmptyTransaction)) {
           throw err
         }
       }

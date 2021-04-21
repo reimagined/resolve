@@ -119,9 +119,10 @@ export interface PassthroughErrorInstance extends Error {
   name: string
   lastTransactionId: string | null | undefined
   isRetryable: boolean
+  isEmptyTransaction: boolean
 }
 
-export type PassthougthErrorLike = Error & {
+export type PassthroughErrorLike = Error & {
   code: string | number
   stack: string
 }
@@ -129,19 +130,21 @@ export type PassthougthErrorLike = Error & {
 export type PassthroughErrorFactory = {
   new (
     lastTransactionId: string | null | undefined,
-    isRetryable: boolean
+    isRetryable: boolean,
+    isEmptyTransaction: boolean
   ): PassthroughErrorInstance
 } & {
-  isShortCircuitPassthroughError: (error: PassthougthErrorLike) => boolean
-  isRetryablePassthroughError: (error: PassthougthErrorLike) => boolean
-  isRegularFatalPassthroughError: (error: PassthougthErrorLike) => boolean
-  isRuntimeFatalPassthroughError: (error: PassthougthErrorLike) => boolean
+  isShortCircuitPassthroughError: (error: PassthroughErrorLike) => boolean
+  isRetryablePassthroughError: (error: PassthroughErrorLike) => boolean
+  isRegularFatalPassthroughError: (error: PassthroughErrorLike) => boolean
+  isRuntimeFatalPassthroughError: (error: PassthroughErrorLike) => boolean
   isPassthroughError: (
-    error: PassthougthErrorLike,
+    error: PassthroughErrorLike,
     includeRuntimeErrors: boolean
   ) => boolean
+  isEmptyTransactionError: (error: PassthroughErrorLike) => boolean
   maybeThrowPassthroughError: (
-    error: PassthougthErrorLike,
+    error: PassthroughErrorLike,
     transactionId: string | null
   ) => void
 }
