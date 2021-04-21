@@ -9,7 +9,7 @@ import {
 const deleteSecret = async (
   pool: AdapterPool,
   selector: string
-): Promise<void> => {
+): Promise<boolean> => {
   const { database, secretsTableName, escapeId, escape, eventsTableName } = pool
 
   const log = getLog('secretsManager:deleteSecret')
@@ -41,8 +41,21 @@ const deleteSecret = async (
         "name" = ${freezeTableNameAsString}
       ) CTE;
 
+    SELECT json_type("CTE2"."SecretIsDeleted") FROM (
+        SELECT '{}' AS "SecretIsDeleted"
+      UNION ALL
+        SELECT 'Malformed' AS "SecretIsDeleted"
+        FROM ${secretsTableNameAsId}
+        WHERE id = ${escape(selector)} AND secret IS NULL
+      UNION ALL
+        SELECT 'Malformed' FROM secrets WHERE NOT EXISTS (SELECT 1 FROM secrets WHERE id = ${escape(
+          selector
+        )})
+      )
+       CTE2;
+
     UPDATE ${secretsTableNameAsId} SET secret = NULL
-      WHERE id = ${escape(selector)};
+      WHERE id = ${escape(selector)} AND secret IS NOT NULL;
 
     INSERT INTO ${eventsTableNameAsId}(
         "threadId",
@@ -73,6 +86,8 @@ const deleteSecret = async (
 
     COMMIT;`
     )
+    log.debug(`query executed successfully`)
+    return true
   } catch (error) {
     const errorMessage =
       error != null && error.message != null ? error.message : ''
@@ -84,6 +99,8 @@ const deleteSecret = async (
 
     if (errorMessage === 'SQLITE_ERROR: integer overflow') {
       throw new EventstoreFrozenError()
+    } else if (errorMessage === 'SQLITE_ERROR: malformed JSON') {
+      return false
     } else if (
       errorCode === 'SQLITE_CONSTRAINT' &&
       errorMessage.indexOf('PRIMARY') > -1
@@ -93,8 +110,6 @@ const deleteSecret = async (
       throw error
     }
   }
-
-  log.debug(`query executed successfully`)
 }
 
 export default deleteSecret

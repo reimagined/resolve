@@ -39,8 +39,8 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
       setSecret: async (id: string, secret: string): Promise<void> => {
         return
       },
-      deleteSecret: async (id: string): Promise<void> => {
-        return
+      deleteSecret: async (id: string): Promise<boolean> => {
+        return true
       },
     }),
   }
