@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 
+require('events').EventEmitter.defaultMaxListeners = 30
+
 const minimist = require('minimist')
 const chalk = require('chalk')
-const { createProfiler } = require('./profiler')
 const babel = require('@babel/cli/lib/babel/dir').default
-const { getBabelConfig, getCompileConfigs } = require('@internal/helpers')
+const {
+  getBabelConfig,
+  getCompileConfigs,
+  createProfiler,
+} = require('@internal/helpers')
 const { prepare } = require('./prepare')
 
 let isFailed = false

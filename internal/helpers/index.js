@@ -1,3 +1,4 @@
+const { createProfiler } = require('./create-profiler')
 const { getRepoRoot } = require('./get-repo-root')
 const { getBabelConfig } = require('./get-babel-config')
 const { getCompileConfigs } = require('./get-compile-configs')
@@ -16,6 +17,7 @@ module.exports = {
   getResolveExamples,
   getResolvePackages,
   getRepoRoot,
+  createProfiler,
   patchPackageJson,
   safeName,
 }

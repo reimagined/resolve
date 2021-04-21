@@ -14,6 +14,7 @@
     "dependency-graph": "0.11.0",
     "lodash.intersection": "4.4.0",
     "lodash.difference": "4.5.0",
-    "lodash.uniq": "4.5.0"
+    "lodash.uniq": "4.5.0",
+    "performance-now": "2.1.0"
   }
 }
