@@ -24,8 +24,8 @@ function makeIdFromIndex(index: number): string {
 }
 
 describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
-  beforeAll(adapterFactory.createAdapter('secret_testing'))
-  afterAll(adapterFactory.destroyAdapter('secret_testing'))
+  beforeAll(adapterFactory.create('secret_testing'))
+  afterAll(adapterFactory.destroy('secret_testing'))
 
   const adapter = adapters['secret_testing']
 
@@ -190,8 +190,8 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
 describe(`${adapterFactory.name}. Eventstore adapter import secrets`, () => {
   beforeAll(async () => {
     await Promise.all([
-      adapterFactory.createAdapter('secret_input_testing')(),
-      adapterFactory.createAdapter('secret_output_testing')(),
+      adapterFactory.create('secret_input_testing')(),
+      adapterFactory.create('secret_output_testing')(),
     ])
 
     const outputAdapter = adapters['secret_output_testing']
@@ -203,8 +203,8 @@ describe(`${adapterFactory.name}. Eventstore adapter import secrets`, () => {
   })
   afterAll(() =>
     Promise.all([
-      adapterFactory.destroyAdapter('secret_input_testing')(),
-      adapterFactory.destroyAdapter('secret_output_testing')(),
+      adapterFactory.destroy('secret_input_testing')(),
+      adapterFactory.destroy('secret_output_testing')(),
     ])
   )
 

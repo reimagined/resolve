@@ -14,8 +14,8 @@ import {
 jest.setTimeout(jestTimeout())
 
 describe(`${adapterFactory.name}. Eventstore adapter freeze and unfreeze`, () => {
-  beforeAll(adapterFactory.createAdapter('freeze_testing'))
-  afterAll(adapterFactory.destroyAdapter('freeze_testing'))
+  beforeAll(adapterFactory.create('freeze_testing'))
+  afterAll(adapterFactory.destroy('freeze_testing'))
 
   const adapter = adapters['freeze_testing']
 

@@ -117,7 +117,7 @@ export function getPostgresServerlessOptions(
 export const adapterFactory = isPostgresServerless()
   ? {
       name: '@resolve-js/eventstore-postgresql-serverless',
-      createAdapter(uniqueName: string) {
+      create(uniqueName: string) {
         return async () => {
           const options = getPostgresServerlessOptions(uniqueName)
 
@@ -140,7 +140,7 @@ export const adapterFactory = isPostgresServerless()
           await adapters[uniqueName].init()
         }
       },
-      destroyAdapter(uniqueName: string) {
+      destroy(uniqueName: string) {
         return async () => {
           const options = getPostgresServerlessOptions(uniqueName)
 
@@ -155,7 +155,7 @@ export const adapterFactory = isPostgresServerless()
     }
   : {
       name: '@resolve-js/eventstore-lite',
-      createAdapter(uniqueName: string) {
+      create(uniqueName: string) {
         return async () => {
           adapters[uniqueName] = createSqliteAdapter({
             eventsTableName: 'events',
@@ -168,7 +168,7 @@ export const adapterFactory = isPostgresServerless()
           await adapters[uniqueName].init()
         }
       },
-      destroyAdapter(uniqueName: string) {
+      destroy(uniqueName: string) {
         return async () => {
           await adapters[uniqueName].drop()
           await adapters[uniqueName].dispose()

@@ -6,8 +6,8 @@ import {
 import { adapterFactory, adapters } from '../eventstore-test-utils'
 
 describe(`${adapterFactory.name}. Eventstore adapter init and drop`, () => {
-  beforeAll(adapterFactory.createAdapter('init_and_drop_testing'))
-  afterAll(adapterFactory.destroyAdapter('init_and_drop_testing'))
+  beforeAll(adapterFactory.create('init_and_drop_testing'))
+  afterAll(adapterFactory.destroy('init_and_drop_testing'))
 
   const adapter = adapters['init_and_drop_testing']
 

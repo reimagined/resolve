@@ -8,8 +8,8 @@ import {
 jest.setTimeout(jestTimeout())
 
 describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
-  beforeAll(adapterFactory.createAdapter('events_testing'))
-  afterAll(adapterFactory.destroyAdapter('events_testing'))
+  beforeAll(adapterFactory.create('events_testing'))
+  afterAll(adapterFactory.destroy('events_testing'))
 
   const adapter = adapters['events_testing']
 
@@ -96,8 +96,8 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
 })
 
 describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
-  beforeAll(adapterFactory.createAdapter('events_filter_testing'))
-  afterAll(adapterFactory.destroyAdapter('events_filter_testing'))
+  beforeAll(adapterFactory.create('events_filter_testing'))
+  afterAll(adapterFactory.destroy('events_filter_testing'))
 
   const adapter = adapters['events_filter_testing']
 

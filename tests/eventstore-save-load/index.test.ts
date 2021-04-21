@@ -2,12 +2,12 @@ import { adapterFactory, adapters } from '../eventstore-test-utils'
 
 jest.setTimeout(1000 * 60 * 5)
 
-beforeAll(adapterFactory.createAdapter('save_and_load_testing'))
-afterAll(adapterFactory.destroyAdapter('save_and_load_testing'))
+beforeAll(adapterFactory.create('save_and_load_testing'))
+afterAll(adapterFactory.destroy('save_and_load_testing'))
 
 const adapter = adapters['save_and_load_testing']
 
-test(`${adapterFactory.name}. Postgres-serverless eventstore adapter should be able to save and load an event`, async () => {
+test(`${adapterFactory.name}. Eventstore adapter should be able to save and load an event`, async () => {
   await adapter.saveEvent({
     aggregateVersion: 1,
     aggregateId: 'ID_1',
