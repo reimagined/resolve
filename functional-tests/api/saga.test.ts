@@ -4,9 +4,9 @@ import { Client } from '@resolve-js/client'
 import {
   SAGA_TEST_EVENTS_COUNT,
   SAGA_TEST_AGGREGATE_ID,
-} from '../../utils/constants'
+} from '../utils/constants'
 
-import { getClient } from '../../utils/utils'
+import { getClient } from '../utils/utils'
 
 let client: Client
 
