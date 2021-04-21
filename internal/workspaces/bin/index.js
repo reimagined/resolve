@@ -160,7 +160,6 @@ const main = async (args) => {
         throw Error('script not specified')
       }
       count = await doAll(args, execNpmScript.bind(null, script))
-      await cleanWorkspace({ absolutePath: getRepoRoot(), location: '/' })
       break
 
     default:
