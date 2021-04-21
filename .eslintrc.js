@@ -526,7 +526,7 @@ module.exports = {
           'dep',
           'uniq',
           'micromatch',
-          'rimraf'
+          'rimraf',
         ],
         minLength: 3,
       },
