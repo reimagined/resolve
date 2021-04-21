@@ -44,7 +44,11 @@ const getWorkspaces = () =>
 const execShellCommand = async (shellCommand, workspace) => {
   const { absolutePath, location } = workspace
   try {
-    log.info(`[${chalk.bold(chalk.green(workspace.location))}]: ${chalk.dim(shellCommand)}`)
+    log.info(
+      `[${chalk.bold(chalk.green(workspace.location))}]: ${chalk.dim(
+        shellCommand
+      )}`
+    )
     await new Promise((resolve, reject) => {
       const [command, ...args] = shellCommand
         .split(' ')
