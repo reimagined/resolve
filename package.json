@@ -10,7 +10,6 @@
       "internal/*",
       "examples/*",
       "examples/shopping-list-tutorial/*",
-      "packages/modules/*",
       "tests",
       "website",
       "functional-tests",
@@ -38,8 +37,6 @@
     "test:clean-snapshots": "npx oao all -i \"examples/shopping-list-advanced\"  \"yarn test -u --color 2>&1\"",
     "test:cra": "node internal/cra-test/bin/index.js",
     "workspace-manager": "node internal/workspace-manager/bin/index.js",
-    "sla:enable": "yarn workspace-manager add \"examples/shopping-list-advanced/*\"",
-    "sla:disable": "yarn workspace-manager rm \"examples/shopping-list-advanced/*\"",
     "validate-lock-file": "node validate-lock-file.js"
   },
   "dependencies": {
@@ -73,7 +70,7 @@
     "glob": "7.1.6",
     "lcov-result-merger": "3.1.0",
     "mdis": "0.0.5",
-    "oao": "1.8.0",
+    "oao": "2.0.2",
     "prettier": "2.1.1",
     "rimraf": "3.0.2",
     "ts-jest": "26.5.0",

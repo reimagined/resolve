@@ -13531,10 +13531,10 @@ nyc@^11.6.0:
     yargs "11.1.0"
     yargs-parser "^8.0.0"
 
-oao@1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/oao/-/oao-1.8.0.tgz#b69e7f230de9916c6a12fe889434b539dd681475"
-  integrity sha512-xOwcL20Db8PAuT99SVyPP4iZ89mX0/iQy+pAeBEtkV9ESiwgWxn+36RJu/bl9iptYKIBbClFqcL24rZnTtOC6w==
+oao@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/oao/-/oao-2.0.2.tgz#c837a49e17e01416a94d0255b69e9a79a568b94b"
+  integrity sha512-egjsgtePUdp6uRj7UfBL+t8a5OLBDpIo1RCIa1Lp9nA07Uhbwyuv0q7m+jRePlY/8QVHRz4/8wLU8nFfLVJPyg==
   dependencies:
     commander "2.19.0"
     execa "0.6.3"
@@ -13544,11 +13544,11 @@ oao@1.8.0:
     minimatch "^3.0.4"
     rimraf "2.6.3"
     semver "5.6.0"
-    shelljs "0.7.8"
+    shelljs "^0.8.4"
     split "1.0.1"
-    storyboard "3.1.4"
-    storyboard-listener-console "3.1.4"
-    storyboard-listener-console-parallel "3.1.4"
+    storyboard "^3.3.1"
+    storyboard-listener-console "^3.3.1"
+    storyboard-listener-console-parallel "^3.3.1"
     timm "^1.6.2"
 
 oauth-sign@~0.9.0:
@@ -16607,16 +16607,7 @@ shell-quote@1.7.2:
   resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.7.2.tgz#67a7d02c76c9da24f99d20808fcaded0e0e04be2"
   integrity sha512-mRz/m/JVscCrkMyPqHc/bczi3OQHkLTqXHEFu0zDhK/qfv3UcOA4SVmRCLmos4bhjr9ekVQubj/R7waKapmiQg==
 
-shelljs@0.7.8:
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.7.8.tgz#decbcf874b0d1e5fb72e14b164a9683048e9acb3"
-  integrity sha1-3svPh0sNHl+3LhSxZKloMEjprLM=
-  dependencies:
-    glob "^7.0.0"
-    interpret "^1.0.0"
-    rechoir "^0.6.2"
-
-shelljs@^0.8.3:
+shelljs@^0.8.3, shelljs@^0.8.4:
   version "0.8.4"
   resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.8.4.tgz#de7684feeb767f8716b326078a8a00875890e3c2"
   integrity sha512-7gk3UZ9kOfPLIAbslLzyWeGiEqx9e3rxwZM0KE6EL8GlGwjym9Mrlx5/p33bWTu9YG6vcS4MBxYZDHYr5lr8BQ==
@@ -17089,10 +17080,10 @@ stealthy-require@^1.1.1:
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
 
-storyboard-core@^3.1.1:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/storyboard-core/-/storyboard-core-3.2.0.tgz#6765e2c71bdc5b8ed1db52faf896df43461bca7c"
-  integrity sha512-v2p3SDYi22go1oLrJPnsiwXgSsjqKL6oryy9B3rz2UEpLwqWArjUoaECciD+/sfwJFJs1etIjUbE4tBx2G+adQ==
+storyboard-core@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/storyboard-core/-/storyboard-core-3.3.2.tgz#90d5f13ed5f3b9668cb95ce778b5f44425339daf"
+  integrity sha512-fcACoTmGllEiK3Cfvv6xgrZmFym07SA8GJNRoVSTZhRfIplQQd8sx0nbrP7wTeMeZ7KUao5ucpflXjtm2ZV0FA==
   dependencies:
     chalk "1.x"
     lodash "^4.17.10"
@@ -17101,27 +17092,27 @@ storyboard-core@^3.1.1:
     timm "^1.6.1"
     uuid "^3.0.1"
 
-storyboard-listener-console-parallel@3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/storyboard-listener-console-parallel/-/storyboard-listener-console-parallel-3.1.4.tgz#110d4582f4ab924c2ca5c56eb6a3c61fe4d162b3"
-  integrity sha512-VjgpN02DISKSNWNB9eSF3zhWA5nRINQITan/g/CuS45S7YqISKCP3+ztOLLDmfYvrmg6PrjahwLMq0GvQ37ZDA==
+storyboard-listener-console-parallel@^3.3.1:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/storyboard-listener-console-parallel/-/storyboard-listener-console-parallel-3.3.2.tgz#ed00230c90abb529e12ee11f657de56ebcfb2d0e"
+  integrity sha512-g59OmDSyIiHeGR8CkRF+Ne9fMDLWpJu9W6PJrKEzIt/eIX4UwIsb6T27wY//M+z+p2BBOKdvCLr/b1IJTfFsog==
   dependencies:
     terminal-kit "^0.26.1"
     timm "^1.6.1"
 
-storyboard-listener-console@3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/storyboard-listener-console/-/storyboard-listener-console-3.1.4.tgz#165c23629721a0327b181d4b926bc2d9787eb661"
-  integrity sha512-zP2x0XKXHXGYrz4/RS4kxMp/4JqEvREV3rdkfbb6uqGld9gPKNqAdRDLQPN7cJRycTipTt+qew7RFGDTIVSIVA==
+storyboard-listener-console@^3.3.1:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/storyboard-listener-console/-/storyboard-listener-console-3.3.2.tgz#95c415992ea79ef22e8b1e5b0b9a5476362717ec"
+  integrity sha512-7o8C4KeJDzNsCRq/o6ydt97HBNEBeHCgY13R1h7OjPwEoyo3uBQrLMTQlue/q600u1th06wi+vAR6XjrmK6hPg==
   dependencies:
     timm "^1.6.1"
 
-storyboard@3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/storyboard/-/storyboard-3.1.4.tgz#f39a908f168541ffae2af6ed8a06f27e0eed12e2"
-  integrity sha512-YkWhyz6IxvL/+kN9iMtcw3XVppqY/J8wBRDMpKxnkMniD/QKsKnHPMsxloob2B2+ONwASQPbzZkNXeyY2/kXwg==
+storyboard@^3.3.1:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/storyboard/-/storyboard-3.3.2.tgz#a5ef868a6d8d86cbae1ce10c58e0795e846c6265"
+  integrity sha512-xEvgHaztj7QtpUriwgsDo1R/DrkXEWuyrBuGFER107FCrGW1IKRv6m01cS/TAbjhQ4aV3+ePmoWQ+vdbjr6lcg==
   dependencies:
-    storyboard-core "^3.1.1"
+    storyboard-core "^3.3.2"
 
 stream-browserify@^2.0.1:
   version "2.0.2"
