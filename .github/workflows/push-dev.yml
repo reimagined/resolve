@@ -52,6 +52,6 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Generate Changelog
-        uses: reimagined/github-actions/generatre-changelog@feature/changelog-generator
+        uses: reimagined/github-actions/generate-changelog@feature/changelog-generator
 
 
