@@ -220,18 +220,16 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
       } of operations as Array<Required<typeof operations[0]>>) {
         const inlineTableName = escapeId(`inline-table-${inlineTableNameIdx++}`)
         if (operationName === '$unset') {
-          updateExprArray.push(
-            `(SELECT CASE 
+          updateExpr = `(SELECT CASE 
             WHEN jsonb_typeof(${inlineTableName}."val" #> '${makeNestedPath(
-              nestedPath
-            )}') IS NOT NULL THEN 
+            nestedPath
+          )}') IS NOT NULL THEN 
             ${inlineTableName}."val" #- '${makeNestedPath(nestedPath)}'
             ELSE to_jsonb(jsonb_typeof((SELECT 'MalformedUnsetOperation')::jsonb))
             END FROM (
               SELECT ${updateExpr} AS "val"
             ) ${inlineTableName})
             `
-          )
         } else if (operationName === '$set') {
           const baseNestedPath = makeNestedPath(nestedPath.slice(0, -1))
           const lastNestedPathElementType = escapeStr(
@@ -242,21 +240,19 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
               : 'unknown'
           )
 
-          updateExprArray.push(
-            `(SELECT CASE 
+          updateExpr = `(SELECT CASE 
             WHEN ((jsonb_typeof(${inlineTableName}."val" #> '${baseNestedPath}') || '-' || ${lastNestedPathElementType} ) = 'object-string' OR
             jsonb_typeof(${inlineTableName}."val" #> '${baseNestedPath}') || '-' || ${lastNestedPathElementType} ) = 'array-number') THEN
             jsonb_set(${updateExpr}, '${makeNestedPath(nestedPath)}', ${
-              fieldValue != null
-                ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSONB)`
-                : `CAST('null' AS JSONB)`
-            })
+            fieldValue != null
+              ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSONB)`
+              : `CAST('null' AS JSONB)`
+          })
             ELSE to_jsonb(jsonb_typeof((SELECT 'MalformedSetOperation')::jsonb))
             END FROM (
               SELECT ${updateExpr} AS "val"
             ) ${inlineTableName})
             `
-          )
         } else if (operationName === '$inc') {
           const fieldValueType = escapeStr(
             fieldValue != null
@@ -268,22 +264,32 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
               : 'unknown'
           )
 
-          updateExprArray.push(
-            `(SELECT CASE 
-            WHEN (jsonb_typeof(${inlineTableName}."val" #> '${nestedPath}')) || '-' || ${fieldValueType} ) = 'string-string' THEN to_jsonb(
-              CAST(${inlineTableName}."val" #>> '${nestedPath}' AS VARCHAR) ||
+          updateExpr = `(SELECT CASE 
+            WHEN (jsonb_typeof(${inlineTableName}."val" #> '${makeNestedPath(
+            nestedPath
+          )}') || '-' || ${fieldValueType} ) = 'string-string' THEN jsonb_set(${updateExpr}, '${makeNestedPath(
+            nestedPath
+          )}', to_jsonb(
+              CAST(${inlineTableName}."val" #>> '${makeNestedPath(
+            nestedPath
+          )}' AS VARCHAR) ||
               CAST(${escapeStr(`${fieldValue}`)} AS VARCHAR)
-            )
-            WHEN (jsonb_typeof(${inlineTableName}."val" #> '${nestedPath}') || '-' || ${fieldValueType} ) = 'number-number' THEN to_jsonb(
-              CAST(${inlineTableName}."val" #>> '${nestedPath}' AS DECIMAL(48, 16)) +
+            ))
+            WHEN (jsonb_typeof(${inlineTableName}."val" #> '${makeNestedPath(
+            nestedPath
+          )}') || '-' || ${fieldValueType} ) = 'number-number' THEN jsonb_set(${updateExpr}, '${makeNestedPath(
+            nestedPath
+          )}', to_jsonb(
+              CAST(${inlineTableName}."val" #>> '${makeNestedPath(
+            nestedPath
+          )}' AS DECIMAL(48, 16)) +
               CAST(${+(fieldValue as number)} AS DECIMAL(48, 16))
-            )
+            ))
             ELSE to_jsonb(jsonb_typeof((SELECT 'MalformedIncOperation')::jsonb))
             END FROM (
               SELECT ${updateExpr} AS "val"
             ) ${inlineTableName})
             `
-          )
         }
       }
 

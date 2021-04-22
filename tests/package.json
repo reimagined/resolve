@@ -7,6 +7,7 @@
     "test": "echo || exit 0",
     "test:integration": "jest --config=./jest.config.js",
     "test:postgres-serverless": "yarn test:eventstore-postgres-serverless",
+    "test:read-model": "env TEST_POSTGRES_SERVERLESS=false jest --config=./jest.config.js --testMatch=**/read-model-store-*/*.test.[jt]s",
     "test:eventstore": "jest --config=./jest.config.js --testMatch=**/eventstore-*/*.test.[jt]s",
     "test:eventstore-postgres-serverless": "env TEST_POSTGRES_SERVERLESS=true jest --config=./jest.config.js --testMatch=**/eventstore-*/*.test.[jt]s",
     "test:import-export": "jest --config=./jest.config.js --testMatch=**/import-export-sample/*.test.ts",
