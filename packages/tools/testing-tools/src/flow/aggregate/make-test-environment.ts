@@ -90,7 +90,7 @@ export const makeTestEnvironment = (
       executor = createCommand({
         performanceTracer: null,
         aggregatesInterop: domain.aggregateDomain.acquireAggregatesInterop({
-          eventstore: getEventStore(events, { aggregateId }),
+          eventstore: await getEventStore(events, { aggregateId }),
           secretsManager,
           monitoring: {},
           hooks: {},
