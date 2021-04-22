@@ -47,10 +47,7 @@ jobs:
 
   update-changelog:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
-      - uses: actions/checkout@v2
-
       - name: Generate Changelog
         uses: reimagined/github-actions/generate-changelog@feature/changelog-generator
         with:
