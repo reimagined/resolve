@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: '10'
+          node-version: '12'
 
       - name: Install
         run: yarn install --frozen-lockfile
