@@ -7,16 +7,7 @@ title: Testing
 
 The **@resolve-js/testing-tools** package contains utilities that allow you to test Read Models and Sagas. The provided tools reproduce a Read Model's full lifecycle in the testing environment.
 
-To write a test, call the `givenEvents` function. This function takes an array of events and gives access to a number of functions that you can chain together to describe the test case. The following functions are available:
-
-| Function                                              | Description                                                                                                                                                                                 |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `aggregate({ aggregate })`                            | Runs an Aggregate's projection and command handlers.                                                                                                                                        |
-| `command(name, payload)`                              | Specifies a command to pass to the Aggregate.                                                                                                                                               |
-| `readModel({ name, projection, resolvers, adapter })` | Runs a Read Model projection on the given events and provides access to the Read Model's resolver functions.<br>A resolver function returns a promise that resolves to the response object. |
-| `as(jwt)`                                             | Specifies a JSON Web Token used for authentication.                                                                                                                                         |
-| `saga({ handlers, sideEffects, adapter, name })`      | Runs a Saga on the given events and provides access to a promise that resolves to an object containing information about the Saga's execution.                                              |
-| `properties(sagaProperties)`                          | Specifies Saga properties                                                                                                                                                                   |
+To write a test, call the `givenEvents` function. This function takes an array of events and gives access to a number of functions that you can chain together to describe the test case.
 
 ## Testing Aggregates
 
