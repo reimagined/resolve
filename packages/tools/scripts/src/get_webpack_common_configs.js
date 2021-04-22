@@ -1,6 +1,7 @@
 import path from 'path'
 import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin'
 import nodeExternals from 'webpack-node-externals'
+import BabelPluginTransformImportInline from 'babel-plugin-transform-import-inline'
 
 import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
 import getModulesDirs from './get_modules_dirs'
@@ -160,6 +161,7 @@ const getWebpackCommonConfigs = ({
         ...baseCommonConfig.output,
         libraryTarget: 'commonjs-module',
       },
+      plugins: targetMode === 'cloud' ? [BabelPluginTransformImportInline] : [],
     },
     {
       ...baseCommonConfig,

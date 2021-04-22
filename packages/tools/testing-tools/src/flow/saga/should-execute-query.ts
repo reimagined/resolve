@@ -2,7 +2,7 @@ import isEqual from 'lodash.isequal'
 import { ReadModelQuery } from '@resolve-js/core'
 import { SagaContext } from '../../types'
 import { makeAssertions, SagaAssertionsNode } from './make-assertions'
-import { stringifyQuery } from '../../utils/format'
+import { stringifyShouldExecuteQueryFailure } from '../../utils/format'
 
 export const shouldExecuteQuery = (
   context: SagaContext,
@@ -29,9 +29,7 @@ export const shouldExecuteQuery = (
       return resolve(result)
     }
     return reject(
-      new Error(
-        `shouldExecuteQuery assertion failed:\n${stringifyQuery(query)}`
-      )
+      new Error(stringifyShouldExecuteQueryFailure(query, result.queries))
     )
   })
 
