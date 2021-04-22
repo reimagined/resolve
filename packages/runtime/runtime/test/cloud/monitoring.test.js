@@ -185,6 +185,21 @@ describe('common', () => {
 
     expect(CloudWatch.putMetricData.mock.calls[1][0].MetricData).toHaveLength(4)
   })
+
+  test('does not reject on publish if putMetricData is failed', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    monitoring.error(new Error('test'))
+
+    CloudWatch.putMetricData.mockReturnValueOnce({
+      promise: () => Promise.reject(new Error('Something went wrong')),
+    })
+
+    await monitoring.publish()
+  })
 })
 
 describe('error', () => {
