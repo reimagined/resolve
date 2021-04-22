@@ -17,7 +17,7 @@ const loadSecrets = async (
 
   const rows = await database.all(
     `SELECT idx, id, secret FROM ${tableNameAsId}
-    WHERE idx >= ${+searchIdx}
+    WHERE secret IS NOT NULL AND idx >= ${+searchIdx}
     ORDER BY "idx" ASC
     LIMIT ${+limit} OFFSET ${skipRows}`
   )

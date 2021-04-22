@@ -141,6 +141,7 @@ export type ReadModelEvent = SavedEvent
 export type EventstoreAdapterLike = {
   loadEvents: EventStoreAdapter['loadEvents']
   getNextCursor: EventStoreAdapter['getNextCursor']
+  getSecretsManager: EventStoreAdapter['getSecretsManager']
   loadSecrets?: EventStoreAdapter['loadSecrets']
 }
 

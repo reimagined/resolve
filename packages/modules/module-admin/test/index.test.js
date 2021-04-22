@@ -194,6 +194,40 @@ describe('@resolve-js/module-admin', () => {
       expect(fetch.mock.calls).toMatchSnapshot('fetch')
       expect(console.log.mock.calls).toMatchSnapshot('console.log')
     })
+
+    test('list. tolerate to invalid date', async () => {
+      fetch().json.mockReturnValue([
+        {
+          eventSubscriber: 'read-model',
+          status: 'status',
+          successEvent: {
+            timestamp: undefined,
+            aggregateId: 'aggregateId',
+            aggregateVersion: 1,
+            type: 'type',
+            payload: {
+              index: 1,
+            },
+          },
+          failedEvent: {
+            timestamp: undefined,
+            aggregateId: 'aggregateId',
+            aggregateVersion: 1,
+            type: 'type',
+            payload: {
+              index: 1,
+            },
+          },
+          errors: null,
+        },
+      ])
+      await readModelListHandler({
+        url: 'url',
+      })
+
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
+    })
   })
 
   describe('sagas', () => {
@@ -245,6 +279,40 @@ describe('@resolve-js/module-admin', () => {
             },
           },
           failedEvent: null,
+          errors: null,
+        },
+      ])
+      await sagaListHandler({
+        url: 'url',
+      })
+
+      expect(fetch.mock.calls).toMatchSnapshot('fetch')
+      expect(console.log.mock.calls).toMatchSnapshot('console.log')
+    })
+
+    test('list. tolerate to invalid date', async () => {
+      fetch().json.mockReturnValue([
+        {
+          eventSubscriber: 'read-model',
+          status: 'status',
+          successEvent: {
+            timestamp: undefined,
+            aggregateId: 'aggregateId',
+            aggregateVersion: 1,
+            type: 'type',
+            payload: {
+              index: 1,
+            },
+          },
+          failedEvent: {
+            timestamp: undefined,
+            aggregateId: 'aggregateId',
+            aggregateVersion: 1,
+            type: 'type',
+            payload: {
+              index: 1,
+            },
+          },
           errors: null,
         },
       ])

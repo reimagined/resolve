@@ -18,9 +18,9 @@
   "main": "./lib/index.js",
   "module": "./es/index.js",
   "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/scripts",
     "test": "jest --config=../../../jest.config.js --verbose",
-    "testw": "jest --config=../../../jest.config.js --watchAll",
-    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/scripts"
+    "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
     "@babel/core": "7.9.6",
@@ -39,6 +39,7 @@
     "ajv": "^6.10.0",
     "babel-loader": "8.1.0",
     "babel-plugin-module-resolver": "4.0.0",
+    "babel-plugin-transform-import-inline": "^0.0.4",
     "chalk": "^2.4.2",
     "deepmerge": "^3.2.0",
     "fs-extra": "^7.0.1",

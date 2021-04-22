@@ -1,11 +1,30 @@
 import wrapApiHandler from './wrap-api-handler'
 
 const readModelList = async (req, res) => {
-  const statusPromises = []
-  for (const { name: eventSubscriber } of req.resolve.readModels) {
-    statusPromises.push(req.resolve.eventSubscriber.status({ eventSubscriber }))
+  const statuses = []
+
+  for (const { name: eventSubscriber } of req.resolve.domain.readModels) {
+    try {
+      const response = await req.resolve.eventSubscriber.status({
+        eventSubscriber,
+      })
+
+      statuses.push(response)
+    } catch (error) {
+      statuses.push({
+        eventSubscriber,
+        status: 'error',
+        errors: [
+          {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+        ],
+      })
+    }
   }
-  const statuses = await Promise.all(statusPromises)
 
   await res.json(statuses)
 }

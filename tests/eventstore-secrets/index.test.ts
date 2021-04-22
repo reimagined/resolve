@@ -1,69 +1,19 @@
-import createSqliteAdapter from '@resolve-js/eventstore-lite'
-import createPostgresqlServerlessAdapter from '@resolve-js/eventstore-postgresql-serverless'
-import createPostgresAdapter from '@resolve-js/eventstore-postgresql'
-import { PostgresqlAdapterConfig } from '@resolve-js/eventstore-postgresql'
 import {
-  Adapter,
-  AdapterConfig,
   SET_SECRET_EVENT_TYPE,
   DELETE_SECRET_EVENT_TYPE,
 } from '@resolve-js/eventstore-base'
 import { SecretsManager } from '@resolve-js/core'
-import { create, destroy } from '@resolve-js/eventstore-postgresql-serverless'
 import { pipeline } from 'stream'
 import { promisify } from 'util'
 import {
-  TEST_SERVERLESS,
   streamToString,
-  updateAwsConfig,
-  getCloudResourceOptions,
   jestTimeout,
-  cloudResourceOptionsToAdapterConfig,
   makeTestEvent,
+  adapterFactory,
+  adapters,
 } from '../eventstore-test-utils'
 
 jest.setTimeout(jestTimeout())
-
-let createAdapter: (config: any) => Adapter
-let config: AdapterConfig
-let inputConfig: AdapterConfig
-let outputConfig: AdapterConfig
-
-if (TEST_SERVERLESS) {
-  createAdapter = createPostgresqlServerlessAdapter
-} else {
-  const testPostgres = false
-  if (testPostgres) {
-    createAdapter = createPostgresAdapter
-    const schema = 'public'
-    const password = 'post'
-
-    const postgresConfig: PostgresqlAdapterConfig = {
-      database: 'db',
-      password: password,
-      databaseName: schema,
-    }
-    const postgresInputConfig: PostgresqlAdapterConfig = {
-      database: 'db-export',
-      password: password,
-      databaseName: schema,
-    }
-    const postgresOutputConfig: PostgresqlAdapterConfig = {
-      database: 'db-import',
-      password: password,
-      databaseName: schema,
-    }
-
-    config = postgresConfig
-    inputConfig = postgresInputConfig
-    outputConfig = postgresOutputConfig
-  } else {
-    createAdapter = createSqliteAdapter
-    config = {}
-    inputConfig = {}
-    outputConfig = {}
-  }
-}
 
 function makeSecretFromIndex(index: number): string {
   return `secret_${index}`
@@ -73,32 +23,13 @@ function makeIdFromIndex(index: number): string {
   return `id_${index}`
 }
 
-describe('eventstore adapter secrets', () => {
-  if (TEST_SERVERLESS) updateAwsConfig()
+describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
+  beforeAll(adapterFactory.create('secret_testing'))
+  afterAll(adapterFactory.destroy('secret_testing'))
+
+  const adapter = adapters['secret_testing']
 
   const countSecrets = 50
-
-  const options = getCloudResourceOptions('secret_testing')
-
-  let adapter: Adapter
-  beforeAll(async () => {
-    if (TEST_SERVERLESS) {
-      await create(options)
-      adapter = createAdapter(cloudResourceOptionsToAdapterConfig(options))
-    } else {
-      adapter = createAdapter(config)
-    }
-    await adapter.init()
-  })
-
-  afterAll(async () => {
-    await adapter.drop()
-    await adapter.dispose()
-
-    if (TEST_SERVERLESS) {
-      await destroy(options)
-    }
-  })
 
   test('should load 0 secrets after initialization', async () => {
     const { secrets, idx } = await adapter.loadSecrets({ limit: countSecrets })
@@ -131,10 +62,22 @@ describe('eventstore adapter secrets', () => {
     expect(events).toHaveLength(countSecrets)
   })
 
-  test('should get secret by id', async () => {
-    const secretManger: SecretsManager = await adapter.getSecretsManager()
+  test('should throw on setting secret with existing id', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
     const randomIndex: number = Math.floor(Math.random() * countSecrets)
-    const secret: string = await secretManger.getSecret(
+
+    await expect(
+      secretManager.setSecret(
+        makeIdFromIndex(randomIndex),
+        makeSecretFromIndex(randomIndex)
+      )
+    ).rejects.toThrow()
+  })
+
+  test('should get secret by id', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+    const randomIndex: number = Math.floor(Math.random() * countSecrets)
+    const secret: string = await secretManager.getSecret(
       makeIdFromIndex(randomIndex)
     )
     expect(secret).toEqual(makeSecretFromIndex(randomIndex))
@@ -208,12 +151,29 @@ describe('eventstore adapter secrets', () => {
     expect(emptyResult.secrets).toHaveLength(0)
   })
 
+  test('should not generate delete secret event when deleting secret by non-existing id', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+    const secretId = makeIdFromIndex(countSecrets)
+    const result = await secretManager.deleteSecret(secretId)
+    expect(result).toBe(false)
+
+    const { events } = await adapter.loadEvents({
+      cursor: null,
+      limit: countSecrets,
+      eventTypes: [DELETE_SECRET_EVENT_TYPE],
+    })
+    expect(events).toHaveLength(0)
+  })
+
+  const secretToDeleteIndex: number = Math.floor(Math.random() * countSecrets)
+
   test('should delete secret by id, return null for this id and generate delete secret event', async () => {
-    const secretManger: SecretsManager = await adapter.getSecretsManager()
-    const randomIndex: number = Math.floor(Math.random() * countSecrets)
-    const secretId = makeIdFromIndex(randomIndex)
-    await secretManger.deleteSecret(secretId)
-    const secret: string | null = await secretManger.getSecret(secretId)
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+    const secretId = makeIdFromIndex(secretToDeleteIndex)
+    const result = await secretManager.deleteSecret(secretId)
+    expect(result).toBe(true)
+
+    const secret: string | null = await secretManager.getSecret(secretId)
     expect(secret).toBeNull()
 
     const { events } = await adapter.loadEvents({
@@ -225,58 +185,69 @@ describe('eventstore adapter secrets', () => {
     expect(events[0].payload.id).toEqual(secretId)
   })
 
+  test('deleteSecret should return false when asked to delete non-existing or already deleted secret', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+    const secretId = makeIdFromIndex(secretToDeleteIndex)
+    const result = await secretManager.deleteSecret(secretId)
+    expect(result).toBe(false)
+
+    const nonExistingId = makeIdFromIndex(countSecrets)
+    const resultNonExisting = await secretManager.deleteSecret(nonExistingId)
+    expect(resultNonExisting).toBe(false)
+  })
+
+  test('should not generate additional delete secret event if secret has been already deleted', async () => {
+    const { events } = await adapter.loadEvents({
+      cursor: null,
+      limit: countSecrets,
+      eventTypes: [DELETE_SECRET_EVENT_TYPE],
+    })
+    expect(events).toHaveLength(1)
+  })
+
   test('should return 1 less number of secrets after the secret was deleted', async () => {
     const secrets = (await adapter.loadSecrets({ limit: countSecrets + 1 }))
       .secrets
     expect(secrets).toHaveLength(countSecrets - 1)
   })
+
+  test('should throw when setting secret with id that belonged to previously deleted secret', async () => {
+    const secretManager: SecretsManager = await adapter.getSecretsManager()
+
+    await expect(
+      secretManager.setSecret(
+        makeIdFromIndex(secretToDeleteIndex),
+        makeSecretFromIndex(secretToDeleteIndex)
+      )
+    ).rejects.toThrow()
+  })
 })
 
-describe('eventstore adapter import secrets', () => {
-  if (TEST_SERVERLESS) updateAwsConfig()
-
-  const inputOptions = getCloudResourceOptions('secret_input_testing')
-  const outputOptions = getCloudResourceOptions('secret_output_testing')
-
-  let inputAdapter: Adapter
-  let outputAdapter: Adapter
-
-  const countEvents = 50
-
+describe(`${adapterFactory.name}. Eventstore adapter import secrets`, () => {
   beforeAll(async () => {
-    if (TEST_SERVERLESS) {
-      await create(inputOptions)
-      await create(outputOptions)
-      inputAdapter = createAdapter(
-        cloudResourceOptionsToAdapterConfig(inputOptions)
-      )
-      outputAdapter = createAdapter(
-        cloudResourceOptionsToAdapterConfig(outputOptions)
-      )
-    } else {
-      inputAdapter = createAdapter(inputConfig)
-      outputAdapter = createAdapter(outputConfig)
-    }
-    await inputAdapter.init()
-    await outputAdapter.init()
+    await Promise.all([
+      adapterFactory.create('secret_input_testing')(),
+      adapterFactory.create('secret_output_testing')(),
+    ])
+
+    const outputAdapter = adapters['secret_output_testing']
 
     for (let eventIndex = 0; eventIndex < countEvents; ++eventIndex) {
       const event = makeTestEvent(eventIndex)
       await outputAdapter.saveEvent(event)
     }
   })
+  afterAll(() =>
+    Promise.all([
+      adapterFactory.destroy('secret_input_testing')(),
+      adapterFactory.destroy('secret_output_testing')(),
+    ])
+  )
 
-  afterAll(async () => {
-    await inputAdapter.drop()
-    await inputAdapter.dispose()
-    await outputAdapter.drop()
-    await outputAdapter.dispose()
+  const inputAdapter = adapters['secret_input_testing']
+  const outputAdapter = adapters['secret_output_testing']
 
-    if (TEST_SERVERLESS) {
-      await destroy(inputOptions)
-      await destroy(outputOptions)
-    }
-  })
+  const countEvents = 50
 
   test('should correctly import exported secrets', async () => {
     const countSecrets = 50

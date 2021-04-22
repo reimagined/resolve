@@ -32,7 +32,7 @@ const index = async ({ assemblies, constants, domain }) => {
     const resolve = {
       seedClientEnvs: assemblies.seedClientEnvs,
       serverImports: assemblies.serverImports,
-      ...domain,
+      domain,
       ...constants,
       routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
       publisher: {},
@@ -63,7 +63,7 @@ const index = async ({ assemblies, constants, domain }) => {
     resolve.sendReactiveEvent = async (event) => {
       const { aggregateId, type } = event
       const databaseNameAsId = escapeId(
-        process.env.RESOLVE_EVENT_BUS_DATABASE_NAME
+        process.env.RESOLVE_EVENT_STORE_DATABASE_NAME
       )
       const subscriptionsTableNameAsId = escapeId(
         process.env.RESOLVE_SUBSCRIPTIONS_TABLE_NAME
