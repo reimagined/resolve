@@ -1,0 +1,5 @@
+author=false
+header-label=# Changelog
+exclude-labels=docs,documentation
+breaking-labels=documentation
+release-branch=dev
