@@ -7,7 +7,7 @@ const apiGatewayHandler = async (lambdaEvent, lambdaContext, resolve) => {
   const executor = wrapApiHandler(
     mainHandler,
     getCustomParameters.bind(null, resolve),
-    resolve.monitoring.monitoring.group({ Part: 'ApiHandler' })
+    resolve.monitoring.group({ Part: 'ApiHandler' })
   )
 
   const segment = resolve.performanceTracer.getSegment()

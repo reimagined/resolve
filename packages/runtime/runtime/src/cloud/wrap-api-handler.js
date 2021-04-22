@@ -317,6 +317,13 @@ const wrapApiHandler = (handler, getCustomParameters, monitoring) => async (
   lambdaContext,
   lambdaCallback
 ) => {
+  const startTimestamp = Date.now()
+
+  if (monitoring != null) {
+    monitoring.time('Execution', startTimestamp)
+  }
+
+  let pathMonitoring
   let result
   let isLambdaEdgeRequest
   let req
@@ -327,6 +334,12 @@ const wrapApiHandler = (handler, getCustomParameters, monitoring) => async (
         : {}
 
     req = await createRequest(lambdaEvent, customParameters)
+
+    if (monitoring != null) {
+      pathMonitoring = monitoring.group({ Path: req.path })
+      pathMonitoring.time('Execution', startTimestamp)
+    }
+
     const res = createResponse()
 
     await handler(req, res)
@@ -365,10 +378,8 @@ const wrapApiHandler = (handler, getCustomParameters, monitoring) => async (
         ? `${error.stack}`
         : `Unknown error ${error}`
 
-    if (req != null) {
-      if (monitoring != null) {
-        monitoring.group({ Path: req.path }).error(error)
-      }
+    if (pathMonitoring != null) {
+      pathMonitoring.error(error)
     }
 
     // eslint-disable-next-line no-console
@@ -387,6 +398,16 @@ const wrapApiHandler = (handler, getCustomParameters, monitoring) => async (
         body: '',
       }
     }
+  }
+
+  const endTimestamp = Date.now()
+
+  if (pathMonitoring != null) {
+    pathMonitoring.timeEnd('Execution', endTimestamp)
+  }
+
+  if (monitoring != null) {
+    monitoring.timeEnd('Execution', endTimestamp)
   }
 
   if (typeof lambdaCallback === 'function') {
