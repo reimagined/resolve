@@ -1,5 +1,12 @@
 author=false
 header-label=# Changelog
-exclude-labels=docs,documentation
-breaking-labels=documentation
 release-branch=dev
+unreleased-label=Upcoming
+issues-wo-labels=false
+exclude-labels=docs,Docs,documentation,Documentation,question
+max-issues=100
+enhancement-label=**Implemented new features and enhancements:**
+enhancement-labels=enhancement,Enhancement,Type: Enhancement,feature,Feature,improvement,Improvement
+breaking-labels=breaking,Breaking,breaking-change,Breaking-Change,migration,Migration
+pr-label=**Other changes:**
+

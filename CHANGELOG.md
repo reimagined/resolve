@@ -1,9 +1,52 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.29.0...HEAD)
+
+**Implemented new features and enhancements:**
+
+- Advanced testing tools: improvements [\#1816](https://github.com/reimagined/resolve/pull/1816)
+- Advanced testing tools [\#1793](https://github.com/reimagined/resolve/pull/1793)
+
+**Fixed bugs:**
+
+- Unable to get read-models and sagas list using module-admin [\#1807](https://github.com/reimagined/resolve/issues/1807)
+- Error collecting is broken in read model \(and saga\) projection [\#1797](https://github.com/reimagined/resolve/issues/1797)
+-  with-angular example does not work [\#1795](https://github.com/reimagined/resolve/issues/1795)
+- After local app launch, module-admin returns "invalid date" error for some time [\#1765](https://github.com/reimagined/resolve/issues/1765)
+- The store.update function works incorrectly when the $set fields contain only null values. [\#1758](https://github.com/reimagined/resolve/issues/1758)
+
+**Other changes:**
+
+- CRA tests [\#1828](https://github.com/reimagined/resolve/pull/1828)
+- Fix/Repository restructuring [\#1826](https://github.com/reimagined/resolve/pull/1826)
+- Eventstore postgres-serverless tests [\#1825](https://github.com/reimagined/resolve/pull/1825)
+- Fix saga codesample [\#1821](https://github.com/reimagined/resolve/pull/1821)
+- deleteSecret returns boolean [\#1820](https://github.com/reimagined/resolve/pull/1820)
+- Fix/correct & fast repo building [\#1818](https://github.com/reimagined/resolve/pull/1818)
+- Fix/Update license [\#1817](https://github.com/reimagined/resolve/pull/1817)
+- Improve cold start [\#1815](https://github.com/reimagined/resolve/pull/1815)
+- Fix module-admin [\#1812](https://github.com/reimagined/resolve/pull/1812)
+- Prohibit updating or resetting previously deleted secrets [\#1811](https://github.com/reimagined/resolve/pull/1811)
+- Hotfix/sequential lite adapters [\#1808](https://github.com/reimagined/resolve/pull/1808)
+- Rename DevExpress/resolve-cloud2 to DevExpress/resolve-cloud [\#1805](https://github.com/reimagined/resolve/pull/1805)
+- Monitoring functional tests [\#1802](https://github.com/reimagined/resolve/pull/1802)
+- Example of replicator as read-model [\#1801](https://github.com/reimagined/resolve/pull/1801)
+- Implement fast CTE for eventstore adapter [\#1800](https://github.com/reimagined/resolve/pull/1800)
+- Fix read-model monitored error meta [\#1799](https://github.com/reimagined/resolve/pull/1799)
+- Fix CRA tests isolation [\#1798](https://github.com/reimagined/resolve/pull/1798)
+- Fix links to the PostgreSQL schema article [\#1796](https://github.com/reimagined/resolve/pull/1796)
+- Fix scheduler [\#1792](https://github.com/reimagined/resolve/pull/1792)
+- Update module-admin readme [\#1787](https://github.com/reimagined/resolve/pull/1787)
+- Fix readme badges [\#1786](https://github.com/reimagined/resolve/pull/1786)
+- Generate secrets in hacker-news import [\#1785](https://github.com/reimagined/resolve/pull/1785)
+- Feature/cra refactoring [\#1784](https://github.com/reimagined/resolve/pull/1784)
+- Generate set and delete secret events for sqlite and postegresql-serverless [\#1783](https://github.com/reimagined/resolve/pull/1783)
+- Deduplicate eventstore-related types re-declared in readmodel adapter [\#1781](https://github.com/reimagined/resolve/pull/1781)
+- Remove unstable resolve-cloud dependency [\#1780](https://github.com/reimagined/resolve/pull/1780)
+- Hotfix/saga side effects [\#1779](https://github.com/reimagined/resolve/pull/1779)
+- 'Skip' parameter for loadSecrets of eventstore adapter [\#1778](https://github.com/reimagined/resolve/pull/1778)
 
 ## V0.29.0
 
