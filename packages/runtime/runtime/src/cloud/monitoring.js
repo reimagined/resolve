@@ -203,11 +203,7 @@ const createGroupDimensions = (config) =>
     []
   )
 
-const createMonitoringImplementation = (
-  log,
-  monitoringData,
-  groupData
-) => {
+const createMonitoringImplementation = (log, monitoringData, groupData) => {
   return {
     group: (config) => {
       const groupDimensions = createGroupDimensions(config)
@@ -226,19 +222,10 @@ const createMonitoringImplementation = (
         ],
       }
 
-      return createMonitoringImplementation(
-        log,
-        monitoringData,
-        nextGroupData
-      )
+      return createMonitoringImplementation(log, monitoringData, nextGroupData)
     },
     error: monitoringErrorCallback.bind(null, log, monitoringData, groupData),
-    time: monitoringTimeCallback.bind(
-      null,
-      log,
-      monitoringData,
-      groupData
-    ),
+    time: monitoringTimeCallback.bind(null, log, monitoringData, groupData),
     timeEnd: monitoringTimeEndCallback.bind(
       null,
       log,
