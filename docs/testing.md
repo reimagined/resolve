@@ -20,7 +20,7 @@ To write a test, call the `givenEvents` function. This function takes an array o
 
 ## Testing Aggregates
 
-Use the `.aggregate` function to add an aggregate to a test case. Use the following interface to describe the test case for an aggregate:
+Use the `.aggregate` function to add an aggregate to a test case. Use the following API to describe the test case for an aggregate:
 
 ### Chainable Functions
 
@@ -91,7 +91,7 @@ The `aggregate` function's parameter should be an object with the following fiel
 
 ## Testing Read Models
 
-Use the `.readModel` function to add a Read Model to a test case. Use the following interface to describe the test case for a Read Model:
+Use the `.readModel` function to add a Read Model to a test case. Use the following API to describe the test case for a Read Model:
 
 ### Chainable Functions
 
@@ -101,7 +101,7 @@ Use the `.readModel` function to add a Read Model to a test case. Use the follow
 | `not()`                       | Invers the assertions.                              |
 | `query(resolver, args?)`      | Specifies a query to send to the read model.        |
 | `withAdapter(adapter)`        | Specifies a read model adapter to use.              |
-| `withEncryption( encryption)` | Specifies an encryption factory function to use.    |
+| `withEncryption(encryption)`  | Specifies an encryption factory function to use.    |
 | `withSecretsManager(manager)` | Assigns a secrets manager to the aggregate          |
 
 ### Assertions
@@ -146,7 +146,7 @@ In this example, the `.all` function called at the end of the call chain is the 
 
 ## Testing Sagas
 
-Use the `.saga` function to add a saga to a test case. Use the following interface to describe the test case for a saga:
+Use the `.saga` function to add a saga to a test case. Use the following API to describe the test case for a saga:
 
 ### Chainable Functions
 
@@ -155,7 +155,7 @@ Use the `.saga` function to add a saga to a test case. Use the following interfa
 | `allowSideEffects()`          | Specifies that saga side effects are allowed.                        |
 | `startSideEffectsFrom(date)`  | Specifies the date time from which to start to execute side effects. |
 | `withAdapter(adapter)`        | Specifies a read model adapter to use.                               |
-| `withEncryption( encryption)` | Specifies an encryption factory function to use.                     |
+| `withEncryption(encryption)`  | Specifies an encryption factory function to use.                     |
 | `withSecretsManager(manager)` | Assigns a secrets manager to the aggregate                           |
 
 ### Assertions
