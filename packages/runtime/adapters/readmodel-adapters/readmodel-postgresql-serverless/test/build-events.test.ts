@@ -82,8 +82,8 @@ describe('buildEvents', () => {
         setSecret: async (id: string, secret: string): Promise<void> => {
           return
         },
-        deleteSecret: async (id: string): Promise<void> => {
-          return
+        deleteSecret: async (id: string): Promise<boolean> => {
+          return true
         },
       }),
     }
@@ -198,8 +198,8 @@ describe('buildEvents', () => {
         setSecret: async (id: string, secret: string): Promise<void> => {
           return
         },
-        deleteSecret: async (id: string): Promise<void> => {
-          return
+        deleteSecret: async (id: string): Promise<boolean> => {
+          return true
         },
       }),
     }

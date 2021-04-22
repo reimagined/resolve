@@ -2,12 +2,9 @@ import fs from 'fs-extra'
 import path from 'path'
 import message from './message'
 
-const testExampleExists = (
-  resolveCloneExamplesPath,
-  resolveCloneExamplePath,
-  exampleName
-) => {
-  if (fs.existsSync(resolveCloneExamplePath)) {
+const testExampleExists = (resolveCloneExamplesPath, exampleName) => {
+  const examplePath = path.join(resolveCloneExamplesPath, exampleName)
+  if (fs.existsSync(examplePath)) {
     return
   }
 
