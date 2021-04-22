@@ -82,8 +82,8 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
     ): boolean {
       return (
         (!!includeRuntimeErrors &&
-          PassthroughError.isRuntimeFatalPassthroughError(error) &&
-          PassthroughError.isShortCircuitPassthroughError(error)) ||
+          PassthroughError.isRuntimeFatalPassthroughError(error)) ||
+        PassthroughError.isShortCircuitPassthroughError(error) ||
         PassthroughError.isRetryablePassthroughError(error) ||
         PassthroughError.isRegularFatalPassthroughError(error)
       )
