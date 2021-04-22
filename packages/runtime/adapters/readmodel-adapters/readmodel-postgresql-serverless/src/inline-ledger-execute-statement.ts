@@ -79,8 +79,11 @@ const inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod = Object.
               error,
               transactionId != null && transactionId.constructor === String
                 ? transactionId
-                : null
+                : null,
+              !!passthroughRuntimeErrors
             )
+          } else {
+            throw error
           }
         } else {
           if (PassthroughError.isPassthroughError(error, false)) {

@@ -33,7 +33,7 @@ const inlineLedgerExecuteTransaction: InlineLedgerExecuteTransactionMethod = asy
             MethodName
           >
         } catch (error) {
-          PassthroughError.maybeThrowPassthroughError(error, null)
+          PassthroughError.maybeThrowPassthroughError(error, null, false)
         }
       }
     }
@@ -52,7 +52,7 @@ const inlineLedgerExecuteTransaction: InlineLedgerExecuteTransactionMethod = asy
             MethodName
           >
         } catch (error) {
-          PassthroughError.maybeThrowPassthroughError(error, null)
+          PassthroughError.maybeThrowPassthroughError(error, null, false)
         }
       }
     }
@@ -71,7 +71,7 @@ const inlineLedgerExecuteTransaction: InlineLedgerExecuteTransactionMethod = asy
             MethodName
           >
         } catch (error) {
-          PassthroughError.maybeThrowPassthroughError(error, null)
+          PassthroughError.maybeThrowPassthroughError(error, null, false)
         }
       }
     }

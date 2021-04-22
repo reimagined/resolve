@@ -145,7 +145,8 @@ export type PassthroughErrorFactory = {
   isEmptyTransactionError: (error: PassthroughErrorLike) => boolean
   maybeThrowPassthroughError: (
     error: PassthroughErrorLike,
-    transactionId: string | null
+    transactionId: string | null,
+    includeRuntimeErrors: boolean
   ) => void
 }
 

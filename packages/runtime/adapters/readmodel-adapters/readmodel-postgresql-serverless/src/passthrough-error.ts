@@ -90,9 +90,10 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
     },
     maybeThrowPassthroughError(
       error: PassthroughErrorLike,
-      transactionId: string | null
+      transactionId: string | null,
+      includeRuntimeErrors = false
     ): void {
-      if (!PassthroughError.isPassthroughError(error, false)) {
+      if (!PassthroughError.isPassthroughError(error, includeRuntimeErrors)) {
         throw error
       } else if (!PassthroughError.isShortCircuitPassthroughError(error)) {
         const isEmptyTransaction = PassthroughError.isEmptyTransactionError(
