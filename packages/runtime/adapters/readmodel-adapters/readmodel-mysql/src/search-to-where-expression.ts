@@ -73,6 +73,10 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
           ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSON)`
           : `CAST("null" AS JSON)`
 
+      if(compareOperators[fieldOperator] == null) {
+        throw new Error(`Malformed JSON ${JSON.stringify(fieldOperator)}, must be JSON primitive value`)
+      }
+
       const resultExpression = compareOperators[fieldOperator](
         resultFieldName,
         compareInlinedValue

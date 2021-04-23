@@ -9,7 +9,7 @@ jest.setTimeout(jestTimeout())
 // eslint-disable-next-line no-console
 console.error = () => {}
 
-describe('Read-model Store API. Update. $set', () => {
+describe(`${adapterFactory.name}. Read-model Store API. Update. $set`, () => {
   beforeEach(adapterFactory.create('update_set_operator'))
   afterEach(adapterFactory.destroy('update_set_operator'))
 
