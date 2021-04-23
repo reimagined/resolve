@@ -122,7 +122,7 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
               : 'unknown'
           )
 
-          let updatingInlinedValue = `json(CAST(CASE
+          let updatingInlinedValue = `CAST(CASE
             WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'string-string' THEN JSON_QUOTE(
               CAST(${sourceInlinedValue} AS CHAR) ||
               CAST(${fieldValueStringLike} AS CHAR)
@@ -132,7 +132,7 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
               CAST(${fieldValueNumberLike} AS DECIMAL(48, 16))
             )
             ELSE JSON_TYPE((SELECT 'MalformedIncOperation' FROM information_schema.tables LIMIT 1))
-          END AS BLOB))`
+          END AS JSON)`
 
           updateExprArray.push(
             `${targetInlinedPrefix} ${updatingInlinedValue} ${targetInlinedPostfix}`
