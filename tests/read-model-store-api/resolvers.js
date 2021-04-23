@@ -4,6 +4,11 @@ const resolvers = {
 
     return result
   },
+  findOne: async (store, args) => {
+    const result = await store.findOne('test', args)
+
+    return result
+  },
 }
 
 export default resolvers
