@@ -74,8 +74,12 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
         JSON.stringify([fieldValue])
       )} AS BLOB))`
 
-      if(compareOperators[fieldOperator] == null) {
-        throw new Error(`Malformed JSON ${JSON.stringify(fieldOperator)}, must be JSON primitive value`)
+      if (compareOperators[fieldOperator] == null) {
+        throw new Error(
+          `Malformed JSON ${JSON.stringify(
+            fieldOperator
+          )}, must be JSON primitive value`
+        )
       }
 
       const resultExpression = compareOperators[fieldOperator](
