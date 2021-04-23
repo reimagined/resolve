@@ -123,8 +123,10 @@ await reset(resolveConfig, {
   - `pushIncrementalImport` - accumulate events for incremental import
   - `commitIncrementalImport` - commit accumulated events to eventstore
   - `rollbackIncrementalImport` - drop accumulated events
+
 - resolve-client
   - **meta** object in query response containing meta data
+
 - resolve-redux
   - New redux hook API
   - Added **serializedState** parameter to createStore
