@@ -32,14 +32,28 @@ The request provides the following interface:
   path: String,
   body: String,
   cookies: Object<key, value>,cd
-  headers: Object<key, value>,
-  query: Object<key, value>
+  <key, value>,
+  query: Object<key, value>,
+  resolve: Object<key, value>
 }
 ```
 
+The request's `resolve` field is a reSolve context object that provides access to reSolve API and metadata. Through this object, you can use reSolve-specific API:
+
+```js
+const getPersonalKey = async (req, res) => {
+    await req.resolve.executeCommand({
+      ...
+    });
+    res.end();
+  }
+```
+
+> **Note:** The `resolve` object contains resources, such as database connections, that are disposed after the API handler completes to prevent leaks. For this reason, you should not use the `resolve` object in code with delayed execution that may run after the API handler completes.
+
 ### Response
 
-The `res` object represents the server's response to the HTTP request.
+`The`res` object represents the server's response to the HTTP request.
 
 The response object provides the following interface:
 
