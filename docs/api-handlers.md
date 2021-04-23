@@ -3,11 +3,7 @@ id: api-handlers
 title: API Handlers
 ---
 
-Use API Handlers to provide your reSolve server with the capability to handle arbitrary HTTP requests.
-
-## API Reference
-
-ReSolve API handlers have the following general structure:
+Use API Handlers to provide your reSolve server with the capability to handle arbitrary HTTP requests. ReSolve API handlers have the following general structure:
 
 ##### common/api-handlers/my-api-handler.js:
 
@@ -19,7 +15,7 @@ export default async (req, res) => {
 
 The handler function takes two parameters - the [request](#request) and [response](#response).
 
-### Request
+## Request
 
 The `req` object represents the HTTP request. This object exposes properties that provide access to the request query string, parameters, body, HTTP headers, etc.
 
@@ -51,9 +47,9 @@ const getPersonalKey = async (req, res) => {
 
 > **Note:** The `resolve` object contains resources, such as database connections, that are disposed after the API handler completes to prevent leaks. For this reason, you should not use the `resolve` object in code with delayed execution that may run after the API handler completes.
 
-### Response
+## Response
 
-`The`res` object represents the server's response to the HTTP request.
+The `res` object represents the server's response to the HTTP request.
 
 The response object provides the following interface:
 
@@ -72,7 +68,7 @@ The response object provides the following interface:
 }
 ```
 
-### Configuration
+## Configuration
 
 An API handler should be registered in the `apiHandlers` section of the application's configuration file.
 
@@ -104,7 +100,7 @@ Refer to the [Application Configuration](application-configuration) topic for mo
 
 ## Implementation Examples
 
-- Send Text
+##### Send Text
 
 ```js
 export default async (req, res) => {
@@ -114,7 +110,7 @@ export default async (req, res) => {
 }
 ```
 
-- Send JSON
+##### Send JSON
 
 ```js
 export default async (req, res) => {
@@ -127,7 +123,7 @@ export default async (req, res) => {
 }
 ```
 
-- Send File
+##### Send File
 
 ```js
 export default async (req, res) => {
@@ -139,7 +135,7 @@ export default async (req, res) => {
 }
 ```
 
-- Set Cookies
+##### Set Cookies
 
 ```js
 export default async (req, res) => {
@@ -149,7 +145,7 @@ export default async (req, res) => {
 }
 ```
 
-- Redirect
+##### Redirect
 
 ```js
 export default async (req, res) => {
@@ -157,7 +153,7 @@ export default async (req, res) => {
 }
 ```
 
-- Custom status
+##### Custom status
 
 ```js
 export default async (req, res) => {
