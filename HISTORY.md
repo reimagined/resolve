@@ -14,8 +14,7 @@
 
 - `clientIp` in request object
 
-
-## 0.27.0
+## V0.27.0
 
 ### Breaking Changes
 
@@ -83,7 +82,7 @@ await reset(resolveConfig, {
 })
 ```
 
-## 0.25.0
+## V0.25.0
 
 ### Breaking Changes
 
