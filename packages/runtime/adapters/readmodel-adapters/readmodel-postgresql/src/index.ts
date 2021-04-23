@@ -9,6 +9,7 @@ import type {
   AdapterPool,
   AdapterOptions,
   AdapterApi,
+  AdminPool,
 } from './types'
 
 import buildUpsertDocument from './build-upsert-document'
@@ -41,6 +42,10 @@ import pause from './pause'
 import resume from './resume'
 import status from './status'
 import build from './build'
+
+import _createResource from './resource/create'
+import _disposeResource from './resource/dispose'
+import _destroyResource from './resource/destroy'
 
 const store: CurrentStoreApi = {
   defineTable,
@@ -99,3 +104,26 @@ const createAdapter = _createAdapter.bind<
 >(null, implementation)
 
 export default createAdapter
+
+const pool = {
+  connect,
+  disconnect,
+  escapeId,
+  escapeStr,
+} as AdminPool
+
+const createResource = _createResource.bind(null, pool)
+const disposeResource = _disposeResource.bind(null, pool)
+const destroyResource = _destroyResource.bind(null, pool)
+
+Object.assign(pool, {
+  createResource,
+  disposeResource,
+  destroyResource,
+})
+
+export {
+  createResource as create,
+  disposeResource as dispose,
+  destroyResource as destroy,
+}

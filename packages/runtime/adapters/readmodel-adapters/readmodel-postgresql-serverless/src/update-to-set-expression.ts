@@ -242,7 +242,7 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
 
           updateExpr = `(SELECT CASE 
             WHEN ((jsonb_typeof(${inlineTableName}."val" #> '${baseNestedPath}') || '-' || ${lastNestedPathElementType} ) = 'object-string' OR
-            jsonb_typeof(${inlineTableName}."val" #> '${baseNestedPath}') || '-' || ${lastNestedPathElementType} ) = 'array-number') THEN
+            (jsonb_typeof(${inlineTableName}."val" #> '${baseNestedPath}') || '-' || ${lastNestedPathElementType} ) = 'array-number') THEN
             jsonb_set(${updateExpr}, '${makeNestedPath(nestedPath)}', ${
             fieldValue != null
               ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSONB)`

@@ -11,14 +11,15 @@ const create: UnboundResourceMethod = async (pool, options) => {
   const admin = {} as AdapterPool
 
   await connect(admin, {
-    awsSecretStoreArn: options.awsSecretStoreAdminArn,
-    dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
     databaseName: options.databaseName,
-    region: options.region,
+    host: options.host,
+    port: options.port,
+    user: options.user,
+    password: options.password,
+    database: options.database,
   } as OmitObject<AdapterOptions, CommonAdapterOptions>)
 
-  await admin.inlineLedgerExecuteStatement(
-    admin,
+  await admin.inlineLedgerRunQuery(
     [
       `CREATE SCHEMA ${escapeId(options.databaseName)}`,
 
