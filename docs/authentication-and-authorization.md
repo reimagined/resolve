@@ -1,7 +1,7 @@
 ---
 id: authentication-and-authorization
 title: Authentication and Authorization
-description: You can use reSolve's built-in module to enable authentication in your application. The authentication module uses the Passport.js library
+description: You can use reSolve's built-in authentication module to enable authentication in your application.
 ---
 
 ## Setting up Authentication
