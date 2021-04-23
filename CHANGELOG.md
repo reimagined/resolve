@@ -36,7 +36,6 @@
 - Implement fast CTE for eventstore adapter [\#1800](https://github.com/reimagined/resolve/pull/1800)
 - Fix read-model monitored error meta [\#1799](https://github.com/reimagined/resolve/pull/1799)
 - Fix CRA tests isolation [\#1798](https://github.com/reimagined/resolve/pull/1798)
-- Fix links to the PostgreSQL schema article [\#1796](https://github.com/reimagined/resolve/pull/1796)
 - Fix scheduler [\#1792](https://github.com/reimagined/resolve/pull/1792)
 - Update module-admin readme [\#1787](https://github.com/reimagined/resolve/pull/1787)
 - Fix readme badges [\#1786](https://github.com/reimagined/resolve/pull/1786)
@@ -62,8 +61,7 @@
 
 - `clientIp` in request object
 
-
-## 0.27.0
+## V0.27.0
 
 ### Breaking Changes
 
@@ -131,7 +129,7 @@ await reset(resolveConfig, {
 })
 ```
 
-## 0.25.0
+## V0.25.0
 
 ### Breaking Changes
 
@@ -172,8 +170,10 @@ await reset(resolveConfig, {
   - `pushIncrementalImport` - accumulate events for incremental import
   - `commitIncrementalImport` - commit accumulated events to eventstore
   - `rollbackIncrementalImport` - drop accumulated events
+
 - resolve-client
   - **meta** object in query response containing meta data
+
 - resolve-redux
   - New redux hook API
   - Added **serializedState** parameter to createStore
