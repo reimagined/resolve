@@ -24,7 +24,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
     },
   ]
 
-  test(`Projection\n        store.insert('test', { testId })\n      Resolver should return [{ testId: 'root', a: null }]`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId })\n      Resolver should return [{ testId: 'root', a: null }]`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -47,7 +47,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
         resolvers,
       })
       .withAdapter(adapter)
-      .query('all', {})
+      .query('find', {})
 
     expect(result).toEqual([
       {
@@ -57,7 +57,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
     ])
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: undefined })\n      Resolver should return [{ testId: 'root', a: null }]`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: undefined })\n      Resolver should return [{ testId: 'root', a: null }]`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -81,7 +81,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
         resolvers,
       })
       .withAdapter(adapter)
-      .query('all', {})
+      .query('find', {})
 
     expect(result).toEqual([
       {
@@ -91,7 +91,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
     ])
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: { b: undefined } })\n      Resolver should return [{ testId: 'root', a: {} }]`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: { b: undefined } })\n      Resolver should return [{ testId: 'root', a: {} }]`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -117,7 +117,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
         resolvers,
       })
       .withAdapter(adapter)
-      .query('all', {})
+      .query('find', {})
 
     expect(result).toEqual([
       {
@@ -127,7 +127,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
     ])
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: { b: { c: undefined } } })\n      Resolver should return [{ testId: 'root', a: { b: {} } }]`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: { b: { c: undefined } } })\n      Resolver should return [{ testId: 'root', a: { b: {} } }]`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -155,7 +155,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
         resolvers,
       })
       .withAdapter(adapter)
-      .query('all', {})
+      .query('find', {})
 
     expect(result).toEqual([
       {
@@ -165,7 +165,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
     ])
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: null })\n      Resolver should return [{ testId: 'root', a: null }]`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: null })\n      Resolver should return [{ testId: 'root', a: null }]`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -189,7 +189,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
         resolvers,
       })
       .withAdapter(adapter)
-      .query('all', {})
+      .query('find', {})
 
     expect(result).toEqual([
       {
@@ -199,7 +199,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
     ])
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: { b: null } })\n      Resolver should return [{ testId: 'root', a: { b: null } }]`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: { b: null } })\n      Resolver should return [{ testId: 'root', a: { b: null } }]`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -225,7 +225,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
         resolvers,
       })
       .withAdapter(adapter)
-      .query('all', {})
+      .query('find', {})
 
     expect(result).toEqual([
       {
@@ -237,7 +237,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
     ])
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: { b: { c: null } } })\n      Resolver should return [{ testId: 'root', a: { b: { c: null} } }]`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: { b: { c: null } } })\n      Resolver should return [{ testId: 'root', a: { b: { c: null} } }]`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -265,7 +265,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
         resolvers,
       })
       .withAdapter(adapter)
-      .query('all', {})
+      .query('find', {})
 
     expect(result).toEqual([
       {
