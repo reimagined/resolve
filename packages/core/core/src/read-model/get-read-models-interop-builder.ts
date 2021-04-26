@@ -75,6 +75,18 @@ const getReadModelInterop = (
         }
       )
 
+      const monitoringGroup =
+        monitoring != null
+          ? monitoring
+              .group({ Part: 'ReadModelResolver' })
+              .group({ ReadModel: name })
+              .group({ Resolver: resolver })
+          : null
+
+      if (monitoringGroup != null) {
+        monitoringGroup.time('Execution')
+      }
+
       try {
         log.debug(`invoking the resolver`)
         const data = await invoker(connection, args, {
@@ -91,16 +103,15 @@ const getReadModelInterop = (
           subSegment.addError(error)
         }
 
-        if (monitoring) {
-          const monitoringGroup = monitoring
-            .group({ Part: 'ReadModelResolver' })
-            .group({ ReadModel: name })
-            .group({ Resolver: resolver })
-
+        if (monitoringGroup != null) {
           monitoringGroup.error(error)
         }
         throw error
       } finally {
+        if (monitoringGroup != null) {
+          monitoringGroup.timeEnd('Execution')
+        }
+
         if (subSegment != null) {
           subSegment.close()
         }

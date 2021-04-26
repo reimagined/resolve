@@ -95,24 +95,28 @@ export const makeTestEnvironment = (
     })
 
     const liveErrors: Array<Error> = []
-    const monitoring: Monitoring = {
-      group(config: Record<string, string>) {
-        if (config.Part !== 'ReadModelProjection') {
-          return this
-        }
 
-        return {
-          ...this,
-          error: (error: Error) => {
-            liveErrors.push(error)
-          },
-        }
+    const monitoringWithError: Monitoring = {
+      group: () => monitoringWithError,
+      time: () => void 0,
+      timeEnd: () => void 0,
+      error: (error: Error) => {
+        liveErrors.push(error)
       },
+      publish: async () => void 0,
+    }
+
+    const monitoring: Monitoring = {
+      group: (config: Record<string, string>) =>
+        config.Part !== 'ReadModelProjection'
+          ? monitoring
+          : monitoringWithError,
       time: () => void 0,
       timeEnd: () => void 0,
       error: () => void 0,
       publish: async () => void 0,
     }
+
     const eventstoreAdapter = getEventStore(events)
 
     const errors = []

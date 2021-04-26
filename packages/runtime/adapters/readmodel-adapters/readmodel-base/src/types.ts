@@ -136,8 +136,10 @@ export type PerformanceTracerLike = {
 }
 
 export type MonitoringLike = {
-  time?: (name: string, timestamp?: number) => void
-  timeEnd?: (name: string, timestamp?: number) => void
+  time: (name: string, timestamp?: number) => void
+  timeEnd: (name: string, timestamp?: number) => void
+  group: (config: Record<string, string>) => MonitoringLike
+  publish: () => Promise<void>
   performance?: PerformanceTracerLike
 }
 

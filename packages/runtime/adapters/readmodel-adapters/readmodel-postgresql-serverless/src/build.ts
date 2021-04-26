@@ -558,10 +558,25 @@ const build: ExternalMethods['build'] = async (
 
   const now = Date.now()
 
-  monitoring?.time?.('NotificationToBuildStart', nt.sendTime)
-  monitoring?.timeEnd?.('NotificationToBuildStart', now)
+  const hasSendTime = typeof nt.sendTime === 'number'
 
-  monitoring?.time?.('NotificationToBuildEnd', now)
+  const groupMonitoring =
+    monitoring != null
+      ? monitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ ReadModel: readModelName })
+      : null
+
+  if (monitoring != null && groupMonitoring != null && hasSendTime) {
+    monitoring.time('NotificationToBuildStart', nt.sendTime)
+    monitoring.timeEnd('NotificationToBuildStart', now)
+
+    groupMonitoring.time('NotificationToBuildStart', nt.sendTime)
+    groupMonitoring.timeEnd('NotificationToBuildStart', now)
+
+    monitoring.time('NotificationToBuildEnd', now)
+    groupMonitoring.time('NotificationToBuildStart', nt.sendTime)
+  }
 
   const inlineLedgerExecuteStatement: typeof iles = Object.assign(
     async (...args: any[]): Promise<any> => {
@@ -712,29 +727,29 @@ const build: ExternalMethods['build'] = async (
   } finally {
     basePool.activePassthrough = false
 
-    if (
-      typeof monitoring?.time !== 'function' ||
-      typeof monitoring?.timeEnd !== 'function'
-    ) {
-      // eslint-disable-next-line no-console
-      console.warn('Monitoring is absent')
-      return
-    }
-
-    try {
-      monitoring.timeEnd('NotificationToBuildEnd')
+    if (monitoring != null && groupMonitoring != null) {
+      if (hasSendTime) {
+        monitoring.timeEnd('NotificationToBuildEnd')
+        groupMonitoring.timeEnd('NotificationToBuildEnd')
+      }
 
       monitoring.time('EventLoadTime', 0)
       monitoring.timeEnd('EventLoadTime', nt.pureEventLoadTime)
 
+      groupMonitoring.time('EventLoadTime', 0)
+      groupMonitoring.timeEnd('EventLoadTime', nt.pureEventLoadTime)
+
       monitoring.time('ProjectionApplyTime', 0)
       monitoring.timeEnd('ProjectionApplyTime', nt.pureProjectionApplyTime)
 
+      groupMonitoring.time('ProjectionApplyTime', 0)
+      groupMonitoring.timeEnd('ProjectionApplyTime', nt.pureProjectionApplyTime)
+
       monitoring.time('LedgerTime', 0)
       monitoring.timeEnd('LedgerTime', nt.pureLedgerTime)
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.warn('Monitoring error:', e)
+
+      groupMonitoring.time('LedgerTime', 0)
+      groupMonitoring.timeEnd('LedgerTime', nt.pureLedgerTime)
     }
   }
 }

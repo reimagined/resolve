@@ -17,8 +17,6 @@ import {
   CommandResult,
 } from '../types/core'
 
-import { makeMonitoringSafe } from '../helpers'
-
 type AggregateData = {
   aggregateVersion: number
   aggregateId: string
@@ -378,7 +376,6 @@ const executeCommand = async (
           .group({ Part: 'Command' })
           .group({ AggregateName: command.aggregateName })
           .group({ Type: command.type })
-          .group({ AggregateId: command.aggregateId })
       : null
 
   if (monitoringGroup != null) {
@@ -510,10 +507,6 @@ const executeCommand = async (
       }
     })()
 
-    if (monitoringGroup != null) {
-      monitoringGroup.timeEnd('Execution')
-    }
-
     return processedEvent
   } catch (error) {
     subSegment.addError(error)
@@ -523,6 +516,10 @@ const executeCommand = async (
     }
     throw error
   } finally {
+    if (monitoringGroup != null) {
+      monitoringGroup.timeEnd('Execution')
+    }
+
     subSegment.close()
   }
 }
