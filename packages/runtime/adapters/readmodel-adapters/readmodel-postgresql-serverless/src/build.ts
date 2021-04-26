@@ -30,7 +30,6 @@ const buildInit: (
     inputCursor: ReadModelCursor
     readModelLedger: ReadModelLedger
     xaKey: string
-    nt: any
   },
   ...args: Parameters<ExternalMethods['build']>
 ) => ReturnType<ExternalMethods['build']> = async (
@@ -55,10 +54,7 @@ const buildInit: (
     ledgerTableNameAsId,
     trxTableNameAsId,
     xaKey,
-    nt,
   } = pool
-
-  nt.buildKind = 'init'
 
   const {
     transactionId = RDS_TRANSACTION_FAILED_KEY,
@@ -170,7 +166,7 @@ export const buildEvents: (
     inputCursor: ReadModelCursor
     readModelLedger: ReadModelLedger
     xaKey: string
-    nt: any
+    metricData: any
   },
   ...args: Parameters<ExternalMethods['build']>
 ) => ReturnType<ExternalMethods['build']> = async (
@@ -198,10 +194,8 @@ export const buildEvents: (
     xaKey,
     eventTypes,
     inputCursor,
-    nt,
+    metricData,
   } = pool
-
-  nt.buildKind = 'events'
 
   let lastSuccessEvent: ReadModelEvent | null = null
   let lastFailedEvent: ReadModelEvent | null = null
@@ -221,7 +215,7 @@ export const buildEvents: (
         : RDS_TRANSACTION_FAILED_KEY
     )
 
-  const tsEp = Date.now()
+  const firstEventsLoadStartTimestamp = Date.now()
 
   let eventsPromise: Promise<Array<ReadModelEvent>> = eventstoreAdapter
     .loadEvents({
@@ -231,7 +225,8 @@ export const buildEvents: (
       cursor,
     })
     .then((result) => {
-      nt.pureEventLoadTime += Date.now() - tsEp
+      metricData.eventBatchLoadTime +=
+        Date.now() - firstEventsLoadStartTimestamp
       return result != null ? result.events : []
     })
 
@@ -284,9 +279,8 @@ export const buildEvents: (
     acquireTrxPromise,
   ])
 
-  for (nt.eventLoopCount = 0; true; nt.eventLoopCount++) {
+  for (metricData.eventLoopCount = 0; true; metricData.eventLoopCount++) {
     if (events.length === 0) {
-      nt.discardReason = 'zero-events'
       throw new PassthroughError(transactionId)
     }
 
@@ -306,7 +300,7 @@ export const buildEvents: (
       cursor,
       events
     )
-    const tsEp = Date.now()
+    const eventsLoadStartTimestamp = Date.now()
     eventsPromise = eventstoreAdapter
       .loadEvents({
         eventTypes,
@@ -315,7 +309,7 @@ export const buildEvents: (
         cursor: nextCursor,
       })
       .then((result) => {
-        nt.pureEventLoadTime += Date.now() - tsEp
+        metricData.eventBatchLoadTime += Date.now() - eventsLoadStartTimestamp
         return result != null ? result.events : []
       })
 
@@ -331,14 +325,14 @@ export const buildEvents: (
               `SAVEPOINT ${savePointId}`,
               transactionId
             )
-            const tsAh = Date.now()
+            const projectionApplyStartTimestamp = Date.now()
             try {
-              nt.insideProjection = true
+              metricData.insideProjection = true
               await handler()
             } finally {
-              nt.insideProjection = false
+              metricData.insideProjection = false
             }
-            nt.pureProjectionApplyTime += Date.now() - tsAh
+            metricData.pureProjectionApplyTime += Date.now() - projectionApplyStartTimestamp
 
             await inlineLedgerExecuteStatement(
               pool,
@@ -511,10 +505,7 @@ export const buildEvents: (
       ]))
     } else {
       if (isBuildSuccess) {
-        nt.discardReason = 'invoke-next-round'
         await next()
-      } else {
-        nt.discardReason = 'error-in-read-model'
       }
 
       throw new PassthroughError(await transactionIdPromise)
@@ -532,11 +523,9 @@ const build: ExternalMethods['build'] = async (
   getVacantTimeInMillis,
   ...args
 ) => {
-  const nt: any = {
+  const metricData: any = {
     ...(args as any)[0],
-    receiveTime: Date.now(),
-    name: 'NTPROFILE',
-    pureEventLoadTime: 0,
+    eventBatchLoadTime: 0,
     pureProjectionApplyTime: 0,
     pureLedgerTime: 0,
   }
@@ -556,7 +545,7 @@ const build: ExternalMethods['build'] = async (
 
   const now = Date.now()
 
-  const hasSendTime = typeof nt.sendTime === 'number'
+  const hasSendTime = typeof metricData.sendTime === 'number'
 
   const groupMonitoring =
     monitoring != null
@@ -571,21 +560,21 @@ const build: ExternalMethods['build'] = async (
         return
       }
 
-      innerMonitoring.time('NotificationToBuildStart', nt.sendTime)
-      innerMonitoring.timeEnd('NotificationToBuildStart', now)
+      innerMonitoring.time('EventDelivery', metricData.sendTime)
+      innerMonitoring.timeEnd('EventDelivery', now)
 
-      innerMonitoring.time('NotificationToBuildEnd', nt.sendTime)
+      innerMonitoring.time('EventApply', metricData.sendTime)
     })
   }
 
   const inlineLedgerExecuteStatement: typeof ledgerStatement = Object.assign(
     async (...args: any[]): Promise<any> => {
-      const ilTs = Date.now()
+      const inlineLedgerStartTimestamp = Date.now()
       try {
         return await (ledgerStatement as any)(...args)
       } finally {
-        if (!nt.insideProjection) {
-          nt.pureLedgerTime += Date.now() - ilTs
+        if (!metricData.insideProjection) {
+          metricData.pureLedgerTime += Date.now() - inlineLedgerStartTimestamp
         }
       }
     },
@@ -626,7 +615,6 @@ const build: ExternalMethods['build'] = async (
       Errors: string | null
       Schema: string | null
     }>
-    nt.fetchLedgerTime = Date.now()
 
     const readModelLedger =
       rows.length === 1
@@ -654,7 +642,6 @@ const build: ExternalMethods['build'] = async (
         : null
 
     if (readModelLedger == null || readModelLedger.Errors != null) {
-      nt.discardReason = 'busy-initial-ledger'
       throw new PassthroughError(null)
     }
 
@@ -676,7 +663,7 @@ const build: ExternalMethods['build'] = async (
       readModelLedger,
       eventTypes,
       xaKey,
-      nt,
+      metricData,
     }
 
     const buildMethod = cursor == null ? buildInit : buildEvents
@@ -691,11 +678,6 @@ const build: ExternalMethods['build'] = async (
       getVacantTimeInMillis
     )
   } catch (error) {
-    if (nt.discardReason == null) {
-      nt.discardReason = 'error'
-      nt.error = error
-    }
-
     if (!(error instanceof PassthroughError)) {
       throw error
     }
@@ -733,17 +715,20 @@ const build: ExternalMethods['build'] = async (
       }
 
       if (hasSendTime) {
-        innerMonitoring.timeEnd('NotificationToBuildEnd')
+        innerMonitoring.timeEnd('EventApply')
       }
 
-      innerMonitoring.time('EventLoadTime', 0)
-      innerMonitoring.timeEnd('EventLoadTime', nt.pureEventLoadTime)
+      innerMonitoring.time('EventBatchLoad', 0)
+      innerMonitoring.timeEnd('EventBatchLoad', metricData.eventBatchLoadTime)
 
-      innerMonitoring.time('ProjectionApplyTime', 0)
-      innerMonitoring.timeEnd('ProjectionApplyTime', nt.pureProjectionApplyTime)
+      innerMonitoring.time('EventProjectionApply', 0)
+      innerMonitoring.timeEnd(
+        'EventProjectionApply',
+        metricData.pureProjectionApplyTime
+      )
 
-      innerMonitoring.time('LedgerTime', 0)
-      innerMonitoring.timeEnd('LedgerTime', nt.pureLedgerTime)
+      innerMonitoring.time('Ledger', 0)
+      innerMonitoring.timeEnd('Ledger', metricData.pureLedgerTime)
     })
   }
 }
