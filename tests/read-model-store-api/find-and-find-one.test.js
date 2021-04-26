@@ -9,10 +9,10 @@ jest.setTimeout(jestTimeout())
 console.error = () => {}
 
 describe(`${adapterFactory.name}. Read-model Store API. FindOne`, () => {
-  beforeEach(adapterFactory.create('findOne'))
-  afterEach(adapterFactory.destroy('findOne'))
+  beforeEach(adapterFactory.create('find_and_find_one'))
+  afterEach(adapterFactory.destroy('find_and_find_one'))
 
-  const adapter = adapters['findOne']
+  const adapter = adapters['find_and_find_one']
 
   const events = [
     {
@@ -482,6 +482,90 @@ describe(`${adapterFactory.name}. Read-model Store API. FindOne`, () => {
         testId: 'test-id-6',
         a: { c: false },
         b: { c: true },
+      },
+    ])
+  })
+
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        $lt, $gt, $lte, $gte should work correctly`, async () => {
+    const projection = {
+      Init: async (store) => {
+        await store.defineTable('test', {
+          indexes: { testId: 'string' },
+          fields: ['a'],
+        })
+      },
+
+      TEST: async (store) => {
+        await store.insert('test', {
+          testId: 'test-id-1',
+          a: 1,
+        })
+        await store.insert('test', {
+          testId: 'test-id-2',
+          a: 2,
+        })
+        await store.insert('test', {
+          testId: 'test-id-3',
+          a: 3,
+        })
+        await store.insert('test', {
+          testId: 'test-id-4',
+          a: 4,
+        })
+        await store.insert('test', {
+          testId: 'test-id-5',
+          a: { b: 1 },
+        })
+        await store.insert('test', {
+          testId: 'test-id-6',
+          a: { b: 2 },
+        })
+        await store.insert('test', {
+          testId: 'test-id-7',
+          a: { b: 3 },
+        })
+        await store.insert('test', {
+          testId: 'test-id-8',
+          a: { b: 4 },
+        })
+      },
+    }
+
+    const domain = givenEvents(events)
+      .readModel({
+        name: 'StoreApi',
+        projection,
+        resolvers,
+      })
+      .withAdapter(adapter)
+
+    expect(
+      await domain.query('find', {
+        $and: [{ a: { $gte: 2 } }, { a: { $lte: 3 } }],
+      })
+    ).toEqual([
+      {
+        a: 2,
+        testId: 'test-id-2',
+      },
+      {
+        a: 3,
+        testId: 'test-id-3',
+      },
+    ])
+
+    expect(
+      await domain.query('find', {
+        $and: [{ a: { $gt: 1 } }, { a: { $lt: 4 } }],
+      })
+    ).toEqual([
+      {
+        a: 2,
+        testId: 'test-id-2',
+      },
+      {
+        a: 3,
+        testId: 'test-id-3',
       },
     ])
   })
