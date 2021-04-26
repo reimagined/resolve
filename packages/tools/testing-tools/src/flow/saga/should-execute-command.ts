@@ -2,7 +2,7 @@ import isEqual from 'lodash.isequal'
 import { Command } from '@resolve-js/core'
 import { SagaContext } from '../../types'
 import { makeAssertions, SagaAssertionsNode } from './make-assertions'
-import { stringifyCommand } from '../../utils/format'
+import { stringifyShouldExecuteCommandFailure } from '../../utils/format'
 
 export const shouldExecuteCommand = (
   context: SagaContext,
@@ -29,9 +29,7 @@ export const shouldExecuteCommand = (
       return resolve(result)
     }
     return reject(
-      new Error(
-        `shouldExecuteCommand assertion failed:\n${stringifyCommand(command)}`
-      )
+      new Error(stringifyShouldExecuteCommandFailure(command, result.commands))
     )
   })
 

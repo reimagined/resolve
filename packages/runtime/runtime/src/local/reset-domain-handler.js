@@ -9,9 +9,8 @@ const resetDomainHandler = (options) => async (req, res) => {
   const {
     eventstoreAdapter,
     eventSubscriber,
-    readModels,
-    sagas,
     domainInterop: { sagaDomain },
+    domain: { readModels, sagas },
     applicationName,
   } = req.resolve
 

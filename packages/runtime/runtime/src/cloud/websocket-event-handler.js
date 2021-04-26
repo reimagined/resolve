@@ -12,7 +12,7 @@ const log = debugLevels('resolve:runtime:websocket-event-handler')
 const region = process.env.AWS_REGION
 const websocketLambdaArn = process.env.RESOLVE_WEBSOCKET_LAMBDA_ARN
 const eventStoreClusterArn = process.env.RESOLVE_EVENT_STORE_CLUSTER_ARN
-const eventBusDatabaseName = process.env.RESOLVE_EVENT_BUS_DATABASE_NAME
+const eventStoreDatabaseName = process.env.RESOLVE_EVENT_STORE_DATABASE_NAME
 const subscriptionsTableName = process.env.RESOLVE_SUBSCRIPTIONS_TABLE_NAME
 const userSecretArn = process.env.RESOLVE_USER_SECRET_ARN
 const encryptedDeploymentId = process.env.RESOLVE_ENCRYPTED_DEPLOYMENT_ID
@@ -21,7 +21,7 @@ const LOAD_EVENTS_COUNT_LIMIT = 1000000
 // 128kb is a limit for AWS WebSocket API message size
 const LOAD_EVENTS_SIZE_LIMIT = 124 * 1024
 
-const databaseNameAsId = escapeId(eventBusDatabaseName)
+const databaseNameAsId = escapeId(eventStoreDatabaseName)
 const subscriptionsTableNameAsId = escapeId(subscriptionsTableName)
 
 const handleWebsocketEvent = async ({ method, payload }, resolve) => {

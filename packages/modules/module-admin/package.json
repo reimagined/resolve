@@ -19,6 +19,7 @@
   "module": "./es/index.js",
   "bin": "./bin/index.js",
   "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/module-admin",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },

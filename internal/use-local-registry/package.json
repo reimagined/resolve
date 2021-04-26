@@ -1,0 +1,16 @@
+{
+  "name": "@internal/use-local-registry",
+  "version": "0.29.0",
+  "private": true,
+  "main": "./index.js",
+  "bin": "./bin/index.js",
+  "scripts": {
+    "deploy": "node bin/index.js",
+    "test": "echo || exit 0"
+  },
+  "dependencies": {
+    "@internal/helpers": "0.29.0",
+    "@internal/local-registry": "0.29.0",
+    "minimist": "1.2.3"
+  }
+}

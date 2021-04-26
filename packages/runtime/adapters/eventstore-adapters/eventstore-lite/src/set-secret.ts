@@ -1,7 +1,6 @@
 import getLog from './get-log'
 import { AdapterPool } from './types'
 import {
-  ConcurrentError,
   EventstoreFrozenError,
   InputEvent,
   makeSetSecretEvent,
