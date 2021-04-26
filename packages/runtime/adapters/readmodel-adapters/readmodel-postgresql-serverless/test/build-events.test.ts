@@ -111,7 +111,7 @@ describe('buildEvents', () => {
           //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           readModelLedger: null! as any,
           xaKey,
-          nt: {},
+          metricData: {},
         },
         {
           PassthroughError,
@@ -228,7 +228,7 @@ describe('buildEvents', () => {
           //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           readModelLedger: null! as any,
           xaKey,
-          nt: {},
+          metricData: {},
         },
         {
           PassthroughError,
