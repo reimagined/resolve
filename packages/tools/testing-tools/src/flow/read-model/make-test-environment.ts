@@ -96,25 +96,21 @@ export const makeTestEnvironment = (
 
     const liveErrors: Array<Error> = []
 
-    const monitoringWithError: Monitoring = {
-      group: () => monitoringWithError,
-      time: () => void 0,
-      timeEnd: () => void 0,
-      error: (error: Error) => {
-        liveErrors.push(error)
-      },
-      publish: async () => void 0,
-    }
-
-    const monitoring: Monitoring = {
-      group: (config: Record<string, string>) =>
-        config.Part !== 'ReadModelProjection'
-          ? monitoring
-          : monitoringWithError,
-      time: () => void 0,
-      timeEnd: () => void 0,
-      error: () => void 0,
-      publish: async () => void 0,
+    const makeMonitoring = (
+      error: Monitoring['error'] = () => void 0
+    ): Monitoring => {
+      return {
+        group: (config) =>
+          config.Part === 'ReadModelProjection'
+            ? makeMonitoring((error: Error) => {
+                liveErrors.push(error)
+              })
+            : makeMonitoring(error),
+        time: () => void 0,
+        timeEnd: () => void 0,
+        error,
+        publish: async () => void 0,
+      }
     }
 
     const eventstoreAdapter = getEventStore(events)
@@ -135,7 +131,7 @@ export const makeTestEnvironment = (
         eventstoreAdapter,
         readModelsInterop: domain.readModelDomain.acquireReadModelsInterop({
           secretsManager,
-          monitoring,
+          monitoring: makeMonitoring(),
         }),
         viewModelsInterop: {},
         performanceTracer: null,
