@@ -332,7 +332,8 @@ export const buildEvents: (
             } finally {
               metricData.insideProjection = false
             }
-            metricData.pureProjectionApplyTime += Date.now() - projectionApplyStartTimestamp
+            metricData.pureProjectionApplyTime +=
+              Date.now() - projectionApplyStartTimestamp
 
             await inlineLedgerExecuteStatement(
               pool,
