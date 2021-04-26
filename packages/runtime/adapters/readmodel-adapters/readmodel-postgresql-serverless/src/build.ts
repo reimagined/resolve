@@ -1,5 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
-
 import type {
   PassthroughErrorInstance,
   ExternalMethods,
@@ -551,7 +549,7 @@ const build: ExternalMethods['build'] = async (
     escapeId,
     escapeStr,
     rdsDataService,
-    inlineLedgerExecuteStatement: iles,
+    inlineLedgerExecuteStatement: ledgerStatement,
     generateGuid,
     monitoring,
   } = basePool
@@ -567,29 +565,31 @@ const build: ExternalMethods['build'] = async (
           .group({ ReadModel: readModelName })
       : null
 
-  if (monitoring != null && groupMonitoring != null && hasSendTime) {
-    monitoring.time('NotificationToBuildStart', nt.sendTime)
-    monitoring.timeEnd('NotificationToBuildStart', now)
+  if (hasSendTime) {
+    void [monitoring, groupMonitoring].forEach((innerMonitoring) => {
+      if (innerMonitoring == null) {
+        return
+      }
 
-    groupMonitoring.time('NotificationToBuildStart', nt.sendTime)
-    groupMonitoring.timeEnd('NotificationToBuildStart', now)
+      innerMonitoring.time('NotificationToBuildStart', nt.sendTime)
+      innerMonitoring.timeEnd('NotificationToBuildStart', now)
 
-    monitoring.time('NotificationToBuildEnd', now)
-    groupMonitoring.time('NotificationToBuildStart', nt.sendTime)
+      innerMonitoring.time('NotificationToBuildEnd', nt.sendTime)
+    })
   }
 
-  const inlineLedgerExecuteStatement: typeof iles = Object.assign(
+  const inlineLedgerExecuteStatement: typeof ledgerStatement = Object.assign(
     async (...args: any[]): Promise<any> => {
       const ilTs = Date.now()
       try {
-        return await (iles as any)(...args)
+        return await (ledgerStatement as any)(...args)
       } finally {
         if (!nt.insideProjection) {
           nt.pureLedgerTime += Date.now() - ilTs
         }
       }
     },
-    iles
+    ledgerStatement
   )
 
   try {
@@ -727,30 +727,24 @@ const build: ExternalMethods['build'] = async (
   } finally {
     basePool.activePassthrough = false
 
-    if (monitoring != null && groupMonitoring != null) {
-      if (hasSendTime) {
-        monitoring.timeEnd('NotificationToBuildEnd')
-        groupMonitoring.timeEnd('NotificationToBuildEnd')
+    void [monitoring, groupMonitoring].forEach((innerMonitoring) => {
+      if (innerMonitoring == null) {
+        return
       }
 
-      monitoring.time('EventLoadTime', 0)
-      monitoring.timeEnd('EventLoadTime', nt.pureEventLoadTime)
+      if (hasSendTime) {
+        innerMonitoring.timeEnd('NotificationToBuildEnd')
+      }
 
-      groupMonitoring.time('EventLoadTime', 0)
-      groupMonitoring.timeEnd('EventLoadTime', nt.pureEventLoadTime)
+      innerMonitoring.time('EventLoadTime', 0)
+      innerMonitoring.timeEnd('EventLoadTime', nt.pureEventLoadTime)
 
-      monitoring.time('ProjectionApplyTime', 0)
-      monitoring.timeEnd('ProjectionApplyTime', nt.pureProjectionApplyTime)
+      innerMonitoring.time('ProjectionApplyTime', 0)
+      innerMonitoring.timeEnd('ProjectionApplyTime', nt.pureProjectionApplyTime)
 
-      groupMonitoring.time('ProjectionApplyTime', 0)
-      groupMonitoring.timeEnd('ProjectionApplyTime', nt.pureProjectionApplyTime)
-
-      monitoring.time('LedgerTime', 0)
-      monitoring.timeEnd('LedgerTime', nt.pureLedgerTime)
-
-      groupMonitoring.time('LedgerTime', 0)
-      groupMonitoring.timeEnd('LedgerTime', nt.pureLedgerTime)
-    }
+      innerMonitoring.time('LedgerTime', 0)
+      innerMonitoring.timeEnd('LedgerTime', nt.pureLedgerTime)
+    })
   }
 }
 

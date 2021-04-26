@@ -591,6 +591,7 @@ const operationMethods = {
       next.bind(null, pool, readModelName),
       pool.eventstoreAdapter,
       pool.getVacantTimeInMillis,
+      parameters,
     ]
   ),
 
