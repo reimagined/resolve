@@ -1,5 +1,4 @@
 process.env.TZ = 'Europe/Moscow'
-
 const path = require('path')
 
 module.exports = {
