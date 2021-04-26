@@ -5,12 +5,13 @@ const setReplicationPaused = async (
   pool: AdapterPool,
   pause: boolean
 ): Promise<void> => {
-  const { executeStatement, escapeId } = pool
+  const { executeStatement, escapeId, databaseName } = pool
 
   const replicationStateTableName = await initReplicationStateTable(pool)
+  const databaseNameAsId = escapeId(databaseName)
 
   await executeStatement(
-    `UPDATE ${escapeId(replicationStateTableName)} 
+    `UPDATE ${databaseNameAsId}.${escapeId(replicationStateTableName)} 
     SET "IsPaused" = ${pause ? `TRUE` : 'FALSE'}`
   )
 }

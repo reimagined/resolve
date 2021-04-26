@@ -6,12 +6,13 @@ const setReplicationIterator = async (
   pool: AdapterPool,
   iterator: ReplicationState['iterator']
 ): Promise<void> => {
-  const { executeStatement, escapeId, escape } = pool
+  const { executeStatement, escapeId, escape, databaseName } = pool
 
   const replicationStateTableName = await initReplicationStateTable(pool)
+  const databaseNameAsId = escapeId(databaseName)
 
   await executeStatement(
-    `UPDATE ${escapeId(replicationStateTableName)} 
+    `UPDATE ${databaseNameAsId}.${escapeId(replicationStateTableName)} 
     SET
       "Iterator" = ${escape(
         iterator != null ? JSON.stringify(iterator) : 'null'

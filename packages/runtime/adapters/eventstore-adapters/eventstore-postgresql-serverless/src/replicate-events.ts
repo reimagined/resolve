@@ -1,6 +1,7 @@
 import { AdapterPool } from './types'
 import { OldEvent, SavedEvent } from '@resolve-js/eventstore-base'
 import { str as strCRC32 } from 'crc-32'
+import { RESERVED_EVENT_SIZE } from './constants'
 
 export const replicateEvents = async (
   pool: AdapterPool,
@@ -8,12 +9,19 @@ export const replicateEvents = async (
 ): Promise<void> => {
   if (events.length === 0) return
 
-  const { executeStatement, eventsTableName, escape, escapeId } = pool
+  const {
+    executeStatement,
+    eventsTableName,
+    escape,
+    escapeId,
+    databaseName,
+  } = pool
   const eventsTableNameAsId = escapeId(eventsTableName)
+  const databaseNameAsId = escapeId(databaseName)
 
   const rows = (await executeStatement(
     `SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
-    ${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`
+    ${databaseNameAsId}.${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`
   )) as Array<{
     threadId: SavedEvent['threadId']
     threadCounter: SavedEvent['threadCounter']
@@ -37,30 +45,35 @@ export const replicateEvents = async (
     eventsToInsert.push({ ...event, threadId, threadCounter })
   }
 
-  await executeStatement(`INSERT INTO ${eventsTableNameAsId}(
+  await executeStatement(`INSERT INTO ${databaseNameAsId}.${eventsTableNameAsId}(
       "threadId",
       "threadCounter",
       "timestamp",
       "aggregateId",
       "aggregateVersion",
       "type",
-      "payload"
+      "payload",
+      "eventSize"
     ) VALUES ${eventsToInsert
-      .map(
-        (event) => `(
+      .map((event) => {
+        const serializedEvent = [
+          `${escape(event.aggregateId)},`,
+          `${+event.aggregateVersion},`,
+          `${escape(event.type)},`,
+          escape(JSON.stringify(event.payload != null ? event.payload : null)),
+        ].join('')
+
+        const byteLength =
+          Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
+
+        return `(
       ${+event.threadId},
       ${+event.threadCounter},
       ${+event.timestamp},
-      ${escape(event.aggregateId)},
-      ${+event.aggregateVersion},
-      ${escape(event.type)},
-      ${
-        event.payload != null
-          ? escape(JSON.stringify(event.payload))
-          : escape('null')
-      }
+      ${serializedEvent},
+      ${byteLength}
     )`
-      )
+      })
       .join(',')}
       ON CONFLICT DO NOTHING`)
 }

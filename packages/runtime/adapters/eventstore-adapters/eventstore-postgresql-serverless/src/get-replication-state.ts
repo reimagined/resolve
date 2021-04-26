@@ -10,12 +10,13 @@ import initReplicationStateTable from './init-replication-state-table'
 const getReplicationState = async (
   pool: AdapterPool
 ): Promise<ReplicationState> => {
-  const { executeStatement, escapeId } = pool
+  const { executeStatement, escapeId, databaseName } = pool
 
   const replicationStateTableName = await initReplicationStateTable(pool)
+  const databaseNameAsId = escapeId(databaseName)
 
   const rows = (await executeStatement(
-    `SELECT "Status", "StatusData", "Iterator", "IsPaused", "SuccessEvent" FROM ${escapeId(
+    `SELECT "Status", "StatusData", "Iterator", "IsPaused", "SuccessEvent" FROM ${databaseNameAsId}.${escapeId(
       replicationStateTableName
     )}`
   )) as Array<{

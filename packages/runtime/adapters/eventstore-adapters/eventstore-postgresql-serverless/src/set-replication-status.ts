@@ -13,14 +13,15 @@ const setReplicationStatus = async (
   statusData?: ReplicationState['statusData'],
   lastEvent?: OldEvent
 ): Promise<void> => {
-  const { executeStatement, escapeId, escape } = pool
+  const { executeStatement, escapeId, escape, databaseName } = pool
 
   const replicationStateTableName = await initReplicationStateTable(pool)
+  const databaseNameAsId = escapeId(databaseName)
 
   const batchInProgress: ReplicationStatus = 'batchInProgress'
 
   const rows = await executeStatement(
-    `UPDATE ${escapeId(replicationStateTableName)} 
+    `UPDATE ${databaseNameAsId}.${escapeId(replicationStateTableName)} 
     SET
       "Status" = ${escape(status)},
       "StatusData" = ${
