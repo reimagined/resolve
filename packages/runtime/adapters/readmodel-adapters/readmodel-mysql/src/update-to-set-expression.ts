@@ -56,21 +56,21 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
             const lastNestedPathElementType = escapeStr(
               nestedPath[nestedPath.length - 1] != null
                 ? !isNaN(+nestedPath[nestedPath.length - 1])
-                  ? 'number'
-                  : 'string'
-                : 'unknown'
+                  ? 'NUMBER'
+                  : 'STRING'
+                : 'UNKNOWN'
             )
 
             updateExprArray.push(`${escapeId(baseName)} = CASE
               WHEN CONCAT(JSON_TYPE(JSON_EXTRACT(${escapeId(
                 baseName
-              )}, '${baseNestedPath}')),  '-', ${lastNestedPathElementType}) = 'object-string' THEN
+              )}, '${baseNestedPath}')),  '-', ${lastNestedPathElementType}) = 'OBJECT-STRING' THEN
               JSON_SET(${escapeId(baseName)}, '${makeNestedPath(
               nestedPath
             )}', ${updatingInlinedValue})
               WHEN CONCAT(JSON_TYPE(JSON_EXTRACT(${escapeId(
                 baseName
-              )}, '${baseNestedPath}')),  '-', ${lastNestedPathElementType}) = 'array-number' THEN
+              )}, '${baseNestedPath}')),  '-', ${lastNestedPathElementType}) = 'ARRAY-NUMBER' THEN
               JSON_SET(${escapeId(baseName)}, '${makeNestedPath(
               nestedPath
             )}', ${updatingInlinedValue})
@@ -115,19 +115,33 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
           const fieldValueType = escapeStr(
             fieldValue != null
               ? fieldValue.constructor === String
-                ? 'string'
+                ? 'STRING'
                 : fieldValue.constructor === Number
-                ? 'number'
-                : 'unknown'
-              : 'unknown'
+                ? Number.isInteger(fieldValue)
+                  ? 'INTEGER'
+                  : 'DOUBLE'
+                : 'UNKNOWN'
+              : 'UNKNOWN'
           )
 
           let updatingInlinedValue = `CAST(CASE
-            WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'string-string' THEN JSON_QUOTE(
+            WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'STRING-STRING' THEN JSON_QUOTE(
               CAST(${sourceInlinedValue} AS CHAR) ||
               CAST(${fieldValueStringLike} AS CHAR)
             )
-            WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'integer-integer' THEN (
+            WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'INTEGER-INTEGER' THEN (
+              CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
+              CAST(${fieldValueNumberLike} AS DECIMAL(48, 16))
+            )
+            WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'INTEGER-DOUBLE' THEN (
+              CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
+              CAST(${fieldValueNumberLike} AS DECIMAL(48, 16))
+            )
+            WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'DOUBLE-INTEGER' THEN (
+              CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
+              CAST(${fieldValueNumberLike} AS DECIMAL(48, 16))
+            )
+            WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'DOUBLE-DOUBLE' THEN (
               CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
               CAST(${fieldValueNumberLike} AS DECIMAL(48, 16))
             )
