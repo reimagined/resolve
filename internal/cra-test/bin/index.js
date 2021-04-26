@@ -9,6 +9,7 @@ const { getResolveExamples, getRepoRoot } = require('@internal/helpers')
 
 const main = async () => {
   log.info(`Preparing for create-resolve-app testing...`)
+
   const passedParams = process.argv.slice(2).join(' ')
   log.info(`Passed params: ${passedParams}`)
 
