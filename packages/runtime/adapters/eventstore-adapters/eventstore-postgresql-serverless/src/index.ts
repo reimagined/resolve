@@ -40,6 +40,13 @@ import getSecret from './get-secret'
 import injectSecret from './inject-secret'
 import loadSecrets from './load-secrets'
 
+import replicateEvents from './replicate-events'
+import replicateSecrets from './replicate-secrets'
+import setReplicationStatus from './set-replication-status'
+import setReplicationIterator from './set-replication-iterator'
+import setReplicationPaused from './set-replication-paused'
+import getReplicationState from './get-replication-state'
+
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
@@ -89,6 +96,12 @@ const createPostgresqlServerlessAdapter = (
       injectEvent,
       injectSecret,
       loadSecrets,
+      replicateEvents,
+      replicateSecrets,
+      setReplicationStatus,
+      setReplicationIterator,
+      setReplicationPaused,
+      getReplicationState,
     },
     {
       RDSDataService,

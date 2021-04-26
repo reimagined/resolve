@@ -35,13 +35,13 @@ const setReplicationStatus = async (
     }
     UPDATE ${escapeId(replicationStateTableName)} 
     SET
-      Status = ${escape(status)},
-      StatusData = ${
+      "Status" = ${escape(status)},
+      "StatusData" = ${
         statusData != null ? escape(JSON.stringify(statusData)) : 'NULL'
       }
       ${
         lastEvent != null
-          ? `, SuccessEvent = ${escape(JSON.stringify(lastEvent))}`
+          ? `, "SuccessEvent" = ${escape(JSON.stringify(lastEvent))}`
           : ``
       } ${
         status === batchInProgress

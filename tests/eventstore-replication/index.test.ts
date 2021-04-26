@@ -1,4 +1,3 @@
-import createSqliteAdapter from '@resolve-js/eventstore-lite'
 import {
   Adapter,
   ReplicationState,
@@ -6,9 +5,14 @@ import {
   OldEvent,
   ReplicationAlreadyInProgress,
 } from '@resolve-js/eventstore-base'
-import { makeTestEvent } from '../eventstore-test-utils'
+import {
+  jestTimeout,
+  makeTestEvent,
+  adapterFactory,
+  adapters,
+} from '../eventstore-test-utils'
 
-const createAdapter = createSqliteAdapter
+jest.setTimeout(jestTimeout())
 
 function makeSecretFromIndex(index: number): string {
   return `secret_${index}`
@@ -18,17 +22,10 @@ function makeIdFromIndex(index: number): string {
   return `id_${index}`
 }
 
-describe('eventstore adapter replication state', () => {
-  let adapter: Adapter
-  beforeAll(async () => {
-    adapter = createAdapter({})
-    await adapter.init()
-  })
-
-  afterAll(async () => {
-    await adapter.drop()
-    await adapter.dispose()
-  })
+describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
+  beforeAll(adapterFactory.create('test_replication'))
+  afterAll(adapterFactory.destroy('test_replication'))
+  const adapter: Adapter = adapters['test_replication']
 
   test('get-replication-state should return default state', async () => {
     const state: ReplicationState = await adapter.getReplicationState()
