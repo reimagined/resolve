@@ -96,13 +96,13 @@ export const makeTestEnvironment = (
 
     const liveErrors: Array<Error> = []
     const monitoring: Monitoring = {
-      group: (config: Record<string, string>) => {
+      group(config: Record<string, string>) {
         if (config.Part !== 'ReadModelProjection') {
-          return monitoring
+          return this
         }
 
         return {
-          ...monitoring,
+          ...this,
           error: (error: Error) => {
             liveErrors.push(error)
           },
