@@ -39,7 +39,7 @@ describe('eventstore adapter replication state', () => {
     expect(state.paused).toEqual(false)
   })
 
-  test('set-replication-status should change status and statusData properties of the state', async () => {
+  test('set-replication-status should change status, statusData properties of the state', async () => {
     await adapter.setReplicationStatus('batchInProgress', {
       info: 'in progress',
     })
@@ -51,6 +51,25 @@ describe('eventstore adapter replication state', () => {
     state = await adapter.getReplicationState()
     expect(state.status).toEqual('batchDone')
     expect(state.statusData).toEqual(null)
+  })
+
+  test('set-replication-status should set lastEvent and not rewrite it if it was not provided', async () => {
+    const event: OldEvent = {
+      aggregateId: 'aggregateId',
+      aggregateVersion: 1,
+      timestamp: 1,
+      type: 'type',
+    }
+
+    await adapter.setReplicationStatus('batchDone', null, event)
+    let state = await adapter.getReplicationState()
+    expect(state.status).toEqual('batchDone')
+    expect(state.successEvent).toEqual(event)
+
+    await adapter.setReplicationStatus('error')
+    state = await adapter.getReplicationState()
+    expect(state.status).toEqual('error')
+    expect(state.successEvent).toEqual(event)
   })
 
   test('set-replication-status should throw ReplicationAlreadyInProgress if replication is already in progress', async () => {

@@ -16,7 +16,8 @@ const initReplicationStateTable = async (
         "Status" VARCHAR(50) DEFAULT ${escape(notStarted)},
         "StatusData" JSON NULL,
         "Iterator" JSON NULL,
-        "IsPaused" TINYINT DEFAULT 0 NOT NULL
+        "IsPaused" TINYINT DEFAULT 0 NOT NULL,
+        "SuccessEvent" JSON NULL
       );
       INSERT OR IGNORE INTO ${replicationStateTableNameAsId} DEFAULT VALUES;
       COMMIT;

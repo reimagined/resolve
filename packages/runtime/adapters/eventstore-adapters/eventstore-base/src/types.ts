@@ -58,6 +58,7 @@ export type ReplicationState = {
   statusData: SerializableMap | null
   paused: boolean
   iterator: SerializableMap | null
+  successEvent: OldEvent | null
 }
 
 export function getInitialReplicationState(): ReplicationState {
@@ -66,6 +67,7 @@ export function getInitialReplicationState(): ReplicationState {
     statusData: null,
     iterator: null,
     paused: false,
+    successEvent: null,
   }
 }
 
@@ -596,7 +598,8 @@ export interface Adapter {
   setReplicationIterator?: (iterator: SerializableMap) => Promise<void>
   setReplicationStatus?: (
     status: ReplicationStatus,
-    info?: ReplicationState['statusData']
+    info?: ReplicationState['statusData'],
+    lastEvent?: OldEvent
   ) => Promise<void>
   setReplicationPaused?: (pause: boolean) => Promise<void>
   getReplicationState?: () => Promise<ReplicationState>

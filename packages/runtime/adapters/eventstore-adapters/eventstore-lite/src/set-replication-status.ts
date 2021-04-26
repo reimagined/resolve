@@ -3,13 +3,15 @@ import {
   ReplicationStatus,
   ReplicationState,
   ReplicationAlreadyInProgress,
+  OldEvent,
 } from '@resolve-js/eventstore-base'
 import initReplicationStateTable from './init-replication-state-table'
 
 const setReplicationStatus = async (
   pool: AdapterPool,
   status: ReplicationStatus,
-  statusData?: ReplicationState['statusData']
+  statusData?: ReplicationState['statusData'],
+  lastEvent?: OldEvent
 ): Promise<void> => {
   const { database, escapeId, escape } = pool
 
@@ -34,9 +36,14 @@ const setReplicationStatus = async (
     UPDATE ${escapeId(replicationStateTableName)} 
     SET
       Status = ${escape(status)},
-      StatusData = ${escape(
-        statusData != null ? JSON.stringify(statusData) : 'null'
-      )} ${
+      StatusData = ${
+        statusData != null ? escape(JSON.stringify(statusData)) : 'NULL'
+      }
+      ${
+        lastEvent != null
+          ? `, SuccessEvent = ${escape(JSON.stringify(lastEvent))}`
+          : ``
+      } ${
         status === batchInProgress
           ? `WHERE (SELECT COUNT("AlreadyInProcess") FROM "AlreadyInProgressCheck") = 1`
           : ``
