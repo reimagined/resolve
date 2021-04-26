@@ -1,6 +1,6 @@
 const resolvers = {
-  all: async (store) => {
-    const result = await store.find('test', {})
+  find: async (store, args) => {
+    const result = await store.find('test', args)
 
     return result
   },

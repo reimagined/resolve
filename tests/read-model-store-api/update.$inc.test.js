@@ -22,7 +22,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Update. $inc`, () => {
     },
   ]
 
-  test(`Projection\n        store.insert('test', { testId, a: 0 })\n        store.update('test', { testId }, { $inc: { ['a']: 1 } } )\n      Resolver should return [{ testId: 'root', a: 1 }]`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: 0 })\n        store.update('test', { testId }, { $inc: { ['a']: 1 } } )\n      Resolver should return [{ testId: 'root', a: 1 }]`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -60,12 +60,12 @@ describe(`${adapterFactory.name}. Read-model Store API. Update. $inc`, () => {
         resolvers,
       })
       .withAdapter(adapter)
-      .query('all', {})
+      .query('find', {})
 
     expect(result).toEqual([{ testId: 'root', a: 1 }])
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: 0, b: 3 })\n        store.update('test', { testId }, { $inc: { ['a']: 1, ['b']: -1 } } )\n      Resolver should return [{ testId: 'root', a: 1, b: 2 }]`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a', 'b'] })\n        store.insert('test', { testId, a: 0, b: 3 })\n        store.update('test', { testId }, { $inc: { ['a']: 1, ['b']: -1 } } )\n      Resolver should return [{ testId: 'root', a: 1, b: 2 }]`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -105,12 +105,12 @@ describe(`${adapterFactory.name}. Read-model Store API. Update. $inc`, () => {
         resolvers,
       })
       .withAdapter(adapter)
-      .query('all', {})
+      .query('find', {})
 
     expect(result).toEqual([{ testId: 'root', a: 1, b: 2 }])
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: undefined })\n        store.update('test', { testId }, { $inc: { ['a']: 1 } } )\n      Resolver should throw error`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: undefined })\n        store.update('test', { testId }, { $inc: { ['a']: 1 } } )\n      Resolver should throw error`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -149,11 +149,11 @@ describe(`${adapterFactory.name}. Read-model Store API. Update. $inc`, () => {
           resolvers,
         })
         .withAdapter(adapter)
-        .query('all', {})
+        .query('find', {})
     ).rejects.toThrow()
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: null })\n        store.update('test', { testId }, { $inc: { ['a']: 1 } } )\n      Resolver should throw error`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: null })\n        store.update('test', { testId }, { $inc: { ['a']: 1 } } )\n      Resolver should throw error`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -192,11 +192,11 @@ describe(`${adapterFactory.name}. Read-model Store API. Update. $inc`, () => {
           resolvers,
         })
         .withAdapter(adapter)
-        .query('all', {})
+        .query('find', {})
     ).rejects.toThrow()
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: { b: 0 } })\n        store.update('test', { testId }, { $inc: { ['a.b']: 1 } } )\n      Resolver should return [{ testId: 'root', a: { b: 1 } }]`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: { b: 0 } })\n        store.update('test', { testId }, { $inc: { ['a.b']: 1 } } )\n      Resolver should return [{ testId: 'root', a: { b: 1 } }]`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -236,12 +236,12 @@ describe(`${adapterFactory.name}. Read-model Store API. Update. $inc`, () => {
         resolvers,
       })
       .withAdapter(adapter)
-      .query('all', {})
+      .query('find', {})
 
     expect(result).toEqual([{ testId: 'root', a: { b: 1 } }])
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: { b: 0 } })\n        store.update('test', { testId }, { $inc: { ['a.b']: 1, ['a.c']: -1 } } )\n      Resolver should return [{ testId: 'root', a: { b: 1, c: 2 } }]`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: { b: 0 } })\n        store.update('test', { testId }, { $inc: { ['a.b']: 1, ['a.c']: -1 } } )\n      Resolver should return [{ testId: 'root', a: { b: 1, c: 2 } }]`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -283,12 +283,12 @@ describe(`${adapterFactory.name}. Read-model Store API. Update. $inc`, () => {
         resolvers,
       })
       .withAdapter(adapter)
-      .query('all', {})
+      .query('find', {})
 
     expect(result).toEqual([{ testId: 'root', a: { b: 1, c: 2 } }])
   })
 
-  test(`Projection\n        store.insert('test', { testId })\n        store.update('test', { testId }, { $inc: { ['a']: 1 } } )\n      Resolver should throw error`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId })\n        store.update('test', { testId }, { $inc: { ['a']: 1 } } )\n      Resolver should throw error`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -326,11 +326,11 @@ describe(`${adapterFactory.name}. Read-model Store API. Update. $inc`, () => {
           resolvers,
         })
         .withAdapter(adapter)
-        .query('all', {})
+        .query('find', {})
     ).rejects.toThrow()
   })
 
-  test(`Projection\n        store.insert('test', { testId })\n        store.update('test', { testId }, { $inc: { ['a.b']: 1 } } )\n      Resolver should throw error`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId })\n        store.update('test', { testId }, { $inc: { ['a.b']: 1 } } )\n      Resolver should throw error`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -368,11 +368,11 @@ describe(`${adapterFactory.name}. Read-model Store API. Update. $inc`, () => {
           resolvers,
         })
         .withAdapter(adapter)
-        .query('all', {})
+        .query('find', {})
     ).rejects.toThrow()
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: {} })\n        store.update('test', { testId }, { $inc: { ['a.b']: 1 } } )\n      Resolver should throw error`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: {} })\n        store.update('test', { testId }, { $inc: { ['a.b']: 1 } } )\n      Resolver should throw error`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -411,11 +411,11 @@ describe(`${adapterFactory.name}. Read-model Store API. Update. $inc`, () => {
           resolvers,
         })
         .withAdapter(adapter)
-        .query('all', {})
+        .query('find', {})
     ).rejects.toThrow()
   })
 
-  test(`Projection\n        store.insert('test', { testId, a: {} })\n        store.update('test', { testId }, { $inc: { ['a.b.c']: 1 } } )\n      Resolver should throw error`, async () => {
+  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: {} })\n        store.update('test', { testId }, { $inc: { ['a.b.c']: 1 } } )\n      Resolver should throw error`, async () => {
     const projection = {
       Init: async (store) => {
         await store.defineTable('test', {
@@ -454,7 +454,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Update. $inc`, () => {
           resolvers,
         })
         .withAdapter(adapter)
-        .query('all', {})
+        .query('find', {})
     ).rejects.toThrow()
   })
 })
