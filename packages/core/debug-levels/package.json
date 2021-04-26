@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/debug-levels",
-  "version": "0.28.3",
+  "version": "0.29.0",
   "description": "Provides the debug-level API for reSolve packages.",
   "keywords": [
     "cqrs",
@@ -19,6 +19,7 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/debug-levels",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },

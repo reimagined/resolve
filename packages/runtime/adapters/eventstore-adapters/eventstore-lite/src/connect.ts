@@ -105,6 +105,9 @@ const connect = async (
 
   log.debug(`adjusting connection`)
 
+  log.verbose(`Entering driver serialize mode`)
+  await (database as any)?.driver?.serialize?.()
+
   log.verbose(`PRAGMA busy_timeout=1000000`)
   await database.exec(`PRAGMA busy_timeout=1000000`)
 

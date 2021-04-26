@@ -16,12 +16,12 @@ const snapshotTrigger = async <
   log.verbose(`bucketSize: ${bucketSize}`)
 
   if (snapshotKey == null || snapshotKey.constructor !== String) {
-    const error = new Error('Snapshot key must be string')
+    const error = new Error('Snapshot key must be a string')
     log.error(error.message)
     throw error
   }
   if (content == null || content.constructor !== String) {
-    const error = new Error('Snapshot content must be string')
+    const error = new Error('Snapshot content must be a string')
     log.error(error.message)
     throw error
   }

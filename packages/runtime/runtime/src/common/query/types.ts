@@ -17,7 +17,6 @@ export type CreateQueryOptions = {
   monitoring?: Monitoring
   readModelsInterop: ReadModelInteropMap | SagaInteropMap
   viewModelsInterop: ViewModelInteropMap
-  provideLedger: (ledger: any) => Promise<void>
   eventstoreAdapter: Eventstore
   applicationName: string
 }
@@ -52,7 +51,6 @@ export type ReadModelPool = {
   invokeEventSubscriberAsync: Function
   getVacantTimeInMillis: Function
   monitoring?: Monitoring
-  provideLedger: (ledger: any) => Promise<void>
   eventstoreAdapter: Eventstore
   applicationName: string
 }

@@ -5,7 +5,7 @@ const loadSnapshot = async (
   snapshotKey: string
 ): Promise<string | null> => {
   if (snapshotKey == null || snapshotKey.constructor !== String) {
-    throw new Error('Snapshot key must be string')
+    throw new Error('Snapshot key must be a string')
   }
 
   const snapshotsTableNameAsId: string = escapeId(snapshotsTableName)

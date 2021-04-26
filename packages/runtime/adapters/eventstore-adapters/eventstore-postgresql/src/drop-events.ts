@@ -15,7 +15,7 @@ const dropEvents = async ({
 }: AdapterPool): Promise<any[]> => {
   const log = getLog('dropEvents')
 
-  log.debug(`dropping events tables`)
+  log.debug(`dropping event tables`)
   log.verbose(`secretsTableName: ${secretsTableName}`)
   log.verbose(`databaseName: ${databaseName}`)
 

@@ -56,7 +56,15 @@ const read = async (
 
   try {
     if (isDisposed) {
-      throw new Error(`Read model "${readModelName}" is disposed`)
+      const error = new Error(`Read model "${readModelName}" is disposed`)
+      await monitoring?.error?.(error, 'readModelResolver', {
+        readModelName,
+        resolverName,
+      })
+      if (subSegment != null) {
+        subSegment.addError(error)
+      }
+      throw error
     }
     const resolver = await interop.acquireResolver(resolverName, resolverArgs, {
       jwt,
@@ -65,16 +73,6 @@ const read = async (
     const result = await wrapConnection(pool, interop, resolver)
     log.verbose(result)
     return result
-  } catch (error) {
-    if (subSegment != null) {
-      subSegment.addError(error)
-    }
-
-    await monitoring?.error?.(error, 'readModelResolver', {
-      readModelName,
-      resolverName,
-    })
-    throw error
   } finally {
     if (subSegment != null) {
       subSegment.close()
@@ -128,7 +126,7 @@ const updateCustomReadModel = async (
   })
 }
 
-const customReadModelMethods = {
+export const customReadModelMethods = {
   build: async (
     pool: ReadModelPool,
     interop: ReadModelInterop | SagaInterop,
@@ -185,7 +183,7 @@ const customReadModelMethods = {
       if (events == null) {
         try {
           log.verbose(
-            `Applying "Init" event to read-model "${readModelName}" started`
+            `Started applying the "Init" event to the "${readModelName}" read model`
           )
 
           try {
@@ -205,21 +203,21 @@ const customReadModelMethods = {
             }
           }
           log.debug(
-            `applying "Init" event to read-model "${readModelName}" succeed`
+            `applying "Init" event to the "${readModelName}"  read model succeed`
           )
         } catch (readModelError) {
           if (readModelError === OMIT_BATCH) {
             throw OMIT_BATCH
           }
           log.error(
-            `applying "Init" event to read-model "${readModelName}" failed`
+            `applying "Init" event to the "${readModelName}" read model failed`
           )
           log.error(readModelError.message)
           log.verbose(readModelError.stack)
 
           const summaryError = readModelError
           log.verbose(
-            `Throwing error for "Init" applying to read-model "${readModelName}"`,
+            `Throwing error for applying "Init" to the "${readModelName}" read model`,
             summaryError
           )
           throw summaryError
@@ -230,7 +228,7 @@ const customReadModelMethods = {
         for (const event of events) {
           if (pool.isDisposed) {
             throw new Error(
-              `read-model "${readModelName}" updating had been interrupted`
+              `read model "${readModelName}" updating has been interrupted`
             )
           }
           if (event == null) {
@@ -238,19 +236,19 @@ const customReadModelMethods = {
           }
           const remainingTime = pool.getVacantTimeInMillis()
           log.debug(
-            `remaining read-model "${readModelName}" feeding time is ${remainingTime} ms`
+            `remaining read model "${readModelName}" feeding time is ${remainingTime} ms`
           )
 
           if (remainingTime < 0) {
             log.debug(
-              `stop applying events to read-model "${readModelName}" because of timeout`
+              `stop applying events to the "${readModelName}" read model due to timeout`
             )
             break
           }
 
           try {
             log.verbose(
-              `Applying "${event.type}" event to read-model "${readModelName}" started`
+              `Applying "${event.type}" event to the "${readModelName}" read model started`
             )
             try {
               const executor = await interop.acquireEventHandler(
@@ -274,14 +272,14 @@ const customReadModelMethods = {
               }
             }
             log.debug(
-              `applying "${event.type}" event to read-model "${readModelName}" succeed`
+              `applying "${event.type}" event to the "${readModelName}" read model succeed`
             )
           } catch (readModelError) {
             if (readModelError === OMIT_BATCH) {
               throw OMIT_BATCH
             }
             log.error(
-              `applying "${event.type}" event to read-model "${readModelName}" failed`
+              `applying "${event.type}" event to the "${readModelName}" read model failed`
             )
             log.error(readModelError.message)
             log.verbose(readModelError.stack)
@@ -290,7 +288,7 @@ const customReadModelMethods = {
             summaryError.stack = readModelError.stack
 
             log.verbose(
-              `Throwing error for feeding read-model "${readModelName}"`,
+              `Throwing error for feeding the "${readModelName}" read model`,
               summaryError
             )
             throw summaryError
@@ -384,20 +382,22 @@ const customReadModelMethods = {
     connection: any,
     readModelName: string,
     parameters: {}
-  ) =>
+  ) => {
+    let isSuccess = false
     await updateCustomReadModel(
       pool,
       readModelName,
       { status: 'deliver', busy: false },
       async (status: any) => {
-        const isSuccess =
-          status.status === 'deliver' || status.status === 'skip'
-        if (isSuccess) {
-          await next(pool, readModelName)
-        }
+        isSuccess = status.status === 'deliver' || status.status === 'skip'
         return isSuccess
       }
-    ),
+    )
+
+    if (isSuccess) {
+      await next(pool, readModelName)
+    }
+  },
 
   pause: async (
     pool: ReadModelPool,
@@ -443,6 +443,7 @@ const customReadModelMethods = {
       applicationName: pool.applicationName,
       eventSubscriber: readModelName,
       status: {
+        eventSubscriber: readModelName,
         status: 'skip',
         busy: false,
         ...entry.status,
@@ -469,6 +470,7 @@ const customReadModelMethods = {
       eventSubscriber: readModelName,
       status: {
         ...parameters.subscriptionOptions,
+        eventSubscriber: readModelName,
         status: 'skip',
         busy: false,
       },
@@ -494,105 +496,6 @@ const customReadModelMethods = {
 
     await pool.connector.drop(connection, readModelName)
   },
-
-  deleteProperty: async (
-    pool: ReadModelPool,
-    interop: ReadModelInterop | SagaInterop,
-    connection: any,
-    readModelName: string,
-    parameters: {
-      key: string
-    }
-  ) =>
-    await updateCustomReadModel(
-      pool,
-      readModelName,
-      {},
-      async (status: any) => {
-        const { [parameters.key]: _, ...currentProperties } =
-          status.properties ?? {}
-        await pool.eventstoreAdapter.ensureEventSubscriber({
-          applicationName: pool.applicationName,
-          eventSubscriber: readModelName,
-          status: {
-            ...status,
-            properties: currentProperties,
-          },
-          updateOnly: true,
-        })
-
-        return true
-      }
-    ),
-
-  getProperty: async (
-    pool: ReadModelPool,
-    interop: ReadModelInterop | SagaInterop,
-    connection: any,
-    readModelName: string,
-    parameters: {
-      key: string
-    }
-  ) => {
-    const { status } = (
-      await pool.eventstoreAdapter.getEventSubscribers({
-        applicationName: pool.applicationName,
-        eventSubscriber: readModelName,
-      })
-    )[0] ?? { status: null }
-
-    return (status.properties ?? {})[parameters.key]
-  },
-
-  listProperties: async (
-    pool: ReadModelPool,
-    interop: ReadModelInterop | SagaInterop,
-    connection: any,
-    readModelName: string,
-    parameters: {}
-  ) => {
-    const { status } = (
-      await pool.eventstoreAdapter.getEventSubscribers({
-        applicationName: pool.applicationName,
-        eventSubscriber: readModelName,
-      })
-    )[0] ?? { status: null }
-
-    return status.properties ?? {}
-  },
-
-  setProperty: async (
-    pool: ReadModelPool,
-    interop: ReadModelInterop | SagaInterop,
-    connection: any,
-    readModelName: string,
-    parameters: {
-      key: string
-      value: any
-    }
-  ) =>
-    await updateCustomReadModel(
-      pool,
-      readModelName,
-      {},
-      async (status: any) => {
-        const { ...currentProperties } = status.properties ?? {}
-        await pool.eventstoreAdapter.ensureEventSubscriber({
-          applicationName: pool.applicationName,
-          eventSubscriber: readModelName,
-          status: {
-            ...status,
-            properties: {
-              ...currentProperties,
-              [parameters.key]: parameters.value,
-            },
-          },
-          updateOnly: true,
-        })
-
-        return true
-      }
-    ),
 
   status: async (
     pool: ReadModelPool,
@@ -622,7 +525,7 @@ const doOperation = async (
 ): Promise<any> => {
   const readModelName = interop.name
   if (pool.isDisposed) {
-    throw new Error(`read-model "${readModelName}" is disposed`)
+    throw new Error(`the "${readModelName}" read model is disposed`)
   }
   let result = null
 
@@ -660,23 +563,6 @@ const doOperation = async (
   return result
 }
 
-const provideLedger = async (
-  pool: ReadModelPool,
-  readModelName: string,
-  inlineLedger: any
-) => {
-  try {
-    if (typeof pool.provideLedger === 'function') {
-      await pool.provideLedger(inlineLedger)
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      `Provide inline ledger for event listener ${readModelName} failed: ${error}`
-    )
-  }
-}
-
 const operationMethods = {
   build: doOperation.bind(
     null,
@@ -695,7 +581,6 @@ const operationMethods = {
       next.bind(null, pool, readModelName),
       pool.eventstoreAdapter,
       pool.getVacantTimeInMillis,
-      provideLedger.bind(null, pool, readModelName),
     ]
   ),
 
@@ -791,61 +676,6 @@ const operationMethods = {
     ) => [connection, readModelName]
   ),
 
-  deleteProperty: doOperation.bind(
-    null,
-    'deleteProperty',
-    (
-      pool: ReadModelPool,
-      interop: ReadModelInterop | SagaInterop,
-      connection: any,
-      readModelName: string,
-      parameters: {
-        key: string
-      }
-    ) => [connection, readModelName, parameters.key]
-  ),
-
-  getProperty: doOperation.bind(
-    null,
-    'getProperty',
-    (
-      pool: ReadModelPool,
-      interop: ReadModelInterop | SagaInterop,
-      connection: any,
-      readModelName: string,
-      parameters: {
-        key: string
-      }
-    ) => [connection, readModelName, parameters.key]
-  ),
-
-  listProperties: doOperation.bind(
-    null,
-    'listProperties',
-    (
-      pool: ReadModelPool,
-      interop: ReadModelInterop | SagaInterop,
-      connection: any,
-      readModelName: string,
-      parameters: {}
-    ) => [connection, readModelName]
-  ),
-
-  setProperty: doOperation.bind(
-    null,
-    'setProperty',
-    (
-      pool: ReadModelPool,
-      interop: ReadModelInterop | SagaInterop,
-      connection: any,
-      readModelName: string,
-      parameters: {
-        key: string
-        value: any
-      }
-    ) => [connection, readModelName, parameters.key, parameters.value]
-  ),
-
   status: doOperation.bind(
     null,
     'status',
@@ -883,7 +713,7 @@ const dispose = async (
 ): Promise<void> => {
   const readModelName = interop.name
   if (pool.isDisposed) {
-    throw new Error(`read-model "${readModelName}" is disposed`)
+    throw new Error(`read model "${readModelName}" is disposed`)
   }
   pool.isDisposed = true
 
@@ -902,7 +732,6 @@ const wrapReadModel = ({
   performanceTracer,
   getVacantTimeInMillis,
   monitoring,
-  provideLedger,
   eventstoreAdapter,
 }: WrapReadModelOptions) => {
   const log = getLog(`readModel:wrapReadModel:${interop.name}`)
@@ -911,7 +740,7 @@ const wrapReadModel = ({
   const connector = readModelConnectors[interop.connectorName]
   if (connector == null) {
     throw new Error(
-      `connector "${interop.connectorName}" for read-model "${interop.name}" does not exist`
+      `connector "${interop.connectorName}" for read model "${interop.name}" does not exist`
     )
   }
 
@@ -927,7 +756,6 @@ const wrapReadModel = ({
     performanceTracer,
     getVacantTimeInMillis,
     monitoring: safeMonitoring,
-    provideLedger,
     eventstoreAdapter,
   }
 
@@ -935,6 +763,78 @@ const wrapReadModel = ({
     serializeState,
     read: read.bind(null, pool, interop),
     dispose: dispose.bind(null, pool, interop),
+
+    deleteProperty: async (parameters: { key: string }) => {
+      const entry = (
+        await pool.eventstoreAdapter.getEventSubscribers({
+          applicationName: pool.applicationName,
+          eventSubscriber: interop.name,
+        })
+      )[0]
+      if (entry == null) {
+        return
+      }
+      const status = entry.status ?? {}
+      const { [parameters.key]: _, ...currentProperties } =
+        status.properties ?? {}
+      await pool.eventstoreAdapter.ensureEventSubscriber({
+        applicationName: pool.applicationName,
+        eventSubscriber: interop.name,
+        status: {
+          ...status,
+          properties: currentProperties,
+        },
+        updateOnly: true,
+      })
+    },
+
+    getProperty: async (parameters: { key: string }) => {
+      const { status } = (
+        await pool.eventstoreAdapter.getEventSubscribers({
+          applicationName: pool.applicationName,
+          eventSubscriber: interop.name,
+        })
+      )[0] ?? { status: null }
+
+      return (status?.properties ?? {})[parameters.key]
+    },
+
+    listProperties: async (parameters: {}) => {
+      const { status } = (
+        await pool.eventstoreAdapter.getEventSubscribers({
+          applicationName: pool.applicationName,
+          eventSubscriber: interop.name,
+        })
+      )[0] ?? { status: null }
+
+      return status?.properties ?? {}
+    },
+
+    setProperty: async (parameters: { key: string; value: any }) => {
+      const entry = (
+        await pool.eventstoreAdapter.getEventSubscribers({
+          applicationName: pool.applicationName,
+          eventSubscriber: interop.name,
+        })
+      )[0]
+      if (entry == null) {
+        return
+      }
+      const status = entry.status ?? {}
+      const { ...currentProperties } = status.properties ?? {}
+      await pool.eventstoreAdapter.ensureEventSubscriber({
+        applicationName: pool.applicationName,
+        eventSubscriber: interop.name,
+        status: {
+          ...status,
+          properties: {
+            ...currentProperties,
+            [parameters.key]: parameters.value,
+          },
+        },
+        updateOnly: true,
+      })
+    },
   }
 
   log.debug(`detecting connector features`)
@@ -962,7 +862,7 @@ const wrapReadModel = ({
     )
   )
 
-  log.debug(`read-model wrapped successfully`)
+  log.debug(`read model wrapped successfully`)
 
   return Object.freeze(api)
 }

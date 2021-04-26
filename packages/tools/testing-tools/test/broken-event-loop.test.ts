@@ -53,40 +53,38 @@ test('async call during building', async () => {
       name: 'readModelName',
       projection: readModelProjection,
       resolvers: readModelResolvers,
-      adapter: await getReadModelConnector(),
     })
-    .all({ a: 10, b: 20 })
+    .withAdapter(await getReadModelConnector())
+    .query('all', { a: 10, b: 20 })
     .as('JWT_TOKEN')
 
   expect(result.items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }])
 })
 
 test('async call before building', async () => {
-  const adapter = await getReadModelConnector()
   const result = await givenEvents(inputEvents)
     .readModel({
       name: 'readModelName',
       projection: readModelProjection,
       resolvers: readModelResolvers,
-      adapter,
     })
-    .all({ a: 10, b: 20 })
+    .withAdapter(await getReadModelConnector())
+    .query('all', { a: 10, b: 20 })
     .as('JWT_TOKEN')
 
   expect(result.items).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }])
 })
 
 test('bug: promise never completes on hard error', async () => {
-  const adapter = await getReadModelConnector()
   try {
     await givenEvents(inputEvents)
       .readModel({
         name: 'readModelName',
         projection: readModelBrokenProjection,
         resolvers: readModelResolvers,
-        adapter,
       })
-      .all({ a: 10, b: 20 })
+      .withAdapter(await getReadModelConnector())
+      .query('all', { a: 10, b: 20 })
       .as('JWT_TOKEN')
   } catch {}
 })

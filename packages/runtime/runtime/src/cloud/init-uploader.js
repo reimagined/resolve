@@ -6,7 +6,7 @@ import crypto from 'crypto'
 import mime from 'mime-types'
 
 const createPresignedPut = async (
-  { uploaderArn, userId, encryptedUserId, scope },
+  { uploaderArn, userId, encryptedUserId },
   dir
 ) => {
   const lambda = new Lambda()
@@ -18,7 +18,6 @@ const createPresignedPut = async (
         type: 'put',
         userId,
         encryptedUserId,
-        scope,
         dir,
       }),
     })
@@ -60,7 +59,7 @@ export const upload = (pool, uploadUrl, filePath) => {
 }
 
 const createPresignedPost = async (
-  { uploaderArn, userId, encryptedUserId, scope },
+  { uploaderArn, userId, encryptedUserId },
   dir
 ) => {
   const lambda = new Lambda()
@@ -72,7 +71,6 @@ const createPresignedPost = async (
         type: 'post',
         userId,
         encryptedUserId,
-        scope,
         dir,
       }),
     })
@@ -113,13 +111,12 @@ export const uploadFormData = (pool, form, filePath) => {
 }
 
 export const createToken = (
-  { encryptedUserId, scope },
+  { encryptedUserId },
   { dir, expireTime = 3600 }
 ) => {
   const payload = Buffer.from(
     JSON.stringify({
       encryptedUserId,
-      scope,
       dir,
       expireTime: Date.now() + expireTime * 1000,
     })
@@ -136,7 +133,15 @@ export const createToken = (
 }
 
 const createUploader = (config) => {
-  const { userId, CDN, encryptedUserId, scope } = config
+  const { CDN } = config
+
+  const userId = process.env['RESOLVE_USER_ID']
+  const encryptedUserId = process.env['RESOLVE_ENCRYPTED_USER_ID']
+
+  Object.assign(config, {
+    userId,
+    encryptedUserId,
+  })
 
   return Object.freeze({
     createPresignedPut: createPresignedPut.bind(null, config),
@@ -147,7 +152,6 @@ const createUploader = (config) => {
     CDN,
     userId,
     encryptedUserId,
-    scope,
   })
 }
 
@@ -164,7 +168,7 @@ const initUploader = async (resolve) => {
     // TODO: provide support for custom uploader adapter
     const createUploadAdapter = resolve.assemblies.uploadAdapter
     const uploader = createUploader(createUploadAdapter())
-    process.env.RESOLVE_UPLOADER_CDN_URL = `https://${uploader.CDN}/${uploader.userId}/${uploader.scope}`
+    process.env.RESOLVE_UPLOADER_CDN_URL = `https://${uploader.CDN}/${uploader.userId}`
 
     Object.assign(resolve, {
       uploader: {
