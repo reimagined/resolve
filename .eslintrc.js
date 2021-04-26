@@ -71,6 +71,7 @@ module.exports = {
           'adm',
           'alloc',
           'ajv',
+          'abuse',
           'amazonaws',
           'amqp',
           'amqplib',
