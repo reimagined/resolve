@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/resolve",
-  "version": "0.40.0",
+  "version": "0.29.0",
   "private": true,
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
