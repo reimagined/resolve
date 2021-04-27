@@ -3,10 +3,8 @@ header-label=# Changelog
 release-branch=dev
 unreleased-label=Upcoming
 issues-wo-labels=false
-exclude-labels=docs,Docs,documentation,Documentation,question
+exclude-labels=docs,maintenance
 max-issues=100
-enhancement-label=**Implemented new features and enhancements:**
-enhancement-labels=enhancement,Enhancement,Type: Enhancement,feature,Feature,improvement,Improvement
-breaking-labels=breaking,Breaking,breaking-change,Breaking-Change,migration,Migration
 pr-label=**Other changes:**
+configure-sections={"A":{"prefix":"**New features:**","labels":["feature", "Feature"]}, "B":{"prefix":"**Enhancements:**","labels":["improvement", "enhancement"]}, "C":{"prefix":"**Breaking changes:**","labels":["breaking"]}, "D":{"prefix":"**Fixed bugs:**","labels":["bug"]}}
 
