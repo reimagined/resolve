@@ -158,7 +158,7 @@ export type CurrentAdapterImplementation = AdapterImplementation<
   AdapterOptions
 >
 
-export type AdminOptions = PGLib.ConnectionConfig & {
+export type AdminOptions = MySQLPromiseLib.ConnectionOptions & {
   database: string
 }
 
