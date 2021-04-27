@@ -44,7 +44,6 @@ import status from './status'
 import build from './build'
 
 import _createResource from './resource/create'
-import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
 
 const store: CurrentStoreApi = {
@@ -113,17 +112,11 @@ const pool = {
 } as AdminPool
 
 const createResource = _createResource.bind(null, pool)
-const disposeResource = _disposeResource.bind(null, pool)
 const destroyResource = _destroyResource.bind(null, pool)
 
 Object.assign(pool, {
   createResource,
-  disposeResource,
   destroyResource,
 })
 
-export {
-  createResource as create,
-  disposeResource as dispose,
-  destroyResource as destroy,
-}
+export { createResource as create, destroyResource as destroy }

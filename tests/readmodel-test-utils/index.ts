@@ -2,6 +2,7 @@ import * as AWS from 'aws-sdk'
 import createSqliteAdapter from '@resolve-js/readmodel-lite'
 import createPostgresqlServerlessAdapter from '@resolve-js/readmodel-postgresql-serverless'
 import createPostgresqlAdapter from '@resolve-js/readmodel-postgresql'
+import createMySQLAdapter from '@resolve-js/readmodel-mysql'
 import {
   create as createPostgresServerlessResource,
   destroy as destroyPostgresServerlessResource,
@@ -10,6 +11,10 @@ import {
   create as createPostgresResource,
   destroy as destroyPostgresResource,
 } from '@resolve-js/readmodel-postgresql'
+import {
+  create as createMySQLResource,
+  destroy as destroyMySQLResource,
+} from '@resolve-js/readmodel-mysql'
 
 export function isPostgresServerless(): boolean {
   if (
@@ -59,6 +64,27 @@ export function isPostgres(): boolean {
     }
     if (process.env.POSTGRES_DATABASE == null) {
       throw new Error(`Environment variable POSTGRES_DATABASE is required`)
+    }
+    return true
+  }
+}
+
+export function isMySQL(): boolean {
+  if (
+    process.env.TEST_MYSQL !== undefined &&
+    process.env.TEST_MYSQL !== 'false'
+  ) {
+    if (process.env.MYSQL_HOST == null) {
+      throw new Error(`Environment variable MYSQL_HOST is required`)
+    }
+    if (process.env.MYSQL_PORT == null) {
+      throw new Error(`Environment variable MYSQL_PORT is required`)
+    }
+    if (process.env.MYSQL_USER == null) {
+      throw new Error(`Environment variable MYSQL_USER is required`)
+    }
+    if (process.env.MYSQL_PASSWORD == null) {
+      throw new Error(`Environment variable MYSQL_PASSWORD is required`)
     }
     return true
   }
@@ -127,13 +153,13 @@ export function getPostgresOptions(uniqueName: string) {
   }
 }
 
-export function getMysqlOptions(uniqueName: string) {
+export function getMySQLOptions(uniqueName: string) {
   return {
     database: uniqueName,
     user: process.env.MYSQL_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    port: +process.env.POSTGRES_PORT,
-    host: process.env.POSTGRES_HOST,
+    password: process.env.MYSQL_PASSWORD,
+    port: +process.env.MYSQL_PORT,
+    host: process.env.MYSQL_HOST,
   }
 }
 
@@ -190,6 +216,30 @@ export const adapterFactory = isPostgresServerless()
           delete adapters[uniqueName]
 
           await destroyPostgresResource(options)
+        }
+      },
+    }
+  : isMySQL()
+  ? {
+      name: '@resolve-js/readmodel-postgresql',
+      create(uniqueName: string) {
+        return async () => {
+          const options = getMySQLOptions(uniqueName)
+
+          createMySQLResource(options)
+
+          adapters[uniqueName] = createMySQLAdapter(options)
+        }
+      },
+      destroy(uniqueName: string) {
+        return async () => {
+          const options = getMySQLOptions(uniqueName)
+
+          await adapters[uniqueName].dispose()
+
+          delete adapters[uniqueName]
+
+          await destroyMySQLResource(options)
         }
       },
     }

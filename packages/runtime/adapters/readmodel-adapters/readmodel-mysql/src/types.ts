@@ -15,6 +15,7 @@ import type {
 
 import type MySQLPromiseLib from 'mysql2/promise'
 import type { escape as _EscapeableMethod } from 'mysql2'
+import PGLib from 'pg'
 export * from '@resolve-js/readmodel-base'
 
 export type EscapeableMethod = typeof _EscapeableMethod
@@ -157,3 +158,23 @@ export type CurrentAdapterImplementation = AdapterImplementation<
   AdapterPool,
   AdapterOptions
 >
+
+export type AdminOptions = PGLib.ConnectionConfig & {
+  database: string
+}
+
+export type BoundResourceMethod = (options: AdminOptions) => Promise<void>
+
+export type UnboundResourceMethod = (
+  pool: AdminPool,
+  options: AdminOptions
+) => Promise<void>
+
+export type AdminPool = {
+  connect: CurrentAdapterImplementation['connect']
+  disconnect: CurrentAdapterImplementation['disconnect']
+  escapeStr: EscapeableMethod
+  escapeId: EscapeableMethod
+  createResource: BoundResourceMethod
+  destroyResource: BoundResourceMethod
+}

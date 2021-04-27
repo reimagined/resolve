@@ -192,6 +192,5 @@ export type AdminPool = {
   escapeStr: EscapeableMethod
   escapeId: EscapeableMethod
   createResource: BoundResourceMethod
-  disposeResource: BoundResourceMethod
   destroyResource: BoundResourceMethod
 }
