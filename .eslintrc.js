@@ -5,6 +5,7 @@ module.exports = {
   env: {
     node: true,
     jest: true,
+    jasmine: true,
     es6: true,
     browser: true,
   },
@@ -70,6 +71,7 @@ module.exports = {
           'adm',
           'alloc',
           'ajv',
+          'abuse',
           'amazonaws',
           'amqp',
           'amqplib',

@@ -44,7 +44,6 @@ jobs:
   #          tag: dev
   #          unpublish: false
   #          github_target_repository: resolve-js/resolve
-
   update-changelog:
     runs-on: ubuntu-latest
     steps:
