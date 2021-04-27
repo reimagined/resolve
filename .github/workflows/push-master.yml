@@ -3,7 +3,7 @@ name: master (push)
 on:
   push:
     branches:
-      - feature/changelog-generator
+      - master
 
 jobs:
   release:
