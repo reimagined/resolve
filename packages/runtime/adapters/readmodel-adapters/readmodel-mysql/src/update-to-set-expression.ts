@@ -12,6 +12,7 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
   splitNestedPath
 ) => {
   const updateExprArray: Array<string> = []
+  let inlineTableNameIdx = 0
 
   for (let operatorName of Object.keys(expression) as Array<
     ObjectFixedKeys<typeof expression>
@@ -100,15 +101,6 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
                 )}, '${makeNestedPath(nestedPath)}'))`
               : `JSON_TYPE(${escapeId(baseName)})`
 
-          const targetInlinedPrefix =
-            nestedPath.length > 0
-              ? `${escapeId(baseName)} = JSON_SET(${escapeId(
-                  baseName
-                )}, '${makeNestedPath(nestedPath)}', `
-              : `${escapeId(baseName)} = `
-
-          const targetInlinedPostfix = nestedPath.length > 0 ? ')' : ''
-
           const fieldValueNumberLike = +(fieldValue as number)
           const fieldValueStringLike = escapeStr(`${fieldValue}`)
 
@@ -124,7 +116,19 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
               : 'UNKNOWN'
           )
 
-          let updatingInlinedValue = `CAST(CASE
+          const inlineTableName = escapeId(
+            `inline-table-${inlineTableNameIdx++}`
+          )
+          let updatingInlinedValue = `(SELECT ${
+            nestedPath.length > 0
+              ? `JSON_EXTRACT(JSON_ARRAY(JSON_SET(${escapeId(
+                  baseName
+                )}, '${makeNestedPath(
+                  nestedPath
+                )}', ${inlineTableName}.\`value\`), ${inlineTableName}.\`value\`), '$[0]')`
+              : `${inlineTableName}.\`value\``
+          }
+            FROM (SELECT CAST(CASE
             WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'STRING-STRING' THEN JSON_QUOTE(
               CONCAT(CAST(${sourceInlinedValue} AS CHAR),
               CAST(${fieldValueStringLike} AS CHAR))
@@ -146,10 +150,11 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
               CAST(${fieldValueNumberLike} AS DECIMAL(48, 16))
             )
             ELSE JSON_TYPE((SELECT 'MalformedIncOperation' FROM information_schema.tables LIMIT 1))
-          END AS JSON)`
+          END AS JSON) AS \`value\`) ${inlineTableName})
+          `
 
           updateExprArray.push(
-            `${targetInlinedPrefix} ${updatingInlinedValue} ${targetInlinedPostfix}`
+            `${escapeId(baseName)} = ${updatingInlinedValue}`
           )
 
           break

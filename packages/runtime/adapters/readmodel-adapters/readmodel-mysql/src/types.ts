@@ -15,7 +15,6 @@ import type {
 
 import type MySQLPromiseLib from 'mysql2/promise'
 import type { escape as _EscapeableMethod } from 'mysql2'
-import PGLib from 'pg'
 export * from '@resolve-js/readmodel-base'
 
 export type EscapeableMethod = typeof _EscapeableMethod

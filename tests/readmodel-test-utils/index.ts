@@ -204,7 +204,7 @@ export const adapterFactory = isPostgresServerless()
 
           try {
             await destroyPostgresResource(options)
-          } catch(e) {}
+          } catch (e) {}
           await createPostgresResource(options)
 
           adapters[uniqueName] = createPostgresqlAdapter(options)
@@ -231,7 +231,7 @@ export const adapterFactory = isPostgresServerless()
 
           try {
             await destroyMySQLResource(options)
-          } catch(e) {}
+          } catch (e) {}
           await createMySQLResource(options)
 
           adapters[uniqueName] = createMySQLAdapter(options)

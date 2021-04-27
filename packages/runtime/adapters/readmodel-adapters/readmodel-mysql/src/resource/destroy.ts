@@ -17,11 +17,10 @@ const destroy: UnboundResourceMethod = async (pool, options) => {
     password: options.password,
     database: 'mysql',
   } as OmitObject<AdapterOptions, CommonAdapterOptions>)
-  
+
   await admin.inlineLedgerRunQuery(
     `DROP DATABASE ${escapeId(options.database)}`
   )
- 
 
   await disconnect(admin)
 }
