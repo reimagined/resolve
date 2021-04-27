@@ -1,8 +1,8 @@
 # Changelog
 
-## [.40.0](https://github.com/max-vasin-team/resolve/tree/.40.0) (2021-04-27)
+## [Upcoming](https://github.com/max-vasin-team/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/max-vasin-team/resolve/compare/V0.29.0....40.0)
+[Full Changelog](https://github.com/max-vasin-team/resolve/compare/V0.29.0...HEAD)
 
 **New features:**
 
@@ -22,6 +22,7 @@
 
 **Other changes:**
 
+- Release 0.40.0 [\#27](https://github.com/max-vasin-team/resolve/pull/27)
 - Fix nasty bug in redux [\#21](https://github.com/max-vasin-team/resolve/pull/21)
 
 ## V0.29.0
