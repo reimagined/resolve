@@ -1,3 +1,5 @@
+import { mocked } from 'ts-jest/utils'
+
 import { SecretsManager, Event } from '../src/types/core'
 import { ViewModelMeta, Eventstore, Monitoring } from '../src/types/runtime'
 import { getViewModelsInteropBuilder } from '../src/view-model/get-view-models-interop-builder'
@@ -7,6 +9,8 @@ import {
   ViewModelBuildResult,
   ViewModelRuntime,
 } from '../src/view-model/types'
+
+let monitoring: Monitoring
 
 const dummyEncryption = () => Promise.resolve({})
 
@@ -48,9 +52,15 @@ const makeTestRuntime = (storedEvents: Event[] = []): ViewModelRuntime => {
     getEventSubscribers: jest.fn().mockResolvedValue([]),
   }
 
-  const monitoring: Monitoring = {
+  monitoring = {
+    group: jest.fn(),
     error: jest.fn(),
+    time: jest.fn(),
+    timeEnd: jest.fn(),
+    publish: jest.fn(),
   }
+
+  mocked(monitoring.group).mockReturnValue(monitoring)
 
   return {
     eventstore,
@@ -122,5 +132,115 @@ describe('View models', () => {
     expect(data).toEqual(['first', 'third'])
     expect(eventCount).toEqual(2)
     expect(cursor).toEqual(2)
+  })
+
+  test('collects error if event handler is failed', async () => {
+    const error = new Error('TestError')
+
+    const resolver = setUpTestViewModelResolver(
+      {
+        name: 'TestViewModel',
+        projection: {
+          Init: () => [],
+          dummyEvent: () => {
+            throw error
+          },
+        },
+        resolver: (resolve: any, params: any) =>
+          resolve.buildViewModel('TestViewModel', params),
+      },
+      [
+        {
+          type: 'dummyEvent',
+          payload: { text: 'first' },
+          aggregateId: 'validAggregateId',
+          aggregateVersion: 1,
+          timestamp: 1,
+        },
+        {
+          type: 'dummyEvent',
+          payload: { text: 'second' },
+          aggregateId: 'invalidAggregateId',
+          aggregateVersion: 1,
+          timestamp: 2,
+        },
+        {
+          type: 'dummyEvent',
+          payload: { text: 'third' },
+          aggregateId: 'validAggregateId',
+          aggregateVersion: 2,
+          timestamp: 3,
+        },
+      ]
+    )
+
+    try {
+      await resolver({
+        aggregateIds: ['validAggregateId'],
+        aggregateArgs: null,
+      })
+
+      throw new Error('Building must be failed')
+    } catch (e) {}
+
+    expect(monitoring.group).toBeCalledWith({ Part: 'ViewModelProjection' })
+    expect(monitoring.group).toBeCalledWith({ ViewModel: 'TestViewModel' })
+    expect(monitoring.group).toBeCalledWith({ EventType: 'dummyEvent' })
+    expect(monitoring.error).toBeCalledWith(error)
+  })
+
+  test('collects error if resolver is failed', async () => {
+    const error = new Error('TestError')
+
+    const resolver = setUpTestViewModelResolver(
+      {
+        name: 'TestViewModel',
+        projection: {
+          Init: () => [],
+          dummyEvent: (state: any, event: any) => {
+            return [...state, event.payload.text]
+          },
+        },
+        resolver: () => {
+          throw error
+        },
+      },
+      [
+        {
+          type: 'dummyEvent',
+          payload: { text: 'first' },
+          aggregateId: 'validAggregateId',
+          aggregateVersion: 1,
+          timestamp: 1,
+        },
+        {
+          type: 'dummyEvent',
+          payload: { text: 'second' },
+          aggregateId: 'invalidAggregateId',
+          aggregateVersion: 1,
+          timestamp: 2,
+        },
+        {
+          type: 'dummyEvent',
+          payload: { text: 'third' },
+          aggregateId: 'validAggregateId',
+          aggregateVersion: 2,
+          timestamp: 3,
+        },
+      ]
+    )
+
+    try {
+      await resolver({
+        aggregateIds: ['validAggregateId'],
+        aggregateArgs: null,
+      })
+
+      throw new Error('Building must be failed')
+    } catch (e) {}
+
+    expect(monitoring.group).toBeCalledWith({ Part: 'ViewModelResolver' })
+    expect(monitoring.group).toBeCalledWith({ ViewModel: 'TestViewModel' })
+    expect(monitoring.error).toBeCalledWith(error)
   })
 })

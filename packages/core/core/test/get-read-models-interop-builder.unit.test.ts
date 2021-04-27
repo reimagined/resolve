@@ -23,12 +23,22 @@ const secretsManager: SecretsManager = {
 
 let monitoring: {
   error: jest.MockedFunction<NonNullable<Monitoring['error']>>
+  group: jest.MockedFunction<NonNullable<Monitoring['group']>>
+  time: jest.MockedFunction<NonNullable<Monitoring['time']>>
+  timeEnd: jest.MockedFunction<NonNullable<Monitoring['timeEnd']>>
+  publish: jest.MockedFunction<NonNullable<Monitoring['publish']>>
 }
 
 const makeTestRuntime = (): ReadModelRuntime => {
   monitoring = {
+    group: jest.fn(),
     error: jest.fn(),
+    time: jest.fn(),
+    timeEnd: jest.fn(),
+    publish: jest.fn(),
   }
+
+  monitoring.group.mockReturnValue(monitoring)
 
   return {
     secretsManager,
@@ -163,15 +173,22 @@ describe('Read models', () => {
       }
     } catch {}
 
+    expect(monitoring.group.mock.calls[0][0]).toEqual({
+      Part: 'ReadModelProjection',
+    })
+
+    expect(monitoring.group.mock.calls[1][0]).toEqual({
+      ReadModel: 'TestReadModel',
+    })
+
+    expect(monitoring.group.mock.calls[2][0]).toEqual({
+      EventType: 'Init',
+    })
+
     expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
     expect(monitoring.error.mock.calls[0][0].message).toEqual(
       'Projection error'
     )
-    expect(monitoring.error.mock.calls[0][1]).toEqual('readModelProjection')
-    expect(monitoring.error.mock.calls[0][2]).toEqual({
-      readModelName: 'TestReadModel',
-      eventType: 'Init',
-    })
   })
 
   test('#1797: error meta within monitored error on event handler ', async () => {
@@ -201,15 +218,20 @@ describe('Read models', () => {
       }
     } catch {}
 
+    expect(monitoring.group.mock.calls[0][0]).toEqual({
+      Part: 'ReadModelProjection',
+    })
+    expect(monitoring.group.mock.calls[1][0]).toEqual({
+      ReadModel: 'TestReadModel',
+    })
+    expect(monitoring.group.mock.calls[2][0]).toEqual({
+      EventType: 'Failed',
+    })
+
     expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
     expect(monitoring.error.mock.calls[0][0].message).toEqual(
       'Projection error'
     )
-    expect(monitoring.error.mock.calls[0][1]).toEqual('readModelProjection')
-    expect(monitoring.error.mock.calls[0][2]).toEqual({
-      readModelName: 'TestReadModel',
-      eventType: 'Failed',
-    })
   })
 
   test('should register error if resolver not found', async () => {
@@ -228,15 +250,20 @@ describe('Read models', () => {
       readModelInterop.acquireResolver('not-existing-resolver', {}, {})
     ).rejects.toBeInstanceOf(Error)
 
+    expect(monitoring.group.mock.calls[0][0]).toEqual({
+      Part: 'ReadModelResolver',
+    })
+    expect(monitoring.group.mock.calls[1][0]).toEqual({
+      ReadModel: 'TestReadModel',
+    })
+    expect(monitoring.group.mock.calls[2][0]).toEqual({
+      Resolver: 'not-existing-resolver',
+    })
+
     expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
     expect(monitoring.error.mock.calls[0][0].message).toEqual(
       expect.stringContaining(`not-existing-resolver`)
     )
-    expect(monitoring.error.mock.calls[0][1]).toEqual('readModelResolver')
-    expect(monitoring.error.mock.calls[0][2]).toEqual({
-      readModelName: 'TestReadModel',
-      resolverName: 'not-existing-resolver',
-    })
   })
 
   test('should register error or resolver failure', async () => {
@@ -257,12 +284,17 @@ describe('Read models', () => {
 
     await expect(resolver(null, null)).rejects.toBeInstanceOf(Error)
 
+    expect(monitoring.group.mock.calls[0][0]).toEqual({
+      Part: 'ReadModelResolver',
+    })
+    expect(monitoring.group.mock.calls[1][0]).toEqual({
+      ReadModel: 'TestReadModel',
+    })
+    expect(monitoring.group.mock.calls[2][0]).toEqual({
+      Resolver: 'fail',
+    })
+
     expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
     expect(monitoring.error.mock.calls[0][0].message).toEqual('failed resolver')
-    expect(monitoring.error.mock.calls[0][1]).toEqual('readModelResolver')
-    expect(monitoring.error.mock.calls[0][2]).toEqual({
-      readModelName: 'TestReadModel',
-      resolverName: 'fail',
-    })
   })
 })
