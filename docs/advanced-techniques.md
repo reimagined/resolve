@@ -26,14 +26,14 @@ When an application runs locally, the `@resolve-js/scripts` utility loads all ne
 
 ## Adapters
 
-ReSolve uses the **adapter** mechanism to provide an abstraction layer above APIs used by its subsystems. For instance, adapters are used to define how a reSolve application stores its data. They abstract away all direct interactions with the underlying storage, allowing reSolve to provide a unified data management API.
+ReSolve uses the **adapter** mechanism to provide an abstraction layer above APIs used by its subsystems. For instance, adapters are used to define how a reSolve application stores its data. This allows reSolve to abstract away all direct interactions with the underlying storage and expose a unified data management API.
 
 ReSolve uses different types of adapters depending on which kind of data needs to be stored.
 
 - **Event store adapters**
 - **Read model store adapters**
 
-Resolve comes with a set of adapters covering popular DBMS choices. You can also implement new adapters to store data in any required way.
+Resolve includes a set of adapters compatible with popular Database Management Systems (DBMS). You can also implement new adapters to store data in any required way.
 
 Note that reSolve does not force you to use adapters. For example, you may need to implement a Read Model on top of some arbitrary system, such as a full-text-search engine, OLAP or a particular SQL database. In such case, you can just work with that system in the code of the projection function and query resolver, without writing a new Read Model adapter.
 
@@ -229,7 +229,7 @@ For an example on how to use modules, see the [Hacker News](https://github.com/r
 
 ## Encryption
 
-The reSolve framework provides a mechanism that allows you to use an arbitrary encryption algorithm to encrypt the stored events and Read Model state data. You can use this functionality to store user data in compliance with General Data Protection Regulation (GDPR).
+The reSolve framework includes a mechanism that allows you to use an arbitrary encryption algorithm to encrypt the stored events and Read Model state data. You can use this functionality to store user data in compliance with General Data Protection Regulation (GDPR).
 
 Encryption is defined in a file that exports a factory function of the following format:
 
