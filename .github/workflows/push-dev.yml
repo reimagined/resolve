@@ -8,6 +8,7 @@ on:
 
 jobs:
   #  e2e-mac:
+  #    if: startsWith(github.event.head_commit.message, '<auto>') != true
   #    runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
   #    steps:
   #      - uses: actions/checkout@v2
@@ -24,6 +25,7 @@ jobs:
   #        run: yarn test:e2e
 
   #  publish-dev:
+  #    if: startsWith(github.event.head_commit.message, '<auto>') != true
   #    runs-on: ubuntu-latest
   #    continue-on-error: true
   #    steps:
@@ -46,6 +48,7 @@ jobs:
   #          github_target_repository: resolve-js/resolve
 
   update-changelog:
+    if: startsWith(github.event.head_commit.message, '<auto>') != true
     runs-on: ubuntu-latest
     steps:
       - name: Generate upcoming changelog
