@@ -31,7 +31,8 @@ jobs:
         with:
           push_event: ${{ toJSON(github.event) }}
           token: ${{ secrets.RESOLVE_BOT_PAT }}
-          release: ${{ steps.git_release.outputs.release_tag }}
+          upcoming: false
+          release: ${{ env.git_release_tag }}
 
       - uses: reimagined/github-actions/git-release@feature/changelog-generator
         id: git_release
