@@ -239,10 +239,10 @@ Encryption is defined in a file that exports a factory function of the following
 // common/aggregates/encryption.js
 const createEncryption = (aggregateId, context) => {
   ...
-  // Returns an object that contains an 'encrypt' and 'decrypt' functions
+  // Returns an object that contains 'encrypt' and 'decrypt' functions
   return {
     encrypt: (data) => ..., // A function that takes data and returns its encrypted version
-    decrypt: (blob) => ..., // A function takes an encrypted blob and returns unencrypted data
+    decrypt: (blob) => ..., // A function that takes an encrypted blob and returns unencrypted data
   }
 }
 export default createEncryption
@@ -254,10 +254,10 @@ export default createEncryption
 // common/read-models/encryption.js
 const createEncryption = (event, context) => {
   ...
-  // Returns an object that contains an 'encrypt' and 'decrypt' functions
+  // Returns an object that contains 'encrypt' and 'decrypt' functions
   return {
     encrypt: (data) => ..., // A function that takes data and returns its encrypted version
-    decrypt: (blob) => ..., // A function takes an encrypted blob and returns unencrypted data
+    decrypt: (blob) => ..., // A function that takes an encrypted blob and returns unencrypted data
   }
 }
 export default createEncryption
@@ -316,7 +316,7 @@ The `secretsManager` object contains the following functions:
 
 | Function Name  | Description                                                                                                                                 |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `getSecret`    | Takes a unique ID as an argument and returns a promise that resolves to a string if a secret was found or null if the secret was not found. |
+| `getSecret`    | Takes a unique ID as an argument and returns a promise that resolves to a string if a secret was found or null if a secret was not found. |
 | `setSecret`    | Takes a unique ID and a secret string as arguments and returns a promise that resolves if the secret was successfully saved.                |
 | `deleteSecret` | Takes a unique ID as an argument and returns a promise that resolves if the secret was successfully deleted.                                |
 
