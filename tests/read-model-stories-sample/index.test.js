@@ -1,8 +1,7 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents from 'resolve-testing-tools'
+import givenEvents from '@resolve-js/testing-tools'
 
 import config from './config'
-import resetReadModel from '../reset-read-model'
 
 jest.setTimeout(1000 * 60 * 5)
 
@@ -28,11 +27,9 @@ describe('Read-model sample', () => {
 
   let adapter = null
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = createConnector(connectorOptions)
   })
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = null
   })
 
@@ -123,9 +120,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoryById({ id: 'story-id-1' })
+        .withAdapter(adapter)
+        .query('getStoryById', { id: 'story-id-1' })
     ).toMatchSnapshot(`getStoryById({ id: 'story-id-1' })`)
   })
 
@@ -136,9 +133,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoryById({ id: 'story-id-2' })
+        .withAdapter(adapter)
+        .query('getStoryById', { id: 'story-id-2' })
     ).toMatchSnapshot(`getStoryById({ id: 'story-id-2' })`)
   })
 
@@ -149,9 +146,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoryById({ id: 'story-id-3' })
+        .withAdapter(adapter)
+        .query('getStoryById', { id: 'story-id-3' })
     ).toMatchSnapshot(`getStoryById({ id: 'story-id-3' })`)
   })
 
@@ -162,9 +159,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoryById({ id: 'story-id-4' })
+        .withAdapter(adapter)
+        .query('getStoryById', { id: 'story-id-4' })
     ).toMatchSnapshot(`getStoryById({ id: 'story-id-4' })`)
   })
 
@@ -175,9 +172,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoryById({ id: 'story-id-5' })
+        .withAdapter(adapter)
+        .query('getStoryById', { id: 'story-id-5' })
     ).toMatchSnapshot(`getStoryById({ id: 'story-id-5' })`)
   })
 
@@ -188,9 +185,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getCountStories()
+        .withAdapter(adapter)
+        .query('getCountStories')
     ).toMatchSnapshot(`getCountStories()`)
   })
 
@@ -201,9 +198,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoriesByIds({
+        .withAdapter(adapter)
+        .query('getStoriesByIds', {
           ids: [
             'story-id-1',
             'story-id-2',
@@ -224,9 +221,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoriesByPage({ skip: 0, limit: 2, ascending: true })
+        .withAdapter(adapter)
+        .query('getStoriesByPage', { skip: 0, limit: 2, ascending: true })
     ).toMatchSnapshot(
       `.getStoriesByPage({ skip: 0, limit: 2, ascending: true })`
     )
@@ -239,9 +236,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoriesByPage({ skip: 2, limit: 2, ascending: true })
+        .withAdapter(adapter)
+        .query('getStoriesByPage', { skip: 2, limit: 2, ascending: true })
     ).toMatchSnapshot(
       `.getStoriesByPage({ skip: 2, limit: 2, ascending: true })`
     )
@@ -254,9 +251,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoriesByPage({ skip: 0, limit: 2, ascending: false })
+        .withAdapter(adapter)
+        .query('getStoriesByPage', { skip: 0, limit: 2, ascending: false })
     ).toMatchSnapshot(
       `.getStoriesByPage({ skip: 0, limit: 2, ascending: false })`
     )
@@ -269,9 +266,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoriesByPage({ skip: 2, limit: 2, ascending: false })
+        .withAdapter(adapter)
+        .query('getStoriesByPage', { skip: 2, limit: 2, ascending: false })
     ).toMatchSnapshot(
       `.getStoriesByPage({ skip: 2, limit: 2, ascending: false })`
     )
@@ -284,9 +281,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoriesWithRangedVersion({
+        .withAdapter(adapter)
+        .query('getStoriesWithRangedVersion', {
           minVersion: 1,
           maxVersion: 3,
           openRange: false,
@@ -303,9 +300,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoriesWithRangedVersion({
+        .withAdapter(adapter)
+        .query('getStoriesWithRangedVersion', {
           minVersion: 1,
           maxVersion: 3,
           openRange: true,
@@ -322,9 +319,9 @@ describe('Read-model sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getStoryVersionById({ id: 'story-id-1' })
+        .withAdapter(adapter)
+        .query('getStoryVersionById', { id: 'story-id-1' })
     ).toMatchSnapshot(`.getStoryVersionById({ id: 'story-id-1' })`)
   })
 })

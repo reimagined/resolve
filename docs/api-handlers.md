@@ -80,13 +80,13 @@ export default appConfig
 
 The configuration object specifies the following options:
 
-| Option     | Description                                                                     |
-| ---------- | ------------------------------------------------------------------------------- |
-| Path       | The URL path for which the handler is invoked. The path is specified in the [route-trie](https://www.npmjs.com/package/route-trie) router's format |
-| Handler    | The path to the file that contains the handler's definition.                    |
-| Method     | The HTTP method to handle.                                                      |
+| Option  | Description                                                                                                                                        |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Path    | The URL path for which the handler is invoked. The path is specified in the [route-trie](https://www.npmjs.com/package/route-trie) router's format |
+| Handler | The path to the file that contains the handler's definition.                                                                                       |
+| Method  | The HTTP method to handle.                                                                                                                         |
 
-Refer to the [Schema Resolve Config](https://github.com/reimagined/resolve/blob/master/packages/core/resolve-scripts/configs/schema.resolve.config.json) file for more information.
+Refer to the [Application Configuration](application-configuration) topic for more information.
 
 ## Implementation Examples
 
@@ -108,7 +108,7 @@ export default async (req, res) => {
 
   res.json({
     id: uuid(),
-    username
+    username,
   })
 }
 ```

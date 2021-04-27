@@ -1,11 +1,15 @@
-const printFinishOutput = (pool) => async () => {
-  const { chalk, console, applicationName, useYarn } = pool
+/* eslint-disable no-console */
+
+import chalk from 'chalk'
+import isYarnAvailable from './is-yarn-available'
+
+const printFinishOutput = async (applicationName) => {
   const displayCommand = (isDefaultCmd) =>
-    useYarn ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run'
+    isYarnAvailable() ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run'
 
   console.log()
   console.log(`Success! ${applicationName} is created `)
-  console.log('In that directory, you can run the following commands:')
+  console.log('You can run the following commands in this directory:')
 
   console.log()
   console.log(chalk.cyan(`  ${displayCommand(false)} dev`))
@@ -40,3 +44,5 @@ const printFinishOutput = (pool) => async () => {
 }
 
 export default printFinishOutput
+
+/* eslint-enable no-console */

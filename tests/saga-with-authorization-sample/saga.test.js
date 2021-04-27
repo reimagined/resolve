@@ -1,15 +1,13 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents, { getSchedulersNamesBySagas } from 'resolve-testing-tools'
+import givenEvents from '@resolve-js/testing-tools'
 
 import config from './config'
-import resetReadModel from '../reset-read-model'
 
 jest.setTimeout(1000 * 60 * 5)
 
 describe('Saga', () => {
   const currentSaga = config.sagas.find(({ name }) => name === 'ProcessKiller')
   const { name: sagaName, source: sourceModule, connectorName } = currentSaga
-  const schedulerName = getSchedulersNamesBySagas([currentSaga])[0]
   const {
     module: connectorModule,
     options: connectorOptions,
@@ -35,28 +33,21 @@ describe('Saga', () => {
     return event
   }
 
-  let sagaWithAdapter = null
+  let saga = null
   let adapter = null
 
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, schedulerName)
-    await resetReadModel(createConnector, connectorOptions, sagaName)
-
     adapter = createConnector(connectorOptions)
-    sagaWithAdapter = {
+    saga = {
       handlers: source.handlers,
       sideEffects: source.sideEffects,
-      adapter,
       name: sagaName,
     }
   })
 
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, schedulerName)
-    await resetReadModel(createConnector, connectorOptions, sagaName)
-
     adapter = null
-    sagaWithAdapter = null
+    saga = null
   })
 
   test('success registration', async () => {
@@ -81,7 +72,9 @@ describe('Saga', () => {
         aggregateName: 'Process',
         type: 'killAllProcesses',
       }),
-    ]).saga(sagaWithAdapter)
+    ])
+      .saga(saga)
+      .withAdapter(adapter)
 
     expect(result).toMatchSnapshot()
   })

@@ -24,6 +24,12 @@ const appConfig = {
       resolvers: 'common/read-models/search.resolvers.js',
       connectorName: 'elasticSearch',
     },
+    /*{
+      name: 'Replicator',
+      projection: 'common/read-models/empty.js',
+      resolvers: 'common/read-models/empty.js',
+      connectorName: 'replicator',
+    },*/
   ],
   sagas: [
     {
@@ -35,7 +41,8 @@ const appConfig = {
   apiHandlers: [
     {
       handler: {
-        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        module:
+          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
         options: {
           modulePath: './ssr.js',
           moduleFactoryImport: false,

@@ -63,5 +63,8 @@ types
 
 bus.json
 lcov.info
-packages/core/resolve-zeromq/optional
+packages/core/zeromq/optional
 .npmrc
+
+cra-tests
+*.tsbuildinfo

@@ -1,0 +1,46 @@
+name: master (push)
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    if: startsWith(github.event.head_commit.message, '<auto>') != true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+
+#      - name: Build packages
+#        run: |
+#          yarn install --frozen-lockfile
+
+#      - uses: reimagined/github-actions/publish@v1
+#        with:
+#          registry: npm
+#          token: ${{ secrets.NPM_RESOLVEJS_TOKEN }}
+#          version: source
+#          tag: latest
+#          unpublish: false
+
+      - name: Generate release changelog
+        uses: reimagined/github-actions/generate-changelog@feature/changelog-generator
+        with:
+          push_event: ${{ toJSON(github.event) }}
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          ssh_private_key: ${{ secrets.RESOLVE_BOT_SSH_PRIVATE_KEY }}
+          prepare: false
+          future_release: ${{  steps.git_release.outputs.release_tag }}
+
+      - uses: reimagined/github-actions/git-release@feature/changelog-generator
+        id: git_release
+        with:
+          push_event: ${{ toJSON(github.event) }}
+          commit: ${{ github.sha }}
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          ssh_private_key: ${{ secrets.RESOLVE_BOT_SSH_PRIVATE_KEY }}
+          release_branch: master
+          development_branch: dev

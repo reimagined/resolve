@@ -1,8 +1,7 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents from 'resolve-testing-tools'
+import givenEvents from '@resolve-js/testing-tools'
 
 import config from './config'
-import resetReadModel from '../reset-read-model'
 
 jest.setTimeout(1000 * 60 * 5)
 
@@ -28,11 +27,9 @@ describe('Read-model Comments sample', () => {
 
   let adapter = null
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = createConnector(connectorOptions)
   })
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = null
   })
 
@@ -102,9 +99,9 @@ describe('Read-model Comments sample', () => {
           name,
           projection,
           resolvers,
-          adapter,
         })
-        .getComments({})
+        .withAdapter(adapter)
+        .query('getComments', {})
     ).toMatchSnapshot(`getComments`)
   })
 })

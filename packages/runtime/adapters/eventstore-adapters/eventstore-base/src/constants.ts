@@ -1,0 +1,8 @@
+export const MAINTENANCE_MODE_AUTO = Symbol.for('MAINTENANCE_MODE_AUTO')
+export const MAINTENANCE_MODE_MANUAL = Symbol.for('MAINTENANCE_MODE_MANUAL')
+
+export const PARTIAL_EVENT_FLAG = Symbol.for('PARTIAL_EVENT_FLAG')
+export const PARTIAL_SECRET_FLAG = Symbol.for('PARTIAL_SECRET_FLAG')
+
+export const BUFFER_SIZE = 512 * 1024
+export const BATCH_SIZE = 200

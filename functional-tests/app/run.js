@@ -5,8 +5,9 @@ import {
   merge,
   stop,
   reset,
-} from 'resolve-scripts'
-import resolveModuleAdmin from 'resolve-module-admin'
+} from '@resolve-js/scripts'
+import resolveModuleAdmin from '@resolve-js/module-admin'
+import resolveModuleUploader from '@resolve-js/module-uploader'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -16,7 +17,13 @@ const launchMode = process.argv[2]
 
 void (async () => {
   try {
-    const baseConfig = merge(defaultResolveConfig, appConfig)
+    const moduleUploader = resolveModuleUploader({
+      publicDirs: ['images'],
+      expireTime: 604800,
+      jwtSecret: 'SECRETJWT',
+    })
+
+    const baseConfig = merge(defaultResolveConfig, appConfig, moduleUploader)
 
     switch (launchMode) {
       case 'dev': {
@@ -24,7 +31,7 @@ void (async () => {
 
         await reset(resolveConfig, {
           dropEventStore: false,
-          dropEventBus: true,
+          dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
         })

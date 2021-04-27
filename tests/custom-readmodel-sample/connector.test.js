@@ -1,10 +1,9 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents from 'resolve-testing-tools'
+import givenEvents from '@resolve-js/testing-tools'
 import fs from 'fs'
 import path from 'path'
 
 import config from './config'
-import resetReadModel from '../reset-read-model'
 
 jest.setTimeout(1000 * 60 * 5)
 
@@ -36,11 +35,9 @@ describe('Read-model generic adapter API', () => {
 
   let adapter = null
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = createConnector(connectorOptions)
   })
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = null
   })
 
@@ -72,10 +69,10 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter: adapter,
       })
-      .read({})
+      .withAdapter(adapter)
+      .query('read', {})
 
-    expect(result.data).toEqual(200)
+    expect(result).toEqual(200)
   })
 })

@@ -7,15 +7,21 @@
       {
         "type": "subcategory",
         "label": "Basics",
-        "ids": ["app-structure", "write-side", "read-side", "frontend"]
+        "ids": [
+          "write-side",  
+          "read-side", 
+          "sagas", 
+          "api-handlers",
+          "frontend",
+          "manage-application",
+          "app-structure"
+        ]
       },
       {
         "type": "subcategory",
         "label": "Guides",
         "ids": [
           "advanced-techniques",
-          "api-handlers",
-          "sagas",
           "authentication-and-authorization",
           "preparing-to-production",
           "debugging",

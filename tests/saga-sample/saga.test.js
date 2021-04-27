@@ -1,20 +1,28 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents, {
-  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP,
-  getSchedulersNamesBySagas,
-} from 'resolve-testing-tools'
+import givenEvents from '@resolve-js/testing-tools'
 
 import config from './config'
-import resetReadModel from '../reset-read-model'
 
 jest.setTimeout(1000 * 60 * 5)
+
+let warnSpy
+let errorSpy
+
+beforeAll(() => {
+  warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => void 0)
+  errorSpy = jest.spyOn(console, 'error').mockImplementation(() => void 0)
+})
+
+afterAll(() => {
+  warnSpy.mockRestore()
+  errorSpy.mockRestore()
+})
 
 describe('Saga', () => {
   const currentSaga = config.sagas.find(
     ({ name }) => name === 'UserConfirmation'
   )
   const { name: sagaName, source: sourceModule, connectorName } = currentSaga
-  const schedulerName = getSchedulersNamesBySagas([currentSaga])[0]
   const {
     module: connectorModule,
     options: connectorOptions,
@@ -29,8 +37,7 @@ describe('Saga', () => {
 
   describe('with sideEffects.isEnabled = true', () => {
     beforeEach(async () => {
-      await resetReadModel(createConnector, connectorOptions, schedulerName)
-      await resetReadModel(createConnector, connectorOptions, sagaName)
+      process.env.RESOLVE_LAUNCH_ID = `${Date.now()}${Math.random()}`
       adapter = createConnector(connectorOptions)
       sagaWithAdapter = {
         handlers: source.handlers,
@@ -41,8 +48,6 @@ describe('Saga', () => {
     })
 
     afterEach(async () => {
-      await resetReadModel(createConnector, connectorOptions, schedulerName)
-      await resetReadModel(createConnector, connectorOptions, sagaName)
       adapter = null
       sagaWithAdapter = null
     })
@@ -86,8 +91,7 @@ describe('Saga', () => {
 
   describe('with sideEffects.isEnabled = false', () => {
     beforeEach(async () => {
-      await resetReadModel(createConnector, connectorOptions, schedulerName)
-      await resetReadModel(createConnector, connectorOptions, sagaName)
+      process.env.RESOLVE_LAUNCH_ID = `${Date.now()}${Math.random()}`
       adapter = createConnector(connectorOptions)
       sagaWithAdapter = {
         handlers: source.handlers,
@@ -98,8 +102,6 @@ describe('Saga', () => {
     })
 
     afterEach(async () => {
-      await resetReadModel(createConnector, connectorOptions, schedulerName)
-      await resetReadModel(createConnector, connectorOptions, sagaName)
       adapter = null
       sagaWithAdapter = null
     })
@@ -119,9 +121,7 @@ describe('Saga', () => {
         { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} },
       ])
         .saga(sagaWithAdapter)
-        .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE,
-        })
+        .startSideEffectsFrom(Number.MAX_VALUE)
 
       expect(result).toMatchSnapshot()
     })
@@ -141,9 +141,7 @@ describe('Saga', () => {
         { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} },
       ])
         .saga(sagaWithAdapter)
-        .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE,
-        })
+        .startSideEffectsFrom(Number.MAX_VALUE)
 
       expect(result).toMatchSnapshot()
     })

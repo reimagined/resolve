@@ -149,8 +149,9 @@ test('incremental import should work correctly', async () => {
 
   await adapter.incrementalImport(events)
 
-  const resultEvents = (await adapter.loadEvents({ limit: countEvents + 1 }))
-    .events
+  const resultEvents = (
+    await adapter.loadEvents({ limit: countEvents + 1, cursor: null })
+  ).events
 
   expect(resultEvents.length).toEqual(countEvents)
 
@@ -185,7 +186,7 @@ test('inject-events should work correctly', async () => {
         }
       })()
     ),
-    adapter.import()
+    adapter.importEvents()
   )
 
   // const t1 = Date.now()
@@ -197,7 +198,7 @@ test('inject-events should work correctly', async () => {
   // )
 
   const tempInitialEvents = (
-    await adapter.loadEvents({ limit: countInitialEvents + 1 })
+    await adapter.loadEvents({ limit: countInitialEvents + 1, cursor: null })
   ).events
   expect(tempInitialEvents.length).toEqual(initialEvents.length)
   expect(tempInitialEvents).toEqual(initialEvents)
@@ -274,8 +275,9 @@ test('inject-events should work correctly', async () => {
   //     t3} ms / Events ${countIncrementalImportEvents}`
   // )
 
-  const resultEvents = (await adapter.loadEvents({ limit: countAllEvents + 1 }))
-    .events
+  const resultEvents = (
+    await adapter.loadEvents({ limit: countAllEvents + 1, cursor: null })
+  ).events
 
   expect(resultEvents.length).toEqual(countAllEvents)
 
@@ -321,13 +323,13 @@ test('inject-events should work correctly with retries', async () => {
         }
       })()
     ),
-    adapter.import()
+    adapter.importEvents()
   )
 
   await new Promise((resolve) => setImmediate(resolve))
 
   const tempInitialEvents = (
-    await adapter.loadEvents({ limit: countInitialEvents + 1 })
+    await adapter.loadEvents({ limit: countInitialEvents + 1, cursor: null })
   ).events
   expect(tempInitialEvents.length).toEqual(initialEvents.length)
   expect(tempInitialEvents).toEqual(initialEvents)

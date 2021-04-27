@@ -55,6 +55,7 @@ typings/
 .env
 
 dist
+dist-replica
 .idea
 
 .vscode

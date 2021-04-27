@@ -1,4 +1,4 @@
-import { internal } from 'resolve-redux'
+import { internal } from '@resolve-js/redux'
 import { delay } from 'redux-saga/effects'
 import storyCreateSagaFactory from '../../../client/sagas/story-create-saga'
 

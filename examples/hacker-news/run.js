@@ -9,14 +9,15 @@ import {
   reset,
   importEventStore,
   exportEventStore,
-} from 'resolve-scripts'
-import resolveModuleComments from 'resolve-module-comments'
-import resolveModuleAuth from 'resolve-module-auth'
-import resolveModuleAdmin from 'resolve-module-admin'
+} from '@resolve-js/scripts'
+import resolveModuleComments from '@resolve-js/module-comments'
+import resolveModuleAuth from '@resolve-js/module-auth'
+import resolveModuleAdmin from '@resolve-js/module-admin'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
+import devReplicaConfig from './config.dev.replica'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test-functional'
 
@@ -72,6 +73,13 @@ void (async () => {
         break
       }
 
+      case 'dev:replica': {
+        const moduleAdmin = resolveModuleAdmin()
+        const resolveConfig = merge(baseConfig, devReplicaConfig, moduleAdmin)
+        await watch(resolveConfig)
+        break
+      }
+
       case 'build': {
         const resolveConfig = merge(baseConfig, prodConfig)
         await build(resolveConfig)
@@ -93,7 +101,7 @@ void (async () => {
         const resolveConfig = merge(baseConfig, devConfig)
         await reset(resolveConfig, {
           dropEventStore: false,
-          dropEventBus: true,
+          dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
         })
@@ -104,8 +112,8 @@ void (async () => {
       case 'import-event-store': {
         const resolveConfig = merge(baseConfig, devConfig)
 
-        const importFile = process.argv[3]
-        await importEventStore(resolveConfig, { importFile })
+        const directory = process.argv[3]
+        await importEventStore(resolveConfig, { directory })
 
         break
       }
@@ -113,8 +121,8 @@ void (async () => {
       case 'export-event-store': {
         const resolveConfig = merge(baseConfig, devConfig)
 
-        const exportFile = process.argv[3]
-        await exportEventStore(resolveConfig, { exportFile })
+        const directory = process.argv[3]
+        await exportEventStore(resolveConfig, { directory })
 
         break
       }
@@ -128,7 +136,7 @@ void (async () => {
         )
         await reset(resolveConfig, {
           dropEventStore: true,
-          dropEventBus: true,
+          dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
         })
@@ -154,19 +162,26 @@ void (async () => {
         const config = merge(baseConfig, devConfig)
         await reset(config, {
           dropEventStore: true,
-          dropEventBus: true,
+          dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
         })
 
         const importConfig = merge(defaultResolveConfig, devConfig, {
-          eventBroker: { launchBroker: true },
           apiHandlers: [
             {
               method: 'POST',
               path: '/api/import_events',
               handler: {
                 module: 'import/import_api_handler.js',
+                options: {},
+              },
+            },
+            {
+              method: 'POST',
+              path: '/api/import_secrets',
+              handler: {
+                module: 'import/import_secret_api_handler.js',
                 options: {},
               },
             },

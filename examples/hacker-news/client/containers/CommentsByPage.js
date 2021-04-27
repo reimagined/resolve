@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom'
 
 import Comment from '../components/Comment'
 import Pagination from '../components/Pagination'
-import { CommentsPaginateRenderless } from 'resolve-module-comments'
+import { CommentsPaginateRenderless } from '@resolve-js/module-comments'
 
 import { ITEMS_PER_PAGE } from '../constants'
 

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useQuery } from 'resolve-react-hooks'
+import { useQuery } from '@resolve-js/react-hooks'
 import { useEffect, useState } from 'react'
 import { Redirect } from 'react-router-dom'
 

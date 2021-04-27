@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { ResolveProvider } from 'resolve-react-hooks'
+import { ResolveProvider } from '@resolve-js/react-hooks'
 import { BrowserRouter } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 

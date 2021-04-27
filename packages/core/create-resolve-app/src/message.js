@@ -1,8 +1,13 @@
+import { EOL } from 'os'
+import chalk from 'chalk'
+
+import { resolveExamples } from './constants'
+
 const optionsInfo = (examples) => [
   `Options:`,
   ``,
-  `  -e, --example    creates an example application base on application from resolve examples directory`,
-  `      Now you can choose one of the next examples:`,
+  `  -e, --example    creates an example application based on an application from the reSolve examples directory`,
+  `      You can choose one of the following examples:`,
   ...examples.map(
     ({ name, description }) => `          * ${name} - ${description}`
   ),
@@ -12,21 +17,23 @@ const optionsInfo = (examples) => [
   `  -h, --help       outputs usage information`,
 ]
 
+const formatLines = (lines) => lines.join(EOL)
+
 const message = {
-  help: ({ chalk, EOL, resolveExamples }) =>
-    [
+  help: () =>
+    formatLines([
       `Usage: create-resolve-app ${chalk.green(
         '<project-directory>'
       )} [options]`,
       ``,
       ...optionsInfo(resolveExamples),
       ``,
-      `If you have any problems, you can create an issue:`,
+      `If you have any problems, create an issue:`,
       `  ${chalk.cyan('https://github.com/reimagined/resolve/issues/new')}`,
-    ].join(EOL),
+    ]),
 
-  emptyAppNameError: ({ chalk, EOL, resolveExamples }) =>
-    [
+  emptyAppNameError: () =>
+    formatLines([
       `Specify the project directory:`,
       `  ${chalk.cyan('create-resolve-app')} ${chalk.green(
         `<project-directory> [options]`
@@ -37,24 +44,41 @@ const message = {
       ``,
       ...optionsInfo(resolveExamples),
       ``,
-      `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
-    ].join(EOL),
+      `Run ${chalk.cyan('create-resolve-app --help')} to view all options.`,
+    ]),
 
-  startCreatingApp: ({ EOL, applicationName, exampleName, commit, branch }) =>
-    [
-      `Creating ${applicationName} in ./${applicationName} based on ${exampleName} example`,
+  startCreatingApp: (applicationName, exampleName, commit, branch) =>
+    formatLines([
+      `Creating ${applicationName} in ./${applicationName} based on the ${exampleName} example`,
       commit ? ` (commit SHA:${commit})` : ``,
       branch ? ` (from ${branch} branch)` : ``,
-    ].join(EOL),
+    ]),
 
-  unknownOptions: ({ EOL, chalk }, options) =>
-    [
+  unknownOptions: (unknownOptions) =>
+    formatLines([
       `You have specified an unsupported option(s): ${chalk.red(
-        options.join(' ')
-      )}` +
-        `` +
-        `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
-    ].join(EOL),
-}
+        unknownOptions.join(' ')
+      )}`,
+      `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
+    ]),
 
+  missingExample: (exampleName, examplesDirs) =>
+    formatLines([
+      `No such example, ${exampleName}. The following examples are available: `,
+      ...resolveExamples
+        .filter((e) => examplesDirs.includes(e.name))
+        .map(({ name, description }) => `          * ${name} - ${description}`),
+    ]),
+
+  invalidApplicationName: (applicationName, errors, warnings) => {
+    const message = `It is impossible to create an application called ${chalk.red(
+      `"${applicationName}"`
+    )} due to npm naming restrictions:`
+
+    const details = [...(errors || []), ...(warnings || [])].map(
+      (e) => `  *  ${e}`
+    )
+    return formatLines([message, ...details])
+  },
+}
 export default message

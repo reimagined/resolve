@@ -1,6 +1,5 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents from 'resolve-testing-tools'
-import resetReadModel from '../reset-read-model'
+import givenEvents from '@resolve-js/testing-tools'
 
 import config from './config'
 
@@ -28,11 +27,9 @@ describe('Read-model generic adapter API', () => {
 
   let adapter = null
   beforeEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = createConnector(connectorOptions)
   })
   afterEach(async () => {
-    await resetReadModel(createConnector, connectorOptions, name)
     adapter = null
   })
 
@@ -49,9 +46,9 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter,
       })
-      .NON_PARAMETERIZED_RESOLVER_TEST({})
+      .withAdapter(adapter)
+      .query('NON_PARAMETERIZED_RESOLVER_TEST', {})
 
     expect(result).toMatchSnapshot()
   })
@@ -75,9 +72,9 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter,
       })
-      .NON_PARAMETERIZED_RESOLVER_TEST({})
+      .withAdapter(adapter)
+      .query('NON_PARAMETERIZED_RESOLVER_TEST', {})
 
     expect(result).toMatchSnapshot()
   })
@@ -101,9 +98,9 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter,
       })
-      .NON_PARAMETERIZED_RESOLVER_TEST({})
+      .withAdapter(adapter)
+      .query('NON_PARAMETERIZED_RESOLVER_TEST', {})
 
     expect(result).toMatchSnapshot()
   })
@@ -127,9 +124,9 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter,
       })
-      .NON_PARAMETERIZED_RESOLVER_TEST({})
+      .withAdapter(adapter)
+      .query('NON_PARAMETERIZED_RESOLVER_TEST', {})
 
     expect(result).toMatchSnapshot()
   })
@@ -153,10 +150,9 @@ describe('Read-model generic adapter API', () => {
         name,
         projection,
         resolvers,
-        adapter,
       })
-
-      .PARAMETRIZED_RESOLVER_TEST({
+      .withAdapter(adapter)
+      .query('PARAMETRIZED_RESOLVER_TEST', {
         firstFieldCondition: 10,
         secondFieldCondition: 2,
         pageNumber: 2,

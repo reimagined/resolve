@@ -12,8 +12,12 @@ import {
   DropdownItem,
   Dropdown,
 } from 'reactstrap'
-import { getCDNBasedUrl } from 'resolve-module-uploader'
-import { useStaticResolver, useQuery, useCommand } from 'resolve-react-hooks'
+import { getCDNBasedUrl } from '@resolve-js/module-uploader'
+import {
+  useStaticResolver,
+  useQuery,
+  useCommand,
+} from '@resolve-js/react-hooks'
 
 import Loading from './Loading'
 import UploaderContext from '../context'

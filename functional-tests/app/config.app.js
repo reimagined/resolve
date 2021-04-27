@@ -15,6 +15,20 @@ const appConfig = {
       commands: 'common/aggregates/test-scenario.commands.js',
       projection: 'common/aggregates/test-scenario.projection.js',
     },
+    {
+      name: 'saga-test',
+      commands: 'common/aggregates/saga-test.commands.js',
+      projection: 'common/aggregates/saga-test.projection.js',
+    },
+    {
+      name: 'scheduler-test',
+      commands: 'common/aggregates/scheduler-test.commands.js',
+      projection: 'common/aggregates/scheduler-test.projection.js',
+    },
+    {
+      name: 'monitoring-aggregate',
+      commands: 'common/aggregates/monitoring.commands.js',
+    },
   ],
   readModels: [
     {
@@ -36,6 +50,30 @@ const appConfig = {
       resolvers: 'common/read-models/test-scenarios.resolvers.js',
       connectorName: 'default',
       encryption: 'common/read-models/encryption.js',
+    },
+    {
+      name: 'saga-tests',
+      projection: 'common/read-models/saga-tests.projection.js',
+      resolvers: 'common/read-models/saga-tests.resolvers.js',
+      connectorName: 'default',
+    },
+    {
+      name: 'scheduler-tests',
+      projection: 'common/read-models/saga-scheduler-tests.projection.js',
+      resolvers: 'common/read-models/saga-scheduler-tests.resolvers.js',
+      connectorName: 'default',
+    },
+    {
+      name: 'init-failed',
+      projection: 'common/read-models/init-failed.projection.js',
+      resolvers: 'common/read-models/init-failed.resolvers.js',
+      connectorName: 'default',
+    },
+    {
+      name: 'monitoring',
+      projection: 'common/read-models/monitoring.projection.js',
+      resolvers: 'common/read-models/monitoring.resolvers.js',
+      connectorName: 'default',
     },
   ],
   viewModels: [
@@ -64,18 +102,31 @@ const appConfig = {
       resolver: 'common/view-models/test-scenario.resolver.js',
     },
   ],
+  sagas: [
+    {
+      name: 'saga-test-saga',
+      source: 'common/sagas/saga-test-saga.js',
+      connectorName: 'default',
+    },
+    {
+      name: 'saga-test-scheduler',
+      source: 'common/sagas/saga-test-scheduler.js',
+      connectorName: 'default',
+    },
+  ],
   clientImports: {
-    version: 'resolve-runtime/lib/common/utils/interop-options.js',
+    version: '@resolve-js/runtime/lib/common/utils/interop-options.js',
   },
   apiHandlers: [
     {
-      handler: 'resolve-runtime/lib/local/query-is-ready-handler.js',
+      handler: '@resolve-js/runtime/lib/local/query-is-ready-handler.js',
       path: '/api/query-is-ready',
       method: 'GET',
     },
     {
       handler: {
-        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        module:
+          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
         options: {
           modulePath: './ssr-hoc.js',
           moduleFactoryImport: false,
@@ -86,7 +137,8 @@ const appConfig = {
     },
     {
       handler: {
-        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        module:
+          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
         options: {
           modulePath: './ssr-hoc.js',
           moduleFactoryImport: false,
@@ -97,7 +149,8 @@ const appConfig = {
     },
     {
       handler: {
-        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        module:
+          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
         options: {
           modulePath: './ssr-redux-hooks.js',
           moduleFactoryImport: false,
@@ -108,7 +161,8 @@ const appConfig = {
     },
     {
       handler: {
-        module: 'resolve-runtime/lib/common/handlers/live-require-handler.js',
+        module:
+          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
         options: {
           modulePath: './ssr-redux-hooks.js',
           moduleFactoryImport: false,
