@@ -1,8 +1,8 @@
 # Changelog
 
-## [Upcoming](https://github.com/max-vasin-team/resolve/tree/HEAD)
+## [.40.0](https://github.com/max-vasin-team/resolve/tree/.40.0) (2021-04-27)
 
-[Full Changelog](https://github.com/max-vasin-team/resolve/compare/V0.29.0...HEAD)
+[Full Changelog](https://github.com/max-vasin-team/resolve/compare/V0.29.0....40.0)
 
 **New features:**
 
