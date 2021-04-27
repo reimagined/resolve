@@ -68,4 +68,3 @@ packages/core/zeromq/optional
 
 cra-tests
 *.tsbuildinfo
-*.temp

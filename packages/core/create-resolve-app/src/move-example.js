@@ -8,7 +8,11 @@ const moveExample = async (applicationPath, resolveClonePath, exampleName) => {
     resolveCloneExamplesPath,
     exampleName
   )
-  await testExampleExists(resolveCloneExamplesPath, exampleName)
+  await testExampleExists(
+    resolveCloneExamplesPath,
+    resolveCloneExamplePath,
+    exampleName
+  )
 
   for (const resource of fs.readdirSync(resolveCloneExamplePath)) {
     fs.moveSync(
