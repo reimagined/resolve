@@ -48,7 +48,7 @@ jobs:
   update-changelog:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate Changelog
+      - name: Generate upcoming changelog
         uses: reimagined/github-actions/generate-changelog@feature/changelog-generator
         with:
           push_event: ${{ toJSON(github.event) }}
