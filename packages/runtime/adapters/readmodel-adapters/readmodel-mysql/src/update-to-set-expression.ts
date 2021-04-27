@@ -74,7 +74,7 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
               JSON_SET(${escapeId(baseName)}, '${makeNestedPath(
               nestedPath
             )}', ${updatingInlinedValue})
-              ELSE JSON_TYPE((SELECT 'MalformedUnsetOperation' FROM information_schema.tables LIMIT 1))
+              ELSE JSON_TYPE((SELECT 'MalformedSetOperation' FROM information_schema.tables LIMIT 1))
               END
             `)
           } else {
