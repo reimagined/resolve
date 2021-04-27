@@ -15,6 +15,13 @@ const loadSecrets = async (
   const searchIdx: number = idx == null ? 0 : idx
   const skipRows = skip === undefined ? 0 : skip
 
+  if (ids && ids.length === 0) {
+    return {
+      secrets: [],
+      idx: searchIdx,
+    }
+  }
+
   const rows = await database.all(
     `SELECT idx, id, secret FROM ${tableNameAsId}
     WHERE secret IS NOT NULL AND idx >= ${+searchIdx}

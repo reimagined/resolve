@@ -181,6 +181,15 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     )
   })
 
+  test('should return no secrets if empty ids array is passed', async () => {
+    const ids = []
+    const { secrets } = await adapter.loadSecrets({
+      limit: countSecrets,
+      ids,
+    })
+    expect(secrets).toHaveLength(0)
+  })
+
   const secretToDeleteIndex: number = Math.floor(Math.random() * countSecrets)
 
   test('should delete secret by id, return null for this id and generate delete secret event', async () => {
@@ -252,6 +261,16 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     expect(deletedSecrets).toHaveLength(1)
     expect(deletedSecrets[0]).toEqual(makeIdFromIndex(secretToDeleteIndex))
     expect(existingSecrets).toHaveLength(countSecrets - 1)
+  })
+
+  test('should gather no secrets if no corresponding events exist', async () => {
+    const {
+      deletedSecrets,
+      existingSecrets,
+    } = await adapter.gatherSecretsFromEvents([])
+
+    expect(deletedSecrets).toHaveLength(0)
+    expect(existingSecrets).toHaveLength(0)
   })
 })
 

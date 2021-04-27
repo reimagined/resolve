@@ -16,7 +16,7 @@ import resolveModuleAdmin from '@resolve-js/module-admin'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
-import cloudCommonConfig from './config.cloud.common'
+import cloudReplicaConfig from './config.cloud.replica'
 import devConfig from './config.dev'
 import devReplicaConfig from './config.dev.replica'
 import prodConfig from './config.prod'
@@ -94,7 +94,7 @@ void (async () => {
       }
 
       case 'cloud:replica': {
-        const resolveConfig = merge(baseConfig, cloudCommonConfig)
+        const resolveConfig = merge(baseConfig, cloudReplicaConfig)
         await build(resolveConfig)
         break
       }

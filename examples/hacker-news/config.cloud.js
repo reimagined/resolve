@@ -2,7 +2,6 @@ import cloudCommonConfig from './config.cloud.common'
 
 export default {
   ...cloudCommonConfig,
-  /*
   readModels: [
     {
       name: 'Replicator',
@@ -16,8 +15,8 @@ export default {
     replicator: {
       module: '@resolve-js/replicator-via-api-handler',
       options: {
-        targetApplicationUrl: 'http://localhost:3001',
+        targetApplicationUrl: 'https://ekqic1.dev.resolve.fit',
       },
     },
-  },*/
+  },
 }

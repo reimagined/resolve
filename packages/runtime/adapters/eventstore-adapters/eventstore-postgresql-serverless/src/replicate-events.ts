@@ -45,7 +45,8 @@ export const replicateEvents = async (
     eventsToInsert.push({ ...event, threadId, threadCounter })
   }
 
-  await executeStatement(`INSERT INTO ${databaseNameAsId}.${eventsTableNameAsId}(
+  if (eventsToInsert.length) {
+    await executeStatement(`INSERT INTO ${databaseNameAsId}.${eventsTableNameAsId}(
       "threadId",
       "threadCounter",
       "timestamp",
@@ -76,6 +77,7 @@ export const replicateEvents = async (
       })
       .join(',')}
       ON CONFLICT DO NOTHING`)
+  }
 }
 
 export default replicateEvents
