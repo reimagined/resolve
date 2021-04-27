@@ -126,8 +126,8 @@ const updateToSetExpression: UpdateToSetExpressionMethod = (
 
           let updatingInlinedValue = `CAST(CASE
             WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'STRING-STRING' THEN JSON_QUOTE(
-              CAST(${sourceInlinedValue} AS CHAR) ||
-              CAST(${fieldValueStringLike} AS CHAR)
+              CONCAT(CAST(${sourceInlinedValue} AS CHAR),
+              CAST(${fieldValueStringLike} AS CHAR))
             )
             WHEN CONCAT(${sourceInlinedType}, '-', ${fieldValueType} ) = 'INTEGER-INTEGER' THEN (
               CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +

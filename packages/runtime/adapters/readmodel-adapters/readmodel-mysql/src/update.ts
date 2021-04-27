@@ -58,6 +58,10 @@ const update: CurrentStoreApi['update'] = async (
     splitNestedPath
   )
 
+  if (updateExpr.trim() === '') {
+    return
+  }
+
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 

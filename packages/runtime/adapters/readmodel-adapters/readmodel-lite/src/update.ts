@@ -61,10 +61,12 @@ const update: CurrentStoreApi['update'] = async (
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   for (const updateExpr of updateExprArray) {
-    await inlineLedgerRunQuery(
-      `UPDATE ${escapeId(`${tablePrefix}${tableName}`)}
-      SET ${updateExpr} ${inlineSearchExpr}`
-    )
+    if (updateExpr.trim() !== '') {
+      await inlineLedgerRunQuery(
+        `UPDATE ${escapeId(`${tablePrefix}${tableName}`)}
+        SET ${updateExpr} ${inlineSearchExpr}`
+      )
+    }
   }
 }
 
