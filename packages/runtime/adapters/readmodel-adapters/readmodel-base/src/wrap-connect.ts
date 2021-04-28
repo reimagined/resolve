@@ -53,6 +53,7 @@ const connectImpl = async <
     update: wrapWithCloneArgs(update.bind(null, adapterPool, readModelName)),
     delete: wrapWithCloneArgs(del.bind(null, adapterPool, readModelName)),
     performanceTracer: pool.performanceTracer,
+    monitoring: pool.monitoring,
   }
 
   Object.freeze(store)

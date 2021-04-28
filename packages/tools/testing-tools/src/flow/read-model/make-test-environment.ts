@@ -3,7 +3,6 @@ import {
   initDomain,
   Monitoring,
   SecretsManager,
-  MonitoringPart,
 } from '@resolve-js/core'
 import { createQuery } from '@resolve-js/runtime'
 import {
@@ -96,13 +95,24 @@ export const makeTestEnvironment = (
     })
 
     const liveErrors: Array<Error> = []
-    const monitoring: Monitoring = {
-      error: async (error: Error, part: MonitoringPart) => {
-        if (part === 'readModelProjection') {
-          liveErrors.push(error)
-        }
-      },
+
+    const makeMonitoring = (
+      error: Monitoring['error'] = () => void 0
+    ): Monitoring => {
+      return {
+        group: (config) =>
+          config.Part === 'ReadModelProjection'
+            ? makeMonitoring((error: Error) => {
+                liveErrors.push(error)
+              })
+            : makeMonitoring(error),
+        time: () => void 0,
+        timeEnd: () => void 0,
+        error,
+        publish: async () => void 0,
+      }
     }
+
     const eventstoreAdapter = await getEventStore(events)
 
     const errors = []
@@ -121,7 +131,7 @@ export const makeTestEnvironment = (
         eventstoreAdapter,
         readModelsInterop: domain.readModelDomain.acquireReadModelsInterop({
           secretsManager,
-          monitoring,
+          monitoring: makeMonitoring(),
         }),
         viewModelsInterop: {},
         performanceTracer: null,

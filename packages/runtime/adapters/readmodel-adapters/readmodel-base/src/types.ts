@@ -135,6 +135,14 @@ export type PerformanceTracerLike = {
   } | null
 }
 
+export type MonitoringLike = {
+  time: (name: string, timestamp?: number) => void
+  timeEnd: (name: string, timestamp?: number) => void
+  group: (config: Record<string, string>) => MonitoringLike
+  publish: () => Promise<void>
+  performance?: PerformanceTracerLike
+}
+
 export type ReadModelCursor = Cursor // TODO brand type
 export type ReadModelEvent = SavedEvent
 
@@ -148,11 +156,13 @@ export type EventstoreAdapterLike = {
 export type SplitNestedPathMethod = (input: string) => Array<string>
 
 export type CommonAdapterPool = {
+  monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
   splitNestedPath: SplitNestedPathMethod
 }
 
 export type CommonAdapterOptions = {
+  monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
 }
 
@@ -190,6 +200,7 @@ export type ReadModelStoreImpl<
     CurrentStoreApi[K]
   >
 } & {
+  monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
 }
 
@@ -328,6 +339,7 @@ export type BaseAdapterPool<AdapterPool extends CommonAdapterPool> = {
   commonAdapterPool: CommonAdapterPool
   adapterPoolMap: Map<ReadModelStore<StoreApi<AdapterPool>>, AdapterPool>
   withPerformanceTracer: WithPerformanceTracerMethod
+  monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
 }
 

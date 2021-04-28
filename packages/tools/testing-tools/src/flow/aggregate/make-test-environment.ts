@@ -92,7 +92,6 @@ export const makeTestEnvironment = (
         aggregatesInterop: domain.aggregateDomain.acquireAggregatesInterop({
           eventstore: await getEventStore(events, { aggregateId }),
           secretsManager,
-          monitoring: {},
           hooks: {},
         }),
       })
