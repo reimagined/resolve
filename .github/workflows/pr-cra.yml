@@ -20,7 +20,7 @@ jobs:
           yarn install --frozen-lockfile
           yarn build-packages
           npm install pm2 -g
-          pm2 start packages/internal/local-registry/bin/index.js --name local-registry
+          pm2 start ./internal/local-registry/bin/index.js --name local-registry
 
       - name: Tutorial E2E test
         env:
