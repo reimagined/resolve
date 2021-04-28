@@ -56,6 +56,10 @@ const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
 
   const monitoring: Monitoring = {
     error: jest.fn(),
+    group: jest.fn(() => monitoring),
+    time: jest.fn(),
+    timeEnd: jest.fn(),
+    publish: jest.fn(),
     performance: performanceTracer,
   }
 
@@ -958,13 +962,27 @@ describe('Monitoring', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      expect(runtime.monitoring.error).toBeCalledWith(e, 'command', {
-        command: {
-          aggregateName: 'empty',
-          aggregateId: 'aggregateId',
-          type: 'emptyCommand',
-        },
-      })
+      if (runtime.monitoring != null) {
+        expect(runtime.monitoring.group).toBeCalledWith({
+          Part: 'Command',
+        })
+
+        expect(runtime.monitoring.group).toBeCalledWith({
+          AggregateName: 'empty',
+        })
+
+        expect(runtime.monitoring.group).toBeCalledWith({
+          AggregateId: 'aggregateId',
+        })
+
+        expect(runtime.monitoring.group).toBeCalledWith({
+          Type: 'emptyCommand',
+        })
+
+        expect(runtime.monitoring.error).toBeCalledWith(e)
+      } else {
+        throw new Error('Monitoring must exist')
+      }
     }
   })
 
@@ -991,13 +1009,27 @@ describe('Monitoring', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      expect(runtime.monitoring.error).toBeCalledWith(e, 'command', {
-        command: {
-          aggregateName: 'empty',
-          aggregateId: 'aggregateId',
-          type: 'unknownCommand',
-        },
-      })
+      if (runtime.monitoring != null) {
+        expect(runtime.monitoring.group).toBeCalledWith({
+          Part: 'Command',
+        })
+
+        expect(runtime.monitoring.group).toBeCalledWith({
+          AggregateName: 'empty',
+        })
+
+        expect(runtime.monitoring.group).toBeCalledWith({
+          AggregateId: 'aggregateId',
+        })
+
+        expect(runtime.monitoring.group).toBeCalledWith({
+          Type: 'unknownCommand',
+        })
+
+        expect(runtime.monitoring.error).toBeCalledWith(e)
+      } else {
+        throw new Error('Monitoring must exist')
+      }
     }
   })
 
@@ -1024,49 +1056,34 @@ describe('Monitoring', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      expect(runtime.monitoring.error).toBeCalledWith(e, 'command', {
-        command: {
-          aggregateName: 'unknown',
-          aggregateId: 'aggregateId',
-          type: 'unknownCommand',
-        },
-      })
-    }
-  })
+      if (runtime.monitoring != null) {
+        expect(runtime.monitoring.group).toBeCalledWith({
+          Part: 'Command',
+        })
 
-  test('does not affect command workflow if monitoring.error is failed', async () => {
-    const runtime = makeTestRuntime()
-    runtime.monitoring.error = () => {
-      throw new Error('onCommandFailed failed')
-    }
+        expect(runtime.monitoring.group).toBeCalledWith({
+          AggregateName: 'unknown',
+        })
 
-    const { executeCommand } = getAggregatesInteropBuilder([
-      makeAggregateMeta({
-        encryption: () => Promise.resolve({}),
-        name: 'empty',
-        commands: {
-          emptyCommand: () => {
-            throw new Error('Empty command failed')
-          },
-        },
-      }),
-    ])(runtime)
+        expect(runtime.monitoring.group).toBeCalledWith({
+          AggregateId: 'aggregateId',
+        })
 
-    try {
-      await executeCommand({
-        aggregateName: 'empty',
-        aggregateId: 'aggregateId',
-        type: 'emptyCommand',
-      })
+        expect(runtime.monitoring.group).toBeCalledWith({
+          Type: 'unknownCommand',
+        })
 
-      throw new Error('Test must be failed')
-    } catch (e) {
-      expect(e.message).toContain('Empty command failed')
+        expect(runtime.monitoring.error).toBeCalledWith(e)
+      } else {
+        throw new Error('Monitoring must exist')
+      }
     }
   })
 
   test('does not affect command workflow if monitoring is absent', async () => {
     const runtime = makeTestRuntime()
+    delete runtime.monitoring
+
     const { executeCommand } = getAggregatesInteropBuilder([
       makeAggregateMeta({
         encryption: () => Promise.resolve({}),

@@ -6,7 +6,7 @@ import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
 import initScheduler from './init-scheduler'
 import initMonitoring from './init-monitoring'
-import { putDurationMetrics, putInternalError } from './metrics'
+import { putDurationMetrics } from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 import handleWebsocketEvent from './websocket-event-handler'
@@ -92,7 +92,13 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
 
       log.debug('identified event source: event-subscriber-direct')
       const { method, payload } = lambdaEvent
-      const executorResult = await resolve.eventSubscriber[method](payload)
+
+      const actualPayload =
+        method === 'build' ? { ...payload, coldStart } : payload
+
+      const executorResult = await resolve.eventSubscriber[method](
+        actualPayload
+      )
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
@@ -158,7 +164,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   } catch (error) {
     log.error('top-level event handler execution error!')
 
-    putInternalError(error)
+    resolve.monitoring.error('internal', error)
 
     if (error instanceof Error) {
       log.error('error', error.message)
@@ -170,6 +176,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
     throw error
   } finally {
     await disposeResolve(resolve)
+
     if (process.env.RESOLVE_PERFORMANCE_MONITORING) {
       await putDurationMetrics(
         lambdaEvent,
@@ -178,8 +185,13 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
         lambdaRemainingTimeStart
       )
     }
+
     coldStart = false
-    log.debug('reSolve framework was disposed')
+    log.debug('reSolve framework was disposed. publishing metrics')
+
+    await resolve.monitoring.publish()
+
+    log.debug(`metrics published`)
   }
 }
 
