@@ -385,8 +385,8 @@ An array of the application's Read Models. A Read Model configuration object wit
 | Field         | Description                                                          |
 | ------------- | -------------------------------------------------------------------- |
 | name          | The Read Model's name                                                |
-| projection    | A path to a file that defines Read Model projection.                 |
-| resolvers     | A path to a file that defines Read Model resolver.                   |
+| projection    | A path to a file that defines a Read Model projection.               |
+| resolvers     | A path to a file that defines a Read Model resolver.                 |
 | connectorName | The name of a connector used to connect the Read Model to its store. |
 
 ##### Example:
@@ -650,13 +650,14 @@ Supported values:
 
 Specifies an array of the application's View Models. A View Model configuration object within this array contains the following fields:
 
-| Field            | Description                                                         |
-| ---------------- | ------------------------------------------------------------------- |
-| name             | The View Model's name.                                              |
-| projection       | A path to a file that defines View Model projection.                |
-| serializeState   | A path to a file that defines a state serializer function.          |
-| deserializeState | A path to a file that defines a state deserializer function.        |
-| encryption       | A path to a file that defines data encryption and decryption logic. |
+| Field            | Description                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| name             | The View Model's name.                                                                   |
+| projection       | A path to a file that defines a View Model projection.                                   |
+| resolver         | A path to a file that defines a [View Model resolver](read-side.md#view-model-resolver). |
+| serializeState   | A path to a file that defines a state serializer function.                               |
+| deserializeState | A path to a file that defines a state deserializer function.                             |
+| encryption       | A path to a file that defines data encryption and decryption logic.                      |
 
 ```js
 viewModels: [
