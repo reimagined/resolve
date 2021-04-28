@@ -103,6 +103,8 @@ export function jestTimeout(): number {
 
 let adapters: Record<string, any> = {}
 
+const uniquePostfix = `${process.pid}_${Math.round(Math.random() * 1000)}`
+
 const proxy = new Proxy(
   {},
   {
@@ -133,7 +135,7 @@ export { proxy as adapters }
 
 export function getPostgresServerlessOptions(uniqueName: string) {
   return {
-    databaseName: uniqueName,
+    databaseName: `${uniqueName}_${uniquePostfix}`,
     dbClusterOrInstanceArn: process.env.AWS_RDS_CLUSTER_ARN,
     awsSecretStoreAdminArn: process.env.AWS_RDS_ADMIN_SECRET_ARN,
     region: process.env.AWS_REGION ?? 'eu-central-1',
