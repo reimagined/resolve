@@ -92,13 +92,14 @@ const createAdapter = <
     }
   }
 
-  const { performanceTracer, ...adapterOptions } = options
+  const { performanceTracer, monitoring, ...adapterOptions } = options
 
   const pool: BaseAdapterPool<AdapterPool> = {
-    commonAdapterPool: { performanceTracer },
+    commonAdapterPool: { performanceTracer, monitoring },
     adapterPoolMap: new Map(),
     withPerformanceTracer,
     performanceTracer,
+    monitoring,
   }
 
   const adapter: AdapterApi<AdapterPool> = {

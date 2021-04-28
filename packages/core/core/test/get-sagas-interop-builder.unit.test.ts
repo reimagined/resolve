@@ -25,12 +25,21 @@ const secretsManager: SecretsManager = {
 
 let monitoring: {
   error: jest.MockedFunction<NonNullable<Monitoring['error']>>
+  group: jest.MockedFunction<NonNullable<Monitoring['group']>>
+  time: jest.MockedFunction<NonNullable<Monitoring['time']>>
+  timeEnd: jest.MockedFunction<NonNullable<Monitoring['timeEnd']>>
+  publish: jest.MockedFunction<NonNullable<Monitoring['publish']>>
 }
 
 const makeTestRuntime = (): SagaRuntime => {
   monitoring = {
+    group: jest.fn(),
     error: jest.fn(),
+    time: jest.fn(),
+    timeEnd: jest.fn(),
+    publish: jest.fn(),
   }
+  monitoring.group.mockReturnValue(monitoring)
   const scheduler = {
     addEntries: jest.fn(),
     clearEntries: jest.fn(),
@@ -223,7 +232,7 @@ describe('Sagas', () => {
       taskId: 'validAggregateId',
     })
   })
-  test('#1797: error meta within monitored error on Init handler ', async () => {
+  test('#1797: error group on Init handler ', async () => {
     const sagaParams = {
       name: 'dummySaga',
       handlers: {
@@ -248,17 +257,22 @@ describe('Sagas', () => {
       }
     } catch {}
 
+    expect(monitoring.group.mock.calls[0][0]).toEqual({
+      Part: 'SagaProjection',
+    })
+    expect(monitoring.group.mock.calls[1][0]).toEqual({
+      Saga: 'dummySaga',
+    })
+    expect(monitoring.group.mock.calls[2][0]).toEqual({
+      EventType: 'Init',
+    })
+
     expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
     expect(monitoring.error.mock.calls[0][0].message).toEqual(
       'Projection error'
     )
-    expect(monitoring.error.mock.calls[0][1]).toEqual('readModelProjection')
-    expect(monitoring.error.mock.calls[0][2]).toEqual({
-      readModelName: 'dummySaga',
-      eventType: 'Init',
-    })
   })
-  test('#1797: error meta within monitored error on event handler ', async () => {
+  test('#1797: error group on event handler ', async () => {
     const sagaParams = {
       name: 'dummySaga',
       handlers: {
@@ -288,14 +302,19 @@ describe('Sagas', () => {
       }
     } catch {}
 
+    expect(monitoring.group.mock.calls[0][0]).toEqual({
+      Part: 'SagaProjection',
+    })
+    expect(monitoring.group.mock.calls[1][0]).toEqual({
+      Saga: 'dummySaga',
+    })
+    expect(monitoring.group.mock.calls[2][0]).toEqual({
+      EventType: 'Failed',
+    })
+
     expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
     expect(monitoring.error.mock.calls[0][0].message).toEqual(
       'Projection error'
     )
-    expect(monitoring.error.mock.calls[0][1]).toEqual('readModelProjection')
-    expect(monitoring.error.mock.calls[0][2]).toEqual({
-      readModelName: 'dummySaga',
-      eventType: 'Failed',
-    })
   })
 })
