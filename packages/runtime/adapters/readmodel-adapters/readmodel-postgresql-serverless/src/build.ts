@@ -459,7 +459,7 @@ export const buildEvents: (
       monitoring
         .group({ Part: 'ReadModel' })
         .group({ ReadModel: readModelName })
-        .countPerSecond('ReadModelFeedingRate', eventCount, seconds)
+        .rate('ReadModelFeedingRate', eventCount, seconds)
     }
 
     eventCount = 0

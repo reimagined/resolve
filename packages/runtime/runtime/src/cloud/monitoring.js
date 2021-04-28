@@ -214,7 +214,7 @@ const createGroupDimensions = (config) =>
     []
   )
 
-const monitoringCountPerSecond = async (
+const monitoringRate = async (
   log,
   monitoringData,
   groupData,
@@ -285,12 +285,7 @@ const createMonitoringImplementation = (log, monitoringData, groupData) => {
     duration: monitoringDuration.bind(null, log, monitoringData, groupData),
     time: monitoringTime.bind(null, log, monitoringData, groupData),
     timeEnd: monitoringTimeEnd.bind(null, log, monitoringData, groupData),
-    countPerSecond: monitoringCountPerSecond.bind(
-      null,
-      log,
-      monitoringData,
-      groupData
-    ),
+    rate: monitoringRate.bind(null, log, monitoringData, groupData),
     publish: monitoringPublish.bind(null, log, monitoringData),
   }
 }

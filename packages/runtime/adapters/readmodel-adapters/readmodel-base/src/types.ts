@@ -141,7 +141,7 @@ export type MonitoringLike = {
   duration: (label: string, duration: number) => void
   time: (label: string, timestamp?: number) => void
   timeEnd: (label: string, timestamp?: number) => void
-  countPerSecond: (metricName: string, count: number, seconds?: number) => void
+  rate: (metricName: string, count: number, seconds?: number) => void
   publish: () => Promise<void>
   performance?: PerformanceTracerLike
 }

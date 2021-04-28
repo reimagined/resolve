@@ -987,14 +987,14 @@ describe('duration', () => {
   })
 })
 
-describe('countPerSecond', () => {
+describe('rate', () => {
   test('sends correct metrics base data', async () => {
     const monitoring = createMonitoring({
       deploymentId: 'test-deployment',
       resolveVersion: '1.0.0-test',
     })
 
-    monitoring.countPerSecond('applied-events', 123)
+    monitoring.rate('applied-events', 123)
 
     await monitoring.publish()
 
@@ -1023,7 +1023,7 @@ describe('countPerSecond', () => {
       resolveVersion: '1.0.0-test',
     })
 
-    monitoring.countPerSecond('applied-events', 15, 0.5)
+    monitoring.rate('applied-events', 15, 0.5)
 
     await monitoring.publish()
 
@@ -1052,7 +1052,7 @@ describe('countPerSecond', () => {
       resolveVersion: '1.0.0-test',
     })
 
-    monitoring.countPerSecond('applied-events', 123)
+    monitoring.rate('applied-events', 123)
 
     await monitoring.publish()
 
@@ -1102,7 +1102,7 @@ describe('countPerSecond', () => {
       'test-group': 'test-group-name',
     })
 
-    monitoringGroup.countPerSecond('applied-events', 1000)
+    monitoringGroup.rate('applied-events', 1000)
 
     await monitoring.publish()
 
