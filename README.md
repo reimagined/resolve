@@ -25,6 +25,7 @@ npx create-resolve-app my-awesome-app
 cd my-awesome-app
 npm run dev
 ```
+
 <details>
 <summary>You can also use npm or yarn tools</summary>
 
