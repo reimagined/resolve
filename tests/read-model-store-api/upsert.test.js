@@ -39,7 +39,7 @@ describe(`${adapterFactory.name}. Read-model Store API. Upsert`, () => {
           {
             testId,
           },
-          { $set: { ['a']: true } },
+          { $set: { a: true } },
           { upsert: true }
         )
       },
