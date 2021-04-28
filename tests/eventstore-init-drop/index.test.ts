@@ -1,23 +1,22 @@
-import createSqliteAdapter from '@resolve-js/eventstore-lite'
 import {
-  Adapter,
   EventstoreResourceAlreadyExistError,
   EventstoreResourceNotExistError,
 } from '@resolve-js/eventstore-base'
 
-const createAdapter = createSqliteAdapter
+import { adapterFactory, adapters, jestTimeout } from '../eventstore-test-utils'
 
-describe('eventstore adapter init and drop', () => {
-  const adapter: Adapter = createAdapter({})
+jest.setTimeout(jestTimeout())
 
-  test('should init successfully', async () => {
-    await expect(adapter.init()).resolves.not.toThrow(
-      EventstoreResourceAlreadyExistError
-    )
-  })
+describe(`${adapterFactory.name}. Eventstore adapter init and drop`, () => {
+  beforeAll(adapterFactory.create('init_and_drop_testing'))
+  afterAll(adapterFactory.destroy('init_and_drop_testing'))
+
+  const adapter = adapters['init_and_drop_testing']
 
   test('should throw on repeated init', async () => {
-    await expect(adapter.init()).rejects.toThrow()
+    await expect(adapter.init()).rejects.toThrow(
+      EventstoreResourceAlreadyExistError
+    )
   })
 
   test('should drop successfully', async () => {

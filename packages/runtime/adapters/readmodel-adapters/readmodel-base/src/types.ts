@@ -1,3 +1,9 @@
+import {
+  Adapter as EventStoreAdapter,
+  Cursor,
+  SavedEvent,
+} from '@resolve-js/eventstore-base'
+
 export type JsonPrimitive = string | number | boolean | null
 export type JsonMap = {
   [member: string]: JsonPrimitive | JsonArray | JsonMap
@@ -129,36 +135,34 @@ export type PerformanceTracerLike = {
   } | null
 }
 
-export type ReadModelCursor = string | null // TODO brand type
-export type ReadModelEvent = {
-  aggregateId: string
-  aggregateVersion: number
-  timestamp: number
-  type: string
-  payload: JsonMap | JsonArray | JsonPrimitive
+export type MonitoringLike = {
+  group: (config: Record<string, string>) => MonitoringLike
+  error: (error: Error) => void
+  duration: (label: string, duration: number) => void
+  time: (label: string, timestamp?: number) => void
+  timeEnd: (label: string, timestamp?: number) => void
+  rate: (metricName: string, count: number, seconds?: number) => void
+  publish: () => Promise<void>
+  performance?: PerformanceTracerLike
 }
 
+export type ReadModelCursor = Cursor // TODO brand type
+export type ReadModelEvent = SavedEvent
+
 export type EventstoreAdapterLike = {
-  loadEvents(filter: {
-    eventTypes: Array<ReadModelEvent['type']> | null
-    eventsSizeLimit: number | null
-    limit: number | null
-    cursor: ReadModelCursor | null
-  }): Promise<{
-    events: Array<ReadModelEvent>
-    cursor: ReadModelCursor
-  }>
-  getNextCursor(
-    previousCursor: ReadModelCursor,
-    appliedEvents: Array<ReadModelEvent>
-  ): ReadModelCursor
+  loadEvents: EventStoreAdapter['loadEvents']
+  getNextCursor: EventStoreAdapter['getNextCursor']
+  getSecretsManager: EventStoreAdapter['getSecretsManager']
+  loadSecrets?: EventStoreAdapter['loadSecrets']
 }
 
 export type CommonAdapterPool = {
+  monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
 }
 
 export type CommonAdapterOptions = {
+  monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
 }
 
@@ -196,6 +200,7 @@ export type ReadModelStoreImpl<
     CurrentStoreApi[K]
   >
 } & {
+  monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
 }
 
@@ -224,14 +229,12 @@ export type ReadModelLedger = {
   SuccessEvent: ReadModelEvent | null
   FailedEvent: ReadModelEvent | null
   Errors: Array<Error> | null
-  Properties: Record<string, string> | null
   Schema: Record<string, string> | null
   IsPaused: boolean
 }
 
 export type MethodNext = () => Promise<void>
 export type MethodGetRemainingTime = () => number
-export type MethodProvideLedger = (ledger: ReadModelLedger) => Promise<void>
 export type MethodGetEncryption = () => (
   event: ReadModelEvent
 ) => EncryptionLike
@@ -244,7 +247,6 @@ export enum ReadModelRunStatus {
 
 export type ReadModelStatus = {
   eventSubscriber: string
-  properties: Record<string, string> | null
   deliveryStrategy: 'inline-ledger'
   successEvent: ReadModelEvent | null
   failedEvent: ReadModelEvent | null
@@ -289,30 +291,6 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     aggregateIds: Array<ReadModelEvent['aggregateId']> | null
   ): Promise<void>
 
-  deleteProperty(
-    pool: AdapterPool,
-    readModelName: string,
-    key: string
-  ): Promise<void>
-
-  getProperty(
-    pool: AdapterPool,
-    readModelName: string,
-    key: string
-  ): Promise<string | null>
-
-  listProperties(
-    pool: AdapterPool,
-    readModelName: string
-  ): Promise<Record<string, string> | null>
-
-  setProperty(
-    pool: AdapterPool,
-    readModelName: string,
-    key: string,
-    value: string
-  ): Promise<void>
-
   resume(
     pool: AdapterPool,
     readModelName: string,
@@ -343,8 +321,7 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     },
     next: MethodNext,
     eventstoreAdapter: EventstoreAdapterLike,
-    getVacantTimeInMillis: MethodGetRemainingTime,
-    provideLedger: MethodProvideLedger
+    getVacantTimeInMillis: MethodGetRemainingTime
   ): Promise<void>
 }
 
@@ -362,6 +339,7 @@ export type BaseAdapterPool<AdapterPool extends CommonAdapterPool> = {
   commonAdapterPool: CommonAdapterPool
   adapterPoolMap: Map<ReadModelStore<StoreApi<AdapterPool>>, AdapterPool>
   withPerformanceTracer: WithPerformanceTracerMethod
+  monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
 }
 

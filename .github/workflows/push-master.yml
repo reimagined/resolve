@@ -3,7 +3,7 @@ name: master (push)
 on:
   push:
     branches:
-      - master*
+      - master
 
 jobs:
   release:
@@ -26,7 +26,16 @@ jobs:
           tag: latest
           unpublish: false
 
+      - name: Generate release changelog
+        uses: reimagined/github-actions/generate-changelog@v1
+        with:
+          push_event: ${{ toJSON(github.event) }}
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          upcoming: false
+          release_tag: ${{ env.git_release_tag }}
+
       - uses: reimagined/github-actions/git-release@v1
+        id: git_release
         with:
           push_event: ${{ toJSON(github.event) }}
           commit: ${{ github.sha }}

@@ -44,7 +44,7 @@ export type AggregateRuntimeHooks = {
 }
 
 export type AggregateRuntime = {
-  monitoring: Monitoring
+  monitoring?: Monitoring
   secretsManager: SecretsManager
   eventstore: Eventstore
   hooks?: AggregateRuntimeHooks

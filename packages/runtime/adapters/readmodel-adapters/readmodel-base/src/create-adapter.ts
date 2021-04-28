@@ -32,10 +32,6 @@ const createAdapter = <
     subscribe,
     unsubscribe,
     resubscribe,
-    deleteProperty,
-    getProperty,
-    listProperties,
-    setProperty,
     resume,
     pause,
     reset,
@@ -73,10 +69,6 @@ const createAdapter = <
     subscribe,
     unsubscribe,
     resubscribe,
-    deleteProperty,
-    getProperty,
-    listProperties,
-    setProperty,
     resume,
     pause,
     reset,
@@ -100,13 +92,14 @@ const createAdapter = <
     }
   }
 
-  const { performanceTracer, ...adapterOptions } = options
+  const { performanceTracer, monitoring, ...adapterOptions } = options
 
   const pool: BaseAdapterPool<AdapterPool> = {
-    commonAdapterPool: { performanceTracer },
+    commonAdapterPool: { performanceTracer, monitoring },
     adapterPoolMap: new Map(),
     withPerformanceTracer,
     performanceTracer,
+    monitoring,
   }
 
   const adapter: AdapterApi<AdapterPool> = {
@@ -116,10 +109,6 @@ const createAdapter = <
     subscribe: wrapOperation(pool, 'subscribe', subscribe),
     unsubscribe: wrapOperation(pool, 'unsubscribe', unsubscribe),
     resubscribe: wrapOperation(pool, 'resubscribe', resubscribe),
-    deleteProperty: wrapOperation(pool, 'deleteProperty', deleteProperty),
-    getProperty: wrapOperation(pool, 'getProperty', getProperty),
-    listProperties: wrapOperation(pool, 'listProperties', listProperties),
-    setProperty: wrapOperation(pool, 'setProperty', setProperty),
     resume: wrapOperation(pool, 'resume', resume),
     pause: wrapOperation(pool, 'pause', pause),
     reset: wrapOperation(pool, 'reset', reset),

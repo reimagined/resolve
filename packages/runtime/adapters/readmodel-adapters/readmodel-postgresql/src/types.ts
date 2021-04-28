@@ -87,6 +87,8 @@ export type AdapterOptions = CommonAdapterOptions & {
   databaseName: string
 } & PGLib.ConnectionConfig
 
+export type MaybeInitMethod = (pool: AdapterPool) => Promise<void>
+
 export type InternalMethods = {
   inlineLedgerForceStop: InlineLedgerForceStopMethod
   buildUpsertDocument: BuildUpsertDocumentMethod
@@ -98,6 +100,7 @@ export type InternalMethods = {
   dropReadModel: DropReadModelMethod
   escapeId: EscapeableMethod
   escapeStr: EscapeableMethod
+  maybeInit: MaybeInitMethod
 }
 
 export type ArrayOrSingleOrNull<T> = Array<T> | T | null

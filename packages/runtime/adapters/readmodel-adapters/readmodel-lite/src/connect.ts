@@ -160,6 +160,8 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     }
   }
 
+  await (pool.connection as any)?.driver?.serialize?.()
+
   await pool.connection.configure('busyTimeout', 0)
 
   const configureSql = `

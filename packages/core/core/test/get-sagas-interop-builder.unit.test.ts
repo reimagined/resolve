@@ -1,3 +1,5 @@
+import { mocked } from 'ts-jest/utils'
+
 import { SecretsManager } from '../src/types/core'
 import { HttpError } from '../src/errors'
 import { getSagasInteropBuilder } from '../src/saga/get-sagas-interop-builder'
@@ -21,10 +23,23 @@ const secretsManager: SecretsManager = {
   deleteSecret: jest.fn(),
 }
 
+let monitoring: {
+  error: jest.MockedFunction<NonNullable<Monitoring['error']>>
+  group: jest.MockedFunction<NonNullable<Monitoring['group']>>
+  time: jest.MockedFunction<NonNullable<Monitoring['time']>>
+  timeEnd: jest.MockedFunction<NonNullable<Monitoring['timeEnd']>>
+  publish: jest.MockedFunction<NonNullable<Monitoring['publish']>>
+}
+
 const makeTestRuntime = (): SagaRuntime => {
-  const monitoring: Monitoring = {
+  monitoring = {
+    group: jest.fn(),
     error: jest.fn(),
+    time: jest.fn(),
+    timeEnd: jest.fn(),
+    publish: jest.fn(),
   }
+  monitoring.group.mockReturnValue(monitoring)
   const scheduler = {
     addEntries: jest.fn(),
     clearEntries: jest.fn(),
@@ -33,11 +48,12 @@ const makeTestRuntime = (): SagaRuntime => {
   return {
     secretsManager,
     monitoring,
-    eventProperties: {},
     executeCommand: jest.fn(),
     executeQuery: jest.fn(),
     scheduler,
     uploader: {},
+    getSideEffectsTimestamp: jest.fn(),
+    setSideEffectsTimestamp: jest.fn(),
   }
 }
 
@@ -49,6 +65,10 @@ const schedulerEventTypes: SchedulerEventTypes = {
 }
 
 describe('Sagas', () => {
+  let dummyStore: any
+  beforeEach(() => {
+    dummyStore = {}
+  })
   test('saga handlers should be called with correct arguments', async () => {
     const sagaParams = {
       name: 'dummySaga',
@@ -70,7 +90,6 @@ describe('Sagas', () => {
       timestamp: 1,
     }
 
-    const dummyStore = {}
     const expectedStoreAndSideEffects = expect.objectContaining({
       sideEffects: {
         scheduleCommand: expect.any(Function),
@@ -101,7 +120,6 @@ describe('Sagas', () => {
       dummyEvent
     )
   })
-
   test('acquiring resolver should throw error', async () => {
     const sagaParams = {
       name: 'dummySaga',
@@ -121,7 +139,6 @@ describe('Sagas', () => {
       expect(error).toEqual(expect.any(HttpError))
     }
   })
-
   test('side effects should be passed to event handlers', async () => {
     const sagaParams = {
       name: 'dummySaga',
@@ -133,19 +150,22 @@ describe('Sagas', () => {
       sideEffects: { dummySideEffect: jest.fn() },
     }
 
+    const runtime = makeTestRuntime()
+    mocked(runtime.getSideEffectsTimestamp).mockResolvedValueOnce(5)
+
     const sagas = await getSagasInteropBuilder(
       'dummyScheduler',
       schedulerEventTypes,
       makeSagaMeta(sagaParams),
       []
-    )(makeTestRuntime())
+    )(runtime)
 
     const dummyEvent = {
       type: 'dummyEvent',
       payload: { text: 'first' },
       aggregateId: 'validAggregateId',
       aggregateVersion: 1,
-      timestamp: 1,
+      timestamp: 10,
     }
 
     const dummyStore = {}
@@ -156,12 +176,10 @@ describe('Sagas', () => {
     )
     eventHandler && (await eventHandler())
     expect(sagaParams.sideEffects.dummySideEffect).toHaveBeenCalledTimes(1)
-    expect(sagaParams.sideEffects.dummySideEffect).toBeCalledWith(
-      dummyEvent,
-      {}
-    )
+    expect(sagaParams.sideEffects.dummySideEffect).toBeCalledWith(dummyEvent, {
+      sideEffectsStartTimestamp: 5,
+    })
   })
-
   test('scheduler saga should be initialized correctly', async () => {
     const sagaParams = {
       name: 'dummySaga',
@@ -213,5 +231,90 @@ describe('Sagas', () => {
       date: 0,
       taskId: 'validAggregateId',
     })
+  })
+  test('#1797: error group on Init handler ', async () => {
+    const sagaParams = {
+      name: 'dummySaga',
+      handlers: {
+        Init: async () => {
+          throw Error('Projection error')
+        },
+      },
+    }
+
+    const { dummySaga } = await getSagasInteropBuilder(
+      'dummyScheduler',
+      schedulerEventTypes,
+      makeSagaMeta(sagaParams),
+      []
+    )(makeTestRuntime())
+
+    const initHandler = await dummySaga.acquireInitHandler(dummyStore)
+
+    try {
+      if (initHandler != null) {
+        await initHandler()
+      }
+    } catch {}
+
+    expect(monitoring.group.mock.calls[0][0]).toEqual({
+      Part: 'SagaProjection',
+    })
+    expect(monitoring.group.mock.calls[1][0]).toEqual({
+      Saga: 'dummySaga',
+    })
+    expect(monitoring.group.mock.calls[2][0]).toEqual({
+      EventType: 'Init',
+    })
+
+    expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(monitoring.error.mock.calls[0][0].message).toEqual(
+      'Projection error'
+    )
+  })
+  test('#1797: error group on event handler ', async () => {
+    const sagaParams = {
+      name: 'dummySaga',
+      handlers: {
+        Failed: async () => {
+          throw Error('Projection error')
+        },
+      },
+    }
+
+    const { dummySaga } = await getSagasInteropBuilder(
+      'dummyScheduler',
+      schedulerEventTypes,
+      makeSagaMeta(sagaParams),
+      []
+    )(makeTestRuntime())
+
+    const eventHandler = await dummySaga.acquireEventHandler(dummyStore, {
+      type: 'Failed',
+      aggregateId: 'id',
+      aggregateVersion: 1,
+      timestamp: 1,
+    })
+
+    try {
+      if (eventHandler != null) {
+        await eventHandler()
+      }
+    } catch {}
+
+    expect(monitoring.group.mock.calls[0][0]).toEqual({
+      Part: 'SagaProjection',
+    })
+    expect(monitoring.group.mock.calls[1][0]).toEqual({
+      Saga: 'dummySaga',
+    })
+    expect(monitoring.group.mock.calls[2][0]).toEqual({
+      EventType: 'Failed',
+    })
+
+    expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(monitoring.error.mock.calls[0][0].message).toEqual(
+      'Projection error'
+    )
   })
 })

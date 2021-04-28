@@ -1,4 +1,10 @@
-import { SecretsManager, Event, SagaEventHandlers } from '../types/core'
+import {
+  SecretsManager,
+  Event,
+  SagaEventHandlers,
+  SagaSideEffects,
+  SerializablePrimitive,
+} from '../types/core'
 import { AggregateMeta } from '../types/runtime'
 import { AggregatesInteropBuilder } from '../aggregate/types'
 import { Monitoring } from '../types/runtime'
@@ -8,12 +14,12 @@ export type SchedulerInfo = {
   connectorName: string
 }
 
-export type SagaProperties = {
-  [key: string]: string
-}
-
 export type SideEffectsCollection = {
   [key: string]: Function | SideEffectsCollection
+}
+
+export type SideEffectsContext = {
+  sideEffectsStartTimestamp: number
 }
 
 export type SchedulerRuntime = {
@@ -21,6 +27,7 @@ export type SchedulerRuntime = {
   clearEntries: Function
   executeEntries: Function
 }
+
 export type SchedulerSideEffects = SchedulerRuntime
 
 export type SystemSideEffects = {
@@ -31,9 +38,10 @@ export type SystemSideEffects = {
 }
 
 export type SagaRuntime = {
-  eventProperties: SagaProperties
   executeCommand: Function
   executeQuery: Function
+  getSideEffectsTimestamp: () => Promise<number>
+  setSideEffectsTimestamp: (timestamp: number) => Promise<void>
   secretsManager: SecretsManager
   uploader: any
   scheduler: SchedulerRuntime
@@ -53,6 +61,23 @@ export type SchedulerProjectionBuilder = (
   schedulerName: string,
   schedulerEventTypes: SchedulerEventTypes
 ) => SagaEventHandlers<any, any>
+
+export type SagaSideEffectProperties = {
+  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP: number
+} & {
+  [key: string]: SerializablePrimitive
+}
+
+export type SagaUserSideEffect = (
+  properties: SagaSideEffectProperties,
+  sideEffects: SagaSideEffects,
+  effectName: string,
+  isEnabled: boolean
+) => Promise<any>
+
+export type SagaUserSideEffects = {
+  [key: string]: SagaUserSideEffect
+}
 
 export type SagaDomain = {
   schedulerName: string

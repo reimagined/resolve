@@ -40,6 +40,7 @@ const connectImpl = async <
     update: update.bind(null, adapterPool, readModelName),
     delete: del.bind(null, adapterPool, readModelName),
     performanceTracer: pool.performanceTracer,
+    monitoring: pool.monitoring,
   }
 
   Object.freeze(store)
