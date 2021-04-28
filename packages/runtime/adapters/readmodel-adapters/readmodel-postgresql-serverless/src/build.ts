@@ -502,14 +502,11 @@ const build: ExternalMethods['build'] = async (
   const {
     PassthroughError,
     inlineLedgerExecuteTransaction,
-    inlineLedgerExecuteStatement,
     generateGuid,
     schemaName,
     escapeId,
     escapeStr,
-    rdsDataService,
     inlineLedgerExecuteStatement: ledgerStatement,
-    generateGuid,
     monitoring,
   } = basePool
 
