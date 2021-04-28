@@ -32,12 +32,7 @@ const createErrorDimensionsList = (error) => [
   [],
 ]
 
-const monitoringErrorCallback = async (
-  log,
-  monitoringData,
-  groupData,
-  error
-) => {
+const monitoringError = async (log, monitoringData, groupData, error) => {
   try {
     log.verbose(`Collect error`)
 
@@ -83,7 +78,55 @@ const monitoringErrorCallback = async (
   }
 }
 
-const monitoringTimeCallback = async (
+const monitoringDuration = async (
+  log,
+  monitoringData,
+  groupData,
+  label,
+  duration
+) => {
+  if (!Number.isFinite(duration)) {
+    log.warn(
+      `Duration '${label}' is not recorded because duration must be a finite number`
+    )
+    return
+  }
+
+  const durationDimensions = [{ Name: 'Label', Value: label }]
+  const now = new Date()
+
+  let isDimensionCountLimitReached = false
+
+  monitoringData.metricData = monitoringData.metricData.concat(
+    groupData.durationMetricDimensionsList.reduce((acc, groupDimensions) => {
+      const dimensions = [...groupDimensions, ...durationDimensions]
+
+      if (dimensions.length <= MAX_DIMENSION_COUNT) {
+        acc.push({
+          MetricName: 'Duration',
+          Timestamp: now,
+          Unit: 'Milliseconds',
+          Value: duration,
+          Dimensions: [...groupDimensions, ...durationDimensions],
+        })
+      } else {
+        isDimensionCountLimitReached = true
+      }
+
+      return acc
+    }, [])
+  )
+
+  delete groupData.timerMap[label]
+
+  if (isDimensionCountLimitReached) {
+    log.warn(
+      `Duration '${label}' missed some or all metric data because of dimension count limit`
+    )
+  }
+}
+
+const monitoringTime = async (
   log,
   monitoringData,
   groupData,
@@ -104,7 +147,7 @@ const monitoringTimeCallback = async (
   }
 }
 
-const monitoringTimeEndCallback = async (
+const monitoringTimeEnd = async (
   log,
   monitoringData,
   groupData,
@@ -120,45 +163,13 @@ const monitoringTimeEndCallback = async (
 
   if (typeof groupData.timerMap[label] === 'number') {
     const duration = timestamp - groupData.timerMap[label]
-
-    const durationDimensions = [{ Name: 'Label', Value: label }]
-    const now = new Date()
-
-    let isDimensionCountLimitReached = false
-
-    monitoringData.metricData = monitoringData.metricData.concat(
-      groupData.durationMetricDimensionsList.reduce((acc, groupDimensions) => {
-        const dimensions = [...groupDimensions, ...durationDimensions]
-
-        if (dimensions.length <= MAX_DIMENSION_COUNT) {
-          acc.push({
-            MetricName: 'Duration',
-            Timestamp: now,
-            Unit: 'Milliseconds',
-            Value: duration,
-            Dimensions: [...groupDimensions, ...durationDimensions],
-          })
-        } else {
-          isDimensionCountLimitReached = true
-        }
-
-        return acc
-      }, [])
-    )
-
-    delete groupData.timerMap[label]
-
-    if (isDimensionCountLimitReached) {
-      log.warn(
-        `Timer '${label}' missed some or all metric data because of dimension count limit`
-      )
-    }
+    return monitoringDuration(log, monitoringData, groupData, label, duration)
   } else {
     log.warn(`Timer '${label}' does not exist`)
   }
 }
 
-const monitoringPublishCallback = async (log, monitoringData) => {
+const monitoringPublish = async (log, monitoringData) => {
   try {
     log.verbose(`Sending ${monitoringData.metricData.length} metrics`)
     log.verbose(JSON.stringify(monitoringData.metricData))
@@ -203,6 +214,52 @@ const createGroupDimensions = (config) =>
     []
   )
 
+const monitoringRate = async (
+  log,
+  monitoringData,
+  groupData,
+  metricName,
+  count,
+  seconds = 1
+) => {
+  if (!Number.isFinite(count)) {
+    log.warn(
+      `Count per second '${metricName}' is not recorded because count must be a finite number`
+    )
+    return
+  }
+
+  const now = new Date()
+
+  let isDimensionCountLimitReached = false
+
+  monitoringData.metricData = monitoringData.metricData.concat(
+    groupData.durationMetricDimensionsList.reduce((acc, groupDimensions) => {
+      if (groupDimensions.length <= MAX_DIMENSION_COUNT) {
+        acc.push({
+          MetricName: metricName,
+          Timestamp: now,
+          Unit: 'Count/Second',
+          Value: count / seconds,
+          Dimensions: groupDimensions,
+        })
+      } else {
+        isDimensionCountLimitReached = true
+      }
+
+      return acc
+    }, [])
+  )
+
+  delete groupData.timerMap[metricName]
+
+  if (isDimensionCountLimitReached) {
+    log.warn(
+      `Count per second '${metricName}' missed some or all metric data because of dimension count limit`
+    )
+  }
+}
+
 const createMonitoringImplementation = (log, monitoringData, groupData) => {
   return {
     group: (config) => {
@@ -224,15 +281,12 @@ const createMonitoringImplementation = (log, monitoringData, groupData) => {
 
       return createMonitoringImplementation(log, monitoringData, nextGroupData)
     },
-    error: monitoringErrorCallback.bind(null, log, monitoringData, groupData),
-    time: monitoringTimeCallback.bind(null, log, monitoringData, groupData),
-    timeEnd: monitoringTimeEndCallback.bind(
-      null,
-      log,
-      monitoringData,
-      groupData
-    ),
-    publish: monitoringPublishCallback.bind(null, log, monitoringData),
+    error: monitoringError.bind(null, log, monitoringData, groupData),
+    duration: monitoringDuration.bind(null, log, monitoringData, groupData),
+    time: monitoringTime.bind(null, log, monitoringData, groupData),
+    timeEnd: monitoringTimeEnd.bind(null, log, monitoringData, groupData),
+    rate: monitoringRate.bind(null, log, monitoringData, groupData),
+    publish: monitoringPublish.bind(null, log, monitoringData),
   }
 }
 
