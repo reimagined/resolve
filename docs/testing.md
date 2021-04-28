@@ -26,7 +26,7 @@ Use the `.aggregate` function to add an aggregate to a test case. Use the follow
 | Assertion                   | Description                                                          |
 | --------------------------- | -------------------------------------------------------------------- |
 | `shouldProduceEvent(event)` | Succeeds if the specified event was produced in the given test case. |
-| `shouldThrow(event)`        | Succeeds if the Aggregate throws an exception.                       |
+| `shouldThrow(error)`        | Succeeds if the Aggregate throws an exception.                       |
 
 The code sample below demonstrates a **jest** test for an Aggregate:
 
@@ -151,11 +151,11 @@ Use the `.saga` function to add a saga to a test case. Use the following API to 
 
 ### Assertions
 
-| Assertion                                    | Description                                                                                 |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `shouldExecuteCommand(shouldExecuteCommand)` | Succeeds if the saga executes the specified command.                                        |
-| `shouldExecuteQuery(query)`                  | Succeeds if the saga executes the specified query.                                          |
-| `shouldExecuteSideEffect(name, ...args)`     | Succeeds if the saga calls the specified side effect function with the specified arguments. |
+| Assertion                                | Description                                                                                 |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `shouldExecuteCommand(command)`          | Succeeds if the saga executes the specified command.                                        |
+| `shouldExecuteQuery(query)`              | Succeeds if the saga executes the specified query.                                          |
+| `shouldExecuteSideEffect(name, ...args)` | Succeeds if the saga calls the specified side effect function with the specified arguments. |
 
 The code sample below demonstrates a **jest** test for a saga:
 
