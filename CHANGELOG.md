@@ -1,8 +1,8 @@
 # Changelog
 
-## [Upcoming](https://github.com/max-vasin-team/resolve/tree/HEAD)
+## [V0.40.0](https://github.com/max-vasin-team/resolve/tree/V0.40.0) (2021-04-27)
 
-[Full Changelog](https://github.com/max-vasin-team/resolve/compare/V0.29.0...HEAD)
+[Full Changelog](https://github.com/max-vasin-team/resolve/compare/V0.29.0...V0.40.0)
 
 **New features:**
 
@@ -16,7 +16,7 @@
 
 - Breaking change [\#22](https://github.com/max-vasin-team/resolve/pull/22)
 
-**Fixed bugs:**
+**Bug fixes:**
 
 - Nasty bug in redux [\#20](https://github.com/max-vasin-team/resolve/issues/20)
 
