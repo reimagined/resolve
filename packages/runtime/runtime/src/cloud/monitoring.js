@@ -32,7 +32,7 @@ const createErrorDimensionsList = (error) => [
   [],
 ]
 
-const monitoringErrorCallback = async (
+const monitoringError = async (
   log,
   monitoringData,
   groupData,
@@ -83,7 +83,55 @@ const monitoringErrorCallback = async (
   }
 }
 
-const monitoringTimeCallback = async (
+const monitoringDuration = async (
+  log,
+  monitoringData,
+  groupData,
+  label,
+  duration
+) => {
+  if (!Number.isFinite(duration)) {
+    log.warn(
+      `Duration '${label}' is not recorded because duration must be a finite number`
+    )
+    return
+  }
+
+  const durationDimensions = [{ Name: 'Label', Value: label }]
+  const now = new Date()
+
+  let isDimensionCountLimitReached = false
+
+  monitoringData.metricData = monitoringData.metricData.concat(
+    groupData.durationMetricDimensionsList.reduce((acc, groupDimensions) => {
+      const dimensions = [...groupDimensions, ...durationDimensions]
+
+      if (dimensions.length <= MAX_DIMENSION_COUNT) {
+        acc.push({
+          MetricName: 'Duration',
+          Timestamp: now,
+          Unit: 'Milliseconds',
+          Value: duration,
+          Dimensions: [...groupDimensions, ...durationDimensions],
+        })
+      } else {
+        isDimensionCountLimitReached = true
+      }
+
+      return acc
+    }, [])
+  )
+
+  delete groupData.timerMap[label]
+
+  if (isDimensionCountLimitReached) {
+    log.warn(
+      `Timer '${label}' missed some or all metric data because of dimension count limit`
+    )
+  }
+}
+
+const monitoringTime = async (
   log,
   monitoringData,
   groupData,
@@ -104,7 +152,7 @@ const monitoringTimeCallback = async (
   }
 }
 
-const monitoringTimeEndCallback = async (
+const monitoringTimeEnd = async (
   log,
   monitoringData,
   groupData,
@@ -120,45 +168,19 @@ const monitoringTimeEndCallback = async (
 
   if (typeof groupData.timerMap[label] === 'number') {
     const duration = timestamp - groupData.timerMap[label]
-
-    const durationDimensions = [{ Name: 'Label', Value: label }]
-    const now = new Date()
-
-    let isDimensionCountLimitReached = false
-
-    monitoringData.metricData = monitoringData.metricData.concat(
-      groupData.durationMetricDimensionsList.reduce((acc, groupDimensions) => {
-        const dimensions = [...groupDimensions, ...durationDimensions]
-
-        if (dimensions.length <= MAX_DIMENSION_COUNT) {
-          acc.push({
-            MetricName: 'Duration',
-            Timestamp: now,
-            Unit: 'Milliseconds',
-            Value: duration,
-            Dimensions: [...groupDimensions, ...durationDimensions],
-          })
-        } else {
-          isDimensionCountLimitReached = true
-        }
-
-        return acc
-      }, [])
+    return monitoringDuration(
+      log,
+      monitoringData,
+      groupData,
+      label,
+      duration
     )
-
-    delete groupData.timerMap[label]
-
-    if (isDimensionCountLimitReached) {
-      log.warn(
-        `Timer '${label}' missed some or all metric data because of dimension count limit`
-      )
-    }
   } else {
     log.warn(`Timer '${label}' does not exist`)
   }
 }
 
-const monitoringPublishCallback = async (log, monitoringData) => {
+const monitoringPublish = async (log, monitoringData) => {
   try {
     log.verbose(`Sending ${monitoringData.metricData.length} metrics`)
     log.verbose(JSON.stringify(monitoringData.metricData))
@@ -224,15 +246,21 @@ const createMonitoringImplementation = (log, monitoringData, groupData) => {
 
       return createMonitoringImplementation(log, monitoringData, nextGroupData)
     },
-    error: monitoringErrorCallback.bind(null, log, monitoringData, groupData),
-    time: monitoringTimeCallback.bind(null, log, monitoringData, groupData),
-    timeEnd: monitoringTimeEndCallback.bind(
+    error: monitoringError.bind(null, log, monitoringData, groupData),
+    duration: monitoringDuration.bind(
       null,
       log,
       monitoringData,
       groupData
     ),
-    publish: monitoringPublishCallback.bind(null, log, monitoringData),
+    time: monitoringTime.bind(null, log, monitoringData, groupData),
+    timeEnd: monitoringTimeEnd.bind(
+      null,
+      log,
+      monitoringData,
+      groupData
+    ),
+    publish: monitoringPublish.bind(null, log, monitoringData),
   }
 }
 
