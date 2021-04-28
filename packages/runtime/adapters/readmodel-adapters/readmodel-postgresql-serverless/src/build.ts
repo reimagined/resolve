@@ -181,6 +181,7 @@ export const buildEvents: (
     eventTypes,
     inputCursor,
     metricData,
+    monitoring,
   } = pool
 
   let lastSuccessEvent: ReadModelEvent | null = null
@@ -189,10 +190,19 @@ export const buildEvents: (
   let localContinue = true
   let cursor: ReadModelCursor = inputCursor
 
+
+  let eventsApplyStartTimestamp = Date.now()
+  let eventCount = 0
+
   let transactionIdPromise: Promise<string> = inlineLedgerExecuteTransaction(
     pool,
     'begin'
-  ).then((result) => (result != null ? result : RDS_TRANSACTION_FAILED_KEY))
+  )
+    .then((result) =>
+      result != null && result.transactionId != null
+        ? result.transactionId
+        : RDS_TRANSACTION_FAILED_KEY
+    )
 
   const firstEventsLoadStartTimestamp = Date.now()
 
@@ -301,6 +311,7 @@ export const buildEvents: (
             try {
               metricData.insideProjection = true
               await handler()
+              eventCount++
             } finally {
               metricData.insideProjection = false
             }
@@ -415,6 +426,18 @@ export const buildEvents: (
     }
 
     await inlineLedgerExecuteTransaction(pool, 'commit', transactionId)
+
+    if (eventCount > 0 && monitoring != null) {
+      const seconds = (Date.now() - eventsApplyStartTimestamp) / 1000
+
+      monitoring
+        .group({ Part: 'ReadModel' })
+        .group({ ReadModel: readModelName })
+        .rate('ReadModelFeedingRate', eventCount, seconds)
+    }
+
+    eventCount = 0
+    eventsApplyStartTimestamp = Date.now()
 
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
     cursor = nextCursor
@@ -679,17 +702,14 @@ const build: ExternalMethods['build'] = async (
         innerMonitoring.timeEnd('EventApply')
       }
 
-      innerMonitoring.time('EventBatchLoad', 0)
-      innerMonitoring.timeEnd('EventBatchLoad', metricData.eventBatchLoadTime)
+      innerMonitoring.duration('EventBatchLoad', metricData.eventBatchLoadTime)
 
-      innerMonitoring.time('EventProjectionApply', 0)
-      innerMonitoring.timeEnd(
+      innerMonitoring.duration(
         'EventProjectionApply',
         metricData.pureProjectionApplyTime
       )
 
-      innerMonitoring.time('Ledger', 0)
-      innerMonitoring.timeEnd('Ledger', metricData.pureLedgerTime)
+      innerMonitoring.duration('Ledger', metricData.pureLedgerTime)
     })
   }
 }

@@ -164,7 +164,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   } catch (error) {
     log.error('top-level event handler execution error!')
 
-    resolve.monitoring.error('internal', error)
+    resolve.monitoring.group({ Part: 'Internal' }).error(error)
 
     if (error instanceof Error) {
       log.error('error', error.message)

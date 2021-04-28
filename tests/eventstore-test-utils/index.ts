@@ -68,6 +68,8 @@ export function makeTestEvent(eventIndex: number): any {
   }
 }
 
+const uniquePostfix = `${process.pid}_${Math.round(Math.random() * 1000)}`
+
 let adapters: Record<string, Adapter> = {}
 
 const proxy = new Proxy(
@@ -106,7 +108,7 @@ export function getPostgresServerlessOptions(
     snapshotsTableName: 'snapshots',
     secretsTableName: 'secrets',
     subscribersTableName: 'subscribers',
-    databaseName: uniqueName,
+    databaseName: `${uniqueName}_${uniquePostfix}`,
     dbClusterOrInstanceArn: process.env.AWS_RDS_CLUSTER_ARN,
     awsSecretStoreAdminArn: process.env.AWS_RDS_ADMIN_SECRET_ARN,
     region: process.env.AWS_REGION ?? 'eu-central-1',
