@@ -1,0 +1,10 @@
+author=false
+header-label=# Changelog
+release-branch=dev
+unreleased-label=Upcoming
+issues-wo-labels=false
+exclude-labels=maintenance,release,fix
+max-issues=100
+pr-label=**Other changes:**
+configure-sections={"A":{"prefix":"**New features:**","labels":["feature", "Feature"]}, "B":{"prefix":"**Enhancements:**","labels":["improvement", "enhancement"]}, "C":{"prefix":"**Breaking changes:**","labels":["breaking"]}, "D":{"prefix":"**Bug fixes:**","labels":["bug"]}, "E":{"prefix":"**Documentation:**","labels":["docs"]}}
+
