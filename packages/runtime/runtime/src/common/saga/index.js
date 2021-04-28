@@ -21,9 +21,9 @@ const createSaga = ({
   const sagaMonitoring =
     monitoring != null
       ? {
-          error: async (error, part, meta) => {
+          error: (error, part, meta) => {
             if (monitoring.error != null) {
-              await monitoring.error(error, 'sagaProjection', meta)
+              monitoring.error(error, 'sagaProjection', meta)
             }
           },
         }

@@ -5,9 +5,10 @@
   "description": "API tests for resolve",
   "scripts": {
     "test": "echo || exit 0",
-    "test:integration": "jest --config=./jest.config.js --testMatch=**/*.test.[jt]s",
+    "test:integration": "jest --config=./jest.config.js",
+    "test:postgres-serverless": "yarn test:eventstore-postgres-serverless",
     "test:eventstore": "jest --config=./jest.config.js --testMatch=**/eventstore-*/*.test.[jt]s",
-    "test:eventstore-serverless": "env TEST_SERVERLESS=1 jest --config=./jest.config.js --testMatch=**/eventstore-*/*.test.[jt]s",
+    "test:eventstore-postgres-serverless": "env TEST_POSTGRES_SERVERLESS=true jest --config=./jest.config.js --testMatch=**/eventstore-*/*.test.[jt]s",
     "test:import-export": "jest --config=./jest.config.js --testMatch=**/import-export-sample/*.test.ts",
     "test:secrets": "jest --config=./jest.config.js --testMatch=**/eventstore-secrets/*.test.ts"
   },

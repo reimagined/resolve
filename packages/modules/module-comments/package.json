@@ -35,9 +35,9 @@
   },
   "peerDependencies": {
     "@resolve-js/redux": "0.29.0",
-    "react": "*",
-    "react-redux": "*",
-    "redux": "*"
+    "react": "^16.13.1",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5"
   },
   "engines": {
     "node": ">=10.9"

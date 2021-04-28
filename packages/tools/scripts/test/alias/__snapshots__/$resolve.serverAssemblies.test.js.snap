@@ -6,6 +6,7 @@ exports[`works correctly 1`] = `
   import '$resolve.guardOnlyServer'
   import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
   import constants from '$resolve.constants'
+  import resolveVersion from '$resolve.resolveVersion'
 
   const assemblies = Object.create(Object.prototype, {
     seedClientEnvs: { 
@@ -76,7 +77,8 @@ exports[`works correctly 1`] = `
   export default { 
     assemblies, 
     constants, 
-    domain 
+    domain,
+    resolveVersion
   } 
 
 "

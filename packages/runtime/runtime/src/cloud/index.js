@@ -17,11 +17,10 @@ import wrapTrie from '../common/wrap-trie'
 import initUploader from './init-uploader'
 import gatherEventListeners from '../common/gather-event-listeners'
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
-import { putInternalError } from './metrics'
 
 const log = debugLevels('resolve:runtime:cloud-entry')
 
-const index = async ({ assemblies, constants, domain }) => {
+const index = async ({ assemblies, constants, domain, resolveVersion }) => {
   let subSegment = null
 
   log.debug(`starting lambda 'cold start'`)
@@ -40,6 +39,7 @@ const index = async ({ assemblies, constants, domain }) => {
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
       upstream: true,
+      resolveVersion,
     }
 
     log.debug('preparing performance tracer')
@@ -63,7 +63,7 @@ const index = async ({ assemblies, constants, domain }) => {
     resolve.sendReactiveEvent = async (event) => {
       const { aggregateId, type } = event
       const databaseNameAsId = escapeId(
-        process.env.RESOLVE_EVENT_BUS_DATABASE_NAME
+        process.env.RESOLVE_EVENT_STORE_DATABASE_NAME
       )
       const subscriptionsTableNameAsId = escapeId(
         process.env.RESOLVE_SUBSCRIPTIONS_TABLE_NAME
@@ -121,7 +121,6 @@ const index = async ({ assemblies, constants, domain }) => {
   } catch (error) {
     log.error(`lambda 'cold start' failure`, error)
     subSegment.addError(error)
-    await putInternalError(error)
   } finally {
     if (subSegment != null) {
       subSegment.close()

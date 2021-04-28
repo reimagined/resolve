@@ -17,8 +17,6 @@ import {
   CommandResult,
 } from '../types/core'
 
-import { makeMonitoringSafe } from '../helpers'
-
 type AggregateData = {
   aggregateVersion: number
   aggregateId: string
@@ -372,13 +370,24 @@ const executeCommand = async (
   runtime: AggregateRuntime,
   command: Command
 ): Promise<CommandResult> => {
-  const monitoring = makeMonitoringSafe(runtime.monitoring)
+  const monitoringGroup =
+    runtime.monitoring != null
+      ? runtime.monitoring
+          .group({ Part: 'Command' })
+          .group({ AggregateName: command.aggregateName })
+          .group({ Type: command.type })
+      : null
+
+  if (monitoringGroup != null) {
+    monitoringGroup.time('Execution')
+  }
+
   const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
 
   const jwt = actualJwt || deprecatedJwt
 
   const subSegment = getPerformanceTracerSubsegment(
-    monitoring,
+    runtime.monitoring,
     'executeCommand'
   )
 
@@ -419,7 +428,7 @@ const executeCommand = async (
       context: CommandContext
     ): Promise<CommandResult> => {
       const subSegment = getPerformanceTracerSubsegment(
-        monitoring,
+        runtime.monitoring,
         'processCommand'
       )
       try {
@@ -483,7 +492,10 @@ const executeCommand = async (
     }
 
     await (async (): Promise<void> => {
-      const subSegment = getPerformanceTracerSubsegment(monitoring, 'saveEvent')
+      const subSegment = getPerformanceTracerSubsegment(
+        runtime.monitoring,
+        'saveEvent'
+      )
 
       try {
         return await saveEvent(runtime, aggregate, command, processedEvent)
@@ -498,9 +510,16 @@ const executeCommand = async (
     return processedEvent
   } catch (error) {
     subSegment.addError(error)
-    await monitoring?.error?.(error, 'command', { command })
+
+    if (monitoringGroup != null) {
+      monitoringGroup.group({ AggregateId: command.aggregateId }).error(error)
+    }
     throw error
   } finally {
+    if (monitoringGroup != null) {
+      monitoringGroup.timeEnd('Execution')
+    }
+
     subSegment.close()
   }
 }

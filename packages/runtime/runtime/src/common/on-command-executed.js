@@ -47,7 +47,15 @@ const notifyEventSubscribers = async (resolve) => {
   const inlineLedgerPromise = (async () => {
     const promises = []
     for (const { name: eventListener } of resolve.eventListeners.values()) {
-      promises.push(resolve.invokeEventSubscriberAsync(eventListener, 'build'))
+      promises.push(
+        resolve.invokeEventSubscriberAsync(eventListener, 'build', {
+          initiator: 'command',
+          notificationId: `NT-${Date.now()}${Math.floor(
+            Math.random() * 1000000
+          )}`,
+          sendTime: Date.now(),
+        })
+      )
     }
 
     const eventSubscribers = await resolve.eventstoreAdapter.getEventSubscribers()
