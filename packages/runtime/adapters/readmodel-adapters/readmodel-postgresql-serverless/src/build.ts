@@ -190,19 +190,13 @@ export const buildEvents: (
   let localContinue = true
   let cursor: ReadModelCursor = inputCursor
 
-
   let eventsApplyStartTimestamp = Date.now()
   let eventCount = 0
 
   let transactionIdPromise: Promise<string> = inlineLedgerExecuteTransaction(
     pool,
     'begin'
-  )
-    .then((result) =>
-      result != null && result.transactionId != null
-        ? result.transactionId
-        : RDS_TRANSACTION_FAILED_KEY
-    )
+  ).then((result) => (result != null ? result : RDS_TRANSACTION_FAILED_KEY))
 
   const firstEventsLoadStartTimestamp = Date.now()
 
