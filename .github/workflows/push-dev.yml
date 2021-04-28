@@ -42,7 +42,7 @@ jobs:
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           version: auto
           build: ${{ github.sha }}
-          tag: dev
+          tag: latest
           unpublish: false
           github_target_repository: resolve-js/resolve
 
