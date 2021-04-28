@@ -31,44 +31,15 @@ Use the `.aggregate` function to add an aggregate to a test case. Use the follow
 The code sample below demonstrates a **jest** test for an Aggregate:
 
 ```js
-  ...
-  const aggregate:  = {
-    name: 'user',
-    projection: {
-      Init: () => ({
-        exist: false
-      }),
-      TEST_COMMAND_EXECUTED: (state: AggregateState) => ({
-        ...state,
-        exist: true
-      })
-    },
-    commands: {
-      create: (state, command, context) => {
-        if (context.jwt !== 'valid-user') {
-          throw Error('unauthorized user')
-        }
-        if (state.exist) {
-          throw Error('aggregate already exist')
-        }
-        return {
-          type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
-        }
-      }
-    }
-  }
-
-  describe('with BDD assertions', () => {
-    test('expecting success command execution', () =>
-      givenEvents([])
-        .aggregate(aggregate)
-        .command('create', {})
-        .as('valid-user')
-        .shouldProduceEvent({
-          type: 'TEST_COMMAND_EXECUTED',
-          payload: {}
-        }))
+test('expecting success command execution', () =>
+  givenEvents([])
+    .aggregate(aggregate)
+    .command('create', {})
+    .as('valid-user')
+    .shouldProduceEvent({
+      type: 'TEST_COMMAND_EXECUTED',
+      payload: {},
+    }))
 ```
 
 The `aggregate` function's parameter should be an object with the following fields:
@@ -103,35 +74,16 @@ Use the `.readModel` function to add a read model to a test case. Use the follow
 
 The code sample below demonstrates a **jest** test for a read model:
 
-<!-- prettier-ignore-start -->
-
-[mdis]:# (../examples/shopping-list/test/unit/read_models.test.js#read-model-test)
 ```js
-    test('projection "SHOPPING_LIST_CREATED" should create a shopping list', async () => {
-      const shoppingLists = await givenEvents([
-        {
-          aggregateId,
-          type: SHOPPING_LIST_CREATED,
-          payload: {
-            name: 'Products'
-          }
-        }
-      ])
-        .readModel({
-          name: 'ShoppingLists',
-          projection,
-          resolvers,
-          adapter
-        })
-        .all()
-
-      expect(shoppingLists[0]).toMatchObject({
-        id: aggregateId,
-        name: 'Products'
-      })
-    })
+test('shouldReturn assertion', async () => {
+  await givenEvents([
+    { aggregateId: 'id2', type: 'TEST2', payload: { name: 'test-name' } },
+  ])
+    .readModel(readModel)
+    .query('get', { id: 2 })
+    .shouldReturn({ name: 'test-name' })
+})
 ```
-<!-- prettier-ignore-end -->
 
 In this example, the `.all` function called at the end of the call chain is the `ShoppingLists` read model's resolver function. It returns a promise that resolves to the resolver's response object.
 
@@ -161,30 +113,23 @@ Use the `.saga` function to add a saga to a test case. Use the following API to 
 
 The code sample below demonstrates a **jest** test for a saga:
 
-<!-- prettier-ignore-start -->
-
-[mdis]:# (../tests/saga-sample/saga.test.js#saga-test)
 ```js
-test('success registration', async () => {
-  const result = await givenEvents([
+test('shouldExecuteSideEffect & shouldExecuteCommand', async () => {
+  await givenEvents([
     {
-      aggregateId: 'userId',
-      type: 'USER_CREATED',
-      payload: { mail: 'user@example.com' }
+      type: 'CommandSideEffect',
+      aggregateId: 'aggregate-id',
     },
-    {
-      aggregateId: 'userId',
-      type: 'USER_CONFIRM_REQUESTED',
-      payload: { mail: 'user@example.com' }
-    },
-    { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} }
   ])
-    .saga(sagaWithAdapter)
-    .properties({
-      [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE
+    .saga(saga)
+    .shouldExecuteSideEffect('email', 'test', 'aggregate-id')
+    .shouldExecuteCommand({
+      type: 'create',
+      aggregateName: 'user',
+      aggregateId: 'id',
+      payload: {
+        item: 'aggregate-id',
+      },
     })
-
-  expect(result).toMatchSnapshot()
 })
 ```
-<!-- prettier-ignore-end -->
