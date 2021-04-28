@@ -17,7 +17,7 @@ export type ViewModelBuildResult = {
 }
 
 export type ViewModelRuntime = {
-  monitoring: Monitoring
+  monitoring?: Monitoring
   eventstore: Eventstore
   secretsManager: SecretsManager
 }

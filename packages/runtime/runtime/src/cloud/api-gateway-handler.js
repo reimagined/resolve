@@ -4,18 +4,10 @@ import mainHandler from '../common/handlers/main-handler'
 const getCustomParameters = async (resolve) => ({ resolve })
 
 const apiGatewayHandler = async (lambdaEvent, lambdaContext, resolve) => {
-  const onError = async (error, path) => {
-    try {
-      await resolve.monitoring.error(error, 'apiHandler', {
-        path,
-      })
-    } catch (e) {}
-  }
-
   const executor = wrapApiHandler(
     mainHandler,
     getCustomParameters.bind(null, resolve),
-    onError
+    resolve.monitoring.group({ Part: 'ApiHandler' })
   )
 
   const segment = resolve.performanceTracer.getSegment()

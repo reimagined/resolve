@@ -57,10 +57,16 @@ const read = async (
   try {
     if (isDisposed) {
       const error = new Error(`Read model "${readModelName}" is disposed`)
-      await monitoring?.error?.(error, 'readModelResolver', {
-        readModelName,
-        resolverName,
-      })
+
+      if (monitoring != null) {
+        const monitoringGroup = monitoring
+          .group({ Part: 'ReadModelResolver' })
+          .group({ ReadModel: readModelName })
+          .group({ Resolver: resolverName })
+
+        monitoringGroup.error(error)
+      }
+
       if (subSegment != null) {
         subSegment.addError(error)
       }
@@ -92,7 +98,11 @@ const next = async (
   if (args.length > 0) {
     throw new TypeError('Next should be invoked with no arguments')
   }
-  await pool.invokeEventSubscriberAsync(eventListener, 'build')
+  await pool.invokeEventSubscriberAsync(eventListener, 'build', {
+    initiator: 'read-model-next',
+    notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
+    sendTime: Date.now(),
+  })
 }
 
 const updateCustomReadModel = async (
@@ -581,6 +591,7 @@ const operationMethods = {
       next.bind(null, pool, readModelName),
       pool.eventstoreAdapter,
       pool.getVacantTimeInMillis,
+      parameters,
     ]
   ),
 

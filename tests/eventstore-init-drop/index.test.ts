@@ -3,7 +3,9 @@ import {
   EventstoreResourceNotExistError,
 } from '@resolve-js/eventstore-base'
 
-import { adapterFactory, adapters } from '../eventstore-test-utils'
+import { adapterFactory, adapters, jestTimeout } from '../eventstore-test-utils'
+
+jest.setTimeout(jestTimeout())
 
 describe(`${adapterFactory.name}. Eventstore adapter init and drop`, () => {
   beforeAll(adapterFactory.create('init_and_drop_testing'))
