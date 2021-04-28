@@ -1,29 +1,3 @@
-# Changelog
-
-## [V0.40.0](https://github.com/max-vasin-team/resolve/tree/V0.40.0) (2021-04-27)
-
-[Full Changelog](https://github.com/max-vasin-team/resolve/compare/V0.29.0...V0.40.0)
-
-**New features:**
-
-- Implement Azure Adapter [\#25](https://github.com/max-vasin-team/resolve/pull/25)
-
-**Enhancements:**
-
-- Speed up read model building [\#26](https://github.com/max-vasin-team/resolve/pull/26)
-
-**Breaking changes:**
-
-- Breaking change [\#22](https://github.com/max-vasin-team/resolve/pull/22)
-
-**Bug fixes:**
-
-- Nasty bug in redux [\#20](https://github.com/max-vasin-team/resolve/issues/20)
-
-**Other changes:**
-
-- Fix nasty bug in redux [\#21](https://github.com/max-vasin-team/resolve/pull/21)
-
 ## V0.29.0
 
 ### Breaking Changes
