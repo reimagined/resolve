@@ -22,6 +22,19 @@ function makeIdFromIndex(index: number): string {
   return `id_${index}`
 }
 
+function generateSecrets(secretCount: number): OldSecretRecord[] {
+  const secretRecords: OldSecretRecord[] = []
+
+  for (let i = 0; i < secretCount; ++i) {
+    secretRecords.push({
+      id: makeIdFromIndex(i),
+      idx: i,
+      secret: makeSecretFromIndex(i),
+    })
+  }
+  return secretRecords
+}
+
 describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
   beforeAll(adapterFactory.create('test_replication'))
   afterAll(adapterFactory.destroy('test_replication'))
@@ -95,15 +108,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
   const secretCount = 36
 
   test('replicate-secrets should be able to set secrets', async () => {
-    const secretRecords: OldSecretRecord[] = []
-
-    for (let i = 0; i < secretCount; ++i) {
-      secretRecords.push({
-        id: makeIdFromIndex(i),
-        idx: i,
-        secret: makeSecretFromIndex(i),
-      })
-    }
+    const secretRecords: OldSecretRecord[] = generateSecrets(secretCount)
 
     await adapter.replicateSecrets(secretRecords, [])
     const { secrets: loadedSecrets } = await adapter.loadSecrets({
@@ -230,5 +235,61 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     })
 
     expect(loadedEvents).toHaveLength(eventCount * 2)
+  })
+
+  test('reset-replication should remove all events and secrets and reset state', async () => {
+    await adapter.resetReplication()
+    const { events } = await adapter.loadEvents({
+      cursor: null,
+      limit: eventCount,
+    })
+    const { secrets } = await adapter.loadSecrets({
+      limit: secretCount,
+    })
+    expect(events).toHaveLength(0)
+    expect(secrets).toHaveLength(0)
+
+    const state = await adapter.getReplicationState()
+    expect(state.status).toEqual('notStarted')
+    expect(state.statusData).toBeNull()
+    expect(state.iterator).toBeNull()
+  })
+
+  test('should be able to replicate secrets and events after reset', async () => {
+    const secretRecords: OldSecretRecord[] = generateSecrets(secretCount)
+
+    await adapter.replicateSecrets(secretRecords, [])
+    const { secrets: loadedSecrets } = await adapter.loadSecrets({
+      limit: secretCount,
+    })
+
+    expect(loadedSecrets).toHaveLength(secretCount)
+
+    const events: OldEvent[] = []
+    for (let i = 0; i < eventCount; ++i) {
+      events.push(makeTestEvent(i))
+    }
+
+    await adapter.replicateEvents(events)
+    const { events: loadedEvents } = await adapter.loadEvents({
+      limit: eventCount,
+      cursor: null,
+    })
+    expect(loadedEvents).toHaveLength(eventCount)
+  })
+
+  test('should be able to save event and secret after replication', async () => {
+    await adapter.saveEvent(makeTestEvent(eventCount))
+    const secretManager = await adapter.getSecretsManager()
+    await secretManager.setSecret(
+      makeIdFromIndex(secretCount),
+      makeSecretFromIndex(secretCount)
+    )
+
+    const { events: loadedEvents } = await adapter.loadEvents({
+      limit: eventCount + 1,
+      cursor: null,
+    })
+    expect(loadedEvents).toHaveLength(eventCount + 1)
   })
 })

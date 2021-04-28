@@ -34,6 +34,7 @@ const build: ExternalMethods['build'] = async (
   while (true) {
     const cursor =
       iterator == null ? null : (iterator.cursor as ReadModelCursor)
+
     const { cursor: nextCursor, events } = await eventstoreAdapter.loadEvents({
       cursor,
       limit: 100,
@@ -51,24 +52,26 @@ const build: ExternalMethods['build'] = async (
     )
 
     let appliedEventsCount = 0
+    let wasPaused = false
 
     if (result.type === 'alreadyInProgress') {
       const errorMessage =
         "Refuse to start or continue replication since it's already in progress"
       lastError = { name: 'Error', message: errorMessage }
-      console.log(errorMessage)
+      console.error(errorMessage)
     } else if (result.type === 'launched') {
-      await sleep(100)
+      await sleep(50)
       while (true) {
         const state = await basePool.getReplicationState(basePool)
         if (state.status === 'batchInProgress') {
-          await sleep(100)
+          await sleep(50)
         } else if (state.status === 'batchDone') {
           iterator = { cursor: nextCursor }
           appliedEventsCount =
             state.statusData != null
               ? (state.statusData.appliedEventsCount as number)
               : 0
+          wasPaused = state.paused
           break
         } else if (state.status === 'serviceError') {
           lastError = {
@@ -105,14 +108,19 @@ const build: ExternalMethods['build'] = async (
       localContinue = false
     }
 
+    if (isBuildSuccess && wasPaused) {
+      console.log('Pausing replication as requested')
+      break
+    }
+
     if (isBuildSuccess && localContinue) {
-      console.log('Continuing in the same loop')
+      console.log('Enough time to continue in the local loop')
     } else {
       if (isBuildSuccess) {
         console.log('Calling next')
         await next()
       }
-      console.log('Exiting loop')
+      console.log('Exiting local loop')
       break
     }
   }

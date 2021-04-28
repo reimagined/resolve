@@ -46,6 +46,7 @@ import setReplicationStatus from './set-replication-status'
 import setReplicationIterator from './set-replication-iterator'
 import setReplicationPaused from './set-replication-paused'
 import getReplicationState from './get-replication-state'
+import resetReplication from './reset-replication'
 
 import _createResource from './resource/create'
 import _disposeResource from './resource/dispose'
@@ -102,6 +103,7 @@ const createPostgresqlServerlessAdapter = (
       setReplicationIterator,
       setReplicationPaused,
       getReplicationState,
+      resetReplication,
     },
     {
       RDSDataService,

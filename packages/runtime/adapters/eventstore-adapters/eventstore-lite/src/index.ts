@@ -41,6 +41,7 @@ import setReplicationStatus from './set-replication-status'
 import setReplicationIterator from './set-replication-iterator'
 import setReplicationPaused from './set-replication-paused'
 import getReplicationState from './get-replication-state'
+import resetReplication from './reset-replication'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
 import type { ConnectionDependencies, SqliteAdapterConfig } from './types'
@@ -85,6 +86,7 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       setReplicationIterator,
       setReplicationPaused,
       getReplicationState,
+      resetReplication,
     },
     { sqlite, tmp, os, fs } as ConnectionDependencies,
     options

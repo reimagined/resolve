@@ -85,6 +85,7 @@ const createAdapter = <
     setReplicationPaused,
     setReplicationStatus,
     getReplicationState,
+    resetReplication,
   }: AdapterFunctions<ConnectedProps, ConnectionDependencies, Config>,
   connectionDependencies: ConnectionDependencies,
   options: Config
@@ -188,6 +189,7 @@ const createAdapter = <
     setReplicationPaused: wrapMethod(adapterPool, setReplicationPaused),
     setReplicationStatus: wrapMethod(adapterPool, setReplicationStatus),
     getReplicationState: wrapMethod(adapterPool, getReplicationState),
+    resetReplication: wrapMethod(adapterPool, resetReplication),
   }
 
   Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(

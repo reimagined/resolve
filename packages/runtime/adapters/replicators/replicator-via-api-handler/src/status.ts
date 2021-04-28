@@ -24,13 +24,20 @@ const status: ExternalMethods['status'] = async (pool, readModelName) => {
   if (state.status === 'error') {
     if (state.statusData == null) {
       error = {
-        message: 'Unknown error' as string,
-        name: 'Error' as string,
+        message: 'Unknown error',
+        name: 'Error',
       }
     } else {
       error = {
-        name: state.statusData.name as string,
+        name:
+          state.statusData.name === undefined
+            ? 'Error'
+            : (state.statusData.name as string),
         message: state.statusData.message as string,
+        stack:
+          state.statusData.stack === undefined
+            ? (state.statusData.message as string)
+            : (state.statusData.stack as string),
       }
     }
   }

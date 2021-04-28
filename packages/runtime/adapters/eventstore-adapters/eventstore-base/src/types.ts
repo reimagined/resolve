@@ -528,6 +528,10 @@ export interface AdapterFunctions<
     ConnectedProps,
     NonNullable<Adapter['getReplicationState']>
   >
+  resetReplication?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['resetReplication']>
+  >
 }
 
 export interface Adapter {
@@ -603,4 +607,5 @@ export interface Adapter {
   ) => Promise<void>
   setReplicationPaused?: (pause: boolean) => Promise<void>
   getReplicationState?: () => Promise<ReplicationState>
+  resetReplication?: () => Promise<void>
 }

@@ -21,7 +21,6 @@ const handler = async (req, res) => {
     input = JSON.parse(req.body)
     checkInput(input)
   } catch (error) {
-    console.error(error.message)
     res.status(400)
     res.end(error.message)
     return
@@ -30,34 +29,41 @@ const handler = async (req, res) => {
   try {
     await req.resolve.eventstoreAdapter.setReplicationStatus('batchInProgress')
     await req.resolve.eventstoreAdapter.setReplicationIterator(input.iterator)
-
-    res.status(202)
-    res.end('Replication has been started')
-
-    try {
-      await req.resolve.eventstoreAdapter.replicateSecrets(
-        input.secretsToSet,
-        input.secretsToDelete
-      )
-      await req.resolve.eventstoreAdapter.replicateEvents(input.events)
-      await req.resolve.eventstoreAdapter.setReplicationStatus(
-        'batchDone',
-        {
-          appliedEventsCount: input.events.length,
-        },
-        input.events[input.events.length - 1]
-      )
-    } catch (error) {
-      await req.resolve.eventstoreAdapter.setReplicationStatus('error', error)
-    }
   } catch (error) {
     if (ReplicationAlreadyInProgress.is(error)) {
       res.status(425)
       res.end(error.message)
     } else {
+      try {
+        await req.resolve.eventstoreAdapter.setReplicationStatus('error', error)
+      } catch (e) {}
+
       res.status(500)
       res.end(error.message)
     }
+    return
+  }
+
+  res.status(202)
+  res.end('Replication has been started')
+
+  try {
+    await req.resolve.eventstoreAdapter.replicateSecrets(
+      input.secretsToSet,
+      input.secretsToDelete
+    )
+    await req.resolve.eventstoreAdapter.replicateEvents(input.events)
+    await req.resolve.eventstoreAdapter.setReplicationStatus(
+      'batchDone',
+      {
+        appliedEventsCount: input.events.length,
+      },
+      input.events[input.events.length - 1]
+    )
+  } catch (error) {
+    try {
+      await req.resolve.eventstoreAdapter.setReplicationStatus('error', error)
+    } catch (e) {}
   }
 }
 
