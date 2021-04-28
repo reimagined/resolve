@@ -30,6 +30,7 @@ const gatherSecretsFromEvents = async <
   const { secrets } = await pool.loadSecrets({
     limit: existingSecretsIds.length,
     ids: existingSecretsIds,
+    includeDeleted: true,
   })
 
   return { deletedSecrets, existingSecrets: secrets }

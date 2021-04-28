@@ -19,9 +19,9 @@ const replicateSecrets = async (
     ) VALUES ${existingSecrets
       .map(
         (secretRecord) =>
-          `(${secretRecord.idx},${escape(secretRecord.id)},${escape(
-            secretRecord.secret
-          )})`
+          `(${secretRecord.idx},${escape(secretRecord.id)},${
+            secretRecord.secret != null ? escape(secretRecord.secret) : 'NULL'
+          })`
       )
       .join(',')}`
     )

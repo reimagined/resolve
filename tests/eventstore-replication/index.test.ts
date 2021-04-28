@@ -134,6 +134,12 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
       limit: secretCount,
     })
     expect(loadedSecrets).toHaveLength(secretCount - secretsToDelete.length)
+
+    const { secrets: loadedSecretsIncludeDeleted } = await adapter.loadSecrets({
+      limit: secretCount,
+      includeDeleted: true,
+    })
+    expect(loadedSecretsIncludeDeleted).toHaveLength(secretCount)
   })
 
   const additionalSecretCount = Math.floor(secretCount / 2)

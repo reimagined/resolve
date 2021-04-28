@@ -15,7 +15,7 @@ const injectSecret = async (
     ) VALUES(
       ${+idx},
       ${escape(id)},
-      ${escape(secret)}
+      ${secret != null ? escape(secret) : 'NULL'}
     )`
   )
 }

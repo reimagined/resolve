@@ -174,6 +174,7 @@ export type SecretFilter = {
   skip?: number
   limit: number
   ids?: Array<SecretRecord['id']> | null
+  includeDeleted?: boolean
 }
 
 export type SecretsWithIdx = {
@@ -184,7 +185,7 @@ export type SecretsWithIdx = {
 export type SecretRecord = {
   idx: number
   id: string
-  secret: string
+  secret: string | null
 }
 
 export type GatheredSecrets = {

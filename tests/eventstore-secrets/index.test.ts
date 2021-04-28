@@ -236,6 +236,16 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     expect(secrets).toHaveLength(countSecrets - 1)
   })
 
+  test('should return old number of secrets after the secret was deleted if includeDeleted flag is used', async () => {
+    const secrets = (
+      await adapter.loadSecrets({
+        limit: countSecrets + 1,
+        includeDeleted: true,
+      })
+    ).secrets
+    expect(secrets).toHaveLength(countSecrets)
+  })
+
   test('should throw when setting secret with id that belonged to previously deleted secret', async () => {
     const secretManager: SecretsManager = await adapter.getSecretsManager()
 
@@ -260,7 +270,7 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
 
     expect(deletedSecrets).toHaveLength(1)
     expect(deletedSecrets[0]).toEqual(makeIdFromIndex(secretToDeleteIndex))
-    expect(existingSecrets).toHaveLength(countSecrets - 1)
+    expect(existingSecrets).toHaveLength(countSecrets)
   })
 
   test('should gather no secrets if no corresponding events exist', async () => {
