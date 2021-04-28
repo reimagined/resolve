@@ -141,13 +141,15 @@ Use the `.saga` function to add a saga to a test case. Use the following API to 
 
 ### Chainable Functions
 
-| Function                      | Description                                                          |
-| ----------------------------- | -------------------------------------------------------------------- |
-| `allowSideEffects()`          | Specifies that saga side effects are allowed.                        |
-| `startSideEffectsFrom(date)`  | Specifies the date time from which to start to execute side effects. |
-| `withAdapter(adapter)`        | Specifies a read model adapter to use.                               |
-| `withEncryption(encryption)`  | Specifies an encryption factory function to use.                     |
-| `withSecretsManager(manager)` | Assigns a secrets manager to the aggregate                           |
+| Function                                                           | Description                                                          |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| `allowSideEffects()`                                               | Specifies that saga side effects are allowed.                        |
+| `startSideEffectsFrom(date)`                                       | Specifies the date time from which to start to execute side effects. |
+| `withAdapter(adapter)`                                             | Specifies a read model adapter to use.                               |
+| `withEncryption(encryption)`                                       | Specifies an encryption factory function to use.                     |
+| `withSecretsManager(manager)`                                      | Assigns a secrets manager to the aggregate                           |
+| `mockCommandImplementation(aggregateName, type, implementation)`   | Specifies a mock function to be called with the saga's commands.     |
+| `mockQueryImplementation(modelName, resolverName, implementation)` | Specifies a mock function to be called with the saga's queries.      |
 
 ### Assertions
 
