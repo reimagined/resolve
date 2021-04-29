@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/client",
-  "version": "0.29.0",
+  "version": "0.30.0",
   "description": "Basic reSolve client.",
   "keywords": [
     "cqrs",
@@ -19,7 +19,7 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/client",
     "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'",
     "test": "jest --config=../../../jest.config.js --verbose",
     "test:e2e": "jest --config=./jest.func-config.js --verbose",
@@ -39,7 +39,7 @@
     "verbose": true
   },
   "dependencies": {
-    "@resolve-js/core": "0.29.0",
+    "@resolve-js/core": "0.30.0",
     "global": "^4.4.0",
     "isomorphic-fetch": "3.0.0",
     "node-fetch": "^2.6.0",

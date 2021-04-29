@@ -55,6 +55,7 @@ description: Full stack CQRS, DDD, Event Sourcing framework for Node.js
   - [Adapters](advanced-techniques.md#adapters)
   - [Custom Read Models](advanced-techniques.md#custom-read-models)
   - [Modules](advanced-techniques.md#modules)
+  - [Encryption](advanced-techniques.md#encryption)
 
 - [Authentication and Authorization](authentication-and-authorization.md)
 

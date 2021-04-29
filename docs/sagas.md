@@ -133,10 +133,7 @@ Init: async ({ store }) => {
 An event handler function runs for each occurrence of a specific event. It has the following general structure:
 
 ```js
-EVENT_NAME: async (
-  { executeCommand, scheduleCommand, store, sideEffects },
-  event
-) => {
+EVENT_NAME: async ({ store, sideEffects }, event) => {
   // Event handler logic
 }
 ```

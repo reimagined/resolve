@@ -4,11 +4,7 @@ title: API Handlers
 description: Use API Handlers to provide your reSolve server with the capability to handle arbitrary HTTP requests.
 ---
 
-Use API Handlers to provide your reSolve server with the capability to handle arbitrary HTTP requests.
-
-## API Reference
-
-ReSolve API handlers have the following general structure:
+Use API Handlers to provide your reSolve server with the capability to handle arbitrary HTTP requests. ReSolve API handlers have the following general structure:
 
 ##### common/api-handlers/my-api-handler.js:
 
@@ -20,7 +16,7 @@ export default async (req, res) => {
 
 The handler function takes two parameters - the [request](#request) and [response](#response).
 
-### Request
+## Request
 
 The `req` object represents the HTTP request. This object exposes properties that provide access to the request query string, parameters, body, HTTP headers, etc.
 
@@ -33,12 +29,26 @@ The request provides the following interface:
   path: String,
   body: String,
   cookies: Object<key, value>,cd
-  headers: Object<key, value>,
-  query: Object<key, value>
+  <key, value>,
+  query: Object<key, value>,
+  resolve: Object<key, value>
 }
 ```
 
-### Response
+The request's `resolve` field is a reSolve context object that provides access to reSolve API and metadata. Through this object, you can use reSolve-specific API:
+
+```js
+const getPersonalKey = async (req, res) => {
+    await req.resolve.executeCommand({
+      ...
+    });
+    res.end();
+  }
+```
+
+> **Note:** The `resolve` object contains resources, such as database connections, that are disposed after the API handler completes to prevent leaks. For this reason, you should not use the `resolve` object in code with delayed execution that may run after the API handler completes.
+
+## Response
 
 The `res` object represents the server's response to the HTTP request.
 
@@ -59,7 +69,7 @@ The response object provides the following interface:
 }
 ```
 
-### Configuration
+## Configuration
 
 An API handler should be registered in the `apiHandlers` section of the application's configuration file.
 
@@ -91,7 +101,7 @@ Refer to the [Application Configuration](application-configuration) topic for mo
 
 ## Implementation Examples
 
-- Send Text
+##### Send Text
 
 ```js
 export default async (req, res) => {
@@ -101,7 +111,7 @@ export default async (req, res) => {
 }
 ```
 
-- Send JSON
+##### Send JSON
 
 ```js
 export default async (req, res) => {
@@ -114,7 +124,7 @@ export default async (req, res) => {
 }
 ```
 
-- Send File
+##### Send File
 
 ```js
 export default async (req, res) => {
@@ -126,7 +136,7 @@ export default async (req, res) => {
 }
 ```
 
-- Set Cookies
+##### Set Cookies
 
 ```js
 export default async (req, res) => {
@@ -136,7 +146,7 @@ export default async (req, res) => {
 }
 ```
 
-- Redirect
+##### Redirect
 
 ```js
 export default async (req, res) => {
@@ -144,7 +154,7 @@ export default async (req, res) => {
 }
 ```
 
-- Custom status
+##### Custom status
 
 ```js
 export default async (req, res) => {

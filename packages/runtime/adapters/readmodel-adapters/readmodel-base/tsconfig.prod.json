@@ -1,4 +1,13 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["test"]
+  "exclude": ["test"],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "composite": true
+  },
+  "references": [
+    {
+      "path": "../../eventstore-adapters/eventstore-base/tsconfig.prod.json"
+    }
+  ]
 }
