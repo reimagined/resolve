@@ -6,7 +6,7 @@ export const prepareEvents = (
     aggregateId: string
   }
 ): any => {
-  let timestamp = 1
+  let timestamp = Date.now() + 60 * 1000
   const aggregateVersionsMap = new Map()
 
   return events.map((testEvent) => {
