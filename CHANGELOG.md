@@ -7,6 +7,7 @@
 **Documentation:**
 
 - Revise API Handler Documentation [\#1832](https://github.com/reimagined/resolve/pull/1832)
+- Update Testing [\#1831](https://github.com/reimagined/resolve/pull/1831)
 
 ## [V0.30.0](https://github.com/reimagined/resolve/tree/V0.30.0) (2021-04-28)
 
