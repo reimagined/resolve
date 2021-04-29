@@ -11,7 +11,7 @@ const devConfig = {
       snapshotBucketSize: 100,
     },
   },
-  readModels: [
+  /*readModels: [
     {
       name: 'Replicator',
       projection: 'common/read-models/empty.js',
@@ -27,7 +27,7 @@ const devConfig = {
         targetApplicationUrl: 'http://localhost:3001',
       },
     },
-  },
+  },*/
 }
 
 export default devConfig

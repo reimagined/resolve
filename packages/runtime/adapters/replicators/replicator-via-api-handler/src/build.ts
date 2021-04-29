@@ -15,15 +15,15 @@ const build: ExternalMethods['build'] = async (
   eventstoreAdapter,
   getVacantTimeInMillis
 ) => {
-  console.log('Start build')
+  //console.log('Start build')
 
   const state = await basePool.getReplicationState(basePool)
   if (state.status === 'error') {
-    console.error('Refuse to start or continue replication with error state')
+    //console.error('Refuse to start or continue replication with error state')
     return
   }
   if (state.paused) {
-    console.log('Refuse to start or continue replication because it is paused')
+    //console.log('Refuse to start or continue replication because it is paused')
     return
   }
 
@@ -58,7 +58,7 @@ const build: ExternalMethods['build'] = async (
       const errorMessage =
         "Refuse to start or continue replication since it's already in progress"
       lastError = { name: 'Error', message: errorMessage }
-      console.error(errorMessage)
+      //console.error(errorMessage)
     } else if (result.type === 'launched') {
       await sleep(50)
       while (true) {
@@ -91,7 +91,7 @@ const build: ExternalMethods['build'] = async (
                 : 'Unknown error',
           }
 
-          console.error(state.statusData)
+          //console.error(state.statusData)
           break
         }
       }
@@ -99,7 +99,7 @@ const build: ExternalMethods['build'] = async (
       const errorMessage = `Unhandled replicate result. HTTP status code: ${result.httpStatus}`
       lastError = { name: 'Error', message: errorMessage }
 
-      console.error(errorMessage)
+      //console.error(errorMessage)
     }
 
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
@@ -109,18 +109,18 @@ const build: ExternalMethods['build'] = async (
     }
 
     if (isBuildSuccess && wasPaused) {
-      console.log('Pausing replication as requested')
+      //console.log('Pausing replication as requested')
       break
     }
 
     if (isBuildSuccess && localContinue) {
-      console.log('Enough time to continue in the local loop')
+      //console.log('Enough time to continue in the local loop')
     } else {
       if (isBuildSuccess) {
-        console.log('Calling next')
+        //console.log('Calling next')
         await next()
       }
-      console.log('Exiting local loop')
+      //console.log('Exiting local loop')
       break
     }
   }
