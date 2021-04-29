@@ -85,19 +85,13 @@ const appConfig = {
       projection: 'common/view-models/story_details.projection.js',
       serializeState: 'common/view-models/story_details.serialize_state.js',
       deserializeState: 'common/view-models/story_details.deserialize_state.js',
-      snapshotAdapter: {
-        module: 'common/view-models/snapshot_adapter.module.js',
-        options: {
-          databaseFile: 'snapshot.db',
-        }
-      },
       resolver: 'common/view-models/story-details.validator.js'
     }
   ]
 }
 ```
 
-In the configuration object, specify the View Model's name and the path to the file containing projection definition. You can also specify the View Model snapshot storage adapter. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions. Specify the **resolver** option to add a [View Model resolver](#view-model-resolver) to the View Model.
+In the configuration object, specify the View Model's name and the path to the file containing projection definition. Use the **serializeState** and **deserializeState** options to specify paths to a View Model's serializer and deserializer functions. Specify the **resolver** option to add a [View Model resolver](#view-model-resolver) to the View Model.
 
 ## Initialize a Read Model
 
@@ -238,6 +232,7 @@ The resolver function should return a built View Model data object and a meta ob
 The code sample below demonstrates a View Model resolver implementation:
 
 ```js
+// common/view-models/story-details.validator.js
 import jwt from 'jsonwebtoken'
 import jwtSecret from '../../auth/jwt-secret'
 
@@ -260,6 +255,24 @@ export default async (resolve, query, { jwt: token, viewModel }) => {
   }
 }
 ```
+
+Use a View Model's `resolver` configuration option to register a resolver:
+
+```js
+// config.app.js
+const appConfig = {
+  ...
+  viewModels: [
+    {
+      name: 'storyDetails',
+      ...
+      resolver: 'common/view-models/story-details.validator.js'
+    }
+  ]
+}
+```
+
+See the [Configuring View Models](#configuring-view-models) section for more information.
 
 ## Performing Queries Using HTTP API
 

@@ -16,7 +16,7 @@ const configs = getCompileConfigs()
 
 for (const { location, name } of configs) {
   const directory = path.resolve(getResolveDir(), location)
-  const rollback = patchPackageJson()
+  const rollback = patchPackageJson(directory)
 
   execSync(
     `yarn pack --filename="${path.join(

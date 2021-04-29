@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
-import { putDurationMetrics } from '../src/cloud/metrics'
+import { putDurationMetrics } from '../../src/cloud/metrics'
+
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
 
 const lambdaContext = {
@@ -8,15 +9,27 @@ const lambdaContext = {
 
 const consoleInfoOldHandler = console.info
 
+let originalEnv
+
+beforeAll(() => {
+  originalEnv = process.env
+  process.env = {
+    ...originalEnv,
+    RESOLVE_DEPLOYMENT_ID: 'deployment-id',
+  }
+})
+
+afterAll(() => {
+  process.env = originalEnv
+})
+
 describe('put duration metrics', () => {
   beforeAll(async () => {
     console.info = jest.fn()
-    process.env.RESOLVE_DEPLOYMENT_ID = 'deployment-id'
   })
 
   afterAll(async () => {
     console.info = consoleInfoOldHandler
-    delete process.env.RESOLVE_DEPLOYMENT_ID
   })
 
   beforeEach(async () => {
