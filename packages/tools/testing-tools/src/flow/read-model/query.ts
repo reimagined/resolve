@@ -8,7 +8,7 @@ import {
   TestQuery,
 } from '../../types'
 import { as } from './as'
-import {  withSecretsManager } from './with-secrets-manager'
+import { withSecretsManager } from './with-secrets-manager'
 import { makeTestEnvironment } from './make-test-environment'
 import { shouldReturn } from './should-return'
 import { not } from './not'

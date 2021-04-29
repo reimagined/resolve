@@ -5,7 +5,6 @@ import { request, RequestOptions, VALIDATED_RESULT } from '../../src/request'
 import { Context } from '../../src/context'
 import determineOrigin from '../../src/determine-origin'
 import { getRootBasedUrl } from '../../src/utils'
-import { GenericError, HttpError } from '../../src/errors'
 import {
   requestWithMiddleware,
   ClientMiddlewareOptions,

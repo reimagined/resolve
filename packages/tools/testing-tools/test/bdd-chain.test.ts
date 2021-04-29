@@ -109,11 +109,6 @@ describe('read model', () => {
     },
   }
 
-  const makeEncryptionFactory = (): EventHandlerEncryptionFactory => async () => ({
-    decrypt: jest.fn(),
-    encrypt: jest.fn(),
-  })
-
   test('incomplete test: should provide a query', async () => {
     expect.assertions(1)
     try {
