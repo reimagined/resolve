@@ -8,6 +8,7 @@ const PostgresErrors = Object.freeze({
   // https://www.postgresql.org/docs/10/errcodes-appendix.html
   DIVISION_BY_ZERO: '22012',
   CARDINALITY_VIOLATION: '21000',
+  SERIALIZATION_FAILURE: '40001',
   IN_FAILED_SQL_TRANSACTION: '25P02',
   LOCK_NOT_AVAILABLE: '55P03',
   DEADLOCK_DETECTED: '40P01',
@@ -32,6 +33,7 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
         error != null &&
         error.code != null &&
         (`${error.code}` === PostgresErrors.IN_FAILED_SQL_TRANSACTION ||
+          `${error.code}` === PostgresErrors.SERIALIZATION_FAILURE ||
           `${error.code}` === PostgresErrors.LOCK_NOT_AVAILABLE ||
           `${error.code}` === PostgresErrors.DEADLOCK_DETECTED ||
           (!!includeRuntimeErrors &&

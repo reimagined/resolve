@@ -1,6 +1,5 @@
 import type {
   ObjectFixedIntersectionToObject,
-  ObjectFunctionLikeKeys,
   CommonAdapterPool,
   CommonAdapterOptions,
   AdapterOperations,
@@ -8,14 +7,14 @@ import type {
   AdapterImplementation,
   StoreApi,
   PerformanceTracerLike,
+  SplitNestedPathMethod,
   JsonMap,
   SearchCondition,
   UpdateCondition,
   ObjectFixedKeys,
   OmitObject,
   JsonPrimitive,
-  FunctionLike,
-  UnPromise,
+  IfEquals,
 } from '@resolve-js/readmodel-base'
 
 import type RDSDataService from 'aws-sdk/clients/rdsdataservice'
@@ -36,6 +35,47 @@ export type InlineLedgerExecuteStatementMethod = ((
   SHARED_TRANSACTION_ID: symbol
 }
 
+export type InlineLedgerExecuteTransactionMethodNames =
+  | 'begin'
+  | 'commit'
+  | 'rollback'
+export type InlineLedgerExecuteTransactionMethodParameters<
+  MethodName extends InlineLedgerExecuteTransactionMethodNames
+> = [
+  pool: AdapterPool,
+  method: MethodName,
+  ...args: IfEquals<
+    MethodName,
+    'begin',
+    [],
+    IfEquals<
+      MethodName,
+      'commit',
+      [transactionId: string],
+      IfEquals<MethodName, 'rollback', [transactionId: string], never>
+    >
+  >
+]
+export type InlineLedgerExecuteTransactionMethodReturnType<
+  MethodName extends InlineLedgerExecuteTransactionMethodNames
+> = IfEquals<
+  MethodName,
+  'begin',
+  string,
+  IfEquals<
+    MethodName,
+    'commit',
+    null | undefined,
+    IfEquals<MethodName, 'rollback', null | undefined, never>
+  >
+>
+
+export type InlineLedgerExecuteTransactionMethod = <
+  MethodName extends InlineLedgerExecuteTransactionMethodNames
+>(
+  ...args: InlineLedgerExecuteTransactionMethodParameters<MethodName>
+) => Promise<InlineLedgerExecuteTransactionMethodReturnType<MethodName>>
+
 export type FullJitterMethod = (retries: number) => Promise<void>
 export type MakeNestedPathMethod = (nestedPath: Array<string>) => string
 export type EscapeableMethod = (str: string) => string
@@ -47,7 +87,8 @@ export type InlineLedgerForceStopMethod = (
 
 export type BuildUpsertDocumentMethod = (
   searchExpression: Parameters<StoreApi<CommonAdapterPool>['update']>[3],
-  updateExpression: Parameters<StoreApi<CommonAdapterPool>['update']>[4]
+  updateExpression: Parameters<StoreApi<CommonAdapterPool>['update']>[4],
+  splitNestedPath: SplitNestedPathMethod
 ) => JsonMap
 
 export type RowLike = JsonMap
@@ -62,108 +103,59 @@ export type SearchToWhereExpressionMethod = (
   expression: SearchCondition,
   escapeId: EscapeableMethod,
   escapeStr: EscapeableMethod,
-  makeNestedPath: MakeNestedPathMethod
+  makeNestedPath: MakeNestedPathMethod,
+  splitNestedPath: SplitNestedPathMethod
 ) => string
 
 export type UpdateToSetExpressionMethod = (
   expression: UpdateCondition,
   escapeId: EscapeableMethod,
   escapeStr: EscapeableMethod,
-  makeNestedPath: MakeNestedPathMethod
+  makeNestedPath: MakeNestedPathMethod,
+  splitNestedPath: SplitNestedPathMethod
 ) => string
 
 export interface PassthroughErrorInstance extends Error {
   name: string
   lastTransactionId: string | null | undefined
+  isRetryable: boolean
+  isEmptyTransaction: boolean
+}
+
+export type PassthroughErrorLike = Error & {
+  code: string | number
+  stack: string
 }
 
 export type PassthroughErrorFactory = {
-  new (lastTransactionId: string | null | undefined): PassthroughErrorInstance
+  new (
+    lastTransactionId: string | null | undefined,
+    isRetryable: boolean,
+    isEmptyTransaction: boolean
+  ): PassthroughErrorInstance
 } & {
+  isShortCircuitPassthroughError: (error: PassthroughErrorLike) => boolean
+  isRetryablePassthroughError: (error: PassthroughErrorLike) => boolean
+  isRegularFatalPassthroughError: (error: PassthroughErrorLike) => boolean
+  isRuntimeFatalPassthroughError: (error: PassthroughErrorLike) => boolean
   isPassthroughError: (
-    error: Error & { code: string | number; stack: string },
+    error: PassthroughErrorLike,
     includeRuntimeErrors: boolean
   ) => boolean
+  isEmptyTransactionError: (error: PassthroughErrorLike) => boolean
+  maybeThrowPassthroughError: (
+    error: PassthroughErrorLike,
+    transactionId: string | null,
+    includeRuntimeErrors: boolean
+  ) => void
 }
 
-export type IsRdsServiceErrorMethod = (
-  error: Error & { code: string | number; stack: string }
-) => boolean
 export type GenerateGuidMethod = (...args: any) => string
 
 export type DropReadModelMethod = (
   pool: AdapterPool,
   readModelName: string
 ) => Promise<void>
-
-export type HighloadMethodParameters<
-  KS extends ObjectFunctionLikeKeys<
-    InstanceType<LibDependencies['RDSDataService']>
-  >,
-  T extends { [K in KS]: FunctionLike }
-> = T[KS] extends {
-  //eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (params: infer Params, callback: infer Callback): infer Result
-  //eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (callback: infer _Callback): infer _Result
-}
-  ? Params
-  : never
-
-export type HighloadMethodReturnType<
-  KS extends ObjectFunctionLikeKeys<
-    InstanceType<LibDependencies['RDSDataService']>
-  >,
-  T extends { [K in KS]: FunctionLike }
-> = Promise<
-  T[KS] extends {
-    //eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (params: infer Params, callback: infer Callback): infer Result
-    //eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (callback: infer _Callback): infer _Result
-  }
-    ? Result extends { promise: infer F }
-      ? F extends FunctionLike
-        ? UnPromise<ReturnType<F>>
-        : never
-      : never
-    : never
->
-
-export type WrapHighloadMethod = <
-  KS extends ObjectFunctionLikeKeys<
-    InstanceType<LibDependencies['RDSDataService']>
-  >,
-  T extends { [K in KS]: FunctionLike }
->(
-  isHighloadError: IsRdsServiceErrorMethod,
-  obj: T,
-  method: KS,
-  params: HighloadMethodParameters<KS, T>
-) => HighloadMethodReturnType<KS, T>
-
-export type HighloadRdsMethod<
-  KS extends ObjectFunctionLikeKeys<
-    InstanceType<LibDependencies['RDSDataService']>
-  >
-> = (
-  ...args: [
-    HighloadMethodParameters<
-      KS,
-      InstanceType<LibDependencies['RDSDataService']>
-    >
-  ]
-) => HighloadMethodReturnType<
-  KS,
-  InstanceType<LibDependencies['RDSDataService']>
->
-
-export type HighloadRdsDataService = {
-  executeStatement: HighloadRdsMethod<'executeStatement'>
-  beginTransaction: HighloadRdsMethod<'beginTransaction'>
-  commitTransaction: HighloadRdsMethod<'commitTransaction'>
-  rollbackTransaction: HighloadRdsMethod<'rollbackTransaction'>
-}
 
 export type AdapterOptions = CommonAdapterOptions & {
   dbClusterOrInstanceArn: RDSDataService.Arn
@@ -175,11 +167,10 @@ export type AdapterOptions = CommonAdapterOptions & {
 export type MaybeInitMethod = (pool: AdapterPool) => Promise<void>
 
 export type InternalMethods = {
+  inlineLedgerExecuteTransaction: InlineLedgerExecuteTransactionMethod
   inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod
   inlineLedgerForceStop: InlineLedgerForceStopMethod
   buildUpsertDocument: BuildUpsertDocumentMethod
-  isHighloadError: IsRdsServiceErrorMethod
-  isTimeoutError: IsRdsServiceErrorMethod
   convertResultRow: ConvertResultRowMethod
   searchToWhereExpression: SearchToWhereExpressionMethod
   updateToSetExpression: UpdateToSetExpressionMethod
@@ -224,7 +215,7 @@ export type AdapterPool = CommonAdapterPool & {
   hash512: (str: string) => string
   performanceTracer: PerformanceTracerLike
   makeNestedPath: MakeNestedPathMethod
-  rdsDataService: HighloadRdsDataService
+  rdsDataService: InstanceType<LibDependencies['RDSDataService']>
   dbClusterOrInstanceArn: RDSDataService.Arn
   awsSecretStoreArn: RDSDataService.Arn
   schemaName: RDSDataService.DbName
@@ -292,6 +283,5 @@ export type AdminPool = {
   escapeStr: EscapeableMethod
   escapeId: EscapeableMethod
   createResource: BoundResourceMethod
-  disposeResource: BoundResourceMethod
   destroyResource: BoundResourceMethod
 }

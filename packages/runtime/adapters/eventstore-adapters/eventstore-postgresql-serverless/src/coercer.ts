@@ -4,8 +4,9 @@ const coercer = ({
   bigIntValue,
   longValue,
   booleanValue,
+  isNull,
   ...rest
-}: any): number | string | boolean => {
+}: any): number | string | boolean | null => {
   if (intValue != null) {
     return Number(intValue)
   } else if (bigIntValue != null) {
@@ -16,6 +17,8 @@ const coercer = ({
     return String(stringValue)
   } else if (booleanValue != null) {
     return Boolean(booleanValue)
+  } else if (isNull != null && isNull === true) {
+    return null
   } else {
     throw new Error(`Unknown type ${JSON.stringify(rest)}`)
   }

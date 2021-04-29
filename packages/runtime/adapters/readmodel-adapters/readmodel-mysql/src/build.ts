@@ -61,8 +61,13 @@ const buildInit: (
   try {
     const handler = await modelInterop.acquireInitHandler(store)
     if (handler != null) {
-      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await handler()
+      try {
+        basePool.distinctMode = true
+        //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        await handler()
+      } finally {
+        basePool.distinctMode = false
+      }
     }
 
     await inlineLedgerRunQuery(

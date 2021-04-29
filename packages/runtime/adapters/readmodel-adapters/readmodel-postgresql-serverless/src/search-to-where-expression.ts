@@ -35,7 +35,8 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
   expression,
   escapeId,
   escapeStr,
-  makeNestedPath
+  makeNestedPath,
+  splitNestedPath
 ) => {
   const searchExprArray: Array<string> = []
   const isDocumentExpr = !(
@@ -46,7 +47,7 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
 
   if (isDocumentExpr) {
     for (let fieldName of Object.keys(expression)) {
-      const [baseName, ...nestedPath] = fieldName.split('.')
+      const [baseName, ...nestedPath] = splitNestedPath(fieldName)
       const resultFieldName =
         nestedPath.length > 0
           ? `${escapeId(baseName)} #> '${makeNestedPath(nestedPath)}'`
@@ -72,6 +73,14 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
           ? `CAST(${escapeStr(JSON.stringify(fieldValue))} AS JSONB)`
           : `CAST(${escapeStr('null')} AS JSONB)`
 
+      if (compareOperators[fieldOperator] == null) {
+        throw new Error(
+          `Malformed JSON ${JSON.stringify(
+            fieldOperator
+          )}, must be JSON primitive value`
+        )
+      }
+
       const resultExpression = compareOperators[fieldOperator](
         resultFieldName,
         compareInlinedValue
@@ -94,7 +103,8 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
           innerExpr,
           escapeId,
           escapeStr,
-          makeNestedPath
+          makeNestedPath,
+          splitNestedPath
         )
         localSearchExprArray.push(whereExpr)
       }
@@ -118,7 +128,8 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
         >)[operatorName],
         escapeId,
         escapeStr,
-        makeNestedPath
+        makeNestedPath,
+        splitNestedPath
       )
 
       searchExprArray.push(`NOT (${whereExpr})`)
