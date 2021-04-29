@@ -41,11 +41,9 @@ import injectSecret from './inject-secret'
 import loadSecrets from './load-secrets'
 
 import _createResource from './resource/create'
-import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
 
 import type {
-  CloudResource,
   CloudResourcePool,
   CloudResourceOptions,
   ConnectionDependencies,
@@ -117,22 +115,13 @@ const cloudPool: CloudResourcePool = {
 }
 
 const createResource = _createResource.bind(null, cloudPool)
-const disposeResource = _disposeResource.bind(
-  null,
-  cloudPool as CloudResourcePool & CloudResource
-)
 const destroyResource = _destroyResource.bind(null, cloudPool)
 
 Object.assign(cloudPool, {
   createResource,
-  disposeResource,
   destroyResource,
 })
 
-export {
-  createResource as create,
-  disposeResource as dispose,
-  destroyResource as destroy,
-}
+export { createResource as create, destroyResource as destroy }
 
 export type { PostgresqlAdapterConfig, CloudResourcePool, CloudResourceOptions }

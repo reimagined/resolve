@@ -33,7 +33,11 @@ const update: CurrentStoreApi['update'] = async (
     )
 
     if (foundDocumentsCount === 0) {
-      const document = buildUpsertDocument(searchExpression, updateExpression)
+      const document = buildUpsertDocument(
+        searchExpression,
+        updateExpression,
+        pool.splitNestedPath
+      )
       await insert(pool, readModelName, tableName, document)
       return
     }
@@ -43,14 +47,20 @@ const update: CurrentStoreApi['update'] = async (
     searchExpression,
     escapeId,
     escapeStr,
-    makeNestedPath
+    makeNestedPath,
+    pool.splitNestedPath
   )
   const updateExpr = updateToSetExpression(
     updateExpression,
     escapeId,
     escapeStr,
-    makeNestedPath
+    makeNestedPath,
+    pool.splitNestedPath
   )
+
+  if (updateExpr.trim() === '') {
+    return
+  }
 
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
