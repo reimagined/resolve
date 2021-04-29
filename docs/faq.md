@@ -1,6 +1,7 @@
 ---
 id: faq
 title: FAQ
+description: This article provides answers to frequently asked questions about the reSolve framework.
 ---
 
 **Q**: Where can I find information about CQRS and Event Sourcing?<br/>
