@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.0...HEAD)
+
+**Documentation:**
+
+- Revise API Handler Documentation [\#1832](https://github.com/reimagined/resolve/pull/1832)
+
 ## [V0.30.0](https://github.com/reimagined/resolve/tree/V0.30.0) (2021-04-28)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.29.0...V0.30.0)
