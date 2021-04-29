@@ -13,6 +13,7 @@ import {
 import resolveModuleComments from '@resolve-js/module-comments'
 import resolveModuleAuth from '@resolve-js/module-auth'
 import resolveModuleAdmin from '@resolve-js/module-admin'
+import resolveModuleReplication from '@resolve-js/module-replication'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -59,6 +60,8 @@ void (async () => {
       },
     ])
 
+    const moduleReplication = resolveModuleReplication({})
+
     const baseConfig = merge(
       defaultResolveConfig,
       appConfig,
@@ -76,7 +79,12 @@ void (async () => {
 
       case 'dev:replica': {
         const moduleAdmin = resolveModuleAdmin()
-        const resolveConfig = merge(baseConfig, devReplicaConfig, moduleAdmin)
+        const resolveConfig = merge(
+          baseConfig,
+          devReplicaConfig,
+          moduleReplication,
+          moduleAdmin
+        )
         await watch(resolveConfig)
         break
       }
@@ -94,7 +102,11 @@ void (async () => {
       }
 
       case 'cloud:replica': {
-        const resolveConfig = merge(baseConfig, cloudReplicaConfig)
+        const resolveConfig = merge(
+          baseConfig,
+          cloudReplicaConfig,
+          moduleReplication
+        )
         await build(resolveConfig)
         break
       }
