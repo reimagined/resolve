@@ -9,6 +9,10 @@
 - Revise API Handler Documentation [\#1832](https://github.com/reimagined/resolve/pull/1832)
 - Update Testing [\#1831](https://github.com/reimagined/resolve/pull/1831)
 
+**Other changes:**
+
+- Eventstore replicator implemented as a read-model [\#1843](https://github.com/reimagined/resolve/pull/1843)
+
 ## [V0.30.0](https://github.com/reimagined/resolve/tree/V0.30.0) (2021-04-28)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.29.0...V0.30.0)
