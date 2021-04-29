@@ -154,6 +154,7 @@ export type EventstoreAdapterLike = {
   getNextCursor: EventStoreAdapter['getNextCursor']
   getSecretsManager: EventStoreAdapter['getSecretsManager']
   loadSecrets?: EventStoreAdapter['loadSecrets']
+  gatherSecretsFromEvents: EventStoreAdapter['gatherSecretsFromEvents']
 }
 
 export type SplitNestedPathMethod = (input: string) => Array<string>
