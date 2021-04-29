@@ -3,6 +3,9 @@ import createReadModelConnector, {
   CommonAdapterPool,
   CommonAdapterOptions,
 } from '../src'
+import makeSplitNestedPath from '../src/make-split-nested-path'
+
+jest.mock('../src/make-split-nested-path', () => jest.fn())
 
 test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
   const implementation: AdapterImplementation<
@@ -28,7 +31,9 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
     delete: jest.fn().mockImplementation(async () => void 0),
   }
 
-  const adapterPool = { performanceTracer: undefined }
+  const adapterPool = {
+    splitNestedPath: makeSplitNestedPath({} as any),
+  }
   const eventstoreAdapter = {
     loadEvents: jest.fn().mockResolvedValue({ cursor: 'CURSOR', events: [] }),
     getNextCursor: jest.fn().mockReturnValue('CURSOR'),

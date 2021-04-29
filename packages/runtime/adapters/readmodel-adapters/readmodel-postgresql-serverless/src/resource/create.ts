@@ -23,14 +23,6 @@ const create: UnboundResourceMethod = async (pool, options) => {
       `CREATE SCHEMA ${escapeId(options.databaseName)}`,
 
       `CREATE TABLE ${escapeId(options.databaseName)}.${escapeId(
-        `__${options.databaseName}__XA__`
-      )}(
-        "xa_key" VARCHAR(190),
-        "timestamp" BIGINT,
-        PRIMARY KEY("xa_key")
-      )`,
-
-      `CREATE TABLE ${escapeId(options.databaseName)}.${escapeId(
         `__${options.databaseName}__LEDGER__`
       )}(
         "EventSubscriber" VARCHAR(190) NOT NULL,

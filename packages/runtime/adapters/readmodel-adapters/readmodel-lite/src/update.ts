@@ -16,6 +16,7 @@ const update: CurrentStoreApi['update'] = async (
     searchToWhereExpression,
     updateToSetExpression,
     makeNestedPath,
+    splitNestedPath,
     buildUpsertDocument,
     insert,
     count,
@@ -31,7 +32,11 @@ const update: CurrentStoreApi['update'] = async (
     )
 
     if (foundDocumentsCount === 0) {
-      const document = buildUpsertDocument(searchExpression, updateExpression)
+      const document = buildUpsertDocument(
+        searchExpression,
+        updateExpression,
+        splitNestedPath
+      )
       await insert(pool, readModelName, tableName, document)
       return
     }
@@ -41,23 +46,27 @@ const update: CurrentStoreApi['update'] = async (
     searchExpression,
     escapeId,
     escapeStr,
-    makeNestedPath
+    makeNestedPath,
+    splitNestedPath
   )
   const updateExprArray = updateToSetExpression(
     updateExpression,
     escapeId,
     escapeStr,
-    makeNestedPath
+    makeNestedPath,
+    splitNestedPath
   )
 
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   for (const updateExpr of updateExprArray) {
-    await inlineLedgerRunQuery(
-      `UPDATE ${escapeId(`${tablePrefix}${tableName}`)}
-      SET ${updateExpr} ${inlineSearchExpr}`
-    )
+    if (updateExpr.trim() !== '') {
+      await inlineLedgerRunQuery(
+        `UPDATE ${escapeId(`${tablePrefix}${tableName}`)}
+        SET ${updateExpr} ${inlineSearchExpr}`
+      )
+    }
   }
 }
 

@@ -67,7 +67,30 @@ describe('Saga', () => {
         { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} },
       ]).saga(sagaWithAdapter)
 
-      expect(result).toMatchSnapshot()
+      expect(result.commands).toEqual([
+        {
+          aggregateId: 'userId',
+          aggregateName: 'User',
+          payload: {
+            mail: 'user@example.com',
+          },
+          type: 'requestConfirmUser',
+        },
+      ])
+      expect(result.scheduledCommands).toEqual([
+        {
+          command: {
+            aggregateId: 'userId',
+            aggregateName: 'User',
+            payload: {},
+            type: 'forgetUser',
+          },
+          date: expect.any(Number),
+        },
+      ])
+      expect(result.sideEffects).toEqual([
+        ['sendEmail', 'user@example.com', 'Confirm mail'],
+      ])
     })
 
     test('forgotten registration', async () => {
@@ -85,7 +108,30 @@ describe('Saga', () => {
         { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} },
       ]).saga(sagaWithAdapter)
 
-      expect(result).toMatchSnapshot()
+      expect(result.commands).toEqual([
+        {
+          aggregateId: 'userId',
+          aggregateName: 'User',
+          payload: {
+            mail: 'user@example.com',
+          },
+          type: 'requestConfirmUser',
+        },
+      ])
+      expect(result.scheduledCommands).toEqual([
+        {
+          command: {
+            aggregateId: 'userId',
+            aggregateName: 'User',
+            payload: {},
+            type: 'forgetUser',
+          },
+          date: expect.any(Number),
+        },
+      ])
+      expect(result.sideEffects).toEqual([
+        ['sendEmail', 'user@example.com', 'Confirm mail'],
+      ])
     })
   })
 
@@ -123,7 +169,9 @@ describe('Saga', () => {
         .saga(sagaWithAdapter)
         .startSideEffectsFrom(Number.MAX_VALUE)
 
-      expect(result).toMatchSnapshot()
+      expect(result.commands).toEqual([])
+      expect(result.scheduledCommands).toEqual([])
+      expect(result.sideEffects).toEqual([])
     })
     // mdis-stop saga-test
     test('forgotten registration', async () => {
@@ -143,7 +191,9 @@ describe('Saga', () => {
         .saga(sagaWithAdapter)
         .startSideEffectsFrom(Number.MAX_VALUE)
 
-      expect(result).toMatchSnapshot()
+      expect(result.commands).toEqual([])
+      expect(result.scheduledCommands).toEqual([])
+      expect(result.sideEffects).toEqual([])
     })
   })
 })

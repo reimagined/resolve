@@ -1,71 +1,20 @@
 import { Eventstore } from '@resolve-js/core'
+import createEventStoreLite from '@resolve-js/eventstore-lite'
 import { TestEvent } from '../types'
 import { prepareEvents } from './prepare-events'
 
-export const getEventStore = (
+export const getEventStore = async (
   events: TestEvent[],
   context?: { aggregateId: string }
-): Eventstore => {
-  const eventStoreLocalState = new Map<
-    string,
-    { destination: any; status: any }
-  >()
+): Promise<Eventstore> => {
+  const eventStoreAdapter: any = createEventStoreLite({
+    databaseFile: ':memory:',
+  })
 
-  return {
-    loadEvents: async () => ({
-      events: prepareEvents(events, context),
-      get cursor() {
-        throw new Error('Cursor access violation')
-      },
-    }),
-    ensureEventSubscriber: async ({
-      applicationName,
-      eventSubscriber,
-      destination,
-      status,
-    }: any) => {
-      eventStoreLocalState.set(`${applicationName}${eventSubscriber}`, {
-        ...(eventStoreLocalState.has(`${applicationName}${eventSubscriber}`)
-          ? (eventStoreLocalState.get(
-              `${applicationName}${eventSubscriber}`
-            ) as any)
-          : {}),
-        ...(destination != null ? { destination } : {}),
-        ...(status != null ? { status } : {}),
-      })
-    },
-    removeEventSubscriber: async ({
-      applicationName,
-      eventSubscriber,
-    }: any) => {
-      eventStoreLocalState.delete(`${applicationName}${eventSubscriber}`)
-    },
-    getEventSubscribers: async ({
-      applicationName,
-      eventSubscriber,
-    }: any = {}) => {
-      if (applicationName == null && eventSubscriber == null) {
-        return [...eventStoreLocalState.values()]
-      }
-      const result = []
-      for (const [
-        key,
-        { destination, status },
-      ] of eventStoreLocalState.entries()) {
-        if (`${applicationName}${eventSubscriber}` === key) {
-          result.push({
-            applicationName,
-            eventSubscriber,
-            destination,
-            status,
-          })
-        }
-      }
-      return result
-    },
-    getNextCursor: async () => 'SHIFT_CURSOR',
-    loadSnapshot: async () => null,
-    saveEvent: async () => void 0,
-    saveSnapshot: () => void 0,
+  await eventStoreAdapter.init()
+  for (const event of prepareEvents(events, context)) {
+    await eventStoreAdapter.saveEvent(event)
   }
+
+  return eventStoreAdapter
 }

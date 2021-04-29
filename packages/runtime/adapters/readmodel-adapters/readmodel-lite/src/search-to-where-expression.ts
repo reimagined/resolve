@@ -35,7 +35,8 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
   expression,
   escapeId,
   escapeStr,
-  makeNestedPath
+  makeNestedPath,
+  splitNestedPath
 ) => {
   const searchExprArray: Array<string> = []
   const isDocumentExpr = !(
@@ -46,13 +47,13 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
 
   if (isDocumentExpr) {
     for (let fieldName of Object.keys(expression)) {
-      const [baseName, ...nestedPath] = fieldName.split('.')
+      const [baseName, ...nestedPath] = splitNestedPath(fieldName)
       const resultFieldName =
         nestedPath.length > 0
-          ? `json_extract(${escapeId(baseName)}, '${makeNestedPath(
+          ? `json_remove(json_extract(${escapeId(baseName)}, '${makeNestedPath(
               nestedPath
-            )}')`
-          : escapeId(baseName)
+            )}', '${makeNestedPath(nestedPath)}'), '$[1]')`
+          : `json_remove(json_extract(${escapeId(baseName)}, '$', '$'), '$[1]')`
 
       let fieldValue = (expression as ObjectDictionaryKeys<typeof expression>)[
         fieldName
@@ -69,10 +70,17 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
         >)[fieldOperator]
       }
 
-      const compareInlinedValue =
-        fieldValue != null
-          ? `json(CAST(${escapeStr(JSON.stringify(fieldValue))} AS BLOB))`
-          : `json(CAST(${escapeStr('null')} AS BLOB))`
+      const compareInlinedValue = `json(CAST(${escapeStr(
+        JSON.stringify([fieldValue])
+      )} AS BLOB))`
+
+      if (compareOperators[fieldOperator] == null) {
+        throw new Error(
+          `Malformed JSON ${JSON.stringify(
+            fieldOperator
+          )}, must be JSON primitive value`
+        )
+      }
 
       const resultExpression = compareOperators[fieldOperator](
         resultFieldName,
@@ -96,7 +104,8 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
           innerExpr,
           escapeId,
           escapeStr,
-          makeNestedPath
+          makeNestedPath,
+          splitNestedPath
         )
         localSearchExprArray.push(whereExpr)
       }
@@ -120,7 +129,8 @@ const searchToWhereExpression: SearchToWhereExpressionMethod = (
         >)[operatorName],
         escapeId,
         escapeStr,
-        makeNestedPath
+        makeNestedPath,
+        splitNestedPath
       )
 
       searchExprArray.push(`NOT (${whereExpr})`)
