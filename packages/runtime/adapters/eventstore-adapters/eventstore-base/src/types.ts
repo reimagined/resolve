@@ -45,6 +45,31 @@ export type EventThreadData = {
   threadId: number
 }
 export type SavedEvent = Event & EventThreadData & SerializableMap
+export type OldEvent = Event
+
+export type ReplicationStatus =
+  | 'batchInProgress'
+  | 'batchDone'
+  | 'error'
+  | 'notStarted'
+  | 'serviceError'
+export type ReplicationState = {
+  status: ReplicationStatus
+  statusData: SerializableMap | null
+  paused: boolean
+  iterator: SerializableMap | null
+  successEvent: OldEvent | null
+}
+
+export function getInitialReplicationState(): ReplicationState {
+  return {
+    status: 'notStarted',
+    statusData: null,
+    iterator: null,
+    paused: false,
+    successEvent: null,
+  }
+}
 
 export type CheckForResourceError = (errors: Error[]) => void
 
@@ -145,21 +170,30 @@ type EventFilterChecked = t.TypeOf<typeof EventFilterSchemaSimple>
 export type EventFilter = UnbrandProps<EventFilterChecked>
 
 export type SecretFilter = {
-  idx?: number | null
+  idx?: SecretRecord['idx'] | null
   skip?: number
   limit: number
+  ids?: Array<SecretRecord['id']> | null
+  includeDeleted?: boolean
 }
 
 export type SecretsWithIdx = {
-  idx: number | null
+  idx: SecretRecord['idx'] | null
   secrets: SecretRecord[]
 }
 
 export type SecretRecord = {
   idx: number
   id: string
-  secret: string
+  secret: string | null
 }
+
+export type GatheredSecrets = {
+  existingSecrets: SecretRecord[]
+  deletedSecrets: Array<SecretRecord['id']>
+}
+
+export type OldSecretRecord = SecretRecord
 
 export function isTimestampFilter(
   filter: EventFilter
@@ -375,6 +409,10 @@ export interface CommonAdapterFunctions<
   >
   init: PoolMethod<ConnectedProps, Adapter['init']>
   drop: PoolMethod<ConnectedProps, Adapter['drop']>
+  gatherSecretsFromEvents: PoolMethod<
+    ConnectedProps,
+    Adapter['gatherSecretsFromEvents']
+  >
 }
 
 export interface AdapterFunctions<
@@ -465,6 +503,36 @@ export interface AdapterFunctions<
     ConnectedProps,
     AdapterPoolConnectedProps['getEventSubscribers']
   >
+
+  replicateEvents?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['replicateEvents']>
+  >
+  replicateSecrets?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['replicateSecrets']>
+  >
+
+  setReplicationStatus?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['setReplicationStatus']>
+  >
+  setReplicationIterator?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['setReplicationIterator']>
+  >
+  setReplicationPaused?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['setReplicationPaused']>
+  >
+  getReplicationState?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['getReplicationState']>
+  >
+  resetReplication?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['resetReplication']>
+  >
 }
 
 export interface Adapter {
@@ -524,4 +592,21 @@ export interface Adapter {
       status: any
     }>
   >
+
+  gatherSecretsFromEvents: (events: SavedEvent[]) => Promise<GatheredSecrets>
+
+  replicateEvents?: (events: OldEvent[]) => Promise<void>
+  replicateSecrets?: (
+    existingSecrets: OldSecretRecord[],
+    deletedSecrets: Array<OldSecretRecord['id']>
+  ) => Promise<void>
+  setReplicationIterator?: (iterator: SerializableMap) => Promise<void>
+  setReplicationStatus?: (
+    status: ReplicationStatus,
+    info?: ReplicationState['statusData'],
+    lastEvent?: OldEvent
+  ) => Promise<void>
+  setReplicationPaused?: (pause: boolean) => Promise<void>
+  getReplicationState?: () => Promise<ReplicationState>
+  resetReplication?: () => Promise<void>
 }

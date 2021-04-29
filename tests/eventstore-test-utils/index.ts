@@ -6,6 +6,7 @@ import createPostgresqlServerlessAdapter, {
   create as createResource,
   destroy as destroyResource,
 } from '@resolve-js/eventstore-postgresql-serverless'
+import { InputEvent } from '@resolve-js/eventstore-base'
 
 import { Readable } from 'stream'
 
@@ -58,7 +59,7 @@ export function streamToString(stream: Readable): Promise<string> {
   })
 }
 
-export function makeTestEvent(eventIndex: number): any {
+export function makeTestEvent(eventIndex: number): InputEvent {
   return {
     aggregateId: 'aggregateId',
     aggregateVersion: eventIndex + 1,

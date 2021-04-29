@@ -26,7 +26,8 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "@resolve-js/debug-levels": "0.30.0",
-    "@resolve-js/eventstore-base": "0.30.0"
+    "@resolve-js/eventstore-base": "0.30.0",
+    "crc-32": "^1.2.0"
   },
   "devDependencies": {
     "@resolve-js/core": "0.30.0",
