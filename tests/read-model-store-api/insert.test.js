@@ -24,258 +24,314 @@ describe(`${adapterFactory.name}. Read-model Store API. Insert`, () => {
     },
   ]
 
-  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId })\n      Resolver should return [{ testId: 'root', a: null }]`, async () => {
-    const projection = {
-      Init: async (store) => {
-        await store.defineTable('test', {
-          indexes: { testId: 'string' },
-          fields: ['a'],
+  test(
+    [
+      `Projection`,
+      `  store.defineTable({ /* ... */ fields: ['a'] })`,
+      `  store.insert('test', { testId })`,
+      `Resolver should return [{ testId: 'root', a: null }]`,
+    ].join('\n'),
+    async () => {
+      const projection = {
+        Init: async (store) => {
+          await store.defineTable('test', {
+            indexes: { testId: 'string' },
+            fields: ['a'],
+          })
+        },
+
+        TEST: async (store) => {
+          await store.insert('test', {
+            testId,
+          })
+        },
+      }
+
+      const result = await givenEvents(events)
+        .readModel({
+          name: 'StoreApi',
+          projection,
+          resolvers,
         })
-      },
+        .withAdapter(adapter)
+        .query('find', {})
 
-      TEST: async (store) => {
-        await store.insert('test', {
-          testId,
-        })
-      },
-    }
-
-    const result = await givenEvents(events)
-      .readModel({
-        name: 'StoreApi',
-        projection,
-        resolvers,
-      })
-      .withAdapter(adapter)
-      .query('find', {})
-
-    expect(result).toEqual([
-      {
-        testId: 'root',
-        a: null,
-      },
-    ])
-  })
-
-  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: undefined })\n      Resolver should return [{ testId: 'root', a: null }]`, async () => {
-    const projection = {
-      Init: async (store) => {
-        await store.defineTable('test', {
-          indexes: { testId: 'string' },
-          fields: ['a'],
-        })
-      },
-
-      TEST: async (store) => {
-        await store.insert('test', {
-          testId,
-          a: undefined,
-        })
-      },
-    }
-
-    const result = await givenEvents(events)
-      .readModel({
-        name: 'StoreApi',
-        projection,
-        resolvers,
-      })
-      .withAdapter(adapter)
-      .query('find', {})
-
-    expect(result).toEqual([
-      {
-        testId: 'root',
-        a: null,
-      },
-    ])
-  })
-
-  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: { b: undefined } })\n      Resolver should return [{ testId: 'root', a: {} }]`, async () => {
-    const projection = {
-      Init: async (store) => {
-        await store.defineTable('test', {
-          indexes: { testId: 'string' },
-          fields: ['a'],
-        })
-      },
-
-      TEST: async (store) => {
-        await store.insert('test', {
-          testId,
-          a: {
-            b: undefined,
-          },
-        })
-      },
-    }
-
-    const result = await givenEvents(events)
-      .readModel({
-        name: 'StoreApi',
-        projection,
-        resolvers,
-      })
-      .withAdapter(adapter)
-      .query('find', {})
-
-    expect(result).toEqual([
-      {
-        testId: 'root',
-        a: {},
-      },
-    ])
-  })
-
-  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: { b: { c: undefined } } })\n      Resolver should return [{ testId: 'root', a: { b: {} } }]`, async () => {
-    const projection = {
-      Init: async (store) => {
-        await store.defineTable('test', {
-          indexes: { testId: 'string' },
-          fields: ['a'],
-        })
-      },
-
-      TEST: async (store) => {
-        await store.insert('test', {
-          testId,
-          a: {
-            b: {
-              c: undefined,
-            },
-          },
-        })
-      },
-    }
-
-    const result = await givenEvents(events)
-      .readModel({
-        name: 'StoreApi',
-        projection,
-        resolvers,
-      })
-      .withAdapter(adapter)
-      .query('find', {})
-
-    expect(result).toEqual([
-      {
-        testId: 'root',
-        a: { b: {} },
-      },
-    ])
-  })
-
-  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: null })\n      Resolver should return [{ testId: 'root', a: null }]`, async () => {
-    const projection = {
-      Init: async (store) => {
-        await store.defineTable('test', {
-          indexes: { testId: 'string' },
-          fields: ['a'],
-        })
-      },
-
-      TEST: async (store) => {
-        await store.insert('test', {
-          testId,
+      expect(result).toEqual([
+        {
+          testId: 'root',
           a: null,
-        })
-      },
+        },
+      ])
     }
+  )
 
-    const result = await givenEvents(events)
-      .readModel({
-        name: 'StoreApi',
-        projection,
-        resolvers,
-      })
-      .withAdapter(adapter)
-      .query('find', {})
+  test(
+    [
+      `Projection`,
+      `  store.defineTable({ /* ... */ fields: ['a'] })`,
+      `  store.insert('test', { testId, a: undefined })`,
+      `Resolver should return [{ testId: 'root', a: null }]`,
+    ].join('\n'),
+    async () => {
+      const projection = {
+        Init: async (store) => {
+          await store.defineTable('test', {
+            indexes: { testId: 'string' },
+            fields: ['a'],
+          })
+        },
 
-    expect(result).toEqual([
-      {
-        testId: 'root',
-        a: null,
-      },
-    ])
-  })
+        TEST: async (store) => {
+          await store.insert('test', {
+            testId,
+            a: undefined,
+          })
+        },
+      }
 
-  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: { b: null } })\n      Resolver should return [{ testId: 'root', a: { b: null } }]`, async () => {
-    const projection = {
-      Init: async (store) => {
-        await store.defineTable('test', {
-          indexes: { testId: 'string' },
-          fields: ['a'],
+      const result = await givenEvents(events)
+        .readModel({
+          name: 'StoreApi',
+          projection,
+          resolvers,
         })
-      },
+        .withAdapter(adapter)
+        .query('find', {})
 
-      TEST: async (store) => {
-        await store.insert('test', {
-          testId,
+      expect(result).toEqual([
+        {
+          testId: 'root',
+          a: null,
+        },
+      ])
+    }
+  )
+
+  test(
+    [
+      `Projection`,
+      `  store.defineTable({ /* ... */ fields: ['a'] })`,
+      `  store.insert('test', { testId, a: { b: undefined } })`,
+      `Resolver should return [{ testId: 'root', a: {} }]`,
+    ].join('\n'),
+    async () => {
+      const projection = {
+        Init: async (store) => {
+          await store.defineTable('test', {
+            indexes: { testId: 'string' },
+            fields: ['a'],
+          })
+        },
+
+        TEST: async (store) => {
+          await store.insert('test', {
+            testId,
+            a: {
+              b: undefined,
+            },
+          })
+        },
+      }
+
+      const result = await givenEvents(events)
+        .readModel({
+          name: 'StoreApi',
+          projection,
+          resolvers,
+        })
+        .withAdapter(adapter)
+        .query('find', {})
+
+      expect(result).toEqual([
+        {
+          testId: 'root',
+          a: {},
+        },
+      ])
+    }
+  )
+
+  test(
+    [
+      `Projection`,
+      `  store.defineTable({ /* ... */ fields: ['a'] })`,
+      `  store.insert('test', { testId, a: { b: { c: undefined } } })`,
+      `Resolver should return [{ testId: 'root', a: { b: {} } }]`,
+    ].join('\n'),
+    async () => {
+      const projection = {
+        Init: async (store) => {
+          await store.defineTable('test', {
+            indexes: { testId: 'string' },
+            fields: ['a'],
+          })
+        },
+
+        TEST: async (store) => {
+          await store.insert('test', {
+            testId,
+            a: {
+              b: {
+                c: undefined,
+              },
+            },
+          })
+        },
+      }
+
+      const result = await givenEvents(events)
+        .readModel({
+          name: 'StoreApi',
+          projection,
+          resolvers,
+        })
+        .withAdapter(adapter)
+        .query('find', {})
+
+      expect(result).toEqual([
+        {
+          testId: 'root',
+          a: { b: {} },
+        },
+      ])
+    }
+  )
+
+  test(
+    [
+      `Projection`,
+      `  store.defineTable({ /* ... */ fields: ['a'] })`,
+      `  store.insert('test', { testId, a: null })`,
+      `Resolver should return [{ testId: 'root', a: null }]`,
+    ].join('\n'),
+    async () => {
+      const projection = {
+        Init: async (store) => {
+          await store.defineTable('test', {
+            indexes: { testId: 'string' },
+            fields: ['a'],
+          })
+        },
+
+        TEST: async (store) => {
+          await store.insert('test', {
+            testId,
+            a: null,
+          })
+        },
+      }
+
+      const result = await givenEvents(events)
+        .readModel({
+          name: 'StoreApi',
+          projection,
+          resolvers,
+        })
+        .withAdapter(adapter)
+        .query('find', {})
+
+      expect(result).toEqual([
+        {
+          testId: 'root',
+          a: null,
+        },
+      ])
+    }
+  )
+
+  test(
+    [
+      `Projection`,
+      `  store.defineTable({ /* ... */ fields: ['a'] })`,
+      `  store.insert('test', { testId, a: { b: null } })`,
+      `Resolver should return [{ testId: 'root', a: { b: null } }]`,
+    ].join('\n'),
+    async () => {
+      const projection = {
+        Init: async (store) => {
+          await store.defineTable('test', {
+            indexes: { testId: 'string' },
+            fields: ['a'],
+          })
+        },
+
+        TEST: async (store) => {
+          await store.insert('test', {
+            testId,
+            a: {
+              b: null,
+            },
+          })
+        },
+      }
+
+      const result = await givenEvents(events)
+        .readModel({
+          name: 'StoreApi',
+          projection,
+          resolvers,
+        })
+        .withAdapter(adapter)
+        .query('find', {})
+
+      expect(result).toEqual([
+        {
+          testId: 'root',
           a: {
             b: null,
           },
-        })
-      },
-    }
-
-    const result = await givenEvents(events)
-      .readModel({
-        name: 'StoreApi',
-        projection,
-        resolvers,
-      })
-      .withAdapter(adapter)
-      .query('find', {})
-
-    expect(result).toEqual([
-      {
-        testId: 'root',
-        a: {
-          b: null,
         },
-      },
-    ])
-  })
+      ])
+    }
+  )
 
-  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.insert('test', { testId, a: { b: { c: null } } })\n      Resolver should return [{ testId: 'root', a: { b: { c: null} } }]`, async () => {
-    const projection = {
-      Init: async (store) => {
-        await store.defineTable('test', {
-          indexes: { testId: 'string' },
-          fields: ['a'],
+  test(
+    [
+      `Projection`,
+      `  store.defineTable({ /* ... */ fields: ['a'] })`,
+      `  store.insert('test', { testId, a: { b: { c: null } } })`,
+      `Resolver should return [{ testId: 'root', a: { b: { c: null} } }]`,
+    ].join('\n'),
+    async () => {
+      const projection = {
+        Init: async (store) => {
+          await store.defineTable('test', {
+            indexes: { testId: 'string' },
+            fields: ['a'],
+          })
+        },
+
+        TEST: async (store) => {
+          await store.insert('test', {
+            testId,
+            a: {
+              b: {
+                c: null,
+              },
+            },
+          })
+        },
+      }
+
+      const result = await givenEvents(events)
+        .readModel({
+          name: 'StoreApi',
+          projection,
+          resolvers,
         })
-      },
+        .withAdapter(adapter)
+        .query('find', {})
 
-      TEST: async (store) => {
-        await store.insert('test', {
-          testId,
+      expect(result).toEqual([
+        {
+          testId: 'root',
           a: {
             b: {
               c: null,
             },
           },
-        })
-      },
-    }
-
-    const result = await givenEvents(events)
-      .readModel({
-        name: 'StoreApi',
-        projection,
-        resolvers,
-      })
-      .withAdapter(adapter)
-      .query('find', {})
-
-    expect(result).toEqual([
-      {
-        testId: 'root',
-        a: {
-          b: {
-            c: null,
-          },
         },
-      },
-    ])
-  })
+      ])
+    }
+  )
 })

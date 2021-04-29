@@ -24,41 +24,49 @@ describe(`${adapterFactory.name}. Read-model Store API. Upsert`, () => {
     },
   ]
 
-  test(`Projection\n        store.defineTable({ /* ... */ fields: ['a'] })\n        store.update('test', { testId }, { $set: { ['a']: true } }, { upsert: true })\n      Resolver should return [{ testId: 'root', a: true }]`, async () => {
-    const projection = {
-      Init: async (store) => {
-        await store.defineTable('test', {
-          indexes: { testId: 'string' },
-          fields: ['a'],
+  test(
+    [
+      `Projection`,
+      `  store.defineTable({ /* ... */ fields: ['a'] })`,
+      `  store.update('test', { testId }, { $set: { ['a']: true } }, { upsert: true })`,
+      `Resolver should return [{ testId: 'root', a: true }]`,
+    ].join('\n'),
+    async () => {
+      const projection = {
+        Init: async (store) => {
+          await store.defineTable('test', {
+            indexes: { testId: 'string' },
+            fields: ['a'],
+          })
+        },
+
+        TEST: async (store) => {
+          await store.update(
+            'test',
+            {
+              testId,
+            },
+            { $set: { a: true } },
+            { upsert: true }
+          )
+        },
+      }
+
+      const result = await givenEvents(events)
+        .readModel({
+          name: 'StoreApi',
+          projection,
+          resolvers,
         })
-      },
+        .withAdapter(adapter)
+        .query('find', {})
 
-      TEST: async (store) => {
-        await store.update(
-          'test',
-          {
-            testId,
-          },
-          { $set: { a: true } },
-          { upsert: true }
-        )
-      },
+      expect(result).toEqual([
+        {
+          testId: 'root',
+          a: true,
+        },
+      ])
     }
-
-    const result = await givenEvents(events)
-      .readModel({
-        name: 'StoreApi',
-        projection,
-        resolvers,
-      })
-      .withAdapter(adapter)
-      .query('find', {})
-
-    expect(result).toEqual([
-      {
-        testId: 'root',
-        a: true,
-      },
-    ])
-  })
+  )
 })
