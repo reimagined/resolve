@@ -22,13 +22,9 @@ const getReplicationState = async (
   if (rows.length > 0) {
     const row = rows[0]
 
-    let lastEvent: OldEvent
+    let lastEvent: OldEvent | null = null
     if (row.SuccessEvent != null) {
       lastEvent = JSON.parse(row.SuccessEvent) as OldEvent
-    } else {
-      lastEvent = {
-        type: 'Init',
-      } as OldEvent
     }
 
     return {

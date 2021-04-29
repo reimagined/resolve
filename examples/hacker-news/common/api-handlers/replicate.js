@@ -1,5 +1,3 @@
-import { ReplicationAlreadyInProgress } from '@resolve-js/eventstore-base'
-
 const checkInput = (input) => {
   if (!Array.isArray(input.events)) {
     throw new Error('Events must be array')
@@ -30,7 +28,7 @@ const handler = async (req, res) => {
     await req.resolve.eventstoreAdapter.setReplicationStatus('batchInProgress')
     await req.resolve.eventstoreAdapter.setReplicationIterator(input.iterator)
   } catch (error) {
-    if (ReplicationAlreadyInProgress.is(error)) {
+    if (error.name === 'ReplicationAlreadyInProgress') {
       res.status(425)
       res.end(error.message)
     } else {
@@ -65,6 +63,7 @@ const handler = async (req, res) => {
       await req.resolve.eventstoreAdapter.setReplicationStatus('error', error)
     } catch (e) {}
   }
+  await req.resolve.notifyEventSubscribers()
 }
 
 export default handler

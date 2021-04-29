@@ -43,6 +43,10 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
         return true
       },
     }),
+    gatherSecretsFromEvents: jest.fn().mockReturnValue({
+      existingSecrets: [],
+      deletedSecrets: [],
+    }),
   }
 
   const adapterOptions = {

@@ -86,6 +86,10 @@ describe('buildEvents', () => {
           return true
         },
       }),
+      gatherSecretsFromEvents: jest.fn().mockReturnValue({
+        existingSecrets: [],
+        deletedSecrets: [],
+      }),
     }
 
     const inlineLedgerExecuteStatement = jest
@@ -202,6 +206,10 @@ describe('buildEvents', () => {
         deleteSecret: async (id: string): Promise<boolean> => {
           return true
         },
+      }),
+      gatherSecretsFromEvents: jest.fn().mockReturnValue({
+        existingSecrets: [],
+        deletedSecrets: [],
       }),
     }
 
