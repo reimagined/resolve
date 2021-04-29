@@ -6,9 +6,8 @@ export const prepareEvents = (
     aggregateId: string
   }
 ): any => {
-  let timestamp = 1
+  let timestamp = Date.now() + 60 * 1000
   const aggregateVersionsMap = new Map()
-  const threadCountersMap = new Map()
 
   return events.map((testEvent) => {
     const aggregateId =
@@ -19,25 +18,15 @@ export const prepareEvents = (
     const aggregateVersion = aggregateVersionsMap.has(aggregateId)
       ? aggregateVersionsMap.get(aggregateId) + 1
       : 1
-    const threadId = Buffer.from(JSON.stringify(testEvent)).reduce(
-      (acc, val) => (acc + val) % 256,
-      0
-    )
-    const threadCounter = threadCountersMap.has(threadId)
-      ? threadCountersMap.get(threadId) + 1
-      : 1
 
     const event = {
       ...testEvent,
       aggregateId,
       aggregateVersion,
       timestamp: timestamp++,
-      threadId,
-      threadCounter,
     }
 
     aggregateVersionsMap.set(aggregateId, aggregateVersion)
-    threadCountersMap.set(threadId, threadCounter + 1)
 
     return event
   })

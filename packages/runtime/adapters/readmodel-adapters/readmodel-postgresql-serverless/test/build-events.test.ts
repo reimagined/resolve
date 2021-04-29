@@ -86,11 +86,18 @@ describe('buildEvents', () => {
           return true
         },
       }),
+      gatherSecretsFromEvents: jest.fn().mockReturnValue({
+        existingSecrets: [],
+        deletedSecrets: [],
+      }),
     }
 
     const inlineLedgerExecuteStatement = jest
       .fn()
       .mockReturnValue(Promise.resolve())
+    const inlineLedgerExecuteTransaction = jest
+      .fn()
+      .mockReturnValue(Promise.resolve('transaction-id'))
     const generateGuid = () => 'guid'
     const getVacantTimeInMillis = () => 0
     const rdsDataService = {
@@ -119,6 +126,7 @@ describe('buildEvents', () => {
           awsSecretStoreArn,
           rdsDataService,
           inlineLedgerExecuteStatement,
+          inlineLedgerExecuteTransaction,
           generateGuid,
           escapeStr,
         } as any,
@@ -203,11 +211,18 @@ describe('buildEvents', () => {
           return true
         },
       }),
+      gatherSecretsFromEvents: jest.fn().mockReturnValue({
+        existingSecrets: [],
+        deletedSecrets: [],
+      }),
     }
 
     const inlineLedgerExecuteStatement = jest
       .fn()
       .mockReturnValue(Promise.resolve())
+    const inlineLedgerExecuteTransaction = jest
+      .fn()
+      .mockReturnValue(Promise.resolve('transaction-id'))
     const generateGuid = () => 'guid'
     const getVacantTimeInMillis = () => 0
     const rdsDataService = {
@@ -236,6 +251,7 @@ describe('buildEvents', () => {
           awsSecretStoreArn,
           rdsDataService,
           inlineLedgerExecuteStatement,
+          inlineLedgerExecuteTransaction,
           generateGuid,
           escapeStr,
         } as any,

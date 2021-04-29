@@ -6,13 +6,11 @@ const inlineLedgerForceStop: InlineLedgerForceStopMethod = async (
 ) => {
   const {
     PassthroughError,
-    dbClusterOrInstanceArn,
-    awsSecretStoreArn,
+    inlineLedgerExecuteTransaction,
+    inlineLedgerExecuteStatement,
     schemaName,
     escapeId,
     escapeStr,
-    rdsDataService,
-    inlineLedgerExecuteStatement,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -44,23 +42,9 @@ const inlineLedgerForceStop: InlineLedgerForceStopMethod = async (
       }
 
       try {
-        await rdsDataService.rollbackTransaction({
-          resourceArn: dbClusterOrInstanceArn,
-          secretArn: awsSecretStoreArn,
-          transactionId,
-        })
+        await inlineLedgerExecuteTransaction(pool, 'rollback', transactionId)
       } catch (err) {
-        if (
-          !(
-            err != null &&
-            (/Transaction .*? Is Not Found/i.test(err.message) ||
-              /Transaction .*? Is Not Found/i.test(err.stack) ||
-              /Transaction is expired/i.test(err.message) ||
-              /Transaction is expired/i.test(err.stack) ||
-              /Invalid transaction ID/i.test(err.message) ||
-              /Invalid transaction ID/i.test(err.stack))
-          )
-        ) {
+        if (!(err instanceof PassthroughError && err.isEmptyTransaction)) {
           throw err
         }
       }

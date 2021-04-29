@@ -1,13 +1,26 @@
 # Changelog
 
-## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+## [V0.30.1](https://github.com/reimagined/resolve/tree/V0.30.1) (2021-04-29)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.0...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.0...V0.30.1)
+
+**New features:**
+
+- Eventstore replicator implemented as a read-model [\#1843](https://github.com/reimagined/resolve/pull/1843)
+
+**Enhancements:**
+
+- Normalize read-model Store API. Add functional tests. [\#1837](https://github.com/reimagined/resolve/pull/1837)
+
+**Bug fixes:**
+
+- Store.update\(\) with $inc operator works incorrectly [\#1794](https://github.com/reimagined/resolve/issues/1794)
+- Store.update\(\) with $set operator works incorrectly in some cases [\#1782](https://github.com/reimagined/resolve/issues/1782)
 
 **Documentation:**
 
-- Revise API Handler Documentation [\#1832](https://github.com/reimagined/resolve/pull/1832)
-- Update Testing [\#1831](https://github.com/reimagined/resolve/pull/1831)
+- Revise API handler documentation [\#1832](https://github.com/reimagined/resolve/pull/1832)
+- Update testing tools documentation [\#1831](https://github.com/reimagined/resolve/pull/1831)
 
 ## [V0.30.0](https://github.com/reimagined/resolve/tree/V0.30.0) (2021-04-28)
 

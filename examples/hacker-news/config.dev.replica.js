@@ -1,10 +1,17 @@
-import devConfig from './config.dev'
+import devCommonConfig from './config.dev.common'
 
 const devReplicaConfig = {
-  ...devConfig,
+  ...devCommonConfig,
   name: 'hacker-news-replica',
   port: '3001',
   distDir: 'dist-replica',
+  eventstoreAdapter: {
+    module: '@resolve-js/eventstore-lite',
+    options: {
+      databaseFile: 'data-replica/event-store.db',
+      snapshotBucketSize: 100,
+    },
+  },
   readModelConnectors: {
     default: {
       module: '@resolve-js/readmodel-lite',

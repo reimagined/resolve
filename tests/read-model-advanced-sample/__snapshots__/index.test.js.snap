@@ -90,6 +90,13 @@ Array [
     "firstJsonName": null,
   },
   Object {
+    "firstJsonName": Object {
+      "a": 1,
+      "b": 2,
+      "e": 10,
+    },
+  },
+  Object {
     "firstJsonName": null,
   },
 ]
@@ -97,7 +104,7 @@ Array [
 
 exports[`Read-model generic adapter API Upsert and non-parameterized resolver invocation 1`] = `
 Object {
-  "countResult": 5,
+  "countResult": 4,
   "findOneResult": Object {
     "firstJsonName": Object {
       "a": 1,
@@ -106,13 +113,6 @@ Object {
     },
   },
   "findResult": Array [
-    Object {
-      "firstJsonName": Object {
-        "a": 1,
-        "b": 2,
-        "e": 10,
-      },
-    },
     Object {
       "firstJsonName": Object {
         "c": 3,

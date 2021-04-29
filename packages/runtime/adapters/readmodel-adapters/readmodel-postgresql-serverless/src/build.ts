@@ -44,9 +44,7 @@ const buildInit: (
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
-    dbClusterOrInstanceArn,
-    awsSecretStoreArn,
-    rdsDataService,
+    inlineLedgerExecuteTransaction,
     inlineLedgerExecuteStatement,
     generateGuid,
     escapeStr,
@@ -56,13 +54,9 @@ const buildInit: (
     xaKey,
   } = pool
 
-  const {
-    transactionId = RDS_TRANSACTION_FAILED_KEY,
-  } = await rdsDataService.beginTransaction({
-    resourceArn: dbClusterOrInstanceArn,
-    secretArn: awsSecretStoreArn,
-    database: 'postgres',
-  })
+  const transactionId =
+    (await inlineLedgerExecuteTransaction(pool, 'begin')) ??
+    RDS_TRANSACTION_FAILED_KEY
   const rootSavePointId = generateGuid(transactionId, 'ROOT')
 
   const saveTrxIdPromise = inlineLedgerExecuteStatement(
@@ -103,6 +97,8 @@ const buildInit: (
     true
   )
 
+  basePool.sharedTransactionId = transactionId
+
   await Promise.all([saveTrxIdPromise, acquireTrxPromise])
 
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
@@ -122,11 +118,7 @@ const buildInit: (
       transactionId
     )
 
-    await rdsDataService.commitTransaction({
-      resourceArn: dbClusterOrInstanceArn,
-      secretArn: awsSecretStoreArn,
-      transactionId,
-    })
+    await inlineLedgerExecuteTransaction(pool, 'commit', transactionId)
 
     await next()
   } catch (error) {
@@ -149,11 +141,7 @@ const buildInit: (
       transactionId
     )
 
-    await rdsDataService.commitTransaction({
-      resourceArn: dbClusterOrInstanceArn,
-      secretArn: awsSecretStoreArn,
-      transactionId,
-    })
+    await inlineLedgerExecuteTransaction(pool, 'commit', transactionId)
   }
 }
 
@@ -182,9 +170,7 @@ export const buildEvents: (
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
-    dbClusterOrInstanceArn,
-    awsSecretStoreArn,
-    rdsDataService,
+    inlineLedgerExecuteTransaction,
     inlineLedgerExecuteStatement,
     generateGuid,
     escapeStr,
@@ -207,17 +193,10 @@ export const buildEvents: (
   let eventsApplyStartTimestamp = Date.now()
   let eventCount = 0
 
-  let transactionIdPromise: Promise<string> = rdsDataService
-    .beginTransaction({
-      resourceArn: dbClusterOrInstanceArn,
-      secretArn: awsSecretStoreArn,
-      database: 'postgres',
-    })
-    .then((result) =>
-      result != null && result.transactionId != null
-        ? result.transactionId
-        : RDS_TRANSACTION_FAILED_KEY
-    )
+  let transactionIdPromise: Promise<string> = inlineLedgerExecuteTransaction(
+    pool,
+    'begin'
+  ).then((result) => (result != null ? result : RDS_TRANSACTION_FAILED_KEY))
 
   const firstEventsLoadStartTimestamp = Date.now()
 
@@ -285,20 +264,13 @@ export const buildEvents: (
 
   for (metricData.eventLoopCount = 0; true; metricData.eventLoopCount++) {
     if (events.length === 0) {
-      throw new PassthroughError(transactionId)
+      throw new PassthroughError(transactionId, false, false)
     }
 
-    transactionIdPromise = rdsDataService
-      .beginTransaction({
-        resourceArn: dbClusterOrInstanceArn,
-        secretArn: awsSecretStoreArn,
-        database: 'postgres',
-      })
-      .then((result) =>
-        result != null && result.transactionId != null
-          ? result.transactionId
-          : RDS_TRANSACTION_FAILED_KEY
-      )
+    transactionIdPromise = inlineLedgerExecuteTransaction(
+      pool,
+      'begin'
+    ).then((result) => (result != null ? result : RDS_TRANSACTION_FAILED_KEY))
 
     let nextCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(
       cursor,
@@ -447,11 +419,19 @@ export const buildEvents: (
       )
     }
 
-    await rdsDataService.commitTransaction({
-      resourceArn: dbClusterOrInstanceArn,
-      secretArn: awsSecretStoreArn,
-      transactionId,
-    })
+    await inlineLedgerExecuteTransaction(pool, 'commit', transactionId)
+
+    if (eventCount > 0 && monitoring != null) {
+      const seconds = (Date.now() - eventsApplyStartTimestamp) / 1000
+
+      monitoring
+        .group({ Part: 'ReadModel' })
+        .group({ ReadModel: readModelName })
+        .rate('ReadModelFeedingRate', eventCount, seconds)
+    }
+
+    eventCount = 0
+    eventsApplyStartTimestamp = Date.now()
 
     if (eventCount > 0 && monitoring != null) {
       const seconds = (Date.now() - eventsApplyStartTimestamp) / 1000
@@ -526,7 +506,7 @@ export const buildEvents: (
         await next()
       }
 
-      throw new PassthroughError(await transactionIdPromise)
+      throw new PassthroughError(await transactionIdPromise, false, false)
     }
   }
 }
@@ -550,14 +530,12 @@ const build: ExternalMethods['build'] = async (
 
   const {
     PassthroughError,
-    dbClusterOrInstanceArn,
-    awsSecretStoreArn,
+    inlineLedgerExecuteTransaction,
+    generateGuid,
     schemaName,
     escapeId,
     escapeStr,
-    rdsDataService,
     inlineLedgerExecuteStatement: ledgerStatement,
-    generateGuid,
     monitoring,
   } = basePool
 
@@ -660,7 +638,7 @@ const build: ExternalMethods['build'] = async (
         : null
 
     if (readModelLedger == null || readModelLedger.Errors != null) {
-      throw new PassthroughError(null)
+      throw new PassthroughError(null, false, false)
     }
 
     const { EventTypes: eventTypes, Cursor: cursor } = readModelLedger
@@ -703,26 +681,20 @@ const build: ExternalMethods['build'] = async (
 
     if (passthroughError.lastTransactionId != null) {
       try {
-        await rdsDataService.rollbackTransaction({
-          resourceArn: dbClusterOrInstanceArn,
-          secretArn: awsSecretStoreArn,
-          transactionId: passthroughError.lastTransactionId,
-        })
+        await inlineLedgerExecuteTransaction(
+          basePool,
+          'rollback',
+          passthroughError.lastTransactionId
+        )
       } catch (err) {
-        if (
-          !(
-            err != null &&
-            (/Transaction .*? Is Not Found/i.test(err.message) ||
-              /Transaction .*? Is Not Found/i.test(err.stack) ||
-              /Transaction is expired/i.test(err.message) ||
-              /Transaction is expired/i.test(err.stack) ||
-              /Invalid transaction ID/i.test(err.message) ||
-              /Invalid transaction ID/i.test(err.stack))
-          )
-        ) {
+        if (!(err instanceof PassthroughError && err.isEmptyTransaction)) {
           throw err
         }
       }
+    }
+
+    if (passthroughError.isRetryable) {
+      await next()
     }
   } finally {
     basePool.activePassthrough = false
