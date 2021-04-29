@@ -74,7 +74,6 @@ export type Command = {
   aggregateName: string
   payload?: any
   jwt?: string
-  jwtToken?: string // deprecated
 }
 
 export type CommandResult = {

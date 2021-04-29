@@ -382,9 +382,7 @@ const executeCommand = async (
     monitoringGroup.time('Execution')
   }
 
-  const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
-
-  const jwt = actualJwt || deprecatedJwt
+  const { jwt } = command
 
   const subSegment = getPerformanceTracerSubsegment(
     runtime.monitoring,

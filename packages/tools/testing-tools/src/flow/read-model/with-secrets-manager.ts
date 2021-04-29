@@ -29,15 +29,3 @@ export const withSecretsManager = (
     not: partial(not, context),
   })
 }
-
-// FIXME: deprecated
-export const setSecretsManager = (
-  context: QueryContext,
-  manager: SecretsManager
-) => {
-  // eslint-disable-next-line no-console
-  console.warn(
-    `'setSecretsManager' deprecated, you should use withSecretsManager instead`
-  )
-  return withSecretsManager(context, manager)
-}

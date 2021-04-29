@@ -34,24 +34,6 @@ export const saga = (
     }),
   }
 
-  // FIXME: deprecated
-  if (saga.adapter != null) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      `'adapter' property of read model deprecated, use 'withAdapter' selector instead.`
-    )
-    withAdapter(context, saga.adapter)
-  }
-
-  // FIXME: deprecated
-  if (saga.encryption != null) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      `'encryption' property of read model deprecated, use 'withEncryption' selector instead.`
-    )
-    withEncryption(context, saga.encryption)
-  }
-
   return Object.assign(makeAssertions(context), {
     withAdapter: partial(withAdapter, context),
     withEncryption: partial(withEncryption, context),

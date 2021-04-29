@@ -78,10 +78,6 @@ export type TestReadModel = {
   name: string
   projection: ReadModel<any>
   resolvers: ReadModelResolvers<any>
-  // FIXME: deprecated
-  encryption?: EventHandlerEncryptionFactory
-  // FIXME: deprecated
-  adapter?: any
 }
 
 export type TestQuery = {
@@ -108,10 +104,6 @@ export type TestSaga<TSideEffects = any> = {
   name: string
   handlers: SagaEventHandlers<any, SagaSideEffects & TSideEffects>
   sideEffects: TSideEffects
-  // FIXME: deprecated
-  encryption?: EventHandlerEncryptionFactory
-  // FIXME: deprecated
-  adapter?: any
 }
 
 export type TestSagaAssertion = TestAssertion<SagaTestResult>
@@ -128,8 +120,6 @@ export type SagaTestResult = {
   scheduledCommands: Array<ScheduledCommand>
   sideEffects: Array<ExecutedSideEffect>
   queries: Array<ReadModelQuery>
-  // FIXME: deprecated
-  scheduleCommands: any[]
 }
 
 export type SagaContext = {
