@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import { Client } from '@resolve-js/client'
+import { Client, createWaitForResponseMiddleware } from '@resolve-js/client'
 
 import { getClient } from '../utils/utils'
 
@@ -43,10 +43,19 @@ test('executes scheduled command correctly', async () => {
         args: { id: testId },
       },
       {
-        waitFor: {
-          validator: (result) => result?.data != null,
-          attempts: 5,
-          period: 3000,
+        middleware: {
+          response: createWaitForResponseMiddleware({
+            validator: async (response, confirm) => {
+              if (response.ok) {
+                const result = await response.json()
+                if (result.data != null) {
+                  confirm(result)
+                }
+              }
+            },
+            attempts: 5,
+            period: 3000,
+          }),
         },
       }
     )
