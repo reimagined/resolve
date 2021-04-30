@@ -1,6 +1,7 @@
 ---
 id: app-structure
 title: reSolve App Structure
+description: This article describes the typical structure of a reSolve application.
 ---
 
 ## Configuration

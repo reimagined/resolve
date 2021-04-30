@@ -1,6 +1,7 @@
 ---
 id: frontend
 title: Frontend
+description: This document describes approaches that you can use to implement a frontend for a reSolve application.
 ---
 
 This document describes approaches that you can use to implement a frontend for a reSolve application. The following approaches are available:

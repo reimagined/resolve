@@ -1,6 +1,7 @@
 ---
 id: read-side
 title: Read Side
+description: The reSolve framework's read side listens to events that the write side produces. Based on these events, the read side updates the read models that provide data to the queries.
 ---
 
 ## Read Models

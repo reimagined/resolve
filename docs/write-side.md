@@ -1,6 +1,7 @@
 ---
 id: write-side
 title: Write Side
+description: An application's write side handles commands, validates input data, and emits events based on valid commands.
 ---
 
 ## Aggregates

@@ -1,9 +1,10 @@
 ---
 id: debugging
 title: Debugging
+description: This document describes how to debug the reSolve framework and reSolve-based applications.
 ---
 
-Resolve uses the [@resolve-js/debug-levels](https://www.npmjs.com/package/@resolve-js/debug-levels) package to log debug information. This package extends the [debug](https://www.npmjs.com/package/debug) library's functionality with the following logging levels:
+ReSolve uses the [@resolve-js/debug-levels](https://www.npmjs.com/package/@resolve-js/debug-levels) package to log debug information. This package extends the [debug](https://www.npmjs.com/package/debug) library's functionality with the following logging levels:
 
 | Level   | Description                                            |
 | ------- | ------------------------------------------------------ |

@@ -1,6 +1,7 @@
 ---
 id: introduction
 title: Introduction
+description: Full stack CQRS, DDD, Event Sourcing framework for Node.js
 ---
 
 ## Core Concepts
