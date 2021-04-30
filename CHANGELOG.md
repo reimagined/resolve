@@ -1,5 +1,17 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.1...HEAD)
+
+**Bug fixes:**
+
+- Environment variable is not updated after subsequent deploys [\#1833](https://github.com/reimagined/resolve/issues/1833)
+
+**Documentation:**
+
+- Add document descriptions [\#1841](https://github.com/reimagined/resolve/pull/1841)
+
 ## [V0.30.1](https://github.com/reimagined/resolve/tree/V0.30.1) (2021-04-29)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.0...V0.30.1)
