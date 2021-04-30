@@ -165,6 +165,31 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     expect(events).toHaveLength(0)
   })
 
+  test('should return secrets by specified ids', async () => {
+    const ids = [
+      makeIdFromIndex(0),
+      makeIdFromIndex(countSecrets / 2),
+      makeIdFromIndex(countSecrets - 1),
+    ]
+    const { secrets } = await adapter.loadSecrets({
+      limit: countSecrets,
+      ids,
+    })
+    expect(secrets).toHaveLength(ids.length)
+    expect(secrets.map((record) => record.id)).toEqual(
+      expect.arrayContaining(ids)
+    )
+  })
+
+  test('should return no secrets if empty ids array is passed', async () => {
+    const ids = []
+    const { secrets } = await adapter.loadSecrets({
+      limit: countSecrets,
+      ids,
+    })
+    expect(secrets).toHaveLength(0)
+  })
+
   const secretToDeleteIndex: number = Math.floor(Math.random() * countSecrets)
 
   test('should delete secret by id, return null for this id and generate delete secret event', async () => {
@@ -211,6 +236,16 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     expect(secrets).toHaveLength(countSecrets - 1)
   })
 
+  test('should return old number of secrets after the secret was deleted if includeDeleted flag is used', async () => {
+    const secrets = (
+      await adapter.loadSecrets({
+        limit: countSecrets + 1,
+        includeDeleted: true,
+      })
+    ).secrets
+    expect(secrets).toHaveLength(countSecrets)
+  })
+
   test('should throw when setting secret with id that belonged to previously deleted secret', async () => {
     const secretManager: SecretsManager = await adapter.getSecretsManager()
 
@@ -220,6 +255,32 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
         makeSecretFromIndex(secretToDeleteIndex)
       )
     ).rejects.toThrow()
+  })
+
+  test('should gather secrets by events', async () => {
+    const { events } = await adapter.loadEvents({
+      cursor: null,
+      limit: countSecrets * 2,
+      eventTypes: [SET_SECRET_EVENT_TYPE, DELETE_SECRET_EVENT_TYPE],
+    })
+    const {
+      deletedSecrets,
+      existingSecrets,
+    } = await adapter.gatherSecretsFromEvents(events)
+
+    expect(deletedSecrets).toHaveLength(1)
+    expect(deletedSecrets[0]).toEqual(makeIdFromIndex(secretToDeleteIndex))
+    expect(existingSecrets).toHaveLength(countSecrets)
+  })
+
+  test('should gather no secrets if no corresponding events exist', async () => {
+    const {
+      deletedSecrets,
+      existingSecrets,
+    } = await adapter.gatherSecretsFromEvents([])
+
+    expect(deletedSecrets).toHaveLength(0)
+    expect(existingSecrets).toHaveLength(0)
   })
 })
 

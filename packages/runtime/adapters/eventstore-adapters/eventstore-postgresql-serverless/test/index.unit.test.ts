@@ -13,14 +13,9 @@ import connect from '../src/connect'
 import dispose from '../src/dispose'
 
 import createResource from '../src/resource/create'
-import disposeResource from '../src/resource/dispose'
 import destroyResource from '../src/resource/destroy'
 
-import {
-  create as exportedCreate,
-  destroy as exportedDestroy,
-  dispose as exportedDispose,
-} from '../src'
+import { create as exportedCreate, destroy as exportedDestroy } from '../src'
 import {
   CloudResource,
   CloudResourceOptions,
@@ -37,11 +32,9 @@ jest.mock('../src/connect', () => jest.fn())
 jest.mock('../src/dispose', () => jest.fn())
 
 jest.mock('../src/resource/create', () => jest.fn())
-jest.mock('../src/resource/dispose', () => jest.fn())
 jest.mock('../src/resource/destroy', () => jest.fn())
 
 const mCreateResource = mocked(createResource)
-const mDisposeResource = mocked(disposeResource)
 const mDestroyResource = mocked(destroyResource)
 
 describe('as cloud resource', () => {
@@ -75,14 +68,12 @@ describe('as cloud resource', () => {
     completePool = {
       ...cloudPool,
       createResource: exportedCreate,
-      disposeResource: exportedDispose,
       destroyResource: exportedDestroy,
     }
   })
 
   afterEach(() => {
     mCreateResource.mockClear()
-    mDisposeResource.mockClear()
     mDestroyResource.mockClear()
   })
 
@@ -94,10 +85,5 @@ describe('as cloud resource', () => {
   test('destroy', () => {
     exportedDestroy(options)
     expect(mDestroyResource).toHaveBeenCalledWith(completePool, options)
-  })
-
-  test('dispose', () => {
-    exportedDispose(options)
-    expect(mDisposeResource).toHaveBeenCalledWith(completePool, options)
   })
 })

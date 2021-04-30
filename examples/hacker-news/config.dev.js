@@ -1,53 +1,33 @@
 import { declareRuntimeEnv } from '@resolve-js/scripts'
+import devCommonConfig from './config.dev.common'
 
 const devConfig = {
-  target: 'local',
+  ...devCommonConfig,
   port: declareRuntimeEnv('PORT', '3000'),
-  mode: 'development',
   eventstoreAdapter: {
     module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/event-store.db',
-      secretsFile: 'data/secrets.db',
       snapshotBucketSize: 100,
     },
   },
+  /*readModels: [
+    {
+      name: 'Replicator',
+      projection: 'common/read-models/empty.js',
+      resolvers: 'common/read-models/empty.js',
+      connectorName: 'replicator',
+    },
+  ],
   readModelConnectors: {
-    default: {
-      module: '@resolve-js/readmodel-lite',
+    ...devCommonConfig.readModelConnectors,
+    replicator: {
+      module: '@resolve-js/replicator-via-api-handler',
       options: {
-        databaseFile: 'data/read-model-default.db',
+        targetApplicationUrl: 'http://localhost:3001',
       },
     },
-    hackerNews: {
-      module: '@resolve-js/readmodel-lite',
-      options: {
-        databaseFile: 'data/read-model-hackerNews.db',
-      },
-    },
-    comments: {
-      module: '@resolve-js/readmodel-lite',
-      options: {
-        databaseFile: 'data/read-model-comments.db',
-      },
-    },
-    elasticSearch: {
-      module: 'common/read-models/elastic-search-connector.js',
-      options: {
-        /*
-        node: "<your-cloud-elastic-search-host>:port",
-        auth: {
-          username: 'name',
-          password: 'pass'
-        }
-        */
-      },
-    },
-  },
-  jwtCookie: {
-    name: 'jwt',
-    maxAge: 31536000000,
-  },
+  },*/
 }
 
 export default devConfig

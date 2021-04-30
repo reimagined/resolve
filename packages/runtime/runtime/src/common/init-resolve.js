@@ -3,6 +3,7 @@ import createQueryExecutor from '../common/query/index'
 import createSagaExecutor from '../common/saga/index'
 import crypto from 'crypto'
 
+import createNotifyEventSubscribers from './notify-event-subscribers'
 import createOnCommandExecuted from './on-command-executed'
 import createEventSubscriber from './event-subscriber'
 
@@ -49,6 +50,7 @@ const initResolve = async (resolve) => {
   })
 
   const getVacantTimeInMillis = resolve.getVacantTimeInMillis
+  const notifyEventSubscribers = createNotifyEventSubscribers(resolve)
   const onCommandExecuted = createOnCommandExecuted(resolve)
 
   const secretsManager = await eventstoreAdapter.getSecretsManager()
@@ -147,6 +149,7 @@ const initResolve = async (resolve) => {
     executeQuery,
     executeSaga,
     executeSchedulerCommand,
+    notifyEventSubscribers,
   })
 
   Object.defineProperties(resolve, {

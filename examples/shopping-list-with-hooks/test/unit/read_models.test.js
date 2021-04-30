@@ -25,9 +25,9 @@ describe('read-models', () => {
           name: 'ShoppingLists',
           projection,
           resolvers,
-          adapter,
         })
-        .all()
+        .withAdapter(adapter)
+        .query('all', {})
 
       expect(shoppingLists).toEqual([])
     })
@@ -46,9 +46,9 @@ describe('read-models', () => {
           name: 'ShoppingLists',
           projection,
           resolvers,
-          adapter,
         })
-        .all()
+        .withAdapter(adapter)
+        .query('all', {})
 
       expect(shoppingLists[0]).toMatchObject({
         id: aggregateId,
@@ -77,9 +77,9 @@ describe('read-models', () => {
           name: 'ShoppingLists',
           projection,
           resolvers,
-          adapter,
         })
-        .all()
+        .withAdapter(adapter)
+        .query('all', {})
 
       expect(shoppingLists[0]).toMatchObject({
         id: aggregateId,
@@ -105,9 +105,9 @@ describe('read-models', () => {
           name: 'ShoppingLists',
           projection,
           resolvers,
-          adapter,
         })
-        .all()
+        .withAdapter(adapter)
+        .query('all', {})
 
       expect(shoppingLists.length).toEqual(0)
     })

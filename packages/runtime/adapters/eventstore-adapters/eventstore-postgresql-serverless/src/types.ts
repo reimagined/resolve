@@ -25,7 +25,7 @@ export type Coercer = (
   } & {
     [key: string]: any
   }
-) => number | string | boolean
+) => number | string | boolean | null
 type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
@@ -104,7 +104,6 @@ export type ConnectionDependencies = {
 
 export type CloudResource = {
   createResource: (options: CloudResourceOptions) => Promise<any>
-  disposeResource: (options: CloudResourceOptions) => Promise<any>
   destroyResource: (options: CloudResourceOptions) => Promise<any>
 }
 

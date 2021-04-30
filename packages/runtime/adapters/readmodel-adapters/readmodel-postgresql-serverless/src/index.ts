@@ -33,11 +33,10 @@ import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
 
 import PassthroughError from './passthrough-error'
+import inlineLedgerExecuteTransaction from './inline-ledger-execute-transaction'
 import inlineLedgerExecuteStatement from './inline-ledger-execute-statement'
 import inlineLedgerForceStop from './inline-ledger-force-stop'
 import generateGuid from './generate-guid'
-import isHighloadError from './is-highload-error'
-import isTimeoutError from './is-timeout-error'
 import maybeInit from './maybe-init'
 
 import dropReadModel from './drop-read-model'
@@ -51,7 +50,6 @@ import status from './status'
 import build from './build'
 
 import _createResource from './resource/create'
-import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
 
 const store: CurrentStoreApi = {
@@ -72,10 +70,9 @@ const internalMethods: InternalMethods = {
   coercer,
   generateGuid,
   PassthroughError,
+  inlineLedgerExecuteTransaction,
   inlineLedgerExecuteStatement,
   inlineLedgerForceStop,
-  isTimeoutError,
-  isHighloadError,
   dropReadModel,
   maybeInit,
   escapeId,
@@ -125,17 +122,11 @@ const pool = {
 } as AdminPool
 
 const createResource = _createResource.bind(null, pool)
-const disposeResource = _disposeResource.bind(null, pool)
 const destroyResource = _destroyResource.bind(null, pool)
 
 Object.assign(pool, {
   createResource,
-  disposeResource,
   destroyResource,
 })
 
-export {
-  createResource as create,
-  disposeResource as dispose,
-  destroyResource as destroy,
-}
+export { createResource as create, destroyResource as destroy }

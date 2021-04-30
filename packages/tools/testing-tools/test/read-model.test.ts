@@ -106,6 +106,50 @@ describe('basic tests', () => {
   })
 })
 
+describe('sequence tests', () => {
+  const testId = 'root'
+
+  const readModel: TestReadModel = {
+    name: 'readModelSequence',
+    projection: {
+      Init: async (store: any): Promise<any> => {
+        await store.defineTable('sequence', {
+          indexes: { id: 'string' },
+          fields: ['items'],
+        })
+        await store.insert('sequence', { id: testId, items: [] })
+      },
+      TEST: async (store: any, { payload: { item } }): Promise<any> => {
+        const { items } = await store.findOne('sequence', {
+          id: testId,
+        })
+        await store.update(
+          'sequence',
+          { id: testId },
+          { $set: { items: [...items, item] } }
+        )
+      },
+    },
+    resolvers: {
+      all: async (store: any): Promise<any> => {
+        return await store.findOne('sequence', { id: testId })
+      },
+    },
+  }
+
+  test('resolver should return ["test-1", "test-2", "test-3"]', async () => {
+    const result: any = await givenEvents([
+      { aggregateId: 'id1', type: 'TEST', payload: { item: 'test-1' } },
+      { aggregateId: 'id2', type: 'TEST', payload: { item: 'test-2' } },
+      { aggregateId: 'id3', type: 'TEST', payload: { item: 'test-3' } },
+    ])
+      .readModel(readModel)
+      .query('all', {})
+
+    expect(result?.items).toEqual(['test-1', 'test-2', 'test-3'])
+  })
+})
+
 describe('advanced', () => {
   test('using encryption', async () => {
     const decryptMock = jest.fn((val: any) => `plain_${val}`)

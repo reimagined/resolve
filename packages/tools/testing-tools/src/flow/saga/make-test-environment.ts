@@ -193,7 +193,7 @@ export const makeTestEnvironment = (
       error: () => void 0,
       publish: async () => void 0,
     }
-    const eventstoreAdapter = getEventStore(events)
+    const eventstoreAdapter = await getEventStore(events)
 
     const errors: Error[] = []
     let executor = null

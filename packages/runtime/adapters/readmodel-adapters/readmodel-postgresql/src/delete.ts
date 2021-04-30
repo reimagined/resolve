@@ -8,6 +8,7 @@ const del: CurrentStoreApi['delete'] = async (
     escapeStr,
     searchToWhereExpression,
     makeNestedPath,
+    splitNestedPath,
     schemaName,
   },
   readModelName,
@@ -18,7 +19,8 @@ const del: CurrentStoreApi['delete'] = async (
     searchExpression,
     escapeId,
     escapeStr,
-    makeNestedPath
+    makeNestedPath,
+    splitNestedPath
   )
 
   const inlineSearchExpr =
