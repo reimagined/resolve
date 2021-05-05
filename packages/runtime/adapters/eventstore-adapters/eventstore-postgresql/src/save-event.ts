@@ -1,7 +1,6 @@
 import {
   ConcurrentError,
   InputEvent,
-  EventstoreAlreadyFrozenError,
   EventstoreFrozenError,
 } from '@resolve-js/eventstore-base'
 
