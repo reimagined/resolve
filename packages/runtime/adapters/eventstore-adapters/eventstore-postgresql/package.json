@@ -28,7 +28,8 @@
     "@resolve-js/core": "0.30.1",
     "@resolve-js/debug-levels": "0.30.1",
     "@resolve-js/eventstore-base": "0.30.1",
-    "pg": "^8.2.1"
+    "pg": "^8.2.1",
+    "crc-32": "^1.2.0"
   },
   "devDependencies": {
     "@types/pg": "^7.14.3",

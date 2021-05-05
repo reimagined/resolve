@@ -3,6 +3,7 @@ import { AdapterPool } from './types'
 import { LONG_NUMBER_SQL_TYPE, RESERVED_EVENT_SIZE } from './constants'
 import {
   ConcurrentError,
+  EventstoreFrozenError,
   InputEvent,
   makeSetSecretEvent,
 } from '@resolve-js/eventstore-base'
@@ -132,7 +133,7 @@ const setSecret = async (
       error != null && error.message != null ? error.message : ''
 
     if (errorMessage.indexOf('subquery used as an expression') > -1) {
-      throw new Error('Event store is frozen')
+      throw new EventstoreFrozenError()
     } else if (/aggregateIdAndVersion/i.test(errorMessage)) {
       throw new ConcurrentError(setSecretEvent.aggregateId)
     } else {
