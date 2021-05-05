@@ -65,3 +65,12 @@ export type ConnectionDependencies = {
   executeStatement: (pool: AdapterPool, sql: string) => Promise<any[]>
   coercer: Coercer
 }
+
+export type PostgresResourceConfig = {
+  user: PostgresqlAdapterConfig['user']
+  database: PostgresqlAdapterConfig['database']
+  databaseName: PostgresqlAdapterConfig['databaseName']
+  host: PostgresqlAdapterConfig['host']
+  port: PostgresqlAdapterConfig['port']
+  password: PostgresqlAdapterConfig['password']
+}

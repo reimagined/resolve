@@ -1,4 +1,9 @@
-import { ConcurrentError, InputEvent } from '@resolve-js/eventstore-base'
+import {
+  ConcurrentError,
+  InputEvent,
+  EventstoreAlreadyFrozenError,
+  EventstoreFrozenError,
+} from '@resolve-js/eventstore-base'
 
 import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'
@@ -95,7 +100,7 @@ const saveEvent = async (
         error != null && error.message != null ? error.message : ''
 
       if (errorMessage.indexOf('subquery used as an expression') > -1) {
-        throw new Error('Event store is frozen')
+        throw new EventstoreFrozenError()
       } else if (/aggregateIdAndVersion/i.test(errorMessage)) {
         throw new ConcurrentError(event.aggregateId)
       } else {
