@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.1...HEAD)
 
+**New features:**
+
+- Postgresql fixes and tests [\#1846](https://github.com/reimagined/resolve/pull/1846)
+
 **Bug fixes:**
 
 - Environment variable is not updated after subsequent deploys [\#1833](https://github.com/reimagined/resolve/issues/1833)
