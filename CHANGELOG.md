@@ -14,11 +14,16 @@
 
 **Bug fixes:**
 
+- NPM audit reports vulnerabilities [\#1848](https://github.com/reimagined/resolve/issues/1848)
 - Environment variable is not updated after subsequent deploys [\#1833](https://github.com/reimagined/resolve/issues/1833)
 
 **Documentation:**
 
 - Add document descriptions [\#1841](https://github.com/reimagined/resolve/pull/1841)
+
+**Other changes:**
+
+- Fixing security vulnerabilities in npm dependencies. Updating npm dependencies. Removing unused npm dependencies [\#1849](https://github.com/reimagined/resolve/pull/1849)
 
 ## [V0.30.1](https://github.com/reimagined/resolve/tree/V0.30.1) (2021-04-29)
 
