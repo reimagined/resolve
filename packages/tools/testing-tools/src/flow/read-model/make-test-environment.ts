@@ -119,6 +119,7 @@ export const makeTestEnvironment = (
     let executor = null
     let result: QueryTestResult | null = null
     const actualAssertion = assertion != null ? assertion : defaultAssertion
+    let isNext = false
 
     try {
       executor = createQuery({
@@ -127,7 +128,9 @@ export const makeTestEnvironment = (
           ADAPTER_NAME: actualAdapter,
         },
         getVacantTimeInMillis: () => 0x7fffffff,
-        invokeEventSubscriberAsync: async () => void 0,
+        invokeEventSubscriberAsync: async () => {
+          isNext = true
+        },
         eventstoreAdapter,
         readModelsInterop: domain.readModelDomain.acquireReadModelsInterop({
           secretsManager,
@@ -157,13 +160,12 @@ export const makeTestEnvironment = (
           modelName: readModel.name,
         })
 
-        await executor.build({
-          modelName: readModel.name,
-        })
-
-        await executor.build({
-          modelName: readModel.name,
-        })
+        do {
+          isNext = false
+          await executor.build({
+            modelName: readModel.name,
+          })
+        } while (isNext)
 
         const status = await executor.status({
           modelName: readModel.name,
