@@ -8,6 +8,10 @@
 
 - Postgresql fixes and tests [\#1846](https://github.com/reimagined/resolve/pull/1846)
 
+**Enhancements:**
+
+- Update typescript to 4.2.4 [\#1847](https://github.com/reimagined/resolve/pull/1847)
+
 **Bug fixes:**
 
 - Environment variable is not updated after subsequent deploys [\#1833](https://github.com/reimagined/resolve/issues/1833)
