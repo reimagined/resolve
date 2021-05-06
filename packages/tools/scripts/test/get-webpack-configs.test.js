@@ -28,10 +28,6 @@ const resolveConfig = {
       databaseFile: 'data/event-store.db',
     },
   },
-  subscribeAdapter: {
-    module: '@resolve-js/subscribe-socket.io',
-    options: {},
-  },
   snapshotAdapter: {
     module: '@resolve-js/snapshot-lite',
     options: {},
