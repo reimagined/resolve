@@ -1,4 +1,4 @@
-import { InternalMethods, ReadModelEvent, ReadModelRunStatus } from './types'
+import { InternalMethods } from './types'
 import { ReplicationState } from '@resolve-js/eventstore-base'
 import fetch from 'node-fetch'
 

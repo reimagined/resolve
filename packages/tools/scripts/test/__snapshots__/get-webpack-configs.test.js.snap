@@ -149,10 +149,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
                   },
-                  \\"subscribeAdapter\\": {
-                    \\"module\\": \\"@resolve-js/subscribe-socket.io\\",
-                    \\"options\\": {}
-                  },
                   \\"snapshotAdapter\\": {
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
                     \\"options\\": {}
@@ -368,10 +364,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
-                  },
-                  \\"subscribeAdapter\\": {
-                    \\"module\\": \\"@resolve-js/subscribe-socket.io\\",
-                    \\"options\\": {}
                   },
                   \\"snapshotAdapter\\": {
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
@@ -590,10 +582,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
-                  },
-                  \\"subscribeAdapter\\": {
-                    \\"module\\": \\"@resolve-js/subscribe-socket.io\\",
-                    \\"options\\": {}
                   },
                   \\"snapshotAdapter\\": {
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
@@ -826,10 +814,6 @@ exports[`should make webpack configs for local mode 1`] = `
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
                   },
-                  \\"subscribeAdapter\\": {
-                    \\"module\\": \\"@resolve-js/subscribe-socket.io\\",
-                    \\"options\\": {}
-                  },
                   \\"snapshotAdapter\\": {
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
                     \\"options\\": {}
@@ -1046,10 +1030,6 @@ exports[`should make webpack configs for local mode 1`] = `
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
                   },
-                  \\"subscribeAdapter\\": {
-                    \\"module\\": \\"@resolve-js/subscribe-socket.io\\",
-                    \\"options\\": {}
-                  },
                   \\"snapshotAdapter\\": {
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
                     \\"options\\": {}
@@ -1265,10 +1245,6 @@ exports[`should make webpack configs for local mode 1`] = `
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
-                  },
-                  \\"subscribeAdapter\\": {
-                    \\"module\\": \\"@resolve-js/subscribe-socket.io\\",
-                    \\"options\\": {}
                   },
                   \\"snapshotAdapter\\": {
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",

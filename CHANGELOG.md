@@ -1,5 +1,24 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.1...HEAD)
+
+**Enhancements:**
+
+- Update typescript to 4.2.4 [\#1847](https://github.com/reimagined/resolve/pull/1847)
+- Postgresql fixes and tests [\#1846](https://github.com/reimagined/resolve/pull/1846)
+
+**Bug fixes:**
+
+- Unable to apply more than one hundred events to read-model [\#1853](https://github.com/reimagined/resolve/issues/1853)
+- NPM audit reports vulnerabilities [\#1848](https://github.com/reimagined/resolve/issues/1848)
+- Environment variable is not updated after subsequent deploys [\#1833](https://github.com/reimagined/resolve/issues/1833)
+
+**Documentation:**
+
+- Add document descriptions [\#1841](https://github.com/reimagined/resolve/pull/1841)
+
 ## [V0.30.1](https://github.com/reimagined/resolve/tree/V0.30.1) (2021-04-29)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.0...V0.30.1)

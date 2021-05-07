@@ -29,12 +29,17 @@ export function validate<T extends t.Type<any>>(
   return params
 }
 
+type DefinedType<T extends any> = undefined extends Extract<T, undefined>
+  ? Exclude<T, undefined>
+  : T
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export type UnbrandProps<T extends any> = {
-  [Property in keyof T]: T[Property] extends
-    | t.Branded<infer S, infer B>
-    | infer Union
-    ? S | Union
+  [Property in keyof T]: DefinedType<T[Property]> extends string &
+    t.Brand<infer B>
+    ? string | Extract<T[Property], undefined>
+    : DefinedType<T[Property]> extends t.Branded<infer S, infer B>
+    ? S | Extract<T[Property], undefined>
     : T[Property]
 }
 /* eslint-enable @typescript-eslint/no-unused-vars */

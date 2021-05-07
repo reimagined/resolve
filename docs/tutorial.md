@@ -1,6 +1,7 @@
 ---
 id: tutorial
 title: Step-by-Step Tutorial
+description: This document provides a step-by-step tutorial for the reSolve framework. Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
 ---
 
 This document provides a step-by-step tutorial for the reSolve framework.
