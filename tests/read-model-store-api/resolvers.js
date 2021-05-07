@@ -9,6 +9,11 @@ const resolvers = {
 
     return result
   },
+  count: async (store, args) => {
+    const result = await store.count('test', args)
+
+    return result
+  },
 }
 
 export default resolvers
