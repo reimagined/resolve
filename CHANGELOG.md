@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.2...HEAD)
+
+**Enhancements:**
+
+- Update eslint [\#1858](https://github.com/reimagined/resolve/pull/1858)
+
 ## [V0.30.2](https://github.com/reimagined/resolve/tree/V0.30.2) (2021-05-07)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.1...V0.30.2)
