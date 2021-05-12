@@ -10,7 +10,7 @@ import { AdapterPool } from './types'
 const saveEvent = async (
   pool: AdapterPool,
   event: InputEvent
-): Promise<void> => {
+): Promise<string> => {
   const { eventsTableName, connection, database, escapeId, escape } = pool
   try {
     const eventsTableNameAsId: string = escapeId(eventsTableName)
@@ -69,6 +69,7 @@ const saveEvent = async (
       
       COMMIT;`
     )
+    return ''
   } catch (error) {
     const errno = error != null && error.errno != null ? error.errno : 0
     const message = error != null && error.message != null ? error.message : ''

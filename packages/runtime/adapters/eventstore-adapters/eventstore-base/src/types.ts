@@ -545,7 +545,7 @@ export interface Adapter {
   importEvents: (options?: Partial<ImportOptions>) => ImportEventsStream
   exportEvents: (options?: Partial<ExportOptions>) => ExportEventsStream
   getLatestEvent: (filter: EventFilter) => Promise<SavedEvent | null>
-  saveEvent: (event: InputEvent) => Promise<void>
+  saveEvent: (event: InputEvent) => Promise<string>
   init: () => Promise<void>
   drop: () => Promise<void>
   dispose: () => Promise<void>
