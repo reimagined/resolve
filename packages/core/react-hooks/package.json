@@ -58,7 +58,7 @@
     "react": "^16.13.0"
   },
   "engines": {
-    "node": ">=10.9"
+    "node": ">=12.18"
   },
   "babelCompile": [
     {
