@@ -48,6 +48,8 @@ import {
   AdapterConfigSchema,
 } from './types'
 
+import threadArrayToCursor from './thread-array-to-cursor'
+
 const wrappedCreateAdapter = <
   ConnectedProps extends AdapterPoolConnectedProps,
   ConnectionDependencies extends any,
@@ -143,3 +145,5 @@ export {
   DELETE_SECRET_EVENT_TYPE,
   SET_SECRET_EVENT_TYPE,
 } from './secret-event'
+
+export { threadArrayToCursor }
