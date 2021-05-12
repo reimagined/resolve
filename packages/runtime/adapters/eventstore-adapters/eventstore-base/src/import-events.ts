@@ -40,11 +40,10 @@ export const getStringifiedEvent = (params: {
       eventByteLength,
     }
   } else {
-    let stringifiedEvent = buffer
-      .slice(beginPosition, bufferSize)
-      .toString(encoding)
-    stringifiedEvent += buffer.slice(0, endPosition).toString(encoding)
-
+    const stringifiedEvent = Buffer.concat([
+      buffer.slice(beginPosition, bufferSize),
+      buffer.slice(0, endPosition),
+    ]).toString(encoding)
     const eventByteLength = bufferSize - beginPosition + endPosition
 
     return {
