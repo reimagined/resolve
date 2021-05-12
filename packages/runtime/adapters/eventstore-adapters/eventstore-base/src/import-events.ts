@@ -17,6 +17,42 @@ import {
   ImportEventsStream,
 } from './types'
 
+export const getStringifiedEvent = (params: {
+  buffer: Buffer
+  bufferSize: number
+  beginPosition: number
+  endPosition: number
+  encoding: BufferEncoding
+}): {
+  stringifiedEvent: string
+  eventByteLength: number
+} => {
+  const { buffer, bufferSize, beginPosition, endPosition, encoding } = params
+  if (beginPosition < endPosition) {
+    const stringifiedEvent = buffer
+      .slice(beginPosition, endPosition)
+      .toString(encoding)
+
+    const eventByteLength = endPosition - beginPosition
+
+    return {
+      stringifiedEvent,
+      eventByteLength,
+    }
+  } else {
+    const stringifiedEvent = Buffer.concat([
+      buffer.slice(beginPosition, bufferSize),
+      buffer.slice(0, endPosition),
+    ]).toString(encoding)
+    const eventByteLength = bufferSize - beginPosition + endPosition
+
+    return {
+      stringifiedEvent,
+      eventByteLength,
+    }
+  }
+}
+
 const EventStream = function (
   this: any,
   { pool, maintenanceMode, byteOffset }: any
@@ -123,25 +159,14 @@ EventStream.prototype._write = async function (
       const endEventPosition: number =
         (BUFFER_SIZE + this.endPosition - chunk.byteLength + eolPosition) %
         BUFFER_SIZE
-      let stringifiedEvent = null
-      let eventByteLength = 0
 
-      if (this.beginPosition < endEventPosition) {
-        stringifiedEvent = this.buffer
-          .slice(this.beginPosition, endEventPosition)
-          .toString(this.encoding)
-
-        eventByteLength += endEventPosition - this.beginPosition
-      } else {
-        stringifiedEvent = this.buffer
-          .slice(this.beginPosition, BUFFER_SIZE)
-          .toString(this.encoding)
-        stringifiedEvent += this.buffer
-          .slice(0, endEventPosition)
-          .toString(this.encoding)
-
-        eventByteLength += BUFFER_SIZE - this.beginPosition + endEventPosition
-      }
+      const { stringifiedEvent, eventByteLength } = getStringifiedEvent({
+        buffer: this.buffer,
+        bufferSize: BUFFER_SIZE,
+        encoding: this.encoding,
+        beginPosition: this.beginPosition,
+        endPosition: endEventPosition,
+      })
 
       this.vacantSize += eventByteLength
       this.beginPosition = endEventPosition
