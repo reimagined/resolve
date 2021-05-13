@@ -1,5 +1,4 @@
 import givenEvents from '@resolve-js/testing-tools'
-import createReadModelAdapter from '@resolve-js/readmodel-lite'
 
 import projection from '../../common/read-models/shopping-lists.projection'
 import resolvers from '../../common/read-models/shopping-lists.resolvers'
@@ -14,11 +13,6 @@ describe('read-models', () => {
   describe('ShoppingLists', () => {
     const aggregateId = '00000000-0000-0000-0000-000000000000'
 
-    let adapter = null
-    beforeEach(async () => {
-      adapter = createReadModelAdapter({ databaseFile: ':memory:' })
-    })
-
     test('resolver "all" should return an empty array', async () => {
       const shoppingLists = await givenEvents([])
         .readModel({
@@ -26,7 +20,6 @@ describe('read-models', () => {
           projection,
           resolvers,
         })
-        .withAdapter(adapter)
         .query('all', {})
 
       expect(shoppingLists).toEqual([])
@@ -48,7 +41,6 @@ describe('read-models', () => {
           projection,
           resolvers,
         })
-        .withAdapter(adapter)
         .query('all', {})
 
       expect(shoppingLists[0]).toMatchObject({
@@ -80,7 +72,6 @@ describe('read-models', () => {
           projection,
           resolvers,
         })
-        .withAdapter(adapter)
         .query('all', {})
 
       expect(shoppingLists[0]).toMatchObject({
@@ -108,7 +99,6 @@ describe('read-models', () => {
           projection,
           resolvers,
         })
-        .withAdapter(adapter)
         .query('all', {})
 
       expect(shoppingLists.length).toEqual(0)
