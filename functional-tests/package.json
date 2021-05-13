@@ -20,7 +20,7 @@
     "fs-extra": "9.0.1",
     "isomorphic-fetch": "3.0.0",
     "jest": "26.6.3",
-    "lodash": "4.17.20",
+    "lodash": "4.17.21",
     "nanoid": "3.1.12",
     "semver": "7.3.2",
     "testcafe": "^1.9.1",
