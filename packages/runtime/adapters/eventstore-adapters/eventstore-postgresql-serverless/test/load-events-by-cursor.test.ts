@@ -38,9 +38,6 @@ test(`method "loadEventsByCursor" should execute a correct SQL with limit lower 
   const sql = executeStatement.mock.calls.join(';')
 
   expect(sql).toContain(
-    `AND "cumulatedEventSize" < ${injectNumber(eventsSizeLimit)}`
-  )
-  expect(sql).toContain(
     `WHERE "sizedEvents"."summaryEventSize" < ${injectNumber(eventsSizeLimit)}`
   )
 })
