@@ -10,6 +10,7 @@
 
 **Bug fixes:**
 
+- Wrong event order: eventstore-postgresql-serverless [\#1866](https://github.com/reimagined/resolve/issues/1866)
 - create-resolve-app failed on node 10.15 [\#1855](https://github.com/reimagined/resolve/issues/1855)
 
 ## [V0.30.2](https://github.com/reimagined/resolve/tree/V0.30.2) (2021-05-07)
