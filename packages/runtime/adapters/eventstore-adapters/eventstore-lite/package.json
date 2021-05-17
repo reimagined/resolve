@@ -38,7 +38,7 @@
     "ts-jest": "26.5.0"
   },
   "engines": {
-    "node": ">=10.9"
+    "node": ">=12.18"
   },
   "babelCompile": [
     {
