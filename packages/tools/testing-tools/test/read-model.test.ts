@@ -150,6 +150,75 @@ describe('sequence tests', () => {
   })
 })
 
+describe('snapshot tests', () => {
+  const testId = 'root'
+
+  const readModel: TestReadModel = {
+    name: 'readModelSnapshotTimestamps',
+    projection: {
+      Init: async (store: any): Promise<any> => {
+        await store.defineTable('snapshot', {
+          indexes: { id: 'string' },
+          fields: ['items', 'timestamp'],
+        })
+        await store.insert('snapshot', { id: testId, items: [] })
+      },
+      TEST: async (
+        store: any,
+        { timestamp, payload: { item } }
+      ): Promise<any> => {
+        const { items } = await store.findOne('snapshot', {
+          id: testId,
+        })
+        await store.update(
+          'snapshot',
+          { id: testId },
+          {
+            $set: {
+              items: [
+                ...items,
+                {
+                  value: item,
+                  timestamp,
+                },
+              ],
+            },
+          }
+        )
+      },
+    },
+    resolvers: {
+      all: async (store: any): Promise<any> => {
+        return await store.findOne('snapshot', { id: testId })
+      },
+    },
+  }
+
+  test('should match snapshot', async () => {
+    const result: any = await givenEvents([
+      { aggregateId: 'id1', type: 'TEST', payload: { item: 'test-1' } },
+      { aggregateId: 'id2', type: 'TEST', payload: { item: 'test-2' } },
+      { aggregateId: 'id3', type: 'TEST', payload: { item: 'test-3' } },
+    ])
+      .readModel(readModel)
+      .query('all', {})
+
+    expect(result?.items).toMatchSnapshot()
+  })
+
+  test('should match snapshot with specified timestamp', async () => {
+    const result: any = await givenEvents([
+      { aggregateId: 'id1', type: 'TEST', payload: { item: 'test-1' }, timestamp: 10 },
+      { aggregateId: 'id2', type: 'TEST', payload: { item: 'test-2' }, timestamp: 20 },
+      { aggregateId: 'id3', type: 'TEST', payload: { item: 'test-3' }, timestamp: 30 },
+    ])
+      .readModel(readModel)
+      .query('all', {})
+
+    expect(result?.items).toMatchSnapshot()
+  })
+})
+
 describe('advanced', () => {
   test('using encryption', async () => {
     const decryptMock = jest.fn((val: any) => `plain_${val}`)

@@ -1,3 +1,4 @@
+import { Event } from '@resolve-js/core'
 import { TestEvent } from '../types'
 
 export const prepareEvents = (
@@ -5,29 +6,31 @@ export const prepareEvents = (
   context?: {
     aggregateId: string
   }
-): any => {
+): Event[] => {
   let timestamp = Date.now() + 60 * 1000
   const aggregateVersionsMap = new Map()
 
-  return events.map((testEvent) => {
-    const aggregateId =
-      testEvent.aggregateId != null
-        ? testEvent.aggregateId
-        : context?.aggregateId
+  return events.map(
+    (testEvent: TestEvent): Event => {
+      const aggregateId =
+        testEvent.aggregateId != null
+          ? testEvent.aggregateId
+          : context?.aggregateId
 
-    const aggregateVersion = aggregateVersionsMap.has(aggregateId)
-      ? aggregateVersionsMap.get(aggregateId) + 1
-      : 1
+      const aggregateVersion = aggregateVersionsMap.has(aggregateId)
+        ? aggregateVersionsMap.get(aggregateId) + 1
+        : 1
 
-    const event = {
-      ...testEvent,
-      aggregateId,
-      aggregateVersion,
-      timestamp: timestamp++,
+      const event: any = {
+        ...testEvent,
+        aggregateId,
+        aggregateVersion,
+        timestamp: timestamp++,
+      }
+
+      aggregateVersionsMap.set(aggregateId, aggregateVersion)
+
+      return event
     }
-
-    aggregateVersionsMap.set(aggregateId, aggregateVersion)
-
-    return event
-  })
+  )
 }
