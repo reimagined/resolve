@@ -1,6 +1,7 @@
 import { TestSaga } from '../src/types'
 import { stringify } from '../src/utils/format'
 import givenEvents from '../src/index'
+import { TestReadModel } from '../types/types'
 
 let warnSpy: jest.SpyInstance
 let errorSpy: jest.SpyInstance
@@ -158,6 +159,37 @@ const saga: TestSaga<{
     email: async (subject, to) => void 0,
   },
 }
+
+describe('givenEvents tests', () => {
+  test('should throw error', async () => {
+    try {
+      await givenEvents([
+        {
+          type: 'Command',
+          aggregateId: 'aggregate-id',
+        },
+        {
+          type: 'Command',
+          aggregateId: 'aggregate-id',
+          timestamp: 20,
+        },
+      ])
+        .saga(saga)
+        .shouldExecuteCommand({
+          type: 'create',
+          aggregateName: 'user',
+          aggregateId: 'id',
+          payload: {
+            item: 'aggregate-id',
+          },
+        })
+      return Promise.reject('Test failed')
+    } catch (error) {
+      /* TODO @EugeniyBurmistrov */
+      expect(error.message).toContain('Invalid events')
+    }
+  })
+})
 
 test('side effects mocked by default', async () => {
   const result = await givenEvents([

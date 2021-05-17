@@ -3,11 +3,42 @@ import createEventStoreLite from '@resolve-js/eventstore-lite'
 import { TestEvent } from '../types'
 import { prepareEvents } from './prepare-events'
 
+export const validateEvents = (events: TestEvent[]) => {
+  let withSpecifiedTimestamp = false
+  let withoutSpecifiedTimestamp = false
+  for (const event of events) {
+    if (event.timestamp != null) {
+      if (withoutSpecifiedTimestamp) {
+        /* TODO @EugeniyBurmistrov */
+        throw new Error('Invalid events')
+      }
+      withSpecifiedTimestamp = true
+    } else if (withSpecifiedTimestamp) {
+      /* TODO @EugeniyBurmistrov */
+      throw new Error('Invalid events')
+    } else {
+      withoutSpecifiedTimestamp = true
+    }
+  }
+}
+
 export const getEventStore = async (
   events: TestEvent[],
   context?: { aggregateId: string }
 ): Promise<Eventstore> => {
+  validateEvents(events)
+
   const preparedEvents = prepareEvents(events, context)
+
+  const eventByAggregateIdVersion = new Map<string, TestEvent>()
+
+  for (let eventIndex = 0; eventIndex < events.length; eventIndex++) {
+    const { aggregateId, aggregateVersion } = preparedEvents[eventIndex]
+    const event = events[eventIndex]
+    if (event != null) {
+      eventByAggregateIdVersion.set(`${aggregateId}:${aggregateVersion}`, event)
+    }
+  }
 
   const eventStoreAdapter: any = createEventStoreLite({
     databaseFile: ':memory:',
@@ -35,22 +66,10 @@ export const getEventStore = async (
       ) {
         const eventFromEventStore = eventsFromEventStore[timestampIndex]
 
-        let event: TestEvent | null = null
-
-        for (let eventIndex = 0; eventIndex < events.length; eventIndex++) {
-          if (
-            preparedEvents[eventIndex].aggregateId ===
-              eventFromEventStore.aggregateId &&
-            preparedEvents[eventIndex].aggregateVersion ===
-              eventFromEventStore.aggregateVersion
-          ) {
-            event = events[eventIndex]
-          }
-        }
-
-        if (event != null) {
-          eventFromEventStore.timestamp = event.timestamp ?? timestampIndex
-        }
+        eventFromEventStore.timestamp =
+          eventByAggregateIdVersion.get(
+            `${eventFromEventStore.aggregateId}:${eventFromEventStore.aggregateVersion}`
+          )?.timestamp ?? timestampIndex
       }
 
       return {

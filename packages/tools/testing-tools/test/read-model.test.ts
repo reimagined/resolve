@@ -150,7 +150,7 @@ describe('sequence tests', () => {
   })
 })
 
-describe('snapshot tests', () => {
+describe('givenEvents tests', () => {
   const testId = 'root'
 
   const readModel: TestReadModel = {
@@ -208,14 +208,50 @@ describe('snapshot tests', () => {
 
   test('should match snapshot with specified timestamp', async () => {
     const result: any = await givenEvents([
-      { aggregateId: 'id1', type: 'TEST', payload: { item: 'test-1' }, timestamp: 10 },
-      { aggregateId: 'id2', type: 'TEST', payload: { item: 'test-2' }, timestamp: 20 },
-      { aggregateId: 'id3', type: 'TEST', payload: { item: 'test-3' }, timestamp: 30 },
+      {
+        aggregateId: 'id1',
+        type: 'TEST',
+        payload: { item: 'test-1' },
+        timestamp: 10,
+      },
+      {
+        aggregateId: 'id2',
+        type: 'TEST',
+        payload: { item: 'test-2' },
+        timestamp: 20,
+      },
+      {
+        aggregateId: 'id3',
+        type: 'TEST',
+        payload: { item: 'test-3' },
+        timestamp: 30,
+      },
     ])
       .readModel(readModel)
       .query('all', {})
 
     expect(result?.items).toMatchSnapshot()
+  })
+
+  test('should throw error', async () => {
+    try {
+      await givenEvents([
+        { aggregateId: 'id1', type: 'TEST', payload: { item: 'test-1' } },
+        {
+          aggregateId: 'id2',
+          type: 'TEST',
+          payload: { item: 'test-2' },
+          timestamp: 20,
+        },
+        { aggregateId: 'id3', type: 'TEST', payload: { item: 'test-3' } },
+      ])
+        .readModel(readModel)
+        .query('all', {})
+      return Promise.reject('Test failed')
+    } catch (error) {
+      /* TODO @EugeniyBurmistrov */
+      expect(error.message).toEqual('Invalid events')
+    }
   })
 })
 

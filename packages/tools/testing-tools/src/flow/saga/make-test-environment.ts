@@ -194,12 +194,13 @@ export const makeTestEnvironment = (
       error: () => void 0,
       publish: async () => void 0,
     }
-    const eventstoreAdapter = await getEventStore(events)
 
     const errors: Error[] = []
     let executor = null
 
     try {
+      const eventstoreAdapter = await getEventStore(events)
+
       const runtime = getSagaRuntime(
         result,
         {
