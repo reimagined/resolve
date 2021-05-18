@@ -1,6 +1,7 @@
 import givenEvents from '../src/index'
 import { Event, EventHandlerEncryptionContext } from '@resolve-js/core'
 import { TestReadModel } from '../types/types'
+import { ambiguousEventsTimeErrorMessage } from '../src/constants'
 
 const ProjectionError = (function (this: Error, message: string): void {
   Error.call(this)
@@ -234,8 +235,8 @@ describe('givenEvents tests', () => {
   })
 
   test('should throw error', async () => {
-    try {
-      await givenEvents([
+    await expect(
+      givenEvents([
         { aggregateId: 'id1', type: 'TEST', payload: { item: 'test-1' } },
         {
           aggregateId: 'id2',
@@ -247,11 +248,7 @@ describe('givenEvents tests', () => {
       ])
         .readModel(readModel)
         .query('all', {})
-      return Promise.reject('Test failed')
-    } catch (error) {
-      /* TODO @EugeniyBurmistrov */
-      expect(error.message).toEqual('Invalid events')
-    }
+    ).rejects.toThrow(ambiguousEventsTimeErrorMessage)
   })
 })
 

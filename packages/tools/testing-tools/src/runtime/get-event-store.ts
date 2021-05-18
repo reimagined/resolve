@@ -2,23 +2,12 @@ import { Eventstore } from '@resolve-js/core'
 import createEventStoreLite from '@resolve-js/eventstore-lite'
 import { TestEvent } from '../types'
 import { prepareEvents } from './prepare-events'
+import { ambiguousEventsTimeErrorMessage } from '../constants'
 
 export const validateEvents = (events: TestEvent[]) => {
-  let withSpecifiedTimestamp = false
-  let withoutSpecifiedTimestamp = false
-  for (const event of events) {
-    if (event.timestamp != null) {
-      if (withoutSpecifiedTimestamp) {
-        /* TODO @EugeniyBurmistrov */
-        throw new Error('Invalid events')
-      }
-      withSpecifiedTimestamp = true
-    } else if (withSpecifiedTimestamp) {
-      /* TODO @EugeniyBurmistrov */
-      throw new Error('Invalid events')
-    } else {
-      withoutSpecifiedTimestamp = true
-    }
+  const stampedCount = events.filter((event) => event.timestamp != null).length
+  if (stampedCount !== events.length && stampedCount > 0) {
+    throw Error(ambiguousEventsTimeErrorMessage)
   }
 }
 

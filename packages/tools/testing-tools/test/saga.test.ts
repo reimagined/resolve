@@ -1,7 +1,7 @@
 import { TestSaga } from '../src/types'
 import { stringify } from '../src/utils/format'
 import givenEvents from '../src/index'
-import { TestReadModel } from '../types/types'
+import { ambiguousEventsTimeErrorMessage } from '../src/constants'
 
 let warnSpy: jest.SpyInstance
 let errorSpy: jest.SpyInstance
@@ -162,8 +162,8 @@ const saga: TestSaga<{
 
 describe('givenEvents tests', () => {
   test('should throw error', async () => {
-    try {
-      await givenEvents([
+    await expect(
+      givenEvents([
         {
           type: 'Command',
           aggregateId: 'aggregate-id',
@@ -183,11 +183,7 @@ describe('givenEvents tests', () => {
             item: 'aggregate-id',
           },
         })
-      return Promise.reject('Test failed')
-    } catch (error) {
-      /* TODO @EugeniyBurmistrov */
-      expect(error.message).toContain('Invalid events')
-    }
+    ).rejects.toThrow(ambiguousEventsTimeErrorMessage)
   })
 })
 
