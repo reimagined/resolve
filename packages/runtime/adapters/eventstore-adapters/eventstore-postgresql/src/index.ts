@@ -39,8 +39,19 @@ import dispose from './dispose'
 import injectSecret from './inject-secret'
 import loadSecrets from './load-secrets'
 
+import replicateEvents from './replicate-events'
+import replicateSecrets from './replicate-secrets'
+import setReplicationStatus from './set-replication-status'
+import setReplicationIterator from './set-replication-iterator'
+import setReplicationPaused from './set-replication-paused'
+import getReplicationState from './get-replication-state'
+import resetReplication from './reset-replication'
+
 import type { Adapter } from '@resolve-js/eventstore-base'
 import type { ConnectionDependencies, PostgresqlAdapterConfig } from './types'
+
+import createResource from './resource/create'
+import destroyResource from './resource/destroy'
 
 const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
   return createAdapter(
@@ -76,6 +87,13 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       setSecret,
       injectSecret,
       loadSecrets,
+      replicateEvents,
+      replicateSecrets,
+      setReplicationStatus,
+      setReplicationIterator,
+      setReplicationPaused,
+      getReplicationState,
+      resetReplication,
     },
     {
       Postgres,
@@ -91,3 +109,4 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
 
 export default createPostgresqlAdapter
 export type { PostgresqlAdapterConfig }
+export { createResource as create, destroyResource as destroy }

@@ -6,6 +6,10 @@ import createPostgresqlServerlessAdapter, {
   create as createResource,
   destroy as destroyResource,
 } from '@resolve-js/eventstore-postgresql-serverless'
+import createPostgresqlAdapter, {
+  create as createPostgresResource,
+  destroy as destroyPostgresResource,
+} from '@resolve-js/eventstore-postgresql'
 import { InputEvent } from '@resolve-js/eventstore-base'
 
 import { Readable } from 'stream'
@@ -39,12 +43,41 @@ export function isPostgresServerless(): boolean {
   }
 }
 
+export function isPostgres(): boolean {
+  if (
+    process.env.TEST_POSTGRES !== undefined &&
+    process.env.TEST_POSTGRES !== 'false'
+  ) {
+    if (process.env.POSTGRES_HOST == null) {
+      throw new Error(`Environment variable POSTGRES_HOST is required`)
+    }
+    if (process.env.POSTGRES_PORT == null) {
+      throw new Error(`Environment variable POSTGRES_PORT is required`)
+    }
+    if (process.env.POSTGRES_USER == null) {
+      throw new Error(`Environment variable POSTGRES_USER is required`)
+    }
+    if (process.env.POSTGRES_PASSWORD == null) {
+      throw new Error(`Environment variable POSTGRES_PASSWORD is required`)
+    }
+    if (process.env.POSTGRES_DATABASE == null) {
+      throw new Error(`Environment variable POSTGRES_DATABASE is required`)
+    }
+    return true
+  }
+}
+
 export function jestTimeout(): number {
   if (
     process.env.TEST_POSTGRES_SERVERLESS !== undefined &&
     process.env.TEST_POSTGRES_SERVERLESS !== 'false'
   ) {
     return 1000 * 60 * 5
+  } else if (
+    process.env.TEST_POSTGRES !== undefined &&
+    process.env.TEST_POSTGRES !== 'false'
+  ) {
+    return 1000 * 60 * 2
   } else {
     return 1000 * 60 * 1
   }
@@ -151,6 +184,56 @@ export const adapterFactory = isPostgresServerless()
           await adapters[uniqueName].dispose()
 
           await destroyResource(options)
+
+          delete adapters[uniqueName]
+        }
+      },
+    }
+  : isPostgres()
+  ? {
+      name: '@resolve-js/eventstore-postgresql',
+      create(uniqueName: string) {
+        return async () => {
+          adapters[uniqueName] = createPostgresqlAdapter({
+            databaseName: uniqueName,
+            database: process.env.POSTGRES_DATABASE,
+            host: process.env.POSTGRES_HOST,
+            port: +process.env.POSTGRES_PORT,
+            user: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+          })
+
+          const options = {
+            databaseName: uniqueName,
+            database: process.env.POSTGRES_DATABASE,
+            host: process.env.POSTGRES_HOST,
+            port: +process.env.POSTGRES_PORT,
+            user: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+          }
+
+          try {
+            await destroyPostgresResource(options)
+          } catch {}
+          await createPostgresResource(options)
+
+          await adapters[uniqueName].init()
+        }
+      },
+      destroy(uniqueName: string) {
+        return async () => {
+          await adapters[uniqueName].drop()
+          await adapters[uniqueName].dispose()
+
+          const options = {
+            databaseName: uniqueName,
+            database: process.env.POSTGRES_DATABASE,
+            host: process.env.POSTGRES_HOST,
+            port: +process.env.POSTGRES_PORT,
+            user: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+          }
+          await destroyPostgresResource(options)
 
           delete adapters[uniqueName]
         }

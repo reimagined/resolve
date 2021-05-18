@@ -142,6 +142,7 @@ export const makeTestEnvironment = (
     const actualEncryption = encryption != null ? encryption : async () => null
     const actualAdapter =
       adapter != null ? adapter : await getReadModelAdapter()
+    let isNext = false
 
     const domain = initDomain({
       viewModels: [],
@@ -203,7 +204,9 @@ export const makeTestEnvironment = (
           ADAPTER_NAME: actualAdapter,
         },
         getVacantTimeInMillis: () => 0x7fffffff,
-        invokeEventSubscriberAsync: async () => void 0,
+        invokeEventSubscriberAsync: async () => {
+          isNext = true
+        },
         eventstoreAdapter,
         readModelsInterop: domain.sagaDomain.acquireSagasInterop(runtime),
         viewModelsInterop: {},
@@ -230,13 +233,12 @@ export const makeTestEnvironment = (
           modelName: saga.name,
         })
 
-        await executor.build({
-          modelName: saga.name,
-        })
-
-        await executor.build({
-          modelName: saga.name,
-        })
+        do {
+          isNext = false
+          await executor.build({
+            modelName: saga.name,
+          })
+        } while (isNext)
 
         const status = await executor.status({
           modelName: saga.name,

@@ -1,6 +1,6 @@
 {
   "name": "@internal/use-local-registry",
-  "version": "0.30.1",
+  "version": "0.30.3",
   "private": true,
   "main": "./index.js",
   "bin": "./bin/index.js",
@@ -9,8 +9,8 @@
     "test": "echo || exit 0"
   },
   "dependencies": {
-    "@internal/helpers": "0.30.1",
-    "@internal/local-registry": "0.30.1",
+    "@internal/helpers": "0.30.3",
+    "@internal/local-registry": "0.30.3",
     "minimist": "1.2.3"
   }
 }

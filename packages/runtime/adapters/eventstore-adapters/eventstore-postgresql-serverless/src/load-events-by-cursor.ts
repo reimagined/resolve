@@ -205,15 +205,13 @@ const loadEventsByCursor = async (
   } else {
     // prettier-ignore
     const sqlQuery = `
-      WITH RECURSIVE "cumulateEvents"("threadId", "threadCounter", "eventSize", "timestamp", "cumulatedEventSize") AS (
+      WITH RECURSIVE "cumulateEvents"("threadId", "threadCounter", "eventSize", "timestamp") AS (
         (SELECT CAST(256 AS BIGINT) AS "threadId", CAST(9223372036854775807 AS BIGINT) AS "threadCounter",
-        CAST(0 AS BIGINT) AS "eventSize", CAST(9223372036854775807 AS BIGINT) AS "timestamp",
-        CAST(0 AS numeric) AS "cumulatedEventSize")
+        CAST(0 AS BIGINT) AS "eventSize", CAST(9223372036854775807 AS BIGINT) AS "timestamp")
       UNION ALL
         (WITH "R" AS (SELECT "cumulateEvents"."threadId" AS "currentThreadId" FROM "cumulateEvents"),
         "M" AS (SELECT COALESCE(MAX("R"."currentThreadId"), 256) AS "maxThreadId" FROM "R" WHERE "R"."currentThreadId" < 256),
-        "V" AS ((SELECT "threadId", "threadCounter", "eventSize", "timestamp",
-        SUM("eventSize") OVER (ORDER BY "threadCounter") AS "cumulatedEventSize"
+        "V" AS ((SELECT "threadId", "threadCounter", "eventSize", "timestamp"
         FROM ${databaseNameAsId}.${eventsTableAsId}
         WHERE (${resultQueryCondition}) AND "threadId" = (SELECT COALESCE(NULLIF("M"."maxThreadId", 256) + 1, 0) FROM "M")
         AND (SELECT COALESCE(NULLIF("M"."maxThreadId", 256), 0) FROM "M") < 256 - 1
@@ -227,8 +225,7 @@ const loadEventsByCursor = async (
         SELECT (SELECT COALESCE(NULLIF("M"."maxThreadId", 256) + 1, 0) FROM "M") AS "threadId",
         CAST(9223372036854775807 AS BIGINT) AS "threadCounter",
         CAST(0 AS BIGINT) AS "eventSize",
-        CAST(9223372036854775807 AS BIGINT) AS "timestamp",
-        CAST(0 AS numeric) AS "cumulatedEventSize"
+        CAST(9223372036854775807 AS BIGINT) AS "timestamp"
         WHERE (SELECT COALESCE(NULLIF("M"."maxThreadId", 256), 0) FROM "M") < 256 - 1
         ))
         SELECT * FROM "V"
@@ -238,7 +235,6 @@ const loadEventsByCursor = async (
       ), "filteredEvents" AS (
         SELECT * FROM "cumulateEvents" 
         WHERE "threadCounter" < 9223372036854775807
-        AND "cumulatedEventSize" < ${injectNumber(eventsSizeLimit)}
       ), "sizedEvents" AS (
         SELECT *, SUM("eventSize") OVER (ORDER BY "timestamp", "threadCounter", "threadId") AS "summaryEventSize"
         FROM "filteredEvents" 
