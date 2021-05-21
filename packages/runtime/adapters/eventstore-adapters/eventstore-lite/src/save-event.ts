@@ -1,11 +1,16 @@
-import { ConcurrentError, InputEvent } from '@resolve-js/eventstore-base'
+import {
+  ConcurrentError,
+  InputEvent,
+  SavedEvent,
+  threadArrayToCursor,
+} from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 import { EventstoreFrozenError } from '@resolve-js/eventstore-base'
 
 const saveEvent = async (
   pool: AdapterPool,
   event: InputEvent
-): Promise<void> => {
+): Promise<string> => {
   const { eventsTableName, database, escapeId, escape } = pool
   try {
     const currentThreadId = Math.floor(Math.random() * 256)
@@ -53,10 +58,29 @@ const saveEvent = async (
         ${+event.aggregateVersion},
         ${escape(event.type)},
         json(CAST(${serializedPayload} AS BLOB))
-      );
-
-      COMMIT;`
+      );`
     )
+
+    const rows = (await database.all(
+      `SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
+    ${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`
+    )) as Array<{
+      threadId: SavedEvent['threadId']
+      threadCounter: SavedEvent['threadCounter']
+    }>
+
+    const threadCounters = new Array<number>(256)
+    threadCounters.fill(-1)
+    for (const row of rows) {
+      threadCounters[row.threadId] = row.threadCounter
+    }
+    for (let i = 0; i < threadCounters.length; ++i) {
+      threadCounters[i]++
+    }
+
+    const cursor = threadArrayToCursor(threadCounters)
+    await database.exec('COMMIT;')
+    return cursor
   } catch (error) {
     const errorMessage =
       error != null && error.message != null ? error.message : ''

@@ -46,6 +46,7 @@ import setReplicationIterator from './set-replication-iterator'
 import setReplicationPaused from './set-replication-paused'
 import getReplicationState from './get-replication-state'
 import resetReplication from './reset-replication'
+import getCursorUntilEventTypes from './get-cursor-until-event-types'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
 import type { ConnectionDependencies, PostgresqlAdapterConfig } from './types'
@@ -94,6 +95,7 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       setReplicationPaused,
       getReplicationState,
       resetReplication,
+      getCursorUntilEventTypes,
     },
     {
       Postgres,
