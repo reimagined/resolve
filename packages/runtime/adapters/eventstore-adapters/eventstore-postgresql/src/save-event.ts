@@ -4,6 +4,7 @@ import {
   EventstoreFrozenError,
   SavedEvent,
   threadArrayToCursor,
+  initThreadArray,
 } from '@resolve-js/eventstore-base'
 
 import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
@@ -104,8 +105,7 @@ const saveEvent = async (
       }>
 
       assert.strictEqual(rows.length, 256, 'Thread table must have 256 rows')
-      const threadCounters = new Array<number>(256)
-      threadCounters.fill(0)
+      const threadCounters = initThreadArray()
       for (const row of rows) {
         threadCounters[row.threadId] = row.newThreadCounter
       }

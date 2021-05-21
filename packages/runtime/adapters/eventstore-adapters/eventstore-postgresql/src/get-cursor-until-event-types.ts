@@ -26,6 +26,7 @@ const getCursorUntilEventTypes = async (
 
   const databaseNameAsId: string = escapeId(databaseName)
   const eventsTableAsId: string = escapeId(eventsTableName)
+  const threadsTableAsId: string = escapeId(`${eventsTableName}-threads`)
 
   const vectorConditions = cursorToThreadArray(cursor)
 
@@ -45,7 +46,7 @@ const getCursorUntilEventTypes = async (
           AND (${minThreadCounterConditions}) 
           GROUP BY "threadId"
           UNION ALL
-          SELECT "threadId", MAX("threadCounter")+1 AS "threadCounter" FROM ${databaseNameAsId}.${eventsTableAsId} GROUP BY "threadId") AS "union_table"
+          SELECT "threadId", "threadCounter" FROM ${databaseNameAsId}.${threadsTableAsId}) AS "union_table"
         GROUP BY "threadId"`
   )) as Array<{
     threadId: SavedEvent['threadId']
