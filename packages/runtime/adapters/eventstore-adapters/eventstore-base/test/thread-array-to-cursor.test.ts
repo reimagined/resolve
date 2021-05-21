@@ -1,5 +1,9 @@
 import { AssertionError } from 'assert'
-import threadArrayToCursor from '../src/thread-array-to-cursor'
+import {
+  threadArrayToCursor,
+  cursorToThreadArray,
+  initThreadArray,
+} from '../src'
 
 describe('calculating cursor from array of thread counters', () => {
   test('should throw AssertionError when array has an invalid size', () => {
@@ -8,8 +12,7 @@ describe('calculating cursor from array of thread counters', () => {
   })
 
   test('should return expected results', () => {
-    const arr = new Array<number>(256)
-    arr.fill(0)
+    const arr = initThreadArray()
     arr[0] = 1
     arr[1] = 61
     arr[2] = 64
@@ -29,5 +32,8 @@ describe('calculating cursor from array of thread counters', () => {
     expect(cursor.substring(8 * 6, 8 * 7)).toEqual('AAAAAAA/')
     expect(cursor.substring(8 * 7, 8 * 8)).toEqual('AAAAAAAA')
     expect(cursor.substring(8 * 255, 8 * 256)).toEqual('AAAAAAAC')
+
+    const translatedArr = cursorToThreadArray(cursor)
+    expect(translatedArr).toEqual(arr)
   })
 })

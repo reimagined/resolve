@@ -5,7 +5,6 @@ import wrapMethod from './wrap-method'
 import wrapEventFilter from './wrap-event-filter'
 import wrapDispose from './wrap-dispose'
 import validateEventFilter from './validate-event-filter'
-import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 import ConcurrentError from './concurrent-error'
 import {
   ResourceAlreadyExistError,
@@ -48,7 +47,18 @@ import {
   AdapterConfigSchema,
 } from './types'
 
-import threadArrayToCursor from './thread-array-to-cursor'
+export {
+  threadArrayToCursor,
+  cursorToThreadArray,
+  initThreadArray,
+} from './cursor-operations'
+export {
+  MAINTENANCE_MODE_AUTO,
+  MAINTENANCE_MODE_MANUAL,
+  THREAD_COUNT,
+  CURSOR_BUFFER_SIZE,
+  THREAD_COUNTER_BYTE_LENGTH,
+} from './constants'
 
 const wrappedCreateAdapter = <
   ConnectedProps extends AdapterPoolConnectedProps,
@@ -101,8 +111,6 @@ export {
   AlreadyFrozenError as EventstoreAlreadyFrozenError,
   AlreadyUnfrozenError as EventstoreAlreadyUnfrozenError,
   ReplicationAlreadyInProgress,
-  MAINTENANCE_MODE_AUTO,
-  MAINTENANCE_MODE_MANUAL,
   throwBadCursor,
   getNextCursor,
   snapshotTrigger,
@@ -145,5 +153,3 @@ export {
   DELETE_SECRET_EVENT_TYPE,
   SET_SECRET_EVENT_TYPE,
 } from './secret-event'
-
-export { threadArrayToCursor }

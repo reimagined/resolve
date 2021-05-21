@@ -1,8 +1,11 @@
 import { INT8_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'
-import { CursorFilter } from '@resolve-js/eventstore-base'
-
-const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
+import {
+  CursorFilter,
+  SavedEvent,
+  cursorToThreadArray,
+  threadArrayToCursor,
+} from '@resolve-js/eventstore-base'
 
 const loadEventsByCursor = async (
   {
@@ -18,16 +21,7 @@ const loadEventsByCursor = async (
   const injectString = (value: any): string => `${escape(value)}`
   const injectNumber = (value: any): string => `${+value}`
 
-  const cursorBuffer: Buffer =
-    cursor != null ? Buffer.from(cursor, 'base64') : Buffer.alloc(1536, 0)
-  const vectorConditions = []
-  for (let i = 0; i < cursorBuffer.length / 6; i++) {
-    vectorConditions.push(
-      `x'${cursorBuffer
-        .slice(i * 6, (i + 1) * 6)
-        .toString('hex')}'::${INT8_SQL_TYPE}`
-    )
-  }
+  const vectorConditions = cursorToThreadArray(cursor)
 
   const queryConditions: any[] = []
   if (eventTypes != null) {
@@ -45,7 +39,7 @@ const loadEventsByCursor = async (
         (threadCounter, threadId) =>
           `"threadId" = ${injectNumber(
             threadId
-          )} AND "threadCounter" >= ${threadCounter} `
+          )} AND "threadCounter" >= ${threadCounter}::${INT8_SQL_TYPE} `
       )
       .join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}`
@@ -61,43 +55,21 @@ const loadEventsByCursor = async (
   ].join('\n')
 
   const rows: any[] = await executeStatement(sqlQuery)
-  const events: any[] = []
+  const events: SavedEvent[] = []
 
   for (const event of rows) {
     const threadId = +event.threadId
     const threadCounter = +event.threadCounter
-    const oldThreadCounter = parseInt(
-      vectorConditions[threadId].substring(
-        2,
-        vectorConditions[threadId].length - (INT8_SQL_TYPE.length + 3)
-      ),
-      16
-    )
-
-    vectorConditions[threadId] = `x'${Math.max(
-      threadCounter + 1,
-      oldThreadCounter
-    )
-      .toString(16)
-      .padStart(12, '0')}'::${INT8_SQL_TYPE}`
+    const oldThreadCounter = vectorConditions[threadId]
+    vectorConditions[threadId] = Math.max(threadCounter + 1, oldThreadCounter)
 
     events.push(shapeEvent(event))
   }
 
-  const nextConditionsBuffer: Buffer = Buffer.alloc(1536)
-  let byteIndex = 0
-
-  for (const threadCounter of vectorConditions) {
-    const threadCounterBytes = threadCounter
-      .substring(2, threadCounter.length - (INT8_SQL_TYPE.length + 3))
-      .match(split2RegExp)
-    for (const byteHex of threadCounterBytes as any) {
-      nextConditionsBuffer[byteIndex++] = Buffer.from(byteHex, 'hex')[0]
-    }
-  }
+  const nextConditions = threadArrayToCursor(vectorConditions)
 
   return {
-    cursor: nextConditionsBuffer.toString('base64'),
+    cursor: nextConditions,
     events,
   }
 }
