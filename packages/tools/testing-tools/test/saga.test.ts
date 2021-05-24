@@ -1,6 +1,7 @@
 import { TestSaga } from '../src/types'
 import { stringify } from '../src/utils/format'
 import givenEvents from '../src/index'
+import { ambiguousEventsTimeErrorMessage } from '../src/constants'
 
 let warnSpy: jest.SpyInstance
 let errorSpy: jest.SpyInstance
@@ -158,6 +159,33 @@ const saga: TestSaga<{
     email: async (subject, to) => void 0,
   },
 }
+
+describe('givenEvents tests', () => {
+  test('should throw error', async () => {
+    await expect(
+      givenEvents([
+        {
+          type: 'Command',
+          aggregateId: 'aggregate-id',
+        },
+        {
+          type: 'Command',
+          aggregateId: 'aggregate-id',
+          timestamp: 20,
+        },
+      ])
+        .saga(saga)
+        .shouldExecuteCommand({
+          type: 'create',
+          aggregateName: 'user',
+          aggregateId: 'id',
+          payload: {
+            item: 'aggregate-id',
+          },
+        })
+    ).rejects.toThrow(ambiguousEventsTimeErrorMessage)
+  })
+})
 
 test('side effects mocked by default', async () => {
   const result = await givenEvents([
