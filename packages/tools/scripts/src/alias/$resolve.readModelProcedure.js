@@ -17,32 +17,36 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
   }
 
   const { readModelName } = loaderUtils.parseQuery(resourceQuery)
-  const readModel = resolveConfig.readModels.find(({name}) => name === readModelName )
-  const readModelConnector = readModel != null ? resolveConfig.readModelConnectors[readModel.name] : null
+  const readModel = resolveConfig.readModels.find(
+    ({ name }) => name === readModelName
+  )
+  const readModelConnector =
+    readModel != null ? resolveConfig.readModelConnectors[readModel.name] : null
   let wrapProcedureMethodPath = null
-  for(const pathPostfix of [
+  for (const pathPostfix of [
     ['lib', 'wrap-procedure'],
-    ['es', 'wrap-procedure']
+    ['es', 'wrap-procedure'],
   ]) {
     try {
-      wrapProcedureMethodPath = resolveFileOrModule(path.join(readModelConnector.module, ...pathPostfix))
-    } catch(e) {}
-    if(wrapProcedureMethodPath != null) {
+      wrapProcedureMethodPath = resolveFileOrModule(
+        path.join(readModelConnector.module, ...pathPostfix)
+      )
+    } catch (e) {}
+    if (wrapProcedureMethodPath != null) {
       break
     }
   }
-  if(wrapProcedureMethodPath == null) {
-    throw new Error("Wrap procedure method not found")
+  if (wrapProcedureMethodPath == null) {
+    throw new Error('Wrap procedure method not found')
   }
 
   const imports = [
-    `import { SynchronousPromise } from 'synchronous-promise'`
-    `import currentReadModel from '$resolve.readModel?readModelName=${readModelName}&onlyCode=true'`,
-    `import wrapProcedure from ${JSON.stringify(wrapProcedureMethodPath)}`
+    `import { SynchronousPromise } from 'synchronous-promise'``import currentReadModel from '$resolve.readModel?readModelName=${readModelName}&onlyCode=true'`,
+    `import wrapProcedure from ${JSON.stringify(wrapProcedureMethodPath)}`,
   ]
   const constants = [
     `SynchronousPromise.installGlobally()`,
-    `const procedure = wrapProcedure(currentReadModel)`
+    `const procedure = wrapProcedure(currentReadModel)`,
   ]
   const exports = [`export default procedure`]
 

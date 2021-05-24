@@ -14,7 +14,7 @@ const liveEntryDir = () => {
       ) || {}
     ).filename
 
-    if(entryPointDirname != null) {
+    if (entryPointDirname != null) {
       entryPointDirname = path.dirname(entryPointDirname)
     }
   }

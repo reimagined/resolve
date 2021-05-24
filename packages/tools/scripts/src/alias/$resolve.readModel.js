@@ -24,20 +24,22 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
   const { readModelName, onlyCode } = loaderUtils.parseQuery(resourceQuery)
   let readModel = null
   let index = -1
-  for (let currentIndex = 0; currentIndex < resolveConfig.readModels.length; currentIndex++) {
-    if(resolveConfig.readModels[currentIndex].name === readModelName) {
+  for (
+    let currentIndex = 0;
+    currentIndex < resolveConfig.readModels.length;
+    currentIndex++
+  ) {
+    if (resolveConfig.readModels[currentIndex].name === readModelName) {
       readModel = resolveConfig.readModels[currentIndex]
       index = currentIndex
     }
   }
 
-  if(readModelName == null || readModel == null || index < 0) {
+  if (readModelName == null || readModel == null || index < 0) {
     throw new Error(
       `Read-model ${readModelName} does not exist (readModels[${index}])`
     )
   }
-
-
 
   const imports = []
   const constants = []
@@ -54,9 +56,7 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     )
   }
   constants.push(
-    `const connectorName_${index} = ${JSON.stringify(
-      readModel.connectorName
-    )}`
+    `const connectorName_${index} = ${JSON.stringify(readModel.connectorName)}`
   )
 
   importResource({
@@ -79,13 +79,15 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
     importMode: RESOURCE_ANY,
     instanceMode: IMPORT_INSTANCE,
-    ...(!onlyCode ? { calculateHash: 'resolve-read-model-projection-hash' } : {}),
+    ...(!onlyCode
+      ? { calculateHash: 'resolve-read-model-projection-hash' }
+      : {}),
     imports,
     constants,
   })
   exports.push(`, projection: projection_${index}`)
-  
-  if(!onlyCode) {
+
+  if (!onlyCode) {
     exports.push(`, invariantHash: projection_${index}_hash`)
 
     importResource({
@@ -102,7 +104,6 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
   }
 
   exports.push(`}`, ``)
-
 
   exports.push(`export default readModel`)
 

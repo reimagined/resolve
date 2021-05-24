@@ -72,15 +72,18 @@ const subscribe: ExternalMethods['subscribe'] = async (
       }
     }
 
-    if(readModelSource != null && readModelSource.constructor === String) {
+    if (readModelSource != null && readModelSource.constructor === String) {
       const procedureNameAsId = escapeId(`PROC-${readModelName}`)
       while (true) {
         try {
-          await inlineLedgerExecuteStatement(pool, `
+          await inlineLedgerExecuteStatement(
+            pool,
+            `
             CREATE OR REPLACE FUNCTION ${databaseNameAsId}.${procedureNameAsId}(mode BOOL, input JSON) RETURNS JSON AS $$
               ${readModelSource}
             $$ LANGUAGE plv8;
-          `)
+          `
+          )
 
           break
         } catch (err) {
@@ -90,7 +93,6 @@ const subscribe: ExternalMethods['subscribe'] = async (
         }
       }
     }
-
   } finally {
     pool.activePassthrough = false
   }

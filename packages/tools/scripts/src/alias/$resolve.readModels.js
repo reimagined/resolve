@@ -13,7 +13,9 @@ export default ({ resolveConfig, isClient }) => {
 
   for (let index = 0; index < resolveConfig.readModels.length; index++) {
     const readModelName = resolveConfig.readModels[index].name
-    imports.push(`import readModel_${index} from "$resolve.readModel?readModelName=${readModelName}"`)
+    imports.push(
+      `import readModel_${index} from "$resolve.readModel?readModelName=${readModelName}"`
+    )
     constants.push(`readModels.push(readModel_${index})`)
   }
 

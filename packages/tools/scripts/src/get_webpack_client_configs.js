@@ -3,6 +3,7 @@ import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin'
 
 import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
 import getModulesDirs from './get_modules_dirs'
+import { OPTIONAL_ASSET_PREFIX } from './constants'
 
 const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
   const targetMode = resolveConfig.target
@@ -116,9 +117,9 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
       },
       plugins: [...getBaseClientConfig(true).plugins, new EsmWebpackPlugin()],
     },
-    ...resolveConfig.readModels.map(({name}) => ({
+    ...resolveConfig.readModels.map(({ name }) => ({
       ...getBaseClientConfig(false),
-      name: `Read-model chunks [${name}]`,
+      name: `${OPTIONAL_ASSET_PREFIX} Read-model adapter-inline chunk ${name}`,
       entry: {
         [`common/${targetMode}-entry/read-model-${name}.js`]: `${path.resolve(
           __dirname,
@@ -135,13 +136,10 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
         library: '__READ_MODEL_ENTRY__',
       },
       plugins: [...getBaseClientConfig(false).plugins],
-      stats: {
-        all: false
-      },
       mode: 'production',
       devtool: undefined,
       target: 'node',
-    }))
+    })),
   ]
 
   attachWebpackConfigsClientEntries(

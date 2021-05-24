@@ -650,7 +650,7 @@ const operationMethods = {
       readModelName,
       parameters.subscriptionOptions.eventTypes,
       parameters.subscriptionOptions.aggregateIds,
-      pool.readModelSource
+      pool.readModelSource,
     ]
   ),
 
@@ -673,7 +673,7 @@ const operationMethods = {
       readModelName,
       parameters.subscriptionOptions.eventTypes,
       parameters.subscriptionOptions.aggregateIds,
-      pool.readModelSource
+      pool.readModelSource,
     ]
   ),
 
@@ -773,7 +773,7 @@ const wrapReadModel = ({
     eventstoreAdapter,
     get readModelSource() {
       return readModelSources[interop.name]
-    }
+    },
   }
 
   const api = {
