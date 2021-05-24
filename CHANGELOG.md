@@ -8,6 +8,10 @@
 
 - Eventstore adapter: saveEvent now returns the next cursor, add getCursorUntilEventTypes [\#1878](https://github.com/reimagined/resolve/pull/1878)
 
+**Bug fixes:**
+
+- Can't pass timestamp to givenEvents events [\#1862](https://github.com/reimagined/resolve/issues/1862)
+
 ## [V0.30.3](https://github.com/reimagined/resolve/tree/V0.30.3) (2021-05-17)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.2...V0.30.3)
