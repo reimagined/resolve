@@ -2,15 +2,19 @@ import {
   ConcurrentError,
   InputEvent,
   EventstoreFrozenError,
+  SavedEvent,
+  threadArrayToCursor,
+  initThreadArray,
 } from '@resolve-js/eventstore-base'
 
 import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'
+import assert from 'assert'
 
 const saveEvent = async (
   pool: AdapterPool,
   event: InputEvent
-): Promise<void> => {
+): Promise<string> => {
   const {
     databaseName,
     eventsTableName,
@@ -44,7 +48,7 @@ const saveEvent = async (
     savingEvent: while (true) {
       try {
         // prettier-ignore
-        await executeStatement(
+        const rows = (await executeStatement(
           `WITH "freeze_check" AS (
               SELECT 0 AS "freeze_zero" WHERE (
                 (SELECT 1 AS "EventStoreIsFrozen")
@@ -79,7 +83,7 @@ const saveEvent = async (
                 SELECT "threadId" FROM "vector_id" LIMIT 1
               )
               RETURNING *
-            ) INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
+            ), "insert_event" AS (INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
               "threadId",
               "threadCounter",
               "timestamp",
@@ -98,9 +102,21 @@ const saveEvent = async (
               ),
               ${serializedEvent},
               ${byteLength}
-            )`
-        )
-        break
+            )) SELECT "threadId", "threadCounter",
+            (CASE WHEN (SELECT "threadId" FROM "vector_id" LIMIT 1) = "threadId" THEN "threadCounter"+1
+              ELSE "threadCounter" END) AS "newThreadCounter"
+            FROM ${databaseNameAsId}.${threadsTableAsId}
+            ORDER BY "threadId" ASC`
+        )) as Array<{
+          threadId: SavedEvent['threadId']
+          newThreadCounter: SavedEvent['threadCounter']
+        }>
+        assert.strictEqual(rows.length, 256, 'Thread table must have 256 rows')
+        const threadCounters = initThreadArray()
+        for (const row of rows) {
+          threadCounters[row.threadId] = row.newThreadCounter
+        }
+        return threadArrayToCursor(threadCounters)
       } catch (error) {
         if (isTimeoutError(error)) {
           while (true) {

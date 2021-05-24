@@ -538,6 +538,11 @@ export interface AdapterFunctions<
     ConnectedProps,
     NonNullable<Adapter['resetReplication']>
   >
+
+  getCursorUntilEventTypes?: PoolMethod<
+    ConnectedProps,
+    NonNullable<Adapter['getCursorUntilEventTypes']>
+  >
 }
 
 export interface Adapter {
@@ -545,7 +550,7 @@ export interface Adapter {
   importEvents: (options?: Partial<ImportOptions>) => ImportEventsStream
   exportEvents: (options?: Partial<ExportOptions>) => ExportEventsStream
   getLatestEvent: (filter: EventFilter) => Promise<SavedEvent | null>
-  saveEvent: (event: InputEvent) => Promise<void>
+  saveEvent: (event: InputEvent) => Promise<string>
   init: () => Promise<void>
   drop: () => Promise<void>
   dispose: () => Promise<void>
@@ -614,4 +619,9 @@ export interface Adapter {
   setReplicationPaused?: (pause: boolean) => Promise<void>
   getReplicationState?: () => Promise<ReplicationState>
   resetReplication?: () => Promise<void>
+
+  getCursorUntilEventTypes?: (
+    cursor: Cursor,
+    untilEventTypes: Array<InputEvent['type']>
+  ) => Promise<string>
 }
