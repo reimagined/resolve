@@ -4,7 +4,8 @@ const resubscribe: ExternalMethods['resubscribe'] = async (
   pool,
   readModelName,
   eventTypes,
-  aggregateIds
+  aggregateIds,
+  readModelSource
 ) => {
   const {
     schemaName,

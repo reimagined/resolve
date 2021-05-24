@@ -116,25 +116,32 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
       },
       plugins: [...getBaseClientConfig(true).plugins, new EsmWebpackPlugin()],
     },
-    {
+    ...resolveConfig.readModels.map(({name}) => ({
       ...getBaseClientConfig(false),
-      name: `Read-model chunks [${resolveConfig.readModels.map(({name}) => name).join(',')}]`,
-      entry: resolveConfig.readModels.reduce((acc, {name}) => Object.assign(acc, {
+      name: `Read-model chunks [${name}]`,
+      entry: {
         [`common/${targetMode}-entry/read-model-${name}.js`]: `${path.resolve(
           __dirname,
-          './alias/$resolve.readModel.js'
-        )}?readModelName=${name}&onlyCode=true`,
-      }), {}),
+          './alias/$resolve.readModelProcedure.js'
+        )}?readModelName=${name}`,
+      },
+      optimization: {
+        ...getBaseClientConfig(false).optimization,
+        noEmitOnErrors: true,
+      },
       output: {
         ...getBaseClientConfig(false).output,
         libraryTarget: 'var',
         library: '__READ_MODEL_ENTRY__',
       },
       plugins: [...getBaseClientConfig(false).plugins],
+      stats: {
+        all: false
+      },
       mode: 'production',
       devtool: undefined,
       target: 'node',
-    },
+    }))
   ]
 
   attachWebpackConfigsClientEntries(

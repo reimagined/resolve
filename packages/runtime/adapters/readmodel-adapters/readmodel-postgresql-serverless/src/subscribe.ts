@@ -4,7 +4,8 @@ const subscribe: ExternalMethods['subscribe'] = async (
   pool,
   readModelName,
   eventTypes,
-  aggregateIds
+  aggregateIds,
+  readModelSource
 ) => {
   const {
     schemaName,
@@ -62,6 +63,7 @@ const subscribe: ExternalMethods['subscribe'] = async (
          }
       `
         )
+
         break
       } catch (err) {
         if (!(err instanceof PassthroughError)) {
@@ -69,6 +71,26 @@ const subscribe: ExternalMethods['subscribe'] = async (
         }
       }
     }
+
+    if(readModelSource != null && readModelSource.constructor === String) {
+      const procedureNameAsId = escapeId(`PROC-${readModelName}`)
+      while (true) {
+        try {
+          await inlineLedgerExecuteStatement(pool, `
+            CREATE OR REPLACE FUNCTION ${databaseNameAsId}.${procedureNameAsId}(mode BOOL, input JSON) RETURNS JSON AS $$
+              ${readModelSource}
+            $$ LANGUAGE plv8;
+          `)
+
+          break
+        } catch (err) {
+          if (!(err instanceof PassthroughError)) {
+            break
+          }
+        }
+      }
+    }
+
   } finally {
     pool.activePassthrough = false
   }

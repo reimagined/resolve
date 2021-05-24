@@ -2,7 +2,8 @@ import type { ExternalMethods } from './types'
 
 const unsubscribe: ExternalMethods['unsubscribe'] = async (
   pool,
-  readModelName
+  readModelName,
+  readModelSource
 ) => {
   const {
     schemaName,

@@ -283,16 +283,22 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     pool: AdapterPool,
     readModelName: string,
     eventTypes: Array<ReadModelEvent['type']> | null,
-    aggregateIds: Array<ReadModelEvent['aggregateId']> | null
+    aggregateIds: Array<ReadModelEvent['aggregateId']> | null,
+    readModelSource?: string
   ): Promise<void>
 
-  unsubscribe(pool: AdapterPool, readModelName: string): Promise<void>
+  unsubscribe(
+    pool: AdapterPool,
+    readModelName: string,
+    readModelSource?: string
+  ): Promise<void>
 
   resubscribe(
     pool: AdapterPool,
     readModelName: string,
     eventTypes: Array<ReadModelEvent['type']> | null,
-    aggregateIds: Array<ReadModelEvent['aggregateId']> | null
+    aggregateIds: Array<ReadModelEvent['aggregateId']> | null,
+    readModelSource?: string
   ): Promise<void>
 
   resume(

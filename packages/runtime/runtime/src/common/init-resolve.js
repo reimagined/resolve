@@ -108,6 +108,7 @@ const initResolve = async (resolve) => {
     applicationName,
     eventstoreAdapter,
     readModelConnectors,
+    readModelSources,
     performanceTracer,
     getVacantTimeInMillis,
     monitoring,
