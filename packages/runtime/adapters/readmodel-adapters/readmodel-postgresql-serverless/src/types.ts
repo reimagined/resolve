@@ -5,6 +5,7 @@ import type {
   AdapterOperations,
   AdapterConnection,
   AdapterImplementation,
+  MatchTypeConditional,
   StoreApi,
   PerformanceTracerLike,
   SplitNestedPathMethod,
@@ -14,7 +15,6 @@ import type {
   ObjectFixedKeys,
   OmitObject,
   JsonPrimitive,
-  IfEquals,
 } from '@resolve-js/readmodel-base'
 
 import type RDSDataService from 'aws-sdk/clients/rdsdataservice'
@@ -44,30 +44,25 @@ export type InlineLedgerExecuteTransactionMethodParameters<
 > = [
   pool: AdapterPool,
   method: MethodName,
-  ...args: IfEquals<
+  ...args: MatchTypeConditional<
     MethodName,
-    'begin',
-    [],
-    IfEquals<
-      MethodName,
-      'commit',
-      [transactionId: string],
-      IfEquals<MethodName, 'rollback', [transactionId: string], never>
-    >
+    [
+      ['begin', []],
+      ['commit', [transactionId: string]],
+      ['rollback', [transactionId: string]]
+    ]
   >
 ]
+
 export type InlineLedgerExecuteTransactionMethodReturnType<
   MethodName extends InlineLedgerExecuteTransactionMethodNames
-> = IfEquals<
+> = MatchTypeConditional<
   MethodName,
-  'begin',
-  string,
-  IfEquals<
-    MethodName,
-    'commit',
-    null | undefined,
-    IfEquals<MethodName, 'rollback', null | undefined, never>
-  >
+  [
+    ['begin', string],
+    ['commit', null | undefined],
+    ['rollback', null | undefined]
+  ]
 >
 
 export type InlineLedgerExecuteTransactionMethod = <
@@ -166,6 +161,29 @@ export type AdapterOptions = CommonAdapterOptions & {
 
 export type MaybeInitMethod = (pool: AdapterPool) => Promise<void>
 
+export type MakeSqlQueryMethodTargetParameters<
+  T extends keyof CurrentStoreApi
+> = Parameters<CurrentStoreApi[T]> extends [infer _, infer __, ...infer Args] // eslint-disable-line @typescript-eslint/no-unused-vars
+  ? Args
+  : never
+
+export type MakeSqlQueryMethod = <T extends keyof CurrentStoreApi>(
+  methods: {
+    buildUpsertDocument: BuildUpsertDocumentMethod
+    searchToWhereExpression: SearchToWhereExpressionMethod
+    updateToSetExpression: UpdateToSetExpressionMethod
+    makeNestedPath: MakeNestedPathMethod
+    splitNestedPath: SplitNestedPathMethod
+    escapeId: EscapeableMethod
+    escapeStr: EscapeableMethod
+    readModelName: string
+    schemaName: string
+    tablePrefix: string
+  },
+  operation: T,
+  ...args: MakeSqlQueryMethodTargetParameters<T>
+) => string
+
 export type InternalMethods = {
   inlineLedgerExecuteTransaction: InlineLedgerExecuteTransactionMethod
   inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod
@@ -175,8 +193,10 @@ export type InternalMethods = {
   searchToWhereExpression: SearchToWhereExpressionMethod
   updateToSetExpression: UpdateToSetExpressionMethod
   PassthroughError: PassthroughErrorFactory
+  makeNestedPath: MakeNestedPathMethod
   generateGuid: GenerateGuidMethod
   dropReadModel: DropReadModelMethod
+  makeSqlQuery: MakeSqlQueryMethod
   escapeId: EscapeableMethod
   escapeStr: EscapeableMethod
   maybeInit: MaybeInitMethod
@@ -214,7 +234,6 @@ export type CoercerMethod = (value: {
 export type AdapterPool = CommonAdapterPool & {
   hash512: (str: string) => string
   performanceTracer: PerformanceTracerLike
-  makeNestedPath: MakeNestedPathMethod
   rdsDataService: InstanceType<LibDependencies['RDSDataService']>
   dbClusterOrInstanceArn: RDSDataService.Arn
   awsSecretStoreArn: RDSDataService.Arn

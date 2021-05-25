@@ -574,6 +574,30 @@ export type IfEquals<T, U, Y = unknown, N = never> = (<G>() => G extends T
 
 export type IsTypeLike<T, B> = IfEquals<Extract<T, B>, T>
 
+export type MatchTypeConditional<
+  M extends any,
+  V extends Array<[any, any]>,
+  D = never
+> = V extends [[infer A, infer B], ...infer T]
+  ? T extends Array<[any, any]>
+    ? IfEquals<M, A, true, false> extends true
+      ? B
+      : MatchTypeConditional<M, T, D>
+    : D
+  : D
+
+export type MatchTypeConditionalLike<
+  M extends any,
+  V extends Array<[any, any]>,
+  D = never
+> = V extends [[infer A, infer B], ...infer T]
+  ? T extends Array<[any, any]>
+    ? IfEquals<Extract<M, A>, M, true, false> extends true
+      ? B
+      : MatchTypeConditionalLike<M, T, D>
+    : D
+  : D
+
 export type ExtractNewable<F extends NewableLike> = F extends new (
   ...args: infer Args
 ) => infer Result
@@ -591,36 +615,17 @@ export type MakeNewableFunction<F extends FunctionLike> = F extends (
   ...args: infer Args
 ) => infer Result
   ? T extends object
-    ? IfEquals<
+    ? MatchTypeConditionalLike<
         Result,
-        T,
-        new (...args: Args) => T,
-        IfEquals<
-          Result,
-          null,
-          new (...args: Args) => T,
-          IfEquals<
-            Result,
-            undefined,
-            new (...args: Args) => T,
-            IfEquals<
-              Result,
-              boolean,
-              new (...args: Args) => T,
-              IfEquals<
-                Result,
-                string,
-                new (...args: Args) => T,
-                IfEquals<
-                  Result,
-                  number,
-                  new (...args: Args) => T,
-                  IfEquals<Result, void, new (...args: Args) => T, never>
-                >
-              >
-            >
-          >
-        >
+        [
+          [T, new (...args: Args) => T],
+          [null, new (...args: Args) => T],
+          [undefined, new (...args: Args) => T],
+          [boolean, new (...args: Args) => T],
+          [number, new (...args: Args) => T],
+          [string, new (...args: Args) => T],
+          [void, new (...args: Args) => T]
+        ]
       >
     : never
   : never

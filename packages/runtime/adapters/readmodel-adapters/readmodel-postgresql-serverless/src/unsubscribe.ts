@@ -77,6 +77,24 @@ const unsubscribe: ExternalMethods['unsubscribe'] = async (
         }
       }
     }
+
+    if (readModelSource != null && readModelSource.constructor === String) {
+      const procedureNameAsId = escapeId(`PROC-${readModelName}`)
+      while (true) {
+        try {
+          await inlineLedgerExecuteStatement(
+            pool,
+            `DROP FUNCTION ${databaseNameAsId}.${procedureNameAsId}`
+          )
+
+          break
+        } catch (err) {
+          if (!(err instanceof PassthroughError)) {
+            break
+          }
+        }
+      }
+    }
   } finally {
     pool.activePassthrough = false
   }

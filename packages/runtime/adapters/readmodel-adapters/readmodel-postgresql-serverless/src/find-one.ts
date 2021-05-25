@@ -9,35 +9,41 @@ const findOne: CurrentStoreApi['findOne'] = async (
 ) => {
   const {
     inlineLedgerExecuteStatement,
-    escapeId,
-    escapeStr,
-    tablePrefix,
+    makeSqlQuery,
+    convertResultRow,
+    updateToSetExpression,
+    buildUpsertDocument,
     searchToWhereExpression,
     makeNestedPath,
     splitNestedPath,
-    convertResultRow,
+    escapeId,
+    escapeStr,
+    tablePrefix,
     schemaName,
   } = pool
 
-  const searchExpr = searchToWhereExpression(
+  const inputQuery = makeSqlQuery(
+    {
+      searchToWhereExpression,
+      updateToSetExpression,
+      buildUpsertDocument,
+      splitNestedPath,
+      makeNestedPath,
+      escapeId,
+      escapeStr,
+      readModelName,
+      schemaName,
+      tablePrefix,
+    },
+    'findOne',
+    tableName,
     searchExpression,
-    escapeId,
-    escapeStr,
-    makeNestedPath,
-    splitNestedPath
+    fieldList
   )
-
-  const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   const rows = (await inlineLedgerExecuteStatement(
     pool,
-    `SELECT * FROM ${escapeId(schemaName)}.${escapeId(
-      `${tablePrefix}${tableName}`
-    )}
-    ${inlineSearchExpr}
-    OFFSET 0
-    LIMIT 1;`,
+    inputQuery,
     inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
   )) as Array<MarshalledRowLike>
 

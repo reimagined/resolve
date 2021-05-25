@@ -8,12 +8,13 @@ const subscribe: ExternalMethods['subscribe'] = async (
   readModelSource
 ) => {
   const {
-    schemaName,
-    escapeId,
-    escapeStr,
     inlineLedgerForceStop,
     inlineLedgerExecuteStatement,
     PassthroughError,
+    escapeId,
+    escapeStr,
+    schemaName,
+    tablePrefix,
   } = pool
 
   const databaseNameAsId = escapeId(schemaName)
@@ -78,9 +79,12 @@ const subscribe: ExternalMethods['subscribe'] = async (
         try {
           await inlineLedgerExecuteStatement(
             pool,
-            `
-            CREATE OR REPLACE FUNCTION ${databaseNameAsId}.${procedureNameAsId}(mode BOOL, input JSON) RETURNS JSON AS $$
+            `CREATE OR REPLACE FUNCTION ${databaseNameAsId}.${procedureNameAsId}(events JSON) RETURNS JSON AS $$
               ${readModelSource}
+              return __READ_MODEL_ENTRY__.default(events, ${JSON.stringify({
+                schemaName,
+                tablePrefix,
+              })})
             $$ LANGUAGE plv8;
           `
           )

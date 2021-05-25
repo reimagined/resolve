@@ -10,68 +10,45 @@ const update: CurrentStoreApi['update'] = async (
 ) => {
   const {
     inlineLedgerExecuteStatement,
-    tablePrefix,
-    escapeId,
-    escapeStr,
-    count,
-    buildUpsertDocument,
-    insert,
-    searchToWhereExpression,
+    makeSqlQuery,
     updateToSetExpression,
+    buildUpsertDocument,
+    searchToWhereExpression,
     makeNestedPath,
     splitNestedPath,
+    escapeId,
+    escapeStr,
+    tablePrefix,
     schemaName,
   } = pool
 
-  const isUpsert = options != null ? !!options.upsert : false
-
-  if (isUpsert) {
-    const foundDocumentsCount = await count(
-      pool,
+  const inputQuery = makeSqlQuery(
+    {
+      searchToWhereExpression,
+      updateToSetExpression,
+      buildUpsertDocument,
+      splitNestedPath,
+      makeNestedPath,
+      escapeId,
+      escapeStr,
       readModelName,
-      tableName,
-      searchExpression
-    )
-
-    if (foundDocumentsCount === 0) {
-      const document = buildUpsertDocument(
-        searchExpression,
-        updateExpression,
-        splitNestedPath
-      )
-      await insert(pool, readModelName, tableName, document)
-      return
-    }
-  }
-
-  const searchExpr = searchToWhereExpression(
+      schemaName,
+      tablePrefix,
+    },
+    'update',
+    tableName,
     searchExpression,
-    escapeId,
-    escapeStr,
-    makeNestedPath,
-    splitNestedPath
-  )
-  const updateExpr = updateToSetExpression(
     updateExpression,
-    escapeId,
-    escapeStr,
-    makeNestedPath,
-    splitNestedPath
+    options
   )
 
-  if (updateExpr.trim() === '') {
-    return
+  if (inputQuery !== '') {
+    await inlineLedgerExecuteStatement(
+      pool,
+      inputQuery,
+      inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
+    )
   }
-
-  const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
-
-  await inlineLedgerExecuteStatement(
-    pool,
-    `UPDATE ${escapeId(schemaName)}.${escapeId(`${tablePrefix}${tableName}`)}
-    SET ${updateExpr} ${inlineSearchExpr};`,
-    inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
-  )
 }
 
 export default update

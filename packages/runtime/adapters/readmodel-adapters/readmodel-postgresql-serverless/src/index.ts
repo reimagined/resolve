@@ -31,11 +31,13 @@ import escapeId from './escape-id'
 import escapeStr from './escape-str'
 import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
+import makeSqlQuery from './make-sql-query'
 
 import PassthroughError from './passthrough-error'
 import inlineLedgerExecuteTransaction from './inline-ledger-execute-transaction'
 import inlineLedgerExecuteStatement from './inline-ledger-execute-statement'
 import inlineLedgerForceStop from './inline-ledger-force-stop'
+import makeNestedPath from './make-nested-path'
 import generateGuid from './generate-guid'
 import maybeInit from './maybe-init'
 
@@ -73,6 +75,8 @@ const internalMethods: InternalMethods = {
   inlineLedgerExecuteTransaction,
   inlineLedgerExecuteStatement,
   inlineLedgerForceStop,
+  makeNestedPath,
+  makeSqlQuery,
   dropReadModel,
   maybeInit,
   escapeId,

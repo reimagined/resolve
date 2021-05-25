@@ -1,19 +1,4 @@
-import type { CurrentConnectMethod, MakeNestedPathMethod } from './types'
-
-const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
-  const jsonPathParts = []
-  for (const part of nestedPath) {
-    if (part == null || part.constructor !== String) {
-      throw new Error('Invalid JSON path')
-    }
-    if (!isNaN(+part)) {
-      jsonPathParts.push(String(+part))
-    } else {
-      jsonPathParts.push(JSON.stringify(part))
-    }
-  }
-  return `{${jsonPathParts.join(',')}}`
-}
+import type { CurrentConnectMethod } from './types'
 
 const connect: CurrentConnectMethod = async (imports, pool, options) => {
   let {
@@ -47,7 +32,6 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     awsSecretStoreArn,
     schemaName: databaseName,
     tablePrefix,
-    makeNestedPath,
     transactionId: null,
     ...imports,
     hash512,

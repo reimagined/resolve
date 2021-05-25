@@ -12,7 +12,7 @@ import wrapOperation from './wrap-operation'
 import { CreateAdapterMethod } from './types'
 export * from './types'
 
-const createAdapter = _createAdapter.bind(null, {
+const baseAdapterImports = {
   PathToolkit,
   makeSplitNestedPath,
   withPerformanceTracer,
@@ -20,6 +20,15 @@ const createAdapter = _createAdapter.bind(null, {
   wrapDisconnect,
   wrapDispose,
   wrapOperation,
-}) as CreateAdapterMethod
+}
+
+const createAdapter = _createAdapter.bind(
+  null,
+  baseAdapterImports
+) as CreateAdapterMethod
+
+const splitNestedPath = makeSplitNestedPath(baseAdapterImports)
 
 export default createAdapter
+
+export { splitNestedPath }
