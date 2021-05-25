@@ -2,7 +2,7 @@ import loaderUtils from 'loader-utils'
 import path from 'path'
 
 import resolveFileOrModule from '../resolve_file_or_module'
-import { message } from '../constants'
+import { message, OPTIONAL_ASSET_ERROR } from '../constants'
 
 export default ({ resolveConfig, isClient }, resourceQuery) => {
   if (!/^\?/.test(resourceQuery)) {
@@ -21,27 +21,26 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     ({ name }) => name === readModelName
   )
   const readModelConnector =
-    readModel != null ? resolveConfig.readModelConnectors[readModel.name] : null
+    readModel != null ? resolveConfig.readModelConnectors[readModel.connectorName] : null
   let wrapProcedureMethodPath = null
   for (const pathPostfix of [
     ['lib', 'wrap-procedure'],
     ['es', 'wrap-procedure'],
   ]) {
     try {
-      wrapProcedureMethodPath = resolveFileOrModule(
-        path.join(readModelConnector.module, ...pathPostfix)
-      )
+      wrapProcedureMethodPath = resolveFileOrModule(path.join(readModelConnector.module, ...pathPostfix))
     } catch (e) {}
     if (wrapProcedureMethodPath != null) {
       break
     }
   }
   if (wrapProcedureMethodPath == null) {
-    throw new Error('Wrap procedure method not found')
+    throw new Error(OPTIONAL_ASSET_ERROR)
   }
 
   const imports = [
-    `import { SynchronousPromise } from 'synchronous-promise'``import currentReadModel from '$resolve.readModel?readModelName=${readModelName}&onlyCode=true'`,
+    `import { SynchronousPromise } from 'synchronous-promise'`,
+    `import currentReadModel from '$resolve.readModel?readModelName=${readModelName}&onlyCode=true'`,
     `import wrapProcedure from ${JSON.stringify(wrapProcedureMethodPath)}`,
   ]
   const constants = [
