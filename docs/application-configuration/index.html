@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Application Configuration · reSolve</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## Overview"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Application Configuration · reSolve"/><meta property="og:type" content="website"/><meta property="og:url" content="https://reimagined.github.io/resolve/"/><meta property="og:description" content="## Overview"/><meta property="og:image" content="https://reimagined.github.io/resolve/img/reSolve400x400-fill.png"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/resolve/undefined"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css"/><script>
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Application Configuration · reSolve</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="This document lists configuration options available for a reSolve application."/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Application Configuration · reSolve"/><meta property="og:type" content="website"/><meta property="og:url" content="https://reimagined.github.io/resolve/"/><meta property="og:description" content="This document lists configuration options available for a reSolve application."/><meta property="og:image" content="https://reimagined.github.io/resolve/img/reSolve400x400-fill.png"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/resolve/undefined"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -67,7 +67,7 @@
 <p>In a new reSolve application, configuration settings are split across the following files for different run targets:</p>
 <ul>
 <li><strong>config.app.js</strong> - Contains general app configuration settings. In this file, you should register the application's aggregates, Read Models and View Models.</li>
-<li><strong>config.cloud.js</strong> - Contains configuration settings that target the <a href="cloud-overview.md">reSolve Cloud</a> environment.</li>
+<li><strong>config.cloud.js</strong> - Contains configuration settings that target the reSolve Cloud environment.</li>
 <li><strong>config.dev.js</strong> - Contains configuration settings that target the development server.</li>
 <li><strong>config.prod.js</strong> - Contains configuration settings that target the production server.</li>
 <li><strong>config.test_functional.js</strong> - Contains configuration settings that target the test environment.</li>
@@ -233,6 +233,140 @@ apiHandlers: [
   }
 }
 </code></pre>
+<p>The following adapters are available:</p>
+<table>
+<thead>
+<tr><th>Adapter Module</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="#eventstore-lite">@resolve-js/eventstore-lite</a></td><td>Used to store events in an SQLite database.</td></tr>
+<tr><td><a href="#eventstore-mysql">@resolve-js/eventstore-mysql</a></td><td>Used to store events in a MySQL database.</td></tr>
+<tr><td><a href="#eventstore-postgresql">@resolve-js/eventstore-postgresql</a></td><td>Used to store events in a PostgreSQL database.</td></tr>
+<tr><td><a href="#eventstore-postgresql-serverless">@resolve-js/eventstore-postgresql-serverless</a></td><td>Used to store events in AWS Aurora PostgreSQL Serverless.</td></tr>
+</tbody>
+</table>
+<h4><a class="anchor" aria-hidden="true" id="eventstore-lite"></a><a href="#eventstore-lite" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>eventstore-lite</h4>
+<p>Used to store events in an SQLite database.</p>
+<p>This adapter supports the following options:</p>
+<table>
+<thead>
+<tr><th>Option Name</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>databaseFile</td><td>Specifies the path to a database file used to store events. If set to <code>':memory:'</code>, all data is stored in memory and is lost when the application is shut down or restarted.</td></tr>
+<tr><td>secretsTableName</td><td>The name of a database table used to store secrets.</td></tr>
+<tr><td>snapshotBucketSize</td><td>The number of events between aggregate snapshots.</td></tr>
+</tbody>
+</table>
+<h5><a class="anchor" aria-hidden="true" id="example-2"></a><a href="#example-2" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h5>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> prodConfig = {
+  <span class="hljs-attr">eventstoreAdapter</span>: {
+    <span class="hljs-attr">module</span>: <span class="hljs-string">'@resolve-js/eventstore-lite'</span>,
+    <span class="hljs-attr">options</span>: {
+      <span class="hljs-attr">databaseFile</span>: <span class="hljs-string">'data/event-store.db'</span>
+      <span class="hljs-comment">// databaseFile: ':memory:'</span>
+    },
+  },
+  ...
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="eventstore-mysql"></a><a href="#eventstore-mysql" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>eventstore-mysql</h4>
+<p>Used to store events in a MySQL database.</p>
+<p>To configure the database connection for this adapter, specify <a href="https://www.npmjs.com/package/mysql2#first-query">MySQL connection setting</a> as the adapter's options. Additionally, you can specify the following options:</p>
+<table>
+<thead>
+<tr><th>Option Name</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>eventsTableName</td><td>The name of a database table used to store events.</td></tr>
+<tr><td>secretsTableName</td><td>The name of a database table used to store secrets.</td></tr>
+<tr><td>snapshotBucketSize</td><td>The number of events between aggregate snapshots.</td></tr>
+</tbody>
+</table>
+<h5><a class="anchor" aria-hidden="true" id="example-3"></a><a href="#example-3" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h5>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> prodConfig = {
+  <span class="hljs-attr">eventstoreAdapter</span>: {
+    <span class="hljs-attr">module</span>: <span class="hljs-string">'@resolve-js/eventstore-mysql'</span>,
+    <span class="hljs-attr">options</span>: {
+      <span class="hljs-attr">host</span>: <span class="hljs-string">'localhost'</span>,
+      <span class="hljs-attr">port</span>: <span class="hljs-number">3306</span>,
+      <span class="hljs-attr">user</span>: <span class="hljs-string">'customUser'</span>,
+      <span class="hljs-attr">password</span>: <span class="hljs-string">'customPassword'</span>,
+      <span class="hljs-attr">database</span>: <span class="hljs-string">'customDatabaseName'</span>,
+      <span class="hljs-attr">eventsTableName</span>: <span class="hljs-string">'customTableName'</span>,
+    }
+  },
+  ...
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="eventstore-postgresql"></a><a href="#eventstore-postgresql" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>eventstore-postgresql</h4>
+<p>Used to store events in a PostgreSQL database.</p>
+<p>This adapter supports the following options:</p>
+<table>
+<thead>
+<tr><th>Option Name</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>database</td><td>The name of a database.</td></tr>
+<tr><td>databaseName</td><td>The name of a PostgreSQL database schema.</td></tr>
+<tr><td>eventsTableName</td><td>The name of a database table used to store events.</td></tr>
+<tr><td>host</td><td>The database server host name.</td></tr>
+<tr><td>password</td><td>The user's password.</td></tr>
+<tr><td>port</td><td>The database server port number.</td></tr>
+<tr><td>secretsTableName</td><td>The name of a database table used to store secrets.</td></tr>
+<tr><td>snapshotBucketSize</td><td>The number of events between aggregate snapshots.</td></tr>
+<tr><td>user</td><td>The user name used to log in to the database server.</td></tr>
+</tbody>
+</table>
+<h5><a class="anchor" aria-hidden="true" id="example-4"></a><a href="#example-4" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h5>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> prodConfig = {
+  <span class="hljs-attr">eventstoreAdapter</span>: {
+    <span class="hljs-attr">module</span>: <span class="hljs-string">'@resolve-js/eventstore-postgresql'</span>,
+    <span class="hljs-attr">options</span>: {
+      <span class="hljs-attr">user</span>: <span class="hljs-string">'user'</span>,
+      <span class="hljs-attr">password</span>: <span class="hljs-string">'password'</span>,
+      <span class="hljs-attr">database</span>: <span class="hljs-string">'postgres'</span>,
+      <span class="hljs-attr">host</span>: <span class="hljs-string">'localhost'</span>,
+      <span class="hljs-attr">port</span>: <span class="hljs-number">5432</span>,
+      <span class="hljs-attr">databaseName</span>: <span class="hljs-string">'public'</span>,
+      <span class="hljs-attr">eventsTableName</span>: <span class="hljs-string">'events'</span>,
+    }
+  },
+  ...
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="eventstore-postgresql-serverless"></a><a href="#eventstore-postgresql-serverless" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>eventstore-postgresql-serverless</h4>
+<p>Used to store events in AWS Aurora PostgreSQL Serverless.</p>
+<p>This adapter supports the following options:</p>
+<table>
+<thead>
+<tr><th>Option Name</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>awsSecretStoreArn</td><td>An AWS secret store's Amazon Resource Name (ARN)</td></tr>
+<tr><td>databaseName</td><td>The name of a database.</td></tr>
+<tr><td>dbClusterOrInstanceArn</td><td>An Amazon Resource Name (ARN) of a database cluster or instance.</td></tr>
+<tr><td>eventsTableName</td><td>The name of a database table used to store events.</td></tr>
+<tr><td>region</td><td>An AWS region.</td></tr>
+<tr><td>secretsTableName</td><td>The name of a database table used to store secrets.</td></tr>
+<tr><td>snapshotBucketSize</td><td>The number of events between aggregate snapshots.</td></tr>
+</tbody>
+</table>
+<h5><a class="anchor" aria-hidden="true" id="example-5"></a><a href="#example-5" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h5>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> prodConfig = {
+  <span class="hljs-attr">eventstoreAdapter</span>: {
+    <span class="hljs-attr">module</span>: <span class="hljs-string">'@resolve-js/eventstore-postgresql-serverless'</span>,
+    <span class="hljs-attr">options</span>: {
+      <span class="hljs-attr">region</span>: <span class="hljs-string">'us-east-1'</span>,
+      <span class="hljs-attr">databaseName</span>: <span class="hljs-string">'databaseName'</span>,
+      <span class="hljs-attr">eventsTableName</span>: <span class="hljs-string">'eventsTableName'</span>,
+      <span class="hljs-attr">awsSecretStoreArn</span>: <span class="hljs-string">'awsSecretStoreArn'</span>,
+      <span class="hljs-attr">dbClusterOrInstanceArn</span>: <span class="hljs-string">'dbClusterOrInstanceArn'</span>,
+    }
+  },
+  ...
+}
+</code></pre>
 <h3><a class="anchor" aria-hidden="true" id="jwtcookie"></a><a href="#jwtcookie" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>jwtCookie</h3>
 <p>Specifies global settings for the application's JWT cookies. The configuration object contains the following fields:</p>
 <table>
@@ -270,12 +404,12 @@ apiHandlers: [
 </thead>
 <tbody>
 <tr><td>name</td><td>The Read Model's name</td></tr>
-<tr><td>projection</td><td>A path to a file that defines Read Model projection.</td></tr>
-<tr><td>resolvers</td><td>A path to a file that defines Read Model resolver.</td></tr>
+<tr><td>projection</td><td>A path to a file that defines a Read Model projection.</td></tr>
+<tr><td>resolvers</td><td>A path to a file that defines a Read Model resolver.</td></tr>
 <tr><td>connectorName</td><td>The name of a connector used to connect the Read Model to its store.</td></tr>
 </tbody>
 </table>
-<h5><a class="anchor" aria-hidden="true" id="example-2"></a><a href="#example-2" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example:</h5>
+<h5><a class="anchor" aria-hidden="true" id="example-6"></a><a href="#example-6" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example:</h5>
 <pre><code class="hljs css language-js">readModels: [
   {
     <span class="hljs-attr">name</span>: <span class="hljs-string">'ShoppingLists'</span>,
@@ -296,7 +430,7 @@ apiHandlers: [
 <tr><td>options</td><td>An object that defines the connector's options as key-value pairs</td></tr>
 </tbody>
 </table>
-<h5><a class="anchor" aria-hidden="true" id="example-3"></a><a href="#example-3" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example:</h5>
+<h5><a class="anchor" aria-hidden="true" id="example-7"></a><a href="#example-7" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example:</h5>
 <pre><code class="hljs css language-js">readModelConnectors: {
   <span class="hljs-attr">default</span>: {
     <span class="hljs-attr">module</span>: <span class="hljs-string">'readmodel-mysql'</span>,
@@ -308,6 +442,129 @@ apiHandlers: [
       <span class="hljs-attr">database</span>: <span class="hljs-string">'ReadModelStoriesSample'</span>
     }
   }
+}
+</code></pre>
+<p>The following connectors are available:</p>
+<table>
+<thead>
+<tr><th>Module Name</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="#readmodel-lite">@resolve-js/readmodel-lite</a></td><td>Used to store Read Model data in an SQLite database.</td></tr>
+<tr><td><a href="#readmodel-mysql">@resolve-js/readmodel-mysql</a></td><td>Used to store Read Model data in a MySQL database.</td></tr>
+<tr><td><a href="#readmodel-postgresql">@resolve-js/readmodel-postgresql</a></td><td>Used to store Read Model data in a PostgreSQL database.</td></tr>
+<tr><td><a href="#readmodel-postgresql-serverless">@resolve-js/readmodel-postgresql-serverless</a></td><td>Used to store Read Model data in Amazon Aurora PostgreSQL Serverless.</td></tr>
+</tbody>
+</table>
+<h4><a class="anchor" aria-hidden="true" id="readmodel-lite"></a><a href="#readmodel-lite" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>readmodel-lite</h4>
+<p>Used to store Read Model data in an SQLite database.</p>
+<p>This connector supports the following options:</p>
+<table>
+<thead>
+<tr><th>Option Name</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>databaseFile</td><td>Specifies the path to a database file used to store Read Model data. If set to <code>':memory:'</code>, all data is stored in memory and is lost when the application is shut down or restarted.</td></tr>
+</tbody>
+</table>
+<h5><a class="anchor" aria-hidden="true" id="example-8"></a><a href="#example-8" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h5>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> prodConfig = {
+  <span class="hljs-attr">readModelConnectors</span>: {
+    <span class="hljs-attr">default</span>: {
+      <span class="hljs-attr">module</span>: <span class="hljs-string">'@resolve-js/readmodel-lite'</span>,
+      <span class="hljs-attr">options</span>: {
+        <span class="hljs-attr">databaseFile</span>: <span class="hljs-string">'data/read-models.db'</span>
+        <span class="hljs-comment">// databaseFile: ':memory:'</span>
+      },
+    },
+  },
+  ...
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="readmodel-mysql"></a><a href="#readmodel-mysql" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>readmodel-mysql</h4>
+<p>Used to store Read Model data in a MySQL database.</p>
+<p>To configure the database connection for this adapter, specify <a href="https://www.npmjs.com/package/mysql2#first-query">MySQL connection setting</a> as the adapter's options.</p>
+<h5><a class="anchor" aria-hidden="true" id="example-9"></a><a href="#example-9" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h5>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> prodConfig = {
+  <span class="hljs-attr">readModelConnectors</span>: {
+    <span class="hljs-attr">default</span>: {
+      <span class="hljs-attr">module</span>: <span class="hljs-string">'@resolve-js/readmodel-mysql'</span>,
+      <span class="hljs-attr">options</span>: {
+        <span class="hljs-attr">host</span>: <span class="hljs-string">'localhost'</span>,
+        <span class="hljs-attr">port</span>: <span class="hljs-number">3306</span>,
+        <span class="hljs-attr">user</span>: <span class="hljs-string">'customUser'</span>,
+        <span class="hljs-attr">password</span>: <span class="hljs-string">'customPassword'</span>,
+        <span class="hljs-attr">database</span>: <span class="hljs-string">'customDatabaseName'</span>
+      }
+    }
+  },
+  ...
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="readmodel-postgresql"></a><a href="#readmodel-postgresql" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>readmodel-postgresql</h4>
+<p>Used to store Read Model data in a PostgreSQL database.</p>
+<p>This connector supports the following options:</p>
+<table>
+<thead>
+<tr><th>Option Name</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>database</td><td>The name of a database.</td></tr>
+<tr><td>databaseName</td><td>The name of a PostgreSQL database schema.</td></tr>
+<tr><td>host</td><td>The database server host name.</td></tr>
+<tr><td>password</td><td>The user's password.</td></tr>
+<tr><td>port</td><td>The database server port number.</td></tr>
+<tr><td>tablePrefix</td><td>Optional table name prefix.</td></tr>
+<tr><td>user</td><td>The user name used to log in to the database server.</td></tr>
+</tbody>
+</table>
+<h5><a class="anchor" aria-hidden="true" id="example-10"></a><a href="#example-10" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h5>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> prodConfig = {
+  <span class="hljs-attr">readModelConnectors</span>: {
+    <span class="hljs-attr">default</span>: {
+      <span class="hljs-attr">module</span>: <span class="hljs-string">'@resolve-js/readmodel-postgresql'</span>,
+      <span class="hljs-attr">options</span>: {
+        <span class="hljs-attr">user</span>: <span class="hljs-string">'user'</span>,
+        <span class="hljs-attr">password</span>: <span class="hljs-string">'password'</span>,
+        <span class="hljs-attr">database</span>: <span class="hljs-string">'postgres'</span>,
+        <span class="hljs-attr">host</span>: <span class="hljs-string">'localhost'</span>,
+        <span class="hljs-attr">port</span>: <span class="hljs-number">5432</span>,
+        <span class="hljs-attr">databaseName</span>: <span class="hljs-string">'public'</span>,
+      }
+    }
+  },
+  ...
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="readmodel-postgresql-serverless"></a><a href="#readmodel-postgresql-serverless" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>readmodel-postgresql-serverless</h4>
+<p>Used to store Read Model data in AWS Aurora PostgreSQL Serverless.</p>
+<p>This connector supports the following options:</p>
+<table>
+<thead>
+<tr><th>Option Name</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>awsSecretStoreArn</td><td>An AWS secret store's Amazon Resource Name (ARN)</td></tr>
+<tr><td>databaseName</td><td>The name of a database.</td></tr>
+<tr><td>dbClusterOrInstanceArn</td><td>An Amazon Resource Name (ARN) of a database cluster or instance.</td></tr>
+<tr><td>region</td><td>An AWS region.</td></tr>
+<tr><td>tablePrefix</td><td>Optional table name prefix.</td></tr>
+</tbody>
+</table>
+<h4><a class="anchor" aria-hidden="true" id="example-11"></a><a href="#example-11" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h4>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> prodConfig = {
+  <span class="hljs-attr">readModelConnectors</span>: {
+    <span class="hljs-attr">default</span>: {
+      <span class="hljs-attr">module</span>: <span class="hljs-string">'@resolve-js/readmodel-postgresql-serverless'</span>,
+      <span class="hljs-attr">options</span>: {
+        <span class="hljs-attr">region</span>: <span class="hljs-string">'us-east-1'</span>,
+        <span class="hljs-attr">databaseName</span>: <span class="hljs-string">'databaseName'</span>,
+        <span class="hljs-attr">awsSecretStoreArn</span>: <span class="hljs-string">'awsSecretStoreArn'</span>,
+        <span class="hljs-attr">dbClusterOrInstanceArn</span>: <span class="hljs-string">'dbClusterOrInstanceArn'</span>,
+      }
+    }
+  },
+  ...
 }
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="sagas"></a><a href="#sagas" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>sagas</h3>
@@ -323,7 +580,7 @@ apiHandlers: [
 <tr><td>encryption</td><td>A path to a file that defines data encryption and decryption logic.</td></tr>
 </tbody>
 </table>
-<h5><a class="anchor" aria-hidden="true" id="example-4"></a><a href="#example-4" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example:</h5>
+<h5><a class="anchor" aria-hidden="true" id="example-12"></a><a href="#example-12" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example:</h5>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> appConfig = {
   <span class="hljs-attr">sagas</span>: [
@@ -357,7 +614,7 @@ apiHandlers: [
 <tr><td>options</td><td>An object that defines the adapter's options as key-value pairs</td></tr>
 </tbody>
 </table>
-<h5><a class="anchor" aria-hidden="true" id="example-5"></a><a href="#example-5" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example:</h5>
+<h5><a class="anchor" aria-hidden="true" id="example-13"></a><a href="#example-13" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example:</h5>
 <!-- prettier-ignore-start -->
 <pre><code class="hljs css language-js">schedulers: {
   <span class="hljs-attr">scheduler</span>: {
@@ -391,7 +648,8 @@ apiHandlers: [
 </thead>
 <tbody>
 <tr><td>name</td><td>The View Model's name.</td></tr>
-<tr><td>projection</td><td>A path to a file that defines View Model projection.</td></tr>
+<tr><td>projection</td><td>A path to a file that defines a View Model projection.</td></tr>
+<tr><td>resolver</td><td>A path to a file that defines a <a href="/resolve/docs/read-side#view-model-resolver">View Model resolver</a>.</td></tr>
 <tr><td>serializeState</td><td>A path to a file that defines a state serializer function.</td></tr>
 <tr><td>deserializeState</td><td>A path to a file that defines a state deserializer function.</td></tr>
 <tr><td>encryption</td><td>A path to a file that defines data encryption and decryption logic.</td></tr>
