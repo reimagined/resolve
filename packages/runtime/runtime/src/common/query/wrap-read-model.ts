@@ -772,7 +772,7 @@ const wrapReadModel = ({
     monitoring: safeMonitoring,
     eventstoreAdapter,
     get readModelSource() {
-      return readModelSources[interop.name]
+      return readModelSources != null ? readModelSources[interop.name] : null
     },
   }
 
