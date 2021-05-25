@@ -126,6 +126,21 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
           './alias/$resolve.readModelProcedure.js'
         )}?readModelName=${name}`,
       },
+      module: {
+        ...getBaseClientConfig(false).module,
+        rules: [
+          getBaseClientConfig(false).module.rules[0],
+          {
+            test: /\.js$/,
+            use: {
+              loader: require.resolve('babel-loader'),
+              options: clientTransformBabelOptions,
+            },
+            exclude: Object.values(alias)
+          },
+          ...getBaseClientConfig(false).module.rules.slice(3)
+        ]
+      },
       optimization: {
         ...getBaseClientConfig(false).optimization,
         noEmitOnErrors: true,
