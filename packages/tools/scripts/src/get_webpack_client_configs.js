@@ -129,16 +129,21 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
       module: {
         ...getBaseClientConfig(false).module,
         rules: [
-          getBaseClientConfig(false).module.rules[0],
           {
             test: /\.js$/,
             use: {
               loader: require.resolve('babel-loader'),
-              options: clientTransformBabelOptions,
+              options: {
+                cacheDirectory: false,
+                babelrc: false,
+                presets: [['@babel/preset-env', {
+                  loose: true
+                }]],
+              },
             },
-            exclude: Object.values(alias)
+            exclude: Object.values(alias),
           },
-          ...getBaseClientConfig(false).module.rules.slice(3)
+          ...getBaseClientConfig(false).module.rules,
         ]
       },
       optimization: {
@@ -151,7 +156,7 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
         library: '__READ_MODEL_ENTRY__',
       },
       plugins: [...getBaseClientConfig(false).plugins],
-      mode: 'production',
+      mode: 'development',//'production',
       devtool: undefined,
       target: 'node',
     })),

@@ -1,6 +1,6 @@
 //eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import * as PathToolkit from 'path-toolkit'
+import PathToolkit from 'path-toolkit'
 
 import _createAdapter from './create-adapter'
 import makeSplitNestedPath from './make-split-nested-path'
