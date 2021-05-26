@@ -7,8 +7,6 @@ import {
 } from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 
-//const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
-
 const loadEventsByCursor = async (
   { database, escapeId, escape, eventsTableName, shapeEvent }: AdapterPool,
   filter: CursorFilter

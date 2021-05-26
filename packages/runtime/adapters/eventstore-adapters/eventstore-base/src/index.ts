@@ -139,6 +139,7 @@ export {
   EventThreadData,
   Cursor,
   EventsWithCursor,
+  EventWithCursor,
   EventFilter,
   ReplicationStatus,
   ReplicationState,
