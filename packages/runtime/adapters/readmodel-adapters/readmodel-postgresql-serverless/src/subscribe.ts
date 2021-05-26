@@ -79,9 +79,9 @@ const subscribe: ExternalMethods['subscribe'] = async (
         try {
           await inlineLedgerExecuteStatement(
             pool,
-            `CREATE OR REPLACE FUNCTION ${databaseNameAsId}.${procedureNameAsId}(events JSON) RETURNS JSON AS $$
+            `CREATE OR REPLACE FUNCTION ${databaseNameAsId}.${procedureNameAsId}(input JSON) RETURNS JSON AS $$
               ${readModelSource}
-              return __READ_MODEL_ENTRY__.default(events, ${JSON.stringify({
+              return __READ_MODEL_ENTRY__.default(input, ${JSON.stringify({
                 schemaName,
                 tablePrefix,
               })})

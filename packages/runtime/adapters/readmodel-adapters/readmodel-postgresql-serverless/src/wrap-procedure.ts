@@ -39,6 +39,16 @@ const baseMethods = {
   escapeStr,
 }
 
+const serializeError = (error) =>
+  error != null
+    ? {
+        name: error.name == null ? null : String(error.name),
+        code: error.code == null ? null : String(error.code),
+        message: String(error.message),
+        stack: String(error.stack),
+      }
+    : null
+
 const executeProjection = async (name, options, ...args) => {
   const methods = { ...baseMethods, ...options }
   switch (name) {
@@ -67,29 +77,92 @@ const executeProjection = async (name, options, ...args) => {
   }
 }
 
-const wrapProcedure = (readModel) => (events, options) =>
+const getStoreAndProjection = (readModel, options) => {
+  const { name: readModelName, projection } = readModel
+  const store = new Proxy(
+    {},
+    {
+      get(_, key) {
+        return executeProjection.bind(null, key, {
+          ...options,
+          readModelName,
+        })
+      },
+      set() {
+        throw new Error('Read-model Store API is immutable')
+      },
+    }
+  )
+  return { store, projection }
+}
+
+const wrapProcedure = (readModel) => (input, options) =>
   executeSync(async () => {
+    const { events, maxExecutionTime } = input
     if (!Array.isArray(events)) {
       throw new Error('Provided events is not array')
     }
-    const { name: readModelName, projection } = readModel
-    const store = new Proxy(
+    const { store, projection } = getStoreAndProjection(readModel, options)
+    const getVacantTimeInMillis = ((time) => time - Date.now()).bind(
+      null,
+      Date.now() + maxExecutionTime
+    )
+    const encryptionError = new Error('EncryptionError')
+    const encryption = new Proxy(
       {},
       {
-        get(_, key) {
-          return executeProjection.bind(null, key, {
-            ...options,
-            readModelName,
-          })
+        get() {
+          throw encryptionError
         },
         set() {
-          throw new Error('Read-model Store API is immutable')
+          throw encryptionError
         },
       }
     )
 
-    for (const event of events) {
+    const result = {
+      successEvents: [],
+      failureEvent: null,
+      failureError: null,
+      status: 'OK_ALL',
     }
+    try {
+      for (const event of events) {
+        try {
+          const handler = projection[event.type]
+          if (typeof handler === 'function') {
+            await handler(store, event, encryption)
+          }
+          result.successEvents.push({
+            threadId: event.threadId,
+            threadCounter: event.threadCounter,
+          })
+          if (
+            getVacantTimeInMillis() < 0 &&
+            result.successEvents.length < events.length
+          ) {
+            result.status = 'OK_PARTIAL'
+            break
+          }
+        } catch (error) {
+          if (error === encryptionError) {
+            throw error
+          }
+          result.failureError = serializeError(error)
+          result.failureEvent = event
+          result.status = 'CUSTOM_ERROR'
+          break
+        }
+      }
+    } catch (error) {
+      if (error === encryptionError) {
+        result.status = 'ENCRYPTION_ERROR'
+      } else {
+        result.status = 'CUSTOM_ERROR'
+      }
+    }
+
+    return result
   })
 
 export default wrapProcedure
