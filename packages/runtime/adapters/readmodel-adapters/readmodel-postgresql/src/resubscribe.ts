@@ -4,7 +4,8 @@ const resubscribe: ExternalMethods['resubscribe'] = async (
   pool,
   readModelName,
   eventTypes,
-  aggregateIds
+  aggregateIds,
+  readModelSource
 ) => {
   const {
     PassthroughError,
@@ -96,6 +97,30 @@ const resubscribe: ExternalMethods['resubscribe'] = async (
       } catch (err) {
         if (!(err instanceof PassthroughError)) {
           throw err
+        }
+      }
+    }
+
+    if (readModelSource != null && readModelSource.constructor === String) {
+      const procedureNameAsId = escapeId(`PROC-${readModelName}`)
+      while (true) {
+        try {
+          await inlineLedgerRunQuery(
+            `CREATE OR REPLACE FUNCTION ${databaseNameAsId}.${procedureNameAsId}(input JSON) RETURNS JSON AS $$
+              ${readModelSource}
+              return __READ_MODEL_ENTRY__.default(input, ${JSON.stringify({
+                schemaName,
+                tablePrefix,
+              })})
+            $$ LANGUAGE plv8;
+          `
+          )
+
+          break
+        } catch (err) {
+          if (!(err instanceof PassthroughError)) {
+            break
+          }
         }
       }
     }

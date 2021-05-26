@@ -5,6 +5,7 @@ import type {
   AdapterOperations,
   AdapterConnection,
   AdapterImplementation,
+  MatchTypeConditional,
   StoreApi,
   PerformanceTracerLike,
   SplitNestedPathMethod,
@@ -93,12 +94,27 @@ export type AdapterOptions = CommonAdapterOptions & {
 
 export type MaybeInitMethod = (pool: AdapterPool) => Promise<void>
 
+export type MakeSqlQueryMethodTargetParameters<
+  T extends keyof CurrentStoreApi
+> = Parameters<CurrentStoreApi[T]> extends [infer _, infer __, ...infer Args] // eslint-disable-line @typescript-eslint/no-unused-vars
+  ? Args
+  : never
+
+export type MakeSqlQueryMethod = <T extends keyof CurrentStoreApi>(
+  methods: AdapterPool,
+  readModelName: string,
+  operation: T,
+  ...args: MakeSqlQueryMethodTargetParameters<T>
+) => string
+
 export type InternalMethods = {
   inlineLedgerForceStop: InlineLedgerForceStopMethod
   buildUpsertDocument: BuildUpsertDocumentMethod
   convertResultRow: ConvertResultRowMethod
   searchToWhereExpression: SearchToWhereExpressionMethod
   updateToSetExpression: UpdateToSetExpressionMethod
+  makeNestedPath: MakeNestedPathMethod
+  makeSqlQuery: MakeSqlQueryMethod
   PassthroughError: PassthroughErrorFactory
   generateGuid: GenerateGuidMethod
   dropReadModel: DropReadModelMethod
