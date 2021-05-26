@@ -8,7 +8,7 @@ module.exports={
   "scripts": [
     "https://buttons.github.io/buttons.js"
   ],
-  "favicon": "",
+  "favicon": "img/favicon.ico",
   "customFields": {},
   "onBrokenLinks": "log",
   "onBrokenMarkdownLinks": "log",
@@ -21,7 +21,7 @@ module.exports={
           "showLastUpdateAuthor": true,
           "showLastUpdateTime": true,
           "path": "..\\docs",
-          "sidebarPath": "..\\website\\sidebars.json"
+          "sidebarPath": "..\\v2-website\\sidebars.json"
         },
         "blog": {
           "path": "blog"
@@ -71,7 +71,8 @@ module.exports={
       }
     },
     "algolia": {
-      "indexName": "reimagined_resolve"
+      "indexName": "reimagined_resolve",
+      "apiKey": process.env.ALGOLIA_RESOLVE_API_KEY
     },
     "gtag": {
       "trackingID": "UA-118635726-3"
