@@ -1,7 +1,7 @@
 ---
 id: advanced-techniques
 title: Advanced Techniques
-description: This document describes advanced techniques that can help уou extend your reSolve application's functionality.
+description: "This document describes advanced techniques that can help уou extend your reSolve application's functionality."
 ---
 
 ## Splitting Code Into Chunks

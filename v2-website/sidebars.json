@@ -1,0 +1,38 @@
+{
+  "docs": {
+    "Docs Index": [
+      "index",
+      "introduction",
+      "tutorial",
+      {
+        "type": "subcategory",
+        "label": "Basics",
+        "ids": [
+          "write-side",  
+          "read-side", 
+          "sagas", 
+          "api-handlers",
+          "frontend",
+          "manage-application",
+          "app-structure"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "Guides",
+        "ids": [
+          "advanced-techniques",
+          "authentication-and-authorization",
+          "preparing-to-production",
+          "debugging",
+          "testing",
+          "api-reference",
+          "application-configuration",
+          "contributing"
+        ]
+      }
+    ],
+    "FAQ": ["faq"],
+    "Troubleshooting": ["troubleshooting"]
+  }
+}
