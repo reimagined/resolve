@@ -21,14 +21,18 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     ({ name }) => name === readModelName
   )
   const readModelConnector =
-    readModel != null ? resolveConfig.readModelConnectors[readModel.connectorName] : null
+    readModel != null
+      ? resolveConfig.readModelConnectors[readModel.connectorName]
+      : null
   let wrapProcedureMethodPath = null
   for (const pathPostfix of [
     ['lib', 'wrap-procedure'],
     ['es', 'wrap-procedure'],
   ]) {
     try {
-      wrapProcedureMethodPath = resolveFileOrModule(path.join(readModelConnector.module, ...pathPostfix))
+      wrapProcedureMethodPath = resolveFileOrModule(
+        path.join(readModelConnector.module, ...pathPostfix)
+      )
     } catch (e) {}
     if (wrapProcedureMethodPath != null) {
       break

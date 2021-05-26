@@ -19,12 +19,12 @@ const showBuildInfo = (err, stats) => {
 
   if (stats.hasErrors() && err == null) {
     const statsStr = stats.toString(statsConfig)
-    if(statsStr.indexOf(OPTIONAL_ASSET_ERROR) < 0) {
+    if (statsStr.indexOf(OPTIONAL_ASSET_ERROR) < 0) {
       // eslint-disable-next-line no-console
       console.log(
         '[',
         chalk.yellow(stats.compilation.name),
-        ']' ,
+        ']',
         chalk.yellow(statsStr)
       )
     }

@@ -136,15 +136,20 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
               options: {
                 cacheDirectory: false,
                 babelrc: false,
-                presets: [['@babel/preset-env', {
-                  loose: true
-                }]],
+                presets: [
+                  [
+                    '@babel/preset-env',
+                    {
+                      loose: true,
+                    },
+                  ],
+                ],
               },
             },
             exclude: Object.values(alias),
           },
           ...getBaseClientConfig(false).module.rules,
-        ]
+        ],
       },
       optimization: {
         ...getBaseClientConfig(false).optimization,
@@ -156,7 +161,7 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
         library: '__READ_MODEL_ENTRY__',
       },
       plugins: [...getBaseClientConfig(false).plugins],
-      mode: 'development',//'production',
+      mode: 'production',
       devtool: undefined,
       target: 'node',
     })),
