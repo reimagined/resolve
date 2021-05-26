@@ -23,9 +23,19 @@ const executeSync = (asyncFunc) => {
     throw new Error(`Should not be executed in NodeJS or browser environment`)
   }
   let result = null
+  let isError = false
   void Promise.resolve().then(async () => {
-    result = await asyncFunc()
+    try {
+      result = await asyncFunc()
+    } catch (error) {
+      result = error
+      isError = true
+    }
   })
+  if (isError) {
+    throw result
+  }
+
   return result
 }
 
