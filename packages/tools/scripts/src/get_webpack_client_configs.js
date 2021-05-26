@@ -134,6 +134,7 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
             use: {
               loader: require.resolve('babel-loader'),
               options: {
+                sourceType: 'unambiguous',
                 cacheDirectory: false,
                 babelrc: false,
                 presets: [
@@ -144,9 +145,24 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
                     },
                   ],
                 ],
+                plugins: [
+                  [
+                    '@babel/plugin-transform-runtime',
+                    {
+                      corejs: false,
+                      helpers: true,
+                      regenerator: true,
+                      useESModules: false,
+                    },
+                  ],
+                ],
               },
             },
-            exclude: Object.values(alias),
+            exclude: [
+              ...Object.values(alias),
+              /@babel\/runtime/,
+              /regenerator-runtime/,
+            ],
           },
           ...getBaseClientConfig(false).module.rules,
         ],

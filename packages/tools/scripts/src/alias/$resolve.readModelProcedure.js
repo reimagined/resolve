@@ -26,8 +26,9 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
       : null
   let wrapProcedureMethodPath = null
   for (const pathPostfix of [
-    ['lib', 'wrap-procedure'],
     ['es', 'wrap-procedure'],
+    ['lib', 'wrap-procedure'],
+    ['wrap-procedure'],
   ]) {
     try {
       wrapProcedureMethodPath = resolveFileOrModule(
