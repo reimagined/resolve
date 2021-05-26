@@ -1,5 +1,6 @@
 import type { CurrentStoreApi, MarshalledRowLike, JsonMap } from './types'
 
+const MAX_LIMIT_VALUE = 0x0fffffff | 0
 const LIMIT_REGEX = /Database returned more than the allowed response size limit/i
 const RETRY_LIMIT = Symbol('RETRY_LIMIT')
 
@@ -54,48 +55,55 @@ const find: CurrentStoreApi['find'] = async (
   inputLimit
 ) => {
   const {
-    inlineLedgerExecuteStatement,
-    makeSqlQuery,
-    updateToSetExpression,
-    buildUpsertDocument,
     searchToWhereExpression,
     makeNestedPath,
     splitNestedPath,
+    inlineLedgerExecuteStatement,
     escapeId,
     escapeStr,
     tablePrefix,
     schemaName,
   } = pool
 
-  const inputQuery = makeSqlQuery(
-    {
-      searchToWhereExpression,
-      updateToSetExpression,
-      buildUpsertDocument,
-      splitNestedPath,
-      makeNestedPath,
-      escapeId,
-      escapeStr,
-      readModelName,
-      schemaName,
-      tablePrefix,
-    },
-    'find',
-    tableName,
+  const orderExpression =
+    sort && Object.keys(sort).length > 0
+      ? 'ORDER BY ' +
+        Object.keys(sort)
+          .map((fieldName) => {
+            const [baseName, ...nestedPath] = splitNestedPath(fieldName)
+            const provisionedName =
+              nestedPath.length === 0
+                ? escapeId(baseName)
+                : `${escapeId(baseName)}->'${makeNestedPath(nestedPath)}'`
+            return sort[fieldName] > 0
+              ? `${provisionedName} ASC`
+              : `${provisionedName} DESC`
+          })
+          .join(', ')
+      : ''
+
+  const searchExpr = searchToWhereExpression(
     searchExpression,
-    fieldList,
-    sort,
-    inputSkip,
-    inputLimit
+    escapeId,
+    escapeStr,
+    makeNestedPath,
+    splitNestedPath
   )
 
-  const query = inputQuery.substring(0, inputQuery.length - 36)
-  let skip = parseInt(
-    inputQuery.substring(inputQuery.length - 29, inputQuery.length - 18)
-  )
-  let limit = parseInt(
-    inputQuery.substring(inputQuery.length - 14, inputQuery.length)
-  )
+  const inlineSearchExpr =
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
+
+  const query = `SELECT * FROM ${escapeId(schemaName)}.${escapeId(
+    `${tablePrefix}${tableName}`
+  )}
+  ${inlineSearchExpr}
+  ${orderExpression}
+  `
+
+  const skip = isFinite(+(inputSkip as number)) ? +(inputSkip as number) : 0
+  let limit = isFinite(+(inputLimit as number))
+    ? +(inputLimit as number)
+    : MAX_LIMIT_VALUE
 
   try {
     return await retrieveRows(pool, fieldList, query, skip, limit)

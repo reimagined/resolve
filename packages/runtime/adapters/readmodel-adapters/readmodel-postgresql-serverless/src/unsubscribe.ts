@@ -2,8 +2,7 @@ import type { ExternalMethods } from './types'
 
 const unsubscribe: ExternalMethods['unsubscribe'] = async (
   pool,
-  readModelName,
-  readModelSource
+  readModelName
 ) => {
   const {
     schemaName,
@@ -74,24 +73,6 @@ const unsubscribe: ExternalMethods['unsubscribe'] = async (
       } catch (err) {
         if (!(err instanceof PassthroughError)) {
           throw err
-        }
-      }
-    }
-
-    if (readModelSource != null && readModelSource.constructor === String) {
-      const procedureNameAsId = escapeId(`PROC-${readModelName}`)
-      while (true) {
-        try {
-          await inlineLedgerExecuteStatement(
-            pool,
-            `DROP FUNCTION ${databaseNameAsId}.${procedureNameAsId}`
-          )
-
-          break
-        } catch (err) {
-          if (!(err instanceof PassthroughError)) {
-            break
-          }
         }
       }
     }

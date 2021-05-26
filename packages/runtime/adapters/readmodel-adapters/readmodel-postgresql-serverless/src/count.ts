@@ -8,39 +8,30 @@ const count: CurrentStoreApi['count'] = async (
 ) => {
   const {
     inlineLedgerExecuteStatement,
-    makeSqlQuery,
-    updateToSetExpression,
-    buildUpsertDocument,
-    searchToWhereExpression,
-    makeNestedPath,
-    splitNestedPath,
     escapeId,
     escapeStr,
     tablePrefix,
+    searchToWhereExpression,
+    makeNestedPath,
+    splitNestedPath,
     schemaName,
   } = pool
-
-  const inputQuery = makeSqlQuery(
-    {
-      searchToWhereExpression,
-      updateToSetExpression,
-      buildUpsertDocument,
-      splitNestedPath,
-      makeNestedPath,
-      escapeId,
-      escapeStr,
-      readModelName,
-      schemaName,
-      tablePrefix,
-    },
-    'count',
-    tableName,
-    searchExpression
+  const searchExpr = searchToWhereExpression(
+    searchExpression,
+    escapeId,
+    escapeStr,
+    makeNestedPath,
+    splitNestedPath
   )
+
+  const inlineSearchExpr =
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   const rows = (await inlineLedgerExecuteStatement(
     pool,
-    inputQuery,
+    `SELECT Count(*) AS ${escapeId('Count')}
+    FROM ${escapeId(schemaName)}.${escapeId(`${tablePrefix}${tableName}`)}
+    ${inlineSearchExpr};`,
     inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
   )) as Array<{ Count: number }>
 

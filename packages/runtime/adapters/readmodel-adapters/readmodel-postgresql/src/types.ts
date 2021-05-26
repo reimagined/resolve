@@ -5,7 +5,6 @@ import type {
   AdapterOperations,
   AdapterConnection,
   AdapterImplementation,
-  MatchTypeConditional,
   StoreApi,
   PerformanceTracerLike,
   SplitNestedPathMethod,

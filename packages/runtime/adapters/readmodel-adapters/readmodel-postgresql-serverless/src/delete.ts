@@ -8,39 +8,31 @@ const del: CurrentStoreApi['delete'] = async (
 ) => {
   const {
     inlineLedgerExecuteStatement,
-    makeSqlQuery,
-    updateToSetExpression,
-    buildUpsertDocument,
+    tablePrefix,
+    escapeId,
+    escapeStr,
     searchToWhereExpression,
     makeNestedPath,
     splitNestedPath,
-    escapeId,
-    escapeStr,
-    tablePrefix,
     schemaName,
   } = pool
-
-  const inputQuery = makeSqlQuery(
-    {
-      searchToWhereExpression,
-      updateToSetExpression,
-      buildUpsertDocument,
-      splitNestedPath,
-      makeNestedPath,
-      escapeId,
-      escapeStr,
-      readModelName,
-      schemaName,
-      tablePrefix,
-    },
-    'delete',
-    tableName,
-    searchExpression
+  const searchExpr = searchToWhereExpression(
+    searchExpression,
+    escapeId,
+    escapeStr,
+    makeNestedPath,
+    splitNestedPath
   )
+
+  const inlineSearchExpr =
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   await inlineLedgerExecuteStatement(
     pool,
-    inputQuery,
+    `DELETE FROM ${escapeId(schemaName)}.${escapeId(
+      `${tablePrefix}${tableName}`
+    )}
+    ${inlineSearchExpr};`,
     inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
   )
 }

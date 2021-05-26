@@ -8,39 +8,24 @@ const insert: CurrentStoreApi['insert'] = async (
 ) => {
   const {
     inlineLedgerExecuteStatement,
-    makeSqlQuery,
-    updateToSetExpression,
-    buildUpsertDocument,
-    searchToWhereExpression,
-    makeNestedPath,
-    splitNestedPath,
     escapeId,
     escapeStr,
     tablePrefix,
     schemaName,
   } = pool
-
-  const inputQuery = makeSqlQuery(
-    {
-      searchToWhereExpression,
-      updateToSetExpression,
-      buildUpsertDocument,
-      splitNestedPath,
-      makeNestedPath,
-      escapeId,
-      escapeStr,
-      readModelName,
-      schemaName,
-      tablePrefix,
-    },
-    'insert',
-    tableName,
-    document
-  )
-
   await inlineLedgerExecuteStatement(
     pool,
-    inputQuery,
+    `INSERT INTO ${escapeId(schemaName)}.${escapeId(
+      `${tablePrefix}${tableName}`
+    )}(${Object.keys(document)
+      .map((key) => escapeId(key))
+      .join(', ')})
+      VALUES(${Object.keys(document)
+        .map(
+          (key) => `CAST(${escapeStr(JSON.stringify(document[key]))} AS JSONB)`
+        )
+        .join(', ')});
+    `,
     inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
   )
 }

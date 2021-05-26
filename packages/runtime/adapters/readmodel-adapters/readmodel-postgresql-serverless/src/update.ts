@@ -10,45 +10,68 @@ const update: CurrentStoreApi['update'] = async (
 ) => {
   const {
     inlineLedgerExecuteStatement,
-    makeSqlQuery,
-    updateToSetExpression,
-    buildUpsertDocument,
-    searchToWhereExpression,
-    makeNestedPath,
-    splitNestedPath,
+    tablePrefix,
     escapeId,
     escapeStr,
-    tablePrefix,
+    count,
+    buildUpsertDocument,
+    insert,
+    searchToWhereExpression,
+    updateToSetExpression,
+    makeNestedPath,
+    splitNestedPath,
     schemaName,
   } = pool
 
-  const inputQuery = makeSqlQuery(
-    {
-      searchToWhereExpression,
-      updateToSetExpression,
-      buildUpsertDocument,
-      splitNestedPath,
-      makeNestedPath,
-      escapeId,
-      escapeStr,
+  const isUpsert = options != null ? !!options.upsert : false
+
+  if (isUpsert) {
+    const foundDocumentsCount = await count(
+      pool,
       readModelName,
-      schemaName,
-      tablePrefix,
-    },
-    'update',
-    tableName,
+      tableName,
+      searchExpression
+    )
+
+    if (foundDocumentsCount === 0) {
+      const document = buildUpsertDocument(
+        searchExpression,
+        updateExpression,
+        splitNestedPath
+      )
+      await insert(pool, readModelName, tableName, document)
+      return
+    }
+  }
+
+  const searchExpr = searchToWhereExpression(
     searchExpression,
+    escapeId,
+    escapeStr,
+    makeNestedPath,
+    splitNestedPath
+  )
+  const updateExpr = updateToSetExpression(
     updateExpression,
-    options
+    escapeId,
+    escapeStr,
+    makeNestedPath,
+    splitNestedPath
   )
 
-  if (inputQuery !== '') {
-    await inlineLedgerExecuteStatement(
-      pool,
-      inputQuery,
-      inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
-    )
+  if (updateExpr.trim() === '') {
+    return
   }
+
+  const inlineSearchExpr =
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
+
+  await inlineLedgerExecuteStatement(
+    pool,
+    `UPDATE ${escapeId(schemaName)}.${escapeId(`${tablePrefix}${tableName}`)}
+    SET ${updateExpr} ${inlineSearchExpr};`,
+    inlineLedgerExecuteStatement.SHARED_TRANSACTION_ID
+  )
 }
 
 export default update
