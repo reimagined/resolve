@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.4...HEAD)
+
+**Other changes:**
+
+- saveEvent returns a saved event with the next cursor [\#1879](https://github.com/reimagined/resolve/pull/1879)
+
 ## [V0.30.4](https://github.com/reimagined/resolve/tree/V0.30.4) (2021-05-27)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.3...V0.30.4)
