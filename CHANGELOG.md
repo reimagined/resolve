@@ -1,8 +1,8 @@
 # Changelog
 
-## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+## [V0.30.4](https://github.com/reimagined/resolve/tree/V0.30.4) (2021-05-27)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.3...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.3...V0.30.4)
 
 **New features:**
 
@@ -10,6 +10,7 @@
 
 **Bug fixes:**
 
+- Read models don't work in cloud [\#1880](https://github.com/reimagined/resolve/issues/1880)
 - Can't pass timestamp to givenEvents events [\#1862](https://github.com/reimagined/resolve/issues/1862)
 
 ## [V0.30.3](https://github.com/reimagined/resolve/tree/V0.30.3) (2021-05-17)
