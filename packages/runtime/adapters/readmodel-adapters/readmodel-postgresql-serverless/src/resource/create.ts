@@ -42,7 +42,7 @@ const create: UnboundResourceMethod = async (pool, options) => {
         `__${options.databaseName}__TRX__`
       )}(
         "XaKey" VARCHAR(190) NOT NULL,
-        "XaValue" VARCHAR(190) NOT NULL,
+        "XaValue" VARCHAR(65535) NOT NULL,
         "Timestamp" BIGINT,
         PRIMARY KEY("XaKey")
       )`,
