@@ -20,7 +20,10 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
   const adapter = adapters['save_and_load_testing']
 
   test('should be able to save and load an event', async () => {
-    const returnedCursor = await adapter.saveEvent({
+    const {
+      cursor: returnedCursor,
+      event: savedEvent,
+    } = await adapter.saveEvent({
       aggregateVersion: 1,
       aggregateId: 'ID_1',
       type: 'TYPE_1',
@@ -34,9 +37,12 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
       cursor: null,
     })
     expect(events).toHaveLength(1)
-    expect(events[0].type).toEqual('TYPE_1')
-    expect(events[0].payload).toEqual({ message: 'hello' })
-    expect(events[0].timestamp).toBeGreaterThan(0)
+
+    const loadedEvent = events[0]
+    expect(loadedEvent.type).toEqual('TYPE_1')
+    expect(loadedEvent.payload).toEqual({ message: 'hello' })
+    expect(loadedEvent.timestamp).toBeGreaterThan(0)
+    expect(loadedEvent).toEqual(savedEvent)
     expect(typeof cursor).toBe('string')
     expect(returnedCursor).toEqual(cursor)
   })
@@ -46,11 +52,14 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
 
     for (let i = 0; i < checkCount; ++i) {
       const event = makeTestEvent(i)
-      const nextCursor = await adapter.saveEvent(event)
+      const { cursor: nextCursor, event: savedEvent } = await adapter.saveEvent(
+        event
+      )
       const { events, cursor } = await adapter.loadEvents({
         limit: checkCount + 1,
         cursor: null,
       })
+      expect(events[i + 1]).toEqual(savedEvent)
       expect(nextCursor).toEqual(cursor)
       expect(events).toHaveLength(i + 2)
     }
@@ -81,7 +90,7 @@ describe(`${adapterFactory.name}. Eventstore adapter getCursorUntilEventTypes`, 
       timestamp: 1,
     })
 
-    const endCursor = await adapter.saveEvent({
+    const { cursor: endCursor } = await adapter.saveEvent({
       aggregateVersion: 1,
       aggregateId: 'ID_2',
       type: 'TYPE_1',
@@ -99,13 +108,14 @@ describe(`${adapterFactory.name}. Eventstore adapter getCursorUntilEventTypes`, 
       cursor: null,
     })
 
-    firstStopEventCursor = await adapter.saveEvent({
+    const saveResult = await adapter.saveEvent({
       aggregateVersion: 1,
       aggregateId: 'ID_3',
       type: 'TYPE_2',
       payload: { message: 'hello' },
       timestamp: 1,
     })
+    firstStopEventCursor = saveResult.cursor
     const cursor = await adapter.getCursorUntilEventTypes(null, ['TYPE_2'])
     expect(cursor).toEqual(endCursor)
   })

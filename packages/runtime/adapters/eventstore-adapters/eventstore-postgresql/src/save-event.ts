@@ -1,10 +1,13 @@
 import {
   ConcurrentError,
   InputEvent,
+  EventThreadData,
   EventstoreFrozenError,
   SavedEvent,
+  EventWithCursor,
   threadArrayToCursor,
   initThreadArray,
+  THREAD_COUNT,
 } from '@resolve-js/eventstore-base'
 
 import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
@@ -20,7 +23,7 @@ const saveEvent = async (
     escape,
   }: AdapterPool,
   event: InputEvent
-): Promise<string> => {
+): Promise<EventWithCursor> => {
   while (true) {
     try {
       const serializedEvent = [
@@ -94,22 +97,40 @@ const saveEvent = async (
           ),
           ${serializedEvent},
           ${byteLength}
-        )) SELECT "threadId", "threadCounter",
+        ) RETURNING "timestamp") (SELECT "threadId", 0 AS "timestamp",
         (CASE WHEN (SELECT "threadId" FROM "vector_id" LIMIT 1) = "threadId" THEN "threadCounter"+1
           ELSE "threadCounter" END) AS "newThreadCounter"
         FROM ${databaseNameAsId}.${threadsTableAsId}
-        ORDER BY "threadId" ASC`
+        ORDER BY "threadId" ASC) UNION ALL (SELECT 
+          (SELECT "threadId" FROM "vector_id" LIMIT 1), 
+          (SELECT "timestamp" FROM "insert_event" LIMIT 1),
+          (SELECT "threadCounter" AS "newThreadCounter" FROM "vector_id" LIMIT 1)
+          )`
       )) as Array<{
-        threadId: SavedEvent['threadId']
-        newThreadCounter: SavedEvent['threadCounter']
+        threadId: EventThreadData['threadId']
+        newThreadCounter: EventThreadData['threadCounter']
+        timestamp: SavedEvent['timestamp']
       }>
 
-      assert.strictEqual(rows.length, 256, 'Thread table must have 256 rows')
+      assert.strictEqual(
+        rows.length - 1,
+        THREAD_COUNT,
+        'Thread table must have 256 rows'
+      )
       const threadCounters = initThreadArray()
-      for (const row of rows) {
+      for (let i = 0; i < THREAD_COUNT; ++i) {
+        const row = rows[i]
         threadCounters[row.threadId] = row.newThreadCounter
       }
-      return threadArrayToCursor(threadCounters)
+      return {
+        cursor: threadArrayToCursor(threadCounters),
+        event: {
+          ...event,
+          threadId: +rows[THREAD_COUNT].threadId,
+          threadCounter: +rows[THREAD_COUNT].newThreadCounter,
+          timestamp: +rows[THREAD_COUNT].timestamp,
+        },
+      }
     } catch (error) {
       const errorMessage =
         error != null && error.message != null ? error.message : ''
