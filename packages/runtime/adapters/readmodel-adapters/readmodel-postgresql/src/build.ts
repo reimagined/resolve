@@ -107,6 +107,7 @@ const buildEvents: (
     inputCursor: ReadModelCursor
     readModelLedger: ReadModelLedger
     xaKey: string
+    metricData: any
   },
   ...args: Parameters<ExternalMethods['build']>
 ) => ReturnType<ExternalMethods['build']> = async (
@@ -130,6 +131,8 @@ const buildEvents: (
     inputCursor,
     eventTypes,
     xaKey,
+    metricData,
+    monitoring,
   } = pool
 
   let lastSuccessEvent = null
@@ -138,6 +141,10 @@ const buildEvents: (
   let localContinue = true
   let cursor = inputCursor
 
+  let eventsApplyStartTimestamp = Date.now()
+  let eventCount = 0
+  const firstEventsLoadStartTimestamp = Date.now()
+
   let eventsPromise = eventstoreAdapter
     .loadEvents({
       eventTypes,
@@ -145,7 +152,12 @@ const buildEvents: (
       limit: 100,
       cursor,
     })
-    .then((result) => (result != null ? result.events : []))
+    .then((result) => {
+      metricData.eventBatchLoadTime +=
+        Date.now() - firstEventsLoadStartTimestamp
+
+      return result != null ? result.events : []
+    })
 
   let rootSavePointId = generateGuid(xaKey, 'ROOT')
 
@@ -177,6 +189,8 @@ const buildEvents: (
       events
     )
 
+    const eventsLoadStartTimestamp = Date.now()
+
     eventsPromise = eventstoreAdapter
       .loadEvents({
         eventTypes,
@@ -184,7 +198,10 @@ const buildEvents: (
         limit: 1000,
         cursor: nextCursor,
       })
-      .then((result) => (result != null ? result.events : []))
+      .then((result) => {
+        metricData.eventBatchLoadTime += Date.now() - eventsLoadStartTimestamp
+        return result != null ? result.events : []
+      })
 
     let appliedEventsCount = 0
     try {
@@ -194,7 +211,15 @@ const buildEvents: (
           const handler = await modelInterop.acquireEventHandler(store, event)
           if (handler != null) {
             await inlineLedgerRunQuery(`SAVEPOINT ${savePointId}`)
+
+            const projectionApplyStartTimestamp = Date.now()
+
             await handler()
+            eventCount++
+
+            metricData.pureProjectionApplyTime +=
+              Date.now() - projectionApplyStartTimestamp
+
             await inlineLedgerRunQuery(`RELEASE SAVEPOINT ${savePointId}`)
             lastSuccessEvent = event
           }
@@ -294,6 +319,18 @@ const buildEvents: (
       )
     }
 
+    if (eventCount > 0 && monitoring != null) {
+      const seconds = (Date.now() - eventsApplyStartTimestamp) / 1000
+
+      monitoring
+        .group({ Part: 'ReadModel' })
+        .group({ ReadModel: readModelName })
+        .rate('ReadModelFeedingRate', eventCount, seconds)
+    }
+
+    eventCount = 0
+    eventsApplyStartTimestamp = Date.now()
+
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
     cursor = nextCursor
 
@@ -339,8 +376,15 @@ const build: ExternalMethods['build'] = async (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis
+  getVacantTimeInMillis,
+  ...args
 ) => {
+  const metricData: any = {
+    ...(args as any)[0],
+    eventBatchLoadTime: 0,
+    pureProjectionApplyTime: 0,
+  }
+
   const {
     PassthroughError,
     inlineLedgerRunQuery,
@@ -349,7 +393,28 @@ const build: ExternalMethods['build'] = async (
     escapeId,
     escapeStr,
     generateGuid,
+    monitoring,
   } = basePool
+
+  const now = Date.now()
+
+  const hasSendTime = typeof metricData.sendTime === 'number'
+
+  const groupMonitoring =
+    monitoring != null
+      ? monitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ ReadModel: readModelName })
+      : null
+
+  if (hasSendTime && monitoring != null && groupMonitoring != null) {
+    for (const innerMonitoring of [monitoring, groupMonitoring]) {
+      innerMonitoring.time('EventDelivery', metricData.sendTime)
+      innerMonitoring.timeEnd('EventDelivery', now)
+
+      innerMonitoring.time('EventApply', metricData.sendTime)
+    }
+  }
 
   try {
     basePool.activePassthrough = true
@@ -420,6 +485,7 @@ const build: ExternalMethods['build'] = async (
       inputCursor: cursor,
       readModelLedger,
       xaKey,
+      metricData,
     }
 
     const buildMethod = cursor == null ? buildInit : buildEvents
@@ -447,6 +513,24 @@ const build: ExternalMethods['build'] = async (
     }
   } finally {
     basePool.activePassthrough = false
+
+    if (monitoring != null && groupMonitoring != null) {
+      for (const innerMonitoring of [monitoring, groupMonitoring]) {
+        if (hasSendTime) {
+          innerMonitoring.timeEnd('EventApply')
+        }
+
+        innerMonitoring.duration(
+          'EventBatchLoad',
+          metricData.eventBatchLoadTime
+        )
+
+        innerMonitoring.duration(
+          'EventProjectionApply',
+          metricData.pureProjectionApplyTime
+        )
+      }
+    }
   }
 }
 
