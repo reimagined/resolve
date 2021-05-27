@@ -1,5 +1,22 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.3...HEAD)
+
+**New features:**
+
+- Eventstore adapter: saveEvent now returns the next cursor, add getCursorUntilEventTypes [\#1878](https://github.com/reimagined/resolve/pull/1878)
+
+**Bug fixes:**
+
+- Read models don't work in cloud [\#1880](https://github.com/reimagined/resolve/issues/1880)
+- Can't pass timestamp to givenEvents events [\#1862](https://github.com/reimagined/resolve/issues/1862)
+
+**Other changes:**
+
+- Fix \#1880 / Add test [\#1881](https://github.com/reimagined/resolve/pull/1881)
+
 ## [V0.30.3](https://github.com/reimagined/resolve/tree/V0.30.3) (2021-05-17)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.2...V0.30.3)

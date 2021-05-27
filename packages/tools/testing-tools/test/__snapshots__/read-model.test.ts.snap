@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`givenEvents tests should match snapshot 1`] = `
+Array [
+  Object {
+    "timestamp": 0,
+    "value": "test-1",
+  },
+  Object {
+    "timestamp": 1,
+    "value": "test-2",
+  },
+  Object {
+    "timestamp": 2,
+    "value": "test-3",
+  },
+]
+`;
+
+exports[`givenEvents tests should match snapshot with specified timestamp 1`] = `
+Array [
+  Object {
+    "timestamp": 10,
+    "value": "test-1",
+  },
+  Object {
+    "timestamp": 20,
+    "value": "test-2",
+  },
+  Object {
+    "timestamp": 30,
+    "value": "test-3",
+  },
+]
+`;

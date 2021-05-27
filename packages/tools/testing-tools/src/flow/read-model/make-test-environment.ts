@@ -113,8 +113,6 @@ export const makeTestEnvironment = (
       }
     }
 
-    const eventstoreAdapter = await getEventStore(events)
-
     const errors = []
     let executor = null
     let result: QueryTestResult | null = null
@@ -122,6 +120,8 @@ export const makeTestEnvironment = (
     let isNext = false
 
     try {
+      const eventstoreAdapter = await getEventStore(events)
+
       executor = createQuery({
         applicationName: 'APP_NAME',
         readModelConnectors: {
