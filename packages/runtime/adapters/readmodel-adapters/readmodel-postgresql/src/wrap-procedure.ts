@@ -59,26 +59,60 @@ const serializeError = (error) =>
       }
     : null
 
-const executeProjection = async (name, options, ...args) => {
+const filterFields = (fieldList, inputRow) => {
+  if (fieldList != null && fieldList.constructor !== Object) {
+    throw new Error(
+      'Field list should be an object with enumerated selected fields'
+    )
+  }
+  const row = { ...inputRow }
+
+  const fieldNames = fieldList != null ? Object.keys(fieldList) : []
+  if (fieldList == null || fieldNames.length === 0) {
+    return row
+  }
+
+  const inclusiveMode = fieldList[fieldNames[0]] === 1
+  const resultRow = {}
+
+  for (const key of Object.keys(row)) {
+    if (
+      (inclusiveMode && fieldList.hasOwnProperty(key)) ||
+      (!inclusiveMode && !fieldList.hasOwnProperty(key))
+    ) {
+      resultRow[key] = row[key]
+    }
+  }
+
+  return resultRow
+}
+
+const executeProjection = async (name, options, readModelName, ...args) => {
   const methods = { ...baseMethods, ...options }
   switch (name) {
     case 'defineTable':
     case 'insert':
     case 'update':
     case 'delete': {
-      await plv8.execute(makeSqlQuery(methods, name, ...args))
+      await plv8.execute(makeSqlQuery(methods, readModelName, name, ...args))
       return null
     }
     case 'findOne': {
-      const result = await plv8.execute(makeSqlQuery(methods, name, ...args))
-      return result.map(filterFields.bind(null, args[2]))
-    }
-    case 'find': {
-      const result = await plv8.execute(makeSqlQuery(methods, name, ...args))
+      const result = await plv8.execute(
+        makeSqlQuery(methods, readModelName, name, ...args)
+      )
       return result.length > 0 ? filterFields(args[2], result[0]) : null
     }
+    case 'find': {
+      const result = await plv8.execute(
+        makeSqlQuery(methods, readModelName, name, ...args)
+      )
+      return result.map(filterFields.bind(null, args[2]))
+    }
     case 'count': {
-      const result = await plv8.execute(makeSqlQuery(methods, name, ...args))
+      const result = await plv8.execute(
+        makeSqlQuery(methods, readModelName, name, ...args)
+      )
       return result.length > 0 ? +result[0].Count : 0
     }
     default: {
@@ -93,10 +127,7 @@ const getStoreAndProjection = (readModel, options) => {
     {},
     {
       get(_, key) {
-        return executeProjection.bind(null, key, {
-          ...options,
-          readModelName,
-        })
+        return executeProjection.bind(null, key, options, readModelName)
       },
       set() {
         throw new Error('Read-model Store API is immutable')
