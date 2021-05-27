@@ -579,9 +579,9 @@ Gets an array of events and the next cursor from the store based on the specifie
 
 ##### Arguments
 
-| Argument Name | Description                                                                                                                                                                                                                                                                        |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| eventFilter   | { cursor: string or null, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> } </br> or </br> { startTime?: number, endTime?: number, limit: number, eventsSizeLimit: number, eventTypes: Array<string>, aggregateIds: Array<string> } |
+| Argument Name | Description                                                                                                                                                                                                                                                                                                  |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| eventFilter   | { cursor: string or null, limit: number, eventsSizeLimit: number, eventTypes: Array&lt;string&gt;, aggregateIds: Array&lt;string&gt; } <br /> or <br /> { startTime?: number, endTime?: number, limit: number, eventsSizeLimit: number, eventTypes: Array&lt;string&gt;, aggregateIds: Array&lt;string&gt; } |
 
 ##### Result
 
