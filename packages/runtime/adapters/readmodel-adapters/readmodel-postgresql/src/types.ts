@@ -8,6 +8,7 @@ import type {
   StoreApi,
   PerformanceTracerLike,
   SplitNestedPathMethod,
+  ReadModelLedger,
   JsonMap,
   SearchCondition,
   UpdateCondition,
@@ -192,6 +193,18 @@ export type CurrentAdapterImplementation = AdapterImplementation<
 export type AdminOptions = PGLib.ConnectionConfig & {
   databaseName: string
   userLogin: string
+}
+
+export type ReadModelProcedureLedger = ReadModelLedger & {
+  IsProcedural: boolean
+}
+
+export type ProcedureResult = {
+  status: 'OK_ALL' | 'OK_PARTIAL' | 'CUSTOM_ERROR' | 'DEPENDENCY_ERROR'
+  successEvent: Event | null
+  failureEvent: Event | null
+  failureError: Error | null
+  appliedCount: number
 }
 
 export type BoundResourceMethod = (options: AdminOptions) => Promise<void>

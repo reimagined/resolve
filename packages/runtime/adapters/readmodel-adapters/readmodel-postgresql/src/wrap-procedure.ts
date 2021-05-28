@@ -137,6 +137,16 @@ const getStoreAndProjection = (readModel, options) => {
   return { store, projection }
 }
 
+const DependencyError = function () {
+  Error.call(this)
+  this.name = 'DependencyError'
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, DependencyError)
+  } else {
+    this.stack = new Error().stack
+  }
+}
+
 const wrapProcedure = (readModel) => (input, options) =>
   executeSync(async () => {
     const { events, maxExecutionTime } = input
@@ -148,21 +158,22 @@ const wrapProcedure = (readModel) => (input, options) =>
       null,
       Date.now() + maxExecutionTime
     )
-    const encryptionError = new Error('EncryptionError')
+
     const encryption = new Proxy(
       {},
       {
         get() {
-          throw encryptionError
+          throw new DependencyError('GetEncryption')
         },
         set() {
-          throw encryptionError
+          throw new DependencyError('SetEncryption')
         },
       }
     )
 
     const result = {
-      successEvents: [],
+      appliedCount: 0,
+      successEvent: null,
       failureEvent: null,
       failureError: null,
       status: 'OK_ALL',
@@ -173,20 +184,18 @@ const wrapProcedure = (readModel) => (input, options) =>
           const handler = projection[event.type]
           if (typeof handler === 'function') {
             await handler(store, event, encryption)
+            result.successEvent = event
           }
-          result.successEvents.push({
-            threadId: event.threadId,
-            threadCounter: event.threadCounter,
-          })
+          result.appliedCount++
           if (
             getVacantTimeInMillis() < 0 &&
-            result.successEvents.length < events.length
+            result.appliedCount < events.length
           ) {
             result.status = 'OK_PARTIAL'
             break
           }
         } catch (error) {
-          if (error === encryptionError) {
+          if (error != null && error.name === 'DependencyError') {
             throw error
           }
           result.failureError = serializeError(error)
@@ -196,11 +205,11 @@ const wrapProcedure = (readModel) => (input, options) =>
         }
       }
     } catch (error) {
-      if (error === encryptionError) {
-        result.status = 'ENCRYPTION_ERROR'
-      } else {
-        result.status = 'CUSTOM_ERROR'
-      }
+      result.status = 'DEPENDENCY_ERROR'
+      result.failureError = serializeError(error)
+      result.successEvent = null
+      result.failureEvent = null
+      result.appliedCount = 0
     }
 
     return result

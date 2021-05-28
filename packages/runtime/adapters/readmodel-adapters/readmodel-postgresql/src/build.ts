@@ -1,4 +1,9 @@
-import type { ExternalMethods, ReadModelCursor, ReadModelLedger } from './types'
+import type {
+  ExternalMethods,
+  ReadModelCursor,
+  ReadModelProcedureLedger,
+  ProcedureResult,
+} from './types'
 
 const serializeError = (error: Error & { code: number }) =>
   error != null
@@ -16,7 +21,7 @@ const buildInit: (
     databaseNameAsId: string
     eventTypes: Array<string> | null
     inputCursor: ReadModelCursor
-    readModelLedger: ReadModelLedger
+    readModelLedger: ReadModelProcedureLedger
     xaKey: string
   },
   ...args: Parameters<ExternalMethods['build']>
@@ -65,6 +70,7 @@ const buildInit: (
     if (handler != null) {
       await handler()
     }
+    // TODO Init via plv8
 
     await inlineLedgerRunQuery(
       `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
@@ -105,7 +111,7 @@ const buildEvents: (
     databaseNameAsId: string
     eventTypes: Array<string> | null
     inputCursor: ReadModelCursor
-    readModelLedger: ReadModelLedger
+    readModelLedger: ReadModelProcedureLedger
     xaKey: string
   },
   ...args: Parameters<ExternalMethods['build']>
@@ -121,6 +127,7 @@ const buildEvents: (
 ) => {
   const pool = { ...basePool, ...currentPool }
   const {
+    readModelLedger: { IsProcedural: isProcedural },
     PassthroughError,
     inlineLedgerRunQuery,
     generateGuid,
@@ -129,6 +136,7 @@ const buildEvents: (
     ledgerTableNameAsId,
     inputCursor,
     eventTypes,
+    escapeId,
     xaKey,
   } = pool
 
@@ -187,67 +195,123 @@ const buildEvents: (
       .then((result) => (result != null ? result.events : []))
 
     let appliedEventsCount = 0
-    try {
-      for (const event of events) {
-        const savePointId = generateGuid(xaKey, `${appliedEventsCount}`)
-        try {
-          const handler = await modelInterop.acquireEventHandler(store, event)
-          if (handler != null) {
-            await inlineLedgerRunQuery(`SAVEPOINT ${savePointId}`)
-            await handler()
-            await inlineLedgerRunQuery(`RELEASE SAVEPOINT ${savePointId}`)
-            lastSuccessEvent = event
-          }
-          appliedEventsCount++
+    let regularWorkflow = true
 
-          if (getVacantTimeInMillis() < 0) {
+    if (isProcedural) {
+      try {
+        const procedureResult = (await inlineLedgerRunQuery(
+          `SELECT ${databaseNameAsId}.${escapeId(
+            `PROC-${readModelName}`
+          )}(${escapeStr(
+            JSON.stringify({
+              maxExecutionTime: getVacantTimeInMillis(),
+              events,
+            })
+          )}) AS "Result"`
+        )) as Array<{ Result: ProcedureResult }>
+        const {
+          successEvent,
+          failureEvent,
+          failureError,
+          appliedCount,
+          status,
+        } = procedureResult[0].Result
+        if (status === 'DEPENDENCY_ERROR') {
+          throw new Error(`${failureError}`)
+        }
+
+        appliedEventsCount = appliedCount
+        if (status === 'OK_PARTIAL' || status === 'CUSTOM_ERROR') {
+          nextCursor = eventstoreAdapter.getNextCursor(
+            cursor,
+            events.slice(0, appliedCount)
+          )
+        }
+        if (status === 'OK_ALL' || status === 'OK_PARTIAL') {
+          lastSuccessEvent = successEvent
+        } else if (status === 'CUSTOM_ERROR') {
+          lastFailedEvent = failureEvent
+          lastError = failureError
+        }
+
+        if (getVacantTimeInMillis() < 0) {
+          localContinue = false
+        }
+
+        regularWorkflow = false
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          `Inline procedure execution failed for reason: ${JSON.stringify(
+            serializeError(err)
+          )}`
+        )
+      }
+    }
+
+    if (regularWorkflow) {
+      try {
+        for (const event of events) {
+          const savePointId = generateGuid(xaKey, `${appliedEventsCount}`)
+          try {
+            const handler = await modelInterop.acquireEventHandler(store, event)
+            if (handler != null) {
+              await inlineLedgerRunQuery(`SAVEPOINT ${savePointId}`)
+              await handler()
+              await inlineLedgerRunQuery(`RELEASE SAVEPOINT ${savePointId}`)
+              lastSuccessEvent = event
+            }
+            appliedEventsCount++
+
+            if (getVacantTimeInMillis() < 0) {
+              nextCursor = eventstoreAdapter.getNextCursor(
+                cursor,
+                events.slice(0, appliedEventsCount)
+              )
+              localContinue = false
+              break
+            }
+          } catch (error) {
+            if (error instanceof PassthroughError) {
+              throw error
+            }
+
             nextCursor = eventstoreAdapter.getNextCursor(
               cursor,
               events.slice(0, appliedEventsCount)
             )
-            localContinue = false
+
+            await inlineLedgerRunQuery(
+              `ROLLBACK TO SAVEPOINT ${savePointId};
+              RELEASE SAVEPOINT ${savePointId}
+            `
+            )
+
+            lastFailedEvent = event
+            lastError = error
             break
           }
-        } catch (error) {
-          if (error instanceof PassthroughError) {
-            throw error
-          }
-
-          nextCursor = eventstoreAdapter.getNextCursor(
-            cursor,
-            events.slice(0, appliedEventsCount)
-          )
-
-          await inlineLedgerRunQuery(
-            `ROLLBACK TO SAVEPOINT ${savePointId};
-             RELEASE SAVEPOINT ${savePointId}
-          `
-          )
-
-          lastFailedEvent = event
-          lastError = error
-          break
         }
-      }
-    } catch (originalError) {
-      if (originalError instanceof PassthroughError) {
-        throw originalError
-      }
+      } catch (originalError) {
+        if (originalError instanceof PassthroughError) {
+          throw originalError
+        }
 
-      nextCursor = cursor
-      appliedEventsCount = 0
-      const composedError = new Error(
-        `Fatal inline ledger building error: ${originalError.message}`
-      )
-      composedError.stack = `${composedError.stack}${originalError.stack}`
-      lastError = composedError
-      lastSuccessEvent = null
-      lastFailedEvent = null
-      await inlineLedgerRunQuery(
-        `ROLLBACK TO SAVEPOINT ${rootSavePointId};
-         RELEASE SAVEPOINT ${rootSavePointId}
-      `
-      )
+        nextCursor = cursor
+        appliedEventsCount = 0
+        const composedError = new Error(
+          `Fatal inline ledger building error: ${originalError.message}`
+        )
+        composedError.stack = `${composedError.stack}${originalError.stack}`
+        lastError = composedError
+        lastSuccessEvent = null
+        lastFailedEvent = null
+        await inlineLedgerRunQuery(
+          `ROLLBACK TO SAVEPOINT ${rootSavePointId};
+          RELEASE SAVEPOINT ${rootSavePointId}
+        `
+        )
+      }
     }
 
     if (lastError == null) {
@@ -354,6 +418,7 @@ const build: ExternalMethods['build'] = async (
   try {
     basePool.activePassthrough = true
     const databaseNameAsId = escapeId(schemaName)
+    const databaseNameAsStr = escapeStr(schemaName)
     const ledgerTableNameAsId = escapeId(
       `${tablePrefix}__${schemaName}__LEDGER__`
     )
@@ -381,18 +446,25 @@ const build: ExternalMethods['build'] = async (
           CAST(pg_backend_pid() AS VARCHAR(190))
         )
         RETURNING *
+      ), "UpdateTrx" AS (
+        UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
+        SET "XaKey" = ${escapeStr(xaKey)}
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)}
+        AND CAST(COALESCE((SELECT LEAST(Count("InsertTrx".*), 0) FROM "InsertTrx"), 0) AS BIGINT) = 0
+        AND CAST(COALESCE((SELECT LEAST(Count("CleanTrx".*), 0) FROM "CleanTrx"), 0) AS BIGINT) = 0
+        AND (SELECT Count("MaybeAcquireLock".*) FROM "MaybeAcquireLock") = 1
+        AND "IsPaused" = FALSE
+        AND "Errors" IS NULL
+        RETURNING *
       )
-      UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
-      SET "XaKey" = ${escapeStr(xaKey)}
-      WHERE "EventSubscriber" = ${escapeStr(readModelName)}
-      AND CAST(COALESCE((SELECT LEAST(Count("InsertTrx".*), 0) FROM "InsertTrx"), 0) AS BIGINT) = 0
-      AND CAST(COALESCE((SELECT LEAST(Count("CleanTrx".*), 0) FROM "CleanTrx"), 0) AS BIGINT) = 0
-      AND (SELECT Count("MaybeAcquireLock".*) FROM "MaybeAcquireLock") = 1
-      AND "IsPaused" = FALSE
-      AND "Errors" IS NULL
-      RETURNING *
+      SELECT "UpdateTrx".*, (
+        SELECT Count(*) FROM information_schema.routines
+        WHERE routines.specific_schema=${databaseNameAsStr} AND
+        routines.routine_name = ${escapeStr(`PROC-${readModelName}`)}
+      ) > 0 AS "IsProcedural"
+      FROM "UpdateTrx"
       `
-    )) as Array<ReadModelLedger>
+    )) as Array<ReadModelProcedureLedger>
 
     let readModelLedger = rows.length === 1 ? rows[0] : null
     if (readModelLedger == null || readModelLedger.Errors != null) {
