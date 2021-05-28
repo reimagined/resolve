@@ -7,6 +7,7 @@ import type {
   AdapterImplementation,
   StoreApi,
   PerformanceTracerLike,
+  SplitNestedPathMethod,
   JsonMap,
   SearchCondition,
   UpdateCondition,
@@ -37,7 +38,8 @@ export type InlineLedgerForceStopMethod = (
 
 export type BuildUpsertDocumentMethod = (
   searchExpression: Parameters<StoreApi<CommonAdapterPool>['update']>[3],
-  updateExpression: Parameters<StoreApi<CommonAdapterPool>['update']>[4]
+  updateExpression: Parameters<StoreApi<CommonAdapterPool>['update']>[4],
+  splitNestedPath: SplitNestedPathMethod
 ) => JsonMap
 
 export type RowLike = JsonMap
@@ -52,14 +54,16 @@ export type SearchToWhereExpressionMethod = (
   expression: SearchCondition,
   escapeId: EscapeableMethod,
   escapeStr: EscapeableMethod,
-  makeNestedPath: MakeNestedPathMethod
+  makeNestedPath: MakeNestedPathMethod,
+  splitNestedPath: SplitNestedPathMethod
 ) => string
 
 export type UpdateToSetExpressionMethod = (
   expression: UpdateCondition,
   escapeId: EscapeableMethod,
   escapeStr: EscapeableMethod,
-  makeNestedPath: MakeNestedPathMethod
+  makeNestedPath: MakeNestedPathMethod,
+  splitNestedPath: SplitNestedPathMethod
 ) => string
 
 export interface PassthroughErrorInstance extends Error {
@@ -87,6 +91,8 @@ export type AdapterOptions = CommonAdapterOptions & {
   databaseName: string
 } & PGLib.ConnectionConfig
 
+export type MaybeInitMethod = (pool: AdapterPool) => Promise<void>
+
 export type InternalMethods = {
   inlineLedgerForceStop: InlineLedgerForceStopMethod
   buildUpsertDocument: BuildUpsertDocumentMethod
@@ -98,6 +104,7 @@ export type InternalMethods = {
   dropReadModel: DropReadModelMethod
   escapeId: EscapeableMethod
   escapeStr: EscapeableMethod
+  maybeInit: MaybeInitMethod
 }
 
 export type ArrayOrSingleOrNull<T> = Array<T> | T | null
@@ -166,3 +173,24 @@ export type CurrentAdapterImplementation = AdapterImplementation<
   AdapterPool,
   AdapterOptions
 >
+
+export type AdminOptions = PGLib.ConnectionConfig & {
+  databaseName: string
+  userLogin: string
+}
+
+export type BoundResourceMethod = (options: AdminOptions) => Promise<void>
+
+export type UnboundResourceMethod = (
+  pool: AdminPool,
+  options: AdminOptions
+) => Promise<void>
+
+export type AdminPool = {
+  connect: CurrentAdapterImplementation['connect']
+  disconnect: CurrentAdapterImplementation['disconnect']
+  escapeStr: EscapeableMethod
+  escapeId: EscapeableMethod
+  createResource: BoundResourceMethod
+  destroyResource: BoundResourceMethod
+}

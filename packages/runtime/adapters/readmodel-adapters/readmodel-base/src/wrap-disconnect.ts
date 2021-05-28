@@ -18,7 +18,7 @@ const disconnectImpl = async <
 ): Promise<void> => {
   const adapterPool = pool.adapterPoolMap.get(store)
   if (adapterPool == null) {
-    throw new Error(`Read-model adapter pool is null`)
+    throw new Error(`Read model adapter pool is null`)
   }
   pool.adapterPoolMap.delete(store)
   await disconnect(adapterPool)

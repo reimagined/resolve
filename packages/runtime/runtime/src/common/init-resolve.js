@@ -3,6 +3,7 @@ import createQueryExecutor from '../common/query/index'
 import createSagaExecutor from '../common/saga/index'
 import crypto from 'crypto'
 
+import createNotifyEventSubscribers from './notify-event-subscribers'
 import createOnCommandExecuted from './on-command-executed'
 import createEventSubscriber from './event-subscriber'
 
@@ -34,6 +35,7 @@ const initResolve = async (resolve) => {
   for (const name of Object.keys(readModelConnectorsCreators)) {
     readModelConnectors[name] = readModelConnectorsCreators[name]({
       performanceTracer,
+      monitoring,
     })
   }
 
@@ -48,17 +50,13 @@ const initResolve = async (resolve) => {
   })
 
   const getVacantTimeInMillis = resolve.getVacantTimeInMillis
+  const notifyEventSubscribers = createNotifyEventSubscribers(resolve)
   const onCommandExecuted = createOnCommandExecuted(resolve)
-
-  const domainMonitoring = {
-    error: monitoring?.error,
-    performance: performanceTracer,
-  }
 
   const secretsManager = await eventstoreAdapter.getSecretsManager()
 
   const aggregateRuntime = {
-    monitoring: domainMonitoring,
+    monitoring,
     secretsManager,
     eventstore: eventstoreAdapter,
     hooks: {
@@ -94,11 +92,11 @@ const initResolve = async (resolve) => {
     getVacantTimeInMillis,
     monitoring,
     readModelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
-      monitoring: domainMonitoring,
+      monitoring,
       secretsManager,
     }),
     viewModelsInterop: domainInterop.viewModelDomain.acquireViewModelsInterop({
-      monitoring: domainMonitoring,
+      monitoring,
       eventstore: eventstoreAdapter,
       secretsManager,
     }),
@@ -146,10 +144,12 @@ const initResolve = async (resolve) => {
   )
 
   Object.assign(resolve, {
+    isInitialized: true,
     executeCommand,
     executeQuery,
     executeSaga,
     executeSchedulerCommand,
+    notifyEventSubscribers,
   })
 
   Object.defineProperties(resolve, {

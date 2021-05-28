@@ -9,6 +9,7 @@ const count: CurrentStoreApi['count'] = async (
     searchToWhereExpression,
     makeNestedPath,
     schemaName,
+    splitNestedPath,
   },
   readModelName,
   tableName,
@@ -18,7 +19,8 @@ const count: CurrentStoreApi['count'] = async (
     searchExpression,
     escapeId,
     escapeStr,
-    makeNestedPath
+    makeNestedPath,
+    splitNestedPath
   )
 
   const inlineSearchExpr =

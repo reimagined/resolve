@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/readmodel-base",
-  "version": "0.28.1-alpha",
+  "version": "0.30.4",
   "description": "A base package for reSolve read model adapters",
   "keywords": [
     "cqrs",
@@ -19,11 +19,14 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/readmodel-base",
     "test": "jest --config=../../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
     "@babel/runtime": "7.13.10",
+    "@resolve-js/eventstore-base": "0.30.4",
+    "path-toolkit": "1.2.1",
     "uuid": "8.3.2"
   },
   "devDependencies": {
@@ -31,7 +34,7 @@
     "sinon": "9.2.4"
   },
   "engines": {
-    "node": ">=10.9"
+    "node": ">=12.18"
   },
   "babelCompile": [
     {

@@ -3,6 +3,9 @@ import createReadModelConnector, {
   CommonAdapterPool,
   CommonAdapterOptions,
 } from '../src'
+import makeSplitNestedPath from '../src/make-split-nested-path'
+
+jest.mock('../src/make-split-nested-path', () => jest.fn())
 
 test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
   const implementation: AdapterImplementation<
@@ -14,12 +17,6 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
     subscribe: jest.fn().mockImplementation(async () => void 0),
     unsubscribe: jest.fn().mockImplementation(async () => void 0),
     resubscribe: jest.fn().mockImplementation(async () => void 0),
-    deleteProperty: jest.fn().mockImplementation(async () => void 0),
-    getProperty: jest.fn().mockImplementation(async () => `Value`),
-    listProperties: jest
-      .fn()
-      .mockImplementation(async () => ({ Key: `Value` })),
-    setProperty: jest.fn().mockImplementation(async () => void 0),
     resume: jest.fn().mockImplementation(async () => void 0),
     pause: jest.fn().mockImplementation(async () => void 0),
     reset: jest.fn().mockImplementation(async () => void 0),
@@ -34,10 +31,27 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
     delete: jest.fn().mockImplementation(async () => void 0),
   }
 
-  const adapterPool = { performanceTracer: undefined }
+  const adapterPool = {
+    splitNestedPath: makeSplitNestedPath({} as any),
+  }
   const eventstoreAdapter = {
     loadEvents: jest.fn().mockResolvedValue({ cursor: 'CURSOR', events: [] }),
     getNextCursor: jest.fn().mockReturnValue('CURSOR'),
+    getSecretsManager: jest.fn().mockReturnValue({
+      getSecret: async (id: string): Promise<string | null> => {
+        return ''
+      },
+      setSecret: async (id: string, secret: string): Promise<void> => {
+        return
+      },
+      deleteSecret: async (id: string): Promise<boolean> => {
+        return true
+      },
+    }),
+    gatherSecretsFromEvents: jest.fn().mockReturnValue({
+      existingSecrets: [],
+      deletedSecrets: [],
+    }),
   }
 
   const adapterOptions = {
@@ -50,7 +64,6 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
   })
 
   const getVacantTimeInMillis = jest.fn().mockReturnValue(15000)
-  const provideLedger = jest.fn()
 
   const modelInterop: Parameters<typeof adapter.build>[3] = {
     acquireInitHandler: (
@@ -106,8 +119,7 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
       modelInterop,
       buildStep,
       eventstoreAdapter,
-      getVacantTimeInMillis,
-      provideLedger
+      getVacantTimeInMillis
     )
   })
   await buildStep()
@@ -118,8 +130,7 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
     modelInterop,
     buildStep,
     eventstoreAdapter,
-    getVacantTimeInMillis,
-    provideLedger
+    getVacantTimeInMillis
   )
 
   await modelInterop.acquireInitHandler(store)()
@@ -193,34 +204,6 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
 
   await adapter.status(store, readModelName)
   expect(implementation.status).toBeCalledWith(adapterPool, readModelName)
-
-  await adapter.deleteProperty(store, readModelName, 'key')
-  expect(implementation.deleteProperty).toBeCalledWith(
-    adapterPool,
-    readModelName,
-    'key'
-  )
-
-  await adapter.getProperty(store, readModelName, 'key')
-  expect(implementation.getProperty).toBeCalledWith(
-    adapterPool,
-    readModelName,
-    'key'
-  )
-
-  await adapter.setProperty(store, readModelName, 'key', 'value')
-  expect(implementation.setProperty).toBeCalledWith(
-    adapterPool,
-    readModelName,
-    'key',
-    'value'
-  )
-
-  await adapter.listProperties(store, readModelName)
-  expect(implementation.listProperties).toBeCalledWith(
-    adapterPool,
-    readModelName
-  )
 
   await adapter.unsubscribe(store, readModelName)
   expect(implementation.unsubscribe).toBeCalledWith(adapterPool, readModelName)

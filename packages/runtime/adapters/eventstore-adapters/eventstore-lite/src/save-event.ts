@@ -1,11 +1,20 @@
-import { ConcurrentError, InputEvent } from '@resolve-js/eventstore-base'
+import {
+  ConcurrentError,
+  InputEvent,
+  SavedEvent,
+  EventThreadData,
+  EventWithCursor,
+  threadArrayToCursor,
+  THREAD_COUNT,
+} from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 import { EventstoreFrozenError } from '@resolve-js/eventstore-base'
+import assert from 'assert'
 
 const saveEvent = async (
   pool: AdapterPool,
   event: InputEvent
-): Promise<void> => {
+): Promise<EventWithCursor> => {
   const { eventsTableName, database, escapeId, escape } = pool
   try {
     const currentThreadId = Math.floor(Math.random() * 256)
@@ -53,10 +62,67 @@ const saveEvent = async (
         ${+event.aggregateVersion},
         ${escape(event.type)},
         json(CAST(${serializedPayload} AS BLOB))
-      );
-
-      COMMIT;`
+      );`
     )
+
+    const rows = (await database.all(
+      `SELECT "threadId", MAX("threadCounter") AS "threadCounter", "timestamp" FROM 
+    ${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`
+    )) as Array<{
+      threadId: EventThreadData['threadId']
+      threadCounter: EventThreadData['threadCounter']
+      timestamp: SavedEvent['timestamp']
+    }>
+
+    const threadCounters = new Array<number>(THREAD_COUNT)
+    threadCounters.fill(-1)
+
+    let savedEventThreadCounter: number | undefined
+    let savedEventTimestamp: number | undefined
+
+    for (const row of rows) {
+      threadCounters[row.threadId] = row.threadCounter
+      if (row.threadId === currentThreadId) {
+        savedEventThreadCounter = row.threadCounter
+        savedEventTimestamp = row.timestamp
+      }
+    }
+
+    if (savedEventThreadCounter === undefined) {
+      throw new assert.AssertionError({
+        message: 'Could not find threadCounter of saved event',
+        actual: savedEventThreadCounter,
+        expected: undefined,
+        operator: 'notStrictEqual',
+      })
+    }
+
+    if (savedEventTimestamp === undefined) {
+      throw new assert.AssertionError({
+        message: 'Could not find timestamp of saved event',
+        actual: savedEventTimestamp,
+        expected: undefined,
+        operator: 'notStrictEqual',
+      })
+    }
+
+    const savedEvent: SavedEvent = {
+      ...event,
+      threadId: currentThreadId,
+      threadCounter: savedEventThreadCounter,
+      timestamp: savedEventTimestamp,
+    }
+
+    for (let i = 0; i < threadCounters.length; ++i) {
+      threadCounters[i]++
+    }
+
+    const cursor = threadArrayToCursor(threadCounters)
+    await database.exec('COMMIT;')
+    return {
+      event: savedEvent,
+      cursor,
+    }
   } catch (error) {
     const errorMessage =
       error != null && error.message != null ? error.message : ''

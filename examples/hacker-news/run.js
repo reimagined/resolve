@@ -13,9 +13,11 @@ import {
 import resolveModuleComments from '@resolve-js/module-comments'
 import resolveModuleAuth from '@resolve-js/module-auth'
 import resolveModuleAdmin from '@resolve-js/module-admin'
+import resolveModuleReplication from '@resolve-js/module-replication'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
+import cloudReplicaConfig from './config.cloud.replica'
 import devConfig from './config.dev'
 import devReplicaConfig from './config.dev.replica'
 import prodConfig from './config.prod'
@@ -58,6 +60,8 @@ void (async () => {
       },
     ])
 
+    const moduleReplication = resolveModuleReplication({})
+
     const baseConfig = merge(
       defaultResolveConfig,
       appConfig,
@@ -75,7 +79,12 @@ void (async () => {
 
       case 'dev:replica': {
         const moduleAdmin = resolveModuleAdmin()
-        const resolveConfig = merge(baseConfig, devReplicaConfig, moduleAdmin)
+        const resolveConfig = merge(
+          baseConfig,
+          devReplicaConfig,
+          moduleReplication,
+          moduleAdmin
+        )
         await watch(resolveConfig)
         break
       }
@@ -88,6 +97,16 @@ void (async () => {
 
       case 'cloud': {
         const resolveConfig = merge(baseConfig, cloudConfig)
+        await build(resolveConfig)
+        break
+      }
+
+      case 'cloud:replica': {
+        const resolveConfig = merge(
+          baseConfig,
+          cloudReplicaConfig,
+          moduleReplication
+        )
         await build(resolveConfig)
         break
       }
@@ -174,6 +193,14 @@ void (async () => {
               path: '/api/import_events',
               handler: {
                 module: 'import/import_api_handler.js',
+                options: {},
+              },
+            },
+            {
+              method: 'POST',
+              path: '/api/import_secrets',
+              handler: {
+                module: 'import/import_secret_api_handler.js',
                 options: {},
               },
             },

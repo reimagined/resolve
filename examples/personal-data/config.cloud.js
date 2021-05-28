@@ -31,10 +31,6 @@ const cloudConfig = {
   },
   uploadAdapter: {
     options: {
-      encryptedDeploymentId: declareRuntimeEnv(
-        'RESOLVE_ENCRYPTED_DEPLOYMENT_ID'
-      ),
-      deploymentId: declareRuntimeEnv('RESOLVE_DEPLOYMENT_ID'),
       CDN: declareRuntimeEnv('RESOLVE_UPLOADER_URL'),
       uploaderArn: declareRuntimeEnv('RESOLVE_UPLOADER_LAMBDA_ARN'),
     },

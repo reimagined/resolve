@@ -36,6 +36,9 @@ const wrapTrie = (apiHandlers, rootPath) => {
 
   trie
     .define(getRootBasedUrl(rootPath, '/uploader'))
+    .handle('OPTIONS', uploaderHandler)
+  trie
+    .define(getRootBasedUrl(rootPath, '/uploader'))
     .handle('POST', uploaderHandler)
   trie
     .define(getRootBasedUrl(rootPath, '/uploader'))

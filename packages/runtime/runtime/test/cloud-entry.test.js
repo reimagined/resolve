@@ -364,7 +364,7 @@ describe('Cloud entry', () => {
       expect(JSON.parse(result.body)).toEqual({
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
-        timestamp: 1,
+        timestamp: 2,
         type: 'SET',
         payload: {
           key: 'key1',
@@ -414,7 +414,7 @@ describe('Cloud entry', () => {
 
       expect(result.statusCode).toEqual(409)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
-      expect(result.body).toContain('is not actual at the moment')
+      expect(result.body).toContain('is currently out of date')
     })
 
     test('should fail command via POST /"rootPath"/api/commands/ with CommandError', async () => {

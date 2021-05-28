@@ -14,6 +14,7 @@ const findOne: CurrentStoreApi['findOne'] = async (
     tablePrefix,
     searchToWhereExpression,
     makeNestedPath,
+    splitNestedPath,
     convertResultRow,
     schemaName,
   } = pool
@@ -22,7 +23,8 @@ const findOne: CurrentStoreApi['findOne'] = async (
     searchExpression,
     escapeId,
     escapeStr,
-    makeNestedPath
+    makeNestedPath,
+    splitNestedPath
   )
 
   const inlineSearchExpr =

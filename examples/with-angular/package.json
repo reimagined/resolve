@@ -1,6 +1,6 @@
 {
   "name": "with-angular",
-  "version": "0.28.1-alpha",
+  "version": "0.30.4",
   "private": true,
   "description": "Example shows how to work with Angular-8 framework",
   "scripts": {
@@ -23,11 +23,11 @@
     "@angular/platform-browser-dynamic": "11.2.4",
     "@babel/node": "7.12.13",
     "@ngtools/webpack": "11.2.3",
-    "@resolve-js/eventstore-lite": "0.28.1-alpha",
-    "@resolve-js/eventstore-postgresql-serverless": "0.28.1-alpha",
-    "@resolve-js/readmodel-lite": "0.28.1-alpha",
-    "@resolve-js/readmodel-postgresql-serverless": "0.28.1-alpha",
-    "@resolve-js/scripts": "0.28.1-alpha",
+    "@resolve-js/eventstore-lite": "0.30.4",
+    "@resolve-js/eventstore-postgresql-serverless": "0.30.4",
+    "@resolve-js/readmodel-lite": "0.30.4",
+    "@resolve-js/readmodel-postgresql-serverless": "0.30.4",
+    "@resolve-js/scripts": "0.30.4",
     "angular-router-loader": "0.8.5",
     "angular2-template-loader": "0.6.2",
     "awesome-typescript-loader": "5.2.1",
@@ -58,5 +58,8 @@
     "postcss-loader": "5.1.0",
     "style-loader": "2.0.0",
     "testcafe": "1.12.0"
+  },
+  "resolveJs": {
+    "isAppTemplate": true
   }
 }

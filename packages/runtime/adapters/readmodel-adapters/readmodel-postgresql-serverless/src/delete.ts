@@ -13,13 +13,15 @@ const del: CurrentStoreApi['delete'] = async (
     escapeStr,
     searchToWhereExpression,
     makeNestedPath,
+    splitNestedPath,
     schemaName,
   } = pool
   const searchExpr = searchToWhereExpression(
     searchExpression,
     escapeId,
     escapeStr,
-    makeNestedPath
+    makeNestedPath,
+    splitNestedPath
   )
 
   const inlineSearchExpr =

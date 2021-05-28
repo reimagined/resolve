@@ -45,6 +45,7 @@ const createAdapter = <
     exportSecretsStream,
     init,
     drop,
+    gatherSecretsFromEvents,
   }: CommonAdapterFunctions<ConnectedProps>,
   {
     connect,
@@ -78,6 +79,14 @@ const createAdapter = <
     deleteSecret,
     loadSecrets,
     injectSecret,
+    replicateEvents,
+    replicateSecrets,
+    setReplicationIterator,
+    setReplicationPaused,
+    setReplicationStatus,
+    getReplicationState,
+    resetReplication,
+    getCursorUntilEventTypes,
   }: AdapterFunctions<ConnectedProps, ConnectionDependencies, Config>,
   connectionDependencies: ConnectionDependencies,
   options: Config
@@ -172,6 +181,18 @@ const createAdapter = <
     ensureEventSubscriber: wrapMethod(adapterPool, ensureEventSubscriber),
     removeEventSubscriber: wrapMethod(adapterPool, removeEventSubscriber),
     getEventSubscribers: wrapMethod(adapterPool, getEventSubscribers),
+
+    gatherSecretsFromEvents: wrapMethod(adapterPool, gatherSecretsFromEvents),
+
+    replicateEvents: wrapMethod(adapterPool, replicateEvents),
+    replicateSecrets: wrapMethod(adapterPool, replicateSecrets),
+    setReplicationIterator: wrapMethod(adapterPool, setReplicationIterator),
+    setReplicationPaused: wrapMethod(adapterPool, setReplicationPaused),
+    setReplicationStatus: wrapMethod(adapterPool, setReplicationStatus),
+    getReplicationState: wrapMethod(adapterPool, getReplicationState),
+    resetReplication: wrapMethod(adapterPool, resetReplication),
+
+    getCursorUntilEventTypes: wrapMethod(adapterPool, getCursorUntilEventTypes),
   }
 
   Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(

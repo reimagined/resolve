@@ -10,6 +10,7 @@ const find: CurrentStoreApi['find'] = async (
     tablePrefix,
     searchToWhereExpression,
     makeNestedPath,
+    splitNestedPath,
     convertResultRow,
     schemaName,
   },
@@ -26,7 +27,7 @@ const find: CurrentStoreApi['find'] = async (
       ? 'ORDER BY ' +
         Object.keys(sort)
           .map((fieldName) => {
-            const [baseName, ...nestedPath] = fieldName.split('.')
+            const [baseName, ...nestedPath] = splitNestedPath(fieldName)
             const provisionedName =
               nestedPath.length === 0
                 ? escapeId(baseName)
@@ -47,7 +48,8 @@ const find: CurrentStoreApi['find'] = async (
     searchExpression,
     escapeId,
     escapeStr,
-    makeNestedPath
+    makeNestedPath,
+    splitNestedPath
   )
 
   const inlineSearchExpr =

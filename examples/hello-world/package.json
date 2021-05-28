@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "0.28.1-alpha",
+  "version": "0.30.4",
   "private": true,
   "description": "used as a template for new reSolve applications",
   "scripts": {
@@ -15,12 +15,12 @@
   },
   "dependencies": {
     "@babel/node": "7.12.13",
-    "@resolve-js/eventstore-lite": "0.28.1-alpha",
-    "@resolve-js/eventstore-postgresql-serverless": "0.28.1-alpha",
-    "@resolve-js/react-hooks": "0.28.1-alpha",
-    "@resolve-js/readmodel-lite": "0.28.1-alpha",
-    "@resolve-js/readmodel-postgresql-serverless": "0.28.1-alpha",
-    "@resolve-js/scripts": "0.28.1-alpha",
+    "@resolve-js/eventstore-lite": "0.30.4",
+    "@resolve-js/eventstore-postgresql-serverless": "0.30.4",
+    "@resolve-js/react-hooks": "0.30.4",
+    "@resolve-js/readmodel-lite": "0.30.4",
+    "@resolve-js/readmodel-postgresql-serverless": "0.30.4",
+    "@resolve-js/scripts": "0.30.4",
     "react": "17.0.1",
     "react-bootstrap": "1.5.1",
     "react-dom": "17.0.1",
@@ -40,5 +40,8 @@
     "jest": "26.6.3",
     "react-test-renderer": "17.0.1",
     "testcafe": "1.12.0"
+  },
+  "resolveJs": {
+    "isAppTemplate": true
   }
 }

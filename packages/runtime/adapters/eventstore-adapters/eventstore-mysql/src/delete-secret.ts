@@ -4,7 +4,7 @@ import { AdapterPool } from './types'
 const deleteSecret = async (
   pool: AdapterPool,
   selector: string
-): Promise<void> => {
+): Promise<boolean> => {
   const log = getLog('secretsManager:deleteSecret')
   log.debug(`removing secret from the database`)
   const { secretsTableName, connection, escapeId, escape } = pool
@@ -19,6 +19,7 @@ const deleteSecret = async (
     )}`
   )
   log.debug(`query executed successfully`)
+  return true
 }
 
 export default deleteSecret

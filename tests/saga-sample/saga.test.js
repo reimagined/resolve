@@ -1,11 +1,22 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import givenEvents, {
-  RESOLVE_SIDE_EFFECTS_START_TIMESTAMP,
-} from '@resolve-js/testing-tools'
+import givenEvents from '@resolve-js/testing-tools'
 
 import config from './config'
 
 jest.setTimeout(1000 * 60 * 5)
+
+let warnSpy
+let errorSpy
+
+beforeAll(() => {
+  warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => void 0)
+  errorSpy = jest.spyOn(console, 'error').mockImplementation(() => void 0)
+})
+
+afterAll(() => {
+  warnSpy.mockRestore()
+  errorSpy.mockRestore()
+})
 
 describe('Saga', () => {
   const currentSaga = config.sagas.find(
@@ -56,7 +67,30 @@ describe('Saga', () => {
         { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} },
       ]).saga(sagaWithAdapter)
 
-      expect(result).toMatchSnapshot()
+      expect(result.commands).toEqual([
+        {
+          aggregateId: 'userId',
+          aggregateName: 'User',
+          payload: {
+            mail: 'user@example.com',
+          },
+          type: 'requestConfirmUser',
+        },
+      ])
+      expect(result.scheduledCommands).toEqual([
+        {
+          command: {
+            aggregateId: 'userId',
+            aggregateName: 'User',
+            payload: {},
+            type: 'forgetUser',
+          },
+          date: expect.any(Number),
+        },
+      ])
+      expect(result.sideEffects).toEqual([
+        ['sendEmail', 'user@example.com', 'Confirm mail'],
+      ])
     })
 
     test('forgotten registration', async () => {
@@ -74,7 +108,30 @@ describe('Saga', () => {
         { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} },
       ]).saga(sagaWithAdapter)
 
-      expect(result).toMatchSnapshot()
+      expect(result.commands).toEqual([
+        {
+          aggregateId: 'userId',
+          aggregateName: 'User',
+          payload: {
+            mail: 'user@example.com',
+          },
+          type: 'requestConfirmUser',
+        },
+      ])
+      expect(result.scheduledCommands).toEqual([
+        {
+          command: {
+            aggregateId: 'userId',
+            aggregateName: 'User',
+            payload: {},
+            type: 'forgetUser',
+          },
+          date: expect.any(Number),
+        },
+      ])
+      expect(result.sideEffects).toEqual([
+        ['sendEmail', 'user@example.com', 'Confirm mail'],
+      ])
     })
   })
 
@@ -110,11 +167,11 @@ describe('Saga', () => {
         { aggregateId: 'userId', type: 'USER_CONFIRMED', payload: {} },
       ])
         .saga(sagaWithAdapter)
-        .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE,
-        })
+        .startSideEffectsFrom(Number.MAX_VALUE)
 
-      expect(result).toMatchSnapshot()
+      expect(result.commands).toEqual([])
+      expect(result.scheduledCommands).toEqual([])
+      expect(result.sideEffects).toEqual([])
     })
     // mdis-stop saga-test
     test('forgotten registration', async () => {
@@ -132,11 +189,11 @@ describe('Saga', () => {
         { aggregateId: 'userId', type: 'USER_FORGOTTEN', payload: {} },
       ])
         .saga(sagaWithAdapter)
-        .properties({
-          [RESOLVE_SIDE_EFFECTS_START_TIMESTAMP]: Number.MAX_VALUE,
-        })
+        .startSideEffectsFrom(Number.MAX_VALUE)
 
-      expect(result).toMatchSnapshot()
+      expect(result.commands).toEqual([])
+      expect(result.scheduledCommands).toEqual([])
+      expect(result.sideEffects).toEqual([])
     })
   })
 })

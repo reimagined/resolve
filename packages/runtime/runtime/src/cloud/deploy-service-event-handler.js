@@ -6,13 +6,13 @@ import shutdown from '../common/shutdown'
 const log = debugLevels('resolve:runtime:deploy-service-event-handler')
 
 const getReadModelNames = (resolve) =>
-  resolve.readModels.map(({ name }) => name)
+  resolve.domain.readModels.map(({ name }) => name)
 
 const getSagaNames = (resolve) => [
   ...resolve.domainInterop.sagaDomain
     .getSagasSchedulersInfo()
     .map((scheduler) => scheduler.name),
-  ...resolve.sagas.map(({ name }) => name),
+  ...resolve.domain.sagas.map(({ name }) => name),
 ]
 
 const handleResolveReadModelEvent = async (

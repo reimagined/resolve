@@ -1,6 +1,6 @@
 {
   "name": "cli-uploader",
-  "version": "0.28.1-alpha",
+  "version": "0.30.4",
   "private": true,
   "description": "used as a template for new reSolve applications",
   "scripts": {
@@ -15,15 +15,15 @@
   },
   "dependencies": {
     "@babel/node": "7.12.13",
-    "@resolve-js/eventstore-lite": "0.28.1-alpha",
-    "@resolve-js/eventstore-postgresql-serverless": "0.28.1-alpha",
-    "@resolve-js/module-auth": "0.28.1-alpha",
-    "@resolve-js/module-uploader": "0.28.1-alpha",
-    "@resolve-js/react-hooks": "0.28.1-alpha",
-    "@resolve-js/readmodel-lite": "0.28.1-alpha",
-    "@resolve-js/readmodel-postgresql-serverless": "0.28.1-alpha",
-    "@resolve-js/redux": "0.28.1-alpha",
-    "@resolve-js/scripts": "0.28.1-alpha",
+    "@resolve-js/eventstore-lite": "0.30.4",
+    "@resolve-js/eventstore-postgresql-serverless": "0.30.4",
+    "@resolve-js/module-auth": "0.30.4",
+    "@resolve-js/module-uploader": "0.30.4",
+    "@resolve-js/react-hooks": "0.30.4",
+    "@resolve-js/readmodel-lite": "0.30.4",
+    "@resolve-js/readmodel-postgresql-serverless": "0.30.4",
+    "@resolve-js/redux": "0.30.4",
+    "@resolve-js/scripts": "0.30.4",
     "history": "5.0.0",
     "js-cookie": "2.2.1",
     "jsonwebtoken": "8.5.1",
@@ -55,5 +55,8 @@
     "jest": "26.6.3",
     "react-test-renderer": "17.0.1",
     "testcafe": "1.12.0"
+  },
+  "resolveJs": {
+    "isAppTemplate": true
   }
 }

@@ -9,6 +9,7 @@ import {
   AdapterConfigSchema,
   UnbrandProps,
   iots as t,
+  iotsTypes,
 } from '@resolve-js/eventstore-base'
 
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -24,7 +25,7 @@ export type Coercer = (
   } & {
     [key: string]: any
   }
-) => number | string | boolean
+) => number | string | boolean | null
 type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
@@ -63,16 +64,16 @@ export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
 export const PostgresqlAdapterConfigSchema = t.intersection([
   AdapterConfigSchema,
   t.type({
-    dbClusterOrInstanceArn: t.string,
-    awsSecretStoreArn: t.string,
-    databaseName: t.string,
+    dbClusterOrInstanceArn: iotsTypes.NonEmptyString,
+    awsSecretStoreArn: iotsTypes.NonEmptyString,
+    databaseName: iotsTypes.NonEmptyString,
   }),
   t.partial({
-    eventsTableName: t.string,
-    secretsTableName: t.string,
-    snapshotsTableName: t.string,
-    subscribersTableName: t.string,
-    region: t.string,
+    eventsTableName: iotsTypes.NonEmptyString,
+    secretsTableName: iotsTypes.NonEmptyString,
+    snapshotsTableName: iotsTypes.NonEmptyString,
+    subscribersTableName: iotsTypes.NonEmptyString,
+    region: iotsTypes.NonEmptyString,
   }),
   t.UnknownRecord,
 ])
@@ -103,7 +104,6 @@ export type ConnectionDependencies = {
 
 export type CloudResource = {
   createResource: (options: CloudResourceOptions) => Promise<any>
-  disposeResource: (options: CloudResourceOptions) => Promise<any>
   destroyResource: (options: CloudResourceOptions) => Promise<any>
 }
 

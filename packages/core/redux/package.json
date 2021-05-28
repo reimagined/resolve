@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/redux",
-  "version": "0.28.1-alpha",
+  "version": "0.30.4",
   "description": "Provides tools that you can use to connect a React/Redux frontend to reSolve.",
   "keywords": [
     "cqrs",
@@ -19,7 +19,7 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/redux",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
@@ -38,9 +38,9 @@
   },
   "dependencies": {
     "@babel/runtime": "7.13.10",
-    "@resolve-js/client": "0.28.1-alpha",
-    "@resolve-js/core": "0.28.1-alpha",
-    "@resolve-js/react-hooks": "0.28.1-alpha",
+    "@resolve-js/client": "0.30.4",
+    "@resolve-js/core": "0.30.4",
+    "@resolve-js/react-hooks": "0.30.4",
     "hoist-non-react-statics": "3.3.2",
     "json-stable-stringify": "1.0.1",
     "jwt-decode": "3.1.2",
@@ -82,7 +82,7 @@
     "redux-saga": "^1.1.3"
   },
   "engines": {
-    "node": ">=10.9"
+    "node": ">=12.18"
   },
   "babelCompile": [
     {

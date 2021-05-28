@@ -1,11 +1,130 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.4...HEAD)
 
-## 0.27.0
+**Other changes:**
+
+- saveEvent returns a saved event with the next cursor [\#1879](https://github.com/reimagined/resolve/pull/1879)
+
+## [V0.30.4](https://github.com/reimagined/resolve/tree/V0.30.4) (2021-05-27)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.3...V0.30.4)
+
+**New features:**
+
+- Eventstore adapter: saveEvent now returns the next cursor, add getCursorUntilEventTypes [\#1878](https://github.com/reimagined/resolve/pull/1878)
+
+**Bug fixes:**
+
+- Read models don't work in cloud [\#1880](https://github.com/reimagined/resolve/issues/1880)
+- Can't pass timestamp to givenEvents events [\#1862](https://github.com/reimagined/resolve/issues/1862)
+
+## [V0.30.3](https://github.com/reimagined/resolve/tree/V0.30.3) (2021-05-17)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.2...V0.30.3)
+
+**Enhancements:**
+
+- Update eslint [\#1858](https://github.com/reimagined/resolve/pull/1858)
+
+**Bug fixes:**
+
+- Wrong event order: eventstore-postgresql-serverless [\#1866](https://github.com/reimagined/resolve/issues/1866)
+- create-resolve-app failed on node 10.15 [\#1855](https://github.com/reimagined/resolve/issues/1855)
+
+## [V0.30.2](https://github.com/reimagined/resolve/tree/V0.30.2) (2021-05-07)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.1...V0.30.2)
+
+**Enhancements:**
+
+- Update typescript to 4.2.4 [\#1847](https://github.com/reimagined/resolve/pull/1847)
+- Postgresql fixes and tests [\#1846](https://github.com/reimagined/resolve/pull/1846)
+
+**Bug fixes:**
+
+- Unable to apply more than one hundred events to read-model [\#1853](https://github.com/reimagined/resolve/issues/1853)
+- NPM audit reports vulnerabilities [\#1848](https://github.com/reimagined/resolve/issues/1848)
+- Environment variable is not updated after subsequent deploys [\#1833](https://github.com/reimagined/resolve/issues/1833)
+
+**Documentation:**
+
+- Add document descriptions [\#1841](https://github.com/reimagined/resolve/pull/1841)
+
+## [V0.30.1](https://github.com/reimagined/resolve/tree/V0.30.1) (2021-04-29)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.0...V0.30.1)
+
+**New features:**
+
+- Eventstore replicator implemented as a read-model [\#1843](https://github.com/reimagined/resolve/pull/1843)
+
+**Enhancements:**
+
+- Normalize read-model Store API. Add functional tests. [\#1837](https://github.com/reimagined/resolve/pull/1837)
+
+**Bug fixes:**
+
+- Store.update\(\) with $inc operator works incorrectly [\#1794](https://github.com/reimagined/resolve/issues/1794)
+- Store.update\(\) with $set operator works incorrectly in some cases [\#1782](https://github.com/reimagined/resolve/issues/1782)
+
+**Documentation:**
+
+- Revise API handler documentation [\#1832](https://github.com/reimagined/resolve/pull/1832)
+- Update testing tools documentation [\#1831](https://github.com/reimagined/resolve/pull/1831)
+
+## [V0.30.0](https://github.com/reimagined/resolve/tree/V0.30.0) (2021-04-28)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.29.0...V0.30.0)
+
+**New features:**
+
+- Automatic changelog generation [\#1835](https://github.com/reimagined/resolve/pull/1835)
+- Performance monitoring [\#1829](https://github.com/reimagined/resolve/pull/1829)
+- Advanced testing tools [\#1793](https://github.com/reimagined/resolve/pull/1793)
+
+**Enhancements:**
+
+- Monitoring improvements [\#1834](https://github.com/reimagined/resolve/pull/1834)
+- Advanced testing tools: improvements [\#1816](https://github.com/reimagined/resolve/pull/1816)
+- Improve cold start [\#1815](https://github.com/reimagined/resolve/pull/1815)
+- Implement fast CTE for eventstore adapter [\#1800](https://github.com/reimagined/resolve/pull/1800)
+
+**Bug fixes:**
+
+- Unable to get read-models and sagas list using module-admin [\#1807](https://github.com/reimagined/resolve/issues/1807)
+- Error collecting is broken in read model \(and saga\) projection [\#1797](https://github.com/reimagined/resolve/issues/1797)
+-  with-angular example does not work [\#1795](https://github.com/reimagined/resolve/issues/1795)
+- After local app launch, module-admin returns "invalid date" error for some time [\#1765](https://github.com/reimagined/resolve/issues/1765)
+- The store.update function works incorrectly when the $set fields contain only null values. [\#1758](https://github.com/reimagined/resolve/issues/1758)
+
+**Documentation:**
+
+- Describe view model resolver configuration [\#1824](https://github.com/reimagined/resolve/pull/1824)
+- Fix saga codesample [\#1821](https://github.com/reimagined/resolve/pull/1821)
+- Describe encryption [\#1810](https://github.com/reimagined/resolve/pull/1810)
+- Reference for adapters [\#1809](https://github.com/reimagined/resolve/pull/1809)
+- Fix links to the PostgreSQL schema article [\#1796](https://github.com/reimagined/resolve/pull/1796)
+- Update module-admin readme [\#1787](https://github.com/reimagined/resolve/pull/1787)
+- Fix readme badges [\#1786](https://github.com/reimagined/resolve/pull/1786)
+
+## V0.29.0
+
+### Breaking Changes
+
+#### Cloud config
+
+- `deploymentId` and `encryptedDeploymentId` removed from **uploadAdapter** options
+
+### Added
+
+#### resolve runtime
+
+- `clientIp` in request object
+
+## V0.27.0
 
 ### Breaking Changes
 
@@ -49,7 +168,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Packages folder structure has been changed. The **core** folder contains packages related to framework's core functionality. The **runtime** folder contains runtime-specific adapters, brokers etc. The **tools** folder contains basic scripts and testing tools.
 
-## 0.25.0
+#### @resolve-js/scripts
+
+- Replaced the **reset** mode's **dropEventBus** option with **dropEventSubscriber**
+
+Previously: 
+```
+await reset(resolveConfig, {
+  dropEventStore: false,
+  dropEventBus: true,
+  dropReadModels: true,
+  dropSagas: true,
+})
+```
+
+Now:
+```
+await reset(resolveConfig, {
+  dropEventStore: false,
+  dropEventSubscriber: true,
+  dropReadModels: true,
+  dropSagas: true,
+})
+```
+
+## V0.25.0
 
 ### Breaking Changes
 
@@ -90,8 +233,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `pushIncrementalImport` - accumulate events for incremental import
   - `commitIncrementalImport` - commit accumulated events to eventstore
   - `rollbackIncrementalImport` - drop accumulated events
+
 - resolve-client
   - **meta** object in query response containing meta data
+
 - resolve-redux
   - New redux hook API
   - Added **serializedState** parameter to createStore
@@ -102,3 +247,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **url** and **cursor** params in the **subscribe** function
 
 ### Removed
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*

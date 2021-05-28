@@ -56,6 +56,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
         \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+        \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
         \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
         \\"$resolve.sagas\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
         \\"$resolve.seedClientEnvs\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
@@ -90,6 +91,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
@@ -146,10 +148,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
-                  },
-                  \\"subscribeAdapter\\": {
-                    \\"module\\": \\"@resolve-js/subscribe-socket.io\\",
-                    \\"options\\": {}
                   },
                   \\"snapshotAdapter\\": {
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
@@ -260,6 +258,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
         \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+        \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
         \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
         \\"$resolve.sagas\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
         \\"$resolve.seedClientEnvs\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
@@ -301,6 +300,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
@@ -364,10 +364,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
-                  },
-                  \\"subscribeAdapter\\": {
-                    \\"module\\": \\"@resolve-js/subscribe-socket.io\\",
-                    \\"options\\": {}
                   },
                   \\"snapshotAdapter\\": {
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
@@ -436,7 +432,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
         }
       ]
     ],
-    \\"plugins\\": [],
+    \\"plugins\\": [
+      null
+    ],
     \\"name\\": \\"Server cloud entry point\\",
     \\"entry\\": {
       \\"common/cloud-entry/cloud-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\"
@@ -477,6 +475,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
         \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+        \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
         \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
         \\"$resolve.sagas\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
         \\"$resolve.seedClientEnvs\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
@@ -519,6 +518,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
@@ -582,10 +582,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
-                  },
-                  \\"subscribeAdapter\\": {
-                    \\"module\\": \\"@resolve-js/subscribe-socket.io\\",
-                    \\"options\\": {}
                   },
                   \\"snapshotAdapter\\": {
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
@@ -725,6 +721,7 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
         \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+        \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
         \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
         \\"$resolve.sagas\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
         \\"$resolve.seedClientEnvs\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
@@ -759,6 +756,7 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
@@ -815,10 +813,6 @@ exports[`should make webpack configs for local mode 1`] = `
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
-                  },
-                  \\"subscribeAdapter\\": {
-                    \\"module\\": \\"@resolve-js/subscribe-socket.io\\",
-                    \\"options\\": {}
                   },
                   \\"snapshotAdapter\\": {
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
@@ -929,6 +923,7 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
         \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+        \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
         \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
         \\"$resolve.sagas\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
         \\"$resolve.seedClientEnvs\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
@@ -970,6 +965,7 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
@@ -1033,10 +1029,6 @@ exports[`should make webpack configs for local mode 1`] = `
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
-                  },
-                  \\"subscribeAdapter\\": {
-                    \\"module\\": \\"@resolve-js/subscribe-socket.io\\",
-                    \\"options\\": {}
                   },
                   \\"snapshotAdapter\\": {
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
@@ -1146,6 +1138,7 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
         \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+        \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
         \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
         \\"$resolve.sagas\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
         \\"$resolve.seedClientEnvs\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
@@ -1188,6 +1181,7 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
@@ -1251,10 +1245,6 @@ exports[`should make webpack configs for local mode 1`] = `
                     \\"options\\": {
                       \\"databaseFile\\": \\"data/event-store.db\\"
                     }
-                  },
-                  \\"subscribeAdapter\\": {
-                    \\"module\\": \\"@resolve-js/subscribe-socket.io\\",
-                    \\"options\\": {}
                   },
                   \\"snapshotAdapter\\": {
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",

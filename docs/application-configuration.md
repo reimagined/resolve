@@ -1,6 +1,7 @@
 ---
 id: application-configuration
 title: Application Configuration
+description: This document lists configuration options available for a reSolve application.
 ---
 
 ## Overview
@@ -10,7 +11,7 @@ This document describes configuration options available for a reSolve applicatio
 In a new reSolve application, configuration settings are split across the following files for different run targets:
 
 - **config.app.js** - Contains general app configuration settings. In this file, you should register the application's aggregates, Read Models and View Models.
-- **config.cloud.js** - Contains configuration settings that target the [reSolve Cloud](cloud-overview.md) environment.
+- **config.cloud.js** - Contains configuration settings that target the reSolve Cloud environment.
 - **config.dev.js** - Contains configuration settings that target the development server.
 - **config.prod.js** - Contains configuration settings that target the production server.
 - **config.test_functional.js** - Contains configuration settings that target the test environment.
@@ -203,6 +204,145 @@ eventstoreAdapter: {
 }
 ```
 
+The following adapters are available:
+
+| Adapter Module                                                                    | Description                                               |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| [@resolve-js/eventstore-lite](#eventstore-lite)                                   | Used to store events in an SQLite database.               |
+| [@resolve-js/eventstore-mysql](#eventstore-mysql)                                 | Used to store events in a MySQL database.                 |
+| [@resolve-js/eventstore-postgresql](#eventstore-postgresql)                       | Used to store events in a PostgreSQL database.            |
+| [@resolve-js/eventstore-postgresql-serverless](#eventstore-postgresql-serverless) | Used to store events in AWS Aurora PostgreSQL Serverless. |
+
+#### eventstore-lite
+
+Used to store events in an SQLite database.
+
+This adapter supports the following options:
+
+| Option Name        | Description                                                                                                                                                                  |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| databaseFile       | Specifies the path to a database file used to store events. If set to `':memory:'`, all data is stored in memory and is lost when the application is shut down or restarted. |
+| secretsTableName   | The name of a database table used to store secrets.                                                                                                                          |
+| snapshotBucketSize | The number of events between aggregate snapshots.                                                                                                                            |
+
+##### Example
+
+```js
+const prodConfig = {
+  eventstoreAdapter: {
+    module: '@resolve-js/eventstore-lite',
+    options: {
+      databaseFile: 'data/event-store.db'
+      // databaseFile: ':memory:'
+    },
+  },
+  ...
+}
+```
+
+#### eventstore-mysql
+
+Used to store events in a MySQL database.
+
+To configure the database connection for this adapter, specify [MySQL connection setting](https://www.npmjs.com/package/mysql2#first-query) as the adapter's options. Additionally, you can specify the following options:
+
+| Option Name        | Description                                         |
+| ------------------ | --------------------------------------------------- |
+| eventsTableName    | The name of a database table used to store events.  |
+| secretsTableName   | The name of a database table used to store secrets. |
+| snapshotBucketSize | The number of events between aggregate snapshots.   |
+
+##### Example
+
+```js
+const prodConfig = {
+  eventstoreAdapter: {
+    module: '@resolve-js/eventstore-mysql',
+    options: {
+      host: 'localhost',
+      port: 3306,
+      user: 'customUser',
+      password: 'customPassword',
+      database: 'customDatabaseName',
+      eventsTableName: 'customTableName',
+    }
+  },
+  ...
+}
+```
+
+#### eventstore-postgresql
+
+Used to store events in a PostgreSQL database.
+
+This adapter supports the following options:
+
+| Option Name        | Description                                          |
+| ------------------ | ---------------------------------------------------- |
+| database           | The name of a database.                              |
+| databaseName       | The name of a PostgreSQL database schema.            |
+| eventsTableName    | The name of a database table used to store events.   |
+| host               | The database server host name.                       |
+| password           | The user's password.                                 |
+| port               | The database server port number.                     |
+| secretsTableName   | The name of a database table used to store secrets.  |
+| snapshotBucketSize | The number of events between aggregate snapshots.    |
+| user               | The user name used to log in to the database server. |
+
+##### Example
+
+```js
+const prodConfig = {
+  eventstoreAdapter: {
+    module: '@resolve-js/eventstore-postgresql',
+    options: {
+      user: 'user',
+      password: 'password',
+      database: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      databaseName: 'public',
+      eventsTableName: 'events',
+    }
+  },
+  ...
+}
+```
+
+#### eventstore-postgresql-serverless
+
+Used to store events in AWS Aurora PostgreSQL Serverless.
+
+This adapter supports the following options:
+
+| Option Name            | Description                                                      |
+| ---------------------- | ---------------------------------------------------------------- |
+| awsSecretStoreArn      | An AWS secret store's Amazon Resource Name (ARN)                 |
+| databaseName           | The name of a database.                                          |
+| dbClusterOrInstanceArn | An Amazon Resource Name (ARN) of a database cluster or instance. |
+| eventsTableName        | The name of a database table used to store events.               |
+| region                 | An AWS region.                                                   |
+| secretsTableName       | The name of a database table used to store secrets.              |
+| snapshotBucketSize     | The number of events between aggregate snapshots.                |
+
+##### Example
+
+```js
+const prodConfig = {
+  eventstoreAdapter: {
+    module: '@resolve-js/eventstore-postgresql-serverless',
+    options: {
+      region: 'us-east-1',
+      databaseName: 'databaseName',
+      eventsTableName: 'eventsTableName',
+      awsSecretStoreArn: 'awsSecretStoreArn',
+      dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
+    }
+  },
+  ...
+}
+```
+
 ### jwtCookie
 
 Specifies global settings for the application's JWT cookies. The configuration object contains the following fields:
@@ -246,8 +386,8 @@ An array of the application's Read Models. A Read Model configuration object wit
 | Field         | Description                                                          |
 | ------------- | -------------------------------------------------------------------- |
 | name          | The Read Model's name                                                |
-| projection    | A path to a file that defines Read Model projection.                 |
-| resolvers     | A path to a file that defines Read Model resolver.                   |
+| projection    | A path to a file that defines a Read Model projection.               |
+| resolvers     | A path to a file that defines a Read Model resolver.                 |
 | connectorName | The name of a connector used to connect the Read Model to its store. |
 
 ##### Example:
@@ -289,6 +429,138 @@ readModelConnectors: {
 }
 ```
 
+The following connectors are available:
+
+| Module Name                                                                     | Description                                                           |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| [@resolve-js/readmodel-lite](#readmodel-lite)                                   | Used to store Read Model data in an SQLite database.                  |
+| [@resolve-js/readmodel-mysql](#readmodel-mysql)                                 | Used to store Read Model data in a MySQL database.                    |
+| [@resolve-js/readmodel-postgresql](#readmodel-postgresql)                       | Used to store Read Model data in a PostgreSQL database.               |
+| [@resolve-js/readmodel-postgresql-serverless](#readmodel-postgresql-serverless) | Used to store Read Model data in Amazon Aurora PostgreSQL Serverless. |
+
+#### readmodel-lite
+
+Used to store Read Model data in an SQLite database.
+
+This connector supports the following options:
+
+| Option Name  | Description                                                                                                                                                                           |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| databaseFile | Specifies the path to a database file used to store Read Model data. If set to `':memory:'`, all data is stored in memory and is lost when the application is shut down or restarted. |
+
+##### Example
+
+```js
+const prodConfig = {
+  readModelConnectors: {
+    default: {
+      module: '@resolve-js/readmodel-lite',
+      options: {
+        databaseFile: 'data/read-models.db'
+        // databaseFile: ':memory:'
+      },
+    },
+  },
+  ...
+}
+```
+
+#### readmodel-mysql
+
+Used to store Read Model data in a MySQL database.
+
+To configure the database connection for this adapter, specify [MySQL connection setting](https://www.npmjs.com/package/mysql2#first-query) as the adapter's options.
+
+##### Example
+
+```js
+const prodConfig = {
+  readModelConnectors: {
+    default: {
+      module: '@resolve-js/readmodel-mysql',
+      options: {
+        host: 'localhost',
+        port: 3306,
+        user: 'customUser',
+        password: 'customPassword',
+        database: 'customDatabaseName'
+      }
+    }
+  },
+  ...
+}
+```
+
+#### readmodel-postgresql
+
+Used to store Read Model data in a PostgreSQL database.
+
+This connector supports the following options:
+
+| Option Name  | Description                                          |
+| ------------ | ---------------------------------------------------- |
+| database     | The name of a database.                              |
+| databaseName | The name of a PostgreSQL database schema.            |
+| host         | The database server host name.                       |
+| password     | The user's password.                                 |
+| port         | The database server port number.                     |
+| tablePrefix  | Optional table name prefix.                          |
+| user         | The user name used to log in to the database server. |
+
+##### Example
+
+```js
+const prodConfig = {
+  readModelConnectors: {
+    default: {
+      module: '@resolve-js/readmodel-postgresql',
+      options: {
+        user: 'user',
+        password: 'password',
+        database: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        databaseName: 'public',
+      }
+    }
+  },
+  ...
+}
+```
+
+#### readmodel-postgresql-serverless
+
+Used to store Read Model data in AWS Aurora PostgreSQL Serverless.
+
+This connector supports the following options:
+
+| Option Name            | Description                                                      |
+| ---------------------- | ---------------------------------------------------------------- |
+| awsSecretStoreArn      | An AWS secret store's Amazon Resource Name (ARN)                 |
+| databaseName           | The name of a database.                                          |
+| dbClusterOrInstanceArn | An Amazon Resource Name (ARN) of a database cluster or instance. |
+| region                 | An AWS region.                                                   |
+| tablePrefix            | Optional table name prefix.                                      |
+
+#### Example
+
+```js
+const prodConfig = {
+  readModelConnectors: {
+    default: {
+      module: '@resolve-js/readmodel-postgresql-serverless',
+      options: {
+        region: 'us-east-1',
+        databaseName: 'databaseName',
+        awsSecretStoreArn: 'awsSecretStoreArn',
+        dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
+      }
+    }
+  },
+  ...
+}
+```
+
 ### sagas
 
 Specifies an array of the application's Sagas. A Saga configuration object within this array contains the following fields:
@@ -315,7 +587,7 @@ const appConfig = {
     }
   ]
 }
-```
+````
 
 <!-- prettier-ignore-end -->
 
@@ -379,13 +651,14 @@ Supported values:
 
 Specifies an array of the application's View Models. A View Model configuration object within this array contains the following fields:
 
-| Field            | Description                                                         |
-| ---------------- | ------------------------------------------------------------------- |
-| name             | The View Model's name.                                              |
-| projection       | A path to a file that defines View Model projection.                |
-| serializeState   | A path to a file that defines a state serializer function.          |
-| deserializeState | A path to a file that defines a state deserializer function.        |
-| encryption       | A path to a file that defines data encryption and decryption logic. |
+| Field            | Description                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| name             | The View Model's name.                                                                   |
+| projection       | A path to a file that defines a View Model projection.                                   |
+| resolver         | A path to a file that defines a [View Model resolver](read-side.md#view-model-resolver). |
+| serializeState   | A path to a file that defines a state serializer function.                               |
+| deserializeState | A path to a file that defines a state deserializer function.                             |
+| encryption       | A path to a file that defines data encryption and decryption logic.                      |
 
 ```js
 viewModels: [

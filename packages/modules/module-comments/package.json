@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/module-comments",
-  "version": "0.28.1-alpha",
+  "version": "0.30.4",
   "description": "A reSolve module that allows an application's users to post comments.",
   "keywords": [
     "cqrs",
@@ -18,6 +18,7 @@
   "main": "./lib/common/index.js",
   "browser": "./lib/client/index.js",
   "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/module-comments",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
@@ -25,7 +26,7 @@
     "@babel/runtime": "7.13.10"
   },
   "devDependencies": {
-    "@resolve-js/redux": "0.28.1-alpha",
+    "@resolve-js/redux": "0.30.4",
     "jest": "26.6.3",
     "react": "17.0.1",
     "react-redux": "7.2.2",
@@ -33,13 +34,13 @@
     "sinon": "9.2.4"
   },
   "peerDependencies": {
-    "@resolve-js/redux": "0.28.1-alpha",
+    "@resolve-js/redux": "0.30.4",
     "react": "^17.0.1",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5"
   },
   "engines": {
-    "node": ">=10.9"
+    "node": ">=12.18"
   },
   "babelCompile": [
     {

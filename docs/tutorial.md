@@ -1,6 +1,7 @@
 ---
 id: tutorial
 title: Step-by-Step Tutorial
+description: This document provides a step-by-step tutorial for the reSolve framework. Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
 ---
 
 This document provides a step-by-step tutorial for the reSolve framework.
@@ -135,7 +136,7 @@ A request's body should have the `application/json` content type and contain a J
   "type": "createShoppingList",
   "aggregateId": "shopping-list-1",
   "payload": {
-    "text": "Item 1"
+    "name": "Item 1"
   }
 }
 ```
@@ -155,12 +156,12 @@ curl -i http://localhost:3000/api/commands/ \
 --header "Content-Type: application/json" \
 --data '
 {
-    "aggregateName": "ShoppingList",
-    "aggregateId": "shopping-list-1",
-    "type": "createShoppingList",
-    "payload": {
-        "name": "List 1"
-    }
+  "aggregateName": "ShoppingList",
+  "aggregateId": "shopping-list-1",
+  "type": "createShoppingList",
+  "payload": {
+    "name": "List 1"
+  }
 }
 '
 
@@ -188,13 +189,13 @@ curl -i http://localhost:3000/api/commands/ \
 --header "Content-Type: application/json" \
 --data '
 {
-    "aggregateName": "ShoppingList",
-    "aggregateId": "shopping-list-1",
-    "type": "createShoppingItem",
-    "payload": {
-        "id": "1",
-        "text": "Milk"
-    }
+  "aggregateName": "ShoppingList",
+  "aggregateId": "shopping-list-1",
+  "type": "createShoppingItem",
+  "payload": {
+    "id": "1",
+    "text": "Milk"
+  }
 }
 '
 

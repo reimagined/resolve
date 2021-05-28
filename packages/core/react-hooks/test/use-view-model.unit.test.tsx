@@ -468,4 +468,29 @@ describe('call', () => {
       expect.any(Function)
     )
   })
+
+  test('#1715: "eventReceived" action creator never called', async () => {
+    const event = {
+      type: 'EVENT_TYPE',
+    }
+    const {
+      result: {
+        current: { connect },
+      },
+    } = renderWrapped(() =>
+      useViewModel(
+        'view-model-name',
+        ['aggregate-id'],
+        {},
+        mockStateChange,
+        mockEventReceived
+      )
+    )
+
+    await connect()
+
+    await emulateIncomingEvent(event)
+
+    expect(mockEventReceived).toHaveBeenCalledWith(event)
+  })
 })

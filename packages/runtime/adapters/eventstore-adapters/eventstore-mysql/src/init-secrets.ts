@@ -32,7 +32,7 @@ const initSecrets = async (pool: AdapterPool): Promise<any[]> => {
     (error) => {
       if (isAlreadyExistsError(error)) {
         return new EventstoreResourceAlreadyExistError(
-          `duplicate initialization of the mysql adapter with same events database "${database}" and table "${secretsTableName}" is not allowed`
+          `duplicate initialization of the mysql adapter with the same event database "${database}" and table "${secretsTableName}" is not allowed`
         )
       }
       return null

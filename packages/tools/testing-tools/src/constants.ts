@@ -1,13 +1,3 @@
-export enum Phases {
-  GIVEN_EVENTS = 0,
-  READ_MODEL,
-  RESOLVER,
-  READ_MODEL_AS,
-  SAGA,
-  PROPERTIES,
-  AGGREGATE,
-  COMMAND,
-  COMMAND_AS,
-}
-
-export const symbol = Symbol()
+export const testContext = Symbol()
+export const ambiguousEventsTimeErrorMessage =
+  'The givenEvents function requires either all or none event timestamps to be specified.'

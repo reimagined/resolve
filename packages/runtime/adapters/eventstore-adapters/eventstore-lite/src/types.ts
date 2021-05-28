@@ -8,6 +8,7 @@ import {
   AdapterConfigSchema,
   UnbrandProps,
   iots as t,
+  iotsTypes,
 } from '@resolve-js/eventstore-base'
 
 export type SqliteOpen = typeof open
@@ -32,11 +33,11 @@ export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
 export const SqliteAdapterConfigSchema = t.intersection([
   AdapterConfigSchema,
   t.partial({
-    databaseFile: t.string,
-    secretsTableName: t.string,
-    eventsTableName: t.string,
-    snapshotsTableName: t.string,
-    subscribersTableName: t.string,
+    databaseFile: iotsTypes.NonEmptyString,
+    secretsTableName: iotsTypes.NonEmptyString,
+    eventsTableName: iotsTypes.NonEmptyString,
+    snapshotsTableName: iotsTypes.NonEmptyString,
+    subscribersTableName: iotsTypes.NonEmptyString,
   }),
 ])
 

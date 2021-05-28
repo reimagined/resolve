@@ -5,7 +5,6 @@ import wrapMethod from './wrap-method'
 import wrapEventFilter from './wrap-event-filter'
 import wrapDispose from './wrap-dispose'
 import validateEventFilter from './validate-event-filter'
-import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
 import ConcurrentError from './concurrent-error'
 import {
   ResourceAlreadyExistError,
@@ -17,6 +16,7 @@ import {
   AlreadyFrozenError,
   AlreadyUnfrozenError,
 } from './frozen-errors'
+import { ReplicationAlreadyInProgress } from './replication-errors'
 import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
 import throwBadCursor from './throw-bad-cursor'
@@ -26,7 +26,9 @@ import importSecretsStream from './import-secrets'
 import exportSecretsStream from './export-secrets'
 import init from './init'
 import drop from './drop'
+import gatherSecretsFromEvents from './gather-secrets-from-events'
 import * as iots from 'io-ts'
+import * as iotsTypes from 'io-ts-types'
 
 import {
   validate,
@@ -35,8 +37,6 @@ import {
   TimestampFilter,
   isTimestampFilter,
   isCursorFilter,
-  EventsWithCursor,
-  EventFilter,
   Adapter,
   AdapterFunctions,
   AdapterPoolConnectedProps,
@@ -45,14 +45,20 @@ import {
   AdapterPoolConnected,
   AdapterConfig,
   AdapterConfigSchema,
-  ImportOptions,
-  ExportOptions,
-  SecretFilter,
-  SecretsWithIdx,
-  SecretRecord,
-  InputEvent,
-  SavedEvent,
 } from './types'
+
+export {
+  threadArrayToCursor,
+  cursorToThreadArray,
+  initThreadArray,
+} from './cursor-operations'
+export {
+  MAINTENANCE_MODE_AUTO,
+  MAINTENANCE_MODE_MANUAL,
+  THREAD_COUNT,
+  CURSOR_BUFFER_SIZE,
+  THREAD_COUNTER_BYTE_LENGTH,
+} from './constants'
 
 const wrappedCreateAdapter = <
   ConnectedProps extends AdapterPoolConnectedProps,
@@ -82,6 +88,7 @@ const wrappedCreateAdapter = <
     importSecretsStream,
     init,
     drop,
+    gatherSecretsFromEvents,
   }
 
   return createAdapter(
@@ -103,8 +110,7 @@ export {
   EventstoreFrozenError,
   AlreadyFrozenError as EventstoreAlreadyFrozenError,
   AlreadyUnfrozenError as EventstoreAlreadyUnfrozenError,
-  MAINTENANCE_MODE_AUTO,
-  MAINTENANCE_MODE_MANUAL,
+  ReplicationAlreadyInProgress,
   throwBadCursor,
   getNextCursor,
   snapshotTrigger,
@@ -112,14 +118,17 @@ export {
   TimestampFilter,
   isTimestampFilter,
   isCursorFilter,
-  EventsWithCursor,
-  EventFilter,
   Adapter,
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
   AdapterConfig,
   AdapterConfigSchema,
+  iots,
+  iotsTypes,
+}
+
+export {
   ImportOptions,
   ExportOptions,
   SecretFilter,
@@ -127,5 +136,21 @@ export {
   SecretRecord,
   InputEvent,
   SavedEvent,
-  iots,
-}
+  EventThreadData,
+  Cursor,
+  EventsWithCursor,
+  EventWithCursor,
+  EventFilter,
+  ReplicationStatus,
+  ReplicationState,
+  OldEvent,
+  OldSecretRecord,
+  getInitialReplicationState,
+} from './types'
+
+export {
+  makeSetSecretEvent,
+  makeDeleteSecretEvent,
+  DELETE_SECRET_EVENT_TYPE,
+  SET_SECRET_EVENT_TYPE,
+} from './secret-event'

@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/react-hooks",
-  "version": "0.28.1-alpha",
+  "version": "0.30.4",
   "description": "reSolve client wrapper for using in React hooks projects.",
   "keywords": [
     "cqrs",
@@ -19,7 +19,7 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/react-hooks",
     "lint": "eslint --ignore-path=../../../.prettierignore './src/**/*.{ts,tsx}' './test/**/*.{ts,tsx}'",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "echo || exit 0"
@@ -38,8 +38,8 @@
     "verbose": true
   },
   "dependencies": {
-    "@resolve-js/client": "0.28.1-alpha",
-    "@resolve-js/core": "0.28.1-alpha"
+    "@resolve-js/client": "0.30.4",
+    "@resolve-js/core": "0.30.4"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "5.11.9",
@@ -57,7 +57,7 @@
     "react": "^17.0.1"
   },
   "engines": {
-    "node": ">=10.9"
+    "node": ">=12.18"
   },
   "babelCompile": [
     {

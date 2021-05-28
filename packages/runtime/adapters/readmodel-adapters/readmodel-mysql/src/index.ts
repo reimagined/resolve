@@ -12,6 +12,7 @@ import type {
   AdapterPool,
   AdapterOptions,
   AdapterApi,
+  AdminPool,
 } from './types'
 
 import buildUpsertDocument from './build-upsert-document'
@@ -22,6 +23,7 @@ import defineTable from './define-table'
 import del from './delete'
 import disconnect from './disconnect'
 import dropReadModel from './drop-read-model'
+import maybeInit from './maybe-init'
 import findOne from './find-one'
 import find from './find'
 import insert from './insert'
@@ -36,15 +38,14 @@ import generateGuid from './generate-guid'
 import subscribe from './subscribe'
 import resubscribe from './resubscribe'
 import unsubscribe from './unsubscribe'
-import deleteProperty from './delete-property'
-import getProperty from './get-property'
-import listProperties from './list-properties'
-import setProperty from './set-property'
 import reset from './reset'
 import pause from './pause'
 import resume from './resume'
 import status from './status'
 import build from './build'
+
+import _createResource from './resource/create'
+import _destroyResource from './resource/destroy'
 
 const store: CurrentStoreApi = {
   defineTable,
@@ -65,6 +66,7 @@ const internalMethods: InternalMethods = {
   inlineLedgerForceStop,
   generateGuid,
   dropReadModel,
+  maybeInit,
   escapeId,
   escapeStr,
 }
@@ -73,10 +75,6 @@ const externalMethods: ExternalMethods = {
   subscribe,
   resubscribe,
   unsubscribe,
-  deleteProperty,
-  getProperty,
-  listProperties,
-  setProperty,
   resume,
   pause,
   reset,
@@ -106,3 +104,20 @@ const createAdapter = _createAdapter.bind<
 >(null, implementation)
 
 export default createAdapter
+
+const pool = {
+  connect,
+  disconnect,
+  escapeId,
+  escapeStr,
+} as AdminPool
+
+const createResource = _createResource.bind(null, pool)
+const destroyResource = _destroyResource.bind(null, pool)
+
+Object.assign(pool, {
+  createResource,
+  destroyResource,
+})
+
+export { createResource as create, destroyResource as destroy }

@@ -61,8 +61,13 @@ const buildInit: (
   try {
     const handler = await modelInterop.acquireInitHandler(store)
     if (handler != null) {
-      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await handler()
+      try {
+        basePool.distinctMode = true
+        //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        await handler()
+      } finally {
+        basePool.distinctMode = false
+      }
     }
 
     await inlineLedgerRunQuery(
@@ -112,10 +117,8 @@ const buildEvents: (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis,
-  provideLedger
+  getVacantTimeInMillis
 ) => {
-  void provideLedger
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
@@ -168,7 +171,10 @@ const buildEvents: (
     if (events.length === 0) {
       throw new PassthroughError()
     }
-    let nextCursor = eventstoreAdapter.getNextCursor(cursor, events)
+    let nextCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(
+      cursor,
+      events
+    )
 
     eventsPromise = eventstoreAdapter
       .loadEvents({
@@ -331,8 +337,7 @@ const build: ExternalMethods['build'] = async (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis,
-  provideLedger
+  getVacantTimeInMillis
 ) => {
   const {
     PassthroughError,
@@ -407,8 +412,6 @@ const build: ExternalMethods['build'] = async (
       throw new TypeError('cursor')
     }
 
-    await provideLedger(readModelLedger)
-
     const currentPool = {
       ledgerTableNameAsId,
       xaKey,
@@ -426,8 +429,7 @@ const build: ExternalMethods['build'] = async (
       modelInterop,
       next,
       eventstoreAdapter,
-      getVacantTimeInMillis,
-      provideLedger
+      getVacantTimeInMillis
     )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {

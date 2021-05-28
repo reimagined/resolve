@@ -1,0 +1,48 @@
+{
+  "name": "@resolve-js/module-replication",
+  "version": "0.30.4",
+  "description": "A reSolve module that adds replication commands to an application.",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/module-replication",
+    "test": "echo || exit 0",
+    "testw": "echo || exit 0"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.9.6",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "jest": "26.6.3"
+  },
+  "engines": {
+    "node": ">=12.18"
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ]
+}

@@ -1,11 +1,15 @@
-const moveExample = (pool) => async () => {
-  const {
-    fs,
-    path,
-    applicationPath,
-    resolveClonePath,
-    resolveCloneExamplePath,
-  } = pool
+import fs from 'fs-extra'
+import path from 'path'
+import testExampleExists from './test-example-exists'
+
+const moveExample = async (applicationPath, resolveClonePath, exampleName) => {
+  const resolveCloneExamplesPath = path.join(resolveClonePath, 'examples')
+  const resolveCloneExamplePath = path.join(
+    resolveCloneExamplesPath,
+    exampleName
+  )
+  await testExampleExists(resolveCloneExamplesPath, exampleName)
+
   for (const resource of fs.readdirSync(resolveCloneExamplePath)) {
     fs.moveSync(
       path.join(resolveCloneExamplePath, resource),

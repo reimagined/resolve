@@ -146,6 +146,8 @@ const createRequest = async (lambdaEvent, customParameters) => {
       ? cookie.parse(headers.cookie)
       : {}
 
+  const clientIp = headers['X-Forwarded-For']
+
   const req = Object.create(null)
   req.isLambdaEdgeRequest = isLambdaEdgeRequest
 
@@ -157,6 +159,7 @@ const createRequest = async (lambdaEvent, customParameters) => {
     headers,
     cookies,
     body,
+    clientIp,
     ...customParameters,
   }
 
@@ -309,11 +312,18 @@ const createResponse = () => {
   return Object.freeze(res)
 }
 
-const wrapApiHandler = (
-  handler,
-  getCustomParameters,
-  onError = async () => void 0
-) => async (lambdaEvent, lambdaContext, lambdaCallback) => {
+const wrapApiHandler = (handler, getCustomParameters, monitoring) => async (
+  lambdaEvent,
+  lambdaContext,
+  lambdaCallback
+) => {
+  const startTimestamp = Date.now()
+
+  if (monitoring != null) {
+    monitoring.time('Execution', startTimestamp)
+  }
+
+  let pathMonitoring
   let result
   let isLambdaEdgeRequest
   let req
@@ -324,6 +334,12 @@ const wrapApiHandler = (
         : {}
 
     req = await createRequest(lambdaEvent, customParameters)
+
+    if (monitoring != null) {
+      pathMonitoring = monitoring.group({ Path: req.path })
+      pathMonitoring.time('Execution', startTimestamp)
+    }
+
     const res = createResponse()
 
     await handler(req, res)
@@ -362,8 +378,8 @@ const wrapApiHandler = (
         ? `${error.stack}`
         : `Unknown error ${error}`
 
-    if (req != null) {
-      await onError(error, req.path)
+    if (pathMonitoring != null) {
+      pathMonitoring.error(error)
     }
 
     // eslint-disable-next-line no-console
@@ -382,6 +398,16 @@ const wrapApiHandler = (
         body: '',
       }
     }
+  }
+
+  const endTimestamp = Date.now()
+
+  if (pathMonitoring != null) {
+    pathMonitoring.timeEnd('Execution', endTimestamp)
+  }
+
+  if (monitoring != null) {
+    monitoring.timeEnd('Execution', endTimestamp)
   }
 
   if (typeof lambdaCallback === 'function') {

@@ -7,6 +7,9 @@ import type {
 } from './types'
 
 const RDS_TRANSACTION_FAILED_KEY = 'RDS_TRANSACTION_FAILED_KEY'
+// Although documentation describes a 1 MB limit, the actual limit is 512 KB
+// https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
+const MAX_RDS_DATA_API_RESPONSE_SIZE = 512000
 
 const serializeError = (error: Error & { code?: number | string }) =>
   error != null
@@ -41,9 +44,7 @@ const buildInit: (
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
-    dbClusterOrInstanceArn,
-    awsSecretStoreArn,
-    rdsDataService,
+    inlineLedgerExecuteTransaction,
     inlineLedgerExecuteStatement,
     generateGuid,
     escapeStr,
@@ -53,13 +54,9 @@ const buildInit: (
     xaKey,
   } = pool
 
-  const {
-    transactionId = RDS_TRANSACTION_FAILED_KEY,
-  } = await rdsDataService.beginTransaction({
-    resourceArn: dbClusterOrInstanceArn,
-    secretArn: awsSecretStoreArn,
-    database: 'postgres',
-  })
+  const transactionId =
+    (await inlineLedgerExecuteTransaction(pool, 'begin')) ??
+    RDS_TRANSACTION_FAILED_KEY
   const rootSavePointId = generateGuid(transactionId, 'ROOT')
 
   const saveTrxIdPromise = inlineLedgerExecuteStatement(
@@ -100,6 +97,8 @@ const buildInit: (
     true
   )
 
+  basePool.sharedTransactionId = transactionId
+
   await Promise.all([saveTrxIdPromise, acquireTrxPromise])
 
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
@@ -119,11 +118,7 @@ const buildInit: (
       transactionId
     )
 
-    await rdsDataService.commitTransaction({
-      resourceArn: dbClusterOrInstanceArn,
-      secretArn: awsSecretStoreArn,
-      transactionId,
-    })
+    await inlineLedgerExecuteTransaction(pool, 'commit', transactionId)
 
     await next()
   } catch (error) {
@@ -146,11 +141,7 @@ const buildInit: (
       transactionId
     )
 
-    await rdsDataService.commitTransaction({
-      resourceArn: dbClusterOrInstanceArn,
-      secretArn: awsSecretStoreArn,
-      transactionId,
-    })
+    await inlineLedgerExecuteTransaction(pool, 'commit', transactionId)
   }
 }
 
@@ -163,6 +154,7 @@ export const buildEvents: (
     inputCursor: ReadModelCursor
     readModelLedger: ReadModelLedger
     xaKey: string
+    metricData: any
   },
   ...args: Parameters<ExternalMethods['build']>
 ) => ReturnType<ExternalMethods['build']> = async (
@@ -178,9 +170,7 @@ export const buildEvents: (
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
-    dbClusterOrInstanceArn,
-    awsSecretStoreArn,
-    rdsDataService,
+    inlineLedgerExecuteTransaction,
     inlineLedgerExecuteStatement,
     generateGuid,
     escapeStr,
@@ -190,6 +180,8 @@ export const buildEvents: (
     xaKey,
     eventTypes,
     inputCursor,
+    metricData,
+    monitoring,
   } = pool
 
   let lastSuccessEvent: ReadModelEvent | null = null
@@ -198,26 +190,28 @@ export const buildEvents: (
   let localContinue = true
   let cursor: ReadModelCursor = inputCursor
 
-  let transactionIdPromise: Promise<string> = rdsDataService
-    .beginTransaction({
-      resourceArn: dbClusterOrInstanceArn,
-      secretArn: awsSecretStoreArn,
-      database: 'postgres',
-    })
-    .then((result) =>
-      result != null && result.transactionId != null
-        ? result.transactionId
-        : RDS_TRANSACTION_FAILED_KEY
-    )
+  let eventsApplyStartTimestamp = Date.now()
+  let eventCount = 0
+
+  let transactionIdPromise: Promise<string> = inlineLedgerExecuteTransaction(
+    pool,
+    'begin'
+  ).then((result) => (result != null ? result : RDS_TRANSACTION_FAILED_KEY))
+
+  const firstEventsLoadStartTimestamp = Date.now()
 
   let eventsPromise: Promise<Array<ReadModelEvent>> = eventstoreAdapter
     .loadEvents({
       eventTypes,
-      eventsSizeLimit: 6553600,
+      eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
       limit: 100,
       cursor,
     })
-    .then((result) => (result != null ? result.events : []))
+    .then((result) => {
+      metricData.eventBatchLoadTime +=
+        Date.now() - firstEventsLoadStartTimestamp
+      return result != null ? result.events : []
+    })
 
   let transactionId: string = await transactionIdPromise
   let rootSavePointId: string = generateGuid(transactionId, 'ROOT')
@@ -268,36 +262,32 @@ export const buildEvents: (
     acquireTrxPromise,
   ])
 
-  while (true) {
+  for (metricData.eventLoopCount = 0; true; metricData.eventLoopCount++) {
     if (events.length === 0) {
-      throw new PassthroughError(transactionId)
+      throw new PassthroughError(transactionId, false, false)
     }
 
-    transactionIdPromise = rdsDataService
-      .beginTransaction({
-        resourceArn: dbClusterOrInstanceArn,
-        secretArn: awsSecretStoreArn,
-        database: 'postgres',
-      })
-      .then((result) =>
-        result != null && result.transactionId != null
-          ? result.transactionId
-          : RDS_TRANSACTION_FAILED_KEY
-      )
+    transactionIdPromise = inlineLedgerExecuteTransaction(
+      pool,
+      'begin'
+    ).then((result) => (result != null ? result : RDS_TRANSACTION_FAILED_KEY))
 
     let nextCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(
       cursor,
       events
     )
-
+    const eventsLoadStartTimestamp = Date.now()
     eventsPromise = eventstoreAdapter
       .loadEvents({
         eventTypes,
-        eventsSizeLimit: 65536000,
+        eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
         limit: 1000,
         cursor: nextCursor,
       })
-      .then((result) => (result != null ? result.events : []))
+      .then((result) => {
+        metricData.eventBatchLoadTime += Date.now() - eventsLoadStartTimestamp
+        return result != null ? result.events : []
+      })
 
     let appliedEventsCount = 0
     try {
@@ -311,7 +301,17 @@ export const buildEvents: (
               `SAVEPOINT ${savePointId}`,
               transactionId
             )
-            await handler()
+            const projectionApplyStartTimestamp = Date.now()
+            try {
+              metricData.insideProjection = true
+              await handler()
+              eventCount++
+            } finally {
+              metricData.insideProjection = false
+            }
+            metricData.pureProjectionApplyTime +=
+              Date.now() - projectionApplyStartTimestamp
+
             await inlineLedgerExecuteStatement(
               pool,
               `RELEASE SAVEPOINT ${savePointId}`,
@@ -419,11 +419,31 @@ export const buildEvents: (
       )
     }
 
-    await rdsDataService.commitTransaction({
-      resourceArn: dbClusterOrInstanceArn,
-      secretArn: awsSecretStoreArn,
-      transactionId,
-    })
+    await inlineLedgerExecuteTransaction(pool, 'commit', transactionId)
+
+    if (eventCount > 0 && monitoring != null) {
+      const seconds = (Date.now() - eventsApplyStartTimestamp) / 1000
+
+      monitoring
+        .group({ Part: 'ReadModel' })
+        .group({ ReadModel: readModelName })
+        .rate('ReadModelFeedingRate', eventCount, seconds)
+    }
+
+    eventCount = 0
+    eventsApplyStartTimestamp = Date.now()
+
+    if (eventCount > 0 && monitoring != null) {
+      const seconds = (Date.now() - eventsApplyStartTimestamp) / 1000
+
+      monitoring
+        .group({ Part: 'ReadModel' })
+        .group({ ReadModel: readModelName })
+        .rate('ReadModelFeedingRate', eventCount, seconds)
+    }
+
+    eventCount = 0
+    eventsApplyStartTimestamp = Date.now()
 
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
     cursor = nextCursor
@@ -486,7 +506,7 @@ export const buildEvents: (
         await next()
       }
 
-      throw new PassthroughError(await transactionIdPromise)
+      throw new PassthroughError(await transactionIdPromise, false, false)
     }
   }
 }
@@ -499,19 +519,63 @@ const build: ExternalMethods['build'] = async (
   next,
   eventstoreAdapter,
   getVacantTimeInMillis,
-  provideLedger
+  ...args
 ) => {
+  const metricData: any = {
+    ...(args as any)[0],
+    eventBatchLoadTime: 0,
+    pureProjectionApplyTime: 0,
+    pureLedgerTime: 0,
+  }
+
   const {
     PassthroughError,
-    dbClusterOrInstanceArn,
-    awsSecretStoreArn,
+    inlineLedgerExecuteTransaction,
+    generateGuid,
     schemaName,
     escapeId,
     escapeStr,
-    rdsDataService,
-    inlineLedgerExecuteStatement,
-    generateGuid,
+    inlineLedgerExecuteStatement: ledgerStatement,
+    monitoring,
   } = basePool
+
+  const now = Date.now()
+
+  const hasSendTime = typeof metricData.sendTime === 'number'
+
+  const groupMonitoring =
+    monitoring != null
+      ? monitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ ReadModel: readModelName })
+      : null
+
+  if (hasSendTime) {
+    void [monitoring, groupMonitoring].forEach((innerMonitoring) => {
+      if (innerMonitoring == null) {
+        return
+      }
+
+      innerMonitoring.time('EventDelivery', metricData.sendTime)
+      innerMonitoring.timeEnd('EventDelivery', now)
+
+      innerMonitoring.time('EventApply', metricData.sendTime)
+    })
+  }
+
+  const inlineLedgerExecuteStatement: typeof ledgerStatement = Object.assign(
+    async (...args: any[]): Promise<any> => {
+      const inlineLedgerStartTimestamp = Date.now()
+      try {
+        return await (ledgerStatement as any)(...args)
+      } finally {
+        if (!metricData.insideProjection) {
+          metricData.pureLedgerTime += Date.now() - inlineLedgerStartTimestamp
+        }
+      }
+    },
+    ledgerStatement
+  )
 
   try {
     basePool.activePassthrough = true
@@ -545,7 +609,6 @@ const build: ExternalMethods['build'] = async (
       SuccessEvent: string | null
       FailedEvent: string | null
       Errors: string | null
-      Properties: string | null
       Schema: string | null
     }>
 
@@ -570,16 +633,12 @@ const build: ExternalMethods['build'] = async (
                 ? JSON.parse(rows[0].FailedEvent)
                 : null,
             Errors: rows[0].Errors != null ? JSON.parse(rows[0].Errors) : null,
-            Properties:
-              rows[0].Properties != null
-                ? JSON.parse(rows[0].Properties)
-                : null,
             Schema: rows[0].Schema != null ? JSON.parse(rows[0].Schema) : null,
           } as ReadModelLedger)
         : null
 
     if (readModelLedger == null || readModelLedger.Errors != null) {
-      throw new PassthroughError(null)
+      throw new PassthroughError(null, false, false)
     }
 
     const { EventTypes: eventTypes, Cursor: cursor } = readModelLedger
@@ -592,8 +651,6 @@ const build: ExternalMethods['build'] = async (
       throw new TypeError('cursor')
     }
 
-    await provideLedger(readModelLedger)
-
     const currentPool = {
       databaseNameAsId,
       ledgerTableNameAsId,
@@ -602,6 +659,7 @@ const build: ExternalMethods['build'] = async (
       readModelLedger,
       eventTypes,
       xaKey,
+      metricData,
     }
 
     const buildMethod = cursor == null ? buildInit : buildEvents
@@ -613,8 +671,7 @@ const build: ExternalMethods['build'] = async (
       modelInterop,
       next,
       eventstoreAdapter,
-      getVacantTimeInMillis,
-      provideLedger
+      getVacantTimeInMillis
     )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
@@ -624,29 +681,42 @@ const build: ExternalMethods['build'] = async (
 
     if (passthroughError.lastTransactionId != null) {
       try {
-        await rdsDataService.rollbackTransaction({
-          resourceArn: dbClusterOrInstanceArn,
-          secretArn: awsSecretStoreArn,
-          transactionId: passthroughError.lastTransactionId,
-        })
+        await inlineLedgerExecuteTransaction(
+          basePool,
+          'rollback',
+          passthroughError.lastTransactionId
+        )
       } catch (err) {
-        if (
-          !(
-            err != null &&
-            (/Transaction .*? Is Not Found/i.test(err.message) ||
-              /Transaction .*? Is Not Found/i.test(err.stack) ||
-              /Transaction is expired/i.test(err.message) ||
-              /Transaction is expired/i.test(err.stack) ||
-              /Invalid transaction ID/i.test(err.message) ||
-              /Invalid transaction ID/i.test(err.stack))
-          )
-        ) {
+        if (!(err instanceof PassthroughError && err.isEmptyTransaction)) {
           throw err
         }
       }
     }
+
+    if (passthroughError.isRetryable) {
+      await next()
+    }
   } finally {
     basePool.activePassthrough = false
+
+    void [monitoring, groupMonitoring].forEach((innerMonitoring) => {
+      if (innerMonitoring == null) {
+        return
+      }
+
+      if (hasSendTime) {
+        innerMonitoring.timeEnd('EventApply')
+      }
+
+      innerMonitoring.duration('EventBatchLoad', metricData.eventBatchLoadTime)
+
+      innerMonitoring.duration(
+        'EventProjectionApply',
+        metricData.pureProjectionApplyTime
+      )
+
+      innerMonitoring.duration('Ledger', metricData.pureLedgerTime)
+    })
   }
 }
 

@@ -40,12 +40,19 @@ import getSecret from './get-secret'
 import injectSecret from './inject-secret'
 import loadSecrets from './load-secrets'
 
+import replicateEvents from './replicate-events'
+import replicateSecrets from './replicate-secrets'
+import setReplicationStatus from './set-replication-status'
+import setReplicationIterator from './set-replication-iterator'
+import setReplicationPaused from './set-replication-paused'
+import getReplicationState from './get-replication-state'
+import resetReplication from './reset-replication'
+import getCursorUntilEventTypes from './get-cursor-until-event-types'
+
 import _createResource from './resource/create'
-import _disposeResource from './resource/dispose'
 import _destroyResource from './resource/destroy'
 
 import type {
-  CloudResource,
   CloudResourcePool,
   CloudResourceOptions,
   ConnectionDependencies,
@@ -89,6 +96,14 @@ const createPostgresqlServerlessAdapter = (
       injectEvent,
       injectSecret,
       loadSecrets,
+      replicateEvents,
+      replicateSecrets,
+      setReplicationStatus,
+      setReplicationIterator,
+      setReplicationPaused,
+      getReplicationState,
+      resetReplication,
+      getCursorUntilEventTypes,
     },
     {
       RDSDataService,
@@ -117,22 +132,13 @@ const cloudPool: CloudResourcePool = {
 }
 
 const createResource = _createResource.bind(null, cloudPool)
-const disposeResource = _disposeResource.bind(
-  null,
-  cloudPool as CloudResourcePool & CloudResource
-)
 const destroyResource = _destroyResource.bind(null, cloudPool)
 
 Object.assign(cloudPool, {
   createResource,
-  disposeResource,
   destroyResource,
 })
 
-export {
-  createResource as create,
-  disposeResource as dispose,
-  destroyResource as destroy,
-}
+export { createResource as create, destroyResource as destroy }
 
 export type { PostgresqlAdapterConfig, CloudResourcePool, CloudResourceOptions }

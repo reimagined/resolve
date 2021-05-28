@@ -1,6 +1,6 @@
 # **resolve-redux**
 
-[![npm version](https://badge.fury.io/js/@resolve-js/redux.svg)](https://badge.fury.io/js/@resolve-js/redux)
+[![npm version](https://badge.fury.io/js/%40resolve-js%2Fredux.svg)](https://badge.fury.io/js/%40resolve-js%2Fredux)
 
 This package contains tools for integrating reSolve with [Redux](http://redux.js.org/).
 

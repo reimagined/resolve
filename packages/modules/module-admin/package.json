@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/module-admin",
-  "version": "0.28.1-alpha",
+  "version": "0.30.4",
   "description": "A reSolve module that adds admin commands to an application.",
   "keywords": [
     "cqrs",
@@ -19,12 +19,13 @@
   "module": "./es/index.js",
   "bin": "./bin/index.js",
   "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/module-admin",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
     "@babel/runtime": "7.13.10",
-    "@resolve-js/eventstore-base": "0.28.1-alpha",
+    "@resolve-js/eventstore-base": "0.30.4",
     "columnify": "1.5.4",
     "dateformat": "4.5.1",
     "isomorphic-fetch": "3.0.0",
@@ -35,7 +36,7 @@
     "sinon": "9.2.4"
   },
   "engines": {
-    "node": ">=10.9"
+    "node": ">=12.18"
   },
   "babelCompile": [
     {

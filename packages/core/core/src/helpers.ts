@@ -7,11 +7,11 @@ export function firstOfType<T>(
   return vars.find((i) => selector(i)) as T
 }
 
-const createSafeHandler = <T extends Array<any>>(
-  fn: (...args: T) => Promise<void>
-) => async (...args: T): Promise<void> => {
+const createSafeHandler = <T extends (...args: any[]) => void>(
+  fn: (...args: Parameters<T>) => void
+) => (...args: Parameters<T>): void => {
   try {
-    await fn(...args)
+    fn(...args)
   } catch (e) {}
 }
 

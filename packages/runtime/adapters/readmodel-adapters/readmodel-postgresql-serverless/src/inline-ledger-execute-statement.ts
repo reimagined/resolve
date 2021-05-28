@@ -36,15 +36,17 @@ const inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod = Object.
                 })()
             : {}
 
-        const result = await rdsDataService.executeStatement({
-          resourceArn: dbClusterOrInstanceArn,
-          secretArn: awsSecretStoreArn,
-          database: 'postgres',
-          continueAfterTimeout: false,
-          includeResultMetadata: true,
-          ...transactionScope,
-          sql,
-        })
+        const result = await rdsDataService
+          .executeStatement({
+            resourceArn: dbClusterOrInstanceArn,
+            secretArn: awsSecretStoreArn,
+            database: 'postgres',
+            continueAfterTimeout: false,
+            includeResultMetadata: true,
+            ...transactionScope,
+            sql,
+          })
+          .promise()
 
         const { columnMetadata, records } = result
 
@@ -73,14 +75,16 @@ const inlineLedgerExecuteStatement: InlineLedgerExecuteStatementMethod = Object.
               !!passthroughRuntimeErrors
             )
           ) {
-            throw new PassthroughError(
+            PassthroughError.maybeThrowPassthroughError(
+              error,
               transactionId != null && transactionId.constructor === String
                 ? transactionId
-                : null
+                : null,
+              !!passthroughRuntimeErrors
             )
+          } else {
+            throw error
           }
-
-          throw error
         } else {
           if (PassthroughError.isPassthroughError(error, false)) {
             await new Promise((resolve) => setTimeout(resolve, 100))

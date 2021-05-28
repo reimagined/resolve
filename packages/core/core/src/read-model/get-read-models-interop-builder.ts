@@ -11,12 +11,20 @@ import { getPerformanceTracerSubsegment } from '../utils'
 import { ReadModelMeta } from '../types/runtime'
 import getLog from '../get-log'
 
-const monitoredError = async (
+const monitoredError = (
   runtime: ReadModelRuntime,
   error: Error,
-  meta: any
+  readModelName: string,
+  resolverName: string
 ) => {
-  await runtime.monitoring?.error?.(error, 'readModelResolver', meta)
+  if (runtime.monitoring != null) {
+    const monitoringGroup = runtime.monitoring
+      .group({ Part: 'ReadModelResolver' })
+      .group({ ReadModel: readModelName })
+      .group({ Resolver: resolverName })
+
+    monitoringGroup.error(error)
+  }
   return error
 }
 
@@ -43,16 +51,14 @@ const getReadModelInterop = (
     const invoker = resolverInvokerMap[resolver]
     if (invoker == null) {
       log.error(`unable to find invoker for the resolver`)
-      throw await monitoredError(
+      throw monitoredError(
         runtime,
         createHttpError(
           HttpStatusCodes.UnprocessableEntity,
           `Resolver "${resolver}" does not exist`
         ),
-        {
-          readModelName: name,
-          resolverName: resolver,
-        }
+        name,
+        resolver
       )
     }
 
@@ -69,6 +75,18 @@ const getReadModelInterop = (
         }
       )
 
+      const monitoringGroup =
+        monitoring != null
+          ? monitoring
+              .group({ Part: 'ReadModelResolver' })
+              .group({ ReadModel: name })
+              .group({ Resolver: resolver })
+          : null
+
+      if (monitoringGroup != null) {
+        monitoringGroup.time('Execution')
+      }
+
       try {
         log.debug(`invoking the resolver`)
         const data = await invoker(connection, args, {
@@ -84,12 +102,16 @@ const getReadModelInterop = (
         if (subSegment != null) {
           subSegment.addError(error)
         }
-        await monitoring?.error?.(error, 'readModelResolver', {
-          readModelName: name,
-          resolverName: resolver,
-        })
+
+        if (monitoringGroup != null) {
+          monitoringGroup.error(error)
+        }
         throw error
       } finally {
+        if (monitoringGroup != null) {
+          monitoringGroup.timeEnd('Execution')
+        }
+
         if (subSegment != null) {
           subSegment.close()
         }
@@ -113,9 +135,14 @@ const getReadModelInterop = (
     try {
       return await handler()
     } catch (error) {
-      await monitoring?.error?.(error, 'readModelProjection', {
-        readModelName: readModel.name,
-      })
+      if (monitoring != null) {
+        const monitoringGroup = monitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ ReadModel: readModel.name })
+          .group({ EventType: eventType })
+
+        monitoringGroup.error(error)
+      }
       throw error
     }
   }
@@ -123,8 +150,8 @@ const getReadModelInterop = (
   const acquireInitHandler = async (
     store: any
   ): Promise<ReadModelRuntimeEventHandler | null> => {
-    if (typeof projection.Init === 'function') {
-      return monitoredHandler('Init', async () => projection.Init(store))
+    if (projection.Init != null && typeof projection.Init === 'function') {
+      return monitoredHandler('Init', async () => projection.Init?.(store))
     }
     return null
   }

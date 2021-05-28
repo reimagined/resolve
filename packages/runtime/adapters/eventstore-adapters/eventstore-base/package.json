@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/eventstore-base",
-  "version": "0.28.1-alpha",
+  "version": "0.30.4",
   "description": "A base for reSolve eventstore adapters",
   "keywords": [
     "cqrs",
@@ -19,22 +19,27 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/eventstore-base",
     "test": "jest --config=../../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
     "@babel/runtime": "7.13.10",
-    "@resolve-js/core": "0.28.1-alpha",
-    "@resolve-js/debug-levels": "0.28.1-alpha",
+    "@resolve-js/core": "0.30.4",
+    "@resolve-js/debug-levels": "0.30.4",
     "fp-ts": "2.9.5",
-    "io-ts": "2.2.16"
+    "io-ts": "2.2.16",
+    "io-ts-types": "0.5.15",
+    "monocle-ts": "2.3.9",
+    "nanoid": "3.1.12",
+    "newtype-ts": "0.3.4"
   },
   "devDependencies": {
     "jest": "26.6.3",
     "sinon": "9.2.4"
   },
   "engines": {
-    "node": ">=10.9"
+    "node": ">=12.18"
   },
   "babelCompile": [
     {

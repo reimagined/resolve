@@ -1,3 +1,9 @@
+import {
+  Adapter as EventStoreAdapter,
+  Cursor,
+  SavedEvent,
+} from '@resolve-js/eventstore-base'
+
 export type JsonPrimitive = string | number | boolean | null
 export type JsonMap = {
   [member: string]: JsonPrimitive | JsonArray | JsonMap
@@ -129,36 +135,38 @@ export type PerformanceTracerLike = {
   } | null
 }
 
-export type ReadModelCursor = string | null // TODO brand type
-export type ReadModelEvent = {
-  aggregateId: string
-  aggregateVersion: number
-  timestamp: number
-  type: string
-  payload: JsonMap | JsonArray | JsonPrimitive
+export type MonitoringLike = {
+  group: (config: Record<string, string>) => MonitoringLike
+  error: (error: Error) => void
+  duration: (label: string, duration: number) => void
+  time: (label: string, timestamp?: number) => void
+  timeEnd: (label: string, timestamp?: number) => void
+  rate: (metricName: string, count: number, seconds?: number) => void
+  publish: () => Promise<void>
+  performance?: PerformanceTracerLike
 }
+
+export type ReadModelCursor = Cursor // TODO brand type
+export type ReadModelEvent = SavedEvent
 
 export type EventstoreAdapterLike = {
-  loadEvents(filter: {
-    eventTypes: Array<ReadModelEvent['type']> | null
-    eventsSizeLimit: number | null
-    limit: number | null
-    cursor: ReadModelCursor | null
-  }): Promise<{
-    events: Array<ReadModelEvent>
-    cursor: ReadModelCursor
-  }>
-  getNextCursor(
-    previousCursor: ReadModelCursor,
-    appliedEvents: Array<ReadModelEvent>
-  ): ReadModelCursor
+  loadEvents: EventStoreAdapter['loadEvents']
+  getNextCursor: EventStoreAdapter['getNextCursor']
+  getSecretsManager: EventStoreAdapter['getSecretsManager']
+  loadSecrets?: EventStoreAdapter['loadSecrets']
+  gatherSecretsFromEvents: EventStoreAdapter['gatherSecretsFromEvents']
 }
 
+export type SplitNestedPathMethod = (input: string) => Array<string>
+
 export type CommonAdapterPool = {
+  monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
+  splitNestedPath: SplitNestedPathMethod
 }
 
 export type CommonAdapterOptions = {
+  monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
 }
 
@@ -196,6 +204,7 @@ export type ReadModelStoreImpl<
     CurrentStoreApi[K]
   >
 } & {
+  monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
 }
 
@@ -224,14 +233,12 @@ export type ReadModelLedger = {
   SuccessEvent: ReadModelEvent | null
   FailedEvent: ReadModelEvent | null
   Errors: Array<Error> | null
-  Properties: Record<string, string> | null
   Schema: Record<string, string> | null
   IsPaused: boolean
 }
 
 export type MethodNext = () => Promise<void>
 export type MethodGetRemainingTime = () => number
-export type MethodProvideLedger = (ledger: ReadModelLedger) => Promise<void>
 export type MethodGetEncryption = () => (
   event: ReadModelEvent
 ) => EncryptionLike
@@ -244,7 +251,6 @@ export enum ReadModelRunStatus {
 
 export type ReadModelStatus = {
   eventSubscriber: string
-  properties: Record<string, string> | null
   deliveryStrategy: 'inline-ledger'
   successEvent: ReadModelEvent | null
   failedEvent: ReadModelEvent | null
@@ -289,30 +295,6 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     aggregateIds: Array<ReadModelEvent['aggregateId']> | null
   ): Promise<void>
 
-  deleteProperty(
-    pool: AdapterPool,
-    readModelName: string,
-    key: string
-  ): Promise<void>
-
-  getProperty(
-    pool: AdapterPool,
-    readModelName: string,
-    key: string
-  ): Promise<string | null>
-
-  listProperties(
-    pool: AdapterPool,
-    readModelName: string
-  ): Promise<Record<string, string> | null>
-
-  setProperty(
-    pool: AdapterPool,
-    readModelName: string,
-    key: string,
-    value: string
-  ): Promise<void>
-
   resume(
     pool: AdapterPool,
     readModelName: string,
@@ -343,8 +325,7 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     },
     next: MethodNext,
     eventstoreAdapter: EventstoreAdapterLike,
-    getVacantTimeInMillis: MethodGetRemainingTime,
-    provideLedger: MethodProvideLedger
+    getVacantTimeInMillis: MethodGetRemainingTime
   ): Promise<void>
 }
 
@@ -362,6 +343,7 @@ export type BaseAdapterPool<AdapterPool extends CommonAdapterPool> = {
   commonAdapterPool: CommonAdapterPool
   adapterPoolMap: Map<ReadModelStore<StoreApi<AdapterPool>>, AdapterPool>
   withPerformanceTracer: WithPerformanceTracerMethod
+  monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
 }
 
@@ -411,7 +393,7 @@ export type WrappedAdapterOperationParameters<
   readModelName: string,
   ...args: infer Args
 ) => // eslint-disable-next-line @typescript-eslint/no-unused-vars
-infer Result
+infer _Result
   ? Args
   : never
 
@@ -428,7 +410,24 @@ export type WrapOperationMethod = <
   ...args: WrappedAdapterOperationParameters<AdapterPool, MethodImpl>
 ) => ReturnType<MethodImpl>
 
+export type PathToolkitLibInstance = {
+  getTokens: (
+    input: string
+  ) => { t: Array<string>; simple: number | boolean } | null | undefined
+  setOptions: (options: any) => void
+}
+
+export type PathToolkitLib = {
+  new (): PathToolkitLibInstance
+}
+
+export type MakeSplitNestedPathMethod = (
+  imports: BaseAdapterImports
+) => SplitNestedPathMethod
+
 export type BaseAdapterImports = {
+  PathToolkit: PathToolkitLib
+  makeSplitNestedPath: MakeSplitNestedPathMethod
   withPerformanceTracer: WithPerformanceTracerMethod
   wrapConnect: WrapConnectMethod
   wrapDisconnect: WrapDisconnectMethod
@@ -486,7 +485,7 @@ export type ObjectKeys<T> = T extends object
   : T extends number
   ? []
   : // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  T extends Array<infer R> | string
+  T extends Array<infer _R> | string
   ? string[]
   : never
 
@@ -508,26 +507,32 @@ export type ObjectDictionaryKeys<T extends object> = Exclude<
 export type DistributeFixedFieldsUnionLikeObject<
   U extends object,
   K extends keyof any,
-  KS extends keyof U = Exclude<ObjectFixedKeys<U>, K>
-> = KS extends any ? { [K in KS]: any } : never
+  KS = Exclude<ObjectFixedKeys<U>, K>
+> = KS extends keyof any ? { [K in KS]: any } : never
 
 export type ExtractExactUnionLikeKeyType<
   U extends object,
   K extends keyof any,
-  Q extends object = Exclude<U, DistributeFixedFieldsUnionLikeObject<U, K>>
-> = Extract<Q, { [K in ObjectFixedKeys<Q>]: Q[K] }>[keyof Extract<
+  Q extends object = Exclude<U, DistributeFixedFieldsUnionLikeObject<U, K>>,
+  KS = ObjectFixedKeys<Q>
+> = Extract<Q, KS extends keyof Q ? { [K in KS]: Q[K] } : never>[keyof Extract<
   Q,
-  { [K in ObjectFixedKeys<Q>]: Q[K] }
+  KS extends keyof Q ? { [K in KS]: Q[K] } : never
 >]
 
 export type DistributeUnionLikeObject<
   U extends object,
-  KS extends keyof U = ObjectFixedKeys<U>
-> = KS extends any ? ExtractExactUnionLikeKeyType<U, KS> : never
+  KS = ObjectFixedKeys<U>
+> = KS extends keyof any ? ExtractExactUnionLikeKeyType<U, KS> : never
 
-export type ObjectFixedUnionToIntersection<U extends object> = {
-  [K in ObjectFixedKeys<U>]: DistributeUnionLikeObject<U>
-}
+export type ObjectFixedUnionToIntersection<
+  U extends object,
+  KS = ObjectFixedKeys<U>
+> = [KS] extends [keyof any]
+  ? {
+      [K in KS]: DistributeUnionLikeObject<U>
+    }
+  : never
 
 export type ObjectFixedUnionToIntersectionByKeys<
   U extends object,
@@ -539,14 +544,19 @@ export type ObjectFixedUnionToIntersectionByKeys<
   >
 }
 
-export type ObjectFixedIntersectionToObject<T extends object> = {
-  [K in ObjectFixedKeys<T>]: ExtractExactUnionLikeKeyType<T, K>
-}
+export type ObjectFixedIntersectionToObject<
+  T extends object,
+  KS = ObjectFixedKeys<T>
+> = [KS] extends [keyof any]
+  ? {
+      [K in KS]: ExtractExactUnionLikeKeyType<T, K>
+    }
+  : never
 
 export type ObjectFunctionLikeKeys<
   U extends object,
-  KS extends keyof U = ObjectFixedKeys<U>
-> = KS extends any ? (U[KS] extends FunctionLike ? KS : never) : never
+  KS = ObjectFixedKeys<U>
+> = KS extends keyof U ? (U[KS] extends FunctionLike ? KS : never) : never
 
 export type JsonLike = JsonPrimitive | JsonArray | JsonMap
 
