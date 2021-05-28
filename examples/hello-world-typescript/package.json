@@ -12,7 +12,7 @@
     "type-check": "tsc"
   },
   "resolutions": {
-    "@types/react": "16.9.35"
+    "@types/react": "17.0.3"
   },
   "dependencies": {
     "@babel/node": "7.12.13",
