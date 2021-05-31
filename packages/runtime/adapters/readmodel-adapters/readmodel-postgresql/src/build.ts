@@ -240,6 +240,12 @@ const buildEvents: (
 
         regularWorkflow = false
       } catch (err) {
+        try {
+          await inlineLedgerRunQuery(
+            `ROLLBACK TO SAVEPOINT ${rootSavePointId};`
+          )
+        } catch (e) {}
+
         // eslint-disable-next-line no-console
         console.warn(
           `Inline procedure execution failed for reason: ${JSON.stringify(
