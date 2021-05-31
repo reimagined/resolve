@@ -489,11 +489,31 @@ export type ObjectKeys<T> = T extends object
   ? string[]
   : never
 
-export type ObjectFixedKeys<T extends object> = {
-  [K in keyof T]: string extends K ? never : number extends K ? never : K
-} extends { [_ in keyof T]: infer U }
+export type PrimitiveOnly<K> = string extends K
+  ? never
+  : number extends K
+  ? never
+  : K
+
+export type ObjectFixedKeysDistribute<T> = T extends any
+  ? T extends [infer U]
+    ? PrimitiveOnly<U>
+    : never
+  : never
+
+export type ObjectFixedKeysReInfer<T extends object> = T extends {
+  [K in keyof T]: infer U
+}
   ? U
   : never
+
+export type ObjectFixedKeysKeysToValues<T extends object> = {
+  [K in keyof T]: [K]
+}
+
+export type ObjectFixedKeys<T extends object> = ObjectFixedKeysDistribute<
+  ObjectFixedKeysReInfer<ObjectFixedKeysKeysToValues<T>>
+>
 
 export type DistributeKeysUnion<U> = U extends string | number | symbol
   ? { [K in U]: any }
