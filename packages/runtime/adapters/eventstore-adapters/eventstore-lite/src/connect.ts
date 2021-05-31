@@ -47,7 +47,7 @@ const connect = async (
   log.verbose(`secretsTableName: ${secretsTableName}`)
   log.verbose(`subscribersTableName: ${subscribersTableName}`)
 
-  let connector
+  let fileName: string
   if (databaseFile === ':memory:') {
     log.debug(`using memory connector`)
     if (process.env.RESOLVE_LAUNCH_ID != null) {
@@ -79,17 +79,20 @@ const connect = async (
       }
     }
 
-    connector = sqlite.open.bind(sqlite, pool.memoryStore.name)
+    fileName = pool.memoryStore.name
   } else {
     log.debug(`using disk file connector`)
-    connector = sqlite.open.bind(sqlite, databaseFile)
+    fileName = databaseFile
   }
 
   log.debug(`connecting`)
   let database
   for (let retry = 0; ; retry++) {
     try {
-      database = await connector()
+      database = await sqlite.open({
+        filename: fileName,
+        driver: sqlite.driver,
+      })
       break
     } catch (error) {
       if (error != null && error.code === SQLITE_BUSY) {

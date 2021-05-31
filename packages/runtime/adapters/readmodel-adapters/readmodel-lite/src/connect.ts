@@ -149,7 +149,10 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
 
   for (let retry = 0; ; retry++) {
     try {
-      pool.connection = await SQLite.open(pool.connectionUri)
+      pool.connection = await SQLite.open({
+        filename: pool.connectionUri,
+        driver: SQLite.driver,
+      })
       break
     } catch (error) {
       if (error != null && error.code === SQLITE_BUSY) {

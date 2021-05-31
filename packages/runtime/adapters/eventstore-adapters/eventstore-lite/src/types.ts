@@ -1,4 +1,5 @@
 import type { open, Database } from 'sqlite'
+import sqlite3 from 'sqlite3'
 import type {
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
@@ -11,6 +12,7 @@ import {
   iotsTypes,
 } from '@resolve-js/eventstore-base'
 
+export type SqliteDriver = typeof sqlite3.Database
 export type SqliteOpen = typeof open
 
 export type MemoryStore = {
@@ -50,7 +52,7 @@ export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
 >
 
 export type ConnectionDependencies = {
-  sqlite: { open: SqliteOpen }
+  sqlite: { open: SqliteOpen; driver: SqliteDriver }
   tmp: any
   os: any
   fs: any

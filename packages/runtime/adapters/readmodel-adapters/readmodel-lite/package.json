@@ -26,7 +26,8 @@
   "dependencies": {
     "@babel/runtime": "7.9.6",
     "@resolve-js/readmodel-base": "0.30.4",
-    "sqlite": "^3.0.2",
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2",
     "tmp": "^0.1.0",
     "uuid": "8.3.1"
   },

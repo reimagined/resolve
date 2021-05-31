@@ -1,5 +1,6 @@
 import _createAdapter from '@resolve-js/readmodel-base'
-import SQLite from 'sqlite'
+import { open } from 'sqlite'
+import sqlite3 from 'sqlite3'
 //eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import tmp from 'tmp'
@@ -79,7 +80,7 @@ const externalMethods: ExternalMethods = {
 }
 
 const connect = _connect.bind(null, {
-  SQLite,
+  SQLite: { open, driver: sqlite3.Database },
   tmp,
   os,
   fs,

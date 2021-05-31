@@ -29,7 +29,8 @@
     "@resolve-js/debug-levels": "0.30.4",
     "@resolve-js/eventstore-base": "0.30.4",
     "crc-32": "^1.2.0",
-    "sqlite": "^3.0.2",
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2",
     "tmp": "^0.1.0"
   },
   "devDependencies": {

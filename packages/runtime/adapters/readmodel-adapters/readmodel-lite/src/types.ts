@@ -15,7 +15,8 @@ import type {
   IsTypeLike,
 } from '@resolve-js/readmodel-base'
 
-import type SQLiteLib from 'sqlite'
+import type { open, Database } from 'sqlite'
+import sqlite3 from 'sqlite3'
 import type OsLib from 'os'
 import type FsLib from 'fs'
 
@@ -33,8 +34,14 @@ export type MemoryStore = {
   drop: () => {}
 }
 
+export type SqliteDriver = typeof sqlite3.Database
+export type SqliteOpen = typeof open
+
 export type LibDependencies = {
-  SQLite: typeof SQLiteLib
+  SQLite: {
+    open: SqliteOpen
+    driver: SqliteDriver
+  }
   tmp: TmpLib
   os: typeof OsLib
   fs: typeof FsLib
@@ -144,7 +151,7 @@ export type AdapterPool = CommonAdapterPool & {
   escapeId: EscapeableMethod
   escapeStr: EscapeableMethod
   connectionUri: string
-  connection: SQLiteLib.Database
+  connection: Database
   activePassthrough: boolean
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<

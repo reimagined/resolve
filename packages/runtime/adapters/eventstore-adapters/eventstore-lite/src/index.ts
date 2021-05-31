@@ -1,5 +1,6 @@
 import createAdapter from '@resolve-js/eventstore-base'
-import sqlite from 'sqlite'
+import { open } from 'sqlite'
+import sqlite3 from 'sqlite3'
 import tmp from 'tmp'
 import os from 'os'
 import fs from 'fs'
@@ -90,7 +91,12 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       resetReplication,
       getCursorUntilEventTypes,
     },
-    { sqlite, tmp, os, fs } as ConnectionDependencies,
+    {
+      sqlite: { open, driver: sqlite3.Database },
+      tmp,
+      os,
+      fs,
+    } as ConnectionDependencies,
     options
   )
 }
