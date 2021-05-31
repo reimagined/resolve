@@ -12,9 +12,17 @@ import escapeId from './escape-id'
 import escapeStr from './escape-str'
 import makeSqlQuery from './make-sql-query'
 
-// Event loop rules in PLV8 are slightly different from NodeJS environment
-// None of the *async* or *await* below have been mistakenly missed
-const executeSync = (asyncFunc) => {
+const DependencyError = function () {
+  Error.call(this)
+  this.name = 'DependencyError'
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, DependencyError)
+  } else {
+    this.stack = new Error().stack
+  }
+}
+
+const checkEnvironment = () => {
   if (
     typeof Promise.installGlobally !== 'function' ||
     typeof Promise.uninstallGlobally !== 'function' ||
@@ -22,18 +30,27 @@ const executeSync = (asyncFunc) => {
   ) {
     throw new Error(`Should not be executed in NodeJS or browser environment`)
   }
-  let result = null
+}
+
+// Event loop rules in PLV8 are slightly different from NodeJS environment
+// None of the *async* or *await* below have been mistakenly missed
+const syncExecuteFailure = {}
+const executeSync = (asyncFunc, ...args) => {
+  let result = syncExecuteFailure
   let isError = false
-  void Promise.resolve().then(async () => {
+  void (async () => {
     try {
-      result = await asyncFunc()
+      result = await asyncFunc(...args)
     } catch (error) {
       result = error
       isError = true
     }
-  })
+  })()
   if (isError) {
     throw result
+  }
+  if (result === syncExecuteFailure) {
+    throw new DependencyError('SyncExecuteFailure')
   }
 
   return result
@@ -137,82 +154,73 @@ const getStoreAndProjection = (readModel, options) => {
   return { store, projection }
 }
 
-const DependencyError = function () {
-  Error.call(this)
-  this.name = 'DependencyError'
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, DependencyError)
-  } else {
-    this.stack = new Error().stack
+const wrapProcedure = (readModel) => (input, options) => {
+  checkEnvironment()
+
+  const { events, maxExecutionTime } = input
+  if (!Array.isArray(events)) {
+    throw new Error('Provided events is not array')
   }
-}
+  const { store, projection } = getStoreAndProjection(readModel, options)
+  const getVacantTimeInMillis = ((time) => time - Date.now()).bind(
+    null,
+    Date.now() + maxExecutionTime
+  )
 
-const wrapProcedure = (readModel) => (input, options) =>
-  executeSync(async () => {
-    const { events, maxExecutionTime } = input
-    if (!Array.isArray(events)) {
-      throw new Error('Provided events is not array')
+  const encryption = new Proxy(
+    {},
+    {
+      get() {
+        throw new DependencyError('GetEncryption')
+      },
+      set() {
+        throw new DependencyError('SetEncryption')
+      },
     }
-    const { store, projection } = getStoreAndProjection(readModel, options)
-    const getVacantTimeInMillis = ((time) => time - Date.now()).bind(
-      null,
-      Date.now() + maxExecutionTime
-    )
+  )
 
-    const encryption = new Proxy(
-      {},
-      {
-        get() {
-          throw new DependencyError('GetEncryption')
-        },
-        set() {
-          throw new DependencyError('SetEncryption')
-        },
-      }
-    )
-
-    const result = {
-      appliedCount: 0,
-      successEvent: null,
-      failureEvent: null,
-      failureError: null,
-      status: 'OK_ALL',
-    }
-    try {
-      for (const event of events) {
-        try {
-          const handler = projection[event.type]
-          if (typeof handler === 'function') {
-            await handler(store, event, encryption)
-            result.successEvent = event
-          }
-          result.appliedCount++
-          if (
-            getVacantTimeInMillis() < 0 &&
-            result.appliedCount < events.length
-          ) {
-            result.status = 'OK_PARTIAL'
-            break
-          }
-        } catch (error) {
-          if (error != null && error.name === 'DependencyError') {
-            throw error
-          }
-          result.failureError = serializeError(error)
-          result.failureEvent = event
-          result.status = 'CUSTOM_ERROR'
+  const result = {
+    appliedCount: 0,
+    successEvent: null,
+    failureEvent: null,
+    failureError: null,
+    status: 'OK_ALL',
+  }
+  try {
+    for (const event of events) {
+      try {
+        const handler = projection[event.type]
+        if (typeof handler === 'function') {
+          executeSync(handler, store, event, encryption)
+          result.successEvent = event
+        }
+        result.appliedCount++
+        if (
+          getVacantTimeInMillis() < 0 &&
+          result.appliedCount < events.length
+        ) {
+          result.status = 'OK_PARTIAL'
           break
         }
+      } catch (error) {
+        if (error != null && error.name === 'DependencyError') {
+          throw error
+        }
+        result.failureError = serializeError(error)
+        result.failureEvent = event
+        result.status = 'CUSTOM_ERROR'
+        break
       }
-    } catch (error) {
-      result.status = 'DEPENDENCY_ERROR'
-      result.failureError = serializeError(error)
-      result.successEvent = null
-      result.failureEvent = null
-      result.appliedCount = 0
     }
+  } catch (error) {
+    result.status = 'DEPENDENCY_ERROR'
+    result.failureError = serializeError(error)
+    result.successEvent = null
+    result.failureEvent = null
+    result.appliedCount = 0
+  }
 
-    return result
-  })
+  return result
+}
 
 export default wrapProcedure

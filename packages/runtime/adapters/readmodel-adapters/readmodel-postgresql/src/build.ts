@@ -209,6 +209,9 @@ const buildEvents: (
             })
           )}) AS "Result"`
         )) as Array<{ Result: ProcedureResult }>
+        if (procedureResult?.[0]?.Result == null) {
+          throw new Error(`Procedure was not able to be launched`)
+        }
         const {
           successEvent,
           failureEvent,
