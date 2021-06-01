@@ -35,12 +35,12 @@ jobs:
             packages/**/lib
             packages/**/types
             packages/**/*.tsbuildinfo
-            !packages/**/node_modules
+            !packages/**/node_modules/**
             internal/**/es
             internal/**/lib
             internal/**/types
             internal/**/*.tsbuildinfo
-            !internal/**/node_modules
+            !internal/**/node_modules/**
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
@@ -55,6 +55,10 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
 
       - name: Cache node_modules
         uses: actions/cache@v2
@@ -75,6 +79,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+
       - name: Cache node_modules
         uses: actions/cache@v2
         with:
@@ -89,12 +97,12 @@ jobs:
             packages/**/lib
             packages/**/types
             packages/**/*.tsbuildinfo
-            !packages/**/node_modules
+            !packages/**/node_modules/**
             internal/**/es
             internal/**/lib
             internal/**/types
             internal/**/*.tsbuildinfo
-            !internal/**/node_modules
+            !internal/**/node_modules/**
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
@@ -108,6 +116,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+
       - name: Cache node_modules
         uses: actions/cache@v2
         with:
@@ -122,12 +134,12 @@ jobs:
             packages/**/lib
             packages/**/types
             packages/**/*.tsbuildinfo
-            !packages/**/node_modules
+            !packages/**/node_modules/**
             internal/**/es
             internal/**/lib
             internal/**/types
             internal/**/*.tsbuildinfo
-            !internal/**/node_modules
+            !internal/**/node_modules/**
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
@@ -141,6 +153,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+
       - name: Cache node_modules
         uses: actions/cache@v2
         with:
@@ -155,12 +171,12 @@ jobs:
             packages/**/lib
             packages/**/types
             packages/**/*.tsbuildinfo
-            !packages/**/node_modules
+            !packages/**/node_modules/**
             internal/**/es
             internal/**/lib
             internal/**/types
             internal/**/*.tsbuildinfo
-            !internal/**/node_modules
+            !internal/**/node_modules/**
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
@@ -180,6 +196,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+
       - name: Cache node_modules
         uses: actions/cache@v2
         with:
@@ -194,12 +214,12 @@ jobs:
             packages/**/lib
             packages/**/types
             packages/**/*.tsbuildinfo
-            !packages/**/node_modules
+            !packages/**/node_modules/**
             internal/**/es
             internal/**/lib
             internal/**/types
             internal/**/*.tsbuildinfo
-            !internal/**/node_modules
+            !internal/**/node_modules/**
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
@@ -219,6 +239,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+
       - name: Cache node_modules
         uses: actions/cache@v2
         with:
@@ -233,12 +257,12 @@ jobs:
             packages/**/lib
             packages/**/types
             packages/**/*.tsbuildinfo
-            !packages/**/node_modules
+            !packages/**/node_modules/**
             internal/**/es
             internal/**/lib
             internal/**/types
             internal/**/*.tsbuildinfo
-            !internal/**/node_modules
+            !internal/**/node_modules/**
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
