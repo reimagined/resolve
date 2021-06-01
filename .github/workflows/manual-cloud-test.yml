@@ -1,12 +1,15 @@
 name: manual test (cloud)
 
 on:
-  workflow_dispatch:
-    inputs:
-      RESOLVE_REF:
-        description: 'Resolve branch, tag or SHA'
-        required: true
-        default: 'dev'
+#  workflow_dispatch:
+#    inputs:
+#      RESOLVE_REF:
+#        description: 'Resolve branch, tag or SHA'
+#        required: true
+#        default: 'dev'
+  push:
+    branches:
+      - feature/manual_test_workflow
 
 jobs:
   verify:
@@ -18,7 +21,7 @@ jobs:
           access_token: ${{ github.token }}
 
       - uses: actions/checkout@v2
-        ref: ${{ github.event.inputs.RESOLVE_REF }}
+#        ref: ${{ github.event.inputs.RESOLVE_REF }}
 
       - uses: actions/setup-node@v2-beta
         with:
