@@ -69,7 +69,7 @@ jobs:
         run: yarn lint
 
   test:
-    name: Unit test
+    name: Unit Test
     runs-on: ubuntu-latest
     needs: build
     steps:
