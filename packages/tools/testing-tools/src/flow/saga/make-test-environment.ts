@@ -136,6 +136,7 @@ export const makeTestEnvironment = (
         scheduledCommands: [],
         queries: [],
         sideEffects: [],
+        scheduleCommands: [],
       },
       // FIXME: deprecated
       'scheduleCommands',
