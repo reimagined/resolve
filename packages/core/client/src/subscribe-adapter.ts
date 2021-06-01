@@ -37,6 +37,7 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
   let currentCursor: string | null = cursor
   let pullEventsRequestId: string | null = null
   let pullEventsTimeoutInstance: ReturnType<typeof setTimeout> | null = null
+  let isWaitingForExtraPulling = false
 
   return {
     init(): void {
@@ -54,7 +55,9 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
       status = SubscriptionAdapterStatus.Connecting
 
       const tryToSendPullEventsRequest = (attempts = pullEventsMaxAttempts) => {
-        if (pullEventsRequestId == null && client != null) {
+        if (pullEventsRequestId != null) {
+          isWaitingForExtraPulling = true
+        } else if (client != null) {
           pullEventsRequestId = uuid()
 
           client.send(
@@ -104,6 +107,11 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
                 if (pullEventsTimeoutInstance != null) {
                   clearTimeout(pullEventsTimeoutInstance)
                   pullEventsTimeoutInstance = null
+                }
+
+                if (isWaitingForExtraPulling) {
+                  isWaitingForExtraPulling = false
+                  tryToSendPullEventsRequest()
                 }
               }
               break

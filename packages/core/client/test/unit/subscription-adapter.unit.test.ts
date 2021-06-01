@@ -382,6 +382,121 @@ describe('messaging', () => {
       'WebSocket pullEvents max attempts reached out'
     )
   })
+
+  test('pulls events again if some event are delivered while previous pulling', () => {
+    uuidV4Mock
+      .mockReturnValueOnce('request-id-1')
+      .mockReturnValueOnce('request-id-2')
+      .mockReturnValueOnce('request-id-3')
+
+    adapter.init()
+    ws.onopen()
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'pullEvents',
+        payload: {
+          cursor: 'B',
+          events: [],
+          requestId: 'request-id-1',
+        },
+      }),
+    })
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'event',
+        event: events[0],
+      }),
+    })
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'event',
+        event: events[1],
+      }),
+    })
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'pullEvents',
+        payload: {
+          cursor: 'C',
+          events: [events[0]],
+          requestId: 'request-id-2',
+        },
+      }),
+    })
+
+    expect(ws.send).toBeCalledTimes(3)
+
+    expect(ws.send).toBeCalledWith(
+      JSON.stringify({
+        type: 'pullEvents',
+        cursor: 'C',
+        requestId: 'request-id-3',
+      })
+    )
+  })
+
+  test('does not pull events infinitely if new events are not delivered', () => {
+    uuidV4Mock
+      .mockReturnValueOnce('request-id-1')
+      .mockReturnValueOnce('request-id-2')
+      .mockReturnValueOnce('request-id-3')
+
+    adapter.init()
+    ws.onopen()
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'pullEvents',
+        payload: {
+          cursor: 'B',
+          events: [],
+          requestId: 'request-id-1',
+        },
+      }),
+    })
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'event',
+        event: events[0],
+      }),
+    })
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'event',
+        event: events[1],
+      }),
+    })
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'pullEvents',
+        payload: {
+          cursor: 'C',
+          events: [events[0]],
+          requestId: 'request-id-2',
+        },
+      }),
+    })
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'pullEvents',
+        payload: {
+          cursor: 'D',
+          events: [],
+          requestId: 'request-id-3',
+        },
+      }),
+    })
+
+    expect(ws.send).toBeCalledTimes(3)
+  })
 })
 
 describe('close', () => {
