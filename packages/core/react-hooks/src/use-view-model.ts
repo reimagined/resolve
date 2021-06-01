@@ -19,6 +19,7 @@ type Closure = {
   subscription?: Subscription
   url?: string
   cursor: string | null
+  aggregateIds?: string[]
 }
 
 type ViewModelConnection = {
@@ -163,10 +164,11 @@ function useViewModel(
       actualQueryOptions
     )
     if (result) {
-      const { data, meta: { url, cursor } = {} } = result
+      const { data, meta: { url, cursor, aggregateIds } = {} } = result
       setState(data, false)
       closure.url = url
       closure.cursor = cursor ?? null
+      closure.aggregateIds = aggregateIds
     }
   }, [])
 
@@ -187,7 +189,9 @@ function useViewModel(
         closure.url ?? '',
         closure.cursor,
         modelName,
-        aggregateIds,
+        Array.isArray(closure.aggregateIds)
+          ? closure.aggregateIds
+          : aggregateIds,
         (event) => applyEvent(event),
         undefined,
         () => queryState()

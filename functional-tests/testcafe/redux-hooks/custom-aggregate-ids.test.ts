@@ -3,7 +3,7 @@ import { Selector } from 'testcafe'
 import { getTargetURL } from '../../utils/utils'
 
 const runId = nanoid()
-const targetUrl = `${getTargetURL()}/redux-hooks/view-model/${runId}`
+const targetUrl = `${getTargetURL()}/redux-hooks/custom-aggregate-ids/${runId}`
 
 fixture`Redux Hooks: custom view model resolver`.beforeEach(async (t) => {
   await t.setNativeDialogHandler(() => true)
@@ -12,8 +12,6 @@ fixture`Redux Hooks: custom view model resolver`.beforeEach(async (t) => {
 
 test('#1874: useReduxViewModel hook not working if resolver returned aggregate ids differs', async (t) => {
   await t.expect(Selector('#counter').innerText).eql('0')
-
   await t.click(Selector('button').withText('increase'))
-
-  await t.expect(Selector('#byEvents').innerText).eql('1')
+  await t.expect(Selector('#counter').innerText).eql('1')
 })
