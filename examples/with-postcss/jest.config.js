@@ -2,8 +2,10 @@ process.env.TZ = 'Europe/Moscow'
 
 module.exports = {
   testEnvironment: 'node',
+  moduleNameMapper: {
+    '^.+\\.css': 'identity-obj-proxy',
+  },
   transform: {
     '^.+\\.js$': 'babel-jest',
-    '^.+\\.css': 'jest-css-modules-transform',
   },
 }
