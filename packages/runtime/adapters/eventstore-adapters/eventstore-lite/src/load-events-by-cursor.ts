@@ -4,6 +4,7 @@ import {
   SavedEvent,
   cursorToThreadArray,
   threadArrayToCursor,
+  emptyLoadEventsResult,
 } from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 
@@ -18,11 +19,17 @@ const loadEventsByCursor = async (
 
   const queryConditions = []
   if (eventTypes != null) {
+    if (eventTypes.length === 0) {
+      return emptyLoadEventsResult(cursor)
+    }
     queryConditions.push(
       `${escapeId('type')} IN (${eventTypes.map(injectString).join(', ')})`
     )
   }
   if (aggregateIds != null) {
+    if (aggregateIds.length === 0) {
+      return emptyLoadEventsResult(cursor)
+    }
     queryConditions.push(
       `${escapeId('aggregateId')} IN (${aggregateIds
         .map(injectString)

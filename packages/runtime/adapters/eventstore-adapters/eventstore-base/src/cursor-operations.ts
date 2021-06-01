@@ -4,7 +4,7 @@ import {
   CURSOR_BUFFER_SIZE,
   THREAD_COUNTER_BYTE_LENGTH,
 } from './constants'
-import { Cursor } from './types'
+import { Cursor, EventsWithCursor } from './types'
 
 const checkThreadCounterHexString = (threadCounter: string): void => {
   assert.strictEqual(
@@ -90,4 +90,11 @@ export const threadCounterHexStringToBuffer = (
 
 export const threadCounterToBuffer = (threadCounter: number): Buffer => {
   return threadCounterHexStringToBuffer(threadCounterToHexString(threadCounter))
+}
+
+export const emptyLoadEventsResult = (cursor: Cursor): EventsWithCursor => {
+  return {
+    cursor: cursor == null ? threadArrayToCursor(initThreadArray()) : cursor,
+    events: [],
+  }
 }
