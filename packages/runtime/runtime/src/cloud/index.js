@@ -102,9 +102,10 @@ const index = async ({ assemblies, constants, domain, resolveVersion }) => {
               type: 'send',
               connectionId,
               data: {
-                type: 'event',
-                event,
-                connectionIdsResult,
+                type: 'events',
+                payload: {
+                  events: [event],
+                },
               },
             },
           }).catch(errorBoundary(errors))

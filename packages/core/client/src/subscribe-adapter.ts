@@ -94,7 +94,7 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
           const { type, requestId, payload } = JSON.parse(message.data)
 
           switch (type) {
-            case 'event': {
+            case 'events': {
               tryToSendPullEventsRequest()
               break
             }

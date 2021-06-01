@@ -209,8 +209,10 @@ describe('messaging', () => {
 
     ws.onmessage({
       data: JSON.stringify({
-        type: 'event',
-        event: events[1],
+        type: 'events',
+        payload: {
+          events: [events[1]],
+        },
       }),
     })
 
@@ -233,15 +235,19 @@ describe('messaging', () => {
 
     ws.onmessage({
       data: JSON.stringify({
-        type: 'event',
-        event: events[0],
+        type: 'events',
+        payload: {
+          events: [events[0]],
+        },
       }),
     })
 
     ws.onmessage({
       data: JSON.stringify({
-        type: 'event',
-        event: events[1],
+        type: 'events',
+        payload: {
+          events: [events[1]],
+        },
       }),
     })
 
@@ -269,15 +275,19 @@ describe('messaging', () => {
 
     ws.onmessage({
       data: JSON.stringify({
-        type: 'event',
-        event: events[0],
+        type: 'events',
+        payload: {
+          events: [events[0]],
+        },
       }),
     })
 
     ws.onmessage({
       data: JSON.stringify({
-        type: 'event',
-        event: events[1],
+        type: 'events',
+        payload: {
+          events: [events[1]],
+        },
       }),
     })
 
@@ -353,8 +363,10 @@ describe('messaging', () => {
 
     ws.onmessage({
       data: JSON.stringify({
-        type: 'event',
-        event: events[0],
+        type: 'events',
+        payload: {
+          events: [events[0]],
+        },
       }),
     })
 
@@ -413,15 +425,19 @@ describe('messaging', () => {
 
     ws.onmessage({
       data: JSON.stringify({
-        type: 'event',
-        event: events[0],
+        type: 'events',
+        payload: {
+          events: [events[0]],
+        },
       }),
     })
 
     ws.onmessage({
       data: JSON.stringify({
-        type: 'event',
-        event: events[1],
+        type: 'events',
+        payload: {
+          events: [events[1]],
+        },
       }),
     })
 
@@ -471,15 +487,19 @@ describe('messaging', () => {
 
     ws.onmessage({
       data: JSON.stringify({
-        type: 'event',
-        event: events[0],
+        type: 'events',
+        payload: {
+          events: [events[0]],
+        },
       }),
     })
 
     ws.onmessage({
       data: JSON.stringify({
-        type: 'event',
-        event: events[1],
+        type: 'events',
+        payload: {
+          events: [events[1]],
+        },
       }),
     })
 
