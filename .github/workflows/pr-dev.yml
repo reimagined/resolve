@@ -26,6 +26,16 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/es
+            packages/**/lib
+            packages/**/types
+            !packages/**/node_modules
+          key: ${{ runner.os }}-${{ github.run_id }}-build
+
       - name: Install
         run: |
           yarn install --frozen-lockfile
@@ -33,7 +43,7 @@ jobs:
 
   prettier:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: build
     steps:
       - uses: actions/checkout@v2
 
@@ -48,7 +58,7 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: build
     steps:
       - uses: actions/checkout@v2
 
@@ -63,7 +73,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: build
     steps:
       - uses: actions/checkout@v2
 
@@ -72,6 +82,16 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/es
+            packages/**/lib
+            packages/**/types
+            !packages/**/node_modules
+          key: ${{ runner.os }}-${{ github.run_id }}-build
 
       - name: Test:unit
         run: yarn test
