@@ -1,15 +1,10 @@
 name: manual test (cloud)
 
 on:
-#  workflow_dispatch:
-#    inputs:
-#      RESOLVE_REF:
-#        description: 'Resolve branch, tag or SHA'
-#        required: true
-#        default: 'dev'
-  push:
-    branches:
-      - feature/manual_test_workflow
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - feature/manual_test_workflow
 
 jobs:
   verify:
