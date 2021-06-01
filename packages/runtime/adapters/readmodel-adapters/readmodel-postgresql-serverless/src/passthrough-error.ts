@@ -35,6 +35,10 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
       return (
         error != null &&
         (checkFuzzyError(error, /Request timed out/i) ||
+          checkFuzzyError(
+            error,
+            /terminating connection due to serverless scale event timeout/i
+          ) ||
           checkFuzzyError(error, /Remaining connection slots are reserved/i) ||
           checkFuzzyError(error, /I\/O error occurr?ed/i) ||
           checkFuzzyError(error, /too many clients already/i) ||
@@ -48,6 +52,7 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
       return (
         error != null &&
         (checkFuzzyError(error, /Transaction .*? Is Not Found/i) ||
+          checkFuzzyError(error, /Failed to rollback transaction/i) ||
           checkFuzzyError(error, /Transaction is expired/i) ||
           checkFuzzyError(error, /Invalid transaction ID/i))
       )
