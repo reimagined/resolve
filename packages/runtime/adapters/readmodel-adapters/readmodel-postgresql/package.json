@@ -30,7 +30,7 @@
     "pg": "8.5.1"
   },
   "devDependencies": {
-    "jest": "26.6.3",
+    "jest": "27.0.3",
     "sinon": "9.2.4"
   },
   "peerDependencies": {

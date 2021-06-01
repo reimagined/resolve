@@ -48,9 +48,9 @@
     "@resolve-js/module-admin": "0.30.4",
     "aws-sdk": "2.860.0",
     "aws-xray-sdk-core": "3.2.0",
-    "babel-jest": "26.6.3",
+    "babel-jest": "27.0.2",
     "isomorphic-fetch": "3.0.0",
-    "jest": "26.6.3",
+    "jest": "27.0.3",
     "react-test-renderer": "17.0.2",
     "testcafe": "1.14.2",
     "testcafe-react-selectors": "4.1.4"
