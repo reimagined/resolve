@@ -41,7 +41,7 @@ jobs:
             internal/**/types
             internal/**/*.tsbuildinfo
             !internal/**/node_modules
-            .packages
+            .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
       - name: Install
@@ -95,7 +95,7 @@ jobs:
             internal/**/types
             internal/**/*.tsbuildinfo
             !internal/**/node_modules
-            .packages
+            .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
       - name: Test:unit
@@ -128,7 +128,7 @@ jobs:
             internal/**/types
             internal/**/*.tsbuildinfo
             !internal/**/node_modules
-            .packages
+            .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
       - name: Test:integration
@@ -161,7 +161,7 @@ jobs:
             internal/**/types
             internal/**/*.tsbuildinfo
             !internal/**/node_modules
-            .packages
+            .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
       - name: Test:e2e (ubuntu:chrome-headless)
@@ -200,7 +200,7 @@ jobs:
             internal/**/types
             internal/**/*.tsbuildinfo
             !internal/**/node_modules
-            .packages
+            .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
       - name: Test:integration Postgres Serverless
@@ -239,7 +239,7 @@ jobs:
             internal/**/types
             internal/**/*.tsbuildinfo
             !internal/**/node_modules
-            .packages
+            .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
       - name: Publish to private repository
