@@ -51,7 +51,7 @@
     "respawn": "2.6.0",
     "route-trie": "3.0.0",
     "socket.io-client": "4.0.0",
-    "testcafe": "1.12.0",
+    "testcafe": "1.14.2",
     "testcafe-browser-tools": "2.0.15",
     "uuid": "8.3.2",
     "webpack": "4.42.0",
