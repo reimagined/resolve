@@ -2,6 +2,8 @@ import { adapterFactory, adapters, jestTimeout } from '../eventstore-test-utils'
 import { EventWithCursor } from '@resolve-js/eventstore-base'
 import { SecretsManager } from '@resolve-js/core'
 
+jest.setTimeout(jestTimeout())
+
 describe(`${adapterFactory.name}. Eventstore adapter init and drop`, () => {
   beforeAll(adapterFactory.create('parallel_write_testing'))
   afterAll(adapterFactory.destroy('parallel_write_testing'))
