@@ -159,8 +159,10 @@ describe('messaging', () => {
     expect(ws.send).toBeCalledWith(
       JSON.stringify({
         type: 'pullEvents',
-        cursor: 'A',
         requestId: 'request-id-1',
+        payload: {
+          cursor: 'A',
+        },
       })
     )
   })
@@ -174,10 +176,10 @@ describe('messaging', () => {
     ws.onmessage({
       data: JSON.stringify({
         type: 'pullEvents',
+        requestId: 'request-id-1',
         payload: {
           cursor: 'B',
           events,
-          requestId: 'request-id-1',
         },
       }),
     })
@@ -197,10 +199,10 @@ describe('messaging', () => {
     ws.onmessage({
       data: JSON.stringify({
         type: 'pullEvents',
+        requestId: 'request-id-1',
         payload: {
           cursor: 'B',
           events: [events[0]],
-          requestId: 'request-id-1',
         },
       }),
     })
@@ -215,8 +217,10 @@ describe('messaging', () => {
     expect(ws.send).toBeCalledWith(
       JSON.stringify({
         type: 'pullEvents',
-        cursor: 'B',
         requestId: 'request-id-2',
+        payload: {
+          cursor: 'B',
+        },
       })
     )
   })
@@ -255,10 +259,10 @@ describe('messaging', () => {
     ws.onmessage({
       data: JSON.stringify({
         type: 'pullEvents',
+        requestId: 'request-id-1',
         payload: {
           cursor: 'B',
           events: [],
-          requestId: 'request-id-1',
         },
       }),
     })
@@ -291,10 +295,10 @@ describe('messaging', () => {
     ws.onmessage({
       data: JSON.stringify({
         type: 'pullEvents',
+        requestId: 'request-id-5',
         payload: {
           cursor: 'B',
           events,
-          requestId: 'request-id-5',
         },
       }),
     })
@@ -319,8 +323,10 @@ describe('messaging', () => {
     expect(ws.send).toBeCalledWith(
       JSON.stringify({
         type: 'pullEvents',
-        cursor: 'A',
         requestId: 'request-id-2',
+        payload: {
+          cursor: 'A',
+        },
       })
     )
   })
@@ -337,10 +343,10 @@ describe('messaging', () => {
     ws.onmessage({
       data: JSON.stringify({
         type: 'pullEvents',
+        requestId: 'request-id-1',
         payload: {
           cursor: 'B',
           events: [],
-          requestId: 'request-id-1',
         },
       }),
     })
@@ -361,8 +367,10 @@ describe('messaging', () => {
     expect(ws.send).toBeCalledWith(
       JSON.stringify({
         type: 'pullEvents',
-        cursor: 'B',
         requestId: 'request-id-3',
+        payload: {
+          cursor: 'B',
+        },
       })
     )
   })
@@ -395,10 +403,10 @@ describe('messaging', () => {
     ws.onmessage({
       data: JSON.stringify({
         type: 'pullEvents',
+        requestId: 'request-id-1',
         payload: {
           cursor: 'B',
           events: [],
-          requestId: 'request-id-1',
         },
       }),
     })
@@ -420,10 +428,10 @@ describe('messaging', () => {
     ws.onmessage({
       data: JSON.stringify({
         type: 'pullEvents',
+        requestId: 'request-id-2',
         payload: {
           cursor: 'C',
           events: [events[0]],
-          requestId: 'request-id-2',
         },
       }),
     })
@@ -433,8 +441,10 @@ describe('messaging', () => {
     expect(ws.send).toBeCalledWith(
       JSON.stringify({
         type: 'pullEvents',
-        cursor: 'C',
         requestId: 'request-id-3',
+        payload: {
+          cursor: 'C',
+        },
       })
     )
   })
@@ -451,10 +461,10 @@ describe('messaging', () => {
     ws.onmessage({
       data: JSON.stringify({
         type: 'pullEvents',
+        requestId: 'request-id-1',
         payload: {
           cursor: 'B',
           events: [],
-          requestId: 'request-id-1',
         },
       }),
     })
@@ -476,10 +486,10 @@ describe('messaging', () => {
     ws.onmessage({
       data: JSON.stringify({
         type: 'pullEvents',
+        requestId: 'request-id-2',
         payload: {
           cursor: 'C',
           events: [events[0]],
-          requestId: 'request-id-2',
         },
       }),
     })
@@ -487,10 +497,10 @@ describe('messaging', () => {
     ws.onmessage({
       data: JSON.stringify({
         type: 'pullEvents',
+        requestId: 'request-id-3',
         payload: {
           cursor: 'D',
           events: [],
-          requestId: 'request-id-3',
         },
       }),
     })

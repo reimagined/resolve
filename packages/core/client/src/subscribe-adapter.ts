@@ -63,8 +63,10 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
           client.send(
             JSON.stringify({
               type: 'pullEvents',
-              cursor: currentCursor,
               requestId: pullEventsRequestId,
+              payload: {
+                cursor: currentCursor,
+              },
             })
           )
 
@@ -89,19 +91,19 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
 
       client.onmessage = (message): void => {
         try {
-          const data = JSON.parse(message.data)
+          const { type, requestId, payload } = JSON.parse(message.data)
 
-          switch (data.type) {
+          switch (type) {
             case 'event': {
               tryToSendPullEventsRequest()
               break
             }
             case 'pullEvents': {
-              if (data.payload.requestId === pullEventsRequestId) {
-                data.payload.events.forEach((event: any) => {
+              if (requestId === pullEventsRequestId) {
+                payload.events.forEach((event: any) => {
                   onEvent(event)
                 })
-                currentCursor = data.payload.cursor
+                currentCursor = payload.cursor
                 pullEventsRequestId = null
 
                 if (pullEventsTimeoutInstance != null) {
@@ -118,7 +120,7 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
             }
             default: {
               // eslint-disable-next-line no-console
-              console.warn(`Unknown '${data.type}' socket message type`)
+              console.warn(`Unknown '${type}' socket message type`)
             }
           }
         } catch (error) {

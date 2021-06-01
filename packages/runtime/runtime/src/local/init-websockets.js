@@ -58,7 +58,7 @@ const createWebSocketMessageHandler = (
       connectionId,
     })
 
-    const { type, cursor: prevCursor, requestId } = JSON.parse(message)
+    const { type, payload, requestId } = JSON.parse(message)
     switch (type) {
       case 'pullEvents': {
         const { events, cursor } = await eventstoreAdapter.loadEvents({
@@ -66,13 +66,14 @@ const createWebSocketMessageHandler = (
           aggregateIds,
           limit: 1000000,
           eventsSizeLimit: 124 * 1024,
-          cursor: prevCursor,
+          cursor: payload.cursor,
         })
 
         ws.send(
           JSON.stringify({
             type: 'pullEvents',
-            payload: { events, cursor, requestId },
+            requestId,
+            payload: { events, cursor },
           })
         )
 
