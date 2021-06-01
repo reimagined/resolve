@@ -18,7 +18,8 @@
     "test:secrets": "jest --config=./jest.config.js --testMatch=**/eventstore-secrets/*.test.ts",
     "test:replication": "jest --config=./jest.config.js --testMatch=**/eventstore-replication/*.test.ts",
     "test:freeze": "jest --config=./jest.config.js --testMatch=**/eventstore-freeze-unfreeze/*.test.ts",
-    "test:save-load": "jest --config=./jest.config.js --testMatch=**/eventstore-save-load/*.test.ts"
+    "test:save-load": "jest --config=./jest.config.js --testMatch=**/eventstore-save-load/*.test.ts",
+    "test:parallel-save": "jest --config=./jest.config.js --testMatch=**/eventstore-parallel-save/*.test.ts"
   },
   "devDependencies": {
     "@babel/runtime": "7.9.6",
