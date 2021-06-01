@@ -49,7 +49,10 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  uuidV4Mock.mockClear()
+  uuidV4Mock.mockRestore()
+  onEvent.mockRestore()
+  ws.send.mockRestore()
+  ws.close.mockRestore()
 })
 
 describe('construction', () => {
@@ -59,6 +62,14 @@ describe('construction', () => {
 })
 
 describe('init', () => {
+  afterEach(() => {
+    try {
+      adapter.close()
+    } catch (e) {
+      // empty
+    }
+  })
+
   test('status "connecting" after init', () => {
     adapter.init()
     expect(adapter.status()).toEqual(SubscriptionAdapterStatus.Connecting)
@@ -97,6 +108,23 @@ describe('init', () => {
 })
 
 describe('messaging', () => {
+  let originalConsoleWarn: typeof console.warn
+
+  beforeEach(() => {
+    jest.useFakeTimers()
+    // eslint-disable-next-line no-console
+    originalConsoleWarn = console.warn
+    // eslint-disable-next-line no-console
+    console.warn = jest.fn()
+  })
+
+  afterEach(() => {
+    adapter.close()
+    jest.clearAllTimers()
+    // eslint-disable-next-line no-console
+    console.warn = originalConsoleWarn
+  })
+
   const events = [
     {
       threadCounter: 0,
@@ -123,7 +151,7 @@ describe('messaging', () => {
   ]
 
   test('sends "pullEvents" message on connection open', () => {
-    uuidV4Mock.mockReturnValueOnce('test-id-1')
+    uuidV4Mock.mockReturnValueOnce('request-id-1')
 
     adapter.init()
     ws.onopen()
@@ -132,13 +160,13 @@ describe('messaging', () => {
       JSON.stringify({
         type: 'pullEvents',
         cursor: 'A',
-        requestId: 'test-id-1',
+        requestId: 'request-id-1',
       })
     )
   })
 
   test('calls onEvent with pulled events', () => {
-    uuidV4Mock.mockReturnValueOnce('test-id-1')
+    uuidV4Mock.mockReturnValueOnce('request-id-1')
 
     adapter.init()
     ws.onopen()
@@ -149,6 +177,7 @@ describe('messaging', () => {
         payload: {
           cursor: 'B',
           events,
+          requestId: 'request-id-1',
         },
       }),
     })
@@ -158,7 +187,9 @@ describe('messaging', () => {
   })
 
   test('pulls event on event message with new cursor', () => {
-    uuidV4Mock.mockReturnValueOnce('test-id-1').mockReturnValueOnce('test-id-2')
+    uuidV4Mock
+      .mockReturnValueOnce('request-id-1')
+      .mockReturnValueOnce('request-id-2')
 
     adapter.init()
     ws.onopen()
@@ -169,6 +200,7 @@ describe('messaging', () => {
         payload: {
           cursor: 'B',
           events: [events[0]],
+          requestId: 'request-id-1',
         },
       }),
     })
@@ -176,7 +208,7 @@ describe('messaging', () => {
     ws.onmessage({
       data: JSON.stringify({
         type: 'event',
-        event: [events[1]],
+        event: events[1],
       }),
     })
 
@@ -184,8 +216,170 @@ describe('messaging', () => {
       JSON.stringify({
         type: 'pullEvents',
         cursor: 'B',
-        requestId: 'test-id-2',
+        requestId: 'request-id-2',
       })
+    )
+  })
+
+  test('pulls events exactly once on ws connection', () => {
+    uuidV4Mock.mockReturnValueOnce('request-id-1')
+
+    adapter.init()
+    ws.onopen()
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'event',
+        event: events[0],
+      }),
+    })
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'event',
+        event: events[1],
+      }),
+    })
+
+    expect(ws.send).toBeCalledTimes(1)
+  })
+
+  test('pulls events exactly once due to ordinary work', () => {
+    uuidV4Mock
+      .mockReturnValueOnce('request-id-1')
+      .mockReturnValueOnce('request-id-2')
+
+    adapter.init()
+    ws.onopen()
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'pullEvents',
+        payload: {
+          cursor: 'B',
+          events: [],
+          requestId: 'request-id-1',
+        },
+      }),
+    })
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'event',
+        event: events[0],
+      }),
+    })
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'event',
+        event: events[1],
+      }),
+    })
+
+    expect(ws.send).toBeCalledTimes(2)
+  })
+
+  test('waits for pullEvents message by requestId', () => {
+    uuidV4Mock
+      .mockReturnValueOnce('request-id-1')
+      .mockReturnValueOnce('request-id-2')
+
+    adapter.init()
+    ws.onopen()
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'pullEvents',
+        payload: {
+          cursor: 'B',
+          events,
+          requestId: 'request-id-5',
+        },
+      }),
+    })
+
+    expect(onEvent).toBeCalledTimes(0)
+  })
+
+  test('pulls events again after initial request is timed out', () => {
+    uuidV4Mock
+      .mockReturnValueOnce('request-id-1')
+      .mockReturnValueOnce('request-id-2')
+
+    adapter.init()
+    ws.onopen()
+
+    expect(ws.send).toBeCalledTimes(1)
+
+    jest.advanceTimersByTime(30000)
+
+    expect(ws.send).toBeCalledTimes(2)
+
+    expect(ws.send).toBeCalledWith(
+      JSON.stringify({
+        type: 'pullEvents',
+        cursor: 'A',
+        requestId: 'request-id-2',
+      })
+    )
+  })
+
+  test('pulls events again after request is timed out', () => {
+    uuidV4Mock
+      .mockReturnValueOnce('request-id-1')
+      .mockReturnValueOnce('request-id-2')
+      .mockReturnValueOnce('request-id-3')
+
+    adapter.init()
+    ws.onopen()
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'pullEvents',
+        payload: {
+          cursor: 'B',
+          events: [],
+          requestId: 'request-id-1',
+        },
+      }),
+    })
+
+    ws.onmessage({
+      data: JSON.stringify({
+        type: 'event',
+        event: events[0],
+      }),
+    })
+
+    expect(ws.send).toBeCalledTimes(2)
+
+    jest.advanceTimersByTime(30000)
+
+    expect(ws.send).toBeCalledTimes(3)
+
+    expect(ws.send).toBeCalledWith(
+      JSON.stringify({
+        type: 'pullEvents',
+        cursor: 'B',
+        requestId: 'request-id-3',
+      })
+    )
+  })
+
+  test('pulls events at most 10 times', () => {
+    uuidV4Mock.mockReturnValue('request-id')
+
+    adapter.init()
+    ws.onopen()
+
+    jest.advanceTimersByTime(10000000)
+
+    expect(ws.send).toBeCalledTimes(10)
+
+    // eslint-disable-next-line no-console
+    expect(console.warn).toBeCalledWith(
+      'WebSocket pullEvents max attempts reached out'
     )
   })
 })

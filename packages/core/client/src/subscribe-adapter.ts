@@ -19,6 +19,8 @@ export interface SubscriptionAdapterFactory {
     url: string
     cursor: string | null
     onEvent: Function
+    pullEventsTimeout?: number
+    pullEventsMaxAttempts?: number
   }): SubscriptionAdapter
   adapterName: string
 }
@@ -27,10 +29,14 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
   url,
   cursor,
   onEvent,
+  pullEventsTimeout = 30000,
+  pullEventsMaxAttempts = 10,
 }) => {
   let client: WebSocket | undefined
   let status: SubscriptionAdapterStatus = SubscriptionAdapterStatus.Initializing
-  let currentCursor: string | undefined
+  let currentCursor: string | null = cursor
+  let pullEventsRequestId: string | null = null
+  let pullEventsTimeoutInstance: ReturnType<typeof setTimeout> | null = null
 
   return {
     init(): void {
@@ -47,16 +53,35 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
       client = new WebSocket(url)
       status = SubscriptionAdapterStatus.Connecting
 
+      const tryToSendPullEventsRequest = (attempts = pullEventsMaxAttempts) => {
+        if (pullEventsRequestId == null && client != null) {
+          pullEventsRequestId = uuid()
+
+          client.send(
+            JSON.stringify({
+              type: 'pullEvents',
+              cursor: currentCursor,
+              requestId: pullEventsRequestId,
+            })
+          )
+
+          pullEventsTimeoutInstance = setTimeout(() => {
+            pullEventsRequestId = null
+
+            if (attempts > 1) {
+              tryToSendPullEventsRequest(attempts - 1)
+            } else {
+              // eslint-disable-next-line no-console
+              console.warn(`WebSocket pullEvents max attempts reached out`)
+              pullEventsTimeoutInstance = null
+            }
+          }, pullEventsTimeout)
+        }
+      }
+
       client.onopen = (): void => {
         status = SubscriptionAdapterStatus.Connected
-
-        client?.send(
-          JSON.stringify({
-            type: 'pullEvents',
-            cursor,
-            requestId: uuid(),
-          })
-        )
+        tryToSendPullEventsRequest()
       }
 
       client.onmessage = (message): void => {
@@ -65,20 +90,22 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
 
           switch (data.type) {
             case 'event': {
-              client?.send(
-                JSON.stringify({
-                  type: 'pullEvents',
-                  cursor: currentCursor,
-                  requestId: uuid(),
-                })
-              )
+              tryToSendPullEventsRequest()
               break
             }
             case 'pullEvents': {
-              data.payload.events.forEach((event: any) => {
-                onEvent(event)
-              })
-              currentCursor = data.payload.cursor
+              if (data.payload.requestId === pullEventsRequestId) {
+                data.payload.events.forEach((event: any) => {
+                  onEvent(event)
+                })
+                currentCursor = data.payload.cursor
+                pullEventsRequestId = null
+
+                if (pullEventsTimeoutInstance != null) {
+                  clearTimeout(pullEventsTimeoutInstance)
+                  pullEventsTimeoutInstance = null
+                }
+              }
               break
             }
             default: {
@@ -105,6 +132,12 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
         client.close()
       }
       client = undefined
+      pullEventsRequestId = null
+
+      if (pullEventsTimeoutInstance != null) {
+        clearTimeout(pullEventsTimeoutInstance)
+        pullEventsTimeoutInstance = null
+      }
     },
 
     status(): SubscriptionAdapterStatus {
