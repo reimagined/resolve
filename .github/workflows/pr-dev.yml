@@ -34,6 +34,11 @@ jobs:
             packages/**/lib
             packages/**/types
             !packages/**/node_modules
+            internal/**/es
+            internal/**/lib
+            internal/**/types
+            !internal/**/node_modules
+            .packages
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
       - name: Install
@@ -91,6 +96,11 @@ jobs:
             packages/**/lib
             packages/**/types
             !packages/**/node_modules
+            internal/**/es
+            internal/**/lib
+            internal/**/types
+            !internal/**/node_modules
+            .packages
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
       - name: Test:unit
