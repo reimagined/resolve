@@ -2,10 +2,9 @@ name: manual test (cloud)
 
 on:
   workflow_dispatch:
-#  push:
-#    branches:
-#      - feature/manual_test_workflow
-
+    inputs:
+      tags:
+        description: 'Test scenario tags'
 jobs:
   verify:
     runs-on: ubuntu-latest
