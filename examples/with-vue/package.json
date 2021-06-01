@@ -14,7 +14,7 @@
     "test:e2e": "babel-node ./run.js test:e2e"
   },
   "dependencies": {
-    "@babel/node": "7.12.13",
+    "@babel/node": "7.14.2",
     "@resolve-js/client": "0.30.4",
     "@resolve-js/eventstore-lite": "0.30.4",
     "@resolve-js/eventstore-postgresql-serverless": "0.30.4",
@@ -32,13 +32,13 @@
     "vue-template-compiler": "2.6.12"
   },
   "devDependencies": {
-    "@babel/core": "7.12.13",
-    "@babel/plugin-proposal-class-properties": "7.12.13",
+    "@babel/core": "7.14.3",
+    "@babel/plugin-proposal-class-properties": "7.13.0",
     "@babel/plugin-proposal-export-default-from": "7.12.13",
-    "@babel/plugin-proposal-export-namespace-from": "7.12.13",
-    "@babel/plugin-transform-runtime": "7.12.13",
-    "@babel/preset-env": "7.12.13",
-    "@babel/preset-react": "7.12.13",
+    "@babel/plugin-proposal-export-namespace-from": "7.14.2",
+    "@babel/plugin-transform-runtime": "7.14.3",
+    "@babel/preset-env": "7.14.4",
+    "@babel/preset-react": "7.13.13",
     "autoprefixer": "10.2.5",
     "aws-sdk": "2.860.0",
     "aws-xray-sdk-core": "3.2.0",

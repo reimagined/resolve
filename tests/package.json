@@ -21,7 +21,7 @@
     "test:save-load": "jest --config=./jest.config.js --testMatch=**/eventstore-save-load/*.test.ts"
   },
   "devDependencies": {
-    "@babel/runtime": "7.12.13",
+    "@babel/runtime": "7.14.0",
     "@resolve-js/core": "0.30.4",
     "@resolve-js/debug-levels": "0.30.4",
     "@resolve-js/eventstore-base": "0.30.4",

@@ -24,7 +24,7 @@
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.13.10",
+    "@babel/runtime": "7.14.0",
     "@resolve-js/debug-levels": "0.30.4",
     "@resolve-js/readmodel-base": "0.30.4"
   },
