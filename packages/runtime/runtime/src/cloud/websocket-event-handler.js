@@ -63,7 +63,7 @@ const handleWebsocketEvent = async ({ method, payload }, resolve) => {
     }
     case 'receive': {
       const { connectionId, data } = payload
-      const { type, cursor: prevCursor } = JSON.parse(data)
+      const { type, cursor: prevCursor, requestId } = JSON.parse(data)
 
       switch (type) {
         case 'pullEvents': {
@@ -100,7 +100,7 @@ const handleWebsocketEvent = async ({ method, payload }, resolve) => {
                 connectionId,
                 data: {
                   type: 'pullEvents',
-                  payload: { events, cursor },
+                  payload: { events, cursor, requestId },
                 },
               },
             })

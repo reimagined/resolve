@@ -1,8 +1,11 @@
+import { v4 as uuid } from 'uuid'
+
 import {
   subscriptionAdapterAlreadyInitialized,
   subscriptionAdapterClosed,
   subscriptionAdapterNotInitialized,
 } from './subscribe-adapter-constants'
+
 import { SubscriptionAdapterStatus } from './types'
 
 export interface SubscriptionAdapter {
@@ -51,6 +54,7 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
           JSON.stringify({
             type: 'pullEvents',
             cursor,
+            requestId: uuid(),
           })
         )
       }
@@ -65,6 +69,7 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
                 JSON.stringify({
                   type: 'pullEvents',
                   cursor: currentCursor,
+                  requestId: uuid(),
                 })
               )
               break
