@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/server'
-import { Router } from 'react-router'
+import { StaticRouter } from 'react-router'
+import { renderRoutes } from 'react-router-config'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 import { createMemoryHistory } from 'history'
 import { ResolveProvider } from '@resolve-js/react-hooks'
 import { Helmet } from 'react-helmet'
 
 import { getRoutes } from './get-routes'
-import Routes from '../client/components/Routes'
 
 const ssrHandler = async (serverContext, req, res) => {
   try {
@@ -30,9 +30,13 @@ const ssrHandler = async (serverContext, req, res) => {
     const markup = ReactDOM.renderToStaticMarkup(
       <StyleSheetManager sheet={sheet.instance}>
         <ResolveProvider context={resolveContext}>
-          <Router history={history} staticContext={staticContext}>
-            <Routes routes={getRoutes()} />
-          </Router>
+          <StaticRouter
+            location={url}
+            history={history}
+            context={staticContext}
+          >
+            {renderRoutes(getRoutes())}
+          </StaticRouter>
         </ResolveProvider>
       </StyleSheetManager>
     )
