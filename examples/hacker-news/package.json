@@ -35,6 +35,7 @@
     "@resolve-js/readmodel-lite": "0.30.4",
     "@resolve-js/readmodel-postgresql-serverless": "0.30.4",
     "@resolve-js/redux": "0.30.4",
+    "@resolve-js/react-hooks": "0.30.4",
     "@resolve-js/replicator-via-api-handler": "0.30.4",
     "@resolve-js/scripts": "0.30.4",
     "history": "5.0.0",
