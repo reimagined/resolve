@@ -23,13 +23,13 @@
     "@resolve-js/scripts": "0.30.4",
     "bootstrap": "4.6.0",
     "bootstrap-vue": "2.21.2",
-    "copy-webpack-plugin": "8.0.0",
-    "css-loader": "5.1.1",
-    "vue": "2.6.12",
+    "copy-webpack-plugin": "6.0.0",
+    "css-loader": "5.2.6",
+    "vue": "2.6.13",
     "vue-highlighter": "2.5.3",
-    "vue-loader": "15.9.6",
-    "vue-server-renderer": "2.6.12",
-    "vue-template-compiler": "2.6.12"
+    "vue-loader": "15.9.7",
+    "vue-server-renderer": "2.6.13",
+    "vue-template-compiler": "2.6.13"
   },
   "devDependencies": {
     "@babel/core": "7.14.3",
@@ -39,7 +39,7 @@
     "@babel/plugin-transform-runtime": "7.14.3",
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
-    "autoprefixer": "10.2.5",
+    "autoprefixer": "10.2.6",
     "aws-sdk": "2.860.0",
     "aws-xray-sdk-core": "3.2.0",
     "babel-jest": "27.0.2",

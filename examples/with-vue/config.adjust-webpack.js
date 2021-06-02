@@ -43,16 +43,18 @@ const adjustWebpackConfigs = (webpackConfigs) => {
 
   const clientDistDir = path.join(clientEntry.output.path, 'client')
   clientEntry.plugins.push(
-    new CopyPlugin([
-      {
-        from: require.resolve('bootstrap-vue/dist/bootstrap-vue.css'),
-        to: path.join(clientDistDir, 'bootstrap-vue.css'),
-      },
-      {
-        from: require.resolve('bootstrap/dist/css/bootstrap.css'),
-        to: path.join(clientDistDir, 'bootstrap.css'),
-      },
-    ])
+    new CopyPlugin({
+      patterns: [
+        {
+          from: require.resolve('bootstrap-vue/dist/bootstrap-vue.css'),
+          to: path.join(clientDistDir, 'bootstrap-vue.css'),
+        },
+        {
+          from: require.resolve('bootstrap/dist/css/bootstrap.css'),
+          to: path.join(clientDistDir, 'bootstrap.css'),
+        },
+      ],
+    })
   )
 }
 
