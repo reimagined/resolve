@@ -7,8 +7,9 @@ import {
 
 import {
   threadArrayToCursor,
-  cursorToThreadArray,
+  checkEventsContinuity,
   THREAD_COUNT,
+  EventWithCursor,
 } from '@resolve-js/eventstore-base'
 
 jest.setTimeout(jestTimeout())
@@ -19,17 +20,22 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
 
   const adapter = adapters['save_and_load_testing']
 
+  let eventCursorPairs: EventWithCursor[] = []
+
   test('should be able to save and load an event', async () => {
-    const {
-      cursor: returnedCursor,
-      event: savedEvent,
-    } = await adapter.saveEvent({
+    const saveResult = await adapter.saveEvent({
       aggregateVersion: 1,
       aggregateId: 'ID_1',
       type: 'TYPE_1',
       payload: { message: 'hello' },
       timestamp: 1,
     })
+
+    const { cursor: returnedCursor, event: savedEvent } = saveResult
+    eventCursorPairs.push(saveResult)
+
+    expect(checkEventsContinuity(null, [saveResult])).toBe(true)
+
     const { events, cursor } = await adapter.loadEvents({
       eventTypes: null,
       aggregateIds: null,
@@ -52,9 +58,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
 
     for (let i = 0; i < checkCount; ++i) {
       const event = makeTestEvent(i)
-      const { cursor: nextCursor, event: savedEvent } = await adapter.saveEvent(
-        event
-      )
+      const saveResult = await adapter.saveEvent(event)
+      const { cursor: nextCursor, event: savedEvent } = saveResult
+      eventCursorPairs.push(saveResult)
       const { events, cursor } = await adapter.loadEvents({
         limit: checkCount + 1,
         cursor: null,
@@ -63,6 +69,103 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
       expect(nextCursor).toEqual(cursor)
       expect(events).toHaveLength(i + 2)
     }
+  })
+
+  test('same cursors are not continuous', async () => {
+    expect(
+      checkEventsContinuity(
+        eventCursorPairs[0].cursor,
+        eventCursorPairs.slice(0, 1)
+      )
+    ).toBe(false)
+
+    expect(
+      checkEventsContinuity(
+        eventCursorPairs[1].cursor,
+        eventCursorPairs.slice(1, 3)
+      )
+    ).toBe(false)
+  })
+
+  test('scattered events are not continuous', async () => {
+    expect(checkEventsContinuity(null, eventCursorPairs.slice(1, 3))).toBe(
+      false
+    )
+    expect(
+      checkEventsContinuity(
+        eventCursorPairs[1].cursor,
+        eventCursorPairs.slice(3, 6)
+      )
+    ).toBe(false)
+    expect(
+      checkEventsContinuity(null, [
+        eventCursorPairs[0],
+        eventCursorPairs[1],
+        eventCursorPairs[3],
+      ])
+    ).toBe(false)
+    expect(
+      checkEventsContinuity(eventCursorPairs[2].cursor, [
+        eventCursorPairs[3],
+        eventCursorPairs[4],
+        eventCursorPairs[6],
+      ])
+    ).toBe(false)
+  })
+
+  test('consequentially saved events are continuous', async () => {
+    const middleIndex = Math.floor(eventCursorPairs.length / 2)
+
+    expect(checkEventsContinuity(null, eventCursorPairs)).toBe(true)
+
+    expect(
+      checkEventsContinuity(null, eventCursorPairs.slice(0, middleIndex + 1))
+    ).toBe(true)
+    expect(
+      checkEventsContinuity(
+        eventCursorPairs[middleIndex].cursor,
+        eventCursorPairs.slice(middleIndex + 1)
+      )
+    ).toBe(true)
+  })
+
+  test('consequentially saved events are continuous regardless the order in array', async () => {
+    expect(
+      checkEventsContinuity(null, [eventCursorPairs[1], eventCursorPairs[0]])
+    ).toBe(true)
+
+    expect(
+      checkEventsContinuity(eventCursorPairs[0].cursor, [
+        eventCursorPairs[2],
+        eventCursorPairs[1],
+      ])
+    ).toBe(true)
+  })
+
+  test('many events saved in parallel should be continuous', async () => {
+    const parallelWrites = 8
+    const promises: Promise<EventWithCursor>[] = []
+    for (let i = 0; i < parallelWrites; ++i) {
+      promises.push(
+        adapter.saveEvent({
+          aggregateVersion: 1,
+          aggregateId: `PARALLEL_ID_${i}`,
+          type: 'PARALLEL_TYPE',
+          payload: { message: 'hello' },
+          timestamp: 1,
+        })
+      )
+    }
+    const parallelEventCursorPairs: EventWithCursor[] = await Promise.all(
+      promises
+    )
+
+    expect(
+      checkEventsContinuity(
+        eventCursorPairs[eventCursorPairs.length - 1].cursor,
+        parallelEventCursorPairs
+      )
+    ).toBe(true)
   })
 })
 

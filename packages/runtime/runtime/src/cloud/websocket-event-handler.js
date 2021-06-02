@@ -63,7 +63,7 @@ const handleWebsocketEvent = async ({ method, payload }, resolve) => {
     }
     case 'receive': {
       const { connectionId, data } = payload
-      const { type, cursor: prevCursor } = JSON.parse(data)
+      const { type, requestId, payload: messagePayload } = JSON.parse(data)
 
       switch (type) {
         case 'pullEvents': {
@@ -89,7 +89,7 @@ const handleWebsocketEvent = async ({ method, payload }, resolve) => {
                   : Object.keys(JSON.parse(aggregateIds)),
               limit: LOAD_EVENTS_COUNT_LIMIT,
               eventsSizeLimit: LOAD_EVENTS_SIZE_LIMIT,
-              cursor: prevCursor,
+              cursor: messagePayload.cursor,
             })
 
             await invokeFunction({
@@ -100,6 +100,7 @@ const handleWebsocketEvent = async ({ method, payload }, resolve) => {
                 connectionId,
                 data: {
                   type: 'pullEvents',
+                  requestId,
                   payload: { events, cursor },
                 },
               },

@@ -7,7 +7,9 @@
 **Bug fixes:**
 
 - SQLITE\_ERROR: cannot start a transaction within a transaction [\#1886](https://github.com/reimagined/resolve/issues/1886)
+- Event subscription does not work for cursor equal to null [\#1884](https://github.com/reimagined/resolve/issues/1884)
 - Event store postgresql serverless failed on loading events with empty types list [\#1883](https://github.com/reimagined/resolve/issues/1883)
+- View model gets duplicated events through websocket [\#1877](https://github.com/reimagined/resolve/issues/1877)
 - Subscription to events with a custom view-model resolver [\#1874](https://github.com/reimagined/resolve/issues/1874)
 
 **Other changes:**
