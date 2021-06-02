@@ -25,7 +25,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-root
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -33,19 +33,27 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-packages
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
 
       - name: Cache examples node_modules
         uses: actions/cache@v2
         with:
           path: 'examples/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-examples
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
 
       - name: Cache functional tests node_modules
         uses: actions/cache@v2
         with:
           path: 'functional-tests/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-functional-tests
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-functional-tests
+
+      - name: Cache tests and website node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            tests/**/node_modules
+            website/**/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
 
       - name: Cache build
         uses: actions/cache@v2
@@ -84,7 +92,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-root
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -92,7 +100,7 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-packages
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
 
       - name: Prettier
         run: yarn prettier:check
@@ -115,7 +123,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-root
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -123,7 +131,7 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-packages
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
 
       - name: Cache build
         uses: actions/cache@v2
@@ -161,7 +169,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-root
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -169,7 +177,7 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-packages
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
 
       - name: Cache build
         uses: actions/cache@v2
@@ -207,7 +215,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-root
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -215,19 +223,19 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-packages
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
 
       - name: Cache examples node_modules
         uses: actions/cache@v2
         with:
           path: 'examples/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-examples
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
 
       - name: Cache functional tests node_modules
         uses: actions/cache@v2
         with:
           path: 'functional-tests/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-functional-tests
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-functional-tests
 
       - name: Cache build
         uses: actions/cache@v2
@@ -271,7 +279,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-root
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -279,7 +287,7 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-packages
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
 
       - name: Cache build
         uses: actions/cache@v2
