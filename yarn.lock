@@ -4730,15 +4730,20 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001125, caniuse-lite@^1.0.30001219:
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001125:
   version "1.0.30001230"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001230.tgz#8135c57459854b2240b57a4a6786044bdc5a9f71"
   integrity sha512-5yBd5nWCBS+jWKTcHOzXwo5xzcj4ePE/yjtkZyUV1BTUmrBaA9MRGC+e7mxnqXSA90CmCA8L3eKLaSUkt099IQ==
 
-caniuse-lite@^1.0.30001196, caniuse-lite@^1.0.30001230:
+caniuse-lite@^1.0.30001196:
   version "1.0.30001232"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001232.tgz#2ebc8b6a77656fd772ab44a82a332a26a17e9527"
   integrity sha512-e4Gyp7P8vqC2qV2iHA+cJNf/yqUKOShXQOJHQt81OHxlIZl/j/j3soEA0adAQi8CPUQgvOdDENyQ5kd6a6mNSg==
+
+caniuse-lite@^1.0.30001219, caniuse-lite@^1.0.30001230:
+  version "1.0.30001233"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001233.tgz#b7cb4a377a4b12ed240d2fa5c792951a06e5f2c4"
+  integrity sha512-BmkbxLfStqiPA7IEzQpIk0UFZFf3A4E6fzjPJ6OR+bFC2L8ES9J8zGA/asoi47p8XDVkev+WJo2I2Nc8c/34Yg==
 
 canonical-path@1.0.0:
   version "1.0.0"
@@ -6552,10 +6557,15 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-electron-to-chromium@^1.3.564, electron-to-chromium@^1.3.723:
+electron-to-chromium@^1.3.564:
   version "1.3.741"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.741.tgz#dc1024b19b31e27fb2c8c0a1f120cb05fc6ca695"
   integrity sha512-4i3T0cwnHo1O4Mnp9JniEco8bZiXoqbm3PhW5hv7uu8YLg35iajYrRnNyKFaN8/8SSTskU2hYqVTeYVPceSpUA==
+
+electron-to-chromium@^1.3.723:
+  version "1.3.743"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.743.tgz#fcec24d6d647cb84fd796b42caa1b4039a180894"
+  integrity sha512-K2wXfo9iZQzNJNx67+Pld0DRF+9bYinj62gXCdgPhcu1vidwVuLPHQPPFnCdO55njWigXXpfBiT90jGUPbw8Zg==
 
 elegant-spinner@^1.0.1:
   version "1.0.1"

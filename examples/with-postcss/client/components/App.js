@@ -1,8 +1,8 @@
 import React from 'react'
-
+import { renderRoutes } from 'react-router-config'
 import { Header } from '../containers/Header'
 
-const App = ({ children }) => (
+const App = ({ route }) => (
   <div>
     <Header
       title="reSolve PostCSS Example"
@@ -10,7 +10,7 @@ const App = ({ children }) => (
       favicon="/favicon.ico"
       css={['/bootstrap.min.css', '/style.css']}
     />
-    {children}
+    {renderRoutes(route.routes)}
   </div>
 )
 

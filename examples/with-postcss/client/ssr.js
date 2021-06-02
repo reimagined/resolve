@@ -5,8 +5,8 @@ import { ResolveProvider } from '@resolve-js/react-hooks'
 import { Helmet } from 'react-helmet'
 
 import { getRoutes } from './get-routes'
-import Routes from '../client/components/Routes'
-import { Router } from 'react-router'
+import { StaticRouter } from 'react-router'
+import { renderRoutes } from 'react-router-config'
 
 const ssrHandler = async (serverContext, req, res) => {
   try {
@@ -27,9 +27,9 @@ const ssrHandler = async (serverContext, req, res) => {
     const staticContext = {}
     const markup = ReactDOM.renderToStaticMarkup(
       <ResolveProvider context={resolveContext}>
-        <Router history={history} staticContext={staticContext}>
-          <Routes routes={getRoutes()} />
-        </Router>
+        <StaticRouter location={url} context={staticContext} history={history}>
+          {renderRoutes(getRoutes())}
+        </StaticRouter>
       </ResolveProvider>
     )
 
