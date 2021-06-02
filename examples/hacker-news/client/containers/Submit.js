@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import { v4 as uuid } from 'uuid'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Redirect } from 'react-router'
-import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
 
-import * as aggregateActions from '../actions/aggregate-actions'
+import { useReduxCommand } from '@resolve-js/redux'
 
 const FormLabel = styled.div`
   margin-bottom: 0.1em;
@@ -23,85 +22,75 @@ const SubmitButton = styled.button`
   margin-bottom: 1em;
 `
 
-export class Submit extends React.PureComponent {
-  state = {
-    title: '',
-    link: '',
-    text: '',
-    disabled: false,
-  }
+const Submit = () => {
+  const [title, setTitle] = useState('')
+  const [link, setLink] = useState('')
+  const [text, setText] = useState('')
+  const [disabled, setDisabled] = useState(false)
 
-  handleChange = (event, name) => this.setState({ [name]: event.target.value })
+  const { execute: createStory } = useReduxCommand((storyId, payload) => ({
+    aggregateId: storyId,
+    aggregateName: 'Story',
+    type: 'createStory',
+    payload,
+  }))
 
-  handleSubmit = () => {
-    const { title, link, text } = this.state
-
-    this.setState({ disabled: !this.state.disabled })
-
-    return this.props.createStory(uuid(), {
+  const handleSubmit = useCallback(() => {
+    setDisabled(!disabled)
+    createStory(uuid(), {
       title,
       text,
       link,
     })
+  }, [createStory])
+
+  const me = useSelector((state) => state.jwt)
+
+  if (!me?.id) {
+    return <Redirect to="/login?redirect=/submit" />
   }
 
-  render() {
-    if (!this.props.me.id) {
-      return <Redirect to="/login?redirect=/submit" />
-    }
-
-    return (
+  return (
+    <div>
       <div>
-        <div>
-          <FormLabel>title:</FormLabel>
-          <FormInput
-            type="text"
-            value={this.state.title}
-            onChange={(e) => this.handleChange(e, 'title')}
-            disabled={this.state.disabled}
-          />
-        </div>
-        <div>
-          <FormLabel>url:</FormLabel>
-          <FormInput
-            type="text"
-            value={this.state.link}
-            onChange={(e) => this.handleChange(e, 'link')}
-            disabled={this.state.disabled}
-          />
-        </div>
-        <div>
-          <FormLabel>text:</FormLabel>
-          <FormTextArea
-            name="text"
-            rows="4"
-            value={this.state.text}
-            onChange={(e) => this.handleChange(e, 'text')}
-            disabled={this.state.disabled}
-          />
-        </div>
-        <div>
-          <SubmitButton
-            disabled={this.state.disabled}
-            onClick={this.handleSubmit}
-          >
-            {this.state.disabled ? 'Please wait...' : 'submit'}
-          </SubmitButton>
-        </div>
-        <div>
-          Leave url blank to submit a question for discussion. If there is no
-          url, the text (if any) will appear at the top of the thread.
-        </div>
+        <FormLabel>title:</FormLabel>
+        <FormInput
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          disabled={disabled}
+        />
       </div>
-    )
-  }
+      <div>
+        <FormLabel>url:</FormLabel>
+        <FormInput
+          type="text"
+          value={link}
+          onChange={(e) => setLink(e.target.value)}
+          disabled={disabled}
+        />
+      </div>
+      <div>
+        <FormLabel>text:</FormLabel>
+        <FormTextArea
+          name="text"
+          rows="4"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          disabled={disabled}
+        />
+      </div>
+      <div>
+        <SubmitButton disabled={disabled} onClick={handleSubmit}>
+          {disabled ? 'Please wait...' : 'submit'}
+        </SubmitButton>
+      </div>
+      <div>
+        Leave url blank to submit a question for discussion. If there is no url,
+        the text (if any) will appear at the top of the thread.
+      </div>
+    </div>
+  )
 }
 
-export const mapStateToProps = (state) => ({
-  me: state.jwt,
-})
-
-export const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(aggregateActions, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(Submit)
+export { Submit }

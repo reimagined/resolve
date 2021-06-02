@@ -1,66 +1,36 @@
-import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connectReadModel } from '@resolve-js/redux'
-import { connect } from 'react-redux'
-
-import * as aggregateActions from '../actions/aggregate-actions'
-import Stories from '../components/Stories'
+import React, { useEffect } from 'react'
+import { ResultStatus, useReduxReadModel } from '@resolve-js/redux'
+import { Stories } from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
+import { useSelector } from 'react-redux'
 
 const AskByPage = ({
-  isLoading,
-  page,
-  stories,
-  me,
-  upvoteStory,
-  unvoteStory,
-}) => (
-  <Stories
-    isLoading={isLoading}
-    items={stories}
-    page={page}
-    type="ask"
-    userId={me && me.id}
-    upvoteStory={upvoteStory}
-    unvoteStory={unvoteStory}
-  />
-)
-
-const mapStateToOptions = (
-  state,
-  {
-    match: {
-      params: { page },
-    },
-  }
-) => ({
-  readModelName: 'HackerNews',
-  resolverName: 'askStories',
-  resolverArgs: {
-    offset: ITEMS_PER_PAGE + 1,
-    first: (+page - 1) * ITEMS_PER_PAGE,
+  match: {
+    params: { page },
   },
-})
-
-const mapStateToProps = (
-  state,
-  {
-    match: {
-      params: { page },
+}) => {
+  const { request: getStories, selector } = useReduxReadModel(
+    {
+      name: 'HackerNews',
+      resolver: 'askStories',
+      args: {
+        offset: ITEMS_PER_PAGE + 1,
+        first: (+page - 1) * ITEMS_PER_PAGE,
+      },
     },
-    isLoading,
-    data,
-  }
-) => ({
-  isLoading,
-  page,
-  stories: data,
-  me: state.jwt,
-})
+    null,
+    []
+  )
+  const { data: stories, status } = useSelector(selector)
 
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(aggregateActions, dispatch)
+  useEffect(() => {
+    getStories()
+  }, [getStories])
 
-export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps, mapDispatchToProps)(AskByPage)
-)
+  const isLoading =
+    status === ResultStatus.Initial || status === ResultStatus.Requested
+
+  return !isLoading ? <Stories items={stories} page={page} type="ask" /> : null
+}
+
+export { AskByPage }

@@ -1,10 +1,10 @@
 import React from 'react'
-import { connect, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { Link as NormalLink } from 'react-router-dom'
 
 import { Splitter } from '../components/Splitter'
-import Form from './Form'
+import { Form } from './Form'
 
 const Link = styled(NormalLink)`
   color: white;

@@ -1,5 +1,9 @@
-import { connectRootBasedUrls } from '@resolve-js/redux'
+import React from 'react'
+import { useOriginResolver } from '@resolve-js/react-hooks'
 
-const Form = connectRootBasedUrls(['action'])('form')
+const Form = ({ action, ...props }) => {
+  const appHref = useOriginResolver()
+  return <form action={appHref(action)} {...props} />
+}
 
-export default Form
+export { Form }

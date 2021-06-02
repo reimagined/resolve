@@ -1,15 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import Comment from './Comment'
-import ReplyLink from './ReplyLink'
+import { Comment } from './Comment'
+import { ReplyLink } from './ReplyLink'
 
 const ChildrenCommentsContainer = styled.div`
   margin-left: 2em;
   margin-top: 1em;
 `
 
-const ChildrenComments = ({ storyId, comments, loggedIn }) => {
+const ChildComments = ({ storyId, comments, loggedIn }) => {
   if (!comments || !comments.length) {
     return null
   }
@@ -31,7 +31,7 @@ const ChildrenComments = ({ storyId, comments, loggedIn }) => {
               <ReplyLink storyId={storyId} commentId={comment.commentId} />
             ) : null}
             <ChildrenCommentsContainer>
-              <ChildrenComments
+              <ChildComments
                 storyId={storyId}
                 comments={comment.children}
                 loggedIn={loggedIn}
@@ -44,4 +44,4 @@ const ChildrenComments = ({ storyId, comments, loggedIn }) => {
   )
 }
 
-export default ChildrenComments
+export { ChildComments }

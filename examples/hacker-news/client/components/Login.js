@@ -1,6 +1,6 @@
 import React from 'react'
 
-import AuthForm from './AuthForm'
+import { AuthForm } from './AuthForm'
 
 const Login = (props) => {
   return (
@@ -19,4 +19,4 @@ const Login = (props) => {
   )
 }
 
-export default Login
+export { Login }

@@ -1,6 +1,6 @@
-import React from 'react'
-import { connectReadModel } from '@resolve-js/redux'
-import { connect } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useReduxReadModel } from '@resolve-js/redux'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
 const UserInfoRoot = styled.div`
@@ -19,12 +19,28 @@ const Content = styled.div`
   vertical-align: middle;
 `
 
-export const UserById = ({ user }) => {
-  if (!user) {
-    return null
-  }
+const UserById = ({
+  match: {
+    params: { userId },
+  },
+}) => {
+  const { request: getUser, selector } = useReduxReadModel(
+    {
+      name: 'HackerNews',
+      resolver: 'user',
+      args: { id: userId },
+    },
+    null,
+    []
+  )
 
-  return (
+  const { data: user } = useSelector(selector)
+
+  useEffect(() => {
+    getUser()
+  }, [getUser])
+
+  return user ? (
     <UserInfoRoot>
       <div>
         <Label>name:</Label>
@@ -35,27 +51,7 @@ export const UserById = ({ user }) => {
         <Content>{new Date(+user.createdAt).toLocaleString('en-US')}</Content>
       </div>
     </UserInfoRoot>
-  )
+  ) : null
 }
 
-const mapStateToOptions = (
-  state,
-  {
-    match: {
-      params: { userId },
-    },
-  }
-) => ({
-  readModelName: 'HackerNews',
-  resolverName: 'user',
-  resolverArgs: { id: userId },
-})
-
-const mapStateToProps = (state, { data }) => ({
-  user: data,
-  me: state.jwt,
-})
-
-export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps)(UserById)
-)
+export { UserById }

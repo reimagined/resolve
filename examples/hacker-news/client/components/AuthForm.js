@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import Form from '../containers/Form'
+import { Form } from '../containers/Form'
 
 const AuthFormRoot = styled.div`
   margin-bottom: 1em;
@@ -34,4 +34,4 @@ const AuthForm = ({ title, action, buttonText }) => (
   </AuthFormRoot>
 )
 
-export default AuthForm
+export { AuthForm }

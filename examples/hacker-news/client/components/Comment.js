@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import sanitizer from 'sanitizer'
 import styled from 'styled-components'
 
 import { Splitter } from './Splitter'
-import TimeAgo from './TimeAgo'
+import { TimeAgo } from './TimeAgo'
 import { NavLink } from 'react-router-dom'
 
 const CommentRoot = styled.div`
@@ -37,64 +37,60 @@ const StyledUserLink = styled(NavLink)`
   padding-right: 3px;
 `
 
-class Comment extends React.PureComponent {
-  state = {
-    expanded: true,
+const Comment = ({
+  id,
+  storyId,
+  text,
+  createdBy,
+  createdByName,
+  createdAt,
+  parentId,
+  children,
+}) => {
+  if (!id) {
+    return null
   }
 
-  expand = () => this.setState({ expanded: !this.state.expanded })
+  const [expanded, setExpanded] = useState(true)
 
-  render() {
-    const {
-      id,
-      storyId,
-      text,
-      createdBy,
-      createdByName,
-      createdAt,
-      parentId,
-      children,
-    } = this.props
+  const toggleExpand = useCallback(() => {
+    setExpanded(!expanded)
+  }, [setExpanded])
 
-    if (!id) {
-      return null
-    }
+  const parent =
+    parentId == null
+      ? `/storyDetails/${storyId}`
+      : `/storyDetails/${storyId}/comments/${parentId}`
 
-    const parent =
-      parentId == null
-        ? `/storyDetails/${storyId}`
-        : `/storyDetails/${storyId}/comments/${parentId}`
-
-    return (
-      <CommentRoot>
-        <CommentInfo>
-          <Collapse onClick={this.expand} tabIndex="0">
-            {'['}
-            {this.state.expanded ? '−' : '+'}
-            {']'}
-          </Collapse>
-          <StyledUserLink to={`/user/${createdBy}`}>
-            {createdByName}
-          </StyledUserLink>
-          <TimeAgo createdAt={createdAt} />
-          <Splitter />
-          <StyledLink to={`/storyDetails/${storyId}/comments/${id}`}>
-            link
-          </StyledLink>
-          <Splitter />
-          <StyledLink to={parent}>parent</StyledLink>
-        </CommentInfo>
-        {this.state.expanded ? (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: sanitizer.sanitize(text),
-            }}
-          />
-        ) : null}
-        {this.state.expanded ? children : null}
-      </CommentRoot>
-    )
-  }
+  return (
+    <CommentRoot>
+      <CommentInfo>
+        <Collapse onClick={toggleExpand} tabIndex="0">
+          {'['}
+          {expanded ? '−' : '+'}
+          {']'}
+        </Collapse>
+        <StyledUserLink to={`/user/${createdBy}`}>
+          {createdByName}
+        </StyledUserLink>
+        <TimeAgo createdAt={createdAt} />
+        <Splitter />
+        <StyledLink to={`/storyDetails/${storyId}/comments/${id}`}>
+          link
+        </StyledLink>
+        <Splitter />
+        <StyledLink to={parent}>parent</StyledLink>
+      </CommentInfo>
+      {expanded ? (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: sanitizer.sanitize(text),
+          }}
+        />
+      ) : null}
+      {expanded ? children : null}
+    </CommentRoot>
+  )
 }
 
-export default Comment
+export { Comment }

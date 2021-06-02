@@ -1,12 +1,13 @@
 import React from 'react'
-import url from 'url'
-import { connect } from 'react-redux'
 import sanitizer from 'sanitizer'
 import styled, { css } from 'styled-components'
+import { URL } from 'url'
+import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 
 import { Splitter } from '../components/Splitter'
-import TimeAgo from '../components/TimeAgo'
+import { TimeAgo } from '../components/TimeAgo'
+import { useReduxCommand } from '@resolve-js/redux'
 
 export const StoryRoot = styled.div`
   margin-bottom: 12px;
@@ -56,9 +57,8 @@ export const DiscussLink = styled(NavLink)`
 
 export const UpvoteArrow = styled.div`
   display: inline-block;
-  width: 0px;
-  height: 0px;
-  border: 0px;
+  width: 0;
+  height: 0;
   border-width: 4px;
   border-bottom-width: 7px;
   border-style: solid;
@@ -86,10 +86,10 @@ const Username = styled(NavLink)`
 const isExternalLink = (link) => link[0] !== '/'
 
 export const getHostname = (link) => {
-  return url.parse(link).hostname
+  return new URL(link).hostname
 }
 
-export const Title = ({ title, link, upvoteStory, voted, loggedIn }) => {
+const Title = ({ title, link, upvoteStory, voted, loggedIn }) => {
   const isExternal = isExternalLink(link)
 
   return (
@@ -111,18 +111,17 @@ export const Title = ({ title, link, upvoteStory, voted, loggedIn }) => {
   )
 }
 
-export const StoryInfo = (props) => {
-  const {
-    id,
-    createdBy,
-    createdByName,
-    createdAt,
-    votes,
-    commentCount,
-    voted,
-    loggedIn,
-    unvoteStory,
-  } = props
+const StoryInfo = ({
+  id,
+  createdBy,
+  createdByName,
+  createdAt,
+  votes,
+  commentCount,
+  voted,
+  loggedIn,
+  unvoteStory,
+}) => {
   const unvoteIsVisible = voted && loggedIn
 
   return (
@@ -152,67 +151,77 @@ export const StoryInfo = (props) => {
   )
 }
 
-export class Story extends React.PureComponent {
-  upvoteStory = () => this.props.upvoteStory(this.props.story.id)
-
-  unvoteStory = () => this.props.unvoteStory(this.props.story.id)
-
-  render() {
-    const { story, index, userId, showText, optimistic } = this.props
-
-    if (!story || !story.id) {
-      return null
-    }
-
-    const loggedIn = !!userId
-
-    const voted =
-      optimistic.votedStories[story.id] !== false &&
-      (optimistic.votedStories[story.id] === true ||
-        story.votes.indexOf(userId) !== -1)
-
-    const votes = story.votes
-      .filter((id) => id !== userId)
-      .concat(voted ? [userId] : [])
-
-    const commentCount = story.commentCount
-
-    const title = `${index ? `${index}. ` : ''}${
-      story.type === 'ask' ? `Ask HN: ${story.title}` : story.title
-    }`
-
-    return (
-      <StoryRoot>
-        <Title
-          loggedIn={loggedIn}
-          voted={voted}
-          upvoteStory={this.upvoteStory}
-          title={title}
-          link={story.link || `/storyDetails/${story.id}`}
-        />
-        <StoryInfo
-          voted={voted}
-          id={story.id}
-          votes={votes}
-          commentCount={commentCount}
-          unvoteStory={this.unvoteStory}
-          loggedIn={loggedIn}
-          createdAt={story.createdAt}
-          createdBy={story.createdBy}
-          createdByName={story.createdByName}
-        />
-        {story.text && showText ? (
-          <StoryText
-            dangerouslySetInnerHTML={{
-              __html: sanitizer.sanitize(story.text),
-            }}
-          />
-        ) : null}
-      </StoryRoot>
-    )
+const Story = ({ story, index, showText }) => {
+  if (!story || !story.id) {
+    return null
   }
+  const { execute: upvoteStory } = useReduxCommand(
+    {
+      aggregateId: story.id,
+      aggregateName: 'Story',
+      type: 'upvoteStory',
+    },
+    [story.id]
+  )
+
+  const { execute: unvoteStory } = useReduxCommand(
+    {
+      aggregateId: story.id,
+      aggregateName: 'Story',
+      type: 'unvoteStory',
+    },
+    [story.id]
+  )
+
+  const optimistic = useSelector((state) => state.optimistic)
+  const userId = useSelector((state) => (state.jwt ? state.jwt.id : null))
+
+  const loggedIn = !!userId
+
+  const voted =
+    optimistic.votedStories[story.id] !== false &&
+    (optimistic.votedStories[story.id] === true ||
+      story.votes.indexOf(userId) !== -1)
+
+  const votes = story.votes
+    .filter((id) => id !== userId)
+    .concat(voted ? [userId] : [])
+
+  const commentCount = story.commentCount
+
+  const title = `${index ? `${index}. ` : ''}${
+    story.type === 'ask' ? `Ask HN: ${story.title}` : story.title
+  }`
+
+  return (
+    <StoryRoot>
+      <Title
+        loggedIn={loggedIn}
+        voted={voted}
+        upvoteStory={upvoteStory}
+        title={title}
+        link={story.link || `/storyDetails/${story.id}`}
+      />
+      <StoryInfo
+        voted={voted}
+        id={story.id}
+        votes={votes}
+        commentCount={commentCount}
+        unvoteStory={unvoteStory}
+        loggedIn={loggedIn}
+        createdAt={story.createdAt}
+        createdBy={story.createdBy}
+        createdByName={story.createdByName}
+      />
+      {story.text && showText ? (
+        <StoryText
+          dangerouslySetInnerHTML={{
+            __html: sanitizer.sanitize(story.text),
+          }}
+        />
+      ) : null}
+    </StoryRoot>
+  )
 }
 
-export const mapStateToProps = ({ optimistic }) => ({ optimistic })
-
-export default connect(mapStateToProps)(Story)
+export { Story }

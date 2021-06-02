@@ -8,7 +8,7 @@ import { StyleSheetManager, ServerStyleSheet } from 'styled-components'
 import { createMemoryHistory } from 'history'
 import jsonwebtoken from 'jsonwebtoken'
 
-import getRoutes from './get-routes'
+import { getRoutes } from './get-routes'
 import getRedux from './get-redux'
 
 const ssrHandler = async (serverContext, req, res) => {

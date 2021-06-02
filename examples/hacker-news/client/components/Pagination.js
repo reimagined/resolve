@@ -29,7 +29,7 @@ export const StyledLink = styled(NavLink)`
         `};
 `
 
-const Pagination = ({ page, hasNext, location }) => {
+const Pagination = ({ page = 1, hasNext, location }) => {
   if (page === 1 && !hasNext) {
     return null
   }
@@ -58,8 +58,4 @@ const Pagination = ({ page, hasNext, location }) => {
   )
 }
 
-Pagination.defaultProps = {
-  page: 1,
-}
-
-export default Pagination
+export { Pagination }

@@ -1,44 +1,30 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { connectReadModel } from '@resolve-js/redux'
+import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { useReduxReadModel } from '@resolve-js/redux'
 
-import * as aggregateActions from '../actions/aggregate-actions'
-import Story from './Story'
+import { Story } from './Story'
 
-class ConnectedStory extends React.PureComponent {
-  render() {
-    const { story, me, upvoteStory, unvoteStory } = this.props
+const ConnectedStory = ({ id }) => {
+  const refreshId = useSelector((state) => state.optimistic.refreshId)
+  const { request: getStory, selector } = useReduxReadModel(
+    {
+      name: 'HackerNews',
+      resolver: 'story',
+      args: {
+        refreshId,
+        id,
+      },
+    },
+    null,
+    []
+  )
+  const { data: story } = useSelector(selector)
 
-    return (
-      <Story
-        showText
-        story={story}
-        userId={me && me.id}
-        upvoteStory={upvoteStory}
-        unvoteStory={unvoteStory}
-      />
-    )
-  }
+  useEffect(() => {
+    getStory()
+  }, [getStory])
+
+  return <Story showText story={story} />
 }
 
-const mapStateToOptions = ({ optimistic: { refreshId } }, { id }) => ({
-  readModelName: 'HackerNews',
-  resolverName: 'story',
-  resolverArgs: {
-    refreshId,
-    id,
-  },
-})
-
-const mapStateToProps = (state, { data }) => ({
-  story: data,
-  me: state.jwt,
-})
-
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(aggregateActions, dispatch)
-
-export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps, mapDispatchToProps)(ConnectedStory)
-)
+export { ConnectedStory }

@@ -38,7 +38,8 @@ const Search = () => {
       resolver: 'enabled',
       args: {},
     },
-    false
+    false,
+    []
   )
   const { data: enabled } = useSelector(selector)
 
@@ -51,7 +52,7 @@ const Search = () => {
 
   useEffect(() => {
     requestSearchAvailability()
-  }, [])
+  }, [requestSearchAvailability])
 
   return (
     <SearchResultsWrapper>

@@ -1,66 +1,39 @@
-import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { connectReadModel } from '@resolve-js/redux'
+import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { ResultStatus, useReduxReadModel } from '@resolve-js/redux'
 
-import * as aggregateActions from '../actions/aggregate-actions'
-import Stories from '../components/Stories'
+import { Stories } from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
 const NewestByPage = ({
-  isLoading,
-  page,
-  stories,
-  me,
-  upvoteStory,
-  unvoteStory,
-}) => (
-  <Stories
-    isLoading={isLoading}
-    items={stories}
-    page={page || '1'}
-    type="newest"
-    userId={me && me.id}
-    upvoteStory={upvoteStory}
-    unvoteStory={unvoteStory}
-  />
-)
-
-export const mapStateToOptions = (
-  state,
-  {
-    match: {
-      params: { page },
-    },
-  }
-) => ({
-  readModelName: 'HackerNews',
-  resolverName: 'allStories',
-  resolverArgs: {
-    offset: ITEMS_PER_PAGE + 1,
-    first: (+page - 1) * ITEMS_PER_PAGE,
+  match: {
+    params: { page },
   },
-})
-
-export const mapStateToProps = (
-  state,
-  {
-    match: {
-      params: { page },
+}) => {
+  const { request: getStories, selector } = useReduxReadModel(
+    {
+      name: 'HackerNews',
+      resolver: 'allStories',
+      args: {
+        offset: ITEMS_PER_PAGE + 1,
+        first: (+page - 1) * ITEMS_PER_PAGE,
+      },
     },
-    data,
-    isLoading,
-  }
-) => ({
-  stories: data,
-  isLoading,
-  page,
-  me: state.jwt,
-})
+    null,
+    []
+  )
+  const { data: stories, status } = useSelector(selector)
 
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(aggregateActions, dispatch)
+  useEffect(() => {
+    getStories()
+  }, [getStories])
 
-export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps, mapDispatchToProps)(NewestByPage)
-)
+  const isLoading =
+    status === ResultStatus.Initial || status === ResultStatus.Requested
+
+  return !isLoading ? (
+    <Stories items={stories} page={page} type="newest" />
+  ) : null
+}
+
+export { NewestByPage }

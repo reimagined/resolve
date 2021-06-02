@@ -14,4 +14,4 @@ const ReplyLink = ({ storyId, commentId }) => (
   </StyledLink>
 )
 
-export default ReplyLink
+export { ReplyLink }

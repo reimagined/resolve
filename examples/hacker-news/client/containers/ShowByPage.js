@@ -1,66 +1,37 @@
-import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connectReadModel } from '@resolve-js/redux'
-import { connect } from 'react-redux'
+import React, { useEffect } from 'react'
+import { ResultStatus, useReduxReadModel } from '@resolve-js/redux'
+import { useSelector } from 'react-redux'
 
-import * as aggregateActions from '../actions/aggregate-actions'
-import Stories from '../components/Stories'
+import { Stories } from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
 const ShowByPage = ({
-  isLoading,
-  page,
-  stories,
-  me,
-  upvoteStory,
-  unvoteStory,
-}) => (
-  <Stories
-    isLoading={isLoading}
-    items={stories}
-    page={page}
-    type="show"
-    userId={me && me.id}
-    upvoteStory={upvoteStory}
-    unvoteStory={unvoteStory}
-  />
-)
-
-export const mapStateToOptions = (
-  state,
-  {
-    match: {
-      params: { page },
-    },
-  }
-) => ({
-  readModelName: 'HackerNews',
-  resolverName: 'showStories',
-  resolverArgs: {
-    offset: ITEMS_PER_PAGE + 1,
-    first: (+page - 1) * ITEMS_PER_PAGE,
+  match: {
+    params: { page },
   },
-})
-
-export const mapStateToProps = (
-  state,
-  {
-    match: {
-      params: { page },
+}) => {
+  const { request: getStories, selector } = useReduxReadModel(
+    {
+      name: 'HackerNews',
+      resolver: 'showStories',
+      args: {
+        offset: ITEMS_PER_PAGE + 1,
+        first: (+page - 1) * ITEMS_PER_PAGE,
+      },
     },
-    data,
-    isLoading,
-  }
-) => ({
-  isLoading,
-  stories: data,
-  page,
-  me: state.jwt,
-})
+    [],
+    []
+  )
+  const { data: stories, status } = useSelector(selector)
 
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(aggregateActions, dispatch)
+  useEffect(() => {
+    getStories()
+  }, [getStories])
 
-export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps, mapDispatchToProps)(ShowByPage)
-)
+  const isLoading =
+    status === ResultStatus.Initial && status === ResultStatus.Requested
+
+  return !isLoading ? <Stories items={stories} page={page} type="show" /> : null
+}
+
+export { ShowByPage }

@@ -99,6 +99,7 @@ const App = ({ route }) => (
         <LoginInfo />
         <Search />
       </PageHeader>
+
       <Content>{renderRoutes(route.routes)}</Content>
 
       <Footer>
@@ -110,4 +111,4 @@ const App = ({ route }) => (
   </div>
 )
 
-export default App
+export { App }

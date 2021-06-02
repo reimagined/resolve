@@ -1,19 +1,19 @@
-import App from './containers/App'
+import { App } from './containers/App'
 
-import Error from './components/Error'
-import Login from './components/Login'
-import UserById from './containers/UserById'
+import { Error } from './components/Error'
+import { Login } from './components/Login'
+import { UserById } from './containers/UserById'
 
-import NewestByPage from './containers/NewestByPage'
-import ShowByPage from './containers/ShowByPage'
-import AskByPage from './containers/AskByPage'
-import StoryById from './containers/StoryById'
-import Submit from './containers/Submit'
+import { NewestByPage } from './containers/NewestByPage'
+import { ShowByPage } from './containers/ShowByPage'
+import { AskByPage } from './containers/AskByPage'
+import { StoryById } from './containers/StoryById'
+import { Submit } from './containers/Submit'
 
-import CommentsByPage from './containers/CommentsByPage'
-import CommentsTreeById from './containers/CommentsTreeById'
+import { CommentsByPage } from './containers/CommentsByPage'
+import { CommentsTreeById } from './containers/CommentsTreeById'
 
-import PageNotFound from './components/PageNotFound'
+import { PageNotFound } from './components/PageNotFound'
 
 const routes = [
   {
@@ -74,4 +74,4 @@ const routes = [
 
 const getRoutes = () => routes
 
-export default getRoutes
+export { getRoutes }

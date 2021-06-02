@@ -5,7 +5,7 @@ import { Router } from 'react-router'
 import { createBrowserHistory } from 'history'
 import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
 
-import getRoutes from './get-routes'
+import { getRoutes } from './get-routes'
 import getRedux from './get-redux'
 
 const entryPoint = (clientContext) => {

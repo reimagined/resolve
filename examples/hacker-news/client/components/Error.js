@@ -15,4 +15,4 @@ const Error = ({ location }) => (
   </div>
 )
 
-export default Error
+export { Error }

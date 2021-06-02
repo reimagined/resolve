@@ -19,13 +19,14 @@ const SearchResults = ({ onNavigate, query }) => {
         q: query,
       },
     },
+    [],
     []
   )
   const { data: results } = useSelector(selector)
 
   useEffect(() => {
     search()
-  }, [])
+  }, [search])
 
   return results.length ? (
     results.map((item) => (

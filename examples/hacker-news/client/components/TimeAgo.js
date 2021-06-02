@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 
 const SECOND = 1000
@@ -10,12 +10,18 @@ const Container = styled.div`
   display: inline-block;
 `
 
-class TimeAgo extends React.PureComponent {
-  state = { timestamp: Date.now() }
+const TimeAgo = ({ createdAt }) => {
+  const [now, setNow] = useState(Date.now())
 
-  getMessage = () => {
-    const now = Date.now()
-    const time = new Date(+this.props.createdAt).getTime()
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now())
+    }, MINUTE)
+    return () => clearInterval(interval)
+  }, [])
+
+  const getMessage = useCallback(() => {
+    const time = new Date(+createdAt).getTime()
 
     const difference = now - time
 
@@ -31,25 +37,9 @@ class TimeAgo extends React.PureComponent {
       const days = Math.floor(difference / DAY)
       return `${days} day(s) ago`
     }
-  }
+  }, [])
 
-  updateTimestamp = () => {
-    this.setState({
-      timestamp: Date.now(),
-    })
-  }
-
-  componentDidMount() {
-    this.timer = setInterval(this.updateTimestamp, MINUTE)
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timer)
-  }
-
-  render() {
-    return <Container>{this.getMessage()}</Container>
-  }
+  return <Container>{getMessage()}</Container>
 }
 
-export default TimeAgo
+export { TimeAgo }
