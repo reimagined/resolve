@@ -37,4 +37,4 @@ const SearchResultItem = ({
   )
 }
 
-export default SearchResultItem
+export { SearchResultItem }

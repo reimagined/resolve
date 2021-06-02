@@ -2,11 +2,11 @@ import React from 'react'
 import { NavLink, Link as NormalLink } from 'react-router-dom'
 import styled from 'styled-components'
 
-import Splitter from '../components/Splitter'
-import Header from './Header'
-import LoginInfo from './LoginInfo'
+import { Splitter } from '../components/Splitter'
+import { Header } from './Header'
+import { LoginInfo } from './LoginInfo'
 import { StaticImage } from './StaticImage'
-import Search from './Search'
+import { Search } from './Search'
 
 const ContentRoot = styled.div`
   width: 90%;

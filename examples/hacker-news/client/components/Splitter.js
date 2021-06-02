@@ -15,4 +15,4 @@ const Splitter = styled.div`
     `};
 `
 
-export default Splitter
+export { Splitter }

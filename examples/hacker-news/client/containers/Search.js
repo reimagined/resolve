@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { connectReadModel } from '@resolve-js/redux'
-import { connect } from 'react-redux'
+import { useReduxReadModel } from '@resolve-js/redux'
+import { useSelector } from 'react-redux'
 import SearchResults from './SearchResults'
-import Splitter from '../components/Splitter'
+import { Splitter } from '../components/Splitter'
 
 const SearchField = styled.input`
   width: 100px !important;
@@ -29,61 +29,51 @@ const SearchResultsContainer = styled.div`
   overflow-y: scroll;
 `
 
-export class Search extends React.PureComponent {
-  constructor(props) {
-    super(props)
-    this.state = { query: '' }
+const Search = () => {
+  const [query, setQuery] = useState('')
 
-    this.handleChange = this.handleChange.bind(this)
-  }
+  const { request: requestSearchAvailability, selector } = useReduxReadModel(
+    {
+      name: 'Search',
+      resolver: 'enabled',
+      args: {},
+    },
+    false
+  )
+  const { data: enabled } = useSelector(selector)
 
-  handleChange(event) {
-    this.setState({ query: event.target.value })
-  }
+  const handleChange = useCallback(
+    (event) => {
+      setQuery(event.target.value)
+    },
+    [setQuery]
+  )
 
-  render() {
-    const { query } = this.state
-    const { enabled } = this.props
+  useEffect(() => {
+    requestSearchAvailability()
+  })
 
-    return (
-      <SearchResultsWrapper>
-        <SearchField
-          type="text"
-          placeholder="search"
-          disabled={!enabled}
-          value={this.state.query}
-          onChange={this.handleChange}
-        />
+  return (
+    <SearchResultsWrapper>
+      <SearchField
+        type="text"
+        placeholder="search"
+        disabled={!enabled}
+        value={query}
+        onChange={handleChange}
+      />
 
-        {query.length ? (
-          <SearchResultsContainer>
-            <SearchResultsTitle>
-              Search results for <strong>{query}</strong>:
-            </SearchResultsTitle>
-            <SearchResults
-              query={query}
-              onNavigate={() => {
-                this.setState({ query: '' })
-              }}
-            />
-          </SearchResultsContainer>
-        ) : null}
-        <Splitter color="white" />
-      </SearchResultsWrapper>
-    )
-  }
+      {query.length ? (
+        <SearchResultsContainer>
+          <SearchResultsTitle>
+            Search results for <strong>{query}</strong>:
+          </SearchResultsTitle>
+          <SearchResults query={query} onNavigate={() => setQuery('')} />
+        </SearchResultsContainer>
+      ) : null}
+      <Splitter color="white" />
+    </SearchResultsWrapper>
+  )
 }
 
-const mapStateToOptions = () => ({
-  readModelName: 'Search',
-  resolverName: 'enabled',
-  resolverArgs: {},
-})
-
-const mapStateToProps = (state, { data }) => ({
-  enabled: data,
-})
-
-export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps)(Search)
-)
+export { Search }

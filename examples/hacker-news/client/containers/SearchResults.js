@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { connectReadModel } from '@resolve-js/redux'
-import { connect } from 'react-redux'
-import SearchResultItem from '../components/SearchResultItem'
+import { useReduxReadModel } from '@resolve-js/redux'
+import { useSelector } from 'react-redux'
+import { SearchResultItem } from '../components/SearchResultItem'
 
 const NothingFound = styled.div`
   padding: 0 6px 6px 6px;
@@ -10,8 +10,24 @@ const NothingFound = styled.div`
   text-align: center;
 `
 
-const SearchResults = ({ results, onNavigate }) => {
-  return results && results.length ? (
+const SearchResults = ({ onNavigate, query }) => {
+  const { request: search, selector } = useReduxReadModel(
+    {
+      name: 'Search',
+      resolver: 'find',
+      args: {
+        q: query,
+      },
+    },
+    []
+  )
+  const { data: results } = useSelector(selector)
+
+  useEffect(() => {
+    search()
+  })
+
+  return results.length ? (
     results.map((item) => (
       <SearchResultItem data={item} onNavigate={onNavigate} />
     ))
@@ -20,18 +36,4 @@ const SearchResults = ({ results, onNavigate }) => {
   )
 }
 
-const mapStateToOptions = (state, { query }) => ({
-  readModelName: 'Search',
-  resolverName: 'find',
-  resolverArgs: {
-    q: query,
-  },
-})
-
-const mapStateToProps = (state, { data }) => ({
-  results: data,
-})
-
-export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps)(SearchResults)
-)
+export { SearchResults }

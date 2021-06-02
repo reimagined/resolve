@@ -1,10 +1,15 @@
 import React from 'react'
-import { connectStaticBasedUrls } from '@resolve-js/redux'
+import { useStaticResolver } from '@resolve-js/react-hooks'
 import { Helmet } from 'react-helmet'
 
 const Header = ({ title, css, favicon }) => {
-  const stylesheetLinks = css.map((href) => ({ rel: 'stylesheet', href }))
-  const faviconLink = { rel: 'icon', type: 'image/png', href: favicon }
+  const asset = useStaticResolver()
+
+  const stylesheetLinks = css.map((sheet) => ({
+    rel: 'stylesheet',
+    href: asset(sheet),
+  }))
+  const faviconLink = { rel: 'icon', type: 'image/png', href: asset(favicon) }
   const links = [...stylesheetLinks, faviconLink]
   const meta = {
     name: 'viewport',
@@ -13,4 +18,4 @@ const Header = ({ title, css, favicon }) => {
   return <Helmet title={title} link={links} meta={[meta]} />
 }
 
-export default connectStaticBasedUrls(['css', 'favicon'])(Header)
+export { Header }
