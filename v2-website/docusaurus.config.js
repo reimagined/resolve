@@ -6,7 +6,10 @@ module.exports={
   "organizationName": "reimagined",
   "projectName": "reSolve",
   "scripts": [
-    "https://buttons.github.io/buttons.js"
+    {
+      src: "https://buttons.github.io/buttons.js",
+      async: true
+    }    
   ],
   "favicon": "img/favicon.ico",
   "customFields": {},
@@ -64,7 +67,49 @@ module.exports={
     },
     "image": "img/reSolve400x400-fill.png",
     "footer": {
-      "links": [],
+      "style": 'dark',
+      "links": [
+        {
+          title: 'Docs',
+          items: [
+            {
+              label: "Documentation Index",
+              to: 'docs'
+            }
+          ]
+        },
+        {
+          title: 'Community',
+          items: [
+            {
+              label: "Stack Overflow",
+              to: 'https://stackoverflow.com/questions/tagged/resolvejs'
+            },
+            {
+              label: "Twitter",
+              to: 'https://twitter.com/resolvejs'
+            },
+            {
+              label: "Facebook",
+              to: 'https://www.facebook.com/resolvejs/'
+            }
+          ]
+        },
+        {
+          title: 'More',
+          items: [
+            {
+              label: "GitHub",
+              to: 'https://github.com/reimagined/resolve'
+            },
+            {
+              html: `
+              <iframe src="https://ghbtns.com/github-btn.html?user=reimagined&repo=resolve&type=star&count=true" frameborder="0" scrolling="0" width="150" height="20" title="GitHub"></iframe>
+              `
+            }
+          ]
+        }
+      ],
       "copyright": "Copyright © 2021 Developer Express, Inc",
       "logo": {
         "src": "img/resolve.svg"
