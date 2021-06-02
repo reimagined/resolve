@@ -147,7 +147,7 @@ jobs:
   integrationTest:
     name: Integration Tests
     runs-on: ubuntu-latest
-    needs: buildAndTest
+    needs: [buildAndTest, lint]
     steps:
       - uses: actions/checkout@v2
 
@@ -192,7 +192,7 @@ jobs:
   e2eTest:
     name: E2E Tests
     runs-on: ubuntu-latest
-    needs: buildAndTest
+    needs: [buildAndTest, lint]
     steps:
       - uses: actions/checkout@v2
 
@@ -255,7 +255,7 @@ jobs:
   cloudTest:
     name: Cloud Tests
     runs-on: ubuntu-latest
-    needs: buildAndTest
+    needs: [buildAndTest, lint]
     if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
     steps:
       - uses: actions/checkout@v2
