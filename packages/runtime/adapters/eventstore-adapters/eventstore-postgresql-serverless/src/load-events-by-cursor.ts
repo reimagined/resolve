@@ -4,6 +4,7 @@ import {
   CursorFilter,
   cursorToThreadArray,
   threadArrayToCursor,
+  emptyLoadEventsResult,
 } from '@resolve-js/eventstore-base'
 
 // Although documentation describes a 1 MB limit, the actual limit is 512 KB
@@ -41,9 +42,15 @@ const loadEventsByCursor = async (
 
   const queryConditions: string[] = ['1=1']
   if (eventTypes != null) {
+    if (eventTypes.length === 0) {
+      return emptyLoadEventsResult(cursor)
+    }
     queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
   }
   if (aggregateIds != null) {
+    if (aggregateIds.length === 0) {
+      return emptyLoadEventsResult(cursor)
+    }
     queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
 

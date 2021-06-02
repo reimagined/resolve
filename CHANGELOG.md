@@ -4,6 +4,12 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.4...HEAD)
 
+**Bug fixes:**
+
+- SQLITE\_ERROR: cannot start a transaction within a transaction [\#1886](https://github.com/reimagined/resolve/issues/1886)
+- Event store postgresql serverless failed on loading events with empty types list [\#1883](https://github.com/reimagined/resolve/issues/1883)
+- Subscription to events with a custom view-model resolver [\#1874](https://github.com/reimagined/resolve/issues/1874)
+
 **Other changes:**
 
 - saveEvent returns a saved event with the next cursor [\#1879](https://github.com/reimagined/resolve/pull/1879)
