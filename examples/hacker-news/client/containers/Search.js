@@ -51,7 +51,7 @@ const Search = () => {
 
   useEffect(() => {
     requestSearchAvailability()
-  })
+  }, [])
 
   return (
     <SearchResultsWrapper>

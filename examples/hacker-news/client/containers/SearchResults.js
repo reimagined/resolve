@@ -25,7 +25,7 @@ const SearchResults = ({ onNavigate, query }) => {
 
   useEffect(() => {
     search()
-  })
+  }, [])
 
   return results.length ? (
     results.map((item) => (
