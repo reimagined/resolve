@@ -5,6 +5,11 @@ import {
   adapters,
 } from '../eventstore-test-utils'
 
+import {
+  initThreadArray,
+  threadArrayToCursor,
+} from '@resolve-js/eventstore-base'
+
 jest.setTimeout(jestTimeout())
 
 describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
@@ -56,6 +61,31 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
     expect(events).toHaveLength(0)
   })
 
+  test('should load 0 events by empty type list and return the initial cursor', async () => {
+    const { events, cursor } = await adapter.loadEvents({
+      limit: countEvents,
+      eventTypes: [],
+      cursor: null,
+    })
+    expect(events).toHaveLength(0)
+    expect(cursor).toEqual(threadArrayToCursor(initThreadArray()))
+
+    const { cursor: shiftedCursor } = await adapter.loadEvents({
+      cursor: null,
+      limit: 1,
+    })
+    const {
+      events: shiftedEvents,
+      cursor: newCursor,
+    } = await adapter.loadEvents({
+      limit: countEvents,
+      eventTypes: [],
+      cursor: shiftedCursor,
+    })
+    expect(shiftedEvents).toHaveLength(0)
+    expect(newCursor).toEqual(shiftedCursor)
+  })
+
   test('should load events by aggregateId', async () => {
     const { events } = await adapter.loadEvents({
       limit: countEvents,
@@ -72,6 +102,31 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
       cursor: null,
     })
     expect(events).toHaveLength(0)
+  })
+
+  test('should load 0 events by empty aggregateId list and return the initial cursor', async () => {
+    const { events, cursor } = await adapter.loadEvents({
+      limit: countEvents,
+      aggregateIds: [],
+      cursor: null,
+    })
+    expect(events).toHaveLength(0)
+    expect(cursor).toEqual(threadArrayToCursor(initThreadArray()))
+
+    const { cursor: shiftedCursor } = await adapter.loadEvents({
+      cursor: null,
+      limit: 1,
+    })
+    const {
+      events: shiftedEvents,
+      cursor: newCursor,
+    } = await adapter.loadEvents({
+      limit: countEvents,
+      aggregateIds: [],
+      cursor: shiftedCursor,
+    })
+    expect(shiftedEvents).toHaveLength(0)
+    expect(newCursor).toEqual(shiftedCursor)
   })
 
   test('should be able to load events continuously', async () => {
