@@ -14,6 +14,7 @@
 
 **Other changes:**
 
+- Improve dev pr workflow [\#1893](https://github.com/reimagined/resolve/pull/1893)
 - saveEvent returns a saved event with the next cursor [\#1879](https://github.com/reimagined/resolve/pull/1879)
 
 ## [V0.30.4](https://github.com/reimagined/resolve/tree/V0.30.4) (2021-05-27)
