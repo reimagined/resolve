@@ -1,14 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/server'
 import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
-import { Router } from 'react-router'
+import { StaticRouter } from 'react-router'
+import { renderRoutes } from 'react-router-config'
 import { Helmet } from 'react-helmet'
 import { createMemoryHistory } from 'history'
 import jsonwebtoken from 'jsonwebtoken'
 
 import getRoutes from './get-routes'
 import getRedux from './get-redux'
-import Routes from './components/Routes'
 
 const ssrHandler = async (serverContext, req, res) => {
   try {
@@ -53,9 +53,9 @@ const ssrHandler = async (serverContext, req, res) => {
     const staticContext = {}
     const markup = ReactDOM.renderToStaticMarkup(
       <ResolveReduxProvider context={resolveContext} store={store}>
-        <Router history={history} staticContext={staticContext}>
-          <Routes routes={routes} />
-        </Router>
+        <StaticRouter location={url} context={staticContext} history={history}>
+          {renderRoutes(routes)}
+        </StaticRouter>
       </ResolveReduxProvider>
     )
 

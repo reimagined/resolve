@@ -33,6 +33,7 @@
     "react-helmet": "6.1.0",
     "react-redux": "7.2.4",
     "react-router": "5.2.0",
+    "react-router-config": "5.1.1",
     "react-router-dom": "5.2.0",
     "redux": "4.1.0",
     "redux-devtools-extension": "2.13.9",

@@ -1,9 +1,9 @@
 import React from 'react'
-
+import { renderRoutes } from 'react-router-config'
 import Header from './Header'
 
 const App = ({
-  children,
+  route,
   match: {
     params: { id },
   },
@@ -16,7 +16,7 @@ const App = ({
       css={['/bootstrap.min.css', '/fontawesome.min.css', '/style.css']}
       shoppingListId={id}
     />
-    {children}
+    {renderRoutes(route.routes)}
   </div>
 )
 
