@@ -198,7 +198,7 @@ jobs:
     name: Cloud Tests
     runs-on: ubuntu-latest
     needs: buildAndTest
-    if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+    concurrency: cloud-environment
     steps:
       - uses: actions/checkout@v2
 
@@ -219,6 +219,18 @@ jobs:
             packages/**/node_modules
             internal/**/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
+
+      - name: Cache examples node_modules
+        uses: actions/cache@v2
+        with:
+          path: 'examples/**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
+
+      - name: Cache functional tests node_modules
+        uses: actions/cache@v2
+        with:
+          path: 'functional-tests/**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-functional-tests
 
       - name: Cache build
         uses: actions/cache@v2
