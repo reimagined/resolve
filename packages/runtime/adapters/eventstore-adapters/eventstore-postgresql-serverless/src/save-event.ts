@@ -1,16 +1,23 @@
 import {
   ConcurrentError,
   InputEvent,
+  EventThreadData,
   EventstoreFrozenError,
+  SavedEvent,
+  EventWithCursor,
+  threadArrayToCursor,
+  initThreadArray,
+  THREAD_COUNT,
 } from '@resolve-js/eventstore-base'
 
 import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'
+import assert from 'assert'
 
 const saveEvent = async (
   pool: AdapterPool,
   event: InputEvent
-): Promise<void> => {
+): Promise<EventWithCursor> => {
   const {
     databaseName,
     eventsTableName,
@@ -44,7 +51,7 @@ const saveEvent = async (
     savingEvent: while (true) {
       try {
         // prettier-ignore
-        await executeStatement(
+        const rows = (await executeStatement(
           `WITH "freeze_check" AS (
               SELECT 0 AS "freeze_zero" WHERE (
                 (SELECT 1 AS "EventStoreIsFrozen")
@@ -79,7 +86,7 @@ const saveEvent = async (
                 SELECT "threadId" FROM "vector_id" LIMIT 1
               )
               RETURNING *
-            ) INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
+            ), "insert_event" AS (INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
               "threadId",
               "threadCounter",
               "timestamp",
@@ -98,9 +105,39 @@ const saveEvent = async (
               ),
               ${serializedEvent},
               ${byteLength}
+            ) RETURNING "timestamp") (SELECT "threadId", 0 as timestamp,
+            (CASE WHEN (SELECT "threadId" FROM "vector_id" LIMIT 1) = "threadId" THEN "threadCounter"+1
+              ELSE "threadCounter" END) AS "newThreadCounter"
+            FROM ${databaseNameAsId}.${threadsTableAsId}
+            ORDER BY "threadId" ASC) UNION ALL (SELECT 
+              (SELECT "threadId" FROM "vector_id" LIMIT 1), 
+              (SELECT "timestamp" FROM "insert_event" LIMIT 1),
+              (SELECT "threadCounter" AS "newThreadCounter" FROM "vector_id" LIMIT 1)
             )`
+        )) as Array<{
+          threadId: EventThreadData['threadId']
+          newThreadCounter: EventThreadData['threadCounter']
+          timestamp: SavedEvent['timestamp']
+        }>
+        assert.strictEqual(
+          rows.length - 1,
+          THREAD_COUNT,
+          'Thread table must have 256 rows'
         )
-        break
+        const threadCounters = initThreadArray()
+        for (let i = 0; i < THREAD_COUNT; ++i) {
+          const row = rows[i]
+          threadCounters[row.threadId] = row.newThreadCounter
+        }
+        return {
+          cursor: threadArrayToCursor(threadCounters),
+          event: {
+            ...event,
+            threadId: +rows[THREAD_COUNT].threadId,
+            threadCounter: +rows[THREAD_COUNT].newThreadCounter,
+            timestamp: +rows[THREAD_COUNT].timestamp,
+          },
+        }
       } catch (error) {
         if (isTimeoutError(error)) {
           while (true) {

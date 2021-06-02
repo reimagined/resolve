@@ -93,6 +93,10 @@ const deleteSecret = async (
       error != null && error.message != null ? error.message : ''
     const errorCode = error != null && error.code != null ? error.code : ''
 
+    if (errorMessage.indexOf('transaction within a transaction') > -1) {
+      return await deleteSecret(pool, selector)
+    }
+
     try {
       await database.exec('ROLLBACK;')
     } catch (e) {}

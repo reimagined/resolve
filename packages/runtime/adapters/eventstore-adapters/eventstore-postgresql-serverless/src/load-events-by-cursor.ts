@@ -1,7 +1,12 @@
 import { INT8_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'
+import {
+  CursorFilter,
+  cursorToThreadArray,
+  threadArrayToCursor,
+  emptyLoadEventsResult,
+} from '@resolve-js/eventstore-base'
 
-const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 // Although documentation describes a 1 MB limit, the actual limit is 512 KB
 // https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
 const MAX_RDS_DATA_API_RESPONSE_SIZE = 512000
@@ -22,7 +27,7 @@ const loadEventsByCursor = async (
     cursor,
     limit: inputLimit,
     eventsSizeLimit: inputEventsSizeLimit,
-  }: any
+  }: CursorFilter
 ) => {
   const eventsSizeLimit =
     inputEventsSizeLimit != null
@@ -30,30 +35,22 @@ const loadEventsByCursor = async (
       : MAX_RDS_DATA_API_RESPONSE_SIZE
   const limit = Math.min(inputLimit, 0x7fffffff)
 
-  const makeBigIntLiteral = (numStr: any): string =>
-    `x'${numStr}'::${INT8_SQL_TYPE}`
-  const parseBigIntString = (str: any): string =>
-    str.substring(2, str.length - (INT8_SQL_TYPE.length + 3))
-
-  const injectBigInt = (value: any): string =>
-    makeBigIntLiteral((+value).toString(16).padStart(12, '0'))
   const injectString = (value: any): string => `${escape(value)}`
   const injectNumber = (value: any): string => `${+value}`
 
-  const cursorBuffer: Buffer =
-    cursor != null ? Buffer.from(cursor, 'base64') : Buffer.alloc(1536, 0)
-  const vectorConditions = []
-  for (let i = 0; i < cursorBuffer.length / 6; i++) {
-    vectorConditions.push(
-      makeBigIntLiteral(cursorBuffer.slice(i * 6, (i + 1) * 6).toString('hex'))
-    )
-  }
+  const vectorConditions = cursorToThreadArray(cursor)
 
   const queryConditions: string[] = ['1=1']
   if (eventTypes != null) {
+    if (eventTypes.length === 0) {
+      return emptyLoadEventsResult(cursor)
+    }
     queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
   }
   if (aggregateIds != null) {
+    if (aggregateIds.length === 0) {
+      return emptyLoadEventsResult(cursor)
+    }
     queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
 
@@ -63,7 +60,7 @@ const loadEventsByCursor = async (
       (threadCounter, threadId) =>
         `"threadId"=${injectNumber(
           threadId
-        )} AND "threadCounter">=${threadCounter}`
+        )} AND "threadCounter">=${threadCounter}::${INT8_SQL_TYPE}`
     )
     .join(' OR ')
   const resultTimestampConditions: string = vectorConditions
@@ -71,7 +68,7 @@ const loadEventsByCursor = async (
       (threadCounter, threadId) =>
         `"threadId"=${injectNumber(
           threadId
-        )} AND "threadCounter"=${threadCounter}`
+        )} AND "threadCounter"=${threadCounter}::${INT8_SQL_TYPE}`
     )
     .join(' OR ')
 
@@ -156,9 +153,9 @@ const loadEventsByCursor = async (
       }
 
       requestCursors[batchIndex].push(
-        `"threadId"= ${+threadId} AND "threadCounter" BETWEEN ${injectBigInt(
-          threadCounterStart
-        )} AND ${injectBigInt(threadCounterEnd)}`
+        `"threadId"= ${+threadId} AND "threadCounter" BETWEEN 
+          ${threadCounterStart}::${INT8_SQL_TYPE} AND 
+          ${threadCounterEnd}::${INT8_SQL_TYPE}`
       )
     }
 
@@ -266,31 +263,16 @@ const loadEventsByCursor = async (
   for (const event of events) {
     const threadId = +event.threadId
     const threadCounter = +event.threadCounter
-    const oldThreadCounter = parseInt(
-      parseBigIntString(vectorConditions[threadId]),
-      16
-    )
-    vectorConditions[threadId] = injectBigInt(
-      Math.max(threadCounter + 1, oldThreadCounter)
-    )
+    const oldThreadCounter = vectorConditions[threadId]
+    vectorConditions[threadId] = Math.max(threadCounter + 1, oldThreadCounter)
 
     resultEvents.push(shapeEvent(event))
   }
 
-  const nextConditionsBuffer: Buffer = Buffer.alloc(1536)
-  let byteIndex = 0
-
-  for (const threadCounter of vectorConditions) {
-    const threadCounterBytes = parseBigIntString(threadCounter).match(
-      split2RegExp
-    )
-    for (const byteHex of threadCounterBytes as any) {
-      nextConditionsBuffer[byteIndex++] = parseInt(byteHex, 16)
-    }
-  }
+  const nextConditions = threadArrayToCursor(vectorConditions)
 
   return {
-    cursor: nextConditionsBuffer.toString('base64'),
+    cursor: nextConditions,
     events: resultEvents,
   }
 }
