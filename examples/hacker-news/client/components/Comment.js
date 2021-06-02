@@ -2,7 +2,7 @@ import React from 'react'
 import sanitizer from 'sanitizer'
 import styled from 'styled-components'
 
-import Splitter from './Splitter'
+import { Splitter } from './Splitter'
 import TimeAgo from './TimeAgo'
 import { NavLink } from 'react-router-dom'
 

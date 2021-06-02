@@ -5,7 +5,7 @@ import sanitizer from 'sanitizer'
 import styled, { css } from 'styled-components'
 import { NavLink } from 'react-router-dom'
 
-import Splitter from '../components/Splitter'
+import { Splitter } from '../components/Splitter'
 import TimeAgo from '../components/TimeAgo'
 
 export const StoryRoot = styled.div`
