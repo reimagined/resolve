@@ -21,11 +21,31 @@ jobs:
         with:
           node-version: '12'
 
-      - name: Cache node_modules
+      - name: Cache root node_modules
         uses: actions/cache@v2
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          path: 'node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-root
+
+      - name: Cache packages node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/node_modules
+            internal/**/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-packages
+
+      - name: Cache examples node_modules
+        uses: actions/cache@v2
+        with:
+          path: 'examples/**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-examples
+
+      - name: Cache functional tests node_modules
+        uses: actions/cache@v2
+        with:
+          path: 'functional-tests/**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-functional-tests
 
       - name: Cache build
         uses: actions/cache@v2
@@ -60,11 +80,19 @@ jobs:
         with:
           node-version: '12'
 
-      - name: Cache node_modules
+      - name: Cache root node_modules
         uses: actions/cache@v2
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          path: 'node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-root
+
+      - name: Cache packages node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/node_modules
+            internal/**/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-packages
 
       - name: Prettier
         run: yarn prettier:check
@@ -73,7 +101,7 @@ jobs:
         run: yarn lint
 
   test:
-    name: Unit Test
+    name: Unit Tests
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -83,11 +111,19 @@ jobs:
         with:
           node-version: '12'
 
-      - name: Cache node_modules
+      - name: Cache root node_modules
         uses: actions/cache@v2
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          path: 'node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-root
+
+      - name: Cache packages node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/node_modules
+            internal/**/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-packages
 
       - name: Cache build
         uses: actions/cache@v2
@@ -110,7 +146,7 @@ jobs:
         run: yarn test
 
   integrationTest:
-    name: Integration Test
+    name: Integration Tests
     runs-on: ubuntu-latest
     needs: build
     if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
@@ -121,11 +157,19 @@ jobs:
         with:
           node-version: '12'
 
-      - name: Cache node_modules
+      - name: Cache root node_modules
         uses: actions/cache@v2
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          path: 'node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-root
+
+      - name: Cache packages node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/node_modules
+            internal/**/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-packages
 
       - name: Cache build
         uses: actions/cache@v2
@@ -148,7 +192,7 @@ jobs:
         run: yarn test:integration
 
   e2eTest:
-    name: E2E Test
+    name: E2E Tests
     runs-on: ubuntu-latest
     needs: build
     if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
@@ -159,11 +203,31 @@ jobs:
         with:
           node-version: '12'
 
-      - name: Cache node_modules
+      - name: Cache root node_modules
         uses: actions/cache@v2
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          path: 'node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-root
+
+      - name: Cache packages node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/node_modules
+            internal/**/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-packages
+
+      - name: Cache examples node_modules
+        uses: actions/cache@v2
+        with:
+          path: 'examples/**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-examples
+
+      - name: Cache functional tests node_modules
+        uses: actions/cache@v2
+        with:
+          path: 'functional-tests/**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-functional-tests
 
       - name: Cache build
         uses: actions/cache@v2
@@ -192,7 +256,7 @@ jobs:
           yarn test:e2e
 
   cloudTest:
-    name: Cloud Test
+    name: Cloud Tests
     runs-on: ubuntu-latest
     needs: build
     if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
@@ -203,11 +267,19 @@ jobs:
         with:
           node-version: '12'
 
-      - name: Cache node_modules
+      - name: Cache root node_modules
         uses: actions/cache@v2
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          path: 'node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-root
+
+      - name: Cache packages node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/node_modules
+            internal/**/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-modules-packages
 
       - name: Cache build
         uses: actions/cache@v2
