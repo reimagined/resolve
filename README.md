@@ -16,7 +16,7 @@ reSolve is a full stack functional JavaScript framework.
 
 ### Installation
 
-Make sure you have **NodeJS** version **8.10.0** or higher.
+Make sure you have **NodeJS** version **12.18** or higher.
 
 Use [create-resolve-app](packages/core/create-resolve-app) package to create a new reSolve application. The easiest way is to use [npx](https://www.npmjs.com/package/npx/v/1.1.1)
 
