@@ -24,7 +24,7 @@
     "@resolve-js/scripts": "0.30.4",
     "crypto-js": "4.0.0",
     "generate-password": "1.6.0",
-    "history": "5.0.0",
+    "history": "4.10.1",
     "jsonwebtoken": "8.5.1",
     "passport-local": "1.0.0",
     "react": "17.0.2",

@@ -23,7 +23,7 @@
     "@resolve-js/readmodel-lite": "0.30.4",
     "@resolve-js/readmodel-postgresql-serverless": "0.30.4",
     "@resolve-js/scripts": "0.30.4",
-    "history": "5.0.0",
+    "history": "4.10.1",
     "isomorphic-fetch": "3.0.0",
     "react": "17.0.2",
     "react-bootstrap": "1.6.0",
