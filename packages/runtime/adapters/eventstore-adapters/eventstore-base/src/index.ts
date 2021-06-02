@@ -51,6 +51,8 @@ export {
   threadArrayToCursor,
   cursorToThreadArray,
   initThreadArray,
+  emptyLoadEventsResult,
+  checkEventsContinuity,
 } from './cursor-operations'
 export {
   MAINTENANCE_MODE_AUTO,
@@ -139,6 +141,7 @@ export {
   EventThreadData,
   Cursor,
   EventsWithCursor,
+  EventWithCursor,
   EventFilter,
   ReplicationStatus,
   ReplicationState,

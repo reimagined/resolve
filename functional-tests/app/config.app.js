@@ -101,6 +101,11 @@ const appConfig = {
       projection: 'common/view-models/test-scenario.projection.js',
       resolver: 'common/view-models/test-scenario.resolver.js',
     },
+    {
+      name: 'custom-aggregate-ids',
+      projection: 'common/view-models/custom-aggregate-ids.projection.js',
+      resolver: 'common/view-models/custom-aggregate-ids.resolver.js',
+    },
   ],
   sagas: [
     {

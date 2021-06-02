@@ -2,7 +2,24 @@
 
 ## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.3...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.4...HEAD)
+
+**Bug fixes:**
+
+- SQLITE\_ERROR: cannot start a transaction within a transaction [\#1886](https://github.com/reimagined/resolve/issues/1886)
+- Event subscription does not work for cursor equal to null [\#1884](https://github.com/reimagined/resolve/issues/1884)
+- Event store postgresql serverless failed on loading events with empty types list [\#1883](https://github.com/reimagined/resolve/issues/1883)
+- View model gets duplicated events through websocket [\#1877](https://github.com/reimagined/resolve/issues/1877)
+- Subscription to events with a custom view-model resolver [\#1874](https://github.com/reimagined/resolve/issues/1874)
+
+**Other changes:**
+
+- Improve dev pr workflow [\#1893](https://github.com/reimagined/resolve/pull/1893)
+- saveEvent returns a saved event with the next cursor [\#1879](https://github.com/reimagined/resolve/pull/1879)
+
+## [V0.30.4](https://github.com/reimagined/resolve/tree/V0.30.4) (2021-05-27)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.3...V0.30.4)
 
 **New features:**
 
@@ -10,6 +27,7 @@
 
 **Bug fixes:**
 
+- Read models don't work in cloud [\#1880](https://github.com/reimagined/resolve/issues/1880)
 - Can't pass timestamp to givenEvents events [\#1862](https://github.com/reimagined/resolve/issues/1862)
 
 ## [V0.30.3](https://github.com/reimagined/resolve/tree/V0.30.3) (2021-05-17)

@@ -36,7 +36,11 @@ const createPubsubManager = () => {
           (eventTypes == null || eventTypes?.includes?.(type)) &&
           (aggregateIds == null || aggregateIds?.includes?.(aggregateId))
         ) {
-          promises.push(client(JSON.stringify({ type: 'event', event })))
+          promises.push(
+            client(
+              JSON.stringify({ type: 'events', payload: { events: [event] } })
+            )
+          )
         }
       }
 
