@@ -1,4 +1,5 @@
 import type {
+  PassthroughErrorInstance,
   ExternalMethods,
   ReadModelCursor,
   ReadModelProcedureLedger,
@@ -178,7 +179,7 @@ const buildEvents: (
 
   while (true) {
     if (events.length === 0) {
-      throw new PassthroughError()
+      throw new PassthroughError(false, false)
     }
     let nextCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(
       cursor,
@@ -400,7 +401,7 @@ const buildEvents: (
         await next()
       }
 
-      throw new PassthroughError()
+      throw new PassthroughError(false, false)
     }
   }
 }
@@ -477,7 +478,7 @@ const build: ExternalMethods['build'] = async (
 
     let readModelLedger = rows.length === 1 ? rows[0] : null
     if (readModelLedger == null || readModelLedger.Errors != null) {
-      throw new PassthroughError()
+      throw new PassthroughError(false, false)
     }
 
     const eventTypes =
@@ -519,12 +520,18 @@ const build: ExternalMethods['build'] = async (
       throw error
     }
 
+    const passthroughError = error as PassthroughErrorInstance
+
     try {
       await inlineLedgerRunQuery(`ROLLBACK`)
     } catch (err) {
-      if (!(err instanceof PassthroughError)) {
+      if (!(err instanceof PassthroughError && err.isEmptyTransaction)) {
         throw err
       }
+    }
+
+    if (passthroughError.isRetryable) {
+      await next()
     }
   } finally {
     basePool.activePassthrough = false

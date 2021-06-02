@@ -69,15 +69,33 @@ export type UpdateToSetExpressionMethod = (
 
 export interface PassthroughErrorInstance extends Error {
   name: string
+  isRetryable: boolean
+  isEmptyTransaction: boolean
+}
+
+export type PassthroughErrorLike = Error & {
+  code: string | number
+  stack: string
 }
 
 export type PassthroughErrorFactory = {
-  new (): PassthroughErrorInstance
+  new (
+    isRetryable: boolean,
+    isEmptyTransaction: boolean
+  ): PassthroughErrorInstance
 } & {
+  isRetryablePassthroughError: (error: PassthroughErrorLike) => boolean
+  isRegularFatalPassthroughError: (error: PassthroughErrorLike) => boolean
+  isRuntimeFatalPassthroughError: (error: PassthroughErrorLike) => boolean
   isPassthroughError: (
-    error: Error & { code: string | number },
+    error: PassthroughErrorLike,
     includeRuntimeErrors: boolean
   ) => boolean
+  isEmptyTransactionError: (error: PassthroughErrorLike) => boolean
+  maybeThrowPassthroughError: (
+    error: PassthroughErrorLike,
+    includeRuntimeErrors: boolean
+  ) => void
 }
 
 export type GenerateGuidMethod = (...args: any) => string

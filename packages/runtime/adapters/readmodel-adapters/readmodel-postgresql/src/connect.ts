@@ -41,7 +41,10 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
               !!passthroughRuntimeErrors
             )
           ) {
-            throw new imports.PassthroughError()
+            imports.PassthroughError.maybeThrowPassthroughError(
+              error,
+              !!passthroughRuntimeErrors
+            )
           } else {
             throw error
           }
