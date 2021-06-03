@@ -77,18 +77,6 @@ jobs:
           yarn install --frozen-lockfile
           yarn validate-lock-file
 
-      - name: Test:unit
-        if: ''
-        run: yarn test
-
-      - name: Run Prettier
-        if: ''
-        run: yarn prettier:check
-
-      - name: Run ESLint
-        if: ''
-        run: yarn lint
-
   integrationTest:
     name: Integration Tests
     runs-on: ubuntu-latest
