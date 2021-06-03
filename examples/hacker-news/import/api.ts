@@ -13,8 +13,8 @@ const firebaseIP = new Promise((resolve, reject) => {
   })
 })
 
-const wait = (time, result) =>
-  new Promise((resolve) => setTimeout(() => resolve(result), time))
+const wait = (time) =>
+  new Promise((resolve) => setTimeout(() => resolve(undefined), time))
 
 const fetchSingle = (url) =>
   firebaseIP
@@ -29,7 +29,9 @@ const fetchSingle = (url) =>
     )
     .then((response) => {
       if (!response.ok) {
-        throw new Error(response.text())
+        return response.text().then((text) => {
+          throw new Error(text)
+        })
       }
       return response.json()
     })
@@ -61,10 +63,7 @@ const invokeImportApi = async (body) => {
       while (loop) {
         try {
           const response = await fetch(
-            `http://localhost:${path.join(
-              process.env.PORT,
-              process.env.ROOT_PATH
-            )}/api/import_events`,
+            `${process.env.RESOLVE_APP_URL}/api/import_events`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -98,10 +97,7 @@ const invokeImportSecretApi = async (body) => {
       while (loop) {
         try {
           const response = await fetch(
-            `http://localhost:${path.join(
-              process.env.PORT,
-              process.env.ROOT_PATH
-            )}/api/import_secrets`,
+            `${process.env.RESOLVE_APP_URL}/api/import_secrets`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },

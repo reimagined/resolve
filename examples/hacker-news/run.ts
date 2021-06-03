@@ -22,6 +22,7 @@ import devConfig from './config.dev'
 import devReplicaConfig from './config.dev.replica'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test-functional'
+import adjustWebpackConfigs from './config.adjust-webpack'
 
 import runImport from './import'
 
@@ -40,7 +41,7 @@ void (async () => {
     const moduleAuth = resolveModuleAuth([
       {
         name: 'local-strategy',
-        createStrategy: 'auth/create_strategy.js',
+        createStrategy: 'auth/create-strategy.ts',
         logoutRoute: {
           path: 'logout',
           method: 'POST',
@@ -49,12 +50,12 @@ void (async () => {
           {
             path: 'register',
             method: 'POST',
-            callback: 'auth/route_register_callback.js',
+            callback: 'auth/route-register-callback.ts',
           },
           {
             path: 'login',
             method: 'POST',
-            callback: 'auth/route_login_callback.js',
+            callback: 'auth/route-login-callback.ts',
           },
         ],
       },
@@ -73,7 +74,7 @@ void (async () => {
       case 'dev': {
         const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(baseConfig, devConfig, moduleAdmin)
-        await watch(resolveConfig)
+        await watch(resolveConfig, adjustWebpackConfigs)
         break
       }
 
@@ -85,19 +86,19 @@ void (async () => {
           moduleReplication,
           moduleAdmin
         )
-        await watch(resolveConfig)
+        await watch(resolveConfig, adjustWebpackConfigs)
         break
       }
 
       case 'build': {
         const resolveConfig = merge(baseConfig, prodConfig)
-        await build(resolveConfig)
+        await build(resolveConfig, adjustWebpackConfigs)
         break
       }
 
       case 'cloud': {
         const resolveConfig = merge(baseConfig, cloudConfig)
-        await build(resolveConfig)
+        await build(resolveConfig, adjustWebpackConfigs)
         break
       }
 
@@ -107,7 +108,7 @@ void (async () => {
           cloudReplicaConfig,
           moduleReplication
         )
-        await build(resolveConfig)
+        await build(resolveConfig, adjustWebpackConfigs)
         break
       }
 
@@ -132,7 +133,11 @@ void (async () => {
         const resolveConfig = merge(baseConfig, devConfig)
 
         const directory = process.argv[3]
-        await importEventStore(resolveConfig, { directory })
+        await importEventStore(
+          resolveConfig,
+          { directory },
+          adjustWebpackConfigs
+        )
 
         break
       }
@@ -141,7 +146,11 @@ void (async () => {
         const resolveConfig = merge(baseConfig, devConfig)
 
         const directory = process.argv[3]
-        await exportEventStore(resolveConfig, { directory })
+        await exportEventStore(
+          resolveConfig,
+          { directory },
+          adjustWebpackConfigs
+        )
 
         break
       }
@@ -153,15 +162,20 @@ void (async () => {
           moduleAdmin,
           testFunctionalConfig
         )
-        await reset(resolveConfig, {
-          dropEventStore: true,
-          dropEventSubscriber: true,
-          dropReadModels: true,
-          dropSagas: true,
-        })
+        await reset(
+          resolveConfig,
+          {
+            dropEventStore: true,
+            dropEventSubscriber: true,
+            dropReadModels: true,
+            dropSagas: true,
+          },
+          adjustWebpackConfigs
+        )
 
         await runTestcafe({
           resolveConfig,
+          adjustWebpackConfigs,
           functionalTestsDir: 'test/functional',
           browser: process.argv[3],
           customArgs: ['--stop-on-first-fail'],
@@ -173,18 +187,22 @@ void (async () => {
       case 'test:e2e-cloud': {
         const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(baseConfig, moduleAdmin, cloudConfig)
-        await build(resolveConfig)
+        await build(resolveConfig, adjustWebpackConfigs)
         break
       }
 
       case 'import': {
         const config = merge(baseConfig, devConfig)
-        await reset(config, {
-          dropEventStore: true,
-          dropEventSubscriber: true,
-          dropReadModels: true,
-          dropSagas: true,
-        })
+        await reset(
+          config,
+          {
+            dropEventStore: true,
+            dropEventSubscriber: true,
+            dropReadModels: true,
+            dropSagas: true,
+          },
+          adjustWebpackConfigs
+        )
 
         const importConfig = merge(defaultResolveConfig, devConfig, {
           apiHandlers: [
@@ -192,7 +210,7 @@ void (async () => {
               method: 'POST',
               path: '/api/import_events',
               handler: {
-                module: 'import/import_api_handler.js',
+                module: 'import/import_api_handler.ts',
                 options: {},
               },
             },
@@ -200,7 +218,7 @@ void (async () => {
               method: 'POST',
               path: '/api/import_secrets',
               handler: {
-                module: 'import/import_secret_api_handler.js',
+                module: 'import/import_secret_api_handler.ts',
                 options: {},
               },
             },
@@ -208,7 +226,7 @@ void (async () => {
         })
         importConfig.readModelConnectors = {}
 
-        await build(importConfig)
+        await build(importConfig, adjustWebpackConfigs)
 
         await Promise.all([start(importConfig), runImport(importConfig)])
 

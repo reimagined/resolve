@@ -14,7 +14,7 @@ export default function* (history, { client }) {
           const { data } = yield client.query({
             name: 'HackerNews',
             resolver: 'story',
-            args: { id: action.command.aggregateId },
+            args: { id: (action as any).command.aggregateId },
           })
 
           if (data == null) {
@@ -22,7 +22,9 @@ export default function* (history, { client }) {
             continue
           }
 
-          yield history.push(`/storyDetails/${action.command.aggregateId}`)
+          yield history.push(
+            `/storyDetails/${(action as any).command.aggregateId}`
+          )
           break
         } catch (error) {
           // eslint-disable-next-line no-console

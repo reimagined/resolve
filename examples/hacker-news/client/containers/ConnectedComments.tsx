@@ -5,16 +5,17 @@ import { useSelector } from 'react-redux'
 import { CommentsTreeRenderless } from '@resolve-js/module-comments'
 import { ChildComments } from '../components/ChildComments'
 import { Comment } from '../components/Comment'
+import { StoreState, UserState } from '../../types'
 
 const Reply = styled.div`
   padding: 0.5em;
   margin-bottom: 1em;
 `
 
-const ConnectedComments = ({ treeId, parentCommentId, authorId }) => {
-  const comment = useRef('')
+const ConnectedComments = ({ treeId, authorId, parentCommentId = null }) => {
+  const comment = useRef<any>()
 
-  const me = useSelector((state) => state.jwt)
+  const me = useSelector<StoreState, UserState>((state) => state.jwt)
 
   const addComment = useCallback(
     (createComment) => {
@@ -47,7 +48,7 @@ const ConnectedComments = ({ treeId, parentCommentId, authorId }) => {
           <div>
             {loggedIn ? (
               <Reply>
-                <textarea ref={comment} rows="6" />
+                <textarea ref={comment} rows={6} />
                 <div>
                   <button onClick={() => addComment(createComment)}>
                     add comment

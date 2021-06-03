@@ -5,6 +5,7 @@ import { URL } from 'url'
 import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 
+import { OptimisticState, StoreState } from '../../types'
 import { Splitter } from '../components/Splitter'
 import { TimeAgo } from '../components/TimeAgo'
 import { useReduxCommand } from '@resolve-js/redux'
@@ -151,7 +152,7 @@ const StoryInfo = ({
   )
 }
 
-const Story = ({ story, index, showText }) => {
+const Story = ({ story, index = undefined, showText = false }) => {
   if (!story || !story.id) {
     return null
   }
@@ -173,15 +174,17 @@ const Story = ({ story, index, showText }) => {
     [story.id]
   )
 
-  const optimistic = useSelector((state) => state.optimistic)
-  const userId = useSelector((state) => (state.jwt ? state.jwt.id : null))
+  const optimistic = useSelector<StoreState, OptimisticState>(
+    (state) => state.optimistic
+  )
+  const userId = useSelector<StoreState, string>((state) =>
+    state.jwt ? state.jwt.id : null
+  )
 
   const loggedIn = !!userId
 
   const voted =
-    optimistic.votedStories[story.id] !== false &&
-    (optimistic.votedStories[story.id] === true ||
-      story.votes.indexOf(userId) !== -1)
+    optimistic.votedStories[story.id] && story.votes.indexOf(userId) !== -1
 
   const votes = story.votes
     .filter((id) => id !== userId)

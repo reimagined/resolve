@@ -3,9 +3,12 @@ import { useSelector } from 'react-redux'
 import { useReduxReadModel } from '@resolve-js/redux'
 
 import { Story } from './Story'
+import { StoreState } from '../../types'
 
 const ConnectedStory = ({ id }) => {
-  const refreshId = useSelector((state) => state.optimistic.refreshId)
+  const refreshId = useSelector<StoreState, string>(
+    (state) => state.optimistic.refreshId
+  )
   const { request: getStory, selector } = useReduxReadModel(
     {
       name: 'HackerNews',

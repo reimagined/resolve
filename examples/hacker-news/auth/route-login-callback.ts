@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import jwtSecret from './jwt_secret'
+import jwtSecret from './jwt-secret'
 
 const API_GATEWAY_TIMEOUT = 30000
 

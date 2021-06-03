@@ -5,6 +5,7 @@ import { Link as NormalLink } from 'react-router-dom'
 
 import { Splitter } from '../components/Splitter'
 import { Form } from './Form'
+import { StoreState, UserState } from '../../types'
 
 const Link = styled(NormalLink)`
   color: white;
@@ -20,7 +21,7 @@ const PageAuth = styled.div`
 `
 
 const LoginInfo = () => {
-  const me = useSelector((state) => state.jwt)
+  const me = useSelector<StoreState, UserState>((state) => state.jwt)
 
   return (
     <PageAuth>
@@ -31,7 +32,9 @@ const LoginInfo = () => {
           <Link
             to="/newest"
             onClick={() =>
-              document.getElementById('hidden-form-for-logout').submit()
+              (document.getElementById(
+                'hidden-form-for-logout'
+              ) as any).submit()
             }
           >
             logout

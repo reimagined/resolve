@@ -14,7 +14,7 @@ const entryPoint = (clientContext) => {
   const redux = getRedux(clientContext.clientImports, history)
 
   const store = createResolveStore(clientContext, {
-    serializedState: window.__INITIAL_STATE__,
+    serializedState: (window as any).__INITIAL_STATE__,
     redux,
   })
 

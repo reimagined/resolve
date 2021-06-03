@@ -2,33 +2,33 @@ const appConfig = {
   aggregates: [
     {
       name: 'Story',
-      commands: 'common/aggregates/story.commands.js',
-      projection: 'common/aggregates/story.projection.js',
+      commands: 'common/aggregates/story.commands.ts',
+      projection: 'common/aggregates/story.projection.ts',
     },
     {
       name: 'User',
-      commands: 'common/aggregates/user.commands.js',
-      projection: 'common/aggregates/user.projection.js',
+      commands: 'common/aggregates/user.commands.ts',
+      projection: 'common/aggregates/user.projection.ts',
     },
   ],
   readModels: [
     {
       name: 'HackerNews',
-      projection: 'common/read-models/hacker-news.projection.js',
-      resolvers: 'common/read-models/hacker-news.resolvers.js',
+      projection: 'common/read-models/hacker-news.projection.ts',
+      resolvers: 'common/read-models/hacker-news.resolvers.ts',
       connectorName: 'hackerNews',
     },
     {
       name: 'Search',
-      projection: 'common/read-models/search.projection.js',
-      resolvers: 'common/read-models/search.resolvers.js',
+      projection: 'common/read-models/search.projection.ts',
+      resolvers: 'common/read-models/search.resolvers.ts',
       connectorName: 'elasticSearch',
     },
   ],
   sagas: [
     {
       name: 'UserConfirmation',
-      source: 'common/sagas/user-confirmation.saga.js',
+      source: 'common/sagas/user-confirmation.saga.ts',
       connectorName: 'default',
     },
   ],
@@ -47,9 +47,9 @@ const appConfig = {
     },
   ],
   clientEntries: [
-    'client/index.js',
+    'client/index.tsx',
     [
-      'client/ssr.js',
+      'client/ssr.tsx',
       {
         outputFile: 'common/local-entry/ssr.js',
         moduleType: 'commonjs',
@@ -57,7 +57,7 @@ const appConfig = {
       },
     ],
     [
-      'client/ssr.js',
+      'client/ssr.tsx',
       {
         outputFile: 'common/cloud-entry/ssr.js',
         moduleType: 'commonjs',

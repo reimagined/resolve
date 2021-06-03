@@ -13,7 +13,7 @@ export default function* () {
       action.type === SEND_COMMAND_SUCCESS &&
       action.command.type === 'upvoteStory',
     function* (action) {
-      yield put(optimisticUpvoteStory(action.command.aggregateId))
+      yield put(optimisticUpvoteStory((action as any).command.aggregateId))
     }
   )
 
@@ -22,7 +22,7 @@ export default function* () {
       action.type === SEND_COMMAND_SUCCESS &&
       action.command.type === 'unvoteStory',
     function* (action) {
-      yield put(optimisticUnvoteStory(action.command.aggregateId))
+      yield put(optimisticUnvoteStory((action as any).command.aggregateId))
     }
   )
 }

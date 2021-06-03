@@ -84,7 +84,10 @@ async function generateComments(ids, aggregateId, parentId, options) {
   if (options.count-- <= 0) {
     return Promise.resolve()
   }
-  const comments = await api.fetchItems(ids)
+  const comments = (await api.fetchItems(ids)) as Array<{
+    kids: any
+    by: string
+  }>
   const promises = []
   for (const comment of comments) {
     if (!comment || !comment.by) {

@@ -1,15 +1,18 @@
 import React from 'react'
-import { connect, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { RefreshHelperRenderless } from '@resolve-js/module-comments'
 import { ConnectedComments } from './ConnectedComments'
 import { CommentsNotification } from '../components/CommentsNotification'
+import { StoreState } from '../../types'
 
 const CommentsTreeById = ({
   match: {
     params: { storyId, commentId },
   },
 }) => {
-  const authorId = useSelector((state) => (state.jwt ? state.jwt.id : null))
+  const authorId = useSelector<StoreState, string>((state) =>
+    state.jwt ? state.jwt.id : null
+  )
 
   return (
     <RefreshHelperRenderless>

@@ -21,7 +21,7 @@ const devCommonConfig = {
       },
     },
     elasticSearch: {
-      module: 'common/read-models/elastic-search-connector.js',
+      module: 'common/read-models/elastic-search-connector.ts',
       options: {
         /*
         node: "<your-cloud-elastic-search-host>:port",

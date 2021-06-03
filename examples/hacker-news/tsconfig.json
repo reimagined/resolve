@@ -10,5 +10,12 @@
     "lib": ["es2018", "dom"],
     "types": ["node", "react"],
     "noEmit": true
-  }
+  },
+  "include": [
+    "auth/**/*",
+    "client/**/*",
+    "common/**/*",
+    "import/**/*",
+    "*.ts"
+  ]
 }

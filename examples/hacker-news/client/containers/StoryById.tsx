@@ -5,6 +5,7 @@ import { RefreshHelperRenderless } from '@resolve-js/module-comments'
 import { ConnectedStory } from './ConnectedStory'
 import { ConnectedComments } from './ConnectedComments'
 import { CommentsNotification } from '../components/CommentsNotification'
+import { StoreState } from '../../types'
 
 const StoryById = ({
   match: {
@@ -14,7 +15,9 @@ const StoryById = ({
   if (!storyId) {
     return null
   }
-  const authorId = useSelector((state) => (state.jwt ? state.jwt.id : null))
+  const authorId = useSelector<StoreState, string>((state) =>
+    state.jwt ? state.jwt.id : null
+  )
 
   return (
     <RefreshHelperRenderless>

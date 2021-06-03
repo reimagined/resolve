@@ -18,8 +18,8 @@ const Notification = styled.div`
 
 const CommentsNotification = ({
   treeId,
-  parentCommentId,
   authorId,
+  parentCommentId = null,
   ...props
 }) => {
   if (!treeId || !authorId) {

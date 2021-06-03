@@ -5,6 +5,7 @@ import { Redirect } from 'react-router'
 import styled from 'styled-components'
 
 import { useReduxCommand } from '@resolve-js/redux'
+import { StoreState, UserState } from '../../types'
 
 const FormLabel = styled.div`
   margin-bottom: 0.1em;
@@ -44,7 +45,7 @@ const Submit = () => {
     })
   }, [createStory])
 
-  const me = useSelector((state) => state.jwt)
+  const me = useSelector<StoreState, UserState>((state) => state.jwt)
 
   if (!me?.id) {
     return <Redirect to="/login?redirect=/submit" />

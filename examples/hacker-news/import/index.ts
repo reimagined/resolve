@@ -2,22 +2,18 @@ import ProgressBar from 'progress'
 import { EOL } from 'os'
 
 import { start } from './importer'
+import path from 'path'
 
 const runImport = (importConfig) => {
-  if (process.env.hasOwnProperty(String(importConfig.port))) {
-    process.env.PORT = +String(process.env.PORT)
-  } else if (
-    process.env.PORT != null &&
-    process.env.PORT.defaultValue != null
-  ) {
-    process.env.PORT = +process.env.PORT.defaultValue
-  } else {
-    process.env.PORT = 3000
-  }
+  const port = importConfig.hasOwnProperty('port')
+    ? String(importConfig.port)
+    : process.env.PORT || '3000'
+
+  const appUrl = `http://localhost:${path.join(port, importConfig.rootPath)}`
 
   Object.assign(process.env, {
     RESOLVE_SERVER_OPEN_BROWSER: 'false',
-    ROOT_PATH: importConfig.rootPath,
+    RESOLVE_APP_URL: appUrl,
   })
 
   let bar

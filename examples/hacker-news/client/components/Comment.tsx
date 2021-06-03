@@ -45,7 +45,7 @@ const Comment = ({
   createdByName,
   createdAt,
   parentId,
-  children,
+  children = null,
 }) => {
   if (!id) {
     return null
