@@ -157,9 +157,7 @@ const getViewModelInterop = (
   const acquireResolver = async (
     params: ViewModelBuildParams,
     context: ViewModelBuildContext
-  ): Promise<ViewModelRuntimeResolver> => async (): Promise<
-    ViewModelBuildResult
-  > => {
+  ): Promise<ViewModelRuntimeResolver> => async (): Promise<ViewModelBuildResult> => {
     const { name, projection, resolver } = viewModel
     const { monitoring } = runtime
 

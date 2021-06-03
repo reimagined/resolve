@@ -65,9 +65,9 @@ describe('aggregates', () => {
         },
       }
 
-      expect(() => commands.createStory(state, command, { jwt: token })).toThrowError(
-        'Story already exists'
-      )
+      expect(() =>
+        commands.createStory(state, command, { jwt: token })
+      ).toThrowError('Story already exists')
     })
 
     test('command "createStory" should throw Error "The title field is required"', () => {
@@ -85,9 +85,9 @@ describe('aggregates', () => {
         },
       }
 
-      expect(() => commands.createStory(state, command, { jwt: token })).toThrowError(
-        'The "title" field is required'
-      )
+      expect(() =>
+        commands.createStory(state, command, { jwt: token })
+      ).toThrowError('The "title" field is required')
     })
 
     test('command "createStory" should throw Error "The userId field is required"', () => {
@@ -110,9 +110,9 @@ describe('aggregates', () => {
         },
       }
 
-      expect(() => commands.createStory(state, command, { jwt: token })).toThrow(
-        /The "userId" field is required/
-      )
+      expect(() =>
+        commands.createStory(state, command, { jwt: token })
+      ).toThrow(/The "userId" field is required/)
     })
 
     test('command "upvoteStory" should create an event to upvote the story', () => {
@@ -144,9 +144,9 @@ describe('aggregates', () => {
         },
       }
 
-      expect(() => commands.upvoteStory(state, command, { jwt: token })).toThrowError(
-        'User already voted'
-      )
+      expect(() =>
+        commands.upvoteStory(state, command, { jwt: token })
+      ).toThrowError('User already voted')
     })
 
     test('command "upvoteStory" should throw Error "Story does not exist"', () => {
@@ -157,9 +157,9 @@ describe('aggregates', () => {
         },
       }
 
-      expect(() => commands.upvoteStory(state, command, { jwt: token })).toThrowError(
-        'Story does not exist'
-      )
+      expect(() =>
+        commands.upvoteStory(state, command, { jwt: token })
+      ).toThrowError('Story does not exist')
     })
 
     test('command "upvoteStory" should throw Error "The userId field is required"', () => {
@@ -179,9 +179,9 @@ describe('aggregates', () => {
         },
       }
 
-      expect(() => commands.upvoteStory(state, command, { jwt: token })).toThrowError(
-        /The "userId" field is required/
-      )
+      expect(() =>
+        commands.upvoteStory(state, command, { jwt: token })
+      ).toThrowError(/The "userId" field is required/)
     })
 
     test('command "unvoteStory" should create an event to unvote the story', () => {
@@ -213,9 +213,9 @@ describe('aggregates', () => {
         },
       }
 
-      expect(() => commands.unvoteStory(state, command, { jwt: token })).toThrowError(
-        'User did not vote'
-      )
+      expect(() =>
+        commands.unvoteStory(state, command, { jwt: token })
+      ).toThrowError('User did not vote')
     })
 
     test('command "unvoteStory" should throw Error "Story does not exist"', () => {
@@ -226,9 +226,9 @@ describe('aggregates', () => {
         },
       }
 
-      expect(() => commands.unvoteStory(state, command, { jwt: token })).toThrowError(
-        'Story does not exist'
-      )
+      expect(() =>
+        commands.unvoteStory(state, command, { jwt: token })
+      ).toThrowError('Story does not exist')
     })
 
     test('command "unvoteStory" should throw Error "The userId field is required"', () => {
@@ -248,9 +248,9 @@ describe('aggregates', () => {
         },
       }
 
-      expect(() => commands.unvoteStory(state, command, { jwt: token })).toThrowError(
-        'The "userId" field is required'
-      )
+      expect(() =>
+        commands.unvoteStory(state, command, { jwt: token })
+      ).toThrowError('The "userId" field is required')
     })
 
     test('eventHandler "STORY_CREATED" should set createdAt, createdBy and voted to state', () => {
