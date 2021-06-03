@@ -14,6 +14,7 @@
 
 **Other changes:**
 
+- Implement monitoring in readmodel-postgresql [\#1896](https://github.com/reimagined/resolve/pull/1896)
 - Improve dev pr workflow [\#1893](https://github.com/reimagined/resolve/pull/1893)
 - saveEvent returns a saved event with the next cursor [\#1879](https://github.com/reimagined/resolve/pull/1879)
 
