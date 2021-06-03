@@ -48,7 +48,7 @@ export default () => {
   return (
     <Layout title={siteConfig.title} description={siteConfig.tagline}>
       <header 
-        className='hero hero--primary heroBanner'
+        className='hero hero--dark heroBanner'
         style={{ backgroundImage: `url(${useBaseUrl('/img/header-background.svg')})` }}      
       >
         <div className="container">
@@ -105,7 +105,8 @@ export default () => {
           <div className="row">
             <div className="col col--6 padding-vert--lg">
               <h3>Get started in seconds</h3>
-              <p>reSolve allows you to focus on code, not build tools. To create a project, you simply called my-app and run the following command:</p>      
+              <p>reSolve allows you to focus on code, not build tools. To create a project, you simply called my-app and run the following command:</p>     
+              <code className="featureCode">yarn create resolve-app my-app</code>
             </div>
             <div className="col col--6 padding-vert--lg">
               <img

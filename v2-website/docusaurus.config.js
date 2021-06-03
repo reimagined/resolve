@@ -20,7 +20,6 @@ module.exports={
       "@docusaurus/preset-classic",
       {
         "docs": {
-          "homePageId": "index",
           "showLastUpdateAuthor": true,
           "showLastUpdateTime": true,
           "path": "..\\docs",
@@ -40,7 +39,8 @@ module.exports={
     "navbar": {
       "title": "reSolve",
       "logo": {
-        "src": "img/resolve.svg"
+        "src": "img/resolve-light.svg",
+        "srcDark": "img/resolve.svg"
       },
       "items": [
         {

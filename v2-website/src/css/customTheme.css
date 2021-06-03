@@ -62,3 +62,12 @@
   height: 200px;
   width: 200px;
 }
+
+.featureCode {
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+  display: block;
+  overflow-x: auto;
+  background: #333;
+  color: white;
+}
