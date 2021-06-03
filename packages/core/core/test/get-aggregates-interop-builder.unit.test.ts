@@ -971,7 +971,7 @@ describe('Monitoring', () => {
           AggregateName: 'empty',
         })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
+        expect(runtime.monitoring.group).not.toBeCalledWith({
           AggregateId: 'aggregateId',
         })
 
@@ -1018,7 +1018,7 @@ describe('Monitoring', () => {
           AggregateName: 'empty',
         })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
+        expect(runtime.monitoring.group).not.toBeCalledWith({
           AggregateId: 'aggregateId',
         })
 
@@ -1065,7 +1065,7 @@ describe('Monitoring', () => {
           AggregateName: 'unknown',
         })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
+        expect(runtime.monitoring.group).not.toBeCalledWith({
           AggregateId: 'aggregateId',
         })
 
