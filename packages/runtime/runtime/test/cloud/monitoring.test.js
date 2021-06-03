@@ -563,6 +563,48 @@ describe('error', () => {
       })
     )
   })
+
+  test('contains global dimensions if Part dimension is specified', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    class TestError extends Error {
+      name = 'test-error'
+    }
+
+    monitoring.group({ Part: 'test-part' }).error(new TestError('test-message'))
+
+    await monitoring.publish()
+
+    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(7)
+
+    expect(CloudWatch.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Dimensions: [{ Name: 'Part', Value: 'test-part' }],
+          }),
+        ]),
+      })
+    )
+
+    expect(CloudWatch.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Dimensions: [
+              { Name: 'DeploymentId', Value: 'test-deployment' },
+              { Name: 'Part', Value: 'test-part' },
+              { Name: 'ErrorName', Value: 'test-error' },
+              { Name: 'ErrorMessage', Value: 'test-message' },
+            ],
+          }),
+        ]),
+      })
+    )
+  })
 })
 
 describe('time and timeEnd', () => {
