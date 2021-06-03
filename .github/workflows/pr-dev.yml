@@ -78,15 +78,15 @@ jobs:
           yarn validate-lock-file
 
       - name: Test:unit
-        if: '1' == '0'
+        if: ''
         run: yarn test
 
       - name: Run Prettier
-        if: '1' == '0'
+        if: ''
         run: yarn prettier:check
 
       - name: Run ESLint
-        if: '1' == '0'
+        if: ''
         run: yarn lint
 
   integrationTest:
