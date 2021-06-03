@@ -433,18 +433,6 @@ export const buildEvents: (
     eventCount = 0
     eventsApplyStartTimestamp = Date.now()
 
-    if (eventCount > 0 && monitoring != null) {
-      const seconds = (Date.now() - eventsApplyStartTimestamp) / 1000
-
-      monitoring
-        .group({ Part: 'ReadModel' })
-        .group({ ReadModel: readModelName })
-        .rate('ReadModelFeedingRate', eventCount, seconds)
-    }
-
-    eventCount = 0
-    eventsApplyStartTimestamp = Date.now()
-
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
     cursor = nextCursor
 

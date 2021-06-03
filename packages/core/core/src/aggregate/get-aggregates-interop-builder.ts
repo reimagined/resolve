@@ -512,7 +512,7 @@ const executeCommand = async (
     subSegment.addError(error)
 
     if (monitoringGroup != null) {
-      monitoringGroup.group({ AggregateId: command.aggregateId }).error(error)
+      monitoringGroup.error(error)
     }
     throw error
   } finally {
