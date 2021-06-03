@@ -114,7 +114,7 @@ test('Create story saga - success story create and failed fetch', () => {
   const history = []
   const storyCreateSaga = storyCreateSagaFactory(history, { client })
   let step = storyCreateSaga.next()
-  const successCommandSagaFactory = step.value.payload.args[1]
+  const successCommandSagaFactory = (step.value as any).payload.args[1]
 
   const successCommandSaga = successCommandSagaFactory({
     command: {
@@ -139,6 +139,7 @@ test('Create story saga - story creating failed', () => {
   const client = {}
   const history = []
   const storyCreateSaga = storyCreateSagaFactory(history, { client })
+  storyCreateSaga.next()
   let step = storyCreateSaga.next()
   const failureCommandSagaFactory = (step.value as any).payload.args[1]
 

@@ -28,7 +28,7 @@ fixture`User`.beforeEach(async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/login`)
 })
 
-test('create', async (t /*: TestController */) => {
+test('create', async (t) => {
   await t.expect(await Selector('a').withText('login').exists).eql(true)
 
   await t.typeText(await Selector('input[type=text]').nth(2), '123', {

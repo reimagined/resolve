@@ -16,7 +16,7 @@
     "client/**/*",
     "common/**/*",
     "import/**/*",
-    "test/**/*",
+    "test/unit/*",
     "*.ts"
   ]
 }

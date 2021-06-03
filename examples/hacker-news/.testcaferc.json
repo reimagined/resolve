@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "typescript": {
-      "configPath": "e2e.tsconfig.json"
+      "configPath": "./test/e2e/tsconfig.json"
     }
   }
 }
