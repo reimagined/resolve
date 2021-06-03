@@ -66,7 +66,7 @@ test('Create story saga - success story create and success fetch', () => {
   const history = []
   const storyCreateSaga = storyCreateSagaFactory(history, { client })
   let step = storyCreateSaga.next()
-  const successCommandSagaFactory = step.value.payload.args[1]
+  const successCommandSagaFactory = (step.value as any).payload.args[1]
 
   const successCommandSaga = successCommandSagaFactory({
     command: {
@@ -86,7 +86,7 @@ test('Create story saga - success story create and success fetch', () => {
 
   step = successCommandSaga.next({ data: null })
   expect(step.done).toEqual(false)
-  expect(Object.keys(step.value)).toEqual(Object.keys(delay(300)))
+  expect(Object.keys(step.value as any)).toEqual(Object.keys(delay(300)))
 
   step = successCommandSaga.next()
   expect(step.done).toEqual(false)
@@ -140,8 +140,7 @@ test('Create story saga - story creating failed', () => {
   const history = []
   const storyCreateSaga = storyCreateSagaFactory(history, { client })
   let step = storyCreateSaga.next()
-  step = storyCreateSaga.next()
-  const failureCommandSagaFactory = step.value.payload.args[1]
+  const failureCommandSagaFactory = (step.value as any).payload.args[1]
 
   const failureCommandSaga = failureCommandSagaFactory({
     aggregateId: 'aggregateId',

@@ -207,6 +207,7 @@ module.exports = {
           'gif',
           'guid',
           'gzip',
+          'globals',
           'Highload',
           'hmac',
           'hmr',

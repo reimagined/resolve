@@ -9,11 +9,9 @@ const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = internal.actionTypes
 
 test('Optimistic voting saga - register takeAll sagas', () => {
   const optimisticVotingSaga = optimisticVotingSagaFactory()
-  let step = null
-
-  step = optimisticVotingSaga.next()
+  let step = optimisticVotingSaga.next()
   expect(step.done).toEqual(false)
-  const upvoteActionFilter = step.value.payload.args[0]
+  const upvoteActionFilter = (step.value as any).payload.args[0]
 
   expect(
     upvoteActionFilter({
@@ -35,7 +33,7 @@ test('Optimistic voting saga - register takeAll sagas', () => {
 
   step = optimisticVotingSaga.next()
   expect(step.done).toEqual(false)
-  const unvoteActionFilter = step.value.payload.args[0]
+  const unvoteActionFilter = (step.value as any).payload.args[0]
 
   expect(
     unvoteActionFilter({
@@ -62,14 +60,14 @@ test('Optimistic voting saga - register takeAll sagas', () => {
 test('Optimistic voting saga - upvote success', () => {
   const optimisticVotingSaga = optimisticVotingSagaFactory()
   let step = optimisticVotingSaga.next()
-  const upvoteSagaFactory = step.value.payload.args[1]
+  const upvoteSagaFactory = (step.value as any).payload.args[1]
   const upvoteSaga = upvoteSagaFactory({
     command: { aggregateId: 'aggregateId' },
   })
 
   step = upvoteSaga.next()
   expect(step.done).toEqual(false)
-  expect(step.value.payload.action).toEqual(
+  expect((step.value as any).payload.action).toEqual(
     optimisticUpvoteStory('aggregateId')
   )
 
@@ -81,7 +79,7 @@ test('Optimistic voting saga - unvote success', () => {
   const optimisticVotingSaga = optimisticVotingSagaFactory()
   let step = optimisticVotingSaga.next()
   step = optimisticVotingSaga.next()
-  const unvoteSagaFactory = step.value.payload.args[1]
+  const unvoteSagaFactory = (step.value as any).payload.args[1]
 
   const unvoteSaga = unvoteSagaFactory({
     command: { aggregateId: 'aggregateId' },
@@ -89,7 +87,7 @@ test('Optimistic voting saga - unvote success', () => {
 
   step = unvoteSaga.next()
   expect(step.done).toEqual(false)
-  expect(step.value.payload.action).toEqual(
+  expect((step.value as any).payload.action).toEqual(
     optimisticUnvoteStory('aggregateId')
   )
 
