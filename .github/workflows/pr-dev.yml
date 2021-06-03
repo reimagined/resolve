@@ -142,7 +142,7 @@ jobs:
 
       - name: PostgreSQL Integration Tests
         env:
-          POSTGRES_HOST: localhost
+          POSTGRES_HOST: postgres
           POSTGRES_PORT: 5432
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
