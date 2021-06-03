@@ -53,7 +53,7 @@ jobs:
           path: |
             tests/**/node_modules
             website/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-tests
 
       - name: Cache build
         uses: actions/cache@v2
@@ -78,19 +78,31 @@ jobs:
           yarn validate-lock-file
 
       - name: Test:unit
+        if: '1' == '0'
         run: yarn test
 
       - name: Run Prettier
+        if: '1' == '0'
         run: yarn prettier:check
 
       - name: Run ESLint
+        if: '1' == '0'
         run: yarn lint
 
   integrationTest:
     name: Integration Tests
     runs-on: ubuntu-latest
     needs: buildAndTest
-    if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v2
 
@@ -112,6 +124,14 @@ jobs:
             internal/**/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
 
+      - name: Cache tests and website node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            tests/**/node_modules
+            website/**/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-tests
+
       - name: Cache build
         uses: actions/cache@v2
         with:
@@ -129,8 +149,17 @@ jobs:
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
-      - name: Test:integration
+      - name: Integration Tests
         run: yarn test:integration
+
+      - name: PostgreSQL Integration Tests
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DATABASE: postgres
+        run: yarn test:integration-postgres
 
   e2eTest:
     name: E2E Tests
