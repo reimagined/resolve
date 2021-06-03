@@ -47,7 +47,14 @@ const appConfig = {
     },
   ],
   clientEntries: [
-    'client/index.tsx',
+    [
+      'client/index.tsx',
+      {
+        outputFile: 'client/index.js',
+        moduleType: 'iife',
+        target: 'web',
+      },
+    ],
     [
       'client/ssr.tsx',
       {

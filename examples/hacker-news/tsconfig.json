@@ -16,6 +16,7 @@
     "client/**/*",
     "common/**/*",
     "import/**/*",
+    "test/functional/**/*",
     "*.ts"
   ]
 }

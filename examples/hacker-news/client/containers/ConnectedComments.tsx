@@ -12,7 +12,11 @@ const Reply = styled.div`
   margin-bottom: 1em;
 `
 
-const ConnectedComments = ({ treeId, authorId, parentCommentId = null }) => {
+const ConnectedComments = ({
+  treeId,
+  authorId,
+  parentCommentId = undefined,
+}) => {
   const comment = useRef<any>()
 
   const me = useSelector<StoreState, UserState>((state) => state.jwt)
