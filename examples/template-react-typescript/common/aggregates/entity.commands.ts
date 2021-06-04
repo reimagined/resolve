@@ -1,3 +1,4 @@
+import { Aggregate } from '@resolve-js/core'
 import {
   ENTITY_CREATED,
   ENTITY_DELETED,
@@ -5,9 +6,9 @@ import {
   ENTITY_ITEM_REMOVED,
 } from '../event-types'
 
-export default {
+const aggregate: Aggregate = {
   createEntity: (state, { payload: { name } }) => {
-    if (state.createdAt) {
+    if (state.exists) {
       throw new Error('Entity already exists')
     }
     return {
@@ -16,39 +17,31 @@ export default {
     }
   },
   deleteEntity: (state) => {
-    if (!state.createdAt) {
-      throw new Error('Entity does not exist')
+    if (!state.exists) {
+      throw new Error('Entity not exist')
     }
     return {
       type: ENTITY_DELETED,
     }
   },
   addItem: (state) => {
-    if (!state.createdAt) {
-      throw new Error('Entity does not exist')
+    if (!state.exists) {
+      throw new Error('Entity not exist')
     }
-
     return {
       type: ENTITY_ITEM_ADDED,
       payload: { itemName: `Item ${state.items.length}` },
     }
   },
   removeItem: (state, { payload: { itemName } }) => {
-    if (!state.createdAt) {
-      throw new Error('Entity does not exist')
+    if (!state.exists) {
+      throw new Error('Entity not exist')
     }
-
-    if (!itemName) {
-      throw new Error(`The "itemName" field is required`)
-    }
-
-    if (!state.items.includes(itemName)) {
-      throw new Error(`Item not found`)
-    }
-
     return {
       type: ENTITY_ITEM_REMOVED,
       payload: { itemName },
     }
   },
 }
+
+export default aggregate

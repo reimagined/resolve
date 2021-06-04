@@ -49,7 +49,7 @@ The `aggregate` function's parameter should be an object with the following fiel
 | ------------------------ | ----------------------------------- |
 | `name`                   | The Aggregate's name.               |
 | `projection`             | The projection definition.          |
-| `commands`               | The definition of command handlers. |
+| `aggregate`               | The definition of command handlers. |
 | `encryption`_(optional)_ | An encryption factory function.     |
 
 ## Testing Read Models
@@ -101,7 +101,7 @@ Use the `.saga` function to add a saga to a test case. Use the following API to 
 | `withAdapter(adapter)`                                             | Specifies a read model adapter to use.                               |
 | `withEncryption(encryption)`                                       | Specifies an encryption factory function to use.                     |
 | `withSecretsManager(manager)`                                      | Assigns a secrets manager to the aggregate                           |
-| `mockCommandImplementation(aggregateName, type, implementation)`   | Specifies a mock function to be called with the saga's commands.     |
+| `mockCommandImplementation(aggregateName, type, implementation)`   | Specifies a mock function to be called with the saga's aggregate.     |
 | `mockQueryImplementation(modelName, resolverName, implementation)` | Specifies a mock function to be called with the saga's queries.      |
 
 ### Assertions

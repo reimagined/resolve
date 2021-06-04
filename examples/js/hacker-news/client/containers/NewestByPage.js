@@ -1,0 +1,37 @@
+import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { ResultStatus, useReduxReadModel } from '@resolve-js/redux'
+import { Stories } from '../components/Stories'
+import { ITEMS_PER_PAGE } from '../constants'
+const NewestByPage = ({
+  match: {
+    params: { page },
+  },
+}) => {
+  const { request: getStories, selector } = useReduxReadModel(
+    {
+      name: 'HackerNews',
+      resolver: 'allStories',
+      args: {
+        offset: ITEMS_PER_PAGE + 1,
+        first: (+page - 1) * ITEMS_PER_PAGE,
+      },
+    },
+    null,
+    []
+  )
+  const { data: stories, status } = useSelector(selector)
+  useEffect(() => {
+    getStories()
+  }, [getStories])
+  const isLoading =
+    status === ResultStatus.Initial || status === ResultStatus.Requested
+  return !isLoading
+    ? React.createElement(Stories, {
+        items: stories,
+        page: page,
+        type: 'newest',
+      })
+    : null
+}
+export { NewestByPage }

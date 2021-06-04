@@ -19,7 +19,7 @@ Configuration settings are split across the following files by default:
 
 In accordance with the CQRS paradigm, a reSolve application is divided into the **[write](write-side.md)** and **[read](read-side.md)** sides.
 
-- The **[write side](write-side.md)** is represented by a set of aggregates. The aggregates receive commands and emit events in response. The events are then saved to the event store.
+- The **[write side](write-side.md)** is represented by a set of aggregates. The aggregates receive aggregate and emit events in response. The events are then saved to the event store.
 - The **[read side](read-side.md)** is used to query the application's data. The read side is represented by a set of **Read Models**.
 
 A **Read Model** gradually accumulates event data in a storage based on the logic defined by the **projection**. When the client queries the data, the data is pulled from the storage by the **resolver**, processed based on the provided arguments and sent to the client in the required form.

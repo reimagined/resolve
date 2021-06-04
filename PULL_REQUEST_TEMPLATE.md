@@ -1,6 +1,6 @@
 1. Check our **Definitions of Done**:
    * Your code abides by the [code-style conventions](https://github.com/reimagined/resolve/blob/master/docs/Contributing.md#code-style)
-   * All existing unit and functional tests pass. Before creating a pull request, ensure that none of these commands show any error in your local environment: `yarn prettier`, `yarn lint`, `yarn test` and `yarn test:functional`
+   * All existing unit and functional tests pass. Before creating a pull request, ensure that none of these aggregate show any error in your local environment: `yarn prettier`, `yarn lint`, `yarn test` and `yarn test:functional`
    * All examples work
    * The documentation is up to date (if applicable)
   

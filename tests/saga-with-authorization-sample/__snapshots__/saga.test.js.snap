@@ -2,7 +2,7 @@
 
 exports[`Saga success registration 1`] = `
 Object {
-  "commands": Array [
+  "aggregate": Array [
     Object {
       "aggregateId": "id1",
       "aggregateName": "Process",

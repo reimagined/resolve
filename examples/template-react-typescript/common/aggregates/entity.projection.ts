@@ -1,3 +1,4 @@
+import { AggregateProjection } from '@resolve-js/core'
 import {
   ENTITY_CREATED,
   ENTITY_DELETED,
@@ -5,15 +6,19 @@ import {
   ENTITY_ITEM_REMOVED,
 } from '../event-types'
 
-export default {
-  Init: () => ({}),
-  [ENTITY_CREATED]: (state, { timestamp, payload: { name } }) => ({
-    ...state,
-    name,
-    items: [],
-    createdAt: timestamp,
+const projection: AggregateProjection = {
+  Init: () => ({
+    exists: false,
   }),
-  [ENTITY_DELETED]: () => ({}),
+  [ENTITY_CREATED]: (state) => ({
+    ...state,
+    exists: true,
+    items: [],
+  }),
+  [ENTITY_DELETED]: (state) => ({
+    ...state,
+    exists: false,
+  }),
   [ENTITY_ITEM_ADDED]: (state, { payload }) => ({
     ...state,
     items: [...state.items, payload.itemName],
@@ -23,3 +28,5 @@ export default {
     items: state.items.filter((item) => item !== payload.itemName),
   }),
 }
+
+export default projection

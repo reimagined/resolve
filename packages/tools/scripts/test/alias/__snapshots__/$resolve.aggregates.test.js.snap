@@ -29,7 +29,7 @@ const aggregates = []
 
 aggregates.push({
   name: name_0
-, commands: commands_0
+, aggregate: commands_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 , encryption: encryption_0
@@ -77,7 +77,7 @@ const aggregates = []
 
 aggregates.push({
   name: name_0
-, commands: commands_0
+, aggregate: commands_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 , encryption: encryption_0
@@ -85,7 +85,7 @@ aggregates.push({
 
 aggregates.push({
   name: name_1
-, commands: commands_1
+, aggregate: commands_1
 , serializeState: serializeState_1
 , deserializeState: deserializeState_1
 , encryption: encryption_1
@@ -95,7 +95,7 @@ export default aggregates
 "
 `;
 
-exports[`config with commands as module works correctly [server] 1`] = `
+exports[`config with aggregate as module works correctly [server] 1`] = `
 "
 import '$resolve.guardOnlyServer'
 import commands_0_constructor from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testCommandsAsModule.js\\"
@@ -130,7 +130,7 @@ const aggregates = []
 
 aggregates.push({
   name: name_0
-, commands: commands_0
+, aggregate: commands_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 , encryption: encryption_0
@@ -172,7 +172,7 @@ const aggregates = []
 
 aggregates.push({
   name: name_0
-, commands: commands_0
+, aggregate: commands_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 , projection: projection_0
@@ -213,7 +213,7 @@ const aggregates = []
 
 aggregates.push({
   name: name_0
-, commands: commands_0
+, aggregate: commands_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 , encryption: encryption_0

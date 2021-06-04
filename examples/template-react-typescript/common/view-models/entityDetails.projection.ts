@@ -1,23 +1,13 @@
-import {
-  ENTITY_CREATED,
-  ENTITY_DELETED,
-  ENTITY_ITEM_ADDED,
-  ENTITY_ITEM_REMOVED,
-} from '../event-types'
+import { ViewModelProjection } from '@resolve-js/core'
+import { ENTITY_ITEM_ADDED, ENTITY_ITEM_REMOVED } from '../event-types'
 
-export default {
+type EntityState = {
+  items: string[]
+}
+
+const projection: ViewModelProjection<EntityState> = {
   Init: () => ({
-    name: '',
-    id: null,
     items: [],
-  }),
-  [ENTITY_CREATED]: (state, { aggregateId, payload: { name } }) => ({
-    id: aggregateId,
-    name,
-    items: [],
-  }),
-  [ENTITY_DELETED]: () => ({
-    removed: true,
   }),
   [ENTITY_ITEM_ADDED]: (state, { payload: { itemName } }) => ({
     ...state,
@@ -28,3 +18,5 @@ export default {
     items: state.items.filter((item) => item !== itemName),
   }),
 }
+
+export default projection

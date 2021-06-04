@@ -1188,7 +1188,7 @@ import {
 
 ### HTTP API
 
-ReSolve provides a standard HTTP API that allows you to send aggregate commands, and query Read and View Models.
+ReSolve provides a standard HTTP API that allows you to send aggregate aggregate, and query Read and View Models.
 
 #### Read Model API
 
@@ -1257,7 +1257,7 @@ curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
 You can send a command from the client side as a POST request to the following URL:
 
 ```
-http://{host}:{port}/api/commands
+http://{host}:{port}/api/aggregate
 ```
 
 The request body should have the `application/json` content type and contain the command's JSON representation.
@@ -1288,7 +1288,7 @@ The request body should have the `application/json` content type and contain the
 Use the following command to add an item to the **shopping-list** example:
 
 ```sh
-$ curl -X POST "http://localhost:3000/api/commands"
+$ curl -X POST "http://localhost:3000/api/aggregate"
 --header "Content-Type: application/json" \
 --data '
 {
@@ -1606,7 +1606,7 @@ Returns an absolute URL within the application for the given relative path.
 ##### Example
 
 ```js
-var commandsApiPath = client.getOriginPath('/api/commands')
+var commandsApiPath = client.getOriginPath('/api/aggregate')
 ```
 
 #### subscribe
@@ -1647,7 +1647,7 @@ The **@resolve-js/react-hooks** library provides React hooks that you can use to
 | Hook                                    | Description                                                               |
 | --------------------------------------- | ------------------------------------------------------------------------- |
 | [useCommand](#usecommand)               | Initializes a command that can be passed to the backend.                  |
-| [useCommandBuilder](#usecommandbuilder) | Allows a component to generate commands based on input parameters.        |
+| [useCommandBuilder](#usecommandbuilder) | Allows a component to generate aggregate based on input parameters.        |
 | [useViewModel](#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model.               |
 | [useQuery](#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model. |
 | [useOriginResolver](#useoriginresolver) | Resolves a relative path to an absolute URL within the application.       |
@@ -1686,7 +1686,7 @@ const ShoppingList = ({
 
 #### useCommandBuilder
 
-Allows a component to generate commands based on input parameters.
+Allows a component to generate aggregate based on input parameters.
 
 ##### Example
 
@@ -1807,7 +1807,7 @@ Resolves a relative path to an absolute URL within the application.
 
 ```js
 var resolver = useOriginResolver()
-var commandApiPath = resolver('/api/commands')
+var commandApiPath = resolver('/api/aggregate')
 ```
 
 ### Request Middleware

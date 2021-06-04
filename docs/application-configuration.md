@@ -52,7 +52,7 @@ An array of the application's aggregates. An aggregate configuration object with
 | Field            | Description                                                         |
 | ---------------- | ------------------------------------------------------------------- |
 | name             | The aggregate's name.                                               |
-| commands         | A path to a file that defines aggregate commands.                   |
+| aggregate         | A path to a file that defines aggregate aggregate.                   |
 | projection       | A path to a file that defines aggregate projection.                 |
 | serializeState   | A path to a file that defines a state serializer function.          |
 | deserializeState | A path to a file that defines a state deserializer function.        |
@@ -62,7 +62,7 @@ An array of the application's aggregates. An aggregate configuration object with
 aggregates: [
   {
     name: 'ShoppingList',
-    commands: 'common/aggregates/shopping_list.commands.js',
+    aggregate: 'common/aggregates/shopping_list.aggregate.js',
     projection: 'common/aggregates/shopping_list.projection.js',
   },
 ]

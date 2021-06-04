@@ -90,7 +90,7 @@ You can use the standard event sourcing approach to implement a user registry. T
 
 Use the following steps to implement a user registry:
 
-1. Add a User aggregate to accept commands and generate events related to managing a user registry
+1. Add a User aggregate to accept aggregate and generate events related to managing a user registry
 2. Create a read model and use it to look up a user's information during logging in and add this information to a JWT (JSON Web Token)
 
 For example, you can write the following if you want to grant permissions to a user:
@@ -98,7 +98,7 @@ For example, you can write the following if you want to grant permissions to a u
 #### Write side - The "user" aggregate
 
 ```js
-// user.commands.js
+// user.aggregate.js
 ...
 grantPermission: (state, command) => {
    const {payload: {permission: permissionToGrant }} = command;

@@ -196,7 +196,7 @@ npx @resolve-js/module-admin sagas reset UserConfirmation --side-effects-start-t
 
 ### Send Aggregate Commands
 
-Use the `executeCommand` side effect function to send aggregate commands as shown below:
+Use the `executeCommand` side effect function to send aggregate aggregate as shown below:
 
 <!-- prettier-ignore-start -->
 

@@ -50,7 +50,7 @@ Redux middleware is used to:
 
 1. Fetch View and Read Models
 2. Subscribe to events
-3. Send commands to the server side
+3. Send aggregate to the server side
 
 ```js
 import { createStore, applyMiddleware, combineReducers } from 'redux'
@@ -91,7 +91,7 @@ resolveMiddleware.run({
 
 ### `connectViewModel`
 
-A higher-order component (HOC), used to automatically subscribe/unsubscribe to/from View Model updates, and access the aggregate commands by `aggregateIds`.
+A higher-order component (HOC), used to automatically subscribe/unsubscribe to/from View Model updates, and access the aggregate aggregate by `aggregateIds`.
 
 ```js
 import { connect } from 'react-redux'
@@ -130,7 +130,7 @@ export default connectViewModel(mapStateToOptions)(
 
 ### `connectReadModel`
 
-A higher-order component (HOC), used to automatically subscribe/unsubscribe to/from Read Model updates, and access the corresponding aggregate's commands.
+A higher-order component (HOC), used to automatically subscribe/unsubscribe to/from Read Model updates, and access the corresponding aggregate's aggregate.
 
 ```js
 import { connect } from 'react-redux'
@@ -242,7 +242,7 @@ Generates a [Redux store](https://github.com/reduxjs/redux/blob/master/docs/api/
 
 ### `createActions`
 
-Generates [Redux actions](https://redux.js.org/basics/actions) using a reSolve aggregate. This function uses [`sendCommandRequest`](#sendcommandrequest) to pass a command from Redux to the server side. The generated actions are named after the aggregate commands. Arguments:
+Generates [Redux actions](https://redux.js.org/basics/actions) using a reSolve aggregate. This function uses [`sendCommandRequest`](#sendcommandrequest) to pass a command from Redux to the server side. The generated actions are named after the aggregate aggregate. Arguments:
 
 - `aggregate` - reSolve aggregate
 - `extendActions` - actions to extend or redefine resulting actions

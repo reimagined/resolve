@@ -1,22 +1,22 @@
 ---
 id: write-side
 title: Write Side
-description: An application's write side handles commands, validates input data, and emits events based on valid commands.
+description: An application's write side handles aggregate, validates input data, and emits events based on valid aggregate.
 ---
 
 ## Aggregates
 
 Commands are executed by objects that encapsulate domain logic. These objects are called Domain Objects.
-Domain Objects are grouped into Aggregates. In a CQRS/ES app, an aggregate is a transaction boundary. This means that any given aggregate should be able to execute its commands without communicating with other aggregates.
+Domain Objects are grouped into Aggregates. In a CQRS/ES app, an aggregate is a transaction boundary. This means that any given aggregate should be able to execute its aggregate without communicating with other aggregates.
 
-Since the write side is used only to perform commands, your aggregate can be compact, and only keep state required for command execution.
+Since the write side is used only to perform aggregate, your aggregate can be compact, and only keep state required for command execution.
 
 See Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html)
 
 In reSolve, an aggregate is a static object that contains a set of functions of the following two kinds:
 
 - [Projections](#aggregate-projection-function) - build aggregate state base from events.
-- [Command Handlers](#aggregate-command-handlers) - execute commands.
+- [Command Handlers](#aggregate-command-handlers) - execute aggregate.
 
 Aggregate state is explicitly passed to all of these functions as an argument.
 
@@ -55,7 +55,7 @@ To configure aggregates in a reSolve app, provide an aggregates array in the app
 aggregates: [
     {
       name: 'ShoppingList',
-      commands: 'common/aggregates/shopping_list.commands.js',
+      aggregate: 'common/aggregates/shopping_list.aggregate.js',
       projection: 'common/aggregates/shopping_list.projection.js'
     }
   ]
@@ -65,19 +65,19 @@ aggregates: [
 
 ## Sending a Command
 
-You can emit aggregate commands in the following cases:
+You can emit aggregate aggregate in the following cases:
 
-- [Sending commands from the client](#sending-commands-from-the-client)
-- [Emitting commands on the server](#emitting-commands-on-the-server)
+- [Sending aggregate from the client](#sending-commands-from-the-client)
+- [Emitting aggregate on the server](#emitting-commands-on-the-server)
 
 ### Sending Commands From the Client
 
-The reSolve framework exposes an [HTTP API](api-reference.md#commands-http-api) that you can use to to send commands from the client side. Your application's frontend can use this API directly or through one of the available [client libraries](frontend.md).
+The reSolve framework exposes an [HTTP API](api-reference.md#commands-http-api) that you can use to to send aggregate from the client side. Your application's frontend can use this API directly or through one of the available [client libraries](frontend.md).
 
 You can send a command from the client side as a POST request to the following URL:
 
 ```
-http://{host}:{port}/api/commands
+http://{host}:{port}/api/aggregate
 ```
 
 The request body should have the `application/json` content type and contain a JSON representation of the command:
@@ -108,7 +108,7 @@ The request body should have the `application/json` content type and contain a J
 Use the following command to add an item to the **shopping-list** example:
 
 ```sh
-$ curl -X POST "http://localhost:3000/api/commands"
+$ curl -X POST "http://localhost:3000/api/aggregate"
 --header "Content-Type: application/json" \
 --data '
 {

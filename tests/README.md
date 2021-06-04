@@ -637,7 +637,7 @@ const appConfig = {
   aggregates: [
     {
       name: 'Process',
-      commands: 'process.commands.js',
+      aggregate: 'process.aggregate.js',
     },
   ],
   sagas: [
@@ -687,7 +687,7 @@ const devConfig = {
 
 #### Aggregate Commands
 
-[mdis]: # './saga-with-authorization-sample/process.commands.js'
+[mdis]: # './saga-with-authorization-sample/process.aggregate.js'
 
 ```js
 import jsonwebtoken from 'jsonwebtoken'
@@ -951,7 +951,7 @@ describe('Saga', () => {
         },
       ]).saga(sagaWithAdapter)
 
-      expect(result.commands[0][0].type).toEqual('increment')
+      expect(result.aggregate[0][0].type).toEqual('increment')
     })
 
     test('success decrement', async () => {
@@ -965,7 +965,7 @@ describe('Saga', () => {
         },
       ]).saga(sagaWithAdapter)
 
-      expect(result.commands[0][0].type).toEqual('decrement')
+      expect(result.aggregate[0][0].type).toEqual('decrement')
     })
   })
 
@@ -1003,7 +1003,7 @@ describe('Saga', () => {
         })
 
       expect(result).toEqual({
-        commands: [],
+        aggregate: [],
         scheduleCommands: [],
         sideEffects: [],
         queries: [],
