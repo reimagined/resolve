@@ -1,23 +1,24 @@
-import { NOTE_CREATED, NOTE_MODIFIED, NOTE_DELETED } from '../event-types'
+import { ViewModelProjection } from '@resolve-js/core'
+import { NOTE_CREATED, NOTE_MODIFIED } from '../event-types'
 
-export default {
+type NoteState = {
+  text: string | null
+  modifiedAt: number | null
+}
+
+const projection: ViewModelProjection<NoteState> = {
   Init: () => ({
-    name: '',
-    id: null,
     text: null,
     modifiedAt: null,
   }),
-  [NOTE_CREATED]: (state, { aggregateId, timestamp, payload: { text } }) => ({
-    id: aggregateId,
-    text,
+  [NOTE_CREATED]: (state, { timestamp }) => ({
+    ...state,
     modifiedAt: timestamp,
   }),
-  [NOTE_MODIFIED]: (state, { aggregateId, timestamp, payload: { text } }) => ({
-    id: aggregateId,
+  [NOTE_MODIFIED]: (state, { timestamp, payload: { text } }) => ({
     text,
     modifiedAt: timestamp,
-  }),
-  [NOTE_DELETED]: () => ({
-    removed: true,
   }),
 }
+
+export default projection

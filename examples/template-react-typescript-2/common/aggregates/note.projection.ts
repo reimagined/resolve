@@ -1,10 +1,10 @@
+import { AggregateProjection } from '@resolve-js/core'
 import { NOTE_CREATED, NOTE_MODIFIED, NOTE_DELETED } from '../event-types'
 
-export default {
+const projection: AggregateProjection = {
   Init: () => ({}),
-  [NOTE_CREATED]: (state, { timestamp, payload: { text } }) => ({
+  [NOTE_CREATED]: (state, { timestamp }) => ({
     ...state,
-    text,
     modifiedAt: timestamp,
   }),
   [NOTE_MODIFIED]: (state, { timestamp, payload: { text } }) => ({
@@ -14,3 +14,5 @@ export default {
   }),
   [NOTE_DELETED]: () => ({}),
 }
+
+export default projection

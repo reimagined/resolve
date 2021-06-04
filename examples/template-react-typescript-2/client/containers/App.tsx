@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { v4 as uuid } from 'uuid'
 import { Helmet } from 'react-helmet'
-import { Navbar, Image, Nav, Button, Card, Form } from 'react-bootstrap'
+import { Navbar, Image, Button, Card, Form } from 'react-bootstrap'
 import {
   useStaticResolver,
   useQuery,
@@ -36,35 +36,15 @@ const App = () => {
 
   return (
     <div>
-      <Helmet title="reSolve Hello World" link={links} meta={[meta]} />
+      <Helmet title="reSolve Application" link={links} meta={[meta]} />
       <Navbar>
         <Navbar.Brand href="#home">
           <Image
             src={staticResolver('/resolve-logo.png')}
             className="d-inline-block align-top"
-          />{' '}
-          Hello World Example
+          />
+          <span>{' reSolve Application'}</span>
         </Navbar.Brand>
-
-        <Nav className="ml-auto">
-          <Navbar.Text className="navbar-right">
-            <Nav.Link href="https://facebook.com/resolvejs/">
-              <Image src={staticResolver('/fb-logo.png')} />
-            </Nav.Link>
-          </Navbar.Text>
-
-          <Navbar.Text className="navbar-right">
-            <Nav.Link href="https://twitter.com/resolvejs">
-              <Image src={staticResolver('/twitter-logo.png')} />
-            </Nav.Link>
-          </Navbar.Text>
-
-          <Navbar.Text className="navbar-right">
-            <Nav.Link href="https://github.com/reimagined/resolve">
-              <Image src={staticResolver('/github-logo.png')} />
-            </Nav.Link>
-          </Navbar.Text>
-        </Nav>
       </Navbar>
       <div className="content-wrapper">
         <NoteList />
@@ -80,7 +60,7 @@ const NoteList = () => {
   const getNotes = useQuery(
     { name: 'Notes', resolver: 'all', args: {} },
     (error, result) => {
-      setNotes(result.data)
+      setNotes(result.data.map((note) => note.id))
     }
   )
 
@@ -93,11 +73,10 @@ const NoteList = () => {
       type: 'createNote',
       aggregateId: uuid(),
       aggregateName: 'Note',
-      payload: { text: '' },
     },
     (error, result) => {
       const event = result as any
-      setNotes([...notes, { id: event.aggregateId, text: '' }])
+      setNotes([...notes, event.aggregateId])
       setCurrentlyEditing(event.aggregateId)
     }
   )
@@ -120,7 +99,7 @@ const NoteList = () => {
     }),
     (error, result) => {
       const event = result as any
-      setNotes([...notes.filter((note) => note.id !== event.aggregateId)])
+      setNotes([...notes.filter((id) => id !== event.aggregateId)])
     }
   )
 
@@ -130,14 +109,14 @@ const NoteList = () => {
         Create note
       </Button>
       <div className="notes">
-        {notes.map((note) => (
+        {notes.map((noteId) => (
           <Note
-            key={note.id}
-            id={note.id}
-            editMode={note.id === currentlyEditing}
-            onStartEdit={() => setCurrentlyEditing(note.id)}
-            onDelete={() => deleteNoteCommand(note.id)}
-            onSave={(text) => modifyNoteCommand(note.id, text)}
+            key={noteId}
+            id={noteId}
+            editMode={noteId === currentlyEditing}
+            onStartEdit={() => setCurrentlyEditing(noteId)}
+            onDelete={() => deleteNoteCommand(noteId)}
+            onSave={(text) => modifyNoteCommand(noteId, text)}
           />
         ))}
       </div>
@@ -151,7 +130,7 @@ const Note = ({ id, editMode, onStartEdit, onDelete, onSave }) => {
 
   const setNote = (note) => {
     setText(note.text)
-    setModifiedAt(note.modifiedAt)
+    setModifiedAt(new Date(note.modifiedAt))
   }
 
   const { connect, dispose } = useViewModel('NoteText', [id], setNote)
@@ -163,6 +142,12 @@ const Note = ({ id, editMode, onStartEdit, onDelete, onSave }) => {
     }
   }, [])
 
+  const textarea = useRef(null)
+
+  useEffect(() => {
+    textarea?.current?.focus()
+  }, [editMode])
+
   const toggleEdit = () => {
     editMode ? onSave(text) : onStartEdit()
   }
@@ -173,6 +158,7 @@ const Note = ({ id, editMode, onStartEdit, onDelete, onSave }) => {
           <Form>
             <Form.Group controlId="noteForm.noteTextarea">
               <Form.Control
+                ref={textarea}
                 as="textarea"
                 rows={3}
                 value={text}
@@ -188,7 +174,7 @@ const Note = ({ id, editMode, onStartEdit, onDelete, onSave }) => {
       </Card.Body>
       <Card.Footer className="note-footer">
         <span className="note-last-modified">
-          Last modified at {new Date(modifiedAt).toLocaleString()}
+          Last modified at {modifiedAt?.toLocaleString()}
         </span>
         <span>
           <Button variant="success" size="sm" onClick={toggleEdit}>

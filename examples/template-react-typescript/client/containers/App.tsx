@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { v4 as uuid } from 'uuid'
 import { Helmet } from 'react-helmet'
-import { Navbar, Image, Nav, Button, Card } from 'react-bootstrap'
+import { Navbar, Image, Button, Card } from 'react-bootstrap'
 import {
   useStaticResolver,
   useQuery,
@@ -42,8 +42,8 @@ const App = () => {
           <Image
             src={staticResolver('/resolve-logo.png')}
             className="d-inline-block align-top"
-          />{' '}
-          reSolveApplicaion
+          />
+          <span>{' reSolve Application'}</span>
         </Navbar.Brand>
       </Navbar>
       <div className="content-wrapper">

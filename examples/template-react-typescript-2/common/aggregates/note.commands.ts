@@ -1,13 +1,13 @@
+import { Aggregate } from '@resolve-js/core'
 import { NOTE_CREATED, NOTE_DELETED, NOTE_MODIFIED } from '../event-types'
 
-export default {
-  createNote: (state, { payload: { text } }) => {
+const aggregate: Aggregate = {
+  createNote: (state) => {
     if (state.modifiedAt) {
       throw new Error('Note already exists')
     }
     return {
       type: NOTE_CREATED,
-      payload: { text },
     }
   },
   modifyNote: (state, { payload: { text } }) => {
@@ -28,3 +28,5 @@ export default {
     }
   },
 }
+
+export default aggregate
