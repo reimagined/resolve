@@ -5,7 +5,13 @@ import path from 'path'
 import liveEntryDir from './live-entry-dir'
 
 const log = debugLevels('resolve:runtime:liveRequire')
-const pureRequire = __non_webpack_require__ //eslint-disable-line no-undef
+
+let pureRequire
+try {
+  pureRequire = __non_webpack_require__ //eslint-disable-line no-undef
+} catch (error) {
+  pureRequire = require
+}
 
 const liveRequire = (filePath) => {
   const entryPointDirname = liveEntryDir()

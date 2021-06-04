@@ -1,7 +1,13 @@
 import path from 'path'
 import entryPointMarker from './entry-point-marker'
 
-const pureRequire = __non_webpack_require__ //eslint-disable-line no-undef
+let pureRequire
+try {
+  pureRequire = __non_webpack_require__ //eslint-disable-line no-undef
+} catch (error) {
+  pureRequire = require
+}
+
 const entryPointDirnamePlaceholder = Symbol('EntryPointDirnamePlaceholder')
 let entryPointDirname = entryPointDirnamePlaceholder
 
