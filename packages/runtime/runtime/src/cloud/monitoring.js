@@ -36,16 +36,18 @@ const monitoringError = async (log, monitoringData, groupData, error) => {
   try {
     log.verbose(`Collect error`)
 
-    const dimensionsList = createErrorDimensionsList(error).reduce(
-      (acc, errorDimensions) =>
-        acc.concat(
-          groupData.errorMetricDimensionsList.map((groupDimensions) => [
-            ...groupDimensions,
-            ...errorDimensions,
-          ])
-        ),
-      []
-    )
+    const dimensionsList = createErrorDimensionsList(error)
+      .reduce(
+        (acc, errorDimensions) =>
+          acc.concat(
+            groupData.errorMetricDimensionsList.map((groupDimensions) => [
+              ...groupDimensions,
+              ...errorDimensions,
+            ])
+          ),
+        []
+      )
+      .concat(groupData.globalDimensions)
 
     const now = new Date()
     let isDimensionCountLimitReached = false
@@ -265,8 +267,12 @@ const createMonitoringImplementation = (log, monitoringData, groupData) => {
     group: (config) => {
       const groupDimensions = createGroupDimensions(config)
 
+      const globalDimensions =
+        config.Part != null ? [[{ Name: 'Part', Value: config.Part }]] : []
+
       const nextGroupData = {
         timerMap: {},
+        globalDimensions: groupData.globalDimensions.concat(globalDimensions),
         metricDimensions: groupData.metricDimensions.concat(groupDimensions),
         durationMetricDimensionsList: groupData.durationMetricDimensionsList.map(
           (dimensions) => [...dimensions, ...groupDimensions]
@@ -308,6 +314,7 @@ const createMonitoring = ({ deploymentId, resolveVersion }) => {
   const monitoringGroupData = {
     timerMap: {},
     metricDimensions: [],
+    globalDimensions: [],
     durationMetricDimensionsList: [
       [
         { Name: 'DeploymentId', Value: deploymentId },

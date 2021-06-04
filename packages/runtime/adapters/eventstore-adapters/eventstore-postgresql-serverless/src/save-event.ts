@@ -106,7 +106,7 @@ const saveEvent = async (
               ${serializedEvent},
               ${byteLength}
             ) RETURNING "timestamp") (SELECT "threadId", 0 as timestamp,
-            (CASE WHEN (SELECT "threadId" FROM "vector_id" LIMIT 1) = "threadId" THEN "threadCounter"+1
+            (CASE WHEN (SELECT "threadId" FROM "vector_id" LIMIT 1) = "threadId" THEN (SELECT "threadCounter" FROM "update_vector_id" LIMIT 1)
               ELSE "threadCounter" END) AS "newThreadCounter"
             FROM ${databaseNameAsId}.${threadsTableAsId}
             ORDER BY "threadId" ASC) UNION ALL (SELECT 
