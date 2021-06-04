@@ -11,11 +11,12 @@ const entities: ReadModel<any> = {
     })
   },
   [ENTITY_CREATED]: async (store, { aggregateId, payload: { name } }) => {
-    const entity = {
-      id: aggregateId,
-      name,
-    }
-    await store.update('Entities', entity, { upsert: true })
+    await store.update(
+      'Entities',
+      { id: aggregateId },
+      { $set: { name } },
+      { upsert: true }
+    )
   },
   [ENTITY_DELETED]: async (store, { aggregateId }) => {
     await store.delete('Entities', { id: aggregateId })

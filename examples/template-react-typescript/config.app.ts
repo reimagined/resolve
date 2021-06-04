@@ -16,8 +16,8 @@ const appConfig = {
   ],
   viewModels: [
     {
-      name: 'EntityDetails',
-      projection: 'common/view-models/entityDetails.projection.ts',
+      name: 'EntityItems',
+      projection: 'common/view-models/entityItems.projection.ts',
     },
   ],
   clientEntries: [

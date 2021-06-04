@@ -36,35 +36,15 @@ const App = () => {
 
   return (
     <div>
-      <Helmet title="reSolve Hello World" link={links} meta={[meta]} />
+      <Helmet title="reSolve Application" link={links} meta={[meta]} />
       <Navbar>
         <Navbar.Brand href="#home">
           <Image
             src={staticResolver('/resolve-logo.png')}
             className="d-inline-block align-top"
           />{' '}
-          Hello World Example
+          reSolveApplicaion
         </Navbar.Brand>
-
-        <Nav className="ml-auto">
-          <Navbar.Text className="navbar-right">
-            <Nav.Link href="https://facebook.com/resolvejs/">
-              <Image src={staticResolver('/fb-logo.png')} />
-            </Nav.Link>
-          </Navbar.Text>
-
-          <Navbar.Text className="navbar-right">
-            <Nav.Link href="https://twitter.com/resolvejs">
-              <Image src={staticResolver('/twitter-logo.png')} />
-            </Nav.Link>
-          </Navbar.Text>
-
-          <Navbar.Text className="navbar-right">
-            <Nav.Link href="https://github.com/reimagined/resolve">
-              <Image src={staticResolver('/github-logo.png')} />
-            </Nav.Link>
-          </Navbar.Text>
-        </Nav>
       </Navbar>
       <div className="content-wrapper">
         <EntityList />
@@ -127,6 +107,7 @@ const EntityList = () => {
           <Entity
             key={entity.id}
             id={entity.id}
+            name={entity.name}
             onDelete={() => deleteEntityCommand(entity.id)}
           />
         ))}
@@ -135,15 +116,10 @@ const EntityList = () => {
   )
 }
 
-const Entity = ({ id, onDelete }) => {
-  const [name, setName] = useState('')
+const Entity = ({ id, name, onDelete }) => {
   const [items, setItems] = useState([])
 
-  const setEntity = (entity) => {
-    setName(entity.name)
-    setItems(entity.items)
-  }
-  const { connect, dispose } = useViewModel('EntityDetails', [id], setEntity)
+  const { connect, dispose } = useViewModel('EntityItems', [id], setItems)
 
   useEffect(() => {
     connect()
