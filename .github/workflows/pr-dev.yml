@@ -93,7 +93,7 @@ jobs:
     if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
     services:
       postgres:
-        image: postgres:10
+        image: clkao/postgres-plv8:10-2
         env:
           POSTGRES_PASSWORD: postgres
         ports:
