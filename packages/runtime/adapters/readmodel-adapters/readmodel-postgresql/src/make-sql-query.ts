@@ -278,7 +278,7 @@ const makeSqlQuery: MakeSqlQueryMethod = (
             upsertKeys != null &&
             upsertKeys.length > 0
             ? `WITH "Updating" AS (
-          ${baseQuery} RETURNING COUNT(*) AS "Count"
+          ${baseQuery} RETURNING *
         ), "Inserting" AS (
           SELECT ${upsertKeys
             .map(
@@ -288,7 +288,7 @@ const makeSqlQuery: MakeSqlQueryMethod = (
                 )} AS JSONB) AS ${escapeId(key)}`
             )
             .join(', ')}
-          WHERE (SELECT "Updating"."Count") = 0
+          WHERE NOT EXISTS(SELECT * FROM "Updating")
         )
         INSERT INTO ${escapeId(schemaName)}.${escapeId(
                 `${tablePrefix}${tableName}`
