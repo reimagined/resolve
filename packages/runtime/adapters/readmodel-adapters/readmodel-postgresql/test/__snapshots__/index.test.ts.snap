@@ -828,7 +828,7 @@ Array [
           SELECT CAST('\\"id-1\\"' AS JSONB) AS \\"id\\", CAST('\\"Products-NEW\\"' AS JSONB) AS \\"name\\"
           WHERE NOT EXISTS(SELECT * FROM \\"Updating\\")
         )
-        INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"
+        INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"(\\"id\\", \\"name\\")
         SELECT * FROM \\"Inserting\\"
         ON CONFLICT DO NOTHING
         ;",
@@ -853,7 +853,7 @@ Array [
           SELECT CAST('\\"id-3\\"' AS JSONB) AS \\"id\\", CAST('\\"Entries\\"' AS JSONB) AS \\"name\\"
           WHERE NOT EXISTS(SELECT * FROM \\"Updating\\")
         )
-        INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"
+        INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"(\\"id\\", \\"name\\")
         SELECT * FROM \\"Inserting\\"
         ON CONFLICT DO NOTHING
         ;",
