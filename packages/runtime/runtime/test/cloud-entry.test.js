@@ -3,6 +3,10 @@ import { ConcurrentError } from '@resolve-js/eventstore-base'
 
 import initCloudEntry from '../src/cloud/index'
 
+jest.mock('../src/common/utils/pure-require.js', () => ({
+  default: require,
+}))
+
 describe('Cloud entry', () => {
   let assemblies, constants, domain, redux, routes
   let getCloudEntryWorker, lambdaContext
