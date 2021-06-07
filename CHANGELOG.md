@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.4...HEAD)
 
+**New features:**
+
+- Implement inline projection execution in RDBMS PostgreSQL via PLV8 extenstion [\#1898](https://github.com/reimagined/resolve/pull/1898)
+
 **Bug fixes:**
 
 - SQLITE\_ERROR: cannot start a transaction within a transaction [\#1886](https://github.com/reimagined/resolve/issues/1886)
