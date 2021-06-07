@@ -823,10 +823,10 @@ Array [
       SET \\"name\\" = CAST('\\"Products-NEW\\"' AS JSONB)  WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
-    RETURNING COUNT(*) AS \\"Count\\"
+    RETURNING *
         ), \\"Inserting\\" AS (
           SELECT CAST('\\"id-1\\"' AS JSONB) AS \\"id\\", CAST('\\"Products-NEW\\"' AS JSONB) AS \\"name\\"
-          WHERE (SELECT \\"Updating\\".\\"Count\\") = 0
+          WHERE NOT EXISTS(SELECT * FROM \\"Updating\\")
         )
         INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"
         SELECT * FROM \\"Inserting\\"
@@ -848,10 +848,10 @@ Array [
       SET \\"name\\" = CAST('\\"Entries\\"' AS JSONB)  WHERE 
     (((\\"id\\" = CAST('\\"id-3\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-3\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-3\\"' AS JSONB) is null)))
-    RETURNING COUNT(*) AS \\"Count\\"
+    RETURNING *
         ), \\"Inserting\\" AS (
           SELECT CAST('\\"id-3\\"' AS JSONB) AS \\"id\\", CAST('\\"Entries\\"' AS JSONB) AS \\"name\\"
-          WHERE (SELECT \\"Updating\\".\\"Count\\") = 0
+          WHERE NOT EXISTS(SELECT * FROM \\"Updating\\")
         )
         INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"
         SELECT * FROM \\"Inserting\\"
