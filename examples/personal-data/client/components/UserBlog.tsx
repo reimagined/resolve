@@ -7,7 +7,7 @@ import FeedByAuthor from './FeedByAuthor'
 import Loading from './Loading'
 
 const BlogHeader = ({ userId }) => {
-  const [user, setUser] = useState('unknown')
+  const [user, setUser] = useState<any>('unknown')
   const getUser = useQuery(
     {
       name: 'user-profiles',
@@ -41,7 +41,7 @@ const UserBlog = ({
     params: { id: authorId },
   },
 }) => {
-  const [user, setUser] = useState('unknown')
+  const [user, setUser] = useState<any>('unknown')
   const getUser = useQuery(
     {
       name: 'user-profiles',

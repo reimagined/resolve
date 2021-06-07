@@ -145,7 +145,7 @@ const RegistrationForm = ({ user }) => {
           <Col>
             <div className="mb-3">
               {user ? (
-                <Button onClick={update}>Update</Button>
+                <Button onClick={() => update()}>Update</Button>
               ) : (
                 <Button disabled={!agree} type="submit">
                   Sign Up

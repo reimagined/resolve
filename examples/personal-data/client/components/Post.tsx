@@ -54,7 +54,7 @@ const Post = ({ post }) => {
       </CardBody>
       {author === user.id && (
         <CardFooter style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-          <Button outline color="danger" size="sm" onClick={deletePost}>
+          <Button outline color="danger" size="sm" onClick={() => deletePost()}>
             Delete post
           </Button>
         </CardFooter>

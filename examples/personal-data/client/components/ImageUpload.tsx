@@ -108,7 +108,7 @@ const ImageUploader = ({ owner, onUploaded }) => {
     setState({ ...state, picked: true })
   }
 
-  const inputRef = React.createRef()
+  const inputRef = React.createRef<any>()
 
   const uploadFormRender = (onSubmitHandler) => {
     return (
@@ -158,9 +158,9 @@ const ImageUploader = ({ owner, onUploaded }) => {
       loadedId: uploadId,
       uploadId: null,
     })
-    uploadStarted(aggregateId)
+    new Promise(() => uploadStarted(aggregateId))
       .then(() => {
-        return uploadFinished(aggregateId)
+        return new Promise(() => uploadFinished(aggregateId))
       })
       .then(() => {
         if (onUploaded && uploadId) {

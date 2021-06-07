@@ -133,13 +133,15 @@ const UserInfo = (props) => {
           <DropdownItem tag={Link} to="/profile">
             Update my profile
           </DropdownItem>
-          <DropdownItem onClick={gatherPersonalData}>
+          <DropdownItem onClick={() => gatherPersonalData()}>
             Gather my personal data
           </DropdownItem>
           <DropdownItem onClick={deleteKeys}>
             Delete my personal keys
           </DropdownItem>
-          <DropdownItem onClick={deleteMe}>Delete my profile</DropdownItem>
+          <DropdownItem onClick={() => deleteMe()}>
+            Delete my profile
+          </DropdownItem>
           {archiveSubmenu}
         </DropdownMenu>
       </Dropdown>
@@ -150,7 +152,7 @@ const UserInfo = (props) => {
 const Header = () => {
   const asset = useStaticResolver()
 
-  const [user, setUser] = useState('unknown')
+  const [user, setUser] = useState(null)
   const getUser = useQuery(
     {
       name: 'user-profiles',
@@ -196,7 +198,7 @@ const Header = () => {
               Users
             </NavLink>
           </NavItem>
-          {typeof user === 'object' && user != null && (
+          {user && (
             <NavItem>
               <NavLink tag={Link} to={`/blog/${user.id}`}>
                 My blog

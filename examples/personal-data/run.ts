@@ -17,6 +17,7 @@ import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import cloudConfig from './config.cloud'
 import testFunctionalConfig from './config.test-functional'
+import adjustWebpackConfigs from './config.adjust-webpack'
 
 const launchMode = process.argv[2]
 
@@ -30,7 +31,7 @@ void (async () => {
   const moduleAuth = resolveModuleAuth([
     {
       name: 'local-strategy',
-      createStrategy: 'auth/create-strategy.js',
+      createStrategy: 'auth/create-strategy.ts',
       logoutRoute: {
         path: 'logout',
         method: 'POST',
@@ -39,12 +40,12 @@ void (async () => {
         {
           path: 'register',
           method: 'POST',
-          callback: 'auth/route-register-callback.js',
+          callback: 'auth/route-register-callback.ts',
         },
         {
           path: 'login',
           method: 'POST',
-          callback: 'auth/route-login-callback.js',
+          callback: 'auth/route-login-callback.ts',
         },
       ],
     },
@@ -60,33 +61,37 @@ void (async () => {
   switch (launchMode) {
     case 'dev': {
       const resolveConfig = merge(baseConfig, devConfig)
-      await watch(resolveConfig)
+      await watch(resolveConfig, adjustWebpackConfigs)
       break
     }
 
     case 'reset': {
       const resolveConfig = merge(baseConfig, devConfig)
-      await reset(resolveConfig, {
-        dropEventStore: false,
-        dropEventSubscriber: true,
-        dropReadModels: true,
-        dropSagas: true,
-      })
+      await reset(
+        resolveConfig,
+        {
+          dropEventStore: false,
+          dropEventSubscriber: true,
+          dropReadModels: true,
+          dropSagas: true,
+        },
+        adjustWebpackConfigs
+      )
       break
     }
 
     case 'build': {
-      await build(merge(baseConfig, prodConfig))
+      await build(merge(baseConfig, prodConfig), adjustWebpackConfigs)
       break
     }
 
     case 'start': {
-      await start(merge(baseConfig, prodConfig))
+      await start(merge(baseConfig, prodConfig), adjustWebpackConfigs)
       break
     }
 
     case 'cloud': {
-      await build(merge(baseConfig, cloudConfig))
+      await build(merge(baseConfig, cloudConfig), adjustWebpackConfigs)
       break
     }
 
@@ -98,15 +103,20 @@ void (async () => {
         testFunctionalConfig
       )
 
-      await reset(resolveConfig, {
-        dropEventStore: true,
-        dropEventSubscriber: true,
-        dropReadModels: true,
-        dropSagas: true,
-      })
+      await reset(
+        resolveConfig,
+        {
+          dropEventStore: true,
+          dropEventSubscriber: true,
+          dropReadModels: true,
+          dropSagas: true,
+        },
+        adjustWebpackConfigs
+      )
 
       await runTestcafe({
         resolveConfig,
+        adjustWebpackConfigs,
         functionalTestsDir: 'test/functional',
         browser: process.argv[3],
         customArgs: ['--skip-js-errors', '--stop-on-first-fail'],

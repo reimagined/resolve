@@ -18,7 +18,7 @@ const ContentSelector = ({ user }) => {
   return <Redirect to={`/blog/${user.id}`} />
 }
 
-const Home = ({ location: { hash } = {} }) => {
+const Home = ({ location: { hash } }) => {
   const [user, setUser] = useState('unknown')
   const getUser = useQuery(
     {

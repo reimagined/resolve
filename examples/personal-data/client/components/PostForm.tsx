@@ -44,7 +44,7 @@ const PostForm = ({ successHandler, errorHandler }) => {
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value })
   }
-  const textareaRef = React.createRef()
+  const textareaRef = React.createRef<any>()
   const onUploaded = (value) => {
     const textarea = textareaRef.current
     let nextContent = textarea.value
@@ -84,7 +84,7 @@ const PostForm = ({ successHandler, errorHandler }) => {
             className="mt-3"
             style={{ display: 'flex', alignItems: 'flex-start' }}
           >
-            <Button onClick={publish} className="mr-1">
+            <Button onClick={() => publish()} className="mr-1">
               Publish
             </Button>
             <ImageUploader owner={user} onUploaded={onUploaded} />
