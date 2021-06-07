@@ -2,16 +2,10 @@ import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import debugLevels from '@resolve-js/debug-levels'
 import path from 'path'
 
+import pureRequire from './pure-require'
 import liveEntryDir from './live-entry-dir'
 
 const log = debugLevels('resolve:runtime:liveRequire')
-
-let pureRequire
-try {
-  pureRequire = __non_webpack_require__ //eslint-disable-line no-undef
-} catch (error) {
-  pureRequire = require
-}
 
 const liveRequire = (filePath) => {
   const entryPointDirname = liveEntryDir()
