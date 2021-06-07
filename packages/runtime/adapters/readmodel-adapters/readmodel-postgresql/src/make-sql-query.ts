@@ -292,7 +292,7 @@ const makeSqlQuery: MakeSqlQueryMethod = (
         )
         INSERT INTO ${escapeId(schemaName)}.${escapeId(
                 `${tablePrefix}${tableName}`
-              )}
+              )}(${upsertKeys.map((key) => escapeId(key)).join(', ')})
         SELECT * FROM "Inserting"
         ON CONFLICT DO NOTHING
         ;`
