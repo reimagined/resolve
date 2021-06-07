@@ -1,4 +1,4 @@
-\import binaryCase from 'binary-case'
+import binaryCase from 'binary-case'
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
 import { parse as parseQuery } from 'qs'
