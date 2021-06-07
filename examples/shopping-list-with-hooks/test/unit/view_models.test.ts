@@ -51,9 +51,8 @@ describe('view-models', () => {
         name,
         list: [],
       }
-      const event = {}
 
-      expect(projection[SHOPPING_LIST_REMOVED](state, event)).toEqual({
+      expect(projection[SHOPPING_LIST_REMOVED]()).toEqual({
         removed: true,
       })
     })

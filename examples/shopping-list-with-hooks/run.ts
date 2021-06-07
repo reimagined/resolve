@@ -18,6 +18,7 @@ import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test-functional'
+import adjustWebpackConfigs from './config.adjust-webpack'
 
 const launchMode = process.argv[2]
 
@@ -33,29 +34,42 @@ void (async () => {
           moduleAdmin
         )
 
-        await reset(resolveConfig, {
-          dropEventStore: false,
-          dropEventSubscriber: true,
-          dropReadModels: true,
-          dropSagas: true,
-        })
+        await reset(
+          resolveConfig,
+          {
+            dropEventStore: false,
+            dropEventSubscriber: true,
+            dropReadModels: true,
+            dropSagas: true,
+          },
+          adjustWebpackConfigs
+        )
 
-        await watch(resolveConfig)
+        await watch(resolveConfig, adjustWebpackConfigs)
         break
       }
 
       case 'build': {
-        await build(merge(defaultResolveConfig, appConfig, prodConfig))
+        await build(
+          merge(defaultResolveConfig, appConfig, prodConfig),
+          adjustWebpackConfigs
+        )
         break
       }
 
       case 'cloud': {
-        await build(merge(defaultResolveConfig, appConfig, cloudConfig))
+        await build(
+          merge(defaultResolveConfig, appConfig, cloudConfig),
+          adjustWebpackConfigs
+        )
         break
       }
 
       case 'start': {
-        await start(merge(defaultResolveConfig, appConfig, prodConfig))
+        await start(
+          merge(defaultResolveConfig, appConfig, prodConfig),
+          adjustWebpackConfigs
+        )
         break
       }
 
@@ -64,7 +78,11 @@ void (async () => {
 
         const directory = process.argv[3]
 
-        await importEventStore(resolveConfig, { directory })
+        await importEventStore(
+          resolveConfig,
+          { directory },
+          adjustWebpackConfigs
+        )
         break
       }
 
@@ -73,7 +91,11 @@ void (async () => {
 
         const directory = process.argv[3]
 
-        await exportEventStore(resolveConfig, { directory })
+        await exportEventStore(
+          resolveConfig,
+          { directory },
+          adjustWebpackConfigs
+        )
         break
       }
 
@@ -86,15 +108,20 @@ void (async () => {
           moduleAdmin
         )
 
-        await reset(resolveConfig, {
-          dropEventStore: true,
-          dropEventSubscriber: true,
-          dropReadModels: true,
-          dropSagas: true,
-        })
+        await reset(
+          resolveConfig,
+          {
+            dropEventStore: true,
+            dropEventSubscriber: true,
+            dropReadModels: true,
+            dropSagas: true,
+          },
+          adjustWebpackConfigs
+        )
 
         await runTestcafe({
           resolveConfig,
+          adjustWebpackConfigs,
           functionalTestsDir: 'test/functional',
           browser: process.argv[3],
           customArgs: ['--stop-on-first-fail'],

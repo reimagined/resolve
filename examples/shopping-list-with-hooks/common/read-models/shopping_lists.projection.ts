@@ -1,10 +1,11 @@
+import { ReadModel } from '@resolve-js/core'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_REMOVED,
   SHOPPING_LIST_RENAMED,
 } from '../event_types'
 
-export default {
+const projection: ReadModel<any> = {
   Init: async (store) => {
     await store.defineTable('ShoppingLists', {
       indexes: {
@@ -38,3 +39,5 @@ export default {
     await store.update('ShoppingLists', { id: aggregateId }, { $set: { name } })
   },
 }
+
+export default projection

@@ -13,7 +13,7 @@ const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
   )
 
   return (
-    <Button variant="danger" onClick={removeShoppingListCommand}>
+    <Button variant="danger" onClick={() => removeShoppingListCommand()}>
       <i className="far fa-trash-alt" />
     </Button>
   )

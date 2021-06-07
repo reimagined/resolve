@@ -49,7 +49,7 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
           <Button
             className="example-button"
             variant="success"
-            onClick={createShoppingListCommand}
+            onClick={() => createShoppingListCommand()}
           >
             Add Shopping List
           </Button>

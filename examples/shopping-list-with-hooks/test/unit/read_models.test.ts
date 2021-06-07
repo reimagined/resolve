@@ -99,7 +99,7 @@ describe('read-models', () => {
         })
         .query('all', {})
 
-      expect(shoppingLists.length).toEqual(0)
+      expect(shoppingLists).toEqual([])
     })
   })
 })

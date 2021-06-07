@@ -16,7 +16,7 @@ const App = ({
       name="Shopping List"
       favicon="/favicon.ico"
       css={['/bootstrap.min.css', '/fontawesome.min.css', '/style.css']}
-      shoppingListId={id}
+      // shoppingListId={id}
     />
     {renderRoutes(route.routes)}
     {children}

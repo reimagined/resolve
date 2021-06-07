@@ -20,6 +20,7 @@ const ShoppingList = ({
     name: '',
     id: null,
     list: [],
+    removed: false,
   })
   const { connect, dispose } = useViewModel(
     'shoppingList',
@@ -95,7 +96,11 @@ const ShoppingList = ({
       <Form.Label>Shopping list name</Form.Label>
       <Form.Group>
         <InputGroup size="lg">
-          <Button size="lg" variant="danger" onClick={removeShoppingList}>
+          <Button
+            size="lg"
+            variant="danger"
+            onClick={() => removeShoppingList()}
+          >
             <i className="far fa-trash-alt" />
           </Button>
           <Form.Control
@@ -103,7 +108,7 @@ const ShoppingList = ({
             value={shoppingList.name}
             onChange={updateShoppingListName}
             onKeyPress={onShoppingListNamePressEnter}
-            onBlur={renameShoppingList}
+            onBlur={() => renameShoppingList()}
           />
         </InputGroup>
       </Form.Group>

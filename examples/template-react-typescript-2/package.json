@@ -7,7 +7,7 @@
     "build": "tsc && babel-node --extensions=.ts,.tsx run.ts build",
     "dev": "tsc && babel-node --extensions=.ts,.tsx run.ts dev",
     "start": "tsc && babel-node --extensions=.ts,.tsx run.ts start",
-    "test": "jest --testMatch=**/test/unit/*.test.js --verbose --passWithNoTests",
+    "test": "jest --testMatch=**/test/unit/*.test.ts --verbose --passWithNoTests",
     "test:e2e": "tsc && babel-node --extensions=.ts,.tsx run.ts test:e2e",
     "type-check": "tsc"
   },
@@ -33,6 +33,7 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
+    "@types/jest": "26.0.23",
     "@babel/core": "7.14.3",
     "@babel/plugin-proposal-class-properties": "7.13.0",
     "@babel/plugin-proposal-export-default-from": "7.12.13",

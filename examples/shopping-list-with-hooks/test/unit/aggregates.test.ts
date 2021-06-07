@@ -36,9 +36,8 @@ describe('aggregates', () => {
 
     it('command "removeShoppingList" should create an event to remove the list', () => {
       const state = { createdAt: Date.now() }
-      const command = {}
 
-      expect(commands.removeShoppingList(state, command)).toEqual({
+      expect(commands.removeShoppingList(state)).toEqual({
         type: SHOPPING_LIST_REMOVED,
       })
     })

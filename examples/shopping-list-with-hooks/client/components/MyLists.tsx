@@ -5,12 +5,12 @@ import ShoppingLists from './ShoppingLists'
 import ShoppingListCreator from './ShoppingListCreator'
 
 const MyLists = () => {
-  const [lists, setLists] = useState({})
+  const [lists, setLists] = useState([])
 
   const getLists = useQuery(
     { name: 'ShoppingLists', resolver: 'all', args: {} },
     (error, result) => {
-      setLists(result)
+      setLists(result.data)
     }
   )
   useEffect(() => {
@@ -21,19 +21,16 @@ const MyLists = () => {
     <div className="example-wrapper">
       My lists
       <ShoppingLists
-        lists={lists ? lists.data || [] : []}
+        lists={lists || []}
         onRemoveSuccess={(err, result) => {
-          setLists({
-            ...lists,
-            data: lists.data.filter((list) => list.id !== result.aggregateId),
-          })
+          setLists(lists.filter((list) => list.id !== result.aggregateId))
         }}
       />
       <ShoppingListCreator
-        lists={lists ? lists.data || [] : []}
+        lists={lists || []}
         onCreateSuccess={(err, result) => {
-          const nextLists = { ...lists }
-          nextLists.data.push({
+          const nextLists = [...lists]
+          nextLists.push({
             name: result.payload.name,
             createdAt: result.timestamp,
             id: result.aggregateId,
