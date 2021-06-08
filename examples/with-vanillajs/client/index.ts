@@ -30,13 +30,16 @@ const main = async (resolveContext) => {
       }
     )
 
+  const queryResult: any = await client.query({
+    name: 'chat',
+    aggregateIds: [chatRoom],
+    args: undefined,
+  })
+
   const {
     data,
     meta: { url, cursor },
-  } = await client.query({
-    name: 'chat',
-    aggregateIds: [chatRoom],
-  })
+  } = queryResult
 
   let chatViewModelState = data
 

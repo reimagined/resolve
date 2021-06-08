@@ -5,13 +5,13 @@
   "description": "used as a template for new reSolve applications",
   "scripts": {
     "build": "echo || exit 0",
-    "cloud": "babel-node ./run.js cloud",
-    "dev": "babel-node ./run.js dev",
+    "cloud": "tsc && babel-node --extensions=.ts,.tsx run.ts cloud",
+    "dev": "tsc && babel-node --extensions=.ts,.tsx run.ts dev",
     "export-event-store": "echo || exit 0",
     "import-event-store": "echo || exit 0",
     "start": "echo || exit 0",
     "test": "echo || exit 0",
-    "test:e2e": "babel-node ./run.js test:e2e"
+    "test:e2e": "tsc && babel-node --extensions=.ts,.tsx run.ts test:e2e"
   },
   "dependencies": {
     "@babel/node": "7.14.2",

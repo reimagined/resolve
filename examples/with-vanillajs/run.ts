@@ -12,6 +12,7 @@ import appConfig from './config.app'
 import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import testFunctionalConfig from './config.test-functional'
+import adjustWebpackConfigs from './config.adjust-webpack'
 
 const launchMode = process.argv[2]
 
@@ -20,18 +21,22 @@ void (async () => {
     switch (launchMode) {
       case 'dev': {
         const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
-        await watch(resolveConfig)
+        await watch(resolveConfig, adjustWebpackConfigs)
         break
       }
 
       case 'reset': {
         const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig)
-        await reset(resolveConfig, {
-          dropEventStore: false,
-          dropEventSubscriber: true,
-          dropReadModels: true,
-          dropSagas: true,
-        })
+        await reset(
+          resolveConfig,
+          {
+            dropEventStore: false,
+            dropEventSubscriber: true,
+            dropReadModels: true,
+            dropSagas: true,
+          },
+          adjustWebpackConfigs
+        )
         break
       }
 
@@ -42,7 +47,7 @@ void (async () => {
           cloudConfig
         )
 
-        await build(resolveConfig)
+        await build(resolveConfig, adjustWebpackConfigs)
         break
       }
 
@@ -53,15 +58,20 @@ void (async () => {
           testFunctionalConfig
         )
 
-        await reset(resolveConfig, {
-          dropEventStore: true,
-          dropEventSubscriber: true,
-          dropReadModels: true,
-          dropSagas: true,
-        })
+        await reset(
+          resolveConfig,
+          {
+            dropEventStore: true,
+            dropEventSubscriber: true,
+            dropReadModels: true,
+            dropSagas: true,
+          },
+          adjustWebpackConfigs
+        )
 
         await runTestcafe({
           resolveConfig,
+          adjustWebpackConfigs,
           functionalTestsDir: 'test/functional',
           browser: process.argv[3],
           customArgs: ['--stop-on-first-fail'],
