@@ -19,6 +19,7 @@ const ShoppingList = ({
   const { connect, dispose, selector: thisList } = useReduxViewModel({
     name: 'shoppingList',
     aggregateIds: [aggregateId],
+    args: undefined,
   })
 
   const { data: shoppingList, status: shoppingListStatus } = useSelector(
@@ -105,7 +106,11 @@ const ShoppingList = ({
       <Form.Label>Shopping list name</Form.Label>
       <Form.Group>
         <InputGroup size="lg">
-          <Button size="lg" variant="danger" onClick={removeShoppingList}>
+          <Button
+            size="lg"
+            variant="danger"
+            onClick={() => removeShoppingList()}
+          >
             <i className="far fa-trash-alt" />
           </Button>
           <Form.Control
@@ -115,7 +120,7 @@ const ShoppingList = ({
             }
             onChange={updateShoppingListName}
             onKeyPress={onShoppingListNamePressEnter}
-            onBlur={renameShoppingList}
+            onBlur={() => renameShoppingList()}
           />
         </InputGroup>
       </Form.Group>
@@ -142,7 +147,7 @@ const ShoppingList = ({
         <Col md={4}>
           <Button
             className="example-button"
-            bsstyle="success"
+            variant="success"
             onClick={() => createShoppingItem(itemText)}
           >
             Add Item

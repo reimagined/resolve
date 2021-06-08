@@ -28,7 +28,7 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
         type="checkbox"
         label={text}
         checked={checked}
-        onChange={toggleItem}
+        onChange={() => toggleItem()}
       />
       <StaticImage
         className="example-close-button"

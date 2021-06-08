@@ -46,7 +46,7 @@ const useOptimisticLists = () => {
     }
   )
 
-  const lists = useSelector((state) => state.optimisticShoppingLists)
+  const lists = useSelector<any>((state) => state.optimisticShoppingLists)
 
   return {
     getLists,
@@ -55,7 +55,7 @@ const useOptimisticLists = () => {
   }
 }
 
-export default () => {
+const ShoppingLists = () => {
   const { getLists, removeShoppingList, lists } = useOptimisticLists()
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export default () => {
           </tr>
         </thead>
         <tbody>
-          {lists.map(({ id, name }, index) => (
+          {(lists as any[]).map(({ id, name }, index) => (
             <tr key={id}>
               <td>{index + 1}</td>
               <td>
@@ -97,3 +97,5 @@ export default () => {
     </div>
   )
 }
+
+export default ShoppingLists

@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "typescript": {
+      "configPath": "./test/functional/tsconfig.json"
+    }
+  }
+}

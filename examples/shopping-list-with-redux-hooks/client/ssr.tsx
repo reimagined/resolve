@@ -12,13 +12,7 @@ import getRedux from './get-redux'
 
 const ssrHandler = async (serverContext, req, res) => {
   try {
-    const {
-      serverImports,
-      constants,
-      seedClientEnvs,
-      utils,
-      viewModels,
-    } = serverContext
+    const { constants, seedClientEnvs, utils, viewModels } = serverContext
     const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils
     const { rootPath, staticPath, jwtCookie } = constants
 
@@ -27,7 +21,7 @@ const ssrHandler = async (serverContext, req, res) => {
     const url = req.path.substring(baseQueryUrl.length)
     history.push(url)
 
-    const redux = getRedux(serverImports, history)
+    const redux = getRedux()
     const routes = getRoutes()
 
     const jwt = {}

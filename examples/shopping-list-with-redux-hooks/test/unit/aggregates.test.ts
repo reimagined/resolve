@@ -14,9 +14,9 @@ describe('aggregates', () => {
       const name = 'test'
 
       const state = {}
-      const command = { payload: { name } }
+      const command: any = { payload: { name } }
 
-      expect(commands.createShoppingList(state, command)).toEqual({
+      expect(commands.createShoppingList(state, command, undefined)).toEqual({
         type: SHOPPING_LIST_CREATED,
         payload: { name },
       })
@@ -26,9 +26,9 @@ describe('aggregates', () => {
       const name = 'test'
 
       const state = { createdAt: Date.now() }
-      const command = { payload: { name } }
+      const command: any = { payload: { name } }
 
-      expect(commands.renameShoppingList(state, command)).toEqual({
+      expect(commands.renameShoppingList(state, command, undefined)).toEqual({
         type: SHOPPING_LIST_RENAMED,
         payload: { name },
       })
@@ -36,18 +36,18 @@ describe('aggregates', () => {
 
     it('command "removeShoppingList" should create an event to remove the list', () => {
       const state = { createdAt: Date.now() }
-      const command = {}
+      const command: any = {}
 
-      expect(commands.removeShoppingList(state, command)).toEqual({
+      expect(commands.removeShoppingList(state, command, undefined)).toEqual({
         type: SHOPPING_LIST_REMOVED,
       })
     })
 
     it('command "createShoppingItem" should create an event to create a item', () => {
       const state = { createdAt: Date.now() }
-      const command = { payload: { id: 'id', text: 'id' } }
+      const command: any = { payload: { id: 'id', text: 'id' } }
 
-      expect(commands.createShoppingItem(state, command)).toEqual({
+      expect(commands.createShoppingItem(state, command, undefined)).toEqual({
         type: SHOPPING_ITEM_CREATED,
         payload: { id: 'id', text: 'id' },
       })
@@ -55,9 +55,9 @@ describe('aggregates', () => {
 
     it('command "toggleShoppingItem" should create an event to toggle the item', () => {
       const state = { createdAt: Date.now() }
-      const command = { payload: { id: 'id' } }
+      const command: any = { payload: { id: 'id' } }
 
-      expect(commands.toggleShoppingItem(state, command)).toEqual({
+      expect(commands.toggleShoppingItem(state, command, undefined)).toEqual({
         type: SHOPPING_ITEM_TOGGLED,
         payload: { id: 'id' },
       })
@@ -65,9 +65,9 @@ describe('aggregates', () => {
 
     it('command "removeShoppingItem" should create an event to remove the item', () => {
       const state = { createdAt: Date.now() }
-      const command = { payload: { id: 'id' } }
+      const command: any = { payload: { id: 'id' } }
 
-      expect(commands.removeShoppingItem(state, command)).toEqual({
+      expect(commands.removeShoppingItem(state, command, undefined)).toEqual({
         type: SHOPPING_ITEM_REMOVED,
         payload: { id: 'id' },
       })

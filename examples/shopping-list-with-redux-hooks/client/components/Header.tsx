@@ -6,7 +6,7 @@ import { useStaticResolver } from '@resolve-js/react-hooks'
 
 import { StaticImage } from './StaticImage'
 
-const Header = ({ title, name, css, favicon }) => {
+const Header = ({ title, name, css, favicon, shoppingListId }) => {
   const resolveStatic = useStaticResolver()
   const stylesheetLinks = css.map((href) => ({
     rel: 'stylesheet',

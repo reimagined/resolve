@@ -4,28 +4,28 @@ const appConfig = {
   aggregates: [
     {
       name: 'ShoppingList',
-      commands: 'common/aggregates/shopping-list.commands.js',
-      projection: 'common/aggregates/shopping-list.projection.js',
+      commands: 'common/aggregates/shopping-list.commands.ts',
+      projection: 'common/aggregates/shopping-list.projection.ts',
     },
   ],
   viewModels: [
     {
       name: 'shoppingList',
-      projection: 'common/view-models/shopping-list.projection.js',
+      projection: 'common/view-models/shopping-list.projection.ts',
     },
   ],
   readModels: [
     {
       name: 'ShoppingLists',
-      projection: 'common/read-models/shopping-lists.projection.js',
-      resolvers: 'common/read-models/shopping-lists.resolvers.js',
+      projection: 'common/read-models/shopping-lists.projection.ts',
+      resolvers: 'common/read-models/shopping-lists.resolvers.ts',
       connectorName: 'default',
     },
   ],
   apiHandlers: [
     {
       path: '/api/shopping-lists.json',
-      handler: 'common/api-handlers/shopping-lists.js',
+      handler: 'common/api-handlers/shopping-lists.ts',
       method: 'GET',
     },
     {
@@ -42,9 +42,16 @@ const appConfig = {
     },
   ],
   clientEntries: [
-    'client/index.js',
     [
-      'client/ssr.js',
+      'client/index.tsx',
+      {
+        outputFile: 'client/index.js',
+        moduleType: 'iife',
+        target: 'web',
+      },
+    ],
+    [
+      'client/ssr.tsx',
       {
         outputFile: 'common/local-entry/ssr.js',
         moduleType: 'commonjs',
@@ -52,7 +59,7 @@ const appConfig = {
       },
     ],
     [
-      'client/ssr.js',
+      'client/ssr.tsx',
       {
         outputFile: 'common/cloud-entry/ssr.js',
         moduleType: 'commonjs',

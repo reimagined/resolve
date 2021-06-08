@@ -4,18 +4,19 @@
   "private": true,
   "description": "shows how to work with read-models and view-models using redux hooks",
   "scripts": {
-    "build": "babel-node ./run.js build",
-    "cloud": "babel-node ./run.js cloud",
-    "dev": "babel-node ./run.js dev",
-    "export-event-store": "babel-node ./run.js export-event-store",
-    "import-event-store": "babel-node ./run.js import-event-store",
+    "build": "tsc && babel-node --extensions=.ts,.tsx run.ts build",
+    "cloud": "tsc && babel-node --extensions=.ts,.tsx run.ts cloud",
+    "dev": "tsc && babel-node --extensions=.ts,.tsx run.ts dev",
+    "export-event-store": "tsc && babel-node --extensions=.ts,.tsx run.ts export-event-store",
+    "import-event-store": "tsc && babel-node --extensions=.ts,.tsx run.ts import-event-store",
     "module-admin": "module-admin",
-    "start": "babel-node ./run.js start",
-    "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:e2e": "babel-node ./run.js test:e2e"
+    "start": "tsc && babel-node --extensions=.ts,.tsx run.ts start",
+    "test": "jest --testMatch=**/test/unit/*.test.ts --verbose",
+    "test:e2e": "tsc && babel-node --extensions=.ts,.tsx run.ts test:e2e"
   },
   "dependencies": {
     "@babel/node": "7.14.2",
+    "@resolve-js/core": "0.30.4",
     "@resolve-js/eventstore-lite": "0.30.4",
     "@resolve-js/eventstore-postgresql-serverless": "0.30.4",
     "@resolve-js/module-admin": "0.30.4",
@@ -48,14 +49,21 @@
     "@babel/plugin-transform-runtime": "7.14.3",
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
+    "@babel/preset-typescript": "7.13.0",
     "@resolve-js/testing-tools": "0.30.4",
+    "@types/jest": "26.0.23",
+    "@types/node": "12.7.4",
+    "@types/react": "17.0.5",
+    "@types/react-dom": "17.0.5",
+    "@types/react-helmet": "6.1.1",
     "aws-sdk": "2.860.0",
     "aws-xray-sdk-core": "3.2.0",
     "babel-jest": "27.0.2",
     "enzyme": "3.11.0",
     "jest": "27.0.3",
     "react-test-renderer": "17.0.2",
-    "testcafe": "1.14.2"
+    "testcafe": "1.14.2",
+    "typescript": "4.3.2"
   },
   "resolveJs": {
     "isAppTemplate": true
