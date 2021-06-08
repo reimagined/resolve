@@ -16,8 +16,6 @@ const getWebpackCommonConfigs = ({
     throw new Error(`Wrong target mode ${targetMode}`)
   }
   const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
-  const isClient = false
-
   const packageJson = `common/${targetMode}-entry/package.json`
   if (!nodeModulesByAssembly.has(packageJson)) {
     nodeModulesByAssembly.set(packageJson, new Set())
@@ -95,7 +93,7 @@ const getWebpackCommonConfigs = ({
               loader: require.resolve('./val_query_loader'),
               options: {
                 resolveConfig,
-                isClient,
+                isClient: false,
               },
             },
           ],
@@ -148,9 +146,7 @@ const getWebpackCommonConfigs = ({
   const commonConfigs = [
     {
       ...baseCommonConfig,
-      name: `Server ${targetMode} entry point${
-        targetMode === 'local' ? ', local bus broker, local event store' : ''
-      }`,
+      name: `Server ${targetMode} entry point`,
       entry: {
         [`common/${targetMode}-entry/${targetMode}-entry.js`]: path.resolve(
           __dirname,

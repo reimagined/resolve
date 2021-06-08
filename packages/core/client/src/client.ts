@@ -101,8 +101,10 @@ export type QueryResult = {
   data: any
   meta?: {
     url?: string
-    cursor?: string
+    cursor?: string | null
     timestamp?: number
+    aggregateIds?: string[]
+    eventTypes?: string[]
   }
 }
 export type QueryOptions = {

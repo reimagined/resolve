@@ -33,6 +33,7 @@
     "test:e2e": "workspaces run-script -i \"examples/shopping-list-tutorial/*\" test:e2e",
     "test:integration": "workspaces run-script test:integration",
     "tutorial-test:e2e": "workspaces run-script -i \"examples/*\" test:e2e",
+    "test:integration-postgres": "cd tests && yarn test:postgres --color 2>&1",
     "test:integration-postgres-serverless": "cd tests && yarn test:postgres-serverless --color 2>&1",
     "test:clean-snapshots": "workspaces all \"yarn test -u --color 2>&1\"",
     "test:cra": "node internal/cra-test/bin/index.js",
@@ -55,8 +56,8 @@
     "@babel/runtime": "7.9.6",
     "@internal/helpers": "0.30.4",
     "@testing-library/dom": "7.21.1",
-    "@typescript-eslint/eslint-plugin": "4.22.1",
-    "@typescript-eslint/parser": "4.22.1",
+    "@typescript-eslint/eslint-plugin": "4.26.0",
+    "@typescript-eslint/parser": "4.26.0",
     "babel-eslint": "10.1.0",
     "babel-jest": "26.0.1",
     "babel-plugin-transform-inline-environment-variables": "0.4.3",
@@ -76,6 +77,6 @@
     "prettier": "2.1.1",
     "rimraf": "3.0.2",
     "ts-jest": "26.5.0",
-    "typescript": "4.2.4"
+    "typescript": "4.3.2"
   }
 }

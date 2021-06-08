@@ -13,3 +13,6 @@ export const RESOURCE_ANY = 'RESOURCE_ANY'
 
 export const IMPORT_CONSTRUCTOR = 'IMPORT_CONSTRUCTOR'
 export const IMPORT_INSTANCE = 'IMPORT_INSTANCE'
+
+export const OPTIONAL_ASSET_PREFIX = '[Optional]'
+export const OPTIONAL_ASSET_ERROR = 'OptionalError'

@@ -58,20 +58,21 @@ const createWebSocketMessageHandler = (
       connectionId,
     })
 
-    const parsedMessage = JSON.parse(message)
-    switch (parsedMessage.type) {
+    const { type, payload, requestId } = JSON.parse(message)
+    switch (type) {
       case 'pullEvents': {
         const { events, cursor } = await eventstoreAdapter.loadEvents({
           eventTypes,
           aggregateIds,
           limit: 1000000,
           eventsSizeLimit: 124 * 1024,
-          cursor: parsedMessage.cursor,
+          cursor: payload.cursor,
         })
 
         ws.send(
           JSON.stringify({
             type: 'pullEvents',
+            requestId,
             payload: { events, cursor },
           })
         )
@@ -79,7 +80,7 @@ const createWebSocketMessageHandler = (
         break
       }
       default: {
-        throw new Error(`The '${parsedMessage.type}' message type is unknown`)
+        throw new Error(`The '${type}' message type is unknown`)
       }
     }
   } catch (error) {

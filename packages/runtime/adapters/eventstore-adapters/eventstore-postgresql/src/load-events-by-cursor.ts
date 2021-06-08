@@ -3,8 +3,10 @@ import { AdapterPool } from './types'
 import {
   CursorFilter,
   SavedEvent,
+  EventsWithCursor,
   cursorToThreadArray,
   threadArrayToCursor,
+  emptyLoadEventsResult,
 } from '@resolve-js/eventstore-base'
 
 const loadEventsByCursor = async (
@@ -17,17 +19,23 @@ const loadEventsByCursor = async (
     shapeEvent,
   }: AdapterPool,
   { eventTypes, aggregateIds, cursor, limit }: CursorFilter
-): Promise<{ cursor: string; events: any[] }> => {
+): Promise<EventsWithCursor> => {
   const injectString = (value: any): string => `${escape(value)}`
   const injectNumber = (value: any): string => `${+value}`
 
   const vectorConditions = cursorToThreadArray(cursor)
 
-  const queryConditions: any[] = []
+  const queryConditions: string[] = []
   if (eventTypes != null) {
+    if (eventTypes.length === 0) {
+      return emptyLoadEventsResult(cursor)
+    }
     queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
   }
   if (aggregateIds != null) {
+    if (aggregateIds.length === 0) {
+      return emptyLoadEventsResult(cursor)
+    }
     queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
 
