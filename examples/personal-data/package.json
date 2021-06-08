@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@babel/node": "7.14.2",
-    "@babel/preset-typescript": "7.13.0",
     "@resolve-js/eventstore-lite": "0.30.4",
     "@resolve-js/eventstore-postgresql-serverless": "0.30.4",
     "@resolve-js/module-auth": "0.30.4",
@@ -45,6 +44,7 @@
     "@babel/plugin-transform-runtime": "7.14.3",
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
+    "@babel/preset-typescript": "7.13.0",
     "@resolve-js/module-admin": "0.30.4",
     "@types/jest": "26.0.23",
     "@types/node": "12.7.4",

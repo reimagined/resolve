@@ -8,7 +8,11 @@ import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
 import * as aggregateActions from '../actions/aggregate_actions'
 
-class MyLists extends React.PureComponent {
+class MyLists extends React.PureComponent<{
+  lists: any[]
+  createShoppingList: (...args: any[]) => any
+  removeShoppingList: (...args: any[]) => any
+}> {
   render() {
     const { lists, createShoppingList, removeShoppingList } = this.props
 

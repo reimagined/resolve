@@ -2,7 +2,10 @@ import React from 'react'
 import { Button, FormLabel, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-class ShoppingLists extends React.PureComponent {
+class ShoppingLists extends React.PureComponent<{
+  lists: any[]
+  removeShoppingList: (...args: any[]) => any
+}> {
   render() {
     const { lists } = this.props
 

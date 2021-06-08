@@ -1,3 +1,4 @@
+import { ViewModelProjection } from '@resolve-js/core'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_RENAMED,
@@ -7,7 +8,7 @@ import {
   SHOPPING_ITEM_REMOVED,
 } from '../event_types'
 
-export default {
+const projection: ViewModelProjection<any> = {
   Init: () => null,
   [SHOPPING_LIST_CREATED]: (state, { aggregateId, payload: { name } }) => ({
     id: aggregateId,
@@ -48,3 +49,5 @@ export default {
     list: state.list.filter((item) => item.id !== id),
   }),
 }
+
+export default projection

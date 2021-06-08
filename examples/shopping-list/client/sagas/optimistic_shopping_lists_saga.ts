@@ -14,7 +14,7 @@ export default function* () {
     (action) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.command.type === 'createShoppingList',
-    function* (action) {
+    function* (action: any) {
       yield put({
         type: OPTIMISTIC_CREATE_SHOPPING_LIST,
         payload: {
@@ -29,7 +29,7 @@ export default function* () {
     (action) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.command.type === 'removeShoppingList',
-    function* (action) {
+    function* (action: any) {
       yield put({
         type: OPTIMISTIC_REMOVE_SHOPPING_LIST,
         payload: {
@@ -41,7 +41,7 @@ export default function* () {
 
   yield takeEvery(
     (action) => action.type === QUERY_READMODEL_SUCCESS,
-    function* (action) {
+    function* (action: any) {
       yield put({
         type: OPTIMISTIC_SYNC,
         payload: {

@@ -9,7 +9,18 @@ import { StaticImage } from './StaticImage'
 import NotFound from '../components/NotFound'
 import * as aggregateActions from '../actions/aggregate_actions'
 
-export class ShoppingList extends React.PureComponent {
+type ShoppingListProps = {
+  isLoading: boolean
+  data: any
+  aggregateId: string
+  toggleShoppingItem: (...args: any[]) => any
+  removeShoppingItem: (...args: any[]) => any
+  createShoppingItem: (...args: any[]) => any
+  renameShoppingList: (...args: any[]) => any
+  removeShoppingList: (...args: any[]) => any
+}
+
+export class ShoppingList extends React.PureComponent<ShoppingListProps> {
   state = {
     shoppingListName: null,
     itemText: '',
@@ -163,6 +174,7 @@ export const mapStateToOptions = (state, ownProps) => {
   return {
     viewModelName: 'shoppingList',
     aggregateIds: [aggregateId],
+    aggregateArgs: undefined,
   }
 }
 

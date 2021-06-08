@@ -12,7 +12,7 @@ const entryPoint = (clientContext) => {
   const redux = getRedux()
 
   const store = createResolveStore(clientContext, {
-    serializedState: window.__INITIAL_STATE__,
+    serializedState: (window as any).__INITIAL_STATE__,
     redux,
   })
 

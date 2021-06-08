@@ -2,7 +2,10 @@ import React from 'react'
 import { Button, Col, FormLabel, FormControl, Row } from 'react-bootstrap'
 import { v4 as uuid } from 'uuid'
 
-class ShoppingListCreator extends React.PureComponent {
+class ShoppingListCreator extends React.PureComponent<{
+  lists: any[]
+  createShoppingList: (...args: any[]) => any
+}> {
   state = {
     shoppingListName: '',
   }
