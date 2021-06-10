@@ -1,5 +1,5 @@
 {
-  "name": "personal-data",
+  "name": "personal-data-js",
   "version": "0.30.5",
   "private": true,
   "description": "personal user data within events (GDPR compliance)",
