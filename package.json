@@ -9,7 +9,7 @@
       "packages/**/*",
       "examples/*",
       "examples/js/*",
-      "examples/shopping-list-tutorial/*",
+      "tutorial/**/*",
       "templates/**/*",
       "internal/*",
       "tests",
