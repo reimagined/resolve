@@ -5,11 +5,29 @@ import autoprefixer from 'autoprefixer'
 const adjustWebpackConfigs = (webpackConfigs) => {
   for (const webpackConfig of webpackConfigs) {
     const entries = Object.keys(webpackConfig.entry)
+
+    webpackConfig.module.rules.push({
+      test: /\.tsx?$/,
+      loader: 'babel-loader',
+      options: {
+        presets: [
+          [
+            '@babel/preset-typescript',
+            {
+              isTSX: true,
+              allExtensions: true,
+            },
+          ],
+        ],
+      },
+    })
+    webpackConfig.resolve.extensions = ['.js', '.jsx', '.ts', '.tsx']
+
     const target = webpackConfig.target
     const isUIConfig =
-      (entries.find((entry) => entry.endsWith('/ssr.ts')) != null &&
+      (entries.find((entry) => entry.endsWith('ssr.js')) != null &&
         target === 'node') ||
-      (entries.find((entry) => entry.endsWith('client/index.ts')) != null &&
+      (entries.find((entry) => entry.endsWith('client/index.js')) != null &&
         target === 'web')
 
     if (!isUIConfig) {
@@ -48,15 +66,6 @@ const adjustWebpackConfigs = (webpackConfigs) => {
     webpackConfig.plugins = Array.isArray(webpackConfig.plugins)
       ? webpackConfig.plugins.concat([extractTextPlugin])
       : [extractTextPlugin]
-
-    webpackConfig.module.rules.push({
-      test: /\.tsx?$/,
-      loader: 'babel-loader',
-      options: {
-        presets: ['@babel/preset-typescript'],
-      },
-    })
-    webpackConfig.resolve.extensions = ['.js', '.jsx', '.ts', '.tsx']
   }
 }
 
