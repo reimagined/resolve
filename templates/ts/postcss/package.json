@@ -54,6 +54,7 @@
     "style-loader": "2.0.0",
     "testcafe": "1.14.2",
     "webpack": "4.42.0",
+    "typescript": "4.3.2",
     "ts-node": "10.0.0"
   },
   "resolveJs": {
