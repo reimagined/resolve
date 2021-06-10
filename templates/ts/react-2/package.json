@@ -1,5 +1,5 @@
 {
-  "name": "template-react-typescirpt-2",
+  "name": "@resolve-js/react-ts-2",
   "version": "0.30.4",
   "private": true,
   "description": "used as a template for new reSolve applications",
@@ -7,7 +7,7 @@
     "build": "ts-node run.ts build",
     "dev": "ts-node run.ts dev",
     "start": "ts-node run.ts start",
-    "test": "jest --testMatch=**/test/unit/*.test.{ts,tsx} --verbose --passWithNoTest",
+    "test": "jest --testMatch=**/test/unit/*.test.{ts,tsx} --verbose --passWithNoTests",
     "test:e2e": "ts-node run.ts test:e2e",
     "type-check": "tsc"
   },

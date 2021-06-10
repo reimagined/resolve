@@ -1,17 +1,17 @@
 {
-  "name": "with-vanillajs",
+  "name": "@resolve-js/vanilla-ts",
   "version": "0.30.4",
   "private": true,
   "description": "used as a template for new reSolve applications",
   "scripts": {
     "build": "echo || exit 0",
-    "cloud": "tsc && babel-node --extensions=.ts,.tsx run.ts cloud",
-    "dev": "tsc && babel-node --extensions=.ts,.tsx run.ts dev",
+    "cloud": "ts-node run.ts cloud",
+    "dev": "ts-node run.ts dev",
     "export-event-store": "echo || exit 0",
     "import-event-store": "echo || exit 0",
     "start": "echo || exit 0",
-    "test": "echo || exit 0",
-    "test:e2e": "tsc && babel-node --extensions=.ts,.tsx run.ts test:e2e"
+    "test": "jest --testMatch=**/test/unit/*.test.{ts,tsx} --verbose --passWithNoTests",
+    "test:e2e": "ts-node run.ts test:e2e"
   },
   "dependencies": {
     "@babel/node": "7.14.2",
@@ -33,11 +33,14 @@
     "@babel/plugin-transform-runtime": "7.14.3",
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
+    "@babel/preset-typescript": "7.14.5",
     "aws-sdk": "2.860.0",
     "aws-xray-sdk-core": "3.2.0",
     "babel-jest": "27.0.2",
     "jest": "27.0.3",
-    "testcafe": "1.14.2"
+    "testcafe": "1.14.2",
+    "typescript": "4.3.2",
+    "ts-node": "10.0.0"
   },
   "resolveJs": {
     "isAppTemplate": true

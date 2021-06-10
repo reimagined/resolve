@@ -1,5 +1,5 @@
 {
-  "name": "with-angular",
+  "name": "@resolve-js/angular",
   "version": "0.30.4",
   "private": true,
   "description": "Example shows how to work with Angular-8 framework",
@@ -11,7 +11,7 @@
     "test:e2e": "ts-node run.ts test:e2e",
     "export-event-store": "echo || exit 0",
     "import-event-store": "echo || exit 0",
-    "test": "jest --testMatch=**/test/unit/*.test.{ts,tsx} --verbose --passWithNoTest"
+    "test": "jest --testMatch=**/test/unit/*.test.{ts,tsx} --verbose --passWithNoTests"
   },
   "dependencies": {
     "@angular/common": "11.2.4",
@@ -33,7 +33,6 @@
     "awesome-typescript-loader": "5.2.1",
     "core-js": "3.9.1",
     "rxjs": "6.6.6",
-    "typescript": "4.1.3",
     "webpack-filter-warnings-plugin": "1.2.1",
     "zone.js": "0.11.4"
   },
@@ -45,6 +44,7 @@
     "@babel/plugin-transform-runtime": "7.14.3",
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
+    "@babel/preset-typescript": "7.14.5",
     "@types/core-js": "2.5.4",
     "@types/node": "12.7.4",
     "autoprefixer": "10.2.5",
@@ -58,6 +58,7 @@
     "postcss-loader": "5.3.0",
     "style-loader": "2.0.0",
     "testcafe": "1.14.2",
+    "typescript": "4.3.2",
     "ts-node": "10.0.0"
   },
   "resolveJs": {
