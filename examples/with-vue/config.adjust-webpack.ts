@@ -27,14 +27,39 @@ const adjustWebpackEntry = (webpackConfig) => {
 }
 
 const adjustWebpackConfigs = (webpackConfigs) => {
+  for (const webpackConfig of webpackConfigs) {
+    const {
+      module: { rules },
+      resolve,
+    } = webpackConfig
+
+    rules.push({
+      test: /\.tsx?$/,
+      loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-typescript'],
+        appendTsSuffixTo: [/\.vue$/],
+      },
+    })
+    resolve.extensions = ['.js', '.jsx', '.ts', '.tsx']
+
+    rules.push({
+      test: /\.tsx?$/,
+      loader: 'ts-loader',
+      options: {
+        appendTsSuffixTo: [/\.vue$/],
+      },
+    })
+  }
+
   const clientEntry = webpackConfigs.find(
     ({ entry, target }) =>
-      Object.keys(entry).find((entry) => entry.endsWith('client/index.js')) !=
+      Object.keys(entry).find((entry) => entry.endsWith('client/index.ts')) !=
         null && target === 'web'
   )
   const ssrEntry = webpackConfigs.find(
     ({ entry, target }) =>
-      Object.keys(entry).find((entry) => entry.endsWith('/ssr.js')) != null &&
+      Object.keys(entry).find((entry) => entry.endsWith('/ssr.ts')) != null &&
       target === 'node'
   )
 

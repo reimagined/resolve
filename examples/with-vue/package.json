@@ -4,14 +4,14 @@
   "private": true,
   "description": "Example shows how to work with Vue framework",
   "scripts": {
-    "build": "babel-node ./run.js build",
-    "cloud": "babel-node ./run.js cloud",
-    "dev": "babel-node ./run.js dev",
+    "build": "tsc && babel-node --extensions=.ts,.tsx run.ts build",
+    "cloud": "tsc && babel-node --extensions=.ts,.tsx run.ts cloud",
+    "dev": "tsc && babel-node --extensions=.ts,.tsx run.ts dev",
     "export-event-store": "echo || exit 0",
     "import-event-store": "echo || exit 0",
-    "start": "babel-node ./run.js start",
+    "start": "tsc && babel-node --extensions=.ts,.tsx run.ts start",
     "test": "echo || exit 0",
-    "test:e2e": "babel-node ./run.js test:e2e"
+    "test:e2e": "tsc && babel-node --extensions=.ts,.tsx run.ts test:e2e"
   },
   "dependencies": {
     "@babel/node": "7.14.2",

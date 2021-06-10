@@ -7,9 +7,9 @@ const adjustWebpackConfigs = (webpackConfigs) => {
     const entries = Object.keys(webpackConfig.entry)
     const target = webpackConfig.target
     const isUIConfig =
-      (entries.find((entry) => entry.endsWith('/ssr.js')) != null &&
+      (entries.find((entry) => entry.endsWith('/ssr.ts')) != null &&
         target === 'node') ||
-      (entries.find((entry) => entry.endsWith('client/index.js')) != null &&
+      (entries.find((entry) => entry.endsWith('client/index.ts')) != null &&
         target === 'web')
 
     if (!isUIConfig) {
@@ -48,6 +48,15 @@ const adjustWebpackConfigs = (webpackConfigs) => {
     webpackConfig.plugins = Array.isArray(webpackConfig.plugins)
       ? webpackConfig.plugins.concat([extractTextPlugin])
       : [extractTextPlugin]
+
+    webpackConfig.module.rules.push({
+      test: /\.tsx?$/,
+      loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-typescript'],
+      },
+    })
+    webpackConfig.resolve.extensions = ['.js', '.jsx', '.ts', '.tsx']
   }
 }
 

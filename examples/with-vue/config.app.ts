@@ -14,9 +14,17 @@ const appConfig = {
     },
   ],
   clientEntries: [
-    'client/index.js',
     [
-      'client/ssr.js',
+      'client/index.ts',
+      {
+        outputFile: 'client/index.js',
+        moduleType: 'iife',
+        target: 'web',
+      },
+    ],
+
+    [
+      'client/ssr.ts',
       {
         outputFile: 'common/local-entry/ssr.js',
         moduleType: 'commonjs',
