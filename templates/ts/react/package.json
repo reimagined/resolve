@@ -7,7 +7,7 @@
     "build": "ts-node run.ts build",
     "dev": "ts-node run.ts dev",
     "start": "ts-node run.ts start",
-    "test": "echo || exit 0",
+    "test": "jest --testMatch=**/test/unit/*.test.{ts,tsx} --verbose --passWithNoTest",
     "test:e2e": "ts-node run.ts test:e2e",
     "type-check": "tsc"
   },
@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@babel/node": "7.14.2",
-    "@babel/preset-typescript": "7.14.5",
     "@resolve-js/core": "0.30.4",
     "@resolve-js/eventstore-lite": "0.30.4",
     "@resolve-js/eventstore-postgresql-serverless": "0.30.4",
@@ -40,6 +39,7 @@
     "@babel/plugin-transform-runtime": "7.14.3",
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
+    "@babel/preset-typescript": "7.14.5",
     "@types/node": "12.7.4",
     "@types/react": "17.0.5",
     "@types/react-dom": "17.0.5",
