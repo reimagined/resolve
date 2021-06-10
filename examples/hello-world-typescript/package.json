@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@babel/node": "7.14.2",
-    "@babel/preset-typescript": "7.13.0",
+    "@babel/preset-typescript": "7.14.5",
     "@resolve-js/eventstore-lite": "0.30.4",
     "@resolve-js/eventstore-postgresql-serverless": "0.30.4",
     "@resolve-js/react-hooks": "0.30.4",

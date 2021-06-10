@@ -11,13 +11,17 @@ import {
   exportEventStore,
 } from '@resolve-js/scripts'
 
-import appConfig from './config.app'
+import backendConfig from './config.app'
+import clientConfig from './config.client'
+
 import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test-functional'
 
 const launchMode = process.argv[2]
+
+const appConfig = merge(backendConfig, clientConfig)
 
 void (async () => {
   try {

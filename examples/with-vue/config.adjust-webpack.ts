@@ -17,49 +17,42 @@ const adjustWebpackEntry = (webpackConfig) => {
   rules.unshift({
     test: /\.vue$/,
     loader: 'vue-loader',
+    options: {
+      esModule: true,
+    },
   })
 
-  resolve.alias['vue$'] = mode === 'development' ? 'vue/dist/vue' : 'vue'
+  rules.push({
+    test: /\.tsx?$/,
+    loader: 'babel-loader',
+    options: {
+      presets: [
+        [
+          '@babel/preset-typescript',
+          {
+            isTSX: true,
+            allExtensions: true,
+          },
+        ],
+      ],
+    },
+  })
+  resolve.extensions = ['.js', '.jsx', '.ts', '.tsx', '.vue']
 
-  resolve.extensions = ['.js', '.vue']
+  resolve.alias['vue$'] = mode === 'development' ? 'vue/dist/vue' : 'vue'
 
   plugins.push(new VueLoaderPlugin())
 }
 
 const adjustWebpackConfigs = (webpackConfigs) => {
-  for (const webpackConfig of webpackConfigs) {
-    const {
-      module: { rules },
-      resolve,
-    } = webpackConfig
-
-    rules.push({
-      test: /\.tsx?$/,
-      loader: 'babel-loader',
-      options: {
-        presets: ['@babel/preset-typescript'],
-        appendTsSuffixTo: [/\.vue$/],
-      },
-    })
-    resolve.extensions = ['.js', '.jsx', '.ts', '.tsx']
-
-    rules.push({
-      test: /\.tsx?$/,
-      loader: 'ts-loader',
-      options: {
-        appendTsSuffixTo: [/\.vue$/],
-      },
-    })
-  }
-
   const clientEntry = webpackConfigs.find(
     ({ entry, target }) =>
-      Object.keys(entry).find((entry) => entry.endsWith('client/index.ts')) !=
+      Object.keys(entry).find((entry) => entry.endsWith('client/index.js')) !=
         null && target === 'web'
   )
   const ssrEntry = webpackConfigs.find(
     ({ entry, target }) =>
-      Object.keys(entry).find((entry) => entry.endsWith('/ssr.ts')) != null &&
+      Object.keys(entry).find((entry) => entry.endsWith('/ssr.js')) != null &&
       target === 'node'
   )
 
