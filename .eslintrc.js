@@ -328,6 +328,7 @@ module.exports = {
           'pid',
           'pingreq',
           'pingresp',
+          'plv8',
           'png',
           'polyfill',
           'polyfills',

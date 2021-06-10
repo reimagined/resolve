@@ -12,6 +12,7 @@ import {
 export type CreateQueryOptions = {
   invokeEventSubscriberAsync: Function
   readModelConnectors: any
+  readModelSources?: any
   performanceTracer: any
   getVacantTimeInMillis: any
   monitoring?: Monitoring
@@ -50,6 +51,7 @@ export type ReadModelPool = {
   connections: Set<any>
   invokeEventSubscriberAsync: Function
   getVacantTimeInMillis: Function
+  readModelSource?: any
   monitoring?: Monitoring
   eventstoreAdapter: Eventstore
   applicationName: string

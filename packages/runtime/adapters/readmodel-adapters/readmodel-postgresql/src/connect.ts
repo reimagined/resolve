@@ -1,26 +1,10 @@
 import type {
-  MakeNestedPathMethod,
   CurrentConnectMethod,
   InlineLedgerRunQueryMethod,
   AdapterPool,
   CommonAdapterPool,
   OmitObject,
 } from './types'
-
-const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
-  const jsonPathParts = []
-  for (const part of nestedPath) {
-    if (part == null || part.constructor !== String) {
-      throw new Error('Invalid JSON path')
-    }
-    if (!isNaN(+part)) {
-      jsonPathParts.push(String(+part))
-    } else {
-      jsonPathParts.push(JSON.stringify(part))
-    }
-  }
-  return `{${jsonPathParts.join(',')}}`
-}
 
 const connect: CurrentConnectMethod = async (imports, pool, options) => {
   let { tablePrefix, databaseName, ...connectionOptions } = options
@@ -57,7 +41,10 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
               !!passthroughRuntimeErrors
             )
           ) {
-            throw new imports.PassthroughError()
+            imports.PassthroughError.maybeThrowPassthroughError(
+              error,
+              !!passthroughRuntimeErrors
+            )
           } else {
             throw error
           }
@@ -85,7 +72,6 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
   >(pool, {
     schemaName: databaseName,
     tablePrefix,
-    makeNestedPath,
     inlineLedgerRunQuery,
     connection,
     activePassthrough: false,

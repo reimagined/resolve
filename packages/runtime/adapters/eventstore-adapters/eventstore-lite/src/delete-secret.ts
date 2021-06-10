@@ -4,6 +4,7 @@ import {
   EventstoreFrozenError,
   InputEvent,
   makeDeleteSecretEvent,
+  THREAD_COUNT,
 } from '@resolve-js/eventstore-base'
 
 const deleteSecret = async (
@@ -19,7 +20,7 @@ const deleteSecret = async (
   log.verbose(`secretsTableName: ${secretsTableName}`)
 
   const secretsTableNameAsId = escapeId(secretsTableName)
-  const currentThreadId = Math.floor(Math.random() * 256)
+  const currentThreadId = Math.floor(Math.random() * THREAD_COUNT)
   const eventsTableNameAsId = escapeId(eventsTableName)
   const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
 

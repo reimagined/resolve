@@ -433,18 +433,6 @@ export const buildEvents: (
     eventCount = 0
     eventsApplyStartTimestamp = Date.now()
 
-    if (eventCount > 0 && monitoring != null) {
-      const seconds = (Date.now() - eventsApplyStartTimestamp) / 1000
-
-      monitoring
-        .group({ Part: 'ReadModel' })
-        .group({ ReadModel: readModelName })
-        .rate('ReadModelFeedingRate', eventCount, seconds)
-    }
-
-    eventCount = 0
-    eventsApplyStartTimestamp = Date.now()
-
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
     cursor = nextCursor
 
@@ -541,7 +529,8 @@ const build: ExternalMethods['build'] = async (
 
   const now = Date.now()
 
-  const hasSendTime = typeof metricData.sendTime === 'number'
+  const hasSendTime =
+    metricData.sendTime != null && metricData.sendTime.constructor === Number
 
   const groupMonitoring =
     monitoring != null
@@ -551,16 +540,14 @@ const build: ExternalMethods['build'] = async (
       : null
 
   if (hasSendTime) {
-    void [monitoring, groupMonitoring].forEach((innerMonitoring) => {
-      if (innerMonitoring == null) {
-        return
+    for (const innerMonitoring of [monitoring, groupMonitoring]) {
+      if (innerMonitoring != null) {
+        innerMonitoring.time('EventDelivery', metricData.sendTime)
+        innerMonitoring.timeEnd('EventDelivery', now)
+
+        innerMonitoring.time('EventApply', metricData.sendTime)
       }
-
-      innerMonitoring.time('EventDelivery', metricData.sendTime)
-      innerMonitoring.timeEnd('EventDelivery', now)
-
-      innerMonitoring.time('EventApply', metricData.sendTime)
-    })
+    }
   }
 
   const inlineLedgerExecuteStatement: typeof ledgerStatement = Object.assign(
@@ -699,24 +686,25 @@ const build: ExternalMethods['build'] = async (
   } finally {
     basePool.activePassthrough = false
 
-    void [monitoring, groupMonitoring].forEach((innerMonitoring) => {
-      if (innerMonitoring == null) {
-        return
+    for (const innerMonitoring of [monitoring, groupMonitoring]) {
+      if (innerMonitoring != null) {
+        if (hasSendTime) {
+          innerMonitoring.timeEnd('EventApply')
+        }
+
+        innerMonitoring.duration(
+          'EventBatchLoad',
+          metricData.eventBatchLoadTime
+        )
+
+        innerMonitoring.duration(
+          'EventProjectionApply',
+          metricData.pureProjectionApplyTime
+        )
+
+        innerMonitoring.duration('Ledger', metricData.pureLedgerTime)
       }
-
-      if (hasSendTime) {
-        innerMonitoring.timeEnd('EventApply')
-      }
-
-      innerMonitoring.duration('EventBatchLoad', metricData.eventBatchLoadTime)
-
-      innerMonitoring.duration(
-        'EventProjectionApply',
-        metricData.pureProjectionApplyTime
-      )
-
-      innerMonitoring.duration('Ledger', metricData.pureLedgerTime)
-    })
+    }
   }
 }
 
