@@ -28,7 +28,7 @@ const adjustClientEntry = (webpackConfig) => {
         'app.module#AppModule'
       ),
       sourceMap: true,
-      tsConfigPath: path.join(__dirname, 'tsconfig.json'),
+      tsConfigPath: path.resolve(__dirname, 'tsconfig.client.json'),
       skipCodeGeneration: true,
     })
   )
