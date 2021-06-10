@@ -10,6 +10,7 @@
       "examples/*",
       "examples/js/*",
       "examples/shopping-list-tutorial/*",
+      "templates/**/*",
       "internal/*",
       "tests",
       "website",

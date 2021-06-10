@@ -2,27 +2,32 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import postcssImport from 'postcss-import'
 import autoprefixer from 'autoprefixer'
 
+// enable-ts
+const enableTypescript = (webpackConfig) => {
+  webpackConfig.module.rules.push({
+    test: /\.tsx?$/,
+    loader: 'babel-loader',
+    options: {
+      presets: [
+        [
+          '@babel/preset-typescript',
+          {
+            isTSX: true,
+            allExtensions: true,
+          },
+        ],
+      ],
+    },
+  })
+  webpackConfig.resolve.extensions = ['.js', '.jsx', '.ts', '.tsx']
+}
+// enable-ts
+
 const adjustWebpackConfigs = (webpackConfigs) => {
   for (const webpackConfig of webpackConfigs) {
+    enableTypescript(webpackConfig)
+
     const entries = Object.keys(webpackConfig.entry)
-
-    webpackConfig.module.rules.push({
-      test: /\.tsx?$/,
-      loader: 'babel-loader',
-      options: {
-        presets: [
-          [
-            '@babel/preset-typescript',
-            {
-              isTSX: true,
-              allExtensions: true,
-            },
-          ],
-        ],
-      },
-    })
-    webpackConfig.resolve.extensions = ['.js', '.jsx', '.ts', '.tsx']
-
     const target = webpackConfig.target
     const isUIConfig =
       (entries.find((entry) => entry.endsWith('ssr.js')) != null &&

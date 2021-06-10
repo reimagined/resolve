@@ -2,6 +2,27 @@ import VueLoaderPlugin from 'vue-loader/lib/plugin'
 import CopyPlugin from 'copy-webpack-plugin'
 import path from 'path'
 
+// enable-ts
+const enableTypescript = (webpackConfig) => {
+  webpackConfig.module.rules.push({
+    test: /\.tsx?$/,
+    loader: 'babel-loader',
+    options: {
+      presets: [
+        [
+          '@babel/preset-typescript',
+          {
+            isTSX: true,
+            allExtensions: true,
+          },
+        ],
+      ],
+    },
+  })
+  webpackConfig.resolve.extensions = ['.js', '.jsx', '.ts', '.tsx']
+}
+// enable-ts
+
 const adjustWebpackEntry = (webpackConfig) => {
   const {
     module: { rules },
@@ -22,22 +43,7 @@ const adjustWebpackEntry = (webpackConfig) => {
     },
   })
 
-  rules.push({
-    test: /\.tsx?$/,
-    loader: 'babel-loader',
-    options: {
-      presets: [
-        [
-          '@babel/preset-typescript',
-          {
-            isTSX: true,
-            allExtensions: true,
-          },
-        ],
-      ],
-    },
-  })
-  resolve.extensions = ['.js', '.jsx', '.ts', '.tsx', '.vue']
+  enableTypescript(webpackConfig)
 
   resolve.alias['vue$'] = mode === 'development' ? 'vue/dist/vue' : 'vue'
 

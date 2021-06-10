@@ -33,10 +33,6 @@ const adjustClientEntry = (webpackConfig) => {
     })
   )
 
-  // Warning suppression below is left intentionally, since Angular loader
-  // and compiler generates empty context for "$$_lazy_route_resource" via
-  // "System.import" mechanism. This is not reSolve example issue, since
-  // native cli command "npx ng build --aot" performs such operation.
   plugins.push(
     new FilterWarningsPlugin({
       exclude: /System.import/,
