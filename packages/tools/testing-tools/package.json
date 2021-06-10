@@ -35,7 +35,7 @@
     "lodash.partial": "4.2.1"
   },
   "devDependencies": {
-    "@resolve-js/readmodel-lite": "0.30.4",
+    "@resolve-js/readmodel-lite": "0.30.5",
     "@types/diff": "5.0.0",
     "@types/lodash.isequal": "4.5.5",
     "@types/lodash.partial": "4.2.6",
