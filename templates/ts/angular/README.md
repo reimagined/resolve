@@ -9,7 +9,7 @@ To create Angular TypeScript project:
 npx create-resolve-app angular -e angular-ts
 ```
 
-To create Angular TypeScript project
+To create Angular JavaScript project:
 ```sh
 npx create-resolve-app angular -e angular-js
 ```
