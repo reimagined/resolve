@@ -62,6 +62,12 @@ jobs:
     if: startsWith(github.event.head_commit.message, '<auto>') != true
     runs-on: ubuntu-latest
     steps:
+      - name: Cache root node_modules
+        uses: actions/cache@v2
+        with:
+          path: 'node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
+
       - name: Generate JS code
         uses: reimagined/github-actions/generate-js-examples@feature/js-generator
         with:
