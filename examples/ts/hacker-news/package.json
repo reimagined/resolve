@@ -1,5 +1,5 @@
 {
-  "name": "hacker-news",
+  "name": "hacker-news-ts",
   "version": "0.30.5",
   "private": true,
   "description": "Hacker News application clone with CQRS and EventSourcing",

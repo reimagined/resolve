@@ -1,5 +1,5 @@
 {
-  "name": "shopping-list-with-hooks",
+  "name": "shopping-list-with-hooks-ts",
   "version": "0.30.5",
   "private": true,
   "description": "shows how to work with read-models and view-models",
