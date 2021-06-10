@@ -12,7 +12,7 @@ The following example projects are available:
 | [hacker-news](https://github.com/reimagined/resolve/tree/master/examples/ts/hacker-news)                                       | A clone of the [HackerNews](https://news.ycombinator.com/) application implemented using reSolve.                   |
 | [personal-data](https://github.com/reimagined/resolve/tree/master/examples/ts/personal-data)                                   | Demonstrates how to store encrypted personal data.                                                                  |
 
-You can create a new application based on example code using the `create-resolve-app` command with the `-e` flag followed by an example name. Use the `create-resolve-app -h` command to list the available examples in this folder.
+You can create a new application based on example code using the `create-resolve-app` command with the `-e` flag followed by an example name. Use the `create-resolve-app -h` command to list the available examples.
 
 ```sh
 npx create-resolve-app resolve-example -e <example name>
