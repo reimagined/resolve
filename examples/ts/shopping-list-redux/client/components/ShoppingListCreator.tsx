@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid'
 import { useReduxReadModelSelector, useReduxCommand } from '@resolve-js/redux'
 import { SHOPPING_LIST_CREATED } from '../actions/optimistic-actions'
 
-export default () => {
+const ShoppingListCreator = () => {
   const [shoppingListName, setShoppingListName] = useState('')
 
   const lists = useReduxReadModelSelector('all-user-lists') || []
@@ -76,3 +76,5 @@ export default () => {
     </div>
   )
 }
+
+export default ShoppingListCreator

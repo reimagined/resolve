@@ -1,4 +1,5 @@
 import { ViewModelProjection } from '@resolve-js/core'
+import { ShoppingListViewModelState } from '../../types'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_RENAMED,
@@ -8,18 +9,20 @@ import {
   SHOPPING_ITEM_REMOVED,
 } from '../event-types'
 
-const projection: ViewModelProjection<any> = {
+const projection: ViewModelProjection<ShoppingListViewModelState | null> = {
   Init: () => null,
   [SHOPPING_LIST_CREATED]: (state, { aggregateId, payload: { name } }) => ({
     id: aggregateId,
     name,
+    removed: false,
     list: [],
   }),
   [SHOPPING_LIST_RENAMED]: (state, { payload: { name } }) => ({
     ...state,
     name,
   }),
-  [SHOPPING_LIST_REMOVED]: () => ({
+  [SHOPPING_LIST_REMOVED]: (state) => ({
+    ...state,
     removed: true,
   }),
   [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
