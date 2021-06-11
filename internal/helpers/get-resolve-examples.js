@@ -9,11 +9,12 @@ function getResolveExamples() {
   }
 
   const sources = ['./examples/**/package.json', './templates/**/package.json']
+  const resolveDir = getResolveDir()
 
   const packages = sources
     .map((source) =>
       glob(source, {
-        cwd: getResolveDir(),
+        cwd: resolveDir,
         absolute: true,
         ignore: ['**/node_modules/**', './node_modules/**', '**/dist/**'],
       })
@@ -47,7 +48,11 @@ function getResolveExamples() {
       throw new Error(`Example "${name}" .description must be a string`)
     }
 
-    resolveExamples.push({ name, description })
+    resolveExamples.push({
+      name,
+      description,
+      path: filePath.replace(resolveDir, '').replace('/package.json', ''),
+    })
   }
 
   resolveExamples.sort((a, b) =>
