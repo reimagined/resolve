@@ -5,7 +5,7 @@ import {
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED,
   SHOPPING_ITEM_REMOVED,
-} from '../event_types'
+} from '../event-types'
 const aggregate = {
   createShoppingList: (state, { payload: { name } }) => {
     if (state.createdAt) {

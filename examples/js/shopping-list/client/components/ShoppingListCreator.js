@@ -1,60 +1,56 @@
-import React from 'react'
-import { Button, Col, FormLabel, FormControl, Row } from 'react-bootstrap'
+import React, { useState } from 'react'
+import { Button, Col, Form, Row } from 'react-bootstrap'
+import { useCommand } from '@resolve-js/react-hooks'
 import { v4 as uuid } from 'uuid'
-class ShoppingListCreator extends React.PureComponent {
-  constructor() {
-    super(...arguments)
-    this.state = {
-      shoppingListName: '',
+const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
+  const [shoppingListName, setShoppingListName] = useState('')
+  const createShoppingListCommand = useCommand(
+    {
+      type: 'createShoppingList',
+      aggregateId: uuid(),
+      aggregateName: 'ShoppingList',
+      payload: {
+        name: shoppingListName || `Shopping List ${lists.length + 1}`,
+      },
+    },
+    (err, result) => {
+      setShoppingListName('')
+      onCreateSuccess(err, result)
     }
-    this.updateShoppingListName = (event) => {
-      this.setState({
-        shoppingListName: event.target.value,
-      })
-    }
-    this.onShoppingListNamePressEnter = (event) => {
-      if (event.charCode === 13) {
-        event.preventDefault()
-        this.createList()
-      }
-    }
-    this.createList = () => {
-      this.props.createShoppingList(uuid(), {
-        name:
-          this.state.shoppingListName ||
-          `Shopping List ${this.props.lists.length + 1}`,
-      })
-      this.setState({
-        shoppingListName: '',
-      })
+  )
+  const updateShoppingListName = (event) => {
+    setShoppingListName(event.target.value)
+  }
+  const onShoppingListNamePressEnter = (event) => {
+    if (event.charCode === 13) {
+      event.preventDefault()
+      createShoppingListCommand()
     }
   }
-  render() {
-    return (
-      <div>
-        <FormLabel>Shopping list name</FormLabel>
-        <Row>
-          <Col md={8}>
-            <FormControl
-              className="example-form-control"
-              type="text"
-              value={this.state.shoppingListName}
-              onChange={this.updateShoppingListName}
-              onKeyPress={this.onShoppingListNamePressEnter}
-            />
-          </Col>
-          <Col md={4}>
-            <Button
-              className="example-button"
-              variant="success"
-              onClick={this.createList}
-            >
-              Add Shopping List
-            </Button>
-          </Col>
-        </Row>
-      </div>
-    )
-  }
+  return (
+    <div>
+      <Form.Label>Shopping list name</Form.Label>
+      <Row>
+        <Col md={8}>
+          <Form.Control
+            className="example-form-control"
+            type="text"
+            value={shoppingListName}
+            onChange={updateShoppingListName}
+            onKeyPress={onShoppingListNamePressEnter}
+          />
+        </Col>
+        <Col md={4}>
+          <Button
+            className="example-button"
+            variant="success"
+            onClick={() => createShoppingListCommand()}
+          >
+            Add Shopping List
+          </Button>
+        </Col>
+      </Row>
+    </div>
+  )
 }
 export default ShoppingListCreator
