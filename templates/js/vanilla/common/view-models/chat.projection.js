@@ -1,4 +1,4 @@
-export default {
+const projection = {
   Init: () => [],
   MESSAGE_POSTED: (state, { payload: { userName, message } }) =>
     state.concat({
@@ -6,3 +6,4 @@ export default {
       message,
     }),
 }
+export default projection
