@@ -9,6 +9,7 @@ const optionsInfo = (examples) => [
   `  -e, --example    creates an example application based on an application from the reSolve examples directory`,
   `      You can choose one of the following examples:`,
   ...formatExamplesList(examples, 4),
+  `  -t, --typescript use TS version of application template`,
   `  -b, --branch     branch (optional, master is default)`,
   `  -c, --commit     commit`,
   `  -V, --version    outputs the version number`,
