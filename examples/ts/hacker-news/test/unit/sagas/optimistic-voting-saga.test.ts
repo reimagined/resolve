@@ -1,5 +1,5 @@
 import { internal } from '@resolve-js/redux'
-import optimisticVotingSagaFactory from '../../../client/sagas/optimistic-voting-saga'
+import { optimisticVotingSaga as sagaFactory } from '../../../client/sagas/optimistic-voting-saga'
 import {
   optimisticUnvoteStory,
   optimisticUpvoteStory,
@@ -8,7 +8,7 @@ import {
 const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = internal.actionTypes
 
 test('Optimistic voting saga - register takeAll sagas', () => {
-  const optimisticVotingSaga = optimisticVotingSagaFactory()
+  const optimisticVotingSaga = sagaFactory()
   let step = optimisticVotingSaga.next()
   expect(step.done).toEqual(false)
   const upvoteActionFilter = (step.value as any).payload.args[0]
@@ -58,7 +58,7 @@ test('Optimistic voting saga - register takeAll sagas', () => {
 })
 
 test('Optimistic voting saga - upvote success', () => {
-  const optimisticVotingSaga = optimisticVotingSagaFactory()
+  const optimisticVotingSaga = sagaFactory()
   let step = optimisticVotingSaga.next()
   const upvoteSagaFactory = (step.value as any).payload.args[1]
   const upvoteSaga = upvoteSagaFactory({
@@ -76,7 +76,7 @@ test('Optimistic voting saga - upvote success', () => {
 })
 
 test('Optimistic voting saga - unvote success', () => {
-  const optimisticVotingSaga = optimisticVotingSagaFactory()
+  const optimisticVotingSaga = sagaFactory()
   let step = optimisticVotingSaga.next()
   step = optimisticVotingSaga.next()
   const unvoteSagaFactory = (step.value as any).payload.args[1]

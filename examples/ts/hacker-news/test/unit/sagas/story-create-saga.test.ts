@@ -1,13 +1,13 @@
 import { internal } from '@resolve-js/redux'
 import { delay } from 'redux-saga/effects'
-import storyCreateSagaFactory from '../../../client/sagas/story-create-saga'
+import { storyCreateSaga as sagaFactory } from '../../../client/sagas/story-create-saga'
 
 const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = internal.actionTypes
 
 test('Create story saga - register takeAll sagas', () => {
   const client = {}
   const history = []
-  const storyCreateSaga = storyCreateSagaFactory(history, { client })
+  const storyCreateSaga = sagaFactory(history, { client })
   let step = null
 
   step = storyCreateSaga.next()
@@ -64,7 +64,7 @@ test('Create story saga - success story create and success fetch', () => {
     query: jest.fn().mockResolvedValue(readModelStatePromise),
   }
   const history = []
-  const storyCreateSaga = storyCreateSagaFactory(history, { client })
+  const storyCreateSaga = sagaFactory(history, { client })
   let step = storyCreateSaga.next()
   const successCommandSagaFactory = (step.value as any).payload.args[1]
 
@@ -112,7 +112,7 @@ test('Create story saga - success story create and failed fetch', () => {
     query: jest.fn().mockReturnValue(readModelStatePromise),
   }
   const history = []
-  const storyCreateSaga = storyCreateSagaFactory(history, { client })
+  const storyCreateSaga = sagaFactory(history, { client })
   let step = storyCreateSaga.next()
   const successCommandSagaFactory = (step.value as any).payload.args[1]
 
@@ -138,7 +138,7 @@ test('Create story saga - success story create and failed fetch', () => {
 test('Create story saga - story creating failed', () => {
   const client = {}
   const history = []
-  const storyCreateSaga = storyCreateSagaFactory(history, { client })
+  const storyCreateSaga = sagaFactory(history, { client })
   storyCreateSaga.next()
   let step = storyCreateSaga.next()
   const failureCommandSagaFactory = (step.value as any).payload.args[1]

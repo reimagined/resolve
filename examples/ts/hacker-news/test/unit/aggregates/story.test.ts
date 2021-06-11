@@ -12,12 +12,17 @@ import {
 
 let sandbox
 let userId
+let commandContext
 const token = 'token'
 
 describe('aggregates', () => {
   beforeEach(() => {
     userId = uuid()
     sandbox = sinon.createSandbox()
+    commandContext = {
+      jwt: token,
+      aggregateVersion: 0,
+    }
     jwt.verify = sandbox.stub().returns({ id: userId })
   })
   afterEach(() => {
@@ -31,6 +36,9 @@ describe('aggregates', () => {
 
       const state = {}
       const command = {
+        aggregateId: 'id',
+        aggregateName: 'name',
+        type: 'type',
         payload: {
           title,
           text,
@@ -39,7 +47,7 @@ describe('aggregates', () => {
         },
       }
 
-      const event = commands.createStory(state, command, { jwt: token })
+      const event = commands.createStory(state, command, commandContext)
 
       expect(event).toEqual({
         type: STORY_CREATED,
@@ -57,6 +65,9 @@ describe('aggregates', () => {
         createdBy: userId,
       }
       const command = {
+        aggregateId: 'id',
+        aggregateName: 'name',
+        type: 'type',
         payload: {
           title,
           text,
@@ -66,7 +77,7 @@ describe('aggregates', () => {
       }
 
       expect(() =>
-        commands.createStory(state, command, { jwt: token })
+        commands.createStory(state, command, commandContext)
       ).toThrowError('Story already exists')
     })
 
@@ -77,6 +88,9 @@ describe('aggregates', () => {
 
       const state = {}
       const command = {
+        aggregateId: 'id',
+        aggregateName: 'name',
+        type: 'type',
         payload: {
           title,
           text,
@@ -86,7 +100,7 @@ describe('aggregates', () => {
       }
 
       expect(() =>
-        commands.createStory(state, command, { jwt: token })
+        commands.createStory(state, command, commandContext)
       ).toThrowError('The "title" field is required')
     })
 
@@ -102,6 +116,9 @@ describe('aggregates', () => {
 
       const state = {}
       const command = {
+        aggregateId: 'id',
+        aggregateName: 'name',
+        type: 'type',
         payload: {
           title,
           text,
@@ -111,7 +128,7 @@ describe('aggregates', () => {
       }
 
       expect(() =>
-        commands.createStory(state, command, { jwt: token })
+        commands.createStory(state, command, commandContext)
       ).toThrow(/The "userId" field is required/)
     })
 
@@ -122,12 +139,15 @@ describe('aggregates', () => {
         voted: [],
       }
       const command = {
+        aggregateId: 'id',
+        aggregateName: 'name',
+        type: 'type',
         payload: {
           userId,
         },
       }
 
-      const event = commands.upvoteStory(state, command, { jwt: token })
+      const event = commands.upvoteStory(state, command, commandContext)
 
       expect(event).toEqual({ type: STORY_UPVOTED, payload: { userId } })
     })
@@ -139,26 +159,32 @@ describe('aggregates', () => {
         voted: [userId],
       }
       const command = {
+        aggregateId: 'id',
+        aggregateName: 'name',
+        type: 'type',
         payload: {
           userId,
         },
       }
 
       expect(() =>
-        commands.upvoteStory(state, command, { jwt: token })
+        commands.upvoteStory(state, command, commandContext)
       ).toThrowError('User already voted')
     })
 
     test('command "upvoteStory" should throw Error "Story does not exist"', () => {
       const state = {}
       const command = {
+        aggregateId: 'id',
+        aggregateName: 'name',
+        type: 'type',
         payload: {
           userId,
         },
       }
 
       expect(() =>
-        commands.upvoteStory(state, command, { jwt: token })
+        commands.upvoteStory(state, command, commandContext)
       ).toThrowError('Story does not exist')
     })
 
@@ -174,13 +200,16 @@ describe('aggregates', () => {
         voted: [],
       }
       const command = {
+        aggregateId: 'id',
+        aggregateName: 'name',
+        type: 'type',
         payload: {
           userId,
         },
       }
 
       expect(() =>
-        commands.upvoteStory(state, command, { jwt: token })
+        commands.upvoteStory(state, command, commandContext)
       ).toThrowError(/The "userId" field is required/)
     })
 
@@ -191,12 +220,15 @@ describe('aggregates', () => {
         voted: [userId],
       }
       const command = {
+        aggregateId: 'id',
+        aggregateName: 'name',
+        type: 'type',
         payload: {
           userId,
         },
       }
 
-      const event = commands.unvoteStory(state, command, { jwt: token })
+      const event = commands.unvoteStory(state, command, commandContext)
 
       expect(event).toEqual({ type: STORY_UNVOTED, payload: { userId } })
     })
@@ -208,26 +240,32 @@ describe('aggregates', () => {
         voted: [],
       }
       const command = {
+        aggregateId: 'id',
+        aggregateName: 'name',
+        type: 'type',
         payload: {
           userId,
         },
       }
 
       expect(() =>
-        commands.unvoteStory(state, command, { jwt: token })
+        commands.unvoteStory(state, command, commandContext)
       ).toThrowError('User did not vote')
     })
 
     test('command "unvoteStory" should throw Error "Story does not exist"', () => {
       const state = {}
       const command = {
+        aggregateId: 'id',
+        aggregateName: 'name',
+        type: 'type',
         payload: {
           userId,
         },
       }
 
       expect(() =>
-        commands.unvoteStory(state, command, { jwt: token })
+        commands.unvoteStory(state, command, commandContext)
       ).toThrowError('Story does not exist')
     })
 
@@ -243,13 +281,16 @@ describe('aggregates', () => {
         voted: [userId],
       }
       const command = {
+        aggregateId: 'id',
+        aggregateName: 'name',
+        type: 'type',
         payload: {
           userId,
         },
       }
 
       expect(() =>
-        commands.unvoteStory(state, command, { jwt: token })
+        commands.unvoteStory(state, command, commandContext)
       ).toThrowError('The "userId" field is required')
     })
 
@@ -258,6 +299,10 @@ describe('aggregates', () => {
 
       const state = {}
       const event = {
+        type: STORY_CREATED,
+        aggregateId: 'id',
+        aggregateName: 'name',
+        aggregateVersion: 1,
         timestamp: createdAt,
         payload: {
           userId,
@@ -281,6 +326,11 @@ describe('aggregates', () => {
         voted: [],
       }
       const event = {
+        type: STORY_UPVOTED,
+        aggregateId: 'id',
+        aggregateName: 'name',
+        aggregateVersion: 1,
+        timestamp: createdAt,
         payload: {
           userId,
         },
@@ -303,6 +353,11 @@ describe('aggregates', () => {
         voted: [userId],
       }
       const event = {
+        type: STORY_UNVOTED,
+        aggregateId: 'id',
+        aggregateName: 'name',
+        aggregateVersion: 1,
+        timestamp: createdAt,
         payload: {
           userId,
         },
