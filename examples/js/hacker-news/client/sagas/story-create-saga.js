@@ -1,7 +1,7 @@
 import { takeEvery, delay } from 'redux-saga/effects'
 import { internal } from '@resolve-js/redux'
 const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = internal.actionTypes
-export default function* (history, { client }) {
+export function* storyCreateSaga(history, { client }) {
   yield takeEvery(
     (action) =>
       action.type === SEND_COMMAND_SUCCESS &&

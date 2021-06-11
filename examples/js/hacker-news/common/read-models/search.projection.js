@@ -1,5 +1,5 @@
 import { STORY_CREATED, USER_CREATED } from '../event-types'
-export default {
+const searchProjection = {
   [STORY_CREATED]: async (es, { aggregateId, payload: { title, text } }) => {
     if (es) {
       await es.index({
@@ -58,3 +58,4 @@ export default {
     }
   },
 }
+export default searchProjection

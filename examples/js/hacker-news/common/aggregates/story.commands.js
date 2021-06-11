@@ -3,7 +3,7 @@ import jsonwebtoken from 'jsonwebtoken'
 import validate from './validation'
 import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types'
 import jwtSecret from '../../auth/jwt-secret'
-export default {
+const storyCommands = {
   createStory: (state, command, { jwt: token }) => {
     const jwt = jsonwebtoken.verify(token, jwtSecret)
     validate.fieldRequired(jwt, 'id')
@@ -52,3 +52,4 @@ export default {
     }
   },
 }
+export default storyCommands

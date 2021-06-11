@@ -15,7 +15,8 @@ const find = async (es, { q }) => {
   }))
 }
 const enabled = async (es) => es !== null
-export default {
+const searchResolvers = {
   find,
   enabled,
 }
+export default searchResolvers

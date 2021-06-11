@@ -1,5 +1,5 @@
 import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types'
-export default {
+const storyProjection = {
   Init: () => ({}),
   [STORY_CREATED]: (state, { timestamp, payload: { userId } }) => ({
     ...state,
@@ -16,3 +16,4 @@ export default {
     voted: state.voted.filter((curUserId) => curUserId !== userId),
   }),
 }
+export default storyProjection

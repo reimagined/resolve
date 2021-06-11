@@ -1,5 +1,5 @@
 import { USER_CREATED, USER_CONFIRMED, USER_REJECTED } from '../event-types'
-export default {
+const userProjection = {
   Init: () => ({}),
   [USER_CREATED]: (state, { timestamp }) => ({
     ...state,
@@ -16,3 +16,4 @@ export default {
     rejected: true,
   }),
 }
+export default userProjection

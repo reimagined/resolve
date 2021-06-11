@@ -1,14 +1,14 @@
 import { createCommentsReducer } from '@resolve-js/module-comments'
-import optimisticReducer from './reducers/optimistic'
-import optimisticVotingSaga from './sagas/optimistic-voting-saga'
-import storyCreateSaga from './sagas/story-create-saga'
-import devTools from './enhancers/redux-devtools'
+import { optimisticReducer } from './reducers/optimistic'
+import { optimisticVotingSaga } from './sagas/optimistic-voting-saga'
+import { storyCreateSaga } from './sagas/story-create-saga'
+import { devTools } from './enhancers/redux-devtools'
 const getRedux = ({ 'comments-hn': getCommentsOptions }, history) => {
   const {
     reducerName: commentsReducerName,
     ...commentsOptions
   } = getCommentsOptions()
-  const redux = {
+  return {
     reducers: {
       [commentsReducerName]: createCommentsReducer(commentsOptions),
       optimistic: optimisticReducer,
@@ -17,6 +17,5 @@ const getRedux = ({ 'comments-hn': getCommentsOptions }, history) => {
     sagas: [optimisticVotingSaga, storyCreateSaga.bind(null, history)],
     enhancers: [devTools],
   }
-  return redux
 }
 export default getRedux

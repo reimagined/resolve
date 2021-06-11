@@ -1,4 +1,4 @@
-export default {
+const validation = {
   stateIsAbsent: (state, type) => {
     if (Object.keys(state).length > 0) {
       throw new Error(`${type} already exists`)
@@ -38,3 +38,4 @@ export default {
     }
   },
 }
+export default validation

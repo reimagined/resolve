@@ -4,7 +4,7 @@ import {
   STORY_UPVOTED,
   USER_CREATED,
 } from '../event-types'
-export default {
+const hackerNewsProjection = {
   Init: async (store) => {
     await store.defineTable('Stories', {
       indexes: { id: 'string', type: 'string' },
@@ -96,3 +96,4 @@ export default {
     )
   },
 }
+export default hackerNewsProjection

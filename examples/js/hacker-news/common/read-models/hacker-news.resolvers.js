@@ -48,10 +48,11 @@ const getUser = async (store, { id, name }) => {
       : null
   return user
 }
-export default {
+const hackerNewsResolvers = {
   story: getStory,
   allStories: getStories.bind(null, null),
   askStories: getStories.bind(null, 'ask'),
   showStories: getStories.bind(null, 'show'),
   user: getUser,
 }
+export default hackerNewsResolvers

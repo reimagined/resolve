@@ -3,7 +3,7 @@ import {
   USER_PROFILE_UPDATED,
   USER_REGISTERED,
 } from '../user-profile.events'
-export default {
+const viewModel = {
   Init: () => null,
   [USER_REGISTERED]: (
     state,
@@ -30,3 +30,4 @@ export default {
     lastName: 'deleted user',
   }),
 }
+export default viewModel

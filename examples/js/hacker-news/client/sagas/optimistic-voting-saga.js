@@ -5,7 +5,7 @@ import {
 } from '../actions/optimistic-actions'
 import { internal } from '@resolve-js/redux'
 const { SEND_COMMAND_SUCCESS } = internal.actionTypes
-export default function* () {
+export function* optimisticVotingSaga() {
   yield takeEvery(
     (action) =>
       action.type === SEND_COMMAND_SUCCESS &&

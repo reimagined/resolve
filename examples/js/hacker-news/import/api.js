@@ -114,9 +114,10 @@ const fetchItem = (id) => fetchWithRetry(`item/${id}.json`)
 const fetchItems = (ids) => {
   return Promise.all(ids.map(fetchItem))
 }
-export default {
+const api = {
   fetchStoryIds,
   fetchItems,
   invokeImportApi,
   invokeImportSecretApi,
 }
+export default api

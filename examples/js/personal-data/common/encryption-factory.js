@@ -9,7 +9,11 @@ export const getDecrypter = (key) => (blob) => {
     return null
   }
 }
-export default async (aggregateId, secretsManager, generateKey = true) => {
+const encryptionFactory = async (
+  aggregateId,
+  secretsManager,
+  generateKey = true
+) => {
   let aggregateKey = await secretsManager.getSecret(aggregateId)
   if (!aggregateKey && generateKey) {
     aggregateKey = generate({
@@ -26,3 +30,4 @@ export default async (aggregateId, secretsManager, generateKey = true) => {
     decrypt: getDecrypter(aggregateKey),
   }
 }
+export default encryptionFactory

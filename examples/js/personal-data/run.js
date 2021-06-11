@@ -103,7 +103,7 @@ void (async () => {
       await runTestcafe({
         resolveConfig,
         adjustWebpackConfigs,
-        functionalTestsDir: 'test/functional',
+        functionalTestsDir: 'test/e2e',
         browser: process.argv[3],
         customArgs: ['--skip-js-errors', '--stop-on-first-fail'],
       })

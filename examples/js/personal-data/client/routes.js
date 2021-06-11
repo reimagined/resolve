@@ -3,7 +3,7 @@ import Home from './components/Home'
 import UserBlog from './components/UserBlog'
 import Users from './components/Users'
 import Profile from './components/Profile'
-export default [
+export const routes = [
   {
     component: App,
     routes: [

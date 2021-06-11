@@ -1,2 +1,2 @@
 import { devToolsEnhancer } from 'redux-devtools-extension'
-export default devToolsEnhancer({})
+export const devTools = devToolsEnhancer({})

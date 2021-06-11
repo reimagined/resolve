@@ -1,6 +1,6 @@
 import validate from './validation'
 import { USER_CREATED, USER_CONFIRMED, USER_REJECTED } from '../event-types'
-export default {
+const userCommands = {
   createUser: (state, command) => {
     validate.stateIsAbsent(state, 'User')
     const { name } = command.payload
@@ -18,3 +18,4 @@ export default {
     return { type: USER_REJECTED, payload: { reason } }
   },
 }
+export default userCommands

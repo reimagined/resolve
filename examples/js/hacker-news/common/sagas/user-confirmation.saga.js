@@ -1,5 +1,5 @@
 import { USER_CREATED, USER_CONFIRMED, USER_REJECTED } from '../event-types'
-export default {
+const userConfirmationSaga = {
   handlers: {
     Init: async ({ store }) => {
       await store.defineTable('SagaUsers', {
@@ -62,3 +62,4 @@ export default {
     },
   },
 }
+export default userConfirmationSaga

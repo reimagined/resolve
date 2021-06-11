@@ -1,5 +1,5 @@
 import cloudCommonConfig from './config.cloud.common'
-export default {
+const cloudConfig = {
   ...cloudCommonConfig,
   /*readModels: [
       {
@@ -19,3 +19,4 @@ export default {
       },
     },*/
 }
+export default cloudConfig
