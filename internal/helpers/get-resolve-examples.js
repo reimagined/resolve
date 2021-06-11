@@ -1,4 +1,4 @@
-const find = require('glob').sync
+const glob = require('glob').sync
 
 const { getResolveDir } = require('./get-resolve-dir')
 
@@ -8,13 +8,21 @@ function getResolveExamples() {
     return _resolveExamples
   }
 
+  const sources = ['./examples/**/package.json', './templates/**/package.json']
+
+  const packages = sources
+    .map((source) =>
+      glob(source, {
+        cwd: getResolveDir(),
+        absolute: true,
+        ignore: ['**/node_modules/**', './node_modules/**', '**/dist/**'],
+      })
+    )
+    .flat(1)
+
   const resolveExamples = []
 
-  for (const filePath of find('./examples/*/package.json', {
-    cwd: getResolveDir(),
-    absolute: true,
-    ignore: ['**/node_modules/**', './node_modules/**'],
-  })) {
+  for (const filePath of packages) {
     if (filePath.includes('node_modules')) {
       continue
     }
