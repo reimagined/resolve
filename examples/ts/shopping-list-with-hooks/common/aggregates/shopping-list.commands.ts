@@ -1,3 +1,4 @@
+import { Aggregate } from '@resolve-js/core'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_RENAMED,
@@ -5,9 +6,9 @@ import {
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED,
   SHOPPING_ITEM_REMOVED,
-} from '../event_types'
+} from '../event-types'
 
-export default {
+const aggregate: Aggregate = {
   createShoppingList: (state, { payload: { name } }) => {
     if (state.createdAt) {
       throw new Error('Shopping List already exists')
@@ -90,3 +91,5 @@ export default {
     }
   },
 }
+
+export default aggregate

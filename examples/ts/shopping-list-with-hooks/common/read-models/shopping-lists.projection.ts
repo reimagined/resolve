@@ -4,7 +4,7 @@ import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_REMOVED,
   SHOPPING_LIST_RENAMED,
-} from '../event_types'
+} from '../event-types'
 
 const projection: ReadModel<ResolveStore> = {
   Init: async (store) => {

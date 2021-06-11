@@ -1,4 +1,4 @@
-import projection from '../../common/view-models/shopping_list.projection'
+import projection from '../../common/view-models/shopping-list.projection'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_RENAMED,
@@ -6,7 +6,7 @@ import {
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED,
   SHOPPING_ITEM_REMOVED,
-} from '../../common/event_types'
+} from '../../common/event-types'
 
 describe('view-models', () => {
   describe('ShoppingList', () => {

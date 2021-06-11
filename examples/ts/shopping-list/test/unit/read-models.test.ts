@@ -1,13 +1,13 @@
 import givenEvents from '@resolve-js/testing-tools'
 
-import projection from '../../common/read-models/shopping_lists.projection'
-import resolvers from '../../common/read-models/shopping_lists.resolvers'
+import projection from '../../common/read-models/shopping-lists.projection'
+import resolvers from '../../common/read-models/shopping-lists.resolvers'
 
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_REMOVED,
   SHOPPING_LIST_RENAMED,
-} from '../../common/event_types'
+} from '../../common/event-types'
 
 describe('read-models', () => {
   describe('ShoppingLists', () => {
@@ -25,6 +25,7 @@ describe('read-models', () => {
       expect(shoppingLists).toEqual([])
     })
 
+    // mdis-start read-model-test
     test('projection "SHOPPING_LIST_CREATED" should create a shopping list', async () => {
       const shoppingLists = await givenEvents([
         {
@@ -47,6 +48,7 @@ describe('read-models', () => {
         name: 'Products',
       })
     })
+    // mdis-stop read-model-test
 
     test('projection "SHOPPING_LIST_RENAMED" should rename the shopping list', async () => {
       const shoppingLists = await givenEvents([

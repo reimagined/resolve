@@ -1,5 +1,5 @@
 import { AggregateProjection } from '@resolve-js/core'
-import { SHOPPING_LIST_CREATED, SHOPPING_LIST_REMOVED } from '../event_types'
+import { SHOPPING_LIST_CREATED, SHOPPING_LIST_REMOVED } from '../event-types'
 
 const projection: AggregateProjection = {
   Init: () => ({}),

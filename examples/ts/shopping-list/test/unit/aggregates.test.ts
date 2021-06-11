@@ -1,4 +1,4 @@
-import commands from '../../common/aggregates/shopping_list.commands'
+import commands from '../../common/aggregates/shopping-list.commands'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_RENAMED,
@@ -6,7 +6,7 @@ import {
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED,
   SHOPPING_ITEM_REMOVED,
-} from '../../common/event_types'
+} from '../../common/event-types'
 
 describe('aggregates', () => {
   describe('ShoppingList', () => {

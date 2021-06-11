@@ -4,28 +4,28 @@ const appConfig = {
   aggregates: [
     {
       name: 'ShoppingList',
-      commands: 'common/aggregates/shopping_list.commands.ts',
-      projection: 'common/aggregates/shopping_list.projection.ts',
+      commands: 'common/aggregates/shopping-list.commands.ts',
+      projection: 'common/aggregates/shopping-list.projection.ts',
     },
   ],
   viewModels: [
     {
       name: 'shoppingList',
-      projection: 'common/view-models/shopping_list.projection.ts',
+      projection: 'common/view-models/shopping-list.projection.ts',
     },
   ],
   readModels: [
     {
       name: 'ShoppingLists',
-      projection: 'common/read-models/shopping_lists.projection.ts',
-      resolvers: 'common/read-models/shopping_lists.resolvers.ts',
+      projection: 'common/read-models/shopping-lists.projection.ts',
+      resolvers: 'common/read-models/shopping-lists.resolvers.ts',
       connectorName: 'default',
     },
   ],
   apiHandlers: [
     {
       path: '/api/shopping-lists.json',
-      handler: 'common/api-handlers/shopping_lists.ts',
+      handler: 'common/api-handlers/shopping-lists.ts',
       method: 'GET',
     },
     {
