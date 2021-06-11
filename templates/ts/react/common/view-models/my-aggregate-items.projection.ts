@@ -1,5 +1,8 @@
 import { ViewModelProjection } from '@resolve-js/core'
-import { MY_AGGREGATE_ITEM_ADDED, MY_AGGREGATE_ITEM_REMOVED } from '../event-types'
+import {
+  MY_AGGREGATE_ITEM_ADDED,
+  MY_AGGREGATE_ITEM_REMOVED,
+} from '../event-types'
 
 const projection: ViewModelProjection<string[]> = {
   Init: () => [],

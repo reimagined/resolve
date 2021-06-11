@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@babel/node": "7.14.2",
+    "@resolve-js/core": "0.30.5",
     "@resolve-js/client": "0.30.5",
     "@resolve-js/eventstore-lite": "0.30.5",
     "@resolve-js/eventstore-postgresql-serverless": "0.30.5",

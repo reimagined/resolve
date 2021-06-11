@@ -9,7 +9,7 @@ import {
   ViewModelRuntimeResolver,
   ViewModelsInteropBuilder,
 } from './types'
-import getLog from '../get-log'
+import { getLog } from '../get-log'
 import {
   getPerformanceTracerSegment,
   getPerformanceTracerSubsegment,
