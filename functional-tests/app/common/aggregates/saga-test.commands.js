@@ -1,4 +1,4 @@
-export default {
+const aggregate = {
   requestSagaTest: (_, { payload }) => ({
     type: 'SagaTestRequested',
     payload,
@@ -8,3 +8,5 @@ export default {
     payload,
   }),
 }
+
+export default aggregate

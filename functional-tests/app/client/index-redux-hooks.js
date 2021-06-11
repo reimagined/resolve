@@ -5,8 +5,8 @@ import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
 import { createBrowserHistory } from 'history'
 
 import Routes from './redux-hooks/components/Routes'
-import routes from './redux-hooks/routes'
-import getRedux from './redux-hooks/get-redux'
+import { routes } from './redux-hooks/routes'
+import { getRedux } from './redux-hooks/get-redux'
 
 const entryPoint = (resolveContext) => {
   const rootPath = '/redux-hooks'

@@ -5,8 +5,8 @@ import { AppContainer, createStore, getOrigin } from '@resolve-js/redux'
 import { createBrowserHistory } from 'history'
 
 import Routes from './hoc/components/Routes'
-import routes from './hoc/routes'
-import getRedux from './hoc/get-redux'
+import { routes } from './hoc/routes'
+import { getRedux } from './hoc/get-redux'
 
 const entryPoint = ({ staticPath, viewModels, subscriber, clientImports }) => {
   const rootPath = '/hoc'

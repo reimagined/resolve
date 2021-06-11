@@ -5,7 +5,7 @@ import { ArrayWithQueryString } from './components/ArrayWithinQueryString'
 import { BasicViewModelTests } from './components/ViewModel'
 import { CustomAggregateIds } from './components/CustomAggregateIds'
 
-export default [
+export const routes = [
   {
     component: App,
     routes: [
