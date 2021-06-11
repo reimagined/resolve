@@ -57,11 +57,12 @@ const uploaderHandler = async (req, res) => {
         body = req.body
         data = Buffer.from(body, 'latin1')
 
+        const ft = await fileType.fromBuffer(data)
+
         fs.writeFileSync(
           `${dirName}/${uploadId}.metadata`,
           JSON.stringify({
-            'Content-Type':
-              fileType(data) != null ? fileType(data).mime : 'text/plain',
+            'Content-Type': ft != null ? ft.mime : 'text/plain',
           }),
           { flag: 'w+', encoding: 'utf8' }
         )

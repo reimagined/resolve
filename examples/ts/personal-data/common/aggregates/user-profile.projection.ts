@@ -1,10 +1,11 @@
+import { AggregateProjection } from '@resolve-js/core'
 import {
   USER_REGISTERED,
   USER_PROFILE_UPDATED,
   USER_PROFILE_DELETED,
 } from '../user-profile.events'
 
-const projection = {
+const projection: AggregateProjection = {
   Init: () => ({
     isRegistered: false,
     isDeleted: false,

@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import { UnauthorizedError } from './errors'
 import { authSecret, systemUserId } from './constants'
 
-export const decode = (token) => {
+export const decode = (token: string) => {
   try {
     return jwt.verify(token, authSecret)
   } catch (e) {
@@ -10,7 +10,7 @@ export const decode = (token) => {
   }
 }
 
-export const sign = (payload, options) => {
+export const sign = (payload: object, options: any) => {
   return jwt.sign(payload, authSecret, options)
 }
 

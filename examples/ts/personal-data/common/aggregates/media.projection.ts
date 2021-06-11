@@ -1,10 +1,11 @@
+import { AggregateProjection } from '@resolve-js/core'
 import {
   MEDIA_UPLOAD_STARTED,
   MEDIA_UPLOAD_COMPLETED,
   MEDIA_UPLOAD_FAILED,
 } from '../media.events'
 
-const projection = {
+const projection: AggregateProjection = {
   Init: () => ({
     status: 'none',
     isFinished: false,

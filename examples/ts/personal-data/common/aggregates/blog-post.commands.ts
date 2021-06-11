@@ -1,7 +1,8 @@
+import { Aggregate } from '@resolve-js/core'
 import { BLOG_POST_CREATED, BLOG_POST_DELETED } from '../blog-post.events'
 import { decode } from '../jwt'
 
-const aggregate = {
+const aggregate: Aggregate = {
   create: (state, command, { jwt }) => {
     const { authorId, content, title } = command.payload
 

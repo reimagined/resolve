@@ -1,3 +1,4 @@
+import { Aggregate } from '@resolve-js/core'
 import {
   USER_REGISTERED,
   USER_PROFILE_UPDATED,
@@ -9,7 +10,7 @@ import { systemUserId } from '../constants'
 
 import { decode } from '../jwt'
 
-const aggregate = {
+const aggregate: Aggregate = {
   register: (state, command, context) => {
     // TODO: check user authorization token
 

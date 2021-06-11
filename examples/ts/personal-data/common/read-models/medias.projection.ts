@@ -1,6 +1,8 @@
+import { ReadModel } from '@resolve-js/core'
+import { ResolveStore } from '@resolve-js/readmodel-base'
 import { MEDIA_UPLOAD_STARTED } from '../media.events'
 
-const readModel = {
+const readModel: ReadModel<ResolveStore> = {
   Init: async (store) => {
     await store.defineTable('Media', {
       indexes: { id: 'string', mediaId: 'string' },

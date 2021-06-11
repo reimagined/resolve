@@ -1,13 +1,15 @@
 import { v4 as uuid } from 'uuid'
 import fs from 'fs'
-
+import { Saga } from '@resolve-js/core'
+import { ResolveStore } from '@resolve-js/readmodel-base'
+import { PersonalDataSagaSideEffects } from '../../types'
 import {
   USER_PERSONAL_DATA_REQUESTED,
   USER_PROFILE_DELETED,
 } from '../user-profile.events'
 import { systemToken } from '../jwt'
 
-const saga = {
+const saga: Saga<ResolveStore, PersonalDataSagaSideEffects> = {
   handlers: {
     Init: async () => Promise.resolve(),
     [USER_PERSONAL_DATA_REQUESTED]: async (context, event) => {

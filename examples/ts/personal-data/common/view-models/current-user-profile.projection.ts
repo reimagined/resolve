@@ -1,10 +1,12 @@
+import { ViewModelProjection } from '@resolve-js/core'
 import {
   USER_PROFILE_DELETED,
   USER_PROFILE_UPDATED,
   USER_REGISTERED,
 } from '../user-profile.events'
+import { UserProfileViewModelState } from '../../types'
 
-export default {
+const viewModel: ViewModelProjection<UserProfileViewModelState | null> = {
   Init: () => null,
   [USER_REGISTERED]: (
     state,
@@ -31,3 +33,5 @@ export default {
     lastName: 'deleted user',
   }),
 }
+
+export default viewModel

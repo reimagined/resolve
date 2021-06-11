@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 import UploaderContext from './context'
 
-import routes from './routes'
+import { routes } from './routes'
 
 const entryPoint = (clientContext) => {
   const appContainer = document.createElement('div')

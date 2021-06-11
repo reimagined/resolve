@@ -1,7 +1,12 @@
 import jwt from 'jsonwebtoken'
+import { ViewModelResolver } from '@resolve-js/core'
 import jwtSecret from '../../auth/jwt-secret'
 
-export default async (resolve, query, { jwt: token, viewModel }) => {
+const resolver: ViewModelResolver = async (
+  resolve,
+  query,
+  { jwt: token, viewModel }
+) => {
   try {
     jwt.verify(token, jwtSecret)
   } catch (error) {
@@ -19,3 +24,5 @@ export default async (resolve, query, { jwt: token, viewModel }) => {
     },
   }
 }
+
+export default resolver

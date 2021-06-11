@@ -1,3 +1,5 @@
+import { ReadModel } from '@resolve-js/core'
+import { ResolveStore } from '@resolve-js/readmodel-base'
 import {
   USER_PROFILE_DELETED,
   USER_PROFILE_UPDATED,
@@ -6,7 +8,7 @@ import {
   USER_PERSONAL_DATA_GATHERED,
 } from '../user-profile.events'
 
-const readModel = {
+const readModel: ReadModel<ResolveStore> = {
   Init: async (store) => {
     await store.defineTable('Users', {
       indexes: { id: 'string' },

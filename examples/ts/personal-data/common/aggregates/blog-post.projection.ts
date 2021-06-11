@@ -1,6 +1,7 @@
+import { AggregateProjection } from '@resolve-js/core'
 import { BLOG_POST_CREATED, BLOG_POST_DELETED } from '../blog-post.events'
 
-const projection = {
+const projection: AggregateProjection = {
   Init: () => ({
     isExist: false,
   }),

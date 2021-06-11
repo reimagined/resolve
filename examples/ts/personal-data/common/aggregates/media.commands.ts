@@ -1,10 +1,11 @@
+import { Aggregate } from '@resolve-js/core'
 import {
   MEDIA_UPLOAD_COMPLETED,
   MEDIA_UPLOAD_FAILED,
   MEDIA_UPLOAD_STARTED,
 } from '../media.events'
 
-const aggregate = {
+const aggregate: Aggregate = {
   startUpload: (state, command) => {
     const { status } = state
 
