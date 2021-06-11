@@ -6,8 +6,8 @@ import { renderRoutes } from 'react-router-config'
 import { Helmet } from 'react-helmet'
 import { createMemoryHistory } from 'history'
 import jsonwebtoken from 'jsonwebtoken'
-import getRoutes from './get-routes'
-import getRedux from './get-redux'
+import { getRoutes } from './get-routes'
+import { getRedux } from './get-redux'
 const ssrHandler = async (serverContext, req, res) => {
   try {
     const { constants, seedClientEnvs, utils, viewModels } = serverContext

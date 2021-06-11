@@ -6,7 +6,7 @@ import {
   OPTIMISTIC_SYNC,
 } from '../actions/optimistic_actions'
 const { SEND_COMMAND_SUCCESS, QUERY_READMODEL_SUCCESS } = internal.actionTypes
-export default function* () {
+export function* optimisticShoppingListsSaga() {
   yield takeEvery(
     (action) =>
       action.type === SEND_COMMAND_SUCCESS &&

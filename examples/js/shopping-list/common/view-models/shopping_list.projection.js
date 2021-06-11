@@ -11,13 +11,15 @@ const projection = {
   [SHOPPING_LIST_CREATED]: (state, { aggregateId, payload: { name } }) => ({
     id: aggregateId,
     name,
+    removed: false,
     list: [],
   }),
   [SHOPPING_LIST_RENAMED]: (state, { payload: { name } }) => ({
     ...state,
     name,
   }),
-  [SHOPPING_LIST_REMOVED]: () => ({
+  [SHOPPING_LIST_REMOVED]: (state) => ({
+    ...state,
     removed: true,
   }),
   [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({

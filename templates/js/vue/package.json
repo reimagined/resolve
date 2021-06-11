@@ -1,5 +1,5 @@
 {
-  "name": "@resolve-js/vue-js",
+  "name": "vue-js",
   "version": "0.30.5",
   "private": true,
   "description": "Example shows how to work with Vue framework",

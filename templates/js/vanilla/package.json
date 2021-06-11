@@ -1,5 +1,5 @@
 {
-  "name": "@resolve-js/vanilla-js",
+  "name": "vanilla-js",
   "version": "0.30.5",
   "private": true,
   "description": "used as a template for new reSolve applications",

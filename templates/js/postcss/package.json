@@ -1,5 +1,5 @@
 {
-  "name": "@resolve-js/postcss-js",
+  "name": "postcss-js",
   "version": "0.30.5",
   "private": true,
   "description": "shows how to work with postCSS",
