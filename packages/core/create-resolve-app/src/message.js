@@ -62,12 +62,13 @@ const message = {
       `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
     ]),
 
-  missingExample: (exampleName, examplesDirs) =>
+  missingExample: (exampleName, availableExamples) =>
     formatLines([
       `No such example, ${exampleName}. The following examples are available: `,
-      ...resolveExamples
-        .filter((e) => examplesDirs.includes(e.name))
-        .map(({ name, description }) => `          * ${name} - ${description}`),
+      ...availableExamples.map(
+        ({ name, description, path }) =>
+          `          * ${name} - ${description} - ${path}`
+      ),
     ]),
 
   invalidApplicationName: (applicationName, errors, warnings) => {
