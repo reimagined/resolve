@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { v4 as uuid } from 'uuid'
 import { useQuery, useCommand } from '@resolve-js/react-hooks'
 import { Button } from 'react-bootstrap'
-import { Entity } from './Entity'
+import { MyAggregateItems } from './MyAggregateItems'
 
-const EntityList = () => {
+const MyAggregateList = () => {
   const [entities, setEntities] = useState([])
 
   const getEntities = useQuery(
-    { name: 'Entities', resolver: 'all', args: {} },
+    { name: 'MyAggregateList', resolver: 'all', args: {} },
     (error, result) => {
       setEntities(result.data)
     }
@@ -20,25 +20,29 @@ const EntityList = () => {
 
   const createEntityCommand = useCommand(
     {
-      type: 'createEntity',
+      type: 'create',
       aggregateId: uuid(),
-      aggregateName: 'Entity',
-      payload: { name: `Entity ${entities.length}` },
+      aggregateName: 'MyAggregate',
+      payload: { name: `MyAggregate ${entities.length}` },
     },
     (error, result) => {
       const event = result as any
       setEntities([
         ...entities,
-        { id: event.aggregateId, name: `Entity ${entities.length}`, items: [] },
+        {
+          id: event.aggregateId,
+          name: `MyAggregate ${entities.length}`,
+          items: [],
+        },
       ])
     }
   )
 
   const deleteEntityCommand = useCommand(
     (id) => ({
-      type: 'deleteEntity',
+      type: 'delete',
       aggregateId: id,
-      aggregateName: 'Entity',
+      aggregateName: 'MyAggregate',
     }),
     (error, result) => {
       const event = result as any
@@ -51,11 +55,11 @@ const EntityList = () => {
   return (
     <div>
       <Button variant="success" onClick={() => createEntityCommand()}>
-        Create entity
+        Create Aggregate
       </Button>
       <div className="entities">
         {entities.map(({ id, name }) => (
-          <Entity
+          <MyAggregateItems
             key={id}
             id={id}
             name={name}
@@ -67,4 +71,4 @@ const EntityList = () => {
   )
 }
 
-export { EntityList }
+export { MyAggregateList }

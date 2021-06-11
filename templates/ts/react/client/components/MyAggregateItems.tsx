@@ -6,10 +6,10 @@ import {
 import React, { useState, useEffect } from 'react'
 import { Button, Card } from 'react-bootstrap'
 
-const Entity = ({ id, name, onDelete }) => {
+const MyAggregateItems = ({ id, name, onDelete }) => {
   const [items, setItems] = useState([])
 
-  const { connect, dispose } = useViewModel('EntityItems', [id], setItems)
+  const { connect, dispose } = useViewModel('MyAggregateItems', [id], setItems)
 
   useEffect(() => {
     connect()
@@ -21,13 +21,13 @@ const Entity = ({ id, name, onDelete }) => {
   const addItemCommand = useCommand({
     type: 'addItem',
     aggregateId: id,
-    aggregateName: 'Entity',
+    aggregateName: 'MyAggregate',
   })
 
   const removeItemCommand = useCommandBuilder((itemName) => ({
     type: 'removeItem',
     aggregateId: id,
-    aggregateName: 'Entity',
+    aggregateName: 'MyAggregate',
     payload: { itemName },
   }))
 
@@ -37,12 +37,12 @@ const Entity = ({ id, name, onDelete }) => {
         <span className="entity-name">{name}</span>
         <span>
           <Button variant="success" size="sm" onClick={() => addItemCommand()}>
-            Add item
+            Add Item
           </Button>
         </span>
         <span>
           <Button variant="danger" size="sm" onClick={onDelete}>
-            Delete entity
+            Delete Aggregate
           </Button>
         </span>
       </Card.Header>
@@ -68,4 +68,4 @@ const Entity = ({ id, name, onDelete }) => {
   )
 }
 
-export { Entity }
+export { MyAggregateItems }

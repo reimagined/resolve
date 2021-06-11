@@ -11,6 +11,6 @@ fixture`reSolve Application`.beforeEach(async (t) => {
 
 test('home page', async (t) => {
   await t
-    .expect(await Selector('span').withText('reSolve Application').exists)
+    .expect(await Selector('span').withText('reSolve React Template').exists)
     .eql(true)
 })

@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Navbar, Image } from 'react-bootstrap'
 import { useStaticResolver } from '@resolve-js/react-hooks'
-import { EntityList } from '../components/EntityList'
+import { MyAggregateList } from '../components/MyAggregateList'
 
 const App = () => {
   const staticResolver = useStaticResolver()
@@ -37,11 +37,11 @@ const App = () => {
             src={staticResolver('/resolve-logo.png')}
             className="d-inline-block align-top"
           />
-          <span>{' reSolve Application'}</span>
+          <span>{'reSolve React Template'}</span>
         </Navbar.Brand>
       </Navbar>
       <div className="content-wrapper">
-        <EntityList />
+        <MyAggregateList />
       </div>
     </div>
   )
