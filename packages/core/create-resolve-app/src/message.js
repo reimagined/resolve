@@ -66,8 +66,7 @@ const message = {
     formatLines([
       `No such example, ${exampleName}. The following examples are available: `,
       ...availableExamples.map(
-        ({ name, description, path }) =>
-          `          * ${name} - ${description} - ${path}`
+        ({ name, description }) => `          * ${name} - ${description}`
       ),
     ]),
 
