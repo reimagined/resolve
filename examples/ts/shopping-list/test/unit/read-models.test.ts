@@ -25,7 +25,6 @@ describe('read-models', () => {
       expect(shoppingLists).toEqual([])
     })
 
-    // mdis-start read-model-test
     test('projection "SHOPPING_LIST_CREATED" should create a shopping list', async () => {
       const shoppingLists = await givenEvents([
         {
@@ -48,7 +47,6 @@ describe('read-models', () => {
         name: 'Products',
       })
     })
-    // mdis-stop read-model-test
 
     test('projection "SHOPPING_LIST_RENAMED" should rename the shopping list', async () => {
       const shoppingLists = await givenEvents([

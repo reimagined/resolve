@@ -33,18 +33,7 @@ void (async () => {
           devConfig,
           moduleAdmin
         )
-        await watch(resolveConfig, adjustWebpackConfigs)
-        break
-      }
 
-      case 'reset': {
-        const moduleAdmin = resolveModuleAdmin()
-        const resolveConfig = merge(
-          defaultResolveConfig,
-          appConfig,
-          devConfig,
-          moduleAdmin
-        )
         await reset(
           resolveConfig,
           {
@@ -55,6 +44,8 @@ void (async () => {
           },
           adjustWebpackConfigs
         )
+
+        await watch(resolveConfig, adjustWebpackConfigs)
         break
       }
 
@@ -131,7 +122,7 @@ void (async () => {
         await runTestcafe({
           resolveConfig,
           adjustWebpackConfigs,
-          functionalTestsDir: 'test/e2e',
+          functionalTestsDir: 'test/functional',
           browser: process.argv[3],
           customArgs: ['--stop-on-first-fail'],
         })

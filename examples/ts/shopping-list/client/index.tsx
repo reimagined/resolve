@@ -1,26 +1,19 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { renderRoutes } from 'react-router-config'
+import { ResolveProvider } from '@resolve-js/react-hooks'
 import { BrowserRouter } from 'react-router-dom'
-import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
+import { renderRoutes } from 'react-router-config'
 
-import { getRoutes } from './get-routes'
-import { getRedux } from './get-redux'
+import routes from './routes'
 
 const entryPoint = (clientContext) => {
-  const routes = getRoutes()
-  const redux = getRedux()
-
-  const store = createResolveStore(clientContext, {
-    serializedState: (window as any).__INITIAL_STATE__,
-    redux,
-  })
-
+  const appContainer = document.createElement('div')
+  document.body.appendChild(appContainer)
   render(
-    <ResolveReduxProvider context={clientContext} store={store}>
+    <ResolveProvider context={clientContext}>
       <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
-    </ResolveReduxProvider>,
-    document.getElementById('app-container')
+    </ResolveProvider>,
+    appContainer
   )
 }
 
