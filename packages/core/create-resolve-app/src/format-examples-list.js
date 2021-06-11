@@ -52,8 +52,8 @@ const formatExamplesList = (availableExamples, indentationLevel = 0) => {
     lines.push(
       ...formatItemsGroup(
         [
-          ...formatItemsGroup(ts.map(formatExampleInfo), 'Typescript', 0),
-          ...formatItemsGroup(js.map(formatExampleInfo), 'JavaScript', 0),
+          ...formatItemsGroup(ts?.map(formatExampleInfo), 'Typescript', 0),
+          ...formatItemsGroup(js?.map(formatExampleInfo), 'JavaScript', 0),
         ],
         'Templates:',
         indentationLevel
@@ -65,8 +65,8 @@ const formatExamplesList = (availableExamples, indentationLevel = 0) => {
     lines.push(
       ...formatItemsGroup(
         [
-          ...formatItemsGroup(ts.map(formatExampleInfo), 'Typescript', 0),
-          ...formatItemsGroup(js.map(formatExampleInfo), 'JavaScript', 0),
+          ...formatItemsGroup(ts?.map(formatExampleInfo), 'Typescript', 0),
+          ...formatItemsGroup(js?.map(formatExampleInfo), 'JavaScript', 0),
         ],
         'Examples:',
         indentationLevel
