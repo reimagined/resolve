@@ -23,6 +23,7 @@
     "clean:packages": "npx rimraf .packages",
     "lint": "eslint . --ext=.js,.jsx,.ts,.tsx",
     "lint:js": "eslint . --ext=.js,.jsx",
+    "lint:ts": "eslint . --ext=.ts,.tsx",
     "mdis": "mdis",
     "prepare": "babel-compile",
     "build-packages": "build-packages",

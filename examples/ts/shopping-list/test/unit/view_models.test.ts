@@ -21,6 +21,7 @@ describe('view-models', () => {
         projection[SHOPPING_LIST_CREATED](state, event, undefined, undefined)
       ).toEqual({
         id: aggregateId,
+        removed: false,
         name,
         list: [],
       })
@@ -32,6 +33,7 @@ describe('view-models', () => {
 
       const state = {
         id: aggregateId,
+        removed: false,
         name,
         list: [],
       }
@@ -41,6 +43,7 @@ describe('view-models', () => {
         projection[SHOPPING_LIST_RENAMED](state, event, undefined, undefined)
       ).toEqual({
         id: aggregateId,
+        removed: false,
         name: 'renamed',
         list: [],
       })
@@ -52,6 +55,7 @@ describe('view-models', () => {
 
       const state = {
         id: aggregateId,
+        removed: false,
         name,
         list: [],
       }
@@ -60,7 +64,10 @@ describe('view-models', () => {
       expect(
         projection[SHOPPING_LIST_REMOVED](state, event, undefined, undefined)
       ).toEqual({
+        id: aggregateId,
         removed: true,
+        name,
+        list: [],
       })
     })
 
@@ -70,6 +77,7 @@ describe('view-models', () => {
 
       const state = {
         id: aggregateId,
+        removed: false,
         name,
         list: [],
       }
@@ -79,6 +87,7 @@ describe('view-models', () => {
         projection[SHOPPING_ITEM_CREATED](state, event, undefined, undefined)
       ).toEqual({
         id: aggregateId,
+        removed: false,
         name,
         list: [
           {
@@ -96,6 +105,7 @@ describe('view-models', () => {
 
       const state = {
         id: aggregateId,
+        removed: false,
         name,
         list: [
           {
@@ -111,6 +121,7 @@ describe('view-models', () => {
         projection[SHOPPING_ITEM_TOGGLED](state, event, undefined, undefined)
       ).toEqual({
         id: aggregateId,
+        removed: false,
         name,
         list: [
           {
@@ -128,6 +139,7 @@ describe('view-models', () => {
 
       const state = {
         id: aggregateId,
+        removed: false,
         name,
         list: [
           {
@@ -143,6 +155,7 @@ describe('view-models', () => {
         projection[SHOPPING_ITEM_REMOVED](state, event, undefined, undefined)
       ).toEqual({
         id: aggregateId,
+        removed: false,
         name,
         list: [],
       })

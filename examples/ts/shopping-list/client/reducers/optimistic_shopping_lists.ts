@@ -4,7 +4,7 @@ import {
   OPTIMISTIC_SYNC,
 } from '../actions/optimistic_actions'
 
-const optimistic_shopping_lists = (state = [], action) => {
+export const optimisticShoppingListsReducer = (state = [], action) => {
   switch (action.type) {
     case OPTIMISTIC_CREATE_SHOPPING_LIST: {
       return [
@@ -28,5 +28,3 @@ const optimistic_shopping_lists = (state = [], action) => {
     }
   }
 }
-
-export default optimistic_shopping_lists

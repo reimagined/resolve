@@ -1,11 +1,12 @@
 import { ReadModel } from '@resolve-js/core'
+import { ResolveStore } from '@resolve-js/readmodel-base'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_REMOVED,
   SHOPPING_LIST_RENAMED,
 } from '../event_types'
 
-const projection: ReadModel<any> = {
+const projection: ReadModel<ResolveStore> = {
   Init: async (store) => {
     await store.defineTable('ShoppingLists', {
       indexes: {

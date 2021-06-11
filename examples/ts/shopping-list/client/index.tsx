@@ -4,8 +4,8 @@ import { renderRoutes } from 'react-router-config'
 import { BrowserRouter } from 'react-router-dom'
 import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
 
-import getRoutes from './get-routes'
-import getRedux from './get-redux'
+import { getRoutes } from './get-routes'
+import { getRedux } from './get-redux'
 
 const entryPoint = (clientContext) => {
   const routes = getRoutes()
