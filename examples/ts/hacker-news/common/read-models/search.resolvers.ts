@@ -1,4 +1,7 @@
-const find = async (es, { q }) => {
+import { ReadModelResolvers } from '@resolve-js/core'
+import { Client } from '@elastic/elasticsearch'
+
+const find = async (es, { q }: { q: string }) => {
   if (!es)
     throw new Error(
       'Please, configure Elastic Search options, to make this service available'
@@ -19,7 +22,9 @@ const find = async (es, { q }) => {
 
 const enabled = async (es) => es !== null
 
-export default {
+const searchResolvers: ReadModelResolvers<Client> = {
   find,
   enabled,
 }
+
+export default searchResolvers

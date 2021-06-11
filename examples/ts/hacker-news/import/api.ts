@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch'
 import dns from 'dns'
-import path from 'path'
 
 const timeout = 15000
 
@@ -130,9 +129,11 @@ const fetchItems = (ids) => {
   return Promise.all(ids.map(fetchItem))
 }
 
-export default {
+const api = {
   fetchStoryIds,
   fetchItems,
   invokeImportApi,
   invokeImportSecretApi,
 }
+
+export default api

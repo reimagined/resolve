@@ -14,3 +14,7 @@ export type StoreState = {
   jwt: UserState
   optimistic: OptimisticState
 }
+
+export type UserConfirmationSagaSideEffects = {
+  sendEmail: (email: string, subject: string, body: string) => void
+}

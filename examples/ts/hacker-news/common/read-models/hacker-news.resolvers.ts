@@ -1,4 +1,6 @@
-const getStories = async (type, store, { first, offset }) => {
+import { ReadModelResolvers } from '@resolve-js/core'
+
+const getStories = async (type, store: any, { first, offset }) => {
   const segment = store.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('resolver')
 
@@ -30,7 +32,7 @@ const getStories = async (type, store, { first, offset }) => {
   }
 }
 
-const getStory = async (store, { id }) => {
+const getStory = async (store, { id }: { id: string }) => {
   const story = await store.findOne('Stories', { id })
 
   if (!story) {
@@ -48,7 +50,16 @@ const getStory = async (store, { id }) => {
   return story
 }
 
-const getUser = async (store, { id, name }) => {
+const getUser = async (
+  store,
+  {
+    id,
+    name,
+  }: {
+    id: string
+    name: string
+  }
+) => {
   const user =
     name != null
       ? await store.findOne('Users', { name })
@@ -59,14 +70,12 @@ const getUser = async (store, { id, name }) => {
   return user
 }
 
-export default {
+const hackerNewsResolvers: ReadModelResolvers<any> = {
   story: getStory,
-
   allStories: getStories.bind(null, null),
-
   askStories: getStories.bind(null, 'ask'),
-
   showStories: getStories.bind(null, 'show'),
-
   user: getUser,
 }
+
+export default hackerNewsResolvers

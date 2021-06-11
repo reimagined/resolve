@@ -1,6 +1,12 @@
 import { USER_CREATED, USER_CONFIRMED, USER_REJECTED } from '../event-types'
+import { Saga } from '@resolve-js/core'
+import { ResolveStore } from '@resolve-js/readmodel-base'
+import { UserConfirmationSagaSideEffects } from '../../types'
 
-export default {
+const userConfirmationSaga: Saga<
+  ResolveStore,
+  UserConfirmationSagaSideEffects
+> = {
   handlers: {
     Init: async ({ store }) => {
       await store.defineTable('SagaUsers', {
@@ -65,3 +71,5 @@ export default {
     },
   },
 }
+
+export default userConfirmationSaga

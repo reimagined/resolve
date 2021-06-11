@@ -1,6 +1,8 @@
 import cloudCommonConfig from './config.cloud.common'
 
-export default {
+const replicaConfig = {
   ...cloudCommonConfig,
   distDir: 'dist',
 }
+
+export default replicaConfig

@@ -1,6 +1,8 @@
+import { ReadModel } from '@resolve-js/core'
+import { Client } from '@elastic/elasticsearch'
 import { STORY_CREATED, USER_CREATED } from '../event-types'
 
-export default {
+const searchProjection: ReadModel<Client> = {
   [STORY_CREATED]: async (es, { aggregateId, payload: { title, text } }) => {
     if (es) {
       await es.index({
@@ -61,3 +63,5 @@ export default {
     }
   },
 }
+
+export default searchProjection

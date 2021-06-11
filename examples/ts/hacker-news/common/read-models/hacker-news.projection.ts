@@ -1,3 +1,5 @@
+import { ReadModel } from '@resolve-js/core'
+import { ResolveStore } from '@resolve-js/readmodel-base'
 import {
   STORY_CREATED,
   STORY_UNVOTED,
@@ -5,7 +7,7 @@ import {
   USER_CREATED,
 } from '../event-types'
 
-export default {
+const hackerNewsProjection: ReadModel<ResolveStore> = {
   Init: async (store) => {
     await store.defineTable('Stories', {
       indexes: { id: 'string', type: 'string' },
@@ -106,3 +108,5 @@ export default {
     )
   },
 }
+
+export default hackerNewsProjection

@@ -433,7 +433,6 @@ module.exports = {
           'subsegment',
           'subsegments',
           'subquery',
-          'Sv1',
           'svg',
           'symlink',
           'tagline',

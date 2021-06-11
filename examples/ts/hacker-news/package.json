@@ -25,6 +25,7 @@
   "dependencies": {
     "@babel/node": "7.14.2",
     "@elastic/elasticsearch": "7.11.0",
+    "@resolve-js/core": "0.30.5",
     "@resolve-js/debug-levels": "0.30.5",
     "@resolve-js/eventstore-lite": "0.30.5",
     "@resolve-js/eventstore-postgresql-serverless": "0.30.5",
@@ -32,6 +33,7 @@
     "@resolve-js/module-auth": "0.30.5",
     "@resolve-js/module-comments": "0.30.5",
     "@resolve-js/module-replication": "0.30.5",
+    "@resolve-js/readmodel-base": "0.30.5",
     "@resolve-js/readmodel-lite": "0.30.5",
     "@resolve-js/readmodel-postgresql-serverless": "0.30.5",
     "@resolve-js/redux": "0.30.5",

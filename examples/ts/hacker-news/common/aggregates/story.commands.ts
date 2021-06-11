@@ -1,11 +1,12 @@
 import urlLib from 'url'
 import jsonwebtoken from 'jsonwebtoken'
+import { Aggregate } from '@resolve-js/core'
 
 import validate from './validation'
 import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types'
 import jwtSecret from '../../auth/jwt-secret'
 
-export default {
+const storyCommands: Aggregate = {
   createStory: (state, command, { jwt: token }) => {
     const jwt = jsonwebtoken.verify(token, jwtSecret)
 
@@ -66,3 +67,5 @@ export default {
     }
   },
 }
+
+export default storyCommands

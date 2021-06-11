@@ -1,13 +1,15 @@
-import es from '@elastic/elasticsearch'
+import { Client, ClientOptions } from '@elastic/elasticsearch'
 
-const connect = (options) => async () =>
-  options.node ? new es.Client(options) : null
+const connect = (options: ClientOptions) => async () =>
+  options.node ? new Client(options) : null
 
-const drop = async (client) => {
+const drop = async (client: Client) => {
   if (client) await client.indices.delete({ index: 'primary' })
 }
 
-export default (options) => ({
+const createConnector = (options: ClientOptions) => ({
   connect: connect(options),
   drop,
 })
+
+export default createConnector
