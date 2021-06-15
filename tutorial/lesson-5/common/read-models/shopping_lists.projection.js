@@ -1,6 +1,6 @@
 import { SHOPPING_LIST_CREATED, SHOPPING_LIST_REMOVED } from '../eventTypes'
 
-export default {
+export const projection = {
   Init: async (store) => {
     await store.defineTable('ShoppingLists', {
       indexes: {
@@ -27,3 +27,5 @@ export default {
     await store.delete('ShoppingLists', { id: aggregateId })
   },
 }
+
+export default projection

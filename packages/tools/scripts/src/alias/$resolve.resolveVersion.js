@@ -1,6 +1,6 @@
 import resolveFileOrModule from '../resolve_file_or_module'
 
-export default () => {
+const importResolveVersion = () => {
   const exports = []
 
   const runtimePackageJson = require(resolveFileOrModule(
@@ -15,3 +15,5 @@ export default () => {
 
   return exports.join('\r\n')
 }
+
+export default importResolveVersion

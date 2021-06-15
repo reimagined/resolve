@@ -1,6 +1,6 @@
 import declareRuntimeEnv, { injectRuntimeEnv } from '../declare_runtime_env'
 
-export default ({ resolveConfig, isClient }) => {
+const importCdnUrl = ({ resolveConfig, isClient }) => {
   const exports = []
   if (resolveConfig.hasOwnProperty('uploadAdapter')) {
     exports.push(
@@ -17,3 +17,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return exports.join('\r\n')
 }
+
+export default importCdnUrl

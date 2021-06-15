@@ -1,6 +1,6 @@
 import { SHOPPING_LIST_CREATED } from '../eventTypes'
 
-export default {
+const readModel = {
   Init: async (store) => {
     await store.defineTable('ShoppingLists', {
       indexes: {
@@ -23,3 +23,5 @@ export default {
     await store.insert('ShoppingLists', shoppingList)
   },
 }
+
+export default readModel

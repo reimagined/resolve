@@ -7,7 +7,7 @@ import {
 import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
 
-export default ({ resolveConfig, isClient }) => {
+const importApiHandlers = ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.apiHandlers`
@@ -53,3 +53,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importApiHandlers

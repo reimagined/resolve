@@ -1,1 +1,3 @@
-export default (store) => (next) => (action) => store && next(action)
+const middleware = (store) => (next) => (action) => store && next(action)
+
+export default middleware

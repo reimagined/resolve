@@ -1,6 +1,6 @@
 import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
 
-export default {
+const aggregate = {
   createShoppingList: (state, { payload: { name } }) => {
     if (!name) throw new Error('The "name" field is required')
     if (state.createdAt) throw new Error('Shopping list already exists')
@@ -21,3 +21,5 @@ export default {
     }
   },
 }
+
+export default aggregate

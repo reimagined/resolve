@@ -1,7 +1,7 @@
 import App from './components/App'
 import MyLists from './components/MyLists'
 
-export default [
+export const routes = [
   {
     component: App,
     routes: [

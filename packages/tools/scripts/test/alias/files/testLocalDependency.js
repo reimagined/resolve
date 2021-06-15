@@ -1,1 +1,3 @@
-export default 'test'
+const dependency = 'test'
+
+export default dependency

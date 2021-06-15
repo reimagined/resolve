@@ -6,7 +6,7 @@ import {
   SHOPPING_ITEM_REMOVED,
 } from '../eventTypes'
 
-export default {
+const projection = {
   Init: () => ({
     id: 'id',
     name: 'unnamed',
@@ -47,3 +47,5 @@ export default {
     list: state.list.filter((item) => item.id !== id),
   }),
 }
+
+export default projection

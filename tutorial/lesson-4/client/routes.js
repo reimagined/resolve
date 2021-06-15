@@ -2,7 +2,7 @@ import App from './components/App'
 import MyLists from './components/MyLists'
 import ShoppingList from './components/ShoppingList'
 
-export default [
+export const routes = [
   {
     component: App,
     routes: [

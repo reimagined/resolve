@@ -6,7 +6,7 @@ import {
 } from '../constants'
 import importResource from '../import_resource'
 
-export default ({ resolveConfig, isClient }) => {
+const importUploadAdapter = ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.seedClientEnvs`
@@ -38,3 +38,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importUploadAdapter

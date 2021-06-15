@@ -2,7 +2,7 @@ import { ReadModel } from '@resolve-js/core'
 import { ResolveStore } from '@resolve-js/readmodel-base'
 import { MY_AGGREGATE_CREATED, MY_AGGREGATE_DELETED } from '../event-types'
 
-const entities: ReadModel<ResolveStore> = {
+const readModel: ReadModel<ResolveStore> = {
   Init: async (store) => {
     await store.defineTable('Aggregates', {
       indexes: {
@@ -24,4 +24,4 @@ const entities: ReadModel<ResolveStore> = {
   },
 }
 
-export default entities
+export default readModel

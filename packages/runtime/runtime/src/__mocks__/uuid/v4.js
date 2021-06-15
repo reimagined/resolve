@@ -1,1 +1,2 @@
-export default () => 'UUID'
+const mockedUUID = () => 'UUID'
+export default mockedUUID

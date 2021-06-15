@@ -5,7 +5,7 @@ import { Router } from 'react-router'
 import { createBrowserHistory } from 'history'
 
 import Routes from './hooks/components/Routes'
-import routes from './hooks/routes'
+import { routes } from './hooks/routes'
 import UploaderContext from './hooks/context'
 
 const entryPoint = (resolveContext) => {

@@ -9,7 +9,7 @@ import {
 import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
 
-export default ({ resolveConfig, isClient }, resourceQuery) => {
+const importReadModel = ({ resolveConfig, isClient }, resourceQuery) => {
   if (!/^\?/.test(resourceQuery)) {
     throw new Error(
       `Resource $resolve.readModel should be retrieved with resource query`
@@ -109,3 +109,5 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importReadModel

@@ -6,7 +6,7 @@ import {
   SHOPPING_ITEM_REMOVED,
 } from '../eventTypes'
 
-export default {
+const aggregate = {
   createShoppingList: (state, { payload: { name } }) => {
     if (state.createdAt) {
       throw new Error('Shopping list already exists')
@@ -75,3 +75,5 @@ export default {
     }
   },
 }
+
+export default aggregate
