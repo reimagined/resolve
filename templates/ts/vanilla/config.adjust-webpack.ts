@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const adjustWebpackConfigs = (webpackConfigs): void => {
   // enable-ts
   for (const webpackConfig of webpackConfigs) {
