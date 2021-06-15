@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - master*
+  push:
+    branches:
+      - fix/update-dependencies
 
 jobs:
   create-resolve-app-tests:
