@@ -4,36 +4,36 @@ import { useQuery, useCommand } from '@resolve-js/react-hooks'
 import { Button } from 'react-bootstrap'
 import { MyAggregateItems } from './MyAggregateItems'
 const MyAggregateList = () => {
-  const [entities, setEntities] = useState([])
+  const [aggregates, setAggregates] = useState([])
   const getEntities = useQuery(
     { name: 'MyAggregateList', resolver: 'all', args: {} },
     (error, result) => {
-      setEntities(result.data)
+      setAggregates(result.data)
     }
   )
   useEffect(() => {
     getEntities()
   }, [])
-  const createEntityCommand = useCommand(
+  const createAggregate = useCommand(
     {
       type: 'create',
       aggregateId: uuid(),
       aggregateName: 'MyAggregate',
-      payload: { name: `MyAggregate ${entities.length}` },
+      payload: { name: `MyAggregate ${aggregates.length}` },
     },
     (error, result) => {
       const event = result
-      setEntities([
-        ...entities,
+      setAggregates([
+        ...aggregates,
         {
           id: event.aggregateId,
-          name: `MyAggregate ${entities.length}`,
+          name: `MyAggregate ${aggregates.length}`,
           items: [],
         },
       ])
     }
   )
-  const deleteEntityCommand = useCommand(
+  const deleteAggregate = useCommand(
     (id) => ({
       type: 'delete',
       aggregateId: id,
@@ -41,23 +41,23 @@ const MyAggregateList = () => {
     }),
     (error, result) => {
       const event = result
-      setEntities([
-        ...entities.filter((entity) => entity.id !== event.aggregateId),
+      setAggregates([
+        ...aggregates.filter((entity) => entity.id !== event.aggregateId),
       ])
     }
   )
   return (
     <div>
-      <Button variant="success" onClick={() => createEntityCommand()}>
+      <Button variant="success" onClick={() => createAggregate()}>
         Create Aggregate
       </Button>
       <div className="entities">
-        {entities.map(({ id, name }) => (
+        {aggregates.map(({ id, name }) => (
           <MyAggregateItems
             key={id}
             id={id}
             name={name}
-            onDelete={() => deleteEntityCommand(id)}
+            onDelete={() => deleteAggregate(id)}
           />
         ))}
       </div>

@@ -1,5 +1,5 @@
 import { MY_AGGREGATE_CREATED, MY_AGGREGATE_DELETED } from '../event-types'
-const entities = {
+const readModel = {
   Init: async (store) => {
     await store.defineTable('Aggregates', {
       indexes: {
@@ -20,4 +20,4 @@ const entities = {
     await store.delete('Aggregates', { id: aggregateId })
   },
 }
-export default entities
+export default readModel
