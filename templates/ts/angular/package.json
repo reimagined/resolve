@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "11.2.4",
     "@babel/node": "7.14.2",
     "@ngtools/webpack": "11.2.3",
+    "@resolve-js/client": "0.30.5",
     "@resolve-js/eventstore-lite": "0.30.5",
     "@resolve-js/eventstore-postgresql-serverless": "0.30.5",
     "@resolve-js/readmodel-lite": "0.30.5",
