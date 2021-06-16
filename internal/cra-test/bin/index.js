@@ -17,7 +17,7 @@ const main = async () => {
   const testJs = testAll || lang === 'js'
   const testTs = testAll || lang === 'ts'
 
-  if (!testAll && !testTs && !testTs) {
+  if (!testAll && !testJs && !testTs) {
     throw Error(`unsupported language selector ${lang}`)
   }
 
