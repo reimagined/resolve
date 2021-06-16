@@ -1,35 +1,20 @@
 import { ReadModelResolvers } from '@resolve-js/core'
+import { ResolveStore } from '@resolve-js/readmodel-base'
+import { GetStoriesParams } from '../../types'
 
-const getStories = async (type, store: any, { first, offset }) => {
-  const segment = store.performanceTracer.getSegment()
-  const subSegment = segment.addNewSubsegment('resolver')
+const getStories = async (type, store, { first, offset }) => {
+  const search = type && type.constructor === String ? { type } : {}
+  const skip = first || 0
+  const stories = await store.find(
+    'Stories',
+    search,
+    null,
+    { createdAt: -1 },
+    skip,
+    offset
+  )
 
-  subSegment.addAnnotation('type', type)
-  subSegment.addAnnotation('origin', 'hacker-news:getStories')
-
-  try {
-    const search = type && type.constructor === String ? { type } : {}
-    const skip = first || 0
-    const stories = await store.find(
-      'Stories',
-      search,
-      null,
-      { createdAt: -1 },
-      skip,
-      offset
-    )
-
-    return Array.isArray(stories) ? stories : []
-  } catch (error) {
-    if (subSegment != null) {
-      subSegment.addError(error)
-    }
-    throw error
-  } finally {
-    if (subSegment != null) {
-      subSegment.close()
-    }
-  }
+  return Array.isArray(stories) ? stories : []
 }
 
 const getStory = async (store, { id }: { id: string }) => {
@@ -70,11 +55,14 @@ const getUser = async (
   return user
 }
 
-const hackerNewsResolvers: ReadModelResolvers<any> = {
+const hackerNewsResolvers: ReadModelResolvers<ResolveStore> = {
   story: getStory,
-  allStories: getStories.bind(null, null),
-  askStories: getStories.bind(null, 'ask'),
-  showStories: getStories.bind(null, 'show'),
+  allStories: (store, params: GetStoriesParams) =>
+    getStories(null, store, params),
+  askStories: (store, params: GetStoriesParams) =>
+    getStories.bind('ask', store, params),
+  showStories: (store, params: GetStoriesParams) =>
+    getStories('show', store, params),
   user: getUser,
 }
 

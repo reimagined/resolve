@@ -18,3 +18,8 @@ export type StoreState = {
 export type UserConfirmationSagaSideEffects = {
   sendEmail: (email: string, subject: string, body: string) => void
 }
+
+export type GetStoriesParams = {
+  first: number
+  offset: number
+}
