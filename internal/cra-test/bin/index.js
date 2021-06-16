@@ -4,29 +4,33 @@ const fs = require('fs')
 const os = require('os')
 const { execSync } = require('child_process')
 const rm = require('rimraf')
-const minimist = require('minimist')
 const log = require('consola')
 const { getResolveExamples, getRepoRoot } = require('@internal/helpers')
 
 const main = async () => {
-  log.info(`Preparing for create-resolve-app testing...`)
-  const { _, lang, ...args } = minimist(process.argv.slice(2))
+  if (process.argv.length < 3) {
+    throw Error(`minimum number of arguments expected: 3`)
+  }
 
-  const passedParams = [
-    ..._,
-    ...Object.entries(args).map(([key, value]) => `-${key} ${value}`),
-  ].join(' ')
-  log.info(`Passed params: ${passedParams}`)
+  const lang = process.argv[2]
+  const testAll = lang === 'all'
+  const testJs = testAll || lang === 'js'
+  const testTs = testAll || lang === 'ts'
+
+  if (!testAll && !testTs && !testTs) {
+    throw Error(`unsupported language selector ${lang}`)
+  }
+
+  log.info(`language selector set to ${lang}`)
+  log.info(`Preparing for create-resolve-app testing...`)
+  const craParams = process.argv.slice(3).join(' ')
+  log.info(`Passed params: ${craParams}`)
 
   const rootDir = getRepoRoot()
   const tempDir = path.resolve(os.tmpdir(), 'cra-tests')
 
   rm.sync(tempDir)
   fs.mkdirSync(tempDir)
-
-  const testAll = lang === 'all' || lang === undefined
-  const testJs = testAll || lang === 'js'
-  const testTs = testAll || lang === 'ts'
 
   const isTs = (exampleName) =>
     exampleName.includes('angular') ||
@@ -49,7 +53,7 @@ const main = async () => {
       `node ${path.resolve(
         rootDir,
         './packages/core/create-resolve-app/bin/index.js'
-      )} ${passedParams} -e ${example} ${example}`,
+      )} ${craParams} -e ${example} ${example}`,
       { cwd: tempDir, stdio: 'inherit' }
     )
     log.info(`Testing create-resolve-app template: ${example}`)
