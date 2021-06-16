@@ -15,7 +15,7 @@ const shutdown = async (resolve) => {
         eventSubscriber: resolve.eventSubscriber,
         name,
         upstream: resolve.upstream,
-        deleteQueue: resolve.deleteQueue
+        deleteQueue: resolve.deleteQueue,
       })
     )
   }

@@ -1,6 +1,15 @@
 import { getAccountIdFromLambdaContext } from 'resolve-cloud-common/utils'
-import { ensureSqsQueue, deleteSqsQueue, sendMessage } from 'resolve-cloud-common/sqs'
-import { createEventSourceMapping, setFunctionTags, deleteEventSourceMapping, getFunctionTags } from 'resolve-cloud-common/lambda'
+import {
+  ensureSqsQueue,
+  deleteSqsQueue,
+  sendMessage,
+} from 'resolve-cloud-common/sqs'
+import {
+  createEventSourceMapping,
+  setFunctionTags,
+  deleteEventSourceMapping,
+  getFunctionTags,
+} from 'resolve-cloud-common/lambda'
 import { getCallerIdentity } from 'resolve-cloud-common/sts'
 
 const initSubscriber = (resolve, lambdaContext) => {
@@ -20,7 +29,7 @@ const initSubscriber = (resolve, lambdaContext) => {
     await sendMessage({
       Region: region,
       QueueUrl: queueUrl,
-      MessageBody: JSON.stringify(parameters)
+      MessageBody: JSON.stringify(parameters),
     })
   }
 
@@ -28,19 +37,19 @@ const initSubscriber = (resolve, lambdaContext) => {
     await resolve.sendSqsMessage(parameters.eventSubscriber, parameters)
   }
 
-  resolve.ensureQueue = async (name) => {  
+  resolve.ensureQueue = async (name) => {
     const getTags = () => {
       const tags = {
         'resolve-deployment-id': process.env.RESOLVE_DEPLOYMENT_ID,
         'resolve-function-name': functionName,
         'resolve-user-id': userId,
       }
-  
+
       return tags
     }
 
     const roleArn = (await getCallerIdentity({ region })).Arn
-  
+
     await ensureSqsQueue({
       QueueName: `${userId}-${name}`,
       Region: region,
@@ -50,9 +59,7 @@ const initSubscriber = (resolve, lambdaContext) => {
           {
             Action: 'SQS:*',
             Principal: {
-              AWS: [
-                roleArn,
-              ]
+              AWS: [roleArn],
             },
             Effect: 'Allow',
           },
@@ -60,13 +67,13 @@ const initSubscriber = (resolve, lambdaContext) => {
       },
       Tags: getTags(),
     })
-  
+
     const { UUID } = await createEventSourceMapping({
       Region: region,
       QueueName: `${userId}-${name}`,
       FunctionName: functionName,
     })
-  
+
     await setFunctionTags({
       Region: region,
       FunctionName: functionArn,
@@ -75,7 +82,7 @@ const initSubscriber = (resolve, lambdaContext) => {
       },
     })
   }
-  
+
   resolve.deleteQueue = async (name) => {
     const functionTags = await getFunctionTags({
       Region: region,
@@ -83,9 +90,8 @@ const initSubscriber = (resolve, lambdaContext) => {
     })
     const UUID = functionTags[`SQS-${name}`]
     const queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${userId}-${name}`
-  
-    if(UUID != undefined) {
-      console.log('start deleteEventSourceMapping')
+
+    if (UUID != null) {
       await deleteEventSourceMapping({
         Region: region,
         UUID,

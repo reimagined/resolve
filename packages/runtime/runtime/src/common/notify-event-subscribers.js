@@ -1,8 +1,17 @@
-const notifyEventSubscriber = async (resolveBase, destination, eventSubscriber, event, cursor) => {
+const notifyEventSubscriber = async (
+  resolveBase,
+  destination,
+  eventSubscriber,
+  event,
+  cursor
+) => {
   switch (true) {
     case /^https?:\/\//.test(destination): {
       await new Promise((resolve, reject) => {
-        const req = (destination.startsWith('https') ? resolveBase.https : resolveBase.http).request(`${destination}/${eventSubscriber}`, (res) => {
+        const req = (destination.startsWith('https')
+          ? resolveBase.https
+          : resolveBase.http
+        ).request(`${destination}/${eventSubscriber}`, (res) => {
           res.on('data', () => {})
           res.on('end', resolve)
           res.on('error', reject)
@@ -21,7 +30,7 @@ const notifyEventSubscriber = async (resolveBase, destination, eventSubscriber, 
         )}`,
         sendTime: Date.now(),
         event,
-        cursor
+        cursor,
       })
       break
     }
@@ -54,7 +63,7 @@ const notifyEventSubscribers = async (resolve, event, cursor) => {
           )}`,
           sendTime: Date.now(),
           event,
-          cursor
+          cursor,
         })
       )
     }

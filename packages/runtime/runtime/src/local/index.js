@@ -61,23 +61,20 @@ const localEntry = async ({ assemblies, constants, domain }) => {
             method === 'OPTIONS' && path === '/SKIP_COMMANDS'
         ) < 0,
       https,
-      http
+      http,
     }
 
     resolve.eventSubscriberDestination = `http://0.0.0.0:${constants.port}/api/subscribers`
-    resolve.invokeBuildAsync = multiplexAsync.bind(
-      null,
-      async (parameters) => {
-        const currentResolve = Object.create(resolve)
-        try {
-          await initResolve(currentResolve)
-          const result = await currentResolve.eventSubscriber.build(parameters)
-          return result
-        } finally {
-          await disposeResolve(currentResolve)
-        }
+    resolve.invokeBuildAsync = multiplexAsync.bind(null, async (parameters) => {
+      const currentResolve = Object.create(resolve)
+      try {
+        await initResolve(currentResolve)
+        const result = await currentResolve.eventSubscriber.build(parameters)
+        return result
+      } finally {
+        await disposeResolve(currentResolve)
       }
-    )
+    })
     resolve.ensureQueue = async () => {}
     resolve.deleteQueue = async () => {}
 

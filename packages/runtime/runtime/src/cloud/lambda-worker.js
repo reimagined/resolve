@@ -54,8 +54,15 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
-    } else if (Array.isArray(lambdaEvent.Records) &&
-      [...(new Set(lambdaEvent.Records.map(record => record != null ? record.eventSource : null)))].every(key => key === 'aws:sqs')
+    } else if (
+      Array.isArray(lambdaEvent.Records) &&
+      [
+        ...new Set(
+          lambdaEvent.Records.map((record) =>
+            record != null ? record.eventSource : null
+          )
+        ),
+      ].every((key) => key === 'aws:sqs')
     ) {
       ///////////// BEGIN
       initSubscriber(resolveBase, lambdaContext)
@@ -65,41 +72,58 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       await initResolve(resolve)
       log.debug('reSolve framework initialized')
 
-      const records = lambdaEvent.Records.map(record => record != null ? JSON.parse(record) : null)
+      const records = lambdaEvent.Records.map((record) =>
+        record != null ? JSON.parse(record) : null
+      )
       let buildParameters = { coldStart, eventsWithCursors: [] }
       const errors = []
-      for(const record of records) {
-        if(record == null || record.eventSubscriber == null || record.eventSubscriber.constructor !== String ||
-        !((record.event == null && record.event == null) || (
-          record.event != null && record.event.constructor === Object &&
-        record.cursor != null && record.cursor.constructor === String
-        ))) {
+      for (const record of records) {
+        if (
+          record == null ||
+          record.eventSubscriber == null ||
+          record.eventSubscriber.constructor !== String ||
+          !(
+            (record.event == null && record.event == null) ||
+            (record.event != null &&
+              record.event.constructor === Object &&
+              record.cursor != null &&
+              record.cursor.constructor === String)
+          )
+        ) {
           errors.push(new Error(`Malformed record ${record}`))
           continue
         }
         const { eventSubscriber, event, cursor, ...notification } = record
-        if(buildParameters.eventSubscriber == null) {
+        if (buildParameters.eventSubscriber == null) {
           buildParameters.eventSubscriber = eventSubscriber
-        } else if(buildParameters.eventSubscriber !== eventSubscriber) {
-          errors.push(new Error(`Multiple event subscribers ${buildParameters.eventSubscriber} and ${eventSubscriber} are not allowed in one window`))
+        } else if (buildParameters.eventSubscriber !== eventSubscriber) {
+          errors.push(
+            new Error(
+              `Multiple event subscribers ${buildParameters.eventSubscriber} and ${eventSubscriber} are not allowed in one window`
+            )
+          )
           continue
         }
-        if(event != null && cursor != null) {
+        if (event != null && cursor != null) {
           buildParameters.eventsWithCursors.push({ event, cursor })
         }
         Object.assign(buildParameters, notification)
       }
-      if(buildParameters.eventsWithCursors.length === 0) {
+      if (buildParameters.eventsWithCursors.length === 0) {
         buildParameters.eventsWithCursors = null
       }
 
-      if(errors.length > 0) {
-        const summaryError = new Error(errors.map(({ message }) => message).join('\n'))
+      if (errors.length > 0) {
+        const summaryError = new Error(
+          errors.map(({ message }) => message).join('\n')
+        )
         summaryError.stack = errors.map(({ stack }) => stack).join('\n')
         throw summaryError
       }
 
-      const executorResult = await resolve.eventSubscriber.build(buildParameters)
+      const executorResult = await resolve.eventSubscriber.build(
+        buildParameters
+      )
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
