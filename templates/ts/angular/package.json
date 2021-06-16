@@ -9,9 +9,7 @@
     "dev": "ts-node run.ts dev",
     "start": "ts-node run.ts start",
     "test:e2e": "ts-node run.ts test:e2e",
-    "export-event-store": "echo || exit 0",
-    "import-event-store": "echo || exit 0",
-    "test": "jest --testMatch=**/test/unit/*.test.{ts,tsx} --verbose --passWithNoTests"
+    "test": "echo || exit 0"
   },
   "dependencies": {
     "@angular/common": "11.2.4",

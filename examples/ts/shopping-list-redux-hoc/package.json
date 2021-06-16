@@ -11,7 +11,7 @@
     "import-event-store": "ts-node run.ts import-event-store",
     "module-admin": "module-admin",
     "start": "ts-node run.ts start",
-    "test": "jest --testMatch=**/test/unit/*.test.ts --verbose",
+    "test": "jest --verbose",
     "test:e2e": "ts-node run.ts test:e2e"
   },
   "dependencies": {

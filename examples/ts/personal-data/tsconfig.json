@@ -11,5 +11,5 @@
     "types": ["node", "react", "jest"],
     "noEmit": true
   },
-  "include": ["client/**/*", "common/**/*", "auth/*", "*.ts"]
+  "include": ["client/**/*", "common/**/*", "auth/*", "./*.ts"]
 }

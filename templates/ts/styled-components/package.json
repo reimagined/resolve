@@ -10,7 +10,7 @@
     "export-event-store": "ts-node run.ts export-event-store",
     "import-event-store": "ts-node run.ts import-event-store",
     "start": "ts-node run.ts start",
-    "test": "jest --testMatch=**/test/unit/*.test.{ts,tsx} --verbose --passWithNoTests",
+    "test": "jest --verbose",
     "test:e2e": "ts-node run.ts test:e2e"
   },
   "dependencies": {

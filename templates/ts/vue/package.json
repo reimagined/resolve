@@ -7,10 +7,8 @@
     "build": "ts-node run.ts build",
     "cloud": "ts-node run.ts cloud",
     "dev": "ts-node run.ts dev",
-    "export-event-store": "echo || exit 0",
-    "import-event-store": "echo || exit 0",
     "start": "ts-node run.ts start",
-    "test": "jest --testMatch=**/test/unit/*.test.{ts,tsx} --verbose --passWithNoTests",
+    "test": "echo || exit 0",
     "test:e2e": "ts-node run.ts test:e2e"
   },
   "dependencies": {
