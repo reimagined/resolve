@@ -87,6 +87,9 @@
     "testcafe": "1.14.2",
     "ts-node": "10.0.0"
   },
+  "resolutions": {
+    "@types/react": "17.0.5"
+  },
   "resolveJs": {
     "isAppTemplate": true
   }
