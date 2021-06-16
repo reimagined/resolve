@@ -1,8 +1,13 @@
-import {
+import type {
   Adapter as EventStoreAdapter,
   Cursor,
   SavedEvent,
+  EventWithCursor as EventStoreEventWithCursor,
+  checkEventsContinuity,
 } from '@resolve-js/eventstore-base'
+
+export type CheckEventsContinuityMethod = typeof checkEventsContinuity
+export type EventWithCursor = EventStoreEventWithCursor
 
 export type JsonPrimitive = string | number | boolean | null
 export type JsonMap = {
@@ -149,13 +154,7 @@ export type MonitoringLike = {
 export type ReadModelCursor = Cursor // TODO brand type
 export type ReadModelEvent = SavedEvent
 
-export type EventstoreAdapterLike = {
-  loadEvents: EventStoreAdapter['loadEvents']
-  getNextCursor: EventStoreAdapter['getNextCursor']
-  getSecretsManager: EventStoreAdapter['getSecretsManager']
-  loadSecrets?: EventStoreAdapter['loadSecrets']
-  gatherSecretsFromEvents: EventStoreAdapter['gatherSecretsFromEvents']
-}
+export type EventstoreAdapterLike = EventStoreAdapter
 
 export type SplitNestedPathMethod = (input: string) => Array<string>
 
@@ -163,6 +162,7 @@ export type CommonAdapterPool = {
   monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
   splitNestedPath: SplitNestedPathMethod
+  checkEventsContinuity: CheckEventsContinuityMethod
 }
 
 export type CommonAdapterOptions = {
@@ -269,6 +269,14 @@ export type OmitObject<T extends object, U extends object> = {
   [K in Exclude<keyof T, keyof U>]: T[K]
 }
 
+export type BuildInfo = {
+  eventsWithCursors?: Array<EventWithCursor>
+  initiator: 'command' | 'read-model-next'
+  notificationId: string
+  sendTime: number
+  coldStart?: boolean
+}
+
 export type AdapterConnection<
   AdapterPool extends CommonAdapterPool,
   AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
@@ -331,7 +339,8 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     },
     next: MethodNext,
     eventstoreAdapter: EventstoreAdapterLike,
-    getVacantTimeInMillis: MethodGetRemainingTime
+    getVacantTimeInMillis: MethodGetRemainingTime,
+    buildInfo: BuildInfo
   ): Promise<void>
 }
 
@@ -433,6 +442,7 @@ export type MakeSplitNestedPathMethod = (
 
 export type BaseAdapterImports = {
   PathToolkit: PathToolkitLib
+  checkEventsContinuity: CheckEventsContinuityMethod
   makeSplitNestedPath: MakeSplitNestedPathMethod
   withPerformanceTracer: WithPerformanceTracerMethod
   wrapConnect: WrapConnectMethod

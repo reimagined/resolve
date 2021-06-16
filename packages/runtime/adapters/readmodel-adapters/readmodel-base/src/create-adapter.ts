@@ -20,6 +20,7 @@ const createAdapter = <
 ): AdapterApi<AdapterPool> => {
   const {
     makeSplitNestedPath,
+    checkEventsContinuity,
     withPerformanceTracer,
     wrapConnect,
     wrapDisconnect,
@@ -97,7 +98,12 @@ const createAdapter = <
   const { performanceTracer, monitoring, ...adapterOptions } = options
 
   const pool: BaseAdapterPool<AdapterPool> = {
-    commonAdapterPool: { performanceTracer, splitNestedPath, monitoring },
+    commonAdapterPool: {
+      performanceTracer,
+      checkEventsContinuity,
+      splitNestedPath,
+      monitoring,
+    },
     adapterPoolMap: new Map(),
     withPerformanceTracer,
     performanceTracer,

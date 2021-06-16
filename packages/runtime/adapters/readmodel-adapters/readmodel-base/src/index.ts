@@ -1,6 +1,7 @@
 //eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import PathToolkit from 'path-toolkit'
+import { checkEventsContinuity } from '@resolve-js/eventstore-base'
 
 import _createAdapter from './create-adapter'
 import makeSplitNestedPath from './make-split-nested-path'
@@ -14,6 +15,7 @@ export * from './types'
 
 const baseAdapterImports = {
   PathToolkit,
+  checkEventsContinuity,
   makeSplitNestedPath,
   withPerformanceTracer,
   wrapConnect,
