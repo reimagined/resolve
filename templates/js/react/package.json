@@ -8,14 +8,12 @@
     "dev": "babel-node run.js dev",
     "start": "babel-node run.js start",
     "test": "jest --testMatch=**/test/unit/*.test.{ts,tsx} --verbose --passWithNoTests",
-    "test:e2e": "babel-node run.js test:e2e",
-    "type-check": "tsc"
+    "test:e2e": "babel-node run.js test:e2e"
   },
   "resolutions": {
     "@types/react": "17.0.5"
   },
   "dependencies": {
-    "@babel/node": "7.14.2",
     "@resolve-js/core": "0.30.5",
     "@resolve-js/eventstore-lite": "0.30.5",
     "@resolve-js/eventstore-postgresql-serverless": "0.30.5",
@@ -23,8 +21,6 @@
     "@resolve-js/readmodel-base": "0.30.5",
     "@resolve-js/readmodel-lite": "0.30.5",
     "@resolve-js/readmodel-postgresql-serverless": "0.30.5",
-    "@resolve-js/scripts": "0.30.5",
-    "babel-loader": "8.2.2",
     "react": "17.0.2",
     "react-bootstrap": "1.6.0",
     "react-dom": "17.0.2",
@@ -32,6 +28,8 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
+    "babel-loader": "8.2.2",
+    "@babel/node": "7.14.2",
     "@babel/core": "7.14.3",
     "@babel/plugin-proposal-class-properties": "7.13.0",
     "@babel/plugin-proposal-export-default-from": "7.12.13",
@@ -40,6 +38,7 @@
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
     "@babel/preset-typescript": "7.14.5",
+    "@resolve-js/scripts": "0.30.5",
     "babel-jest": "27.0.2",
     "jest": "27.0.3",
     "react-test-renderer": "17.0.2",

@@ -8,8 +8,8 @@
     "cloud": "babel-node ./run.js cloud",
     "cloud:replica": "babel-node run.js cloud:replica",
     "dev": "babel-node run.js dev",
-    "dev:replica": "babel-node run.js dev:replica",
-    "export-event-store": "babel-node run.js export-event-store",
+    "dev:replica": "babel-node dev:replica",
+    "export-event-store": "babel-node export-event-store",
     "import": "babel-node run.js import",
     "import-event-store": "babel-node run.js import-event-store",
     "reset": "babel-node run.js reset",
@@ -23,7 +23,6 @@
     "test:watch": "jest --watchAll"
   },
   "dependencies": {
-    "@babel/node": "7.14.2",
     "@elastic/elasticsearch": "7.11.0",
     "@resolve-js/core": "0.30.5",
     "@resolve-js/debug-levels": "0.30.5",
@@ -39,7 +38,6 @@
     "@resolve-js/redux": "0.30.5",
     "@resolve-js/react-hooks": "0.30.5",
     "@resolve-js/replicator-via-api-handler": "0.30.5",
-    "@resolve-js/scripts": "0.30.5",
     "history": "4.10.1",
     "isomorphic-fetch": "3.0.0",
     "js-cookie": "2.2.1",
@@ -64,6 +62,7 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
+    "@babel/node": "7.14.2",
     "@babel/core": "7.14.3",
     "@babel/plugin-proposal-class-properties": "7.13.0",
     "@babel/plugin-proposal-export-default-from": "7.12.13",
@@ -71,6 +70,9 @@
     "@babel/plugin-transform-runtime": "7.14.3",
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
+    "@babel/preset-typescript": "7.14.5",
+    "@resolve-js/scripts": "0.30.5",
+    "babel-loader": "8.2.2",
     "aws-sdk": "2.860.0",
     "aws-xray-sdk-core": "3.2.0",
     "babel-jest": "27.0.2",

@@ -55,7 +55,7 @@ void (async () => {
         ],
       },
     ])
-    const moduleReplication = resolveModuleReplication({})
+    const moduleReplication = resolveModuleReplication()
     const baseConfig = merge(
       defaultResolveConfig,
       appConfig,
