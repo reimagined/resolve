@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate JS code
-        uses: reimagined/github-actions/generate-js-examples@feature/js-generator
+        uses: reimagined/github-actions/generate-js-examples@v1
         with:
           push_event: ${{ toJSON(github.event) }}
           token: ${{ secrets.RESOLVE_BOT_PAT }}
