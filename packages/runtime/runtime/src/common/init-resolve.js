@@ -93,6 +93,7 @@ const initResolve = async (resolve) => {
         return false
       },
     },
+    commandMiddlewares: domain.middlewares.command,
   }
 
   const executeCommand = createCommandExecutor({

@@ -20,6 +20,13 @@ const appConfig = {
       projection: 'common/view-models/my-aggregate-items.projection.ts',
     },
   ],
+  middlewares: {
+    command: [
+      'common/middlewares/my-command-middleware.ts',
+      'common/middlewares/my-command-middleware-2.ts',
+    ],
+    query: ['common/middlewares/my-query-middleware.ts'],
+  },
   clientEntries: [
     [
       'client/index.tsx',

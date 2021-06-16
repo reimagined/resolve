@@ -48,6 +48,7 @@ export type AggregateRuntime = {
   secretsManager: SecretsManager
   eventstore: Eventstore
   hooks?: AggregateRuntimeHooks
+  commandMiddlewares?: any[]
 }
 
 export type AggregatesInteropBuilder = (

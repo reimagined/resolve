@@ -445,7 +445,7 @@ const executeCommand = async (
       }
     }
 
-    const { secretsManager } = runtime
+    const { secretsManager, commandMiddlewares = [() => void 0] } = runtime
 
     const encryption =
       typeof aggregate.encryption === 'function'
@@ -457,12 +457,26 @@ const executeCommand = async (
 
     const { encrypt, decrypt } = encryption || {}
 
-    const event = await commandHandler(aggregateState, command, {
+    const context = {
       jwt,
       aggregateVersion,
       encrypt,
       decrypt,
-    })
+    }
+
+    const applyMiddlewares = (commandHandler: any, middlewares: any[]) => {
+      const reversedMiddlewares = middlewares.slice().reverse()
+      let handlersChain = commandHandler
+      reversedMiddlewares.forEach(
+        (middleware) => (handlersChain = middleware(handlersChain))
+      )
+      return handlersChain
+    }
+
+    const chainedHandlers = applyMiddlewares(commandHandler, commandMiddlewares)
+
+    const event = await chainedHandlers(aggregateState, command, context)
+    // const event = await commandHandler(aggregateState, command, context)
 
     if (!checkOptionShape(event.type, [String])) {
       throw generateCommandError('Event "type" is required')

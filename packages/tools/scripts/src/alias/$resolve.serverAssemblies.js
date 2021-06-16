@@ -67,6 +67,12 @@ const importServerAssemblies = () => `
         return interopRequireDefault(require('$resolve.sagas')).default
       },
       enumerable: true
+    },
+    middlewares: {
+      get() { 
+        return interopRequireDefault(require('$resolve.middlewares')).default
+      },
+      enumerable: true
     }
   })
   
