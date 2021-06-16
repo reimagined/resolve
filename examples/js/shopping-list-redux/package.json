@@ -11,7 +11,7 @@
     "import-event-store": "babel-node run.js import-event-store",
     "module-admin": "module-admin",
     "start": "babel-node run.js start",
-    "test": "jest --testMatch=**/test/unit/*.test.ts --verbose",
+    "test": "jest --verbose",
     "test:e2e": "babel-node run.js test:e2e"
   },
   "dependencies": {

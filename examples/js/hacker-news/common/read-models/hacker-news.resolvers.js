@@ -1,30 +1,15 @@
 const getStories = async (type, store, { first, offset }) => {
-  const segment = store.performanceTracer.getSegment()
-  const subSegment = segment.addNewSubsegment('resolver')
-  subSegment.addAnnotation('type', type)
-  subSegment.addAnnotation('origin', 'hacker-news:getStories')
-  try {
-    const search = type && type.constructor === String ? { type } : {}
-    const skip = first || 0
-    const stories = await store.find(
-      'Stories',
-      search,
-      null,
-      { createdAt: -1 },
-      skip,
-      offset
-    )
-    return Array.isArray(stories) ? stories : []
-  } catch (error) {
-    if (subSegment != null) {
-      subSegment.addError(error)
-    }
-    throw error
-  } finally {
-    if (subSegment != null) {
-      subSegment.close()
-    }
-  }
+  const search = type && type.constructor === String ? { type } : {}
+  const skip = first || 0
+  const stories = await store.find(
+    'Stories',
+    search,
+    null,
+    { createdAt: -1 },
+    skip,
+    offset
+  )
+  return Array.isArray(stories) ? stories : []
 }
 const getStory = async (store, { id }) => {
   const story = await store.findOne('Stories', { id })
@@ -50,9 +35,9 @@ const getUser = async (store, { id, name }) => {
 }
 const hackerNewsResolvers = {
   story: getStory,
-  allStories: getStories.bind(null, null),
-  askStories: getStories.bind(null, 'ask'),
-  showStories: getStories.bind(null, 'show'),
+  allStories: (store, params) => getStories(null, store, params),
+  askStories: (store, params) => getStories.bind('ask', store, params),
+  showStories: (store, params) => getStories('show', store, params),
   user: getUser,
 }
 export default hackerNewsResolvers

@@ -11,7 +11,7 @@
     "test:e2e": "babel-node run.js test:e2e",
     "export-event-store": "babel-node run.js export-event-store",
     "import-event-store": "babel-node run.js import-event-store",
-    "test": "jest --testMatch=**/test/unit/*.test.ts --verbose --passWithNoTests",
+    "test": "jest --verbose",
     "module-admin": "module-admin"
   },
   "dependencies": {
