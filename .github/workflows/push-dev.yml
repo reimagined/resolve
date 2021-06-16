@@ -58,6 +58,7 @@ jobs:
 #          token: ${{ secrets.RESOLVE_BOT_PAT }}
 #          ssh_private_key: ${{ secrets.RESOLVE_BOT_SSH_PRIVATE_KEY }}
 #
+
   generate-js:
     if: startsWith(github.event.head_commit.message, '<auto>') != true
     runs-on: ubuntu-latest
