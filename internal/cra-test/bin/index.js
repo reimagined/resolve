@@ -14,7 +14,7 @@ const main = async () => {
 
   const passedParams = [
     ..._,
-    Object.entries(args).map(([key, value]) => `-${key} ${value}`),
+    ...Object.entries(args).map(([key, value]) => `-${key} ${value}`),
   ].join(' ')
   log.info(`Passed params: ${passedParams}`)
 
