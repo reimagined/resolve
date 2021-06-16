@@ -1,4 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 const adjustWebpackConfigs = (webpackConfigs): void => {
+  // enable-ts
   for (const webpackConfig of webpackConfigs) {
     const {
       module: { rules },
@@ -14,5 +16,6 @@ const adjustWebpackConfigs = (webpackConfigs): void => {
     })
     resolve.extensions = ['.js', '.jsx', '.ts', '.tsx']
   }
+  // enable-ts
 }
 export default adjustWebpackConfigs
