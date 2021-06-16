@@ -1,5 +1,5 @@
 {
-  "name": "shopping-list-with-redux-hooks-js",
+  "name": "shopping-list-redux-js",
   "version": "0.30.5",
   "private": true,
   "description": "shows how to work with read-models and view-models using redux hooks",
