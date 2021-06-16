@@ -81,6 +81,9 @@
     "socket.io": "3",
     "testcafe": "1.14.2"
   },
+  "resolutions": {
+    "@types/react": "17.0.5"
+  },
   "resolveJs": {
     "isAppTemplate": true
   }

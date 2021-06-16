@@ -14,9 +14,6 @@
     "test": "jest --testMatch=**/test/unit/*.test.ts --verbose --passWithNoTests",
     "module-admin": "module-admin"
   },
-  "resolutions": {
-    "@types/react": "17.0.5"
-  },
   "dependencies": {
     "@resolve-js/core": "0.30.5",
     "@resolve-js/eventstore-lite": "0.30.5",
@@ -55,6 +52,9 @@
     "jest": "27.0.3",
     "react-test-renderer": "17.0.2",
     "testcafe": "1.14.2"
+  },
+  "resolutions": {
+    "@types/react": "17.0.5"
   },
   "resolveJs": {
     "isAppTemplate": true

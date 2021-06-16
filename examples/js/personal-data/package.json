@@ -58,6 +58,9 @@
     "testcafe": "1.14.2",
     "testcafe-react-selectors": "4.1.4"
   },
+  "resolutions": {
+    "@types/react": "17.0.5"
+  },
   "resolveJs": {
     "isAppTemplate": true
   }
