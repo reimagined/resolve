@@ -6,6 +6,7 @@ const bootstrapOne = async ({
   eventTypes,
   destination,
   upstream,
+  ensureQueue
 }) => {
   try {
     await eventstoreAdapter.ensureEventSubscriber({
@@ -29,6 +30,9 @@ const bootstrapOne = async ({
 
       await eventSubscriber.resume({ eventSubscriber: name })
     }
+
+    await ensureQueue(name)
+    
   } catch (error) {
     // eslint-disable-next-line no-console
     console.warn(`

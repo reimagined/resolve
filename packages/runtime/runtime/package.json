@@ -47,7 +47,7 @@
     "qs": "6.9.6",
     "raw-body": "2.3.3",
     "request": "^2.88.2",
-    "resolve-cloud-common": "0.0.124",
+    "resolve-cloud-common": "0.0.133",
     "route-trie": "^3.0.0",
     "source-map-support": "^0.5.9",
     "url": "^0.11.0",

@@ -1,11 +1,11 @@
 import debugLevels from '@resolve-js/debug-levels'
-import { invokeFunction } from 'resolve-cloud-common/lambda'
 
 import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
 import initScheduler from './init-scheduler'
 import initMonitoring from './init-monitoring'
+import initSubscriber from './init-subscriber'
 import { putDurationMetrics } from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
@@ -17,36 +17,7 @@ const GRACEFUL_WORKER_SHUTDOWN_TIME = 30 * 1000
 const getVacantTimeInMillis = (lambdaContext) =>
   lambdaContext.getRemainingTimeInMillis() - GRACEFUL_WORKER_SHUTDOWN_TIME
 
-const EVENT_SUBSCRIBER_DIRECT = 'EventSubscriberDirect'
-
 let coldStart = true
-
-const initSubscriber = (resolve, lambdaContext) => {
-  resolve.eventSubscriberDestination = lambdaContext.invokedFunctionArn
-  resolve.subscriptionsCredentials = {
-    applicationLambdaArn: lambdaContext.invokedFunctionArn,
-  }
-
-  resolve.invokeEventSubscriberAsync = async (
-    eventSubscriber,
-    method,
-    parameters
-  ) => {
-    await invokeFunction({
-      FunctionName: lambdaContext.invokedFunctionArn,
-      InvocationType: 'Event',
-      Region: process.env.AWS_REGION,
-      Payload: {
-        resolveSource: EVENT_SUBSCRIBER_DIRECT,
-        method,
-        payload: {
-          eventSubscriber,
-          ...parameters,
-        },
-      },
-    })
-  }
-}
 
 const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   log.debug('executing application lambda')
@@ -76,13 +47,17 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
 
       const executorResult = await handleDeployServiceEvent(
         lambdaEvent,
-        resolve
+        resolve,
+        lambdaContext
       )
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
-    } else if (lambdaEvent.resolveSource === EVENT_SUBSCRIBER_DIRECT) {
+    } else if (Array.isArray(lambdaEvent.Records) &&
+      [...(new Set(lambdaEvent.Records.map(record => record != null ? record.eventSource : null)))].every(key => key === 'aws:sqs')
+    ) {
+      ///////////// BEGIN
       initSubscriber(resolveBase, lambdaContext)
       initScheduler(resolve)
 
@@ -90,19 +65,46 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       await initResolve(resolve)
       log.debug('reSolve framework initialized')
 
-      log.debug('identified event source: event-subscriber-direct')
-      const { method, payload } = lambdaEvent
+      const records = lambdaEvent.Records.map(record => record != null ? JSON.parse(record) : null)
+      let buildParameters = { coldStart, eventsWithCursors: [] }
+      const errors = []
+      for(const record of records) {
+        if(record == null || record.eventSubscriber == null || record.eventSubscriber.constructor !== String ||
+        !((record.event == null && record.event == null) || (
+          record.event != null && record.event.constructor === Object &&
+        record.cursor != null && record.cursor.constructor === String
+        ))) {
+          errors.push(new Error(`Malformed record ${record}`))
+          continue
+        }
+        const { eventSubscriber, event, cursor, ...notification } = record
+        if(buildParameters.eventSubscriber == null) {
+          buildParameters.eventSubscriber = eventSubscriber
+        } else if(buildParameters.eventSubscriber !== eventSubscriber) {
+          errors.push(new Error(`Multiple event subscribers ${buildParameters.eventSubscriber} and ${eventSubscriber} are not allowed in one window`))
+          continue
+        }
+        if(event != null && cursor != null) {
+          buildParameters.eventsWithCursors.push({ event, cursor })
+        }
+        Object.assign(buildParameters, notification)
+      }
+      if(buildParameters.eventsWithCursors.length === 0) {
+        buildParameters.eventsWithCursors = null
+      }
 
-      const actualPayload =
-        method === 'build' ? { ...payload, coldStart } : payload
+      if(errors.length > 0) {
+        const summaryError = new Error(errors.map(({ message }) => message).join('\n'))
+        summaryError.stack = errors.map(({ stack }) => stack).join('\n')
+        throw summaryError
+      }
 
-      const executorResult = await resolve.eventSubscriber[method](
-        actualPayload
-      )
+      const executorResult = await resolve.eventSubscriber.build(buildParameters)
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
+      ///////////// END
     } else if (lambdaEvent.resolveSource === 'Scheduler') {
       initSubscriber(resolveBase, lambdaContext)
       initScheduler(resolve)

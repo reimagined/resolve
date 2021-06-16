@@ -4,8 +4,11 @@ const shutdownOne = async ({
   eventstoreAdapter,
   eventSubscriber,
   upstream,
+  deleteQueue
 }) => {
   try {
+    await deleteQueue(name)
+
     if (upstream) {
       await eventSubscriber.pause({ eventSubscriber: name })
     }

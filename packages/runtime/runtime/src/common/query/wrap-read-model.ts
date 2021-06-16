@@ -92,13 +92,14 @@ const serializeState = async ({ state }: { state: any }): Promise<string> => {
 
 const next = async (
   pool: ReadModelPool,
-  eventListener: string,
+  eventSubscriber: string,
   ...args: any[]
 ) => {
   if (args.length > 0) {
     throw new TypeError('Next should be invoked with no arguments')
   }
-  await pool.invokeEventSubscriberAsync(eventListener, 'build', {
+  await pool.invokeBuildAsync({
+    eventSubscriber,
     initiator: 'read-model-next',
     notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
     sendTime: Date.now(),
@@ -739,7 +740,7 @@ const wrapReadModel = ({
   applicationName,
   interop,
   readModelConnectors,
-  invokeEventSubscriberAsync,
+  invokeBuildAsync,
   performanceTracer,
   getVacantTimeInMillis,
   monitoring,
@@ -759,7 +760,7 @@ const wrapReadModel = ({
     monitoring != null ? makeMonitoringSafe(monitoring) : monitoring
 
   const pool: ReadModelPool = {
-    invokeEventSubscriberAsync,
+    invokeBuildAsync,
     applicationName,
     connections: new Set(),
     connector,

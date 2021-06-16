@@ -1,10 +1,8 @@
-import http from 'http'
-
-const notifyEventSubscriber = async (resolve, destination, eventSubscriber) => {
+const notifyEventSubscriber = async (resolveBase, destination, eventSubscriber, event, cursor) => {
   switch (true) {
     case /^https?:\/\//.test(destination): {
       await new Promise((resolve, reject) => {
-        const req = http.request(`${destination}/${eventSubscriber}`, (res) => {
+        const req = (destination.startsWith('https') ? resolveBase.https : resolveBase.http).request(`${destination}/${eventSubscriber}`, (res) => {
           res.on('data', () => {})
           res.on('end', resolve)
           res.on('error', reject)
@@ -14,20 +12,20 @@ const notifyEventSubscriber = async (resolve, destination, eventSubscriber) => {
       })
       break
     }
-    case /^arn:aws:lambda:/.test(destination): {
-      await resolve.lambda
-        .invoke({
-          FunctionName: destination,
-          InvocationType: 'Event',
-          Payload: JSON.stringify({
-            resolveSource: 'EventSubscriberDirect',
-            method: 'build',
-            payload: { eventSubscriber },
-          }),
-        })
-        .promise()
+    case /^arn:aws:sqs:/.test(destination): {
+      await resolveBase.sendSqsMessage(eventSubscriber, {
+        eventSubscriber,
+        initiator: 'command-foreign',
+        notificationId: `NT-${Date.now()}${Math.floor(
+          Math.random() * 1000000
+        )}`,
+        sendTime: Date.now(),
+        event,
+        cursor
+      })
       break
     }
+
     default: {
       // eslint-disable-next-line no-console
       console.warn(`Unknown event subscriber destination`)
@@ -36,7 +34,7 @@ const notifyEventSubscriber = async (resolve, destination, eventSubscriber) => {
   }
 }
 
-const notifyEventSubscribers = async (resolve) => {
+const notifyEventSubscribers = async (resolve, event, cursor) => {
   const maxDuration = Math.max(resolve.getVacantTimeInMillis() - 15000, 0)
   let timerId = null
 
@@ -46,14 +44,17 @@ const notifyEventSubscribers = async (resolve) => {
 
   const inlineLedgerPromise = (async () => {
     const promises = []
-    for (const { name: eventListener } of resolve.eventListeners.values()) {
+    for (const { name: eventSubscriber } of resolve.eventListeners.values()) {
       promises.push(
-        resolve.invokeEventSubscriberAsync(eventListener, 'build', {
+        resolve.invokeBuildAsync({
+          eventSubscriber,
           initiator: 'command',
           notificationId: `NT-${Date.now()}${Math.floor(
             Math.random() * 1000000
           )}`,
           sendTime: Date.now(),
+          event,
+          cursor
         })
       )
     }
@@ -75,7 +76,9 @@ const notifyEventSubscribers = async (resolve) => {
                 null,
                 resolve,
                 destination,
-                eventSubscriber
+                eventSubscriber,
+                event,
+                cursor
               )
             )
             .catch((error) => {
