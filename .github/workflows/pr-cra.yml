@@ -4,9 +4,6 @@ on:
   pull_request:
     branches:
       - master*
-  push:
-    branches:
-      - fix/update-dependencies
 
 jobs:
   prepare-test-environment:
