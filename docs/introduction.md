@@ -18,7 +18,7 @@ Don't store system state, store events that brought system to this state.
 
 System is divided in two "sides":
 
-- Write Side accepts aggregate and generate events that stored in the Event Store.
+- Write Side accepts commands and generate events that stored in the Event Store.
 - Read Side applies events to Read Models, and process queries.
 
 Write side is optimized for writing, read side - for reading.

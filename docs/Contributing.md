@@ -38,7 +38,7 @@ If you are maintaining several branches, don't forget to merge the upstream `dev
 After implementing a feature or fixing a bug, ensure that all items of the following list are satisfied:
 
 - Your code abides by the [code-style conventions](#code-style).
-- **All** existing unit and functional tests pass. Before creating a pull request, ensure that none of these aggregate show any error in your local environment: `yarn prettier`, `yarn lint`, `yarn test` and `yarn test:functional`.
+- **All** existing unit and functional tests pass. Before creating a pull request, ensure that none of these commands show any error in your local environment: `yarn prettier`, `yarn lint`, `yarn test` and `yarn test:functional`.
 - All examples work.
 - The documentation is up to date (if applicable).
 

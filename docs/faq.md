@@ -27,7 +27,7 @@ View Models are a Redux-specific extension to these mechanisms. View models are 
 **A**: To send a command from a client browser, use the [standard HTTP API](frontend.md#http-api): <br/>
 
 ```
-$ curl -X POST "http://localhost:3000/api/aggregate"
+$ curl -X POST "http://localhost:3000/api/commands"
 --header "Content-Type: application/json" \
 --data '
 {

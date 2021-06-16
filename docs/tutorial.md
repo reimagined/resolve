@@ -56,7 +56,7 @@ $ yarn run dev
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-1)
 
-This lesson describes how to implement a write side for a reSolve application. An application's [write side](resolve-app-structure.md#write-and-read-sides) handles aggregate, validates input data, and emits **events** based on valid aggregate. The framework then saves the emitted events to the **event store**.
+This lesson describes how to implement a write side for a reSolve application. An application's [write side](resolve-app-structure.md#write-and-read-sides) handles commands, validates input data, and emits **events** based on valid commands. The framework then saves the emitted events to the **event store**.
 
 ### Create an Aggregate
 
@@ -69,9 +69,9 @@ export const SHOPPING_LIST_CREATED = 'SHOPPING_LIST_CREATED' // Indicates the cr
 export const SHOPPING_ITEM_CREATED = 'SHOPPING_ITEM_CREATED' // Indicates the creation of an item within a shopping list
 ```
 
-Next, define an aggregate that handles aggregate and produces the defined events as a result. Create a **shopping_list.aggregate.js** file in the **common/aggregates** folder and add the following code to it:
+Next, define an aggregate that handles commands and produces the defined events as a result. Create a **shopping_list.commands.js** file in the **common/aggregates** folder and add the following code to it:
 
-**common/aggregates/shopping_list.aggregate.js**
+**common/aggregates/shopping_list.commands.js**
 
 ```js
 import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
@@ -118,7 +118,7 @@ aggregates: [
     // The aggregate name
     name: 'ShoppingList',
     // A path to the file that defines the aggregate's command handlers
-    aggregate: 'common/aggregates/shopping_list.aggregate.js',
+    commands: 'common/aggregates/shopping_list.commands.js',
   }
 ],
 ...
@@ -126,7 +126,7 @@ aggregates: [
 
 ### Sending Commands to an Aggregate
 
-Now that your application can handle aggregate, you can use the reSolve framework's HTTP API to create shopping lists and populate them with items.
+Now that your application can handle commands, you can use the reSolve framework's HTTP API to create shopping lists and populate them with items.
 
 A request's body should have the `application/json` content type and contain a JSON representation of a command:
 
@@ -146,13 +146,13 @@ In addition to the aggregate name, command type and payload, this object specifi
 Run your application and send a POST request to the following URL:
 
 ```
-http://127.0.0.1:3000/api/aggregate
+http://127.0.0.1:3000/api/commands
 ```
 
 You can use any REST client or **curl** to do this. For example, use the following console input to create a shopping list:
 
 ```sh
-curl -i http://localhost:3000/api/aggregate/ \
+curl -i http://localhost:3000/api/commands/ \
 --header "Content-Type: application/json" \
 --data '
 {
@@ -185,7 +185,7 @@ Content-Length: 169
 Use the console input shown below to add an item to the created shopping list:
 
 ```sh
-curl -i http://localhost:3000/api/aggregate/ \
+curl -i http://localhost:3000/api/commands/ \
 --header "Content-Type: application/json" \
 --data '
 {
@@ -240,7 +240,7 @@ Your application's write side currently does not validate input data. This resul
 
 To overcome the first issue, add checks at the beginning of each command handler:
 
-**common/aggregates/shopping_list.aggregate.js**
+**common/aggregates/shopping_list.commands.js**
 
 ```js
 createShoppingList: (state, { payload: { name } }) => {
@@ -282,7 +282,7 @@ Register the projection in the application's configuration file:
 aggregates: [
   {
     name: "ShoppingList",
-    aggregate: "common/aggregates/shopping_list.aggregate.js",
+    commands: "common/aggregates/shopping_list.commands.js",
     // A path to the file that defines the projection
     projection: "common/aggregates/shopping_list.projection.js"
   }
@@ -291,7 +291,7 @@ aggregates: [
 
 You can use the state assembled by a projection on the write side to find out whether and when a shopping list was created for the current aggregate instance (an instance that the current aggregate ID identifies).
 
-**common/aggregates/shopping_list.aggregate.js**
+**common/aggregates/shopping_list.commands.js**
 
 ```js
 createShoppingList: (state, { payload: { name } }) => {
@@ -306,11 +306,11 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 }
 ```
 
-You can send faulty aggregate to your aggregate to check whether the validation works as intended:
+You can send faulty commands to your aggregate to check whether the validation works as intended:
 
 ```sh
 # Trying to create a shopping list without specifying the name
-$ curl -i http://localhost:3000/api/aggregate/ \
+$ curl -i http://localhost:3000/api/commands/ \
 > --header "Content-Type: application/json" \
 > --data '
 > {
@@ -915,7 +915,7 @@ const ShoppingLists = ({ lists }) => {
 Run the application and click a shopping list's name view the result. To test the View Model's reactiveness, keep the page opened and use the following console input to add a shopping list item:
 
 ```bash
-curl -i http://localhost:3000/api/aggregate/ \
+curl -i http://localhost:3000/api/commands/ \
 --header "Content-Type: application/json" \
 --data '
 {
@@ -959,9 +959,9 @@ export const SHOPPING_ITEM_REMOVED = 'SHOPPING_ITEM_REMOVED' // Indicates that a
 
 #### Modify the ShoppingList Aggregate
 
-Add the following command handlers to the ShoppingList aggregate to validate the aggregate and produce the corresponding events:
+Add the following command handlers to the ShoppingList aggregate to validate the commands and produce the corresponding events:
 
-**common/aggregates/shopping_lists.aggregate.js**
+**common/aggregates/shopping_lists.commands.js**
 
 ```js
 import {
@@ -1086,7 +1086,7 @@ import { v4 as uuid } from 'uuid'
 const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
   const [shoppingListName, setShoppingListName] = useState('')
 
-  // The useCommandHook allows you send aggregate to reSolve.
+  // The useCommandHook allows you send commands to reSolve.
   const createShoppingListCommand = useCommand(
     {
       type: 'createShoppingList',
@@ -1299,7 +1299,7 @@ const ShoppingList = ({
   const [itemText, setItemText] = useState('')
   const clearItemText = () => setItemText('')
 
-  // The useCommandBuilder hook creates a function that generates aggregate based on a parameter
+  // The useCommandBuilder hook creates a function that generates commands based on a parameter
   const createShoppingItem = useCommandBuilder(
     (text) => ({
       type: 'createShoppingItem',
