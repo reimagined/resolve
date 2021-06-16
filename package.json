@@ -39,7 +39,9 @@
     "test:integration-postgres": "cd tests && yarn test:postgres --color 2>&1",
     "test:integration-postgres-serverless": "cd tests && yarn test:postgres-serverless --color 2>&1",
     "test:clean-snapshots": "workspaces all \"yarn test -u --color 2>&1\"",
-    "test:cra": "node internal/cra-test/bin/index.js",
+    "test:cra": "node internal/cra-test/bin/index.js --lang all",
+    "test:cra:ts": "node internal/cra-test/bin/index.js --lang ts",
+    "test:cra:js": "node internal/cra-test/bin/index.js --lang js",
     "workspace-manager": "node internal/workspace-manager/bin/index.js",
     "validate-lock-file": "node validate-lock-file.js"
   },
