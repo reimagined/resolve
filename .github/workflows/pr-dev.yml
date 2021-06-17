@@ -38,7 +38,9 @@ jobs:
       - name: Cache examples node_modules
         uses: actions/cache@v2
         with:
-          path: 'examples/**/node_modules'
+          path: |
+            examples/**/node_modules
+            templates/**/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
 
       - name: Cache functional tests node_modules
@@ -149,6 +151,10 @@ jobs:
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
+      - name: Install
+        run: |
+          yarn install --frozen-lockfile
+
       - name: Integration Tests
         run: yarn test:integration
 
@@ -190,14 +196,10 @@ jobs:
       - name: Cache examples node_modules
         uses: actions/cache@v2
         with:
-          path: 'examples/**/node_modules'
+          path: |
+            examples/**/node_modules
+            templates/**/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
-
-      - name: Cache functional tests node_modules
-        uses: actions/cache@v2
-        with:
-          path: 'functional-tests/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-functional-tests
 
       - name: Cache build
         uses: actions/cache@v2
@@ -215,6 +217,10 @@ jobs:
             !internal/**/node_modules/**
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
+
+      - name: Install
+        run: |
+          yarn install --frozen-lockfile
 
       - name: Test:e2e (ubuntu:chrome-headless)
         env:
@@ -255,7 +261,9 @@ jobs:
       - name: Cache examples node_modules
         uses: actions/cache@v2
         with:
-          path: 'examples/**/node_modules'
+          path: |
+            examples/**/node_modules
+            templates/**/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
 
       - name: Cache functional tests node_modules
@@ -280,6 +288,10 @@ jobs:
             !internal/**/node_modules/**
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
+
+      - name: Install
+        run: |
+          yarn install --frozen-lockfile
 
       - name: Publish to private repository
         id: publish
