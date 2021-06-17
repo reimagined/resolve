@@ -83,6 +83,8 @@ const initSubscriber = (resolve, lambdaContext) => {
         Region: region,
         QueueName: `${userId}-${name}`,
         FunctionName: functionName,
+        MaximumBatchingWindowInSeconds: 0,
+        BatchSize: 10
       }))
     } catch (err) {
       errors.push(err)
