@@ -143,7 +143,7 @@ test('registered user, gather personal data', async (t) => {
   await t.click(gatherItem)
   const progressItem = ReactSelector('button').withText('Being gathered now...')
   await t.expect(progressItem.exists).ok()
-  await t.wait(5000).navigateTo(MAIN_PAGE)
+  await t.wait(10000).navigateTo(MAIN_PAGE)
   nicknameItem = ReactSelector('a').withText('user-nickname-5')
   await t.click(nicknameItem)
   const downloadItem = ReactSelector('a').withText('Download')

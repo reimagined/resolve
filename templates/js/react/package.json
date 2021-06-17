@@ -7,7 +7,7 @@
     "build": "babel-node run.js build",
     "dev": "babel-node run.js dev",
     "start": "babel-node run.js start",
-    "test": "echo || exit 0",
+    "test": "jest --verbose",
     "test:e2e": "babel-node run.js test:e2e"
   },
   "resolutions": {
@@ -39,6 +39,7 @@
     "@babel/preset-react": "7.13.13",
     "@babel/preset-typescript": "7.14.5",
     "@resolve-js/scripts": "0.30.5",
+    "@resolve-js/testing-tools": "0.30.5",
     "babel-jest": "27.0.2",
     "jest": "27.0.3",
     "react-test-renderer": "17.0.2",
