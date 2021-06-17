@@ -1,13 +1,15 @@
+'use strict'
+Object.defineProperty(exports, '__esModule', { value: true })
 process.env.TZ = 'Europe/Moscow'
 const config = {
   testEnvironment: 'node',
-  setupFiles: ['<rootDir>/test/unit/jest-setup.ts'],
+  setupFiles: ['<rootDir>/test/unit/jest-setup.js'],
   coveragePathIgnorePatterns: ['node_modules/', 'dist/', 'coverage/'],
   unmockedModulePathPatterns: ['node_modules/react/', 'node_modules/enzyme/'],
-  testMatch: ['**/test/unit/**/*.test.ts'],
+  testMatch: ['**/test/unit/**/*.test.js'],
   transform: {
     '^.+\\.js$': 'babel-jest',
     '^.+\\.tsx?$': 'ts-jest',
   },
 }
-export default config
+exports.default = config

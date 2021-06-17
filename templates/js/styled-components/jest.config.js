@@ -1,3 +1,5 @@
+'use strict'
+Object.defineProperty(exports, '__esModule', { value: true })
 process.env.TZ = 'Europe/Moscow'
 const config = {
   testEnvironment: 'node',
@@ -9,4 +11,4 @@ const config = {
     '^.+\\.tsx?$': 'ts-jest',
   },
 }
-export default config
+exports.default = config
