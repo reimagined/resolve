@@ -8,7 +8,7 @@
     "allowJs": true,
     "target": "es2018",
     "lib": ["es2018", "dom"],
-    "types": ["node", "react"],
+    "types": ["node", "react", "jest"],
     "noEmit": true
   }
 }

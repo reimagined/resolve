@@ -7,7 +7,7 @@
     "build": "ts-node run.ts build",
     "dev": "ts-node run.ts dev",
     "start": "ts-node run.ts start",
-    "test": "echo || exit 0",
+    "test": "jest --verbose",
     "test:e2e": "ts-node run.ts test:e2e"
   },
   "resolutions": {
@@ -39,6 +39,8 @@
     "@babel/preset-react": "7.13.13",
     "@babel/preset-typescript": "7.14.5",
     "@resolve-js/scripts": "0.30.5",
+    "@resolve-js/testing-tools": "0.30.5",
+    "@types/jest": "26.0.23",
     "@types/node": "12.7.4",
     "@types/react": "17.0.5",
     "@types/react-dom": "17.0.5",
