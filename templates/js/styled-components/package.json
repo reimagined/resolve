@@ -10,7 +10,7 @@
     "export-event-store": "babel-node run.js export-event-store",
     "import-event-store": "babel-node run.js import-event-store",
     "start": "babel-node run.js start",
-    "test": "jest --verbose",
+    "test": "jest --testMatch=**/test/unit/*.test.{ts,tsx} --verbose --passWithNoTests",
     "test:e2e": "babel-node run.js test:e2e"
   },
   "dependencies": {

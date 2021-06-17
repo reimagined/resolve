@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom'
 import { Story } from '../containers/Story'
 import { Pagination } from './Pagination'
 import { ITEMS_PER_PAGE } from '../constants'
-const Stories = ({ items, page, type }) => {
+const Stories = ({ items = [], page, type }) => {
   if (items === null || (page && !Number.isInteger(Number(page)))) {
     return <Redirect push to="/error?text=No such page" />
   }
