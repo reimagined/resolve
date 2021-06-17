@@ -110,12 +110,6 @@ jobs:
         with:
           node-version: '12'
 
-      - name: Install
-        run: |
-          yarn install --frozen-lockfile
-          yarn validate-lock-file
-
-
       - name: Cache root node_modules
         uses: actions/cache@v2
         with:
@@ -178,12 +172,6 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: '12'
-
-      - name: Install
-        run: |
-          yarn install --frozen-lockfile
-          yarn validate-lock-file
-
 
       - name: Cache root node_modules
         uses: actions/cache@v2
@@ -249,11 +237,6 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: '12'
-
-      - name: Install
-        run: |
-          yarn install --frozen-lockfile
-          yarn validate-lock-file
 
       - name: Cache root node_modules
         uses: actions/cache@v2
