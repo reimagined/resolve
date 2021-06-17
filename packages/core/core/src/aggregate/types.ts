@@ -40,7 +40,7 @@ export type AggregateRuntimeHooks = {
     aggregate: AggregateInterop,
     command: Command,
     event: Event,
-    cursor?: string
+    cursorWithEvent?: { event: Event; cursor: string }
   ) => Promise<void>
 }
 

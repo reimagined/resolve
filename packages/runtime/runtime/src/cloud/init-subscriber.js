@@ -47,60 +47,111 @@ const initSubscriber = (resolve, lambdaContext) => {
 
       return tags
     }
+    const errors = []
+    let roleArn = null
+    let UUID = null
+    try {
+      roleArn = (await getCallerIdentity({ region })).Arn
+    } catch (err) {
+      errors.push(err)
+    }
 
-    const roleArn = (await getCallerIdentity({ region })).Arn
-
-    await ensureSqsQueue({
-      QueueName: `${userId}-${name}`,
-      Region: region,
-      Policy: {
-        Version: '2008-10-17',
-        Statement: [
-          {
-            Action: 'SQS:*',
-            Principal: {
-              AWS: [roleArn],
+    try {
+      await ensureSqsQueue({
+        QueueName: `${userId}-${name}`,
+        Region: region,
+        Policy: {
+          Version: '2008-10-17',
+          Statement: [
+            {
+              Action: 'SQS:*',
+              Principal: {
+                AWS: [roleArn],
+              },
+              Effect: 'Allow',
             },
-            Effect: 'Allow',
-          },
-        ],
-      },
-      Tags: getTags(),
-    })
+          ],
+        },
+        Tags: getTags(),
+      })
+    } catch (err) {
+      errors.push(err)
+    }
 
-    const { UUID } = await createEventSourceMapping({
-      Region: region,
-      QueueName: `${userId}-${name}`,
-      FunctionName: functionName,
-    })
+    try {
+      void ({ UUID } = await createEventSourceMapping({
+        Region: region,
+        QueueName: `${userId}-${name}`,
+        FunctionName: functionName,
+      }))
+    } catch (err) {
+      errors.push(err)
+    }
 
-    await setFunctionTags({
-      Region: region,
-      FunctionName: functionArn,
-      Tags: {
-        [`SQS-${name}`]: UUID,
-      },
-    })
+    try {
+      await setFunctionTags({
+        Region: region,
+        FunctionName: functionArn,
+        Tags: {
+          [`SQS-${name}`]: UUID,
+        },
+      })
+    } catch (err) {
+      errors.push(err)
+    }
+
+    if (errors.length > 0) {
+      const summaryError = new Error(
+        errors.map(({ message }) => message).join('\n')
+      )
+      summaryError.stack = errors.map(({ stack }) => stack).join('\n')
+      throw summaryError
+    }
   }
 
   resolve.deleteQueue = async (name) => {
-    const functionTags = await getFunctionTags({
-      Region: region,
-      FunctionName: functionArn,
-    })
-    const UUID = functionTags[`SQS-${name}`]
-    const queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${userId}-${name}`
+    const errors = []
+    let functionTags = null
+    let UUID = null
+    let queueUrl = null
+
+    try {
+      functionTags = await getFunctionTags({
+        Region: region,
+        FunctionName: functionArn,
+      })
+      UUID = functionTags[`SQS-${name}`]
+      queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${userId}-${name}`
+    } catch (err) {
+      errors.push(err)
+    }
 
     if (UUID != null) {
-      await deleteEventSourceMapping({
-        Region: region,
-        UUID,
-      })
-      await deleteSqsQueue({
-        Region: region,
-        QueueName: `${userId}-${name}`,
-        QueueUrl: queueUrl,
-      })
+      try {
+        await deleteEventSourceMapping({
+          Region: region,
+          UUID,
+        })
+      } catch (err) {
+        errors.push(err)
+      }
+      try {
+        await deleteSqsQueue({
+          Region: region,
+          QueueName: `${userId}-${name}`,
+          QueueUrl: queueUrl,
+        })
+      } catch (err) {
+        errors.push(err)
+      }
+    }
+
+    if (errors.length > 0) {
+      const summaryError = new Error(
+        errors.map(({ message }) => message).join('\n')
+      )
+      summaryError.stack = errors.map(({ stack }) => stack).join('\n')
+      throw summaryError
     }
   }
 }

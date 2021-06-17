@@ -64,19 +64,28 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
         ),
       ].every((key) => key === 'aws:sqs')
     ) {
-      ///////////// BEGIN
       initSubscriber(resolveBase, lambdaContext)
       initScheduler(resolve)
 
       log.debug('initializing reSolve framework')
       await initResolve(resolve)
       log.debug('reSolve framework initialized')
-
-      const records = lambdaEvent.Records.map((record) =>
-        record != null ? JSON.parse(record) : null
-      )
-      let buildParameters = { coldStart, eventsWithCursors: [] }
       const errors = []
+      const records = lambdaEvent.Records.map((record) => {
+        try {
+          return JSON.parse(record.body)
+        } catch (err) {
+          errors.push(
+            new Error(
+              `Invalid record ${JSON.stringify(
+                record
+              )} parsing failed with error ${err}`
+            )
+          )
+          return null
+        }
+      })
+      let buildParameters = { coldStart, eventsWithCursors: [] }
       for (const record of records) {
         if (
           record == null ||
@@ -90,7 +99,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
               record.cursor.constructor === String)
           )
         ) {
-          errors.push(new Error(`Malformed record ${record}`))
+          errors.push(new Error(`Malformed record ${JSON.stringify(record)}`))
           continue
         }
         const { eventSubscriber, event, cursor, ...notification } = record
@@ -128,7 +137,6 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
-      ///////////// END
     } else if (lambdaEvent.resolveSource === 'Scheduler') {
       initSubscriber(resolveBase, lambdaContext)
       initScheduler(resolve)

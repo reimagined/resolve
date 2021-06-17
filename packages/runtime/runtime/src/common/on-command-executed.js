@@ -1,5 +1,5 @@
-const onCommandExecuted = async (resolve, event, command, cursor) => {
-  await resolve.notifyEventSubscribers(event, cursor)
+const onCommandExecuted = async (resolve, event, command, eventWithCursor) => {
+  await resolve.notifyEventSubscribers(eventWithCursor)
   await resolve.sendReactiveEvent(event)
   void command
 }

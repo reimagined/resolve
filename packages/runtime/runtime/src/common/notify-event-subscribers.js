@@ -2,8 +2,7 @@ const notifyEventSubscriber = async (
   resolveBase,
   destination,
   eventSubscriber,
-  event,
-  cursor
+  eventWithCursor
 ) => {
   switch (true) {
     case /^https?:\/\//.test(destination): {
@@ -29,8 +28,7 @@ const notifyEventSubscriber = async (
           Math.random() * 1000000
         )}`,
         sendTime: Date.now(),
-        event,
-        cursor,
+        ...(eventWithCursor != null ? eventWithCursor : {}),
       })
       break
     }
@@ -43,7 +41,7 @@ const notifyEventSubscriber = async (
   }
 }
 
-const notifyEventSubscribers = async (resolve, event, cursor) => {
+const notifyEventSubscribers = async (resolve, eventWithCursor) => {
   const maxDuration = Math.max(resolve.getVacantTimeInMillis() - 15000, 0)
   let timerId = null
 
@@ -62,8 +60,7 @@ const notifyEventSubscribers = async (resolve, event, cursor) => {
             Math.random() * 1000000
           )}`,
           sendTime: Date.now(),
-          event,
-          cursor,
+          ...(eventWithCursor != null ? eventWithCursor : {}),
         })
       )
     }
@@ -86,8 +83,7 @@ const notifyEventSubscribers = async (resolve, event, cursor) => {
                 resolve,
                 destination,
                 eventSubscriber,
-                event,
-                cursor
+                eventWithCursor
               )
             )
             .catch((error) => {
