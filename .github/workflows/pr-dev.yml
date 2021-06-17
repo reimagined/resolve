@@ -77,14 +77,14 @@ jobs:
           yarn install --frozen-lockfile
           yarn validate-lock-file
 
-      - name: Test:unit
-        run: yarn test
-
-      - name: Run Prettier
-        run: yarn prettier:check
-
-      - name: Run ESLint
-        run: yarn lint
+#      - name: Test:unit
+#        run: yarn test
+#
+#      - name: Run Prettier
+#        run: yarn prettier:check
+#
+#      - name: Run ESLint
+#        run: yarn lint
 
   integrationTest:
     name: Integration Tests
