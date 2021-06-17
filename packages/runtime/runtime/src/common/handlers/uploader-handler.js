@@ -2,7 +2,7 @@ import debugLevels from '@resolve-js/debug-levels'
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
-import fileType from 'file-type'
+import * as fileType from 'file-type'
 
 import extractRequestBody from '../utils/extract-request-body'
 

@@ -4,12 +4,12 @@
   "private": true,
   "description": "personal user data within events (GDPR compliance)",
   "scripts": {
-    "build": "tsc && babel-node --extensions=.ts,.tsx run.ts build",
-    "cloud": "tsc && babel-node --extensions=.ts,.tsx run.ts cloud",
-    "dev": "tsc && babel-node --extensions=.ts,.tsx run.ts dev",
-    "start": "tsc && babel-node --extensions=.ts,.tsx run.ts start",
+    "build": "ts-node run.ts build",
+    "cloud": "ts-node run.ts cloud",
+    "dev": "ts-node run.ts dev",
+    "start": "ts-node run.ts start",
     "test": "echo || exit 0",
-    "test:e2e": "tsc && babel-node --extensions=.ts,.tsx run.ts test:e2e"
+    "test:e2e": "ts-node run.ts test:e2e"
   },
   "dependencies": {
     "@babel/node": "7.14.2",
@@ -62,7 +62,8 @@
     "react-test-renderer": "17.0.2",
     "testcafe": "1.14.2",
     "testcafe-react-selectors": "4.1.4",
-    "typescript": "4.3.2"
+    "typescript": "4.3.2",
+    "ts-node": "10.0.0"
   },
   "resolutions": {
     "@types/react": "17.0.5"
