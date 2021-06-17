@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - fix/update-dependencies
 
 jobs:
 #  e2e-mac:
