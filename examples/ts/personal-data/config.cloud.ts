@@ -17,7 +17,8 @@ const cloudConfig = {
       region: declareRuntimeEnv('AWS_REGION'),
       snapshotBucketSize: 100,
     },
-  },  readModelConnectors: {
+  },
+  readModelConnectors: {
     default: {
       module: '@resolve-js/readmodel-postgresql-serverless',
       options: {
