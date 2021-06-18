@@ -7,12 +7,12 @@ const cloudConfig = {
   eventstoreAdapter: {
     module: '@resolve-js/eventstore-postgresql-serverless',
     options: {
-      awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_STORE_ARN'),
+      awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
       dbClusterOrInstanceArn: declareRuntimeEnv(
         'RESOLVE_EVENT_STORE_CLUSTER_ARN'
       ),
       databaseName: declareRuntimeEnv('RESOLVE_EVENT_STORE_DATABASE_NAME'),
-      eventsTableName: declareRuntimeEnv('RESOLVE_ES_TABLE'),
+      eventsTableName: 'events',
       secretsTableName: 'secrets',
       region: declareRuntimeEnv('AWS_REGION'),
       snapshotBucketSize: 100,
