@@ -1,5 +1,10 @@
-const middleware = (next) => (resolver, args, context) => {
+const middleware = (next) => async (resolver, args, context) => {
   console.log('query middleware')
-  return next(resolver, args, context)
+  const data = await next(resolver, args, context)
+  const modifiedData = data.map((item) => ({
+    ...item,
+    name: item.name + ', modified by middleware',
+  }))
+  return modifiedData
 }
 export default middleware

@@ -122,11 +122,13 @@ const initResolve = async (resolve) => {
     readModelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
       monitoring,
       secretsManager,
+      queryMiddlewares: domain.middlewares.query,
     }),
     viewModelsInterop: domainInterop.viewModelDomain.acquireViewModelsInterop({
       monitoring,
       eventstore: eventstoreAdapter,
       secretsManager,
+      queryMiddlewares: domain.middlewares.query,
     }),
   })
 

@@ -33,7 +33,11 @@ const getReadModelInterop = (
   runtime: ReadModelRuntime
 ): ReadModelInterop => {
   const { connectorName, name, resolvers, projection } = readModel
-  const { monitoring, secretsManager } = runtime
+  const {
+    monitoring,
+    secretsManager,
+    queryMiddlewares = [() => void 0],
+  } = runtime
 
   const resolverInvokerMap = Object.keys(resolvers).reduce<
     ReadModelResolvers<any>
@@ -89,10 +93,26 @@ const getReadModelInterop = (
 
       try {
         log.debug(`invoking the resolver`)
-        const data = await invoker(connection, args, {
+
+        const applyMiddlewares = (queryHandler: any, middlewares: any[]) => {
+          const reversedMiddlewares = middlewares.slice().reverse()
+          let handlersChain = queryHandler
+          reversedMiddlewares.forEach(
+            (middleware) => (handlersChain = middleware(handlersChain))
+          )
+          return handlersChain
+        }
+
+        const chainedHandlers = applyMiddlewares(invoker, queryMiddlewares)
+
+        const data = await chainedHandlers(connection, args, {
           secretsManager,
           jwt: context.jwt,
         })
+        // const data = await invoker(connection, args, {
+        //   secretsManager,
+        //   jwt: context.jwt,
+        // })
         log.verbose(data)
         return {
           data,
