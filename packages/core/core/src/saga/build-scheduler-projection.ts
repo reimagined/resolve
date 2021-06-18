@@ -1,5 +1,5 @@
 import { SagaEventHandlers } from '../types/core'
-import getLog from '../get-log'
+import { getLog } from '../get-log'
 import {
   SchedulerEventTypes,
   SchedulerProjectionBuilder,

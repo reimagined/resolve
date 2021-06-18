@@ -1,1 +1,2 @@
-export default {}
+const resolvers = {}
+export default resolvers

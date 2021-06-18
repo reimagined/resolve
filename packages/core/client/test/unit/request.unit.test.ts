@@ -44,12 +44,15 @@ const createMockContext = (): Context => ({
   viewModels: [],
 })
 
+let warnMock: jest.SpyInstance
 beforeAll(() => {
   void ((global as any).fetch = mFetch)
+  warnMock = jest.spyOn(console, 'warn').mockImplementation(void 0)
 })
 
 afterAll(() => {
   void ((global as any).fetch = undefined)
+  warnMock.mockRestore()
 })
 
 let mockContext: Context

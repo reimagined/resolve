@@ -1,1 +1,3 @@
-export default () => (createStore) => (...args) => createStore(...args)
+const enhancer = () => (createStore) => (...args) => createStore(...args)
+
+export default enhancer

@@ -4,4 +4,4 @@ const babelrc = require('@internal/helpers').getBabelConfig({
   sourceType: 'js',
 })
 
-module.exports = require('babel-jest').createTransformer(babelrc)
+module.exports = require('babel-jest').default.createTransformer(babelrc)

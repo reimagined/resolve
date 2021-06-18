@@ -2,7 +2,7 @@ import jsonwebtoken from 'jsonwebtoken'
 
 import jwtSecret from './jwt-secret'
 
-export default {
+const commands = {
   createProcess: () => {
     return {
       type: 'PROCESS_CREATED',
@@ -27,3 +27,5 @@ export default {
     }
   },
 }
+
+export default commands

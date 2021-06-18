@@ -45,9 +45,7 @@ type SqliteAdapterConfigChecked = t.TypeOf<typeof SqliteAdapterConfigSchema>
 export type SqliteAdapterConfig = UnbrandProps<SqliteAdapterConfigChecked>
 
 export type AdapterPool = AdapterPoolConnected<SqliteAdapterPoolConnectedProps>
-export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
-  SqliteAdapterPoolConnectedProps
->
+export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<SqliteAdapterPoolConnectedProps>
 
 export type ConnectionDependencies = {
   sqlite: { open: SqliteOpen }

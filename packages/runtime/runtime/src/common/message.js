@@ -1,4 +1,4 @@
-export default {
+const messages = {
   incorrectQuery: 'Query is incorrect',
   commandSuccess: 'OK',
   commandFail: 'Command error: ',
@@ -6,3 +6,5 @@ export default {
   viewModelFail: 'View model query error: ',
   viewModelOnlyOnDemand: 'The aggregateIds field is required',
 }
+
+export default messages

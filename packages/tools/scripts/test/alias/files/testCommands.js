@@ -1,7 +1,7 @@
 import path from 'path'
 import localDependency from './testLocalDependency'
 
-export default {
+const commands = {
   create: (state, event) => ({ type: 'CREATE', payload: event.payload }),
   update: (state, event) => ({ type: 'UPDATE', payload: event.payload }),
   remove: (state, event) => {
@@ -10,3 +10,5 @@ export default {
     return { type: 'REMOVE', payload: event.payload, test1, test2 }
   },
 }
+
+export default commands

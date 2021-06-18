@@ -1,1 +1,3 @@
-export default {}
+const sagaCronHandlers = {}
+
+export default sagaCronHandlers

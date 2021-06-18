@@ -6,7 +6,7 @@ import {
 } from '../constants'
 import importResource from '../import_resource'
 
-export default ({ resolveConfig, isClient }) => {
+const importServerImports = ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(`${message.serverAliasInClientCode}.serverImports`)
   }
@@ -41,3 +41,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importServerImports

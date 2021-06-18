@@ -33,7 +33,8 @@ beforeAll(() => {
     send: jest.fn(),
     close: jest.fn(),
   }
-  global.WebSocket = jest.fn(() => ws) as any
+  const browserGlobal = global as any
+  browserGlobal.WebSocket = jest.fn(() => ws) as any
 })
 
 let adapter: SubscriptionAdapter

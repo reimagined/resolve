@@ -2,7 +2,7 @@ import validatePath from '@resolve-js/runtime/lib/common/utils/validate-path'
 
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
-export default ({ resolveConfig, isClient }) => {
+const importStaticPath = ({ resolveConfig, isClient }) => {
   let staticPath = resolveConfig.staticPath
   const exports = []
 
@@ -47,3 +47,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return exports.join('\r\n')
 }
+
+export default importStaticPath

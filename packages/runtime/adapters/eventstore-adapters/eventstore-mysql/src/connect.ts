@@ -1,4 +1,4 @@
-import getLog from './get-log'
+import { getLog } from './get-log'
 import type {
   ConnectionDependencies,
   MysqlAdapterPoolConnectedProps,

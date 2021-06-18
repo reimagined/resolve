@@ -1,3 +1,4 @@
-import getLog from '@resolve-js/debug-levels'
+import logScope from '@resolve-js/debug-levels'
 
-export default (scope: string): any => getLog(`resolve:resolve-query:${scope}`)
+export const getLog = (scope: string) =>
+  logScope(`resolve:resolve-query:${scope}`)
