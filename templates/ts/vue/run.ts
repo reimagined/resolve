@@ -12,6 +12,7 @@ import {
 import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
+import cloudConfig from './config.cloud'
 import adjustWebpackConfigs from './config.adjust-webpack'
 import testFunctionalConfig from './config.test-functional'
 
@@ -44,6 +45,14 @@ void (async () => {
       case 'build': {
         await build(
           merge(defaultResolveConfig, appConfig, prodConfig),
+          adjustWebpackConfigs
+        )
+        break
+      }
+
+      case 'cloud': {
+        await build(
+          merge(defaultResolveConfig, appConfig, cloudConfig),
           adjustWebpackConfigs
         )
         break

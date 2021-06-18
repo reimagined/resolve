@@ -4,8 +4,8 @@
   "private": true,
   "description": "Hacker News application clone with CQRS and EventSourcing",
   "scripts": {
-    "build": "ts-node ./run.js build",
-    "cloud": "ts-node ./run.js cloud",
+    "build": "ts-node run.ts build",
+    "cloud": "ts-node run.ts cloud",
     "cloud:replica": "ts-node run.ts cloud:replica",
     "dev": "ts-node run.ts dev",
     "dev:replica": "ts-node dev:replica",
