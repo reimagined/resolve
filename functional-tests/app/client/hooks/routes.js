@@ -4,7 +4,7 @@ import { UseRequestMiddleware } from './components/UseRequestMiddleware'
 import { SecretsManager } from './components/SecretsManager'
 import { FileUploader } from './components/FileUploader'
 
-export default [
+export const routes = [
   {
     component: App,
     routes: [

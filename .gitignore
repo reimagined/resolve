@@ -65,6 +65,8 @@ bus.json
 lcov.info
 packages/core/zeromq/optional
 .npmrc
+base-patch.json
+target-patch.json
 
 cra-tests
 *.tsbuildinfo

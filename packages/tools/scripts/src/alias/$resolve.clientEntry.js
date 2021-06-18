@@ -6,7 +6,7 @@ import {
 } from '../constants'
 import importResource from '../import_resource'
 
-export default ({ resolveConfig, isClient }, resourceQuery) => {
+const importClientEntry = ({ resolveConfig, isClient }, resourceQuery) => {
   if (!/^\?/.test(resourceQuery)) {
     throw new Error(
       `Resource $resolve.clientEntry should be retrieved with resource query`
@@ -88,3 +88,5 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importClientEntry

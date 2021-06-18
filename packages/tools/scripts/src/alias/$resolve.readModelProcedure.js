@@ -4,7 +4,10 @@ import path from 'path'
 import resolveFileOrModule from '../resolve_file_or_module'
 import { message, OPTIONAL_ASSET_ERROR } from '../constants'
 
-export default ({ resolveConfig, isClient }, resourceQuery) => {
+const importReadModelProcedure = (
+  { resolveConfig, isClient },
+  resourceQuery
+) => {
   if (!/^\?/.test(resourceQuery)) {
     throw new Error(
       `Resource $resolve.readModelProcedure should be retrieved with resource query`
@@ -56,3 +59,5 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importReadModelProcedure

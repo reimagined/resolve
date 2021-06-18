@@ -16,7 +16,7 @@ import detectErrors from './detect_errors'
 
 const log = getLog('watch')
 
-export default async (resolveConfig, adjustWebpackConfigs) => {
+const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
   log.debug('Starting "watch" mode')
   validateConfig(resolveConfig)
 
@@ -117,3 +117,5 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     )
   })
 }
+
+export default watchMode

@@ -1,5 +1,5 @@
 import { EOL } from 'os'
-import getLog from '../get-log'
+import { getLog } from '../get-log'
 import { AdminPool, CloudResourceOptions, CloudResourcePool } from '../types'
 
 const destroy = async (

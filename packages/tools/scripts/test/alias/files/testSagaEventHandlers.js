@@ -1,1 +1,3 @@
-export default {}
+const sagaEventHandlers = {}
+
+export default sagaEventHandlers

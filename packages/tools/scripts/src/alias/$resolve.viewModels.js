@@ -8,7 +8,7 @@ import {
 import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
 
-export default ({ resolveConfig, isClient }) => {
+const importViewModels = ({ resolveConfig, isClient }) => {
   const imports = []
   const constants = []
   const exports = [`const viewModels = []`, ``]
@@ -152,3 +152,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importViewModels

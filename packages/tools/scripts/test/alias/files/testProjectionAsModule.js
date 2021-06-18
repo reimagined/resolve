@@ -1,1 +1,3 @@
-export default () => ({})
+const projectionAsModule = () => ({})
+
+export default projectionAsModule

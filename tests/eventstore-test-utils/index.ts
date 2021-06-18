@@ -1,6 +1,9 @@
 import * as AWS from 'aws-sdk'
 import createSqliteAdapter from '@resolve-js/eventstore-lite'
-import { Adapter } from '@resolve-js/eventstore-base'
+import {
+  Adapter,
+  EventstoreResourceNotExistError,
+} from '@resolve-js/eventstore-base'
 import createPostgresqlServerlessAdapter, {
   CloudResourceOptions,
   create as createResource,
@@ -40,6 +43,16 @@ export function isPostgresServerless(): boolean {
       },
     })
     return true
+  }
+}
+
+async function safeDrop(adapter: Adapter): Promise<void> {
+  try {
+    await adapter.drop()
+  } catch (error) {
+    if (!(error instanceof EventstoreResourceNotExistError)) {
+      throw error
+    }
   }
 }
 
@@ -180,7 +193,7 @@ export const adapterFactory = isPostgresServerless()
         return async () => {
           const options = getPostgresServerlessOptions(uniqueName)
 
-          await adapters[uniqueName].drop()
+          await safeDrop(adapters[uniqueName])
           await adapters[uniqueName].dispose()
 
           await destroyResource(options)
@@ -222,7 +235,7 @@ export const adapterFactory = isPostgresServerless()
       },
       destroy(uniqueName: string) {
         return async () => {
-          await adapters[uniqueName].drop()
+          await safeDrop(adapters[uniqueName])
           await adapters[uniqueName].dispose()
 
           const options = {
@@ -256,7 +269,7 @@ export const adapterFactory = isPostgresServerless()
       },
       destroy(uniqueName: string) {
         return async () => {
-          await adapters[uniqueName].drop()
+          await safeDrop(adapters[uniqueName])
           await adapters[uniqueName].dispose()
 
           delete adapters[uniqueName]

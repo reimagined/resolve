@@ -135,11 +135,13 @@ for (const { describeName, prepare } of [
     })
 
     describe('view models', () => {
-      let resolver: jest.MockedFunction<() => Promise<{
-        data: any
-        eventCount: number
-        cursor: any
-      }>>
+      let resolver: jest.MockedFunction<
+        () => Promise<{
+          data: any
+          eventCount: number
+          cursor: any
+        }>
+      >
       beforeEach(() => {
         resolver = jest.fn(() =>
           Promise.resolve({

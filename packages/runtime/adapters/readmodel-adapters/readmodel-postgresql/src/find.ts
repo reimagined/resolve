@@ -22,9 +22,9 @@ const find: CurrentStoreApi['find'] = async (
     limit
   )
 
-  const inputRows = (await pool.inlineLedgerRunQuery(sqlQuery)) as Array<
-    MarshalledRowLike
-  >
+  const inputRows = (await pool.inlineLedgerRunQuery(
+    sqlQuery
+  )) as Array<MarshalledRowLike>
 
   const rows: Array<JsonMap> = []
 

@@ -1,4 +1,4 @@
-export default async (resolve, query, { viewModel }) => {
+const defaultResolver = async (resolve, query, { viewModel }) => {
   const { data, cursor } = await resolve.buildViewModel(viewModel.name, query)
 
   return {
@@ -10,3 +10,5 @@ export default async (resolve, query, { viewModel }) => {
     },
   }
 }
+
+export default defaultResolver

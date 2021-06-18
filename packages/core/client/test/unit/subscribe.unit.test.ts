@@ -1,4 +1,4 @@
-jest.useFakeTimers()
+jest.useFakeTimers('legacy')
 
 /* eslint-disable import/first */
 import { mocked } from 'ts-jest/utils'
