@@ -5,6 +5,7 @@
   "description": "used as a template for new reSolve applications",
   "scripts": {
     "build": "babel-node run.js build",
+    "cloud": "babel-node run.js cloud",
     "dev": "babel-node run.js dev",
     "start": "babel-node run.js start",
     "test": "jest --verbose",
@@ -40,6 +41,8 @@
     "@babel/preset-typescript": "7.14.5",
     "@resolve-js/scripts": "0.30.5",
     "@resolve-js/testing-tools": "0.30.5",
+    "aws-sdk": "2.860.0",
+    "aws-xray-sdk-core": "3.2.0",
     "babel-jest": "27.0.2",
     "jest": "27.0.3",
     "react-test-renderer": "17.0.2",

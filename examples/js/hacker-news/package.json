@@ -4,8 +4,8 @@
   "private": true,
   "description": "Hacker News application clone with CQRS and EventSourcing",
   "scripts": {
-    "build": "babel-node ./run.js build",
-    "cloud": "babel-node ./run.js cloud",
+    "build": "babel-node run.js build",
+    "cloud": "babel-node run.js cloud",
     "cloud:replica": "babel-node run.js cloud:replica",
     "dev": "babel-node run.js dev",
     "dev:replica": "babel-node dev:replica",

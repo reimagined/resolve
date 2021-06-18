@@ -11,6 +11,8 @@ const cloudConfig = {
         'RESOLVE_EVENT_STORE_CLUSTER_ARN'
       ),
       databaseName: declareRuntimeEnv('RESOLVE_EVENT_STORE_DATABASE_NAME'),
+      eventsTableName: 'events',
+      secretsTableName: 'secrets',
       region: declareRuntimeEnv('AWS_REGION'),
       snapshotBucketSize: 100,
     },
