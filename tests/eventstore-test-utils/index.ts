@@ -109,7 +109,7 @@ let adapters: Record<string, Adapter> = {}
 const proxy = new Proxy(
   {},
   {
-    get(_: any, adapterName: string): any {
+    get(_: any, adapterName: string): Adapter {
       return new Proxy(
         {},
         {
@@ -124,13 +124,13 @@ const proxy = new Proxy(
             throw new TypeError()
           },
         }
-      )
+      ) as Adapter
     },
     set() {
       throw new TypeError()
     },
   }
-)
+) as typeof adapters
 
 export { proxy as adapters }
 
