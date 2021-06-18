@@ -8,40 +8,20 @@
   --ifm-color-primary-darkest: #24306f;
 }
 
-/* your custom css */
-
-@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
-}
-
-@media only screen and (min-width: 1024px) {
-}
-
-@media only screen and (max-width: 1023px) {
-}
-
-@media only screen and (min-width: 1400px) {
-}
-
-@media only screen and (min-width: 1500px) {
-}
-
-.fixedHeaderContainer {
-  background: #3949ab;
-}
-
-.homeContainer {
-  background-color: #3949ab;
+.heroBanner {
+  padding: 4rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
 }
 
-.projectTitle {
-  color: #ffffff;
-}
-
-.homeContainer .homeWrapper {
-  padding: 106px 10px;
+.headerButtons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .button {
@@ -64,23 +44,30 @@
   color: #34449f;
 }
 
-.projectTitle > small {
-  line-height: 1.2em;
-  font-weight: bold;
+.buttonWrapper {
+  padding-top: 5px;
+  padding-right: 23px;
+  padding-bottom: 5px;
+  padding-left: 23px;
 }
 
-.promoSection .promoRow .pluginRowBlock .pluginWrapper {
-  padding: 5px 23px;
+.features {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  width: 100%;
 }
 
-.promoSection .promoRow {
-  padding: 0px;
+.featureImage {
+  height: 200px;
+  width: 200px;
 }
 
-.imageAlignTop .blockImage {
-  max-width: inherit;
-}
-
-.nav-footer {
-  background-color: #262a46;
+.featureCode {
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+  display: block;
+  overflow-x: auto;
+  background: #333;
+  color: white;
 }
