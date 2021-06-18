@@ -8,13 +8,13 @@ import type {
   StoreApi,
   PerformanceTracerLike,
   SplitNestedPathMethod,
+  MatchTypeConditional,
   JsonMap,
   SearchCondition,
   UpdateCondition,
   ObjectFixedKeys,
   OmitObject,
   JsonPrimitive,
-  IfEquals,
 } from '@resolve-js/readmodel-base'
 
 import type RDSDataService from 'aws-sdk/clients/rdsdataservice'
@@ -44,30 +44,25 @@ export type InlineLedgerExecuteTransactionMethodParameters<
 > = [
   pool: AdapterPool,
   method: MethodName,
-  ...args: IfEquals<
+  ...args: MatchTypeConditional<
     MethodName,
-    'begin',
-    [],
-    IfEquals<
-      MethodName,
-      'commit',
-      [transactionId: string],
-      IfEquals<MethodName, 'rollback', [transactionId: string], never>
-    >
+    [
+      ['begin', []],
+      ['commit', [transactionId: string]],
+      ['rollback', [transactionId: string]]
+    ]
   >
 ]
+
 export type InlineLedgerExecuteTransactionMethodReturnType<
   MethodName extends InlineLedgerExecuteTransactionMethodNames
-> = IfEquals<
+> = MatchTypeConditional<
   MethodName,
-  'begin',
-  string,
-  IfEquals<
-    MethodName,
-    'commit',
-    null | undefined,
-    IfEquals<MethodName, 'rollback', null | undefined, never>
-  >
+  [
+    ['begin', string],
+    ['commit', null | undefined],
+    ['rollback', null | undefined]
+  ]
 >
 
 export type InlineLedgerExecuteTransactionMethod = <

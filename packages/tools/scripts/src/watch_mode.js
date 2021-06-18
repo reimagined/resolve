@@ -12,6 +12,7 @@ import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 import openBrowser from './open_browser'
 import { processRegister } from './process_manager'
+import detectErrors from './detect_errors'
 
 const log = getLog('watch')
 
@@ -83,11 +84,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
 
         copyEnvToDist(resolveConfig.distDir)
 
-        const hasErrors = stats.reduce(
-          (acc, val) => acc || (val != null && val.hasErrors()),
-          false
-        )
-
+        const hasErrors = detectErrors(stats, true)
         const port = Number(
           checkRuntimeEnv(resolveConfig.port)
             ? // eslint-disable-next-line no-new-func

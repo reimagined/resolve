@@ -1,4 +1,10 @@
-import type { ExternalMethods, ReadModelCursor, ReadModelLedger } from './types'
+import type {
+  PassthroughErrorInstance,
+  ExternalMethods,
+  ReadModelCursor,
+  ReadModelProcedureLedger,
+  ProcedureResult,
+} from './types'
 
 const serializeError = (error: Error & { code: number }) =>
   error != null
@@ -16,7 +22,7 @@ const buildInit: (
     databaseNameAsId: string
     eventTypes: Array<string> | null
     inputCursor: ReadModelCursor
-    readModelLedger: ReadModelLedger
+    readModelLedger: ReadModelProcedureLedger
     xaKey: string
   },
   ...args: Parameters<ExternalMethods['build']>
@@ -65,6 +71,7 @@ const buildInit: (
     if (handler != null) {
       await handler()
     }
+    // TODO Init via plv8
 
     await inlineLedgerRunQuery(
       `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
@@ -105,7 +112,7 @@ const buildEvents: (
     databaseNameAsId: string
     eventTypes: Array<string> | null
     inputCursor: ReadModelCursor
-    readModelLedger: ReadModelLedger
+    readModelLedger: ReadModelProcedureLedger
     xaKey: string
     metricData: any
   },
@@ -122,17 +129,19 @@ const buildEvents: (
 ) => {
   const pool = { ...basePool, ...currentPool }
   const {
+    readModelLedger: { IsProcedural: isProcedural },
     PassthroughError,
     inlineLedgerRunQuery,
     generateGuid,
     escapeStr,
     databaseNameAsId,
     ledgerTableNameAsId,
-    inputCursor,
-    eventTypes,
-    xaKey,
     metricData,
     monitoring,
+    inputCursor,
+    eventTypes,
+    escapeId,
+    xaKey,
   } = pool
 
   let lastSuccessEvent = null
@@ -141,9 +150,9 @@ const buildEvents: (
   let localContinue = true
   let cursor = inputCursor
 
+  const firstEventsLoadStartTimestamp = Date.now()
   let eventsApplyStartTimestamp = Date.now()
   let eventCount = 0
-  const firstEventsLoadStartTimestamp = Date.now()
 
   let eventsPromise = eventstoreAdapter
     .loadEvents({
@@ -155,7 +164,6 @@ const buildEvents: (
     .then((result) => {
       metricData.eventBatchLoadTime +=
         Date.now() - firstEventsLoadStartTimestamp
-
       return result != null ? result.events : []
     })
 
@@ -180,9 +188,9 @@ const buildEvents: (
 
   let events = await eventsPromise
 
-  while (true) {
+  for (metricData.eventLoopCount = 0; true; metricData.eventLoopCount++) {
     if (events.length === 0) {
-      throw new PassthroughError()
+      throw new PassthroughError(false, false)
     }
     let nextCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(
       cursor,
@@ -190,7 +198,6 @@ const buildEvents: (
     )
 
     const eventsLoadStartTimestamp = Date.now()
-
     eventsPromise = eventstoreAdapter
       .loadEvents({
         eventTypes,
@@ -204,75 +211,151 @@ const buildEvents: (
       })
 
     let appliedEventsCount = 0
-    try {
-      for (const event of events) {
-        const savePointId = generateGuid(xaKey, `${appliedEventsCount}`)
+    let regularWorkflow = true
+
+    if (isProcedural) {
+      try {
+        let procedureResult: Array<{ Result: ProcedureResult }> | null = null
         try {
-          const handler = await modelInterop.acquireEventHandler(store, event)
-          if (handler != null) {
-            await inlineLedgerRunQuery(`SAVEPOINT ${savePointId}`)
+          metricData.insideProjection = true
+          procedureResult = (await inlineLedgerRunQuery(
+            `SELECT ${databaseNameAsId}.${escapeId(
+              `PROC-${readModelName}`
+            )}(${escapeStr(
+              JSON.stringify({
+                maxExecutionTime: getVacantTimeInMillis(),
+                events,
+              })
+            )}) AS "Result"`
+          )) as Array<{ Result: ProcedureResult }>
+        } finally {
+          metricData.insideProjection = false
+        }
 
-            const projectionApplyStartTimestamp = Date.now()
+        if (procedureResult?.[0]?.Result == null) {
+          throw new Error(`Procedure was not able to be launched`)
+        }
+        const {
+          successEvent,
+          failureEvent,
+          failureError,
+          appliedCount,
+          status,
+        } = procedureResult[0].Result
+        if (status === 'DEPENDENCY_ERROR') {
+          throw new Error(`${failureError}`)
+        }
 
-            await handler()
-            eventCount++
+        appliedEventsCount = appliedCount
+        eventCount += appliedCount
+        if (status === 'OK_PARTIAL' || status === 'CUSTOM_ERROR') {
+          nextCursor = eventstoreAdapter.getNextCursor(
+            cursor,
+            events.slice(0, appliedCount)
+          )
+        }
+        if (status === 'OK_ALL' || status === 'OK_PARTIAL') {
+          lastSuccessEvent = successEvent
+        } else if (status === 'CUSTOM_ERROR') {
+          lastFailedEvent = failureEvent
+          lastError = failureError
+        }
 
-            metricData.pureProjectionApplyTime +=
-              Date.now() - projectionApplyStartTimestamp
+        if (getVacantTimeInMillis() < 0) {
+          localContinue = false
+        }
 
-            await inlineLedgerRunQuery(`RELEASE SAVEPOINT ${savePointId}`)
-            lastSuccessEvent = event
-          }
-          appliedEventsCount++
+        regularWorkflow = false
+      } catch (err) {
+        try {
+          await inlineLedgerRunQuery(
+            `ROLLBACK TO SAVEPOINT ${rootSavePointId};`
+          )
+        } catch (e) {}
 
-          if (getVacantTimeInMillis() < 0) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          `Inline procedure execution failed for reason: ${JSON.stringify(
+            serializeError(err)
+          )}`
+        )
+      }
+    }
+
+    if (regularWorkflow) {
+      try {
+        for (const event of events) {
+          const savePointId = generateGuid(xaKey, `${appliedEventsCount}`)
+          try {
+            const handler = await modelInterop.acquireEventHandler(store, event)
+            if (handler != null) {
+              await inlineLedgerRunQuery(`SAVEPOINT ${savePointId}`)
+
+              const projectionApplyStartTimestamp = Date.now()
+              try {
+                metricData.insideProjection = true
+                await handler()
+                eventCount++
+              } finally {
+                metricData.insideProjection = false
+              }
+              metricData.pureProjectionApplyTime +=
+                Date.now() - projectionApplyStartTimestamp
+
+              await inlineLedgerRunQuery(`RELEASE SAVEPOINT ${savePointId}`)
+              lastSuccessEvent = event
+            }
+            appliedEventsCount++
+
+            if (getVacantTimeInMillis() < 0) {
+              nextCursor = eventstoreAdapter.getNextCursor(
+                cursor,
+                events.slice(0, appliedEventsCount)
+              )
+              localContinue = false
+              break
+            }
+          } catch (error) {
+            if (error instanceof PassthroughError) {
+              throw error
+            }
+
             nextCursor = eventstoreAdapter.getNextCursor(
               cursor,
               events.slice(0, appliedEventsCount)
             )
-            localContinue = false
+
+            await inlineLedgerRunQuery(
+              `ROLLBACK TO SAVEPOINT ${savePointId};
+              RELEASE SAVEPOINT ${savePointId}
+            `
+            )
+
+            lastFailedEvent = event
+            lastError = error
             break
           }
-        } catch (error) {
-          if (error instanceof PassthroughError) {
-            throw error
-          }
-
-          nextCursor = eventstoreAdapter.getNextCursor(
-            cursor,
-            events.slice(0, appliedEventsCount)
-          )
-
-          await inlineLedgerRunQuery(
-            `ROLLBACK TO SAVEPOINT ${savePointId};
-             RELEASE SAVEPOINT ${savePointId}
-          `
-          )
-
-          lastFailedEvent = event
-          lastError = error
-          break
         }
-      }
-    } catch (originalError) {
-      if (originalError instanceof PassthroughError) {
-        throw originalError
-      }
+      } catch (originalError) {
+        if (originalError instanceof PassthroughError) {
+          throw originalError
+        }
 
-      nextCursor = cursor
-      appliedEventsCount = 0
-      const composedError = new Error(
-        `Fatal inline ledger building error: ${originalError.message}`
-      )
-      composedError.stack = `${composedError.stack}${originalError.stack}`
-      lastError = composedError
-      lastSuccessEvent = null
-      lastFailedEvent = null
-      await inlineLedgerRunQuery(
-        `ROLLBACK TO SAVEPOINT ${rootSavePointId};
-         RELEASE SAVEPOINT ${rootSavePointId}
-      `
-      )
+        nextCursor = cursor
+        appliedEventsCount = 0
+        const composedError = new Error(
+          `Fatal inline ledger building error: ${originalError.message}`
+        )
+        composedError.stack = `${composedError.stack}${originalError.stack}`
+        lastError = composedError
+        lastSuccessEvent = null
+        lastFailedEvent = null
+        await inlineLedgerRunQuery(
+          `ROLLBACK TO SAVEPOINT ${rootSavePointId};
+          RELEASE SAVEPOINT ${rootSavePointId}
+        `
+        )
+      }
     }
 
     if (lastError == null) {
@@ -364,7 +447,7 @@ const buildEvents: (
         await next()
       }
 
-      throw new PassthroughError()
+      throw new PassthroughError(false, false)
     }
   }
 }
@@ -383,11 +466,12 @@ const build: ExternalMethods['build'] = async (
     ...(args as any)[0],
     eventBatchLoadTime: 0,
     pureProjectionApplyTime: 0,
+    pureLedgerTime: 0,
   }
 
   const {
     PassthroughError,
-    inlineLedgerRunQuery,
+    inlineLedgerRunQuery: ledgerQuery,
     schemaName,
     tablePrefix,
     escapeId,
@@ -398,7 +482,8 @@ const build: ExternalMethods['build'] = async (
 
   const now = Date.now()
 
-  const hasSendTime = typeof metricData.sendTime === 'number'
+  const hasSendTime =
+    metricData.sendTime != null && metricData.sendTime.constructor === Number
 
   const groupMonitoring =
     monitoring != null
@@ -407,18 +492,35 @@ const build: ExternalMethods['build'] = async (
           .group({ ReadModel: readModelName })
       : null
 
-  if (hasSendTime && monitoring != null && groupMonitoring != null) {
+  if (hasSendTime) {
     for (const innerMonitoring of [monitoring, groupMonitoring]) {
-      innerMonitoring.time('EventDelivery', metricData.sendTime)
-      innerMonitoring.timeEnd('EventDelivery', now)
+      if (innerMonitoring != null) {
+        innerMonitoring.time('EventDelivery', metricData.sendTime)
+        innerMonitoring.timeEnd('EventDelivery', now)
 
-      innerMonitoring.time('EventApply', metricData.sendTime)
+        innerMonitoring.time('EventApply', metricData.sendTime)
+      }
     }
   }
+
+  const inlineLedgerRunQuery: typeof ledgerQuery = Object.assign(
+    async (...args: any[]): Promise<any> => {
+      const inlineLedgerStartTimestamp = Date.now()
+      try {
+        return await (ledgerQuery as any)(...args)
+      } finally {
+        if (!metricData.insideProjection) {
+          metricData.pureLedgerTime += Date.now() - inlineLedgerStartTimestamp
+        }
+      }
+    },
+    ledgerQuery
+  )
 
   try {
     basePool.activePassthrough = true
     const databaseNameAsId = escapeId(schemaName)
+    const databaseNameAsStr = escapeStr(schemaName)
     const ledgerTableNameAsId = escapeId(
       `${tablePrefix}__${schemaName}__LEDGER__`
     )
@@ -446,22 +548,29 @@ const build: ExternalMethods['build'] = async (
           CAST(pg_backend_pid() AS VARCHAR(190))
         )
         RETURNING *
+      ), "UpdateTrx" AS (
+        UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
+        SET "XaKey" = ${escapeStr(xaKey)}
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)}
+        AND CAST(COALESCE((SELECT LEAST(Count("InsertTrx".*), 0) FROM "InsertTrx"), 0) AS BIGINT) = 0
+        AND CAST(COALESCE((SELECT LEAST(Count("CleanTrx".*), 0) FROM "CleanTrx"), 0) AS BIGINT) = 0
+        AND (SELECT Count("MaybeAcquireLock".*) FROM "MaybeAcquireLock") = 1
+        AND "IsPaused" = FALSE
+        AND "Errors" IS NULL
+        RETURNING *
       )
-      UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
-      SET "XaKey" = ${escapeStr(xaKey)}
-      WHERE "EventSubscriber" = ${escapeStr(readModelName)}
-      AND CAST(COALESCE((SELECT LEAST(Count("InsertTrx".*), 0) FROM "InsertTrx"), 0) AS BIGINT) = 0
-      AND CAST(COALESCE((SELECT LEAST(Count("CleanTrx".*), 0) FROM "CleanTrx"), 0) AS BIGINT) = 0
-      AND (SELECT Count("MaybeAcquireLock".*) FROM "MaybeAcquireLock") = 1
-      AND "IsPaused" = FALSE
-      AND "Errors" IS NULL
-      RETURNING *
+      SELECT "UpdateTrx".*, (
+        SELECT Count(*) FROM information_schema.routines
+        WHERE routines.specific_schema=${databaseNameAsStr} AND
+        routines.routine_name = ${escapeStr(`PROC-${readModelName}`)}
+      ) > 0 AS "IsProcedural"
+      FROM "UpdateTrx"
       `
-    )) as Array<ReadModelLedger>
+    )) as Array<ReadModelProcedureLedger>
 
     let readModelLedger = rows.length === 1 ? rows[0] : null
     if (readModelLedger == null || readModelLedger.Errors != null) {
-      throw new PassthroughError()
+      throw new PassthroughError(false, false)
     }
 
     const eventTypes =
@@ -484,8 +593,8 @@ const build: ExternalMethods['build'] = async (
       eventTypes,
       inputCursor: cursor,
       readModelLedger,
-      xaKey,
       metricData,
+      xaKey,
     }
 
     const buildMethod = cursor == null ? buildInit : buildEvents
@@ -504,18 +613,24 @@ const build: ExternalMethods['build'] = async (
       throw error
     }
 
+    const passthroughError = error as PassthroughErrorInstance
+
     try {
       await inlineLedgerRunQuery(`ROLLBACK`)
     } catch (err) {
-      if (!(err instanceof PassthroughError)) {
+      if (!(err instanceof PassthroughError && err.isEmptyTransaction)) {
         throw err
       }
+    }
+
+    if (passthroughError.isRetryable) {
+      await next()
     }
   } finally {
     basePool.activePassthrough = false
 
-    if (monitoring != null && groupMonitoring != null) {
-      for (const innerMonitoring of [monitoring, groupMonitoring]) {
+    for (const innerMonitoring of [monitoring, groupMonitoring]) {
+      if (innerMonitoring != null) {
         if (hasSendTime) {
           innerMonitoring.timeEnd('EventApply')
         }
@@ -529,6 +644,8 @@ const build: ExternalMethods['build'] = async (
           'EventProjectionApply',
           metricData.pureProjectionApplyTime
         )
+
+        innerMonitoring.duration('Ledger', metricData.pureLedgerTime)
       }
     }
   }
