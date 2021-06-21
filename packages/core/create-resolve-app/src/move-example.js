@@ -3,9 +3,20 @@ import path from 'path'
 import { getAvailableExamples } from './get-available-examples'
 import message from './message'
 
-const moveExample = async (applicationPath, resolveClonePath, exampleName) => {
+const exampleNameMatch = (exampleName, isTypescript) => {
+  const fullName = `${exampleName}-${isTypescript ? 'ts' : 'js'}`
+  return ({ name }) => name === exampleName || name === fullName
+}
+
+const moveExample = async (
+  applicationPath,
+  resolveClonePath,
+  exampleName,
+  useTypescript = false
+) => {
   const availableExamples = getAvailableExamples(resolveClonePath)
-  const example = availableExamples.find((x) => x.name === exampleName)
+  const matchName = exampleNameMatch(exampleName, useTypescript)
+  const example = availableExamples.find(matchName)
   if (!example) {
     throw new Error(message.missingExample(exampleName, availableExamples))
   }
