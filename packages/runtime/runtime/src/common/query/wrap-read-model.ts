@@ -3,7 +3,7 @@ import {
   ReadModelInterop,
   SagaInterop,
 } from '@resolve-js/core'
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { WrapReadModelOptions, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
 import { OMIT_BATCH, STOP_BATCH } from './batch'

@@ -8,7 +8,7 @@ import {
 import importResource from '../import_resource'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 
-export default ({ resolveConfig, isClient }) => {
+const importSagas = ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(`${message.serverAliasInClientCodeError}$resolve.sagas`)
   }
@@ -96,3 +96,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importSagas

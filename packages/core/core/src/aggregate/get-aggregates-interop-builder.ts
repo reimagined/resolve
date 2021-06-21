@@ -6,7 +6,7 @@ import {
 } from './types'
 import { CommandError } from '../errors'
 import { AggregateMeta } from '../types/runtime'
-import getLog from '../get-log'
+import { getLog } from '../get-log'
 import { getPerformanceTracerSubsegment } from '../utils'
 import {
   Event,

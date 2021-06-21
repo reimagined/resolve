@@ -8,9 +8,9 @@
     "test": "echo || exit 0"
   },
   "dependencies": {
-    "@babel/cli": "7.8.4",
+    "@babel/cli": "7.14.3",
     "@internal/helpers": "0.30.5",
-    "chalk": "4.0.0",
+    "chalk": "4.1.0",
     "glob": "7.1.6",
     "minimist": "1.2.5",
     "typescript": "4.3.2"

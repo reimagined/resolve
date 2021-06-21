@@ -14,7 +14,7 @@ import detectErrors from './detect_errors'
 
 const log = getLog('build')
 
-export default async (resolveConfig, adjustWebpackConfigs) => {
+const buildMode = async (resolveConfig, adjustWebpackConfigs) => {
   log.debug('Starting "build" mode')
   validateConfig(resolveConfig)
 
@@ -71,3 +71,5 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     )
   }
 }
+
+export default buildMode

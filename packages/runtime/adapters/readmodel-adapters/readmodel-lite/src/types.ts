@@ -147,9 +147,7 @@ export type AdapterPool = CommonAdapterPool & {
   connection: SQLiteLib.Database
   activePassthrough: boolean
 } & {
-    [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
-      AdapterPool
-    >[K]
+    [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<AdapterPool>[K]
   } &
   {
     [K in keyof StoreApi<CommonAdapterPool>]: StoreApi<AdapterPool>[K]

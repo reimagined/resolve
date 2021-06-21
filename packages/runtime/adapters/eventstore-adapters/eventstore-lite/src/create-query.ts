@@ -30,12 +30,12 @@ const createQuery = (pool: AdapterPool, filter: EventFilter): string => {
 
     if (startTime != null) {
       queryConditions.push(
-        `${escapeId('timestamp')} > ${injectNumber(pool, startTime)}`
+        `${escapeId('timestamp')} >= ${injectNumber(pool, startTime)}`
       )
     }
     if (finishTime != null) {
       queryConditions.push(
-        `${escapeId('timestamp')} < ${injectNumber(pool, finishTime)}`
+        `${escapeId('timestamp')} <= ${injectNumber(pool, finishTime)}`
       )
     }
   }

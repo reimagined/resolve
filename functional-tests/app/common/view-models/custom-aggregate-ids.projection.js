@@ -1,6 +1,6 @@
 import { COUNTER_INCREASED, COUNTER_DECREASED } from '../event-types'
 
-export default {
+const projection = {
   Init: () => 0,
   [COUNTER_INCREASED]: (state) => {
     return state + 1
@@ -9,3 +9,5 @@ export default {
     return state - 1
   },
 }
+
+export default projection

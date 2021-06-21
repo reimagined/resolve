@@ -1,3 +1,4 @@
-import getLog from '@resolve-js/debug-levels'
+import logScope from '@resolve-js/debug-levels'
 
-export default (scope: string) => getLog(`resolve:runtime-interop:${scope}`)
+export const getLog = (scope: string) =>
+  logScope(`resolve:runtime-interop:${scope}`)

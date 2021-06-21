@@ -7,7 +7,7 @@ import {
 import { injectRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
 
-export default ({ resolveConfig, isClient }) => {
+const importReadModelConnectors = ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}.readModelConnectors`
@@ -74,3 +74,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importReadModelConnectors
