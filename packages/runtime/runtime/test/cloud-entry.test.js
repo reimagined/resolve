@@ -113,6 +113,7 @@ describe('Cloud entry', () => {
 
     lambdaContext = {
       getRemainingTimeInMillis: () => 0x7fffffff,
+      invokedFunctionArn: '',
     }
 
     getCloudEntryWorker = async () => {
