@@ -62,7 +62,7 @@ const invokeImportApi = async (body) => {
       while (loop) {
         try {
           const response = await fetch(
-            `${process.env.RESOLVE_APP_URL}/api/import_events`,
+            `${process.env.RESOLVE_APP_URL}/api/import-events`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -96,7 +96,7 @@ const invokeImportSecretApi = async (body) => {
       while (loop) {
         try {
           const response = await fetch(
-            `${process.env.RESOLVE_APP_URL}/api/import_secrets`,
+            `${process.env.RESOLVE_APP_URL}/api/import-secrets`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
