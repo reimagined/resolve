@@ -181,17 +181,17 @@ void (async () => {
           apiHandlers: [
             {
               method: 'POST',
-              path: '/api/import_events',
+              path: '/api/import-events',
               handler: {
-                module: 'import/import_api_handler.js',
+                module: 'import/import-api-handler.js',
                 options: {},
               },
             },
             {
               method: 'POST',
-              path: '/api/import_secrets',
+              path: '/api/import-secrets',
               handler: {
-                module: 'import/import_secret_api_handler.js',
+                module: 'import/import-secret-api-handler.js',
                 options: {},
               },
             },

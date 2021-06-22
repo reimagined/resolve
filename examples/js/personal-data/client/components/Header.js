@@ -169,7 +169,7 @@ const Header = () => {
         <title>Personal Blog Platform</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href={asset('/bootstrap.min.css')} />
-        <link rel="icon" href={asset('/favicon.ico')} />
+        <link rel="icon" href={asset('/favicon.png')} />
       </Helmet>
 
       <Navbar color="light" light expand="md">

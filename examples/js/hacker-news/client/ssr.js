@@ -61,7 +61,7 @@ const ssrHandler = async (serverContext, req, res) => {
     const styleTags = sheet.getStyleTags()
     const initialState = store.getState()
     const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js')
-    const faviconUrl = getStaticBasedPath(rootPath, staticPath, 'favicon.ico')
+    const faviconUrl = getStaticBasedPath(rootPath, staticPath, 'favicon.png')
     const helmet = Helmet.renderStatic()
     const markupHtml =
       `<!doctype html>` +
