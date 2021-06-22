@@ -12055,6 +12055,11 @@ neo-async@^2.5.0, neo-async@^2.6.0, neo-async@^2.6.1:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+netmask@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/netmask/-/netmask-2.0.2.tgz#8b01a07644065d536383835823bc52004ebac5e7"
+  integrity sha512-dBpDMdxv9Irdq66304OLfEmQ9tbNRFnFTuZiLo+bD+r332bBmMJ8GBLXklIXXgxd3+v9+KUnZaUR5PJMa75Gsg==
+
 newtype-ts@0.3.4:
   version "0.3.4"
   resolved "https://registry.yarnpkg.com/newtype-ts/-/newtype-ts-0.3.4.tgz#65c74b7d5195edaa9abfcdba6549a33a5c0e298d"
@@ -14693,13 +14698,14 @@ reselect@^4.0.0:
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
   integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
-resolve-cloud-common@0.0.118:
-  version "0.0.118"
-  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.118.tgz#c1c5c3ecb4f64aef755ab9820a5af7016b4acdb7"
-  integrity sha512-fry4lc+/g/70/lRSyKY2L+i+LmqSzTaZCi9fbTUvN5L+/o0Z4YyuSJ2Qc3wbobuo1bu+e3RyDTL10wbz1XwkEw==
+resolve-cloud-common@0.0.136:
+  version "0.0.136"
+  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.136.tgz#1153d98945a5915346fc20dd2b44ed47c01421de"
+  integrity sha512-wLzSm3JMU55j5ZeRH3beATwSWHZ4MVsyL0Q4uOYKsj2J/UolKetF1PO+WvYPIV6bXfFfKGhlU/r+cYAB+oRh3Q==
   dependencies:
     chalk "^4.0.0"
     debug "^4.1.1"
+    netmask "2.0.2"
     node-rsa "1.1.1"
     uuid "^8.3.1"
 

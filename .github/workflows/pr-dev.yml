@@ -98,8 +98,7 @@ jobs:
         image: clkao/postgres-plv8:10-2
         env:
           POSTGRES_PASSWORD: postgres
-          POSTGRESQL_MAX_IDLE_CONNS: 0
-          POSTGRESQL_MAX_OPEN_CONNS: 0
+          PGOPTIONS: -c max_connections=300
         ports:
           - 5432:5432
         options: >-

@@ -20,7 +20,7 @@ type ResolveQuery = ReturnType<typeof createQuery>
 
 let performanceTracer: any | null = null
 
-let invokeEventSubscriberAsync: any = null
+let invokeBuildAsync: any = null
 let getVacantTimeInMillis: any = null
 
 const eventStoreLocalState = new Map<
@@ -115,7 +115,7 @@ for (const { describeName, prepare } of [
     beforeEach(() => {
       events = []
 
-      invokeEventSubscriberAsync = jest.fn()
+      invokeBuildAsync = jest.fn()
       getVacantTimeInMillis = jest.fn()
       readModelConnectors = {}
       readModelsInterop = {}
@@ -128,7 +128,7 @@ for (const { describeName, prepare } of [
       query = null
       events = null
       readModelConnectors = null
-      invokeEventSubscriberAsync = null
+      invokeBuildAsync = null
       getVacantTimeInMillis = null
 
       eventStoreLocalState.clear()
@@ -159,7 +159,7 @@ for (const { describeName, prepare } of [
         }
         query = createQuery({
           applicationName: 'APPLICATION_NAME',
-          invokeEventSubscriberAsync,
+          invokeBuildAsync,
           readModelConnectors,
           performanceTracer,
           getVacantTimeInMillis,
@@ -361,7 +361,7 @@ for (const { describeName, prepare } of [
 
         query = createQuery({
           applicationName: 'APPLICATION_NAME',
-          invokeEventSubscriberAsync,
+          invokeBuildAsync,
           readModelConnectors,
           performanceTracer,
           getVacantTimeInMillis,
@@ -888,7 +888,7 @@ for (const { describeName, prepare } of [
           applicationName: 'APPLICATION_NAME',
           readModelConnectors,
           performanceTracer,
-          invokeEventSubscriberAsync,
+          invokeBuildAsync,
           getVacantTimeInMillis,
           readModelsInterop,
           viewModelsInterop: {

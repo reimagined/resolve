@@ -19,15 +19,14 @@ jest.mock('adm-zip', () => {
     default: jest.fn(() => ({ extractAllTo: admZipExtractAllMock })),
   }
 })
+jest.mock('fs-extra')
+jest.mock('https')
 
 describe('downloadResolveRepo', () => {
   afterAll(() => {
     jest.resetModules()
   })
   beforeEach(() => {
-    jest.mock('fs-extra')
-    jest.mock('https')
-
     const mockResponse = {
       write: jest.fn(),
       on: jest.fn(),
