@@ -48,7 +48,7 @@ const importReadModelProcedure = (
 
   const imports = [
     `import { SynchronousPromise } from 'synchronous-promise'`,
-    `import currentReadModel from '$resolve.readModel?readModelName=${readModelName}&onlyCode=true'`,
+    `import currentReadModel from '$resolve.readModel?readModelName=${readModelName}&onlyProjection=true'`,
     `import wrapProcedure from ${JSON.stringify(wrapProcedureMethodPath)}`,
   ]
   const constants = [
