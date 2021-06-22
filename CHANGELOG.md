@@ -6,6 +6,7 @@
 
 **New features:**
 
+- Add SQS integration [\#1905](https://github.com/reimagined/resolve/pull/1905)
 - Upgrade examples [\#1902](https://github.com/reimagined/resolve/pull/1902)
 
 **Bug fixes:**
