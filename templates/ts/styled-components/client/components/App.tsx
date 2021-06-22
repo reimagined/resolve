@@ -7,7 +7,7 @@ const App = ({ route }) => (
     <Header
       title="reSolve Styled-Components Example"
       name="Styled-Components Example"
-      favicon="/favicon.ico"
+      favicon="/favicon.png"
       css={['/bootstrap.min.css']}
     />
     {renderRoutes(route.routes)}

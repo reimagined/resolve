@@ -35,39 +35,29 @@ const splitBy = (keyBy) => (items = []) =>
   }, {})
 
 const byKind = (item) => (item.isTemplate ? 'templates' : 'examples')
-const byLanguage = (item) => item.language ?? 'js'
 
 const splitByKind = splitBy(byKind)
-const splitByLanguage = splitBy(byLanguage)
 
 const formatExampleInfo = ({ name, description }) =>
-  `* ${name} - ${description}`
+  `* ${name.replace(/(?:-ts|-js)$/, '')} - ${description}`
 
 const formatExamplesList = (availableExamples, indentationLevel = 0) => {
   const lines = []
   const examplesWithGrouping = appendGroupingInformation(availableExamples)
   const { examples, templates } = splitByKind(examplesWithGrouping)
   if (templates && templates.length > 0) {
-    const { ts, js } = splitByLanguage(templates)
     lines.push(
       ...formatItemsGroup(
-        [
-          ...formatItemsGroup(ts?.map(formatExampleInfo), 'Typescript', 0),
-          ...formatItemsGroup(js?.map(formatExampleInfo), 'JavaScript', 0),
-        ],
+        Array.from(new Set(templates.map(formatExampleInfo))),
         'Templates:',
         indentationLevel
       )
     )
   }
   if (examples && examples.length > 0) {
-    const { ts, js } = splitByLanguage(examples)
     lines.push(
       ...formatItemsGroup(
-        [
-          ...formatItemsGroup(ts?.map(formatExampleInfo), 'Typescript', 0),
-          ...formatItemsGroup(js?.map(formatExampleInfo), 'JavaScript', 0),
-        ],
+        Array.from(new Set(examples.map(formatExampleInfo))),
         'Examples:',
         indentationLevel
       )

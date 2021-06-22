@@ -6,7 +6,7 @@ const App = ({ children, route }) => (
   <div>
     <Header
       title="HOC tests"
-      favicon="/favicon.ico"
+      favicon="/favicon.png"
       css={['/bootstrap.min.css', '/fontawesome.min.css', '/style.css']}
     />
     {renderRoutes(route.routes)}
