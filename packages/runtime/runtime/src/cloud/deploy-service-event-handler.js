@@ -110,7 +110,11 @@ const handleResolveReadModelEvent = async (
   }
 }
 
-const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
+const handleDeployServiceEvent = async (
+  lambdaEvent,
+  resolve,
+  lambdaContext
+) => {
   const segment = resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('apiEvent')
   subSegment.addAnnotation('operation', lambdaEvent.operation)
@@ -120,7 +124,7 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent.part) {
     case 'bootstrap': {
       try {
-        return await bootstrap(resolve)
+        return await bootstrap(resolve, lambdaContext)
       } catch (error) {
         subSegment.addError(error)
         throw error
@@ -130,7 +134,7 @@ const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
     }
     case 'shutdown': {
       try {
-        return await shutdown(resolve)
+        return await shutdown(resolve, lambdaContext)
       } catch (error) {
         subSegment.addError(error)
         throw error
