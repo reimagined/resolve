@@ -57,6 +57,13 @@ const main = async () => {
       { cwd: tempDir, stdio: 'inherit' }
     )
     log.info(`Testing create-resolve-app template: ${example}`)
+    log.info(`Unit tests:`)
+    execSync(`yarn test`, {
+      cwd: path.resolve(tempDir, example),
+      stdio: 'inherit',
+    })
+    log.info(`Unit tests done`)
+    log.info(`E2e tests:`)
     execSync(`yarn test:e2e`, {
       cwd: path.resolve(tempDir, example),
       stdio: 'inherit',
