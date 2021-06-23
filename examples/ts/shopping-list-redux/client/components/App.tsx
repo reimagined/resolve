@@ -7,7 +7,7 @@ const App = ({ route }) => (
     <Header
       title="ReSolve Shopping List Example"
       name="Shopping List"
-      favicon="/favicon.ico"
+      favicon="/favicon.png"
       css={['/bootstrap.min.css', '/fontawesome.min.css', '/style.css']}
     />
     {renderRoutes(route.routes)}

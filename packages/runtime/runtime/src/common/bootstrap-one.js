@@ -6,28 +6,52 @@ const bootstrapOne = async ({
   eventTypes,
   destination,
   upstream,
+  ensureQueue,
 }) => {
   try {
-    await eventstoreAdapter.ensureEventSubscriber({
-      applicationName,
-      eventSubscriber: name,
-      status: null,
-      destination,
-    })
+    const errors = []
+    try {
+      await ensureQueue(name)
+    } catch (err) {
+      errors.push(err)
+    }
 
-    await eventSubscriber.subscribe({
-      eventSubscriber: name,
-      subscriptionOptions: { eventTypes },
-    })
-
-    if (upstream) {
-      await eventSubscriber.setProperty({
+    try {
+      await eventstoreAdapter.ensureEventSubscriber({
+        applicationName,
         eventSubscriber: name,
-        key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
-        value: `${Date.now()}`,
+        status: null,
+        destination,
+      })
+    } catch (err) {
+      errors.push(err)
+    }
+
+    try {
+      await eventSubscriber.subscribe({
+        eventSubscriber: name,
+        subscriptionOptions: { eventTypes },
       })
 
-      await eventSubscriber.resume({ eventSubscriber: name })
+      if (upstream) {
+        await eventSubscriber.setProperty({
+          eventSubscriber: name,
+          key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
+          value: `${Date.now()}`,
+        })
+
+        await eventSubscriber.resume({ eventSubscriber: name })
+      }
+    } catch (err) {
+      errors.push(err)
+    }
+
+    if (errors.length > 0) {
+      const summaryError = new Error(
+        errors.map(({ message }) => message).join('\n')
+      )
+      summaryError.stack = errors.map(({ stack }) => stack).join('\n')
+      throw summaryError
     }
   } catch (error) {
     // eslint-disable-next-line no-console

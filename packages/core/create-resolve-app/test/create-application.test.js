@@ -41,7 +41,8 @@ test('createApplication steps', async () => {
   expect(moveExampleToApplicationPath).toHaveBeenCalledWith(
     appPath,
     '/clone-path',
-    'hacker-news'
+    'hacker-news',
+    false
   )
   expect(patchPackageJson).toHaveBeenCalledWith('dummy-app', appPath, '')
   expect(install).toHaveBeenCalledWith(appPath)

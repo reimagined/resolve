@@ -4,7 +4,7 @@ import { start } from './importer'
 import path from 'path'
 const runImport = (importConfig) => {
   const port = importConfig.hasOwnProperty('port')
-    ? String(importConfig.port)
+    ? String(importConfig.port.defaultValue)
     : process.env.PORT || '3000'
   const appUrl = `http://localhost:${path.join(port, importConfig.rootPath)}`
   Object.assign(process.env, {

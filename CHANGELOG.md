@@ -6,7 +6,16 @@
 
 **New features:**
 
+- Add SQS integration [\#1905](https://github.com/reimagined/resolve/pull/1905)
 - Upgrade examples [\#1902](https://github.com/reimagined/resolve/pull/1902)
+
+**Bug fixes:**
+
+- The loadEvents function does not work if 'startTime' and 'endTime' parameters are specified [\#1903](https://github.com/reimagined/resolve/issues/1903)
+
+**Other changes:**
+
+- Examples and create-resolve-app minor fixes [\#1907](https://github.com/reimagined/resolve/pull/1907)
 
 ## [V0.30.5](https://github.com/reimagined/resolve/tree/V0.30.5) (2021-06-08)
 

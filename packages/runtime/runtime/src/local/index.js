@@ -1,6 +1,8 @@
 import 'source-map-support/register'
 import debugLevels from '@resolve-js/debug-levels'
 import { initDomain } from '@resolve-js/core'
+import http from 'http'
+import https from 'https'
 
 import initPerformanceTracer from './init-performance-tracer'
 import initExpress from './init-express'
@@ -58,31 +60,23 @@ const localEntry = async ({ assemblies, constants, domain }) => {
           ({ method, path }) =>
             method === 'OPTIONS' && path === '/SKIP_COMMANDS'
         ) < 0,
+      https,
+      http,
     }
 
     resolve.eventSubscriberDestination = `http://0.0.0.0:${constants.port}/api/subscribers`
-    resolve.invokeEventSubscriberAsync = multiplexAsync.bind(
-      null,
-      async (eventSubscriber, method, parameters) => {
-        const currentResolve = Object.create(resolve)
-        try {
-          await initResolve(currentResolve)
-          const rawMethod = currentResolve.eventSubscriber[method]
-          if (typeof rawMethod !== 'function') {
-            throw new TypeError(method)
-          }
-
-          const result = await rawMethod.call(currentResolve.eventSubscriber, {
-            eventSubscriber,
-            ...parameters,
-          })
-
-          return result
-        } finally {
-          await disposeResolve(currentResolve)
-        }
+    resolve.invokeBuildAsync = multiplexAsync.bind(null, async (parameters) => {
+      const currentResolve = Object.create(resolve)
+      try {
+        await initResolve(currentResolve)
+        const result = await currentResolve.eventSubscriber.build(parameters)
+        return result
+      } finally {
+        await disposeResolve(currentResolve)
       }
-    )
+    })
+    resolve.ensureQueue = async () => {}
+    resolve.deleteQueue = async () => {}
 
     await initPerformanceTracer(resolve)
     await initExpress(resolve)
