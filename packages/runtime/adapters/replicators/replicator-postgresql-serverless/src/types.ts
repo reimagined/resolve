@@ -141,9 +141,7 @@ export type AdapterPool = CommonAdapterPool & {
   awsSecretStoreArn: RDSDataService.Arn
   targetEventStore: TargetEventStore
 } & {
-    [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
-      AdapterPool
-    >[K]
+    [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<AdapterPool>[K]
   } &
   {
     [K in keyof StoreApi<CommonAdapterPool>]: StoreApi<AdapterPool>[K]

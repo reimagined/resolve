@@ -5,7 +5,7 @@ import {
   SagaInitHandler,
   SideEffectsCollection,
 } from '../types/core'
-import getLog from '../get-log'
+import { getLog } from '../get-log'
 import { wrapSideEffects } from './wrap-side-effects'
 import { SagaRuntime, SystemSideEffects, SideEffectsContext } from './types'
 

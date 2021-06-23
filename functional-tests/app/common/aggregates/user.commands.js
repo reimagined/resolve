@@ -1,6 +1,6 @@
 import { USER_REGISTERED, USER_LIKED } from '../event-types'
 
-export default {
+const aggregate = {
   register: (state, command, { encrypt }) => {
     if (state.isExist) {
       throw Error(`the user already exists`)
@@ -23,3 +23,5 @@ export default {
     }
   },
 }
+
+export default aggregate

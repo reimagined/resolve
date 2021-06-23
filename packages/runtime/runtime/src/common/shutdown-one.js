@@ -4,18 +4,42 @@ const shutdownOne = async ({
   eventstoreAdapter,
   eventSubscriber,
   upstream,
+  deleteQueue,
 }) => {
   try {
-    if (upstream) {
-      await eventSubscriber.pause({ eventSubscriber: name })
+    const errors = []
+    try {
+      if (upstream) {
+        await eventSubscriber.pause({ eventSubscriber: name })
+      }
+
+      await eventSubscriber.unsubscribe({ eventSubscriber: name })
+    } catch (err) {
+      errors.push(err)
     }
 
-    await eventSubscriber.unsubscribe({ eventSubscriber: name })
+    try {
+      await eventstoreAdapter.removeEventSubscriber({
+        applicationName,
+        eventSubscriber: name,
+      })
+    } catch (err) {
+      errors.push(err)
+    }
 
-    await eventstoreAdapter.removeEventSubscriber({
-      applicationName,
-      eventSubscriber: name,
-    })
+    try {
+      await deleteQueue(name)
+    } catch (err) {
+      errors.push(err)
+    }
+
+    if (errors.length > 0) {
+      const summaryError = new Error(
+        errors.map(({ message }) => message).join('\n')
+      )
+      summaryError.stack = errors.map(({ stack }) => stack).join('\n')
+      throw summaryError
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.warn(`

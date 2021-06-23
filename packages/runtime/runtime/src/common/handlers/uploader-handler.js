@@ -2,7 +2,7 @@ import debugLevels from '@resolve-js/debug-levels'
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
-import fileType from 'file-type'
+import { fromBuffer as fileTypeFromBuffer } from 'file-type/core'
 
 import extractRequestBody from '../utils/extract-request-body'
 
@@ -57,11 +57,12 @@ const uploaderHandler = async (req, res) => {
         body = req.body
         data = Buffer.from(body, 'latin1')
 
+        const ft = await fileTypeFromBuffer(data)
+
         fs.writeFileSync(
           `${dirName}/${uploadId}.metadata`,
           JSON.stringify({
-            'Content-Type':
-              fileType(data) != null ? fileType(data).mime : 'text/plain',
+            'Content-Type': ft != null ? ft.mime : 'text/plain',
           }),
           { flag: 'w+', encoding: 'utf8' }
         )

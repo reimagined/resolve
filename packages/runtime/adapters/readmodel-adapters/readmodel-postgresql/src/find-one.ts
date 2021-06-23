@@ -16,9 +16,9 @@ const findOne: CurrentStoreApi['findOne'] = async (
     fieldList
   )
 
-  const rows = (await pool.inlineLedgerRunQuery(sqlQuery)) as Array<
-    MarshalledRowLike
-  >
+  const rows = (await pool.inlineLedgerRunQuery(
+    sqlQuery
+  )) as Array<MarshalledRowLike>
 
   if (Array.isArray(rows) && rows.length > 0) {
     return pool.convertResultRow(rows[0], fieldList)

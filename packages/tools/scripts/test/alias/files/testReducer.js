@@ -1,1 +1,3 @@
-export default (state = null) => state
+const reducer = (state = null) => state
+
+export default reducer

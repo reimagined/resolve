@@ -9,7 +9,7 @@ import {
 import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
 
-export default ({ resolveConfig, isClient }, resourceQuery) => {
+const importReadModel = ({ resolveConfig, isClient }, resourceQuery) => {
   if (!/^\?/.test(resourceQuery)) {
     throw new Error(
       `Resource $resolve.readModel should be retrieved with resource query`
@@ -21,7 +21,9 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     )
   }
 
-  const { readModelName, onlyCode } = loaderUtils.parseQuery(resourceQuery)
+  const { readModelName, onlyProjection } = loaderUtils.parseQuery(
+    resourceQuery
+  )
   let readModel = null
   let index = -1
   for (
@@ -59,18 +61,22 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     `const connectorName_${index} = ${JSON.stringify(readModel.connectorName)}`
   )
 
-  importResource({
-    resourceName: `resolvers_${index}`,
-    resourceValue: readModel.resolvers,
-    runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
-    importMode: RESOURCE_ANY,
-    instanceMode: IMPORT_INSTANCE,
-    imports,
-    constants,
-  })
+  if (!onlyProjection) {
+    importResource({
+      resourceName: `resolvers_${index}`,
+      resourceValue: readModel.resolvers,
+      runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
+      importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
+      imports,
+      constants,
+    })
+  }
 
   exports.push(`const readModel = {`, `  name: name_${index}`)
-  exports.push(`, resolvers: resolvers_${index}`)
+  if (!onlyProjection) {
+    exports.push(`, resolvers: resolvers_${index}`)
+  }
   exports.push(`, connectorName: connectorName_${index}`)
 
   importResource({
@@ -79,7 +85,7 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
     importMode: RESOURCE_ANY,
     instanceMode: IMPORT_INSTANCE,
-    ...(!onlyCode
+    ...(!onlyProjection
       ? { calculateHash: 'resolve-read-model-projection-hash' }
       : {}),
     imports,
@@ -87,7 +93,7 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
   })
   exports.push(`, projection: projection_${index}`)
 
-  if (!onlyCode) {
+  if (!onlyProjection) {
     exports.push(`, invariantHash: projection_${index}_hash`)
 
     importResource({
@@ -109,3 +115,5 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importReadModel

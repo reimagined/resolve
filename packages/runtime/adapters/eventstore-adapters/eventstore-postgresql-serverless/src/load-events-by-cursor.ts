@@ -7,9 +7,7 @@ import {
   emptyLoadEventsResult,
 } from '@resolve-js/eventstore-base'
 
-// Although documentation describes a 1 MB limit, the actual limit is 512 KB
-// https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
-const MAX_RDS_DATA_API_RESPONSE_SIZE = 512000
+import { MAX_RDS_DATA_API_RESPONSE_SIZE } from './constants'
 
 const loadEventsByCursor = async (
   {

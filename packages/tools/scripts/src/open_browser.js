@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import fetch from 'isomorphic-fetch'
-import opn from 'opn'
+import open from 'open'
 import path from 'path'
 
 import useYarn from './use_yarn'
@@ -27,7 +27,7 @@ const openBrowser = async (port, rootPath) => {
   }
 
   Promise.resolve()
-    .then(() => opn(url, { app: process.env.BROWSER }))
+    .then(() => open(url, { app: process.env.BROWSER }))
     .catch(() => {})
 
   console.log()

@@ -1,4 +1,4 @@
-import getLog from './get-log'
+import { getLog } from './get-log'
 import type {
   ConnectionDependencies,
   PostgresqlAdapterPoolConnectedProps,
@@ -37,6 +37,17 @@ const connect = async (
   secretsTableName = secretsTableName ?? 'secrets'
   subscribersTableName = subscribersTableName ?? 'subscribers'
 
+  const connection = new Postgres({
+    keepAlive: false,
+    connectionTimeoutMillis: 45000,
+    idle_in_transaction_session_timeout: 45000,
+    query_timeout: 45000,
+    statement_timeout: 45000,
+    ...connectionOptions,
+  })
+
+  await connection.connect()
+
   Object.assign<
     AdapterPoolPrimal,
     Partial<PostgresqlAdapterPoolConnectedProps>
@@ -53,6 +64,7 @@ const connect = async (
     executeStatement: executeStatement.bind(null, pool as AdapterPool),
     escapeId,
     escape,
+    connection,
   })
 
   if (pool.executeStatement != null) {

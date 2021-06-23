@@ -12,7 +12,8 @@ const createApplication = async (
   exampleName,
   localRegistry,
   commit,
-  branch
+  branch,
+  useTypescript = false
 ) => {
   // eslint-disable-next-line no-console
   console.log(
@@ -30,7 +31,8 @@ const createApplication = async (
   await moveExampleToApplicationPath(
     applicationPath,
     resolveClonePath,
-    exampleName
+    exampleName,
+    useTypescript
   )
   await patchPackageJson(applicationName, applicationPath, localRegistry)
   await install(applicationPath)

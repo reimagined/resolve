@@ -81,17 +81,11 @@ export const PostgresqlAdapterConfigSchema = t.intersection([
 type PostgresqlAdapterConfigChecked = t.TypeOf<
   typeof PostgresqlAdapterConfigSchema
 >
-export type PostgresqlAdapterConfig = UnbrandProps<
-  PostgresqlAdapterConfigChecked
->
+export type PostgresqlAdapterConfig = UnbrandProps<PostgresqlAdapterConfigChecked>
 
-export type AdapterPool = AdapterPoolConnected<
-  PostgresqlAdapterPoolConnectedProps
->
+export type AdapterPool = AdapterPoolConnected<PostgresqlAdapterPoolConnectedProps>
 
-export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
-  PostgresqlAdapterPoolConnectedProps
->
+export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<PostgresqlAdapterPoolConnectedProps>
 
 export type ConnectionDependencies = {
   RDSDataService: typeof RDSDataService

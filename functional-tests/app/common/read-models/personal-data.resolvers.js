@@ -1,7 +1,7 @@
 import { HttpError } from '@resolve-js/client'
 import { v4 as uuid } from 'uuid'
 
-export default {
+const resolvers = {
   get: async (store, { userId }) => {
     const plainEntry = await store.findOne('PersonalDataPlain', {
       id: userId,
@@ -35,3 +35,5 @@ export default {
     }
   },
 }
+
+export default resolvers

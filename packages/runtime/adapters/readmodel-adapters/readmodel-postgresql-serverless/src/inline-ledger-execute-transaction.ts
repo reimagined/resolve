@@ -29,9 +29,7 @@ const inlineLedgerExecuteTransaction: InlineLedgerExecuteTransactionMethod = asy
               database: 'postgres',
             })
             .promise()
-          return transactionId as InlineLedgerExecuteTransactionMethodReturnType<
-            MethodName
-          >
+          return transactionId as InlineLedgerExecuteTransactionMethodReturnType<MethodName>
         } catch (error) {
           PassthroughError.maybeThrowPassthroughError(error, null, false)
         }
@@ -48,9 +46,7 @@ const inlineLedgerExecuteTransaction: InlineLedgerExecuteTransactionMethod = asy
               transactionId: inputTransactionId,
             })
             .promise()
-          return null as InlineLedgerExecuteTransactionMethodReturnType<
-            MethodName
-          >
+          return null as InlineLedgerExecuteTransactionMethodReturnType<MethodName>
         } catch (error) {
           PassthroughError.maybeThrowPassthroughError(error, null, false)
         }
@@ -67,9 +63,7 @@ const inlineLedgerExecuteTransaction: InlineLedgerExecuteTransactionMethod = asy
               transactionId: inputTransactionId,
             })
             .promise()
-          return null as InlineLedgerExecuteTransactionMethodReturnType<
-            MethodName
-          >
+          return null as InlineLedgerExecuteTransactionMethodReturnType<MethodName>
         } catch (error) {
           PassthroughError.maybeThrowPassthroughError(error, null, false)
         }

@@ -1,12 +1,12 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { Router } from 'react-router'
+import { BrowserRouter as Router } from 'react-router-dom'
 import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
 import { createBrowserHistory } from 'history'
+import { renderRoutes } from 'react-router-config'
 
-import Routes from './redux-hooks/components/Routes'
-import routes from './redux-hooks/routes'
-import getRedux from './redux-hooks/get-redux'
+import { routes } from './redux-hooks/routes'
+import { getRedux } from './redux-hooks/get-redux'
 
 const entryPoint = (resolveContext) => {
   const rootPath = '/redux-hooks'
@@ -31,9 +31,7 @@ const entryPoint = (resolveContext) => {
 
   render(
     <ResolveReduxProvider context={resolveContext} store={store}>
-      <Router history={history}>
-        <Routes routes={routes} />
-      </Router>
+      <Router history={history}>{renderRoutes(routes)}</Router>
     </ResolveReduxProvider>,
     appContainer
   )

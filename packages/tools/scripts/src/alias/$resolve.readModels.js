@@ -1,6 +1,6 @@
 import { message } from '../constants'
 
-export default ({ resolveConfig, isClient }) => {
+const importReadModels = ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.readModels`
@@ -23,3 +23,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importReadModels

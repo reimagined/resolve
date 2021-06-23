@@ -1,8 +1,11 @@
-import getLog from './get-log'
+import { getLog } from './get-log'
+import { AdapterPool } from './types'
 
-const dispose = async (): Promise<any> => {
+const dispose = async ({ connection }: AdapterPool): Promise<any> => {
   const log = getLog(`dispose`)
-  log.debug(`disposing the adapter`)
+  log.debug(`disconnecting the event store adapter`)
+  await connection.end()
+  log.debug(`event store adapter disconnected`)
 }
 
 export default dispose

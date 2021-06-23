@@ -10,7 +10,6 @@ import { invokeFunction } from 'resolve-cloud-common/lambda'
 import { errorBoundary } from 'resolve-cloud-common/utils'
 import { initDomain } from '@resolve-js/core'
 
-import initAwsClients from './init-aws-clients'
 import initPerformanceTracer from './init-performance-tracer'
 import lambdaWorker from './lambda-worker'
 import wrapTrie from '../common/wrap-trie'
@@ -53,9 +52,6 @@ const index = async ({ assemblies, constants, domain, resolveVersion }) => {
         value: getSubscribeAdapterOptions,
       },
     })
-
-    log.debug('preparing aws clients')
-    await initAwsClients(resolve)
 
     log.debug('preparing uploader')
     await initUploader(resolve)

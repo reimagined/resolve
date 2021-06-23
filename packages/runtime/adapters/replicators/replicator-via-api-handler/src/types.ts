@@ -58,9 +58,7 @@ export type ArrayOrSingleOrNull<T> = Array<T> | T | null
 export type AdapterPool = CommonAdapterPool & {
   targetApplicationUrl: string
 } & {
-    [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
-      AdapterPool
-    >[K]
+    [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<AdapterPool>[K]
   } &
   {
     [K in keyof StoreApi<CommonAdapterPool>]: StoreApi<AdapterPool>[K]

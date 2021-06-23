@@ -1,4 +1,4 @@
-export default () => ({
+const makeDefaultEncryption = () => ({
   encrypt: () => {
     throw Error(`encryption disabled, please check your configuration`)
   },
@@ -6,3 +6,5 @@ export default () => ({
     throw Error(`encryption disabled, please check your configuration`)
   },
 })
+
+export default makeDefaultEncryption
