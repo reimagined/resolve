@@ -14698,6 +14698,16 @@ reselect@^4.0.0:
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
   integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
+resolve-cloud-common@0.0.118:
+  version "0.0.118"
+  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.118.tgz#c1c5c3ecb4f64aef755ab9820a5af7016b4acdb7"
+  integrity sha512-fry4lc+/g/70/lRSyKY2L+i+LmqSzTaZCi9fbTUvN5L+/o0Z4YyuSJ2Qc3wbobuo1bu+e3RyDTL10wbz1XwkEw==
+  dependencies:
+    chalk "^4.0.0"
+    debug "^4.1.1"
+    node-rsa "1.1.1"
+    uuid "^8.3.1"
+
 resolve-cloud-common@0.0.136:
   version "0.0.136"
   resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.136.tgz#1153d98945a5915346fc20dd2b44ed47c01421de"
