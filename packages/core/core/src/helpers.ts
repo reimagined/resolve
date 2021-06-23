@@ -27,7 +27,7 @@ export const makeMonitoringSafe = (monitoring: Monitoring): Monitoring => {
 
 export const applyMiddlewares: MiddlewareApplier = (
   targetHandler,
-  middlewares
+  middlewares = []
 ) => {
   const reversedMiddlewares = middlewares.slice().reverse()
   let handlersChain = targetHandler

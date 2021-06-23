@@ -37,8 +37,8 @@ const getReadModelInterop = (
   const {
     monitoring,
     secretsManager,
-    resolverMiddlewares = [() => void 0],
-    projectionMiddlewares = [() => void 0],
+    resolverMiddlewares = [],
+    projectionMiddlewares = [],
   } = runtime
 
   const resolverInvokerMap = Object.keys(resolvers).reduce<

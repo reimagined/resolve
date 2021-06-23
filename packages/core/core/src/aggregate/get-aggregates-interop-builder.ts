@@ -446,7 +446,7 @@ const executeCommand = async (
       }
     }
 
-    const { secretsManager, commandMiddlewares = [() => void 0] } = runtime
+    const { secretsManager, commandMiddlewares = [] } = runtime
 
     const encryption =
       typeof aggregate.encryption === 'function'
