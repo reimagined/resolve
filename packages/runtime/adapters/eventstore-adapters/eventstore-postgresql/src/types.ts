@@ -50,13 +50,9 @@ export type PostgresqlAdapterConfig = AdapterConfig & {
   [key: string]: any
 }
 
-export type AdapterPool = AdapterPoolConnected<
-  PostgresqlAdapterPoolConnectedProps
->
+export type AdapterPool = AdapterPoolConnected<PostgresqlAdapterPoolConnectedProps>
 
-export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
-  PostgresqlAdapterPoolConnectedProps
->
+export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<PostgresqlAdapterPoolConnectedProps>
 
 export type ConnectionDependencies = {
   Postgres: typeof Postgres
