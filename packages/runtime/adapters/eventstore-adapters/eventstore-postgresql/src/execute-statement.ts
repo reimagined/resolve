@@ -4,18 +4,9 @@ import { AdapterPool } from './types'
 const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
   const errors: any[] = []
   let rows = null
-  const connection = new pool.Postgres({
-    keepAlive: false,
-    connectionTimeoutMillis: 45000,
-    idle_in_transaction_session_timeout: 45000,
-    query_timeout: 45000,
-    statement_timeout: 45000,
-    ...pool.connectionOptions,
-  })
 
   try {
-    await connection.connect()
-    const result = await connection.query(sql)
+    const result = await pool.connection.query(sql)
 
     if (result != null && Array.isArray(result.rows)) {
       rows = JSON.parse(JSON.stringify(result.rows))
@@ -24,8 +15,6 @@ const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
     return rows
   } catch (error) {
     errors.push(error)
-  } finally {
-    await connection.end()
   }
 
   if (errors.length > 0) {
