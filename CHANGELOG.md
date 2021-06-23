@@ -9,6 +9,10 @@
 - Add SQS integration [\#1905](https://github.com/reimagined/resolve/pull/1905)
 - Upgrade examples [\#1902](https://github.com/reimagined/resolve/pull/1902)
 
+**Enhancements:**
+
+- Don't create new instance of postgres connection per each query [\#1909](https://github.com/reimagined/resolve/pull/1909)
+
 **Bug fixes:**
 
 - The loadEvents function does not work if 'startTime' and 'endTime' parameters are specified [\#1903](https://github.com/reimagined/resolve/issues/1903)
