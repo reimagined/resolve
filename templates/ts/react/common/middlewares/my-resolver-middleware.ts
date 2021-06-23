@@ -1,5 +1,5 @@
 const middleware = (next) => async (resolver, args, context) => {
-  console.log('query middleware')
+  console.log('resolver middleware')
   const data = await next(resolver, args, context)
   const modifiedData = data.map((item) => ({
     ...item,

@@ -83,6 +83,11 @@ const initResolve = async (resolve) => {
 
   const secretsManager = await eventstoreAdapter.getSecretsManager()
 
+  const {
+    command: commandMiddlewares = [],
+    resolver: resolverMiddlewares = [],
+    projection: projectionMiddlewares = [],
+  } = domain.middlewares ?? {}
   const aggregateRuntime = {
     monitoring,
     secretsManager,
@@ -93,7 +98,7 @@ const initResolve = async (resolve) => {
         return false
       },
     },
-    commandMiddlewares: domain.middlewares.command,
+    commandMiddlewares,
   }
 
   const executeCommand = createCommandExecutor({
@@ -122,13 +127,13 @@ const initResolve = async (resolve) => {
     readModelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
       monitoring,
       secretsManager,
-      queryMiddlewares: domain.middlewares.query,
+      resolverMiddlewares,
+      projectionMiddlewares,
     }),
     viewModelsInterop: domainInterop.viewModelDomain.acquireViewModelsInterop({
       monitoring,
       eventstore: eventstoreAdapter,
       secretsManager,
-      queryMiddlewares: domain.middlewares.query,
     }),
   })
 

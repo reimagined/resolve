@@ -15,10 +15,19 @@ const importMiddlewares = ({ resolveConfig, isClient }) => {
 
   const imports = [`import '$resolve.guardOnlyServer'`]
   const constants = []
-  const exports = [``, `const middlewares = { command: [], query: [] }`, ``]
+  const exports = [
+    ``,
+    `const middlewares = { command: [], resolver: [], projection: [] }`,
+    ``,
+  ]
 
-  const { command: commandMiddlewares = [], query: queryMiddlewares = [] } =
-    resolveConfig.middlewares ?? {}
+  const {
+    aggregate: commandMiddlewares = [],
+    readModel: {
+      resolver: resolverMiddlewares = [],
+      projection: projectionMiddlewares = [],
+    } = {},
+  } = resolveConfig.middlewares ?? {}
 
   for (let index = 0; index < commandMiddlewares.length; index++) {
     importResource({
@@ -33,10 +42,10 @@ const importMiddlewares = ({ resolveConfig, isClient }) => {
 
     exports.push(`middlewares.command.push(command_middlewares_${index})`)
   }
-  for (let index = 0; index < queryMiddlewares.length; index++) {
+  for (let index = 0; index < resolverMiddlewares.length; index++) {
     importResource({
-      resourceName: `query_middlewares_${index}`,
-      resourceValue: queryMiddlewares[index],
+      resourceName: `resolver_middlewares_${index}`,
+      resourceValue: resolverMiddlewares[index],
       runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
@@ -44,7 +53,20 @@ const importMiddlewares = ({ resolveConfig, isClient }) => {
       constants,
     })
 
-    exports.push(`middlewares.query.push(query_middlewares_${index})`)
+    exports.push(`middlewares.resolver.push(resolver_middlewares_${index})`)
+  }
+  for (let index = 0; index < projectionMiddlewares.length; index++) {
+    importResource({
+      resourceName: `projection_middlewares_${index}`,
+      resourceValue: projectionMiddlewares[index],
+      runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
+      importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
+      imports,
+      constants,
+    })
+
+    exports.push(`middlewares.projection.push(projection_middlewares_${index})`)
   }
 
   exports.push(`export default middlewares`)

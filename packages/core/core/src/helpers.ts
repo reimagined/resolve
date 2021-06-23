@@ -23,3 +23,12 @@ export const makeMonitoringSafe = (monitoring: Monitoring): Monitoring => {
       : monitoring.error,
   }
 }
+
+export const applyMiddlewares = (targetHandler: any, middlewares: any[]) => {
+  const reversedMiddlewares = middlewares.slice().reverse()
+  let handlersChain = targetHandler
+  reversedMiddlewares.forEach(
+    (middleware) => (handlersChain = middleware(handlersChain))
+  )
+  return handlersChain
+}

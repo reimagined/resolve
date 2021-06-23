@@ -10,6 +10,7 @@ import { createHttpError, HttpStatusCodes } from '../errors'
 import { getPerformanceTracerSubsegment } from '../utils'
 import { ReadModelMeta } from '../types/runtime'
 import { getLog } from '../get-log'
+import { applyMiddlewares } from '../helpers'
 
 const monitoredError = (
   runtime: ReadModelRuntime,
@@ -36,7 +37,8 @@ const getReadModelInterop = (
   const {
     monitoring,
     secretsManager,
-    queryMiddlewares = [() => void 0],
+    resolverMiddlewares = [() => void 0],
+    projectionMiddlewares = [() => void 0],
   } = runtime
 
   const resolverInvokerMap = Object.keys(resolvers).reduce<
@@ -94,16 +96,7 @@ const getReadModelInterop = (
       try {
         log.debug(`invoking the resolver`)
 
-        const applyMiddlewares = (queryHandler: any, middlewares: any[]) => {
-          const reversedMiddlewares = middlewares.slice().reverse()
-          let handlersChain = queryHandler
-          reversedMiddlewares.forEach(
-            (middleware) => (handlersChain = middleware(handlersChain))
-          )
-          return handlersChain
-        }
-
-        const chainedHandlers = applyMiddlewares(invoker, queryMiddlewares)
+        const chainedHandlers = applyMiddlewares(invoker, resolverMiddlewares)
 
         const data = await chainedHandlers(connection, args, {
           secretsManager,
@@ -181,8 +174,12 @@ const getReadModelInterop = (
     event: Event
   ): Promise<ReadModelRuntimeEventHandler | null> => {
     if (typeof projection[event.type] === 'function') {
+      const chainedHandlers = applyMiddlewares(
+        projection[event.type],
+        projectionMiddlewares
+      )
       return monitoredHandler(event.type, async () =>
-        projection[event.type](store, event, await buildEncryption(event))
+        chainedHandlers(store, event, await buildEncryption(event))
       )
     }
     return null

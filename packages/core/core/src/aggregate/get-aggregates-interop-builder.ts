@@ -16,6 +16,7 @@ import {
   CommandHandler,
   CommandResult,
 } from '../types/core'
+import { applyMiddlewares } from '../helpers'
 
 type AggregateData = {
   aggregateVersion: number
@@ -462,15 +463,6 @@ const executeCommand = async (
       aggregateVersion,
       encrypt,
       decrypt,
-    }
-
-    const applyMiddlewares = (commandHandler: any, middlewares: any[]) => {
-      const reversedMiddlewares = middlewares.slice().reverse()
-      let handlersChain = commandHandler
-      reversedMiddlewares.forEach(
-        (middleware) => (handlersChain = middleware(handlersChain))
-      )
-      return handlersChain
     }
 
     const chainedHandlers = applyMiddlewares(commandHandler, commandMiddlewares)

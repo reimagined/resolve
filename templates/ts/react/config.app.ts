@@ -21,11 +21,14 @@ const appConfig = {
     },
   ],
   middlewares: {
-    command: [
+    aggregate: [
       'common/middlewares/my-command-middleware.ts',
       'common/middlewares/my-command-middleware-2.ts',
     ],
-    query: ['common/middlewares/my-query-middleware.ts'],
+    readModel: {
+      resolver: ['common/middlewares/my-resolver-middleware.ts'],
+      projection: ['common/middlewares/my-projection-middleware.ts'],
+    },
   },
   clientEntries: [
     [
