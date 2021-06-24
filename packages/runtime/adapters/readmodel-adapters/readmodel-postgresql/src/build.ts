@@ -1,3 +1,4 @@
+import { ReadModelEvent } from '../../readmodel-base/types'
 import type {
   PassthroughErrorInstance,
   ExternalMethods,
@@ -125,12 +126,14 @@ const buildEvents: (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis
+  getVacantTimeInMillis,
+  buildInfo
 ) => {
   const pool = { ...basePool, ...currentPool }
   const {
     readModelLedger: { IsProcedural: isProcedural },
     PassthroughError,
+    checkEventsContinuity,
     inlineLedgerRunQuery,
     generateGuid,
     escapeStr,
@@ -143,6 +146,24 @@ const buildEvents: (
     escapeId,
     xaKey,
   } = pool
+  const { eventsWithCursors } = buildInfo
+  const isContinuousMode =
+    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function'
+  const getContinuousLatestCursor = async (
+    cursor: ReadModelCursor,
+    events: Array<ReadModelEvent>,
+    eventTypes: Array<string> | null
+  ) => {
+    let nextCursor = await eventstoreAdapter.getNextCursor(cursor, events)
+    if (isContinuousMode && eventTypes != null) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      nextCursor = await eventstoreAdapter.getCursorUntilEventTypes!(
+        nextCursor,
+        eventTypes
+      )
+    }
+    return nextCursor
+  }
 
   let lastSuccessEvent = null
   let lastFailedEvent = null
@@ -154,18 +175,28 @@ const buildEvents: (
   let eventsApplyStartTimestamp = Date.now()
   let eventCount = 0
 
-  let eventsPromise = eventstoreAdapter
-    .loadEvents({
-      eventTypes,
-      eventsSizeLimit: 6553600,
-      limit: 100,
-      cursor,
-    })
-    .then((result) => {
-      metricData.eventBatchLoadTime +=
-        Date.now() - firstEventsLoadStartTimestamp
-      return result != null ? result.events : []
-    })
+  const hotEvents: Array<ReadModelEvent> | null =
+    isContinuousMode &&
+    Array.isArray(eventsWithCursors) &&
+    checkEventsContinuity(inputCursor, eventsWithCursors)
+      ? eventsWithCursors.map(({ event }) => event)
+      : null
+
+  let eventsPromise =
+    hotEvents == null
+      ? eventstoreAdapter
+          .loadEvents({
+            eventTypes,
+            eventsSizeLimit: 6553600,
+            limit: 100,
+            cursor,
+          })
+          .then((result) => {
+            metricData.eventBatchLoadTime +=
+              Date.now() - firstEventsLoadStartTimestamp
+            return result != null ? result.events : []
+          })
+      : Promise.resolve(hotEvents)
 
   let rootSavePointId = generateGuid(xaKey, 'ROOT')
 
@@ -192,19 +223,22 @@ const buildEvents: (
     if (events.length === 0) {
       throw new PassthroughError(false, false)
     }
-    let nextCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(
+    let nextCursorPromise: Promise<ReadModelCursor> = getContinuousLatestCursor(
       cursor,
-      events
+      events,
+      eventTypes
     )
 
     const eventsLoadStartTimestamp = Date.now()
-    eventsPromise = eventstoreAdapter
-      .loadEvents({
-        eventTypes,
-        eventsSizeLimit: 65536000,
-        limit: 1000,
-        cursor: nextCursor,
-      })
+    eventsPromise = Promise.resolve(nextCursorPromise)
+      .then((nextCursor) =>
+        eventstoreAdapter.loadEvents({
+          eventTypes,
+          eventsSizeLimit: 65536000,
+          limit: 1000,
+          cursor: nextCursor,
+        })
+      )
       .then((result) => {
         metricData.eventBatchLoadTime += Date.now() - eventsLoadStartTimestamp
         return result != null ? result.events : []
@@ -249,9 +283,10 @@ const buildEvents: (
         appliedEventsCount = appliedCount
         eventCount += appliedCount
         if (status === 'OK_PARTIAL' || status === 'CUSTOM_ERROR') {
-          nextCursor = eventstoreAdapter.getNextCursor(
+          nextCursorPromise = getContinuousLatestCursor(
             cursor,
-            events.slice(0, appliedCount)
+            events.slice(0, appliedCount),
+            eventTypes
           )
         }
         if (status === 'OK_ALL' || status === 'OK_PARTIAL') {
@@ -308,9 +343,10 @@ const buildEvents: (
             appliedEventsCount++
 
             if (getVacantTimeInMillis() < 0) {
-              nextCursor = eventstoreAdapter.getNextCursor(
+              nextCursorPromise = getContinuousLatestCursor(
                 cursor,
-                events.slice(0, appliedEventsCount)
+                events.slice(0, appliedEventsCount),
+                eventTypes
               )
               localContinue = false
               break
@@ -320,9 +356,10 @@ const buildEvents: (
               throw error
             }
 
-            nextCursor = eventstoreAdapter.getNextCursor(
+            nextCursorPromise = getContinuousLatestCursor(
               cursor,
-              events.slice(0, appliedEventsCount)
+              events.slice(0, appliedEventsCount),
+              eventTypes
             )
 
             await inlineLedgerRunQuery(
@@ -341,7 +378,7 @@ const buildEvents: (
           throw originalError
         }
 
-        nextCursor = cursor
+        nextCursorPromise = Promise.resolve(cursor)
         appliedEventsCount = 0
         const composedError = new Error(
           `Fatal inline ledger building error: ${originalError.message}`
@@ -357,7 +394,7 @@ const buildEvents: (
         )
       }
     }
-
+    const nextCursor = await nextCursorPromise
     if (lastError == null) {
       await inlineLedgerRunQuery(
         `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId} SET 
@@ -460,14 +497,17 @@ const build: ExternalMethods['build'] = async (
   next,
   eventstoreAdapter,
   getVacantTimeInMillis,
-  ...args
+  buildInfo
 ) => {
-  const metricData: any = {
-    ...(args as any)[0],
+  const { eventsWithCursors, ...inputMetricData } = buildInfo
+  const metricData = {
+    ...inputMetricData,
     eventBatchLoadTime: 0,
     pureProjectionApplyTime: 0,
     pureLedgerTime: 0,
+    insideProjection: false,
   }
+  void eventsWithCursors
 
   const {
     PassthroughError,
@@ -606,7 +646,8 @@ const build: ExternalMethods['build'] = async (
       modelInterop,
       next,
       eventstoreAdapter,
-      getVacantTimeInMillis
+      getVacantTimeInMillis,
+      buildInfo
     )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
