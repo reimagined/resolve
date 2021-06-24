@@ -19,6 +19,7 @@
 
 **Other changes:**
 
+- Feature/hot read models [\#1910](https://github.com/reimagined/resolve/pull/1910)
 - Examples and create-resolve-app minor fixes [\#1907](https://github.com/reimagined/resolve/pull/1907)
 
 ## [V0.30.5](https://github.com/reimagined/resolve/tree/V0.30.5) (2021-06-08)

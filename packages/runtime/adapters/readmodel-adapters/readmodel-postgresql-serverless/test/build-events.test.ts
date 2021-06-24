@@ -90,7 +90,13 @@ describe('buildEvents', () => {
         existingSecrets: [],
         deletedSecrets: [],
       }),
-    }
+    } as any
+
+    const buildInfo = {
+      initiator: 'read-model-next',
+      notificationId: '0',
+      sendTime: 0,
+    } as const
 
     const inlineLedgerExecuteStatement = jest
       .fn()
@@ -135,7 +141,8 @@ describe('buildEvents', () => {
         projection,
         next,
         eventstoreAdapter,
-        getVacantTimeInMillis
+        getVacantTimeInMillis,
+        buildInfo
       )
       throw new Error('Test failed')
     } catch (error) {
@@ -185,6 +192,12 @@ describe('buildEvents', () => {
       },
     }
 
+    const buildInfo = {
+      initiator: 'read-model-next',
+      notificationId: '0',
+      sendTime: 0,
+    } as const
+
     const eventstoreAdapter = {
       loadEvents: jest
         .fn()
@@ -215,7 +228,7 @@ describe('buildEvents', () => {
         existingSecrets: [],
         deletedSecrets: [],
       }),
-    }
+    } as any
 
     const inlineLedgerExecuteStatement = jest
       .fn()
@@ -260,7 +273,8 @@ describe('buildEvents', () => {
         projection,
         next,
         eventstoreAdapter,
-        getVacantTimeInMillis
+        getVacantTimeInMillis,
+        buildInfo
       )
       throw new Error('Test failed')
     } catch (error) {
