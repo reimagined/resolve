@@ -2,7 +2,9 @@
 
 ![Styled Components](https://user-images.githubusercontent.com/5055654/39309673-413535aa-4971-11e8-933f-5c0a8ed1a2ea.png)
 
-This example demonstrates how to work with [postCSS](https://github.com/postcss/postcss-loader#css-modules). Get the example using this command:
+An application pre-configured to use [PostCSS](https://github.com/postcss/postcss-loader#css-modules).
+
+To create a project:
 
 ```sh
 npx create-resolve-app resolve-with-postcss-example -e with-postcss
