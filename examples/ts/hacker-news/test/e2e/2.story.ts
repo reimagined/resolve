@@ -114,9 +114,5 @@ test('create with external link', async (t) => {
   await t.typeText('textarea', 'my text', { paste: true })
   await t.click('button')
 
-  await waitSelector(
-    t,
-    'HackerNews',
-    Selector('a').withText('Ask HN: external link')
-  )
+  await waitSelector(t, 'HackerNews', Selector('a').withText('external link'))
 })
