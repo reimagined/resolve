@@ -11,7 +11,13 @@ import {
   AggregateProjection,
   EventHandlerEncryptionFactory,
   ReadModelResolvers,
+  CommandHandler,
+  ReadModelResolver,
+  ReadModelEventHandler,
 } from './core'
+
+import { AggregateInterop, AggregateRuntime } from '../aggregate/types'
+import { ReadModelRuntime } from '../read-model/types'
 
 export type PerformanceSubsegment = {
   addAnnotation: (name: string, data: any) => void
@@ -90,3 +96,53 @@ export type ViewModelMeta = {
   encryption: EventHandlerEncryptionFactory
   invariantHash: string
 }
+
+//Middleware
+
+type MiddlewareChainableFunction =
+  | CommandHandler
+  | ReadModelResolver<any>
+  | ReadModelEventHandler<any>
+
+type MiddlewareHandler<THandler> = (next: THandler) => THandler
+
+type ReadModelMiddlewareContext = {
+  meta: ReadModelMeta
+  runtime: ReadModelRuntime
+}
+type AggregateMiddlewareContext = {
+  interop: AggregateInterop
+  runtime: AggregateRuntime
+}
+
+type MiddlewareContext = AggregateMiddlewareContext | ReadModelMiddlewareContext
+
+type Middleware<
+  TContext extends MiddlewareContext,
+  THandler extends MiddlewareChainableFunction
+> = (middlewareContext: TContext) => MiddlewareHandler<THandler>
+
+export type MiddlewareWrapper = <
+  TContext extends MiddlewareContext,
+  THandler extends MiddlewareChainableFunction
+>(
+  middlewares: Array<Middleware<TContext, THandler>>,
+  context: TContext
+) => MiddlewareApplier<THandler>
+
+export type MiddlewareApplier<T extends MiddlewareChainableFunction> = (
+  targetHandler: T
+) => T
+
+export type CommandMiddleware = Middleware<
+  AggregateMiddlewareContext,
+  CommandHandler
+>
+export type ProjectionMiddleware = Middleware<
+  ReadModelMiddlewareContext,
+  ReadModelEventHandler<any>
+>
+export type ResolverMiddleware = Middleware<
+  ReadModelMiddlewareContext,
+  ReadModelResolver<any>
+>

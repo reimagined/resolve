@@ -16,7 +16,7 @@ import {
   CommandHandler,
   CommandResult,
 } from '../types/core'
-import { applyMiddlewares } from '../helpers'
+import { makeMiddlewareApplier } from '../helpers'
 
 type AggregateData = {
   aggregateVersion: number
@@ -401,6 +401,13 @@ const executeCommand = async (
     )
     const aggregate = aggregateMap[aggregateName]
 
+    const { commandMiddlewares = [] } = runtime
+
+    const applyMiddlewares = makeMiddlewareApplier(commandMiddlewares, {
+      interop: aggregate,
+      runtime,
+    })
+
     subSegment.addAnnotation('aggregateName', aggregateName)
     subSegment.addAnnotation('commandType', command.type)
     subSegment.addAnnotation('origin', 'resolve:executeCommand')
@@ -446,7 +453,7 @@ const executeCommand = async (
       }
     }
 
-    const { secretsManager, commandMiddlewares = [] } = runtime
+    const { secretsManager } = runtime
 
     const encryption =
       typeof aggregate.encryption === 'function'
@@ -465,7 +472,7 @@ const executeCommand = async (
       decrypt,
     }
 
-    const chainedHandlers = applyMiddlewares(commandHandler, commandMiddlewares)
+    const chainedHandlers = applyMiddlewares(commandHandler)
 
     const event = await chainedHandlers(aggregateState, command, context)
     // const event = await commandHandler(aggregateState, command, context)

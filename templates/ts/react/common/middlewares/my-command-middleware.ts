@@ -5,7 +5,7 @@ type ExtendedContext = {
   isOdd: boolean
 } & CommandContext
 
-const middleware: CommandMiddleware = (next) => async (
+const middleware: CommandMiddleware = (middlewareContext) => (next) => async (
   state,
   command,
   context
@@ -16,7 +16,7 @@ const middleware: CommandMiddleware = (next) => async (
 
   const modifiedContext: ExtendedContext = {
     ...context,
-    addedByMiddleware: 'Middleware added this',
+    addedByMiddleware: ', modified by middleware',
     isOdd: !!((state.items?.length ?? 0) % 2),
   }
 

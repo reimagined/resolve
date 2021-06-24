@@ -131,7 +131,7 @@ type ReadModelHandlerContext = Encryption
 
 type ReadModelInitHandler<TStore> = (store: TStore) => Promise<void>
 
-type ReadModelEventHandler<TStore> = (
+export type ReadModelEventHandler<TStore> = (
   store: TStore,
   event: Event,
   context: ReadModelHandlerContext
@@ -148,7 +148,7 @@ type ReadModelResolverContext = {
   secretsManager: SecretsManager | null
 }
 
-type ReadModelResolver<TStore> = (
+export type ReadModelResolver<TStore> = (
   store: TStore,
   params: SerializableMap,
   context: ReadModelResolverContext
@@ -264,21 +264,3 @@ export type SagaEncryptionFactory = (
   event: Event,
   context: SagaEncryptionContext
 ) => Promise<Encryption | null>
-
-//Middleware
-
-type MiddlewareChainableFunction =
-  | CommandHandler
-  | ReadModelResolver<any>
-  | ReadModelEventHandler<any>
-
-type Middleware<T = MiddlewareChainableFunction> = (next: T) => T
-
-export type MiddlewareApplier = <T extends MiddlewareChainableFunction>(
-  targetHandler: T,
-  middlewares: Middleware<T>[]
-) => T
-
-export type CommandMiddleware = Middleware<CommandHandler>
-export type ProjectionMiddleware = Middleware<ReadModelEventHandler<any>>
-export type ResolverMiddleware = Middleware<ReadModelResolver<any>>

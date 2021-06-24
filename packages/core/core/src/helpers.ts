@@ -1,5 +1,4 @@
-import { MiddlewareApplier } from './types/core'
-import { Monitoring } from './types/runtime'
+import { MiddlewareWrapper, Monitoring } from './types/runtime'
 
 export function firstOfType<T>(
   selector: (x: any) => x is T,
@@ -25,14 +24,19 @@ export const makeMonitoringSafe = (monitoring: Monitoring): Monitoring => {
   }
 }
 
-export const applyMiddlewares: MiddlewareApplier = (
-  targetHandler,
-  middlewares = []
+export const makeMiddlewareApplier: MiddlewareWrapper = (
+  middlewares,
+  middlewareContext
 ) => {
-  const reversedMiddlewares = middlewares.slice().reverse()
-  let handlersChain = targetHandler
-  reversedMiddlewares.forEach(
-    (middleware) => (handlersChain = middleware(handlersChain))
-  )
-  return handlersChain
+  const reversedMiddlewares = middlewares
+    .map((m) => m(middlewareContext))
+    .reverse()
+
+  return (targetHandler) => {
+    let handlersChain = targetHandler
+    reversedMiddlewares.forEach(
+      (middleware) => (handlersChain = middleware(handlersChain))
+    )
+    return handlersChain
+  }
 }

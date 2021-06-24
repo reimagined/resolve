@@ -10,7 +10,7 @@ import { createHttpError, HttpStatusCodes } from '../errors'
 import { getPerformanceTracerSubsegment } from '../utils'
 import { ReadModelMeta } from '../types/runtime'
 import { getLog } from '../get-log'
-import { applyMiddlewares } from '../helpers'
+import { makeMiddlewareApplier } from '../helpers'
 
 const monitoredError = (
   runtime: ReadModelRuntime,
@@ -41,6 +41,12 @@ const getReadModelInterop = (
     projectionMiddlewares = [],
   } = runtime
 
+  const middlewareContext = { meta: readModel, runtime }
+
+  const applyProjectionMiddlewares = makeMiddlewareApplier(
+    projectionMiddlewares,
+    middlewareContext
+  )
   const resolverInvokerMap = Object.keys(resolvers).reduce<
     ReadModelResolvers<any>
   >((map, resolverName) => {
@@ -54,6 +60,11 @@ const getReadModelInterop = (
     context: { jwt?: string }
   ) => {
     const log = getLog(`read-model-interop:${name}:acquireResolver:${resolver}`)
+    const applyResolverMiddlewares = makeMiddlewareApplier(
+      resolverMiddlewares,
+      { ...middlewareContext, resolver }
+    )
+
     const invoker = resolverInvokerMap[resolver]
     if (invoker == null) {
       log.error(`unable to find invoker for the resolver`)
@@ -96,7 +107,7 @@ const getReadModelInterop = (
       try {
         log.debug(`invoking the resolver`)
 
-        const chainedHandlers = applyMiddlewares(invoker, resolverMiddlewares)
+        const chainedHandlers = applyResolverMiddlewares(invoker)
 
         const data = await chainedHandlers(connection, args, {
           secretsManager,
@@ -174,10 +185,8 @@ const getReadModelInterop = (
     event: Event
   ): Promise<ReadModelRuntimeEventHandler | null> => {
     if (typeof projection[event.type] === 'function') {
-      const chainedHandlers = applyMiddlewares(
-        projection[event.type],
-        projectionMiddlewares
-      )
+      const chainedHandlers = applyProjectionMiddlewares(projection[event.type])
+
       return monitoredHandler(event.type, async () =>
         chainedHandlers(store, event, await buildEncryption(event))
       )

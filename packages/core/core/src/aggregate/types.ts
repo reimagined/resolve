@@ -1,4 +1,4 @@
-import { Eventstore, Monitoring } from '../types/runtime'
+import { CommandMiddleware, Eventstore, Monitoring } from '../types/runtime'
 import {
   Event,
   AggregateEncryptionFactory,
@@ -48,7 +48,7 @@ export type AggregateRuntime = {
   secretsManager: SecretsManager
   eventstore: Eventstore
   hooks?: AggregateRuntimeHooks
-  commandMiddlewares?: any[]
+  commandMiddlewares?: Array<CommandMiddleware>
 }
 
 export type AggregatesInteropBuilder = (
