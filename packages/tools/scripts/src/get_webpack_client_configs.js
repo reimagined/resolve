@@ -92,6 +92,73 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
     plugins: [],
   })
 
+  const getReadModelEntryConfig = (name) => ({
+    ...getBaseClientConfig(false),
+    name: `${OPTIONAL_ASSET_PREFIX} Read-model adapter-inline chunk ${name}`,
+    entry: {
+      [`common/${targetMode}-entry/read-model-${name}.js`]: `${path.resolve(
+        __dirname,
+        './alias/$resolve.readModelProcedure.js'
+      )}?readModelName=${name}`,
+    },
+    module: {
+      ...getBaseClientConfig(false).module,
+      rules: [
+        {
+          test: /\.js$/,
+          sideEffects: false,
+          use: {
+            loader: require.resolve('babel-loader'),
+            options: {
+              sourceType: 'unambiguous',
+              cacheDirectory: false,
+              babelrc: false,
+              presets: [
+                [
+                  '@babel/preset-env',
+                  {
+                    loose: true,
+                    modules: false,
+                  },
+                ],
+              ],
+              plugins: [
+                [
+                  '@babel/plugin-transform-runtime',
+                  {
+                    corejs: false,
+                    helpers: true,
+                    regenerator: true,
+                    useESModules: false,
+                  },
+                ],
+              ],
+            },
+          },
+          exclude: [
+            ...Object.values(alias),
+            /@babel\/runtime/,
+            /regenerator-runtime/,
+          ],
+        },
+        ...getBaseClientConfig(false).module.rules,
+      ],
+    },
+    optimization: {
+      ...getBaseClientConfig(false).optimization,
+      noEmitOnErrors: true,
+    },
+    output: {
+      ...getBaseClientConfig(false).output,
+      libraryTarget: 'var',
+      library: '__READ_MODEL_ENTRY__',
+    },
+    plugins: [...getBaseClientConfig(false).plugins],
+    mode: 'production',
+    devtool: undefined,
+    target: 'node',
+  })
+
   const clientConfigs = [
     {
       ...getBaseClientConfig(true),
@@ -117,70 +184,9 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
       },
       plugins: [...getBaseClientConfig(true).plugins, new EsmWebpackPlugin()],
     },
-    ...resolveConfig.readModels.map(({ name }) => ({
-      ...getBaseClientConfig(false),
-      name: `${OPTIONAL_ASSET_PREFIX} Read-model adapter-inline chunk ${name}`,
-      entry: {
-        [`common/${targetMode}-entry/read-model-${name}.js`]: `${path.resolve(
-          __dirname,
-          './alias/$resolve.readModelProcedure.js'
-        )}?readModelName=${name}`,
-      },
-      module: {
-        ...getBaseClientConfig(false).module,
-        rules: [
-          {
-            test: /\.js$/,
-            use: {
-              loader: require.resolve('babel-loader'),
-              options: {
-                sourceType: 'unambiguous',
-                cacheDirectory: false,
-                babelrc: false,
-                presets: [
-                  [
-                    '@babel/preset-env',
-                    {
-                      loose: true,
-                    },
-                  ],
-                ],
-                plugins: [
-                  [
-                    '@babel/plugin-transform-runtime',
-                    {
-                      corejs: false,
-                      helpers: true,
-                      regenerator: true,
-                      useESModules: false,
-                    },
-                  ],
-                ],
-              },
-            },
-            exclude: [
-              ...Object.values(alias),
-              /@babel\/runtime/,
-              /regenerator-runtime/,
-            ],
-          },
-          ...getBaseClientConfig(false).module.rules,
-        ],
-      },
-      optimization: {
-        ...getBaseClientConfig(false).optimization,
-        noEmitOnErrors: true,
-      },
-      output: {
-        ...getBaseClientConfig(false).output,
-        libraryTarget: 'var',
-        library: '__READ_MODEL_ENTRY__',
-      },
-      plugins: [...getBaseClientConfig(false).plugins],
-      mode: 'production',
-      devtool: undefined,
-      target: 'node',
-    })),
+    ...resolveConfig.readModels.map(({ name }) =>
+      getReadModelEntryConfig(name)
+    ),
   ]
 
   attachWebpackConfigsClientEntries(

@@ -437,13 +437,12 @@ export type PathToolkitLib = {
 }
 
 export type MakeSplitNestedPathMethod = (
-  imports: BaseAdapterImports
+  PathToolkitLib: PathToolkitLib
 ) => SplitNestedPathMethod
 
 export type BaseAdapterImports = {
-  PathToolkit: PathToolkitLib
+  splitNestedPath: SplitNestedPathMethod
   checkEventsContinuity: CheckEventsContinuityMethod
-  makeSplitNestedPath: MakeSplitNestedPathMethod
   withPerformanceTracer: WithPerformanceTracerMethod
   wrapConnect: WrapConnectMethod
   wrapDisconnect: WrapDisconnectMethod
