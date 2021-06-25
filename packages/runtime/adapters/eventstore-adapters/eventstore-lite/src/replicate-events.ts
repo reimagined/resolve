@@ -19,9 +19,9 @@ export const replicateEvents = async (
     threadCounter: SavedEvent['threadCounter']
   }>
 
-  const threadCounters = new Array<number>(THREAD_COUNT)
+  const threadCounters = new Array<SavedEvent['threadCounter']>(THREAD_COUNT)
   for (const row of rows) {
-    threadCounters[row.threadId] = row.threadCounter
+    threadCounters[row.threadId] = +row.threadCounter
   }
 
   const eventsToInsert: SavedEvent[] = []
