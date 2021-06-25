@@ -25,7 +25,7 @@ const initSubscriber = (resolve, lambdaContext) => {
   }
 
   resolve.sendSqsMessage = async (localQueueName, parameters) => {
-    const queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${userId}-${localQueueName}`
+    const queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${userId}-${resolve.applicationName}-${localQueueName}`
     await sendMessage({
       Region: region,
       QueueUrl: queueUrl,
@@ -58,7 +58,7 @@ const initSubscriber = (resolve, lambdaContext) => {
 
     try {
       await ensureSqsQueue({
-        QueueName: `${userId}-${name}`,
+        QueueName: `${userId}-${resolve.applicationName}-${name}`,
         Region: region,
         Policy: {
           Version: '2008-10-17',
@@ -81,7 +81,7 @@ const initSubscriber = (resolve, lambdaContext) => {
     try {
       void ({ UUID } = await createEventSourceMapping({
         Region: region,
-        QueueName: `${userId}-${name}`,
+        QueueName: `${userId}-${resolve.applicationName}-${name}`,
         FunctionName: functionName,
         MaximumBatchingWindowInSeconds: 0,
         BatchSize: 10,
@@ -95,7 +95,7 @@ const initSubscriber = (resolve, lambdaContext) => {
         Region: region,
         FunctionName: functionArn,
         Tags: {
-          [`SQS-${name}`]: UUID,
+          [`SQS-${resolve.applicationName}-${name}`]: UUID,
         },
       })
     } catch (err) {
@@ -122,8 +122,8 @@ const initSubscriber = (resolve, lambdaContext) => {
         Region: region,
         FunctionName: functionArn,
       })
-      UUID = functionTags[`SQS-${name}`]
-      queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${userId}-${name}`
+      UUID = functionTags[`SQS-${resolve.applicationName}-${name}`]
+      queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${userId}-${resolve.applicationName}-${name}`
     } catch (err) {
       errors.push(err)
     }
@@ -140,7 +140,7 @@ const initSubscriber = (resolve, lambdaContext) => {
       try {
         await deleteSqsQueue({
           Region: region,
-          QueueName: `${userId}-${name}`,
+          QueueName: `${userId}-${resolve.applicationName}-${name}`,
           QueueUrl: queueUrl,
         })
       } catch (err) {
