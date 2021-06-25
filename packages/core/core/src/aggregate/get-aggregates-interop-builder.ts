@@ -114,10 +114,10 @@ const saveEvent = async (
       : true
 
   if (allowSave) {
-    await eventstore.saveEvent(event)
+    const eventWithCursor = await eventstore.saveEvent(event)
 
     if (typeof postSaveEvent === 'function') {
-      await postSaveEvent(aggregate, command, event)
+      await postSaveEvent(aggregate, command, event, eventWithCursor)
     }
   }
 

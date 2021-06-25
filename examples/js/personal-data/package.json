@@ -56,7 +56,8 @@
     "jest": "27.0.3",
     "react-test-renderer": "17.0.2",
     "testcafe": "1.14.2",
-    "testcafe-react-selectors": "4.1.4"
+    "testcafe-react-selectors": "4.1.4",
+    "ts-jest": "27.0.2"
   },
   "resolutions": {
     "@types/react": "17.0.5"

@@ -33,7 +33,7 @@ const prodConfig = {
       },
     },
     elasticSearch: {
-      module: 'common/read-models/elastic-search-connector.js',
+      module: 'common/read-models/elastic-search-connector.ts',
       options: {
         /*
         host: '<your-production-elastic-search-host>'

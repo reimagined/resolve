@@ -66,3 +66,19 @@ test('add reply', async (t /*: TestController */) => {
   await t.expect(await Selector('div').withText('first reply').exists).eql(true)
   // TODO: check comments page and parent link
 })
+test('create with external link', async (t) => {
+  await t.navigateTo(`${ROOT_URL}/submit`)
+  await t.typeText(Selector('input[type=text]').nth(1), 'external link', {
+    paste: true,
+  })
+  await t.typeText(
+    Selector('input[type=text]').nth(2),
+    'https://www.youtube.com',
+    {
+      paste: true,
+    }
+  )
+  await t.typeText('textarea', 'my text', { paste: true })
+  await t.click('button')
+  await waitSelector(t, 'HackerNews', Selector('a').withText('external link'))
+})

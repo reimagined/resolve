@@ -17,3 +17,7 @@ export const DATA_API_ERROR_FLAG = Symbol()
 export const RESPONSE_SIZE_LIMIT = Symbol()
 
 export const AGGREGATE_ID_SQL_TYPE = LONG_STRING_SQL_TYPE
+
+// Although documentation describes a 1 MB limit, the actual limit is 512 KB
+// https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
+export const MAX_RDS_DATA_API_RESPONSE_SIZE = 512000

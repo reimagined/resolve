@@ -1,7 +1,7 @@
 import { MakeSplitNestedPathMethod, SplitNestedPathMethod } from './types'
 
-const makeSplitNestedPath: MakeSplitNestedPathMethod = (imports) => {
-  const pathToolkit = new imports.PathToolkit()
+const makeSplitNestedPath: MakeSplitNestedPathMethod = (PathToolkit) => {
+  const pathToolkit = new PathToolkit()
   pathToolkit.setOptions({
     cache: false,
     force: false,

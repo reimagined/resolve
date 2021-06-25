@@ -76,7 +76,7 @@ const App = ({ route }) => (
   <div>
     <Header
       title="reSolve Hacker News"
-      favicon="/favicon.ico"
+      favicon="/favicon.png"
       css={['/style.css']}
     />
     <ContentRoot>

@@ -55,7 +55,7 @@ const getCursorUntilEventTypes = async (
 
   const threadCounters = initThreadArray()
   for (const row of rows) {
-    threadCounters[row.threadId] = row.threadCounter
+    threadCounters[row.threadId] = +row.threadCounter
   }
   return threadArrayToCursor(threadCounters)
 }

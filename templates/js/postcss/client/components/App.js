@@ -6,7 +6,7 @@ const App = ({ route }) => (
     <Header
       title="reSolve PostCSS Example"
       name="PostCSS Example"
-      favicon="/favicon.ico"
+      favicon="/favicon.png"
       css={['/bootstrap.min.css', '/style.css']}
     />
     {renderRoutes(route.routes)}

@@ -127,7 +127,7 @@ const saveEvent = async (
         const threadCounters = initThreadArray()
         for (let i = 0; i < THREAD_COUNT; ++i) {
           const row = rows[i]
-          threadCounters[row.threadId] = row.newThreadCounter
+          threadCounters[row.threadId] = +row.newThreadCounter
         }
         return {
           cursor: threadArrayToCursor(threadCounters),

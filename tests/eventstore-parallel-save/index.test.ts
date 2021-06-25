@@ -10,11 +10,10 @@ describe(`${adapterFactory.name}. Eventstore adapter init and drop`, () => {
 
   const adapter = adapters['parallel_write_testing']
 
-  const parallelWrites = 8
+  const parallelWrites = 100
   let lastCursor: string
   let lastIdx: number
   test('should be able to save many events in parallel', async () => {
-    const parallelWrites = 8
     const promises: Promise<EventWithCursor>[] = []
     for (let i = 0; i < parallelWrites; ++i) {
       promises.push(

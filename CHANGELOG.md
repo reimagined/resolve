@@ -6,7 +6,22 @@
 
 **New features:**
 
+- Add SQS integration [\#1905](https://github.com/reimagined/resolve/pull/1905)
 - Upgrade examples [\#1902](https://github.com/reimagined/resolve/pull/1902)
+
+**Enhancements:**
+
+- Don't create new instance of postgres connection per each query [\#1909](https://github.com/reimagined/resolve/pull/1909)
+
+**Bug fixes:**
+
+- The loadEvents function does not work if 'startTime' and 'endTime' parameters are specified [\#1903](https://github.com/reimagined/resolve/issues/1903)
+
+**Other changes:**
+
+- Fix getCursorUntilEventTypes [\#1913](https://github.com/reimagined/resolve/pull/1913)
+- Feature/hot read models [\#1910](https://github.com/reimagined/resolve/pull/1910)
+- Examples and create-resolve-app minor fixes [\#1907](https://github.com/reimagined/resolve/pull/1907)
 
 ## [V0.30.5](https://github.com/reimagined/resolve/tree/V0.30.5) (2021-06-08)
 
