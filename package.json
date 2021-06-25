@@ -43,6 +43,8 @@
     "@types/react": "16.9.35"
   },
   "dependencies": {
+    "@docusaurus/core": "^2.0.0-beta.2",
+    "@docusaurus/preset-classic": "^2.0.0-beta.2",
     "@yarnpkg/lockfile": "^1.1.0"
   },
   "devDependencies": {
