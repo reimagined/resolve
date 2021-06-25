@@ -82,7 +82,7 @@ export default () => {
                 {features.map(({ imageUrl, title, description }, idx) => (
                   <div
                     key={idx}
-                    className='col col--4'
+                    className='col col--4 text--center'
                   >
                     {imageUrl && (
                       <div className="text--center">
@@ -103,7 +103,7 @@ export default () => {
         )}
         <div className="container">
           <div className="row">
-            <div className="col col--6 padding-vert--lg">
+            <div className="col col--6 padding-vert--lg text--center">
               <h3>Get started in seconds</h3>
               <p>reSolve allows you to focus on code, not build tools. To create a project, you simply called my-app and run the following command:</p>     
               <code className="featureCode">yarn create resolve-app my-app</code>
