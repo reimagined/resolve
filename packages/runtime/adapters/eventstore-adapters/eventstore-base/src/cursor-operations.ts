@@ -17,8 +17,8 @@ const checkThreadArrayLength = (threadArray: Array<number>): void => {
 const checkThreadCounterHexString = (threadCounter: string): void => {
   assert.strictEqual(
     threadCounter.length,
-    12,
-    'threadCounter in hex form must have length equal to 12'
+    THREAD_COUNTER_BYTE_LENGTH * 2,
+    'Wrong length of threadCounter in hex form'
   )
 }
 
@@ -55,15 +55,20 @@ export const cursorToThreadArray = (cursor: Cursor): Array<number> => {
 
   const threadCounters = new Array<number>(THREAD_COUNT)
   for (let i = 0; i < cursorBuffer.length / THREAD_COUNTER_BYTE_LENGTH; i++) {
-    threadCounters[i] = hexStringToThreadCounter(
-      cursorBuffer.slice(i * 6, (i + 1) * 6).toString('hex')
-    )
+    const hexString = cursorBuffer
+      .slice(
+        i * THREAD_COUNTER_BYTE_LENGTH,
+        (i + 1) * THREAD_COUNTER_BYTE_LENGTH
+      )
+      .toString('hex')
+    checkThreadCounterHexString(hexString)
+    threadCounters[i] = hexStringToThreadCounter(hexString)
   }
   return threadCounters
 }
 
 export const threadCounterToHexString = (threadCounter: number): string =>
-  threadCounter.toString(16).padStart(12, '0')
+  threadCounter.toString(16).padStart(THREAD_COUNTER_BYTE_LENGTH * 2, '0')
 
 export const hexStringToThreadCounter = (threadCounter: string): number => {
   checkThreadCounterHexString(threadCounter)
@@ -76,20 +81,25 @@ export const threadCounterHexStringToBuffer = (
   threadCounter: string
 ): Buffer => {
   checkThreadCounterHexString(threadCounter)
-  const b: Buffer = Buffer.alloc(THREAD_COUNTER_BYTE_LENGTH)
+  const buffer: Buffer = Buffer.alloc(THREAD_COUNTER_BYTE_LENGTH)
 
   for (
     let hexIndex = 0, hexPairIndex = 0;
     hexIndex < threadCounter.length;
     hexIndex += 2, hexPairIndex++
   ) {
-    b[hexPairIndex] = Buffer.from(
-      threadCounter.substring(hexIndex, hexIndex + 2),
-      'hex'
-    )[0]
+    const hexPairString = threadCounter.substring(hexIndex, hexIndex + 2)
+    assert.strictEqual(hexPairString.length, 2)
+    const byte = Buffer.from(hexPairString, 'hex')
+    assert.strictEqual(
+      byte.length,
+      1,
+      'One-byte buffer expected from a pair of hex digits'
+    )
+    buffer[hexPairIndex] = byte[0]
   }
 
-  return b
+  return buffer
 }
 
 export const threadCounterToBuffer = (threadCounter: number): Buffer => {
