@@ -71,6 +71,12 @@ exports[`works correctly 1`] = `
         return interopRequireDefault(require('$resolve.sagas')).default
       },
       enumerable: true
+    },
+    middlewares: {
+      get() { 
+        return interopRequireDefault(require('$resolve.middlewares')).default
+      },
+      enumerable: true
     }
   })
   
