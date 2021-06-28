@@ -19,6 +19,7 @@
 
 **Other changes:**
 
+- Update examples default cloud adapter [\#1915](https://github.com/reimagined/resolve/pull/1915)
 - Fix getCursorUntilEventTypes [\#1913](https://github.com/reimagined/resolve/pull/1913)
 - Feature/hot read models [\#1910](https://github.com/reimagined/resolve/pull/1910)
 - Examples and create-resolve-app minor fixes [\#1907](https://github.com/reimagined/resolve/pull/1907)
