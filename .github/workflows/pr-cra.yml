@@ -104,6 +104,10 @@ jobs:
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
+      - name: Install
+        run: |
+          yarn install --frozen-lockfile
+
       - name: Run local registry
         run: |
           npm install pm2 -g
@@ -154,6 +158,10 @@ jobs:
             !internal/**/node_modules/**
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
+
+      - name: Install
+        run: |
+          yarn install --frozen-lockfile
 
       - name: Run local registry
         run: |
@@ -219,6 +227,10 @@ jobs:
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
+      - name: Install
+        run: |
+          yarn install --frozen-lockfile
+
       - name: E2E test - tutorial
         env:
           RESOLVE_E2E_TESTS_BROWSER: chrome
@@ -272,6 +284,10 @@ jobs:
             !internal/**/node_modules/**
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
+
+      - name: Install
+        run: |
+          yarn install --frozen-lockfile
 
       - name: E2E test - JS examples
         env:
