@@ -1,8 +1,8 @@
 # Changelog
 
-## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+## [V0.31.0](https://github.com/reimagined/resolve/tree/V0.31.0) (2021-06-28)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.5...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.5...V0.31.0)
 
 **New features:**
 
