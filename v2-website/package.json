@@ -8,6 +8,7 @@
     "publish-gh-pages": "docusaurus-publish",
     "rename-version": "docusaurus-rename-version",
     "start": "docusaurus start",
+    "serve": "docusaurus serve",
     "test": "echo Test || exit 0",
     "version": "docusaurus-version",
     "write-translations": "docusaurus-write-translations",
