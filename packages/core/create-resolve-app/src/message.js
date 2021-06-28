@@ -1,6 +1,6 @@
 import { EOL } from 'os'
 import chalk from 'chalk'
-
+import { formatExamplesList } from './format-examples-list'
 import { resolveExamples } from './constants'
 
 const optionsInfo = (examples) => [
@@ -8,9 +8,8 @@ const optionsInfo = (examples) => [
   ``,
   `  -e, --example    creates an example application based on an application from the reSolve examples directory`,
   `      You can choose one of the following examples:`,
-  ...examples.map(
-    ({ name, description }) => `          * ${name} - ${description}`
-  ),
+  ...formatExamplesList(examples, 4),
+  `  -t, --typescript use TS version of application template`,
   `  -b, --branch     branch (optional, master is default)`,
   `  -c, --commit     commit`,
   `  -V, --version    outputs the version number`,
@@ -62,12 +61,10 @@ const message = {
       `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
     ]),
 
-  missingExample: (exampleName, examplesDirs) =>
+  missingExample: (exampleName, availableExamples) =>
     formatLines([
       `No such example, ${exampleName}. The following examples are available: `,
-      ...resolveExamples
-        .filter((e) => examplesDirs.includes(e.name))
-        .map(({ name, description }) => `          * ${name} - ${description}`),
+      ...formatExamplesList(availableExamples, 4),
     ]),
 
   invalidApplicationName: (applicationName, errors, warnings) => {

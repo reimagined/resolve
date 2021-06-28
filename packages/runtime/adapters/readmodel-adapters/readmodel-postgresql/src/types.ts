@@ -169,9 +169,7 @@ export type AdapterPool = CommonAdapterPool & {
   activePassthrough: boolean
   connection: InstanceType<LibDependencies['Postgres']>
 } & {
-    [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
-      AdapterPool
-    >[K]
+    [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<AdapterPool>[K]
   } &
   {
     [K in keyof StoreApi<CommonAdapterPool>]: StoreApi<AdapterPool>[K]

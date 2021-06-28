@@ -211,9 +211,10 @@ const makeSqlQuery: MakeSqlQueryMethod = (
     }
 
     case 'insert': {
-      const [tableName, document] = args as MakeSqlQueryMethodTargetParameters<
-        'insert'
-      >
+      const [
+        tableName,
+        document,
+      ] = args as MakeSqlQueryMethodTargetParameters<'insert'>
 
       const sqlQuery = `INSERT INTO ${escapeId(schemaName)}.${escapeId(
         `${tablePrefix}${tableName}`

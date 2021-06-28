@@ -1,6 +1,6 @@
 import resolveFile from '../resolve_file'
 
-export default ({ resolveConfig }) => {
+const importApplicationName = ({ resolveConfig }) => {
   const exports = []
 
   const applicationName =
@@ -16,3 +16,5 @@ export default ({ resolveConfig }) => {
 
   return exports.join('\r\n')
 }
+
+export default importApplicationName

@@ -4,7 +4,6 @@ dist-replica
 lib
 es
 coverage
-examples/shopping-list-advanced/native/native-chunk*
 website
 packages/core/zeromq/optional
 
@@ -20,10 +19,10 @@ packages/core/react-hooks/**/*.mjs
 packages/core/react-hooks/**/*.mjs.map
 packages/core/react-hooks/**/*.d.ts
 
-examples/with-angular/client/**/*.js
-examples/with-angular/client/**/*.js.map
-examples/with-angular/client/**/*.mjs
-examples/with-angular/client/**/*.mjs.map
-examples/with-angular/client/**/*.d.ts
+templates/**/angular/client/**/*.js
+templates/**/angular/client/**/*.js.map
+templates/**/angular/client/**/*.mjs
+templates/**/angular/client/**/*.mjs.map
+templates/**/angular/client/**/*.d.ts
 
 packages/**/types/**/*.d.ts

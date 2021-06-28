@@ -16,7 +16,7 @@ export const jwt = jsonwebtoken.sign(
   }
 )
 
-export default {
+const saga = {
   handlers: {
     Init: async ({ store }) => {
       await store.defineTable('Processes', {
@@ -49,3 +49,5 @@ export default {
     },
   },
 }
+
+export default saga

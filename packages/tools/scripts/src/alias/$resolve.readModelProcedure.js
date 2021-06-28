@@ -4,7 +4,10 @@ import path from 'path'
 import resolveFileOrModule from '../resolve_file_or_module'
 import { message, OPTIONAL_ASSET_ERROR } from '../constants'
 
-export default ({ resolveConfig, isClient }, resourceQuery) => {
+const importReadModelProcedure = (
+  { resolveConfig, isClient },
+  resourceQuery
+) => {
   if (!/^\?/.test(resourceQuery)) {
     throw new Error(
       `Resource $resolve.readModelProcedure should be retrieved with resource query`
@@ -45,7 +48,7 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
 
   const imports = [
     `import { SynchronousPromise } from 'synchronous-promise'`,
-    `import currentReadModel from '$resolve.readModel?readModelName=${readModelName}&onlyCode=true'`,
+    `import currentReadModel from '$resolve.readModel?readModelName=${readModelName}&onlyProjection=true'`,
     `import wrapProcedure from ${JSON.stringify(wrapProcedureMethodPath)}`,
   ]
   const constants = [
@@ -56,3 +59,5 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importReadModelProcedure

@@ -1,1 +1,3 @@
-export default () => ({})
+const resolversAsModule = () => ({})
+
+export default resolversAsModule

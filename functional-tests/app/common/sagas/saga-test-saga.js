@@ -1,4 +1,4 @@
-export default {
+const saga = {
   handlers: {
     Init: async ({ store }) => {
       await store.defineTable('SagaTestRecordsInSaga', {
@@ -26,3 +26,5 @@ export default {
     },
   },
 }
+
+export default saga

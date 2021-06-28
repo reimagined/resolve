@@ -1,12 +1,12 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { Router } from 'react-router'
+import { BrowserRouter as Router } from 'react-router-dom'
 import { AppContainer, createStore, getOrigin } from '@resolve-js/redux'
 import { createBrowserHistory } from 'history'
+import { renderRoutes } from 'react-router-config'
 
-import Routes from './hoc/components/Routes'
-import routes from './hoc/routes'
-import getRedux from './hoc/get-redux'
+import { routes } from './hoc/routes'
+import { getRedux } from './hoc/get-redux'
 
 const entryPoint = ({ staticPath, viewModels, subscriber, clientImports }) => {
   const rootPath = '/hoc'
@@ -37,9 +37,7 @@ const entryPoint = ({ staticPath, viewModels, subscriber, clientImports }) => {
       staticPath={staticPath}
       store={store}
     >
-      <Router history={history}>
-        <Routes routes={routes} />
-      </Router>
+      <Router history={history}>{renderRoutes(routes)}</Router>
     </AppContainer>,
     appContainer
   )

@@ -1,6 +1,6 @@
 import { COUNTER_INCREASED, COUNTER_DECREASED } from '../event-types'
 
-export default {
+const aggregate = {
   increase: (_, { payload }) => ({
     type: COUNTER_INCREASED,
     payload,
@@ -10,3 +10,5 @@ export default {
     payload,
   }),
 }
+
+export default aggregate

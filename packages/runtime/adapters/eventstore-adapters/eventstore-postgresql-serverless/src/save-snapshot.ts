@@ -1,4 +1,4 @@
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { snapshotTrigger } from '@resolve-js/eventstore-base'
 import { SAVE_CHUNK_SIZE } from './constants'
 import { AdapterPool } from './types'
