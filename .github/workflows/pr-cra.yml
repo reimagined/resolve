@@ -32,6 +32,15 @@ jobs:
             internal/**/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
 
+      - name: Cache templates, examples and tutorial node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            tutorial/**/node_modules
+            examples/**/node_modules
+            templates/**/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
+
       - name: Cache build
         uses: actions/cache@v2
         with:
@@ -180,10 +189,11 @@ jobs:
             internal/**/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
 
-      - name: Cache tutorial node_modules
+      - name: Cache templates, examples and tutorial node_modules
         uses: actions/cache@v2
         with:
-          path: 'tutorial/**/node_modules'
+          path: |
+            tutorial/**/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
 
       - name: Cache functional tests node_modules
@@ -238,10 +248,12 @@ jobs:
             internal/**/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
 
-      - name: Cache templates node_modules
+      - name: Cache templates & examples node_modules
         uses: actions/cache@v2
         with:
-          path: 'templates/**/node_modules'
+          path: |
+            examples/**/node_modules
+            templates/**/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
 
       - name: Cache build
