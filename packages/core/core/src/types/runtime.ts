@@ -14,6 +14,7 @@ import {
   CommandHandler,
   ReadModelResolver,
   ReadModelEventHandler,
+  ExecutionContext,
 } from './core'
 
 import { AggregateInterop, AggregateRuntime } from '../aggregate/types'
@@ -106,24 +107,29 @@ type MiddlewareChainableFunction =
 
 type MiddlewareHandler<THandler> = (next: THandler) => THandler
 
-type ReadModelMiddlewareContext = {
+type ReadModelInteropContext = {
   meta: ReadModelMeta
   runtime: ReadModelRuntime
-}
-type AggregateMiddlewareContext = {
+} & ExecutionContext
+
+type ReadModelResolverInteropContext = {
+  resolver: string
+} & ReadModelInteropContext
+
+type AggregateInteropContext = {
   interop: AggregateInterop
   runtime: AggregateRuntime
-}
+} & ExecutionContext
 
-type MiddlewareContext = AggregateMiddlewareContext | ReadModelMiddlewareContext
+type InteropContext = AggregateInteropContext | ReadModelInteropContext
 
 type Middleware<
-  TContext extends MiddlewareContext,
+  TContext extends InteropContext,
   THandler extends MiddlewareChainableFunction
 > = (middlewareContext: TContext) => MiddlewareHandler<THandler>
 
 export type MiddlewareWrapper = <
-  TContext extends MiddlewareContext,
+  TContext extends InteropContext,
   THandler extends MiddlewareChainableFunction
 >(
   middlewares: Array<Middleware<TContext, THandler>>,
@@ -135,14 +141,14 @@ export type MiddlewareApplier<T extends MiddlewareChainableFunction> = (
 ) => T
 
 export type CommandMiddleware = Middleware<
-  AggregateMiddlewareContext,
+  AggregateInteropContext,
   CommandHandler
 >
 export type ProjectionMiddleware = Middleware<
-  ReadModelMiddlewareContext,
+  ReadModelInteropContext,
   ReadModelEventHandler<any>
 >
 export type ResolverMiddleware = Middleware<
-  ReadModelMiddlewareContext,
+  ReadModelResolverInteropContext,
   ReadModelResolver<any>
 >

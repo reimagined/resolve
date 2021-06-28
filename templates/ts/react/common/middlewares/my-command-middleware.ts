@@ -5,11 +5,13 @@ type ExtendedContext = {
   isOdd: boolean
 } & CommandContext
 
-const middleware: CommandMiddleware = (middlewareContext) => (next) => async (
+const middleware: CommandMiddleware = (interopContext) => (next) => async (
   state,
   command,
   context
 ) => {
+  const { req, res } = interopContext
+  console.log({ req, res })
   if (command.type === 'removeItem') {
     throw Error('Forbidden by middleware')
   }

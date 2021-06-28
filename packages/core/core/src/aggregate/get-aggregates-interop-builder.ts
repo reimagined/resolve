@@ -15,6 +15,7 @@ import {
   CommandContext,
   CommandHandler,
   CommandResult,
+  ExecutionContext,
 } from '../types/core'
 import { makeMiddlewareApplier } from '../helpers'
 
@@ -369,7 +370,8 @@ const getAggregateState = async (
 const executeCommand = async (
   aggregateMap: AggregateInteropMap,
   runtime: AggregateRuntime,
-  command: Command
+  command: Command,
+  executionContext: ExecutionContext
 ): Promise<CommandResult> => {
   const monitoringGroup =
     runtime.monitoring != null
@@ -404,6 +406,7 @@ const executeCommand = async (
     const { commandMiddlewares = [] } = runtime
 
     const applyMiddlewares = makeMiddlewareApplier(commandMiddlewares, {
+      ...executionContext,
       interop: aggregate,
       runtime,
     })
@@ -546,6 +549,7 @@ export const getAggregatesInteropBuilder = (
   }, {})
   return {
     aggregateMap,
-    executeCommand: (command) => executeCommand(aggregateMap, runtime, command),
+    executeCommand: (command, executionContext = {}) =>
+      executeCommand(aggregateMap, runtime, command, executionContext),
   }
 }

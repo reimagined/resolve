@@ -26,10 +26,10 @@ export const makeMonitoringSafe = (monitoring: Monitoring): Monitoring => {
 
 export const makeMiddlewareApplier: MiddlewareWrapper = (
   middlewares,
-  middlewareContext
+  interopContext
 ) => {
   const reversedMiddlewares = middlewares
-    .map((m) => m(middlewareContext))
+    .map((m) => m(interopContext))
     .reverse()
 
   return (targetHandler) => {

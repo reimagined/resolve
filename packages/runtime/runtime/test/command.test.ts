@@ -59,7 +59,10 @@ test('api assigned', async () => {
 test('aggregate interop invoked', async () => {
   const command = makeCommand()
   await executor(command)
-  expect(aggregatesInterop.executeCommand).toHaveBeenCalledWith(command)
+  expect(aggregatesInterop.executeCommand).toHaveBeenCalledWith(
+    command,
+    undefined
+  )
 })
 
 test('disposed handler', async () => {

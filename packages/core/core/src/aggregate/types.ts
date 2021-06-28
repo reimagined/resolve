@@ -7,6 +7,7 @@ import {
   CommandHandler,
   CommandResult,
   SecretsManager,
+  ExecutionContext,
 } from '../types/core'
 
 export type AggregateInterop = {
@@ -27,7 +28,10 @@ export type AggregateInteropMap = {
 
 export type AggregatesInterop = {
   aggregateMap: AggregateInteropMap
-  executeCommand: (command: Command) => Promise<CommandResult>
+  executeCommand: (
+    command: Command,
+    executionContext?: ExecutionContext
+  ) => Promise<CommandResult>
 }
 
 export type AggregateRuntimeHooks = {
