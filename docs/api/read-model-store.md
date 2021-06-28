@@ -1,5 +1,5 @@
 ---
-id: api-read-model-store
+id: read-model-store
 title: Read Model Store
 ---
 

@@ -34,19 +34,20 @@
         "type": "category",
         "label": "API",
         "items": [
-          "api-read-model-connector",
-          "api-read-model-store",
-          "api-event-store-adapter",
-          "api-handler",
-          "api-saga",
-          "api-resolve-scripts",
+          "api/read-model-connector",
+          "api/read-model-store",
+          "api/event-store-adapter",
+          "api/api-handler",
+          "api/saga",
+          "api/resolve-scripts",
           {
             "type": "category",
             "label": "Client API",
             "items": [
-              "api-client-http",
-              "api-client-resolve-redux",
-              "api-client-resolveclient"
+              "api/client/http-api",
+              "api/client/entry-point",
+              "api/client/resolve-redux",
+              "api/client/resolve-client"
             ]
           }
         ]

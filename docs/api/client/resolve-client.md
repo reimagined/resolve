@@ -1,5 +1,5 @@
 ---
-id: api-client-resolveclient
+id: resolve-client
 title: '@resolve-js/client'
 ---
 

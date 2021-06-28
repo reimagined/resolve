@@ -1,5 +1,5 @@
 ---
-id: api-resolve-scripts
+id: resolve-scripts
 title: ReSolve Scripts
 ---
 

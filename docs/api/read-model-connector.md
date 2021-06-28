@@ -1,5 +1,5 @@
 ---
-id: api-read-model-connector
+id: read-model-connector
 title: Read Model Connector
 ---
 

@@ -1,5 +1,5 @@
 ---
-id: api-event-store-adapter
+id: event-store-adapter
 title: Event Store Adapter
 ---
 

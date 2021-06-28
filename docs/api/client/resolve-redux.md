@@ -1,5 +1,5 @@
 ---
-id: api-client-resolve-redux
+id: resolve-redux
 title: '@resolve-js/redux'
 ---
 
