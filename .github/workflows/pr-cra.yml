@@ -194,6 +194,8 @@ jobs:
         with:
           path: |
             tutorial/**/node_modules
+            examples/**/node_modules
+            templates/**/node_modules
           key: ${{ runner.os }}-${{ github.run_id }}-modules-examples
 
       - name: Cache build
@@ -246,6 +248,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
+            tutorial/**/node_modules
             examples/**/node_modules
             templates/**/node_modules
           key: ${{ runner.os }}-${{ github.run_id }}-modules-examples
