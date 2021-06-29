@@ -167,6 +167,10 @@ export type EventHandlerEncryptionFactory = (
   context: EventHandlerEncryptionContext
 ) => Promise<Encryption | null>
 
+export type ReadModelChannel = {
+  checkPermissions: (channel: string, permit: string) => Promise<boolean>
+}
+
 // View model
 export type ViewModelHandlerContext = {
   jwt?: string

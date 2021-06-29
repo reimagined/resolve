@@ -6,7 +6,6 @@ import https from 'https'
 
 import initPerformanceTracer from './init-performance-tracer'
 import initExpress from './init-express'
-import initWebsockets from './init-websockets'
 import startExpress from './start-express'
 import emptyWorker from './empty-worker'
 import wrapTrie from '../common/wrap-trie'
@@ -17,6 +16,8 @@ import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 import multiplexAsync from '../common/utils/multiplex-async'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
+
+import { initWebsockets } from './init-websockets'
 
 const log = debugLevels('resolve:runtime:local-entry')
 
@@ -51,7 +52,7 @@ const localEntry = async ({
       },
     })
 
-    const domainInterop = await initDomain(domain)
+    const domainInterop = initDomain(domain)
 
     const resolve = {
       instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,

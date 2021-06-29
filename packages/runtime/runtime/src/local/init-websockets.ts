@@ -1,4 +1,5 @@
-import type { Event } from '@resolve-js/core'
+import { Domain, Event, SecretsManager } from '@resolve-js/core'
+import { Adapter as EventstoreAdapter } from '@resolve-js/eventstore-base'
 import debugLevels from '@resolve-js/debug-levels'
 import EventEmitter from 'events'
 import http from 'http'
@@ -9,8 +10,11 @@ import jwt from 'jsonwebtoken'
 
 import getRootBasedUrl from '../common/utils/get-root-based-url'
 import { getSubscribeAdapterOptions } from './get-subscribe-adapter-options'
-import { createPubSubManager, PubSubManager } from './create-pubsub-manager'
-import { Adapter as EventstoreAdapter } from '@resolve-js/eventstore-base'
+import {
+  createPubSubManager,
+  PubSubManager,
+  ViewModelConnection,
+} from './create-pubsub-manager'
 
 const getLog = (scope: string) => debugLevels(`resolve:runtime:ws:${scope}`)
 
@@ -42,7 +46,9 @@ const createViewModelMessageHandler = (
   ws: WebSocket,
   connectionId: string
 ) => async (message: string) => {
-  const connection = pubSubManager.getConnection(connectionId)
+  const connection = pubSubManager.getConnection(
+    connectionId
+  ) as ViewModelConnection
   if (connection != null) {
     try {
       const { eventTypes, aggregateIds } = connection
@@ -85,7 +91,7 @@ const createViewModelMessageHandler = (
   }
 }
 
-const connectViewModel = (
+const connectViewModel = async (
   pubSubManager: PubSubManager,
   eventstoreAdapter: EventstoreAdapter,
   ws: WebSocket,
@@ -140,16 +146,51 @@ const connectViewModel = (
   ws.on('error', dispose)
 }
 
-const connectReadModel = (
+const connectReadModel = async (
+  domainInterop: Domain,
   pubSubManager: PubSubManager,
-  eventstoreAdapter: EventstoreAdapter,
+  secretsManager: SecretsManager,
   ws: WebSocket,
   connectionRequest: ReadModelConnectionRequest
 ) => {
   const { channel, permit, name } = connectionRequest
+  const log = getLog(`connect-read-model`)
+
+  log.debug(`acquiring read models interop`)
+  const readModels = domainInterop.readModelDomain.acquireReadModelsInterop({
+    secretsManager,
+  })
+
+  const readModelInterop = readModels[name]
+
+  if (!readModelInterop) {
+    log.error(`read-model interop not found`)
+    throw Error(`Permission denied`)
+  }
+
+  log.debug(`acquiring channel interop`)
+  const channelInterop = await readModelInterop.acquireChannel()
+
+  if (channelInterop == null) {
+    log.error(`read-model does not support channeling`)
+    throw Error(`Permission denied`)
+  }
+
+  let connectionAllowed = false
+  try {
+    log.debug(`checking channel permissions`)
+    connectionAllowed = await channelInterop.checkPermissions(channel, permit)
+  } catch (error) {
+    log.error(error)
+  }
+
+  if (!connectionAllowed) {
+    log.debug(`checking channel permissions failed`)
+    throw Error(`Permission denied`)
+  }
+
   const connectionId = uuid()
 
-  /*
   const publisher = (message: string) =>
     new Promise<void>((resolve, reject) => {
       return ws.send(message, (error) => {
@@ -163,31 +204,28 @@ const connectReadModel = (
 
   pubSubManager.connect(connectionId, {
     publisher,
-    eventTypes,
-    aggregateIds,
+    channel,
   })
 
   const dispose = () => {
     pubSubManager.disconnect(connectionId)
     ws.close()
   }
-  */
 
   ws.on('message', (message: string) => {
     const log = getLog(`read-model:on-message`)
     log.warn(message)
   })
-
-  /*
   ws.on('close', dispose)
   ws.on('error', dispose)
-  */
 }
 
 const createWebSocketConnectionHandler = (
   pubSubManager: PubSubManager,
-  eventstoreAdapter: EventstoreAdapter
-) => (
+  eventstoreAdapter: EventstoreAdapter,
+  secretsManager: SecretsManager,
+  domainInterop: Domain
+) => async (
   ws: WebSocket,
   req: {
     url: string
@@ -198,9 +236,20 @@ const createWebSocketConnectionHandler = (
     | ViewModelConnectionRequest
     | ReadModelConnectionRequest
   if (connectionRequest.kind === 'viewModel') {
-    connectViewModel(pubSubManager, eventstoreAdapter, ws, connectionRequest)
+    await connectViewModel(
+      pubSubManager,
+      eventstoreAdapter,
+      ws,
+      connectionRequest
+    )
   } else {
-    connectReadModel(pubSubManager, eventstoreAdapter, ws, connectionRequest)
+    await connectReadModel(
+      domainInterop,
+      pubSubManager,
+      secretsManager,
+      ws,
+      connectionRequest
+    )
   }
 }
 
@@ -247,9 +296,14 @@ const initWebSocketServer = async (
   wsPath: string,
   server: http.Server,
   pubSubManager: PubSubManager,
-  eventstoreAdapter: EventstoreAdapter
+  eventstoreAdapter: EventstoreAdapter,
+  domainInterop: Domain
 ) => {
   const log = getLog('initWebsocketServer')
+  log.debug(`acquiring secrets manager`)
+
+  const secretsManager = await eventstoreAdapter.getSecretsManager()
+
   try {
     const websocketServer = new WebSocket.Server({
       path: wsPath,
@@ -257,7 +311,9 @@ const initWebSocketServer = async (
     })
     const connectionHandler = createWebSocketConnectionHandler(
       pubSubManager,
-      eventstoreAdapter
+      eventstoreAdapter,
+      secretsManager,
+      domainInterop
     )
     websocketServer.on('connection', connectionHandler)
   } catch (error) {
@@ -272,12 +328,13 @@ const createProxyServer = (): http.Server => {
   return proxyServer as http.Server
 }
 
-const initWebsockets = async (thisResolve: any) => {
+export const initWebsockets = async (thisResolve: any) => {
   // thisResolve only here
   const {
     rootPath,
     server,
     assemblies: { eventstoreAdapter: createEventstoreAdapter },
+    domainInterop,
   } = thisResolve
   // thisResolve only here
 
@@ -301,7 +358,8 @@ const initWebsockets = async (thisResolve: any) => {
     rootPath,
     proxyServer,
     pubSubManager,
-    await createEventstoreAdapter()
+    await createEventstoreAdapter(),
+    domainInterop
   )
   await initInterceptingHttpServer(wsPath, server, proxyServer)
 
@@ -312,5 +370,3 @@ const initWebsockets = async (thisResolve: any) => {
     sendReactiveEvent: { value: sendReactiveEvent },
   }
 }
-
-export default initWebsockets

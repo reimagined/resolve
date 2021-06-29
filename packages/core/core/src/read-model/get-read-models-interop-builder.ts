@@ -168,12 +168,15 @@ const getReadModelInterop = (
     return null
   }
 
+  const acquireChannel = async () => readModel.channel ?? null
+
   return {
     name,
     connectorName,
     acquireResolver,
     acquireEventHandler,
     acquireInitHandler,
+    acquireChannel,
   }
 }
 

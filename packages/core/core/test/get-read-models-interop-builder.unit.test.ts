@@ -1,19 +1,18 @@
-import { SecretsManager } from '../src/types/core'
+import { ReadModelChannel, SecretsManager } from '../src/types/core'
 import { getReadModelsInteropBuilder } from '../src/read-model/get-read-models-interop-builder'
 import { ReadModelInterop, ReadModelRuntime } from '../src/read-model/types'
 import { ReadModelMeta, Monitoring } from '../src/types/runtime'
 
 const dummyEncryption = () => Promise.resolve({})
 
-const makeReadModelMeta = (params: any): ReadModelMeta[] => [
-  {
-    encryption: params.encryption || dummyEncryption,
-    name: params.name || 'empty',
-    connectorName: params.connectorName || 'empty',
-    projection: params.projection || {},
-    resolvers: params.resolvers || {},
-  },
-]
+const makeReadModelMeta = (params: any): ReadModelMeta => ({
+  encryption: params.encryption || dummyEncryption,
+  name: params.name || 'empty',
+  connectorName: params.connectorName || 'empty',
+  projection: params.projection || {},
+  resolvers: params.resolvers || {},
+  channel: params.channel,
+})
 
 const secretsManager: SecretsManager = {
   getSecret: jest.fn(),
@@ -46,15 +45,13 @@ const makeTestRuntime = (): ReadModelRuntime => {
   }
 }
 
-const setUpTestReadModelInterop = async (readModel: {
-  name: string
-  projection: any
-  resolvers: any
-}): Promise<ReadModelInterop> => {
-  const readModelInteropMap = getReadModelsInteropBuilder(
-    makeReadModelMeta(readModel)
-  )(makeTestRuntime())
-  return readModelInteropMap[readModel.name]
+const setUpTestReadModelInterop = async (
+  meta: ReadModelMeta
+): Promise<ReadModelInterop> => {
+  const readModelInteropMap = getReadModelsInteropBuilder([meta])(
+    makeTestRuntime()
+  )
+  return readModelInteropMap[meta.name]
 }
 
 describe('Read models', () => {
@@ -70,16 +67,18 @@ describe('Read models', () => {
   })
 
   test('interop methods should be called with correct arguments', async () => {
-    const readModelInterop = await setUpTestReadModelInterop({
-      name: 'TestReadModel',
-      projection: {
-        Init: dummyInitHandler,
-        dummyEvent: dummyEventHandler,
-      },
-      resolvers: {
-        all: dummyResolver,
-      },
-    })
+    const readModelInterop = await setUpTestReadModelInterop(
+      makeReadModelMeta({
+        name: 'TestReadModel',
+        projection: {
+          Init: dummyInitHandler,
+          dummyEvent: dummyEventHandler,
+        },
+        resolvers: {
+          all: dummyResolver,
+        },
+      })
+    )
 
     const initHandler = await readModelInterop.acquireInitHandler(dummyStore)
     initHandler && (await initHandler())
@@ -110,15 +109,17 @@ describe('Read models', () => {
   })
 
   test('interop should return nulls for nonexistent handlers', async () => {
-    const readModelInterop = await setUpTestReadModelInterop({
-      name: 'TestReadModel',
-      projection: {
-        dummyEvent: dummyEventHandler,
-      },
-      resolvers: {
-        all: dummyResolver,
-      },
-    })
+    const readModelInterop = await setUpTestReadModelInterop(
+      makeReadModelMeta({
+        name: 'TestReadModel',
+        projection: {
+          dummyEvent: dummyEventHandler,
+        },
+        resolvers: {
+          all: dummyResolver,
+        },
+      })
+    )
 
     const initHandler = await readModelInterop.acquireInitHandler(dummyStore)
 
@@ -139,11 +140,13 @@ describe('Read models', () => {
   })
 
   test('interop should throw error when acquiring nonexistent resolver', async () => {
-    const readModelInterop = await setUpTestReadModelInterop({
-      name: 'TestReadModel',
-      projection: {},
-      resolvers: {},
-    })
+    const readModelInterop = await setUpTestReadModelInterop(
+      makeReadModelMeta({
+        name: 'TestReadModel',
+        projection: {},
+        resolvers: {},
+      })
+    )
     try {
       await readModelInterop.acquireResolver('nonExistentResolver', {}, {})
       fail('Error should be thrown for nonexistent resolver')
@@ -155,15 +158,17 @@ describe('Read models', () => {
   })
 
   test('#1797: error meta within monitored error on Init handler ', async () => {
-    const readModelInterop = await setUpTestReadModelInterop({
-      name: 'TestReadModel',
-      projection: {
-        Init: async () => {
-          throw Error('Projection error')
+    const readModelInterop = await setUpTestReadModelInterop(
+      makeReadModelMeta({
+        name: 'TestReadModel',
+        projection: {
+          Init: async () => {
+            throw Error('Projection error')
+          },
         },
-      },
-      resolvers: {},
-    })
+        resolvers: {},
+      })
+    )
 
     const initHandler = await readModelInterop.acquireInitHandler(dummyStore)
 
@@ -192,15 +197,17 @@ describe('Read models', () => {
   })
 
   test('#1797: error meta within monitored error on event handler ', async () => {
-    const readModelInterop = await setUpTestReadModelInterop({
-      name: 'TestReadModel',
-      projection: {
-        Failed: async () => {
-          throw Error('Projection error')
+    const readModelInterop = await setUpTestReadModelInterop(
+      makeReadModelMeta({
+        name: 'TestReadModel',
+        projection: {
+          Failed: async () => {
+            throw Error('Projection error')
+          },
         },
-      },
-      resolvers: {},
-    })
+        resolvers: {},
+      })
+    )
 
     const eventHandler = await readModelInterop.acquireEventHandler(
       dummyStore,
@@ -235,16 +242,18 @@ describe('Read models', () => {
   })
 
   test('should register error if resolver not found', async () => {
-    const readModelInterop = await setUpTestReadModelInterop({
-      name: 'TestReadModel',
-      projection: {
-        Init: dummyInitHandler,
-        dummyEvent: dummyEventHandler,
-      },
-      resolvers: {
-        all: dummyResolver,
-      },
-    })
+    const readModelInterop = await setUpTestReadModelInterop(
+      makeReadModelMeta({
+        name: 'TestReadModel',
+        projection: {
+          Init: dummyInitHandler,
+          dummyEvent: dummyEventHandler,
+        },
+        resolvers: {
+          all: dummyResolver,
+        },
+      })
+    )
 
     await expect(
       readModelInterop.acquireResolver('not-existing-resolver', {}, {})
@@ -267,18 +276,20 @@ describe('Read models', () => {
   })
 
   test('should register error or resolver failure', async () => {
-    const readModelInterop = await setUpTestReadModelInterop({
-      name: 'TestReadModel',
-      projection: {
-        Init: dummyInitHandler,
-        dummyEvent: dummyEventHandler,
-      },
-      resolvers: {
-        fail: () => {
-          throw Error('failed resolver')
+    const readModelInterop = await setUpTestReadModelInterop(
+      makeReadModelMeta({
+        name: 'TestReadModel',
+        projection: {
+          Init: dummyInitHandler,
+          dummyEvent: dummyEventHandler,
         },
-      },
-    })
+        resolvers: {
+          fail: () => {
+            throw Error('failed resolver')
+          },
+        },
+      })
+    )
 
     const resolver = await readModelInterop.acquireResolver('fail', {}, {})
 
@@ -296,5 +307,33 @@ describe('Read models', () => {
 
     expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
     expect(monitoring.error.mock.calls[0][0].message).toEqual('failed resolver')
+  })
+
+  test('should return assigned read model channel', async () => {
+    const channel: ReadModelChannel = {
+      checkPermissions: jest.fn(),
+    }
+    const readModelInterop = await setUpTestReadModelInterop(
+      makeReadModelMeta({
+        name: 'TestReadModel',
+        projection: {},
+        resolvers: {},
+        channel,
+      })
+    )
+
+    expect(await readModelInterop.acquireChannel()).toStrictEqual(channel)
+  })
+
+  test('should return null if channel not presented in read-model', async () => {
+    const readModelInterop = await setUpTestReadModelInterop(
+      makeReadModelMeta({
+        name: 'TestReadModel',
+        projection: {},
+        resolvers: {},
+      })
+    )
+
+    expect(await readModelInterop.acquireChannel()).toBeNull()
   })
 })

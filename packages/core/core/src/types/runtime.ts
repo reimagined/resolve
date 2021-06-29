@@ -11,6 +11,7 @@ import {
   AggregateProjection,
   EventHandlerEncryptionFactory,
   ReadModelResolvers,
+  ReadModelChannel,
 } from './core'
 
 export type PerformanceSubsegment = {
@@ -72,6 +73,7 @@ export type EventProjectionMeta = {
 export type ReadModelMeta = EventProjectionMeta & {
   resolvers: ReadModelResolvers<any>
   projection: ReadModel<any>
+  channel?: ReadModelChannel
 }
 
 export type SagaMeta = EventProjectionMeta & {

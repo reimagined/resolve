@@ -107,6 +107,19 @@ const importReadModel = ({ resolveConfig, isClient }, resourceQuery) => {
       constants,
     })
     exports.push(`, encryption: encryption_${index}`)
+
+    if (readModel.channel != null) {
+      importResource({
+        resourceName: `channel_${index}`,
+        resourceValue: readModel.channel,
+        runtimeMode: RUNTIME_ENV_NOWHERE,
+        importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_INSTANCE,
+        imports,
+        constants,
+      })
+      exports.push(`, channel: channel_${index}`)
+    }
   }
 
   exports.push(`}`, ``)

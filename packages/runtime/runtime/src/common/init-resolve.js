@@ -13,8 +13,6 @@ import createEventSubscriber from './event-subscriber'
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
 const initResolve = async (resolve) => {
-  const performanceTracer = resolve.performanceTracer
-
   const {
     eventstoreAdapter: createEventstoreAdapter,
     readModelConnectors: readModelConnectorsCreators,
@@ -28,6 +26,7 @@ const initResolve = async (resolve) => {
     monitoring,
     domainInterop,
     domain,
+    performanceTracer,
   } = resolve
 
   const eventstoreAdapter = createEventstoreAdapter()

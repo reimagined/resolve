@@ -39,15 +39,14 @@ export type DomainMeta = {
   viewModels: ViewModelMeta[]
 }
 
-const initDomain = (domainMeta: DomainMeta): Domain => ({
+export const initDomain = (domainMeta: DomainMeta): Domain => ({
   sagaDomain: initSagaDomain(domainMeta.sagas),
   readModelDomain: initReadModelDomain(domainMeta.readModels),
   aggregateDomain: initAggregateDomain(domainMeta.aggregates),
   viewModelDomain: initViewModelDomain(domainMeta.viewModels),
 })
 
-export {
-  initDomain,
+export type {
   ReadModelInterop,
   ReadModelInteropMap,
   SagaInterop,

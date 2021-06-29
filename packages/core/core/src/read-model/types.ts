@@ -1,4 +1,4 @@
-import { SecretsManager, Event } from '../types/core'
+import { SecretsManager, Event, ReadModelChannel } from '../types/core'
 import { Monitoring } from '../types/runtime'
 
 export type ReadModelRuntimeResolver = (
@@ -7,6 +7,8 @@ export type ReadModelRuntimeResolver = (
 ) => Promise<any>
 
 export type ReadModelRuntimeEventHandler = () => Promise<void>
+
+export type ReadModelRuntimeChannel = ReadModelChannel
 
 export type ReadModelRuntime = {
   secretsManager: SecretsManager
@@ -30,6 +32,7 @@ export type ReadModelInterop = {
     store: any,
     event: Event
   ) => Promise<ReadModelRuntimeEventHandler | null>
+  acquireChannel: () => Promise<ReadModelRuntimeChannel | null>
 }
 
 export type ReadModelInteropMap = {
