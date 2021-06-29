@@ -112,15 +112,15 @@ type ProjectionMiddlewareParameters = [
   middlewareContext?: ReadModelInteropContext
 ]
 
-type CommandMiddlewareHandler = (
+export type CommandMiddlewareHandler = (
   ...args: CommandMiddlewareParameters
 ) => ReturnType<CommandHandler>
 
-type ResolverMiddlewareHandler = (
+export type ResolverMiddlewareHandler = (
   ...args: ResolverMiddlewareParameters
 ) => ReturnType<ReadModelResolver<any>>
 
-type ProjectionMiddlewareHandler = (
+export type ProjectionMiddlewareHandler = (
   ...args: ProjectionMiddlewareParameters
 ) => ReturnType<ReadModelEventHandler<any>>
 
