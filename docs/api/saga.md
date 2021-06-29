@@ -25,9 +25,9 @@ Sends a command with the specified payload to an aggregate.
 
 #### Arguments
 
-| Argument Name | Description                                                                                                       |
-| ------------- | ----------------------------------------------------------------------------------------------------------------- |
-| command       | Specifies a command object. Refer to the [Write Side](write-side#sending-a-command) article for more information. |
+| Argument Name | Description                                                                                                             |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| command       | Specifies a command object. Refer to the [Write Side](../write-side.md#sending-a-command) article for more information. |
 
 #### Example
 
@@ -51,9 +51,9 @@ Similar to `executeCommand` but delays the command's execution until a specified
 
 #### Arguments
 
-| Argument Name | Description                                                                                                       |
-| ------------- | ----------------------------------------------------------------------------------------------------------------- |
-| command       | Specifies a command object. Refer to the [Write Side](write-side#sending-a-command) article for more information. |
+| Argument Name | Description                                                                                                             |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| command       | Specifies a command object. Refer to the [Write Side](../write-side.md#sending-a-command) article for more information. |
 
 #### Example
 

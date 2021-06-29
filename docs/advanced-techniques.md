@@ -315,11 +315,11 @@ const createEncryption = (aggregateId, context) => {
 
 The `secretsManager` object contains the following functions:
 
-| Function Name  | Description                                                                                                                                 |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Function Name  | Description                                                                                                                               |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | `getSecret`    | Takes a unique ID as an argument and returns a promise that resolves to a string if a secret was found or null if a secret was not found. |
-| `setSecret`    | Takes a unique ID and a secret string as arguments and returns a promise that resolves if the secret was successfully saved.                |
-| `deleteSecret` | Takes a unique ID as an argument and returns a promise that resolves if the secret was successfully deleted.                                |
+| `setSecret`    | Takes a unique ID and a secret string as arguments and returns a promise that resolves if the secret was successfully saved.              |
+| `deleteSecret` | Takes a unique ID as an argument and returns a promise that resolves if the secret was successfully deleted.                              |
 
 > **NOTE:** The unique ID of an existing or deleted secret cannot be reused. If you pass a previously used ID to the `setSecret` function, an exception is raised.
 
@@ -405,7 +405,7 @@ Incremental import allows you to import into an event store only those events th
 
 ### Basic Incremental Import
 
-To import events incrementally, pass an array of events to an event store adapter's [incrementalImport](api-reference.md#incrementalimport) method.
+To import events incrementally, pass an array of events to an event store adapter's [incrementalImport](api/event-store-adapter.md#incrementalimport) method.
 
 The code sample below implements an API endpoint that incrementally imports events into the application's event store.
 
@@ -436,12 +436,12 @@ export default handler
 
 The following methods give you additional control over the incremental import process:
 
-| Method                                                                  | Description                                         |
-| ----------------------------------------------------------------------- | --------------------------------------------------- |
-| [beginIncrementalImport](api-reference.md#beginincrementalimport)       | Starts to accumulate events for incremental import. |
-| [pushIncrementalImport](api-reference.md#pushincrementalimport)         | Accumulates events for incremental import.          |
-| [commitIncrementalImport](api-reference.md#commitincrementalimport)     | Commits the accumulated events to the event store.  |
-| [rollbackIncrementalImport](api-reference.md#rollbackincrementaiImport) | Drops the accumulated events.                       |
+| Method                                                                            | Description                                         |
+| --------------------------------------------------------------------------------- | --------------------------------------------------- |
+| [beginIncrementalImport](api/event-store-adapter.md#beginincrementalimport)       | Starts to accumulate events for incremental import. |
+| [pushIncrementalImport](api/event-store-adapter.md#pushincrementalimport)         | Accumulates events for incremental import.          |
+| [commitIncrementalImport](api/event-store-adapter.md#commitincrementalimport)     | Commits the accumulated events to the event store.  |
+| [rollbackIncrementalImport](api/event-store-adapter.md#rollbackincrementaiImport) | Drops the accumulated events.                       |
 
 The code sample below demonstrates how to use advanced incremental import in a try-catch block to roll back in case of errors.
 
