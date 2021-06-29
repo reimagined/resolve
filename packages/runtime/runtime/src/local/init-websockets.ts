@@ -12,68 +12,31 @@ import { getSubscribeAdapterOptions } from './get-subscribe-adapter-options'
 import { createPubSubManager, PubSubManager } from './create-pubsub-manager'
 import { Adapter as EventstoreAdapter } from '@resolve-js/eventstore-base'
 
-const log = debugLevels('resolve:runtime:local-subscribe-adapter')
+const getLog = (scope: string) => debugLevels(`resolve:runtime:ws:${scope}`)
 
-const createWebSocketConnectionHandler = (
-  pubSubManager: PubSubManager,
-  eventstoreAdapter: EventstoreAdapter
-) => (
-  ws: WebSocket,
-  req: {
-    url: string
-  }
-) => {
-  const queryString = req.url.split('?')[1]
-  const { token, deploymentId } = qs.parse(queryString)
-  const connectionId = uuid()
-
-  let eventTypes = null
-  let aggregateIds = null
-
-  try {
-    void ({ eventTypes, aggregateIds } = jwt.verify(
-      token as string,
-      deploymentId as string
-    ) as any)
-  } catch (error) {
-    throw new Error('Permission denied, invalid token')
-  }
-
-  const publisher = (message: string) =>
-    new Promise<void>((resolve, reject) => {
-      return ws.send(message, (error) => {
-        if (error != null) {
-          reject(error)
-        } else {
-          resolve(undefined)
-        }
-      })
-    })
-
-  pubSubManager.connect(connectionId, {
-    publisher,
-    eventTypes,
-    aggregateIds,
-  })
-
-  const dispose = () => {
-    pubSubManager.disconnect(connectionId)
-    ws.close()
-  }
-
-  const handler = createWebSocketMessageHandler(
-    pubSubManager,
-    eventstoreAdapter,
-    ws,
-    connectionId
-  )
-
-  ws.on('message', handler)
-  ws.on('close', dispose)
-  ws.on('error', dispose)
+enum ConnectionRequestKind {
+  viewModel = 'viewModel',
+  readModel = 'readModel',
 }
 
-const createWebSocketMessageHandler = (
+type ConnectionRequest = {
+  kind: ConnectionRequestKind
+}
+
+type ViewModelConnectionRequest = ConnectionRequest & {
+  kind: ConnectionRequestKind.viewModel
+  token: string
+  deploymentId: string
+}
+
+type ReadModelConnectionRequest = ConnectionRequest & {
+  kind: ConnectionRequestKind.readModel
+  name: string
+  channel: string
+  permit: string
+}
+
+const createViewModelMessageHandler = (
   pubSubManager: PubSubManager,
   eventstoreAdapter: EventstoreAdapter,
   ws: WebSocket,
@@ -122,6 +85,125 @@ const createWebSocketMessageHandler = (
   }
 }
 
+const connectViewModel = (
+  pubSubManager: PubSubManager,
+  eventstoreAdapter: EventstoreAdapter,
+  ws: WebSocket,
+  connectionRequest: ViewModelConnectionRequest
+) => {
+  const { token, deploymentId } = connectionRequest
+  const connectionId = uuid()
+
+  let eventTypes = null
+  let aggregateIds = null
+
+  try {
+    void ({ eventTypes, aggregateIds } = jwt.verify(
+      token as string,
+      deploymentId as string
+    ) as any)
+  } catch (error) {
+    throw new Error('Permission denied, invalid token')
+  }
+
+  const publisher = (message: string) =>
+    new Promise<void>((resolve, reject) => {
+      return ws.send(message, (error) => {
+        if (error != null) {
+          reject(error)
+        } else {
+          resolve(undefined)
+        }
+      })
+    })
+
+  pubSubManager.connect(connectionId, {
+    publisher,
+    eventTypes,
+    aggregateIds,
+  })
+
+  const dispose = () => {
+    pubSubManager.disconnect(connectionId)
+    ws.close()
+  }
+
+  const handler = createViewModelMessageHandler(
+    pubSubManager,
+    eventstoreAdapter,
+    ws,
+    connectionId
+  )
+
+  ws.on('message', handler)
+  ws.on('close', dispose)
+  ws.on('error', dispose)
+}
+
+const connectReadModel = (
+  pubSubManager: PubSubManager,
+  eventstoreAdapter: EventstoreAdapter,
+  ws: WebSocket,
+  connectionRequest: ReadModelConnectionRequest
+) => {
+  const { permit } = connectionRequest
+  const connectionId = uuid()
+
+  /*
+  const publisher = (message: string) =>
+    new Promise<void>((resolve, reject) => {
+      return ws.send(message, (error) => {
+        if (error != null) {
+          reject(error)
+        } else {
+          resolve(undefined)
+        }
+      })
+    })
+
+  pubSubManager.connect(connectionId, {
+    publisher,
+    eventTypes,
+    aggregateIds,
+  })
+
+  const dispose = () => {
+    pubSubManager.disconnect(connectionId)
+    ws.close()
+  }
+  */
+
+  ws.on('message', (message: string) => {
+    const log = getLog(`read-model:on-message`)
+    log.warn(message)
+  })
+
+  /*
+  ws.on('close', dispose)
+  ws.on('error', dispose)
+  */
+}
+
+const createWebSocketConnectionHandler = (
+  pubSubManager: PubSubManager,
+  eventstoreAdapter: EventstoreAdapter
+) => (
+  ws: WebSocket,
+  req: {
+    url: string
+  }
+) => {
+  const queryString = req.url.split('?')[1]
+  const connectionRequest = qs.parse(queryString) as
+    | ViewModelConnectionRequest
+    | ReadModelConnectionRequest
+  if (connectionRequest.kind === 'viewModel') {
+    connectViewModel(pubSubManager, eventstoreAdapter, ws, connectionRequest)
+  } else {
+    connectReadModel(pubSubManager, eventstoreAdapter, ws, connectionRequest)
+  }
+}
+
 const initInterceptingHttpServer = (
   wsPath: string,
   server: http.Server,
@@ -167,6 +249,7 @@ const initWebSocketServer = async (
   pubSubManager: PubSubManager,
   eventstoreAdapter: EventstoreAdapter
 ) => {
+  const log = getLog('initWebsocketServer')
   try {
     const websocketServer = new WebSocket.Server({
       path: wsPath,
@@ -182,11 +265,11 @@ const initWebSocketServer = async (
   }
 }
 
-const createFakeHttpServer = (): http.Server => {
-  const socketServer = new EventEmitter()
-  Object.setPrototypeOf(socketServer, http.Server.prototype)
-  Object.defineProperty(socketServer, 'listen', { value: () => void 0 })
-  return socketServer as http.Server
+const createProxyServer = (): http.Server => {
+  const proxyServer = new EventEmitter()
+  Object.setPrototypeOf(proxyServer, http.Server.prototype)
+  Object.defineProperty(proxyServer, 'listen', { value: () => void 0 })
+  return proxyServer as http.Server
 }
 
 const initWebsockets = async (thisResolve: any) => {
@@ -199,20 +282,28 @@ const initWebsockets = async (thisResolve: any) => {
   // thisResolve only here
 
   const pubSubManager = createPubSubManager()
-  const fakeHttpServer = createFakeHttpServer()
+  const proxyServer = createProxyServer()
   const wsPath = getRootBasedUrl(rootPath, '/api/websocket')
 
   const sendReactiveEvent = async (event: Event) => {
-    await pubSubManager.dispatch(event)
+    await pubSubManager.dispatchEvent(event)
+  }
+  const publishReadModelNotification = async (
+    channel: never,
+    notification: never
+  ) => {
+    const log = getLog('publishReadModelNotification')
+    log.verbose(`publishing RM notification to channel ${channel}`)
+    //await pubSubManager
   }
 
   await initWebSocketServer(
     rootPath,
-    fakeHttpServer,
+    proxyServer,
     pubSubManager,
     await createEventstoreAdapter()
   )
-  await initInterceptingHttpServer(wsPath, server, fakeHttpServer)
+  await initInterceptingHttpServer(wsPath, server, proxyServer)
 
   return {
     getSubscribeAdapterOptions: {

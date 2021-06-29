@@ -9,7 +9,10 @@ export const getSubscribeAdapterOptions = async (
   eventTypes: string[],
   aggregateIds: string[]
 ) => {
-  const token = jwt.sign({ eventTypes, aggregateIds }, thisResolve.applicationName)
+  const token = jwt.sign(
+    { eventTypes, aggregateIds },
+    thisResolve.applicationName
+  )
 
   const { protocol, hostname, port } = new URL(origin)
   const isSecure = /^https/.test(protocol)
@@ -20,7 +23,7 @@ export const getSubscribeAdapterOptions = async (
   const subscribeUrl = `${targetProtocol}://${hostname}:${targetPort}${getRootBasedUrl(
     thisResolve.rootPath,
     targetPath
-  )}?deploymentId=${thisResolve.applicationName}&token=${token}`
+  )}?kind=viewModel&deploymentId=${thisResolve.applicationName}&token=${token}`
 
   return {
     appId: thisResolve.applicationName,

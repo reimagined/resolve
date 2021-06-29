@@ -11,7 +11,7 @@ export type PubSubManager = {
   connect: (connectionId: string, subscription: Connection) => void
   disconnect: (connectionId: string) => void
   getConnection: (connectionId: string) => Connection | undefined
-  dispatch: (event: Event) => Promise<void>
+  dispatchEvent: (event: Event) => Promise<void>
 }
 
 export const createPubSubManager = () => {
@@ -36,7 +36,7 @@ export const createPubSubManager = () => {
       return map.get(connectionId)
     },
 
-    async dispatch(event: Event) {
+    async dispatchEvent(event: Event) {
       const promises: Promise<void>[] = []
       const { type, aggregateId } = event
 
