@@ -173,6 +173,8 @@ export const query = (
 
   let queryRequest: Promise<NarrowedResponse>
 
+  const headers = { 'X-Resolve-Query-Origin': determineOrigin(context.origin) }
+
   if (isReadModelQuery(qr)) {
     const { name, resolver, args } = qr
     queryRequest = request(
@@ -180,7 +182,7 @@ export const query = (
       `/api/query/${name}/${resolver}`,
       args,
       requestOptions,
-      { 'X-Resolve-Query-Origin': determineOrigin(context.origin) }
+      headers
     )
   } else {
     const { name, aggregateIds, args } = qr
@@ -190,7 +192,7 @@ export const query = (
       `/api/query/${name}/${ids}`,
       args,
       requestOptions,
-      { 'X-Resolve-Query-Origin': determineOrigin(context.origin) },
+      headers,
       viewModelDeserializer
     )
   }
