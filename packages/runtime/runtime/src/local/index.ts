@@ -20,12 +20,20 @@ import getRootBasedUrl from '../common/utils/get-root-based-url'
 
 const log = debugLevels('resolve:runtime:local-entry')
 
-const localEntry = async ({ assemblies, constants, domain }) => {
+const localEntry = async ({
+  assemblies,
+  constants,
+  domain,
+}: {
+  assemblies: any
+  constants: any
+  domain: any
+}) => {
   try {
     domain.apiHandlers.push({
       path: '/api/subscribers/:eventSubscriber',
       method: 'GET',
-      handler: async (req, res) => {
+      handler: async (req: any, res: any) => {
         try {
           const baseQueryUrl = getRootBasedUrl(
             req.resolve.rootPath,
@@ -57,7 +65,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       eventListeners: gatherEventListeners(domain, domainInterop),
       upstream:
         domain.apiHandlers.findIndex(
-          ({ method, path }) =>
+          ({ method, path }: { method: string; path: string }) =>
             method === 'OPTIONS' && path === '/SKIP_COMMANDS'
         ) < 0,
       https,
@@ -65,22 +73,24 @@ const localEntry = async ({ assemblies, constants, domain }) => {
     }
 
     resolve.eventSubscriberDestination = `http://0.0.0.0:${constants.port}/api/subscribers`
-    resolve.invokeBuildAsync = multiplexAsync.bind(null, async (parameters) => {
-      const currentResolve = Object.create(resolve)
-      try {
-        await initResolve(currentResolve)
-        const result = await currentResolve.eventSubscriber.build(parameters)
-        return result
-      } finally {
-        await disposeResolve(currentResolve)
+    resolve.invokeBuildAsync = multiplexAsync.bind(
+      null,
+      async (parameters: any) => {
+        const currentResolve = Object.create(resolve)
+        try {
+          await initResolve(currentResolve)
+          return await currentResolve.eventSubscriber.build(parameters)
+        } finally {
+          await disposeResolve(currentResolve)
+        }
       }
-    })
-    resolve.ensureQueue = async () => {}
-    resolve.deleteQueue = async () => {}
+    )
+    resolve.ensureQueue = async () => void 0
+    resolve.deleteQueue = async () => void 0
 
     await initPerformanceTracer(resolve)
     await initExpress(resolve)
-    await initWebsockets(resolve)
+    Object.defineProperties(resolve, await initWebsockets(resolve))
     await initUploader(resolve)
     await initScheduler(resolve)
     await startExpress(resolve)
