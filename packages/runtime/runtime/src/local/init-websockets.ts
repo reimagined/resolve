@@ -9,7 +9,7 @@ import qs from 'querystring'
 import jwt from 'jsonwebtoken'
 
 import getRootBasedUrl from '../common/utils/get-root-based-url'
-import { getSubscribeAdapterOptions } from './get-subscribe-adapter-options'
+import { makeSubscription } from './make-subscription'
 import {
   createPubSubManager,
   PubSubManager,
@@ -364,8 +364,8 @@ export const initWebsockets = async (thisResolve: any) => {
   await initInterceptingHttpServer(wsPath, server, proxyServer)
 
   return {
-    getSubscribeAdapterOptions: {
-      value: getSubscribeAdapterOptions,
+    makeSubscription: {
+      value: makeSubscription,
     },
     sendReactiveEvent: { value: sendReactiveEvent },
   }

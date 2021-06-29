@@ -205,15 +205,10 @@ export const query = (
       throw new GenericError(`"Date" header missed within response`)
     }
 
-    let subscriptionsUrl = null
-
-    if (!isReadModelQuery(qr)) {
-      const responseSubscription =
-        response.headers.get('X-Resolve-View-Model-Subscription') ??
-        '{ "url": "" }'
-      const { url } = JSON.parse(responseSubscription)
-      subscriptionsUrl = url
-    }
+    const responseSubscription =
+      response.headers.get('X-Resolve-View-Model-Subscription') ??
+      '{ "url": "" }'
+    const { url: subscriptionsUrl } = JSON.parse(responseSubscription)
 
     try {
       let result

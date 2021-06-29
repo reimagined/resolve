@@ -34,30 +34,34 @@ const queryHandler = async (req, res) => {
     res.status(200)
     res.setHeader('Content-Type', 'application/json')
 
-    if (
-      (result.meta?.aggregateIds != null || result.meta?.eventTypes != null) &&
-      req.headers['x-resolve-query-origin'] != null
-    ) {
-      const { aggregateIds } = result.meta || {}
-
-      const subscriptionAggregateIds =
-        Array.isArray(aggregateIds) ||
-        aggregateIds === '*' ||
-        aggregateIds == null
-          ? aggregateIds
-          : [aggregateIds]
-
-      const subscribeOptions = await req.resolve.getSubscribeAdapterOptions(
-        req.resolve,
-        req.headers['x-resolve-query-origin'],
-        result.meta.eventTypes,
-        subscriptionAggregateIds
-      )
-
-      res.setHeader(
-        'X-Resolve-View-Model-Subscription',
-        JSON.stringify(subscribeOptions)
-      )
+    if (req.headers['x-resolve-query-origin'] != null) {
+      const { aggregateIds, eventTypes, channel, permit } = result.meta || {}
+      let subscription
+      if (aggregateIds != null || eventTypes != null) {
+        subscription = await req.resolve.makeSubscription(
+          req.resolve,
+          req.headers['x-resolve-query-origin'],
+          {
+            eventTypes,
+            aggregateIds,
+          }
+        )
+      } else if (channel != null && permit != null) {
+        subscription = await req.resolve.makeSubscription(
+          req.resolve,
+          req.headers['x-resolve-query-origin'],
+          {
+            channel,
+            permit,
+          }
+        )
+      }
+      if (subscription != null) {
+        res.setHeader(
+          'X-Resolve-View-Model-Subscription',
+          JSON.stringify(subscription)
+        )
+      }
     }
 
     res.end(
