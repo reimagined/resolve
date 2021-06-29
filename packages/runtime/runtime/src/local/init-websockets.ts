@@ -146,7 +146,7 @@ const connectReadModel = (
   ws: WebSocket,
   connectionRequest: ReadModelConnectionRequest
 ) => {
-  const { permit } = connectionRequest
+  const { channel, permit, name } = connectionRequest
   const connectionId = uuid()
 
   /*

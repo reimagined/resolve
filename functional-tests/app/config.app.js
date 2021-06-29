@@ -50,6 +50,7 @@ const appConfig = {
       resolvers: 'common/read-models/test-scenarios.resolvers.js',
       connectorName: 'default',
       encryption: 'common/read-models/encryption.js',
+      channel: 'common/read-models/test-scenarios.channel.js',
     },
     {
       name: 'saga-tests',

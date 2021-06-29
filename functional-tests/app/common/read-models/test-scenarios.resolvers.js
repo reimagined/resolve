@@ -33,6 +33,9 @@ const resolvers = {
       result: entries ? entries.map((entry) => entry.id) : [],
     }
   },
+  reactiveChannelScenario: async () => {
+    return undefined
+  },
 }
 
 export default resolvers
