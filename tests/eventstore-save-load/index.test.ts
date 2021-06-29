@@ -143,7 +143,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
   })
 
   test('many events saved in parallel should be continuous', async () => {
-    const parallelWrites = 8
+    const parallelWrites = 100
     const promises: Promise<EventWithCursor>[] = []
     for (let i = 0; i < parallelWrites; ++i) {
       promises.push(

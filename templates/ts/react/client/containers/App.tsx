@@ -20,7 +20,7 @@ const App = () => {
   const faviconLink = {
     rel: 'icon',
     type: 'image/png',
-    href: staticResolver('/favicon.ico'),
+    href: staticResolver('/favicon.png'),
   }
   const links = [bootstrapLink, stylesheetLink, faviconLink]
   const meta = {

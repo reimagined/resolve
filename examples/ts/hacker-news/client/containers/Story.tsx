@@ -1,7 +1,7 @@
 import React from 'react'
 import sanitizer from 'sanitizer'
 import styled, { css } from 'styled-components'
-import { URL } from 'url'
+import { parse as parseUrl } from 'url'
 import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 
@@ -87,7 +87,7 @@ const Username = styled(NavLink)`
 const isExternalLink = (link) => link[0] !== '/'
 
 export const getHostname = (link) => {
-  return new URL(link).hostname
+  return parseUrl(link).hostname
 }
 
 const Title = ({ title, link, upvoteStory, voted, loggedIn }) => {

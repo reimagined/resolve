@@ -3,7 +3,6 @@ import createReadModelConnector, {
   CommonAdapterPool,
   CommonAdapterOptions,
 } from '../src'
-import makeSplitNestedPath from '../src/make-split-nested-path'
 
 jest.mock('../src/make-split-nested-path', () => jest.fn())
 
@@ -31,9 +30,6 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
     delete: jest.fn().mockImplementation(async () => void 0),
   }
 
-  const adapterPool = {
-    splitNestedPath: makeSplitNestedPath({} as any),
-  }
   const eventstoreAdapter = {
     loadEvents: jest.fn().mockResolvedValue({ cursor: 'CURSOR', events: [] }),
     getNextCursor: jest.fn().mockReturnValue('CURSOR'),
@@ -52,16 +48,13 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
       existingSecrets: [],
       deletedSecrets: [],
     }),
-  }
+  } as any
 
   const adapterOptions = {
     parameter: 'content',
-  }
+  } as const
 
-  const adapter = createReadModelConnector(implementation, {
-    ...adapterPool,
-    ...adapterOptions,
-  })
+  const adapter = createReadModelConnector(implementation, adapterOptions)
 
   const getVacantTimeInMillis = jest.fn().mockReturnValue(15000)
 
@@ -100,6 +93,7 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
 
   const readModelName = 'ReadModelName'
   const store = await adapter.connect(readModelName)
+  const adapterPool = (implementation.connect as any).mock.calls[0][0]
   expect(implementation.connect).toBeCalledWith(adapterPool, adapterOptions)
 
   await adapter.subscribe(store, readModelName, null, null)
@@ -110,6 +104,12 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
     null
   )
 
+  const buildInfo = {
+    initiator: 'read-model-next',
+    notificationId: '0',
+    sendTime: 0,
+  } as const
+
   const buildStep = jest.fn().mockImplementation(async () => {
     await new Promise((resolve) => setImmediate(resolve))
     await adapter.build(
@@ -119,7 +119,8 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
       modelInterop,
       buildStep,
       eventstoreAdapter,
-      getVacantTimeInMillis
+      getVacantTimeInMillis,
+      buildInfo
     )
   })
   await buildStep()
@@ -130,7 +131,8 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
     modelInterop,
     buildStep,
     eventstoreAdapter,
-    getVacantTimeInMillis
+    getVacantTimeInMillis,
+    buildInfo
   )
 
   await modelInterop.acquireInitHandler(store)()

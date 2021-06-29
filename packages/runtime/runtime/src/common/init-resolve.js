@@ -21,7 +21,7 @@ const initResolve = async (resolve) => {
   } = resolve.assemblies
 
   const {
-    invokeEventSubscriberAsync,
+    invokeBuildAsync,
     applicationName,
     uploader,
     scheduler,
@@ -88,8 +88,8 @@ const initResolve = async (resolve) => {
     secretsManager,
     eventstore: eventstoreAdapter,
     hooks: {
-      postSaveEvent: async (aggregate, command, event) => {
-        await onCommandExecuted(event, command)
+      postSaveEvent: async (aggregate, command, event, eventWithCursor) => {
+        await onCommandExecuted(event, command, eventWithCursor)
         return false
       },
     },
@@ -110,7 +110,7 @@ const initResolve = async (resolve) => {
   })
 
   const executeQuery = createQueryExecutor({
-    invokeEventSubscriberAsync,
+    invokeBuildAsync,
     applicationName,
     eventstoreAdapter,
     readModelConnectors,
@@ -130,7 +130,7 @@ const initResolve = async (resolve) => {
   })
 
   const executeSaga = createSagaExecutor({
-    invokeEventSubscriberAsync,
+    invokeBuildAsync,
     applicationName,
     executeCommand,
     executeQuery,

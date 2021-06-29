@@ -415,6 +415,7 @@ module.exports = {
           'sql',
           'sqlite',
           'squaremobius',
+          'sqs',
           'src',
           'ssl',
           'ssr',

@@ -1,6 +1,6 @@
 {
   "name": "hacker-news-js",
-  "version": "0.30.5",
+  "version": "0.31.0",
   "private": true,
   "description": "Hacker News application clone with CQRS and EventSourcing",
   "scripts": {
@@ -8,8 +8,8 @@
     "cloud": "babel-node run.js cloud",
     "cloud:replica": "babel-node run.js cloud:replica",
     "dev": "babel-node run.js dev",
-    "dev:replica": "babel-node dev:replica",
-    "export-event-store": "babel-node export-event-store",
+    "dev:replica": "babel-node run.js dev:replica",
+    "export-event-store": "babel-node run.js export-event-store",
     "import": "babel-node run.js import",
     "import-event-store": "babel-node run.js import-event-store",
     "reset": "babel-node run.js reset",
@@ -22,22 +22,25 @@
     "test:update": "jest -u",
     "test:watch": "jest --watchAll"
   },
+  "resolutions": {
+    "@types/react": "17.0.5"
+  },
   "dependencies": {
     "@elastic/elasticsearch": "7.11.0",
-    "@resolve-js/core": "0.30.5",
-    "@resolve-js/debug-levels": "0.30.5",
-    "@resolve-js/eventstore-lite": "0.30.5",
-    "@resolve-js/eventstore-postgresql-serverless": "0.30.5",
-    "@resolve-js/module-admin": "0.30.5",
-    "@resolve-js/module-auth": "0.30.5",
-    "@resolve-js/module-comments": "0.30.5",
-    "@resolve-js/module-replication": "0.30.5",
-    "@resolve-js/readmodel-base": "0.30.5",
-    "@resolve-js/readmodel-lite": "0.30.5",
-    "@resolve-js/readmodel-postgresql-serverless": "0.30.5",
-    "@resolve-js/redux": "0.30.5",
-    "@resolve-js/react-hooks": "0.30.5",
-    "@resolve-js/replicator-via-api-handler": "0.30.5",
+    "@resolve-js/core": "0.31.0",
+    "@resolve-js/debug-levels": "0.31.0",
+    "@resolve-js/eventstore-lite": "0.31.0",
+    "@resolve-js/eventstore-postgresql": "0.31.0",
+    "@resolve-js/module-admin": "0.31.0",
+    "@resolve-js/module-auth": "0.31.0",
+    "@resolve-js/module-comments": "0.31.0",
+    "@resolve-js/module-replication": "0.31.0",
+    "@resolve-js/react-hooks": "0.31.0",
+    "@resolve-js/readmodel-base": "0.31.0",
+    "@resolve-js/readmodel-lite": "0.31.0",
+    "@resolve-js/readmodel-postgresql": "0.31.0",
+    "@resolve-js/redux": "0.31.0",
+    "@resolve-js/replicator-via-api-handler": "0.31.0",
     "history": "4.10.1",
     "isomorphic-fetch": "3.0.0",
     "js-cookie": "2.2.1",
@@ -62,8 +65,8 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
-    "@babel/node": "7.14.2",
     "@babel/core": "7.14.3",
+    "@babel/node": "7.14.2",
     "@babel/plugin-proposal-class-properties": "7.13.0",
     "@babel/plugin-proposal-export-default-from": "7.12.13",
     "@babel/plugin-proposal-export-namespace-from": "7.14.2",
@@ -71,18 +74,16 @@
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
     "@babel/preset-typescript": "7.14.5",
-    "@resolve-js/scripts": "0.30.5",
-    "babel-loader": "8.2.2",
+    "@resolve-js/scripts": "0.31.0",
     "aws-sdk": "2.860.0",
     "aws-xray-sdk-core": "3.2.0",
     "babel-jest": "27.0.2",
+    "babel-loader": "8.2.2",
     "jest": "27.0.3",
     "sinon": "9.2.4",
     "socket.io": "3",
-    "testcafe": "1.14.2"
-  },
-  "resolutions": {
-    "@types/react": "17.0.5"
+    "testcafe": "1.14.2",
+    "ts-jest": "27.0.2"
   },
   "resolveJs": {
     "isAppTemplate": true

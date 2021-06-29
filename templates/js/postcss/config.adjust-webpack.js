@@ -33,7 +33,9 @@ const adjustWebpackConfigs = (webpackConfigs) => {
         {
           loader: 'postcss-loader',
           options: {
-            plugins: [postcssImport(), autoprefixer()],
+            postcssOptions: {
+              plugins: [postcssImport(), autoprefixer()],
+            },
           },
         },
       ],

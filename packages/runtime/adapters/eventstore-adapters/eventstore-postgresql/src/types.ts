@@ -33,6 +33,7 @@ export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
   executeStatement: (sql: string) => Promise<any[]>
   escapeId: EscapeFunction
   escape: EscapeFunction
+  connection: Postgres
 }
 
 export type PostgresqlAdapterConfig = AdapterConfig & {

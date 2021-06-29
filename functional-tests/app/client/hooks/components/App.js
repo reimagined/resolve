@@ -14,7 +14,7 @@ const App = ({ version, children, route }) => {
   const faviconLink = {
     rel: 'icon',
     type: 'image/png',
-    href: resolveStatic(`/favicon.ico`),
+    href: resolveStatic(`/favicon.png`),
   }
   const links = [stylesheetLink, faviconLink]
   const meta = {

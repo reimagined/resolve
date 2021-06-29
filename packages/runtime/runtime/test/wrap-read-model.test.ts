@@ -5,7 +5,7 @@ test('resume should call next if read-model status is successful', async () => {
   let ensured = false
   const mockCallback = jest.fn(() => ensured)
   const pool = ({
-    invokeEventSubscriberAsync: mockCallback,
+    invokeBuildAsync: mockCallback,
     eventstoreAdapter: {
       getEventSubscribers: async (options: any) => {
         return [{ status: { status: 'deliver' } }]

@@ -1,5 +1,5 @@
 import { AdapterPool } from './types'
-import { OldEvent, SavedEvent } from '@resolve-js/eventstore-base'
+import { OldEvent, SavedEvent, THREAD_COUNT } from '@resolve-js/eventstore-base'
 import { str as strCRC32 } from 'crc-32'
 import { RESERVED_EVENT_SIZE } from './constants'
 
@@ -36,9 +36,9 @@ export const replicateEvents = async (
     threadCounter: SavedEvent['threadCounter']
   }>
 
-  const threadCounters = new Array<SavedEvent['threadCounter']>(256)
+  const threadCounters = new Array<SavedEvent['threadCounter']>(THREAD_COUNT)
   for (const row of rows) {
-    threadCounters[row.threadId] = row.threadCounter
+    threadCounters[row.threadId] = +row.threadCounter
   }
 
   const eventsToInsert: SavedEvent[] = []

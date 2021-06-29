@@ -55,6 +55,7 @@ jobs:
           push_event: ${{ toJSON(github.event) }}
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           ssh_private_key: ${{ secrets.RESOLVE_BOT_SSH_PRIVATE_KEY }}
+          commit_message: <auto> Update changelog
 
   generate-js:
     if: startsWith(github.event.head_commit.message, '<auto>') != true
@@ -67,4 +68,4 @@ jobs:
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           ssh_private_key: ${{ secrets.RESOLVE_BOT_SSH_PRIVATE_KEY }}
           entries: '[{"source":"templates/ts/!(angular)*","out":"templates/js"},{"source":"examples/ts/*","out":"examples/js"}]'
-          commit_message: <auto> Autogenerate JS
+          commit_message: <auto> Generate JS

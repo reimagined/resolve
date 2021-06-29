@@ -62,7 +62,8 @@ const saveEvent = async (
         ${+event.aggregateVersion},
         ${escape(event.type)},
         json(CAST(${serializedPayload} AS BLOB))
-      );`
+      );
+      COMMIT;`
     )
 
     const rows = (await database.all(
@@ -118,7 +119,7 @@ const saveEvent = async (
     }
 
     const cursor = threadArrayToCursor(threadCounters)
-    await database.exec('COMMIT;')
+
     return {
       event: savedEvent,
       cursor,
@@ -126,6 +127,7 @@ const saveEvent = async (
   } catch (error) {
     const errorMessage =
       error != null && error.message != null ? error.message : ''
+
     const errorCode = error != null && error.code != null ? error.code : ''
 
     if (errorMessage.indexOf('transaction within a transaction') > -1) {

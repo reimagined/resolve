@@ -39,7 +39,8 @@ export type AggregateRuntimeHooks = {
   postSaveEvent?: (
     aggregate: AggregateInterop,
     command: Command,
-    event: Event
+    event: Event,
+    cursorWithEvent?: { event: Event; cursor: string }
   ) => Promise<void>
 }
 

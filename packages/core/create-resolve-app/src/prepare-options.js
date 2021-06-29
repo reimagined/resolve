@@ -42,11 +42,11 @@ const prepareOptions = async () => {
     return process.exit(1)
   } else {
     const applicationName = cliArgs._unknown[0]
-    const { typescript: forceTypescript } = cliArgs
     const {
       commit,
       branch,
-      example: exampleName = `react-${forceTypescript ? 'ts' : 'js'}`,
+      example: exampleName = 'react',
+      typescript: useTypescript = false,
     } = cliArgs
 
     const localRegistry = cliArgs['local-registry']
@@ -95,7 +95,7 @@ const prepareOptions = async () => {
       branch,
       exampleName,
       localRegistry,
-      forceTypescript,
+      useTypescript,
     }
   }
 }
