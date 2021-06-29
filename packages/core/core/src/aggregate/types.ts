@@ -1,4 +1,9 @@
-import { CommandMiddleware, Eventstore, Monitoring } from '../types/runtime'
+import {
+  CommandMiddleware,
+  Eventstore,
+  Monitoring,
+  ExecutionContext,
+} from '../types/runtime'
 import {
   Event,
   AggregateEncryptionFactory,
@@ -7,7 +12,6 @@ import {
   CommandHandler,
   CommandResult,
   SecretsManager,
-  ExecutionContext,
 } from '../types/core'
 
 export type AggregateInterop = {

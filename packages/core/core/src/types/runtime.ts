@@ -14,7 +14,6 @@ import {
   CommandHandler,
   ReadModelResolver,
   ReadModelEventHandler,
-  ExecutionContext,
 } from './core'
 
 import { AggregateInterop, AggregateRuntime } from '../aggregate/types'
@@ -100,12 +99,42 @@ export type ViewModelMeta = {
 
 //Middleware
 
+type CommandMiddlewareParameters = [
+  ...args: Parameters<CommandHandler>,
+  middlewareContext?: AggregateInteropContext
+]
+type ResolverMiddlewareParameters = [
+  ...args: Parameters<ReadModelResolver<any>>,
+  middlewareContext?: ReadModelResolverInteropContext
+]
+type ProjectionMiddlewareParameters = [
+  ...args: Parameters<ReadModelEventHandler<any>>,
+  middlewareContext?: ReadModelInteropContext
+]
+
+type CommandMiddlewareHandler = (
+  ...args: CommandMiddlewareParameters
+) => ReturnType<CommandHandler>
+
+type ResolverMiddlewareHandler = (
+  ...args: ResolverMiddlewareParameters
+) => ReturnType<ReadModelResolver<any>>
+
+type ProjectionMiddlewareHandler = (
+  ...args: ProjectionMiddlewareParameters
+) => ReturnType<ReadModelEventHandler<any>>
+
 type MiddlewareChainableFunction =
-  | CommandHandler
-  | ReadModelResolver<any>
-  | ReadModelEventHandler<any>
+  | CommandMiddlewareHandler
+  | ResolverMiddlewareHandler
+  | ProjectionMiddlewareHandler
 
 type MiddlewareHandler<THandler> = (next: THandler) => THandler
+
+export type ExecutionContext = {
+  req?: any
+  res?: any
+}
 
 type ReadModelInteropContext = {
   meta: ReadModelMeta
@@ -121,34 +150,18 @@ type AggregateInteropContext = {
   runtime: AggregateRuntime
 } & ExecutionContext
 
-type InteropContext = AggregateInteropContext | ReadModelInteropContext
-
 type Middleware<
-  TContext extends InteropContext,
   THandler extends MiddlewareChainableFunction
-> = (middlewareContext: TContext) => MiddlewareHandler<THandler>
+> = MiddlewareHandler<THandler>
 
-export type MiddlewareWrapper = <
-  TContext extends InteropContext,
-  THandler extends MiddlewareChainableFunction
->(
-  middlewares: Array<Middleware<TContext, THandler>>,
-  context: TContext
+export type MiddlewareWrapper = <THandler extends MiddlewareChainableFunction>(
+  middlewares: Array<Middleware<THandler>>
 ) => MiddlewareApplier<THandler>
 
 export type MiddlewareApplier<T extends MiddlewareChainableFunction> = (
   targetHandler: T
 ) => T
 
-export type CommandMiddleware = Middleware<
-  AggregateInteropContext,
-  CommandHandler
->
-export type ProjectionMiddleware = Middleware<
-  ReadModelInteropContext,
-  ReadModelEventHandler<any>
->
-export type ResolverMiddleware = Middleware<
-  ReadModelResolverInteropContext,
-  ReadModelResolver<any>
->
+export type CommandMiddleware = Middleware<CommandMiddlewareHandler>
+export type ProjectionMiddleware = Middleware<ProjectionMiddlewareHandler>
+export type ResolverMiddleware = Middleware<ResolverMiddlewareHandler>

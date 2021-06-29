@@ -1180,9 +1180,11 @@ describe('Command middleware', () => {
 
     const dummyMiddlewareHandler = jest.fn()
 
-    const dummyMiddleware: CommandMiddleware = (middlewareContext) => (
-      next
-    ) => async (state, command, context) => {
+    const dummyMiddleware: CommandMiddleware = (next) => async (
+      state,
+      command,
+      context
+    ) => {
       dummyMiddlewareHandler({
         state,
         command,
@@ -1217,9 +1219,11 @@ describe('Command middleware', () => {
       makeAggregateMeta(aggregate),
     ])
 
-    const dummyMiddleware: CommandMiddleware = (middlewareContext) => (
-      next
-    ) => async (state, command, context) => {
+    const dummyMiddleware: CommandMiddleware = (next) => async (
+      state,
+      command,
+      context
+    ) => {
       throw new Error('Interrupted by middleware')
     }
 
@@ -1246,9 +1250,11 @@ describe('Command middleware', () => {
       makeAggregateMeta(aggregate),
     ])
 
-    const dummyMiddleware: CommandMiddleware = (middlewareContext) => (
-      next
-    ) => async (state, command, context) => {
+    const dummyMiddleware: CommandMiddleware = (next) => async (
+      state,
+      command,
+      context
+    ) => {
       return next(
         state,
         {
@@ -1282,9 +1288,11 @@ describe('Command middleware', () => {
       makeAggregateMeta(aggregate),
     ])
 
-    const dummyMiddleware: CommandMiddleware = (middlewareContext) => (
-      next
-    ) => async (state, command, context) => {
+    const dummyMiddleware: CommandMiddleware = (next) => async (
+      state,
+      command,
+      context
+    ) => {
       const event = await next(state, command, context)
       event.payload.additionalContent = 'Content from middleware'
       return event
@@ -1309,9 +1317,11 @@ describe('Command middleware', () => {
       makeAggregateMeta(aggregate),
     ])
 
-    const middleware1: CommandMiddleware = (middlewareContext) => (
-      next
-    ) => async (state, command, context) => {
+    const middleware1: CommandMiddleware = (next) => async (
+      state,
+      command,
+      context
+    ) => {
       const modifiedCommand = { ...command }
       modifiedCommand.payload.contents = 'Command modified by first middleware'
       const event = await next(state, modifiedCommand, context)
@@ -1319,9 +1329,11 @@ describe('Command middleware', () => {
       return event
     }
 
-    const middleware2: CommandMiddleware = (middlewareContext) => (
-      next
-    ) => async (state, command, context) => {
+    const middleware2: CommandMiddleware = (next) => async (
+      state,
+      command,
+      context
+    ) => {
       const modifiedCommand = { ...command }
       modifiedCommand.payload.contents +=
         '; Command modified by second middleware'

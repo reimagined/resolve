@@ -1,9 +1,12 @@
 import { ResolverMiddleware } from '@resolve-js/core'
-const middleware: ResolverMiddleware = (middlewareContext) => (next) => async (
+const middleware: ResolverMiddleware = (next) => async (
   store,
   args,
-  context
+  context,
+  middlewareContext
 ) => {
+  const { req, res } = middlewareContext
+  console.log({ req, res })
   const data = await next(store, args, context)
   const modifiedData = data.map((item) => ({
     ...item,

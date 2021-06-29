@@ -264,8 +264,3 @@ export type SagaEncryptionFactory = (
   event: Event,
   context: SagaEncryptionContext
 ) => Promise<Encryption | null>
-
-export type ExecutionContext = {
-  req?: any
-  res?: any
-}

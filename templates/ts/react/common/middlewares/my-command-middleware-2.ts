@@ -1,10 +1,11 @@
 import { CommandMiddleware } from '@resolve-js/core'
-const middleware: CommandMiddleware = (interopContext) => (next) => async (
+const middleware: CommandMiddleware = (next) => async (
   state,
   command,
-  context
+  context,
+  middlewareContext
 ) => {
-  const { req, res } = interopContext
+  const { req, res } = middlewareContext
   console.log({ req, res })
   const { addedByMiddleware, isOdd } = context as any
   const event = await next(state, command, context)

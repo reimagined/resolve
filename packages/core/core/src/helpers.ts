@@ -24,13 +24,8 @@ export const makeMonitoringSafe = (monitoring: Monitoring): Monitoring => {
   }
 }
 
-export const makeMiddlewareApplier: MiddlewareWrapper = (
-  middlewares,
-  interopContext
-) => {
-  const reversedMiddlewares = middlewares
-    .map((m) => m(interopContext))
-    .reverse()
+export const makeMiddlewareApplier: MiddlewareWrapper = (middlewares) => {
+  const reversedMiddlewares = middlewares.slice().reverse()
 
   return (targetHandler) => {
     let handlersChain = targetHandler

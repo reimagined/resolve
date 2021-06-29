@@ -44,9 +44,10 @@ const getReadModelInterop = (
   const middlewareContext = { meta: readModel, runtime }
 
   const applyProjectionMiddlewares = makeMiddlewareApplier(
-    projectionMiddlewares,
-    middlewareContext
+    projectionMiddlewares
   )
+  const applyResolverMiddlewares = makeMiddlewareApplier(resolverMiddlewares)
+
   const resolverInvokerMap = Object.keys(resolvers).reduce<
     ReadModelResolvers<any>
   >((map, resolverName) => {
@@ -60,10 +61,6 @@ const getReadModelInterop = (
     context: { jwt?: string }
   ) => {
     const log = getLog(`read-model-interop:${name}:acquireResolver:${resolver}`)
-    const applyResolverMiddlewares = makeMiddlewareApplier(
-      resolverMiddlewares,
-      { ...middlewareContext, resolver }
-    )
 
     const invoker = resolverInvokerMap[resolver]
     if (invoker == null) {
@@ -107,12 +104,19 @@ const getReadModelInterop = (
       try {
         log.debug(`invoking the resolver`)
 
-        const chainedHandlers = applyResolverMiddlewares(invoker)
+        const chainedHandlers = applyResolverMiddlewares(
+          (connection, args, context) => invoker(connection, args, context)
+        )
 
-        const data = await chainedHandlers(connection, args, {
-          secretsManager,
-          jwt: context.jwt,
-        })
+        const data = await chainedHandlers(
+          connection,
+          args,
+          {
+            secretsManager,
+            jwt: context.jwt,
+          },
+          { ...middlewareContext, resolver }
+        )
         // const data = await invoker(connection, args, {
         //   secretsManager,
         //   jwt: context.jwt,
@@ -185,10 +189,17 @@ const getReadModelInterop = (
     event: Event
   ): Promise<ReadModelRuntimeEventHandler | null> => {
     if (typeof projection[event.type] === 'function') {
-      const chainedHandlers = applyProjectionMiddlewares(projection[event.type])
+      const chainedHandlers = applyProjectionMiddlewares(
+        (store, event, context) => projection[event.type](store, event, context)
+      )
 
       return monitoredHandler(event.type, async () =>
-        chainedHandlers(store, event, await buildEncryption(event))
+        chainedHandlers(
+          store,
+          event,
+          await buildEncryption(event),
+          middlewareContext
+        )
       )
     }
     return null

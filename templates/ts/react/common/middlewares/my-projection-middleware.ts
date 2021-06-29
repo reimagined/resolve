@@ -1,8 +1,12 @@
 import { ProjectionMiddleware } from '@resolve-js/core'
 
-const middleware: ProjectionMiddleware = (middlewareContext) => (
-  next
-) => async (store, event, context) => {
+const middleware: ProjectionMiddleware = (next) => async (
+  store,
+  event,
+  context,
+  middlewareContext
+) => {
+  console.log({ req, res })
   return next(
     store,
     {
