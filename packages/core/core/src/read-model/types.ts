@@ -1,5 +1,6 @@
 import { SecretsManager, Event } from '../types/core'
 import {
+  ExecutionContext,
   Monitoring,
   ProjectionMiddleware,
   ResolverMiddleware,
@@ -27,7 +28,8 @@ export type ReadModelInterop = {
     args: any,
     context: {
       jwt?: string
-    }
+    },
+    executionContext?: ExecutionContext
   ) => Promise<ReadModelRuntimeResolver>
   acquireInitHandler: (
     store: any

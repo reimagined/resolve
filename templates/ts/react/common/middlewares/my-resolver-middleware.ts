@@ -7,7 +7,7 @@ const middleware: ResolverMiddleware = (next) => async (
 ) => {
   const { req, res } = middlewareContext
   console.log({ req, res })
-  const data = await next(store, args, context)
+  const data = await next(store, args, context, middlewareContext)
   const modifiedData = data.map((item) => ({
     ...item,
     name: item.name + ', modified by middleware',

@@ -6,14 +6,14 @@ const middleware: ProjectionMiddleware = (next) => async (
   context,
   middlewareContext
 ) => {
-  console.log({ req, res })
   return next(
     store,
     {
       ...event,
       payload: { ...event.payload, extra: 'added by projection middleware' },
     },
-    context
+    context,
+    middlewareContext
   )
 }
 export default middleware

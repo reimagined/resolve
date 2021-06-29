@@ -11,8 +11,6 @@ const middleware: CommandMiddleware = (next) => async (
   context,
   middlewareContext
 ) => {
-  const { req, res } = middlewareContext
-  console.log({ req, res })
   if (command.type === 'removeItem') {
     throw Error('Forbidden by middleware')
   }

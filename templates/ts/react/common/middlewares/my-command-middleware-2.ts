@@ -5,10 +5,8 @@ const middleware: CommandMiddleware = (next) => async (
   context,
   middlewareContext
 ) => {
-  const { req, res } = middlewareContext
-  console.log({ req, res })
   const { addedByMiddleware, isOdd } = context as any
-  const event = await next(state, command, context)
+  const event = await next(state, command, context, middlewareContext)
   if (isOdd && event.type === 'MY_AGGREGATE_ITEM_ADDED') {
     event.payload.itemName += addedByMiddleware
   }

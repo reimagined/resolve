@@ -21,12 +21,15 @@ const queryHandler = async (req, res) => {
 
     const modelArgs = extractRequestBody(req)
 
-    const result = await req.resolve.executeQuery.read({
-      modelName,
-      modelOptions,
-      modelArgs,
-      jwt: req.jwt,
-    })
+    const result = await req.resolve.executeQuery.read(
+      {
+        modelName,
+        modelOptions,
+        modelArgs,
+        jwt: req.jwt,
+      },
+      { req, res }
+    )
 
     subSegment.addAnnotation('modelName', modelName)
     subSegment.addAnnotation('origin', 'resolve:query')

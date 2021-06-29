@@ -8,7 +8,7 @@ import {
 import { Event, ReadModelResolvers } from '../types/core'
 import { createHttpError, HttpStatusCodes } from '../errors'
 import { getPerformanceTracerSubsegment } from '../utils'
-import { ReadModelMeta } from '../types/runtime'
+import { ExecutionContext, ReadModelMeta } from '../types/runtime'
 import { getLog } from '../get-log'
 import { makeMiddlewareApplier } from '../helpers'
 
@@ -58,7 +58,8 @@ const getReadModelInterop = (
   const acquireResolver = async (
     resolver: string,
     args: any,
-    context: { jwt?: string }
+    context: { jwt?: string },
+    executionContext?: ExecutionContext
   ) => {
     const log = getLog(`read-model-interop:${name}:acquireResolver:${resolver}`)
 
@@ -115,7 +116,7 @@ const getReadModelInterop = (
             secretsManager,
             jwt: context.jwt,
           },
-          { ...middlewareContext, resolver }
+          { ...middlewareContext, resolver, ...executionContext }
         )
         // const data = await invoker(connection, args, {
         //   secretsManager,
