@@ -3,8 +3,6 @@ id: saga
 title: Saga
 ---
 
-## Saga
-
 A saga's event handler receives an object that provides access to the saga-related API. This API includes the following objects:
 
 | Object Name | Description                                                                       |

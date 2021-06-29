@@ -3,8 +3,6 @@ id: api-handler
 title: API Handler
 ---
 
-## API Handler
-
 An API handler function has the following structure:
 
 ```js

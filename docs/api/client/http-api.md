@@ -3,11 +3,9 @@ id: http-api
 title: HTTP API
 ---
 
-### HTTP API
-
 ReSolve provides a standard HTTP API that allows you to send aggregate commands, and query Read and View Models.
 
-#### Read Model API
+## Read Model API
 
 To query a Read Model from the client side, send a POST request to the following URL:
 
@@ -46,7 +44,7 @@ curl -X POST \
 "http://localhost:3000/api/query/default/users"
 ```
 
-#### View Model API
+## View Model API
 
 To query a View Model from the client side, send a GET request to the following URL:
 
@@ -69,7 +67,7 @@ Use the following command to get the [shopping-list](https://github.com/reimagin
 curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
 ```
 
-#### Command API
+## Command API
 
 You can send a command from the client side as a POST request to the following URL:
 

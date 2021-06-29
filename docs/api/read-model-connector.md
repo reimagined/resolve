@@ -3,8 +3,6 @@ id: read-model-connector
 title: Read Model Connector
 ---
 
-## Read Model Connector
-
 The table below lists functions a custom Read Model's connector should implement.
 
 | Function Name             | Description                                      |

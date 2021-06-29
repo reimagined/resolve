@@ -3,8 +3,6 @@ id: read-model-store
 title: Read Model Store
 ---
 
-## Read Model Store
-
 The table below lists functions that you can use to communicate with a Read Model store through a `store` object.
 
 | Function Name               | Description                                        |

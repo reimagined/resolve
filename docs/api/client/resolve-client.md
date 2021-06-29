@@ -3,8 +3,6 @@ id: resolve-client
 title: '@resolve-js/client'
 ---
 
-### @resolve-js/client Library
-
 The **@resolve-js/client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
 
 ```js
@@ -26,7 +24,7 @@ The `getClient` function takes a reSolve context as a parameter and returns an i
 | [subscribe](#subscribe)                 | Subscribes to View Model updates.                                           |
 | [unsubscribe](#unsubscribe)             | Unsubscribes from View Model updates.                                       |
 
-#### command
+### command
 
 Sends an aggregate command to the backend.
 
@@ -48,7 +46,7 @@ client.command(
 )
 ```
 
-#### query
+### query
 
 Queries a Read Model.
 
@@ -61,7 +59,7 @@ const { data } = await client.query({
 })
 ```
 
-#### getStaticAssetUrl
+### getStaticAssetUrl
 
 Gets a static file's full URL.
 
@@ -71,7 +69,7 @@ Gets a static file's full URL.
 var imagePath = client.getStaticAssetUrl('/account/image.jpg')
 ```
 
-#### getOriginPath
+### getOriginPath
 
 Returns an absolute URL within the application for the given relative path.
 
@@ -81,7 +79,7 @@ Returns an absolute URL within the application for the given relative path.
 var commandsApiPath = client.getOriginPath('/api/commands')
 ```
 
-#### subscribe
+### subscribe
 
 Subscribes to View Model updates. Returns a promise that resolves to a **subscription** object.
 
@@ -102,7 +100,7 @@ const chatViewModelUpdater = (event) => {
 await client.subscribe('chat', '*', chatViewModelUpdater)
 ```
 
-#### unsubscribe
+### unsubscribe
 
 Unsubscribes from View Model updates.
 

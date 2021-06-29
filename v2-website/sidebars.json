@@ -47,7 +47,9 @@
               "api/client/http-api",
               "api/client/entry-point",
               "api/client/resolve-redux",
-              "api/client/resolve-client"
+              "api/client/resolve-client",
+              "api/client/resolve-react-hooks",
+              "api/client/request-middleware"
             ]
           }
         ]
