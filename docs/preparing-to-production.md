@@ -14,7 +14,7 @@ An example **config.prod.js** file:
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../examples/hacker-news/config.prod.js /^/ /\n$/)
+[embedmd]:# (../examples/js/hacker-news/config.prod.js /^/ /\n$/)
 ```js
 const prodConfig = {
   port: 3000,
@@ -46,7 +46,7 @@ The code below demonstrates how to set up a storage adapter on the example of an
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../examples/hacker-news/config.prod.js /readModelConnectors/ /\},/)
+[embedmd]:# (../examples/js/hacker-news/config.prod.js /readModelConnectors/ /\},/)
 ```js
 readModelConnectors: {
     HackerNews: {

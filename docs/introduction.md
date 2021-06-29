@@ -53,11 +53,11 @@ Your app is running at http://localhost:3000
 
 > The create-resolve-app tool creates an application based on the latest versions of reSolve packages. If you want to update an existing application to a newer version of reSolve, ensure that all `resolve-*` dependencies in the application's package.json file have the same version number to avoid version conflicts.
 
-## Examples
+## Examples and Template Projects
 
-The reSolve repository contains example projects. You can use them to study various use-case scenarios or as templates for new reSolve applications. The example projects are available in the repository's **[examples](https://github.com/reimagined/resolve/tree/master/examples)** folder.
+The reSolve repository contains example and template projects. You can use them to study various use-case scenarios or to create new reSolve applications. The example projects are available in the repository's **[examples](https://github.com/reimagined/resolve/tree/master/examples)** folder. The template projects are available in the repository's **[templates](https://github.com/reimagined/resolve/tree/master/templates)** folder.
 
-You can install any of these examples on your machine using the `create-resolve-app` tool with the `-e` flag followed by an example name.
+You can install any of these projects on your machine using the `create-resolve-app` tool with the `-e` flag followed by an example or template name.
 
 ##### npm
 
