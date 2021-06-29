@@ -252,7 +252,7 @@ describe('query', () => {
       {
         method: 'GET',
       },
-      undefined
+      { 'X-Resolve-Query-Origin': 'mock-origin' }
     )
   })
 
@@ -341,7 +341,7 @@ describe('query', () => {
           attempts: 1,
         },
       },
-      undefined
+      expect.anything()
     )
 
     const validator = mRequest.mock.calls[0][3]?.waitForResponse
@@ -447,7 +447,7 @@ describe('query', () => {
       {
         method: 'POST',
       },
-      undefined
+      expect.anything()
     )
   })
 
@@ -471,7 +471,7 @@ describe('query', () => {
       {
         method: 'GET',
       },
-      undefined
+      expect.anything()
     )
   })
 
@@ -498,6 +498,7 @@ describe('query', () => {
     })
 
     expect(mRequest).toHaveBeenCalledWith(
+      expect.anything(),
       expect.anything(),
       expect.anything(),
       expect.anything(),
@@ -731,7 +732,7 @@ describe('query', () => {
           arrayFormat: 'comma',
         },
       }),
-      undefined
+      expect.anything()
     )
   })
 })
