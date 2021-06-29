@@ -25,6 +25,7 @@ export const getSubscribeAdapterOptions = async (
     targetPath
   )}?kind=viewModel&deploymentId=${thisResolve.applicationName}&token=${token}`
 
+
   return {
     appId: thisResolve.applicationName,
     url: subscribeUrl,

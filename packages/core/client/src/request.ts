@@ -192,12 +192,13 @@ export const request = async (
   url: string,
   requestParams: any,
   options?: RequestOptions,
+  customHeaders: { [key: string]: string } = {},
   deserializer?: (state: string) => any
 ): Promise<NarrowedResponse> => {
   const { origin, rootPath, jwtProvider } = context
   const rootBasedUrl = getRootBasedUrl(rootPath, url, determineOrigin(origin))
 
-  const headers: { [key: string]: string } = {}
+  const headers: { [key: string]: string } = { ...customHeaders }
   let requestUrl: string
   let init: RequestInit
 

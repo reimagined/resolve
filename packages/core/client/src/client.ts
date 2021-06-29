@@ -180,7 +180,7 @@ export const query = (
       `/api/query/${name}/${resolver}`,
       args,
       requestOptions,
-      viewModelDeserializer
+      { 'X-Resolve-Query-Origin': determineOrigin(context.origin) }
     )
   } else {
     const { name, aggregateIds, args } = qr
@@ -188,11 +188,9 @@ export const query = (
     queryRequest = request(
       context,
       `/api/query/${name}/${ids}`,
-      {
-        args,
-        origin: determineOrigin(context.origin),
-      },
+      args,
       requestOptions,
+      { 'X-Resolve-Query-Origin': determineOrigin(context.origin) },
       viewModelDeserializer
     )
   }

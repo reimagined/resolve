@@ -36,7 +36,7 @@ const queryHandler = async (req, res) => {
 
     if (
       (result.meta?.aggregateIds != null || result.meta?.eventTypes != null) &&
-      modelArgs.origin != null
+      req.headers['x-resolve-query-origin'] != null
     ) {
       const { aggregateIds } = result.meta || {}
 
@@ -49,7 +49,7 @@ const queryHandler = async (req, res) => {
 
       const subscribeOptions = await req.resolve.getSubscribeAdapterOptions(
         req.resolve,
-        modelArgs.origin,
+        req.headers['x-resolve-query-origin'],
         result.meta.eventTypes,
         subscriptionAggregateIds
       )
