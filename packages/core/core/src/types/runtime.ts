@@ -16,9 +16,6 @@ import {
   ReadModelEventHandler,
 } from './core'
 
-import { AggregateInterop, AggregateRuntime } from '../aggregate/types'
-import { ReadModelRuntime } from '../read-model/types'
-
 export type PerformanceSubsegment = {
   addAnnotation: (name: string, data: any) => void
   addError: (error: Error) => void

@@ -1178,7 +1178,7 @@ describe('Command middleware', () => {
       makeAggregateMeta(aggregate),
     ])
 
-    const dummyMiddlewareHandler = jest.fn()
+    const dummyMiddlewareSpy = jest.fn()
 
     const dummyMiddleware: CommandMiddleware = (next) => async (
       middlewareContext,
@@ -1186,10 +1186,7 @@ describe('Command middleware', () => {
       command,
       context
     ) => {
-      dummyMiddlewareHandler({
-        state,
-        command,
-      })
+      dummyMiddlewareSpy(middlewareContext, state, command)
       return next(middlewareContext, state, command, context)
     }
 
@@ -1205,10 +1202,7 @@ describe('Command middleware', () => {
 
     await executeCommand(command)
 
-    expect(dummyMiddlewareHandler).toBeCalledWith({
-      state: { contents: '' },
-      command,
-    })
+    expect(dummyMiddlewareSpy).toBeCalledWith({}, { contents: '' }, command)
     expect(aggregate.commands.modify).toBeCalledWith(
       { contents: '' },
       command,
