@@ -1,18 +1,19 @@
 # reSolve Angular-8 Example
 
-Demonstrates how to use Angular to implement the client application.
+An application with an Angular client.
 
 ##### Installation
 
-To create Angular TypeScript project:
+To create an Angular TypeScript project:
+
 ```sh
-npx create-resolve-app angular -e angular-ts
+npx create-resolve-app angular -e angular -t
 ```
 
-To create Angular JavaScript project:
-```sh
-npx create-resolve-app angular -e angular-js
-```
+To create and Angular JavaScript project:
 
+```sh
+npx create-resolve-app angular -e angular
+```
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-with-angular-readme?pixel)

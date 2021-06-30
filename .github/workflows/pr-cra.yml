@@ -19,7 +19,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-root
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -27,7 +27,16 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-packages
+
+      - name: Cache templates, examples and tutorial node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            tutorial/**/node_modules
+            examples/**/node_modules
+            templates/**/node_modules
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-examples
 
       - name: Cache build
         uses: actions/cache@v2
@@ -65,7 +74,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-root
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -73,7 +82,7 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-packages
 
       - name: Cache build
         uses: actions/cache@v2
@@ -102,7 +111,6 @@ jobs:
           RESOLVE_E2E_TESTS_BROWSER: chrome
           RESOLVE_E2E_TESTS_HEADLESS_MODE: true
         run: yarn test:cra:js -c ${{ github.sha }} --local-registry
-
   create-resolve-app-tests-ts:
     runs-on: ubuntu-latest
     needs: prepare-test-environment
@@ -117,7 +125,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-root
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -125,19 +133,7 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
-
-      - name: Cache examples node_modules
-        uses: actions/cache@v2
-        with:
-          path: 'examples/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
-
-      - name: Cache functional tests node_modules
-        uses: actions/cache@v2
-        with:
-          path: 'functional-tests/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-functional-tests
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-packages
 
       - name: Cache build
         uses: actions/cache@v2
@@ -166,7 +162,6 @@ jobs:
           RESOLVE_E2E_TESTS_BROWSER: chrome
           RESOLVE_E2E_TESTS_HEADLESS_MODE: true
         run: yarn test:cra:ts -c ${{ github.sha }} --local-registry
-
   tutorial-tests:
     runs-on: ubuntu-latest
     needs: prepare-test-environment
@@ -181,7 +176,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-root
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -189,19 +184,16 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-packages
 
-      - name: Cache examples node_modules
+      - name: Cache templates, examples and tutorial node_modules
         uses: actions/cache@v2
         with:
-          path: 'examples/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
-
-      - name: Cache functional tests node_modules
-        uses: actions/cache@v2
-        with:
-          path: 'functional-tests/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-functional-tests
+          path: |
+            tutorial/**/node_modules
+            examples/**/node_modules
+            templates/**/node_modules
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-examples
 
       - name: Cache build
         uses: actions/cache@v2
@@ -225,7 +217,6 @@ jobs:
           RESOLVE_E2E_TESTS_BROWSER: chrome
           RESOLVE_E2E_TESTS_HEADLESS_MODE: true
         run: yarn test:e2e:tutorial
-
   js-examples-tests:
     runs-on: ubuntu-latest
     needs: prepare-test-environment
@@ -240,7 +231,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-root
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -248,19 +239,16 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-packages
 
-      - name: Cache examples node_modules
+      - name: Cache templates, examples and tutorial node_modules
         uses: actions/cache@v2
         with:
-          path: 'examples/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
-
-      - name: Cache functional tests node_modules
-        uses: actions/cache@v2
-        with:
-          path: 'functional-tests/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-functional-tests
+          path: |
+            tutorial/**/node_modules
+            examples/**/node_modules
+            templates/**/node_modules
+          key: ${{ runner.os }}-${{ github.run_id }}-modules-examples
 
       - name: Cache build
         uses: actions/cache@v2
@@ -279,7 +267,7 @@ jobs:
             .packages/**
           key: ${{ runner.os }}-${{ github.run_id }}-build
 
-      - name: E2E test - tutorial
+      - name: E2E test - JS examples
         env:
           RESOLVE_E2E_TESTS_BROWSER: chrome
           RESOLVE_E2E_TESTS_HEADLESS_MODE: true

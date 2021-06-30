@@ -1,6 +1,6 @@
 {
   "name": "personal-data-js",
-  "version": "0.30.5",
+  "version": "0.31.0",
   "private": true,
   "description": "personal user data within events (GDPR compliance)",
   "scripts": {
@@ -11,18 +11,21 @@
     "test": "echo || exit 0",
     "test:e2e": "babel-node run.js test:e2e"
   },
+  "resolutions": {
+    "@types/react": "17.0.5"
+  },
   "dependencies": {
     "@babel/node": "7.14.2",
-    "@resolve-js/core": "0.30.5",
-    "@resolve-js/readmodel-base": "0.30.5",
-    "@resolve-js/eventstore-lite": "0.30.5",
-    "@resolve-js/eventstore-postgresql-serverless": "0.30.5",
-    "@resolve-js/module-auth": "0.30.5",
-    "@resolve-js/module-uploader": "0.30.5",
-    "@resolve-js/react-hooks": "0.30.5",
-    "@resolve-js/readmodel-lite": "0.30.5",
-    "@resolve-js/readmodel-postgresql-serverless": "0.30.5",
-    "@resolve-js/scripts": "0.30.5",
+    "@resolve-js/core": "0.31.0",
+    "@resolve-js/eventstore-lite": "0.31.0",
+    "@resolve-js/eventstore-postgresql": "0.31.0",
+    "@resolve-js/module-auth": "0.31.0",
+    "@resolve-js/module-uploader": "0.31.0",
+    "@resolve-js/react-hooks": "0.31.0",
+    "@resolve-js/readmodel-base": "0.31.0",
+    "@resolve-js/readmodel-lite": "0.31.0",
+    "@resolve-js/readmodel-postgresql": "0.31.0",
+    "@resolve-js/scripts": "0.31.0",
     "babel-loader": "8.2.2",
     "crypto-js": "4.0.0",
     "generate-password": "1.6.0",
@@ -48,7 +51,7 @@
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
     "@babel/preset-typescript": "7.14.5",
-    "@resolve-js/module-admin": "0.30.5",
+    "@resolve-js/module-admin": "0.31.0",
     "aws-sdk": "2.860.0",
     "aws-xray-sdk-core": "3.2.0",
     "babel-jest": "27.0.2",
@@ -58,9 +61,6 @@
     "testcafe": "1.14.2",
     "testcafe-react-selectors": "4.1.4",
     "ts-jest": "27.0.2"
-  },
-  "resolutions": {
-    "@types/react": "17.0.5"
   },
   "resolveJs": {
     "isAppTemplate": true
