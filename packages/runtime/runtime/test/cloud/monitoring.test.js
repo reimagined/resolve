@@ -156,7 +156,8 @@ describe('common', () => {
           {
             MetricName: 'Duration',
             Unit: 'Milliseconds',
-            Value: 300,
+            Values: [300],
+            Counts: [1],
             Timestamp: expect.any(Date),
             Dimensions: expect.any(Array),
           },
@@ -631,7 +632,8 @@ describe('time and timeEnd', () => {
       expect(metricData).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
-        Value: 1000,
+        Values: [1000],
+        Counts: [1],
         Timestamp: expect.any(Date),
         Dimensions: expect.any(Array),
       })
@@ -769,7 +771,8 @@ describe('time and timeEnd', () => {
       expect(metricData).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
-        Value: 2000,
+        Values: [2000],
+        Counts: [1],
         Timestamp: expect.any(Date),
         Dimensions: expect.any(Array),
       })
@@ -794,7 +797,8 @@ describe('time and timeEnd', () => {
       expect(metricData).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
-        Value: 4500,
+        Values: [4500],
+        Counts: [1],
         Timestamp: expect.any(Date),
         Dimensions: expect.any(Array),
       })
@@ -868,7 +872,38 @@ describe('duration', () => {
       expect(metricData).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
-        Value: 1000,
+        Values: [1000],
+        Counts: [1],
+        Timestamp: expect.any(Date),
+        Dimensions: expect.any(Array),
+      })
+    }
+  })
+
+  test('sends correct metrics with custom count', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    monitoring.duration('test-label', 1000, 5)
+
+    await monitoring.publish()
+
+    expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+
+    expect(CloudWatch.putMetricData).toBeCalledWith({
+      Namespace: 'RESOLVE_METRICS',
+      MetricData: expect.any(Array),
+    })
+
+    for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
+      .MetricData) {
+      expect(metricData).toEqual({
+        MetricName: 'Duration',
+        Unit: 'Milliseconds',
+        Values: [1000],
+        Counts: [5],
         Timestamp: expect.any(Date),
         Dimensions: expect.any(Array),
       })

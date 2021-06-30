@@ -85,7 +85,8 @@ const monitoringDuration = async (
   monitoringData,
   groupData,
   label,
-  duration
+  duration,
+  count = 1
 ) => {
   if (!Number.isFinite(duration)) {
     log.warn(
@@ -99,25 +100,22 @@ const monitoringDuration = async (
 
   let isDimensionCountLimitReached = false
 
-  monitoringData.metricData = monitoringData.metricData.concat(
-    groupData.durationMetricDimensionsList.reduce((acc, groupDimensions) => {
-      const dimensions = [...groupDimensions, ...durationDimensions]
+  for (const groupDimensions of groupData.durationMetricDimensionsList) {
+    const dimensions = [...groupDimensions, ...durationDimensions]
 
-      if (dimensions.length <= MAX_DIMENSION_COUNT) {
-        acc.push({
-          MetricName: 'Duration',
-          Timestamp: now,
-          Unit: 'Milliseconds',
-          Value: duration,
-          Dimensions: [...groupDimensions, ...durationDimensions],
-        })
-      } else {
-        isDimensionCountLimitReached = true
-      }
-
-      return acc
-    }, [])
-  )
+    if (dimensions.length <= MAX_DIMENSION_COUNT) {
+      monitoringData.metricData.push({
+        MetricName: 'Duration',
+        Timestamp: now,
+        Unit: 'Milliseconds',
+        Values: [duration],
+        Counts: [count],
+        Dimensions: dimensions,
+      })
+    } else {
+      isDimensionCountLimitReached = true
+    }
+  }
 
   delete groupData.timerMap[label]
 
