@@ -8,6 +8,7 @@ type Connection = {
 export type ReadModelNotification = Serializable
 
 export type ReadModelConnection = Connection & {
+  name: string
   channel: string
 }
 
@@ -27,6 +28,7 @@ export type PubSubManager = {
   ) => ViewModelConnection | ReadModelConnection | undefined
   dispatchEvent: (event: Event) => Promise<void>
   dispatchReadModelNotification: (
+    name: string,
     channel: string,
     notification: ReadModelNotification
   ) => Promise<void>
@@ -93,17 +95,20 @@ export const createPubSubManager = () => {
     },
 
     async dispatchReadModelNotification(
+      name: string,
       channel: string,
       notification: ReadModelNotification
     ) {
       const promises: Promise<void>[] = []
       const payload = JSON.stringify(notification)
 
-      readModelConnections.forEach(({ channel: currentChannel, publisher }) => {
-        if (channel === currentChannel) {
-          promises.push(publisher(payload))
+      readModelConnections.forEach(
+        ({ name: currentName, channel: currentChannel, publisher }) => {
+          if (channel === currentChannel && name === currentName) {
+            promises.push(publisher(payload))
+          }
         }
-      })
+      )
 
       await Promise.all(promises)
     },

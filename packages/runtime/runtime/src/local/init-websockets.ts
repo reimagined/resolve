@@ -13,6 +13,7 @@ import { makeSubscription } from './make-subscription'
 import {
   createPubSubManager,
   PubSubManager,
+  ReadModelNotification,
   ViewModelConnection,
 } from './create-pubsub-manager'
 
@@ -191,6 +192,7 @@ const connectReadModel = async (
     throw Error(`Permission denied`)
   }
 
+  log.debug(`connection permitted`)
   const connectionId = uuid()
 
   const publisher = (message: string) =>
@@ -207,6 +209,7 @@ const connectReadModel = async (
   pubSubManager.connect(connectionId, {
     publisher,
     channel,
+    name,
   })
 
   const dispose = () => {
@@ -348,12 +351,17 @@ export const initWebsockets = async (thisResolve: any) => {
     await pubSubManager.dispatchEvent(event)
   }
   const publishReadModelNotification = async (
-    channel: never,
-    notification: never
+    name: string,
+    channel: string,
+    notification: ReadModelNotification
   ) => {
-    const log = getLog('publishReadModelNotification')
+    const log = getLog('publish-read-model-notification')
     log.verbose(`publishing RM notification to channel ${channel}`)
-    //await pubSubManager
+    await pubSubManager.dispatchReadModelNotification(
+      name,
+      channel,
+      notification
+    )
   }
 
   await initWebSocketServer(
@@ -370,5 +378,6 @@ export const initWebsockets = async (thisResolve: any) => {
       value: makeSubscription,
     },
     sendReactiveEvent: { value: sendReactiveEvent },
+    publishReadModelNotification: { value: publishReadModelNotification },
   }
 }
