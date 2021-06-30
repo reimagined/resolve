@@ -1,4 +1,4 @@
-import { CommandContext } from '@resolve-js/core'
+import { CommandContext, CommandMiddleware } from '@resolve-js/core'
 
 type ExtendedContext = {
   addedByMiddleware: string
@@ -6,11 +6,14 @@ type ExtendedContext = {
 } & CommandContext
 
 const middleware: CommandMiddleware = (next) => async (
+  middlewareContext,
   state,
   command,
-  context,
-  middlewareContext
+  context
 ) => {
+  const { req, res } = middlewareContext
+  console.log({ req, res, command })
+
   if (command.type === 'removeItem') {
     throw Error('Forbidden by middleware')
   }
@@ -21,6 +24,6 @@ const middleware: CommandMiddleware = (next) => async (
     isOdd: !!((state.items?.length ?? 0) % 2),
   }
 
-  return next(state, command, modifiedContext, middlewareContext)
+  return next(middlewareContext, state, command, modifiedContext)
 }
 export default middleware

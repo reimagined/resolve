@@ -9,7 +9,7 @@ import { Event } from '../types/core'
 import { createHttpError, HttpStatusCodes } from '../errors'
 import { getPerformanceTracerSubsegment } from '../utils'
 import {
-  ExecutionContext,
+  MiddlewareContext,
   ReadModelMeta,
   ResolverMiddlewareHandler,
 } from '../types/runtime'
@@ -48,28 +48,29 @@ const makeReadModelInteropCreator = (runtime: ReadModelRuntime) => {
 
   return (readModel: ReadModelMeta): ReadModelInterop => {
     const { connectorName, name, resolvers, projection } = readModel
-    const middlewareContext = { meta: readModel, runtime }
 
     const resolverInvokerMap = Object.keys(resolvers).reduce<{
       [key: string]: ResolverMiddlewareHandler
     }>((map, resolverName) => {
       map[
         resolverName
-      ] = applyResolverMiddlewares((connection, args, context) =>
-        resolvers[resolverName](connection, args, context)
+      ] = applyResolverMiddlewares(
+        (middlewareContext, connection, args, context) =>
+          resolvers[resolverName](connection, args, context)
       )
       return map
     }, {})
 
     const projectionHandlersChain = applyProjectionMiddlewares(
-      (store, event, context) => projection[event.type](store, event, context)
+      (middlewareContext, store, event, context) =>
+        projection[event.type](store, event, context)
     )
 
     const acquireResolver = async (
       resolver: string,
       args: any,
       context: { jwt?: string },
-      executionContext?: ExecutionContext
+      middlewareContext: MiddlewareContext = {}
     ) => {
       const log = getLog(
         `read-model-interop:${name}:acquireResolver:${resolver}`
@@ -118,13 +119,17 @@ const makeReadModelInteropCreator = (runtime: ReadModelRuntime) => {
           log.debug(`invoking the resolver`)
 
           const data = await invoker(
+            {
+              ...middlewareContext,
+              readModelName: name,
+              resolverName: resolver,
+            },
             connection,
             args,
             {
               secretsManager,
               jwt: context.jwt,
-            },
-            { ...middlewareContext, resolver, ...executionContext }
+            }
           )
           // const data = await invoker(connection, args, {
           //   secretsManager,
@@ -200,10 +205,10 @@ const makeReadModelInteropCreator = (runtime: ReadModelRuntime) => {
       if (typeof projection[event.type] === 'function') {
         return monitoredHandler(event.type, async () =>
           projectionHandlersChain(
+            { readModelName: name },
             store,
             event,
-            await buildEncryption(event),
-            middlewareContext
+            await buildEncryption(event)
           )
         )
       }

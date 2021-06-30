@@ -5,7 +5,7 @@ import {
   AggregateRuntime,
 } from './types'
 import { CommandError } from '../errors'
-import { AggregateMeta, ExecutionContext } from '../types/runtime'
+import { AggregateMeta, MiddlewareContext } from '../types/runtime'
 import { getLog } from '../get-log'
 import { getPerformanceTracerSubsegment } from '../utils'
 import {
@@ -399,11 +399,14 @@ const makeCommandExecutor = (
     }
   }
 
-  const chainedHandlers = applyMiddlewares(commandHandler)
+  const chainedHandlers = applyMiddlewares(
+    (middlewareContext, state, command, context) =>
+      commandHandler(state, command, context)
+  )
 
   return async (
     command: Command,
-    executionContext?: ExecutionContext
+    middlewareContext: MiddlewareContext = {}
   ): Promise<CommandResult> => {
     const monitoringGroup =
       runtime.monitoring != null
@@ -476,11 +479,12 @@ const makeCommandExecutor = (
         decrypt,
       }
 
-      const event = await chainedHandlers(aggregateState, command, context, {
-        ...executionContext,
-        interop: aggregate,
-        runtime,
-      })
+      const event = await chainedHandlers(
+        middlewareContext,
+        aggregateState,
+        command,
+        context
+      )
       // const event = await commandHandler(aggregateState, command, context)
 
       if (!checkOptionShape(event.type, [String])) {

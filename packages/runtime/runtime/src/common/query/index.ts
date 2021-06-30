@@ -41,9 +41,9 @@ const interopApi = async (models: any, key: string, ...args: Array<any>) => {
       `Model "${modelName}" does not implement method "${key}"`
     )
   }
-  const executionContext = args.length > 1 ? args[1] : undefined
+  const middlewareContext = args.length > 1 ? args[1] : {}
 
-  return await method(parameters, executionContext)
+  return await method(parameters, middlewareContext)
 }
 
 const createQuery = (params: CreateQueryOptions): any => {

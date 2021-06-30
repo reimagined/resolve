@@ -16,7 +16,7 @@ function isCommandError(error) {
 
 export const executeCommandWithRetryConflicts = async (
   { executeCommand, commandArgs, jwt },
-  executionContext
+  middlewareContext
 ) => {
   const retryCount = commandArgs.immediateConflict != null ? 0 : 10
   let lastError = null
@@ -24,7 +24,7 @@ export const executeCommandWithRetryConflicts = async (
 
   for (let retry = 0; retry <= retryCount; retry++) {
     try {
-      event = await executeCommand({ ...commandArgs, jwt }, executionContext)
+      event = await executeCommand({ ...commandArgs, jwt }, middlewareContext)
       lastError = null
       break
     } catch (error) {

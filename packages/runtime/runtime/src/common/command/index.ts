@@ -3,7 +3,7 @@ import {
   CommandResult,
   AggregatesInterop,
   CommandError,
-  ExecutionContext,
+  MiddlewareContext,
 } from '@resolve-js/core'
 
 type CommandPool = {
@@ -56,12 +56,12 @@ const createCommand: CommandExecutorBuilder = ({
 
   const disposableExecutor = async (
     command: Command,
-    executionContext: ExecutionContext
+    middlewareContext: MiddlewareContext
   ): Promise<CommandResult> => {
     if (pool.isDisposed) {
       throw new CommandError('Command handler is disposed')
     }
-    return await aggregatesInterop.executeCommand(command, executionContext)
+    return await aggregatesInterop.executeCommand(command, middlewareContext)
   }
 
   const api = {

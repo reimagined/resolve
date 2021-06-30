@@ -2,7 +2,7 @@ import {
   CommandMiddleware,
   Eventstore,
   Monitoring,
-  ExecutionContext,
+  MiddlewareContext,
 } from '../types/runtime'
 import {
   Event,
@@ -34,7 +34,7 @@ export type AggregatesInterop = {
   aggregateMap: AggregateInteropMap
   executeCommand: (
     command: Command,
-    executionContext?: ExecutionContext
+    middlewareContext?: MiddlewareContext
   ) => Promise<CommandResult>
 }
 

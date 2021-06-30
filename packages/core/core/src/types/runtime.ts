@@ -100,16 +100,16 @@ export type ViewModelMeta = {
 //Middleware
 
 type CommandMiddlewareParameters = [
-  ...args: Parameters<CommandHandler>,
-  middlewareContext?: AggregateInteropContext
+  middlewareContext: AggregateMiddlewareContext,
+  ...args: Parameters<CommandHandler>
 ]
 type ResolverMiddlewareParameters = [
-  ...args: Parameters<ReadModelResolver<any>>,
-  middlewareContext?: ReadModelResolverInteropContext
+  middlewareContext: ReadModelResolverMiddlewareContext,
+  ...args: Parameters<ReadModelResolver<any>>
 ]
 type ProjectionMiddlewareParameters = [
-  ...args: Parameters<ReadModelEventHandler<any>>,
-  middlewareContext?: ReadModelInteropContext
+  middlewareContext: ReadModelMiddlewareContext,
+  ...args: Parameters<ReadModelEventHandler<any>>
 ]
 
 export type CommandMiddlewareHandler = (
@@ -131,24 +131,20 @@ type MiddlewareChainableFunction =
 
 type MiddlewareHandler<THandler> = (next: THandler) => THandler
 
-export type ExecutionContext = {
+export type MiddlewareContext = {
   req?: any
   res?: any
 }
 
-type ReadModelInteropContext = {
-  meta: ReadModelMeta
-  runtime: ReadModelRuntime
-} & ExecutionContext
+type ReadModelMiddlewareContext = {
+  readModelName: string
+} & MiddlewareContext
 
-type ReadModelResolverInteropContext = {
-  resolver: string
-} & ReadModelInteropContext
+type ReadModelResolverMiddlewareContext = {
+  resolverName: string
+} & ReadModelMiddlewareContext
 
-type AggregateInteropContext = {
-  interop: AggregateInterop
-  runtime: AggregateRuntime
-} & ExecutionContext
+type AggregateMiddlewareContext = MiddlewareContext
 
 type Middleware<
   THandler extends MiddlewareChainableFunction
