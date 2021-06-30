@@ -1,5 +1,5 @@
-import { ResolverMiddleware } from '@resolve-js/core'
-const middleware: ResolverMiddleware = (next) => async (
+import { ReadModelResolverMiddleware } from '@resolve-js/core'
+const middleware: ReadModelResolverMiddleware = (next) => async (
   middlewareContext,
   store,
   args,

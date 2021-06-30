@@ -4,8 +4,8 @@ import { ReadModelInterop, ReadModelRuntime } from '../src/read-model/types'
 import {
   ReadModelMeta,
   Monitoring,
-  ResolverMiddleware,
-  ProjectionMiddleware,
+  ReadModelResolverMiddleware,
+  ReadModelProjectionMiddleware,
 } from '../src/types/runtime'
 
 const dummyEncryption = () => Promise.resolve({})
@@ -314,8 +314,8 @@ describe('Read model middleware: ', () => {
   let dummyMiddlewareSpy: any
 
   const prepareInterop = (
-    resolverMiddlewares: ResolverMiddleware[] = [],
-    projectionMiddlewares: ProjectionMiddleware[] = []
+    resolverMiddlewares: ReadModelResolverMiddleware[] = [],
+    projectionMiddlewares: ReadModelProjectionMiddleware[] = []
   ): Promise<ReadModelInterop> => {
     const runtime = makeTestRuntime()
     runtime.resolverMiddlewares = [...resolverMiddlewares]
@@ -343,12 +343,9 @@ describe('Read model middleware: ', () => {
   afterEach(() => jest.resetAllMocks())
   describe('resolver', () => {
     test('should be executed in resolver execution flow', async () => {
-      const dummyResolverMiddleware: ResolverMiddleware = (next) => async (
-        middlewareContext,
-        store,
-        params,
-        context
-      ) => {
+      const dummyResolverMiddleware: ReadModelResolverMiddleware = (
+        next
+      ) => async (middlewareContext, store, params, context) => {
         dummyMiddlewareSpy(middlewareContext, store, params, context)
         return next(middlewareContext, store, params, context)
       }
@@ -369,12 +366,9 @@ describe('Read model middleware: ', () => {
 
     test('can modify passed params', async () => {
       const extraParams = { extra: 'extra' }
-      const dummyResolverMiddleware: ResolverMiddleware = (next) => async (
-        middlewareContext,
-        store,
-        params,
-        context
-      ) => {
+      const dummyResolverMiddleware: ReadModelResolverMiddleware = (
+        next
+      ) => async (middlewareContext, store, params, context) => {
         return next(middlewareContext, store, { ...params, extraParams }, {
           ...context,
           extraParams,
@@ -395,12 +389,9 @@ describe('Read model middleware: ', () => {
     })
     test('can interrupt resolver flow on error', async () => {
       dummyResolver = jest.fn().mockReturnValue({ dummy: 'dummy' })
-      const dummyResolverMiddleware: ResolverMiddleware = (next) => async (
-        middlewareContext,
-        store,
-        params,
-        context
-      ) => {
+      const dummyResolverMiddleware: ReadModelResolverMiddleware = (
+        next
+      ) => async (middlewareContext, store, params, context) => {
         throw new Error('Interrupted by middleware')
       }
 
@@ -420,12 +411,9 @@ describe('Read model middleware: ', () => {
     test('can modify resolver result', async () => {
       const extraResult = { extra: 'extra' }
       dummyResolver = jest.fn().mockReturnValue({ dummy: 'dummy' })
-      const dummyResolverMiddleware: ResolverMiddleware = (next) => async (
-        middlewareContext,
-        store,
-        params,
-        context
-      ) => {
+      const dummyResolverMiddleware: ReadModelResolverMiddleware = (
+        next
+      ) => async (middlewareContext, store, params, context) => {
         const result = await next(middlewareContext, store, params, context)
         return { ...result, extraResult }
       }
@@ -444,7 +432,7 @@ describe('Read model middleware: ', () => {
         out: 'Result value.',
       }))
 
-      const middleware1: ResolverMiddleware = (next) => async (
+      const middleware1: ReadModelResolverMiddleware = (next) => async (
         middlewareContext,
         store,
         params,
@@ -461,7 +449,7 @@ describe('Read model middleware: ', () => {
           out: (result as any).out + ' Modified by first middleware.',
         }
       }
-      const middleware2: ResolverMiddleware = (next) => async (
+      const middleware2: ReadModelResolverMiddleware = (next) => async (
         middlewareContext,
         store,
         params,
@@ -506,12 +494,9 @@ describe('Read model middleware: ', () => {
       timestamp: 1,
     }
     test('should be executed in event handling execution flow', async () => {
-      const dummyProjectionMiddleware: ProjectionMiddleware = (next) => async (
-        middlewareContext,
-        store,
-        event,
-        context
-      ) => {
+      const dummyProjectionMiddleware: ReadModelProjectionMiddleware = (
+        next
+      ) => async (middlewareContext, store, event, context) => {
         dummyMiddlewareSpy(middlewareContext, store, event, context)
         return next(middlewareContext, store, event, context)
       }
@@ -535,7 +520,7 @@ describe('Read model middleware: ', () => {
     })
 
     test('can be chained and modifies passed params in order', async () => {
-      const middleware1: ProjectionMiddleware = (next) => async (
+      const middleware1: ReadModelProjectionMiddleware = (next) => async (
         middlewareContext,
         store,
         event,
@@ -545,7 +530,7 @@ describe('Read model middleware: ', () => {
         modifiedEvent.payload.extra = 'Added by first middleware.'
         return next(middlewareContext, store, modifiedEvent, context)
       }
-      const middleware2: ProjectionMiddleware = (next) => async (
+      const middleware2: ReadModelProjectionMiddleware = (next) => async (
         middlewareContext,
         store,
         event,
@@ -579,12 +564,9 @@ describe('Read model middleware: ', () => {
       )
     })
     test('can interrupt event handling flow', async () => {
-      const dummyProjectionMiddleware: ProjectionMiddleware = (next) => async (
-        middlewareContext,
-        store,
-        event,
-        context
-      ) => {
+      const dummyProjectionMiddleware: ReadModelProjectionMiddleware = (
+        next
+      ) => async (middlewareContext, store, event, context) => {
         throw new Error('Interrupted by middleware')
       }
 

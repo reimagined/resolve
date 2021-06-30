@@ -1,6 +1,6 @@
-import { ProjectionMiddleware } from '@resolve-js/core'
+import { ReadModelProjectionMiddleware } from '@resolve-js/core'
 
-const middleware: ProjectionMiddleware = (next) => async (
+const middleware: ReadModelProjectionMiddleware = (next) => async (
   middlewareContext,
   store,
   event,

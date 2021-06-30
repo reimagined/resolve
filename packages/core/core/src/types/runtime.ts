@@ -156,5 +156,5 @@ export type MiddlewareApplier<T extends MiddlewareChainableFunction> = (
 ) => T
 
 export type CommandMiddleware = Middleware<CommandMiddlewareHandler>
-export type ProjectionMiddleware = Middleware<ProjectionMiddlewareHandler>
-export type ResolverMiddleware = Middleware<ResolverMiddlewareHandler>
+export type ReadModelProjectionMiddleware = Middleware<ProjectionMiddlewareHandler>
+export type ReadModelResolverMiddleware = Middleware<ResolverMiddlewareHandler>
