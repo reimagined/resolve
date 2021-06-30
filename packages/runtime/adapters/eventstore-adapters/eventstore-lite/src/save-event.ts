@@ -2,18 +2,22 @@ import {
   ConcurrentError,
   InputEvent,
   SavedEvent,
+  EventThreadData,
+  EventWithCursor,
   threadArrayToCursor,
+  THREAD_COUNT,
 } from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 import { EventstoreFrozenError } from '@resolve-js/eventstore-base'
+import assert from 'assert'
 
 const saveEvent = async (
   pool: AdapterPool,
   event: InputEvent
-): Promise<string> => {
+): Promise<EventWithCursor> => {
   const { eventsTableName, database, escapeId, escape } = pool
   try {
-    const currentThreadId = Math.floor(Math.random() * 256)
+    const currentThreadId = Math.floor(Math.random() * THREAD_COUNT)
     const eventsTableNameAsId = escapeId(eventsTableName)
     const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
     const serializedPayload =
@@ -58,33 +62,77 @@ const saveEvent = async (
         ${+event.aggregateVersion},
         ${escape(event.type)},
         json(CAST(${serializedPayload} AS BLOB))
-      );`
+      );
+      COMMIT;`
     )
 
     const rows = (await database.all(
-      `SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
+      `SELECT "threadId", MAX("threadCounter") AS "threadCounter", "timestamp" FROM 
     ${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`
     )) as Array<{
-      threadId: SavedEvent['threadId']
-      threadCounter: SavedEvent['threadCounter']
+      threadId: EventThreadData['threadId']
+      threadCounter: EventThreadData['threadCounter']
+      timestamp: SavedEvent['timestamp']
     }>
 
-    const threadCounters = new Array<number>(256)
+    const threadCounters = new Array<number>(THREAD_COUNT)
     threadCounters.fill(-1)
+
+    let savedEventThreadCounter: number | undefined
+    let savedEventTimestamp: number | undefined
+
     for (const row of rows) {
       threadCounters[row.threadId] = row.threadCounter
+      if (row.threadId === currentThreadId) {
+        savedEventThreadCounter = row.threadCounter
+        savedEventTimestamp = row.timestamp
+      }
     }
+
+    if (savedEventThreadCounter === undefined) {
+      throw new assert.AssertionError({
+        message: 'Could not find threadCounter of saved event',
+        actual: savedEventThreadCounter,
+        expected: undefined,
+        operator: 'notStrictEqual',
+      })
+    }
+
+    if (savedEventTimestamp === undefined) {
+      throw new assert.AssertionError({
+        message: 'Could not find timestamp of saved event',
+        actual: savedEventTimestamp,
+        expected: undefined,
+        operator: 'notStrictEqual',
+      })
+    }
+
+    const savedEvent: SavedEvent = {
+      ...event,
+      threadId: currentThreadId,
+      threadCounter: savedEventThreadCounter,
+      timestamp: savedEventTimestamp,
+    }
+
     for (let i = 0; i < threadCounters.length; ++i) {
       threadCounters[i]++
     }
 
     const cursor = threadArrayToCursor(threadCounters)
-    await database.exec('COMMIT;')
-    return cursor
+
+    return {
+      event: savedEvent,
+      cursor,
+    }
   } catch (error) {
     const errorMessage =
       error != null && error.message != null ? error.message : ''
+
     const errorCode = error != null && error.code != null ? error.code : ''
+
+    if (errorMessage.indexOf('transaction within a transaction') > -1) {
+      return await saveEvent(pool, event)
+    }
 
     try {
       await database.exec('ROLLBACK;')

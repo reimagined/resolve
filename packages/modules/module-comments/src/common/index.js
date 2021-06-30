@@ -72,7 +72,7 @@ const makeConfig = (options, imports) => {
   return config
 }
 
-export default ({
+const serverEntry = ({
   aggregateName,
   readModelName,
   readModelConnectorName,
@@ -106,3 +106,5 @@ export default ({
 
   return injectDefaults(makeConfig)(options, imports)
 }
+
+export default serverEntry

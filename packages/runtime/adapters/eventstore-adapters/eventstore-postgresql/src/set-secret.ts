@@ -1,4 +1,4 @@
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { AdapterPool } from './types'
 import { LONG_NUMBER_SQL_TYPE, RESERVED_EVENT_SIZE } from './constants'
 import {

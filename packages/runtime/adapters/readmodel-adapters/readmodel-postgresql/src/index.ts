@@ -33,6 +33,8 @@ import update from './update'
 import PassthroughError from './passthrough-error'
 import inlineLedgerForceStop from './inline-ledger-force-stop'
 import generateGuid from './generate-guid'
+import makeNestedPath from './make-nested-path'
+import makeSqlQuery from './make-sql-query'
 
 import subscribe from './subscribe'
 import resubscribe from './resubscribe'
@@ -57,17 +59,19 @@ const store: CurrentStoreApi = {
 }
 
 const internalMethods: InternalMethods = {
-  dropReadModel,
-  escapeId,
-  escapeStr,
   buildUpsertDocument,
   convertResultRow,
   searchToWhereExpression,
   updateToSetExpression,
   PassthroughError,
   inlineLedgerForceStop,
+  makeNestedPath,
+  makeSqlQuery,
   generateGuid,
   maybeInit,
+  dropReadModel,
+  escapeId,
+  escapeStr,
 }
 
 const externalMethods: ExternalMethods = {

@@ -3,7 +3,7 @@ import {
   ReadModelInterop,
   SagaInterop,
 } from '@resolve-js/core'
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { WrapReadModelOptions, ReadModelPool } from './types'
 import parseReadOptions from './parse-read-options'
 import { OMIT_BATCH, STOP_BATCH } from './batch'
@@ -92,13 +92,14 @@ const serializeState = async ({ state }: { state: any }): Promise<string> => {
 
 const next = async (
   pool: ReadModelPool,
-  eventListener: string,
+  eventSubscriber: string,
   ...args: any[]
 ) => {
   if (args.length > 0) {
     throw new TypeError('Next should be invoked with no arguments')
   }
-  await pool.invokeEventSubscriberAsync(eventListener, 'build', {
+  await pool.invokeBuildAsync({
+    eventSubscriber,
     initiator: 'read-model-next',
     notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
     sendTime: Date.now(),
@@ -650,6 +651,7 @@ const operationMethods = {
       readModelName,
       parameters.subscriptionOptions.eventTypes,
       parameters.subscriptionOptions.aggregateIds,
+      pool.readModelSource,
     ]
   ),
 
@@ -672,6 +674,7 @@ const operationMethods = {
       readModelName,
       parameters.subscriptionOptions.eventTypes,
       parameters.subscriptionOptions.aggregateIds,
+      pool.readModelSource,
     ]
   ),
 
@@ -684,7 +687,7 @@ const operationMethods = {
       connection: any,
       readModelName: string,
       parameters: {}
-    ) => [connection, readModelName]
+    ) => [connection, readModelName, pool.readModelSource]
   ),
 
   status: doOperation.bind(
@@ -739,7 +742,8 @@ const wrapReadModel = ({
   applicationName,
   interop,
   readModelConnectors,
-  invokeEventSubscriberAsync,
+  invokeBuildAsync,
+  readModelSources,
   performanceTracer,
   getVacantTimeInMillis,
   monitoring,
@@ -759,7 +763,7 @@ const wrapReadModel = ({
     monitoring != null ? makeMonitoringSafe(monitoring) : monitoring
 
   const pool: ReadModelPool = {
-    invokeEventSubscriberAsync,
+    invokeBuildAsync,
     applicationName,
     connections: new Set(),
     connector,
@@ -768,6 +772,9 @@ const wrapReadModel = ({
     getVacantTimeInMillis,
     monitoring: safeMonitoring,
     eventstoreAdapter,
+    get readModelSource() {
+      return readModelSources != null ? readModelSources[interop.name] : null
+    },
   }
 
   const api = {

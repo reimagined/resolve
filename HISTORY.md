@@ -1,5 +1,64 @@
 # Changelog
 
+## [V0.31.0](https://github.com/reimagined/resolve/tree/V0.31.0) (2021-06-28)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.5...V0.31.0)
+
+**New features:**
+
+- Add SQS integration [\#1905](https://github.com/reimagined/resolve/pull/1905)
+- Upgrade examples [\#1902](https://github.com/reimagined/resolve/pull/1902)
+
+**Enhancements:**
+
+- Don't create new instance of postgres connection per each query [\#1909](https://github.com/reimagined/resolve/pull/1909)
+
+**Bug fixes:**
+
+- The loadEvents function does not work if 'startTime' and 'endTime' parameters are specified [\#1903](https://github.com/reimagined/resolve/issues/1903)
+
+**Other changes:**
+
+- Fix getCursorUntilEventTypes [\#1913](https://github.com/reimagined/resolve/pull/1913)
+- Feature/hot read models [\#1910](https://github.com/reimagined/resolve/pull/1910)
+- Examples and create-resolve-app minor fixes [\#1907](https://github.com/reimagined/resolve/pull/1907)
+
+## [V0.30.5](https://github.com/reimagined/resolve/tree/V0.30.5) (2021-06-08)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.4...V0.30.5)
+
+**New features:**
+
+- Implement inline projection execution in RDBMS PostgreSQL via PLV8 extenstion [\#1898](https://github.com/reimagined/resolve/pull/1898)
+
+**Bug fixes:**
+
+- SQLITE\_ERROR: cannot start a transaction within a transaction [\#1886](https://github.com/reimagined/resolve/issues/1886)
+- Event subscription does not work for cursor equal to null [\#1884](https://github.com/reimagined/resolve/issues/1884)
+- Event store postgresql serverless failed on loading events with empty types list [\#1883](https://github.com/reimagined/resolve/issues/1883)
+- View model gets duplicated events through websocket [\#1877](https://github.com/reimagined/resolve/issues/1877)
+- Subscription to events with a custom view-model resolver [\#1874](https://github.com/reimagined/resolve/issues/1874)
+
+**Other changes:**
+
+- Add postresql integration tests into CI [\#1897](https://github.com/reimagined/resolve/pull/1897)
+- Implement monitoring in readmodel-postgresql [\#1896](https://github.com/reimagined/resolve/pull/1896)
+- Improve dev pr workflow [\#1893](https://github.com/reimagined/resolve/pull/1893)
+- saveEvent returns a saved event with the next cursor [\#1879](https://github.com/reimagined/resolve/pull/1879)
+
+## [V0.30.4](https://github.com/reimagined/resolve/tree/V0.30.4) (2021-05-27)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.3...V0.30.4)
+
+**New features:**
+
+- Eventstore adapter: saveEvent now returns the next cursor, add getCursorUntilEventTypes [\#1878](https://github.com/reimagined/resolve/pull/1878)
+
+**Bug fixes:**
+
+- Read models don't work in cloud [\#1880](https://github.com/reimagined/resolve/issues/1880)
+- Can't pass timestamp to givenEvents events [\#1862](https://github.com/reimagined/resolve/issues/1862)
+
 ## [V0.30.3](https://github.com/reimagined/resolve/tree/V0.30.3) (2021-05-17)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.30.2...V0.30.3)

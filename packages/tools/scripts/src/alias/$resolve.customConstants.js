@@ -1,7 +1,7 @@
 import { message } from '../constants'
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
-export default ({ resolveConfig, isClient }) => {
+const importCustomConstants = ({ resolveConfig, isClient }) => {
   void JSON.stringify(resolveConfig.customConstants, (key, value) => {
     if (
       value != null &&
@@ -31,3 +31,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return exports.join('\r\n')
 }
+
+export default importCustomConstants

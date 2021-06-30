@@ -1,4 +1,4 @@
-export default {
+const resolvers = {
   resolverA: async () => {
     throw Error('Test read model: resolverA failure')
   },
@@ -6,3 +6,4 @@ export default {
     throw Error('Test read model: resolverB failure')
   },
 }
+export default resolvers

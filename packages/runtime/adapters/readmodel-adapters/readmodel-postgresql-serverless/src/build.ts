@@ -165,11 +165,13 @@ export const buildEvents: (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis
+  getVacantTimeInMillis,
+  buildInfo
 ) => {
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
+    checkEventsContinuity,
     inlineLedgerExecuteTransaction,
     inlineLedgerExecuteStatement,
     generateGuid,
@@ -183,6 +185,24 @@ export const buildEvents: (
     metricData,
     monitoring,
   } = pool
+  const { eventsWithCursors } = buildInfo
+  const isContinuousMode =
+    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function'
+  const getContinuousLatestCursor = async (
+    cursor: ReadModelCursor,
+    events: Array<ReadModelEvent>,
+    eventTypes: Array<string> | null
+  ) => {
+    let nextCursor = await eventstoreAdapter.getNextCursor(cursor, events)
+    if (isContinuousMode && eventTypes != null) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      nextCursor = await eventstoreAdapter.getCursorUntilEventTypes!(
+        nextCursor,
+        eventTypes
+      )
+    }
+    return nextCursor
+  }
 
   let lastSuccessEvent: ReadModelEvent | null = null
   let lastFailedEvent: ReadModelEvent | null = null
@@ -193,6 +213,13 @@ export const buildEvents: (
   let eventsApplyStartTimestamp = Date.now()
   let eventCount = 0
 
+  const hotEvents: Array<ReadModelEvent> | null =
+    isContinuousMode &&
+    Array.isArray(eventsWithCursors) &&
+    checkEventsContinuity(inputCursor, eventsWithCursors)
+      ? eventsWithCursors.map(({ event }) => event)
+      : null
+
   let transactionIdPromise: Promise<string> = inlineLedgerExecuteTransaction(
     pool,
     'begin'
@@ -200,18 +227,21 @@ export const buildEvents: (
 
   const firstEventsLoadStartTimestamp = Date.now()
 
-  let eventsPromise: Promise<Array<ReadModelEvent>> = eventstoreAdapter
-    .loadEvents({
-      eventTypes,
-      eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
-      limit: 100,
-      cursor,
-    })
-    .then((result) => {
-      metricData.eventBatchLoadTime +=
-        Date.now() - firstEventsLoadStartTimestamp
-      return result != null ? result.events : []
-    })
+  let eventsPromise: Promise<Array<ReadModelEvent>> =
+    hotEvents == null
+      ? eventstoreAdapter
+          .loadEvents({
+            eventTypes,
+            eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
+            limit: 100,
+            cursor,
+          })
+          .then((result) => {
+            metricData.eventBatchLoadTime +=
+              Date.now() - firstEventsLoadStartTimestamp
+            return result != null ? result.events : []
+          })
+      : Promise.resolve(hotEvents)
 
   let transactionId: string = await transactionIdPromise
   let rootSavePointId: string = generateGuid(transactionId, 'ROOT')
@@ -272,18 +302,21 @@ export const buildEvents: (
       'begin'
     ).then((result) => (result != null ? result : RDS_TRANSACTION_FAILED_KEY))
 
-    let nextCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(
+    let nextCursorPromise: Promise<ReadModelCursor> = getContinuousLatestCursor(
       cursor,
-      events
+      events,
+      eventTypes
     )
     const eventsLoadStartTimestamp = Date.now()
-    eventsPromise = eventstoreAdapter
-      .loadEvents({
-        eventTypes,
-        eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
-        limit: 1000,
-        cursor: nextCursor,
-      })
+    eventsPromise = Promise.resolve(nextCursorPromise)
+      .then((nextCursor) =>
+        eventstoreAdapter.loadEvents({
+          eventTypes,
+          eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
+          limit: 1000,
+          cursor: nextCursor,
+        })
+      )
       .then((result) => {
         metricData.eventBatchLoadTime += Date.now() - eventsLoadStartTimestamp
         return result != null ? result.events : []
@@ -322,9 +355,10 @@ export const buildEvents: (
           appliedEventsCount++
 
           if (getVacantTimeInMillis() < 0) {
-            nextCursor = eventstoreAdapter.getNextCursor(
+            nextCursorPromise = getContinuousLatestCursor(
               cursor,
-              events.slice(0, appliedEventsCount)
+              events.slice(0, appliedEventsCount),
+              eventTypes
             )
             localContinue = false
             break
@@ -334,9 +368,10 @@ export const buildEvents: (
             throw error
           }
 
-          nextCursor = eventstoreAdapter.getNextCursor(
+          nextCursorPromise = getContinuousLatestCursor(
             cursor,
-            events.slice(0, appliedEventsCount)
+            events.slice(0, appliedEventsCount),
+            eventTypes
           )
 
           await inlineLedgerExecuteStatement(
@@ -357,7 +392,7 @@ export const buildEvents: (
         throw originalError
       }
 
-      nextCursor = cursor
+      nextCursorPromise = Promise.resolve(cursor)
       appliedEventsCount = 0
       const composedError = new Error(
         `Fatal inline ledger building error: ${originalError.message}`
@@ -375,6 +410,7 @@ export const buildEvents: (
       )
     }
 
+    const nextCursor = await nextCursorPromise
     if (lastError == null) {
       await inlineLedgerExecuteStatement(
         pool,
@@ -420,18 +456,6 @@ export const buildEvents: (
     }
 
     await inlineLedgerExecuteTransaction(pool, 'commit', transactionId)
-
-    if (eventCount > 0 && monitoring != null) {
-      const seconds = (Date.now() - eventsApplyStartTimestamp) / 1000
-
-      monitoring
-        .group({ Part: 'ReadModel' })
-        .group({ ReadModel: readModelName })
-        .rate('ReadModelFeedingRate', eventCount, seconds)
-    }
-
-    eventCount = 0
-    eventsApplyStartTimestamp = Date.now()
 
     if (eventCount > 0 && monitoring != null) {
       const seconds = (Date.now() - eventsApplyStartTimestamp) / 1000
@@ -519,14 +543,17 @@ const build: ExternalMethods['build'] = async (
   next,
   eventstoreAdapter,
   getVacantTimeInMillis,
-  ...args
+  buildInfo
 ) => {
-  const metricData: any = {
-    ...(args as any)[0],
+  const { eventsWithCursors, ...inputMetricData } = buildInfo
+  const metricData = {
+    ...inputMetricData,
     eventBatchLoadTime: 0,
     pureProjectionApplyTime: 0,
     pureLedgerTime: 0,
+    insideProjection: false,
   }
+  void eventsWithCursors
 
   const {
     PassthroughError,
@@ -541,7 +568,8 @@ const build: ExternalMethods['build'] = async (
 
   const now = Date.now()
 
-  const hasSendTime = typeof metricData.sendTime === 'number'
+  const hasSendTime =
+    metricData.sendTime != null && metricData.sendTime.constructor === Number
 
   const groupMonitoring =
     monitoring != null
@@ -551,16 +579,14 @@ const build: ExternalMethods['build'] = async (
       : null
 
   if (hasSendTime) {
-    void [monitoring, groupMonitoring].forEach((innerMonitoring) => {
-      if (innerMonitoring == null) {
-        return
+    for (const innerMonitoring of [monitoring, groupMonitoring]) {
+      if (innerMonitoring != null) {
+        innerMonitoring.time('EventDelivery', metricData.sendTime)
+        innerMonitoring.timeEnd('EventDelivery', now)
+
+        innerMonitoring.time('EventApply', metricData.sendTime)
       }
-
-      innerMonitoring.time('EventDelivery', metricData.sendTime)
-      innerMonitoring.timeEnd('EventDelivery', now)
-
-      innerMonitoring.time('EventApply', metricData.sendTime)
-    })
+    }
   }
 
   const inlineLedgerExecuteStatement: typeof ledgerStatement = Object.assign(
@@ -671,7 +697,8 @@ const build: ExternalMethods['build'] = async (
       modelInterop,
       next,
       eventstoreAdapter,
-      getVacantTimeInMillis
+      getVacantTimeInMillis,
+      buildInfo
     )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
@@ -699,24 +726,25 @@ const build: ExternalMethods['build'] = async (
   } finally {
     basePool.activePassthrough = false
 
-    void [monitoring, groupMonitoring].forEach((innerMonitoring) => {
-      if (innerMonitoring == null) {
-        return
+    for (const innerMonitoring of [monitoring, groupMonitoring]) {
+      if (innerMonitoring != null) {
+        if (hasSendTime) {
+          innerMonitoring.timeEnd('EventApply')
+        }
+
+        innerMonitoring.duration(
+          'EventBatchLoad',
+          metricData.eventBatchLoadTime
+        )
+
+        innerMonitoring.duration(
+          'EventProjectionApply',
+          metricData.pureProjectionApplyTime
+        )
+
+        innerMonitoring.duration('Ledger', metricData.pureLedgerTime)
       }
-
-      if (hasSendTime) {
-        innerMonitoring.timeEnd('EventApply')
-      }
-
-      innerMonitoring.duration('EventBatchLoad', metricData.eventBatchLoadTime)
-
-      innerMonitoring.duration(
-        'EventProjectionApply',
-        metricData.pureProjectionApplyTime
-      )
-
-      innerMonitoring.duration('Ledger', metricData.pureLedgerTime)
-    })
+    }
   }
 }
 

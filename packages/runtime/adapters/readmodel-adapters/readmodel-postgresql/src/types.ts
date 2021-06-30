@@ -8,6 +8,7 @@ import type {
   StoreApi,
   PerformanceTracerLike,
   SplitNestedPathMethod,
+  ReadModelLedger,
   JsonMap,
   SearchCondition,
   UpdateCondition,
@@ -68,15 +69,33 @@ export type UpdateToSetExpressionMethod = (
 
 export interface PassthroughErrorInstance extends Error {
   name: string
+  isRetryable: boolean
+  isEmptyTransaction: boolean
+}
+
+export type PassthroughErrorLike = Error & {
+  code: string | number
+  stack: string
 }
 
 export type PassthroughErrorFactory = {
-  new (): PassthroughErrorInstance
+  new (
+    isRetryable: boolean,
+    isEmptyTransaction: boolean
+  ): PassthroughErrorInstance
 } & {
+  isRetryablePassthroughError: (error: PassthroughErrorLike) => boolean
+  isRegularFatalPassthroughError: (error: PassthroughErrorLike) => boolean
+  isRuntimeFatalPassthroughError: (error: PassthroughErrorLike) => boolean
   isPassthroughError: (
-    error: Error & { code: string | number },
+    error: PassthroughErrorLike,
     includeRuntimeErrors: boolean
   ) => boolean
+  isEmptyTransactionError: (error: PassthroughErrorLike) => boolean
+  maybeThrowPassthroughError: (
+    error: PassthroughErrorLike,
+    includeRuntimeErrors: boolean
+  ) => void
 }
 
 export type GenerateGuidMethod = (...args: any) => string
@@ -93,12 +112,27 @@ export type AdapterOptions = CommonAdapterOptions & {
 
 export type MaybeInitMethod = (pool: AdapterPool) => Promise<void>
 
+export type MakeSqlQueryMethodTargetParameters<
+  T extends keyof CurrentStoreApi
+> = Parameters<CurrentStoreApi[T]> extends [infer _, infer __, ...infer Args] // eslint-disable-line @typescript-eslint/no-unused-vars
+  ? Args
+  : never
+
+export type MakeSqlQueryMethod = <T extends keyof CurrentStoreApi>(
+  methods: AdapterPool,
+  readModelName: string,
+  operation: T,
+  ...args: MakeSqlQueryMethodTargetParameters<T>
+) => string
+
 export type InternalMethods = {
   inlineLedgerForceStop: InlineLedgerForceStopMethod
   buildUpsertDocument: BuildUpsertDocumentMethod
   convertResultRow: ConvertResultRowMethod
   searchToWhereExpression: SearchToWhereExpressionMethod
   updateToSetExpression: UpdateToSetExpressionMethod
+  makeNestedPath: MakeNestedPathMethod
+  makeSqlQuery: MakeSqlQueryMethod
   PassthroughError: PassthroughErrorFactory
   generateGuid: GenerateGuidMethod
   dropReadModel: DropReadModelMethod
@@ -135,9 +169,7 @@ export type AdapterPool = CommonAdapterPool & {
   activePassthrough: boolean
   connection: InstanceType<LibDependencies['Postgres']>
 } & {
-    [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<
-      AdapterPool
-    >[K]
+    [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<AdapterPool>[K]
   } &
   {
     [K in keyof StoreApi<CommonAdapterPool>]: StoreApi<AdapterPool>[K]
@@ -177,6 +209,18 @@ export type CurrentAdapterImplementation = AdapterImplementation<
 export type AdminOptions = PGLib.ConnectionConfig & {
   databaseName: string
   userLogin: string
+}
+
+export type ReadModelProcedureLedger = ReadModelLedger & {
+  IsProcedural: boolean
+}
+
+export type ProcedureResult = {
+  status: 'OK_ALL' | 'OK_PARTIAL' | 'CUSTOM_ERROR' | 'DEPENDENCY_ERROR'
+  successEvent: Event | null
+  failureEvent: Event | null
+  failureError: Error | null
+  appliedCount: number
 }
 
 export type BoundResourceMethod = (options: AdminOptions) => Promise<void>

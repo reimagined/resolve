@@ -1,5 +1,5 @@
 import { snapshotTrigger } from '@resolve-js/eventstore-base'
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { AdapterPool } from './types'
 
 const saveSnapshot = async (

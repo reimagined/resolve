@@ -1,0 +1,24 @@
+import React from 'react'
+import { render } from 'react-dom'
+import { BrowserRouter } from 'react-router-dom'
+import { renderRoutes } from 'react-router-config'
+import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
+
+import getRoutes from './get-routes'
+import getRedux from './get-redux'
+
+const entryPoint = (clientContext) => {
+  const store = createResolveStore(clientContext, {
+    serializedState: (window as any).__INITIAL_STATE__,
+    redux: getRedux(),
+  })
+
+  render(
+    <ResolveReduxProvider context={clientContext} store={store}>
+      <BrowserRouter>{renderRoutes(getRoutes())}</BrowserRouter>
+    </ResolveReduxProvider>,
+    document.getElementById('app-container')
+  )
+}
+
+export default entryPoint

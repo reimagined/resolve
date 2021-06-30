@@ -12,6 +12,7 @@ import showBuildInfo from './show_build_info'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
 import copyEnvToDist from './copy_env_to_dist'
 import getLog from './get-log'
+import detectErrors from './detect_errors'
 
 const log = getLog('custom')
 
@@ -55,10 +56,7 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 
           copyEnvToDist(config.distDir)
 
-          const hasNoErrors = stats.reduce(
-            (acc, val) => acc && val != null && !val.hasErrors(),
-            true
-          )
+          const hasNoErrors = detectErrors(stats, false)
 
           void (hasNoErrors ? resolve() : reject(stats.toString('')))
         })

@@ -337,7 +337,8 @@ const build: ExternalMethods['build'] = async (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis
+  getVacantTimeInMillis,
+  buildInfo
 ) => {
   const {
     PassthroughError,
@@ -429,7 +430,8 @@ const build: ExternalMethods['build'] = async (
       modelInterop,
       next,
       eventstoreAdapter,
-      getVacantTimeInMillis
+      getVacantTimeInMillis,
+      buildInfo
     )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {

@@ -2,24 +2,13 @@ import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import debugLevels from '@resolve-js/debug-levels'
 import path from 'path'
 
-import entryPointMarker from './entry-point-marker'
+import pureRequire from './pure-require'
+import liveEntryDir from './live-entry-dir'
 
 const log = debugLevels('resolve:runtime:liveRequire')
 
-const pureRequire = __non_webpack_require__ //eslint-disable-line no-undef
-const entryPointDirnamePlaceholder = Symbol('EntryPointDirnamePlaceholder')
-let entryPointDirname = entryPointDirnamePlaceholder
-
 const liveRequire = (filePath) => {
-  if (entryPointDirname === entryPointDirnamePlaceholder) {
-    entryPointDirname = (
-      Object.values(pureRequire.cache).find(
-        ({ exports }) =>
-          exports != null && exports.entryPointMarker === entryPointMarker
-      ) || {}
-    ).filename
-  }
-
+  const entryPointDirname = liveEntryDir()
   let resource = null
   const isRealFilePath = filePath[0] === '/' || filePath[0] === '.'
 
@@ -29,7 +18,7 @@ const liveRequire = (filePath) => {
   }
 
   const fullPath = isRealFilePath
-    ? path.resolve(path.dirname(entryPointDirname), filePath)
+    ? path.resolve(entryPointDirname, filePath)
     : filePath
 
   try {

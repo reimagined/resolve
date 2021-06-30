@@ -5,6 +5,12 @@ import {
   adapters,
 } from '../eventstore-test-utils'
 
+import {
+  initThreadArray,
+  threadArrayToCursor,
+  SavedEvent,
+} from '@resolve-js/eventstore-base'
+
 jest.setTimeout(jestTimeout())
 
 describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
@@ -56,6 +62,31 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
     expect(events).toHaveLength(0)
   })
 
+  test('should load 0 events by empty type list and return the initial cursor', async () => {
+    const { events, cursor } = await adapter.loadEvents({
+      limit: countEvents,
+      eventTypes: [],
+      cursor: null,
+    })
+    expect(events).toHaveLength(0)
+    expect(cursor).toEqual(threadArrayToCursor(initThreadArray()))
+
+    const { cursor: shiftedCursor } = await adapter.loadEvents({
+      cursor: null,
+      limit: 1,
+    })
+    const {
+      events: shiftedEvents,
+      cursor: newCursor,
+    } = await adapter.loadEvents({
+      limit: countEvents,
+      eventTypes: [],
+      cursor: shiftedCursor,
+    })
+    expect(shiftedEvents).toHaveLength(0)
+    expect(newCursor).toEqual(shiftedCursor)
+  })
+
   test('should load events by aggregateId', async () => {
     const { events } = await adapter.loadEvents({
       limit: countEvents,
@@ -72,6 +103,31 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
       cursor: null,
     })
     expect(events).toHaveLength(0)
+  })
+
+  test('should load 0 events by empty aggregateId list and return the initial cursor', async () => {
+    const { events, cursor } = await adapter.loadEvents({
+      limit: countEvents,
+      aggregateIds: [],
+      cursor: null,
+    })
+    expect(events).toHaveLength(0)
+    expect(cursor).toEqual(threadArrayToCursor(initThreadArray()))
+
+    const { cursor: shiftedCursor } = await adapter.loadEvents({
+      cursor: null,
+      limit: 1,
+    })
+    const {
+      events: shiftedEvents,
+      cursor: newCursor,
+    } = await adapter.loadEvents({
+      limit: countEvents,
+      aggregateIds: [],
+      cursor: shiftedCursor,
+    })
+    expect(shiftedEvents).toHaveLength(0)
+    expect(newCursor).toEqual(shiftedCursor)
   })
 
   test('should be able to load events continuously', async () => {
@@ -106,6 +162,8 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
   const eventTypesCount = 4
   const aggregateIdCount = 5
 
+  const savedEvents: Array<SavedEvent> = []
+
   test('should save events with different aggregate ids and types', async () => {
     for (let eventIndex = 0; eventIndex < countEvents; eventIndex++) {
       const event = {
@@ -115,7 +173,8 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
         payload: { eventIndex },
         timestamp: eventIndex + 1,
       }
-      await adapter.saveEvent(event)
+      const { event: savedEvent } = await adapter.saveEvent(event)
+      savedEvents.push(savedEvent)
     }
   })
 
@@ -192,6 +251,65 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
         event.aggregateId === 'aggregateId_1' ||
           event.aggregateId === 'aggregateId_5'
       ).toBeTruthy()
+    }
+  })
+
+  test('should load events by timestamp', async () => {
+    const { events } = await adapter.loadEvents({
+      limit: countEvents,
+      startTime: savedEvents[0].timestamp,
+      finishTime: savedEvents[countEvents / 3 - 1].timestamp,
+    })
+
+    expect(events.length).toBeGreaterThan(0)
+    for (let i = 0; i < events.length; ++i) {
+      expect(events[i].type).toEqual(savedEvents[i].type)
+      expect(events[i].aggregateId).toEqual(savedEvents[i].aggregateId)
+      expect(events[i].threadId).toEqual(savedEvents[i].threadId)
+      expect(events[i].threadCounter).toEqual(savedEvents[i].threadCounter)
+    }
+
+    const middleEventsIndex = countEvents / 3
+    const { events: otherEvents } = await adapter.loadEvents({
+      limit: countEvents,
+      startTime: savedEvents[middleEventsIndex].timestamp,
+      finishTime: savedEvents[middleEventsIndex + countEvents / 3].timestamp,
+    })
+
+    expect(otherEvents.length).toBeGreaterThan(0)
+    for (let i = 0; i < otherEvents.length; ++i) {
+      expect(otherEvents[i].type).toEqual(
+        savedEvents[i + middleEventsIndex].type
+      )
+      expect(otherEvents[i].aggregateId).toEqual(
+        savedEvents[i + middleEventsIndex].aggregateId
+      )
+      expect(otherEvents[i].threadId).toEqual(
+        savedEvents[i + middleEventsIndex].threadId
+      )
+      expect(otherEvents[i].threadCounter).toEqual(
+        savedEvents[i + middleEventsIndex].threadCounter
+      )
+    }
+
+    const lastEventsIndex = (countEvents / 3) * 2
+    const { events: lastEvents } = await adapter.loadEvents({
+      limit: countEvents,
+      startTime: savedEvents[lastEventsIndex].timestamp,
+      finishTime: savedEvents[countEvents - 1].timestamp,
+    })
+
+    for (let i = 0; i < lastEvents.length; ++i) {
+      expect(lastEvents[i].type).toEqual(savedEvents[i + lastEventsIndex].type)
+      expect(lastEvents[i].aggregateId).toEqual(
+        savedEvents[i + lastEventsIndex].aggregateId
+      )
+      expect(lastEvents[i].threadId).toEqual(
+        savedEvents[i + lastEventsIndex].threadId
+      )
+      expect(lastEvents[i].threadCounter).toEqual(
+        savedEvents[i + lastEventsIndex].threadCounter
+      )
     }
   })
 })

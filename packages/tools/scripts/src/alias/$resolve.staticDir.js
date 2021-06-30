@@ -1,7 +1,7 @@
 import { message } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 
-export default ({ resolveConfig, isClient }) => {
+const importStaticDir = ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(`${message.serverAliasInClientCodeError}$resolve.staticDir`)
   }
@@ -20,3 +20,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return exports.join('\r\n')
 }
+
+export default importStaticDir

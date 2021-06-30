@@ -6,7 +6,7 @@ import {
 } from './types'
 import { CommandError } from '../errors'
 import { AggregateMeta } from '../types/runtime'
-import getLog from '../get-log'
+import { getLog } from '../get-log'
 import { getPerformanceTracerSubsegment } from '../utils'
 import {
   Event,
@@ -113,10 +113,10 @@ const saveEvent = async (
       : true
 
   if (allowSave) {
-    await eventstore.saveEvent(event)
+    const eventWithCursor = await eventstore.saveEvent(event)
 
     if (typeof postSaveEvent === 'function') {
-      await postSaveEvent(aggregate, command, event)
+      await postSaveEvent(aggregate, command, event, eventWithCursor)
     }
   }
 
@@ -512,7 +512,7 @@ const executeCommand = async (
     subSegment.addError(error)
 
     if (monitoringGroup != null) {
-      monitoringGroup.group({ AggregateId: command.aggregateId }).error(error)
+      monitoringGroup.error(error)
     }
     throw error
   } finally {

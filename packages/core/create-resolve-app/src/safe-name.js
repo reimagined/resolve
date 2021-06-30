@@ -1,1 +1,2 @@
-export default (safeName) => safeName.replace(/@/, '').replace(/[/|\\]/g, '-')
+const safeName = (name) => name.replace(/@/, '').replace(/[/|\\]/g, '-')
+export default safeName

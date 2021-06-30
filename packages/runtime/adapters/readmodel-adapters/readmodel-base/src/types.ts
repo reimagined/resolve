@@ -1,8 +1,13 @@
-import {
+import type {
   Adapter as EventStoreAdapter,
   Cursor,
   SavedEvent,
+  EventWithCursor as EventStoreEventWithCursor,
+  checkEventsContinuity,
 } from '@resolve-js/eventstore-base'
+
+export type CheckEventsContinuityMethod = typeof checkEventsContinuity
+export type EventWithCursor = EventStoreEventWithCursor
 
 export type JsonPrimitive = string | number | boolean | null
 export type JsonMap = {
@@ -149,13 +154,7 @@ export type MonitoringLike = {
 export type ReadModelCursor = Cursor // TODO brand type
 export type ReadModelEvent = SavedEvent
 
-export type EventstoreAdapterLike = {
-  loadEvents: EventStoreAdapter['loadEvents']
-  getNextCursor: EventStoreAdapter['getNextCursor']
-  getSecretsManager: EventStoreAdapter['getSecretsManager']
-  loadSecrets?: EventStoreAdapter['loadSecrets']
-  gatherSecretsFromEvents: EventStoreAdapter['gatherSecretsFromEvents']
-}
+export type EventstoreAdapterLike = EventStoreAdapter
 
 export type SplitNestedPathMethod = (input: string) => Array<string>
 
@@ -163,6 +162,7 @@ export type CommonAdapterPool = {
   monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
   splitNestedPath: SplitNestedPathMethod
+  checkEventsContinuity: CheckEventsContinuityMethod
 }
 
 export type CommonAdapterOptions = {
@@ -269,6 +269,14 @@ export type OmitObject<T extends object, U extends object> = {
   [K in Exclude<keyof T, keyof U>]: T[K]
 }
 
+export type BuildInfo = {
+  eventsWithCursors?: Array<EventWithCursor>
+  initiator: 'command' | 'read-model-next'
+  notificationId: string
+  sendTime: number
+  coldStart?: boolean
+}
+
 export type AdapterConnection<
   AdapterPool extends CommonAdapterPool,
   AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
@@ -283,16 +291,22 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     pool: AdapterPool,
     readModelName: string,
     eventTypes: Array<ReadModelEvent['type']> | null,
-    aggregateIds: Array<ReadModelEvent['aggregateId']> | null
+    aggregateIds: Array<ReadModelEvent['aggregateId']> | null,
+    readModelSource?: string
   ): Promise<void>
 
-  unsubscribe(pool: AdapterPool, readModelName: string): Promise<void>
+  unsubscribe(
+    pool: AdapterPool,
+    readModelName: string,
+    readModelSource?: string
+  ): Promise<void>
 
   resubscribe(
     pool: AdapterPool,
     readModelName: string,
     eventTypes: Array<ReadModelEvent['type']> | null,
-    aggregateIds: Array<ReadModelEvent['aggregateId']> | null
+    aggregateIds: Array<ReadModelEvent['aggregateId']> | null,
+    readModelSource?: string
   ): Promise<void>
 
   resume(
@@ -325,7 +339,8 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     },
     next: MethodNext,
     eventstoreAdapter: EventstoreAdapterLike,
-    getVacantTimeInMillis: MethodGetRemainingTime
+    getVacantTimeInMillis: MethodGetRemainingTime,
+    buildInfo: BuildInfo
   ): Promise<void>
 }
 
@@ -422,12 +437,12 @@ export type PathToolkitLib = {
 }
 
 export type MakeSplitNestedPathMethod = (
-  imports: BaseAdapterImports
+  PathToolkitLib: PathToolkitLib
 ) => SplitNestedPathMethod
 
 export type BaseAdapterImports = {
-  PathToolkit: PathToolkitLib
-  makeSplitNestedPath: MakeSplitNestedPathMethod
+  splitNestedPath: SplitNestedPathMethod
+  checkEventsContinuity: CheckEventsContinuityMethod
   withPerformanceTracer: WithPerformanceTracerMethod
   wrapConnect: WrapConnectMethod
   wrapDisconnect: WrapDisconnectMethod
@@ -489,11 +504,31 @@ export type ObjectKeys<T> = T extends object
   ? string[]
   : never
 
-export type ObjectFixedKeys<T extends object> = {
-  [K in keyof T]: string extends K ? never : number extends K ? never : K
-} extends { [_ in keyof T]: infer U }
+export type PrimitiveOnly<K> = string extends K
+  ? never
+  : number extends K
+  ? never
+  : K
+
+export type ObjectFixedKeysDistribute<T> = T extends any
+  ? T extends [infer U]
+    ? PrimitiveOnly<U>
+    : never
+  : never
+
+export type ObjectFixedKeysReInfer<T extends object> = T extends {
+  [K in keyof T]: infer U
+}
   ? U
   : never
+
+export type ObjectFixedKeysKeysToValues<T extends object> = {
+  [K in keyof T]: [K]
+}
+
+export type ObjectFixedKeys<T extends object> = ObjectFixedKeysDistribute<
+  ObjectFixedKeysReInfer<ObjectFixedKeysKeysToValues<T>>
+>
 
 export type DistributeKeysUnion<U> = U extends string | number | symbol
   ? { [K in U]: any }
@@ -568,6 +603,30 @@ export type IfEquals<T, U, Y = unknown, N = never> = (<G>() => G extends T
 
 export type IsTypeLike<T, B> = IfEquals<Extract<T, B>, T>
 
+export type MatchTypeConditional<
+  M extends any,
+  V extends Array<[any, any]>,
+  D = never
+> = V extends [[infer A, infer B], ...infer T]
+  ? T extends Array<[any, any]>
+    ? IfEquals<M, A, true, false> extends true
+      ? B
+      : MatchTypeConditional<M, T, D>
+    : D
+  : D
+
+export type MatchTypeConditionalLike<
+  M extends any,
+  V extends Array<[any, any]>,
+  D = never
+> = V extends [[infer A, infer B], ...infer T]
+  ? T extends Array<[any, any]>
+    ? IfEquals<Extract<M, A>, M, true, false> extends true
+      ? B
+      : MatchTypeConditionalLike<M, T, D>
+    : D
+  : D
+
 export type ExtractNewable<F extends NewableLike> = F extends new (
   ...args: infer Args
 ) => infer Result
@@ -585,36 +644,17 @@ export type MakeNewableFunction<F extends FunctionLike> = F extends (
   ...args: infer Args
 ) => infer Result
   ? T extends object
-    ? IfEquals<
+    ? MatchTypeConditionalLike<
         Result,
-        T,
-        new (...args: Args) => T,
-        IfEquals<
-          Result,
-          null,
-          new (...args: Args) => T,
-          IfEquals<
-            Result,
-            undefined,
-            new (...args: Args) => T,
-            IfEquals<
-              Result,
-              boolean,
-              new (...args: Args) => T,
-              IfEquals<
-                Result,
-                string,
-                new (...args: Args) => T,
-                IfEquals<
-                  Result,
-                  number,
-                  new (...args: Args) => T,
-                  IfEquals<Result, void, new (...args: Args) => T, never>
-                >
-              >
-            >
-          >
-        >
+        [
+          [T, new (...args: Args) => T],
+          [null, new (...args: Args) => T],
+          [undefined, new (...args: Args) => T],
+          [boolean, new (...args: Args) => T],
+          [number, new (...args: Args) => T],
+          [string, new (...args: Args) => T],
+          [void, new (...args: Args) => T]
+        ]
       >
     : never
   : never

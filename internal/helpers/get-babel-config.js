@@ -45,7 +45,7 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
       regenerator = false
       helpers = false
       targets = {
-        node: '8.10',
+        node: '12.18',
       }
       break
     }
@@ -110,6 +110,7 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
     presets,
     plugins: [
       ['@babel/plugin-proposal-decorators', { legacy: true }],
+      ['@babel/plugin-proposal-private-methods', { loose: false }],
       '@babel/plugin-proposal-class-properties',
       [
         '@babel/plugin-transform-runtime',
