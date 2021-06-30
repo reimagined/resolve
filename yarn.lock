@@ -11682,15 +11682,6 @@ mini-create-react-context@^0.4.0:
     "@babel/runtime" "^7.12.1"
     tiny-warning "^1.0.3"
 
-mini-css-extract-plugin@1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/mini-css-extract-plugin/-/mini-css-extract-plugin-1.6.0.tgz#b4db2525af2624899ed64a23b0016e0036411893"
-  integrity sha512-nPFKI7NSy6uONUo9yn2hIfb9vyYvkFu95qki0e21DQ9uaqNKDP15DGpK0KnV6wDroWxPHtExrdEwx/yDQ8nVRw==
-  dependencies:
-    loader-utils "^2.0.0"
-    schema-utils "^3.0.0"
-    webpack-sources "^1.1.0"
-
 mini-css-extract-plugin@1.6.2:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/mini-css-extract-plugin/-/mini-css-extract-plugin-1.6.2.tgz#83172b4fd812f8fc4a09d6f6d16f924f53990ca8"
@@ -14686,10 +14677,10 @@ reselect@^4.0.0:
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
   integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
-resolve-cloud-common@0.0.136:
-  version "0.0.136"
-  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.136.tgz#1153d98945a5915346fc20dd2b44ed47c01421de"
-  integrity sha512-wLzSm3JMU55j5ZeRH3beATwSWHZ4MVsyL0Q4uOYKsj2J/UolKetF1PO+WvYPIV6bXfFfKGhlU/r+cYAB+oRh3Q==
+resolve-cloud-common@0.0.138:
+  version "0.0.138"
+  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.138.tgz#54a14a58d1ade3e2b7043afaed88533899cf2171"
+  integrity sha512-tMRT49+n9gSFIWBAERrw1ucCKJLTCNTeAhnrbM3qsyUVBZkmvu3JkHfSrOpmRfJxyYNud140kduXMkqxmYScfw==
   dependencies:
     chalk "^4.0.0"
     debug "^4.1.1"
