@@ -1,37 +1,40 @@
 import { v4 as uuid } from 'uuid'
 
 import {
+  pullEventsMaxAttempts,
+  pullEventsTimeout,
   subscriptionAdapterAlreadyInitialized,
   subscriptionAdapterClosed,
   subscriptionAdapterNotInitialized,
 } from './subscribe-adapter-constants'
 
 import { SubscriptionAdapterStatus } from './types'
+import {
+  ReadModelSubscriptionParams,
+  SubscriptionHandler,
+  ViewModelSubscriptionParams,
+} from './client'
+import { isViewModelSubscriptionParams } from './utils'
 
-export interface SubscriptionAdapter {
+export type SubscriptionAdapter = {
   init: () => void
   close: () => void
   status: () => SubscriptionAdapterStatus
 }
 
-export interface SubscriptionAdapterFactory {
-  (options: {
-    url: string
-    cursor: string | null
-    onEvent: Function
-    pullEventsTimeout?: number
-    pullEventsMaxAttempts?: number
-  }): SubscriptionAdapter
-  adapterName: string
-}
+export type SubscriptionAdapterFactory = (
+  params: ViewModelSubscriptionParams | ReadModelSubscriptionParams,
+  handler: SubscriptionHandler
+) => SubscriptionAdapter
 
-const createClientAdapter: SubscriptionAdapterFactory = ({
-  url,
-  cursor,
-  onEvent,
-  pullEventsTimeout = 30000,
-  pullEventsMaxAttempts = 10,
-}) => {
+// TODO: refactor
+
+const createViewModelSubscriptionAdapter = (
+  params: ViewModelSubscriptionParams,
+  handler: SubscriptionHandler
+): SubscriptionAdapter => {
+  const { cursor, url } = params
+
   let client: WebSocket | undefined
   let status: SubscriptionAdapterStatus = SubscriptionAdapterStatus.Initializing
   let currentCursor: string | null = cursor
@@ -101,7 +104,7 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
             case 'pullEvents': {
               if (requestId === pullEventsRequestId) {
                 payload.events.forEach((event: any) => {
-                  onEvent(event)
+                  handler(event)
                 })
                 currentCursor = payload.cursor
                 pullEventsRequestId = null
@@ -163,6 +166,84 @@ const createClientAdapter: SubscriptionAdapterFactory = ({
   }
 }
 
-createClientAdapter.adapterName = 'ws'
+const createReadModelSubscriptionAdapter = (
+  params: ReadModelSubscriptionParams,
+  handler: SubscriptionHandler
+): SubscriptionAdapter => {
+  const { url, channel, readModelName } = params
 
-export default createClientAdapter
+  let client: WebSocket | undefined
+  let status: SubscriptionAdapterStatus = SubscriptionAdapterStatus.Initializing
+
+  return {
+    init(): void {
+      if (
+        status === SubscriptionAdapterStatus.Connecting ||
+        status === SubscriptionAdapterStatus.Connected
+      ) {
+        throw new Error(subscriptionAdapterAlreadyInitialized)
+      }
+      if (status === SubscriptionAdapterStatus.Closed) {
+        throw new Error(subscriptionAdapterClosed)
+      }
+
+      client = new WebSocket(url)
+      status = SubscriptionAdapterStatus.Connecting
+
+      client.onopen = (): void => {
+        status = SubscriptionAdapterStatus.Connected
+      }
+
+      client.onmessage = (message): void => {
+        try {
+          const notification = JSON.parse(message.data)
+
+          handler({
+            readModelName,
+            channel,
+            notification,
+          })
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('WebSocket message error', error)
+        }
+      }
+    },
+
+    close(): void {
+      if (
+        status !== SubscriptionAdapterStatus.Connecting &&
+        status !== SubscriptionAdapterStatus.Connected
+      ) {
+        throw new Error(`${subscriptionAdapterNotInitialized}: ${status}`)
+      }
+      status = SubscriptionAdapterStatus.Closed
+      if (client != null) {
+        client.close()
+      }
+      client = undefined
+    },
+
+    status(): SubscriptionAdapterStatus {
+      if (
+        status === SubscriptionAdapterStatus.Connected &&
+        client != null &&
+        client.readyState === 1
+      ) {
+        return SubscriptionAdapterStatus.Ready
+      }
+      return status
+    },
+  }
+}
+
+export const createSubscriptionAdapter: SubscriptionAdapterFactory = (
+  params: ViewModelSubscriptionParams | ReadModelSubscriptionParams,
+  handler: SubscriptionHandler
+) => {
+  if (isViewModelSubscriptionParams(params)) {
+    return createViewModelSubscriptionAdapter(params, handler)
+  } else {
+    return createReadModelSubscriptionAdapter(params, handler)
+  }
+}

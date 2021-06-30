@@ -1,13 +1,15 @@
-jest.useFakeTimers('legacy')
-
+import { SubscriptionKind } from '../../src/client'
 /* eslint-disable import/first */
 import { mocked } from 'ts-jest/utils'
 
 import { SubscriptionAdapterStatus } from '../../src/types'
 import * as subscribe from '../../src/subscribe'
-import { rootCallback } from '../../src/subscribe-callback'
+import { viewModelCallback } from '../../src/subscribe-callback'
 import { Context } from '../../src/context'
-import createClientAdapter from '../../src/subscribe-adapter'
+import { createSubscriptionAdapter } from '../../src/subscribe-adapter'
+
+jest.useFakeTimers('legacy')
+
 /* eslint-enable */
 
 const { connect, disconnect, dropSubscribeAdapterPromise } = subscribe
@@ -18,12 +20,12 @@ const mockInit = jest.fn()
 const mockCallback = jest.fn()
 const mockStatus = jest.fn().mockReturnValue(SubscriptionAdapterStatus.Ready)
 const mockClose = jest.fn()
+const mockCreateSubscribeAdapter = mocked(createSubscriptionAdapter)
 
-const mockCreateSubscribeAdapter = mocked(createClientAdapter)
-
-jest.mock('../../src/subscribe-adapter', () => jest.fn())
-
-mockCreateSubscribeAdapter.adapterName = 'adapter-name'
+jest.mock('global/window', () => undefined)
+jest.mock('../../src/subscribe-adapter', () => ({
+  createSubscriptionAdapter: jest.fn(),
+}))
 
 let context: Context
 
@@ -76,84 +78,121 @@ describe('subscribe', () => {
   test('init with params', async () => {
     await connect(
       context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-1'],
+      },
+      mockCallback
     )
 
-    expect(mockCreateSubscribeAdapter).toBeCalledWith({
-      onEvent: rootCallback,
-      url: 'subscribe-url',
-      cursor: 'cursor',
-    })
+    expect(mockCreateSubscribeAdapter).toBeCalledWith(
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-1'],
+      },
+      viewModelCallback
+    )
     expect(mockInit).toBeCalledTimes(1)
   })
 
   test('is subscribed', async () => {
     await connect(
       context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-1'],
+      },
+      mockCallback
     )
     await connect(
       context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-2'],
-      mockCallback,
-      'view-model'
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-2'],
+      },
+      mockCallback
     )
     await connect(
       context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-3'],
-      mockCallback,
-      'view-model'
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-3'],
+      },
+      mockCallback
     )
 
-    expect(mockCreateSubscribeAdapter).toBeCalledWith({
-      onEvent: rootCallback,
-      url: 'subscribe-url',
-      cursor: 'cursor',
-    })
+    expect(mockCreateSubscribeAdapter).toBeCalledWith(
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-1'],
+      },
+      viewModelCallback
+    )
     expect(mockInit).toBeCalledTimes(3)
   })
 
   test('is unsubscribed', async () => {
     await connect(
       context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-1'],
+      },
+      mockCallback
     )
     await connect(
       context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-2'],
-      mockCallback,
-      'view-model'
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-2'],
+      },
+      mockCallback
     )
     await connect(
       context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-3'],
-      mockCallback,
-      'view-model'
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-3'],
+      },
+      mockCallback
     )
 
-    await disconnect(context, ['aggregate-id-1'], 'view-model', mockCallback)
-    await disconnect(context, ['aggregate-id-2'], 'view-model', mockCallback)
-    await disconnect(context, ['aggregate-id-3'], 'view-model', mockCallback)
+    await disconnect(context, {
+      kind: SubscriptionKind.viewModel,
+      viewModelName: 'view-model',
+      aggregateIds: ['aggregate-id-1'],
+      handler: mockCallback,
+    })
+    await disconnect(context, {
+      kind: SubscriptionKind.viewModel,
+      viewModelName: 'view-model',
+      aggregateIds: ['aggregate-id-2'],
+      handler: mockCallback,
+    })
+    await disconnect(context, {
+      kind: SubscriptionKind.viewModel,
+      viewModelName: 'view-model',
+      aggregateIds: ['aggregate-id-3'],
+      handler: mockCallback,
+    })
     expect(mockInit).toBeCalledTimes(3)
     expect(mockClose).toBeCalledTimes(3)
   })
@@ -161,27 +200,23 @@ describe('subscribe', () => {
   test('no multiple subscriptions', async () => {
     await connect(
       context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-1'],
+      },
+      mockCallback
     )
     await connect(
       context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
-    )
-    await connect(
-      context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-1'],
+      },
+      mockCallback
     )
     expect(mockInit).toBeCalledTimes(1)
   })
@@ -202,6 +237,11 @@ describe('re-subscribe', () => {
       text: (): Promise<string> => Promise.resolve('response'),
     }))
     ;(global as any).fetch = mFetch
+    mockCreateSubscribeAdapter.mockReturnValue({
+      init: mockInit,
+      close: mockClose,
+      status: mockStatus,
+    })
   })
 
   afterAll(() => {
@@ -212,15 +252,6 @@ describe('re-subscribe', () => {
   beforeEach(async () => {
     jest.clearAllMocks()
     refreshSpy = jest.spyOn(subscribe, 'refreshSubscriptionAdapter')
-    /* mockCreateSubscribeAdapter = jest.fn().mockReturnValue({
-      init: mockInit,
-      isConnected: mockIsConnected,
-      close: mockClose,
-      subscribeToTopics: mockSubscribe,
-      unsubscribeFromTopics: mockUnsubscribe,
-      adapterName: 'adapter-name'
-    }) */
-
     context = {
       origin: 'http://origin-url',
       rootPath: '',
@@ -238,11 +269,13 @@ describe('re-subscribe', () => {
   test('refresh executed first time on subscribe adapter creation', async () => {
     await connect(
       context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-1'],
+      },
+      mockCallback
     )
 
     expect(refreshSpy).not.toBeCalled()
@@ -261,11 +294,13 @@ describe('re-subscribe', () => {
 
     await connect(
       context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-1'],
+      },
+      mockCallback
     )
 
     expect(setTimeout).toHaveBeenCalledTimes(1) // initial call of resfresh
@@ -288,11 +323,13 @@ describe('re-subscribe', () => {
   test('close on disconnected', async () => {
     await connect(
       context,
-      'subscribe-url',
-      'cursor',
-      ['aggregate-id-1'],
-      mockCallback,
-      'view-model'
+      {
+        url: 'subscribe-url',
+        cursor: 'cursor',
+        viewModelName: 'view-model',
+        aggregateIds: ['aggregate-id-1'],
+      },
+      mockCallback
     )
 
     expect(refreshSpy).not.toBeCalled()
@@ -301,7 +338,12 @@ describe('re-subscribe', () => {
 
     mockStatus.mockReturnValueOnce(SubscriptionAdapterStatus.Closed)
 
-    await disconnect(context, ['aggregate-id-1'], 'view-model', mockCallback)
+    await disconnect(context, {
+      kind: SubscriptionKind.viewModel,
+      viewModelName: 'view-model',
+      aggregateIds: ['aggregate-id-1'],
+      handler: mockCallback,
+    })
 
     jest.runOnlyPendingTimers()
 

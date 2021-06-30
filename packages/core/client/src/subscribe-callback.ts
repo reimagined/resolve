@@ -1,40 +1,94 @@
-interface CallbackTuple extends Array<Function | undefined> {
-  0: Function
-  1: Function | undefined
+type ViewModelListener = {
+  onEvent: Function
+  onResubscribe?: Function
 }
 
-let callbackMap: {
+type ReadModelListener = {
+  onNotification: Function
+}
+
+type ViewModelKey = {
+  eventType: string
+  aggregateId: string
+}
+
+type ReadModelKey = {
+  readModelName: string
+  channel: string
+}
+
+let viewModelCallbacks: {
   [key: string]: {
-    [key: string]: Array<CallbackTuple>
+    [key: string]: ViewModelListener[]
   }
 } = {}
 
-const addCallback = (
-  eventType: string,
-  aggregateId: string,
-  eventCallback: Function,
-  resubscribeCallback?: Function
-): void => {
-  if (!callbackMap[eventType]) {
-    callbackMap[eventType] = {}
+let readModelCallbacks: {
+  [key: string]: {
+    [key: string]: ReadModelListener[]
   }
-  if (!callbackMap[eventType][aggregateId]) {
-    callbackMap[eventType][aggregateId] = []
-  }
-  callbackMap[eventType][aggregateId].push([eventCallback, resubscribeCallback])
 }
 
-const removeCallback = (
-  eventType: string,
-  aggregateId: string,
-  eventCallback?: Function
+const isViewModelKey = (key: any): key is ViewModelKey => key.eventType != null
+const isViewModelListener = (listener: any): listener is ViewModelListener =>
+  typeof listener.onEvent === 'function'
+const isReadModelListener = (listener: any): listener is ReadModelListener =>
+  typeof listener.onNotification === 'function'
+
+export const addCallback = (
+  key: ViewModelKey | ReadModelKey,
+  listener: ViewModelListener | ReadModelListener
 ): void => {
-  callbackMap[eventType][aggregateId] = callbackMap[eventType][
-    aggregateId
-  ].filter((f) => f[0] !== eventCallback)
+  if (isViewModelKey(key)) {
+    const { eventType, aggregateId } = key
+    if (isViewModelListener(listener)) {
+      if (!viewModelCallbacks[eventType]) {
+        viewModelCallbacks[eventType] = {}
+      }
+      if (!viewModelCallbacks[eventType][aggregateId]) {
+        viewModelCallbacks[eventType][aggregateId] = []
+      }
+      viewModelCallbacks[eventType][aggregateId].push(listener)
+    } else {
+      throw Error('Invalid WS callback listener')
+    }
+  } else {
+    const { channel, readModelName } = key
+    if (isReadModelListener(listener)) {
+      if (!readModelCallbacks[readModelName]) {
+        readModelCallbacks[readModelName] = {}
+      }
+      if (!readModelCallbacks[readModelName][channel]) {
+        readModelCallbacks[readModelName][channel] = []
+      }
+      readModelCallbacks[readModelName][channel].push(listener)
+    } else {
+      throw Error('Invalid WS callback listener')
+    }
+  }
 }
 
-const rootCallback = (
+export const removeCallback = (
+  key: ViewModelKey | ReadModelKey,
+  listener: ViewModelListener | ReadModelListener
+): void => {
+  if (isViewModelKey(key) && isViewModelListener(listener)) {
+    const { eventType, aggregateId } = key
+    const callbacks = viewModelCallbacks[eventType][aggregateId]
+    viewModelCallbacks[eventType][aggregateId] = callbacks.filter(
+      (f) => f.onEvent !== listener.onEvent
+    )
+  }
+  if (!isViewModelKey(key) && isReadModelListener(listener)) {
+    const { channel, readModelName } = key
+    const callbacks = readModelCallbacks[readModelName][channel]
+    readModelCallbacks[readModelName][channel] = callbacks.filter(
+      (f) => f.onNotification !== listener.onNotification
+    )
+  }
+}
+
+export const viewModelCallback = (
   event: {
     aggregateId: string
     type: string
@@ -42,30 +96,43 @@ const rootCallback = (
   resubscribed?: boolean
 ): void => {
   const { type, aggregateId } = event
-  for (const eventType in callbackMap) {
+  for (const eventType in viewModelCallbacks) {
     if (eventType === type) {
-      let listeners: Array<CallbackTuple> = []
-      const wildcard = callbackMap[eventType]['*'] ?? []
-      let aggregateIdListeners: Array<CallbackTuple> = []
+      let listeners: Array<ViewModelListener> = []
+      const wildcard = viewModelCallbacks[eventType]['*'] ?? []
+      let aggregateIdListeners: Array<ViewModelListener> = []
       if (aggregateId !== '*') {
-        aggregateIdListeners = callbackMap[eventType][aggregateId] ?? []
+        aggregateIdListeners = viewModelCallbacks[eventType][aggregateId] ?? []
       }
       listeners = listeners.concat(wildcard).concat(aggregateIdListeners)
       if (listeners) {
         if (resubscribed) {
           listeners.forEach(
-            (listener) => listener[1] && listener[1]({ eventType, aggregateId })
+            (listener) =>
+              listener.onResubscribe &&
+              listener.onResubscribe({ eventType, aggregateId })
           )
         } else {
-          listeners.forEach((listener) => listener[0](event))
+          listeners.forEach((listener) => listener.onEvent(event))
         }
       }
     }
   }
 }
 
-const dropCallbackMap = (): void => {
-  callbackMap = {}
+export const readModelCallback = (event: {
+  readModelName: string
+  channel: string
+  notification: any
+}): void => {
+  const { readModelName, channel, notification } = event
+  const callbacks = readModelCallbacks[readModelName]?.[channel]
+  if (Array.isArray(callbacks)) {
+    callbacks.forEach((listener) => listener.onNotification(notification))
+  }
 }
 
-export { rootCallback, addCallback, removeCallback, dropCallbackMap }
+export const dropCallbackMap = (): void => {
+  viewModelCallbacks = {}
+  readModelCallbacks = {}
+}

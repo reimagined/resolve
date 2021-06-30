@@ -1,4 +1,5 @@
 import { assertLeadingSlash } from './assertions'
+import { ViewModelSubscriptionParams } from './client'
 
 const regExpAbsoluteUrl = new RegExp('^(?:[a-z]+:)?//', 'i')
 
@@ -32,3 +33,7 @@ export async function readJSONOrText<TResponse>(
     return textData
   }
 }
+
+export const isViewModelSubscriptionParams = (
+  params: any
+): params is ViewModelSubscriptionParams => params.viewModelName != null

@@ -45,7 +45,8 @@ export type CommandCallback<T extends Command> = (
 export type CommandOptions = {
   middleware?: ClientMiddlewareOptions
 }
-export const command = (
+
+const command = (
   context: Context,
   cmd: Command,
   options?: CommandOptions | CommandCallback<Command>,
@@ -82,7 +83,7 @@ export const command = (
   return undefined
 }
 
-type AggregateSelector = string[] | '*'
+export type AggregateSelector = string[] | '*'
 export type ViewModelQuery = {
   name: string
   aggregateIds: AggregateSelector
@@ -256,14 +257,44 @@ export const query = (
   return undefined
 }
 
-export type Subscription = {
-  readonly viewModelName: string
-  readonly aggregateIds: AggregateSelector
-  readonly handler: SubscribeHandler
+export type ViewModelSubscriptionParams = {
+  url: string
+  cursor: string | null
+  viewModelName: string
+  aggregateIds: AggregateSelector
+}
+
+export type ReadModelSubscriptionParams = {
+  url: string
+  readModelName: string
+  channel: string
+}
+
+export enum SubscriptionKind {
+  viewModel = 'viewModel',
+  readModel = 'readModel',
+}
+
+export type SubscriptionHandler = (event: any) => void
+
+type Subscription = {
+  kind: SubscriptionKind
+  handler: SubscriptionHandler
+}
+
+export type ViewModelSubscription = Subscription & {
+  kind: SubscriptionKind.viewModel
+  viewModelName: string
+  aggregateIds: AggregateSelector
+}
+
+export type ReadModelSubscription = Subscription & {
+  kind: SubscriptionKind.readModel
+  readModelName: string
+  channel: string
 }
 
 export type SubscribeResult = void
-export type SubscribeHandler = (event: any) => void
 export type SubscribeCallback = (
   error: Error | null,
   result: Subscription | null
@@ -280,30 +311,13 @@ export type ResubscribeCallback = (
 
 export const subscribe = (
   context: Context,
-  url: string,
-  cursor: string | null,
-  viewModelName: string,
-  aggregateIds: AggregateSelector,
-  handler: SubscribeHandler,
+  params: ViewModelSubscriptionParams | ReadModelSubscriptionParams,
+  handler: SubscriptionHandler,
   subscribeCallback?: SubscribeCallback,
   resubscribeCallback?: ResubscribeCallback
 ): PromiseOrVoid<Subscription> => {
   const subscribeAsync = async (): Promise<Subscription> => {
-    await connect(
-      context,
-      url,
-      cursor,
-      aggregateIds,
-      handler,
-      viewModelName,
-      resubscribeCallback
-    )
-
-    return {
-      viewModelName,
-      aggregateIds,
-      handler,
-    }
+    return await connect(context, params, handler, resubscribeCallback)
   }
 
   if (typeof subscribeCallback !== 'function') {
@@ -319,16 +333,15 @@ export const subscribe = (
 
 export const unsubscribe = (
   context: Context,
-  subscription: Subscription
+  subscription: ReadModelSubscription | ViewModelSubscription
 ): Promise<any> => {
-  const { viewModelName, aggregateIds, handler } = subscription
-
+  const { handler } = subscription
   const unsubscribeAsync = async (): Promise<any> => {
     if (typeof handler !== 'function') {
       return
     }
 
-    await disconnect(context, aggregateIds, viewModelName, handler)
+    await disconnect(context, subscription)
   }
 
   return unsubscribeAsync()
@@ -380,15 +393,14 @@ export type Client = {
   getStaticAssetUrl: (assetPath: string) => string
   getOriginPath: (path: string) => string
   subscribe: (
-    url: string,
-    cursor: string | null,
-    viewModelName: string,
-    aggregateIds: AggregateSelector,
-    handler: SubscribeHandler,
+    params: ViewModelSubscriptionParams | ReadModelSubscriptionParams,
+    handler: SubscriptionHandler,
     subscribeCallback?: SubscribeCallback,
     resubscribeCallback?: ResubscribeCallback
   ) => PromiseOrVoid<Subscription>
-  unsubscribe: (subscription: Subscription) => PromiseOrVoid<void>
+  unsubscribe: (
+    subscription: ReadModelSubscription | ViewModelSubscription
+  ) => PromiseOrVoid<void>
 }
 
 export const getClient = (context: Context): Client => ({
@@ -400,24 +412,12 @@ export const getClient = (context: Context): Client => ({
     getStaticAssetUrl(context, assetPath),
   getOriginPath: (path: string): string => getOriginPath(context, path),
   subscribe: (
-    url,
-    cursor,
-    viewModelName,
-    aggregateIds,
+    params,
     handler,
     subscribeCallback?,
     resubscribeCallback?
   ): PromiseOrVoid<Subscription> =>
-    subscribe(
-      context,
-      url,
-      cursor,
-      viewModelName,
-      aggregateIds,
-      handler,
-      subscribeCallback,
-      resubscribeCallback
-    ),
-  unsubscribe: (subscription: Subscription): PromiseOrVoid<void> =>
+    subscribe(context, params, handler, subscribeCallback, resubscribeCallback),
+  unsubscribe: (subscription): PromiseOrVoid<void> =>
     unsubscribe(context, subscription),
 })

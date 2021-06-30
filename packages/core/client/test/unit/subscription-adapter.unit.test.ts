@@ -1,7 +1,8 @@
 import { v4 as uuidV4 } from 'uuid'
 import { mocked } from 'ts-jest/utils'
 
-import adapterFactory, {
+import {
+  createSubscriptionAdapter,
   SubscriptionAdapter,
 } from '../../src/subscribe-adapter'
 import {
@@ -42,11 +43,15 @@ let onEvent: jest.Mock
 
 beforeEach(() => {
   onEvent = jest.fn()
-  adapter = adapterFactory({
-    url: 'url',
-    cursor: 'A',
-    onEvent,
-  })
+  adapter = createSubscriptionAdapter(
+    {
+      url: 'url',
+      cursor: 'A',
+      viewModelName: 'view-model',
+      aggregateIds: ['a'],
+    },
+    onEvent
+  )
 })
 
 afterEach(() => {

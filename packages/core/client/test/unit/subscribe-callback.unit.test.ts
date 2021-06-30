@@ -1,5 +1,5 @@
 import {
-  rootCallback,
+  viewModelCallback,
   addCallback,
   removeCallback,
   dropCallbackMap,
@@ -7,12 +7,21 @@ import {
 
 const restoreConnectionCallback = jest.fn()
 const eventCallback = jest.fn()
+const listener = {
+  onEvent: eventCallback,
+  onResubscribe: restoreConnectionCallback,
+}
 const clearMocks = (): void => {
   restoreConnectionCallback.mockClear()
   eventCallback.mockClear()
 }
 
 describe('subscribe callbacks', () => {
+  const createKey = (eventType: string, aggregateId: string) => ({
+    eventType,
+    aggregateId,
+  })
+
   afterEach(() => {
     dropCallbackMap()
     clearMocks()
@@ -20,24 +29,24 @@ describe('subscribe callbacks', () => {
 
   test('single callback added and called', async () => {
     const event = { type: 'type-1', aggregateId: 'id-1' }
-    addCallback('type-1', 'id-1', eventCallback)
-    rootCallback(event)
+    addCallback(createKey('type-1', 'id-1'), listener)
+    viewModelCallback(event)
     expect(eventCallback).toBeCalledTimes(1)
     expect(eventCallback).toBeCalledWith(event)
   })
 
   test('single callback added and called #2', async () => {
     const event = { type: 'type-1', aggregateId: 'id-1' }
-    addCallback('type-1', 'id-1', eventCallback)
-    rootCallback(event, false)
+    addCallback(createKey('type-1', 'id-1'), listener)
+    viewModelCallback(event, false)
     expect(eventCallback).toBeCalledTimes(1)
     expect(eventCallback).toBeCalledWith(event)
   })
 
   test('connection restored callback added and called', async () => {
     const event = { type: 'type-1', aggregateId: 'id-1' }
-    addCallback('type-1', 'id-1', eventCallback, restoreConnectionCallback)
-    rootCallback(event, true)
+    addCallback(createKey('type-1', 'id-1'), listener)
+    viewModelCallback(event, true)
     expect(restoreConnectionCallback).toBeCalledTimes(1)
     expect(eventCallback).toBeCalledTimes(0)
   })
@@ -45,9 +54,9 @@ describe('subscribe callbacks', () => {
   test('single callback removed', async () => {
     const event = { type: 'type-1', aggregateId: 'id-1' }
 
-    addCallback('type-1', 'id-1', eventCallback)
-    removeCallback('type-1', 'id-1', eventCallback)
-    rootCallback(event)
+    addCallback(createKey('type-1', 'id-1'), listener)
+    removeCallback(createKey('type-1', 'id-1'), listener)
+    viewModelCallback(event)
 
     expect(eventCallback).toBeCalledTimes(0)
   })
@@ -56,10 +65,10 @@ describe('subscribe callbacks', () => {
     const event1 = { type: 'type-1', aggregateId: 'id-1' }
     const event2 = { type: 'type-1', aggregateId: 'id-2' }
     const event3 = { type: 'type-1', aggregateId: 'id-3' }
-    addCallback('type-1', '*', eventCallback)
-    rootCallback(event1)
-    rootCallback(event2)
-    rootCallback(event3)
+    addCallback(createKey('type-1', '*'), listener)
+    viewModelCallback(event1)
+    viewModelCallback(event2)
+    viewModelCallback(event3)
     expect(eventCallback).toBeCalledTimes(3)
     expect(eventCallback).toBeCalledWith(event1)
     expect(eventCallback).toBeCalledWith(event2)
@@ -72,11 +81,17 @@ describe('subscribe callbacks', () => {
     const callback3 = jest.fn()
 
     const event = { type: 'type-1', aggregateId: 'id-1' }
-    addCallback('type-1', 'id-1', callback1)
-    addCallback('type-1', 'id-1', callback2)
-    addCallback('type-1', 'id-1', callback3)
+    addCallback(createKey('type-1', 'id-1'), {
+      onEvent: callback1,
+    })
+    addCallback(createKey('type-1', 'id-1'), {
+      onEvent: callback2,
+    })
+    addCallback(createKey('type-1', 'id-1'), {
+      onEvent: callback3,
+    })
 
-    rootCallback(event)
+    viewModelCallback(event)
 
     expect(callback1).toBeCalledTimes(1)
     expect(callback1).toBeCalledWith(event)
@@ -92,13 +107,23 @@ describe('subscribe callbacks', () => {
     const callback3 = jest.fn()
 
     const event = { type: 'type-1', aggregateId: 'id-1' }
-    addCallback('type-1', 'id-1', callback1)
-    addCallback('type-1', 'id-1', callback2)
-    addCallback('type-1', 'id-1', callback3)
-    removeCallback('type-1', 'id-1', callback2)
-    removeCallback('type-1', 'id-1', callback3)
+    addCallback(createKey('type-1', 'id-1'), {
+      onEvent: callback1,
+    })
+    addCallback(createKey('type-1', 'id-1'), {
+      onEvent: callback2,
+    })
+    addCallback(createKey('type-1', 'id-1'), {
+      onEvent: callback3,
+    })
+    removeCallback(createKey('type-1', 'id-1'), {
+      onEvent: callback2,
+    })
+    removeCallback(createKey('type-1', 'id-1'), {
+      onEvent: callback3,
+    })
 
-    rootCallback(event)
+    viewModelCallback(event)
 
     expect(callback1).toBeCalledTimes(1)
     expect(callback1).toBeCalledWith(event)
