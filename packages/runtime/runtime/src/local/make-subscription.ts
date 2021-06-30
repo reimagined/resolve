@@ -11,6 +11,7 @@ export type ViewModelSubscriptionParams = {
 export type ReadModelSubscriptionParams = {
   channel: string
   permit: string
+  name: string
 }
 
 const isReadModelSubscriptionParams = (
@@ -46,10 +47,10 @@ const makeReadModelSubscription = (
   baseUrl: string,
   subscription: ReadModelSubscriptionParams
 ) => {
-  const { channel, permit } = subscription
+  const { channel, permit, name } = subscription
 
   return {
-    url: `${baseUrl}?kind=readModel&channel=${channel}&permit=${permit}`,
+    url: `${baseUrl}?kind=readModel&name=${name}&channel=${channel}&permit=${permit}`,
   }
 }
 

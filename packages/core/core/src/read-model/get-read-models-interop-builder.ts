@@ -107,6 +107,7 @@ const getReadModelInterop = (
       channelPermit = {
         channel,
         permit,
+        name,
       }
     }
 

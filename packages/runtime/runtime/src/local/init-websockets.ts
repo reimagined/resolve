@@ -154,12 +154,14 @@ const connectReadModel = async (
   connectionRequest: ReadModelConnectionRequest
 ) => {
   const { channel, permit, name } = connectionRequest
-  const log = getLog(`connect-read-model`)
+  const log = getLog(`connect-read-model:${name}`)
 
   log.debug(`acquiring read models interop`)
   const readModels = domainInterop.readModelDomain.acquireReadModelsInterop({
     secretsManager,
   })
+
+  log.verbose(readModels)
 
   const readModelInterop = readModels[name]
 

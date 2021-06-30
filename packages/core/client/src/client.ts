@@ -106,6 +106,10 @@ export type QueryResult = {
     timestamp?: number
     aggregateIds?: string[]
     eventTypes?: string[]
+    channelPermit?: {
+      channel: string
+      permit: string
+    }
   }
 }
 export type QueryOptions = {
@@ -297,7 +301,7 @@ export type ReadModelSubscription = Subscription & {
 export type SubscribeResult = void
 export type SubscribeCallback = (
   error: Error | null,
-  result: Subscription | null
+  result: ReadModelSubscription | ViewModelSubscription | null
 ) => void
 
 export type ResubscribeInfo = {
@@ -316,7 +320,9 @@ export const subscribe = (
   subscribeCallback?: SubscribeCallback,
   resubscribeCallback?: ResubscribeCallback
 ): PromiseOrVoid<Subscription> => {
-  const subscribeAsync = async (): Promise<Subscription> => {
+  const subscribeAsync = async (): Promise<
+    ReadModelSubscription | ViewModelSubscription
+  > => {
     return await connect(context, params, handler, resubscribeCallback)
   }
 
@@ -325,7 +331,7 @@ export const subscribe = (
   }
 
   subscribeAsync()
-    .then((result: Subscription) => subscribeCallback(null, result))
+    .then((result) => subscribeCallback(null, result))
     .catch((error) => subscribeCallback(error, null))
 
   return undefined

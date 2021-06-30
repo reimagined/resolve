@@ -233,10 +233,7 @@ export const connect = async (
   } else {
     const { readModelName, channel } = params
 
-    addCallback(
-      { readModelName, channel },
-      { onEvent: handler, onResubscribe: subscribeCallback }
-    )
+    addCallback({ readModelName, channel }, { onNotification: handler })
 
     const key = buildKey(params)
     const cachedAdapter = adaptersMap.get(key)

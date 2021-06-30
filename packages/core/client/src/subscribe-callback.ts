@@ -27,7 +27,7 @@ let readModelCallbacks: {
   [key: string]: {
     [key: string]: ReadModelListener[]
   }
-}
+} = {}
 
 const isViewModelKey = (key: any): key is ViewModelKey => key.eventType != null
 const isViewModelListener = (listener: any): listener is ViewModelListener =>

@@ -48,6 +48,7 @@ export type ReadModelDomain = {
 }
 
 export type ReadModelChannelPermit = {
+  name: string
   channel: string
   permit: string
 }

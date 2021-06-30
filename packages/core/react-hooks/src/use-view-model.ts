@@ -4,7 +4,7 @@ import { Event, firstOfType, SerializableMap } from '@resolve-js/core'
 import {
   QueryOptions,
   SubscribeCallback,
-  Subscription,
+  ViewModelSubscription,
 } from '@resolve-js/client'
 import { useClient } from './use-client'
 import { isCallback, isOptions, isSerializableMap } from './generic'
@@ -16,14 +16,14 @@ type PromiseOrVoid<T> = Promise<T> | void
 type Closure = {
   initialState: any
   state?: any
-  subscription?: Subscription
+  subscription?: ViewModelSubscription
   url?: string
   cursor: string | null
   aggregateIds?: string[]
 }
 
 type ViewModelConnection = {
-  connect: (done?: SubscribeCallback) => PromiseOrVoid<Subscription>
+  connect: (done?: SubscribeCallback) => PromiseOrVoid<ViewModelSubscription>
   dispose: (done?: (error?: Error) => void) => PromiseOrVoid<void>
   initialState: any
 }
@@ -185,21 +185,23 @@ function useViewModel(
   }, [])
 
   const connect = useCallback(
-    (done?: SubscribeCallback): PromiseOrVoid<Subscription> => {
-      const asyncConnect = async (): Promise<Subscription> => {
+    (done?: SubscribeCallback): PromiseOrVoid<ViewModelSubscription> => {
+      const asyncConnect = async (): Promise<ViewModelSubscription> => {
         await queryState()
 
         const subscribe = client.subscribe(
-          closure.url ?? '',
-          closure.cursor,
-          modelName,
-          Array.isArray(closure.aggregateIds)
-            ? closure.aggregateIds
-            : aggregateIds,
+          {
+            url: closure.url ?? '',
+            viewModelName: modelName,
+            cursor: closure.cursor,
+            aggregateIds: Array.isArray(closure.aggregateIds)
+              ? closure.aggregateIds
+              : aggregateIds,
+          },
           (event) => applyEvent(event),
           undefined,
           () => queryState()
-        ) as Promise<Subscription>
+        ) as Promise<ViewModelSubscription>
 
         const subscription = await subscribe
 

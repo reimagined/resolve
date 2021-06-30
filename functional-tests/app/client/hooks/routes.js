@@ -3,6 +3,7 @@ import { Counter } from './components/Counter'
 import { UseRequestMiddleware } from './components/UseRequestMiddleware'
 import { SecretsManager } from './components/SecretsManager'
 import { FileUploader } from './components/FileUploader'
+import { ReadModelChannel } from './components/ReadModelChannel'
 
 export const routes = [
   {
@@ -26,6 +27,10 @@ export const routes = [
         path: '/file-uploader',
         component: FileUploader,
         exact: true,
+      },
+      {
+        path: '/read-model-channel/:id',
+        component: ReadModelChannel,
       },
     ],
   },
