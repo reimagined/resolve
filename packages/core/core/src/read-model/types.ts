@@ -46,3 +46,8 @@ export type ReadModelsInteropBuilder = (
 export type ReadModelDomain = {
   acquireReadModelsInterop: ReadModelsInteropBuilder
 }
+
+export type ReadModelChannelPermit = {
+  channel: string
+  permit: string
+}

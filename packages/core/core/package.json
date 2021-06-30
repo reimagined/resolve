@@ -26,9 +26,13 @@
   "dependencies": {
     "@babel/runtime": "7.14.0",
     "@resolve-js/debug-levels": "0.31.0",
-    "uuid": "8.3.2"
+    "uuid": "8.3.2",
+    "lodash.isempty": "4.4.0",
+    "lodash.isstring": "4.0.1"
   },
   "devDependencies": {
+    "@types/lodash.isempty": "4.4.6",
+    "@types/lodash.isstring": "4.0.6",
     "jest": "27.0.3",
     "ts-jest": "^27.0.2"
   },

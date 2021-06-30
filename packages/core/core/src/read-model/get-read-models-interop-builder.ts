@@ -1,9 +1,12 @@
+import isEmpty from 'lodash.isempty'
+import isString from 'lodash.isstring'
 import {
   ReadModelsInteropBuilder,
   ReadModelInterop,
   ReadModelRuntime,
   ReadModelInteropMap,
   ReadModelRuntimeEventHandler,
+  ReadModelChannelPermit,
 } from './types'
 import { Event, ReadModelResolvers } from '../types/core'
 import { createHttpError, HttpStatusCodes } from '../errors'
@@ -62,6 +65,51 @@ const getReadModelInterop = (
       )
     }
 
+    let channelPermit: ReadModelChannelPermit
+
+    const permitChannel = (channel: string, permit: string) => {
+      if (channelPermit != null) {
+        throw monitoredError(
+          runtime,
+          createHttpError(
+            HttpStatusCodes.InternalServerError,
+            `Resolver "${resolver}" already permit other channel`
+          ),
+          name,
+          resolver
+        )
+      }
+
+      if (!isString(channel) || isEmpty(channel)) {
+        throw monitoredError(
+          runtime,
+          createHttpError(
+            HttpStatusCodes.InternalServerError,
+            `Bad channel name`
+          ),
+          name,
+          resolver
+        )
+      }
+
+      if (!isString(permit) || isEmpty(permit)) {
+        throw monitoredError(
+          runtime,
+          createHttpError(
+            HttpStatusCodes.InternalServerError,
+            `Bad channel permit value`
+          ),
+          name,
+          resolver
+        )
+      }
+
+      channelPermit = {
+        channel,
+        permit,
+      }
+    }
+
     log.debug(`invoker found`)
 
     return async (connection: any) => {
@@ -91,11 +139,15 @@ const getReadModelInterop = (
         log.debug(`invoking the resolver`)
         const data = await invoker(connection, args, {
           secretsManager,
+          permitChannel,
           jwt: context.jwt,
         })
         log.verbose(data)
         return {
           data,
+          meta: {
+            ...channelPermit,
+          },
         }
       } catch (error) {
         log.error(error)

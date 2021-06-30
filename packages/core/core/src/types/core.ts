@@ -143,9 +143,10 @@ export type ReadModel<TStore> = {
   Init?: ReadModelInitHandler<TStore>
 }
 
-type ReadModelResolverContext = {
+export type ReadModelResolverContext = {
   jwt?: string
   secretsManager: SecretsManager | null
+  permitChannel: (channel: string, permit: string) => void
 }
 
 type ReadModelResolver<TStore> = (

@@ -1,7 +1,12 @@
-import { ReadModelChannel, SecretsManager } from '../src/types/core'
+import {
+  ReadModelChannel,
+  ReadModelResolverContext,
+  SecretsManager,
+} from '../src/types/core'
 import { getReadModelsInteropBuilder } from '../src/read-model/get-read-models-interop-builder'
 import { ReadModelInterop, ReadModelRuntime } from '../src/read-model/types'
 import { ReadModelMeta, Monitoring } from '../src/types/runtime'
+import { HttpError } from '../src/errors'
 
 const dummyEncryption = () => Promise.resolve({})
 
@@ -104,7 +109,7 @@ describe('Read models', () => {
     expect(dummyResolver).toBeCalledWith(
       dummyStore,
       {},
-      { jwt: undefined, secretsManager }
+      { jwt: undefined, secretsManager, permitChannel: expect.any(Function) }
     )
   })
 
@@ -335,5 +340,69 @@ describe('Read models', () => {
     )
 
     expect(await readModelInterop.acquireChannel()).toBeNull()
+  })
+
+  test('channel permit returned after resolver invocation', async () => {
+    const readModelInterop = await setUpTestReadModelInterop(
+      makeReadModelMeta({
+        name: 'TestReadModel',
+        projection: {},
+        resolvers: {
+          channeled: async (
+            store: any,
+            event: any,
+            { permitChannel }: ReadModelResolverContext
+          ) => {
+            permitChannel('channel-name', 'permit-data')
+          },
+        },
+      })
+    )
+
+    const resolver = await readModelInterop.acquireResolver('channeled', {}, {})
+    const result = await resolver(null, null)
+    expect(result.meta.channel).toEqual('channel-name')
+    expect(result.meta.permit).toEqual('permit-data')
+  })
+
+  test('throw error on invalid channel name', async () => {
+    const readModelInterop = await setUpTestReadModelInterop(
+      makeReadModelMeta({
+        name: 'TestReadModel',
+        projection: {},
+        resolvers: {
+          channeled: async (
+            store: any,
+            event: any,
+            { permitChannel }: ReadModelResolverContext
+          ) => {
+            permitChannel('', 'permit-data')
+          },
+        },
+      })
+    )
+
+    const resolver = await readModelInterop.acquireResolver('channeled', {}, {})
+    await expect(resolver(null, null)).rejects.toBeInstanceOf(HttpError)
+  })
+  test('throw error on invalid permit', async () => {
+    const readModelInterop = await setUpTestReadModelInterop(
+      makeReadModelMeta({
+        name: 'TestReadModel',
+        projection: {},
+        resolvers: {
+          channeled: async (
+            store: any,
+            event: any,
+            { permitChannel }: ReadModelResolverContext
+          ) => {
+            permitChannel('channel-name', '')
+          },
+        },
+      })
+    )
+
+    const resolver = await readModelInterop.acquireResolver('channeled', {}, {})
+    await expect(resolver(null, null)).rejects.toBeInstanceOf(HttpError)
   })
 })
