@@ -1,4 +1,4 @@
-export default () => `
+const importLocalEntry = () => `
   import '$resolve.guardOnlyServer'
   import serverAssemblies from '$resolve.serverAssemblies'
   import localEntry from '@resolve-js/runtime/lib/local'
@@ -14,3 +14,4 @@ export default () => `
 
   export default handler
 `
+export default importLocalEntry

@@ -30,13 +30,10 @@ import gatherSecretsFromEvents from './gather-secrets-from-events'
 import * as iots from 'io-ts'
 import * as iotsTypes from 'io-ts-types'
 
-import {
-  validate,
+import type {
   UnbrandProps,
   CursorFilter,
   TimestampFilter,
-  isTimestampFilter,
-  isCursorFilter,
   Adapter,
   AdapterFunctions,
   AdapterPoolConnectedProps,
@@ -44,6 +41,12 @@ import {
   AdapterPoolPossiblyUnconnected,
   AdapterPoolConnected,
   AdapterConfig,
+} from './types'
+
+import {
+  validate,
+  isTimestampFilter,
+  isCursorFilter,
   AdapterConfigSchema,
 } from './types'
 
@@ -51,6 +54,8 @@ export {
   threadArrayToCursor,
   cursorToThreadArray,
   initThreadArray,
+  emptyLoadEventsResult,
+  checkEventsContinuity,
 } from './cursor-operations'
 export {
   MAINTENANCE_MODE_AUTO,
@@ -103,7 +108,6 @@ export default wrappedCreateAdapter
 
 export {
   validate,
-  UnbrandProps,
   ResourceAlreadyExistError as EventstoreResourceAlreadyExistError,
   ResourceNotExistError as EventstoreResourceNotExistError,
   ConcurrentError,
@@ -114,21 +118,25 @@ export {
   throwBadCursor,
   getNextCursor,
   snapshotTrigger,
-  CursorFilter,
-  TimestampFilter,
   isTimestampFilter,
   isCursorFilter,
-  Adapter,
-  AdapterPoolConnectedProps,
-  AdapterPoolConnected,
-  AdapterPoolPossiblyUnconnected,
-  AdapterConfig,
   AdapterConfigSchema,
   iots,
   iotsTypes,
 }
 
-export {
+export type {
+  UnbrandProps,
+  CursorFilter,
+  TimestampFilter,
+  Adapter,
+  AdapterPoolConnectedProps,
+  AdapterPoolConnected,
+  AdapterPoolPossiblyUnconnected,
+  AdapterConfig,
+}
+
+export type {
   ImportOptions,
   ExportOptions,
   SecretFilter,
@@ -139,13 +147,15 @@ export {
   EventThreadData,
   Cursor,
   EventsWithCursor,
+  EventWithCursor,
   EventFilter,
   ReplicationStatus,
   ReplicationState,
   OldEvent,
   OldSecretRecord,
-  getInitialReplicationState,
 } from './types'
+
+export { getInitialReplicationState } from './types'
 
 export {
   makeSetSecretEvent,

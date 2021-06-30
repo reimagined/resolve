@@ -35,9 +35,7 @@ export type MysqlAdapterConfig = AdapterConfig & {
 }
 
 export type AdapterPool = AdapterPoolConnected<MysqlAdapterPoolConnectedProps>
-export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
-  MysqlAdapterPoolConnectedProps
->
+export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<MysqlAdapterPoolConnectedProps>
 
 export type ConnectionDependencies = {
   MySQL: MySQLLib

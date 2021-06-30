@@ -6,7 +6,7 @@ import {
 } from '../constants'
 import importResource from '../import_resource'
 
-export default ({ resolveConfig, isClient }) => {
+const importEventstoreAdapter = ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.eventstoreAdapter`
@@ -31,3 +31,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importEventstoreAdapter

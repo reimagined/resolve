@@ -1,8 +1,9 @@
 import React from 'react'
+import { renderRoutes } from 'react-router-config'
 import { Helmet } from 'react-helmet'
 import { useStaticResolver } from '@resolve-js/react-hooks'
 
-const App = ({ version, children }) => {
+const App = ({ version, children, route }) => {
   const resolveStatic = useStaticResolver()
 
   const stylesheetLink = {
@@ -13,7 +14,7 @@ const App = ({ version, children }) => {
   const faviconLink = {
     rel: 'icon',
     type: 'image/png',
-    href: resolveStatic(`/favicon.ico`),
+    href: resolveStatic(`/favicon.png`),
   }
   const links = [stylesheetLink, faviconLink]
   const meta = {
@@ -27,6 +28,7 @@ const App = ({ version, children }) => {
       <h6 align="left">
         {version != null && version.length > 0 ? `Version ${version}` : ``}
       </h6>
+      {renderRoutes(route.routes)}
       {children}
     </div>
   )

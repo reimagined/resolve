@@ -189,7 +189,7 @@ A module is a standalone configuration object that can reference client code, re
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../examples/hacker-news/run.js /^[[:blank:]]+const moduleAuth/ /^[[:blank:]]+\)/)
+[embedmd]:# (../examples/js/hacker-news/run.js /^[[:blank:]]+const moduleAuth/ /^[[:blank:]]+\)/)
 ```js
   const moduleAuth = resolveModuleAuth([
     {
@@ -226,7 +226,7 @@ A module is a standalone configuration object that can reference client code, re
 
 A merged module's code is included in the resulting application's bundles.
 
-For an example on how to use modules, see the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) sample application. This application uses the authentication and comments modules from reSolve.
+For an example on how to use modules, see the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/js/hacker-news) sample application. This application uses the authentication and comments modules from reSolve.
 
 ## Encryption
 
@@ -366,7 +366,7 @@ The **@resolve-js/module-uploader** module adds the following API endpoints to a
 - `/api/uploader/getUploadUrl` - Returns a path used to upload files.
 - `/api/uploader/getToken` - Takes user credentials and returns the user's authorization token.
 
-The [cli-uploader](https://github.com/reimagined/resolve/tree/master/examples/cli-uploader) example application demonstrates how to design a file uploader utility and handle file uploads on the server.
+The [personal-data](https://github.com/reimagined/resolve/tree/master/examples/js/personal-data) example application uses the **@resolve-js/module-uploader** module to upload images.
 
 ## Import-export
 

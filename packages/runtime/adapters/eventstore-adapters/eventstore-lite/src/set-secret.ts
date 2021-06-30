@@ -1,4 +1,4 @@
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { AdapterPool } from './types'
 import {
   EventstoreFrozenError,
@@ -88,6 +88,10 @@ const setSecret = async (
     const errorMessage =
       error != null && error.message != null ? error.message : ''
     const errorCode = error != null && error.code != null ? error.code : ''
+
+    if (errorMessage.indexOf('transaction within a transaction') > -1) {
+      return await setSecret(pool, selector, secret)
+    }
 
     try {
       await database.exec('ROLLBACK;')

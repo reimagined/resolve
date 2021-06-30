@@ -10,8 +10,9 @@ import {
 } from '@resolve-js/core'
 
 export type CreateQueryOptions = {
-  invokeEventSubscriberAsync: Function
+  invokeBuildAsync: Function
   readModelConnectors: any
+  readModelSources?: any
   performanceTracer: any
   getVacantTimeInMillis: any
   monitoring?: Monitoring
@@ -48,8 +49,9 @@ export type ReadModelPool = {
   isDisposed: boolean
   connector: any
   connections: Set<any>
-  invokeEventSubscriberAsync: Function
+  invokeBuildAsync: Function
   getVacantTimeInMillis: Function
+  readModelSource?: any
   monitoring?: Monitoring
   eventstoreAdapter: Eventstore
   applicationName: string

@@ -98,6 +98,11 @@ export type EventsWithCursor = {
   events: SavedEvent[]
 }
 
+export type EventWithCursor = {
+  cursor: Cursor
+  event: SavedEvent
+}
+
 const EventFilterCommonSchema = t.intersection([
   t.type({
     limit: t.Int,
@@ -550,7 +555,7 @@ export interface Adapter {
   importEvents: (options?: Partial<ImportOptions>) => ImportEventsStream
   exportEvents: (options?: Partial<ExportOptions>) => ExportEventsStream
   getLatestEvent: (filter: EventFilter) => Promise<SavedEvent | null>
-  saveEvent: (event: InputEvent) => Promise<string>
+  saveEvent: (event: InputEvent) => Promise<EventWithCursor>
   init: () => Promise<void>
   drop: () => Promise<void>
   dispose: () => Promise<void>

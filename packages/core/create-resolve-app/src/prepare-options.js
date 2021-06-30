@@ -15,6 +15,7 @@ const prepareOptions = async () => {
       { name: 'commit', alias: 'c', type: String },
       { name: 'version', alias: 'V', type: Boolean },
       { name: 'help', alias: 'h', type: Boolean },
+      { name: 'typescript', alias: 't', type: Boolean },
       { name: 'local-registry', type: Boolean },
     ],
     { partial: true }
@@ -41,8 +42,12 @@ const prepareOptions = async () => {
     return process.exit(1)
   } else {
     const applicationName = cliArgs._unknown[0]
-
-    const { commit, branch, example: exampleName = 'hello-world' } = cliArgs
+    const {
+      commit,
+      branch,
+      example: exampleName = 'react',
+      typescript: useTypescript = false,
+    } = cliArgs
 
     const localRegistry = cliArgs['local-registry']
 
@@ -90,6 +95,7 @@ const prepareOptions = async () => {
       branch,
       exampleName,
       localRegistry,
+      useTypescript,
     }
   }
 }

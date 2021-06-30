@@ -36,7 +36,7 @@ export type Monitoring = {
 }
 
 export type Eventstore = {
-  saveEvent: (event: any) => Promise<void>
+  saveEvent: (event: any) => Promise<any>
   saveSnapshot: Function
   getNextCursor: (cursor: any, events: Event[]) => Promise<any>
   loadSnapshot: (snapshotKey: string) => Promise<string | null>

@@ -18,7 +18,7 @@ AWS.config.update({
 jest.setTimeout(20000000)
 
 describe.skip('@resolve-js/eventstore-mysql-serverless', () => {
-  beforeAll.skip(async () => {
+  beforeAll(async () => {
     logger.warn('create start')
     const rdsDataApi = new AWS.RDSDataService({
       region: process.env.AWS_REGION,
@@ -50,7 +50,7 @@ describe.skip('@resolve-js/eventstore-mysql-serverless', () => {
     logger.warn('create end')
   })
 
-  afterAll.skip(async () => {
+  afterAll(async () => {
     logger.warn('destroy start')
     await destroy({
       region: 'us-east-1',

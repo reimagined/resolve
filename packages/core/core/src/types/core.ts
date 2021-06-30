@@ -218,12 +218,11 @@ export type ViewModelResolverMap = {
 
 export type SagaSideEffects = {
   executeCommand: (command: Command) => Promise<CommandResult>
-  executeQuery: (
-    query: ReadModelQuery | ViewModelQuery
-  ) => Promise<ReadModelQueryResult | ViewModelQueryResult>
+  executeQuery: (query: ReadModelQuery | ViewModelQuery) => Promise<any>
   scheduleCommand: (timestamp: number, command: Command) => Promise<void>
   secretsManager: SecretsManager
   isEnabled: boolean
+  uploader: any
 }
 
 export type SideEffectsCollection = {

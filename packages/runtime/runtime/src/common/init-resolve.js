@@ -2,7 +2,10 @@ import createCommandExecutor from '../common/command/index'
 import createQueryExecutor from '../common/query/index'
 import createSagaExecutor from '../common/saga/index'
 import crypto from 'crypto'
+import path from 'path'
+import fs from 'fs'
 
+import liveEntryDir from './utils/live-entry-dir'
 import createNotifyEventSubscribers from './notify-event-subscribers'
 import createOnCommandExecuted from './on-command-executed'
 import createEventSubscriber from './event-subscriber'
@@ -18,15 +21,13 @@ const initResolve = async (resolve) => {
   } = resolve.assemblies
 
   const {
-    invokeEventSubscriberAsync,
+    invokeBuildAsync,
     applicationName,
-    readModels,
-    sagas,
-    viewModels,
     uploader,
     scheduler,
     monitoring,
     domainInterop,
+    domain,
   } = resolve
 
   const eventstoreAdapter = createEventstoreAdapter()
@@ -44,9 +45,36 @@ const initResolve = async (resolve) => {
     resolve.getVacantTimeInMillis = () => endTime - Date.now()
   }
 
+  const readModelSources = new Proxy(
+    {},
+    {
+      get(target, key) {
+        if (!target.hasOwnProperty(key)) {
+          target[key] = null
+          const entryDir = liveEntryDir()
+          if (
+            domain.readModels.find(({ name }) => name === key) &&
+            entryDir != null
+          ) {
+            try {
+              target[key] = fs
+                .readFileSync(path.join(entryDir, `read-model-${key}.js`))
+                .toString('utf8')
+            } catch (err) {}
+          }
+        }
+        return target[key]
+      },
+      set() {
+        throw new Error(`Read model sources are immutable`)
+      },
+    }
+  )
+
   Object.defineProperties(resolve, {
     readModelConnectors: { value: readModelConnectors },
     eventstoreAdapter: { value: eventstoreAdapter },
+    readModelSources: { value: readModelSources },
   })
 
   const getVacantTimeInMillis = resolve.getVacantTimeInMillis
@@ -60,8 +88,8 @@ const initResolve = async (resolve) => {
     secretsManager,
     eventstore: eventstoreAdapter,
     hooks: {
-      postSaveEvent: async (aggregate, command, event) => {
-        await onCommandExecuted(event, command)
+      postSaveEvent: async (aggregate, command, event, eventWithCursor) => {
+        await onCommandExecuted(event, command, eventWithCursor)
         return false
       },
     },
@@ -82,12 +110,11 @@ const initResolve = async (resolve) => {
   })
 
   const executeQuery = createQueryExecutor({
-    invokeEventSubscriberAsync,
+    invokeBuildAsync,
     applicationName,
     eventstoreAdapter,
     readModelConnectors,
-    readModels,
-    viewModels,
+    readModelSources,
     performanceTracer,
     getVacantTimeInMillis,
     monitoring,
@@ -103,14 +130,13 @@ const initResolve = async (resolve) => {
   })
 
   const executeSaga = createSagaExecutor({
-    invokeEventSubscriberAsync,
+    invokeBuildAsync,
     applicationName,
     executeCommand,
     executeQuery,
     eventstoreAdapter,
     secretsManager,
     readModelConnectors,
-    sagas,
     performanceTracer,
     getVacantTimeInMillis,
     uploader,

@@ -11,6 +11,7 @@ const pipeline = async () => {
       localRegistry,
       commit,
       branch,
+      useTypescript,
     } = await prepareOptions()
 
     await createApplication(
@@ -18,7 +19,8 @@ const pipeline = async () => {
       exampleName,
       localRegistry,
       commit,
-      branch
+      branch,
+      useTypescript
     )
 
     await sendAnalytics(exampleName)

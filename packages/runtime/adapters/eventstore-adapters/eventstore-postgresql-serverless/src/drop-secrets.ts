@@ -1,5 +1,5 @@
 import { EventstoreResourceNotExistError } from '@resolve-js/eventstore-base'
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { AdapterPool } from './types'
 import { isNotExistError } from './resource-errors'
 import executeSequence from './execute-sequence'

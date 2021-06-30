@@ -15,10 +15,10 @@ http://{host}:{port}/api/query/{readModel}/{resolver}
 
 ##### URL Parameters:
 
-| Name          | Description                                                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| **readModel** | The Read Model name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/with-saga/config.app.js) |
-| **resolver**  | The name of a [resolver defined in the Read Model](#resolvers)                                                                        |
+| Name          | Description                                                             |
+| ------------- | ----------------------------------------------------------------------- |
+| **readModel** | The Read Model name as defined in the application's configuration file. |
+| **resolver**  | The name of a [resolver defined in the Read Model](#resolvers)          |
 
 The request body should have the `application/json` content type and the following structure:
 
@@ -33,17 +33,6 @@ The request body should have the `application/json` content type and the followi
 
 The object contains parameters that the resolver accepts.
 
-##### Example
-
-Use the following command to get 3 users from the [with-saga](https://github.com/reimagined/resolve/tree/master/examples/with-saga) example:
-
-```sh
-curl -X POST \
--H "Content-Type: application/json" \
--d "{\"page\":0, \"limit\":3}" \
-"http://localhost:3000/api/query/default/users"
-```
-
 ## View Model API
 
 To query a View Model from the client side, send a GET request to the following URL:
@@ -54,14 +43,14 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 
 ##### URL Parameters
 
-| Name         | Description                                                                                                                               |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| viewModel    | The View Model name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/shopping-list/config.app.js) |
-| aggregateIds | The comma-separated list of Aggregate IDs to include in the View Model. Use `*` to include all Aggregates                                 |
+| Name         | Description                                                                                               |
+| ------------ | --------------------------------------------------------------------------------------------------------- |
+| viewModel    | The View Model name as defined in the application's configuration file                                    |
+| aggregateIds | The comma-separated list of Aggregate IDs to include in the View Model. Use `*` to include all Aggregates |
 
 ##### Example
 
-Use the following command to get the [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example application's state:
+Use the following command to get the [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/js/shopping-list) example application's state:
 
 ```sh
 curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"

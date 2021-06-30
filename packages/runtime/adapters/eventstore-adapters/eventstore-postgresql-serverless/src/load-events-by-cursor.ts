@@ -2,15 +2,12 @@ import { INT8_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'
 import {
   CursorFilter,
-  SavedEvent,
   cursorToThreadArray,
   threadArrayToCursor,
+  emptyLoadEventsResult,
 } from '@resolve-js/eventstore-base'
 
-const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
-// Although documentation describes a 1 MB limit, the actual limit is 512 KB
-// https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
-const MAX_RDS_DATA_API_RESPONSE_SIZE = 512000
+import { MAX_RDS_DATA_API_RESPONSE_SIZE } from './constants'
 
 const loadEventsByCursor = async (
   {
@@ -43,9 +40,15 @@ const loadEventsByCursor = async (
 
   const queryConditions: string[] = ['1=1']
   if (eventTypes != null) {
+    if (eventTypes.length === 0) {
+      return emptyLoadEventsResult(cursor)
+    }
     queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
   }
   if (aggregateIds != null) {
+    if (aggregateIds.length === 0) {
+      return emptyLoadEventsResult(cursor)
+    }
     queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
 

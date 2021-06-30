@@ -1,44 +1,27 @@
 import type { CurrentStoreApi, MarshalledRowLike } from './types'
 
 const findOne: CurrentStoreApi['findOne'] = async (
-  {
-    inlineLedgerRunQuery,
-    escapeId,
-    escapeStr,
-    tablePrefix,
-    searchToWhereExpression,
-    makeNestedPath,
-    splitNestedPath,
-    convertResultRow,
-    schemaName,
-  },
+  pool,
   readModelName,
   tableName,
   searchExpression,
   fieldList
 ) => {
-  const searchExpr = searchToWhereExpression(
+  const sqlQuery = pool.makeSqlQuery(
+    pool,
+    readModelName,
+    'findOne',
+    tableName,
     searchExpression,
-    escapeId,
-    escapeStr,
-    makeNestedPath,
-    splitNestedPath
+    fieldList
   )
 
-  const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
-
-  const rows = (await inlineLedgerRunQuery(
-    `SELECT * FROM ${escapeId(schemaName)}.${escapeId(
-      `${tablePrefix}${tableName}`
-    )}
-    ${inlineSearchExpr}
-    OFFSET 0
-    LIMIT 1;`
+  const rows = (await pool.inlineLedgerRunQuery(
+    sqlQuery
   )) as Array<MarshalledRowLike>
 
   if (Array.isArray(rows) && rows.length > 0) {
-    return convertResultRow(rows[0], fieldList)
+    return pool.convertResultRow(rows[0], fieldList)
   }
 
   return null

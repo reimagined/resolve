@@ -11,7 +11,7 @@ export const includeAlias = [
   'staticPath',
 ]
 
-export default () => {
+const importConstants = () => {
   const exports = [`import '$resolve.guardOnlyServer'`]
 
   const alias = fs
@@ -28,3 +28,5 @@ export default () => {
 
   return exports.join('\r\n')
 }
+
+export default importConstants

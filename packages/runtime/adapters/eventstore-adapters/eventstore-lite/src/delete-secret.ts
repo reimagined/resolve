@@ -1,9 +1,10 @@
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { AdapterPool } from './types'
 import {
   EventstoreFrozenError,
   InputEvent,
   makeDeleteSecretEvent,
+  THREAD_COUNT,
 } from '@resolve-js/eventstore-base'
 
 const deleteSecret = async (
@@ -19,7 +20,7 @@ const deleteSecret = async (
   log.verbose(`secretsTableName: ${secretsTableName}`)
 
   const secretsTableNameAsId = escapeId(secretsTableName)
-  const currentThreadId = Math.floor(Math.random() * 256)
+  const currentThreadId = Math.floor(Math.random() * THREAD_COUNT)
   const eventsTableNameAsId = escapeId(eventsTableName)
   const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
 
@@ -92,6 +93,10 @@ const deleteSecret = async (
     const errorMessage =
       error != null && error.message != null ? error.message : ''
     const errorCode = error != null && error.code != null ? error.code : ''
+
+    if (errorMessage.indexOf('transaction within a transaction') > -1) {
+      return await deleteSecret(pool, selector)
+    }
 
     try {
       await database.exec('ROLLBACK;')

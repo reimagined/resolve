@@ -136,6 +136,7 @@ export const makeTestEnvironment = (
         scheduledCommands: [],
         queries: [],
         sideEffects: [],
+        scheduleCommands: [],
       },
       // FIXME: deprecated
       'scheduleCommands',
@@ -219,7 +220,7 @@ export const makeTestEnvironment = (
           ADAPTER_NAME: actualAdapter,
         },
         getVacantTimeInMillis: () => 0x7fffffff,
-        invokeEventSubscriberAsync: async () => {
+        invokeBuildAsync: async () => {
           isNext = true
         },
         eventstoreAdapter,

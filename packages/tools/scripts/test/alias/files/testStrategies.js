@@ -1,1 +1,3 @@
-export default []
+const strategies = []
+
+export default strategies

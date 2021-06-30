@@ -50,7 +50,7 @@ To configure aggregates in a reSolve app, provide an aggregates array in the app
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list/config.app.js /aggregates: \[/ /\]/)
+[embedmd]:# (../../examples/js/shopping-list/config.app.js /aggregates: \[/ /\]/)
 ```js
 aggregates: [
     {
@@ -135,8 +135,6 @@ await resolve.executeCommand({
   aggregateId,
 })
 ```
-
-For the full code sample, refer to the [with-saga](https://github.com/reimagined/resolve/tree/master/examples/with-saga) example project.
 
 ## Aggregate Command Handlers
 

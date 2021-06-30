@@ -54,7 +54,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
         \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+        \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+        \\"$resolve.readModelProcedure\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
         \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
         \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
         \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
@@ -89,7 +91,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
@@ -256,7 +260,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
         \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+        \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+        \\"$resolve.readModelProcedure\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
         \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
         \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
         \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
@@ -298,7 +304,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
@@ -410,7 +418,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
       [
         {
           \\"modulesDir\\": \\"node_modules\\",
-          \\"whitelist\\": [
+          \\"allowlist\\": [
             {}
           ]
         }
@@ -418,7 +426,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
       [
         {
           \\"modulesDir\\": \\"../../runtime/runtime/node_modules\\",
-          \\"whitelist\\": [
+          \\"allowlist\\": [
             {}
           ]
         }
@@ -426,7 +434,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
       [
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
-          \\"whitelist\\": [
+          \\"allowlist\\": [
             {}
           ]
         }
@@ -473,7 +481,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
         \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+        \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+        \\"$resolve.readModelProcedure\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
         \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
         \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
         \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
@@ -516,7 +526,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
@@ -628,7 +640,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
       [
         {
           \\"modulesDir\\": \\"node_modules\\",
-          \\"whitelist\\": [
+          \\"allowlist\\": [
             {}
           ]
         }
@@ -636,7 +648,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
       [
         {
           \\"modulesDir\\": \\"../../runtime/runtime/node_modules\\",
-          \\"whitelist\\": [
+          \\"allowlist\\": [
             {}
           ]
         }
@@ -644,7 +656,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
       [
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
-          \\"whitelist\\": [
+          \\"allowlist\\": [
             {}
           ]
         }
@@ -719,7 +731,9 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
         \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+        \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+        \\"$resolve.readModelProcedure\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
         \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
         \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
         \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
@@ -754,7 +768,9 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
@@ -921,7 +937,9 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
         \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+        \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+        \\"$resolve.readModelProcedure\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
         \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
         \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
         \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
@@ -963,7 +981,9 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
@@ -1075,7 +1095,7 @@ exports[`should make webpack configs for local mode 1`] = `
       [
         {
           \\"modulesDir\\": \\"node_modules\\",
-          \\"whitelist\\": [
+          \\"allowlist\\": [
             {}
           ]
         }
@@ -1083,7 +1103,7 @@ exports[`should make webpack configs for local mode 1`] = `
       [
         {
           \\"modulesDir\\": \\"../../runtime/runtime/node_modules\\",
-          \\"whitelist\\": [
+          \\"allowlist\\": [
             {}
           ]
         }
@@ -1091,14 +1111,14 @@ exports[`should make webpack configs for local mode 1`] = `
       [
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
-          \\"whitelist\\": [
+          \\"allowlist\\": [
             {}
           ]
         }
       ]
     ],
     \\"plugins\\": [],
-    \\"name\\": \\"Server local entry point, local bus broker, local event store\\",
+    \\"name\\": \\"Server local entry point\\",
     \\"entry\\": {
       \\"common/local-entry/local-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\"
     }
@@ -1136,7 +1156,9 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
         \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+        \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+        \\"$resolve.readModelProcedure\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
         \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
         \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
         \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
@@ -1179,7 +1201,9 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
@@ -1291,7 +1315,7 @@ exports[`should make webpack configs for local mode 1`] = `
       [
         {
           \\"modulesDir\\": \\"node_modules\\",
-          \\"whitelist\\": [
+          \\"allowlist\\": [
             {}
           ]
         }
@@ -1299,7 +1323,7 @@ exports[`should make webpack configs for local mode 1`] = `
       [
         {
           \\"modulesDir\\": \\"../../runtime/runtime/node_modules\\",
-          \\"whitelist\\": [
+          \\"allowlist\\": [
             {}
           ]
         }
@@ -1307,7 +1331,7 @@ exports[`should make webpack configs for local mode 1`] = `
       [
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
-          \\"whitelist\\": [
+          \\"allowlist\\": [
             {}
           ]
         }

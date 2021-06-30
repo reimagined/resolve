@@ -12,7 +12,7 @@ Initialize the authentication module in the application's **run.js** script:
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../examples/hacker-news/run.js /^[[:blank:]]+const moduleAuth/ /^[[:blank:]]+\)/)
+[embedmd]:# (../examples/hacker-news/js/run.js /^[[:blank:]]+const moduleAuth/ /^[[:blank:]]+\)/)
 ```js
   const moduleAuth = resolveModuleAuth([
     {
@@ -51,7 +51,7 @@ These setting specify the path to a strategy constructor and HTTP API handlers t
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../examples/hacker-news/auth/create_strategy.js /^/ /\n$/)
+[embedmd]:# (../examples/hacker-news/js/auth/create_strategy.js /^/ /\n$/)
 ```js
 import { Strategy as StrategyFactory } from 'passport-local'
 

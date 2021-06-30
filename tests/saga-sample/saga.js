@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export*/
 // mdis-start
 export default {
   handlers: {

@@ -7,7 +7,7 @@ const safeUnlinkSync = (filename) => {
   }
 }
 
-export default (options) => {
+const connector = (options) => {
   const prefix = String(options.prefix)
   const readModels = new Set()
   // mdis-start connect
@@ -53,3 +53,5 @@ export default (options) => {
   }
 }
 // mdis-stop
+
+export default connector

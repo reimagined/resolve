@@ -1,4 +1,4 @@
-export default () => `
+const importClientEntry = () => `
     import '$resolve.guardOnlyServer'
 
     export { default as entryPointMarker } from '@resolve-js/runtime/lib/common/utils/entry-point-marker'
@@ -27,3 +27,5 @@ export default () => `
 
     export default handler
   `
+
+export default importClientEntry

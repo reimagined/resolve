@@ -192,7 +192,7 @@ A reSolve exposes HTTP API that you can use to send aggregate commands and query
 
 #### Example
 
-> To test the provided console inputs on your machine, download and run the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example project.
+> To test the provided console inputs on your machine, download and run the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/js/shopping-list) example project.
 
 1. Create a new shopping list named "List 1":
 
@@ -322,7 +322,7 @@ The **@resolve-js/client** library provides an interface that you can use to com
 
 #### Example
 
-The [with-vanilajs](https://github.com/reimagined/resolve/tree/master/examples/with-vanillajs) example application demonstrates how to use the **@resolve-js/client** library to implement a frontend for a reSolve application in pure JavaScript.
+The [with-vanilajs](https://github.com/reimagined/resolve/tree/master/templates/js/vanilla) template project demonstrates how to use the **@resolve-js/client** library to implement a frontend for a reSolve application in pure JavaScript.
 
 ## @resolve-js/redux library
 
@@ -351,9 +351,7 @@ Use the following @resolve-js/redux library's hooks and Higher-Order Components 
 
 #### Example
 
-The [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example application demonstrates how to use the **@resolve-js/client** library to implement a react-redux frontend for a reSolve application.
-
-<!-- prettier-ignore-end -->
+The [shopping-list-redux-hoc](https://github.com/reimagined/resolve/tree/master/examples/js/shopping-list-redux-hoc) example application demonstrates how to use the **@resolve-js/redux** library to implement a react-redux frontend for a reSolve application.
 
 ## @resolve-js/react-hooks library
 
@@ -369,4 +367,4 @@ The **@resolve-js/react-hooks** library provides React hooks that you can use to
 
 #### Example
 
-The [shopping-list-with-hooks](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-with-hooks) example application demonstrates how to use the **@resolve-js/react-hooks** library to communicate with a reSolve backend.
+The [shopping-list-with-hooks](https://github.com/reimagined/resolve/tree/master/examples/js/shopping-list) example application demonstrates how to use the **@resolve-js/react-hooks** library to communicate with a reSolve backend.
