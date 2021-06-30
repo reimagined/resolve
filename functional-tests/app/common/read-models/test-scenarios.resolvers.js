@@ -33,8 +33,8 @@ const resolvers = {
       result: entries ? entries.map((entry) => entry.id) : [],
     }
   },
-  reactiveChannelScenario: async () => {
-    return undefined
+  reactiveChannelScenario: async (store, { scenarioId }, { permitChannel }) => {
+    permitChannel(`test-scenario-${scenarioId}`, 'allow')
   },
 }
 

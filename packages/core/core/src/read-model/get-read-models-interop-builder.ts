@@ -146,7 +146,7 @@ const getReadModelInterop = (
         return {
           data,
           meta: {
-            ...channelPermit,
+            channelPermit,
           },
         }
       } catch (error) {

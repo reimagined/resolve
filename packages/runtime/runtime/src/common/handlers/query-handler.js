@@ -35,7 +35,7 @@ const queryHandler = async (req, res) => {
     res.setHeader('Content-Type', 'application/json')
 
     if (req.headers['x-resolve-query-origin'] != null) {
-      const { aggregateIds, eventTypes, channel, permit } = result.meta || {}
+      const { aggregateIds, eventTypes, channelPermit } = result.meta || {}
       let subscription
       if (aggregateIds != null || eventTypes != null) {
         subscription = await req.resolve.makeSubscription(
@@ -46,14 +46,11 @@ const queryHandler = async (req, res) => {
             aggregateIds,
           }
         )
-      } else if (channel != null && permit != null) {
+      } else if (channelPermit != null) {
         subscription = await req.resolve.makeSubscription(
           req.resolve,
           req.headers['x-resolve-query-origin'],
-          {
-            channel,
-            permit,
-          }
+          channelPermit
         )
       }
       if (subscription != null) {

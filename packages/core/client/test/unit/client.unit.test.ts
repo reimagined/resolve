@@ -273,6 +273,7 @@ describe('query', () => {
       },
       meta: {
         timestamp: 12345,
+        url: 'subscribe-url',
       },
     })
   })
@@ -297,6 +298,7 @@ describe('query', () => {
           },
           meta: {
             timestamp: 12345,
+            url: 'subscribe-url',
           },
         })
 

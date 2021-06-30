@@ -361,8 +361,10 @@ describe('Read models', () => {
 
     const resolver = await readModelInterop.acquireResolver('channeled', {}, {})
     const result = await resolver(null, null)
-    expect(result.meta.channel).toEqual('channel-name')
-    expect(result.meta.permit).toEqual('permit-data')
+    expect(result.meta.channelPermit).toEqual({
+      channel: 'channel-name',
+      permit: 'permit-data',
+    })
   })
 
   test('throw error on invalid channel name', async () => {
