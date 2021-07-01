@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>reSolve Blog</title>
+        <link>https://reimagined.github.io/resolve/blog</link>
+        <description>reSolve Blog</description>
+        <lastBuildDate>Wed, 05 Dec 2018 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Welcome to reSolve]]></title>
+            <link>https://reimagined.github.io/resolve/blog/2018/12/05/welcome</link>
+            <guid>Welcome to reSolve</guid>
+            <pubDate>Wed, 05 Dec 2018 00:00:00 GMT</pubDate>
+            <description><![CDATA[Hello, this is going to be a place for reSolve blog posts.]]></description>
+        </item>
+    </channel>
+</rss>
