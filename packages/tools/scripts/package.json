@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/scripts",
-  "version": "0.31.0",
+  "version": "0.31.1",
   "description": "Contains scripts used to initialize a reSolve server.",
   "keywords": [
     "cqrs",
@@ -33,8 +33,8 @@
     "@babel/register": "7.13.16",
     "@babel/runtime": "7.14.0",
     "@purtuga/esm-webpack-plugin": "1.5.0",
-    "@resolve-js/debug-levels": "0.31.0",
-    "@resolve-js/runtime": "0.31.0",
+    "@resolve-js/debug-levels": "0.31.1",
+    "@resolve-js/runtime": "0.31.1",
     "address": "1.1.2",
     "ajv": "7.2.1",
     "babel-loader": "8.2.2",

@@ -7,7 +7,7 @@ This example demonstrates how to work with [read-models](https://reimagined.gith
 ##### Installation:
 
 ```sh
-npx create-resolve-app resolve-shopping-list -e shopping-list
+npx create-resolve-app resolve-shopping-list-redux-hoc -e shopping-list-redux-hoc
 ```
 
 ## What's next?

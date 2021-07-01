@@ -57,22 +57,26 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
       return (
         error != null &&
         (PassthroughError.isEmptyTransactionError(error) ||
-          checkFuzzyError(error, /Remaining connection slots are reserved/i),
-        checkFuzzyError(error, /Too many clients already/i),
-        checkFuzzyError(error, /Connection terminated unexpectedly/i),
-        checkFormalError(error, 'ECONNRESET'),
-        checkFormalError(error, PostgresErrors.CONNECTION_EXCEPTION),
-        checkFormalError(error, PostgresErrors.CONNECTION_DOES_NOT_EXIST),
-        checkFormalError(error, PostgresErrors.CONNECTION_FAILURE),
-        checkFormalError(
-          error,
-          PostgresErrors.SQLCLIENT_UNABLE_TO_ESTABLISH_SQLCONNECTION
-        ),
-        checkFormalError(
-          error,
-          PostgresErrors.SQLSERVER_REJECTED_ESTABLISHMENT_OF_SQLCONNECTION
-        ),
-        checkFormalError(error, PostgresErrors.IN_FAILED_SQL_TRANSACTION) ||
+          checkFuzzyError(
+            error,
+            /terminating connection due to serverless scale event timeout/i
+          ) ||
+          checkFuzzyError(error, /Remaining connection slots are reserved/i) ||
+          checkFuzzyError(error, /Too many clients already/i) ||
+          checkFuzzyError(error, /Connection terminated unexpectedly/i) ||
+          checkFormalError(error, 'ECONNRESET') ||
+          checkFormalError(error, PostgresErrors.CONNECTION_EXCEPTION) ||
+          checkFormalError(error, PostgresErrors.CONNECTION_DOES_NOT_EXIST) ||
+          checkFormalError(error, PostgresErrors.CONNECTION_FAILURE) ||
+          checkFormalError(
+            error,
+            PostgresErrors.SQLCLIENT_UNABLE_TO_ESTABLISH_SQLCONNECTION
+          ) ||
+          checkFormalError(
+            error,
+            PostgresErrors.SQLSERVER_REJECTED_ESTABLISHMENT_OF_SQLCONNECTION
+          ) ||
+          checkFormalError(error, PostgresErrors.IN_FAILED_SQL_TRANSACTION) ||
           checkFormalError(error, PostgresErrors.SERIALIZATION_FAILURE) ||
           checkFormalError(error, PostgresErrors.DEADLOCK_DETECTED))
       )

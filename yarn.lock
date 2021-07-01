@@ -8890,9 +8890,9 @@ hosted-git-info@^2.1.4:
   integrity sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==
 
 hpagent@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/hpagent/-/hpagent-0.1.1.tgz#66f67f16e5c7a8b59a068e40c2658c2c749ad5e2"
-  integrity sha512-IxJWQiY0vmEjetHdoE9HZjD4Cx+mYTr25tR7JCxXaiI3QxW0YqYyM11KyZbHufoa/piWhMb2+D3FGpMgmA2cFQ==
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/hpagent/-/hpagent-0.1.2.tgz#cab39c66d4df2d4377dbd212295d878deb9bdaa9"
+  integrity sha512-ePqFXHtSQWAFXYmj+JtOTHr84iNrII4/QRlAAPPE+zqnKy4xJo7Ie1Y4kC7AdB+LxLxSTTzBMASsEcy0q8YyvQ==
 
 hsl-regex@^1.0.0:
   version "1.0.0"
@@ -14677,10 +14677,10 @@ reselect@^4.0.0:
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
   integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
-resolve-cloud-common@0.0.136:
-  version "0.0.136"
-  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.136.tgz#1153d98945a5915346fc20dd2b44ed47c01421de"
-  integrity sha512-wLzSm3JMU55j5ZeRH3beATwSWHZ4MVsyL0Q4uOYKsj2J/UolKetF1PO+WvYPIV6bXfFfKGhlU/r+cYAB+oRh3Q==
+resolve-cloud-common@0.0.138:
+  version "0.0.138"
+  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.138.tgz#54a14a58d1ade3e2b7043afaed88533899cf2171"
+  integrity sha512-tMRT49+n9gSFIWBAERrw1ucCKJLTCNTeAhnrbM3qsyUVBZkmvu3JkHfSrOpmRfJxyYNud140kduXMkqxmYScfw==
   dependencies:
     chalk "^4.0.0"
     debug "^4.1.1"

@@ -7,6 +7,7 @@ import {
   initThreadArray,
   Cursor,
 } from '@resolve-js/eventstore-base'
+import assert from 'assert'
 
 const getCursorUntilEventTypes = async (
   {
@@ -39,7 +40,7 @@ const getCursorUntilEventTypes = async (
     )
     .join(' OR ')}`
 
-  const rows = (await executeStatement(
+  const stringRows = (await executeStatement(
     `SELECT "threadId", MIN("threadCounter") AS "threadCounter" FROM (
           SELECT "threadId", MIN("threadCounter") AS "threadCounter" FROM ${databaseNameAsId}.${eventsTableAsId} WHERE type IN 
           (${untilEventTypes.map((t) => escape(t)).join(', ')}) 
@@ -52,6 +53,17 @@ const getCursorUntilEventTypes = async (
     threadId: SavedEvent['threadId']
     threadCounter: SavedEvent['threadCounter']
   }>
+
+  const rows = stringRows.map((row) => {
+    const result = {
+      threadId: +row.threadId,
+      threadCounter: +row.threadCounter,
+    }
+    assert.strict.ok(!Number.isNaN(result.threadId))
+    assert.strict.ok(!Number.isNaN(result.threadCounter))
+
+    return result
+  })
 
   const threadCounters = initThreadArray()
   for (const row of rows) {

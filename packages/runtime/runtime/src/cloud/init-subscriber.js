@@ -6,6 +6,7 @@ import {
 } from 'resolve-cloud-common/sqs'
 import {
   createEventSourceMapping,
+  getEventSourceMapping,
   setFunctionTags,
   deleteEventSourceMapping,
   getFunctionTags,
@@ -86,6 +87,29 @@ const initSubscriber = (resolve, lambdaContext) => {
         MaximumBatchingWindowInSeconds: 0,
         BatchSize: 10,
       }))
+      while (true) {
+        try {
+          const { State } = await getEventSourceMapping({
+            Region: region,
+            UUID,
+          })
+          if (State === 'Enabled') {
+            break
+          }
+        } catch (error) {
+          if (
+            !(
+              error != null &&
+              (error.code === 'ResourceInUseException' ||
+                error.code === 'TooManyRequestsException' ||
+                error.code === 'ServiceException')
+            )
+          ) {
+            throw error
+          }
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      }
     } catch (err) {
       errors.push(err)
     }
@@ -134,6 +158,32 @@ const initSubscriber = (resolve, lambdaContext) => {
           Region: region,
           UUID,
         })
+
+        while (true) {
+          try {
+            await getEventSourceMapping({ Region: region, UUID })
+            const error = new Error('ResourceAlreadyExists')
+            error.code = 'ResourceAlreadyExists'
+            throw error
+          } catch (error) {
+            if (error != null && error.code === 'ResourceNotFoundException') {
+              break
+            }
+
+            if (
+              !(
+                error != null &&
+                (error.code === 'ResourceNotFoundException' ||
+                  error.code === 'ResourceInUseException' ||
+                  error.code === 'TooManyRequestsException' ||
+                  error.code === 'ServiceException')
+              )
+            ) {
+              throw error
+            }
+          }
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+        }
       } catch (err) {
         errors.push(err)
       }

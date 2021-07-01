@@ -7,7 +7,7 @@ This example demonstrates how to use the [@resolve-js/redux](https://reimagined.
 ##### Installation:
 
 ```sh
-npx create-resolve-app resolve-shopping-list-with-redux-hooks -e shopping-list-with-redux-hooks
+npx create-resolve-app resolve-shopping-list-redux -e shopping-list-redux
 ```
 
 ## What's next?

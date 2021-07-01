@@ -12,6 +12,8 @@ import {
   EventWithCursor,
 } from '@resolve-js/eventstore-base'
 
+import type { SavedEvent } from '@resolve-js/eventstore-base'
+
 jest.setTimeout(jestTimeout())
 
 describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`, () => {
@@ -53,21 +55,35 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
     expect(returnedCursor).toEqual(cursor)
   })
 
-  test('should be able to save many events and returned cursors must match the subsequent loadEvents cursor', async () => {
-    const checkCount = 16
-
-    for (let i = 0; i < checkCount; ++i) {
+  const checkCount = 256
+  test('should be able to save many events and returned result must match the subsequent loadEvents result', async () => {
+    for (let i = 1; i < checkCount; ++i) {
       const event = makeTestEvent(i)
       const saveResult = await adapter.saveEvent(event)
-      const { cursor: nextCursor, event: savedEvent } = saveResult
       eventCursorPairs.push(saveResult)
-      const { events, cursor } = await adapter.loadEvents({
-        limit: checkCount + 1,
-        cursor: null,
+    }
+
+    expect(eventCursorPairs).toHaveLength(checkCount)
+  })
+
+  test('saved events and corresponding must match the result of loadEvent', async () => {
+    let currentCursor = null
+    let loadedEvents: SavedEvent[] = []
+    const step = 100
+    for (let i = 0; i < checkCount; i += step) {
+      const { events, cursor: nextCursor } = await adapter.loadEvents({
+        limit: 100,
+        cursor: currentCursor,
       })
-      expect(events[i + 1]).toEqual(savedEvent)
-      expect(nextCursor).toEqual(cursor)
-      expect(events).toHaveLength(i + 2)
+      expect(nextCursor).toEqual(
+        eventCursorPairs[Math.min(i + step, checkCount) - 1].cursor
+      )
+      loadedEvents = loadedEvents.concat(events)
+      currentCursor = nextCursor
+    }
+    expect(loadedEvents).toHaveLength(checkCount)
+    for (let i = 0; i < checkCount; ++i) {
+      expect(eventCursorPairs[i].event).toEqual(loadedEvents[i])
     }
   })
 
