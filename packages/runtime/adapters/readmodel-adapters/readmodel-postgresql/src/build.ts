@@ -174,7 +174,7 @@ const buildEvents: (
   const groupMonitoring =
     monitoring != null
       ? monitoring
-          .group({ Part: 'ReadModelProjection' })
+          .group({ Part: 'ReadModel' })
           .group({ ReadModel: readModelName })
       : null
 
@@ -212,7 +212,6 @@ const buildEvents: (
               )
             }
 
-            // metricData.eventBatchLoadTime += loadDuration
             return events
           })
       : Promise.resolve(hotEvents)
@@ -271,7 +270,6 @@ const buildEvents: (
           )
         }
 
-        // metricData.eventBatchLoadTime += Date.now() - eventsLoadStartTimestamp
         return events
       })
 
@@ -551,8 +549,6 @@ const build: ExternalMethods['build'] = async (
   const { eventsWithCursors, ...inputMetricData } = buildInfo
   const metricData = {
     ...inputMetricData,
-    eventBatchLoadTime: 0,
-    pureProjectionApplyTime: 0,
     pureLedgerTime: 0,
     insideProjection: false,
   }
@@ -577,7 +573,7 @@ const build: ExternalMethods['build'] = async (
   const groupMonitoring =
     monitoring != null
       ? monitoring
-          .group({ Part: 'ReadModelProjection' })
+          .group({ Part: 'ReadModel' })
           .group({ ReadModel: readModelName })
       : null
 
@@ -718,16 +714,6 @@ const build: ExternalMethods['build'] = async (
 
     for (const innerMonitoring of [monitoring, groupMonitoring]) {
       if (innerMonitoring != null) {
-        // innerMonitoring.duration(
-        //   'EventBatchLoad',
-        //   metricData.eventBatchLoadTime
-        // )
-
-        // innerMonitoring.duration(
-        //   'EventProjectionApply',
-        //   metricData.pureProjectionApplyTime
-        // )
-
         innerMonitoring.duration('Ledger', metricData.pureLedgerTime)
       }
     }

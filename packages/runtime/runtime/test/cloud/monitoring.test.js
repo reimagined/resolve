@@ -1125,6 +1125,77 @@ describe('duration', () => {
     )
   })
 
+  test('combines different values with same dimensions up to 150 samples', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    const mockDate = new Date(1625152712546)
+    dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
+    for (let i = 0; i < 200; i++) {
+      monitoring.duration('test-label', i)
+    }
+
+    await monitoring.publish()
+
+    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+
+    expect(CloudWatch.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Values: Array.from({ length: 150 }, (_, i) => i),
+            Counts: Array.from({ length: 150 }, () => 1),
+          }),
+        ]),
+      })
+    )
+
+    expect(CloudWatch.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Values: Array.from({ length: 50 }, (_, i) => i + 150),
+            Counts: Array.from({ length: 50 }, () => 1),
+          }),
+        ]),
+      })
+    )
+  })
+
+  test('combines different values with same dimensions up to 150 samples considering value', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    const mockDate = new Date(1625152712546)
+    dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
+    for (let i = 0; i < 150; i++) {
+      monitoring.duration('test-label', i)
+    }
+
+    monitoring.duration('test-label', 69)
+
+    await monitoring.publish()
+
+    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+
+    expect(CloudWatch.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Values: Array.from({ length: 150 }, (_, i) => i),
+            Counts: Array.from({ length: 150 }, (_, i) => (i === 69 ? 2 : 1)),
+          }),
+        ]),
+      })
+    )
+  })
+
   test('combines same values with same dimensions if metric put in the same second', async () => {
     const monitoring = createMonitoring({
       deploymentId: 'test-deployment',

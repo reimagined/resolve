@@ -52,17 +52,6 @@ const verifyCommand = ({ aggregateId, aggregateName, type }: Command): void => {
   }
 }
 
-/*
-const monitoredError = async (
-  runtime: ReadModelRuntime,
-  error: Error,
-  meta: any
-) => {
-  await runtime.monitoring?.error?.(error, 'readModelResolver', meta)
-  return error
-}
-*/
-
 const getAggregateInterop = (aggregate: AggregateMeta): AggregateInterop => {
   const {
     name,

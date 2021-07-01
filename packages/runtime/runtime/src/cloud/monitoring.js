@@ -5,6 +5,7 @@ import { retry } from 'resolve-cloud-common/utils'
 const MAX_DIMENSION_VALUE_LENGTH = 256
 const MAX_METRIC_COUNT = 20
 const MAX_DIMENSION_COUNT = 10
+const MAX_VALUES_PER_METRIC = 150
 
 const getLog = (name) => debugLevels(`resolve:cloud:${name}`)
 
@@ -98,7 +99,8 @@ const monitoringDuration = async (
   }
 
   const durationDimensions = [{ Name: 'Label', Value: label }]
-  const now = new Date()
+  const timestamp = new Date()
+  timestamp.setMilliseconds(0)
 
   let isDimensionCountLimitReached = false
 
@@ -107,7 +109,7 @@ const monitoringDuration = async (
 
     if (dimensions.length <= MAX_DIMENSION_COUNT) {
       const metricName = 'Duration'
-      const time = now.getTime()
+      const time = timestamp.getTime()
       const unit = 'Milliseconds'
 
       const existingMetricData = monitoringData.metricData.find(
@@ -116,6 +118,8 @@ const monitoringDuration = async (
           data.Unit === unit &&
           data.Timestamp.getTime() === time &&
           data.Dimensions.length === dimensions.length &&
+          (data.Values.length < MAX_VALUES_PER_METRIC ||
+            data.Values.includes(duration)) &&
           data.Dimensions.every(
             (dimension, index) =>
               dimension.Name === dimensions[index].Name &&
@@ -141,7 +145,7 @@ const monitoringDuration = async (
       } else {
         monitoringData.metricData.push({
           MetricName: metricName,
-          Timestamp: now,
+          Timestamp: timestamp,
           Unit: unit,
           Values: [duration],
           Counts: [count],
@@ -265,7 +269,8 @@ const monitoringRate = async (
     return
   }
 
-  const now = new Date()
+  const timestamp = new Date()
+  timestamp.setMilliseconds(0)
 
   let isDimensionCountLimitReached = false
 
@@ -274,7 +279,7 @@ const monitoringRate = async (
       if (groupDimensions.length <= MAX_DIMENSION_COUNT) {
         acc.push({
           MetricName: metricName,
-          Timestamp: now,
+          Timestamp: timestamp,
           Unit: 'Count/Second',
           Value: count / seconds,
           Dimensions: groupDimensions,

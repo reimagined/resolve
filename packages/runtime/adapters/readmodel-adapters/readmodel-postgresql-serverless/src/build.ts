@@ -574,7 +574,7 @@ const build: ExternalMethods['build'] = async (
   const groupMonitoring =
     monitoring != null
       ? monitoring
-          .group({ Part: 'ReadModelProjection' })
+          .group({ Part: 'ReadModel' })
           .group({ ReadModel: readModelName })
       : null
 

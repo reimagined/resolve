@@ -40,7 +40,7 @@ const withPerformanceTracerImpl = async <
       : null
 
   try {
-    const label = `${methodName}Operation`
+    const label = `Operation "${methodName}"`
     groupMonitoring?.time(label)
     const result = await methodImpl(...args)
     groupMonitoring?.timeEnd(label)
