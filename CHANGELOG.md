@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.0...HEAD)
 
+**Enhancements:**
+
+- Improve event source mapping \(wait for enabled/disabled state\) [\#1922](https://github.com/reimagined/resolve/pull/1922)
+
 **Documentation:**
 
 - Restructure the documentation to account for moved examples [\#1918](https://github.com/reimagined/resolve/pull/1918)
