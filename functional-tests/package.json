@@ -6,7 +6,9 @@
     "cleanup": "ts-node --files=true scripts/run.ts clean",
     "deploy": "ts-node --files=true scripts/run.ts deploy",
     "run-test": "ts-node --files=true scripts/run.ts test",
-    "test": "echo skipping"
+    "test": "echo skipping",
+    "test:testcafe": "ts-node --files=true scripts/run.ts test testcafe",
+    "test:api": "ts-node --files=true scripts/run.ts test api"
   },
   "dependencies": {
     "@babel/core": "7.14.3",
