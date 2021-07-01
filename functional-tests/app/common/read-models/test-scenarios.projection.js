@@ -40,7 +40,7 @@ const projection = {
   },
   [TEST_SCENARIO_REACTIVE_CHANNEL_PUBLISHED]: async (
     store,
-    { aggregateId, payload: { echo } },
+    { aggregateId, payload: { state: { echo } } },
     { dispatchNotification }
   ) => {
     await dispatchNotification(`test-scenario-${aggregateId}`, echo)

@@ -29,10 +29,12 @@ const eventListenerSaga = function* (
 
   const subscription = yield call(
     [client, client.subscribe],
-    url,
-    cursor,
-    name,
-    aggregateIds,
+    {
+      url,
+      cursor,
+      viewModelName: name,
+      aggregateIds,
+    },
     (event: any) => {
       viewModelState = projection[event.type](viewModelState, event, args)
       store.dispatch(viewModelStateUpdate(query, viewModelState, false))

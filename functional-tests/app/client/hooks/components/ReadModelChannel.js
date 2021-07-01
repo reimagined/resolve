@@ -43,7 +43,7 @@ const ReadModelChannel = ({
   return (
     <div>
       <h4>{`Read model channel test scenario: ${scenarioId}`}</h4>
-      <button onClick={() => publish('echo')}>publish</button>
+      <button onClick={() => publish('hello')}>publish</button>
     </div>
   )
 }

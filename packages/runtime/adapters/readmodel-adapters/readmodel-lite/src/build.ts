@@ -229,10 +229,16 @@ const buildEvents: (
     | Promise<ReadModelCursor>
     | ReadModelCursor = eventstoreAdapter.getNextCursor(cursor, events)
   let appliedEventsCount = 0
+  let effectBufferId
   try {
+    effectBufferId = await modelInterop.beginEffects()
     for (const event of events) {
       try {
-        const handler = await modelInterop.acquireEventHandler(store, event)
+        const handler = await modelInterop.acquireEventHandler(
+          store,
+          event,
+          effectBufferId
+        )
         if (handler != null) {
           await inlineLedgerRunQuery(`SAVEPOINT E${appliedEventsCount}`, true)
           await handler()
@@ -347,6 +353,10 @@ const buildEvents: (
 
       await fullJitter(0)
     }
+  }
+
+  if (effectBufferId != null) {
+    await modelInterop.commitEffects(effectBufferId)
   }
 
   const isBuildSuccess = lastError == null && appliedEventsCount > 0

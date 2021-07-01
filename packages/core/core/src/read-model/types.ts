@@ -17,7 +17,7 @@ export type ReadModelRuntime = {
 
 export type EffectBufferID = number
 
-export type ReadModelInterop = {
+export type ReadModelInterop<TStore = any, TEvent extends Event = Event> = {
   name: string
   connectorName: string
   acquireResolver: (
@@ -28,12 +28,12 @@ export type ReadModelInterop = {
     }
   ) => Promise<ReadModelRuntimeResolver>
   acquireInitHandler: (
-    store: any,
+    store: TStore,
     effectBufferId?: EffectBufferID
   ) => Promise<ReadModelRuntimeEventHandler | null>
   acquireEventHandler: (
-    store: any,
-    event: Event,
+    store: TStore,
+    event: TEvent,
     effectBufferId?: EffectBufferID
   ) => Promise<ReadModelRuntimeEventHandler | null>
   acquireChannel: () => Promise<ReadModelRuntimeChannel | null>
