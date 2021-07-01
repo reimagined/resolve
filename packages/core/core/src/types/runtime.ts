@@ -14,6 +14,9 @@ import {
   CommandHandler,
   ReadModelResolver,
   ReadModelEventHandler,
+  CommandContext,
+  ReadModelResolverContext,
+  ReadModelHandlerContext,
 } from './core'
 
 export type PerformanceSubsegment = {
@@ -96,30 +99,44 @@ export type ViewModelMeta = {
 
 //Middleware
 
-type CommandMiddlewareParameters = [
+type CommandMiddlewareParameters<
+  TContext extends CommandContext = CommandContext
+> = [
   middlewareContext: AggregateMiddlewareContext,
-  ...args: Parameters<CommandHandler>
+  ...args: Parameters<CommandHandler<TContext>>
 ]
-type ResolverMiddlewareParameters = [
+
+type ResolverMiddlewareParameters<
+  TContext extends ReadModelResolverContext = ReadModelResolverContext
+> = [
   middlewareContext: ReadModelResolverMiddlewareContext,
-  ...args: Parameters<ReadModelResolver<any>>
+  ...args: Parameters<ReadModelResolver<any, TContext>>
 ]
-type ProjectionMiddlewareParameters = [
+
+type ProjectionMiddlewareParameters<
+  TContext extends ReadModelHandlerContext = ReadModelHandlerContext
+> = [
   middlewareContext: ReadModelMiddlewareContext,
-  ...args: Parameters<ReadModelEventHandler<any>>
+  ...args: Parameters<ReadModelEventHandler<any, TContext>>
 ]
 
-export type CommandMiddlewareHandler = (
-  ...args: CommandMiddlewareParameters
-) => ReturnType<CommandHandler>
+export type CommandMiddlewareHandler<
+  TContext extends CommandContext = CommandContext
+> = (
+  ...args: CommandMiddlewareParameters<TContext>
+) => ReturnType<CommandHandler<TContext>>
 
-export type ResolverMiddlewareHandler = (
-  ...args: ResolverMiddlewareParameters
-) => ReturnType<ReadModelResolver<any>>
+export type ResolverMiddlewareHandler<
+  TContext extends ReadModelResolverContext = ReadModelResolverContext
+> = (
+  ...args: ResolverMiddlewareParameters<TContext>
+) => ReturnType<ReadModelResolver<any, TContext>>
 
-export type ProjectionMiddlewareHandler = (
-  ...args: ProjectionMiddlewareParameters
-) => ReturnType<ReadModelEventHandler<any>>
+export type ProjectionMiddlewareHandler<
+  TContext extends ReadModelHandlerContext = ReadModelHandlerContext
+> = (
+  ...args: ProjectionMiddlewareParameters<TContext>
+) => ReturnType<ReadModelEventHandler<any, TContext>>
 
 type MiddlewareChainableFunction =
   | CommandMiddlewareHandler
@@ -143,9 +160,7 @@ type ReadModelResolverMiddlewareContext = {
 
 type AggregateMiddlewareContext = MiddlewareContext
 
-type Middleware<
-  THandler extends MiddlewareChainableFunction
-> = MiddlewareHandler<THandler>
+type Middleware<THandler> = MiddlewareHandler<THandler>
 
 export type MiddlewareWrapper = <THandler extends MiddlewareChainableFunction>(
   middlewares: Array<Middleware<THandler>>
@@ -155,6 +170,14 @@ export type MiddlewareApplier<T extends MiddlewareChainableFunction> = (
   targetHandler: T
 ) => T
 
-export type CommandMiddleware = Middleware<CommandMiddlewareHandler>
-export type ReadModelProjectionMiddleware = Middleware<ProjectionMiddlewareHandler>
-export type ReadModelResolverMiddleware = Middleware<ResolverMiddlewareHandler>
+export type ReadModelProjectionMiddleware<
+  TContext extends ReadModelHandlerContext = ReadModelHandlerContext
+> = Middleware<ProjectionMiddlewareHandler<TContext>>
+
+export type ReadModelResolverMiddleware<
+  TContext extends ReadModelResolverContext = ReadModelResolverContext
+> = Middleware<ResolverMiddlewareHandler<TContext>>
+
+export type CommandMiddleware<
+  TContext extends CommandContext = CommandContext
+> = Middleware<CommandMiddlewareHandler<TContext>>
