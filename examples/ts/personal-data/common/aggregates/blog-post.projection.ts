@@ -5,8 +5,9 @@ const projection: AggregateProjection = {
   Init: () => ({
     isExist: false,
   }),
-  [BLOG_POST_CREATED]: (state) => ({
+  [BLOG_POST_CREATED]: (state, { payload: { authorId } }) => ({
     ...state,
+    authorId,
     isExist: true,
   }),
   [BLOG_POST_DELETED]: (state) => ({

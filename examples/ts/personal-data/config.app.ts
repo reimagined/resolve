@@ -64,6 +64,10 @@ const appConfig = {
       method: 'DELETE',
     },
   ],
+  middlewares: {
+    aggregate: ['common/middleware/auth-command-middleware.ts'],
+    readModel: { resolver: ['common/middleware/auth-resolver-middleware.ts'] },
+  },
   clientEntries: [
     [
       'client/index.tsx',

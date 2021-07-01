@@ -1,11 +1,14 @@
 import { ReadModelResolvers } from '@resolve-js/core'
 import { ResolveStore } from '@resolve-js/readmodel-base'
-import { decode } from '../jwt'
 import { systemUserId } from '../constants'
+import { AuthResolverMiddlewareContext } from '../../types'
 
-const resolvers: ReadModelResolvers<ResolveStore> = {
-  byOwner: async (store, { ownerId }: { ownerId: string }, { jwt }) => {
-    const { userId } = decode(jwt)
+const resolvers: ReadModelResolvers<
+  ResolveStore,
+  AuthResolverMiddlewareContext
+> = {
+  byOwner: async (store, { ownerId }: { ownerId: string }, { user }) => {
+    const { userId } = user
     if (userId !== systemUserId) {
       throw Error('you are not authorized to perform this operation')
     }
