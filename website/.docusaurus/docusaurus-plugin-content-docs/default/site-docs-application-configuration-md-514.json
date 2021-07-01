@@ -1,0 +1,26 @@
+{
+  "unversionedId": "application-configuration",
+  "id": "application-configuration",
+  "isDocsHomePage": false,
+  "title": "Application Configuration",
+  "description": "This document lists configuration options available for a reSolve application.",
+  "source": "@site/../docs/application-configuration.md",
+  "sourceDirName": ".",
+  "slug": "/application-configuration",
+  "permalink": "/resolve/docs/application-configuration",
+  "version": "current",
+  "frontMatter": {
+    "id": "application-configuration",
+    "title": "Application Configuration",
+    "description": "This document lists configuration options available for a reSolve application."
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "API Reference",
+    "permalink": "/resolve/docs/api-reference"
+  },
+  "next": {
+    "title": "Contributing",
+    "permalink": "/resolve/docs/contributing"
+  }
+}

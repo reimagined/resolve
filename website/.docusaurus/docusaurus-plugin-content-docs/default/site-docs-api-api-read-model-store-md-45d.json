@@ -1,0 +1,28 @@
+{
+  "unversionedId": "api/api-read-model-store",
+  "id": "api/api-read-model-store",
+  "isDocsHomePage": false,
+  "title": "Read Model Store",
+  "description": "Read Model Store",
+  "source": "@site/../docs/api/api-read-model-store.md",
+  "sourceDirName": "api",
+  "slug": "/api/api-read-model-store",
+  "permalink": "/resolve/docs/api/api-read-model-store",
+  "version": "current",
+  "lastUpdatedBy": "Author",
+  "lastUpdatedAt": 1539502055,
+  "formattedLastUpdatedAt": "10/14/2018",
+  "frontMatter": {
+    "id": "api-read-model-store",
+    "title": "Read Model Store"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Read Model Connector",
+    "permalink": "/resolve/docs/api/api-read-model-connector"
+  },
+  "next": {
+    "title": "Event Store Adapter",
+    "permalink": "/resolve/docs/api/api-event-store-adapter"
+  }
+}

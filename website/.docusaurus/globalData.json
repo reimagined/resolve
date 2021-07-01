@@ -1,0 +1,118 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/resolve/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/resolve/docs",
+          "mainDocId": "index",
+          "docs": [
+            {
+              "id": "advanced-techniques",
+              "path": "/resolve/docs/advanced-techniques",
+              "sidebar": "docs"
+            },
+            {
+              "id": "api-handlers",
+              "path": "/resolve/docs/api-handlers",
+              "sidebar": "docs"
+            },
+            {
+              "id": "api-reference",
+              "path": "/resolve/docs/api-reference",
+              "sidebar": "docs"
+            },
+            {
+              "id": "app-structure",
+              "path": "/resolve/docs/app-structure",
+              "sidebar": "docs"
+            },
+            {
+              "id": "application-configuration",
+              "path": "/resolve/docs/application-configuration",
+              "sidebar": "docs"
+            },
+            {
+              "id": "authentication-and-authorization",
+              "path": "/resolve/docs/authentication-and-authorization",
+              "sidebar": "docs"
+            },
+            {
+              "id": "contributing",
+              "path": "/resolve/docs/contributing",
+              "sidebar": "docs"
+            },
+            {
+              "id": "debugging",
+              "path": "/resolve/docs/debugging",
+              "sidebar": "docs"
+            },
+            {
+              "id": "faq",
+              "path": "/resolve/docs/faq",
+              "sidebar": "docs"
+            },
+            {
+              "id": "frontend",
+              "path": "/resolve/docs/frontend",
+              "sidebar": "docs"
+            },
+            {
+              "id": "index",
+              "path": "/resolve/docs/",
+              "sidebar": "docs"
+            },
+            {
+              "id": "introduction",
+              "path": "/resolve/docs/introduction",
+              "sidebar": "docs"
+            },
+            {
+              "id": "manage-application",
+              "path": "/resolve/docs/manage-application",
+              "sidebar": "docs"
+            },
+            {
+              "id": "preparing-to-production",
+              "path": "/resolve/docs/preparing-to-production",
+              "sidebar": "docs"
+            },
+            {
+              "id": "read-side",
+              "path": "/resolve/docs/read-side",
+              "sidebar": "docs"
+            },
+            {
+              "id": "sagas",
+              "path": "/resolve/docs/sagas",
+              "sidebar": "docs"
+            },
+            {
+              "id": "testing",
+              "path": "/resolve/docs/testing",
+              "sidebar": "docs"
+            },
+            {
+              "id": "troubleshooting",
+              "path": "/resolve/docs/troubleshooting",
+              "sidebar": "docs"
+            },
+            {
+              "id": "tutorial",
+              "path": "/resolve/docs/tutorial",
+              "sidebar": "docs"
+            },
+            {
+              "id": "write-side",
+              "path": "/resolve/docs/write-side",
+              "sidebar": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

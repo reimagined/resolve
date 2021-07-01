@@ -1,0 +1,25 @@
+{
+  "unversionedId": "api/client/resolve-redux",
+  "id": "api/client/resolve-redux",
+  "isDocsHomePage": false,
+  "title": "@resolve-js/redux",
+  "description": "The reSolve framework includes the client @resolve-js/redux library used to connect a client React + Redux app to a reSolve-powered backend. This library includes both React Hooks and Higher-Order Components (HOCs).",
+  "source": "@site/../docs/api/client/resolve-redux.md",
+  "sourceDirName": "api/client",
+  "slug": "/api/client/resolve-redux",
+  "permalink": "/resolve/docs/api/client/resolve-redux",
+  "version": "current",
+  "frontMatter": {
+    "id": "resolve-redux",
+    "title": "@resolve-js/redux"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Client Entry Point",
+    "permalink": "/resolve/docs/api/client/entry-point"
+  },
+  "next": {
+    "title": "@resolve-js/client",
+    "permalink": "/resolve/docs/api/client/resolve-client"
+  }
+}

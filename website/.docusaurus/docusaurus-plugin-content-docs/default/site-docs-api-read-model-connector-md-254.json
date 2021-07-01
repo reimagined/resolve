@@ -1,0 +1,25 @@
+{
+  "unversionedId": "api/read-model-connector",
+  "id": "api/read-model-connector",
+  "isDocsHomePage": false,
+  "title": "Read Model Connector",
+  "description": "The table below lists functions a custom Read Model's connector should implement.",
+  "source": "@site/../docs/api/read-model-connector.md",
+  "sourceDirName": "api",
+  "slug": "/api/read-model-connector",
+  "permalink": "/resolve/docs/api/read-model-connector",
+  "version": "current",
+  "frontMatter": {
+    "id": "read-model-connector",
+    "title": "Read Model Connector"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Contributing",
+    "permalink": "/resolve/docs/contributing"
+  },
+  "next": {
+    "title": "Read Model Store",
+    "permalink": "/resolve/docs/api/read-model-store"
+  }
+}

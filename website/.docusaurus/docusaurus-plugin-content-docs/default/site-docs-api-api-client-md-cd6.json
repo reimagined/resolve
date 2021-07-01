@@ -1,0 +1,19 @@
+{
+  "unversionedId": "api/api-client",
+  "id": "api/api-client",
+  "isDocsHomePage": false,
+  "title": "Client-Side API",
+  "description": "Client-Side API",
+  "source": "@site/../docs/api/api-client.md",
+  "sourceDirName": "api",
+  "slug": "/api/api-client",
+  "permalink": "/resolve/docs/api/api-client",
+  "version": "current",
+  "lastUpdatedBy": "Author",
+  "lastUpdatedAt": 1539502055,
+  "formattedLastUpdatedAt": "10/14/2018",
+  "frontMatter": {
+    "id": "api-client",
+    "title": "Client-Side API"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "unversionedId": "api/client/resolve-react-hooks",
+  "id": "api/client/resolve-react-hooks",
+  "isDocsHomePage": false,
+  "title": "@resolve-js/react-hooks",
+  "description": "The @resolve-js/react-hooks library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.",
+  "source": "@site/../docs/api/client/resolve-react-hooks.md",
+  "sourceDirName": "api/client",
+  "slug": "/api/client/resolve-react-hooks",
+  "permalink": "/resolve/docs/api/client/resolve-react-hooks",
+  "version": "current",
+  "frontMatter": {
+    "id": "resolve-react-hooks",
+    "title": "@resolve-js/react-hooks"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "@resolve-js/client",
+    "permalink": "/resolve/docs/api/client/resolve-client"
+  },
+  "next": {
+    "title": "Request Middleware",
+    "permalink": "/resolve/docs/api/client/request-middleware"
+  }
+}

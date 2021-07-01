@@ -1,4 +1,4 @@
-module.exports={
+export default {
   "title": "reSolve",
   "tagline": "Full stack CQRS, DDD, Event Sourcing framework for Node.js",
   "url": "https://reimagined.github.io",
@@ -7,9 +7,9 @@ module.exports={
   "projectName": "reSolve",
   "scripts": [
     {
-      src: "https://buttons.github.io/buttons.js",
-      async: true
-    }    
+      "src": "https://buttons.github.io/buttons.js",
+      "async": true
+    }
   ],
   "favicon": "img/favicon.ico",
   "customFields": {},
@@ -63,49 +63,48 @@ module.exports={
           "label": "GitHub",
           "position": "left"
         }
-      ]
+      ],
+      "hideOnScroll": false
     },
     "image": "img/reSolve400x400-fill.png",
     "footer": {
-      "style": 'dark',
+      "style": "dark",
       "links": [
         {
-          title: 'Docs',
-          items: [
+          "title": "Docs",
+          "items": [
             {
-              label: "Documentation Index",
-              to: 'docs'
+              "label": "Documentation Index",
+              "to": "docs"
             }
           ]
         },
         {
-          title: 'Community',
-          items: [
+          "title": "Community",
+          "items": [
             {
-              label: "Stack Overflow",
-              to: 'https://stackoverflow.com/questions/tagged/resolvejs'
+              "label": "Stack Overflow",
+              "to": "https://stackoverflow.com/questions/tagged/resolvejs"
             },
             {
-              label: "Twitter",
-              to: 'https://twitter.com/resolvejs'
+              "label": "Twitter",
+              "to": "https://twitter.com/resolvejs"
             },
             {
-              label: "Facebook",
-              to: 'https://www.facebook.com/resolvejs/'
+              "label": "Facebook",
+              "to": "https://www.facebook.com/resolvejs/"
             }
           ]
         },
         {
-          title: 'More',
-          items: [
+          "title": "More",
+          "items": [
             {
-              label: "GitHub",
-              to: 'https://github.com/reimagined/resolve'
+              "label": "GitHub",
+              "to": "https://github.com/reimagined/resolve"
             },
             {
-              html: `
-              <iframe src="https://ghbtns.com/github-btn.html?user=reimagined&repo=resolve&type=star&count=true" frameborder="0" scrolling="0" width="150" height="20" title="GitHub"></iframe>
-              `
+              "html": "\n              <iframe src=\"https://ghbtns.com/github-btn.html?user=reimagined&repo=resolve&type=star&count=true\" frameborder=\"0\" scrolling=\"0\" width=\"150\" height=\"20\" title=\"GitHub\"></iframe>\n              "
             }
           ]
         }
@@ -117,10 +116,44 @@ module.exports={
     },
     "algolia": {
       "indexName": "reimagined_resolve",
-      "apiKey": process.env.ALGOLIA_RESOLVE_API_KEY
+      "apiKey": "2acd75b7a94d568aa418a4f02bd811cc",
+      "contextualSearch": false,
+      "appId": "BH4D9OD16A",
+      "searchParameters": {}
     },
     "gtag": {
       "trackingID": "UA-118635726-3"
-    }
-  }
-}
+    },
+    "colorMode": {
+      "defaultMode": "light",
+      "disableSwitch": false,
+      "respectPrefersColorScheme": false,
+      "switchConfig": {
+        "darkIcon": "🌜",
+        "darkIconStyle": {},
+        "lightIcon": "🌞",
+        "lightIconStyle": {}
+      }
+    },
+    "docs": {
+      "versionPersistence": "localStorage"
+    },
+    "metadatas": [],
+    "prism": {
+      "additionalLanguages": []
+    },
+    "hideableSidebar": false
+  },
+  "baseUrlIssueBanner": true,
+  "i18n": {
+    "defaultLocale": "en",
+    "locales": [
+      "en"
+    ],
+    "localeConfigs": {}
+  },
+  "onDuplicateRoutes": "warn",
+  "themes": [],
+  "titleDelimiter": "|",
+  "noIndex": false
+};

@@ -1,0 +1,25 @@
+{
+  "unversionedId": "api/saga",
+  "id": "api/saga",
+  "isDocsHomePage": false,
+  "title": "Saga",
+  "description": "A saga's event handler receives an object that provides access to the saga-related API. This API includes the following objects:",
+  "source": "@site/../docs/api/saga.md",
+  "sourceDirName": "api",
+  "slug": "/api/saga",
+  "permalink": "/resolve/docs/api/saga",
+  "version": "current",
+  "frontMatter": {
+    "id": "saga",
+    "title": "Saga"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "API Handler",
+    "permalink": "/resolve/docs/api/api-handler"
+  },
+  "next": {
+    "title": "reSolve Scripts",
+    "permalink": "/resolve/docs/api/resolve-scripts"
+  }
+}

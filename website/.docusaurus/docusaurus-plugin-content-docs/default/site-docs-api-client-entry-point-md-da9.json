@@ -1,0 +1,25 @@
+{
+  "unversionedId": "api/client/entry-point",
+  "id": "api/client/entry-point",
+  "isDocsHomePage": false,
+  "title": "Client Entry Point",
+  "description": "The entry point is a function that is the first to be called when the client script runs. It takes a reSolve context object as a parameter.",
+  "source": "@site/../docs/api/client/entry-point.md",
+  "sourceDirName": "api/client",
+  "slug": "/api/client/entry-point",
+  "permalink": "/resolve/docs/api/client/entry-point",
+  "version": "current",
+  "frontMatter": {
+    "id": "entry-point",
+    "title": "Client Entry Point"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "HTTP API",
+    "permalink": "/resolve/docs/api/client/http-api"
+  },
+  "next": {
+    "title": "@resolve-js/redux",
+    "permalink": "/resolve/docs/api/client/resolve-redux"
+  }
+}

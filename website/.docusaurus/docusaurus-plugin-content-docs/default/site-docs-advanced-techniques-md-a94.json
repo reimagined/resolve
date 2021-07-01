@@ -1,0 +1,26 @@
+{
+  "unversionedId": "advanced-techniques",
+  "id": "advanced-techniques",
+  "isDocsHomePage": false,
+  "title": "Advanced Techniques",
+  "description": "This document describes advanced techniques that can help уou extend your reSolve application's functionality.",
+  "source": "@site/../docs/advanced-techniques.md",
+  "sourceDirName": ".",
+  "slug": "/advanced-techniques",
+  "permalink": "/resolve/docs/advanced-techniques",
+  "version": "current",
+  "frontMatter": {
+    "id": "advanced-techniques",
+    "title": "Advanced Techniques",
+    "description": "This document describes advanced techniques that can help уou extend your reSolve application's functionality."
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "reSolve App Structure",
+    "permalink": "/resolve/docs/app-structure"
+  },
+  "next": {
+    "title": "Authentication and Authorization",
+    "permalink": "/resolve/docs/authentication-and-authorization"
+  }
+}
