@@ -43,7 +43,7 @@ const saveEvent = async (
       const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
       const eventsTableAsId = escapeId(eventsTableName)
 
-      const rows = (await executeStatement(
+      const stringRows = (await executeStatement(
         `WITH "freeze_check" AS (
           SELECT 0 AS "freeze_zero" WHERE (
             (SELECT 1 AS "EventStoreIsFrozen")
@@ -111,6 +111,19 @@ const saveEvent = async (
         newThreadCounter: EventThreadData['threadCounter']
         timestamp: SavedEvent['timestamp']
       }>
+
+      const rows = stringRows.map((row) => {
+        const result = {
+          threadId: +row.threadId,
+          newThreadCounter: +row.newThreadCounter,
+          timestamp: +row.timestamp,
+        }
+        assert.strict.ok(!Number.isNaN(result.threadId))
+        assert.strict.ok(!Number.isNaN(result.newThreadCounter))
+        assert.strict.ok(!Number.isNaN(result.timestamp))
+
+        return result
+      })
 
       assert.strictEqual(
         rows.length - 1,

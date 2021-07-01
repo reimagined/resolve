@@ -2,6 +2,7 @@ import { AdapterPool } from './types'
 import { OldEvent, SavedEvent, THREAD_COUNT } from '@resolve-js/eventstore-base'
 import { str as strCRC32 } from 'crc-32'
 import { RESERVED_EVENT_SIZE } from './constants'
+import assert from 'assert'
 
 const MAX_EVENTS_BATCH_BYTE_SIZE = 32768
 
@@ -28,13 +29,23 @@ export const replicateEvents = async (
   const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
   const databaseNameAsId = escapeId(databaseName)
 
-  const rows = (await executeStatement(
+  const stringRows = (await executeStatement(
     `SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
     ${databaseNameAsId}.${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`
   )) as Array<{
-    threadId: SavedEvent['threadId']
-    threadCounter: SavedEvent['threadCounter']
+    threadId: string
+    threadCounter: string
   }>
+  const rows = stringRows.map((row) => {
+    const result = {
+      threadId: +row.threadId,
+      threadCounter: +row.threadCounter,
+    }
+    assert.strict.ok(!Number.isNaN(result.threadId))
+    assert.strict.ok(!Number.isNaN(result.threadCounter))
+
+    return result
+  })
 
   const threadCounters = new Array<SavedEvent['threadCounter']>(THREAD_COUNT)
   for (const row of rows) {
