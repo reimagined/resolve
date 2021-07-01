@@ -1,6 +1,7 @@
 import {
-  TEST_SCENARIO_EXECUTED, TEST_SCENARIO_REACTIVE_CHANNEL_PUBLISHED,
-  TEST_SCENARIO_RETRY_ON_ERROR_UNBLOCKED
+  TEST_SCENARIO_EXECUTED,
+  TEST_SCENARIO_REACTIVE_CHANNEL_PUBLISHED,
+  TEST_SCENARIO_RETRY_ON_ERROR_UNBLOCKED,
 } from '../event-types'
 
 const projection = {
@@ -40,7 +41,12 @@ const projection = {
   },
   [TEST_SCENARIO_REACTIVE_CHANNEL_PUBLISHED]: async (
     store,
-    { aggregateId, payload: { state: { echo } } },
+    {
+      aggregateId,
+      payload: {
+        state: { echo },
+      },
+    },
     { dispatchNotification }
   ) => {
     await dispatchNotification(`test-scenario-${aggregateId}`, echo)
