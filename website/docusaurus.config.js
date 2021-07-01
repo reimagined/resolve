@@ -4,7 +4,7 @@ module.exports={
   "url": "https://reimagined.github.io",
   "baseUrl": "/resolve/",
   "organizationName": "reimagined",
-  "projectName": "reSolve",
+  "projectName": "resolve",
   "scripts": [
     {
       src: "https://buttons.github.io/buttons.js",
@@ -12,6 +12,7 @@ module.exports={
     }    
   ],
   "favicon": "img/favicon.ico",
+  "trailingSlash": "true",
   "customFields": {},
   "onBrokenLinks": "log",
   "onBrokenMarkdownLinks": "log",
