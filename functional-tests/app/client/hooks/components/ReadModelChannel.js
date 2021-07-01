@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useCommandBuilder, useReadModelChannel } from '@resolve-js/react-hooks'
 
 const ReadModelChannel = ({
@@ -10,6 +10,8 @@ const ReadModelChannel = ({
     throw Error(`use read-model-channel/:id path to run tests`)
   }
 
+  const [message, setMessage] = useState('')
+
   const { connect, dispose } = useReadModelChannel(
     {
       name: 'test-scenarios',
@@ -19,9 +21,7 @@ const ReadModelChannel = ({
       },
     },
     [],
-    (notification) => {
-      console.log(notification)
-    }
+    (notification) => setMessage(notification)
   )
 
   const publish = useCommandBuilder((echo) => ({
@@ -43,7 +43,8 @@ const ReadModelChannel = ({
   return (
     <div>
       <h4>{`Read model channel test scenario: ${scenarioId}`}</h4>
-      <button onClick={() => publish('hello')}>publish</button>
+      <button onClick={() => publish('Reactive Hello!')}>publish</button>
+      <h3>{message}</h3>
     </div>
   )
 }

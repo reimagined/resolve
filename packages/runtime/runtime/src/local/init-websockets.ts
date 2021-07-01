@@ -350,7 +350,7 @@ export const initWebsockets = async (thisResolve: any) => {
   const sendReactiveEvent = async (event: Event) => {
     await pubSubManager.dispatchEvent(event)
   }
-  const publishReadModelNotification = async (
+  const dispatchReadModelNotification = async (
     name: string,
     channel: string,
     notification: ReadModelNotification
@@ -378,6 +378,6 @@ export const initWebsockets = async (thisResolve: any) => {
       value: makeSubscription,
     },
     sendReactiveEvent: { value: sendReactiveEvent },
-    publishReadModelNotification: { value: publishReadModelNotification },
+    dispatchReadModelNotification: { value: dispatchReadModelNotification },
   }
 }

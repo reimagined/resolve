@@ -27,6 +27,7 @@ const initResolve = async (resolve) => {
     domainInterop,
     domain,
     performanceTracer,
+    dispatchReadModelNotification,
   } = resolve
 
   const eventstoreAdapter = createEventstoreAdapter()
@@ -120,6 +121,7 @@ const initResolve = async (resolve) => {
     readModelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
       monitoring,
       secretsManager,
+      dispatchReadModelNotification,
     }),
     viewModelsInterop: domainInterop.viewModelDomain.acquireViewModelsInterop({
       monitoring,

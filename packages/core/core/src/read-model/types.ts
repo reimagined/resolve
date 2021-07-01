@@ -1,4 +1,9 @@
-import { SecretsManager, Event, ReadModelChannel } from '../types/core'
+import {
+  SecretsManager,
+  Event,
+  ReadModelChannel,
+  Serializable,
+} from '../types/core'
 import { Monitoring } from '../types/runtime'
 
 export type ReadModelRuntimeResolver = (
@@ -13,6 +18,11 @@ export type ReadModelRuntimeChannel = ReadModelChannel
 export type ReadModelRuntime = {
   secretsManager: SecretsManager
   monitoring?: Monitoring
+  dispatchReadModelNotification?: (
+    name: string,
+    channel: string,
+    notification: Serializable
+  ) => Promise<void>
 }
 
 export type EffectBufferID = number

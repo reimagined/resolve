@@ -24,6 +24,8 @@ type EffectBuffer = {
   notifications: Array<{ channel: string; notification: Serializable }>
 }
 
+const noEffectBuffer = -1
+
 const monitoredError = (
   runtime: ReadModelRuntime,
   error: Error,
@@ -46,7 +48,13 @@ const getReadModelInterop = (
   runtime: ReadModelRuntime
 ): ReadModelInterop => {
   const { connectorName, name, resolvers, projection } = readModel
-  const { monitoring, secretsManager } = runtime
+  const { monitoring, secretsManager, dispatchReadModelNotification } = runtime
+
+  const dispatchNotification =
+    typeof dispatchReadModelNotification === 'function'
+      ? (channel: string, notification: Serializable) =>
+          dispatchReadModelNotification(name, channel, notification)
+      : undefined
 
   const resolverInvokerMap = Object.keys(resolvers).reduce<
     ReadModelResolvers<any>
@@ -116,29 +124,49 @@ const getReadModelInterop = (
   }
 
   const beginEffects = async () => {
-    const effectBufferId = ++idCounter
-    effectBuffers.set(effectBufferId, {
-      notifications: [],
-    })
-    return effectBufferId
+    if (typeof dispatchNotification === 'function') {
+      const effectBufferId = ++idCounter
+      effectBuffers.set(effectBufferId, {
+        notifications: [],
+      })
+      return effectBufferId
+    }
+    return noEffectBuffer
   }
 
   const commitEffects = async (id: EffectBufferID) => {
-    // TODO: actual publish here
-    const log = getLog(`read-model-interop:${name}:commit-effects`)
+    if (id !== noEffectBuffer) {
+      const log = getLog(`read-model-interop:${name}:commit-effects`)
 
-    const effects = effectBuffers.get(id)
-    if (effects != null) {
-      effects.notifications.forEach(({ channel, notification }) => {
-        log.verbose(`[${channel}]: ${notification}`)
-      })
+      const effects = effectBuffers.get(id)
+
+      if (effects != null) {
+        if (typeof dispatchNotification === 'function') {
+          log.debug(`dispatching ${effects.notifications.length} notifications`)
+          try {
+            await Promise.all(
+              effects.notifications.map(({ channel, notification }) =>
+                dispatchNotification(channel, notification)
+              )
+            )
+          } catch (error) {
+            log.error(error)
+          }
+        } else {
+          effects.notifications.forEach(({ channel, notification }) => {
+            log.verbose(`[${channel}]: ${notification}`)
+          })
+        }
+      }
+
+      effectBuffers.delete(id)
     }
-
-    effectBuffers.delete(id)
   }
 
   const dropEffects = async (id: EffectBufferID) => {
-    effectBuffers.delete(id)
+    if (id !== noEffectBuffer) {
+      effectBuffers.delete(id)
+    }
   }
 
   const acquireResolver = async (
