@@ -9,7 +9,7 @@
 }
 
 .heroBanner {
-  padding: 4rem 0;
+  padding: 6rem 0;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -70,4 +70,9 @@
   overflow-x: auto;
   background: #333;
   color: white;
+}
+
+.section {
+  padding: 72px 0;
+  background-color: var(--ifm-color-emphasis-100);
 }

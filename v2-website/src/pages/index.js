@@ -40,7 +40,6 @@ const features = [
 ];
 
 
-
 export default () => {
   const context = useDocusaurusContext()
   const { siteConfig = {} } = context
@@ -77,7 +76,7 @@ export default () => {
       <main>
         {features && features.length && (
           <section className="features">
-            <div className="container">
+            <div className="container padding-vert--xl">
               <div className="row">
                 {features.map(({ imageUrl, title, description }, idx) => (
                   <div
@@ -101,17 +100,19 @@ export default () => {
             </div>
           </section>
         )}
-        <div className="container">
-          <div className="row">
-            <div className="col col--6 padding-vert--lg text--center">
-              <h3>Get started in seconds</h3>
-              <p>reSolve allows you to focus on code, not build tools. To create a project, you simply called my-app and run the following command:</p>     
-              <code className="featureCode">yarn create resolve-app my-app</code>
-            </div>
-            <div className="col col--6 padding-vert--lg">
-              <img
-                src='https://raw.githubusercontent.com/reimagined/resolve/3571365c58b025cf628046a96bab23eca93367fe/website/static/img/create-resolve-app.svg?sanitize=true'
-              />    
+        <div className="section">
+          <div className="container">
+            <div className="row">
+              <div className="col col--6 padding-vert--lg text--center sectionAlt" >
+                <h3>Get started in seconds</h3>
+                <p>reSolve allows you to focus on code, not build tools. To create a project, you simply called my-app and run the following command:</p>     
+                <code className="featureCode">yarn create resolve-app my-app</code>
+              </div>
+              <div className="col col--6 padding-vert--lg">
+                <img
+                  src='https://raw.githubusercontent.com/reimagined/resolve/3571365c58b025cf628046a96bab23eca93367fe/website/static/img/create-resolve-app.svg?sanitize=true'
+                />    
+              </div>
             </div>
           </div>
         </div>
