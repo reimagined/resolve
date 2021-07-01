@@ -77,16 +77,15 @@ slug: /
   - [Debug a ReSolve Application](debugging.md#debug-a-resolve-application)
 
 - [Testing](testing.md)
+
   - [Testing Tools](testing.md#testing-tools)
   - [Testing Aggregates](testing.md#testing-aggregates)
   - [Testing Read Models](testing.md#testing-read-models)
   - [Testing Sagas](testing.md#testing-sagas)
 
+- [Application Configuration](application-configuration.md)
+
 [FAQ](faq.md)
-
-[API Reference](api-reference.md)
-
-[Application Configuration](application-configuration.md)
 
 [Troubleshooting](troubleshooting.md)
 
