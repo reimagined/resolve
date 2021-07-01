@@ -49,7 +49,9 @@ const monitoringError = async (log, monitoringData, groupData, error) => {
       )
       .concat(groupData.globalDimensions)
 
-    const now = new Date()
+    const timestamp = new Date()
+    timestamp.setMilliseconds(0)
+
     let isDimensionCountLimitReached = false
 
     monitoringData.metricData = monitoringData.metricData.concat(
@@ -57,7 +59,7 @@ const monitoringError = async (log, monitoringData, groupData, error) => {
         if (dimensions.length <= MAX_DIMENSION_COUNT) {
           acc.push({
             MetricName: 'Errors',
-            Timestamp: now,
+            Timestamp: timestamp,
             Unit: 'Count',
             Value: 1,
             Dimensions: dimensions,
@@ -104,14 +106,48 @@ const monitoringDuration = async (
     const dimensions = [...groupDimensions, ...durationDimensions]
 
     if (dimensions.length <= MAX_DIMENSION_COUNT) {
-      monitoringData.metricData.push({
-        MetricName: 'Duration',
-        Timestamp: now,
-        Unit: 'Milliseconds',
-        Values: [duration],
-        Counts: [count],
-        Dimensions: dimensions,
-      })
+      const metricName = 'Duration'
+      const time = now.getTime()
+      const unit = 'Milliseconds'
+
+      const existingMetricData = monitoringData.metricData.find(
+        (data) =>
+          data.MetricName === metricName &&
+          data.Unit === unit &&
+          data.Timestamp.getTime() === time &&
+          data.Dimensions.length === dimensions.length &&
+          data.Dimensions.every(
+            (dimension, index) =>
+              dimension.Name === dimensions[index].Name &&
+              dimension.Value === dimensions[index].Value
+          )
+      )
+
+      if (existingMetricData != null) {
+        let isValueFound = false
+
+        for (let i = 0; i < existingMetricData.Values.length; i++) {
+          if (existingMetricData.Values[i] === duration) {
+            existingMetricData.Counts[i] += count
+            isValueFound = true
+            break
+          }
+        }
+
+        if (!isValueFound) {
+          existingMetricData.Values.push(duration)
+          existingMetricData.Counts.push(count)
+        }
+      } else {
+        monitoringData.metricData.push({
+          MetricName: metricName,
+          Timestamp: now,
+          Unit: unit,
+          Values: [duration],
+          Counts: [count],
+          Dimensions: dimensions,
+        })
+      }
     } else {
       isDimensionCountLimitReached = true
     }
