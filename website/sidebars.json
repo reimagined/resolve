@@ -5,9 +5,9 @@
       "introduction",
       "tutorial",
       {
-        "type": "subcategory",
+        "type": "category",
         "label": "Basics",
-        "ids": [
+        "items": [
           "write-side",  
           "read-side", 
           "sagas", 
@@ -18,9 +18,9 @@
         ]
       },
       {
-        "type": "subcategory",
+        "type": "category",
         "label": "Guides",
-        "ids": [
+        "items": [
           "advanced-techniques",
           "authentication-and-authorization",
           "preparing-to-production",
