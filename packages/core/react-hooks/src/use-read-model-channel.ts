@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import {
   QueryOptions,
   QueryResult,
@@ -30,6 +30,10 @@ function useReadModelChannel(
     queryResultCallback,
     options
   )
+
+  const memo: any = useMemo(() => ({}), dependencies)
+
+  memo.notificationCallback = notificationCallback
 
   let subscription: ReadModelSubscription
   let connected = false
@@ -70,7 +74,7 @@ function useReadModelChannel(
           readModelName: query.name,
           channel: channelPermit.channel,
         },
-        notificationCallback,
+        (notification) => memo.notificationCallback(notification),
         (error, sub) => {
           if (error != null) {
             throw error

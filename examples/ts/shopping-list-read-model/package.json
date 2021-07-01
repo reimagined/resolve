@@ -1,0 +1,70 @@
+{
+  "name": "shopping-list-read-model-ts",
+  "version": "0.31.0",
+  "private": true,
+  "description": "shows how to work with reactive read models",
+  "scripts": {
+    "build": "ts-node run.ts build",
+    "cloud": "ts-node run.ts cloud",
+    "dev": "ts-node run.ts dev",
+    "start": "ts-node run.ts start",
+    "test:e2e": "ts-node run.ts test:e2e",
+    "export-event-store": "ts-node run.ts export-event-store",
+    "import-event-store": "ts-node run.ts import-event-store",
+    "test": "jest --verbose",
+    "module-admin": "module-admin"
+  },
+  "resolutions": {
+    "@types/react": "17.0.5"
+  },
+  "dependencies": {
+    "@resolve-js/core": "0.31.0",
+    "@resolve-js/eventstore-lite": "0.31.0",
+    "@resolve-js/eventstore-postgresql": "0.31.0",
+    "@resolve-js/module-admin": "0.31.0",
+    "@resolve-js/react-hooks": "0.31.0",
+    "@resolve-js/readmodel-base": "0.31.0",
+    "@resolve-js/readmodel-lite": "0.31.0",
+    "@resolve-js/readmodel-postgresql": "0.31.0",
+    "history": "4.10.1",
+    "isomorphic-fetch": "3.0.0",
+    "react": "17.0.2",
+    "react-bootstrap": "1.6.0",
+    "react-dom": "17.0.2",
+    "react-helmet": "6.1.0",
+    "react-router": "5.2.0",
+    "react-router-config": "5.1.1",
+    "react-router-dom": "5.2.0",
+    "uuid": "8.3.2"
+  },
+  "devDependencies": {
+    "@babel/core": "7.14.3",
+    "@babel/node": "7.14.2",
+    "@babel/plugin-proposal-class-properties": "7.13.0",
+    "@babel/plugin-proposal-export-default-from": "7.12.13",
+    "@babel/plugin-proposal-export-namespace-from": "7.14.2",
+    "@babel/plugin-transform-runtime": "7.14.3",
+    "@babel/preset-env": "7.14.4",
+    "@babel/preset-react": "7.13.13",
+    "@babel/preset-typescript": "7.14.5",
+    "@resolve-js/scripts": "0.31.0",
+    "@resolve-js/testing-tools": "0.31.0",
+    "@types/jest": "26.0.23",
+    "@types/node": "12.7.4",
+    "@types/react": "17.0.5",
+    "@types/react-dom": "17.0.5",
+    "aws-sdk": "2.860.0",
+    "aws-xray-sdk-core": "3.2.0",
+    "babel-jest": "27.0.2",
+    "babel-loader": "8.2.2",
+    "jest": "27.0.3",
+    "react-test-renderer": "17.0.2",
+    "testcafe": "1.14.2",
+    "ts-jest": "27.0.2",
+    "ts-node": "10.0.0",
+    "typescript": "4.3.2"
+  },
+  "resolveJs": {
+    "isAppTemplate": true
+  }
+}
