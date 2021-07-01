@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useReadModelChannel } from '@resolve-js/react-hooks'
+import { useCommandBuilder, useReadModelChannel } from '@resolve-js/react-hooks'
 
 const ReadModelChannel = ({
   match: {
@@ -24,6 +24,15 @@ const ReadModelChannel = ({
     }
   )
 
+  const publish = useCommandBuilder((echo) => ({
+    type: 'publishToReactiveChannel',
+    aggregateId: scenarioId,
+    aggregateName: 'test-scenario',
+    payload: {
+      echo,
+    },
+  }))
+
   useEffect(() => {
     connect()
     return () => {
@@ -34,6 +43,7 @@ const ReadModelChannel = ({
   return (
     <div>
       <h4>{`Read model channel test scenario: ${scenarioId}`}</h4>
+      <button onClick={() => publish('echo')}>publish</button>
     </div>
   )
 }

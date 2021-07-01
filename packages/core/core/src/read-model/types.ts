@@ -15,6 +15,8 @@ export type ReadModelRuntime = {
   monitoring?: Monitoring
 }
 
+export type EffectBufferID = number
+
 export type ReadModelInterop = {
   name: string
   connectorName: string
@@ -26,13 +28,18 @@ export type ReadModelInterop = {
     }
   ) => Promise<ReadModelRuntimeResolver>
   acquireInitHandler: (
-    store: any
+    store: any,
+    effectBufferId?: EffectBufferID
   ) => Promise<ReadModelRuntimeEventHandler | null>
   acquireEventHandler: (
     store: any,
-    event: Event
+    event: Event,
+    effectBufferId?: EffectBufferID
   ) => Promise<ReadModelRuntimeEventHandler | null>
   acquireChannel: () => Promise<ReadModelRuntimeChannel | null>
+  beginEffects: () => Promise<EffectBufferID>
+  commitEffects: (batchId: EffectBufferID) => Promise<void>
+  dropEffects: (batchId: EffectBufferID) => Promise<void>
 }
 
 export type ReadModelInteropMap = {

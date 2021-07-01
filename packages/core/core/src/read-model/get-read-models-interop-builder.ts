@@ -7,12 +7,22 @@ import {
   ReadModelInteropMap,
   ReadModelRuntimeEventHandler,
   ReadModelChannelPermit,
+  EffectBufferID,
 } from './types'
-import { Event, ReadModelResolvers } from '../types/core'
+import {
+  Event,
+  ReadModelNotificationDispatcher,
+  ReadModelResolvers,
+  Serializable,
+} from '../types/core'
 import { createHttpError, HttpStatusCodes } from '../errors'
 import { getPerformanceTracerSubsegment } from '../utils'
 import { ReadModelMeta } from '../types/runtime'
 import { getLog } from '../get-log'
+
+type EffectBuffer = {
+  notifications: Array<{ channel: string; notification: Serializable }>
+}
 
 const monitoredError = (
   runtime: ReadModelRuntime,
@@ -44,6 +54,92 @@ const getReadModelInterop = (
     map[resolverName] = resolvers[resolverName]
     return map
   }, {})
+
+  let idCounter = 0
+  const effectBuffers = new Map<EffectBufferID, EffectBuffer>()
+
+  const buildEncryption = async (event: Event) => {
+    const { secretsManager } = runtime
+    const encryption =
+      typeof readModel.encryption === 'function'
+        ? await readModel.encryption(event, { secretsManager })
+        : null
+    return { ...encryption }
+  }
+
+  const buildNotificationDispatcher = async (
+    effectBufferId?: EffectBufferID
+  ): Promise<{ dispatchNotification: ReadModelNotificationDispatcher }> => {
+    const log = getLog(`read-model-interop:${name}:notification-dispatcher`)
+    if (effectBufferId != null) {
+      const buffer = effectBuffers.get(effectBufferId)
+      if (buffer != null) {
+        return {
+          dispatchNotification: async (
+            channel: string,
+            notification: Serializable
+          ) => {
+            buffer.notifications.push({
+              channel,
+              notification,
+            })
+          },
+        }
+      }
+    }
+    return {
+      dispatchNotification: async (channel: string) => {
+        log.warn(
+          `a try to dispatch a notification to [${channel}] was performed, but no effects buffer allocated`
+        )
+      },
+    }
+  }
+
+  const monitoredHandler = (
+    eventType: string,
+    handler: ReadModelRuntimeEventHandler
+  ): ReadModelRuntimeEventHandler => async () => {
+    try {
+      return await handler()
+    } catch (error) {
+      if (monitoring != null) {
+        const monitoringGroup = monitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ ReadModel: readModel.name })
+          .group({ EventType: eventType })
+
+        monitoringGroup.error(error)
+      }
+      throw error
+    }
+  }
+
+  const beginEffects = async () => {
+    const effectBufferId = ++idCounter
+    effectBuffers.set(effectBufferId, {
+      notifications: [],
+    })
+    return effectBufferId
+  }
+
+  const commitEffects = async (id: EffectBufferID) => {
+    // TODO: actual publish here
+    const log = getLog(`read-model-interop:${name}:commit-effects`)
+
+    const effects = effectBuffers.get(id)
+    if (effects != null) {
+      effects.notifications.forEach(({ channel, notification }) => {
+        log.verbose(`[${channel}]: ${notification}`)
+      })
+    }
+
+    effectBuffers.delete(id)
+  }
+
+  const dropEffects = async (id: EffectBufferID) => {
+    effectBuffers.delete(id)
+  }
 
   const acquireResolver = async (
     resolver: string,
@@ -172,36 +268,9 @@ const getReadModelInterop = (
     }
   }
 
-  const buildEncryption = async (event: Event) => {
-    const { secretsManager } = runtime
-    const encryption =
-      typeof readModel.encryption === 'function'
-        ? await readModel.encryption(event, { secretsManager })
-        : null
-    return { ...encryption }
-  }
-
-  const monitoredHandler = (
-    eventType: string,
-    handler: ReadModelRuntimeEventHandler
-  ): ReadModelRuntimeEventHandler => async () => {
-    try {
-      return await handler()
-    } catch (error) {
-      if (monitoring != null) {
-        const monitoringGroup = monitoring
-          .group({ Part: 'ReadModelProjection' })
-          .group({ ReadModel: readModel.name })
-          .group({ EventType: eventType })
-
-        monitoringGroup.error(error)
-      }
-      throw error
-    }
-  }
-
   const acquireInitHandler = async (
-    store: any
+    store: any,
+    effectBufferId?: EffectBufferID
   ): Promise<ReadModelRuntimeEventHandler | null> => {
     if (projection.Init != null && typeof projection.Init === 'function') {
       return monitoredHandler('Init', async () => projection.Init?.(store))
@@ -211,11 +280,15 @@ const getReadModelInterop = (
 
   const acquireEventHandler = async (
     store: any,
-    event: Event
+    event: Event,
+    effectBufferId?: EffectBufferID
   ): Promise<ReadModelRuntimeEventHandler | null> => {
     if (typeof projection[event.type] === 'function') {
       return monitoredHandler(event.type, async () =>
-        projection[event.type](store, event, await buildEncryption(event))
+        projection[event.type](store, event, {
+          ...(await buildEncryption(event)),
+          ...(await buildNotificationDispatcher(effectBufferId)),
+        })
       )
     }
     return null
@@ -230,6 +303,9 @@ const getReadModelInterop = (
     acquireEventHandler,
     acquireInitHandler,
     acquireChannel,
+    beginEffects,
+    commitEffects,
+    dropEffects,
   }
 }
 

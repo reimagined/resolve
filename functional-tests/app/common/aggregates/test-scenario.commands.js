@@ -3,6 +3,7 @@ import {
   TEST_SCENARIO_RETRY_ON_ERROR_UNBLOCKED,
   TEST_SCENARIO_EXECUTED,
   TEST_SCENARIO_RETRY_ON_ERROR_COMPLETED,
+  TEST_SCENARIO_REACTIVE_CHANNEL_PUBLISHED,
 } from '../event-types'
 
 const assertNotExecuted = (state) => {
@@ -60,6 +61,17 @@ const aggregate = {
       payload: {
         scenarioName: 'array-within-query-string',
         state: {},
+      },
+    }
+  },
+  publishToReactiveChannel: (state, { payload: { echo } }) => {
+    return {
+      type: TEST_SCENARIO_REACTIVE_CHANNEL_PUBLISHED,
+      payload: {
+        scenarioName: 'reactive-channel',
+        state: {
+          echo,
+        },
       },
     }
   },

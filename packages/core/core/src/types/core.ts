@@ -127,11 +127,18 @@ export type AggregateEncryptionFactory = (
 
 // Read model
 
-type ReadModelHandlerContext = Encryption
+export type ReadModelNotificationDispatcher = (
+  channel: string,
+  notification: Serializable
+) => Promise<void>
 
-type ReadModelInitHandler<TStore> = (store: TStore) => Promise<void>
+export type ReadModelHandlerContext = Encryption & {
+  dispatchNotification: ReadModelNotificationDispatcher
+}
 
-type ReadModelEventHandler<TStore> = (
+export type ReadModelInitHandler<TStore> = (store: TStore) => Promise<void>
+
+export type ReadModelEventHandler<TStore> = (
   store: TStore,
   event: Event,
   context: ReadModelHandlerContext
