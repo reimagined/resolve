@@ -1,0 +1,28 @@
+{
+  "unversionedId": "api/api-saga",
+  "id": "api/api-saga",
+  "isDocsHomePage": false,
+  "title": "Saga",
+  "description": "Saga",
+  "source": "@site/../docs/api/api-saga.md",
+  "sourceDirName": "api",
+  "slug": "/api/api-saga",
+  "permalink": "/resolve/docs/api/api-saga",
+  "version": "current",
+  "lastUpdatedBy": "Author",
+  "lastUpdatedAt": 1539502055,
+  "formattedLastUpdatedAt": "10/14/2018",
+  "frontMatter": {
+    "id": "api-saga",
+    "title": "Saga"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "API Handler",
+    "permalink": "/resolve/docs/api/api-handler"
+  },
+  "next": {
+    "title": "ReSolve Scripts",
+    "permalink": "/resolve/docs/api/api-resolve-scripts"
+  }
+}

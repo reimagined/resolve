@@ -1,0 +1,25 @@
+{
+  "unversionedId": "api/api-handler",
+  "id": "api/api-handler",
+  "isDocsHomePage": false,
+  "title": "API Handler",
+  "description": "An API handler function has the following structure:",
+  "source": "@site/../docs/api/api-handler.md",
+  "sourceDirName": "api",
+  "slug": "/api/api-handler",
+  "permalink": "/resolve/docs/api/api-handler",
+  "version": "current",
+  "frontMatter": {
+    "id": "api-handler",
+    "title": "API Handler"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Event Store Adapter",
+    "permalink": "/resolve/docs/api/event-store-adapter"
+  },
+  "next": {
+    "title": "Saga",
+    "permalink": "/resolve/docs/api/saga"
+  }
+}

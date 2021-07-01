@@ -1,0 +1,28 @@
+{
+  "unversionedId": "api/client-resolve-redux",
+  "id": "api/client-resolve-redux",
+  "isDocsHomePage": false,
+  "title": "@resolve-js/redux",
+  "description": "@resolve-js/redux Library",
+  "source": "@site/../docs/api/client-resolve-redux.md",
+  "sourceDirName": "api",
+  "slug": "/api/client-resolve-redux",
+  "permalink": "/resolve/docs/api/client-resolve-redux",
+  "version": "current",
+  "lastUpdatedBy": "Author",
+  "lastUpdatedAt": 1539502055,
+  "formattedLastUpdatedAt": "10/14/2018",
+  "frontMatter": {
+    "id": "client-resolve-redux",
+    "title": "@resolve-js/redux"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "HTTP API",
+    "permalink": "/resolve/docs/api/client-http"
+  },
+  "next": {
+    "title": "@resolve-js/client",
+    "permalink": "/resolve/docs/api/client-resolveclient"
+  }
+}

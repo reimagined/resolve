@@ -1,0 +1,25 @@
+{
+  "unversionedId": "api/event-store-adapter",
+  "id": "api/event-store-adapter",
+  "isDocsHomePage": false,
+  "title": "Event Store Adapter",
+  "description": "An event store adapter defines how the reSolve framework stores events in the underlying event store. An event store adapter object must expose the following functions:",
+  "source": "@site/../docs/api/event-store-adapter.md",
+  "sourceDirName": "api",
+  "slug": "/api/event-store-adapter",
+  "permalink": "/resolve/docs/api/event-store-adapter",
+  "version": "current",
+  "frontMatter": {
+    "id": "event-store-adapter",
+    "title": "Event Store Adapter"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Read Model Store",
+    "permalink": "/resolve/docs/api/read-model-store"
+  },
+  "next": {
+    "title": "API Handler",
+    "permalink": "/resolve/docs/api/api-handler"
+  }
+}

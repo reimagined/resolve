@@ -1,0 +1,734 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "loadedVersions": [
+        {
+          "versionName": "current",
+          "versionLabel": "Next",
+          "versionPath": "/resolve/docs",
+          "versionBanner": "none",
+          "isLast": true,
+          "routePriority": -1,
+          "sidebarFilePath": "D:\\repos\\resolve\\website\\sidebars.json",
+          "contentPath": "D:\\repos\\resolve\\docs",
+          "contentPathLocalized": "D:\\repos\\resolve\\website\\i18n\\en\\docusaurus-plugin-content-docs\\current",
+          "mainDocId": "index",
+          "sidebars": {
+            "docs": [
+              {
+                "collapsed": true,
+                "type": "category",
+                "label": "Docs Index",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "index"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "introduction"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "tutorial"
+                  },
+                  {
+                    "collapsed": true,
+                    "type": "category",
+                    "label": "Basics",
+                    "items": [
+                      {
+                        "type": "doc",
+                        "id": "write-side"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "read-side"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "sagas"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "api-handlers"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "frontend"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "manage-application"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "app-structure"
+                      }
+                    ]
+                  },
+                  {
+                    "collapsed": true,
+                    "type": "category",
+                    "label": "Guides",
+                    "items": [
+                      {
+                        "type": "doc",
+                        "id": "advanced-techniques"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "authentication-and-authorization"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "preparing-to-production"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "debugging"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "testing"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "api-reference"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "application-configuration"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "contributing"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "collapsed": true,
+                "type": "category",
+                "label": "FAQ",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "faq"
+                  }
+                ]
+              },
+              {
+                "collapsed": true,
+                "type": "category",
+                "label": "Troubleshooting",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "troubleshooting"
+                  }
+                ]
+              }
+            ]
+          },
+          "permalinkToSidebar": {
+            "/resolve/docs/advanced-techniques": "docs",
+            "/resolve/docs/api-handlers": "docs",
+            "/resolve/docs/api-reference": "docs",
+            "/resolve/docs/app-structure": "docs",
+            "/resolve/docs/application-configuration": "docs",
+            "/resolve/docs/authentication-and-authorization": "docs",
+            "/resolve/docs/contributing": "docs",
+            "/resolve/docs/debugging": "docs",
+            "/resolve/docs/faq": "docs",
+            "/resolve/docs/frontend": "docs",
+            "/resolve/docs/": "docs",
+            "/resolve/docs/introduction": "docs",
+            "/resolve/docs/manage-application": "docs",
+            "/resolve/docs/preparing-to-production": "docs",
+            "/resolve/docs/read-side": "docs",
+            "/resolve/docs/sagas": "docs",
+            "/resolve/docs/testing": "docs",
+            "/resolve/docs/troubleshooting": "docs",
+            "/resolve/docs/tutorial": "docs",
+            "/resolve/docs/write-side": "docs"
+          },
+          "docs": [
+            {
+              "unversionedId": "advanced-techniques",
+              "id": "advanced-techniques",
+              "isDocsHomePage": false,
+              "title": "Advanced Techniques",
+              "description": "This document describes advanced techniques that can help уou extend your reSolve application's functionality.",
+              "source": "@site/../docs/advanced-techniques.md",
+              "sourceDirName": ".",
+              "slug": "/advanced-techniques",
+              "permalink": "/resolve/docs/advanced-techniques",
+              "version": "current",
+              "frontMatter": {
+                "id": "advanced-techniques",
+                "title": "Advanced Techniques",
+                "description": "This document describes advanced techniques that can help уou extend your reSolve application's functionality."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "reSolve App Structure",
+                "permalink": "/resolve/docs/app-structure"
+              },
+              "next": {
+                "title": "Authentication and Authorization",
+                "permalink": "/resolve/docs/authentication-and-authorization"
+              }
+            },
+            {
+              "unversionedId": "api-handlers",
+              "id": "api-handlers",
+              "isDocsHomePage": false,
+              "title": "API Handlers",
+              "description": "Use API Handlers to provide your reSolve server with the capability to handle arbitrary HTTP requests.",
+              "source": "@site/../docs/api-handlers.md",
+              "sourceDirName": ".",
+              "slug": "/api-handlers",
+              "permalink": "/resolve/docs/api-handlers",
+              "version": "current",
+              "frontMatter": {
+                "id": "api-handlers",
+                "title": "API Handlers",
+                "description": "Use API Handlers to provide your reSolve server with the capability to handle arbitrary HTTP requests."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Sagas",
+                "permalink": "/resolve/docs/sagas"
+              },
+              "next": {
+                "title": "Frontend",
+                "permalink": "/resolve/docs/frontend"
+              }
+            },
+            {
+              "unversionedId": "api-reference",
+              "id": "api-reference",
+              "isDocsHomePage": false,
+              "title": "API Reference",
+              "description": "This document lists API used in application development.",
+              "source": "@site/../docs/api-reference.md",
+              "sourceDirName": ".",
+              "slug": "/api-reference",
+              "permalink": "/resolve/docs/api-reference",
+              "version": "current",
+              "frontMatter": {
+                "id": "api-reference",
+                "title": "API Reference",
+                "description": "This document lists API used in application development."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Testing",
+                "permalink": "/resolve/docs/testing"
+              },
+              "next": {
+                "title": "Application Configuration",
+                "permalink": "/resolve/docs/application-configuration"
+              }
+            },
+            {
+              "unversionedId": "app-structure",
+              "id": "app-structure",
+              "isDocsHomePage": false,
+              "title": "reSolve App Structure",
+              "description": "This article describes the typical structure of a reSolve application.",
+              "source": "@site/../docs/resolve-app-structure.md",
+              "sourceDirName": ".",
+              "slug": "/app-structure",
+              "permalink": "/resolve/docs/app-structure",
+              "version": "current",
+              "frontMatter": {
+                "id": "app-structure",
+                "title": "reSolve App Structure",
+                "description": "This article describes the typical structure of a reSolve application."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Manage a ReSolve Application",
+                "permalink": "/resolve/docs/manage-application"
+              },
+              "next": {
+                "title": "Advanced Techniques",
+                "permalink": "/resolve/docs/advanced-techniques"
+              }
+            },
+            {
+              "unversionedId": "application-configuration",
+              "id": "application-configuration",
+              "isDocsHomePage": false,
+              "title": "Application Configuration",
+              "description": "This document lists configuration options available for a reSolve application.",
+              "source": "@site/../docs/application-configuration.md",
+              "sourceDirName": ".",
+              "slug": "/application-configuration",
+              "permalink": "/resolve/docs/application-configuration",
+              "version": "current",
+              "frontMatter": {
+                "id": "application-configuration",
+                "title": "Application Configuration",
+                "description": "This document lists configuration options available for a reSolve application."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "API Reference",
+                "permalink": "/resolve/docs/api-reference"
+              },
+              "next": {
+                "title": "Contributing",
+                "permalink": "/resolve/docs/contributing"
+              }
+            },
+            {
+              "unversionedId": "authentication-and-authorization",
+              "id": "authentication-and-authorization",
+              "isDocsHomePage": false,
+              "title": "Authentication and Authorization",
+              "description": "You can use reSolve's built-in authentication module to enable authentication in your application.",
+              "source": "@site/../docs/authentication-and-authorization.md",
+              "sourceDirName": ".",
+              "slug": "/authentication-and-authorization",
+              "permalink": "/resolve/docs/authentication-and-authorization",
+              "version": "current",
+              "frontMatter": {
+                "id": "authentication-and-authorization",
+                "title": "Authentication and Authorization",
+                "description": "You can use reSolve's built-in authentication module to enable authentication in your application."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Advanced Techniques",
+                "permalink": "/resolve/docs/advanced-techniques"
+              },
+              "next": {
+                "title": "Preparing to Production",
+                "permalink": "/resolve/docs/preparing-to-production"
+              }
+            },
+            {
+              "unversionedId": "contributing",
+              "id": "contributing",
+              "isDocsHomePage": false,
+              "title": "Contributing",
+              "description": "This is a set of guidelines for contributing to reSolve and its packages hosted in the ReImagined project on GitHub.",
+              "source": "@site/../docs/Contributing.md",
+              "sourceDirName": ".",
+              "slug": "/contributing",
+              "permalink": "/resolve/docs/contributing",
+              "version": "current",
+              "frontMatter": {
+                "id": "contributing",
+                "title": "Contributing",
+                "description": "This is a set of guidelines for contributing to reSolve and its packages hosted in the ReImagined project on GitHub."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Application Configuration",
+                "permalink": "/resolve/docs/application-configuration"
+              },
+              "next": {
+                "title": "FAQ",
+                "permalink": "/resolve/docs/faq"
+              }
+            },
+            {
+              "unversionedId": "debugging",
+              "id": "debugging",
+              "isDocsHomePage": false,
+              "title": "Debugging",
+              "description": "This document describes how to debug the reSolve framework and reSolve-based applications.",
+              "source": "@site/../docs/debugging.md",
+              "sourceDirName": ".",
+              "slug": "/debugging",
+              "permalink": "/resolve/docs/debugging",
+              "version": "current",
+              "frontMatter": {
+                "id": "debugging",
+                "title": "Debugging",
+                "description": "This document describes how to debug the reSolve framework and reSolve-based applications."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Preparing to Production",
+                "permalink": "/resolve/docs/preparing-to-production"
+              },
+              "next": {
+                "title": "Testing",
+                "permalink": "/resolve/docs/testing"
+              }
+            },
+            {
+              "unversionedId": "faq",
+              "id": "faq",
+              "isDocsHomePage": false,
+              "title": "FAQ",
+              "description": "This article provides answers to frequently asked questions about the reSolve framework.",
+              "source": "@site/../docs/faq.md",
+              "sourceDirName": ".",
+              "slug": "/faq",
+              "permalink": "/resolve/docs/faq",
+              "version": "current",
+              "frontMatter": {
+                "id": "faq",
+                "title": "FAQ",
+                "description": "This article provides answers to frequently asked questions about the reSolve framework."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Contributing",
+                "permalink": "/resolve/docs/contributing"
+              },
+              "next": {
+                "title": "Troubleshooting",
+                "permalink": "/resolve/docs/troubleshooting"
+              }
+            },
+            {
+              "unversionedId": "frontend",
+              "id": "frontend",
+              "isDocsHomePage": false,
+              "title": "Frontend",
+              "description": "This document describes approaches that you can use to implement a frontend for a reSolve application.",
+              "source": "@site/../docs/frontend.md",
+              "sourceDirName": ".",
+              "slug": "/frontend",
+              "permalink": "/resolve/docs/frontend",
+              "version": "current",
+              "frontMatter": {
+                "id": "frontend",
+                "title": "Frontend",
+                "description": "This document describes approaches that you can use to implement a frontend for a reSolve application."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "API Handlers",
+                "permalink": "/resolve/docs/api-handlers"
+              },
+              "next": {
+                "title": "Manage a ReSolve Application",
+                "permalink": "/resolve/docs/manage-application"
+              }
+            },
+            {
+              "unversionedId": "index",
+              "id": "index",
+              "isDocsHomePage": false,
+              "title": "reSolve Documentation",
+              "description": "Full stack CQRS, DDD, Event Sourcing framework for Node.js",
+              "source": "@site/../docs/README.md",
+              "sourceDirName": ".",
+              "slug": "/",
+              "permalink": "/resolve/docs/",
+              "version": "current",
+              "frontMatter": {
+                "id": "index",
+                "title": "reSolve Documentation",
+                "description": "Full stack CQRS, DDD, Event Sourcing framework for Node.js",
+                "slug": "/"
+              },
+              "sidebar": "docs",
+              "next": {
+                "title": "Introduction",
+                "permalink": "/resolve/docs/introduction"
+              }
+            },
+            {
+              "unversionedId": "introduction",
+              "id": "introduction",
+              "isDocsHomePage": false,
+              "title": "Introduction",
+              "description": "Full stack CQRS, DDD, Event Sourcing framework for Node.js",
+              "source": "@site/../docs/introduction.md",
+              "sourceDirName": ".",
+              "slug": "/introduction",
+              "permalink": "/resolve/docs/introduction",
+              "version": "current",
+              "frontMatter": {
+                "id": "introduction",
+                "title": "Introduction",
+                "description": "Full stack CQRS, DDD, Event Sourcing framework for Node.js"
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "reSolve Documentation",
+                "permalink": "/resolve/docs/"
+              },
+              "next": {
+                "title": "Step-by-Step Tutorial",
+                "permalink": "/resolve/docs/tutorial"
+              }
+            },
+            {
+              "unversionedId": "manage-application",
+              "id": "manage-application",
+              "isDocsHomePage": false,
+              "title": "Manage a ReSolve Application",
+              "description": "Use the module-admin CLI tool to manage a reSolve application's sagas and read models.",
+              "source": "@site/../docs/manage-application.md",
+              "sourceDirName": ".",
+              "slug": "/manage-application",
+              "permalink": "/resolve/docs/manage-application",
+              "version": "current",
+              "frontMatter": {
+                "id": "manage-application",
+                "title": "Manage a ReSolve Application",
+                "description": "Use the module-admin CLI tool to manage a reSolve application's sagas and read models."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Frontend",
+                "permalink": "/resolve/docs/frontend"
+              },
+              "next": {
+                "title": "reSolve App Structure",
+                "permalink": "/resolve/docs/app-structure"
+              }
+            },
+            {
+              "unversionedId": "preparing-to-production",
+              "id": "preparing-to-production",
+              "isDocsHomePage": false,
+              "title": "Preparing to Production",
+              "description": "This document describes how to prepare a reSolve application for deployment to a production server environment.",
+              "source": "@site/../docs/preparing-to-production.md",
+              "sourceDirName": ".",
+              "slug": "/preparing-to-production",
+              "permalink": "/resolve/docs/preparing-to-production",
+              "version": "current",
+              "frontMatter": {
+                "id": "preparing-to-production",
+                "title": "Preparing to Production",
+                "description": "This document describes how to prepare a reSolve application for deployment to a production server environment."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Authentication and Authorization",
+                "permalink": "/resolve/docs/authentication-and-authorization"
+              },
+              "next": {
+                "title": "Debugging",
+                "permalink": "/resolve/docs/debugging"
+              }
+            },
+            {
+              "unversionedId": "read-side",
+              "id": "read-side",
+              "isDocsHomePage": false,
+              "title": "Read Side",
+              "description": "The reSolve framework's read side listens to events that the write side produces. Based on these events, the read side updates the read models that provide data to the queries.",
+              "source": "@site/../docs/read-side.md",
+              "sourceDirName": ".",
+              "slug": "/read-side",
+              "permalink": "/resolve/docs/read-side",
+              "version": "current",
+              "frontMatter": {
+                "id": "read-side",
+                "title": "Read Side",
+                "description": "The reSolve framework's read side listens to events that the write side produces. Based on these events, the read side updates the read models that provide data to the queries."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Write Side",
+                "permalink": "/resolve/docs/write-side"
+              },
+              "next": {
+                "title": "Sagas",
+                "permalink": "/resolve/docs/sagas"
+              }
+            },
+            {
+              "unversionedId": "sagas",
+              "id": "sagas",
+              "isDocsHomePage": false,
+              "title": "Sagas",
+              "description": "A saga describes a long running process as a sequence of events.",
+              "source": "@site/../docs/sagas.md",
+              "sourceDirName": ".",
+              "slug": "/sagas",
+              "permalink": "/resolve/docs/sagas",
+              "version": "current",
+              "frontMatter": {
+                "id": "sagas",
+                "title": "Sagas",
+                "description": "A saga describes a long running process as a sequence of events."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Read Side",
+                "permalink": "/resolve/docs/read-side"
+              },
+              "next": {
+                "title": "API Handlers",
+                "permalink": "/resolve/docs/api-handlers"
+              }
+            },
+            {
+              "unversionedId": "testing",
+              "id": "testing",
+              "isDocsHomePage": false,
+              "title": "Testing",
+              "description": "This document describes how to write tests for a reSolve application.",
+              "source": "@site/../docs/testing.md",
+              "sourceDirName": ".",
+              "slug": "/testing",
+              "permalink": "/resolve/docs/testing",
+              "version": "current",
+              "frontMatter": {
+                "id": "testing",
+                "title": "Testing",
+                "description": "This document describes how to write tests for a reSolve application."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Debugging",
+                "permalink": "/resolve/docs/debugging"
+              },
+              "next": {
+                "title": "API Reference",
+                "permalink": "/resolve/docs/api-reference"
+              }
+            },
+            {
+              "unversionedId": "troubleshooting",
+              "id": "troubleshooting",
+              "isDocsHomePage": false,
+              "title": "Troubleshooting",
+              "description": "This describes how to solve popular issues with reSolve applications.",
+              "source": "@site/../docs/troubleshooting.md",
+              "sourceDirName": ".",
+              "slug": "/troubleshooting",
+              "permalink": "/resolve/docs/troubleshooting",
+              "version": "current",
+              "frontMatter": {
+                "id": "troubleshooting",
+                "title": "Troubleshooting",
+                "description": "This describes how to solve popular issues with reSolve applications."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "FAQ",
+                "permalink": "/resolve/docs/faq"
+              }
+            },
+            {
+              "unversionedId": "tutorial",
+              "id": "tutorial",
+              "isDocsHomePage": false,
+              "title": "Step-by-Step Tutorial",
+              "description": "This document provides a step-by-step tutorial for the reSolve framework. Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.",
+              "source": "@site/../docs/tutorial.md",
+              "sourceDirName": ".",
+              "slug": "/tutorial",
+              "permalink": "/resolve/docs/tutorial",
+              "version": "current",
+              "frontMatter": {
+                "id": "tutorial",
+                "title": "Step-by-Step Tutorial",
+                "description": "This document provides a step-by-step tutorial for the reSolve framework. Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Introduction",
+                "permalink": "/resolve/docs/introduction"
+              },
+              "next": {
+                "title": "Write Side",
+                "permalink": "/resolve/docs/write-side"
+              }
+            },
+            {
+              "unversionedId": "write-side",
+              "id": "write-side",
+              "isDocsHomePage": false,
+              "title": "Write Side",
+              "description": "An application's write side handles commands, validates input data, and emits events based on valid commands.",
+              "source": "@site/../docs/write-side.md",
+              "sourceDirName": ".",
+              "slug": "/write-side",
+              "permalink": "/resolve/docs/write-side",
+              "version": "current",
+              "frontMatter": {
+                "id": "write-side",
+                "title": "Write Side",
+                "description": "An application's write side handles commands, validates input data, and emits events based on valid commands."
+              },
+              "sidebar": "docs",
+              "previous": {
+                "title": "Step-by-Step Tutorial",
+                "permalink": "/resolve/docs/tutorial"
+              },
+              "next": {
+                "title": "Read Side",
+                "permalink": "/resolve/docs/read-side"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "docusaurus-plugin-content-blog": {
+    "default": {
+      "blogPosts": [
+        {
+          "id": "Welcome to reSolve",
+          "metadata": {
+            "permalink": "/resolve/blog/2018/12/05/welcome",
+            "source": "@site/blog/2018-12-5-welcome.md",
+            "title": "Welcome to reSolve",
+            "description": "Hello, this is going to be a place for reSolve blog posts.",
+            "date": "2018-12-05T00:00:00.000Z",
+            "formattedDate": "December 5, 2018",
+            "tags": [],
+            "readingTime": 0.09,
+            "truncated": false
+          }
+        }
+      ],
+      "blogListPaginated": [
+        {
+          "metadata": {
+            "permalink": "/resolve/blog",
+            "page": 1,
+            "postsPerPage": 10,
+            "totalPages": 1,
+            "totalCount": 1,
+            "previousPage": null,
+            "nextPage": null,
+            "blogDescription": "Blog",
+            "blogTitle": "Blog"
+          },
+          "items": [
+            "Welcome to reSolve"
+          ]
+        }
+      ],
+      "blogTags": {},
+      "blogTagsListPath": null
+    }
+  },
+  "docusaurus-plugin-content-pages": {
+    "default": [
+      {
+        "type": "jsx",
+        "permalink": "/resolve/",
+        "source": "@site/src/pages/index.js"
+      }
+    ]
+  },
+  "docusaurus-plugin-debug": {
+    "default": null
+  },
+  "docusaurus-theme-classic": {
+    "default": null
+  },
+  "docusaurus-theme-search-algolia": {
+    "default": null
+  }
+}

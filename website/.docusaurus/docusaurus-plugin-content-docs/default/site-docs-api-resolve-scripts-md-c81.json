@@ -1,0 +1,25 @@
+{
+  "unversionedId": "api/resolve-scripts",
+  "id": "api/resolve-scripts",
+  "isDocsHomePage": false,
+  "title": "reSolve Scripts",
+  "description": "The @resolve-js/scripts package contains service scripts used to configure, build, and run reSolve applications. The package contains the following scripts:",
+  "source": "@site/../docs/api/resolve-scripts.md",
+  "sourceDirName": "api",
+  "slug": "/api/resolve-scripts",
+  "permalink": "/resolve/docs/api/resolve-scripts",
+  "version": "current",
+  "frontMatter": {
+    "id": "resolve-scripts",
+    "title": "reSolve Scripts"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Saga",
+    "permalink": "/resolve/docs/api/saga"
+  },
+  "next": {
+    "title": "HTTP API",
+    "permalink": "/resolve/docs/api/client/http-api"
+  }
+}

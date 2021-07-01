@@ -1,0 +1,26 @@
+{
+  "unversionedId": "introduction",
+  "id": "introduction",
+  "isDocsHomePage": false,
+  "title": "Introduction",
+  "description": "Full stack CQRS, DDD, Event Sourcing framework for Node.js",
+  "source": "@site/../docs/introduction.md",
+  "sourceDirName": ".",
+  "slug": "/introduction",
+  "permalink": "/resolve/docs/introduction",
+  "version": "current",
+  "frontMatter": {
+    "id": "introduction",
+    "title": "Introduction",
+    "description": "Full stack CQRS, DDD, Event Sourcing framework for Node.js"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "reSolve Documentation",
+    "permalink": "/resolve/docs/"
+  },
+  "next": {
+    "title": "Step-by-Step Tutorial",
+    "permalink": "/resolve/docs/tutorial"
+  }
+}

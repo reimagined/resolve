@@ -1,0 +1,25 @@
+{
+  "unversionedId": "api/client/http-api",
+  "id": "api/client/http-api",
+  "isDocsHomePage": false,
+  "title": "HTTP API",
+  "description": "ReSolve provides a standard HTTP API that allows you to send aggregate commands, and query Read and View Models.",
+  "source": "@site/../docs/api/client/http-api.md",
+  "sourceDirName": "api/client",
+  "slug": "/api/client/http-api",
+  "permalink": "/resolve/docs/api/client/http-api",
+  "version": "current",
+  "frontMatter": {
+    "id": "http-api",
+    "title": "HTTP API"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "reSolve Scripts",
+    "permalink": "/resolve/docs/api/resolve-scripts"
+  },
+  "next": {
+    "title": "Client Entry Point",
+    "permalink": "/resolve/docs/api/client/entry-point"
+  }
+}

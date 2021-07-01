@@ -1,0 +1,25 @@
+{
+  "unversionedId": "api/client/request-middleware",
+  "id": "api/client/request-middleware",
+  "isDocsHomePage": false,
+  "title": "Request Middleware",
+  "description": "The @resolve-js/client and @resolve-js/react-hooks libraries allow you to use request middleware to extend the client's functionality. Middleware implements intermediate logic that can modify the response object or handle errors before they are passed to the callback function.",
+  "source": "@site/../docs/api/client/request-middleware.md",
+  "sourceDirName": "api/client",
+  "slug": "/api/client/request-middleware",
+  "permalink": "/resolve/docs/api/client/request-middleware",
+  "version": "current",
+  "frontMatter": {
+    "id": "request-middleware",
+    "title": "Request Middleware"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "@resolve-js/react-hooks",
+    "permalink": "/resolve/docs/api/client/resolve-react-hooks"
+  },
+  "next": {
+    "title": "FAQ",
+    "permalink": "/resolve/docs/faq"
+  }
+}

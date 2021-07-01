@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api-reference",
+  "id": "api-reference",
+  "isDocsHomePage": false,
+  "title": "API Reference",
+  "description": "This document lists API used in application development.",
+  "source": "@site/../docs/api-reference.md",
+  "sourceDirName": ".",
+  "slug": "/api-reference",
+  "permalink": "/resolve/docs/api-reference",
+  "version": "current",
+  "frontMatter": {
+    "id": "api-reference",
+    "title": "API Reference",
+    "description": "This document lists API used in application development."
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Testing",
+    "permalink": "/resolve/docs/testing"
+  },
+  "next": {
+    "title": "Application Configuration",
+    "permalink": "/resolve/docs/application-configuration"
+  }
+}

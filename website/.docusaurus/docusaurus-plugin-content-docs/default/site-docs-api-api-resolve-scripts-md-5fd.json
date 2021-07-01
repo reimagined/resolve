@@ -1,0 +1,28 @@
+{
+  "unversionedId": "api/api-resolve-scripts",
+  "id": "api/api-resolve-scripts",
+  "isDocsHomePage": false,
+  "title": "ReSolve Scripts",
+  "description": "ReSolve Scripts",
+  "source": "@site/../docs/api/api-resolve-scripts.md",
+  "sourceDirName": "api",
+  "slug": "/api/api-resolve-scripts",
+  "permalink": "/resolve/docs/api/api-resolve-scripts",
+  "version": "current",
+  "lastUpdatedBy": "Author",
+  "lastUpdatedAt": 1539502055,
+  "formattedLastUpdatedAt": "10/14/2018",
+  "frontMatter": {
+    "id": "api-resolve-scripts",
+    "title": "ReSolve Scripts"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Saga",
+    "permalink": "/resolve/docs/api/api-saga"
+  },
+  "next": {
+    "title": "HTTP API",
+    "permalink": "/resolve/docs/api/api-client-http"
+  }
+}

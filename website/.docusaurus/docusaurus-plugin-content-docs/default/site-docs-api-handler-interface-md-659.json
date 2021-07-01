@@ -1,0 +1,28 @@
+{
+  "unversionedId": "api-handler",
+  "id": "api-handler",
+  "isDocsHomePage": false,
+  "title": "API Handler",
+  "description": "API Handler",
+  "source": "@site/../docs/api-handler-interface.md",
+  "sourceDirName": ".",
+  "slug": "/api-handler",
+  "permalink": "/resolve/docs/api-handler",
+  "version": "current",
+  "lastUpdatedBy": "Author",
+  "lastUpdatedAt": 1539502055,
+  "formattedLastUpdatedAt": "10/14/2018",
+  "frontMatter": {
+    "id": "api-handler",
+    "title": "API Handler"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Event Store Adapter",
+    "permalink": "/resolve/docs/api-event-store-adapter"
+  },
+  "next": {
+    "title": "Saga",
+    "permalink": "/resolve/docs/api-saga"
+  }
+}
