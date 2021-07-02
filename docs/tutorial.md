@@ -382,9 +382,9 @@ export default {
 
 ##### Used API:
 
-- [store](api-reference.md#read-model-store-interface)
-- [store.defineTable](api-reference.md#definetable)
-- [store.insert](api-reference.md#insert)
+- [store](api/read-model-store.md#read-model-store-interface)
+- [store.defineTable](api/read-model-store.md#definetable)
+- [store.insert](api/read-model-store.md#insert)
 
 The type of the physical store used to save data is defined by a Read Model connector:
 
@@ -438,7 +438,7 @@ export default {
 
 ##### Used API:
 
-- [store.find](api-reference.md#find)
+- [store.find](api/read-model-store.md#find)
 
 Register the created Read Model in the application configuration file:
 
@@ -580,7 +580,7 @@ export default MyLists
 
 ##### Used API:
 
-- [useQuery](api-reference.md#usequery)
+- [useQuery](api/client/resolve-react-hooks.md#usequery)
 
 Add the root component that defines the page's HEAD section and renders routes:
 
@@ -879,7 +879,7 @@ export default ShoppingList
 
 ##### Used API:
 
-- [useViewModel](api-reference.md#useviewmodel)
+- [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)
 
 ![List Items](assets/tutorial/lesson4-list-items.png)
 
@@ -1141,7 +1141,7 @@ export default ShoppingListCreator
 
 ##### Used API:
 
-- [useCommand](api-reference.md#usecommand)
+- [useCommand](api/client/resolve-react-hooks.md#usecommand)
 
 ![Shopping List Creator](assets/tutorial/lesson5-list-creator.png)
 
@@ -1200,7 +1200,7 @@ export default ShoppingListRemover
 
 ##### Used API:
 
-- [useCommand](api-reference.md#usecommand)
+- [useCommand](api/client/resolve-react-hooks.md#usecommand)
 
 Add this component to each item in the ShoppingLists component's layout:
 
@@ -1380,8 +1380,8 @@ export default ShoppingList
 
 ##### Used API:
 
-- [useCommandBuilder](api-reference.md#usecommandbuilder)
-- [useViewModel](api-reference.md#useviewmodel)
+- [useCommandBuilder](api/client/resolve-react-hooks.md#usecommandbuilder)
+- [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)
 
 Modify the ShoppingListItem component to support item checking and deletion.
 
@@ -1430,6 +1430,6 @@ export default ShoppingListItem
 
 ##### Used API:
 
-- [useCommand](api-reference.md#usecommand)
+- [useCommand](api/client/resolve-react-hooks.md#usecommand)
 
 ![Check List Item](assets/tutorial/lesson5-check-item.png)

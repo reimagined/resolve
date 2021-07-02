@@ -10,42 +10,37 @@ You can use reSolve's built-in **[module](./advanced-techniques.md#modules)** (*
 
 Initialize the authentication module in the application's **run.js** script:
 
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/hacker-news/js/run.js /^[[:blank:]]+const moduleAuth/ /^[[:blank:]]+\)/)
 ```js
-  const moduleAuth = resolveModuleAuth([
-    {
-      name: 'local-strategy',
-      createStrategy: 'auth/create_strategy.js',
-      logoutRoute: {
-        path: 'logout',
-        method: 'POST'
+const moduleAuth = resolveModuleAuth([
+  {
+    name: 'local-strategy',
+    createStrategy: 'auth/create_strategy.js',
+    logoutRoute: {
+      path: 'logout',
+      method: 'POST',
+    },
+    routes: [
+      {
+        path: 'register',
+        method: 'POST',
+        callback: 'auth/route_register_callback.js',
       },
-      routes: [
-        {
-          path: 'register',
-          method: 'POST',
-          callback: 'auth/route_register_callback.js'
-        },
-        {
-          path: 'login',
-          method: 'POST',
-          callback: 'auth/route_login_callback.js'
-        }
-      ]
-    }
-  ])
+      {
+        path: 'login',
+        method: 'POST',
+        callback: 'auth/route_login_callback.js',
+      },
+    ],
+  },
+])
 
-  const baseConfig = merge(
-    defaultResolveConfig,
-    appConfig,
-    moduleComments,
-    moduleAuth
-  )
+const baseConfig = merge(
+  defaultResolveConfig,
+  appConfig,
+  moduleComments,
+  moduleAuth
+)
 ```
-
-<!-- prettier-ignore-end -->
 
 These setting specify the path to a strategy constructor and HTTP API handlers to handle authentication-related requests (register, login and logout in this example). You can implement a strategy constructor as shown below:
 
