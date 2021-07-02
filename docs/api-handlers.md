@@ -97,7 +97,7 @@ The configuration object specifies the following options:
 | Handler | The path to the file that contains the handler's definition.                                                                                       |
 | Method  | The HTTP method to handle.                                                                                                                         |
 
-Refer to the [Application Configuration](application-configuration) topic for more information.
+Refer to the [Application Configuration](application-configuration.md) topic for more information.
 
 ## Implementation Examples
 
