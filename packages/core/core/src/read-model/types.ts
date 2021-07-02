@@ -1,5 +1,10 @@
 import { SecretsManager, Event } from '../types/core'
-import { Monitoring } from '../types/runtime'
+import {
+  MiddlewareContext,
+  Monitoring,
+  ReadModelProjectionMiddleware,
+  ReadModelResolverMiddleware,
+} from '../types/runtime'
 
 export type ReadModelRuntimeResolver = (
   connection: any,
@@ -11,6 +16,8 @@ export type ReadModelRuntimeEventHandler = () => Promise<void>
 export type ReadModelRuntime = {
   secretsManager: SecretsManager
   monitoring?: Monitoring
+  resolverMiddlewares?: Array<ReadModelResolverMiddleware>
+  projectionMiddlewares?: Array<ReadModelProjectionMiddleware>
 }
 
 export type ReadModelInterop = {
@@ -21,7 +28,8 @@ export type ReadModelInterop = {
     args: any,
     context: {
       jwt?: string
-    }
+    },
+    middlewareContext?: MiddlewareContext
   ) => Promise<ReadModelRuntimeResolver>
   acquireInitHandler: (
     store: any
