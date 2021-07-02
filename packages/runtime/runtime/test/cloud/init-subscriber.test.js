@@ -1,76 +1,44 @@
-/* eslint-disable no-console */
-import { isRetryableEventSourceMappingError } from '../../src/cloud/init-subscriber'
+import {
+  isRetryableServiceError,
+  checkError,
+} from '../../src/cloud/init-subscriber'
 
-describe('Check is retryable event source mapping error', () => {
-  test('AWS.SimpleQueueService.QueueDeletedRecently without Ensure mode', () => {
-    const error = new Error()
-    error.code = 'AWS.SimpleQueueService.QueueDeletedRecently'
-    expect(isRetryableEventSourceMappingError(error, false)).toBeFalsy()
+describe('Check error content', () => {
+  test('Error fuzzy match by message', () => {
+    const error = new Error('MyError')
+    expect(checkError(error, 'MyError')).toBeTruthy()
   })
-  test('QueueDeletedRecently without Ensure mode', () => {
+  test('Error fuzzy match by stack', () => {
     const error = new Error()
-    error.code = 'QueueDeletedRecently'
-    expect(isRetryableEventSourceMappingError(error, false)).toBeFalsy()
+    error.stack = 'MyError'
+    expect(checkError(error, 'MyError')).toBeTruthy()
   })
-  test('QueueAlreadyExists without Ensure mode', () => {
+  test('Error strict match by name', () => {
     const error = new Error()
-    error.code = 'QueueAlreadyExists'
-    expect(isRetryableEventSourceMappingError(error, false)).toBeTruthy()
+    error.code = 'MyError'
+    expect(checkError(error, 'MyError')).toBeTruthy()
   })
-  test('ResourceInUseException without Ensure mode', () => {
+  test('Error strict match by code', () => {
     const error = new Error()
-    error.code = 'ResourceInUseException'
-    expect(isRetryableEventSourceMappingError(error, false)).toBeTruthy()
+    error.name = 'MyError'
+    expect(checkError(error, 'MyError')).toBeTruthy()
   })
-  test('TooManyRequestsException without Ensure mode', () => {
+})
+
+describe('Check is retryable service error', () => {
+  test('TooManyRequestsException', () => {
     const error = new Error()
     error.code = 'TooManyRequestsException'
-    expect(isRetryableEventSourceMappingError(error, false)).toBeTruthy()
+    expect(isRetryableServiceError(error)).toBeTruthy()
   })
-  test('ServiceException without Ensure mode', () => {
+  test('ServiceException', () => {
     const error = new Error()
     error.code = 'ServiceException'
-    expect(isRetryableEventSourceMappingError(error, false)).toBeTruthy()
+    expect(isRetryableServiceError(error)).toBeTruthy()
   })
-  test('CustomCode without Ensure mode', () => {
+  test('CustomCode', () => {
     const error = new Error()
     error.code = 'CustomCode'
-    expect(isRetryableEventSourceMappingError(error, false)).toBeFalsy()
-  })
-
-  test('AWS.SimpleQueueService.QueueDeletedRecently with Ensure mode', () => {
-    const error = new Error()
-    error.code = 'AWS.SimpleQueueService.QueueDeletedRecently'
-    expect(isRetryableEventSourceMappingError(error, true)).toBeTruthy()
-  })
-  test('QueueDeletedRecently with Ensure mode', () => {
-    const error = new Error()
-    error.code = 'QueueDeletedRecently'
-    expect(isRetryableEventSourceMappingError(error, true)).toBeTruthy()
-  })
-  test('QueueAlreadyExists with Ensure mode', () => {
-    const error = new Error()
-    error.code = 'QueueAlreadyExists'
-    expect(isRetryableEventSourceMappingError(error, true)).toBeFalsy()
-  })
-  test('ResourceInUseException with Ensure mode', () => {
-    const error = new Error()
-    error.code = 'ResourceInUseException'
-    expect(isRetryableEventSourceMappingError(error, true)).toBeTruthy()
-  })
-  test('TooManyRequestsException with Ensure mode', () => {
-    const error = new Error()
-    error.code = 'TooManyRequestsException'
-    expect(isRetryableEventSourceMappingError(error, true)).toBeTruthy()
-  })
-  test('ServiceException with Ensure mode', () => {
-    const error = new Error()
-    error.code = 'ServiceException'
-    expect(isRetryableEventSourceMappingError(error, true)).toBeTruthy()
-  })
-  test('CustomCode with Ensure mode', () => {
-    const error = new Error()
-    error.code = 'CustomCode'
-    expect(isRetryableEventSourceMappingError(error, true)).toBeFalsy()
+    expect(isRetryableServiceError(error)).toBeFalsy()
   })
 })

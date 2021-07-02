@@ -13,15 +13,20 @@ import {
 } from 'resolve-cloud-common/lambda'
 import { getCallerIdentity } from 'resolve-cloud-common/sts'
 
-export const isRetryableEventSourceMappingError = (error, ensureMode) =>
+export const checkError = (error, value) =>
   error != null &&
-  ((error.code === 'AWS.SimpleQueueService.QueueDeletedRecently' &&
-    ensureMode) ||
-    (error.code === 'QueueDeletedRecently' && ensureMode) ||
-    (error.code === 'QueueAlreadyExists' && !ensureMode) ||
-    error.code === 'ResourceInUseException' ||
-    error.code === 'TooManyRequestsException' ||
-    error.code === 'ServiceException')
+  ((error.message != null &&
+    error.message.constructor === String &&
+    error.message.indexOf(`${value}`) > -1) ||
+    (error.stack != null &&
+      error.stack.constructor === String &&
+      error.stack.indexOf(`${value}`) > -1) ||
+    error.name === `${value}` ||
+    error.code === `${value}`)
+
+export const isRetryableServiceError = (error) =>
+  checkError(error, 'TooManyRequestsException') ||
+  checkError(error, 'ServiceException')
 
 const initSubscriber = (resolve, lambdaContext) => {
   const accountId = getAccountIdFromLambdaContext(lambdaContext)
@@ -49,6 +54,10 @@ const initSubscriber = (resolve, lambdaContext) => {
   }
 
   resolve.ensureQueue = async (name) => {
+    try {
+      resolve.deleteQueue(name)
+    } catch (err) {}
+
     const getTags = () => {
       const tags = {
         'resolve-deployment-id': process.env.RESOLVE_DEPLOYMENT_ID,
@@ -68,35 +77,69 @@ const initSubscriber = (resolve, lambdaContext) => {
     }
 
     try {
-      await ensureSqsQueue({
-        QueueName: `${userId}-${resolve.applicationName}-${name}`,
-        Region: region,
-        Policy: {
-          Version: '2008-10-17',
-          Statement: [
-            {
-              Action: 'SQS:*',
-              Principal: {
-                AWS: [roleArn],
-              },
-              Effect: 'Allow',
+      while (true) {
+        try {
+          await ensureSqsQueue({
+            QueueName: `${userId}-${resolve.applicationName}-${name}`,
+            Region: region,
+            Policy: {
+              Version: '2008-10-17',
+              Statement: [
+                {
+                  Action: 'SQS:*',
+                  Principal: {
+                    AWS: [roleArn],
+                  },
+                  Effect: 'Allow',
+                },
+              ],
             },
-          ],
-        },
-        Tags: getTags(),
-      })
+            Tags: getTags(),
+          })
+          break
+        } catch (error) {
+          if (
+            !(
+              isRetryableServiceError(error) ||
+              checkError(
+                error,
+                'AWS.SimpleQueueService.QueueDeletedRecently'
+              ) ||
+              checkError(error, 'QueueDeletedRecently')
+            )
+          ) {
+            throw error
+          }
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+        }
+      }
     } catch (err) {
       errors.push(err)
     }
 
     try {
-      void ({ UUID } = await createEventSourceMapping({
-        Region: region,
-        QueueName: `${userId}-${resolve.applicationName}-${name}`,
-        FunctionName: functionName,
-        MaximumBatchingWindowInSeconds: 0,
-        BatchSize: 10,
-      }))
+      while (true) {
+        try {
+          void ({ UUID } = await createEventSourceMapping({
+            Region: region,
+            QueueName: `${userId}-${resolve.applicationName}-${name}`,
+            FunctionName: functionName,
+            MaximumBatchingWindowInSeconds: 0,
+            BatchSize: 10,
+          }))
+          break
+        } catch (error) {
+          if (!isRetryableServiceError(error)) {
+            throw error
+          }
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+        }
+      }
+    } catch (err) {
+      errors.push(err)
+    }
+
+    try {
       while (true) {
         try {
           const { State } = await getEventSourceMapping({
@@ -107,7 +150,7 @@ const initSubscriber = (resolve, lambdaContext) => {
             break
           }
         } catch (error) {
-          if (!isRetryableEventSourceMappingError(error, true)) {
+          if (!isRetryableServiceError(error)) {
             throw error
           }
         }
@@ -157,22 +200,49 @@ const initSubscriber = (resolve, lambdaContext) => {
 
     if (UUID != null) {
       try {
-        await deleteEventSourceMapping({
-          Region: region,
-          UUID,
-        })
+        while (true) {
+          try {
+            await deleteEventSourceMapping({
+              Region: region,
+              UUID,
+            })
+            break
+          } catch (error) {
+            if (checkError(error, 'ResourceNotFoundException')) {
+              break
+            }
+            if (
+              !(
+                isRetryableServiceError(error) ||
+                checkError(error, 'ResourceInUseException')
+              )
+            ) {
+              throw error
+            }
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+          }
+        }
+      } catch (err) {
+        errors.push(err)
+      }
 
+      try {
         while (true) {
           try {
             await getEventSourceMapping({ Region: region, UUID })
-            const error = new Error('QueueAlreadyExists')
-            error.code = 'QueueAlreadyExists'
+            const error = new Error('ResourceAlreadyExists')
+            error.code = 'ResourceAlreadyExists'
             throw error
           } catch (error) {
-            if (error != null && error.code === 'ResourceNotFoundException') {
+            if (checkError(error, 'ResourceNotFoundException')) {
               break
             }
-            if (!isRetryableEventSourceMappingError(error, false)) {
+            if (
+              !(
+                isRetryableServiceError(error) ||
+                checkError(error, 'ResourceAlreadyExists')
+              )
+            ) {
               throw error
             }
           }
@@ -181,12 +251,26 @@ const initSubscriber = (resolve, lambdaContext) => {
       } catch (err) {
         errors.push(err)
       }
+
       try {
-        await deleteSqsQueue({
-          Region: region,
-          QueueName: `${userId}-${resolve.applicationName}-${name}`,
-          QueueUrl: queueUrl,
-        })
+        while (true) {
+          try {
+            await deleteSqsQueue({
+              Region: region,
+              QueueName: `${userId}-${resolve.applicationName}-${name}`,
+              QueueUrl: queueUrl,
+            })
+            break
+          } catch (error) {
+            if (checkError(error, 'Failed to delete SQS queue')) {
+              break
+            }
+            if (!isRetryableServiceError(error)) {
+              throw error
+            }
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+          }
+        }
       } catch (err) {
         errors.push(err)
       }

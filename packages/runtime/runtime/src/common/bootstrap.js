@@ -18,7 +18,6 @@ const bootstrap = async (resolve) => {
         destination: resolve.eventSubscriberDestination,
         upstream: resolve.upstream,
         ensureQueue: resolve.ensureQueue,
-        deleteQueue: resolve.deleteQueue,
       })
     )
   }
