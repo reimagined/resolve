@@ -39,18 +39,19 @@ const withPerformanceTracerImpl = async <
           .group({ ReadModel: maybeReadModelName })
       : null
 
+  const label = `Operation "${methodName}"`
+  groupMonitoring?.time(label)
+
   try {
-    const label = `Operation "${methodName}"`
-    groupMonitoring?.time(label)
-    const result = await methodImpl(...args)
-    groupMonitoring?.timeEnd(label)
-    return result
+    return await methodImpl(...args)
   } catch (error) {
     if (subSegment != null) {
       subSegment.addError(error)
     }
     throw error
   } finally {
+    groupMonitoring?.timeEnd(label)
+
     if (subSegment != null) {
       subSegment.close()
     }
