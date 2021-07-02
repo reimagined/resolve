@@ -1,4 +1,5 @@
 import {
+  MiddlewareContext,
   makeMonitoringSafe,
   ReadModelInterop,
   SagaInterop,
@@ -31,7 +32,8 @@ const wrapConnection = async (
 const read = async (
   pool: ReadModelPool,
   interop: ReadModelInterop | SagaInterop,
-  { jwt, ...params }: any
+  { jwt, ...params }: any,
+  middlewareContext?: MiddlewareContext
 ): Promise<any> => {
   const { isDisposed, performanceTracer, monitoring } = pool
 
@@ -72,9 +74,14 @@ const read = async (
       }
       throw error
     }
-    const resolver = await interop.acquireResolver(resolverName, resolverArgs, {
-      jwt,
-    })
+    const resolver = await interop.acquireResolver(
+      resolverName,
+      resolverArgs,
+      {
+        jwt,
+      },
+      middlewareContext
+    )
     log.debug(`invoking resolver`)
     const result = await wrapConnection(pool, interop, resolver)
     log.verbose(result)

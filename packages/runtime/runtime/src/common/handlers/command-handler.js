@@ -14,18 +14,17 @@ function isCommandError(error) {
   return error.name === 'CommandError'
 }
 
-export const executeCommandWithRetryConflicts = async ({
-  executeCommand,
-  commandArgs,
-  jwt,
-}) => {
+export const executeCommandWithRetryConflicts = async (
+  { executeCommand, commandArgs, jwt },
+  middlewareContext
+) => {
   const retryCount = commandArgs.immediateConflict != null ? 0 : 10
   let lastError = null
   let event = null
 
   for (let retry = 0; retry <= retryCount; retry++) {
     try {
-      event = await executeCommand({ ...commandArgs, jwt })
+      event = await executeCommand({ ...commandArgs, jwt }, middlewareContext)
       lastError = null
       break
     } catch (error) {
@@ -56,11 +55,14 @@ const commandHandler = async (req, res) => {
   try {
     const executeCommand = req.resolve.executeCommand
     const commandArgs = extractRequestBody(req)
-    const event = await executeCommandWithRetryConflicts({
-      executeCommand,
-      commandArgs,
-      jwt: req.jwt,
-    })
+    const event = await executeCommandWithRetryConflicts(
+      {
+        executeCommand,
+        commandArgs,
+        jwt: req.jwt,
+      },
+      { req, res }
+    )
 
     subSegment.addAnnotation('aggregateName', commandArgs.aggregateName)
     subSegment.addAnnotation('aggregateId', commandArgs.aggregateId)
