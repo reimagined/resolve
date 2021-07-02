@@ -13,6 +13,16 @@ import {
 } from 'resolve-cloud-common/lambda'
 import { getCallerIdentity } from 'resolve-cloud-common/sts'
 
+export const isRetryableEventSourceMappingError = (error, ensureMode) =>
+  error != null &&
+  ((error.code === 'AWS.SimpleQueueService.QueueDeletedRecently' &&
+    ensureMode) ||
+    (error.code === 'QueueDeletedRecently' && ensureMode) ||
+    (error.code === 'QueueAlreadyExists' && !ensureMode) ||
+    error.code === 'ResourceInUseException' ||
+    error.code === 'TooManyRequestsException' ||
+    error.code === 'ServiceException')
+
 const initSubscriber = (resolve, lambdaContext) => {
   const accountId = getAccountIdFromLambdaContext(lambdaContext)
   const { functionName } = lambdaContext
@@ -97,14 +107,7 @@ const initSubscriber = (resolve, lambdaContext) => {
             break
           }
         } catch (error) {
-          if (
-            !(
-              error != null &&
-              (error.code === 'ResourceInUseException' ||
-                error.code === 'TooManyRequestsException' ||
-                error.code === 'ServiceException')
-            )
-          ) {
+          if (!isRetryableEventSourceMappingError(error, true)) {
             throw error
           }
         }
@@ -162,23 +165,14 @@ const initSubscriber = (resolve, lambdaContext) => {
         while (true) {
           try {
             await getEventSourceMapping({ Region: region, UUID })
-            const error = new Error('ResourceAlreadyExists')
-            error.code = 'ResourceAlreadyExists'
+            const error = new Error('QueueAlreadyExists')
+            error.code = 'QueueAlreadyExists'
             throw error
           } catch (error) {
             if (error != null && error.code === 'ResourceNotFoundException') {
               break
             }
-
-            if (
-              !(
-                error != null &&
-                (error.code === 'ResourceNotFoundException' ||
-                  error.code === 'ResourceInUseException' ||
-                  error.code === 'TooManyRequestsException' ||
-                  error.code === 'ServiceException')
-              )
-            ) {
+            if (!isRetryableEventSourceMappingError(error, false)) {
               throw error
             }
           }

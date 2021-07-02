@@ -7,9 +7,13 @@ const bootstrapOne = async ({
   destination,
   upstream,
   ensureQueue,
+  deleteQueue,
 }) => {
   try {
     const errors = []
+    try {
+      await deleteQueue(name)
+    } catch (err) {}
     try {
       await ensureQueue(name)
     } catch (err) {
