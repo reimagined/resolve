@@ -62,7 +62,7 @@ const read = async (
 
       if (monitoring != null) {
         const monitoringGroup = monitoring
-          .group({ Part: 'ReadModelResolver' })
+          .group({ Part: 'ReadModel' })
           .group({ ReadModel: readModelName })
           .group({ Resolver: resolverName })
 
