@@ -1,7 +1,12 @@
 import { SecretsManager } from '../src/types/core'
 import { getReadModelsInteropBuilder } from '../src/read-model/get-read-models-interop-builder'
 import { ReadModelInterop, ReadModelRuntime } from '../src/read-model/types'
-import { ReadModelMeta, Monitoring } from '../src/types/runtime'
+import {
+  ReadModelMeta,
+  Monitoring,
+  ReadModelResolverMiddleware,
+  ReadModelProjectionMiddleware,
+} from '../src/types/runtime'
 
 const dummyEncryption = () => Promise.resolve({})
 
@@ -46,14 +51,17 @@ const makeTestRuntime = (): ReadModelRuntime => {
   }
 }
 
-const setUpTestReadModelInterop = async (readModel: {
-  name: string
-  projection: any
-  resolvers: any
-}): Promise<ReadModelInterop> => {
+const setUpTestReadModelInterop = async (
+  readModel: {
+    name: string
+    projection: any
+    resolvers: any
+  },
+  testRuntime?: ReadModelRuntime
+): Promise<ReadModelInterop> => {
   const readModelInteropMap = getReadModelsInteropBuilder(
     makeReadModelMeta(readModel)
-  )(makeTestRuntime())
+  )(testRuntime ?? makeTestRuntime())
   return readModelInteropMap[readModel.name]
 }
 
@@ -296,5 +304,288 @@ describe('Read models', () => {
 
     expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
     expect(monitoring.error.mock.calls[0][0].message).toEqual('failed resolver')
+  })
+})
+
+describe('Read model middleware: ', () => {
+  let dummyEventHandler: any
+  let dummyResolver: any
+  const dummyStore: any = {}
+  let dummyMiddlewareSpy: any
+
+  const prepareInterop = (
+    resolverMiddlewares: ReadModelResolverMiddleware[] = [],
+    projectionMiddlewares: ReadModelProjectionMiddleware[] = []
+  ): Promise<ReadModelInterop> => {
+    const runtime = makeTestRuntime()
+    runtime.resolverMiddlewares = [...resolverMiddlewares]
+    runtime.projectionMiddlewares = [...projectionMiddlewares]
+    return setUpTestReadModelInterop(
+      {
+        name: 'TestReadModel',
+        projection: {
+          dummyEvent: dummyEventHandler,
+        },
+        resolvers: {
+          all: dummyResolver,
+        },
+      },
+      runtime
+    )
+  }
+
+  beforeEach(() => {
+    dummyEventHandler = jest.fn()
+    dummyResolver = jest.fn()
+    dummyMiddlewareSpy = jest.fn()
+  })
+
+  afterEach(() => jest.resetAllMocks())
+  describe('resolver', () => {
+    test('should be executed in resolver execution flow', async () => {
+      const dummyResolverMiddleware: ReadModelResolverMiddleware = (
+        next
+      ) => async (middlewareContext, store, params, context) => {
+        dummyMiddlewareSpy(middlewareContext, store, params, context)
+        return next(middlewareContext, store, params, context)
+      }
+
+      const readModelInterop = await prepareInterop(
+        [dummyResolverMiddleware],
+        []
+      )
+      const resolve = await readModelInterop.acquireResolver('all', {}, {})
+      await resolve(dummyStore, null)
+      expect(dummyMiddlewareSpy).toBeCalledWith(
+        { readModelName: 'TestReadModel', resolverName: 'all' },
+        dummyStore,
+        {},
+        { jwt: undefined, secretsManager }
+      )
+    })
+
+    test('can modify passed params', async () => {
+      const extraParams = { extra: 'extra' }
+      const dummyResolverMiddleware: ReadModelResolverMiddleware = (
+        next
+      ) => async (middlewareContext, store, params, context) => {
+        return next(middlewareContext, store, { ...params, extraParams }, {
+          ...context,
+          extraParams,
+        } as any)
+      }
+
+      const readModelInterop = await prepareInterop(
+        [dummyResolverMiddleware],
+        []
+      )
+      const resolve = await readModelInterop.acquireResolver('all', {}, {})
+      await resolve(dummyStore, null)
+      expect(dummyResolver).toBeCalledWith(
+        dummyStore,
+        { extraParams },
+        { jwt: undefined, secretsManager, extraParams }
+      )
+    })
+    test('can interrupt resolver flow on error', async () => {
+      dummyResolver = jest.fn().mockReturnValue({ dummy: 'dummy' })
+      const dummyResolverMiddleware: ReadModelResolverMiddleware = (
+        next
+      ) => async (middlewareContext, store, params, context) => {
+        throw new Error('Interrupted by middleware')
+      }
+
+      const readModelInterop = await prepareInterop(
+        [dummyResolverMiddleware],
+        []
+      )
+      const resolve = await readModelInterop.acquireResolver('all', {}, {})
+      try {
+        await resolve(dummyStore, null)
+        throw new Error('Test failed')
+      } catch (error) {
+        expect(error.message).toEqual('Interrupted by middleware')
+      }
+      expect(dummyResolver).not.toHaveBeenCalled()
+    })
+    test('can modify resolver result', async () => {
+      const extraResult = { extra: 'extra' }
+      dummyResolver = jest.fn().mockReturnValue({ dummy: 'dummy' })
+      const dummyResolverMiddleware: ReadModelResolverMiddleware = (
+        next
+      ) => async (middlewareContext, store, params, context) => {
+        const result = await next(middlewareContext, store, params, context)
+        return { ...result, extraResult }
+      }
+
+      const readModelInterop = await prepareInterop(
+        [dummyResolverMiddleware],
+        []
+      )
+      const resolve = await readModelInterop.acquireResolver('all', {}, {})
+      const { data } = await resolve(dummyStore, null)
+      expect(data).toEqual({ dummy: 'dummy', extraResult })
+    })
+    test('can be chained and keep order', async () => {
+      dummyResolver = jest.fn((store, params, context) => ({
+        in: params.in,
+        out: 'Result value.',
+      }))
+
+      const middleware1: ReadModelResolverMiddleware = (next) => async (
+        middlewareContext,
+        store,
+        params,
+        context
+      ) => {
+        const result = await next(
+          middlewareContext,
+          store,
+          { ...params, in: params.in + ' Modified by first middleware.' },
+          context
+        )
+        return {
+          ...result,
+          out: (result as any).out + ' Modified by first middleware.',
+        }
+      }
+      const middleware2: ReadModelResolverMiddleware = (next) => async (
+        middlewareContext,
+        store,
+        params,
+        context
+      ) => {
+        const result = await next(
+          middlewareContext,
+          store,
+          { ...params, in: params.in + ' Modified by second middleware.' },
+          context
+        )
+        return {
+          ...result,
+          out: (result as any).out + ' Modified by second middleware.',
+        }
+      }
+
+      const readModelInterop = await prepareInterop(
+        [middleware1, middleware2],
+        []
+      )
+      const resolve = await readModelInterop.acquireResolver(
+        'all',
+        { in: 'Input value.' },
+        {}
+      )
+      const { data } = await resolve(dummyStore, null)
+      expect(data).toEqual({
+        in:
+          'Input value. Modified by first middleware. Modified by second middleware.',
+        out:
+          'Result value. Modified by second middleware. Modified by first middleware.',
+      })
+    })
+  })
+  describe('projection', () => {
+    const dummyEvent = {
+      type: 'dummyEvent',
+      payload: { text: 'first' },
+      aggregateId: 'validAggregateId',
+      aggregateVersion: 1,
+      timestamp: 1,
+    }
+    test('should be executed in event handling execution flow', async () => {
+      const dummyProjectionMiddleware: ReadModelProjectionMiddleware = (
+        next
+      ) => async (middlewareContext, store, event, context) => {
+        dummyMiddlewareSpy(middlewareContext, store, event, context)
+        return next(middlewareContext, store, event, context)
+      }
+
+      const readModelInterop = await prepareInterop(
+        [],
+        [dummyProjectionMiddleware]
+      )
+
+      const handleEvent = await readModelInterop.acquireEventHandler(
+        dummyStore,
+        dummyEvent
+      )
+      handleEvent && (await handleEvent())
+      expect(dummyMiddlewareSpy).toBeCalledWith(
+        { readModelName: 'TestReadModel' },
+        dummyStore,
+        dummyEvent,
+        {}
+      )
+    })
+
+    test('can be chained and modifies passed params in order', async () => {
+      const middleware1: ReadModelProjectionMiddleware = (next) => async (
+        middlewareContext,
+        store,
+        event,
+        context
+      ) => {
+        const modifiedEvent = { ...event }
+        modifiedEvent.payload.extra = 'Added by first middleware.'
+        return next(middlewareContext, store, modifiedEvent, context)
+      }
+      const middleware2: ReadModelProjectionMiddleware = (next) => async (
+        middlewareContext,
+        store,
+        event,
+        context
+      ) => {
+        const modifiedEvent = { ...event }
+        modifiedEvent.payload.extra += ' Modified by second middleware.'
+        return next(middlewareContext, store, modifiedEvent, context)
+      }
+
+      const readModelInterop = await prepareInterop(
+        [],
+        [middleware1, middleware2]
+      )
+
+      const handleEvent = await readModelInterop.acquireEventHandler(
+        dummyStore,
+        dummyEvent
+      )
+      handleEvent && (await handleEvent())
+      expect(dummyEventHandler).toBeCalledWith(
+        dummyStore,
+        {
+          ...dummyEvent,
+          payload: {
+            ...dummyEvent.payload,
+            extra: 'Added by first middleware. Modified by second middleware.',
+          },
+        },
+        {}
+      )
+    })
+    test('can interrupt event handling flow', async () => {
+      const dummyProjectionMiddleware: ReadModelProjectionMiddleware = (
+        next
+      ) => async (middlewareContext, store, event, context) => {
+        throw new Error('Interrupted by middleware')
+      }
+
+      const readModelInterop = await prepareInterop(
+        [],
+        [dummyProjectionMiddleware]
+      )
+
+      const handleEvent = await readModelInterop.acquireEventHandler(
+        dummyStore,
+        dummyEvent
+      )
+      try {
+        handleEvent && (await handleEvent())
+        throw new Error('Test failed')
+      } catch (error) {
+        expect(error.message).toEqual('Interrupted by middleware')
+      }
+      expect(dummyEventHandler).not.toHaveBeenCalled()
+    })
   })
 })

@@ -11,6 +11,12 @@ import {
   AggregateProjection,
   EventHandlerEncryptionFactory,
   ReadModelResolvers,
+  CommandHandler,
+  ReadModelResolver,
+  ReadModelEventHandler,
+  CommandContext,
+  ReadModelResolverContext,
+  ReadModelHandlerContext,
 } from './core'
 
 export type PerformanceSubsegment = {
@@ -90,3 +96,70 @@ export type ViewModelMeta = {
   encryption: EventHandlerEncryptionFactory
   invariantHash: string
 }
+
+//Middleware
+
+export type CommandMiddlewareHandler<
+  TContext extends CommandContext = CommandContext
+> = (
+  middlewareContext: AggregateMiddlewareContext,
+  ...args: Parameters<CommandHandler<TContext>>
+) => ReturnType<CommandHandler<TContext>>
+
+export type ResolverMiddlewareHandler<
+  TContext extends ReadModelResolverContext = ReadModelResolverContext
+> = (
+  middlewareContext: ReadModelResolverMiddlewareContext,
+  ...args: Parameters<ReadModelResolver<any, TContext>>
+) => ReturnType<ReadModelResolver<any, TContext>>
+
+export type ProjectionMiddlewareHandler<
+  TContext extends ReadModelHandlerContext = ReadModelHandlerContext
+> = (
+  middlewareContext: ReadModelMiddlewareContext,
+  ...args: Parameters<ReadModelEventHandler<any, TContext>>
+) => ReturnType<ReadModelEventHandler<any, TContext>>
+
+type MiddlewareChainableFunction =
+  | CommandMiddlewareHandler
+  | ResolverMiddlewareHandler
+  | ProjectionMiddlewareHandler
+
+type MiddlewareHandler<THandler> = (next: THandler) => THandler
+
+export type MiddlewareContext = {
+  req?: any
+  res?: any
+}
+
+type ReadModelMiddlewareContext = {
+  readModelName: string
+} & MiddlewareContext
+
+type ReadModelResolverMiddlewareContext = {
+  resolverName: string
+} & ReadModelMiddlewareContext
+
+type AggregateMiddlewareContext = MiddlewareContext
+
+type Middleware<THandler> = MiddlewareHandler<THandler>
+
+export type MiddlewareWrapper = <THandler extends MiddlewareChainableFunction>(
+  middlewares: Array<Middleware<THandler>>
+) => MiddlewareApplier<THandler>
+
+export type MiddlewareApplier<T extends MiddlewareChainableFunction> = (
+  targetHandler: T
+) => T
+
+export type ReadModelProjectionMiddleware<
+  TContext extends ReadModelHandlerContext = ReadModelHandlerContext
+> = Middleware<ProjectionMiddlewareHandler<TContext>>
+
+export type ReadModelResolverMiddleware<
+  TContext extends ReadModelResolverContext = ReadModelResolverContext
+> = Middleware<ResolverMiddlewareHandler<TContext>>
+
+export type CommandMiddleware<
+  TContext extends CommandContext = CommandContext
+> = Middleware<CommandMiddlewareHandler<TContext>>
