@@ -101,7 +101,7 @@ export const makeTestEnvironment = (
     ): Monitoring => {
       return {
         group: (config) =>
-          config.Part === 'ReadModel'
+          config.Part === 'ReadModelProjection'
             ? makeMonitoring((error: Error) => {
                 liveErrors.push(error)
               })

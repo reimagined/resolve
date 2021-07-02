@@ -174,7 +174,7 @@ describe('Read models', () => {
     } catch {}
 
     expect(monitoring.group.mock.calls[0][0]).toEqual({
-      Part: 'ReadModel',
+      Part: 'ReadModelProjection',
     })
 
     expect(monitoring.group.mock.calls[1][0]).toEqual({
@@ -219,7 +219,7 @@ describe('Read models', () => {
     } catch {}
 
     expect(monitoring.group.mock.calls[0][0]).toEqual({
-      Part: 'ReadModel',
+      Part: 'ReadModelProjection',
     })
     expect(monitoring.group.mock.calls[1][0]).toEqual({
       ReadModel: 'TestReadModel',
@@ -251,7 +251,7 @@ describe('Read models', () => {
     ).rejects.toBeInstanceOf(Error)
 
     expect(monitoring.group.mock.calls[0][0]).toEqual({
-      Part: 'ReadModel',
+      Part: 'ReadModelProjection',
     })
     expect(monitoring.group.mock.calls[1][0]).toEqual({
       ReadModel: 'TestReadModel',
@@ -285,7 +285,7 @@ describe('Read models', () => {
     await expect(resolver(null, null)).rejects.toBeInstanceOf(Error)
 
     expect(monitoring.group.mock.calls[0][0]).toEqual({
-      Part: 'ReadModel',
+      Part: 'ReadModelProjection',
     })
     expect(monitoring.group.mock.calls[1][0]).toEqual({
       ReadModel: 'TestReadModel',
