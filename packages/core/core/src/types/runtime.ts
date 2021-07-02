@@ -99,43 +99,25 @@ export type ViewModelMeta = {
 
 //Middleware
 
-type CommandMiddlewareParameters<
-  TContext extends CommandContext = CommandContext
-> = [
-  middlewareContext: AggregateMiddlewareContext,
-  ...args: Parameters<CommandHandler<TContext>>
-]
-
-type ResolverMiddlewareParameters<
-  TContext extends ReadModelResolverContext = ReadModelResolverContext
-> = [
-  middlewareContext: ReadModelResolverMiddlewareContext,
-  ...args: Parameters<ReadModelResolver<any, TContext>>
-]
-
-type ProjectionMiddlewareParameters<
-  TContext extends ReadModelHandlerContext = ReadModelHandlerContext
-> = [
-  middlewareContext: ReadModelMiddlewareContext,
-  ...args: Parameters<ReadModelEventHandler<any, TContext>>
-]
-
 export type CommandMiddlewareHandler<
   TContext extends CommandContext = CommandContext
 > = (
-  ...args: CommandMiddlewareParameters<TContext>
+  middlewareContext: AggregateMiddlewareContext,
+  ...args: Parameters<CommandHandler<TContext>>
 ) => ReturnType<CommandHandler<TContext>>
 
 export type ResolverMiddlewareHandler<
   TContext extends ReadModelResolverContext = ReadModelResolverContext
 > = (
-  ...args: ResolverMiddlewareParameters<TContext>
+  middlewareContext: ReadModelResolverMiddlewareContext,
+  ...args: Parameters<ReadModelResolver<any, TContext>>
 ) => ReturnType<ReadModelResolver<any, TContext>>
 
 export type ProjectionMiddlewareHandler<
   TContext extends ReadModelHandlerContext = ReadModelHandlerContext
 > = (
-  ...args: ProjectionMiddlewareParameters<TContext>
+  middlewareContext: ReadModelMiddlewareContext,
+  ...args: Parameters<ReadModelEventHandler<any, TContext>>
 ) => ReturnType<ReadModelEventHandler<any, TContext>>
 
 type MiddlewareChainableFunction =
