@@ -29,7 +29,7 @@ fixture`Story`.beforeEach(async (t /*: TestController */) => {
   await login(t)
 })
 
-test('create', async (t /*: TestController */) => {
+test.skip('create', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/submit`)
 
   await t.typeText(Selector('input[type=text]').nth(1), 'my ask', {
@@ -43,7 +43,7 @@ test('create', async (t /*: TestController */) => {
   await t.expect('ok').ok('this assertion will pass')
 })
 
-test('add comment', async (t /*: TestController */) => {
+test.skip('add comment', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/newest`)
 
   await waitSelector(t, 'HackerNews', Selector('a').withText('Ask HN: my ask'))
@@ -65,10 +65,9 @@ test('add comment', async (t /*: TestController */) => {
   await t
     .expect(await Selector('div').withText('first comment').exists)
     .eql(true)
-  // TODO: check comments page and parent link
 })
 
-test('add reply', async (t /*: TestController */) => {
+test.skip('add reply', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/newest`)
 
   await t.click(await Selector('a').withText('Ask HN: my ask').nth(-1))
@@ -94,11 +93,9 @@ test('add reply', async (t /*: TestController */) => {
   await waitSelector(t, 'Comments', Selector('div').withText('first reply'))
 
   await t.expect(await Selector('div').withText('first reply').exists).eql(true)
-
-  // TODO: check comments page and parent link
 })
 
-test('create with external link', async (t) => {
+test.skip('create with external link', async (t) => {
   await t.navigateTo(`${ROOT_URL}/submit`)
 
   await t.typeText(Selector('input[type=text]').nth(1), 'external link', {
@@ -115,4 +112,30 @@ test('create with external link', async (t) => {
   await t.click('button')
 
   await waitSelector(t, 'HackerNews', Selector('a').withText('external link'))
+})
+
+test('upvote/unvote story', async (t) => {
+  await t.navigateTo(`${ROOT_URL}/submit`)
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'my ask', {
+    paste: true,
+  })
+  await t.typeText('textarea', 'my text', { paste: true })
+  await t.click('button')
+
+  await waitSelector(t, 'HackerNews', Selector('a').withText('Ask HN: my ask'))
+
+  await t.click(Selector('div').withAttribute('title', 'upvote'))
+
+  await t.expect(await Selector('span').withText('1 point(s)').exists).eql(true)
+  await t
+    .expect(await Selector('div').withAttribute('title', 'upvote').visible)
+    .eql(false)
+
+  await t.click(Selector('span').withText('unvote'))
+
+  await t.expect(await Selector('span').withText('0 point(s)').exists).eql(true)
+  await t
+    .expect(await Selector('div').withAttribute('title', 'upvote').visible)
+    .eql(true)
 })

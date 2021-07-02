@@ -23,7 +23,7 @@ const waitSelector = async (t, eventSubscriber, selector) => {
 }
 
 // eslint-disable-next-line
-fixture`Comments`.beforeEach(async (t /*: TestController */) => {
+fixture`Comments`.skip.beforeEach(async (t /*: TestController */) => {
   await t.setNativeDialogHandler(() => true)
   await t.navigateTo(`${ROOT_URL}/login`)
   await login(t)
