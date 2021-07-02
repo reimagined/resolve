@@ -29,7 +29,7 @@ fixture`Story`.beforeEach(async (t /*: TestController */) => {
   await login(t)
 })
 
-test.skip('create', async (t /*: TestController */) => {
+test('create', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/submit`)
 
   await t.typeText(Selector('input[type=text]').nth(1), 'my ask', {
@@ -43,7 +43,7 @@ test.skip('create', async (t /*: TestController */) => {
   await t.expect('ok').ok('this assertion will pass')
 })
 
-test.skip('add comment', async (t /*: TestController */) => {
+test('add comment', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/newest`)
 
   await waitSelector(t, 'HackerNews', Selector('a').withText('Ask HN: my ask'))
@@ -67,7 +67,7 @@ test.skip('add comment', async (t /*: TestController */) => {
     .eql(true)
 })
 
-test.skip('add reply', async (t /*: TestController */) => {
+test('add reply', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/newest`)
 
   await t.click(await Selector('a').withText('Ask HN: my ask').nth(-1))
@@ -95,7 +95,7 @@ test.skip('add reply', async (t /*: TestController */) => {
   await t.expect(await Selector('div').withText('first reply').exists).eql(true)
 })
 
-test.skip('create with external link', async (t) => {
+test('create with external link', async (t) => {
   await t.navigateTo(`${ROOT_URL}/submit`)
 
   await t.typeText(Selector('input[type=text]').nth(1), 'external link', {
@@ -114,7 +114,7 @@ test.skip('create with external link', async (t) => {
   await waitSelector(t, 'HackerNews', Selector('a').withText('external link'))
 })
 
-test('upvote/unvote story', async (t) => {
+test('#1921: upvote/unvote story', async (t) => {
   await t.navigateTo(`${ROOT_URL}/submit`)
 
   await t.typeText(Selector('input[type=text]').nth(1), 'my ask', {
@@ -129,13 +129,13 @@ test('upvote/unvote story', async (t) => {
 
   await t.expect(await Selector('span').withText('1 point(s)').exists).eql(true)
   await t
-    .expect(await Selector('div').withAttribute('title', 'upvote').visible)
+    .expect(await Selector('div').withAttribute('title', 'upvote').exists)
     .eql(false)
 
   await t.click(Selector('span').withText('unvote'))
 
   await t.expect(await Selector('span').withText('0 point(s)').exists).eql(true)
   await t
-    .expect(await Selector('div').withAttribute('title', 'upvote').visible)
+    .expect(await Selector('div').withAttribute('title', 'upvote').exists)
     .eql(true)
 })

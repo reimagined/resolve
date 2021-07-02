@@ -43,7 +43,7 @@ test('create', async (t) => {
   await t.expect(await Selector('a').withText('login').exists).eql(false)
 })
 
-test.skip('login', async (t /*: TestController */) => {
+test('login', async (t /*: TestController */) => {
   await t.expect(await Selector('a').withText('login').exists).eql(true)
 
   await login(t)
@@ -55,7 +55,7 @@ test.skip('login', async (t /*: TestController */) => {
   await t.expect(await Selector('a').withText('login').exists).eql(false)
 })
 
-test.skip('create: User cannot be created', async (t /*: TestController */) => {
+test('create: User cannot be created', async (t /*: TestController */) => {
   await t.typeText(await Selector('input[type=text]').nth(2), '123', {
     paste: true,
   })

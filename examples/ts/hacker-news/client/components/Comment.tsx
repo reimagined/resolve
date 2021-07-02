@@ -53,9 +53,9 @@ const Comment = ({
 
   const [expanded, setExpanded] = useState(true)
 
-  const toggleExpand = useCallback(() => {
+  const toggleExpand = () => {
     setExpanded(!expanded)
-  }, [setExpanded])
+  }
 
   const parent =
     parentId == null
@@ -66,9 +66,7 @@ const Comment = ({
     <CommentRoot>
       <CommentInfo>
         <Collapse onClick={toggleExpand} tabIndex="0">
-          {'['}
-          {expanded ? '−' : '+'}
-          {']'}
+          <span id="toggle-expand">{`[${expanded ? '−' : '+'}]`}</span>
         </Collapse>
         <StyledUserLink to={`/user/${createdBy}`}>
           {createdByName}
