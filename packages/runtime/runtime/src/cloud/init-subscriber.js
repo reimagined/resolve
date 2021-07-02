@@ -55,7 +55,7 @@ const initSubscriber = (resolve, lambdaContext) => {
 
   resolve.ensureQueue = async (name) => {
     try {
-      resolve.deleteQueue(name)
+      await resolve.deleteQueue(name)
     } catch (err) {}
 
     const getTags = () => {
