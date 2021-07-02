@@ -266,7 +266,7 @@ describe('Read models', () => {
     )
   })
 
-  test('should register error or resolver failure', async () => {
+  test('should register error on resolver failure', async () => {
     const readModelInterop = await setUpTestReadModelInterop({
       name: 'TestReadModel',
       projection: {
@@ -285,7 +285,7 @@ describe('Read models', () => {
     await expect(resolver(null, null)).rejects.toBeInstanceOf(Error)
 
     expect(monitoring.group.mock.calls[0][0]).toEqual({
-      Part: 'ReadModelProjection',
+      Part: 'ReadModelResolver',
     })
     expect(monitoring.group.mock.calls[1][0]).toEqual({
       ReadModel: 'TestReadModel',
