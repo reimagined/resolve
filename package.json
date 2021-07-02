@@ -7,7 +7,8 @@
   "workspaces": {
     "packages": [
       "packages/**/*",
-      "examples/**/*",
+      "examples/ts/*",
+      "examples/js/*",
       "tutorial/**/*",
       "templates/**/*",
       "internal/*",
