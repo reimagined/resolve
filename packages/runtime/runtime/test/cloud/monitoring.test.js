@@ -7,6 +7,7 @@ afterEach(() => {
 })
 
 let originalNow
+let dateSpy = null
 
 beforeEach(() => {
   originalNow = Date.now
@@ -15,6 +16,11 @@ beforeEach(() => {
 
 afterEach(() => {
   Date.now = originalNow
+
+  if (dateSpy != null) {
+    dateSpy.mockRestore()
+    dateSpy = null
+  }
 })
 
 describe('common', () => {
@@ -34,6 +40,34 @@ describe('common', () => {
       Namespace: 'RESOLVE_METRICS',
       MetricData: expect.any(Array),
     })
+  })
+
+  test('ignores milliseconds in timestamp', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    }).group({ 'test-group-name': 'test-group' })
+
+    const mockDate = new Date(1625152712546)
+    const expectedDate = new Date(1625152712000)
+    dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
+    class TestError extends Error {
+      name = 'test-error'
+    }
+
+    monitoring.error(new TestError('test-message'))
+
+    await monitoring.publish()
+
+    for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
+      .MetricData) {
+      expect(metricData).toEqual(
+        expect.objectContaining({
+          Timestamp: expectedDate,
+        })
+      )
+    }
   })
 
   test('does nothing with no metric data on publish', async () => {
@@ -156,7 +190,8 @@ describe('common', () => {
           {
             MetricName: 'Duration',
             Unit: 'Milliseconds',
-            Value: 300,
+            Values: [300],
+            Counts: [1],
             Timestamp: expect.any(Date),
             Dimensions: expect.any(Array),
           },
@@ -631,7 +666,8 @@ describe('time and timeEnd', () => {
       expect(metricData).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
-        Value: 1000,
+        Values: [1000],
+        Counts: [1],
         Timestamp: expect.any(Date),
         Dimensions: expect.any(Array),
       })
@@ -769,7 +805,8 @@ describe('time and timeEnd', () => {
       expect(metricData).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
-        Value: 2000,
+        Values: [2000],
+        Counts: [1],
         Timestamp: expect.any(Date),
         Dimensions: expect.any(Array),
       })
@@ -794,7 +831,8 @@ describe('time and timeEnd', () => {
       expect(metricData).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
-        Value: 4500,
+        Values: [4500],
+        Counts: [1],
         Timestamp: expect.any(Date),
         Dimensions: expect.any(Array),
       })
@@ -868,7 +906,38 @@ describe('duration', () => {
       expect(metricData).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
-        Value: 1000,
+        Values: [1000],
+        Counts: [1],
+        Timestamp: expect.any(Date),
+        Dimensions: expect.any(Array),
+      })
+    }
+  })
+
+  test('sends correct metrics with custom count', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    monitoring.duration('test-label', 1000, 5)
+
+    await monitoring.publish()
+
+    expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+
+    expect(CloudWatch.putMetricData).toBeCalledWith({
+      Namespace: 'RESOLVE_METRICS',
+      MetricData: expect.any(Array),
+    })
+
+    for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
+      .MetricData) {
+      expect(metricData).toEqual({
+        MetricName: 'Duration',
+        Unit: 'Milliseconds',
+        Values: [1000],
+        Counts: [5],
         Timestamp: expect.any(Date),
         Dimensions: expect.any(Array),
       })
@@ -1022,6 +1091,177 @@ describe('duration', () => {
               { Name: 'DeploymentId', Value: 'test-deployment' },
               { Name: 'Label', Value: 'test-label-2' },
             ],
+          }),
+        ]),
+      })
+    )
+  })
+
+  test('combines different values with same dimensions if metric put in the same second', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    const mockDate = new Date(1625152712546)
+    dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
+    monitoring.duration('test-label', 200, 5)
+    monitoring.duration('test-label', 300, 3)
+
+    await monitoring.publish()
+
+    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+
+    expect(CloudWatch.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Values: [200, 300],
+            Counts: [5, 3],
+          }),
+        ]),
+      })
+    )
+  })
+
+  test('combines different values with same dimensions up to 150 samples', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    const mockDate = new Date(1625152712546)
+    dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
+    for (let i = 0; i < 200; i++) {
+      monitoring.duration('test-label', i)
+    }
+
+    await monitoring.publish()
+
+    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+
+    expect(CloudWatch.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Values: Array.from({ length: 150 }, (_, i) => i),
+            Counts: Array.from({ length: 150 }, () => 1),
+          }),
+        ]),
+      })
+    )
+
+    expect(CloudWatch.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Values: Array.from({ length: 50 }, (_, i) => i + 150),
+            Counts: Array.from({ length: 50 }, () => 1),
+          }),
+        ]),
+      })
+    )
+  })
+
+  test('combines different values with same dimensions up to 150 samples considering value', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    const mockDate = new Date(1625152712546)
+    dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
+    for (let i = 0; i < 150; i++) {
+      monitoring.duration('test-label', i)
+    }
+
+    monitoring.duration('test-label', 69)
+
+    await monitoring.publish()
+
+    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+
+    expect(CloudWatch.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Values: Array.from({ length: 150 }, (_, i) => i),
+            Counts: Array.from({ length: 150 }, (_, i) => (i === 69 ? 2 : 1)),
+          }),
+        ]),
+      })
+    )
+  })
+
+  test('combines same values with same dimensions if metric put in the same second', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    const mockDate = new Date(1625152712546)
+    dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
+    monitoring.duration('test-label', 200, 5)
+    monitoring.duration('test-label', 200, 3)
+
+    await monitoring.publish()
+
+    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+
+    expect(CloudWatch.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Values: [200],
+            Counts: [8],
+          }),
+        ]),
+      })
+    )
+  })
+
+  test('does not combine different values with same dimensions if metric put in different seconds', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    const firstDate = new Date(1625152712546)
+    const secondDate = new Date(1625152713121)
+
+    dateSpy = jest
+      .spyOn(global, 'Date')
+      .mockImplementationOnce(() => firstDate)
+      .mockImplementationOnce(() => secondDate)
+
+    monitoring.duration('test-label', 200, 5)
+    monitoring.duration('test-label', 300, 3)
+
+    await monitoring.publish()
+
+    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+
+    expect(CloudWatch.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Values: [200],
+            Counts: [5],
+          }),
+        ]),
+      })
+    )
+
+    expect(CloudWatch.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Values: [300],
+            Counts: [3],
           }),
         ]),
       })
