@@ -5,9 +5,9 @@
       "introduction",
       "tutorial",
       {
-        "type": "subcategory",
+        "type": "category",
         "label": "Basics",
-        "ids": [
+        "items": [
           "write-side",  
           "read-side", 
           "sagas", 
@@ -18,21 +18,44 @@
         ]
       },
       {
-        "type": "subcategory",
+        "type": "category",
         "label": "Guides",
-        "ids": [
+        "items": [
           "advanced-techniques",
           "authentication-and-authorization",
           "preparing-to-production",
           "debugging",
           "testing",
-          "api-reference",
           "application-configuration",
           "contributing"
         ]
-      }
-    ],
-    "FAQ": ["faq"],
-    "Troubleshooting": ["troubleshooting"]
+      },
+      {
+        "type": "category",
+        "label": "API",
+        "items": [
+          "api/read-model-connector",
+          "api/read-model-store",
+          "api/event-store-adapter",
+          "api/api-handler",
+          "api/saga",
+          "api/resolve-scripts",
+          {
+            "type": "category",
+            "label": "Client API",
+            "items": [
+              "api/client/http-api",
+              "api/client/entry-point",
+              "api/client/resolve-redux",
+              "api/client/resolve-client",
+              "api/client/resolve-react-hooks",
+              "api/client/request-middleware"
+            ]
+          }
+        ]
+      },
+      "faq",
+      "troubleshooting"    
+    ]
   }
 }

@@ -1,5 +1,17 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.1...HEAD)
+
+**New features:**
+
+- Middleware support for aggregate commands, read model resolvers and projections [\#1925](https://github.com/reimagined/resolve/pull/1925)
+
+**Documentation:**
+
+- Migrate documentation to docusaurus v2 [\#1924](https://github.com/reimagined/resolve/pull/1924)
+
 ## [V0.31.1](https://github.com/reimagined/resolve/tree/V0.31.1) (2021-07-01)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.0...V0.31.1)

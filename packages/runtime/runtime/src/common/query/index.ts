@@ -11,7 +11,7 @@ const dispose = async (models: any): Promise<any> => {
 }
 
 const interopApi = async (models: any, key: string, ...args: Array<any>) => {
-  if (args.length !== 1 || Object(args[0]) !== args[0]) {
+  if (args.length > 2 || Object(args[0]) !== args[0]) {
     throw new TypeError(
       `Invalid resolve-query method "${key}" arguments ${JSON.stringify(args)}`
     )
@@ -41,8 +41,9 @@ const interopApi = async (models: any, key: string, ...args: Array<any>) => {
       `Model "${modelName}" does not implement method "${key}"`
     )
   }
+  const middlewareContext = args.length > 1 ? args[1] : {}
 
-  return await method(parameters)
+  return await method(parameters, middlewareContext)
 }
 
 const createQuery = (params: CreateQueryOptions): any => {
