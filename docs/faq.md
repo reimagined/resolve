@@ -41,7 +41,7 @@ $ curl -X POST "http://localhost:3000/api/commands"
 }
 ```
 
-On the server side, you can [send a command](api-reference.md#executecommand) from an API Handler or Saga:
+On the server side, you can [send a command](api/saga.md#executecommand) from an API Handler or Saga:
 
 <!-- prettier-ignore-start -->
 

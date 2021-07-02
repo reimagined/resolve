@@ -1,7 +1,7 @@
 ---
 id: advanced-techniques
 title: Advanced Techniques
-description: This document describes advanced techniques that can help уou extend your reSolve application's functionality.
+description: "This document describes advanced techniques that can help уou extend your reSolve application's functionality."
 ---
 
 ## Splitting Code Into Chunks
@@ -405,7 +405,7 @@ Incremental import allows you to import into an event store only those events th
 
 ### Basic Incremental Import
 
-To import events incrementally, pass an array of events to an event store adapter's [incrementalImport](api-reference.md#incrementalimport) method.
+To import events incrementally, pass an array of events to an event store adapter's [incrementalImport](api/event-store-adapter.md#incrementalimport) method.
 
 The code sample below implements an API endpoint that incrementally imports events into the application's event store.
 
@@ -436,12 +436,12 @@ export default handler
 
 The following methods give you additional control over the incremental import process:
 
-| Method                                                                  | Description                                         |
-| ----------------------------------------------------------------------- | --------------------------------------------------- |
-| [beginIncrementalImport](api-reference.md#beginincrementalimport)       | Starts to accumulate events for incremental import. |
-| [pushIncrementalImport](api-reference.md#pushincrementalimport)         | Accumulates events for incremental import.          |
-| [commitIncrementalImport](api-reference.md#commitincrementalimport)     | Commits the accumulated events to the event store.  |
-| [rollbackIncrementalImport](api-reference.md#rollbackincrementaiImport) | Drops the accumulated events.                       |
+| Method                                                                            | Description                                         |
+| --------------------------------------------------------------------------------- | --------------------------------------------------- |
+| [beginIncrementalImport](api/event-store-adapter.md#beginincrementalimport)       | Starts to accumulate events for incremental import. |
+| [pushIncrementalImport](api/event-store-adapter.md#pushincrementalimport)         | Accumulates events for incremental import.          |
+| [commitIncrementalImport](api/event-store-adapter.md#commitincrementalimport)     | Commits the accumulated events to the event store.  |
+| [rollbackIncrementalImport](api/event-store-adapter.md#rollbackincrementaiImport) | Drops the accumulated events.                       |
 
 The code sample below demonstrates how to use advanced incremental import in a try-catch block to roll back in case of errors.
 

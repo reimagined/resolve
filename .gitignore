@@ -52,6 +52,7 @@ dist
 lib
 es
 types
+/website/.docusaurus
 /website/node_modules
 /website/build
 /website/i18n
