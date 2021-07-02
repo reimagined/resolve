@@ -184,8 +184,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
           },
           \\"exclude\\": [
             {},
-            \\"<MONOREPO_DIR>/packages/tools/scripts/node_modules\\",
-            \\"<MONOREPO_DIR>/packages/runtime/runtime/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
             \\"<MONOREPO_DIR>/node_modules\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/lib\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/es\\"
@@ -404,8 +404,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
           },
           \\"exclude\\": [
             {},
-            \\"<MONOREPO_DIR>/packages/tools/scripts/node_modules\\",
-            \\"<MONOREPO_DIR>/packages/runtime/runtime/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
             \\"<MONOREPO_DIR>/node_modules\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/lib\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/es\\"
@@ -626,8 +626,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
           },
           \\"exclude\\": [
             {},
-            \\"<MONOREPO_DIR>/packages/tools/scripts/node_modules\\",
-            \\"<MONOREPO_DIR>/packages/runtime/runtime/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
             \\"<MONOREPO_DIR>/node_modules\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/lib\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/es\\"
@@ -861,8 +861,8 @@ exports[`should make webpack configs for local mode 1`] = `
           },
           \\"exclude\\": [
             {},
-            \\"<MONOREPO_DIR>/packages/tools/scripts/node_modules\\",
-            \\"<MONOREPO_DIR>/packages/runtime/runtime/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
             \\"<MONOREPO_DIR>/node_modules\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/lib\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/es\\"
@@ -1081,8 +1081,8 @@ exports[`should make webpack configs for local mode 1`] = `
           },
           \\"exclude\\": [
             {},
-            \\"<MONOREPO_DIR>/packages/tools/scripts/node_modules\\",
-            \\"<MONOREPO_DIR>/packages/runtime/runtime/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
             \\"<MONOREPO_DIR>/node_modules\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/lib\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/es\\"
@@ -1301,8 +1301,8 @@ exports[`should make webpack configs for local mode 1`] = `
           },
           \\"exclude\\": [
             {},
-            \\"<MONOREPO_DIR>/packages/tools/scripts/node_modules\\",
-            \\"<MONOREPO_DIR>/packages/runtime/runtime/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
             \\"<MONOREPO_DIR>/node_modules\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/lib\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/es\\"
