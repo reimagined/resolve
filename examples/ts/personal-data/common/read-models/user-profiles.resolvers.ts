@@ -1,20 +1,21 @@
 import { ReadModelResolvers } from '@resolve-js/core'
 import { ResolveStore } from '@resolve-js/readmodel-base'
-import { decode } from '../jwt'
 import { systemUserId } from '../constants'
+import { AuthResolverMiddlewareContext } from '../../types'
 
-const resolvers: ReadModelResolvers<ResolveStore> = {
-  profile: async (store, params, { jwt }) => {
-    const { userId } = decode(jwt)
+const resolvers: ReadModelResolvers<
+  ResolveStore,
+  AuthResolverMiddlewareContext
+> = {
+  profile: async (store, params, { user }) => {
+    const { userId } = user
     const actualUserId = userId === systemUserId ? params.userId : userId
     return await store.findOne('Users', { id: actualUserId })
   },
-  profileById: async (store, params: { userId: string }, { jwt }) => {
-    decode(jwt)
+  profileById: async (store, params: { userId: string }) => {
     return await store.findOne('Users', { id: params.userId })
   },
-  fullNameById: async (store, params: { userId: string }, { jwt }) => {
-    decode(jwt)
+  fullNameById: async (store, params: { userId: string }) => {
     const user = await store.findOne('Users', { id: params.userId })
 
     if (user) {

@@ -5,7 +5,7 @@ import {
   AggregateRuntime,
 } from './types'
 import { CommandError } from '../errors'
-import { AggregateMeta } from '../types/runtime'
+import { AggregateMeta, MiddlewareContext } from '../types/runtime'
 import { getLog } from '../get-log'
 import { getPerformanceTracerSubsegment } from '../utils'
 import {
@@ -16,6 +16,7 @@ import {
   CommandHandler,
   CommandResult,
 } from '../types/core'
+import { makeMiddlewareApplier } from '../helpers'
 
 type AggregateData = {
   aggregateVersion: number
@@ -365,162 +366,185 @@ const getAggregateState = async (
   }
 }
 
-const executeCommand = async (
+const makeCommandExecutor = (
   aggregateMap: AggregateInteropMap,
-  runtime: AggregateRuntime,
-  command: Command
-): Promise<CommandResult> => {
-  const monitoringGroup =
-    runtime.monitoring != null
-      ? runtime.monitoring
-          .group({ Part: 'Command' })
-          .group({ AggregateName: command.aggregateName })
-          .group({ Type: command.type })
-      : null
+  runtime: AggregateRuntime
+) => {
+  const { commandMiddlewares = [] } = runtime
 
-  if (monitoringGroup != null) {
-    monitoringGroup.time('Execution')
+  const applyMiddlewares = makeMiddlewareApplier(commandMiddlewares)
+
+  const commandHandler: CommandHandler = async (
+    state: AggregateState,
+    command: Command,
+    context: CommandContext
+  ): Promise<CommandResult> => {
+    const subSegment = getPerformanceTracerSubsegment(
+      runtime.monitoring,
+      'processCommand'
+    )
+    try {
+      subSegment.addAnnotation('aggregateName', command.aggregateName)
+      subSegment.addAnnotation('commandType', command.type)
+      subSegment.addAnnotation('origin', 'resolve:processCommand')
+
+      const aggregate = aggregateMap[command.aggregateName]
+
+      return await aggregate.commands[command.type](state, command, context)
+    } catch (error) {
+      subSegment.addError(error)
+      throw error
+    } finally {
+      subSegment.close()
+    }
   }
 
-  const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
-
-  const jwt = actualJwt || deprecatedJwt
-
-  const subSegment = getPerformanceTracerSubsegment(
-    runtime.monitoring,
-    'executeCommand'
+  const chainedHandlers = applyMiddlewares(
+    (middlewareContext, state, command, context) =>
+      commandHandler(state, command, context)
   )
 
-  try {
-    await verifyCommand(command)
-
-    const { aggregateName, aggregateId, type } = command
-    const log = getLog(
-      `execute-command:${command.aggregateName}:${command.type}`
-    )
-    const aggregate = aggregateMap[aggregateName]
-
-    subSegment.addAnnotation('aggregateName', aggregateName)
-    subSegment.addAnnotation('commandType', command.type)
-    subSegment.addAnnotation('origin', 'resolve:executeCommand')
-
-    if (aggregate == null) {
-      const error = generateCommandError(
-        `Aggregate "${aggregateName}" does not exist`
-      )
-      log.error(error)
-      throw error
-    }
-
-    const {
-      aggregateState,
-      aggregateVersion,
-      minimalTimestamp,
-    } = await getAggregateState(aggregate, runtime, aggregateId)
-
-    if (!aggregate.commands.hasOwnProperty(type)) {
-      throw generateCommandError(`Command type "${type}" does not exist`)
-    }
-
-    const commandHandler: CommandHandler = async (
-      state: AggregateState,
-      command: Command,
-      context: CommandContext
-    ): Promise<CommandResult> => {
-      const subSegment = getPerformanceTracerSubsegment(
-        runtime.monitoring,
-        'processCommand'
-      )
-      try {
-        subSegment.addAnnotation('aggregateName', aggregateName)
-        subSegment.addAnnotation('commandType', command.type)
-        subSegment.addAnnotation('origin', 'resolve:processCommand')
-
-        return await aggregate.commands[type](state, command, context)
-      } catch (error) {
-        subSegment.addError(error)
-        throw error
-      } finally {
-        subSegment.close()
-      }
-    }
-
-    const { secretsManager } = runtime
-
-    const encryption =
-      typeof aggregate.encryption === 'function'
-        ? await aggregate.encryption(aggregateId, {
-            jwt,
-            secretsManager,
-          })
+  return async (
+    command: Command,
+    middlewareContext: MiddlewareContext = {}
+  ): Promise<CommandResult> => {
+    const monitoringGroup =
+      runtime.monitoring != null
+        ? runtime.monitoring
+            .group({ Part: 'Command' })
+            .group({ AggregateName: command.aggregateName })
+            .group({ Type: command.type })
         : null
 
-    const { encrypt, decrypt } = encryption || {}
-
-    const event = await commandHandler(aggregateState, command, {
-      jwt,
-      aggregateVersion,
-      encrypt,
-      decrypt,
-    })
-
-    if (!checkOptionShape(event.type, [String])) {
-      throw generateCommandError('Event "type" is required')
+    if (monitoringGroup != null) {
+      monitoringGroup.time('Execution')
     }
 
-    const runtimeEvent = event as any
+    const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
 
-    if (
-      runtimeEvent.aggregateId != null ||
-      runtimeEvent.aggregateVersion != null ||
-      runtimeEvent.timestamp != null
-    ) {
-      throw generateCommandError(
-        'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
+    const jwt = actualJwt || deprecatedJwt
+
+    const subSegment = getPerformanceTracerSubsegment(
+      runtime.monitoring,
+      'executeCommand'
+    )
+
+    try {
+      await verifyCommand(command)
+
+      const { aggregateName, aggregateId, type } = command
+      const log = getLog(
+        `execute-command:${command.aggregateName}:${command.type}`
       )
-    }
+      const aggregate = aggregateMap[aggregateName]
 
-    const processedEvent: Event = {
-      aggregateId,
-      aggregateVersion: aggregateVersion + 1,
-      timestamp: Math.max(minimalTimestamp + 1, Date.now()),
-      type: event.type,
-    }
+      subSegment.addAnnotation('aggregateName', aggregateName)
+      subSegment.addAnnotation('commandType', command.type)
+      subSegment.addAnnotation('origin', 'resolve:executeCommand')
 
-    if (Object.prototype.hasOwnProperty.call(event, 'payload')) {
-      processedEvent.payload = event.payload
-    }
-
-    await (async (): Promise<void> => {
-      const subSegment = getPerformanceTracerSubsegment(
-        runtime.monitoring,
-        'saveEvent'
-      )
-
-      try {
-        return await saveEvent(runtime, aggregate, command, processedEvent)
-      } catch (error) {
-        subSegment.addError(error)
+      if (aggregate == null) {
+        const error = generateCommandError(
+          `Aggregate "${aggregateName}" does not exist`
+        )
+        log.error(error)
         throw error
-      } finally {
-        subSegment.close()
       }
-    })()
 
-    return processedEvent
-  } catch (error) {
-    subSegment.addError(error)
+      const {
+        aggregateState,
+        aggregateVersion,
+        minimalTimestamp,
+      } = await getAggregateState(aggregate, runtime, aggregateId)
 
-    if (monitoringGroup != null) {
-      monitoringGroup.error(error)
+      if (!aggregate.commands.hasOwnProperty(type)) {
+        throw generateCommandError(`Command type "${type}" does not exist`)
+      }
+
+      const { secretsManager } = runtime
+
+      const encryption =
+        typeof aggregate.encryption === 'function'
+          ? await aggregate.encryption(aggregateId, {
+              jwt,
+              secretsManager,
+            })
+          : null
+
+      const { encrypt, decrypt } = encryption || {}
+
+      const context = {
+        jwt,
+        aggregateVersion,
+        encrypt,
+        decrypt,
+      }
+
+      const event = await chainedHandlers(
+        middlewareContext,
+        aggregateState,
+        command,
+        context
+      )
+      // const event = await commandHandler(aggregateState, command, context)
+
+      if (!checkOptionShape(event.type, [String])) {
+        throw generateCommandError('Event "type" is required')
+      }
+
+      const runtimeEvent = event as any
+
+      if (
+        runtimeEvent.aggregateId != null ||
+        runtimeEvent.aggregateVersion != null ||
+        runtimeEvent.timestamp != null
+      ) {
+        throw generateCommandError(
+          'Event should not contain "aggregateId", "aggregateVersion", "timestamp" fields'
+        )
+      }
+
+      const processedEvent: Event = {
+        aggregateId,
+        aggregateVersion: aggregateVersion + 1,
+        timestamp: Math.max(minimalTimestamp + 1, Date.now()),
+        type: event.type,
+      }
+
+      if (Object.prototype.hasOwnProperty.call(event, 'payload')) {
+        processedEvent.payload = event.payload
+      }
+
+      await (async (): Promise<void> => {
+        const subSegment = getPerformanceTracerSubsegment(
+          runtime.monitoring,
+          'saveEvent'
+        )
+
+        try {
+          return await saveEvent(runtime, aggregate, command, processedEvent)
+        } catch (error) {
+          subSegment.addError(error)
+          throw error
+        } finally {
+          subSegment.close()
+        }
+      })()
+
+      return processedEvent
+    } catch (error) {
+      subSegment.addError(error)
+
+      if (monitoringGroup != null) {
+        monitoringGroup.error(error)
+      }
+      throw error
+    } finally {
+      if (monitoringGroup != null) {
+        monitoringGroup.timeEnd('Execution')
+      }
+
+      subSegment.close()
     }
-    throw error
-  } finally {
-    if (monitoringGroup != null) {
-      monitoringGroup.timeEnd('Execution')
-    }
-
-    subSegment.close()
   }
 }
 
@@ -533,6 +557,6 @@ export const getAggregatesInteropBuilder = (
   }, {})
   return {
     aggregateMap,
-    executeCommand: (command) => executeCommand(aggregateMap, runtime, command),
+    executeCommand: makeCommandExecutor(aggregateMap, runtime),
   }
 }
