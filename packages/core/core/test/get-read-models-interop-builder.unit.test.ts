@@ -251,7 +251,7 @@ describe('Read models', () => {
     ).rejects.toBeInstanceOf(Error)
 
     expect(monitoring.group.mock.calls[0][0]).toEqual({
-      Part: 'ReadModelProjection',
+      Part: 'ReadModelResolver',
     })
     expect(monitoring.group.mock.calls[1][0]).toEqual({
       ReadModel: 'TestReadModel',
