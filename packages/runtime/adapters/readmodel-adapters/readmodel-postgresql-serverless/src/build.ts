@@ -461,7 +461,7 @@ export const buildEvents: (
       const seconds = (Date.now() - eventsApplyStartTimestamp) / 1000
 
       monitoring
-        .group({ Part: 'ReadModel' })
+        .group({ Part: 'ReadModelProjection' })
         .group({ ReadModel: readModelName })
         .rate('ReadModelFeedingRate', eventCount, seconds)
     }
@@ -574,7 +574,7 @@ const build: ExternalMethods['build'] = async (
   const groupMonitoring =
     monitoring != null
       ? monitoring
-          .group({ Part: 'ReadModel' })
+          .group({ Part: 'ReadModelProjection' })
           .group({ ReadModel: readModelName })
       : null
 

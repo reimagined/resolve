@@ -19,7 +19,7 @@ const monitoredError = (
 ) => {
   if (runtime.monitoring != null) {
     const monitoringGroup = runtime.monitoring
-      .group({ Part: 'ReadModel' })
+      .group({ Part: 'ReadModelResolver' })
       .group({ ReadModel: readModelName })
       .group({ Resolver: resolverName })
 
@@ -78,7 +78,7 @@ const getReadModelInterop = (
       const monitoringGroup =
         monitoring != null
           ? monitoring
-              .group({ Part: 'ReadModel' })
+              .group({ Part: 'ReadModelResolver' })
               .group({ ReadModel: name })
               .group({ Resolver: resolver })
           : null
@@ -137,7 +137,7 @@ const getReadModelInterop = (
     } catch (error) {
       if (monitoring != null) {
         const monitoringGroup = monitoring
-          .group({ Part: 'ReadModel' })
+          .group({ Part: 'ReadModelProjection' })
           .group({ ReadModel: readModel.name })
           .group({ EventType: eventType })
 

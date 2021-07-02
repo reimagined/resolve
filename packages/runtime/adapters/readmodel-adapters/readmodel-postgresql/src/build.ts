@@ -174,7 +174,7 @@ const buildEvents: (
   const groupMonitoring =
     monitoring != null
       ? monitoring
-          .group({ Part: 'ReadModel' })
+          .group({ Part: 'ReadModelProjection' })
           .group({ ReadModel: readModelName })
       : null
 
@@ -468,12 +468,8 @@ const buildEvents: (
       )
     }
 
-    if (monitoring != null && eventCount > 0) {
+    if (groupMonitoring != null && eventCount > 0) {
       const applyDuration = Date.now() - eventsApplyStartTimestamp
-
-      const groupMonitoring = monitoring
-        .group({ Part: 'ReadModel' })
-        .group({ ReadModel: readModelName })
 
       groupMonitoring.rate(
         'ReadModelFeedingRate',
@@ -573,7 +569,7 @@ const build: ExternalMethods['build'] = async (
   const groupMonitoring =
     monitoring != null
       ? monitoring
-          .group({ Part: 'ReadModel' })
+          .group({ Part: 'ReadModelProjection' })
           .group({ ReadModel: readModelName })
       : null
 
