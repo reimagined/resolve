@@ -19,18 +19,20 @@ const NewestByPage = ({
         first: (+page - 1) * ITEMS_PER_PAGE,
       },
     },
-    null,
-    []
+    [],
+    [page]
   )
-  const { data: stories, status } = useSelector(selector)
+  const { data: stories, status } = useSelector(selector) || {
+    data: [],
+    status: ResultStatus.Initial,
+  }
 
   useEffect(() => {
     getStories()
-  }, [getStories])
+  }, [page])
 
   const isLoading =
     status === ResultStatus.Initial || status === ResultStatus.Requested
-
   return !isLoading ? (
     <Stories items={stories} page={page} type="newest" />
   ) : null

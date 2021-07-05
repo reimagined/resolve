@@ -8,6 +8,15 @@
 
 - Middleware support for aggregate commands, read model resolvers and projections [\#1925](https://github.com/reimagined/resolve/pull/1925)
 
+**Enhancements:**
+
+- Collect read model building metrics per event [\#1927](https://github.com/reimagined/resolve/pull/1927)
+
+**Bug fixes:**
+
+- Pagination problem with hacker-news example [\#1928](https://github.com/reimagined/resolve/issues/1928)
+- UI problems with hacker-news example [\#1921](https://github.com/reimagined/resolve/issues/1921)
+
 **Documentation:**
 
 - Migrate documentation to docusaurus v2 [\#1924](https://github.com/reimagined/resolve/pull/1924)
