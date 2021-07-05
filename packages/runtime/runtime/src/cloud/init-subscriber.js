@@ -94,6 +94,9 @@ const initSubscriber = (resolve, lambdaContext) => {
           })
           break
         } catch (error) {
+          if (checkError(error, 'QueueAlreadyExists')) {
+            break
+          }
           if (
             !(
               isRetryableServiceError(error) ||
@@ -101,8 +104,7 @@ const initSubscriber = (resolve, lambdaContext) => {
                 error,
                 'AWS.SimpleQueueService.QueueDeletedRecently'
               ) ||
-              checkError(error, 'QueueDeletedRecently') ||
-              checkError(error, 'QueueAlreadyExists')
+              checkError(error, 'QueueDeletedRecently')
             )
           ) {
             throw error
@@ -126,12 +128,10 @@ const initSubscriber = (resolve, lambdaContext) => {
           }))
           break
         } catch (error) {
-          if (
-            !(
-              isRetryableServiceError(error) ||
-              checkError(error, 'ResourceConflictException')
-            )
-          ) {
+          if (checkError(error, 'ResourceConflictException')) {
+            break
+          }
+          if (!isRetryableServiceError(error)) {
             throw error
           }
           await new Promise((resolve) => setTimeout(resolve, 1000))
