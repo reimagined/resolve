@@ -274,7 +274,7 @@ describe('Read models', () => {
     )
   })
 
-  test('should register error or resolver failure', async () => {
+  test('should register error on resolver failure', async () => {
     const readModelInterop = await setUpTestReadModelInterop({
       name: 'TestReadModel',
       projection: {

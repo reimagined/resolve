@@ -210,8 +210,16 @@ export const buildEvents: (
   let localContinue = true
   let cursor: ReadModelCursor = inputCursor
 
+  const groupMonitoring =
+    monitoring != null
+      ? monitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ ReadModel: readModelName })
+      : null
+
   let eventsApplyStartTimestamp = Date.now()
   let eventCount = 0
+  let projectionApplyTime = 0
 
   const hotEvents: Array<ReadModelEvent> | null =
     isContinuousMode &&
@@ -237,9 +245,18 @@ export const buildEvents: (
             cursor,
           })
           .then((result) => {
-            metricData.eventBatchLoadTime +=
-              Date.now() - firstEventsLoadStartTimestamp
-            return result != null ? result.events : []
+            const loadDuration = Date.now() - firstEventsLoadStartTimestamp
+            const events = result != null ? result.events : []
+
+            if (groupMonitoring != null && events.length > 0) {
+              groupMonitoring.duration(
+                'EventLoad',
+                loadDuration / events.length,
+                events.length
+              )
+            }
+
+            return events
           })
       : Promise.resolve(hotEvents)
 
@@ -318,8 +335,19 @@ export const buildEvents: (
         })
       )
       .then((result) => {
-        metricData.eventBatchLoadTime += Date.now() - eventsLoadStartTimestamp
-        return result != null ? result.events : []
+        const loadDuration = Date.now() - eventsLoadStartTimestamp
+
+        const events = result != null ? result.events : []
+
+        if (groupMonitoring != null && events.length > 0) {
+          groupMonitoring.duration(
+            'EventLoad',
+            loadDuration / events.length,
+            events.length
+          )
+        }
+
+        return events
       })
 
     let appliedEventsCount = 0
@@ -342,8 +370,7 @@ export const buildEvents: (
             } finally {
               metricData.insideProjection = false
             }
-            metricData.pureProjectionApplyTime +=
-              Date.now() - projectionApplyStartTimestamp
+            projectionApplyTime += Date.now() - projectionApplyStartTimestamp
 
             await inlineLedgerExecuteStatement(
               pool,
@@ -457,17 +484,31 @@ export const buildEvents: (
 
     await inlineLedgerExecuteTransaction(pool, 'commit', transactionId)
 
-    if (eventCount > 0 && monitoring != null) {
-      const seconds = (Date.now() - eventsApplyStartTimestamp) / 1000
+    if (groupMonitoring != null && eventCount > 0) {
+      const applyDuration = Date.now() - eventsApplyStartTimestamp
 
-      monitoring
-        .group({ Part: 'ReadModel' })
-        .group({ ReadModel: readModelName })
-        .rate('ReadModelFeedingRate', eventCount, seconds)
+      groupMonitoring.rate(
+        'ReadModelFeedingRate',
+        eventCount,
+        applyDuration / 1000
+      )
+
+      groupMonitoring.duration(
+        'EventApply',
+        applyDuration / eventCount,
+        eventCount
+      )
+
+      groupMonitoring.duration(
+        'EventProjectionApply',
+        projectionApplyTime / eventCount,
+        eventCount
+      )
     }
 
     eventCount = 0
     eventsApplyStartTimestamp = Date.now()
+    projectionApplyTime = 0
 
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
     cursor = nextCursor
@@ -548,8 +589,6 @@ const build: ExternalMethods['build'] = async (
   const { eventsWithCursors, ...inputMetricData } = buildInfo
   const metricData = {
     ...inputMetricData,
-    eventBatchLoadTime: 0,
-    pureProjectionApplyTime: 0,
     pureLedgerTime: 0,
     insideProjection: false,
   }
@@ -581,10 +620,7 @@ const build: ExternalMethods['build'] = async (
   if (hasSendTime) {
     for (const innerMonitoring of [monitoring, groupMonitoring]) {
       if (innerMonitoring != null) {
-        innerMonitoring.time('EventDelivery', metricData.sendTime)
-        innerMonitoring.timeEnd('EventDelivery', now)
-
-        innerMonitoring.time('EventApply', metricData.sendTime)
+        innerMonitoring.duration('EventDelivery', now - metricData.sendTime)
       }
     }
   }
@@ -731,16 +767,6 @@ const build: ExternalMethods['build'] = async (
         if (hasSendTime) {
           innerMonitoring.timeEnd('EventApply')
         }
-
-        innerMonitoring.duration(
-          'EventBatchLoad',
-          metricData.eventBatchLoadTime
-        )
-
-        innerMonitoring.duration(
-          'EventProjectionApply',
-          metricData.pureProjectionApplyTime
-        )
 
         innerMonitoring.duration('Ledger', metricData.pureLedgerTime)
       }
