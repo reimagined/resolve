@@ -141,37 +141,39 @@ const initSubscriber = (resolve, lambdaContext) => {
       errors.push(err)
     }
 
-    try {
-      while (true) {
-        try {
-          const { State } = await getEventSourceMapping({
-            Region: region,
-            UUID,
-          })
-          if (State === 'Enabled') {
-            break
+    if (UUID != null) {
+      try {
+        while (true) {
+          try {
+            const { State } = await getEventSourceMapping({
+              Region: region,
+              UUID,
+            })
+            if (State === 'Enabled') {
+              break
+            }
+          } catch (error) {
+            if (!isRetryableServiceError(error)) {
+              throw error
+            }
           }
-        } catch (error) {
-          if (!isRetryableServiceError(error)) {
-            throw error
-          }
+          await new Promise((resolve) => setTimeout(resolve, 1000))
         }
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+      } catch (err) {
+        errors.push(err)
       }
-    } catch (err) {
-      errors.push(err)
-    }
 
-    try {
-      await setFunctionTags({
-        Region: region,
-        FunctionName: functionArn,
-        Tags: {
-          [`SQS-${resolve.applicationName}-${name}`]: UUID,
-        },
-      })
-    } catch (err) {
-      errors.push(err)
+      try {
+        await setFunctionTags({
+          Region: region,
+          FunctionName: functionArn,
+          Tags: {
+            [`SQS-${resolve.applicationName}-${name}`]: UUID,
+          },
+        })
+      } catch (err) {
+        errors.push(err)
+      }
     }
 
     if (errors.length > 0) {
