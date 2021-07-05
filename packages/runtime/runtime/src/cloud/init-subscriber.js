@@ -54,10 +54,6 @@ const initSubscriber = (resolve, lambdaContext) => {
   }
 
   resolve.ensureQueue = async (name) => {
-    try {
-      await resolve.deleteQueue(name)
-    } catch (err) {}
-
     const getTags = () => {
       const tags = {
         'resolve-deployment-id': process.env.RESOLVE_DEPLOYMENT_ID,
@@ -105,7 +101,8 @@ const initSubscriber = (resolve, lambdaContext) => {
                 error,
                 'AWS.SimpleQueueService.QueueDeletedRecently'
               ) ||
-              checkError(error, 'QueueDeletedRecently')
+              checkError(error, 'QueueDeletedRecently') ||
+              checkError(error, 'QueueAlreadyExists')
             )
           ) {
             throw error
@@ -129,7 +126,12 @@ const initSubscriber = (resolve, lambdaContext) => {
           }))
           break
         } catch (error) {
-          if (!isRetryableServiceError(error)) {
+          if (
+            !(
+              isRetryableServiceError(error) ||
+              checkError(error, 'ResourceConflictException')
+            )
+          ) {
             throw error
           }
           await new Promise((resolve) => setTimeout(resolve, 1000))
