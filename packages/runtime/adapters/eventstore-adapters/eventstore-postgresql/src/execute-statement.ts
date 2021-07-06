@@ -19,9 +19,28 @@ const isRetryableError = (error: any): boolean =>
     checkFormalError(error, '08003') ||
     checkFormalError(error, '08006'))
 
+const isConnectionTerminatedError = (error: any): boolean =>
+  error != null &&
+  (checkFuzzyError(error, /Connection terminated/i) ||
+    checkFuzzyError(error, /Query read timeout/i))
+
 const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
   while (true) {
     try {
+      if (pool.connectionErrors.length > 0) {
+        let summaryError = pool.connectionErrors[0]
+        if (pool.connectionErrors.length > 1) {
+          summaryError = new Error(
+            pool.connectionErrors.map(({ message }) => message).join('\n')
+          )
+          summaryError.stack = pool.connectionErrors
+            .map(({ stack }) => stack)
+            .join('\n')
+        }
+        pool.connectionErrors = []
+        throw summaryError
+      }
+
       const result = await pool.connection.query(sql)
 
       if (result != null && Array.isArray(result.rows)) {
@@ -30,7 +49,16 @@ const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
 
       return null
     } catch (error) {
-      if (!isRetryableError(error)) {
+      if (isConnectionTerminatedError(error)) {
+        try {
+          await pool.connection.end()
+        } catch (error) {
+          // pass
+        }
+
+        pool.getConnectPromise = pool.createGetConnectPromise()
+        await pool.getConnectPromise()
+      } else if (!isRetryableError(error)) {
         throw error
       }
     }
