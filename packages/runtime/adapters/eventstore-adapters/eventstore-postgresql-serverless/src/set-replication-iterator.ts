@@ -1,5 +1,5 @@
-import { AdapterPool } from './types'
-import { ReplicationState } from '@resolve-js/eventstore-base'
+import type { AdapterPool } from './types'
+import type { ReplicationState } from '@resolve-js/eventstore-base'
 import initReplicationStateTable from './init-replication-state-table'
 
 const setReplicationIterator = async (

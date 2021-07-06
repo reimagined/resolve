@@ -1,5 +1,6 @@
-import { AdapterPool } from './types'
-import { OldEvent, SavedEvent, THREAD_COUNT } from '@resolve-js/eventstore-base'
+import type { AdapterPool } from './types'
+import { THREAD_COUNT } from '@resolve-js/eventstore-base'
+import type { OldEvent, SavedEvent } from '@resolve-js/eventstore-base'
 import { str as strCRC32 } from 'crc-32'
 
 export const replicateEvents = async (

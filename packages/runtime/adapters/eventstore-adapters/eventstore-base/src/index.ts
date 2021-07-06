@@ -16,7 +16,6 @@ import {
   AlreadyFrozenError,
   AlreadyUnfrozenError,
 } from './frozen-errors'
-import { ReplicationAlreadyInProgress } from './replication-errors'
 import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
 import throwBadCursor from './throw-bad-cursor'
@@ -114,7 +113,6 @@ export {
   EventstoreFrozenError,
   AlreadyFrozenError as EventstoreAlreadyFrozenError,
   AlreadyUnfrozenError as EventstoreAlreadyUnfrozenError,
-  ReplicationAlreadyInProgress,
   throwBadCursor,
   getNextCursor,
   snapshotTrigger,
