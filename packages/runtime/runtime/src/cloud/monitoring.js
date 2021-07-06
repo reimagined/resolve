@@ -83,6 +83,77 @@ const monitoringError = async (log, monitoringData, groupData, error) => {
   }
 }
 
+const monitoringExecution = async (log, monitoringData, groupData, error) => {
+  try {
+    log.verbose(`Collect execution`)
+
+    const executionDimensionList = groupData.errorMetricDimensionsList.concat(
+      groupData.globalDimensions
+    )
+
+    let errorDimensionList = executionDimensionList
+    let errorValue = 0
+
+    if (error != null) {
+      errorValue = 1
+
+      errorDimensionList = createErrorDimensionsList(error)
+        .reduce(
+          (acc, errorDimensions) =>
+            acc.concat(
+              groupData.errorMetricDimensionsList.map((groupDimensions) => [
+                ...groupDimensions,
+                ...errorDimensions,
+              ])
+            ),
+          []
+        )
+        .concat(groupData.globalDimensions)
+    }
+
+    const timestamp = new Date()
+    timestamp.setMilliseconds(0)
+
+    let isDimensionCountLimitReached = false
+
+    for (const dimensions of executionDimensionList) {
+      if (dimensions.length <= MAX_DIMENSION_COUNT) {
+        monitoringData.metricData.push({
+          MetricName: 'Executions',
+          Timestamp: timestamp,
+          Unit: 'Count',
+          Value: 1,
+          Dimensions: dimensions,
+        })
+      } else {
+        isDimensionCountLimitReached = true
+      }
+    }
+
+    for (const dimensions of errorDimensionList) {
+      if (dimensions.length <= MAX_DIMENSION_COUNT) {
+        monitoringData.metricData.push({
+          MetricName: 'Errors',
+          Timestamp: timestamp,
+          Unit: 'Count',
+          Value: errorValue,
+          Dimensions: dimensions,
+        })
+      } else {
+        isDimensionCountLimitReached = true
+      }
+    }
+
+    if (isDimensionCountLimitReached) {
+      log.warn(
+        `Error collecting missed some or all metric data because of dimension count limit`
+      )
+    }
+  } catch (error) {
+    log.verbose(`Failed to collect execution`, error)
+  }
+}
+
 const monitoringDuration = async (
   log,
   monitoringData,
@@ -327,6 +398,7 @@ const createMonitoringImplementation = (log, monitoringData, groupData) => {
       return createMonitoringImplementation(log, monitoringData, nextGroupData)
     },
     error: monitoringError.bind(null, log, monitoringData, groupData),
+    execution: monitoringExecution.bind(null, log, monitoringData, groupData),
     duration: monitoringDuration.bind(null, log, monitoringData, groupData),
     time: monitoringTime.bind(null, log, monitoringData, groupData),
     timeEnd: monitoringTimeEnd.bind(null, log, monitoringData, groupData),
