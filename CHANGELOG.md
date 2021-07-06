@@ -10,6 +10,7 @@
 
 **Enhancements:**
 
+- Implement monitoring execution counter [\#1932](https://github.com/reimagined/resolve/pull/1932)
 - Implement only one-time event source mapping [\#1929](https://github.com/reimagined/resolve/pull/1929)
 - Collect read model building metrics per event [\#1927](https://github.com/reimagined/resolve/pull/1927)
 
