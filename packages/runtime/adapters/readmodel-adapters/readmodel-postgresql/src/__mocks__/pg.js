@@ -11,6 +11,9 @@ const Client = jest.fn(function () {
   this.end = jest.fn(async (...args) => {
     result.push(['end', ...args])
   })
+  this.on = jest.fn(async (...args) => {
+    result.push(['on', ...args])
+  })
 })
 
 export { Client }
