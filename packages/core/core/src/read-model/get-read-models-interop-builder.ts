@@ -28,7 +28,7 @@ const monitoredError = (
       .group({ ReadModel: readModelName })
       .group({ Resolver: resolverName })
 
-    monitoringGroup.error(error)
+    monitoringGroup.execution(error)
   }
   return error
 }
@@ -111,9 +111,9 @@ const makeReadModelInteropCreator = (runtime: ReadModelRuntime) => {
                 .group({ Resolver: resolver })
             : null
 
-        if (monitoringGroup != null) {
-          monitoringGroup.time('Execution')
-        }
+        monitoringGroup?.time('Execution')
+
+        let executionError
 
         try {
           log.debug(`invoking the resolver`)
@@ -140,23 +140,17 @@ const makeReadModelInteropCreator = (runtime: ReadModelRuntime) => {
             data,
           }
         } catch (error) {
+          executionError = error
           log.error(error)
-          if (subSegment != null) {
-            subSegment.addError(error)
-          }
-
-          if (monitoringGroup != null) {
-            monitoringGroup.error(error)
-          }
+          subSegment?.addError(error)
           throw error
         } finally {
           if (monitoringGroup != null) {
             monitoringGroup.timeEnd('Execution')
+            monitoringGroup.execution(executionError)
           }
 
-          if (subSegment != null) {
-            subSegment.close()
-          }
+          subSegment?.close()
         }
       }
     }

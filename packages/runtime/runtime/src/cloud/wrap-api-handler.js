@@ -327,6 +327,7 @@ const wrapApiHandler = (handler, getCustomParameters, monitoring) => async (
   let result
   let isLambdaEdgeRequest
   let req
+  let executionError
   try {
     const customParameters =
       typeof getCustomParameters === 'function'
@@ -373,14 +374,12 @@ const wrapApiHandler = (handler, getCustomParameters, monitoring) => async (
       }
     }
   } catch (error) {
+    executionError = error
+
     const outError =
       error != null && error.stack != null
         ? `${error.stack}`
         : `Unknown error ${error}`
-
-    if (pathMonitoring != null) {
-      pathMonitoring.error(error)
-    }
 
     // eslint-disable-next-line no-console
     console.error(outError)
@@ -398,16 +397,15 @@ const wrapApiHandler = (handler, getCustomParameters, monitoring) => async (
         body: '',
       }
     }
-  }
+  } finally {
+    const endTimestamp = Date.now()
 
-  const endTimestamp = Date.now()
+    if (pathMonitoring != null) {
+      pathMonitoring.execution(executionError)
+      pathMonitoring.timeEnd('Execution', endTimestamp)
+    }
 
-  if (pathMonitoring != null) {
-    pathMonitoring.timeEnd('Execution', endTimestamp)
-  }
-
-  if (monitoring != null) {
-    monitoring.timeEnd('Execution', endTimestamp)
+    monitoring?.timeEnd('Execution', endTimestamp)
   }
 
   if (typeof lambdaCallback === 'function') {

@@ -66,7 +66,7 @@ const read = async (
           .group({ ReadModel: readModelName })
           .group({ Resolver: resolverName })
 
-        monitoringGroup.error(error)
+        monitoringGroup.execution(error)
       }
 
       if (subSegment != null) {

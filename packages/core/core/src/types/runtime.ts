@@ -35,6 +35,7 @@ export type PerformanceTracer = {
 export type Monitoring = {
   group: (config: Record<string, any>) => Monitoring
   error: (error: Error) => void
+  execution: (error?: Error) => void
   time: (name: string, timestamp?: number) => void
   timeEnd: (name: string, timestamp?: number) => void
   publish: () => Promise<void>

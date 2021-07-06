@@ -97,17 +97,24 @@ export const makeTestEnvironment = (
     const liveErrors: Array<Error> = []
 
     const makeMonitoring = (
-      error: Monitoring['error'] = () => void 0
+      error: Monitoring['error'] = () => void 0,
+      execution: Monitoring['execution'] = () => void 0
     ): Monitoring => {
       return {
-        group: (config) =>
-          config.Part === 'ReadModelProjection'
-            ? makeMonitoring((error: Error) => {
-                liveErrors.push(error)
-              })
-            : makeMonitoring(error),
+        group: (config) => {
+          const errorHandler = (error?: Error) => {
+            if (error != null) {
+              liveErrors.push(error)
+            }
+          }
+
+          return config.Part === 'ReadModelProjection'
+            ? makeMonitoring(errorHandler, errorHandler)
+            : makeMonitoring(error, execution)
+        },
         time: () => void 0,
         timeEnd: () => void 0,
+        execution,
         error,
         publish: async () => void 0,
       }
