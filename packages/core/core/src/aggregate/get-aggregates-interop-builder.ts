@@ -527,7 +527,12 @@ const makeCommandExecutor = (
     } finally {
       if (monitoringGroup != null) {
         monitoringGroup.timeEnd('Execution')
-        monitoringGroup.execution(executionError)
+
+        if (executionError != null) {
+          monitoringGroup.execution(executionError)
+        } else {
+          monitoringGroup.execution()
+        }
       }
 
       subSegment.close()

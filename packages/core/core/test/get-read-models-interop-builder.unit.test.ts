@@ -28,6 +28,7 @@ const secretsManager: SecretsManager = {
 
 let monitoring: {
   error: jest.MockedFunction<NonNullable<Monitoring['error']>>
+  execution: jest.MockedFunction<NonNullable<Monitoring['execution']>>
   group: jest.MockedFunction<NonNullable<Monitoring['group']>>
   time: jest.MockedFunction<NonNullable<Monitoring['time']>>
   timeEnd: jest.MockedFunction<NonNullable<Monitoring['timeEnd']>>
@@ -38,6 +39,7 @@ const makeTestRuntime = (): ReadModelRuntime => {
   monitoring = {
     group: jest.fn(),
     error: jest.fn(),
+    execution: jest.fn(),
     time: jest.fn(),
     timeEnd: jest.fn(),
     publish: jest.fn(),
@@ -242,6 +244,34 @@ describe('Read models', () => {
     )
   })
 
+  test('calls execution without error if resolver executed without error', async () => {
+    const readModelInterop = await setUpTestReadModelInterop({
+      name: 'TestReadModel',
+      projection: {
+        Init: dummyInitHandler,
+        dummyEvent: dummyEventHandler,
+      },
+      resolvers: {
+        all: dummyResolver,
+      },
+    })
+
+    const resolver = await readModelInterop.acquireResolver('all', {}, {})
+    await resolver(dummyStore, null)
+
+    expect(monitoring.group.mock.calls[0][0]).toEqual({
+      Part: 'ReadModelResolver',
+    })
+    expect(monitoring.group.mock.calls[1][0]).toEqual({
+      ReadModel: 'TestReadModel',
+    })
+    expect(monitoring.group.mock.calls[2][0]).toEqual({
+      Resolver: 'all',
+    })
+
+    expect(monitoring.execution.mock.calls[0]).toHaveLength(0)
+  })
+
   test('should register error if resolver not found', async () => {
     const readModelInterop = await setUpTestReadModelInterop({
       name: 'TestReadModel',
@@ -268,8 +298,8 @@ describe('Read models', () => {
       Resolver: 'not-existing-resolver',
     })
 
-    expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
-    expect(monitoring.error.mock.calls[0][0].message).toEqual(
+    expect(monitoring.execution.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(monitoring.execution.mock.calls[0][0]?.message).toEqual(
       expect.stringContaining(`not-existing-resolver`)
     )
   })
@@ -302,8 +332,10 @@ describe('Read models', () => {
       Resolver: 'fail',
     })
 
-    expect(monitoring.error.mock.calls[0][0]).toBeInstanceOf(Error)
-    expect(monitoring.error.mock.calls[0][0].message).toEqual('failed resolver')
+    expect(monitoring.execution.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(monitoring.execution.mock.calls[0][0]?.message).toEqual(
+      'failed resolver'
+    )
   })
 })
 

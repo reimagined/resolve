@@ -25,6 +25,7 @@ const secretsManager: SecretsManager = {
 
 let monitoring: {
   error: jest.MockedFunction<NonNullable<Monitoring['error']>>
+  execution: jest.MockedFunction<NonNullable<Monitoring['execution']>>
   group: jest.MockedFunction<NonNullable<Monitoring['group']>>
   time: jest.MockedFunction<NonNullable<Monitoring['time']>>
   timeEnd: jest.MockedFunction<NonNullable<Monitoring['timeEnd']>>
@@ -35,6 +36,7 @@ const makeTestRuntime = (): SagaRuntime => {
   monitoring = {
     group: jest.fn(),
     error: jest.fn(),
+    execution: jest.fn(),
     time: jest.fn(),
     timeEnd: jest.fn(),
     publish: jest.fn(),
