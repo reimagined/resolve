@@ -55,6 +55,7 @@ const makeTestRuntime = (storedEvents: Event[] = []): ViewModelRuntime => {
   monitoring = {
     group: jest.fn(),
     error: jest.fn(),
+    execution: jest.fn(),
     time: jest.fn(),
     timeEnd: jest.fn(),
     publish: jest.fn(),
@@ -241,6 +242,59 @@ describe('View models', () => {
 
     expect(monitoring.group).toBeCalledWith({ Part: 'ViewModelResolver' })
     expect(monitoring.group).toBeCalledWith({ ViewModel: 'TestViewModel' })
-    expect(monitoring.error).toBeCalledWith(error)
+    expect(monitoring.execution).toBeCalledWith(error)
+  })
+
+  test('collects execution if resolver is not failed', async () => {
+    const resolver = setUpTestViewModelResolver(
+      {
+        name: 'TestViewModel',
+        projection: {
+          Init: () => [],
+          dummyEvent: (state: any, event: any) => {
+            return [...state, event.payload.text]
+          },
+        },
+        resolver: () => {
+          return null
+        },
+      },
+      [
+        {
+          type: 'dummyEvent',
+          payload: { text: 'first' },
+          aggregateId: 'validAggregateId',
+          aggregateVersion: 1,
+          timestamp: 1,
+        },
+        {
+          type: 'dummyEvent',
+          payload: { text: 'second' },
+          aggregateId: 'invalidAggregateId',
+          aggregateVersion: 1,
+          timestamp: 2,
+        },
+        {
+          type: 'dummyEvent',
+          payload: { text: 'third' },
+          aggregateId: 'validAggregateId',
+          aggregateVersion: 2,
+          timestamp: 3,
+        },
+      ]
+    )
+
+    try {
+      await resolver({
+        aggregateIds: ['validAggregateId'],
+        aggregateArgs: null,
+      })
+
+      throw new Error('Building must be failed')
+    } catch (e) {}
+
+    expect(monitoring.group).toBeCalledWith({ Part: 'ViewModelResolver' })
+    expect(monitoring.group).toBeCalledWith({ ViewModel: 'TestViewModel' })
+    expect(monitoring.execution).toBeCalledWith()
   })
 })

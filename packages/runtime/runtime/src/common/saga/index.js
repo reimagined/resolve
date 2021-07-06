@@ -18,17 +18,6 @@ const createSaga = ({
 }) => {
   const { sagaDomain } = domainInterop
 
-  const sagaMonitoring =
-    monitoring != null
-      ? {
-          error: (error, part, meta) => {
-            if (monitoring.error != null) {
-              monitoring.error(error, 'sagaProjection', meta)
-            }
-          },
-        }
-      : monitoring
-
   const executeCommandOrScheduler = async (...args) => {
     if (
       !(
@@ -85,7 +74,7 @@ const createSaga = ({
     performanceTracer,
     getVacantTimeInMillis,
     eventstoreAdapter,
-    monitoring: sagaMonitoring,
+    monitoring,
     readModelsInterop: domainInterop.sagaDomain.acquireSagasInterop(runtime),
     viewModelsInterop: {},
   })

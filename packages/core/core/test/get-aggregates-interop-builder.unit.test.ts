@@ -56,6 +56,7 @@ const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
 
   const monitoring: Monitoring = {
     error: jest.fn(),
+    execution: jest.fn(),
     group: jest.fn(() => monitoring),
     time: jest.fn(),
     timeEnd: jest.fn(),
@@ -945,7 +946,52 @@ describe('Snapshots', () => {
 })
 
 describe('Monitoring', () => {
-  test('calls monitoring.error when command error is thrown', async () => {
+  test('calls monitoring.execution with no arguments error when command is executed correctly', async () => {
+    const runtime = makeTestRuntime()
+    const { executeCommand } = getAggregatesInteropBuilder([
+      makeAggregateMeta({
+        encryption: () => Promise.resolve({}),
+        name: 'empty',
+        commands: {
+          emptyCommand: () => {
+            return {
+              type: 'myEvent',
+            }
+          },
+        },
+      }),
+    ])(runtime)
+
+    if (runtime.monitoring == null) {
+      throw new Error('Monitoring is required')
+    }
+
+    await executeCommand({
+      aggregateName: 'empty',
+      aggregateId: 'aggregateId',
+      type: 'emptyCommand',
+    })
+
+    expect(runtime.monitoring.group).toBeCalledWith({
+      Part: 'Command',
+    })
+
+    expect(runtime.monitoring.group).toBeCalledWith({
+      AggregateName: 'empty',
+    })
+
+    expect(runtime.monitoring.group).not.toBeCalledWith({
+      AggregateId: 'aggregateId',
+    })
+
+    expect(runtime.monitoring.group).toBeCalledWith({
+      Type: 'emptyCommand',
+    })
+
+    expect(runtime.monitoring.execution).toBeCalledWith()
+  })
+
+  test('calls monitoring.execution with error when command error is thrown', async () => {
     const runtime = makeTestRuntime()
     const { executeCommand } = getAggregatesInteropBuilder([
       makeAggregateMeta({
@@ -958,6 +1004,10 @@ describe('Monitoring', () => {
         },
       }),
     ])(runtime)
+
+    if (runtime.monitoring == null) {
+      throw new Error('Monitoring is required')
+    }
 
     try {
       await executeCommand({
@@ -968,31 +1018,27 @@ describe('Monitoring', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      if (runtime.monitoring != null) {
-        expect(runtime.monitoring.group).toBeCalledWith({
-          Part: 'Command',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        Part: 'Command',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          AggregateName: 'empty',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        AggregateName: 'empty',
+      })
 
-        expect(runtime.monitoring.group).not.toBeCalledWith({
-          AggregateId: 'aggregateId',
-        })
+      expect(runtime.monitoring.group).not.toBeCalledWith({
+        AggregateId: 'aggregateId',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          Type: 'emptyCommand',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        Type: 'emptyCommand',
+      })
 
-        expect(runtime.monitoring.error).toBeCalledWith(e)
-      } else {
-        throw new Error('Monitoring must exist')
-      }
+      expect(runtime.monitoring.execution).toBeCalledWith(e)
     }
   })
 
-  test('calls monitoring.error if command is absent', async () => {
+  test('calls monitoring.execution with error if command is absent', async () => {
     const runtime = makeTestRuntime()
     const { executeCommand } = getAggregatesInteropBuilder([
       makeAggregateMeta({
@@ -1005,6 +1051,10 @@ describe('Monitoring', () => {
         },
       }),
     ])(runtime)
+
+    if (runtime.monitoring == null) {
+      throw new Error('Monitoring is required')
+    }
 
     try {
       await executeCommand({
@@ -1015,31 +1065,27 @@ describe('Monitoring', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      if (runtime.monitoring != null) {
-        expect(runtime.monitoring.group).toBeCalledWith({
-          Part: 'Command',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        Part: 'Command',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          AggregateName: 'empty',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        AggregateName: 'empty',
+      })
 
-        expect(runtime.monitoring.group).not.toBeCalledWith({
-          AggregateId: 'aggregateId',
-        })
+      expect(runtime.monitoring.group).not.toBeCalledWith({
+        AggregateId: 'aggregateId',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          Type: 'unknownCommand',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        Type: 'unknownCommand',
+      })
 
-        expect(runtime.monitoring.error).toBeCalledWith(e)
-      } else {
-        throw new Error('Monitoring must exist')
-      }
+      expect(runtime.monitoring.execution).toBeCalledWith(e)
     }
   })
 
-  test('calls monitoring.error if aggregate is absent', async () => {
+  test('calls monitoring.execution with error if aggregate is absent', async () => {
     const runtime = makeTestRuntime()
     const { executeCommand } = getAggregatesInteropBuilder([
       makeAggregateMeta({
@@ -1053,6 +1099,10 @@ describe('Monitoring', () => {
       }),
     ])(runtime)
 
+    if (runtime.monitoring == null) {
+      throw new Error('Monitoring is required')
+    }
+
     try {
       await executeCommand({
         aggregateName: 'unknown',
@@ -1062,27 +1112,23 @@ describe('Monitoring', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      if (runtime.monitoring != null) {
-        expect(runtime.monitoring.group).toBeCalledWith({
-          Part: 'Command',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        Part: 'Command',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          AggregateName: 'unknown',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        AggregateName: 'unknown',
+      })
 
-        expect(runtime.monitoring.group).not.toBeCalledWith({
-          AggregateId: 'aggregateId',
-        })
+      expect(runtime.monitoring.group).not.toBeCalledWith({
+        AggregateId: 'aggregateId',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          Type: 'unknownCommand',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        Type: 'unknownCommand',
+      })
 
-        expect(runtime.monitoring.error).toBeCalledWith(e)
-      } else {
-        throw new Error('Monitoring must exist')
-      }
+      expect(runtime.monitoring.execution).toBeCalledWith(e)
     }
   })
 
@@ -1115,7 +1161,7 @@ describe('Monitoring', () => {
     }
   })
 
-  test('does not affect command workflow if monitoring.error is absent', async () => {
+  test('does not affect command workflow if monitoring.execution is absent', async () => {
     const runtime = makeTestRuntime()
     const { executeCommand } = getAggregatesInteropBuilder([
       makeAggregateMeta({

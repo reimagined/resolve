@@ -161,8 +161,18 @@ const getViewModelInterop = (
     const { name, projection, resolver } = viewModel
     const { monitoring } = runtime
 
+    const monitoringGroup =
+      monitoring != null
+        ? monitoring
+            .group({ Part: 'ViewModelResolver' })
+            .group({ ViewModel: name })
+        : null
+
     const segment = getPerformanceTracerSegment(monitoring)
     const subSegment = segment.addNewSubsegment('read')
+    let executionError
+
+    monitoringGroup?.time('Execution')
 
     try {
       subSegment.addAnnotation('viewModelName', name)
@@ -221,17 +231,20 @@ const getViewModelInterop = (
         }
       )
     } catch (error) {
+      executionError = error
       subSegment.addError(error)
-
-      if (monitoring != null) {
-        const monitoringGroup = monitoring
-          .group({ Part: 'ViewModelResolver' })
-          .group({ ViewModel: name })
-
-        monitoringGroup.error(error)
-      }
       throw error
     } finally {
+      if (monitoringGroup != null) {
+        monitoringGroup.timeEnd('Execution')
+
+        if (executionError != null) {
+          monitoringGroup.execution(executionError)
+        } else {
+          monitoringGroup.execution()
+        }
+      }
+
       subSegment.close()
     }
   }

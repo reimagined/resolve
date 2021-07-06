@@ -405,13 +405,13 @@ const makeCommandExecutor = (
             .group({ Type: command.type })
         : null
 
-    if (monitoringGroup != null) {
-      monitoringGroup.time('Execution')
-    }
+    monitoringGroup?.time('Execution')
 
     const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
 
     const jwt = actualJwt || deprecatedJwt
+
+    let executionError
 
     const subSegment = getPerformanceTracerSubsegment(
       runtime.monitoring,
@@ -521,15 +521,18 @@ const makeCommandExecutor = (
 
       return processedEvent
     } catch (error) {
+      executionError = error
       subSegment.addError(error)
-
-      if (monitoringGroup != null) {
-        monitoringGroup.error(error)
-      }
       throw error
     } finally {
       if (monitoringGroup != null) {
         monitoringGroup.timeEnd('Execution')
+
+        if (executionError != null) {
+          monitoringGroup.execution(executionError)
+        } else {
+          monitoringGroup.execution()
+        }
       }
 
       subSegment.close()
