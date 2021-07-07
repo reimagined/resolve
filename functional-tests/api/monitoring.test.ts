@@ -6,25 +6,6 @@ import { isEqual } from 'lodash'
 import { customAlphabet } from 'nanoid'
 import { parse as parseVersion } from 'semver'
 
-type BaseMetrics = {
-  Errors: {
-    commandPart: number
-    command: {
-      failCommand: number
-    }
-    readModelResolver: {
-      resolver: number
-      resolverB: number
-    }
-  }
-  Executions: {
-    commandPart: number
-    command: {
-      failCommand: number
-    }
-  }
-}
-
 interface CommandBaseMetrics {
   partErrors: number
   commandErrors: number
@@ -70,7 +51,6 @@ let lambda: Lambda
 let client: Client
 let startTime: Date
 let endTime: Date
-let baseMetrics: BaseMetrics
 let commandBaseMetrics: CommandBaseMetrics
 let readModelResolverBaseMetrics: ReadModelResolverBaseMetrics
 let apiHandlerBaseMetrics: ApiHandlerBaseMetrics
@@ -123,73 +103,6 @@ const createDimensions = (list: string[]): Dimension[] =>
       Value: temp[1],
     }
   })
-
-const collectBaseMetrics = async (): Promise<BaseMetrics> => {
-  const [
-    commandPartMetrics,
-    failCommandMetrics,
-    resolverMetrics,
-    resolverBMetrics,
-  ] = await Promise.all([
-    getMetricData({
-      MetricName: 'Errors',
-      Stat: 'Sum',
-      Dimensions: createDimensions([
-        `DeploymentId=${deploymentId}`,
-        'Part=Command',
-      ]),
-    }),
-    getMetricData({
-      MetricName: 'Errors',
-      Stat: 'Sum',
-      Dimensions: createDimensions([
-        `DeploymentId=${deploymentId}`,
-        'Part=Command',
-        'AggregateName=monitoring-aggregate',
-        'Type=failCommand',
-      ]),
-    }),
-    getMetricData({
-      MetricName: 'Errors',
-      Stat: 'Sum',
-      Dimensions: createDimensions([
-        `DeploymentId=${deploymentId}`,
-        'Part=ReadModelResolver',
-        'ReadModel=monitoring',
-        'Resolver=resolver',
-      ]),
-    }),
-    getMetricData({
-      MetricName: 'Errors',
-      Stat: 'Sum',
-      Dimensions: createDimensions([
-        `DeploymentId=${deploymentId}`,
-        'Part=ReadModelResolver',
-        'ReadModel=monitoring',
-        'Resolver=resolverB',
-      ]),
-    }),
-  ])
-
-  return {
-    Errors: {
-      commandPart: commandPartMetrics,
-      command: {
-        failCommand: failCommandMetrics,
-      },
-      readModelResolver: {
-        resolver: resolverMetrics,
-        resolverB: resolverBMetrics,
-      },
-    },
-    Executions: {
-      commandPart: 0,
-      command: {
-        failCommand: 0,
-      },
-    },
-  }
-}
 
 const collectReadModelResolverBaseMetrics = async (): Promise<ReadModelResolverBaseMetrics> => {
   const [
@@ -419,7 +332,6 @@ beforeAll(async () => {
   client = getClient()
   endTime = new Date(Date.now() + 3600000) // next hour
   startTime = new Date(Date.now() - 3600000 * 24) // previous day
-  baseMetrics = await collectBaseMetrics()
 })
 
 const awaitMetricValue = async (
