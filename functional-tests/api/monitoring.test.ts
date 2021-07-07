@@ -6,9 +6,10 @@ import { customAlphabet } from 'nanoid'
 
 type BaseMetrics = {
   Errors: {
-    readModelProjection: {
-      Init: number
-      EventHandler: number
+    commandPart: number
+    command: {
+      failCommandA: number
+      failCommandB: number
     }
     readModelResolver: {
       resolverA: number
@@ -75,111 +76,89 @@ const getMetricData = async ({
   throw Error(`multiple metric ${MetricName} values received`)
 }
 
+const createDimensions = (list: string[]): Dimension[] =>
+  list.map((item) => {
+    const temp = item.split('=')
+
+    return {
+      Name: temp[0],
+      Value: temp[1],
+    }
+  })
+
 const collectBaseMetrics = async (): Promise<BaseMetrics> => {
-  const metrics = await Promise.all([
+  const [
+    commandPartMetrics,
+    failCommandAMetrics,
+    failCommandBMetrics,
+    resolverAMetrics,
+    resolverBMetrics,
+  ] = await Promise.all([
     getMetricData({
       MetricName: 'Errors',
       Stat: 'Sum',
       Unit: 'Count',
-      Dimensions: [
-        {
-          Name: 'DeploymentId',
-          Value: deploymentId,
-        },
-        {
-          Name: 'Part',
-          Value: 'ReadModelProjection',
-        },
-        {
-          Name: 'ReadModel',
-          Value: 'init-failed',
-        },
-        {
-          Name: 'EventType',
-          Value: 'Init',
-        },
-      ],
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=Command',
+      ]),
     }),
     getMetricData({
       MetricName: 'Errors',
       Stat: 'Sum',
       Unit: 'Count',
-      Dimensions: [
-        {
-          Name: 'DeploymentId',
-          Value: deploymentId,
-        },
-        {
-          Name: 'Part',
-          Value: 'ReadModelProjection',
-        },
-        {
-          Name: 'ReadModel',
-          Value: 'monitoring',
-        },
-        {
-          Name: 'EventType',
-          Value: 'MONITORING_FAILED_HANDLER',
-        },
-      ],
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=Command',
+        'AggregateName=monitoring-aggregate',
+        'Type=failCommandA',
+      ]),
     }),
     getMetricData({
       MetricName: 'Errors',
       Stat: 'Sum',
       Unit: 'Count',
-      Dimensions: [
-        {
-          Name: 'DeploymentId',
-          Value: deploymentId,
-        },
-        {
-          Name: 'Part',
-          Value: 'ReadModelResolver',
-        },
-        {
-          Name: 'ReadModel',
-          Value: 'monitoring',
-        },
-        {
-          Name: 'Resolver',
-          Value: 'resolverA',
-        },
-      ],
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=Command',
+        'AggregateName=monitoring-aggregate',
+        'Type=failCommandB',
+      ]),
     }),
     getMetricData({
       MetricName: 'Errors',
       Stat: 'Sum',
       Unit: 'Count',
-      Dimensions: [
-        {
-          Name: 'DeploymentId',
-          Value: deploymentId,
-        },
-        {
-          Name: 'Part',
-          Value: 'ReadModelResolver',
-        },
-        {
-          Name: 'ReadModel',
-          Value: 'monitoring',
-        },
-        {
-          Name: 'Resolver',
-          Value: 'resolverB',
-        },
-      ],
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ReadModelResolver',
+        'ReadModel=monitoring',
+        'Resolver=resolverA',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Errors',
+      Stat: 'Sum',
+      Unit: 'Count',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ReadModelResolver',
+        'ReadModel=monitoring',
+        'Resolver=resolverB',
+      ]),
     }),
   ])
 
   return {
     Errors: {
-      readModelProjection: {
-        Init: metrics[0],
-        EventHandler: metrics[1],
+      commandPart: commandPartMetrics,
+      command: {
+        failCommandA: failCommandAMetrics,
+        failCommandB: failCommandBMetrics,
       },
       readModelResolver: {
-        resolverA: metrics[2],
-        resolverB: metrics[3],
+        resolverA: resolverAMetrics,
+        resolverB: resolverBMetrics,
       },
     },
   }
@@ -208,8 +187,16 @@ const awaitMetricValue = async (
 
   if (!isEqual(metric, value)) {
     if (attempt >= maxAttempts) {
+      const lastDimension =
+        metricData.Dimensions[metricData.Dimensions.length - 1]
+      const dimensionString = `${lastDimension.Name}=${lastDimension.Value}`
+
       throw Error(
-        `Metric data mismatch after ${attempt} attempts: expected ${value}, received last ${metric}`
+        [
+          `Metric data mismatch after ${attempt} attempts: `,
+          `expected ${value}, received last ${metric} `,
+          `(last dimension: ${dimensionString})`,
+        ].join('')
       )
     }
     await new Promise((resolve) => setTimeout(resolve, attemptPeriod))
@@ -218,36 +205,149 @@ const awaitMetricValue = async (
   }
 }
 
-describe('Read Model', () => {
+describe('Commands', () => {
+  test('aggregate commands failed', async () => {
+    await expect(
+      client.command({
+        aggregateId: 'any',
+        aggregateName: 'monitoring-aggregate',
+        type: 'failCommandA',
+        payload: {},
+      })
+    ).rejects.toThrowError()
+
+    await expect(
+      client.command({
+        aggregateId: 'any',
+        aggregateName: 'monitoring-aggregate',
+        type: 'failCommandB',
+        payload: {},
+      })
+    ).rejects.toThrowError()
+
+    baseMetrics.Errors.command.failCommandA += 1
+    baseMetrics.Errors.command.failCommandB += 1
+    baseMetrics.Errors.commandPart += 2
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Unit: 'Count',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=Command',
+          'AggregateName=monitoring-aggregate',
+          'Type=failCommandA',
+        ]),
+      },
+      baseMetrics.Errors.command.failCommandA
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Unit: 'Count',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=Command',
+          'AggregateName=monitoring-aggregate',
+          'Type=failCommandB',
+        ]),
+      },
+      baseMetrics.Errors.command.failCommandB
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Unit: 'Count',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=Command',
+          'AggregateName=monitoring-aggregate',
+        ]),
+      },
+      baseMetrics.Errors.command.failCommandA +
+        baseMetrics.Errors.command.failCommandB
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Unit: 'Count',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=Command',
+          'AggregateName=monitoring-aggregate',
+        ]),
+      },
+      baseMetrics.Errors.command.failCommandA +
+        baseMetrics.Errors.command.failCommandB
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Unit: 'Count',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=Command',
+        ]),
+      },
+      baseMetrics.Errors.commandPart
+    )
+  })
+})
+
+describe('Read Model Projection monitoring', () => {
   test('read model Init handler failed', async () => {
     await awaitMetricValue(
       {
         MetricName: 'Errors',
         Stat: 'Sum',
         Unit: 'Count',
-        Dimensions: [
-          {
-            Name: 'DeploymentId',
-            Value: deploymentId,
-          },
-          {
-            Name: 'Part',
-            Value: 'ReadModelProjection',
-          },
-          {
-            Name: 'ReadModel',
-            Value: 'init-failed',
-          },
-          {
-            Name: 'EventType',
-            Value: 'Init',
-          },
-        ],
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ReadModelProjection',
+          'ReadModel=init-failed',
+          'EventType=Init',
+        ]),
       },
-      baseMetrics.Errors.readModelProjection.Init
+      1
     )
   })
 
+  test('read model event handler failed', async () => {
+    await client.command({
+      aggregateId: 'any',
+      aggregateName: 'monitoring-aggregate',
+      type: 'failReadModelProjection',
+      payload: {},
+    })
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Unit: 'Count',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ReadModelProjection',
+          'ReadModel=monitoring',
+          'EventType=MONITORING_FAILED_HANDLER',
+        ]),
+      },
+      1
+    )
+  })
+})
+
+describe('Read Model Resolver monitoring', () => {
   test('read model resolverA failed', async () => {
     await expect(
       client.query({
@@ -264,24 +364,12 @@ describe('Read Model', () => {
         MetricName: 'Errors',
         Stat: 'Sum',
         Unit: 'Count',
-        Dimensions: [
-          {
-            Name: 'DeploymentId',
-            Value: deploymentId,
-          },
-          {
-            Name: 'Part',
-            Value: 'ReadModelResolver',
-          },
-          {
-            Name: 'ReadModel',
-            Value: 'monitoring',
-          },
-          {
-            Name: 'Resolver',
-            Value: 'resolverA',
-          },
-        ],
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ReadModelResolver',
+          'ReadModel=monitoring',
+          'Resolver=resolverA',
+        ]),
       },
       baseMetrics.Errors.readModelResolver.resolverA
     )
@@ -291,20 +379,11 @@ describe('Read Model', () => {
         MetricName: 'Errors',
         Stat: 'Sum',
         Unit: 'Count',
-        Dimensions: [
-          {
-            Name: 'DeploymentId',
-            Value: deploymentId,
-          },
-          {
-            Name: 'Part',
-            Value: 'ReadModelResolver',
-          },
-          {
-            Name: 'ReadModel',
-            Value: 'monitoring',
-          },
-        ],
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ReadModelResolver',
+          'ReadModel=monitoring',
+        ]),
       },
       baseMetrics.Errors.readModelResolver.resolverB +
         baseMetrics.Errors.readModelResolver.resolverA
@@ -327,24 +406,12 @@ describe('Read Model', () => {
         MetricName: 'Errors',
         Stat: 'Sum',
         Unit: 'Count',
-        Dimensions: [
-          {
-            Name: 'DeploymentId',
-            Value: deploymentId,
-          },
-          {
-            Name: 'Part',
-            Value: 'ReadModelResolver',
-          },
-          {
-            Name: 'ReadModel',
-            Value: 'monitoring',
-          },
-          {
-            Name: 'Resolver',
-            Value: 'resolverB',
-          },
-        ],
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ReadModelResolver',
+          'ReadModel=monitoring',
+          'Resolver=resolverB',
+        ]),
       },
       baseMetrics.Errors.readModelResolver.resolverB
     )
@@ -354,53 +421,14 @@ describe('Read Model', () => {
         MetricName: 'Errors',
         Stat: 'Sum',
         Unit: 'Count',
-        Dimensions: [
-          {
-            Name: 'Part',
-            Value: 'ReadModelResolver',
-          },
-          {
-            Name: 'ReadModel',
-            Value: 'monitoring',
-          },
-        ],
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ReadModelResolver',
+          'ReadModel=monitoring',
+        ]),
       },
       baseMetrics.Errors.readModelResolver.resolverB +
         baseMetrics.Errors.readModelResolver.resolverA
-    )
-  })
-
-  test('read model event handler failed', async () => {
-    await client.command({
-      aggregateId: 'any',
-      aggregateName: 'monitoring-aggregate',
-      type: 'fail',
-      payload: {},
-    })
-
-    baseMetrics.Errors.readModelProjection.EventHandler++
-
-    await awaitMetricValue(
-      {
-        MetricName: 'Errors',
-        Stat: 'Sum',
-        Unit: 'Count',
-        Dimensions: [
-          {
-            Name: 'Part',
-            Value: 'ReadModelProjection',
-          },
-          {
-            Name: 'ReadModel',
-            Value: 'monitoring',
-          },
-          {
-            Name: 'EventType',
-            Value: 'MONITORING_FAILED_HANDLER',
-          },
-        ],
-      },
-      baseMetrics.Errors.readModelProjection.EventHandler
     )
   })
 })
