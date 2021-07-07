@@ -11,7 +11,7 @@ type BaseMetrics = {
       failCommand: number
     }
     readModelResolver: {
-      resolverA: number
+      resolver: number
       resolverB: number
     }
   }
@@ -28,6 +28,15 @@ interface CommandBaseMetrics {
   commandErrors: number
   partExecutions: number
   commandExecutions: number
+  executionDurationSamples: number
+}
+
+type ReadModelResolverBaseMetrics = {
+  partErrors: number
+  resolverErrors: number
+  resolverBErrors: number
+  partExecutions: number
+  resolverExecutions: number
   executionDurationSamples: number
 }
 
@@ -48,6 +57,7 @@ let startTime: Date
 let endTime: Date
 let baseMetrics: BaseMetrics
 let commandBaseMetrics: CommandBaseMetrics
+let readModelResolverBaseMetrics: ReadModelResolverBaseMetrics
 
 const getMetricData = async ({
   MetricName,
@@ -101,7 +111,7 @@ const collectBaseMetrics = async (): Promise<BaseMetrics> => {
   const [
     commandPartMetrics,
     failCommandMetrics,
-    resolverAMetrics,
+    resolverMetrics,
     resolverBMetrics,
   ] = await Promise.all([
     getMetricData({
@@ -129,7 +139,7 @@ const collectBaseMetrics = async (): Promise<BaseMetrics> => {
         `DeploymentId=${deploymentId}`,
         'Part=ReadModelResolver',
         'ReadModel=monitoring',
-        'Resolver=resolverA',
+        'Resolver=resolver',
       ]),
     }),
     getMetricData({
@@ -151,7 +161,7 @@ const collectBaseMetrics = async (): Promise<BaseMetrics> => {
         failCommand: failCommandMetrics,
       },
       readModelResolver: {
-        resolverA: resolverAMetrics,
+        resolver: resolverMetrics,
         resolverB: resolverBMetrics,
       },
     },
@@ -226,6 +236,73 @@ const collectBaseCommandMetrics = async (): Promise<CommandBaseMetrics> => {
     commandErrors,
     partExecutions,
     commandExecutions,
+    executionDurationSamples,
+  }
+}
+
+const collectReadModelResolverBaseMetrics = async (): Promise<ReadModelResolverBaseMetrics> => {
+  const [
+    partErrors,
+    resolverErrors,
+    partExecutions,
+    resolverExecutions,
+    executionDurationSamples,
+  ] = await Promise.all([
+    getMetricData({
+      MetricName: 'Errors',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ReadModelResolver',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Errors',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ReadModelResolver',
+        'ReadModel=monitoring',
+        'Resolver=failResolver',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Executions',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ReadModelResolver',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Executions',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ReadModelResolver',
+        'ReadModel=monitoring',
+        'Resolver=failResolver',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Duration',
+      Stat: 'SampleCount',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ReadModelResolver',
+        'ReadModel=monitoring',
+        'Resolver=failResolver',
+        'Label=Execution',
+      ]),
+    }),
+  ])
+
+  return {
+    partErrors,
+    resolverErrors,
+    resolverBErrors: 0,
+    partExecutions,
+    resolverExecutions,
     executionDurationSamples,
   }
 }
@@ -402,56 +479,24 @@ describe('Read Model Projection monitoring', () => {
 })
 
 describe('Read Model Resolver monitoring', () => {
-  test('read model resolverA failed', async () => {
-    await expect(
-      client.query({
-        name: 'monitoring',
-        resolver: 'resolverA',
-        args: {},
-      })
-    ).rejects.toBeInstanceOf(Error)
-
-    baseMetrics.Errors.readModelResolver.resolverA++
-
-    await awaitMetricValue(
-      {
-        MetricName: 'Errors',
-        Stat: 'Sum',
-        Dimensions: createDimensions([
-          `DeploymentId=${deploymentId}`,
-          'Part=ReadModelResolver',
-          'ReadModel=monitoring',
-          'Resolver=resolverA',
-        ]),
-      },
-      baseMetrics.Errors.readModelResolver.resolverA
-    )
-
-    await awaitMetricValue(
-      {
-        MetricName: 'Errors',
-        Stat: 'Sum',
-        Dimensions: createDimensions([
-          `DeploymentId=${deploymentId}`,
-          'Part=ReadModelResolver',
-          'ReadModel=monitoring',
-        ]),
-      },
-      baseMetrics.Errors.readModelResolver.resolverB +
-        baseMetrics.Errors.readModelResolver.resolverA
-    )
+  beforeAll(async () => {
+    readModelResolverBaseMetrics = await collectReadModelResolverBaseMetrics()
   })
 
-  test('read model resolverB failed', async () => {
+  test('read model resolver failed', async () => {
     await expect(
       client.query({
         name: 'monitoring',
-        resolver: 'resolverB',
+        resolver: 'failResolver',
         args: {},
       })
     ).rejects.toBeInstanceOf(Error)
 
-    baseMetrics.Errors.readModelResolver.resolverB++
+    readModelResolverBaseMetrics.resolverErrors++
+    readModelResolverBaseMetrics.partErrors++
+    readModelResolverBaseMetrics.resolverExecutions++
+    readModelResolverBaseMetrics.partExecutions++
+    readModelResolverBaseMetrics.executionDurationSamples++
 
     await awaitMetricValue(
       {
@@ -461,10 +506,10 @@ describe('Read Model Resolver monitoring', () => {
           `DeploymentId=${deploymentId}`,
           'Part=ReadModelResolver',
           'ReadModel=monitoring',
-          'Resolver=resolverB',
+          'Resolver=failResolver',
         ]),
       },
-      baseMetrics.Errors.readModelResolver.resolverB
+      readModelResolverBaseMetrics.resolverErrors
     )
 
     await awaitMetricValue(
@@ -474,11 +519,50 @@ describe('Read Model Resolver monitoring', () => {
         Dimensions: createDimensions([
           `DeploymentId=${deploymentId}`,
           'Part=ReadModelResolver',
-          'ReadModel=monitoring',
         ]),
       },
-      baseMetrics.Errors.readModelResolver.resolverB +
-        baseMetrics.Errors.readModelResolver.resolverA
+      readModelResolverBaseMetrics.partErrors
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Executions',
+        Stat: 'Sum',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ReadModelResolver',
+          'ReadModel=monitoring',
+          'Resolver=failResolver',
+        ]),
+      },
+      readModelResolverBaseMetrics.resolverExecutions
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Executions',
+        Stat: 'Sum',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ReadModelResolver',
+        ]),
+      },
+      readModelResolverBaseMetrics.partExecutions
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Duration',
+        Stat: 'SampleCount',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ReadModelResolver',
+          'ReadModel=monitoring',
+          'Resolver=failResolver',
+          'Label=Execution',
+        ]),
+      },
+      readModelResolverBaseMetrics.executionDurationSamples
     )
   })
 })
