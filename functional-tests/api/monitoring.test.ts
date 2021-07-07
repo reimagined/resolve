@@ -17,6 +17,11 @@ type BaseMetrics = {
   }
 }
 
+interface Dimension {
+  Name: string
+  Value: string
+}
+
 const nanoid = customAlphabet('0123456789abcdef_', 16)
 const maxAttempts = 5
 const attemptPeriod = 2000
@@ -29,33 +34,30 @@ let startTime: Date
 let endTime: Date
 let baseMetrics: BaseMetrics
 
-const getMetricData = async (
-  part: string,
-  ...dimensions: Array<any>
-): Promise<number> => {
+const getMetricData = async ({
+  MetricName,
+  Stat,
+  Unit,
+  Dimensions,
+}: {
+  MetricName: string
+  Stat: string
+  Unit: string
+  Dimensions: Array<Dimension>
+}): Promise<number> => {
   const data = await cw.getMetricData({
     MetricDataQueries: [
       {
         Id: `q${nanoid()}`,
         MetricStat: {
           Metric: {
-            Namespace: 'RESOLVE_METRICS',
-            MetricName: 'Errors',
-            Dimensions: [
-              {
-                Name: 'DeploymentId',
-                Value: deploymentId,
-              },
-              {
-                Name: 'Part',
-                Value: part,
-              },
-              ...dimensions,
-            ],
+            Namespace: 'ResolveJs',
+            MetricName,
+            Dimensions,
           },
-          Stat: 'Sum',
+          Stat,
           Period: 31536000, // year
-          Unit: 'Count',
+          Unit,
         },
       },
     ],
@@ -70,55 +72,103 @@ const getMetricData = async (
   if (valueCount === 1) {
     return data.MetricDataResults?.[0]?.Values?.[0] as number
   }
-  throw Error(`multiple metric ${part} values received`)
+  throw Error(`multiple metric ${MetricName} values received`)
 }
 
 const collectBaseMetrics = async (): Promise<BaseMetrics> => {
   const metrics = await Promise.all([
-    getMetricData(
-      'ReadModelProjection',
-      {
-        Name: 'ReadModel',
-        Value: 'init-failed',
-      },
-      {
-        Name: 'EventType',
-        Value: 'Init',
-      }
-    ),
-    getMetricData(
-      'ReadModelProjection',
-      {
-        Name: 'ReadModel',
-        Value: 'monitoring',
-      },
-      {
-        Name: 'EventType',
-        Value: 'MONITORING_FAILED_HANDLER',
-      }
-    ),
-    getMetricData(
-      'ReadModelResolver',
-      {
-        Name: 'ReadModel',
-        Value: 'monitoring',
-      },
-      {
-        Name: 'Resolver',
-        Value: 'resolverA',
-      }
-    ),
-    getMetricData(
-      'ReadModelResolver',
-      {
-        Name: 'ReadModel',
-        Value: 'monitoring',
-      },
-      {
-        Name: 'Resolver',
-        Value: 'resolverB',
-      }
-    ),
+    getMetricData({
+      MetricName: 'Errors',
+      Stat: 'Sum',
+      Unit: 'Count',
+      Dimensions: [
+        {
+          Name: 'DeploymentId',
+          Value: deploymentId,
+        },
+        {
+          Name: 'Part',
+          Value: 'ReadModelProjection',
+        },
+        {
+          Name: 'ReadModel',
+          Value: 'init-failed',
+        },
+        {
+          Name: 'EventType',
+          Value: 'Init',
+        },
+      ],
+    }),
+    getMetricData({
+      MetricName: 'Errors',
+      Stat: 'Sum',
+      Unit: 'Count',
+      Dimensions: [
+        {
+          Name: 'DeploymentId',
+          Value: deploymentId,
+        },
+        {
+          Name: 'Part',
+          Value: 'ReadModelProjection',
+        },
+        {
+          Name: 'ReadModel',
+          Value: 'monitoring',
+        },
+        {
+          Name: 'EventType',
+          Value: 'MONITORING_FAILED_HANDLER',
+        },
+      ],
+    }),
+    getMetricData({
+      MetricName: 'Errors',
+      Stat: 'Sum',
+      Unit: 'Count',
+      Dimensions: [
+        {
+          Name: 'DeploymentId',
+          Value: deploymentId,
+        },
+        {
+          Name: 'Part',
+          Value: 'ReadModelResolver',
+        },
+        {
+          Name: 'ReadModel',
+          Value: 'monitoring',
+        },
+        {
+          Name: 'Resolver',
+          Value: 'resolverA',
+        },
+      ],
+    }),
+    getMetricData({
+      MetricName: 'Errors',
+      Stat: 'Sum',
+      Unit: 'Count',
+      Dimensions: [
+        {
+          Name: 'DeploymentId',
+          Value: deploymentId,
+        },
+        {
+          Name: 'Part',
+          Value: 'ReadModelResolver',
+        },
+        {
+          Name: 'ReadModel',
+          Value: 'monitoring',
+        },
+        {
+          Name: 'Resolver',
+          Value: 'resolverB',
+        },
+      ],
+    }),
   ])
 
   return {
@@ -139,18 +189,22 @@ beforeAll(async () => {
   deploymentId = process.env.RESOLVE_TESTS_TARGET_DEPLOYMENT_ID || ''
   cw = new CloudWatch({})
   client = getClient()
-  endTime = new Date(Date.now() + 3600000)
-  startTime = new Date(Date.now() - 360000 * 24)
+  endTime = new Date(Date.now() + 3600000) // next hour
+  startTime = new Date(Date.now() - 3600000 * 24) // previous day
   baseMetrics = await collectBaseMetrics()
 })
 
 const awaitMetricValue = async (
-  part: string,
-  dimensions: Array<any>,
+  metricData: {
+    MetricName: string
+    Stat: string
+    Unit: string
+    Dimensions: Array<Dimension>
+  },
   value: number,
   attempt = 0
 ): Promise<any> => {
-  const metric = await getMetricData(part, ...dimensions)
+  const metric = await getMetricData(metricData)
 
   if (!isEqual(metric, value)) {
     if (attempt >= maxAttempts) {
@@ -159,125 +213,194 @@ const awaitMetricValue = async (
       )
     }
     await new Promise((resolve) => setTimeout(resolve, attemptPeriod))
-    await awaitMetricValue(part, dimensions, value, attempt + 1)
+
+    await awaitMetricValue(metricData, value, attempt + 1)
   }
 }
 
-test('read model Init handler failed', async () => {
-  await awaitMetricValue(
-    'ReadModelProjection',
-    [
+describe('Read Model', () => {
+  test('read model Init handler failed', async () => {
+    await awaitMetricValue(
       {
-        Name: 'ReadModel',
-        Value: 'init-failed',
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Unit: 'Count',
+        Dimensions: [
+          {
+            Name: 'DeploymentId',
+            Value: deploymentId,
+          },
+          {
+            Name: 'Part',
+            Value: 'ReadModelProjection',
+          },
+          {
+            Name: 'ReadModel',
+            Value: 'init-failed',
+          },
+          {
+            Name: 'EventType',
+            Value: 'Init',
+          },
+        ],
       },
-      {
-        Name: 'EventType',
-        Value: 'Init',
-      },
-    ],
-    baseMetrics.Errors.readModelProjection.Init
-  )
-})
-
-test('read model resolverA failed', async () => {
-  await expect(
-    client.query({
-      name: 'monitoring',
-      resolver: 'resolverA',
-      args: {},
-    })
-  ).rejects.toBeInstanceOf(Error)
-
-  baseMetrics.Errors.readModelResolver.resolverA++
-
-  await awaitMetricValue(
-    'ReadModelResolver',
-    [
-      {
-        Name: 'ReadModel',
-        Value: 'monitoring',
-      },
-      {
-        Name: 'Resolver',
-        Value: 'resolverA',
-      },
-    ],
-    baseMetrics.Errors.readModelResolver.resolverA
-  )
-
-  await awaitMetricValue(
-    'ReadModelResolver',
-    [
-      {
-        Name: 'ReadModel',
-        Value: 'monitoring',
-      },
-    ],
-    baseMetrics.Errors.readModelResolver.resolverB +
-      baseMetrics.Errors.readModelResolver.resolverA
-  )
-})
-
-test('read model resolverB failed', async () => {
-  await expect(
-    client.query({
-      name: 'monitoring',
-      resolver: 'resolverB',
-      args: {},
-    })
-  ).rejects.toBeInstanceOf(Error)
-
-  baseMetrics.Errors.readModelResolver.resolverB++
-
-  await awaitMetricValue(
-    'ReadModelResolver',
-    [
-      {
-        Name: 'ReadModel',
-        Value: 'monitoring',
-      },
-      {
-        Name: 'Resolver',
-        Value: 'resolverB',
-      },
-    ],
-    baseMetrics.Errors.readModelResolver.resolverB
-  )
-
-  await awaitMetricValue(
-    'ReadModelResolver',
-    [
-      {
-        Name: 'ReadModel',
-        Value: 'monitoring',
-      },
-    ],
-    baseMetrics.Errors.readModelResolver.resolverB +
-      baseMetrics.Errors.readModelResolver.resolverA
-  )
-})
-
-test('read model event handler failed', async () => {
-  await client.command({
-    aggregateId: 'any',
-    aggregateName: 'monitoring-aggregate',
-    type: 'fail',
-    payload: {},
+      baseMetrics.Errors.readModelProjection.Init
+    )
   })
 
-  await awaitMetricValue(
-    'ReadModelProjection',
-    [
+  test('read model resolverA failed', async () => {
+    await expect(
+      client.query({
+        name: 'monitoring',
+        resolver: 'resolverA',
+        args: {},
+      })
+    ).rejects.toBeInstanceOf(Error)
+
+    baseMetrics.Errors.readModelResolver.resolverA++
+
+    await awaitMetricValue(
       {
-        Name: 'ReadModel',
-        Value: 'monitoring',
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Unit: 'Count',
+        Dimensions: [
+          {
+            Name: 'DeploymentId',
+            Value: deploymentId,
+          },
+          {
+            Name: 'Part',
+            Value: 'ReadModelResolver',
+          },
+          {
+            Name: 'ReadModel',
+            Value: 'monitoring',
+          },
+          {
+            Name: 'Resolver',
+            Value: 'resolverA',
+          },
+        ],
       },
+      baseMetrics.Errors.readModelResolver.resolverA
+    )
+
+    await awaitMetricValue(
       {
-        Name: 'EventType',
-        Value: 'MONITORING_FAILED_HANDLER',
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Unit: 'Count',
+        Dimensions: [
+          {
+            Name: 'DeploymentId',
+            Value: deploymentId,
+          },
+          {
+            Name: 'Part',
+            Value: 'ReadModelResolver',
+          },
+          {
+            Name: 'ReadModel',
+            Value: 'monitoring',
+          },
+        ],
       },
-    ],
-    baseMetrics.Errors.readModelProjection.EventHandler + 1
-  )
+      baseMetrics.Errors.readModelResolver.resolverB +
+        baseMetrics.Errors.readModelResolver.resolverA
+    )
+  })
+
+  test('read model resolverB failed', async () => {
+    await expect(
+      client.query({
+        name: 'monitoring',
+        resolver: 'resolverB',
+        args: {},
+      })
+    ).rejects.toBeInstanceOf(Error)
+
+    baseMetrics.Errors.readModelResolver.resolverB++
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Unit: 'Count',
+        Dimensions: [
+          {
+            Name: 'DeploymentId',
+            Value: deploymentId,
+          },
+          {
+            Name: 'Part',
+            Value: 'ReadModelResolver',
+          },
+          {
+            Name: 'ReadModel',
+            Value: 'monitoring',
+          },
+          {
+            Name: 'Resolver',
+            Value: 'resolverB',
+          },
+        ],
+      },
+      baseMetrics.Errors.readModelResolver.resolverB
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Unit: 'Count',
+        Dimensions: [
+          {
+            Name: 'Part',
+            Value: 'ReadModelResolver',
+          },
+          {
+            Name: 'ReadModel',
+            Value: 'monitoring',
+          },
+        ],
+      },
+      baseMetrics.Errors.readModelResolver.resolverB +
+        baseMetrics.Errors.readModelResolver.resolverA
+    )
+  })
+
+  test('read model event handler failed', async () => {
+    await client.command({
+      aggregateId: 'any',
+      aggregateName: 'monitoring-aggregate',
+      type: 'fail',
+      payload: {},
+    })
+
+    baseMetrics.Errors.readModelProjection.EventHandler++
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Unit: 'Count',
+        Dimensions: [
+          {
+            Name: 'Part',
+            Value: 'ReadModelProjection',
+          },
+          {
+            Name: 'ReadModel',
+            Value: 'monitoring',
+          },
+          {
+            Name: 'EventType',
+            Value: 'MONITORING_FAILED_HANDLER',
+          },
+        ],
+      },
+      baseMetrics.Errors.readModelProjection.EventHandler
+    )
+  })
 })

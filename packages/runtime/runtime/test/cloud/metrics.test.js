@@ -68,7 +68,7 @@ describe('put duration metrics', () => {
           Value: 2000,
         },
       ],
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
     })
     expect(console.info).toBeCalledWith(
       ['[REQUEST INFO]', 'route', '', 2000].join('\n')
@@ -103,7 +103,7 @@ describe('put duration metrics', () => {
           Value: 2000,
         },
       ],
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
     })
     expect(console.info).toBeCalledWith(
       [
@@ -143,7 +143,7 @@ describe('put duration metrics', () => {
           Value: 2000,
         },
       ],
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
     })
     expect(console.info).toBeCalledWith(
       [
@@ -183,7 +183,7 @@ describe('put duration metrics', () => {
           Value: 2000,
         },
       ],
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
     })
     expect(console.info).toBeCalledWith(
       [
@@ -223,7 +223,7 @@ describe('put duration metrics', () => {
           Value: 2000,
         },
       ],
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
     })
     expect(console.info).toBeCalledWith(
       [
@@ -279,7 +279,7 @@ describe('put duration metrics', () => {
           Value: 897000,
         },
       ],
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
     })
   })
 })
