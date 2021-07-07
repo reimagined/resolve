@@ -37,6 +37,7 @@ const index = async ({ assemblies, constants, domain, resolveVersion }) => {
       assemblies,
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
+      eventSubscriberPrefix: process.env.RESOLVE_DEPLOYMENT_ID,
       upstream: true,
       resolveVersion,
     }

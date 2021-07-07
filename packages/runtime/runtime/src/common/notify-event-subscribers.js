@@ -21,7 +21,8 @@ const notifyEventSubscriber = async (
       break
     }
     case /^arn:aws:sqs:/.test(destination): {
-      await resolveBase.sendSqsMessage(eventSubscriber, {
+      const queueFullName = destination.split(':')[5]
+      await resolveBase.sendSqsMessage(queueFullName, {
         eventSubscriber,
         initiator: 'command-foreign',
         notificationId: `NT-${Date.now()}${Math.floor(
