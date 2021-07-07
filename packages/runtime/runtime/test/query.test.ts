@@ -65,12 +65,7 @@ const eventstoreAdapter = ({
         { destination, status },
       ] of eventStoreLocalState.entries()) {
         if (`${applicationName}${eventSubscriber}` === key) {
-          result.push({
-            applicationName,
-            eventSubscriber,
-            destination,
-            status,
-          })
+          result.push({ applicationName, eventSubscriber, destination, status })
         }
       }
       return result
