@@ -1,5 +1,5 @@
 const shutdownOne = async ({
-  eventSubscriberScope,
+  applicationName,
   name,
   eventstoreAdapter,
   eventSubscriber,
@@ -20,7 +20,7 @@ const shutdownOne = async ({
 
     try {
       await eventstoreAdapter.removeEventSubscriber({
-        applicationName: eventSubscriberScope,
+        applicationName,
         eventSubscriber: name,
       })
     } catch (err) {

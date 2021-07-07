@@ -221,7 +221,7 @@ export const makeTestEnvironment = (
       )
 
       executor = createQuery({
-        eventSubscriberScope: 'APP_NAME',
+        applicationName: 'APP_NAME',
         readModelConnectors: {
           ADAPTER_NAME: actualAdapter,
         },
@@ -237,7 +237,7 @@ export const makeTestEnvironment = (
 
       try {
         await eventstoreAdapter.ensureEventSubscriber({
-          eventSubscriberScope: 'APP_NAME',
+          applicationName: 'APP_NAME',
           eventSubscriber: saga.name,
           status: null,
           destination: 'LOCAL',
@@ -299,7 +299,7 @@ export const makeTestEnvironment = (
 
       try {
         await eventstoreAdapter.removeEventSubscriber({
-          eventSubscriberScope: 'APP_NAME',
+          applicationName: 'APP_NAME',
           eventSubscriber: saga.name,
         })
       } catch (err) {

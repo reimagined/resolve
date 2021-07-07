@@ -117,7 +117,7 @@ const initResolve = async (resolve) => {
 
   const executeQuery = createQueryExecutor({
     invokeBuildAsync,
-    eventSubscriberScope,
+    applicationName: eventSubscriberScope,
     eventstoreAdapter,
     readModelConnectors,
     readModelSources,
@@ -139,7 +139,7 @@ const initResolve = async (resolve) => {
 
   const executeSaga = createSagaExecutor({
     invokeBuildAsync,
-    eventSubscriberScope,
+    applicationName: eventSubscriberScope,
     executeCommand,
     executeQuery,
     eventstoreAdapter,

@@ -130,7 +130,7 @@ export const makeTestEnvironment = (
       const eventstoreAdapter = await getEventStore(events)
 
       executor = createQuery({
-        eventSubscriberScope: 'APP_NAME',
+        applicationName: 'APP_NAME',
         readModelConnectors: {
           ADAPTER_NAME: actualAdapter,
         },
@@ -149,7 +149,7 @@ export const makeTestEnvironment = (
 
       try {
         await eventstoreAdapter.ensureEventSubscriber({
-          eventSubscriberScope: 'APP_NAME',
+          applicationName: 'APP_NAME',
           eventSubscriber: readModel.name,
           status: null,
           destination: 'LOCAL',
@@ -222,7 +222,7 @@ export const makeTestEnvironment = (
 
       try {
         await eventstoreAdapter.removeEventSubscriber({
-          eventSubscriberScope: 'APP_NAME',
+          applicationName: 'APP_NAME',
           eventSubscriber: readModel.name,
         })
       } catch (err) {

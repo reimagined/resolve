@@ -10,7 +10,7 @@ const bootstrap = async (resolve) => {
   for (const { name, eventTypes } of resolve.eventListeners.values()) {
     promises.push(
       bootstrapOne({
-        eventSubscriberScope: resolve.eventSubscriberScope,
+        applicationName: resolve.eventSubscriberScope,
         eventstoreAdapter: resolve.eventstoreAdapter,
         eventSubscriber: resolve.eventSubscriber,
         name,
