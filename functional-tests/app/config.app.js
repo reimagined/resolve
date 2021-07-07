@@ -124,6 +124,11 @@ const appConfig = {
   },
   apiHandlers: [
     {
+      handler: 'common/api-handlers/fail-api.js',
+      path: '/api/fail-api',
+      method: 'GET',
+    },
+    {
       handler: '@resolve-js/runtime/lib/local/query-is-ready-handler.js',
       path: '/api/query-is-ready',
       method: 'GET',

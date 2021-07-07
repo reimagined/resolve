@@ -1,7 +1,7 @@
 import { Client } from '@resolve-js/client'
 import { CloudWatch } from '@aws-sdk/client-cloudwatch'
 import { Lambda } from '@aws-sdk/client-lambda'
-import { getClient } from '../utils/utils'
+import { getClient, getTargetURL } from '../utils/utils'
 import { isEqual } from 'lodash'
 import { customAlphabet } from 'nanoid'
 import { parse as parseVersion } from 'semver'
@@ -41,6 +41,14 @@ type ReadModelResolverBaseMetrics = {
   executionDurationSamples: number
 }
 
+type ApiHandlerBaseMetrics = {
+  partErrors: number
+  apiHandlerErrors: number
+  partExecutions: number
+  apiHandlerExecutions: number
+  executionDurationSamples: number
+}
+
 interface InternalBaseMetrics {
   partErrors: number
   globalErrors: number
@@ -65,6 +73,7 @@ let endTime: Date
 let baseMetrics: BaseMetrics
 let commandBaseMetrics: CommandBaseMetrics
 let readModelResolverBaseMetrics: ReadModelResolverBaseMetrics
+let apiHandlerBaseMetrics: ApiHandlerBaseMetrics
 let internalBaseMetrics: InternalBaseMetrics
 
 const getMetricData = async ({
@@ -310,6 +319,72 @@ const collectCommandBaseMetrics = async (): Promise<CommandBaseMetrics> => {
     commandErrors,
     partExecutions,
     commandExecutions,
+    executionDurationSamples,
+  }
+}
+
+const collectApiHandlerBaseMetrics = async (): Promise<ApiHandlerBaseMetrics> => {
+  const [
+    partErrors,
+    apiHandlerErrors,
+    partExecutions,
+    apiHandlerExecutions,
+    executionDurationSamples,
+  ] = await Promise.all([
+    getMetricData({
+      MetricName: 'Errors',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ApiHandler',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Errors',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ApiHandler',
+        'Path=/api/fail-api',
+        'Method=GET',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Executions',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ApiHandler',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Executions',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ApiHandler',
+        'Path=/api/fail-api',
+        'Method=GET',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Duration',
+      Stat: 'SampleCount',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ApiHandler',
+        'Path=/api/fail-api',
+        'Method=GET',
+        'Label=Execution',
+      ]),
+    }),
+  ])
+
+  return {
+    partErrors,
+    apiHandlerErrors,
+    partExecutions,
+    apiHandlerExecutions,
     executionDurationSamples,
   }
 }
@@ -612,6 +687,89 @@ describe('Read Model Resolver metrics', () => {
         ]),
       },
       readModelResolverBaseMetrics.executionDurationSamples
+    )
+  })
+})
+
+describe('Api Handler metrics', () => {
+  beforeAll(async () => {
+    apiHandlerBaseMetrics = await collectApiHandlerBaseMetrics()
+  })
+
+  test('api handler failed', async () => {
+    await fetch(`${getTargetURL()}/api/fail-api`)
+
+    apiHandlerBaseMetrics.apiHandlerErrors++
+    apiHandlerBaseMetrics.partErrors++
+    apiHandlerBaseMetrics.apiHandlerExecutions++
+    apiHandlerBaseMetrics.partExecutions++
+    apiHandlerBaseMetrics.executionDurationSamples++
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ApiHandler',
+          'Path=/api/fail-api',
+          'Method=GET',
+        ]),
+      },
+      apiHandlerBaseMetrics.apiHandlerErrors
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ApiHandler',
+        ]),
+      },
+      apiHandlerBaseMetrics.partErrors
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Executions',
+        Stat: 'Sum',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ApiHandler',
+          'Path=/api/fail-api',
+          'Method=GET',
+        ]),
+      },
+      apiHandlerBaseMetrics.apiHandlerExecutions
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Executions',
+        Stat: 'Sum',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ApiHandler',
+        ]),
+      },
+      apiHandlerBaseMetrics.partExecutions
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Duration',
+        Stat: 'SampleCount',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ApiHandler',
+          'Path=/api/fail-api',
+          'Method=GET',
+          'Label=Execution'
+        ]),
+      },
+      apiHandlerBaseMetrics.executionDurationSamples
     )
   })
 })

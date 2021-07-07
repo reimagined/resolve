@@ -337,7 +337,10 @@ const wrapApiHandler = (handler, getCustomParameters, monitoring) => async (
     req = await createRequest(lambdaEvent, customParameters)
 
     if (monitoring != null) {
-      pathMonitoring = monitoring.group({ Path: req.path })
+      pathMonitoring = monitoring
+        .group({ Path: req.path })
+        .group({ Method: req.method })
+
       pathMonitoring.time('Execution', startTimestamp)
     }
 
