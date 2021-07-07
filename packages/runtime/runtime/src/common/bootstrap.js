@@ -15,9 +15,7 @@ const bootstrap = async (resolve) => {
         eventSubscriber: resolve.eventSubscriber,
         name,
         eventTypes,
-        destination: resolve.getEventSubscriberDestination(
-          resolve.eventSubscriber
-        ),
+        destination: resolve.getEventSubscriberDestination(name),
         upstream: resolve.upstream,
         ensureQueue: resolve.ensureQueue,
       })
