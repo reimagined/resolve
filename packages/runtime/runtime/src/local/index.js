@@ -55,6 +55,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       assemblies,
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
+      eventSubscriberScope: constants.applicationName,
       upstream:
         domain.apiHandlers.findIndex(
           ({ method, path }) =>
@@ -64,7 +65,8 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       http,
     }
 
-    resolve.eventSubscriberDestination = `http://0.0.0.0:${constants.port}/api/subscribers`
+    resolve.getEventSubscriberDestination = () =>
+      `http://0.0.0.0:${constants.port}/api/subscribers`
     resolve.invokeBuildAsync = multiplexAsync.bind(null, async (parameters) => {
       const currentResolve = Object.create(resolve)
       try {
