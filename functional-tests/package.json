@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.11.0",
+    "@aws-sdk/client-lambda": "3.11.0",
     "@types/fs-extra": "8.1.0",
     "@types/isomorphic-fetch": "0.0.35",
     "@types/nanoid": "2.1.0",

@@ -372,6 +372,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-central-1
           RESOLVE_TESTS_TARGET_DEPLOYMENT_ID: ${{ steps.deploy.outputs.id }}
+          RESOLVE_TESTS_TARGET_VERSION: ${{ steps.publish.outputs.version }}
+          RESOLVE_TESTS_TARGET_STAGE: framework-test
         run: |
           cd functional-tests
           yarn run-test api --url=${{ steps.deploy.outputs.url }}

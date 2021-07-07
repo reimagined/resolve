@@ -468,6 +468,7 @@ module.exports = {
           'undef',
           'unfetch',
           'unicode',
+          'Uint8Array',
           'unlink',
           'unmarshall',
           'unmocked',
