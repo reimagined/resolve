@@ -36,11 +36,18 @@ const eventstoreAdapter = ({
   ensureEventSubscriber: jest
     .fn()
     .mockImplementation(
-      async ({ applicationName, eventSubscriber, destination, status }) => {
-        eventStoreLocalState.set(`${applicationName}${eventSubscriber}`, {
-          ...(eventStoreLocalState.has(`${applicationName}${eventSubscriber}`)
+      async ({
+        eventSubscriberScope,
+        eventSubscriber,
+        destination,
+        status,
+      }) => {
+        eventStoreLocalState.set(`${eventSubscriberScope}${eventSubscriber}`, {
+          ...(eventStoreLocalState.has(
+            `${eventSubscriberScope}${eventSubscriber}`
+          )
             ? (eventStoreLocalState.get(
-                `${applicationName}${eventSubscriber}`
+                `${eventSubscriberScope}${eventSubscriber}`
               ) as any)
             : {}),
           ...(destination != null ? { destination } : {}),
@@ -50,26 +57,33 @@ const eventstoreAdapter = ({
     ),
   removeEventSubscriber: jest
     .fn()
-    .mockImplementation(async ({ applicationName, eventSubscriber }) => {
-      eventStoreLocalState.delete(`${applicationName}${eventSubscriber}`)
+    .mockImplementation(async ({ eventSubscriberScope, eventSubscriber }) => {
+      eventStoreLocalState.delete(`${eventSubscriberScope}${eventSubscriber}`)
     }),
   getEventSubscribers: jest
     .fn()
-    .mockImplementation(async ({ applicationName, eventSubscriber } = {}) => {
-      if (applicationName == null && eventSubscriber == null) {
-        return [...eventStoreLocalState.values()]
-      }
-      const result = []
-      for (const [
-        key,
-        { destination, status },
-      ] of eventStoreLocalState.entries()) {
-        if (`${applicationName}${eventSubscriber}` === key) {
-          result.push({ applicationName, eventSubscriber, destination, status })
+    .mockImplementation(
+      async ({ eventSubscriberScope, eventSubscriber } = {}) => {
+        if (eventSubscriberScope == null && eventSubscriber == null) {
+          return [...eventStoreLocalState.values()]
         }
+        const result = []
+        for (const [
+          key,
+          { destination, status },
+        ] of eventStoreLocalState.entries()) {
+          if (`${eventSubscriberScope}${eventSubscriber}` === key) {
+            result.push({
+              eventSubscriberScope,
+              eventSubscriber,
+              destination,
+              status,
+            })
+          }
+        }
+        return result
       }
-      return result
-    }),
+    ),
 } as unknown) as Eventstore
 
 for (const { describeName, prepare } of [
@@ -158,7 +172,7 @@ for (const { describeName, prepare } of [
           },
         }
         query = createQuery({
-          applicationName: 'APPLICATION_NAME',
+          eventSubscriberScope: 'APPLICATION_NAME',
           invokeBuildAsync,
           readModelConnectors,
           performanceTracer,
@@ -360,7 +374,7 @@ for (const { describeName, prepare } of [
         }
 
         query = createQuery({
-          applicationName: 'APPLICATION_NAME',
+          eventSubscriberScope: 'APPLICATION_NAME',
           invokeBuildAsync,
           readModelConnectors,
           performanceTracer,
@@ -885,7 +899,7 @@ for (const { describeName, prepare } of [
     describe('common', () => {
       test('"read" should raise error when wrong options for read invocation', async () => {
         query = createQuery({
-          applicationName: 'APPLICATION_NAME',
+          eventSubscriberScope: 'APPLICATION_NAME',
           readModelConnectors,
           performanceTracer,
           invokeBuildAsync,

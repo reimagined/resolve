@@ -55,7 +55,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       assemblies,
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
-      eventSubscriberPrefix: constants.applicationName,
+      eventSubscriberScope: constants.applicationName,
       upstream:
         domain.apiHandlers.findIndex(
           ({ method, path }) =>

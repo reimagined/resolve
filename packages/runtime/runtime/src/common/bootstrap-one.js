@@ -1,5 +1,5 @@
 const bootstrapOne = async ({
-  eventSubscriberPrefix,
+  eventSubscriberScope,
   name,
   eventstoreAdapter,
   eventSubscriber,
@@ -18,7 +18,7 @@ const bootstrapOne = async ({
 
     try {
       await eventstoreAdapter.ensureEventSubscriber({
-        applicationName: eventSubscriberPrefix,
+        applicationName: eventSubscriberScope,
         eventSubscriber: name,
         status: null,
         destination,

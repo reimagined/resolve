@@ -19,7 +19,7 @@ export type CreateQueryOptions = {
   readModelsInterop: ReadModelInteropMap | SagaInteropMap
   viewModelsInterop: ViewModelInteropMap
   eventstoreAdapter: Eventstore
-  applicationName: string
+  eventSubscriberScope: string
 }
 
 type WrapModelOptions = Omit<
@@ -54,7 +54,7 @@ export type ReadModelPool = {
   readModelSource?: any
   monitoring?: Monitoring
   eventstoreAdapter: Eventstore
-  applicationName: string
+  eventSubscriberScope: string
 }
 
 export type ViewModelPool = {

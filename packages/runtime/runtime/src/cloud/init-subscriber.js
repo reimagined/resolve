@@ -36,7 +36,7 @@ const initSubscriber = (resolve, lambdaContext) => {
   const functionArn = `arn:aws:lambda:${region}:${accountId}:function:${functionName}`
 
   resolve.getEventSubscriberDestination = (eventSubscriber) =>
-    `arn:aws:sqs:${region}:${accountId}:${userId}-${resolve.eventSubscriberPrefix}-${eventSubscriber}`
+    `arn:aws:sqs:${region}:${accountId}:${userId}-${resolve.eventSubscriberScope}-${eventSubscriber}`
   resolve.subscriptionsCredentials = {
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
   }
@@ -52,7 +52,7 @@ const initSubscriber = (resolve, lambdaContext) => {
 
   resolve.invokeBuildAsync = async (parameters) => {
     await resolve.sendSqsMessage(
-      `${userId}-${resolve.eventSubscriberPrefix}-${parameters.eventSubscriber}`,
+      `${userId}-${resolve.eventSubscriberScope}-${parameters.eventSubscriber}`,
       parameters
     )
   }
@@ -60,7 +60,7 @@ const initSubscriber = (resolve, lambdaContext) => {
   resolve.ensureQueue = async (name) => {
     const getTags = () => {
       const tags = {
-        'resolve-deployment-id': resolve.eventSubscriberPrefix,
+        'resolve-deployment-id': resolve.eventSubscriberScope,
         'resolve-function-name': functionName,
         'resolve-user-id': userId,
       }
@@ -80,7 +80,7 @@ const initSubscriber = (resolve, lambdaContext) => {
       while (true) {
         try {
           await ensureSqsQueue({
-            QueueName: `${userId}-${resolve.eventSubscriberPrefix}-${name}`,
+            QueueName: `${userId}-${resolve.eventSubscriberScope}-${name}`,
             Region: region,
             Policy: {
               Version: '2008-10-17',
@@ -125,7 +125,7 @@ const initSubscriber = (resolve, lambdaContext) => {
         try {
           void ({ UUID } = await createEventSourceMapping({
             Region: region,
-            QueueName: `${userId}-${resolve.eventSubscriberPrefix}-${name}`,
+            QueueName: `${userId}-${resolve.eventSubscriberScope}-${name}`,
             FunctionName: functionName,
             MaximumBatchingWindowInSeconds: 0,
             BatchSize: 10,
@@ -172,7 +172,7 @@ const initSubscriber = (resolve, lambdaContext) => {
           Region: region,
           FunctionName: functionArn,
           Tags: {
-            [`SQS-${resolve.eventSubscriberPrefix}-${name}`]: UUID,
+            [`SQS-${resolve.eventSubscriberScope}-${name}`]: UUID,
           },
         })
       } catch (err) {
@@ -200,8 +200,8 @@ const initSubscriber = (resolve, lambdaContext) => {
         Region: region,
         FunctionName: functionArn,
       })
-      UUID = functionTags[`SQS-${resolve.eventSubscriberPrefix}-${name}`]
-      queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${userId}-${resolve.eventSubscriberPrefix}-${name}`
+      UUID = functionTags[`SQS-${resolve.eventSubscriberScope}-${name}`]
+      queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${userId}-${resolve.eventSubscriberScope}-${name}`
     } catch (err) {
       errors.push(err)
     }
@@ -265,7 +265,7 @@ const initSubscriber = (resolve, lambdaContext) => {
           try {
             await deleteSqsQueue({
               Region: region,
-              QueueName: `${userId}-${resolve.eventSubscriberPrefix}-${name}`,
+              QueueName: `${userId}-${resolve.eventSubscriberScope}-${name}`,
               QueueUrl: queueUrl,
             })
             break

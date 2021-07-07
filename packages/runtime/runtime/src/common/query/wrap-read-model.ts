@@ -121,7 +121,7 @@ const updateCustomReadModel = async (
 ) => {
   const { status } = (
     await pool.eventstoreAdapter.getEventSubscribers({
-      applicationName: pool.applicationName,
+      applicationName: pool.eventSubscriberScope,
       eventSubscriber: readModelName,
     })
   )[0] ?? { status: null }
@@ -134,7 +134,7 @@ const updateCustomReadModel = async (
   }
 
   await pool.eventstoreAdapter.ensureEventSubscriber({
-    applicationName: pool.applicationName,
+    applicationName: pool.eventSubscriberScope,
     eventSubscriber: readModelName,
     status: {
       ...status,
@@ -165,7 +165,7 @@ export const customReadModelMethods = {
       log.debug(`applying events to read-model "${readModelName}" started`)
       void ({ status } = (
         await pool.eventstoreAdapter.getEventSubscribers({
-          applicationName: pool.applicationName,
+          applicationName: pool.eventSubscriberScope,
           eventSubscriber: readModelName,
         })
       )[0] ?? { status: null })
@@ -176,7 +176,7 @@ export const customReadModelMethods = {
       // This intentionally left as non-atomic operation since custom read model
       // in non-inline-ledger mode should provide idempotent capacities anyway
       await pool.eventstoreAdapter.ensureEventSubscriber({
-        applicationName: pool.applicationName,
+        applicationName: pool.eventSubscriberScope,
         eventSubscriber: readModelName,
         status: { ...status, busy: true },
         updateOnly: true,
@@ -348,7 +348,7 @@ export const customReadModelMethods = {
     }
 
     await pool.eventstoreAdapter.ensureEventSubscriber({
-      applicationName: pool.applicationName,
+      applicationName: pool.eventSubscriberScope,
       eventSubscriber: readModelName,
       status: result,
       updateOnly: true,
@@ -378,7 +378,7 @@ export const customReadModelMethods = {
       },
       async (status: any) => {
         await pool.eventstoreAdapter.ensureEventSubscriber({
-          applicationName: pool.applicationName,
+          applicationName: pool.eventSubscriberScope,
           eventSubscriber: readModelName,
           status: {
             ...status,
@@ -449,7 +449,7 @@ export const customReadModelMethods = {
   ) => {
     const entry = (
       await pool.eventstoreAdapter.getEventSubscribers({
-        applicationName: pool.applicationName,
+        applicationName: pool.eventSubscriberScope,
         eventSubscriber: readModelName,
       })
     )[0]
@@ -458,7 +458,7 @@ export const customReadModelMethods = {
     }
 
     await pool.eventstoreAdapter.ensureEventSubscriber({
-      applicationName: pool.applicationName,
+      applicationName: pool.eventSubscriberScope,
       eventSubscriber: readModelName,
       status: {
         eventSubscriber: readModelName,
@@ -484,7 +484,7 @@ export const customReadModelMethods = {
     }
   ) => {
     await pool.eventstoreAdapter.ensureEventSubscriber({
-      applicationName: pool.applicationName,
+      applicationName: pool.eventSubscriberScope,
       eventSubscriber: readModelName,
       status: {
         ...parameters.subscriptionOptions,
@@ -506,7 +506,7 @@ export const customReadModelMethods = {
     parameters: {}
   ) => {
     await pool.eventstoreAdapter.ensureEventSubscriber({
-      applicationName: pool.applicationName,
+      applicationName: pool.eventSubscriberScope,
       eventSubscriber: readModelName,
       status: null,
       updateOnly: true,
@@ -524,7 +524,7 @@ export const customReadModelMethods = {
   ) => {
     const { status } = (
       await pool.eventstoreAdapter.getEventSubscribers({
-        applicationName: pool.applicationName,
+        applicationName: pool.eventSubscriberScope,
         eventSubscriber: readModelName,
       })
     )[0] ?? { status: null }
@@ -746,7 +746,7 @@ const dispose = async (
 }
 
 const wrapReadModel = ({
-  applicationName,
+  eventSubscriberScope,
   interop,
   readModelConnectors,
   invokeBuildAsync,
@@ -771,7 +771,7 @@ const wrapReadModel = ({
 
   const pool: ReadModelPool = {
     invokeBuildAsync,
-    applicationName,
+    eventSubscriberScope,
     connections: new Set(),
     connector,
     isDisposed: false,
@@ -792,7 +792,7 @@ const wrapReadModel = ({
     deleteProperty: async (parameters: { key: string }) => {
       const entry = (
         await pool.eventstoreAdapter.getEventSubscribers({
-          applicationName: pool.applicationName,
+          applicationName: pool.eventSubscriberScope,
           eventSubscriber: interop.name,
         })
       )[0]
@@ -803,7 +803,7 @@ const wrapReadModel = ({
       const { [parameters.key]: _, ...currentProperties } =
         status.properties ?? {}
       await pool.eventstoreAdapter.ensureEventSubscriber({
-        applicationName: pool.applicationName,
+        applicationName: pool.eventSubscriberScope,
         eventSubscriber: interop.name,
         status: {
           ...status,
@@ -816,7 +816,7 @@ const wrapReadModel = ({
     getProperty: async (parameters: { key: string }) => {
       const { status } = (
         await pool.eventstoreAdapter.getEventSubscribers({
-          applicationName: pool.applicationName,
+          applicationName: pool.eventSubscriberScope,
           eventSubscriber: interop.name,
         })
       )[0] ?? { status: null }
@@ -827,7 +827,7 @@ const wrapReadModel = ({
     listProperties: async (parameters: {}) => {
       const { status } = (
         await pool.eventstoreAdapter.getEventSubscribers({
-          applicationName: pool.applicationName,
+          applicationName: pool.eventSubscriberScope,
           eventSubscriber: interop.name,
         })
       )[0] ?? { status: null }
@@ -838,7 +838,7 @@ const wrapReadModel = ({
     setProperty: async (parameters: { key: string; value: any }) => {
       const entry = (
         await pool.eventstoreAdapter.getEventSubscribers({
-          applicationName: pool.applicationName,
+          applicationName: pool.eventSubscriberScope,
           eventSubscriber: interop.name,
         })
       )[0]
@@ -848,7 +848,7 @@ const wrapReadModel = ({
       const status = entry.status ?? {}
       const { ...currentProperties } = status.properties ?? {}
       await pool.eventstoreAdapter.ensureEventSubscriber({
-        applicationName: pool.applicationName,
+        applicationName: pool.eventSubscriberScope,
         eventSubscriber: interop.name,
         status: {
           ...status,

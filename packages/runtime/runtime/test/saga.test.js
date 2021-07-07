@@ -39,43 +39,57 @@ test('resolve-saga', async () => {
     ensureEventSubscriber: jest
       .fn()
       .mockImplementation(
-        async ({ applicationName, eventSubscriber, destination, status }) => {
-          eventStoreLocalState.set(`${applicationName}${eventSubscriber}`, {
-            ...(eventStoreLocalState.has(`${applicationName}${eventSubscriber}`)
-              ? eventStoreLocalState.get(`${applicationName}${eventSubscriber}`)
-              : {}),
-            ...(destination != null ? { destination } : {}),
-            ...(status != null ? { status } : {}),
-          })
+        async ({
+          eventSubscriberScope,
+          eventSubscriber,
+          destination,
+          status,
+        }) => {
+          eventStoreLocalState.set(
+            `${eventSubscriberScope}${eventSubscriber}`,
+            {
+              ...(eventStoreLocalState.has(
+                `${eventSubscriberScope}${eventSubscriber}`
+              )
+                ? eventStoreLocalState.get(
+                    `${eventSubscriberScope}${eventSubscriber}`
+                  )
+                : {}),
+              ...(destination != null ? { destination } : {}),
+              ...(status != null ? { status } : {}),
+            }
+          )
         }
       ),
     removeEventSubscriber: jest
       .fn()
-      .mockImplementation(async ({ applicationName, eventSubscriber }) => {
-        eventStoreLocalState.delete(`${applicationName}${eventSubscriber}`)
+      .mockImplementation(async ({ eventSubscriberScope, eventSubscriber }) => {
+        eventStoreLocalState.delete(`${eventSubscriberScope}${eventSubscriber}`)
       }),
     getEventSubscribers: jest
       .fn()
-      .mockImplementation(async ({ applicationName, eventSubscriber } = {}) => {
-        if (applicationName == null && eventSubscriber == null) {
-          return [...eventStoreLocalState.values()]
-        }
-        const result = []
-        for (const [
-          key,
-          { destination, status },
-        ] of eventStoreLocalState.entries()) {
-          if (`${applicationName}${eventSubscriber}` === key) {
-            result.push({
-              applicationName,
-              eventSubscriber,
-              destination,
-              status,
-            })
+      .mockImplementation(
+        async ({ eventSubscriberScope, eventSubscriber } = {}) => {
+          if (eventSubscriberScope == null && eventSubscriber == null) {
+            return [...eventStoreLocalState.values()]
           }
+          const result = []
+          for (const [
+            key,
+            { destination, status },
+          ] of eventStoreLocalState.entries()) {
+            if (`${eventSubscriberScope}${eventSubscriber}` === key) {
+              result.push({
+                eventSubscriberScope,
+                eventSubscriber,
+                destination,
+                status,
+              })
+            }
+          }
+          return result
         }
-        return result
-      }),
+      ),
   }
 
   const readModelStore = {

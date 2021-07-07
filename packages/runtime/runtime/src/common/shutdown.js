@@ -10,7 +10,7 @@ const shutdown = async (resolve) => {
   for (const { name } of resolve.eventListeners.values()) {
     promises.push(
       shutdownOne({
-        eventSubscriberPrefix: resolve.eventSubscriberPrefix,
+        eventSubscriberScope: resolve.eventSubscriberScope,
         eventstoreAdapter: resolve.eventstoreAdapter,
         eventSubscriber: resolve.eventSubscriber,
         name,

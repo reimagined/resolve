@@ -76,7 +76,7 @@ describe('Cloud entry', () => {
     }
 
     constants = {
-      applicationName: 'application-name',
+      eventSubscriberScope: 'application-name',
       distDir: 'dist-dir',
       jwtCookie: {
         cookieOptionName: 'cookie-option-value',
