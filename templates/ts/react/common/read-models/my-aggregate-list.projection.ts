@@ -8,14 +8,17 @@ const readModel: ReadModel<ResolveStore> = {
       indexes: {
         id: 'string',
       },
-      fields: ['name'],
+      fields: ['name', 'extra'],
     })
   },
-  [MY_AGGREGATE_CREATED]: async (store, { aggregateId, payload: { name } }) => {
+  [MY_AGGREGATE_CREATED]: async (
+    store,
+    { aggregateId, payload: { name, extra } }
+  ) => {
     await store.update(
       'Aggregates',
       { id: aggregateId },
-      { $set: { name } },
+      { $set: { name, extra } },
       { upsert: true }
     )
   },

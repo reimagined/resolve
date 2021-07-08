@@ -32,6 +32,16 @@ const withPerformanceTracerImpl = async <
     subSegment.addAnnotation('origin', `resolve:readmodel:${methodName}`)
   }
 
+  const groupMonitoring =
+    pool.monitoring != null && maybeReadModelName != null
+      ? pool.monitoring
+          .group({ Part: 'ReadModel' })
+          .group({ ReadModel: maybeReadModelName })
+      : null
+
+  const label = `Operation "${methodName}"`
+  groupMonitoring?.time(label)
+
   try {
     return await methodImpl(...args)
   } catch (error) {
@@ -40,6 +50,8 @@ const withPerformanceTracerImpl = async <
     }
     throw error
   } finally {
+    groupMonitoring?.timeEnd(label)
+
     if (subSegment != null) {
       subSegment.close()
     }

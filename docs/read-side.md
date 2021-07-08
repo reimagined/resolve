@@ -126,7 +126,7 @@ We recommend that you store Read Model data in a denormalized form so that your 
 
 A projection function is used to accumulate the event data in a **Read Model storage**. Each projection function receives the storage object and event information. The event information includes the aggregateID, timestamp, and payload.
 
-You can use the [standard API](api-reference.md#read-model-store-interface) to communicate with the store. The code sample below demonstrates a Read Model projection function's implementation:
+You can use the [standard API](api/read-model-store.md) to communicate with the store. The code sample below demonstrates a Read Model projection function's implementation:
 
 ```js
 [STORY_COMMENTED]: async (

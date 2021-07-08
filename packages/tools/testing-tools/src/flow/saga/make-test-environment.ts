@@ -188,11 +188,17 @@ export const makeTestEnvironment = (
           error: (error: Error) => {
             liveErrors.push(error)
           },
+          execution: (error?: Error) => {
+            if (error != null) {
+              liveErrors.push(error)
+            }
+          },
         }
       },
       time: () => void 0,
       timeEnd: () => void 0,
       error: () => void 0,
+      execution: () => void 0,
       publish: async () => void 0,
     }
 

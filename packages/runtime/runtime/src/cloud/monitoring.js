@@ -5,6 +5,7 @@ import { retry } from 'resolve-cloud-common/utils'
 const MAX_DIMENSION_VALUE_LENGTH = 256
 const MAX_METRIC_COUNT = 20
 const MAX_DIMENSION_COUNT = 10
+const MAX_VALUES_PER_METRIC = 150
 
 const getLog = (name) => debugLevels(`resolve:cloud:${name}`)
 
@@ -49,7 +50,9 @@ const monitoringError = async (log, monitoringData, groupData, error) => {
       )
       .concat(groupData.globalDimensions)
 
-    const now = new Date()
+    const timestamp = new Date()
+    timestamp.setMilliseconds(0)
+
     let isDimensionCountLimitReached = false
 
     monitoringData.metricData = monitoringData.metricData.concat(
@@ -57,7 +60,7 @@ const monitoringError = async (log, monitoringData, groupData, error) => {
         if (dimensions.length <= MAX_DIMENSION_COUNT) {
           acc.push({
             MetricName: 'Errors',
-            Timestamp: now,
+            Timestamp: timestamp,
             Unit: 'Count',
             Value: 1,
             Dimensions: dimensions,
@@ -80,12 +83,84 @@ const monitoringError = async (log, monitoringData, groupData, error) => {
   }
 }
 
+const monitoringExecution = async (log, monitoringData, groupData, error) => {
+  try {
+    log.verbose(`Collect execution`)
+
+    const executionDimensionList = groupData.errorMetricDimensionsList.concat(
+      groupData.globalDimensions
+    )
+
+    let errorDimensionList = executionDimensionList
+    let errorValue = 0
+
+    if (error != null) {
+      errorValue = 1
+
+      errorDimensionList = createErrorDimensionsList(error)
+        .reduce(
+          (acc, errorDimensions) =>
+            acc.concat(
+              groupData.errorMetricDimensionsList.map((groupDimensions) => [
+                ...groupDimensions,
+                ...errorDimensions,
+              ])
+            ),
+          []
+        )
+        .concat(groupData.globalDimensions)
+    }
+
+    const timestamp = new Date()
+    timestamp.setMilliseconds(0)
+
+    let isDimensionCountLimitReached = false
+
+    for (const dimensions of executionDimensionList) {
+      if (dimensions.length <= MAX_DIMENSION_COUNT) {
+        monitoringData.metricData.push({
+          MetricName: 'Executions',
+          Timestamp: timestamp,
+          Unit: 'Count',
+          Value: 1,
+          Dimensions: dimensions,
+        })
+      } else {
+        isDimensionCountLimitReached = true
+      }
+    }
+
+    for (const dimensions of errorDimensionList) {
+      if (dimensions.length <= MAX_DIMENSION_COUNT) {
+        monitoringData.metricData.push({
+          MetricName: 'Errors',
+          Timestamp: timestamp,
+          Unit: 'Count',
+          Value: errorValue,
+          Dimensions: dimensions,
+        })
+      } else {
+        isDimensionCountLimitReached = true
+      }
+    }
+
+    if (isDimensionCountLimitReached) {
+      log.warn(
+        `Error collecting missed some or all metric data because of dimension count limit`
+      )
+    }
+  } catch (error) {
+    log.verbose(`Failed to collect execution`, error)
+  }
+}
+
 const monitoringDuration = async (
   log,
   monitoringData,
   groupData,
   label,
-  duration
+  duration,
+  count = 1
 ) => {
   if (!Number.isFinite(duration)) {
     log.warn(
@@ -95,29 +170,63 @@ const monitoringDuration = async (
   }
 
   const durationDimensions = [{ Name: 'Label', Value: label }]
-  const now = new Date()
+  const timestamp = new Date()
+  timestamp.setMilliseconds(0)
 
   let isDimensionCountLimitReached = false
 
-  monitoringData.metricData = monitoringData.metricData.concat(
-    groupData.durationMetricDimensionsList.reduce((acc, groupDimensions) => {
-      const dimensions = [...groupDimensions, ...durationDimensions]
+  for (const groupDimensions of groupData.durationMetricDimensionsList) {
+    const dimensions = [...groupDimensions, ...durationDimensions]
 
-      if (dimensions.length <= MAX_DIMENSION_COUNT) {
-        acc.push({
-          MetricName: 'Duration',
-          Timestamp: now,
-          Unit: 'Milliseconds',
-          Value: duration,
-          Dimensions: [...groupDimensions, ...durationDimensions],
-        })
+    if (dimensions.length <= MAX_DIMENSION_COUNT) {
+      const metricName = 'Duration'
+      const time = timestamp.getTime()
+      const unit = 'Milliseconds'
+
+      const existingMetricData = monitoringData.metricData.find(
+        (data) =>
+          data.MetricName === metricName &&
+          data.Unit === unit &&
+          data.Timestamp.getTime() === time &&
+          data.Dimensions.length === dimensions.length &&
+          (data.Values.length < MAX_VALUES_PER_METRIC ||
+            data.Values.includes(duration)) &&
+          data.Dimensions.every(
+            (dimension, index) =>
+              dimension.Name === dimensions[index].Name &&
+              dimension.Value === dimensions[index].Value
+          )
+      )
+
+      if (existingMetricData != null) {
+        let isValueFound = false
+
+        for (let i = 0; i < existingMetricData.Values.length; i++) {
+          if (existingMetricData.Values[i] === duration) {
+            existingMetricData.Counts[i] += count
+            isValueFound = true
+            break
+          }
+        }
+
+        if (!isValueFound) {
+          existingMetricData.Values.push(duration)
+          existingMetricData.Counts.push(count)
+        }
       } else {
-        isDimensionCountLimitReached = true
+        monitoringData.metricData.push({
+          MetricName: metricName,
+          Timestamp: timestamp,
+          Unit: unit,
+          Values: [duration],
+          Counts: [count],
+          Dimensions: dimensions,
+        })
       }
-
-      return acc
-    }, [])
-  )
+    } else {
+      isDimensionCountLimitReached = true
+    }
+  }
 
   delete groupData.timerMap[label]
 
@@ -231,7 +340,8 @@ const monitoringRate = async (
     return
   }
 
-  const now = new Date()
+  const timestamp = new Date()
+  timestamp.setMilliseconds(0)
 
   let isDimensionCountLimitReached = false
 
@@ -240,7 +350,7 @@ const monitoringRate = async (
       if (groupDimensions.length <= MAX_DIMENSION_COUNT) {
         acc.push({
           MetricName: metricName,
-          Timestamp: now,
+          Timestamp: timestamp,
           Unit: 'Count/Second',
           Value: count / seconds,
           Dimensions: groupDimensions,
@@ -288,6 +398,7 @@ const createMonitoringImplementation = (log, monitoringData, groupData) => {
       return createMonitoringImplementation(log, monitoringData, nextGroupData)
     },
     error: monitoringError.bind(null, log, monitoringData, groupData),
+    execution: monitoringExecution.bind(null, log, monitoringData, groupData),
     duration: monitoringDuration.bind(null, log, monitoringData, groupData),
     time: monitoringTime.bind(null, log, monitoringData, groupData),
     timeEnd: monitoringTimeEnd.bind(null, log, monitoringData, groupData),

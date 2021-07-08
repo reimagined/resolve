@@ -22,6 +22,11 @@ const normalizePaths = (source) => {
     result = result.replace(new RegExp(escapeRegExp('\\\\'), 'gi'), '/')
   }
 
+  result = result.replace(
+    /<MONOREPO_DIR>(.*)\/node_modules/g,
+    '<MONOREPO_DIR>/node_modules'
+  )
+
   return result
 }
 

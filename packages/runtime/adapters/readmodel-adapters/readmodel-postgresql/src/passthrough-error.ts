@@ -61,6 +61,12 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
             error,
             /terminating connection due to serverless scale event timeout/i
           ) ||
+          checkFuzzyError(
+            error,
+            /terminating connection due to administrator command/i
+          ) ||
+          checkFuzzyError(error, /Connection terminated/i) ||
+          checkFuzzyError(error, /Query read timeout/i) ||
           checkFuzzyError(error, /Remaining connection slots are reserved/i) ||
           checkFuzzyError(error, /Too many clients already/i) ||
           checkFuzzyError(error, /Connection terminated unexpectedly/i) ||

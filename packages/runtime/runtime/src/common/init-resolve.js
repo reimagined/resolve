@@ -22,7 +22,7 @@ const initResolve = async (resolve) => {
 
   const {
     invokeBuildAsync,
-    applicationName,
+    eventSubscriberScope,
     uploader,
     scheduler,
     monitoring,
@@ -83,6 +83,11 @@ const initResolve = async (resolve) => {
 
   const secretsManager = await eventstoreAdapter.getSecretsManager()
 
+  const {
+    command: commandMiddlewares = [],
+    resolver: resolverMiddlewares = [],
+    projection: projectionMiddlewares = [],
+  } = domain.middlewares ?? {}
   const aggregateRuntime = {
     monitoring,
     secretsManager,
@@ -93,6 +98,7 @@ const initResolve = async (resolve) => {
         return false
       },
     },
+    commandMiddlewares,
   }
 
   const executeCommand = createCommandExecutor({
@@ -111,7 +117,7 @@ const initResolve = async (resolve) => {
 
   const executeQuery = createQueryExecutor({
     invokeBuildAsync,
-    applicationName,
+    applicationName: eventSubscriberScope,
     eventstoreAdapter,
     readModelConnectors,
     readModelSources,
@@ -121,6 +127,8 @@ const initResolve = async (resolve) => {
     readModelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
       monitoring,
       secretsManager,
+      resolverMiddlewares,
+      projectionMiddlewares,
     }),
     viewModelsInterop: domainInterop.viewModelDomain.acquireViewModelsInterop({
       monitoring,
@@ -131,7 +139,7 @@ const initResolve = async (resolve) => {
 
   const executeSaga = createSagaExecutor({
     invokeBuildAsync,
-    applicationName,
+    applicationName: eventSubscriberScope,
     executeCommand,
     executeQuery,
     eventstoreAdapter,

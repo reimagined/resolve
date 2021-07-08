@@ -76,6 +76,7 @@ describe('Cloud entry', () => {
     }
 
     constants = {
+      eventSubscriberScope: 'deployment-id',
       applicationName: 'application-name',
       distDir: 'dist-dir',
       jwtCookie: {

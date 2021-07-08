@@ -1,3 +1,5 @@
+import { CommandContext, ReadModelResolverContext } from '@resolve-js/core'
+
 export type PersonalDataArchive = {
   id: string
   profile: any
@@ -19,3 +21,11 @@ export type UserProfileViewModelState = {
   lastName: string
   contacts: string
 }
+
+export type AuthCommandMiddlewareContext = {
+  user: any
+} & CommandContext
+
+export type AuthResolverMiddlewareContext = {
+  user: any
+} & ReadModelResolverContext

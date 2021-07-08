@@ -1,0 +1,77 @@
+:root {
+  --ifm-color-primary-lightest: #4d5fc5;
+  --ifm-color-primary-lighter: #3c4eb7;
+  --ifm-color-primary-light: #394baf;
+  --ifm-color-primary: #34449f;
+  --ifm-color-primary-dark: #2f3d8f;
+  --ifm-color-primary-darker: #2c3a87;
+  --ifm-color-primary-darkest: #24306f;
+}
+
+.heroBanner {
+  padding: 6rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+.headerButtons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button {
+  border: 2px solid #fff;
+  box-sizing: border-box;
+  border-radius: 30px;
+  color: #fff;
+  font-size: 18px;
+  line-height: 46px;
+  width: 190px;
+  padding: 0px;
+  vertical-align: middle;
+  text-align: center;
+  text-transform: capitalize;
+  font-weight: bold;
+}
+
+.button:hover {
+  background: #fff;
+  color: #34449f;
+}
+
+.buttonWrapper {
+  padding-top: 5px;
+  padding-right: 23px;
+  padding-bottom: 5px;
+  padding-left: 23px;
+}
+
+.features {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.featureImage {
+  padding-bottom: 20px;
+}
+
+.featureCode {
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+  display: block;
+  overflow-x: auto;
+  background: #333;
+  color: white;
+}
+
+.section {
+  padding: 72px 0;
+  background-color: var(--ifm-color-emphasis-100);
+}

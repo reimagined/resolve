@@ -20,13 +20,16 @@ const ShowByPage = ({
       },
     },
     [],
-    []
+    [page]
   )
-  const { data: stories, status } = useSelector(selector)
+  const { data: stories, status } = useSelector(selector) || {
+    data: [],
+    status: ResultStatus.Initial,
+  }
 
   useEffect(() => {
     getStories()
-  }, [getStories])
+  }, [page])
 
   const isLoading =
     status === ResultStatus.Initial && status === ResultStatus.Requested

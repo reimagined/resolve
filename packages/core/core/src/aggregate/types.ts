@@ -1,4 +1,9 @@
-import { Eventstore, Monitoring } from '../types/runtime'
+import {
+  CommandMiddleware,
+  Eventstore,
+  Monitoring,
+  MiddlewareContext,
+} from '../types/runtime'
 import {
   Event,
   AggregateEncryptionFactory,
@@ -27,7 +32,10 @@ export type AggregateInteropMap = {
 
 export type AggregatesInterop = {
   aggregateMap: AggregateInteropMap
-  executeCommand: (command: Command) => Promise<CommandResult>
+  executeCommand: (
+    command: Command,
+    middlewareContext?: MiddlewareContext
+  ) => Promise<CommandResult>
 }
 
 export type AggregateRuntimeHooks = {
@@ -49,6 +57,7 @@ export type AggregateRuntime = {
   secretsManager: SecretsManager
   eventstore: Eventstore
   hooks?: AggregateRuntimeHooks
+  commandMiddlewares?: Array<CommandMiddleware>
 }
 
 export type AggregatesInteropBuilder = (

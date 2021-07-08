@@ -105,14 +105,14 @@ export type AggregateProjection = {
   [key: string]: AggregateEventHandler
 }
 
-export type CommandHandler = (
+export type CommandHandler<TContext extends CommandContext = CommandContext> = (
   state: AggregateState,
   command: Command,
-  context: CommandContext
+  context: TContext
 ) => CommandResult | Promise<CommandResult>
 
-export type Aggregate = {
-  [key: string]: CommandHandler
+export type Aggregate<TContext extends CommandContext = CommandContext> = {
+  [key: string]: CommandHandler<TContext>
 }
 
 export type AggregateEncryptionContext = {
@@ -127,35 +127,39 @@ export type AggregateEncryptionFactory = (
 
 // Read model
 
-type ReadModelHandlerContext = Encryption
+export type ReadModelHandlerContext = Encryption
 
 type ReadModelInitHandler<TStore> = (store: TStore) => Promise<void>
 
-type ReadModelEventHandler<TStore> = (
-  store: TStore,
-  event: Event,
-  context: ReadModelHandlerContext
-) => Promise<void>
+export type ReadModelEventHandler<
+  TStore,
+  TContext extends ReadModelHandlerContext = ReadModelHandlerContext
+> = (store: TStore, event: Event, context: TContext) => Promise<void>
 
-export type ReadModel<TStore> = {
-  [key: string]: ReadModelEventHandler<TStore>
+export type ReadModel<
+  TStore,
+  TContext extends ReadModelHandlerContext = ReadModelHandlerContext
+> = {
+  [key: string]: ReadModelEventHandler<TStore, TContext>
 } & {
   Init?: ReadModelInitHandler<TStore>
 }
 
-type ReadModelResolverContext = {
+export type ReadModelResolverContext = {
   jwt?: string
   secretsManager: SecretsManager | null
 }
 
-type ReadModelResolver<TStore> = (
-  store: TStore,
-  params: SerializableMap,
-  context: ReadModelResolverContext
-) => Promise<any>
+export type ReadModelResolver<
+  TStore,
+  TContext extends ReadModelResolverContext = ReadModelResolverContext
+> = (store: TStore, params: SerializableMap, context: TContext) => Promise<any>
 
-export type ReadModelResolvers<TStore> = {
-  [key: string]: ReadModelResolver<TStore>
+export type ReadModelResolvers<
+  TStore,
+  TContext extends ReadModelResolverContext = ReadModelResolverContext
+> = {
+  [key: string]: ReadModelResolver<TStore, TContext>
 }
 
 export type EventHandlerEncryptionContext = {
