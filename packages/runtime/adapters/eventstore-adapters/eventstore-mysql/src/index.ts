@@ -11,6 +11,7 @@ import getEventSubscribers from './get-event-subscribers'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import injectEvent from './inject-event'
+import injectEvents from './inject-events'
 import freeze from './freeze'
 import unfreeze from './unfreeze'
 import shapeEvent from './shape-event'
@@ -56,6 +57,7 @@ const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {
       dropFinal,
       dispose,
       injectEvent,
+      injectEvents,
       freeze,
       unfreeze,
       shapeEvent,

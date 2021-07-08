@@ -267,6 +267,7 @@ export type AdapterPoolPrimalProps = {
 
 export type AdapterPoolConnectedProps = Adapter & {
   injectEvent: (event: SavedEvent) => Promise<void>
+  injectEvents: (events: SavedEvent[]) => Promise<void>
   injectSecret?: (secretRecord: SecretRecord) => Promise<void>
 
   loadEventsByTimestamp: (filter: TimestampFilter) => Promise<EventsWithCursor>
@@ -451,6 +452,10 @@ export interface AdapterFunctions<
   injectEvent: PoolMethod<
     ConnectedProps,
     AdapterPoolConnectedProps['injectEvent']
+  >
+  injectEvents: PoolMethod<
+    ConnectedProps,
+    AdapterPoolConnectedProps['injectEvents']
   >
   loadEventsByCursor: PoolMethod<
     ConnectedProps,

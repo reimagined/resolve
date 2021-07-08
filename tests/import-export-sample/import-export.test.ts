@@ -7,11 +7,30 @@ import {
   MAINTENANCE_MODE_MANUAL,
 } from '@resolve-js/eventstore-base'
 import createEventstoreAdapter from '@resolve-js/eventstore-lite'
-import { EventsWithCursor, SavedEvent } from '@resolve-js/eventstore-base'
+import type {
+  EventsWithCursor,
+  SavedEvent,
+  Cursor,
+} from '@resolve-js/eventstore-base'
+
+import {
+  adapterFactory,
+  adapters,
+  jestTimeout,
+  isServerlessAdapter,
+} from '../eventstore-test-utils'
 
 import createStreamBuffer from './create-stream-buffer'
 
-jest.setTimeout(1000 * 60 * 5)
+jest.setTimeout(jestTimeout())
+
+function getInterruptingTimeout() {
+  return isServerlessAdapter() ? 200 : 100
+}
+
+function getInputEventsCount() {
+  return isServerlessAdapter() ? 500 : 1000
+}
 
 describe('import-export events', () => {
   const eventStorePath = path.join(__dirname, 'es.txt')
@@ -34,15 +53,12 @@ describe('import-export events', () => {
     }
   })
 
-  test('should work correctly with maintenanceMode = auto', async () => {
-    const inputEventstoreAdapter = createEventstoreAdapter({
-      databaseFile: ':memory:',
-    })
-    const outputEventstoreAdapter = createEventstoreAdapter({
-      databaseFile: ':memory:',
-    })
-    await inputEventstoreAdapter.init()
-    await outputEventstoreAdapter.init()
+  test(`${adapterFactory.name}. Should work correctly with maintenanceMode = auto`, async () => {
+    await adapterFactory.create('input-auto')()
+    await adapterFactory.create('output-auto')()
+
+    const inputEventstoreAdapter = adapters['input-auto']
+    const outputEventstoreAdapter = adapters['output-auto']
 
     const inputCountEvents = 200
 
@@ -62,12 +78,34 @@ describe('import-export events', () => {
       outputEventstoreAdapter.importEvents()
     )
 
-    const { events } = await outputEventstoreAdapter.loadEvents({
-      limit: 300,
+    await adapterFactory.destroy('input-auto')()
+
+    const { events, cursor } = await outputEventstoreAdapter.loadEvents({
+      limit: inputCountEvents + 1,
       cursor: null,
     })
 
-    expect(events.length).toEqual(inputCountEvents)
+    expect(events).toHaveLength(inputCountEvents)
+
+    const extraEventCount = 50
+    for (let eventIndex = 0; eventIndex < extraEventCount; eventIndex++) {
+      const event = {
+        aggregateId: 'aggregateId_extra',
+        aggregateVersion: eventIndex + 1,
+        type: 'EVENT_EXTRA',
+        payload: { eventIndex },
+        timestamp: eventIndex + 1,
+      }
+      await outputEventstoreAdapter.saveEvent(event)
+    }
+
+    const { events: extraEvents } = await outputEventstoreAdapter.loadEvents({
+      limit: extraEventCount + 1,
+      cursor: cursor,
+    })
+    expect(extraEvents).toHaveLength(extraEventCount)
+
+    await adapterFactory.destroy('output-auto')()
   })
 
   test('should work correctly with maintenanceMode = manual', async () => {
@@ -98,7 +136,7 @@ describe('import-export events', () => {
 
     const exportBuffers = []
 
-    let cursor = null
+    let cursor: Cursor = null
     let steps = 0
 
     while (true) {
@@ -150,21 +188,31 @@ describe('import-export events', () => {
     expect(events.length).toEqual(inputCountEvents)
     expect(steps).toBeGreaterThan(1)
   })
+})
 
-  test('export should work correctly when stopped by timeout ', async () => {
-    const inputEventstoreAdapter = createEventstoreAdapter({
-      databaseFile: ':memory:',
-    })
-    await inputEventstoreAdapter.init()
+describe('import-export timeouts', () => {
+  beforeAll(async () => {
+    await adapterFactory.create('export-timeout')()
+    await adapterFactory.create('import-timeout')()
+  })
+  afterAll(async () => {
+    await adapterFactory.destroy('export-timeout')()
+    await adapterFactory.destroy('import-timeout')()
+  })
 
-    const inputCountEvents = 1001
+  const inputCountEvents = getInputEventsCount() + 1
+
+  test(`${adapterFactory.name}. Export should work correctly when stopped by timeout`, async () => {
+    const inputEventstoreAdapter = adapters['export-timeout']
+
+    const longData = '#'.repeat(2000)
 
     for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
       await inputEventstoreAdapter.saveEvent({
         aggregateId: 'aggregateId',
         aggregateVersion: eventIndex + 1,
         type: 'EVENT',
-        payload: { eventIndex },
+        payload: { eventIndex, data: longData },
         timestamp: eventIndex + 1,
       })
     }
@@ -192,7 +240,7 @@ describe('import-export events', () => {
         const timeoutPromise = new Promise<boolean>((resolve) =>
           setTimeout(() => {
             resolve(true)
-          }, 100)
+          }, getInterruptingTimeout())
         )
 
         const isJsonStreamTimedOut = await Promise.race([
@@ -236,36 +284,16 @@ describe('import-export events', () => {
     expect(steps).toBeGreaterThan(1)
   })
 
-  test('import should work correctly when stopped by timeout ', async () => {
-    const inputEventstoreAdapter = createEventstoreAdapter({
-      databaseFile: ':memory:',
-    })
-    const outputEventstoreAdapter = createEventstoreAdapter({
-      databaseFile: ':memory:',
-    })
-    await inputEventstoreAdapter.init()
-    await outputEventstoreAdapter.init()
+  test(`${adapterFactory.name}. Import should work correctly when stopped by timeout`, async () => {
+    const inputEventstoreAdapter = adapters['export-timeout']
+    const outputEventstoreAdapter = adapters['import-timeout']
 
     const exportedEventsFileName = path.join(__dirname, 'exported-events.txt')
-
-    const inputCountEvents = 1000
-
-    for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
-      await inputEventstoreAdapter.saveEvent({
-        aggregateId: 'aggregateId',
-        aggregateVersion: eventIndex + 1,
-        type: 'EVENT',
-        payload: { eventIndex },
-        timestamp: eventIndex + 1,
-      })
-    }
 
     await promisify(pipeline)(
       inputEventstoreAdapter.exportEvents(),
       fs.createWriteStream(exportedEventsFileName)
     )
-
-    await inputEventstoreAdapter.drop()
 
     const exportedEventsFileSize = fs.statSync(exportedEventsFileName).size
 
@@ -297,7 +325,7 @@ describe('import-export events', () => {
         const timeoutPromise = new Promise<boolean>((resolve) =>
           setTimeout(() => {
             resolve(true)
-          }, 100)
+          }, getInterruptingTimeout())
         )
 
         const isJsonStreamTimedOut = await Promise.race([
@@ -347,12 +375,10 @@ describe('import-export events', () => {
       }
     }
 
-    await outputEventstoreAdapter.drop()
-
-    expect(isJsonStreamTimedOutOnce).toBeTruthy()
-    expect(steps).toBeGreaterThan(1)
     expect(savedEventsCount).toEqual(inputCountEvents)
     expect(allEvents).toHaveLength(inputCountEvents)
+    expect(isJsonStreamTimedOutOnce).toBeTruthy()
+    expect(steps).toBeGreaterThan(1)
     //console.log(events.map((event) => event.payload.eventIndex))
   })
 })
