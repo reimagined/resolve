@@ -1,9 +1,8 @@
-import {
+import type {
   Adapter,
   ReplicationState,
   OldSecretRecord,
   OldEvent,
-  ReplicationAlreadyInProgress,
 } from '@resolve-js/eventstore-base'
 import {
   jestTimeout,
@@ -63,7 +62,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(state.statusData).toEqual(null)
   })
 
-  test('set-replication-status should set lastEvent and not rewrite it if it was not provided', async () => {
+  test('set-replication-status should set successEvent and not rewrite it if it was not provided', async () => {
     const event: OldEvent = {
       aggregateId: 'aggregateId',
       aggregateVersion: 1,
@@ -80,13 +79,6 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     state = await adapter.getReplicationState()
     expect(state.status).toEqual('error')
     expect(state.successEvent).toEqual(event)
-  })
-
-  test('set-replication-status should throw ReplicationAlreadyInProgress if replication is already in progress', async () => {
-    await adapter.setReplicationStatus('batchInProgress')
-    await expect(
-      adapter.setReplicationStatus('batchInProgress')
-    ).rejects.toThrow(ReplicationAlreadyInProgress)
   })
 
   test('set-replication-iterator should change iterator property of the state', async () => {
