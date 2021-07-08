@@ -106,6 +106,11 @@ const appConfig = {
       projection: 'common/view-models/custom-aggregate-ids.projection.js',
       resolver: 'common/view-models/custom-aggregate-ids.resolver.js',
     },
+    {
+      name: 'monitoring-view-model',
+      projection: 'common/view-models/monitoring.projection.js',
+      resolver: 'common/view-models/monitoring.resolver.js',
+    },
   ],
   sagas: [
     {

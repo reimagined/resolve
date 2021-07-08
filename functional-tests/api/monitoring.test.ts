@@ -14,7 +14,7 @@ interface CommandBaseMetrics {
   executionDurationSamples: number
 }
 
-type ReadModelResolverBaseMetrics = {
+type ResolverBaseMetrics = {
   partErrors: number
   resolverErrors: number
   partExecutions: number
@@ -52,7 +52,8 @@ let client: Client
 let startTime: Date
 let endTime: Date
 let commandBaseMetrics: CommandBaseMetrics
-let readModelResolverBaseMetrics: ReadModelResolverBaseMetrics
+let readModelResolverBaseMetrics: ResolverBaseMetrics
+let viewModelResolverBaseMetrics: ResolverBaseMetrics
 let apiHandlerBaseMetrics: ApiHandlerBaseMetrics
 let internalBaseMetrics: InternalBaseMetrics
 
@@ -104,7 +105,7 @@ const createDimensions = (list: string[]): Dimension[] =>
     }
   })
 
-const collectReadModelResolverBaseMetrics = async (): Promise<ReadModelResolverBaseMetrics> => {
+const collectReadModelResolverBaseMetrics = async (): Promise<ResolverBaseMetrics> => {
   const [
     partErrors,
     resolverErrors,
@@ -156,6 +157,69 @@ const collectReadModelResolverBaseMetrics = async (): Promise<ReadModelResolverB
         'Part=ReadModelResolver',
         'ReadModel=monitoring',
         'Resolver=failResolver',
+        'Label=Execution',
+      ]),
+    }),
+  ])
+
+  return {
+    partErrors,
+    resolverErrors,
+    partExecutions,
+    resolverExecutions,
+    executionDurationSamples,
+  }
+}
+
+const collectViewModelResolverBaseMetrics = async (): Promise<ResolverBaseMetrics> => {
+  const [
+    partErrors,
+    resolverErrors,
+    partExecutions,
+    resolverExecutions,
+    executionDurationSamples,
+  ] = await Promise.all([
+    getMetricData({
+      MetricName: 'Errors',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ViewModelResolver',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Errors',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ViewModelResolver',
+        'ViewModel=monitoring-view-model',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Executions',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ViewModelResolver',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Executions',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ViewModelResolver',
+        'ViewModel=monitoring-view-model',
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Duration',
+      Stat: 'SampleCount',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ViewModelResolver',
+        'ViewModel=monitoring-view-model',
         'Label=Execution',
       ]),
     }),
@@ -599,6 +663,92 @@ describe('Read Model Resolver metrics', () => {
         ]),
       },
       readModelResolverBaseMetrics.executionDurationSamples
+    )
+  })
+})
+
+describe('View Model resolver metrics', () => {
+  beforeAll(async () => {
+    viewModelResolverBaseMetrics = await collectViewModelResolverBaseMetrics()
+  })
+
+  test('view model resolver failed', async () => {
+    await expect(
+      client.query({
+        name: 'monitoring-view-model',
+        aggregateIds: ['test-aggregate'],
+        args: {},
+      })
+    ).rejects.toBeInstanceOf(Error)
+
+    viewModelResolverBaseMetrics.resolverErrors++
+    viewModelResolverBaseMetrics.partErrors++
+    viewModelResolverBaseMetrics.resolverExecutions++
+    viewModelResolverBaseMetrics.partExecutions++
+    viewModelResolverBaseMetrics.executionDurationSamples++
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ViewModelResolver',
+          'ViewModel=monitoring-view-model',
+        ]),
+      },
+      viewModelResolverBaseMetrics.resolverErrors
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ViewModelResolver',
+        ]),
+      },
+      viewModelResolverBaseMetrics.partErrors
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Executions',
+        Stat: 'Sum',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ViewModelResolver',
+          'ViewModel=monitoring-view-model',
+        ]),
+      },
+      viewModelResolverBaseMetrics.resolverExecutions
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Executions',
+        Stat: 'Sum',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ViewModelResolver',
+        ]),
+      },
+      viewModelResolverBaseMetrics.partExecutions
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Duration',
+        Stat: 'SampleCount',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ViewModelResolver',
+          'ViewModel=monitoring-view-model',
+          'Label=Execution',
+        ]),
+      },
+      viewModelResolverBaseMetrics.executionDurationSamples
     )
   })
 })
