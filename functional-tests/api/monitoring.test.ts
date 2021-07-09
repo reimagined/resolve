@@ -1030,7 +1030,7 @@ describe('Api Handler metrics', () => {
           'Part=ApiHandler',
           'Path=/api/fail-api',
           'Method=GET',
-          'Label=Execution'
+          'Label=Execution',
         ]),
       },
       apiHandlerBaseMetrics.executionDurationSamples
