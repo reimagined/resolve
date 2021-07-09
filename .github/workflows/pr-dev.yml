@@ -80,7 +80,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ github.run_id }}
 
       - name: Install
-        run: yarn install --ignore-scripts
+        run: yarn install
 
       - name: Check if yarn.lock changed
         run: echo "git_diff=$(git diff --name-only yarn.lock)" >> $GITHUB_ENV
@@ -91,9 +91,6 @@ jobs:
 
       - name: Validate yarn.lock
         run: yarn validate-lock-file
-
-      - name: Build
-        run: yarn prepare
 
       - name: Run Prettier
         run: yarn prettier:check
