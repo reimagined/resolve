@@ -1,8 +1,15 @@
-import { MONITORING_FAILED_HANDLER } from '../event-types'
+import {
+  MONITORING_FAILED_HANDLER,
+  MONITORING_VIEW_MODEL_FAILED,
+} from '../event-types'
 
 const aggregate = {
   failReadModelProjection: () => ({
     type: MONITORING_FAILED_HANDLER,
+    payload: {},
+  }),
+  failViewModelProjection: () => ({
+    type: MONITORING_VIEW_MODEL_FAILED,
     payload: {},
   }),
   failCommand: () => {
