@@ -2,21 +2,21 @@ import fs from 'fs-extra'
 import moveExample from '../src/move-example'
 import { moveSync, removeSync } from 'fs-extra'
 
-import availableExamples from '../src/get-available-examples'
-
 jest.mock('fs-extra', () => ({
   moveSync: jest.fn(),
   removeSync: jest.fn(),
   readdirSync: jest.fn().mockReturnValue(['one', 'two']),
 }))
 
-availableExamples.getAvailableExamples = jest.fn().mockReturnValue([
-  {
-    name: 'dummy-example',
-    description: 'Dummy reSolve example',
-    path: '/dummy-example',
-  },
-])
+jest.mock('../src/get-available-examples', () => ({
+  getAvailableExamples: jest.fn().mockReturnValue([
+    {
+      name: 'dummy-example',
+      description: 'Dummy reSolve example',
+      path: '/dummy-example',
+    },
+  ]),
+}))
 
 afterAll(() => jest.clearAllMocks())
 

@@ -1,11 +1,14 @@
 import { execSync } from 'child_process'
+import { mocked } from 'ts-jest/utils'
 import install from '../src/install'
-import isYarnAvailable from '../src/is-yarn-available.js'
+import isYarnAvailable from '../src/is-yarn-available'
 
 jest.mock('child_process', () => ({
   execSync: jest.fn(),
 }))
-jest.mock('../src/is-yarn-available.js', () => jest.fn())
+jest.mock('../src/is-yarn-available', () => jest.fn())
+
+const mockedIsYarnAvailable = mocked(isYarnAvailable)
 
 describe('dependencies installation', () => {
   afterAll(() => {
@@ -15,7 +18,7 @@ describe('dependencies installation', () => {
     jest.clearAllMocks()
   })
   test('with yarn', async () => {
-    isYarnAvailable.mockReturnValue(true)
+    mockedIsYarnAvailable.mockReturnValue(true)
     await install('./')
     expect(execSync).toHaveBeenNthCalledWith(
       1,
@@ -29,7 +32,7 @@ describe('dependencies installation', () => {
     )
   })
   test('with npm', async () => {
-    isYarnAvailable.mockReturnValue(false)
+    mockedIsYarnAvailable.mockReturnValue(false)
     await install('./')
     expect(execSync).toHaveBeenNthCalledWith(
       1,

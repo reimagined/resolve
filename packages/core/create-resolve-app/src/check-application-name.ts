@@ -1,7 +1,7 @@
 import validateProjectName from 'validate-npm-package-name'
 import message from './message'
 
-const checkApplicationName = async (applicationName) => {
+const checkApplicationName = async (applicationName: string) => {
   const result = validateProjectName(applicationName)
   if (!result.validForNewPackages) {
     throw message.invalidApplicationName(

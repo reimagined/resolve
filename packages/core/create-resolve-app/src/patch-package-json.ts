@@ -5,18 +5,20 @@ import { localRegistry as server, resolvePackages } from './constants'
 import safeName from './safe-name'
 
 const patchPackageJson = async (
-  applicationName,
-  applicationPath,
-  localRegistry
+  applicationName: string,
+  applicationPath: string,
+  localRegistry: boolean
 ) => {
   // eslint-disable-next-line no-console
   console.log(chalk.green('Patch package.json'))
 
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const resolveVersion = require(path.join(__dirname, '..', 'package.json'))
     .version
 
   const applicationPackageJsonPath = path.join(applicationPath, 'package.json')
 
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const applicationPackageJson = require(applicationPackageJsonPath)
 
   applicationPackageJson.name = applicationName
@@ -44,7 +46,8 @@ const patchPackageJson = async (
       }
     })
     .map((directory) => ({
-      name: path.join(applicationPath, directory, 'package.json').name,
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      name: require(path.join(applicationPath, directory, 'package.json')).name,
       directory: path.join(applicationPath, directory),
     }))
 
@@ -59,6 +62,7 @@ const patchPackageJson = async (
       ...localPackages.map(({ name }) => name),
     ]
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const packageJson = require(path.join(directory, 'package.json'))
 
     packageJson.version = resolveVersion

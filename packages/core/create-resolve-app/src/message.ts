@@ -1,9 +1,9 @@
 import { EOL } from 'os'
 import chalk from 'chalk'
-import { formatExamplesList } from './format-examples-list'
+import { ExampleData, formatExamplesList } from './format-examples-list'
 import { resolveExamples } from './constants'
 
-const optionsInfo = (examples) => [
+const optionsInfo = (examples: ExampleData[]) => [
   `Options:`,
   ``,
   `  -e, --example    creates an example application based on an application from the reSolve examples directory`,
@@ -16,7 +16,7 @@ const optionsInfo = (examples) => [
   `  -h, --help       outputs usage information`,
 ]
 
-const formatLines = (lines) => lines.join(EOL)
+const formatLines = (lines: string[]) => lines.join(EOL)
 
 const message = {
   help: () =>
@@ -46,14 +46,19 @@ const message = {
       `Run ${chalk.cyan('create-resolve-app --help')} to view all options.`,
     ]),
 
-  startCreatingApp: (applicationName, exampleName, commit, branch) =>
+  startCreatingApp: (
+    applicationName: string,
+    exampleName: string,
+    commit: string,
+    branch: string
+  ) =>
     formatLines([
       `Creating ${applicationName} in ./${applicationName} based on the ${exampleName} example`,
       commit ? ` (commit SHA:${commit})` : ``,
       branch ? ` (from ${branch} branch)` : ``,
     ]),
 
-  unknownOptions: (unknownOptions) =>
+  unknownOptions: (unknownOptions: string[]) =>
     formatLines([
       `You have specified an unsupported option(s): ${chalk.red(
         unknownOptions.join(' ')
@@ -61,18 +66,22 @@ const message = {
       `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
     ]),
 
-  missingExample: (exampleName, availableExamples) =>
+  missingExample: (exampleName: string, availableExamples: ExampleData[]) =>
     formatLines([
       `No such example, ${exampleName}. The following examples are available: `,
       ...formatExamplesList(availableExamples, 4),
     ]),
 
-  invalidApplicationName: (applicationName, errors, warnings) => {
+  invalidApplicationName: (
+    applicationName: string,
+    errors?: string[],
+    warnings?: string[]
+  ) => {
     const message = `It is impossible to create an application called ${chalk.red(
       `"${applicationName}"`
     )} due to npm naming restrictions:`
 
-    const details = [...(errors || []), ...(warnings || [])].map(
+    const details = [...(errors ?? []), ...(warnings ?? [])].map(
       (e) => `  *  ${e}`
     )
     return formatLines([message, ...details])

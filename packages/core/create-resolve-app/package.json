@@ -17,6 +17,7 @@
   "author": "reimagined team",
   "main": "./lib/index.js",
   "bin": "./bin/index.js",
+  "types": "./types/index.d.ts",
   "scripts": {
     "build": "yarn workspace @internal/babel-compile start --name=create-resolve-app",
     "test": "jest --config=../../../jest.config.js --verbose",
@@ -36,7 +37,14 @@
     "validate-npm-package-name": "3.0.0"
   },
   "devDependencies": {
-    "jest": "27.0.3"
+    "@types/adm-zip": "0.4.34",
+    "@types/command-line-args": "5.0.1",
+    "@types/jest": "26.0.23",
+    "@types/node": "12.7.4",
+    "@types/progress": "2.0.4",
+    "@types/validate-npm-package-name": "3.0.3",
+    "jest": "27.0.3",
+    "ts-jest": "^27.0.2"
   },
   "engines": {
     "node": ">=12.18"
@@ -48,5 +56,6 @@
       "inputDir": "./src",
       "outDir": "./lib"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }

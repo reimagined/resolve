@@ -1,4 +1,12 @@
-const appendGroupingInformation = (examples = []) =>
+export type ExampleData = { name: string; path: string }
+export type ExampleDataExtended = ExampleData & {
+  isTemplate: boolean
+  language: 'ts' | 'js'
+}
+
+const appendGroupingInformation = (
+  examples: ExampleData[] = []
+): ExampleDataExtended[] =>
   examples.map((example) => ({
     ...example,
     language:
@@ -10,7 +18,11 @@ const appendGroupingInformation = (examples = []) =>
     isTemplate: example.path.startsWith('/templates'),
   }))
 
-const formatItemsGroup = (items, title = '', indentationLevel = 0) => {
+const formatItemsGroup = (
+  items: string[],
+  title = '',
+  indentationLevel = 0
+) => {
   const indentationSymbol = ' '
   const indentationStep = 2
   const titleIndent = indentationLevel * indentationStep
@@ -27,21 +39,30 @@ const formatItemsGroup = (items, title = '', indentationLevel = 0) => {
   return result
 }
 
-const splitBy = (keyBy) => (items = []) =>
-  items.reduce((result, item) => {
+const splitBy = (keyBy: (item: any) => string) => (items: ExampleData[] = []) =>
+  items.reduce<{ [index: string]: any }>((result, item) => {
     const key = keyBy(item)
     result[key] = [...(result[key] ?? []), item]
     return result
   }, {})
 
-const byKind = (item) => (item.isTemplate ? 'templates' : 'examples')
+const byKind = (item: { isTemplate: boolean }) =>
+  item.isTemplate ? 'templates' : 'examples'
 
 const splitByKind = splitBy(byKind)
 
-const formatExampleInfo = ({ name, description }) =>
-  `* ${name.replace(/(?:-ts|-js)$/, '')} - ${description}`
+const formatExampleInfo = ({
+  name,
+  description,
+}: {
+  name: string
+  description: string
+}) => `* ${name.replace(/(?:-ts|-js)$/, '')} - ${description}`
 
-const formatExamplesList = (availableExamples, indentationLevel = 0) => {
+const formatExamplesList = (
+  availableExamples: ExampleData[],
+  indentationLevel = 0
+) => {
   const lines = []
   const examplesWithGrouping = appendGroupingInformation(availableExamples)
   const { examples, templates } = splitByKind(examplesWithGrouping)

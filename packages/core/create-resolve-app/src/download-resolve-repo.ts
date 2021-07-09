@@ -11,7 +11,11 @@ import safeName from './safe-name'
 
 const log = getLog('resolve:create-resolve-app:download-resolve-repo')
 
-const downloadResolveRepo = async (applicationPath, branch, commit) => {
+const downloadResolveRepo = async (
+  applicationPath: string,
+  branch?: string,
+  commit?: string
+) => {
   const revision = branch ? branch : commit ? commit : `V${resolveVersion}`
   const resolveDownloadZipUrl = `https://codeload.github.com/reimagined/resolve/zip/${revision}`
   const resolveCloneZipPath = path.join(
@@ -20,7 +24,7 @@ const downloadResolveRepo = async (applicationPath, branch, commit) => {
   )
 
   try {
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       try {
         if (fs.readdirSync(applicationPath).length !== 0) {
           reject(
@@ -37,7 +41,7 @@ const downloadResolveRepo = async (applicationPath, branch, commit) => {
 
       const resolveCloneZip = fs.createWriteStream(resolveCloneZipPath)
 
-      let error = null
+      let error: any = null
       let downloadedBytes = 0
 
       resolveCloneZip.on('finish', function () {
@@ -51,8 +55,8 @@ const downloadResolveRepo = async (applicationPath, branch, commit) => {
       })
 
       https.get(resolveDownloadZipUrl, (response) => {
-        let bar = null
-        const showProgressBar = (total, increment) => {
+        let bar: any = null
+        const showProgressBar = (total: number, increment: number) => {
           if (isNaN(+total)) {
             return
           }
@@ -72,15 +76,15 @@ const downloadResolveRepo = async (applicationPath, branch, commit) => {
 
         response.on('data', (data) => {
           const currentBytes = Buffer.byteLength(data)
-          const total = response.headers['content-length']
+          const total = response.headers['content-length'] ?? 0
           downloadedBytes += currentBytes
-          showProgressBar(total, currentBytes)
+          showProgressBar(+total, currentBytes)
 
           resolveCloneZip.write(data)
         })
         response.on('end', () => {
           const total = response.headers['content-length'] ?? downloadedBytes
-          showProgressBar(total, 0)
+          showProgressBar(+total, 0)
           resolveCloneZip.end()
         })
         response.on('error', (err) => {
