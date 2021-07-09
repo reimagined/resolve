@@ -21,7 +21,8 @@ const notifyEventSubscriber = async (
       break
     }
     case /^arn:aws:sqs:/.test(destination): {
-      await resolveBase.sendSqsMessage(eventSubscriber, {
+      const queueFullName = destination.split(':')[5]
+      await resolveBase.sendSqsMessage(queueFullName, {
         eventSubscriber,
         initiator: 'command-foreign',
         notificationId: `NT-${Date.now()}${Math.floor(
@@ -67,12 +68,12 @@ const notifyEventSubscribers = async (resolve, eventWithCursor) => {
 
     const eventSubscribers = await resolve.eventstoreAdapter.getEventSubscribers()
     for (const {
-      applicationName,
+      applicationName: eventSubscriberScope,
       eventSubscriber,
       destination,
     } of eventSubscribers) {
       if (
-        resolve.applicationName !== applicationName ||
+        resolve.eventSubscriberScope !== eventSubscriberScope ||
         !resolve.eventListeners.has(eventSubscriber)
       ) {
         promises.push(
@@ -89,7 +90,7 @@ const notifyEventSubscribers = async (resolve, eventWithCursor) => {
             .catch((error) => {
               // eslint-disable-next-line no-console
               console.warn(
-                `Notify application "${applicationName}" for event subscriber "${eventSubscriber}" failed with error: ${error}`
+                `Notify application "${eventSubscriberScope}" for event subscriber "${eventSubscriber}" failed with error: ${error}`
               )
             })
         )

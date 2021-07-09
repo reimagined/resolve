@@ -1,5 +1,29 @@
 # Changelog
 
+## [V0.31.2](https://github.com/reimagined/resolve/tree/V0.31.2) (2021-07-08)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.1...V0.31.2)
+
+**New features:**
+
+- Middleware support for aggregate commands, read model resolvers and projections [\#1925](https://github.com/reimagined/resolve/pull/1925)
+
+**Enhancements:**
+
+- Enhance event subscriber prefixes [\#1936](https://github.com/reimagined/resolve/pull/1936)
+- Implement monitoring execution counter [\#1932](https://github.com/reimagined/resolve/pull/1932)
+- Implement only one-time event source mapping [\#1929](https://github.com/reimagined/resolve/pull/1929)
+- Collect read model building metrics per event [\#1927](https://github.com/reimagined/resolve/pull/1927)
+
+**Bug fixes:**
+
+- Pagination problem with hacker-news example [\#1928](https://github.com/reimagined/resolve/issues/1928)
+- UI problems with hacker-news example [\#1921](https://github.com/reimagined/resolve/issues/1921)
+
+**Documentation:**
+
+- Migrate documentation to docusaurus v2 [\#1924](https://github.com/reimagined/resolve/pull/1924)
+
 ## [V0.31.1](https://github.com/reimagined/resolve/tree/V0.31.1) (2021-07-01)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.0...V0.31.1)
