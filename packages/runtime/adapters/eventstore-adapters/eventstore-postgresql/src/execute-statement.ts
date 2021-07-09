@@ -13,15 +13,11 @@ const isRetryableError = (error: any): boolean =>
   ) ||
     checkFuzzyError(error, /Remaining connection slots are reserved/i) ||
     checkFuzzyError(error, /Too many clients already/i) ||
-    checkFuzzyError(error, /Connection terminated unexpectedly/i) ||
     checkFormalError(error, 'ECONNRESET') ||
     checkFormalError(error, '08000') ||
     checkFormalError(error, '08003') ||
-    checkFormalError(error, '08006'))
-
-const isConnectionTerminatedError = (error: any): boolean =>
-  error != null &&
-  (checkFuzzyError(error, /Connection terminated/i) ||
+    checkFormalError(error, '08006') ||
+    checkFuzzyError(error, /Connection terminated/i) ||
     checkFuzzyError(error, /Query read timeout/i))
 
 const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
@@ -49,7 +45,7 @@ const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
 
       return null
     } catch (error) {
-      if (isConnectionTerminatedError(error)) {
+      if (isRetryableError(error)) {
         try {
           await pool.connection.end()
         } catch (error) {
@@ -58,7 +54,7 @@ const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
 
         pool.getConnectPromise = pool.createGetConnectPromise()
         await pool.getConnectPromise()
-      } else if (!isRetryableError(error)) {
+      } else {
         throw error
       }
     }
