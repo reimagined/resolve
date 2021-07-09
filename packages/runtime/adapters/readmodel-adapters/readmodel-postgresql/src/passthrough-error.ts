@@ -30,15 +30,10 @@ const checkFuzzyError = (error: PassthroughErrorLike, value: RegExp): boolean =>
   value.test(error.message) || value.test(error.stack)
 
 const PassthroughError: PassthroughErrorFactory = Object.assign(
-  (function (
-    this: PassthroughErrorInstance,
-    isRetryable: boolean,
-    isEmptyTransaction: boolean
-  ): void {
+  (function (this: PassthroughErrorInstance, isRetryable: boolean): void {
     Error.call(this)
     this.name = 'PassthroughError'
     this.isRetryable = isRetryable
-    this.isEmptyTransaction = isEmptyTransaction
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, PassthroughError)
     } else {
@@ -46,21 +41,13 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
     }
   } as Function) as ExtractNewable<PassthroughErrorFactory>,
   {
-    isEmptyTransactionError(error: PassthroughErrorLike): boolean {
-      return (
-        error != null &&
-        (checkFormalError(error, PostgresErrors.TRANSACTION_ROLLBACK) ||
-          checkFormalError(error, PostgresErrors.NO_ACTIVE_SQL_TRANSACTION))
-      )
-    },
     isRetryablePassthroughError(error: PassthroughErrorLike): boolean {
       return (
         error != null &&
-        (PassthroughError.isEmptyTransactionError(error) ||
-          checkFuzzyError(
-            error,
-            /terminating connection due to serverless scale event timeout/i
-          ) ||
+        (checkFuzzyError(
+          error,
+          /terminating connection due to serverless scale event timeout/i
+        ) ||
           checkFuzzyError(
             error,
             /terminating connection due to administrator command/i
@@ -82,6 +69,8 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
             error,
             PostgresErrors.SQLSERVER_REJECTED_ESTABLISHMENT_OF_SQLCONNECTION
           ) ||
+          checkFormalError(error, PostgresErrors.TRANSACTION_ROLLBACK) ||
+          checkFormalError(error, PostgresErrors.NO_ACTIVE_SQL_TRANSACTION) ||
           checkFormalError(error, PostgresErrors.IN_FAILED_SQL_TRANSACTION) ||
           checkFormalError(error, PostgresErrors.SERIALIZATION_FAILURE) ||
           checkFormalError(error, PostgresErrors.DEADLOCK_DETECTED))
@@ -118,9 +107,8 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
       if (!PassthroughError.isPassthroughError(error, includeRuntimeErrors)) {
         throw error
       }
-      const isEmptyTransaction = PassthroughError.isEmptyTransactionError(error)
       const isRetryable = PassthroughError.isRetryablePassthroughError(error)
-      throw new PassthroughError(isRetryable, isEmptyTransaction)
+      throw new PassthroughError(isRetryable)
     },
   }
 )
