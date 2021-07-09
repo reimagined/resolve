@@ -80,20 +80,20 @@ jobs:
           key: ${{ runner.os }}-build-${{ github.run_id }}
 
       - name: Install
-        run: yarn install
+        run: yarn install --ignore-scripts
 
       - name: Check if yarn.lock changed
-        id: git-diff
-        uses: technote-space/get-diff-action@v4
-        with:
-          FILES: yarn.lock
+        run: echo "git_diff=$(git diff --name-only yarn.lock)" >> $GITHUB_ENV
 
-      - name: Fail job if yarn.lock changed\
-        if: steps.git-diff.output.diff
+      - name: Fail job if yarn.lock changed
+        if: env.git_diff
         run: exit 1
 
       - name: Validate yarn.lock
         run: yarn validate-lock-file
+
+      - name: Build
+        run: yarn prepare
 
       - name: Run Prettier
         run: yarn prettier:check
