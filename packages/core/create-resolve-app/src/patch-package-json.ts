@@ -22,6 +22,7 @@ const patchPackageJson = async (
   const applicationPackageJson = require(applicationPackageJsonPath)
 
   applicationPackageJson.name = applicationName
+  applicationPackageJson.version = resolveVersion
 
   const namespaces = [
     'dependencies',
@@ -51,12 +52,12 @@ const patchPackageJson = async (
       directory: path.join(applicationPath, directory),
     }))
 
-  localPackages.push({
-    name: applicationName,
-    directory: applicationPath,
-  })
+  const directories = [
+    applicationPath,
+    ...localPackages.map(({ directory }) => directory),
+  ]
 
-  for (const { directory } of localPackages) {
+  for (const directory of directories) {
     const listPackageNamesForPatching = [
       ...resolvePackages,
       ...localPackages.map(({ name }) => name),
