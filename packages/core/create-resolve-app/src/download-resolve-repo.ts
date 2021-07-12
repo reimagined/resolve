@@ -57,7 +57,7 @@ const downloadResolveRepo = async (
       https.get(resolveDownloadZipUrl, (response) => {
         let bar: any = null
         const showProgressBar = (total: number, increment: number) => {
-          if (isNaN(+total)) {
+          if (isNaN(total) || total <= 0) {
             return
           }
           if (bar == null) {
@@ -65,7 +65,7 @@ const downloadResolveRepo = async (
               `${chalk.green('Load example')} [:bar] :current/:total`,
               {
                 width: 20,
-                total: +total,
+                total,
               }
             )
 
