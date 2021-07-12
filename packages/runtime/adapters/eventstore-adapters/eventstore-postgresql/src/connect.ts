@@ -46,6 +46,9 @@ const connect = async (
     ...connectionOptions,
   })
 
+  connection.on('error', (error) => {
+    pool.connectionErrors.push(error)
+  })
   await connection.connect()
 
   Object.assign<

@@ -1,6 +1,6 @@
 {
   "name": "postcss-ts",
-  "version": "0.31.2",
+  "version": "0.31.3",
   "private": true,
   "description": "shows how to work with postCSS",
   "scripts": {
@@ -15,12 +15,12 @@
   },
   "dependencies": {
     "@babel/node": "7.14.2",
-    "@resolve-js/eventstore-lite": "0.31.2",
-    "@resolve-js/eventstore-postgresql-serverless": "0.31.2",
-    "@resolve-js/react-hooks": "0.31.2",
-    "@resolve-js/readmodel-lite": "0.31.2",
-    "@resolve-js/readmodel-postgresql-serverless": "0.31.2",
-    "@resolve-js/scripts": "0.31.2",
+    "@resolve-js/eventstore-lite": "0.31.3",
+    "@resolve-js/eventstore-postgresql-serverless": "0.31.3",
+    "@resolve-js/react-hooks": "0.31.3",
+    "@resolve-js/readmodel-lite": "0.31.3",
+    "@resolve-js/readmodel-postgresql-serverless": "0.31.3",
+    "@resolve-js/scripts": "0.31.3",
     "history": "4.10.1",
     "react": "17.0.2",
     "react-bootstrap": "1.6.0",
