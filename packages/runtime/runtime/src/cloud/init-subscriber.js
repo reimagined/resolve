@@ -42,12 +42,28 @@ const initSubscriber = (resolve, lambdaContext) => {
   }
 
   resolve.sendSqsMessage = async (destination, parameters) => {
+    // Send SQS messages within 1 minute with exponential jitter from 64 ms
+    const getRemainingSendingTime = ((endTime) => endTime - Date.now()).bind(
+      null,
+      Date.now() + 60 * 1000
+    )
+    const getJitterTime = (attempt) => Math.pow(2, attempt + 7)
+
     const queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${destination}`
-    await sendMessage({
-      Region: region,
-      QueueUrl: queueUrl,
-      MessageBody: JSON.stringify(parameters),
-    })
+    for (let attempt = 0; getRemainingSendingTime() > 0; attempt++) {
+      try {
+        await sendMessage({
+          Region: region,
+          QueueUrl: queueUrl,
+          MessageBody: JSON.stringify(parameters),
+        })
+        break
+      } catch (err) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, getJitterTime(attempt))
+        )
+      }
+    }
   }
 
   resolve.invokeBuildAsync = async (parameters) => {
