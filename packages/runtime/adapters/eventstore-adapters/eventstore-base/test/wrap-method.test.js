@@ -7,10 +7,8 @@ test('wrapMethod should wrap API methods to await connection', async () => {
 
   const pool = {
     config: {},
-    connectPromiseResolve: sinon.stub(),
-    connectPromise: Promise.resolve(),
-    initialPromiseResolve: sinon.stub(),
-    initialPromise: Promise.resolve(),
+    createGetConnectPromise: sinon.stub(),
+    getConnectPromise: sinon.stub(),
   }
 
   const wrappedApiMethod = wrapMethod(pool, apiMethod)
@@ -24,8 +22,7 @@ test('wrapMethod should wrap API methods to await connection', async () => {
 
   sinon.assert.calledWith(apiMethod, pool, methodArg)
 
-  sinon.assert.calledWith(pool.connectPromiseResolve)
-  sinon.assert.notCalled(pool.initialPromiseResolve)
+  sinon.assert.calledWith(pool.getConnectPromise)
 })
 
 test('wrapMethod handle dispose adapter state', async () => {
