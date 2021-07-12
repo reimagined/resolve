@@ -3,13 +3,6 @@
 exports[`@resolve-js/readmodel-postgresql-serverless method "drop" 1`] = `
 Array [
   Array [
-    "connect",
-  ],
-  Array [
-    "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
     "on",
     "error",
     [Function],
@@ -25,6 +18,13 @@ Array [
     "on",
     "error",
     [Function],
+  ],
+  Array [
+    "connect",
+  ],
+  Array [
+    "query",
+    "SELECT 0 AS \\"defunct\\"",
   ],
   Array [
     "query",
@@ -446,16 +446,16 @@ Array [
 exports[`@resolve-js/readmodel-postgresql-serverless methods "defineTable", "insert", "find", "findOne" 1`] = `
 Array [
   Array [
+    "on",
+    "error",
+    [Function],
+  ],
+  Array [
     "connect",
   ],
   Array [
     "query",
     "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "on",
-    "error",
-    [Function],
   ],
   Array [
     "query",
@@ -719,16 +719,16 @@ Array [
 exports[`@resolve-js/readmodel-postgresql-serverless methods "defineTable", "insert", "update", "count", "delete" 1`] = `
 Array [
   Array [
+    "on",
+    "error",
+    [Function],
+  ],
+  Array [
     "connect",
   ],
   Array [
     "query",
     "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "on",
-    "error",
-    [Function],
   ],
   Array [
     "query",
@@ -990,16 +990,16 @@ Array [
 exports[`@resolve-js/readmodel-postgresql-serverless operator "$inc" 1`] = `
 Array [
   Array [
+    "on",
+    "error",
+    [Function],
+  ],
+  Array [
     "connect",
   ],
   Array [
     "query",
     "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "on",
-    "error",
-    [Function],
   ],
   Array [
     "query",
@@ -1387,16 +1387,16 @@ Array [
 exports[`@resolve-js/readmodel-postgresql-serverless operator "$set" 1`] = `
 Array [
   Array [
+    "on",
+    "error",
+    [Function],
+  ],
+  Array [
     "connect",
   ],
   Array [
     "query",
     "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "on",
-    "error",
-    [Function],
   ],
   Array [
     "query",
@@ -1652,16 +1652,16 @@ Array [
 exports[`@resolve-js/readmodel-postgresql-serverless operator "$unset" 1`] = `
 Array [
   Array [
+    "on",
+    "error",
+    [Function],
+  ],
+  Array [
     "connect",
   ],
   Array [
     "query",
     "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "on",
-    "error",
-    [Function],
   ],
   Array [
     "query",

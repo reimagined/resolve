@@ -41,17 +41,47 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
       (async () => {
         await Promise.resolve()
         connectionErrorsMap.set(connection, [])
-        await connection.connect()
-        await connection.query('SELECT 0 AS "defunct"')
-        connection.on('error', (error) => {
+        try {
+          connection.on('error', (error) => {
+            connectionErrorsMap.get(connection)?.push(error)
+          })
+          await connection.connect()
+          await connection.query('SELECT 0 AS "defunct"')
+        } catch (error) {
           connectionErrorsMap.get(connection)?.push(error)
-        })
+        }
       })()
     )
     await connectPromiseMap.get(connection)
     return connection
   }
+
+  const maybeThrowConnectionErrors = async (
+    connection: typeof pool.connection
+  ) => {
+    const connectionErrors = connectionErrorsMap.get(connection) ?? []
+    if (connectionErrors.length > 0) {
+      let summaryError = connectionErrors[0]
+      if (connectionErrors.length > 1) {
+        summaryError = new Error(
+          connectionErrors.map(({ message }) => message).join('\n')
+        )
+        summaryError.stack = connectionErrors
+          .map(({ stack }) => stack)
+          .join('\n')
+      }
+      if (pool.connection === connection) {
+        pool.connection = null!
+      }
+      try {
+        await connection.end()
+      } catch (err) {}
+      throw summaryError
+    }
+  }
+
   const initialConnection = await establishConnection()
+  await maybeThrowConnectionErrors(initialConnection)
 
   const inlineLedgerRunQuery: InlineLedgerRunQueryMethod = async (
     sql,
@@ -61,22 +91,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     for (;;) {
       try {
         const connection = await establishConnection()
-        const connectionErrors = connectionErrorsMap.get(connection) ?? []
-        if (connectionErrors.length > 0) {
-          let summaryError = connectionErrors[0]
-          if (connectionErrors.length > 1) {
-            summaryError = new Error(
-              connectionErrors.map(({ message }) => message).join('\n')
-            )
-            summaryError.stack = connectionErrors
-              .map(({ stack }) => stack)
-              .join('\n')
-          }
-          if (pool.connection === connection) {
-            pool.connection = null!
-          }
-          throw summaryError
-        }
+        await maybeThrowConnectionErrors(connection)
         result = await connection.query(sql)
         break
       } catch (error) {

@@ -1,5 +1,22 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.2...HEAD)
+
+**Enhancements:**
+
+- Improve passthrough errors [\#1944](https://github.com/reimagined/resolve/pull/1944)
+
+**Bug fixes:**
+
+- RESOLVE\_DEPLOYMENT\_DOMAIN is incorrect after using the `domains assign` command [\#1933](https://github.com/reimagined/resolve/issues/1933)
+- Command error: Incorrect order of events by aggregateId [\#1873](https://github.com/reimagined/resolve/issues/1873)
+
+**Other changes:**
+
+- Handle connection terminated errors in postgres eventstore adapter [\#1943](https://github.com/reimagined/resolve/pull/1943)
+
 ## [V0.31.2](https://github.com/reimagined/resolve/tree/V0.31.2) (2021-07-08)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.1...V0.31.2)

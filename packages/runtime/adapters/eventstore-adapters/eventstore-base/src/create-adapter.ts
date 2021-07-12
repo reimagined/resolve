@@ -111,10 +111,20 @@ const createAdapter = <
     disposed: false,
     validateEventFilter,
     isInitialized: false,
+    connectionErrors: [],
     maybeThrowResourceError,
     bucketSize,
     getNextCursor: getNextCursor.bind(null),
     counters: new Map(),
+    createGetConnectPromise: () => {
+      let p: Promise<void>
+      return () => {
+        if (p === undefined) {
+          p = connect.bind(null, adapterPool, connectionDependencies, config)()
+        }
+        return p
+      }
+    },
   }
 
   const emptyProps: Partial<ConnectedProps> = {}
@@ -123,9 +133,7 @@ const createAdapter = <
     ...emptyProps,
   }
 
-  adapterPool.connectPromise = new Promise((resolve) => {
-    adapterPool.connectPromiseResolve = resolve.bind(null, null)
-  }).then(connect.bind(null, adapterPool, connectionDependencies, config))
+  adapterPool.getConnectPromise = adapterPool.createGetConnectPromise()
 
   const connectedProps: Partial<ConnectedProps> = {
     injectEvent: wrapMethod(adapterPool, injectEvent),

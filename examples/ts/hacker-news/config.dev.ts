@@ -14,8 +14,8 @@ const devConfig = {
   /*readModels: [
     {
       name: 'Replicator',
-      projection: 'common/read-models/empty.js',
-      resolvers: 'common/read-models/empty.js',
+      projection: 'common/read-models/empty.ts',
+      resolvers: 'common/read-models/empty.ts',
       connectorName: 'replicator',
     },
   ],

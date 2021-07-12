@@ -1,5 +1,5 @@
-import { AdapterPool } from './types'
-import { ReplicationStatus } from '@resolve-js/eventstore-base'
+import type { AdapterPool } from './types'
+import type { ReplicationStatus } from '@resolve-js/eventstore-base'
 
 const initReplicationStateTable = async (
   pool: AdapterPool

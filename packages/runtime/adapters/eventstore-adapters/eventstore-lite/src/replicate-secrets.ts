@@ -1,5 +1,5 @@
-import { AdapterPool } from './types'
-import { OldSecretRecord } from '@resolve-js/eventstore-base'
+import type { AdapterPool } from './types'
+import type { OldSecretRecord } from '@resolve-js/eventstore-base'
 
 const replicateSecrets = async (
   pool: AdapterPool,
