@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.2...HEAD)
 
+**Enhancements:**
+
+- Improve passthrough errors [\#1944](https://github.com/reimagined/resolve/pull/1944)
+
 **Bug fixes:**
 
 - RESOLVE\_DEPLOYMENT\_DOMAIN is incorrect after using the `domains assign` command [\#1933](https://github.com/reimagined/resolve/issues/1933)
