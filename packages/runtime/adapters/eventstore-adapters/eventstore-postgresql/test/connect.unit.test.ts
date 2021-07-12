@@ -11,13 +11,20 @@ import connect from '../src/connect'
 import executeStatement from '../src/execute-statement'
 
 const mPostgres = mocked(Postgres)
+Object.assign(mPostgres.prototype, {
+  on: (event: 'error', listener: (err: Error) => void) => {
+    return mPostgres
+  },
+})
 
 let pool: AdapterPool
 let connectionDependencies: ConnectionDependencies
 let config: PostgresqlAdapterConfig
 
 beforeEach(() => {
-  pool = {} as any
+  pool = {
+    connectionErrors: [],
+  } as any
   connectionDependencies = {
     Postgres,
     coercer: jest.fn(),
@@ -37,7 +44,6 @@ beforeEach(() => {
     snapshotsTableName: 'snapshots-table-name',
     secretsTableName: 'secrets-table-name',
   }
-  mPostgres.mockClear()
 })
 
 test('destination passed to postgres client', async () => {

@@ -18,7 +18,7 @@ const wrapDispose = <ConnectedProps extends AdapterPoolConnectedProps>(
     return
   }
 
-  await pool.connectPromise
+  if (pool.getConnectPromise) await pool.getConnectPromise()
 
   await dispose(pool as AdapterPoolConnected<ConnectedProps>)
 }

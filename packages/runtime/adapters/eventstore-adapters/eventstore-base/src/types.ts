@@ -254,8 +254,9 @@ export type AdapterPoolPrimalProps = {
   validateEventFilter: ValidateEventFilter
 
   isInitialized: boolean
-  connectPromiseResolve?: any
-  connectPromise?: Promise<any>
+  createGetConnectPromise: () => () => Promise<void>
+  getConnectPromise?: () => Promise<void>
+  connectionErrors: any[]
 
   maybeThrowResourceError: CheckForResourceError
   bucketSize: number

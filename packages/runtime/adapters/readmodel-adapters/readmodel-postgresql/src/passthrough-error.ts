@@ -57,6 +57,10 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
           checkFuzzyError(error, /Remaining connection slots are reserved/i) ||
           checkFuzzyError(error, /Too many clients already/i) ||
           checkFuzzyError(error, /Connection terminated unexpectedly/i) ||
+          checkFuzzyError(
+            error,
+            /canceling statement due to statement timeout/i
+          ) ||
           checkFormalError(error, 'ECONNRESET') ||
           checkFormalError(error, PostgresErrors.CONNECTION_EXCEPTION) ||
           checkFormalError(error, PostgresErrors.CONNECTION_DOES_NOT_EXIST) ||
