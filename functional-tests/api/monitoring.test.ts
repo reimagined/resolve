@@ -22,16 +22,21 @@ type ResolverBaseMetrics = {
   executionDurationSamples: number
 }
 
+type SingleViewModelBaseMetrics = {
+  resolverErrors: number
+  resolverExecutions: number
+  resolverExecutionDurationSamples: number
+  projectionErrors: number
+}
+
 type ViewModelBaseMetrics = {
   resolverPartErrors: number
-  resolverErrors: number
-  resolverInitErrors: number
-  projectionPartErrors: number
-  projectionInitErrors: number
-  projectionErrors: number
   resolverPartExecutions: number
-  resolverExecutions: number
-  executionDurationSamples: number
+  projectionPartErrors: number
+
+  monitoring: SingleViewModelBaseMetrics
+  initFailed: SingleViewModelBaseMetrics
+  resolverFailed: SingleViewModelBaseMetrics
 }
 
 type ApiHandlerBaseMetrics = {
@@ -183,17 +188,73 @@ const collectReadModelResolverBaseMetrics = async (): Promise<ResolverBaseMetric
   }
 }
 
+const collectSingViewModelBaseMetrics = async (
+  name: string,
+  skipProjectionErrors = false
+): Promise<SingleViewModelBaseMetrics> => {
+  const [
+    resolverErrors,
+    resolverExecutions,
+    resolverExecutionDurationSamples,
+    projectionErrors,
+  ] = await Promise.all([
+    getMetricData({
+      MetricName: 'Errors',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ViewModelResolver',
+        `ViewModel=${name}`,
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Executions',
+      Stat: 'Sum',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ViewModelResolver',
+        `ViewModel=${name}`,
+      ]),
+    }),
+    getMetricData({
+      MetricName: 'Duration',
+      Stat: 'SampleCount',
+      Dimensions: createDimensions([
+        `DeploymentId=${deploymentId}`,
+        'Part=ViewModelResolver',
+        `ViewModel=${name}`,
+        'Label=Execution',
+      ]),
+    }),
+    !skipProjectionErrors
+      ? getMetricData({
+          MetricName: 'Errors',
+          Stat: 'Sum',
+          Dimensions: createDimensions([
+            `DeploymentId=${deploymentId}`,
+            'Part=ViewModelProjection',
+            `ViewModel=${name}`,
+          ]),
+        })
+      : 0,
+  ])
+
+  return {
+    resolverErrors,
+    resolverExecutions,
+    resolverExecutionDurationSamples,
+    projectionErrors,
+  }
+}
+
 const collectViewModelBaseMetrics = async (): Promise<ViewModelBaseMetrics> => {
   const [
     resolverPartErrors,
-    resolverErrors,
-    resolverInitErrors,
     resolverPartExecutions,
-    resolverExecutions,
-    executionDurationSamples,
     projectionPartErrors,
-    projectionErrors,
-    projectionInitErrors,
+    initFailed,
+    resolverFailed,
+    monitoring,
   ] = await Promise.all([
     getMetricData({
       MetricName: 'Errors',
@@ -204,24 +265,6 @@ const collectViewModelBaseMetrics = async (): Promise<ViewModelBaseMetrics> => {
       ]),
     }),
     getMetricData({
-      MetricName: 'Errors',
-      Stat: 'Sum',
-      Dimensions: createDimensions([
-        `DeploymentId=${deploymentId}`,
-        'Part=ViewModelResolver',
-        'ViewModel=monitoring-view-model',
-      ]),
-    }),
-    getMetricData({
-      MetricName: 'Errors',
-      Stat: 'Sum',
-      Dimensions: createDimensions([
-        `DeploymentId=${deploymentId}`,
-        'Part=ViewModelResolver',
-        'ViewModel=init-failed-view-model',
-      ]),
-    }),
-    getMetricData({
       MetricName: 'Executions',
       Stat: 'Sum',
       Dimensions: createDimensions([
@@ -230,25 +273,6 @@ const collectViewModelBaseMetrics = async (): Promise<ViewModelBaseMetrics> => {
       ]),
     }),
     getMetricData({
-      MetricName: 'Executions',
-      Stat: 'Sum',
-      Dimensions: createDimensions([
-        `DeploymentId=${deploymentId}`,
-        'Part=ViewModelResolver',
-        'ViewModel=monitoring-view-model',
-      ]),
-    }),
-    getMetricData({
-      MetricName: 'Duration',
-      Stat: 'SampleCount',
-      Dimensions: createDimensions([
-        `DeploymentId=${deploymentId}`,
-        'Part=ViewModelResolver',
-        'ViewModel=monitoring-view-model',
-        'Label=Execution',
-      ]),
-    }),
-    getMetricData({
       MetricName: 'Errors',
       Stat: 'Sum',
       Dimensions: createDimensions([
@@ -256,36 +280,18 @@ const collectViewModelBaseMetrics = async (): Promise<ViewModelBaseMetrics> => {
         'Part=ViewModelProjection',
       ]),
     }),
-    getMetricData({
-      MetricName: 'Errors',
-      Stat: 'Sum',
-      Dimensions: createDimensions([
-        `DeploymentId=${deploymentId}`,
-        'Part=ViewModelProjection',
-        'ViewModel=monitoring-view-model',
-      ]),
-    }),
-    getMetricData({
-      MetricName: 'Errors',
-      Stat: 'Sum',
-      Dimensions: createDimensions([
-        `DeploymentId=${deploymentId}`,
-        'Part=ViewModelProjection',
-        'ViewModel=init-failed-view-model',
-      ]),
-    }),
+    collectSingViewModelBaseMetrics('init-failed-view-model'),
+    collectSingViewModelBaseMetrics('resolver-failed-view-model', true),
+    collectSingViewModelBaseMetrics('monitoring-view-model'),
   ])
 
   return {
     resolverPartErrors,
-    resolverErrors,
-    resolverInitErrors,
     resolverPartExecutions,
-    resolverExecutions,
-    executionDurationSamples,
     projectionPartErrors,
-    projectionErrors,
-    projectionInitErrors,
+    initFailed,
+    monitoring,
+    resolverFailed,
   }
 }
 
@@ -609,27 +615,20 @@ describe('Read Model Projection metrics', () => {
     )
   })
 
-  test('read model event handler failed', async () => {
+  test('read model event handler', async () => {
+    await client.command({
+      aggregateId: 'any',
+      aggregateName: 'monitoring-aggregate',
+      type: 'executeReadModelProjection',
+      payload: {},
+    })
+
     await client.command({
       aggregateId: 'any',
       aggregateName: 'monitoring-aggregate',
       type: 'failReadModelProjection',
       payload: {},
     })
-
-    await awaitMetricValue(
-      {
-        MetricName: 'Errors',
-        Stat: 'Sum',
-        Dimensions: createDimensions([
-          `DeploymentId=${deploymentId}`,
-          'Part=ReadModelProjection',
-          'ReadModel=monitoring',
-          'EventType=MONITORING_FAILED_HANDLER',
-        ]),
-      },
-      1
-    )
 
     await awaitMetricValue(
       {
@@ -654,6 +653,20 @@ describe('Read Model Projection metrics', () => {
           'Part=ReadModelProjection',
           'ReadModel=monitoring',
           'Label=EventProjectionApply',
+        ]),
+      },
+      1
+    )
+
+    await awaitMetricValue(
+      {
+        MetricName: 'Errors',
+        Stat: 'Sum',
+        Dimensions: createDimensions([
+          `DeploymentId=${deploymentId}`,
+          'Part=ReadModelProjection',
+          'ReadModel=monitoring',
+          'EventType=MONITORING_FAILED_HANDLER',
         ]),
       },
       1
@@ -758,17 +771,17 @@ describe('View Model metrics', () => {
   test('view model resolver failed', async () => {
     await expect(
       client.query({
-        name: 'monitoring-view-model',
+        name: 'resolver-failed-view-model',
         aggregateIds: ['test-aggregate'],
         args: {},
       })
     ).rejects.toBeInstanceOf(Error)
 
-    viewModelBaseMetrics.resolverErrors++
     viewModelBaseMetrics.resolverPartErrors++
-    viewModelBaseMetrics.resolverExecutions++
     viewModelBaseMetrics.resolverPartExecutions++
-    viewModelBaseMetrics.executionDurationSamples++
+    viewModelBaseMetrics.resolverFailed.resolverErrors++
+    viewModelBaseMetrics.resolverFailed.resolverExecutions++
+    viewModelBaseMetrics.resolverFailed.resolverExecutionDurationSamples++
 
     await awaitMetricValue(
       {
@@ -777,10 +790,10 @@ describe('View Model metrics', () => {
         Dimensions: createDimensions([
           `DeploymentId=${deploymentId}`,
           'Part=ViewModelResolver',
-          'ViewModel=monitoring-view-model',
+          'ViewModel=resolver-failed-view-model',
         ]),
       },
-      viewModelBaseMetrics.resolverErrors
+      viewModelBaseMetrics.resolverFailed.resolverErrors
     )
 
     await awaitMetricValue(
@@ -802,10 +815,10 @@ describe('View Model metrics', () => {
         Dimensions: createDimensions([
           `DeploymentId=${deploymentId}`,
           'Part=ViewModelResolver',
-          'ViewModel=monitoring-view-model',
+          'ViewModel=resolver-failed-view-model',
         ]),
       },
-      viewModelBaseMetrics.resolverExecutions
+      viewModelBaseMetrics.resolverFailed.resolverExecutions
     )
 
     await awaitMetricValue(
@@ -827,11 +840,11 @@ describe('View Model metrics', () => {
         Dimensions: createDimensions([
           `DeploymentId=${deploymentId}`,
           'Part=ViewModelResolver',
-          'ViewModel=monitoring-view-model',
+          'ViewModel=resolver-failed-view-model',
           'Label=Execution',
         ]),
       },
-      viewModelBaseMetrics.executionDurationSamples
+      viewModelBaseMetrics.resolverFailed.resolverExecutionDurationSamples
     )
   })
 
@@ -844,12 +857,12 @@ describe('View Model metrics', () => {
       })
     ).rejects.toThrowError()
 
-    viewModelBaseMetrics.resolverInitErrors++
     viewModelBaseMetrics.resolverPartErrors++
     viewModelBaseMetrics.resolverPartExecutions++
-    viewModelBaseMetrics.executionDurationSamples++
     viewModelBaseMetrics.projectionPartErrors++
-    viewModelBaseMetrics.projectionInitErrors++
+    viewModelBaseMetrics.initFailed.resolverErrors++
+    viewModelBaseMetrics.initFailed.resolverExecutions++
+    viewModelBaseMetrics.initFailed.projectionErrors++
 
     await awaitMetricValue(
       {
@@ -861,7 +874,7 @@ describe('View Model metrics', () => {
           'ViewModel=init-failed-view-model',
         ]),
       },
-      viewModelBaseMetrics.resolverInitErrors
+      viewModelBaseMetrics.initFailed.resolverErrors
     )
 
     await awaitMetricValue(
@@ -875,7 +888,7 @@ describe('View Model metrics', () => {
           'EventType=Init',
         ]),
       },
-      viewModelBaseMetrics.projectionInitErrors
+      viewModelBaseMetrics.initFailed.projectionErrors
     )
 
     await awaitMetricValue(
@@ -895,7 +908,7 @@ describe('View Model metrics', () => {
     await client.command({
       aggregateId: 'fail-aggregate',
       aggregateName: 'monitoring-aggregate',
-      type: 'failReadModelProjection',
+      type: 'failViewModelProjection',
       payload: {},
     })
 
@@ -907,12 +920,13 @@ describe('View Model metrics', () => {
       })
     ).rejects.toBeInstanceOf(Error)
 
-    viewModelBaseMetrics.resolverErrors++
     viewModelBaseMetrics.resolverPartErrors++
     viewModelBaseMetrics.resolverPartExecutions++
-    viewModelBaseMetrics.executionDurationSamples++
     viewModelBaseMetrics.projectionPartErrors++
-    viewModelBaseMetrics.projectionErrors++
+    viewModelBaseMetrics.monitoring.resolverErrors++
+    viewModelBaseMetrics.monitoring.resolverExecutions++
+    viewModelBaseMetrics.monitoring.projectionErrors++
+    viewModelBaseMetrics.monitoring.resolverExecutionDurationSamples++
 
     await awaitMetricValue(
       {
@@ -924,7 +938,7 @@ describe('View Model metrics', () => {
           'ViewModel=monitoring-view-model',
         ]),
       },
-      viewModelBaseMetrics.resolverErrors
+      viewModelBaseMetrics.monitoring.resolverErrors
     )
 
     await awaitMetricValue(
@@ -938,7 +952,7 @@ describe('View Model metrics', () => {
           'EventType=MONITORING_VIEW_MODEL_FAILED',
         ]),
       },
-      viewModelBaseMetrics.projectionErrors
+      viewModelBaseMetrics.monitoring.projectionErrors
     )
 
     await awaitMetricValue(

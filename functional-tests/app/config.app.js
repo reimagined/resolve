@@ -115,6 +115,11 @@ const appConfig = {
       name: 'init-failed-view-model',
       projection: 'common/view-models/init-failed.projection.js',
     },
+    {
+      name: 'resolver-failed-view-model',
+      projection: 'common/view-models/resolver-failed.projection.js',
+      resolver: 'common/view-models/resolver-failed.resolver.js',
+    },
   ],
   sagas: [
     {
