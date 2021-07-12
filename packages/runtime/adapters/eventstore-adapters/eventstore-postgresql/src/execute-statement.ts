@@ -18,6 +18,7 @@ const isRetryableError = (error: any): boolean =>
     checkFormalError(error, '08003') ||
     checkFormalError(error, '08006') ||
     checkFuzzyError(error, /Connection terminated/i) ||
+    checkFuzzyError(error, /canceling statement due to statement timeout/i) ||
     checkFuzzyError(error, /Query read timeout/i))
 
 const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
