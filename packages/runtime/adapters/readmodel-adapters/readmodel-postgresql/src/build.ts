@@ -239,7 +239,7 @@ const buildEvents: (
 
   for (metricData.eventLoopCount = 0; true; metricData.eventLoopCount++) {
     if (events.length === 0) {
-      throw new PassthroughError(false, false)
+      throw new PassthroughError(false)
     }
     let nextCursorPromise: Promise<ReadModelCursor> = getContinuousLatestCursor(
       cursor,
@@ -527,7 +527,7 @@ const buildEvents: (
         await next()
       }
 
-      throw new PassthroughError(false, false)
+      throw new PassthroughError(false)
     }
   }
 }
@@ -648,7 +648,7 @@ const build: ExternalMethods['build'] = async (
 
     let readModelLedger = rows.length === 1 ? rows[0] : null
     if (readModelLedger == null || readModelLedger.Errors != null) {
-      throw new PassthroughError(false, false)
+      throw new PassthroughError(false)
     }
 
     const eventTypes =
@@ -697,7 +697,7 @@ const build: ExternalMethods['build'] = async (
     try {
       await inlineLedgerRunQuery(`ROLLBACK`)
     } catch (err) {
-      if (!(err instanceof PassthroughError && err.isEmptyTransaction)) {
+      if (!(err instanceof PassthroughError)) {
         throw err
       }
     }

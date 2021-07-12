@@ -18,8 +18,10 @@ const connectOnDemandAndCall = async <
   }
 
   pool.isInitialized = true
-  pool.connectPromiseResolve()
-  await pool.connectPromise
+  if (pool.getConnectPromise) {
+    const connectPromise = pool.getConnectPromise()
+    await connectPromise
+  }
 
   return await method(pool as AdapterPoolConnected<ConnectedProps>, ...args)
 }
