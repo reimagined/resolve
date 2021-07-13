@@ -9,15 +9,15 @@ import {
   BATCH_SIZE,
 } from './constants'
 
-const MAX_EVENTS_BATCH_BYTE_SIZE = 32768
-
 import { ResourceNotExistError } from './resource-errors'
-import {
+import type {
   AdapterPoolConnectedProps,
   AdapterPoolPossiblyUnconnected,
   ImportOptions,
   ImportEventsStream,
 } from './types'
+
+const MAX_EVENTS_BATCH_BYTE_SIZE = 32768
 
 export const getStringifiedEvent = (params: {
   buffer: Buffer
