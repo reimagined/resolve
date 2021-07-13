@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.3...HEAD)
+
+**Other changes:**
+
+- Add more monitoring functional tests [\#1941](https://github.com/reimagined/resolve/pull/1941)
+
 ## [V0.31.3](https://github.com/reimagined/resolve/tree/V0.31.3) (2021-07-12)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.2...V0.31.3)
