@@ -52,7 +52,7 @@ export const putDurationMetrics = async (
           Value: duration,
         },
       ],
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
     }
 
     if (coldStart) {

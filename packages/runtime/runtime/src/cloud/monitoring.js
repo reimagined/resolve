@@ -297,7 +297,7 @@ const monitoringPublish = async (log, monitoringData) => {
     ) {
       promises.push(
         putMetricData({
-          Namespace: 'RESOLVE_METRICS',
+          Namespace: 'ResolveJs',
           MetricData: monitoringData.metricData.slice(i, i + MAX_METRIC_COUNT),
         })
       )
