@@ -10,12 +10,14 @@ import {
 } from './constants'
 
 import { ResourceNotExistError } from './resource-errors'
-import {
+import type {
   AdapterPoolConnectedProps,
   AdapterPoolPossiblyUnconnected,
   ImportOptions,
   ImportEventsStream,
 } from './types'
+
+const MAX_EVENTS_BATCH_BYTE_SIZE = 32768
 
 export const getStringifiedEvent = (params: {
   buffer: Buffer
@@ -53,6 +55,23 @@ export const getStringifiedEvent = (params: {
   }
 }
 
+async function flushEvents(stream: any) {
+  const eventsToInject = stream.eventsToInject
+  stream.eventsToInject = []
+  stream.currentBatchByteSize = 0
+
+  if (eventsToInject.length === 0) {
+    return
+  }
+
+  await stream.pool
+    .injectEvents(eventsToInject)
+    .then(() => {
+      stream.savedEventsCount += eventsToInject.length
+    })
+    .catch(stream.saveEventErrors.push.bind(stream.saveEventErrors))
+}
+
 const EventStream = function (
   this: any,
   { pool, maintenanceMode, byteOffset }: any
@@ -65,14 +84,14 @@ const EventStream = function (
   this.beginPosition = 0
   this.endPosition = 0
   this.vacantSize = BUFFER_SIZE
-  this.saveEventPromiseSet = new Set()
   this.saveEventErrors = []
   this.timestamp = 0
   this.maintenanceMode = maintenanceMode
   this.isMaintenanceInProgress = false
-  this.parsedEventsCount = 0
   this.bypassMode = false
   this.savedEventsCount = 0
+  this.currentBatchByteSize = 0
+  this.eventsToInject = []
 
   this.on('timeout', () => {
     this.externalTimeout = true
@@ -96,7 +115,7 @@ EventStream.prototype._write = async function (
   try {
     await this.pool.waitConnect()
 
-    const { dropEvents, initEvents, freeze, injectEvent }: any = this.pool
+    const { dropEvents, initEvents, freeze }: any = this.pool
 
     if (
       this.maintenanceMode === MAINTENANCE_MODE_AUTO &&
@@ -176,26 +195,20 @@ EventStream.prototype._write = async function (
 
       this.timestamp = Math.max(this.timestamp, event.timestamp)
 
-      const saveEventPromise = injectEvent(event)
-        .then(() => {
-          this.savedEventsCount++
-        })
-        .catch(this.saveEventErrors.push.bind(this.saveEventErrors))
-      void saveEventPromise.then(
-        this.saveEventPromiseSet.delete.bind(
-          this.saveEventPromiseSet,
-          saveEventPromise
-        )
-      )
-      this.saveEventPromiseSet.add(saveEventPromise)
+      if (
+        this.currentBatchByteSize + eventByteLength >
+          MAX_EVENTS_BATCH_BYTE_SIZE ||
+        this.eventsToInject.length >= BATCH_SIZE
+      ) {
+        await flushEvents(this)
 
-      if (this.parsedEventsCount++ >= BATCH_SIZE) {
-        await Promise.all([...this.saveEventPromiseSet])
         if (this.externalTimeout === true) {
           this.bypassMode = true
         }
-        this.parsedEventsCount = 0
       }
+
+      this.eventsToInject.push(event)
+      this.currentBatchByteSize += eventByteLength
     }
 
     callback()
@@ -207,7 +220,7 @@ EventStream.prototype._write = async function (
 EventStream.prototype._final = async function (callback: any): Promise<void> {
   if (this.bypassMode) {
     try {
-      await Promise.all([...this.saveEventPromiseSet])
+      await flushEvents(this)
       callback()
     } catch (err) {
       callback(err)
@@ -219,28 +232,16 @@ EventStream.prototype._final = async function (callback: any): Promise<void> {
 
   try {
     await this.pool.waitConnect()
-    const { unfreeze, injectEvent } = this.pool
+    const { unfreeze } = this.pool
 
     if (this.vacantSize !== BUFFER_SIZE) {
-      let stringifiedEvent = null
-      let eventByteLength = 0
-
-      if (this.beginPosition < this.endPosition) {
-        stringifiedEvent = this.buffer
-          .slice(this.beginPosition, this.endPosition)
-          .toString(this.encoding)
-
-        eventByteLength += this.endPosition - this.beginPosition
-      } else {
-        stringifiedEvent = this.buffer
-          .slice(this.beginPosition, BUFFER_SIZE)
-          .toString(this.encoding)
-        stringifiedEvent += this.buffer
-          .slice(0, this.endPosition)
-          .toString(this.encoding)
-
-        eventByteLength += BUFFER_SIZE - this.beginPosition + this.endPosition
-      }
+      const { stringifiedEvent, eventByteLength } = getStringifiedEvent({
+        buffer: this.buffer,
+        bufferSize: BUFFER_SIZE,
+        encoding: this.encoding,
+        beginPosition: this.beginPosition,
+        endPosition: this.endPosition,
+      })
 
       let event: any = PARTIAL_EVENT_FLAG
       try {
@@ -252,22 +253,12 @@ EventStream.prototype._final = async function (callback: any): Promise<void> {
 
         this.byteOffset += eventByteLength
 
-        const saveEventPromise: any = injectEvent(event)
-          .then(() => {
-            this.savedEventsCount++
-          })
-          .catch(this.saveEventErrors.push.bind(this.saveEventErrors))
-        void saveEventPromise.then(
-          this.saveEventPromiseSet.delete.bind(
-            this.saveEventPromiseSet,
-            saveEventPromise
-          )
-        )
-        this.saveEventPromiseSet.add(saveEventPromise)
+        this.eventsToInject.push(event)
+        this.currentBatchByteSize += eventByteLength
       }
     }
 
-    await Promise.all([...this.saveEventPromiseSet])
+    await flushEvents(this)
 
     if (
       this.maintenanceMode === MAINTENANCE_MODE_AUTO &&

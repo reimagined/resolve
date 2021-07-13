@@ -106,6 +106,20 @@ const appConfig = {
       projection: 'common/view-models/custom-aggregate-ids.projection.js',
       resolver: 'common/view-models/custom-aggregate-ids.resolver.js',
     },
+    {
+      name: 'monitoring-view-model',
+      projection: 'common/view-models/monitoring.projection.js',
+      resolver: 'common/view-models/monitoring.resolver.js',
+    },
+    {
+      name: 'init-failed-view-model',
+      projection: 'common/view-models/init-failed.projection.js',
+    },
+    {
+      name: 'resolver-failed-view-model',
+      projection: 'common/view-models/resolver-failed.projection.js',
+      resolver: 'common/view-models/resolver-failed.resolver.js',
+    },
   ],
   sagas: [
     {
@@ -123,6 +137,11 @@ const appConfig = {
     version: '@resolve-js/runtime/lib/common/utils/interop-options.js',
   },
   apiHandlers: [
+    {
+      handler: 'common/api-handlers/fail-api.js',
+      path: '/api/fail-api',
+      method: 'GET',
+    },
     {
       handler: '@resolve-js/runtime/lib/local/query-is-ready-handler.js',
       path: '/api/query-is-ready',
