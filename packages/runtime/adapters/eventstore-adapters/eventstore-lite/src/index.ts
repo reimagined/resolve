@@ -19,6 +19,7 @@ import getLatestEvent from './get-latest-event'
 import getSecret from './get-secret'
 import initEvents from './init-events'
 import injectEvent from './inject-event'
+import injectEvents from './inject-events'
 import loadEventsByCursor from './load-events-by-cursor'
 import loadEventsByTimestamp from './load-events-by-timestamp'
 import loadSnapshot from './load-snapshot'
@@ -69,6 +70,7 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       initSecrets,
       initFinal,
       injectEvent,
+      injectEvents,
       loadEventsByCursor,
       loadEventsByTimestamp,
       loadSnapshot,

@@ -13,6 +13,7 @@ import saveEvent from './save-event'
 import fullJitter from './full-jitter'
 import executeStatement from './execute-statement'
 import injectEvent from './inject-event'
+import injectEvents from './inject-events'
 import coercer from './coercer'
 import escapeId from './escape-id'
 import escape from './escape'
@@ -83,6 +84,7 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       rollbackIncrementalImport,
       pushIncrementalImport,
       injectEvent,
+      injectEvents,
       deleteSecret,
       getSecret,
       setSecret,

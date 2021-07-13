@@ -96,6 +96,13 @@ export function jestTimeout(): number {
   }
 }
 
+export function isServerlessAdapter(): boolean {
+  return (
+    process.env.TEST_POSTGRES_SERVERLESS !== undefined &&
+    process.env.TEST_POSTGRES_SERVERLESS !== 'false'
+  )
+}
+
 export function streamToString(stream: Readable): Promise<string> {
   const chunks: Buffer[] = []
   return new Promise((resolve, reject) => {

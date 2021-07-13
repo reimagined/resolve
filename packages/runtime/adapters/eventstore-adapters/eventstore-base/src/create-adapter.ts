@@ -64,6 +64,7 @@ const createAdapter = <
     dropFinal,
     dispose,
     injectEvent,
+    injectEvents,
     freeze,
     unfreeze,
     shapeEvent,
@@ -137,6 +138,7 @@ const createAdapter = <
 
   const connectedProps: Partial<ConnectedProps> = {
     injectEvent: wrapMethod(adapterPool, injectEvent),
+    injectEvents: wrapMethod(adapterPool, injectEvents),
     injectSecret: wrapMethod(adapterPool, injectSecret),
     loadEventsByCursor: wrapMethod(adapterPool, loadEventsByCursor),
     loadEventsByTimestamp: wrapMethod(adapterPool, loadEventsByTimestamp),
