@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.3...HEAD)
 
+**Enhancements:**
+
+- Add injectEvents, run import-export tests on postgres too [\#1947](https://github.com/reimagined/resolve/pull/1947)
+
 **Other changes:**
 
 - Add more monitoring functional tests [\#1941](https://github.com/reimagined/resolve/pull/1941)
