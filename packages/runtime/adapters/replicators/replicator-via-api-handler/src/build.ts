@@ -69,7 +69,7 @@ const build: ExternalMethods['build'] = async (
 
   let iterator = state.iterator
   let localContinue = true
-  let sleepAfterServiceErrorMs = 3000
+  const sleepAfterServiceErrorMs = 3000
 
   while (true) {
     let lastError: Error | null = null
@@ -90,6 +90,8 @@ const build: ExternalMethods['build'] = async (
     let wasPaused = false
 
     try {
+      log.debug(`Calling replicate on ${events.length} events`)
+
       const result: CallReplicateResult = await basePool.callReplicate(
         basePool,
         events,
@@ -98,10 +100,10 @@ const build: ExternalMethods['build'] = async (
         { cursor }
       )
 
-      if (result.type === 'alreadyInProgress') {
-        const errorMessage =
-          "Refuse to start or continue replication since it's already in progress"
-        lastError = { name: 'Error', message: errorMessage }
+      if (result.type === 'serverError') {
+        lastError = { name: 'ServiceError', message: result.message }
+      } else if (result.type === 'clientError') {
+        lastError = { name: 'Error', message: result.message }
       } else if (result.type === 'launched') {
         await sleep(BATCH_PROCESSING_POLL_MS)
         while (true) {
@@ -131,7 +133,7 @@ const build: ExternalMethods['build'] = async (
           }
         }
       } else {
-        const errorMessage = `Unhandled replicate result. HTTP status code: ${result.httpStatus}`
+        const errorMessage = `Unhandled replicate result. HTTP status code: ${result.httpStatus}. Message: ${result.message}`
         lastError = { name: 'Error', message: errorMessage }
       }
     } catch (error) {
@@ -154,7 +156,6 @@ const build: ExternalMethods['build'] = async (
         const vacantTime = getVacantTimeInMillis()
         if (vacantTime > 0) {
           await sleep(Math.min(vacantTime, sleepAfterServiceErrorMs))
-          sleepAfterServiceErrorMs += 2000
         }
       }
     }

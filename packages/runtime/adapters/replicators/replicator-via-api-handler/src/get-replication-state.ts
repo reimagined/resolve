@@ -32,7 +32,7 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
       `${targetApplicationUrl}${REPLICATION_STATE.endpoint}`
     )
     const state: ReplicationState = await response.json()
-    if (response.status >= 500) {
+    if (response.status >= 400) {
       return {
         status: 'serviceError',
         statusData: {
@@ -46,7 +46,11 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
     }
     return state
   } catch (error) {
-    if (error.name === 'AbortError' || error.name === 'FetchError') {
+    if (
+      error.name === 'AbortError' ||
+      error.name === 'FetchError' ||
+      error.name === 'TypeError'
+    ) {
       const state: ReplicationState = {
         status: 'serviceError',
         statusData: {

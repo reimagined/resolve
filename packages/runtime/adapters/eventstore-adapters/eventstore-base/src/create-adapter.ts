@@ -108,6 +108,16 @@ const createAdapter = <
     log.debug(`snapshot bucket size defaulted to ${bucketSize}`)
   }
 
+  const createGetConnectPromise = () => {
+    let p: Promise<void>
+    return () => {
+      if (p === undefined) {
+        p = connect.bind(null, adapterPool, connectionDependencies, config)()
+      }
+      return p
+    }
+  }
+
   const primalProps: AdapterPoolPrimalProps = {
     disposed: false,
     validateEventFilter,
@@ -117,15 +127,8 @@ const createAdapter = <
     bucketSize,
     getNextCursor: getNextCursor.bind(null),
     counters: new Map(),
-    createGetConnectPromise: () => {
-      let p: Promise<void>
-      return () => {
-        if (p === undefined) {
-          p = connect.bind(null, adapterPool, connectionDependencies, config)()
-        }
-        return p
-      }
-    },
+    createGetConnectPromise: createGetConnectPromise,
+    getConnectPromise: createGetConnectPromise(),
   }
 
   const emptyProps: Partial<ConnectedProps> = {}
@@ -133,8 +136,6 @@ const createAdapter = <
     ...primalProps,
     ...emptyProps,
   }
-
-  adapterPool.getConnectPromise = adapterPool.createGetConnectPromise()
 
   const connectedProps: Partial<ConnectedProps> = {
     injectEvent: wrapMethod(adapterPool, injectEvent),

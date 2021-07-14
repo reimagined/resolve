@@ -5,7 +5,7 @@ import { str as strCRC32 } from 'crc-32'
 import { RESERVED_EVENT_SIZE } from './constants'
 import assert from 'assert'
 
-const MAX_EVENTS_BATCH_BYTE_SIZE = 32768
+const MAX_EVENTS_BATCH_BYTE_SIZE = 1024 * 1024 * 10
 
 type EventWithSize = {
   event: SavedEvent
@@ -123,8 +123,6 @@ export const replicateEvents = async (
     } while (shouldRetry)
   }
 
-  const eventPromises: Array<Promise<void>> = []
-
   let currentBatchSize = 0
   const currentEventsBatch: EventWithSize[] = []
 
@@ -132,13 +130,13 @@ export const replicateEvents = async (
     const eventWithSize = calculateEventWithSize(event)
 
     if (eventWithSize.size > MAX_EVENTS_BATCH_BYTE_SIZE) {
-      eventPromises.push(insertEventsBatch([eventWithSize]))
+      await insertEventsBatch([eventWithSize])
       continue
     }
 
     const newCurrentBatchSize = currentBatchSize + eventWithSize.size
     if (newCurrentBatchSize > MAX_EVENTS_BATCH_BYTE_SIZE) {
-      eventPromises.push(insertEventsBatch(currentEventsBatch))
+      await insertEventsBatch(currentEventsBatch)
       currentEventsBatch.length = 0
       currentBatchSize = 0
     }
@@ -147,10 +145,8 @@ export const replicateEvents = async (
   }
 
   if (currentEventsBatch.length) {
-    eventPromises.push(insertEventsBatch(currentEventsBatch))
+    await insertEventsBatch(currentEventsBatch)
   }
-
-  await Promise.all(eventPromises)
 
   type ThreadToUpdate = {
     threadId: SavedEvent['threadId']

@@ -255,7 +255,7 @@ export type AdapterPoolPrimalProps = {
 
   isInitialized: boolean
   createGetConnectPromise: () => () => Promise<void>
-  getConnectPromise?: () => Promise<void>
+  getConnectPromise: () => Promise<void>
   connectionErrors: any[]
 
   maybeThrowResourceError: CheckForResourceError
