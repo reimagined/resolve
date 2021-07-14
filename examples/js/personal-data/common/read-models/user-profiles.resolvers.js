@@ -1,17 +1,14 @@
-import { decode } from '../jwt'
 import { systemUserId } from '../constants'
 const resolvers = {
-  profile: async (store, params, { jwt }) => {
-    const { userId } = decode(jwt)
+  profile: async (store, params, { user }) => {
+    const { userId } = user
     const actualUserId = userId === systemUserId ? params.userId : userId
     return await store.findOne('Users', { id: actualUserId })
   },
-  profileById: async (store, params, { jwt }) => {
-    decode(jwt)
+  profileById: async (store, params) => {
     return await store.findOne('Users', { id: params.userId })
   },
-  fullNameById: async (store, params, { jwt }) => {
-    decode(jwt)
+  fullNameById: async (store, params) => {
     const user = await store.findOne('Users', { id: params.userId })
     if (user) {
       return `${user.profile.firstName} ${user.profile.lastName}`

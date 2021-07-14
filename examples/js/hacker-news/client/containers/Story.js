@@ -108,10 +108,10 @@ const StoryInfo = ({
   const unvoteIsVisible = voted && loggedIn
   return (
     <StoryInfoRoot>
-      {votes ? `${votes.length} point(s) ` : null}
+      <span>{votes ? `${votes.length} point(s)` : null}</span>
       {createdBy
         ? [
-            'by ',
+            ' by ',
             <Username key="username" to={`/user/${createdBy}`}>
               {createdByName}
             </Username>,
@@ -156,7 +156,9 @@ const Story = ({ story, index = undefined, showText = false }) => {
   const userId = useSelector((state) => (state.jwt ? state.jwt.id : null))
   const loggedIn = !!userId
   const voted =
-    optimistic.votedStories[story.id] && story.votes.indexOf(userId) !== -1
+    optimistic.votedStories[story.id] != null
+      ? optimistic.votedStories[story.id]
+      : story.votes.indexOf(userId) !== -1
   const votes = story.votes
     .filter((id) => id !== userId)
     .concat(voted ? [userId] : [])

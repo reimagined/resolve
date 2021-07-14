@@ -10,22 +10,22 @@ const devConfig = {
       snapshotBucketSize: 100,
     },
   },
-  /*readModels: [
-      {
-        name: 'Replicator',
-        projection: 'common/read-models/empty.js',
-        resolvers: 'common/read-models/empty.js',
-        connectorName: 'replicator',
+  readModels: [
+    {
+      name: 'Replicator',
+      projection: 'common/read-models/empty.js',
+      resolvers: 'common/read-models/empty.js',
+      connectorName: 'replicator',
+    },
+  ],
+  readModelConnectors: {
+    ...devCommonConfig.readModelConnectors,
+    replicator: {
+      module: '@resolve-js/replicator-via-api-handler',
+      options: {
+        targetApplicationUrl: declareRuntimeEnv('TARGET_REPLICATION_URL', ''),
       },
-    ],
-    readModelConnectors: {
-      ...devCommonConfig.readModelConnectors,
-      replicator: {
-        module: '@resolve-js/replicator-via-api-handler',
-        options: {
-          targetApplicationUrl: 'http://localhost:3001',
-        },
-      },
-    },*/
+    },
+  },
 }
 export default devConfig
