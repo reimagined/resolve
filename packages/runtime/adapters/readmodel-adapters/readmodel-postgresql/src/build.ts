@@ -604,7 +604,15 @@ const build: ExternalMethods['build'] = async (
     )
     const trxTableNameAsId = escapeId(`${tablePrefix}__${schemaName}__TRX__`)
 
-    const xaKey = generateGuid(`${Date.now()}${Math.random()}${process.pid}`)
+    const firstRandom = Math.random()
+    let lastRandom: number | null = null
+    // More entropy via branch misprediction and more context changes
+    for (let index = 0; index < Math.floor(firstRandom * 50) + 1; index++) {
+      lastRandom = Math.random()
+    }
+    const xaKey = generateGuid(
+      `${Date.now()}${firstRandom}${lastRandom}${process.pid}`
+    )
 
     const rows = (await inlineLedgerRunQuery(
       `WITH "MaybeAcquireLock" AS (
