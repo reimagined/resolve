@@ -12,7 +12,7 @@ const setReplicationPaused: InternalMethods['setReplicationPaused'] = async (
 ) => {
   if (paused) {
     await fetch(`${pool.targetApplicationUrl}${PAUSE_REPLICATION.endpoint}`, {
-      method: PAUSE_REPLICATION.endpoint,
+      method: PAUSE_REPLICATION.method,
     })
   } else {
     await fetch(`${pool.targetApplicationUrl}${RESUME_REPLICATION.endpoint}`, {

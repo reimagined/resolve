@@ -27,14 +27,18 @@ const callReplicate: InternalMethods['callReplicate'] = async (
     }
   )
   let resultType: CallReplicateResult['type'] = 'unknown'
-  if (response.status === 425) {
-    resultType = 'alreadyInProgress'
+  const message = await response.text()
+  if (response.status >= 500) {
+    resultType = 'serverError'
+  } else if (response.status >= 400) {
+    resultType = 'clientError'
   } else if (response.status === 202 || response.status === 200) {
     resultType = 'launched'
   }
   return {
     type: resultType,
     httpStatus: response.status,
+    message: message,
   }
 }
 

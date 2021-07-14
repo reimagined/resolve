@@ -27,23 +27,20 @@ const handler = async (req, res) => {
   try {
     await req.resolve.eventstoreAdapter.setReplicationStatus('batchInProgress')
     await req.resolve.eventstoreAdapter.setReplicationIterator(input.iterator)
-  } catch (error) {
-    if (error.name === 'ReplicationAlreadyInProgress') {
-      res.status(425)
-      res.end(error.message)
-    } else {
-      try {
-        await req.resolve.eventstoreAdapter.setReplicationStatus('error', error)
-      } catch (e) {}
 
-      res.status(500)
-      res.end(error.message)
+    res.status(202)
+    res.end('Replication has been started')
+  } catch (error) {
+    try {
+      await req.resolve.eventstoreAdapter.setReplicationStatus('error', error)
+    } catch (e) {
+      error.message += e.message
     }
+
+    res.status(500)
+    res.end(error.message)
     return
   }
-
-  res.status(202)
-  res.end('Replication has been started')
 
   try {
     await req.resolve.eventstoreAdapter.replicateSecrets(

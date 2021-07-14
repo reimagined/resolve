@@ -23,6 +23,7 @@ const isRetryableError = (error: any): boolean =>
 
 const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
   while (true) {
+    let connection: typeof pool.connection = pool.connection
     try {
       if (pool.connectionErrors.length > 0) {
         let summaryError = pool.connectionErrors[0]
@@ -35,10 +36,13 @@ const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
             .join('\n')
         }
         pool.connectionErrors = []
+
+        pool.getConnectPromise = pool.createGetConnectPromise()
+
         throw summaryError
       }
 
-      const result = await pool.connection.query(sql)
+      const result = await connection.query(sql)
 
       if (result != null && Array.isArray(result.rows)) {
         return JSON.parse(JSON.stringify(result.rows))
@@ -48,12 +52,11 @@ const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
     } catch (error) {
       if (isRetryableError(error)) {
         try {
-          await pool.connection.end()
+          await connection.end()
         } catch (error) {
           // pass
         }
 
-        pool.getConnectPromise = pool.createGetConnectPromise()
         await pool.getConnectPromise()
       } else {
         throw error
