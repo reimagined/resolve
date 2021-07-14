@@ -41,7 +41,7 @@ const notifyEventSubscriber = async (
       break
     }
     case /^arn:aws:lambda:/.test(destination): {
-      const lambdaFullName = destination.split(':')[5]
+      const lambdaFullName = destination.split(':')[6]
       await resolveBase.invokeLambdaAsync(lambdaFullName, {
         resolveSource: 'BuildEventSubscriber',
         ...getNotificationObject(eventSubscriber, eventWithCursor, true),
