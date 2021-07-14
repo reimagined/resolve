@@ -12,6 +12,13 @@ const resolveConfigOrigin = {
 jest.setTimeout(30000)
 
 describe('validate schema', () => {
+  let consoleWarn
+  beforeAll(() => {
+    consoleWarn = jest.spyOn(console, 'warn')
+  })
+  afterAll(() => {
+    jest.restoreAllMocks()
+  })
   it('empty', () => {
     expect(
       validateConfig({
@@ -20,6 +27,15 @@ describe('validate schema', () => {
         target: 'local',
       })
     ).toBeTruthy()
+  })
+
+  it('no unexpected warnings', async () => {
+    await validateConfig({
+      ...resolveConfigOrigin,
+      mode: 'development',
+      target: 'local',
+    })
+    expect(consoleWarn).not.toHaveBeenCalled()
   })
 
   it('custom eventstore adapter', () => {
@@ -130,6 +146,36 @@ describe('validate schema', () => {
         },
       })
     ).toBeTruthy()
+  })
+
+  it('middlewares', () => {
+    const resolveConfig = {
+      ...defaultResolveConfig,
+      eventstoreAdapter: {
+        module: '@resolve-js/eventstore-lite',
+        options: {},
+      },
+      target: 'local',
+      mode: 'development',
+      middlewares: {
+        aggregate: [
+          './dummy-aggregate-middleware.js',
+          './dummy-aggregate-middleware-2.js',
+        ],
+        readModel: {
+          resolver: [
+            './dummy-resolver-middleware.js',
+            './dummy-resolver-middleware-2.js',
+          ],
+          projection: [
+            './dummy-projection-middleware.js',
+            './dummy-projection-middleware-2.js',
+          ],
+        },
+      },
+    }
+
+    expect(() => validateConfig(resolveConfig)).not.toThrow()
   })
 })
 
