@@ -50,7 +50,7 @@ const initSubscriber = (resolve, lambdaContext) => {
     await invokeFunction({
       Region: region,
       FunctionName: destination,
-      Payload: JSON.stringify(parameters),
+      Payload: parameters,
       InvocationType: 'Event',
     })
   }
