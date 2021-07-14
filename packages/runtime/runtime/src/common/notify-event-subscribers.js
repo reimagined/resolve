@@ -1,3 +1,15 @@
+const getNotificationObject = (
+  eventSubscriber,
+  eventWithCursor,
+  isForeign
+) => ({
+  eventSubscriber,
+  initiator: isForeign ? 'command-foreign' : 'command',
+  notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
+  sendTime: Date.now(),
+  ...(eventWithCursor != null ? eventWithCursor : {}),
+})
+
 const notifyEventSubscriber = async (
   resolveBase,
   destination,
@@ -22,14 +34,17 @@ const notifyEventSubscriber = async (
     }
     case /^arn:aws:sqs:/.test(destination): {
       const queueFullName = destination.split(':')[5]
-      await resolveBase.sendSqsMessage(queueFullName, {
-        eventSubscriber,
-        initiator: 'command-foreign',
-        notificationId: `NT-${Date.now()}${Math.floor(
-          Math.random() * 1000000
-        )}`,
-        sendTime: Date.now(),
-        ...(eventWithCursor != null ? eventWithCursor : {}),
+      await resolveBase.sendSqsMessage(
+        queueFullName,
+        getNotificationObject(eventSubscriber, eventWithCursor, true)
+      )
+      break
+    }
+    case /^arn:aws:lambda:/.test(destination): {
+      const lambdaFullName = destination.split(':')[5]
+      await resolveBase.invokeLambdaAsync(lambdaFullName, {
+        resolveSource: 'BuildEventSubscriber',
+        ...getNotificationObject(eventSubscriber, eventWithCursor, true),
       })
       break
     }
@@ -54,15 +69,9 @@ const notifyEventSubscribers = async (resolve, eventWithCursor) => {
     const promises = []
     for (const { name: eventSubscriber } of resolve.eventListeners.values()) {
       promises.push(
-        resolve.invokeBuildAsync({
-          eventSubscriber,
-          initiator: 'command',
-          notificationId: `NT-${Date.now()}${Math.floor(
-            Math.random() * 1000000
-          )}`,
-          sendTime: Date.now(),
-          ...(eventWithCursor != null ? eventWithCursor : {}),
-        })
+        resolve.invokeBuildAsync(
+          getNotificationObject(eventSubscriber, eventWithCursor)
+        )
       )
     }
 

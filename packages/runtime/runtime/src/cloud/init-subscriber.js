@@ -10,6 +10,7 @@ import {
   setFunctionTags,
   deleteEventSourceMapping,
   getFunctionTags,
+  invokeFunction,
 } from 'resolve-cloud-common/lambda'
 import { getCallerIdentity } from 'resolve-cloud-common/sts'
 
@@ -34,46 +35,50 @@ const initSubscriber = (resolve, lambdaContext) => {
   const region = process.env.AWS_REGION
   const userId = process.env.RESOLVE_USER_ID
   const functionArn = `arn:aws:lambda:${region}:${accountId}:function:${functionName}`
+  const useSqs = !!process.env.EXPERIMENTAL_SQS_TRANSPORT
 
   resolve.getEventSubscriberDestination = (eventSubscriber) =>
-    `arn:aws:sqs:${region}:${accountId}:${userId}-${resolve.eventSubscriberScope}-${eventSubscriber}`
+    useSqs
+      ? `arn:aws:sqs:${region}:${accountId}:${userId}-${resolve.eventSubscriberScope}-${eventSubscriber}`
+      : functionArn
+
   resolve.subscriptionsCredentials = {
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
   }
 
+  resolve.invokeLambdaAsync = async (destination, parameters) => {
+    await invokeFunction({
+      Region: region,
+      FunctionName: destination,
+      Payload: JSON.stringify(parameters),
+      InvocationType: 'Event',
+    })
+  }
+
   resolve.sendSqsMessage = async (destination, parameters) => {
-    // Send SQS messages within 1 minute with exponential jitter from 64 ms
-    const getRemainingSendingTime = ((endTime) => endTime - Date.now()).bind(
-      null,
-      Date.now() + 60 * 1000
-    )
-    const getJitterTime = (attempt) => Math.pow(2, attempt + 7)
-
     const queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${destination}`
-    for (let attempt = 0; getRemainingSendingTime() > 0; attempt++) {
-      try {
-        await sendMessage({
-          Region: region,
-          QueueUrl: queueUrl,
-          MessageBody: JSON.stringify(parameters),
-        })
-        break
-      } catch (err) {
-        await new Promise((resolve) =>
-          setTimeout(resolve, getJitterTime(attempt))
-        )
-      }
-    }
+    await sendMessage({
+      Region: region,
+      QueueUrl: queueUrl,
+      MessageBody: JSON.stringify(parameters),
+    })
   }
 
-  resolve.invokeBuildAsync = async (parameters) => {
-    await resolve.sendSqsMessage(
-      `${userId}-${resolve.eventSubscriberScope}-${parameters.eventSubscriber}`,
-      parameters
-    )
-  }
+  resolve.invokeBuildAsync = async (parameters) =>
+    useSqs
+      ? await resolve.sendSqsMessage(
+          `${userId}-${resolve.eventSubscriberScope}-${parameters.eventSubscriber}`,
+          parameters
+        )
+      : await resolve.invokeLambdaAsync(functionName, {
+          resolveSource: 'BuildEventSubscriber',
+          ...parameters,
+        })
 
   resolve.ensureQueue = async (name) => {
+    if (!useSqs) {
+      return
+    }
     const getTags = () => {
       const tags = {
         'resolve-deployment-id': resolve.eventSubscriberScope,
@@ -206,6 +211,9 @@ const initSubscriber = (resolve, lambdaContext) => {
   }
 
   resolve.deleteQueue = async (name) => {
+    if (!useSqs) {
+      return
+    }
     const errors = []
     let functionTags = null
     let UUID = null

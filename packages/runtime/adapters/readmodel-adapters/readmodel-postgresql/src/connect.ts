@@ -71,6 +71,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
           .join('\n')
       }
       if (pool.connection === connection) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         pool.connection = null!
       }
       try {
