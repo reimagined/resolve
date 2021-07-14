@@ -6,6 +6,7 @@
 
 **Enhancements:**
 
+- Implement toggle notification queue mode [\#1950](https://github.com/reimagined/resolve/pull/1950)
 - Add injectEvents, run import-export tests on postgres too [\#1947](https://github.com/reimagined/resolve/pull/1947)
 
 **Bug fixes:**
