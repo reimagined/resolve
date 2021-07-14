@@ -1,13 +1,16 @@
 import sendAnalytics from '../src/send-analytics'
 import { analyticsUrlBase, resolveVersion } from '../src/constants'
 import { get } from 'https'
+import { mocked } from 'ts-jest/utils'
 jest.mock('https')
+
+const mockedGet = mocked(get)
 
 test('sendAnalytics requests correct analytics url', () => {
   const exampleName = 'hacker-news'
   sendAnalytics(exampleName)
   expect(get).toBeCalledTimes(1)
-  expect(get.mock.calls[0][0]).toEqual(
+  expect(mockedGet.mock.calls[0][0]).toEqual(
     `${analyticsUrlBase}/${exampleName}/${resolveVersion}`
   )
 })

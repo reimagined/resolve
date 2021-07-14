@@ -5,7 +5,7 @@ import isYarnAvailable from './is-yarn-available'
 
 const log = getLog('resolve:create-resolve-app:install')
 
-const installCloudCli = (cwd, useYarn) => {
+const installCloudCli = (cwd: string, useYarn: boolean) => {
   // eslint-disable-next-line no-console
   console.log(chalk.green('\nInstall resolve-cloud'))
 
@@ -18,7 +18,7 @@ const installCloudCli = (cwd, useYarn) => {
   })
 }
 
-const installDependencies = async (cwd, useYarn) => {
+const installDependencies = async (cwd: string, useYarn: boolean) => {
   // eslint-disable-next-line no-console
   console.log(chalk.green('\nInstall dependencies'))
 
@@ -55,7 +55,7 @@ const installDependencies = async (cwd, useYarn) => {
   }
 }
 
-const install = async (applicationPath) => {
+const install = async (applicationPath: string) => {
   const useYarn = isYarnAvailable()
   try {
     await installDependencies(applicationPath, useYarn)

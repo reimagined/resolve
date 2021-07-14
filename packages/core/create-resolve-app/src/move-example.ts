@@ -3,15 +3,16 @@ import path from 'path'
 import { getAvailableExamples } from './get-available-examples'
 import message from './message'
 
-const exampleNameMatch = (exampleName, isTypescript) => {
+const exampleNameMatch = (exampleName: string, isTypescript: boolean) => {
   const fullName = `${exampleName}-${isTypescript ? 'ts' : 'js'}`
-  return ({ name }) => name === exampleName || name === fullName
+  return ({ name }: { name: string }) =>
+    name === exampleName || name === fullName
 }
 
 const moveExample = async (
-  applicationPath,
-  resolveClonePath,
-  exampleName,
+  applicationPath: string,
+  resolveClonePath: string,
+  exampleName: string,
   useTypescript = false
 ) => {
   const availableExamples = getAvailableExamples(resolveClonePath)

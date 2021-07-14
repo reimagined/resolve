@@ -3213,6 +3213,13 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.1.tgz#a6ca6a9a0ff366af433f42f5f0e124794ff6b8f1"
   integrity sha512-FTgBI767POY/lKNDNbIzgAX6miIDBs6NTCbdlDb8TrWovHsSvaVIZDlTqym29C6UqhzwcJx4CYr+AlrMywA0cA==
 
+"@types/adm-zip@0.4.34":
+  version "0.4.34"
+  resolved "https://registry.yarnpkg.com/@types/adm-zip/-/adm-zip-0.4.34.tgz#62ac859eb2af6024362a1b3e43527ab79e0c624e"
+  integrity sha512-8ToYLLAYhkRfcmmljrKi22gT2pqu7hGMDtORP1emwIEGmgUTZOsaDjzWFzW5N2frcFRz/50CWt4zA1CxJ73pmQ==
+  dependencies:
+    "@types/node" "*"
+
 "@types/aria-query@^4.2.0":
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/@types/aria-query/-/aria-query-4.2.1.tgz#78b5433344e2f92e8b306c06a5622c50c245bf6b"
@@ -3272,6 +3279,11 @@
   integrity sha512-gNstDTb/ty5h6gJd6YpSPgsLX9LmRpaKJqGFp7MRlYxhwp4vXXKlJ9+bt1TZ9KbVNXE+Mbxy2AYXcpY21DDtJw==
   dependencies:
     "@types/node" "*"
+
+"@types/command-line-args@5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@types/command-line-args/-/command-line-args-5.0.1.tgz#8c283123bd9411168fa3cbdb6f5799c07d4af0b0"
+  integrity sha512-+pAMlf+fHYWFDf4OvzEXPsVKLIahB66drrWXPxMe9IapFxjF5Ir+kFAR9qctKxZW4weuFL5ydm3V5yCGnJieew==
 
 "@types/component-emitter@^1.2.10":
   version "1.2.10"
@@ -3584,6 +3596,13 @@
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.3.1.tgz#54dd88bdc7f49958329666af3779561e47d5dab3"
   integrity sha512-NVkb4p4YjI8E3O6+1m8I+8JlMpFZwfSbPGdaw0wXuyPRTEz0SLKwBUWNSO7Maoi8tQMPC8JLZNWkrcKPI7/sLA==
 
+"@types/progress@2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@types/progress/-/progress-2.0.4.tgz#01f8eb06a5f6be396b81d19a20f273cea11ef9b6"
+  integrity sha512-vXGO4Hkk1QeLGRtOD9D8q2K0peciCA46Qo3n/w8joyW5BYx80C2h3b7qk5MkcRnncQRPlFm+KA73BJRfVl+yyw==
+  dependencies:
+    "@types/node" "*"
+
 "@types/prop-types@*", "@types/prop-types@^15.7.3":
   version "15.7.3"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
@@ -3719,6 +3738,11 @@
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.0.tgz#215c231dff736d5ba92410e6d602050cce7e273f"
   integrity sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ==
+
+"@types/validate-npm-package-name@3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@types/validate-npm-package-name/-/validate-npm-package-name-3.0.3.tgz#970c1949b0b677e970aa6e60db4e0f6aaf5fb293"
+  integrity sha512-dLhCHEIjf9++/vHaHCo/ngJzGqGGbPh/f7HKwznEk3WFL64t/VKuRiVpyQH4afX93YkCV94I9M0Cx+DBLk1Dsg==
 
 "@types/warning@^3.0.0":
   version "3.0.0"

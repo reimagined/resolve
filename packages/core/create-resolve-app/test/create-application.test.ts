@@ -27,7 +27,7 @@ test('createApplication steps', async () => {
   await createApplication(
     'dummy-app',
     'hacker-news',
-    '',
+    false,
     'commit-hash',
     'branch-name'
   )
@@ -44,6 +44,6 @@ test('createApplication steps', async () => {
     'hacker-news',
     false
   )
-  expect(patchPackageJson).toHaveBeenCalledWith('dummy-app', appPath, '')
+  expect(patchPackageJson).toHaveBeenCalledWith('dummy-app', appPath, false)
   expect(install).toHaveBeenCalledWith(appPath)
 })
