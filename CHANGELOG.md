@@ -8,6 +8,11 @@
 
 - Add injectEvents, run import-export tests on postgres too [\#1947](https://github.com/reimagined/resolve/pull/1947)
 
+**Bug fixes:**
+
+- Failed to load events in eventstore adapter if connection is terminated while events loading [\#1901](https://github.com/reimagined/resolve/issues/1901)
+- Events batch load is very slow [\#1875](https://github.com/reimagined/resolve/issues/1875)
+
 **Other changes:**
 
 - Add more monitoring functional tests [\#1941](https://github.com/reimagined/resolve/pull/1941)
