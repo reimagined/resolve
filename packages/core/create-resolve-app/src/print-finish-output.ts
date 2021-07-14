@@ -3,8 +3,8 @@
 import chalk from 'chalk'
 import isYarnAvailable from './is-yarn-available'
 
-const printFinishOutput = async (applicationName) => {
-  const displayCommand = (isDefaultCmd) =>
+const printFinishOutput = async (applicationName: string) => {
+  const displayCommand = (isDefaultCmd: boolean) =>
     isYarnAvailable() ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run'
 
   console.log()

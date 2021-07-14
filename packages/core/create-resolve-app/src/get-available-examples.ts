@@ -1,6 +1,6 @@
 import { sync as glob } from 'glob'
 
-function getAvailableExamples(rootPath) {
+export function getAvailableExamples(rootPath: string) {
   const sources = ['./examples/**/package.json', './templates/**/package.json']
 
   const packages = sources
@@ -16,6 +16,7 @@ function getAvailableExamples(rootPath) {
   const resolveExamples = []
 
   for (const filePath of packages) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { name, description, resolveJs } = require(filePath)
     if (!description || !resolveJs || !resolveJs.isAppTemplate) {
       continue
@@ -33,5 +34,3 @@ function getAvailableExamples(rootPath) {
 
   return resolveExamples
 }
-
-module.exports = { getAvailableExamples }
