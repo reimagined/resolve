@@ -11,7 +11,7 @@ const devConfig = {
       snapshotBucketSize: 100,
     },
   },
-  readModels: [
+  /*readModels: [
     {
       name: 'Replicator',
       projection: 'common/read-models/empty.ts',
@@ -27,7 +27,7 @@ const devConfig = {
         targetApplicationUrl: declareRuntimeEnv('TARGET_REPLICATION_URL', ''),
       },
     },
-  },
+  },*/
 }
 
 export default devConfig

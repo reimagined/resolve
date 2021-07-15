@@ -3,7 +3,7 @@ import cloudCommonConfig from './config.cloud.common'
 
 const cloudConfig = {
   ...cloudCommonConfig,
-  readModels: [
+  /*readModels: [
     {
       name: 'Replicator',
       projection: 'common/read-models/empty.ts',
@@ -19,7 +19,7 @@ const cloudConfig = {
         targetApplicationUrl: declareRuntimeEnv('TARGET_REPLICATION_URL', ''),
       },
     },
-  },
+  },*/
 }
 
 export default cloudConfig
