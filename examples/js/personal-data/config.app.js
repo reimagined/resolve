@@ -66,7 +66,7 @@ const appConfig = {
   ],
   middlewares: {
     aggregate: ['common/middlewares/auth-command-middleware.js'],
-    readModel: { resolver: ['common/middlewares/auth-resolver-middleware.ts'] },
+    readModel: { resolver: ['common/middlewares/auth-resolver-middleware.js'] },
   },
   clientEntries: [
     [
