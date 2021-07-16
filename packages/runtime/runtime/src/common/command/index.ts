@@ -57,7 +57,7 @@ const createCommand: CommandExecutorBuilder = ({
   const disposableExecutor = async (
     command: Command,
     middlewareContext: MiddlewareContext
-  ): Promise<CommandResult> => {
+  ): Promise<CommandResult | null> => {
     if (pool.isDisposed) {
       throw new CommandError('Command handler is disposed')
     }

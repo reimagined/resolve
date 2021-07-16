@@ -62,6 +62,7 @@ const getAggregateInterop = (aggregate: AggregateMeta): AggregateInterop => {
     deserializeState,
     invariantHash,
     projection,
+    commandHttpResponseMode = 'empty',
   } = aggregate
   return {
     name,
@@ -71,6 +72,7 @@ const getAggregateInterop = (aggregate: AggregateMeta): AggregateInterop => {
     serializeState,
     deserializeState,
     invariantHash,
+    commandHttpResponseMode,
   }
 }
 
@@ -396,7 +398,7 @@ const makeCommandExecutor = (
   return async (
     command: Command,
     middlewareContext: MiddlewareContext = {}
-  ): Promise<CommandResult> => {
+  ): Promise<CommandResult | null> => {
     const monitoringGroup =
       runtime.monitoring != null
         ? runtime.monitoring
@@ -519,7 +521,9 @@ const makeCommandExecutor = (
         }
       })()
 
-      return processedEvent
+      return aggregate.commandHttpResponseMode === 'event'
+        ? processedEvent
+        : null
     } catch (error) {
       executionError = error
       subSegment.addError(error)

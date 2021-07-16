@@ -24,6 +24,7 @@ export type AggregateInterop = {
   serializeState: Function
   deserializeState: Function
   invariantHash?: string
+  commandHttpResponseMode?: 'event' | 'empty'
 }
 
 export type AggregateInteropMap = {
@@ -35,7 +36,7 @@ export type AggregatesInterop = {
   executeCommand: (
     command: Command,
     middlewareContext?: MiddlewareContext
-  ) => Promise<CommandResult>
+  ) => Promise<CommandResult | null>
 }
 
 export type AggregateRuntimeHooks = {

@@ -103,6 +103,10 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
+        },
+        "commandHttpResponseMode": {
+          "enum": ["event", "empty"],
+          "default": "empty"
         }
       },
       "dependencies": {

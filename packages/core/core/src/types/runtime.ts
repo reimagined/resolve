@@ -68,6 +68,7 @@ export type AggregateMeta = {
   deserializeState: Function
   encryption: AggregateEncryptionFactory | null
   invariantHash?: string
+  commandHttpResponseMode?: 'event' | 'empty'
 }
 
 export type EventProjectionMeta = {

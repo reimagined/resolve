@@ -338,6 +338,7 @@ describe('Cloud entry', () => {
         serializeState: (state) => JSON.stringify(state),
         deserializeState: (serializedState) => JSON.parse(serializedState),
         invariantHash: 'aggregate-invariantHash',
+        commandHttpResponseMode: 'event',
       }
 
       domain.aggregates.push(aggregate)
@@ -364,7 +365,6 @@ describe('Cloud entry', () => {
       const cloudEntryWorker = await getCloudEntryWorker()
 
       const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
-
       expect(result.statusCode).toEqual(200)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
       expect(JSON.parse(result.body)).toEqual({
