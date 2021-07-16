@@ -11,15 +11,22 @@ const isRetryableError = (error: any): boolean =>
     error,
     /terminating connection due to serverless scale event timeout/i
   ) ||
+    checkFuzzyError(
+      error,
+      /terminating connection due to administrator command/i
+    ) ||
     checkFuzzyError(error, /Remaining connection slots are reserved/i) ||
     checkFuzzyError(error, /Too many clients already/i) ||
-    checkFormalError(error, 'ECONNRESET') ||
-    checkFormalError(error, '08000') ||
-    checkFormalError(error, '08003') ||
-    checkFormalError(error, '08006') ||
     checkFuzzyError(error, /Connection terminated/i) ||
     checkFuzzyError(error, /canceling statement due to statement timeout/i) ||
-    checkFuzzyError(error, /Query read timeout/i))
+    checkFuzzyError(error, /Query read timeout/i) ||
+    checkFuzzyError(error, /Connection terminated unexpectedly/i) ||
+    checkFuzzyError(error, /timeout expired/i) ||
+    checkFormalError(error, 'ECONNRESET') ||
+    checkFormalError(error, 'ETIMEDOUT') ||
+    checkFormalError(error, '08000') ||
+    checkFormalError(error, '08003') ||
+    checkFormalError(error, '08006'))
 
 const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
   while (true) {
