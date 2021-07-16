@@ -2,7 +2,8 @@ import binaryCase from 'binary-case'
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
 import { parse as parseQuery } from 'qs'
-import { getReasonPhrase } from 'http-status-codes'
+
+import getHttpStatusText from '../common/utils/get-http-status-text'
 
 const COOKIE_CLEAR_DATE = new Date(0)
 const INTERNAL = Symbol('INTERNAL')
@@ -362,7 +363,7 @@ const wrapApiHandler = (handler, getCustomParameters, monitoring) => async (
     if (isLambdaEdgeRequest) {
       result = {
         httpStatus: statusCode,
-        httpStatusText: getReasonPhrase(statusCode),
+        httpStatusText: getHttpStatusText(statusCode),
         headers: Object.entries(headers).map(([key, value]) => ({
           key,
           value,
@@ -390,7 +391,7 @@ const wrapApiHandler = (handler, getCustomParameters, monitoring) => async (
     if (isLambdaEdgeRequest) {
       result = {
         httpStatus: 500,
-        httpStatusText: getReasonPhrase(500),
+        httpStatusText: getHttpStatusText(500),
         headers: [],
         body: '',
       }
