@@ -1,5 +1,24 @@
 # Changelog
 
+## [V0.31.4](https://github.com/reimagined/resolve/tree/V0.31.4) (2021-07-19)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.3...V0.31.4)
+
+**Enhancements:**
+
+- Passthorugh errors list from monitoring [\#1957](https://github.com/reimagined/resolve/pull/1957)
+- Implement toggle notification queue mode [\#1950](https://github.com/reimagined/resolve/pull/1950)
+- Add injectEvents, run import-export tests on postgres too [\#1947](https://github.com/reimagined/resolve/pull/1947)
+
+**Bug fixes:**
+
+- Failed to load events in eventstore adapter if connection is terminated while events loading [\#1901](https://github.com/reimagined/resolve/issues/1901)
+- Events batch load is very slow [\#1875](https://github.com/reimagined/resolve/issues/1875)
+
+**Other changes:**
+
+- Add more monitoring functional tests [\#1941](https://github.com/reimagined/resolve/pull/1941)
+
 ## [V0.31.3](https://github.com/reimagined/resolve/tree/V0.31.3) (2021-07-12)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.2...V0.31.3)
