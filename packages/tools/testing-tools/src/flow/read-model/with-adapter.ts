@@ -1,6 +1,7 @@
 import partial from 'lodash.partial'
 import { ReadModelContext } from '../../types'
 import { query } from './query'
+import { withEncryption } from './with-encryption'
 import { ReadModelNode } from './read-model'
 
 type WithAdapterNode = Omit<ReadModelNode, 'withAdapter'>
@@ -17,5 +18,6 @@ export const withAdapter = (
 
   return {
     query: partial(query, context),
+    withEncryption: partial(withEncryption, context),
   }
 }
