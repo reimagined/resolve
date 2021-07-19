@@ -37,7 +37,7 @@ describe('common', () => {
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
 
     expect(CloudWatch.putMetricData).toBeCalledWith({
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
       MetricData: expect.any(Array),
     })
   })
@@ -1027,7 +1027,7 @@ describe('time and timeEnd', () => {
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
 
     expect(CloudWatch.putMetricData).toBeCalledWith({
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
       MetricData: expect.any(Array),
     })
 
@@ -1267,7 +1267,7 @@ describe('duration', () => {
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
 
     expect(CloudWatch.putMetricData).toBeCalledWith({
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
       MetricData: expect.any(Array),
     })
 
@@ -1297,7 +1297,7 @@ describe('duration', () => {
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
 
     expect(CloudWatch.putMetricData).toBeCalledWith({
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
       MetricData: expect.any(Array),
     })
 
@@ -1653,7 +1653,7 @@ describe('rate', () => {
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
 
     expect(CloudWatch.putMetricData).toBeCalledWith({
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
       MetricData: expect.any(Array),
     })
 
@@ -1682,7 +1682,7 @@ describe('rate', () => {
     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
 
     expect(CloudWatch.putMetricData).toBeCalledWith({
-      Namespace: 'RESOLVE_METRICS',
+      Namespace: 'ResolveJs',
       MetricData: expect.any(Array),
     })
 

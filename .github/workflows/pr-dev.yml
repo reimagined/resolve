@@ -25,7 +25,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
+          key: ${{ runner.os }}-modules-root-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
+          restore-keys: ${{ runner.os }}-modules-root-
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -33,7 +34,8 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
+          key: ${{ runner.os }}-modules-packages-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
+          restore-keys: ${{ runner.os }}-modules-packages-
 
       - name: Cache examples node_modules
         uses: actions/cache@v2
@@ -41,13 +43,15 @@ jobs:
           path: |
             examples/**/node_modules
             templates/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
+          key: ${{ runner.os }}-modules-examples-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
+          restore-keys: ${{ runner.os }}-modules-examples-
 
       - name: Cache functional tests node_modules
         uses: actions/cache@v2
         with:
           path: 'functional-tests/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-functional-tests
+          key: ${{ runner.os }}-modules-functional-tests-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
+          restore-keys: ${{ runner.os }}-modules-functional-tests-
 
       - name: Cache tests and website node_modules
         uses: actions/cache@v2
@@ -55,7 +59,8 @@ jobs:
           path: |
             tests/**/node_modules
             website/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-tests
+          key: ${{ runner.os }}-modules-tests-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
+          restore-keys: ${{ runner.os }}-modules-tests-
 
       - name: Cache build
         uses: actions/cache@v2
@@ -72,12 +77,20 @@ jobs:
             internal/**/*.tsbuildinfo
             !internal/**/node_modules/**
             .packages/**
-          key: ${{ runner.os }}-${{ github.run_id }}-build
+          key: ${{ runner.os }}-build-${{ github.run_id }}
 
       - name: Install
-        run: |
-          yarn install --frozen-lockfile
-          yarn validate-lock-file
+        run: yarn install
+
+      - name: Check if yarn.lock changed
+        run: echo "git_diff=$(git diff --name-only yarn.lock)" >> $GITHUB_ENV
+
+      - name: Fail job if yarn.lock changed
+        if: env.git_diff
+        run: exit 1
+
+      - name: Validate yarn.lock
+        run: yarn validate-lock-file
 
       - name: Run Prettier
         run: yarn prettier:check
@@ -117,7 +130,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
+          key: ${{ runner.os }}-modules-root-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -125,7 +138,7 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
+          key: ${{ runner.os }}-modules-packages-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
 
       - name: Cache tests and website node_modules
         uses: actions/cache@v2
@@ -133,7 +146,7 @@ jobs:
           path: |
             tests/**/node_modules
             website/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-tests
+          key: ${{ runner.os }}-modules-tests-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
 
       - name: Cache build
         uses: actions/cache@v2
@@ -150,7 +163,7 @@ jobs:
             internal/**/*.tsbuildinfo
             !internal/**/node_modules/**
             .packages/**
-          key: ${{ runner.os }}-${{ github.run_id }}-build
+          key: ${{ runner.os }}-build-${{ github.run_id }}
 
       - name: Install
         run: |
@@ -184,7 +197,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
+          key: ${{ runner.os }}-modules-root-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -192,7 +205,7 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
+          key: ${{ runner.os }}-modules-packages-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
 
       - name: Cache examples node_modules
         uses: actions/cache@v2
@@ -200,7 +213,7 @@ jobs:
           path: |
             examples/**/node_modules
             templates/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
+          key: ${{ runner.os }}-modules-examples-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
 
       - name: Cache build
         uses: actions/cache@v2
@@ -217,7 +230,7 @@ jobs:
             internal/**/*.tsbuildinfoF
             !internal/**/node_modules/**
             .packages/**
-          key: ${{ runner.os }}-${{ github.run_id }}-build
+          key: ${{ runner.os }}-build-${{ github.run_id }}
 
       - name: Install
         run: |
@@ -249,7 +262,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-root
+          key: ${{ runner.os }}-modules-root-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
 
       - name: Cache packages node_modules
         uses: actions/cache@v2
@@ -257,7 +270,7 @@ jobs:
           path: |
             packages/**/node_modules
             internal/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-packages
+          key: ${{ runner.os }}-modules-packages-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
 
       - name: Cache examples node_modules
         uses: actions/cache@v2
@@ -265,13 +278,13 @@ jobs:
           path: |
             examples/**/node_modules
             templates/**/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-examples
+          key: ${{ runner.os }}-modules-examples-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
 
       - name: Cache functional tests node_modules
         uses: actions/cache@v2
         with:
           path: 'functional-tests/**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}-modules-functional-tests
+          key: ${{ runner.os }}-modules-functional-tests-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
 
       - name: Cache build
         uses: actions/cache@v2
@@ -288,7 +301,7 @@ jobs:
             internal/**/*.tsbuildinfo
             !internal/**/node_modules/**
             .packages/**
-          key: ${{ runner.os }}-${{ github.run_id }}-build
+          key: ${{ runner.os }}-build-${{ github.run_id }}
 
       - name: Install
         run: |
@@ -326,14 +339,6 @@ jobs:
           registry: ${{ steps.publish.outputs.registry_url }}
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           scopes: '@resolve-js'
-
-      - name: Integration Test PostgreSQL Serverless
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
-          AWS_RDS_CLUSTER_ARN: ${{  steps.install_cloud.outputs.system_cluster_arn }}
-          AWS_RDS_ADMIN_SECRET_ARN: ${{  steps.install_cloud.outputs.postgres_admin_secret_arn }}
-        run: yarn test:integration-postgres-serverless
 
       - name: Prepare test application
         run: |
@@ -374,6 +379,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-central-1
           RESOLVE_TESTS_TARGET_DEPLOYMENT_ID: ${{ steps.deploy.outputs.id }}
+          RESOLVE_TESTS_TARGET_VERSION: ${{ steps.publish.outputs.version }}
+          RESOLVE_TESTS_TARGET_STAGE: framework-test
         run: |
           cd functional-tests
           yarn run-test api --url=${{ steps.deploy.outputs.url }}
@@ -382,3 +389,11 @@ jobs:
         run: |
           cd functional-tests
           yarn run-test testcafe --url=${{ steps.deploy.outputs.url }} --testcafe-browser=chrome --ci-mode --testcafe-timeout=10000
+
+      - name: Integration Test PostgreSQL Serverless
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
+          AWS_RDS_CLUSTER_ARN: ${{ steps.install_cloud.outputs.system_cluster_arn }}
+          AWS_RDS_ADMIN_SECRET_ARN: ${{ steps.install_cloud.outputs.postgres_admin_secret_arn }}
+        run: yarn test:integration-postgres-serverless

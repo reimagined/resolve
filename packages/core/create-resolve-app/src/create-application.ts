@@ -8,11 +8,11 @@ import install from './install'
 import printFinishOutput from './print-finish-output'
 
 const createApplication = async (
-  applicationName,
-  exampleName,
-  localRegistry,
-  commit,
-  branch,
+  applicationName: string,
+  exampleName: string,
+  localRegistry: boolean,
+  commit: string,
+  branch: string,
   useTypescript = false
 ) => {
   // eslint-disable-next-line no-console

@@ -1,8 +1,7 @@
 import fs from 'fs-extra'
 import moveExample from '../src/move-example'
 import { moveSync } from 'fs-extra'
-
-import availableExamples from '../src/get-available-examples'
+import { mocked } from 'ts-jest/utils'
 
 jest.mock('fs-extra', () => ({
   moveSync: jest.fn(),
@@ -10,37 +9,41 @@ jest.mock('fs-extra', () => ({
   readdirSync: jest.fn().mockReturnValue(['one']),
 }))
 
-availableExamples.getAvailableExamples = jest.fn().mockReturnValue([
-  {
-    name: 'language-unspecified-example',
-    description: 'Dummy reSolve example',
-    path: '/language-unspecified-example',
-  },
-  {
-    name: 'two-language-example-ts',
-    description: 'Dummy reSolve example',
-    path: '/two-language-example-ts',
-  },
-  {
-    name: 'two-language-example-js',
-    description: 'Dummy reSolve example',
-    path: '/two-language-example-js',
-  },
-  {
-    name: 'js-example-js',
-    description: 'Dummy reSolve example',
-    path: '/js-example-js',
-  },
-  {
-    name: 'ts-example-ts',
-    description: 'Dummy reSolve example',
-    path: '/ts-example-ts',
-  },
-])
+jest.mock('../src/get-available-examples', () => ({
+  getAvailableExamples: jest.fn().mockReturnValue([
+    {
+      name: 'language-unspecified-example',
+      description: 'Dummy reSolve example',
+      path: '/language-unspecified-example',
+    },
+    {
+      name: 'two-language-example-ts',
+      description: 'Dummy reSolve example',
+      path: '/two-language-example-ts',
+    },
+    {
+      name: 'two-language-example-js',
+      description: 'Dummy reSolve example',
+      path: '/two-language-example-js',
+    },
+    {
+      name: 'js-example-js',
+      description: 'Dummy reSolve example',
+      path: '/js-example-js',
+    },
+    {
+      name: 'ts-example-ts',
+      description: 'Dummy reSolve example',
+      path: '/ts-example-ts',
+    },
+  ]),
+}))
 
 fs.existsSync = jest.fn().mockReturnValue(true)
 
-afterEach(() => moveSync.mockClear())
+const mockedMoveSync = mocked(moveSync)
+
+afterEach(() => mockedMoveSync.mockClear())
 
 afterAll(() => jest.clearAllMocks())
 

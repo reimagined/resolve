@@ -54,6 +54,26 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
+    } else if (lambdaEvent.resolveSource === 'BuildEventSubscriber') {
+      initSubscriber(resolveBase, lambdaContext)
+      initScheduler(resolve)
+
+      log.debug('initializing reSolve framework')
+      await initResolve(resolve)
+      log.debug('reSolve framework initialized')
+
+      log.debug('identified event source: event-subscriber-direct')
+      const { resolveSource, ...buildParameters } = lambdaEvent
+      void resolveSource
+
+      const executorResult = await resolve.eventSubscriber.build({
+        ...buildParameters,
+        coldStart,
+      })
+
+      log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
+
+      return executorResult
     } else if (
       Array.isArray(lambdaEvent.Records) &&
       [

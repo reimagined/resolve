@@ -23,7 +23,7 @@ const devConfig = {
       replicator: {
         module: '@resolve-js/replicator-via-api-handler',
         options: {
-          targetApplicationUrl: 'http://localhost:3001',
+          targetApplicationUrl: declareRuntimeEnv('TARGET_REPLICATION_URL', ''),
         },
       },
     },*/

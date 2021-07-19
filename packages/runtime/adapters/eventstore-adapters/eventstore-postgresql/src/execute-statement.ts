@@ -11,18 +11,26 @@ const isRetryableError = (error: any): boolean =>
     error,
     /terminating connection due to serverless scale event timeout/i
   ) ||
+    checkFuzzyError(
+      error,
+      /terminating connection due to administrator command/i
+    ) ||
     checkFuzzyError(error, /Remaining connection slots are reserved/i) ||
     checkFuzzyError(error, /Too many clients already/i) ||
-    checkFormalError(error, 'ECONNRESET') ||
-    checkFormalError(error, '08000') ||
-    checkFormalError(error, '08003') ||
-    checkFormalError(error, '08006') ||
     checkFuzzyError(error, /Connection terminated/i) ||
     checkFuzzyError(error, /canceling statement due to statement timeout/i) ||
-    checkFuzzyError(error, /Query read timeout/i))
+    checkFuzzyError(error, /Query read timeout/i) ||
+    checkFuzzyError(error, /Connection terminated unexpectedly/i) ||
+    checkFuzzyError(error, /timeout expired/i) ||
+    checkFormalError(error, 'ECONNRESET') ||
+    checkFormalError(error, 'ETIMEDOUT') ||
+    checkFormalError(error, '08000') ||
+    checkFormalError(error, '08003') ||
+    checkFormalError(error, '08006'))
 
 const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
   while (true) {
+    let connection: typeof pool.connection = pool.connection
     try {
       if (pool.connectionErrors.length > 0) {
         let summaryError = pool.connectionErrors[0]
@@ -35,10 +43,13 @@ const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
             .join('\n')
         }
         pool.connectionErrors = []
+
+        pool.getConnectPromise = pool.createGetConnectPromise()
+
         throw summaryError
       }
 
-      const result = await pool.connection.query(sql)
+      const result = await connection.query(sql)
 
       if (result != null && Array.isArray(result.rows)) {
         return JSON.parse(JSON.stringify(result.rows))
@@ -48,12 +59,11 @@ const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
     } catch (error) {
       if (isRetryableError(error)) {
         try {
-          await pool.connection.end()
+          await connection.end()
         } catch (error) {
           // pass
         }
 
-        pool.getConnectPromise = pool.createGetConnectPromise()
         await pool.getConnectPromise()
       } else {
         throw error

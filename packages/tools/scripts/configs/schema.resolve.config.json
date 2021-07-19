@@ -385,23 +385,32 @@
         "middlewares": {
           "type": "object",
           "properties": {
-            "command": {
+            "aggregate": {
               "type": "array",
-              "items": [
-                {
-                  "type": "string"
-                }
-              ]
+              "items": {
+                "type": "string"
+              }
             },
-            "query": {
-              "type": "array",
-              "items": [
-                {
-                  "type": "string"
+            "readModel": {
+              "type": "object",
+              "properties": {
+                "resolver": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "projection": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 }
-              ]
+              },
+              "additionalProperties": false
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "required": [

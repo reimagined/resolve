@@ -64,6 +64,10 @@ const appConfig = {
       method: 'DELETE',
     },
   ],
+  middlewares: {
+    aggregate: ['common/middlewares/auth-command-middleware.js'],
+    readModel: { resolver: ['common/middlewares/auth-resolver-middleware.js'] },
+  },
   clientEntries: [
     [
       'client/index.js',

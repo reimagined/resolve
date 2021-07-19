@@ -6,10 +6,8 @@ import {
   USER_PERSONAL_DATA_GATHERED,
 } from '../user-profile.events'
 import { systemUserId } from '../constants'
-import { decode } from '../jwt'
 const aggregate = {
-  register: (state, command, context) => {
-    // TODO: check user authorization token
+  register: (state, command, { encrypt }) => {
     const { isRegistered, isDeleted } = state
     if (isRegistered) {
       throw Error(`the user already registered`)
@@ -23,7 +21,6 @@ const aggregate = {
     if (!firstName || !lastName || !phoneNumber) {
       throw Error(`some of the user profile data missed`)
     }
-    const { encrypt } = context
     return {
       type: USER_REGISTERED,
       payload: {
@@ -37,8 +34,7 @@ const aggregate = {
       },
     }
   },
-  update: (state, command, context) => {
-    const { encrypt, jwt } = context
+  update: (state, command, { encrypt, user }) => {
     const {
       aggregateId,
       payload: { firstName, lastName, phoneNumber, address },
@@ -54,7 +50,6 @@ const aggregate = {
       phoneNumber,
       address,
     })
-    const user = decode(jwt)
     if (user.userId !== aggregateId) {
       throw Error(`you are not authorized to perform this operation`)
     }
@@ -78,8 +73,7 @@ const aggregate = {
     }
     throw Error("no user's profile changes found")
   },
-  delete: (state, { aggregateId }, { jwt }) => {
-    const user = decode(jwt)
+  delete: (state, { aggregateId }, { user }) => {
     if (user.userId !== aggregateId) {
       throw Error(`you are not authorized to perform this operation`)
     }
@@ -91,8 +85,7 @@ const aggregate = {
       type: USER_PROFILE_DELETED,
     }
   },
-  gatherPersonalData: (state, { aggregateId }, { jwt }) => {
-    const user = decode(jwt)
+  gatherPersonalData: (state, { aggregateId }, { user }) => {
     if (user.userId !== aggregateId) {
       throw Error('you are not authorized to perform this operation')
     }
@@ -107,8 +100,7 @@ const aggregate = {
       type: USER_PERSONAL_DATA_REQUESTED,
     }
   },
-  completePersonalDataGathering: (state, command, { jwt }) => {
-    const user = decode(jwt)
+  completePersonalDataGathering: (state, command, { user }) => {
     if (user.userId !== systemUserId) {
       throw Error('you are not authorized to perform this operation')
     }

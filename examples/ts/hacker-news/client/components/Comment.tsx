@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import sanitizer from 'sanitizer'
 import styled from 'styled-components'
 

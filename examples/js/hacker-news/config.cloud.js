@@ -14,7 +14,7 @@ const cloudConfig = {
       replicator: {
         module: '@resolve-js/replicator-via-api-handler',
         options: {
-          targetApplicationUrl: '...',
+          targetApplicationUrl: declareRuntimeEnv('TARGET_REPLICATION_URL', ''),
         },
       },
     },*/

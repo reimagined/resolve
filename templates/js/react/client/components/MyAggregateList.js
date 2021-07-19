@@ -5,14 +5,14 @@ import { Button } from 'react-bootstrap'
 import { MyAggregateItems } from './MyAggregateItems'
 const MyAggregateList = () => {
   const [aggregates, setAggregates] = useState([])
-  const getEntities = useQuery(
+  const getMyAggregates = useQuery(
     { name: 'MyAggregateList', resolver: 'all', args: {} },
     (error, result) => {
       setAggregates(result.data)
     }
   )
   useEffect(() => {
-    getEntities()
+    getMyAggregates()
   }, [])
   const createAggregate = useCommand(
     {
@@ -42,7 +42,7 @@ const MyAggregateList = () => {
     (error, result) => {
       const event = result
       setAggregates([
-        ...aggregates.filter((entity) => entity.id !== event.aggregateId),
+        ...aggregates.filter((aggregate) => aggregate.id !== event.aggregateId),
       ])
     }
   )
@@ -51,7 +51,7 @@ const MyAggregateList = () => {
       <Button variant="success" onClick={() => createAggregate()}>
         Create Aggregate
       </Button>
-      <div className="entities">
+      <div className="my-aggregates">
         {aggregates.map(({ id, name }) => (
           <MyAggregateItems
             key={id}

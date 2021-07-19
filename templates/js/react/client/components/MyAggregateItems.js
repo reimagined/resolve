@@ -26,9 +26,9 @@ const MyAggregateItems = ({ id, name, onDelete }) => {
     payload: { itemName },
   }))
   return (
-    <Card className="entity">
-      <Card.Header className="entity-header">
-        <span className="entity-name">{name}</span>
+    <Card className="my-aggregate">
+      <Card.Header className="my-aggregate-header">
+        <span className="my-aggregate-name">{name}</span>
         <span>
           <Button variant="success" size="sm" onClick={() => addItemCommand()}>
             Add Item
@@ -40,10 +40,10 @@ const MyAggregateItems = ({ id, name, onDelete }) => {
           </Button>
         </span>
       </Card.Header>
-      <Card.Body className="entity-items">
-        <div className="entity-items-content">
+      <Card.Body className="my-aggregate-items">
+        <div className="my-aggregate-items-content">
           {items.map((item) => (
-            <div className="entity-item" key={item}>
+            <div className="my-aggregate-item" key={item}>
               <span>{item}</span>
               <span>
                 <Button
