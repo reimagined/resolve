@@ -1,6 +1,6 @@
 {
   "name": "create-resolve-app",
-  "version": "0.31.3",
+  "version": "0.31.4",
   "description": "A tool that generates boilerplate web applications based on the reSolve framework",
   "keywords": [
     "cqrs",
@@ -16,8 +16,8 @@
   "license": "MIT",
   "author": "reimagined team",
   "main": "./lib/index.js",
-  "bin": "./bin/index.js",
   "types": "./types/index.d.ts",
+  "bin": "./bin/index.js",
   "scripts": {
     "build": "yarn workspace @internal/babel-compile start --name=create-resolve-app",
     "test": "jest --config=../../../jest.config.js --verbose",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
-    "@resolve-js/debug-levels": "0.31.3",
+    "@resolve-js/debug-levels": "0.31.4",
     "adm-zip": "0.5.4",
     "boxen": "5.0.0",
     "chalk": "4.1.0",

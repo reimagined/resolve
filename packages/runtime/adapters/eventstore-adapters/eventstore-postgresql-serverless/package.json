@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/eventstore-postgresql-serverless",
-  "version": "0.31.3",
+  "version": "0.31.4",
   "description": "An adapter reSolve uses to store events in PostgreSQL Serverless.",
   "keywords": [
     "cqrs",
@@ -25,12 +25,12 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
-    "@resolve-js/debug-levels": "0.31.3",
-    "@resolve-js/eventstore-base": "0.31.3",
+    "@resolve-js/debug-levels": "0.31.4",
+    "@resolve-js/eventstore-base": "0.31.4",
     "crc-32": "^1.2.0"
   },
   "devDependencies": {
-    "@resolve-js/core": "0.31.3",
+    "@resolve-js/core": "0.31.4",
     "jest": "27.0.3",
     "ts-jest": "27.0.2"
   },
