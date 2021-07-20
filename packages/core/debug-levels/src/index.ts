@@ -1,7 +1,7 @@
 import debug, { Debug, Debugger } from 'debug'
 
 const logLevels = ['log', 'error', 'warn', 'debug', 'info', 'verbose']
-const defaultLogLevel = logLevels[2]
+const defaultLogLevel = logLevels[3]
 
 type Logger = (...args: any[]) => void
 
@@ -38,6 +38,11 @@ const debugLevels = (
 
   if (!envProvider.hasOwnProperty('DEBUG')) {
     debugProvider.enable('resolve:*')
+    envProvider['DEFAULT_DEBUG'] = 'true'
+  }
+
+  if (envProvider['DEFAULT_DEBUG'] === 'true') {
+    logLevel = logLevels[2]
   }
 
   const allowedLevels = logLevels.slice(0, logLevels.indexOf(logLevel) + 1)
