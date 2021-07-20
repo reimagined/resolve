@@ -39,7 +39,7 @@ test('should set DEBUG_LEVEL="debug" if DEBUG_LEVEL env is not set', () => {
   }
   const namespace = 'namespace'
   const logger = debugLevels(
-    (debugProvider as unknown) as Debug,
+    (debugProvider as any) as Debug,
     envProvider,
     namespace
   )
@@ -61,7 +61,7 @@ test('should set DEBUG_LEVEL="debug" if DEBUG_LEVEL env is not set', () => {
   expect(debugPrinter).not.toBeCalledWith('Verbose message')
 })
 
-test('should set DEBUG="resolve:*" if DEBUG env is not set', () => {
+test('should set DEBUG="resolve:*" and DEBUG_LEVEL="warn" if DEBUG env is not set', () => {
   const debugNamespaceEnabler = jest.fn()
   const debugPrinter = jest.fn()
   const debugProvider = jest.fn().mockReturnValue(debugPrinter)
