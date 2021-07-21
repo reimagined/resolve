@@ -15,6 +15,7 @@ import {
   CommandContext,
   CommandHandler,
   CommandResult,
+  EmptyCommandResult,
 } from '../types/core'
 import { makeMiddlewareApplier } from '../helpers'
 
@@ -398,7 +399,7 @@ const makeCommandExecutor = (
   return async (
     command: Command,
     middlewareContext: MiddlewareContext = {}
-  ): Promise<CommandResult | null> => {
+  ): Promise<CommandResult | EmptyCommandResult> => {
     const monitoringGroup =
       runtime.monitoring != null
         ? runtime.monitoring
@@ -521,9 +522,7 @@ const makeCommandExecutor = (
         }
       })()
 
-      return aggregate.commandHttpResponseMode === 'event'
-        ? processedEvent
-        : null
+      return aggregate.commandHttpResponseMode === 'event' ? processedEvent : {}
     } catch (error) {
       executionError = error
       subSegment.addError(error)

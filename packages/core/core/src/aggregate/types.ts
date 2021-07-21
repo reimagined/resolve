@@ -12,6 +12,7 @@ import {
   CommandHandler,
   CommandResult,
   SecretsManager,
+  EmptyCommandResult,
 } from '../types/core'
 
 export type AggregateInterop = {
@@ -36,7 +37,7 @@ export type AggregatesInterop = {
   executeCommand: (
     command: Command,
     middlewareContext?: MiddlewareContext
-  ) => Promise<CommandResult | null>
+  ) => Promise<CommandResult | EmptyCommandResult>
 }
 
 export type AggregateRuntimeHooks = {

@@ -85,6 +85,8 @@ export type CommandResult = {
   aggregateVersion?: number
 }
 
+export type EmptyCommandResult = {}
+
 // Aggregate
 
 export type AggregateState = any

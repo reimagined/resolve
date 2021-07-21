@@ -71,7 +71,7 @@ const commandHandler = async (req, res) => {
 
     await res.status(200)
     await res.setHeader('Content-Type', 'text/plain')
-    await res.end(result ? JSON.stringify(result) : '')
+    await res.end(JSON.stringify(result))
 
     log.debug('Command handler executed successfully', req.path, commandArgs)
   } catch (err) {
