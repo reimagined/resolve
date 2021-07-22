@@ -1,6 +1,9 @@
 import { getAggregatesInteropBuilder } from '../src/aggregate/get-aggregates-interop-builder'
 import { CommandError } from '../src/errors'
-import { AggregateRuntime } from '../src/aggregate/types'
+import {
+  AggregateRuntime,
+  CommandHttpResponseMode,
+} from '../src/aggregate/types'
 import { SecretsManager, Event, CommandResult } from '../src/types/core'
 import { CommandMiddleware, Eventstore, Monitoring } from '../src/types/runtime'
 let DateNow: any
@@ -20,7 +23,8 @@ const makeAggregateMeta = (params: any) => ({
   serializeState: params.serializeState || JSON.stringify,
   deserializeState: params.deserializeState || JSON.parse,
   projection: params.projection || {},
-  commandHttpResponseMode: params.commandHttpResponseMode || 'event',
+  commandHttpResponseMode:
+    params.commandHttpResponseMode || CommandHttpResponseMode.event,
 })
 
 const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
@@ -684,6 +688,33 @@ describe('Command handlers', () => {
         payload: undefined,
       })
     )
+  })
+
+  test('should not return event if commandHttpResponseMode set to "empty"', async () => {
+    const { executeCommand } = getAggregatesInteropBuilder([
+      makeAggregateMeta({
+        name: 'test-aggregate',
+        commands: {
+          testCommand: () => {
+            return {
+              type: 'SOME_EVENT',
+              payload: {
+                somePayloadData: 'somePayloadData',
+              },
+            }
+          },
+        },
+        commandHttpResponseMode: CommandHttpResponseMode.empty,
+      }),
+    ])(makeTestRuntime())
+
+    await expect(
+      executeCommand({
+        aggregateName: 'test-aggregate',
+        aggregateId: 'aggregateId',
+        type: 'testCommand',
+      })
+    ).resolves.toEqual({})
   })
 })
 
