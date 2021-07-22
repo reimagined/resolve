@@ -338,7 +338,6 @@ describe('Cloud entry', () => {
         serializeState: (state) => JSON.stringify(state),
         deserializeState: (serializedState) => JSON.parse(serializedState),
         invariantHash: 'aggregate-invariantHash',
-        commandHttpResponseMode: 'event',
       }
 
       domain.aggregates.push(aggregate)

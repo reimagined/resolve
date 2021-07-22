@@ -99,7 +99,7 @@ const importAggregate = ({ resolveConfig, isClient }) => {
     exports.push(`, encryption: encryption_${index}`)
     exports.push(
       `, commandHttpResponseMode: '${
-        aggregate.commandHttpResponseMode ?? 'empty'
+        aggregate.commandHttpResponseMode ?? 'event'
       }'`
     )
 

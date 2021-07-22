@@ -106,7 +106,7 @@
         },
         "commandHttpResponseMode": {
           "enum": ["event", "empty"],
-          "default": "empty"
+          "default": "event"
         }
       },
       "dependencies": {

@@ -33,7 +33,7 @@ aggregates.push({
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 , encryption: encryption_0
-, commandHttpResponseMode: 'empty'
+, commandHttpResponseMode: 'event'
 })
 
 export default aggregates
@@ -82,7 +82,7 @@ aggregates.push({
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 , encryption: encryption_0
-, commandHttpResponseMode: 'empty'
+, commandHttpResponseMode: 'event'
 })
 
 aggregates.push({
@@ -91,7 +91,7 @@ aggregates.push({
 , serializeState: serializeState_1
 , deserializeState: deserializeState_1
 , encryption: encryption_1
-, commandHttpResponseMode: 'empty'
+, commandHttpResponseMode: 'event'
 })
 
 export default aggregates
@@ -137,7 +137,7 @@ aggregates.push({
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 , encryption: encryption_0
-, commandHttpResponseMode: 'empty'
+, commandHttpResponseMode: 'event'
 })
 
 export default aggregates
@@ -182,7 +182,7 @@ aggregates.push({
 , projection: projection_0
 , invariantHash: projection_0_hash
 , encryption: encryption_0
-, commandHttpResponseMode: 'empty'
+, commandHttpResponseMode: 'event'
 })
 
 export default aggregates
@@ -222,7 +222,7 @@ aggregates.push({
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 , encryption: encryption_0
-, commandHttpResponseMode: 'empty'
+, commandHttpResponseMode: 'event'
 })
 
 export default aggregates

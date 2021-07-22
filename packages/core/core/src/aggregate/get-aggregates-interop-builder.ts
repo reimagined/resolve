@@ -64,7 +64,7 @@ const getAggregateInterop = (aggregate: AggregateMeta): AggregateInterop => {
     deserializeState,
     invariantHash,
     projection,
-    commandHttpResponseMode = CommandHttpResponseMode.empty,
+    commandHttpResponseMode = CommandHttpResponseMode.event,
   } = aggregate
   return {
     name,
@@ -478,7 +478,6 @@ const makeCommandExecutor = (
         command,
         context
       )
-      // const event = await commandHandler(aggregateState, command, context)
 
       if (!checkOptionShape(event.type, [String])) {
         throw generateCommandError('Event "type" is required')
