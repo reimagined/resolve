@@ -18,6 +18,7 @@ import {
   ReadModelResolverContext,
   ReadModelHandlerContext,
 } from './core'
+import { CommandHttpResponseMode } from '../aggregate/types'
 
 export type PerformanceSubsegment = {
   addAnnotation: (name: string, data: any) => void
@@ -68,7 +69,7 @@ export type AggregateMeta = {
   deserializeState: Function
   encryption: AggregateEncryptionFactory | null
   invariantHash?: string
-  commandHttpResponseMode?: 'event' | 'empty'
+  commandHttpResponseMode?: CommandHttpResponseMode
 }
 
 export type EventProjectionMeta = {

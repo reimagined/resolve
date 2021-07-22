@@ -3,6 +3,7 @@ import {
   AggregateInteropMap,
   AggregateInterop,
   AggregateRuntime,
+  CommandHttpResponseMode,
 } from './types'
 import { CommandError } from '../errors'
 import { AggregateMeta, MiddlewareContext } from '../types/runtime'
@@ -63,7 +64,7 @@ const getAggregateInterop = (aggregate: AggregateMeta): AggregateInterop => {
     deserializeState,
     invariantHash,
     projection,
-    commandHttpResponseMode = 'empty',
+    commandHttpResponseMode = CommandHttpResponseMode.empty,
   } = aggregate
   return {
     name,
@@ -522,7 +523,9 @@ const makeCommandExecutor = (
         }
       })()
 
-      return aggregate.commandHttpResponseMode === 'event' ? processedEvent : {}
+      return aggregate.commandHttpResponseMode === CommandHttpResponseMode.event
+        ? processedEvent
+        : {}
     } catch (error) {
       executionError = error
       subSegment.addError(error)

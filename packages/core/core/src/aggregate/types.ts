@@ -15,6 +15,11 @@ import {
   EmptyCommandResult,
 } from '../types/core'
 
+export enum CommandHttpResponseMode {
+  event = 'event',
+  empty = 'empty',
+}
+
 export type AggregateInterop = {
   name: string
   commands: {
@@ -25,7 +30,7 @@ export type AggregateInterop = {
   serializeState: Function
   deserializeState: Function
   invariantHash?: string
-  commandHttpResponseMode?: 'event' | 'empty'
+  commandHttpResponseMode: CommandHttpResponseMode
 }
 
 export type AggregateInteropMap = {
