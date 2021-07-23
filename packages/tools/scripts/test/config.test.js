@@ -177,6 +177,30 @@ describe('validate schema', () => {
 
     expect(() => validateConfig(resolveConfig)).not.toThrow()
   })
+
+  it('commandHttpResponseMode', () => {
+    const resolveConfig = {
+      ...resolveConfigOrigin,
+      target: 'local',
+      mode: 'development',
+      aggregates: [
+        {
+          name: 'MyAggregate',
+          commands: 'my-aggregate.commands.js',
+          projection: 'my-aggregate.projection.js',
+          commandHttpResponseMode: 'empty',
+        },
+        {
+          name: 'MyAggregate2',
+          commands: 'my-aggregate2.commands.js',
+          projection: 'my-aggregate2.projection.js',
+          commandHttpResponseMode: 'event',
+        },
+      ],
+    }
+
+    expect(() => validateConfig(resolveConfig)).not.toThrow()
+  })
 })
 
 describe('validate schema (fail)', () => {

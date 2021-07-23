@@ -22,8 +22,8 @@ const MyLists = () => {
       My lists
       <ShoppingLists
         lists={lists || []}
-        onRemoveSuccess={(err, result) => {
-          setLists(lists.filter((list) => list.id !== result.aggregateId))
+        onRemoveSuccess={(err, result, command) => {
+          setLists(lists.filter((list) => list.id !== command.aggregateId))
         }}
       />
       <ShoppingListCreator
