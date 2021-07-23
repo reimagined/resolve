@@ -4,6 +4,11 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.4...HEAD)
 
+**Enhancements:**
+
+- Commands return created event to client [\#1876](https://github.com/reimagined/resolve/issues/1876)
+- Introduce an option for aggregate config that enables or disables returning resulting event to client on command execution.  [\#1963](https://github.com/reimagined/resolve/pull/1963)
+
 **Bug fixes:**
 
 - Unable to use `withEncryption` and `withAdapter` API simultaneously [\#1959](https://github.com/reimagined/resolve/issues/1959)
