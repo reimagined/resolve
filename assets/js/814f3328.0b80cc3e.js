@@ -1,1 +1,0 @@
-(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[2535],{9549:e=>{"use strict";e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Welcome to reSolve","permalink":"/resolve/blog/2018/12/05/welcome"}]}')}}]);
