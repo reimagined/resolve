@@ -1,7 +1,7 @@
 import {
   Command,
   CommandResult,
-  EmptyCommandResult,
+  InteropCommandResult,
   AggregatesInterop,
   CommandError,
   MiddlewareContext,
@@ -58,7 +58,7 @@ const createCommand: CommandExecutorBuilder = ({
   const disposableExecutor = async (
     command: Command,
     middlewareContext: MiddlewareContext
-  ): Promise<CommandResult | EmptyCommandResult> => {
+  ): Promise<InteropCommandResult> => {
     if (pool.isDisposed) {
       throw new CommandError('Command handler is disposed')
     }

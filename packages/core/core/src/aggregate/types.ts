@@ -10,9 +10,8 @@ import {
   AggregateProjection,
   Command,
   CommandHandler,
-  CommandResult,
   SecretsManager,
-  EmptyCommandResult,
+  InteropCommandResult,
 } from '../types/core'
 
 export enum CommandHttpResponseMode {
@@ -42,7 +41,7 @@ export type AggregatesInterop = {
   executeCommand: (
     command: Command,
     middlewareContext?: MiddlewareContext
-  ) => Promise<CommandResult | EmptyCommandResult>
+  ) => Promise<InteropCommandResult>
 }
 
 export type AggregateRuntimeHooks = {

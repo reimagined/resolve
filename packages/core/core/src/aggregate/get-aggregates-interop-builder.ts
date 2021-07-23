@@ -16,7 +16,7 @@ import {
   CommandContext,
   CommandHandler,
   CommandResult,
-  EmptyCommandResult,
+  InteropCommandResult,
 } from '../types/core'
 import { makeMiddlewareApplier } from '../helpers'
 
@@ -400,7 +400,7 @@ const makeCommandExecutor = (
   return async (
     command: Command,
     middlewareContext: MiddlewareContext = {}
-  ): Promise<CommandResult | EmptyCommandResult> => {
+  ): Promise<InteropCommandResult> => {
     const monitoringGroup =
       runtime.monitoring != null
         ? runtime.monitoring
