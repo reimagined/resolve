@@ -2,6 +2,7 @@ import givenEvents from '../src/index'
 import { Event, EventHandlerEncryptionContext } from '@resolve-js/core'
 import { TestReadModel } from '../types/types'
 import { ambiguousEventsTimeErrorMessage } from '../src/constants'
+import { getReadModelAdapter } from '../src/runtime/get-read-model-adapter'
 
 const ProjectionError = (function (this: Error, message: string): void {
   Error.call(this)
@@ -410,5 +411,45 @@ describe('advanced', () => {
     expect(secretsManager.getSecret).toHaveBeenCalledWith('id')
     expect(secretsManager.setSecret).toHaveBeenCalledWith('id', 'secret')
     expect(secretsManager.deleteSecret).toHaveBeenCalledWith('id')
+  })
+
+  test('fix 1959: unable to use withEncryption and withAdapter API simultaneously, ordering #1', async () => {
+    await givenEvents([
+      { aggregateId: 'id1', type: 'PUSH', payload: { data: 'data' } },
+    ])
+      .readModel({
+        name: 'readModelName',
+        projection: {},
+        resolvers: {
+          all: async (): Promise<any> => Promise.resolve('ok'),
+        },
+      })
+      .withEncryption(async () => ({
+        decrypt: jest.fn(),
+        encrypt: jest.fn(),
+      }))
+      .withAdapter(await getReadModelAdapter())
+      .query('all', {})
+      .shouldReturn('ok')
+  })
+
+  test('fix 1959: unable to use withEncryption and withAdapter API simultaneously, ordering #2', async () => {
+    await givenEvents([
+      { aggregateId: 'id1', type: 'PUSH', payload: { data: 'data' } },
+    ])
+      .readModel({
+        name: 'readModelName',
+        projection: {},
+        resolvers: {
+          all: async (): Promise<any> => Promise.resolve('ok'),
+        },
+      })
+      .withAdapter(await getReadModelAdapter())
+      .withEncryption(async () => ({
+        decrypt: jest.fn(),
+        encrypt: jest.fn(),
+      }))
+      .query('all', {})
+      .shouldReturn('ok')
   })
 })

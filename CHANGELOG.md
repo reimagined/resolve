@@ -2,7 +2,15 @@
 
 ## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.3...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.4...HEAD)
+
+**Bug fixes:**
+
+- Unable to use `withEncryption` and `withAdapter` API simultaneously [\#1959](https://github.com/reimagined/resolve/issues/1959)
+
+## [V0.31.4](https://github.com/reimagined/resolve/tree/V0.31.4) (2021-07-19)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.3...V0.31.4)
 
 **Enhancements:**
 
