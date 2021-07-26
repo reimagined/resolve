@@ -12,7 +12,7 @@ module.exports = {
     '^.*/test/functional/.*$',
     '^.*/test/.*\\.func\\.test\\.[jt]sx?$',
   ],
-  collectCoverageFrom: ['src/**/*.js'],
+  collectCoverageFrom: ['src/**/*.js', 'src/**/*.ts'],
   transform: {
     '^.+\\.js$': path.resolve(__dirname, 'jest.transform.js'),
     '^.+\\.tsx?$': 'ts-jest',
