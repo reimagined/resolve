@@ -7,7 +7,7 @@ import path from 'path'
 import ProgressBar from 'progress'
 import getLog from '@resolve-js/debug-levels'
 import { resolveVersion } from './constants'
-import safeName from './safe-name'
+import { safeName } from './utils'
 
 const log = getLog('resolve:create-resolve-app:download-resolve-repo')
 

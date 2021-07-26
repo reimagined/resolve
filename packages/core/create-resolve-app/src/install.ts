@@ -1,7 +1,7 @@
 import { execSync } from 'child_process'
 import chalk from 'chalk'
 import getLog from '@resolve-js/debug-levels'
-import isYarnAvailable from './is-yarn-available'
+import { isYarnAvailable } from './utils'
 
 const log = getLog('resolve:create-resolve-app:install')
 
