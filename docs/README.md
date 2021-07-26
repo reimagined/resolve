@@ -1,10 +1,3 @@
----
-id: index
-title: reSolve Documentation
-description: Full stack CQRS, DDD, Event Sourcing framework for Node.js
-slug: /
----
-
 [Introduction](introduction.md)
 
 - [Setting Up](introduction.md#setting-up)
