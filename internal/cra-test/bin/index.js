@@ -49,11 +49,12 @@ const main = async () => {
         exampleNames.length
       }: ${example}`
     )
+    const exampleName = example.replace(/(?:-ts|-js)$/, '')
     execSync(
       `node ${path.resolve(
         rootDir,
         './packages/core/create-resolve-app/bin/index.js'
-      )} ${craParams} -e ${example} ${example}`,
+      )} ${craParams} -e ${exampleName} ${example}${testTs ? ' -t' : ''}`,
       { cwd: tempDir, stdio: 'inherit' }
     )
     log.info(`Testing create-resolve-app template: ${example}`)

@@ -85,6 +85,9 @@ export type CommandResult = {
   aggregateVersion?: number
 }
 
+type EmptyObject = {}
+export type InteropCommandResult = CommandResult | EmptyObject
+
 // Aggregate
 
 export type AggregateState = any
