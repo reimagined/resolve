@@ -19,6 +19,7 @@
     "test:import-export": "jest --config=./jest.config.js --testMatch=**/import-export-sample/*.test.ts",
     "test:secrets": "jest --config=./jest.config.js --testMatch=**/eventstore-secrets/*.test.ts",
     "test:events": "jest --config=./jest.config.js --testMatch=**/eventstore-events/*.test.ts",
+    "test:incremental-import": "jest --config=./jest.config.js --testMatch=**/incremental-import/*.test.[jt]s",
     "test:replication": "jest --config=./jest.config.js --testMatch=**/eventstore-replication/*.test.ts",
     "test:freeze": "jest --config=./jest.config.js --testMatch=**/eventstore-freeze-unfreeze/*.test.ts",
     "test:save-load": "jest --config=./jest.config.js --testMatch=**/eventstore-save-load/*.test.ts",
