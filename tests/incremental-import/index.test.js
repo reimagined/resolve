@@ -344,3 +344,142 @@ test('inject-events should work correctly with retries', async () => {
 
   await adapter.commitIncrementalImport(importId, true)
 })
+
+test('preserve order of input events with the same timestamp', async () => {
+  async function orderCheck() {
+    for (
+      let aggregateIndex = 0;
+      aggregateIndex < aggregateCount;
+      aggregateIndex++
+    ) {
+      const aggregateId = aggregateIds[aggregateIndex]
+      const { events } = await adapter.loadEvents({
+        cursor: null,
+        limit: 10000,
+        aggregateIds: [aggregateId],
+      })
+      for (let index = 0; index < events.length - 1; index++) {
+        const nextIndex = index + 1
+        if (
+          events[nextIndex].aggregateVersion !==
+          events[index].aggregateVersion + 1
+        ) {
+          throw new Error(
+            `Bad order. aggregateId = ${aggregateId}. ${JSON.stringify(
+              events,
+              null,
+              2
+            )}`
+          )
+        }
+      }
+    }
+  }
+
+  const aggregateCount = 5
+  const timestampCount = 7
+
+  const aggregateIds = Array.from(Array(aggregateCount).keys()).map(
+    (id) => `id_${id}`
+  )
+  const aggregateVersions = aggregateIds.reduce((acc, val) => {
+    acc[val] = 0
+    return acc
+  }, {})
+
+  const threadCounters = Array.from(Array(256).keys())
+    .map((_, index) => index)
+    .reduce((acc, val) => {
+      acc[val] = 0
+      return acc
+    }, {})
+
+  const initialEvents = []
+
+  let eventIndex = 0
+  for (
+    let aggregateIndex = 0;
+    aggregateIndex < aggregateCount;
+    aggregateIndex++
+  ) {
+    for (
+      let timestampIndex = 0;
+      timestampIndex < timestampCount;
+      timestampIndex++
+    ) {
+      eventIndex++
+
+      const aggregateId = aggregateIds[aggregateIndex]
+      const aggregateVersion = ++aggregateVersions[aggregateId]
+      const timestamp = eventIndex
+      const threadId = (eventIndex * aggregateCount * timestampCount) % 256
+      const threadCounter = threadCounters[threadId]++
+
+      initialEvents.push({
+        threadId,
+        threadCounter,
+        aggregateId,
+        aggregateVersion,
+        timestamp,
+        type: 'type',
+        payload: {},
+      })
+    }
+  }
+
+  await pipeline(
+    Readable.from(
+      (async function* eventStream() {
+        for (const event of initialEvents) {
+          yield Buffer.from(`${JSON.stringify(event)}\n`)
+        }
+      })()
+    ),
+    adapter.importEvents()
+  )
+
+  await orderCheck()
+
+  const incrementalEvents = [
+    {
+      timestamp: 1626110770000,
+      aggregateId: aggregateIds[0],
+      type: 'type',
+      payload: { idx: 0 },
+    },
+    {
+      timestamp: 1626110770000,
+      aggregateId: aggregateIds[0],
+      type: 'type',
+      payload: { idx: 1 },
+    },
+    {
+      timestamp: 1626132179642,
+      aggregateId: aggregateIds[0],
+      type: 'type',
+      payload: { idx: 2 },
+    },
+    {
+      timestamp: 1626132179642,
+      aggregateId: aggregateIds[0],
+      type: 'type',
+      payload: { idx: 3 },
+    },
+    {
+      timestamp: 1626132179642,
+      aggregateId: aggregateIds[0],
+      type: 'type',
+      payload: { idx: 4 },
+    },
+    {
+      timestamp: 1626132179642,
+      aggregateId: aggregateIds[0],
+      type: 'type',
+      payload: { idx: 5 },
+    },
+  ]
+
+  await adapter.incrementalImport(incrementalEvents)
+
+  await orderCheck()
+})

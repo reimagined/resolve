@@ -1,5 +1,5 @@
 import { AdapterPool } from './types'
-import { InputEvent } from '@resolve-js/eventstore-base'
+import { InputEvent, THREAD_COUNT } from '@resolve-js/eventstore-base'
 
 const pushIncrementalImport = async (
   { database, eventsTableName, escapeId, escape }: AdapterPool,
@@ -29,7 +29,7 @@ const pushIncrementalImport = async (
       ) CTE;
       
       INSERT INTO ${incrementalImportTableAsId}(
-        "timestamp", "aggregateId", "type", "payload"
+        "timestamp", "aggregateId", "type", "payload", "threadId"
       ) VALUES ${events
         .map(
           (event) => `(${+event.timestamp}, ${escape(
@@ -39,7 +39,7 @@ const pushIncrementalImport = async (
         event.payload != null
           ? escape(JSON.stringify(event.payload))
           : escape('null')
-      })`
+      }, ${event.timestamp % THREAD_COUNT})`
         )
         .join(',')};
     
