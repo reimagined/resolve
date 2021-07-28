@@ -15,7 +15,7 @@ ReSolve uses the [@resolve-js/debug-levels](https://www.npmjs.com/package/@resol
 | info    | Messages that describe the current operation           |
 | verbose | Extended descriptions to the previous message          |
 
-The reSolve framework uses the **info** logging level by default. Set the `DEBUG_LEVEL` environment variable to use a different logging level.
+The reSolve framework uses the **debug** logging level by default. Set the `DEBUG_LEVEL` environment variable to use a different logging level.
 
 ## Debug ReSolve
 
