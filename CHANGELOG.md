@@ -14,6 +14,10 @@
 - Running create-resolve-app on Windows results in incorrect path error [\#1964](https://github.com/reimagined/resolve/issues/1964)
 - Unable to use `withEncryption` and `withAdapter` API simultaneously [\#1959](https://github.com/reimagined/resolve/issues/1959)
 
+**Other changes:**
+
+- Soft bootstrap \(primitive without mutexes for concurrent bootstrap/shutdown\) [\#1971](https://github.com/reimagined/resolve/pull/1971)
+
 ## [V0.31.4](https://github.com/reimagined/resolve/tree/V0.31.4) (2021-07-19)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.3...V0.31.4)
