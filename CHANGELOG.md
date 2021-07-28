@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.4...HEAD)
 
+**New features:**
+
+- Add 'describe' method for eventstore adapater [\#1972](https://github.com/reimagined/resolve/pull/1972)
+
 **Enhancements:**
 
 - Commands return created event to client [\#1876](https://github.com/reimagined/resolve/issues/1876)
