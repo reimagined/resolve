@@ -35,6 +35,11 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     const { secrets, idx } = await adapter.loadSecrets({ limit: countSecrets })
     expect(secrets).toHaveLength(0)
     expect(idx).toBeNull()
+
+    const description = await adapter.describe()
+    expect(description.secretCount).toEqual(0)
+    expect(description.setSecretCount).toEqual(0)
+    expect(description.deletedSecretCount).toEqual(0)
   })
 
   test('should set secrets', async () => {
@@ -51,6 +56,11 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     for (let secret of secrets) {
       await secretManager.setSecret(secret.id, secret.secret)
     }
+
+    const description = await adapter.describe()
+    expect(description.secretCount).toEqual(countSecrets)
+    expect(description.setSecretCount).toEqual(countSecrets)
+    expect(description.deletedSecretCount).toEqual(0)
   })
 
   test('should generate set secret events', async () => {
@@ -234,6 +244,11 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     const secrets = (await adapter.loadSecrets({ limit: countSecrets + 1 }))
       .secrets
     expect(secrets).toHaveLength(countSecrets - 1)
+
+    const description = await adapter.describe()
+    expect(description.secretCount).toEqual(countSecrets)
+    expect(description.setSecretCount).toEqual(countSecrets - 1)
+    expect(description.deletedSecretCount).toEqual(1)
   })
 
   test('should return old number of secrets after the secret was deleted if includeDeleted flag is used', async () => {
