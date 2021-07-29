@@ -1,12 +1,12 @@
 import { execSync } from 'child_process'
 import { mocked } from 'ts-jest/utils'
 import install from '../src/install'
-import isYarnAvailable from '../src/is-yarn-available'
+import { isYarnAvailable } from '../src/utils'
 
 jest.mock('child_process', () => ({
   execSync: jest.fn(),
 }))
-jest.mock('../src/is-yarn-available', () => jest.fn())
+jest.mock('../src/utils', () => ({ isYarnAvailable: jest.fn() }))
 
 const mockedIsYarnAvailable = mocked(isYarnAvailable)
 

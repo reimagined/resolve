@@ -16,8 +16,7 @@ const beginIncrementalImport = async ({
     await database.exec(
       `CREATE TABLE ${incrementalImportTableAsId}(
       -- RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE
-        ${escapeId('sortedIdx')} BIGINT NULL,
-        ${escapeId('threadId')} BIGINT NULL,
+        ${escapeId('threadId')} BIGINT NOT NULL,
         ${escapeId('threadCounter')} BIGINT NULL,
         ${escapeId('timestamp')} BIGINT NOT NULL,
         ${escapeId('aggregateId')} VARCHAR(700) NOT NULL,

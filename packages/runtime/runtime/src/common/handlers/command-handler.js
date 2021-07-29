@@ -20,11 +20,11 @@ export const executeCommandWithRetryConflicts = async (
 ) => {
   const retryCount = commandArgs.immediateConflict != null ? 0 : 10
   let lastError = null
-  let event = null
+  let result = null
 
   for (let retry = 0; retry <= retryCount; retry++) {
     try {
-      event = await executeCommand({ ...commandArgs, jwt }, middlewareContext)
+      result = await executeCommand({ ...commandArgs, jwt }, middlewareContext)
       lastError = null
       break
     } catch (error) {
@@ -45,7 +45,7 @@ export const executeCommandWithRetryConflicts = async (
     throw lastError
   }
 
-  return event
+  return result
 }
 
 const commandHandler = async (req, res) => {
@@ -55,7 +55,7 @@ const commandHandler = async (req, res) => {
   try {
     const executeCommand = req.resolve.executeCommand
     const commandArgs = extractRequestBody(req)
-    const event = await executeCommandWithRetryConflicts(
+    const result = await executeCommandWithRetryConflicts(
       {
         executeCommand,
         commandArgs,
@@ -71,7 +71,7 @@ const commandHandler = async (req, res) => {
 
     await res.status(200)
     await res.setHeader('Content-Type', 'text/plain')
-    await res.end(JSON.stringify(event, null, 2))
+    await res.end(JSON.stringify(result))
 
     log.debug('Command handler executed successfully', req.path, commandArgs)
   } catch (err) {
