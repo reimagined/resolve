@@ -22,7 +22,7 @@ const PostForm = ({ successHandler, errorHandler }) => {
         title,
       },
     },
-    (error, result) => {
+    (error, result, { aggregateId, payload }) => {
       if (error) {
         errorHandler(error)
       } else {
@@ -31,7 +31,7 @@ const PostForm = ({ successHandler, errorHandler }) => {
           title: '',
           content: '',
         })
-        successHandler(result)
+        successHandler({ aggregateId, payload })
       }
     },
     [content]

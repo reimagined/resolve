@@ -1,8 +1,12 @@
 # Changelog
 
-## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+## [V0.31.5](https://github.com/reimagined/resolve/tree/V0.31.5) (2021-07-29)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.4...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.4...V0.31.5)
+
+**New features:**
+
+- Add 'describe' method for eventstore adapater [\#1972](https://github.com/reimagined/resolve/pull/1972)
 
 **Enhancements:**
 
@@ -11,7 +15,12 @@
 
 **Bug fixes:**
 
+- Running create-resolve-app on Windows results in incorrect path error [\#1964](https://github.com/reimagined/resolve/issues/1964)
 - Unable to use `withEncryption` and `withAdapter` API simultaneously [\#1959](https://github.com/reimagined/resolve/issues/1959)
+
+**Other changes:**
+
+- Soft bootstrap \(primitive without mutexes for concurrent bootstrap/shutdown\) [\#1971](https://github.com/reimagined/resolve/pull/1971)
 
 ## [V0.31.4](https://github.com/reimagined/resolve/tree/V0.31.4) (2021-07-19)
 

@@ -1,6 +1,7 @@
 import { useMemo, useRef } from 'react'
 import { AnyAction } from 'redux'
 import { useDispatch } from 'react-redux'
+import isEqual from 'lodash.isequal'
 import { firstOfType } from '@resolve-js/core'
 import {
   QueryCallback,
@@ -8,9 +9,8 @@ import {
   QueryResult,
   ReadModelQuery,
 } from '@resolve-js/client'
-import { useQueryBuilder, QueryBuilder } from '@resolve-js/react-hooks'
+import { QueryBuilder, useQueryBuilder } from '@resolve-js/react-hooks'
 import {
-  initReadModel,
   queryReadModelFailure,
   QueryReadModelFailureAction,
   queryReadModelRequest,
@@ -19,8 +19,13 @@ import {
   QueryReadModelSuccessAction,
 } from './actions'
 import { isDependencies, isOptions } from '../helpers'
-import { ReduxState } from '../types'
+import { ReduxState, ResultStatus } from '../types'
 import { badSelectorDrain, getEntry } from './read-model-reducer'
+import {
+  getSelectorState,
+  releaseSelectorState,
+  setSelectorState,
+} from './initial-state-manager'
 
 type HookData<TArgs extends any[]> = {
   request: (...args: TArgs) => void
@@ -140,7 +145,16 @@ function useReduxReadModel<TArgs extends any[], TQuery extends ReadModelQuery>(
   const { request, success, failure } = actualActionCreators
   const { selectorId } = actualOptions
 
+  const actualSelector =
+    selectorId ||
+    (!isBuilder(query)
+      ? {
+          query,
+        }
+      : badSelectorDrain)
+
   const callback: QueryCallback<TQuery> = (error, result, executedQuery) => {
+    releaseSelectorState(actualSelector)
     if (error || result == null) {
       if (typeof failure === 'function') {
         if (error) {
@@ -172,14 +186,24 @@ function useReduxReadModel<TArgs extends any[], TQuery extends ReadModelQuery>(
         callback
       )
 
-  const initialStateDispatched = useRef(false)
-  if (!initialStateDispatched.current) {
-    if (selectorId) {
-      dispatch(initReadModel(initialState, undefined, selectorId))
-    } else if (!isBuilder(query)) {
-      dispatch(initReadModel(initialState, query, undefined))
+  const mutex = useRef({
+    assigned: false,
+    state: initialState,
+    selector: actualSelector,
+  })
+  if (!mutex.current.assigned) {
+    setSelectorState(actualSelector, mutex.current.state)
+    mutex.current.assigned = true
+  } else {
+    if (
+      !isEqual(mutex.current.selector, actualSelector) ||
+      !isEqual(mutex.current.state, initialState)
+    ) {
+      releaseSelectorState(mutex.current.selector)
+      setSelectorState(actualSelector, initialState)
+      mutex.current.selector = actualSelector
+      mutex.current.state = initialState
     }
-    initialStateDispatched.current = true
   }
 
   return useMemo(
@@ -197,15 +221,10 @@ function useReduxReadModel<TArgs extends any[], TQuery extends ReadModelQuery>(
         executor(plainQuery)
       },
       selector: (state: ReduxState): any =>
-        getEntry(
-          state.readModels,
-          selectorId ||
-            (!isBuilder(query)
-              ? {
-                  query,
-                }
-              : badSelectorDrain)
-        ),
+        getEntry(state.readModels, actualSelector, {
+          status: ResultStatus.Initial,
+          data: getSelectorState(actualSelector),
+        }),
     }),
     [executor, dispatch]
   )
