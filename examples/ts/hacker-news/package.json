@@ -87,6 +87,7 @@
     "@types/redux": "3.6.0",
     "@types/redux-saga": "0.10.5",
     "@types/sanitizer": "0.0.28",
+    "@types/sinon": "10.0.2",
     "@types/styled-components": "5.1.11",
     "aws-sdk": "2.860.0",
     "aws-xray-sdk-core": "3.2.0",
