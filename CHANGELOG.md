@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.5...HEAD)
+
+**Documentation:**
+
+- Mention the default logging level [\#1966](https://github.com/reimagined/resolve/pull/1966)
+
 ## [V0.31.5](https://github.com/reimagined/resolve/tree/V0.31.5) (2021-07-29)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.4...V0.31.5)
