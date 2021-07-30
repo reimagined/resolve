@@ -38,9 +38,7 @@ const ShowByPage = ({
   const isLoading =
     status === ResultStatus.Initial && status === ResultStatus.Requested
 
-  return !isLoading ? (
-    <Stories items={stories} page={+page} type="show" />
-  ) : null
+  return !isLoading ? <Stories items={stories} page={page} type="show" /> : null
 }
 
 export { ShowByPage }

@@ -37,7 +37,7 @@ const NewestByPage = ({
   const isLoading =
     status === ResultStatus.Initial || status === ResultStatus.Requested
   return !isLoading ? (
-    <Stories items={stories} page={+page} type="newest" />
+    <Stories items={stories} page={page} type="newest" />
   ) : null
 }
 

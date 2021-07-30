@@ -44,7 +44,7 @@ const CommentsByPage = ({
               />
             ))}
           <Pagination
-            page={+page}
+            page={page}
             hasNext={!paginationDone}
             location="/comments"
           />

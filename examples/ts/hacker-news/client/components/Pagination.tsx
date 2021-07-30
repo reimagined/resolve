@@ -31,17 +31,17 @@ export const StyledLink = styled(NavLink)<StyledLinkProps>`
 `
 
 type PaginationProps = {
-  page: number
+  page?: string
   hasNext: boolean
   location: string
 }
 
-const Pagination = ({ page = 1, hasNext, location }: PaginationProps) => {
-  if (page === 1 && !hasNext) {
+const Pagination = ({ page = '1', hasNext, location }: PaginationProps) => {
+  if (page === '1' && !hasNext) {
     return null
   }
 
-  const prevDisabled = page <= 1
+  const prevDisabled = Number(page) <= 1
   const nextDisabled = !hasNext
 
   return (

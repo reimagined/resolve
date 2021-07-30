@@ -34,7 +34,7 @@ const AskByPage = ({
   const isLoading =
     status === ResultStatus.Initial || status === ResultStatus.Requested
 
-  return !isLoading ? <Stories items={stories} page={+page} type="ask" /> : null
+  return !isLoading ? <Stories items={stories} page={page} type="ask" /> : null
 }
 
 export { AskByPage }
