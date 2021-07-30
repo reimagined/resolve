@@ -1,6 +1,7 @@
 ---
 id: entry-point
 title: Client Entry Point
+description: The entry point is a function that is the first to be called when the client script runs.
 ---
 
 The entry point is a function that is the first to be called when the client script runs. It takes a reSolve context object as a parameter.
