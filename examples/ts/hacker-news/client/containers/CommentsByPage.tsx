@@ -6,12 +6,15 @@ import { Pagination } from '../components/Pagination'
 import { CommentsPaginateRenderless } from '@resolve-js/module-comments'
 
 import { ITEMS_PER_PAGE } from '../constants'
+import { RouteComponentProps } from 'react-router'
+
+type MatchParams = { page?: string }
 
 const CommentsByPage = ({
   match: {
     params: { page },
   },
-}) => {
+}: RouteComponentProps<MatchParams>) => {
   return page && !Number.isInteger(Number(page)) ? (
     <Redirect push to={`/error?text=No such page`} />
   ) : (
@@ -19,10 +22,16 @@ const CommentsByPage = ({
       itemsOnPage={ITEMS_PER_PAGE}
       pageNumber={+page || 1}
     >
-      {({ comments, paginationDone }) => (
+      {({
+        comments,
+        paginationDone,
+      }: {
+        comments: any[]
+        paginationDone: boolean
+      }) => (
         <div>
           {comments &&
-            comments.map((comment) => (
+            comments.map((comment: any) => (
               <Comment
                 key={comment.commentId}
                 id={comment.commentId}
@@ -35,7 +44,7 @@ const CommentsByPage = ({
               />
             ))}
           <Pagination
-            page={page}
+            page={+page}
             hasNext={!paginationDone}
             location="/comments"
           />

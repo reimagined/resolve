@@ -5,7 +5,9 @@ import { Story } from '../containers/Story'
 import { Pagination } from './Pagination'
 import { ITEMS_PER_PAGE } from '../constants'
 
-const Stories = ({ items = [], page, type }) => {
+type StoriesProps = { items: any[]; page: number; type: string }
+
+const Stories = ({ items = [], page, type }: StoriesProps) => {
   if (items === null || (page && !Number.isInteger(Number(page)))) {
     return <Redirect push to="/error?text=No such page" />
   }

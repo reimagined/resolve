@@ -4,12 +4,13 @@ import {
   optimisticUpvoteStory,
 } from '../actions/optimistic-actions'
 import { internal } from '@resolve-js/redux'
+import { CommandAction } from '../types'
 
 const { SEND_COMMAND_SUCCESS } = internal.actionTypes
 
 export function* optimisticVotingSaga() {
   yield takeEvery(
-    (action) =>
+    (action: CommandAction) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.command.type === 'upvoteStory',
     function* (action) {
@@ -18,7 +19,7 @@ export function* optimisticVotingSaga() {
   )
 
   yield takeEvery(
-    (action) =>
+    (action: CommandAction) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.command.type === 'unvoteStory',
     function* (action) {
