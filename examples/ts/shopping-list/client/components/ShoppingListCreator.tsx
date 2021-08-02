@@ -15,9 +15,9 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
         name: shoppingListName || `Shopping List ${lists.length + 1}`,
       },
     },
-    (err, result) => {
+    (err, result, { aggregateId, payload }) => {
       setShoppingListName('')
-      onCreateSuccess(err, result)
+      onCreateSuccess(err, { aggregateId, payload })
     }
   )
 

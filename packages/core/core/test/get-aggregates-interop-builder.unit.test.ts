@@ -1,7 +1,10 @@
 import { getAggregatesInteropBuilder } from '../src/aggregate/get-aggregates-interop-builder'
 import { CommandError } from '../src/errors'
-import { AggregateRuntime } from '../src/aggregate/types'
-import { SecretsManager, Event } from '../src/types/core'
+import {
+  AggregateRuntime,
+  CommandHttpResponseMode,
+} from '../src/aggregate/types'
+import { SecretsManager, Event, CommandResult } from '../src/types/core'
 import { CommandMiddleware, Eventstore, Monitoring } from '../src/types/runtime'
 let DateNow: any
 let performanceTracer: any
@@ -20,6 +23,8 @@ const makeAggregateMeta = (params: any) => ({
   serializeState: params.serializeState || JSON.stringify,
   deserializeState: params.deserializeState || JSON.parse,
   projection: params.projection || {},
+  commandHttpResponseMode:
+    params.commandHttpResponseMode || CommandHttpResponseMode.event,
 })
 
 const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
@@ -126,11 +131,11 @@ describe('Command handlers', () => {
       }),
     ])(makeTestRuntime())
 
-    const event = await executeCommand({
+    const event = (await executeCommand({
       aggregateName: 'empty',
       aggregateId: 'aggregateId',
       type: 'emptyCommand',
-    })
+    })) as CommandResult
 
     expect(event.aggregateVersion).toEqual(1)
 
@@ -683,6 +688,33 @@ describe('Command handlers', () => {
         payload: undefined,
       })
     )
+  })
+
+  test('should not return event if commandHttpResponseMode set to "empty"', async () => {
+    const { executeCommand } = getAggregatesInteropBuilder([
+      makeAggregateMeta({
+        name: 'test-aggregate',
+        commands: {
+          testCommand: () => {
+            return {
+              type: 'SOME_EVENT',
+              payload: {
+                somePayloadData: 'somePayloadData',
+              },
+            }
+          },
+        },
+        commandHttpResponseMode: CommandHttpResponseMode.empty,
+      }),
+    ])(makeTestRuntime())
+
+    await expect(
+      executeCommand({
+        aggregateName: 'test-aggregate',
+        aggregateId: 'aggregateId',
+        type: 'testCommand',
+      })
+    ).resolves.toEqual({})
   })
 })
 
@@ -1322,7 +1354,7 @@ describe('Command middleware', () => {
       type: 'modify',
       payload: { contents: 'New content' },
     }
-    const { payload } = await executeCommand(command)
+    const { payload } = (await executeCommand(command)) as CommandResult
     expect(payload.contents).toEqual('New content modified by middleware')
     expect(payload.extra).toEqual('data from middleware')
   })
@@ -1351,7 +1383,7 @@ describe('Command middleware', () => {
       type: 'modify',
       payload: { contents: 'New content' },
     }
-    const { payload } = await executeCommand(command)
+    const { payload } = (await executeCommand(command)) as CommandResult
     expect(payload.contents).toEqual('New content')
     expect(payload.additionalContent).toEqual('Content from middleware')
   })
@@ -1407,7 +1439,7 @@ describe('Command middleware', () => {
       type: 'modify',
       payload: { contents: 'New content' },
     }
-    const { payload } = await executeCommand(command)
+    const { payload } = (await executeCommand(command)) as CommandResult
     expect(payload.contents).toEqual(
       'Command modified by first middleware; Command modified by second middleware'
     )

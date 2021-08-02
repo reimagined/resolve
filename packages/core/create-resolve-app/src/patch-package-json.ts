@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import path from 'path'
 import fs from 'fs-extra'
 import { localRegistry as server, resolvePackages } from './constants'
-import safeName from './safe-name'
+import { loadPackageJson, safeName } from './utils'
 
 const patchPackageJson = async (
   applicationName: string,
@@ -12,14 +12,13 @@ const patchPackageJson = async (
   // eslint-disable-next-line no-console
   console.log(chalk.green('Patch package.json'))
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const resolveVersion = require(path.join(__dirname, '..', 'package.json'))
-    .version
+  const resolveVersion = loadPackageJson(
+    path.join(__dirname, '..', 'package.json')
+  ).version
 
   const applicationPackageJsonPath = path.join(applicationPath, 'package.json')
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const applicationPackageJson = require(applicationPackageJsonPath)
+  const applicationPackageJson = loadPackageJson(applicationPackageJsonPath)
 
   applicationPackageJson.name = applicationName
   applicationPackageJson.version = resolveVersion
@@ -47,8 +46,9 @@ const patchPackageJson = async (
       }
     })
     .map((directory) => ({
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      name: require(path.join(applicationPath, directory, 'package.json')).name,
+      name: loadPackageJson(
+        path.join(applicationPath, directory, 'package.json')
+      ).name,
       directory: path.join(applicationPath, directory),
     }))
 
@@ -63,8 +63,7 @@ const patchPackageJson = async (
       ...localPackages.map(({ name }) => name),
     ]
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const packageJson = require(path.join(directory, 'package.json'))
+    const packageJson = loadPackageJson(path.join(directory, 'package.json'))
 
     packageJson.version = resolveVersion
 

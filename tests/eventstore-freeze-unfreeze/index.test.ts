@@ -20,6 +20,9 @@ describe(`${adapterFactory.name}. Eventstore adapter freeze and unfreeze`, () =>
   const adapter = adapters['freeze_testing']
 
   test('should throw when unfreezing not frozen adapter', async () => {
+    const description = await adapter.describe()
+    expect(description.isFrozen).toEqual(false)
+
     await expect(adapter.unfreeze()).rejects.toThrow(
       EventstoreAlreadyUnfrozenError
     )
@@ -27,8 +30,14 @@ describe(`${adapterFactory.name}. Eventstore adapter freeze and unfreeze`, () =>
 
   test('should throw when freezing already frozen adapter', async () => {
     await adapter.freeze()
+    let description = await adapter.describe()
+    expect(description.isFrozen).toEqual(true)
+
     await expect(adapter.freeze()).rejects.toThrow(EventstoreAlreadyFrozenError)
+
     await adapter.unfreeze()
+    description = await adapter.describe()
+    expect(description.isFrozen).toEqual(false)
   })
 
   test('should throw on saveEvent when adapter is frozen', async () => {

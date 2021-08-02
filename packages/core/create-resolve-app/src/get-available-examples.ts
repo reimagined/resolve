@@ -1,4 +1,6 @@
+import path from 'path'
 import { sync as glob } from 'glob'
+import { loadPackageJson } from './utils'
 
 export function getAvailableExamples(rootPath: string) {
   const sources = ['./examples/**/package.json', './templates/**/package.json']
@@ -14,17 +16,17 @@ export function getAvailableExamples(rootPath: string) {
     .flat(1)
 
   const resolveExamples = []
-
   for (const filePath of packages) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { name, description, resolveJs } = require(filePath)
+    const { name, description, resolveJs } = loadPackageJson(filePath)
+
     if (!description || !resolveJs || !resolveJs.isAppTemplate) {
       continue
     }
+
     resolveExamples.push({
       name,
       description,
-      path: filePath.replace(rootPath, '').replace('/package.json', ''),
+      path: path.dirname(path.relative(rootPath, filePath)),
     })
   }
 

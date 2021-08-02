@@ -1,4 +1,4 @@
-import safeName from '../src/safe-name'
+import { safeName } from '../src/utils'
 
 test('safeName works correctly', () => {
   expect(safeName('dev')).toEqual('dev')
