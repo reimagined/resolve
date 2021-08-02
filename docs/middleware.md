@@ -8,7 +8,23 @@ description: This describes how to use middleware in command handlers, read mode
 
 The reSolve framework implements the middleware mechanism that you can use to add intermediate logic to the lifecycle of command handlers as well as read model resolvers and projection.
 
-To learn how to implement different types of middleware, refer to the following sections of this document:
+Middleware is defined as a curried function of the following format:
+
+```js
+// Takes *next* and returns a handler function
+const myMiddleware = (next) =>
+  // The handler function's signature depends on the middleware type
+  (middlewareContext, state, command, context) => { // Command middleware handler
+    ...
+    // Regardless of the middleware type, a handler should either call **next** at the end
+    // to continue the processing chain or throw an error
+    return next(middlewareContext, state, command, context)
+  }
+  // (middlewareContext, store, event, context) => { ... } // Projection middleware handler
+  // (middlewareContext, store, params, context) => { ... } // Resolver middleware handler
+```
+
+For details on how to implement different types of middleware, refer to the following sections of this document:
 
 - [Command Handler Middleware](#command-handler-middleware)
 - [Read Model Resolver Middleware](#read-model-resolver-middleware)
@@ -21,7 +37,11 @@ The implemented middleware should be registered in the application's configurati
 const appConfig = {
   ...
   middlewares: {
-    aggregate: ['common/middlewares/command-middleware.js'],
+    aggregate: [
+      'common/middlewares/command-middleware-1.js', // Middlewares are invoked in the order that they are deifined in the config
+      'common/middlewares/command-middleware-2.js',
+      'common/middlewares/command-middleware-3.js'
+    ],
     readModel: {
         projection: ['common/middlewares/projection-middleware.js'],
         resolver: ['common/middlewares/resolver-middleware.js']
@@ -31,59 +51,84 @@ const appConfig = {
 }
 ```
 
+> **Note:** Take caution when you design middleware. Purely implemented middleware can easily brake an application because middleware intercepts the internal chain of request processing and can potentially disrupt it.
+
 ### Example
 
-See to the [Personal Data](https://github.com/reimagined/resolve/tree/dev/examples/ts/personal-data) application for the example middleware implementation.
+See to the [Personal Data](https://github.com/reimagined/resolve/tree/dev/examples/ts/personal-data) application for example middleware implementation.
 
 ## Command Handler Middleware
 
+A command handler middleware function has the following structure:
+
 ```js
-import { UnauthorizedError } from '../errors'
-import { decode } from '../jwt'
-const authMiddleware = (next) => (
+const commandMiddleware = (next) => (
   middlewareContext,
   state,
   command,
   context
 ) => {
-  if (command.aggregateName === 'user-profile' && command.type === 'register') {
-    return next(middlewareContext, state, command, context)
-  }
-  if (context.jwt) {
-    const user = decode(context.jwt)
-    return next(middlewareContext, state, command, { ...context, user })
-  }
-  throw new UnauthorizedError()
+  ...
+  state,
+  return next(middlewareContext, state, command, context)
 }
-export default authMiddleware
 ```
+
+The handler function takes the following parameters:
+
+| Parameter Name    | Description                                                     |
+| ----------------- | --------------------------------------------------------------- |
+| middlewareContext | Contains data that describes the currently processed operation. |
+| state             | The aggregates state.                                           |
+| command           | An object that contains data about the incoming command.        |
+| context           | Used to store arbitrary data throughout the middleware chain.   |
 
 ## Read Model Resolver Middleware
 
+A read model resolver middleware function has the following structure:
+
 ```js
-import { UnauthorizedError } from '../errors'
-import { decode } from '../jwt'
-const authMiddleware = (next) => (
+const resolverMiddleware = (next) => (
   middlewareContext,
   store,
   params,
   context
 ) => {
-  const { readModelName, resolverName } = middlewareContext
-  if (
-    readModelName === 'medias' ||
-    (readModelName === 'user-profiles' &&
-      ['profile', 'profileById', 'fullNameById'].includes(resolverName))
-  ) {
-    if (context.jwt) {
-      const user = decode(context.jwt)
-      return next(middlewareContext, store, params, { ...context, user })
-    }
-    throw new UnauthorizedError()
-  }
+  ...
   return next(middlewareContext, store, params, context)
 }
-export default authMiddleware
 ```
 
+The handler function takes the following parameters:
+
+| Parameter Name    | Description                                                     |
+| ----------------- | --------------------------------------------------------------- |
+| middlewareContext | Contains data that describes the currently processed operation. |
+| store             | The read model store.                                           |
+| params            | The request parameters passed to the resolver.                  |
+| context           | Used to store arbitrary data throughout the middleware chain.   |
+
 ## Read Model Projection Middleware
+
+A read model projection middleware function has the following structure:
+
+```js
+const resolverMiddleware = (next) => (
+  middlewareContext,
+  store,
+  event,
+  context
+) => {
+  ...
+  return next(middlewareContext, store, event, context)
+}
+```
+
+The handler function takes the following parameters:
+
+| Parameter Name    | Description                                                     |
+| ----------------- | --------------------------------------------------------------- |
+| middlewareContext | Contains data that describes the currently processed operation. |
+| store             | The read model store.                                           |
+| event             | The incoming event object.                                      |
+| context           | Used to store arbitrary data throughout the middleware chain.   |
