@@ -1,4 +1,4 @@
-const checkInput = (input) => {
+const checkInput = (input: any) => {
   if (!Array.isArray(input.events)) {
     throw new Error('Events must be array')
   }
@@ -13,7 +13,7 @@ const checkInput = (input) => {
   }
 }
 
-const handler = async (req, res) => {
+const handler = async (req: any, res: any) => {
   let input
   try {
     input = JSON.parse(req.body)
