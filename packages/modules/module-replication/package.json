@@ -16,6 +16,7 @@
   "author": "reimagined team",
   "main": "./lib/index.js",
   "module": "./es/index.js",
+  "types": "./types/index.d.ts",
   "scripts": {
     "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/module-replication",
     "test": "echo || exit 0",
@@ -44,5 +45,6 @@
       "inputDir": "./src",
       "outDir": "./lib"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }
