@@ -343,6 +343,44 @@ const prodConfig = {
 }
 ```
 
+### middleware
+
+Specifies [middleware](middleware.md) for aggregates and read models. The configuration object can contain the following fields:
+
+| Field     | Description                                                                                          |
+| --------- | ---------------------------------------------------------------------------------------------------- |
+| aggregate | An array of file paths. Each value in the array specifies a file that exports a middleware function. |
+| readModel | An object that contains read model middleware settings (see below).                                  |
+
+The **readModel** object can have the following fields:
+
+| Field      | Description                                                |
+| ---------- | ---------------------------------------------------------- |
+| projection | Lists files that contain read model projection middleware. |
+| resolver   | Lists files that contain read model resolver middleware.   |
+
+Middlewares of all types are invoked in the order that they are listed in the configuration object.
+
+#### Example
+
+```js
+const appConfig = {
+  ...
+  middlewares: {
+    aggregate: [
+      'common/middlewares/command-middleware-1.js',
+      'common/middlewares/command-middleware-2.js',
+      'common/middlewares/command-middleware-3.js'
+    ],
+    readModel: {
+        projection: ['common/middlewares/projection-middleware.js'],
+        resolver: ['common/middlewares/resolver-middleware.js']
+    }
+  },
+  ...
+}
+```
+
 ### jwtCookie
 
 Specifies global settings for the application's JWT cookies. The configuration object contains the following fields:

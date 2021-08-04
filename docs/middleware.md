@@ -6,7 +6,7 @@ description: This describes how to use middleware in command handlers, read mode
 
 ## General Information
 
-The reSolve framework implements the middleware mechanism that you can use to add intermediate logic to the lifecycle of command handlers as well as read model resolvers and projection.
+The reSolve framework implements the middleware mechanism that you can use to add intermediate logic to the lifecycle of command handlers as well as read model resolvers and projections.
 
 Middleware is defined as a curried function of the following format:
 
