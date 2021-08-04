@@ -51,14 +51,14 @@ Searches for data items based on the specified expression.
 
 #### Arguments
 
-| Argument Name    | Description                                 |
-| ---------------- | ------------------------------------------- |
-| tableName        | A table name.                               |
-| searchExpression | An object that defines a search expression. |
-| fieldList        | A list of fields to fetch.                  |
-| sort             | A sort order.                               |
-| skip             | A number of data items to skip.             |
-| limit            | The maximum number of data items to fetch.  |
+| Argument Name    | Description                                                             |
+| ---------------- | ----------------------------------------------------------------------- |
+| tableName        | A table name.                                                           |
+| searchExpression | An object that defines a search expression.                             |
+| projection       | Defines which fields should be included into the resulting data sample. |
+| sort             | A sort order.                                                           |
+| skip             | A number of data items to skip.                                         |
+| limit            | The maximum number of data items to fetch.                              |
 
 #### Example
 
