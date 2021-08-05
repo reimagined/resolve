@@ -32,20 +32,6 @@ const appConfig = {
       connectorName: 'default',
     },
   ],
-  apiHandlers: [
-    {
-      handler: {
-        module:
-          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
-        options: {
-          modulePath: './ssr.js',
-          moduleFactoryImport: false,
-        },
-      },
-      path: '/:markup*',
-      method: 'GET',
-    },
-  ],
   clientEntries: [
     [
       'client/index.tsx',
@@ -55,22 +41,28 @@ const appConfig = {
         target: 'web',
       },
     ],
-    [
-      'client/ssr.tsx',
-      {
-        outputFile: 'common/local-entry/ssr.js',
-        moduleType: 'commonjs',
-        target: 'node',
-      },
-    ],
-    [
-      'client/ssr.tsx',
-      {
-        outputFile: 'common/cloud-entry/ssr.js',
-        moduleType: 'commonjs',
-        target: 'node',
-      },
-    ],
+  ],
+  staticPath: undefined,
+  staticRoutes: [
+    ['/', 'index.html'],
+    ['/index', 'index.html'],
+    ['/error', 'index.html'],
+    ['/login', 'index.html'],
+    ['/comments/:wildcard*', 'index.html'],
+    ['/user/:wildcard*', 'index.html'],
+    ['/newest/:wildcard*', 'index.html'],
+    ['/show/:wildcard*', 'index.html'],
+    ['/ask/:wildcard*', 'index.html'],
+    ['/submit/:wildcard*', 'index.html'],
+    ['/storyDetails/:wildcard*', 'index.html'],
+    ['/comments', 'index.html'],
+    ['/user', 'index.html'],
+    ['/newest', 'index.html'],
+    ['/show', 'index.html'],
+    ['/ask', 'index.html'],
+    ['/submit', 'index.html'],
+    ['/storyDetails', 'index.html'],
+    '/:static*',
   ],
 }
 

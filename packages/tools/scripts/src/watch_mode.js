@@ -5,6 +5,7 @@ import getLog from './get-log'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
+import getRoutesManifest from './get_routes_manifest'
 import { checkRuntimeEnv, injectRuntimeEnv } from './declare_runtime_env'
 import getPeerDependencies from './get_peer_dependencies'
 import showBuildInfo from './show_build_info'
@@ -21,6 +22,7 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
   validateConfig(resolveConfig)
 
   const nodeModulesByAssembly = new Map()
+  const routesManifest = getRoutesManifest(resolveConfig)
 
   const webpackConfigs = await getWebpackConfigs({
     resolveConfig,
@@ -79,7 +81,8 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
         writePackageJsonsForAssemblies(
           resolveConfig.distDir,
           nodeModulesByAssembly,
-          peerDependencies
+          peerDependencies,
+          routesManifest
         )
 
         copyEnvToDist(resolveConfig.distDir)

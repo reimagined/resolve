@@ -4,7 +4,8 @@ import path from 'path'
 const writePackageJsonsForAssemblies = (
   distDir,
   nodeModulesByAssembly,
-  peerDependencies
+  peerDependencies,
+  routesManifest
 ) => {
   const applicationPackageJson = JSON.parse(
     fs.readFileSync(path.resolve(process.cwd(), 'package.json'))
@@ -48,6 +49,7 @@ const writePackageJsonsForAssemblies = (
 
         return acc
       }, {}),
+      ...(routesManifest != null ? { routesManifest } : {}),
     }
 
     fs.writeFileSync(

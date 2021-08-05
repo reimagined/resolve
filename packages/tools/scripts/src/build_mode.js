@@ -7,6 +7,7 @@ import getLog from './get-log'
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
 import getPeerDependencies from './get_peer_dependencies'
+import getRoutesManifest from './get_routes_manifest'
 import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
@@ -27,6 +28,7 @@ const buildMode = async (resolveConfig, adjustWebpackConfigs) => {
   })
 
   const peerDependencies = getPeerDependencies()
+  const routesManifest = getRoutesManifest(resolveConfig)
 
   const compiler = webpack(webpackConfigs)
 
@@ -43,7 +45,8 @@ const buildMode = async (resolveConfig, adjustWebpackConfigs) => {
       writePackageJsonsForAssemblies(
         resolveConfig.distDir,
         nodeModulesByAssembly,
-        peerDependencies
+        peerDependencies,
+        routesManifest
       )
 
       copyEnvToDist(resolveConfig.distDir)

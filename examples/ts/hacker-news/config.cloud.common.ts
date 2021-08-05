@@ -3,7 +3,7 @@ import { declareRuntimeEnv } from '@resolve-js/scripts'
 const cloudCommonConfig = {
   target: 'cloud',
   mode: 'production',
-  staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
+  //staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
   eventstoreAdapter: {
     module: '@resolve-js/eventstore-postgresql',
     options: {
