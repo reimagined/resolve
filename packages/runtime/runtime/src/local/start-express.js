@@ -28,12 +28,14 @@ const startExpress = async (resolve) => {
           successEvent,
           failedEvent,
           errors,
+          status,
         } = await currentResolve.eventSubscriber.status({ eventSubscriber })
 
         if (
           successEvent != null ||
           failedEvent != null ||
-          (Array.isArray(errors) && errors.length > 0)
+          (Array.isArray(errors) && errors.length > 0) ||
+          status !== 'deliver'
         ) {
           notReadyListeners.delete(eventSubscriber)
         }
