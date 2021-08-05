@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.5...HEAD)
 
+**Enhancements:**
+
+- Improve bootstrapping / Remove some eslint warnings [\#1979](https://github.com/reimagined/resolve/pull/1979)
+
 **Documentation:**
 
 - Mention the default logging level [\#1966](https://github.com/reimagined/resolve/pull/1966)
