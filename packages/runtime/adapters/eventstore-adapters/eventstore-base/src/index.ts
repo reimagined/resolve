@@ -40,7 +40,6 @@ import type {
   AdapterPoolPossiblyUnconnected,
   AdapterPoolConnected,
   AdapterConfig,
-  EventStoreDescription,
 } from './types'
 
 import {
