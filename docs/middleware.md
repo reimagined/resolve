@@ -1,7 +1,7 @@
 ---
 id: faq
 title: FAQ
-description: This describes how to use middleware in command handlers, read model resolvers and projections.
+description: This describes how to use middleware in aggregates, read model resolvers and projections.
 ---
 
 ## General Information
@@ -26,9 +26,9 @@ const myMiddleware = (next) =>
 
 For details on how to implement different types of middleware, refer to the following sections of this document:
 
-- [Command Handler Middleware](#command-handler-middleware)
-- [Read Model Resolver Middleware](#read-model-resolver-middleware)
+- [Command Middleware](#command-middleware)
 - [Read Model Projection Middleware](#read-model-projection-middleware)
+- [Read Model Resolver Middleware](#read-model-resolver-middleware)
 
 The implemented middleware should be registered in the application's configuration file:
 
@@ -57,9 +57,9 @@ const appConfig = {
 
 See to the [Personal Data](https://github.com/reimagined/resolve/tree/dev/examples/ts/personal-data) application for example middleware implementation.
 
-## Command Handler Middleware
+## Command Middleware
 
-A command handler middleware function has the following structure:
+A command middleware function has the following structure:
 
 ```js
 const commandMiddleware = (next) => (
@@ -81,32 +81,7 @@ The handler function takes the following parameters:
 | middlewareContext | Contains data that describes the currently processed operation. |
 | state             | The aggregates state.                                           |
 | command           | An object that contains data about the incoming command.        |
-| context           | Used to store arbitrary data throughout the middleware chain.   |
-
-## Read Model Resolver Middleware
-
-A read model resolver middleware function has the following structure:
-
-```js
-const resolverMiddleware = (next) => (
-  middlewareContext,
-  store,
-  params,
-  context
-) => {
-  ...
-  return next(middlewareContext, store, params, context)
-}
-```
-
-The handler function takes the following parameters:
-
-| Parameter Name    | Description                                                     |
-| ----------------- | --------------------------------------------------------------- |
-| middlewareContext | Contains data that describes the currently processed operation. |
-| store             | The read model store.                                           |
-| params            | The request parameters passed to the resolver.                  |
-| context           | Used to store arbitrary data throughout the middleware chain.   |
+| context           | Accumulates data throughout the processing chain.               |
 
 ## Read Model Projection Middleware
 
@@ -131,4 +106,29 @@ The handler function takes the following parameters:
 | middlewareContext | Contains data that describes the currently processed operation. |
 | store             | The read model store.                                           |
 | event             | The incoming event object.                                      |
-| context           | Used to store arbitrary data throughout the middleware chain.   |
+| context           | Accumulates data throughout the processing chain.               |
+
+## Read Model Resolver Middleware
+
+A read model resolver middleware function has the following structure:
+
+```js
+const resolverMiddleware = (next) => (
+  middlewareContext,
+  store,
+  params,
+  context
+) => {
+  ...
+  return next(middlewareContext, store, params, context)
+}
+```
+
+The handler function takes the following parameters:
+
+| Parameter Name    | Description                                                     |
+| ----------------- | --------------------------------------------------------------- |
+| middlewareContext | Contains data that describes the currently processed operation. |
+| store             | The read model store.                                           |
+| params            | The request parameters passed to the resolver.                  |
+| context           | Accumulates data throughout the processing chain.               |
