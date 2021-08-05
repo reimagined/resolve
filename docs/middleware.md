@@ -79,16 +79,16 @@ The handler function takes the following parameters:
 | Parameter Name    | Description                                                     |
 | ----------------- | --------------------------------------------------------------- |
 | middlewareContext | Contains data that describes the currently processed operation. |
-| state             | The aggregates state.                                           |
+| state             | The aggregate's state.                                          |
 | command           | An object that contains data about the incoming command.        |
-| context           | Accumulates data throughout the processing chain.               |
+| context           | Used to pass service data throughout the processing chain.      |
 
 ## Read Model Projection Middleware
 
 A read model projection middleware function has the following structure:
 
 ```js
-const resolverMiddleware = (next) => (
+const projectionMiddleware = (next) => (
   middlewareContext,
   store,
   event,
@@ -106,7 +106,7 @@ The handler function takes the following parameters:
 | middlewareContext | Contains data that describes the currently processed operation. |
 | store             | The read model store.                                           |
 | event             | The incoming event object.                                      |
-| context           | Accumulates data throughout the processing chain.               |
+| context           | Used to pass service data throughout the processing chain.      |
 
 ## Read Model Resolver Middleware
 
@@ -131,4 +131,4 @@ The handler function takes the following parameters:
 | middlewareContext | Contains data that describes the currently processed operation. |
 | store             | The read model store.                                           |
 | params            | The request parameters passed to the resolver.                  |
-| context           | Accumulates data throughout the processing chain.               |
+| context           | Used to pass service data throughout the processing chain.      |
