@@ -37,6 +37,7 @@
           "api/read-model-connector",
           "api/read-model-store",
           "api/event-store-adapter",
+          "api/midleware",
           "api/api-handler",
           "api/saga",
           "api/resolve-scripts",
