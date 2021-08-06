@@ -288,7 +288,7 @@ jobs:
             internal/**/es
             internal/**/lib
             internal/**/types
-            internal/**/*.tsbuildinfoF
+            internal/**/*.tsbuildinfo
             !internal/**/node_modules/**
             .packages/**
           key: ${{ runner.os }}-build-${{ github.run_id }}
@@ -366,7 +366,7 @@ jobs:
 
       - name: Install
         run: |
-          yarn install --frozen-lockfile
+          yarn install --ignore-scripts
 
       - name: Publish to private repository
         id: publish
