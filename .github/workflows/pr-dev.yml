@@ -89,26 +89,25 @@ jobs:
         if: env.git_diff
         run: exit 1
 
-#      - name: Validate yarn.lock
-#        run: yarn validate-lock-file
-#
-#      - name: Run Prettier
-#        run: yarn prettier:check
-#
-#      - name: Run ESLint
-#        run: yarn lint
-#
-#      - name: Test:unit
-#        env:
-#          DEBUG_LEVEL: error
-#        run: yarn test
+      - name: Validate yarn.lock
+        run: yarn validate-lock-file
+
+      - name: Run Prettier
+        run: yarn prettier:check
+
+      - name: Run ESLint
+        run: yarn lint
+
+      - name: Test:unit
+        env:
+          DEBUG_LEVEL: error
+        run: yarn test
 
   integrationTest:
     name: Integration Tests
     runs-on: ubuntu-latest
     needs: buildAndTest
-    if: 1 == 0
-#    if: 1 == 0 startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+    if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
     services:
       postgres:
         image: clkao/postgres-plv8:10-2
@@ -170,7 +169,7 @@ jobs:
 
       - name: Install
         run: |
-          yarn install --frozen-lockfile
+          yarn install --ignore-scripts
 
       - name: Integration Tests
         env:
@@ -188,7 +187,7 @@ jobs:
         run: yarn test:integration-postgres
 
   cloudIntegrationTest:
-    name: Cloud Tests
+    name: Cloud Integration Tests
     runs-on: ubuntu-latest
     needs: buildAndTest
     concurrency: cloud-environment
@@ -233,7 +232,7 @@ jobs:
 
       - name: Install
         run: |
-          yarn install --frozen-lockfile
+          yarn install --ignore-scripts
 
       - name: Integration Test PostgreSQL Serverless
         env:
@@ -248,8 +247,7 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: buildAndTest
-    if: 1 == 0
-#    if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+    if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
     steps:
       - uses: actions/checkout@v2
 
@@ -298,7 +296,7 @@ jobs:
 
       - name: Install
         run: |
-          yarn install --frozen-lockfile
+          yarn install --ignore-scripts
 
       - name: Test:e2e (ubuntu:chrome-headless)
         env:
@@ -314,8 +312,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: buildAndTest
     concurrency: cloud-environment
-    if: 1 == 0
-#    if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+    if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
     steps:
       - uses: actions/checkout@v2
 
