@@ -3,6 +3,7 @@ import {
   AggregateInteropMap,
   AggregateInterop,
   AggregateRuntime,
+  CommandHttpResponseMode,
 } from './types'
 import { CommandError } from '../errors'
 import { AggregateMeta, MiddlewareContext } from '../types/runtime'
@@ -15,6 +16,7 @@ import {
   CommandContext,
   CommandHandler,
   CommandResult,
+  InteropCommandResult,
 } from '../types/core'
 import { makeMiddlewareApplier } from '../helpers'
 
@@ -62,6 +64,7 @@ const getAggregateInterop = (aggregate: AggregateMeta): AggregateInterop => {
     deserializeState,
     invariantHash,
     projection,
+    commandHttpResponseMode = CommandHttpResponseMode.event,
   } = aggregate
   return {
     name,
@@ -71,6 +74,7 @@ const getAggregateInterop = (aggregate: AggregateMeta): AggregateInterop => {
     serializeState,
     deserializeState,
     invariantHash,
+    commandHttpResponseMode,
   }
 }
 
@@ -396,7 +400,7 @@ const makeCommandExecutor = (
   return async (
     command: Command,
     middlewareContext: MiddlewareContext = {}
-  ): Promise<CommandResult> => {
+  ): Promise<InteropCommandResult> => {
     const monitoringGroup =
       runtime.monitoring != null
         ? runtime.monitoring
@@ -474,7 +478,6 @@ const makeCommandExecutor = (
         command,
         context
       )
-      // const event = await commandHandler(aggregateState, command, context)
 
       if (!checkOptionShape(event.type, [String])) {
         throw generateCommandError('Event "type" is required')
@@ -519,7 +522,9 @@ const makeCommandExecutor = (
         }
       })()
 
-      return processedEvent
+      return aggregate.commandHttpResponseMode === CommandHttpResponseMode.event
+        ? processedEvent
+        : {}
     } catch (error) {
       executionError = error
       subSegment.addError(error)

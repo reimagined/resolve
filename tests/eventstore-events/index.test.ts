@@ -27,6 +27,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
       cursor: null,
     })
     expect(events).toHaveLength(0)
+
+    const description = await adapter.describe()
+    expect(description.eventCount).toEqual(0)
   })
 
   test('should save events', async () => {
@@ -34,6 +37,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
       const event = makeTestEvent(eventIndex)
       await adapter.saveEvent(event)
     }
+
+    const description = await adapter.describe()
+    expect(description.eventCount).toEqual(countEvents)
   })
 
   test('should load all requested events', async () => {
@@ -42,6 +48,11 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
       cursor: null,
     })
     expect(events).toHaveLength(countEvents)
+
+    const description = await adapter.describe()
+    expect(events[events.length - 1].timestamp).toEqual(
+      description.lastEventTimestamp
+    )
   })
 
   test('should load events by type', async () => {

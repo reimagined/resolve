@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import chalk from 'chalk'
-import isYarnAvailable from './is-yarn-available'
+import { isYarnAvailable } from './utils'
 
 const printFinishOutput = async (applicationName: string) => {
   const displayCommand = (isDefaultCmd: boolean) =>

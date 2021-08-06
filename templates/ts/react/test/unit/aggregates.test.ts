@@ -8,8 +8,8 @@ import {
 
 describe('aggregates', () => {
   describe('MyAggregate', () => {
-    it('"create" command executes successfully', () => {
-      givenEvents([])
+    it('"create" command executes successfully', async () => {
+      await givenEvents([])
         .aggregate({ name: 'MyAggregate', commands, projection })
         .command('create', { name: 'Test Aggregate' })
         .shouldProduceEvent({
@@ -17,8 +17,8 @@ describe('aggregates', () => {
           payload: { name: 'Test Aggregate' },
         })
     })
-    it('"addItem" command executes successfully', () => {
-      givenEvents([
+    it('"addItem" command executes successfully', async () => {
+      await givenEvents([
         {
           type: MY_AGGREGATE_CREATED,
           payload: { name: 'Test Aggregate' },

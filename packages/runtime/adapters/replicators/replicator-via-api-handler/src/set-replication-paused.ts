@@ -1,10 +1,10 @@
 import { InternalMethods } from './types'
 import fetch from 'node-fetch'
 
-//eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import * as REPLICATION_CONSTANTS from '@resolve-js/module-replication'
-const { PAUSE_REPLICATION, RESUME_REPLICATION } = REPLICATION_CONSTANTS
+import {
+  PAUSE_REPLICATION,
+  RESUME_REPLICATION,
+} from '@resolve-js/module-replication'
 
 const setReplicationPaused: InternalMethods['setReplicationPaused'] = async (
   pool,

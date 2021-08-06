@@ -25,12 +25,11 @@ const MyAggregateList = () => {
       aggregateName: 'MyAggregate',
       payload: { name: `MyAggregate ${aggregates.length}` },
     },
-    (error, result) => {
-      const event = result as any
+    (error, result, { aggregateId }) => {
       setAggregates([
         ...aggregates,
         {
-          id: event.aggregateId,
+          id: aggregateId,
           name: `MyAggregate ${aggregates.length}`,
           items: [],
         },
@@ -44,10 +43,9 @@ const MyAggregateList = () => {
       aggregateId: id,
       aggregateName: 'MyAggregate',
     }),
-    (error, result) => {
-      const event = result as any
+    (error, result, { aggregateId }) => {
       setAggregates([
-        ...aggregates.filter((aggregate) => aggregate.id !== event.aggregateId),
+        ...aggregates.filter((aggregate) => aggregate.id !== aggregateId),
       ])
     }
   )
