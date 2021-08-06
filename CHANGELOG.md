@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.5...HEAD)
 
+**New features:**
+
+- Implement read model isAlive boolean in status [\#1982](https://github.com/reimagined/resolve/pull/1982)
+
 **Enhancements:**
 
 - Improve bootstrapping / Remove some eslint warnings [\#1979](https://github.com/reimagined/resolve/pull/1979)

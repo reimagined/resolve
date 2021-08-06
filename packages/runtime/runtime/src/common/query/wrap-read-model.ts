@@ -705,8 +705,15 @@ const operationMethods = {
       interop: ReadModelInterop | SagaInterop,
       connection: any,
       readModelName: string,
-      parameters: {}
-    ) => [connection, readModelName]
+      parameters: {
+        includeRuntimeStatus?: boolean
+      }
+    ) => [
+      connection,
+      readModelName,
+      pool.eventstoreAdapter,
+      parameters.includeRuntimeStatus,
+    ]
   ),
 } as const
 
