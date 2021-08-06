@@ -190,7 +190,6 @@ jobs:
     name: Cloud Integration Tests
     runs-on: ubuntu-latest
     needs: buildAndTest
-    concurrency: cloud-environment
     if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
     steps:
       - uses: actions/checkout@v2
