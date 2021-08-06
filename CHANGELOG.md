@@ -14,6 +14,7 @@
 
 **Documentation:**
 
+- Fix links to CI and eventstore adapters directories [\#1984](https://github.com/reimagined/resolve/pull/1984)
 - Mention the default logging level [\#1966](https://github.com/reimagined/resolve/pull/1966)
 
 ## [V0.31.5](https://github.com/reimagined/resolve/tree/V0.31.5) (2021-07-29)
