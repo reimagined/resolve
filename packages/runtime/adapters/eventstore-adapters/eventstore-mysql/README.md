@@ -2,11 +2,11 @@
 
 [![npm version](https://badge.fury.io/js/%40resolve-js%2Feventstore-mysql.svg)](https://badge.fury.io/js/%40resolve-js%2Feventstore-mysql)
 
-This package is an eventstore adapter for storing events using MySQL 8.0.
+This package is an event store adapter used to store events in MySQL 8.0.
 
 ## Available Parameters
 
-- `eventsTableName` - a name of a table storing events.
+- `eventsTableName` - the name of a table used to store events.
 - `...connectionSettings` - see [Connection Settings](https://www.npmjs.com/package/mysql2#first-query) for more information.
 
 ## Usage
