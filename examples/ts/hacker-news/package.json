@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "7.11.0",
+    "@resolve-js/client": "0.31.5",
     "@resolve-js/core": "0.31.5",
     "@resolve-js/debug-levels": "0.31.5",
     "@resolve-js/eventstore-lite": "0.31.5",
