@@ -4,13 +4,22 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.5...HEAD)
 
+**New features:**
+
+- Implement read model isAlive boolean in status [\#1982](https://github.com/reimagined/resolve/pull/1982)
+
 **Enhancements:**
 
 - Improve bootstrapping / Remove some eslint warnings [\#1979](https://github.com/reimagined/resolve/pull/1979)
 
 **Documentation:**
 
+- Fix links to CI and eventstore adapters directories [\#1984](https://github.com/reimagined/resolve/pull/1984)
 - Mention the default logging level [\#1966](https://github.com/reimagined/resolve/pull/1966)
+
+**Other changes:**
+
+- Make cloud integration tests running in parallel with other jobs [\#1987](https://github.com/reimagined/resolve/pull/1987)
 
 ## [V0.31.5](https://github.com/reimagined/resolve/tree/V0.31.5) (2021-07-29)
 

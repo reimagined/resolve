@@ -1,53 +1,31 @@
 import { CheckForResourceError } from './types'
 
-interface ResourceError extends Error {
-  code: number
-  name: string
+function DefineResourceError(name: string, errorCode: number) {
+  return class ResourceError extends Error {
+    code: number
+
+    constructor(msg: string) {
+      super(msg)
+      this.name = name
+      this.code = errorCode
+      Object.setPrototypeOf(this, new.target.prototype)
+    }
+
+    static is(err: any): boolean {
+      return err instanceof Error && err.name === name
+    }
+  }
 }
 
-export const ResourceAlreadyExistError: {
-  new (message: string): ResourceError
-  is: (error: any) => boolean
-} = function (this: ResourceError, message: string): void {
-  Error.call(this)
-  this.code = 406
-  this.message = message
-  Object.assign(this, { name: 'ResourceAlreadyExistError' })
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, ResourceAlreadyExistError)
-  } else {
-    this.stack = new Error().stack
-  }
-} as any
+export const ResourceAlreadyExistError = DefineResourceError(
+  'ResourceAlreadyExistError',
+  406
+)
 
-void ((ResourceAlreadyExistError as any).is = (error: any): boolean =>
-  error != null && error.name === 'ResourceAlreadyExistError')
-
-export const ResourceNotExistError: {
-  new (message: string): ResourceError
-  is: (error: any) => boolean
-} = function (this: any, message: string): void {
-  Error.call(this)
-  this.code = 410
-  this.message = message
-  Object.assign(this, { name: 'ResourceNotExistError' })
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, ResourceNotExistError)
-  } else {
-    this.stack = new Error().stack
-  }
-} as any
-
-void ((ResourceNotExistError as any).is = (error: any): boolean =>
-  error != null && error.name === 'ResourceNotExistError')
-
-ResourceAlreadyExistError.prototype = Object.create(Error.prototype, {
-  constructor: { enumerable: true, value: ResourceAlreadyExistError },
-})
-
-ResourceNotExistError.prototype = Object.create(Error.prototype, {
-  constructor: { enumerable: true, value: ResourceNotExistError },
-})
+export const ResourceNotExistError = DefineResourceError(
+  'ResourceNotExistError',
+  410
+)
 
 const allowedResourceErrorsConstructors = Array.from<Function>([
   ResourceAlreadyExistError,
