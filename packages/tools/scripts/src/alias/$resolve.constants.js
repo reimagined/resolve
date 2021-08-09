@@ -9,7 +9,6 @@ export const includeAlias = [
   'rootPath',
   'staticDir',
   'staticPath',
-  'staticRoutes',
 ]
 
 const importConstants = () => {

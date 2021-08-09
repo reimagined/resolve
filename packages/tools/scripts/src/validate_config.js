@@ -1,7 +1,5 @@
 import Ajv from 'ajv'
 import Trie from 'route-trie'
-import path from 'path'
-import fs from 'fs'
 
 import { schemaResolveConfig, message } from './constants'
 import { checkRuntimeEnv } from './declare_runtime_env'
@@ -46,18 +44,13 @@ export const validateReadModelConnectors = (resolveConfig) => {
   }
 }
 
-export const validateApiHandlersAndStaticRoutes = (resolveConfig) => {
-  if (
-    !resolveConfig.hasOwnProperty('apiHandlers') &&
-    !resolveConfig.hasOwnProperty('staticRoutes')
-  ) {
+export const validateApiHandlers = (resolveConfig) => {
+  if (!resolveConfig.hasOwnProperty('apiHandlers')) {
     return
   }
   const trie = new Trie()
 
-  const apiHandlers =
-    resolveConfig.apiHandlers != null ? resolveConfig.apiHandlers : []
-  for (const [idx, apiHandler] of apiHandlers.entries()) {
+  for (const [idx, apiHandler] of resolveConfig.apiHandlers.entries()) {
     if (checkRuntimeEnv(apiHandler.path)) {
       throw new Error(`${message.clientEnvError}.apiHandlers[${idx}].path`)
     }
@@ -85,53 +78,6 @@ export const validateApiHandlersAndStaticRoutes = (resolveConfig) => {
           `Incorrect options.apiHandlers[${idx}].method = "${apiHandler.path}"``API handler method should be from the following list ${allowedMethods}`,
         ].join('\n')
       )
-    }
-  }
-
-  const staticRoutes =
-    resolveConfig.staticRoutes != null ? resolveConfig.staticRoutes : []
-
-  for (const [idx, inputStaticRoute] of staticRoutes.entries()) {
-    const staticRoute = Array.isArray(inputStaticRoute)
-      ? inputStaticRoute[0]
-      : inputStaticRoute
-    const maybeMappedStaticFile = Array.isArray(inputStaticRoute)
-      ? inputStaticRoute[1]
-      : null
-    if (
-      checkRuntimeEnv(staticRoute) ||
-      checkRuntimeEnv(maybeMappedStaticFile)
-    ) {
-      throw new Error(`${message.clientEnvError}.staticRoutes[${idx}]`)
-    }
-
-    try {
-      trie.define(staticRoute)
-    } catch (error) {
-      throw new Error(
-        `Incorrect options.staticRoutes[${idx}] = "${staticRoute}"\nTrie error: ${error}`
-      )
-    }
-
-    if (maybeMappedStaticFile != null) {
-      try {
-        if (
-          !fs.existsSync(
-            path.join(
-              path.resolve(process.cwd(), resolveConfig.staticDir),
-              maybeMappedStaticFile
-            )
-          )
-        ) {
-          throw new Error(
-            `Static mapping "${staticRoute}" -> "${maybeMappedStaticFile}" not exists`
-          )
-        }
-      } catch (error) {
-        throw new Error(
-          `Incorrect options.staticRoutes[${idx}] = "${staticRoute}"\nTrie error: ${error}`
-        )
-      }
     }
   }
 }
@@ -222,7 +168,7 @@ const validateConfig = (config) => {
   }
 
   validateUniqueNames(config)
-  validateApiHandlersAndStaticRoutes(config)
+  validateApiHandlers(config)
   validateReadModelConnectors(config)
   validateClientEntries(config)
 

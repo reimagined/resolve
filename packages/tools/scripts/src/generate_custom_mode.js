@@ -10,7 +10,6 @@ import webpack from 'webpack'
 import fsExtra from 'fs-extra'
 import showBuildInfo from './show_build_info'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
-import getRoutesManifest from './get_routes_manifest'
 import copyEnvToDist from './copy_env_to_dist'
 import getLog from './get-log'
 import detectErrors from './detect_errors'
@@ -29,7 +28,6 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
       validateConfig(config)
 
       const nodeModulesByAssembly = new Map()
-      const routesManifest = getRoutesManifest(resolveConfig)
       const webpackConfigs = await getWebpackConfigs({
         resolveConfig: config,
         nodeModulesByAssembly,
@@ -53,8 +51,7 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
           writePackageJsonsForAssemblies(
             config.distDir,
             nodeModulesByAssembly,
-            peerDependencies,
-            routesManifest
+            peerDependencies
           )
 
           copyEnvToDist(config.distDir)

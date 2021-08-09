@@ -309,24 +309,6 @@
         "staticPath": {
           "type": "string"
         },
-        "staticRoutes": {
-          "type": "array",
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "minItems": 2,
-                "maxItems": 2
-              }
-            ]
-          }
-        },
         "aggregates": {
           "type": "array",
           "items": {
@@ -444,6 +426,7 @@
         "rootPath",
         "distDir",
         "staticDir",
+        "staticPath",
         "aggregates",
         "viewModels",
         "readModels",
@@ -455,12 +438,6 @@
         "sagas",
         "mode"
       ],
-
-      "oneOf": [
-        { "required": ["staticPath"] },
-        { "required": ["staticRoutes"] }
-      ],
-
       "additionalProperties": false
     }
   },
