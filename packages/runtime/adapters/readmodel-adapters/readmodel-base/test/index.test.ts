@@ -204,8 +204,13 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
   await adapter.reset(store, readModelName)
   expect(implementation.reset).toBeCalledWith(adapterPool, readModelName)
 
-  await adapter.status(store, readModelName)
-  expect(implementation.status).toBeCalledWith(adapterPool, readModelName)
+  await adapter.status(store, readModelName, eventstoreAdapter)
+
+  expect(implementation.status).toBeCalledWith(
+    adapterPool,
+    readModelName,
+    eventstoreAdapter
+  )
 
   await adapter.unsubscribe(store, readModelName)
   expect(implementation.unsubscribe).toBeCalledWith(adapterPool, readModelName)
