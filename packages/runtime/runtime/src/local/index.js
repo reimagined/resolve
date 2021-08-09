@@ -50,6 +50,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       serverImports: assemblies.serverImports,
       domain,
       ...constants,
+      staticRoutes: [], // For future use
       assemblies,
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
