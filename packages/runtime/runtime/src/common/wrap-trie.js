@@ -41,14 +41,16 @@ const wrapTrie = (apiHandlers, staticRoutes, rootPath, customStaticHandler) => {
       .handle(String(method).toUpperCase(), handler)
   }
 
-  for (const [staticPath] of staticRoutes) {
-    trie
-      .define(getRootBasedUrl(rootPath, staticPath))
-      .handle('GET', staticHandler)
+  if (Array.isArray(staticRoutes)) {
+    for (const [staticPath] of staticRoutes) {
+      trie
+        .define(getRootBasedUrl(rootPath, staticPath))
+        .handle('GET', staticHandler)
 
-    trie
-      .define(getRootBasedUrl(rootPath, staticPath))
-      .handle('HEAD', staticHandler)
+      trie
+        .define(getRootBasedUrl(rootPath, staticPath))
+        .handle('HEAD', staticHandler)
+    }
   }
 
   try {

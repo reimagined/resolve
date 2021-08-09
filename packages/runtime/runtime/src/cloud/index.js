@@ -32,7 +32,6 @@ const index = async ({ assemblies, constants, domain, resolveVersion }) => {
       serverImports: assemblies.serverImports,
       domain,
       ...constants,
-      staticRoutes: [], // For future use
       publisher: {},
       assemblies,
       domainInterop,
