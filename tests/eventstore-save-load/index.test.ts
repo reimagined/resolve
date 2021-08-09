@@ -10,6 +10,7 @@ import {
   checkEventsContinuity,
   THREAD_COUNT,
   EventWithCursor,
+  ConcurrentError,
 } from '@resolve-js/eventstore-base'
 
 import type { SavedEvent } from '@resolve-js/eventstore-base'
@@ -24,14 +25,16 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
 
   let eventCursorPairs: EventWithCursor[] = []
 
+  const firstEvent = {
+    aggregateVersion: 1,
+    aggregateId: 'ID_1',
+    type: 'TYPE_1',
+    payload: { message: 'hello' },
+    timestamp: 1,
+  }
+
   test('should be able to save and load an event', async () => {
-    const saveResult = await adapter.saveEvent({
-      aggregateVersion: 1,
-      aggregateId: 'ID_1',
-      type: 'TYPE_1',
-      payload: { message: 'hello' },
-      timestamp: 1,
-    })
+    const saveResult = await adapter.saveEvent(firstEvent)
 
     const { cursor: returnedCursor, event: savedEvent } = saveResult
     eventCursorPairs.push(saveResult)
@@ -55,18 +58,19 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
     expect(returnedCursor).toEqual(cursor)
   })
 
+  test('should throw ConcurrentError when saving event with the same aggregateVersion', async () => {
+    await expect(adapter.saveEvent(firstEvent)).rejects.toThrow(ConcurrentError)
+  })
+
   const checkCount = 256
-  test('should be able to save many events and returned result must match the subsequent loadEvents result', async () => {
+  test('saved events and corresponding cursors must match the subsequent loadEvents result', async () => {
     for (let i = 1; i < checkCount; ++i) {
       const event = makeTestEvent(i)
       const saveResult = await adapter.saveEvent(event)
       eventCursorPairs.push(saveResult)
     }
-
     expect(eventCursorPairs).toHaveLength(checkCount)
-  })
 
-  test('saved events and corresponding must match the result of loadEvent', async () => {
     let currentCursor = null
     let loadedEvents: SavedEvent[] = []
     const step = 100

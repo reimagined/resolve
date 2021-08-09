@@ -2,12 +2,12 @@
 
 [![npm version](https://badge.fury.io/js/%40resolve-js%2Feventstore-postgresql-serverless.svg)](https://badge.fury.io/js/%40resolve-js%2Feventstore-postgresql-serverless)
 
-This package is a eventstore adapter for storing events using AWS Aurora Serverless PostgreSQL 10.7.
+This package is an event store adapter used to store events in AWS Aurora Serverless PostgreSQL 10.7.
 
 ## Available Parameters
 
-- `databaseName` - a name of a database storing events.
-- `eventsTableName` - a name of a table storing events.
+- `databaseName` - the name of a database used to store events.
+- `eventsTableName` - the name of a table used to store events.
 - `awsSecretStoreArn` - an AWS Secret store ARN.
 - `dbClusterOrInstanceArn` - a database cluster or instance ARN.
 - `region` - an AWS region.
