@@ -2,7 +2,32 @@
 
 ## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.4...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.5...HEAD)
+
+**New features:**
+
+- Implement read model isAlive boolean in status [\#1982](https://github.com/reimagined/resolve/pull/1982)
+
+**Enhancements:**
+
+- Improve bootstrapping / Remove some eslint warnings [\#1979](https://github.com/reimagined/resolve/pull/1979)
+
+**Documentation:**
+
+- Fix links to CI and eventstore adapters directories [\#1984](https://github.com/reimagined/resolve/pull/1984)
+- Mention the default logging level [\#1966](https://github.com/reimagined/resolve/pull/1966)
+
+**Other changes:**
+
+- Make cloud integration tests running in parallel with other jobs [\#1987](https://github.com/reimagined/resolve/pull/1987)
+
+## [V0.31.5](https://github.com/reimagined/resolve/tree/V0.31.5) (2021-07-29)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.4...V0.31.5)
+
+**New features:**
+
+- Add 'describe' method for eventstore adapater [\#1972](https://github.com/reimagined/resolve/pull/1972)
 
 **Enhancements:**
 
@@ -13,6 +38,10 @@
 
 - Running create-resolve-app on Windows results in incorrect path error [\#1964](https://github.com/reimagined/resolve/issues/1964)
 - Unable to use `withEncryption` and `withAdapter` API simultaneously [\#1959](https://github.com/reimagined/resolve/issues/1959)
+
+**Other changes:**
+
+- Soft bootstrap \(primitive without mutexes for concurrent bootstrap/shutdown\) [\#1971](https://github.com/reimagined/resolve/pull/1971)
 
 ## [V0.31.4](https://github.com/reimagined/resolve/tree/V0.31.4) (2021-07-19)
 

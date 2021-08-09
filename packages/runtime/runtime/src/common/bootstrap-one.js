@@ -34,13 +34,28 @@ const bootstrapOne = async ({
       })
 
       if (upstream) {
-        await eventSubscriber.setProperty({
-          eventSubscriber: name,
-          key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
-          value: `${Date.now()}`,
-        })
+        const sideEffectsKey = 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'
+        const [status, sideEffectsValue] = await Promise.all([
+          eventSubscriber
+            .status({ eventSubscriber: name })
+            .then((result) => (result != null ? result.status : result)),
+          eventSubscriber.getProperty({
+            eventSubscriber: name,
+            key: sideEffectsKey,
+          }),
+        ])
 
-        await eventSubscriber.resume({ eventSubscriber: name })
+        if (sideEffectsValue == null || sideEffectsValue === '') {
+          await eventSubscriber.setProperty({
+            eventSubscriber: name,
+            key: sideEffectsKey,
+            value: `${Date.now()}`,
+          })
+        }
+
+        if (status === 'deliver') {
+          await eventSubscriber.resume({ eventSubscriber: name })
+        }
       }
     } catch (err) {
       errors.push(err)
