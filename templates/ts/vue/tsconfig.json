@@ -9,7 +9,8 @@
     "target": "es2018",
     "lib": ["es2018", "dom"],
     "types": ["node", "vue", "jest"],
-    "noEmit": true
+    "noEmit": true,
+    "noImplicitAny": true
   },
   "include": ["client/**/*", "common/**/*", "test/unit/**/*", "*.ts"]
 }

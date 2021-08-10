@@ -38,6 +38,7 @@
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
     "@babel/preset-typescript": "7.14.5",
+    "@types/copy-webpack-plugin": "8.0.1",
     "autoprefixer": "10.2.6",
     "aws-sdk": "2.860.0",
     "aws-xray-sdk-core": "3.2.0",
