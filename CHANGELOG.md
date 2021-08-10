@@ -10,6 +10,7 @@
 
 **Enhancements:**
 
+- Better error message for failed read-model in PLV8 [\#1990](https://github.com/reimagined/resolve/pull/1990)
 - Improve bootstrapping / Remove some eslint warnings [\#1979](https://github.com/reimagined/resolve/pull/1979)
 
 **Documentation:**
