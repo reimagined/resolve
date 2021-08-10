@@ -20,6 +20,7 @@
 
 **Other changes:**
 
+- Runtime preparations for static routing support in future [\#1988](https://github.com/reimagined/resolve/pull/1988)
 - Make cloud integration tests running in parallel with other jobs [\#1987](https://github.com/reimagined/resolve/pull/1987)
 
 ## [V0.31.5](https://github.com/reimagined/resolve/tree/V0.31.5) (2021-07-29)
