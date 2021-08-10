@@ -9,7 +9,6 @@ import initExpress from './init-express'
 import initWebsockets from './init-websockets'
 import startExpress from './start-express'
 import emptyWorker from './empty-worker'
-import wrapTrie from '../common/wrap-trie'
 import initUploader from './init-uploader'
 import initScheduler from './init-scheduler'
 import gatherEventListeners from '../common/gather-event-listeners'
@@ -51,7 +50,6 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       serverImports: assemblies.serverImports,
       domain,
       ...constants,
-      routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
       assemblies,
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
