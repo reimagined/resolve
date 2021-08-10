@@ -3,7 +3,7 @@ import postcssImport from 'postcss-import'
 import autoprefixer from 'autoprefixer'
 
 // enable-ts
-const enableTypescript = (webpackConfig) => {
+const enableTypescript = (webpackConfig: any) => {
   webpackConfig.module.rules.push({
     test: /\.tsx?$/,
     loader: 'babel-loader',
@@ -23,7 +23,7 @@ const enableTypescript = (webpackConfig) => {
 }
 // enable-ts
 
-const adjustWebpackConfigs = (webpackConfigs) => {
+const adjustWebpackConfigs = (webpackConfigs: any[]) => {
   for (const webpackConfig of webpackConfigs) {
     enableTypescript(webpackConfig)
 
