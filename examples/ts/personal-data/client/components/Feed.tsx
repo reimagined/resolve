@@ -3,7 +3,9 @@ import { Alert } from 'reactstrap'
 
 import Post from './Post'
 
-const Feed = ({ posts }) => {
+type FeetProps = { posts: any[] }
+
+const Feed = ({ posts }: FeetProps) => {
   return (
     <React.Fragment>
       {posts.length > 0 ? (

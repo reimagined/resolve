@@ -21,7 +21,9 @@ import UploaderContext from '../context'
 
 const DIRECTORY = 'images'
 
-const ImageUploader = ({ owner, onUploaded }) => {
+type ImageUploaderProps = { owner: any; onUploaded: Function }
+
+const ImageUploader = ({ owner, onUploaded }: ImageUploaderProps) => {
   const [state, setState] = useState({
     form: {
       fields: {},
@@ -110,11 +112,16 @@ const ImageUploader = ({ owner, onUploaded }) => {
 
   const inputRef = React.createRef<any>()
 
-  const uploadFormRender = (onSubmitHandler) => {
+  const uploadFormRender = (onSubmitHandler: Function) => {
     return (
       <Form id="uploadForm">
         {Object.keys(fields).map((key, index) => (
-          <Input key={index} name={key} value={fields[key]} type="hidden" />
+          <Input
+            key={index}
+            name={key}
+            value={(fields as any)[key]}
+            type="hidden"
+          />
         ))}
         <Input type="hidden" name="Content-Type" value={mimeType} />
         <FormGroup style={{ display: 'flex' }}>
@@ -176,11 +183,11 @@ const ImageUploader = ({ owner, onUploaded }) => {
       })
   }, [uploadId])
 
-  const onError = (error) => {
+  const onError = (error: any) => {
     uploadError({ aggregateId, error })
   }
 
-  const handleFocus = (event) => event.target.select()
+  const handleFocus = (event: any) => event.target.select()
 
   return (
     <div>
