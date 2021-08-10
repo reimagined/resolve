@@ -27,7 +27,7 @@ describe('read-models', () => {
 
     // mdis-start read-model-test
     test('projection "SHOPPING_LIST_CREATED" should create a shopping list', async () => {
-      const shoppingLists = await givenEvents([
+      const shoppingLists: any = await givenEvents([
         {
           aggregateId,
           type: SHOPPING_LIST_CREATED,
@@ -51,7 +51,7 @@ describe('read-models', () => {
     // mdis-stop read-model-test
 
     test('projection "SHOPPING_LIST_RENAMED" should rename the shopping list', async () => {
-      const shoppingLists = await givenEvents([
+      const shoppingLists: any = await givenEvents([
         {
           aggregateId: aggregateId,
           type: SHOPPING_LIST_CREATED,
