@@ -43,6 +43,7 @@ jobs:
           path: |
             examples/**/node_modules
             templates/**/node_modules
+            tutorial/**/node_modules
           key: ${{ runner.os }}-modules-examples-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
           restore-keys: ${{ runner.os }}-modules-examples-
 
@@ -78,6 +79,7 @@ jobs:
             !internal/**/node_modules/**
             .packages/**
           key: ${{ runner.os }}-build-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-build-
 
       - name: Install
         run: yarn install
@@ -274,6 +276,7 @@ jobs:
           path: |
             examples/**/node_modules
             templates/**/node_modules
+            tutorial/**/node_modules
           key: ${{ runner.os }}-modules-examples-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
 
       - name: Cache build
@@ -339,6 +342,7 @@ jobs:
           path: |
             examples/**/node_modules
             templates/**/node_modules
+            tutorial/**/node_modules
           key: ${{ runner.os }}-modules-examples-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
 
       - name: Cache functional tests node_modules
