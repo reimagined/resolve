@@ -1,12 +1,21 @@
-import { ExternalMethods } from './types'
+import { ExternalMethods, AdapterPool } from './types'
 import { ReplicationState } from '@resolve-js/eventstore-base'
 import {
+  AdapterOperationStatusMethodArguments,
+  AdapterOperationStatusMethodReturnType,
+  RuntimeReadModelStatus,
   ReadModelRunStatus,
   ReadModelStatus,
   ReadModelEvent,
+  UnPromise,
 } from '@resolve-js/readmodel-base'
 
-const status: ExternalMethods['status'] = async (pool, readModelName) => {
+const status: ExternalMethods['status'] = async <
+  T extends [includeRuntimeStatus?: boolean]
+>(
+  ...args: AdapterOperationStatusMethodArguments<T, AdapterPool>
+): AdapterOperationStatusMethodReturnType<T> => {
+  const [pool, readModelName, eventstoreAdapter, includeRuntimeStatus] = args
   const state: ReplicationState = await pool.getReplicationState(pool)
 
   let runStatus: ReadModelRunStatus = ReadModelRunStatus.DELIVER
@@ -15,7 +24,6 @@ const status: ExternalMethods['status'] = async (pool, readModelName) => {
   } else if (state.paused) {
     runStatus = ReadModelRunStatus.SKIP
   }
-
   let error: Error | null = null
   if (state.status === 'error' || state.status === 'serviceError') {
     if (state.statusData == null) {
@@ -38,7 +46,7 @@ const status: ExternalMethods['status'] = async (pool, readModelName) => {
     }
   }
 
-  const result: ReadModelStatus = {
+  let result: ReadModelStatus | RuntimeReadModelStatus | null = {
     eventSubscriber: readModelName,
     deliveryStrategy: 'inline-ledger',
     successEvent:
@@ -52,7 +60,12 @@ const status: ExternalMethods['status'] = async (pool, readModelName) => {
     cursor: state.iterator ? (state.iterator.cursor as string) ?? null : null,
     status: runStatus,
   }
-  return result
+  if (includeRuntimeStatus) {
+    void eventstoreAdapter // TODO real replicator status
+    result = Object.assign(result, { isAlive: true })
+  }
+
+  return result as UnPromise<AdapterOperationStatusMethodReturnType<T>>
 }
 
 export default status

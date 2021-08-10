@@ -75,8 +75,17 @@ module.exports={
           items: [
             {
               label: "Documentation Index",
+              to: 'docs/index'
+            },
+            {
+              label: "Introduction",
               to: 'docs'
-            }
+            },
+            {
+              label: "Step-by-Step Tutorial",
+              to: 'docs/tutorial'
+            },
+
           ]
         },
         {

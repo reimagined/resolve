@@ -17,30 +17,16 @@ const bootstrap = async (resolve) => {
 
   for (const { name, eventTypes } of resolve.eventListeners.values()) {
     promises.push(
-      // eslint-disable-next-line no-loop-func
-      (async () => {
-        let eventSubscriberExists = existingEventSubscribers.indexOf(name) > -1
-        if (eventSubscriberExists) {
-          try {
-            eventSubscriberExists =
-              (await resolve.eventSubscriber.status({
-                eventSubscriber: name,
-              })) != null
-          } catch (err) {}
-        }
-        if (!eventSubscriberExists) {
-          await bootstrapOne({
-            applicationName: resolve.eventSubscriberScope,
-            eventstoreAdapter: resolve.eventstoreAdapter,
-            eventSubscriber: resolve.eventSubscriber,
-            name,
-            eventTypes,
-            destination: resolve.getEventSubscriberDestination(name),
-            upstream: resolve.upstream,
-            ensureQueue: resolve.ensureQueue,
-          })
-        }
-      })()
+      bootstrapOne({
+        applicationName: resolve.eventSubscriberScope,
+        eventstoreAdapter: resolve.eventstoreAdapter,
+        eventSubscriber: resolve.eventSubscriber,
+        name,
+        eventTypes,
+        destination: resolve.getEventSubscriberDestination(name),
+        upstream: resolve.upstream,
+        ensureQueue: resolve.ensureQueue,
+      })
     )
   }
 
