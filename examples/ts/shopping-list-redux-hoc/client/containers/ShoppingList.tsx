@@ -20,8 +20,13 @@ type ShoppingListProps = {
   removeShoppingList: (...args: any[]) => any
 }
 
+type ShoppingListState = {
+  shoppingListName: string
+  itemText: string
+}
+
 export class ShoppingList extends React.PureComponent<ShoppingListProps> {
-  state = {
+  state: ShoppingListState = {
     shoppingListName: null,
     itemText: '',
   }
@@ -37,7 +42,7 @@ export class ShoppingList extends React.PureComponent<ShoppingListProps> {
     })
   }
 
-  updateShoppingListName = (event) => {
+  updateShoppingListName = (event: any) => {
     this.setState({
       shoppingListName: event.target.value,
     })
@@ -53,19 +58,19 @@ export class ShoppingList extends React.PureComponent<ShoppingListProps> {
     this.props.removeShoppingList(this.props.aggregateId)
   }
 
-  updateItemText = (event) => {
+  updateItemText = (event: any) => {
     this.setState({
       itemText: event.target.value,
     })
   }
 
-  onItemTextPressEnter = (event) => {
+  onItemTextPressEnter = (event: any) => {
     if (event.charCode === 13) {
       event.preventDefault()
       this.createShoppingItem()
     }
   }
-  onShoppingListNamePressEnter = (event) => {
+  onShoppingListNamePressEnter = (event: any) => {
     if (event.charCode === 13) {
       event.preventDefault()
       this.renameShoppingList()
@@ -121,7 +126,7 @@ export class ShoppingList extends React.PureComponent<ShoppingListProps> {
           </InputGroup>
         </Form.Group>
         <ListGroup className="example-list">
-          {list.map((todo) => (
+          {list.map((todo: any) => (
             <ListGroup.Item key={todo.id}>
               <Form.Check
                 inline
@@ -168,7 +173,7 @@ export class ShoppingList extends React.PureComponent<ShoppingListProps> {
   }
 }
 
-export const mapStateToOptions = (state, ownProps) => {
+export const mapStateToOptions = (state: any, ownProps: any): any => {
   const aggregateId = ownProps.match.params.id
 
   return {
@@ -178,7 +183,7 @@ export const mapStateToOptions = (state, ownProps) => {
   }
 }
 
-export const mapStateToProps = (state, ownProps) => {
+export const mapStateToProps = (state: any, ownProps: any) => {
   const aggregateId = ownProps.match.params.id
 
   return {
@@ -186,7 +191,7 @@ export const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch) =>
+export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToOptions)(

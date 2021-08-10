@@ -1,5 +1,6 @@
 import { takeEvery, put } from 'redux-saga/effects'
 import { internal } from '@resolve-js/redux'
+import { Command } from '@resolve-js/client'
 
 import {
   OPTIMISTIC_CREATE_SHOPPING_LIST,
@@ -9,9 +10,19 @@ import {
 
 const { SEND_COMMAND_SUCCESS, QUERY_READMODEL_SUCCESS } = internal.actionTypes
 
+export type CommandAction = {
+  type: string
+  command: Command
+}
+
+export type QueryAction = {
+  type: string
+  result: any
+}
+
 export function* optimisticShoppingListsSaga() {
   yield takeEvery(
-    (action) =>
+    (action: CommandAction) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.command.type === 'createShoppingList',
     function* (action: any) {
@@ -26,7 +37,7 @@ export function* optimisticShoppingListsSaga() {
   )
 
   yield takeEvery(
-    (action) =>
+    (action: CommandAction) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.command.type === 'removeShoppingList',
     function* (action: any) {
@@ -40,7 +51,7 @@ export function* optimisticShoppingListsSaga() {
   )
 
   yield takeEvery(
-    (action) => action.type === QUERY_READMODEL_SUCCESS,
+    (action: QueryAction) => action.type === QUERY_READMODEL_SUCCESS,
     function* (action: any) {
       yield put({
         type: OPTIMISTIC_SYNC,

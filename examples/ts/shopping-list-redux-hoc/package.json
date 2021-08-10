@@ -18,6 +18,7 @@
     "@types/react": "17.0.5"
   },
   "dependencies": {
+    "@resolve-js/client": "0.31.5",
     "@resolve-js/core": "0.31.5",
     "@resolve-js/eventstore-lite": "0.31.5",
     "@resolve-js/eventstore-postgresql": "0.31.5",

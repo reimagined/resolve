@@ -2,7 +2,7 @@ import React from 'react'
 
 import { bindActionCreators } from 'redux'
 import { connectReadModel } from '@resolve-js/redux'
-import { connect } from 'react-redux'
+import { connect, MapDispatchToProps } from 'react-redux'
 
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
@@ -34,11 +34,11 @@ export const mapStateToOptions = () => ({
   resolverArgs: {},
 })
 
-export const mapStateToProps = (state) => ({
+export const mapStateToProps = (state: any) => ({
   lists: state.optimisticShoppingLists || [],
 })
 
-export const mapDispatchToProps = (dispatch) =>
+export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
