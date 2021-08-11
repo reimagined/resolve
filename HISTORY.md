@@ -1,5 +1,29 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.5...HEAD)
+
+**New features:**
+
+- Implement read model isAlive boolean in status [\#1982](https://github.com/reimagined/resolve/pull/1982)
+
+**Enhancements:**
+
+- Better error message for failed read-model in PLV8 [\#1990](https://github.com/reimagined/resolve/pull/1990)
+- Improve bootstrapping / Remove some eslint warnings [\#1979](https://github.com/reimagined/resolve/pull/1979)
+
+**Documentation:**
+
+- Review READMEs for event store adapters [\#1985](https://github.com/reimagined/resolve/pull/1985)
+- Fix links to CI and eventstore adapters directories [\#1984](https://github.com/reimagined/resolve/pull/1984)
+- Mention the default logging level [\#1966](https://github.com/reimagined/resolve/pull/1966)
+
+**Other changes:**
+
+- Runtime preparations for static routing support in future [\#1988](https://github.com/reimagined/resolve/pull/1988)
+- Make cloud integration tests running in parallel with other jobs [\#1987](https://github.com/reimagined/resolve/pull/1987)
+
 ## [V0.31.5](https://github.com/reimagined/resolve/tree/V0.31.5) (2021-07-29)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.4...V0.31.5)
