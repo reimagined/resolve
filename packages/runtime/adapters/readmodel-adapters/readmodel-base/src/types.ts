@@ -395,11 +395,14 @@ export type ConnectMethod<AdapterPool extends CommonAdapterPool> = (
   readModelName: string
 ) => Promise<ReadModelStore<StoreApi<AdapterPool>>>
 
+export type WrapWithCloneArgsMethod = <T extends FunctionLike>(fn: T) => T
+
 export type WrapConnectMethod = <
   AdapterPool extends CommonAdapterPool,
   AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
 >(
   pool: BaseAdapterPool<AdapterPool>,
+  wrapWithCloneArgs: WrapWithCloneArgsMethod,
   connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],
   storeApi: StoreApi<AdapterPool>,
   options: AdapterOptions
@@ -471,6 +474,7 @@ export type BaseAdapterImports = {
   splitNestedPath: SplitNestedPathMethod
   checkEventsContinuity: CheckEventsContinuityMethod
   withPerformanceTracer: WithPerformanceTracerMethod
+  wrapWithCloneArgs: WrapWithCloneArgsMethod
   wrapConnect: WrapConnectMethod
   wrapDisconnect: WrapDisconnectMethod
   wrapDispose: WrapDisposeMethod

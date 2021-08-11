@@ -5,7 +5,6 @@ import type {
   ExternalMethods,
   ReadModelStatus,
   ReadModelRunStatus,
-  ReadModelLedger,
   AdapterPool,
   UnPromise,
 } from './types'
