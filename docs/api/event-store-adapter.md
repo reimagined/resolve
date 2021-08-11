@@ -1,6 +1,7 @@
 ---
 id: event-store-adapter
 title: Event Store Adapter
+description: This document describes the interface that an event store adapter should expose.
 ---
 
 An event store adapter defines how the reSolve framework stores events in the underlying event store. An event store adapter object must expose the following functions:
