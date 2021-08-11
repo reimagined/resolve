@@ -1,6 +1,7 @@
 ---
 id: request-middleware
 title: Request Middleware
+description: Middleware implements intermediate logic that can modify the response object or handle errors before they are passed to the callback function.
 ---
 
 The [@resolve-js/client](#resolve-client-library) and [@resolve-js/react-hooks](#resolve-react-hooks-library) libraries allow you to use request middleware to extend the client's functionality. Middleware implements intermediate logic that can modify the response object or handle errors before they are passed to the callback function.
