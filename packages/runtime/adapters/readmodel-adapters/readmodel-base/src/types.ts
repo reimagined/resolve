@@ -259,6 +259,10 @@ export type ReadModelStatus = {
   status: ReadModelRunStatus
 }
 
+export type RuntimeReadModelStatus = ReadModelStatus & {
+  isAlive: boolean
+}
+
 export type ProjectionMethod<AdapterPool extends CommonAdapterPool> = (
   projectionStore: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
   projectionEvent: ReadModelEvent,
@@ -285,6 +289,30 @@ export type AdapterConnection<
 
   disconnect(pool: AdapterPool): Promise<void>
 }
+
+export type AdapterOperationStatusMethodArguments<
+  T extends [includeRuntimeStatus?: boolean],
+  AdapterPool extends CommonAdapterPool
+> = [
+  pool: AdapterPool,
+  readModelName: string,
+  eventstoreAdapter: EventstoreAdapterLike,
+  ...args: T
+]
+
+export type AdapterOperationStatusMethodReturnType<
+  T extends [includeRuntimeStatus?: boolean]
+> = Promise<IfEquals<
+  T['length'],
+  0,
+  ReadModelStatus,
+  IfEquals<
+    T['length'],
+    1,
+    IfEquals<T[0], true, RuntimeReadModelStatus, ReadModelStatus>,
+    never
+  >
+> | null>
 
 export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
   subscribe(
@@ -319,10 +347,9 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
 
   reset(pool: AdapterPool, readModelName: string): Promise<void>
 
-  status(
-    pool: AdapterPool,
-    readModelName: string
-  ): Promise<ReadModelStatus | null>
+  status<T extends [includeRuntimeStatus?: boolean]>(
+    ...args: AdapterOperationStatusMethodArguments<T, AdapterPool>
+  ): AdapterOperationStatusMethodReturnType<T>
 
   build(
     pool: AdapterPool,

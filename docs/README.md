@@ -2,7 +2,6 @@
 id: index
 title: reSolve Documentation
 description: Full stack CQRS, DDD, Event Sourcing framework for Node.js
-slug: /
 ---
 
 [Introduction](introduction.md)
@@ -42,9 +41,9 @@ slug: /
   - [API Reference](api-handlers.md#api-reference)
   - [Implementation Examples](api-handlers.md#implementation-examples)
 - [Frontend](frontend.md)
-- [Manage a ReSolve Application](manage-application)
-  - [Installation](manage-application#installation)
-  - [Usage](manage-application#usage)
+- [Manage a ReSolve Application](manage-application.md)
+  - [Installation](manage-application.md#installation)
+  - [Usage](manage-application.md#usage)
 - [reSolve app structure](resolve-app-structure.md)
   - [Configuration](resolve-app-structure.md#configuration)
   - [Write and Read Sides](resolve-app-structure.md#write-and-read-sides)
