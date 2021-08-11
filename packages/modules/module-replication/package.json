@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/module-replication",
-  "version": "0.31.5",
+  "version": "0.31.6",
   "description": "A reSolve module that adds replication commands to an application.",
   "keywords": [
     "cqrs",
@@ -16,6 +16,7 @@
   "author": "reimagined team",
   "main": "./lib/index.js",
   "module": "./es/index.js",
+  "types": "./types/index.d.ts",
   "scripts": {
     "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/module-replication",
     "test": "echo || exit 0",
@@ -44,5 +45,6 @@
       "inputDir": "./src",
       "outDir": "./lib"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }

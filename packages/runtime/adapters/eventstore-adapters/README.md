@@ -1,6 +1,6 @@
 # **EventStore Adapters**
 
-This folder contains eventstore adapters.
+This folder contains event store adapters.
 
 Available adapters:
 

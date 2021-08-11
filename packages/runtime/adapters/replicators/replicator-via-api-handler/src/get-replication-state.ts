@@ -2,8 +2,6 @@ import { InternalMethods } from './types'
 import { ReplicationState } from '@resolve-js/eventstore-base'
 import fetch from 'node-fetch'
 
-//eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { REPLICATION_STATE } from '@resolve-js/module-replication'
 
 const getReplicationState: InternalMethods['getReplicationState'] = async ({
