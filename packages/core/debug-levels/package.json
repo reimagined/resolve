@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/debug-levels",
-  "version": "0.31.5",
+  "version": "0.31.7",
   "description": "Provides the debug-level API for reSolve packages.",
   "keywords": [
     "cqrs",
