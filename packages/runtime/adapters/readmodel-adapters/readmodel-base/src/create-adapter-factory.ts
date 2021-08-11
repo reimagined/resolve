@@ -22,6 +22,7 @@ const createAdapter = <
     splitNestedPath,
     checkEventsContinuity,
     withPerformanceTracer,
+    wrapWithCloneArgs,
     wrapConnect,
     wrapDisconnect,
     wrapDispose,
@@ -110,7 +111,13 @@ const createAdapter = <
   }
 
   const adapter: AdapterApi<AdapterPool> = {
-    connect: wrapConnect(pool, connect, storeApi, adapterOptions),
+    connect: wrapConnect(
+      pool,
+      wrapWithCloneArgs,
+      connect,
+      storeApi,
+      adapterOptions
+    ),
     disconnect: wrapDisconnect(pool, disconnect),
     dispose: wrapDispose(pool, disconnect),
     subscribe: wrapOperation(pool, 'subscribe', subscribe),

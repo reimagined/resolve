@@ -1,6 +1,7 @@
 ---
 id: read-model-connector
 title: Read Model Connector
+description: This document describes the interface that a read model connector should expose.
 ---
 
 The table below lists functions a custom Read Model's connector should implement.
