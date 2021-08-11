@@ -36,9 +36,11 @@ description: Full stack CQRS, DDD, Event Sourcing framework for Node.js
   - [Sagas Overview](sagas.md#sagas-overview)
   - [Define a Saga](sagas.md#define-a-saga)
   - [Register a Saga](sagas.md#register-a-saga)
+- [Adapters](adapters.md)
 - [API Handlers](api-handlers.md)
   - [API Reference](api-handlers.md#api-reference)
   - [Implementation Examples](api-handlers.md#implementation-examples)
+- [Frontend](frontend.md)
 - [Manage a ReSolve Application](manage-application.md)
   - [Installation](manage-application.md#installation)
   - [Usage](manage-application.md#usage)
@@ -49,39 +51,29 @@ description: Full stack CQRS, DDD, Event Sourcing framework for Node.js
 
 #### Guides
 
-- [Advanced Techniques](advanced-techniques.md)
-
-  - [Splitting Code Into Chunks](advanced-techniques.md#splitting-code-into-chunks)
-  - [Adapters](advanced-techniques.md#adapters)
-  - [Custom Read Models](advanced-techniques.md#custom-read-models)
-  - [Modules](advanced-techniques.md#modules)
-  - [Encryption](advanced-techniques.md#encryption)
-
+- [Modules](modules.md)
 - [Authentication and Authorization](authentication-and-authorization.md)
-
   - [Setting up Authentication](authentication-and-authorization.md#setting-up-authentication)
   - [Using 3rd-Party Auth Services](authentication-and-authorization.md#using-3rd-party-auth-services)
   - [Making Your Own User Registry](authentication-and-authorization.md#making-your-own-user-registry)
   - [Using JWT for Command and Query Authorization](authentication-and-authorization.md#using-jwt-for-command-and-query-authorization)
-
+- [Encryption](encryption.md)
+- [Custom Read Model Connectors](custom-read-model-connectors.md)
+- [File Upload](file-upload.md)
+- [Event Export and Import](export-import.md)
 - [Preparing to Production](preparing-to-production.md)
-
   - [Configuration Options](preparing-to-production.md#configuration-options)
   - [Configuring Adapters](preparing-to-production.md#configuring-adapters)
   - [Using Environment Variables](preparing-to-production.md#using-environment-variables)
-
+- [Code Splitting](code-splitting.md)
 - [Debugging](debugging.md)
-
   - [Debug ReSolve](debugging.md#debug-resolve)
   - [Debug a ReSolve Application](debugging.md#debug-a-resolve-application)
-
 - [Testing](testing.md)
-
   - [Testing Tools](testing.md#testing-tools)
   - [Testing Aggregates](testing.md#testing-aggregates)
   - [Testing Read Models](testing.md#testing-read-models)
   - [Testing Sagas](testing.md#testing-sagas)
-
 - [Application Configuration](application-configuration.md)
 
 [FAQ](faq.md)
