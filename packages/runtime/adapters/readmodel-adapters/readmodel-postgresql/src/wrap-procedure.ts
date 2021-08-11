@@ -3,7 +3,7 @@
 // This file is entry point for PLV8 procedure for Postgresql Ecmascript engine
 // This entry point should never be executed in NodeJS or browser environment
 // See more documentation here https://plv8.github.io/
-import { splitNestedPath } from '@resolve-js/readmodel-base'
+import { splitNestedPath, wrapWithCloneArgs } from '@resolve-js/readmodel-base'
 import buildUpsertDocument from './build-upsert-document'
 import searchToWhereExpression from './search-to-where-expression'
 import updateToSetExpression from './update-to-set-expression'
@@ -104,7 +104,13 @@ const filterFields = (fieldList, inputRow) => {
   return resultRow
 }
 
-const executeProjection = async (name, options, readModelName, ...args) => {
+const executeProjection = async (
+  name,
+  options,
+  readModelName,
+  ...inputArgs
+) => {
+  const args = wrapWithCloneArgs((...currentArgs) => currentArgs)(...inputArgs)
   const methods = { ...baseMethods, ...options }
   switch (name) {
     case 'defineTable':

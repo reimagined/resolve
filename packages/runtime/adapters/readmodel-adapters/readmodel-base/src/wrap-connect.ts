@@ -2,29 +2,25 @@ import type {
   WrapConnectMethod,
   CommonAdapterPool,
   CommonAdapterOptions,
+  WrapWithCloneArgsMethod,
   BaseAdapterPool,
   AdapterConnection,
   ReadModelStore,
   StoreApi,
   OmitObject,
-  FunctionLike,
-  JsonLike,
 } from './types'
-
-const deepClone = <T extends JsonLike | undefined>(value: T): T =>
-  ((value !== undefined
-    ? JSON.parse(JSON.stringify(value))
-    : undefined) as unknown) as T
-
-const wrapWithCloneArgs = <T extends FunctionLike>(fn: T): T =>
-  (((...args: Parameters<T>): ReturnType<T> =>
-    fn(...args.map((arg) => deepClone(arg)))) as unknown) as T
 
 const connectImpl = async <
   AdapterPool extends CommonAdapterPool,
   AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
 >(
-  pool: BaseAdapterPool<AdapterPool>,
+  {
+    pool,
+    wrapWithCloneArgs,
+  }: {
+    pool: BaseAdapterPool<AdapterPool>
+    wrapWithCloneArgs: WrapWithCloneArgsMethod
+  },
   connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],
   storeApi: StoreApi<AdapterPool>,
   options: AdapterOptions,
@@ -67,6 +63,7 @@ const wrapConnect: WrapConnectMethod = <
   AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
 >(
   pool: BaseAdapterPool<AdapterPool>,
+  wrapWithCloneArgs: WrapWithCloneArgsMethod,
   connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],
   storeApi: StoreApi<AdapterPool>,
   options: AdapterOptions
@@ -78,13 +75,16 @@ const wrapConnect: WrapConnectMethod = <
     'connect',
     connectImpl.bind<
       null,
-      BaseAdapterPool<AdapterPool>,
+      {
+        pool: BaseAdapterPool<AdapterPool>
+        wrapWithCloneArgs: WrapWithCloneArgsMethod
+      },
       AdapterConnection<AdapterPool, AdapterOptions>['connect'],
       StoreApi<AdapterPool>,
       AdapterOptions,
       [string],
       Promise<ReadModelStore<StoreApi<AdapterPool>>>
-    >(null, pool, connect, storeApi, options)
+    >(null, { pool, wrapWithCloneArgs }, connect, storeApi, options)
   )
 
 export default wrapConnect

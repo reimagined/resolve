@@ -1,6 +1,7 @@
 ---
 id: resolve-redux
 title: '@resolve-js/redux'
+description: The reSolve framework includes the client @resolve-js/redux library used to connect a client React + Redux app to a reSolve-powered backend.
 ---
 
 The reSolve framework includes the client **@resolve-js/redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library includes both React Hooks and Higher-Order Components (HOCs).
