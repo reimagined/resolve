@@ -26,7 +26,7 @@ jobs:
         uses: reimagined/github-actions/resolve-gate@v1
         with:
           source: ./
-          registry: '@resolve-js'
+          registry: https://npm.pkg.github.com
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           framework_version: ${{ github.event.inputs.VERSION }}
           registry_package_tag: latest
