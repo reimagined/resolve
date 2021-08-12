@@ -20,6 +20,7 @@ jobs:
         with:
           repository: DevExpress/testcafe-dashboard
           ref: ${{ github.event.inputs.DASHBOARD_REF }}
+          token: ${{ secrets.DASHBOARD_PAT }}
 
       - name: Start resolve-gate
         uses: reimagined/github-actions/resolve-gate@v1
