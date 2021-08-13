@@ -83,6 +83,13 @@ const getStories = async (type, store, { first, offset }) => {
 }
 ```
 
+The **projection** argument should be an object, in which keys are field names and values are either 1 or 0:
+
+- 1 - specifies that the field should be included into the resulting data sample;
+- 0 - specifies that a field should be excluded from the resulting sample.
+
+You can use the dotted notation to include or exclude subfields.
+
 ### findOne
 
 Searches for a data item based on the specified expression.
