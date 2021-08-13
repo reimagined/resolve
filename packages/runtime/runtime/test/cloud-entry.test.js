@@ -369,7 +369,7 @@ describe('Cloud entry', () => {
       expect(JSON.parse(result.body)).toEqual({
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
-        timestamp: 2,
+        timestamp: expect.any(Number),
         type: 'SET',
         payload: {
           key: 'key1',
