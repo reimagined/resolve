@@ -50,7 +50,9 @@ describe('Cloud entry', () => {
       getEventSubscribers: jest.fn().mockReturnValue(Promise.resolve([])),
       getNextCursor: jest.fn(),
       getLatestEvent: jest.fn(),
-      saveEvent: jest.fn(),
+      saveEvent: jest
+        .fn()
+        .mockImplementation((event) => ({ event, cursor: null })),
       dispose: jest.fn(),
       import: jest.fn(),
       export: jest.fn(),
@@ -369,7 +371,7 @@ describe('Cloud entry', () => {
       expect(JSON.parse(result.body)).toEqual({
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
-        timestamp: expect.any(Number),
+        timestamp: 2,
         type: 'SET',
         payload: {
           key: 'key1',
