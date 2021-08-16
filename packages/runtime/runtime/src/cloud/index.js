@@ -32,7 +32,6 @@ const index = async ({ assemblies, constants, domain, resolveVersion }) => {
       serverImports: assemblies.serverImports,
       domain,
       ...constants,
-      routesTrie: wrapTrie(domain.apiHandlers, constants.rootPath),
       publisher: {},
       assemblies,
       domainInterop,
@@ -51,6 +50,14 @@ const index = async ({ assemblies, constants, domain, resolveVersion }) => {
     Object.defineProperties(resolve, {
       getSubscribeAdapterOptions: {
         value: getSubscribeAdapterOptions,
+      },
+      routesTrie: {
+        value: wrapTrie(
+          domain.apiHandlers,
+          constants.staticRoutes,
+          constants.rootPath
+        ),
+        enumerable: true,
       },
     })
 

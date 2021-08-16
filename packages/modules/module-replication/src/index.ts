@@ -1,24 +1,29 @@
-export const REPLICATION_STATE = {
+type EndpointDefinition = {
+  endpoint: string
+  method: 'POST' | 'GET'
+}
+
+export const REPLICATION_STATE: EndpointDefinition = {
   endpoint: '/api/replication-state',
   method: 'GET',
 }
 
-export const PAUSE_REPLICATION = {
+export const PAUSE_REPLICATION: EndpointDefinition = {
   endpoint: '/api/pause-replication',
   method: 'POST',
 }
 
-export const RESUME_REPLICATION = {
+export const RESUME_REPLICATION: EndpointDefinition = {
   endpoint: '/api/resume-replication',
   method: 'POST',
 }
 
-export const REPLICATE = {
+export const REPLICATE: EndpointDefinition = {
   endpoint: '/api/replicate',
   method: 'POST',
 }
 
-export const RESET_REPLICATION = {
+export const RESET_REPLICATION: EndpointDefinition = {
   endpoint: '/api/reset-replication',
   method: 'POST',
 }

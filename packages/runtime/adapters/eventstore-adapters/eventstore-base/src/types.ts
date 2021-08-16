@@ -76,6 +76,15 @@ export function getInitialReplicationState(): ReplicationState {
   }
 }
 
+export type EventStoreDescription = {
+  eventCount: number
+  secretCount: number
+  setSecretCount: number
+  deletedSecretCount: number
+  isFrozen: boolean
+  lastEventTimestamp: number
+}
+
 export type CheckForResourceError = (errors: Error[]) => void
 
 type DeleteSecret = SecretsManager['deleteSecret']
@@ -554,6 +563,7 @@ export interface AdapterFunctions<
     ConnectedProps,
     NonNullable<Adapter['getCursorUntilEventTypes']>
   >
+  describe: PoolMethod<ConnectedProps, Adapter['describe']>
 }
 
 export interface Adapter {
@@ -635,4 +645,6 @@ export interface Adapter {
     cursor: Cursor,
     untilEventTypes: Array<InputEvent['type']>
   ) => Promise<string>
+
+  describe: () => Promise<EventStoreDescription>
 }

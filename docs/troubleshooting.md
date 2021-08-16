@@ -1,7 +1,7 @@
 ---
 id: troubleshooting
 title: Troubleshooting
-description: This describes how to solve popular issues with reSolve applications.
+description: This document describes how to solve popular issues with reSolve applications.
 ---
 
 ## An application throws an error when a Read Model is queried.

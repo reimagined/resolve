@@ -1,6 +1,7 @@
 ---
 id: api-handler
 title: API Handler
+description: This document describes API used by API handlers.
 ---
 
 An API handler function has the following structure:
