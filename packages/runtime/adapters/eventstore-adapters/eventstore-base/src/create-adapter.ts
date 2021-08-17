@@ -1,6 +1,6 @@
 import { getLog } from './get-log'
-import { SecretsManager } from '@resolve-js/core'
-import {
+import type { SecretsManager } from '@resolve-js/core'
+import type {
   AdapterPoolPrimalProps,
   AdapterPoolPossiblyUnconnected,
   AdapterPoolConnected,
@@ -9,11 +9,18 @@ import {
   AdapterFunctions,
   CommonAdapterFunctions,
   AdapterConfig,
+  AdapterPoolPrivateConnectedProps,
 } from './types'
-import { LeveledDebugger } from '@resolve-js/debug-levels'
+import type { LeveledDebugger } from '@resolve-js/debug-levels'
+import wrapMethod from './wrap-method'
+import wrapEventFilter from './wrap-event-filter'
+import wrapDispose from './wrap-dispose'
 
-// eslint-disable-next-line no-new-func
-const idempotentFunction = Function('obj', 'return obj') as <T>(t: T) => T
+const emptyFunction = async <ConnectedProps extends AdapterPoolConnectedProps>(
+  pool: AdapterPoolConnected<ConnectedProps>
+): Promise<void> => {
+  return
+}
 
 const getSecretsManager = <ConnectedProps extends AdapterPoolConnectedProps>(
   pool: AdapterPoolConnected<ConnectedProps>
@@ -32,9 +39,6 @@ const createAdapter = <
 >(
   {
     maybeThrowResourceError,
-    wrapMethod,
-    wrapEventFilter,
-    wrapDispose,
     validateEventFilter,
     loadEvents,
     importEventsStream,
@@ -49,6 +53,7 @@ const createAdapter = <
   }: CommonAdapterFunctions<ConnectedProps>,
   {
     connect,
+    dispose,
     loadEventsByCursor,
     loadEventsByTimestamp,
     ensureEventSubscriber,
@@ -62,7 +67,6 @@ const createAdapter = <
     dropEvents,
     dropSecrets,
     dropFinal,
-    dispose,
     injectEvent,
     injectEvents,
     freeze,
@@ -89,6 +93,7 @@ const createAdapter = <
     resetReplication,
     getCursorUntilEventTypes,
     describe,
+    establishTimeLimit,
   }: AdapterFunctions<ConnectedProps, ConnectionDependencies, Config>,
   connectionDependencies: ConnectionDependencies,
   options: Config
@@ -97,7 +102,7 @@ const createAdapter = <
   const config: Config = { ...options }
 
   let bucketSize = 100
-  const { snapshotBucketSize } = config
+  const { snapshotBucketSize, getVacantTimeInMillis } = config
   if (
     snapshotBucketSize !== undefined &&
     Number.isSafeInteger(snapshotBucketSize) &&
@@ -113,7 +118,7 @@ const createAdapter = <
     let p: Promise<void>
     return () => {
       if (p === undefined) {
-        p = connect.bind(null, adapterPool, connectionDependencies, config)()
+        p = connect(adapterPool, connectionDependencies, config)
       }
       return p
     }
@@ -122,7 +127,7 @@ const createAdapter = <
   const primalProps: AdapterPoolPrimalProps = {
     disposed: false,
     validateEventFilter,
-    isInitialized: false,
+    isConnected: false,
     connectionErrors: [],
     maybeThrowResourceError,
     bucketSize,
@@ -130,6 +135,7 @@ const createAdapter = <
     counters: new Map(),
     createGetConnectPromise: createGetConnectPromise,
     getConnectPromise: createGetConnectPromise(),
+    getVacantTimeInMillis: getVacantTimeInMillis as any,
   }
 
   const emptyProps: Partial<ConnectedProps> = {}
@@ -138,7 +144,7 @@ const createAdapter = <
     ...emptyProps,
   }
 
-  const connectedProps: Partial<ConnectedProps> = {
+  const connectedProps: AdapterPoolPrivateConnectedProps = {
     injectEvent: wrapMethod(adapterPool, injectEvent),
     injectEvents: wrapMethod(adapterPool, injectEvents),
     injectSecret: wrapMethod(adapterPool, injectSecret),
@@ -153,13 +159,13 @@ const createAdapter = <
     dropEvents: wrapMethod(adapterPool, dropEvents),
     dropSecrets: wrapMethod(adapterPool, dropSecrets),
     dropFinal: wrapMethod(adapterPool, dropFinal),
-    waitConnect: wrapMethod(adapterPool, idempotentFunction),
+    waitConnect: wrapMethod(adapterPool, emptyFunction),
     shapeEvent,
-  } as Partial<ConnectedProps>
+  }
 
   Object.assign<
     AdapterPoolPossiblyUnconnected<ConnectedProps>,
-    Partial<ConnectedProps>
+    AdapterPoolPrivateConnectedProps
   >(adapterPool, connectedProps)
 
   const adapter: Adapter = {
@@ -206,6 +212,12 @@ const createAdapter = <
 
     getCursorUntilEventTypes: wrapMethod(adapterPool, getCursorUntilEventTypes),
     describe: wrapMethod(adapterPool, describe),
+    establishTimeLimit:
+      establishTimeLimit === undefined
+        ? (f: () => number) => {
+            return
+          }
+        : establishTimeLimit.bind(null, adapterPool),
   }
 
   Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(

@@ -116,7 +116,7 @@ const createPostgresqlServerlessAdapter = (
       fullJitter,
       executeStatement,
       coercer,
-    } as ConnectionDependencies,
+    },
     options
   )
 }

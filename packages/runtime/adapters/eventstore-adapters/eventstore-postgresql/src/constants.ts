@@ -14,3 +14,8 @@ export const DATA_API_ERROR_FLAG = Symbol()
 export const RESPONSE_SIZE_LIMIT = Symbol()
 
 export const AGGREGATE_ID_SQL_TYPE = LONG_STRING_SQL_TYPE
+
+export const DEFAULT_QUERY_TIMEOUT = 45000
+export const MINIMAL_QUERY_TIMEOUT = 1000
+
+export const MAX_RECONNECTIONS = 5

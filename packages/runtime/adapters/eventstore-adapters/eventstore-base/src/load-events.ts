@@ -1,10 +1,10 @@
-import {
+import type {
   EventFilter,
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
   EventsWithCursor,
-  isTimestampFilter,
 } from './types'
+import { isTimestampFilter } from './types'
 
 const loadEvents = async <ConnectedProps extends AdapterPoolConnectedProps>(
   pool: AdapterPoolConnected<ConnectedProps>,

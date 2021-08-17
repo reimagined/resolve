@@ -6,6 +6,9 @@ import type {
   AdapterPoolPrimal,
   PostgresqlAdapterConfig,
 } from './types'
+import { ConnectionError } from '@resolve-js/eventstore-base'
+import { DEFAULT_QUERY_TIMEOUT, MINIMAL_QUERY_TIMEOUT } from './constants'
+import checkRequestTimeout from './check-request-timeout'
 
 const connect = async (
   pool: AdapterPoolPrimal,
@@ -37,41 +40,65 @@ const connect = async (
   secretsTableName = secretsTableName ?? 'secrets'
   subscribersTableName = subscribersTableName ?? 'subscribers'
 
-  const connection = new Postgres({
-    keepAlive: false,
-    connectionTimeoutMillis: 45000,
-    idle_in_transaction_session_timeout: 45000,
-    query_timeout: 45000,
-    statement_timeout: 45000,
-    ...connectionOptions,
-  })
+  const vacantTimeInMillis = checkRequestTimeout(pool) ?? DEFAULT_QUERY_TIMEOUT
 
-  connection.on('error', (error) => {
-    pool.connectionErrors.push(error)
-  })
-  await connection.connect()
+  const queryTimeout = Math.max(vacantTimeInMillis, MINIMAL_QUERY_TIMEOUT)
+  const statementTimeout = Math.max(MINIMAL_QUERY_TIMEOUT, queryTimeout - 500)
 
-  Object.assign<
-    AdapterPoolPrimal,
-    Partial<PostgresqlAdapterPoolConnectedProps>
-  >(pool, {
-    databaseName,
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName,
-    connectionOptions,
-    subscribersTableName,
-    Postgres,
-    fullJitter,
-    coercer,
-    executeStatement: executeStatement.bind(null, pool as AdapterPool),
-    escapeId,
-    escape,
-    connection,
-  })
+  const oldConnection = pool.connection
+  if (oldConnection !== undefined) {
+    pool.connection = undefined
+    oldConnection.end((err) => {
+      if (err)
+        log.error(`Error during disconnection before reconnection: ${err}`)
+    })
+  }
 
-  if (pool.executeStatement != null) {
-    await pool.executeStatement('SELECT 0 AS "defunct"')
+  try {
+    const connection = new Postgres({
+      keepAlive: false,
+      connectionTimeoutMillis: queryTimeout,
+      idle_in_transaction_session_timeout: queryTimeout,
+      query_timeout: queryTimeout,
+      statement_timeout: statementTimeout,
+      ...connectionOptions,
+    })
+
+    connection.on('error', (error) => {
+      pool.connectionErrors.push(error)
+    })
+    await connection.connect()
+
+    Object.assign<
+      AdapterPoolPrimal,
+      Partial<PostgresqlAdapterPoolConnectedProps>
+    >(pool, {
+      databaseName,
+      eventsTableName,
+      snapshotsTableName,
+      secretsTableName,
+      connectionOptions,
+      subscribersTableName,
+      Postgres,
+      fullJitter,
+      coercer,
+      executeStatement: executeStatement.bind(null, pool as AdapterPool),
+      escapeId,
+      escape,
+      connection,
+    })
+
+    if (pool.executeStatement != null) {
+      await pool.executeStatement('SELECT 0 AS "defunct"')
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      const connectionError = new ConnectionError(error.message)
+      connectionError.stack = error.stack
+      throw connectionError
+    } else {
+      throw error
+    }
   }
   log.debug('connection to postgres databases established')
 }

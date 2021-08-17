@@ -49,9 +49,10 @@ import getReplicationState from './get-replication-state'
 import resetReplication from './reset-replication'
 import getCursorUntilEventTypes from './get-cursor-until-event-types'
 import describe from './describe'
+import establishTimeLimit from './establish-time-limit'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
-import type { ConnectionDependencies, PostgresqlAdapterConfig } from './types'
+import type { PostgresqlAdapterConfig } from './types'
 
 import createResource from './resource/create'
 import destroyResource from './resource/destroy'
@@ -100,6 +101,7 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       resetReplication,
       getCursorUntilEventTypes,
       describe,
+      establishTimeLimit,
     },
     {
       Postgres,
@@ -108,7 +110,7 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       fullJitter,
       executeStatement,
       coercer,
-    } as ConnectionDependencies,
+    },
     options
   )
 }

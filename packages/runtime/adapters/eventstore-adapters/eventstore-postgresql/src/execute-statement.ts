@@ -1,37 +1,17 @@
-import { AdapterPool } from './types'
-
-const checkFormalError = (error: any, value: string): boolean =>
-  error.name === value || error.code === value
-const checkFuzzyError = (error: any, value: RegExp): boolean =>
-  value.test(error.message) || value.test(error.stack)
-// https://www.postgresql.org/docs/10/errcodes-appendix.html
-const isRetryableError = (error: any): boolean =>
-  error != null &&
-  (checkFuzzyError(
-    error,
-    /terminating connection due to serverless scale event timeout/i
-  ) ||
-    checkFuzzyError(
-      error,
-      /terminating connection due to administrator command/i
-    ) ||
-    checkFuzzyError(error, /Remaining connection slots are reserved/i) ||
-    checkFuzzyError(error, /Too many clients already/i) ||
-    checkFuzzyError(error, /Connection terminated/i) ||
-    checkFuzzyError(error, /canceling statement due to statement timeout/i) ||
-    checkFuzzyError(error, /Query read timeout/i) ||
-    checkFuzzyError(error, /Connection terminated unexpectedly/i) ||
-    checkFuzzyError(error, /timeout expired/i) ||
-    checkFormalError(error, 'ECONNRESET') ||
-    checkFormalError(error, 'ETIMEDOUT') ||
-    checkFormalError(error, '08000') ||
-    checkFormalError(error, '08003') ||
-    checkFormalError(error, '08006'))
+import type { AdapterPool } from './types'
+import { RequestTimeoutError } from '@resolve-js/eventstore-base'
+import { isTimeoutError, isConnectionTerminatedError } from './errors'
+import { MAX_RECONNECTIONS } from './constants'
+import { getLog } from './get-log'
 
 const executeStatement = async (
   pool: AdapterPool,
   sql: string
 ): Promise<any[]> => {
+  const log = getLog('executeStatement')
+
+  let reConnectionTimes = 0
+
   while (true) {
     let connection: typeof pool.connection = pool.connection
     try {
@@ -60,14 +40,21 @@ const executeStatement = async (
 
       return []
     } catch (error) {
-      if (isRetryableError(error)) {
+      if (isTimeoutError(error)) {
+        throw new RequestTimeoutError(error.message)
+      } else if (isConnectionTerminatedError(error)) {
         try {
           await connection.end()
         } catch (error) {
-          // pass
+          log.error(error)
+        }
+
+        if (reConnectionTimes > MAX_RECONNECTIONS) {
+          throw error
         }
 
         await pool.getConnectPromise()
+        reConnectionTimes++
       } else {
         throw error
       }

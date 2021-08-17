@@ -3,6 +3,8 @@ import type {
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
   AdapterConfig,
+  AdapterTableNames,
+  AdapterTableNamesProps,
 } from '@resolve-js/eventstore-base'
 
 export type MySQLConnection = {
@@ -14,25 +16,19 @@ type MySQLLib = {
   createConnection: (options: any) => MySQLConnection
 }
 
-export type MysqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
-  connection: MySQLConnection
-  eventsTableName: string
-  snapshotsTableName: string
-  secretsTableName: string
-  subscribersTableName: string
-  database: string
-  escapeId: (val: string) => string
-  escape: (val: string) => string
-}
+export type MysqlAdapterPoolConnectedProps = AdapterPoolConnectedProps &
+  AdapterTableNamesProps & {
+    connection: MySQLConnection
+    database: string
+    escapeId: (val: string) => string
+    escape: (val: string) => string
+  }
 
-export type MysqlAdapterConfig = AdapterConfig & {
-  database: string
-  eventsTableName?: string
-  snapshotsTableName?: string
-  secretsTableName?: string
-  subscribersTableName?: string
-  [key: string]: any
-}
+export type MysqlAdapterConfig = AdapterConfig &
+  AdapterTableNames & {
+    database: string
+    [key: string]: any
+  }
 
 export type AdapterPool = AdapterPoolConnected<MysqlAdapterPoolConnectedProps>
 export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<MysqlAdapterPoolConnectedProps>

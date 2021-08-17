@@ -1,4 +1,4 @@
-import {
+import type {
   SecretsManager,
   Event,
   SerializableMap,
@@ -11,6 +11,7 @@ import * as t from 'io-ts'
 import { isRight } from 'fp-ts/These'
 import { either } from 'fp-ts/Either'
 import { PathReporter } from 'io-ts/lib/PathReporter'
+import * as iotsTypes from 'io-ts-types'
 
 export function validate<T extends t.Type<any>>(
   schema: T,
@@ -255,15 +256,26 @@ export type UnconnectedPoolMethod<
 
 export const AdapterConfigSchema = t.partial({
   snapshotBucketSize: t.Int,
+  getVacantTimeInMillis: t.Function,
 })
 type AdapterConfigChecked = t.TypeOf<typeof AdapterConfigSchema>
 export type AdapterConfig = UnbrandProps<AdapterConfigChecked>
+
+export const AdapterTableNamesSchema = t.partial({
+  secretsTableName: iotsTypes.NonEmptyString,
+  eventsTableName: iotsTypes.NonEmptyString,
+  snapshotsTableName: iotsTypes.NonEmptyString,
+  subscribersTableName: iotsTypes.NonEmptyString,
+})
+type AdapterTableNamesChecked = t.TypeOf<typeof AdapterTableNamesSchema>
+export type AdapterTableNames = UnbrandProps<AdapterTableNamesChecked>
+export type AdapterTableNamesProps = Required<AdapterTableNames>
 
 export type AdapterPoolPrimalProps = {
   disposed: boolean
   validateEventFilter: ValidateEventFilter
 
-  isInitialized: boolean
+  isConnected: boolean
   createGetConnectPromise: () => () => Promise<void>
   getConnectPromise: () => Promise<void>
   connectionErrors: any[]
@@ -273,9 +285,10 @@ export type AdapterPoolPrimalProps = {
   counters: Map<string, number>
 
   getNextCursor: GetNextCursor
+  getVacantTimeInMillis?: () => number
 }
 
-export type AdapterPoolConnectedProps = Adapter & {
+export type AdapterPoolPrivateConnectedProps = {
   injectEvent: (event: SavedEvent) => Promise<void>
   injectEvents: (events: SavedEvent[]) => Promise<void>
   injectSecret?: (secretRecord: SecretRecord) => Promise<void>
@@ -287,7 +300,7 @@ export type AdapterPoolConnectedProps = Adapter & {
   getSecret: GetSecret
   setSecret: SetSecret
 
-  waitConnect: any
+  waitConnect: () => Promise<void>
   shapeEvent: ShapeEvent
 
   initEvents: () => Promise<any[]>
@@ -296,34 +309,10 @@ export type AdapterPoolConnectedProps = Adapter & {
   dropEvents: () => Promise<any[]>
   dropSecrets: () => Promise<any[]>
   dropFinal: () => Promise<any[]>
-
-  ensureEventSubscriber: (params: {
-    applicationName: string
-    eventSubscriber: string
-    destination?: any
-    status?: any
-    updateOnly?: boolean
-  }) => Promise<boolean>
-  removeEventSubscriber: (params: {
-    applicationName: string
-    eventSubscriber: string
-  }) => Promise<void>
-  getEventSubscribers: (
-    params?:
-      | {
-          applicationName?: string
-          eventSubscriber?: string
-        }
-      | undefined
-  ) => Promise<
-    Array<{
-      applicationName: string
-      eventSubscriber: string
-      destination: any
-      status: any
-    }>
-  >
 }
+
+export type AdapterPoolConnectedProps = Adapter &
+  AdapterPoolPrivateConnectedProps
 
 export type AdapterPoolPossiblyUnconnected<
   ConnectedProps extends AdapterPoolConnectedProps
@@ -332,38 +321,6 @@ export type AdapterPoolPossiblyUnconnected<
 export type AdapterPoolConnected<
   ConnectedProps extends AdapterPoolConnectedProps
 > = AdapterPoolPrimalProps & ConnectedProps
-
-export type WrappedConnectOnDemandAndCall<
-  ConnectedProps extends AdapterPoolConnectedProps,
-  M extends (pool: AdapterPoolConnected<ConnectedProps>, ...args: any) => any
-> = (
-  ...args: RemoveFirstType<Parameters<M>>
-) => Promise<PromiseResultType<ReturnType<M>>>
-
-type IfEquals<T, U, Y = unknown, N = never> = (<G>() => G extends T
-  ? 1
-  : 2) extends <G>() => G extends U ? 1 : 2
-  ? Y
-  : N
-
-export type WrapMethod<ConnectedProps extends AdapterPoolConnectedProps> = <
-  M extends
-    | undefined
-    | ((pool: AdapterPoolConnected<ConnectedProps>, ...args: any) => any)
->(
-  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
-  method: M
-) => IfEquals<
-  M,
-  undefined,
-  undefined,
-  WrappedConnectOnDemandAndCall<ConnectedProps, Exclude<M, undefined>>
->
-
-export type WrapDispose<ConnectedProps extends AdapterPoolConnectedProps> = (
-  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
-  dispose: PoolMethod<ConnectedProps, Adapter['dispose']>
-) => () => Promise<void>
 
 export type MAINTENANCE_MODE =
   | typeof MAINTENANCE_MODE_AUTO
@@ -404,11 +361,6 @@ export interface CommonAdapterFunctions<
   ConnectedProps extends AdapterPoolConnectedProps
 > {
   maybeThrowResourceError: CheckForResourceError
-  wrapMethod: WrapMethod<ConnectedProps>
-  wrapEventFilter: (
-    loadEvents: PoolMethod<ConnectedProps, Adapter['loadEvents']>
-  ) => PoolMethod<ConnectedProps, Adapter['loadEvents']>
-  wrapDispose: WrapDispose<ConnectedProps>
   validateEventFilter: ValidateEventFilter
   loadEvents: PoolMethod<ConnectedProps, Adapter['loadEvents']>
   importEventsStream: UnconnectedPoolMethod<
@@ -491,7 +443,7 @@ export interface AdapterFunctions<
   getSecret: PoolMethod<ConnectedProps, GetSecret>
   setSecret: PoolMethod<ConnectedProps, SetSecret>
   deleteSecret: PoolMethod<ConnectedProps, DeleteSecret>
-  loadSecrets?: PoolMethod<ConnectedProps, NonNullable<Adapter['loadSecrets']>>
+  loadSecrets?: PoolMethod<ConnectedProps, Adapter['loadSecrets']>
   injectSecret?: PoolMethod<
     ConnectedProps,
     NonNullable<AdapterPoolConnectedProps['injectSecret']>
@@ -530,41 +482,36 @@ export interface AdapterFunctions<
     AdapterPoolConnectedProps['getEventSubscribers']
   >
 
-  replicateEvents?: PoolMethod<
-    ConnectedProps,
-    NonNullable<Adapter['replicateEvents']>
-  >
-  replicateSecrets?: PoolMethod<
-    ConnectedProps,
-    NonNullable<Adapter['replicateSecrets']>
-  >
+  replicateEvents?: PoolMethod<ConnectedProps, Adapter['replicateEvents']>
+  replicateSecrets?: PoolMethod<ConnectedProps, Adapter['replicateSecrets']>
 
   setReplicationStatus?: PoolMethod<
     ConnectedProps,
-    NonNullable<Adapter['setReplicationStatus']>
+    Adapter['setReplicationStatus']
   >
   setReplicationIterator?: PoolMethod<
     ConnectedProps,
-    NonNullable<Adapter['setReplicationIterator']>
+    Adapter['setReplicationIterator']
   >
   setReplicationPaused?: PoolMethod<
     ConnectedProps,
-    NonNullable<Adapter['setReplicationPaused']>
+    Adapter['setReplicationPaused']
   >
   getReplicationState?: PoolMethod<
     ConnectedProps,
-    NonNullable<Adapter['getReplicationState']>
+    Adapter['getReplicationState']
   >
-  resetReplication?: PoolMethod<
-    ConnectedProps,
-    NonNullable<Adapter['resetReplication']>
-  >
+  resetReplication?: PoolMethod<ConnectedProps, Adapter['resetReplication']>
 
   getCursorUntilEventTypes?: PoolMethod<
     ConnectedProps,
-    NonNullable<Adapter['getCursorUntilEventTypes']>
+    Adapter['getCursorUntilEventTypes']
   >
   describe: PoolMethod<ConnectedProps, Adapter['describe']>
+  establishTimeLimit?: UnconnectedPoolMethod<
+    ConnectedProps,
+    Adapter['establishTimeLimit']
+  >
 }
 
 export interface Adapter {
@@ -594,7 +541,7 @@ export interface Adapter {
   ) => Promise<void>
   rollbackIncrementalImport: () => Promise<void>
   incrementalImport: (events: InputEvent[]) => Promise<void>
-  loadSecrets?: (filter: SecretFilter) => Promise<SecretsWithIdx>
+  loadSecrets: (filter: SecretFilter) => Promise<SecretsWithIdx>
   importSecrets: (options?: Partial<ImportSecretsOptions>) => stream.Writable
   exportSecrets: (options?: Partial<ExportSecretsOptions>) => stream.Readable
 
@@ -627,25 +574,26 @@ export interface Adapter {
 
   gatherSecretsFromEvents: (events: SavedEvent[]) => Promise<GatheredSecrets>
 
-  replicateEvents?: (events: OldEvent[]) => Promise<void>
-  replicateSecrets?: (
+  replicateEvents: (events: OldEvent[]) => Promise<void>
+  replicateSecrets: (
     existingSecrets: OldSecretRecord[],
     deletedSecrets: Array<OldSecretRecord['id']>
   ) => Promise<void>
-  setReplicationIterator?: (iterator: SerializableMap) => Promise<void>
-  setReplicationStatus?: (
+  setReplicationIterator: (iterator: SerializableMap) => Promise<void>
+  setReplicationStatus: (
     status: ReplicationStatus,
     info?: ReplicationState['statusData'],
     lastEvent?: OldEvent
   ) => Promise<void>
-  setReplicationPaused?: (pause: boolean) => Promise<void>
-  getReplicationState?: () => Promise<ReplicationState>
-  resetReplication?: () => Promise<void>
+  setReplicationPaused: (pause: boolean) => Promise<void>
+  getReplicationState: () => Promise<ReplicationState>
+  resetReplication: () => Promise<void>
 
-  getCursorUntilEventTypes?: (
+  getCursorUntilEventTypes: (
     cursor: Cursor,
     untilEventTypes: Array<InputEvent['type']>
   ) => Promise<string>
 
   describe: () => Promise<EventStoreDescription>
+  establishTimeLimit: (getVacantTimeInMillis: () => number) => void
 }
