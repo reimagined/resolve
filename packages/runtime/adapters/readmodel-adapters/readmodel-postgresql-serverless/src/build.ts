@@ -171,6 +171,7 @@ export const buildEvents: (
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
+    eventstoreOperationTimeLimited,
     checkEventsContinuity,
     inlineLedgerExecuteTransaction,
     inlineLedgerExecuteStatement,
@@ -195,8 +196,11 @@ export const buildEvents: (
   ) => {
     let nextCursor = await eventstoreAdapter.getNextCursor(cursor, events)
     if (isContinuousMode && eventTypes != null) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      nextCursor = await eventstoreAdapter.getCursorUntilEventTypes!(
+      nextCursor = await eventstoreOperationTimeLimited(
+        eventstoreAdapter as Required<typeof eventstoreAdapter>,
+        Object.bind(null, new PassthroughError(pool.sharedTransactionId, true, false)),
+        getVacantTimeInMillis,
+        "getCursorUntilEventTypes",
         nextCursor,
         eventTypes
       )
@@ -237,14 +241,18 @@ export const buildEvents: (
 
   let eventsPromise: Promise<Array<ReadModelEvent>> =
     hotEvents == null
-      ? eventstoreAdapter
-          .loadEvents({
-            eventTypes,
+      ? eventstoreOperationTimeLimited(
+        eventstoreAdapter,
+        Object.bind(null, new PassthroughError(pool.sharedTransactionId, true, false)),
+        getVacantTimeInMillis,
+        "loadEvents",
+        {
+          eventTypes,
             eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
             limit: 100,
             cursor,
-          })
-          .then((result) => {
+        }
+      ).then((result) => {
             const loadDuration = Date.now() - firstEventsLoadStartTimestamp
             const events = result != null ? result.events : []
 
@@ -327,12 +335,18 @@ export const buildEvents: (
     const eventsLoadStartTimestamp = Date.now()
     eventsPromise = Promise.resolve(nextCursorPromise)
       .then((nextCursor) =>
-        eventstoreAdapter.loadEvents({
+      eventstoreOperationTimeLimited(
+        eventstoreAdapter,
+        Object.bind(null, new PassthroughError(pool.sharedTransactionId, true, false)),
+        getVacantTimeInMillis,
+        "loadEvents",
+        {
           eventTypes,
           eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
           limit: 1000,
           cursor: nextCursor,
-        })
+        }
+      )
       )
       .then((result) => {
         const loadDuration = Date.now() - eventsLoadStartTimestamp

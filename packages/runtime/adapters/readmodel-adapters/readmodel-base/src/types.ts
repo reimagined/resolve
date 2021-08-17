@@ -158,10 +158,67 @@ export type EventstoreAdapterLike = EventStoreAdapter
 
 export type SplitNestedPathMethod = (input: string) => Array<string>
 
+export type EventStoreAdapterKeys = keyof EventStoreAdapter
+export type EventStoreAdapterIsAsyncFunctionalKey<
+  T extends EventStoreAdapterKeys
+> = EventStoreAdapter[T] extends FunctionLike | undefined
+  ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    Exclude<EventStoreAdapter[T], undefined> extends (
+      ...args: infer _Args
+    ) => infer Result
+    ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      Result extends Promise<infer _R>
+      ? T
+      : never
+    : never
+  : never
+
+export type EventStoreAdapterAsyncFunctionKeysDistribute<
+  T extends EventStoreAdapterKeys
+> = T extends any ? EventStoreAdapterIsAsyncFunctionalKey<T> : never
+
+export type EventStoreAdapterAsyncFunctionKeys = EventStoreAdapterAsyncFunctionKeysDistribute<EventStoreAdapterKeys>
+
+export type EventstoreOperationTimeLimitedMethodArguments<
+  E extends EventStoreAdapter,
+  T extends EventStoreAdapterAsyncFunctionKeys
+> = [
+  eventstoreAdapter: E,
+  timeoutErrorProvider: () => Error,
+  getVacantTimeInMillis: MethodGetRemainingTime,
+  methodName: T,
+  ...args: IfEquals<
+    E[T],
+    Exclude<E[T], undefined>,
+    Parameters<Exclude<E[T], undefined>>,
+    never
+  >
+]
+
+export type EventstoreOperationTimeLimitedMethodReturnType<
+  E extends EventStoreAdapter,
+  T extends EventStoreAdapterAsyncFunctionKeys
+> = UnPromise<
+  IfEquals<
+    E[T],
+    Exclude<E[T], undefined>,
+    ReturnType<Exclude<E[T], undefined>>,
+    never
+  >
+>
+
+export type EventstoreOperationTimeLimitedMethod = <
+  E extends EventStoreAdapter,
+  T extends EventStoreAdapterAsyncFunctionKeys
+>(
+  ...args: EventstoreOperationTimeLimitedMethodArguments<E, T>
+) => Promise<EventstoreOperationTimeLimitedMethodReturnType<E, T>>
+
 export type CommonAdapterPool = {
   monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
   splitNestedPath: SplitNestedPathMethod
+  eventstoreOperationTimeLimited: EventstoreOperationTimeLimitedMethod
   checkEventsContinuity: CheckEventsContinuityMethod
 }
 
@@ -471,6 +528,7 @@ export type MakeSplitNestedPathMethod = (
 ) => SplitNestedPathMethod
 
 export type BaseAdapterImports = {
+  eventstoreOperationTimeLimited: EventstoreOperationTimeLimitedMethod
   splitNestedPath: SplitNestedPathMethod
   checkEventsContinuity: CheckEventsContinuityMethod
   withPerformanceTracer: WithPerformanceTracerMethod

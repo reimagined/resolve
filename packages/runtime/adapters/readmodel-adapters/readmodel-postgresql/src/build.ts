@@ -133,6 +133,7 @@ const buildEvents: (
   const {
     readModelLedger: { IsProcedural: inputIsProcedural },
     PassthroughError,
+    eventstoreOperationTimeLimited,
     checkEventsContinuity,
     inlineLedgerRunQuery,
     generateGuid,
@@ -150,6 +151,7 @@ const buildEvents: (
   let isProcedural = inputIsProcedural
   const isContinuousMode =
     typeof eventstoreAdapter.getCursorUntilEventTypes === 'function'
+
   const getContinuousLatestCursor = async (
     cursor: ReadModelCursor,
     events: Array<ReadModelEvent>,
@@ -157,8 +159,11 @@ const buildEvents: (
   ) => {
     let nextCursor = await eventstoreAdapter.getNextCursor(cursor, events)
     if (isContinuousMode && eventTypes != null) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      nextCursor = await eventstoreAdapter.getCursorUntilEventTypes!(
+      nextCursor = await eventstoreOperationTimeLimited(
+        eventstoreAdapter as Required<typeof eventstoreAdapter>,
+        Object.bind(null, new PassthroughError(true)),
+        getVacantTimeInMillis,
+        "getCursorUntilEventTypes",
         nextCursor,
         eventTypes
       )
@@ -193,14 +198,18 @@ const buildEvents: (
 
   let eventsPromise =
     hotEvents == null
-      ? eventstoreAdapter
-          .loadEvents({
-            eventTypes,
-            eventsSizeLimit: 6553600,
-            limit: 100,
-            cursor,
-          })
-          .then((result) => {
+      ? eventstoreOperationTimeLimited(
+        eventstoreAdapter,
+        Object.bind(null, new PassthroughError(true)),
+        getVacantTimeInMillis,
+        "loadEvents",
+        {
+          eventTypes,
+          eventsSizeLimit: 6553600,
+          limit: 100,
+          cursor,
+        }
+      ).then((result) => {
             const loadDuration = Date.now() - firstEventsLoadStartTimestamp
 
             const events = result != null ? result.events : []
@@ -251,12 +260,18 @@ const buildEvents: (
     const eventsLoadStartTimestamp = Date.now()
     eventsPromise = Promise.resolve(nextCursorPromise)
       .then((nextCursor) =>
-        eventstoreAdapter.loadEvents({
+      eventstoreOperationTimeLimited(
+        eventstoreAdapter,
+        Object.bind(null, new PassthroughError(true)),
+        getVacantTimeInMillis,
+        "loadEvents",
+        {
           eventTypes,
           eventsSizeLimit: 65536000,
           limit: 1000,
           cursor: nextCursor,
-        })
+        }
+      )
       )
       .then((result) => {
         const loadDuration = Date.now() - eventsLoadStartTimestamp
