@@ -2,7 +2,7 @@ import React from 'react'
 
 import { bindActionCreators } from 'redux'
 import { connectReadModel } from '@resolve-js/redux'
-import { connect, MapDispatchToProps } from 'react-redux'
+import { connect } from 'react-redux'
 
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
