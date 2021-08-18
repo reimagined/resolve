@@ -4,6 +4,14 @@ title: Read Model Projection
 description:
 ---
 
+A read model projection function has the following signature:
+
+```js
+async (store, event, context) => {
+  ...
+}
+```
+
 ### context
 
 the `context` argument is an object with the following fields:

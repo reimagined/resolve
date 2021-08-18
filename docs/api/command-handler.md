@@ -4,6 +4,18 @@ title: Command Handler
 description:
 ---
 
+A command handler function has the following signature:
+
+```js
+(state, command, context) => {
+  ...
+  return {
+    type: 'CommandTypeName',
+    payload: { ... },
+  }
+}
+```
+
 ### context
 
 the `context` argument is an object with the following fields:

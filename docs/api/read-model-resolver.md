@@ -4,6 +4,15 @@ title: Read Model Resolver
 description:
 ---
 
+A read model resolver function has the following signature:
+
+```js
+async (store, params, context) => {
+  ...
+  return resultingData
+}
+```
+
 ### context
 
 the `context` argument is an object with the following fields:
