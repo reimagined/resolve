@@ -39,17 +39,6 @@ A command middleware handler's `middlewareContext` argument is an object with th
 | req        | Stores data that describes the currently processed HTTP request |
 | res        | Contains function used to configure the server's response       |
 
-### context
-
-the `context` argument is an object with the following fields:
-
-| Field Name       | Description                                                                |
-| ---------------- | -------------------------------------------------------------------------- |
-| jwt              | The JSON Web Token attached to the request.                                |
-| aggregateVersion | The aggregate version identifier.                                          |
-| encrypt          | The user-defined [encrypt](../advanced-techniques.md#encryption) function. |
-| decrypt          | The user-defined [decrypt](../advanced-techniques.md#encryption) function. |
-
 ## Read Model Projection Middleware
 
 A read model projection middleware function has the following structure:
@@ -84,15 +73,6 @@ A projection middleware handler's `middlewareContext` argument is an object with
 | req           | Stores data that describes the currently processed HTTP request |
 | res           | Contains function used to configure the server's response       |
 | readModelName | The name of the processed read model.                           |
-
-### context
-
-the `context` argument is an object with the following fields:
-
-| Field Name | Description                                                                |
-| ---------- | -------------------------------------------------------------------------- |
-| encrypt    | The user-defined [encrypt](../advanced-techniques.md#encryption) function. |
-| decrypt    | The user-defined [decrypt](../advanced-techniques.md#encryption) function. |
 
 ## Read Model Resolver Middleware
 
@@ -129,12 +109,3 @@ A projection middleware handler's `middlewareContext` argument is an object with
 | res           | Contains function used to configure the server's response       |
 | readModelName | The name of the processed read model.                           |
 | resolverName  | The name of the queried resolver.                               |
-
-### context
-
-the `context` argument is an object with the following fields:
-
-| Field Name     | Description                                                                     |
-| -------------- | ------------------------------------------------------------------------------- |
-| jwt            | The JSON Web Token attached to the request.                                     |
-| secretsManager | The application's [secrets manager](../advanced-techniques.md#storing-secrets). |
