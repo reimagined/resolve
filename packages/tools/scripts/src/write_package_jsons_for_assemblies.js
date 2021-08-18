@@ -63,7 +63,9 @@ const writePackageJsonsForAssemblies = (
           resolveRuntimePackageJson.dependencies.hasOwnProperty(val) &&
           nodeModules.has(val)
         ) {
-          acc[val] = frameworkVersion
+          acc[val] = val.startsWith('@resolve-js/')
+            ? frameworkVersion
+            : resolveRuntimePackageJson.dependencies[val]
         }
 
         return acc
