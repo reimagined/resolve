@@ -10,9 +10,10 @@ const entryPoint = (clientContext) => {
     serializedState: window.__INITIAL_STATE__,
     redux: getRedux(),
   })
+  const routes = getRoutes()
   render(
     <ResolveReduxProvider context={clientContext} store={store}>
-      <BrowserRouter>{renderRoutes(getRoutes())}</BrowserRouter>
+      <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
     </ResolveReduxProvider>,
     document.getElementById('app-container')
   )
