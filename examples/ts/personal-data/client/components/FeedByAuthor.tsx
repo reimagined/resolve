@@ -7,7 +7,11 @@ import PostForm from './PostForm'
 
 import UserContext from '../userContext'
 
-const NewPost = ({ successHandlerProp }) => {
+const NewPost = ({
+  successHandlerProp,
+}: {
+  successHandlerProp: (result: any) => any
+}) => {
   const [values, setValues] = useState({
     error: null,
     collapsed: true,
@@ -19,11 +23,11 @@ const NewPost = ({ successHandlerProp }) => {
     setValues({ ...values, collapsed: !collapsed })
   }
 
-  const errorHandler = (error) => {
+  const errorHandler = (error: any) => {
     setValues({ ...values, collapsed: false, error })
   }
 
-  const successHandler = (result) => {
+  const successHandler = (result: any) => {
     setValues({ collapsed: true, error: null })
     successHandlerProp(result)
   }
@@ -42,7 +46,9 @@ const NewPost = ({ successHandlerProp }) => {
   )
 }
 
-const FeedByAuthor = ({ authorId, user }) => {
+type FeedByAuthorProps = { authorId: string; user: any }
+
+const FeedByAuthor = ({ authorId, user }: FeedByAuthorProps) => {
   const [posts, setPosts] = useState([])
 
   const getPosts = useQuery(

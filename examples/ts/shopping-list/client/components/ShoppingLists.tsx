@@ -4,7 +4,12 @@ import { Link } from 'react-router-dom'
 
 import ShoppingListRemover from './ShoppingListRemover'
 
-const ShoppingLists = ({ lists, onRemoveSuccess }) => {
+type ShoppingListsProps = {
+  lists: any[]
+  onRemoveSuccess: (...args: any[]) => any
+}
+
+const ShoppingLists = ({ lists, onRemoveSuccess }: ShoppingListsProps) => {
   return (
     <div>
       <Table responsive>

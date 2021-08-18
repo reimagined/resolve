@@ -1,9 +1,12 @@
-import React from 'react'
-import { renderRoutes } from 'react-router-config'
+import React, { PropsWithChildren } from 'react'
+import { renderRoutes, RouteConfigComponentProps } from 'react-router-config'
 
 import Header from './Header'
 
-const App = ({ route, children }) => (
+const App = ({
+  route,
+  children,
+}: PropsWithChildren<RouteConfigComponentProps>) => (
   <div>
     <Header
       title="ReSolve Shopping List Example"

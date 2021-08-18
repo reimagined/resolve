@@ -7,7 +7,14 @@ import { Link } from 'react-router-dom'
 
 import { StaticImage } from './StaticImage'
 
-const Header = ({ title, name, css, favicon }) => {
+type HeaderProps = {
+  title: string
+  name: string
+  css: string[]
+  favicon: string
+}
+
+const Header = ({ title, name, css, favicon }: HeaderProps) => {
   const stylesheetLinks = css.map((href) => ({ rel: 'stylesheet', href }))
   const faviconLink = { rel: 'icon', type: 'image/png', href: favicon }
   const links = [...stylesheetLinks, faviconLink]
@@ -30,7 +37,7 @@ const Header = ({ title, name, css, favicon }) => {
   )
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
   jwt: state.jwt,
 })
 

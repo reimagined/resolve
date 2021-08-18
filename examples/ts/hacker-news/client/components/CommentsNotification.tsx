@@ -15,13 +15,19 @@ const Notification = styled.div`
   padding: 15px;
   color: #ffffff;
 `
+type CommentsNotificationProps = {
+  treeId: string
+  authorId: string
+  parentCommentId?: string | null
+  onClick: () => any
+}
 
 const CommentsNotification = ({
   treeId,
   authorId,
   parentCommentId = null,
   ...props
-}) => {
+}: CommentsNotificationProps) => {
   if (!treeId || !authorId) {
     return null
   }
@@ -34,7 +40,7 @@ const CommentsNotification = ({
       checkInterval={10000}
       {...props}
     >
-      {({ count, onClick }) =>
+      {({ count, onClick }: { count: number; onClick: () => any }) =>
         count !== 0 ? (
           <Container onClick={onClick}>
             <Notification>

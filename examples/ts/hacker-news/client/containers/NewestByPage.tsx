@@ -4,12 +4,15 @@ import { ResultStatus, useReduxReadModel } from '@resolve-js/redux'
 
 import { Stories } from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
+import { RouteComponentProps } from 'react-router'
+
+type MatchParams = { page?: string }
 
 const NewestByPage = ({
   match: {
     params: { page },
   },
-}) => {
+}: RouteComponentProps<MatchParams>) => {
   const { request: getStories, selector } = useReduxReadModel(
     {
       name: 'HackerNews',
