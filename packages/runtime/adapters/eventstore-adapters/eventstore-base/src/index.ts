@@ -151,6 +151,7 @@ export type {
   ReplicationState,
   OldEvent,
   OldSecretRecord,
+  EventStoreDescription,
 } from './types'
 
 export { getInitialReplicationState } from './types'

@@ -1,4 +1,3 @@
-import { declareRuntimeEnv } from '@resolve-js/scripts'
 import cloudCommonConfig from './config.cloud.common'
 
 const cloudConfig = {

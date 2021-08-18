@@ -15,7 +15,7 @@ ReSolve uses the [@resolve-js/debug-levels](https://www.npmjs.com/package/@resol
 | info    | Messages that describe the current operation           |
 | verbose | Extended descriptions to the previous message          |
 
-Use the `DEBUG_LEVEL` environment variable to specify the logging level.
+The reSolve framework uses the **debug** logging level by default. Set the `DEBUG_LEVEL` environment variable to use a different logging level.
 
 ## Debug ReSolve
 
@@ -24,8 +24,6 @@ The reSolve framework uses the `resolve` prefix for all its debugging namespaces
 ```
 DEBUG=resolve:* DEBUG_LEVEL=error yarn dev
 ```
-
-The reSolve framework displays **log**, **error**, and **warn** level messages.
 
 ## Debug a ReSolve Application
 

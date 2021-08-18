@@ -5,6 +5,7 @@ const shutdownOne = async ({
   eventSubscriber,
   upstream,
   deleteQueue,
+  soft,
 }) => {
   try {
     const errors = []
@@ -12,8 +13,9 @@ const shutdownOne = async ({
       if (upstream) {
         await eventSubscriber.pause({ eventSubscriber: name })
       }
-
-      await eventSubscriber.unsubscribe({ eventSubscriber: name })
+      if (!soft) {
+        await eventSubscriber.unsubscribe({ eventSubscriber: name })
+      }
     } catch (err) {
       errors.push(err)
     }

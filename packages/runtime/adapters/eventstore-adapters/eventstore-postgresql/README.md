@@ -2,17 +2,17 @@
 
 [![npm version](https://badge.fury.io/js/%40resolve-js%2Feventstore-postgresql.svg)](https://badge.fury.io/js/%40resolve-js%2Feventstore-postgresql)
 
-This package is a eventstore adapter for storing events using PostgreSQL 10.7.
+This package is an event store adapter used to store events in PostgreSQL 10.7.
 
 ## Available Parameters
 
-- `databaseName` - a name of a [schema](https://www.postgresql.org/docs/10/ddl-schemas.html) storing events.
-- `eventsTableName` - a name of a table storing events.
-- `user` - a name of an user.
-- `password` - a password of an user.
-- `database` - a name of a database.
-- `host` - a host of a database server.
-- `port` - a port of a database server.
+- `databaseName` - the name of a [schema](https://www.postgresql.org/docs/10/ddl-schemas.html) used to store events.
+- `eventsTableName` - the name of a table used to store events.
+- `user` - the user name.
+- `password` - a user's password.
+- `database` - the name of a database.
+- `host` - a database server's host name.
+- `port` - a database server's port.
 
 ## Usage
 

@@ -1,6 +1,7 @@
 ---
 id: saga
 title: Saga
+description: This document describes API used by sagas.
 ---
 
 A saga's event handler receives an object that provides access to the saga-related API. This API includes the following objects:

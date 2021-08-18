@@ -48,29 +48,23 @@ const commitIncrementalImport = async (
         LIMIT 2
       ) "CTE2";
       
+      
       WITH "CTE3" AS (
-        SELECT ROW_NUMBER() OVER (ORDER BY "timestamp", "rowid") - 1 AS "sortedIdx",
+        SELECT ROW_NUMBER() OVER (PARTITION BY "threadId" ORDER BY "timestamp", "rowid") - 1 AS "sortedIdx",
         "rowid" as "rowIdX"
         FROM ${incrementalImportTableAsId}
         ORDER BY "timestamp"
-      )
-      UPDATE ${incrementalImportTableAsId} SET "sortedIdx" = (
-        SELECT "CTE3"."sortedIdx" FROM "CTE3"
-        WHERE "CTE3"."rowIdX" = ${incrementalImportTableAsId}."rowid"
-      );
-      
-      WITH "CTE4" AS (
+      ),
+      "CTE4" AS (
         SELECT "threadId", MAX("threadCounter") AS "threadCounter"  
         FROM ${eventsTableAsId}
         GROUP BY "threadId"
       )
       UPDATE ${incrementalImportTableAsId} 
-      SET "threadId" = "sortedIdx" % 256,
-      "threadCounter" = COALESCE((
+      SET "threadCounter" = COALESCE((
         SELECT "CTE4"."threadCounter" FROM "CTE4"
-        WHERE "CTE4"."threadId" = ${incrementalImportTableAsId}."sortedIdx" % 256
-      ), -1) + 1 + CAST(("sortedIdx" / 256) AS INT) -
-      (("sortedIdx" / 256) < CAST(("sortedIdx" / 256) AS INT));
+        WHERE "CTE4"."threadId" = ${incrementalImportTableAsId}."timestamp" % 256
+      ), -1) + 1 + (SELECT "sortedIdx" FROM "CTE3" WHERE "CTE3"."rowIdX" = ${incrementalImportTableAsId}."rowid");
       
       WITH "CTE5" AS (
         SELECT MAX("aggregateVersion") AS "aggregateVersion", "aggregateId"  
@@ -111,8 +105,7 @@ const commitIncrementalImport = async (
         "aggregateVersion",
         "type",
         "payload"
-      FROM ${incrementalImportTableAsId}
-      ORDER BY "sortedIdx";
+      FROM ${incrementalImportTableAsId};
            
       COMMIT;
       `)

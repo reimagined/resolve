@@ -1,6 +1,6 @@
 {
   "name": "vanilla-ts",
-  "version": "0.31.4",
+  "version": "0.31.7",
   "private": true,
   "description": "used as a template for new reSolve applications",
   "scripts": {
@@ -11,14 +11,14 @@
   },
   "dependencies": {
     "@babel/node": "7.14.2",
-    "@resolve-js/client": "0.31.4",
-    "@resolve-js/core": "0.31.4",
-    "@resolve-js/eventstore-lite": "0.31.4",
-    "@resolve-js/eventstore-postgresql-serverless": "0.31.4",
-    "@resolve-js/readmodel-lite": "0.31.4",
-    "@resolve-js/readmodel-postgresql-serverless": "0.31.4",
-    "@resolve-js/runtime": "0.31.4",
-    "@resolve-js/scripts": "0.31.4",
+    "@resolve-js/client": "0.31.7",
+    "@resolve-js/core": "0.31.7",
+    "@resolve-js/eventstore-lite": "0.31.7",
+    "@resolve-js/eventstore-postgresql-serverless": "0.31.7",
+    "@resolve-js/readmodel-lite": "0.31.7",
+    "@resolve-js/readmodel-postgresql-serverless": "0.31.7",
+    "@resolve-js/runtime": "0.31.7",
+    "@resolve-js/scripts": "0.31.7",
     "domready": "1.0.8",
     "unfetch": "4.2.0"
   },

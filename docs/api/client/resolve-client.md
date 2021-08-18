@@ -1,6 +1,7 @@
 ---
 id: resolve-client
 title: '@resolve-js/client'
+description: The @resolve-js/client library provides an interface that you can use to communicate with the reSolve backend from JavaScript code.
 ---
 
 The **@resolve-js/client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
