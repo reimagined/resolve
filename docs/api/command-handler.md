@@ -16,9 +16,17 @@ A command handler function has the following signature:
 }
 ```
 
+A command handler implementation receives the following arguments:
+
+| Argument Name | Description                                                                  |
+| ------------- | ---------------------------------------------------------------------------- |
+| state         | The aggregate's state.                                                       |
+| command       | An object that contains the incoming command's data.                         |
+| context       | An object that contains data and functions related to the current operation. |
+
 ### context
 
-the `context` argument is an object with the following fields:
+The `context` argument is an object with the following fields:
 
 | Field Name       | Description                                                                |
 | ---------------- | -------------------------------------------------------------------------- |
@@ -26,3 +34,5 @@ the `context` argument is an object with the following fields:
 | aggregateVersion | The aggregate version identifier.                                          |
 | encrypt          | The user-defined [encrypt](../advanced-techniques.md#encryption) function. |
 | decrypt          | The user-defined [decrypt](../advanced-techniques.md#encryption) function. |
+
+This object can also contain additional fields added by [middleware](middleware.md)
