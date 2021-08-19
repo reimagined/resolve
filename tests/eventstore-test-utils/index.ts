@@ -1,9 +1,9 @@
 import * as AWS from 'aws-sdk'
-import createSqliteAdapter from '@resolve-js/eventstore-lite'
 import {
   Adapter,
   EventstoreResourceNotExistError,
 } from '@resolve-js/eventstore-base'
+import createSqliteAdapter from '@resolve-js/eventstore-lite'
 import createPostgresqlServerlessAdapter, {
   CloudResourceOptions,
   create as createResource,
