@@ -11,7 +11,7 @@ import jsonwebtoken from 'jsonwebtoken'
 import { getRoutes } from './get-routes'
 import getRedux from './get-redux'
 
-const ssrHandler = async (serverContext, req, res) => {
+const ssrHandler = async (serverContext: any, req: any, res: any) => {
   try {
     const {
       serverImports,
@@ -56,11 +56,7 @@ const ssrHandler = async (serverContext, req, res) => {
     const markup = ReactDOM.renderToStaticMarkup(
       <StyleSheetManager sheet={sheet.instance}>
         <ResolveReduxProvider context={resolveContext} store={store}>
-          <StaticRouter
-            location={url}
-            context={staticContext}
-            history={history}
-          >
+          <StaticRouter location={url} context={staticContext}>
             {renderRoutes(routes)}
           </StaticRouter>
         </ResolveReduxProvider>

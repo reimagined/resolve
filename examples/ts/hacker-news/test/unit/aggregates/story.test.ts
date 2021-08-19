@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid'
 import jwt from 'jsonwebtoken'
 import sinon from 'sinon'
-
+import { CommandContext } from '@resolve-js/core'
 import commands from '../../../common/aggregates/story.commands'
 import projection from '../../../common/aggregates/story.projection'
 import {
@@ -10,9 +10,9 @@ import {
   STORY_UNVOTED,
 } from '../../../common/event-types'
 
-let sandbox
-let userId
-let commandContext
+let sandbox: sinon.SinonSandbox
+let userId: string
+let commandContext: CommandContext
 const token = 'token'
 
 describe('aggregates', () => {
@@ -82,7 +82,7 @@ describe('aggregates', () => {
     })
 
     test('command "createStory" should throw Error "The title field is required"', () => {
-      const title = undefined
+      const title: string = undefined
       const text = 'SomeText'
       const link = 'SomeLink'
 
@@ -108,7 +108,7 @@ describe('aggregates', () => {
       const title = 'SomeTitle'
       const text = 'SomeText'
       const link = 'SomeLink'
-      const userId = undefined
+      const userId: string = undefined
 
       jwt.verify = sandbox
         .stub()
@@ -133,7 +133,7 @@ describe('aggregates', () => {
     })
 
     test('command "upvoteStory" should create an event to upvote the story', () => {
-      const state = {
+      const state: any = {
         createdAt: Date.now(),
         createdBy: userId,
         voted: [],
@@ -189,12 +189,12 @@ describe('aggregates', () => {
     })
 
     test('command "upvoteStory" should throw Error "The userId field is required"', () => {
-      const userId = undefined
+      const userId: string = undefined
       jwt.verify = sandbox
         .stub()
         .throws(new Error('The "userId" field is required'))
 
-      const state = {
+      const state: any = {
         createdAt: Date.now(),
         createdBy: userId,
         voted: [],
@@ -234,7 +234,7 @@ describe('aggregates', () => {
     })
 
     test('command "unvoteStory" should throw Error "User did not vote"', () => {
-      const state = {
+      const state: any = {
         createdAt: Date.now(),
         createdBy: userId,
         voted: [],
@@ -270,7 +270,7 @@ describe('aggregates', () => {
     })
 
     test('command "unvoteStory" should throw Error "The userId field is required"', () => {
-      const userId = undefined
+      const userId: string = undefined
       jwt.verify = sandbox
         .stub()
         .throws(new Error('The "userId" field is required'))
@@ -308,7 +308,7 @@ describe('aggregates', () => {
           userId,
         },
       }
-      const nextState = {
+      const nextState: any = {
         createdAt,
         createdBy: userId,
         voted: [],
@@ -320,7 +320,7 @@ describe('aggregates', () => {
     test('eventHandler "STORY_UPVOTED" should add userId to state.voted', () => {
       const createdAt = Date.now()
 
-      const state = {
+      const state: any = {
         createdAt,
         createdBy: userId,
         voted: [],
@@ -362,7 +362,7 @@ describe('aggregates', () => {
           userId,
         },
       }
-      const nextState = {
+      const nextState: any = {
         createdAt,
         createdBy: userId,
         voted: [],

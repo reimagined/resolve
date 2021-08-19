@@ -1,4 +1,4 @@
-const updateUI = (messages) => {
+const updateUI = (messages: any[]) => {
   const messagesList = document.getElementsByClassName('messagesList')[0]
   const oldMessagesLength = messagesList.childNodes.length
   const newMessages = messages.slice(oldMessagesLength)

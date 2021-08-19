@@ -1,4 +1,4 @@
-const getPersonalKey = async (req, res) => {
+const getPersonalKey = async (req: any, res: any) => {
   const secretsManager = await req.resolve.eventstoreAdapter.getSecretsManager()
 
   const { userId } = req.matchedParams

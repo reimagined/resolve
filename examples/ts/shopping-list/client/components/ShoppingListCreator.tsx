@@ -3,7 +3,15 @@ import { Button, Col, Form, Row } from 'react-bootstrap'
 import { useCommand } from '@resolve-js/react-hooks'
 import { v4 as uuid } from 'uuid'
 
-const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
+type ShoppingListCreatorProps = {
+  lists: any[]
+  onCreateSuccess: (...args: any[]) => any
+}
+
+const ShoppingListCreator = ({
+  lists,
+  onCreateSuccess,
+}: ShoppingListCreatorProps) => {
   const [shoppingListName, setShoppingListName] = useState('')
 
   const createShoppingListCommand = useCommand(
@@ -21,11 +29,11 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
     }
   )
 
-  const updateShoppingListName = (event) => {
+  const updateShoppingListName = (event: any) => {
     setShoppingListName(event.target.value)
   }
 
-  const onShoppingListNamePressEnter = (event) => {
+  const onShoppingListNamePressEnter = (event: any) => {
     if (event.charCode === 13) {
       event.preventDefault()
       createShoppingListCommand()

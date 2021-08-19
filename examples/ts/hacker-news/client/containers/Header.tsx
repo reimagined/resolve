@@ -2,7 +2,9 @@ import React from 'react'
 import { useStaticResolver } from '@resolve-js/react-hooks'
 import { Helmet } from 'react-helmet'
 
-const Header = ({ title, css, favicon }) => {
+type HeaderProps = { title: string; css: string[]; favicon: string }
+
+const Header = ({ title, css, favicon }: HeaderProps) => {
   const asset = useStaticResolver()
 
   const stylesheetLinks = css.map((sheet) => ({

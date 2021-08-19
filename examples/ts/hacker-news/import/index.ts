@@ -4,7 +4,7 @@ import { EOL } from 'os'
 import { start } from './importer'
 import path from 'path'
 
-const runImport = (importConfig) => {
+const runImport = (importConfig: any) => {
   const port = importConfig.hasOwnProperty('port')
     ? String(importConfig.port.defaultValue)
     : process.env.PORT || '3000'
@@ -16,12 +16,12 @@ const runImport = (importConfig) => {
     RESOLVE_APP_URL: appUrl,
   })
 
-  let bar
+  let bar: ProgressBar
   // eslint-disable-next-line no-console
   console.log('Import has been started. Press Control+C to stop import')
 
   start(
-    (total) => {
+    (total: number) => {
       bar = new ProgressBar(
         'Data importing from news.ycombinator.com [:bar] :current/:total',
         {

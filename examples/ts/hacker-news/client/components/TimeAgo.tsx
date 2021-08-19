@@ -10,7 +10,7 @@ const Container = styled.div`
   display: inline-block;
 `
 
-const TimeAgo = ({ createdAt }) => {
+const TimeAgo = ({ createdAt }: { createdAt: number }) => {
   const [now, setNow] = useState(Date.now())
 
   useEffect(() => {

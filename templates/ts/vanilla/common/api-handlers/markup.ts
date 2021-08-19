@@ -1,7 +1,7 @@
 import getStaticBasedPath from '@resolve-js/runtime/lib/common/utils/get-static-based-path'
 import jsonUtfStringify from '@resolve-js/runtime/lib/common/utils/json-utf-stringify'
 
-const markupHandler = async (req, res) => {
+const markupHandler = async (req: any, res: any) => {
   const { rootPath, staticPath, seedClientEnvs } = req.resolve
   const scriptUrl = getStaticBasedPath(rootPath, staticPath, 'index.js')
   const styleUrl = getStaticBasedPath(rootPath, staticPath, 'style.css')

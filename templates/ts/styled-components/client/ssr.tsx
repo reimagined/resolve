@@ -9,7 +9,7 @@ import { Helmet } from 'react-helmet'
 
 import { getRoutes } from './get-routes'
 
-const ssrHandler = async (serverContext, req, res) => {
+const ssrHandler = async (serverContext: any, req: any, res: any) => {
   try {
     const { seedClientEnvs, constants, viewModels, utils } = serverContext
     const { rootPath, staticPath } = constants
@@ -30,11 +30,7 @@ const ssrHandler = async (serverContext, req, res) => {
     const markup = ReactDOM.renderToStaticMarkup(
       <StyleSheetManager sheet={sheet.instance}>
         <ResolveProvider context={resolveContext}>
-          <StaticRouter
-            location={url}
-            history={history}
-            context={staticContext}
-          >
+          <StaticRouter location={url} context={staticContext}>
             {renderRoutes(getRoutes())}
           </StaticRouter>
         </ResolveProvider>

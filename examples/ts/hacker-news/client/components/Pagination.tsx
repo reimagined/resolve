@@ -1,14 +1,15 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { NavLink } from 'react-router-dom'
-
 import { Splitter } from './Splitter'
 
 export const PaginationRoot = styled.div`
   padding: 0.5em 0;
 `
 
-export const StyledLink = styled(NavLink)`
+type StyledLinkProps = { disabled: boolean }
+
+export const StyledLink = styled(NavLink)<StyledLinkProps>`
   display: inline;
   font-weight: bold;
   text-decoration: none;
@@ -29,12 +30,18 @@ export const StyledLink = styled(NavLink)`
         `};
 `
 
-const Pagination = ({ page = 1, hasNext, location }) => {
-  if (page === 1 && !hasNext) {
+type PaginationProps = {
+  page?: string
+  hasNext: boolean
+  location: string
+}
+
+const Pagination = ({ page = '1', hasNext, location }: PaginationProps) => {
+  if (page === '1' && !hasNext) {
     return null
   }
 
-  const prevDisabled = page <= 1
+  const prevDisabled = Number(page) <= 1
   const nextDisabled = !hasNext
 
   return (

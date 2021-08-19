@@ -17,11 +17,15 @@ const Link = styled(NavLink)`
     text-decoration: underline;
   }
 `
+type SearchResultItemProps = {
+  data: { type: string; aggregateId: string; text: string }
+  onNavigate: () => any
+}
 
 const SearchResultItem = ({
   data: { type, aggregateId, text },
   onNavigate,
-}) => {
+}: SearchResultItemProps) => {
   return (
     <Link
       onClick={onNavigate}

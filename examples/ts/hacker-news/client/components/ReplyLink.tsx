@@ -8,7 +8,13 @@ const StyledLink = styled(NavLink)`
   color: #000;
 `
 
-const ReplyLink = ({ storyId, commentId }) => (
+const ReplyLink = ({
+  storyId,
+  commentId,
+}: {
+  storyId: string
+  commentId: string
+}) => (
   <StyledLink to={`/storyDetails/${storyId}/comments/${commentId}`}>
     reply
   </StyledLink>
