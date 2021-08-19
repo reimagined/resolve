@@ -1,7 +1,6 @@
 ---
 id: read-model-resolver
 title: Read Model Resolver
-description:
 ---
 
 A read model resolver function has the following structure:

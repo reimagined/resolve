@@ -1,7 +1,6 @@
 ---
 id: read-model-projection
 title: Read Model Projection
-description:
 ---
 
 A read model projection function has the following structure:

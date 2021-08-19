@@ -1,7 +1,6 @@
 ---
 id: command-handler
 title: Command Handler
-description:
 ---
 
 A command handler function has the following structure:

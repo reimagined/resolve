@@ -1,6 +1,6 @@
 ---
-id: faq
-title: FAQ
+id: middleware
+title: Middleware
 description: This describes how to use middleware in aggregates, read model resolvers and projections.
 ---
 
@@ -24,11 +24,17 @@ const myMiddleware = (next) =>
   // (middlewareContext, store, params, context) => { ... } // Resolver middleware handler
 ```
 
-For details on how to implement different types of middleware, refer to the following sections of this document:
+:::caution
 
-- [Command Middleware](#command-middleware)
-- [Read Model Projection Middleware](#read-model-projection-middleware)
-- [Read Model Resolver Middleware](#read-model-resolver-middleware)
+Keep in mind that poorly implemented middleware can brake an application because middleware intercepts the internal request and event processing chains and can potentially disrupt them.
+
+:::
+
+For details on the API used to implement different types of middleware, refer to the following sections of the [middleware API reference](api/middleware.md):
+
+- [Command Middleware](api/middleware.md#command-middleware)
+- [Read Model Projection Middleware](api/middleware.md#read-model-projection-middleware)
+- [Read Model Resolver Middleware](api/middleware.md#read-model-resolver-middleware)
 
 The implemented middleware should be registered in the application's configuration file:
 
@@ -51,84 +57,6 @@ const appConfig = {
 }
 ```
 
-> **Note:** Take caution when you design middleware. Purely implemented middleware can easily brake an application because middleware intercepts the internal chain of request processing and can potentially disrupt it.
-
 ### Example
 
 See to the [Personal Data](https://github.com/reimagined/resolve/tree/dev/examples/ts/personal-data) application for example middleware implementation.
-
-## Command Middleware
-
-A command middleware function has the following structure:
-
-```js
-const commandMiddleware = (next) => (
-  middlewareContext,
-  state,
-  command,
-  context
-) => {
-  ...
-  state,
-  return next(middlewareContext, state, command, context)
-}
-```
-
-The handler function takes the following parameters:
-
-| Parameter Name    | Description                                                     |
-| ----------------- | --------------------------------------------------------------- |
-| middlewareContext | Contains data that describes the currently processed operation. |
-| state             | The aggregate's state.                                          |
-| command           | An object that contains data about the incoming command.        |
-| context           | Used to pass service data throughout the processing chain.      |
-
-## Read Model Projection Middleware
-
-A read model projection middleware function has the following structure:
-
-```js
-const projectionMiddleware = (next) => (
-  middlewareContext,
-  store,
-  event,
-  context
-) => {
-  ...
-  return next(middlewareContext, store, event, context)
-}
-```
-
-The handler function takes the following parameters:
-
-| Parameter Name    | Description                                                     |
-| ----------------- | --------------------------------------------------------------- |
-| middlewareContext | Contains data that describes the currently processed operation. |
-| store             | The read model store.                                           |
-| event             | The incoming event object.                                      |
-| context           | Used to pass service data throughout the processing chain.      |
-
-## Read Model Resolver Middleware
-
-A read model resolver middleware function has the following structure:
-
-```js
-const resolverMiddleware = (next) => (
-  middlewareContext,
-  store,
-  params,
-  context
-) => {
-  ...
-  return next(middlewareContext, store, params, context)
-}
-```
-
-The handler function takes the following parameters:
-
-| Parameter Name    | Description                                                     |
-| ----------------- | --------------------------------------------------------------- |
-| middlewareContext | Contains data that describes the currently processed operation. |
-| store             | The read model store.                                           |
-| params            | The request parameters passed to the resolver.                  |
-| context           | Used to pass service data throughout the processing chain.      |

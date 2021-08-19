@@ -12,6 +12,7 @@
           "read-side", 
           "sagas", 
           "api-handlers",
+          "middleware",
           "frontend",
           "manage-application",
           "app-structure"
@@ -34,10 +35,13 @@
         "type": "category",
         "label": "API",
         "items": [
+          "api/command-handler",
+          "api/read-model-projection",
+          "api/read-model-resolver",
           "api/read-model-connector",
           "api/read-model-store",
           "api/event-store-adapter",
-          "api/midleware",
+          "api/middleware",
           "api/api-handler",
           "api/saga",
           "api/resolve-scripts",
