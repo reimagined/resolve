@@ -4,7 +4,7 @@ title: Read Model Resolver
 description:
 ---
 
-A read model resolver function has the following signature:
+A read model resolver function has the following structure:
 
 ```js
 async (store, params, context) => {
@@ -15,13 +15,13 @@ async (store, params, context) => {
 
 A projection implementation receives the following arguments:
 
-| Argument Name | Description                                                                    |
-| ------------- | ------------------------------------------------------------------------------ |
-| store         | Exposes API used to communicate with the read model's persistent data storage. |
-| params        | An object that contains the request parameters as key-value pairs.             |
-| context       | An object that contains data and functions related to the current operation.   |
+| Argument Name | Description                                                                                           |
+| ------------- | ----------------------------------------------------------------------------------------------------- |
+| store         | Exposes [API](read-model-store.md) used to communicate with the read model's persistent data storage. |
+| params        | An object that contains the request parameters as key-value pairs.                                    |
+| context       | An object that contains data and functions related to the current operation.                          |
 
-### context
+## context
 
 The `context` argument is an object with the following fields:
 

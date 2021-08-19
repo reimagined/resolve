@@ -4,7 +4,7 @@ title: Command Handler
 description:
 ---
 
-A command handler function has the following signature:
+A command handler function has the following structure:
 
 ```js
 (state, command, context) => {
@@ -18,13 +18,13 @@ A command handler function has the following signature:
 
 A command handler implementation receives the following arguments:
 
-| Argument Name | Description                                                                  |
-| ------------- | ---------------------------------------------------------------------------- |
-| state         | The aggregate's state.                                                       |
-| command       | An object that contains the incoming command's data.                         |
-| context       | An object that contains data and functions related to the current operation. |
+| Argument Name | Description                                                                                           |
+| ------------- | ----------------------------------------------------------------------------------------------------- |
+| state         | The state object built by the aggregate [projection](../write-side.md#aggregate-projection-function). |
+| command       | An object that contains the incoming command's data.                                                  |
+| context       | An object that contains data and functions related to the current operation.                          |
 
-### context
+## context
 
 The `context` argument is an object with the following fields:
 
