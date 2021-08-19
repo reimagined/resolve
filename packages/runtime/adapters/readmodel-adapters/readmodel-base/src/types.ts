@@ -154,14 +154,71 @@ export type MonitoringLike = {
 export type ReadModelCursor = Cursor // TODO brand type
 export type ReadModelEvent = SavedEvent
 
-export type EventstoreAdapterLike = EventStoreAdapter
+export type EventStoreAdapterLike = EventStoreAdapter
 
 export type SplitNestedPathMethod = (input: string) => Array<string>
+
+export type EventStoreAdapterKeys = keyof EventStoreAdapter
+export type EventStoreAdapterIsAsyncFunctionalKey<
+  T extends EventStoreAdapterKeys
+> = EventStoreAdapter[T] extends FunctionLike | undefined
+  ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    Exclude<EventStoreAdapter[T], undefined> extends (
+      ...args: infer _Args
+    ) => infer Result
+    ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      Result extends Promise<infer _R>
+      ? T
+      : never
+    : never
+  : never
+
+export type EventStoreAdapterAsyncFunctionKeysDistribute<
+  T extends EventStoreAdapterKeys
+> = T extends any ? EventStoreAdapterIsAsyncFunctionalKey<T> : never
+
+export type EventStoreAdapterAsyncFunctionKeys = EventStoreAdapterAsyncFunctionKeysDistribute<EventStoreAdapterKeys>
+
+export type EventStoreOperationTimeLimitedMethodArguments<
+  E extends EventStoreAdapter,
+  T extends EventStoreAdapterAsyncFunctionKeys
+> = [
+  eventstoreAdapter: E,
+  timeoutErrorProvider: () => Error,
+  getVacantTimeInMillis: MethodGetRemainingTime,
+  methodName: T,
+  ...args: IfEquals<
+    E[T],
+    Exclude<E[T], undefined>,
+    Parameters<Exclude<E[T], undefined>>,
+    never
+  >
+]
+
+export type EventStoreOperationTimeLimitedMethodReturnType<
+  E extends EventStoreAdapter,
+  T extends EventStoreAdapterAsyncFunctionKeys
+> = UnPromise<
+  IfEquals<
+    E[T],
+    Exclude<E[T], undefined>,
+    ReturnType<Exclude<E[T], undefined>>,
+    never
+  >
+>
+
+export type EventStoreOperationTimeLimitedMethod = <
+  E extends EventStoreAdapter,
+  T extends EventStoreAdapterAsyncFunctionKeys
+>(
+  ...args: EventStoreOperationTimeLimitedMethodArguments<E, T>
+) => Promise<EventStoreOperationTimeLimitedMethodReturnType<E, T>>
 
 export type CommonAdapterPool = {
   monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
   splitNestedPath: SplitNestedPathMethod
+  eventStoreOperationTimeLimited: EventStoreOperationTimeLimitedMethod
   checkEventsContinuity: CheckEventsContinuityMethod
 }
 
@@ -296,7 +353,7 @@ export type AdapterOperationStatusMethodArguments<
 > = [
   pool: AdapterPool,
   readModelName: string,
-  eventstoreAdapter: EventstoreAdapterLike,
+  eventstoreAdapter: EventStoreAdapterLike,
   ...args: T
 ]
 
@@ -365,7 +422,7 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
       ) => () => Promise<void>
     },
     next: MethodNext,
-    eventstoreAdapter: EventstoreAdapterLike,
+    eventstoreAdapter: EventStoreAdapterLike,
     getVacantTimeInMillis: MethodGetRemainingTime,
     buildInfo: BuildInfo
   ): Promise<void>
@@ -471,6 +528,7 @@ export type MakeSplitNestedPathMethod = (
 ) => SplitNestedPathMethod
 
 export type BaseAdapterImports = {
+  eventStoreOperationTimeLimited: EventStoreOperationTimeLimitedMethod
   splitNestedPath: SplitNestedPathMethod
   checkEventsContinuity: CheckEventsContinuityMethod
   withPerformanceTracer: WithPerformanceTracerMethod

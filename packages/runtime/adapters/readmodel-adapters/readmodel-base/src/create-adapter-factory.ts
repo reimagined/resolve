@@ -19,6 +19,7 @@ const createAdapter = <
   options: AdapterOptions
 ): AdapterApi<AdapterPool> => {
   const {
+    eventStoreOperationTimeLimited,
     splitNestedPath,
     checkEventsContinuity,
     withPerformanceTracer,
@@ -99,6 +100,7 @@ const createAdapter = <
 
   const pool: BaseAdapterPool<AdapterPool> = {
     commonAdapterPool: {
+      eventStoreOperationTimeLimited,
       performanceTracer,
       checkEventsContinuity,
       splitNestedPath,

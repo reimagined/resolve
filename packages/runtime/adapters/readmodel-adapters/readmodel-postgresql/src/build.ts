@@ -133,6 +133,7 @@ const buildEvents: (
   const {
     readModelLedger: { IsProcedural: inputIsProcedural },
     PassthroughError,
+    eventStoreOperationTimeLimited,
     checkEventsContinuity,
     inlineLedgerRunQuery,
     generateGuid,
@@ -157,8 +158,11 @@ const buildEvents: (
   ) => {
     let nextCursor = await eventstoreAdapter.getNextCursor(cursor, events)
     if (isContinuousMode && eventTypes != null) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      nextCursor = await eventstoreAdapter.getCursorUntilEventTypes!(
+      nextCursor = await eventStoreOperationTimeLimited(
+        eventstoreAdapter as Required<typeof eventstoreAdapter>,
+        Object.bind(null, new PassthroughError(true)),
+        getVacantTimeInMillis,
+        'getCursorUntilEventTypes',
         nextCursor,
         eventTypes
       )
@@ -193,28 +197,32 @@ const buildEvents: (
 
   let eventsPromise =
     hotEvents == null
-      ? eventstoreAdapter
-          .loadEvents({
+      ? eventStoreOperationTimeLimited(
+          eventstoreAdapter,
+          Object.bind(null, new PassthroughError(true)),
+          getVacantTimeInMillis,
+          'loadEvents',
+          {
             eventTypes,
             eventsSizeLimit: 6553600,
             limit: 100,
             cursor,
-          })
-          .then((result) => {
-            const loadDuration = Date.now() - firstEventsLoadStartTimestamp
+          }
+        ).then((result) => {
+          const loadDuration = Date.now() - firstEventsLoadStartTimestamp
 
-            const events = result != null ? result.events : []
+          const events = result != null ? result.events : []
 
-            if (groupMonitoring != null && events.length > 0) {
-              groupMonitoring.duration(
-                'EventLoad',
-                loadDuration / events.length,
-                events.length
-              )
-            }
+          if (groupMonitoring != null && events.length > 0) {
+            groupMonitoring.duration(
+              'EventLoad',
+              loadDuration / events.length,
+              events.length
+            )
+          }
 
-            return events
-          })
+          return events
+        })
       : Promise.resolve(hotEvents)
 
   let rootSavePointId = generateGuid(xaKey, 'ROOT')
@@ -251,12 +259,18 @@ const buildEvents: (
     const eventsLoadStartTimestamp = Date.now()
     eventsPromise = Promise.resolve(nextCursorPromise)
       .then((nextCursor) =>
-        eventstoreAdapter.loadEvents({
-          eventTypes,
-          eventsSizeLimit: 65536000,
-          limit: 1000,
-          cursor: nextCursor,
-        })
+        eventStoreOperationTimeLimited(
+          eventstoreAdapter,
+          Object.bind(null, new PassthroughError(true)),
+          getVacantTimeInMillis,
+          'loadEvents',
+          {
+            eventTypes,
+            eventsSizeLimit: 65536000,
+            limit: 1000,
+            cursor: nextCursor,
+          }
+        )
       )
       .then((result) => {
         const loadDuration = Date.now() - eventsLoadStartTimestamp
