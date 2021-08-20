@@ -125,7 +125,7 @@ $ curl -X POST "http://localhost:3000/api/commands"
 
 ### Emitting Commands on the Server
 
-You can use the **resolve.executeCommand** function to emit a command on the server side from a **[Saga](advanced-techniques.md#process-managers-sagas)** or **[API Handler](api-handlers.md)**:
+You can use the **resolve.executeCommand** function to emit a command on the server side from a **[Saga](sagas.md)** or **[API Handler](api-handlers.md)**:
 
 ```js
 await resolve.executeCommand({
@@ -202,8 +202,8 @@ storageAdapter: {
 
 Adapters for the following storage types are available out of the box:
 
-- [File or memory](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/@resolve-js/eventstore-lite)
-- [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/@resolve-js/eventstore-mysql)
+- [File or memory](https://github.com/reimagined/resolve/tree/master/packages/runtime/adapters/eventstore-adapters/eventstore-lite)
+- [PostgreSQL](https://github.com/reimagined/resolve/tree/master/packages/runtime/adapters/eventstore-adapters/eventstore-postgresql)
 
 You can also add your own storage adapter to store events.
-Refer to the [Adapters](advanced-techniques.md#adapters) section of the reSolve documentation for more information about adapters.
+Refer to the [Adapters](adapters.md) section of the reSolve documentation for more information about adapters.

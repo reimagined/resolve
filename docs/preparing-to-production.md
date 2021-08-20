@@ -38,7 +38,7 @@ export default prodConfig
 
 ## Configuring Adapters
 
-Before you move your app into production, specify all required [adapters](advanced-techniques.md#adapters) in the production config.
+Before you move your app into production, specify all required [adapters](adapters.md) in the production config.
 
 Depending on your requirements, you may want to specify storage adapters for events, Read Model data and View Model snapshots.
 

@@ -3,7 +3,7 @@ import { useQuery } from '@resolve-js/react-hooks'
 import { Link } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap'
 
-const User = ({ user }) => (
+const User = ({ user }: { user: any }) => (
   <div className="mb-3">
     <Link to={`/blog/${user.id}`} className="lead">
       {user.profile.nickname}

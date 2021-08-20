@@ -55,6 +55,7 @@ module.exports = {
     'no-control-regex': 'off',
     'eol-last': ['error', 'always'],
     'no-console': ['error'],
+    strict: 'off',
     'spellcheck/spell-checker': [
       'error',
       {
@@ -139,8 +140,9 @@ module.exports = {
           'cumulated',
           'cwd',
           'cryptr',
-          'dateformat',
           'darwin',
+          'dateformat',
+          'datname',
           'dddddd',
           'ddd',
           'decrement',

@@ -1,11 +1,16 @@
 import { takeEvery, delay } from 'redux-saga/effects'
+import { Client } from '@resolve-js/client'
 import { internal } from '@resolve-js/redux'
-
+import { History } from 'history'
+import { CommandAction } from '../types'
 const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = internal.actionTypes
 
-export function* storyCreateSaga(history, { client }) {
+export function* storyCreateSaga(
+  history: History,
+  { client }: { client: Client }
+) {
   yield takeEvery(
-    (action) =>
+    (action: CommandAction) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.command.type === 'createStory',
     function* (action) {
@@ -36,7 +41,7 @@ export function* storyCreateSaga(history, { client }) {
   )
 
   yield takeEvery(
-    (action) =>
+    (action: CommandAction) =>
       action.type === SEND_COMMAND_FAILURE &&
       action.command.type === 'createStory',
     function* () {

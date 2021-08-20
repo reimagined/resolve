@@ -1,9 +1,10 @@
 import commands from '../../../common/aggregates/user.commands'
 import projection from '../../../common/aggregates/user.projection'
 import { USER_CREATED } from '../../../common/event-types'
+import { CommandContext } from '@resolve-js/core'
 
 describe('aggregates', () => {
-  let commandContext
+  let commandContext: CommandContext
   describe('user', () => {
     beforeEach(() => {
       commandContext = {
@@ -51,7 +52,7 @@ describe('aggregates', () => {
     })
 
     it('command "createUser" should throw Error "The name field is required"', () => {
-      const name = undefined
+      const name: string = undefined
 
       const state = {}
       const command = {

@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 
-const handler = async (req, res) => {
+const handler = async (req: any, res: any) => {
   const defaultReadModelUrl = `http://${req.headers.host}${req.resolve.rootPath}/api/query/ShoppingLists/all`
 
   const request = await fetch(defaultReadModelUrl)

@@ -1,4 +1,4 @@
-const deletePersonalKey = async (req, res) => {
+const deletePersonalKey = async (req: any, res: any) => {
   const secretsManager = await req.resolve.eventstoreAdapter.getSecretsManager()
 
   const { userId } = req.matchedParams

@@ -57,7 +57,7 @@ export default () => {
             <div className='buttonWrapper'>
               <Link
                 className={'button'}
-                to={useBaseUrl('docs/introduction')}
+                to={useBaseUrl('docs')}
               >
                 Get Started
               </Link>

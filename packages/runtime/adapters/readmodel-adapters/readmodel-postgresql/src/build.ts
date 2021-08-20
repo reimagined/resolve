@@ -131,7 +131,7 @@ const buildEvents: (
 ) => {
   const pool = { ...basePool, ...currentPool }
   const {
-    readModelLedger: { IsProcedural: isProcedural },
+    readModelLedger: { IsProcedural: inputIsProcedural },
     PassthroughError,
     checkEventsContinuity,
     inlineLedgerRunQuery,
@@ -147,6 +147,7 @@ const buildEvents: (
     xaKey,
   } = pool
   const { eventsWithCursors } = buildInfo
+  let isProcedural = inputIsProcedural
   const isContinuousMode =
     typeof eventstoreAdapter.getCursorUntilEventTypes === 'function'
   const getContinuousLatestCursor = async (
@@ -306,7 +307,11 @@ const buildEvents: (
           status,
         } = procedureResult[0].Result
         if (status === 'DEPENDENCY_ERROR') {
-          throw new Error(`${failureError}`)
+          if (failureError?.message != null || failureError?.stack != null) {
+            throw failureError
+          } else {
+            throw new Error(`${failureError}`)
+          }
         }
 
         appliedEventsCount = appliedCount
@@ -331,11 +336,7 @@ const buildEvents: (
 
         regularWorkflow = false
       } catch (err) {
-        try {
-          await inlineLedgerRunQuery(
-            `ROLLBACK TO SAVEPOINT ${rootSavePointId};`
-          )
-        } catch (e) {}
+        isProcedural = false
 
         // eslint-disable-next-line no-console
         console.warn(
@@ -343,6 +344,8 @@ const buildEvents: (
             serializeError(err)
           )}`
         )
+
+        await inlineLedgerRunQuery(`ROLLBACK TO SAVEPOINT ${rootSavePointId};`)
       }
     }
 

@@ -1,6 +1,7 @@
 ---
 id: read-model-store
 title: Read Model Store
+description: This document describes functions that you can use to communicate with a Read Model store through a `store` object.
 ---
 
 The table below lists functions that you can use to communicate with a Read Model store through a `store` object.

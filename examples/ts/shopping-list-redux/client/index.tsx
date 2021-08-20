@@ -7,15 +7,16 @@ import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
 import getRoutes from './get-routes'
 import getRedux from './get-redux'
 
-const entryPoint = (clientContext) => {
+const entryPoint = (clientContext: any) => {
   const store = createResolveStore(clientContext, {
     serializedState: (window as any).__INITIAL_STATE__,
     redux: getRedux(),
   })
+  const routes = getRoutes()
 
   render(
     <ResolveReduxProvider context={clientContext} store={store}>
-      <BrowserRouter>{renderRoutes(getRoutes())}</BrowserRouter>
+      <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
     </ResolveReduxProvider>,
     document.getElementById('app-container')
   )

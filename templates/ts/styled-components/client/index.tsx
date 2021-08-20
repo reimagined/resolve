@@ -6,7 +6,7 @@ import { ResolveProvider } from '@resolve-js/react-hooks'
 
 import { getRoutes } from './get-routes'
 
-const entryPoint = (clientContext) => {
+const entryPoint = (clientContext: any) => {
   render(
     <ResolveProvider context={clientContext}>
       <BrowserRouter>{renderRoutes(getRoutes())}</BrowserRouter>

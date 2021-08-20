@@ -2,13 +2,13 @@
 
 [![npm version](https://badge.fury.io/js/%40resolve-js%2Feventstore-lite.svg)](https://badge.fury.io/js/%40resolve-js%2Feventstore-lite)
 
-This package is a eventstore adapter for storing events using a file or memory.
+This package is a event store adapter used to store events in a file or memory.
 
 ## Available Parameters
 
 You can pass the following argument when initializing an adapter:
 
-- `databaseFile` - the path to a file where events are stored. In case ":memory:" all data is lost when an application instance is restarted.
+- `databaseFile` - the path to a file where events are stored. If set to ":memory:", all data is lost when an application instance is restarted.
 
 ## Usage
 
