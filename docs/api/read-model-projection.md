@@ -1,6 +1,7 @@
 ---
 id: read-model-projection
 title: Read Model Projection
+description: Projection functions build a Read Models state based on incoming events.
 ---
 
 A read model projection function has the following structure:

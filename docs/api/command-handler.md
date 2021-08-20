@@ -1,6 +1,7 @@
 ---
 id: command-handler
 title: Command Handler
+description: Aggregate command handlers handle incoming commands and produce events.
 ---
 
 A command handler function has the following structure:
