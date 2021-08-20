@@ -28,7 +28,10 @@ const isRetryableError = (error: any): boolean =>
     checkFormalError(error, '08003') ||
     checkFormalError(error, '08006'))
 
-const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
+const executeStatement = async (
+  pool: AdapterPool,
+  sql: string
+): Promise<any[]> => {
   while (true) {
     let connection: typeof pool.connection = pool.connection
     try {
@@ -52,10 +55,10 @@ const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
       const result = await connection.query(sql)
 
       if (result != null && Array.isArray(result.rows)) {
-        return JSON.parse(JSON.stringify(result.rows))
+        return result.rows as Array<any>
       }
 
-      return null
+      return []
     } catch (error) {
       if (isRetryableError(error)) {
         try {

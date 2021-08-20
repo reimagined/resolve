@@ -187,6 +187,7 @@ export const EventFilterSchema = new t.Type<EventFilter, EventFilter>(
 )
 type EventFilterChecked = t.TypeOf<typeof EventFilterSchemaSimple>
 export type EventFilter = UnbrandProps<EventFilterChecked>
+export type LatestEventFilter = Omit<EventFilter, 'limit' | 'eventsSizeLimit'>
 
 export type SecretFilter = {
   idx?: SecretRecord['idx'] | null
@@ -570,7 +571,7 @@ export interface Adapter {
   loadEvents: (filter: EventFilter) => Promise<EventsWithCursor>
   importEvents: (options?: Partial<ImportOptions>) => ImportEventsStream
   exportEvents: (options?: Partial<ExportOptions>) => ExportEventsStream
-  getLatestEvent: (filter: EventFilter) => Promise<SavedEvent | null>
+  getLatestEvent: (filter: LatestEventFilter) => Promise<SavedEvent | null>
   saveEvent: (event: InputEvent) => Promise<EventWithCursor>
   init: () => Promise<void>
   drop: () => Promise<void>
