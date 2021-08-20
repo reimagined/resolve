@@ -3,7 +3,8 @@ import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_REMOVED,
 } from '../actions/optimistic-actions'
-const optimisticShoppingLists = (state = [], action) => {
+const initialState = []
+const optimisticShoppingLists = (state = initialState, action) => {
   switch (action.type) {
     case SHOPPING_LIST_CREATED: {
       return [

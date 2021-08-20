@@ -2,11 +2,12 @@ import * as React from 'react'
 import { useQuery } from '@resolve-js/react-hooks'
 import { useEffect, useState } from 'react'
 import { Redirect } from 'react-router-dom'
+import { Location } from 'history'
 
 import Login from './Login'
 import Loading from './Loading'
 
-const ContentSelector = ({ user }) => {
+const ContentSelector = ({ user }: { user: any }) => {
   if (typeof user === 'string') {
     return <Loading />
   }
@@ -18,7 +19,9 @@ const ContentSelector = ({ user }) => {
   return <Redirect to={`/blog/${user.id}`} />
 }
 
-const Home = ({ location: { hash } }) => {
+type HomeProps = { location: Location }
+
+const Home = ({ location: { hash } }: HomeProps) => {
   const [user, setUser] = useState('unknown')
   const getUser = useQuery(
     {

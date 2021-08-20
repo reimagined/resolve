@@ -3,7 +3,7 @@ import BootstrapVue from 'bootstrap-vue'
 import { getClient } from '@resolve-js/client'
 import App from './App.vue'
 
-const entryPoint = (clientContext) => {
+const entryPoint = (clientContext: any) => {
   const client = getClient(clientContext)
 
   const appContainer = document.body.firstElementChild

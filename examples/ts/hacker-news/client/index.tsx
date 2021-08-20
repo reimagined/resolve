@@ -8,7 +8,7 @@ import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
 import { getRoutes } from './get-routes'
 import getRedux from './get-redux'
 
-const entryPoint = (clientContext) => {
+const entryPoint = (clientContext: any) => {
   const history = createBrowserHistory({ basename: clientContext.rootPath })
   const routes = getRoutes()
   const redux = getRedux(clientContext.clientImports, history)

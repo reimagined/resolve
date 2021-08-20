@@ -1,8 +1,8 @@
 import React from 'react'
-
+import { Location } from 'history'
 import { AuthForm } from './AuthForm'
 
-const Login = (props) => {
+const Login = (props: { location: Location }) => {
   return (
     <div>
       <AuthForm

@@ -63,7 +63,7 @@ const Submit = () => {
         <FormLabel>text:</FormLabel>
         <FormTextArea
           name="text"
-          rows="4"
+          rows={4}
           value={text}
           onChange={(e) => setText(e.target.value)}
           disabled={disabled}

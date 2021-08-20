@@ -1,4 +1,4 @@
-const initUI = (messages, sendMessage) => {
+const initUI = (messages: any[], sendMessage: Function) => {
   const container = document.createElement('div')
   container.setAttribute('class', 'container')
   document.body.appendChild(container)
