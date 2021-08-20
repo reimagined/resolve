@@ -39,6 +39,8 @@ A command middleware handler's `middlewareContext` argument is an object with th
 | req        | Stores data that describes the currently processed HTTP request |
 | res        | Contains function used to configure the server's response       |
 
+Both `req` and `res` fields are included only if the command arrived from a client. If the command was emitted on the server (for example, by a saga or API handler), these fields are omitted.
+
 ## Read Model Projection Middleware
 
 A read model projection middleware function has the following structure:
