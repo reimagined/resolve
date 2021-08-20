@@ -147,6 +147,7 @@ export type {
   EventsWithCursor,
   EventWithCursor,
   EventFilter,
+  LatestEventFilter,
   ReplicationStatus,
   ReplicationState,
   OldEvent,
