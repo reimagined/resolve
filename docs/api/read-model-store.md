@@ -91,6 +91,20 @@ The **projection** argument should be an object, in which keys are field names a
 
 You can use the dotted notation to include or exclude subfields.
 
+#### Example
+
+```js
+const findResult = await store.find(
+  'TestTable',
+  searchCondition,
+  { field1: 1, field2: 1, 'field3.nestedField': 1 }, // Return the specified fields
+  //{ field1: 0, field2: 0, "field3.nestedField": 0 }, // Return all but the specified fields
+  { id: sortOrder },
+  skip,
+  limit
+)
+```
+
 ### findOne
 
 Searches for a data item based on the specified expression.
