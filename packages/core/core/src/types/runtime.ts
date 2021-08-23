@@ -59,6 +59,7 @@ export type Eventstore = {
   ensureEventSubscriber: Function
   getEventSubscribers: Function
   removeEventSubscriber: Function
+  establishTimeLimit: (f: () => number) => void
 }
 
 export type AggregateMeta = {

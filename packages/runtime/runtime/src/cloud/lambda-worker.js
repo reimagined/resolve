@@ -17,6 +17,8 @@ const GRACEFUL_WORKER_SHUTDOWN_TIME = 30 * 1000
 const getVacantTimeInMillis = (lambdaContext) =>
   lambdaContext.getRemainingTimeInMillis() - GRACEFUL_WORKER_SHUTDOWN_TIME
 
+const WORKER_HTTP_REQUEST_DURATION = 25 * 1000
+
 let coldStart = true
 
 const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
@@ -191,6 +193,15 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       initSubscriber(resolveBase, lambdaContext)
       initScheduler(resolve)
 
+      if (
+        lambdaEvent.requestStartTime !== undefined &&
+        Number.isSafeInteger(lambdaEvent.requestStartTime)
+      ) {
+        resolve.getVacantTimeInMillis = () =>
+          lambdaEvent.requestStartTime +
+          WORKER_HTTP_REQUEST_DURATION -
+          Date.now()
+      }
       log.debug('initializing reSolve framework')
       await initResolve(resolve)
       log.debug('reSolve framework initialized')

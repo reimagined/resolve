@@ -99,6 +99,7 @@ const initResolve = async (resolve) => {
       },
     },
     commandMiddlewares,
+    getVacantTimeInMillis,
   }
 
   const executeCommand = createCommandExecutor({
