@@ -3,7 +3,6 @@ import type {
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
-  AdapterTableNames,
   AdapterTableNamesProps,
 } from '@resolve-js/eventstore-base'
 import {
