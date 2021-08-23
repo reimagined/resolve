@@ -89,16 +89,14 @@ The **projection** argument should be an object, in which keys are field names a
 - 1 - specifies that the field should be included into the resulting data sample;
 - 0 - specifies that a field should be excluded from the resulting sample.
 
-You can use the dotted notation to include or exclude subfields.
-
 #### Example
 
 ```js
 const findResult = await store.find(
   'TestTable',
   searchCondition,
-  { field1: 1, field2: 1, 'field3.nestedField': 1 }, // Return the specified fields
-  //{ field1: 0, field2: 0, "field3.nestedField": 0 }, // Return all but the specified fields
+  { field1: 1, field2: 1, field3: 1 }, // Return the specified fields
+  //{ field1: 0, field2: 0, field3: 0 }, // Return all but the specified fields
   { id: sortOrder },
   skip,
   limit
