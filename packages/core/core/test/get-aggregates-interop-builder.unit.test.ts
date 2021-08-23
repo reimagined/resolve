@@ -61,6 +61,7 @@ const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
     ensureEventSubscriber: jest.fn().mockResolvedValue(null),
     removeEventSubscriber: jest.fn().mockResolvedValue(null),
     getEventSubscribers: jest.fn().mockResolvedValue([]),
+    establishTimeLimit: jest.fn(),
   }
 
   const monitoring: Monitoring = {
