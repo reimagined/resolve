@@ -84,10 +84,15 @@ const getStories = async (type, store, { first, offset }) => {
 }
 ```
 
-The **projection** argument should be an object, in which keys are field names and values are either 1 or 0:
+The **projection** argument should be an object, in which keys are field names and values are either `1` or `0`:
 
 - 1 - specifies that the field should be included into the resulting data sample;
 - 0 - specifies that a field should be excluded from the resulting sample.
+
+The first field in a projection object defines how the projection is interpreted:
+
+- If the first field's value is `1`, the projection works in inclusive mode. In this mode, you only need to specify included fields. All omitted fields are excluded by default.
+- If the first field's value is `0`, the projection works in exclusive mode. In this mode, only excluded fields should be specified explicitly and all omitted fields are included.
 
 #### Example
 
