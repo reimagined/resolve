@@ -5,8 +5,9 @@ import { useQuery } from '@resolve-js/react-hooks'
 
 import FeedByAuthor from './FeedByAuthor'
 import Loading from './Loading'
+import { RouteComponentProps } from 'react-router'
 
-const BlogHeader = ({ userId }) => {
+const BlogHeader = ({ userId }: { userId: string }) => {
   const [user, setUser] = useState<any>('unknown')
   const getUser = useQuery(
     {
@@ -36,11 +37,13 @@ const BlogHeader = ({ userId }) => {
   )
 }
 
+type MatchParams = { id: string }
+
 const UserBlog = ({
   match: {
     params: { id: authorId },
   },
-}) => {
+}: RouteComponentProps<MatchParams>) => {
   const [user, setUser] = useState<any>('unknown')
   const getUser = useQuery(
     {

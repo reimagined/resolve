@@ -13,7 +13,7 @@ import {
   Label,
 } from 'reactstrap'
 
-const RegistrationForm = ({ user }) => {
+const RegistrationForm = ({ user }: { user: any }) => {
   const [values, setValues] = useState({
     nickname: user ? user.nickname : '',
     firstName: user ? user.firstName : '',
@@ -26,7 +26,7 @@ const RegistrationForm = ({ user }) => {
 
   const [agree, setAgree] = useState(false)
 
-  const handleChange = (prop) => (event) => {
+  const handleChange = (prop: string) => (event: any) => {
     setValues({
       ...values,
       error: false,

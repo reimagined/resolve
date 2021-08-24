@@ -4,7 +4,7 @@ import { ResolveProvider } from '@resolve-js/react-hooks'
 
 import App from './containers/App'
 
-const entryPoint = (clientContext) => {
+const entryPoint = (clientContext: any) => {
   const appContainer = document.createElement('div')
   document.body.appendChild(appContainer)
   render(

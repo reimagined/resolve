@@ -20,8 +20,9 @@ const AuthFormContent = styled.div`
   display: block;
   margin-bottom: 0.83em;
 `
+type AuthFormProps = { title: string; action: any; buttonText: string }
 
-const AuthForm = ({ title, action, buttonText }) => (
+const AuthForm = ({ title, action, buttonText }: AuthFormProps) => (
   <AuthFormRoot>
     <AuthFormTitle>{title}</AuthFormTitle>
     <Form method="POST" action={action}>

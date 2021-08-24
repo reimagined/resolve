@@ -8,7 +8,7 @@ import { getRoutes } from './get-routes'
 import { StaticRouter } from 'react-router'
 import { renderRoutes } from 'react-router-config'
 
-const ssrHandler = async (serverContext, req, res) => {
+const ssrHandler = async (serverContext: any, req: any, res: any) => {
   try {
     const { seedClientEnvs, constants, viewModels, utils } = serverContext
     const { rootPath, staticPath } = constants
@@ -27,7 +27,7 @@ const ssrHandler = async (serverContext, req, res) => {
     const staticContext = {}
     const markup = ReactDOM.renderToStaticMarkup(
       <ResolveProvider context={resolveContext}>
-        <StaticRouter location={url} context={staticContext} history={history}>
+        <StaticRouter location={url} context={staticContext}>
           {renderRoutes(getRoutes())}
         </StaticRouter>
       </ResolveProvider>

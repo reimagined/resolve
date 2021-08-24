@@ -7,6 +7,19 @@ import {
   USER_CREATED,
 } from '../event-types'
 
+type Story = {
+  id: string
+  type: string
+  title: string
+  text: string
+  link: string
+  commentCount: number
+  votes: string[]
+  createdAt: number
+  createdBy: string
+  createdByName: string
+}
+
 const hackerNewsProjection: ReadModel<ResolveStore> = {
   Init: async (store) => {
     await store.defineTable('Stories', {
@@ -36,7 +49,7 @@ const hackerNewsProjection: ReadModel<ResolveStore> = {
     const isAsk = link == null || link === ''
     const type = isAsk ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
 
-    const story = {
+    const story: Story = {
       id: aggregateId,
       type,
       title,
@@ -74,7 +87,7 @@ const hackerNewsProjection: ReadModel<ResolveStore> = {
     await store.update(
       'Stories',
       { id: aggregateId },
-      { $set: { votes: story.votes.filter((vote) => vote !== userId) } }
+      { $set: { votes: story.votes.filter((vote: string) => vote !== userId) } }
     )
   },
 

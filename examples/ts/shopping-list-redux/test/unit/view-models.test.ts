@@ -14,7 +14,7 @@ describe('view-models', () => {
       const aggregateId = 'aggregateId'
       const name = 'name'
 
-      const state = null
+      const state: any = null
       const event: any = { aggregateId, payload: { name } }
 
       expect(
@@ -31,7 +31,7 @@ describe('view-models', () => {
       const aggregateId = 'aggregateId'
       const name = 'name'
 
-      const state = {
+      const state: any = {
         id: aggregateId,
         removed: false,
         name,
@@ -53,7 +53,7 @@ describe('view-models', () => {
       const aggregateId = 'aggregateId'
       const name = 'name'
 
-      const state = {
+      const state: any = {
         id: aggregateId,
         removed: false,
         name,
@@ -75,7 +75,7 @@ describe('view-models', () => {
       const aggregateId = 'aggregateId'
       const name = 'name'
 
-      const state = {
+      const state: any = {
         id: aggregateId,
         removed: false,
         name,

@@ -1,10 +1,15 @@
+import { AnyAction } from 'redux'
 import {
   SHOPPING_LISTS_ACQUIRED,
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_REMOVED,
 } from '../actions/optimistic-actions'
 
-const optimisticShoppingLists = (state = [], action) => {
+type ShoppingList = { id: string; name: string }
+
+const initialState: ShoppingList[] = []
+
+const optimisticShoppingLists = (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case SHOPPING_LIST_CREATED: {
       return [

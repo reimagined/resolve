@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { Splitter } from './Splitter'
 import { TimeAgo } from './TimeAgo'
 import { NavLink } from 'react-router-dom'
+import { ReactElement } from 'react'
 
 const CommentRoot = styled.div`
   margin-bottom: 1em;
@@ -36,6 +37,16 @@ const StyledUserLink = styled(NavLink)`
   font-weight: bold;
   padding-right: 3px;
 `
+type CommentProps = {
+  id: string
+  storyId: string
+  text: string
+  createdBy: any
+  createdByName: string
+  createdAt: number
+  parentId: string
+  children?: ReactElement
+}
 
 const Comment = ({
   id,
@@ -46,7 +57,7 @@ const Comment = ({
   createdAt,
   parentId,
   children = null,
-}) => {
+}: CommentProps) => {
   if (!id) {
     return null
   }
@@ -65,7 +76,7 @@ const Comment = ({
   return (
     <CommentRoot>
       <CommentInfo>
-        <Collapse onClick={toggleExpand} tabIndex="0">
+        <Collapse onClick={toggleExpand} tabIndex={0}>
           <span id="toggle-expand">{`[${expanded ? '−' : '+'}]`}</span>
         </Collapse>
         <StyledUserLink to={`/user/${createdBy}`}>

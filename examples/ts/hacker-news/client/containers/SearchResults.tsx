@@ -9,8 +9,14 @@ const NothingFound = styled.div`
   color: gray;
   text-align: center;
 `
+type SearchResultsProps = {
+  query: any
+  onNavigate: () => any
+}
 
-const SearchResults = ({ onNavigate, query }) => {
+type ResultItem = { type: string; aggregateId: string; text: string }
+
+const SearchResults = ({ onNavigate, query }: SearchResultsProps) => {
   const { request: search, selector } = useReduxReadModel(
     {
       name: 'Search',
@@ -29,7 +35,7 @@ const SearchResults = ({ onNavigate, query }) => {
   }, [search])
 
   return results.length ? (
-    results.map((item) => (
+    results.map((item: ResultItem) => (
       <SearchResultItem data={item} onNavigate={onNavigate} />
     ))
   ) : (

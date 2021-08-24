@@ -2,7 +2,15 @@ import React from 'react'
 import { Button } from 'react-bootstrap'
 import { useCommand } from '@resolve-js/react-hooks'
 
-const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
+type ShoppingListRemoverProps = {
+  shoppingListId: string
+  onRemoveSuccess: () => any
+}
+
+const ShoppingListRemover = ({
+  shoppingListId,
+  onRemoveSuccess,
+}: ShoppingListRemoverProps) => {
   const removeShoppingListCommand = useCommand(
     {
       type: 'removeShoppingList',

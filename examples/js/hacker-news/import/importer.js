@@ -1,4 +1,4 @@
-import { COMMENT_CREATED } from '@resolve-js/module-comments/lib/common/defaults'
+import { defaults as commentsModule } from '@resolve-js/module-comments'
 import { v4 as uuid } from 'uuid'
 import { EOL } from 'os'
 import {
@@ -7,6 +7,7 @@ import {
   STORY_UPVOTED,
 } from '../common/event-types'
 import api from './api'
+const { COMMENT_CREATED } = commentsModule
 const aggregateVersionsMap = new Map()
 let eventTimestamp = Date.now()
 const users = {}
