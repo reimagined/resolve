@@ -24,6 +24,8 @@ const myMiddleware = (next) =>
   // (middlewareContext, store, params, context) => { ... } // Resolver middleware handler
 ```
 
+In a middleware handler, you can modify one or several of the handler's parameters and pass the changed version down the processing chain. For example, you can modify the `command` object, add auxiliary data to the `context` object and so on. You can also intercept and modify data returned back through the chain.
+
 :::caution
 
 Keep in mind that poorly implemented middleware can brake an application because middleware intercepts the internal request and event processing chains and can potentially disrupt them.
@@ -59,4 +61,4 @@ const appConfig = {
 
 ### Example
 
-See to the [Personal Data](https://github.com/reimagined/resolve/tree/dev/examples/ts/personal-data) application for example middleware implementation.
+The [Personal Data](https://github.com/reimagined/resolve/tree/dev/examples/ts/personal-data) example application uses middleware to implement user authorization.
