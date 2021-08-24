@@ -245,27 +245,31 @@ export const buildEvents: (
 
   let eventsPromise: Promise<Array<ReadModelEvent>> =
     hotEvents == null
-      ? eventstoreAdapter
-          .loadEvents({
+      ? eventStoreOperationTimeLimited(
+          eventstoreAdapter,
+          Object.bind(null, new PassthroughError(null, true, false)),
+          getVacantTimeInMillis,
+          'loadEvents',
+          {
             eventTypes,
             eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
             limit: 100,
             cursor,
-          })
-          .then((result) => {
-            const loadDuration = Date.now() - firstEventsLoadStartTimestamp
-            const events = result != null ? result.events : []
+          }
+        ).then((result) => {
+          const loadDuration = Date.now() - firstEventsLoadStartTimestamp
+          const events = result != null ? result.events : []
 
-            if (groupMonitoring != null && events.length > 0) {
-              groupMonitoring.duration(
-                'EventLoad',
-                loadDuration / events.length,
-                events.length
-              )
-            }
+          if (groupMonitoring != null && events.length > 0) {
+            groupMonitoring.duration(
+              'EventLoad',
+              loadDuration / events.length,
+              events.length
+            )
+          }
 
-            return events
-          })
+          return events
+        })
       : Promise.resolve(hotEvents)
 
   let transactionId: string = await transactionIdPromise
@@ -740,7 +744,6 @@ const build: ExternalMethods['build'] = async (
       eventTypes,
       xaKey,
       metricData,
-      eventStoreOperationTimeLimited,
     }
 
     const buildMethod = cursor == null ? buildInit : buildEvents
