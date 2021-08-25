@@ -3,7 +3,6 @@ import {
   threadArrayToCursor,
   cursorToThreadArray,
   initThreadArray,
-  THREAD_COUNT,
 } from '../src'
 
 describe('calculating cursor from array of thread counters', () => {
