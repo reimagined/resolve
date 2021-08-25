@@ -24,7 +24,7 @@ const myMiddleware = (next) =>
   // (middlewareContext, store, params, context) => { ... } // Resolver middleware handler
 ```
 
-In a middleware handler, you can modify one or several of the handler's parameters and pass the changed version down the processing chain. For example, you can modify the `command` object, add auxiliary data to the `context` object and so on. You can also intercept and modify data returned back through the chain.
+In a middleware handler, you can modify one or several of the handler's parameters and pass their changed versions to the `next` function so they propagate down the processing chain. For example, you can modify the `command` object, add auxiliary data to the `context` object and so on. You can also intercept and modify data returned back through the chain.
 
 :::caution
 

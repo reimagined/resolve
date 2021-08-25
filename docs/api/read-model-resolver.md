@@ -30,4 +30,4 @@ The `context` argument is an object with the following fields:
 | jwt            | The JSON Web Token attached to the request.                                     |
 | secretsManager | The application's [secrets manager](../advanced-techniques.md#storing-secrets). |
 
-This object can also contain additional fields added by [middleware](middleware.md)
+This object can also contain additional fields added by [middleware](middleware.md).

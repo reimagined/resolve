@@ -29,4 +29,4 @@ The `context` argument is an object with the following fields:
 | encrypt    | The user-defined [encrypt](../advanced-techniques.md#encryption) function. |
 | decrypt    | The user-defined [decrypt](../advanced-techniques.md#encryption) function. |
 
-This object can also contain additional fields added by [middleware](middleware.md)
+This object can also contain additional fields added by [middleware](middleware.md).
