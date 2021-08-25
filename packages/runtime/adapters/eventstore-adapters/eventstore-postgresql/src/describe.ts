@@ -37,6 +37,10 @@ const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
     deletedSecretCount: +row.deletedSecretCount,
     lastEventTimestamp: +row.lastEventTimestamp,
     isFrozen: !!row.isFrozen,
+    resourceNames: {
+      eventsTableName,
+      databaseName,
+    },
   }
 }
 

@@ -14,6 +14,7 @@ import type {
   UpdateCondition,
   ObjectFixedKeys,
   OmitObject,
+  EventThreadData,
 } from '@resolve-js/readmodel-base'
 
 import type PGLib from 'pg'
@@ -211,6 +212,7 @@ export type ReadModelProcedureLedger = ReadModelLedger & {
 }
 
 export type ProcedureResult = {
+  appliedEventsThreadData: Array<EventThreadData>
   status: 'OK_ALL' | 'OK_PARTIAL' | 'CUSTOM_ERROR' | 'DEPENDENCY_ERROR'
   successEvent: Event | null
   failureEvent: Event | null
