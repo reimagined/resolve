@@ -3,8 +3,11 @@ import {
   Adapter,
   EventstoreResourceNotExistError,
 } from '@resolve-js/eventstore-base'
-import createSqliteAdapter from '@resolve-js/eventstore-lite'
+import createSqliteAdapter, {
+  SqliteAdapterConfig,
+} from '@resolve-js/eventstore-lite'
 import createPostgresqlServerlessAdapter, {
+  PostgresqlAdapterConfig as PostgresServerlessAdapterConfig,
   CloudResourceOptions,
   create as createResource,
   destroy as destroyResource,
@@ -12,6 +15,7 @@ import createPostgresqlServerlessAdapter, {
 import createPostgresqlAdapter, {
   create as createPostgresResource,
   destroy as destroyPostgresResource,
+  PostgresqlAdapterConfig,
 } from '@resolve-js/eventstore-postgresql'
 import { InputEvent } from '@resolve-js/eventstore-base'
 
@@ -173,7 +177,10 @@ export function getPostgresServerlessOptions(
 export const adapterFactory = isPostgresServerless()
   ? {
       name: '@resolve-js/eventstore-postgresql-serverless',
-      create(uniqueName: string) {
+      create(
+        uniqueName: string,
+        additionalOptions?: Partial<PostgresServerlessAdapterConfig>
+      ) {
         return async () => {
           const options = getPostgresServerlessOptions(uniqueName)
 
@@ -191,6 +198,7 @@ export const adapterFactory = isPostgresServerless()
             dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
             awsSecretStoreArn: options.awsSecretStoreAdminArn,
             region: options.region,
+            ...additionalOptions,
           })
 
           await adapters[uniqueName].init()
@@ -212,7 +220,10 @@ export const adapterFactory = isPostgresServerless()
   : isPostgres()
   ? {
       name: '@resolve-js/eventstore-postgresql',
-      create(uniqueName: string) {
+      create(
+        uniqueName: string,
+        additionalOptions?: Partial<PostgresqlAdapterConfig>
+      ) {
         return async () => {
           adapters[uniqueName] = createPostgresqlAdapter({
             databaseName: uniqueName,
@@ -221,6 +232,7 @@ export const adapterFactory = isPostgresServerless()
             port: +process.env.POSTGRES_PORT,
             user: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
+            ...additionalOptions,
           })
 
           const options = {
@@ -261,7 +273,10 @@ export const adapterFactory = isPostgresServerless()
     }
   : {
       name: '@resolve-js/eventstore-lite',
-      create(uniqueName: string) {
+      create(
+        uniqueName: string,
+        additionalOptions?: Partial<SqliteAdapterConfig>
+      ) {
         return async () => {
           adapters[uniqueName] = createSqliteAdapter({
             eventsTableName: 'events',
@@ -269,6 +284,7 @@ export const adapterFactory = isPostgresServerless()
             secretsTableName: 'secrets',
             subscribersTableName: 'subscribers',
             databaseFile: ':memory:',
+            ...additionalOptions,
           })
 
           await adapters[uniqueName].init()

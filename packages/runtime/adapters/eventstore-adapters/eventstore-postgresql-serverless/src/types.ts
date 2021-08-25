@@ -7,6 +7,8 @@ import type {
 
 import {
   AdapterConfigSchema,
+  AdapterTableNamesSchema,
+  AdapterTableNamesProps,
   UnbrandProps,
   iots as t,
   iotsTypes,
@@ -38,41 +40,38 @@ export type AdminPool = {
   coercer?: Coercer
 }
 
-export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
-  rdsDataService: RDSDataService
-  dbClusterOrInstanceArn: string
-  awsSecretStoreArn: string
-  databaseName: string
-  eventsTableName: string
-  secretsTableName: string
-  snapshotsTableName: string
-  subscribersTableName: string
-  fullJitter: FullJitter
-  coercer: Coercer
-  executeStatement: (sql: any, transactionId?: string) => Promise<any[]>
-  escapeId: EscapeFunction
-  escape: EscapeFunction
-  isTimeoutError: (error: any) => boolean
-  beginTransaction: (pool: AdapterPool) => Promise<any>
-  commitTransaction: (pool: AdapterPool, transactionId: string) => Promise<void>
-  rollbackTransaction: (
-    pool: AdapterPool,
-    transactionId: string
-  ) => Promise<void>
-}
+export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps &
+  AdapterTableNamesProps & {
+    rdsDataService: RDSDataService
+    dbClusterOrInstanceArn: string
+    awsSecretStoreArn: string
+    databaseName: string
+    fullJitter: FullJitter
+    coercer: Coercer
+    executeStatement: (sql: any, transactionId?: string) => Promise<any[]>
+    escapeId: EscapeFunction
+    escape: EscapeFunction
+    isTimeoutError: (error: any) => boolean
+    beginTransaction: (pool: AdapterPool) => Promise<any>
+    commitTransaction: (
+      pool: AdapterPool,
+      transactionId: string
+    ) => Promise<void>
+    rollbackTransaction: (
+      pool: AdapterPool,
+      transactionId: string
+    ) => Promise<void>
+  }
 
 export const PostgresqlAdapterConfigSchema = t.intersection([
   AdapterConfigSchema,
+  AdapterTableNamesSchema,
   t.type({
     dbClusterOrInstanceArn: iotsTypes.NonEmptyString,
     awsSecretStoreArn: iotsTypes.NonEmptyString,
     databaseName: iotsTypes.NonEmptyString,
   }),
   t.partial({
-    eventsTableName: iotsTypes.NonEmptyString,
-    secretsTableName: iotsTypes.NonEmptyString,
-    snapshotsTableName: iotsTypes.NonEmptyString,
-    subscribersTableName: iotsTypes.NonEmptyString,
     region: iotsTypes.NonEmptyString,
   }),
   t.UnknownRecord,

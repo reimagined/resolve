@@ -13,6 +13,19 @@ describe(`${adapterFactory.name}. Eventstore adapter init and drop`, () => {
 
   const adapter = adapters['init_and_drop_testing']
 
+  test('should be able to connect and process a request', async () => {
+    await expect(
+      adapter.loadEvents({ cursor: null, limit: 1 })
+    ).resolves.not.toThrow()
+  })
+
+  test('should process a request after setting a custom timeout', async () => {
+    adapter.establishTimeLimit(() => 30000)
+    await expect(
+      adapter.loadEvents({ cursor: null, limit: 1 })
+    ).resolves.not.toThrow()
+  })
+
   test('should throw on repeated init', async () => {
     await expect(adapter.init()).rejects.toThrow(
       EventstoreResourceAlreadyExistError
