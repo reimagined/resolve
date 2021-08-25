@@ -3,6 +3,7 @@ import {
   threadArrayToCursor,
   cursorToThreadArray,
   initThreadArray,
+  THREAD_COUNT,
 } from '../src'
 
 describe('calculating cursor from array of thread counters', () => {
@@ -35,5 +36,20 @@ describe('calculating cursor from array of thread counters', () => {
 
     const translatedArr = cursorToThreadArray(cursor)
     expect(translatedArr).toEqual(arr)
+  })
+
+  test.skip('Test performance', () => {
+    const arr: Array<Array<number>> = []
+    for (let i = 0; i < 100000; ++i) {
+      const threadArray = initThreadArray()
+      for (let j = 0; j < threadArray.length; ++j) {
+        threadArray[j] = j
+      }
+      arr.push(threadArray)
+    }
+
+    for (let i = 0; i < arr.length; ++i) {
+      threadArrayToCursor(arr[i])
+    }
   })
 })

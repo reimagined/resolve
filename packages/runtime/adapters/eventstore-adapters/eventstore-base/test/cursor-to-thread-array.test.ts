@@ -30,4 +30,16 @@ describe('calculating array of threadCounters from cursor', () => {
     expectedArr[255] = 64 ** 7
     expect(arr).toEqual(expectedArr)
   })
+
+  test.skip('Test performance', () => {
+    const arr: Array<string> = []
+    for (let i = 0; i < 100000; ++i) {
+      const cursor = 'ABCDEFGH'.repeat(THREAD_COUNT)
+      arr.push(cursor)
+    }
+
+    for (let i = 0; i < arr.length; ++i) {
+      cursorToThreadArray(arr[i])
+    }
+  })
 })
