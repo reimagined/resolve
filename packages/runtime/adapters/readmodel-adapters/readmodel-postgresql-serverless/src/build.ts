@@ -171,6 +171,7 @@ export const buildEvents: (
   const pool = { ...basePool, ...currentPool }
   const {
     PassthroughError,
+    eventStoreOperationTimeLimited,
     checkEventsContinuity,
     inlineLedgerExecuteTransaction,
     inlineLedgerExecuteStatement,
@@ -196,7 +197,14 @@ export const buildEvents: (
     let nextCursor = await eventstoreAdapter.getNextCursor(cursor, events)
     if (isContinuousMode && eventTypes != null) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      nextCursor = await eventstoreAdapter.getCursorUntilEventTypes!(
+      nextCursor = await eventStoreOperationTimeLimited(
+        eventstoreAdapter as Required<typeof eventstoreAdapter>,
+        Object.bind(
+          null,
+          new PassthroughError(pool.sharedTransactionId, true, false)
+        ),
+        getVacantTimeInMillis,
+        'getCursorUntilEventTypes',
         nextCursor,
         eventTypes
       )
@@ -237,27 +245,31 @@ export const buildEvents: (
 
   let eventsPromise: Promise<Array<ReadModelEvent>> =
     hotEvents == null
-      ? eventstoreAdapter
-          .loadEvents({
+      ? eventStoreOperationTimeLimited(
+          eventstoreAdapter,
+          Object.bind(null, new PassthroughError(null, true, false)),
+          getVacantTimeInMillis,
+          'loadEvents',
+          {
             eventTypes,
             eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
             limit: 100,
             cursor,
-          })
-          .then((result) => {
-            const loadDuration = Date.now() - firstEventsLoadStartTimestamp
-            const events = result != null ? result.events : []
+          }
+        ).then((result) => {
+          const loadDuration = Date.now() - firstEventsLoadStartTimestamp
+          const events = result != null ? result.events : []
 
-            if (groupMonitoring != null && events.length > 0) {
-              groupMonitoring.duration(
-                'EventLoad',
-                loadDuration / events.length,
-                events.length
-              )
-            }
+          if (groupMonitoring != null && events.length > 0) {
+            groupMonitoring.duration(
+              'EventLoad',
+              loadDuration / events.length,
+              events.length
+            )
+          }
 
-            return events
-          })
+          return events
+        })
       : Promise.resolve(hotEvents)
 
   let transactionId: string = await transactionIdPromise
@@ -327,12 +339,21 @@ export const buildEvents: (
     const eventsLoadStartTimestamp = Date.now()
     eventsPromise = Promise.resolve(nextCursorPromise)
       .then((nextCursor) =>
-        eventstoreAdapter.loadEvents({
-          eventTypes,
-          eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
-          limit: 1000,
-          cursor: nextCursor,
-        })
+        eventStoreOperationTimeLimited(
+          eventstoreAdapter,
+          Object.bind(
+            null,
+            new PassthroughError(pool.sharedTransactionId, true, false)
+          ),
+          getVacantTimeInMillis,
+          'loadEvents',
+          {
+            eventTypes,
+            eventsSizeLimit: MAX_RDS_DATA_API_RESPONSE_SIZE,
+            limit: 1000,
+            cursor: nextCursor,
+          }
+        )
       )
       .then((result) => {
         const loadDuration = Date.now() - eventsLoadStartTimestamp
@@ -596,6 +617,7 @@ const build: ExternalMethods['build'] = async (
 
   const {
     PassthroughError,
+    eventStoreOperationTimeLimited,
     inlineLedgerExecuteTransaction,
     generateGuid,
     schemaName,

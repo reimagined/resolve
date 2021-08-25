@@ -4,6 +4,13 @@ import { buildEvents } from '../src/build'
 // https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
 const MAX_RDS_DATA_API_RESPONSE_SIZE = 512000
 
+const eventStoreOperationTimeLimited = jest
+  .fn()
+  .mockImplementation(
+    (adapter, createError, getVacantTime, methodName, ...args) =>
+      adapter[methodName](...args)
+  )
+
 describe('buildEvents', () => {
   const readModelName = 'readModelName'
   const inputCursor = null
@@ -128,6 +135,7 @@ describe('buildEvents', () => {
         },
         {
           PassthroughError,
+          eventStoreOperationTimeLimited,
           dbClusterOrInstanceArn,
           awsSecretStoreArn,
           rdsDataService,
@@ -260,6 +268,7 @@ describe('buildEvents', () => {
         },
         {
           PassthroughError,
+          eventStoreOperationTimeLimited,
           dbClusterOrInstanceArn,
           awsSecretStoreArn,
           rdsDataService,
