@@ -7,8 +7,7 @@ import type {
   PostgresqlAdapterConfig,
 } from './types'
 import { ConnectionError } from '@resolve-js/eventstore-base'
-import { DEFAULT_QUERY_TIMEOUT, MINIMAL_QUERY_TIMEOUT } from './constants'
-import checkRequestTimeout from './check-request-timeout'
+import makePostgresClient from './make-postgres-client'
 
 const connect = async (
   pool: AdapterPoolPrimal,
@@ -40,11 +39,6 @@ const connect = async (
   secretsTableName = secretsTableName ?? 'secrets'
   subscribersTableName = subscribersTableName ?? 'subscribers'
 
-  const vacantTimeInMillis = checkRequestTimeout(pool) ?? DEFAULT_QUERY_TIMEOUT
-
-  const queryTimeout = Math.max(vacantTimeInMillis, MINIMAL_QUERY_TIMEOUT)
-  const statementTimeout = Math.max(MINIMAL_QUERY_TIMEOUT, queryTimeout - 500)
-
   const oldConnection = pool.connection
   if (oldConnection !== undefined) {
     pool.connection = undefined
@@ -54,19 +48,9 @@ const connect = async (
     })
   }
 
-  try {
-    const connection = new Postgres({
-      keepAlive: false,
-      connectionTimeoutMillis: queryTimeout,
-      idle_in_transaction_session_timeout: queryTimeout,
-      query_timeout: queryTimeout,
-      statement_timeout: statementTimeout,
-      ...connectionOptions,
-    })
+  const connection = makePostgresClient(pool, Postgres, connectionOptions)
 
-    connection.on('error', (error) => {
-      pool.connectionErrors.push(error)
-    })
+  try {
     await connection.connect()
 
     Object.assign<

@@ -29,7 +29,10 @@ export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps &
     databaseName: string
     fullJitter: FullJitter
     coercer: Coercer
-    executeStatement: (sql: string) => Promise<any[]>
+    executeStatement: (
+      sql: string,
+      useDistinctConnection?: boolean
+    ) => Promise<any[]>
     escapeId: EscapeFunction
     escape: EscapeFunction
     connection: Postgres
@@ -55,7 +58,11 @@ export type ConnectionDependencies = {
   fullJitter: FullJitter
   escapeId: EscapeFunction
   escape: EscapeFunction
-  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[]>
+  executeStatement: (
+    pool: AdapterPool,
+    sql: string,
+    useDistinctConnection?: boolean
+  ) => Promise<any[]>
   coercer: Coercer
 }
 

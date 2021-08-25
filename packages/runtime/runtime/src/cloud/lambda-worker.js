@@ -206,6 +206,10 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       await initResolve(resolve)
       log.debug('reSolve framework initialized')
 
+      resolve.eventstoreAdapter.establishTimeLimit(
+        resolve.getVacantTimeInMillis
+      )
+
       log.debug('identified event source: API gateway')
       log.verbose(
         JSON.stringify(lambdaEvent.httpMethod, null, 2),

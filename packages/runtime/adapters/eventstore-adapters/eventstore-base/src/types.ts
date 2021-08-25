@@ -256,7 +256,6 @@ export type UnconnectedPoolMethod<
 
 export const AdapterConfigSchema = t.partial({
   snapshotBucketSize: t.Int,
-  getVacantTimeInMillis: t.Function,
 })
 type AdapterConfigChecked = t.TypeOf<typeof AdapterConfigSchema>
 export type AdapterConfig = UnbrandProps<AdapterConfigChecked>
@@ -278,7 +277,6 @@ export type AdapterPoolPrimalProps = {
   isConnected: boolean
   createGetConnectPromise: () => () => Promise<void>
   getConnectPromise: () => Promise<void>
-  connectionErrors: any[]
 
   maybeThrowResourceError: CheckForResourceError
   bucketSize: number

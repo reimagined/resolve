@@ -2,34 +2,29 @@ import type { AdapterPool } from './types'
 import { RequestTimeoutError } from '@resolve-js/eventstore-base'
 import { isTimeoutError, isConnectionTerminatedError } from './errors'
 import { MAX_RECONNECTIONS } from './constants'
-import { getLog } from './get-log'
+import makePostgresClient from './make-postgres-client'
 
 const executeStatement = async (
   pool: AdapterPool,
-  sql: string
+  sql: string,
+  useDistinctConnection?: boolean
 ): Promise<any[]> => {
-  const log = getLog('executeStatement')
-
-  let reConnectionTimes = 0
+  let reconnectionTimes = 0
 
   while (true) {
-    let connection: typeof pool.connection = pool.connection
+    let connection: typeof pool.connection
+    if (useDistinctConnection) {
+      connection = makePostgresClient(
+        pool,
+        pool.Postgres,
+        pool.connectionOptions
+      )
+    } else {
+      connection = pool.connection
+    }
     try {
-      if (pool.connectionErrors.length > 0) {
-        let summaryError = pool.connectionErrors[0]
-        if (pool.connectionErrors.length > 1) {
-          summaryError = new Error(
-            pool.connectionErrors.map(({ message }) => message).join('\n')
-          )
-          summaryError.stack = pool.connectionErrors
-            .map(({ stack }) => stack)
-            .join('\n')
-        }
-        pool.connectionErrors = []
-
-        pool.getConnectPromise = pool.createGetConnectPromise()
-
-        throw summaryError
+      if (useDistinctConnection) {
+        await connection.connect()
       }
 
       const result = await connection.query(sql)
@@ -43,20 +38,24 @@ const executeStatement = async (
       if (isTimeoutError(error)) {
         throw new RequestTimeoutError(error.message)
       } else if (isConnectionTerminatedError(error)) {
-        try {
-          await connection.end()
-        } catch (error) {
-          log.error(error)
+        if (!useDistinctConnection) {
+          pool.getConnectPromise = pool.createGetConnectPromise()
         }
 
-        if (reConnectionTimes > MAX_RECONNECTIONS) {
+        if (reconnectionTimes > MAX_RECONNECTIONS) {
           throw error
         }
 
-        await pool.getConnectPromise()
-        reConnectionTimes++
+        if (!useDistinctConnection) await pool.getConnectPromise()
+        reconnectionTimes++
       } else {
         throw error
+      }
+    } finally {
+      if (useDistinctConnection) {
+        connection.end((err) => {
+          return
+        })
       }
     }
   }

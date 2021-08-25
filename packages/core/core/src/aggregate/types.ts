@@ -64,7 +64,6 @@ export type AggregateRuntime = {
   eventstore: Eventstore
   hooks?: AggregateRuntimeHooks
   commandMiddlewares?: Array<CommandMiddleware>
-  getVacantTimeInMillis?: () => number
 }
 
 export type AggregatesInteropBuilder = (

@@ -102,7 +102,7 @@ const createAdapter = <
   const config: Config = { ...options }
 
   let bucketSize = 100
-  const { snapshotBucketSize, getVacantTimeInMillis } = config
+  const { snapshotBucketSize } = config
   if (
     snapshotBucketSize !== undefined &&
     Number.isSafeInteger(snapshotBucketSize) &&
@@ -128,14 +128,12 @@ const createAdapter = <
     disposed: false,
     validateEventFilter,
     isConnected: false,
-    connectionErrors: [],
     maybeThrowResourceError,
     bucketSize,
     getNextCursor: getNextCursor.bind(null),
     counters: new Map(),
     createGetConnectPromise: createGetConnectPromise,
     getConnectPromise: createGetConnectPromise(),
-    getVacantTimeInMillis: getVacantTimeInMillis as any,
   }
 
   const emptyProps: Partial<ConnectedProps> = {}

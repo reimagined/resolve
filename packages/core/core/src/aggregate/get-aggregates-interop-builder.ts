@@ -107,8 +107,6 @@ const saveEvent = async (
       : true
 
   if (allowSave) {
-    if (runtime.getVacantTimeInMillis !== undefined)
-      eventstore.establishTimeLimit(runtime.getVacantTimeInMillis)
     const eventWithCursor = await eventstore.saveEvent(event)
 
     if (typeof postSaveEvent === 'function') {

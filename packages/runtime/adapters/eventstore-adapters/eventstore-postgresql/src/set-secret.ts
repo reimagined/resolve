@@ -26,6 +26,7 @@ const setSecret = async (
     escapeId,
     executeStatement,
     eventsTableName,
+    getVacantTimeInMillis,
   } = pool
 
   // TODO: refactor
@@ -127,7 +128,8 @@ const setSecret = async (
           ),
           ${serializedEvent},
           ${byteLength}
-        )`
+        )`,
+      getVacantTimeInMillis !== undefined
     )
 
     log.debug(`query executed successfully`)

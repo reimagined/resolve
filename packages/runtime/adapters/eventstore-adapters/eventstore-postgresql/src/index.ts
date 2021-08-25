@@ -52,7 +52,7 @@ import describe from './describe'
 import establishTimeLimit from './establish-time-limit'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
-import type { PostgresqlAdapterConfig } from './types'
+import type { PostgresqlAdapterConfig, ConnectionDependencies } from './types'
 
 import createResource from './resource/create'
 import destroyResource from './resource/destroy'

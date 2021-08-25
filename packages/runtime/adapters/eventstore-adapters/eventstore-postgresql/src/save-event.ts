@@ -27,6 +27,7 @@ const saveEvent = async (
     executeStatement,
     escapeId,
     escape,
+    getVacantTimeInMillis,
   } = pool
   checkRequestTimeout(pool)
 
@@ -109,7 +110,8 @@ const saveEvent = async (
           (SELECT "threadId" FROM "vector_id" LIMIT 1), 
           (SELECT "timestamp" FROM "insert_event" LIMIT 1),
           (SELECT "threadCounter" AS "newThreadCounter" FROM "vector_id" LIMIT 1)
-          )`
+          )`,
+      getVacantTimeInMillis !== undefined
     )) as Array<{
       threadId: EventThreadData['threadId']
       newThreadCounter: EventThreadData['threadCounter']
