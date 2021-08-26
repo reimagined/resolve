@@ -649,6 +649,7 @@ const build: ExternalMethods['build'] = async (
   const log = getLog('build')
   log.debug(`Start building`)
 
+  eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
   const { eventsWithCursors, ...inputMetricData } = buildInfo
   const metricData = {
     ...inputMetricData,
@@ -816,7 +817,13 @@ const build: ExternalMethods['build'] = async (
       buildInfo
     )
   } catch (error) {
-    if (!(error instanceof PassthroughError)) {
+    if (
+      error == null ||
+      !(
+        error instanceof PassthroughError ||
+        error.name === 'RequestTimeoutError'
+      )
+    ) {
       log.debug(`Unknown error is thrown while building`)
       throw error
     }
@@ -836,7 +843,7 @@ const build: ExternalMethods['build'] = async (
       log.debug(`PassthroughError is thrown while rollback`)
     }
 
-    if (passthroughError.isRetryable) {
+    if (passthroughError.isRetryable || error.name === 'RequestTimeoutError') {
       log.debug(`PassthroughError is retryable. Going to the next step`)
       await next()
     }
