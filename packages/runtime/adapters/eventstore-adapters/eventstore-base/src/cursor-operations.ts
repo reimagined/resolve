@@ -61,7 +61,6 @@ export const cursorToThreadArray = (cursor: Cursor): Array<number> => {
         (i + 1) * THREAD_COUNTER_BYTE_LENGTH
       )
       .toString('hex')
-    checkThreadCounterHexString(hexString)
     threadCounters[i] = hexStringToThreadCounter(hexString)
   }
   return threadCounters

@@ -56,6 +56,7 @@ describe('Cloud entry', () => {
       dispose: jest.fn(),
       import: jest.fn(),
       export: jest.fn(),
+      establishTimeLimit: jest.fn(),
     }
 
     snapshotAdapter = {
