@@ -4,10 +4,12 @@ import type {
   SavedEvent,
   EventWithCursor as EventStoreEventWithCursor,
   checkEventsContinuity,
+  EventThreadData as EventStoreEventThreadData,
 } from '@resolve-js/eventstore-base'
 
 export type CheckEventsContinuityMethod = typeof checkEventsContinuity
 export type EventWithCursor = EventStoreEventWithCursor
+export type EventThreadData = EventStoreEventThreadData
 
 export type JsonPrimitive = string | number | boolean | null
 export type JsonMap = {
