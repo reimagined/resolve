@@ -3,9 +3,11 @@ import type {
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
+  AdapterTableNamesProps,
 } from '@resolve-js/eventstore-base'
 import {
   AdapterConfigSchema,
+  AdapterTableNamesSchema,
   UnbrandProps,
   iots as t,
   iotsTypes,
@@ -18,26 +20,20 @@ export type MemoryStore = {
   drop: () => void
 }
 
-export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
-  database: Database
-  databaseFile: string
-  eventsTableName: string
-  snapshotsTableName: string
-  secretsTableName: string
-  subscribersTableName: string
-  escapeId: (source: string) => string
-  escape: (source: string) => string
-  memoryStore?: MemoryStore
-}
+export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps &
+  AdapterTableNamesProps & {
+    database: Database
+    databaseFile: string
+    escapeId: (source: string) => string
+    escape: (source: string) => string
+    memoryStore?: MemoryStore
+  }
 
 export const SqliteAdapterConfigSchema = t.intersection([
   AdapterConfigSchema,
+  AdapterTableNamesSchema,
   t.partial({
     databaseFile: iotsTypes.NonEmptyString,
-    secretsTableName: iotsTypes.NonEmptyString,
-    eventsTableName: iotsTypes.NonEmptyString,
-    snapshotsTableName: iotsTypes.NonEmptyString,
-    subscribersTableName: iotsTypes.NonEmptyString,
   }),
 ])
 

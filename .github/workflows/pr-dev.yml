@@ -46,11 +46,17 @@ jobs:
             packages/**/types
             packages/**/*.tsbuildinfo
             !packages/**/node_modules/**
+            !packages/**/src/es
+            !packages/**/src/lib
+            !packages/**/src/types
             internal/**/es
             internal/**/lib
             internal/**/types
             internal/**/*.tsbuildinfo
             !internal/**/node_modules/**
+            !internal/**/src/es
+            !internal/**/src/lib
+            !internal/**/src/types
             .packages/**
           key: ${{ runner.os }}-build-${{ github.run_id }}
           restore-keys: ${{ runner.os }}-build-
@@ -128,11 +134,17 @@ jobs:
             packages/**/types
             packages/**/*.tsbuildinfo
             !packages/**/node_modules/**
+            !packages/**/src/es
+            !packages/**/src/lib
+            !packages/**/src/types
             internal/**/es
             internal/**/lib
             internal/**/types
             internal/**/*.tsbuildinfo
             !internal/**/node_modules/**
+            !internal/**/src/es
+            !internal/**/src/lib
+            !internal/**/src/types
             .packages/**
           key: ${{ runner.os }}-build-${{ github.run_id }}
 
@@ -192,11 +204,17 @@ jobs:
             packages/**/types
             packages/**/*.tsbuildinfo
             !packages/**/node_modules/**
+            !packages/**/src/es
+            !packages/**/src/lib
+            !packages/**/src/types
             internal/**/es
             internal/**/lib
             internal/**/types
             internal/**/*.tsbuildinfo
             !internal/**/node_modules/**
+            !internal/**/src/es
+            !internal/**/src/lib
+            !internal/**/src/types
             .packages/**
           key: ${{ runner.os }}-build-${{ github.run_id }}
 
@@ -250,11 +268,17 @@ jobs:
             packages/**/types
             packages/**/*.tsbuildinfo
             !packages/**/node_modules/**
+            !packages/**/src/es
+            !packages/**/src/lib
+            !packages/**/src/types
             internal/**/es
             internal/**/lib
             internal/**/types
             internal/**/*.tsbuildinfo
             !internal/**/node_modules/**
+            !internal/**/src/es
+            !internal/**/src/lib
+            !internal/**/src/types
             .packages/**
           key: ${{ runner.os }}-build-${{ github.run_id }}
 
@@ -309,11 +333,17 @@ jobs:
             packages/**/types
             packages/**/*.tsbuildinfo
             !packages/**/node_modules/**
+            !packages/**/src/es
+            !packages/**/src/lib
+            !packages/**/src/types
             internal/**/es
             internal/**/lib
             internal/**/types
             internal/**/*.tsbuildinfo
             !internal/**/node_modules/**
+            !internal/**/src/es
+            !internal/**/src/lib
+            !internal/**/src/types
             .packages/**
           key: ${{ runner.os }}-build-${{ github.run_id }}
 

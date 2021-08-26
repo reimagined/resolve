@@ -1,10 +1,11 @@
-import {
+import type {
   AdapterPoolConnected,
   AdapterPoolConnectedProps,
   AdapterPoolPossiblyUnconnected,
   PoolMethod,
   Adapter,
 } from './types'
+import { getLog } from './get-log'
 
 const wrapDispose = <ConnectedProps extends AdapterPoolConnectedProps>(
   pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
@@ -14,7 +15,10 @@ const wrapDispose = <ConnectedProps extends AdapterPoolConnectedProps>(
     throw new Error('Adapter has been already disposed')
   }
   pool.disposed = true
-  if (!pool.isInitialized) {
+
+  const log = getLog('dispose')
+  if (!pool.isConnected) {
+    log.debug('event store is not yet connected, no need for disconnecting')
     return
   }
 

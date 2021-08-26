@@ -4,6 +4,8 @@ import type {
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
   AdapterConfig,
+  AdapterTableNames,
+  AdapterTableNamesProps,
 } from '@resolve-js/eventstore-base'
 
 export type Coercer = (
@@ -20,35 +22,32 @@ export type Coercer = (
 type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
-export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
-  Postgres: typeof Postgres
-  connectionOptions: any
-  databaseName: string
-  eventsTableName: string
-  snapshotsTableName: string
-  subscribersTableName: string
-  secretsTableName: string
-  fullJitter: FullJitter
-  coercer: Coercer
-  executeStatement: (sql: string) => Promise<any[]>
-  escapeId: EscapeFunction
-  escape: EscapeFunction
-  connection: Postgres
-}
+export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps &
+  AdapterTableNamesProps & {
+    Postgres: typeof Postgres
+    connectionOptions: any
+    databaseName: string
+    fullJitter: FullJitter
+    coercer: Coercer
+    executeStatement: (
+      sql: string,
+      useDistinctConnection?: boolean
+    ) => Promise<any[]>
+    escapeId: EscapeFunction
+    escape: EscapeFunction
+    connection: Postgres
+  }
 
-export type PostgresqlAdapterConfig = AdapterConfig & {
-  user?: string
-  database: string
-  port?: number
-  host?: string
-  password?: string
-  databaseName?: string
-  eventsTableName?: string
-  snapshotsTableName?: string
-  subscribersTableName?: string
-  secretsTableName?: string
-  [key: string]: any
-}
+export type PostgresqlAdapterConfig = AdapterConfig &
+  AdapterTableNames & {
+    user?: string
+    database: string
+    port?: number
+    host?: string
+    password?: string
+    databaseName?: string
+    [key: string]: any
+  }
 
 export type AdapterPool = AdapterPoolConnected<PostgresqlAdapterPoolConnectedProps>
 
@@ -59,7 +58,11 @@ export type ConnectionDependencies = {
   fullJitter: FullJitter
   escapeId: EscapeFunction
   escape: EscapeFunction
-  executeStatement: (pool: AdapterPool, sql: string) => Promise<any[]>
+  executeStatement: (
+    pool: AdapterPool,
+    sql: string,
+    useDistinctConnection?: boolean
+  ) => Promise<any[]>
   coercer: Coercer
 }
 

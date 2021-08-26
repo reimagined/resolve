@@ -6,6 +6,8 @@ import type {
   ReadModelProcedureLedger,
   ProcedureResult,
 } from './types'
+import getLog from './get-log'
+import { LeveledDebugger } from '@resolve-js/debug-levels'
 
 const serializeError = (error: Error & { code: number }) =>
   error != null
@@ -25,6 +27,7 @@ const buildInit: (
     inputCursor: ReadModelCursor
     readModelLedger: ReadModelProcedureLedger
     xaKey: string
+    log: LeveledDebugger
   },
   ...args: Parameters<ExternalMethods['build']>
 ) => ReturnType<ExternalMethods['build']> = async (
@@ -45,9 +48,12 @@ const buildInit: (
     databaseNameAsId,
     ledgerTableNameAsId,
     xaKey,
+    log,
   } = pool
 
   const rootSavePointId = generateGuid(xaKey, 'ROOT')
+
+  log.debug(`Begin init transaction`)
 
   await inlineLedgerRunQuery(
     `BEGIN TRANSACTION;
@@ -66,13 +72,19 @@ const buildInit: (
     true
   )
 
+  log.debug(`Building of cursor`)
+
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
+
   try {
     const handler = await modelInterop.acquireInitHandler(store)
     if (handler != null) {
+      log.debug(`Running of init handler`)
       await handler()
     }
     // TODO Init via plv8
+
+    log.debug(`Commit transaction with SuccessEvent`)
 
     await inlineLedgerRunQuery(
       `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
@@ -89,6 +101,8 @@ const buildInit: (
     if (error instanceof PassthroughError) {
       throw error
     }
+
+    log.debug(`Init handler execution failed. Commit transaction with error`)
 
     await inlineLedgerRunQuery(
       `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
@@ -116,6 +130,7 @@ const buildEvents: (
     readModelLedger: ReadModelProcedureLedger
     xaKey: string
     metricData: any
+    log: LeveledDebugger
   },
   ...args: Parameters<ExternalMethods['build']>
 ) => ReturnType<ExternalMethods['build']> = async (
@@ -133,6 +148,7 @@ const buildEvents: (
   const {
     readModelLedger: { IsProcedural: inputIsProcedural },
     PassthroughError,
+    eventStoreOperationTimeLimited,
     checkEventsContinuity,
     inlineLedgerRunQuery,
     generateGuid,
@@ -145,6 +161,7 @@ const buildEvents: (
     eventTypes,
     escapeId,
     xaKey,
+    log,
   } = pool
   const { eventsWithCursors } = buildInfo
   let isProcedural = inputIsProcedural
@@ -157,8 +174,11 @@ const buildEvents: (
   ) => {
     let nextCursor = await eventstoreAdapter.getNextCursor(cursor, events)
     if (isContinuousMode && eventTypes != null) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      nextCursor = await eventstoreAdapter.getCursorUntilEventTypes!(
+      nextCursor = await eventStoreOperationTimeLimited(
+        eventstoreAdapter as Required<typeof eventstoreAdapter>,
+        Object.bind(null, new PassthroughError(true)),
+        getVacantTimeInMillis,
+        'getCursorUntilEventTypes',
         nextCursor,
         eventTypes
       )
@@ -191,33 +211,46 @@ const buildEvents: (
       ? eventsWithCursors.map(({ event }) => event)
       : null
 
+  if (hotEvents == null) {
+    log.debug(`Start loading events`)
+  } else {
+    log.debug(`Getting of hot events`)
+  }
+
   let eventsPromise =
     hotEvents == null
-      ? eventstoreAdapter
-          .loadEvents({
+      ? eventStoreOperationTimeLimited(
+          eventstoreAdapter,
+          Object.bind(null, new PassthroughError(true)),
+          getVacantTimeInMillis,
+          'loadEvents',
+          {
             eventTypes,
             eventsSizeLimit: 6553600,
             limit: 100,
             cursor,
-          })
-          .then((result) => {
-            const loadDuration = Date.now() - firstEventsLoadStartTimestamp
+          }
+        ).then((result) => {
+          log.debug(`Events loaded`)
+          const loadDuration = Date.now() - firstEventsLoadStartTimestamp
 
-            const events = result != null ? result.events : []
+          const events = result != null ? result.events : []
 
-            if (groupMonitoring != null && events.length > 0) {
-              groupMonitoring.duration(
-                'EventLoad',
-                loadDuration / events.length,
-                events.length
-              )
-            }
+          if (groupMonitoring != null && events.length > 0) {
+            groupMonitoring.duration(
+              'EventLoad',
+              loadDuration / events.length,
+              events.length
+            )
+          }
 
-            return events
-          })
+          return events
+        })
       : Promise.resolve(hotEvents)
 
   let rootSavePointId = generateGuid(xaKey, 'ROOT')
+
+  log.debug(`Begin events apply transaction`)
 
   await inlineLedgerRunQuery(
     `BEGIN TRANSACTION;
@@ -242,6 +275,9 @@ const buildEvents: (
     if (events.length === 0) {
       throw new PassthroughError(false)
     }
+
+    log.debug(`Start optimistic events loading`)
+
     let nextCursorPromise: Promise<ReadModelCursor> = getContinuousLatestCursor(
       cursor,
       events,
@@ -251,14 +287,21 @@ const buildEvents: (
     const eventsLoadStartTimestamp = Date.now()
     eventsPromise = Promise.resolve(nextCursorPromise)
       .then((nextCursor) =>
-        eventstoreAdapter.loadEvents({
-          eventTypes,
-          eventsSizeLimit: 65536000,
-          limit: 1000,
-          cursor: nextCursor,
-        })
+        eventStoreOperationTimeLimited(
+          eventstoreAdapter,
+          Object.bind(null, new PassthroughError(true)),
+          getVacantTimeInMillis,
+          'loadEvents',
+          {
+            eventTypes,
+            eventsSizeLimit: 65536000,
+            limit: 1000,
+            cursor: nextCursor,
+          }
+        )
       )
       .then((result) => {
+        log.debug(`Events loaded optimistically`)
         const loadDuration = Date.now() - eventsLoadStartTimestamp
 
         const events = result != null ? result.events : []
@@ -278,6 +321,7 @@ const buildEvents: (
     let regularWorkflow = true
 
     if (isProcedural) {
+      log.debug(`Running procedural events applying`)
       try {
         let procedureResult: Array<{ Result: ProcedureResult }> | null = null
         try {
@@ -347,9 +391,11 @@ const buildEvents: (
 
         await inlineLedgerRunQuery(`ROLLBACK TO SAVEPOINT ${rootSavePointId};`)
       }
+      log.debug(`Finish running procedural events applying`)
     }
 
     if (regularWorkflow) {
+      log.debug(`Running regular workflow events applying`)
       try {
         for (const event of events) {
           const savePointId = generateGuid(xaKey, `${appliedEventsCount}`)
@@ -407,6 +453,7 @@ const buildEvents: (
         }
       } catch (originalError) {
         if (originalError instanceof PassthroughError) {
+          log.debug(`Running failed with PassthroughError`)
           throw originalError
         }
 
@@ -425,9 +472,11 @@ const buildEvents: (
         `
         )
       }
+      log.debug(`Finish running regular workflow events applying`)
     }
     const nextCursor = await nextCursorPromise
     if (lastError == null) {
+      log.debug(`Saving success event into inline ledger`)
       await inlineLedgerRunQuery(
         `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId} SET 
          ${
@@ -444,6 +493,7 @@ const buildEvents: (
         `
       )
     } else {
+      log.debug(`Saving error and failed event into inline ledger`)
       await inlineLedgerRunQuery(
         `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
          SET "Errors" = jsonb_insert(
@@ -470,6 +520,8 @@ const buildEvents: (
         `
       )
     }
+
+    log.debug(`Inline ledger updated after events applied`)
 
     if (groupMonitoring != null && eventCount > 0) {
       const applyDuration = Date.now() - eventsApplyStartTimestamp
@@ -505,6 +557,7 @@ const buildEvents: (
     }
 
     if (isBuildSuccess && localContinue) {
+      log.debug(`Start transaction for the next step events applying`)
       rootSavePointId = generateGuid(xaKey, 'ROOT')
 
       await inlineLedgerRunQuery(
@@ -527,9 +580,11 @@ const buildEvents: (
       events = await eventsPromise
     } else {
       if (isBuildSuccess) {
+        log.debug(`Going to the next step of building`)
         await next()
       }
 
+      log.debug(`Exit from events building`)
       throw new PassthroughError(false)
     }
   }
@@ -545,6 +600,9 @@ const build: ExternalMethods['build'] = async (
   getVacantTimeInMillis,
   buildInfo
 ) => {
+  const log = getLog('build')
+  log.debug(`Start building`)
+
   const { eventsWithCursors, ...inputMetricData } = buildInfo
   const metricData = {
     ...inputMetricData,
@@ -617,6 +675,8 @@ const build: ExternalMethods['build'] = async (
       `${Date.now()}${firstRandom}${lastRandom}${process.pid}`
     )
 
+    log.debug(`Running inline ledger query`)
+
     const rows = (await inlineLedgerRunQuery(
       `WITH "MaybeAcquireLock" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
@@ -659,6 +719,7 @@ const build: ExternalMethods['build'] = async (
 
     let readModelLedger = rows.length === 1 ? rows[0] : null
     if (readModelLedger == null || readModelLedger.Errors != null) {
+      log.debug(`Ledger is not locked. Throwing PassthroughError`)
       throw new PassthroughError(false)
     }
 
@@ -684,9 +745,19 @@ const build: ExternalMethods['build'] = async (
       readModelLedger,
       metricData,
       xaKey,
+      log,
     }
 
-    const buildMethod = cursor == null ? buildInit : buildEvents
+    let buildMethod: typeof buildEvents
+
+    if (cursor == null) {
+      log.debug(`Ledger is locked. Running build init`)
+      buildMethod = buildInit
+    } else {
+      log.debug(`Ledger is locked. Running build events`)
+      buildMethod = buildEvents
+    }
+
     await buildMethod(
       currentPool,
       basePool,
@@ -700,23 +771,31 @@ const build: ExternalMethods['build'] = async (
     )
   } catch (error) {
     if (!(error instanceof PassthroughError)) {
+      log.debug(`Unknown error is thrown while building`)
       throw error
     }
 
+    log.debug(`PassthroughError is thrown while building`)
     const passthroughError = error as PassthroughErrorInstance
 
     try {
+      log.debug(`Running rollback after error`)
       await inlineLedgerRunQuery(`ROLLBACK`)
+      log.debug(`Transaction is rolled back`)
     } catch (err) {
       if (!(err instanceof PassthroughError)) {
+        log.debug(`Unknown error is thrown while rollback`)
         throw err
       }
+      log.debug(`PassthroughError is thrown while rollback`)
     }
 
     if (passthroughError.isRetryable) {
+      log.debug(`PassthroughError is retryable. Going to the next step`)
       await next()
     }
   } finally {
+    log.debug(`Building is finished`)
     basePool.activePassthrough = false
 
     for (const innerMonitoring of [monitoring, groupMonitoring]) {

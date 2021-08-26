@@ -363,6 +363,7 @@ module.exports = {
           'readdir',
           'readmodel',
           'readpolicy',
+          'reconnection',
           'resetter',
           'rerender',
           'realtime',

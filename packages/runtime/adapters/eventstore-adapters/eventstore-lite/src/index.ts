@@ -47,7 +47,7 @@ import getCursorUntilEventTypes from './get-cursor-until-event-types'
 import describe from './describe'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
-import type { ConnectionDependencies, SqliteAdapterConfig } from './types'
+import type { SqliteAdapterConfig } from './types'
 
 const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
   return createAdapter(
@@ -94,7 +94,7 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       getCursorUntilEventTypes,
       describe,
     },
-    { sqlite, tmp, os, fs } as ConnectionDependencies,
+    { sqlite, tmp, os, fs },
     options
   )
 }

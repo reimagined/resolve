@@ -30,6 +30,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
 
     const description = await adapter.describe()
     expect(description.eventCount).toEqual(0)
+
+    const lastEvent = await adapter.getLatestEvent({})
+    expect(lastEvent).toBeNull()
   })
 
   test('should save events', async () => {
@@ -53,6 +56,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
     expect(events[events.length - 1].timestamp).toEqual(
       description.lastEventTimestamp
     )
+
+    const lastEvent = await adapter.getLatestEvent({})
+    expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
   })
 
   test('should load events by type', async () => {
@@ -71,6 +77,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
       cursor: null,
     })
     expect(events).toHaveLength(0)
+
+    const lastEvent = await adapter.getLatestEvent({ eventTypes: ['UNKNOWN'] })
+    expect(lastEvent).toBeNull()
   })
 
   test('should load 0 events by empty type list and return the initial cursor', async () => {
@@ -96,6 +105,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
     })
     expect(shiftedEvents).toHaveLength(0)
     expect(newCursor).toEqual(shiftedCursor)
+
+    const lastEvent = await adapter.getLatestEvent({ eventTypes: [] })
+    expect(lastEvent).toBeNull()
   })
 
   test('should load events by aggregateId', async () => {
@@ -114,6 +126,11 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
       cursor: null,
     })
     expect(events).toHaveLength(0)
+
+    const lastEvent = await adapter.getLatestEvent({
+      aggregateIds: ['unknownId'],
+    })
+    expect(lastEvent).toBeNull()
   })
 
   test('should load 0 events by empty aggregateId list and return the initial cursor', async () => {
@@ -139,6 +156,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
     })
     expect(shiftedEvents).toHaveLength(0)
     expect(newCursor).toEqual(shiftedCursor)
+
+    const lastEvent = await adapter.getLatestEvent({ aggregateIds: [] })
+    expect(lastEvent).toBeNull()
   })
 
   test('should be able to load events continuously', async () => {
@@ -205,6 +225,11 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
         expect(event.payload.eventIndex % eventTypesCount).toEqual(2)
       }
     }
+
+    const lastEvent = await adapter.getLatestEvent({
+      eventTypes: ['EVENT_1', 'EVENT_3'],
+    })
+    expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
   })
 
   test('should load events by distinct aggregate ids', async () => {
@@ -226,6 +251,11 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
         expect(event.payload.eventIndex % eventTypesCount).toEqual(3)
       }
     }
+
+    const lastEvent = await adapter.getLatestEvent({
+      aggregateIds: ['aggregateId_2', 'aggregateId_4'],
+    })
+    expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
   })
 
   test('should load events by combination of event type and aggregate id', async () => {
@@ -243,6 +273,12 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
       expect(event.type).toEqual('EVENT_2')
       expect(event.aggregateId).toEqual('aggregateId_3')
     }
+
+    const lastEvent = await adapter.getLatestEvent({
+      aggregateIds: ['aggregateId_3'],
+      eventTypes: ['EVENT_2'],
+    })
+    expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
   })
 
   test('should load events by combination of distinct event types and aggregate ids', async () => {
@@ -263,6 +299,12 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
           event.aggregateId === 'aggregateId_5'
       ).toBeTruthy()
     }
+
+    const lastEvent = await adapter.getLatestEvent({
+      aggregateIds: ['aggregateId_1', 'aggregateId_5'],
+      eventTypes: ['EVENT_1', 'EVENT_4'],
+    })
+    expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
   })
 
   test('should load events by timestamp', async () => {
