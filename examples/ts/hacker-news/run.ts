@@ -124,7 +124,7 @@ void (async () => {
           dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
-        })
+        }, adjustWebpackConfigs)
 
         break
       }
