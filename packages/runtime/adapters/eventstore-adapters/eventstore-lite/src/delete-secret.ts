@@ -20,7 +20,7 @@ const deleteSecret = async (
   log.verbose(`secretsTableName: ${secretsTableName}`)
 
   const secretsTableNameAsId = escapeId(secretsTableName)
-  const currentThreadId = Math.floor(Math.random() * THREAD_COUNT)
+  const currentThreadId = Date.now() % THREAD_COUNT
   const eventsTableNameAsId = escapeId(eventsTableName)
   const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
 

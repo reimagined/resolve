@@ -17,7 +17,7 @@ const saveEvent = async (
 ): Promise<EventWithCursor> => {
   const { eventsTableName, database, escapeId, escape } = pool
   try {
-    const currentThreadId = Math.floor(Math.random() * THREAD_COUNT)
+    const currentThreadId = Date.now() % THREAD_COUNT
     const eventsTableNameAsId = escapeId(eventsTableName)
     const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
     const serializedPayload =

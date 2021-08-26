@@ -207,11 +207,6 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
       const { event: savedEvent } = await adapter.saveEvent(event)
       savedEvents.push(savedEvent)
     }
-    // eslint-disable-next-line no-console
-    console.log(
-      'timestamps:',
-      savedEvents.map((event) => event.timestamp)
-    )
   })
 
   test('should load events by distinct event types', async () => {
