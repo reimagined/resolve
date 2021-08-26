@@ -1,6 +1,6 @@
 ---
 id: manage-application
-title: Manage a ReSolve Application
+title: Manage an Application
 description: Use the module-admin CLI tool to manage a reSolve application's sagas and read models.
 ---
 
