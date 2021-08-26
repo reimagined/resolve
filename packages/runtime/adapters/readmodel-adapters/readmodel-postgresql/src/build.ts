@@ -174,10 +174,11 @@ const buildEvents: (
   ) => {
     let nextCursor = await eventstoreAdapter.getNextCursor(cursor, events)
     if (isContinuousMode && eventTypes != null) {
-      nextCursor = await eventstoreAdapter.getCursorUntilEventTypes?.(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      nextCursor = await eventstoreAdapter.getCursorUntilEventTypes!(
         nextCursor,
         eventTypes
-      )!
+      )
     }
     return nextCursor
   }
