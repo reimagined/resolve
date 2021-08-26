@@ -1,10 +1,10 @@
 ---
-id: read-model-projection
-title: Read Model Projection
-description: Projection functions build a Read Models state based on incoming events.
+id: read-model-event-handler
+title: Read Model Event Handler
+description: Event handlers build a Read Models state based on incoming events.
 ---
 
-A read model projection function has the following structure:
+A read model event handler function has the following structure:
 
 ```js
 async (store, event, context) => {
@@ -12,7 +12,7 @@ async (store, event, context) => {
 }
 ```
 
-A projection implementation receives the following arguments:
+An event handler implementation receives the following arguments:
 
 | Argument Name | Description                                                                                           |
 | ------------- | ----------------------------------------------------------------------------------------------------- |

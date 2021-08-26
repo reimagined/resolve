@@ -36,7 +36,7 @@
         "label": "API",
         "items": [
           "api/command-handler",
-          "api/read-model-projection",
+          "api/read-model-event-handler",
           "api/read-model-resolver",
           "api/read-model-connector",
           "api/read-model-store",

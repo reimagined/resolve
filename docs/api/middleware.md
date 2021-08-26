@@ -64,7 +64,7 @@ The middleware handler function receives the following arguments:
 | middlewareContext | Contains data that describes the currently processed operation.                                       |
 | store             | Exposes [API](read-model-store.md) used to communicate with the read model's persistent data storage. |
 | event             | The incoming event object.                                                                            |
-| context           | The read model projection [context](read-model-projection.md#context) object.                         |
+| context           | The read model projection [context](read-model-event-handler.md#context) object.                      |
 
 ### middlewareContext
 
