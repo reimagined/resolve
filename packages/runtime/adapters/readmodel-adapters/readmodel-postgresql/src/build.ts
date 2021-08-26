@@ -234,9 +234,10 @@ const buildEvents: (
   const eventstoreLocalTableNamePromise = (async () => {
     let resourceNames = null
     try {
-      void ({ resourceNames } = !isContinuousMode
-        ? await eventstoreAdapter.describe()
-        : { resourceNames: null })
+      void ({ resourceNames } =
+        hotEvents == null
+          ? await eventstoreAdapter.describe()
+          : { resourceNames: null })
     } catch (err) {}
 
     if (
@@ -265,7 +266,7 @@ const buildEvents: (
               JSON.stringify(immediateLastEvent.payload)
             )}
           )
-          SELECT 1/Count("CTE"."*") AS "NonZero" FROM "CTE"
+          SELECT 1/Count("CTE".*) AS "NonZero" FROM "CTE"
         `)
 
       return resourceNames.eventsTableName
@@ -377,6 +378,9 @@ const buildEvents: (
         }
       } catch (err) {
         isProcedural = false
+        if (err instanceof PassthroughError) {
+          throw err
+        }
 
         // eslint-disable-next-line no-console
         console.warn(

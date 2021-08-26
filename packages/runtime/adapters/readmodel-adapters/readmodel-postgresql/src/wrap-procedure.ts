@@ -152,13 +152,15 @@ const cursorStrToHex = (cursor) => {
   ) {
     throw new Error('Invalid cursor')
   }
-  const base64Mapping = [
-    // eslint-disable-next-line spellcheck/spell-checker
-    ...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
-  ]
+
+  // eslint-disable-next-line spellcheck/spell-checker
+  const base64Mapping = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split(
+    ''
+  )
+
   let result = []
   for (let i = 0; i < cursor.length / 8; i++) {
-    let chunk = [...cursor.slice(i * 8, i * 8 + 8)]
+    let chunk = cursor.slice(i * 8, i * 8 + 8).split('')
     let bin = chunk
       .map((x) => base64Mapping.indexOf(x).toString(2).padStart(6, 0))
       .join('')
