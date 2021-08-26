@@ -181,46 +181,10 @@ export type EventStoreAdapterAsyncFunctionKeysDistribute<
 
 export type EventStoreAdapterAsyncFunctionKeys = EventStoreAdapterAsyncFunctionKeysDistribute<EventStoreAdapterKeys>
 
-export type EventStoreOperationTimeLimitedMethodArguments<
-  E extends EventStoreAdapter,
-  T extends EventStoreAdapterAsyncFunctionKeys
-> = [
-  eventstoreAdapter: E,
-  timeoutErrorProvider: () => Error,
-  getVacantTimeInMillis: MethodGetRemainingTime,
-  methodName: T,
-  ...args: IfEquals<
-    E[T],
-    Exclude<E[T], undefined>,
-    Parameters<Exclude<E[T], undefined>>,
-    never
-  >
-]
-
-export type EventStoreOperationTimeLimitedMethodReturnType<
-  E extends EventStoreAdapter,
-  T extends EventStoreAdapterAsyncFunctionKeys
-> = UnPromise<
-  IfEquals<
-    E[T],
-    Exclude<E[T], undefined>,
-    ReturnType<Exclude<E[T], undefined>>,
-    never
-  >
->
-
-export type EventStoreOperationTimeLimitedMethod = <
-  E extends EventStoreAdapter,
-  T extends EventStoreAdapterAsyncFunctionKeys
->(
-  ...args: EventStoreOperationTimeLimitedMethodArguments<E, T>
-) => Promise<EventStoreOperationTimeLimitedMethodReturnType<E, T>>
-
 export type CommonAdapterPool = {
   monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
   splitNestedPath: SplitNestedPathMethod
-  eventStoreOperationTimeLimited: EventStoreOperationTimeLimitedMethod
   checkEventsContinuity: CheckEventsContinuityMethod
 }
 
@@ -530,7 +494,6 @@ export type MakeSplitNestedPathMethod = (
 ) => SplitNestedPathMethod
 
 export type BaseAdapterImports = {
-  eventStoreOperationTimeLimited: EventStoreOperationTimeLimitedMethod
   splitNestedPath: SplitNestedPathMethod
   checkEventsContinuity: CheckEventsContinuityMethod
   withPerformanceTracer: WithPerformanceTracerMethod
