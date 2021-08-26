@@ -235,7 +235,7 @@ const buildEvents: (
     let resourceNames = null
     try {
       void ({ resourceNames } =
-        hotEvents == null
+        hotEvents == null && !!process.env.EXPERIMENTAL_INLINE_DB_EVENT_LOAD
           ? await eventstoreAdapter.describe()
           : { resourceNames: null })
     } catch (err) {}
