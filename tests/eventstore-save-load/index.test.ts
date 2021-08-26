@@ -70,6 +70,13 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
       eventCursorPairs.push(saveResult)
     }
     expect(eventCursorPairs).toHaveLength(checkCount)
+    eventCursorPairs.sort((a, b) => {
+      return (
+        Math.sign(a.event.timestamp - b.event.timestamp) * 100 +
+        Math.sign(a.event.threadCounter - b.event.threadCounter) * 10 +
+        Math.sign(a.event.threadId - b.event.threadId)
+      )
+    })
 
     let currentCursor = null
     let loadedEvents: SavedEvent[] = []

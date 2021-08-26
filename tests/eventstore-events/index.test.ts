@@ -207,6 +207,13 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
       const { event: savedEvent } = await adapter.saveEvent(event)
       savedEvents.push(savedEvent)
     }
+    savedEvents.sort((a, b) => {
+      return (
+        Math.sign(a.timestamp - b.timestamp) * 100 +
+        Math.sign(a.threadCounter - b.threadCounter) * 10 +
+        Math.sign(a.threadId - b.threadId)
+      )
+    })
   })
 
   test('should load events by distinct event types', async () => {
