@@ -13,7 +13,6 @@
           "adapters",
           "api-handlers",
           "frontend",
-          "manage-application",
           "app-structure"
         ]
       },
@@ -21,6 +20,7 @@
         "type": "category",
         "label": "Guides",
         "items": [
+          "manage-application",
           "modules",
           "authentication-and-authorization",
           "encryption",
@@ -31,7 +31,6 @@
           "code-splitting",
           "debugging",
           "testing",
-          "application-configuration",
           "contributing"
         ]
       },
@@ -59,6 +58,7 @@
           }
         ]
       },
+      "application-configuration",
       "faq",
       "troubleshooting"    
     ]
