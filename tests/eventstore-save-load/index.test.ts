@@ -70,6 +70,10 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
       eventCursorPairs.push(saveResult)
     }
     expect(eventCursorPairs).toHaveLength(checkCount)
+    console.log(
+      'timestamps:',
+      eventCursorPairs.map((pair) => pair.event.timestamp)
+    )
 
     let currentCursor = null
     let loadedEvents: SavedEvent[] = []
