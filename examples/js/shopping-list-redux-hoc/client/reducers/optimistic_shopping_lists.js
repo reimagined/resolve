@@ -3,7 +3,11 @@ import {
   OPTIMISTIC_REMOVE_SHOPPING_LIST,
   OPTIMISTIC_SYNC,
 } from '../actions/optimistic_actions'
-export const optimisticShoppingListsReducer = (state = [], action) => {
+const initialState = []
+export const optimisticShoppingListsReducer = (
+  state = initialState,
+  action
+) => {
   switch (action.type) {
     case OPTIMISTIC_CREATE_SHOPPING_LIST: {
       return [

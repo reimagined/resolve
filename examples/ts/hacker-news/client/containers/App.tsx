@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink, Link as NormalLink } from 'react-router-dom'
 import styled from 'styled-components'
-import { renderRoutes } from 'react-router-config'
+import { renderRoutes, RouteConfigComponentProps } from 'react-router-config'
 
 import { Splitter } from '../components/Splitter'
 import { Header } from './Header'
@@ -72,7 +72,7 @@ const FooterLink = styled.a`
   text-decoration: underline;
 `
 
-const App = ({ route }) => (
+const App = ({ route }: RouteConfigComponentProps) => (
   <div>
     <Header
       title="reSolve Hacker News"

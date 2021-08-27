@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import jwtSecret from './jwt-secret'
 import { v4 as uuid } from 'uuid'
 
-const routeRegisterCallback = async (params) => {
+const routeRegisterCallback = async (params: any) => {
   const {
     resolve,
     body: { nickname, firstName, lastName, phoneNumber, address },

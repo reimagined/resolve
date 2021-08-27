@@ -5,10 +5,10 @@ import { getDecrypter } from '../../common/encryption-factory'
 import Login from './Login'
 import Loading from './Loading'
 
-const ProfileWithViewModel = ({ userId }) => {
+const ProfileWithViewModel = ({ userId }: { userId: string }) => {
   const [user, setUser] = useState('unknown')
 
-  const viewModelStateChanged = (user, initial) => {
+  const viewModelStateChanged = (user: any, initial: any) => {
     if (!initial) {
       fetch(`/api/personal-data-keys/${user.id}`)
         .then((response) => response.text())

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 import { useQuery } from '@resolve-js/react-hooks'
+import { Command, Event } from '@resolve-js/core'
 import ShoppingLists from './ShoppingLists'
 import ShoppingListCreator from './ShoppingListCreator'
 
@@ -22,13 +23,13 @@ const MyLists = () => {
       My lists
       <ShoppingLists
         lists={lists || []}
-        onRemoveSuccess={(err, result, command) => {
+        onRemoveSuccess={(err: any, result: any, command: Command) => {
           setLists(lists.filter((list) => list.id !== command.aggregateId))
         }}
       />
       <ShoppingListCreator
         lists={lists || []}
-        onCreateSuccess={(err, result) => {
+        onCreateSuccess={(err: any, result: Event) => {
           const nextLists = [...lists]
           nextLists.push({
             name: result.payload.name,

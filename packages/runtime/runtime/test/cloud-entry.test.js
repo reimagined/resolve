@@ -50,10 +50,13 @@ describe('Cloud entry', () => {
       getEventSubscribers: jest.fn().mockReturnValue(Promise.resolve([])),
       getNextCursor: jest.fn(),
       getLatestEvent: jest.fn(),
-      saveEvent: jest.fn(),
+      saveEvent: jest
+        .fn()
+        .mockImplementation((event) => ({ event, cursor: null })),
       dispose: jest.fn(),
       import: jest.fn(),
       export: jest.fn(),
+      establishTimeLimit: jest.fn(),
     }
 
     snapshotAdapter = {

@@ -30,6 +30,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
 
     const description = await adapter.describe()
     expect(description.eventCount).toEqual(0)
+
+    const lastEvent = await adapter.getLatestEvent({})
+    expect(lastEvent).toBeNull()
   })
 
   test('should save events', async () => {
@@ -53,6 +56,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
     expect(events[events.length - 1].timestamp).toEqual(
       description.lastEventTimestamp
     )
+
+    const lastEvent = await adapter.getLatestEvent({})
+    expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
   })
 
   test('should load events by type', async () => {
@@ -71,6 +77,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
       cursor: null,
     })
     expect(events).toHaveLength(0)
+
+    const lastEvent = await adapter.getLatestEvent({ eventTypes: ['UNKNOWN'] })
+    expect(lastEvent).toBeNull()
   })
 
   test('should load 0 events by empty type list and return the initial cursor', async () => {
@@ -96,6 +105,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
     })
     expect(shiftedEvents).toHaveLength(0)
     expect(newCursor).toEqual(shiftedCursor)
+
+    const lastEvent = await adapter.getLatestEvent({ eventTypes: [] })
+    expect(lastEvent).toBeNull()
   })
 
   test('should load events by aggregateId', async () => {
@@ -114,6 +126,11 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
       cursor: null,
     })
     expect(events).toHaveLength(0)
+
+    const lastEvent = await adapter.getLatestEvent({
+      aggregateIds: ['unknownId'],
+    })
+    expect(lastEvent).toBeNull()
   })
 
   test('should load 0 events by empty aggregateId list and return the initial cursor', async () => {
@@ -139,6 +156,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
     })
     expect(shiftedEvents).toHaveLength(0)
     expect(newCursor).toEqual(shiftedCursor)
+
+    const lastEvent = await adapter.getLatestEvent({ aggregateIds: [] })
+    expect(lastEvent).toBeNull()
   })
 
   test('should be able to load events continuously', async () => {
@@ -187,6 +207,13 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
       const { event: savedEvent } = await adapter.saveEvent(event)
       savedEvents.push(savedEvent)
     }
+    savedEvents.sort((a, b) => {
+      return (
+        Math.sign(a.timestamp - b.timestamp) * 100 +
+        Math.sign(a.threadCounter - b.threadCounter) * 10 +
+        Math.sign(a.threadId - b.threadId)
+      )
+    })
   })
 
   test('should load events by distinct event types', async () => {
@@ -205,6 +232,11 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
         expect(event.payload.eventIndex % eventTypesCount).toEqual(2)
       }
     }
+
+    const lastEvent = await adapter.getLatestEvent({
+      eventTypes: ['EVENT_1', 'EVENT_3'],
+    })
+    expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
   })
 
   test('should load events by distinct aggregate ids', async () => {
@@ -226,6 +258,11 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
         expect(event.payload.eventIndex % eventTypesCount).toEqual(3)
       }
     }
+
+    const lastEvent = await adapter.getLatestEvent({
+      aggregateIds: ['aggregateId_2', 'aggregateId_4'],
+    })
+    expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
   })
 
   test('should load events by combination of event type and aggregate id', async () => {
@@ -243,6 +280,12 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
       expect(event.type).toEqual('EVENT_2')
       expect(event.aggregateId).toEqual('aggregateId_3')
     }
+
+    const lastEvent = await adapter.getLatestEvent({
+      aggregateIds: ['aggregateId_3'],
+      eventTypes: ['EVENT_2'],
+    })
+    expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
   })
 
   test('should load events by combination of distinct event types and aggregate ids', async () => {
@@ -263,6 +306,12 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
           event.aggregateId === 'aggregateId_5'
       ).toBeTruthy()
     }
+
+    const lastEvent = await adapter.getLatestEvent({
+      aggregateIds: ['aggregateId_1', 'aggregateId_5'],
+      eventTypes: ['EVENT_1', 'EVENT_4'],
+    })
+    expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
   })
 
   test('should load events by timestamp', async () => {
@@ -271,8 +320,8 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
       startTime: savedEvents[0].timestamp,
       finishTime: savedEvents[countEvents / 3 - 1].timestamp,
     })
+    expect(events.length).toBeGreaterThanOrEqual(countEvents / 3)
 
-    expect(events.length).toBeGreaterThan(0)
     for (let i = 0; i < events.length; ++i) {
       expect(events[i].type).toEqual(savedEvents[i].type)
       expect(events[i].aggregateId).toEqual(savedEvents[i].aggregateId)
@@ -280,14 +329,18 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
       expect(events[i].threadCounter).toEqual(savedEvents[i].threadCounter)
     }
 
-    const middleEventsIndex = countEvents / 3
+    const middleEventsIndex = savedEvents.findIndex((event) => {
+      return event.timestamp === savedEvents[countEvents / 3].timestamp
+    })
+    expect(middleEventsIndex).toBeGreaterThan(0)
+
     const { events: otherEvents } = await adapter.loadEvents({
       limit: countEvents,
       startTime: savedEvents[middleEventsIndex].timestamp,
-      finishTime: savedEvents[middleEventsIndex + countEvents / 3].timestamp,
+      finishTime: savedEvents[(countEvents / 3) * 2 - 1].timestamp,
     })
+    expect(otherEvents.length).toBeGreaterThanOrEqual(countEvents / 3)
 
-    expect(otherEvents.length).toBeGreaterThan(0)
     for (let i = 0; i < otherEvents.length; ++i) {
       expect(otherEvents[i].type).toEqual(
         savedEvents[i + middleEventsIndex].type
@@ -303,12 +356,17 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
       )
     }
 
-    const lastEventsIndex = (countEvents / 3) * 2
+    const lastEventsIndex = savedEvents.findIndex((event) => {
+      return event.timestamp === savedEvents[(countEvents / 3) * 2].timestamp
+    })
+    expect(lastEventsIndex).toBeGreaterThan(0)
+
     const { events: lastEvents } = await adapter.loadEvents({
       limit: countEvents,
       startTime: savedEvents[lastEventsIndex].timestamp,
       finishTime: savedEvents[countEvents - 1].timestamp,
     })
+    expect(lastEvents.length).toBeGreaterThanOrEqual(countEvents / 3)
 
     for (let i = 0; i < lastEvents.length; ++i) {
       expect(lastEvents[i].type).toEqual(savedEvents[i + lastEventsIndex].type)

@@ -1,4 +1,4 @@
-const importApiHandler = () => async (req, res) => {
+const importApiHandler = () => async (req: any, res: any) => {
   if (process.env.NODE_ENV === 'production') {
     throw new Error('Import API handler should not be used in production mode')
   }

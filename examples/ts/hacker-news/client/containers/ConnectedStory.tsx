@@ -5,7 +5,7 @@ import { useReduxReadModel } from '@resolve-js/redux'
 import { Story } from './Story'
 import { StoreState } from '../../types'
 
-const ConnectedStory = ({ id }) => {
+const ConnectedStory = ({ id }: { id: string }) => {
   const refreshId = useSelector<StoreState, string>(
     (state) => state.optimistic.refreshId
   )

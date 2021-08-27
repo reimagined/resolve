@@ -8,8 +8,13 @@ const ChildrenCommentsContainer = styled.div`
   margin-left: 2em;
   margin-top: 1em;
 `
+type ChildCommentsProps = {
+  storyId: string
+  comments: any[]
+  loggedIn: boolean
+}
 
-const ChildComments = ({ storyId, comments, loggedIn }) => {
+const ChildComments = ({ storyId, comments, loggedIn }: ChildCommentsProps) => {
   if (!comments || !comments.length) {
     return null
   }

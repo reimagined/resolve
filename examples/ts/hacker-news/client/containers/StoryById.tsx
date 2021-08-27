@@ -7,11 +7,15 @@ import { ConnectedComments } from './ConnectedComments'
 import { CommentsNotification } from '../components/CommentsNotification'
 import { StoreState } from '../../types'
 
+import { RouteComponentProps } from 'react-router'
+
+type MatchParams = { storyId: string }
+
 const StoryById = ({
   match: {
     params: { storyId },
   },
-}) => {
+}: RouteComponentProps<MatchParams>) => {
   if (!storyId) {
     return null
   }
@@ -21,7 +25,7 @@ const StoryById = ({
 
   return (
     <RefreshHelperRenderless>
-      {({ refresh, refreshId }) => (
+      {({ refresh, refreshId }: { refreshId: string; refresh: () => any }) => (
         <div>
           <CommentsNotification
             treeId={storyId}

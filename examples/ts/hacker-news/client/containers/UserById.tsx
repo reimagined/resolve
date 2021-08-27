@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useReduxReadModel } from '@resolve-js/redux'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
+import { RouteComponentProps } from 'react-router'
 
 const UserInfoRoot = styled.div`
   margin-bottom: 0.5em;
@@ -19,11 +20,13 @@ const Content = styled.div`
   vertical-align: middle;
 `
 
+type MatchParams = { userId: string }
+
 const UserById = ({
   match: {
     params: { userId },
   },
-}) => {
+}: RouteComponentProps<MatchParams>) => {
   const { request: getUser, selector } = useReduxReadModel(
     {
       name: 'HackerNews',

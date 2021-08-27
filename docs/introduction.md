@@ -5,6 +5,10 @@ description: Full stack CQRS, DDD, Event Sourcing framework for Node.js
 slug: /
 ---
 
+ReSolve is a CQRS, DDD, Event Sourcing framework for Node.js. ReSolve implements an elaborate server-side infrastructure with out-of-the box support for various types of data storages, event export and import, encryption, testing and debugging tools, and more.
+
+On the frontend, you can use the reSolve HTTP API or one of the included client libraries based on your requirements and and client-side technology of choice.
+
 ## Core Concepts
 
 ### Domain Driven Design

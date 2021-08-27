@@ -34,11 +34,11 @@ export const mapStateToOptions = () => ({
   resolverArgs: {},
 })
 
-export const mapStateToProps = (state) => ({
+export const mapStateToProps = (state: any) => ({
   lists: state.optimisticShoppingLists || [],
 })
 
-export const mapDispatchToProps = (dispatch) =>
+export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(

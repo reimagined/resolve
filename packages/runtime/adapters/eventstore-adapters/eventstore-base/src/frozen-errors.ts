@@ -1,5 +1,7 @@
+import { isSpecificError } from './errors'
+
 function DefineFrozenError(name: string, defaultMessage: string) {
-  return class FrozenError extends Error {
+  return class extends Error {
     constructor(msg?: string) {
       super(msg ?? defaultMessage)
       this.name = name
@@ -7,7 +9,7 @@ function DefineFrozenError(name: string, defaultMessage: string) {
     }
 
     static is(err: any): boolean {
-      return err instanceof Error && err.name === name
+      return isSpecificError(err, name)
     }
   }
 }

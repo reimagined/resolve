@@ -53,7 +53,7 @@ const Comment = ({
   return (
     <CommentRoot>
       <CommentInfo>
-        <Collapse onClick={toggleExpand} tabIndex="0">
+        <Collapse onClick={toggleExpand} tabIndex={0}>
           <span id="toggle-expand">{`[${expanded ? '−' : '+'}]`}</span>
         </Collapse>
         <StyledUserLink to={`/user/${createdBy}`}>

@@ -24,7 +24,8 @@
     "test:freeze": "jest --config=./jest.config.js --testMatch=**/eventstore-freeze-unfreeze/*.test.ts",
     "test:save-load": "jest --config=./jest.config.js --testMatch=**/eventstore-save-load/*.test.ts",
     "test:parallel-save": "jest --config=./jest.config.js --testMatch=**/eventstore-parallel-save/*.test.ts",
-    "test:init-drop": "jest --config=./jest.config.js --testMatch=**/eventstore-init-drop/*.test.[jt]s"
+    "test:init-drop": "jest --config=./jest.config.js --testMatch=**/eventstore-init-drop/*.test.[jt]s",
+    "test:timeout-error": "jest --config=./jest.config.js --testMatch=**/eventstore-timeout/*.test.[jt]s"
   },
   "devDependencies": {
     "@babel/runtime": "7.14.0",

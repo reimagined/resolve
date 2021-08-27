@@ -1,18 +1,19 @@
-import { CheckForResourceError } from './types'
+import type { CheckForResourceError } from './types'
+import { isSpecificError } from './errors'
 
-function DefineResourceError(name: string, errorCode: number) {
-  return class ResourceError extends Error {
-    code: number
+function DefineResourceError(name: string, httpStatus: number) {
+  return class extends Error {
+    readonly code: number
 
     constructor(msg: string) {
       super(msg)
       this.name = name
-      this.code = errorCode
+      this.code = httpStatus
       Object.setPrototypeOf(this, new.target.prototype)
     }
 
     static is(err: any): boolean {
-      return err instanceof Error && err.name === name
+      return isSpecificError(err, name)
     }
   }
 }

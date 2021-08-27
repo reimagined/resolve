@@ -39,6 +39,10 @@ const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
   const eventstore: Eventstore = {
     saveEvent: jest.fn(async (event) => {
       generatedEvents.push(event)
+      return {
+        cursor: null,
+        event,
+      }
     }),
     getNextCursor: jest.fn(
       (currentCursor) => (currentCursor && currentCursor + 1) || 1

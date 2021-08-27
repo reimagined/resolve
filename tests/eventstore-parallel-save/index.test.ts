@@ -4,7 +4,7 @@ import { SecretsManager } from '@resolve-js/core'
 
 jest.setTimeout(jestTimeout())
 
-describe(`${adapterFactory.name}. Eventstore adapter init and drop`, () => {
+describe(`${adapterFactory.name}. Eventstore adapter parallel save`, () => {
   beforeAll(adapterFactory.create('parallel_write_testing'))
   afterAll(adapterFactory.destroy('parallel_write_testing'))
 
