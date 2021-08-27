@@ -84,6 +84,7 @@ export type EventStoreDescription = {
   deletedSecretCount: number
   isFrozen: boolean
   lastEventTimestamp: number
+  resourceNames?: { [key: string]: string }
 }
 
 export type CheckForResourceError = (errors: Error[]) => void
