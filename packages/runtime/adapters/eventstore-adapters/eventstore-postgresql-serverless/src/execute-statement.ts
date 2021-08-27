@@ -4,6 +4,12 @@ import { AdapterPool } from './types'
 const isHighloadError = (error: any): boolean =>
   error != null &&
   (/Request timed out/i.test(error.message) ||
+    /terminating connection due to serverless scale event timeout/i.test(
+      error.message
+    ) ||
+    /terminating connection due to administrator command/i.test(
+      error.message
+    ) ||
     /Remaining connection slots are reserved/i.test(error.message) ||
     /I\/O error occurr?ed/i.test(error.message) ||
     /too many clients already/i.test(error.message) ||
