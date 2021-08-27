@@ -9,7 +9,7 @@ A view model projection is an object of the following structure:
 
 ```js
 const projection = {
-  // The *Init* function creates the view models initial state object.
+  // The *Init* function creates the view model's initial state object.
   Init: () => initialState,
   // An event handler function is associated with an event type.
   // It receives the view model's state and an incoming event
