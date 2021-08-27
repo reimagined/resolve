@@ -71,10 +71,10 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
     }
     expect(eventCursorPairs).toHaveLength(checkCount)
     eventCursorPairs.sort((a, b) => {
-      return (
+      return Math.sign(
         Math.sign(a.event.timestamp - b.event.timestamp) * 100 +
-        Math.sign(a.event.threadCounter - b.event.threadCounter) * 10 +
-        Math.sign(a.event.threadId - b.event.threadId)
+          Math.sign(a.event.threadCounter - b.event.threadCounter) * 10 +
+          Math.sign(a.event.threadId - b.event.threadId)
       )
     })
 
@@ -128,14 +128,14 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
       checkEventsContinuity(null, [
         eventCursorPairs[0],
         eventCursorPairs[1],
-        eventCursorPairs[3],
+        eventCursorPairs[10],
       ])
     ).toBe(false)
     expect(
       checkEventsContinuity(eventCursorPairs[2].cursor, [
         eventCursorPairs[3],
         eventCursorPairs[4],
-        eventCursorPairs[6],
+        eventCursorPairs[12],
       ])
     ).toBe(false)
   })
