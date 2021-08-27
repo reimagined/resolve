@@ -50,6 +50,7 @@
     "opn": "^6.0.0",
     "respawn": "2.6.0",
     "route-trie": "3.0.0",
+    "semver": "7.3.5",
     "socket.io-client": "4.0.0",
     "synchronous-promise": "2.0.15",
     "testcafe": "1.14.2",
