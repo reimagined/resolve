@@ -18,7 +18,6 @@ const connect = async (
     escape,
     fullJitter,
     executeStatement,
-    coercer,
   }: ConnectionDependencies,
   config: PostgresqlAdapterConfig
 ): Promise<void> => {
@@ -66,7 +65,6 @@ const connect = async (
       subscribersTableName,
       Postgres,
       fullJitter,
-      coercer,
       executeStatement: executeStatement.bind(null, pool as AdapterPool),
       escapeId,
       escape,
