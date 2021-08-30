@@ -84,6 +84,7 @@ export type EventStoreDescription = {
   deletedSecretCount: number
   isFrozen: boolean
   lastEventTimestamp: number
+  cursor?: string
   resourceNames?: { [key: string]: string }
 }
 

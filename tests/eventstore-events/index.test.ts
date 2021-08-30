@@ -30,6 +30,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
 
     const description = await adapter.describe()
     expect(description.eventCount).toEqual(0)
+    expect(description.cursor).toEqual(threadArrayToCursor(initThreadArray()))
 
     const lastEvent = await adapter.getLatestEvent({})
     expect(lastEvent).toBeNull()
@@ -46,7 +47,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
   })
 
   test('should load all requested events', async () => {
-    const { events } = await adapter.loadEvents({
+    const { cursor, events } = await adapter.loadEvents({
       limit: countEvents + 1,
       cursor: null,
     })
@@ -56,6 +57,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
     expect(events[events.length - 1].timestamp).toEqual(
       description.lastEventTimestamp
     )
+    expect(cursor).toEqual(description.cursor)
 
     const lastEvent = await adapter.getLatestEvent({})
     expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
