@@ -400,6 +400,7 @@ module.exports = {
           'savepoint',
           'scalable',
           'sdk',
+          'semver',
           'sep',
           'serializable',
           'Serializers',
