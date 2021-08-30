@@ -24,11 +24,11 @@ const myMiddleware = (next) =>
   // (middlewareContext, store, params, context) => { ... } // Resolver middleware handler
 ```
 
-In a middleware handler, you can modify one or several of the handler's parameters and pass their changed versions to the `next` function so they propagate down the processing chain. For example, you can modify the `command` object, add auxiliary data to the `context` object and so on. You can also intercept and modify data returned back through the chain.
+In a middleware handler, you can modify one or more of the handler's parameters and pass their changed versions to the `next` function so they propagate down the processing chain. For example, you can modify the `command` object, add auxiliary data to the `context` object, and so on. You can also intercept and modify data returned back through the chain.
 
 :::caution
 
-Keep in mind that poorly implemented middleware can brake an application because middleware intercepts the internal request and event processing chains and can potentially disrupt them.
+Keep in mind that poorly implemented middleware can brake an application because middleware intercepts the internal request and event processing chains, and can potentially disrupt them.
 
 :::
 
@@ -46,7 +46,7 @@ const appConfig = {
   ...
   middlewares: {
     aggregate: [
-      'common/middlewares/command-middleware-1.js', // Middlewares are invoked in the order that they are deifined in the config
+      'common/middlewares/command-middleware-1.js', // Middlewares are invoked in the order that they are defined in the config
       'common/middlewares/command-middleware-2.js',
       'common/middlewares/command-middleware-3.js'
     ],
