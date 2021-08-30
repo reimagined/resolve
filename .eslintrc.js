@@ -354,6 +354,7 @@ module.exports = {
           'pubsub',
           'purtuga',
           'qos',
+          'queryable',
           'querystring',
           'rabbitmq',
           'raf',
