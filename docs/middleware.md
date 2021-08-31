@@ -1,7 +1,7 @@
 ---
 id: middleware
 title: Middleware
-description: This describes how to use middleware in aggregates, read model resolvers and projections.
+description: This topic describes how to use middleware in aggregates, read model resolvers, and projections.
 ---
 
 ## General Information
