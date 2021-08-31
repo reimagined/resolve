@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/readmodel-postgresql-serverless",
-  "version": "0.31.8",
+  "version": "0.31.9",
   "description": "This package serves as a resolve-query adapter for storing a read model in postgres",
   "keywords": [
     "cqrs",
@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@resolve-js/debug-levels": "0.31.8",
-    "@resolve-js/readmodel-base": "0.31.8"
+    "@resolve-js/debug-levels": "0.31.9",
+    "@resolve-js/readmodel-base": "0.31.9"
   },
   "devDependencies": {
     "jest": "27.0.3",
