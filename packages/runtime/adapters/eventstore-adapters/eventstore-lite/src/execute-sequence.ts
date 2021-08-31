@@ -1,5 +1,5 @@
 const executeSequence = async (
-  database: any,
+  executeQuery: (sql: string) => Promise<void>,
   statements: string[],
   log: any,
   convertToKnownError: (error: any) => any
@@ -10,7 +10,7 @@ const executeSequence = async (
     try {
       log.debug(`executing query`)
       log.verbose(statement)
-      await database.exec(statement)
+      await executeQuery(statement)
       log.debug(`query executed successfully`)
     } catch (error) {
       if (error != null) {

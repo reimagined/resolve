@@ -12,11 +12,11 @@ const setReplicationStatus = async (
   statusData?: ReplicationState['statusData'],
   lastEvent?: OldEvent
 ): Promise<void> => {
-  const { database, escapeId, escape } = pool
+  const { executeQuery, escapeId, escape } = pool
 
   const replicationStateTableName = await initReplicationStateTable(pool)
 
-  await database.exec(
+  await executeQuery(
     `UPDATE ${escapeId(replicationStateTableName)} 
     SET
     "Status" = ${escape(status)},

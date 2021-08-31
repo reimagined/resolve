@@ -3,12 +3,12 @@ import { EventstoreAlreadyFrozenError } from '@resolve-js/eventstore-base'
 import { isAlreadyExistsError } from './resource-errors'
 
 const freeze = async ({
-  database,
+  executeQuery,
   eventsTableName,
   escapeId,
 }: AdapterPool): Promise<void> => {
   try {
-    await database.exec(
+    await executeQuery(
       `CREATE TABLE ${escapeId(`${eventsTableName}-freeze`)}(
       -- RESOLVE EVENT STORE ${escapeId(eventsTableName)} FREEZE MARKER
       ${escapeId('surrogate')} BIGINT NOT NULL,

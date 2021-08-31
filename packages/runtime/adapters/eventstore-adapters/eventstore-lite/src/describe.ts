@@ -7,13 +7,19 @@ import assert from 'assert'
 import { THREAD_COUNT, threadArrayToCursor } from '@resolve-js/eventstore-base'
 
 const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
-  const { database, secretsTableName, escapeId, escape, eventsTableName } = pool
+  const {
+    executeStatement,
+    secretsTableName,
+    escapeId,
+    escape,
+    eventsTableName,
+  } = pool
 
   const eventsTableNameAsId = escapeId(eventsTableName)
   const secretsTableNameAsId = escapeId(secretsTableName)
   const freezeTableName = `${eventsTableName}-freeze`
 
-  const existingThreads = (await database.all(`
+  const existingThreads = (await executeStatement(`
     SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
     ${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`)) as Array<{
     threadId: EventThreadData['threadId']
@@ -30,7 +36,7 @@ const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
     threadCounters[i]++
   }
 
-  const rows = await database.all(`SELECT
+  const rows = await executeStatement(`SELECT
     (SELECT COUNT(*) FROM ${eventsTableNameAsId}) AS "eventCount",
     (SELECT COUNT(*) FROM ${secretsTableNameAsId}) AS "secretCount",
     (SELECT COUNT(*) FROM ${secretsTableNameAsId} WHERE "secret" IS NOT NULL) AS "setSecretCount",

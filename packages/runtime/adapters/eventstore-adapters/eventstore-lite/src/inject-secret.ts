@@ -2,12 +2,12 @@ import { SecretRecord } from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 
 const injectSecret = async (
-  { database, escapeId, escape, secretsTableName }: AdapterPool,
+  { executeQuery, escapeId, escape, secretsTableName }: AdapterPool,
   { idx, id, secret }: SecretRecord
 ): Promise<void> => {
   const tableNameAsId: string = escapeId(secretsTableName)
 
-  await database.exec(
+  await executeQuery(
     `INSERT INTO ${tableNameAsId}(
       "idx",
       "id",

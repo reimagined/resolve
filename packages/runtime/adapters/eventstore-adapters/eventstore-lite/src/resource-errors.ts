@@ -3,5 +3,5 @@ export function isAlreadyExistsError(message: string): boolean {
 }
 
 export function isNotExistError(message: string): boolean {
-  return /^SQLITE_ERROR: no such (?:table|(?:Table|Index)).*?$/.test(message)
+  return /^no such (?:table|(?:Table|Index)).*?$/.test(message)
 }
