@@ -110,7 +110,7 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       fullJitter,
       executeStatement,
       coercer,
-    },
+    } as ConnectionDependencies,
     options
   )
 }
