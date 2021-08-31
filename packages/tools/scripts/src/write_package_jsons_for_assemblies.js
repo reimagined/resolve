@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import semver from 'semver'
 
 const writePackageJsonsForAssemblies = (
   distDir,
@@ -35,7 +36,10 @@ const writePackageJsonsForAssemblies = (
       new Set(
         Object.entries(applicationPackageJson.dependencies)
           .filter(([dependency]) => dependency.startsWith('@resolve-js/'))
-          .map(([, version]) => version)
+          .map(([, version]) => {
+            const parsedVersion = semver.parse(version)
+            return parsedVersion != null ? version : null
+          })
       )
     )
 
@@ -63,9 +67,10 @@ const writePackageJsonsForAssemblies = (
           resolveRuntimePackageJson.dependencies.hasOwnProperty(val) &&
           nodeModules.has(val)
         ) {
-          acc[val] = val.startsWith('@resolve-js/')
-            ? frameworkVersion
-            : resolveRuntimePackageJson.dependencies[val]
+          acc[val] =
+            val.startsWith('@resolve-js/') && frameworkVersion != null
+              ? frameworkVersion
+              : resolveRuntimePackageJson.dependencies[val]
         }
 
         return acc
