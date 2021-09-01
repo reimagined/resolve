@@ -382,9 +382,9 @@ export default {
 
 ##### Used API:
 
-- [store](api/read-model-store.md#read-model-store-interface)
-- [store.defineTable](api/read-model-store.md#definetable)
-- [store.insert](api/read-model-store.md#insert)
+- [store](api/read-model/store.md)
+- [store.defineTable](api/read-model/store.md#definetable)
+- [store.insert](api/read-model/store.md#insert)
 
 The type of the physical store used to save data is defined by a Read Model connector:
 
@@ -438,7 +438,7 @@ export default {
 
 ##### Used API:
 
-- [store.find](api/read-model-store.md#find)
+- [store.find](api/read-model/store.md#find)
 
 Register the created Read Model in the application configuration file:
 

@@ -27,6 +27,6 @@ An event handler implementation receives the following arguments:
 | Argument Name | Description                                                   |
 | ------------- | ------------------------------------------------------------- |
 | state         | The aggregate state that is an object of arbitrary structure. |
-| event         | An [event](event.md) object.                                  |
+| event         | An [event](../event.md) object.                               |
 
 An event handler should return a new state object.
