@@ -14,6 +14,11 @@ const resolvers = {
 
     return result
   },
+  findOneWithProjection: async (store, { projection, ...args }) => {
+    const result = await store.findOne('test', args, projection)
+
+    return result
+  },
 }
 
 export default resolvers

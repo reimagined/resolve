@@ -163,8 +163,10 @@ const initResolve = async (resolve) => {
         if (key === 'SaveEvent') {
           return async ({ event }) => await eventstoreAdapter.saveEvent(event)
         } else if (key === 'LoadEvents') {
-          return async ({ scopeName, ...filter }) =>
-            await (scopeName, eventstoreAdapter.loadEvents(filter))
+          return async ({ scopeName, ...filter }) => {
+            void scopeName
+            return await eventstoreAdapter.loadEvents(filter)
+          }
         } else {
           return eventstoreAdapter[key[0].toLowerCase() + key.slice(1)].bind(
             eventstoreAdapter

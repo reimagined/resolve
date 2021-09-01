@@ -84,13 +84,21 @@ const Username = styled(NavLink)`
   }
 `
 
-const isExternalLink = (link) => link[0] !== '/'
+const isExternalLink = (link: string) => link[0] !== '/'
 
-export const getHostname = (link) => {
+export const getHostname = (link: string) => {
   return parseUrl(link).hostname
 }
 
-const Title = ({ title, link, upvoteStory, voted, loggedIn }) => {
+type TitleProps = {
+  title: string
+  link: string
+  upvoteStory: () => any
+  voted: boolean
+  loggedIn: boolean
+}
+
+const Title = ({ title, link, upvoteStory, voted, loggedIn }: TitleProps) => {
   const isExternal = isExternalLink(link)
 
   return (
@@ -112,6 +120,12 @@ const Title = ({ title, link, upvoteStory, voted, loggedIn }) => {
   )
 }
 
+type StoryInfoProps = StoryBase & {
+  voted: boolean
+  loggedIn: boolean
+  unvoteStory: () => any
+}
+
 const StoryInfo = ({
   id,
   createdBy,
@@ -122,7 +136,7 @@ const StoryInfo = ({
   voted,
   loggedIn,
   unvoteStory,
-}) => {
+}: StoryInfoProps) => {
   const unvoteIsVisible = voted && loggedIn
 
   return (
@@ -152,7 +166,28 @@ const StoryInfo = ({
   )
 }
 
-const Story = ({ story, index = undefined, showText = false }) => {
+type StoryBase = {
+  id: string
+  createdBy: string
+  createdByName: string
+  createdAt: number
+  votes: string[]
+  commentCount: number
+}
+type StoryDetails = StoryBase & {
+  title: string
+  type: string
+  text: string
+  link: string
+}
+
+type StoryProps = {
+  story: StoryDetails
+  index?: number
+  showText?: boolean
+}
+
+const Story = ({ story, index = undefined, showText = false }: StoryProps) => {
   if (!story || !story.id) {
     return null
   }

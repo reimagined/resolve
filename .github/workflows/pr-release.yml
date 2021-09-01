@@ -26,4 +26,4 @@ jobs:
         with:
           event: ${{ toJSON(github.event) }}
           token: ${{ secrets.RESOLVE_BOT_PAT }}
-          required_reviews: 1
+          required_reviews: 4

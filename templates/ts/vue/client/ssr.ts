@@ -4,7 +4,7 @@ import { getClient } from '@resolve-js/client'
 import { createRenderer } from 'vue-server-renderer'
 import App from './App.vue'
 
-const entryPoint = async (serverContext, req, res) => {
+const entryPoint = async (serverContext: any, req: any, res: any) => {
   try {
     const { constants, seedClientEnvs, viewModels } = serverContext
     const client = getClient({

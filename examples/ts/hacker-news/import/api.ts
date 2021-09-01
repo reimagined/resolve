@@ -12,10 +12,10 @@ const firebaseIP = new Promise((resolve, reject) => {
   })
 })
 
-const wait = (time) =>
+const wait = (time: number) =>
   new Promise((resolve) => setTimeout(() => resolve(undefined), time))
 
-const fetchSingle = (url) =>
+const fetchSingle = (url: string) =>
   firebaseIP
     .then((ip) =>
       fetch(`https://${ip}/v0/${url}`, {
@@ -35,7 +35,7 @@ const fetchSingle = (url) =>
       return response.json()
     })
 
-const fetchWithRetry = (url) => {
+const fetchWithRetry = (url: string) => {
   return Promise.race([
     new Promise(async (resolve, reject) => {
       let error
@@ -53,7 +53,7 @@ const fetchWithRetry = (url) => {
   ])
 }
 
-const invokeImportApi = async (body) => {
+const invokeImportApi = async (body: any) => {
   let loop = true
   return Promise.race([
     new Promise(async (resolve, reject) => {
@@ -87,7 +87,7 @@ const invokeImportApi = async (body) => {
   ])
 }
 
-const invokeImportSecretApi = async (body) => {
+const invokeImportSecretApi = async (body: any) => {
   let loop = true
   return Promise.race([
     new Promise(async (resolve, reject) => {
@@ -121,11 +121,11 @@ const invokeImportSecretApi = async (body) => {
   ])
 }
 
-const fetchStoryIds = (path) => fetchWithRetry(`${path}.json`)
+const fetchStoryIds = (path: string) => fetchWithRetry(`${path}.json`)
 
-const fetchItem = (id) => fetchWithRetry(`item/${id}.json`)
+const fetchItem = (id: string) => fetchWithRetry(`item/${id}.json`)
 
-const fetchItems = (ids) => {
+const fetchItems = (ids: string[]) => {
   return Promise.all(ids.map(fetchItem))
 }
 

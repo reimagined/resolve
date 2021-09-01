@@ -1,7 +1,6 @@
 {
   "docs": {
     "Docs Index": [
-      "index",
       "introduction",
       "tutorial",
       {
@@ -10,11 +9,11 @@
         "items": [
           "write-side",  
           "read-side", 
-          "sagas", 
+          "sagas",
+          "adapters",
           "api-handlers",
           "middleware",
           "frontend",
-          "manage-application",
           "app-structure"
         ]
       },
@@ -22,12 +21,17 @@
         "type": "category",
         "label": "Guides",
         "items": [
-          "advanced-techniques",
+          "manage-application",
+          "modules",
           "authentication-and-authorization",
+          "encryption",
+          "custom-read-model-connectors",
+          "file-upload",
+          "export-import",
           "preparing-to-production",
+          "code-splitting",
           "debugging",
           "testing",
-          "application-configuration",
           "contributing"
         ]
       },
@@ -59,6 +63,7 @@
           }
         ]
       },
+      "application-configuration",
       "faq",
       "troubleshooting"    
     ]

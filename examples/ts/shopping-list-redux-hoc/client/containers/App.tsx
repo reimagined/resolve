@@ -1,8 +1,8 @@
 import React from 'react'
-import { renderRoutes } from 'react-router-config'
+import { renderRoutes, RouteConfigComponentProps } from 'react-router-config'
 import Header from './Header'
 
-const App = ({ route }) => (
+const App = ({ route }: RouteConfigComponentProps) => (
   <div>
     <Header
       title="ReSolve Shopping List Example"

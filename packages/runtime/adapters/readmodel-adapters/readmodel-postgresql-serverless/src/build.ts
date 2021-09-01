@@ -586,6 +586,7 @@ const build: ExternalMethods['build'] = async (
   getVacantTimeInMillis,
   buildInfo
 ) => {
+  eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
   const { eventsWithCursors, ...inputMetricData } = buildInfo
   const metricData = {
     ...inputMetricData,
@@ -737,7 +738,13 @@ const build: ExternalMethods['build'] = async (
       buildInfo
     )
   } catch (error) {
-    if (!(error instanceof PassthroughError)) {
+    if (
+      error == null ||
+      !(
+        error instanceof PassthroughError ||
+        error.name === 'RequestTimeoutError'
+      )
+    ) {
       throw error
     }
     const passthroughError = error as PassthroughErrorInstance
@@ -756,7 +763,7 @@ const build: ExternalMethods['build'] = async (
       }
     }
 
-    if (passthroughError.isRetryable) {
+    if (passthroughError.isRetryable || error.name === 'RequestTimeoutError') {
       await next()
     }
   } finally {

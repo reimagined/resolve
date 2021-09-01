@@ -1,5 +1,10 @@
 import { AssertionError } from 'assert'
-import { cursorToThreadArray, THREAD_COUNT, initThreadArray } from '../src'
+import {
+  cursorToThreadArray,
+  threadArrayToCursor,
+  THREAD_COUNT,
+  initThreadArray,
+} from '../src'
 
 describe('calculating array of threadCounters from cursor', () => {
   test('should throw AssertionError when cursor has an invalid size', () => {
@@ -29,5 +34,18 @@ describe('calculating array of threadCounters from cursor', () => {
     expectedArr[1] = 26
     expectedArr[255] = 64 ** 7
     expect(arr).toEqual(expectedArr)
+    expect(cursor).toEqual(threadArrayToCursor(arr))
+  })
+
+  test.skip('Test performance', () => {
+    const arr: Array<string> = []
+    for (let i = 0; i < 100000; ++i) {
+      const cursor = 'ABCDEFGH'.repeat(THREAD_COUNT)
+      arr.push(cursor)
+    }
+
+    for (let i = 0; i < arr.length; ++i) {
+      cursorToThreadArray(arr[i])
+    }
   })
 })

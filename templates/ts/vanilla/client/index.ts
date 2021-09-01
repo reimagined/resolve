@@ -5,13 +5,15 @@ import updateUI from './update-ui'
 
 const chatRoom = 'chat-room'
 
-const main = async (resolveContext) => {
-  await new Promise((resolve) => domready(resolve))
+const main = async (resolveContext: any) => {
+  await new Promise((resolve: any) => domready(resolve))
   const { viewModels } = resolveContext
-  const chatViewModel = viewModels.find(({ name }) => name === 'chat')
+  const chatViewModel = viewModels.find(
+    ({ name }: { name: string }) => name === 'chat'
+  )
   const client = getClient(resolveContext)
 
-  const sendMessage = (userName, message) =>
+  const sendMessage = (userName: string, message: string) =>
     client.command(
       {
         aggregateName: 'Chat',
@@ -45,7 +47,7 @@ const main = async (resolveContext) => {
 
   initUI(data, sendMessage)
 
-  const chatViewModelUpdater = (event) => {
+  const chatViewModelUpdater = (event: any) => {
     const eventType = event != null && event.type != null ? event.type : null
     const eventHandler = chatViewModel.projection[eventType]
 

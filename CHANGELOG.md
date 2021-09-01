@@ -1,12 +1,17 @@
 # Changelog
 
-## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+## [V0.31.9](https://github.com/reimagined/resolve/tree/V0.31.9) (2021-08-31)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.5...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.8...V0.31.9)
 
-**Documentation:**
+**Bug fixes:**
 
-- Mention the default logging level [\#1966](https://github.com/reimagined/resolve/pull/1966)
+- Events with same timestamp being projected/exported in wrong order  [\#1948](https://github.com/reimagined/resolve/issues/1948)
+
+**Other changes:**
+
+- Add latest cursor in description of event-store adapter [\#2017](https://github.com/reimagined/resolve/pull/2017)
+- Improve local registry URLS behaviour in resolve-scripts [\#2015](https://github.com/reimagined/resolve/pull/2015)
 
 ## [V0.31.5](https://github.com/reimagined/resolve/tree/V0.31.5) (2021-07-29)
 

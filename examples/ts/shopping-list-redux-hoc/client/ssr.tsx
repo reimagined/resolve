@@ -10,7 +10,7 @@ import jsonwebtoken from 'jsonwebtoken'
 import { getRoutes } from './get-routes'
 import { getRedux } from './get-redux'
 
-const ssrHandler = async (serverContext, req, res) => {
+const ssrHandler = async (serverContext: any, req: any, res: any) => {
   try {
     const { constants, seedClientEnvs, utils, viewModels } = serverContext
     const { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify } = utils

@@ -9,14 +9,15 @@
     "target": "es2018",
     "lib": ["es2018", "dom"],
     "types": ["node", "react", "jest"],
-    "noEmit": true
+    "noEmit": true,
+    "noImplicitAny": true
   },
   "include": [
     "auth/**/*",
     "client/**/*",
     "common/**/*",
     "import/**/*",
-    "test/unit/*",
+    "test/unit/**/*",
     "*.ts"
   ]
 }

@@ -4,7 +4,15 @@ import { ListGroupItem, Form } from 'react-bootstrap'
 
 import { StaticImage } from './StaticImage'
 
-const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
+type ShoppingListItemProps = {
+  shoppingListId: string
+  item: { id: string; checked: boolean; text: string }
+}
+
+const ShoppingListItem = ({
+  shoppingListId,
+  item: { id, checked, text },
+}: ShoppingListItemProps) => {
   const { execute: toggleItem } = useReduxCommand({
     type: 'toggleShoppingItem',
     aggregateId: shoppingListId,

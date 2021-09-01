@@ -48,11 +48,7 @@ const ssrHandler = async (serverContext, req, res) => {
     const markup = ReactDOM.renderToStaticMarkup(
       <StyleSheetManager sheet={sheet.instance}>
         <ResolveReduxProvider context={resolveContext} store={store}>
-          <StaticRouter
-            location={url}
-            context={staticContext}
-            history={history}
-          >
+          <StaticRouter location={url} context={staticContext}>
             {renderRoutes(routes)}
           </StaticRouter>
         </ResolveReduxProvider>

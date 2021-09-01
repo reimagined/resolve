@@ -4,11 +4,15 @@ import { Stories } from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 import { useSelector } from 'react-redux'
 
+import { RouteComponentProps } from 'react-router'
+
+type MatchParams = { page?: string }
+
 const AskByPage = ({
   match: {
     params: { page },
   },
-}) => {
+}: RouteComponentProps<MatchParams>) => {
   const { request: getStories, selector } = useReduxReadModel(
     {
       name: 'HackerNews',

@@ -12,9 +12,9 @@ import { useCommand } from '@resolve-js/react-hooks'
 
 import UserContext from '../userContext'
 
-const Image = (props) => <img {...props} className="img-fluid" alt="" />
+const Image = (props: any) => <img {...props} className="img-fluid" alt="" />
 
-const Post = ({ post }) => {
+const Post = ({ post }: { post: any }) => {
   const { title, content, author, id: postId } = post
   const user = useContext(UserContext)
   const [state, setState] = useState({

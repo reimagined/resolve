@@ -8,12 +8,12 @@ export const logout = () => ({
   type: USER_LOGOUT,
 })
 
-export const optimisticUpvoteStory = (storyId) => ({
+export const optimisticUpvoteStory = (storyId: string) => ({
   type: OPTIMISTIC_STORY_UPVOTED,
   storyId,
 })
 
-export const optimisticUnvoteStory = (storyId) => ({
+export const optimisticUnvoteStory = (storyId: string) => ({
   type: OPTIMISTIC_STORY_UNVOTED,
   storyId,
 })

@@ -17,7 +17,7 @@ const storyProjection: AggregateProjection = {
 
   [STORY_UNVOTED]: (state, { payload: { userId } }) => ({
     ...state,
-    voted: state.voted.filter((curUserId) => curUserId !== userId),
+    voted: state.voted.filter((id: string) => id !== userId),
   }),
 }
 

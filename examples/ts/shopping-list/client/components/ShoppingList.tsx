@@ -11,11 +11,15 @@ import { Row, Col, ListGroup, Button, InputGroup, Form } from 'react-bootstrap'
 import ShoppingListItem from './ShoppingListItem'
 import NotFound from './NotFound'
 
+import { RouteComponentProps } from 'react-router'
+
+type MatchParams = { id: string }
+
 const ShoppingList = ({
   match: {
     params: { id: aggregateId },
   },
-}) => {
+}: RouteComponentProps<MatchParams>) => {
   const [shoppingList, setShoppingList] = useState({
     name: '',
     id: null,
@@ -43,7 +47,7 @@ const ShoppingList = ({
     clearItemText
   )
 
-  const updateShoppingListName = (event) => {
+  const updateShoppingListName = (event: any) => {
     setShoppingList({ ...shoppingList, name: event.target.value })
   }
 
@@ -60,16 +64,16 @@ const ShoppingList = ({
     aggregateName: 'ShoppingList',
   })
 
-  const updateItemText = (event) => {
+  const updateItemText = (event: any) => {
     setItemText(event.target.value)
   }
-  const onItemTextPressEnter = (event) => {
+  const onItemTextPressEnter = (event: any) => {
     if (event.charCode === 13) {
       event.preventDefault()
       createShoppingItem(itemText)
     }
   }
-  const onShoppingListNamePressEnter = (event) => {
+  const onShoppingListNamePressEnter = (event: any) => {
     if (event.charCode === 13) {
       event.preventDefault()
       renameShoppingList()

@@ -11,12 +11,17 @@ const Reply = styled.div`
   padding: 0.5em;
   margin-bottom: 1em;
 `
+type ConnectedCommentsProps = {
+  treeId: string
+  authorId: string
+  parentCommentId?: string
+}
 
 const ConnectedComments = ({
   treeId,
   authorId,
   parentCommentId = undefined,
-}) => {
+}: ConnectedCommentsProps) => {
   const comment = useRef<any>()
 
   const me = useSelector<StoreState, UserState>((state) => state.jwt)
@@ -45,7 +50,13 @@ const ConnectedComments = ({
       parentCommentId={parentCommentId}
       authorId={authorId}
     >
-      {({ comments, createComment }) => {
+      {({
+        comments,
+        createComment,
+      }: {
+        comments: any
+        createComment: (...args: any[]) => any
+      }) => {
         const loggedIn = !!me.id
 
         const content = (

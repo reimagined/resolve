@@ -1,18 +1,21 @@
 import { getLog } from './get-log'
-import { AdapterPool } from './types'
+import type { AdapterPool } from './types'
 import { LONG_NUMBER_SQL_TYPE, RESERVED_EVENT_SIZE } from './constants'
+import type { InputEvent } from '@resolve-js/eventstore-base'
 import {
   ConcurrentError,
   EventstoreFrozenError,
-  InputEvent,
   makeSetSecretEvent,
 } from '@resolve-js/eventstore-base'
+import checkRequestTimeout from './check-request-timeout'
 
 const setSecret = async (
   pool: AdapterPool,
   selector: string,
   secret: string
 ): Promise<void> => {
+  checkRequestTimeout(pool)
+
   const log = getLog('secretsManager:setSecret')
 
   log.debug(`setting secret value within database`)
@@ -23,6 +26,7 @@ const setSecret = async (
     escapeId,
     executeStatement,
     eventsTableName,
+    getVacantTimeInMillis,
   } = pool
 
   // TODO: refactor
@@ -124,7 +128,8 @@ const setSecret = async (
           ),
           ${serializedEvent},
           ${byteLength}
-        )`
+        )`,
+      getVacantTimeInMillis !== undefined
     )
 
     log.debug(`query executed successfully`)

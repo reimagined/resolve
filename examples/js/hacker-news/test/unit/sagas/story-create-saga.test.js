@@ -1,10 +1,19 @@
 import { internal } from '@resolve-js/redux'
 import { delay } from 'redux-saga/effects'
 import { storyCreateSaga as sagaFactory } from '../../../client/sagas/story-create-saga'
+import { createMemoryHistory } from 'history'
+import { getClient } from '@resolve-js/client'
 const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = internal.actionTypes
-test('Create story saga - register takeAll sagas', () => {
-  const client = {}
-  const history = []
+const mockContext = {
+  origin: 'mock-origin',
+  staticPath: 'static-path',
+  rootPath: 'root-path',
+  jwtProvider: undefined,
+  viewModels: [],
+}
+test('Create story saga - register takeAll sagas', async () => {
+  const client = getClient(mockContext)
+  const history = createMemoryHistory()
   const storyCreateSaga = sagaFactory(history, { client })
   let step = null
   step = storyCreateSaga.next()
@@ -48,12 +57,13 @@ test('Create story saga - register takeAll sagas', () => {
   step = storyCreateSaga.next()
   expect(step.done).toEqual(true)
 })
-test('Create story saga - success story create and success fetch', () => {
+test('Create story saga - success story create and success fetch', async () => {
   const readModelStatePromise = Promise.resolve('API_CALL')
   const client = {
+    ...getClient(mockContext),
     query: jest.fn().mockResolvedValue(readModelStatePromise),
   }
-  const history = []
+  const history = createMemoryHistory()
   const storyCreateSaga = sagaFactory(history, { client })
   let step = storyCreateSaga.next()
   const successCommandSagaFactory = step.value.payload.args[1]
@@ -85,16 +95,18 @@ test('Create story saga - success story create and success fetch', () => {
   expect(client.query).toBeCalledTimes(2)
   step = successCommandSaga.next({ data: {} })
   expect(step.done).toEqual(false)
-  expect(history).toEqual([`/storyDetails/aggregateId`])
+  expect(history.location.pathname).toEqual(`/storyDetails/aggregateId`)
+  expect(history.length).toEqual(2)
   step = successCommandSaga.next()
   expect(step.done).toEqual(true)
 })
-test('Create story saga - success story create and failed fetch', () => {
+test('Create story saga - success story create and failed fetch', async () => {
   const readModelStatePromise = Promise.resolve('API_CALL')
   const client = {
-    query: jest.fn().mockReturnValue(readModelStatePromise),
+    ...getClient(mockContext),
+    query: jest.fn().mockResolvedValue(readModelStatePromise),
   }
-  const history = []
+  const history = createMemoryHistory()
   const storyCreateSaga = sagaFactory(history, { client })
   let step = storyCreateSaga.next()
   const successCommandSagaFactory = step.value.payload.args[1]
@@ -114,9 +126,9 @@ test('Create story saga - success story create and failed fetch', () => {
   step = successCommandSaga.throw('Reject read model fetch')
   expect(step.done).toEqual(true)
 })
-test('Create story saga - story creating failed', () => {
-  const client = {}
-  const history = []
+test('Create story saga - story creating failed', async () => {
+  const client = getClient(mockContext)
+  const history = createMemoryHistory()
   const storyCreateSaga = sagaFactory(history, { client })
   storyCreateSaga.next()
   let step = storyCreateSaga.next()
@@ -126,7 +138,9 @@ test('Create story saga - story creating failed', () => {
   })
   step = failureCommandSaga.next()
   expect(step.done).toEqual(false)
-  expect(history).toEqual([`/error?text=Failed to create a story`])
+  expect(history.location.pathname).toEqual(`/error`)
+  expect(history.location.search).toEqual(`?text=Failed to create a story`)
+  expect(history.length).toEqual(2)
   step = failureCommandSaga.next()
   expect(step.done).toEqual(true)
 })

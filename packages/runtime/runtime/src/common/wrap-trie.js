@@ -4,53 +4,53 @@ import commandHandler from './handlers/command-handler'
 import queryHandler from './handlers/query-handler'
 import markupHandler from './handlers/markup-handler'
 import uploaderHandler from './handlers/uploader-handler'
+import failHandler from './handlers/fail-handler'
 
 import getRootBasedUrl from './utils/get-root-based-url'
+import buildInApiHandlers from './defaults/builtin-routes'
 
-const wrapTrie = (apiHandlers, rootPath) => {
+const wrapTrie = (apiHandlers, staticRoutes, rootPath, customStaticHandler) => {
+  const staticHandler =
+    typeof customStaticHandler === 'function'
+      ? customStaticHandler
+      : failHandler
   const trie = new Trie({
-    ignoreCase: true,
+    ignoreCase: false,
     fixedPathRedirect: true,
     trailingSlashRedirect: true,
   })
 
-  trie
-    .define(getRootBasedUrl(rootPath, '/api/query/:wildcard*'))
-    .handle('GET', queryHandler)
-  trie
-    .define(getRootBasedUrl(rootPath, '/api/query/:wildcard*'))
-    .handle('POST', queryHandler)
-  trie
-    .define(getRootBasedUrl(rootPath, '/api/query'))
-    .handle('GET', queryHandler)
-  trie
-    .define(getRootBasedUrl(rootPath, '/api/query'))
-    .handle('POST', queryHandler)
-
-  trie
-    .define(getRootBasedUrl(rootPath, '/api/commands/:wildcard*'))
-    .handle('POST', commandHandler)
-  trie
-    .define(getRootBasedUrl(rootPath, '/api/commands'))
-    .handle('POST', commandHandler)
-
-  trie
-    .define(getRootBasedUrl(rootPath, '/uploader'))
-    .handle('OPTIONS', uploaderHandler)
-  trie
-    .define(getRootBasedUrl(rootPath, '/uploader'))
-    .handle('POST', uploaderHandler)
-  trie
-    .define(getRootBasedUrl(rootPath, '/uploader'))
-    .handle('PUT', uploaderHandler)
-  trie
-    .define(getRootBasedUrl(rootPath, '/uploader/:params*'))
-    .handle('GET', uploaderHandler)
+  for (const { method, path, handler } of buildInApiHandlers) {
+    trie
+      .define(getRootBasedUrl(rootPath, path))
+      .handle(
+        method,
+        handler === 'QUERY'
+          ? queryHandler
+          : handler === 'COMMAND'
+          ? commandHandler
+          : handler === 'UPLOADER'
+          ? uploaderHandler
+          : failHandler
+      )
+  }
 
   for (const { method, path, handler } of apiHandlers) {
     trie
       .define(getRootBasedUrl(rootPath, path))
       .handle(String(method).toUpperCase(), handler)
+  }
+
+  if (Array.isArray(staticRoutes)) {
+    for (const [staticPath] of staticRoutes) {
+      trie
+        .define(getRootBasedUrl(rootPath, staticPath))
+        .handle('GET', staticHandler)
+
+      trie
+        .define(getRootBasedUrl(rootPath, staticPath))
+        .handle('HEAD', staticHandler)
+    }
   }
 
   try {

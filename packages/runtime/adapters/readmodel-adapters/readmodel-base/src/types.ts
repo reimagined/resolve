@@ -4,10 +4,12 @@ import type {
   SavedEvent,
   EventWithCursor as EventStoreEventWithCursor,
   checkEventsContinuity,
+  EventThreadData as EventStoreEventThreadData,
 } from '@resolve-js/eventstore-base'
 
 export type CheckEventsContinuityMethod = typeof checkEventsContinuity
 export type EventWithCursor = EventStoreEventWithCursor
+export type EventThreadData = EventStoreEventThreadData
 
 export type JsonPrimitive = string | number | boolean | null
 export type JsonMap = {
@@ -154,9 +156,30 @@ export type MonitoringLike = {
 export type ReadModelCursor = Cursor // TODO brand type
 export type ReadModelEvent = SavedEvent
 
-export type EventstoreAdapterLike = EventStoreAdapter
+export type EventStoreAdapterLike = EventStoreAdapter
 
 export type SplitNestedPathMethod = (input: string) => Array<string>
+
+export type EventStoreAdapterKeys = keyof EventStoreAdapter
+export type EventStoreAdapterIsAsyncFunctionalKey<
+  T extends EventStoreAdapterKeys
+> = EventStoreAdapter[T] extends FunctionLike | undefined
+  ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    Exclude<EventStoreAdapter[T], undefined> extends (
+      ...args: infer _Args
+    ) => infer Result
+    ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      Result extends Promise<infer _R>
+      ? T
+      : never
+    : never
+  : never
+
+export type EventStoreAdapterAsyncFunctionKeysDistribute<
+  T extends EventStoreAdapterKeys
+> = T extends any ? EventStoreAdapterIsAsyncFunctionalKey<T> : never
+
+export type EventStoreAdapterAsyncFunctionKeys = EventStoreAdapterAsyncFunctionKeysDistribute<EventStoreAdapterKeys>
 
 export type CommonAdapterPool = {
   monitoring?: MonitoringLike
@@ -259,6 +282,10 @@ export type ReadModelStatus = {
   status: ReadModelRunStatus
 }
 
+export type RuntimeReadModelStatus = ReadModelStatus & {
+  isAlive: boolean
+}
+
 export type ProjectionMethod<AdapterPool extends CommonAdapterPool> = (
   projectionStore: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
   projectionEvent: ReadModelEvent,
@@ -285,6 +312,30 @@ export type AdapterConnection<
 
   disconnect(pool: AdapterPool): Promise<void>
 }
+
+export type AdapterOperationStatusMethodArguments<
+  T extends [includeRuntimeStatus?: boolean],
+  AdapterPool extends CommonAdapterPool
+> = [
+  pool: AdapterPool,
+  readModelName: string,
+  eventstoreAdapter: EventStoreAdapterLike,
+  ...args: T
+]
+
+export type AdapterOperationStatusMethodReturnType<
+  T extends [includeRuntimeStatus?: boolean]
+> = Promise<IfEquals<
+  T['length'],
+  0,
+  ReadModelStatus,
+  IfEquals<
+    T['length'],
+    1,
+    IfEquals<T[0], true, RuntimeReadModelStatus, ReadModelStatus>,
+    never
+  >
+> | null>
 
 export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
   subscribe(
@@ -319,10 +370,9 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
 
   reset(pool: AdapterPool, readModelName: string): Promise<void>
 
-  status(
-    pool: AdapterPool,
-    readModelName: string
-  ): Promise<ReadModelStatus | null>
+  status<T extends [includeRuntimeStatus?: boolean]>(
+    ...args: AdapterOperationStatusMethodArguments<T, AdapterPool>
+  ): AdapterOperationStatusMethodReturnType<T>
 
   build(
     pool: AdapterPool,
@@ -338,7 +388,7 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
       ) => () => Promise<void>
     },
     next: MethodNext,
-    eventstoreAdapter: EventstoreAdapterLike,
+    eventstoreAdapter: EventStoreAdapterLike,
     getVacantTimeInMillis: MethodGetRemainingTime,
     buildInfo: BuildInfo
   ): Promise<void>
@@ -368,11 +418,14 @@ export type ConnectMethod<AdapterPool extends CommonAdapterPool> = (
   readModelName: string
 ) => Promise<ReadModelStore<StoreApi<AdapterPool>>>
 
+export type WrapWithCloneArgsMethod = <T extends FunctionLike>(fn: T) => T
+
 export type WrapConnectMethod = <
   AdapterPool extends CommonAdapterPool,
   AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
 >(
   pool: BaseAdapterPool<AdapterPool>,
+  wrapWithCloneArgs: WrapWithCloneArgsMethod,
   connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],
   storeApi: StoreApi<AdapterPool>,
   options: AdapterOptions
@@ -444,6 +497,7 @@ export type BaseAdapterImports = {
   splitNestedPath: SplitNestedPathMethod
   checkEventsContinuity: CheckEventsContinuityMethod
   withPerformanceTracer: WithPerformanceTracerMethod
+  wrapWithCloneArgs: WrapWithCloneArgsMethod
   wrapConnect: WrapConnectMethod
   wrapDisconnect: WrapDisconnectMethod
   wrapDispose: WrapDisposeMethod

@@ -22,11 +22,7 @@ const startExpress = async (resolve) => {
 
     const notReadyListeners = new Set([...resolve.eventListeners.keys()])
 
-    for (
-      let isFirstIteration = true;
-      upstream && notReadyListeners.size > 0;
-      isFirstIteration = false
-    ) {
+    while (upstream && notReadyListeners.size > 0) {
       for (const eventSubscriber of notReadyListeners) {
         const {
           successEvent,
@@ -35,14 +31,11 @@ const startExpress = async (resolve) => {
           status,
         } = await currentResolve.eventSubscriber.status({ eventSubscriber })
 
-        if (status === 'deliver' && isFirstIteration) {
-          await currentResolve.eventSubscriber.resume({ eventSubscriber })
-        }
-
         if (
           successEvent != null ||
           failedEvent != null ||
-          (Array.isArray(errors) && errors.length > 0)
+          (Array.isArray(errors) && errors.length > 0) ||
+          status !== 'deliver'
         ) {
           notReadyListeners.delete(eventSubscriber)
         }

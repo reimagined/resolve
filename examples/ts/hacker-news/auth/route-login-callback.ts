@@ -3,7 +3,10 @@ import jwtSecret from './jwt-secret'
 
 const API_GATEWAY_TIMEOUT = 30000
 
-const routeLoginCallback = async ({ resolve }, username) => {
+const routeLoginCallback = async (
+  { resolve }: { resolve: any },
+  username: string
+) => {
   const startTimestamp = Date.now()
 
   while (true) {

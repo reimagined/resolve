@@ -10,7 +10,7 @@ describe('read-models', () => {
     const aggregateId = '00000000-0000-0000-0000-000000000000'
 
     test('resolver "all" should return created aggregates', async () => {
-      const result = await givenEvents([
+      const result = (await givenEvents([
         {
           aggregateId,
           type: MY_AGGREGATE_CREATED,
@@ -22,7 +22,7 @@ describe('read-models', () => {
           projection,
           resolvers,
         })
-        .query('all', {})
+        .query('all', {})) as any
 
       expect(result[0]).toMatchObject({ name: 'Test Aggregate' })
     })
