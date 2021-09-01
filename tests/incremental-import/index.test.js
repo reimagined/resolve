@@ -291,26 +291,30 @@ test('inject-events should work correctly with retries', async () => {
   const incrementalImportEvents = []
 
   for (let eventIndex = 0; eventIndex < countInitialEvents; eventIndex++) {
+    const timestamp = Date.now()
+    const type = `EVENT${eventIndex % 3}`
+    const aggregateId = `aggregateId${eventIndex % 10}`
+
     if (eventIndex < countInitialEvents * 0.66) {
       initialEvents.push({
         threadId: eventIndex % 256,
         threadCounter: Math.floor(eventIndex / 256),
-        aggregateId: `aggregateId${eventIndex % 10}`,
+        aggregateId,
         aggregateVersion: Math.floor(eventIndex / 10) + 1,
-        type: `EVENT${eventIndex % 3}`,
+        type,
         payload: { eventIndex },
-        timestamp: Date.now(),
+        timestamp,
       })
     }
     if (eventIndex > countInitialEvents * 0.33) {
       incrementalImportEvents.push({
         threadId: eventIndex % 256,
         threadCounter: Math.floor(eventIndex / 256),
-        aggregateId: `aggregateId${eventIndex % 10}`,
+        aggregateId,
         aggregateVersion: Math.floor(eventIndex / 10) + 1,
-        type: `EVENT${eventIndex % 3}`,
+        type,
         payload: { eventIndex },
-        timestamp: Date.now(),
+        timestamp,
       })
     }
   }
