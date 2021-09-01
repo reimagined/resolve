@@ -57,7 +57,7 @@ Searches for data items based on the specified expression.
 | tableName           | A table name.                                                           |
 | searchCondition     | An object that defines a search expression.                             |
 | projectionCondition | Defines which fields should be included into the resulting data sample. |
-| sortCondition       | A sort order.                                                           |
+| sortCondition       | Defines how to sort the resulting data sample.                          |
 | skip                | A number of data items to skip.                                         |
 | limit               | The maximum number of data items to fetch.                              |
 
@@ -143,10 +143,10 @@ Returns the number of items that meet the specified condition.
 
 #### Arguments
 
-| Argument Name | Description                                 |
-| ------------- | ------------------------------------------- |
-| tableName     | A table name.                               |
-| sortCondition | An object that defines a search expression. |
+| Argument Name   | Description                                   |
+| --------------- | --------------------------------------------- |
+| tableName       | A table name.                                 |
+| searchCondition | An object that defines a search expression.   |
 
 #### Example
 
