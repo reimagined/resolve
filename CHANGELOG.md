@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.9...HEAD)
+
+**Documentation:**
+
+- Describe middleware [\#2004](https://github.com/reimagined/resolve/pull/2004)
+
 ## [V0.31.9](https://github.com/reimagined/resolve/tree/V0.31.9) (2021-08-31)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.8...V0.31.9)
