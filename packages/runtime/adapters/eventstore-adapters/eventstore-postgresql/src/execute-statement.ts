@@ -48,6 +48,15 @@ const executeStatement = async (
 
         if (!useDistinctConnection) await pool.getConnectPromise()
         reconnectionTimes++
+      } else if (
+        error != null &&
+        error.message === 'Client was closed and is not queryable'
+      ) {
+        if (reconnectionTimes > MAX_RECONNECTIONS) {
+          throw error
+        }
+        if (!useDistinctConnection) await pool.getConnectPromise()
+        reconnectionTimes++
       } else {
         throw error
       }

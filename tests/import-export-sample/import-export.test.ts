@@ -29,7 +29,7 @@ function getInterruptingTimeout() {
 }
 
 function getInputEventsCount() {
-  return isServerlessAdapter() ? 500 : 1000
+  return isServerlessAdapter() ? 500 : 2500
 }
 
 describe('import-export events', () => {
