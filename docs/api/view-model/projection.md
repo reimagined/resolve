@@ -1,9 +1,7 @@
 ---
-id: view-model
-title: View Model
+id: projection
+title: Projection
 ---
-
-## View Model Projection
 
 A view model projection is an object of the following structure:
 
@@ -24,8 +22,6 @@ const projection = {
 }
 ```
 
-### Event Handler
-
 An event handler implementation receives the following arguments:
 
 | Argument Name | Description                                                                                                                                    |
@@ -37,7 +33,7 @@ An event handler implementation receives the following arguments:
 
 An event handler should return a new state object.
 
-### Event Handler Context
+## Context
 
 A view model event handler context is an object with the following fields:
 

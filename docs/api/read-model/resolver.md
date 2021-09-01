@@ -1,6 +1,6 @@
 ---
-id: read-model-resolver
-title: Read Model Resolver
+id: resolver
+title: Resolver
 description: A resolver is the part of a Read Model that handles data requests.
 ---
 

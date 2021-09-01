@@ -1,7 +1,6 @@
 ---
 id: command-handler
 title: Command Handler
-description: Aggregate command handlers handle incoming commands and produce events.
 ---
 
 A command handler function has the following structure:
@@ -24,7 +23,7 @@ A command handler implementation receives the following arguments:
 | command       | An object that contains the incoming command's data.                                                  |
 | context       | An object that contains data and functions related to the current operation.                          |
 
-## context
+## Context
 
 The `context` argument is an object with the following fields:
 

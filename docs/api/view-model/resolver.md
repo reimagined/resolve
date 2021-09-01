@@ -1,0 +1,4 @@
+---
+id: resolver
+title: Resolver
+---

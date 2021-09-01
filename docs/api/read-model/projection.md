@@ -1,7 +1,6 @@
 ---
-id: read-model-event-handler
-title: Read Model Event Handler
-description: Event handlers build a Read Model state based on incoming events.
+id: projection
+title: Projection
 ---
 
 A read model event handler function has the following structure:

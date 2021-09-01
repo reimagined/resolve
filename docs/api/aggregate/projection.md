@@ -1,9 +1,7 @@
 ---
-id: aggregate
-title: Aggregate
+id: projection
+title: Projection
 ---
-
-## Aggregate Projection
 
 An aggregate projection is an object of the following structure:
 
@@ -23,8 +21,6 @@ const projection = {
   ...
 }
 ```
-
-### Event Handler
 
 An event handler implementation receives the following arguments:
 
