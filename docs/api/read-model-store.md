@@ -91,7 +91,7 @@ The **projection** argument should be an object, in which keys are field names a
 
 The first field in a projection object defines how the projection is interpreted:
 
-- If the first field's value is `1`, the projection works in inclusive mode. In this mode, you only need to specify included fields. All omitted fields are excluded by default.
+- If the first field's value is `1`, the projection works in inclusive mode. In this mode, you only need to specify included fields. All omitted fields are excluded.
 - If the first field's value is `0`, the projection works in exclusive mode. In this mode, only excluded fields should be specified explicitly and all omitted fields are included.
 
 #### Example
