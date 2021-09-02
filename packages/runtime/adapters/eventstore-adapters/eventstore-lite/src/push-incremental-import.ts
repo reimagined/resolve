@@ -1,8 +1,9 @@
-import { AdapterPool } from './types'
+import type { AdapterPool } from './types'
 import { InputEvent, THREAD_COUNT } from '@resolve-js/eventstore-base'
+import isIntegerOverflowError from './integer-overflow-error'
 
 const pushIncrementalImport = async (
-  { database, eventsTableName, escapeId, escape }: AdapterPool,
+  { executeQuery, eventsTableName, escapeId, escape }: AdapterPool,
   events: InputEvent[],
   importId: string
 ): Promise<void> => {
@@ -14,7 +15,7 @@ const pushIncrementalImport = async (
       `${eventsTableName}-incremental-import`
     )
 
-    await database.exec(
+    await executeQuery(
       `BEGIN IMMEDIATE;
       SELECT ABS("CTE"."IncrementalImportFailed") FROM (
         SELECT 0 AS "IncrementalImportFailed"
@@ -48,12 +49,12 @@ const pushIncrementalImport = async (
     )
   } catch (error) {
     try {
-      await database.exec(`ROLLBACK;`)
+      await executeQuery(`ROLLBACK;`)
     } catch (e) {}
     if (
       error != null &&
-      (error.message === 'SQLITE_ERROR: integer overflow' ||
-        /^SQLITE_ERROR:.*? not exists$/.test(error.message))
+      (isIntegerOverflowError(error.message) ||
+        /^.*? not exists$/.test(error.message))
     ) {
       throw new Error(`Incremental importId=${importId} does not exist`)
     } else {

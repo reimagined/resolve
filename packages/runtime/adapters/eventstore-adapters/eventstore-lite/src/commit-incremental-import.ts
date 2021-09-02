@@ -1,7 +1,8 @@
-import { AdapterPool } from './types'
+import type { AdapterPool } from './types'
+import isIntegerOverflowError from './integer-overflow-error'
 
 const commitIncrementalImport = async (
-  { database, eventsTableName, escapeId, escape }: AdapterPool,
+  { executeQuery, eventsTableName, escapeId, escape }: AdapterPool,
   importId: string
 ): Promise<void> => {
   const incrementalImportTableAsId = escapeId(
@@ -13,7 +14,7 @@ const commitIncrementalImport = async (
   const eventsTableAsId = escapeId(eventsTableName)
 
   try {
-    await database.exec(`BEGIN IMMEDIATE;
+    await executeQuery(`BEGIN IMMEDIATE;
       SELECT ABS("CTE1"."IncrementalImportFailed") FROM (
         SELECT 0 AS "IncrementalImportFailed"
       UNION ALL
@@ -37,10 +38,10 @@ const commitIncrementalImport = async (
         WHERE "MaybeEqualEvents"."payloadA" = "MaybeEqualEvents"."payloadB"
       );
       
-      SELECT ABS("CTE2"."IncrementalImportFailed") FROM (
-      SELECT 0 AS "IncrementalImportFailed"
+      SELECT json_type("CTE2"."IncrementalImportFailed") FROM (
+      SELECT '{}' AS "IncrementalImportFailed"
       UNION ALL
-        SELECT -9223372036854775808 AS "IncrementalImportFailed"
+        SELECT 'Malformed' AS "IncrementalImportFailed"
         FROM ${eventsTableAsId}
         WHERE ${eventsTableAsId}."timestamp" > (
           SELECT MIN(${incrementalImportTableAsId}."timestamp") FROM ${incrementalImportTableAsId}
@@ -111,21 +112,19 @@ const commitIncrementalImport = async (
       `)
   } catch (error) {
     try {
-      await database.exec(`ROLLBACK;`)
+      await executeQuery(`ROLLBACK;`)
     } catch (e) {}
-    if (
-      error != null &&
-      (error.message === 'SQLITE_ERROR: integer overflow' ||
-        /^SQLITE_ERROR:.*? not exists$/.test(error.message))
-    ) {
-      throw new Error(
-        `Either event batch has timestamps from the past or incremental importId=${importId} does not exist`
-      )
+    if (error != null && isIntegerOverflowError(error.message)) {
+      throw new Error(`Incremental importId=${importId} does not exist`)
+    } else if (error != null && /^.*? not exists$/.test(error.message)) {
+      throw new Error('Incremental import table does not exist')
+    } else if (error != null && error.message.endsWith('malformed JSON')) {
+      throw new Error('Event batch has timestamps from the past')
     } else {
       throw error
     }
   } finally {
-    await database.exec(`DROP TABLE IF EXISTS ${incrementalImportTableAsId};`)
+    await executeQuery(`DROP TABLE IF EXISTS ${incrementalImportTableAsId};`)
   }
 }
 

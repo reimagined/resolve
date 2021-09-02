@@ -6,7 +6,7 @@ import executeSequence from './execute-sequence'
 import { isAlreadyExistsError } from './resource-errors'
 
 const initSecrets = async ({
-  database,
+  executeQuery,
   databaseFile,
   secretsTableName,
   escapeId,
@@ -30,7 +30,7 @@ const initSecrets = async ({
   ]
 
   const errors: any[] = await executeSequence(
-    database,
+    executeQuery,
     statements,
     log,
     (error) => {

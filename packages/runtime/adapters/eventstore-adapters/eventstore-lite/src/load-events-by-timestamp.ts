@@ -10,13 +10,13 @@ const loadEventsByTimestamp = async (
   pool: AdapterPool,
   filter: TimestampFilter
 ): Promise<EventsWithCursor> => {
-  const { database, escapeId, eventsTableName, shapeEvent } = pool
+  const { executeStatement, escapeId, eventsTableName, shapeEvent } = pool
 
   const resultQueryCondition = createQuery(pool, filter)
 
   const tableNameAsId = escapeId(eventsTableName)
 
-  const rows = await database.all(
+  const rows = await executeStatement(
     `SELECT * FROM ${tableNameAsId}
     ${resultQueryCondition}
     ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC

@@ -4,9 +4,13 @@ import type {
   ConnectionDependencies,
   SqliteAdapterPoolConnectedProps,
   SqliteAdapterConfig,
+  AdapterPool,
+  BetterSqliteDb,
 } from './types'
 import { SqliteAdapterConfigSchema } from './types'
 import { validate } from '@resolve-js/eventstore-base'
+import executeStatement from './execute-statement'
+import executeQuery from './execute-query'
 
 const SQLITE_BUSY = 'SQLITE_BUSY'
 const randRange = (min: number, max: number): number =>
@@ -17,7 +21,7 @@ const fullJitter = (retries: number): number =>
 
 const connect = async (
   pool: AdapterPoolPrimal,
-  { sqlite, tmp, os, fs }: ConnectionDependencies,
+  { BetterSqlite, tmp, os, fs }: ConnectionDependencies,
   config: SqliteAdapterConfig
 ): Promise<void> => {
   const log = getLog('connect')
@@ -47,7 +51,7 @@ const connect = async (
   log.verbose(`secretsTableName: ${secretsTableName}`)
   log.verbose(`subscribersTableName: ${subscribersTableName}`)
 
-  let connector
+  let connector: () => Promise<SqliteAdapterPoolConnectedProps['database']>
   if (databaseFile === ':memory:') {
     log.debug(`using memory connector`)
     if (process.env.RESOLVE_LAUNCH_ID != null) {
@@ -79,14 +83,19 @@ const connect = async (
       }
     }
 
-    connector = sqlite.open.bind(sqlite, pool.memoryStore.name)
+    const memoryStoreFileName = pool.memoryStore.name
+    connector = async () => {
+      return new BetterSqlite(memoryStoreFileName)
+    }
   } else {
     log.debug(`using disk file connector`)
-    connector = sqlite.open.bind(sqlite, databaseFile)
+    connector = async () => {
+      return new BetterSqlite(databaseFile)
+    }
   }
 
   log.debug(`connecting`)
-  let database
+  let database: SqliteAdapterPoolConnectedProps['database']
   for (let retry = 0; ; retry++) {
     try {
       database = await connector()
@@ -96,8 +105,10 @@ const connect = async (
         log.warn(`received SQLITE_BUSY error code, retrying`)
         await new Promise((resolve) => setTimeout(resolve, fullJitter(retry)))
       } else {
-        log.error(error.message)
-        log.verbose(error.stack)
+        if (error != null) {
+          log.error(error.message)
+          log.verbose(error.stack)
+        }
         throw error
       }
     }
@@ -105,24 +116,19 @@ const connect = async (
 
   log.debug(`adjusting connection`)
 
-  log.verbose(`Entering driver serialize mode`)
-  await (database as any)?.driver?.serialize?.()
+  const pragma = async (pragmaSetting: string) => {
+    log.verbose(`PRAGMA ${pragmaSetting}`)
+    database.pragma(pragmaSetting)
+  }
 
-  log.verbose(`PRAGMA busy_timeout=1000000`)
-  await database.exec(`PRAGMA busy_timeout=1000000`)
-
-  log.verbose(`PRAGMA encoding=${escape('UTF-8')}`)
-  await database.exec(`PRAGMA encoding=${escape('UTF-8')}`)
-
-  log.verbose(`PRAGMA synchronous=EXTRA`)
-  await database.exec(`PRAGMA synchronous=EXTRA`)
+  await pragma('busy_timeout=1000000')
+  await pragma(`encoding=${escape('UTF-8')}`)
+  await pragma('synchronous=EXTRA')
 
   if (databaseFile === ':memory:') {
-    log.verbose(`PRAGMA journal_mode=MEMORY`)
-    await database.exec(`PRAGMA journal_mode=MEMORY`)
+    await pragma('journal_mode=MEMORY')
   } else {
-    log.verbose(`PRAGMA journal_mode=DELETE`)
-    await database.exec(`PRAGMA journal_mode=DELETE`)
+    await pragma('journal_mode=DELETE')
   }
 
   Object.assign<AdapterPoolPrimal, Partial<SqliteAdapterPoolConnectedProps>>(
@@ -134,6 +140,8 @@ const connect = async (
       snapshotsTableName,
       secretsTableName,
       subscribersTableName,
+      executeStatement: executeStatement.bind(null, pool as AdapterPool),
+      executeQuery: executeQuery.bind(null, pool as AdapterPool),
     }
   )
 
