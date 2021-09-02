@@ -1,4 +1,9 @@
-import { adapterFactory, adapters, jestTimeout } from '../eventstore-test-utils'
+import {
+  adapterFactory,
+  adapters,
+  jestTimeout,
+  sqliteTempFileName,
+} from '../eventstore-test-utils'
 import type { EventWithCursor, Adapter } from '@resolve-js/eventstore-base'
 import { SecretsManager } from '@resolve-js/core'
 
@@ -8,20 +13,26 @@ describe(`${adapterFactory.name}. Eventstore adapter parallel save`, () => {
   const parallelAdapters: Adapter[] = []
   const parallelConnections = 10
 
+  const dbName = 'parallel_write_testing'
+
   beforeAll(async () => {
-    await adapterFactory.create('parallel_write_testing')()
+    await adapterFactory.create(dbName, {
+      databaseFile: sqliteTempFileName(dbName),
+    })()
     for (let i = 0; i < parallelConnections; ++i) {
       parallelAdapters.push(
-        await adapterFactory.createNoInit('parallel_write_testing')()
+        await adapterFactory.createNoInit(dbName, {
+          databaseFile: sqliteTempFileName(dbName),
+        })()
       )
     }
   })
   afterAll(async () => {
     await Promise.all(parallelAdapters.map((adapter) => adapter.dispose()))
-    await adapterFactory.destroy('parallel_write_testing')()
+    await adapterFactory.destroy(dbName)()
   })
 
-  const adapter = adapters['parallel_write_testing']
+  const adapter = adapters[dbName]
 
   const getRandomAdapterInstance = () => {
     return parallelAdapters[Math.floor(Math.random() * parallelAdapters.length)]

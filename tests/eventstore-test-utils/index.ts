@@ -17,7 +17,9 @@ import createPostgresqlAdapter, {
   destroy as destroyPostgresResource,
   PostgresqlAdapterConfig,
 } from '@resolve-js/eventstore-postgresql'
-import { InputEvent } from '@resolve-js/eventstore-base'
+import type { InputEvent } from '@resolve-js/eventstore-base'
+import os from 'os'
+import fs from 'fs'
 
 import { Readable } from 'stream'
 
@@ -155,6 +157,9 @@ const proxy = new Proxy(
     },
   }
 ) as typeof adapters
+
+export const sqliteTempFileName = (uniqueName: string) =>
+  `${os.tmpdir()}/test-${uniqueName}.db`
 
 export { proxy as adapters }
 
@@ -318,8 +323,6 @@ export const adapterFactory = isPostgresServerless()
         additionalOptions?: Partial<SqliteAdapterConfig>
       ) {
         return async () => {
-          process.env.RESOLVE_LAUNCH_ID = `uniqueName-${process.pid}`
-
           adapters[uniqueName] = createSqliteAdapter({
             databaseFile: ':memory:',
             ...additionalOptions,
@@ -333,10 +336,7 @@ export const adapterFactory = isPostgresServerless()
         additionalOptions?: Partial<SqliteAdapterConfig>
       ) {
         return async () => {
-          process.env.RESOLVE_LAUNCH_ID = `uniqueName-${process.pid}`
-
           const adapter = createSqliteAdapter({
-            databaseFile: ':memory:',
             ...additionalOptions,
           })
           await adapter.describe()
@@ -349,6 +349,12 @@ export const adapterFactory = isPostgresServerless()
           await adapters[uniqueName].dispose()
 
           delete adapters[uniqueName]
+
+          try {
+            fs.unlinkSync(sqliteTempFileName(uniqueName))
+          } catch (err) {
+            // pass
+          }
         }
       },
     }

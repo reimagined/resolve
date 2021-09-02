@@ -1,10 +1,10 @@
 import type { AdapterPool } from './types'
-import { InputEvent, THREAD_COUNT } from '@resolve-js/eventstore-base'
+import { VersionlessEvent, THREAD_COUNT } from '@resolve-js/eventstore-base'
 import isIntegerOverflowError from './integer-overflow-error'
 
 const pushIncrementalImport = async (
   { executeQuery, eventsTableName, escapeId, escape }: AdapterPool,
-  events: InputEvent[],
+  events: VersionlessEvent[],
   importId: string
 ): Promise<void> => {
   try {
