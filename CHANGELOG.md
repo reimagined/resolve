@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.9...HEAD)
 
+**Enhancements:**
+
+- Replace sqlite3 with better-sqlite3 [\#2027](https://github.com/reimagined/resolve/pull/2027)
+
 **Documentation:**
 
 - Describe middleware [\#2004](https://github.com/reimagined/resolve/pull/2004)
