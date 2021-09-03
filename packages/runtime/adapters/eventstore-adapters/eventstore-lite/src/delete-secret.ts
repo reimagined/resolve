@@ -1,17 +1,24 @@
 import { getLog } from './get-log'
-import { AdapterPool } from './types'
+import type { AdapterPool } from './types'
 import {
   EventstoreFrozenError,
   InputEvent,
   makeDeleteSecretEvent,
   THREAD_COUNT,
 } from '@resolve-js/eventstore-base'
+import isIntegerOverflowError from './integer-overflow-error'
 
 const deleteSecret = async (
   pool: AdapterPool,
   selector: string
 ): Promise<boolean> => {
-  const { database, secretsTableName, escapeId, escape, eventsTableName } = pool
+  const {
+    executeQuery,
+    secretsTableName,
+    escapeId,
+    escape,
+    eventsTableName,
+  } = pool
 
   const log = getLog('secretsManager:deleteSecret')
   log.debug(`removing secret from the database`)
@@ -30,7 +37,7 @@ const deleteSecret = async (
   log.debug(`executing SQL query`)
 
   try {
-    await database.exec(
+    await executeQuery(
       `BEGIN IMMEDIATE;
 
     SELECT ABS("CTE"."EventStoreIsFrozen") FROM (
@@ -91,23 +98,24 @@ const deleteSecret = async (
     return true
   } catch (error) {
     const errorMessage =
-      error != null && error.message != null ? error.message : ''
-    const errorCode = error != null && error.code != null ? error.code : ''
+      error != null && error.message != null ? (error.message as string) : ''
+    const errorCode =
+      error != null && error.code != null ? (error.code as string) : ''
 
     if (errorMessage.indexOf('transaction within a transaction') > -1) {
       return await deleteSecret(pool, selector)
     }
 
     try {
-      await database.exec('ROLLBACK;')
+      await executeQuery('ROLLBACK;')
     } catch (e) {}
 
-    if (errorMessage === 'SQLITE_ERROR: integer overflow') {
+    if (isIntegerOverflowError(errorMessage)) {
       throw new EventstoreFrozenError()
-    } else if (errorMessage === 'SQLITE_ERROR: malformed JSON') {
+    } else if (errorMessage.endsWith('malformed JSON')) {
       return false
     } else if (
-      errorCode === 'SQLITE_CONSTRAINT' &&
+      errorCode.startsWith('SQLITE_CONSTRAINT') &&
       errorMessage.indexOf('PRIMARY') > -1
     ) {
       return await deleteSecret(pool, selector)

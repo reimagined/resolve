@@ -8,7 +8,13 @@ import {
 } from '@resolve-js/eventstore-base'
 
 const getCursorUntilEventTypes = async (
-  { database, escapeId, escape, eventsTableName, shapeEvent }: AdapterPool,
+  {
+    executeStatement,
+    escapeId,
+    escape,
+    eventsTableName,
+    shapeEvent,
+  }: AdapterPool,
   cursor: Cursor,
   untilEventTypes: Array<SavedEvent['type']>
 ): Promise<string> => {
@@ -29,7 +35,7 @@ const getCursorUntilEventTypes = async (
     )
     .join(' OR ')}`
 
-  const rows = (await database.all(
+  const rows = (await executeStatement(
     `SELECT "threadId", MIN("threadCounter") AS "threadCounter" FROM (
           SELECT "threadId", MIN("threadCounter") AS "threadCounter" FROM ${tableNameAsId} WHERE type IN 
           (${untilEventTypes.map((t) => escape(t)).join(', ')}) 

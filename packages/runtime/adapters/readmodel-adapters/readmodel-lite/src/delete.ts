@@ -27,7 +27,8 @@ const del: CurrentStoreApi['delete'] = async (
 
   await inlineLedgerRunQuery(
     `DELETE FROM ${escapeId(`${tablePrefix}${tableName}`)}
-    ${inlineSearchExpr}`
+    ${inlineSearchExpr}`,
+    true
   )
 }
 

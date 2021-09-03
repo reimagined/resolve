@@ -337,6 +337,7 @@ module.exports = {
           'postcss',
           'postgres',
           'postgresql',
+          'pragma',
           'prefetch',
           'principial',
           'Postfix',
