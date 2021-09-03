@@ -191,45 +191,54 @@ const wrapProcedure = (readModel) => (input, options) => {
 
   const {
     events: inputEvents,
-    eventstoreLocalTableName,
+    localEventsDatabaseName,
+    localEventsTableName,
     maxExecutionTime,
   } = input
-  if (inputEvents != null && eventstoreLocalTableName != null) {
+  if (
+    inputEvents != null &&
+    (localEventsDatabaseName != null || localEventsTableName != null)
+  ) {
     throw new Error(
-      'Providing events and eventstoreLocalTableName is mutually exclusive'
+      'Providing events and localEventsDatabaseName/localEventsTableName is mutually exclusive'
     )
   }
-  let events = inputEvents
-  if (eventstoreLocalTableName != null) {
+
+  let events = null
+  if (localEventsDatabaseName != null && localEventsTableName != null) {
     try {
-      events = null
-      const databaseNameAsId = escapeId(options.schemaName)
+      const ledgerDatabaseNameAsId = escapeId(options.schemaName)
       const ledgerTableNameAsId = escapeId(
         `${options.tablePrefix}__${options.schemaName}__LEDGER__`
       )
-      const eventsTableAsId = escapeId(eventstoreLocalTableName)
+      const eventsDatabaseNameAsId = escapeId(localEventsDatabaseName)
+      const eventsTableAsId = escapeId(localEventsTableName)
       const [{ EventTypes, Cursor }] = plv8.execute(`
-      SELECT "EventTypes", "Cursor" FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+      SELECT "EventTypes", "Cursor" FROM ${ledgerDatabaseNameAsId}.${ledgerTableNameAsId}
       WHERE "EventSubscriber" = ${escapeStr(readModel.name)}
     `)
 
-      events = plv8.execute(`SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}
+      events = Array.from(
+        plv8.execute(`SELECT * FROM ${eventsDatabaseNameAsId}.${eventsTableAsId}
       WHERE 1=1 ${
         EventTypes != null && EventTypes.length > 0
           ? `AND "type" IN (${EventTypes.map(escapeStr)})`
           : ''
       } AND (${cursorStrToHex(Cursor)
-        .map(
-          (threadCounter, threadId) =>
-            `"threadId" = ${+threadId} AND "threadCounter" >= x'${threadCounter}'::INT8 `
-        )
-        .join(' OR ')})
+          .map(
+            (threadCounter, threadId) =>
+              `"threadId" = ${+threadId} AND "threadCounter" >= x'${threadCounter}'::INT8 `
+          )
+          .join(' OR ')})
       ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
       LIMIT 1000
     `)
+      )
     } catch (err) {
       throw new Error('Local events reading failed')
     }
+  } else if (inputEvents != null) {
+    events = inputEvents
   }
 
   if (!Array.isArray(events)) {
