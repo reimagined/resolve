@@ -13,7 +13,7 @@ On the frontend, you can use the reSolve HTTP API or one of the included client 
 
 ### Domain Driven Design
 
-Domain aggregate is a business model unit. Business logic is mostly in command handlers for the aggregate.
+A domain aggregate is a business model unit. Business logic is defined primarily in aggregate command handlers.
 
 ### Event Sourcing
 
@@ -21,9 +21,9 @@ Don't store system state, store events that brought system to this state.
 
 ### CQRS
 
-System is divided in two "sides":
+The system is divided in two "sides":
 
-- Write Side accepts commands and generate events that stored in the Event Store.
+- Write Side accepts commands and generates events that are stored in the Event Store.
 - Read Side applies events to Read Models, and process queries.
 
 Write side is optimized for writing, read side - for reading.
