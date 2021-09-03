@@ -187,7 +187,8 @@ export const buildEvents: (
   } = pool
   const { eventsWithCursors } = buildInfo
   const isContinuousMode =
-    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function'
+    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function' &&
+    !!process.env.EXPERIMENTAL_SQS_TRANSPORT
   const getContinuousLatestCursor = async (
     cursor: ReadModelCursor,
     events: Array<ReadModelEvent>,
