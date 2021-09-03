@@ -6,12 +6,12 @@ const replicateSecrets = async (
   existingSecrets: OldSecretRecord[],
   deletedSecrets: Array<OldSecretRecord['id']>
 ): Promise<void> => {
-  const { database, secretsTableName, escape, escapeId } = pool
+  const { executeQuery, secretsTableName, escape, escapeId } = pool
 
   const secretsTableNameAsId = escapeId(secretsTableName)
 
   if (existingSecrets.length > 0) {
-    await database.exec(
+    await executeQuery(
       `INSERT OR IGNORE INTO ${secretsTableNameAsId}(
       "idx",
       "id",
@@ -27,7 +27,7 @@ const replicateSecrets = async (
     )
   }
   if (deletedSecrets.length > 0) {
-    await database.exec(`UPDATE ${secretsTableNameAsId} SET "secret" = NULL
+    await executeQuery(`UPDATE ${secretsTableNameAsId} SET "secret" = NULL
       WHERE "id" IN (${deletedSecrets.map((id) => escape(id)).join(',')})`)
   }
 }

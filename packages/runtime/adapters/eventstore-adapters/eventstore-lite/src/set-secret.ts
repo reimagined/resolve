@@ -1,24 +1,32 @@
 import { getLog } from './get-log'
-import { AdapterPool } from './types'
+import type { AdapterPool } from './types'
 import {
   EventstoreFrozenError,
   InputEvent,
   makeSetSecretEvent,
   THREAD_COUNT,
 } from '@resolve-js/eventstore-base'
+import isIntegerOverflowError from './integer-overflow-error'
 
 const setSecret = async (
   pool: AdapterPool,
   selector: string,
   secret: string
 ): Promise<void> => {
-  const { database, eventsTableName, secretsTableName, escape, escapeId } = pool
+  const {
+    executeQuery,
+    databaseFile,
+    eventsTableName,
+    secretsTableName,
+    escape,
+    escapeId,
+  } = pool
 
   const log = getLog('secretsManager:setSecret')
   log.debug(`setting secret value within database`)
 
   log.verbose(`selector: ${selector}`)
-  log.verbose(`database: ${database}`)
+  log.verbose(`database: ${databaseFile}`)
   log.verbose(`secretsTableName: ${secretsTableName}`)
 
   const secretsTableNameAsId = escapeId(secretsTableName)
@@ -31,7 +39,7 @@ const setSecret = async (
 
   try {
     log.debug(`executing SQL query`)
-    await database.exec(
+    await executeQuery(
       `BEGIN IMMEDIATE;
 
       SELECT ABS("CTE"."EventStoreIsFrozen") FROM (
@@ -88,20 +96,21 @@ const setSecret = async (
   } catch (error) {
     const errorMessage =
       error != null && error.message != null ? error.message : ''
-    const errorCode = error != null && error.code != null ? error.code : ''
+    const errorCode =
+      error != null && error.code != null ? (error.code as string) : ''
 
     if (errorMessage.indexOf('transaction within a transaction') > -1) {
       return await setSecret(pool, selector, secret)
     }
 
     try {
-      await database.exec('ROLLBACK;')
+      await executeQuery('ROLLBACK;')
     } catch (e) {}
 
-    if (errorMessage === 'SQLITE_ERROR: integer overflow') {
+    if (isIntegerOverflowError(errorMessage)) {
       throw new EventstoreFrozenError()
     } else if (
-      errorCode === 'SQLITE_CONSTRAINT' &&
+      errorCode.startsWith('SQLITE_CONSTRAINT') &&
       errorMessage.indexOf('PRIMARY') > -1
     ) {
       return await setSecret(pool, selector, secret)

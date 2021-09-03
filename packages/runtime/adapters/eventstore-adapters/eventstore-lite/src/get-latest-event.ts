@@ -10,11 +10,11 @@ const getLatestEvent = async (
   pool: AdapterPool,
   filter: LatestEventFilter
 ): Promise<SavedEvent | null> => {
-  const { database, eventsTableName, escapeId, shapeEvent } = pool
+  const { executeStatement, eventsTableName, escapeId, shapeEvent } = pool
 
   const resultQueryCondition = createQuery(pool, filter as EventFilter)
 
-  const rows = await database.all(
+  const rows = await executeStatement(
     `SELECT * FROM ${escapeId(eventsTableName)} ${resultQueryCondition}
     ORDER BY ${escapeId('timestamp')} DESC
     LIMIT 0, 1`

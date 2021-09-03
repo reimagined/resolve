@@ -19,7 +19,7 @@ class WritableStreamBuffer extends Writable {
   _write(chunk: any, encoding: string, callback: (error?: Error) => void) {
     chunk.copy(this.buffer, this.size, 0)
     this.size += chunk.length
-    callback()
+    setImmediate(callback)
   }
 }
 

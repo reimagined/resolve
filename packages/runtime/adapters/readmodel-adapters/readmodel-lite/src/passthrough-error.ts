@@ -4,6 +4,10 @@ import type {
   ExtractNewable,
 } from './types'
 
+const checkSqliteCode = (code: any, sqliteCode: string) => {
+  return typeof code === 'string' && code.startsWith(sqliteCode)
+}
+
 const PassthroughError: PassthroughErrorFactory = Object.assign(
   (function (this: PassthroughErrorInstance, isRuntimeError: boolean): void {
     Error.call(this)
@@ -24,11 +28,11 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
         error != null &&
         (/cannot rollback - no transaction is active/i.test(error.message) ||
           (!!includeRuntimeErrors && /integer overflow/i.test(error.message)) ||
-          error.code === 'SQLITE_ABORT' ||
-          error.code === 'SQLITE_BUSY' ||
-          error.code === 'SQLITE_READONLY' ||
-          error.code === 'SQLITE_INTERRUPT' ||
-          error.code === 'SQLITE_LOCKED')
+          checkSqliteCode(error.code, 'SQLITE_ABORT') ||
+          checkSqliteCode(error.code, 'SQLITE_BUSY') ||
+          checkSqliteCode(error.code, 'SQLITE_READONLY') ||
+          checkSqliteCode(error.code, 'SQLITE_INTERRUPT') ||
+          checkSqliteCode(error.code, 'SQLITE_LOCKED'))
       )
     },
   }

@@ -2,18 +2,24 @@ import { getLog } from './get-log'
 import { AdapterPool } from './types'
 
 const getSecret = async (
-  { database, secretsTableName, escapeId, escape }: AdapterPool,
+  {
+    executeStatement,
+    databaseFile,
+    secretsTableName,
+    escapeId,
+    escape,
+  }: AdapterPool,
   selector: string
 ): Promise<string | null> => {
   const log = getLog('secretsManager:getSecret')
   log.debug(`retrieving secret value from the database`)
 
   log.verbose(`selector: ${selector}`)
-  log.verbose(`database: ${database}`)
+  log.verbose(`database: ${databaseFile}`)
   log.verbose(`secretsTableName: ${secretsTableName}`)
 
   log.debug(`executing SQL query`)
-  const rows = await database.all(
+  const rows = await executeStatement(
     `SELECT "secret" FROM ${escapeId(secretsTableName)}
     WHERE id = ${escape(selector)} AND secret IS NOT NULL
     LIMIT 0, 1`
