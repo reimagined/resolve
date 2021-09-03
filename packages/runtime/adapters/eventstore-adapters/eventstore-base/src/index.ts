@@ -116,6 +116,7 @@ export type {
   SecretsWithIdx,
   SecretRecord,
   InputEvent,
+  VersionlessEvent,
   SavedEvent,
   EventThreadData,
   Cursor,

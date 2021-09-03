@@ -1,5 +1,8 @@
 import fs from 'fs'
 import path from 'path'
+
+import type { Adapter } from '@resolve-js/eventstore-base'
+
 // eslint-disable-next-line
 import createEventStoreLiteAdapter from '@resolve-js/eventstore-lite'
 // eslint-disable-next-line
@@ -47,12 +50,10 @@ const createAdapter = () => {
 
   const tempName = Math.floor(Math.random() * 1000000)
   const databaseFile = path.join(__dirname, `${tempName}.events.txt`)
-  const secretsFile = path.join(__dirname, `${tempName}.secrets.txt`)
 
   const adapter = Object.create(
     createEventStoreLiteAdapter({
       databaseFile,
-      secretsFile,
     }),
     {
       drop: {
@@ -63,18 +64,12 @@ const createAdapter = () => {
           try {
             fs.unlinkSync(`${databaseFile}-journal`)
           } catch (error) {}
-          try {
-            fs.unlinkSync(secretsFile)
-          } catch (error) {}
-          try {
-            fs.unlinkSync(`${secretsFile}-journal`)
-          } catch (error) {}
         },
       },
     }
   )
 
-  return adapter
+  return adapter as Adapter
 }
 
 export default createAdapter
