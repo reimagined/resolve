@@ -301,10 +301,8 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
 
 describe(`${adapterFactory.name}. Eventstore adapter import secrets`, () => {
   beforeAll(async () => {
-    await Promise.all([
-      adapterFactory.create('secret_input_testing')(),
-      adapterFactory.create('secret_output_testing')(),
-    ])
+    await adapterFactory.create('secret_input_testing')()
+    await adapterFactory.create('secret_output_testing')()
 
     const outputAdapter = adapters['secret_output_testing']
 
@@ -313,12 +311,10 @@ describe(`${adapterFactory.name}. Eventstore adapter import secrets`, () => {
       await outputAdapter.saveEvent(event)
     }
   })
-  afterAll(() =>
-    Promise.all([
-      adapterFactory.destroy('secret_input_testing')(),
-      adapterFactory.destroy('secret_output_testing')(),
-    ])
-  )
+  afterAll(async () => {
+    await adapterFactory.destroy('secret_input_testing')()
+    await adapterFactory.destroy('secret_output_testing')()
+  })
 
   const inputAdapter = adapters['secret_input_testing']
   const outputAdapter = adapters['secret_output_testing']

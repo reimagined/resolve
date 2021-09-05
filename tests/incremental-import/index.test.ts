@@ -1,5 +1,6 @@
 import { promisify } from 'util'
 import { Readable, pipeline as rawPipeline } from 'stream'
+import type { Adapter } from '@resolve-js/eventstore-base'
 
 import createAdapter from './create-adapter'
 
@@ -119,7 +120,7 @@ function validateEvents(events) {
   }
 }
 
-let adapter = null
+let adapter: Adapter
 
 beforeEach(async () => {
   adapter = createAdapter()

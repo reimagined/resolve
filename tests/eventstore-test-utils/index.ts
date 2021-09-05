@@ -17,7 +17,9 @@ import createPostgresqlAdapter, {
   destroy as destroyPostgresResource,
   PostgresqlAdapterConfig,
 } from '@resolve-js/eventstore-postgresql'
-import { InputEvent } from '@resolve-js/eventstore-base'
+import type { InputEvent } from '@resolve-js/eventstore-base'
+import os from 'os'
+import fs from 'fs'
 
 import { Readable } from 'stream'
 
@@ -156,6 +158,9 @@ const proxy = new Proxy(
   }
 ) as typeof adapters
 
+export const sqliteTempFileName = (uniqueName: string) =>
+  `${os.tmpdir()}/test-${uniqueName}.db`
+
 export { proxy as adapters }
 
 export function getPostgresServerlessOptions(
@@ -202,6 +207,28 @@ export const adapterFactory = isPostgresServerless()
           })
 
           await adapters[uniqueName].init()
+        }
+      },
+      createNoInit(
+        uniqueName: string,
+        additionalOptions?: Partial<PostgresqlAdapterConfig>
+      ) {
+        return async () => {
+          const options = getPostgresServerlessOptions(uniqueName)
+
+          const adapter = createPostgresqlServerlessAdapter({
+            eventsTableName: options.eventsTableName,
+            snapshotsTableName: options.snapshotsTableName,
+            secretsTableName: options.secretsTableName,
+            subscribersTableName: options.subscribersTableName,
+            databaseName: options.databaseName,
+            dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
+            awsSecretStoreArn: options.awsSecretStoreAdminArn,
+            region: options.region,
+            ...additionalOptions,
+          })
+          await adapter.describe()
+          return adapter
         }
       },
       destroy(uniqueName: string) {
@@ -252,6 +279,24 @@ export const adapterFactory = isPostgresServerless()
           await adapters[uniqueName].init()
         }
       },
+      createNoInit(
+        uniqueName: string,
+        additionalOptions?: Partial<PostgresqlAdapterConfig>
+      ) {
+        return async () => {
+          const adapter = createPostgresqlAdapter({
+            databaseName: uniqueName,
+            database: process.env.POSTGRES_DATABASE,
+            host: process.env.POSTGRES_HOST,
+            port: +process.env.POSTGRES_PORT,
+            user: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+            ...additionalOptions,
+          })
+          await adapter.describe()
+          return adapter
+        }
+      },
       destroy(uniqueName: string) {
         return async () => {
           await safeDrop(adapters[uniqueName])
@@ -279,15 +324,23 @@ export const adapterFactory = isPostgresServerless()
       ) {
         return async () => {
           adapters[uniqueName] = createSqliteAdapter({
-            eventsTableName: 'events',
-            snapshotsTableName: 'snapshots',
-            secretsTableName: 'secrets',
-            subscribersTableName: 'subscribers',
             databaseFile: ':memory:',
             ...additionalOptions,
           })
 
           await adapters[uniqueName].init()
+        }
+      },
+      createNoInit(
+        uniqueName: string,
+        additionalOptions?: Partial<SqliteAdapterConfig>
+      ) {
+        return async () => {
+          const adapter = createSqliteAdapter({
+            ...additionalOptions,
+          })
+          await adapter.describe()
+          return adapter
         }
       },
       destroy(uniqueName: string) {
@@ -296,6 +349,12 @@ export const adapterFactory = isPostgresServerless()
           await adapters[uniqueName].dispose()
 
           delete adapters[uniqueName]
+
+          try {
+            fs.unlinkSync(sqliteTempFileName(uniqueName))
+          } catch (err) {
+            // pass
+          }
         }
       },
     }

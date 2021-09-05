@@ -219,9 +219,11 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
   })
 
   test('should load events by distinct event types', async () => {
-    const { events } = await adapter.loadEvents({
+    const eventTypes = ['EVENT_1', 'EVENT_3']
+
+    const { events, cursor } = await adapter.loadEvents({
       limit: countEvents,
-      eventTypes: ['EVENT_1', 'EVENT_3'],
+      eventTypes,
       cursor: null,
     })
     expect(events).toHaveLength(countEvents / 2)
@@ -236,15 +238,24 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
     }
 
     const lastEvent = await adapter.getLatestEvent({
-      eventTypes: ['EVENT_1', 'EVENT_3'],
+      eventTypes,
     })
     expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
+
+    const { cursor: endCursor } = await adapter.loadEvents({
+      limit: 1,
+      cursor,
+      eventTypes,
+    })
+    expect(cursor).toEqual(endCursor)
   })
 
   test('should load events by distinct aggregate ids', async () => {
-    const { events } = await adapter.loadEvents({
+    const aggregateIds = ['aggregateId_2', 'aggregateId_4']
+
+    const { events, cursor } = await adapter.loadEvents({
       limit: countEvents,
-      aggregateIds: ['aggregateId_2', 'aggregateId_4'],
+      aggregateIds,
       cursor: null,
     })
     expect(events).toHaveLength((countEvents / aggregateIdCount) * 2)
@@ -262,9 +273,16 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
     }
 
     const lastEvent = await adapter.getLatestEvent({
-      aggregateIds: ['aggregateId_2', 'aggregateId_4'],
+      aggregateIds,
     })
     expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
+
+    const { cursor: endCursor } = await adapter.loadEvents({
+      limit: 1,
+      cursor,
+      aggregateIds,
+    })
+    expect(cursor).toEqual(endCursor)
   })
 
   test('should load events by combination of event type and aggregate id', async () => {
