@@ -29,7 +29,7 @@ function getInterruptingTimeout() {
 }
 
 function getInputEventsCount() {
-  return isServerlessAdapter() ? 500 : 2500
+  return isServerlessAdapter() ? 500 : 1600
 }
 
 describe('import-export events', () => {
@@ -228,9 +228,6 @@ describe('import-export timeouts', () => {
 
       try {
         const exportStream = inputEventstoreAdapter.exportEvents({ cursor })
-        /*const closePromise = new Promise((resolve) => {
-          exportStream.on('close', resolve)
-        })*/
         const tempStream = createStreamBuffer()
         const pipelinePromise = promisify(pipeline)(
           exportStream,
@@ -311,11 +308,6 @@ describe('import-export timeouts', () => {
           byteOffset,
           maintenanceMode: MAINTENANCE_MODE_MANUAL,
         })
-        /*const finalPromise = new Promise((resolve) => {
-          importStream.on('finish', () => {
-            resolve()
-          })
-        })*/
 
         const pipelinePromise = promisify(pipeline)(
           fs.createReadStream(exportedEventsFileName, { start: byteOffset }),
@@ -339,7 +331,6 @@ describe('import-export timeouts', () => {
           importStream.emit('timeout')
           await pipelinePromise
         }
-        //await finalPromise
 
         byteOffset = importStream.byteOffset
         savedEventsCount += importStream.savedEventsCount
@@ -379,6 +370,5 @@ describe('import-export timeouts', () => {
     expect(allEvents).toHaveLength(inputCountEvents)
     expect(isJsonStreamTimedOutOnce).toBeTruthy()
     expect(steps).toBeGreaterThan(1)
-    //console.log(events.map((event) => event.payload.eventIndex))
   })
 })

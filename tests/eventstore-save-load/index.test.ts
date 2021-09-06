@@ -68,9 +68,11 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
       const event = makeTestEvent(i)
       const saveResult = await adapter.saveEvent(event)
       eventCursorPairs.push(saveResult)
-      await new Promise((resolve) => {
-        setTimeout(resolve, 1)
-      })
+      if (Date.now() === saveResult.event.timestamp) {
+        await new Promise((resolve) => {
+          setTimeout(resolve, 1)
+        })
+      }
     }
     expect(eventCursorPairs).toHaveLength(checkCount)
     eventCursorPairs.sort((a, b) => {
@@ -214,8 +216,8 @@ describe(`${adapterFactory.name}. Eventstore adapter getCursorUntilEventTypes`, 
 
   let firstStopEventCursor: string | null
 
-  test('should return cursor past the last event if no events of stop type in event-store and start with null cursor', async () => {
-    await adapter.saveEvent({
+  test('should return cursor past the last event if there no events of stop type in event-store', async () => {
+    const { cursor: firstCursor } = await adapter.saveEvent({
       aggregateVersion: 1,
       aggregateId: 'ID_1',
       type: 'TYPE_1',
@@ -233,6 +235,10 @@ describe(`${adapterFactory.name}. Eventstore adapter getCursorUntilEventTypes`, 
 
     const cursor = await adapter.getCursorUntilEventTypes(null, ['TYPE_2'])
     expect(cursor).toEqual(endCursor)
+    const cursor2 = await adapter.getCursorUntilEventTypes(firstCursor, [
+      'TYPE_2',
+    ])
+    expect(cursor2).toEqual(endCursor)
   })
 
   test('should return cursor to the event of stop type when starting with null cursor', async () => {
@@ -254,15 +260,24 @@ describe(`${adapterFactory.name}. Eventstore adapter getCursorUntilEventTypes`, 
   })
 
   test('should return cursor to the event of stop type when starting with non-null cursor', async () => {
-    const { cursor: startCursor } = await adapter.loadEvents({
+    const { cursor: firstCursor } = await adapter.loadEvents({
+      limit: 1,
+      cursor: null,
+    })
+
+    const { cursor: endCursor } = await adapter.loadEvents({
       limit: 2,
       cursor: null,
     })
 
-    const cursor = await adapter.getCursorUntilEventTypes(startCursor, [
+    const cursor = await adapter.getCursorUntilEventTypes(firstCursor, [
       'TYPE_2',
     ])
-    expect(cursor).toEqual(startCursor)
+    expect(cursor).toEqual(endCursor)
+    const cursor2 = await adapter.getCursorUntilEventTypes(endCursor, [
+      'TYPE_2',
+    ])
+    expect(cursor2).toEqual(endCursor)
   })
 
   test('should return cursor past the last event if starting with non-null cursor past the event of stop type', async () => {

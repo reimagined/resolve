@@ -22,10 +22,10 @@ Defines a new table within the store.
 
 #### Arguments
 
-| Argument Name    | Description                                         |
-| ---------------- | --------------------------------------------------- |
-| tableName        | The new table's name.                               |
-| tableDescription | An object that describes the new table's structure. |
+| Argument Name    | Description                                       |
+| ---------------- | ------------------------------------------------- |
+| tableName        | The new table's name.                             |
+| tableDeclaration | An object that defines the new table's structure. |
 
 #### Example
 
@@ -52,14 +52,14 @@ Searches for data items based on the specified expression.
 
 #### Arguments
 
-| Argument Name    | Description                                 |
-| ---------------- | ------------------------------------------- |
-| tableName        | A table name.                               |
-| searchExpression | An object that defines a search expression. |
-| fieldList        | A list of fields to fetch.                  |
-| sort             | A sort order.                               |
-| skip             | A number of data items to skip.             |
-| limit            | The maximum number of data items to fetch.  |
+| Argument Name       | Description                                                             |
+| ------------------- | ----------------------------------------------------------------------- |
+| tableName           | A table name.                                                           |
+| searchCondition     | An object that defines a search expression.                             |
+| projectionCondition | Defines which fields should be included into the resulting data sample. |
+| sortCondition       | Defines how to sort the resulting data sample.                          |
+| skip                | A number of data items to skip.                                         |
+| limit               | The maximum number of data items to fetch.                              |
 
 #### Example
 
@@ -84,17 +84,41 @@ const getStories = async (type, store, { first, offset }) => {
 }
 ```
 
+The **projection** argument should be an object, in which keys are field names and values are either `1` or `0`:
+
+- 1 - specifies that the field should be included into the resulting data sample;
+- 0 - specifies that a field should be excluded from the resulting sample.
+
+The first field in a projection object defines how the projection is interpreted:
+
+- If the first field's value is `1`, the projection works in inclusive mode. In this mode, you only need to specify included fields. All omitted fields are excluded.
+- If the first field's value is `0`, the projection works in exclusive mode. In this mode, only excluded fields should be specified explicitly and all omitted fields are included.
+
+#### Example
+
+```js
+const findResult = await store.find(
+  'TestTable',
+  searchCondition,
+  { field1: 1, field2: 1, field3: 1 }, // Return the specified fields
+  //{ field1: 0, field2: 0, field3: 0 }, // Return all but the specified fields
+  { id: sortOrder },
+  skip,
+  limit
+)
+```
+
 ### findOne
 
 Searches for a data item based on the specified expression.
 
 #### Arguments
 
-| Argument Name    | Description                                 |
-| ---------------- | ------------------------------------------- |
-| tableName        | A table name.                               |
-| searchExpression | An object that defines a search expression. |
-| fieldList        | A list of fields to fetch.                  |
+| Argument Name       | Description                                                             |
+| ------------------- | ----------------------------------------------------------------------- |
+| tableName           | A table name.                                                           |
+| searchCondition     | An object that defines a search expression.                             |
+| projectionCondition | Defines which fields should be included into the resulting data sample. |
 
 #### Example
 
@@ -119,10 +143,10 @@ Returns the number of items that meet the specified condition.
 
 #### Arguments
 
-| Argument Name    | Description                                 |
-| ---------------- | ------------------------------------------- |
-| tableName        | A table name.                               |
-| searchExpression | An object that defines a search expression. |
+| Argument Name   | Description                                   |
+| --------------- | --------------------------------------------- |
+| tableName       | A table name.                                 |
+| searchCondition | An object that defines a search expression.   |
 
 #### Example
 
@@ -176,12 +200,12 @@ Searches for data items and updates them based on the specified update expressio
 
 #### Arguments
 
-| Argument Name    | Description                                                                                                                 |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| tableName        | A table name.                                                                                                               |
-| searchExpression | An object that defines a search expression.                                                                                 |
-| updateExpression | An object that defines an update expression.                                                                                |
-| upsertOption     | A boolean value that defines whether to create a new item if an existing item meeting the specified criteria was not found. |
+| Argument Name   | Description                                            |
+| --------------- | ------------------------------------------------------ |
+| tableName       | The name of the table to update.                       |
+| searchCondition | An object that defines a search expression.            |
+| updateCondition | An object that defines an update expression.           |
+| updateOptions   | Specifies additional options for the update operation. |
 
 #### Example
 
@@ -206,10 +230,10 @@ Deletes data items based on the specified search expression.
 
 #### Arguments
 
-| Argument Name    | Description                                 |
-| ---------------- | ------------------------------------------- |
-| tableName        | A table name.                               |
-| searchExpression | An object that defines a search expression. |
+| Argument Name   | Description                                 |
+| --------------- | ------------------------------------------- |
+| tableName       | A table name.                               |
+| searchCondition | An object that defines a search expression. |
 
 #### Example
 

@@ -511,6 +511,7 @@ module.exports = {
           'variadic',
           'validator',
           'verdana',
+          'versionless',
           'viewmodel',
           'viewport',
           'vue',
