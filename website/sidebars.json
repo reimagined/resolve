@@ -61,7 +61,8 @@
             "type": "category",
             "label": "View Model",
             "items": [
-              "api/view-model/projection"
+              "api/view-model/projection",
+              "api/view-model/resolver"
             ]
           },
           "api/event-store-adapter",
