@@ -2,7 +2,7 @@ import debugLevels from '@resolve-js/debug-levels'
 
 import liveRequire from '../dynamic-require/live-require'
 
-const log = debugLevels('resolve:runtime:fail-handler')
+const log = debugLevels('resolve:runtime:live-require-handler')
 
 const liveRequireHandler = (moduleOptions, imports) => async (req, res) => {
   try {
