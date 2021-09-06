@@ -3,7 +3,7 @@ const importLocalEntry = () => `
   import serverAssemblies from '$resolve.serverAssemblies'
   import localEntry from '@resolve-js/runtime/lib/local'
 
-  export { default as entryPointMarker } from '@resolve-js/runtime/lib/common/utils/entry-point-marker'
+  export { default as entryPointMarker } from '@resolve-js/runtime/lib/common/dynamic-require/entry-point-marker'
 
   const initPromise = localEntry(serverAssemblies)
 
