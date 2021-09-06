@@ -3,11 +3,17 @@ id: projection
 title: Projection
 ---
 
-A read model event handler function has the following structure:
+A read model projection is an object of the following structure:
 
 ```js
-async (store, event, context) => {
-  ...
+const projection = {
+  // The *Init* function initializes the read model's persistent store.
+  Init: async (store) => { ... }
+  // An event handler function is associated with an event type.
+  // It receives the read model store and an incoming event
+  // and updates the store based on the event's data
+  [EVENT_TYPE1]: async (store, event, context) -> { ... }
+  [EVENT_TYPE2]: async (store, event, context) -> { ... }
 }
 ```
 
