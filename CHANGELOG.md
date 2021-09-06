@@ -6,6 +6,7 @@
 
 **Enhancements:**
 
+- Speedup events export and export tests [\#2031](https://github.com/reimagined/resolve/pull/2031)
 - Replace sqlite3 with better-sqlite3 [\#2027](https://github.com/reimagined/resolve/pull/2027)
 
 **Bug fixes:**
