@@ -15,6 +15,7 @@
 **Documentation:**
 
 - Describe middleware [\#2004](https://github.com/reimagined/resolve/pull/2004)
+- Describe the store.find projection argument [\#2001](https://github.com/reimagined/resolve/pull/2001)
 
 **Other changes:**
 
