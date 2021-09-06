@@ -5,7 +5,7 @@ import crypto from 'crypto'
 import path from 'path'
 import fs from 'fs'
 
-import liveEntryDir from './dynamic-requre/live-entry-dir'
+import liveEntryDir from './dynamic-require/live-entry-dir'
 import createNotifyEventSubscribers from './notify-event-subscribers'
 import createOnCommandExecuted from './on-command-executed'
 import createEventSubscriber from './event-subscriber'
