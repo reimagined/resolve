@@ -105,12 +105,16 @@ void (async () => {
       }
       case 'reset': {
         const resolveConfig = merge(baseConfig, devConfig)
-        await reset(resolveConfig, {
-          dropEventStore: false,
-          dropEventSubscriber: true,
-          dropReadModels: true,
-          dropSagas: true,
-        })
+        await reset(
+          resolveConfig,
+          {
+            dropEventStore: false,
+            dropEventSubscriber: true,
+            dropReadModels: true,
+            dropSagas: true,
+          },
+          adjustWebpackConfigs
+        )
         break
       }
       case 'import-event-store': {

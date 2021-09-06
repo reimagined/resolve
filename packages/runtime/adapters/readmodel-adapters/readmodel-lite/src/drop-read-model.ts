@@ -13,7 +13,7 @@ const dropReadModel: DropReadModelMethod = async (
   )
 
   for (const { name } of rows as Array<{ name: string }>) {
-    await inlineLedgerRunQuery(`DROP TABLE ${escapeId(name)}`)
+    await inlineLedgerRunQuery(`DROP TABLE ${escapeId(name)}`, true)
   }
 
   if (memoryStore.drop != null) {

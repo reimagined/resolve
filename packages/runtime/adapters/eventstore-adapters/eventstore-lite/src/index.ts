@@ -1,8 +1,8 @@
 import createAdapter from '@resolve-js/eventstore-base'
-import sqlite from 'sqlite'
 import tmp from 'tmp'
 import os from 'os'
 import fs from 'fs'
+import BetterSqlite from 'better-sqlite3'
 
 import beginIncrementalImport from './begin-incremental-import'
 import commitIncrementalImport from './commit-incremental-import'
@@ -47,7 +47,7 @@ import getCursorUntilEventTypes from './get-cursor-until-event-types'
 import describe from './describe'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
-import type { ConnectionDependencies, SqliteAdapterConfig } from './types'
+import type { SqliteAdapterConfig } from './types'
 
 const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
   return createAdapter(
@@ -94,7 +94,7 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       getCursorUntilEventTypes,
       describe,
     },
-    { sqlite, tmp, os, fs } as ConnectionDependencies,
+    { BetterSqlite, tmp, os, fs },
     options
   )
 }

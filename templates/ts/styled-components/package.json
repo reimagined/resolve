@@ -1,6 +1,6 @@
 {
   "name": "styled-components-ts",
-  "version": "0.31.7",
+  "version": "0.31.9",
   "private": true,
   "description": "shows how to work with Styled Components",
   "scripts": {
@@ -15,12 +15,12 @@
   },
   "dependencies": {
     "@babel/node": "7.14.2",
-    "@resolve-js/eventstore-lite": "0.31.7",
-    "@resolve-js/eventstore-postgresql-serverless": "0.31.7",
-    "@resolve-js/react-hooks": "0.31.7",
-    "@resolve-js/readmodel-lite": "0.31.7",
-    "@resolve-js/readmodel-postgresql-serverless": "0.31.7",
-    "@resolve-js/scripts": "0.31.7",
+    "@resolve-js/eventstore-lite": "0.31.9",
+    "@resolve-js/eventstore-postgresql-serverless": "0.31.9",
+    "@resolve-js/react-hooks": "0.31.9",
+    "@resolve-js/readmodel-lite": "0.31.9",
+    "@resolve-js/readmodel-postgresql-serverless": "0.31.9",
+    "@resolve-js/scripts": "0.31.9",
     "history": "4.10.1",
     "react": "17.0.2",
     "react-bootstrap": "1.6.0",

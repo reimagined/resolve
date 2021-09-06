@@ -9,7 +9,13 @@ import {
 import { AdapterPool } from './types'
 
 const loadEventsByCursor = async (
-  { database, escapeId, escape, eventsTableName, shapeEvent }: AdapterPool,
+  {
+    executeStatement,
+    escapeId,
+    escape,
+    eventsTableName,
+    shapeEvent,
+  }: AdapterPool,
   filter: CursorFilter
 ): Promise<EventsWithCursor> => {
   const { eventTypes, aggregateIds, cursor, limit } = filter
@@ -53,7 +59,7 @@ const loadEventsByCursor = async (
   const tableNameAsId = escapeId(eventsTableName)
   const events: SavedEvent[] = []
 
-  const rows = await database.all(
+  const rows = await executeStatement(
     `SELECT * FROM ${tableNameAsId}
     ${resultQueryCondition}
     ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC

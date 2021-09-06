@@ -1,72 +1,70 @@
-import { AdapterPool } from './types'
+import type { AdapterPool } from './types'
+import { RequestTimeoutError } from '@resolve-js/eventstore-base'
+import { isTimeoutError, isConnectionTerminatedError } from './errors'
+import { MAX_RECONNECTIONS } from './constants'
+import makePostgresClient from './make-postgres-client'
 
-const checkFormalError = (error: any, value: string): boolean =>
-  error.name === value || error.code === value
-const checkFuzzyError = (error: any, value: RegExp): boolean =>
-  value.test(error.message) || value.test(error.stack)
-// https://www.postgresql.org/docs/10/errcodes-appendix.html
-const isRetryableError = (error: any): boolean =>
-  error != null &&
-  (checkFuzzyError(
-    error,
-    /terminating connection due to serverless scale event timeout/i
-  ) ||
-    checkFuzzyError(
-      error,
-      /terminating connection due to administrator command/i
-    ) ||
-    checkFuzzyError(error, /Remaining connection slots are reserved/i) ||
-    checkFuzzyError(error, /Too many clients already/i) ||
-    checkFuzzyError(error, /Connection terminated/i) ||
-    checkFuzzyError(error, /canceling statement due to statement timeout/i) ||
-    checkFuzzyError(error, /Query read timeout/i) ||
-    checkFuzzyError(error, /Connection terminated unexpectedly/i) ||
-    checkFuzzyError(error, /timeout expired/i) ||
-    checkFormalError(error, 'ECONNRESET') ||
-    checkFormalError(error, 'ETIMEDOUT') ||
-    checkFormalError(error, '08000') ||
-    checkFormalError(error, '08003') ||
-    checkFormalError(error, '08006'))
+const executeStatement = async (
+  pool: AdapterPool,
+  sql: string,
+  useDistinctConnection?: boolean
+): Promise<any[]> => {
+  let reconnectionTimes = 0
 
-const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
   while (true) {
-    let connection: typeof pool.connection = pool.connection
+    let connection: typeof pool.connection
+    if (useDistinctConnection) {
+      connection = makePostgresClient(
+        pool,
+        pool.Postgres,
+        pool.connectionOptions
+      )
+    } else {
+      connection = pool.connection
+    }
     try {
-      if (pool.connectionErrors.length > 0) {
-        let summaryError = pool.connectionErrors[0]
-        if (pool.connectionErrors.length > 1) {
-          summaryError = new Error(
-            pool.connectionErrors.map(({ message }) => message).join('\n')
-          )
-          summaryError.stack = pool.connectionErrors
-            .map(({ stack }) => stack)
-            .join('\n')
-        }
-        pool.connectionErrors = []
-
-        pool.getConnectPromise = pool.createGetConnectPromise()
-
-        throw summaryError
+      if (useDistinctConnection) {
+        await connection.connect()
       }
 
       const result = await connection.query(sql)
 
       if (result != null && Array.isArray(result.rows)) {
-        return JSON.parse(JSON.stringify(result.rows))
+        return result.rows as Array<any>
       }
 
-      return null
+      return []
     } catch (error) {
-      if (isRetryableError(error)) {
-        try {
-          await connection.end()
-        } catch (error) {
-          // pass
+      if (isTimeoutError(error)) {
+        throw new RequestTimeoutError(error.message)
+      } else if (isConnectionTerminatedError(error)) {
+        if (!useDistinctConnection) {
+          pool.getConnectPromise = pool.createGetConnectPromise()
         }
 
-        await pool.getConnectPromise()
+        if (reconnectionTimes > MAX_RECONNECTIONS) {
+          throw error
+        }
+
+        if (!useDistinctConnection) await pool.getConnectPromise()
+        reconnectionTimes++
+      } else if (
+        error != null &&
+        error.message === 'Client was closed and is not queryable'
+      ) {
+        if (reconnectionTimes > MAX_RECONNECTIONS) {
+          throw error
+        }
+        if (!useDistinctConnection) await pool.getConnectPromise()
+        reconnectionTimes++
       } else {
         throw error
+      }
+    } finally {
+      if (useDistinctConnection) {
+        connection.end((err) => {
+          return
+        })
       }
     }
   }

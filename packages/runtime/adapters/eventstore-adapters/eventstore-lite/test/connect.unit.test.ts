@@ -1,10 +1,11 @@
-import sqlite from 'sqlite'
+import BetterSqlite from 'better-sqlite3'
 import {
   AdapterPool,
   ConnectionDependencies,
   SqliteAdapterConfig,
 } from '../src/types'
 import connect from '../src/connect'
+import fs from 'fs'
 
 jest.mock('../src/get-log')
 
@@ -17,7 +18,7 @@ beforeEach(() => {
     shapeEvent: ((e: any) => e) as any,
   } as any
   connectionDependencies = {
-    sqlite,
+    BetterSqlite,
     tmp: jest.fn(),
     os: jest.fn(),
     fs: jest.fn(),
@@ -36,7 +37,9 @@ test("config assigned to adapter's pool", async () => {
   expect(pool.databaseFile).toEqual('database-file')
   expect(pool.secretsTableName).toEqual('secrets-table')
 
-  expect((pool.database as any).driver.serialize).toHaveBeenCalled()
+  if (fs.existsSync('database-file')) {
+    fs.unlinkSync('database-file')
+  }
 })
 
 test('connect should throw on wrong parameters', async () => {

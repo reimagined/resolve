@@ -187,7 +187,8 @@ export const buildEvents: (
   } = pool
   const { eventsWithCursors } = buildInfo
   const isContinuousMode =
-    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function'
+    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function' &&
+    !!process.env.EXPERIMENTAL_SQS_TRANSPORT
   const getContinuousLatestCursor = async (
     cursor: ReadModelCursor,
     events: Array<ReadModelEvent>,
@@ -586,6 +587,7 @@ const build: ExternalMethods['build'] = async (
   getVacantTimeInMillis,
   buildInfo
 ) => {
+  eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
   const { eventsWithCursors, ...inputMetricData } = buildInfo
   const metricData = {
     ...inputMetricData,
@@ -737,7 +739,13 @@ const build: ExternalMethods['build'] = async (
       buildInfo
     )
   } catch (error) {
-    if (!(error instanceof PassthroughError)) {
+    if (
+      error == null ||
+      !(
+        error instanceof PassthroughError ||
+        error.name === 'RequestTimeoutError'
+      )
+    ) {
       throw error
     }
     const passthroughError = error as PassthroughErrorInstance
@@ -756,7 +764,7 @@ const build: ExternalMethods['build'] = async (
       }
     }
 
-    if (passthroughError.isRetryable) {
+    if (passthroughError.isRetryable || error.name === 'RequestTimeoutError') {
       await next()
     }
   } finally {

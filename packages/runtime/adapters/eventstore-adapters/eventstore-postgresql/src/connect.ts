@@ -6,6 +6,8 @@ import type {
   AdapterPoolPrimal,
   PostgresqlAdapterConfig,
 } from './types'
+import { ConnectionError } from '@resolve-js/eventstore-base'
+import makePostgresClient from './make-postgres-client'
 
 const connect = async (
   pool: AdapterPoolPrimal,
@@ -37,41 +39,50 @@ const connect = async (
   secretsTableName = secretsTableName ?? 'secrets'
   subscribersTableName = subscribersTableName ?? 'subscribers'
 
-  const connection = new Postgres({
-    keepAlive: false,
-    connectionTimeoutMillis: 45000,
-    idle_in_transaction_session_timeout: 45000,
-    query_timeout: 45000,
-    statement_timeout: 45000,
-    ...connectionOptions,
-  })
+  const oldConnection = pool.connection
+  if (oldConnection !== undefined) {
+    pool.connection = undefined
+    oldConnection.end((err) => {
+      if (err)
+        log.error(`Error during disconnection before reconnection: ${err}`)
+    })
+  }
 
-  connection.on('error', (error) => {
-    pool.connectionErrors.push(error)
-  })
-  await connection.connect()
+  const connection = makePostgresClient(pool, Postgres, connectionOptions)
 
-  Object.assign<
-    AdapterPoolPrimal,
-    Partial<PostgresqlAdapterPoolConnectedProps>
-  >(pool, {
-    databaseName,
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName,
-    connectionOptions,
-    subscribersTableName,
-    Postgres,
-    fullJitter,
-    coercer,
-    executeStatement: executeStatement.bind(null, pool as AdapterPool),
-    escapeId,
-    escape,
-    connection,
-  })
+  try {
+    await connection.connect()
 
-  if (pool.executeStatement != null) {
-    await pool.executeStatement('SELECT 0 AS "defunct"')
+    Object.assign<
+      AdapterPoolPrimal,
+      Partial<PostgresqlAdapterPoolConnectedProps>
+    >(pool, {
+      databaseName,
+      eventsTableName,
+      snapshotsTableName,
+      secretsTableName,
+      connectionOptions,
+      subscribersTableName,
+      Postgres,
+      fullJitter,
+      coercer,
+      executeStatement: executeStatement.bind(null, pool as AdapterPool),
+      escapeId,
+      escape,
+      connection,
+    })
+
+    if (pool.executeStatement != null) {
+      await pool.executeStatement('SELECT 0 AS "defunct"')
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      const connectionError = new ConnectionError(error.message)
+      connectionError.stack = error.stack
+      throw connectionError
+    } else {
+      throw error
+    }
   }
   log.debug('connection to postgres databases established')
 }
