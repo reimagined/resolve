@@ -1,7 +1,12 @@
 import * as AWS from 'aws-sdk'
-import {
+import type {
   Adapter,
+  InputEvent,
+  SavedEvent,
+} from '@resolve-js/eventstore-base'
+import {
   EventstoreResourceNotExistError,
+  initThreadArray,
 } from '@resolve-js/eventstore-base'
 import createSqliteAdapter, {
   SqliteAdapterConfig,
@@ -17,7 +22,6 @@ import createPostgresqlAdapter, {
   destroy as destroyPostgresResource,
   PostgresqlAdapterConfig,
 } from '@resolve-js/eventstore-postgresql'
-import type { InputEvent } from '@resolve-js/eventstore-base'
 import os from 'os'
 import fs from 'fs'
 
@@ -118,14 +122,43 @@ export function streamToString(stream: Readable): Promise<string> {
   })
 }
 
-export function makeTestEvent(eventIndex: number): InputEvent {
+export function makeTestEvent(eventIndex: number, data?: any): InputEvent {
+  const payload: any = { eventIndex }
+  if (data !== undefined) {
+    payload.data = data
+  }
+
   return {
     aggregateId: 'aggregateId',
     aggregateVersion: eventIndex + 1,
     type: 'EVENT',
-    payload: { eventIndex },
+    payload,
     timestamp: eventIndex + 1,
   }
+}
+
+export function makeTestSavedEvent(
+  eventIndex: number,
+  threadArray: ReturnType<typeof initThreadArray>,
+  data?: any
+): SavedEvent {
+  const payload: any = { eventIndex }
+  if (data !== undefined) {
+    payload.data = data
+  }
+
+  const threadId = Math.floor(Math.random() * threadArray.length)
+  const event: SavedEvent = {
+    aggregateId: 'aggregateId',
+    aggregateVersion: eventIndex + 1,
+    type: 'EVENT',
+    payload,
+    timestamp: eventIndex + 1,
+    threadId,
+    threadCounter: threadArray[threadId],
+  }
+  threadArray[threadId]++
+  return event
 }
 
 const uniquePostfix = `${process.pid}_${Math.round(Math.random() * 1000)}`
