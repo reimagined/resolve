@@ -112,6 +112,7 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
       ['@babel/plugin-proposal-decorators', { legacy: true }],
       ['@babel/plugin-proposal-private-methods', { loose: false }],
       '@babel/plugin-proposal-class-properties',
+      '@babel/plugin-proposal-nullish-coalescing-operator',
       [
         '@babel/plugin-transform-runtime',
         {

@@ -68,7 +68,7 @@ const getWebpackCommonConfigs = ({
                   [
                     '@babel/preset-env',
                     {
-                      targets: { node: '8.10.0' },
+                      targets: { node: '14.10.0' },
                     },
                   ],
                   '@babel/preset-react',
@@ -77,6 +77,7 @@ const getWebpackCommonConfigs = ({
                   '@babel/plugin-proposal-class-properties',
                   '@babel/plugin-proposal-export-default-from',
                   '@babel/plugin-proposal-export-namespace-from',
+                  '@babel/plugin-proposal-nullish-coalescing-operator',
                   [
                     '@babel/plugin-transform-runtime',
                     {
