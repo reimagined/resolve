@@ -45,6 +45,8 @@ The `query` argument is an object of the following field:
 
 ## Context
 
+The `context` argument is an object of the following structure:
+
 ```js
 {
   jwt, // The JSON web token attacked to the request (Optional).

@@ -65,10 +65,12 @@
               "api/view-model/resolver"
             ]
           },
+          "api/saga",
+          "api/command",
+          "api/event",
           "api/event-store-adapter",
           "api/middleware",
           "api/api-handler",
-          "api/saga",
           "api/resolve-scripts",
           {
             "type": "category",
