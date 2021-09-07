@@ -30,7 +30,7 @@
     "jest": "27.0.3"
   },
   "engines": {
-    "node": ">=12.18"
+    "node": ">=14.17"
   },
   "babelCompile": [
     {

@@ -45,7 +45,7 @@ const getBabelConfig = ({ sourceType, moduleType, moduleTarget }) => {
       regenerator = false
       helpers = false
       targets = {
-        node: '12.18',
+        node: '14.17',
       }
       break
     }

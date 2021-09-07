@@ -40,7 +40,7 @@
     "redux": "^4.0.5"
   },
   "engines": {
-    "node": ">=12.18"
+    "node": ">=14.17"
   },
   "babelCompile": [
     {

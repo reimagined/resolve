@@ -40,14 +40,14 @@
     "@types/adm-zip": "0.4.34",
     "@types/command-line-args": "5.0.1",
     "@types/jest": "26.0.23",
-    "@types/node": "12.7.4",
+    "@types/node": "14.17.5",
     "@types/progress": "2.0.4",
     "@types/validate-npm-package-name": "3.0.3",
     "jest": "27.0.3",
     "ts-jest": "^27.0.2"
   },
   "engines": {
-    "node": ">=12.18"
+    "node": ">=14.17"
   },
   "babelCompile": [
     {
