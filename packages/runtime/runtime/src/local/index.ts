@@ -1,6 +1,7 @@
 import 'source-map-support/register'
 import debugLevels from '@resolve-js/debug-levels'
 import { initDomain } from '@resolve-js/core'
+import type { DomainMeta } from '@resolve-js/core'
 import http from 'http'
 import https from 'https'
 
@@ -17,14 +18,33 @@ import disposeResolve from '../common/dispose-resolve'
 import multiplexAsync from '../common/utils/multiplex-async'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
 
+import type { Assemblies, ResolvePartial, Resolve } from '../common/types'
+
 const log = debugLevels('resolve:runtime:local-entry')
 
-const localEntry = async ({ assemblies, constants, domain }) => {
+type ApiHandler = {
+  path: string
+  method: string
+  handler: (req: any, res: any) => Promise<void>
+}
+type DomainWithHandlers = DomainMeta & { apiHandlers: ApiHandler[] }
+
+type LocalEntryDependencies = {
+  assemblies: Assemblies
+  constants: Record<string, any>
+  domain: DomainWithHandlers
+}
+
+const localEntry = async ({
+  assemblies,
+  constants,
+  domain,
+}: LocalEntryDependencies) => {
   try {
     domain.apiHandlers.push({
       path: '/api/subscribers/:eventSubscriber',
       method: 'GET',
-      handler: async (req, res) => {
+      handler: async (req: any, res: any) => {
         try {
           const baseQueryUrl = getRootBasedUrl(
             req.resolve.rootPath,
@@ -44,7 +64,7 @@ const localEntry = async ({ assemblies, constants, domain }) => {
 
     const domainInterop = await initDomain(domain)
 
-    const resolve = {
+    const resolve: ResolvePartial = {
       instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,
       seedClientEnvs: assemblies.seedClientEnvs,
       serverImports: assemblies.serverImports,
@@ -56,33 +76,36 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       eventSubscriberScope: constants.applicationName,
       upstream:
         domain.apiHandlers.findIndex(
-          ({ method, path }) =>
+          ({ method, path }: any) =>
             method === 'OPTIONS' && path === '/SKIP_COMMANDS'
         ) < 0,
       https,
       http,
+      getEventSubscriberDestination: () =>
+        `http://0.0.0.0:${constants.port}/api/subscribers`,
+      invokeBuildAsync: multiplexAsync.bind(null, async (parameters: any) => {
+        const currentResolve = Object.create(resolve)
+        try {
+          await initResolve(currentResolve)
+          const result = await currentResolve.eventSubscriber.build(parameters)
+          return result
+        } finally {
+          await disposeResolve(currentResolve)
+        }
+      }),
+      ensureQueue: async () => {
+        return
+      },
+      deleteQueue: async () => {
+        return
+      },
     }
-
-    resolve.getEventSubscriberDestination = () =>
-      `http://0.0.0.0:${constants.port}/api/subscribers`
-    resolve.invokeBuildAsync = multiplexAsync.bind(null, async (parameters) => {
-      const currentResolve = Object.create(resolve)
-      try {
-        await initResolve(currentResolve)
-        const result = await currentResolve.eventSubscriber.build(parameters)
-        return result
-      } finally {
-        await disposeResolve(currentResolve)
-      }
-    })
-    resolve.ensureQueue = async () => {}
-    resolve.deleteQueue = async () => {}
 
     await initPerformanceTracer(resolve)
     await initExpress(resolve)
-    await initWebsockets(resolve)
-    await initUploader(resolve)
-    await initScheduler(resolve)
+    await initWebsockets(resolve as Resolve)
+    await initUploader(resolve as Resolve)
+    await initScheduler(resolve as Resolve)
     await startExpress(resolve)
 
     log.debug('Local entry point cold start success')

@@ -6,7 +6,7 @@ import getRootBasedUrl from './get-root-based-url'
 const log = debugLevels('resolve:runtime:getStaticBasedPath')
 
 const validate = {
-  nonEmptyString: (value, name) => {
+  nonEmptyString: (value: string, name: string) => {
     if (!(value != null && value.constructor === String)) {
       log.warn('Value is not a string', value)
       throw new Error(`${name} must be a string`)
@@ -19,7 +19,11 @@ const validate = {
   },
 }
 
-const getStaticBasedPath = (rootPath, staticPath, filename) => {
+const getStaticBasedPath = (
+  rootPath: string,
+  staticPath: string,
+  filename: string
+) => {
   validate.nonEmptyString(staticPath, 'Static path')
   validate.nonEmptyString(filename, 'Filename')
 

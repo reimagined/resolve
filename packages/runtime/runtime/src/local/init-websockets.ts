@@ -10,25 +10,35 @@ import createPubsubManager from './create-pubsub-manager'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
+import type { Event } from '@resolve-js/core'
+import type { Resolve } from '../common/types'
+
 const log = debugLevels('resolve:runtime:local-subscribe-adapter')
 
-let eventstoreAdapter = null
+let eventstoreAdapter: any = null
 
-const createWebSocketConnectionHandler = (resolve) => (ws, req) => {
+const createWebSocketConnectionHandler = (resolve: Resolve) => (
+  ws: WebSocket,
+  req: http.IncomingMessage
+) => {
   const { pubsubManager } = resolve
-  const queryString = req.url.split('?')[1]
+  const queryString = (req.url as string).split('?')[1]
   const { token, deploymentId } = qs.parse(queryString)
   const connectionId = uuid()
   let eventTypes = null
   let aggregateIds = null
 
   try {
-    void ({ eventTypes, aggregateIds } = jwt.verify(token, deploymentId))
+    void ({ eventTypes, aggregateIds } = jwt.verify(
+      token as string,
+      deploymentId as string
+    ) as any)
   } catch (error) {
     throw new Error('Permission denied, invalid token')
   }
 
-  const publisher = (event) => ws.send(event)
+  //TODO: use ws.send callback?
+  const publisher = async (event: string) => ws.send(event)
   pubsubManager.connect({
     client: publisher,
     connectionId,
@@ -49,10 +59,10 @@ const createWebSocketConnectionHandler = (resolve) => (ws, req) => {
 }
 
 const createWebSocketMessageHandler = (
-  { pubsubManager },
-  ws,
-  connectionId
-) => async (message) => {
+  { pubsubManager }: any,
+  ws: any,
+  connectionId: any
+) => async (message: string) => {
   try {
     const { eventTypes, aggregateIds } = pubsubManager.getConnection({
       connectionId,
@@ -95,7 +105,7 @@ const createWebSocketMessageHandler = (
   }
 }
 
-const initInterceptingHttpServer = (resolve) => {
+const initInterceptingHttpServer = (resolve: any) => {
   const { server: baseServer, websocketHttpServer } = resolve
   const websocketBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/websocket')
   const interceptingEvents = [
@@ -107,12 +117,16 @@ const initInterceptingHttpServer = (resolve) => {
     'connection',
   ]
 
-  const interceptingEventListener = (eventName, listeners, ...args) => {
+  const interceptingEventListener = (
+    eventName: string,
+    listeners: any[],
+    ...args: any[]
+  ) => {
     const requestUrl =
       args[0] != null && args[0].url != null ? String(args[0].url) : ''
 
     if (requestUrl.startsWith(websocketBaseUrl)) {
-      websocketHttpServer.emit(eventName, ...args)
+      void (websocketHttpServer as EventEmitter).emit(eventName, ...args)
     } else {
       for (const listener of listeners) {
         listener.apply(baseServer, args)
@@ -128,7 +142,7 @@ const initInterceptingHttpServer = (resolve) => {
   }
 }
 
-const initWebSocketServer = async (resolve) => {
+const initWebSocketServer = async (resolve: Resolve) => {
   try {
     const websocketServer = new WebSocket.Server({
       path: getRootBasedUrl(resolve.rootPath, '/api/websocket'),
@@ -144,17 +158,23 @@ const initWebSocketServer = async (resolve) => {
 const createSocketHttpServer = () => {
   const socketServer = new EventEmitter()
   Object.setPrototypeOf(socketServer, http.Server.prototype)
-  Object.defineProperty(socketServer, 'listen', { value: () => {} })
-  return socketServer
+  Object.defineProperty(socketServer, 'listen', {
+    value: () => {
+      return
+    },
+  })
+  return socketServer as http.Server
 }
 
-const initWebsockets = async (resolve) => {
+const initWebsockets = async (resolve: Resolve) => {
   const pubsubManager = createPubsubManager()
   const websocketHttpServer = createSocketHttpServer()
 
   eventstoreAdapter = await resolve.assemblies.eventstoreAdapter()
 
-  const sendReactiveEvent = async (event) => {
+  const sendReactiveEvent = async (
+    event: Pick<Event, 'type' | 'aggregateId'>
+  ) => {
     await resolve.pubsubManager.dispatch({
       topicName: event.type,
       topicId: event.aggregateId,

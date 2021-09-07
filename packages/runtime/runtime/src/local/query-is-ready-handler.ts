@@ -1,4 +1,4 @@
-const queryIsReadyHandler = async (req, res) => {
+const queryIsReadyHandler = async (req: any, res: any) => {
   try {
     const { eventstoreAdapter, eventSubscriber, eventListeners } = req.resolve
     const queryIsReadyPromises = []
@@ -25,7 +25,7 @@ const queryIsReadyHandler = async (req, res) => {
               break
             }
 
-            await new Promise((resolve) => setTimeout(resolve, 1000))
+            await new Promise<void>((resolve) => setTimeout(resolve, 1000))
           }
         })()
       )

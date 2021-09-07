@@ -1,4 +1,6 @@
-const gatherEventListeners = (domain, domainInterop) => {
+import type { Domain, DomainMeta } from '@resolve-js/core'
+
+const gatherEventListeners = (domain: DomainMeta, domainInterop: Domain) => {
   const { sagas, readModels } = domain
   const {
     sagaDomain: {

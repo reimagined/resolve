@@ -1,6 +1,12 @@
 import Url from 'url'
 
-const validatePath = (url, { allowEmptyPath, allowAbsolutePath } = {}) => {
+const validatePath = (
+  url: string,
+  {
+    allowEmptyPath,
+    allowAbsolutePath,
+  }: { allowEmptyPath?: boolean; allowAbsolutePath?: boolean } = {}
+) => {
   if (url === '' && !allowEmptyPath) {
     return false
   }

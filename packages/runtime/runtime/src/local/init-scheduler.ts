@@ -1,16 +1,18 @@
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
-const errorHandler = async (error) => {
+import type { ScheduleEntry, Resolve } from '../common/types'
+
+const errorHandler = async (error: any) => {
   throw error
 }
 
-const initScheduler = (resolve) => {
-  const timeouts = new Set()
+const initScheduler = (resolve: Resolve) => {
+  const timeouts = new Set<NodeJS.Timeout>()
   let flowPromise = Promise.resolve()
 
   resolve.scheduler = {
-    async addEntries(array) {
+    async addEntries(array: ScheduleEntry[]) {
       for (const entry of array) {
         // eslint-disable-next-line no-loop-func
         const timeout = setTimeout(() => {

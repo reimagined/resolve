@@ -1,6 +1,6 @@
 const isAbsoluteUrl = /:\/\//i
 
-const getRootBasedUrl = (rootPath, path) => {
+const getRootBasedUrl = (rootPath: string, path: string) => {
   if (isAbsoluteUrl.test(path)) {
     return path
   }

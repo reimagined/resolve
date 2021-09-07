@@ -34,6 +34,7 @@
     "binary-case": "1.1.4",
     "body-parser": "1.19.0",
     "content-disposition": "0.5.3",
+    "@types/content-disposition": "0.5.3",
     "cookie": "0.4.1",
     "cors": "2.8.5",
     "cron": "1.8.2",
@@ -44,12 +45,14 @@
     "iconv-lite": "0.6.2",
     "jsonwebtoken": "8.5.1",
     "mime-types": "2.1.29",
+    "@types/mime-types": "2.1.1",
     "mqtt-connection": "4.1.0",
     "multer": "1.4.2",
     "proper-lockfile": "4.1.2",
     "qs": "6.9.6",
     "raw-body": "2.4.1",
     "request": "2.88.2",
+    "@types/request": "2.48.7",
     "resolve-cloud-common": "0.0.138",
     "route-trie": "3.0.0",
     "socket.io": "3.1.2",
@@ -57,7 +60,8 @@
     "url": "0.11.0",
     "uuid": "8.3.2",
     "websocket-stream": "5.5.2",
-    "ws": "7.4.4"
+    "ws": "7.4.4",
+    "@types/ws": "7.4.4"
   },
   "devDependencies": {
     "jest": "27.0.3",

@@ -2,8 +2,19 @@ import fs from 'fs'
 import request from 'request'
 import { v4 as uuid } from 'uuid'
 import crypto from 'crypto'
+import type { Resolve, UploaderPool } from '../common/types'
 
-const createPresignedPut = async (pool, dir) => {
+type Pool = UploaderPool
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type RemoveFirstType<T extends any[]> = T extends [infer _, ...infer R]
+  ? R
+  : never
+export type RemovePoolArg<M extends (pool: Pool, ...args: any[]) => any> = (
+  ...args: RemoveFirstType<Parameters<M>>
+) => ReturnType<M>
+
+const createPresignedPut = async (pool: Pool, dir: string) => {
   const uploadId = uuid()
   const uploadUrl = `http://localhost:3000/uploader?dir=${dir}&uploadId=${uploadId}`
 
@@ -13,10 +24,10 @@ const createPresignedPut = async (pool, dir) => {
   }
 }
 
-export const upload = (uploadUrl, filePath) => {
+export const upload = (uploadUrl: string, filePath: string) => {
   const fileSizeInBytes = fs.statSync(filePath).size
   const fileStream = fs.createReadStream(filePath)
-  return new Promise((resolve, reject) =>
+  return new Promise<void>((resolve, reject) =>
     request.put(
       {
         headers: {
@@ -32,7 +43,7 @@ export const upload = (uploadUrl, filePath) => {
   )
 }
 
-const createPresignedPost = async (pool, dir) => {
+const createPresignedPost = async (pool: Pool, dir: string) => {
   const uploadId = uuid()
   const form = {
     url: `http://localhost:3000/uploader?dir=${dir}&uploadId=${uploadId}`,
@@ -45,10 +56,10 @@ const createPresignedPost = async (pool, dir) => {
   }
 }
 
-export const uploadFormData = (form, filePath) => {
+export const uploadFormData = (form: { url: string }, filePath: string) => {
   const fileStream = fs.createReadStream(filePath)
 
-  return new Promise((resolve, reject) =>
+  return new Promise<void>((resolve, reject) =>
     request.post(
       {
         url: form.url,
@@ -63,7 +74,10 @@ export const uploadFormData = (form, filePath) => {
   )
 }
 
-const createToken = ({ secretKey }, { dir, expireTime = 3600 }) => {
+const createToken = (
+  { secretKey }: Pool,
+  { dir, expireTime = 3600 }: { dir: string; expireTime: number }
+) => {
   const payload = Buffer.from(
     JSON.stringify({
       dir,
@@ -81,7 +95,18 @@ const createToken = ({ secretKey }, { dir, expireTime = 3600 }) => {
   return `${payload}*${signature}`
 }
 
-const createUploader = (pool) => {
+type UploaderAdapter = {
+  directory: string
+  bucket: any
+  secretKey: string
+  createPresignedPut: RemovePoolArg<typeof createPresignedPut>
+  createPresignedPost: RemovePoolArg<typeof createPresignedPost>
+  createToken: RemovePoolArg<typeof createToken>
+  upload: typeof upload
+  uploadFormData: typeof uploadFormData
+}
+
+const createUploader = (pool: Pool): UploaderAdapter => {
   const { directory, bucket, secretKey } = pool
   return Object.freeze({
     createPresignedPut: createPresignedPut.bind(null, pool),
@@ -95,31 +120,29 @@ const createUploader = (pool) => {
   })
 }
 
-const getSignedPut = async (adapter, dir) =>
+const getSignedPut = async (adapter: UploaderAdapter, dir: string) =>
   await adapter.createPresignedPut(dir)
 
-const getSignedPost = async (adapter, dir) =>
+const getSignedPost = async (adapter: UploaderAdapter, dir: string) =>
   await adapter.createPresignedPost(dir)
 
-const initUploader = async (resolve) => {
+const initUploader = async (resolve: Resolve) => {
   if (resolve.assemblies.uploadAdapter != null) {
     // TODO: provide support for custom uploader adapter
     const createUploadAdapter = resolve.assemblies.uploadAdapter
     const uploader = createUploader(createUploadAdapter())
     process.env.RESOLVE_UPLOADER_CDN_URL = 'http://localhost:3000/uploader'
 
-    Object.assign(resolve, {
-      uploader: {
-        getSignedPut: getSignedPut.bind(null, uploader),
-        getSignedPost: getSignedPost.bind(null, uploader),
-        uploadPut: uploader.upload,
-        uploadPost: uploader.uploadFormData,
-        createToken: uploader.createToken,
-        directory: uploader.directory,
-        bucket: uploader.bucket,
-        secretKey: uploader.secretKey,
-      },
-    })
+    resolve.uploader = {
+      getSignedPut: getSignedPut.bind(null, uploader),
+      getSignedPost: getSignedPost.bind(null, uploader),
+      uploadPut: uploader.upload,
+      uploadPost: uploader.uploadFormData,
+      createToken: uploader.createToken,
+      directory: uploader.directory,
+      bucket: uploader.bucket,
+      secretKey: uploader.secretKey,
+    }
   }
 }
 

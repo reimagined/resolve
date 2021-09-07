@@ -3,8 +3,12 @@ import fs from 'fs'
 import { promisify } from 'util'
 
 import { pipeline } from 'stream'
+import type { ResolveRequest, ResolveResponse } from '../common/types'
 
-const exportEventStoreHandler = (options) => async (req, res) => {
+const exportEventStoreHandler = (options: { directory: string }) => async (
+  req: ResolveRequest,
+  res: ResolveResponse
+) => {
   const { eventstoreAdapter } = req.resolve
 
   try {

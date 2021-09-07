@@ -76,6 +76,7 @@ export type EventProjectionMeta = {
   name: string
   connectorName: string
   encryption: EventHandlerEncryptionFactory
+  invariantHash?: any
 }
 
 export type ReadModelMeta = EventProjectionMeta & {

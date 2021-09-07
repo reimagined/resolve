@@ -1,6 +1,6 @@
 import { getReasonPhrase } from 'http-status-codes'
 
-const getHttpStatusText = (status) => {
+const getHttpStatusText = (status: number | string) => {
   let httpStatusText = ''
 
   try {

@@ -3,10 +3,10 @@ import cookie from 'cookie'
 import mimeTypes from 'mime-types'
 import getRawBody from 'raw-body'
 
-const COOKIE_CLEAR_DATE = new Date(0).toGMTString()
+const COOKIE_CLEAR_DATE = new Date(0)
 const INTERNAL = Symbol('INTERNAL')
 
-const normalizeKey = (key, mode) => {
+const normalizeKey = (key: string, mode: string) => {
   switch (mode) {
     case 'upper-dash-case':
       return key
@@ -23,10 +23,10 @@ const normalizeKey = (key, mode) => {
   }
 }
 
-const wrapHeadersCaseInsensitive = (headersMap) =>
+const wrapHeadersCaseInsensitive = (headersMap: Record<string, any>) =>
   Object.create(
     Object.prototype,
-    Object.keys(headersMap).reduce((acc, key) => {
+    Object.keys(headersMap).reduce((acc: Record<string, any>, key) => {
       const value = headersMap[key]
       const [upperDashKey, dashKey, lowerKey] = [
         normalizeKey(key, 'upper-dash-case'),
@@ -44,7 +44,7 @@ const wrapHeadersCaseInsensitive = (headersMap) =>
     }, {})
   )
 
-const createRequest = async (expressReq, customParameters) => {
+const createRequest = async (expressReq: any, customParameters: any) => {
   let expressReqError = null
 
   const headers = wrapHeadersCaseInsensitive(expressReq.headers)
@@ -108,7 +108,15 @@ const createRequest = async (expressReq, customParameters) => {
 }
 
 const createResponse = () => {
-  const internalRes = {
+  type InternalRes = {
+    status: number
+    headers: Record<string, any>
+    cookies: any[]
+    body: string | Buffer
+    closed: boolean
+  }
+
+  const internalRes: InternalRes = {
     status: 200,
     headers: {},
     cookies: [],
@@ -122,17 +130,25 @@ const createResponse = () => {
     }
   }
 
-  const validateOptionShape = (fieldName, option, types, nullable = false) => {
+  const validateOptionShape = (
+    fieldName: any,
+    option: any,
+    types: any,
+    nullable = false
+  ) => {
     const isValidValue =
       (nullable && option == null) ||
       !(
         option == null ||
-        !types.reduce((acc, type) => acc || option.constructor === type, false)
+        !types.reduce(
+          (acc: boolean, type: any) => acc || option.constructor === type,
+          false
+        )
       )
     if (!isValidValue) {
       throw new Error(
         `Variable "${fieldName}" should be one of following types: ${types
-          .map((type) => type.name)
+          .map((type: any) => type.name)
           .join(', ')}`
       )
     }
@@ -140,39 +156,46 @@ const createResponse = () => {
 
   const res = Object.create(null, { [INTERNAL]: { value: internalRes } })
 
-  const defineResponseMethod = (name, value) =>
+  const defineResponseMethod = (name: string, value: any) =>
     Object.defineProperty(res, name, {
       enumerable: true,
       value,
     })
 
-  defineResponseMethod('cookie', (name, value, options) => {
-    validateResponseOpened()
-    const serializedCookie = cookie.serialize(name, value, options)
+  defineResponseMethod(
+    'cookie',
+    (name: string, value: string, options?: cookie.CookieSerializeOptions) => {
+      validateResponseOpened()
+      const serializedCookie = cookie.serialize(name, value, options)
 
-    internalRes.cookies.push(serializedCookie)
-    return res
-  })
+      internalRes.cookies.push(serializedCookie)
+      return res
+    }
+  )
 
-  defineResponseMethod('clearCookie', (name, options) => {
-    validateResponseOpened()
-    const serializedCookie = cookie.serialize(name, '', {
-      ...options,
-      expire: COOKIE_CLEAR_DATE,
-    })
+  defineResponseMethod(
+    'clearCookie',
+    (name: string, options?: cookie.CookieSerializeOptions) => {
+      validateResponseOpened()
+      const serializedCookie = cookie.serialize(name, '', {
+        ...options,
+        //TODO: look into that. Before it used 'expire' with string parameter
+        expires: COOKIE_CLEAR_DATE,
+      })
 
-    internalRes.cookies.push(serializedCookie)
-    return res
-  })
+      internalRes.cookies.push(serializedCookie)
+      return res
+    }
+  )
 
-  defineResponseMethod('status', (code) => {
+  defineResponseMethod('status', (code: number) => {
     validateResponseOpened()
     validateOptionShape('Status code', code, [Number])
     internalRes.status = code
     return res
   })
 
-  defineResponseMethod('redirect', (path, code) => {
+  defineResponseMethod('redirect', (path: string, code?: number) => {
     validateResponseOpened()
     validateOptionShape('Status code', code, [Number], true)
     validateOptionShape('Location path', path, [String])
@@ -183,13 +206,13 @@ const createResponse = () => {
     return res
   })
 
-  defineResponseMethod('getHeader', (searchKey) => {
+  defineResponseMethod('getHeader', (searchKey: string) => {
     validateOptionShape('Header name', searchKey, [String])
     const normalizedKey = normalizeKey(searchKey, 'upper-dash-case')
     return internalRes.headers[normalizedKey]
   })
 
-  defineResponseMethod('setHeader', (key, value) => {
+  defineResponseMethod('setHeader', (key: string, value: string) => {
     validateResponseOpened()
     validateOptionShape('Header name', key, [String])
     validateOptionShape('Header value', value, [String])
@@ -198,7 +221,7 @@ const createResponse = () => {
     return res
   })
 
-  defineResponseMethod('text', (content, encoding) => {
+  defineResponseMethod('text', (content: string, encoding?: BufferEncoding) => {
     validateResponseOpened()
     validateOptionShape('Text', content, [String])
     validateOptionShape('Encoding', encoding, [String], true)
@@ -207,7 +230,7 @@ const createResponse = () => {
     return res
   })
 
-  defineResponseMethod('json', (content) => {
+  defineResponseMethod('json', (content: any) => {
     validateResponseOpened()
     internalRes.headers[normalizeKey('Content-Type', 'upper-dash-case')] =
       'application/json'
@@ -216,36 +239,46 @@ const createResponse = () => {
     return res
   })
 
-  defineResponseMethod('end', (content = '', encoding) => {
-    validateResponseOpened()
-    validateOptionShape('Content', content, [String, Buffer])
-    validateOptionShape('Encoding', encoding, [String], true)
-    internalRes.body =
-      content.constructor === String ? Buffer.from(content, encoding) : content
+  defineResponseMethod(
+    'end',
+    (content: string | Buffer = '', encoding?: BufferEncoding) => {
+      validateResponseOpened()
+      validateOptionShape('Content', content, [String, Buffer])
+      validateOptionShape('Encoding', encoding, [String], true)
+      internalRes.body =
+        content.constructor === String
+          ? Buffer.from(content, encoding)
+          : content
 
-    internalRes.closed = true
-    return res
-  })
+      internalRes.closed = true
+      return res
+    }
+  )
 
-  defineResponseMethod('file', (content, filename, encoding) => {
-    validateResponseOpened()
-    validateOptionShape('Content', content, [String, Buffer])
-    validateOptionShape('Encoding', encoding, [String], true)
-    internalRes.body =
-      content.constructor === String ? Buffer.from(content, encoding) : content
+  defineResponseMethod(
+    'file',
+    (content: string | Buffer, filename: string, encoding?: BufferEncoding) => {
+      validateResponseOpened()
+      validateOptionShape('Content', content, [String, Buffer])
+      validateOptionShape('Encoding', encoding, [String], true)
+      internalRes.body =
+        content.constructor === String
+          ? Buffer.from(content, encoding)
+          : content
 
-    internalRes.headers['Content-Disposition'] = contentDisposition(filename)
+      internalRes.headers['Content-Disposition'] = contentDisposition(filename)
 
-    internalRes.closed = true
-    return res
-  })
+      internalRes.closed = true
+      return res
+    }
+  )
 
   return Object.freeze(res)
 }
 
-const wrapApiHandler = (handler, getCustomParameters) => async (
-  expressReq,
-  expressRes
+const wrapApiHandler = (handler: any, getCustomParameters?: Function) => async (
+  expressReq: any,
+  expressRes: any
 ) => {
   try {
     const customParameters =

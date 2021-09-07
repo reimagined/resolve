@@ -1,8 +1,19 @@
-const createPubsubManager = () => {
-  const map = new Map()
+import type {
+  PubsubConnection,
+  PubsubConnectionOptions,
+  PubsubManager,
+} from '../common/types'
 
-  const pubsubManager = {
-    connect({ client, connectionId, eventTypes, aggregateIds }) {
+const createPubsubManager = (): PubsubManager => {
+  const map = new Map<string, PubsubConnection>()
+
+  return {
+    connect({
+      client,
+      connectionId,
+      eventTypes,
+      aggregateIds,
+    }: PubsubConnectionOptions) {
       if (!map.has(connectionId)) {
         map.set(connectionId, {
           client,
@@ -12,7 +23,11 @@ const createPubsubManager = () => {
       }
     },
 
-    disconnect({ connectionId }) {
+    disconnect({
+      connectionId,
+    }: {
+      connectionId: PubsubConnectionOptions['connectionId']
+    }) {
       if (!map.has(connectionId)) {
         return
       }
@@ -20,18 +35,25 @@ const createPubsubManager = () => {
       map.delete(connectionId)
     },
 
-    getConnection({ connectionId }) {
+    getConnection({
+      connectionId,
+    }: {
+      connectionId: PubsubConnectionOptions['connectionId']
+    }) {
       const connection = map.get(connectionId)
 
       return connection
     },
 
-    async dispatch({ event }) {
+    async dispatch({
+      event,
+    }: {
+      event: { type: string; aggregateId: string }
+    }) {
       const promises = []
       const { type, aggregateId } = event
 
-      for (const connectionId of map.keys()) {
-        const { eventTypes, aggregateIds, client } = map.get(connectionId)
+      for (const { eventTypes, aggregateIds, client } of map.values()) {
         if (
           (eventTypes == null || eventTypes?.includes?.(type)) &&
           (aggregateIds == null || aggregateIds?.includes?.(aggregateId))
@@ -47,8 +69,6 @@ const createPubsubManager = () => {
       await Promise.all(promises)
     },
   }
-
-  return pubsubManager
 }
 
 export default createPubsubManager
