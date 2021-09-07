@@ -6,7 +6,7 @@ import executeSequence from './execute-sequence'
 import { isAlreadyExistsError } from './resource-errors'
 
 const initEvents = async ({
-  database,
+  executeQuery,
   databaseFile,
   eventsTableName,
   snapshotsTableName,
@@ -67,7 +67,7 @@ const initEvents = async ({
   ]
 
   const errors: any[] = await executeSequence(
-    database,
+    executeQuery,
     statements,
     log,
     (error) => {

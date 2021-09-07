@@ -16,13 +16,13 @@ describe(`${adapterFactory.name}. Read-model Store API. Count`, () => {
 
   test(
     [
-      `Projection (Event count = 200)`,
+      `Projection (Event count = 20)`,
       `  store.defineTable({ /* ... */ fields: [] })`,
       `  store.insert(/* ... *//)`,
-      `  store.count should return 200`,
+      `  store.count should return 20`,
     ].join('\n'),
     async () => {
-      const eventCount = 200
+      const eventCount = 20
 
       const events = []
       for (let index = 0; index < eventCount; index++) {

@@ -1,15 +1,42 @@
 import type { AdapterPool } from './types'
-import type { EventStoreDescription } from '@resolve-js/eventstore-base'
+import type {
+  EventStoreDescription,
+  EventThreadData,
+} from '@resolve-js/eventstore-base'
 import assert from 'assert'
+import { THREAD_COUNT, threadArrayToCursor } from '@resolve-js/eventstore-base'
 
 const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
-  const { database, secretsTableName, escapeId, escape, eventsTableName } = pool
+  const {
+    executeStatement,
+    secretsTableName,
+    escapeId,
+    escape,
+    eventsTableName,
+  } = pool
 
   const eventsTableNameAsId = escapeId(eventsTableName)
   const secretsTableNameAsId = escapeId(secretsTableName)
   const freezeTableName = `${eventsTableName}-freeze`
 
-  const rows = await database.all(`SELECT
+  const existingThreads = (await executeStatement(`
+    SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
+    ${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`)) as Array<{
+    threadId: EventThreadData['threadId']
+    threadCounter: EventThreadData['threadCounter']
+  }>
+
+  const threadCounters = new Array<number>(THREAD_COUNT)
+  threadCounters.fill(-1)
+
+  for (const existingThread of existingThreads) {
+    threadCounters[existingThread.threadId] = existingThread.threadCounter
+  }
+  for (let i = 0; i < threadCounters.length; ++i) {
+    threadCounters[i]++
+  }
+
+  const rows = await executeStatement(`SELECT
     (SELECT COUNT(*) FROM ${eventsTableNameAsId}) AS "eventCount",
     (SELECT COUNT(*) FROM ${secretsTableNameAsId}) AS "secretCount",
     (SELECT COUNT(*) FROM ${secretsTableNameAsId} WHERE "secret" IS NOT NULL) AS "setSecretCount",
@@ -29,6 +56,7 @@ const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
     deletedSecretCount: +row.deletedSecretCount,
     lastEventTimestamp: +row.lastEventTimestamp,
     isFrozen: !!row.isFrozen,
+    cursor: threadArrayToCursor(threadCounters),
   }
 }
 

@@ -4,13 +4,13 @@ import { ReplicationStatus } from '@resolve-js/eventstore-base'
 const initReplicationStateTable = async (
   pool: AdapterPool
 ): Promise<string> => {
-  const { eventsTableName, database, escapeId, escape } = pool
+  const { eventsTableName, executeQuery, escapeId, escape } = pool
 
   const replicationStateTableName = `${eventsTableName}-replication-state`
   const replicationStateTableNameAsId = escapeId(replicationStateTableName)
 
   const notStarted: ReplicationStatus = 'notStarted'
-  await database.exec(`BEGIN IMMEDIATE;
+  await executeQuery(`BEGIN IMMEDIATE;
       CREATE TABLE IF NOT EXISTS ${replicationStateTableNameAsId}(
         "id" TINYINT DEFAULT 0 PRIMARY KEY CHECK (id = 0),
         "Status" VARCHAR(50) DEFAULT ${escape(notStarted)},

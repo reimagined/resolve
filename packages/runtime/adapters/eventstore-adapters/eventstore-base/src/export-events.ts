@@ -8,12 +8,14 @@ import {
 import getNextCursor from './get-next-cursor'
 import { AlreadyFrozenError, AlreadyUnfrozenError } from './frozen-errors'
 
-import {
+import type {
   AdapterPoolConnectedProps,
   AdapterPoolPossiblyUnconnected,
   ExportOptions,
   ExportEventsStream,
 } from './types'
+
+const FLUSH_CHUNK_SIZE = 64 * 1024 * 1024
 
 async function startProcessEvents({
   pool,
@@ -42,6 +44,11 @@ async function endProcessEvents({ pool, maintenanceMode }: any): Promise<void> {
   }
 }
 
+type EventRecord = {
+  buffer: Buffer
+  event: any
+}
+
 async function* generator(context: any): AsyncGenerator<Buffer, void> {
   const { pool, bufferSize }: any = context
 
@@ -50,27 +57,58 @@ async function* generator(context: any): AsyncGenerator<Buffer, void> {
   await startProcessEvents(context)
 
   let eventsByteSize = 0
+
   while (true) {
     const { events }: any = await pool.loadEventsByCursor({
       cursor: context.cursor,
       limit: BATCH_SIZE,
     })
 
-    for (const event of events) {
-      const chunk: Buffer = Buffer.from(JSON.stringify(event) + '\n', 'utf8')
+    let currentTotalChunkSize = 0
+    let eventRecords: EventRecord[] = []
 
-      const byteLength: number = chunk.byteLength
+    function* flushEvents() {
+      if (eventRecords.length <= 0) {
+        return
+      }
+
+      yield Buffer.concat(eventRecords.map((record) => record.buffer))
+      context.cursor = getNextCursor(
+        context.cursor,
+        eventRecords.map((record) => record.event)
+      )
+      eventRecords = []
+      currentTotalChunkSize = 0
+    }
+
+    for (const event of events) {
+      const buffer: Buffer = Buffer.from(JSON.stringify(event) + '\n', 'utf8')
+
+      const byteLength = buffer.byteLength
       if (eventsByteSize + byteLength > bufferSize) {
+        yield* flushEvents()
+
         context.isBufferOverflow = true
         await endProcessEvents(context)
         return
       }
       eventsByteSize += byteLength
 
-      yield chunk
-      context.cursor = getNextCursor(context.cursor, [event])
+      if (currentTotalChunkSize + buffer.byteLength > FLUSH_CHUNK_SIZE) {
+        yield* flushEvents()
+
+        if (context.externalTimeout) {
+          await endProcessEvents(context)
+          return
+        }
+      }
+      eventRecords.push({ buffer, event })
+      currentTotalChunkSize += buffer.byteLength
     }
-    if (events.length === 0) {
+
+    void (yield* flushEvents())
+
+    if (events.length < BATCH_SIZE) {
       context.isEnd = true
       await endProcessEvents(context)
       return

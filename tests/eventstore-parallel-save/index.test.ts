@@ -1,23 +1,51 @@
-import { adapterFactory, adapters, jestTimeout } from '../eventstore-test-utils'
-import { EventWithCursor } from '@resolve-js/eventstore-base'
+import {
+  adapterFactory,
+  adapters,
+  jestTimeout,
+  sqliteTempFileName,
+} from '../eventstore-test-utils'
+import type { EventWithCursor, Adapter } from '@resolve-js/eventstore-base'
 import { SecretsManager } from '@resolve-js/core'
 
 jest.setTimeout(jestTimeout())
 
-describe(`${adapterFactory.name}. Eventstore adapter init and drop`, () => {
-  beforeAll(adapterFactory.create('parallel_write_testing'))
-  afterAll(adapterFactory.destroy('parallel_write_testing'))
+describe(`${adapterFactory.name}. Eventstore adapter parallel save`, () => {
+  const parallelAdapters: Adapter[] = []
+  const parallelConnections = 10
 
-  const adapter = adapters['parallel_write_testing']
+  const dbName = 'parallel_write_testing'
 
-  const parallelWrites = 100
+  beforeAll(async () => {
+    await adapterFactory.create(dbName, {
+      databaseFile: sqliteTempFileName(dbName),
+    })()
+    for (let i = 0; i < parallelConnections; ++i) {
+      parallelAdapters.push(
+        await adapterFactory.createNoInit(dbName, {
+          databaseFile: sqliteTempFileName(dbName),
+        })()
+      )
+    }
+  })
+  afterAll(async () => {
+    await Promise.all(parallelAdapters.map((adapter) => adapter.dispose()))
+    await adapterFactory.destroy(dbName)()
+  })
+
+  const adapter = adapters[dbName]
+
+  const getRandomAdapterInstance = () => {
+    return parallelAdapters[Math.floor(Math.random() * parallelAdapters.length)]
+  }
+
+  const parallelWrites = 200
   let lastCursor: string
   let lastIdx: number
   test('should be able to save many events in parallel', async () => {
     const promises: Promise<EventWithCursor>[] = []
     for (let i = 0; i < parallelWrites; ++i) {
       promises.push(
-        adapter.saveEvent({
+        getRandomAdapterInstance().saveEvent({
           aggregateVersion: 1,
           aggregateId: `PARALLEL_ID_${i}`,
           type: 'PARALLEL_TYPE',
@@ -42,9 +70,9 @@ describe(`${adapterFactory.name}. Eventstore adapter init and drop`, () => {
   })
 
   test('should be able to save many secrets in parallel', async () => {
-    const secretManager: SecretsManager = await adapter.getSecretsManager()
     const promises: Promise<void>[] = []
     for (let i = 0; i < parallelWrites; ++i) {
+      const secretManager: SecretsManager = await getRandomAdapterInstance().getSecretsManager()
       promises.push(secretManager.setSecret(`id_${i}`, `secret_${i}`))
     }
     await Promise.all(promises)
@@ -58,18 +86,18 @@ describe(`${adapterFactory.name}. Eventstore adapter init and drop`, () => {
 
   let expectedSecretCount = 0
   test('should be able to save many events and secrets mixed up in parallel', async () => {
-    const secretManager: SecretsManager = await adapter.getSecretsManager()
     const promises: Promise<any>[] = []
 
     let expectedEventCount = 0
     for (let i = 0; i < parallelWrites; ++i) {
       if (Math.random() >= 0.5) {
+        const secretManager: SecretsManager = await getRandomAdapterInstance().getSecretsManager()
         expectedSecretCount++
         promises.push(secretManager.setSecret(`id_mix_${i}`, `secret_mix_${i}`))
       } else {
         expectedEventCount++
         promises.push(
-          adapter.saveEvent({
+          getRandomAdapterInstance().saveEvent({
             aggregateVersion: 1,
             aggregateId: `PARALLEL_ID_MIX_${i}`,
             type: 'PARALLEL_TYPE_MIX',
@@ -96,18 +124,18 @@ describe(`${adapterFactory.name}. Eventstore adapter init and drop`, () => {
   })
 
   test('should be able to delete many secrets while saving events in parallel', async () => {
-    const secretManager: SecretsManager = await adapter.getSecretsManager()
     const promises: Promise<any>[] = []
     let expectedDeletedSecretCount = 0
     let expectedEventCount = 0
     for (let i = 0; i < parallelWrites; ++i) {
       if (Math.random() >= 0.5) {
+        const secretManager: SecretsManager = await getRandomAdapterInstance().getSecretsManager()
         expectedDeletedSecretCount++
         promises.push(secretManager.deleteSecret(`id_${i}`))
       } else {
         expectedEventCount++
         promises.push(
-          adapter.saveEvent({
+          getRandomAdapterInstance().saveEvent({
             aggregateVersion: 1,
             aggregateId: `PARALLEL_ID_MIX2_${i}`,
             type: 'PARALLEL_TYPE_MIX2',

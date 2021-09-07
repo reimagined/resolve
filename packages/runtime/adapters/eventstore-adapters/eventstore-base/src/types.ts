@@ -46,6 +46,7 @@ export type UnbrandProps<T extends any> = {
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 export type InputEvent = Omit<Event, 'payload'> & { payload?: Serializable }
+export type VersionlessEvent = Omit<InputEvent, 'aggregateVersion'>
 export type EventThreadData = {
   threadCounter: number
   threadId: number
@@ -84,6 +85,8 @@ export type EventStoreDescription = {
   deletedSecretCount: number
   isFrozen: boolean
   lastEventTimestamp: number
+  cursor?: string
+  resourceNames?: { [key: string]: string }
 }
 
 export type CheckForResourceError = (errors: Error[]) => void
@@ -529,7 +532,7 @@ export interface Adapter {
   saveSnapshot: (snapshotKey: string, content: string) => Promise<void>
   dropSnapshot: (snapshotKey: string) => Promise<void>
   pushIncrementalImport: (
-    events: InputEvent[],
+    events: VersionlessEvent[],
     importId: string
   ) => Promise<void>
   beginIncrementalImport: () => Promise<string>
@@ -538,7 +541,7 @@ export interface Adapter {
     validateAfterCommit?: any
   ) => Promise<void>
   rollbackIncrementalImport: () => Promise<void>
-  incrementalImport: (events: InputEvent[]) => Promise<void>
+  incrementalImport: (events: VersionlessEvent[]) => Promise<void>
   loadSecrets: (filter: SecretFilter) => Promise<SecretsWithIdx>
   importSecrets: (options?: Partial<ImportSecretsOptions>) => stream.Writable
   exportSecrets: (options?: Partial<ExportSecretsOptions>) => stream.Readable

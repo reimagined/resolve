@@ -15,7 +15,7 @@ import type {
   IsTypeLike,
 } from '@resolve-js/readmodel-base'
 
-import type SQLiteLib from 'sqlite'
+import type SQLiteLib from 'better-sqlite3'
 import type OsLib from 'os'
 import type FsLib from 'fs'
 
@@ -144,7 +144,7 @@ export type AdapterPool = CommonAdapterPool & {
   escapeId: EscapeableMethod
   escapeStr: EscapeableMethod
   connectionUri: string
-  connection: SQLiteLib.Database
+  connection: typeof SQLiteLib['prototype']
   activePassthrough: boolean
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<AdapterPool>[K]

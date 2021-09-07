@@ -1,10 +1,11 @@
-import { ReadModelEvent } from '../../readmodel-base/types'
 import type {
   PassthroughErrorInstance,
   ExternalMethods,
   ReadModelCursor,
   ReadModelProcedureLedger,
   ProcedureResult,
+  EventThreadData,
+  ReadModelEvent,
 } from './types'
 import getLog from './get-log'
 import { LeveledDebugger } from '@resolve-js/debug-levels'
@@ -148,7 +149,6 @@ const buildEvents: (
   const {
     readModelLedger: { IsProcedural: inputIsProcedural },
     PassthroughError,
-    eventStoreOperationTimeLimited,
     checkEventsContinuity,
     inlineLedgerRunQuery,
     generateGuid,
@@ -166,19 +166,17 @@ const buildEvents: (
   const { eventsWithCursors } = buildInfo
   let isProcedural = inputIsProcedural
   const isContinuousMode =
-    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function'
+    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function' &&
+    !!process.env.EXPERIMENTAL_SQS_TRANSPORT
   const getContinuousLatestCursor = async (
     cursor: ReadModelCursor,
-    events: Array<ReadModelEvent>,
+    events: Array<EventThreadData>,
     eventTypes: Array<string> | null
   ) => {
     let nextCursor = await eventstoreAdapter.getNextCursor(cursor, events)
     if (isContinuousMode && eventTypes != null) {
-      nextCursor = await eventStoreOperationTimeLimited(
-        eventstoreAdapter as Required<typeof eventstoreAdapter>,
-        Object.bind(null, new PassthroughError(true)),
-        getVacantTimeInMillis,
-        'getCursorUntilEventTypes',
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      nextCursor = await eventstoreAdapter.getCursorUntilEventTypes!(
         nextCursor,
         eventTypes
       )
@@ -211,42 +209,89 @@ const buildEvents: (
       ? eventsWithCursors.map(({ event }) => event)
       : null
 
-  if (hotEvents == null) {
-    log.debug(`Start loading events`)
-  } else {
-    log.debug(`Getting of hot events`)
-  }
-
-  let eventsPromise =
-    hotEvents == null
-      ? eventStoreOperationTimeLimited(
-          eventstoreAdapter,
-          Object.bind(null, new PassthroughError(true)),
-          getVacantTimeInMillis,
-          'loadEvents',
-          {
-            eventTypes,
-            eventsSizeLimit: 6553600,
-            limit: 100,
-            cursor,
-          }
-        ).then((result) => {
-          log.debug(`Events loaded`)
-          const loadDuration = Date.now() - firstEventsLoadStartTimestamp
-
-          const events = result != null ? result.events : []
-
-          if (groupMonitoring != null && events.length > 0) {
-            groupMonitoring.duration(
-              'EventLoad',
-              loadDuration / events.length,
-              events.length
-            )
-          }
-
-          return events
+  const loadEventsWithMonitoring = (
+    cursorPromise: Promise<ReadModelCursor>,
+    limit: number,
+    initialTimestamp: number
+  ) =>
+    Promise.resolve(cursorPromise)
+      .then((cursor) =>
+        eventstoreAdapter.loadEvents({
+          eventTypes,
+          eventsSizeLimit: 65536 * limit,
+          limit,
+          cursor,
         })
+      )
+      .then((result) => {
+        const loadDuration = Date.now() - initialTimestamp
+
+        const events = result != null ? result.events : []
+
+        if (groupMonitoring != null && events.length > 0) {
+          groupMonitoring.duration(
+            'EventLoad',
+            loadDuration / events.length,
+            events.length
+          )
+        }
+
+        return events
+      })
+
+  let eventsPromise: Promise<ReadModelEvent[]> | Promise<null> =
+    hotEvents == null
+      ? loadEventsWithMonitoring(
+          Promise.resolve(cursor),
+          100,
+          firstEventsLoadStartTimestamp
+        )
       : Promise.resolve(hotEvents)
+
+  const eventstoreLocalResourcePromise = (async () => {
+    let resourceNames = null
+    try {
+      void ({ resourceNames } =
+        hotEvents == null && !!process.env.EXPERIMENTAL_INLINE_DB_EVENT_LOAD
+          ? await eventstoreAdapter.describe()
+          : { resourceNames: null })
+    } catch (err) {}
+
+    if (
+      resourceNames == null ||
+      resourceNames?.eventsTableName == null ||
+      resourceNames?.databaseName == null ||
+      !isProcedural
+    ) {
+      return null
+    }
+
+    const databaseNameAsId = escapeId(resourceNames.databaseName)
+    const eventsTableNameAsId = escapeId(resourceNames.eventsTableName)
+
+    try {
+      const immediateLastEvent = (await eventsPromise).slice(-1)[0]
+      await inlineLedgerRunQuery(`
+          WITH "CTE" AS (
+            SELECT * FROM ${databaseNameAsId}.${eventsTableNameAsId}
+            WHERE "threadId" = ${+immediateLastEvent.threadId}
+            AND "threadCounter" = ${+immediateLastEvent.threadCounter}
+            AND "timestamp" = ${+immediateLastEvent.timestamp}
+            AND "aggregateId" = ${escapeStr(immediateLastEvent.aggregateId)}
+            AND "aggregateVersion" = ${+immediateLastEvent.aggregateVersion}
+            AND "type" = ${escapeStr(immediateLastEvent.type)}
+            AND "payload" = ${escapeStr(
+              JSON.stringify(immediateLastEvent.payload)
+            )}
+          )
+          SELECT 1/Count("CTE".*) AS "NonZero" FROM "CTE"
+        `)
+
+      return resourceNames
+    } catch (err) {
+      return null
+    }
+  })()
 
   let rootSavePointId = generateGuid(xaKey, 'ROOT')
 
@@ -269,54 +314,21 @@ const buildEvents: (
     true
   )
 
-  let events = await eventsPromise
+  const eventstoreLocalResourcesNames = await eventstoreLocalResourcePromise
+  let events =
+    eventstoreLocalResourcesNames == null ? await eventsPromise : null
 
   for (metricData.eventLoopCount = 0; true; metricData.eventLoopCount++) {
-    if (events.length === 0) {
+    if (events != null && events.length === 0) {
       throw new PassthroughError(false)
     }
 
     log.debug(`Start optimistic events loading`)
 
-    let nextCursorPromise: Promise<ReadModelCursor> = getContinuousLatestCursor(
-      cursor,
-      events,
-      eventTypes
-    )
-
-    const eventsLoadStartTimestamp = Date.now()
-    eventsPromise = Promise.resolve(nextCursorPromise)
-      .then((nextCursor) =>
-        eventStoreOperationTimeLimited(
-          eventstoreAdapter,
-          Object.bind(null, new PassthroughError(true)),
-          getVacantTimeInMillis,
-          'loadEvents',
-          {
-            eventTypes,
-            eventsSizeLimit: 65536000,
-            limit: 1000,
-            cursor: nextCursor,
-          }
-        )
-      )
-      .then((result) => {
-        log.debug(`Events loaded optimistically`)
-        const loadDuration = Date.now() - eventsLoadStartTimestamp
-
-        const events = result != null ? result.events : []
-
-        if (groupMonitoring != null && events.length > 0) {
-          groupMonitoring.duration(
-            'EventLoad',
-            loadDuration / events.length,
-            events.length
-          )
-        }
-
-        return events
-      })
-
+    let nextCursorPromise: Promise<ReadModelCursor> | null =
+      events != null
+        ? getContinuousLatestCursor(cursor, events, eventTypes)
+        : null
     let appliedEventsCount = 0
     let regularWorkflow = true
 
@@ -332,7 +344,14 @@ const buildEvents: (
             )}(${escapeStr(
               JSON.stringify({
                 maxExecutionTime: getVacantTimeInMillis(),
-                events,
+                ...(eventstoreLocalResourcesNames != null
+                  ? {
+                      localEventsDatabaseName:
+                        eventstoreLocalResourcesNames.databaseName,
+                      localEventsTableName:
+                        eventstoreLocalResourcesNames.eventsTableName,
+                    }
+                  : { events }),
               })
             )}) AS "Result"`
           )) as Array<{ Result: ProcedureResult }>
@@ -344,6 +363,7 @@ const buildEvents: (
           throw new Error(`Procedure was not able to be launched`)
         }
         const {
+          appliedEventsThreadData,
           successEvent,
           failureEvent,
           failureError,
@@ -360,14 +380,23 @@ const buildEvents: (
 
         appliedEventsCount = appliedCount
         eventCount += appliedCount
+
         if (status === 'OK_PARTIAL' || status === 'CUSTOM_ERROR') {
           nextCursorPromise = getContinuousLatestCursor(
             cursor,
-            events.slice(0, appliedCount),
+            appliedEventsThreadData,
             eventTypes
           )
         }
         if (status === 'OK_ALL' || status === 'OK_PARTIAL') {
+          if (nextCursorPromise == null) {
+            nextCursorPromise = nextCursorPromise = getContinuousLatestCursor(
+              cursor,
+              appliedEventsThreadData,
+              eventTypes
+            )
+          }
+
           lastSuccessEvent = successEvent
         } else if (status === 'CUSTOM_ERROR') {
           lastFailedEvent = failureEvent
@@ -381,6 +410,9 @@ const buildEvents: (
         regularWorkflow = false
       } catch (err) {
         isProcedural = false
+        if (err instanceof PassthroughError) {
+          throw err
+        }
 
         // eslint-disable-next-line no-console
         console.warn(
@@ -390,11 +422,38 @@ const buildEvents: (
         )
 
         await inlineLedgerRunQuery(`ROLLBACK TO SAVEPOINT ${rootSavePointId};`)
+
+        if (events == null) {
+          events = await loadEventsWithMonitoring(
+            Promise.resolve(cursor),
+            100,
+            Date.now()
+          )
+        }
+
+        nextCursorPromise = getContinuousLatestCursor(
+          cursor,
+          events,
+          eventTypes
+        )
       }
       log.debug(`Finish running procedural events applying`)
     }
 
+    const eventsLoadStartTimestamp = Date.now()
+    eventsPromise =
+      regularWorkflow || eventstoreLocalResourcesNames == null
+        ? loadEventsWithMonitoring(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            nextCursorPromise!,
+            1000,
+            eventsLoadStartTimestamp
+          )
+        : Promise.resolve(null)
+
     if (regularWorkflow) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      events = events!
       log.debug(`Running regular workflow events applying`)
       try {
         for (const event of events) {
@@ -603,6 +662,7 @@ const build: ExternalMethods['build'] = async (
   const log = getLog('build')
   log.debug(`Start building`)
 
+  eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
   const { eventsWithCursors, ...inputMetricData } = buildInfo
   const metricData = {
     ...inputMetricData,
@@ -684,11 +744,7 @@ const build: ExternalMethods['build'] = async (
          AND "IsPaused" = FALSE
          AND "Errors" IS NULL
          FOR NO KEY UPDATE NOWAIT
-       ), "CleanTrx" AS (
-        DELETE FROM ${databaseNameAsId}.${trxTableNameAsId}
-        WHERE "Timestamp" < CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) - 86400000
-        RETURNING *
-      ), "InsertTrx" AS (
+       ), "InsertTrx" AS (
         INSERT INTO ${databaseNameAsId}.${trxTableNameAsId}(
           "Timestamp", "XaKey", "XaValue"
         ) VALUES (
@@ -702,7 +758,6 @@ const build: ExternalMethods['build'] = async (
         SET "XaKey" = ${escapeStr(xaKey)}
         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         AND CAST(COALESCE((SELECT LEAST(Count("InsertTrx".*), 0) FROM "InsertTrx"), 0) AS BIGINT) = 0
-        AND CAST(COALESCE((SELECT LEAST(Count("CleanTrx".*), 0) FROM "CleanTrx"), 0) AS BIGINT) = 0
         AND (SELECT Count("MaybeAcquireLock".*) FROM "MaybeAcquireLock") = 1
         AND "IsPaused" = FALSE
         AND "Errors" IS NULL
@@ -769,8 +824,26 @@ const build: ExternalMethods['build'] = async (
       getVacantTimeInMillis,
       buildInfo
     )
+
+    try {
+      await inlineLedgerRunQuery(`
+        DELETE FROM ${databaseNameAsId}.${trxTableNameAsId}
+        WHERE "Timestamp" < CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) - 86400000  
+      `)
+    } catch (err) {
+      if (!(err instanceof PassthroughError)) {
+        log.debug(`Unknown error is thrown while cleaning TRX journal`)
+        throw err
+      }
+    }
   } catch (error) {
-    if (!(error instanceof PassthroughError)) {
+    if (
+      error == null ||
+      !(
+        error instanceof PassthroughError ||
+        error.name === 'RequestTimeoutError'
+      )
+    ) {
       log.debug(`Unknown error is thrown while building`)
       throw error
     }
@@ -790,7 +863,7 @@ const build: ExternalMethods['build'] = async (
       log.debug(`PassthroughError is thrown while rollback`)
     }
 
-    if (passthroughError.isRetryable) {
+    if (passthroughError.isRetryable || error.name === 'RequestTimeoutError') {
       log.debug(`PassthroughError is retryable. Going to the next step`)
       await next()
     }

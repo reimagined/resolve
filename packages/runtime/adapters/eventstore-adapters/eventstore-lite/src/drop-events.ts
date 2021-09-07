@@ -5,7 +5,7 @@ import executeSequence from './execute-sequence'
 import { isNotExistError } from './resource-errors'
 
 const dropEvents = async ({
-  database,
+  executeQuery,
   databaseFile,
   eventsTableName,
   snapshotsTableName,
@@ -28,7 +28,7 @@ const dropEvents = async ({
   ]
 
   const errors: any[] = await executeSequence(
-    database,
+    executeQuery,
     statements,
     log,
     (error) => {

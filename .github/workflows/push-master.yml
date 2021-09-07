@@ -33,6 +33,7 @@ jobs:
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           upcoming: false
           release_tag: ${{ env.git_release_tag }}
+          generator_version: '1.16.2'
 
       - uses: reimagined/github-actions/git-release@v1
         id: git_release
