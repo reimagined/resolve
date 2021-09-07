@@ -259,9 +259,11 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
     await handler(req, res)
 
     const { status, headers, cookies, body } = res[INTERNAL]
-    expressRes.status(status)
+    expressRes.statusCode = status
     headers['Set-Cookie'] = cookies
-    expressRes.set(headers)
+    for (const key of Object.keys(headers)) {
+      expressRes.setHeader(key, headers[key])
+    }    
     expressRes.end(body)
   } catch (error) {
     const outError =

@@ -5679,6 +5679,11 @@ buffer-indexof@^1.0.0:
   resolved "https://registry.yarnpkg.com/buffer-indexof/-/buffer-indexof-1.1.1.tgz#52fabcc6a606d1a00302802648ef68f639da268c"
   integrity sha512-4/rOEg86jivtPTeOUUT61jJO1Ya1TrR/OkqCSZDyq84WJh3LuuiphBYJN+fm5xufIk4XAFcEwte/8WzC8If/1g==
 
+buffer-peek-stream@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/buffer-peek-stream/-/buffer-peek-stream-1.1.0.tgz#4d0c3605274e1af479a2654b9b9674458897cd86"
+  integrity sha512-b3MXlJ52rPOL5xCAQsiCOy/tY9WXOP/hwATporJriUDxnT3MjJgVppDzTFegpg2Nw7NMS28MKC6IKvaXLnGr+Q==
+
 buffer-writer@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/buffer-writer/-/buffer-writer-2.0.0.tgz#ce7eb81a38f7829db09c873f2fbb792c0c98ec04"
@@ -12781,6 +12786,13 @@ mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@^0.5.5, mkdirp@~0.5.1:
   dependencies:
     minimist "^1.2.5"
 
+mmmagic@^0.5.0:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/mmmagic/-/mmmagic-0.5.3.tgz#a28feb0cf85632fd6a1e233e4a584990ae0d7302"
+  integrity sha512-xLqCu7GJYTzJczg0jafXFuh+iPzQL/ru0YYf4GiTTz8Cehru/wiXtUS8Pp8Xi77zNaiVndJ0OO1yAFci6iHyFg==
+  dependencies:
+    nan "^2.13.2"
+
 module-alias@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/module-alias/-/module-alias-2.2.2.tgz#151cdcecc24e25739ff0aa6e51e1c5716974c0e0"
@@ -12954,7 +12966,7 @@ named-placeholders@^1.1.2:
   dependencies:
     lru-cache "^4.1.3"
 
-nan@^2.12.1:
+nan@^2.12.1, nan@^2.13.2:
   version "2.15.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.15.0.tgz#3f34a473ff18e15c1b5626b62903b5ad6e665fee"
   integrity sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==
@@ -16859,6 +16871,14 @@ stream-http@^2.7.2:
     readable-stream "^2.3.6"
     to-arraybuffer "^1.0.0"
     xtend "^4.0.0"
+
+stream-mmmagic@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/stream-mmmagic/-/stream-mmmagic-2.3.0.tgz#e7bb58d7ab9eeb85904cea2d828d8ac1c0bdcdc5"
+  integrity sha512-6pzzM+P/cTF77Cq6cZ93vPF2k8FNYHs7F3vnIhwbEbr7QDbhR2p9RAjq2FwHUdH1BL/OJBRQ6XrBFj+RuRpVqQ==
+  dependencies:
+    buffer-peek-stream "^1.1.0"
+    mmmagic "^0.5.0"
 
 stream-shift@^1.0.0:
   version "1.0.1"
