@@ -1,3 +1,5 @@
+import type { Resolve } from './types'
+
 const bootstrapOne = async ({
   applicationName,
   name,
@@ -7,6 +9,15 @@ const bootstrapOne = async ({
   destination,
   upstream,
   ensureQueue,
+}: {
+  applicationName: string
+  name: string
+  eventstoreAdapter: Resolve['eventstoreAdapter']
+  eventSubscriber: Resolve['eventSubscriber']
+  eventTypes: string[]
+  destination?: string
+  upstream: Resolve['upstream']
+  ensureQueue: Resolve['ensureQueue']
 }) => {
   try {
     const errors = []
@@ -38,7 +49,7 @@ const bootstrapOne = async ({
         const [status, sideEffectsValue] = await Promise.all([
           eventSubscriber
             .status({ eventSubscriber: name })
-            .then((result) => (result != null ? result.status : result)),
+            .then((result: any) => (result != null ? result.status : result)),
           eventSubscriber.getProperty({
             eventSubscriber: name,
             key: sideEffectsKey,

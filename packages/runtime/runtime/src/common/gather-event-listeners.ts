@@ -1,4 +1,5 @@
 import type { Domain, DomainMeta } from '@resolve-js/core'
+import type { EventListener } from './types'
 
 const gatherEventListeners = (domain: DomainMeta, domainInterop: Domain) => {
   const { sagas, readModels } = domain
@@ -9,7 +10,7 @@ const gatherEventListeners = (domain: DomainMeta, domainInterop: Domain) => {
       schedulerEventTypes,
     },
   } = domainInterop
-  const eventListeners = new Map()
+  const eventListeners = new Map<string, EventListener>()
 
   for (const { name, projection, invariantHash, connectorName } of readModels) {
     eventListeners.set(name, {

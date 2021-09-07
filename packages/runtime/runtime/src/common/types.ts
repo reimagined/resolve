@@ -9,6 +9,14 @@ import type { Server as HttpServer } from 'http'
 import http from 'http'
 import https from 'https'
 
+export type EventListener = {
+  name: string
+  eventTypes: string[]
+  invariantHash?: string
+  connectorName: string
+  isSaga: boolean
+}
+
 export type PubsubConnectionOptions = {
   client: (event: string) => Promise<void>
   connectionId: string
@@ -37,14 +45,14 @@ export type PubsubManager = {
   }): Promise<void>
 }
 
-export type ScheduleEntry = {
+export type SchedulerEntry = {
   taskId: string
   date: number | string | Date
   command: any
 }
 
 export type Scheduler = {
-  addEntries: (array: ScheduleEntry[]) => Promise<void>
+  addEntries: (array: SchedulerEntry[]) => Promise<void>
   clearEntries: () => Promise<void>
 }
 
@@ -83,17 +91,17 @@ export type Resolve = {
   seedClientEnvs: Assemblies['seedClientEnvs']
   serverImports: Assemblies['serverImports']
 
-  eventListeners: any
+  eventListeners: Map<string, EventListener>
   upstream: any
 
   http: typeof http
   https: typeof https
 
-  getEventSubscriberDestination: () => string
+  getEventSubscriberDestination: (name?: string) => string
   invokeBuildAsync: Function
 
-  ensureQueue: () => Promise<void>
-  deleteQueue: () => Promise<void>
+  ensureQueue: (name?: string) => Promise<void>
+  deleteQueue: (name?: string) => Promise<void>
 
   eventstoreAdapter: EventstoreAdapter
   applicationName: string
@@ -119,7 +127,10 @@ export type Resolve = {
 
   //TODO: types
   eventSubscriber: any
-  eventSubscriberScope: any
+  eventSubscriberScope: string
+
+  executeSaga: any
+  executeQuery: any
 }
 
 export type ResolvePartial = Partial<Resolve>

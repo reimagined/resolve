@@ -1,3 +1,5 @@
+import type { Resolve } from './types'
+
 const shutdownOne = async ({
   applicationName,
   name,
@@ -6,6 +8,14 @@ const shutdownOne = async ({
   upstream,
   deleteQueue,
   soft,
+}: {
+  applicationName: string
+  name: string
+  eventstoreAdapter: Resolve['eventstoreAdapter']
+  eventSubscriber: Resolve['eventSubscriber']
+  upstream: Resolve['upstream']
+  deleteQueue: Resolve['deleteQueue']
+  soft?: boolean
 }) => {
   try {
     const errors = []

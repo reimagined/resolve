@@ -1,7 +1,7 @@
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
-import type { ScheduleEntry, Resolve } from '../common/types'
+import type { SchedulerEntry, Resolve } from '../common/types'
 
 const errorHandler = async (error: any) => {
   throw error
@@ -12,7 +12,7 @@ const initScheduler = (resolve: Resolve) => {
   let flowPromise = Promise.resolve()
 
   resolve.scheduler = {
-    async addEntries(array: ScheduleEntry[]) {
+    async addEntries(array: SchedulerEntry[]) {
       for (const entry of array) {
         // eslint-disable-next-line no-loop-func
         const timeout = setTimeout(() => {

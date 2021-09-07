@@ -3,9 +3,11 @@ import debugLevels from '@resolve-js/debug-levels'
 import bootstrapOne from './bootstrap-one'
 import shutdownOne from './shutdown-one'
 
+import type { Resolve } from './types'
+
 const log = debugLevels('resolve:runtime:bootstrap')
 
-const bootstrap = async (resolve) => {
+const bootstrap = async (resolve: Resolve) => {
   log.debug('bootstrap started')
   const promises = []
 

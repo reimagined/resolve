@@ -1,4 +1,10 @@
-const eventSubscriberMethod = async (resolve, key, ...args) => {
+import type { Resolve } from './types'
+
+const eventSubscriberMethod = async (
+  resolve: Resolve,
+  key: string,
+  ...args: any[]
+): Promise<any> => {
   if (args.length !== 1 || Object(args[0]) !== args[0]) {
     throw new TypeError(
       `Invalid EventSubscriber method "${key}" arguments ${JSON.stringify(
@@ -9,7 +15,7 @@ const eventSubscriberMethod = async (resolve, key, ...args) => {
 
   let { eventSubscriber, modelName, ...parameters } = args[0]
   if (eventSubscriber == null && modelName == null) {
-    throw new Error(`Either "eventSubscriber" nor "modelName" is null`)
+    throw new Error(`Either "eventSubscriber" or "modelName" is null`)
   } else if (eventSubscriber == null) {
     eventSubscriber = modelName
   } else {
@@ -34,11 +40,11 @@ const eventSubscriberMethod = async (resolve, key, ...args) => {
   return result
 }
 
-const createEventSubscriber = (resolve) => {
+const createEventSubscriber = (resolve: Resolve) => {
   const eventSubscriber = new Proxy(
     {},
     {
-      get(_, key) {
+      get(_, key: string) {
         return eventSubscriberMethod.bind(null, resolve, key)
       },
       set() {
