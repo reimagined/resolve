@@ -49,7 +49,7 @@ The `context` argument is an object of the following structure:
 
 ```js
 {
-  jwt, // The JSON web token attacked to the request (Optional).
+  jwt, // The JSON web token attached to the request (Optional).
   viewModel: {
     name, // The name of the view model.
     eventTypes // The event types available to the view model.
