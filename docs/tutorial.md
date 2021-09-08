@@ -69,7 +69,15 @@ export const SHOPPING_LIST_CREATED = 'SHOPPING_LIST_CREATED' // Indicates the cr
 export const SHOPPING_ITEM_CREATED = 'SHOPPING_ITEM_CREATED' // Indicates the creation of an item within a shopping list
 ```
 
-Next, define an aggregate that handles commands and produces the defined events as a result. Create a **shopping_list.commands.js** file in the **common/aggregates** folder and add the following code to it:
+Next, define an aggregate that handles commands and produces the defined events as a result.
+
+:::tip Aggregate
+
+In terms of the event sourcing paradigm, an aggregate is a cluster of domain objects. An aggregate should be able to handle its commands without the need to communicate with other aggregates, which also makes it a transaction boundary.
+
+:::
+
+Create a **shopping_list.commands.js** file in the **common/aggregates** folder and add the following code to it:
 
 **common/aggregates/shopping_list.commands.js**
 
