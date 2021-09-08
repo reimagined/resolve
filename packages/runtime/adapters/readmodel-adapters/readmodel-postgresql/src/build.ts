@@ -841,7 +841,8 @@ const build: ExternalMethods['build'] = async (
       error == null ||
       !(
         error instanceof PassthroughError ||
-        error.name === 'RequestTimeoutError'
+        error.name === 'RequestTimeoutError' ||
+        error.name === 'ServiceBusyError'
       )
     ) {
       log.debug(`Unknown error is thrown while building`)
@@ -863,7 +864,11 @@ const build: ExternalMethods['build'] = async (
       log.debug(`PassthroughError is thrown while rollback`)
     }
 
-    if (passthroughError.isRetryable || error.name === 'RequestTimeoutError') {
+    if (
+      passthroughError.isRetryable ||
+      error.name === 'RequestTimeoutError' ||
+      error.name === 'ServiceBusyError'
+    ) {
       log.debug(`PassthroughError is retryable. Going to the next step`)
       await next()
     }
