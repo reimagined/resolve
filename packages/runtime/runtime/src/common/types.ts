@@ -85,6 +85,13 @@ export type Assemblies = {
   serverImports: any
 }
 
+export type BuildParameters = {
+  eventSubscriber: string
+  initiator: 'read-model-next' | 'command-foreign' | 'command'
+  notificationId: string
+  sendTime: number
+}
+
 export type Resolve = {
   instanceId: string
 
@@ -98,7 +105,7 @@ export type Resolve = {
   https: typeof https
 
   getEventSubscriberDestination: (name?: string) => string
-  invokeBuildAsync: Function
+  invokeBuildAsync: (parameters: BuildParameters) => Promise<void>
 
   ensureQueue: (name?: string) => Promise<void>
   deleteQueue: (name?: string) => Promise<void>

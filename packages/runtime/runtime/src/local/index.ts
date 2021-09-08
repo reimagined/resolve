@@ -18,7 +18,7 @@ import disposeResolve from '../common/dispose-resolve'
 import { backgroundJob } from '../common/utils/background-job'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
 
-import type { Assemblies, ResolvePartial, Resolve } from '../common/types'
+import type { Assemblies, ResolvePartial, Resolve, BuildParameters } from '../common/types'
 
 const log = getLog('local-entry')
 
@@ -83,7 +83,7 @@ const localEntry = async ({
       http,
       getEventSubscriberDestination: () =>
         `http://0.0.0.0:${constants.port}/api/subscribers`,
-      invokeBuildAsync: backgroundJob(async (parameters: any) => {
+      invokeBuildAsync: backgroundJob(async (parameters: BuildParameters) => {
         const currentResolve = Object.create(resolve)
         try {
           await initResolve(currentResolve)
