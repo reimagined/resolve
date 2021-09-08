@@ -743,7 +743,8 @@ const build: ExternalMethods['build'] = async (
       error == null ||
       !(
         error instanceof PassthroughError ||
-        error.name === 'RequestTimeoutError'
+        error.name === 'RequestTimeoutError' ||
+        error.name === 'ServiceBusyError'
       )
     ) {
       throw error
@@ -764,7 +765,11 @@ const build: ExternalMethods['build'] = async (
       }
     }
 
-    if (passthroughError.isRetryable || error.name === 'RequestTimeoutError') {
+    if (
+      passthroughError.isRetryable ||
+      error.name === 'RequestTimeoutError' ||
+      error.name === 'ServiceBusyError'
+    ) {
       await next()
     }
   } finally {
