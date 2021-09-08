@@ -6,7 +6,8 @@ import type {
   AdapterPoolPrimal,
   PostgresqlAdapterConfig,
 } from './types'
-import { ConnectionError } from '@resolve-js/eventstore-base'
+import { ConnectionError, ServiceBusyError } from '@resolve-js/eventstore-base'
+import { isServiceBusyError } from './errors'
 import makePostgresClient from './make-postgres-client'
 
 const connect = async (
@@ -76,7 +77,11 @@ const connect = async (
       await pool.executeStatement('SELECT 0 AS "defunct"')
     }
   } catch (error) {
-    if (error instanceof Error) {
+    if (isServiceBusyError(error)) {
+      const busyError = new ServiceBusyError(error.message)
+      busyError.stack = error.stack
+      throw busyError
+    } else if (error instanceof Error) {
       const connectionError = new ConnectionError(error.message)
       connectionError.stack = error.stack
       throw connectionError

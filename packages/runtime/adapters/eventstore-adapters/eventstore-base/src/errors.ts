@@ -43,3 +43,5 @@ export const RequestTimeoutError = DefineErrorWithStatus(
 )
 
 export const ConnectionError = DefineErrorWithStatus('ConnectionError', 503)
+
+export const ServiceBusyError = DefineErrorWithStatus('ServiceBusyError', 503)

@@ -36,3 +36,9 @@ export const isTimeoutError = (error: any): boolean => {
       checkFormalError(error, 'ETIMEDOUT'))
   )
 }
+
+export const isServiceBusyError = (error: any): boolean => {
+  return (
+    error != null && checkFuzzyError(error, /sorry, too many clients already/i)
+  )
+}
