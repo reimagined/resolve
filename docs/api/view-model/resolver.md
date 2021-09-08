@@ -22,7 +22,7 @@ The `meta` object returned by a resolver should have the following structure:
 {
   cursor, // The data cursor used to traverse the events included into the query result set.
   eventTypes, // The list of event types available to the client.
-  aggregateIds, // List of aggregate IDs available to th client.
+  aggregateIds, // List of aggregate IDs available to the client.
 }
 ```
 
