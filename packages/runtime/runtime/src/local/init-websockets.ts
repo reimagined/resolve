@@ -11,22 +11,25 @@ import getRootBasedUrl from '../common/utils/get-root-based-url'
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
 import type { Event } from '@resolve-js/core'
+import type { Adapter as EventstoreAdapter } from '@resolve-js/eventstore-base'
 import type { Resolve } from '../common/types'
 
 const log = debugLevels('resolve:runtime:local-subscribe-adapter')
 
-let eventstoreAdapter: any = null
+// TODO: get rid of global variable!
+let eventstoreAdapter: EventstoreAdapter
 
 const createWebSocketConnectionHandler = (resolve: Resolve) => (
   ws: WebSocket,
   req: http.IncomingMessage
 ) => {
   const { pubsubManager } = resolve
+  //TODO: check that req.url exist
   const queryString = (req.url as string).split('?')[1]
   const { token, deploymentId } = qs.parse(queryString)
   const connectionId = uuid()
-  let eventTypes = null
-  let aggregateIds = null
+  let eventTypes: string[] | null = null
+  let aggregateIds: string[] | null = null
 
   try {
     void ({ eventTypes, aggregateIds } = jwt.verify(
@@ -59,14 +62,19 @@ const createWebSocketConnectionHandler = (resolve: Resolve) => (
 }
 
 const createWebSocketMessageHandler = (
-  { pubsubManager }: any,
-  ws: any,
-  connectionId: any
+  { pubsubManager }: Resolve,
+  ws: WebSocket,
+  connectionId: string
 ) => async (message: string) => {
   try {
-    const { eventTypes, aggregateIds } = pubsubManager.getConnection({
+    const connection = pubsubManager.getConnection({
       connectionId,
     })
+
+    if (connection === undefined) {
+      throw new Error(`Connection ${connectionId} does not exist`)
+    }
+    const { eventTypes, aggregateIds } = connection
 
     const { type, payload, requestId } = JSON.parse(message)
     switch (type) {
@@ -105,7 +113,7 @@ const createWebSocketMessageHandler = (
   }
 }
 
-const initInterceptingHttpServer = (resolve: any) => {
+const initInterceptingHttpServer = (resolve: Resolve) => {
   const { server: baseServer, websocketHttpServer } = resolve
   const websocketBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/websocket')
   const interceptingEvents = [
@@ -119,14 +127,14 @@ const initInterceptingHttpServer = (resolve: any) => {
 
   const interceptingEventListener = (
     eventName: string,
-    listeners: any[],
+    listeners: Function[],
     ...args: any[]
   ) => {
     const requestUrl =
       args[0] != null && args[0].url != null ? String(args[0].url) : ''
 
     if (requestUrl.startsWith(websocketBaseUrl)) {
-      void (websocketHttpServer as EventEmitter).emit(eventName, ...args)
+      void websocketHttpServer.emit(eventName, ...args)
     } else {
       for (const listener of listeners) {
         listener.apply(baseServer, args)
@@ -182,14 +190,10 @@ const initWebsockets = async (resolve: Resolve) => {
     })
   }
 
-  Object.defineProperties(resolve, {
-    getSubscribeAdapterOptions: {
-      value: getSubscribeAdapterOptions,
-    },
-    pubsubManager: { value: pubsubManager },
-    websocketHttpServer: { value: websocketHttpServer },
-    sendReactiveEvent: { value: sendReactiveEvent },
-  })
+  resolve.getSubscribeAdapterOptions = getSubscribeAdapterOptions
+  resolve.pubsubManager = pubsubManager
+  resolve.websocketHttpServer = websocketHttpServer
+  resolve.sendReactiveEvent = sendReactiveEvent
 
   await initWebSocketServer(resolve)
 

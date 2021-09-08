@@ -37,7 +37,7 @@ export type PubsubManager = {
   }): void
   getConnection(options: {
     connectionId: PubsubConnectionOptions['connectionId']
-  }): void
+  }): PubsubConnection | undefined
   dispatch(options: {
     event: Pick<Event, 'type' | 'aggregateId'>
     topicName: string
@@ -124,13 +124,16 @@ export type Resolve = {
   sendReactiveEvent: (
     event: Pick<Event, 'type' | 'aggregateId'>
   ) => Promise<void>
+  //TODO: bind to resolve object
   getSubscribeAdapterOptions: (
+    resolve: Resolve,
     origin: string,
     eventTypes: string[] | null,
     aggregateIds: string[] | null
-  ) => { appId: Resolve['applicationName']; url: string }
+  ) => Promise<{ appId: Resolve['applicationName']; url: string }>
 
   websocketHttpServer: HttpServer
+  server: http.Server
 
   //TODO: types
   eventSubscriber: any
