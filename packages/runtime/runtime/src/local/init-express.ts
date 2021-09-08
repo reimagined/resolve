@@ -10,25 +10,24 @@ import wrapTrie from '../common/wrap-trie'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
-const staticRouteMarkerHandler = () => {}
+import type { Resolve } from '../common/types'
 
-const initExpress = async (resolve) => {
+const staticRouteMarkerHandler = () => {
+  return
+}
+
+const initExpress = async (resolve: Resolve) => {
   const app = express()
   const server = new Server(app)
 
-  Object.defineProperties(resolve, {
-    routesTrie: {
-      value: wrapTrie(
-        resolve.domain.apiHandlers,
-        resolve.staticRoutes,
-        resolve.rootPath,
-        staticRouteMarkerHandler
-      ),
-      enumerable: true,
-    },
-    app: { value: app },
-    server: { value: server },
-  })
+  resolve.routesTrie = wrapTrie(
+    resolve.domain.apiHandlers,
+    resolve.staticRoutes,
+    resolve.rootPath,
+    staticRouteMarkerHandler
+  )
+  resolve.app = app
+  resolve.server = server
 
   if (resolve.staticPath != null && resolve.staticRoutes != null) {
     throw new Error(`Static routing failed`)
@@ -45,7 +44,7 @@ const initExpress = async (resolve) => {
     )
   }
 
-  resolve.app.use(async (req, res, next) => {
+  void (resolve.app as typeof app).use(async (req, res, next) => {
     if (resolve.staticRoutes != null) {
       const { node } = resolve.routesTrie.match(req.path) ?? { node: null }
       if (node != null) {

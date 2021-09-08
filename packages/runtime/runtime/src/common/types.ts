@@ -5,9 +5,19 @@ import type {
   DomainMeta,
   Event,
 } from '@resolve-js/core'
-import type { Server as HttpServer } from 'http'
+import type { Server as HttpServer, IncomingHttpHeaders } from 'http'
 import http from 'http'
 import https from 'https'
+import cookie from 'cookie'
+import type { Trie } from 'route-trie'
+
+export type ApiHandler = {
+  path: string
+  method: string
+  //TODO: specialize params
+  handler: (req: any, res: any) => Promise<void>
+}
+type DomainWithHandlers = DomainMeta & { apiHandlers: ApiHandler[] }
 
 export type EventListener = {
   name: string
@@ -113,7 +123,7 @@ export type Resolve = {
   eventstoreAdapter: EventstoreAdapter
   applicationName: string
   assemblies: Assemblies
-  domain: DomainMeta
+  domain: DomainWithHandlers
   domainInterop: Domain
   rootPath: string
   performanceTracer: PerformanceTracer
@@ -124,7 +134,7 @@ export type Resolve = {
   sendReactiveEvent: (
     event: Pick<Event, 'type' | 'aggregateId'>
   ) => Promise<void>
-  //TODO: bind to resolve object
+  //TODO: bind to resolve object?
   getSubscribeAdapterOptions: (
     resolve: Resolve,
     origin: string,
@@ -141,15 +151,62 @@ export type Resolve = {
 
   executeSaga: any
   executeQuery: any
+
+  //TODO: Express app. Do we really need it in the pool?
+  app: any
+
+  staticRoutes?: string[]
+  staticPath?: string
+
+  routesTrie: Trie
+
+  //These come from application config
+  distDir: string
+  port: number
 }
 
 export type ResolvePartial = Partial<Resolve>
 
-export type ResolveRequest = {
-  resolve: Resolve
+export type HttpRequest = {
+  readonly adapter: string
+  readonly method: string
+  readonly query: Record<string, any>
+  readonly path: string
+  readonly headers: IncomingHttpHeaders
+  readonly cookies: Record<string, string>
+  readonly body: string | null
+  readonly [key: string]: any
 }
 
-export type ResolveResponse = {
-  end: (text: string) => void
-  status: (status: number) => void
+export type ResolveRequest = HttpRequest & {
+  readonly resolve: Resolve
 }
+
+export type HttpResponse = {
+  readonly cookie: (
+    name: string,
+    value: string,
+    options?: cookie.CookieSerializeOptions
+  ) => HttpResponse
+  readonly clearCookie: (
+    name: string,
+    options?: cookie.CookieSerializeOptions
+  ) => HttpResponse
+  readonly status: (code: number) => HttpResponse
+  readonly redirect: (path: string, code?: number) => HttpResponse
+  readonly getHeader: (searchKey: string) => any
+  readonly setHeader: (key: string, value: string) => HttpResponse
+  readonly text: (content: string, encoding?: BufferEncoding) => HttpResponse
+  readonly json: (content: any) => HttpResponse
+  readonly end: (
+    content?: string | Buffer,
+    encoding?: BufferEncoding
+  ) => HttpResponse
+  readonly file: (
+    content: string | Buffer,
+    filename: string,
+    encoding?: BufferEncoding
+  ) => HttpResponse
+}
+
+export type ResolveResponse = HttpResponse

@@ -2,6 +2,17 @@ import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
 import mimeTypes from 'mime-types'
 import getRawBody from 'raw-body'
+import type {
+  Request as ExpressRequest,
+  Response as ExpressResponse,
+} from 'express'
+import type { IncomingHttpHeaders } from 'http'
+import type {
+  HttpRequest,
+  HttpResponse,
+  ResolveRequest,
+  ResolveResponse,
+} from '../common/types'
 
 const COOKIE_CLEAR_DATE = new Date(0)
 const INTERNAL = Symbol('INTERNAL')
@@ -23,7 +34,9 @@ const normalizeKey = (key: string, mode: string) => {
   }
 }
 
-const wrapHeadersCaseInsensitive = (headersMap: Record<string, any>) =>
+const wrapHeadersCaseInsensitive = (
+  headersMap: IncomingHttpHeaders
+): Record<string, any> =>
   Object.create(
     Object.prototype,
     Object.keys(headersMap).reduce((acc: Record<string, any>, key) => {
@@ -44,12 +57,13 @@ const wrapHeadersCaseInsensitive = (headersMap: Record<string, any>) =>
     }, {})
   )
 
-const createRequest = async (expressReq: any, customParameters: any) => {
-  let expressReqError = null
-
+const createRequest = async (
+  expressReq: ExpressRequest,
+  customParameters: Record<string, any>
+) => {
   const headers = wrapHeadersCaseInsensitive(expressReq.headers)
   const cookies =
-    headers.cookie != null && headers.cookie.constructor === String
+    headers.cookie != null && typeof headers.cookie === 'string'
       ? cookie.parse(headers.cookie)
       : {}
 
@@ -77,9 +91,7 @@ const createRequest = async (expressReq: any, customParameters: any) => {
       })
     : null
 
-  const req = Object.create(null)
-
-  const reqProperties = {
+  const req: HttpRequest = {
     adapter: 'express',
     method: expressReq.method,
     query: expressReq.query,
@@ -88,20 +100,6 @@ const createRequest = async (expressReq: any, customParameters: any) => {
     cookies,
     body,
     ...customParameters,
-  }
-
-  for (const name of Object.keys(reqProperties)) {
-    Object.defineProperty(req, name, {
-      enumerable: true,
-      get: () => reqProperties[name],
-      set: () => {
-        throw new Error(`Request parameters can't be modified`)
-      },
-    })
-  }
-
-  if (expressReqError != null) {
-    throw expressReqError
   }
 
   return Object.freeze(req)
@@ -131,9 +129,9 @@ const createResponse = () => {
   }
 
   const validateOptionShape = (
-    fieldName: any,
+    fieldName: string,
     option: any,
-    types: any,
+    types: any[],
     nullable = false
   ) => {
     const isValidValue =
@@ -154,28 +152,20 @@ const createResponse = () => {
     }
   }
 
-  const res = Object.create(null, { [INTERNAL]: { value: internalRes } })
-
-  const defineResponseMethod = (name: string, value: any) =>
-    Object.defineProperty(res, name, {
-      enumerable: true,
-      value,
-    })
-
-  defineResponseMethod(
-    'cookie',
-    (name: string, value: string, options?: cookie.CookieSerializeOptions) => {
+  const res: HttpResponse & { [INTERNAL]: InternalRes } = {
+    [INTERNAL]: internalRes,
+    cookie: (
+      name: string,
+      value: string,
+      options?: cookie.CookieSerializeOptions
+    ) => {
       validateResponseOpened()
       const serializedCookie = cookie.serialize(name, value, options)
 
       internalRes.cookies.push(serializedCookie)
       return res
-    }
-  )
-
-  defineResponseMethod(
-    'clearCookie',
-    (name: string, options?: cookie.CookieSerializeOptions) => {
+    },
+    clearCookie: (name: string, options?: cookie.CookieSerializeOptions) => {
       validateResponseOpened()
       const serializedCookie = cookie.serialize(name, '', {
         ...options,
@@ -185,63 +175,53 @@ const createResponse = () => {
 
       internalRes.cookies.push(serializedCookie)
       return res
-    }
-  )
+    },
+    status: (code: number) => {
+      validateResponseOpened()
+      validateOptionShape('Status code', code, [Number])
+      internalRes.status = code
+      return res
+    },
+    redirect: (path: string, code?: number) => {
+      validateResponseOpened()
+      validateOptionShape('Status code', code, [Number], true)
+      validateOptionShape('Location path', path, [String])
+      internalRes.headers['Location'] = path
+      internalRes.status = code != null ? code : 302
 
-  defineResponseMethod('status', (code: number) => {
-    validateResponseOpened()
-    validateOptionShape('Status code', code, [Number])
-    internalRes.status = code
-    return res
-  })
+      internalRes.closed = true
+      return res
+    },
+    getHeader: (searchKey: string) => {
+      validateOptionShape('Header name', searchKey, [String])
+      const normalizedKey = normalizeKey(searchKey, 'upper-dash-case')
+      return internalRes.headers[normalizedKey]
+    },
+    setHeader: (key: string, value: string) => {
+      validateResponseOpened()
+      validateOptionShape('Header name', key, [String])
+      validateOptionShape('Header value', value, [String])
 
-  defineResponseMethod('redirect', (path: string, code?: number) => {
-    validateResponseOpened()
-    validateOptionShape('Status code', code, [Number], true)
-    validateOptionShape('Location path', path, [String])
-    internalRes.headers['Location'] = path
-    internalRes.status = code != null ? code : 302
-
-    internalRes.closed = true
-    return res
-  })
-
-  defineResponseMethod('getHeader', (searchKey: string) => {
-    validateOptionShape('Header name', searchKey, [String])
-    const normalizedKey = normalizeKey(searchKey, 'upper-dash-case')
-    return internalRes.headers[normalizedKey]
-  })
-
-  defineResponseMethod('setHeader', (key: string, value: string) => {
-    validateResponseOpened()
-    validateOptionShape('Header name', key, [String])
-    validateOptionShape('Header value', value, [String])
-
-    internalRes.headers[normalizeKey(key, 'upper-dash-case')] = value
-    return res
-  })
-
-  defineResponseMethod('text', (content: string, encoding?: BufferEncoding) => {
-    validateResponseOpened()
-    validateOptionShape('Text', content, [String])
-    validateOptionShape('Encoding', encoding, [String], true)
-    internalRes.body = Buffer.from(content, encoding)
-    internalRes.closed = true
-    return res
-  })
-
-  defineResponseMethod('json', (content: any) => {
-    validateResponseOpened()
-    internalRes.headers[normalizeKey('Content-Type', 'upper-dash-case')] =
-      'application/json'
-    internalRes.body = JSON.stringify(content)
-    internalRes.closed = true
-    return res
-  })
-
-  defineResponseMethod(
-    'end',
-    (content: string | Buffer = '', encoding?: BufferEncoding) => {
+      internalRes.headers[normalizeKey(key, 'upper-dash-case')] = value
+      return res
+    },
+    text: (content: string, encoding?: BufferEncoding) => {
+      validateResponseOpened()
+      validateOptionShape('Text', content, [String])
+      validateOptionShape('Encoding', encoding, [String], true)
+      internalRes.body = Buffer.from(content, encoding)
+      internalRes.closed = true
+      return res
+    },
+    json: (content: any) => {
+      validateResponseOpened()
+      internalRes.headers[normalizeKey('Content-Type', 'upper-dash-case')] =
+        'application/json'
+      internalRes.body = JSON.stringify(content)
+      internalRes.closed = true
+      return res
+    },
+    end: (content: string | Buffer = '', encoding?: BufferEncoding) => {
       validateResponseOpened()
       validateOptionShape('Content', content, [String, Buffer])
       validateOptionShape('Encoding', encoding, [String], true)
@@ -252,12 +232,12 @@ const createResponse = () => {
 
       internalRes.closed = true
       return res
-    }
-  )
-
-  defineResponseMethod(
-    'file',
-    (content: string | Buffer, filename: string, encoding?: BufferEncoding) => {
+    },
+    file: (
+      content: string | Buffer,
+      filename: string,
+      encoding?: BufferEncoding
+    ) => {
       validateResponseOpened()
       validateOptionShape('Content', content, [String, Buffer])
       validateOptionShape('Encoding', encoding, [String], true)
@@ -270,16 +250,15 @@ const createResponse = () => {
 
       internalRes.closed = true
       return res
-    }
-  )
-
+    },
+  }
   return Object.freeze(res)
 }
 
-const wrapApiHandler = (handler: any, getCustomParameters?: Function) => async (
-  expressReq: any,
-  expressRes: any
-) => {
+const wrapApiHandler = (
+  handler: (req: ResolveRequest, res: ResolveResponse) => Promise<void>,
+  getCustomParameters?: Function
+) => async (expressReq: ExpressRequest, expressRes: ExpressResponse) => {
   try {
     const customParameters =
       typeof getCustomParameters === 'function'
@@ -289,7 +268,8 @@ const wrapApiHandler = (handler: any, getCustomParameters?: Function) => async (
     const req = await createRequest(expressReq, customParameters)
     const res = createResponse()
 
-    await handler(req, res)
+    //TODO: explicitly set resolve to req object instead of customParameters? Or write a templated getCustomParameters
+    await handler(req as ResolveRequest, res)
 
     const { status, headers, cookies, body } = res[INTERNAL]
     expressRes.status(status)

@@ -9,7 +9,14 @@ import failHandler from './handlers/fail-handler'
 import getRootBasedUrl from './utils/get-root-based-url'
 import buildInApiHandlers from './defaults/builtin-routes'
 
-const wrapTrie = (apiHandlers, staticRoutes, rootPath, customStaticHandler) => {
+import type { ApiHandler } from './types'
+
+const wrapTrie = (
+  apiHandlers: ApiHandler[],
+  staticRoutes: string[] | undefined,
+  rootPath: string,
+  customStaticHandler: Function
+) => {
   const staticHandler =
     typeof customStaticHandler === 'function'
       ? customStaticHandler

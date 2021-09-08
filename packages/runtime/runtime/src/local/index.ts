@@ -18,21 +18,19 @@ import disposeResolve from '../common/dispose-resolve'
 import { backgroundJob } from '../common/utils/background-job'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
 
-import type { Assemblies, ResolvePartial, Resolve, BuildParameters } from '../common/types'
+import type {
+  Assemblies,
+  ResolvePartial,
+  Resolve,
+  BuildParameters,
+} from '../common/types'
 
 const log = getLog('local-entry')
-
-type ApiHandler = {
-  path: string
-  method: string
-  handler: (req: any, res: any) => Promise<void>
-}
-type DomainWithHandlers = DomainMeta & { apiHandlers: ApiHandler[] }
 
 type LocalEntryDependencies = {
   assemblies: Assemblies
   constants: Record<string, any>
-  domain: DomainWithHandlers
+  domain: Resolve['domain']
 }
 
 const localEntry = async ({
@@ -102,11 +100,11 @@ const localEntry = async ({
     }
 
     await initPerformanceTracer(resolve)
-    await initExpress(resolve)
+    await initExpress(resolve as Resolve)
     await initWebsockets(resolve as Resolve)
     await initUploader(resolve as Resolve)
     await initScheduler(resolve as Resolve)
-    await startExpress(resolve)
+    await startExpress(resolve as Resolve)
 
     log.debug('Local entry point cold start success')
 

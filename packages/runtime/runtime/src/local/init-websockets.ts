@@ -163,6 +163,7 @@ const initWebSocketServer = async (resolve: Resolve) => {
   }
 }
 
+//TODO: look into this code. EventEmitter pretends to be http server!
 const createSocketHttpServer = () => {
   const socketServer = new EventEmitter()
   Object.setPrototypeOf(socketServer, http.Server.prototype)

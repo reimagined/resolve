@@ -4,9 +4,10 @@ import bootstrap from '../common/bootstrap'
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 
 import { EventstoreResourceAlreadyExistError } from '@resolve-js/eventstore-base'
+import type { Resolve } from '../common/types'
 
 const host = '0.0.0.0'
-const startExpress = async (resolve) => {
+const startExpress = async (resolve: Resolve) => {
   const { port, server, upstream } = resolve
   const currentResolve = Object.create(resolve)
   try {
@@ -47,20 +48,16 @@ const startExpress = async (resolve) => {
     await disposeResolve(currentResolve)
   }
 
-  await new Promise((resolve, reject) =>
-    server.listen(port, host, async (error) => {
-      if (error) {
-        return reject(error)
-      }
+  await new Promise<void>((resolve, reject) => {
+    const errorHandler = (err: any) => reject(err)
+    server.once('error', errorHandler)
+    server.listen(port, host, () => {
+      server.removeListener('error', errorHandler)
 
       // eslint-disable-next-line no-console
       console.log(`Application listening on port ${port}!`)
-      return resolve()
+      resolve()
     })
-  )
-
-  server.on('error', (err) => {
-    throw err
   })
 }
 
