@@ -5,7 +5,7 @@ import executeSequence from './execute-sequence'
 import { isNotExistError } from './resource-errors'
 
 const dropSecrets = async ({
-  database,
+  executeQuery,
   databaseFile,
   secretsTableName,
   escapeId,
@@ -16,7 +16,7 @@ const dropSecrets = async ({
   const statements: string[] = [`DROP TABLE ${escapeId(secretsTableName)}`]
 
   const errors: any[] = await executeSequence(
-    database,
+    executeQuery,
     statements,
     log,
     (error) => {

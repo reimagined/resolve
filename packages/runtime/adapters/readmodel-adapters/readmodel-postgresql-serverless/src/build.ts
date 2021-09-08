@@ -187,7 +187,8 @@ export const buildEvents: (
   } = pool
   const { eventsWithCursors } = buildInfo
   const isContinuousMode =
-    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function'
+    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function' &&
+    !!process.env.EXPERIMENTAL_SQS_TRANSPORT
   const getContinuousLatestCursor = async (
     cursor: ReadModelCursor,
     events: Array<ReadModelEvent>,
@@ -742,7 +743,8 @@ const build: ExternalMethods['build'] = async (
       error == null ||
       !(
         error instanceof PassthroughError ||
-        error.name === 'RequestTimeoutError'
+        error.name === 'RequestTimeoutError' ||
+        error.name === 'ServiceBusyError'
       )
     ) {
       throw error
@@ -763,7 +765,11 @@ const build: ExternalMethods['build'] = async (
       }
     }
 
-    if (passthroughError.isRetryable || error.name === 'RequestTimeoutError') {
+    if (
+      passthroughError.isRetryable ||
+      error.name === 'RequestTimeoutError' ||
+      error.name === 'ServiceBusyError'
+    ) {
       await next()
     }
   } finally {

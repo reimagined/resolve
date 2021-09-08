@@ -9,10 +9,16 @@ export const replicateEvents = async (
 ): Promise<void> => {
   if (events.length === 0) return
 
-  const { database, eventsTableName, escape, escapeId } = pool
+  const {
+    executeStatement,
+    executeQuery,
+    eventsTableName,
+    escape,
+    escapeId,
+  } = pool
   const eventsTableNameAsId = escapeId(eventsTableName)
 
-  const rows = (await database.all(
+  const rows = (await executeStatement(
     `SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
     ${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`
   )) as Array<{
@@ -38,7 +44,7 @@ export const replicateEvents = async (
     eventsToInsert.push({ ...event, threadId, threadCounter })
   }
 
-  await database.exec(`INSERT OR IGNORE INTO ${eventsTableNameAsId}(
+  await executeQuery(`INSERT OR IGNORE INTO ${eventsTableNameAsId}(
       "threadId",
       "threadCounter",
       "timestamp",

@@ -8,7 +8,7 @@
     "test:integration": "jest --config=./jest.config.js",
     "test:postgres": "yarn test:eventstore-postgres && yarn test:read-model-postgres",
     "test:postgres-serverless": "yarn test:eventstore-postgres-serverless && yarn test:read-model-postgres-serverless",
-    "test:read-model": "env TEST_POSTGRES_SERVERLESS=false jest --config=./jest.config.js --testMatch=**/read-model-store-*/*.test.[jt]s",
+    "test:read-model": "env TEST_POSTGRES_SERVERLESS=false jest --config=./jest.config.js --testMatch=**/read-model-store-*/*.test.[jt]s --runInBand",
     "test:read-model-mysql": "env TEST_MYSQL=true jest --config=./jest.config.js --testMatch=**/read-model-store-*/*.test.[jt]s",
     "test:read-model-postgres": "env TEST_POSTGRES=true jest --config=./jest.config.js --testMatch=**/read-model-store-*/*.test.[jt]s --runInBand",
     "test:read-model-postgres-serverless": "env TEST_POSTGRES_SERVERLESS=true jest --config=./jest.config.js --testMatch=**/read-model-store-*/*.test.[jt]s",

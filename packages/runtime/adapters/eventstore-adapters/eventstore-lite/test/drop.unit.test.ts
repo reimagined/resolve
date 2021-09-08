@@ -10,7 +10,7 @@ beforeEach(() => {
     secretsTableName: 'secrets-table',
     eventsTableName: 'table-name',
     snapshotsTableName: 'snapshots-table-name',
-    database: { exec: jest.fn().mockImplementation((e: any) => e) },
+    executeQuery: jest.fn(),
     escapeId: (e: any) => `ESCAPEID[${e}]`,
     memoryStore: {
       name: '',
@@ -23,7 +23,7 @@ beforeEach(() => {
 test('executed statements', async () => {
   await dropEvents(pool)
 
-  expect(pool.database.exec).toHaveBeenCalledWith(
+  expect(pool.executeQuery).toHaveBeenCalledWith(
     expect.stringMatching(/table-name-incremental-import/g)
   )
 })

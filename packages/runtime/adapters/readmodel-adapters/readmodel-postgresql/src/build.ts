@@ -1,4 +1,3 @@
-import { ReadModelEvent } from '../../readmodel-base/types'
 import type {
   PassthroughErrorInstance,
   ExternalMethods,
@@ -6,6 +5,7 @@ import type {
   ReadModelProcedureLedger,
   ProcedureResult,
   EventThreadData,
+  ReadModelEvent,
 } from './types'
 import getLog from './get-log'
 import { LeveledDebugger } from '@resolve-js/debug-levels'
@@ -166,7 +166,8 @@ const buildEvents: (
   const { eventsWithCursors } = buildInfo
   let isProcedural = inputIsProcedural
   const isContinuousMode =
-    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function'
+    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function' &&
+    !!process.env.EXPERIMENTAL_SQS_TRANSPORT
   const getContinuousLatestCursor = async (
     cursor: ReadModelCursor,
     events: Array<EventThreadData>,
@@ -238,7 +239,7 @@ const buildEvents: (
         return events
       })
 
-  let eventsPromise =
+  let eventsPromise: Promise<ReadModelEvent[]> | Promise<null> =
     hotEvents == null
       ? loadEventsWithMonitoring(
           Promise.resolve(cursor),
@@ -247,7 +248,7 @@ const buildEvents: (
         )
       : Promise.resolve(hotEvents)
 
-  const eventstoreLocalTableNamePromise = (async () => {
+  const eventstoreLocalResourcePromise = (async () => {
     let resourceNames = null
     try {
       void ({ resourceNames } =
@@ -259,7 +260,8 @@ const buildEvents: (
     if (
       resourceNames == null ||
       resourceNames?.eventsTableName == null ||
-      resourceNames?.databaseName == null
+      resourceNames?.databaseName == null ||
+      !isProcedural
     ) {
       return null
     }
@@ -285,7 +287,7 @@ const buildEvents: (
           SELECT 1/Count("CTE".*) AS "NonZero" FROM "CTE"
         `)
 
-      return resourceNames.eventsTableName
+      return resourceNames
     } catch (err) {
       return null
     }
@@ -312,24 +314,21 @@ const buildEvents: (
     true
   )
 
-  let [events, eventstoreLocalTableName] = await Promise.all([
-    eventsPromise,
-    eventstoreLocalTableNamePromise,
-  ])
-  let isLocalEventsSkipped = false
+  const eventstoreLocalResourcesNames = await eventstoreLocalResourcePromise
+  let events =
+    eventstoreLocalResourcesNames == null ? await eventsPromise : null
 
   for (metricData.eventLoopCount = 0; true; metricData.eventLoopCount++) {
-    if (events.length === 0) {
+    if (events != null && events.length === 0) {
       throw new PassthroughError(false)
     }
 
     log.debug(`Start optimistic events loading`)
 
-    let nextCursorPromise: Promise<ReadModelCursor> = getContinuousLatestCursor(
-      cursor,
-      events,
-      eventTypes
-    )
+    let nextCursorPromise: Promise<ReadModelCursor> | null =
+      events != null
+        ? getContinuousLatestCursor(cursor, events, eventTypes)
+        : null
     let appliedEventsCount = 0
     let regularWorkflow = true
 
@@ -345,8 +344,13 @@ const buildEvents: (
             )}(${escapeStr(
               JSON.stringify({
                 maxExecutionTime: getVacantTimeInMillis(),
-                ...(eventstoreLocalTableName != null
-                  ? { eventstoreLocalTableName }
+                ...(eventstoreLocalResourcesNames != null
+                  ? {
+                      localEventsDatabaseName:
+                        eventstoreLocalResourcesNames.databaseName,
+                      localEventsTableName:
+                        eventstoreLocalResourcesNames.eventsTableName,
+                    }
                   : { events }),
               })
             )}) AS "Result"`
@@ -376,6 +380,7 @@ const buildEvents: (
 
         appliedEventsCount = appliedCount
         eventCount += appliedCount
+
         if (status === 'OK_PARTIAL' || status === 'CUSTOM_ERROR') {
           nextCursorPromise = getContinuousLatestCursor(
             cursor,
@@ -384,6 +389,14 @@ const buildEvents: (
           )
         }
         if (status === 'OK_ALL' || status === 'OK_PARTIAL') {
+          if (nextCursorPromise == null) {
+            nextCursorPromise = nextCursorPromise = getContinuousLatestCursor(
+              cursor,
+              appliedEventsThreadData,
+              eventTypes
+            )
+          }
+
           lastSuccessEvent = successEvent
         } else if (status === 'CUSTOM_ERROR') {
           lastFailedEvent = failureEvent
@@ -395,9 +408,6 @@ const buildEvents: (
         }
 
         regularWorkflow = false
-        if (eventstoreLocalTableName != null) {
-          isLocalEventsSkipped = true
-        }
       } catch (err) {
         isProcedural = false
         if (err instanceof PassthroughError) {
@@ -413,6 +423,14 @@ const buildEvents: (
 
         await inlineLedgerRunQuery(`ROLLBACK TO SAVEPOINT ${rootSavePointId};`)
 
+        if (events == null) {
+          events = await loadEventsWithMonitoring(
+            Promise.resolve(cursor),
+            100,
+            Date.now()
+          )
+        }
+
         nextCursorPromise = getContinuousLatestCursor(
           cursor,
           events,
@@ -423,24 +441,19 @@ const buildEvents: (
     }
 
     const eventsLoadStartTimestamp = Date.now()
-    if (regularWorkflow && isLocalEventsSkipped) {
-      events = await loadEventsWithMonitoring(
-        nextCursorPromise,
-        100,
-        eventsLoadStartTimestamp
-      )
-      isLocalEventsSkipped = false
-    }
-
-    if (regularWorkflow || eventstoreLocalTableName == null) {
-      eventsPromise = loadEventsWithMonitoring(
-        nextCursorPromise,
-        1000,
-        eventsLoadStartTimestamp
-      )
-    }
+    eventsPromise =
+      regularWorkflow || eventstoreLocalResourcesNames == null
+        ? loadEventsWithMonitoring(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            nextCursorPromise!,
+            1000,
+            eventsLoadStartTimestamp
+          )
+        : Promise.resolve(null)
 
     if (regularWorkflow) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      events = events!
       log.debug(`Running regular workflow events applying`)
       try {
         for (const event of events) {
@@ -731,11 +744,7 @@ const build: ExternalMethods['build'] = async (
          AND "IsPaused" = FALSE
          AND "Errors" IS NULL
          FOR NO KEY UPDATE NOWAIT
-       ), "CleanTrx" AS (
-        DELETE FROM ${databaseNameAsId}.${trxTableNameAsId}
-        WHERE "Timestamp" < CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) - 86400000
-        RETURNING *
-      ), "InsertTrx" AS (
+       ), "InsertTrx" AS (
         INSERT INTO ${databaseNameAsId}.${trxTableNameAsId}(
           "Timestamp", "XaKey", "XaValue"
         ) VALUES (
@@ -749,7 +758,6 @@ const build: ExternalMethods['build'] = async (
         SET "XaKey" = ${escapeStr(xaKey)}
         WHERE "EventSubscriber" = ${escapeStr(readModelName)}
         AND CAST(COALESCE((SELECT LEAST(Count("InsertTrx".*), 0) FROM "InsertTrx"), 0) AS BIGINT) = 0
-        AND CAST(COALESCE((SELECT LEAST(Count("CleanTrx".*), 0) FROM "CleanTrx"), 0) AS BIGINT) = 0
         AND (SELECT Count("MaybeAcquireLock".*) FROM "MaybeAcquireLock") = 1
         AND "IsPaused" = FALSE
         AND "Errors" IS NULL
@@ -816,12 +824,25 @@ const build: ExternalMethods['build'] = async (
       getVacantTimeInMillis,
       buildInfo
     )
+
+    try {
+      await inlineLedgerRunQuery(`
+        DELETE FROM ${databaseNameAsId}.${trxTableNameAsId}
+        WHERE "Timestamp" < CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) - 86400000  
+      `)
+    } catch (err) {
+      if (!(err instanceof PassthroughError)) {
+        log.debug(`Unknown error is thrown while cleaning TRX journal`)
+        throw err
+      }
+    }
   } catch (error) {
     if (
       error == null ||
       !(
         error instanceof PassthroughError ||
-        error.name === 'RequestTimeoutError'
+        error.name === 'RequestTimeoutError' ||
+        error.name === 'ServiceBusyError'
       )
     ) {
       log.debug(`Unknown error is thrown while building`)
@@ -843,7 +864,11 @@ const build: ExternalMethods['build'] = async (
       log.debug(`PassthroughError is thrown while rollback`)
     }
 
-    if (passthroughError.isRetryable || error.name === 'RequestTimeoutError') {
+    if (
+      passthroughError.isRetryable ||
+      error.name === 'RequestTimeoutError' ||
+      error.name === 'ServiceBusyError'
+    ) {
       log.debug(`PassthroughError is retryable. Going to the next step`)
       await next()
     }
