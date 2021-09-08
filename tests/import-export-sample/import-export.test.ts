@@ -5,6 +5,7 @@ import { Readable, pipeline } from 'stream'
 import {
   EventstoreAlreadyFrozenError,
   MAINTENANCE_MODE_MANUAL,
+  initThreadArray,
 } from '@resolve-js/eventstore-base'
 import createEventstoreAdapter from '@resolve-js/eventstore-lite'
 import type {
@@ -18,6 +19,7 @@ import {
   adapters,
   jestTimeout,
   isServerlessAdapter,
+  makeTestSavedEvent,
 } from '../eventstore-test-utils'
 
 import createStreamBuffer from './create-stream-buffer'
@@ -29,56 +31,76 @@ function getInterruptingTimeout() {
 }
 
 function getInputEventsCount() {
-  return isServerlessAdapter() ? 500 : 1600
+  return isServerlessAdapter() ? 500 : 2500
 }
 
-describe('import-export events', () => {
-  const eventStorePath = path.join(__dirname, 'es.txt')
+function* eventsGenerator(inputCountEvents: number) {
+  const threadArray = initThreadArray()
 
-  afterAll(() => {
-    if (fs.existsSync(eventStorePath)) {
-      fs.unlinkSync(eventStorePath)
-    }
-    if (fs.existsSync(`${eventStorePath}-journal`)) {
-      fs.unlinkSync(`${eventStorePath}-journal`)
-    }
+  for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
+    yield Buffer.from(
+      JSON.stringify(makeTestSavedEvent(eventIndex, threadArray)) + '\n',
+      'utf-8'
+    )
+  }
+}
+
+function* longEventsGenerator(inputCountEvents: number) {
+  const longData = '#'.repeat(2000)
+  const threadArray = initThreadArray()
+
+  for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
+    yield Buffer.from(
+      JSON.stringify(makeTestSavedEvent(eventIndex, threadArray, longData)) +
+        '\n',
+      'utf-8'
+    )
+  }
+}
+
+function* randomEventsGenerator(inputCountEvents: number) {
+  const threadArray = initThreadArray()
+
+  for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
+    const data = Array.from({ length: 64 })
+      .map(() => Math.round(Math.random()))
+      .join('')
+    yield Buffer.from(
+      JSON.stringify(makeTestSavedEvent(eventIndex, threadArray, data)) + '\n',
+      'utf-8'
+    )
+  }
+}
+
+describe('import-export events auto-mode', () => {
+  beforeAll(async () => {
+    await adapterFactory.create('input-auto')()
+    await adapterFactory.create('output-auto')()
   })
-
-  beforeAll(() => {
-    if (fs.existsSync(eventStorePath)) {
-      fs.unlinkSync(eventStorePath)
-    }
-    if (fs.existsSync(`${eventStorePath}-journal`)) {
-      fs.unlinkSync(`${eventStorePath}-journal`)
-    }
+  afterAll(async () => {
+    await adapterFactory.destroy('input-auto')()
+    await adapterFactory.destroy('output-auto')()
   })
 
   test(`${adapterFactory.name}. Should work correctly with maintenanceMode = auto`, async () => {
-    await adapterFactory.create('input-auto')()
-    await adapterFactory.create('output-auto')()
-
     const inputEventstoreAdapter = adapters['input-auto']
     const outputEventstoreAdapter = adapters['output-auto']
 
     const inputCountEvents = 200
 
-    for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
-      const event = {
-        aggregateId: 'aggregateId',
-        aggregateVersion: eventIndex + 1,
-        type: 'EVENT',
-        payload: { eventIndex },
-        timestamp: eventIndex + 1,
-      }
-      await inputEventstoreAdapter.saveEvent(event)
-    }
+    await promisify(pipeline)(
+      Readable.from(eventsGenerator(inputCountEvents)),
+      inputEventstoreAdapter.importEvents()
+    )
+
+    expect((await inputEventstoreAdapter.describe()).eventCount).toEqual(
+      inputCountEvents
+    )
 
     await promisify(pipeline)(
       inputEventstoreAdapter.exportEvents(),
       outputEventstoreAdapter.importEvents()
     )
-
-    await adapterFactory.destroy('input-auto')()
 
     const { events, cursor } = await outputEventstoreAdapter.loadEvents({
       limit: inputCountEvents + 1,
@@ -104,35 +126,37 @@ describe('import-export events', () => {
       cursor: cursor,
     })
     expect(extraEvents).toHaveLength(extraEventCount)
+  })
+})
 
-    await adapterFactory.destroy('output-auto')()
+describe('import-export events manual mode', () => {
+  const eventStorePath = 'es.db'
+
+  beforeAll(async () => {
+    await adapterFactory.create('input-manual', {
+      databaseFile: eventStorePath,
+    })()
+    await adapterFactory.create('output-manual')()
+  })
+  afterAll(async () => {
+    await adapterFactory.destroy('input-manual')()
+    await adapterFactory.destroy('output-manual')()
   })
 
-  test('should work correctly with maintenanceMode = manual', async () => {
-    const eventEventstoreAdapter = createEventstoreAdapter({
-      databaseFile: eventStorePath,
-    })
-    const outputEventstoreAdapter = createEventstoreAdapter({
-      databaseFile: ':memory:',
-    })
-    await eventEventstoreAdapter.init()
-    await outputEventstoreAdapter.init()
+  test(`${adapterFactory.name}. should work correctly with maintenanceMode = manual`, async () => {
+    const inputEventstoreAdapter = adapters['input-manual']
+    const outputEventstoreAdapter = adapters['output-manual']
 
     const inputCountEvents = 50
 
-    for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
-      await eventEventstoreAdapter.saveEvent({
-        aggregateId: 'aggregateId',
-        aggregateVersion: eventIndex + 1,
-        type: 'EVENT',
-        payload: Array.from({ length: 64 })
-          .map(() => Math.round(Math.random()))
-          .join(''),
-        timestamp: eventIndex + 1,
-      })
-    }
+    await promisify(pipeline)(
+      Readable.from(randomEventsGenerator(inputCountEvents)),
+      inputEventstoreAdapter.importEvents()
+    )
 
-    await eventEventstoreAdapter.dispose()
+    expect((await inputEventstoreAdapter.describe()).eventCount).toEqual(
+      inputCountEvents
+    )
 
     const exportBuffers = []
 
@@ -142,9 +166,12 @@ describe('import-export events', () => {
     while (true) {
       steps++
 
-      const eventEventstoreAdapter = createEventstoreAdapter({
-        databaseFile: eventStorePath,
-      })
+      const eventEventstoreAdapter = await adapterFactory.createNoInit(
+        'input-manual',
+        {
+          databaseFile: eventStorePath,
+        }
+      )()
 
       const exportStream = eventEventstoreAdapter.exportEvents({
         maintenanceMode: MAINTENANCE_MODE_MANUAL,
@@ -181,7 +208,7 @@ describe('import-export events', () => {
     )
 
     const { events } = await outputEventstoreAdapter.loadEvents({
-      limit: 100,
+      limit: inputCountEvents + 1,
       cursor: null,
     })
 
@@ -205,17 +232,10 @@ describe('import-export timeouts', () => {
   test(`${adapterFactory.name}. Export should work correctly when stopped by timeout`, async () => {
     const inputEventstoreAdapter = adapters['export-timeout']
 
-    const longData = '#'.repeat(2000)
-
-    for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
-      await inputEventstoreAdapter.saveEvent({
-        aggregateId: 'aggregateId',
-        aggregateVersion: eventIndex + 1,
-        type: 'EVENT',
-        payload: { eventIndex, data: longData },
-        timestamp: eventIndex + 1,
-      })
-    }
+    await promisify(pipeline)(
+      Readable.from(longEventsGenerator(inputCountEvents)),
+      inputEventstoreAdapter.importEvents()
+    )
 
     let cursor = null
     let steps = 0
@@ -276,8 +296,8 @@ describe('import-export timeouts', () => {
       .map((eventAsString) => JSON.parse(eventAsString.trim()))
     const outputCountEvents = outputEvents.length
 
-    expect(isJsonStreamTimedOutOnce).toEqual(true)
     expect(inputCountEvents).toEqual(outputCountEvents)
+    expect(isJsonStreamTimedOutOnce).toEqual(true)
     expect(steps).toBeGreaterThan(1)
   })
 

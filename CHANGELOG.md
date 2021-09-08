@@ -1,11 +1,12 @@
 # Changelog
 
-## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+## [V0.31.10](https://github.com/reimagined/resolve/tree/V0.31.10) (2021-09-08)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.9...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.9...V0.31.10)
 
 **Enhancements:**
 
+- Speedup events export and export tests [\#2031](https://github.com/reimagined/resolve/pull/2031)
 - Replace sqlite3 with better-sqlite3 [\#2027](https://github.com/reimagined/resolve/pull/2027)
 
 **Bug fixes:**
@@ -19,6 +20,7 @@
 
 **Other changes:**
 
+- Separate error type for 'too many clients' postgres error [\#2033](https://github.com/reimagined/resolve/pull/2033)
 - Sparse clean TRX journal / Improve PLV8 [\#2030](https://github.com/reimagined/resolve/pull/2030)
 
 ## [V0.31.9](https://github.com/reimagined/resolve/tree/V0.31.9) (2021-08-31)
