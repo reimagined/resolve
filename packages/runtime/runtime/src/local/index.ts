@@ -1,10 +1,10 @@
 import 'source-map-support/register'
-import debugLevels from '@resolve-js/debug-levels'
 import { initDomain } from '@resolve-js/core'
 import type { DomainMeta } from '@resolve-js/core'
 import http from 'http'
 import https from 'https'
 
+import { getLog } from '../common/utils/get-log'
 import initPerformanceTracer from './init-performance-tracer'
 import initExpress from './init-express'
 import initWebsockets from './init-websockets'
@@ -15,12 +15,12 @@ import initScheduler from './init-scheduler'
 import gatherEventListeners from '../common/gather-event-listeners'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
-import multiplexAsync from '../common/utils/multiplex-async'
+import { backgroundJob } from '../common/utils/background-job'
 import getRootBasedUrl from '../common/utils/get-root-based-url'
 
 import type { Assemblies, ResolvePartial, Resolve } from '../common/types'
 
-const log = debugLevels('resolve:runtime:local-entry')
+const log = getLog('local-entry')
 
 type ApiHandler = {
   path: string
@@ -83,7 +83,7 @@ const localEntry = async ({
       http,
       getEventSubscriberDestination: () =>
         `http://0.0.0.0:${constants.port}/api/subscribers`,
-      invokeBuildAsync: multiplexAsync.bind(null, async (parameters: any) => {
+      invokeBuildAsync: backgroundJob(async (parameters: any) => {
         const currentResolve = Object.create(resolve)
         try {
           await initResolve(currentResolve)
