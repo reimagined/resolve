@@ -35,10 +35,8 @@ describe('downloadResolveRepo', () => {
       headers: { 'content-length': 100 },
     }
     mockResponse.on.mockImplementation((event, cb) => {
-      if (event === 'end') {
+      if (event === 'end' || event === 'error') {
         cb()
-      } else if (event === 'error') {
-        cb(new Error('error'))
       }
     })
     https.get = jest.fn().mockImplementation((url, callback) => {
