@@ -176,6 +176,7 @@ const importInstanceResource = ({
   instanceFallback = null,
   calculateHash = null,
   injectRuntimeOptions = null,
+  indexEntry = null,
 }) => {
   validateInstanceResource({
     resourceName,
@@ -186,9 +187,17 @@ const importInstanceResource = ({
 
   if (!checkRuntimeEnv(resourceValue)) {
     const resourceFile = resolveFile(resourceValue, instanceFallback)
-    imports.push(
-      `import ${resourceName}_instance from ${JSON.stringify(resourceFile)}`
-    )
+    if (indexEntry == null) {
+      imports.push(
+        `import ${resourceName}_instance from ${JSON.stringify(resourceFile)}`
+      )
+    } else {
+      imports.push(
+        `import { ${indexEntry} as ${resourceName}_instance } from ${JSON.stringify(
+          resourceFile
+        )}`
+      )
+    }
 
     if (calculateHash != null) {
       constants.push(

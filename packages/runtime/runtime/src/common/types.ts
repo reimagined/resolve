@@ -213,7 +213,7 @@ export type HttpRequest = {
   readonly headers: IncomingHttpHeaders
   readonly cookies: Record<string, string>
   readonly body: string | null
-  readonly jwt: string | null
+  jwt?: string
 }
 
 export type ResolveRequest = HttpRequest & {

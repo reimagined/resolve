@@ -42,6 +42,19 @@
     "resourceInstance": {
       "type": "string"
     },
+    "resourcePackage": {
+      "type": "object",
+      "properties": {
+        "package":{
+          "type": "string"
+        },
+        "entry": {
+          "type": "string"
+        }
+      },
+      "required": ["package", "entry"],
+      "additionalProperties": false
+    },
     "resourceConstructor": {
       "type": "object",
       "properties": {
@@ -234,7 +247,8 @@
         "handler": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
-            { "$ref": "#/definitions/resourceConstructor" }
+            { "$ref": "#/definitions/resourceConstructor" },
+            { "$ref": "#/definitions/resourcePackage"}
           ]
         }
       },

@@ -43,7 +43,6 @@ const wrapTrie = (
   }
 
   for (const { method, path, handler } of apiHandlers) {
-    console.log(method, path, handler)
     trie
       .define(getRootBasedUrl(rootPath, path))
       .handle(String(method).toUpperCase(), handler)

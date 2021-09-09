@@ -1,7 +1,7 @@
 import wrapReadModel from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
 
-import { CreateQueryOptions } from './types'
+import type { CreateQueryOptions } from './types'
 import { OMIT_BATCH, STOP_BATCH } from './batch'
 
 const dispose = async (models: any): Promise<any> => {
@@ -86,5 +86,6 @@ const createQuery = (params: CreateQueryOptions): any => {
   return api
 }
 
-export { CreateQueryOptions, OMIT_BATCH, STOP_BATCH }
+export { OMIT_BATCH, STOP_BATCH }
+export type { CreateQueryOptions }
 export default createQuery
