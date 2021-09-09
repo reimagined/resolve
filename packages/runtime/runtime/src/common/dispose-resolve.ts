@@ -1,8 +1,10 @@
 import debugLevels from '@resolve-js/debug-levels'
 
+import type { Resolve } from './types'
+
 const log = debugLevels('resolve:runtime:dispose-resolve')
 
-const disposeResolve = async (resolve) => {
+const disposeResolve = async (resolve: Resolve) => {
   if (resolve.isInitialized) {
     try {
       const disposePromises = [

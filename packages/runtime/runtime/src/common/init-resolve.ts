@@ -10,9 +10,18 @@ import createNotifyEventSubscribers from './notify-event-subscribers'
 import createOnCommandExecuted from './on-command-executed'
 import createEventSubscriber from './event-subscriber'
 
+import type {
+  Event,
+  Command,
+  AggregateInterop,
+  Eventstore as CoreEventstoreAdapter,
+} from '@resolve-js/core'
+
+import type { Resolve } from './types'
+
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
-const initResolve = async (resolve) => {
+const initResolve = async (resolve: Resolve) => {
   const performanceTracer = resolve.performanceTracer
 
   const {
@@ -32,7 +41,7 @@ const initResolve = async (resolve) => {
 
   const eventstoreAdapter = createEventstoreAdapter()
 
-  const readModelConnectors = {}
+  const readModelConnectors: any = {}
   for (const name of Object.keys(readModelConnectorsCreators)) {
     readModelConnectors[name] = readModelConnectorsCreators[name]({
       performanceTracer,
@@ -48,7 +57,7 @@ const initResolve = async (resolve) => {
   const readModelSources = new Proxy(
     {},
     {
-      get(target, key) {
+      get(target: any, key) {
         if (!target.hasOwnProperty(key)) {
           target[key] = null
           const entryDir = liveEntryDir()
@@ -58,7 +67,9 @@ const initResolve = async (resolve) => {
           ) {
             try {
               target[key] = fs
-                .readFileSync(path.join(entryDir, `read-model-${key}.js`))
+                .readFileSync(
+                  path.join(String(entryDir), `read-model-${String(key)}.js`)
+                )
                 .toString('utf8')
             } catch (err) {}
           }
@@ -71,11 +82,9 @@ const initResolve = async (resolve) => {
     }
   )
 
-  Object.defineProperties(resolve, {
-    readModelConnectors: { value: readModelConnectors },
-    eventstoreAdapter: { value: eventstoreAdapter },
-    readModelSources: { value: readModelSources },
-  })
+  resolve.readModelConnectors = readModelConnectors
+  resolve.eventstoreAdapter = eventstoreAdapter
+  resolve.readModelSources = readModelSources
 
   const getVacantTimeInMillis = resolve.getVacantTimeInMillis
   const notifyEventSubscribers = createNotifyEventSubscribers(resolve)
@@ -91,11 +100,17 @@ const initResolve = async (resolve) => {
   const aggregateRuntime = {
     monitoring,
     secretsManager,
-    eventstore: eventstoreAdapter,
+    //TODO: make compatible eventstore interfaces in core and eventstore-base
+    eventstore: (eventstoreAdapter as unknown) as CoreEventstoreAdapter,
     hooks: {
-      postSaveEvent: async (aggregate, command, event, eventWithCursor) => {
+      postSaveEvent: async (
+        aggregate: AggregateInterop,
+        command: Command,
+        event: Event,
+        eventWithCursor?: { event: Event; cursor: string }
+      ) => {
         await onCommandExecuted(event, command, eventWithCursor)
-        return false
+        //return false
       },
     },
     commandMiddlewares,
@@ -118,7 +133,8 @@ const initResolve = async (resolve) => {
   const executeQuery = createQueryExecutor({
     invokeBuildAsync,
     applicationName: eventSubscriberScope,
-    eventstoreAdapter,
+    //TODO:
+    eventstoreAdapter: (eventstoreAdapter as unknown) as CoreEventstoreAdapter,
     readModelConnectors,
     readModelSources,
     performanceTracer,
@@ -132,7 +148,8 @@ const initResolve = async (resolve) => {
     }),
     viewModelsInterop: domainInterop.viewModelDomain.acquireViewModelsInterop({
       monitoring,
-      eventstore: eventstoreAdapter,
+      //TODO:
+      eventstore: (eventstoreAdapter as unknown) as CoreEventstoreAdapter,
       secretsManager,
     }),
   })
@@ -156,21 +173,23 @@ const initResolve = async (resolve) => {
 
   const eventSubscriber = createEventSubscriber(resolve)
 
+  //TODO: get rid of proxy?
   const eventStore = new Proxy(
     {},
     {
       get(_, key) {
         if (key === 'SaveEvent') {
-          return async ({ event }) => await eventstoreAdapter.saveEvent(event)
+          return async ({ event }: any) =>
+            await eventstoreAdapter.saveEvent(event)
         } else if (key === 'LoadEvents') {
-          return async ({ scopeName, ...filter }) => {
+          return async ({ scopeName, ...filter }: any) => {
             void scopeName
-            return await eventstoreAdapter.loadEvents(filter)
+            return await eventstoreAdapter.loadEvents(filter as any)
           }
         } else {
-          return eventstoreAdapter[key[0].toLowerCase() + key.slice(1)].bind(
-            eventstoreAdapter
-          )
+          return (eventstoreAdapter as any)[
+            String(key)[0].toLowerCase() + String(key).slice(1)
+          ].bind(eventstoreAdapter)
         }
       },
       set() {
@@ -179,7 +198,7 @@ const initResolve = async (resolve) => {
     }
   )
 
-  Object.assign(resolve, {
+  Object.assign<Resolve, Partial<Resolve>>(resolve, {
     isInitialized: true,
     executeCommand,
     executeQuery,
@@ -188,10 +207,8 @@ const initResolve = async (resolve) => {
     notifyEventSubscribers,
   })
 
-  Object.defineProperties(resolve, {
-    eventSubscriber: { value: eventSubscriber },
-    eventStore: { value: eventStore },
-  })
+  resolve.eventSubscriber = eventSubscriber
+  resolve.eventStore = eventStore
 
   process.env.RESOLVE_LOCAL_TRACE_ID = crypto
     .randomBytes(Math.ceil(32 / 2))

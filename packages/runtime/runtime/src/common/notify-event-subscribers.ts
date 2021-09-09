@@ -1,8 +1,16 @@
+import type { Event } from '@resolve-js/core'
+import type { Resolve, BuildParameters } from './types'
+
+type EventWithCursor = {
+  event: Event
+  cursor: string
+}
+
 const getNotificationObject = (
-  eventSubscriber,
-  eventWithCursor,
-  isForeign
-) => ({
+  eventSubscriber: string,
+  eventWithCursor?: EventWithCursor,
+  isForeign?: boolean
+): BuildParameters => ({
   eventSubscriber,
   initiator: isForeign ? 'command-foreign' : 'command',
   notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
@@ -11,10 +19,10 @@ const getNotificationObject = (
 })
 
 const notifyEventSubscriber = async (
-  resolveBase,
-  destination,
-  eventSubscriber,
-  eventWithCursor
+  resolveBase: Resolve,
+  destination: string,
+  eventSubscriber: string,
+  eventWithCursor?: EventWithCursor
 ) => {
   switch (true) {
     case /^https?:\/\//.test(destination): {
@@ -23,7 +31,9 @@ const notifyEventSubscriber = async (
           ? resolveBase.https
           : resolveBase.http
         ).request(`${destination}/${eventSubscriber}`, (res) => {
-          res.on('data', () => {})
+          res.on('data', () => {
+            return
+          })
           res.on('end', resolve)
           res.on('error', reject)
         })
@@ -57,7 +67,10 @@ const notifyEventSubscriber = async (
   }
 }
 
-const notifyEventSubscribers = async (resolve, eventWithCursor) => {
+const notifyEventSubscribers = async (
+  resolve: Resolve,
+  eventWithCursor?: EventWithCursor
+) => {
   const maxDuration = Math.max(resolve.getVacantTimeInMillis() - 15000, 0)
   let timerId = null
 
@@ -116,7 +129,7 @@ const notifyEventSubscribers = async (resolve, eventWithCursor) => {
   await Promise.race([timerPromise, inlineLedgerPromise])
 }
 
-const createNotifyEventSubscribers = (resolve) =>
+const createNotifyEventSubscribers = (resolve: Resolve) =>
   notifyEventSubscribers.bind(null, resolve)
 
 export default createNotifyEventSubscribers

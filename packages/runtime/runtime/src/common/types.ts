@@ -4,6 +4,7 @@ import type {
   Domain,
   DomainMeta,
   Event,
+  Monitoring,
 } from '@resolve-js/core'
 import type { Server as HttpServer, IncomingHttpHeaders } from 'http'
 import http from 'http'
@@ -16,7 +17,18 @@ export type ApiHandler = {
   method: string
   handler: (req: ResolveRequest, res: ResolveResponse) => Promise<void>
 }
-type DomainWithHandlers = DomainMeta & { apiHandlers: ApiHandler[] }
+
+type Middlewares = {
+  //TODO: types
+  command: any[]
+  resolver: any[]
+  projection: any[]
+}
+
+type DomainWithHandlers = DomainMeta & {
+  apiHandlers: ApiHandler[]
+  middlewares?: Middlewares
+}
 
 export type EventListener = {
   name: string
@@ -87,7 +99,8 @@ export type Uploader = {
 
 export type Assemblies = {
   uploadAdapter: () => UploaderPool
-  eventstoreAdapter: () => Promise<EventstoreAdapter>
+  eventstoreAdapter: () => EventstoreAdapter
+  readModelConnectors: any
 
   //TODO: types
   seedClientEnvs: any
@@ -99,9 +112,13 @@ export type BuildParameters = {
   initiator: 'read-model-next' | 'command-foreign' | 'command'
   notificationId: string
   sendTime: number
+  event?: Event
+  cursor?: string
 }
 
 export type Resolve = {
+  isInitialized: boolean
+
   instanceId: string
 
   seedClientEnvs: Assemblies['seedClientEnvs']
@@ -115,11 +132,15 @@ export type Resolve = {
 
   getEventSubscriberDestination: (name?: string) => string
   invokeBuildAsync: (parameters: BuildParameters) => Promise<void>
+  invokeLambdaAsync: any
 
   ensureQueue: (name?: string) => Promise<void>
   deleteQueue: (name?: string) => Promise<void>
 
   eventstoreAdapter: EventstoreAdapter
+  readModelConnectors: any
+  readModelSources: any
+
   applicationName: string
   assemblies: Assemblies
   domain: DomainWithHandlers
@@ -148,8 +169,21 @@ export type Resolve = {
   eventSubscriber: any
   eventSubscriberScope: string
 
-  executeSaga: any
+  executeCommand: any
   executeQuery: any
+  executeSaga: any
+  executeSchedulerCommand: any
+  notifyEventSubscribers: (eventWithCursor?: {
+    event: Event
+    cursor: string
+  }) => Promise<void>
+
+  sendSqsMessage: Function
+
+  //TODO: this is proxy!
+  eventStore: any
+
+  monitoring: Monitoring
 
   //TODO: Express app. Do we really need it in the pool?
   app: any
@@ -158,6 +192,8 @@ export type Resolve = {
   staticPath?: string
 
   routesTrie: Trie
+
+  getVacantTimeInMillis: () => number
 
   //These come from application config
   distDir: string
