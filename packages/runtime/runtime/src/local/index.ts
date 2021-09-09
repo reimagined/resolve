@@ -6,12 +6,12 @@ import https from 'https'
 import { getLog } from '../common/utils/get-log'
 import { backgroundJob } from '../common/utils/background-job'
 import { prepareDomain } from './prepare-domain'
+import { lambdaGuard } from './lambda-guard'
+import { initPerformanceTracer } from './init-performance-tracer'
 
-import initPerformanceTracer from './init-performance-tracer'
 import initExpress from './init-express'
 import initWebsockets from './init-websockets'
 import startExpress from './start-express'
-import emptyWorker from './empty-worker'
 import initUploader from './init-uploader'
 import initScheduler from './init-scheduler'
 import gatherEventListeners from '../common/gather-event-listeners'
@@ -27,9 +27,19 @@ import type {
 
 const log = getLog('local-entry')
 
+type BuildConstants = {
+  applicationName: string
+  distDir: string
+  jwtCookie: string
+  port: string
+  rootPath: string
+  staticDir: string
+  staticPath: string
+}
+
 type LocalEntryDependencies = {
   assemblies: Assemblies
-  constants: Record<string, any>
+  constants: BuildConstants
   domain: Resolve['domain']
 }
 
@@ -38,6 +48,8 @@ const localEntry = async (dependencies: LocalEntryDependencies) => {
     const { assemblies, constants } = dependencies
     const domain = prepareDomain(dependencies.domain)
     const domainInterop = await initDomain(domain)
+
+    const performanceTracer = await initPerformanceTracer()
 
     const resolve: ResolvePartial = {
       instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,
@@ -74,9 +86,9 @@ const localEntry = async (dependencies: LocalEntryDependencies) => {
       deleteQueue: async () => {
         return
       },
+      performanceTracer,
     }
 
-    await initPerformanceTracer(resolve)
     await initExpress(resolve as Resolve)
     await initWebsockets(resolve as Resolve)
     await initUploader(resolve as Resolve)
@@ -85,7 +97,7 @@ const localEntry = async (dependencies: LocalEntryDependencies) => {
 
     log.debug('Local entry point cold start success')
 
-    return emptyWorker
+    return lambdaGuard
   } catch (error) {
     log.error('Local entry point cold start failure', error)
   }

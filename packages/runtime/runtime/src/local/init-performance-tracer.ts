@@ -40,12 +40,12 @@ const createEmptySegment = () => {
   return segment
 }
 
-const initPerformanceTracer = (resolve: ResolvePartial): void => {
+export const initPerformanceTracer = (): PerformanceTracer => {
   let segment = createEmptySegment()
   let traceId = process.env.RESOLVE_LOCAL_TRACE_ID
   segment.trace_id = traceId
 
-  const performanceTracer: PerformanceTracer = {
+  return {
     getSegment: (): PerformanceSegment => {
       if (traceId !== process.env.RESOLVE_LOCAL_TRACE_ID) {
         segment = createEmptySegment()
@@ -108,9 +108,4 @@ const initPerformanceTracer = (resolve: ResolvePartial): void => {
       }
     },
   }
-  Object.defineProperty(resolve, 'performanceTracer', {
-    value: performanceTracer,
-  })
 }
-
-export default initPerformanceTracer

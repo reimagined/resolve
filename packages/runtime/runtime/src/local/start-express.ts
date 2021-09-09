@@ -51,7 +51,7 @@ const startExpress = async (resolve: Resolve) => {
   await new Promise<void>((resolve, reject) => {
     const errorHandler = (err: any) => reject(err)
     server.once('error', errorHandler)
-    server.listen(port, host, () => {
+    server.listen(Number(port), host, () => {
       server.removeListener('error', errorHandler)
 
       // eslint-disable-next-line no-console

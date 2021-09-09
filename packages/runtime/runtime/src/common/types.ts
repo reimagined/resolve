@@ -146,7 +146,7 @@ export type Resolve = {
   domain: DomainWithHandlers
   domainInterop: Domain
   rootPath: string
-  performanceTracer: PerformanceTracer
+  readonly performanceTracer: PerformanceTracer
   pubsubManager: PubsubManager
   scheduler: Scheduler
   uploader: Uploader
@@ -185,9 +185,6 @@ export type Resolve = {
 
   monitoring: Monitoring
 
-  //TODO: Express app. Do we really need it in the pool?
-  app: any
-
   staticRoutes?: string[]
   staticPath?: string
 
@@ -197,7 +194,7 @@ export type Resolve = {
 
   //These come from application config
   distDir: string
-  port: number
+  port: string
 }
 
 export type ResolvePartial = Partial<Resolve>

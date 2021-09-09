@@ -26,7 +26,6 @@ const initExpress = async (resolve: Resolve) => {
     resolve.rootPath,
     staticRouteMarkerHandler
   )
-  resolve.app = app
   resolve.server = server
 
   if (resolve.staticPath != null && resolve.staticRoutes != null) {
@@ -38,13 +37,13 @@ const initExpress = async (resolve: Resolve) => {
   )
 
   if (resolve.staticPath != null) {
-    resolve.app.use(
+    app.use(
       getRootBasedUrl(resolve.rootPath, `/${resolve.staticPath}`),
       expressStaticMiddleware
     )
   }
 
-  void (resolve.app as typeof app).use(async (req, res, next) => {
+  app.use(async (req, res, next) => {
     if (resolve.staticRoutes != null) {
       const { node } = resolve.routesTrie.match(req.path) ?? { node: null }
       if (node != null) {
