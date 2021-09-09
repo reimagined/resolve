@@ -27,7 +27,7 @@ If applicable, add screenshots to help explain your problem.
 
 - OS: [e.g. iOS]
 - Browser [e.g. chrome, safari, edge]
-- Node.js Version [e.g. 12.18.3]
+- Node.js Version [e.g. 14.17.5]
 - ReSolve Version [e.g. 0.25.0]
 
 **Additional context**
