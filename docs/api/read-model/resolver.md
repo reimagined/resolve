@@ -13,7 +13,7 @@ async (store, params, context) => {
 }
 ```
 
-A projection implementation receives the following arguments:
+A resolver implementation receives the following arguments:
 
 | Argument Name | Description                                                                                              |
 | ------------- | -------------------------------------------------------------------------------------------------------- |

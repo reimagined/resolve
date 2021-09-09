@@ -27,11 +27,11 @@ A command handler implementation receives the following arguments:
 
 The `context` argument is an object with the following fields:
 
-| Field Name       | Description                                               |
-| ---------------- | --------------------------------------------------------- |
-| jwt              | The JSON Web Token attached to the request.               |
-| aggregateVersion | The aggregate version identifier.                         |
-| encrypt          | The user-defined [encrypt](../../encryption.md) function. |
-| decrypt          | The user-defined [decrypt](../../encryption.md) function. |
+| Field Name       | Description                                                                                                |
+| ---------------- | ---------------------------------------------------------------------------------------------------------- |
+| jwt              | The JSON Web Token attached to the request.                                                                |
+| aggregateVersion | The aggregate version that is a number incremented for each consequent event with the current aggregateId. |
+| encrypt          | The user-defined [encrypt](../../encryption.md) function.                                                  |
+| decrypt          | The user-defined [decrypt](../../encryption.md) function.                                                  |
 
 This object can also contain additional fields added by [middleware](../../middleware.md).

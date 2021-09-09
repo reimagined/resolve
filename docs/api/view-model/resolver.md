@@ -11,24 +11,18 @@ async(api, query, context) => {
     ...
     return {
         data, // Built view model data.
-        meta  // Meta data about the resolver execution results (see below).
+        meta: {  // Metadata about the resolver execution results.
+          cursor, // The data cursor used to traverse the events included into the query result set.
+          eventTypes, // The list of event types available to the client.
+          aggregateIds, // List of aggregate IDs available to the client.
+        }
     }
-}
-```
-
-The `meta` object returned by a resolver should have the following structure:
-
-```js
-{
-  cursor, // The data cursor used to traverse the events included into the query result set.
-  eventTypes, // The list of event types available to the client.
-  aggregateIds, // List of aggregate IDs available to the client.
 }
 ```
 
 ## API
 
-The `API` argument provides is an object that contains the following API:
+The `API` argument is an object that contains the following API:
 
 | Function Name  | Description                        |
 | -------------- | ---------------------------------- |
@@ -36,7 +30,7 @@ The `API` argument provides is an object that contains the following API:
 
 ## Query
 
-The `query` argument is an object of the following field:
+The `query` argument is an object with the following fields:
 
 | Field Name    | Description                                              |
 | ------------- | -------------------------------------------------------- |
