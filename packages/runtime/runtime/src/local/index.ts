@@ -4,6 +4,9 @@ import http from 'http'
 import https from 'https'
 
 import { getLog } from '../common/utils/get-log'
+import { backgroundJob } from '../common/utils/background-job'
+import { prepareDomain } from './prepare-domain'
+
 import initPerformanceTracer from './init-performance-tracer'
 import initExpress from './init-express'
 import initWebsockets from './init-websockets'
@@ -14,16 +17,12 @@ import initScheduler from './init-scheduler'
 import gatherEventListeners from '../common/gather-event-listeners'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
-import { backgroundJob } from '../common/utils/background-job'
-import getRootBasedUrl from '../common/utils/get-root-based-url'
 
 import type {
   Assemblies,
   ResolvePartial,
   Resolve,
   BuildParameters,
-  ResolveRequest,
-  ResolveResponse,
 } from '../common/types'
 
 const log = getLog('local-entry')
@@ -34,33 +33,10 @@ type LocalEntryDependencies = {
   domain: Resolve['domain']
 }
 
-const localEntry = async ({
-  assemblies,
-  constants,
-  domain,
-}: LocalEntryDependencies) => {
+const localEntry = async (dependencies: LocalEntryDependencies) => {
   try {
-    domain.apiHandlers.push({
-      path: '/api/subscribers/:eventSubscriber',
-      method: 'GET',
-      handler: async (req: ResolveRequest, res: ResolveResponse) => {
-        try {
-          const baseQueryUrl = getRootBasedUrl(
-            req.resolve.rootPath,
-            '/api/subscribers/'
-          )
-
-          const eventSubscriber = req.path.substring(baseQueryUrl.length)
-          await req.resolve.eventSubscriber.build({ eventSubscriber })
-          await res.end('ok')
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(error)
-          await res.end(error)
-        }
-      },
-    })
-
+    const { assemblies, constants } = dependencies
+    const domain = prepareDomain(dependencies.domain)
     const domainInterop = await initDomain(domain)
 
     const resolve: ResolvePartial = {

@@ -1,6 +1,6 @@
 const isAbsoluteUrl = /:\/\//i
 
-const getRootBasedUrl = (rootPath: string, path: string) => {
+export const getRootBasedUrl = (rootPath: string, path: string) => {
   if (isAbsoluteUrl.test(path)) {
     return path
   }
@@ -9,5 +9,3 @@ const getRootBasedUrl = (rootPath: string, path: string) => {
 
   return `${basename}/${path.replace(/^\//, '')}`
 }
-
-export default getRootBasedUrl
