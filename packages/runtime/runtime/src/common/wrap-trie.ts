@@ -6,7 +6,7 @@ import markupHandler from './handlers/markup-handler'
 import uploaderHandler from './handlers/uploader-handler'
 import failHandler from './handlers/fail-handler'
 
-import getRootBasedUrl from './utils/get-root-based-url'
+import { getRootBasedUrl } from './utils/get-root-based-url'
 import buildInApiHandlers from './defaults/builtin-routes'
 
 import type { ApiHandler } from './types'

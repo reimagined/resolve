@@ -1,6 +1,6 @@
 import Url from 'url'
 
-import getRootBasedUrl from '../common/utils/get-root-based-url'
+import { getRootBasedUrl } from '../common/utils/get-root-based-url'
 import jwt from 'jsonwebtoken'
 import type { Resolve } from '../common/types'
 

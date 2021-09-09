@@ -1,7 +1,7 @@
 import debugLevels from '@resolve-js/debug-levels'
 import Url from 'url'
 
-import getRootBasedUrl from './get-root-based-url'
+import { getRootBasedUrl } from './get-root-based-url'
 
 const log = debugLevels('resolve:runtime:getStaticBasedPath')
 
