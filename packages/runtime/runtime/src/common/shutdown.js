@@ -4,7 +4,7 @@ import shutdownOne from './shutdown-one'
 
 const log = debugLevels('resolve:runtime:shutdown')
 
-const shutdown = async (resolve) => {
+const shutdown = async (resolve, lambdaContext, { soft }) => {
   log.debug('shutdown started')
   const promises = []
   for (const { name } of resolve.eventListeners.values()) {
@@ -16,6 +16,7 @@ const shutdown = async (resolve) => {
         name,
         upstream: resolve.upstream,
         deleteQueue: resolve.deleteQueue,
+        soft,
       })
     )
   }
