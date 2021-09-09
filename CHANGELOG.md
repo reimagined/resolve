@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.10...HEAD)
+
+**Breaking changes:**
+
+- Update minimal node version to 14 [\#2034](https://github.com/reimagined/resolve/pull/2034)
+
 ## [V0.31.10](https://github.com/reimagined/resolve/tree/V0.31.10) (2021-09-08)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.9...V0.31.10)

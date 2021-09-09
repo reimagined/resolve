@@ -68,10 +68,10 @@ const getWebpackCommonConfigs = ({
                   [
                     '@babel/preset-env',
                     {
-                      targets: { node: '8.10.0' },
+                      targets: { node: '14.17.0' },
+                      shippedProposals: true,
                     },
                   ],
-                  '@babel/preset-react',
                 ],
                 plugins: [
                   '@babel/plugin-proposal-class-properties',
