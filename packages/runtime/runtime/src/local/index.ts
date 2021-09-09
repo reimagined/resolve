@@ -23,23 +23,14 @@ import type {
   ResolvePartial,
   Resolve,
   BuildParameters,
+  BuildTimeConstants,
 } from '../common/types'
 
 const log = getLog('local-entry')
 
-type BuildConstants = {
-  applicationName: string
-  distDir: string
-  jwtCookie: string
-  port: string
-  rootPath: string
-  staticDir: string
-  staticPath: string
-}
-
 type LocalEntryDependencies = {
   assemblies: Assemblies
-  constants: BuildConstants
+  constants: BuildTimeConstants
   domain: Resolve['domain']
 }
 

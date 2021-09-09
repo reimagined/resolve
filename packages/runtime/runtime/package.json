@@ -62,9 +62,11 @@
     "uuid": "8.3.2",
     "websocket-stream": "5.5.2",
     "ws": "7.4.4",
-    "@types/ws": "7.4.4"
+    "lodash.create": "4.2.0"
   },
   "devDependencies": {
+    "@types/ws": "7.4.4",
+    "@types/lodash.create": "4.2.6",
     "jest": "27.0.3",
     "ts-jest": "^27.0.2",
     "lodash.escaperegexp": "4.1.2",

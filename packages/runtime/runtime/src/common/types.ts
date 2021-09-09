@@ -116,6 +116,19 @@ export type BuildParameters = {
   cursor?: string
 }
 
+export type BuildTimeConstants = {
+  applicationName: string
+  distDir: string
+  jwtCookie: {
+    name: string
+    maxAge: number
+  }
+  port: string
+  rootPath: string
+  staticDir: string
+  staticPath: string
+}
+
 export type Resolve = {
   isInitialized: boolean
 
@@ -141,11 +154,9 @@ export type Resolve = {
   readModelConnectors: any
   readModelSources: any
 
-  applicationName: string
   assemblies: Assemblies
   domain: DomainWithHandlers
   domainInterop: Domain
-  rootPath: string
   readonly performanceTracer: PerformanceTracer
   pubsubManager: PubsubManager
   scheduler: Scheduler
@@ -186,16 +197,11 @@ export type Resolve = {
   monitoring: Monitoring
 
   staticRoutes?: string[]
-  staticPath?: string
 
   routesTrie: Trie
 
   getVacantTimeInMillis: () => number
-
-  //These come from application config
-  distDir: string
-  port: string
-}
+} & BuildTimeConstants
 
 export type ResolvePartial = Partial<Resolve>
 
@@ -207,7 +213,7 @@ export type HttpRequest = {
   readonly headers: IncomingHttpHeaders
   readonly cookies: Record<string, string>
   readonly body: string | null
-  readonly [key: string]: any
+  readonly jwt: string | null
 }
 
 export type ResolveRequest = HttpRequest & {

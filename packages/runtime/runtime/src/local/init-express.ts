@@ -3,7 +3,7 @@ import { Server } from 'http'
 import path from 'path'
 
 import wrapApiHandler from './wrap-api-handler'
-import mainHandler from '../common/handlers/main-handler'
+import { mainHandler } from '../common/handlers/main-handler'
 import { getRootBasedUrl } from '../common/utils/get-root-based-url'
 import wrapTrie from '../common/wrap-trie'
 

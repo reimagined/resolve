@@ -99,6 +99,7 @@ const createRequest = async (
     headers: expressReq.headers,
     cookies,
     body,
+    jwt: null,
     ...customParameters,
   }
 

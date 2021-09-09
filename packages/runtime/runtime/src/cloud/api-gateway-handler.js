@@ -1,5 +1,5 @@
 import wrapApiHandler from './wrap-api-handler'
-import mainHandler from '../common/handlers/main-handler'
+import { mainHandler } from '../common/handlers/main-handler'
 
 const getCustomParameters = async (resolve) => ({ resolve })
 
