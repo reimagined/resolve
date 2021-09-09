@@ -76,7 +76,7 @@ const initExpress = async (resolve: Resolve) => {
       }
     }
 
-    const currentResolve = Object.create(resolve)
+    const currentResolve: Resolve = Object.create(resolve)
     try {
       await initResolve(currentResolve)
 

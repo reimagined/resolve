@@ -14,8 +14,7 @@ import type { Trie } from 'route-trie'
 export type ApiHandler = {
   path: string
   method: string
-  //TODO: specialize params
-  handler: (req: any, res: any) => Promise<void>
+  handler: (req: ResolveRequest, res: ResolveResponse) => Promise<void>
 }
 type DomainWithHandlers = DomainMeta & { apiHandlers: ApiHandler[] }
 
@@ -109,7 +108,7 @@ export type Resolve = {
   serverImports: Assemblies['serverImports']
 
   eventListeners: Map<string, EventListener>
-  upstream: any
+  upstream: boolean
 
   http: typeof http
   https: typeof https

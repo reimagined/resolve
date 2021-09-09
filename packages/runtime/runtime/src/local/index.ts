@@ -1,6 +1,5 @@
 import 'source-map-support/register'
 import { initDomain } from '@resolve-js/core'
-import type { DomainMeta } from '@resolve-js/core'
 import http from 'http'
 import https from 'https'
 
@@ -23,6 +22,8 @@ import type {
   ResolvePartial,
   Resolve,
   BuildParameters,
+  ResolveRequest,
+  ResolveResponse,
 } from '../common/types'
 
 const log = getLog('local-entry')
@@ -42,7 +43,7 @@ const localEntry = async ({
     domain.apiHandlers.push({
       path: '/api/subscribers/:eventSubscriber',
       method: 'GET',
-      handler: async (req: any, res: any) => {
+      handler: async (req: ResolveRequest, res: ResolveResponse) => {
         try {
           const baseQueryUrl = getRootBasedUrl(
             req.resolve.rootPath,
@@ -74,7 +75,7 @@ const localEntry = async ({
       eventSubscriberScope: constants.applicationName,
       upstream:
         domain.apiHandlers.findIndex(
-          ({ method, path }: any) =>
+          ({ method, path }) =>
             method === 'OPTIONS' && path === '/SKIP_COMMANDS'
         ) < 0,
       https,
