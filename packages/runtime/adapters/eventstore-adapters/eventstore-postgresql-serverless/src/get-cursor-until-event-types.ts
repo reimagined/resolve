@@ -5,7 +5,7 @@ import {
   SavedEvent,
   threadArrayToCursor,
   initThreadArray,
-  Cursor,
+  InputCursor,
 } from '@resolve-js/eventstore-base'
 
 const getCursorUntilEventTypes = async (
@@ -17,7 +17,7 @@ const getCursorUntilEventTypes = async (
     shapeEvent,
     databaseName,
   }: AdapterPool,
-  cursor: Cursor,
+  cursor: InputCursor,
   untilEventTypes: Array<SavedEvent['type']>
 ): Promise<string> => {
   if (untilEventTypes.length < 1) {

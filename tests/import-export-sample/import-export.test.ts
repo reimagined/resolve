@@ -10,7 +10,7 @@ import createEventstoreAdapter from '@resolve-js/eventstore-lite'
 import type {
   EventsWithCursor,
   SavedEvent,
-  Cursor,
+  InputCursor,
 } from '@resolve-js/eventstore-base'
 
 import {
@@ -136,7 +136,7 @@ describe('import-export events', () => {
 
     const exportBuffers = []
 
-    let cursor: Cursor = null
+    let cursor: InputCursor = null
     let steps = 0
 
     while (true) {

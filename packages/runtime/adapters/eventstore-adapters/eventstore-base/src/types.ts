@@ -1,8 +1,14 @@
 import type {
   SecretsManager,
   Event,
+  SavedEvent,
+  EventThreadData,
   SerializableMap,
-  Serializable,
+  EventWithCursor,
+  EventsWithCursor,
+  Eventstore as CoreEventstore,
+  InputCursor,
+  ReturnedCursor,
 } from '@resolve-js/core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
@@ -12,6 +18,15 @@ import { isRight } from 'fp-ts/These'
 import { either } from 'fp-ts/Either'
 import { PathReporter } from 'io-ts/lib/PathReporter'
 import * as iotsTypes from 'io-ts-types'
+
+export type {
+  SavedEvent,
+  EventThreadData,
+  EventWithCursor,
+  EventsWithCursor,
+  InputCursor,
+  ReturnedCursor,
+}
 
 export function validate<T extends t.Type<any>>(
   schema: T,
@@ -45,14 +60,9 @@ export type UnbrandProps<T extends any> = {
 }
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
-export type InputEvent = Omit<Event, 'payload'> & { payload?: Serializable }
+export type InputEvent = Event
 export type VersionlessEvent = Omit<InputEvent, 'aggregateVersion'>
-export type EventThreadData = {
-  threadCounter: number
-  threadId: number
-}
-export type SavedEvent = Event & EventThreadData & SerializableMap
-export type OldEvent = Event
+export type OldEvent = InputEvent
 
 export type ReplicationStatus =
   | 'batchInProgress'
@@ -85,7 +95,7 @@ export type EventStoreDescription = {
   deletedSecretCount: number
   isFrozen: boolean
   lastEventTimestamp: number
-  cursor?: string
+  cursor?: ReturnedCursor
   resourceNames?: { [key: string]: string }
 }
 
@@ -98,23 +108,6 @@ type SetSecret = SecretsManager['setSecret']
 type ShapeEvent = (event: any, additionalFields?: any) => SavedEvent
 
 export type ValidateEventFilter = (filter: EventFilter) => void
-
-export type Cursor = string | null
-
-export type GetNextCursor = (
-  prevCursor: Cursor,
-  events: EventThreadData[]
-) => string
-
-export type EventsWithCursor = {
-  cursor: Cursor
-  events: SavedEvent[]
-}
-
-export type EventWithCursor = {
-  cursor: Cursor
-  event: SavedEvent
-}
 
 const EventFilterCommonSchema = t.intersection([
   t.type({
@@ -285,7 +278,7 @@ export type AdapterPoolPrimalProps = {
   bucketSize: number
   counters: Map<string, number>
 
-  getNextCursor: GetNextCursor
+  getNextCursor: CoreEventstore['getNextCursor']
   getVacantTimeInMillis?: () => number
 }
 
@@ -338,13 +331,13 @@ export type ImportEventsStream = stream.Writable & {
 }
 
 export type ExportOptions = {
-  cursor: Cursor
+  cursor: InputCursor
   maintenanceMode: MAINTENANCE_MODE
   bufferSize: number
 }
 
 export type ExportEventsStream = stream.Readable & {
-  readonly cursor: Cursor
+  readonly cursor: InputCursor
   readonly isBufferOverflow: boolean
   readonly isEnd: boolean
 }
@@ -373,7 +366,7 @@ export interface CommonAdapterFunctions<
     Adapter['exportEvents']
   >
   incrementalImport: PoolMethod<ConnectedProps, Adapter['incrementalImport']>
-  getNextCursor: GetNextCursor
+  getNextCursor: CoreEventstore['getNextCursor']
   importSecretsStream: UnconnectedPoolMethod<
     ConnectedProps,
     Adapter['importSecrets']
@@ -515,21 +508,16 @@ export interface AdapterFunctions<
   >
 }
 
-export interface Adapter {
-  loadEvents: (filter: EventFilter) => Promise<EventsWithCursor>
+export interface Adapter extends CoreEventstore {
   importEvents: (options?: Partial<ImportOptions>) => ImportEventsStream
   exportEvents: (options?: Partial<ExportOptions>) => ExportEventsStream
   getLatestEvent: (filter: LatestEventFilter) => Promise<SavedEvent | null>
-  saveEvent: (event: InputEvent) => Promise<EventWithCursor>
   init: () => Promise<void>
   drop: () => Promise<void>
   dispose: () => Promise<void>
   freeze: () => Promise<void>
   unfreeze: () => Promise<void>
-  getNextCursor: GetNextCursor
   getSecretsManager: () => Promise<SecretsManager>
-  loadSnapshot: (snapshotKey: string) => Promise<string | null>
-  saveSnapshot: (snapshotKey: string, content: string) => Promise<void>
   dropSnapshot: (snapshotKey: string) => Promise<void>
   pushIncrementalImport: (
     events: VersionlessEvent[],
@@ -545,33 +533,6 @@ export interface Adapter {
   loadSecrets: (filter: SecretFilter) => Promise<SecretsWithIdx>
   importSecrets: (options?: Partial<ImportSecretsOptions>) => stream.Writable
   exportSecrets: (options?: Partial<ExportSecretsOptions>) => stream.Readable
-
-  ensureEventSubscriber: (params: {
-    applicationName: string
-    eventSubscriber: string
-    destination?: any
-    status?: any
-    updateOnly?: boolean
-  }) => Promise<boolean>
-  removeEventSubscriber: (params: {
-    applicationName: string
-    eventSubscriber: string
-  }) => Promise<void>
-  getEventSubscribers: (
-    params?:
-      | {
-          applicationName?: string
-          eventSubscriber?: string
-        }
-      | undefined
-  ) => Promise<
-    Array<{
-      applicationName: string
-      eventSubscriber: string
-      destination: any
-      status: any
-    }>
-  >
 
   gatherSecretsFromEvents: (events: SavedEvent[]) => Promise<GatheredSecrets>
 
@@ -591,7 +552,7 @@ export interface Adapter {
   resetReplication: () => Promise<void>
 
   getCursorUntilEventTypes: (
-    cursor: Cursor,
+    cursor: InputCursor,
     untilEventTypes: Array<InputEvent['type']>
   ) => Promise<string>
 

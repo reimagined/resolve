@@ -9,7 +9,7 @@ import { CommandError } from '../errors'
 import { AggregateMeta, MiddlewareContext } from '../types/runtime'
 import { getLog } from '../get-log'
 import { getPerformanceTracerSubsegment } from '../utils'
-import {
+import type {
   Event,
   AggregateState,
   Command,
@@ -18,6 +18,7 @@ import {
   CommandResult,
   InteropCommandResult,
 } from '../types/core'
+import type { SavedEvent } from '../types/runtime'
 import { makeMiddlewareApplier } from '../helpers'
 
 type AggregateData = {
@@ -124,7 +125,7 @@ const projectionEventHandler = async (
   runtime: AggregateRuntime,
   data: AggregateData,
   processSnapshot: Function | null,
-  event: Event
+  event: SavedEvent
 ): Promise<any> => {
   const { monitoring, eventstore } = runtime
   const subSegment = getPerformanceTracerSubsegment(monitoring, 'applyEvent')
@@ -187,7 +188,8 @@ const takeSnapshot = async (
 
     // FIXME: move snapshot business logic from runtime
     await eventstore.saveSnapshot(
-      data.snapshotKey,
+      //TODO: check for null
+      data.snapshotKey as string,
       JSON.stringify({
         state: aggregate.serializeState(data.aggregateState),
         version: data.aggregateVersion,
@@ -309,7 +311,7 @@ const getAggregateState = async (
         typeof projection.Init === 'function' ? await projection.Init() : null
     }
 
-    const eventHandler = (event: Event) =>
+    const eventHandler = (event: SavedEvent) =>
       projectionEventHandler(
         aggregate,
         runtime,

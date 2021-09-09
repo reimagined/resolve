@@ -1,6 +1,6 @@
 import type {
   Adapter as EventStoreAdapter,
-  Cursor,
+  InputCursor,
   SavedEvent,
   EventWithCursor as EventStoreEventWithCursor,
   checkEventsContinuity,
@@ -153,7 +153,7 @@ export type MonitoringLike = {
   performance?: PerformanceTracerLike
 }
 
-export type ReadModelCursor = Cursor // TODO brand type
+export type ReadModelCursor = InputCursor // TODO brand type
 export type ReadModelEvent = SavedEvent
 
 export type EventStoreAdapterLike = EventStoreAdapter

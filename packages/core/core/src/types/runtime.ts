@@ -43,22 +43,80 @@ export type Monitoring = {
   performance?: PerformanceTracer
 }
 
+export type EventThreadData = {
+  threadCounter: number
+  threadId: number
+}
+
+export type SavedEvent = Event & EventThreadData
+
+export type ReturnedCursor = string
+export type InputCursor = string | null
+
+export type EventWithCursor = {
+  cursor: ReturnedCursor
+  event: SavedEvent
+}
+
+export type EventsWithCursor = {
+  cursor: ReturnedCursor
+  events: SavedEvent[]
+}
+
+type EventLimitFilter = {
+  limit: number
+  eventsSizeLimit?: number
+}
+type EventTypeFilter = {
+  aggregateIds?: string[] | null
+  eventTypes?: string[] | null
+}
+type EventTimestampFilter = {
+  startTime?: number
+  finishTime?: number
+}
+type EventCursorFilter = {
+  cursor?: InputCursor
+}
+
+export type EventFilter = EventLimitFilter &
+  EventTypeFilter &
+  EventTimestampFilter &
+  EventCursorFilter
+
 export type Eventstore = {
-  saveEvent: (event: any) => Promise<any>
-  saveSnapshot: Function
-  getNextCursor: (cursor: any, events: Event[]) => Promise<any>
+  saveEvent: (event: Event) => Promise<EventWithCursor>
+  saveSnapshot: (snapshotKey: string, content: string) => Promise<void>
+  getNextCursor: (cursor: InputCursor, events: EventThreadData[]) => string
   loadSnapshot: (snapshotKey: string) => Promise<string | null>
-  loadEvents: (param: {
-    aggregateIds: string[]
-    eventTypes?: string[]
-    cursor: null
-    limit: number
-  }) => Promise<{
-    events: any[]
-  }>
-  ensureEventSubscriber: Function
-  getEventSubscribers: Function
-  removeEventSubscriber: Function
+  loadEvents: (filter: EventFilter) => Promise<EventsWithCursor>
+
+  ensureEventSubscriber: (params: {
+    applicationName: string
+    eventSubscriber: string
+    destination?: any
+    status?: any
+    updateOnly?: boolean
+  }) => Promise<boolean>
+  removeEventSubscriber: (params: {
+    applicationName: string
+    eventSubscriber: string
+  }) => Promise<void>
+  getEventSubscribers: (
+    params?:
+      | {
+          applicationName?: string
+          eventSubscriber?: string
+        }
+      | undefined
+  ) => Promise<
+    Array<{
+      applicationName: string
+      eventSubscriber: string
+      destination: any
+      status: any
+    }>
+  >
 }
 
 export type AggregateMeta = {

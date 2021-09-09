@@ -100,8 +100,7 @@ const initResolve = async (resolve: Resolve) => {
   const aggregateRuntime = {
     monitoring,
     secretsManager,
-    //TODO: make compatible eventstore interfaces in core and eventstore-base
-    eventstore: (eventstoreAdapter as unknown) as CoreEventstoreAdapter,
+    eventstore: eventstoreAdapter,
     hooks: {
       postSaveEvent: async (
         aggregate: AggregateInterop,
@@ -133,8 +132,7 @@ const initResolve = async (resolve: Resolve) => {
   const executeQuery = createQueryExecutor({
     invokeBuildAsync,
     applicationName: eventSubscriberScope,
-    //TODO:
-    eventstoreAdapter: (eventstoreAdapter as unknown) as CoreEventstoreAdapter,
+    eventstoreAdapter: eventstoreAdapter,
     readModelConnectors,
     readModelSources,
     performanceTracer,
@@ -148,8 +146,7 @@ const initResolve = async (resolve: Resolve) => {
     }),
     viewModelsInterop: domainInterop.viewModelDomain.acquireViewModelsInterop({
       monitoring,
-      //TODO:
-      eventstore: (eventstoreAdapter as unknown) as CoreEventstoreAdapter,
+      eventstore: eventstoreAdapter,
       secretsManager,
     }),
   })
