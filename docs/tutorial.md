@@ -506,7 +506,77 @@ Refer to the [Frontend](frontend.md) article for information on other tools that
 
 ### Implement the Client Application
 
-> The example project uses **react-bootstrap** to reduce the size of the markup To use this library, you should link the Bootstrap stylesheet file to the application's page. The example project's **client/components/Header.js** file demonstrates how to link static resources.
+<details>
+<summary>
+
+The example project uses [react-bootstrap](https://react-bootstrap.github.io) to reduce the size of the markup. To use this library, you should link the Bootstrap stylesheet file to the application's page. Expand this section to view details on how to link static resources.
+
+</summary>
+<div>
+
+You can define a reusable component that generates the document `<head>` section based on the specified parameters. In this component, you can generate static resource links as well as document metadata. The code sample below demonstrates how this component is defined in the example application:
+
+**client/components/Header.js**
+
+```js
+import React from 'react'
+// The react-helmet library allows you to manage the document *head* section.
+import { Helmet } from 'react-helmet'
+import { useStaticResolver } from '@resolve-js/react-hooks'
+
+const Header = ({ title, css }) => {
+  // Use the *useStaticResolver* hook to obtain the full path to a static resource
+  // from a relative path.
+  const resolveStatic = useStaticResolver()
+  // Generate a list of links for stylesheets.
+  const stylesheetLinks = css.map((href) => ({
+    rel: 'stylesheet',
+    href: resolveStatic(href),
+  }))
+  // You can use the same technique to generate links for other resource types.
+  // const faviconLink = {
+  //   rel: 'icon',
+  //   type: 'image/png',
+  //   href: resolveStatic(favicon),
+  // }
+  // Merge all links together in one list.
+  const links = [...stylesheetLinks] // [...stylesheetLinks, faviconLink]
+  const meta = {
+    name: 'viewport',
+    content: 'width=device-width, initial-scale=1',
+  }
+  // The react-helmet to render the *head* section with your settings.
+  return (
+    <div>
+      <Helmet title={title} link={links} meta={[meta]} />
+    </div>
+  )
+}
+
+export default Header
+```
+
+Now you can configure the `<head>` section within the root component:
+
+**client/components/App.js**
+
+```js
+import Header from './Header'
+
+const App = ({ route, children }) => (
+  <div>
+    <Header
+      title="ReSolve Shopping List Example"
+      css={['/bootstrap.min.css']}
+    />
+    {renderRoutes(route.routes)}
+    {children}
+  </div>
+)
+```
+
+</div>
+</details>
 
 First, implement a React component that renders a list of shopping list names. To do this, create a **ShoppingLists.js** file in the **client/components** subfolder and add the following code to this file:
 
