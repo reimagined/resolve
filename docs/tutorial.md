@@ -545,7 +545,7 @@ const Header = ({ title, css }) => {
     name: 'viewport',
     content: 'width=device-width, initial-scale=1',
   }
-  // The react-helmet to render the *head* section with your settings.
+  // Use react-helmet to render the *head* section with your settings.
   return (
     <div>
       <Helmet title={title} link={links} meta={[meta]} />
