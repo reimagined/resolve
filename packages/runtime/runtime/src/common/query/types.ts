@@ -7,14 +7,17 @@ import {
   ViewModelInteropMap,
   ViewModelInterop,
   Eventstore,
+  PerformanceTracer,
 } from '@resolve-js/core'
+
+import type { ReadModelConnector } from '../types'
 
 export type CreateQueryOptions = {
   invokeBuildAsync: Function
-  readModelConnectors: any
-  readModelSources?: any
-  performanceTracer: any
-  getVacantTimeInMillis: any
+  readModelConnectors: Record<string, ReadModelConnector>
+  readModelSources?: Record<string, string | null>
+  performanceTracer: PerformanceTracer | null
+  getVacantTimeInMillis: () => number
   monitoring?: Monitoring
   readModelsInterop: ReadModelInteropMap | SagaInteropMap
   viewModelsInterop: ViewModelInteropMap

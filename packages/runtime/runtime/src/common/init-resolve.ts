@@ -10,14 +10,9 @@ import createNotifyEventSubscribers from './notify-event-subscribers'
 import createOnCommandExecuted from './on-command-executed'
 import createEventSubscriber from './event-subscriber'
 
-import type {
-  Event,
-  Command,
-  AggregateInterop,
-  Eventstore as CoreEventstoreAdapter,
-} from '@resolve-js/core'
+import type { Event, Command, AggregateInterop } from '@resolve-js/core'
 
-import type { Resolve } from './types'
+import type { Resolve, ReadModelConnector } from './types'
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
@@ -41,7 +36,7 @@ const initResolve = async (resolve: Resolve) => {
 
   const eventstoreAdapter = createEventstoreAdapter()
 
-  const readModelConnectors: any = {}
+  const readModelConnectors: Resolve['readModelConnectors'] = {}
   for (const name of Object.keys(readModelConnectorsCreators)) {
     readModelConnectors[name] = readModelConnectorsCreators[name]({
       performanceTracer,
@@ -54,10 +49,10 @@ const initResolve = async (resolve: Resolve) => {
     resolve.getVacantTimeInMillis = () => endTime - Date.now()
   }
 
-  const readModelSources = new Proxy(
+  const readModelSources = new Proxy<Resolve['readModelSources']>(
     {},
     {
-      get(target: any, key) {
+      get(target: Resolve['readModelSources'], key: string) {
         if (!target.hasOwnProperty(key)) {
           target[key] = null
           const entryDir = liveEntryDir()
@@ -68,7 +63,7 @@ const initResolve = async (resolve: Resolve) => {
             try {
               target[key] = fs
                 .readFileSync(
-                  path.join(String(entryDir), `read-model-${String(key)}.js`)
+                  path.join(String(entryDir), `read-model-${key}.js`)
                 )
                 .toString('utf8')
             } catch (err) {}

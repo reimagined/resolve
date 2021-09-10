@@ -16,6 +16,14 @@ import https from 'https'
 import type { CookieSerializeOptions } from 'cookie'
 import type { Trie } from 'route-trie'
 
+//TODO: type
+export type ReadModelConnector = any
+
+export type ReadModelConnectorCreator = (options: {
+  performanceTracer: PerformanceTracer
+  monitoring: Monitoring
+}) => ReadModelConnector
+
 export type ApiHandler = {
   path: string
   method: string
@@ -103,7 +111,7 @@ export type Uploader = {
 export type Assemblies = {
   uploadAdapter: () => UploaderPool
   eventstoreAdapter: () => EventstoreAdapter
-  readModelConnectors: any
+  readModelConnectors: Record<string, ReadModelConnectorCreator>
 
   //TODO: types
   seedClientEnvs: any
@@ -154,8 +162,8 @@ export type Resolve = {
   deleteQueue: (name?: string) => Promise<void>
 
   eventstoreAdapter: EventstoreAdapter
-  readModelConnectors: any
-  readModelSources: any
+  readModelConnectors: Record<string, ReadModelConnector>
+  readModelSources: Record<string, string | null>
 
   assemblies: Assemblies
   domain: DomainWithHandlers
