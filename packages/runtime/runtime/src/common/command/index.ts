@@ -9,7 +9,7 @@ import {
 } from '@resolve-js/core'
 
 type CommandPool = {
-  performanceTracer?: PerformanceTracer
+  performanceTracer?: PerformanceTracer | null
   isDisposed: boolean
 }
 
@@ -19,7 +19,7 @@ export type CommandExecutor = {
 }
 
 export type CommandExecutorBuilder = (context: {
-  performanceTracer?: PerformanceTracer
+  performanceTracer?: PerformanceTracer | null
   aggregatesInterop: AggregatesInterop
 }) => CommandExecutor
 
