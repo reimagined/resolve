@@ -13,7 +13,7 @@ on:
 
 jobs:
   resolve-gate:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, resolve-gate]
     steps:
       - name: Checkout testcafe-dashboard
         uses: actions/checkout@v2
