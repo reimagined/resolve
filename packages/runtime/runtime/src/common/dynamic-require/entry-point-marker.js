@@ -1,3 +1,1 @@
-const entryPointMarker = Symbol('ENTRY-POINT-MARKER')
-
-export default entryPointMarker
+export const entryPointMarker = Symbol('ENTRY-POINT-MARKER')

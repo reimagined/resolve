@@ -1,10 +1,14 @@
 import debugLevels from '@resolve-js/debug-levels'
 
 import liveRequire from '../dynamic-require/live-require'
+import type { ResolveRequest, ResolveResponse } from '../types'
 
 const log = debugLevels('resolve:runtime:live-require-handler')
 
-const liveRequireHandler = (moduleOptions, imports) => async (req, res) => {
+export const liveRequireHandler = (moduleOptions: any, imports: any) => async (
+  req: ResolveRequest,
+  res: ResolveResponse
+) => {
   try {
     const {
       modulePath,
@@ -29,4 +33,3 @@ const liveRequireHandler = (moduleOptions, imports) => async (req, res) => {
   }
 }
 
-export default liveRequireHandler

@@ -34,7 +34,7 @@ type LocalEntryDependencies = {
   domain: Resolve['domain']
 }
 
-const localEntry = async (dependencies: LocalEntryDependencies) => {
+export const localEntry = async (dependencies: LocalEntryDependencies) => {
   try {
     const { assemblies, constants } = dependencies
     const domain = prepareDomain(dependencies.domain)
@@ -93,5 +93,3 @@ const localEntry = async (dependencies: LocalEntryDependencies) => {
     log.error('Local entry point cold start failure', error)
   }
 }
-
-export default localEntry

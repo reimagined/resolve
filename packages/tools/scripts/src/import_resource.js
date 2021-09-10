@@ -24,6 +24,12 @@ const injectRuntimeEnv = (envKey, options) =>
     ? injectRuntimeEnvImpl(envKey, options)
     : injectRuntimeEnvImpl(envKey)
 
+const isPackageImport = (specifier) =>
+  specifier != null &&
+  typeof specifier !== 'string' &&
+  specifier.package != null &&
+  specifier.import != null
+
 const createHashCompileTime = (prefix, content) => {
   const hmac = crypto.createHmac('sha512', prefix)
   hmac.update(content)
@@ -176,7 +182,6 @@ const importInstanceResource = ({
   instanceFallback = null,
   calculateHash = null,
   injectRuntimeOptions = null,
-  indexEntry = null,
 }) => {
   validateInstanceResource({
     resourceName,
@@ -186,16 +191,18 @@ const importInstanceResource = ({
   })
 
   if (!checkRuntimeEnv(resourceValue)) {
-    const resourceFile = resolveFile(resourceValue, instanceFallback)
-    if (indexEntry == null) {
+    let resourceFile
+    if (isPackageImport(resourceValue)) {
+      resourceFile = resolveFile(resourceValue.package, instanceFallback)
       imports.push(
-        `import ${resourceName}_instance from ${JSON.stringify(resourceFile)}`
+        `import { ${
+          resourceValue.import
+        } as ${resourceName}_instance } from ${JSON.stringify(resourceFile)}`
       )
     } else {
+      resourceFile = resolveFile(resourceValue, instanceFallback)
       imports.push(
-        `import { ${indexEntry} as ${resourceName}_instance } from ${JSON.stringify(
-          resourceFile
-        )}`
+        `import ${resourceName}_instance from ${JSON.stringify(resourceFile)}`
       )
     }
 
@@ -210,6 +217,9 @@ const importInstanceResource = ({
       )
     }
   } else {
+    if (isPackageImport(resourceValue)) {
+      throw Error(`Runtime package import not supported`)
+    }
     ensureInteropRequireDefault(imports)
     constants.push(
       `const ${resourceName}_instance = ${importFileRuntime(
@@ -309,8 +319,13 @@ const validateConstructorResource = ({
   }
 
   const module = resourceValue.module
-  if (module == null || module.constructor !== String) {
-    throwInternalError(`resource ${resourceName}.module must be a string`)
+  if (
+    module == null ||
+    (module.constructor !== String && !isPackageImport(module))
+  ) {
+    throwInternalError(
+      `resource ${resourceName}.module must be a string or a package import`
+    )
   }
 
   if (checkRuntimeEnv(module) && runtimeMode !== RUNTIME_ENV_ANYWHERE) {
@@ -342,23 +357,39 @@ const importConstructorResourceModule = ({
 }) => {
   const module = resourceValue.module
   if (!checkRuntimeEnv(module)) {
-    imports.push(
-      `import ${resourceName}_constructor from ${JSON.stringify(
-        resolveFileOrModule(module)
-      )}`
-    )
+    let moduleRef
+    if (isPackageImport(module)) {
+      moduleRef = module.package
+      imports.push(
+        `import { ${
+          module.import
+        } as ${resourceName}_constructor } from ${JSON.stringify(
+          resolveFileOrModule(moduleRef)
+        )}`
+      )
+    } else {
+      moduleRef = module
+      imports.push(
+        `import ${resourceName}_constructor from ${JSON.stringify(
+          resolveFileOrModule(moduleRef)
+        )}`
+      )
+    }
 
     if (calculateHash != null) {
       constants.push(
         `const ${resourceName}_constructor_hash = ${JSON.stringify(
           createHashCompileTime(
             calculateHash,
-            fs.readFileSync(resolveFileOrModule(module, true)).toString()
+            fs.readFileSync(resolveFileOrModule(moduleRef, true)).toString()
           )
         )}`
       )
     }
   } else {
+    if (isPackageImport(module)) {
+      throw Error('Runtime package import not supported')
+    }
     ensureInteropRequireDefault(imports)
     constants.push(
       `const ${resourceName}_constructor = ${importFileRuntime(
@@ -570,7 +601,10 @@ const importResource = (options) => {
 
   if (resourceValue == null) {
     return importEmptyResource(options)
-  } else if (resourceValue.constructor === String) {
+  } else if (
+    resourceValue.constructor === String ||
+    isPackageImport(resourceValue)
+  ) {
     return importInstanceResource(options)
   } else if (resourceValue.constructor === Object) {
     return importConstructorResource(options)

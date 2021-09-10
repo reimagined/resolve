@@ -48,18 +48,21 @@
         "package":{
           "type": "string"
         },
-        "entry": {
+        "import": {
           "type": "string"
         }
       },
-      "required": ["package", "entry"],
+      "required": ["package", "import"],
       "additionalProperties": false
     },
     "resourceConstructor": {
       "type": "object",
       "properties": {
         "module": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourcePackage" }
+          ]
         },
         "options": {
           "type": "object"

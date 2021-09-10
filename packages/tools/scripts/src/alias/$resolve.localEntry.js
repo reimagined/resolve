@@ -1,9 +1,9 @@
 const importLocalEntry = () => `
   import '$resolve.guardOnlyServer'
   import serverAssemblies from '$resolve.serverAssemblies'
-  import localEntry from '@resolve-js/runtime/lib/local'
+  import { localEntry } from '@resolve-js/runtime'
 
-  export { default as entryPointMarker } from '@resolve-js/runtime/lib/common/dynamic-require/entry-point-marker'
+  export { entryPointMarker } from '@resolve-js/runtime'
 
   const initPromise = localEntry(serverAssemblies)
 

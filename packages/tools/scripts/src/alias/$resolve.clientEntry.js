@@ -28,7 +28,7 @@ const importClientEntry = ({ resolveConfig, isClient }, resourceQuery) => {
     : 'iife'
 
   const imports = [
-    `import { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify }  from '@resolve-js/runtime'`,
+    `import { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify }  from '@resolve-js/runtime/lib/common/utils'`,
   ]
 
   const constants = [

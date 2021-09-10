@@ -33,24 +33,14 @@ const importApiHandlers = ({ resolveConfig, isClient }) => {
       `const method_${index} = ${JSON.stringify(apiHandler.method)}`
     )
 
-    const handlerImport =
-      apiHandler.handler && apiHandler.handler.package
-        ? {
-            resourceValue: apiHandler.handler.package,
-            indexEntry: apiHandler.handler.entry,
-          }
-        : {
-            resourceValue: apiHandler.handler,
-          }
-
     importResource({
       resourceName: `handler_${index}`,
+      resourceValue: apiHandler.handler,
       runtimeMode: RUNTIME_ENV_ANYWHERE,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
       imports,
       constants,
-      ...handlerImport,
     })
 
     exports.push(`apiHandlers.push({`, `  path: path_${index}`)
