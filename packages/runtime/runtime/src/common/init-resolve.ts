@@ -170,31 +170,6 @@ const initResolve = async (resolve: Resolve) => {
 
   const eventSubscriber = createEventSubscriber(resolve)
 
-  //TODO: get rid of proxy?
-  const eventStore = new Proxy(
-    {},
-    {
-      get(_, key) {
-        if (key === 'SaveEvent') {
-          return async ({ event }: any) =>
-            await eventstoreAdapter.saveEvent(event)
-        } else if (key === 'LoadEvents') {
-          return async ({ scopeName, ...filter }: any) => {
-            void scopeName
-            return await eventstoreAdapter.loadEvents(filter as any)
-          }
-        } else {
-          return (eventstoreAdapter as any)[
-            String(key)[0].toLowerCase() + String(key).slice(1)
-          ].bind(eventstoreAdapter)
-        }
-      },
-      set() {
-        throw new Error(`Event store API is immutable`)
-      },
-    }
-  )
-
   Object.assign<Resolve, Partial<Resolve>>(resolve, {
     isInitialized: true,
     executeCommand,
@@ -205,7 +180,6 @@ const initResolve = async (resolve: Resolve) => {
   })
 
   resolve.eventSubscriber = eventSubscriber
-  resolve.eventStore = eventStore
 
   process.env.RESOLVE_LOCAL_TRACE_ID = crypto
     .randomBytes(Math.ceil(32 / 2))

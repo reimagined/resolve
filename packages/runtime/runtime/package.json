@@ -39,7 +39,7 @@
     "cron": "1.8.2",
     "cuid": "2.1.8",
     "express": "4.17.1",
-    "file-type": "16.3.0",
+    "file-type": "16.5.3",
     "http-status-codes": "2.1.4",
     "iconv-lite": "0.6.2",
     "jsonwebtoken": "8.5.1",

@@ -134,7 +134,7 @@ const handleDeployServiceEvent = async (
     }
     case 'shutdown': {
       try {
-        return await shutdown(resolve, lambdaContext)
+        return await shutdown(resolve, lambdaContext, lambdaEvent)
       } catch (error) {
         subSegment.addError(error)
         throw error

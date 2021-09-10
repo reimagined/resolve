@@ -197,9 +197,6 @@ export type Resolve = {
   //TODO: types
   sendSqsMessage: Function
 
-  //TODO: this is proxy!
-  eventStore: any
-
   monitoring: Monitoring
 
   staticRoutes?: string[]

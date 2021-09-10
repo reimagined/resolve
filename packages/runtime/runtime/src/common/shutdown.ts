@@ -5,7 +5,11 @@ import type { Resolve } from './types'
 
 const log = debugLevels('resolve:runtime:shutdown')
 
-const shutdown = async (resolve: Resolve) => {
+const shutdown = async (
+  resolve: Resolve,
+  lambdaContext?: any,
+  { soft = false }: { soft?: boolean } = {}
+) => {
   log.debug('shutdown started')
   const promises = []
   for (const { name } of resolve.eventListeners.values()) {
@@ -17,6 +21,7 @@ const shutdown = async (resolve: Resolve) => {
         name,
         upstream: resolve.upstream,
         deleteQueue: resolve.deleteQueue,
+        soft,
       })
     )
   }
