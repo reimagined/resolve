@@ -5,11 +5,15 @@ import type {
   DomainMeta,
   Event,
   Monitoring,
+  CommandMiddleware,
+  ReadModelResolverMiddleware,
+  ReadModelProjectionMiddleware,
 } from '@resolve-js/core'
+import type { CommandExecutor } from './command'
 import type { Server as HttpServer, IncomingHttpHeaders } from 'http'
 import http from 'http'
 import https from 'https'
-import cookie from 'cookie'
+import type { CookieSerializeOptions } from 'cookie'
 import type { Trie } from 'route-trie'
 
 export type ApiHandler = {
@@ -19,10 +23,9 @@ export type ApiHandler = {
 }
 
 type Middlewares = {
-  //TODO: types
-  command: any[]
-  resolver: any[]
-  projection: any[]
+  command: CommandMiddleware[]
+  resolver: ReadModelResolverMiddleware[]
+  projection: ReadModelProjectionMiddleware[]
 }
 
 type DomainWithHandlers = DomainMeta & {
@@ -177,18 +180,21 @@ export type Resolve = {
   server: http.Server
 
   //TODO: types
+  executeQuery: any
+  executeSaga: any
+
   eventSubscriber: any
   eventSubscriberScope: string
 
-  executeCommand: any
-  executeQuery: any
-  executeSaga: any
-  executeSchedulerCommand: any
+  executeCommand: CommandExecutor
+  executeSchedulerCommand: CommandExecutor
+
   notifyEventSubscribers: (eventWithCursor?: {
     event: Event
     cursor: string
   }) => Promise<void>
 
+  //TODO: types
   sendSqsMessage: Function
 
   //TODO: this is proxy!
@@ -224,11 +230,11 @@ export type HttpResponse = {
   readonly cookie: (
     name: string,
     value: string,
-    options?: cookie.CookieSerializeOptions
+    options?: CookieSerializeOptions
   ) => HttpResponse
   readonly clearCookie: (
     name: string,
-    options?: cookie.CookieSerializeOptions
+    options?: CookieSerializeOptions
   ) => HttpResponse
   readonly status: (code: number) => HttpResponse
   readonly redirect: (path: string, code?: number) => HttpResponse

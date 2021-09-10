@@ -5,10 +5,11 @@ import {
   AggregatesInterop,
   CommandError,
   MiddlewareContext,
+  PerformanceTracer,
 } from '@resolve-js/core'
 
 type CommandPool = {
-  performanceTracer: any
+  performanceTracer?: PerformanceTracer
   isDisposed: boolean
 }
 
@@ -18,7 +19,7 @@ export type CommandExecutor = {
 }
 
 export type CommandExecutorBuilder = (context: {
-  performanceTracer?: any
+  performanceTracer?: PerformanceTracer
   aggregatesInterop: AggregatesInterop
 }) => CommandExecutor
 
@@ -67,7 +68,7 @@ const createCommand: CommandExecutorBuilder = ({
 
   const api = {
     executeCommand: disposableExecutor,
-    dispose: dispose.bind(null, pool as any),
+    dispose: dispose.bind(null, pool),
   }
 
   const commandExecutor = disposableExecutor.bind(null)
