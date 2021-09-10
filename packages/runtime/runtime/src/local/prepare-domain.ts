@@ -1,6 +1,6 @@
 import { getLog } from '../common/utils/get-log'
 import type { Resolve, ResolveRequest, ResolveResponse } from '../common/types'
-import { getRootBasedUrl } from '../common/utils/get-root-based-url'
+import { getRootBasedUrl } from '@resolve-js/core'
 
 export const prepareDomain = (domain: Resolve['domain']): Resolve['domain'] => {
   domain.apiHandlers.push({

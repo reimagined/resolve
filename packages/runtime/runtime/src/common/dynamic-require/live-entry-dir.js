@@ -14,8 +14,6 @@ const liveEntryDir = () => {
       }) || {}
     ).filename
 
-    console.log(entryPointDirname)
-
     if (entryPointDirname != null) {
       entryPointDirname = path.dirname(entryPointDirname)
     }

@@ -1,10 +1,10 @@
 import express from 'express'
 import { Server } from 'http'
 import path from 'path'
+import { getRootBasedUrl } from '@resolve-js/core'
 
 import wrapApiHandler from './wrap-api-handler'
 import { mainHandler } from '../common/handlers/main-handler'
-import { getRootBasedUrl } from '../common/utils/get-root-based-url'
 import wrapTrie from '../common/wrap-trie'
 
 import initResolve from '../common/init-resolve'

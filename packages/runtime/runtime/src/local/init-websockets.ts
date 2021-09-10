@@ -5,9 +5,9 @@ import WebSocket from 'ws'
 import { v4 as uuid } from 'uuid'
 import qs from 'querystring'
 import jwt from 'jsonwebtoken'
+import { getRootBasedUrl } from '@resolve-js/core'
 
 import createPubsubManager from './create-pubsub-manager'
-import { getRootBasedUrl } from '../common/utils/get-root-based-url'
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
 import type { Event } from '@resolve-js/core'

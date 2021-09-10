@@ -37,7 +37,7 @@ const appConfig = {
       handler: {
         module: {
           package: '@resolve-js/runtime',
-          import : 'liveRequireHandler'
+          import: 'liveRequireHandler',
         },
         options: {
           modulePath: './ssr.js',

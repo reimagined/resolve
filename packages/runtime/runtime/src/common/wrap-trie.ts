@@ -1,4 +1,5 @@
 import Trie from 'route-trie'
+import { getRootBasedUrl } from '@resolve-js/core'
 
 import commandHandler from './handlers/command-handler'
 import queryHandler from './handlers/query-handler'
@@ -6,7 +7,6 @@ import markupHandler from './handlers/markup-handler'
 import uploaderHandler from './handlers/uploader-handler'
 import { failHandler } from './handlers/fail-handler'
 
-import { getRootBasedUrl } from './utils/get-root-based-url'
 import buildInApiHandlers from './defaults/builtin-routes'
 
 import type { ApiHandler } from './types'

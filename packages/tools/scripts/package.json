@@ -34,6 +34,7 @@
     "@babel/runtime": "7.14.0",
     "@purtuga/esm-webpack-plugin": "1.5.0",
     "@resolve-js/debug-levels": "0.31.10",
+    "@resolve-js/core": "0.31.10",
     "@resolve-js/runtime": "0.31.10",
     "address": "1.1.2",
     "ajv": "7.2.1",
