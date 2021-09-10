@@ -6,7 +6,7 @@ import {
 import { AdapterPool } from './types'
 
 const loadSecrets = async (
-  { database, escapeId, escape, secretsTableName }: AdapterPool,
+  { executeStatement, escapeId, escape, secretsTableName }: AdapterPool,
   filter: SecretFilter
 ): Promise<SecretsWithIdx> => {
   const { idx, limit, skip, ids, includeDeleted } = filter
@@ -22,7 +22,7 @@ const loadSecrets = async (
     }
   }
 
-  const rows = await database.all(
+  const rows = await executeStatement(
     `SELECT idx, id, secret FROM ${tableNameAsId}
     WHERE ${
       !includeDeleted ? `"secret" IS NOT NULL AND` : ''

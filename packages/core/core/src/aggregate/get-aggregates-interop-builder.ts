@@ -112,6 +112,8 @@ const saveEvent = async (
     if (typeof postSaveEvent === 'function') {
       await postSaveEvent(aggregate, command, event, eventWithCursor)
     }
+
+    return eventWithCursor.event
   }
 
   return event

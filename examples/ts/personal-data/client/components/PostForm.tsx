@@ -7,7 +7,9 @@ import UserContext from '../userContext'
 
 import ImageUploader from './ImageUpload'
 
-const PostForm = ({ successHandler, errorHandler }) => {
+type PostFormProps = { successHandler: Function; errorHandler: Function }
+
+const PostForm = ({ successHandler, errorHandler }: PostFormProps) => {
   const [values, setValues] = useState({
     title: '',
     content: '',
@@ -41,11 +43,11 @@ const PostForm = ({ successHandler, errorHandler }) => {
     [content]
   )
 
-  const handleChange = (prop) => (event) => {
+  const handleChange = (prop: string) => (event: any) => {
     setValues({ ...values, [prop]: event.target.value })
   }
   const textareaRef = React.createRef<any>()
-  const onUploaded = (value) => {
+  const onUploaded = (value: any) => {
     const textarea = textareaRef.current
     let nextContent = textarea.value
     if (textarea.selectionStart || textarea.selectionStart === '0') {

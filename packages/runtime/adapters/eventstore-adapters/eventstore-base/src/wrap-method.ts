@@ -1,8 +1,9 @@
-import {
+import type {
   PromiseResultType,
   AdapterPoolConnectedProps,
   AdapterPoolPossiblyUnconnected,
   AdapterPoolConnected,
+  RemoveFirstType,
 } from './types'
 
 const connectOnDemandAndCall = async <
@@ -11,25 +12,44 @@ const connectOnDemandAndCall = async <
 >(
   pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
   method: M,
-  ...args: Parameters<M>
+  ...args: RemoveFirstType<Parameters<M>>
 ): Promise<PromiseResultType<ReturnType<M>>> => {
   if (pool.disposed) {
     throw new Error('Adapter has been already disposed')
   }
 
-  pool.isInitialized = true
+  pool.isConnected = true
   const connectPromise = pool.getConnectPromise()
   await connectPromise
 
   return await method(pool as AdapterPoolConnected<ConnectedProps>, ...args)
 }
 
-const wrapMethod = <ConnectedProps extends AdapterPoolConnectedProps>(
+function generateAssertTrap<F extends (...args: any[]) => any>() {
+  return (...args: Parameters<F>): ReturnType<F> => {
+    throw new Error('Adapter method is not implemented')
+  }
+}
+
+const wrapMethod = <
+  ConnectedProps extends AdapterPoolConnectedProps,
+  M extends (pool: AdapterPoolConnected<ConnectedProps>, ...args: any[]) => any
+>(
   pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
-  method?: any
-): any =>
-  typeof method !== 'undefined'
-    ? connectOnDemandAndCall.bind(null, pool, method)
-    : undefined
+  method: M | undefined
+) => {
+  if (method === undefined)
+    return generateAssertTrap<
+      (
+        ...args: RemoveFirstType<Parameters<M>>
+      ) => Promise<PromiseResultType<ReturnType<M>>>
+    >()
+  else
+    return async (
+      ...args: RemoveFirstType<Parameters<M>>
+    ): Promise<PromiseResultType<ReturnType<M>>> => {
+      return await connectOnDemandAndCall(pool, method, ...args)
+    }
+}
 
 export default wrapMethod

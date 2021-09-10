@@ -5,26 +5,39 @@ import {
   useReduxCommand,
   useReduxViewModel,
 } from '@resolve-js/redux'
-import { Redirect } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { Row, Col, ListGroup, Button, InputGroup, Form } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
 import NotFound from '../components/NotFound'
 
+type MatchParams = { id: string }
+
+type ShoppingListSelectorResult = {
+  data: {
+    name: string
+    id: string
+    list: any[]
+    removed: boolean
+  }
+  status: ResultStatus
+}
+
 const ShoppingList = ({
   match: {
     params: { id: aggregateId },
   },
-}) => {
+}: RouteComponentProps<MatchParams>) => {
   const { connect, dispose, selector: thisList } = useReduxViewModel({
     name: 'shoppingList',
     aggregateIds: [aggregateId],
     args: undefined,
   })
 
-  const { data: shoppingList, status: shoppingListStatus } = useSelector(
-    thisList
-  )
+  const { data: shoppingList, status: shoppingListStatus } = useSelector<
+    any,
+    ShoppingListSelectorResult
+  >(thisList)
 
   const { execute: executeCreateShoppingItem } = useReduxCommand((text) => ({
     type: 'createShoppingItem',
@@ -46,7 +59,7 @@ const ShoppingList = ({
   )
 
   const [shoppingListName, setShoppingListName] = useState(null)
-  const updateShoppingListName = (event) => {
+  const updateShoppingListName = (event: any) => {
     setShoppingListName(event.target.value)
   }
 
@@ -63,16 +76,16 @@ const ShoppingList = ({
     aggregateName: 'ShoppingList',
   })
 
-  const updateItemText = (event) => {
+  const updateItemText = (event: any) => {
     setItemText(event.target.value)
   }
-  const onItemTextPressEnter = (event) => {
+  const onItemTextPressEnter = (event: any) => {
     if (event.charCode === 13) {
       event.preventDefault()
       createShoppingItem(itemText)
     }
   }
-  const onShoppingListNamePressEnter = (event) => {
+  const onShoppingListNamePressEnter = (event: any) => {
     if (event.charCode === 13) {
       event.preventDefault()
       renameShoppingList()

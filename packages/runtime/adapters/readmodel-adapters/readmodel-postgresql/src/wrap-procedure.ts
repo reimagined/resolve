@@ -144,6 +144,32 @@ const executeProjection = async (
   }
 }
 
+const cursorStrToHex = (cursor) => {
+  if (
+    cursor == null ||
+    cursor.constructor !== String ||
+    cursor.length !== 2048
+  ) {
+    throw new Error('Invalid cursor')
+  }
+
+  // eslint-disable-next-line spellcheck/spell-checker
+  const base64Mapping = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split(
+    ''
+  )
+
+  let result = []
+  for (let i = 0; i < cursor.length / 8; i++) {
+    let chunk = cursor.slice(i * 8, i * 8 + 8).split('')
+    let bin = chunk
+      .map((x) => base64Mapping.indexOf(x).toString(2).padStart(6, 0))
+      .join('')
+    let hex = (+`0b${bin}`).toString(16).padStart(12, 0)
+    result.push(hex)
+  }
+  return result
+}
+
 const getStoreAndProjection = (readModel, options) => {
   const { name: readModelName, projection } = readModel
   const store = new Proxy(
@@ -163,7 +189,58 @@ const getStoreAndProjection = (readModel, options) => {
 const wrapProcedure = (readModel) => (input, options) => {
   checkEnvironment()
 
-  const { events, maxExecutionTime } = input
+  const {
+    events: inputEvents,
+    localEventsDatabaseName,
+    localEventsTableName,
+    maxExecutionTime,
+  } = input
+  if (
+    inputEvents != null &&
+    (localEventsDatabaseName != null || localEventsTableName != null)
+  ) {
+    throw new Error(
+      'Providing events and localEventsDatabaseName/localEventsTableName is mutually exclusive'
+    )
+  }
+
+  let events = null
+  if (localEventsDatabaseName != null && localEventsTableName != null) {
+    try {
+      const ledgerDatabaseNameAsId = escapeId(options.schemaName)
+      const ledgerTableNameAsId = escapeId(
+        `${options.tablePrefix}__${options.schemaName}__LEDGER__`
+      )
+      const eventsDatabaseNameAsId = escapeId(localEventsDatabaseName)
+      const eventsTableAsId = escapeId(localEventsTableName)
+      const [{ EventTypes, Cursor }] = plv8.execute(`
+      SELECT "EventTypes", "Cursor" FROM ${ledgerDatabaseNameAsId}.${ledgerTableNameAsId}
+      WHERE "EventSubscriber" = ${escapeStr(readModel.name)}
+    `)
+
+      events = Array.from(
+        plv8.execute(`SELECT * FROM ${eventsDatabaseNameAsId}.${eventsTableAsId}
+      WHERE 1=1 ${
+        EventTypes != null && EventTypes.length > 0
+          ? `AND "type" IN (${EventTypes.map(escapeStr)})`
+          : ''
+      } AND (${cursorStrToHex(Cursor)
+          .map(
+            (threadCounter, threadId) =>
+              `"threadId" = ${+threadId} AND "threadCounter" >= x'${threadCounter}'::INT8 `
+          )
+          .join(' OR ')})
+      ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
+      LIMIT 1000
+    `)
+      )
+    } catch (err) {
+      throw new Error('Local events reading failed')
+    }
+  } else if (inputEvents != null) {
+    events = inputEvents
+  }
+
   if (!Array.isArray(events)) {
     throw new Error('Provided events is not array')
   }
@@ -186,6 +263,7 @@ const wrapProcedure = (readModel) => (input, options) => {
   )
 
   const result = {
+    appliedEventsThreadData: [],
     appliedCount: 0,
     successEvent: null,
     failureEvent: null,
@@ -200,6 +278,10 @@ const wrapProcedure = (readModel) => (input, options) => {
           executeSync(handler, store, event, encryption)
           result.successEvent = event
         }
+        result.appliedEventsThreadData.push({
+          threadId: event.threadId,
+          threadCounter: event.threadCounter,
+        })
         result.appliedCount++
         if (
           getVacantTimeInMillis() < 0 &&
@@ -221,6 +303,7 @@ const wrapProcedure = (readModel) => (input, options) => {
   } catch (error) {
     result.status = 'DEPENDENCY_ERROR'
     result.failureError = serializeError(error)
+    result.appliedEventsThreadData = []
     result.successEvent = null
     result.failureEvent = null
     result.appliedCount = 0

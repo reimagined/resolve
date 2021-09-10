@@ -7,7 +7,7 @@ const Stories = ({ items = [], page, type }) => {
   if (items === null || (page && !Number.isInteger(Number(page)))) {
     return <Redirect push to="/error?text=No such page" />
   }
-  const start = +(ITEMS_PER_PAGE * (page ? page - 1 : 0)) + 1
+  const start = +(ITEMS_PER_PAGE * (page ? Number(page) - 1 : 0)) + 1
   return (
     <div>
       {items.slice(0, ITEMS_PER_PAGE).map((story, index) => (

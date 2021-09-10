@@ -1,10 +1,10 @@
 import { ER_NO_SUCH_TABLE, ER_SUBQUERY_NO_1_ROW } from './constants'
-import { AdapterPool } from './types'
-import { InputEvent } from '@resolve-js/eventstore-base'
+import type { AdapterPool } from './types'
+import type { VersionlessEvent } from '@resolve-js/eventstore-base'
 
 const pushIncrementalImport = async (
   { eventsTableName, connection, database, escapeId, escape }: AdapterPool,
-  events: InputEvent[],
+  events: VersionlessEvent[],
   importId: string
 ): Promise<void> => {
   try {
@@ -36,7 +36,7 @@ const pushIncrementalImport = async (
         \`rowid\`, \`timestamp\`, \`aggregateId\`, \`type\`, \`payload\`
       ) VALUES ${events
         .map(
-          (event: InputEvent) => `(${escape(
+          (event: VersionlessEvent) => `(${escape(
             `${Date.now()}${Math.random()}`
           )}, ${+event.timestamp}, ${escape(event.aggregateId)}, ${escape(
             event.type

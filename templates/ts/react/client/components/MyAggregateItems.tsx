@@ -6,7 +6,9 @@ import {
 import React, { useState, useEffect } from 'react'
 import { Button, Card } from 'react-bootstrap'
 
-const MyAggregateItems = ({ id, name, onDelete }) => {
+type MyAggregateItemsProps = { id: string; name: string; onDelete: () => any }
+
+const MyAggregateItems = ({ id, name, onDelete }: MyAggregateItemsProps) => {
   const [items, setItems] = useState([])
 
   const { connect, dispose } = useViewModel('MyAggregateItems', [id], setItems)

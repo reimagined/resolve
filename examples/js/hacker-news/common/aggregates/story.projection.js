@@ -13,7 +13,7 @@ const storyProjection = {
   }),
   [STORY_UNVOTED]: (state, { payload: { userId } }) => ({
     ...state,
-    voted: state.voted.filter((curUserId) => curUserId !== userId),
+    voted: state.voted.filter((id) => id !== userId),
   }),
 }
 export default storyProjection

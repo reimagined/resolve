@@ -1,6 +1,6 @@
 {
   "name": "@internal/build-packages",
-  "version": "0.31.7",
+  "version": "0.31.10",
   "private": true,
   "bin": "./bin/index.js",
   "scripts": {
@@ -8,6 +8,6 @@
     "test": "echo || exit 0"
   },
   "dependencies": {
-    "@internal/helpers": "0.31.7"
+    "@internal/helpers": "0.31.10"
   }
 }

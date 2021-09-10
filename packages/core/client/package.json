@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/client",
-  "version": "0.31.7",
+  "version": "0.31.10",
   "description": "Basic reSolve client.",
   "keywords": [
     "cqrs",
@@ -39,7 +39,7 @@
     "verbose": true
   },
   "dependencies": {
-    "@resolve-js/core": "0.31.7",
+    "@resolve-js/core": "0.31.10",
     "global": "4.4.0",
     "isomorphic-fetch": "3.0.0",
     "node-fetch": "2.6.1",
@@ -56,7 +56,7 @@
     "ts-jest": "27.0.2"
   },
   "engines": {
-    "node": ">=12.18"
+    "node": ">=14.17"
   },
   "babelCompile": [
     {

@@ -2,27 +2,51 @@
 
 ## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.5...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.10...HEAD)
 
-**New features:**
+**Breaking changes:**
 
-- Implement read model isAlive boolean in status [\#1982](https://github.com/reimagined/resolve/pull/1982)
-
-**Enhancements:**
-
-- Better error message for failed read-model in PLV8 [\#1990](https://github.com/reimagined/resolve/pull/1990)
-- Improve bootstrapping / Remove some eslint warnings [\#1979](https://github.com/reimagined/resolve/pull/1979)
+- Update minimal node version to 14 [\#2034](https://github.com/reimagined/resolve/pull/2034)
 
 **Documentation:**
 
-- Review READMEs for event store adapters [\#1985](https://github.com/reimagined/resolve/pull/1985)
-- Fix links to CI and eventstore adapters directories [\#1984](https://github.com/reimagined/resolve/pull/1984)
-- Mention the default logging level [\#1966](https://github.com/reimagined/resolve/pull/1966)
+- Describe API for fundamental entities of reSolve [\#2032](https://github.com/reimagined/resolve/pull/2032)
+
+## [V0.31.10](https://github.com/reimagined/resolve/tree/V0.31.10) (2021-09-08)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.9...V0.31.10)
+
+**Enhancements:**
+
+- Speedup events export and export tests [\#2031](https://github.com/reimagined/resolve/pull/2031)
+- Replace sqlite3 with better-sqlite3 [\#2027](https://github.com/reimagined/resolve/pull/2027)
+
+**Bug fixes:**
+
+- Redeploy existing application automatically resume manually paused read model [\#1951](https://github.com/reimagined/resolve/issues/1951)
+
+**Documentation:**
+
+- Describe middleware [\#2004](https://github.com/reimagined/resolve/pull/2004)
+- Describe the store.find projection argument [\#2001](https://github.com/reimagined/resolve/pull/2001)
 
 **Other changes:**
 
-- Runtime preparations for static routing support in future [\#1988](https://github.com/reimagined/resolve/pull/1988)
-- Make cloud integration tests running in parallel with other jobs [\#1987](https://github.com/reimagined/resolve/pull/1987)
+- Separate error type for 'too many clients' postgres error [\#2033](https://github.com/reimagined/resolve/pull/2033)
+- Sparse clean TRX journal / Improve PLV8 [\#2030](https://github.com/reimagined/resolve/pull/2030)
+
+## [V0.31.9](https://github.com/reimagined/resolve/tree/V0.31.9) (2021-08-31)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.8...V0.31.9)
+
+**Bug fixes:**
+
+- Events with same timestamp being projected/exported in wrong order  [\#1948](https://github.com/reimagined/resolve/issues/1948)
+
+**Other changes:**
+
+- Add latest cursor in description of event-store adapter [\#2017](https://github.com/reimagined/resolve/pull/2017)
+- Improve local registry URLS behaviour in resolve-scripts [\#2015](https://github.com/reimagined/resolve/pull/2015)
 
 ## [V0.31.5](https://github.com/reimagined/resolve/tree/V0.31.5) (2021-07-29)
 

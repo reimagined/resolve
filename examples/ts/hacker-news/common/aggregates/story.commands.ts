@@ -6,9 +6,14 @@ import validate from './validation'
 import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types'
 import jwtSecret from '../../auth/jwt-secret'
 
+type User = {
+  id: string
+  name: string
+}
+
 const storyCommands: Aggregate = {
   createStory: (state, command, { jwt: token }) => {
-    const jwt = jsonwebtoken.verify(token, jwtSecret)
+    const jwt = jsonwebtoken.verify(token, jwtSecret) as User
 
     validate.fieldRequired(jwt, 'id')
     validate.stateIsAbsent(state, 'Story')
@@ -38,7 +43,7 @@ const storyCommands: Aggregate = {
   },
 
   upvoteStory: (state, command, { jwt: token }) => {
-    const jwt = jsonwebtoken.verify(token, jwtSecret)
+    const jwt = jsonwebtoken.verify(token, jwtSecret) as User
 
     validate.fieldRequired(jwt, 'id')
     validate.stateExists(state, 'Story')
@@ -53,7 +58,7 @@ const storyCommands: Aggregate = {
   },
 
   unvoteStory: (state, command, { jwt: token }) => {
-    const jwt = jsonwebtoken.verify(token, jwtSecret)
+    const jwt = jsonwebtoken.verify(token, jwtSecret) as User
 
     validate.fieldRequired(jwt, 'id')
     validate.stateExists(state, 'Story')

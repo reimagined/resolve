@@ -2,10 +2,16 @@ import {
   OPTIMISTIC_STORY_UPVOTED,
   OPTIMISTIC_STORY_UNVOTED,
 } from '../action-types'
+import { Action } from 'redux'
 
 export const initialState = { votedStories: {} }
 
-export const optimisticReducer = (state = initialState, action) => {
+type StoryAction = Action & { storyId: string }
+
+export const optimisticReducer = (
+  state = initialState,
+  action: StoryAction
+) => {
   switch (action.type) {
     case OPTIMISTIC_STORY_UPVOTED: {
       return {

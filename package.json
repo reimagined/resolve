@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/resolve",
-  "version": "0.31.7",
+  "version": "0.31.10",
   "private": true,
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
@@ -48,7 +48,7 @@
     "validate-lock-file": "node validate-lock-file.js"
   },
   "resolutions": {
-    "**/@types/node": "12.7.4",
+    "**/@types/node": "14.17.5",
     "@types/react": "17.0.5"
   },
   "dependencies": {
@@ -63,7 +63,7 @@
     "@babel/preset-react": "7.13.13",
     "@babel/preset-typescript": "7.14.5",
     "@babel/runtime": "7.14.0",
-    "@internal/helpers": "0.31.7",
+    "@internal/helpers": "0.31.10",
     "@testing-library/dom": "7.30.0",
     "@typescript-eslint/eslint-plugin": "4.27.0",
     "@typescript-eslint/parser": "4.27.0",

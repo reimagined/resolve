@@ -1,10 +1,18 @@
 import * as AWS from 'aws-sdk'
-import createSqliteAdapter from '@resolve-js/eventstore-lite'
-import {
+import type {
   Adapter,
-  EventstoreResourceNotExistError,
+  InputEvent,
+  SavedEvent,
 } from '@resolve-js/eventstore-base'
+import {
+  EventstoreResourceNotExistError,
+  initThreadArray,
+} from '@resolve-js/eventstore-base'
+import createSqliteAdapter, {
+  SqliteAdapterConfig,
+} from '@resolve-js/eventstore-lite'
 import createPostgresqlServerlessAdapter, {
+  PostgresqlAdapterConfig as PostgresServerlessAdapterConfig,
   CloudResourceOptions,
   create as createResource,
   destroy as destroyResource,
@@ -12,8 +20,10 @@ import createPostgresqlServerlessAdapter, {
 import createPostgresqlAdapter, {
   create as createPostgresResource,
   destroy as destroyPostgresResource,
+  PostgresqlAdapterConfig,
 } from '@resolve-js/eventstore-postgresql'
-import { InputEvent } from '@resolve-js/eventstore-base'
+import os from 'os'
+import fs from 'fs'
 
 import { Readable } from 'stream'
 
@@ -112,14 +122,43 @@ export function streamToString(stream: Readable): Promise<string> {
   })
 }
 
-export function makeTestEvent(eventIndex: number): InputEvent {
+export function makeTestEvent(eventIndex: number, data?: any): InputEvent {
+  const payload: any = { eventIndex }
+  if (data !== undefined) {
+    payload.data = data
+  }
+
   return {
     aggregateId: 'aggregateId',
     aggregateVersion: eventIndex + 1,
     type: 'EVENT',
-    payload: { eventIndex },
+    payload,
     timestamp: eventIndex + 1,
   }
+}
+
+export function makeTestSavedEvent(
+  eventIndex: number,
+  threadArray: ReturnType<typeof initThreadArray>,
+  data?: any
+): SavedEvent {
+  const payload: any = { eventIndex }
+  if (data !== undefined) {
+    payload.data = data
+  }
+
+  const threadId = Math.floor(Math.random() * threadArray.length)
+  const event: SavedEvent = {
+    aggregateId: 'aggregateId',
+    aggregateVersion: eventIndex + 1,
+    type: 'EVENT',
+    payload,
+    timestamp: eventIndex + 1,
+    threadId,
+    threadCounter: threadArray[threadId],
+  }
+  threadArray[threadId]++
+  return event
 }
 
 const uniquePostfix = `${process.pid}_${Math.round(Math.random() * 1000)}`
@@ -152,6 +191,9 @@ const proxy = new Proxy(
   }
 ) as typeof adapters
 
+export const sqliteTempFileName = (uniqueName: string) =>
+  `${os.tmpdir()}/test-${uniqueName}.db`
+
 export { proxy as adapters }
 
 export function getPostgresServerlessOptions(
@@ -173,7 +215,10 @@ export function getPostgresServerlessOptions(
 export const adapterFactory = isPostgresServerless()
   ? {
       name: '@resolve-js/eventstore-postgresql-serverless',
-      create(uniqueName: string) {
+      create(
+        uniqueName: string,
+        additionalOptions?: Partial<PostgresServerlessAdapterConfig>
+      ) {
         return async () => {
           const options = getPostgresServerlessOptions(uniqueName)
 
@@ -191,9 +236,32 @@ export const adapterFactory = isPostgresServerless()
             dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
             awsSecretStoreArn: options.awsSecretStoreAdminArn,
             region: options.region,
+            ...additionalOptions,
           })
 
           await adapters[uniqueName].init()
+        }
+      },
+      createNoInit(
+        uniqueName: string,
+        additionalOptions?: Partial<PostgresqlAdapterConfig>
+      ) {
+        return async () => {
+          const options = getPostgresServerlessOptions(uniqueName)
+
+          const adapter = createPostgresqlServerlessAdapter({
+            eventsTableName: options.eventsTableName,
+            snapshotsTableName: options.snapshotsTableName,
+            secretsTableName: options.secretsTableName,
+            subscribersTableName: options.subscribersTableName,
+            databaseName: options.databaseName,
+            dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
+            awsSecretStoreArn: options.awsSecretStoreAdminArn,
+            region: options.region,
+            ...additionalOptions,
+          })
+          await adapter.describe()
+          return adapter
         }
       },
       destroy(uniqueName: string) {
@@ -212,7 +280,10 @@ export const adapterFactory = isPostgresServerless()
   : isPostgres()
   ? {
       name: '@resolve-js/eventstore-postgresql',
-      create(uniqueName: string) {
+      create(
+        uniqueName: string,
+        additionalOptions?: Partial<PostgresqlAdapterConfig>
+      ) {
         return async () => {
           adapters[uniqueName] = createPostgresqlAdapter({
             databaseName: uniqueName,
@@ -221,6 +292,7 @@ export const adapterFactory = isPostgresServerless()
             port: +process.env.POSTGRES_PORT,
             user: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
+            ...additionalOptions,
           })
 
           const options = {
@@ -238,6 +310,24 @@ export const adapterFactory = isPostgresServerless()
           await createPostgresResource(options)
 
           await adapters[uniqueName].init()
+        }
+      },
+      createNoInit(
+        uniqueName: string,
+        additionalOptions?: Partial<PostgresqlAdapterConfig>
+      ) {
+        return async () => {
+          const adapter = createPostgresqlAdapter({
+            databaseName: uniqueName,
+            database: process.env.POSTGRES_DATABASE,
+            host: process.env.POSTGRES_HOST,
+            port: +process.env.POSTGRES_PORT,
+            user: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+            ...additionalOptions,
+          })
+          await adapter.describe()
+          return adapter
         }
       },
       destroy(uniqueName: string) {
@@ -261,17 +351,29 @@ export const adapterFactory = isPostgresServerless()
     }
   : {
       name: '@resolve-js/eventstore-lite',
-      create(uniqueName: string) {
+      create(
+        uniqueName: string,
+        additionalOptions?: Partial<SqliteAdapterConfig>
+      ) {
         return async () => {
           adapters[uniqueName] = createSqliteAdapter({
-            eventsTableName: 'events',
-            snapshotsTableName: 'snapshots',
-            secretsTableName: 'secrets',
-            subscribersTableName: 'subscribers',
             databaseFile: ':memory:',
+            ...additionalOptions,
           })
 
           await adapters[uniqueName].init()
+        }
+      },
+      createNoInit(
+        uniqueName: string,
+        additionalOptions?: Partial<SqliteAdapterConfig>
+      ) {
+        return async () => {
+          const adapter = createSqliteAdapter({
+            ...additionalOptions,
+          })
+          await adapter.describe()
+          return adapter
         }
       },
       destroy(uniqueName: string) {
@@ -280,6 +382,12 @@ export const adapterFactory = isPostgresServerless()
           await adapters[uniqueName].dispose()
 
           delete adapters[uniqueName]
+
+          try {
+            fs.unlinkSync(sqliteTempFileName(uniqueName))
+          } catch (err) {
+            // pass
+          }
         }
       },
     }

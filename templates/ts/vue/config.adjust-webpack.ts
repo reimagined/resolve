@@ -3,7 +3,7 @@ import CopyPlugin from 'copy-webpack-plugin'
 import path from 'path'
 
 // enable-ts
-const enableTypescript = (webpackConfig) => {
+const enableTypescript = (webpackConfig: any) => {
   webpackConfig.module.rules.push({
     test: /\.tsx?$/,
     loader: 'babel-loader',
@@ -23,7 +23,7 @@ const enableTypescript = (webpackConfig) => {
 }
 // enable-ts
 
-const adjustWebpackEntry = (webpackConfig) => {
+const adjustWebpackEntry = (webpackConfig: any) => {
   const {
     module: { rules },
     mode,
@@ -50,7 +50,7 @@ const adjustWebpackEntry = (webpackConfig) => {
   plugins.push(new VueLoaderPlugin())
 }
 
-const adjustWebpackConfigs = (webpackConfigs) => {
+const adjustWebpackConfigs = (webpackConfigs: any[]) => {
   const clientEntry = webpackConfigs.find(
     ({ entry, target }) =>
       Object.keys(entry).find((entry) => entry.endsWith('client/index.js')) !=

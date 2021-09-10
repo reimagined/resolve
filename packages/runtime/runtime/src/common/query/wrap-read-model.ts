@@ -19,6 +19,7 @@ const wrapConnection = async (
   log.debug(`establishing connection`)
   const connection = await pool.connector.connect(readModelName)
   pool.connections.add(connection)
+  log.debug(`connection established`)
 
   try {
     return await callback(connection)
@@ -26,6 +27,7 @@ const wrapConnection = async (
     log.debug(`disconnecting`)
     await pool.connector.disconnect(connection, readModelName)
     pool.connections.delete(connection)
+    log.debug(`disconnected`)
   }
 }
 
@@ -861,7 +863,7 @@ const wrapReadModel = ({
           ...status,
           properties: {
             ...currentProperties,
-            [parameters.key]: parameters.value,
+            [parameters.key]: `${parameters.value}`,
           },
         },
         updateOnly: true,

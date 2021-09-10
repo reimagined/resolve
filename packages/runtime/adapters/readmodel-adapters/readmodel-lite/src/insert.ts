@@ -18,7 +18,8 @@ const insert: CurrentStoreApi['insert'] = async (
             `json(CAST(${escapeStr(JSON.stringify(document[key]))} AS BLOB))`
         )
         .join(', ')})
-    `
+    `,
+    true
   )
 }
 

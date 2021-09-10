@@ -11,9 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
 
       - name: Cache root node_modules
         uses: actions/cache@v2
@@ -66,9 +66,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
 
       - name: Cache root node_modules
         uses: actions/cache@v2
@@ -119,9 +119,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
 
       - name: Cache root node_modules
         uses: actions/cache@v2
@@ -172,9 +172,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
 
       - name: Cache root node_modules
         uses: actions/cache@v2
@@ -229,9 +229,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
 
       - name: Cache root node_modules
         uses: actions/cache@v2
@@ -279,4 +279,3 @@ jobs:
           RESOLVE_E2E_TESTS_HEADLESS_MODE: true
           DEBUG_LEVEL: error
         run: yarn test:e2e:js
-

@@ -1,4 +1,5 @@
-import { AdapterPool } from './types'
+import type { AdapterPool } from './types'
+import isIntegerOverflowError from './integer-overflow-error'
 
 const ensureEventSubscriber = async (
   pool: AdapterPool,
@@ -17,7 +18,7 @@ const ensureEventSubscriber = async (
     status,
     updateOnly,
   } = params
-  const { subscribersTableName, database, escapeId, escape } = pool
+  const { subscribersTableName, executeQuery, escapeId, escape } = pool
   const subscribersTableNameAsId = escapeId(subscribersTableName)
   if (
     (!!updateOnly && destination != null) ||
@@ -29,7 +30,7 @@ const ensureEventSubscriber = async (
   }
 
   try {
-    await database.exec(`
+    await executeQuery(`
     INSERT OR REPLACE INTO ${subscribersTableNameAsId}(
       "applicationName",
       "eventSubscriber",
@@ -68,7 +69,7 @@ const ensureEventSubscriber = async (
     const errorMessage =
       error != null && error.message != null ? error.message : ''
 
-    if (errorMessage === 'SQLITE_ERROR: integer overflow') {
+    if (isIntegerOverflowError(errorMessage)) {
       return false
     }
 

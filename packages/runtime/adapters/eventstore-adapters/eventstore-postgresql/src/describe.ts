@@ -1,6 +1,10 @@
 import type { AdapterPool } from './types'
-import type { EventStoreDescription } from '@resolve-js/eventstore-base'
+import type {
+  EventStoreDescription,
+  EventThreadData,
+} from '@resolve-js/eventstore-base'
 import assert from 'assert'
+import { threadArrayToCursor } from '@resolve-js/eventstore-base'
 
 const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
   const {
@@ -16,6 +20,18 @@ const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
   const eventsTableNameAsId = escapeId(eventsTableName)
   const secretsTableNameAsId = escapeId(secretsTableName)
   const freezeTableName = `${eventsTableName}-freeze`
+  const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
+
+  const threads = (await executeStatement(
+    `SELECT "threadId", "threadCounter" FROM ${databaseNameAsId}.${threadsTableAsId} ORDER BY "threadId" ASC`
+  )) as Array<{
+    threadId: EventThreadData['threadId']
+    threadCounter: EventThreadData['threadCounter']
+  }>
+
+  const threadArray = threads.map((row) => {
+    return +row.threadCounter
+  })
 
   const rows = await executeStatement(`SELECT
     (SELECT COUNT(*) FROM ${databaseNameAsId}.${eventsTableNameAsId}) AS "eventCount",
@@ -37,6 +53,11 @@ const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
     deletedSecretCount: +row.deletedSecretCount,
     lastEventTimestamp: +row.lastEventTimestamp,
     isFrozen: !!row.isFrozen,
+    cursor: threadArrayToCursor(threadArray),
+    resourceNames: {
+      eventsTableName,
+      databaseName,
+    },
   }
 }
 

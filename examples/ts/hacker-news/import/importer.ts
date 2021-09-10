@@ -1,6 +1,7 @@
-import { COMMENT_CREATED } from '@resolve-js/module-comments/lib/common/defaults'
+import { defaults as commentsModule } from '@resolve-js/module-comments'
 import { v4 as uuid } from 'uuid'
 import { EOL } from 'os'
+import { Event } from '@resolve-js/core'
 
 import {
   USER_CREATED,
@@ -9,11 +10,15 @@ import {
 } from '../common/event-types'
 import api from './api'
 
+const { COMMENT_CREATED } = commentsModule
+
 const aggregateVersionsMap = new Map()
 let eventTimestamp = Date.now()
-const users = {}
+const users: { [key: string]: any } = {}
 
-const saveOneEvent = async (event) =>
+type ImportedEvent = Omit<Event, 'timestamp' | 'aggregateVersion'>
+
+const saveOneEvent = async (event: ImportedEvent) =>
   await api.invokeImportApi({
     ...event,
     aggregateVersion: aggregateVersionsMap
@@ -27,7 +32,7 @@ const saveOneEvent = async (event) =>
     timestamp: eventTimestamp++,
   })
 
-const generateUserEvents = async (name) => {
+const generateUserEvents = async (name: string) => {
   const aggregateId = uuid()
 
   await saveOneEvent({
@@ -44,7 +49,7 @@ const generateUserEvents = async (name) => {
   return aggregateId
 }
 
-const getUserId = async (userName) => {
+const getUserId = async (userName: string) => {
   const user = users[userName]
 
   if (user) {
@@ -56,7 +61,11 @@ const getUserId = async (userName) => {
   return aggregateId
 }
 
-const generateCommentEvents = async (comment, aggregateId, parentId) => {
+const generateCommentEvents = async (
+  comment: { by: string; text?: string },
+  aggregateId: string,
+  parentId: string
+): Promise<string> => {
   const userName = comment.by
   const userId = await getUserId(userName)
   const commentId = uuid()
@@ -80,7 +89,12 @@ const generateCommentEvents = async (comment, aggregateId, parentId) => {
   return commentId
 }
 
-async function generateComments(ids, aggregateId, parentId, options) {
+async function generateComments(
+  ids: string[],
+  aggregateId: string,
+  parentId: string,
+  options: any
+): Promise<any> {
   if (options.count-- <= 0) {
     return Promise.resolve()
   }
@@ -115,7 +129,7 @@ async function generateComments(ids, aggregateId, parentId, options) {
   return await Promise.all(promises)
 }
 
-const generatePointEvents = async (aggregateId, pointCount) => {
+const generatePointEvents = async (aggregateId: string, pointCount: number) => {
   const keys = Object.keys(users)
   const count = Math.min(keys.length, pointCount)
 
@@ -130,7 +144,7 @@ const generatePointEvents = async (aggregateId, pointCount) => {
   }
 }
 
-const generateStoryEvents = async (story) => {
+const generateStoryEvents = async (story: any) => {
   if (!story || !story.by) {
     return
   }
@@ -163,7 +177,7 @@ const generateStoryEvents = async (story) => {
   return aggregateId
 }
 
-const getUniqueStoryIds = async (categories) => {
+const getUniqueStoryIds = async (categories: any[]): Promise<any[]> => {
   const result = new Set()
 
   for (const ids of categories) {
@@ -185,10 +199,10 @@ const fetchStoryIds = async () => {
   return await getUniqueStoryIds(categories)
 }
 
-const fetchStories = async (ids, tickCallback) => {
+const fetchStories = async (ids: string[], tickCallback: () => any) => {
   const stories = await api.fetchItems(ids)
 
-  const storiesSlice = []
+  const storiesSlice: any[] = []
   for (let sliceIndex = 0; sliceIndex < stories.length / 20; sliceIndex++) {
     storiesSlice[sliceIndex] = []
     for (let index = 0; index < 20; index++) {
@@ -219,7 +233,10 @@ const fetchStories = async (ids, tickCallback) => {
   }
 }
 
-export const start = async (countCallback, tickCallback) => {
+export const start = async (
+  countCallback: (count: number) => any,
+  tickCallback: () => any
+): Promise<void> => {
   try {
     const storyIds = await fetchStoryIds()
     countCallback(storyIds.length)

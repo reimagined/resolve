@@ -5,11 +5,15 @@ description: Full stack CQRS, DDD, Event Sourcing framework for Node.js
 slug: /
 ---
 
+ReSolve is a CQRS, DDD, Event Sourcing framework for Node.js. ReSolve implements an elaborate server-side infrastructure with out-of-the box support for various types of data storages, event export and import, encryption, testing and debugging tools, and more.
+
+On the frontend, you can use the reSolve HTTP API or one of the included client libraries based on your requirements and a client-side technology of choice.
+
 ## Core Concepts
 
 ### Domain Driven Design
 
-Domain aggregate is a business model unit. Business logic is mostly in command handlers for the aggregate.
+A domain aggregate is a business model unit. Business logic is defined primarily in aggregate command handlers.
 
 ### Event Sourcing
 
@@ -17,9 +21,9 @@ Don't store system state, store events that brought system to this state.
 
 ### CQRS
 
-System is divided in two "sides":
+The system is divided in two "sides":
 
-- Write Side accepts commands and generate events that stored in the Event Store.
+- Write Side accepts commands and generates events that are stored in the Event Store.
 - Read Side applies events to Read Models, and process queries.
 
 Write side is optimized for writing, read side - for reading.
@@ -28,16 +32,16 @@ Write side is optimized for writing, read side - for reading.
 
 ### Prerequisites
 
-You need to have Node >=12.18 on you development machine and on the server.
+You need to have Node >=14.17 on you development machine and on the server.
 You can use [nvm](https://github.com/creationix/nvm#installation) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows#node-version-manager-nvm-for-windows) to switch Node versions between different projects.
 
 Make sure you have Node, NPM, and NPX installed:
 
 ```sh
 $ node --version
-v12.18.0
+v14.17.5
 $ npx --version
-6.1.0
+6.14.14
 ```
 
 ### Getting Started

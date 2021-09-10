@@ -36,7 +36,7 @@ const ShoppingListCreator = () => {
     setShoppingListName('')
   }, [shoppingListName, setShoppingListName])
 
-  const updateShoppingListName = (event) => {
+  const updateShoppingListName = (event: any) => {
     setShoppingListName(event.target.value)
   }
 

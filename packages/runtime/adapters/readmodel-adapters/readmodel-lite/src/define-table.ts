@@ -23,7 +23,8 @@ const defineTable: CurrentStoreApi['defineTable'] = async (
         .concat(Object.keys(tableDescription.indexes))
         .map((columnName) => `${escapeId(columnName)} JSON`)
         .join(',\n')}
-    )`
+    )`,
+    true
   )
 
   for (const [idx, indexName] of Object.entries(
@@ -47,21 +48,24 @@ const defineTable: CurrentStoreApi['defineTable'] = async (
           CAST(json_extract(${escapeId(indexName)}, '$') AS ${
         indexType === 'number' ? 'NUMERIC' : 'TEXT'
       })
-        )`
+        )`,
+      true
     )
 
     await inlineLedgerRunQuery(
       `CREATE ${indexCategory} INDEX ${baseIndexName('extracted-field')}
         ON ${escapeId(`${tablePrefix}${tableName}`)}(
           json_extract(${escapeId(indexName)}, '$')
-        )`
+        )`,
+      true
     )
 
     await inlineLedgerRunQuery(
       `CREATE ${indexCategory} INDEX ${baseIndexName('full-field')}
         ON ${escapeId(`${tablePrefix}${tableName}`)}(
           ${escapeId(indexName)}
-        )`
+        )`,
+      true
     )
   }
 }

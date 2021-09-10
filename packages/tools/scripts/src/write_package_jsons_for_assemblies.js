@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import semver from 'semver'
 
 const writePackageJsonsForAssemblies = (
   distDir,
@@ -31,6 +32,29 @@ const writePackageJsonsForAssemblies = (
       ...Array.from(peerDependencies),
     ])
 
+    const frameworkVersions = Array.from(
+      new Set(
+        Object.entries(applicationPackageJson.dependencies)
+          .filter(([dependency]) => dependency.startsWith('@resolve-js/'))
+          .map(([, version]) => {
+            const parsedVersion = semver.parse(version)
+            return parsedVersion != null ? version : null
+          })
+      )
+    )
+
+    if (frameworkVersions.length === 0) {
+      throw new Error('package.json does not includes any framework packages')
+    }
+
+    if (frameworkVersions.length > 1) {
+      throw new Error(
+        `reSolve version is ${frameworkVersions[0]}, but expected ${frameworkVersions[1]}`
+      )
+    }
+
+    const frameworkVersion = frameworkVersions[0]
+
     const assemblyPackageJson = {
       name: `${applicationPackageJson.name}-${syntheticName}`,
       private: true,
@@ -43,7 +67,10 @@ const writePackageJsonsForAssemblies = (
           resolveRuntimePackageJson.dependencies.hasOwnProperty(val) &&
           nodeModules.has(val)
         ) {
-          acc[val] = resolveRuntimePackageJson.dependencies[val]
+          acc[val] =
+            val.startsWith('@resolve-js/') && frameworkVersion != null
+              ? frameworkVersion
+              : resolveRuntimePackageJson.dependencies[val]
         }
 
         return acc

@@ -10,13 +10,13 @@ class ShoppingListCreator extends React.PureComponent<{
     shoppingListName: '',
   }
 
-  updateShoppingListName = (event) => {
+  updateShoppingListName = (event: any) => {
     this.setState({
       shoppingListName: event.target.value,
     })
   }
 
-  onShoppingListNamePressEnter = (event) => {
+  onShoppingListNamePressEnter = (event: any) => {
     if (event.charCode === 13) {
       event.preventDefault()
       this.createList()

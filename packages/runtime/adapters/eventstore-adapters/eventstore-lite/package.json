@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/eventstore-lite",
-  "version": "0.31.7",
+  "version": "0.31.10",
   "description": "An adapter reSolve uses to store events in a file or memory.",
   "keywords": [
     "cqrs",
@@ -25,11 +25,12 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
-    "@resolve-js/core": "0.31.7",
-    "@resolve-js/debug-levels": "0.31.7",
-    "@resolve-js/eventstore-base": "0.31.7",
+    "@resolve-js/core": "0.31.10",
+    "@resolve-js/debug-levels": "0.31.10",
+    "@resolve-js/eventstore-base": "0.31.10",
+    "@types/better-sqlite3": "7.4.0",
+    "better-sqlite3": "7.4.3",
     "crc-32": "^1.2.0",
-    "sqlite": "3.0.2",
     "tmp": "0.2.1"
   },
   "devDependencies": {
@@ -38,7 +39,7 @@
     "ts-jest": "27.0.2"
   },
   "engines": {
-    "node": ">=12.18"
+    "node": ">=14.17"
   },
   "babelCompile": [
     {

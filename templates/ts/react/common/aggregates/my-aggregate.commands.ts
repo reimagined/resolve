@@ -5,9 +5,10 @@ import {
   MY_AGGREGATE_ITEM_ADDED,
   MY_AGGREGATE_ITEM_REMOVED,
 } from '../event-types'
+import { MyAggregateState } from '../types'
 
 const aggregate: Aggregate = {
-  create: (state, { payload: { name } }) => {
+  create: (state: MyAggregateState, { payload: { name } }) => {
     if (state.exists) {
       throw new Error('Aggregate already exists')
     }
@@ -16,7 +17,7 @@ const aggregate: Aggregate = {
       payload: { name },
     }
   },
-  delete: (state) => {
+  delete: (state: MyAggregateState) => {
     if (!state.exists) {
       throw new Error('Aggregate not exist')
     }
@@ -24,7 +25,7 @@ const aggregate: Aggregate = {
       type: MY_AGGREGATE_DELETED,
     }
   },
-  addItem: (state) => {
+  addItem: (state: MyAggregateState) => {
     if (!state.exists) {
       throw new Error('Aggregate not exist')
     }
@@ -33,7 +34,7 @@ const aggregate: Aggregate = {
       payload: { itemName: `Item ${state.items.length}` },
     }
   },
-  removeItem: (state, { payload: { itemName } }) => {
+  removeItem: (state: MyAggregateState, { payload: { itemName } }) => {
     if (!state.exists) {
       throw new Error('Aggregate not exist')
     }

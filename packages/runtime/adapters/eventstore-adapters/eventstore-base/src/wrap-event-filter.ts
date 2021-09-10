@@ -1,12 +1,13 @@
-import {
+import type {
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
   EventFilter,
   EventsWithCursor,
-  isCursorFilter,
   PoolMethod,
   Adapter,
 } from './types'
+
+import { isCursorFilter } from './types'
 
 const wrapEventFilter = <ConnectedProps extends AdapterPoolConnectedProps>(
   loadEvents: PoolMethod<ConnectedProps, Adapter['loadEvents']>

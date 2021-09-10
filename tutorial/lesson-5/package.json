@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-tutorial/lesson-5",
-  "version": "0.31.7",
+  "version": "0.31.10",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -14,13 +14,13 @@
   },
   "dependencies": {
     "@babel/node": "7.14.2",
-    "@resolve-js/eventstore-lite": "0.31.7",
-    "@resolve-js/eventstore-postgresql-serverless": "0.31.7",
-    "@resolve-js/module-admin": "0.31.7",
-    "@resolve-js/react-hooks": "0.31.7",
-    "@resolve-js/readmodel-lite": "0.31.7",
-    "@resolve-js/readmodel-postgresql-serverless": "0.31.7",
-    "@resolve-js/scripts": "0.31.7",
+    "@resolve-js/eventstore-lite": "0.31.10",
+    "@resolve-js/eventstore-postgresql-serverless": "0.31.10",
+    "@resolve-js/module-admin": "0.31.10",
+    "@resolve-js/react-hooks": "0.31.10",
+    "@resolve-js/readmodel-lite": "0.31.10",
+    "@resolve-js/readmodel-postgresql-serverless": "0.31.10",
+    "@resolve-js/scripts": "0.31.10",
     "history": "4.10.1",
     "react": "17.0.2",
     "react-bootstrap": "1.6.0",

@@ -1,10 +1,16 @@
 import { AES, enc } from 'crypto-js'
 import { generate } from 'generate-password'
+import {
+  Decrypter,
+  Encrypter,
+  Encryption,
+  SecretsManager,
+} from '@resolve-js/core'
 
-export const getEncrypter = (key) => (data) =>
+export const getEncrypter = (key: string): Encrypter => (data) =>
   AES.encrypt(JSON.stringify(data), key).toString()
 
-export const getDecrypter = (key) => (blob) => {
+export const getDecrypter = (key: string): Decrypter => (blob) => {
   try {
     return JSON.parse(AES.decrypt(blob, key).toString(enc.Utf8))
   } catch {
@@ -13,10 +19,10 @@ export const getDecrypter = (key) => (blob) => {
 }
 
 const encryptionFactory = async (
-  aggregateId,
-  secretsManager,
+  aggregateId: string,
+  secretsManager: SecretsManager,
   generateKey = true
-) => {
+): Promise<Encryption> => {
   let aggregateKey = await secretsManager.getSecret(aggregateId)
   if (!aggregateKey && generateKey) {
     aggregateKey = generate({

@@ -22,7 +22,7 @@ import {
 import Loading from './Loading'
 import UploaderContext from '../context'
 
-const UserInfo = (props) => {
+const UserInfo = (props: any) => {
   const [state, setState] = useState({
     deleted: null,
     gatheringStarted: null,

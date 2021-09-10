@@ -1,6 +1,6 @@
 let deletingSecret = false
 
-const importSecretApiHandler = () => async (req, res) => {
+const importSecretApiHandler = () => async (req: any, res: any) => {
   if (process.env.NODE_ENV === 'production') {
     throw new Error('Import API handler should not be used in production mode')
   }

@@ -2,7 +2,11 @@ import { ReadModelResolvers } from '@resolve-js/core'
 import { ResolveStore } from '@resolve-js/readmodel-base'
 import { GetStoriesParams } from '../../types'
 
-const getStories = async (type, store, { first, offset }) => {
+const getStories = async (
+  type: string | null,
+  store: ResolveStore,
+  { first, offset }: { first: number; offset: number }
+) => {
   const search = type && type.constructor === String ? { type } : {}
   const skip = first || 0
   const stories = await store.find(
@@ -17,7 +21,7 @@ const getStories = async (type, store, { first, offset }) => {
   return Array.isArray(stories) ? stories : []
 }
 
-const getStory = async (store, { id }: { id: string }) => {
+const getStory = async (store: ResolveStore, { id }: { id: string }) => {
   const story = await store.findOne('Stories', { id })
 
   if (!story) {
@@ -36,7 +40,7 @@ const getStory = async (store, { id }: { id: string }) => {
 }
 
 const getUser = async (
-  store,
+  store: ResolveStore,
   {
     id,
     name,

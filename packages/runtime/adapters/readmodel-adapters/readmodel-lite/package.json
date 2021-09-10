@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/readmodel-lite",
-  "version": "0.31.7",
+  "version": "0.31.10",
   "description": "An adapter the resolve-query uses to store the read model state in memory",
   "keywords": [
     "cqrs",
@@ -25,8 +25,9 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
-    "@resolve-js/readmodel-base": "0.31.7",
-    "sqlite": "3.0.2",
+    "@resolve-js/readmodel-base": "0.31.10",
+    "@types/better-sqlite3": "7.4.0",
+    "better-sqlite3": "7.4.3",
     "tmp": "0.2.1",
     "uuid": "8.3.2"
   },
@@ -35,7 +36,7 @@
     "sinon": "9.2.4"
   },
   "engines": {
-    "node": ">=12.18"
+    "node": ">=14.17"
   },
   "babelCompile": [
     {
