@@ -504,6 +504,14 @@ This lesson describes how to display a Read Model's data in the client browser. 
 
 Refer to the [Frontend](frontend.md) article for information on other tools that you can use to implement a frontend.
 
+### Install Dependencies
+
+Use the following console input to install NPM packages required for this lesson:
+
+```sh
+yarn add react react-bootstrap react-dom react-router react-router-config react-router-dom react-helmet
+```
+
 ### Implement the Client Application
 
 <details>
