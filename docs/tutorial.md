@@ -349,7 +349,13 @@ Currently, your shopping list application has a write side that allows you to cr
 
 ### Add a Read Model
 
-Add a **ShoppingLists** **[Read Model](read-side.md#read-models)** to your application. A Read Model receives events and populates a persistent store based on event data. It uses the collected data to answer data queries.
+Add a **ShoppingLists** Read Model to your application.
+
+:::tip Read Model
+
+A Read Model is entity at the application's read side that answers data requests. A Read Model receives events and populates a persistent store based on event data. It then uses the collected data to build the requested data samples.
+
+:::
 
 Follow the steps below to implement a **ShoppingLists** Read Model.
 
@@ -403,7 +409,7 @@ The type of the physical store used to save data is defined by a Read Model conn
 const devConfig = {
   readModelConnectors: {
     // This is the 'default' Read Model connector.
-    // It connects a Read Model to a SQLite data.
+    // It connects a Read Model to a SQLite database.
     default: {
       module: '@resolve-js/readmodel-lite',
       options: {
@@ -775,9 +781,13 @@ Run your application to view the result:
 
 This lesson describes how you can use a View Model to obtain shopping list items and display them as a list within the client browser.
 
+:::tip View Model
+
 A View Model is a reactive Read Model that is built on the fly for one or several aggregate IDs. A client can maintain a WebSocket connection with a resolve server to receive View Model data updates in real time.
 
 The downside is that View Models do not have persistent state and should be rebuilt on every query, so they are better suited for small data samples.
+
+:::
 
 ### Create a Shopping List View Model
 
