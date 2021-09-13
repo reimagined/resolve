@@ -7,7 +7,7 @@ const log = debugLevels('resolve:runtime:dispose-resolve')
 const disposeResolve = async (resolve: Resolve) => {
   if (resolve.isInitialized) {
     try {
-      const disposePromises = [
+      const disposePromises: Promise<void>[] = [
         resolve.executeCommand.dispose(),
         resolve.executeQuery.dispose(),
         resolve.executeSaga.dispose(),

@@ -34,7 +34,6 @@ export type ReadModelConnectorCreator = (options: {
   monitoring: Monitoring
 }) => ReadModelConnector
 
-//TODO: must be in query/index.ts?
 export type QueryExecutor = {
   (...args: any[]): Promise<any>
   dispose: () => Promise<void>
@@ -211,7 +210,6 @@ export type Resolve = {
   server: http.Server
 
   executeQuery: QueryExecutor
-  //TODO: types
   executeSaga: SagaExecutor
 
   eventSubscriber: EventSubscriber
