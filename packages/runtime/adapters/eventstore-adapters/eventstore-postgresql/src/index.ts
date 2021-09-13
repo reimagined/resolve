@@ -14,7 +14,6 @@ import fullJitter from './full-jitter'
 import executeStatement from './execute-statement'
 import injectEvent from './inject-event'
 import injectEvents from './inject-events'
-import coercer from './coercer'
 import escapeId from './escape-id'
 import escape from './escape'
 import shapeEvent from './shape-event'
@@ -109,7 +108,6 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       escape,
       fullJitter,
       executeStatement,
-      coercer,
     } as ConnectionDependencies,
     options
   )

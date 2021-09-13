@@ -1,6 +1,6 @@
 ---
-id: read-model-connector
-title: Read Model Connector
+id: connector
+title: Connector
 description: This document describes the interface that a read model connector should expose.
 ---
 

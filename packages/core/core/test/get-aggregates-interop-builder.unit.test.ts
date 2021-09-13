@@ -27,6 +27,8 @@ const makeAggregateMeta = (params: any) => ({
     params.commandHttpResponseMode || CommandHttpResponseMode.event,
 })
 
+let lastSavedEvent: any = null
+
 const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
   const generatedEvents: Event[] = []
 
@@ -37,8 +39,10 @@ const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
   }
 
   const eventstore: Eventstore = {
-    saveEvent: jest.fn(async (event) => {
+    saveEvent: jest.fn(async (originalEvent) => {
+      const event = { ...originalEvent, timestamp: Date.now() }
       generatedEvents.push(event)
+      lastSavedEvent = event
       return {
         cursor: null,
         event,
@@ -719,6 +723,31 @@ describe('Command handlers', () => {
         type: 'testCommand',
       })
     ).resolves.toEqual({})
+  })
+
+  test('should execute command and return last saved event', async () => {
+    const { executeCommand } = getAggregatesInteropBuilder([
+      makeAggregateMeta({
+        encryption: () => Promise.resolve({}),
+        name: 'empty',
+        commands: {
+          emptyCommand: () => {
+            return {
+              type: 'EmptyEvent',
+              payload: {},
+            }
+          },
+        },
+      }),
+    ])(makeTestRuntime())
+
+    const event = (await executeCommand({
+      aggregateName: 'empty',
+      aggregateId: 'aggregateId',
+      type: 'emptyCommand',
+    })) as CommandResult
+
+    expect(event).toBe(lastSavedEvent)
   })
 })
 

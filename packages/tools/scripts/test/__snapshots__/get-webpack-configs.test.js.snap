@@ -338,11 +338,11 @@ exports[`should make webpack configs for cloud mode 1`] = `
                     \\"@babel/preset-env\\",
                     {
                       \\"targets\\": {
-                        \\"node\\": \\"8.10.0\\"
-                      }
+                        \\"node\\": \\"14.17.0\\"
+                      },
+                      \\"shippedProposals\\": true
                     }
-                  ],
-                  \\"@babel/preset-react\\"
+                  ]
                 ],
                 \\"plugins\\": [
                   \\"@babel/plugin-proposal-class-properties\\",
@@ -564,11 +564,11 @@ exports[`should make webpack configs for cloud mode 1`] = `
                     \\"@babel/preset-env\\",
                     {
                       \\"targets\\": {
-                        \\"node\\": \\"8.10.0\\"
-                      }
+                        \\"node\\": \\"14.17.0\\"
+                      },
+                      \\"shippedProposals\\": true
                     }
-                  ],
-                  \\"@babel/preset-react\\"
+                  ]
                 ],
                 \\"plugins\\": [
                   \\"@babel/plugin-proposal-class-properties\\",
@@ -1027,11 +1027,11 @@ exports[`should make webpack configs for local mode 1`] = `
                     \\"@babel/preset-env\\",
                     {
                       \\"targets\\": {
-                        \\"node\\": \\"8.10.0\\"
-                      }
+                        \\"node\\": \\"14.17.0\\"
+                      },
+                      \\"shippedProposals\\": true
                     }
-                  ],
-                  \\"@babel/preset-react\\"
+                  ]
                 ],
                 \\"plugins\\": [
                   \\"@babel/plugin-proposal-class-properties\\",
@@ -1251,11 +1251,11 @@ exports[`should make webpack configs for local mode 1`] = `
                     \\"@babel/preset-env\\",
                     {
                       \\"targets\\": {
-                        \\"node\\": \\"8.10.0\\"
-                      }
+                        \\"node\\": \\"14.17.0\\"
+                      },
+                      \\"shippedProposals\\": true
                     }
-                  ],
-                  \\"@babel/preset-react\\"
+                  ]
                 ],
                 \\"plugins\\": [
                   \\"@babel/plugin-proposal-class-properties\\",

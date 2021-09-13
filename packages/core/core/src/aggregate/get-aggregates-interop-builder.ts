@@ -508,7 +508,7 @@ const makeCommandExecutor = (
         processedEvent.payload = event.payload
       }
 
-      await (async (): Promise<void> => {
+      const savedEvent = await (async (): Promise<Event> => {
         const subSegment = getPerformanceTracerSubsegment(
           runtime.monitoring,
           'saveEvent'
@@ -525,7 +525,7 @@ const makeCommandExecutor = (
       })()
 
       return aggregate.commandHttpResponseMode === CommandHttpResponseMode.event
-        ? processedEvent
+        ? savedEvent
         : {}
     } catch (error) {
       executionError = error

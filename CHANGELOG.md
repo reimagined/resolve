@@ -1,5 +1,25 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.10...HEAD)
+
+**New features:**
+
+- Resolve gate [\#2040](https://github.com/reimagined/resolve/pull/2040)
+
+**Breaking changes:**
+
+- Update minimal node version to 14 [\#2034](https://github.com/reimagined/resolve/pull/2034)
+
+**Bug fixes:**
+
+- Timestamps from CommandResult and Event are different [\#1994](https://github.com/reimagined/resolve/issues/1994)
+
+**Documentation:**
+
+- Describe API for fundamental entities of reSolve [\#2032](https://github.com/reimagined/resolve/pull/2032)
+
 ## [V0.31.10](https://github.com/reimagined/resolve/tree/V0.31.10) (2021-09-08)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.9...V0.31.10)
