@@ -1,5 +1,5 @@
-const parseReadOptions = (options: any): Array<any> => {
-  const optionsFlags: any = {
+const parseReadOptions = (options: any): [any, any] => {
+  const optionsFlags: Record<string, number> = {
     modelOptions: 1 << 0,
     modelArgs: 1 << 1,
     resolverName: 1 << 2,
@@ -8,7 +8,7 @@ const parseReadOptions = (options: any): Array<any> => {
     aggregateArgs: 1 << 5,
   }
 
-  const optionsMap = []
+  const optionsMap: Record<number, Readonly<[string, string]>> = {}
   optionsMap[optionsFlags.modelOptions] = optionsMap[
     optionsFlags.modelOptions + optionsFlags.modelArgs
   ] = ['modelOptions', 'modelArgs']
@@ -28,7 +28,8 @@ const parseReadOptions = (options: any): Array<any> => {
     throw new Error('Wrong options for read invocation')
   }
 
-  return [options[optionsMap[flag][0]], options[optionsMap[flag][1]]]
+  const optionNamesPair = optionsMap[flag]
+  return [options[optionNamesPair[0]], options[optionNamesPair[1]]]
 }
 
 export default parseReadOptions

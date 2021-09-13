@@ -1,12 +1,12 @@
 import { ViewModelInterop } from '@resolve-js/core'
 
-import { WrapViewModelOptions, ViewModelPool } from './types'
+import { WrapViewModelOptions, ViewModelPool, WrappedViewModel } from './types'
 import parseReadOptions from './parse-read-options'
 
 const read = async (
   pool: ViewModelPool,
   interop: ViewModelInterop,
-  { jwt, ...params }: any
+  { jwt, ...params }: { jwt?: string } & Record<string, any>
 ): Promise<any> => {
   const viewModelName = interop.name
 
@@ -42,13 +42,13 @@ const read = async (
 
 const serializeState = async (
   { serialize }: ViewModelInterop,
-  { state, jwt }: any
-): Promise<any> => serialize(state, jwt)
+  { state, jwt }: { state: any; jwt?: string }
+): Promise<string> => serialize(state, jwt)
 
 const dispose = async (
   pool: ViewModelPool,
   interop: ViewModelInterop
-): Promise<any> => {
+): Promise<void> => {
   const viewModelName = interop.name
 
   if (pool.isDisposed) {
@@ -66,11 +66,12 @@ const wrapViewModel = ({
     performanceTracer,
   }
 
-  return Object.freeze({
+  const result: WrappedViewModel = {
     read: read.bind(null, pool, interop),
     serializeState: serializeState.bind(null, interop),
     dispose: dispose.bind(null, pool, interop),
-  })
+  }
+  return Object.freeze(result)
 }
 
 export default wrapViewModel

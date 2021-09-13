@@ -1,4 +1,4 @@
-import {
+import type {
   Monitoring,
   ReadModelInteropMap,
   SagaInteropMap,
@@ -8,6 +8,7 @@ import {
   ViewModelInterop,
   Eventstore,
   PerformanceTracer,
+  MiddlewareContext,
 } from '@resolve-js/core'
 
 import type { ReadModelConnector, InvokeBuildAsync } from '../types'
@@ -26,11 +27,8 @@ export type CreateQueryOptions = {
 }
 
 type WrapModelOptions = Omit<
-  Omit<
-    Omit<Omit<CreateQueryOptions, 'readModels'>, 'viewModels'>,
-    'readModelsInterop'
-  >,
-  'viewModelsInterop'
+  CreateQueryOptions,
+  'readModels' | 'viewModels' | 'readModelsInterop' | 'viewModelsInterop'
 >
 
 export type WrapReadModelOptions = WrapModelOptions & {
@@ -48,20 +46,20 @@ export type SerializedError = {
 }
 
 export type ReadModelPool = {
-  performanceTracer: any
+  performanceTracer: CreateQueryOptions['performanceTracer']
   isDisposed: boolean
   connector: any
   connections: Set<any>
   invokeBuildAsync: Function
   getVacantTimeInMillis: Function
-  readModelSource?: any
+  readModelSource?: string | null
   monitoring?: Monitoring
   eventstoreAdapter: Eventstore
   applicationName: string
 }
 
 export type ViewModelPool = {
-  performanceTracer: any
+  performanceTracer: CreateQueryOptions['performanceTracer']
   isDisposed: boolean
   monitoring?: Monitoring
 }
@@ -69,4 +67,25 @@ export type ViewModelPool = {
 export type BuildViewModelQuery = {
   aggregateIds: Array<string> | null
   aggregateArgs: any
+}
+
+export type WrappedViewModel = {
+  dispose: () => Promise<void>
+  read: (params: { jwt?: string } & Record<string, any>) => Promise<any>
+  serializeState: (params: { state: any; jwt?: string }) => Promise<string>
+}
+
+//TODO: further types
+export type WrappedReadModel = {
+  dispose: () => Promise<void>
+  read: (
+    params: { jwt?: string } & Record<string, any>,
+    middlewareContext?: MiddlewareContext
+  ) => Promise<any>
+  serializeState: (params: { state: any }) => Promise<string>
+
+  deleteProperty: (parameters: { key: string }) => Promise<void>
+  getProperty: (parameters: { key: string }) => Promise<any>
+  listProperties: (parameters: {}) => Promise<any>
+  setProperty: (parameters: { key: string; value: any }) => Promise<void>
 }

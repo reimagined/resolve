@@ -364,6 +364,7 @@ module.exports = {
           'reactivity',
           'readdir',
           'readmodel',
+          'readonly',
           'readpolicy',
           'reconnection',
           'resetter',

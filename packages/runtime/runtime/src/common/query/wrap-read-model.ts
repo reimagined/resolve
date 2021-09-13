@@ -5,7 +5,7 @@ import {
   SagaInterop,
 } from '@resolve-js/core'
 import { getLog } from './get-log'
-import { WrapReadModelOptions, ReadModelPool } from './types'
+import { WrapReadModelOptions, ReadModelPool, WrappedReadModel } from './types'
 import parseReadOptions from './parse-read-options'
 import { OMIT_BATCH, STOP_BATCH } from './batch'
 
@@ -793,7 +793,7 @@ const wrapReadModel = ({
     },
   }
 
-  const api = {
+  const api: WrappedReadModel = {
     serializeState,
     read: read.bind(null, pool, interop),
     dispose: dispose.bind(null, pool, interop),
