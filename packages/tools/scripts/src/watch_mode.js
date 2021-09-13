@@ -91,6 +91,12 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
               new Function(`return ${injectRuntimeEnv(resolveConfig.port)}`)()
             : resolveConfig.port
         )
+        const host = String(
+          checkRuntimeEnv(resolveConfig.host)
+            ? // eslint-disable-next-line no-new-func
+              new Function(`return ${injectRuntimeEnv(resolveConfig.host)}`)()
+            : resolveConfig.host ?? '0.0.0.0'
+        )
 
         if (hasErrors) {
           server.stop()
@@ -108,7 +114,7 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
               process.env.RESOLVE_SERVER_FIRST_START === 'true'
             if (isOpenBrowser && serverFirstStart) {
               log.debug('Opening browser')
-              openBrowser(port, resolveConfig.rootPath).catch(() => {})
+              openBrowser(host, port, resolveConfig.rootPath).catch(() => {})
               log.debug('Browser was opened')
             }
           }
