@@ -16,6 +16,16 @@ import https from 'https'
 import type { CookieSerializeOptions } from 'cookie'
 import type { Trie } from 'route-trie'
 
+export type CallMethodParams = {
+  modelName?: string | null
+  eventSubscriber?: string | null
+  [key: string]: any
+}
+
+export type EventSubscriber = {
+  [key: string]: (params: CallMethodParams, ...args: any[]) => Promise<any>
+}
+
 //TODO: type
 export type ReadModelConnector = any
 
@@ -23,6 +33,17 @@ export type ReadModelConnectorCreator = (options: {
   performanceTracer: PerformanceTracer
   monitoring: Monitoring
 }) => ReadModelConnector
+
+//TODO: must be in query/index.ts?
+export type QueryExecutor = {
+  (...args: any[]): Promise<any>
+  dispose: () => Promise<void>
+  [key: string]: (...args: any[]) => Promise<any>
+}
+
+export type SagaExecutor = QueryExecutor & {
+  build: (...args: any[]) => Promise<any>
+}
 
 export type ApiHandler = {
   path: string
@@ -127,6 +148,8 @@ export type BuildParameters = {
   cursor?: string
 }
 
+export type InvokeBuildAsync = (parameters: BuildParameters) => Promise<void>
+
 export type BuildTimeConstants = {
   applicationName: string
   distDir: string
@@ -187,11 +210,11 @@ export type Resolve = {
   websocketHttpServer: HttpServer
   server: http.Server
 
+  executeQuery: QueryExecutor
   //TODO: types
-  executeQuery: any
-  executeSaga: any
+  executeSaga: SagaExecutor
 
-  eventSubscriber: any
+  eventSubscriber: EventSubscriber
   eventSubscriberScope: string
 
   executeCommand: CommandExecutor

@@ -1,4 +1,23 @@
 import createQuery from '../query/index'
+import type { Resolve, CallMethodParams, SagaExecutor } from '../types'
+import type { SecretsManager } from '@resolve-js/core'
+
+type CreateSagaOptions = {
+  applicationName: string
+  invokeBuildAsync: Resolve['invokeBuildAsync']
+  readModelConnectors: Resolve['readModelConnectors']
+  executeCommand: Resolve['executeCommand']
+  executeQuery: Resolve['executeQuery']
+  performanceTracer: Resolve['performanceTracer']
+  uploader: Resolve['uploader']
+  eventstoreAdapter: Resolve['eventstoreAdapter']
+  secretsManager: SecretsManager
+  getVacantTimeInMillis: Resolve['getVacantTimeInMillis']
+  scheduler: Resolve['scheduler']
+  monitoring: Resolve['monitoring']
+  domainInterop: Resolve['domainInterop']
+  executeSchedulerCommand: Resolve['executeSchedulerCommand']
+}
 
 const createSaga = ({
   invokeBuildAsync,
@@ -15,10 +34,10 @@ const createSaga = ({
   monitoring,
   domainInterop,
   executeSchedulerCommand,
-}) => {
+}: CreateSagaOptions) => {
   const { sagaDomain } = domainInterop
 
-  const executeCommandOrScheduler = async (...args) => {
+  const executeCommandOrScheduler = async (...args: any[]) => {
     if (
       !(
         args.length > 0 &&
@@ -41,7 +60,7 @@ const createSaga = ({
     }
   }
 
-  const executeDirectQuery = async (...args) => {
+  const executeDirectQuery = async (...args: any[]) => {
     if (
       !(
         args.length > 0 &&
@@ -58,7 +77,7 @@ const createSaga = ({
     return await executeQuery(options)
   }
 
-  let currentSagaName = null
+  let currentSagaName: string | null = null
   const runtime = Object.create(Object.prototype, {
     executeCommand: { get: () => executeCommandOrScheduler, enumerable: true },
     executeQuery: { get: () => executeDirectQuery, enumerable: true },
@@ -91,7 +110,7 @@ const createSaga = ({
       enumerable: true,
     },
     setSideEffectsTimestamp: {
-      get: () => (sideEffectTimestamp) =>
+      get: () => (sideEffectTimestamp: number) =>
         executeSagaListener.setProperty({
           eventSubscriber: currentSagaName,
           key: sideEffectPropertyName,
@@ -101,31 +120,42 @@ const createSaga = ({
     },
   })
 
-  const buildSaga = async (...args) => {
+  const buildSaga = async (
+    params: CallMethodParams,
+    o?: any, //TODO: what is this?
+    ...args: any[]
+  ) => {
     if (
       !(
-        args.length > 0 &&
-        args.length < 3 &&
-        Object(args[0]) === args[0] &&
-        (Object(args[1]) === args[1] || args[1] == null)
+        params !== undefined &&
+        args.length === 0 &&
+        Object(params) === params &&
+        (Object(o) === o || o == null)
       )
     ) {
-      throw new Error(`Invalid build saga args ${JSON.stringify(args)}`)
+      throw new Error(
+        `Invalid build saga args ${JSON.stringify([params, o, ...args])}`
+      )
     }
 
     try {
-      let { eventSubscriber, modelName, ...parameters } = args[0]
-      if (eventSubscriber == null && modelName == null) {
-        throw new Error(`Either "eventSubscriber" nor "modelName" is null`)
-      } else if (modelName == null) {
-        modelName = eventSubscriber
-      }
-      if (currentSagaName != null) {
-        throw new Error('Concurrent saga interop')
-      }
-      currentSagaName = modelName
+      const { eventSubscriber, modelName, ...parameters } = params
+      let eventSubscriberName: string
 
-      return await executeSagaListener.build({ modelName, ...parameters })
+      if (eventSubscriber == null) {
+        if (modelName == null) {
+          throw new Error(`Both "eventSubscriber" and "modelName" are null`)
+        }
+        eventSubscriberName = modelName
+      } else {
+        eventSubscriberName = eventSubscriber
+      }
+      currentSagaName = eventSubscriberName
+
+      return await executeSagaListener.build({
+        modelName: eventSubscriberName,
+        ...parameters,
+      })
     } finally {
       if (currentSagaName == null) {
         throw new Error('Concurrent saga interop')
@@ -135,7 +165,7 @@ const createSaga = ({
   }
 
   const executeSaga = new Proxy(executeSagaListener, {
-    get(_, key) {
+    get(_, key: string) {
       if (key === 'build') {
         return buildSaga
       } else {
@@ -145,7 +175,7 @@ const createSaga = ({
     set() {
       throw new TypeError(`Resolve-saga API is immutable`)
     },
-  })
+  }) as SagaExecutor
 
   return executeSaga
 }

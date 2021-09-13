@@ -2,51 +2,65 @@ import wrapReadModel from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
 
 import type { CreateQueryOptions } from './types'
+import type { QueryExecutor, CallMethodParams } from '../types'
 import { OMIT_BATCH, STOP_BATCH } from './batch'
 
-const dispose = async (models: any): Promise<any> => {
+const dispose = async (models: Record<string, any>): Promise<void> => {
   for (const modelName of Object.keys(models)) {
     await models[modelName].dispose()
   }
 }
 
-const interopApi = async (models: any, key: string, ...args: Array<any>) => {
-  if (args.length > 2 || Object(args[0]) !== args[0]) {
+const interopApi = async (
+  models: Record<string, any>,
+  key: string,
+  params: CallMethodParams,
+  context?: any,
+  ...args: any[]
+) => {
+  if (args.length > 0 || Object(params) !== params) {
     throw new TypeError(
-      `Invalid resolve-query method "${key}" arguments ${JSON.stringify(args)}`
+      `Invalid resolve-query method "${key}" arguments ${JSON.stringify([
+        params,
+        context,
+        ...args,
+      ])}`
     )
   }
 
-  // eslint-disable-next-line prefer-const
-  let { eventSubscriber, modelName, ...parameters } = args[0]
+  const { eventSubscriber, modelName, ...parameters } = params
+  let eventSubscriberName: string
 
-  if (eventSubscriber == null && modelName == null) {
-    throw new Error(`Either "eventSubscriber" nor "modelName" is null`)
-  } else if (modelName == null) {
-    modelName = eventSubscriber
+  if (eventSubscriber == null) {
+    if (modelName == null) {
+      throw new Error(`Both "eventSubscriber" and "modelName" are null`)
+    }
+    eventSubscriberName = modelName
+  } else {
+    eventSubscriberName = eventSubscriber
   }
 
-  if (models[modelName] == null) {
+  if (models[eventSubscriberName] == null) {
     const error = new Error(
-      `Read/view model "${modelName}" does not exist`
+      `Read/view model "${eventSubscriberName}" does not exist`
     ) as any
     error.code = 422
     throw error
   }
 
-  const method = models[modelName][key]
+  const method = models[eventSubscriberName][key]
 
   if (typeof method !== 'function') {
     throw new TypeError(
-      `Model "${modelName}" does not implement method "${key}"`
+      `Model "${eventSubscriberName}" does not implement method "${key}"`
     )
   }
-  const middlewareContext = args.length > 1 ? args[1] : {}
+  const middlewareContext = context !== undefined ? context : {}
 
   return await method(parameters, middlewareContext)
 }
 
-const createQuery = (params: CreateQueryOptions): any => {
+const createQuery = (params: CreateQueryOptions): QueryExecutor => {
   const models: {
     [key: string]: any
   } = {}
@@ -67,7 +81,8 @@ const createQuery = (params: CreateQueryOptions): any => {
     })
   }
 
-  const read = interopApi.bind(null, models, 'read') as any
+  const read = interopApi.bind(null, models, 'read')
+
   const api = new Proxy(read, {
     get(_: any, key: string): any {
       if (key === 'bind' || key === 'apply' || key === 'call') {
@@ -81,7 +96,7 @@ const createQuery = (params: CreateQueryOptions): any => {
     set() {
       throw new TypeError(`Resolve-query API is immutable`)
     },
-  } as any)
+  }) as QueryExecutor
 
   return api
 }

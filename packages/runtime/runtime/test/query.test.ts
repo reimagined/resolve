@@ -170,6 +170,10 @@ for (const { describeName, prepare } of [
       })
 
       test('interop resolver invoked on "read"', async () => {
+        if (query === null) {
+          throw new Error('logic error')
+        }
+
         const result = await query.read({
           modelName: 'model',
           jwt: 'jwt',
@@ -194,6 +198,10 @@ for (const { describeName, prepare } of [
       })
 
       test('interop serializer invoked on "serialize"', async () => {
+        if (query === null) {
+          throw new Error('logic error')
+        }
+
         await expect(
           query.serializeState({
             modelName: 'model',

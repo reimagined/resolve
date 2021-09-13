@@ -1,4 +1,4 @@
-import createSagaExecutor from '../src/common/saga/index'
+import createSagaExecutor from '../src/common/saga'
 
 jest.mock('uuid', () => ({
   v4: jest.fn(() => 'guid'),

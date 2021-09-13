@@ -10,10 +10,10 @@ import {
   PerformanceTracer,
 } from '@resolve-js/core'
 
-import type { ReadModelConnector } from '../types'
+import type { ReadModelConnector, InvokeBuildAsync } from '../types'
 
 export type CreateQueryOptions = {
-  invokeBuildAsync: Function
+  invokeBuildAsync: InvokeBuildAsync
   readModelConnectors: Record<string, ReadModelConnector>
   readModelSources?: Record<string, string | null>
   performanceTracer: PerformanceTracer | null

@@ -1,6 +1,6 @@
 import createCommandExecutor from '../common/command/index'
 import createQueryExecutor from '../common/query/index'
-import createSagaExecutor from '../common/saga/index'
+import createSagaExecutor from './saga'
 import crypto from 'crypto'
 import path from 'path'
 import fs from 'fs'
