@@ -12,6 +12,10 @@
 
 - Update minimal node version to 14 [\#2034](https://github.com/reimagined/resolve/pull/2034)
 
+**Bug fixes:**
+
+- Timestamps from CommandResult and Event are different [\#1994](https://github.com/reimagined/resolve/issues/1994)
+
 **Documentation:**
 
 - Describe API for fundamental entities of reSolve [\#2032](https://github.com/reimagined/resolve/pull/2032)
