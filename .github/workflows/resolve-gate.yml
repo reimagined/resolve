@@ -1,0 +1,41 @@
+name: resolve-gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      DASHBOARD_REF:
+        description: 'Testcafe dashboard branch, tag or SHA'
+        required: true
+        default: 'master'
+      VERSION:
+        description: 'Resolve version'
+        required: false
+
+jobs:
+  resolve-gate:
+    runs-on: [self-hosted, Linux, X64, resolve-gate]
+    steps:
+      - name: Checkout testcafe-dashboard
+        uses: actions/checkout@v2
+        with:
+          repository: DevExpress/testcafe-dashboard
+          ref: ${{ github.event.inputs.DASHBOARD_REF }}
+          token: ${{ secrets.DASHBOARD_PAT }}
+
+      - name: Start resolve-gate
+        uses: reimagined/github-actions/resolve-gate@v1
+        env:
+          RESOLVE_API_URL: ${{ secrets.RESOLVE_DEV_API_URL }}
+          OAUTH_CLIENT_ID: ${{ secrets.DASHBOARD_OAUTH_CLIENT_ID }}
+          OAUTH_CLIENT_SECRET: ${{ secrets.DASHBOARD_OAUTH_CLIENT_SECRET }}
+          CRM_CLIENT_ID: ${{ secrets.DASHBOARD_CRM_CLIENT_ID }}
+          CRM_CLIENT_SECRET: ${{ secrets.DASHBOARD_CRM_CLIENT_SECRET }}
+        with:
+          source: ./
+          registry: https://npm.pkg.github.com
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          framework_version: ${{ github.event.inputs.VERSION }}
+          registry_package_tag: latest
+          cloud_user: ${{ secrets.RESOLVE_DEV_CLOUD_USER }}
+          cloud_token: ${{ secrets.RESOLVE_DEV_CLOUD_TOKEN }}
+          cloud_api_url: ${{ secrets.RESOLVE_DEV_API_URL }}

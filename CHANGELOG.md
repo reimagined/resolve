@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.10...HEAD)
 
+**New features:**
+
+- Resolve gate [\#2040](https://github.com/reimagined/resolve/pull/2040)
+
 **Breaking changes:**
 
 - Update minimal node version to 14 [\#2034](https://github.com/reimagined/resolve/pull/2034)
