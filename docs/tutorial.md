@@ -4,6 +4,11 @@ title: Step-by-Step Tutorial
 description: This document provides a step-by-step tutorial for the reSolve framework. Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
 ---
 
+```mdx-code-block
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+```
+
 This document provides a step-by-step tutorial for the reSolve framework.
 Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
 
@@ -151,13 +156,23 @@ A request's body should have the `application/json` content type and contain a J
 
 In addition to the aggregate name, command type and payload, this object specifies the aggregate's ID.
 
-Run your application and send a POST request to the following URL:
+To send a command to the aggregate, run the application and send a POST request to the following URL:
 
 ```
 http://127.0.0.1:3000/api/commands
 ```
 
-You can use any REST client or **curl** to do this. For example, use the following console input to create a shopping list:
+<details>
+<summary>
+
+Expand this section for an example, on how to test this functionality in your application.
+
+</summary>
+
+<Tabs>
+<TabItem value="curl" label="Check manually" default>
+
+You can use any REST client or **curl** to send a request:
 
 ```sh
 curl -i http://localhost:3000/api/commands/ \
@@ -237,6 +252,79 @@ sqlite> select * from events;
 ```
 
 <!-- prettier-ignore-end -->
+
+</TabItem>
+<TabItem value="test" label="Write a test">
+
+To automatically perform the checks, you can write a test or use the test included into the lesson's [example project](https://github.com/reimagined/resolve/tree/dev/tutorial/lesson-1):
+
+[test/functional/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/functional/index.test.js)
+
+```js
+import { expect } from 'chai'
+...
+test('createShoppingList', async () => {
+  const command = {
+    aggregateName: 'ShoppingList',
+    aggregateId: 'shopping-list-1',
+    type: 'createShoppingList',
+    payload: {
+      name: 'List 1',
+    },
+  }
+
+  const response = await fetch(`${MAIN_PAGE}/api/commands`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(command),
+  })
+
+  const event = await response.json()
+
+  expect(event).to.deep.include({
+    type: 'SHOPPING_LIST_CREATED',
+    payload: { name: 'List 1' },
+    aggregateId: 'shopping-list-1',
+    aggregateVersion: 1,
+  })
+})
+
+test('createShoppingItem', async () => {
+  const command = {
+    aggregateName: 'ShoppingList',
+    aggregateId: 'shopping-list-1',
+    type: 'createShoppingItem',
+    payload: {
+      id: '1',
+      text: 'Milk',
+    },
+  }
+
+  const response = await fetch(`${MAIN_PAGE}/api/commands`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(command),
+  })
+
+  const event = await response.json()
+
+  expect(event).to.deep.include({
+    type: 'SHOPPING_ITEM_CREATED',
+    payload: { id: '1', text: 'Milk' },
+    aggregateId: 'shopping-list-1',
+    aggregateVersion: 2,
+  })
+})
+```
+
+</TabItem>
+</Tabs>
+
+</details>
 
 ### Input Validation
 
@@ -547,7 +635,7 @@ const Header = ({ title, css }) => {
     rel: 'stylesheet',
     href: resolveStatic(href),
   }))
-  // You can use the same technique to generate links for other resource types.
+  // You can use the same approach to generate links for other resource types.
   // const faviconLink = {
   //   rel: 'icon',
   //   type: 'image/png',
@@ -1533,3 +1621,7 @@ export default ShoppingListItem
 - [useCommand](api/client/resolve-react-hooks.md#usecommand)
 
 ![Check List Item](assets/tutorial/lesson5-check-item.png)
+
+```
+
+```
