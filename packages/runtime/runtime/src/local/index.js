@@ -62,9 +62,10 @@ const localEntry = async ({ assemblies, constants, domain }) => {
       https,
       http,
     }
+    resolve.host = resolve.host ?? '0.0.0.0'
 
     resolve.getEventSubscriberDestination = () =>
-      `http://${constants.host}:${constants.port}/api/subscribers`
+      `http://${resolve.host}:${resolve.port}/api/subscribers`
     resolve.invokeBuildAsync = multiplexAsync.bind(null, async (parameters) => {
       const currentResolve = Object.create(resolve)
       try {
