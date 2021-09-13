@@ -1236,6 +1236,8 @@ You can render this component within 'MyLists' as shown below:
 **client/components/MyLists.js**
 
 ```jsx
+import ShoppingListCreator from './ShoppingListCreator'
+...
 const MyLists = () => {
   ...
   return (
@@ -1293,6 +1295,8 @@ Add this component to each item in the ShoppingLists component's layout:
 **client/components/ShoppingLists.js**
 
 ```jsx
+import ShoppingListRemover from './ShoppingListRemover'
+...
 const ShoppingLists = ({ lists, onRemoveSuccess }) => {
   return (
     <div>
