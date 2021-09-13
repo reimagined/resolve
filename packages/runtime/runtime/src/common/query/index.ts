@@ -1,18 +1,27 @@
 import wrapReadModel from './wrap-read-model'
 import wrapViewModel from './wrap-view-model'
 
-import type { CreateQueryOptions } from './types'
+import type {
+  CreateQueryOptions,
+  WrappedViewModel,
+  WrappedReadModel,
+} from './types'
 import type { QueryExecutor, CallMethodParams } from '../types'
 import { OMIT_BATCH, STOP_BATCH } from './batch'
 
-const dispose = async (models: Record<string, any>): Promise<void> => {
+type WrappedModels = Record<
+  string,
+  Readonly<WrappedViewModel> | Readonly<WrappedReadModel>
+>
+
+const dispose = async (models: WrappedModels): Promise<void> => {
   for (const modelName of Object.keys(models)) {
     await models[modelName].dispose()
   }
 }
 
 const interopApi = async (
-  models: Record<string, any>,
+  models: WrappedModels,
   key: string,
   params: CallMethodParams,
   context?: any,
@@ -48,7 +57,7 @@ const interopApi = async (
     throw error
   }
 
-  const method = models[eventSubscriberName][key]
+  const method = (models[eventSubscriberName] as any)[key]
 
   if (typeof method !== 'function') {
     throw new TypeError(
@@ -61,9 +70,7 @@ const interopApi = async (
 }
 
 const createQuery = (params: CreateQueryOptions): QueryExecutor => {
-  const models: {
-    [key: string]: any
-  } = {}
+  const models: WrappedModels = {}
 
   const { viewModelsInterop, readModelsInterop, ...imports } = params
 

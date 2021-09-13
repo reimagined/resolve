@@ -50,8 +50,8 @@ export type ReadModelPool = {
   isDisposed: boolean
   connector: any
   connections: Set<any>
-  invokeBuildAsync: Function
-  getVacantTimeInMillis: Function
+  invokeBuildAsync: CreateQueryOptions['invokeBuildAsync']
+  getVacantTimeInMillis: CreateQueryOptions['getVacantTimeInMillis']
   readModelSource?: string | null
   monitoring?: Monitoring
   eventstoreAdapter: Eventstore

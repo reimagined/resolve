@@ -177,7 +177,7 @@ export type Resolve = {
   https: typeof https
 
   getEventSubscriberDestination: (name?: string) => string
-  invokeBuildAsync: (parameters: BuildParameters) => Promise<void>
+  invokeBuildAsync: InvokeBuildAsync
   invokeLambdaAsync: any
 
   ensureQueue: (name?: string) => Promise<void>

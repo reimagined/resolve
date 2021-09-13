@@ -5,7 +5,11 @@ import {
   SagaInterop,
 } from '@resolve-js/core'
 import { getLog } from './get-log'
-import { WrapReadModelOptions, ReadModelPool, WrappedReadModel } from './types'
+import type {
+  WrapReadModelOptions,
+  ReadModelPool,
+  WrappedReadModel,
+} from './types'
 import parseReadOptions from './parse-read-options'
 import { OMIT_BATCH, STOP_BATCH } from './batch'
 
@@ -535,9 +539,17 @@ export const customReadModelMethods = {
   },
 } as const
 
+type PrepareArguments = (
+  pool: ReadModelPool,
+  interop: ReadModelInterop | SagaInterop,
+  connection: any,
+  readModelName: string,
+  parameters: any
+) => any
+
 const doOperation = async (
   operationName: string,
-  prepareArguments: Function | null,
+  prepareArguments: PrepareArguments | null,
   useInlineMethod: boolean,
   pool: ReadModelPool,
   interop: ReadModelInterop | SagaInterop,
@@ -555,9 +567,15 @@ const doOperation = async (
     async (connection: any): Promise<any> => {
       const originalArgs = [connection, readModelName, parameters]
 
-      const args = useInlineMethod
+      const args: any[] = useInlineMethod
         ? prepareArguments != null
-          ? prepareArguments(pool, interop, ...originalArgs)
+          ? prepareArguments(
+              pool,
+              interop,
+              connection,
+              readModelName,
+              parameters
+            )
           : originalArgs
         : [pool, interop, ...originalArgs]
 
