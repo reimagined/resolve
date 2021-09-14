@@ -9,14 +9,18 @@ import type {
   WrapReadModelOptions,
   ReadModelPool,
   WrappedReadModel,
+  PrepareArguments,
+  ReadModelOperationMethods,
+  CustomReadModelMethod,
 } from './types'
+import type { ReadModelMethodName } from '../types'
 import parseReadOptions from './parse-read-options'
 import { OMIT_BATCH, STOP_BATCH } from './batch'
 
 const wrapConnection = async (
   pool: ReadModelPool,
   interop: ReadModelInterop | SagaInterop,
-  callback: Function
+  callback: (connection: any) => any
 ): Promise<any> => {
   const readModelName = interop.name
   const log = getLog(`wrapConnection:${readModelName}`)
@@ -150,7 +154,10 @@ const updateCustomReadModel = async (
   })
 }
 
-export const customReadModelMethods = {
+export const customReadModelMethods: Record<
+  ReadModelMethodName,
+  CustomReadModelMethod
+> = {
   build: async (
     pool: ReadModelPool,
     interop: ReadModelInterop | SagaInterop,
@@ -539,16 +546,8 @@ export const customReadModelMethods = {
   },
 } as const
 
-type PrepareArguments = (
-  pool: ReadModelPool,
-  interop: ReadModelInterop | SagaInterop,
-  connection: any,
-  readModelName: string,
-  parameters: any
-) => any
-
 const doOperation = async (
-  operationName: string,
+  operationName: ReadModelMethodName,
   prepareArguments: PrepareArguments | null,
   useInlineMethod: boolean,
   pool: ReadModelPool,
@@ -601,7 +600,7 @@ const doOperation = async (
   return result
 }
 
-const operationMethods = {
+const operationMethods: ReadModelOperationMethods = {
   build: doOperation.bind(
     null,
     'build',
@@ -896,23 +895,16 @@ const wrapReadModel = ({
     throw new Error(`Invalid adapter ${interop.connectorName}`)
   }
 
-  Object.assign(
-    api,
-    (Object.keys(operationMethods) as Array<
-      keyof typeof operationMethods
-    >).reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: operationMethods[key].bind(
-          null,
-          isFullMethodsAdapter,
-          pool,
-          interop
-        ),
-      }),
-      {}
+  for (const key of Object.keys(operationMethods) as Array<
+    keyof typeof operationMethods
+  >) {
+    api[key] = operationMethods[key].bind(
+      null,
+      isFullMethodsAdapter,
+      pool,
+      interop
     )
-  )
+  }
 
   log.debug(`read model wrapped successfully`)
 

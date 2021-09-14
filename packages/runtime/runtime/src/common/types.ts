@@ -26,8 +26,23 @@ export type EventSubscriber = {
   [key: string]: (params: CallMethodParams, ...args: any[]) => Promise<any>
 }
 
-//TODO: type
-export type ReadModelConnector = any
+export type ReadModelMethodName =
+  | 'build'
+  | 'reset'
+  | 'resume'
+  | 'pause'
+  | 'subscribe'
+  | 'resubscribe'
+  | 'unsubscribe'
+  | 'status'
+
+export type ReadModelConnector = {
+  connect: (name: string) => Promise<any>
+  disconnect: (connection: any, name: string) => Promise<void>
+  dispose: () => Promise<void>
+
+  drop: (connection: any, name: string) => Promise<void>
+} & Record<ReadModelMethodName, (...parameters: any[]) => Promise<void>>
 
 export type ReadModelConnectorCreator = (options: {
   performanceTracer: PerformanceTracer

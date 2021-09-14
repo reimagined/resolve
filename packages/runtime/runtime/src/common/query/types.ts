@@ -11,7 +11,11 @@ import type {
   MiddlewareContext,
 } from '@resolve-js/core'
 
-import type { ReadModelConnector, InvokeBuildAsync } from '../types'
+import type {
+  ReadModelConnector,
+  InvokeBuildAsync,
+  ReadModelMethodName,
+} from '../types'
 
 export type CreateQueryOptions = {
   invokeBuildAsync: InvokeBuildAsync
@@ -48,7 +52,7 @@ export type SerializedError = {
 export type ReadModelPool = {
   performanceTracer: CreateQueryOptions['performanceTracer']
   isDisposed: boolean
-  connector: any
+  connector: ReadModelConnector
   connections: Set<any>
   invokeBuildAsync: CreateQueryOptions['invokeBuildAsync']
   getVacantTimeInMillis: CreateQueryOptions['getVacantTimeInMillis']
@@ -75,7 +79,28 @@ export type WrappedViewModel = {
   serializeState: (params: { state: any; jwt?: string }) => Promise<string>
 }
 
-//TODO: further types
+export type PrepareArguments = (
+  pool: ReadModelPool,
+  interop: ReadModelInterop | SagaInterop,
+  connection: any,
+  readModelName: string,
+  parameters: any
+) => any
+
+export type CustomReadModelMethod = PrepareArguments
+
+export type ReadModelOperation = (
+  useInlineMethod: boolean,
+  pool: ReadModelPool,
+  interop: ReadModelInterop | SagaInterop,
+  parameters: any
+) => Promise<any>
+
+export type ReadModelOperationMethods = Record<
+  ReadModelMethodName,
+  ReadModelOperation
+>
+
 export type WrappedReadModel = {
   dispose: () => Promise<void>
   read: (
@@ -88,4 +113,4 @@ export type WrappedReadModel = {
   getProperty: (parameters: { key: string }) => Promise<any>
   listProperties: (parameters: {}) => Promise<any>
   setProperty: (parameters: { key: string; value: any }) => Promise<void>
-}
+} & Partial<Record<ReadModelMethodName, (parameters: any) => Promise<any>>>
