@@ -1,16 +1,45 @@
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
-import debugLevels from '@resolve-js/debug-levels'
+import debugLevels, { LeveledDebugger } from '@resolve-js/debug-levels'
 import { retry } from 'resolve-cloud-common/utils'
+
+import type { Monitoring } from '@resolve-js/core'
 
 const MAX_DIMENSION_VALUE_LENGTH = 256
 const MAX_METRIC_COUNT = 20
 const MAX_DIMENSION_COUNT = 10
 const MAX_VALUES_PER_METRIC = 150
 
-const getLog = (name) => debugLevels(`resolve:cloud:${name}`)
+type MetricDimensions = Array<{ Name: string; Value: string }>
+type MetricDimensionsList = Array<MetricDimensions>
 
-const getErrorMessage = (error) => {
-  let errorMessage = error.message.split(/\n|\r|\r\n/g)[0]
+type MetricData = {
+  MetricName: string
+  Timestamp: Date
+  Unit: string
+  Value?: number
+  Dimensions: MetricDimensions
+  //TODO: are these valid?
+  Values?: number[]
+  Counts?: number[]
+}
+
+type MonitoringData = {
+  metricData: MetricData[]
+  metricDimensions: MetricDimensionsList
+}
+
+type MonitoringGroupData = {
+  timerMap: Record<string, any>
+  metricDimensions: MetricDimensionsList
+  globalDimensions: MetricDimensionsList
+  durationMetricDimensionsList: MetricDimensionsList
+  errorMetricDimensionsList: MetricDimensionsList
+}
+
+const getLog = (name: string) => debugLevels(`resolve:cloud:${name}`)
+
+const getErrorMessage = (error: any) => {
+  let errorMessage = error.message.split(/\n|\r|\r\n/g)[0] as string
 
   if (errorMessage.length > MAX_DIMENSION_VALUE_LENGTH) {
     const messageEnd = '...'
@@ -24,21 +53,26 @@ const getErrorMessage = (error) => {
   return errorMessage
 }
 
-const createErrorDimensionsList = (error) => [
+const createErrorDimensionsList = (error: any): MetricDimensionsList => [
   [
-    { Name: 'ErrorName', Value: error.name },
+    { Name: 'ErrorName', Value: error.name as string },
     { Name: 'ErrorMessage', Value: getErrorMessage(error) },
   ],
-  [{ Name: 'ErrorName', Value: error.name }],
+  [{ Name: 'ErrorName', Value: error.name as string }],
   [],
 ]
 
-const monitoringError = async (log, monitoringData, groupData, error) => {
+const monitoringError = async (
+  log: LeveledDebugger,
+  monitoringData: MonitoringData,
+  groupData: MonitoringGroupData,
+  error: any
+) => {
   try {
     log.verbose(`Collect error`)
 
     const dimensionsList = createErrorDimensionsList(error)
-      .reduce(
+      .reduce<MetricDimensionsList>(
         (acc, errorDimensions) =>
           acc.concat(
             groupData.errorMetricDimensionsList.map((groupDimensions) => [
@@ -56,7 +90,7 @@ const monitoringError = async (log, monitoringData, groupData, error) => {
     let isDimensionCountLimitReached = false
 
     monitoringData.metricData = monitoringData.metricData.concat(
-      dimensionsList.reduce((acc, dimensions) => {
+      dimensionsList.reduce<MetricData[]>((acc, dimensions) => {
         if (dimensions.length <= MAX_DIMENSION_COUNT) {
           acc.push({
             MetricName: 'Errors',
@@ -83,7 +117,12 @@ const monitoringError = async (log, monitoringData, groupData, error) => {
   }
 }
 
-const monitoringExecution = async (log, monitoringData, groupData, error) => {
+const monitoringExecution = async (
+  log: LeveledDebugger,
+  monitoringData: MonitoringData,
+  groupData: MonitoringGroupData,
+  error: any
+) => {
   try {
     log.verbose(`Collect execution`)
 
@@ -98,7 +137,7 @@ const monitoringExecution = async (log, monitoringData, groupData, error) => {
       errorValue = 1
 
       errorDimensionList = createErrorDimensionsList(error)
-        .reduce(
+        .reduce<MetricDimensionsList>(
           (acc, errorDimensions) =>
             acc.concat(
               groupData.errorMetricDimensionsList.map((groupDimensions) => [
@@ -155,11 +194,11 @@ const monitoringExecution = async (log, monitoringData, groupData, error) => {
 }
 
 const monitoringDuration = async (
-  log,
-  monitoringData,
-  groupData,
-  label,
-  duration,
+  log: LeveledDebugger,
+  monitoringData: MonitoringData,
+  groupData: MonitoringGroupData,
+  label: string,
+  duration: number,
   count = 1
 ) => {
   if (!Number.isFinite(duration)) {
@@ -189,6 +228,7 @@ const monitoringDuration = async (
           data.Unit === unit &&
           data.Timestamp.getTime() === time &&
           data.Dimensions.length === dimensions.length &&
+          data.Values !== undefined &&
           (data.Values.length < MAX_VALUES_PER_METRIC ||
             data.Values.includes(duration)) &&
           data.Dimensions.every(
@@ -198,7 +238,11 @@ const monitoringDuration = async (
           )
       )
 
-      if (existingMetricData != null) {
+      if (
+        existingMetricData != null &&
+        existingMetricData.Values !== undefined &&
+        existingMetricData.Counts !== undefined
+      ) {
         let isValueFound = false
 
         for (let i = 0; i < existingMetricData.Values.length; i++) {
@@ -238,10 +282,10 @@ const monitoringDuration = async (
 }
 
 const monitoringTime = async (
-  log,
-  monitoringData,
-  groupData,
-  label,
+  log: LeveledDebugger,
+  monitoringData: MonitoringData,
+  groupData: MonitoringGroupData,
+  label: string,
   timestamp = Date.now()
 ) => {
   if (!Number.isFinite(timestamp)) {
@@ -259,10 +303,10 @@ const monitoringTime = async (
 }
 
 const monitoringTimeEnd = async (
-  log,
-  monitoringData,
-  groupData,
-  label,
+  log: LeveledDebugger,
+  monitoringData: MonitoringData,
+  groupData: MonitoringGroupData,
+  label: string,
   timestamp = Date.now()
 ) => {
   if (!Number.isFinite(timestamp)) {
@@ -280,7 +324,10 @@ const monitoringTimeEnd = async (
   }
 }
 
-const monitoringPublish = async (log, monitoringData) => {
+const monitoringPublish = async (
+  log: LeveledDebugger,
+  monitoringData: MonitoringData
+) => {
   try {
     log.verbose(`Sending ${monitoringData.metricData.length} metrics`)
     log.verbose(JSON.stringify(monitoringData.metricData))
@@ -313,8 +360,8 @@ const monitoringPublish = async (log, monitoringData) => {
   }
 }
 
-const createGroupDimensions = (config) =>
-  Object.keys(config).reduce(
+const createGroupDimensions = (config: Record<string, string>) =>
+  Object.keys(config).reduce<MetricDimensions>(
     (acc, key) =>
       config[key] != null
         ? acc.concat({
@@ -326,11 +373,11 @@ const createGroupDimensions = (config) =>
   )
 
 const monitoringRate = async (
-  log,
-  monitoringData,
-  groupData,
-  metricName,
-  count,
+  log: LeveledDebugger,
+  monitoringData: MonitoringData,
+  groupData: MonitoringGroupData,
+  metricName: string,
+  count: number,
   seconds = 1
 ) => {
   if (!Number.isFinite(count)) {
@@ -346,21 +393,24 @@ const monitoringRate = async (
   let isDimensionCountLimitReached = false
 
   monitoringData.metricData = monitoringData.metricData.concat(
-    groupData.durationMetricDimensionsList.reduce((acc, groupDimensions) => {
-      if (groupDimensions.length <= MAX_DIMENSION_COUNT) {
-        acc.push({
-          MetricName: metricName,
-          Timestamp: timestamp,
-          Unit: 'Count/Second',
-          Value: count / seconds,
-          Dimensions: groupDimensions,
-        })
-      } else {
-        isDimensionCountLimitReached = true
-      }
+    groupData.durationMetricDimensionsList.reduce<MetricData[]>(
+      (acc, groupDimensions) => {
+        if (groupDimensions.length <= MAX_DIMENSION_COUNT) {
+          acc.push({
+            MetricName: metricName,
+            Timestamp: timestamp,
+            Unit: 'Count/Second',
+            Value: count / seconds,
+            Dimensions: groupDimensions,
+          })
+        } else {
+          isDimensionCountLimitReached = true
+        }
 
-      return acc
-    }, [])
+        return acc
+      },
+      []
+    )
   )
 
   delete groupData.timerMap[metricName]
@@ -372,9 +422,13 @@ const monitoringRate = async (
   }
 }
 
-const createMonitoringImplementation = (log, monitoringData, groupData) => {
+const createMonitoringImplementation = (
+  log: LeveledDebugger,
+  monitoringData: MonitoringData,
+  groupData: MonitoringGroupData
+): Monitoring => {
   return {
-    group: (config) => {
+    group: (config: Record<string, any>) => {
       const groupDimensions = createGroupDimensions(config)
 
       const globalDimensions =
@@ -407,7 +461,10 @@ const createMonitoringImplementation = (log, monitoringData, groupData) => {
   }
 }
 
-const createDeploymentDimensions = (deploymentId, resolveVersion) => [
+const createDeploymentDimensions = (
+  deploymentId: string,
+  resolveVersion: string
+): MetricDimensionsList => [
   [
     { Name: 'DeploymentId', Value: deploymentId },
     { Name: 'ResolveVersion', Value: resolveVersion },
@@ -416,13 +473,19 @@ const createDeploymentDimensions = (deploymentId, resolveVersion) => [
   [{ Name: 'DeploymentId', Value: deploymentId }],
 ]
 
-const createMonitoring = ({ deploymentId, resolveVersion }) => {
-  const monitoringData = {
+const createMonitoring = ({
+  deploymentId,
+  resolveVersion,
+}: {
+  deploymentId: string
+  resolveVersion: string
+}) => {
+  const monitoringData: MonitoringData = {
     metricData: [],
     metricDimensions: createDeploymentDimensions(deploymentId, resolveVersion),
   }
 
-  const monitoringGroupData = {
+  const monitoringGroupData: MonitoringGroupData = {
     timerMap: {},
     metricDimensions: [],
     globalDimensions: [],

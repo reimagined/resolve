@@ -248,6 +248,8 @@ export type Resolve = {
   routesTrie: Trie
 
   getVacantTimeInMillis: () => number
+
+  resolveVersion?: string
 } & BuildTimeConstants
 
 export type ResolvePartial = Partial<Resolve>

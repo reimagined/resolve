@@ -1,6 +1,6 @@
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
 
-const kindByEvent = (event) => {
+const kindByEvent = (event: { part: string; path?: string }) => {
   const { part, path = '' } = event
   if (part === 'bootstrap') {
     return 'bootstrapping'
@@ -16,10 +16,10 @@ const kindByEvent = (event) => {
 }
 
 export const putDurationMetrics = async (
-  lambdaEvent,
-  lambdaContext,
-  coldStart,
-  lambdaRemainingTimeStart
+  lambdaEvent: any,
+  lambdaContext: any,
+  coldStart: boolean,
+  lambdaRemainingTimeStart: number
 ) => {
   if (
     lambdaContext &&
@@ -34,7 +34,7 @@ export const putDurationMetrics = async (
     const dimensions = [
       {
         Name: 'Deployment Id',
-        Value: process.env.RESOLVE_DEPLOYMENT_ID,
+        Value: process.env.RESOLVE_DEPLOYMENT_ID as string,
       },
       {
         Name: 'Kind',
@@ -61,7 +61,7 @@ export const putDurationMetrics = async (
         Dimensions: [
           {
             Name: 'Deployment Id',
-            Value: process.env.RESOLVE_DEPLOYMENT_ID,
+            Value: process.env.RESOLVE_DEPLOYMENT_ID as string,
           },
           {
             Name: 'Kind',
