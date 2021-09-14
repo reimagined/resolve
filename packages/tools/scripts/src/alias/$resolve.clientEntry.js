@@ -4,7 +4,7 @@ import {
   RESOURCE_INSTANCE_ONLY,
   IMPORT_INSTANCE,
 } from '../constants'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
 const importClientEntry = ({ resolveConfig, isClient }, resourceQuery) => {
   if (!/^\?/.test(resourceQuery)) {

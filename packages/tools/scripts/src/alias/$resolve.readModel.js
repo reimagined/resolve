@@ -7,7 +7,7 @@ import {
   IMPORT_INSTANCE,
 } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
 const importReadModel = ({ resolveConfig, isClient }, resourceQuery) => {
   if (!/^\?/.test(resourceQuery)) {

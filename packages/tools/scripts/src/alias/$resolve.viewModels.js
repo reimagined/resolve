@@ -6,7 +6,7 @@ import {
   IMPORT_INSTANCE,
 } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
 const importViewModels = ({ resolveConfig, isClient }) => {
   const imports = []
@@ -39,8 +39,10 @@ const importViewModels = ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      instanceFallback:
-        '@resolve-js/runtime/lib/common/defaults/json-deserialize-state.js',
+      instanceFallback: {
+        package: '@resolve-js/core',
+        import: 'jsonDeserializeState',
+      },
       injectRuntimeOptions: isClient ? true : null,
       imports,
       constants,
@@ -62,8 +64,10 @@ const importViewModels = ({ resolveConfig, isClient }) => {
         runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
-        instanceFallback:
-          '@resolve-js/runtime/lib/common/defaults/json-serialize-state.js',
+        instanceFallback: {
+          package: '@resolve-js/core',
+          import: 'jsonSerializeState',
+        },
         imports,
         constants,
       })

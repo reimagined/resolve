@@ -5,8 +5,7 @@ import {
   checkRuntimeEnv,
   injectRuntimeEnv as injectRuntimeEnvImpl,
 } from './declare_runtime_env'
-import resolveFile from './resolve_file'
-import resolveFileOrModule from './resolve_file_or_module'
+import { isPackageImport, resolveResource } from './resolve-resource'
 
 import {
   RUNTIME_ENV_ANYWHERE,
@@ -23,12 +22,6 @@ const injectRuntimeEnv = (envKey, options) =>
   options != null
     ? injectRuntimeEnvImpl(envKey, options)
     : injectRuntimeEnvImpl(envKey)
-
-const isPackageImport = (specifier) =>
-  specifier != null &&
-  typeof specifier !== 'string' &&
-  specifier.package != null &&
-  specifier.import != null
 
 const createHashCompileTime = (prefix, content) => {
   const hmac = crypto.createHmac('sha512', prefix)
@@ -138,10 +131,20 @@ const importEmptyResource = ({
     )
   }
 
-  const resourceFile = resolveFile(null, instanceFallback)
-  imports.push(
-    `import ${resourceName}_instance from ${JSON.stringify(resourceFile)}`
-  )
+  const { result, isPackage, imported } = resolveResource(null, {
+    instanceFallback,
+  })
+  if (isPackage) {
+    imports.push(
+      `import { ${imported} as ${resourceName}_instance } from ${JSON.stringify(
+        result
+      )}`
+    )
+  } else {
+    imports.push(
+      `import ${resourceName}_instance from ${JSON.stringify(result)}`
+    )
+  }
 
   if (instanceMode === IMPORT_CONSTRUCTOR) {
     constants.push(
@@ -191,18 +194,19 @@ const importInstanceResource = ({
   })
 
   if (!checkRuntimeEnv(resourceValue)) {
-    let resourceFile
-    if (isPackageImport(resourceValue)) {
-      resourceFile = resolveFile(resourceValue.package, instanceFallback)
+    const { isPackage, result, imported } = resolveResource(resourceValue, {
+      instanceFallback,
+    })
+
+    if (isPackage) {
       imports.push(
-        `import { ${
-          resourceValue.import
-        } as ${resourceName}_instance } from ${JSON.stringify(resourceFile)}`
+        `import { ${imported} as ${resourceName}_instance } from ${JSON.stringify(
+          result
+        )}`
       )
     } else {
-      resourceFile = resolveFile(resourceValue, instanceFallback)
       imports.push(
-        `import ${resourceName}_instance from ${JSON.stringify(resourceFile)}`
+        `import ${resourceName}_instance from ${JSON.stringify(result)}`
       )
     }
 
@@ -211,7 +215,7 @@ const importInstanceResource = ({
         `const ${resourceName}_hash = ${JSON.stringify(
           createHashCompileTime(
             calculateHash,
-            fs.readFileSync(resourceFile).toString()
+            fs.readFileSync(result).toString()
           )
         )}`
       )
@@ -357,22 +361,17 @@ const importConstructorResourceModule = ({
 }) => {
   const module = resourceValue.module
   if (!checkRuntimeEnv(module)) {
-    let moduleRef
-    if (isPackageImport(module)) {
-      moduleRef = module.package
+    const { result, imported, isPackage } = resolveResource(module)
+
+    if (isPackage) {
       imports.push(
-        `import { ${
-          module.import
-        } as ${resourceName}_constructor } from ${JSON.stringify(
-          resolveFileOrModule(moduleRef)
+        `import { ${imported} as ${resourceName}_constructor } from ${JSON.stringify(
+          result
         )}`
       )
     } else {
-      moduleRef = module
       imports.push(
-        `import ${resourceName}_constructor from ${JSON.stringify(
-          resolveFileOrModule(moduleRef)
-        )}`
+        `import ${resourceName}_constructor from ${JSON.stringify(result)}`
       )
     }
 
@@ -381,7 +380,11 @@ const importConstructorResourceModule = ({
         `const ${resourceName}_constructor_hash = ${JSON.stringify(
           createHashCompileTime(
             calculateHash,
-            fs.readFileSync(resolveFileOrModule(moduleRef, true)).toString()
+            fs
+              .readFileSync(
+                resolveResource(module, { returnResolved: true }).result
+              )
+              .toString()
           )
         )}`
       )
@@ -426,7 +429,7 @@ const importConstructorResourceImports = ({
     const importValue = resourceImports[importKey]
 
     const inlineImportKey = `${resourceName}_import_${importKey}`
-    const resourceFile = resolveFile(importValue)
+    const { result: resourceFile } = resolveResource(importValue)
 
     if (!checkRuntimeEnv(importValue)) {
       imports.push(
@@ -439,7 +442,9 @@ const importConstructorResourceImports = ({
             createHashCompileTime(
               calculateHash,
               fs
-                .readFileSync(resolveFileOrModule(resourceFile, true))
+                .readFileSync(
+                  resolveResource(resourceFile, { returnResolved: true }).result
+                )
                 .toString()
             )
           )}`
@@ -592,7 +597,7 @@ const importConstructorResource = ({
   }
 }
 
-const importResource = (options) => {
+export const importResource = (options) => {
   const { runtimeMode, importMode, instanceMode, resourceValue } = options
   validateRuntimeMode(runtimeMode)
   validateImportMode(importMode)
@@ -614,5 +619,3 @@ const importResource = (options) => {
     )
   }
 }
-
-export default importResource

@@ -5,7 +5,7 @@ import {
   IMPORT_INSTANCE,
   RUNTIME_ENV_NOWHERE,
 } from '../constants'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 
 const importSagas = ({ resolveConfig, isClient }) => {

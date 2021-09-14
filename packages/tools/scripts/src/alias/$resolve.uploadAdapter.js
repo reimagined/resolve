@@ -4,7 +4,7 @@ import {
   RUNTIME_ENV_ANYWHERE,
   IMPORT_CONSTRUCTOR,
 } from '../constants'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
 const importUploadAdapter = ({ resolveConfig, isClient }) => {
   if (isClient) {

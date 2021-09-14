@@ -1,5 +1,6 @@
 import Url from 'url'
 import { MiddlewareWrapper, Monitoring } from './types/runtime'
+import { IS_BUILT_IN } from './symbols'
 
 export function firstOfType<T>(
   selector: (x: any) => x is T,
@@ -158,3 +159,13 @@ export const jsonUtfStringify = function (inputObject: object) {
     escapeUnicodeSymbol
   )
 }
+
+export function jsonDeserializeState(state: string) {
+  return JSON.parse(state)
+}
+jsonDeserializeState[IS_BUILT_IN] = true
+
+export function jsonSerializeState(state: string) {
+  return JSON.stringify(state, null, 2)
+}
+jsonSerializeState[IS_BUILT_IN] = true
