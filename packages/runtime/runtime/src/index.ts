@@ -7,6 +7,7 @@ import { emptyReadModelConnector } from './common/defaults/empty-read-model-conn
 import { failHandler } from './common/handlers/fail-handler'
 import { liveRequireHandler } from './common/handlers/live-require-handler'
 import { entryPointMarker } from './common/dynamic-require/entry-point-marker'
+import { disabledEncryption } from './common/defaults/disabled-encryption'
 
 // @resolve-js/runtime-local
 import { localEntry } from './local/index'
@@ -32,6 +33,7 @@ export {
   importEventStoreHandler,
   resetDomainHandler,
   emptyReadModelConnector,
+  disabledEncryption,
 }
 
 export type {
