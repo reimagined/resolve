@@ -6,9 +6,11 @@ import { fromBuffer as fileTypeFromBuffer } from 'file-type/core'
 
 import extractRequestBody from '../utils/extract-request-body'
 
+import type { ResolveRequest, ResolveResponse } from '../types'
+
 const log = debugLevels('resolve:runtime:uploader-handler')
 
-const cors = (res) => {
+const cors = (res: ResolveResponse) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader(
     'Access-Control-Allow-Methods',
@@ -17,7 +19,7 @@ const cors = (res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Authorization')
 }
 
-const uploaderHandler = async (req, res) => {
+const uploaderHandler = async (req: ResolveRequest, res: ResolveResponse) => {
   try {
     const { directory, bucket, secretKey } = req.resolve.uploader
     const bucketPath = path.join(directory, bucket)
@@ -39,11 +41,10 @@ const uploaderHandler = async (req, res) => {
         fs.mkdirSync(dirName, { recursive: true })
       }
 
-      let body = null
-      let data = null
+      let data: Buffer
 
       if (req.method === 'POST') {
-        body = extractRequestBody(req)
+        const body = extractRequestBody(req)
         data = Buffer.from(body.file.contentData, 'latin1')
 
         fs.writeFileSync(
@@ -54,8 +55,8 @@ const uploaderHandler = async (req, res) => {
           { flag: 'w+', encoding: 'utf8' }
         )
       } else {
-        body = req.body
-        data = Buffer.from(body, 'latin1')
+        const body = req.body
+        data = Buffer.from(body ?? '', 'latin1')
 
         const ft = await fileTypeFromBuffer(data)
 

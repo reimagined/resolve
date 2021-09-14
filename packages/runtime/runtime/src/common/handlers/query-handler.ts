@@ -2,7 +2,9 @@ import { getRootBasedUrl } from '@resolve-js/core'
 import extractErrorHttpCode from '../utils/extract-error-http-code'
 import extractRequestBody from '../utils/extract-request-body'
 
-const queryHandler = async (req, res) => {
+import type { ResolveRequest, ResolveResponse } from '../types'
+
+const queryHandler = async (req: ResolveRequest, res: ResolveResponse) => {
   const segment = req.resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('query')
 
@@ -14,7 +16,7 @@ const queryHandler = async (req, res) => {
     if (modelName == null || modelOptions == null) {
       const error = new Error(
         'Invalid "modelName" and/or "modelOptions" parameters'
-      )
+      ) as any
       error.code = 400
       throw error
     }

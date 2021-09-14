@@ -1,10 +1,15 @@
 import * as contentDisposition from 'content-disposition'
 import iconv from 'iconv-lite'
 
-const convertCodepage = (content, fromEncoding, toEncoding) =>
-  iconv.decode(iconv.encode(content, fromEncoding), toEncoding)
+import type { ResolveRequest } from '../types'
 
-const extractRequestBody = (req) => {
+const convertCodepage = (
+  content: string,
+  fromEncoding: string,
+  toEncoding: string
+) => iconv.decode(iconv.encode(content, fromEncoding), toEncoding)
+
+const extractRequestBody = (req: ResolveRequest) => {
   if (req.body == null || req.body === '') {
     return req.query
   }
@@ -15,7 +20,7 @@ const extractRequestBody = (req) => {
           .map((value) => value.trim().toLowerCase())
       : []
 
-  let bodyFields = {}
+  let bodyFields: any = {}
 
   switch (contentType) {
     case 'application/json': {
@@ -24,11 +29,13 @@ const extractRequestBody = (req) => {
     }
 
     case 'application/x-www-form-urlencoded': {
-      bodyFields = req.body.split('&').reduce((acc, pair) => {
-        let [key, value] = pair.split('=').map(decodeURIComponent)
-        acc[key] = value
-        return acc
-      }, {})
+      bodyFields = req.body
+        .split('&')
+        .reduce<Record<string, string>>((acc, pair) => {
+          let [key, value] = pair.split('=').map(decodeURIComponent)
+          acc[key] = value
+          return acc
+        }, {})
       break
     }
 
@@ -59,7 +66,7 @@ const extractRequestBody = (req) => {
             'Invalid inline body separator for multipart/form-data'
           )
         }
-        const separatorIndex = separatorMatch.index
+        const separatorIndex = separatorMatch.index as number
         const separatorLength = separatorMatch[0].length
         const inlineHeadersString = contentArray[index].substring(
           0,
@@ -71,7 +78,7 @@ const extractRequestBody = (req) => {
 
         const inlineHeaders = inlineHeadersString
           .split(/\r?\n/g)
-          .reduce((acc, content) => {
+          .reduce<Record<string, string>>((acc, content) => {
             const [inlineHeaderName, ...inlineHeaderContent] = content.split(
               // eslint-disable-next-line no-useless-escape
               /\: /g

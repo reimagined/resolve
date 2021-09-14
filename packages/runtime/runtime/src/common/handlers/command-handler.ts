@@ -4,19 +4,27 @@ import extractErrorHttpCode from '../utils/extract-error-http-code'
 import extractRequestBody from '../utils/extract-request-body'
 import message from '../message'
 
+import type { ResolveRequest, ResolveResponse } from '../types'
+import type { CommandExecutor } from '../command'
+import type { MiddlewareContext } from '@resolve-js/core'
+
 const log = debugLevels('resolve:runtime:command-handler')
 
-function isConcurrentError(error) {
+function isConcurrentError(error: any) {
   return error.name === 'ConcurrentError'
 }
 
-function isCommandError(error) {
+function isCommandError(error: any) {
   return error.name === 'CommandError'
 }
 
 export const executeCommandWithRetryConflicts = async (
-  { executeCommand, commandArgs, jwt },
-  middlewareContext
+  {
+    executeCommand,
+    commandArgs,
+    jwt,
+  }: { executeCommand: CommandExecutor; commandArgs: any; jwt?: string },
+  middlewareContext: MiddlewareContext
 ) => {
   const retryCount = commandArgs.immediateConflict != null ? 0 : 10
   let lastError = null
@@ -48,7 +56,7 @@ export const executeCommandWithRetryConflicts = async (
   return result
 }
 
-const commandHandler = async (req, res) => {
+const commandHandler = async (req: ResolveRequest, res: ResolveResponse) => {
   const segment = req.resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('command')
 

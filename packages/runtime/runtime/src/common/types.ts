@@ -14,7 +14,7 @@ import type { Server as HttpServer, IncomingHttpHeaders } from 'http'
 import http from 'http'
 import https from 'https'
 import type { CookieSerializeOptions } from 'cookie'
-import type { Trie } from 'route-trie'
+import type { Trie, Params as MatchedParams } from 'route-trie'
 
 export type CallMethodParams = {
   modelName?: string | null
@@ -265,6 +265,7 @@ export type HttpRequest = {
 
 export type ResolveRequest = HttpRequest & {
   readonly resolve: Resolve
+  matchedParams: MatchedParams
 }
 
 export type HttpResponse = {

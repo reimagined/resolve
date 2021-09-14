@@ -14,7 +14,7 @@ type CommandPool = {
 }
 
 export type CommandExecutor = {
-  (command: Command): Promise<CommandResult>
+  (command: Command, context?: MiddlewareContext): Promise<CommandResult>
   dispose: () => Promise<void>
 }
 
