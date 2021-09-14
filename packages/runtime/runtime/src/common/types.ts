@@ -121,6 +121,7 @@ export type SchedulerEntry = {
 export type Scheduler = {
   addEntries: (array: SchedulerEntry[]) => Promise<void>
   clearEntries: () => Promise<void>
+  executeEntries?: (entry: any) => any
 }
 
 export type UploaderPool = {
@@ -205,7 +206,7 @@ export type Resolve = {
   assemblies: Assemblies
   domain: DomainWithHandlers
   domainInterop: Domain
-  readonly performanceTracer: PerformanceTracer
+  performanceTracer: PerformanceTracer
   pubsubManager: PubsubManager
   scheduler: Scheduler
   uploader: Uploader

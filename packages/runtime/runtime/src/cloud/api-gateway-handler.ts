@@ -1,9 +1,15 @@
 import wrapApiHandler from './wrap-api-handler'
 import { mainHandler } from '../common/handlers/main-handler'
 
-const getCustomParameters = async (resolve) => ({ resolve })
+import type { Resolve } from '../common/types'
 
-const apiGatewayHandler = async (lambdaEvent, lambdaContext, resolve) => {
+const getCustomParameters = async (resolve: Resolve) => ({ resolve })
+
+const apiGatewayHandler = async (
+  lambdaEvent: any,
+  lambdaContext: any,
+  resolve: Resolve
+) => {
   const executor = wrapApiHandler(
     mainHandler,
     getCustomParameters.bind(null, resolve),

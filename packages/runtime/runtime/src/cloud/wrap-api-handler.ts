@@ -345,7 +345,7 @@ const wrapApiHandler = (
   handler: (req: ResolveRequest, res: ResolveResponse) => Promise<void>,
   getCustomParameters?: Function,
   monitoring?: Monitoring
-) => async (lambdaEvent: any, lambdaContext: any, lambdaCallback: any) => {
+) => async (lambdaEvent: any, lambdaContext: any, lambdaCallback?: any) => {
   const startTimestamp = Date.now()
 
   if (monitoring != null) {

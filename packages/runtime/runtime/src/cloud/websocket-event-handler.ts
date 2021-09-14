@@ -5,17 +5,25 @@ import {
   escapeId,
   escapeStr,
 } from 'resolve-cloud-common/postgres'
+
+import type { Resolve } from '../common/types'
+
 import debugLevels from '@resolve-js/debug-levels'
 
 const log = debugLevels('resolve:runtime:websocket-event-handler')
 
-const region = process.env.AWS_REGION
-const websocketLambdaArn = process.env.RESOLVE_WEBSOCKET_LAMBDA_ARN
-const eventStoreClusterArn = process.env.RESOLVE_EVENT_STORE_CLUSTER_ARN
-const eventStoreDatabaseName = process.env.RESOLVE_EVENT_STORE_DATABASE_NAME
-const subscriptionsTableName = process.env.RESOLVE_SUBSCRIPTIONS_TABLE_NAME
-const userSecretArn = process.env.RESOLVE_USER_SECRET_ARN
-const encryptedDeploymentId = process.env.RESOLVE_ENCRYPTED_DEPLOYMENT_ID
+//TODO: check in runtime that these environment variables are defined?
+const region = process.env.AWS_REGION as string
+const websocketLambdaArn = process.env.RESOLVE_WEBSOCKET_LAMBDA_ARN as string
+const eventStoreClusterArn = process.env
+  .RESOLVE_EVENT_STORE_CLUSTER_ARN as string
+const eventStoreDatabaseName = process.env
+  .RESOLVE_EVENT_STORE_DATABASE_NAME as string
+const subscriptionsTableName = process.env
+  .RESOLVE_SUBSCRIPTIONS_TABLE_NAME as string
+const userSecretArn = process.env.RESOLVE_USER_SECRET_ARN as string
+const encryptedDeploymentId = process.env
+  .RESOLVE_ENCRYPTED_DEPLOYMENT_ID as string
 
 const LOAD_EVENTS_COUNT_LIMIT = 1000000
 // 128kb is a limit for AWS WebSocket API message size
@@ -24,7 +32,20 @@ const LOAD_EVENTS_SIZE_LIMIT = 124 * 1024
 const databaseNameAsId = escapeId(eventStoreDatabaseName)
 const subscriptionsTableNameAsId = escapeId(subscriptionsTableName)
 
-const handleWebsocketEvent = async ({ method, payload }, resolve) => {
+const handleWebsocketEvent = async (
+  {
+    method,
+    payload,
+  }: {
+    method: string
+    payload: {
+      queryString: { token: string }
+      connectionId: string
+      data: string
+    }
+  },
+  resolve: Resolve
+) => {
   log.debug(`dispatching lambda event to websocket`)
 
   switch (method) {
@@ -34,7 +55,10 @@ const handleWebsocketEvent = async ({ method, payload }, resolve) => {
       const { eventTypes, aggregateIds } = jwt.verify(
         token,
         encryptedDeploymentId
-      )
+      ) as {
+        eventTypes: string[] | null
+        aggregateIds: string[] | null
+      }
 
       const eventTypeMap =
         eventTypes != null
