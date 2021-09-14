@@ -29,30 +29,33 @@ We recommend that your familiarize yourself with basics of event sourcing and CQ
 
 Use the **create-resolve-app** tool to create a new reSolve application:
 
-##### npm:
-
 ```sh
-$ npm i -g create-resolve-app
-$ create-resolve-app shopping-list
-```
-
-##### npx:
-
-```sh
-$ npx create-resolve-app shopping-list
-```
-
-##### yarn:
-
-```sh
-$ yarn create resolve-app shopping-list
+yarn create resolve-app shopping-list
 ```
 
 After this, a minimal reSolve application is ready. To run it in development mode, type:
 
 ```sh
-$ cd shopping-list
-$ yarn run dev
+cd shopping-list
+yarn run dev
+```
+
+### Running Tests
+
+A new reSolve application contains a minimalistic end-to-end test located in `test/e2e/index.test.js` that runs on the client and checks that the reSolve server responds normally. You are also free to modify this file to check your application's functionality.
+
+Call the project's `test:e2e` script to run the test:
+
+```sh
+yarn test:e2e
+```
+
+Each consequent lesson in this tutorial will offer you new tests as your application's complexity progresses. Run these tests to ensure that you are ready to move to the next lesson.
+
+The tests for this tutorial make heavy use of the Chai assertion library. Use the following console input to install it:
+
+```sh
+yarn add chai
 ```
 
 ---
@@ -256,13 +259,16 @@ sqlite> select * from events;
 </TabItem>
 <TabItem value="test" label="Write a test">
 
-To automatically perform the checks, you can write a test or use the test included into the lesson's [example project](https://github.com/reimagined/resolve/tree/dev/tutorial/lesson-1):
+You can write an end-to-end test to check the new functionality. Refer to the [Running Tests](#running-tests) section for the information on how to run tests in your application.
 
-[test/functional/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/functional/index.test.js)
+You can manually add the required test cases to your application's tests or use the test included into the lesson's [example project](https://github.com/reimagined/resolve/tree/dev/tutorial/lesson-1):
+
+[test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/e2e/index.test.js)
 
 ```js
 import { expect } from 'chai'
 ...
+// Create a shopping list and check the server response.
 test('createShoppingList', async () => {
   const command = {
     aggregateName: 'ShoppingList',
@@ -290,7 +296,7 @@ test('createShoppingList', async () => {
     aggregateVersion: 1,
   })
 })
-
+// Create an item and check the server response.
 test('createShoppingItem', async () => {
   const command = {
     aggregateName: 'ShoppingList',
@@ -319,6 +325,12 @@ test('createShoppingItem', async () => {
     aggregateVersion: 2,
   })
 })
+```
+
+Call the project's `test:e2e` script to run the test:
+
+```sh
+yarn test:e2e
 ```
 
 </TabItem>
@@ -562,6 +574,34 @@ readModels: [
 ],
 ```
 
+<details>
+<summary>
+
+Update [tests](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-2/test/functional/index.test.js#L199-L214) to check this functionality.
+
+</summary>
+
+```js
+test('read model query should work correctly', async () => {
+  const response = await fetch(`${MAIN_PAGE}/api/query/ShoppingLists/all`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  })
+
+  const result = await response.json()
+
+  expect(result.data).to.have.lengthOf(1)
+  expect(result.data[0]).to.include({
+    id: 'shopping-list-1',
+    name: 'List 1',
+  })
+})
+```
+
+</details>
+
 ### Query a Read Model
 
 Use the reSolve HTTP API to query the ShoppingLists Read Model:
@@ -618,7 +658,7 @@ The example project uses [react-bootstrap](https://react-bootstrap.github.io) to
 
 You can define a reusable component that generates the document `<head>` section based on the specified parameters. In this component, you can generate static resource links as well as document metadata. The code sample below demonstrates how this component is defined in the example application:
 
-**client/components/Header.js**
+[client/components/Header.js](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-3/client/components/Header.js)
 
 ```js
 import React from 'react'
@@ -1621,7 +1661,3 @@ export default ShoppingListItem
 - [useCommand](api/client/resolve-react-hooks.md#usecommand)
 
 ![Check List Item](assets/tutorial/lesson5-check-item.png)
-
-```
-
-```
