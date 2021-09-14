@@ -19,8 +19,10 @@ const importUploadAdapter = ({ resolveConfig, isClient }) => {
 
   if (resolveConfig.hasOwnProperty('uploadAdapter')) {
     if (resolveConfig.uploadAdapter.module == null) {
-      resolveConfig.uploadAdapter.module =
-        '@resolve-js/runtime/lib/common/defaults/upload-adapter.js'
+      resolveConfig.uploadAdapter.module = {
+        package: '@resolve-js/runtime',
+        import: 'emptyUploadAdapter',
+      }
     }
 
     importResource({

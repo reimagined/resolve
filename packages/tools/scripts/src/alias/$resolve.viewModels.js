@@ -80,8 +80,10 @@ const importViewModels = ({ resolveConfig, isClient }) => {
         runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
-        instanceFallback:
-          '@resolve-js/runtime/lib/common/defaults/view-model-resolver.js',
+        instanceFallback: {
+          package: '@resolve-js/runtime',
+          import: 'defaultViewModelResolver',
+        },
         imports,
         constants,
       })

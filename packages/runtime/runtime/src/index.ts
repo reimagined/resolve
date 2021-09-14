@@ -9,6 +9,8 @@ import { liveRequireHandler } from './common/handlers/live-require-handler'
 import { entryPointMarker } from './common/dynamic-require/entry-point-marker'
 import { disabledEncryption } from './common/defaults/disabled-encryption'
 import { wrapReadModelConnector } from './common/wrap-readmodel-connector'
+import { emptyUploadAdapter } from './common/defaults/empty-upload-adapter'
+import { defaultViewModelResolver } from './common/defaults/default-view-model-resolver'
 
 // @resolve-js/runtime-local
 import { localEntry } from './local/index'
@@ -36,6 +38,8 @@ export {
   emptyReadModelConnector,
   disabledEncryption,
   wrapReadModelConnector,
+  emptyUploadAdapter,
+  defaultViewModelResolver,
 }
 
 export type {
