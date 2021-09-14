@@ -5,10 +5,9 @@ import { promisify } from 'util'
 import { pipeline } from 'stream'
 import type { ResolveRequest, ResolveResponse } from '../common/types'
 
-const importEventStoreHandler = (options: { directory: string }) => async (
-  req: ResolveRequest,
-  res: ResolveResponse
-) => {
+export const importEventStoreHandler = (options: {
+  directory: string
+}) => async (req: ResolveRequest, res: ResolveResponse) => {
   const { eventstoreAdapter } = req.resolve
 
   try {
@@ -43,5 +42,3 @@ const importEventStoreHandler = (options: { directory: string }) => async (
     res.end(String(error))
   }
 }
-
-export default importEventStoreHandler

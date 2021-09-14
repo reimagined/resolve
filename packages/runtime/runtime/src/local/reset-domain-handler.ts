@@ -7,7 +7,7 @@ import type { ResolveRequest, ResolveResponse } from '../common/types'
 
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 
-const resetDomainHandler = (options: any) => async (
+export const resetDomainHandler = (options: any) => async (
   req: ResolveRequest,
   res: ResolveResponse
 ) => {
@@ -84,5 +84,3 @@ const resetDomainHandler = (options: any) => async (
     res.end(String(error))
   }
 }
-
-export default resetDomainHandler

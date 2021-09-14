@@ -1,4 +1,4 @@
-const queryIsReadyHandler = async (req: any, res: any) => {
+export const queryIsReadyHandler = async (req: any, res: any) => {
   try {
     const { eventstoreAdapter, eventSubscriber, eventListeners } = req.resolve
     const queryIsReadyPromises = []
@@ -41,5 +41,3 @@ const queryIsReadyHandler = async (req: any, res: any) => {
     res.end(String(error))
   }
 }
-
-export default queryIsReadyHandler

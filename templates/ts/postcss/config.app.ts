@@ -2,8 +2,10 @@ const appConfig = {
   apiHandlers: [
     {
       handler: {
-        module:
-          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+        module: {
+          package: '@resolve-js/runtime',
+          import: 'liveRequireHandler',
+        },
         options: {
           modulePath: './ssr.js',
           moduleFactoryImport: false,

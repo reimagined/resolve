@@ -1,7 +1,7 @@
 const importClientEntry = () => `
     import '$resolve.guardOnlyServer'
 
-    export { default as entryPointMarker } from '@resolve-js/runtime/lib/common/dynamic-require/entry-point-marker'
+    export { default as entryPointMarker } from '@resolve-js/runtime'
 
     const handler = async (...args) => {
       try {

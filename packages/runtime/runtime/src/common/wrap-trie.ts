@@ -3,7 +3,7 @@ import { getRootBasedUrl } from '@resolve-js/core'
 
 import commandHandler from './handlers/command-handler'
 import queryHandler from './handlers/query-handler'
-import markupHandler from './handlers/markup-handler'
+import { markupHandler } from './handlers/markup-handler'
 import uploaderHandler from './handlers/uploader-handler'
 import { failHandler } from './handlers/fail-handler'
 

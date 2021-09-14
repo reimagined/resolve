@@ -143,14 +143,19 @@ const appConfig = {
       method: 'GET',
     },
     {
-      handler: '@resolve-js/runtime/lib/local/query-is-ready-handler.js',
+      handler: {
+        package: '@resolve-js/runtime',
+        import: 'queryIsReadyHandler',
+      },
       path: '/api/query-is-ready',
       method: 'GET',
     },
     {
       handler: {
-        module:
-          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+        module: {
+          package: '@resolve-js/runtime',
+          import: 'liveRequireHandler',
+        },
         options: {
           modulePath: './ssr-hoc.js',
           moduleFactoryImport: false,
@@ -161,8 +166,10 @@ const appConfig = {
     },
     {
       handler: {
-        module:
-          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+        module: {
+          package: '@resolve-js/runtime',
+          import: 'liveRequireHandler',
+        },
         options: {
           modulePath: './ssr-hoc.js',
           moduleFactoryImport: false,
@@ -173,8 +180,10 @@ const appConfig = {
     },
     {
       handler: {
-        module:
-          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+        module: {
+          package: '@resolve-js/runtime',
+          import: 'liveRequireHandler',
+        },
         options: {
           modulePath: './ssr-redux-hooks.js',
           moduleFactoryImport: false,
@@ -185,8 +194,10 @@ const appConfig = {
     },
     {
       handler: {
-        module:
-          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+        module: {
+          package: '@resolve-js/runtime',
+          import: 'liveRequireHandler',
+        },
         options: {
           modulePath: './ssr-redux-hooks.js',
           moduleFactoryImport: false,
