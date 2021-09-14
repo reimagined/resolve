@@ -1,6 +1,5 @@
-import { Selector } from 'testcafe'
+import { Selector, t } from 'testcafe'
 import fetch from 'isomorphic-fetch'
-import { expect } from 'chai'
 
 const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
@@ -38,12 +37,17 @@ test('createShoppingList', async () => {
 
   const event = await response.json()
 
-  expect(event).to.deep.include({
-    type: 'SHOPPING_LIST_CREATED',
-    payload: { name: 'List 1' },
-    aggregateId: 'shopping-list-1',
-    aggregateVersion: 1,
-  })
+  await t
+    .expect(event)
+    .contains({
+      type: 'SHOPPING_LIST_CREATED',
+      aggregateId: 'shopping-list-1',
+      aggregateVersion: 1,
+    })
+    .expect(event.payload)
+    .contains({
+      name: 'List 1',
+    })
 })
 
 test('createShoppingItem', async () => {
@@ -67,12 +71,15 @@ test('createShoppingItem', async () => {
 
   const event = await response.json()
 
-  expect(event).to.deep.include({
-    type: 'SHOPPING_ITEM_CREATED',
-    payload: { id: '1', text: 'Milk' },
-    aggregateId: 'shopping-list-1',
-    aggregateVersion: 2,
-  })
+  await t
+    .expect(event)
+    .contains({
+      type: 'SHOPPING_ITEM_CREATED',
+      aggregateId: 'shopping-list-1',
+      aggregateVersion: 2,
+    })
+    .expect(event.payload)
+    .contains({ id: '1', text: 'Milk' })
 })
 
 test('createShoppingItems', async () => {
@@ -141,7 +148,15 @@ test('createShoppingItems', async () => {
 
     const event = await response.json()
 
-    expect(event).to.deep.include(match.event)
+    await t
+      .expect(event)
+      .contains({
+        aggregateId: match.event.aggregateId,
+        aggregateVersion: match.event.aggregateVersion,
+        type: match.event.type,
+      })
+      .expect(event.payload)
+      .contains(match.event.payload)
   }
 })
 
@@ -190,8 +205,8 @@ test('validation should work correctly', async () => {
       body: JSON.stringify(match.command),
     })
 
-    const event = await response.text()
+    const error = await response.text()
 
-    expect(event).to.include(match.error)
+    await t.expect(error).contains(match.error)
   }
 })

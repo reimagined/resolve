@@ -15,7 +15,7 @@ import appConfig from './config.app'
 import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
-import testFunctionalConfig from './config.test_functional'
+import testFunctionalConfig from './config.test-functional'
 
 const launchMode = process.argv[2]
 
@@ -90,7 +90,7 @@ void (async () => {
 
         await runTestcafe({
           resolveConfig,
-          functionalTestsDir: 'test/functional',
+          functionalTestsDir: 'test/e2e',
           browser: process.argv[3],
           customArgs: ['--stop-on-first-fail'],
         })
