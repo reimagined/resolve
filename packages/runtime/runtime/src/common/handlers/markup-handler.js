@@ -1,4 +1,4 @@
-import getStaticBasedPath from '../utils/get-static-based-path'
+import { getStaticBasedPath } from '@resolve-js/core'
 
 const markupHandler = async (req, res) => {
   const { seedClientEnvs, staticPath, rootPath } = req.resolve
