@@ -1,13 +1,12 @@
 import AWSXray from 'aws-xray-sdk-core'
 
-import type { Resolve } from '../common/types'
+import type { PerformanceTracer } from '@resolve-js/core'
 
-const initPerformanceTracer = (resolve: Resolve) => {
+const initPerformanceTracer = (): PerformanceTracer => {
   let segment = process.env.TRACE ? AWSXray.getSegment() : null
   let traceId = process.env._X_AMZN_TRACE_ID
 
-  //TODO: return performance tracer instead of assigning it here
-  resolve.performanceTracer = {
+  return {
     getSegment: () => {
       if (traceId !== process.env._X_AMZN_TRACE_ID) {
         traceId = process.env._X_AMZN_TRACE_ID

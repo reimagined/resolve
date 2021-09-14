@@ -39,10 +39,10 @@ const index = async ({ assemblies, constants, domain, resolveVersion }) => {
       eventSubscriberScope: process.env.RESOLVE_DEPLOYMENT_ID,
       upstream: true,
       resolveVersion,
+      performanceTracer: await initPerformanceTracer(),
     }
 
     log.debug('preparing performance tracer')
-    await initPerformanceTracer(resolve)
 
     const segment = resolve.performanceTracer.getSegment()
     subSegment = segment.addNewSubsegment('initResolve')

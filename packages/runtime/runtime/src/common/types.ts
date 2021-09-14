@@ -206,7 +206,7 @@ export type Resolve = {
   assemblies: Assemblies
   domain: DomainWithHandlers
   domainInterop: Domain
-  performanceTracer: PerformanceTracer
+  readonly performanceTracer: PerformanceTracer
   pubsubManager: PubsubManager
   scheduler: Scheduler
   uploader: Uploader

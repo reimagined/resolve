@@ -6,8 +6,6 @@ import type {
   PerformanceTracer,
 } from '@resolve-js/core'
 
-import type { ResolvePartial } from '../common/types'
-
 const log = debugLevels('resolve-performance-tracer')
 
 type Segment = {
