@@ -263,6 +263,8 @@ export type HttpRequest = {
   readonly cookies: Record<string, string>
   readonly body: string | null
   jwt?: string
+  readonly isLambdaEdgeRequest?: boolean
+  readonly clientIp?: string
 }
 
 export type ResolveRequest = HttpRequest & {
