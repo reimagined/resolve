@@ -371,7 +371,8 @@
           "additionalProperties": {
             "oneOf": [
               { "$ref": "#/definitions/resourceInstance" },
-              { "$ref": "#/definitions/resourceConstructor" }
+              { "$ref": "#/definitions/resourceConstructor" },
+              { "$ref": "#/definitions/resourcePackage" }
             ]
           }
         },

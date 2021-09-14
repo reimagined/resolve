@@ -34,8 +34,10 @@ const importReadModelConnectors = ({ resolveConfig, isClient }) => {
     )
 
     if (readModelConnector.module == null) {
-      readModelConnector.module =
-        '@resolve-js/runtime/lib/common/defaults/read-model-connector.js'
+      readModelConnector.module = {
+        package: '@resolve-js/runtime',
+        import: 'emptyReadModelConnector',
+      }
     }
 
     importResource({

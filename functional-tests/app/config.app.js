@@ -134,7 +134,10 @@ const appConfig = {
     },
   ],
   clientImports: {
-    version: '@resolve-js/runtime/lib/common/utils/interop-options.js',
+    appOptions: {
+      package: '@resolve-js/core',
+      import: 'optionsInjector',
+    },
   },
   apiHandlers: [
     {

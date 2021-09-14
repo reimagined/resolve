@@ -169,3 +169,9 @@ export function jsonSerializeState(state: string) {
   return JSON.stringify(state, null, 2)
 }
 jsonSerializeState[IS_BUILT_IN] = true
+
+// Used in clientImports to map options to context
+export const optionsInjector = (options: object, imports: object) => {
+  void imports
+  return options
+}
