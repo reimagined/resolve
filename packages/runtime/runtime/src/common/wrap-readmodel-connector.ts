@@ -1,4 +1,4 @@
-const wrapReadmodelConnector = (connector: any, options: any) => {
+export const wrapReadModelConnector = (connector: any, options: any) => {
   const wrappedConnector = Object.create(connector)
 
   if (typeof connector.connect !== 'function') {
@@ -30,5 +30,3 @@ const wrapReadmodelConnector = (connector: any, options: any) => {
 
   return wrappedConnector
 }
-
-export default wrapReadmodelConnector

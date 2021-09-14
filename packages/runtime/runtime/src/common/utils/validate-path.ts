@@ -1,6 +1,6 @@
 import Url from 'url'
 
-const validatePath = (
+export const validatePath = (
   url: string,
   {
     allowEmptyPath,
@@ -40,5 +40,3 @@ const validatePath = (
     return false
   }
 }
-
-export default validatePath
