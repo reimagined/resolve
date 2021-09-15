@@ -102,7 +102,7 @@ export type RealModelConnectorReal = ReadModelConnector &
 
 export type ReadModelConnectorFactory = (options: {
   performanceTracer: PerformanceTracer
-  monitoring: Monitoring
+  monitoring?: Monitoring
 }) => ReadModelConnector
 
 export type QueryExecutor = {

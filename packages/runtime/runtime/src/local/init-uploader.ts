@@ -2,7 +2,7 @@ import fs from 'fs'
 import request from 'request'
 import { v4 as uuid } from 'uuid'
 import crypto from 'crypto'
-import type { Resolve, UploaderPool } from '../common/types'
+import type { Resolve, Uploader, UploaderPool } from '../common/types'
 
 export type UploaderPoolLocal = UploaderPool & {
   directory: string
@@ -131,24 +131,42 @@ const getSignedPut = async (adapter: UploaderAdapter, dir: string) =>
 const getSignedPost = async (adapter: UploaderAdapter, dir: string) =>
   await adapter.createPresignedPost(dir)
 
-const initUploader = async (resolve: Resolve) => {
-  if (resolve.assemblies.uploadAdapter != null) {
-    // TODO: provide support for custom uploader adapter
-    const createUploadAdapter = resolve.assemblies.uploadAdapter
-    const uploader = createUploader(createUploadAdapter() as UploaderPoolLocal)
-    process.env.RESOLVE_UPLOADER_CDN_URL = `http://${resolve.host}:${resolve.port}/uploader`
-
-    resolve.uploader = {
-      getSignedPut: getSignedPut.bind(null, uploader),
-      getSignedPost: getSignedPost.bind(null, uploader),
-      uploadPut: uploader.upload,
-      uploadPost: uploader.uploadFormData,
-      createToken: uploader.createToken,
-      directory: uploader.directory,
-      bucket: uploader.bucket,
-      secretKey: uploader.secretKey,
-    }
-  }
+type UploaderFactoryParameters = {
+  uploaderAdapterFactory: () => UploaderPool
+  host: string
+  port: string
 }
 
-export default initUploader
+export const uploaderFactory = async (
+  params: UploaderFactoryParameters
+): Promise<{
+  uploader: Uploader
+  env: Record<string, string>
+} | null> => {
+  const { uploaderAdapterFactory, host, port } = params
+
+  if (uploaderAdapterFactory != null) {
+    // TODO: provide support for custom uploader adapter
+    const uploader = createUploader(
+      uploaderAdapterFactory() as UploaderPoolLocal
+    )
+    const env = {
+      RESOLVE_UPLOADER_CDN_URL: `http://${host}:${port}/uploader`,
+    }
+
+    return {
+      uploader: {
+        getSignedPut: getSignedPut.bind(null, uploader),
+        getSignedPost: getSignedPost.bind(null, uploader),
+        uploadPut: uploader.upload,
+        uploadPost: uploader.uploadFormData,
+        createToken: uploader.createToken,
+        directory: uploader.directory,
+        bucket: uploader.bucket,
+        secretKey: uploader.secretKey,
+      },
+      env,
+    }
+  }
+  return null
+}

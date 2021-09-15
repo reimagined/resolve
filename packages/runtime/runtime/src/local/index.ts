@@ -12,9 +12,10 @@ import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-fact
 import initExpress from './init-express'
 import initWebsockets from './init-websockets'
 import startExpress from './start-express'
-import initUploader from './init-uploader'
+import initUploader, { uploaderFactory } from './init-uploader'
 import initScheduler from './init-scheduler'
 import { gatherEventListeners } from '../common/gather-event-listeners'
+import { monitoringFactory } from './monitoring-factory'
 import {
   createRuntime,
   RuntimeFactoryParameters,
@@ -50,7 +51,10 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
     const domainInterop = await initDomain(domain)
 
     const performanceTracer = await initPerformanceTracer()
+    const monitoring = await monitoringFactory(performanceTracer)
     const notifyEventSubscriber = await eventSubscriberNotifierFactory()
+    const host = constants.host ?? '0.0.0.0'
+    const port = constants.port ?? '3000'
 
     const {
       eventstoreAdapter: eventStoreAdapterFactory,
@@ -60,10 +64,23 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
     const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
     const getVacantTimeInMillis = () => endTime - Date.now()
 
+    const uploaderData = await uploaderFactory({
+      uploaderAdapterFactory: assemblies.uploadAdapter,
+      host,
+      port,
+    })
+
+    if (uploaderData != null) {
+      Object.keys(uploaderData.env).forEach(
+        (name) => (process.env[name] = uploaderData.env[name])
+      )
+    }
+
     const factoryParameters: RuntimeFactoryParameters = {
       domain,
       domainInterop,
       performanceTracer,
+      monitoring,
       eventStoreAdapterFactory,
       readModelConnectorsFactories,
       getVacantTimeInMillis,
@@ -81,7 +98,7 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
         }
       ),
       eventListeners: gatherEventListeners(domain, domainInterop),
-
+      uploader: uploaderData?.uploader ?? null,
     }
 
     const resolve: ResolvePartial = {
@@ -128,7 +145,6 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
 
     await initExpress(resolve as Resolve)
     await initWebsockets(resolve as Resolve)
-    await initUploader(resolve as Resolve)
     await initScheduler(resolve as Resolve)
     await startExpress(resolve as Resolve)
 
