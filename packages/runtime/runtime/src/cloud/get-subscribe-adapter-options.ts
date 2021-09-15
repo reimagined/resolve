@@ -21,7 +21,7 @@ const getSubscribeAdapterOptions = async (
   const subscribeUrl = `${RESOLVE_WS_URL}?deploymentId=${RESOLVE_DEPLOYMENT_ID}&token=${token}`
 
   return {
-    appId: RESOLVE_DEPLOYMENT_ID,
+    appId: RESOLVE_DEPLOYMENT_ID as string,
     url: subscribeUrl,
   }
 }

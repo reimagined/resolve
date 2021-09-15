@@ -178,12 +178,13 @@ export type BuildTimeConstants = {
   rootPath: string
   staticDir: string
   staticPath: string
+  staticRoutes?: string[] | undefined
 }
 
 export type Resolve = {
   isInitialized: boolean
 
-  instanceId: string
+  instanceId?: string
 
   seedClientEnvs: Assemblies['seedClientEnvs']
   serverImports: Assemblies['serverImports']
@@ -246,8 +247,6 @@ export type Resolve = {
 
   monitoring: Monitoring
 
-  staticRoutes?: string[]
-
   routesTrie: Trie
 
   getVacantTimeInMillis: () => number
@@ -256,6 +255,7 @@ export type Resolve = {
   subscriptionsCredentials: {
     applicationLambdaArn: string
   }
+  publisher: any
 } & BuildTimeConstants
 
 export type ResolvePartial = Partial<Resolve>

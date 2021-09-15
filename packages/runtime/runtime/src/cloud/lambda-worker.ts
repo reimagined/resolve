@@ -10,25 +10,51 @@ import { putDurationMetrics } from './metrics'
 import initResolve from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 import handleWebsocketEvent from './websocket-event-handler'
+import type { EventWithCursor } from '@resolve-js/core'
+
+import type { Resolve } from '../common/types'
 
 const log = debugLevels('resolve:runtime:cloud-entry')
 
 const GRACEFUL_WORKER_SHUTDOWN_TIME = 30 * 1000
-const getVacantTimeInMillis = (lambdaContext) =>
+const getVacantTimeInMillis = (lambdaContext: any) =>
   lambdaContext.getRemainingTimeInMillis() - GRACEFUL_WORKER_SHUTDOWN_TIME
 
 const WORKER_HTTP_REQUEST_DURATION = 25 * 1000
 
 let coldStart = true
 
-const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
+type LambdaContextRecord = {
+  eventSource: string | null
+  body: string
+}
+
+type LambdaContext = {
+  invokedFunctionArn: string
+  functionName: string
+  getRemainingTimeInMillis: () => number
+  callbackWaitsForEmptyEventLoop: boolean
+
+  Records: Array<LambdaContextRecord | null>
+}
+
+type LambdaEvent = {
+  resolveSource: string
+  [key: string]: any
+}
+
+const lambdaWorker = async (
+  resolveBase: Resolve,
+  lambdaEvent: LambdaEvent,
+  lambdaContext: LambdaContext
+) => {
   log.debug('executing application lambda')
   log.verbose(JSON.stringify(lambdaEvent, null, 2))
   lambdaContext.callbackWaitsForEmptyEventLoop = false
 
   initMonitoring(resolveBase)
 
-  const resolve = Object.create(resolveBase)
+  const resolve: Resolve = Object.create(resolveBase)
   resolve.getVacantTimeInMillis = getVacantTimeInMillis.bind(
     null,
     lambdaContext
@@ -80,7 +106,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       Array.isArray(lambdaEvent.Records) &&
       [
         ...new Set(
-          lambdaEvent.Records.map((record) =>
+          lambdaEvent.Records.map((record: LambdaContextRecord) =>
             record != null ? record.eventSource : null
           )
         ),
@@ -93,7 +119,7 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
       await initResolve(resolve)
       log.debug('reSolve framework initialized')
       const errors = []
-      const records = lambdaEvent.Records.map((record) => {
+      const records = lambdaEvent.Records.map((record: LambdaContextRecord) => {
         try {
           return JSON.parse(record.body)
         } catch (err) {
@@ -107,14 +133,24 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
           return null
         }
       })
-      let buildParameters = { coldStart, eventsWithCursors: [] }
+
+      type BuildParameters = {
+        coldStart: boolean
+        eventsWithCursors: EventWithCursor[] | null
+        eventSubscriber?: string
+      }
+
+      let buildParameters: BuildParameters = {
+        coldStart,
+        eventsWithCursors: [],
+      }
       for (const record of records) {
         if (
           record == null ||
           record.eventSubscriber == null ||
           record.eventSubscriber.constructor !== String ||
           !(
-            (record.event == null && record.event == null) ||
+            (record.event == null && record.cursor == null) ||
             (record.event != null &&
               record.event.constructor === Object &&
               record.cursor != null &&
@@ -136,11 +172,16 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
           continue
         }
         if (event != null && cursor != null) {
-          buildParameters.eventsWithCursors.push({ event, cursor })
+          void (buildParameters.eventsWithCursors as EventWithCursor[]).push({
+            event,
+            cursor,
+          })
         }
         Object.assign(buildParameters, notification)
       }
-      if (buildParameters.eventsWithCursors.length === 0) {
+      if (
+        (buildParameters.eventsWithCursors as EventWithCursor[]).length === 0
+      ) {
         buildParameters.eventsWithCursors = null
       }
 
@@ -184,7 +225,10 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
 
       log.debug('identified event source: websocket')
 
-      const executorResult = await handleWebsocketEvent(lambdaEvent, resolve)
+      const executorResult = await handleWebsocketEvent(
+        lambdaEvent as any,
+        resolve
+      )
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 

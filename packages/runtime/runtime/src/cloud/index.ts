@@ -17,17 +17,30 @@ import initUploader from './init-uploader'
 import gatherEventListeners from '../common/gather-event-listeners'
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
+import type { Assemblies, BuildTimeConstants, Resolve } from '../common/types'
+import type { PerformanceSubsegment } from '@resolve-js/core'
+
 const log = debugLevels('resolve:runtime:cloud-entry')
 
-const index = async ({ assemblies, constants, domain, resolveVersion }) => {
-  let subSegment = null
+const index = async ({
+  assemblies,
+  constants,
+  domain,
+  resolveVersion,
+}: {
+  assemblies: Assemblies
+  constants: BuildTimeConstants
+  domain: Resolve['domain']
+  resolveVersion: string
+}) => {
+  let subSegment: PerformanceSubsegment | null = null
 
   log.debug(`starting lambda 'cold start'`)
   const domainInterop = initDomain(domain)
 
   try {
     log.debug('configuring reSolve framework')
-    const resolve = {
+    const resolve: Partial<Resolve> = {
       seedClientEnvs: assemblies.seedClientEnvs,
       serverImports: assemblies.serverImports,
       domain,
@@ -44,39 +57,32 @@ const index = async ({ assemblies, constants, domain, resolveVersion }) => {
 
     log.debug('preparing performance tracer')
 
-    const segment = resolve.performanceTracer.getSegment()
+    const segment = (resolve as Resolve).performanceTracer.getSegment()
     subSegment = segment.addNewSubsegment('initResolve')
 
-    Object.defineProperties(resolve, {
-      getSubscribeAdapterOptions: {
-        value: getSubscribeAdapterOptions,
-      },
-      routesTrie: {
-        value: wrapTrie(
-          domain.apiHandlers,
-          constants.staticRoutes,
-          constants.rootPath
-        ),
-        enumerable: true,
-      },
-    })
+    resolve.getSubscribeAdapterOptions = getSubscribeAdapterOptions
+    resolve.routesTrie = wrapTrie(
+      domain.apiHandlers,
+      constants.staticRoutes,
+      constants.rootPath
+    )
 
     log.debug('preparing uploader')
-    await initUploader(resolve)
+    await initUploader(resolve as Resolve)
 
     resolve.sendReactiveEvent = async (event) => {
       const { aggregateId, type } = event
       const databaseNameAsId = escapeId(
-        process.env.RESOLVE_EVENT_STORE_DATABASE_NAME
+        process.env.RESOLVE_EVENT_STORE_DATABASE_NAME as string
       )
       const subscriptionsTableNameAsId = escapeId(
-        process.env.RESOLVE_SUBSCRIPTIONS_TABLE_NAME
+        process.env.RESOLVE_SUBSCRIPTIONS_TABLE_NAME as string
       )
 
       const connectionIdsResult = await executeStatement({
-        Region: process.env.AWS_REGION,
-        ResourceArn: process.env.RESOLVE_EVENT_STORE_CLUSTER_ARN,
-        SecretArn: process.env.RESOLVE_USER_SECRET_ARN,
+        Region: process.env.AWS_REGION as string,
+        ResourceArn: process.env.RESOLVE_EVENT_STORE_CLUSTER_ARN as string,
+        SecretArn: process.env.RESOLVE_USER_SECRET_ARN as string,
         Sql: `SELECT "connectionId" FROM ${databaseNameAsId}.${subscriptionsTableNameAsId}
           WHERE (
              ${databaseNameAsId}.${subscriptionsTableNameAsId}."eventTypes" #>
@@ -95,13 +101,13 @@ const index = async ({ assemblies, constants, domain, resolveVersion }) => {
           )`,
       })
 
-      const errors = []
+      const errors: any[] = []
 
       await Promise.all(
         connectionIdsResult.map(({ connectionId }) =>
           invokeFunction({
-            Region: process.env.AWS_REGION,
-            FunctionName: process.env.RESOLVE_WEBSOCKET_LAMBDA_ARN,
+            Region: process.env.AWS_REGION as string,
+            FunctionName: process.env.RESOLVE_WEBSOCKET_LAMBDA_ARN as string,
             Payload: {
               type: 'send',
               connectionId,
@@ -122,10 +128,10 @@ const index = async ({ assemblies, constants, domain, resolveVersion }) => {
 
     log.debug(`lambda 'cold start' succeeded`)
 
-    return lambdaWorker.bind(null, resolve)
+    return lambdaWorker.bind(null, resolve as Resolve)
   } catch (error) {
     log.error(`lambda 'cold start' failure`, error)
-    subSegment.addError(error)
+    if (subSegment != null) subSegment.addError(error)
   } finally {
     if (subSegment != null) {
       subSegment.close()

@@ -15,7 +15,7 @@ const wrapTrie = (
   apiHandlers: ApiHandler[],
   staticRoutes: string[] | undefined,
   rootPath: string,
-  customStaticHandler: Function
+  customStaticHandler?: Function
 ) => {
   const staticHandler =
     typeof customStaticHandler === 'function'

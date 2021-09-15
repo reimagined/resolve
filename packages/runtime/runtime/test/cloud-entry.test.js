@@ -1,7 +1,7 @@
 import STS from 'aws-sdk/clients/sts'
 import { ConcurrentError } from '@resolve-js/eventstore-base'
 
-import initCloudEntry from '../src/cloud/index'
+import initCloudEntry from '../src/cloud'
 
 jest.mock('../src/common/dynamic-require/pure-require.js', () => ({
   default: require,
