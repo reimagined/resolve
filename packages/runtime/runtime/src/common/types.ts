@@ -196,7 +196,7 @@ export type Resolve = {
 
   getEventSubscriberDestination: (name?: string) => string
   invokeBuildAsync: InvokeBuildAsync
-  invokeLambdaAsync: any
+  invokeLambdaAsync: (functionName: string, parameters: any) => Promise<void>
 
   ensureQueue: (name?: string) => Promise<void>
   deleteQueue: (name?: string) => Promise<void>
@@ -242,7 +242,7 @@ export type Resolve = {
   }) => Promise<void>
 
   //TODO: types
-  sendSqsMessage: Function
+  sendSqsMessage: (queueName: string, parameters: any) => Promise<void>
 
   monitoring: Monitoring
 
@@ -253,6 +253,9 @@ export type Resolve = {
   getVacantTimeInMillis: () => number
 
   resolveVersion?: string
+  subscriptionsCredentials: {
+    applicationLambdaArn: string
+  }
 } & BuildTimeConstants
 
 export type ResolvePartial = Partial<Resolve>

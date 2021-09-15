@@ -14,7 +14,9 @@ import {
 } from 'resolve-cloud-common/lambda'
 import { getCallerIdentity } from 'resolve-cloud-common/sts'
 
-export const checkError = (error, value) =>
+import type { Resolve } from '../common/types'
+
+export const checkError = (error: any, value: string) =>
   error != null &&
   ((error.message != null &&
     error.message.constructor === String &&
@@ -25,15 +27,18 @@ export const checkError = (error, value) =>
     error.name === `${value}` ||
     error.code === `${value}`)
 
-export const isRetryableServiceError = (error) =>
+export const isRetryableServiceError = (error: any) =>
   checkError(error, 'TooManyRequestsException') ||
   checkError(error, 'ServiceException')
 
-const initSubscriber = (resolve, lambdaContext) => {
+const initSubscriber = (
+  resolve: Resolve,
+  lambdaContext: { invokedFunctionArn: string; functionName: string }
+) => {
   const accountId = getAccountIdFromLambdaContext(lambdaContext)
   const { functionName } = lambdaContext
-  const region = process.env.AWS_REGION
-  const userId = process.env.RESOLVE_USER_ID
+  const region = process.env.AWS_REGION as string
+  const userId = process.env.RESOLVE_USER_ID as string
   const functionArn = `arn:aws:lambda:${region}:${accountId}:function:${functionName}`
   const useSqs = !!process.env.EXPERIMENTAL_SQS_TRANSPORT
 
@@ -46,7 +51,10 @@ const initSubscriber = (resolve, lambdaContext) => {
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
   }
 
-  resolve.invokeLambdaAsync = async (destination, parameters) => {
+  resolve.invokeLambdaAsync = async (
+    destination: string,
+    parameters: Record<string, any>
+  ) => {
     await invokeFunction({
       Region: region,
       FunctionName: destination,
@@ -55,7 +63,10 @@ const initSubscriber = (resolve, lambdaContext) => {
     })
   }
 
-  resolve.sendSqsMessage = async (destination, parameters) => {
+  resolve.sendSqsMessage = async (
+    destination: string,
+    parameters: Record<string, any>
+  ) => {
     const queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${destination}`
     await sendMessage({
       Region: region,
@@ -89,10 +100,10 @@ const initSubscriber = (resolve, lambdaContext) => {
       return tags
     }
     const errors = []
-    let roleArn = null
+    let roleArn: string | null | undefined = null
     let UUID = null
     try {
-      roleArn = (await getCallerIdentity({ region })).Arn
+      roleArn = (await getCallerIdentity({ Region: region })).Arn
     } catch (err) {
       errors.push(err)
     }
@@ -109,7 +120,7 @@ const initSubscriber = (resolve, lambdaContext) => {
                 {
                   Action: 'SQS:*',
                   Principal: {
-                    AWS: [roleArn],
+                    AWS: [roleArn as string],
                   },
                   Effect: 'Allow',
                 },
@@ -217,7 +228,7 @@ const initSubscriber = (resolve, lambdaContext) => {
     const errors = []
     let functionTags = null
     let UUID = null
-    let queueUrl = null
+    let queueUrl: string | null = null
 
     try {
       functionTags = await getFunctionTags({
@@ -263,7 +274,7 @@ const initSubscriber = (resolve, lambdaContext) => {
           try {
             await getEventSourceMapping({ Region: region, UUID })
             const error = new Error('ResourceAlreadyExists')
-            error.code = 'ResourceAlreadyExists'
+            ;(error as any).code = 'ResourceAlreadyExists'
             throw error
           } catch (error) {
             if (checkError(error, 'ResourceNotFoundException')) {
@@ -290,7 +301,7 @@ const initSubscriber = (resolve, lambdaContext) => {
             await deleteSqsQueue({
               Region: region,
               QueueName: `${userId}-${resolve.eventSubscriberScope}-${name}`,
-              QueueUrl: queueUrl,
+              QueueUrl: queueUrl as string,
             })
             break
           } catch (error) {
