@@ -13,6 +13,7 @@ import {
   invokeFunction,
 } from 'resolve-cloud-common/lambda'
 import { getCallerIdentity } from 'resolve-cloud-common/sts'
+import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
 
 import type { Resolve } from '../common/types'
 
@@ -51,7 +52,7 @@ const initSubscriber = (
     applicationLambdaArn: lambdaContext.invokedFunctionArn,
   }
 
-  resolve.invokeLambdaAsync = async (
+  invokeLambdaAsync = async (
     destination: string,
     parameters: Record<string, any>
   ) => {
@@ -63,7 +64,7 @@ const initSubscriber = (
     })
   }
 
-  resolve.sendSqsMessage = async (
+  sendSqsMessage = async (
     destination: string,
     parameters: Record<string, any>
   ) => {
@@ -77,14 +78,19 @@ const initSubscriber = (
 
   resolve.invokeBuildAsync = async (parameters) =>
     useSqs
-      ? await resolve.sendSqsMessage(
+      ? await sendSqsMessage(
           `${userId}-${resolve.eventSubscriberScope}-${parameters.eventSubscriber}`,
           parameters
         )
-      : await resolve.invokeLambdaAsync(functionName, {
+      : await invokeLambdaAsync(functionName, {
           resolveSource: 'BuildEventSubscriber',
           ...parameters,
         })
+
+  resolve.eventSubscriberNotifier = eventSubscriberNotifierFactory({
+    invokeLambdaAsync,
+    sendSqsMessage,
+  })
 
   resolve.ensureQueue = async (name) => {
     if (!useSqs) {
