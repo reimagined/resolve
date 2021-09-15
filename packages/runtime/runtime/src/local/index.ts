@@ -9,10 +9,10 @@ import { lambdaGuard } from './lambda-guard'
 import { initPerformanceTracer } from './init-performance-tracer'
 import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
 
-import initExpress from './init-express'
-import initWebsockets from './init-websockets'
-import startExpress from './start-express'
-import initUploader, { uploaderFactory } from './init-uploader'
+import { expressAppFactory } from './express-app-factory'
+import { websocketServerFactory } from './websocket-server-factory'
+import { startExpress } from './start-express'
+import { uploaderFactory } from './init-uploader'
 import initScheduler from './init-scheduler'
 import { gatherEventListeners } from '../common/gather-event-listeners'
 import { monitoringFactory } from './monitoring-factory'
@@ -76,6 +76,20 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
       )
     }
 
+    const expressAppData = await expressAppFactory({
+      rootPath: constants.rootPath,
+      staticPath: constants.staticPath,
+      distDir: constants.distDir,
+      staticRoutes: constants.staticRoutes,
+      apiHandlers: domain.apiHandlers,
+    })
+
+    const websocketServerData = await websocketServerFactory({
+      server: expressAppData.server,
+      eventStoreAdapterFactory,
+      rootPath: constants.rootPath,
+    })
+
     const factoryParameters: RuntimeFactoryParameters = {
       domain,
       domainInterop,
@@ -90,8 +104,7 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
         async (parameters: EventSubscriberNotification) => {
           const runtime = await createRuntime(factoryParameters)
           try {
-            const result = await runtime.eventSubscriber.build(parameters)
-            return result
+            return await runtime.eventSubscriber.build(parameters)
           } finally {
             await runtime.dispose()
           }
@@ -99,6 +112,7 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
       ),
       eventListeners: gatherEventListeners(domain, domainInterop),
       uploader: uploaderData?.uploader ?? null,
+      sendReactiveEvent: websocketServerData.sendReactiveEvent,
     }
 
     const resolve: ResolvePartial = {
@@ -118,7 +132,7 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
             method === 'OPTIONS' && path === '/SKIP_COMMANDS'
         ) < 0,
       getEventSubscriberDestination: () =>
-        `http://0.0.0.0:${constants.port}/api/subscribers`,
+        `http://${resolve.host}:${constants.port}/api/subscribers`,
       invokeBuildAsync: backgroundJob(
         async (parameters: EventSubscriberNotification) => {
           const runtime = await createRuntime(resolve)
@@ -139,14 +153,28 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
       performanceTracer,
     }
 
-    resolve.host = resolve.host ?? '0.0.0.0'
-    resolve.getEventSubscriberDestination = () =>
-      `http://${resolve.host}:${constants.port}/api/subscribers`
-
-    await initExpress(resolve as Resolve)
-    await initWebsockets(resolve as Resolve)
     await initScheduler(resolve as Resolve)
-    await startExpress(resolve as Resolve)
+    await startExpress(
+      expressAppData,
+      {
+        host,
+        port,
+        upstream:
+          domain.apiHandlers.findIndex(
+            ({ method, path }) =>
+              method === 'OPTIONS' && path === '/SKIP_COMMANDS'
+          ) < 0,
+        getEventSubscriberDestination: () =>
+          `http://${resolve.host}:${constants.port}/api/subscribers`,
+        ensureQueue: async () => {
+          return
+        },
+        deleteQueue: async () => {
+          return
+        },
+      },
+      factoryParameters
+    )
 
     log.debug('Local entry point cold start success')
 

@@ -41,12 +41,11 @@ export type RuntimeFactoryParameters = {
   invokeBuildAsync: Resolve['invokeBuildAsync']
   eventListeners: Resolve['eventListeners']
   sendReactiveEvent: ReactiveEventDispatcher
-  broadcastEvent: Resolve['broadcastEvent']
   uploader: Resolve['uploader'] | null
   scheduler: Resolve['scheduler']
 }
 
-type Runtime = {
+export type Runtime = {
   eventStoreAdapter: Adapter
   executeCommand: CommandExecutor
   executeQuery: QueryExecutor

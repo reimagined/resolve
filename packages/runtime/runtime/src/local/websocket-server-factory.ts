@@ -10,19 +10,25 @@ import { getRootBasedUrl } from '@resolve-js/core'
 import createPubsubManager from './create-pubsub-manager'
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
-import type { Adapter as EventstoreAdapter } from '@resolve-js/eventstore-base'
-import type { ReactiveEventDispatcher, Resolve } from '../common/types'
+import type {
+  Adapter,
+  Adapter as EventstoreAdapter,
+} from '@resolve-js/eventstore-base'
+import type {
+  PubsubManager,
+  ReactiveEventDispatcher,
+  Resolve,
+} from '../common/types'
 
 const log = debugLevels('resolve:runtime:local-subscribe-adapter')
 
 // TODO: get rid of global variable!
 let eventstoreAdapter: EventstoreAdapter
 
-const createWebSocketConnectionHandler = (resolve: Resolve) => (
+const createWebSocketConnectionHandler = (pubSubManager: PubsubManager) => (
   ws: WebSocket,
   req: http.IncomingMessage
 ) => {
-  const { pubsubManager } = resolve
   //TODO: check that req.url exist
   const queryString = (req.url as string).split('?')[1]
   const { token, deploymentId } = qs.parse(queryString)
@@ -41,7 +47,7 @@ const createWebSocketConnectionHandler = (resolve: Resolve) => (
 
   //TODO: use ws.send callback?
   const publisher = async (event: string) => ws.send(event)
-  pubsubManager.connect({
+  pubSubManager.connect({
     client: publisher,
     connectionId,
     eventTypes,
@@ -49,11 +55,11 @@ const createWebSocketConnectionHandler = (resolve: Resolve) => (
   })
 
   const dispose = () => {
-    pubsubManager.disconnect({ connectionId })
+    pubSubManager.disconnect({ connectionId })
     ws.close()
   }
 
-  const handler = createWebSocketMessageHandler(resolve, ws, connectionId)
+  const handler = createWebSocketMessageHandler(pubSubManager, ws, connectionId)
   ws.on('message', handler)
 
   ws.on('close', dispose)
@@ -61,12 +67,12 @@ const createWebSocketConnectionHandler = (resolve: Resolve) => (
 }
 
 const createWebSocketMessageHandler = (
-  { pubsubManager }: Resolve,
+  pubSubManager: PubsubManager,
   ws: WebSocket,
   connectionId: string
 ) => async (message: string) => {
   try {
-    const connection = pubsubManager.getConnection({
+    const connection = pubSubManager.getConnection({
       connectionId,
     })
 
@@ -112,9 +118,12 @@ const createWebSocketMessageHandler = (
   }
 }
 
-const initInterceptingHttpServer = (resolve: Resolve) => {
-  const { server: baseServer, websocketHttpServer } = resolve
-  const websocketBaseUrl = getRootBasedUrl(resolve.rootPath, '/api/websocket')
+const initInterceptingHttpServer = (
+  server: http.Server,
+  websocketHttpServer: http.Server,
+  rootPath: string
+) => {
+  const websocketBaseUrl = getRootBasedUrl(rootPath, '/api/websocket')
   const interceptingEvents = [
     'close',
     'listening',
@@ -136,26 +145,30 @@ const initInterceptingHttpServer = (resolve: Resolve) => {
       void websocketHttpServer.emit(eventName, ...args)
     } else {
       for (const listener of listeners) {
-        listener.apply(baseServer, args)
+        listener.apply(server, args)
       }
     }
   }
 
   for (const eventName of interceptingEvents) {
-    const listeners = baseServer.listeners(eventName).slice(0)
-    baseServer.removeAllListeners(eventName)
+    const listeners = server.listeners(eventName).slice(0)
+    server.removeAllListeners(eventName)
     const listener = interceptingEventListener.bind(null, eventName, listeners)
-    baseServer.on(eventName, listener)
+    server.on(eventName, listener)
   }
 }
 
-const initWebSocketServer = async (resolve: Resolve) => {
+const initWebSocketServer = async (
+  server: http.Server,
+  pubSubManager: PubsubManager,
+  rootPath: string
+) => {
   try {
     const websocketServer = new WebSocket.Server({
-      path: getRootBasedUrl(resolve.rootPath, '/api/websocket'),
-      server: resolve.websocketHttpServer,
+      path: getRootBasedUrl(rootPath, '/api/websocket'),
+      server,
     })
-    const connectionHandler = createWebSocketConnectionHandler(resolve)
+    const connectionHandler = createWebSocketConnectionHandler(pubSubManager)
     websocketServer.on('connection', connectionHandler)
   } catch (error) {
     log.warn('Cannot init WebSocket server: ', error)
@@ -163,7 +176,7 @@ const initWebSocketServer = async (resolve: Resolve) => {
 }
 
 //TODO: look into this code. EventEmitter pretends to be http server!
-const createSocketHttpServer = () => {
+const createSocketHttpServer = (): http.Server => {
   const socketServer = new EventEmitter()
   Object.setPrototypeOf(socketServer, http.Server.prototype)
   Object.defineProperty(socketServer, 'listen', {
@@ -174,28 +187,34 @@ const createSocketHttpServer = () => {
   return socketServer as http.Server
 }
 
-const initWebsockets = async (resolve: Resolve) => {
-  const pubsubManager = createPubsubManager()
+type WebsocketServerFactoryParameters = {
+  eventStoreAdapterFactory: () => Adapter
+  server: http.Server
+  rootPath: string
+}
+
+export const websocketServerFactory = async (
+  params: WebsocketServerFactoryParameters
+) => {
+  const { eventStoreAdapterFactory, rootPath, server } = params
+  const pubSubManager = createPubsubManager()
   const websocketHttpServer = createSocketHttpServer()
 
-  eventstoreAdapter = await resolve.assemblies.eventstoreAdapter()
+  eventstoreAdapter = await eventStoreAdapterFactory()
 
   const sendReactiveEvent: ReactiveEventDispatcher = async (event) => {
-    await resolve.pubsubManager.dispatch({
+    await pubSubManager.dispatch({
       topicName: event.type,
       topicId: event.aggregateId,
       event,
     })
   }
 
-  resolve.getSubscribeAdapterOptions = getSubscribeAdapterOptions
-  resolve.pubsubManager = pubsubManager
-  resolve.websocketHttpServer = websocketHttpServer
-  resolve.sendReactiveEvent = sendReactiveEvent
+  await initWebSocketServer(websocketHttpServer, pubSubManager, rootPath)
+  await initInterceptingHttpServer(server, websocketHttpServer, rootPath)
 
-  await initWebSocketServer(resolve)
-
-  await initInterceptingHttpServer(resolve)
+  return {
+    getSubscribeAdapterOptions,
+    sendReactiveEvent,
+  }
 }
-
-export default initWebsockets
