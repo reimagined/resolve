@@ -1,8 +1,8 @@
 import type {
   Adapter as EventStoreAdapter,
   InputCursor,
-  SavedEvent,
-  EventWithCursor as EventStoreEventWithCursor,
+  StoredEvent,
+  StoredEventPointer as EventStoreEventWithCursor,
   checkEventsContinuity,
   EventThreadData as EventStoreEventThreadData,
 } from '@resolve-js/eventstore-base'
@@ -154,7 +154,7 @@ export type MonitoringLike = {
 }
 
 export type ReadModelCursor = InputCursor // TODO brand type
-export type ReadModelEvent = SavedEvent
+export type ReadModelEvent = StoredEvent
 
 export type EventStoreAdapterLike = EventStoreAdapter
 
@@ -343,13 +343,13 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     readModelName: string,
     eventTypes: Array<ReadModelEvent['type']> | null,
     aggregateIds: Array<ReadModelEvent['aggregateId']> | null,
-    readModelSource?: string
+    loadProcedureSource: () => Promise<string | null>
   ): Promise<void>
 
   unsubscribe(
     pool: AdapterPool,
     readModelName: string,
-    readModelSource?: string
+    loadProcedureSource: () => Promise<string | null>
   ): Promise<void>
 
   resubscribe(
@@ -357,7 +357,7 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     readModelName: string,
     eventTypes: Array<ReadModelEvent['type']> | null,
     aggregateIds: Array<ReadModelEvent['aggregateId']> | null,
-    readModelSource?: string
+    loadProcedureSource: () => Promise<string | null>
   ): Promise<void>
 
   resume(

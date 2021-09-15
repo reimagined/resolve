@@ -3,7 +3,7 @@ import type { ExternalMethods } from './types'
 const unsubscribe: ExternalMethods['unsubscribe'] = async (
   pool,
   readModelName,
-  readModelSource
+  loadProcedureSource
 ) => {
   const {
     PassthroughError,
@@ -77,7 +77,9 @@ const unsubscribe: ExternalMethods['unsubscribe'] = async (
       }
     }
 
-    if (readModelSource != null && readModelSource.constructor === String) {
+    const procedureSource = await loadProcedureSource()
+
+    if (procedureSource != null && procedureSource.constructor === String) {
       const procedureNameAsId = escapeId(`PROC-${readModelName}`)
       while (true) {
         try {

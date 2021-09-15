@@ -20,7 +20,6 @@ import type {
 export type CreateQueryOptions = {
   invokeBuildAsync: InvokeBuildAsync
   readModelConnectors: Record<string, ReadModelConnector>
-  readModelSources?: Record<string, string | null>
   performanceTracer: PerformanceTracer | null
   getVacantTimeInMillis: () => number
   monitoring?: Monitoring
@@ -28,6 +27,7 @@ export type CreateQueryOptions = {
   viewModelsInterop: ViewModelInteropMap
   eventstoreAdapter: Eventstore
   applicationName: string
+  loadReadModelProcedure: (name: string) => Promise<string | null>
 }
 
 type WrapModelOptions = Omit<
@@ -56,7 +56,7 @@ export type ReadModelPool = {
   connections: Set<any>
   invokeBuildAsync: CreateQueryOptions['invokeBuildAsync']
   getVacantTimeInMillis: CreateQueryOptions['getVacantTimeInMillis']
-  readModelSource?: string | null
+  loadProcedureSource: () => Promise<string | null>
   monitoring?: Monitoring
   eventstoreAdapter: Eventstore
   applicationName: string

@@ -677,7 +677,7 @@ const operationMethods: ReadModelOperationMethods = {
       readModelName,
       parameters.subscriptionOptions.eventTypes,
       parameters.subscriptionOptions.aggregateIds,
-      pool.readModelSource,
+      pool.loadProcedureSource,
     ]
   ),
 
@@ -700,7 +700,7 @@ const operationMethods: ReadModelOperationMethods = {
       readModelName,
       parameters.subscriptionOptions.eventTypes,
       parameters.subscriptionOptions.aggregateIds,
-      pool.readModelSource,
+      pool.loadProcedureSource,
     ]
   ),
 
@@ -713,7 +713,7 @@ const operationMethods: ReadModelOperationMethods = {
       connection: any,
       readModelName: string,
       parameters: {}
-    ) => [connection, readModelName, pool.readModelSource]
+    ) => [connection, readModelName, pool.loadProcedureSource]
   ),
 
   status: doOperation.bind(
@@ -776,7 +776,7 @@ const wrapReadModel = ({
   interop,
   readModelConnectors,
   invokeBuildAsync,
-  readModelSources,
+  loadReadModelProcedure,
   performanceTracer,
   getVacantTimeInMillis,
   monitoring,
@@ -795,6 +795,9 @@ const wrapReadModel = ({
   const safeMonitoring =
     monitoring != null ? makeMonitoringSafe(monitoring) : monitoring
 
+  const loadProcedureSource = async () =>
+    await loadReadModelProcedure(interop.name)
+
   const pool: ReadModelPool = {
     invokeBuildAsync,
     applicationName,
@@ -805,9 +808,7 @@ const wrapReadModel = ({
     getVacantTimeInMillis,
     monitoring: safeMonitoring,
     eventstoreAdapter,
-    get readModelSource() {
-      return readModelSources != null ? readModelSources[interop.name] : null
-    },
+    loadProcedureSource,
   }
 
   const api: WrappedReadModel = {

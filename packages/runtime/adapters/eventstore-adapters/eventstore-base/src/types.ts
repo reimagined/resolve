@@ -1,14 +1,14 @@
 import type {
   SecretsManager,
   Event,
-  SavedEvent,
+  StoredEvent,
   EventThreadData,
   SerializableMap,
-  EventWithCursor,
-  EventsWithCursor,
+  StoredEventPointer,
+  StoredEventBatchPointer,
   Eventstore as CoreEventstore,
   InputCursor,
-  ReturnedCursor,
+  Cursor,
 } from '@resolve-js/core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
@@ -20,12 +20,12 @@ import { PathReporter } from 'io-ts/lib/PathReporter'
 import * as iotsTypes from 'io-ts-types'
 
 export type {
-  SavedEvent,
+  StoredEvent,
   EventThreadData,
-  EventWithCursor,
-  EventsWithCursor,
+  StoredEventPointer,
+  StoredEventBatchPointer,
   InputCursor,
-  ReturnedCursor,
+  Cursor,
 }
 
 export function validate<T extends t.Type<any>>(
@@ -95,7 +95,7 @@ export type EventStoreDescription = {
   deletedSecretCount: number
   isFrozen: boolean
   lastEventTimestamp: number
-  cursor?: ReturnedCursor
+  cursor?: Cursor
   resourceNames?: { [key: string]: string }
 }
 
@@ -105,7 +105,7 @@ type DeleteSecret = SecretsManager['deleteSecret']
 type GetSecret = SecretsManager['getSecret']
 type SetSecret = SecretsManager['setSecret']
 
-type ShapeEvent = (event: any, additionalFields?: any) => SavedEvent
+type ShapeEvent = (event: any, additionalFields?: any) => StoredEvent
 
 export type ValidateEventFilter = (filter: EventFilter) => void
 
@@ -283,12 +283,12 @@ export type AdapterPoolPrimalProps = {
 }
 
 export type AdapterPoolPrivateConnectedProps = {
-  injectEvent: (event: SavedEvent) => Promise<void>
-  injectEvents: (events: SavedEvent[]) => Promise<void>
+  injectEvent: (event: StoredEvent) => Promise<void>
+  injectEvents: (events: StoredEvent[]) => Promise<void>
   injectSecret?: (secretRecord: SecretRecord) => Promise<void>
 
-  loadEventsByTimestamp: (filter: TimestampFilter) => Promise<EventsWithCursor>
-  loadEventsByCursor: (filter: CursorFilter) => Promise<EventsWithCursor>
+  loadEventsByTimestamp: (filter: TimestampFilter) => Promise<StoredEventBatchPointer>
+  loadEventsByCursor: (filter: CursorFilter) => Promise<StoredEventBatchPointer>
 
   deleteSecret: DeleteSecret
   getSecret: GetSecret
@@ -511,7 +511,7 @@ export interface AdapterFunctions<
 export interface Adapter extends CoreEventstore {
   importEvents: (options?: Partial<ImportOptions>) => ImportEventsStream
   exportEvents: (options?: Partial<ExportOptions>) => ExportEventsStream
-  getLatestEvent: (filter: LatestEventFilter) => Promise<SavedEvent | null>
+  getLatestEvent: (filter: LatestEventFilter) => Promise<StoredEvent | null>
   init: () => Promise<void>
   drop: () => Promise<void>
   dispose: () => Promise<void>
@@ -534,7 +534,7 @@ export interface Adapter extends CoreEventstore {
   importSecrets: (options?: Partial<ImportSecretsOptions>) => stream.Writable
   exportSecrets: (options?: Partial<ExportSecretsOptions>) => stream.Readable
 
-  gatherSecretsFromEvents: (events: SavedEvent[]) => Promise<GatheredSecrets>
+  gatherSecretsFromEvents: (events: StoredEvent[]) => Promise<GatheredSecrets>
 
   replicateEvents: (events: OldEvent[]) => Promise<void>
   replicateSecrets: (

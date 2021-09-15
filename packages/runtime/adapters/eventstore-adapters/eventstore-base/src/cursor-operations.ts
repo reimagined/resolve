@@ -4,7 +4,7 @@ import {
   CURSOR_BUFFER_SIZE,
   THREAD_COUNTER_BYTE_LENGTH,
 } from './constants'
-import { InputCursor, EventsWithCursor, EventWithCursor } from './types'
+import { InputCursor, StoredEventBatchPointer, StoredEventPointer } from './types'
 
 const checkThreadArrayLength = (threadArray: Array<number>): void => {
   assert.strictEqual(
@@ -59,7 +59,7 @@ export const cursorToThreadArray = (cursor: InputCursor): Array<number> => {
 
 export const emptyLoadEventsResult = (
   cursor: InputCursor
-): EventsWithCursor => {
+): StoredEventBatchPointer => {
   return {
     cursor: cursor == null ? threadArrayToCursor(initThreadArray()) : cursor,
     events: [],
@@ -81,7 +81,7 @@ const calculateMaxThreadArray = (
 
 export const checkEventsContinuity = (
   startingCursor: InputCursor,
-  eventCursorPairs: EventWithCursor[]
+  eventCursorPairs: StoredEventPointer[]
 ): boolean => {
   const startingThreadArray = cursorToThreadArray(startingCursor)
 

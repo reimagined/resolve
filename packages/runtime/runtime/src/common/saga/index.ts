@@ -1,4 +1,4 @@
-import createQuery from '../query/index'
+import { createQueryExecutor } from '../query/index'
 import type { Resolve, CallMethodParams, SagaExecutor } from '../types'
 import type { SecretsManager } from '@resolve-js/core'
 
@@ -19,7 +19,7 @@ type CreateSagaOptions = {
   executeSchedulerCommand: Resolve['executeSchedulerCommand']
 }
 
-const createSaga = ({
+export const createSagaExecutor = ({
   invokeBuildAsync,
   applicationName,
   readModelConnectors,
@@ -86,7 +86,7 @@ const createSaga = ({
     scheduler: { get: () => scheduler, enumerable: true },
   })
 
-  const executeSagaListener = createQuery({
+  const executeSagaListener = createQueryExecutor({
     invokeBuildAsync,
     applicationName,
     readModelConnectors,
@@ -179,5 +179,3 @@ const createSaga = ({
 
   return executeSaga
 }
-
-export default createSaga

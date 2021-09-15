@@ -1,4 +1,5 @@
 import 'source-map-support/register'
+import crypto from 'crypto'
 import { initDomain } from '@resolve-js/core'
 
 import { getLog } from '../common/utils/get-log'
@@ -14,8 +15,10 @@ import startExpress from './start-express'
 import initUploader from './init-uploader'
 import initScheduler from './init-scheduler'
 import { gatherEventListeners } from '../common/gather-event-listeners'
-import { initResolve } from '../common/init-resolve'
-import disposeResolve from '../common/dispose-resolve'
+import {
+  createRuntime,
+  RuntimeFactoryParameters,
+} from '../common/create-runtime'
 
 import type {
   Assemblies,
@@ -24,6 +27,8 @@ import type {
   EventSubscriberNotification,
   BuildTimeConstants,
 } from '../common/types'
+
+const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
 const log = getLog('local-entry')
 
@@ -35,12 +40,49 @@ type LocalEntryDependencies = {
 
 export const localEntry = async (dependencies: LocalEntryDependencies) => {
   try {
+    process.env.RESOLVE_LOCAL_TRACE_ID = crypto
+      .randomBytes(Math.ceil(32 / 2))
+      .toString('hex')
+      .slice(0, 32)
+
     const { assemblies, constants } = dependencies
     const domain = prepareDomain(dependencies.domain)
     const domainInterop = await initDomain(domain)
 
     const performanceTracer = await initPerformanceTracer()
-    const eventSubscriberNotifier = await eventSubscriberNotifierFactory()
+    const notifyEventSubscriber = await eventSubscriberNotifierFactory()
+
+    const {
+      eventstoreAdapter: eventStoreAdapterFactory,
+      readModelConnectors: readModelConnectorsFactories,
+    } = assemblies
+
+    const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
+    const getVacantTimeInMillis = () => endTime - Date.now()
+
+    const factoryParameters: RuntimeFactoryParameters = {
+      domain,
+      domainInterop,
+      performanceTracer,
+      eventStoreAdapterFactory,
+      readModelConnectorsFactories,
+      getVacantTimeInMillis,
+      eventSubscriberScope: constants.applicationName,
+      notifyEventSubscriber,
+      invokeBuildAsync: backgroundJob(
+        async (parameters: EventSubscriberNotification) => {
+          const runtime = await createRuntime(factoryParameters)
+          try {
+            const result = await runtime.eventSubscriber.build(parameters)
+            return result
+          } finally {
+            await runtime.dispose()
+          }
+        }
+      ),
+      eventListeners: gatherEventListeners(domain, domainInterop),
+
+    }
 
     const resolve: ResolvePartial = {
       instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,
@@ -52,7 +94,7 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
       eventSubscriberScope: constants.applicationName,
-      notifyEventSubscriber: eventSubscriberNotifier,
+      notifyEventSubscriber,
       upstream:
         domain.apiHandlers.findIndex(
           ({ method, path }) =>
@@ -62,15 +104,12 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
         `http://0.0.0.0:${constants.port}/api/subscribers`,
       invokeBuildAsync: backgroundJob(
         async (parameters: EventSubscriberNotification) => {
-          const currentResolve = Object.create(resolve)
+          const runtime = await createRuntime(resolve)
           try {
-            await initResolve(currentResolve)
-            const result = await currentResolve.eventSubscriber.build(
-              parameters
-            )
+            const result = await runtime.eventSubscriber.build(parameters)
             return result
           } finally {
-            await disposeResolve(currentResolve)
+            await runtime.dispose()
           }
         }
       ),

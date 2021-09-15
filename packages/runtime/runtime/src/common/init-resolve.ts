@@ -6,9 +6,9 @@ import path from 'path'
 import fs from 'fs'
 
 import liveEntryDir from './dynamic-require/live-entry-dir'
-import { subscribersNotifierFactory } from './subscribers-notifier-factory'
-import createOnCommandExecuted from './on-command-executed'
-import createEventSubscriber from './event-subscriber'
+import { eventBroadcastFactory } from './event-broadcast-factory'
+import createOnCommandExecuted from './command-executed-hook-factory'
+import eventSubscriberFactory from './event-subscriber'
 
 import type { Event, Command, AggregateInterop } from '@resolve-js/core'
 
@@ -19,10 +19,7 @@ const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 export const initResolve = async (resolve: Resolve) => {
   const performanceTracer = resolve.performanceTracer
 
-  const {
-    eventstoreAdapter: createEventstoreAdapter,
-    readModelConnectors: readModelConnectorsCreators,
-  } = resolve.assemblies
+c
 
   const {
     invokeBuildAsync,
@@ -82,7 +79,7 @@ export const initResolve = async (resolve: Resolve) => {
   resolve.readModelSources = readModelSources
 
   const getVacantTimeInMillis = resolve.getVacantTimeInMillis
-  const notifyEventSubscribers = subscribersNotifierFactory(resolve)
+  const notifyEventSubscribers = eventBroadcastFactory(resolve)
   const onCommandExecuted = createOnCommandExecuted(resolve)
 
   const secretsManager = await eventstoreAdapter.getSecretsManager()
@@ -163,7 +160,7 @@ export const initResolve = async (resolve: Resolve) => {
     executeSchedulerCommand,
   })
 
-  const eventSubscriber = createEventSubscriber(resolve)
+  const eventSubscriber = eventSubscriberFactory(resolve)
 
   Object.assign<Resolve, Partial<Resolve>>(resolve, {
     isInitialized: true,
@@ -171,7 +168,7 @@ export const initResolve = async (resolve: Resolve) => {
     executeQuery,
     executeSaga,
     executeSchedulerCommand,
-    notifyEventSubscribers,
+    broadcastEvent: notifyEventSubscribers,
   })
 
   resolve.eventSubscriber = eventSubscriber

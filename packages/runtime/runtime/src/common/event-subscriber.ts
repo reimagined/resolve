@@ -1,7 +1,19 @@
-import type { Resolve, EventSubscriber, CallMethodParams } from './types'
+import type {
+  EventSubscriber,
+  EventListener,
+  CallMethodParams,
+  SagaExecutor,
+  QueryExecutor,
+} from './types'
+
+type EventSubscriberRuntime = {
+  executeSaga: SagaExecutor
+  executeQuery: QueryExecutor
+  eventListeners: Map<string, EventListener>
+}
 
 const eventSubscriberMethod = async (
-  resolve: Resolve,
+  runtime: EventSubscriberRuntime,
   key: string,
   params: CallMethodParams,
   ...args: any[]
@@ -27,14 +39,14 @@ const eventSubscriberMethod = async (
     eventSubscriberName = eventSubscriber
   }
 
-  const listenerInfo = resolve.eventListeners.get(eventSubscriberName)
+  const listenerInfo = runtime.eventListeners.get(eventSubscriberName)
   if (listenerInfo == null) {
     throw new Error(`Listener ${eventSubscriber} does not exist`)
   }
 
   const method = listenerInfo.isSaga
-    ? resolve.executeSaga[key]
-    : resolve.executeQuery[key]
+    ? runtime.executeSaga[key]
+    : runtime.executeQuery[key]
 
   if (typeof method != 'function') {
     throw new TypeError(key)
@@ -43,12 +55,12 @@ const eventSubscriberMethod = async (
   return await method({ modelName: eventSubscriberName, ...parameters })
 }
 
-const createEventSubscriber = (resolve: Resolve) => {
+export const eventSubscriberFactory = (runtime: EventSubscriberRuntime) => {
   const eventSubscriber = new Proxy<EventSubscriber>(
     {},
     {
       get(_, key: string) {
-        return eventSubscriberMethod.bind(null, resolve, key)
+        return eventSubscriberMethod.bind(null, runtime, key)
       },
       set() {
         throw new Error(`Event subscriber API is immutable`)
@@ -58,5 +70,3 @@ const createEventSubscriber = (resolve: Resolve) => {
 
   return eventSubscriber
 }
-
-export default createEventSubscriber

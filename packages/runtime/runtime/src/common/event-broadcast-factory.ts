@@ -1,5 +1,5 @@
 import partial from 'lodash.partial'
-import type { EventWithCursor } from '@resolve-js/core'
+import type { EventPointer } from '@resolve-js/core'
 import type { Resolve } from './types'
 import { Adapter } from '@resolve-js/eventstore-base'
 import { createEventSubscriberNotification, getLog } from '../common'
@@ -13,10 +13,7 @@ type NotifierRuntime = {
   notifyEventSubscriber: Resolve['notifyEventSubscriber']
 }
 
-const subscribersNotifier = async (
-  runtime: NotifierRuntime,
-  event?: EventWithCursor
-) => {
+const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
   const log = getLog(`notifyEventSubscribers`)
   const maxDuration = runtime.getVacantTimeInMillis()
   let timerId = null
@@ -66,5 +63,5 @@ const subscribersNotifier = async (
   await Promise.race([timerPromise, inlineLedgerPromise])
 }
 
-export const subscribersNotifierFactory = (runtime: NotifierRuntime) =>
-  partial(subscribersNotifier, runtime)
+export const eventBroadcastFactory = (runtime: NotifierRuntime) =>
+  partial(broadcaster, runtime)

@@ -47,7 +47,7 @@ const dispose = async (pool: CommandPool): Promise<void> => {
   }
 }
 
-const createCommand: CommandExecutorBuilder = ({
+export const createCommandExecutor: CommandExecutorBuilder = ({
   performanceTracer,
   aggregatesInterop,
 }): CommandExecutor => {
@@ -76,5 +76,3 @@ const createCommand: CommandExecutorBuilder = ({
 
   return commandExecutor as CommandExecutor
 }
-
-export default createCommand

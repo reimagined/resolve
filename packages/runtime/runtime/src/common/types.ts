@@ -4,7 +4,7 @@ import type {
   Domain,
   DomainMeta,
   Event,
-  EventWithCursor,
+  EventPointer,
   Monitoring,
   CommandMiddleware,
   ReadModelResolverMiddleware,
@@ -13,7 +13,6 @@ import type {
 import type { CommandExecutor } from './command'
 import type { Server as HttpServer, IncomingHttpHeaders } from 'http'
 import http from 'http'
-import https from 'https'
 import type { CookieSerializeOptions } from 'cookie'
 import type { Trie, Params as MatchedParams } from 'route-trie'
 
@@ -166,7 +165,9 @@ export type EventSubscriberNotification = {
   cursor?: string
 }
 
-export type InvokeBuildAsync = (parameters: EventSubscriberNotification) => Promise<void>
+export type InvokeBuildAsync = (
+  parameters: EventSubscriberNotification
+) => Promise<void>
 
 export type BuildTimeConstants = {
   applicationName: string
@@ -186,7 +187,11 @@ export type BuildTimeConstants = {
 export type EventSubscriberNotifier = (
   destination: string,
   eventSubscriber: string,
-  event?: EventWithCursor
+  event?: EventPointer
+) => Promise<void>
+
+export type ReactiveEventDispatcher = (
+  event: Pick<Event, 'type' | 'aggregateId'>
 ) => Promise<void>
 
 export type Resolve = {
@@ -208,7 +213,6 @@ export type Resolve = {
 
   eventstoreAdapter: EventstoreAdapter
   readModelConnectors: Record<string, ReadModelConnector>
-  readModelSources: Record<string, string | null>
 
   assemblies: Assemblies
   domain: DomainWithHandlers
@@ -218,9 +222,7 @@ export type Resolve = {
   scheduler: Scheduler
   uploader: Uploader
 
-  sendReactiveEvent: (
-    event: Pick<Event, 'type' | 'aggregateId'>
-  ) => Promise<void>
+  sendReactiveEvent: ReactiveEventDispatcher
   //TODO: bind to resolve object?
   getSubscribeAdapterOptions: (
     resolve: Resolve,
@@ -241,10 +243,7 @@ export type Resolve = {
   executeCommand: CommandExecutor
   executeSchedulerCommand: CommandExecutor
 
-  notifyEventSubscribers: (eventWithCursor?: {
-    event: Event
-    cursor: string
-  }) => Promise<void>
+  broadcastEvent: (eventPointer: EventPointer) => Promise<void>
 
   notifyEventSubscriber: EventSubscriberNotifier
 

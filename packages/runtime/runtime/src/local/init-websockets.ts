@@ -10,9 +10,8 @@ import { getRootBasedUrl } from '@resolve-js/core'
 import createPubsubManager from './create-pubsub-manager'
 import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
 
-import type { Event } from '@resolve-js/core'
 import type { Adapter as EventstoreAdapter } from '@resolve-js/eventstore-base'
-import type { Resolve } from '../common/types'
+import type { ReactiveEventDispatcher, Resolve } from '../common/types'
 
 const log = debugLevels('resolve:runtime:local-subscribe-adapter')
 
@@ -181,9 +180,7 @@ const initWebsockets = async (resolve: Resolve) => {
 
   eventstoreAdapter = await resolve.assemblies.eventstoreAdapter()
 
-  const sendReactiveEvent = async (
-    event: Pick<Event, 'type' | 'aggregateId'>
-  ) => {
+  const sendReactiveEvent: ReactiveEventDispatcher = async (event) => {
     await resolve.pubsubManager.dispatch({
       topicName: event.type,
       topicId: event.aggregateId,

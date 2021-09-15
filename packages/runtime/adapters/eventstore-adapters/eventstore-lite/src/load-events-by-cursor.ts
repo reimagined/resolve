@@ -1,7 +1,7 @@
 import {
-  EventsWithCursor,
+  StoredEventBatchPointer,
   CursorFilter,
-  SavedEvent,
+  StoredEvent,
   cursorToThreadArray,
   threadArrayToCursor,
   emptyLoadEventsResult,
@@ -17,7 +17,7 @@ const loadEventsByCursor = async (
     shapeEvent,
   }: AdapterPool,
   filter: CursorFilter
-): Promise<EventsWithCursor> => {
+): Promise<StoredEventBatchPointer> => {
   const { eventTypes, aggregateIds, cursor, limit } = filter
   const injectString = (value: any): string => `${escape(value)}`
 
@@ -57,7 +57,7 @@ const loadEventsByCursor = async (
     ${queryConditions.length > 0 ? ')' : ''}`
 
   const tableNameAsId = escapeId(eventsTableName)
-  const events: SavedEvent[] = []
+  const events: StoredEvent[] = []
 
   const rows = await executeStatement(
     `SELECT * FROM ${tableNameAsId}
