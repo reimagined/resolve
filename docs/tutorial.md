@@ -160,6 +160,8 @@ http://127.0.0.1:3000/api/commands
 <details>
 <summary>
 
+**Test Your Application**
+
 Expand this section for an example, on how to test this functionality in your application.
 
 </summary>
@@ -418,6 +420,8 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 <details>
 <summary>
 
+**Test Your Application**
+
 Expand this section for an example, on how to test the validation.
 
 </summary>
@@ -619,6 +623,8 @@ readModels: [
 <details>
 <summary>
 
+**Test Your Application**
+
 Expand this section for an example, on how to test the ShoppingLists Read Model.
 
 </summary>
@@ -703,6 +709,8 @@ yarn add react react-bootstrap react-dom react-router react-router-config react-
 
 <details>
 <summary>
+
+**Link Static Resources**
 
 The example project uses [react-bootstrap](https://react-bootstrap.github.io) to reduce the size of the markup. To use this library, you should link the Bootstrap stylesheet file to the application's page. Expand this section to view details on how to link static resources.
 
