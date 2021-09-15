@@ -5,8 +5,7 @@ import crypto from 'crypto'
 
 const createPresignedPut = async (pool, dir) => {
   const uploadId = uuid()
-  const uploadUrl = `http://localhost:3000/uploader?dir=${dir}&uploadId=${uploadId}`
-
+  const uploadUrl = `${process.env.RESOLVE_UPLOADER_CDN_URL}?dir=${dir}&uploadId=${uploadId}`
   return {
     uploadUrl,
     uploadId,
@@ -35,7 +34,7 @@ export const upload = (uploadUrl, filePath) => {
 const createPresignedPost = async (pool, dir) => {
   const uploadId = uuid()
   const form = {
-    url: `http://localhost:3000/uploader?dir=${dir}&uploadId=${uploadId}`,
+    url: `${process.env.RESOLVE_UPLOADER_CDN_URL}?dir=${dir}&uploadId=${uploadId}`,
     fields: {},
   }
 
@@ -80,7 +79,6 @@ const createToken = ({ secretKey }, { dir, expireTime = 3600 }) => {
 
   return `${payload}*${signature}`
 }
-
 const createUploader = (pool) => {
   const { directory, bucket, secretKey } = pool
   return Object.freeze({
@@ -106,7 +104,7 @@ const initUploader = async (resolve) => {
     // TODO: provide support for custom uploader adapter
     const createUploadAdapter = resolve.assemblies.uploadAdapter
     const uploader = createUploader(createUploadAdapter())
-    process.env.RESOLVE_UPLOADER_CDN_URL = 'http://localhost:3000/uploader'
+    process.env.RESOLVE_UPLOADER_CDN_URL = `http://${resolve.host}:${resolve.port}/uploader`
 
     Object.assign(resolve, {
       uploader: {

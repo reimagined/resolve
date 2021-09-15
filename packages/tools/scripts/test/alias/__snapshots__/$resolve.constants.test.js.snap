@@ -5,6 +5,7 @@ exports[`works correctly 1`] = `
 import '$resolve.guardOnlyServer'
 import applicationName from '$resolve.applicationName'
 import distDir from '$resolve.distDir'
+import host from '$resolve.host'
 import jwtCookie from '$resolve.jwtCookie'
 import port from '$resolve.port'
 import rootPath from '$resolve.rootPath'
@@ -14,6 +15,7 @@ import staticPath from '$resolve.staticPath'
 export default {
  applicationName,
 distDir,
+host,
 jwtCookie,
 port,
 rootPath,

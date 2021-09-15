@@ -1,29 +1,9 @@
-import { Selector } from 'testcafe'
+import { Selector, t } from 'testcafe'
 import fetch from 'isomorphic-fetch'
-import { expect } from 'chai'
 
 const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || '3000'
 const MAIN_PAGE = `http://${host}:${port}`
-
-const waitSelector = async (t, eventSubscriber, selector) => {
-  while (true) {
-    const res = await fetch(`${MAIN_PAGE}/api/event-broker/read-models-list`)
-
-    const readModel = (await res.json()).find(
-      (readModel) => readModel.eventSubscriber === eventSubscriber
-    )
-
-    if (readModel.status !== 'deliver') {
-      throw new Error(`Test failed. Read-model status "${readModel.status}"`)
-    }
-
-    try {
-      await t.expect((await selector).exists).eql(true)
-      break
-    } catch (e) {}
-  }
-}
 
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`Shopping List`.beforeEach(async (t) => {
@@ -51,12 +31,17 @@ test('createShoppingList', async () => {
 
   const event = await response.json()
 
-  expect(event).to.deep.include({
-    type: 'SHOPPING_LIST_CREATED',
-    payload: { name: 'List 1' },
-    aggregateId: 'shopping-list-1',
-    aggregateVersion: 1,
-  })
+  await t
+    .expect(event)
+    .contains({
+      type: 'SHOPPING_LIST_CREATED',
+      aggregateId: 'shopping-list-1',
+      aggregateVersion: 1,
+    })
+    .expect(event.payload)
+    .contains({
+      name: 'List 1',
+    })
 })
 
 test('createShoppingItem', async () => {
@@ -80,12 +65,15 @@ test('createShoppingItem', async () => {
 
   const event = await response.json()
 
-  expect(event).to.deep.include({
-    type: 'SHOPPING_ITEM_CREATED',
-    payload: { id: '1', text: 'Milk' },
-    aggregateId: 'shopping-list-1',
-    aggregateVersion: 2,
-  })
+  await t
+    .expect(event)
+    .contains({
+      type: 'SHOPPING_ITEM_CREATED',
+      aggregateId: 'shopping-list-1',
+      aggregateVersion: 2,
+    })
+    .expect(event.payload)
+    .contains({ id: '1', text: 'Milk' })
 })
 
 test('createShoppingItems', async () => {
@@ -154,7 +142,15 @@ test('createShoppingItems', async () => {
 
     const event = await response.json()
 
-    expect(event).to.deep.include(match.event)
+    await t
+      .expect(event)
+      .contains({
+        aggregateId: match.event.aggregateId,
+        aggregateVersion: match.event.aggregateVersion,
+        type: match.event.type,
+      })
+      .expect(event.payload)
+      .contains(match.event.payload)
   }
 })
 
@@ -203,9 +199,9 @@ test('validation should work correctly', async () => {
       body: JSON.stringify(match.command),
     })
 
-    const event = await response.text()
+    const error = await response.text()
 
-    expect(event).to.include(match.error)
+    await t.expect(error).contains(match.error)
   }
 })
 
@@ -219,8 +215,8 @@ test('read model query should work correctly', async () => {
 
   const result = await response.json()
 
-  expect(result.data).to.have.lengthOf(1)
-  expect(result.data[0]).to.include({
+  await t.expect(result.data.length).eql(1)
+  await t.expect(result.data[0]).contains({
     id: 'shopping-list-1',
     name: 'List 1',
   })
@@ -229,13 +225,4 @@ test('read model query should work correctly', async () => {
 test('shopping list is displayed on page', async (t) => {
   await t.expect(Selector('td').withText('1').exists).eql(true)
   await t.expect(Selector('td').withText('List 1').exists).eql(true)
-})
-
-test('shopping list items are displayed on page', async (t) => {
-  await t.click(Selector('a').withText('List 1'))
-  await waitSelector(t, 'ShoppingLists', Selector('div.list-group-item'))
-  await t.expect(Selector('label').withText('Milk').exists).eql(true)
-  await t.expect(Selector('label').withText('Eggs').exists).eql(true)
-  await t.expect(Selector('label').withText('Canned beans').exists).eql(true)
-  await t.expect(Selector('label').withText('Paper towels').exists).eql(true)
 })

@@ -156,29 +156,6 @@ const initResolve = async (resolve) => {
 
   const eventSubscriber = createEventSubscriber(resolve)
 
-  const eventStore = new Proxy(
-    {},
-    {
-      get(_, key) {
-        if (key === 'SaveEvent') {
-          return async ({ event }) => await eventstoreAdapter.saveEvent(event)
-        } else if (key === 'LoadEvents') {
-          return async ({ scopeName, ...filter }) => {
-            void scopeName
-            return await eventstoreAdapter.loadEvents(filter)
-          }
-        } else {
-          return eventstoreAdapter[key[0].toLowerCase() + key.slice(1)].bind(
-            eventstoreAdapter
-          )
-        }
-      },
-      set() {
-        throw new Error(`Event store API is immutable`)
-      },
-    }
-  )
-
   Object.assign(resolve, {
     isInitialized: true,
     executeCommand,
@@ -190,7 +167,6 @@ const initResolve = async (resolve) => {
 
   Object.defineProperties(resolve, {
     eventSubscriber: { value: eventSubscriber },
-    eventStore: { value: eventStore },
   })
 
   process.env.RESOLVE_LOCAL_TRACE_ID = crypto
