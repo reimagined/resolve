@@ -1,10 +1,11 @@
 import jwt from 'jsonwebtoken'
+import type { Resolve } from '../common/types'
 
 const getSubscribeAdapterOptions = async (
-  resolve,
-  origin,
-  eventTypes,
-  aggregateIds
+  resolve: Resolve,
+  origin: string,
+  eventTypes: string[] | null,
+  aggregateIds: string[] | null
 ) => {
   const {
     RESOLVE_DEPLOYMENT_ID,
@@ -14,7 +15,7 @@ const getSubscribeAdapterOptions = async (
 
   const token = jwt.sign(
     { eventTypes, aggregateIds },
-    RESOLVE_ENCRYPTED_DEPLOYMENT_ID
+    RESOLVE_ENCRYPTED_DEPLOYMENT_ID as string
   )
 
   const subscribeUrl = `${RESOLVE_WS_URL}?deploymentId=${RESOLVE_DEPLOYMENT_ID}&token=${token}`

@@ -125,9 +125,6 @@ export type Scheduler = {
 }
 
 export type UploaderPool = {
-  directory: string
-  secretKey: string
-  bucket: any
   [key: string]: any
 }
 
@@ -139,9 +136,14 @@ export type Uploader = {
   uploadPut: (uploadUrl: string, filePath: string) => Promise<void>
   uploadPost: (form: { url: string }, filePath: string) => Promise<void>
   createToken: (options: { dir: string; expireTime: number }) => string
-  directory: UploaderPool['directory']
-  bucket: UploaderPool['bucket']
-  secretKey: UploaderPool['secretKey']
+
+  //local
+  directory?: string
+  bucket?: any
+  secretKey?: string
+
+  //cloud
+  getCDNUrl?: () => Promise<string>
 }
 
 export type Assemblies = {

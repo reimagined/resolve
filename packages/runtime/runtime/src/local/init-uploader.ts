@@ -4,7 +4,13 @@ import { v4 as uuid } from 'uuid'
 import crypto from 'crypto'
 import type { Resolve, UploaderPool } from '../common/types'
 
-type Pool = UploaderPool
+export type UploaderPoolLocal = UploaderPool & {
+  directory: string
+  secretKey: string
+  bucket: any
+}
+
+type Pool = UploaderPoolLocal
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type RemoveFirstType<T extends any[]> = T extends [infer _, ...infer R]
@@ -130,7 +136,7 @@ const initUploader = async (resolve: Resolve) => {
   if (resolve.assemblies.uploadAdapter != null) {
     // TODO: provide support for custom uploader adapter
     const createUploadAdapter = resolve.assemblies.uploadAdapter
-    const uploader = createUploader(createUploadAdapter())
+    const uploader = createUploader(createUploadAdapter() as UploaderPoolLocal)
     process.env.RESOLVE_UPLOADER_CDN_URL = 'http://localhost:3000/uploader'
 
     resolve.uploader = {

@@ -22,7 +22,7 @@ const cors = (res: ResolveResponse) => {
 const uploaderHandler = async (req: ResolveRequest, res: ResolveResponse) => {
   try {
     const { directory, bucket, secretKey } = req.resolve.uploader
-    const bucketPath = path.join(directory, bucket)
+    const bucketPath = path.join(directory as string, bucket)
 
     if (!fs.existsSync(bucketPath)) {
       fs.mkdirSync(bucketPath, { recursive: true })
@@ -31,7 +31,7 @@ const uploaderHandler = async (req: ResolveRequest, res: ResolveResponse) => {
     if (req.method === 'POST' || req.method === 'PUT') {
       const { dir, uploadId } = req.query
 
-      const dirName = path.join(directory, bucket, dir)
+      const dirName = path.join(directory as string, bucket, dir)
 
       if (path.relative(bucketPath, dirName).startsWith('..')) {
         throw new Error(`The specified parameter "dir" ${dir} is not valid`)
@@ -104,7 +104,7 @@ const uploaderHandler = async (req: ResolveRequest, res: ResolveResponse) => {
       }
 
       const encodePayload = crypto
-        .createHmac('md5', secretKey)
+        .createHmac('md5', secretKey as string)
         .update(payload)
         .digest('hex')
 

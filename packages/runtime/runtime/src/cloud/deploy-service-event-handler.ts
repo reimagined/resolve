@@ -3,12 +3,14 @@ import debugLevels from '@resolve-js/debug-levels'
 import bootstrap from '../common/bootstrap'
 import shutdown from '../common/shutdown'
 
+import type { Resolve } from '../common/types'
+
 const log = debugLevels('resolve:runtime:deploy-service-event-handler')
 
-const getReadModelNames = (resolve) =>
+const getReadModelNames = (resolve: Resolve) =>
   resolve.domain.readModels.map(({ name }) => name)
 
-const getSagaNames = (resolve) => [
+const getSagaNames = (resolve: Resolve) => [
   ...resolve.domainInterop.sagaDomain
     .getSagasSchedulersInfo()
     .map((scheduler) => scheduler.name),
@@ -16,9 +18,9 @@ const getSagaNames = (resolve) => [
 ]
 
 const handleResolveReadModelEvent = async (
-  lambdaEvent,
-  resolve,
-  getListenerIds
+  lambdaEvent: any,
+  resolve: Resolve,
+  getListenerIds: (resolve: Resolve) => string[]
 ) => {
   const { listenerId, key, value } = lambdaEvent
   switch (lambdaEvent.operation) {
@@ -111,9 +113,9 @@ const handleResolveReadModelEvent = async (
 }
 
 const handleDeployServiceEvent = async (
-  lambdaEvent,
-  resolve,
-  lambdaContext
+  lambdaEvent: any,
+  resolve: Resolve,
+  lambdaContext: any
 ) => {
   const segment = resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('apiEvent')
@@ -124,7 +126,8 @@ const handleDeployServiceEvent = async (
   switch (lambdaEvent.part) {
     case 'bootstrap': {
       try {
-        return await bootstrap(resolve, lambdaContext)
+        //TODO: it used to pass lambdaContext as the second arg, but bootstrap expects only one
+        return await bootstrap(resolve)
       } catch (error) {
         subSegment.addError(error)
         throw error
