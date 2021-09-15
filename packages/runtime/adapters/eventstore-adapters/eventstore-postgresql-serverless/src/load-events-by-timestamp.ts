@@ -1,7 +1,7 @@
 import {
   TimestampFilter,
   throwBadCursor,
-  EventsWithCursor,
+  StoredEventBatchPointer,
 } from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 import { INT8_SQL_TYPE, MAX_RDS_DATA_API_RESPONSE_SIZE } from './constants'
@@ -24,7 +24,7 @@ const loadEventsByTimestamp = async (
     limit,
     eventsSizeLimit: inputEventsSizeLimit,
   }: TimestampFilter
-): Promise<EventsWithCursor> => {
+): Promise<StoredEventBatchPointer> => {
   const eventsSizeLimit =
     inputEventsSizeLimit != null
       ? inputEventsSizeLimit

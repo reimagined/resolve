@@ -50,19 +50,24 @@ export type EventThreadData = {
   threadId: number
 }
 
-export type SavedEvent = Event & EventThreadData
+export type StoredEvent = Event & EventThreadData
 
-export type ReturnedCursor = string
+export type Cursor = string
 export type InputCursor = string | null
 
-export type EventWithCursor = {
-  cursor: ReturnedCursor
-  event: SavedEvent
+export type EventPointer = {
+  event: Event
+  cursor: Cursor
 }
 
-export type EventsWithCursor = {
-  cursor: ReturnedCursor
-  events: SavedEvent[]
+export type StoredEventPointer = {
+  cursor: Cursor
+  event: StoredEvent
+}
+
+export type StoredEventBatchPointer = {
+  cursor: Cursor
+  events: StoredEvent[]
 }
 
 type EventLimitFilter = {
@@ -87,11 +92,11 @@ export type EventFilter = EventLimitFilter &
   EventCursorFilter
 
 export type Eventstore = {
-  saveEvent: (event: Event) => Promise<EventWithCursor>
+  saveEvent: (event: Event) => Promise<StoredEventPointer>
   saveSnapshot: (snapshotKey: string, content: string) => Promise<void>
   getNextCursor: (cursor: InputCursor, events: EventThreadData[]) => string
   loadSnapshot: (snapshotKey: string) => Promise<string | null>
-  loadEvents: (filter: EventFilter) => Promise<EventsWithCursor>
+  loadEvents: (filter: EventFilter) => Promise<StoredEventBatchPointer>
 
   ensureEventSubscriber: (params: {
     applicationName: string

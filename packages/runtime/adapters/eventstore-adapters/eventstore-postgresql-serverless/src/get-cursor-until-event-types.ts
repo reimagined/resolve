@@ -2,7 +2,7 @@ import { INT8_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'
 import {
   cursorToThreadArray,
-  SavedEvent,
+  StoredEvent,
   threadArrayToCursor,
   initThreadArray,
   InputCursor,
@@ -18,7 +18,7 @@ const getCursorUntilEventTypes = async (
     databaseName,
   }: AdapterPool,
   cursor: InputCursor,
-  untilEventTypes: Array<SavedEvent['type']>
+  untilEventTypes: Array<StoredEvent['type']>
 ): Promise<string> => {
   if (untilEventTypes.length < 1) {
     throw new Error('Must define at least one event type')
@@ -49,8 +49,8 @@ const getCursorUntilEventTypes = async (
           SELECT "threadId", "threadCounter" FROM ${databaseNameAsId}.${threadsTableAsId}) AS "union_table"
         GROUP BY "threadId"`
   )) as Array<{
-    threadId: SavedEvent['threadId']
-    threadCounter: SavedEvent['threadCounter']
+    threadId: StoredEvent['threadId']
+    threadCounter: StoredEvent['threadCounter']
   }>
 
   const threadCounters = initThreadArray()

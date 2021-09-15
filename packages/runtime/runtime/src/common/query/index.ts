@@ -69,7 +69,9 @@ const interopApi = async (
   return await method(parameters, middlewareContext)
 }
 
-const createQuery = (params: CreateQueryOptions): QueryExecutor => {
+export const createQueryExecutor = (
+  params: CreateQueryOptions
+): QueryExecutor => {
   const models: WrappedModels = {}
 
   const { viewModelsInterop, readModelsInterop, ...imports } = params
@@ -110,4 +112,3 @@ const createQuery = (params: CreateQueryOptions): QueryExecutor => {
 
 export { OMIT_BATCH, STOP_BATCH }
 export type { CreateQueryOptions }
-export default createQuery
