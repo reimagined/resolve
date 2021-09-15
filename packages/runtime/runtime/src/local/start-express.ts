@@ -1,35 +1,116 @@
-import initResolve from '../common/init-resolve'
-import disposeResolve from '../common/dispose-resolve'
-import bootstrap from '../common/bootstrap'
+import { createRuntime, Runtime } from '../common/create-runtime'
+import { bootstrap } from '../common/bootstrap'
 import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 
 import { EventstoreResourceAlreadyExistError } from '@resolve-js/eventstore-base'
-import type { Resolve } from '../common/types'
+import { ExpressAppData } from './express-app-factory'
+import { RuntimeFactoryParameters } from '../common/create-runtime'
+import wrapApiHandler from './wrap-api-handler'
+import { mainHandler } from '../common/handlers/main-handler'
 
-const startExpress = async (resolve: Resolve) => {
-  const { port, server, upstream, host } = resolve
-  const currentResolve = Object.create(resolve)
+type StartParameters = {
+  upstream: boolean
+  host: string
+  port: string
+  getEventSubscriberDestination: (name: string) => string
+  ensureQueue: (name?: string) => Promise<void>
+  deleteQueue: (name?: string) => Promise<void>
+}
+
+export const startExpress = async (
+  data: ExpressAppData,
+  startParams: StartParameters,
+  runtimeParams: RuntimeFactoryParameters
+) => {
+  const {
+    server,
+    staticRouteMarkerHandler,
+    expressStaticMiddleware,
+    routesTrie,
+    app,
+    staticRoutes,
+  } = data
+
+  app.use(async (req, res, next) => {
+    if (staticRoutes != null) {
+      const { node } = routesTrie.match(req.path) ?? { node: null }
+      if (node != null) {
+        const handler = node.getHandler(req.method.toUpperCase())
+        const maybeMappedStaticFile = (staticRoutes.find(
+          (route) => route[0] === node.pattern
+        ) ?? [])[1]
+        if (handler === staticRouteMarkerHandler) {
+          return await expressStaticMiddleware(
+            maybeMappedStaticFile != null
+              ? Object.create(req, {
+                  originalUrl: {
+                    value: `/${maybeMappedStaticFile}`,
+                    enumerable: true,
+                  },
+                  url: { value: `/${maybeMappedStaticFile}`, enumerable: true },
+                  path: {
+                    value: `/${maybeMappedStaticFile}`,
+                    enumerable: true,
+                  },
+                  params: { value: {}, enumerable: true },
+                  query: { value: {}, enumerable: true },
+                })
+              : req,
+            res,
+            next
+          )
+        }
+      }
+    }
+
+    let runtime: Runtime | null = null
+    try {
+      runtime = await createRuntime(runtimeParams)
+
+      // TODO: this is "resolve' that exposed to end-user
+      const getCustomParameters = async () => ({ resolve: runtime })
+
+      const executor = wrapApiHandler(mainHandler, getCustomParameters)
+
+      await executor(req, res)
+    } finally {
+      if (runtime != null) {
+        await runtime.dispose()
+      }
+    }
+  })
+
+  let runtime: Runtime | null = null
   try {
-    await initResolve(currentResolve)
-    const { eventstoreAdapter } = currentResolve
+    runtime = await createRuntime(runtimeParams)
+    const { eventStoreAdapter } = runtime
 
     await invokeFilterErrorTypes(
-      eventstoreAdapter.init.bind(eventstoreAdapter),
+      eventStoreAdapter.init.bind(eventStoreAdapter),
       [EventstoreResourceAlreadyExistError]
     )
 
-    await bootstrap(currentResolve)
+    await bootstrap({
+      eventSubscriber: runtime.eventSubscriber,
+      eventStoreAdapter: runtime.eventStoreAdapter,
+      upstream: startParams.upstream,
+      ensureQueue: startParams.ensureQueue,
+      deleteQueue: startParams.deleteQueue,
+      getEventSubscriberDestination: startParams.getEventSubscriberDestination,
+      eventListeners: runtimeParams.eventListeners,
+      eventSubscriberScope: runtimeParams.eventSubscriberScope
+    })
 
-    const notReadyListeners = new Set([...resolve.eventListeners.keys()])
+    const notReadyListeners = new Set([...runtimeParams.eventListeners.keys()])
 
-    while (upstream && notReadyListeners.size > 0) {
+    while (startParams.upstream && notReadyListeners.size > 0) {
       for (const eventSubscriber of notReadyListeners) {
         const {
           successEvent,
           failedEvent,
           errors,
           status,
-        } = await currentResolve.eventSubscriber.status({ eventSubscriber })
+        } = await runtime.eventSubscriber.status({ eventSubscriber })
 
         if (
           successEvent != null ||
@@ -44,20 +125,20 @@ const startExpress = async (resolve: Resolve) => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
     }
   } finally {
-    await disposeResolve(currentResolve)
+    if (runtime != null) {
+      await runtime.dispose()
+    }
   }
 
   await new Promise<void>((resolve, reject) => {
     const errorHandler = (err: any) => reject(err)
     server.once('error', errorHandler)
-    server.listen(Number(port), host, () => {
+    server.listen(Number(startParams.port), startParams.host, () => {
       server.removeListener('error', errorHandler)
 
       // eslint-disable-next-line no-console
-      console.log(`Application listening on port ${port}!`)
+      console.log(`Application listening on port ${startParams.port}!`)
       resolve()
     })
   })
 }
-
-export default startExpress

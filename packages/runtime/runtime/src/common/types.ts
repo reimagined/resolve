@@ -274,7 +274,6 @@ export type Resolve = {
   domain: DomainWithHandlers
   domainInterop: Domain
   readonly performanceTracer: PerformanceTracer
-  pubsubManager: PubsubManager
   scheduler: Scheduler
   uploader: Uploader
 
