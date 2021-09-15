@@ -6,13 +6,13 @@ import path from 'path'
 import useYarn from './use_yarn'
 import prepareUrls from './prepare_urls'
 
-const openBrowser = async (port, rootPath) => {
+const openBrowser = async (host = '0.0.0.0', port, rootPath) => {
   let applicationName = 'application'
   try {
     applicationName = require(path.join(process.cwd(), 'package.json')).name
   } catch (e) {}
 
-  const urls = prepareUrls('http', '0.0.0.0', port, rootPath)
+  const urls = prepareUrls('http', host, port, rootPath)
   const url = urls.localUrlForBrowser
 
   /* eslint-disable no-console */

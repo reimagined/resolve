@@ -7,7 +7,6 @@ import {
   MAINTENANCE_MODE_MANUAL,
   initThreadArray,
 } from '@resolve-js/eventstore-base'
-import createEventstoreAdapter from '@resolve-js/eventstore-lite'
 import type {
   EventsWithCursor,
   SavedEvent,

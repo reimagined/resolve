@@ -5,6 +5,7 @@ export const includeAlias = [
   'applicationName',
   'distDir',
   'jwtCookie',
+  'host',
   'port',
   'rootPath',
   'staticDir',

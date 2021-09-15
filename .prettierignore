@@ -11,3 +11,5 @@ packages/core/zeromq/optional
 packages/core/react-hooks/src/index.ts
 website/**
 functional-tests/app/**/dist
+tutorial/**/dist
+templates/**/dist

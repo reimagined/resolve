@@ -6,9 +6,8 @@ import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 import { EventstoreResourceAlreadyExistError } from '@resolve-js/eventstore-base'
 import type { Resolve } from '../common/types'
 
-const host = '0.0.0.0'
 const startExpress = async (resolve: Resolve) => {
-  const { port, server, upstream } = resolve
+  const { port, server, upstream, host } = resolve
   const currentResolve = Object.create(resolve)
   try {
     await initResolve(currentResolve)

@@ -59,8 +59,6 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
         ) < 0,
       https,
       http,
-      getEventSubscriberDestination: () =>
-        `http://0.0.0.0:${constants.port}/api/subscribers`,
       invokeBuildAsync: backgroundJob(async (parameters: BuildParameters) => {
         const currentResolve = Object.create(resolve)
         try {
@@ -79,6 +77,10 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
       },
       performanceTracer,
     }
+
+    resolve.host = resolve.host ?? '0.0.0.0'
+    resolve.getEventSubscriberDestination = () =>
+      `http://${resolve.host}:${constants.port}/api/subscribers`
 
     await initExpress(resolve as Resolve)
     await initWebsockets(resolve as Resolve)

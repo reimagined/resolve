@@ -22,8 +22,7 @@ export type RemovePoolArg<M extends (pool: Pool, ...args: any[]) => any> = (
 
 const createPresignedPut = async (pool: Pool, dir: string) => {
   const uploadId = uuid()
-  const uploadUrl = `http://localhost:3000/uploader?dir=${dir}&uploadId=${uploadId}`
-
+  const uploadUrl = `${process.env.RESOLVE_UPLOADER_CDN_URL}?dir=${dir}&uploadId=${uploadId}`
   return {
     uploadUrl,
     uploadId,
@@ -52,7 +51,7 @@ export const upload = (uploadUrl: string, filePath: string) => {
 const createPresignedPost = async (pool: Pool, dir: string) => {
   const uploadId = uuid()
   const form = {
-    url: `http://localhost:3000/uploader?dir=${dir}&uploadId=${uploadId}`,
+    url: `${process.env.RESOLVE_UPLOADER_CDN_URL}?dir=${dir}&uploadId=${uploadId}`,
     fields: {},
   }
 
@@ -137,7 +136,7 @@ const initUploader = async (resolve: Resolve) => {
     // TODO: provide support for custom uploader adapter
     const createUploadAdapter = resolve.assemblies.uploadAdapter
     const uploader = createUploader(createUploadAdapter() as UploaderPoolLocal)
-    process.env.RESOLVE_UPLOADER_CDN_URL = 'http://localhost:3000/uploader'
+    process.env.RESOLVE_UPLOADER_CDN_URL = `http://${resolve.host}:${resolve.port}/uploader`
 
     resolve.uploader = {
       getSignedPut: getSignedPut.bind(null, uploader),
