@@ -4,6 +4,7 @@ import type {
   Domain,
   DomainMeta,
   Event,
+  EventWithCursor,
   Monitoring,
   CommandMiddleware,
   ReadModelResolverMiddleware,
@@ -44,7 +45,7 @@ export type ReadModelConnector = {
   drop: (connection: any, name: string) => Promise<void>
 } & Record<ReadModelMethodName, (...parameters: any[]) => Promise<void>>
 
-export type ReadModelConnectorCreator = (options: {
+export type ReadModelConnectorFactory = (options: {
   performanceTracer: PerformanceTracer
   monitoring: Monitoring
 }) => ReadModelConnector
@@ -149,14 +150,14 @@ export type Uploader = {
 export type Assemblies = {
   uploadAdapter: () => UploaderPool
   eventstoreAdapter: () => EventstoreAdapter
-  readModelConnectors: Record<string, ReadModelConnectorCreator>
+  readModelConnectors: Record<string, ReadModelConnectorFactory>
 
   //TODO: types
   seedClientEnvs: any
   serverImports: any
 }
 
-export type BuildParameters = {
+export type EventSubscriberNotification = {
   eventSubscriber: string
   initiator: 'read-model-next' | 'command-foreign' | 'command'
   notificationId: string
@@ -165,7 +166,7 @@ export type BuildParameters = {
   cursor?: string
 }
 
-export type InvokeBuildAsync = (parameters: BuildParameters) => Promise<void>
+export type InvokeBuildAsync = (parameters: EventSubscriberNotification) => Promise<void>
 
 export type BuildTimeConstants = {
   applicationName: string
@@ -182,6 +183,12 @@ export type BuildTimeConstants = {
   staticRoutes?: string[] | undefined
 }
 
+export type EventSubscriberNotifier = (
+  destination: string,
+  eventSubscriber: string,
+  event?: EventWithCursor
+) => Promise<void>
+
 export type Resolve = {
   isInitialized: boolean
 
@@ -193,12 +200,8 @@ export type Resolve = {
   eventListeners: Map<string, EventListener>
   upstream: boolean
 
-  http: typeof http
-  https: typeof https
-
   getEventSubscriberDestination: (name?: string) => string
   invokeBuildAsync: InvokeBuildAsync
-  invokeLambdaAsync: (functionName: string, parameters: any) => Promise<void>
 
   ensureQueue: (name?: string) => Promise<void>
   deleteQueue: (name?: string) => Promise<void>
@@ -243,8 +246,9 @@ export type Resolve = {
     cursor: string
   }) => Promise<void>
 
-  sendSqsMessage: (queueName: string, parameters: any) => Promise<void>
+  notifyEventSubscriber: EventSubscriberNotifier
 
+  //TODO: types
   monitoring: Monitoring
 
   routesTrie: Trie

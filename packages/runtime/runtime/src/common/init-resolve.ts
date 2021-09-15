@@ -6,17 +6,17 @@ import path from 'path'
 import fs from 'fs'
 
 import liveEntryDir from './dynamic-require/live-entry-dir'
-import createNotifyEventSubscribers from './notify-event-subscribers'
+import { subscribersNotifierFactory } from './subscribers-notifier-factory'
 import createOnCommandExecuted from './on-command-executed'
 import createEventSubscriber from './event-subscriber'
 
 import type { Event, Command, AggregateInterop } from '@resolve-js/core'
 
-import type { Resolve, ReadModelConnector } from './types'
+import type { Resolve } from './types'
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
-const initResolve = async (resolve: Resolve) => {
+export const initResolve = async (resolve: Resolve) => {
   const performanceTracer = resolve.performanceTracer
 
   const {
@@ -82,7 +82,7 @@ const initResolve = async (resolve: Resolve) => {
   resolve.readModelSources = readModelSources
 
   const getVacantTimeInMillis = resolve.getVacantTimeInMillis
-  const notifyEventSubscribers = createNotifyEventSubscribers(resolve)
+  const notifyEventSubscribers = subscribersNotifierFactory(resolve)
   const onCommandExecuted = createOnCommandExecuted(resolve)
 
   const secretsManager = await eventstoreAdapter.getSecretsManager()
@@ -181,5 +181,3 @@ const initResolve = async (resolve: Resolve) => {
     .toString('hex')
     .slice(0, 32)
 }
-
-export default initResolve

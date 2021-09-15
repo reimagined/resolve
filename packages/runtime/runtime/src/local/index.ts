@@ -1,28 +1,27 @@
 import 'source-map-support/register'
 import { initDomain } from '@resolve-js/core'
-import http from 'http'
-import https from 'https'
 
 import { getLog } from '../common/utils/get-log'
 import { backgroundJob } from '../common/utils/background-job'
 import { prepareDomain } from './prepare-domain'
 import { lambdaGuard } from './lambda-guard'
 import { initPerformanceTracer } from './init-performance-tracer'
+import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
 
 import initExpress from './init-express'
 import initWebsockets from './init-websockets'
 import startExpress from './start-express'
 import initUploader from './init-uploader'
 import initScheduler from './init-scheduler'
-import gatherEventListeners from '../common/gather-event-listeners'
-import initResolve from '../common/init-resolve'
+import { gatherEventListeners } from '../common/gather-event-listeners'
+import { initResolve } from '../common/init-resolve'
 import disposeResolve from '../common/dispose-resolve'
 
 import type {
   Assemblies,
   ResolvePartial,
   Resolve,
-  BuildParameters,
+  EventSubscriberNotification,
   BuildTimeConstants,
 } from '../common/types'
 
@@ -41,6 +40,7 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
     const domainInterop = await initDomain(domain)
 
     const performanceTracer = await initPerformanceTracer()
+    const eventSubscriberNotifier = await eventSubscriberNotifierFactory()
 
     const resolve: ResolvePartial = {
       instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,
@@ -52,23 +52,28 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
       eventSubscriberScope: constants.applicationName,
+      notifyEventSubscriber: eventSubscriberNotifier,
       upstream:
         domain.apiHandlers.findIndex(
           ({ method, path }) =>
             method === 'OPTIONS' && path === '/SKIP_COMMANDS'
         ) < 0,
-      https,
-      http,
-      invokeBuildAsync: backgroundJob(async (parameters: BuildParameters) => {
-        const currentResolve = Object.create(resolve)
-        try {
-          await initResolve(currentResolve)
-          const result = await currentResolve.eventSubscriber.build(parameters)
-          return result
-        } finally {
-          await disposeResolve(currentResolve)
+      getEventSubscriberDestination: () =>
+        `http://0.0.0.0:${constants.port}/api/subscribers`,
+      invokeBuildAsync: backgroundJob(
+        async (parameters: EventSubscriberNotification) => {
+          const currentResolve = Object.create(resolve)
+          try {
+            await initResolve(currentResolve)
+            const result = await currentResolve.eventSubscriber.build(
+              parameters
+            )
+            return result
+          } finally {
+            await disposeResolve(currentResolve)
+          }
         }
-      }),
+      ),
       ensureQueue: async () => {
         return
       },
