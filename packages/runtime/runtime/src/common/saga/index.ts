@@ -9,7 +9,7 @@ type CreateSagaOptions = {
   executeCommand: Resolve['executeCommand']
   executeQuery: Resolve['executeQuery']
   performanceTracer: Resolve['performanceTracer']
-  uploader: Resolve['uploader']
+  uploader: Resolve['uploader'] | null
   eventstoreAdapter: Resolve['eventstoreAdapter']
   secretsManager: SecretsManager
   getVacantTimeInMillis: Resolve['getVacantTimeInMillis']
@@ -94,6 +94,7 @@ export const createSagaExecutor = ({
     getVacantTimeInMillis,
     eventstoreAdapter,
     monitoring,
+    loadReadModelProcedure: () => Promise.resolve(null),
     readModelsInterop: domainInterop.sagaDomain.acquireSagasInterop(runtime),
     viewModelsInterop: {},
   })

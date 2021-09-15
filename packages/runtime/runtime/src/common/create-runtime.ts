@@ -32,7 +32,7 @@ export type RuntimeFactoryParameters = {
   domain: Resolve['domain']
   domainInterop: Resolve['domainInterop']
   performanceTracer: PerformanceTracer
-  monitoring?: Monitoring
+  monitoring: Monitoring
   eventStoreAdapterFactory: EventStoreAdapterFactory
   readModelConnectorsFactories: Record<string, ReadModelConnectorFactory>
   getVacantTimeInMillis: () => number
@@ -42,7 +42,7 @@ export type RuntimeFactoryParameters = {
   eventListeners: Resolve['eventListeners']
   sendReactiveEvent: ReactiveEventDispatcher
   broadcastEvent: Resolve['broadcastEvent']
-  uploader: Resolve['uploader']
+  uploader: Resolve['uploader'] | null
   scheduler: Resolve['scheduler']
 }
 
