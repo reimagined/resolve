@@ -50,7 +50,7 @@ Call the project's `test:e2e` script to run the test:
 yarn test:e2e
 ```
 
-Each consequent lesson in this tutorial will offer you new tests as your application's complexity progresses. Run these tests to ensure that you are ready to move to the next lesson.
+Each consequent lesson in this tutorial will offer you new tests as you develop your application. Copy these tests to your application and run them to ensure that you are ready to move to the next lesson.
 
 ## **Lesson 1** - Write side - Add Shopping Lists
 
@@ -415,6 +415,16 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 }
 ```
 
+<details>
+<summary>
+
+Expand this section for an example, on how to test the validation.
+
+</summary>
+
+<Tabs>
+<TabItem value="curl" label="Check manually" default>
+
 You can send faulty commands to your aggregate to check whether the validation works as intended:
 
 ```sh
@@ -439,6 +449,37 @@ Content-Length: 31
 
 Command error: name is required
 ```
+
+</TabItem>
+<TabItem value="test" label="Write a test">
+
+Add the following test case to the application's test file.
+
+[test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/e2e/index.test.js)
+
+```js
+test('read model query should work correctly', async () => {
+  const response = await fetch(`${MAIN_PAGE}/api/query/ShoppingLists/all`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  })
+
+  const result = await response.json()
+
+  await t.expect(result.data.length).eql(1)
+  await t.expect(result.data[0]).contains({
+    id: 'shopping-list-1',
+    name: 'List 1',
+  })
+})
+```
+
+</TabItem>
+</Tabs>
+
+</details>
 
 ---
 
@@ -578,34 +619,14 @@ readModels: [
 <details>
 <summary>
 
-Update [tests](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-2/test/e2e/index.test.js#L199-L214) to check this functionality.
+Expand this section for an example, on how to test the ShoppingLists Read Model.
 
 </summary>
 
-```js
-test('read model query should work correctly', async () => {
-  const response = await fetch(`${MAIN_PAGE}/api/query/ShoppingLists/all`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'GET',
-  })
+<Tabs>
+<TabItem value="curl" label="Check manually" default>
 
-  const result = await response.json()
-
-  await t.expect(result.data.length).eql(1)
-  await t.expect(result.data[0]).contains({
-    id: 'shopping-list-1',
-    name: 'List 1',
-  })
-})
-```
-
-</details>
-
-### Query a Read Model
-
-Use the reSolve HTTP API to query the ShoppingLists Read Model:
+Use the reSolve [HTTP API](api/client/http-api.md) to query the ShoppingLists Read Model:
 
 ```sh
 $ curl -X POST \
@@ -628,6 +649,37 @@ $ curl -X POST \
   }
 ]
 ```
+
+</TabItem>
+<TabItem value="test" label="Write a test">
+
+Add the following test case to the application's test file.
+
+[test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/e2e/index.test.js)
+
+```js
+test('read model query should work correctly', async () => {
+  const response = await fetch(`${MAIN_PAGE}/api/query/ShoppingLists/all`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  })
+
+  const result = await response.json()
+
+  await t.expect(result.data.length).eql(1)
+  await t.expect(result.data[0]).contains({
+    id: 'shopping-list-1',
+    name: 'List 1',
+  })
+})
+```
+
+</TabItem>
+</Tabs>
+
+</details>
 
 ---
 
