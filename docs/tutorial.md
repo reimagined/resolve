@@ -52,14 +52,6 @@ yarn test:e2e
 
 Each consequent lesson in this tutorial will offer you new tests as your application's complexity progresses. Run these tests to ensure that you are ready to move to the next lesson.
 
-The tests for this tutorial make heavy use of the Chai assertion library. Use the following console input to install it:
-
-```sh
-yarn add chai
-```
-
----
-
 ## **Lesson 1** - Write side - Add Shopping Lists
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-1)
@@ -289,13 +281,19 @@ test('createShoppingList', async () => {
 
   const event = await response.json()
 
-  expect(event).to.deep.include({
-    type: 'SHOPPING_LIST_CREATED',
-    payload: { name: 'List 1' },
-    aggregateId: 'shopping-list-1',
-    aggregateVersion: 1,
-  })
+  await t
+    .expect(event)
+    .contains({
+      type: 'SHOPPING_LIST_CREATED',
+      aggregateId: 'shopping-list-1',
+      aggregateVersion: 1,
+    })
+    .expect(event.payload)
+    .contains({
+      name: 'List 1',
+    })
 })
+
 // Create an item and check the server response.
 test('createShoppingItem', async () => {
   const command = {
@@ -318,12 +316,15 @@ test('createShoppingItem', async () => {
 
   const event = await response.json()
 
-  expect(event).to.deep.include({
-    type: 'SHOPPING_ITEM_CREATED',
-    payload: { id: '1', text: 'Milk' },
-    aggregateId: 'shopping-list-1',
-    aggregateVersion: 2,
-  })
+  await t
+    .expect(event)
+    .contains({
+      type: 'SHOPPING_ITEM_CREATED',
+      aggregateId: 'shopping-list-1',
+      aggregateVersion: 2,
+    })
+    .expect(event.payload)
+    .contains({ id: '1', text: 'Milk' })
 })
 ```
 
@@ -577,7 +578,7 @@ readModels: [
 <details>
 <summary>
 
-Update [tests](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-2/test/functional/index.test.js#L199-L214) to check this functionality.
+Update [tests](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-2/test/e2e/index.test.js#L199-L214) to check this functionality.
 
 </summary>
 
@@ -592,8 +593,8 @@ test('read model query should work correctly', async () => {
 
   const result = await response.json()
 
-  expect(result.data).to.have.lengthOf(1)
-  expect(result.data[0]).to.include({
+  await t.expect(result.data.length).eql(1)
+  await t.expect(result.data[0]).contains({
     id: 'shopping-list-1',
     name: 'List 1',
   })
