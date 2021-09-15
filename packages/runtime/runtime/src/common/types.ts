@@ -243,7 +243,6 @@ export type Resolve = {
     cursor: string
   }) => Promise<void>
 
-  //TODO: types
   sendSqsMessage: (queueName: string, parameters: any) => Promise<void>
 
   monitoring: Monitoring

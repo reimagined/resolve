@@ -1,4 +1,10 @@
-export const queryIsReadyHandler = async (req: any, res: any) => {
+import type { ResolveRequest, ResolveResponse } from '../common/types'
+import type { SavedEvent } from '@resolve-js/core'
+
+export const queryIsReadyHandler = async (
+  req: ResolveRequest,
+  res: ResolveResponse
+) => {
   try {
     const { eventstoreAdapter, eventSubscriber, eventListeners } = req.resolve
     const queryIsReadyPromises = []
@@ -13,7 +19,8 @@ export const queryIsReadyHandler = async (req: any, res: any) => {
             return
           }
 
-          let successEvent, failedEvent
+          let successEvent: SavedEvent | null = null
+          let failedEvent: SavedEvent | null = null
           while (failedEvent == null) {
             void ({ successEvent, failedEvent } = await eventSubscriber.status({
               eventSubscriber: key,
