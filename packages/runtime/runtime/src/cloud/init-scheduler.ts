@@ -2,9 +2,11 @@ import STS from 'aws-sdk/clients/sts'
 import debugLevels from '@resolve-js/debug-levels'
 import { invokeFunction } from 'resolve-cloud-common/lambda'
 
-const getLog = (name) => debugLevels(`resolve:cloud:scheduler:${name}`)
+import type { SchedulerEntry, Resolve } from '../common/types'
 
-const start = async (entry) => {
+const getLog = (name: string) => debugLevels(`resolve:cloud:scheduler:${name}`)
+
+const start = async (entry: SchedulerEntry) => {
   const log = getLog(`start`)
   try {
     log.verbose(`entry: ${JSON.stringify(entry)}`)
@@ -13,8 +15,8 @@ const start = async (entry) => {
     const { Arn } = await new STS().getCallerIdentity().promise()
 
     await invokeFunction({
-      Region: process.env.AWS_REGION,
-      FunctionName: process.env.RESOLVE_SCHEDULER_LAMBDA_ARN,
+      Region: process.env.AWS_REGION as string,
+      FunctionName: process.env.RESOLVE_SCHEDULER_LAMBDA_ARN as string,
       Payload: {
         functionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
         event: {
@@ -48,8 +50,8 @@ const stopAll = async () => {
   const { Arn } = await new STS().getCallerIdentity().promise()
 
   await invokeFunction({
-    Region: process.env.AWS_REGION,
-    FunctionName: process.env.RESOLVE_SCHEDULER_LAMBDA_ARN,
+    Region: process.env.AWS_REGION as string,
+    FunctionName: process.env.RESOLVE_SCHEDULER_LAMBDA_ARN as string,
     Payload: {
       functionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
       validationRoleArn: Arn,
@@ -64,17 +66,17 @@ const stopAll = async () => {
   log.debug('all executions stopped successfully')
 }
 
-const errorHandler = async (error) => {
+const errorHandler = async (error: any) => {
   throw error
 }
 
-const isEmpty = (obj) =>
+const isEmpty = (obj: any) =>
   Object.keys(obj).reduce(
     (empty, key) => empty && !obj.hasOwnProperty(key),
     true
   )
 
-const validateEntry = ({ date, taskId, command }) =>
+const validateEntry = ({ date, taskId, command }: SchedulerEntry) =>
   date != null &&
   date.constructor === Number &&
   taskId != null &&
@@ -83,7 +85,7 @@ const validateEntry = ({ date, taskId, command }) =>
   command.constructor === Object &&
   !isEmpty(command)
 
-const initScheduler = (resolve) => {
+const initScheduler = (resolve: Resolve) => {
   getLog('createAdapter').debug(`building new resolve cloud scheduler adapter`)
   resolve.scheduler = {
     async addEntries(data) {
@@ -92,7 +94,7 @@ const initScheduler = (resolve) => {
       log.debug(`adding new scheduled entries`)
       log.verbose(`data: ${JSON.stringify(data)}`)
 
-      const entries = [].concat(data)
+      const entries = ([] as SchedulerEntry[]).concat(data)
       try {
         log.debug(`starting step function executions`)
         await Promise.all(
