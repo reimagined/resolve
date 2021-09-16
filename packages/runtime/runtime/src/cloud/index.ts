@@ -1,27 +1,50 @@
 import 'source-map-support/register'
 
 import debugLevels from '@resolve-js/debug-levels'
-import {
-  escapeId,
-  escapeStr,
-  executeStatement,
-} from 'resolve-cloud-common/postgres'
-import { invokeFunction } from 'resolve-cloud-common/lambda'
-import { errorBoundary } from 'resolve-cloud-common/utils'
 import { initDomain } from '@resolve-js/core'
+import type { PerformanceTracer, Domain } from '@resolve-js/core'
 
-import initPerformanceTracer from './init-performance-tracer'
-import lambdaWorker from './lambda-worker'
-import wrapTrie from '../common/wrap-trie'
-import initUploader from './init-uploader'
+import { performanceTracerFactory } from './performance-tracer-factory'
+import { lambdaWorker } from './lambda-worker'
+import { wrapTrie } from '../common/wrap-trie'
+import { uploaderFactory } from './uploader-factory'
 import { gatherEventListeners } from '../common/gather-event-listeners'
-import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
-import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
+import { getSubscribeAdapterOptions } from './get-subscribe-adapter-options'
 
-import type { Assemblies, BuildTimeConstants, Resolve } from '../common/types'
+import type {
+  Assemblies,
+  BuildTimeConstants,
+  DomainWithHandlers,
+  Resolve,
+  Uploader,
+} from '../common/types'
 import type { PerformanceSubsegment } from '@resolve-js/core'
+import { getDeploymentId } from './utils'
+import { sendReactiveEvent } from './send-reactive-event'
 
 const log = debugLevels('resolve:runtime:cloud-entry')
+
+export type LambdaColdStartContext = {
+  readonly performanceTracer: PerformanceTracer
+  readonly seedClientEnvs: Resolve['seedClientEnvs']
+  readonly serverImports: Resolve['serverImports']
+  // TODO: why we still need domain meta outside core?
+  readonly domain: DomainWithHandlers
+  readonly domainInterop: Domain
+  readonly eventListeners: Resolve['eventListeners']
+  readonly eventSubscriberScope: string
+  readonly upstream: boolean
+  readonly resolveVersion: string
+  readonly routesTrie: Resolve['routesTrie']
+  readonly uploader: Uploader | null
+  readonly sendReactiveEvent: Resolve['sendReactiveEvent']
+  // TODO: rename to getSubscriptionAdapterOptions
+  readonly getSubscribeAdapterOptions: Resolve['getSubscribeAdapterOptions']
+  // TODO: do we really need this somewhere?
+  readonly assemblies: Resolve['assemblies']
+  // TODO: what is this?
+  readonly publisher: any
+}
 
 const index = async ({
   assemblies,
@@ -40,96 +63,43 @@ const index = async ({
   const domainInterop = initDomain(domain)
 
   try {
-    log.debug('configuring reSolve framework')
-    const resolve: Partial<Resolve> = {
+    log.debug('building lambda cold start context entries')
+
+    const performanceTracer = await performanceTracerFactory()
+    const uploader = await uploaderFactory({
+      uploaderAdapterFactory: assemblies.uploadAdapter,
+    })
+
+    const coldStartContext: LambdaColdStartContext = {
       seedClientEnvs: assemblies.seedClientEnvs,
       serverImports: assemblies.serverImports,
       domain,
       ...constants,
+      // TODO: what is this?
       publisher: {},
       assemblies,
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
-      eventSubscriberScope: process.env.RESOLVE_DEPLOYMENT_ID,
+      eventSubscriberScope: getDeploymentId(),
       upstream: true,
       resolveVersion,
-      performanceTracer: await initPerformanceTracer(),
+      performanceTracer,
+      getSubscribeAdapterOptions,
+      sendReactiveEvent,
+      routesTrie: wrapTrie(
+        domain.apiHandlers,
+        constants.staticRoutes,
+        constants.rootPath
+      ),
+      uploader
     }
 
-    log.debug('preparing performance tracer')
-
-    const segment = (resolve as Resolve).performanceTracer.getSegment()
+    const segment = performanceTracer.getSegment()
     subSegment = segment.addNewSubsegment('initResolve')
-
-    resolve.getSubscribeAdapterOptions = getSubscribeAdapterOptions
-    resolve.routesTrie = wrapTrie(
-      domain.apiHandlers,
-      constants.staticRoutes,
-      constants.rootPath
-    )
-
-    log.debug('preparing uploader')
-    await initUploader(resolve as Resolve)
-
-    resolve.sendReactiveEvent = async (event) => {
-      const { aggregateId, type } = event
-      const databaseNameAsId = escapeId(
-        process.env.RESOLVE_EVENT_STORE_DATABASE_NAME as string
-      )
-      const subscriptionsTableNameAsId = escapeId(
-        process.env.RESOLVE_SUBSCRIPTIONS_TABLE_NAME as string
-      )
-
-      const connectionIdsResult = await executeStatement({
-        Region: process.env.AWS_REGION as string,
-        ResourceArn: process.env.RESOLVE_EVENT_STORE_CLUSTER_ARN as string,
-        SecretArn: process.env.RESOLVE_USER_SECRET_ARN as string,
-        Sql: `SELECT "connectionId" FROM ${databaseNameAsId}.${subscriptionsTableNameAsId}
-          WHERE (
-             ${databaseNameAsId}.${subscriptionsTableNameAsId}."eventTypes" #>
-             ${escapeStr(`{${JSON.stringify(type)}}`)} =
-             CAST('true' AS jsonb)
-            OR
-             ${databaseNameAsId}.${subscriptionsTableNameAsId}."eventTypes" #> '{}' =
-             CAST('null' AS jsonb) 
-            ) AND (
-             ${databaseNameAsId}.${subscriptionsTableNameAsId}."aggregateIds" #>
-             ${escapeStr(`{${JSON.stringify(aggregateId)}}`)} =
-             CAST('true' AS jsonb)
-            OR
-             ${databaseNameAsId}.${subscriptionsTableNameAsId}."aggregateIds" #> '{}' =
-             CAST('null' AS jsonb) 
-          )`,
-      })
-
-      const errors: any[] = []
-
-      await Promise.all(
-        connectionIdsResult.map(({ connectionId }) =>
-          invokeFunction({
-            Region: process.env.AWS_REGION as string,
-            FunctionName: process.env.RESOLVE_WEBSOCKET_LAMBDA_ARN as string,
-            Payload: {
-              type: 'send',
-              connectionId,
-              data: {
-                type: 'events',
-                payload: {
-                  events: [event],
-                },
-              },
-            },
-          }).catch(errorBoundary(errors))
-        )
-      )
-      if (errors.length > 0) {
-        log.warn(`Failed push event to websocket. ${errors}`)
-      }
-    }
 
     log.debug(`lambda 'cold start' succeeded`)
 
-    return lambdaWorker.bind(null, resolve as Resolve)
+    return lambdaWorker.bind(null, coldStartContext)
   } catch (error) {
     log.error(`lambda 'cold start' failure`, error)
     if (subSegment != null) subSegment.addError(error)

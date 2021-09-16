@@ -1,9 +1,9 @@
-import { EventWithCursor } from '@resolve-js/core'
+import { EventPointer } from '@resolve-js/core'
 import { EventSubscriberNotification } from '../types'
 
 export const createEventSubscriberNotification = (
   eventSubscriber: string,
-  eventWithCursor?: EventWithCursor,
+  eventWithCursor?: EventPointer,
   isForeign?: boolean
 ): EventSubscriberNotification => ({
   eventSubscriber,

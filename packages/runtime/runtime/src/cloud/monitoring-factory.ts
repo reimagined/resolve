@@ -1,13 +1,18 @@
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
-import debugLevels, { LeveledDebugger } from '@resolve-js/debug-levels'
+import { getLog } from '../common/utils/get-log'
 import { retry } from 'resolve-cloud-common/utils'
-
 import type { Monitoring } from '@resolve-js/core'
 
 const MAX_DIMENSION_VALUE_LENGTH = 256
 const MAX_METRIC_COUNT = 20
 const MAX_DIMENSION_COUNT = 10
 const MAX_VALUES_PER_METRIC = 150
+
+type Logger = ReturnType<typeof getLog>
+type MonitoringFactoryParameters = {
+  deploymentId: string
+  resolveVersion: string
+}
 
 type MetricDimensions = Array<{ Name: string; Value: string }>
 type MetricDimensionsList = Array<MetricDimensions>
@@ -36,8 +41,6 @@ type MonitoringGroupData = {
   errorMetricDimensionsList: MetricDimensionsList
 }
 
-const getLog = (name: string) => debugLevels(`resolve:cloud:${name}`)
-
 const getErrorMessage = (error: any) => {
   let errorMessage = error.message.split(/\n|\r|\r\n/g)[0] as string
 
@@ -63,7 +66,7 @@ const createErrorDimensionsList = (error: any): MetricDimensionsList => [
 ]
 
 const monitoringError = async (
-  log: LeveledDebugger,
+  log: Logger,
   monitoringData: MonitoringData,
   groupData: MonitoringGroupData,
   error: any
@@ -118,7 +121,7 @@ const monitoringError = async (
 }
 
 const monitoringExecution = async (
-  log: LeveledDebugger,
+  log: Logger,
   monitoringData: MonitoringData,
   groupData: MonitoringGroupData,
   error: any
@@ -194,7 +197,7 @@ const monitoringExecution = async (
 }
 
 const monitoringDuration = async (
-  log: LeveledDebugger,
+  log: Logger,
   monitoringData: MonitoringData,
   groupData: MonitoringGroupData,
   label: string,
@@ -282,7 +285,7 @@ const monitoringDuration = async (
 }
 
 const monitoringTime = async (
-  log: LeveledDebugger,
+  log: Logger,
   monitoringData: MonitoringData,
   groupData: MonitoringGroupData,
   label: string,
@@ -303,7 +306,7 @@ const monitoringTime = async (
 }
 
 const monitoringTimeEnd = async (
-  log: LeveledDebugger,
+  log: Logger,
   monitoringData: MonitoringData,
   groupData: MonitoringGroupData,
   label: string,
@@ -325,7 +328,7 @@ const monitoringTimeEnd = async (
 }
 
 const monitoringPublish = async (
-  log: LeveledDebugger,
+  log: Logger,
   monitoringData: MonitoringData
 ) => {
   try {
@@ -373,7 +376,7 @@ const createGroupDimensions = (config: Record<string, string>) =>
   )
 
 const monitoringRate = async (
-  log: LeveledDebugger,
+  log: Logger,
   monitoringData: MonitoringData,
   groupData: MonitoringGroupData,
   metricName: string,
@@ -423,7 +426,7 @@ const monitoringRate = async (
 }
 
 const createMonitoringImplementation = (
-  log: LeveledDebugger,
+  log: Logger,
   monitoringData: MonitoringData,
   groupData: MonitoringGroupData
 ): Monitoring => {
@@ -473,13 +476,10 @@ const createDeploymentDimensions = (
   [{ Name: 'DeploymentId', Value: deploymentId }],
 ]
 
-const createMonitoring = ({
+export const monitoringFactory = ({
   deploymentId,
   resolveVersion,
-}: {
-  deploymentId: string
-  resolveVersion: string
-}) => {
+}: MonitoringFactoryParameters): Monitoring => {
   const monitoringData: MonitoringData = {
     metricData: [],
     metricDimensions: createDeploymentDimensions(deploymentId, resolveVersion),
@@ -508,5 +508,3 @@ const createMonitoring = ({
     monitoringGroupData
   )
 }
-
-export default createMonitoring

@@ -1,6 +1,6 @@
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
 
-import createMonitoring from '../../src/cloud/monitoring'
+import createMonitoring from '../../src/cloud/monitoring-factory'
 
 afterEach(() => {
   CloudWatch.putMetricData.mockClear()

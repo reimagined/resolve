@@ -98,7 +98,7 @@ export const startExpress = async (
       deleteQueue: startParams.deleteQueue,
       getEventSubscriberDestination: startParams.getEventSubscriberDestination,
       eventListeners: runtimeParams.eventListeners,
-      eventSubscriberScope: runtimeParams.eventSubscriberScope
+      eventSubscriberScope: runtimeParams.eventSubscriberScope,
     })
 
     const notReadyListeners = new Set([...runtimeParams.eventListeners.keys()])

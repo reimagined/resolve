@@ -1,4 +1,4 @@
-import handleDeployServiceEvent from '../src/cloud/deploy-service-event-handler'
+import handleDeployServiceEvent from '../src/cloud/cloud-service-event-handler'
 
 describe('deploy-service-event-handler.test', () => {
   let resolve = null

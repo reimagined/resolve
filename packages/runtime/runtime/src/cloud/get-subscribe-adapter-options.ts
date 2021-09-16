@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import type { Resolve } from '../common/types'
 
-const getSubscribeAdapterOptions = async (
+export const getSubscribeAdapterOptions = async (
   resolve: Resolve,
   origin: string,
   eventTypes: string[] | null,
@@ -25,5 +25,3 @@ const getSubscribeAdapterOptions = async (
     url: subscribeUrl,
   }
 }
-
-export default getSubscribeAdapterOptions

@@ -341,7 +341,7 @@ const createResponse = () => {
   return Object.freeze(res)
 }
 
-const wrapApiHandler = (
+export const wrapApiHandler = (
   handler: (req: ResolveRequest, res: ResolveResponse) => Promise<void>,
   getCustomParameters?: Function,
   monitoring?: Monitoring
@@ -446,5 +446,3 @@ const wrapApiHandler = (
     return result
   }
 }
-
-export default wrapApiHandler

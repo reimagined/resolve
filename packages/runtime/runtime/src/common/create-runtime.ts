@@ -52,14 +52,14 @@ export type RuntimeFactoryParameters = {
 }
 
 export type Runtime = {
-  eventStoreAdapter: Adapter
-  executeCommand: CommandExecutor
-  executeQuery: QueryExecutor
-  executeSaga: SagaExecutor
-  eventSubscriber: EventSubscriber
-  executeSchedulerCommand: CommandExecutor
-  readModelConnectors: Record<string, ReadModelConnector>
-  dispose: () => Promise<void>
+  readonly eventStoreAdapter: Adapter
+  readonly executeCommand: CommandExecutor
+  readonly executeQuery: QueryExecutor
+  readonly executeSaga: SagaExecutor
+  readonly eventSubscriber: EventSubscriber
+  readonly executeSchedulerCommand: CommandExecutor
+  readonly readModelConnectors: Record<string, ReadModelConnector>
+  readonly dispose: () => Promise<void>
 }
 
 const buildReadModelConnectors = (

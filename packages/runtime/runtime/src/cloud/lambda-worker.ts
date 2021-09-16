@@ -1,23 +1,30 @@
-import debugLevels from '@resolve-js/debug-levels'
+import { getLog } from '../common/utils/get-log'
 
-import handleApiGatewayEvent from './api-gateway-handler'
-import handleDeployServiceEvent from './deploy-service-event-handler'
-import handleSchedulerEvent from './scheduler-event-handler'
-import initScheduler from './init-scheduler'
-import initMonitoring from './init-monitoring'
-import initSubscriber from './init-subscriber'
+import { schedulerFactory } from './scheduler-factory'
+import { monitoringFactory } from './monitoring-factory'
+import {
+  EventSubscriberInterface,
+  eventSubscriberNotifierFactory,
+} from './event-subscriber-notifier-factory'
 import { putDurationMetrics } from './metrics'
-import { initResolve } from '../common/init-resolve'
-import disposeResolve from '../common/dispose-resolve'
-import handleWebsocketEvent from './websocket-event-handler'
-import type { EventWithCursor } from '@resolve-js/core'
+import { handleWebsocketEvent } from './websocket-event-handler'
+import { handleApiGatewayEvent } from './api-gateway-handler'
+import { handleCloudServiceEvent } from './cloud-service-event-handler'
+import { handleSchedulerEvent } from './scheduler-event-handler'
+import type { EventPointer, Monitoring } from '@resolve-js/core'
+import type { LambdaColdStartContext } from './index'
+import { getDeploymentId } from './utils'
+import partial from 'lodash.partial'
+import { createRuntime } from '../common/create-runtime'
+import type {
+  Runtime,
+  RuntimeFactoryParameters,
+} from '../common/create-runtime'
 
-import type { Resolve } from '../common/types'
-
-const log = debugLevels('resolve:runtime:cloud-entry')
+const log = getLog('lambda-worker')
 
 const GRACEFUL_WORKER_SHUTDOWN_TIME = 30 * 1000
-const getVacantTimeInMillis = (lambdaContext: any) =>
+const getLambdaVacantTime = (lambdaContext: any) =>
   lambdaContext.getRemainingTimeInMillis() - GRACEFUL_WORKER_SHUTDOWN_TIME
 
 const WORKER_HTTP_REQUEST_DURATION = 25 * 1000
@@ -43,8 +50,51 @@ type LambdaEvent = {
   [key: string]: any
 }
 
-const lambdaWorker = async (
-  resolveBase: Resolve,
+const createCloudRuntime = async (
+  coldStartContext: LambdaColdStartContext,
+  lambdaContext: LambdaContext,
+  subscriberInterface: EventSubscriberInterface,
+  overrideFactoryParams: Partial<RuntimeFactoryParameters> = {}
+) => {
+  const monitoring = monitoringFactory({
+    resolveVersion: coldStartContext.resolveVersion,
+    deploymentId: getDeploymentId(),
+  })
+  const getVacantTimeInMillis = partial(getLambdaVacantTime, lambdaContext)
+  const {
+    eventstoreAdapter: eventStoreAdapterFactory,
+    readModelConnectors: readModelConnectorsFactories,
+  } = coldStartContext.assemblies
+
+  const runtimeParams: RuntimeFactoryParameters = {
+    ...coldStartContext,
+    eventStoreAdapterFactory,
+    readModelConnectorsFactories,
+    monitoring,
+    getVacantTimeInMillis,
+    notifyEventSubscriber: subscriberInterface.notifyEventSubscriber,
+    invokeBuildAsync: subscriberInterface.invokeBuildAsync,
+    ...overrideFactoryParams,
+  }
+
+  const runtime = await createRuntime(runtimeParams)
+  const scheduler = await schedulerFactory(
+    runtime,
+    coldStartContext.domainInterop.sagaDomain.schedulerName
+  )
+  // TODO: only remaining late binding, protected by guard
+  runtimeParams.scheduler = scheduler
+
+  return {
+    runtime,
+    scheduler,
+    getVacantTimeInMillis: runtimeParams.getVacantTimeInMillis,
+    monitoring,
+  }
+}
+
+export const lambdaWorker = async (
+  coldStartContext: LambdaColdStartContext,
   lambdaEvent: LambdaEvent,
   lambdaContext: LambdaContext
 ) => {
@@ -52,49 +102,55 @@ const lambdaWorker = async (
   log.verbose(JSON.stringify(lambdaEvent, null, 2))
   lambdaContext.callbackWaitsForEmptyEventLoop = false
 
-  initMonitoring(resolveBase)
+  const lambdaRemainingTimeStart = lambdaContext.getRemainingTimeInMillis()
+  const subscriberInterface = await eventSubscriberNotifierFactory({
+    eventSubscriberScope: coldStartContext.eventSubscriberScope,
+    lambdaContext,
+  })
 
-  const resolve: Resolve = Object.create(resolveBase)
-  resolve.getVacantTimeInMillis = getVacantTimeInMillis.bind(
-    null,
-    lambdaContext
+  const makeRuntime = partial(
+    createCloudRuntime,
+    coldStartContext,
+    lambdaContext,
+    subscriberInterface
   )
 
-  const lambdaRemainingTimeStart = lambdaContext.getRemainingTimeInMillis()
+  let runtime: Runtime | null = null
+  let monitoring: Monitoring | null = null
 
   try {
     if (lambdaEvent.resolveSource === 'DeployService') {
-      initSubscriber(resolveBase, lambdaContext)
-      initScheduler(resolve)
-
-      log.debug('initializing reSolve framework')
-      await initResolve(resolve)
-      log.debug('reSolve framework initialized')
-
       log.debug('identified event source: deployment service')
+      ;({ runtime, monitoring } = await makeRuntime({}))
 
-      const executorResult = await handleDeployServiceEvent(
+      const executorResult = await handleCloudServiceEvent(
         lambdaEvent,
-        resolve,
-        lambdaContext
+        runtime,
+        {
+          domain: coldStartContext.domain,
+          domainInterop: coldStartContext.domainInterop,
+          eventListeners: coldStartContext.eventListeners,
+          eventSubscriberScope: coldStartContext.eventSubscriberScope,
+          deleteQueue: subscriberInterface.deleteQueue,
+          ensureQueue: subscriberInterface.ensureQueue,
+          getEventSubscriberDestination:
+            subscriberInterface.getEventSubscriberDestination,
+          upstream: true,
+          performanceTracer: coldStartContext.performanceTracer,
+        }
       )
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
     } else if (lambdaEvent.resolveSource === 'BuildEventSubscriber') {
-      initSubscriber(resolveBase, lambdaContext)
-      initScheduler(resolve)
-
-      log.debug('initializing reSolve framework')
-      await initResolve(resolve)
-      log.debug('reSolve framework initialized')
-
       log.debug('identified event source: event-subscriber-direct')
+      ;({ runtime, monitoring } = await makeRuntime({}))
+
       const { resolveSource, ...buildParameters } = lambdaEvent
       void resolveSource
 
-      const executorResult = await resolve.eventSubscriber.build({
+      const executorResult = await runtime.eventSubscriber.build({
         ...buildParameters,
         coldStart,
       })
@@ -112,12 +168,6 @@ const lambdaWorker = async (
         ),
       ].every((key) => key === 'aws:sqs')
     ) {
-      initSubscriber(resolveBase, lambdaContext)
-      initScheduler(resolve)
-
-      log.debug('initializing reSolve framework')
-      await initResolve(resolve)
-      log.debug('reSolve framework initialized')
       const errors = []
       const records = lambdaEvent.Records.map((record: LambdaContextRecord) => {
         try {
@@ -134,9 +184,11 @@ const lambdaWorker = async (
         }
       })
 
+      ;({ runtime, monitoring } = await makeRuntime({}))
+
       type BuildParameters = {
         coldStart: boolean
-        eventsWithCursors: EventWithCursor[] | null
+        eventsWithCursors: EventPointer[] | null
         eventSubscriber?: string
       }
 
@@ -172,16 +224,14 @@ const lambdaWorker = async (
           continue
         }
         if (event != null && cursor != null) {
-          void (buildParameters.eventsWithCursors as EventWithCursor[]).push({
+          void (buildParameters.eventsWithCursors as EventPointer[]).push({
             event,
             cursor,
           })
         }
         Object.assign(buildParameters, notification)
       }
-      if (
-        (buildParameters.eventsWithCursors as EventWithCursor[]).length === 0
-      ) {
+      if ((buildParameters.eventsWithCursors as EventPointer[]).length === 0) {
         buildParameters.eventsWithCursors = null
       }
 
@@ -193,7 +243,7 @@ const lambdaWorker = async (
         throw summaryError
       }
 
-      const executorResult = await resolve.eventSubscriber.build(
+      const executorResult = await runtime.eventSubscriber.build(
         buildParameters
       )
 
@@ -201,58 +251,49 @@ const lambdaWorker = async (
 
       return executorResult
     } else if (lambdaEvent.resolveSource === 'Scheduler') {
-      initSubscriber(resolveBase, lambdaContext)
-      initScheduler(resolve)
-
-      log.debug('initializing reSolve framework')
-      await initResolve(resolve)
-      log.debug('reSolve framework initialized')
-
       log.debug('identified event source: cloud scheduler')
 
-      const executorResult = await handleSchedulerEvent(lambdaEvent, resolve)
+      const data = await makeRuntime({})
+      monitoring = data.monitoring
+
+      const executorResult = await handleSchedulerEvent(
+        lambdaEvent,
+        data.scheduler
+      )
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
     } else if (lambdaEvent.resolveSource === 'Websocket') {
-      initSubscriber(resolveBase, lambdaContext)
-      initScheduler(resolve)
-
-      log.debug('initializing reSolve framework')
-      await initResolve(resolve)
-      log.debug('reSolve framework initialized')
-
       log.debug('identified event source: websocket')
+      ;({ runtime, monitoring } = await makeRuntime({}))
 
       const executorResult = await handleWebsocketEvent(
         lambdaEvent as any,
-        resolve
+        runtime
       )
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
       return executorResult
     } else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
-      initSubscriber(resolveBase, lambdaContext)
-      initScheduler(resolve)
-
-      if (
+      const overrideParams =
         lambdaEvent.requestStartTime !== undefined &&
         Number.isSafeInteger(lambdaEvent.requestStartTime)
-      ) {
-        resolve.getVacantTimeInMillis = () =>
-          lambdaEvent.requestStartTime +
-          WORKER_HTTP_REQUEST_DURATION -
-          Date.now()
-      }
-      log.debug('initializing reSolve framework')
-      await initResolve(resolve)
-      log.debug('reSolve framework initialized')
+          ? {
+              getVacantTimeInMillis: () =>
+                lambdaEvent.requestStartTime +
+                WORKER_HTTP_REQUEST_DURATION -
+                Date.now(),
+            }
+          : {}
 
-      resolve.eventstoreAdapter.establishTimeLimit(
-        resolve.getVacantTimeInMillis
-      )
+      const data = await makeRuntime(overrideParams)
+
+      runtime = data.runtime
+      monitoring = data.monitoring
+
+      runtime.eventStoreAdapter.establishTimeLimit(data.getVacantTimeInMillis)
 
       log.debug('identified event source: API gateway')
       log.verbose(
@@ -263,7 +304,11 @@ const lambdaWorker = async (
       const executorResult = await handleApiGatewayEvent(
         lambdaEvent,
         lambdaContext,
-        resolve
+        runtime,
+        {
+          monitoring: data.monitoring,
+          performanceTracer: coldStartContext.performanceTracer,
+        }
       )
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
@@ -277,7 +322,7 @@ const lambdaWorker = async (
   } catch (error) {
     log.error('top-level event handler execution error!')
 
-    resolve.monitoring.group({ Part: 'Internal' }).error(error)
+    monitoring?.group({ Part: 'Internal' }).error(error)
 
     if (error instanceof Error) {
       log.error('error', error.message)
@@ -288,7 +333,9 @@ const lambdaWorker = async (
 
     throw error
   } finally {
-    await disposeResolve(resolve)
+    if (runtime != null) {
+      await runtime.dispose()
+    }
 
     if (process.env.RESOLVE_PERFORMANCE_MONITORING) {
       await putDurationMetrics(
@@ -302,10 +349,8 @@ const lambdaWorker = async (
     coldStart = false
     log.debug('reSolve framework was disposed. publishing metrics')
 
-    await resolve.monitoring.publish()
+    await monitoring?.publish()
 
     log.debug(`metrics published`)
   }
 }
-
-export default lambdaWorker

@@ -58,8 +58,8 @@ export const bootstrap = async (runtime: BootstrapRuntime) => {
   )) {
     promises.push(
       shutdownOne({
-        applicationName: eventSubscriberScope,
-        eventstoreAdapter: eventStoreAdapter,
+        eventSubscriberScope,
+        eventStoreAdapter,
         eventSubscriber,
         name,
         upstream,

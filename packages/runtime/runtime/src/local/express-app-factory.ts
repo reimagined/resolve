@@ -2,7 +2,7 @@ import * as path from 'path'
 import * as http from 'http'
 import express, { Express } from 'express'
 import { getRootBasedUrl } from '@resolve-js/core'
-import wrapTrie from '../common/wrap-trie'
+import { wrapTrie } from '../common/wrap-trie'
 import type { ApiHandler } from '../common/types'
 import { Trie } from 'route-trie'
 

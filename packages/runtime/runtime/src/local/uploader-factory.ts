@@ -2,7 +2,7 @@ import fs from 'fs'
 import request from 'request'
 import { v4 as uuid } from 'uuid'
 import crypto from 'crypto'
-import type { Resolve, Uploader, UploaderPool } from '../common/types'
+import type { Uploader, UploaderPool } from '../common/types'
 
 export type UploaderPoolLocal = UploaderPool & {
   directory: string
