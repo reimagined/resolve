@@ -13,7 +13,7 @@ type CreateSagaOptions = {
   eventstoreAdapter: Resolve['eventstoreAdapter']
   secretsManager: SecretsManager
   getVacantTimeInMillis: Resolve['getVacantTimeInMillis']
-  scheduler: Resolve['scheduler']
+  getScheduler: () => Resolve['scheduler']
   monitoring: Resolve['monitoring']
   domainInterop: Resolve['domainInterop']
   executeSchedulerCommand: Resolve['executeSchedulerCommand']
@@ -30,7 +30,7 @@ export const createSagaExecutor = ({
   eventstoreAdapter,
   secretsManager,
   getVacantTimeInMillis,
-  scheduler,
+  getScheduler,
   monitoring,
   domainInterop,
   executeSchedulerCommand,
@@ -83,7 +83,7 @@ export const createSagaExecutor = ({
     executeQuery: { get: () => executeDirectQuery, enumerable: true },
     secretsManager: { get: () => secretsManager, enumerable: true },
     uploader: { get: () => uploader, enumerable: true },
-    scheduler: { get: () => scheduler, enumerable: true },
+    scheduler: { get: getScheduler, enumerable: true },
   })
 
   const executeSagaListener = createQueryExecutor({

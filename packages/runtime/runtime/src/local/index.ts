@@ -13,7 +13,7 @@ import { expressAppFactory } from './express-app-factory'
 import { websocketServerFactory } from './websocket-server-factory'
 import { startExpress } from './start-express'
 import { uploaderFactory } from './init-uploader'
-import initScheduler from './init-scheduler'
+import { schedulerFactory } from './scheduler-factory'
 import { gatherEventListeners } from '../common/gather-event-listeners'
 import { monitoringFactory } from './monitoring-factory'
 import {
@@ -113,47 +113,11 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
       eventListeners: gatherEventListeners(domain, domainInterop),
       uploader: uploaderData?.uploader ?? null,
       sendReactiveEvent: websocketServerData.sendReactiveEvent,
-    }
-
-    const resolve: ResolvePartial = {
-      instanceId: `${process.pid}${Math.floor(Math.random() * 100000)}`,
       seedClientEnvs: assemblies.seedClientEnvs,
       serverImports: assemblies.serverImports,
-      domain,
-      ...constants,
-      assemblies,
-      domainInterop,
-      eventListeners: gatherEventListeners(domain, domainInterop),
-      eventSubscriberScope: constants.applicationName,
-      notifyEventSubscriber,
-      upstream:
-        domain.apiHandlers.findIndex(
-          ({ method, path }) =>
-            method === 'OPTIONS' && path === '/SKIP_COMMANDS'
-        ) < 0,
-      getEventSubscriberDestination: () =>
-        `http://${resolve.host}:${constants.port}/api/subscribers`,
-      invokeBuildAsync: backgroundJob(
-        async (parameters: EventSubscriberNotification) => {
-          const runtime = await createRuntime(resolve)
-          try {
-            const result = await runtime.eventSubscriber.build(parameters)
-            return result
-          } finally {
-            await runtime.dispose()
-          }
-        }
-      ),
-      ensureQueue: async () => {
-        return
-      },
-      deleteQueue: async () => {
-        return
-      },
-      performanceTracer,
     }
 
-    await initScheduler(resolve as Resolve)
+    //await schedulerFactory(resolve as Resolve)
     await startExpress(
       expressAppData,
       {
@@ -165,7 +129,7 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
               method === 'OPTIONS' && path === '/SKIP_COMMANDS'
           ) < 0,
         getEventSubscriberDestination: () =>
-          `http://${resolve.host}:${constants.port}/api/subscribers`,
+          `http://${host}:${port}/api/subscribers`,
         ensureQueue: async () => {
           return
         },
