@@ -1,17 +1,22 @@
-import initResolve from '../common/init-resolve'
-import disposeResolve from '../common/dispose-resolve'
-
-import type { SchedulerEntry, Resolve } from '../common/types'
+import type { SchedulerEntry } from '../common/types'
+import {
+  createRuntime,
+  Runtime,
+  RuntimeFactoryParameters,
+} from '../common/create-runtime'
 
 const errorHandler = async (error: any) => {
   throw error
 }
 
-const initScheduler = (resolve: Resolve) => {
+export const schedulerFactory = (
+  runtimeParams: RuntimeFactoryParameters,
+  schedulerName: string
+) => {
   const timeouts = new Set<NodeJS.Timeout>()
   let flowPromise = Promise.resolve()
 
-  resolve.scheduler = {
+  return {
     async addEntries(array: SchedulerEntry[]) {
       for (const entry of array) {
         // eslint-disable-next-line no-loop-func
@@ -19,17 +24,19 @@ const initScheduler = (resolve: Resolve) => {
           flowPromise = flowPromise
             .then(async () => {
               timeouts.delete(timeout)
-              const currentResolve = Object.create(resolve)
+              let runtime: Runtime | null = null
               try {
-                await initResolve(currentResolve)
-                await currentResolve.executeSchedulerCommand({
-                  aggregateName: resolve.domainInterop.sagaDomain.schedulerName,
+                runtime = await createRuntime(runtimeParams)
+                await runtime.executeSchedulerCommand({
+                  aggregateName: schedulerName,
                   aggregateId: entry.taskId,
                   type: 'execute',
                   payload: { date: entry.date, command: entry.command },
                 })
               } finally {
-                await disposeResolve(currentResolve)
+                if (runtime != null) {
+                  await runtime.dispose()
+                }
               }
             })
             .catch(async (error) => {
@@ -53,5 +60,3 @@ const initScheduler = (resolve: Resolve) => {
     },
   }
 }
-
-export default initScheduler

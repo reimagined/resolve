@@ -1,4 +1,4 @@
-import { createCommandExecutor } from '../common/command/index'
+import { CommandExecutor, createCommandExecutor } from '../common/command/index'
 import { createQueryExecutor } from '../common/query/index'
 import { createSagaExecutor } from './saga'
 import type {
@@ -18,31 +18,37 @@ import type {
   ReadModelConnectorFactory,
   Resolve,
   SagaExecutor,
+  Scheduler,
 } from './types'
 import { getLog } from './utils/get-log'
 import { eventBroadcastFactory } from './event-broadcast-factory'
 import { commandExecutedHookFactory } from './command-executed-hook-factory'
 import { eventSubscriberFactory } from './event-subscriber'
 import { readModelProcedureLoaderFactory } from './load-read-model-procedure'
-import { CommandExecutor } from '../../types'
 
 export type EventStoreAdapterFactory = () => Adapter
 
 export type RuntimeFactoryParameters = {
-  domain: Resolve['domain']
-  domainInterop: Resolve['domainInterop']
-  performanceTracer: PerformanceTracer
-  monitoring: Monitoring
-  eventStoreAdapterFactory: EventStoreAdapterFactory
-  readModelConnectorsFactories: Record<string, ReadModelConnectorFactory>
-  getVacantTimeInMillis: () => number
-  eventSubscriberScope: string
-  notifyEventSubscriber: EventSubscriberNotifier
-  invokeBuildAsync: Resolve['invokeBuildAsync']
-  eventListeners: Resolve['eventListeners']
-  sendReactiveEvent: ReactiveEventDispatcher
-  uploader: Resolve['uploader'] | null
-  scheduler: Resolve['scheduler']
+  // TODO: missed types
+  readonly seedClientEnvs: any
+  readonly serverImports: any
+  readonly domain: Resolve['domain']
+  readonly domainInterop: Resolve['domainInterop']
+  readonly performanceTracer: PerformanceTracer
+  readonly monitoring: Monitoring
+  readonly eventStoreAdapterFactory: EventStoreAdapterFactory
+  readonly readModelConnectorsFactories: Record<
+    string,
+    ReadModelConnectorFactory
+  >
+  readonly getVacantTimeInMillis: () => number
+  readonly eventSubscriberScope: string
+  readonly notifyEventSubscriber: EventSubscriberNotifier
+  readonly invokeBuildAsync: Resolve['invokeBuildAsync']
+  readonly eventListeners: Resolve['eventListeners']
+  readonly sendReactiveEvent: ReactiveEventDispatcher
+  readonly uploader: Resolve['uploader'] | null
+  scheduler?: Resolve['scheduler']
 }
 
 export type Runtime = {
@@ -71,6 +77,18 @@ const buildReadModelConnectors = (
     },
     {}
   )
+
+const schedulerGuard: Scheduler = {
+  executeEntries: () => {
+    throw Error(`Scheduler was not provided by runtime`)
+  },
+  clearEntries: () => {
+    throw Error(`Scheduler was not provided by runtime`)
+  },
+  addEntries: () => {
+    throw Error(`Scheduler was not provided by runtime`)
+  },
+}
 
 const dispose = async (runtime: Runtime) => {
   const log = getLog(`dispose`)
@@ -209,7 +227,9 @@ export const createRuntime = async (
     }),
   })
 
-  const { uploader, scheduler } = params
+  const { uploader } = params
+
+  const getScheduler = () => params.scheduler ?? schedulerGuard
 
   const executeSaga = createSagaExecutor({
     invokeBuildAsync,
@@ -222,7 +242,7 @@ export const createRuntime = async (
     performanceTracer,
     getVacantTimeInMillis,
     uploader,
-    scheduler,
+    getScheduler,
     monitoring,
     domainInterop,
     executeSchedulerCommand,
