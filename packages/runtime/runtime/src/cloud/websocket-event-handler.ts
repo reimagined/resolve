@@ -9,6 +9,7 @@ import {
 import type { Resolve } from '../common/types'
 
 import debugLevels from '@resolve-js/debug-levels'
+import { Adapter } from '@resolve-js/eventstore-base'
 
 const log = debugLevels('resolve:runtime:websocket-event-handler')
 
@@ -32,7 +33,7 @@ const LOAD_EVENTS_SIZE_LIMIT = 124 * 1024
 const databaseNameAsId = escapeId(eventStoreDatabaseName)
 const subscriptionsTableNameAsId = escapeId(subscriptionsTableName)
 
-const handleWebsocketEvent = async (
+export const handleWebsocketEvent = async (
   {
     method,
     payload,
@@ -44,7 +45,11 @@ const handleWebsocketEvent = async (
       data: string
     }
   },
-  resolve: Resolve
+  {
+    eventStoreAdapter,
+  }: {
+    eventStoreAdapter: Adapter
+  }
 ) => {
   log.debug(`dispatching lambda event to websocket`)
 
@@ -102,10 +107,7 @@ const handleWebsocketEvent = async (
           if (connectionIdResult[0] != null) {
             const { eventTypes, aggregateIds } = connectionIdResult[0]
 
-            const {
-              events,
-              cursor,
-            } = await resolve.eventstoreAdapter.loadEvents({
+            const { events, cursor } = await eventStoreAdapter.loadEvents({
               eventTypes:
                 eventTypes === JSON.stringify(null)
                   ? null
@@ -157,5 +159,3 @@ const handleWebsocketEvent = async (
       throw new Error(`Wrong "${method}" websocket method`)
   }
 }
-
-export default handleWebsocketEvent

@@ -1,22 +1,32 @@
-import wrapApiHandler from './wrap-api-handler'
+import partial from 'lodash.partial'
+import { wrapApiHandler } from './wrap-api-handler'
 import { mainHandler } from '../common/handlers/main-handler'
 
-import type { Resolve } from '../common/types'
+import type { Monitoring, PerformanceTracer } from '@resolve-js/core'
+import type { Runtime } from '../common/create-runtime'
 
-const getCustomParameters = async (resolve: Resolve) => ({ resolve })
+// TODO: this is "resolve' that exposed to end-user
+const getCustomParameters = async (runtime: Runtime) => ({ resolve: runtime })
 
-const apiGatewayHandler = async (
+export const handleApiGatewayEvent = async (
   lambdaEvent: any,
   lambdaContext: any,
-  resolve: Resolve
+  runtime: Runtime,
+  {
+    monitoring,
+    performanceTracer,
+  }: {
+    monitoring: Monitoring
+    performanceTracer: PerformanceTracer
+  }
 ) => {
   const executor = wrapApiHandler(
     mainHandler,
-    getCustomParameters.bind(null, resolve),
-    resolve.monitoring.group({ Part: 'ApiHandler' })
+    partial(getCustomParameters, runtime),
+    monitoring.group({ Part: 'ApiHandler' })
   )
 
-  const segment = resolve.performanceTracer.getSegment()
+  const segment = performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('apiHandler')
 
   try {
@@ -28,5 +38,3 @@ const apiGatewayHandler = async (
     subSegment.close()
   }
 }
-
-export default apiGatewayHandler

@@ -1,8 +1,7 @@
 import AWSXray from 'aws-xray-sdk-core'
-
 import type { PerformanceTracer } from '@resolve-js/core'
 
-const initPerformanceTracer = (): PerformanceTracer => {
+export const performanceTracerFactory = (): PerformanceTracer => {
   let segment = process.env.TRACE ? AWSXray.getSegment() : null
   let traceId = process.env._X_AMZN_TRACE_ID
 
@@ -48,4 +47,3 @@ const initPerformanceTracer = (): PerformanceTracer => {
   }
 }
 
-export default initPerformanceTracer

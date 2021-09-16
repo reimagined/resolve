@@ -1,17 +1,17 @@
 import type { Resolve } from './types'
 
 const shutdownOne = async ({
-  applicationName,
+                             eventSubscriberScope,
   name,
-  eventstoreAdapter,
+  eventStoreAdapter,
   eventSubscriber,
   upstream,
   deleteQueue,
   soft,
 }: {
-  applicationName: string
+  eventSubscriberScope: string
   name: string
-  eventstoreAdapter: Resolve['eventstoreAdapter']
+  eventStoreAdapter: Resolve['eventstoreAdapter']
   eventSubscriber: Resolve['eventSubscriber']
   upstream: Resolve['upstream']
   deleteQueue: Resolve['deleteQueue']
@@ -31,8 +31,8 @@ const shutdownOne = async ({
     }
 
     try {
-      await eventstoreAdapter.removeEventSubscriber({
-        applicationName,
+      await eventStoreAdapter.removeEventSubscriber({
+        applicationName: eventSubscriberScope,
         eventSubscriber: name,
       })
     } catch (err) {

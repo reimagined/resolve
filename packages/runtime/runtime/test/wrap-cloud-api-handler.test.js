@@ -2,7 +2,7 @@ import escapeRegExp from 'lodash.escaperegexp'
 import path from 'path'
 import sinon from 'sinon'
 
-import wrapApiHandler from '../src/cloud/wrap-api-handler'
+import { wrapApiHandler } from '../src/cloud/wrap-api-handler'
 
 const stringifyAndNormalizePaths = (value) => {
   const source = (() => {

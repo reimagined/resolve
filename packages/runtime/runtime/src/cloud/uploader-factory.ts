@@ -5,7 +5,7 @@ import request from 'request'
 import crypto from 'crypto'
 import mime from 'mime-types'
 
-import type { Resolve, UploaderPool } from '../common/types'
+import type { Resolve, Uploader, UploaderPool } from '../common/types'
 
 export type UploaderPoolCloud = UploaderPool & {
   uploaderArn: string
@@ -199,14 +199,22 @@ const getSignedPost = async (adapter: UploaderAdapter, dir: string) =>
 
 const getCDNUrl = async ({ CDN }: UploaderAdapter) => CDN
 
-const initUploader = async (resolve: Resolve) => {
-  if (resolve.assemblies.uploadAdapter != null) {
+type UploaderFactoryParameters = {
+  uploaderAdapterFactory: () => UploaderPool
+}
+
+export const uploaderFactory = async (
+  params: UploaderFactoryParameters
+): Promise<Uploader | null> => {
+  const { uploaderAdapterFactory } = params
+  if (uploaderAdapterFactory != null) {
     // TODO: provide support for custom uploader adapter
-    const createUploadAdapter = resolve.assemblies.uploadAdapter
-    const uploader = createUploader(createUploadAdapter() as UploaderPoolCloud)
+    const uploader = createUploader(
+      uploaderAdapterFactory() as UploaderPoolCloud
+    )
     process.env.RESOLVE_UPLOADER_CDN_URL = `https://${uploader.CDN}/${uploader.userId}`
 
-    resolve.uploader = {
+    return {
       getSignedPut: getSignedPut.bind(null, uploader),
       getSignedPost: getSignedPost.bind(null, uploader),
       getCDNUrl: getCDNUrl.bind(null, uploader),
@@ -215,6 +223,5 @@ const initUploader = async (resolve: Resolve) => {
       uploadPost: uploader.uploadFormData,
     }
   }
+  return null
 }
-
-export default initUploader

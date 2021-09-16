@@ -1,5 +1,5 @@
 import type { ResolveRequest, ResolveResponse } from '../../common/types'
-import type { SavedEvent } from '@resolve-js/core'
+import type { StoredEvent } from '@resolve-js/core'
 
 export const queryIsReadyHandler = async (
   req: ResolveRequest,
@@ -19,8 +19,8 @@ export const queryIsReadyHandler = async (
             return
           }
 
-          let successEvent: SavedEvent | null = null
-          let failedEvent: SavedEvent | null = null
+          let successEvent: StoredEvent | null = null
+          let failedEvent: StoredEvent | null = null
           while (failedEvent == null) {
             void ({ successEvent, failedEvent } = await eventSubscriber.status({
               eventSubscriber: key,

@@ -1,52 +1,56 @@
 import debugLevels from '@resolve-js/debug-levels'
 
-import bootstrap from '../common/bootstrap'
-import shutdown from '../common/shutdown'
+import { bootstrap } from '../common/bootstrap'
+import { shutdown } from '../common/shutdown'
 
-import type { Resolve } from '../common/types'
+import type { EventListener, EventSubscriber } from '../common/types'
+import type { Runtime } from '../common/create-runtime'
+import type { Domain, DomainMeta, PerformanceTracer } from '@resolve-js/core'
+import partial from 'lodash.partial'
 
 const log = debugLevels('resolve:runtime:deploy-service-event-handler')
 
-const getReadModelNames = (resolve: Resolve) =>
-  resolve.domain.readModels.map(({ name }) => name)
+// TODO: should not directly access to domain meta!
+const getReadModelNames = (domain: DomainMeta) =>
+  domain.readModels.map(({ name }) => name)
 
-const getSagaNames = (resolve: Resolve) => [
-  ...resolve.domainInterop.sagaDomain
+const getSagaNames = (domain: DomainMeta, domainInterop: Domain) => [
+  ...domainInterop.sagaDomain
     .getSagasSchedulersInfo()
     .map((scheduler) => scheduler.name),
-  ...resolve.domain.sagas.map(({ name }) => name),
+  ...domain.sagas.map(({ name }) => name),
 ]
 
-const handleResolveReadModelEvent = async (
+const handleReadModelEvent = async (
   lambdaEvent: any,
-  resolve: Resolve,
-  getListenerIds: (resolve: Resolve) => string[]
+  eventSubscriber: EventSubscriber,
+  getListenerIds: () => string[]
 ) => {
   const { listenerId, key, value } = lambdaEvent
   switch (lambdaEvent.operation) {
     case 'reset': {
       log.debug('operation "reset" started')
       log.debug('resetting event broker')
-      await resolve.eventSubscriber.reset({ eventSubscriber: listenerId })
-      await resolve.eventSubscriber.resume({ eventSubscriber: listenerId })
+      await eventSubscriber.reset({ eventSubscriber: listenerId })
+      await eventSubscriber.resume({ eventSubscriber: listenerId })
       log.debug('operation "reset" completed')
       return 'ok'
     }
     case 'pause': {
       log.debug('operation "pause" started')
-      await resolve.eventSubscriber.pause({ eventSubscriber: listenerId })
+      await eventSubscriber.pause({ eventSubscriber: listenerId })
       log.debug('operation "pause" completed')
       return 'ok'
     }
     case 'resume': {
       log.debug('operation "resume" started')
-      await resolve.eventSubscriber.resume({ eventSubscriber: listenerId })
+      await eventSubscriber.resume({ eventSubscriber: listenerId })
       log.debug('operation "resume" completed')
       return 'ok'
     }
     case 'listProperties': {
       log.debug('operation "listProperties" started')
-      const result = await resolve.eventSubscriber.listProperties({
+      const result = await eventSubscriber.listProperties({
         eventSubscriber: listenerId,
       })
       log.debug('operation "listProperties" completed')
@@ -55,7 +59,7 @@ const handleResolveReadModelEvent = async (
     }
     case 'getProperty': {
       log.debug('operation "getProperty" started')
-      const result = await resolve.eventSubscriber.getProperty({
+      const result = await eventSubscriber.getProperty({
         eventSubscriber: listenerId,
         key,
       })
@@ -65,7 +69,7 @@ const handleResolveReadModelEvent = async (
     }
     case 'setProperty': {
       log.debug('operation "setProperty" started')
-      await resolve.eventSubscriber.setProperty({
+      await eventSubscriber.setProperty({
         eventSubscriber: listenerId,
         key,
         value,
@@ -75,7 +79,7 @@ const handleResolveReadModelEvent = async (
     }
     case 'deleteProperty': {
       log.debug('operation "deleteProperty" started')
-      await resolve.eventSubscriber.deleteProperty({
+      await eventSubscriber.deleteProperty({
         eventSubscriber: listenerId,
         key,
       })
@@ -83,13 +87,12 @@ const handleResolveReadModelEvent = async (
       return 'ok'
     }
     case 'list': {
-      const listenerIds =
-        listenerId != null ? [listenerId] : getListenerIds(resolve)
+      const listenerIds = listenerId != null ? [listenerId] : getListenerIds()
       log.verbose(`listenerIds = ${JSON.stringify(listenerIds, null, 2)}`)
       log.debug('operation "list" started')
       const result = await Promise.all(
         listenerIds.map(async (listenerId) => {
-          const status = await resolve.eventSubscriber.status({
+          const status = await eventSubscriber.status({
             eventSubscriber: listenerId,
           })
           return {
@@ -112,12 +115,36 @@ const handleResolveReadModelEvent = async (
   }
 }
 
-const handleDeployServiceEvent = async (
+type CloudServiceEventContext = {
+  upstream: boolean
+  ensureQueue: (name?: string) => Promise<void>
+  deleteQueue: (name?: string) => Promise<void>
+  getEventSubscriberDestination: (name: string) => string
+  eventListeners: Map<string, EventListener>
+  eventSubscriberScope: string
+  performanceTracer: PerformanceTracer
+  // TODO: bad indirection
+  domain: DomainMeta
+  domainInterop: Domain
+}
+
+export const handleCloudServiceEvent = async (
   lambdaEvent: any,
-  resolve: Resolve,
-  lambdaContext: any
+  runtime: Runtime,
+  context: CloudServiceEventContext
 ) => {
-  const segment = resolve.performanceTracer.getSegment()
+  const {
+    upstream,
+    ensureQueue,
+    deleteQueue,
+    getEventSubscriberDestination,
+    eventListeners,
+    eventSubscriberScope,
+    performanceTracer,
+    domain,
+    domainInterop,
+  } = context
+  const segment = performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('apiEvent')
   subSegment.addAnnotation('operation', lambdaEvent.operation)
   subSegment.addAnnotation('part', lambdaEvent.part)
@@ -126,8 +153,16 @@ const handleDeployServiceEvent = async (
   switch (lambdaEvent.part) {
     case 'bootstrap': {
       try {
-        //TODO: it used to pass lambdaContext as the second arg, but bootstrap expects only one
-        return await bootstrap(resolve)
+        return await bootstrap({
+          eventSubscriber: runtime.eventSubscriber,
+          eventStoreAdapter: runtime.eventStoreAdapter,
+          upstream,
+          ensureQueue,
+          deleteQueue,
+          getEventSubscriberDestination,
+          eventListeners,
+          eventSubscriberScope,
+        })
       } catch (error) {
         subSegment.addError(error)
         throw error
@@ -137,7 +172,17 @@ const handleDeployServiceEvent = async (
     }
     case 'shutdown': {
       try {
-        return await shutdown(resolve, lambdaContext, lambdaEvent)
+        return await shutdown(
+          {
+            eventSubscriber: runtime.eventSubscriber,
+            eventStoreAdapter: runtime.eventStoreAdapter,
+            upstream,
+            deleteQueue,
+            eventListeners,
+            eventSubscriberScope,
+          },
+          lambdaEvent.soft
+        )
       } catch (error) {
         subSegment.addError(error)
         throw error
@@ -147,10 +192,10 @@ const handleDeployServiceEvent = async (
     }
     case 'readModel': {
       try {
-        return await handleResolveReadModelEvent(
+        return await handleReadModelEvent(
           lambdaEvent,
-          resolve,
-          getReadModelNames
+          runtime.eventSubscriber,
+          partial(getReadModelNames, domain)
         )
       } catch (error) {
         subSegment.addError(error)
@@ -161,10 +206,10 @@ const handleDeployServiceEvent = async (
     }
     case 'saga': {
       try {
-        return await handleResolveReadModelEvent(
+        return await handleReadModelEvent(
           lambdaEvent,
-          resolve,
-          getSagaNames
+          runtime.eventSubscriber,
+          partial(getSagaNames, domain, domainInterop)
         )
       } catch (error) {
         subSegment.addError(error)
@@ -183,5 +228,3 @@ const handleDeployServiceEvent = async (
     }
   }
 }
-
-export default handleDeployServiceEvent

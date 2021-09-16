@@ -126,8 +126,8 @@ type Middlewares = {
   resolver: ReadModelResolverMiddleware[]
   projection: ReadModelProjectionMiddleware[]
 }
-
-type DomainWithHandlers = DomainMeta & {
+// TODO: include in DomainMeta and move to core!
+export type DomainWithHandlers = DomainMeta & {
   apiHandlers: ApiHandler[]
   middlewares?: Middlewares
 }

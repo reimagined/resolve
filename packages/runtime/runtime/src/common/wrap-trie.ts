@@ -11,7 +11,7 @@ import buildInApiHandlers from './defaults/builtin-routes'
 
 import type { ApiHandler } from './types'
 
-const wrapTrie = (
+export const wrapTrie = (
   apiHandlers: ApiHandler[],
   staticRoutes: string[] | undefined,
   rootPath: string,
@@ -68,5 +68,3 @@ const wrapTrie = (
 
   return trie
 }
-
-export default wrapTrie

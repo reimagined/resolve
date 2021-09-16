@@ -2,7 +2,8 @@ import STS from 'aws-sdk/clients/sts'
 import debugLevels from '@resolve-js/debug-levels'
 import { invokeFunction } from 'resolve-cloud-common/lambda'
 
-import type { SchedulerEntry, Resolve } from '../common/types'
+import type { SchedulerEntry, Scheduler } from '../common/types'
+import type { Runtime } from '../common/create-runtime'
 
 const getLog = (name: string) => debugLevels(`resolve:cloud:scheduler:${name}`)
 
@@ -85,9 +86,12 @@ const validateEntry = ({ date, taskId, command }: SchedulerEntry) =>
   command.constructor === Object &&
   !isEmpty(command)
 
-const initScheduler = (resolve: Resolve) => {
+export const schedulerFactory = (
+  runtime: Runtime,
+  schedulerName: string
+): Scheduler => {
   getLog('createAdapter').debug(`building new resolve cloud scheduler adapter`)
-  resolve.scheduler = {
+  return {
     async addEntries(data) {
       const log = getLog('addEntries')
 
@@ -128,8 +132,8 @@ const initScheduler = (resolve: Resolve) => {
         log.debug(`executing tasks`)
         await Promise.all(
           entries.map(({ taskId, date, command }) =>
-            resolve.executeSchedulerCommand({
-              aggregateName: resolve.domainInterop.sagaDomain.schedulerName,
+            runtime.executeSchedulerCommand({
+              aggregateName: schedulerName,
               aggregateId: taskId,
               type: 'execute',
               payload: { date, command },
@@ -144,5 +148,3 @@ const initScheduler = (resolve: Resolve) => {
     },
   }
 }
-
-export default initScheduler
