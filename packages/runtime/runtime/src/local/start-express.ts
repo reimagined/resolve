@@ -5,8 +5,9 @@ import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
 import { EventstoreResourceAlreadyExistError } from '@resolve-js/eventstore-base'
 import { ExpressAppData } from './express-app-factory'
 import { RuntimeFactoryParameters } from '../common/create-runtime'
-import wrapApiHandler from './wrap-api-handler'
+import { wrapApiHandler } from './wrap-api-handler'
 import { mainHandler } from '../common/handlers/main-handler'
+import { BuildTimeConstants, createUserResolve } from '../common'
 
 type StartParameters = {
   upstream: boolean
@@ -15,6 +16,7 @@ type StartParameters = {
   getEventSubscriberDestination: (name: string) => string
   ensureQueue: (name?: string) => Promise<void>
   deleteQueue: (name?: string) => Promise<void>
+  buildTimeConstants: BuildTimeConstants
 }
 
 export const startExpress = async (
@@ -66,9 +68,14 @@ export const startExpress = async (
     let runtime: Runtime | null = null
     try {
       runtime = await createRuntime(runtimeParams)
+      const userResolve = createUserResolve(runtime, {
+        constants: startParams.buildTimeConstants,
+        routesTrie: routesTrie,
+      })
 
-      // TODO: this is "resolve' that exposed to end-user
-      const getCustomParameters = async () => ({ resolve: runtime })
+      const getCustomParameters = async () => ({
+        resolve: userResolve,
+      })
 
       const executor = wrapApiHandler(mainHandler, getCustomParameters)
 

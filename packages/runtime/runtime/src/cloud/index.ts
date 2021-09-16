@@ -28,6 +28,7 @@ export type LambdaColdStartContext = {
   readonly performanceTracer: PerformanceTracer
   readonly seedClientEnvs: Resolve['seedClientEnvs']
   readonly serverImports: Resolve['serverImports']
+  readonly constants: BuildTimeConstants
   // TODO: why we still need domain meta outside core?
   readonly domain: DomainWithHandlers
   readonly domainInterop: Domain
@@ -91,7 +92,8 @@ const index = async ({
         constants.staticRoutes,
         constants.rootPath
       ),
-      uploader
+      uploader,
+      constants,
     }
 
     const segment = performanceTracer.getSegment()

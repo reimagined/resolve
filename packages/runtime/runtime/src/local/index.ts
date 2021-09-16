@@ -27,6 +27,7 @@ import type {
   EventSubscriberNotification,
   BuildTimeConstants,
 } from '../common/types'
+import { createUserResolve } from '../common'
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
@@ -140,6 +141,7 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
         deleteQueue: async () => {
           return
         },
+        buildTimeConstants: constants,
       },
       factoryParameters
     )
