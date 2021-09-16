@@ -3,7 +3,7 @@ import fs from 'fs'
 import { promisify } from 'util'
 
 import { pipeline } from 'stream'
-import type { ResolveRequest, ResolveResponse } from '../common/types'
+import type { ResolveRequest, ResolveResponse } from '../../common/types'
 
 export const exportEventStoreHandler = (options: {
   directory: string

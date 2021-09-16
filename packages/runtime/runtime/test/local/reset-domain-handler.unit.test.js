@@ -1,4 +1,4 @@
-import reset from '../../src/local/reset-domain-handler'
+import reset from '../../src/local/api-handlers/reset-domain-handler'
 
 const acquireMiddleware = (options) => reset(options)
 

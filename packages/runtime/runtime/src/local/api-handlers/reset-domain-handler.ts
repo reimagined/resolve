@@ -3,9 +3,9 @@ import {
   EventstoreResourceNotExistError,
 } from '@resolve-js/eventstore-base'
 
-import type { ResolveRequest, ResolveResponse } from '../common/types'
+import type { ResolveRequest, ResolveResponse } from '../../common/types'
 
-import invokeFilterErrorTypes from '../common/utils/invoke-filter-error-types'
+import invokeFilterErrorTypes from '../../common/utils/invoke-filter-error-types'
 
 export const resetDomainHandler = (options: any) => async (
   req: ResolveRequest,

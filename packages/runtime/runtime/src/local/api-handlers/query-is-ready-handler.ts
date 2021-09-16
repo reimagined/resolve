@@ -1,4 +1,4 @@
-import type { ResolveRequest, ResolveResponse } from '../common/types'
+import type { ResolveRequest, ResolveResponse } from '../../common/types'
 import type { SavedEvent } from '@resolve-js/core'
 
 export const queryIsReadyHandler = async (
