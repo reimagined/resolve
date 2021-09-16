@@ -145,6 +145,7 @@ export const makeTestEnvironment = (
         }),
         viewModelsInterop: {},
         performanceTracer: null,
+        loadReadModelProcedure: () => Promise.resolve(null),
       })
 
       try {
