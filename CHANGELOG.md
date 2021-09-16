@@ -18,6 +18,7 @@
 
 **Documentation:**
 
+- Describe the `host` option [\#2043](https://github.com/reimagined/resolve/pull/2043)
 - Describe API for fundamental entities of reSolve [\#2032](https://github.com/reimagined/resolve/pull/2032)
 
 ## [V0.31.10](https://github.com/reimagined/resolve/tree/V0.31.10) (2021-09-08)
