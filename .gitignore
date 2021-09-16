@@ -71,3 +71,6 @@ target-patch.json
 
 cra-tests
 *.tsbuildinfo
+examples/**/yarn.lock
+tutorial/**/yarn.lock
+templates/**/yarn.lock

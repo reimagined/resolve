@@ -29,7 +29,6 @@ beforeEach(() => {
   } as any
   connectionDependencies = {
     Postgres,
-    coercer: jest.fn(),
     escape: jest.fn(),
     escapeId: jest.fn(),
     executeStatement: jest.fn(),
@@ -108,7 +107,6 @@ test("utilities were assigned to adapter's pool", async () => {
   expect(pool).toEqual(
     expect.objectContaining({
       fullJitter: connectionDependencies.fullJitter,
-      coercer: connectionDependencies.coercer,
       escape: connectionDependencies.escape,
       escapeId: connectionDependencies.escapeId,
     })

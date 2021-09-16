@@ -343,6 +343,10 @@ const prodConfig = {
 }
 ```
 
+### host
+
+Specifies the network host on which to listen for connections. Defaults to `'0.0.0.0'`.
+
 ### middleware
 
 Specifies [middleware](middleware.md) for aggregates and read models. The configuration object can contain the following fields:
