@@ -255,7 +255,7 @@ const createResponse = () => {
   return Object.freeze(res)
 }
 
-const wrapApiHandler = (
+export const wrapApiHandler = (
   handler: (req: ResolveRequest, res: ResolveResponse) => Promise<void>,
   getCustomParameters?: Function
 ) => async (expressReq: ExpressRequest, expressRes: ExpressResponse) => {
@@ -288,5 +288,3 @@ const wrapApiHandler = (
     expressRes.status(500).end('')
   }
 }
-
-export default wrapApiHandler

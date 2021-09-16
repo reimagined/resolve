@@ -308,6 +308,8 @@ export const lambdaWorker = async (
         {
           monitoring: data.monitoring,
           performanceTracer: coldStartContext.performanceTracer,
+          buildTimeConstants: coldStartContext.constants,
+          routesTrie: coldStartContext.routesTrie,
         }
       )
 

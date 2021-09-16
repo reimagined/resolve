@@ -4,9 +4,8 @@ import { mainHandler } from '../common/handlers/main-handler'
 
 import type { Monitoring, PerformanceTracer } from '@resolve-js/core'
 import type { Runtime } from '../common/create-runtime'
-
-// TODO: this is "resolve' that exposed to end-user
-const getCustomParameters = async (runtime: Runtime) => ({ resolve: runtime })
+import { BuildTimeConstants, createUserResolve } from '../common'
+import { Trie } from 'route-trie'
 
 export const handleApiGatewayEvent = async (
   lambdaEvent: any,
@@ -15,11 +14,22 @@ export const handleApiGatewayEvent = async (
   {
     monitoring,
     performanceTracer,
+    buildTimeConstants,
+    routesTrie,
   }: {
     monitoring: Monitoring
     performanceTracer: PerformanceTracer
+    buildTimeConstants: BuildTimeConstants
+    routesTrie: Trie
   }
 ) => {
+  const getCustomParameters = () => ({
+    resolve: createUserResolve(runtime, {
+      constants: buildTimeConstants,
+      routesTrie,
+    }),
+  })
+
   const executor = wrapApiHandler(
     mainHandler,
     partial(getCustomParameters, runtime),

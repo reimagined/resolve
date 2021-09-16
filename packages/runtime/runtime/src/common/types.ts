@@ -17,6 +17,8 @@ import type { Server as HttpServer, IncomingHttpHeaders } from 'http'
 import http from 'http'
 import type { CookieSerializeOptions } from 'cookie'
 import type { Trie, Params as MatchedParams } from 'route-trie'
+import { Runtime } from './create-runtime'
+import { AdditionalUserData } from './create-user-resolve'
 
 export type CallMethodParams = {
   modelName?: string | null
@@ -364,3 +366,7 @@ export type HttpResponse = {
 }
 
 export type ResolveResponse = HttpResponse
+
+export type UserBackendResolve = Runtime &
+  BuildTimeConstants &
+  Omit<AdditionalUserData, 'constants'>
