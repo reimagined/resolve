@@ -38,7 +38,7 @@ const createEmptySegment = () => {
   return segment
 }
 
-export const initPerformanceTracer = (): PerformanceTracer => {
+export const performanceTracerFactory = (): PerformanceTracer => {
   let segment = createEmptySegment()
   let traceId = process.env.RESOLVE_LOCAL_TRACE_ID
   segment.trace_id = traceId

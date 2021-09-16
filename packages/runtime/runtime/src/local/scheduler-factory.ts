@@ -9,7 +9,7 @@ const errorHandler = async (error: any) => {
   throw error
 }
 
-export const schedulerFactory = (
+export const schedulerFactory = async (
   runtimeParams: RuntimeFactoryParameters,
   schedulerName: string
 ) => {

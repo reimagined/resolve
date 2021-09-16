@@ -6,13 +6,13 @@ import { getLog } from '../common/utils/get-log'
 import { backgroundJob } from '../common/utils/background-job'
 import { prepareDomain } from './prepare-domain'
 import { lambdaGuard } from './lambda-guard'
-import { initPerformanceTracer } from './init-performance-tracer'
+import { performanceTracerFactory } from './performance-tracer-factory'
 import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
 
 import { expressAppFactory } from './express-app-factory'
 import { websocketServerFactory } from './websocket-server-factory'
 import { startExpress } from './start-express'
-import { uploaderFactory } from './init-uploader'
+import { uploaderFactory } from './uploader-factory'
 import { schedulerFactory } from './scheduler-factory'
 import { gatherEventListeners } from '../common/gather-event-listeners'
 import { monitoringFactory } from './monitoring-factory'
@@ -23,7 +23,6 @@ import {
 
 import type {
   Assemblies,
-  ResolvePartial,
   Resolve,
   EventSubscriberNotification,
   BuildTimeConstants,
@@ -50,7 +49,7 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
     const domain = prepareDomain(dependencies.domain)
     const domainInterop = await initDomain(domain)
 
-    const performanceTracer = await initPerformanceTracer()
+    const performanceTracer = await performanceTracerFactory()
     const monitoring = await monitoringFactory(performanceTracer)
     const notifyEventSubscriber = await eventSubscriberNotifierFactory()
     const host = constants.host ?? '0.0.0.0'
@@ -117,7 +116,12 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
       serverImports: assemblies.serverImports,
     }
 
-    //await schedulerFactory(resolve as Resolve)
+    // TODO: only remaining late binding, protected by guard
+    factoryParameters.scheduler = await schedulerFactory(
+      factoryParameters,
+      domainInterop.sagaDomain.schedulerName
+    )
+
     await startExpress(
       expressAppData,
       {
