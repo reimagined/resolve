@@ -233,6 +233,7 @@ export const makeTestEnvironment = (
         readModelsInterop: domain.sagaDomain.acquireSagasInterop(runtime),
         viewModelsInterop: {},
         performanceTracer: null,
+        loadReadModelProcedure: () => Promise.resolve(null),
       })
 
       try {
