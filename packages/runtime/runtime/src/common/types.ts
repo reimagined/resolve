@@ -8,6 +8,8 @@ import type {
   CommandMiddleware,
   ReadModelResolverMiddleware,
   ReadModelProjectionMiddleware,
+  ReadModelInterop,
+  Eventstore,
 } from '@resolve-js/core'
 import type { CommandExecutor } from './command'
 import type { Server as HttpServer, IncomingHttpHeaders } from 'http'
@@ -26,15 +28,66 @@ export type EventSubscriber = {
   [key: string]: (params: CallMethodParams, ...args: any[]) => Promise<any>
 }
 
-export type ReadModelMethodName =
-  | 'build'
-  | 'reset'
-  | 'resume'
-  | 'pause'
-  | 'subscribe'
-  | 'resubscribe'
-  | 'unsubscribe'
-  | 'status'
+export const readModelMethodNames = [
+  'build',
+  'reset',
+  'resume',
+  'pause',
+  'subscribe',
+  'resubscribe',
+  'unsubscribe',
+  'status',
+] as const
+
+export type ReadModelMethodName = typeof readModelMethodNames[number]
+
+//TODO: match with types for read-model base
+export type ReadModelAdapterPool = any
+export type ReadModelStore = any
+export type ReadModelAdapterOperations = {
+  build: (
+    pool: ReadModelAdapterPool,
+    readModelName: string,
+    store: ReadModelStore,
+    modelInterop: ReadModelInterop,
+    next: () => Promise<void>,
+    eventstoreAdapter: Eventstore,
+    getVacantTimeInMillis: () => number,
+    buildInfo: any
+  ) => Promise<void>
+  reset: (pool: ReadModelAdapterPool, readModelName: string) => Promise<void>
+  resume: (
+    pool: ReadModelAdapterPool,
+    readModelName: string,
+    next: () => Promise<void>
+  ) => Promise<void>
+  pause: (pool: ReadModelAdapterPool, readModelName: string) => Promise<void>
+  subscribe: (
+    pool: ReadModelAdapterPool,
+    readModelName: string,
+    eventTypes: Array<string> | null,
+    aggregateIds: Array<string> | null,
+    readModelSource?: string | null
+  ) => Promise<void>
+  resubscribe: (
+    pool: ReadModelAdapterPool,
+    readModelName: string,
+    eventTypes: Array<string> | null,
+    aggregateIds: Array<string> | null,
+    readModelSource?: string
+  ) => Promise<void>
+  unsubscribe: (
+    pool: ReadModelAdapterPool,
+    readModelName: string,
+    readModelSource?: string | null
+  ) => Promise<void>
+  status: (
+    pool: ReadModelAdapterPool,
+    readModelName: string,
+    eventstoreAdapter: Eventstore,
+    includeRuntimeStatus?: boolean
+  ) => Promise<any>
+}
 
 export type ReadModelConnector = {
   connect: (name: string) => Promise<any>
@@ -42,7 +95,10 @@ export type ReadModelConnector = {
   dispose: () => Promise<void>
 
   drop: (connection: any, name: string) => Promise<void>
-} & Record<ReadModelMethodName, (...parameters: any[]) => Promise<void>>
+}
+
+export type RealModelConnectorReal = ReadModelConnector &
+  ReadModelAdapterOperations
 
 export type ReadModelConnectorCreator = (options: {
   performanceTracer: PerformanceTracer

@@ -9,11 +9,10 @@ import type {
   WrapReadModelOptions,
   ReadModelPool,
   WrappedReadModel,
-  PrepareArguments,
-  ReadModelOperationMethods,
   CustomReadModelMethod,
 } from './types'
-import type { ReadModelMethodName } from '../types'
+import type { ReadModelMethodName, RealModelConnectorReal } from '../types'
+import { readModelMethodNames } from '../types'
 import parseReadOptions from './parse-read-options'
 import { OMIT_BATCH, STOP_BATCH } from './batch'
 
@@ -548,7 +547,6 @@ export const customReadModelMethods: Record<
 
 const doOperation = async (
   operationName: ReadModelMethodName,
-  prepareArguments: PrepareArguments | null,
   useInlineMethod: boolean,
   pool: ReadModelPool,
   interop: ReadModelInterop | SagaInterop,
@@ -558,31 +556,86 @@ const doOperation = async (
   if (pool.isDisposed) {
     throw new Error(`the "${readModelName}" read model is disposed`)
   }
-  let result = null
-
-  await wrapConnection(
+  return await wrapConnection(
     pool,
     interop,
     async (connection: any): Promise<any> => {
-      const originalArgs = [connection, readModelName, parameters]
-
-      const args: any[] = useInlineMethod
-        ? prepareArguments != null
-          ? prepareArguments(
-              pool,
-              interop,
-              connection,
-              readModelName,
-              parameters
-            )
-          : originalArgs
-        : [pool, interop, ...originalArgs]
-
       try {
         if (useInlineMethod) {
-          result = await pool.connector[operationName](...args)
+          const realConnector = pool.connector as RealModelConnectorReal
+          switch (operationName) {
+            case 'build': {
+              return await realConnector.build(
+                connection,
+                readModelName,
+                connection,
+                interop,
+                next.bind(null, pool, readModelName),
+                pool.eventstoreAdapter,
+                pool.getVacantTimeInMillis,
+                parameters
+              )
+            }
+            case 'reset': {
+              return await realConnector.reset(connection, readModelName)
+            }
+            case 'resume': {
+              return await realConnector.resume(
+                connection,
+                readModelName,
+                next.bind(null, pool, readModelName)
+              )
+            }
+            case 'pause': {
+              return await realConnector.pause(connection, readModelName)
+            }
+            case 'subscribe': {
+              return await realConnector.subscribe(
+                connection,
+                readModelName,
+                parameters.subscriptionOptions.eventTypes,
+                parameters.subscriptionOptions.aggregateIds,
+                pool.readModelSource
+              )
+            }
+            case 'resubscribe': {
+              return await realConnector.subscribe(
+                connection,
+                readModelName,
+                parameters.subscriptionOptions.eventTypes,
+                parameters.subscriptionOptions.aggregateIds,
+                pool.readModelSource
+              )
+            }
+            case 'unsubscribe': {
+              return await realConnector.unsubscribe(
+                connection,
+                readModelName,
+                pool.readModelSource
+              )
+            }
+            case 'status': {
+              return await realConnector.status(
+                connection,
+                readModelName,
+                pool.eventstoreAdapter,
+                parameters.includeRuntimeStatus
+              )
+            }
+            default: {
+              throw new Error(
+                `Invalid operation ${operationName} on read-model`
+              )
+            }
+          }
         } else {
-          result = await (customReadModelMethods as any)[operationName](...args)
+          return await customReadModelMethods[operationName](
+            pool,
+            interop,
+            connection,
+            readModelName,
+            parameters
+          )
         }
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -596,149 +649,11 @@ const doOperation = async (
       }
     }
   )
-
-  return result
 }
 
-const operationMethods: ReadModelOperationMethods = {
-  build: doOperation.bind(
-    null,
-    'build',
-    (
-      pool: ReadModelPool,
-      interop: ReadModelInterop | SagaInterop,
-      connection: any,
-      readModelName: string,
-      parameters: {}
-    ) => [
-      connection,
-      readModelName,
-      connection,
-      interop,
-      next.bind(null, pool, readModelName),
-      pool.eventstoreAdapter,
-      pool.getVacantTimeInMillis,
-      parameters,
-    ]
-  ),
-
-  reset: doOperation.bind(
-    null,
-    'reset',
-    (
-      pool: ReadModelPool,
-      interop: ReadModelInterop | SagaInterop,
-      connection: any,
-      readModelName: string,
-      parameters: {}
-    ) => [connection, readModelName, next.bind(null, pool, readModelName)]
-  ),
-
-  resume: doOperation.bind(
-    null,
-    'resume',
-    (
-      pool: ReadModelPool,
-      interop: ReadModelInterop | SagaInterop,
-      connection: any,
-      readModelName: string,
-      parameters: {}
-    ) => [connection, readModelName, next.bind(null, pool, readModelName)]
-  ),
-
-  pause: doOperation.bind(
-    null,
-    'pause',
-    (
-      pool: ReadModelPool,
-      interop: ReadModelInterop | SagaInterop,
-      connection: any,
-      readModelName: string,
-      parameters: {}
-    ) => [connection, readModelName]
-  ),
-
-  subscribe: doOperation.bind(
-    null,
-    'subscribe',
-    (
-      pool: ReadModelPool,
-      interop: ReadModelInterop | SagaInterop,
-      connection: any,
-      readModelName: string,
-      parameters: {
-        subscriptionOptions: {
-          eventTypes: Array<string> | null
-          aggregateIds: Array<string> | null
-        }
-      }
-    ) => [
-      connection,
-      readModelName,
-      parameters.subscriptionOptions.eventTypes,
-      parameters.subscriptionOptions.aggregateIds,
-      pool.readModelSource,
-    ]
-  ),
-
-  resubscribe: doOperation.bind(
-    null,
-    'resubscribe',
-    (
-      pool: ReadModelPool,
-      interop: ReadModelInterop | SagaInterop,
-      connection: any,
-      readModelName: string,
-      parameters: {
-        subscriptionOptions: {
-          eventTypes: Array<string> | null
-          aggregateIds: Array<string> | null
-        }
-      }
-    ) => [
-      connection,
-      readModelName,
-      parameters.subscriptionOptions.eventTypes,
-      parameters.subscriptionOptions.aggregateIds,
-      pool.readModelSource,
-    ]
-  ),
-
-  unsubscribe: doOperation.bind(
-    null,
-    'unsubscribe',
-    (
-      pool: ReadModelPool,
-      interop: ReadModelInterop | SagaInterop,
-      connection: any,
-      readModelName: string,
-      parameters: {}
-    ) => [connection, readModelName, pool.readModelSource]
-  ),
-
-  status: doOperation.bind(
-    null,
-    'status',
-    (
-      pool: ReadModelPool,
-      interop: ReadModelInterop | SagaInterop,
-      connection: any,
-      readModelName: string,
-      parameters: {
-        includeRuntimeStatus?: boolean
-      }
-    ) => [
-      connection,
-      readModelName,
-      pool.eventstoreAdapter,
-      parameters.includeRuntimeStatus,
-    ]
-  ),
-} as const
-
-export const checkAllMethodsExist = <T extends object>(
-  obj: T,
-  keys: Array<keyof T>
+export const checkAllMethodsExist = (
+  obj: any,
+  keys: readonly string[]
 ): boolean =>
   keys.reduce<boolean>(
     (acc, key) => acc && typeof obj[key] === 'function',
@@ -746,10 +661,10 @@ export const checkAllMethodsExist = <T extends object>(
   )
 
 export const checkConnectorMethod = (connector: any): boolean | null =>
-  checkAllMethodsExist(connector, ['connect', 'disconnect', 'dispose'])
-    ? checkAllMethodsExist(connector, Object.keys(operationMethods))
+  checkAllMethodsExist(connector, ['connect', 'disconnect', 'dispose'] as const)
+    ? checkAllMethodsExist(connector, readModelMethodNames)
       ? true
-      : checkAllMethodsExist(connector, ['drop'])
+      : checkAllMethodsExist(connector, ['drop'] as const)
       ? false
       : null
     : null
@@ -895,11 +810,10 @@ const wrapReadModel = ({
     throw new Error(`Invalid adapter ${interop.connectorName}`)
   }
 
-  for (const key of Object.keys(operationMethods) as Array<
-    keyof typeof operationMethods
-  >) {
-    api[key] = operationMethods[key].bind(
+  for (const name of readModelMethodNames) {
+    api[name] = doOperation.bind(
       null,
+      name,
       isFullMethodsAdapter,
       pool,
       interop

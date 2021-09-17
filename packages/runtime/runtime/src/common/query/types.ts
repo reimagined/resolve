@@ -79,27 +79,13 @@ export type WrappedViewModel = {
   serializeState: (params: { state: any; jwt?: string }) => Promise<string>
 }
 
-export type PrepareArguments = (
+export type CustomReadModelMethod = (
   pool: ReadModelPool,
   interop: ReadModelInterop | SagaInterop,
   connection: any,
   readModelName: string,
   parameters: any
 ) => any
-
-export type CustomReadModelMethod = PrepareArguments
-
-export type ReadModelOperation = (
-  useInlineMethod: boolean,
-  pool: ReadModelPool,
-  interop: ReadModelInterop | SagaInterop,
-  parameters: any
-) => Promise<any>
-
-export type ReadModelOperationMethods = Record<
-  ReadModelMethodName,
-  ReadModelOperation
->
 
 export type WrappedReadModel = {
   dispose: () => Promise<void>
