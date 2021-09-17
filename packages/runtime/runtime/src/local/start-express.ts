@@ -71,6 +71,12 @@ export const startExpress = async (
       const userResolve = createUserResolve(runtime, {
         constants: startParams.buildTimeConstants,
         routesTrie: routesTrie,
+        domain: runtimeParams.domain,
+        domainInterop: runtimeParams.domainInterop,
+        eventSubscriberScope: runtimeParams.eventSubscriberScope,
+        performanceTracer: runtimeParams.performanceTracer,
+        seedClientEnvs: runtimeParams.seedClientEnvs,
+        eventListeners: runtimeParams.eventListeners,
       })
 
       const getCustomParameters = async () => ({

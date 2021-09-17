@@ -21,7 +21,13 @@ const cors = (res: ResolveResponse) => {
 
 const uploaderHandler = async (req: ResolveRequest, res: ResolveResponse) => {
   try {
-    const { directory, bucket, secretKey } = req.resolve.uploader
+    const { uploader } = req.resolve
+
+    if (uploader == null) {
+      throw Error(`uploader not exist, check your config`)
+    }
+
+    const { directory, bucket, secretKey } = uploader
     const bucketPath = path.join(directory as string, bucket)
 
     if (!fs.existsSync(bucketPath)) {

@@ -9,12 +9,13 @@ import { lambdaWorker } from './lambda-worker'
 import { wrapTrie } from '../common/wrap-trie'
 import { uploaderFactory } from './uploader-factory'
 import { gatherEventListeners } from '../common/gather-event-listeners'
-import { getSubscribeAdapterOptions } from './get-subscribe-adapter-options'
+import { getReactiveSubscriptionFactory } from './get-reactive-subscription-factory'
 
 import type {
   Assemblies,
   BuildTimeConstants,
   DomainWithHandlers,
+  ReactiveSubscriptionFactory,
   Resolve,
   Uploader,
 } from '../common/types'
@@ -40,7 +41,7 @@ export type LambdaColdStartContext = {
   readonly uploader: Uploader | null
   readonly sendReactiveEvent: Resolve['sendReactiveEvent']
   // TODO: rename to getSubscriptionAdapterOptions
-  readonly getSubscribeAdapterOptions: Resolve['getSubscribeAdapterOptions']
+  readonly getReactiveSubscription: ReactiveSubscriptionFactory
   // TODO: do we really need this somewhere?
   readonly assemblies: Resolve['assemblies']
   // TODO: what is this?
@@ -70,6 +71,7 @@ const index = async ({
     const uploader = await uploaderFactory({
       uploaderAdapterFactory: assemblies.uploadAdapter,
     })
+    const getReactiveSubscription = getReactiveSubscriptionFactory()
 
     const coldStartContext: LambdaColdStartContext = {
       seedClientEnvs: assemblies.seedClientEnvs,
@@ -85,7 +87,7 @@ const index = async ({
       upstream: true,
       resolveVersion,
       performanceTracer,
-      getSubscribeAdapterOptions,
+      getReactiveSubscription,
       sendReactiveEvent,
       routesTrie: wrapTrie(
         domain.apiHandlers,

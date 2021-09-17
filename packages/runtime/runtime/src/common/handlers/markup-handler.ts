@@ -2,7 +2,10 @@ import { getStaticBasedPath } from '@resolve-js/core'
 
 import type { ResolveRequest, ResolveResponse } from '../types'
 
-export const markupHandler = async (req: ResolveRequest, res: ResolveResponse) => {
+export const markupHandler = async (
+  req: ResolveRequest,
+  res: ResolveResponse
+) => {
   const { seedClientEnvs, staticPath, rootPath } = req.resolve
   const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'index.js')
   await res.setHeader('Content-Type', 'text/html')

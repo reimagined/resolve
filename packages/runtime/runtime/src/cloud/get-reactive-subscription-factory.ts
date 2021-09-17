@@ -1,8 +1,6 @@
 import jwt from 'jsonwebtoken'
-import type { Resolve } from '../common/types'
 
-export const getSubscribeAdapterOptions = async (
-  resolve: Resolve,
+const getReactiveSubscription = async (
   origin: string,
   eventTypes: string[] | null,
   aggregateIds: string[] | null
@@ -25,3 +23,5 @@ export const getSubscribeAdapterOptions = async (
     url: subscribeUrl,
   }
 }
+
+export const getReactiveSubscriptionFactory = () => getReactiveSubscription

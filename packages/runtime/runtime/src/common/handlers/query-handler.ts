@@ -52,8 +52,7 @@ const queryHandler = async (req: ResolveRequest, res: ResolveResponse) => {
           ? aggregateIds
           : [aggregateIds]
 
-      const subscribeOptions = await req.resolve.getSubscribeAdapterOptions(
-        req.resolve,
+      const subscribeOptions = await req.resolve.getReactiveSubscription(
         modelArgs.origin,
         result.meta.eventTypes,
         subscriptionAggregateIds

@@ -27,7 +27,7 @@ import type {
   EventSubscriberNotification,
   BuildTimeConstants,
 } from '../common/types'
-import { createUserResolve } from '../common'
+import { getReactiveSubscriptionFactory } from './get-reactive-subscription-factory'
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
@@ -88,6 +88,7 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
       server: expressAppData.server,
       eventStoreAdapterFactory,
       rootPath: constants.rootPath,
+      applicationName: constants.applicationName,
     })
 
     const factoryParameters: RuntimeFactoryParameters = {
@@ -113,6 +114,7 @@ export const localEntry = async (dependencies: LocalEntryDependencies) => {
       eventListeners: gatherEventListeners(domain, domainInterop),
       uploader: uploaderData?.uploader ?? null,
       sendReactiveEvent: websocketServerData.sendReactiveEvent,
+      getReactiveSubscription: websocketServerData.getReactiveSubscription,
       seedClientEnvs: assemblies.seedClientEnvs,
       serverImports: assemblies.serverImports,
     }

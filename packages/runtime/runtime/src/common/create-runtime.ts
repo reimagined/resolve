@@ -10,15 +10,18 @@ import type {
 } from '@resolve-js/core'
 import { Adapter } from '@resolve-js/eventstore-base'
 import type {
+  Assemblies,
   EventSubscriber,
   EventSubscriberNotifier,
   QueryExecutor,
   ReactiveEventDispatcher,
+  ReactiveSubscriptionFactory,
   ReadModelConnector,
   ReadModelConnectorFactory,
   Resolve,
   SagaExecutor,
   Scheduler,
+  Uploader,
 } from './types'
 import { getLog } from './utils/get-log'
 import { eventBroadcastFactory } from './event-broadcast-factory'
@@ -30,8 +33,8 @@ export type EventStoreAdapterFactory = () => Adapter
 
 export type RuntimeFactoryParameters = {
   // TODO: missed types
-  readonly seedClientEnvs: any
-  readonly serverImports: any
+  readonly seedClientEnvs: Assemblies['seedClientEnvs']
+  readonly serverImports: Assemblies['serverImports']
   readonly domain: Resolve['domain']
   readonly domainInterop: Resolve['domainInterop']
   readonly performanceTracer: PerformanceTracer
@@ -47,18 +50,21 @@ export type RuntimeFactoryParameters = {
   readonly invokeBuildAsync: Resolve['invokeBuildAsync']
   readonly eventListeners: Resolve['eventListeners']
   readonly sendReactiveEvent: ReactiveEventDispatcher
+  readonly getReactiveSubscription: ReactiveSubscriptionFactory
   readonly uploader: Resolve['uploader'] | null
   scheduler?: Resolve['scheduler']
 }
 
 export type Runtime = {
   readonly eventStoreAdapter: Adapter
+  readonly uploader: Uploader | null
   readonly executeCommand: CommandExecutor
   readonly executeQuery: QueryExecutor
   readonly executeSaga: SagaExecutor
   readonly eventSubscriber: EventSubscriber
   readonly executeSchedulerCommand: CommandExecutor
   readonly readModelConnectors: Record<string, ReadModelConnector>
+  readonly getReactiveSubscription: ReactiveSubscriptionFactory
   readonly dispose: () => Promise<void>
 }
 
@@ -254,14 +260,18 @@ export const createRuntime = async (
     eventListeners,
   })
 
+  const { getReactiveSubscription } = params
+
   const runtime = {
     eventStoreAdapter,
+    uploader,
     executeCommand,
     executeQuery,
     executeSaga,
     eventSubscriber,
     executeSchedulerCommand,
     readModelConnectors,
+    getReactiveSubscription,
     dispose: async function () {
       await dispose(this)
     },
