@@ -1,3 +1,5 @@
+import webpack from 'webpack'
+
 // eslint-disable-next-line no-unused-vars
 const adjustWebpackConfigs = (webpackConfigs: any[]): void => {
   // enable-ts
@@ -5,6 +7,7 @@ const adjustWebpackConfigs = (webpackConfigs: any[]): void => {
     const {
       module: { rules },
       resolve,
+      plugins,
     } = webpackConfig
 
     rules.push({
@@ -15,6 +18,22 @@ const adjustWebpackConfigs = (webpackConfigs: any[]): void => {
       },
     })
     resolve.extensions = ['.js', '.jsx', '.ts', '.tsx']
+
+    if (webpackConfig.target === 'web') {
+      resolve.fallback = {
+        ...resolve.fallback,
+        crypto: require.resolve('crypto-browserify'),
+        stream: require.resolve('stream-browserify'),
+        process: require.resolve('process/browser'),
+      }
+      plugins.push(
+        new webpack.ProvidePlugin({
+          // crypto: 'crypto-browserify',
+          // stream: 'stream-browserify',
+          process: 'process/browser',
+        })
+      )
+    }
   }
   // enable-ts
 }
