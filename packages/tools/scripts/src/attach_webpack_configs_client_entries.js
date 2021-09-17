@@ -1,4 +1,3 @@
-import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin'
 import path from 'path'
 
 import getClientEntries from './get_client_entries'
@@ -62,7 +61,7 @@ const attachWebpackConfigsClientEntries = (
         libraryTarget: 'var',
         library: '__RESOLVE_ENTRY__',
       },
-      plugins: [...baseConfig.plugins, new EsmWebpackPlugin()],
+      plugins: [...baseConfig.plugins],
     })
   }
 }

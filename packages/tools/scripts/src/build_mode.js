@@ -70,6 +70,7 @@ const buildMode = async (resolveConfig, adjustWebpackConfigs) => {
       )
     )
   }
+  compiler.close()
 }
 
 export default buildMode

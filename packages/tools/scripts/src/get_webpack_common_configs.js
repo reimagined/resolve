@@ -1,5 +1,4 @@
 import path from 'path'
-import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin'
 import nodeExternals from 'webpack-node-externals'
 import BabelPluginTransformImportInline from 'babel-plugin-transform-import-inline'
 
@@ -21,7 +20,7 @@ const getWebpackCommonConfigs = ({
     nodeModulesByAssembly.set(packageJson, new Set())
   }
 
-  const packageJsonWriter = (context, request, callback) => {
+  const packageJsonWriter = ({ request }, callback) => {
     if (request[0] !== '/' && request[0] !== '.') {
       const packageName = request
         .split('/')
@@ -120,22 +119,22 @@ const getWebpackCommonConfigs = ({
       ...getModulesDirs().map((modulesDir) =>
         nodeExternals({
           modulesDir,
-          importType: (moduleName) => `((() => {
-              const path = require('path')
-              const requireDirs = ['', '@resolve-js/runtime/node_modules/']
-              let modulePath = null
-              const moduleName = ${JSON.stringify(moduleName)}
-              for(const dir of requireDirs) {
-                try {
-                  modulePath = require.resolve(path.join(dir, moduleName))
-                  break
-                } catch(err) {}
-              }
-              if(modulePath == null) {
-                throw new Error(\`Module "\${moduleName}" cannot be resolved\`)
-              }
-              return require(modulePath)
-            })())`,
+          // importType: (moduleName) => `((() => {
+          //     const path = require('path')
+          //     const requireDirs = ['', '@resolve-js/runtime/node_modules/']
+          //     let modulePath = null
+          //     const moduleName = ${JSON.stringify(moduleName)}
+          //     for(const dir of requireDirs) {
+          //       try {
+          //         modulePath = require.resolve(path.join(dir, moduleName))
+          //         break
+          //       } catch(err) {}
+          //     }
+          //     if(modulePath == null) {
+          //       throw new Error(\`Module "\${moduleName}" cannot be resolved\`)
+          //     }
+          //     return require(modulePath)
+          //   })())`,
           allowlist: [/@resolve-js\/runtime/],
         })
       ),
@@ -181,7 +180,7 @@ const getWebpackCommonConfigs = ({
         libraryTarget: 'var',
         library: '__RESOLVE_ENTRY__',
       },
-      plugins: [...baseCommonConfig.plugins, new EsmWebpackPlugin()],
+      plugins: [...baseCommonConfig.plugins],
     },
   ]
 

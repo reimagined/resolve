@@ -2,6 +2,16 @@ import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 import loaderUtils from 'loader-utils'
 import path from 'path'
 
+import Module from 'module'
+
+const exec = (loader, code, filename) => {
+  const module = new Module(filename, loader)
+  module.paths = Module._nodeModulePaths(loader.context)
+  module.filename = filename
+  module._compile(code, filename)
+  return module.exports
+}
+
 const valQueryLoader = function (content) {
   const relPath = path.relative.bind(path, process.cwd())
   const valQueryOptions = loaderUtils.getOptions(this)
@@ -14,7 +24,7 @@ const valQueryLoader = function (content) {
     this.resource.length - resourceQuery.length
   )
 
-  const func = interopRequireDefault(this.exec(content, pureResource)).default
+  const func = interopRequireDefault(exec(this, content, pureResource)).default
 
   if (typeof func !== 'function') {
     throw new Error(

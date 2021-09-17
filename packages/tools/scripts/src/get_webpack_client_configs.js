@@ -1,5 +1,4 @@
 import path from 'path'
-import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin'
 
 import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
 import getModulesDirs from './get_modules_dirs'
@@ -146,7 +145,7 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
     },
     optimization: {
       ...getBaseClientConfig(false).optimization,
-      noEmitOnErrors: true,
+      emitOnErrors: false,
     },
     output: {
       ...getBaseClientConfig(false).output,
@@ -182,7 +181,7 @@ const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
         libraryTarget: 'var',
         library: '__RESOLVE_ENTRY__',
       },
-      plugins: [...getBaseClientConfig(true).plugins, new EsmWebpackPlugin()],
+      plugins: [...getBaseClientConfig(true).plugins],
     },
     ...resolveConfig.readModels.map(({ name }) =>
       getReadModelEntryConfig(name)
