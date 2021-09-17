@@ -595,7 +595,7 @@ const doOperation = async (
                 readModelName,
                 parameters.subscriptionOptions.eventTypes,
                 parameters.subscriptionOptions.aggregateIds,
-                pool.readModelSource
+                pool.loadProcedureSource
               )
             }
             case 'resubscribe': {
@@ -604,14 +604,14 @@ const doOperation = async (
                 readModelName,
                 parameters.subscriptionOptions.eventTypes,
                 parameters.subscriptionOptions.aggregateIds,
-                pool.readModelSource
+                pool.loadProcedureSource
               )
             }
             case 'unsubscribe': {
               return await realConnector.unsubscribe(
                 connection,
                 readModelName,
-                pool.readModelSource
+                pool.loadProcedureSource
               )
             }
             case 'status': {

@@ -24,4 +24,4 @@ const getReactiveSubscription = async (
   }
 }
 
-export default getSubscribeAdapterOptions
+export const getReactiveSubscriptionFactory = () => getReactiveSubscription

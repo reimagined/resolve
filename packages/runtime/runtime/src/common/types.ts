@@ -72,19 +72,19 @@ export type ReadModelAdapterOperations = {
     readModelName: string,
     eventTypes: Array<string> | null,
     aggregateIds: Array<string> | null,
-    readModelSource?: string | null
+    loadProcedureSource: () => Promise<string | null>
   ) => Promise<void>
   resubscribe: (
     pool: ReadModelAdapterPool,
     readModelName: string,
     eventTypes: Array<string> | null,
     aggregateIds: Array<string> | null,
-    readModelSource?: string
+    loadProcedureSource: () => Promise<string | null>
   ) => Promise<void>
   unsubscribe: (
     pool: ReadModelAdapterPool,
     readModelName: string,
-    readModelSource?: string | null
+    loadProcedureSource?: () => Promise<string | null>
   ) => Promise<void>
   status: (
     pool: ReadModelAdapterPool,
