@@ -1,7 +1,8 @@
+import type { Adapter as EventstoreAdapter } from '@resolve-js/eventstore-base'
 import type {
-  Adapter,
-  Adapter as EventstoreAdapter,
-} from '@resolve-js/eventstore-base'
+  CommonAdapterPool,
+  AdapterOperations as ReadModelAdapterOperationsGeneric,
+} from '@resolve-js/readmodel-base'
 import type {
   PerformanceTracer,
   Domain,
@@ -12,8 +13,6 @@ import type {
   CommandMiddleware,
   ReadModelResolverMiddleware,
   ReadModelProjectionMiddleware,
-  ReadModelInterop,
-  Eventstore,
 } from '@resolve-js/core'
 import type { CommandExecutor } from './command'
 import type { Server as HttpServer, IncomingHttpHeaders } from 'http'
@@ -49,50 +48,7 @@ export type ReadModelMethodName = typeof readModelMethodNames[number]
 //TODO: match with types for read-model base
 export type ReadModelAdapterPool = any
 export type ReadModelStore = any
-export type ReadModelAdapterOperations = {
-  build: (
-    pool: ReadModelAdapterPool,
-    readModelName: string,
-    store: ReadModelStore,
-    modelInterop: ReadModelInterop,
-    next: () => Promise<void>,
-    eventstoreAdapter: Eventstore,
-    getVacantTimeInMillis: () => number,
-    buildInfo: any
-  ) => Promise<void>
-  reset: (pool: ReadModelAdapterPool, readModelName: string) => Promise<void>
-  resume: (
-    pool: ReadModelAdapterPool,
-    readModelName: string,
-    next: () => Promise<void>
-  ) => Promise<void>
-  pause: (pool: ReadModelAdapterPool, readModelName: string) => Promise<void>
-  subscribe: (
-    pool: ReadModelAdapterPool,
-    readModelName: string,
-    eventTypes: Array<string> | null,
-    aggregateIds: Array<string> | null,
-    loadProcedureSource: () => Promise<string | null>
-  ) => Promise<void>
-  resubscribe: (
-    pool: ReadModelAdapterPool,
-    readModelName: string,
-    eventTypes: Array<string> | null,
-    aggregateIds: Array<string> | null,
-    loadProcedureSource: () => Promise<string | null>
-  ) => Promise<void>
-  unsubscribe: (
-    pool: ReadModelAdapterPool,
-    readModelName: string,
-    loadProcedureSource?: () => Promise<string | null>
-  ) => Promise<void>
-  status: (
-    pool: ReadModelAdapterPool,
-    readModelName: string,
-    eventstoreAdapter: Eventstore,
-    includeRuntimeStatus?: boolean
-  ) => Promise<any>
-}
+export type ReadModelAdapterOperations = ReadModelAdapterOperationsGeneric<CommonAdapterPool>
 
 export type ReadModelConnector = {
   connect: (name: string) => Promise<any>
@@ -384,5 +340,5 @@ export type ResolveResponse = HttpResponse
 export type UserBackendResolve = Runtime &
   BuildTimeConstants &
   Omit<AdditionalUserData, 'constants' | 'eventStoreAdapter'> & {
-    eventstoreAdapter: Adapter
+    eventstoreAdapter: EventstoreAdapter
   }
