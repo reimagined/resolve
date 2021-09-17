@@ -200,6 +200,8 @@ export const makeTestEnvironment = (
       error: () => void 0,
       execution: () => void 0,
       publish: async () => void 0,
+      duration: async () => void 0,
+      rate: async () => void 0,
     }
 
     const errors: Error[] = []

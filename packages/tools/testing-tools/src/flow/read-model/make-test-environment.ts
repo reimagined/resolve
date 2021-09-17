@@ -117,6 +117,8 @@ export const makeTestEnvironment = (
         execution,
         error,
         publish: async () => void 0,
+        duration: async () => void 0,
+        rate: async () => void 0,
       }
     }
 

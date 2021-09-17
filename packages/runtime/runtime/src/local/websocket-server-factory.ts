@@ -10,10 +10,7 @@ import { getRootBasedUrl } from '@resolve-js/core'
 import { createPubSubManager } from './create-pubsub-manager'
 import { getReactiveSubscriptionFactory } from './get-reactive-subscription-factory'
 
-import type {
-  Adapter,
-  Adapter as EventstoreAdapter,
-} from '@resolve-js/eventstore-base'
+import type { Adapter as EventstoreAdapter } from '@resolve-js/eventstore-base'
 import type { PubsubManager, ReactiveEventDispatcher } from '../common/types'
 
 const log = debugLevels('resolve:runtime:local-subscribe-adapter')
@@ -184,7 +181,7 @@ const createSocketHttpServer = (): http.Server => {
 }
 
 type WebsocketServerFactoryParameters = {
-  eventStoreAdapterFactory: () => Adapter
+  eventStoreAdapterFactory: () => EventstoreAdapter
   server: http.Server
   rootPath: string
   applicationName: string

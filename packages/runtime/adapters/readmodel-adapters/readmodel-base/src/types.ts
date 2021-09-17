@@ -7,6 +7,8 @@ import type {
   EventThreadData as EventStoreEventThreadData,
 } from '@resolve-js/eventstore-base'
 
+import type { PerformanceTracer, Monitoring } from '@resolve-js/core'
+
 export type CheckEventsContinuityMethod = typeof checkEventsContinuity
 export type EventWithCursor = EventStoreEventWithCursor
 export type EventThreadData = EventStoreEventThreadData
@@ -130,28 +132,9 @@ export type EncryptionLike = {
   decrypt<Input, Output>(input: Input): Output
 }
 
-export type PerformanceTracerLike = {
-  getSegment(): {
-    addNewSubsegment(
-      arg0: string
-    ): {
-      addAnnotation(arg0: string, arg1: string): void
-      addError(error: Error): void
-      close(): void
-    } | null
-  } | null
-}
+export type PerformanceTracerLike = PerformanceTracer
 
-export type MonitoringLike = {
-  group: (config: Record<string, string>) => MonitoringLike
-  error: (error: Error) => void
-  duration: (label: string, duration: number, count?: number) => void
-  time: (label: string, timestamp?: number) => void
-  timeEnd: (label: string, timestamp?: number) => void
-  rate: (metricName: string, count: number, seconds?: number) => void
-  publish: () => Promise<void>
-  performance?: PerformanceTracerLike
-}
+export type MonitoringLike = Monitoring
 
 export type ReadModelCursor = InputCursor // TODO brand type
 export type ReadModelEvent = StoredEvent
