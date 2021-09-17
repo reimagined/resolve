@@ -7,7 +7,11 @@ import type {
   EventThreadData as EventStoreEventThreadData,
 } from '@resolve-js/eventstore-base'
 
-import type { PerformanceTracer, Monitoring } from '@resolve-js/core'
+import type {
+  PerformanceTracer,
+  Monitoring,
+  ReadModelInterop,
+} from '@resolve-js/core'
 
 export type CheckEventsContinuityMethod = typeof checkEventsContinuity
 export type EventWithCursor = EventStoreEventWithCursor
@@ -361,15 +365,9 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     pool: AdapterPool,
     readModelName: string,
     store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
-    modelInterop: {
-      acquireInitHandler: (
-        store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>
-      ) => () => Promise<void>
-      acquireEventHandler: (
-        store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
-        event: ReadModelEvent
-      ) => () => Promise<void>
-    },
+    modelInterop: ReadModelInterop<
+      ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>
+    >,
     next: MethodNext,
     eventstoreAdapter: EventStoreAdapterLike,
     getVacantTimeInMillis: MethodGetRemainingTime,
