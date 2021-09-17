@@ -7,18 +7,14 @@ import qs from 'querystring'
 import jwt from 'jsonwebtoken'
 import { getRootBasedUrl } from '@resolve-js/core'
 
-import createPubsubManager from './create-pubsub-manager'
-import getSubscribeAdapterOptions from './get-subscribe-adapter-options'
+import { createPubSubManager } from './create-pubsub-manager'
+import { getReactiveSubscriptionFactory } from './get-reactive-subscription-factory'
 
 import type {
   Adapter,
   Adapter as EventstoreAdapter,
 } from '@resolve-js/eventstore-base'
-import type {
-  PubsubManager,
-  ReactiveEventDispatcher,
-  Resolve,
-} from '../common/types'
+import type { PubsubManager, ReactiveEventDispatcher } from '../common/types'
 
 const log = debugLevels('resolve:runtime:local-subscribe-adapter')
 
@@ -191,13 +187,14 @@ type WebsocketServerFactoryParameters = {
   eventStoreAdapterFactory: () => Adapter
   server: http.Server
   rootPath: string
+  applicationName: string
 }
 
 export const websocketServerFactory = async (
   params: WebsocketServerFactoryParameters
 ) => {
-  const { eventStoreAdapterFactory, rootPath, server } = params
-  const pubSubManager = createPubsubManager()
+  const { eventStoreAdapterFactory, rootPath, server, applicationName } = params
+  const pubSubManager = createPubSubManager()
   const websocketHttpServer = createSocketHttpServer()
 
   eventstoreAdapter = await eventStoreAdapterFactory()
@@ -213,8 +210,13 @@ export const websocketServerFactory = async (
   await initWebSocketServer(websocketHttpServer, pubSubManager, rootPath)
   await initInterceptingHttpServer(server, websocketHttpServer, rootPath)
 
+  const getReactiveSubscription = getReactiveSubscriptionFactory({
+    rootPath,
+    applicationName,
+  })
+
   return {
-    getSubscribeAdapterOptions,
+    getReactiveSubscription,
     sendReactiveEvent,
   }
 }

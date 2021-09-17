@@ -1,4 +1,7 @@
-import type { Adapter as EventstoreAdapter } from '@resolve-js/eventstore-base'
+import type {
+  Adapter,
+  Adapter as EventstoreAdapter,
+} from '@resolve-js/eventstore-base'
 import type {
   PerformanceTracer,
   Domain,
@@ -252,6 +255,19 @@ export type ReactiveEventDispatcher = (
   event: Pick<Event, 'type' | 'aggregateId'>
 ) => Promise<void>
 
+export type ReactiveSubscription = {
+  appId: string
+  url: string
+}
+
+export type ReactiveSubscriptionFactory = (
+  origin: string,
+  eventTypes: string[] | null,
+  aggregateIds: string[] | null
+) => Promise<ReactiveSubscription>
+
+export type EventListeners = Map<string, EventListener>
+
 export type Resolve = {
   isInitialized: boolean
 
@@ -260,7 +276,7 @@ export type Resolve = {
   seedClientEnvs: Assemblies['seedClientEnvs']
   serverImports: Assemblies['serverImports']
 
-  eventListeners: Map<string, EventListener>
+  eventListeners: EventListeners
   upstream: boolean
 
   getEventSubscriberDestination: (name?: string) => string
@@ -286,7 +302,7 @@ export type Resolve = {
     origin: string,
     eventTypes: string[] | null,
     aggregateIds: string[] | null
-  ) => Promise<{ appId: Resolve['applicationName']; url: string }>
+  ) => Promise<ReactiveSubscription>
 
   websocketHttpServer: HttpServer
   server: http.Server
@@ -318,8 +334,6 @@ export type Resolve = {
   publisher: any
 } & BuildTimeConstants
 
-export type ResolvePartial = Partial<Resolve>
-
 export type HttpRequest = {
   readonly adapter: string
   readonly method: string
@@ -334,7 +348,7 @@ export type HttpRequest = {
 }
 
 export type ResolveRequest = HttpRequest & {
-  readonly resolve: Resolve
+  readonly resolve: UserBackendResolve
   matchedParams: MatchedParams
 }
 
@@ -369,4 +383,6 @@ export type ResolveResponse = HttpResponse
 
 export type UserBackendResolve = Runtime &
   BuildTimeConstants &
-  Omit<AdditionalUserData, 'constants'>
+  Omit<AdditionalUserData, 'constants' | 'eventStoreAdapter'> & {
+    eventstoreAdapter: Adapter
+  }

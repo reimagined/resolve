@@ -4,7 +4,7 @@ import type {
   PubsubManager,
 } from '../common/types'
 
-const createPubsubManager = (): PubsubManager => {
+export const createPubSubManager = (): PubsubManager => {
   const map = new Map<string, PubsubConnection>()
 
   return {
@@ -71,4 +71,3 @@ const createPubsubManager = (): PubsubManager => {
   }
 }
 
-export default createPubsubManager

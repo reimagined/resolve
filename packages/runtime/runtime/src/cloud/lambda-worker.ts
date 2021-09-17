@@ -310,6 +310,11 @@ export const lambdaWorker = async (
           performanceTracer: coldStartContext.performanceTracer,
           buildTimeConstants: coldStartContext.constants,
           routesTrie: coldStartContext.routesTrie,
+          domain: coldStartContext.domain,
+          domainInterop: coldStartContext.domainInterop,
+          eventSubscriberScope: coldStartContext.eventSubscriberScope,
+          seedClientEnvs: coldStartContext.seedClientEnvs,
+          eventListeners: coldStartContext.eventListeners,
         }
       )
 

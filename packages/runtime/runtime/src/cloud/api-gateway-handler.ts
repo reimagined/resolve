@@ -2,9 +2,15 @@ import partial from 'lodash.partial'
 import { wrapApiHandler } from './wrap-api-handler'
 import { mainHandler } from '../common/handlers/main-handler'
 
-import type { Monitoring, PerformanceTracer } from '@resolve-js/core'
+import type { Domain, Monitoring, PerformanceTracer } from '@resolve-js/core'
 import type { Runtime } from '../common/create-runtime'
-import { BuildTimeConstants, createUserResolve } from '../common'
+import {
+  Assemblies,
+  BuildTimeConstants,
+  createUserResolve,
+  DomainWithHandlers,
+  EventListeners,
+} from '../common'
 import { Trie } from 'route-trie'
 
 export const handleApiGatewayEvent = async (
@@ -16,17 +22,33 @@ export const handleApiGatewayEvent = async (
     performanceTracer,
     buildTimeConstants,
     routesTrie,
+    domain,
+    domainInterop,
+    eventSubscriberScope,
+    seedClientEnvs,
+    eventListeners,
   }: {
     monitoring: Monitoring
     performanceTracer: PerformanceTracer
     buildTimeConstants: BuildTimeConstants
     routesTrie: Trie
+    domain: DomainWithHandlers
+    domainInterop: Domain
+    eventSubscriberScope: string
+    seedClientEnvs: Assemblies['seedClientEnvs']
+    eventListeners: EventListeners
   }
 ) => {
   const getCustomParameters = () => ({
     resolve: createUserResolve(runtime, {
       constants: buildTimeConstants,
       routesTrie,
+      domain,
+      domainInterop,
+      eventSubscriberScope,
+      performanceTracer,
+      seedClientEnvs,
+      eventListeners,
     }),
   })
 
