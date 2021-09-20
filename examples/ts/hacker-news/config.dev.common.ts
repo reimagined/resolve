@@ -6,7 +6,7 @@ const devCommonConfig = {
     options: {
       host: declareRuntimeEnv('HOST', 'localhost'),
       port: declareRuntimeEnv('PORT', '3000'),
-      importMode: 'dynamic',
+      importMode: 'normal',
     },
   },
   readModelConnectors: {

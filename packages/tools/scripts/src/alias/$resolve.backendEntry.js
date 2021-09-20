@@ -43,7 +43,6 @@ const emitStaticImport = (runtime) => {
 const emitDynamicImport = (runtime) => {
   const { result, imported, isPackage } = resolveResource(runtime.module)
   const entry = isPackage ? imported : 'default'
-
   return `
     import '$resolve.guardOnlyServer'
     export { entryPointMarker } from '@resolve-js/runtime-base'
