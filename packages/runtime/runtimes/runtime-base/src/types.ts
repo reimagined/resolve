@@ -329,14 +329,22 @@ export type BootstrapRuntime = {
   deleteQueue: (name?: string) => Promise<void>
 }
 
-export type UserBackendResolve = Runtime &
-  BuildTimeConstants & {
-    domain: DomainWithHandlers
-    domainInterop: Domain
-    eventSubscriberScope: string
-    eventstoreAdapter: EventStoreAdapter
-    performanceTracer: PerformanceTracer
-    routesTrie: Trie
-    seedClientEnvs: RuntimeFactoryParameters['seedClientEnvs']
-    eventListeners: RuntimeFactoryParameters['eventListeners']
-  }
+export type UserBackendDependencies = {
+  seedClientEnvs: RuntimeFactoryParameters['seedClientEnvs']
+  // TODO: excessive internal data access
+  routesTrie: Trie
+  domain: RuntimeFactoryParameters['domain']
+  domainInterop: RuntimeFactoryParameters['domainInterop']
+  eventSubscriberScope: RuntimeFactoryParameters['eventSubscriberScope']
+  // TODO: push to runtime interface?
+  performanceTracer: PerformanceTracer
+  eventListeners: RuntimeFactoryParameters['eventListeners']
+}
+
+export type UserBackendResolve = Readonly<
+  Omit<Runtime, 'eventStoreAdapter'> &
+    BuildTimeConstants &
+    UserBackendDependencies & {
+      eventstoreAdapter: EventStoreAdapter
+    }
+>
