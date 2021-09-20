@@ -22,7 +22,6 @@ import { createRuntime } from '@resolve-js/runtime-base'
 
 import type {
   Assemblies,
-  Resolve,
   EventSubscriberNotification,
   BuildTimeConstants,
   RuntimeFactoryParameters,
@@ -35,7 +34,7 @@ const log = getLog('local-entry')
 type LocalEntryDependencies = {
   assemblies: Assemblies
   constants: BuildTimeConstants
-  domain: Resolve['domain']
+  domain: RuntimeFactoryParameters['domain']
 }
 
 export const entry = async (dependencies: LocalEntryDependencies) => {

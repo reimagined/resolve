@@ -1,9 +1,20 @@
 import { createCommandExecutor } from './command'
 import { createQueryExecutor } from './query'
 import { createSagaExecutor } from './saga'
-import type { AggregateInterop, Command, Monitoring, PerformanceTracer, StoredEventPointer } from '@resolve-js/core'
+import type {
+  AggregateInterop,
+  Command,
+  Monitoring,
+  PerformanceTracer,
+  StoredEventPointer,
+} from '@resolve-js/core'
 import { Adapter } from '@resolve-js/eventstore-base'
-import type { ReadModelConnectorFactory, Resolve, Runtime, RuntimeFactoryParameters, Scheduler } from './types'
+import type {
+  ReadModelConnectorFactory,
+  Runtime,
+  RuntimeFactoryParameters,
+  Scheduler,
+} from './types'
 import { getLog } from './utils/get-log'
 import { eventBroadcastFactory } from './event-broadcast-factory'
 import { commandExecutedHookFactory } from './command-executed-hook-factory'
@@ -16,8 +27,8 @@ const buildReadModelConnectors = (
   factories: Record<string, ReadModelConnectorFactory>,
   performanceTracer: PerformanceTracer,
   monitoring: Monitoring
-): Resolve['readModelConnectors'] =>
-  Object.keys(factories).reduce<Resolve['readModelConnectors']>(
+): Runtime['readModelConnectors'] =>
+  Object.keys(factories).reduce<Runtime['readModelConnectors']>(
     (connectors, name) => {
       connectors[name] = factories[name]({
         performanceTracer,

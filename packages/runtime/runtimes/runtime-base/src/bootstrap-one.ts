@@ -1,4 +1,4 @@
-import type { Resolve } from './types'
+import type { Runtime, BootstrapRuntime } from './types'
 
 const bootstrapOne = async ({
   applicationName,
@@ -12,12 +12,12 @@ const bootstrapOne = async ({
 }: {
   applicationName: string
   name: string
-  eventstoreAdapter: Resolve['eventstoreAdapter']
-  eventSubscriber: Resolve['eventSubscriber']
+  eventstoreAdapter: Runtime['eventStoreAdapter']
+  eventSubscriber: Runtime['eventSubscriber']
   eventTypes: string[]
   destination?: string
-  upstream: Resolve['upstream']
-  ensureQueue: Resolve['ensureQueue']
+  upstream: BootstrapRuntime['upstream']
+  ensureQueue: BootstrapRuntime['ensureQueue']
 }) => {
   try {
     const errors = []

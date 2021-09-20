@@ -13,12 +13,11 @@ import type {
   ReadModelResolverMiddleware,
 } from '@resolve-js/core'
 import type { CommandExecutor } from './command'
-import type { IncomingHttpHeaders, Server as HttpServer } from 'http'
-import http from 'http'
+import type { IncomingHttpHeaders } from 'http'
 import type { CookieSerializeOptions } from 'cookie'
-import type { Params as MatchedParams, Trie } from 'route-trie'
-import { AdditionalUserData } from './create-user-resolve'
-import { EventStoreAdapterFactory } from './create-runtime'
+import type { Params as MatchedParams } from 'route-trie'
+import type { AdditionalUserData } from './create-user-resolve'
+import type { EventStoreAdapterFactory } from './create-runtime'
 
 export type CallMethodParams = {
   modelName?: string | null
@@ -237,72 +236,6 @@ export type ReactiveSubscriptionFactory = (
 
 export type EventListeners = Map<string, EventListener>
 
-export type Resolve = {
-  isInitialized: boolean
-
-  instanceId?: string
-
-  seedClientEnvs: Assemblies['seedClientEnvs']
-  serverImports: Assemblies['serverImports']
-
-  eventListeners: EventListeners
-  upstream: boolean
-
-  getEventSubscriberDestination: (name?: string) => string
-  invokeBuildAsync: InvokeBuildAsync
-
-  ensureQueue: (name?: string) => Promise<void>
-  deleteQueue: (name?: string) => Promise<void>
-
-  eventstoreAdapter: EventStoreAdapter
-  readModelConnectors: Record<string, ReadModelConnector>
-
-  assemblies: Assemblies
-  domain: DomainWithHandlers
-  domainInterop: Domain
-  readonly performanceTracer: PerformanceTracer
-  scheduler: Scheduler
-  uploader: Uploader
-
-  sendReactiveEvent: ReactiveEventDispatcher
-  //TODO: bind to resolve object?
-  getSubscribeAdapterOptions: (
-    resolve: Resolve,
-    origin: string,
-    eventTypes: string[] | null,
-    aggregateIds: string[] | null
-  ) => Promise<ReactiveSubscription>
-
-  websocketHttpServer: HttpServer
-  server: http.Server
-
-  executeQuery: QueryExecutor
-  executeSaga: SagaExecutor
-
-  eventSubscriber: EventSubscriber
-  eventSubscriberScope: string
-
-  executeCommand: CommandExecutor
-  executeSchedulerCommand: CommandExecutor
-
-  broadcastEvent: (eventPointer: EventPointer) => Promise<void>
-
-  notifyEventSubscriber: EventSubscriberNotifier
-
-  //TODO: types
-  monitoring: Monitoring
-
-  routesTrie: Trie
-
-  getVacantTimeInMillis: () => number
-
-  resolveVersion?: string
-  subscriptionsCredentials: {
-    applicationLambdaArn: string
-  }
-  publisher: any
-} & BuildTimeConstants
-
 export type HttpRequest = {
   readonly adapter: string
   readonly method: string
@@ -351,11 +284,10 @@ export type HttpResponse = {
 export type ResolveResponse = HttpResponse
 
 export type RuntimeFactoryParameters = {
-  // TODO: missed types
   readonly seedClientEnvs: Assemblies['seedClientEnvs']
   readonly serverImports: Assemblies['serverImports']
-  readonly domain: Resolve['domain']
-  readonly domainInterop: Resolve['domainInterop']
+  readonly domain: DomainWithHandlers
+  readonly domainInterop: Domain
   readonly performanceTracer: PerformanceTracer
   readonly monitoring: Monitoring
   readonly eventStoreAdapterFactory: EventStoreAdapterFactory
@@ -366,12 +298,12 @@ export type RuntimeFactoryParameters = {
   readonly getVacantTimeInMillis: () => number
   readonly eventSubscriberScope: string
   readonly notifyEventSubscriber: EventSubscriberNotifier
-  readonly invokeBuildAsync: Resolve['invokeBuildAsync']
-  readonly eventListeners: Resolve['eventListeners']
+  readonly invokeBuildAsync: InvokeBuildAsync
+  readonly eventListeners: EventListeners
   readonly sendReactiveEvent: ReactiveEventDispatcher
   readonly getReactiveSubscription: ReactiveSubscriptionFactory
-  readonly uploader: Resolve['uploader'] | null
-  scheduler?: Resolve['scheduler']
+  readonly uploader: Uploader | null
+  scheduler?: Scheduler
 }
 export type Runtime = {
   readonly eventStoreAdapter: EventStoreAdapter
@@ -390,3 +322,14 @@ export type UserBackendResolve = Runtime &
   Omit<AdditionalUserData, 'constants' | 'eventStoreAdapter'> & {
     eventstoreAdapter: EventStoreAdapter
   }
+
+export type BootstrapRuntime = {
+  eventStoreAdapter: Runtime['eventStoreAdapter']
+  eventSubscriberScope: string
+  eventListeners: RuntimeFactoryParameters['eventListeners']
+  eventSubscriber: Runtime['eventSubscriber']
+  getEventSubscriberDestination: (name: string) => string
+  upstream: boolean
+  ensureQueue: (name?: string) => Promise<void>
+  deleteQueue: (name?: string) => Promise<void>
+}

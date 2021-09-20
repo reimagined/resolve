@@ -34,6 +34,7 @@
     "express": "4.17.1",
     "ws": "7.4.4",
     "uuid": "8.3.2",
+    "content-disposition": "0.5.3",
     "qs": "6.9.6",
     "cookie": "0.4.1",
     "mime-types": "2.1.29",
@@ -45,6 +46,7 @@
     "@types/lodash.partial": "4.2.6",
     "@types/ws": "7.4.4",
     "@types/mime-types": "2.1.1",
+    "@types/content-disposition": "0.5.3",
     "jest": "27.0.3",
     "ts-jest": "27.0.2"
   },

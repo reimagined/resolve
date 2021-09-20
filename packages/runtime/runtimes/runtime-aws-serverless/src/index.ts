@@ -12,14 +12,15 @@ import { lambdaWorker } from './lambda-worker'
 import { uploaderFactory } from './uploader-factory'
 import { getReactiveSubscriptionFactory } from './get-reactive-subscription-factory'
 
+import type { Trie } from 'route-trie'
+
 import type { PerformanceTracer, Domain } from '@resolve-js/core'
 import type {
   Assemblies,
   BuildTimeConstants,
-  DomainWithHandlers,
   ReactiveSubscriptionFactory,
-  Resolve,
-  Uploader,
+  Runtime,
+  RuntimeFactoryParameters,
 } from '@resolve-js/runtime-base'
 
 import type { PerformanceSubsegment } from '@resolve-js/core'
@@ -30,23 +31,23 @@ const log = getLog('aws-serverless-entry')
 
 export type LambdaColdStartContext = {
   readonly performanceTracer: PerformanceTracer
-  readonly seedClientEnvs: Resolve['seedClientEnvs']
-  readonly serverImports: Resolve['serverImports']
+  readonly seedClientEnvs: RuntimeFactoryParameters['seedClientEnvs']
+  readonly serverImports: RuntimeFactoryParameters['serverImports']
   readonly constants: BuildTimeConstants
   // TODO: why we still need domain meta outside core?
-  readonly domain: DomainWithHandlers
+  readonly domain: RuntimeFactoryParameters['domain']
   readonly domainInterop: Domain
-  readonly eventListeners: Resolve['eventListeners']
+  readonly eventListeners: RuntimeFactoryParameters['eventListeners']
   readonly eventSubscriberScope: string
   readonly upstream: boolean
   readonly resolveVersion: string
-  readonly routesTrie: Resolve['routesTrie']
-  readonly uploader: Uploader | null
-  readonly sendReactiveEvent: Resolve['sendReactiveEvent']
+  readonly routesTrie: Trie
+  readonly uploader: Runtime['uploader']
+  readonly sendReactiveEvent: RuntimeFactoryParameters['sendReactiveEvent']
   // TODO: rename to getSubscriptionAdapterOptions
   readonly getReactiveSubscription: ReactiveSubscriptionFactory
   // TODO: do we really need this somewhere?
-  readonly assemblies: Resolve['assemblies']
+  readonly assemblies: Assemblies
   // TODO: what is this?
   readonly publisher: any
 }
@@ -59,7 +60,7 @@ export const entry = async ({
 }: {
   assemblies: Assemblies
   constants: BuildTimeConstants
-  domain: Resolve['domain']
+  domain: RuntimeFactoryParameters['domain']
   resolveVersion: string
 }) => {
   let subSegment: PerformanceSubsegment | null = null

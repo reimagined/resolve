@@ -1,16 +1,15 @@
 import partial from 'lodash.partial'
 import type { EventPointer } from '@resolve-js/core'
-import type { Resolve } from './types'
-import { Adapter } from '@resolve-js/eventstore-base'
+import type { Runtime, RuntimeFactoryParameters } from './types'
 import { createEventSubscriberNotification, getLog } from './utils'
 
 type NotifierRuntime = {
-  getVacantTimeInMillis: Resolve['getVacantTimeInMillis']
-  eventStoreAdapter: Adapter
-  eventListeners: Resolve['eventListeners']
-  invokeBuildAsync: Resolve['invokeBuildAsync']
-  eventSubscriberScope: Resolve['eventSubscriberScope']
-  notifyEventSubscriber: Resolve['notifyEventSubscriber']
+  getVacantTimeInMillis: RuntimeFactoryParameters['getVacantTimeInMillis']
+  eventStoreAdapter: Runtime['eventStoreAdapter']
+  eventListeners: RuntimeFactoryParameters['eventListeners']
+  invokeBuildAsync: RuntimeFactoryParameters['invokeBuildAsync']
+  eventSubscriberScope: RuntimeFactoryParameters['eventSubscriberScope']
+  notifyEventSubscriber: RuntimeFactoryParameters['notifyEventSubscriber']
 }
 
 const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {

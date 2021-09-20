@@ -1,22 +1,29 @@
 import { createQueryExecutor } from '../query/index'
-import type { Resolve, CallMethodParams, SagaExecutor } from '../types'
+import type {
+  InvokeBuildAsync,
+  CallMethodParams,
+  Runtime,
+  RuntimeFactoryParameters,
+  SagaExecutor,
+  Scheduler,
+} from '../types'
 import type { SecretsManager } from '@resolve-js/core'
 
 type CreateSagaOptions = {
   applicationName: string
-  invokeBuildAsync: Resolve['invokeBuildAsync']
-  readModelConnectors: Resolve['readModelConnectors']
-  executeCommand: Resolve['executeCommand']
-  executeQuery: Resolve['executeQuery']
-  performanceTracer: Resolve['performanceTracer']
-  uploader: Resolve['uploader'] | null
-  eventstoreAdapter: Resolve['eventstoreAdapter']
+  invokeBuildAsync: InvokeBuildAsync
+  readModelConnectors: Runtime['readModelConnectors']
+  executeCommand: Runtime['executeCommand']
+  executeQuery: Runtime['executeQuery']
+  performanceTracer: RuntimeFactoryParameters['performanceTracer']
+  uploader: Runtime['uploader']
+  eventstoreAdapter: Runtime['eventStoreAdapter']
   secretsManager: SecretsManager
-  getVacantTimeInMillis: Resolve['getVacantTimeInMillis']
-  getScheduler: () => Resolve['scheduler']
-  monitoring: Resolve['monitoring']
-  domainInterop: Resolve['domainInterop']
-  executeSchedulerCommand: Resolve['executeSchedulerCommand']
+  getVacantTimeInMillis: RuntimeFactoryParameters['getVacantTimeInMillis']
+  getScheduler: () => Scheduler
+  monitoring: RuntimeFactoryParameters['monitoring']
+  domainInterop: RuntimeFactoryParameters['domainInterop']
+  executeSchedulerCommand: Runtime['executeSchedulerCommand']
 }
 
 export const createSagaExecutor = ({

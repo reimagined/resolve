@@ -1,17 +1,17 @@
 import debugLevels from '@resolve-js/debug-levels'
 
 import shutdownOne from './shutdown-one'
-import type { Resolve, EventListener } from './types'
+import type { BootstrapRuntime, Runtime, EventListener } from './types'
 
 const log = debugLevels('resolve:runtime:shutdown')
 
 type ShutdownRuntime = {
   eventSubscriberScope: string
   eventListeners: Map<string, EventListener>
-  eventStoreAdapter: Resolve['eventstoreAdapter']
-  eventSubscriber: Resolve['eventSubscriber']
-  upstream: Resolve['upstream']
-  deleteQueue: Resolve['deleteQueue']
+  eventStoreAdapter: Runtime['eventStoreAdapter']
+  eventSubscriber: Runtime['eventSubscriber']
+  upstream: BootstrapRuntime['upstream']
+  deleteQueue: BootstrapRuntime['deleteQueue']
 }
 
 export const shutdown = async (runtime: ShutdownRuntime, soft: boolean) => {

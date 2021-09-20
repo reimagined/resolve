@@ -2,12 +2,14 @@ import { getLog } from '@resolve-js/runtime-base'
 import { getRootBasedUrl } from '@resolve-js/core'
 
 import type {
-  Resolve,
   ResolveRequest,
   ResolveResponse,
+  RuntimeFactoryParameters,
 } from '@resolve-js/runtime-base'
 
-export const prepareDomain = (domain: Resolve['domain']): Resolve['domain'] => {
+export const prepareDomain = (
+  domain: RuntimeFactoryParameters['domain']
+): RuntimeFactoryParameters['domain'] => {
   domain.apiHandlers.push({
     path: '/api/subscribers/:eventSubscriber',
     method: 'GET',

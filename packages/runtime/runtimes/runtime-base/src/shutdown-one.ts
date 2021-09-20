@@ -1,7 +1,7 @@
-import type { Resolve } from './types'
+import type { BootstrapRuntime, Runtime } from './types'
 
 const shutdownOne = async ({
-                             eventSubscriberScope,
+  eventSubscriberScope,
   name,
   eventStoreAdapter,
   eventSubscriber,
@@ -11,10 +11,10 @@ const shutdownOne = async ({
 }: {
   eventSubscriberScope: string
   name: string
-  eventStoreAdapter: Resolve['eventstoreAdapter']
-  eventSubscriber: Resolve['eventSubscriber']
-  upstream: Resolve['upstream']
-  deleteQueue: Resolve['deleteQueue']
+  eventStoreAdapter: Runtime['eventStoreAdapter']
+  eventSubscriber: Runtime['eventSubscriber']
+  upstream: BootstrapRuntime['upstream']
+  deleteQueue: BootstrapRuntime['deleteQueue']
   soft?: boolean
 }) => {
   try {
