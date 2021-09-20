@@ -1,14 +1,14 @@
 {
-  "name": "@resolve-js/runtime-base",
+  "name": "@resolve-js/runtime-aws-serverless",
   "version": "0.31.10",
-  "description": "The reSolve framework's runtimes base interfaces.",
+  "description": "The reSolve framework's AWS runtime based on serverless services.",
   "keywords": [
     "cqrs",
     "eventsourcing",
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@resolve-js/runtime-base#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@resolve-js/runtime-aws-serverless#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -19,27 +19,38 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/runtime-base",
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/runtime-aws-serverless",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
     "@resolve-js/core": "0.31.10",
-    "@resolve-js/debug-levels": "0.31.10",
+    "@resolve-js/runtime-base": "0.31.10",
     "@resolve-js/eventstore-base": "0.31.10",
-    "@resolve-js/readmodel-base": "0.31.10",
-    "route-trie": "3.0.0",
-    "http-status-codes": "2.1.4",
-    "file-type": "16.5.3",
+    "resolve-cloud-common": "0.0.138",
     "lodash.partial": "4.2.1",
-    "lodash.create": "4.2.0"
+    "route-trie": "3.0.0",
+    "jsonwebtoken": "8.5.1",
+    "source-map-support": "0.5.19",
+    "request": "2.88.2",
+    "mime-types": "2.1.29",
+    "cookie": "0.4.1",
+    "binary-case": "1.1.4",
+    "content-disposition": "0.5.3",
+    "qs": "6.9.6"
   },
   "devDependencies": {
-    "@types/lodash.partial":  "4.2.6",
-    "@types/lodash.create": "4.2.6",
+    "@types/lodash.partial": "4.2.6",
+    "@types/request": "2.48.7",
+    "@types/mime-types": "2.1.1",
+    "@types/content-disposition": "0.5.3",
     "jest": "27.0.3",
     "ts-jest": "27.0.2"
+  },
+  "peerDependencies": {
+    "aws-sdk": "^2.860.0",
+    "aws-xray-sdk-core": "^3.2.0"
   },
   "engines": {
     "node": ">=14.17"

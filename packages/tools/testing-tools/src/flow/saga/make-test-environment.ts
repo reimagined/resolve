@@ -1,11 +1,19 @@
+import partial from 'lodash.partial'
+import { initDomain } from '@resolve-js/core'
+import { createQueryExecutor } from '@resolve-js/runtime-base'
+
+import { getSecretsManager } from '../../runtime/get-secrets-manager'
+import { getEventStore } from '../../runtime/get-event-store'
+import { getSagaRuntime } from '../../runtime/get-saga-runtime'
+import { mockSideEffects } from '../../runtime/mock-side-effects'
+import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
+import { defaultAssertion } from '../../utils/assertions'
 import {
-  EventHandlerEncryptionFactory,
-  initDomain,
-  Monitoring,
-  SecretsManager,
-} from '@resolve-js/core'
-import { createQuery } from '@resolve-js/runtime'
-import {
+  getCommandImplementationKey,
+  getQueryImplementationKey,
+} from '../../runtime/utils'
+
+import type {
   TestSaga,
   SagaTestResult,
   TestEvent,
@@ -13,17 +21,11 @@ import {
   MockedCommandImplementation,
   MockedQueryImplementation,
 } from '../../types'
-import { getSecretsManager } from '../../runtime/get-secrets-manager'
-import { getEventStore } from '../../runtime/get-event-store'
-import { getSagaRuntime } from '../../runtime/get-saga-runtime'
-import { mockSideEffects } from '../../runtime/mock-side-effects'
-import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
-import partial from 'lodash.partial'
-import { defaultAssertion } from '../../utils/assertions'
-import {
-  getCommandImplementationKey,
-  getQueryImplementationKey,
-} from '../../runtime/utils'
+import type {
+  EventHandlerEncryptionFactory,
+  Monitoring,
+  SecretsManager,
+} from '@resolve-js/core'
 
 type SagaTestContext = {
   saga: TestSaga
@@ -222,7 +224,7 @@ export const makeTestEnvironment = (
         sideEffectsStartTimestamp
       )
 
-      executor = createQuery({
+      executor = createQueryExecutor({
         applicationName: 'APP_NAME',
         readModelConnectors: {
           ADAPTER_NAME: actualAdapter,

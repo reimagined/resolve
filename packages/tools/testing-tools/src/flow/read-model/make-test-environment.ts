@@ -1,21 +1,23 @@
-import {
+import { initDomain } from '@resolve-js/core'
+import { createQueryExecutor } from '@resolve-js/runtime-base'
+
+import { getSecretsManager } from '../../runtime/get-secrets-manager'
+import { getEventStore } from '../../runtime/get-event-store'
+import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
+import { defaultAssertion } from '../../utils/assertions'
+
+import type {
   EventHandlerEncryptionFactory,
-  initDomain,
   Monitoring,
   SecretsManager,
 } from '@resolve-js/core'
-import { createQuery } from '@resolve-js/runtime'
-import {
+import type {
   TestReadModel,
   QueryTestResult,
   TestEvent,
   TestQuery,
   TestQueryAssertion,
 } from '../../types'
-import { getSecretsManager } from '../../runtime/get-secrets-manager'
-import { getEventStore } from '../../runtime/get-event-store'
-import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
-import { defaultAssertion } from '../../utils/assertions'
 
 type ReadModelTestContext = {
   readModel: TestReadModel
@@ -131,7 +133,7 @@ export const makeTestEnvironment = (
     try {
       const eventstoreAdapter = await getEventStore(events)
 
-      executor = createQuery({
+      executor = createQueryExecutor({
         applicationName: 'APP_NAME',
         readModelConnectors: {
           ADAPTER_NAME: actualAdapter,
