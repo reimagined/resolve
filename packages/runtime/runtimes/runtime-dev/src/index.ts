@@ -154,3 +154,5 @@ export const entry = async (dependencies: LocalEntryDependencies) => {
     log.error('Local entry point cold start failure', error)
   }
 }
+
+export * from './api-handlers'

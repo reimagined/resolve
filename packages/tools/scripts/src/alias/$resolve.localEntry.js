@@ -5,7 +5,7 @@ const importLocalEntry = () => `
 
   export { entryPointMarker } from '@resolve-js/runtime-base'
 
-  const initPromise = localEntry(serverAssemblies)
+  const initPromise = entry(serverAssemblies)
 
   const handler = async (...args) => {
     const worker = await initPromise
