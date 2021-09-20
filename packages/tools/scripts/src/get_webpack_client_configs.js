@@ -4,9 +4,10 @@ import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin'
 import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
 import getModulesDirs from './get_modules_dirs'
 import { OPTIONAL_ASSET_PREFIX } from './constants'
+import { getDeprecatedTarget } from './getDeprecatedTarget'
 
 const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
-  const targetMode = resolveConfig.target
+  const targetMode = getDeprecatedTarget(resolveConfig)
   const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
   const clientTransformBabelOptions = {
     cacheDirectory: true,

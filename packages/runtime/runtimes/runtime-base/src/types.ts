@@ -348,3 +348,15 @@ export type UserBackendResolve = Readonly<
       eventstoreAdapter: EventStoreAdapter
     }
 >
+
+export type RuntimeEntryContext = {
+  assemblies: Assemblies
+  constants: BuildTimeConstants
+  domain: DomainWithHandlers
+}
+
+export type RuntimeWorker = () => Promise<void>
+export type RuntimeEntry = (
+  context: RuntimeEntryContext
+) => Promise<RuntimeWorker>
+export type RuntimeModuleFactory<TOptions> = (options: TOptions) => RuntimeEntry

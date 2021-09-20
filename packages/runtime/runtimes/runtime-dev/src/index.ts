@@ -1,4 +1,5 @@
 import 'source-map-support/register'
+import partial from 'lodash.partial'
 import crypto from 'crypto'
 import { initDomain } from '@resolve-js/core'
 
@@ -23,36 +24,36 @@ import { createRuntime } from '@resolve-js/runtime-base'
 import type {
   Assemblies,
   EventSubscriberNotification,
-  BuildTimeConstants,
   RuntimeFactoryParameters,
+  RuntimeModuleFactory,
+  RuntimeEntryContext,
 } from '@resolve-js/runtime-base'
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
 const log = getLog('local-entry')
 
-type LocalEntryDependencies = {
-  assemblies: Assemblies
-  constants: BuildTimeConstants
-  domain: RuntimeFactoryParameters['domain']
+type RuntimeOptions = {
+  host: string
+  port: string
 }
 
-export const entry = async (dependencies: LocalEntryDependencies) => {
+const entry = async (options: RuntimeOptions, context: RuntimeEntryContext) => {
   try {
     process.env.RESOLVE_LOCAL_TRACE_ID = crypto
       .randomBytes(Math.ceil(32 / 2))
       .toString('hex')
       .slice(0, 32)
 
-    const { assemblies, constants } = dependencies
-    const domain = prepareDomain(dependencies.domain)
+    const { assemblies, constants } = context
+    const domain = prepareDomain(context.domain)
     const domainInterop = await initDomain(domain)
 
     const performanceTracer = await performanceTracerFactory()
     const monitoring = await monitoringFactory(performanceTracer)
     const notifyEventSubscriber = await eventSubscriberNotifierFactory()
-    const host = constants.host ?? '0.0.0.0'
-    const port = constants.port ?? '3000'
+    const host = options.host ?? '0.0.0.0'
+    const port = options.port ?? '3000'
 
     const {
       eventstoreAdapter: eventStoreAdapterFactory,
@@ -147,11 +148,16 @@ export const entry = async (dependencies: LocalEntryDependencies) => {
     )
 
     log.debug('Local entry point cold start success')
-
-    return lambdaGuard
   } catch (error) {
     log.error('Local entry point cold start failure', error)
   }
+
+  return lambdaGuard
 }
 
+const factory: RuntimeModuleFactory<RuntimeOptions> = (
+  options: RuntimeOptions
+) => partial(entry, options)
+
 export * from './api-handlers'
+export default factory

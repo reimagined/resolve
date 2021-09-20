@@ -5,13 +5,14 @@ import BabelPluginTransformImportInline from 'babel-plugin-transform-import-inli
 
 import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
 import getModulesDirs from './get_modules_dirs'
+import { getDeprecatedTarget } from './getDeprecatedTarget'
 
 const getWebpackCommonConfigs = ({
   resolveConfig,
   alias,
   nodeModulesByAssembly,
 }) => {
-  const targetMode = resolveConfig.target
+  const targetMode = getDeprecatedTarget(resolveConfig)
   if (!['local', 'cloud'].includes(targetMode)) {
     throw new Error(`Wrong target mode ${targetMode}`)
   }
@@ -150,7 +151,7 @@ const getWebpackCommonConfigs = ({
       entry: {
         [`common/${targetMode}-entry/${targetMode}-entry.js`]: path.resolve(
           __dirname,
-          `./alias/$resolve.${targetMode}Entry.js`
+          `./alias/$resolve.entry.js`
         ),
       },
       output: {

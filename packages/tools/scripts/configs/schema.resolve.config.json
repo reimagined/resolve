@@ -304,10 +304,6 @@
             ]
           }
         },
-        "target": {
-          "type": "string",
-          "enum": ["local", "cloud"]
-        },
         "name": {
           "type": ["string"]
         },
@@ -436,6 +432,30 @@
             }
           },
           "additionalProperties": false
+        },
+        "runtime": {
+          "type": "object",
+          "properties": {
+            "module": {
+              "type": "string"
+            },
+            "importMode": {
+              "enum": ["normal", "lazy"],
+              "default": "normal"
+            },
+            "options": {
+              "type": "object",
+              "properties": {
+                "importMode": {
+                  "enum": ["static", "dynamic"],
+                  "default": "normal"
+                },
+                "additionalProperties": true
+              }
+            }
+          },
+          "required": ["module", "options"],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -454,10 +474,10 @@
         "readModelConnectors",
         "eventstoreAdapter",
         "customConstants",
-        "target",
         "jwtCookie",
         "sagas",
-        "mode"
+        "mode",
+        "runtime"
       ],
       "additionalProperties": false
     }

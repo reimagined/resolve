@@ -4,16 +4,16 @@
   "staticPath": "static",
   "staticDir": "static",
   "distDir": "dist",
+  "jwtCookie": {
+    "name": "jwt",
+    "maxAge": 31536000000
+  },
   "aggregates": [],
   "readModels": [],
   "viewModels": [],
   "sagas": [],
   "apiHandlers": [],
   "readModelConnectors": {},
-  "jwtCookie": {
-    "name": "jwt",
-    "maxAge": 31536000000
-  },
   "customConstants": {},
   "clientImports": {},
   "serverImports": {},

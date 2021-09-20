@@ -1,6 +1,12 @@
 const devCommonConfig = {
-  target: 'local',
   mode: 'development',
+  runtime: {
+    module: '@resolve-js/runtime-dev',
+    options: {
+      host: 'localhost',
+      port: 4000,
+    },
+  },
   readModelConnectors: {
     default: {
       module: '@resolve-js/readmodel-lite',
