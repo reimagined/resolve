@@ -11,7 +11,7 @@ import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 import detectErrors from './detect_errors'
-import { getDeprecatedTarget } from './getDeprecatedTarget'
+import { getDeprecatedTarget } from './get-deprecated-target'
 
 const log = getLog('build')
 

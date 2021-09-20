@@ -6,6 +6,7 @@ import {
 } from '../constants'
 import { importResource } from '../import-resource'
 import { resolveResource } from '../resolve-resource'
+import { injectRuntimeEnv } from '../declare_runtime_env'
 
 // TODO: get rid of that entryPointMarker. There is more convenient ways to determine script location
 
@@ -46,28 +47,43 @@ const emitDynamicImport = (runtime) => {
   return `
     import '$resolve.guardOnlyServer'
     export { entryPointMarker } from '@resolve-js/runtime-base'
+    
+    const runtimeOptions = ${injectRuntimeEnv(runtime.options)}
+    
+    console.log('dynamic entry point')
+    console.log(runtimeOptions)
 
     const handler = async (...args) => {
+      console.log(args)
       try {
         if(!global.initPromise) {
+        console.log('no promise, initializing')
           const interopRequireDefault = require('@babel/runtime/helpers/interopRequireDefault')
-
+          console.log('server assemblies')
           global.serverAssemblies = interopRequireDefault(
             require('$resolve.serverAssemblies')
           ).default
-          global.cloudEntry = interopRequireDefault(
+          
+          console.log('entry factory')
+          const entryFactory = interopRequireDefault(
             require('${result}')
-          ).${entry}
-
-          global.initPromise = cloudEntry(serverAssemblies)
+          ).${entry} 
+          
+          console.log('invoking factory')
+          global.entry = entryFactory(runtimeOptions)
+          console.log('invoking entry') 
+          global.initPromise = entry(serverAssemblies)
+          console.log('configured')
         }
         const worker = await initPromise
+        console.log(worker)
         return await worker(...args)
       } catch(error) {
         console.error('Fatal error: ', error)
         throw error
       }
     }
+    console.log('returning handler')
 
     export default handler
   `
@@ -84,6 +100,8 @@ const importEntry = ({ resolveConfig, isClient }) => {
     runtime.options && runtime.options.importMode === 'dynamic'
       ? emitDynamicImport(runtime)
       : emitStaticImport(runtime)
+
+  console.log(code)
 
   return code
 }

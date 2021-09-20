@@ -5,7 +5,7 @@ import BabelPluginTransformImportInline from 'babel-plugin-transform-import-inli
 
 import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
 import getModulesDirs from './get_modules_dirs'
-import { getDeprecatedTarget } from './getDeprecatedTarget'
+import { getDeprecatedTarget } from './get-deprecated-target'
 
 const getWebpackCommonConfigs = ({
   resolveConfig,

@@ -39,6 +39,9 @@ type RuntimeOptions = {
 
 const entry = async (options: RuntimeOptions, context: RuntimeEntryContext) => {
   try {
+    log.debug(`initializing runtime`)
+    log.debug(`options: ${options}`)
+
     process.env.RESOLVE_LOCAL_TRACE_ID = crypto
       .randomBytes(Math.ceil(32 / 2))
       .toString('hex')

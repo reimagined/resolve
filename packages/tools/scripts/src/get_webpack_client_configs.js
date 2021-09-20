@@ -4,7 +4,7 @@ import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin'
 import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
 import getModulesDirs from './get_modules_dirs'
 import { OPTIONAL_ASSET_PREFIX } from './constants'
-import { getDeprecatedTarget } from './getDeprecatedTarget'
+import { getDeprecatedTarget } from './get-deprecated-target'
 
 const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
   const targetMode = getDeprecatedTarget(resolveConfig)
