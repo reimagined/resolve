@@ -16,8 +16,8 @@ import type { CommandExecutor } from './command'
 import type { IncomingHttpHeaders } from 'http'
 import type { CookieSerializeOptions } from 'cookie'
 import type { Params as MatchedParams } from 'route-trie'
-import type { AdditionalUserData } from './create-user-resolve'
 import type { EventStoreAdapterFactory } from './create-runtime'
+import type { Trie } from 'route-trie'
 
 export type CallMethodParams = {
   modelName?: string | null
@@ -317,11 +317,6 @@ export type Runtime = {
   readonly getReactiveSubscription: ReactiveSubscriptionFactory
   readonly dispose: () => Promise<void>
 }
-export type UserBackendResolve = Runtime &
-  BuildTimeConstants &
-  Omit<AdditionalUserData, 'constants' | 'eventStoreAdapter'> & {
-    eventstoreAdapter: EventStoreAdapter
-  }
 
 export type BootstrapRuntime = {
   eventStoreAdapter: Runtime['eventStoreAdapter']
@@ -333,3 +328,15 @@ export type BootstrapRuntime = {
   ensureQueue: (name?: string) => Promise<void>
   deleteQueue: (name?: string) => Promise<void>
 }
+
+export type UserBackendResolve = Runtime &
+  BuildTimeConstants & {
+    domain: DomainWithHandlers
+    domainInterop: Domain
+    eventSubscriberScope: string
+    eventstoreAdapter: EventStoreAdapter
+    performanceTracer: PerformanceTracer
+    routesTrie: Trie
+    seedClientEnvs: RuntimeFactoryParameters['seedClientEnvs']
+    eventListeners: RuntimeFactoryParameters['eventListeners']
+  }

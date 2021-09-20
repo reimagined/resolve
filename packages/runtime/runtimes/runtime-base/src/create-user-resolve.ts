@@ -1,13 +1,12 @@
-
 import type {
   Assemblies,
   BuildTimeConstants,
-  DomainWithHandlers,
-  EventListeners, Runtime,
-  UserBackendResolve
+  Runtime,
+  RuntimeFactoryParameters,
+  UserBackendResolve,
 } from './types'
 import type { Trie } from 'route-trie'
-import type { Domain, PerformanceTracer } from '@resolve-js/core'
+import type { PerformanceTracer } from '@resolve-js/core'
 
 // TODO: review/refactor/rename - do something with that already
 export type AdditionalUserData = {
@@ -15,12 +14,12 @@ export type AdditionalUserData = {
   seedClientEnvs: Assemblies['seedClientEnvs']
   // TODO: excessive internal data access
   routesTrie: Trie
-  domain: DomainWithHandlers
-  domainInterop: Domain
+  domain: RuntimeFactoryParameters['domain']
+  domainInterop: RuntimeFactoryParameters['domainInterop']
   eventSubscriberScope: string
   // TODO: push to runtime interface?
   performanceTracer: PerformanceTracer
-  eventListeners: EventListeners
+  eventListeners: RuntimeFactoryParameters['eventListeners']
 }
 
 export const createUserResolve = (
