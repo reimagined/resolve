@@ -1,10 +1,11 @@
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 const devCommonConfig = {
   mode: 'development',
   runtime: {
     module: '@resolve-js/runtime-dev',
     options: {
-      host: 'localhost',
-      port: 4000,
+      host: declareRuntimeEnv('HOST', 'localhost'),
+      port: declareRuntimeEnv('PORT', '3000'),
     },
   },
   readModelConnectors: {

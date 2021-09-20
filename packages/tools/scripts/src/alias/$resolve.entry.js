@@ -2,7 +2,7 @@ import {
   IMPORT_INSTANCE,
   message,
   RESOURCE_ANY,
-  RUNTIME_ENV_NOWHERE,
+  RUNTIME_ENV_OPTIONS_ONLY,
 } from '../constants'
 import { importResource } from '../import-resource'
 import { resolveResource } from '../resolve-resource'
@@ -20,7 +20,7 @@ const emitStaticImport = (runtime) => {
   importResource({
     resourceName: `runtime_entry`,
     resourceValue: runtime,
-    runtimeMode: RUNTIME_ENV_NOWHERE,
+    runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
     importMode: RESOURCE_ANY,
     instanceMode: IMPORT_INSTANCE,
     imports,
@@ -84,8 +84,6 @@ const importEntry = ({ resolveConfig, isClient }) => {
     runtime.options && runtime.options.importMode === 'dynamic'
       ? emitDynamicImport(runtime)
       : emitStaticImport(runtime)
-
-  console.log(code)
 
   return code
 }

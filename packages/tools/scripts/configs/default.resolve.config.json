@@ -1,5 +1,4 @@
 {
-  "port": 3000,
   "rootPath": "",
   "staticPath": "static",
   "staticDir": "static",

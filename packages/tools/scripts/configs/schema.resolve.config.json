@@ -307,12 +307,6 @@
         "name": {
           "type": ["string"]
         },
-        "host": {
-          "type": "string"
-        },
-        "port": {
-          "type": ["integer", "string"]
-        },
         "rootPath": {
           "type": "string"
         },
@@ -463,7 +457,6 @@
         "clientImports",
         "serverImports",
         "apiHandlers",
-        "port",
         "rootPath",
         "distDir",
         "staticDir",

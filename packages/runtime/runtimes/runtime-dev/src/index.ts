@@ -22,7 +22,6 @@ import { monitoringFactory } from './monitoring-factory'
 import { createRuntime } from '@resolve-js/runtime-base'
 
 import type {
-  Assemblies,
   EventSubscriberNotification,
   RuntimeFactoryParameters,
   RuntimeModuleFactory,
@@ -31,7 +30,7 @@ import type {
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
-const log = getLog('local-entry')
+const log = getLog('dev-entry')
 
 type RuntimeOptions = {
   host: string

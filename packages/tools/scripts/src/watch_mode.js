@@ -66,6 +66,8 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
     }
   })
 
+  const { host: sourceHost, port: sourcePort } = resolveConfig.runtime.options
+
   return await new Promise(() => {
     compiler.watch(
       {
@@ -86,16 +88,16 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
 
         const hasErrors = detectErrors(stats, true)
         const port = Number(
-          checkRuntimeEnv(resolveConfig.port)
+          checkRuntimeEnv(sourcePort)
             ? // eslint-disable-next-line no-new-func
-              new Function(`return ${injectRuntimeEnv(resolveConfig.port)}`)()
-            : resolveConfig.port
+              new Function(`return ${injectRuntimeEnv(sourcePort)}`)()
+            : sourcePort
         )
         const host = String(
-          checkRuntimeEnv(resolveConfig.host)
+          checkRuntimeEnv(sourceHost)
             ? // eslint-disable-next-line no-new-func
-              new Function(`return ${injectRuntimeEnv(resolveConfig.host)}`)()
-            : resolveConfig.host ?? '0.0.0.0'
+              new Function(`return ${injectRuntimeEnv(sourceHost)}`)()
+            : sourceHost ?? '0.0.0.0'
         )
 
         if (hasErrors) {
