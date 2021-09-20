@@ -1,10 +1,10 @@
-import type { Runtime } from './create-runtime'
+
 import type {
   Assemblies,
   BuildTimeConstants,
   DomainWithHandlers,
-  EventListeners,
-  UserBackendResolve,
+  EventListeners, Runtime,
+  UserBackendResolve
 } from './types'
 import type { Trie } from 'route-trie'
 import type { Domain, PerformanceTracer } from '@resolve-js/core'

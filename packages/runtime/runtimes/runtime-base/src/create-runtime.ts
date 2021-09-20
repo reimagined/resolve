@@ -1,28 +1,9 @@
-import { CommandExecutor, createCommandExecutor } from './command'
+import { createCommandExecutor } from './command'
 import { createQueryExecutor } from './query'
 import { createSagaExecutor } from './saga'
-import type {
-  AggregateInterop,
-  Command,
-  Monitoring,
-  PerformanceTracer,
-  StoredEventPointer,
-} from '@resolve-js/core'
+import type { AggregateInterop, Command, Monitoring, PerformanceTracer, StoredEventPointer } from '@resolve-js/core'
 import { Adapter } from '@resolve-js/eventstore-base'
-import type {
-  Assemblies,
-  EventSubscriber,
-  EventSubscriberNotifier,
-  QueryExecutor,
-  ReactiveEventDispatcher,
-  ReactiveSubscriptionFactory,
-  ReadModelConnector,
-  ReadModelConnectorFactory,
-  Resolve,
-  SagaExecutor,
-  Scheduler,
-  Uploader,
-} from './types'
+import type { ReadModelConnectorFactory, Resolve, Runtime, RuntimeFactoryParameters, Scheduler } from './types'
 import { getLog } from './utils/get-log'
 import { eventBroadcastFactory } from './event-broadcast-factory'
 import { commandExecutedHookFactory } from './command-executed-hook-factory'
@@ -30,43 +11,6 @@ import { eventSubscriberFactory } from './event-subscriber'
 import { readModelProcedureLoaderFactory } from './load-read-model-procedure'
 
 export type EventStoreAdapterFactory = () => Adapter
-
-export type RuntimeFactoryParameters = {
-  // TODO: missed types
-  readonly seedClientEnvs: Assemblies['seedClientEnvs']
-  readonly serverImports: Assemblies['serverImports']
-  readonly domain: Resolve['domain']
-  readonly domainInterop: Resolve['domainInterop']
-  readonly performanceTracer: PerformanceTracer
-  readonly monitoring: Monitoring
-  readonly eventStoreAdapterFactory: EventStoreAdapterFactory
-  readonly readModelConnectorsFactories: Record<
-    string,
-    ReadModelConnectorFactory
-  >
-  readonly getVacantTimeInMillis: () => number
-  readonly eventSubscriberScope: string
-  readonly notifyEventSubscriber: EventSubscriberNotifier
-  readonly invokeBuildAsync: Resolve['invokeBuildAsync']
-  readonly eventListeners: Resolve['eventListeners']
-  readonly sendReactiveEvent: ReactiveEventDispatcher
-  readonly getReactiveSubscription: ReactiveSubscriptionFactory
-  readonly uploader: Resolve['uploader'] | null
-  scheduler?: Resolve['scheduler']
-}
-
-export type Runtime = {
-  readonly eventStoreAdapter: Adapter
-  readonly uploader: Uploader | null
-  readonly executeCommand: CommandExecutor
-  readonly executeQuery: QueryExecutor
-  readonly executeSaga: SagaExecutor
-  readonly eventSubscriber: EventSubscriber
-  readonly executeSchedulerCommand: CommandExecutor
-  readonly readModelConnectors: Record<string, ReadModelConnector>
-  readonly getReactiveSubscription: ReactiveSubscriptionFactory
-  readonly dispose: () => Promise<void>
-}
 
 const buildReadModelConnectors = (
   factories: Record<string, ReadModelConnectorFactory>,

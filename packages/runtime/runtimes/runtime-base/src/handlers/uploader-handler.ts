@@ -19,7 +19,7 @@ const cors = (res: ResolveResponse) => {
   res.setHeader('Access-Control-Allow-Headers', 'Authorization')
 }
 
-const uploaderHandler = async (req: ResolveRequest, res: ResolveResponse) => {
+export const uploaderHandler = async (req: ResolveRequest, res: ResolveResponse) => {
   try {
     const { uploader } = req.resolve
 
@@ -146,5 +146,3 @@ const uploaderHandler = async (req: ResolveRequest, res: ResolveResponse) => {
     await res.end(err.toString())
   }
 }
-
-export default uploaderHandler

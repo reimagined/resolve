@@ -1,27 +1,24 @@
+import type { Adapter as EventStoreAdapter } from '@resolve-js/eventstore-base'
 import type {
-  Adapter,
-  Adapter as EventstoreAdapter,
-} from '@resolve-js/eventstore-base'
-import type {
-  PerformanceTracer,
+  CommandMiddleware,
   Domain,
   DomainMeta,
   Event,
   EventPointer,
-  Monitoring,
-  CommandMiddleware,
-  ReadModelResolverMiddleware,
-  ReadModelProjectionMiddleware,
-  ReadModelInterop,
   Eventstore,
+  Monitoring,
+  PerformanceTracer,
+  ReadModelInterop,
+  ReadModelProjectionMiddleware,
+  ReadModelResolverMiddleware,
 } from '@resolve-js/core'
 import type { CommandExecutor } from './command'
-import type { Server as HttpServer, IncomingHttpHeaders } from 'http'
+import type { IncomingHttpHeaders, Server as HttpServer } from 'http'
 import http from 'http'
 import type { CookieSerializeOptions } from 'cookie'
-import type { Trie, Params as MatchedParams } from 'route-trie'
-import { Runtime } from './create-runtime'
+import type { Params as MatchedParams, Trie } from 'route-trie'
 import { AdditionalUserData } from './create-user-resolve'
+import { EventStoreAdapterFactory } from './create-runtime'
 
 export type CallMethodParams = {
   modelName?: string | null
@@ -145,34 +142,6 @@ export type EventListener = {
   isSaga: boolean
 }
 
-export type PubsubConnectionOptions = {
-  client: (event: string) => Promise<void>
-  connectionId: string
-  eventTypes?: string[] | null
-  aggregateIds?: string[] | null
-}
-
-export type PubsubConnection = {
-  client: PubsubConnectionOptions['client']
-  eventTypes?: PubsubConnectionOptions['eventTypes']
-  aggregateIds?: PubsubConnectionOptions['aggregateIds']
-}
-
-export type PubsubManager = {
-  connect(options: PubsubConnectionOptions): void
-  disconnect(options: {
-    connectionId: PubsubConnectionOptions['connectionId']
-  }): void
-  getConnection(options: {
-    connectionId: PubsubConnectionOptions['connectionId']
-  }): PubsubConnection | undefined
-  dispatch(options: {
-    event: Pick<Event, 'type' | 'aggregateId'>
-    topicName: string
-    topicId: string
-  }): Promise<void>
-}
-
 export type SchedulerEntry = {
   taskId: string
   date: number | string | Date
@@ -209,7 +178,7 @@ export type Uploader = {
 
 export type Assemblies = {
   uploadAdapter: () => UploaderPool
-  eventstoreAdapter: () => EventstoreAdapter
+  eventstoreAdapter: () => EventStoreAdapter
   readModelConnectors: Record<string, ReadModelConnectorFactory>
 
   //TODO: types
@@ -285,7 +254,7 @@ export type Resolve = {
   ensureQueue: (name?: string) => Promise<void>
   deleteQueue: (name?: string) => Promise<void>
 
-  eventstoreAdapter: EventstoreAdapter
+  eventstoreAdapter: EventStoreAdapter
   readModelConnectors: Record<string, ReadModelConnector>
 
   assemblies: Assemblies
@@ -381,8 +350,43 @@ export type HttpResponse = {
 
 export type ResolveResponse = HttpResponse
 
+export type RuntimeFactoryParameters = {
+  // TODO: missed types
+  readonly seedClientEnvs: Assemblies['seedClientEnvs']
+  readonly serverImports: Assemblies['serverImports']
+  readonly domain: Resolve['domain']
+  readonly domainInterop: Resolve['domainInterop']
+  readonly performanceTracer: PerformanceTracer
+  readonly monitoring: Monitoring
+  readonly eventStoreAdapterFactory: EventStoreAdapterFactory
+  readonly readModelConnectorsFactories: Record<
+    string,
+    ReadModelConnectorFactory
+  >
+  readonly getVacantTimeInMillis: () => number
+  readonly eventSubscriberScope: string
+  readonly notifyEventSubscriber: EventSubscriberNotifier
+  readonly invokeBuildAsync: Resolve['invokeBuildAsync']
+  readonly eventListeners: Resolve['eventListeners']
+  readonly sendReactiveEvent: ReactiveEventDispatcher
+  readonly getReactiveSubscription: ReactiveSubscriptionFactory
+  readonly uploader: Resolve['uploader'] | null
+  scheduler?: Resolve['scheduler']
+}
+export type Runtime = {
+  readonly eventStoreAdapter: EventStoreAdapter
+  readonly uploader: Uploader | null
+  readonly executeCommand: CommandExecutor
+  readonly executeQuery: QueryExecutor
+  readonly executeSaga: SagaExecutor
+  readonly eventSubscriber: EventSubscriber
+  readonly executeSchedulerCommand: CommandExecutor
+  readonly readModelConnectors: Record<string, ReadModelConnector>
+  readonly getReactiveSubscription: ReactiveSubscriptionFactory
+  readonly dispose: () => Promise<void>
+}
 export type UserBackendResolve = Runtime &
   BuildTimeConstants &
   Omit<AdditionalUserData, 'constants' | 'eventStoreAdapter'> & {
-    eventstoreAdapter: Adapter
+    eventstoreAdapter: EventStoreAdapter
   }

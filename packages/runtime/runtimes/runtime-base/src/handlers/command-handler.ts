@@ -17,7 +17,7 @@ function isCommandError(error: any) {
   return error.name === 'CommandError'
 }
 
-export const executeCommandWithRetryConflicts = async (
+const executeCommandWithRetryConflicts = async (
   {
     executeCommand,
     commandArgs,
@@ -55,7 +55,7 @@ export const executeCommandWithRetryConflicts = async (
   return result
 }
 
-const commandHandler = async (req: ResolveRequest, res: ResolveResponse) => {
+export const commandHandler = async (req: ResolveRequest, res: ResolveResponse) => {
   const segment = req.resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('command')
 
@@ -94,5 +94,3 @@ const commandHandler = async (req: ResolveRequest, res: ResolveResponse) => {
     subSegment.close()
   }
 }
-
-export default commandHandler
