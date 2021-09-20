@@ -1,4 +1,4 @@
-const buildInApiHandlers = [
+export const builtInApiHandlers = [
   {
     path: '/api/query/:wildcard*',
     handler: 'QUERY',
@@ -50,5 +50,3 @@ const buildInApiHandlers = [
     method: 'GET',
   },
 ]
-
-export default buildInApiHandlers

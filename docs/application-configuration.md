@@ -162,7 +162,7 @@ apiHandlers: [
   {
     handler: {
       module: {
-        package: '@resolve-js/runtime',
+        package: '@resolve-js/runtime-base',
         import: 'liveRequireHandler',
       },
       options: {

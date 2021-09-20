@@ -31,7 +31,7 @@ const getConfig = async (resolveConfig, options) => {
     apiHandlers: [
       {
         handler: {
-          package: '@resolve-js/runtime',
+          package: '@resolve-js/runtime-dev',
           import: 'queryIsReadyHandler',
         },
         path: '/api/query-is-ready',

@@ -51,7 +51,7 @@ export type LambdaColdStartContext = {
   readonly publisher: any
 }
 
-const index = async ({
+export const entry = async ({
   assemblies,
   constants,
   domain,
@@ -116,5 +116,3 @@ const index = async ({
     }
   }
 }
-
-export default index

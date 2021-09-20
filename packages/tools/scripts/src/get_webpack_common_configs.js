@@ -122,7 +122,7 @@ const getWebpackCommonConfigs = ({
           modulesDir,
           importType: (moduleName) => `((() => {
               const path = require('path')
-              const requireDirs = ['', '@resolve-js/runtime/node_modules/']
+              const requireDirs = ['', '@resolve-js/runtime-base/node_modules/']
               let modulePath = null
               const moduleName = ${JSON.stringify(moduleName)}
               for(const dir of requireDirs) {

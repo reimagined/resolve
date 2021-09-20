@@ -4,7 +4,7 @@ const importResolveVersion = () => {
   const exports = []
 
   const runtimePackageJson = require(resolveResource(
-    '@resolve-js/runtime/package.json'
+    '@resolve-js/runtime-base/package.json'
   ).result)
 
   exports.push(

@@ -7,7 +7,7 @@ import { markupHandler } from './handlers/markup-handler'
 import { uploaderHandler } from './handlers/uploader-handler'
 import { failHandler } from './handlers/fail-handler'
 
-import buildInApiHandlers from './defaults/builtin-routes'
+import { builtInApiHandlers } from './builtin-routes'
 
 import type { ApiHandler } from './types'
 
@@ -27,7 +27,7 @@ export const wrapTrie = (
     trailingSlashRedirect: true,
   })
 
-  for (const { method, path, handler } of buildInApiHandlers) {
+  for (const { method, path, handler } of builtInApiHandlers) {
     trie
       .define(getRootBasedUrl(rootPath, path))
       .handle(

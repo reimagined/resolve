@@ -16,7 +16,7 @@ const importReadModelConnectors = ({ resolveConfig, isClient }) => {
 
   const imports = [
     `import '$resolve.guardOnlyServer'`,
-    `import { wrapReadModelConnector } from '@resolve-js/runtime'`,
+    `import { wrapReadModelConnector } from '@resolve-js/runtime-base'`,
   ]
   const constants = [``]
   const exports = [`const readModelConnectors = {}`]
@@ -35,7 +35,7 @@ const importReadModelConnectors = ({ resolveConfig, isClient }) => {
 
     if (readModelConnector.module == null) {
       readModelConnector.module = {
-        package: '@resolve-js/runtime',
+        package: '@resolve-js/runtime-base',
         import: 'emptyReadModelConnector',
       }
     }

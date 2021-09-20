@@ -17,7 +17,7 @@ const getConfig = async (resolveConfig, options) => {
         path: '/api/import-event-store',
         handler: {
           module: {
-            package: '@resolve-js/runtime',
+            package: '@resolve-js/runtime-dev',
             import: 'importEventStoreHandler',
           },
           options,
@@ -27,7 +27,7 @@ const getConfig = async (resolveConfig, options) => {
         method: 'OPTIONS',
         path: '/SKIP_COMMANDS',
         handler: {
-          package: '@resolve-js/runtime',
+          package: '@resolve-js/runtime-base',
           entry: 'fail-handler',
         },
       },

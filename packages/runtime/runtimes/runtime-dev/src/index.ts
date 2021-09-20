@@ -38,7 +38,7 @@ type LocalEntryDependencies = {
   domain: Resolve['domain']
 }
 
-export const localEntry = async (dependencies: LocalEntryDependencies) => {
+export const entry = async (dependencies: LocalEntryDependencies) => {
   try {
     process.env.RESOLVE_LOCAL_TRACE_ID = crypto
       .randomBytes(Math.ceil(32 / 2))

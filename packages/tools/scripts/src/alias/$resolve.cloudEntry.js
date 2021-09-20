@@ -1,7 +1,6 @@
 const importClientEntry = () => `
     import '$resolve.guardOnlyServer'
-
-    export { default as entryPointMarker } from '@resolve-js/runtime'
+    export { entryPointMarker } from '@resolve-js/runtime-base'
 
     const handler = async (...args) => {
       try {
@@ -12,8 +11,8 @@ const importClientEntry = () => `
             require('$resolve.serverAssemblies')
           ).default
           global.cloudEntry = interopRequireDefault(
-            require('@resolve-js/runtime/lib/cloud')
-          ).default
+            require('@resolve-js/runtime-aws-serverless')
+          ).entry
 
           global.initPromise = cloudEntry(serverAssemblies)
         }
