@@ -51,7 +51,8 @@ const emitDynamicImport = async (runtime) => {
   const moduleImport = isPackage ? imported : 'default'
 
   // eslint-disable-next-line no-undef
-  const runtimeModule = await import(result)
+  const runtimeModule = require(result)
+  console.log(runtimeModule)
   const { execMode } = await runtimeModule[moduleImport]()
 
   return `
