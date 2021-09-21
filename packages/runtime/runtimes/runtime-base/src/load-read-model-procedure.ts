@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { DomainMeta } from '@resolve-js/core'
-import liveEntryDir from './dynamic-require/live-entry-dir'
+import { liveEntryDir } from './dynamic-require/live-entry-dir'
 
 type ReadModelProcedureLoaderContext = {
   readModels: DomainMeta['readModels']

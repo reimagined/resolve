@@ -3,13 +3,17 @@ import { entryPointMarker } from './entry-point-marker'
 import { pureRequire } from './pure-require'
 
 const entryPointDirnamePlaceholder = Symbol('EntryPointDirnamePlaceholder')
-let entryPointDirname: string | symbol = entryPointDirnamePlaceholder
+let entryPointDirname: string | symbol | undefined = entryPointDirnamePlaceholder
+const dynamicRequire = pureRequire as typeof require
 
-export const liveEntryDir = (): string => {
+export const liveEntryDir = (): string | null => {
   if (entryPointDirname === entryPointDirnamePlaceholder) {
     entryPointDirname = (
-      Object.values(pureRequire.cache).find(({ exports }) => {
-        return exports != null && exports.entryPointMarker === entryPointMarker
+      Object.values(dynamicRequire.cache).find((module) => {
+        return (
+          module?.exports != null &&
+          module.exports.entryPointMarker === entryPointMarker
+        )
       }) ?? {}
     ).filename
 
@@ -18,5 +22,5 @@ export const liveEntryDir = (): string => {
     }
   }
 
-  return entryPointDirname?.toString()
+  return entryPointDirname != null ? entryPointDirname.toString() : null
 }

@@ -18,7 +18,7 @@ const liveRequire = (filePath: string) => {
   }
 
   const fullPath = isRealFilePath
-    ? path.resolve(entryPointDirname, filePath)
+    ? path.resolve(entryPointDirname ?? '', filePath)
     : filePath
 
   try {
