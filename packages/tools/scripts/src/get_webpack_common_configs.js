@@ -138,7 +138,7 @@ const getWebpackCommonConfigs = ({
               }
               return require(modulePath)
             })())`,
-          allowlist: [/@resolve-js\/runtime/],
+          allowlist: [/@resolve-js\/runtime-base/],
         })
       ),
     ],
@@ -152,7 +152,7 @@ const getWebpackCommonConfigs = ({
       entry: {
         [`common/${targetMode}-entry/${targetMode}-entry.js`]: path.resolve(
           __dirname,
-          `./alias/$resolve.backendEntry.js`
+          `./alias/$resolve.localEntry.js`
         ),
       },
       output: {

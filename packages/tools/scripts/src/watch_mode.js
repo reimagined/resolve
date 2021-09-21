@@ -117,7 +117,6 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
             if (isOpenBrowser && serverFirstStart) {
               log.debug('Opening browser')
               openBrowser(host, port, resolveConfig.rootPath).catch(() => {})
-              log.debug('Browser was opened')
             }
           }
         }
