@@ -23,9 +23,15 @@
     "test": "jest --config=../../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@resolve-js/debug-levels": "0.31.10",
+    "resolve-cloud-common": "0.0.138"
+  },
   "devDependencies": {
     "jest": "27.0.3"
+  },
+  "peerDependencies": {
+    "aws-sdk": "^2.860.0"
   },
   "engines": {
     "node": ">=14.17"
