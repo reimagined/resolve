@@ -165,7 +165,7 @@ const factory: RuntimeModuleFactory<RuntimeOptions> = (
   options: RuntimeOptions
 ) => ({
   entry: partial(entry, options),
-  execMode: 'external',
+  execMode: 'immediate',
 })
 
 export * from './api-handlers'

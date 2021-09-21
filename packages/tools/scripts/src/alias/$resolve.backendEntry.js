@@ -51,13 +51,14 @@ const emitDynamicImport = async (runtime) => {
   const moduleImport = isPackage ? imported : 'default'
 
   // eslint-disable-next-line no-undef
-  const runtimeModule = require(result)
+  const runtimeModule = await import(result)
   console.log(runtimeModule)
   const { execMode } = await runtimeModule[moduleImport]()
+  console.log(execMode)
 
   return `
     import '$resolve.guardOnlyServer'
-    export { entryPointMarker, getLog } from '@resolve-js/runtime-base'
+    import { getLog, entryPointMarker } from '@resolve-js/runtime-base'
     
     const log = getLog('backendDynamicImportEntry')
     const runtimeOptions = ${injectRuntimeEnv(runtime.options)}
@@ -92,6 +93,7 @@ const emitDynamicImport = async (runtime) => {
         ? 'handler().catch((error) => log.error(error))'
         : ''
     }
+    export { entryPointMarker }
     export default handler
   `
 }
