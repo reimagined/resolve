@@ -11,6 +11,7 @@ import type {
   WrappedReadModel,
   CustomReadModelMethod,
 } from './types'
+import type { Adapter as EventstoreAdapter } from '@resolve-js/eventstore-base'
 import type { ReadModelMethodName, RealModelConnectorReal } from '../types'
 import { readModelMethodNames } from '../types'
 import parseReadOptions from './parse-read-options'
@@ -571,7 +572,7 @@ const doOperation = async (
                 connection,
                 interop,
                 next.bind(null, pool, readModelName),
-                pool.eventstoreAdapter,
+                pool.eventstoreAdapter as EventstoreAdapter,
                 pool.getVacantTimeInMillis,
                 parameters
               )
@@ -618,7 +619,7 @@ const doOperation = async (
               return await realConnector.status(
                 connection,
                 readModelName,
-                pool.eventstoreAdapter,
+                pool.eventstoreAdapter as EventstoreAdapter,
                 parameters.includeRuntimeStatus
               )
             }
