@@ -41,7 +41,7 @@ const entry = async (
   options: RuntimeOptions,
   context: RuntimeEntryContext
 ): Promise<RuntimeWorker> => {
-  log.debug(`building runtime entry handler`)
+  log.debug(`returning runtime worker (cold start)`)
   return async () => {
     try {
       log.debug(`initializing runtime`)
@@ -165,7 +165,7 @@ const factory: RuntimeModuleFactory<RuntimeOptions> = (
   options: RuntimeOptions
 ) => ({
   entry: partial(entry, options),
-  execMode: 'immediate',
+  execMode: 'external',
 })
 
 export * from './api-handlers'

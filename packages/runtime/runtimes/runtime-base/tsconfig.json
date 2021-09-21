@@ -15,7 +15,8 @@
     "jsx": "react",
     "outDir": "lib",
     "declarationDir": "types",
-    "typeRoots": ["./node_modules/@types", "../../../../node_modules/@types"]
+    "typeRoots": ["./node_modules/@types", "../../../../node_modules/@types"],
+    "types": ["./global.d.ts"]
   },
   "include": ["src", "test"]
 }

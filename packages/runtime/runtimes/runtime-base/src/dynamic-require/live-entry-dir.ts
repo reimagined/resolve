@@ -5,7 +5,7 @@ import pureRequire from './pure-require'
 const entryPointDirnamePlaceholder = Symbol('EntryPointDirnamePlaceholder')
 let entryPointDirname = entryPointDirnamePlaceholder
 
-const liveEntryDir = () => {
+export const liveEntryDir = (): string => {
   if (entryPointDirname === entryPointDirnamePlaceholder) {
     entryPointDirname = (
       Object.values(pureRequire.cache).find(({ exports }) => {
@@ -21,5 +21,3 @@ const liveEntryDir = () => {
 
   return entryPointDirname
 }
-
-export default liveEntryDir

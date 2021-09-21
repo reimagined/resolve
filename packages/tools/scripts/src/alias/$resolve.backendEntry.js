@@ -10,7 +10,7 @@ import { injectRuntimeEnv } from '../declare_runtime_env'
 
 // TODO: get rid of that entryPointMarker. There is more convenient ways to determine script location
 
-const emitStaticImport = (runtime) => {
+const emitStaticImport = async (runtime) => {
   const imports = [
     `import '$resolve.guardOnlyServer'`,
     `import serverAssemblies from '$resolve.serverAssemblies'`,
@@ -46,9 +46,14 @@ const emitStaticImport = (runtime) => {
   return [...imports, ...constants, ...exports].join('\r\n')
 }
 
-const emitDynamicImport = (runtime) => {
+const emitDynamicImport = async (runtime) => {
   const { result, imported, isPackage } = resolveResource(runtime.module)
-  const entry = isPackage ? imported : 'default'
+  const moduleImport = isPackage ? imported : 'default'
+
+  // eslint-disable-next-line no-undef
+  const runtimeModule = await import(result)
+  const { execMode } = await runtimeModule[moduleImport]()
+
   return `
     import '$resolve.guardOnlyServer'
     export { entryPointMarker, getLog } from '@resolve-js/runtime-base'
@@ -67,9 +72,11 @@ const emitDynamicImport = (runtime) => {
           
           const entryFactory = interopRequireDefault(
             require('${result}')
-          ).${entry} 
+          ).${moduleImport} 
           
-          global.entry = entryFactory(runtimeOptions)
+          const { entry } = entryFactory(runtimeOptions)
+          
+          global.entry = entry
           global.initPromise = entry(serverAssemblies)
         }
         const worker = await initPromise
@@ -79,11 +86,16 @@ const emitDynamicImport = (runtime) => {
         throw error
       }
     }
+    ${
+      execMode === 'immediate'
+        ? 'handler().catch((error) => log.error(error))'
+        : ''
+    }
     export default handler
   `
 }
 
-const importEntry = ({ resolveConfig, isClient }) => {
+const importEntry = async ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(`${message.serverAliasInClientCodeError}$resolve.entry`)
   }
@@ -92,8 +104,8 @@ const importEntry = ({ resolveConfig, isClient }) => {
 
   const code =
     runtime.options && runtime.options.importMode === 'dynamic'
-      ? emitDynamicImport(runtime)
-      : emitStaticImport(runtime)
+      ? await emitDynamicImport(runtime)
+      : await emitStaticImport(runtime)
 
   console.log(code)
 
