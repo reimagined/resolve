@@ -39,6 +39,19 @@
       "required": ["module", "options"],
       "additionalProperties": false
     },
+    "monitoringAdapter": {
+      "type": "object",
+      "properties": {
+        "module": {
+          "type": "string"
+        },
+        "imports": {
+          "type": "object"
+        }
+      },
+      "required": ["module"],
+      "additionalProperties": false
+    },
     "resourceInstance": {
       "type": "string"
     },
@@ -372,6 +385,12 @@
         },
         "eventstoreAdapter": {
           "$ref": "#/definitions/eventstoreAdapter"
+        },
+        "monitoringAdapters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/monitoringAdapter"
+          }
         },
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"

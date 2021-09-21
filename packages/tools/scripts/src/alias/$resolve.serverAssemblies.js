@@ -23,6 +23,12 @@ const importServerAssemblies = () => `
       },
       enumerable: true
     },
+    monitoringAdapters: {
+      get() {
+        return interopRequireDefault(require('$resolve.monitoringAdapters')).default
+      },
+      enumerable: true
+    },
     serverImports: {
       get() { 
         return interopRequireDefault(require('$resolve.serverImports')).default

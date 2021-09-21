@@ -9,6 +9,7 @@ import liveEntryDir from './utils/live-entry-dir'
 import createNotifyEventSubscribers from './notify-event-subscribers'
 import createOnCommandExecuted from './on-command-executed'
 import createEventSubscriber from './event-subscriber'
+import initMonitoring from './init-monitoring'
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
@@ -164,6 +165,8 @@ const initResolve = async (resolve) => {
     executeSchedulerCommand,
     notifyEventSubscribers,
   })
+
+  initMonitoring(resolve)
 
   Object.defineProperties(resolve, {
     eventSubscriber: { value: eventSubscriber },

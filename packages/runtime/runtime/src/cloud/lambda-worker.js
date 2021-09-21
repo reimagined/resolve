@@ -4,7 +4,6 @@ import handleApiGatewayEvent from './api-gateway-handler'
 import handleDeployServiceEvent from './deploy-service-event-handler'
 import handleSchedulerEvent from './scheduler-event-handler'
 import initScheduler from './init-scheduler'
-import initMonitoring from './init-monitoring'
 import initSubscriber from './init-subscriber'
 import { putDurationMetrics } from './metrics'
 import initResolve from '../common/init-resolve'
@@ -25,8 +24,6 @@ const lambdaWorker = async (resolveBase, lambdaEvent, lambdaContext) => {
   log.debug('executing application lambda')
   log.verbose(JSON.stringify(lambdaEvent, null, 2))
   lambdaContext.callbackWaitsForEmptyEventLoop = false
-
-  initMonitoring(resolveBase)
 
   const resolve = Object.create(resolveBase)
   resolve.getVacantTimeInMillis = getVacantTimeInMillis.bind(

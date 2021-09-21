@@ -1,6 +1,7 @@
+// TODO: migrate to TS
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
 
-import createMonitoring from '../../src/cloud/monitoring'
+import createMonitoring from '../src'
 
 afterEach(() => {
   CloudWatch.putMetricData.mockClear()
@@ -176,7 +177,8 @@ describe('common', () => {
           {
             MetricName: 'Errors',
             Unit: 'Count',
-            Value: 1,
+            Values: [1],
+            Counts: [1],
             Timestamp: expect.any(Date),
             Dimensions: expect.any(Array),
           },
@@ -257,7 +259,8 @@ describe('error', () => {
       expect(metricData).toEqual({
         MetricName: 'Errors',
         Unit: 'Count',
-        Value: 1,
+        Values: [1],
+        Counts: [1],
         Timestamp: expect.any(Date),
         Dimensions: expect.any(Array),
       })
@@ -659,7 +662,8 @@ describe('executions', () => {
           {
             MetricName: 'Executions',
             Unit: 'Count',
-            Value: 1,
+            Values: [1],
+            Counts: [1],
             Timestamp: expect.any(Date),
             Dimensions: expect.any(Array),
           },
@@ -673,7 +677,8 @@ describe('executions', () => {
           {
             MetricName: 'Errors',
             Unit: 'Count',
-            Value: 0,
+            Values: [0],
+            Counts: [1],
             Timestamp: expect.any(Date),
             Dimensions: expect.any(Array),
           },
@@ -702,7 +707,8 @@ describe('executions', () => {
           {
             MetricName: 'Executions',
             Unit: 'Count',
-            Value: 1,
+            Values: [1],
+            Counts: [1],
             Timestamp: expect.any(Date),
             Dimensions: expect.any(Array),
           },
@@ -716,7 +722,8 @@ describe('executions', () => {
           {
             MetricName: 'Errors',
             Unit: 'Count',
-            Value: 1,
+            Values: [1],
+            Counts: [1],
             Timestamp: expect.any(Date),
             Dimensions: expect.any(Array),
           },
@@ -1662,7 +1669,8 @@ describe('rate', () => {
       expect(metricData).toEqual({
         MetricName: 'applied-events',
         Unit: 'Count/Second',
-        Value: 123,
+        Values: [123],
+        Counts: [1],
         Timestamp: expect.any(Date),
         Dimensions: expect.any(Array),
       })
@@ -1691,7 +1699,8 @@ describe('rate', () => {
       expect(metricData).toEqual({
         MetricName: 'applied-events',
         Unit: 'Count/Second',
-        Value: 30,
+        Values: [30],
+        Counts: [1],
         Timestamp: expect.any(Date),
         Dimensions: expect.any(Array),
       })

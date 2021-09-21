@@ -407,8 +407,8 @@ const createMonitoringImplementation = (
     group: (config: Record<string, string>) => {
       const groupDimensions = createGroupDimensions(config)
 
-      const globalDimensions =
-        config.Part != null ? [{ Name: 'Part', Value: config.Part }] : []
+      const globalDimensions: MonitoringDimensionsList =
+        config.Part != null ? [[{ Name: 'Part', Value: config.Part }]] : []
 
       const nextGroupData = {
         timerMap: {},

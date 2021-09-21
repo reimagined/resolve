@@ -23,7 +23,7 @@ export interface MonitoringData {
 export interface MonitoringGroupData {
   timerMap: Record<string, number>
   metricDimensions: MonitoringDimensions
-  globalDimensions: MonitoringDimensions
+  globalDimensions: MonitoringDimensionsList
   durationMetricDimensionsList: MonitoringDimensionsList
   errorMetricDimensionsList: MonitoringDimensionsList
 }
