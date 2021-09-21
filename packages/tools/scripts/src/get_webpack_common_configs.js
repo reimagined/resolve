@@ -152,7 +152,7 @@ const getWebpackCommonConfigs = ({
       entry: {
         [`common/${targetMode}-entry/${targetMode}-entry.js`]: path.resolve(
           __dirname,
-          `./alias/$resolve.localEntry.js`
+          `./alias/$resolve.backendEntry.js`
         ),
       },
       output: {
