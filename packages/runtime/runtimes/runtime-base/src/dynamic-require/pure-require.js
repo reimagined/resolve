@@ -1,2 +1,1 @@
-// eslint-disable-next-line no-undef
-export const pureRequire = __non_webpack_require__ ?? require
+export const pureRequire = require

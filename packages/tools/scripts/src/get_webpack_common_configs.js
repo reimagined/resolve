@@ -46,6 +46,7 @@ const getWebpackCommonConfigs = ({
     },
     resolve: {
       modules: getModulesDirs(),
+      extensions: ['.webpack.js', '.js', '.json', '.wasm'],
       alias,
     },
     output: {
