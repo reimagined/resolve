@@ -14,12 +14,13 @@ const emitStaticImport = (runtime) => {
   const imports = [
     `import '$resolve.guardOnlyServer'`,
     `import serverAssemblies from '$resolve.serverAssemblies'`,
+    `import { getLog } from '@resolve-js/runtime-base'`,
   ]
   const constants = [``]
   const exports = [``]
 
   importResource({
-    resourceName: `runtime_entry`,
+    resourceName: `runtimeEntry`,
     resourceValue: runtime,
     runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
     importMode: RESOURCE_ANY,
@@ -28,14 +29,19 @@ const emitStaticImport = (runtime) => {
     constants,
   })
 
-  constants.push(`const initPromise = runtime_entry(serverAssemblies)`)
-  constants.push(`const handler = async (...args) => {`)
-  constants.push(`   const worker = await initPromise`)
-  constants.push(`   return await worker(...args)`)
-  constants.push(`}`)
+  constants.push(`
+    const { entry, execMode } = runtimeEntry
+    let worker
+    entry(serverAssemblies).then((w) => {
+      worker = w
+      if (execMode === 'immediate') {
+        worker().catch((error) => getLog('backedStaticImportEntry').error(error))
+      }
+    })
+  `)
 
   exports.push(`export { entryPointMarker } from '@resolve-js/runtime-base'`)
-  exports.push(`export default handler`)
+  exports.push(`export default worker`)
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
@@ -47,7 +53,7 @@ const emitDynamicImport = (runtime) => {
     import '$resolve.guardOnlyServer'
     export { entryPointMarker, getLog } from '@resolve-js/runtime-base'
     
-    const log = getLog('dynamicImportEntry')
+    const log = getLog('backendDynamicImportEntry')
     const runtimeOptions = ${injectRuntimeEnv(runtime.options)}
 
     const handler = async (...args) => {

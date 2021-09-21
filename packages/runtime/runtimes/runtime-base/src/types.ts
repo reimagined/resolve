@@ -312,7 +312,10 @@ export type RuntimeEntryContext = {
 }
 
 export type RuntimeWorker = () => Promise<void>
-export type RuntimeEntry = (
-  context: RuntimeEntryContext
-) => Promise<RuntimeWorker>
-export type RuntimeModuleFactory<TOptions> = (options: TOptions) => RuntimeEntry
+export type RuntimeModule = {
+  entry: (context: RuntimeEntryContext) => Promise<RuntimeWorker>
+  execMode: 'immediate' | 'external'
+}
+export type RuntimeModuleFactory<TOptions> = (
+  options: TOptions
+) => RuntimeModule

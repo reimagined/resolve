@@ -9,7 +9,6 @@ import {
   gatherEventListeners,
 } from '@resolve-js/runtime-base'
 import { prepareDomain } from './prepare-domain'
-import { lambdaGuard } from './lambda-guard'
 import { performanceTracerFactory } from './performance-tracer-factory'
 import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
 
@@ -26,6 +25,7 @@ import type {
   RuntimeFactoryParameters,
   RuntimeModuleFactory,
   RuntimeEntryContext,
+  RuntimeWorker,
 } from '@resolve-js/runtime-base'
 
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
@@ -37,129 +37,136 @@ type RuntimeOptions = {
   port: string
 }
 
-const entry = async (options: RuntimeOptions, context: RuntimeEntryContext) => {
-  try {
-    log.debug(`initializing runtime`)
-    log.debug(`options: ${options}`)
+const entry = async (
+  options: RuntimeOptions,
+  context: RuntimeEntryContext
+): Promise<RuntimeWorker> => {
+  log.debug(`building runtime entry handler`)
+  return async () => {
+    try {
+      log.debug(`initializing runtime`)
+      log.debug(`options: ${options}`)
 
-    process.env.RESOLVE_LOCAL_TRACE_ID = crypto
-      .randomBytes(Math.ceil(32 / 2))
-      .toString('hex')
-      .slice(0, 32)
+      process.env.RESOLVE_LOCAL_TRACE_ID = crypto
+        .randomBytes(Math.ceil(32 / 2))
+        .toString('hex')
+        .slice(0, 32)
 
-    const { assemblies, constants } = context
-    const domain = prepareDomain(context.domain)
-    const domainInterop = await initDomain(domain)
+      const { assemblies, constants } = context
+      const domain = prepareDomain(context.domain)
+      const domainInterop = await initDomain(domain)
 
-    const performanceTracer = await performanceTracerFactory()
-    const monitoring = await monitoringFactory(performanceTracer)
-    const notifyEventSubscriber = await eventSubscriberNotifierFactory()
-    const host = options.host ?? '0.0.0.0'
-    const port = options.port ?? '3000'
+      const performanceTracer = await performanceTracerFactory()
+      const monitoring = await monitoringFactory(performanceTracer)
+      const notifyEventSubscriber = await eventSubscriberNotifierFactory()
+      const host = options.host ?? '0.0.0.0'
+      const port = options.port ?? '3000'
 
-    const {
-      eventstoreAdapter: eventStoreAdapterFactory,
-      readModelConnectors: readModelConnectorsFactories,
-    } = assemblies
+      const {
+        eventstoreAdapter: eventStoreAdapterFactory,
+        readModelConnectors: readModelConnectorsFactories,
+      } = assemblies
 
-    const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
-    const getVacantTimeInMillis = () => endTime - Date.now()
+      const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
+      const getVacantTimeInMillis = () => endTime - Date.now()
 
-    const uploaderData = await uploaderFactory({
-      uploaderAdapterFactory: assemblies.uploadAdapter,
-      host,
-      port,
-    })
-
-    if (uploaderData != null) {
-      Object.keys(uploaderData.env).forEach(
-        (name) => (process.env[name] = uploaderData.env[name])
-      )
-    }
-
-    const expressAppData = await expressAppFactory({
-      rootPath: constants.rootPath,
-      staticPath: constants.staticPath,
-      distDir: constants.distDir,
-      staticRoutes: constants.staticRoutes,
-      apiHandlers: domain.apiHandlers,
-    })
-
-    const websocketServerData = await websocketServerFactory({
-      server: expressAppData.server,
-      eventStoreAdapterFactory,
-      rootPath: constants.rootPath,
-      applicationName: constants.applicationName,
-    })
-
-    const factoryParameters: RuntimeFactoryParameters = {
-      domain,
-      domainInterop,
-      performanceTracer,
-      monitoring,
-      eventStoreAdapterFactory,
-      readModelConnectorsFactories,
-      getVacantTimeInMillis,
-      eventSubscriberScope: constants.applicationName,
-      notifyEventSubscriber,
-      invokeBuildAsync: backgroundJob(
-        async (parameters: EventSubscriberNotification) => {
-          const runtime = await createRuntime(factoryParameters)
-          try {
-            return await runtime.eventSubscriber.build(parameters)
-          } finally {
-            await runtime.dispose()
-          }
-        }
-      ),
-      eventListeners: gatherEventListeners(domain, domainInterop),
-      uploader: uploaderData?.uploader ?? null,
-      sendReactiveEvent: websocketServerData.sendReactiveEvent,
-      getReactiveSubscription: websocketServerData.getReactiveSubscription,
-      seedClientEnvs: assemblies.seedClientEnvs,
-      serverImports: assemblies.serverImports,
-    }
-
-    // TODO: only remaining late binding, protected by guard
-    factoryParameters.scheduler = await schedulerFactory(
-      factoryParameters,
-      domainInterop.sagaDomain.schedulerName
-    )
-
-    await startExpress(
-      expressAppData,
-      {
+      const uploaderData = await uploaderFactory({
+        uploaderAdapterFactory: assemblies.uploadAdapter,
         host,
         port,
-        upstream:
-          domain.apiHandlers.findIndex(
-            ({ method, path }) =>
-              method === 'OPTIONS' && path === '/SKIP_COMMANDS'
-          ) < 0,
-        getEventSubscriberDestination: () =>
-          `http://${host}:${port}/api/subscribers`,
-        ensureQueue: async () => {
-          return
-        },
-        deleteQueue: async () => {
-          return
-        },
-        buildTimeConstants: constants,
-      },
-      factoryParameters
-    )
+      })
 
-    log.debug('Local entry point cold start success')
-  } catch (error) {
-    log.error('Local entry point cold start failure', error)
+      if (uploaderData != null) {
+        Object.keys(uploaderData.env).forEach(
+          (name) => (process.env[name] = uploaderData.env[name])
+        )
+      }
+
+      const expressAppData = await expressAppFactory({
+        rootPath: constants.rootPath,
+        staticPath: constants.staticPath,
+        distDir: constants.distDir,
+        staticRoutes: constants.staticRoutes,
+        apiHandlers: domain.apiHandlers,
+      })
+
+      const websocketServerData = await websocketServerFactory({
+        server: expressAppData.server,
+        eventStoreAdapterFactory,
+        rootPath: constants.rootPath,
+        applicationName: constants.applicationName,
+      })
+
+      const factoryParameters: RuntimeFactoryParameters = {
+        domain,
+        domainInterop,
+        performanceTracer,
+        monitoring,
+        eventStoreAdapterFactory,
+        readModelConnectorsFactories,
+        getVacantTimeInMillis,
+        eventSubscriberScope: constants.applicationName,
+        notifyEventSubscriber,
+        invokeBuildAsync: backgroundJob(
+          async (parameters: EventSubscriberNotification) => {
+            const runtime = await createRuntime(factoryParameters)
+            try {
+              return await runtime.eventSubscriber.build(parameters)
+            } finally {
+              await runtime.dispose()
+            }
+          }
+        ),
+        eventListeners: gatherEventListeners(domain, domainInterop),
+        uploader: uploaderData?.uploader ?? null,
+        sendReactiveEvent: websocketServerData.sendReactiveEvent,
+        getReactiveSubscription: websocketServerData.getReactiveSubscription,
+        seedClientEnvs: assemblies.seedClientEnvs,
+        serverImports: assemblies.serverImports,
+      }
+
+      // TODO: only remaining late binding, protected by guard
+      factoryParameters.scheduler = await schedulerFactory(
+        factoryParameters,
+        domainInterop.sagaDomain.schedulerName
+      )
+
+      await startExpress(
+        expressAppData,
+        {
+          host,
+          port,
+          upstream:
+            domain.apiHandlers.findIndex(
+              ({ method, path }) =>
+                method === 'OPTIONS' && path === '/SKIP_COMMANDS'
+            ) < 0,
+          getEventSubscriberDestination: () =>
+            `http://${host}:${port}/api/subscribers`,
+          ensureQueue: async () => {
+            return
+          },
+          deleteQueue: async () => {
+            return
+          },
+          buildTimeConstants: constants,
+        },
+        factoryParameters
+      )
+
+      log.debug('Local entry point cold start success')
+    } catch (error) {
+      log.error('Local entry point cold start failure', error)
+    }
   }
-
-  return lambdaGuard
 }
 
 const factory: RuntimeModuleFactory<RuntimeOptions> = (
   options: RuntimeOptions
-) => partial(entry, options)
+) => ({
+  entry: partial(entry, options),
+  execMode: 'immediate',
+})
 
 export * from './api-handlers'
 export default factory
