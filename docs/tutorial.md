@@ -951,6 +951,10 @@ const entryPoint = (context) => {
 export default entryPoint
 ```
 
+:::tip SSR
+In addition to a client entry point, you can add SSR handlers to your application to implement server side rendering functionality. Refer to the [SSR Handlers](frontend.md/#ssr-handlers) section of the [Fronted](frontend.md) topic for more information.
+:::
+
 ### Register the Entry Point
 
 Register the client entry point in the application's configuration file as shown below:
