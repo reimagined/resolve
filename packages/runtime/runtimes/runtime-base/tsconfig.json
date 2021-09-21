@@ -16,7 +16,7 @@
     "outDir": "lib",
     "declarationDir": "types",
     "typeRoots": ["./node_modules/@types", "../../../../node_modules/@types"],
-    "types": ["./global"]
+    "types": ["./global", "./external"]
   },
   "include": ["src", "test"]
 }

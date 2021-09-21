@@ -15,8 +15,4 @@ declare global {
   }
 }
 
-declare module "@babel/runtime/helpers" {
-
-}
-
 export {}
