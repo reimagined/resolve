@@ -442,7 +442,7 @@
               "properties": {
                 "importMode": {
                   "enum": ["static", "dynamic"],
-                  "default": "normal"
+                  "default": "static"
                 },
                 "additionalProperties": true
               }

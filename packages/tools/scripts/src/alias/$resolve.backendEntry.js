@@ -30,12 +30,15 @@ const emitStaticImport = async (runtime) => {
   })
 
   constants.push(`
+    const log = getLog('backendStaticImport')
     const { entry, execMode } = runtimeEntry
     let worker
     entry(serverAssemblies).then((w) => {
       worker = w
       if (execMode === 'immediate') {
-        worker().catch((error) => getLog('backedStaticImportEntry').error(error))
+        log.debug('"execMode" set to "immediate", executing worker')
+        worker().catch((error) => log.error(error))
+        log.debug('worker now running')
       }
     })
   `)
@@ -52,9 +55,7 @@ const emitDynamicImport = async (runtime) => {
 
   // eslint-disable-next-line no-undef
   const runtimeModule = await import(result)
-  console.log(runtimeModule)
   const { execMode } = await runtimeModule[moduleImport]()
-  console.log(execMode)
 
   return `
     import '$resolve.guardOnlyServer'
@@ -64,7 +65,6 @@ const emitDynamicImport = async (runtime) => {
     const runtimeOptions = ${injectRuntimeEnv(runtime.options)}
 
     const handler = async (...args) => {
-      console.log(args)
       try {
         if(!global.initPromise) {
           const interopRequireDefault = require('@babel/runtime/helpers/interopRequireDefault')
@@ -90,7 +90,10 @@ const emitDynamicImport = async (runtime) => {
     }
     ${
       execMode === 'immediate'
-        ? 'handler().catch((error) => log.error(error))'
+        ? `
+          log.debug('"execMode" set to "immediate", executing worker') 
+          handler().catch((error) => log.error(error))
+          `
         : ''
     }
     export { entryPointMarker }
