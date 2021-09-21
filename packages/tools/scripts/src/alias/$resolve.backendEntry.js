@@ -7,6 +7,7 @@ import {
 import { importResource } from '../import-resource'
 import { resolveResource } from '../resolve-resource'
 import { injectRuntimeEnv } from '../declare_runtime_env'
+import { getLog } from '../get-log'
 
 // TODO: get rid of that entryPointMarker. There is more convenient ways to determine script location
 
@@ -102,6 +103,8 @@ const emitDynamicImport = async (runtime) => {
 }
 
 const importEntry = async ({ resolveConfig, isClient }) => {
+  const log = getLog(`$resolve.backendEntry`)
+
   if (isClient) {
     throw new Error(`${message.serverAliasInClientCodeError}$resolve.entry`)
   }
@@ -113,7 +116,8 @@ const importEntry = async ({ resolveConfig, isClient }) => {
       ? await emitDynamicImport(runtime)
       : await emitStaticImport(runtime)
 
-  console.log(code)
+  log.debug(`Runtime import generated code:`)
+  log.debug(code)
 
   return code
 }

@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import webpack from 'webpack'
-import getLog from './get-log'
+import { getLog } from './get-log'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
