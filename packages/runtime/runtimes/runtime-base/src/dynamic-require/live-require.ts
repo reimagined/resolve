@@ -1,13 +1,13 @@
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
-import debugLevels from '@resolve-js/debug-levels'
 import path from 'path'
+import { getLog } from '../utils'
 
-import pureRequire from './pure-require'
-import liveEntryDir from './live-entry-dir'
+import { pureRequire } from './pure-require'
+import { liveEntryDir } from './live-entry-dir'
 
-const log = debugLevels('resolve:runtime:liveRequire')
+const log = getLog('liveRequire')
 
-const liveRequire = (filePath) => {
+const liveRequire = (filePath: string) => {
   const entryPointDirname = liveEntryDir()
   let resource = null
   const isRealFilePath = filePath[0] === '/' || filePath[0] === '.'
