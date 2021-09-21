@@ -1,16 +1,29 @@
-import {Dimension, MetricData} from 'aws-sdk/clients/cloudwatch'
+export interface MonitoringDimension {
+  Name: string
+  Value: string
+}
 
-export type MonitoringMetricDimensions = Array<Array<Dimension>>
+export type MonitoringDimensions = MonitoringDimension[]
+export type MonitoringDimensionsList = MonitoringDimensions[]
+
+export interface MonitoringMetricDatum {
+  MetricName: string
+  Dimensions: MonitoringDimension[]
+  Timestamp: Date
+  Values: number[]
+  Counts: number[]
+  Unit: string
+}
 
 export interface MonitoringData {
-  metricData: MetricData,
-  metricDimensions: MonitoringMetricDimensions
+  metricData: MonitoringMetricDatum[]
+  metricDimensions: MonitoringDimensionsList
 }
 
 export interface MonitoringGroupData {
-  timerMap: Record<string, number>,
-  metricDimensions: MonitoringMetricDimensions,
-  globalDimensions: MonitoringMetricDimensions,
-  durationMetricDimensionsList: MonitoringMetricDimensions,
-  errorMetricDimensionsList: MonitoringMetricDimensions
+  timerMap: Record<string, number>
+  metricDimensions: MonitoringDimensions
+  globalDimensions: MonitoringDimensions
+  durationMetricDimensionsList: MonitoringDimensionsList
+  errorMetricDimensionsList: MonitoringDimensionsList
 }

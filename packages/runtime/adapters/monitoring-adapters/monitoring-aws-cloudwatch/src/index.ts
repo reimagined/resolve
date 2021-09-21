@@ -1,14 +1,22 @@
-import CloudWatch, {MetricData, Dimension} from 'aws-sdk/clients/cloudwatch'
-import debugLevels, {LeveledDebugger} from '@resolve-js/debug-levels'
+import CloudWatch from 'aws-sdk/clients/cloudwatch'
+import debugLevels, { LeveledDebugger } from '@resolve-js/debug-levels'
 import { retry } from 'resolve-cloud-common/utils'
-import {MonitoringData, MonitoringGroupData, MonitoringMetricDimensions} from './types'
+
+import {
+  MonitoringData,
+  MonitoringGroupData,
+  MonitoringMetricDatum,
+  MonitoringDimensionsList,
+  MonitoringDimensions,
+} from './types'
 
 const MAX_DIMENSION_VALUE_LENGTH = 256
 const MAX_METRIC_COUNT = 20
 const MAX_DIMENSION_COUNT = 10
 const MAX_VALUES_PER_METRIC = 150
 
-const getLog = (name: string) => debugLevels(`resolve:monitoring-aws-cloudwatch:${name}`)
+const getLog = (name: string) =>
+  debugLevels(`resolve:monitoring-aws-cloudwatch:${name}`)
 
 const getErrorMessage = (error: Error) => {
   let errorMessage = error.message.split(/\n|\r|\r\n/g)[0]
@@ -34,7 +42,12 @@ const createErrorDimensionsList = (error: Error) => [
   [],
 ]
 
-const monitoringError = async (log: LeveledDebugger, monitoringData: MonitoringData , groupData: MonitoringGroupData, error: Error) => {
+const monitoringError = async (
+  log: LeveledDebugger,
+  monitoringData: MonitoringData,
+  groupData: MonitoringGroupData,
+  error: Error
+) => {
   try {
     log.verbose(`Collect error`)
 
@@ -47,7 +60,7 @@ const monitoringError = async (log: LeveledDebugger, monitoringData: MonitoringD
               ...errorDimensions,
             ])
           ),
-        []
+        [] as MonitoringDimensionsList
       )
       .concat(groupData.globalDimensions)
 
@@ -63,7 +76,8 @@ const monitoringError = async (log: LeveledDebugger, monitoringData: MonitoringD
             MetricName: 'Errors',
             Timestamp: timestamp,
             Unit: 'Count',
-            Value: 1,
+            Values: [1],
+            Counts: [1],
             Dimensions: dimensions,
           })
         } else {
@@ -71,7 +85,7 @@ const monitoringError = async (log: LeveledDebugger, monitoringData: MonitoringD
         }
 
         return acc
-      }, [])
+      }, [] as MonitoringMetricDatum[])
     )
 
     if (isDimensionCountLimitReached) {
@@ -84,7 +98,12 @@ const monitoringError = async (log: LeveledDebugger, monitoringData: MonitoringD
   }
 }
 
-const monitoringExecution = async (log: LeveledDebugger, monitoringData: MonitoringData, groupData: MonitoringGroupData, error: Error) => {
+const monitoringExecution = async (
+  log: LeveledDebugger,
+  monitoringData: MonitoringData,
+  groupData: MonitoringGroupData,
+  error: Error
+) => {
   try {
     log.verbose(`Collect execution`)
 
@@ -107,7 +126,7 @@ const monitoringExecution = async (log: LeveledDebugger, monitoringData: Monitor
                 ...errorDimensions,
               ])
             ),
-          [] as Dimension[][]
+          [] as MonitoringDimensionsList
         )
         .concat(groupData.globalDimensions)
     }
@@ -123,7 +142,8 @@ const monitoringExecution = async (log: LeveledDebugger, monitoringData: Monitor
           MetricName: 'Executions',
           Timestamp: timestamp,
           Unit: 'Count',
-          Value: 1,
+          Values: [1],
+          Counts: [1],
           Dimensions: dimensions,
         })
       } else {
@@ -137,7 +157,8 @@ const monitoringExecution = async (log: LeveledDebugger, monitoringData: Monitor
           MetricName: 'Errors',
           Timestamp: timestamp,
           Unit: 'Count',
-          Value: errorValue,
+          Values: [errorValue],
+          Counts: [1],
           Dimensions: dimensions,
         })
       } else {
@@ -281,7 +302,10 @@ const monitoringTimeEnd = async (
   }
 }
 
-const monitoringPublish = async (log: LeveledDebugger, monitoringData: MonitoringData) => {
+const monitoringPublish = async (
+  log: LeveledDebugger,
+  monitoringData: MonitoringData
+) => {
   try {
     log.verbose(`Sending ${monitoringData.metricData.length} metrics`)
     log.verbose(JSON.stringify(monitoringData.metricData))
@@ -323,7 +347,7 @@ const createGroupDimensions = (config: Record<string, string>) =>
             Value: config[key],
           })
         : acc,
-    [] as Dimension[]
+    [] as MonitoringDimensions
   )
 
 const monitoringRate = async (
@@ -353,7 +377,8 @@ const monitoringRate = async (
           MetricName: metricName,
           Timestamp: timestamp,
           Unit: 'Count/Second',
-          Value: count / seconds,
+          Values: [count / seconds],
+          Counts: [1],
           Dimensions: groupDimensions,
         })
       } else {
@@ -361,7 +386,7 @@ const monitoringRate = async (
       }
 
       return acc
-    }, [] as MetricData)
+    }, [] as MonitoringMetricDatum[])
   )
 
   delete groupData.timerMap[metricName]
@@ -373,13 +398,17 @@ const monitoringRate = async (
   }
 }
 
-const createMonitoringImplementation = (log: LeveledDebugger, monitoringData: MonitoringData, groupData: MonitoringGroupData) => {
+const createMonitoringImplementation = (
+  log: LeveledDebugger,
+  monitoringData: MonitoringData,
+  groupData: MonitoringGroupData
+) => {
   return {
     group: (config: Record<string, string>) => {
       const groupDimensions = createGroupDimensions(config)
 
       const globalDimensions =
-        config.Part != null ? [[{ Name: 'Part', Value: config.Part }]] : []
+        config.Part != null ? [{ Name: 'Part', Value: config.Part }] : []
 
       const nextGroupData = {
         timerMap: {},
@@ -408,7 +437,10 @@ const createMonitoringImplementation = (log: LeveledDebugger, monitoringData: Mo
   }
 }
 
-const createDeploymentDimensions = (deploymentId: string, resolveVersion: string) => [
+const createDeploymentDimensions = (
+  deploymentId: string,
+  resolveVersion: string
+) => [
   [
     { Name: 'DeploymentId', Value: deploymentId },
     { Name: 'ResolveVersion', Value: resolveVersion },
@@ -417,7 +449,13 @@ const createDeploymentDimensions = (deploymentId: string, resolveVersion: string
   [{ Name: 'DeploymentId', Value: deploymentId }],
 ]
 
-const createMonitoring = ({ deploymentId, resolveVersion }: {deploymentId: string, resolveVersion: string}) => {
+const createMonitoring = ({
+  deploymentId,
+  resolveVersion,
+}: {
+  deploymentId: string
+  resolveVersion: string
+}) => {
   const monitoringData: MonitoringData = {
     metricData: [],
     metricDimensions: createDeploymentDimensions(deploymentId, resolveVersion),
