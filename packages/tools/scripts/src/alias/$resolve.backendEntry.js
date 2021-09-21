@@ -45,45 +45,34 @@ const emitDynamicImport = (runtime) => {
   const entry = isPackage ? imported : 'default'
   return `
     import '$resolve.guardOnlyServer'
-    export { entryPointMarker } from '@resolve-js/runtime-base'
+    export { entryPointMarker, getLog } from '@resolve-js/runtime-base'
     
+    const log = getLog('dynamicImportEntry')
     const runtimeOptions = ${injectRuntimeEnv(runtime.options)}
-    
-    console.log('dynamic entry point')
-    console.log(runtimeOptions)
 
     const handler = async (...args) => {
       console.log(args)
       try {
         if(!global.initPromise) {
-        console.log('no promise, initializing')
           const interopRequireDefault = require('@babel/runtime/helpers/interopRequireDefault')
-          console.log('server assemblies')
           global.serverAssemblies = interopRequireDefault(
             require('$resolve.serverAssemblies')
           ).default
           
-          console.log('entry factory')
           const entryFactory = interopRequireDefault(
             require('${result}')
           ).${entry} 
           
-          console.log('invoking factory')
           global.entry = entryFactory(runtimeOptions)
-          console.log('invoking entry') 
           global.initPromise = entry(serverAssemblies)
-          console.log('configured')
         }
         const worker = await initPromise
-        console.log(worker)
         return await worker(...args)
       } catch(error) {
-        console.error('Fatal error: ', error)
+        log.error('Fatal error: ', error)
         throw error
       }
     }
-    console.log('returning handler')
-
     export default handler
   `
 }
