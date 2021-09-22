@@ -166,6 +166,7 @@ void (async () => {
           moduleAdmin,
           testFunctionalConfig
         )
+
         await reset(
           resolveConfig,
           {

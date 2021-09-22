@@ -1,0 +1,71 @@
+{
+  "name": "@resolve-js/runtime-dev",
+  "version": "0.31.10",
+  "description": "The reSolve framework's development runtime.",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@resolve-js/runtime-dev#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/runtime-dev",
+    "test": "jest --config=../../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../../jest.config.js --watchAll"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.14.0",
+    "@resolve-js/core": "0.31.10",
+    "@resolve-js/runtime-base": "0.31.10",
+    "@resolve-js/eventstore-base": "0.31.10",
+    "jsonwebtoken": "8.5.1",
+    "lodash.partial": "4.2.1",
+    "route-trie": "3.0.0",
+    "express": "4.17.1",
+    "ws": "7.4.4",
+    "uuid": "8.3.2",
+    "content-disposition": "0.5.3",
+    "qs": "6.9.6",
+    "cookie": "0.4.1",
+    "mime-types": "2.1.29",
+    "raw-body": "2.4.1",
+    "request": "2.88.2",
+    "source-map-support": "0.5.19"
+  },
+  "devDependencies": {
+    "@types/lodash.partial": "4.2.6",
+    "@types/ws": "7.4.4",
+    "@types/mime-types": "2.1.1",
+    "@types/content-disposition": "0.5.3",
+    "jest": "27.0.3",
+    "ts-jest": "27.0.2"
+  },
+  "engines": {
+    "node": ">=14.17"
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ],
+  "sourceType": "ts"
+}

@@ -147,7 +147,7 @@ const appConfig = {
     },
     {
       handler: {
-        package: '@resolve-js/runtime',
+        package: '@resolve-js/runtime-dev',
         import: 'queryIsReadyHandler',
       },
       path: '/api/query-is-ready',
@@ -156,7 +156,7 @@ const appConfig = {
     {
       handler: {
         module: {
-          package: '@resolve-js/runtime',
+          package: '@resolve-js/runtime-base',
           import: 'liveRequireHandler',
         },
         options: {
@@ -170,7 +170,7 @@ const appConfig = {
     {
       handler: {
         module: {
-          package: '@resolve-js/runtime',
+          package: '@resolve-js/runtime-base',
           import: 'liveRequireHandler',
         },
         options: {
@@ -184,7 +184,7 @@ const appConfig = {
     {
       handler: {
         module: {
-          package: '@resolve-js/runtime',
+          package: '@resolve-js/runtime-base',
           import: 'liveRequireHandler',
         },
         options: {
@@ -198,7 +198,7 @@ const appConfig = {
     {
       handler: {
         module: {
-          package: '@resolve-js/runtime',
+          package: '@resolve-js/runtime-base',
           import: 'liveRequireHandler',
         },
         options: {

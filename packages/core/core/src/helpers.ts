@@ -81,9 +81,16 @@ export const getStaticBasedPath = (
   assertNonEmptyString(staticPath, 'Static path')
   assertNonEmptyString(filename, 'Filename')
 
+  const fineStaticPath = staticPath?.endsWith('/')
+    ? staticPath
+    : `${staticPath}/`
+
+  const path = Url.resolve(fineStaticPath, `./${filename}`)
+  const pathPrefix = path?.startsWith('/') ? '' : '/'
+
   return getRootBasedUrl(
     rootPath,
-    `/${Url.resolve(`${staticPath}/`, `./${filename}`)}`
+    isAbsoluteUrl(path) ? path : `${pathPrefix}${path}`
   )
 }
 

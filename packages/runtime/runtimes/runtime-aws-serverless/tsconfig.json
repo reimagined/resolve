@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "strict": true,
+    "jsx": "react",
+    "outDir": "lib",
+    "declarationDir": "types",
+    "typeRoots": [
+      "./node_modules/@types",
+      "../../../../node_modules/@types"
+    ],
+    "types": ["node", "jest", "./external"]
+  },
+  "include": ["src", "test"]
+}

@@ -22,7 +22,7 @@ const openBrowser = async (host = '0.0.0.0', port, rootPath) => {
       await fetch(url)
       break
     } catch (error) {
-      console.log(`Server is still loading - please wait...`)
+      console.log(`Waiting for the server at ${url}`)
     }
   }
 

@@ -23,6 +23,8 @@ const valQueryLoader = function (content) {
     0,
     this.resource.length - resourceQuery.length
   )
+  this.cacheable(false)
+  const callback = this.async()
 
   const func = interopRequireDefault(exec(this, content, pureResource)).default
 
@@ -32,21 +34,21 @@ const valQueryLoader = function (content) {
     )
   }
 
-  const result = func(valQueryOptions, resourceQuery)
-  if (result == null || result.constructor !== String) {
-    this.callback(
-      new Error(
+  const load = async () => {
+    const result = await func(valQueryOptions, resourceQuery)
+    if (result == null || result.constructor !== String) {
+      throw new Error(
         `The returned result of the ${relPath(
           this.resource
         )} module is not a string`
       )
-    )
-    return
+    }
+    return result
   }
 
-  this.cacheable(false)
-
-  this.callback(null, result, null, null)
+  load()
+    .then((result) => callback(null, result, null, null))
+    .catch((error) => callback(error))
 }
 
 export default valQueryLoader

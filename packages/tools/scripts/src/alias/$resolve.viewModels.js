@@ -81,7 +81,7 @@ const importViewModels = ({ resolveConfig, isClient }) => {
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
         instanceFallback: {
-          package: '@resolve-js/runtime',
+          package: '@resolve-js/runtime-base',
           import: 'defaultViewModelResolver',
         },
         imports,
@@ -97,7 +97,7 @@ const importViewModels = ({ resolveConfig, isClient }) => {
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
         instanceFallback: {
-          package: '@resolve-js/runtime',
+          package: '@resolve-js/runtime-base',
           import: 'disabledEncryption',
         },
         imports,

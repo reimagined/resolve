@@ -1,6 +1,6 @@
 import { getInstallations } from 'testcafe-browser-tools'
 import { execSync } from 'child_process'
-import getLog from './get-log'
+import { getLog } from './get-log'
 
 import merge from './merge'
 import generateCustomMode from './generate_custom_mode'
@@ -31,7 +31,7 @@ const getConfig = async (resolveConfig, options) => {
     apiHandlers: [
       {
         handler: {
-          package: '@resolve-js/runtime',
+          package: '@resolve-js/runtime-dev',
           import: 'queryIsReadyHandler',
         },
         path: '/api/query-is-ready',

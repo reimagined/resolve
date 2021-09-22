@@ -11,10 +11,8 @@ import fsExtra from 'fs-extra'
 import showBuildInfo from './show_build_info'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
 import copyEnvToDist from './copy_env_to_dist'
-import getLog from './get-log'
+import { getLog } from './get-log'
 import detectErrors from './detect_errors'
-
-const log = getLog('custom')
 
 const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
   resolveConfig,
@@ -22,11 +20,14 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
   adjustWebpackConfigs
 ) =>
   new Promise(async (resolve, reject) => {
+    const log = getLog(`start:${apiHandlerUrl}`)
+
     try {
-      log.debug(`Starting "${apiHandlerUrl}" mode`)
+      log.debug(`validating framework config`)
       const config = await getConfig(resolveConfig, options)
       validateConfig(config)
 
+      log.debug(`requesting webpack configs`)
       const nodeModulesByAssembly = new Map()
       const webpackConfigs = await getWebpackConfigs({
         resolveConfig: config,
@@ -36,13 +37,16 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 
       const peerDependencies = getPeerDependencies()
 
+      log.debug(`creating webpack compiler`)
       const compiler = webpack(webpackConfigs)
 
+      log.debug(`injecting static files to distribution`)
       fsExtra.copySync(
         path.resolve(process.cwd(), config.staticDir),
         path.resolve(process.cwd(), config.distDir, './client')
       )
 
+      log.debug(`executing webpack compilation`)
       await new Promise((resolve, reject) => {
         compiler.run((err, { stats }) => {
           console.log(' ') // eslint-disable-line no-console
@@ -61,14 +65,17 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
           void (hasNoErrors ? resolve() : reject(stats.toString('')))
         })
       })
+      log.debug(`webpack compilation succeeded`)
 
       const serverPath = path.resolve(
         process.cwd(),
         path.join(config.distDir, './common/local-entry/local-entry.js')
       )
+      log.debug(`backend entry: ${serverPath}`)
 
       const resolveLaunchId = Math.floor(Math.random() * 1000000000)
 
+      log.debug(`registering backend server node process`)
       const server = processRegister(['node', serverPath], {
         cwd: process.cwd(),
         maxRestarts: 0,
@@ -82,21 +89,34 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 
       server.on('crash', reject)
       server.start()
-      log.debug(`Server process pid: ${server.pid}`)
+      log.debug(`server process started with pid: ${server.pid}`)
 
+      const {
+        runtime: {
+          options: { port: portSource, host: hostSource },
+        },
+      } = config
       const port = Number(
-        checkRuntimeEnv(config.port)
+        checkRuntimeEnv(portSource)
           ? // eslint-disable-next-line no-new-func
-            new Function(`return ${injectRuntimeEnv(config.port)}`)()
+            new Function(`return ${injectRuntimeEnv(portSource)}`)()
           : config.port
       )
+      const host = checkRuntimeEnv(hostSource)
+        ? // eslint-disable-next-line no-new-func
+          new Function(`return ${injectRuntimeEnv(hostSource)}`)()
+        : config.port
+
+      log.debug(`resolve host "${host}", port "${port}"`)
 
       let lastError = null
 
       if (apiHandlerUrl != null) {
-        const urls = prepareUrls('http', '0.0.0.0', port, config.rootPath)
+        const urls = prepareUrls('http', host, port, config.rootPath)
         const baseUrl = urls.localUrlForBrowser
         const url = `${baseUrl}api/${apiHandlerUrl}`
+
+        log.debug(`target API url to fetch ${url}`)
 
         while (true) {
           try {

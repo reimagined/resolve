@@ -4,13 +4,14 @@ import BabelPluginTransformImportInline from 'babel-plugin-transform-import-inli
 
 import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
 import getModulesDirs from './get_modules_dirs'
+import { getDeprecatedTarget } from './get-deprecated-target'
 
 const getWebpackCommonConfigs = ({
   resolveConfig,
   alias,
   nodeModulesByAssembly,
 }) => {
-  const targetMode = resolveConfig.target
+  const targetMode = getDeprecatedTarget(resolveConfig)
   if (!['local', 'cloud'].includes(targetMode)) {
     throw new Error(`Wrong target mode ${targetMode}`)
   }
@@ -44,6 +45,7 @@ const getWebpackCommonConfigs = ({
     },
     resolve: {
       modules: getModulesDirs(),
+      extensions: ['.webpack.js', '.js', '.json', '.wasm'],
       alias,
     },
     output: {
@@ -121,7 +123,7 @@ const getWebpackCommonConfigs = ({
           modulesDir,
           // importType: (moduleName) => `((() => {
           //     const path = require('path')
-          //     const requireDirs = ['', '@resolve-js/runtime/node_modules/']
+          //     const requireDirs = ['', '@resolve-js/runtime-base/node_modules/', '@resolve-js/runtime-dev/node_modules/', '@resolve-js/runtime-aws-serverless/node_modules/']
           //     let modulePath = null
           //     const moduleName = ${JSON.stringify(moduleName)}
           //     for(const dir of requireDirs) {
@@ -135,7 +137,11 @@ const getWebpackCommonConfigs = ({
           //     }
           //     return require(modulePath)
           //   })())`,
-          allowlist: [/@resolve-js\/runtime/],
+          allowlist: [
+            /@resolve-js\/runtime-base/,
+            /@resolve-js\/runtime-dev/,
+            /@resolve-js\/runtime-aws-serverless/,
+          ],
         })
       ),
     ],
@@ -149,7 +155,7 @@ const getWebpackCommonConfigs = ({
       entry: {
         [`common/${targetMode}-entry/${targetMode}-entry.js`]: path.resolve(
           __dirname,
-          `./alias/$resolve.${targetMode}Entry.js`
+          `./alias/$resolve.backendEntry.js`
         ),
       },
       output: {

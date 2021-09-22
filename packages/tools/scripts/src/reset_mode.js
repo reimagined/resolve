@@ -29,7 +29,7 @@ const getConfig = async (resolveConfig, options) => {
         path: '/api/reset-domain',
         handler: {
           module: {
-            package: '@resolve-js/runtime',
+            package: '@resolve-js/runtime-dev',
             import: 'resetDomainHandler',
           },
           options,
@@ -39,7 +39,7 @@ const getConfig = async (resolveConfig, options) => {
         method: 'OPTIONS',
         path: '/SKIP_COMMANDS',
         handler: {
-          package: '@resolve-js/runtime',
+          package: '@resolve-js/runtime-base',
           import: 'failHandler',
         },
       },

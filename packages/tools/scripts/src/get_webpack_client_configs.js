@@ -3,9 +3,10 @@ import path from 'path'
 import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
 import getModulesDirs from './get_modules_dirs'
 import { OPTIONAL_ASSET_PREFIX } from './constants'
+import { getDeprecatedTarget } from './get-deprecated-target'
 
 const getClientWebpackConfigs = ({ resolveConfig, alias }) => {
-  const targetMode = resolveConfig.target
+  const targetMode = getDeprecatedTarget(resolveConfig)
   const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
   const clientTransformBabelOptions = {
     cacheDirectory: true,
