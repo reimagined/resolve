@@ -153,10 +153,8 @@ const entry = async (
         },
         factoryParameters
       )
-
-      log.debug('Local entry point cold start success')
     } catch (error) {
-      log.error('Local entry point cold start failure', error)
+      log.error(error)
     }
   }
 }
