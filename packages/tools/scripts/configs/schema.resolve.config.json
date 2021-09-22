@@ -448,7 +448,7 @@
               }
             }
           },
-          "required": ["module", "options"],
+          "required": ["module"],
           "additionalProperties": false
         }
       },
