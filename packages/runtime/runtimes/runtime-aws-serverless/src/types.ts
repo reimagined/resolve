@@ -3,6 +3,13 @@ import {
   EventSubscriberNotifier,
 } from '@resolve-js/runtime-base'
 
+export type OmitFirstParameter<F> = F extends (
+  x: any,
+  ...args: infer P
+) => infer R
+  ? (...args: P) => R
+  : never
+
 export type EventSubscriberInterface = {
   notifyEventSubscriber: EventSubscriberNotifier
   invokeBuildAsync: (params: EventSubscriberNotification) => Promise<void>

@@ -36,6 +36,7 @@ type RuntimeOptions = {
   host: string
   port: string
 }
+type WorkerArguments = []
 
 const entry = async (
   options: RuntimeOptions,
@@ -159,7 +160,7 @@ const entry = async (
   }
 }
 
-const factory: RuntimeModuleFactory<RuntimeOptions> = (
+const factory: RuntimeModuleFactory<RuntimeOptions, WorkerArguments> = (
   options: RuntimeOptions
 ) => ({
   entry: partial(entry, options),

@@ -1,4 +1,5 @@
 import 'source-map-support/register'
+import partial from 'lodash.partial'
 
 import { initDomain } from '@resolve-js/core'
 import {
@@ -11,9 +12,10 @@ import { performanceTracerFactory } from './performance-tracer-factory'
 import { lambdaWorker } from './lambda-worker'
 import { uploaderFactory } from './uploader-factory'
 import { getReactiveSubscriptionFactory } from './get-reactive-subscription-factory'
+import { getDeploymentId } from './utils'
+import { sendReactiveEvent } from './send-reactive-event'
 
 import type { Trie } from 'route-trie'
-
 import type { PerformanceTracer, Domain } from '@resolve-js/core'
 import type {
   Assemblies,
@@ -21,11 +23,11 @@ import type {
   ReactiveSubscriptionFactory,
   Runtime,
   RuntimeFactoryParameters,
+  RuntimeModuleFactory,
+  RuntimeEntryContext,
 } from '@resolve-js/runtime-base'
-
 import type { PerformanceSubsegment } from '@resolve-js/core'
-import { getDeploymentId } from './utils'
-import { sendReactiveEvent } from './send-reactive-event'
+import type { OmitFirstParameter } from './types'
 
 const log = getLog('aws-serverless-entry')
 
@@ -52,17 +54,14 @@ export type LambdaColdStartContext = {
   readonly publisher: any
 }
 
-export const entry = async ({
-  assemblies,
-  constants,
-  domain,
-  resolveVersion,
-}: {
-  assemblies: Assemblies
-  constants: BuildTimeConstants
-  domain: RuntimeFactoryParameters['domain']
-  resolveVersion: string
-}) => {
+type RuntimeOptions = {}
+type WorkerArguments = OmitFirstParameter<Parameters<typeof lambdaWorker>>
+
+export const entry = async (
+  options: RuntimeOptions,
+  context: RuntimeEntryContext
+) => {
+  const { assemblies, constants, domain, resolveVersion } = context
   let subSegment: PerformanceSubsegment | null = null
 
   log.debug(`starting lambda 'cold start'`)
@@ -70,8 +69,11 @@ export const entry = async ({
 
   try {
     log.debug('building lambda cold start context entries')
-
     const performanceTracer = await performanceTracerFactory()
+
+    const segment = performanceTracer.getSegment()
+    subSegment = segment.addNewSubsegment('initResolve')
+
     const uploader = await uploaderFactory({
       uploaderAdapterFactory: assemblies.uploadAdapter,
     })
@@ -102,12 +104,9 @@ export const entry = async ({
       constants,
     }
 
-    const segment = performanceTracer.getSegment()
-    subSegment = segment.addNewSubsegment('initResolve')
-
     log.debug(`lambda 'cold start' succeeded`)
 
-    return lambdaWorker.bind(null, coldStartContext)
+    return partial(lambdaWorker, coldStartContext)
   } catch (error) {
     log.error(`lambda 'cold start' failure`, error)
     if (subSegment != null) subSegment.addError(error)
@@ -116,4 +115,16 @@ export const entry = async ({
       subSegment.close()
     }
   }
+  return async () => {
+    throw Error(`Lambda worker was not created due to cold start failure`)
+  }
 }
+
+const factory: RuntimeModuleFactory<RuntimeOptions, WorkerArguments> = (
+  options: RuntimeOptions
+) => ({
+  entry: partial(entry, options),
+  execMode: 'external',
+})
+
+export default factory

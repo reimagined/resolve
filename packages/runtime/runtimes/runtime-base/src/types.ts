@@ -309,13 +309,17 @@ export type RuntimeEntryContext = {
   assemblies: Assemblies
   constants: BuildTimeConstants
   domain: DomainWithHandlers
+  resolveVersion: string
 }
 
-export type RuntimeWorker = () => Promise<void>
-export type RuntimeModule = {
-  entry: (context: RuntimeEntryContext) => Promise<RuntimeWorker>
+export type RuntimeWorker<TArgs extends any[] = any[]> = (
+  ...args: TArgs
+) => Promise<void>
+export type RuntimeModule<TWorkerArgs extends any[] = any[]> = {
+  entry: (context: RuntimeEntryContext) => Promise<RuntimeWorker<TWorkerArgs>>
   execMode: 'immediate' | 'external'
 }
-export type RuntimeModuleFactory<TOptions> = (
-  options: TOptions
-) => RuntimeModule
+export type RuntimeModuleFactory<
+  TOptions,
+  TWorkerArgs extends any[] = any[]
+> = (options: TOptions) => RuntimeModule<TWorkerArgs>
