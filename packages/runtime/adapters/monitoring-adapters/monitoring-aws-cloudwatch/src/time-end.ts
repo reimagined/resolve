@@ -1,5 +1,5 @@
 import { LeveledDebugger } from '@resolve-js/debug-levels'
-import { monitoringDuration } from './monitoring-duration'
+import { monitoringDuration } from './duration'
 import {
   MonitoringData,
   MonitoringGroupData,

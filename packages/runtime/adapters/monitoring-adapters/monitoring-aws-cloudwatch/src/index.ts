@@ -7,14 +7,14 @@ import {
 } from './types'
 
 import { getLog } from './get-log'
-import { monitoringDuration } from './monitoring-duration'
-import { monitoringError } from './monitoring-error'
-import { monitoringExecution } from './monitoring-execution'
-import { monitoringTime } from './monitoring-time'
-import { monitoringTimeEnd } from './monitoring-time-end'
-import { monitoringPublish } from './monitoring-publish'
+import { monitoringDuration } from './duration'
+import { monitoringError } from './error'
+import { monitoringExecution } from './execution'
+import { monitoringTime } from './time'
+import { monitoringTimeEnd } from './time-end'
+import { monitoringPublish } from './publish'
 import { createGroupDimensions } from './create-group-dimension'
-import { monitoringRate } from './monitoring-rate'
+import { monitoringRate } from './rate'
 import { createDeploymentDimensions } from './create-deployment-dimension'
 
 const createMonitoringImplementation = (
