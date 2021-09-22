@@ -1,10 +1,10 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import qs from 'query-string'
+import { getRootBasedUrl } from '@resolve-js/core'
 import { mocked } from 'ts-jest/utils'
 import { request, RequestOptions, VALIDATED_RESULT } from '../../src/request'
 import { Context } from '../../src/context'
 import determineOrigin from '../../src/determine-origin'
-import { getRootBasedUrl } from '../../src/utils'
 import { GenericError, HttpError } from '../../src/errors'
 import {
   requestWithMiddleware,
@@ -16,8 +16,10 @@ jest.mock('../../src/determine-origin', () =>
   jest.fn((origin): string => origin)
 )
 jest.mock('../../src/utils', () => ({
-  getRootBasedUrl: jest.fn(() => 'http://root-based.url'),
   isString: jest.fn((val) => typeof val === 'string'),
+}))
+jest.mock('@resolve-js/core', () => ({
+  getRootBasedUrl: jest.fn(() => 'http://root-based.url'),
 }))
 jest.mock('../../src/middleware', () => ({
   requestWithMiddleware: jest.fn(() => ({

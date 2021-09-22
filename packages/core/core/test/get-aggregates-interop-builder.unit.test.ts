@@ -6,6 +6,7 @@ import {
 } from '../src/aggregate/types'
 import { SecretsManager, Event, CommandResult } from '../src/types/core'
 import { CommandMiddleware, Eventstore, Monitoring } from '../src/types/runtime'
+import { StoredEvent } from '../types'
 let DateNow: any
 let performanceTracer: any
 let snapshots: any
@@ -29,8 +30,10 @@ const makeAggregateMeta = (params: any) => ({
 
 let lastSavedEvent: any = null
 
-const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
-  const generatedEvents: Event[] = []
+const makeTestRuntime = (
+  storedEvents: StoredEvent[] = []
+): AggregateRuntime => {
+  const generatedEvents: StoredEvent[] = []
 
   const secretsManager: SecretsManager = {
     getSecret: jest.fn(),
@@ -40,26 +43,35 @@ const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
 
   const eventstore: Eventstore = {
     saveEvent: jest.fn(async (originalEvent) => {
-      const event = { ...originalEvent, timestamp: Date.now() }
+      const event: StoredEvent = {
+        ...originalEvent,
+        timestamp: Date.now(),
+        threadId: 0,
+        threadCounter: 0,
+      }
       generatedEvents.push(event)
       lastSavedEvent = event
       return {
-        cursor: null,
-        event,
+        cursor: '',
+        event: {
+          ...event,
+        },
       }
     }),
     getNextCursor: jest.fn(
-      (currentCursor) => (currentCursor && currentCursor + 1) || 1
+      (currentCursor) =>
+        (currentCursor && (Number(currentCursor) + 1).toString()) || '1'
     ),
     loadEvents: jest.fn(({ cursor }) =>
       Promise.resolve({
+        cursor: '',
         events: [...storedEvents, ...generatedEvents].filter(
           (e) => e.aggregateVersion > (cursor || 0)
         ),
       })
     ),
     loadSnapshot: jest.fn((snapshotKey) => snapshots[snapshotKey]),
-    saveSnapshot: jest.fn((snapshotKey, data) => {
+    saveSnapshot: jest.fn(async (snapshotKey, data) => {
       snapshots[snapshotKey] = data
     }),
     ensureEventSubscriber: jest.fn().mockResolvedValue(null),
@@ -75,6 +87,8 @@ const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
     timeEnd: jest.fn(),
     publish: jest.fn(),
     performance: performanceTracer,
+    duration: jest.fn(),
+    rate: jest.fn(),
   }
 
   return {
@@ -266,6 +280,8 @@ describe('Command handlers', () => {
         id: 'userId',
       },
       timestamp: Date.now(),
+      threadId: 0,
+      threadCounter: 0
     })
 
     try {
@@ -298,12 +314,14 @@ describe('Command handlers', () => {
   })
 
   test('should throw error when the incorrect order of events', async () => {
-    const storedEvents: Event[] = [
+    const storedEvents: StoredEvent[] = [
       {
         aggregateId: 'aggregateId',
         aggregateVersion: 2,
         type: 'SET',
         timestamp: 2,
+        threadId: 0,
+        threadCounter: 0,
         payload: {
           key: 'key',
           value: 'value',
@@ -314,6 +332,8 @@ describe('Command handlers', () => {
         aggregateVersion: 1,
         type: 'SET',
         timestamp: 1,
+        threadId: 0,
+        threadCounter: 0,
         payload: {
           key: 'key',
           value: 'value',
@@ -747,7 +767,7 @@ describe('Command handlers', () => {
       type: 'emptyCommand',
     })) as CommandResult
 
-    expect(event).toBe(lastSavedEvent)
+    expect(event).toEqual(lastSavedEvent)
   })
 })
 
