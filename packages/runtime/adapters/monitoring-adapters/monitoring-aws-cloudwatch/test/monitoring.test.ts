@@ -1,14 +1,16 @@
 // TODO: migrate to TS
-import CloudWatch from 'aws-sdk/clients/cloudwatch'
+import type { Request, AWSError } from 'aws-sdk'
+import CloudWatch, { PutMetricDataInput } from 'aws-sdk/clients/cloudwatch'
+import { mocked } from 'ts-jest/utils'
 
 import createMonitoring from '../src'
 
 afterEach(() => {
-  CloudWatch.putMetricData.mockClear()
+  mocked(CloudWatch.prototype.putMetricData).mockClear()
 })
 
-let originalNow
-let dateSpy = null
+let originalNow: typeof Date.now
+let dateSpy: jest.SpyInstance | null
 
 beforeEach(() => {
   originalNow = Date.now
@@ -35,9 +37,9 @@ describe('common', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(1)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith({
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith({
       Namespace: 'ResolveJs',
       MetricData: expect.any(Array),
     })
@@ -51,7 +53,8 @@ describe('common', () => {
 
     const mockDate = new Date(1625152712546)
     const expectedDate = new Date(1625152712000)
-    dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+    // @ts-ignore
+    dateSpy = jest.spyOn(global, 'Date').mockReturnValue(mockDate)
 
     class TestError extends Error {
       name = 'test-error'
@@ -61,9 +64,11 @@ describe('common', () => {
 
     await monitoring.publish()
 
-    for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
-      .MetricData) {
-      expect(metricData).toEqual(
+    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
+      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+
+    for (const item of metricData) {
+      expect(item).toEqual(
         expect.objectContaining({
           Timestamp: expectedDate,
         })
@@ -79,7 +84,7 @@ describe('common', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData).toBeCalledTimes(0)
+    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(0)
   })
 
   test('sends metric data multiple times on multiple publish call', async () => {
@@ -94,9 +99,9 @@ describe('common', () => {
     monitoring.error(new Error('test-2'))
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData).toBeCalledTimes(2)
+    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(2)
 
-    expect(CloudWatch.putMetricData).toHaveBeenNthCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({
         MetricData: expect.arrayContaining([
@@ -111,7 +116,7 @@ describe('common', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).not.toHaveBeenNthCalledWith(
+    expect(CloudWatch.prototype.putMetricData).not.toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({
         MetricData: expect.arrayContaining([
@@ -126,7 +131,7 @@ describe('common', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toHaveBeenNthCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
         MetricData: expect.arrayContaining([
@@ -141,7 +146,7 @@ describe('common', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).not.toHaveBeenNthCalledWith(
+    expect(CloudWatch.prototype.putMetricData).not.toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
         MetricData: expect.arrayContaining([
@@ -169,9 +174,9 @@ describe('common', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(1)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           {
@@ -186,7 +191,7 @@ describe('common', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           {
@@ -214,13 +219,17 @@ describe('common', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData).toBeCalledTimes(2)
+    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(2)
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(
-      20
-    )
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(20)
 
-    expect(CloudWatch.putMetricData.mock.calls[1][0].MetricData).toHaveLength(4)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[1][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(4)
   })
 
   test('does not reject on publish if putMetricData is failed', async () => {
@@ -231,9 +240,9 @@ describe('common', () => {
 
     monitoring.error(new Error('test'))
 
-    CloudWatch.putMetricData.mockReturnValueOnce({
+    mocked(CloudWatch.prototype.putMetricData).mockReturnValueOnce({
       promise: () => Promise.reject(new Error('Something went wrong')),
-    })
+    } as Request<PutMetricDataInput, AWSError>)
 
     await monitoring.publish()
   })
@@ -254,9 +263,11 @@ describe('error', () => {
 
     await monitoring.publish()
 
-    for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
-      .MetricData) {
-      expect(metricData).toEqual({
+    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
+      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+
+    for (const item of metricData) {
+      expect(item).toEqual({
         MetricName: 'Errors',
         Unit: 'Count',
         Values: [1],
@@ -281,9 +292,12 @@ describe('error', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(3)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -297,7 +311,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -310,7 +324,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -339,9 +353,12 @@ describe('error', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(6)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -356,7 +373,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -370,7 +387,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -383,7 +400,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -397,7 +414,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -410,7 +427,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -443,9 +460,12 @@ describe('error', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(9)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(9)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -461,7 +481,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -476,7 +496,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -490,7 +510,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -505,7 +525,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -519,7 +539,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -532,7 +552,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -546,7 +566,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -559,7 +579,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -585,9 +605,12 @@ describe('error', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(6)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -616,9 +639,12 @@ describe('error', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(7)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(7)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -628,7 +654,7 @@ describe('error', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -656,7 +682,7 @@ describe('executions', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           {
@@ -671,7 +697,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           {
@@ -701,7 +727,7 @@ describe('executions', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           {
@@ -716,7 +742,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           {
@@ -746,9 +772,12 @@ describe('executions', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(4)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(4)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -762,7 +791,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -775,7 +804,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -796,9 +825,12 @@ describe('executions', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(2)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(2)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -831,11 +863,12 @@ describe('executions', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(
-      12
-    )
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(12)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -851,7 +884,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -866,7 +899,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -880,7 +913,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -895,7 +928,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -909,7 +942,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -922,7 +955,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -936,7 +969,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -949,7 +982,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -978,9 +1011,12 @@ describe('executions', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(6)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -994,7 +1030,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1007,7 +1043,7 @@ describe('executions', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1031,16 +1067,18 @@ describe('time and timeEnd', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(1)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith({
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith({
       Namespace: 'ResolveJs',
       MetricData: expect.any(Array),
     })
 
-    for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
-      .MetricData) {
-      expect(metricData).toEqual({
+    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
+      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+
+    for (const item of metricData) {
+      expect(item).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
         Values: [1000],
@@ -1062,9 +1100,12 @@ describe('time and timeEnd', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(3)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1077,7 +1118,7 @@ describe('time and timeEnd', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1090,7 +1131,7 @@ describe('time and timeEnd', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1120,9 +1161,12 @@ describe('time and timeEnd', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(3)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1136,7 +1180,7 @@ describe('time and timeEnd', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1150,7 +1194,7 @@ describe('time and timeEnd', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1177,9 +1221,11 @@ describe('time and timeEnd', () => {
 
     await monitoring.publish()
 
-    for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
-      .MetricData) {
-      expect(metricData).toEqual({
+    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
+      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+
+    for (const item of metricData) {
+      expect(item).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
         Values: [2000],
@@ -1196,16 +1242,18 @@ describe('time and timeEnd', () => {
       resolveVersion: '1.0.0-test',
     })
 
-    Date.now.mockReturnValueOnce(15000).mockReturnValueOnce(19500)
+    mocked(Date.now).mockReturnValueOnce(15000).mockReturnValueOnce(19500)
 
     monitoring.time('test-label')
     monitoring.timeEnd('test-label')
 
     await monitoring.publish()
 
-    for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
-      .MetricData) {
-      expect(metricData).toEqual({
+    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
+      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+
+    for (const item of metricData) {
+      expect(item).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
         Values: [4500],
@@ -1230,9 +1278,12 @@ describe('time and timeEnd', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(6)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1245,7 +1296,7 @@ describe('time and timeEnd', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1271,16 +1322,18 @@ describe('duration', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(1)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith({
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith({
       Namespace: 'ResolveJs',
       MetricData: expect.any(Array),
     })
 
-    for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
-      .MetricData) {
-      expect(metricData).toEqual({
+    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
+      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+
+    for (const item of metricData) {
+      expect(item).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
         Values: [1000],
@@ -1301,16 +1354,18 @@ describe('duration', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(1)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith({
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith({
       Namespace: 'ResolveJs',
       MetricData: expect.any(Array),
     })
 
-    for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
-      .MetricData) {
-      expect(metricData).toEqual({
+    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
+      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+
+    for (const item of metricData) {
+      expect(item).toEqual({
         MetricName: 'Duration',
         Unit: 'Milliseconds',
         Values: [1000],
@@ -1331,9 +1386,12 @@ describe('duration', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(3)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1346,7 +1404,7 @@ describe('duration', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1359,7 +1417,7 @@ describe('duration', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1388,9 +1446,12 @@ describe('duration', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(3)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1404,7 +1465,7 @@ describe('duration', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1418,7 +1479,7 @@ describe('duration', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1445,9 +1506,12 @@ describe('duration', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(6)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1460,7 +1524,7 @@ describe('duration', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1481,6 +1545,7 @@ describe('duration', () => {
     })
 
     const mockDate = new Date(1625152712546)
+    // @ts-ignore
     dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
 
     monitoring.duration('test-label', 200, 5)
@@ -1488,9 +1553,12 @@ describe('duration', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(3)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1509,6 +1577,7 @@ describe('duration', () => {
     })
 
     const mockDate = new Date(1625152712546)
+    // @ts-ignore
     dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
 
     for (let i = 0; i < 200; i++) {
@@ -1517,9 +1586,12 @@ describe('duration', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(6)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1530,7 +1602,7 @@ describe('duration', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1549,6 +1621,7 @@ describe('duration', () => {
     })
 
     const mockDate = new Date(1625152712546)
+    // @ts-ignore
     dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
 
     for (let i = 0; i < 150; i++) {
@@ -1559,9 +1632,12 @@ describe('duration', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(3)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1580,6 +1656,7 @@ describe('duration', () => {
     })
 
     const mockDate = new Date(1625152712546)
+    // @ts-ignore
     dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
 
     monitoring.duration('test-label', 200, 5)
@@ -1587,9 +1664,12 @@ describe('duration', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(3)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1612,7 +1692,9 @@ describe('duration', () => {
 
     dateSpy = jest
       .spyOn(global, 'Date')
+      // @ts-ignore
       .mockImplementationOnce(() => firstDate)
+      // @ts-ignore
       .mockImplementationOnce(() => secondDate)
 
     monitoring.duration('test-label', 200, 5)
@@ -1620,9 +1702,12 @@ describe('duration', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(6)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1633,7 +1718,7 @@ describe('duration', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1657,16 +1742,18 @@ describe('rate', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(1)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith({
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith({
       Namespace: 'ResolveJs',
       MetricData: expect.any(Array),
     })
 
-    for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
-      .MetricData) {
-      expect(metricData).toEqual({
+    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
+      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+
+    for (const item of metricData) {
+      expect(item).toEqual({
         MetricName: 'applied-events',
         Unit: 'Count/Second',
         Values: [123],
@@ -1687,16 +1774,18 @@ describe('rate', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(1)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith({
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith({
       Namespace: 'ResolveJs',
       MetricData: expect.any(Array),
     })
 
-    for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
-      .MetricData) {
-      expect(metricData).toEqual({
+    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
+      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+
+    for (const item of metricData) {
+      expect(item).toEqual({
         MetricName: 'applied-events',
         Unit: 'Count/Second',
         Values: [30],
@@ -1717,9 +1806,12 @@ describe('rate', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(3)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1729,7 +1821,7 @@ describe('rate', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1739,7 +1831,7 @@ describe('rate', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1767,9 +1859,12 @@ describe('rate', () => {
 
     await monitoring.publish()
 
-    expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+    expect(
+      ((mocked(CloudWatch.prototype.putMetricData).mock
+        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+    ).toHaveLength(3)
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1782,7 +1877,7 @@ describe('rate', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({
@@ -1795,7 +1890,7 @@ describe('rate', () => {
       })
     )
 
-    expect(CloudWatch.putMetricData).toBeCalledWith(
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
       expect.objectContaining({
         MetricData: expect.arrayContaining([
           expect.objectContaining({

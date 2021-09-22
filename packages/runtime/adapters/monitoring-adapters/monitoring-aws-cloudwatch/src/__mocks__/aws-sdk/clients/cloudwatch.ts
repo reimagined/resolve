@@ -1,10 +1,7 @@
-// TODO: migrate to TS
-const _CloudWatch = jest.fn().mockImplementation(() => CloudWatch)
-const CloudWatch = _CloudWatch.bind(null)
-CloudWatch.putMetricData = jest
-  .fn()
-  .mockReturnValue({ promise: () => Promise.resolve() })
+const CloudWatch = jest.fn()
 
-Object.setPrototypeOf(CloudWatch, _CloudWatch)
+CloudWatch.prototype.putMetricData = jest
+  .fn()
+  .mockReturnValue({ promise: () => Promise.resolve })
 
 export default CloudWatch

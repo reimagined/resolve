@@ -11,7 +11,7 @@ export const monitoringExecution = async (
   log: LeveledDebugger,
   monitoringData: MonitoringData,
   groupData: MonitoringGroupData,
-  error: Error
+  error?: Error
 ) => {
   try {
     log.verbose(`Collect execution`)
