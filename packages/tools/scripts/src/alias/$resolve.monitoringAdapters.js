@@ -28,7 +28,7 @@ const importMonitoringAdapters = ({ resolveConfig, isClient }) => {
     constants.push(`const name_${index} = ${JSON.stringify(adapterConfig)}`)
 
     importResource({
-      resourceName: `factory_s_${index}`,
+      resourceName: `factory_${index}`,
       resourceValue: adapterConfig,
       runtimeMode: RUNTIME_ENV_ANYWHERE,
       importMode: RESOURCE_ANY,
@@ -44,6 +44,8 @@ const importMonitoringAdapters = ({ resolveConfig, isClient }) => {
     } else {
       constants.push(`const options_s_${index} = null`)
     }
+
+    exports.push(`monitoringAdapters[${index}] = factory_${index}`)
   }
 
   exports.push(`export default monitoringAdapters`)

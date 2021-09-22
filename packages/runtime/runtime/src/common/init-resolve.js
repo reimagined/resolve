@@ -14,6 +14,8 @@ import initMonitoring from './init-monitoring'
 const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
 const initResolve = async (resolve) => {
+  initMonitoring(resolve)
+
   const performanceTracer = resolve.performanceTracer
 
   const {
@@ -165,8 +167,6 @@ const initResolve = async (resolve) => {
     executeSchedulerCommand,
     notifyEventSubscribers,
   })
-
-  initMonitoring(resolve)
 
   Object.defineProperties(resolve, {
     eventSubscriber: { value: eventSubscriber },
