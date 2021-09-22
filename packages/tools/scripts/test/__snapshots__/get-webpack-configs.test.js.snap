@@ -225,11 +225,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
         }
       ]
     },
-    \\"plugins\\": [
-      {
-        \\"MODULE\\": \\"esm-webpack-plugin\\"
-      }
-    ]
+    \\"plugins\\": []
   },
   {
     \\"context\\": \\"<MONOREPO_DIR>/packages/tools/scripts\\",
@@ -702,11 +698,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
         }
       ]
     ],
-    \\"plugins\\": [
-      {
-        \\"MODULE\\": \\"esm-webpack-plugin\\"
-      }
-    ],
+    \\"plugins\\": [],
     \\"name\\": \\"Shared server ESM chunks\\",
     \\"entry\\": {
       \\"common/shared/server-imports.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
@@ -942,11 +934,7 @@ exports[`should make webpack configs for local mode 1`] = `
         }
       ]
     },
-    \\"plugins\\": [
-      {
-        \\"MODULE\\": \\"esm-webpack-plugin\\"
-      }
-    ]
+    \\"plugins\\": []
   },
   {
     \\"context\\": \\"<MONOREPO_DIR>/packages/tools/scripts\\",
@@ -1417,11 +1405,7 @@ exports[`should make webpack configs for local mode 1`] = `
         }
       ]
     ],
-    \\"plugins\\": [
-      {
-        \\"MODULE\\": \\"esm-webpack-plugin\\"
-      }
-    ],
+    \\"plugins\\": [],
     \\"name\\": \\"Shared server ESM chunks\\",
     \\"entry\\": {
       \\"common/shared/server-imports.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",

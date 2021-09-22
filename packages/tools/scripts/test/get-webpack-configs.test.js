@@ -118,10 +118,10 @@ test('should make external package.json resolver', async () => {
   })
 
   const externalResolver = webpackConfigs[1].externals[0]
-  externalResolver(null, './resource', () => {})
-  externalResolver(null, '/resource', () => {})
-  externalResolver(null, '@org/package', () => {})
-  externalResolver(null, 'package', () => {})
+  externalResolver({ request: './resource' }, () => {})
+  externalResolver({ request: '/resource' }, () => {})
+  externalResolver({ request: '@org/package' }, () => {})
+  externalResolver({ request: 'package' }, () => {})
 
   expect(
     normalizePaths(JSON.stringify(Array.from(nodeModulesByAssembly), null, 2))

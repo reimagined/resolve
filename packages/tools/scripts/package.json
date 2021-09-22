@@ -59,7 +59,7 @@
     "testcafe": "1.14.2",
     "testcafe-browser-tools": "2.0.15",
     "uuid": "8.3.2",
-    "webpack": "5.52.1",
+    "webpack": "5.53.0",
     "webpack-node-externals": "3.0.0"
   },
   "devDependencies": {

@@ -12,7 +12,7 @@ const adjustClientEntry = (webpackConfig) => {
 
   rules.push({
     test: /\.ts$/,
-    loaders: '@ngtools/webpack',
+    loader: '@ngtools/webpack',
     exclude: [/node_modules/, ...getModulesDirs({ isAbsolutePath: true })],
   })
 
