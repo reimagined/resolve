@@ -30,12 +30,9 @@ const getWebpackConfigs = async ({
     })
   }
 
-  configs.forEach((config) => {
-    const extensions = config.resolve.extensions
-    if (extensions.indexOf('.webpack.js') < 0) {
-      extensions.push('.webpack.js')
-    }
-  })
+  for (const config of configs) {
+    config.resolve.extensions = ['.webpack.js', ...config.resolve.extensions]
+  }
 
   return configs
 }
