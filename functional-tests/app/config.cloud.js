@@ -1,9 +1,12 @@
 import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const cloudConfig = {
-  target: 'cloud',
   mode: 'production',
-  staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
+  runtime: {
+    module: '@resolve-js/runtime-aws-serverless',
+    options: {},
+    importMode: 'dynamic',
+  },
   eventstoreAdapter: {
     module: '@resolve-js/eventstore-postgresql',
     options: {
