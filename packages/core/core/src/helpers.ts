@@ -86,7 +86,7 @@ export const getStaticBasedPath = (
     : `${staticPath}/`
 
   const path = Url.resolve(fineStaticPath, `./${filename}`)
-  const pathPrefix = path && path.length && path[0] !== '/' ? '/' : ''
+  const pathPrefix = path?.startsWith('/') ? '' : '/'
 
   return getRootBasedUrl(
     rootPath,
