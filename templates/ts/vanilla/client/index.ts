@@ -55,7 +55,7 @@ const main = async (resolveContext: any) => {
       chatViewModelState = eventHandler(chatViewModelState, event)
     }
 
-    setImmediate(updateUI.bind(null, chatViewModelState))
+    setTimeout(updateUI.bind(null, chatViewModelState), 0)
   }
 
   await client.subscribe(url, cursor, 'chat', [chatRoom], chatViewModelUpdater)
