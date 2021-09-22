@@ -1,4 +1,8 @@
-import { assertLeadingSlash, isAbsoluteUrl } from '../src/helpers'
+import {
+  assertLeadingSlash,
+  isAbsoluteUrl,
+  getStaticBasedPath,
+} from '../src/helpers'
 
 describe('assertLeadingSlash', () => {
   let spy: jest.SpiedFunction<any>
@@ -39,3 +43,16 @@ describe('isAbsoluteUrl', () => {
   })
 })
 
+describe('getStaticBasedPath', () => {
+  test('some paths to test', () => {
+    expect(getStaticBasedPath('', 'static', 'index.js')).toEqual(
+      '/static/index.js'
+    )
+    expect(
+      getStaticBasedPath('', 'https://static.resolve.fit/app', 'index.js')
+    ).toEqual('https://static.resolve.fit/app/index.js')
+    expect(
+      getStaticBasedPath('', 'https://static.resolve.fit/app/', 'index.js')
+    ).toEqual('https://static.resolve.fit/app/index.js')
+  })
+})
