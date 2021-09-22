@@ -33,11 +33,14 @@
     "http-status-codes": "2.1.4",
     "file-type": "16.5.3",
     "lodash.partial": "4.2.1",
-    "lodash.create": "4.2.0"
+    "lodash.create": "4.2.0",
+    "content-disposition": "0.5.3",
+    "iconv-lite": "0.6.2"
   },
   "devDependencies": {
-    "@types/lodash.partial":  "4.2.6",
+    "@types/lodash.partial": "4.2.6",
     "@types/lodash.create": "4.2.6",
+    "@types/content-disposition": "0.5.3",
     "jest": "27.0.3",
     "ts-jest": "27.0.2"
   },
