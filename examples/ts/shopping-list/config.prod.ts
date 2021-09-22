@@ -1,9 +1,14 @@
 import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const prodConfig = {
-  target: 'local',
-  port: declareRuntimeEnv('PORT', '3000'),
-  mode: 'production',
+  mode: 'development',
+  runtime: {
+    module: '@resolve-js/runtime-dev',
+    options: {
+      host: declareRuntimeEnv('HOST', 'localhost'),
+      port: declareRuntimeEnv('PORT', '3000'),
+    },
+  },
   eventstoreAdapter: {
     module: '@resolve-js/eventstore-lite',
     options: {

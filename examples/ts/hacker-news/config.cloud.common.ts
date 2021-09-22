@@ -5,6 +5,7 @@ const cloudCommonConfig = {
   runtime: {
     module: '@resolve-js/runtime-aws-serverless',
     options: {},
+    importMode: 'dynamic',
   },
   staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
   eventstoreAdapter: {
