@@ -3,7 +3,10 @@ import { extractErrorHttpCode, extractRequestBody } from '../utils'
 
 import type { ResolveRequest, ResolveResponse } from '../types'
 
-export const queryHandler = async (req: ResolveRequest, res: ResolveResponse) => {
+export const queryHandler = async (
+  req: ResolveRequest,
+  res: ResolveResponse
+) => {
   const segment = req.resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('query')
 

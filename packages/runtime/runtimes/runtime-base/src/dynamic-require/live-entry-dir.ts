@@ -3,7 +3,10 @@ import { entryPointMarker } from './entry-point-marker'
 import { pureRequire } from './pure-require'
 
 const entryPointDirnamePlaceholder = Symbol('EntryPointDirnamePlaceholder')
-let entryPointDirname: string | symbol | undefined = entryPointDirnamePlaceholder
+let entryPointDirname:
+  | string
+  | symbol
+  | undefined = entryPointDirnamePlaceholder
 const dynamicRequire = pureRequire as typeof require
 
 export const liveEntryDir = (): string | null => {

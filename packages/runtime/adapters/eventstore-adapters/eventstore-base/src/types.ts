@@ -287,7 +287,9 @@ export type AdapterPoolPrivateConnectedProps = {
   injectEvents: (events: StoredEvent[]) => Promise<void>
   injectSecret?: (secretRecord: SecretRecord) => Promise<void>
 
-  loadEventsByTimestamp: (filter: TimestampFilter) => Promise<StoredEventBatchPointer>
+  loadEventsByTimestamp: (
+    filter: TimestampFilter
+  ) => Promise<StoredEventBatchPointer>
   loadEventsByCursor: (filter: CursorFilter) => Promise<StoredEventBatchPointer>
 
   deleteSecret: DeleteSecret
