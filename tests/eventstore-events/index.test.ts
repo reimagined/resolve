@@ -8,7 +8,7 @@ import {
 import {
   initThreadArray,
   threadArrayToCursor,
-  SavedEvent,
+  StoredEvent,
 } from '@resolve-js/eventstore-base'
 
 jest.setTimeout(jestTimeout())
@@ -195,7 +195,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
   const eventTypesCount = 4
   const aggregateIdCount = 5
 
-  const savedEvents: Array<SavedEvent> = []
+  const savedEvents: Array<StoredEvent> = []
 
   test('should save events with different aggregate ids and types', async () => {
     for (let eventIndex = 0; eventIndex < countEvents; eventIndex++) {
