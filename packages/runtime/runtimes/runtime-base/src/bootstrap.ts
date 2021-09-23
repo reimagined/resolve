@@ -46,24 +46,23 @@ export const bootstrap = async (
         destination: getEventSubscriberDestination(name),
         upstream,
         ensureQueue,
+        forceResume: waitForReady,
       })
     )
   }
 
-  log.debug(`gathering existing subscribers`)
-  const existingEventSubscribers = (
+  log.debug(`gathering orphaned subscribers`)
+  const toShutdown = (
     await eventStoreAdapter.getEventSubscribers({
       applicationName: eventSubscriberScope,
     })
-  ).map(({ eventSubscriber }) => eventSubscriber)
-  log.debug(`${existingEventSubscribers.length} subscribers gathered`)
-
-  log.debug(
-    `enqueue soft shutdown of ${existingEventSubscribers.length} existing subscribers`
   )
-  for (const name of existingEventSubscribers.filter(
-    (name) => !eventListeners.has(name)
-  )) {
+    .map(({ eventSubscriber }) => eventSubscriber)
+    .filter((name) => !eventListeners.has(name))
+
+  log.debug(`${toShutdown.length} orphaned subscribers gathered`)
+
+  for (const name of toShutdown) {
     promises.push(
       shutdownOne({
         eventSubscriberScope,

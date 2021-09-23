@@ -78,7 +78,7 @@ export const resetDomainHandler = (options: any) => async (
       await runtime.eventListenersManager.shutdownAll(true)
       if (bootstrap) {
         log.debug(`bootstrapping all event listeners`)
-        await runtime.eventListenersManager.bootstrapAll(false)
+        await runtime.eventListenersManager.bootstrapAll(true)
       }
     }
 

@@ -1,10 +1,11 @@
 import { getLog } from './get-log'
 
-const log = getLog(`background-job`)
+const log = getLog(`backgroundJob`)
 
 export function backgroundJob<TJob extends (...args: any[]) => any>(
   job: TJob
 ): (...args: Parameters<TJob>) => Promise<void> {
+  log.debug(`creating job executor for [${job.name}]`)
   return async (...args: Parameters<TJob>) => {
     const worker = async () => {
       try {

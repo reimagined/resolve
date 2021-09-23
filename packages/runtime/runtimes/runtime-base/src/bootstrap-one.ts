@@ -1,3 +1,4 @@
+import { getLog } from './utils'
 import type { Runtime, EventListenersManagerParameters } from './types'
 
 export const bootstrapOne = async ({
@@ -9,6 +10,7 @@ export const bootstrapOne = async ({
   destination,
   upstream,
   ensureQueue,
+  forceResume,
 }: {
   applicationName: string
   name: string
@@ -18,7 +20,9 @@ export const bootstrapOne = async ({
   destination?: string
   upstream: EventListenersManagerParameters['upstream']
   ensureQueue: EventListenersManagerParameters['ensureQueue']
+  forceResume: boolean
 }) => {
+  const log = getLog(`bootstrapOne:${name}`)
   try {
     const errors = []
     try {
@@ -28,6 +32,7 @@ export const bootstrapOne = async ({
     }
 
     try {
+      log.debug(`ensuring event subscriber`)
       await eventstoreAdapter.ensureEventSubscriber({
         applicationName,
         eventSubscriber: name,
@@ -35,17 +40,20 @@ export const bootstrapOne = async ({
         destination,
       })
     } catch (err) {
+      log.error(err)
       errors.push(err)
     }
 
     try {
+      log.debug(`subscribing`)
       await eventSubscriber.subscribe({
         eventSubscriber: name,
         subscriptionOptions: { eventTypes },
       })
 
-      if (upstream) {
+      if (upstream || forceResume) {
         const sideEffectsKey = 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'
+        log.debug(`requesting subscriber status`)
         const [status, sideEffectsValue] = await Promise.all([
           eventSubscriber
             .status({ eventSubscriber: name })
@@ -55,8 +63,10 @@ export const bootstrapOne = async ({
             key: sideEffectsKey,
           }),
         ])
+        log.debug(`subscriber status [${status}]`)
 
         if (sideEffectsValue == null || sideEffectsValue === '') {
+          log.debug(`setting side effects timestamp to date.now`)
           await eventSubscriber.setProperty({
             eventSubscriber: name,
             key: sideEffectsKey,
@@ -65,10 +75,12 @@ export const bootstrapOne = async ({
         }
 
         if (status === 'deliver') {
+          log.debug(`resuming event subscriber`)
           await eventSubscriber.resume({ eventSubscriber: name })
         }
       }
     } catch (err) {
+      log.error(err)
       errors.push(err)
     }
 
