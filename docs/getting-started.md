@@ -48,3 +48,28 @@ The reSolve application stores its data in a centralized event store, which can 
 ## Create and Explore a reSolve Application
 
 ## What's Next
+
+### Learn ES and CQRS
+
+Refer to the resources listed below to learn more about the ES and CQRS paradigms:
+
+- [Martin Fowler's Enterprise Architecture pattern](https://martinfowler.com/eaaDev/EventSourcing.html)
+- [Greg Young classic explanation talk](https://www.youtube.com/watch?v=8JKjvY4etTY)
+- [Greg Young's EventStore docs: Event Sourcing Basics](https://eventstore.org/docs/event-sourcing-basics/index.html)
+- [Greg Young's DDD CQRS Class](https://www.youtube.com/watch?v=whCk1Q87_ZI)
+- [Event Sourcing Made Simple](https://kickstarter.engineering/event-sourcing-made-simple-4a2625113224)
+- [Migrating to Microservices and Event-Sourcing: the Dos and Dont’s](https://hackernoon.com/migrating-to-microservices-and-event-sourcing-the-dos-and-donts-195153c7487d)
+- [CQRS.nu](http://www.cqrs.nu)
+- [Event Sourcing: What it is and why it's awesome](https://barryosull.com/blog/event-sourcing-what-it-is-and-why-it-s-awesome) and other related posts at https://barryosull.com/blog
+
+### The Step-by-Step Tutorial
+
+Throughout the [step-by-step tutorial](tutorial.md), you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework in practice as your application's complexity progresses.
+
+### Examples and Templates
+
+Explore the [examples](https://github.com/reimagined/resolve/tree/dev/examples) and [project templates](https://github.com/reimagined/resolve/tree/dev/templates) that come with reSolve to learn about various use-case scenarios supported by reSolve.
+
+### FAQ
+
+Refer to the [FAQ](faq.md) document to find answers to popular questions that may arise as you are learning reSolve.
