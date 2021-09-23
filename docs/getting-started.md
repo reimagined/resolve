@@ -3,6 +3,10 @@ id: getting-started
 title: Getting Started
 ---
 
+import Chart from './getting-started-chart/\_index.mdx'
+
+<Chart />
+
 ## The reSolve Framework
 
 ReSolve is a full stack JavaScript framework based on the Event Sourcing (ES) and Command and Query Responsibility Segregation (CQRS) paradigms. ReSolve comes with a wide variety of tools aimed to cover all needs of a real-world web application.
