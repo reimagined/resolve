@@ -1,11 +1,11 @@
 import {
   Command,
-  CommandResult,
   InteropCommandResult,
   AggregatesInterop,
   CommandError,
   MiddlewareContext,
   PerformanceTracer,
+  CommandExecutor,
 } from '@resolve-js/core'
 
 type CommandPool = {
@@ -13,10 +13,7 @@ type CommandPool = {
   isDisposed: boolean
 }
 
-export type CommandExecutor = {
-  (command: Command, context?: MiddlewareContext): Promise<CommandResult>
-  dispose: () => Promise<void>
-}
+export type { CommandExecutor }
 
 export type CommandExecutorBuilder = (context: {
   performanceTracer?: PerformanceTracer | null

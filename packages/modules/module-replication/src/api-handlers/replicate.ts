@@ -1,3 +1,5 @@
+import type { ResolveRequest, ResolveResponse } from '@resolve-js/core'
+
 const checkInput = (input: any) => {
   if (!Array.isArray(input.events)) {
     throw new Error('Events must be array')
@@ -13,10 +15,10 @@ const checkInput = (input: any) => {
   }
 }
 
-const handler = async (req: any, res: any) => {
+const handler = async (req: ResolveRequest, res: ResolveResponse) => {
   let input
   try {
-    input = JSON.parse(req.body)
+    input = JSON.parse(req.body ?? '')
     checkInput(input)
   } catch (error) {
     res.status(400)

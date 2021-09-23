@@ -9,10 +9,14 @@ import type {
   PerformanceTracer,
   ReadModelProjectionMiddleware,
   ReadModelResolverMiddleware,
+  Uploader as PublicUploader,
+  BuildTimeConstants,
+  HttpRequest,
+  ResolveRequest as PublicResolveRequest,
+  HttpResponse,
+  ResolveResponse,
 } from '@resolve-js/core'
 import type { CommandExecutor } from './command'
-import type { IncomingHttpHeaders } from 'http'
-import type { CookieSerializeOptions } from 'cookie'
 import type { Params as MatchedParams } from 'route-trie'
 import type { EventStoreAdapterFactory } from './create-runtime'
 import type { Trie } from 'route-trie'
@@ -113,15 +117,7 @@ export type UploaderPool = {
   [key: string]: any
 }
 
-export type Uploader = {
-  getSignedPut: (
-    dir: string
-  ) => Promise<{ uploadUrl: string; uploadId: string }>
-  getSignedPost: (dir: string) => Promise<{ form: any; uploadId: string }>
-  uploadPut: (uploadUrl: string, filePath: string) => Promise<void>
-  uploadPost: (form: { url: string }, filePath: string) => Promise<void>
-  createToken: (options: { dir: string; expireTime: number }) => string
-
+export type Uploader = PublicUploader & {
   //local
   directory?: string
   bucket?: any
@@ -154,20 +150,7 @@ export type InvokeBuildAsync = (
   parameters: EventSubscriberNotification
 ) => Promise<void>
 
-export type BuildTimeConstants = {
-  applicationName: string
-  distDir: string
-  jwtCookie: {
-    name: string
-    maxAge: number
-  }
-  host: string
-  port: string
-  rootPath: string
-  staticDir: string
-  staticPath: string
-  staticRoutes?: string[] | undefined
-}
+export type { BuildTimeConstants }
 
 export type EventSubscriberNotifier = (
   destination: string,
@@ -192,52 +175,12 @@ export type ReactiveSubscriptionFactory = (
 
 export type EventListeners = Map<string, EventListener>
 
-export type HttpRequest = {
-  readonly adapter: string
-  readonly method: string
-  readonly query: Record<string, any>
-  readonly path: string
-  readonly headers: IncomingHttpHeaders
-  readonly cookies: Record<string, string>
-  readonly body: string | null
-  jwt?: string
-  readonly isLambdaEdgeRequest?: boolean
-  readonly clientIp?: string
-}
+export type { HttpRequest, HttpResponse, ResolveResponse }
 
-export type ResolveRequest = HttpRequest & {
+export type ResolveRequest = Omit<PublicResolveRequest, 'resolve'> & {
   readonly resolve: UserBackendResolve
   matchedParams: MatchedParams
 }
-
-export type HttpResponse = {
-  readonly cookie: (
-    name: string,
-    value: string,
-    options?: CookieSerializeOptions
-  ) => HttpResponse
-  readonly clearCookie: (
-    name: string,
-    options?: CookieSerializeOptions
-  ) => HttpResponse
-  readonly status: (code: number) => HttpResponse
-  readonly redirect: (path: string, code?: number) => HttpResponse
-  readonly getHeader: (searchKey: string) => any
-  readonly setHeader: (key: string, value: string) => HttpResponse
-  readonly text: (content: string, encoding?: BufferEncoding) => HttpResponse
-  readonly json: (content: any) => HttpResponse
-  readonly end: (
-    content?: string | Buffer,
-    encoding?: BufferEncoding
-  ) => HttpResponse
-  readonly file: (
-    content: string | Buffer,
-    filename: string,
-    encoding?: BufferEncoding
-  ) => HttpResponse
-}
-
-export type ResolveResponse = HttpResponse
 
 export type RuntimeFactoryParameters = {
   readonly seedClientEnvs: Assemblies['seedClientEnvs']

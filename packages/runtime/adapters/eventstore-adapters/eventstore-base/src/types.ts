@@ -9,6 +9,9 @@ import type {
   Eventstore as CoreEventstore,
   InputCursor,
   Cursor,
+  SecretRecord,
+  OldSecretRecord,
+  OldEvent,
 } from '@resolve-js/core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
@@ -62,7 +65,8 @@ export type UnbrandProps<T extends any> = {
 
 export type InputEvent = Event
 export type VersionlessEvent = Omit<InputEvent, 'aggregateVersion'>
-export type OldEvent = InputEvent
+
+export type { SecretRecord, OldSecretRecord, OldEvent }
 
 export type ReplicationStatus =
   | 'batchInProgress'
@@ -199,18 +203,10 @@ export type SecretsWithIdx = {
   secrets: SecretRecord[]
 }
 
-export type SecretRecord = {
-  idx: number
-  id: string
-  secret: string | null
-}
-
 export type GatheredSecrets = {
   existingSecrets: SecretRecord[]
   deletedSecrets: Array<SecretRecord['id']>
 }
-
-export type OldSecretRecord = SecretRecord
 
 export function isTimestampFilter(
   filter: EventFilter
@@ -287,7 +283,9 @@ export type AdapterPoolPrivateConnectedProps = {
   injectEvents: (events: StoredEvent[]) => Promise<void>
   injectSecret?: (secretRecord: SecretRecord) => Promise<void>
 
-  loadEventsByTimestamp: (filter: TimestampFilter) => Promise<StoredEventBatchPointer>
+  loadEventsByTimestamp: (
+    filter: TimestampFilter
+  ) => Promise<StoredEventBatchPointer>
   loadEventsByCursor: (filter: CursorFilter) => Promise<StoredEventBatchPointer>
 
   deleteSecret: DeleteSecret
@@ -535,21 +533,6 @@ export interface Adapter extends CoreEventstore {
   exportSecrets: (options?: Partial<ExportSecretsOptions>) => stream.Readable
 
   gatherSecretsFromEvents: (events: StoredEvent[]) => Promise<GatheredSecrets>
-
-  replicateEvents: (events: OldEvent[]) => Promise<void>
-  replicateSecrets: (
-    existingSecrets: OldSecretRecord[],
-    deletedSecrets: Array<OldSecretRecord['id']>
-  ) => Promise<void>
-  setReplicationIterator: (iterator: SerializableMap) => Promise<void>
-  setReplicationStatus: (
-    status: ReplicationStatus,
-    info?: ReplicationState['statusData'],
-    lastEvent?: OldEvent
-  ) => Promise<void>
-  setReplicationPaused: (pause: boolean) => Promise<void>
-  getReplicationState: () => Promise<ReplicationState>
-  resetReplication: () => Promise<void>
 
   getCursorUntilEventTypes: (
     cursor: InputCursor,
