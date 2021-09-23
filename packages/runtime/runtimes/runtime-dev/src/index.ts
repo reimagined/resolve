@@ -97,6 +97,11 @@ const entry = async (
         rootPath: constants.rootPath,
         applicationName: constants.applicationName,
       })
+      const upstream =
+        domain.apiHandlers.findIndex(
+          ({ method, path }) =>
+            method === 'OPTIONS' && path === '/SKIP_COMMANDS'
+        ) < 0
 
       const factoryParameters: RuntimeFactoryParameters = {
         domain,
@@ -124,6 +129,15 @@ const entry = async (
         getReactiveSubscription: websocketServerData.getReactiveSubscription,
         seedClientEnvs: assemblies.seedClientEnvs,
         serverImports: assemblies.serverImports,
+        upstream,
+        getEventSubscriberDestination: () =>
+          `http://${host}:${port}/api/subscribers`,
+        ensureQueue: async () => {
+          return
+        },
+        deleteQueue: async () => {
+          return
+        },
       }
 
       // TODO: only remaining late binding, protected by guard
@@ -137,20 +151,8 @@ const entry = async (
         {
           host,
           port,
-          upstream:
-            domain.apiHandlers.findIndex(
-              ({ method, path }) =>
-                method === 'OPTIONS' && path === '/SKIP_COMMANDS'
-            ) < 0,
-          getEventSubscriberDestination: () =>
-            `http://${host}:${port}/api/subscribers`,
-          ensureQueue: async () => {
-            return
-          },
-          deleteQueue: async () => {
-            return
-          },
           buildTimeConstants: constants,
+          upstream,
         },
         factoryParameters
       )

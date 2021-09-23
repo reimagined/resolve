@@ -8,13 +8,14 @@ import type {
 // TODO: review/refactor/rename - do something with that already
 export type AdditionalUserData = {
   constants: BuildTimeConstants
-} & UserBackendDependencies
+} & Omit<UserBackendDependencies, 'runtime'>
 
 export const createUserResolve = (
   runtime: Runtime,
   additionalContext: AdditionalUserData
 ): UserBackendResolve => {
   return {
+    runtime,
     ...runtime,
     ...additionalContext.constants,
     routesTrie: additionalContext.routesTrie,

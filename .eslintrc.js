@@ -65,6 +65,7 @@ module.exports = {
         lang: 'en_US',
         skipWordIfMatch: ['^[^A-Za-z_]'],
         skipWords: [
+          'enqueue',
           'redeclare',
           'plusplus',
           'lang',

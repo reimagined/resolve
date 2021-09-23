@@ -1,6 +1,6 @@
-import type { Runtime, BootstrapRuntime } from './types'
+import type { Runtime, EventListenersManagerParameters } from './types'
 
-const bootstrapOne = async ({
+export const bootstrapOne = async ({
   applicationName,
   name,
   eventstoreAdapter,
@@ -16,8 +16,8 @@ const bootstrapOne = async ({
   eventSubscriber: Runtime['eventSubscriber']
   eventTypes: string[]
   destination?: string
-  upstream: BootstrapRuntime['upstream']
-  ensureQueue: BootstrapRuntime['ensureQueue']
+  upstream: EventListenersManagerParameters['upstream']
+  ensureQueue: EventListenersManagerParameters['ensureQueue']
 }) => {
   try {
     const errors = []
@@ -86,5 +86,3 @@ const bootstrapOne = async ({
     `)
   }
 }
-
-export default bootstrapOne

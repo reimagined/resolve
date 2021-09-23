@@ -20,6 +20,7 @@ import { eventBroadcastFactory } from './event-broadcast-factory'
 import { commandExecutedHookFactory } from './command-executed-hook-factory'
 import { eventSubscriberFactory } from './event-subscriber'
 import { readModelProcedureLoaderFactory } from './load-read-model-procedure'
+import { eventListenersManagerFactory } from './event-listeners-manager-factory'
 
 export type EventStoreAdapterFactory = () => Adapter
 
@@ -215,6 +216,28 @@ export const createRuntime = async (
     eventListeners,
   })
 
+  const {
+    deleteQueue,
+    ensureQueue,
+    getEventSubscriberDestination,
+    upstream,
+  } = params
+
+  const eventListenersManager = eventListenersManagerFactory(
+    {
+      eventSubscriber,
+      eventListeners,
+      eventStoreAdapter,
+    },
+    {
+      upstream,
+      eventSubscriberScope,
+      deleteQueue,
+      ensureQueue,
+      getEventSubscriberDestination,
+    }
+  )
+
   const { getReactiveSubscription } = params
 
   const runtime = {
@@ -227,6 +250,7 @@ export const createRuntime = async (
     executeSchedulerCommand,
     readModelConnectors,
     getReactiveSubscription,
+    eventListenersManager,
     dispose: async function () {
       await dispose(this)
     },

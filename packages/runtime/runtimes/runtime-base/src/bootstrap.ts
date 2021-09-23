@@ -1,31 +1,40 @@
-import debugLevels from '@resolve-js/debug-levels'
+import { getLog } from './utils/get-log'
+import { bootstrapOne } from './bootstrap-one'
+import { shutdownOne } from './shutdown-one'
 
-import bootstrapOne from './bootstrap-one'
-import shutdownOne from './shutdown-one'
-import type { BootstrapRuntime } from './types'
+import type {
+  EventListeners,
+  EventListenersManagerParameters,
+  EventSubscriber,
+} from './types'
+import type { Adapter as EventStoreAdapter } from '@resolve-js/eventstore-base'
 
-const log = debugLevels('resolve:runtime:bootstrap')
+const log = getLog('bootstrap')
 
-export const bootstrap = async (runtime: BootstrapRuntime) => {
+type BootstrapRuntime = {
+  eventStoreAdapter: EventStoreAdapter
+  eventListeners: EventListeners
+  eventSubscriber: EventSubscriber
+}
+
+export const bootstrap = async (
+  runtime: BootstrapRuntime,
+  params: EventListenersManagerParameters,
+  waitForReady: boolean
+) => {
   log.debug('bootstrap started')
   const {
     upstream,
-    eventStoreAdapter,
     eventSubscriberScope,
-    eventListeners,
-    eventSubscriber,
     getEventSubscriberDestination,
     ensureQueue,
     deleteQueue,
-  } = runtime
+  } = params
+  const { eventSubscriber, eventStoreAdapter, eventListeners } = runtime
+
   const promises = []
 
-  const existingEventSubscribers = (
-    await eventStoreAdapter.getEventSubscribers({
-      applicationName: eventSubscriberScope,
-    })
-  ).map(({ eventSubscriber }) => eventSubscriber)
-
+  log.debug(`enqueue ${eventListeners.size} new subscribers bootstrap`)
   for (const { name, eventTypes } of eventListeners.values()) {
     promises.push(
       bootstrapOne({
@@ -41,6 +50,17 @@ export const bootstrap = async (runtime: BootstrapRuntime) => {
     )
   }
 
+  log.debug(`gathering existing subscribers`)
+  const existingEventSubscribers = (
+    await eventStoreAdapter.getEventSubscribers({
+      applicationName: eventSubscriberScope,
+    })
+  ).map(({ eventSubscriber }) => eventSubscriber)
+  log.debug(`${existingEventSubscribers.length} subscribers gathered`)
+
+  log.debug(
+    `enqueue soft shutdown of ${existingEventSubscribers.length} existing subscribers`
+  )
   for (const name of existingEventSubscribers.filter(
     (name) => !eventListeners.has(name)
   )) {
@@ -57,9 +77,37 @@ export const bootstrap = async (runtime: BootstrapRuntime) => {
     )
   }
 
+  log.debug(`awaiting tasks to complete`)
   await Promise.all(promises)
 
-  log.debug('bootstrap successful')
+  if (waitForReady && upstream) {
+    log.debug(`start waiting subscribers ready state`)
+    const notReadyListeners = new Set([...runtime.eventListeners.keys()])
+    log.debug(`waiting for ${notReadyListeners.size} listeners`)
 
-  return 'ok'
+    while (upstream && notReadyListeners.size > 0) {
+      for (const eventSubscriber of notReadyListeners) {
+        const {
+          successEvent,
+          failedEvent,
+          errors,
+          status,
+        } = await runtime.eventSubscriber.status({ eventSubscriber })
+
+        if (
+          successEvent != null ||
+          failedEvent != null ||
+          (Array.isArray(errors) && errors.length > 0) ||
+          status !== 'deliver'
+        ) {
+          notReadyListeners.delete(eventSubscriber)
+        }
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
+    log.debug(`all subscribers now ready`)
+  }
+
+  log.debug('bootstrap successful')
 }

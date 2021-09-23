@@ -239,6 +239,14 @@ export type HttpResponse = {
 
 export type ResolveResponse = HttpResponse
 
+export type EventListenersManagerParameters = {
+  upstream: boolean
+  eventSubscriberScope: string
+  getEventSubscriberDestination: (name: string) => string
+  ensureQueue: (name?: string) => Promise<void>
+  deleteQueue: (name?: string) => Promise<void>
+}
+
 export type RuntimeFactoryParameters = {
   readonly seedClientEnvs: Assemblies['seedClientEnvs']
   readonly serverImports: Assemblies['serverImports']
@@ -260,7 +268,13 @@ export type RuntimeFactoryParameters = {
   readonly getReactiveSubscription: ReactiveSubscriptionFactory
   readonly uploader: Uploader | null
   scheduler?: Scheduler
+} & EventListenersManagerParameters
+
+export type EventListenersManager = {
+  readonly bootstrapAll: (waitForReady: boolean) => Promise<void>
+  readonly shutdownAll: (soft: boolean) => Promise<void>
 }
+
 export type Runtime = {
   readonly eventStoreAdapter: EventStoreAdapter
   readonly uploader: Uploader | null
@@ -271,21 +285,15 @@ export type Runtime = {
   readonly executeSchedulerCommand: CommandExecutor
   readonly readModelConnectors: Record<string, ReadModelConnector>
   readonly getReactiveSubscription: ReactiveSubscriptionFactory
+  readonly eventListenersManager: EventListenersManager
   readonly dispose: () => Promise<void>
 }
 
-export type BootstrapRuntime = {
-  eventStoreAdapter: Runtime['eventStoreAdapter']
-  eventSubscriberScope: string
-  eventListeners: RuntimeFactoryParameters['eventListeners']
-  eventSubscriber: Runtime['eventSubscriber']
-  getEventSubscriberDestination: (name: string) => string
-  upstream: boolean
-  ensureQueue: (name?: string) => Promise<void>
-  deleteQueue: (name?: string) => Promise<void>
-}
+export type PublicRuntime = Omit<Runtime, 'dispose' | 'readModelConnectors'>
 
 export type UserBackendDependencies = {
+  // TODO: this is correct way to expose runtime to user
+  runtime: PublicRuntime
   seedClientEnvs: RuntimeFactoryParameters['seedClientEnvs']
   // TODO: excessive internal data access
   routesTrie: Trie

@@ -6,9 +6,10 @@ const validOptions = [
   'dropReadModels',
   'dropEventSubscriber',
   'dropSagas',
+  'bootstrap',
 ]
 
-const getConfig = async (resolveConfig, options) => {
+export const getResetDomainConfig = async (resolveConfig, options) => {
   if (options == null || options.constructor !== Object) {
     throw new Error('Invalid reset options')
   }
@@ -49,6 +50,6 @@ const getConfig = async (resolveConfig, options) => {
   return config
 }
 
-const reset = generateCustomMode(getConfig, 'reset-domain')
+const reset = generateCustomMode(getResetDomainConfig, 'reset-domain')
 
 export default reset

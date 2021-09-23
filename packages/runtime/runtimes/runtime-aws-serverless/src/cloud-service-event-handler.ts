@@ -135,12 +135,6 @@ export const handleCloudServiceEvent = async (
   context: CloudServiceEventContext
 ) => {
   const {
-    upstream,
-    ensureQueue,
-    deleteQueue,
-    getEventSubscriberDestination,
-    eventListeners,
-    eventSubscriberScope,
     performanceTracer,
     domain,
     domainInterop,
@@ -154,16 +148,7 @@ export const handleCloudServiceEvent = async (
   switch (lambdaEvent.part) {
     case 'bootstrap': {
       try {
-        return await bootstrap({
-          eventSubscriber: runtime.eventSubscriber,
-          eventStoreAdapter: runtime.eventStoreAdapter,
-          upstream,
-          ensureQueue,
-          deleteQueue,
-          getEventSubscriberDestination,
-          eventListeners,
-          eventSubscriberScope,
-        })
+        return await runtime.eventListenersManager.bootstrapAll(false)
       } catch (error) {
         subSegment.addError(error)
         throw error
@@ -173,17 +158,7 @@ export const handleCloudServiceEvent = async (
     }
     case 'shutdown': {
       try {
-        return await shutdown(
-          {
-            eventSubscriber: runtime.eventSubscriber,
-            eventStoreAdapter: runtime.eventStoreAdapter,
-            upstream,
-            deleteQueue,
-            eventListeners,
-            eventSubscriberScope,
-          },
-          lambdaEvent.soft
-        )
+        return await runtime.eventListenersManager.shutdownAll(lambdaEvent.soft)
       } catch (error) {
         subSegment.addError(error)
         throw error
