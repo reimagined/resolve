@@ -45,7 +45,7 @@
     "resourcePackage": {
       "type": "object",
       "properties": {
-        "package":{
+        "package": {
           "type": "string"
         },
         "import": {
@@ -251,7 +251,7 @@
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" },
-            { "$ref": "#/definitions/resourcePackage"}
+            { "$ref": "#/definitions/resourcePackage" }
           ]
         }
       },
@@ -432,10 +432,6 @@
           "properties": {
             "module": {
               "type": "string"
-            },
-            "importMode": {
-              "enum": ["normal", "lazy"],
-              "default": "normal"
             },
             "options": {
               "type": "object",
