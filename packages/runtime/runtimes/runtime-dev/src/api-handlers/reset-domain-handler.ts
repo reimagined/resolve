@@ -78,11 +78,7 @@ export const resetDomainHandler = (options: any) => async (
       await runtime.eventListenersManager.shutdownAll(true)
       if (bootstrap) {
         log.debug(`bootstrapping all event listeners`)
-        await invokeFilterErrorTypes(
-          eventstoreAdapter.init.bind(eventstoreAdapter),
-          [EventstoreResourceAlreadyExistError]
-        )
-        await runtime.eventListenersManager.bootstrapAll(true)
+        await runtime.eventListenersManager.bootstrapAll(false)
       }
     }
 
