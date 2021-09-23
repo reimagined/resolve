@@ -974,6 +974,28 @@ Run your application to view the result:
 
 ![result](assets/tutorial/lesson3-result.png)
 
+<details>
+<summary>
+
+**Test Your Application**
+
+Expand this section for an example, on how to test the client application.
+
+</summary>
+
+Add the following test case to the application's test file.
+
+[test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-3/test/e2e/index.test.js)
+
+```js
+test('shopping list is displayed on page', async (t) => {
+  await t.expect(Selector('td').withText('1').exists).eql(true)
+  await t.expect(Selector('td').withText('List 1').exists).eql(true)
+})
+```
+
+</details>
+
 ---
 
 ## **Lesson 4** - Read Side - Create a View Model to Query Shopping List Items
@@ -1228,6 +1250,32 @@ curl -i http://localhost:3000/api/commands/ \
 ```
 
 The page is automatically updated to display the new item.
+
+<details>
+<summary>
+
+**Test Your Application**
+
+Expand this section for an example, on how to test the new functionality in your application.
+
+</summary>
+
+Add the following test case to the application's test file.
+
+[test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-4/test/e2e/index.test.js)
+
+```js
+test('shopping list items are displayed on page', async (t) => {
+  await t.click(Selector('a').withText('List 1'))
+  await waitSelector(t, 'ShoppingLists', Selector('div.list-group-item'))
+  await t.expect(Selector('label').withText('Milk').exists).eql(true)
+  await t.expect(Selector('label').withText('Eggs').exists).eql(true)
+  await t.expect(Selector('label').withText('Canned beans').exists).eql(true)
+  await t.expect(Selector('label').withText('Paper towels').exists).eql(true)
+})
+```
+
+</details>
 
 ## **Lesson 5** - Enable Editing
 
@@ -1734,3 +1782,162 @@ export default ShoppingListItem
 - [useCommand](api/client/resolve-react-hooks.md#usecommand)
 
 ![Check List Item](assets/tutorial/lesson5-check-item.png)
+
+<details>
+<summary>
+
+**Test Your Application**
+
+Expand this section for an example, on how to test data editing in your application.
+
+</summary>
+
+Add the following test cases to the application's test file.
+
+[test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-5/test/e2e/index.test.js)
+
+```js
+test('create first shopping list', async (t) => {
+  await t.typeText(Selector('input[type=text]'), 'First Shopping List', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Shopping List'))
+
+  await refreshAndWait(t, () => Selector('td > a').count, 2)
+})
+
+test('create second shopping list', async (t) => {
+  await t.typeText(Selector('input[type=text]'), 'Second Shopping List', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Shopping List'))
+
+  await refreshAndWait(t, () => Selector('td > a').count, 3)
+})
+
+test('create items in first shopping list', async (t) => {
+  await t.click(Selector('a').withText('First Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('input[type=text]').nth(1))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 1', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 2', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 3', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.expect(Selector('label').withText('Item 1').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 2').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 3').exists).eql(true)
+})
+
+test('toggle items in first shopping list', async (t) => {
+  await t.click(Selector('a').withText('First Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('label').withText('Item 1'))
+
+  await t.click(Selector('label').withText('Item 1').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 1').sibling(-1).checked)
+    .eql(true)
+
+  await t.click(Selector('label').withText('Item 2').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 2').sibling(-1).checked)
+    .eql(true)
+
+  await t.click(Selector('label').withText('Item 3').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 3').sibling(-1).checked)
+    .eql(true)
+})
+
+test('remove items in first shopping list', async (t) => {
+  await t.click(Selector('a').withText('First Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('button').withText('Delete'))
+
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+
+  await t.expect(await Selector('td > a').count).eql(0)
+})
+
+test('create items in second shopping list', async (t) => {
+  await t.click(Selector('a').withText('Second Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('input[type=text]').nth(1))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 1', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 2', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 3', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.expect(Selector('label').withText('Item 1').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 2').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 3').exists).eql(true)
+})
+
+test('toggle items in second shopping list', async (t) => {
+  await t.click(Selector('a').withText('Second Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('label').withText('Item 1'))
+
+  await t.click(Selector('label').withText('Item 1').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 1').sibling(-1).checked)
+    .eql(true)
+
+  await t.click(Selector('label').withText('Item 2').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 2').sibling(-1).checked)
+    .eql(true)
+
+  await t.click(Selector('label').withText('Item 3').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 3').sibling(-1).checked)
+    .eql(true)
+})
+
+test('remove items in second shopping list', async (t) => {
+  await t.click(Selector('a').withText('Second Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('button').withText('Delete'))
+
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+
+  await t.expect(await Selector('td > a').count).eql(0)
+})
+
+test('remove shopping lists', async (t) => {
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+
+  await t.expect(await Selector('td > a').count).eql(0)
+})
+```
+
+</details>
