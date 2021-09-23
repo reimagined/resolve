@@ -258,6 +258,7 @@ export type UserBackendResolve = Readonly<
     executeQuery: QueryExecutor
     executeSaga: SagaExecutor
     seedClientEnvs: any
+    broadcastEvent: (event?: EventPointer) => Promise<void>
   } & BuildTimeConstants
 >
 
@@ -338,8 +339,8 @@ type MiddlewareChainableFunction =
 type MiddlewareHandler<THandler> = (next: THandler) => THandler
 
 export type MiddlewareContext = {
-  req?: any
-  res?: any
+  req?: ResolveRequest
+  res?: ResolveResponse
 }
 
 type ReadModelMiddlewareContext = {

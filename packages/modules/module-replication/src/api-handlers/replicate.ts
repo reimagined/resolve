@@ -62,7 +62,7 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
       await req.resolve.eventstoreAdapter.setReplicationStatus('error', error)
     } catch (e) {}
   }
-  await req.resolve.notifyEventSubscribers()
+  await req.resolve.broadcastEvent()
 }
 
 export default handler

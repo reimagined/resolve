@@ -215,6 +215,7 @@ export type Runtime = {
   readonly readModelConnectors: Record<string, ReadModelConnector>
   readonly getReactiveSubscription: ReactiveSubscriptionFactory
   readonly dispose: () => Promise<void>
+  readonly broadcastEvent: (event?: EventPointer) => Promise<void>
 }
 
 export type BootstrapRuntime = {
