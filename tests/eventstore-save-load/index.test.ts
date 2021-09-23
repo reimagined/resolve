@@ -9,11 +9,11 @@ import {
   threadArrayToCursor,
   checkEventsContinuity,
   THREAD_COUNT,
-  EventWithCursor,
+  StoredEventPointer,
   ConcurrentError,
 } from '@resolve-js/eventstore-base'
 
-import type { SavedEvent } from '@resolve-js/eventstore-base'
+import type { StoredEvent } from '@resolve-js/eventstore-base'
 
 jest.setTimeout(jestTimeout())
 
@@ -23,7 +23,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
 
   const adapter = adapters['save_and_load_testing']
 
-  let eventCursorPairs: EventWithCursor[] = []
+  let eventCursorPairs: StoredEventPointer[] = []
 
   const firstEvent = {
     aggregateVersion: 1,
@@ -84,7 +84,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
     })
 
     let currentCursor = null
-    let loadedEvents: SavedEvent[] = []
+    let loadedEvents: StoredEvent[] = []
     const step = 100
     for (let i = 0; i < checkCount; i += step) {
       const { events, cursor: nextCursor } = await adapter.loadEvents({
@@ -176,7 +176,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
 
   test('many events saved in parallel should be continuous', async () => {
     const parallelWrites = 100
-    const promises: Promise<EventWithCursor>[] = []
+    const promises: Promise<StoredEventPointer>[] = []
     for (let i = 0; i < parallelWrites; ++i) {
       promises.push(
         adapter.saveEvent({
@@ -188,7 +188,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
         })
       )
     }
-    const parallelEventCursorPairs: EventWithCursor[] = await Promise.all(
+    const parallelEventCursorPairs: StoredEventPointer[] = await Promise.all(
       promises
     )
 

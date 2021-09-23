@@ -240,7 +240,7 @@ export const createRuntime = async (
 
   const { getReactiveSubscription } = params
 
-  const runtime = {
+  const runtime: Runtime = {
     eventStoreAdapter,
     uploader,
     executeCommand,
@@ -254,6 +254,7 @@ export const createRuntime = async (
     dispose: async function () {
       await dispose(this)
     },
+    broadcastEvent: broadcastEvent,
   }
 
   return runtime
