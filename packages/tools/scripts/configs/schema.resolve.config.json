@@ -433,10 +433,6 @@
             "module": {
               "type": "string"
             },
-            "importMode": {
-              "enum": ["normal", "lazy"],
-              "default": "normal"
-            },
             "options": {
               "type": "object",
               "properties": {

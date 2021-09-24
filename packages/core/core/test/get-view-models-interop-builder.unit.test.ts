@@ -41,6 +41,13 @@ const makeTestRuntime = (events: Event[] = []): ViewModelRuntime => {
   }))
 
   const eventstore: Eventstore = {
+    getReplicationState: jest.fn(),
+    replicateEvents: jest.fn(),
+    replicateSecrets: jest.fn(),
+    resetReplication: jest.fn(),
+    setReplicationIterator: jest.fn(),
+    setReplicationPaused: jest.fn(),
+    setReplicationStatus: jest.fn(),
     saveEvent: jest.fn(),
     getNextCursor: jest.fn(
       (currentCursor) =>
@@ -58,7 +65,7 @@ const makeTestRuntime = (events: Event[] = []): ViewModelRuntime => {
     saveSnapshot: jest.fn(),
     ensureEventSubscriber: jest.fn().mockResolvedValue(null),
     removeEventSubscriber: jest.fn().mockResolvedValue(null),
-    getEventSubscribers: jest.fn().mockResolvedValue([]),
+    getEventSubscribers: jest.fn().mockResolvedValue([])
   }
 
   monitoring = {

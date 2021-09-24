@@ -213,7 +213,7 @@ export const customReadModelMethods: Record<
 
       if (events == null) {
         try {
-          log.verbose(
+          log.debug(
             `Started applying the "Init" event to the "${readModelName}" read model`
           )
 
@@ -557,12 +557,16 @@ const doOperation = async (
   if (pool.isDisposed) {
     throw new Error(`the "${readModelName}" read model is disposed`)
   }
+  const log = getLog(`doOperation:${operationName}:${readModelName}`)
+  log.debug(`establishing connection`)
   return await wrapConnection(
     pool,
     interop,
     async (connection: any): Promise<any> => {
+      log.debug(`connection established`)
       try {
         if (useInlineMethod) {
+          log.debug(`performing operation in inline mode`)
           const realConnector = pool.connector as RealModelConnectorReal
           switch (operationName) {
             case 'build': {
@@ -630,6 +634,7 @@ const doOperation = async (
             }
           }
         } else {
+          log.debug(`performing operation in normal mode`)
           return await customReadModelMethods[operationName](
             pool,
             interop,
@@ -698,7 +703,7 @@ const wrapReadModel = ({
   monitoring,
   eventstoreAdapter,
 }: WrapReadModelOptions) => {
-  const log = getLog(`readModel:wrapReadModel:${interop.name}`)
+  const log = getLog(`wrapReadModel:${interop.name}`)
 
   log.debug(`wrapping read-model`)
   const connector = readModelConnectors[interop.connectorName]

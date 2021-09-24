@@ -14,13 +14,40 @@ import copyEnvToDist from './copy_env_to_dist'
 import { getLog } from './get-log'
 import detectErrors from './detect_errors'
 
+const waitForUrl = async (log, host, port, rootPath, apiHandlerUrl) => {
+  const urls = prepareUrls('http', host, port, rootPath)
+  const baseUrl = urls.localUrlForBrowser
+  const url = `${baseUrl}api/${apiHandlerUrl}`
+
+  log.debug(`target API url to fetch ${url}`)
+
+  while (true) {
+    try {
+      const response = await fetch(url)
+
+      const result = await response.text()
+      if (result !== 'ok') {
+        throw [
+          `Error communicating with reSolve HTTP server at port ${port}`,
+          `Multiple instances of reSolve applications may be trying to run on the same port`,
+          `${response.status}: ${response.statusText}`,
+          `${result}`,
+        ].join('\n')
+      }
+      break
+    } catch (e) {}
+    await new Promise((resolve) => setTimeout(resolve, 500))
+  }
+}
+
 const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
   resolveConfig,
   options,
   adjustWebpackConfigs
 ) =>
   new Promise(async (resolve, reject) => {
-    const log = getLog(`start:${apiHandlerUrl}`)
+    const apiHandlerUrls = [].concat(apiHandlerUrl)
+    const log = getLog(`start:${apiHandlerUrls.join('+')}`)
 
     try {
       log.debug(`validating framework config`)
@@ -109,31 +136,17 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 
       log.debug(`resolve host "${host}", port "${port}"`)
 
-      let lastError = null
+      const fetchUrl = waitForUrl.bind(null, log, host, port, config.rootPath)
+      let lastError
 
-      if (apiHandlerUrl != null) {
-        const urls = prepareUrls('http', host, port, config.rootPath)
-        const baseUrl = urls.localUrlForBrowser
-        const url = `${baseUrl}api/${apiHandlerUrl}`
-
-        log.debug(`target API url to fetch ${url}`)
-
-        while (true) {
-          try {
-            const response = await fetch(url)
-
-            const result = await response.text()
-            if (result !== 'ok') {
-              lastError = [
-                `Error communicating with reSolve HTTP server at port ${port}`,
-                `Multiple instances of reSolve applications may be trying to run on the same port`,
-                `${response.status}: ${response.statusText}`,
-                `${result}`,
-              ].join('\n')
-            }
-            break
-          } catch (e) {}
-          await new Promise((resolve) => setTimeout(resolve, 500))
+      for (let handler of apiHandlerUrls) {
+        log.debug(`request to: ${handler}`)
+        try {
+          await fetchUrl(handler)
+          log.debug(`${handler} request completed`)
+        } catch (e) {
+          log.error(`${handler} ${e}`)
+          lastError = e
         }
       }
 
@@ -145,7 +158,7 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
         }
       }
 
-      await Promise.all([new Promise((resolve) => server.stop(resolve))])
+      await new Promise((resolve) => server.stop(resolve))
 
       log.debug('Server was stopped')
 

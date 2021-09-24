@@ -19,9 +19,6 @@ type StartParameters = {
   upstream: boolean
   host: string
   port: string
-  getEventSubscriberDestination: (name: string) => string
-  ensureQueue: (name?: string) => Promise<void>
-  deleteQueue: (name?: string) => Promise<void>
   buildTimeConstants: BuildTimeConstants
 }
 
@@ -103,46 +100,11 @@ export const startExpress = async (
   try {
     runtime = await createRuntime(runtimeParams)
     const { eventStoreAdapter } = runtime
-
     await invokeFilterErrorTypes(
       eventStoreAdapter.init.bind(eventStoreAdapter),
       [EventstoreResourceAlreadyExistError]
     )
-
-    await bootstrap({
-      eventSubscriber: runtime.eventSubscriber,
-      eventStoreAdapter: runtime.eventStoreAdapter,
-      upstream: startParams.upstream,
-      ensureQueue: startParams.ensureQueue,
-      deleteQueue: startParams.deleteQueue,
-      getEventSubscriberDestination: startParams.getEventSubscriberDestination,
-      eventListeners: runtimeParams.eventListeners,
-      eventSubscriberScope: runtimeParams.eventSubscriberScope,
-    })
-
-    const notReadyListeners = new Set([...runtimeParams.eventListeners.keys()])
-
-    while (startParams.upstream && notReadyListeners.size > 0) {
-      for (const eventSubscriber of notReadyListeners) {
-        const {
-          successEvent,
-          failedEvent,
-          errors,
-          status,
-        } = await runtime.eventSubscriber.status({ eventSubscriber })
-
-        if (
-          successEvent != null ||
-          failedEvent != null ||
-          (Array.isArray(errors) && errors.length > 0) ||
-          status !== 'deliver'
-        ) {
-          notReadyListeners.delete(eventSubscriber)
-        }
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-    }
+    await runtime.eventListenersManager.bootstrapAll(true)
   } finally {
     if (runtime != null) {
       await runtime.dispose()

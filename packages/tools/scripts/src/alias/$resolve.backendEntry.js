@@ -116,8 +116,8 @@ const importEntry = async ({ resolveConfig, isClient }) => {
       ? await emitDynamicImport(runtime)
       : await emitStaticImport(runtime)
 
-  log.debug(`Runtime import generated code:`)
-  log.debug(code)
+  log.verbose(`Runtime import generated code:`)
+  log.verbose(code)
 
   return code
 }

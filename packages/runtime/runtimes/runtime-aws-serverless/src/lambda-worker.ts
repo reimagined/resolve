@@ -72,6 +72,10 @@ const createCloudRuntime = async (
     getVacantTimeInMillis,
     notifyEventSubscriber: subscriberInterface.notifyEventSubscriber,
     invokeBuildAsync: subscriberInterface.invokeBuildAsync,
+    ensureQueue: subscriberInterface.ensureQueue,
+    deleteQueue: subscriberInterface.deleteQueue,
+    getEventSubscriberDestination:
+      subscriberInterface.getEventSubscriberDestination,
     ...overrideFactoryParams,
   }
 

@@ -1,6 +1,6 @@
-import type { BootstrapRuntime, Runtime } from './types'
+import type { EventListenersManagerParameters, Runtime } from './types'
 
-const shutdownOne = async ({
+export const shutdownOne = async ({
   eventSubscriberScope,
   name,
   eventStoreAdapter,
@@ -13,8 +13,8 @@ const shutdownOne = async ({
   name: string
   eventStoreAdapter: Runtime['eventStoreAdapter']
   eventSubscriber: Runtime['eventSubscriber']
-  upstream: BootstrapRuntime['upstream']
-  deleteQueue: BootstrapRuntime['deleteQueue']
+  upstream: EventListenersManagerParameters['upstream']
+  deleteQueue: EventListenersManagerParameters['deleteQueue']
   soft?: boolean
 }) => {
   try {
@@ -59,5 +59,3 @@ const shutdownOne = async ({
     `)
   }
 }
-
-export default shutdownOne

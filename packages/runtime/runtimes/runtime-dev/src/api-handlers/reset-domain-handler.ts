@@ -2,7 +2,7 @@ import {
   EventstoreResourceAlreadyExistError,
   EventstoreResourceNotExistError,
 } from '@resolve-js/eventstore-base'
-import { invokeFilterErrorTypes } from '@resolve-js/runtime-base'
+import { invokeFilterErrorTypes, getLog } from '@resolve-js/runtime-base'
 
 import type { ResolveRequest, ResolveResponse } from '@resolve-js/runtime-base'
 
@@ -10,27 +10,34 @@ export const resetDomainHandler = (options: any) => async (
   req: ResolveRequest,
   res: ResolveResponse
 ) => {
+  const log = getLog('resetDomainHandler')
   const {
+    runtime,
     eventstoreAdapter,
-    eventSubscriber,
     domainInterop: { sagaDomain },
     domain: { readModels, sagas },
-    eventSubscriberScope,
   } = req.resolve
 
   try {
+    Object.keys(options).map((option) =>
+      log.debug(`${option}: ${options[option]}`)
+    )
+
     const {
       dropEventStore,
       dropEventSubscriber,
       dropReadModels,
       dropSagas,
+      bootstrap,
     } = options
 
     if (dropEventStore) {
+      log.debug(`dropping event store`)
       await invokeFilterErrorTypes(
         eventstoreAdapter.drop.bind(eventstoreAdapter),
         [EventstoreResourceNotExistError]
       )
+      log.debug(`re-initializing event store`)
       await invokeFilterErrorTypes(
         eventstoreAdapter.init.bind(eventstoreAdapter),
         [EventstoreResourceAlreadyExistError]
@@ -39,9 +46,10 @@ export const resetDomainHandler = (options: any) => async (
 
     const dropReadModelsSagasErrors = []
     if (dropReadModels) {
+      log.debug(`dropping ${readModels.length} read models`)
       for (const { name } of readModels) {
         try {
-          await eventSubscriber.reset({ eventSubscriber: name })
+          await runtime.eventSubscriber.reset({ eventSubscriber: name })
         } catch (error) {
           dropReadModelsSagasErrors.push(error)
         }
@@ -49,14 +57,16 @@ export const resetDomainHandler = (options: any) => async (
     }
 
     if (dropSagas) {
-      for (const { name } of [
+      const sagasToDrop = [
         ...sagaDomain.getSagasSchedulersInfo().map(({ name }) => ({
           name,
         })),
         ...sagas,
-      ]) {
+      ]
+      log.debug(`dropping ${sagasToDrop.length} sagas`)
+      for (const { name } of sagasToDrop) {
         try {
-          await eventSubscriber.reset({ eventSubscriber: name })
+          await runtime.eventSubscriber.reset({ eventSubscriber: name })
         } catch (error) {
           dropReadModelsSagasErrors.push(error)
         }
@@ -64,14 +74,11 @@ export const resetDomainHandler = (options: any) => async (
     }
 
     if (dropEventSubscriber) {
-      const eventSubscribers = await eventstoreAdapter.getEventSubscribers({
-        applicationName: eventSubscriberScope,
-      })
-      for (const { eventSubscriber } of eventSubscribers) {
-        await eventstoreAdapter.removeEventSubscriber({
-          applicationName: eventSubscriberScope,
-          eventSubscriber,
-        })
+      log.debug(`shutting down all event listeners`)
+      await runtime.eventListenersManager.shutdownAll(true)
+      if (bootstrap) {
+        log.debug(`bootstrapping all event listeners`)
+        await runtime.eventListenersManager.bootstrapAll(true)
       }
     }
 
