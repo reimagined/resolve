@@ -69,6 +69,31 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
         \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
+      },
+      \\"fallback\\": {
+        \\"assert\\": \\"assert\\",
+        \\"buffer\\": \\"buffer\\",
+        \\"console\\": \\"<MONOREPO_DIR>/node_modules/console-browserify/index.js\\",
+        \\"constants\\": \\"<MONOREPO_DIR>/node_modules/constants-browserify/constants.json\\",
+        \\"crypto\\": \\"<MONOREPO_DIR>/node_modules/crypto-browserify/index.js\\",
+        \\"domain\\": \\"<MONOREPO_DIR>/node_modules/domain-browser/source/index.js\\",
+        \\"events\\": \\"events\\",
+        \\"http\\": \\"<MONOREPO_DIR>/node_modules/stream-http/index.js\\",
+        \\"https\\": \\"<MONOREPO_DIR>/node_modules/https-browserify/index.js\\",
+        \\"os\\": \\"<MONOREPO_DIR>/node_modules/os-browserify/browser.js\\",
+        \\"path\\": \\"<MONOREPO_DIR>/node_modules/path-browserify/index.js\\",
+        \\"punycode\\": \\"punycode\\",
+        \\"process\\": \\"<MONOREPO_DIR>/node_modules/process/browser.js\\",
+        \\"querystring\\": \\"<MONOREPO_DIR>/node_modules/querystring-es3/index.js\\",
+        \\"stream\\": \\"<MONOREPO_DIR>/node_modules/stream-browserify/index.js\\",
+        \\"string_decoder\\": \\"string_decoder\\",
+        \\"sys\\": \\"util\\",
+        \\"timers\\": \\"<MONOREPO_DIR>/node_modules/timers-browserify/main.js\\",
+        \\"tty\\": \\"<MONOREPO_DIR>/node_modules/tty-browserify/index.js\\",
+        \\"url\\": \\"url\\",
+        \\"util\\": \\"util\\",
+        \\"vm\\": \\"<MONOREPO_DIR>/node_modules/vm-browserify/index.js\\",
+        \\"zlib\\": \\"<MONOREPO_DIR>/node_modules/browserify-zlib/lib/index.js\\"
       }
     },
     \\"module\\": {
@@ -225,7 +250,13 @@ exports[`should make webpack configs for cloud mode 1`] = `
         }
       ]
     },
-    \\"plugins\\": []
+    \\"plugins\\": [
+      {
+        \\"definitions\\": {
+          \\"process\\": \\"process/browser\\"
+        }
+      }
+    ]
   },
   {
     \\"context\\": \\"<MONOREPO_DIR>/packages/tools/scripts\\",
@@ -778,6 +809,31 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
         \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
+      },
+      \\"fallback\\": {
+        \\"assert\\": \\"assert\\",
+        \\"buffer\\": \\"buffer\\",
+        \\"console\\": \\"<MONOREPO_DIR>/node_modules/console-browserify/index.js\\",
+        \\"constants\\": \\"<MONOREPO_DIR>/node_modules/constants-browserify/constants.json\\",
+        \\"crypto\\": \\"<MONOREPO_DIR>/node_modules/crypto-browserify/index.js\\",
+        \\"domain\\": \\"<MONOREPO_DIR>/node_modules/domain-browser/source/index.js\\",
+        \\"events\\": \\"events\\",
+        \\"http\\": \\"<MONOREPO_DIR>/node_modules/stream-http/index.js\\",
+        \\"https\\": \\"<MONOREPO_DIR>/node_modules/https-browserify/index.js\\",
+        \\"os\\": \\"<MONOREPO_DIR>/node_modules/os-browserify/browser.js\\",
+        \\"path\\": \\"<MONOREPO_DIR>/node_modules/path-browserify/index.js\\",
+        \\"punycode\\": \\"punycode\\",
+        \\"process\\": \\"<MONOREPO_DIR>/node_modules/process/browser.js\\",
+        \\"querystring\\": \\"<MONOREPO_DIR>/node_modules/querystring-es3/index.js\\",
+        \\"stream\\": \\"<MONOREPO_DIR>/node_modules/stream-browserify/index.js\\",
+        \\"string_decoder\\": \\"string_decoder\\",
+        \\"sys\\": \\"util\\",
+        \\"timers\\": \\"<MONOREPO_DIR>/node_modules/timers-browserify/main.js\\",
+        \\"tty\\": \\"<MONOREPO_DIR>/node_modules/tty-browserify/index.js\\",
+        \\"url\\": \\"url\\",
+        \\"util\\": \\"util\\",
+        \\"vm\\": \\"<MONOREPO_DIR>/node_modules/vm-browserify/index.js\\",
+        \\"zlib\\": \\"<MONOREPO_DIR>/node_modules/browserify-zlib/lib/index.js\\"
       }
     },
     \\"module\\": {
@@ -934,7 +990,13 @@ exports[`should make webpack configs for local mode 1`] = `
         }
       ]
     },
-    \\"plugins\\": []
+    \\"plugins\\": [
+      {
+        \\"definitions\\": {
+          \\"process\\": \\"process/browser\\"
+        }
+      }
+    ]
   },
   {
     \\"context\\": \\"<MONOREPO_DIR>/packages/tools/scripts\\",
