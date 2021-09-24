@@ -1,10 +1,7 @@
 import { LeveledDebugger } from '@resolve-js/debug-levels'
 import { MAX_DIMENSION_COUNT, MAX_VALUES_PER_METRIC } from './constants'
 
-import {
-  MonitoringData,
-  MonitoringGroupData,
-} from './types'
+import { MonitoringData, MonitoringGroupData } from './types'
 
 export const monitoringDuration = async (
   log: LeveledDebugger,
