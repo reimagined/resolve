@@ -9,7 +9,7 @@ import { failHandler } from './handlers/fail-handler'
 
 import { builtInApiHandlers } from './builtin-routes'
 
-import type { ApiHandler } from './types'
+import type { ApiHandler } from '@resolve-js/core'
 
 export const wrapTrie = (
   apiHandlers: ApiHandler[],

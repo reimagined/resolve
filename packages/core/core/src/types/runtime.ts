@@ -1,5 +1,5 @@
 import { IS_BUILT_IN } from '../symbols'
-import {
+import type {
   Event,
   Deserializer,
   ReadModel,

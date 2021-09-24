@@ -85,6 +85,7 @@ export const makeTestEnvironment = (
         },
       ],
       sagas: [],
+      apiHandlers: [],
     })
 
     let executor: CommandExecutor | null = null

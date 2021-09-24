@@ -94,6 +94,7 @@ export const makeTestEnvironment = (
       ],
       aggregates: [],
       sagas: [],
+      apiHandlers: [],
     })
 
     const liveErrors: Array<Error> = []

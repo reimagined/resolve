@@ -6,7 +6,7 @@ import { getRootBasedUrl } from '@resolve-js/core'
 import { wrapTrie } from '@resolve-js/runtime-base'
 import { Trie } from 'route-trie'
 
-import type { ApiHandler } from '@resolve-js/runtime-base'
+import type { ApiHandler } from '@resolve-js/core'
 
 type ExpressAppFactoryParameters = {
   apiHandlers: ApiHandler[]
