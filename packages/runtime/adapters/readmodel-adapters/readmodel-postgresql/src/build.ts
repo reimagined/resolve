@@ -9,6 +9,7 @@ import type {
 } from './types'
 import getLog from './get-log'
 import { LeveledDebugger } from '@resolve-js/debug-levels'
+import { AlreadyDisposedError } from '@resolve-js/eventstore-base'
 
 const serializeError = (error: Error & { code: number }) =>
   error != null
@@ -223,6 +224,13 @@ const buildEvents: (
           cursor,
         })
       )
+      .catch((error) => {
+        if (AlreadyDisposedError.is(error)) {
+          return null
+        } else {
+          return Promise.reject(error)
+        }
+      })
       .then((result) => {
         const loadDuration = Date.now() - initialTimestamp
 
