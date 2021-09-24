@@ -32,8 +32,14 @@ const getWebpackConfigs = async ({
 
   for (const config of configs) {
     // .webpack.js should have precedence over other extensions
-    if (Array.isArray(config.resolve.extensions)) {
-      config.resolve.extensions = ['.webpack.js', ...config.resolve.extensions]
+    const extensions = config.resolve.extensions
+
+    if (Array.isArray(extensions) && extensions.length > 0) {
+      if (extensions[0] !== '.webpack.js') {
+        config.resolve.extensions = ['.webpack.js', ...extensions]
+      }
+    } else {
+      config.resolve.extensions = ['.webpack.js', '...']
     }
   }
 

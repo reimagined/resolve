@@ -69,7 +69,11 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
         \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
-      }
+      },
+      \\"extensions\\": [
+        \\".webpack.js\\",
+        \\"...\\"
+      ]
     },
     \\"module\\": {
       \\"rules\\": [
@@ -248,11 +252,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
       ],
       \\"extensions\\": [
         \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".js\\",
-        \\".json\\",
-        \\".wasm\\"
+        \\"...\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
@@ -487,11 +487,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
       ],
       \\"extensions\\": [
         \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".js\\",
-        \\".json\\",
-        \\".wasm\\"
+        \\"...\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
@@ -786,7 +782,11 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
         \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
         \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
-      }
+      },
+      \\"extensions\\": [
+        \\".webpack.js\\",
+        \\"...\\"
+      ]
     },
     \\"module\\": {
       \\"rules\\": [
@@ -965,11 +965,7 @@ exports[`should make webpack configs for local mode 1`] = `
       ],
       \\"extensions\\": [
         \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".js\\",
-        \\".json\\",
-        \\".wasm\\"
+        \\"...\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
@@ -1202,11 +1198,7 @@ exports[`should make webpack configs for local mode 1`] = `
       ],
       \\"extensions\\": [
         \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".js\\",
-        \\".json\\",
-        \\".wasm\\"
+        \\"...\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
