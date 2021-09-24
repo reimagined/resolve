@@ -244,14 +244,17 @@ export type RuntimeEntryContext = {
   resolveVersion: string
 }
 
-export type RuntimeWorker<TArgs extends any[] = any[]> = (
+export type RuntimeWorker<TArgs extends any[], TResult = never> = (
   ...args: TArgs
-) => Promise<void>
-export type RuntimeModule<TWorkerArgs extends any[] = any[]> = {
-  entry: (context: RuntimeEntryContext) => Promise<RuntimeWorker<TWorkerArgs>>
+) => Promise<TResult>
+export type RuntimeModule<TWorkerArgs extends any[], TWorkerResult = never> = {
+  entry: (
+    context: RuntimeEntryContext
+  ) => Promise<RuntimeWorker<TWorkerArgs, TWorkerResult>>
   execMode: 'immediate' | 'external'
 }
 export type RuntimeModuleFactory<
   TOptions,
-  TWorkerArgs extends any[] = any[]
-> = (options: TOptions) => RuntimeModule<TWorkerArgs>
+  TWorkerArgs extends any[],
+  TWorkerResult = never
+> = (options: TOptions) => RuntimeModule<TWorkerArgs, TWorkerResult>

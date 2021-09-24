@@ -1,6 +1,6 @@
 import partial from 'lodash.partial'
 
-import { bootstrap, shutdown, getLog } from '@resolve-js/runtime-base'
+import { getLog } from '@resolve-js/runtime-base'
 
 import type { Domain, DomainMeta, PerformanceTracer } from '@resolve-js/core'
 import type {
@@ -8,6 +8,7 @@ import type {
   EventListener,
   EventSubscriber,
 } from '@resolve-js/runtime-base'
+import { CloudServiceLambdaEvent } from './types'
 
 const log = getLog('cloud-service-event-handler')
 
@@ -130,15 +131,11 @@ type CloudServiceEventContext = {
 }
 
 export const handleCloudServiceEvent = async (
-  lambdaEvent: any,
+  lambdaEvent: CloudServiceLambdaEvent,
   runtime: Runtime,
   context: CloudServiceEventContext
 ) => {
-  const {
-    performanceTracer,
-    domain,
-    domainInterop,
-  } = context
+  const { performanceTracer, domain, domainInterop } = context
   const segment = performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('apiEvent')
   subSegment.addAnnotation('operation', lambdaEvent.operation)

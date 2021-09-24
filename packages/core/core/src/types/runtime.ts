@@ -226,8 +226,6 @@ export type BuildTimeConstants = {
     name: string
     maxAge: number
   }
-  host: string
-  port: string
   rootPath: string
   staticDir: string
   staticPath: string
