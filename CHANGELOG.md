@@ -15,9 +15,11 @@
 **Bug fixes:**
 
 - Timestamps from CommandResult and Event are different [\#1994](https://github.com/reimagined/resolve/issues/1994)
+- The Replicator read model takes a lot of resources during replication of big event store \(5kk events\) [\#1949](https://github.com/reimagined/resolve/issues/1949)
 
 **Documentation:**
 
+- Describe the `host` option [\#2043](https://github.com/reimagined/resolve/pull/2043)
 - Describe API for fundamental entities of reSolve [\#2032](https://github.com/reimagined/resolve/pull/2032)
 
 ## [V0.31.10](https://github.com/reimagined/resolve/tree/V0.31.10) (2021-09-08)
