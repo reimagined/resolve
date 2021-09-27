@@ -475,7 +475,10 @@ const build: ExternalMethods['build'] = async (
   if (hasSendTime) {
     for (const innerMonitoring of [monitoring, groupMonitoring]) {
       if (innerMonitoring != null) {
-        innerMonitoring.duration('EventDelivery', now - metricData.sendTime)
+        innerMonitoring
+          .group({ Part: 'EventDelivery' })
+          .group({ Readmodel: readModelName })
+          .duration('EventDelivery', now - metricData.sendTime)
       }
     }
   }
@@ -641,7 +644,10 @@ const build: ExternalMethods['build'] = async (
 
     for (const innerMonitoring of [monitoring, groupMonitoring]) {
       if (innerMonitoring != null) {
-        innerMonitoring.duration('Ledger', metricData.pureLedgerTime)
+        innerMonitoring
+          .group({ Part: 'Ledger' })
+          .group({ Readmodel: readModelName })
+          .duration('Ledger', metricData.pureLedgerTime)
       }
     }
   }
