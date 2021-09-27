@@ -289,7 +289,7 @@ const buildEvents: (
           }
 
           projectionApplyTime += Date.now() - projectionApplyStartTimestamp
-          
+
           await inlineLedgerRunQuery(
             `RELEASE SAVEPOINT E${appliedEventsCount}`,
             true
@@ -448,7 +448,7 @@ const build: ExternalMethods['build'] = async (
     pureLedgerTime: 0,
     insideProjection: false,
   }
-  
+
   const {
     PassthroughError,
     inlineLedgerRunQuery: ledgerQuery,
@@ -466,11 +466,11 @@ const build: ExternalMethods['build'] = async (
     metricData.sendTime != null && metricData.sendTime.constructor === Number
 
   const groupMonitoring =
-  monitoring != null
-    ? monitoring
-        .group({ Part: 'ReadModelProjection' })
-        .group({ ReadModel: readModelName })
-    : null
+    monitoring != null
+      ? monitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ ReadModel: readModelName })
+      : null
 
   if (hasSendTime) {
     for (const innerMonitoring of [monitoring, groupMonitoring]) {

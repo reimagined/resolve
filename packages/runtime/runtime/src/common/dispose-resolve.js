@@ -21,6 +21,12 @@ const disposeResolve = async (resolve) => {
       await Promise.all(disposePromises)
 
       log.info('resolve entries are disposed')
+
+      if (resolve.monitoring != null) {
+        log.debug(`publishing monitoring data`)
+        await resolve.monitoring.publish()
+        log.debug(`monitoring data is published`)
+      }
     } catch (error) {
       log.error('error disposing resolve entries')
       log.error(error)
