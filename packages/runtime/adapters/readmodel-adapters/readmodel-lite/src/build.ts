@@ -163,10 +163,10 @@ const buildEvents: (
     escapeStr,
     ledgerTableNameAsId,
     eventTypes,
+    monitoring,
+    metricData,
     inputCursor,
     xaKey,
-    metricData,
-    monitoring,
   } = pool
 
   let lastSuccessEvent = null
@@ -268,170 +268,166 @@ const buildEvents: (
     }
   }
 
+  let nextCursor:
+    | Promise<ReadModelCursor>
+    | ReadModelCursor = eventstoreAdapter.getNextCursor(cursor, events)
+  let appliedEventsCount = 0
+  try {
+    for (const event of events) {
+      try {
+        const handler = await modelInterop.acquireEventHandler(store, event)
+        if (handler != null) {
+          await inlineLedgerRunQuery(`SAVEPOINT E${appliedEventsCount}`, true)
 
-  for (metricData.eventLoopCount = 0; true; metricData.eventLoopCount++) {
-    let nextCursor:
-      | Promise<ReadModelCursor>
-      | ReadModelCursor = eventstoreAdapter.getNextCursor(cursor, events)
-    let appliedEventsCount = 0
-    try {
-      for (const event of events) {
-        try {
-          const handler = await modelInterop.acquireEventHandler(store, event)
-          if (handler != null) {
-            await inlineLedgerRunQuery(`SAVEPOINT E${appliedEventsCount}`, true)
-
-            const projectionApplyStartTimestamp = Date.now()
-            try {
-              metricData.insideProjection = true
-              await handler()
-              eventCount++
-            } finally {
-              metricData.insideProjection = false
-            }
-
-            projectionApplyTime += Date.now() - projectionApplyStartTimestamp
-            
-            await inlineLedgerRunQuery(
-              `RELEASE SAVEPOINT E${appliedEventsCount}`,
-              true
-            )
-            lastSuccessEvent = event
-          }
-          appliedEventsCount++
-
-          if (
-            Date.now() - seizeTimestamp > MAX_SEIZE_TIME ||
-            getVacantTimeInMillis() < 0
-          ) {
-            nextCursor = eventstoreAdapter.getNextCursor(
-              cursor,
-              events.slice(0, appliedEventsCount)
-            )
-            break
-          }
-        } catch (error) {
-          if (error instanceof PassthroughError) {
-            throw error
+          const projectionApplyStartTimestamp = Date.now()
+          try {
+            metricData.insideProjection = true
+            await handler()
+            eventCount++
+          } finally {
+            metricData.insideProjection = false
           }
 
+          projectionApplyTime += Date.now() - projectionApplyStartTimestamp
+          
+          await inlineLedgerRunQuery(
+            `RELEASE SAVEPOINT E${appliedEventsCount}`,
+            true
+          )
+          lastSuccessEvent = event
+        }
+        appliedEventsCount++
+
+        if (
+          Date.now() - seizeTimestamp > MAX_SEIZE_TIME ||
+          getVacantTimeInMillis() < 0
+        ) {
           nextCursor = eventstoreAdapter.getNextCursor(
             cursor,
             events.slice(0, appliedEventsCount)
           )
-
-          await inlineLedgerRunQuery(
-            `ROLLBACK TO SAVEPOINT E${appliedEventsCount};
-              RELEASE SAVEPOINT E${appliedEventsCount}
-          `,
-            true
-          )
-
-          lastFailedEvent = event
-          lastError = error
           break
         }
-      }
-    } catch (originalError) {
-      if (originalError instanceof PassthroughError) {
-        throw originalError
-      }
-
-      nextCursor = cursor
-      appliedEventsCount = 0
-      const composedError = new Error(
-        `Fatal inline ledger building error: ${originalError.message}`
-      )
-      composedError.stack = `${composedError.stack}${originalError.stack}`
-      lastError = composedError
-      lastSuccessEvent = null
-      lastFailedEvent = null
-      await inlineLedgerRunQuery(
-        `ROLLBACK TO SAVEPOINT ROOT;
-          RELEASE SAVEPOINT ROOT
-      `,
-        true
-      )
-    }
-  
-
-    if (lastError == null) {
-      await inlineLedgerRunQuery(
-        `UPDATE ${ledgerTableNameAsId} SET 
-          ${
-            lastSuccessEvent != null
-              ? `"SuccessEvent" = ${escapeStr(JSON.stringify(lastSuccessEvent))},`
-              : ''
-          } 
-          "Cursor" = ${escapeStr(JSON.stringify(nextCursor))}
-          WHERE "EventSubscriber" = ${escapeStr(readModelName)};
-        `,
-        true
-      )
-    } else {
-      await inlineLedgerRunQuery(
-        `UPDATE ${ledgerTableNameAsId}
-          SET "Errors" = JSON_insert(
-            COALESCE("Errors", JSON('[]')),
-            '$[' || JSON_ARRAY_LENGTH(COALESCE("Errors", JSON('[]'))) || ']',
-            JSON(${escapeStr(JSON.stringify(serializeError(lastError)))})
-          ),
-          ${
-            lastFailedEvent != null
-              ? `"FailedEvent" = ${escapeStr(JSON.stringify(lastFailedEvent))},`
-              : ''
-          }
-          ${
-            lastSuccessEvent != null
-              ? `"SuccessEvent" = ${escapeStr(JSON.stringify(lastSuccessEvent))},`
-              : ''
-          }
-          "Cursor" = ${escapeStr(JSON.stringify(nextCursor))}
-          WHERE "EventSubscriber" = ${escapeStr(readModelName)};
-        `,
-        true
-      )
-    }
-
-    if (groupMonitoring != null && eventCount > 0) {
-      const applyDuration = Date.now() - eventsApplyStartTimestamp
-
-      groupMonitoring.rate(
-        'ReadModelFeedingRate',
-        eventCount,
-        applyDuration / 1000
-      )
-
-      groupMonitoring.duration(
-        'EventApply',
-        applyDuration / eventCount,
-        eventCount
-      )
-
-      groupMonitoring.duration(
-        'EventProjectionApply',
-        projectionApplyTime / eventCount,
-        eventCount
-      )
-    }
-
-    while (true) {
-      try {
-        await inlineLedgerRunQuery(`COMMIT;`, true)
-        break
       } catch (error) {
-        if (!(error instanceof PassthroughError)) {
+        if (error instanceof PassthroughError) {
           throw error
         }
 
-        await fullJitter(0)
+        nextCursor = eventstoreAdapter.getNextCursor(
+          cursor,
+          events.slice(0, appliedEventsCount)
+        )
+
+        await inlineLedgerRunQuery(
+          `ROLLBACK TO SAVEPOINT E${appliedEventsCount};
+            RELEASE SAVEPOINT E${appliedEventsCount}
+        `,
+          true
+        )
+
+        lastFailedEvent = event
+        lastError = error
+        break
       }
     }
-
-    const isBuildSuccess = lastError == null && appliedEventsCount > 0
-    if (isBuildSuccess) {
-      await next()
+  } catch (originalError) {
+    if (originalError instanceof PassthroughError) {
+      throw originalError
     }
+
+    nextCursor = cursor
+    appliedEventsCount = 0
+    const composedError = new Error(
+      `Fatal inline ledger building error: ${originalError.message}`
+    )
+    composedError.stack = `${composedError.stack}${originalError.stack}`
+    lastError = composedError
+    lastSuccessEvent = null
+    lastFailedEvent = null
+    await inlineLedgerRunQuery(
+      `ROLLBACK TO SAVEPOINT ROOT;
+        RELEASE SAVEPOINT ROOT
+    `,
+      true
+    )
+  }
+
+  if (lastError == null) {
+    await inlineLedgerRunQuery(
+      `UPDATE ${ledgerTableNameAsId} SET 
+        ${
+          lastSuccessEvent != null
+            ? `"SuccessEvent" = ${escapeStr(JSON.stringify(lastSuccessEvent))},`
+            : ''
+        } 
+        "Cursor" = ${escapeStr(JSON.stringify(nextCursor))}
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)};
+      `,
+      true
+    )
+  } else {
+    await inlineLedgerRunQuery(
+      `UPDATE ${ledgerTableNameAsId}
+        SET "Errors" = JSON_insert(
+          COALESCE("Errors", JSON('[]')),
+          '$[' || JSON_ARRAY_LENGTH(COALESCE("Errors", JSON('[]'))) || ']',
+          JSON(${escapeStr(JSON.stringify(serializeError(lastError)))})
+        ),
+        ${
+          lastFailedEvent != null
+            ? `"FailedEvent" = ${escapeStr(JSON.stringify(lastFailedEvent))},`
+            : ''
+        }
+        ${
+          lastSuccessEvent != null
+            ? `"SuccessEvent" = ${escapeStr(JSON.stringify(lastSuccessEvent))},`
+            : ''
+        }
+        "Cursor" = ${escapeStr(JSON.stringify(nextCursor))}
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)};
+      `,
+      true
+    )
+  }
+
+  while (true) {
+    try {
+      await inlineLedgerRunQuery(`COMMIT;`, true)
+      break
+    } catch (error) {
+      if (!(error instanceof PassthroughError)) {
+        throw error
+      }
+
+      await fullJitter(0)
+    }
+  }
+
+  if (groupMonitoring != null && eventCount > 0) {
+    const applyDuration = Date.now() - eventsApplyStartTimestamp
+
+    groupMonitoring.rate(
+      'ReadModelFeedingRate',
+      eventCount,
+      applyDuration / 1000
+    )
+
+    groupMonitoring.duration(
+      'EventApply',
+      applyDuration / eventCount,
+      eventCount
+    )
+
+    groupMonitoring.duration(
+      'EventProjectionApply',
+      projectionApplyTime / eventCount,
+      eventCount
+    )
+  }
+
+  const isBuildSuccess = lastError == null && appliedEventsCount > 0
+  if (isBuildSuccess) {
+    await next()
   }
 }
 
@@ -452,6 +448,7 @@ const build: ExternalMethods['build'] = async (
     pureLedgerTime: 0,
     insideProjection: false,
   }
+  
   const {
     PassthroughError,
     inlineLedgerRunQuery: ledgerQuery,
@@ -496,7 +493,7 @@ const build: ExternalMethods['build'] = async (
     },
     ledgerQuery
   )
-  
+
   try {
     basePool.activePassthrough = true
     const ledgerTableNameAsId = escapeId(`${tablePrefix}__LEDGER__`)
