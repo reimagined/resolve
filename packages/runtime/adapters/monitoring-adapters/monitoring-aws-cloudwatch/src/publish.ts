@@ -2,9 +2,7 @@ import CloudWatch from 'aws-sdk/clients/cloudwatch'
 import { LeveledDebugger } from '@resolve-js/debug-levels'
 import { retry } from 'resolve-cloud-common/utils'
 import { MAX_METRIC_COUNT } from './constants'
-import {
-  MonitoringData,
-} from './types'
+import { MonitoringData } from './types'
 
 export const monitoringPublish = async (
   log: LeveledDebugger,

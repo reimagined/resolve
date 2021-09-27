@@ -53,8 +53,10 @@ describe('common', () => {
 
     const mockDate = new Date(1625152712546)
     const expectedDate = new Date(1625152712000)
-    // @ts-ignore
-    dateSpy = jest.spyOn(global, 'Date').mockReturnValue(mockDate)
+
+    dateSpy = jest
+      .spyOn(global, 'Date')
+      .mockReturnValue((mockDate as unknown) as string)
 
     class TestError extends Error {
       name = 'test-error'
@@ -1545,8 +1547,10 @@ describe('duration', () => {
     })
 
     const mockDate = new Date(1625152712546)
-    // @ts-ignore
-    dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
+    dateSpy = jest
+      .spyOn(global, 'Date')
+      .mockImplementation(() => (mockDate as unknown) as string)
 
     monitoring.duration('test-label', 200, 5)
     monitoring.duration('test-label', 300, 3)
@@ -1577,8 +1581,10 @@ describe('duration', () => {
     })
 
     const mockDate = new Date(1625152712546)
-    // @ts-ignore
-    dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
+    dateSpy = jest
+      .spyOn(global, 'Date')
+      .mockImplementation(() => (mockDate as unknown) as string)
 
     for (let i = 0; i < 200; i++) {
       monitoring.duration('test-label', i)
@@ -1621,8 +1627,10 @@ describe('duration', () => {
     })
 
     const mockDate = new Date(1625152712546)
-    // @ts-ignore
-    dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
+    dateSpy = jest
+      .spyOn(global, 'Date')
+      .mockImplementation(() => (mockDate as unknown) as string)
 
     for (let i = 0; i < 150; i++) {
       monitoring.duration('test-label', i)
@@ -1656,8 +1664,10 @@ describe('duration', () => {
     })
 
     const mockDate = new Date(1625152712546)
-    // @ts-ignore
-    dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
+    dateSpy = jest
+      .spyOn(global, 'Date')
+      .mockImplementation(() => (mockDate as unknown) as string)
 
     monitoring.duration('test-label', 200, 5)
     monitoring.duration('test-label', 200, 3)
@@ -1692,10 +1702,8 @@ describe('duration', () => {
 
     dateSpy = jest
       .spyOn(global, 'Date')
-      // @ts-ignore
-      .mockImplementationOnce(() => firstDate)
-      // @ts-ignore
-      .mockImplementationOnce(() => secondDate)
+      .mockImplementationOnce(() => (firstDate as unknown) as string)
+      .mockImplementationOnce(() => (secondDate as unknown) as string)
 
     monitoring.duration('test-label', 200, 5)
     monitoring.duration('test-label', 300, 3)

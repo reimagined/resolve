@@ -1,9 +1,6 @@
 import { LeveledDebugger } from '@resolve-js/debug-levels'
 import { monitoringDuration } from './duration'
-import {
-  MonitoringData,
-  MonitoringGroupData,
-} from './types'
+import { MonitoringData, MonitoringGroupData } from './types'
 
 export const monitoringTimeEnd = async (
   log: LeveledDebugger,
