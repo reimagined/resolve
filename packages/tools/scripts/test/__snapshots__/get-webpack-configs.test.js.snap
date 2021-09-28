@@ -887,7 +887,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
                   \\"runtime\\": {
-                    \\"module\\": \\"@resolve-js/runtime-dev\\"
+                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }
                 },
                 \\"isClient\\": true
@@ -1115,7 +1115,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
                   \\"runtime\\": {
-                    \\"module\\": \\"@resolve-js/runtime-dev\\"
+                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }
                 },
                 \\"isClient\\": false
@@ -1349,7 +1349,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
                   \\"runtime\\": {
-                    \\"module\\": \\"@resolve-js/runtime-dev\\"
+                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }
                 },
                 \\"isClient\\": false

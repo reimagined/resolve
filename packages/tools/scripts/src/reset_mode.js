@@ -30,7 +30,7 @@ export const getResetDomainConfig = async (resolveConfig, options) => {
         path: '/api/reset-domain',
         handler: {
           module: {
-            package: '@resolve-js/runtime-dev',
+            package: '@resolve-js/runtime-single-process',
             import: 'resetDomainHandler',
           },
           options,

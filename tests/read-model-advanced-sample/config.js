@@ -7,7 +7,7 @@ import {
 const localConfig = {
   mode: 'development',
   runtime: {
-    module: '@resolve-js/runtime-dev',
+    module: '@resolve-js/runtime-single-process',
     options: {
       host: 'localhost',
       port: 3000,

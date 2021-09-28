@@ -124,7 +124,7 @@ const getWebpackCommonConfigs = ({
           modulesDir,
           importType: (moduleName) => `((() => {
               const path = require('path')
-              const requireDirs = ['', '@resolve-js/runtime-base/node_modules/', '@resolve-js/runtime-dev/node_modules/', '@resolve-js/runtime-aws-serverless/node_modules/']
+              const requireDirs = ['', '@resolve-js/runtime-base/node_modules/', '@resolve-js/runtime-single-process/node_modules/', '@resolve-js/runtime-aws-serverless/node_modules/']
               let modulePath = null
               const moduleName = ${JSON.stringify(moduleName)}
               for(const dir of requireDirs) {

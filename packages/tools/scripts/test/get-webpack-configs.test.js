@@ -67,7 +67,7 @@ test('should make webpack configs for local mode', async () => {
     resolveConfig: {
       ...resolveConfig,
       runtime: {
-        module: '@resolve-js/runtime-dev',
+        module: '@resolve-js/runtime-single-process',
       },
     },
     nodeModulesByAssembly,
@@ -111,7 +111,7 @@ test('should make external package.json resolver', async () => {
     resolveConfig: {
       ...resolveConfig,
       runtime: {
-        module: '@resolve-js/runtime-dev',
+        module: '@resolve-js/runtime-single-process',
       },
     },
     nodeModulesByAssembly,

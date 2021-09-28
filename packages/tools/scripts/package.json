@@ -36,7 +36,7 @@
     "@resolve-js/debug-levels": "0.31.10",
     "@resolve-js/core": "0.31.10",
     "@resolve-js/runtime-base": "0.31.10",
-    "@resolve-js/runtime-dev": "0.31.10",
+    "@resolve-js/runtime-single-process": "0.31.10",
     "@resolve-js/runtime-aws-serverless": "0.31.10",
     "address": "1.1.2",
     "ajv": "7.2.1",

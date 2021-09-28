@@ -5,7 +5,7 @@ const devReplicaConfig = {
   ...devCommonConfig,
   name: 'hacker-news-replica',
   runtime: {
-    module: '@resolve-js/runtime-dev',
+    module: '@resolve-js/runtime-single-process',
     options: {
       host: declareRuntimeEnv('REPLICA_HOST', 'localhost'),
       port: declareRuntimeEnv('REPLICA_PORT', '4001'),
