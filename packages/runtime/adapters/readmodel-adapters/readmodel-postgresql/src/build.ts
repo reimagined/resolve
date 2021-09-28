@@ -401,6 +401,16 @@ const buildEvents: (
         } else if (status === 'CUSTOM_ERROR') {
           lastFailedEvent = failureEvent
           lastError = failureError
+
+          if (
+            failureError != null &&
+            failureEvent != null &&
+            groupMonitoring != null
+          ) {
+            groupMonitoring
+              .group({ EventType: failureEvent.type })
+              .error(failureError)
+          }
         }
 
         if (getVacantTimeInMillis() < 0) {
