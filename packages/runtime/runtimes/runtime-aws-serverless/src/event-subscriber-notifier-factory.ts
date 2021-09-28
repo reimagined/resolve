@@ -88,12 +88,15 @@ export const eventSubscriberNotifierFactory = async (
     destination: string,
     parameters: Record<string, any>
   ) => {
-    await invokeFunction({
-      Region: region,
-      FunctionName: destination,
-      Payload: parameters,
-      InvocationType: 'Event',
-    })
+    try {
+      await invokeFunction({
+        Region: region,
+        FunctionName: destination,
+        Payload: parameters,
+        InvocationType: 'RequestResponse',
+        MaximumExecutionDuration: 500,
+      })
+    } catch (error) {}
   }
 
   const sendSqsMessage = async (

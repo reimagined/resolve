@@ -8,6 +8,10 @@
 
 - Resolve gate [\#2040](https://github.com/reimagined/resolve/pull/2040)
 
+**Enhancements:**
+
+- Add an option to specify hostname for running app in dev mode [\#2024](https://github.com/reimagined/resolve/issues/2024)
+
 **Breaking changes:**
 
 - Update minimal node version to 14 [\#2034](https://github.com/reimagined/resolve/pull/2034)
