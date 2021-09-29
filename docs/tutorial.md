@@ -60,6 +60,52 @@ yarn test:e2e
 
 Each consequent lesson in this tutorial will offer you new tests as you develop your application. Copy these tests to your application and run them to ensure that you are ready to move to the next lesson.
 
+### Remove Demo Code
+
+A new application contains demo code that demonstrates reSolve's core features. Follow the steps below to remove this code so you can start your application from scratch:
+
+- Delete all the contents from the project's **client** and **common** folders.
+- Open the **config.app.js** file and remove all options specified within the `appConfig` configuration object:
+  ```js
+  // config.app.js
+  const appConfig = {
+    // This object should be empty.
+  }
+  export default appConfig
+  ```
+- Open the **config.dev.js** and **config.test-functional.js** files and, in both files, remove or comment out the `readModelConnectors` option:
+
+  ```js
+  // config.dev.js, config.test-functional.js
+  const devConfig = {
+  ...
+    // Remove or comment out the option below.
+
+    // readModelConnectors: {
+    //   default: {
+    //     module: '@resolve-js/readmodel-lite',
+    //     options: {
+    //       databaseFile: 'data/read-models.db',
+    //     },
+    //   },
+    // }
+    ...
+  }
+  export default devConfig
+  ```
+
+- Open the **test/e2e/index.test.js** file and remove or comment out the following test case:
+
+  ```js
+  // Remove or comment out the test case below.
+
+  // test('home page', async (t) => {
+  // await t
+  //    .expect(await Selector('span').withText('reSolve React Template').exists)
+  //    .eql(true)
+  // })
+  ```
+
 ## **Lesson 1** - Write side - Add Shopping Lists
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-1)
@@ -554,7 +600,7 @@ export default {
 - [store.defineTable](api/read-model/store.md#definetable)
 - [store.insert](api/read-model/store.md#insert)
 
-The type of the physical store used to save data is defined by a Read Model connector:
+The type of the physical store used to save data is defined by a Read Model connector. Add the following code to the **config.dev.js** file.
 
 **config.dev.js**
 
@@ -583,6 +629,25 @@ const devConfig = {
         }
       }
     */
+  },
+}
+```
+
+Specify the same option within the **config.test-functional.js** file so that e2e tests could work with read models:
+
+**config.test-functional.js**
+
+```js
+const testFunctionalConfig = {
+  ...
+  readModelConnectors: {
+    default: {
+      module: '@resolve-js/readmodel-lite',
+      options: {
+        // Use a separate database file for testing.
+        databaseFile: 'data/read-models-test-functional.db',
+      },
+    },
   },
 }
 ```
