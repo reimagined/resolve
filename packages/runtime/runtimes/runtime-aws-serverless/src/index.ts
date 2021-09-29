@@ -57,8 +57,6 @@ const entry = async (
       serverImports: assemblies.serverImports,
       domain,
       ...constants,
-      // TODO: what is this?
-      publisher: {},
       assemblies,
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
