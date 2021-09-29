@@ -4,7 +4,11 @@ import {
   CURSOR_BUFFER_SIZE,
   THREAD_COUNTER_BYTE_LENGTH,
 } from './constants'
-import { InputCursor, StoredEventBatchPointer, StoredEventPointer } from './types'
+import {
+  InputCursor,
+  StoredEventBatchPointer,
+  StoredEventPointer,
+} from './types'
 
 const checkThreadArrayLength = (threadArray: Array<number>): void => {
   assert.strictEqual(

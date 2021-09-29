@@ -1,7 +1,10 @@
 import type { Domain, DomainMeta } from '@resolve-js/core'
 import type { EventListener } from './types'
 
-export const gatherEventListeners = (domain: DomainMeta, domainInterop: Domain) => {
+export const gatherEventListeners = (
+  domain: DomainMeta,
+  domainInterop: Domain
+) => {
   const { sagas, readModels } = domain
   const {
     sagaDomain: {
@@ -44,4 +47,3 @@ export const gatherEventListeners = (domain: DomainMeta, domainInterop: Domain) 
 
   return eventListeners
 }
-
