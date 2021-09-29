@@ -55,7 +55,10 @@ const executeCommandWithRetryConflicts = async (
   return result
 }
 
-export const commandHandler = async (req: ResolveRequest, res: ResolveResponse) => {
+export const commandHandler = async (
+  req: ResolveRequest,
+  res: ResolveResponse
+) => {
   const segment = req.resolve.performanceTracer.getSegment()
   const subSegment = segment.addNewSubsegment('command')
 

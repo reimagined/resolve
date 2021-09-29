@@ -9,7 +9,6 @@ import runtimeFactory from '../src/index'
 import type {
   Assemblies,
   BuildTimeConstants,
-  DomainWithHandlers,
   RuntimeWorker,
   UploaderPool,
 } from '@resolve-js/runtime-base'
@@ -24,6 +23,7 @@ import type {
   ReadModelMeta,
   Event,
   AggregateMeta,
+  DomainMeta,
 } from '@resolve-js/core'
 
 const originalMathRandom = Math.random.bind(Math)
@@ -35,7 +35,7 @@ const mAssumeRole = mocked(STS.prototype.assumeRole)
 describe('runtime', () => {
   let constants: BuildTimeConstants
   let assemblies: Assemblies
-  let domain: DomainWithHandlers
+  let domain: DomainMeta
   let uploadAdapter: UploaderPool
   let eventStoreAdapter: EventStoreAdapter
   let lambdaContext: LambdaContext

@@ -1,5 +1,8 @@
 import type { EventSubscriberNotifier } from '@resolve-js/runtime-base'
-import { createEventSubscriberNotification, getLog } from '@resolve-js/runtime-base'
+import {
+  createEventSubscriberNotification,
+  getLog,
+} from '@resolve-js/runtime-base'
 import { getAccountIdFromLambdaContext } from 'resolve-cloud-common/utils'
 import {
   createEventSourceMapping,
@@ -7,9 +10,13 @@ import {
   getEventSourceMapping,
   getFunctionTags,
   invokeFunction,
-  setFunctionTags
+  setFunctionTags,
 } from 'resolve-cloud-common/lambda'
-import { deleteSqsQueue, ensureSqsQueue, sendMessage } from 'resolve-cloud-common/sqs'
+import {
+  deleteSqsQueue,
+  ensureSqsQueue,
+  sendMessage,
+} from 'resolve-cloud-common/sqs'
 import { getCallerIdentity } from 'resolve-cloud-common/sts'
 import { EventSubscriberInterface } from './types'
 

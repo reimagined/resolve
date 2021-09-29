@@ -46,8 +46,6 @@ export type LambdaColdStartContext = {
   readonly getReactiveSubscription: ReactiveSubscriptionFactory
   // TODO: do we really need this somewhere?
   readonly assemblies: Assemblies
-  // TODO: what is this?
-  readonly publisher: any
 }
 
 export type LambdaEventRecord = {

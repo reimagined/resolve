@@ -288,7 +288,7 @@ describe('Command handlers', () => {
       },
       timestamp: Date.now(),
       threadId: 0,
-      threadCounter: 0
+      threadCounter: 0,
     })
 
     try {
