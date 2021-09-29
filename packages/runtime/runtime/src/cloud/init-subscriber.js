@@ -47,12 +47,15 @@ const initSubscriber = (resolve, lambdaContext) => {
   }
 
   resolve.invokeLambdaAsync = async (destination, parameters) => {
-    await invokeFunction({
-      Region: region,
-      FunctionName: destination,
-      Payload: parameters,
-      InvocationType: 'Event',
-    })
+    try {
+      await invokeFunction({
+        Region: region,
+        FunctionName: destination,
+        Payload: parameters,
+        InvocationType: 'RequestResponse',
+        MaximumExecutionDuration: 500,
+      })
+    } catch (error) {}
   }
 
   resolve.sendSqsMessage = async (destination, parameters) => {

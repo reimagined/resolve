@@ -8,6 +8,10 @@
 
 - Resolve gate [\#2040](https://github.com/reimagined/resolve/pull/2040)
 
+**Enhancements:**
+
+- Add an option to specify hostname for running app in dev mode [\#2024](https://github.com/reimagined/resolve/issues/2024)
+
 **Breaking changes:**
 
 - Update minimal node version to 14 [\#2034](https://github.com/reimagined/resolve/pull/2034)
@@ -15,6 +19,7 @@
 **Bug fixes:**
 
 - Timestamps from CommandResult and Event are different [\#1994](https://github.com/reimagined/resolve/issues/1994)
+- The Replicator read model takes a lot of resources during replication of big event store \(5kk events\) [\#1949](https://github.com/reimagined/resolve/issues/1949)
 
 **Documentation:**
 
