@@ -1,59 +1,107 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react'
 
-export default function MyComponent() {
-  const [bool, setBool] = useState(false);
+import Adapter from './Adapter'
+import Aggregates from './Aggregates'
+import ApiHandlers from './ApiHandlers'
+import Arrows from './Arrows'
+import Client from './Client'
+import DataBase from './DataBase'
+import ReadModels from './ReadModels'
+import ReadSide from './ReadSide'
+import Sagas from './Sagas'
+import Server from './Server'
+import ViewModels from './ViewModels'
+import WriteSide from './WriteSide'
 
-  const getCol = () => {
-    if (bool) {
-        return "#aade87"
+import AggregatesPage from '../pages/_aggregates.mdx';
+import ApiHandlersPage from '../pages/_api-handlers.mdx';
+import EsAdapterPage from '../pages/_es-adapter.mdx';
+import WriteSidePage from '../pages/_write-side.mdx';
+
+import '../static/styles.css'
+
+const tabs = {
+  apiHandlers: {
+    page: 'saddsfg dsf sdf',
+  },
+  writeSide: {
+    page: 'saddsfg dsf sdf ',
+  },
+  aggregates: {
+    page: 'saddsfg dsf sdf ',
+  },
+  esAdapter: {
+    page: 'saddsfg dsf sdf ',
+  },
+}
+
+
+const Chart = () => {
+  const [selectedTab, setSelectedTab] = useState(null)
+
+  const getSelected = (tabName) => tabName == selectedTab
+
+  const renderDetail = () => {
+    if (selectedTab == "writeSide") {
+      return <div className="detail"><WriteSidePage></WriteSidePage></div>
     }
+    if (selectedTab == "esAdapter") {
+      return <div className="detail"><EsAdapterPage></EsAdapterPage></div>
+    } 
+    if (selectedTab == "apiHandlers") {
+      return <div className="detail"><ApiHandlersPage></ApiHandlersPage></div>
+    } 
+    if (selectedTab == "aggregates") {
+      return <div className="detail"><AggregatesPage></AggregatesPage></div>
+    } 
     else {
-        return "#ffde87"
+      return null
     }
-  }
-
-  const recClicked = () => {
-      setBool(true)
   }
 
 
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="375.039"
-      height="87.326"
-      viewBox="0 0 99.229 23.105"
-    >
-      <defs>
-        <marker id="Arrow2Send" orient="auto" overflow="visible">
-          <path
-            fillRule="evenodd"
-            stroke="#000"
-            strokeLinejoin="round"
-            strokeWidth="0.188"
-            d="M-1.926-1.21L1.352-.005l-3.278 1.206a2.05 2.05 0 000-2.411z"
-          ></path>
-        </marker>
-      </defs>
-      <g transform="translate(-6.236 -95.48)">
-        <path
-          fill = { getCol() }
-          d="M6.236 95.6H49.534V118.585H6.236z"
-          paintOrder="fill markers stroke"
-        ></path>
-        <path
-          fill="#aade87"
-          d="M62.167 95.48H105.465V118.465H62.167z"
-          paintOrder="fill markers stroke"
-        ></path>
-        <path
-          fill="none"
-          stroke="#000"
-          strokeWidth="0.5"
-          markerEnd="url(#Arrow2Send)"
-          d="M49.326 107.82h12.851"
-        ></path>
-      </g>
-    </svg>
-  );
+    <div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="true"
+        height="400"
+        width="550"
+        viewBox="10 0 60 60"
+      >
+        <g transform="translate(-10.143 -142)">
+          <Server />
+          <WriteSide
+            selected={getSelected('writeSide')}
+            onClick={() => setSelectedTab('writeSide')}
+          />
+          <Aggregates
+            selected={getSelected('aggregates')}
+            onClick={() => setSelectedTab('aggregates')}
+          />
+          <DataBase />
+          <ApiHandlers
+            selected={getSelected('apiHandlers')}
+            onClick={() => setSelectedTab('apiHandlers')}
+          />
+          <Adapter
+            selected={getSelected('esAdapter')}
+            onClick={() => setSelectedTab('esAdapter')}
+          />
+          <ReadSide />
+          <ReadModels />
+          <Sagas />
+          <ViewModels />
+
+          <Client />
+          <Arrows />
+        </g>
+      </svg>
+      <div>
+        {renderDetail()}
+      </div>
+    </div>
+  )
 }
+
+export default Chart

@@ -1,0 +1,43 @@
+.box-interactive:hover {
+  cursor: pointer;
+}
+
+.box-solid > path {
+  fill: rgb(57, 73, 171);
+}
+
+.box-solid[data-selected='true'] > path {
+  fill: green;
+}
+
+.box-framed > path {
+  fill: rgb(218, 225, 246);
+  stroke: rgb(57, 73, 171);
+}
+
+.box-framed[data-selected='true'] > path {
+  fill: lightgreen;
+  stroke: green;
+}
+
+.box-framed[data-selected='true'] text {
+  fill: green;
+}
+
+.box-child-framed > path {
+  fill: rgb(218, 225, 246);
+}
+
+.box-child-framed[data-selected='true'] > path {
+  fill: green;
+}
+
+.box-child-framed[data-selected='true'] text {
+  fill: white;
+}
+
+.detail {
+  padding: 20px;
+  background-color: rgb(218, 225, 246);
+  border-radius: 10px;
+}

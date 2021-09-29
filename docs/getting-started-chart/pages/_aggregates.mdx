@@ -1,0 +1,72 @@
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+**Aggregate**
+
+In terms of the event sourcing paradigm, an aggregate is a cluster of domain objects. An aggregate should be able to handle its commands without the need to communicate with other aggregates, which also makes it a transaction boundary.
+
+An aggregate is defined as follows:
+
+<Tabs>
+<TabItem value="commands" label="Command Handlers" default>
+
+```js
+// common/aggregates/my-aggregate.commands.js
+
+const aggregate = {
+  create: (state, { payload: { name } }) => {
+    if (state.exists) {
+      throw new Error('Aggregate already exists')
+    }
+    return {
+      type: MY_AGGREGATE_CREATED,
+      payload: { name },
+    }
+  },
+  addItem: (state) => {
+    if (!state.exists) {
+      throw new Error('Aggregate not exist')
+    }
+    return {
+      type: MY_AGGREGATE_ITEM_ADDED,
+      payload: { itemName: `Item ${state.items.length}` },
+    }
+  }
+  ...
+}
+export default aggregate
+```
+
+</TabItem>
+<TabItem value="projection" label="Projection">
+
+```js
+// common/aggregates/my-aggregate.projection.js
+
+const projection = {
+  Init: () => ({
+    exists: false,
+  }),
+  [MY_AGGREGATE_CREATED]: (state) => ({
+    ...state,
+    exists: true,
+    items: [],
+  }),
+  [MY_AGGREGATE_DELETED]: (state) => ({
+    ...state,
+    exists: false,
+  }),
+  [MY_AGGREGATE_ITEM_ADDED]: (state, { payload }) => ({
+    ...state,
+    items: [...state.items, payload.itemName],
+  }),
+  [MY_AGGREGATE_ITEM_REMOVED]: (state, { payload }) => ({
+    ...state,
+    items: state.items.filter((item) => item !== payload.itemName),
+  }),
+}
+export default projection
+```
+
+</TabItem>
+</Tabs>
