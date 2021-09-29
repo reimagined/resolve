@@ -26,6 +26,10 @@
 - Describe the `host` option [\#2043](https://github.com/reimagined/resolve/pull/2043)
 - Describe API for fundamental entities of reSolve [\#2032](https://github.com/reimagined/resolve/pull/2032)
 
+**Other changes:**
+
+- Update invocation type for send notifications [\#2053](https://github.com/reimagined/resolve/pull/2053)
+
 ## [V0.31.10](https://github.com/reimagined/resolve/tree/V0.31.10) (2021-09-08)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.9...V0.31.10)
