@@ -50,6 +50,7 @@ const createAdapter = <
     init,
     drop,
     gatherSecretsFromEvents,
+    getEventLoader,
   }: CommonAdapterFunctions<ConnectedProps>,
   {
     connect,
@@ -94,6 +95,7 @@ const createAdapter = <
     getCursorUntilEventTypes,
     describe,
     establishTimeLimit,
+    getEventLoaderNative,
   }: AdapterFunctions<ConnectedProps, ConnectionDependencies, Config>,
   connectionDependencies: ConnectionDependencies,
   options: Config
@@ -159,6 +161,9 @@ const createAdapter = <
     dropFinal: wrapMethod(adapterPool, dropFinal),
     waitConnect: wrapMethod(adapterPool, emptyFunction),
     shapeEvent,
+    getEventLoaderNative: getEventLoaderNative
+      ? wrapMethod(adapterPool, getEventLoaderNative)
+      : getEventLoaderNative,
   }
 
   Object.assign<
@@ -220,6 +225,7 @@ const createAdapter = <
             return
           }
         : establishTimeLimit.bind(null, adapterPool),
+    getEventLoader: wrapMethod(adapterPool, getEventLoader),
   }
 
   Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(
