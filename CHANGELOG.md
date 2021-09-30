@@ -28,6 +28,7 @@
 
 **Other changes:**
 
+- Bump resolve-cloud-common version [\#2054](https://github.com/reimagined/resolve/pull/2054)
 - Update invocation type for send notifications [\#2053](https://github.com/reimagined/resolve/pull/2053)
 
 ## [V0.31.10](https://github.com/reimagined/resolve/tree/V0.31.10) (2021-09-08)
