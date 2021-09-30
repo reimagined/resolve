@@ -21,6 +21,9 @@ const serializeError = (error: Error & { code: number }) =>
       }
     : null
 
+const immediatelyStopError = new Error('ImmediatelyStopError')
+const immediatelyStopTimeout = 45 * 1000
+
 const buildInit: (
   currentPool: {
     ledgerTableNameAsId: string
@@ -674,12 +677,13 @@ const build: ExternalMethods['build'] = async (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis,
+  inputGetVacantTimeInMillis,
   buildInfo
 ) => {
   const log = getLog('build')
   log.debug(`Start building`)
-
+  const getVacantTimeInMillis = () =>
+    Math.max(inputGetVacantTimeInMillis() - immediatelyStopTimeout, 0)
   eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
   const { eventsWithCursors, ...inputMetricData } = buildInfo
   const metricData = {
@@ -831,17 +835,34 @@ const build: ExternalMethods['build'] = async (
       buildMethod = buildEvents
     }
 
-    await buildMethod(
-      currentPool,
-      basePool,
-      readModelName,
-      store,
-      modelInterop,
-      next,
-      eventstoreAdapter,
-      getVacantTimeInMillis,
-      buildInfo
-    )
+    let barrierTimeout: ReturnType<typeof setTimeout> | null = null
+
+    try {
+      await Promise.race([
+        new Promise((_, reject) => {
+          barrierTimeout = setTimeout(() => {
+            reject(immediatelyStopError)
+            barrierTimeout = null
+          }, inputGetVacantTimeInMillis())
+        }),
+        buildMethod(
+          currentPool,
+          basePool,
+          readModelName,
+          store,
+          modelInterop,
+          next,
+          eventstoreAdapter,
+          getVacantTimeInMillis,
+          buildInfo
+        ),
+      ])
+    } finally {
+      if (barrierTimeout != null) {
+        clearTimeout(barrierTimeout)
+        barrierTimeout = null
+      }
+    }
 
     try {
       await inlineLedgerRunQuery(`
@@ -855,6 +876,14 @@ const build: ExternalMethods['build'] = async (
       }
     }
   } catch (error) {
+    if (error === immediatelyStopError) {
+      try {
+        await basePool.connection.end()
+      } catch (e) {}
+      await next()
+      return
+    }
+
     if (
       error == null ||
       !(
