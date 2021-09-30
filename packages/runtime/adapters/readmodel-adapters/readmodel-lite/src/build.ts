@@ -476,7 +476,7 @@ const build: ExternalMethods['build'] = async (
     for (const innerMonitoring of [monitoring, groupMonitoring]) {
       if (innerMonitoring != null) {
         innerMonitoring
-          .group({ Part: 'EventDelivery' })
+          .group({ Part: 'ReadModelProjection' })
           .group({ Readmodel: readModelName })
           .duration('EventDelivery', now - metricData.sendTime)
       }
@@ -645,7 +645,7 @@ const build: ExternalMethods['build'] = async (
     for (const innerMonitoring of [monitoring, groupMonitoring]) {
       if (innerMonitoring != null) {
         innerMonitoring
-          .group({ Part: 'Ledger' })
+          .group({ Part: 'ReadModelProjection' })
           .group({ Readmodel: readModelName })
           .duration('Ledger', metricData.pureLedgerTime)
       }
