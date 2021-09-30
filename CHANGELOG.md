@@ -28,6 +28,7 @@
 
 **Other changes:**
 
+- Next step on long builds [\#2056](https://github.com/reimagined/resolve/pull/2056)
 - Bump resolve-cloud-common version [\#2054](https://github.com/reimagined/resolve/pull/2054)
 - Update invocation type for send notifications [\#2053](https://github.com/reimagined/resolve/pull/2053)
 
