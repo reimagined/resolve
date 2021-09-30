@@ -398,7 +398,7 @@ const buildEvents: (
         }
         if (status === 'OK_ALL' || status === 'OK_PARTIAL') {
           if (nextCursorPromise == null) {
-            nextCursorPromise = nextCursorPromise = getContinuousLatestCursor(
+            nextCursorPromise = getContinuousLatestCursor(
               cursor,
               appliedEventsThreadData,
               eventTypes
