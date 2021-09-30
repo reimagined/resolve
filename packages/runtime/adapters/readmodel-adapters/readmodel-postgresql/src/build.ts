@@ -836,6 +836,7 @@ const build: ExternalMethods['build'] = async (
     }
 
     let barrierTimeout: ReturnType<typeof setTimeout> | null = null
+
     try {
       await Promise.race([
         new Promise((_, reject) => {
