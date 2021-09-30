@@ -35,8 +35,7 @@
     "newtype-ts": "0.3.4"
   },
   "devDependencies": {
-    "jest": "27.0.3",
-    "sinon": "9.2.4"
+    "jest": "27.0.3"
   },
   "engines": {
     "node": ">=14.17"
