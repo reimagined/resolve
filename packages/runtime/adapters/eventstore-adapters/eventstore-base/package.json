@@ -27,7 +27,7 @@
     "@babel/runtime": "7.14.0",
     "@resolve-js/core": "0.31.10",
     "@resolve-js/debug-levels": "0.31.10",
-    "fp-ts": "2.9.5",
+    "fp-ts": "2.10.0",
     "io-ts": "2.2.16",
     "io-ts-types": "0.5.15",
     "monocle-ts": "2.3.9",
@@ -35,8 +35,7 @@
     "newtype-ts": "0.3.4"
   },
   "devDependencies": {
-    "jest": "27.0.3",
-    "sinon": "9.2.4"
+    "jest": "27.0.3"
   },
   "engines": {
     "node": ">=14.17"
