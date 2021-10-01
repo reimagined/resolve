@@ -37,6 +37,13 @@ const inlineLedgerForceStop: InlineLedgerForceStopMethod = async (
       )
       break
     } catch (error) {
+      if (
+        /must be a member of the role whose process is being terminated or member of pg_signal_backend/.test(
+          `${error}`
+        )
+      ) {
+        break
+      }
       if (error instanceof PassthroughError) {
         continue
       }
