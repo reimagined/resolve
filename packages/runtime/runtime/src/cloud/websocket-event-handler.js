@@ -78,7 +78,10 @@ const handleWebsocketEvent = async ({ method, payload }, resolve) => {
           if (connectionIdResult[0] != null) {
             const { eventTypes, aggregateIds } = connectionIdResult[0]
 
-            const { events, cursor } = await resolve.eventStore.loadEvents({
+            const {
+              events,
+              cursor,
+            } = await resolve.eventstoreAdapter.loadEvents({
               eventTypes:
                 eventTypes === JSON.stringify(null)
                   ? null

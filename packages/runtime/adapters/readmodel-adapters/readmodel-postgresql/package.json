@@ -27,6 +27,7 @@
     "@babel/runtime": "7.14.0",
     "@resolve-js/debug-levels": "0.31.10",
     "@resolve-js/readmodel-base": "0.31.10",
+    "@resolve-js/eventstore-base": "0.31.10",
     "pg": "8.5.1"
   },
   "devDependencies": {
@@ -37,7 +38,7 @@
     "aws-sdk": "^2.860.0"
   },
   "engines": {
-    "node": ">=12.18"
+    "node": ">=14.17"
   },
   "babelCompile": [
     {

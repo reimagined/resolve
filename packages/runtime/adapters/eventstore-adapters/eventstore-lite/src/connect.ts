@@ -5,7 +5,6 @@ import type {
   SqliteAdapterPoolConnectedProps,
   SqliteAdapterConfig,
   AdapterPool,
-  BetterSqliteDb,
 } from './types'
 import { SqliteAdapterConfigSchema } from './types'
 import { validate } from '@resolve-js/eventstore-base'

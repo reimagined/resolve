@@ -58,7 +58,7 @@ const notifyEventSubscriber = async (
 }
 
 const notifyEventSubscribers = async (resolve, eventWithCursor) => {
-  const maxDuration = Math.max(resolve.getVacantTimeInMillis() - 15000, 0)
+  const maxDuration = resolve.getVacantTimeInMillis()
   let timerId = null
 
   const timerPromise = new Promise((resolve) => {

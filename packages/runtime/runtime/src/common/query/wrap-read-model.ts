@@ -863,7 +863,7 @@ const wrapReadModel = ({
           ...status,
           properties: {
             ...currentProperties,
-            [parameters.key]: parameters.value,
+            [parameters.key]: `${parameters.value}`,
           },
         },
         updateOnly: true,

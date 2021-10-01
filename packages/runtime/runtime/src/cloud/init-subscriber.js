@@ -51,7 +51,8 @@ const initSubscriber = (resolve, lambdaContext) => {
       Region: region,
       FunctionName: destination,
       Payload: parameters,
-      InvocationType: 'Event',
+      InvocationType: 'RequestOnly',
+      MaximumExecutionDuration: 200,
     })
   }
 

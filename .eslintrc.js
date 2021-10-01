@@ -110,7 +110,6 @@ module.exports = {
           'calc',
           'cax',
           'cdn',
-          'chai',
           'chainable',
           'charset',
           'checkbox',

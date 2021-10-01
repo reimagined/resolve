@@ -8,17 +8,6 @@ import type {
   AdapterTableNamesProps,
 } from '@resolve-js/eventstore-base'
 
-export type Coercer = (
-  value: {
-    intValue: number
-    stringValue: string
-    bigIntValue: number
-    longValue: number
-    booleanValue: boolean
-  } & {
-    [key: string]: any
-  }
-) => number | string | boolean
 type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
@@ -28,7 +17,6 @@ export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps &
     connectionOptions: any
     databaseName: string
     fullJitter: FullJitter
-    coercer: Coercer
     executeStatement: (
       sql: string,
       useDistinctConnection?: boolean
@@ -63,7 +51,6 @@ export type ConnectionDependencies = {
     sql: string,
     useDistinctConnection?: boolean
   ) => Promise<any[]>
-  coercer: Coercer
 }
 
 export type PostgresResourceConfig = {

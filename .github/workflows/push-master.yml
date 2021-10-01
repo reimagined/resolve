@@ -10,9 +10,9 @@ jobs:
     if: startsWith(github.event.head_commit.message, '<auto>') != true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
 
       - name: Build packages
         run: |

@@ -28,16 +28,16 @@ The middleware handler function receives the following arguments:
 | middlewareContext | Contains data that describes the currently processed operation.                                       |
 | state             | The state object built by the aggregate [projection](../write-side.md#aggregate-projection-function). |
 | command           | An object that contains data about the incoming command.                                              |
-| context           | The command [context](command-handler.md#context) object.                                             |
+| context           | The command [context](aggregate/command-handler.md#context) object.                                   |
 
 ### middlewareContext
 
 A command middleware handler's `middlewareContext` argument is an object with the following fields:
 
-| Field Name | Description                                                     |
-| ---------- | --------------------------------------------------------------- |
+| Field Name | Description                                                      |
+| ---------- | ---------------------------------------------------------------- |
 | req        | Stores data that describes the currently processed HTTP request. |
-| res        | Contains the function used to configure the server's response.       |
+| res        | Contains the function used to configure the server's response.   |
 
 Both `req` and `res` fields are included only if the client sends the command. If the command is generated on the server (for example, by a saga or API handler), these fields are omitted.
 
@@ -62,19 +62,19 @@ The middleware handler function receives the following arguments:
 | Parameter Name    | Description                                                                                           |
 | ----------------- | ----------------------------------------------------------------------------------------------------- |
 | middlewareContext | Contains data that describes the currently processed operation.                                       |
-| store             | Exposes [API](read-model-store.md) used to communicate with the read model's persistent data storage. |
+| store             | Exposes [API](read-model/store.md) used to communicate with the read model's persistent data storage. |
 | event             | The incoming event object.                                                                            |
-| context           | The read model projection [context](read-model-event-handler.md#context) object.                      |
+| context           | The read model projection [context](read-model/projection.md#context) object.                         |
 
 ### middlewareContext
 
 A projection middleware handler's `middlewareContext` argument is an object with the following fields:
 
-| Field Name    | Description                                                     |
-| ------------- | --------------------------------------------------------------- |
+| Field Name    | Description                                                      |
+| ------------- | ---------------------------------------------------------------- |
 | req           | Stores data that describes the currently processed HTTP request. |
-| res           | Contains the function used to configure the server's response.       |
-| readModelName | The name of the processed read model.                           |
+| res           | Contains the function used to configure the server's response.   |
+| readModelName | The name of the processed read model.                            |
 
 ## Read Model Resolver Middleware
 
@@ -97,17 +97,17 @@ The middleware handler function receives the following arguments:
 | Parameter Name    | Description                                                                                           |
 | ----------------- | ----------------------------------------------------------------------------------------------------- |
 | middlewareContext | Contains data that describes the currently processed operation.                                       |
-| store             | Exposes [API](read-model-store.md) used to communicate with the read model's persistent data storage. |
+| store             | Exposes [API](read-model/store.md) used to communicate with the read model's persistent data storage. |
 | params            | An object that contains the request parameters as key-value pairs.                                    |
-| context           | The read model resolver [context](read-model-resolver.md#context) object.                             |
+| context           | The read model resolver [context](read-model/resolver.md#context) object.                             |
 
 ### middlewareContext
 
 A projection middleware handler's `middlewareContext` argument is an object with the following fields:
 
-| Field Name    | Description                                                     |
-| ------------- | --------------------------------------------------------------- |
+| Field Name    | Description                                                      |
+| ------------- | ---------------------------------------------------------------- |
 | req           | Stores data that describes the currently processed HTTP request. |
-| res           | Contains the function used to configure the server's response.       |
-| readModelName | The name of the processed read model.                           |
-| resolverName  | The name of the queried resolver.                               |
+| res           | Contains the function used to configure the server's response.   |
+| readModelName | The name of the processed read model.                            |
+| resolverName  | The name of the queried resolver.                                |
