@@ -3637,6 +3637,13 @@
   dependencies:
     "@types/lodash" "*"
 
+"@types/lodash.escaperegexp@4.1.6":
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.escaperegexp/-/lodash.escaperegexp-4.1.6.tgz#3e2326aa33e95b2f3801de027f04a4f7aba2af4f"
+  integrity sha512-uENiqxLlqh6RzeE1cC6Z2gHqakToN9vKlTVCFkSVjAfeMeh2fY0916tHwJHeeKs28qB/hGYvKuampGYH5QDVCw==
+  dependencies:
+    "@types/lodash" "*"
+
 "@types/lodash.get@4.4.6":
   version "4.4.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.get/-/lodash.get-4.4.6.tgz#0c7ac56243dae0f9f09ab6f75b29471e2e777240"
