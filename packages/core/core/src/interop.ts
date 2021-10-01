@@ -6,8 +6,7 @@ import type {
   CommandMiddleware,
   ReadModelProjectionMiddleware,
   ReadModelResolverMiddleware,
-  ResolveResponse,
-  ResolveRequest,
+  ApiHandlerMeta,
 } from './types/runtime'
 import type { SagaDomain, SagaInterop, SagaInteropMap } from './saga/types'
 import type {
@@ -37,12 +36,6 @@ export type Domain = {
   viewModelDomain: ViewModelDomain
 }
 
-export type ApiHandler = {
-  path: string
-  method: string
-  handler: (req: ResolveRequest, res: ResolveResponse) => Promise<void>
-}
-
 type Middlewares = {
   command: CommandMiddleware[]
   resolver: ReadModelResolverMiddleware[]
@@ -54,8 +47,7 @@ export type DomainMeta = {
   readModels: ReadModelMeta[]
   aggregates: AggregateMeta[]
   viewModels: ViewModelMeta[]
-
-  apiHandlers: ApiHandler[]
+  apiHandlers: ApiHandlerMeta[]
   middlewares?: Middlewares
 }
 

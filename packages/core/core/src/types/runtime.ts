@@ -372,3 +372,9 @@ export type ReadModelResolverMiddleware<
 export type CommandMiddleware<
   TContext extends CommandContext = CommandContext
 > = Middleware<CommandMiddlewareHandler<TContext>>
+
+export type ApiHandlerMeta = {
+  path: string
+  method: string
+  handler: (req: ResolveRequest, res: ResolveResponse) => Promise<void>
+}
