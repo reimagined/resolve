@@ -218,15 +218,69 @@ describe('API handler wrapper for express.js', () => {
     resolveHttpBody(null)
     await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.status)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "200",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Content-Type\\":\\"application/json\\",\\"Set-Cookie\\":[\\"One-Cookie-Name=One-Cookie-Value\\",\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT\\"]}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.end)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"{\\\\\\"adapter\\\\\\":\\\\\\"express\\\\\\",\\\\\\"method\\\\\\":\\\\\\"HTTP-VERB\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"header-name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"header-name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":null,\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"Two-Header-Value\\\\\\"}\\"",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with primitive JSON handler with POST client request', async () => {
@@ -237,15 +291,69 @@ describe('API handler wrapper for express.js', () => {
     ])
     await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.status)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "200",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Content-Type\\":\\"application/json\\",\\"Set-Cookie\\":[\\"One-Cookie-Name=One-Cookie-Value\\",\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT\\"]}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.end)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"{\\\\\\"adapter\\\\\\":\\\\\\"express\\\\\\",\\\\\\"method\\\\\\":\\\\\\"HTTP-VERB\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"header-name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"header-name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":null,\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"Two-Header-Value\\\\\\"}\\"",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with text handler with any client request', async () => {
@@ -253,15 +361,69 @@ describe('API handler wrapper for express.js', () => {
     resolveHttpBody(null)
     await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.status)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "200",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-Cookie\\":[\\"One-Cookie-Name=One-Cookie-Value\\",\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT\\"]}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.end)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"type\\":\\"Buffer\\",\\"data\\":[123,34,97,100,97,112,116,101,114,34,58,34,101,120,112,114,101,115,115,34,44,34,109,101,116,104,111,100,34,58,34,72,84,84,80,45,86,69,82,66,34,44,34,113,117,101,114,121,34,58,123,34,113,117,101,114,121,45,110,97,109,101,45,49,34,58,34,113,117,101,114,121,45,118,97,108,117,101,45,49,34,44,34,113,117,101,114,121,45,110,97,109,101,45,50,34,58,34,113,117,101,114,121,45,118,97,108,117,101,45,50,34,125,44,34,112,97,116,104,34,58,34,80,65,84,72,95,73,78,70,79,34,44,34,104,101,97,100,101,114,115,34,58,123,34,104,101,97,100,101,114,45,110,97,109,101,45,49,34,58,34,104,101,97,100,101,114,45,118,97,108,117,101,45,49,34,44,34,104,101,97,100,101,114,45,110,97,109,101,45,50,34,58,34,104,101,97,100,101,114,45,118,97,108,117,101,45,50,34,44,34,99,111,111,107,105,101,34,58,34,99,111,111,107,105,101,45,99,111,110,116,101,110,116,34,44,34,104,111,115,116,34,58,34,104,111,115,116,45,99,111,110,116,101,110,116,34,125,44,34,99,111,111,107,105,101,115,34,58,123,125,44,34,98,111,100,121,34,58,110,117,108,108,44,34,112,97,114,97,109,34,58,34,118,97,108,117,101,34,44,34,101,120,105,115,116,105,110,103,72,101,97,100,101,114,34,58,34,84,119,111,45,72,101,97,100,101,114,45,86,97,108,117,101,34,125]}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with custom handler with any client request', async () => {
@@ -269,15 +431,69 @@ describe('API handler wrapper for express.js', () => {
     resolveHttpBody(null)
     await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.status)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "200",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-Cookie\\":[\\"One-Cookie-Name=One-Cookie-Value\\",\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT\\"]}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.end)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"type\\":\\"Buffer\\",\\"data\\":[123,34,97,100,97,112,116,101,114,34,58,34,101,120,112,114,101,115,115,34,44,34,109,101,116,104,111,100,34,58,34,72,84,84,80,45,86,69,82,66,34,44,34,113,117,101,114,121,34,58,123,34,113,117,101,114,121,45,110,97,109,101,45,49,34,58,34,113,117,101,114,121,45,118,97,108,117,101,45,49,34,44,34,113,117,101,114,121,45,110,97,109,101,45,50,34,58,34,113,117,101,114,121,45,118,97,108,117,101,45,50,34,125,44,34,112,97,116,104,34,58,34,80,65,84,72,95,73,78,70,79,34,44,34,104,101,97,100,101,114,115,34,58,123,34,104,101,97,100,101,114,45,110,97,109,101,45,49,34,58,34,104,101,97,100,101,114,45,118,97,108,117,101,45,49,34,44,34,104,101,97,100,101,114,45,110,97,109,101,45,50,34,58,34,104,101,97,100,101,114,45,118,97,108,117,101,45,50,34,44,34,99,111,111,107,105,101,34,58,34,99,111,111,107,105,101,45,99,111,110,116,101,110,116,34,44,34,104,111,115,116,34,58,34,104,111,115,116,45,99,111,110,116,101,110,116,34,125,44,34,99,111,111,107,105,101,115,34,58,123,125,44,34,98,111,100,121,34,58,110,117,108,108,44,34,112,97,114,97,109,34,58,34,118,97,108,117,101,34,44,34,101,120,105,115,116,105,110,103,72,101,97,100,101,114,34,58,34,84,119,111,45,72,101,97,100,101,114,45,86,97,108,117,101,34,125]}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with file handler with any client request', async () => {
@@ -285,15 +501,69 @@ describe('API handler wrapper for express.js', () => {
     resolveHttpBody(null)
     await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.status)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "200",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Content-Disposition\\":\\"attachment; filename=\\\\\\"synthetic-filename.txt\\\\\\"\\",\\"Set-Cookie\\":[\\"One-Cookie-Name=One-Cookie-Value\\",\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT\\"]}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.end)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"type\\":\\"Buffer\\",\\"data\\":[123,34,97,100,97,112,116,101,114,34,58,34,101,120,112,114,101,115,115,34,44,34,109,101,116,104,111,100,34,58,34,72,84,84,80,45,86,69,82,66,34,44,34,113,117,101,114,121,34,58,123,34,113,117,101,114,121,45,110,97,109,101,45,49,34,58,34,113,117,101,114,121,45,118,97,108,117,101,45,49,34,44,34,113,117,101,114,121,45,110,97,109,101,45,50,34,58,34,113,117,101,114,121,45,118,97,108,117,101,45,50,34,125,44,34,112,97,116,104,34,58,34,80,65,84,72,95,73,78,70,79,34,44,34,104,101,97,100,101,114,115,34,58,123,34,104,101,97,100,101,114,45,110,97,109,101,45,49,34,58,34,104,101,97,100,101,114,45,118,97,108,117,101,45,49,34,44,34,104,101,97,100,101,114,45,110,97,109,101,45,50,34,58,34,104,101,97,100,101,114,45,118,97,108,117,101,45,50,34,44,34,99,111,111,107,105,101,34,58,34,99,111,111,107,105,101,45,99,111,110,116,101,110,116,34,44,34,104,111,115,116,34,58,34,104,111,115,116,45,99,111,110,116,101,110,116,34,125,44,34,99,111,111,107,105,101,115,34,58,123,125,44,34,98,111,100,121,34,58,110,117,108,108,44,34,112,97,114,97,109,34,58,34,118,97,108,117,101,34,44,34,101,120,105,115,116,105,110,103,72,101,97,100,101,114,34,58,34,84,119,111,45,72,101,97,100,101,114,45,86,97,108,117,101,34,125]}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with redirect handler with any client request', async () => {
@@ -301,15 +571,62 @@ describe('API handler wrapper for express.js', () => {
     resolveHttpBody(null)
     await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.status)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "500",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.end)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"\\"",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with error throwing handler', async () => {
@@ -317,15 +634,62 @@ describe('API handler wrapper for express.js', () => {
     resolveHttpBody(null)
     await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.status)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "500",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.end)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"\\"",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with empty end', async () => {
@@ -333,15 +697,69 @@ describe('API handler wrapper for express.js', () => {
     resolveHttpBody(null)
     await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.status)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "200",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"Set-Cookie\\":[]}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.end)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"type\\":\\"Buffer\\",\\"data\\":[]}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with empty end using chaining', async () => {
@@ -352,14 +770,68 @@ describe('API handler wrapper for express.js', () => {
     resolveHttpBody(null)
     await wrappedHandler(expressReq, expressRes)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressReq.on)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.status)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "200",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"Set-Cookie\\":[]}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.end)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"type\\":\\"Buffer\\",\\"data\\":[]}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{}}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 })

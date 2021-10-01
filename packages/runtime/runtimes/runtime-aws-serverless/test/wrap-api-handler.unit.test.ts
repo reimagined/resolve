@@ -205,72 +205,288 @@ describe('API handler wrapper for AWS Lambda', () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Content-Type\\":\\"application/json\\",\\"Set-cookie\\":\\"One-Cookie-Name=One-Cookie-Value\\",\\"set-cookie\\":\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"SEt-cookie\\":\\"Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT\\"},\\"body\\":\\"{\\\\\\"isLambdaEdgeRequest\\\\\\":false,\\\\\\"adapter\\\\\\":\\\\\\"awslambda\\\\\\",\\\\\\"method\\\\\\":\\\\\\"GET\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"Header-Name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"Header-Name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"Cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"Host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":\\\\\\"BODY_CONTENT\\\\\\",\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"Two-Header-Value\\\\\\"}\\"}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\"}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with primitive JSON handler with POST client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Content-Type\\":\\"application/json\\",\\"Set-cookie\\":\\"One-Cookie-Name=One-Cookie-Value\\",\\"set-cookie\\":\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"SEt-cookie\\":\\"Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT\\"},\\"body\\":\\"{\\\\\\"isLambdaEdgeRequest\\\\\\":false,\\\\\\"adapter\\\\\\":\\\\\\"awslambda\\\\\\",\\\\\\"method\\\\\\":\\\\\\"GET\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"Header-Name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"Header-Name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"Cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"Host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":\\\\\\"BODY_CONTENT\\\\\\",\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"Two-Header-Value\\\\\\"}\\"}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\"}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with text handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiTextHandler, getCustomParams)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-cookie\\":\\"One-Cookie-Name=One-Cookie-Value\\",\\"set-cookie\\":\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"SEt-cookie\\":\\"Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT\\"},\\"body\\":\\"{\\\\\\"isLambdaEdgeRequest\\\\\\":false,\\\\\\"adapter\\\\\\":\\\\\\"awslambda\\\\\\",\\\\\\"method\\\\\\":\\\\\\"GET\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"Header-Name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"Header-Name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"Cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"Host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":\\\\\\"BODY_CONTENT\\\\\\",\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"Two-Header-Value\\\\\\"}\\"}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\"}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with custom handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiCustomHandler, getCustomParams)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-cookie\\":\\"One-Cookie-Name=One-Cookie-Value\\",\\"set-cookie\\":\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"SEt-cookie\\":\\"Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT\\"},\\"body\\":\\"{\\\\\\"isLambdaEdgeRequest\\\\\\":false,\\\\\\"adapter\\\\\\":\\\\\\"awslambda\\\\\\",\\\\\\"method\\\\\\":\\\\\\"GET\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"Header-Name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"Header-Name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"Cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"Host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":\\\\\\"BODY_CONTENT\\\\\\",\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"Two-Header-Value\\\\\\"}\\"}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\"}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with file handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiFileHandler, getCustomParams)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Content-Disposition\\":\\"attachment; filename=\\\\\\"synthetic-filename.txt\\\\\\"\\",\\"Set-cookie\\":\\"One-Cookie-Name=One-Cookie-Value\\",\\"set-cookie\\":\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"SEt-cookie\\":\\"Two-Cookie-Name=; Expires=Thu, 01 Jan 1970 00:00:00 GMT\\"},\\"body\\":\\"{\\\\\\"isLambdaEdgeRequest\\\\\\":false,\\\\\\"adapter\\\\\\":\\\\\\"awslambda\\\\\\",\\\\\\"method\\\\\\":\\\\\\"GET\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"Header-Name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"Header-Name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"Cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"Host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":\\\\\\"BODY_CONTENT\\\\\\",\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"Two-Header-Value\\\\\\"}\\"}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\"}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with redirect handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiRedirectHandler, getCustomParams)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":500,\\"body\\":\\"\\"}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\"}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with error throwing handler', async () => {
     const wrappedHandler = wrapApiHandler(apiThrowHandler, getCustomParams)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":500,\\"body\\":\\"\\"}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\"}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with empty end', async () => {
     const wrappedHandler = wrapApiHandler(apiEmptyEndHandler, getCustomParams)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":{},\\"body\\":\\"\\"}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\"}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should work with empty end using chaining', async () => {
@@ -280,9 +496,36 @@ describe('API handler wrapper for AWS Lambda', () => {
     )
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":{},\\"body\\":\\"\\"}",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\"}",
+    },
+  ],
+}
+`)
 
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(getCustomParams)).toMatchInlineSnapshot(`
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"multiValueQueryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"type\\":\\"return\\",\\"value\\":{\\"param\\":\\"value\\"}}",
+    },
+  ],
+}
+`)
   })
 
   it('should correctly parsing query with array params', async () => {
