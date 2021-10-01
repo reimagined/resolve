@@ -1,9 +1,4 @@
-import {
-  jestTimeout,
-  makeTestEvent,
-  adapterFactory,
-  adapters,
-} from '../eventstore-test-utils'
+import { jestTimeout, adapterFactory, adapters } from '../eventstore-test-utils'
 
 import {
   initThreadArray,
@@ -13,63 +8,45 @@ import {
 
 jest.setTimeout(jestTimeout())
 
-describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
-  beforeAll(adapterFactory.create('events_testing'))
-  afterAll(adapterFactory.destroy('events_testing'))
+describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
+  beforeAll(adapterFactory.create('events_filter_testing'))
+  afterAll(adapterFactory.destroy('events_filter_testing'))
 
-  const adapter = adapters['events_testing']
+  const adapter = adapters['events_filter_testing']
 
-  const countEvents = 100
+  const eventTypesCount = 4
+  const aggregateIdCount = 5
+  const eventMultiplier = 6
 
-  test('should load 0 events after initialization', async () => {
-    const { events } = await adapter.loadEvents({
-      limit: countEvents,
-      cursor: null,
-    })
-    expect(events).toHaveLength(0)
+  const countEvents = eventTypesCount * aggregateIdCount * eventMultiplier
 
-    const description = await adapter.describe()
-    expect(description.eventCount).toEqual(0)
-    expect(description.cursor).toEqual(threadArrayToCursor(initThreadArray()))
+  const savedEvents: Array<SavedEvent> = []
 
-    const lastEvent = await adapter.getLatestEvent({})
-    expect(lastEvent).toBeNull()
-  })
-
-  test('should save events', async () => {
+  test('should save events with different aggregate ids and types', async () => {
     for (let eventIndex = 0; eventIndex < countEvents; eventIndex++) {
-      const event = makeTestEvent(eventIndex)
-      await adapter.saveEvent(event)
+      const event = {
+        aggregateId: `aggregateId_${1 + (eventIndex % aggregateIdCount)}`,
+        aggregateVersion: eventIndex + 1,
+        type: `EVENT_${1 + (eventIndex % eventTypesCount)}`,
+        payload: { eventIndex },
+        timestamp: eventIndex + 1,
+      }
+      const { event: savedEvent } = await adapter.saveEvent(event)
+      savedEvents.push(savedEvent)
+
+      if (Date.now() === savedEvent.timestamp) {
+        await new Promise((resolve) => {
+          setTimeout(resolve, 1)
+        })
+      }
     }
-
-    const description = await adapter.describe()
-    expect(description.eventCount).toEqual(countEvents)
-  })
-
-  test('should load all requested events', async () => {
-    const { cursor, events } = await adapter.loadEvents({
-      limit: countEvents + 1,
-      cursor: null,
+    savedEvents.sort((a, b) => {
+      return (
+        Math.sign(a.timestamp - b.timestamp) * 100 +
+        Math.sign(a.threadCounter - b.threadCounter) * 10 +
+        Math.sign(a.threadId - b.threadId)
+      )
     })
-    expect(events).toHaveLength(countEvents)
-
-    const description = await adapter.describe()
-    expect(events[events.length - 1].timestamp).toEqual(
-      description.lastEventTimestamp
-    )
-    expect(cursor).toEqual(description.cursor)
-
-    const lastEvent = await adapter.getLatestEvent({})
-    expect(lastEvent.timestamp).toEqual(events[events.length - 1].timestamp)
-  })
-
-  test('should load events by type', async () => {
-    const { events } = await adapter.loadEvents({
-      limit: countEvents,
-      eventTypes: ['EVENT'],
-      cursor: null,
-    })
-    expect(events).toHaveLength(countEvents)
   })
 
   test('should load 0 events by unknown type', async () => {
@@ -110,15 +87,6 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
 
     const lastEvent = await adapter.getLatestEvent({ eventTypes: [] })
     expect(lastEvent).toBeNull()
-  })
-
-  test('should load events by aggregateId', async () => {
-    const { events } = await adapter.loadEvents({
-      limit: countEvents,
-      aggregateIds: ['aggregateId'],
-      cursor: null,
-    })
-    expect(events).toHaveLength(countEvents)
   })
 
   test('should load 0 events by unknown aggregateId', async () => {
@@ -163,59 +131,22 @@ describe(`${adapterFactory.name}. Eventstore adapter events`, () => {
     expect(lastEvent).toBeNull()
   })
 
-  test('should be able to load events continuously', async () => {
-    const requestedCount = countEvents / 2
-    const { events, cursor } = await adapter.loadEvents({
-      limit: requestedCount,
+  test('should load events by type', async () => {
+    const { events } = await adapter.loadEvents({
+      limit: countEvents,
+      eventTypes: ['EVENT_2'],
       cursor: null,
     })
-    expect(events).toHaveLength(requestedCount)
-
-    const loadResult = await adapter.loadEvents({
-      cursor: cursor,
-      limit: countEvents,
-    })
-    expect(loadResult.events).toHaveLength(countEvents - requestedCount)
-    const emptyResult = await adapter.loadEvents({
-      cursor: loadResult.cursor,
-      limit: countEvents,
-    })
-    expect(emptyResult.events).toHaveLength(0)
+    expect(events).toHaveLength(countEvents / eventTypesCount)
   })
-})
 
-describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
-  beforeAll(adapterFactory.create('events_filter_testing'))
-  afterAll(adapterFactory.destroy('events_filter_testing'))
-
-  const adapter = adapters['events_filter_testing']
-
-  const countEvents = 120
-
-  const eventTypesCount = 4
-  const aggregateIdCount = 5
-
-  const savedEvents: Array<SavedEvent> = []
-
-  test('should save events with different aggregate ids and types', async () => {
-    for (let eventIndex = 0; eventIndex < countEvents; eventIndex++) {
-      const event = {
-        aggregateId: `aggregateId_${1 + (eventIndex % aggregateIdCount)}`,
-        aggregateVersion: eventIndex + 1,
-        type: `EVENT_${1 + (eventIndex % eventTypesCount)}`,
-        payload: { eventIndex },
-        timestamp: eventIndex + 1,
-      }
-      const { event: savedEvent } = await adapter.saveEvent(event)
-      savedEvents.push(savedEvent)
-    }
-    savedEvents.sort((a, b) => {
-      return (
-        Math.sign(a.timestamp - b.timestamp) * 100 +
-        Math.sign(a.threadCounter - b.threadCounter) * 10 +
-        Math.sign(a.threadId - b.threadId)
-      )
+  test('should load events by aggregateId', async () => {
+    const { events } = await adapter.loadEvents({
+      limit: countEvents,
+      aggregateIds: ['aggregateId_2'],
+      cursor: null,
     })
+    expect(events).toHaveLength(countEvents / aggregateIdCount)
   })
 
   test('should load events by distinct event types', async () => {
@@ -226,7 +157,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
       eventTypes,
       cursor: null,
     })
-    expect(events).toHaveLength(countEvents / 2)
+    expect(events).toHaveLength(
+      (countEvents / eventTypesCount) * eventTypes.length
+    )
     for (let eventIndex = 0; eventIndex < events.length; ++eventIndex) {
       const event = events[eventIndex]
       expect(event.type === 'EVENT_1' || event.type === 'EVENT_3').toBeTruthy()
@@ -258,7 +191,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
       aggregateIds,
       cursor: null,
     })
-    expect(events).toHaveLength((countEvents / aggregateIdCount) * 2)
+    expect(events).toHaveLength(
+      (countEvents / aggregateIdCount) * aggregateIds.length
+    )
     for (let eventIndex = 0; eventIndex < events.length; ++eventIndex) {
       const event = events[eventIndex]
       expect(
@@ -309,14 +244,18 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
   })
 
   test('should load events by combination of distinct event types and aggregate ids', async () => {
+    const aggregateIds = ['aggregateId_1', 'aggregateId_5']
+    const eventTypes = ['EVENT_1', 'EVENT_4']
+
     const { events } = await adapter.loadEvents({
       limit: countEvents,
-      aggregateIds: ['aggregateId_1', 'aggregateId_5'],
-      eventTypes: ['EVENT_1', 'EVENT_4'],
+      aggregateIds,
+      eventTypes,
       cursor: null,
     })
     expect(events).toHaveLength(
-      (countEvents / (aggregateIdCount * eventTypesCount)) * 4
+      (countEvents / (aggregateIdCount * eventTypesCount)) *
+        (aggregateIds.length + eventTypes.length)
     )
     for (let eventIndex = 0; eventIndex < events.length; ++eventIndex) {
       const event = events[eventIndex]
