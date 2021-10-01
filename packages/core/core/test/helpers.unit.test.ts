@@ -2,7 +2,10 @@ import {
   assertLeadingSlash,
   isAbsoluteUrl,
   getStaticBasedPath,
+  jsonDeserializeState,
+  jsonSerializeState,
 } from '../src/helpers'
+import { IS_BUILT_IN } from '../src/symbols'
 
 describe('assertLeadingSlash', () => {
   let spy: jest.SpiedFunction<any>
@@ -56,3 +59,16 @@ describe('getStaticBasedPath', () => {
     ).toEqual('https://static.resolve.fit/app/index.js')
   })
 })
+
+describe('jsonDeserializeState', () => {
+  test('should have IS_BUILT_IN field set', () => {
+    expect(jsonDeserializeState[IS_BUILT_IN]).toEqual(true)
+  })
+})
+
+describe('jsonSerializeState', () => {
+  test('should have IS_BUILT_IN field set', () => {
+    expect(jsonSerializeState[IS_BUILT_IN]).toEqual(true)
+  })
+})
+
