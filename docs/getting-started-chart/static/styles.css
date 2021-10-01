@@ -1,21 +1,25 @@
+.chart a {
+  text-decoration: none;
+}
+
 .box-interactive:hover {
   cursor: pointer;
 }
 
-.box-solid > path {
+.box-solid path {
   fill: rgb(57, 73, 171);
 }
 
-.box-solid[data-selected='true'] > path {
+.box-solid[data-selected='true'] path {
   fill: green;
 }
 
-.box-framed > path {
+.box-framed path {
   fill: rgb(218, 225, 246);
   stroke: rgb(57, 73, 171);
 }
 
-.box-framed[data-selected='true'] > path {
+.box-framed[data-selected='true'] path {
   fill: lightgreen;
   stroke: green;
 }
@@ -24,16 +28,38 @@
   fill: green;
 }
 
-.box-child-framed > path {
+.box-child-framed path {
   fill: rgb(218, 225, 246);
 }
 
-.box-child-framed[data-selected='true'] > path {
+.box-child-framed[data-selected='true'] path {
   fill: green;
 }
 
 .box-child-framed[data-selected='true'] text {
   fill: white;
+}
+
+.box-framed .box-header {
+  fill: rgb(57, 73, 171);
+  stroke-width: 0px;
+}
+
+.box-framed[data-selected='true'] .box-header {
+  fill: green;
+  stroke-width: 0px;
+}
+
+.box-framed .box-header-text {
+  fill: white;
+}
+
+.box-framed[data-selected='true'] .box-header-text {
+  fill: white;
+}
+
+.box-framed .box-header-text:hover {
+  cursor: pointer;
 }
 
 .detail {

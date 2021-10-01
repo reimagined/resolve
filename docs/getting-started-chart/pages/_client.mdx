@@ -1,0 +1,35 @@
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+**Client**
+
+ReSolve comes with several client libraries that you can use on the frontend to communicate with a reSolve server. The following libraries are available:
+
+<Tabs>
+<TabItem value="client" label="@resolve-js/client" default>
+A library that contains plain JavaScript functions used to communicate with a reSolve server.
+</TabItem>
+<TabItem value="redux" label="@resolve-js/redux">
+
+A library used to connect a React + Redux component to reSolve.
+
+</TabItem>
+<TabItem value="reactHooks" label="@resolve-js/react-hooks">
+
+A hook-based library used to connect React components to reSolve
+
+</TabItem>
+</Tabs>
+
+You can also dirrectly use the HTTP expose by a reSolve server:
+
+```js
+const response = await fetch(`/api/query/ShoppingLists/all`, {
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  method: 'GET',
+})
+
+const result = await response.json()
+```
