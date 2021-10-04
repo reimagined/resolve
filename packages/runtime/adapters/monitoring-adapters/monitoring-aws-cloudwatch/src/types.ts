@@ -16,6 +16,8 @@ export interface MonitoringMetricDatum {
 }
 
 export interface MonitoringData {
+  // TODO:
+  monitoringBase: any
   metricData: MonitoringMetricDatum[]
   metricDimensions: MonitoringDimensionsList
 }

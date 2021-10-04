@@ -1,4 +1,5 @@
 import { LeveledDebugger } from '@resolve-js/debug-levels'
+import createBaseMonitoring from '@resolve-js/monitoring-base'
 
 import {
   MonitoringData,
@@ -64,6 +65,7 @@ const createMonitoring = ({
   resolveVersion: string
 }) => {
   const monitoringData: MonitoringData = {
+    monitoringBase: createBaseMonitoring(),
     metricData: [],
     metricDimensions: createDeploymentDimensions(deploymentId, resolveVersion),
   }

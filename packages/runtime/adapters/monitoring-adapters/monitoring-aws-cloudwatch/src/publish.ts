@@ -4,33 +4,53 @@ import { retry } from 'resolve-cloud-common/utils'
 import { MAX_METRIC_COUNT } from './constants'
 import { MonitoringData } from './types'
 
+const baseUnitToCloudWatchUnit = {
+  count: 'Count',
+  milliseconds: 'Milliseconds',
+}
+
+// TODO: any
+const baseMetricToCloudWatchMetric = (metric: any) => ({
+  MetricName: metric.metricName,
+  Unit:
+    baseUnitToCloudWatchUnit[
+      metric.unit as keyof typeof baseUnitToCloudWatchUnit
+    ],
+  Dimensions: metric.dimensions.map(({ name, value }: any) => ({
+    Name: name,
+    Value: value,
+  })),
+  Values: metric.values,
+  Counts: metric.counts,
+  Timestamp: new Date(metric.timestamp),
+})
+
 export const monitoringPublish = async (
   log: LeveledDebugger,
   monitoringData: MonitoringData
 ) => {
-  try {
-    log.verbose(`Sending ${monitoringData.metricData.length} metrics`)
-    log.verbose(JSON.stringify(monitoringData.metricData))
+  const metricData = monitoringData.monitoringBase.getMetrics()
+  log.verbose(`Sending ${metricData.metrics.length} metrics`)
+  log.verbose(JSON.stringify(metricData.metrics))
 
+  try {
     const promises = []
 
     const cw = new CloudWatch()
     const putMetricData = retry(cw, cw.putMetricData)
 
-    for (
-      let i = 0;
-      i < monitoringData.metricData.length;
-      i += MAX_METRIC_COUNT
-    ) {
+    for (let i = 0; i < metricData.metrics.length; i += MAX_METRIC_COUNT) {
       promises.push(
         putMetricData({
           Namespace: 'ResolveJs',
-          MetricData: monitoringData.metricData.slice(i, i + MAX_METRIC_COUNT),
+          MetricData: metricData.metrics
+            .slice(i, i + MAX_METRIC_COUNT)
+            .map(baseMetricToCloudWatchMetric),
         })
       )
     }
 
-    monitoringData.metricData = []
+    monitoringData.monitoringBase.clearMetrics()
 
     await Promise.all(promises)
 

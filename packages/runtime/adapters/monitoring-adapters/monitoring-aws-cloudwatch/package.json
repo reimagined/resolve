@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@resolve-js/debug-levels": "0.31.10",
+    "@resolve-js/monitoring-base": "0.31.10",
     "resolve-cloud-common": "0.0.147"
   },
   "devDependencies": {
