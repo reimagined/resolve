@@ -2937,17 +2937,17 @@
   resolved "https://registry.yarnpkg.com/@redux-saga/types/-/types-1.1.0.tgz#0e81ce56b4883b4b2a3001ebe1ab298b84237204"
   integrity sha512-afmTuJrylUU/0OtqzaRkbyYFFNgCF73Bvel/sw90pvGrWIZ+vyoIJqA6eMSoA6+nb443kTmulmBtC9NerXboNg==
 
-"@resolve-js/runtime@0.31.10":
-  version "0.31.10"
-  resolved "https://registry.yarnpkg.com/@resolve-js/runtime/-/runtime-0.31.10.tgz#91b12153fca85ebd3c1cc541174035c0ed1c2b97"
-  integrity sha512-HfEmSB10i3di077E/struF6kYtD7raz/7YqoFuVQ5gRMYmx6Di0WTva42PNalzwoPFTh+RiQ01kzRxJE8kv/yA==
+"@resolve-js/runtime@0.32.0":
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/@resolve-js/runtime/-/runtime-0.32.0.tgz#b3770928ba826f226f73eb009ebda5c2c190a2ac"
+  integrity sha512-Xjrrm6vIKrJpnxG80LWPUf+NDD7Rk+O6P1dmOpJz94objJhmgS7k+PWkw5UzeOevW2gRZP0O0co3I6UpFGnAVg==
   dependencies:
     "@babel/runtime" "7.14.0"
-    "@resolve-js/core" "0.31.10"
-    "@resolve-js/debug-levels" "0.31.10"
-    "@resolve-js/eventstore-base" "0.31.10"
-    "@resolve-js/eventstore-lite" "0.31.10"
-    "@resolve-js/readmodel-base" "0.31.10"
+    "@resolve-js/core" "0.32.0"
+    "@resolve-js/debug-levels" "0.32.0"
+    "@resolve-js/eventstore-base" "0.32.0"
+    "@resolve-js/eventstore-lite" "0.32.0"
+    "@resolve-js/readmodel-base" "0.32.0"
     aws-signature-v4 "1.4.0"
     binary-case "1.1.4"
     body-parser "1.19.0"
@@ -2957,7 +2957,7 @@
     cron "1.8.2"
     cuid "2.1.8"
     express "4.17.1"
-    file-type "16.3.0"
+    file-type "16.5.3"
     http-status-codes "2.1.4"
     iconv-lite "0.6.2"
     jsonwebtoken "8.5.1"
@@ -2968,7 +2968,7 @@
     qs "6.9.6"
     raw-body "2.4.1"
     request "2.88.2"
-    resolve-cloud-common "0.0.138"
+    resolve-cloud-common "0.0.149"
     route-trie "3.0.0"
     socket.io "3.1.2"
     source-map-support "0.5.19"
@@ -3245,11 +3245,6 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^7.28.1"
-
-"@tokenizer/token@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@tokenizer/token/-/token-0.1.1.tgz#f0d92c12f87079ddfd1b29f614758b9696bc29e3"
-  integrity sha512-XO6INPbZCxdprl+9qa/AAbFFOMzzwqYxpjPgLICrMD6C2FCw6qfJOPcBk6JqqPLSaZ/Qx87qn4rpPmPMwaAK6w==
 
 "@tokenizer/token@^0.3.0":
   version "0.3.0"
@@ -8907,16 +8902,6 @@ file-loader@^6.2.0:
   dependencies:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
-
-file-type@16.3.0:
-  version "16.3.0"
-  resolved "https://registry.yarnpkg.com/file-type/-/file-type-16.3.0.tgz#f03af91db30f92cc9a0b335c0644c46101522f6d"
-  integrity sha512-ZA0hV64611vJT42ltw0T9IDwHApQuxRdrmQZWTeDmeAUtZBBVSQW3nSQqhhW1cAgpXgqcJvm410BYHXJQ9AymA==
-  dependencies:
-    readable-web-to-node-stream "^3.0.0"
-    strtok3 "^6.0.3"
-    token-types "^2.0.0"
-    typedarray-to-buffer "^3.1.5"
 
 file-type@16.5.3:
   version "16.5.3"
@@ -15966,17 +15951,6 @@ reselect@^4.0.0:
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
   integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
-resolve-cloud-common@0.0.138:
-  version "0.0.138"
-  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.138.tgz#54a14a58d1ade3e2b7043afaed88533899cf2171"
-  integrity sha512-tMRT49+n9gSFIWBAERrw1ucCKJLTCNTeAhnrbM3qsyUVBZkmvu3JkHfSrOpmRfJxyYNud140kduXMkqxmYScfw==
-  dependencies:
-    chalk "^4.0.0"
-    debug "^4.1.1"
-    netmask "2.0.2"
-    node-rsa "1.1.1"
-    uuid "^8.3.1"
-
 resolve-cloud-common@0.0.149:
   version "0.0.149"
   resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.149.tgz#c0f1ad5af66bcf55b0cffa1f9c221fd1a4d5f9b8"
@@ -17223,7 +17197,7 @@ strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
-strtok3@^6.0.3, strtok3@^6.2.4:
+strtok3@^6.2.4:
   version "6.2.4"
   resolved "https://registry.yarnpkg.com/strtok3/-/strtok3-6.2.4.tgz#302aea64c0fa25d12a0385069ba66253fdc38a81"
   integrity sha512-GO8IcFF9GmFDvqduIspUBwCzCbqzegyVKIsSymcMgiZKeCfrN9SowtUoi8+b59WZMAjIzVZic/Ft97+pynR3Iw==
@@ -17910,14 +17884,6 @@ toidentifier@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"
   integrity sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
-
-token-types@^2.0.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/token-types/-/token-types-2.1.1.tgz#bd585d64902aaf720b8979d257b4b850b4d45c45"
-  integrity sha512-wnQcqlreS6VjthyHO3Y/kpK/emflxDBNhlNUPfh7wE39KnuDdOituXomIbyI79vBtF0Ninpkh72mcuRHo+RG3Q==
-  dependencies:
-    "@tokenizer/token" "^0.1.1"
-    ieee754 "^1.2.1"
 
 token-types@^4.1.1:
   version "4.1.1"
