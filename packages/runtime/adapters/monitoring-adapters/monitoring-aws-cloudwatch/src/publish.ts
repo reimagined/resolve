@@ -39,11 +39,27 @@ export const monitoringPublish = async (
     const cw = new CloudWatch()
     const putMetricData = retry(cw, cw.putMetricData)
 
-    for (let i = 0; i < metricData.metrics.length; i += MAX_METRIC_COUNT) {
+    // TODO: any
+    const metrics = metricData.metrics.reduce((acc: any, metric: any) => {
+      if (metric.metricName === 'Errors') {
+        for (let i = 0; i < metric.dimensions.length; i++) {
+          acc.push({
+            ...metric,
+            dimensions: metric.dimensions.slice(0, i + 1),
+          })
+        }
+      } else {
+        acc.push(metric)
+      }
+
+      return acc
+    }, [])
+
+    for (let i = 0; i < metrics.length; i += MAX_METRIC_COUNT) {
       promises.push(
         putMetricData({
           Namespace: 'ResolveJs',
-          MetricData: metricData.metrics
+          MetricData: metrics
             .slice(i, i + MAX_METRIC_COUNT)
             .map(baseMetricToCloudWatchMetric),
         })

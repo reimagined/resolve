@@ -221,10 +221,6 @@ describe('publish', () => {
       resolveVersion: '1.0.0-test',
     })
 
-    // monitoring.error(new Error('test-error'))
-    // monitoring.time('test', 500)
-    // monitoring.timeEnd('test', 800)
-
     await monitoring.publish()
 
     expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(1)
@@ -260,15 +256,26 @@ describe('publish', () => {
     )
   })
 
-  test.skip('splits metrics sending if metric data array has length more than 20', async () => {
+  test('splits metrics sending if metric data array has length more than 20', async () => {
+    mockGetMetrics.mockReturnValue({
+      metrics: Array.from({ length: 8 }, () => ({
+        metricName: 'Errors',
+        unit: 'count',
+        dimensions: [
+          { name: 'DeploymentId', value: 'test-deployment' },
+          { name: 'ErrorName', value: 'Error' },
+          { name: 'ErrorMessage', value: 'test-error' },
+        ],
+        timestamp: 0,
+        values: [1],
+        counts: [1],
+      })),
+    })
+
     const monitoring = createMonitoring({
       deploymentId: 'test-deployment',
       resolveVersion: '1.0.0-test',
     })
-
-    for (let i = 0; i < 8; i++) {
-      monitoring.error(new Error(`test-${i + 1}`))
-    }
 
     await monitoring.publish()
 
@@ -285,13 +292,28 @@ describe('publish', () => {
     ).toHaveLength(4)
   })
 
-  test.skip('does not reject on publish if putMetricData is failed', async () => {
+  test('does not reject on publish if putMetricData is failed', async () => {
+    mockGetMetrics.mockReturnValue({
+      metrics: [
+        {
+          metricName: 'Errors',
+          unit: 'count',
+          dimensions: [
+            { name: 'DeploymentId', value: 'test-deployment' },
+            { name: 'ErrorName', value: 'Error' },
+            { name: 'ErrorMessage', value: 'test-error' },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [1],
+        },
+      ],
+    })
+
     const monitoring = createMonitoring({
       deploymentId: 'test-deployment',
       resolveVersion: '1.0.0-test',
     })
-
-    monitoring.error(new Error('test'))
 
     mocked(CloudWatch.prototype.putMetricData).mockReturnValueOnce({
       promise: () => Promise.reject(new Error('Something went wrong')),
@@ -299,49 +321,29 @@ describe('publish', () => {
 
     await monitoring.publish()
   })
-})
 
-describe('error', () => {
-  test.skip('sends correct metrics base data', async () => {
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    }).group({ 'test-group-name': 'test-group' })
+  test('sends multiple dimensions if metric name is Errors', async () => {
+    mockGetMetrics.mockReturnValue({
+      metrics: [
+        {
+          metricName: 'Errors',
+          unit: 'count',
+          dimensions: [
+            { name: 'DeploymentId', value: 'test-deployment' },
+            { name: 'ErrorName', value: 'test-error' },
+            { name: 'ErrorMessage', value: 'test-message' },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [1],
+        },
+      ],
+    })
 
-    class TestError extends Error {
-      name = 'test-error'
-    }
-
-    monitoring.error(new TestError('test-message'))
-
-    await monitoring.publish()
-
-    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
-      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-
-    for (const item of metricData) {
-      expect(item).toEqual({
-        MetricName: 'Errors',
-        Unit: 'Count',
-        Values: [1],
-        Counts: [1],
-        Timestamp: expect.any(Date),
-        Dimensions: expect.any(Array),
-      })
-    }
-  })
-
-  test.skip('contains default dimensions', async () => {
     const monitoring = createMonitoring({
       deploymentId: 'test-deployment',
       resolveVersion: '1.0.0-test',
     })
-
-    class TestError extends Error {
-      name = 'test-error'
-    }
-
-    monitoring.error(new TestError('test-message'))
 
     await monitoring.publish()
 
@@ -386,6 +388,37 @@ describe('error', () => {
         ]),
       })
     )
+  })
+})
+
+describe('error', () => {
+  test.skip('sends correct metrics base data', async () => {
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    }).group({ 'test-group-name': 'test-group' })
+
+    class TestError extends Error {
+      name = 'test-error'
+    }
+
+    monitoring.error(new TestError('test-message'))
+
+    await monitoring.publish()
+
+    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
+      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+
+    for (const item of metricData) {
+      expect(item).toEqual({
+        MetricName: 'Errors',
+        Unit: 'Count',
+        Values: [1],
+        Counts: [1],
+        Timestamp: expect.any(Date),
+        Dimensions: expect.any(Array),
+      })
+    }
   })
 
   test.skip('contains default and group dimensions', async () => {
