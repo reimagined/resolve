@@ -11,6 +11,7 @@ import {
   THREAD_COUNT,
   StoredEventPointer,
   ConcurrentError,
+  initThreadArray,
 } from '@resolve-js/eventstore-base'
 
 import type { StoredEvent } from '@resolve-js/eventstore-base'
@@ -24,6 +25,21 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
   const adapter = adapters['save_and_load_testing']
 
   let eventCursorPairs: StoredEventPointer[] = []
+
+  test('should load 0 events after initialization', async () => {
+    const { events } = await adapter.loadEvents({
+      limit: 100,
+      cursor: null,
+    })
+    expect(events).toHaveLength(0)
+
+    const description = await adapter.describe()
+    expect(description.eventCount).toEqual(0)
+    expect(description.cursor).toEqual(threadArrayToCursor(initThreadArray()))
+
+    const lastEvent = await adapter.getLatestEvent({})
+    expect(lastEvent).toBeNull()
+  })
 
   const firstEvent = {
     aggregateVersion: 1,
@@ -42,8 +58,6 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
     expect(checkEventsContinuity(null, [saveResult])).toBe(true)
 
     const { events, cursor } = await adapter.loadEvents({
-      eventTypes: null,
-      aggregateIds: null,
       limit: 1,
       cursor: null,
     })
@@ -56,6 +70,9 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
     expect(loadedEvent).toEqual(savedEvent)
     expect(typeof cursor).toBe('string')
     expect(returnedCursor).toEqual(cursor)
+
+    const lastEvent = await adapter.getLatestEvent({})
+    expect(lastEvent).toEqual(events[0])
   })
 
   test('should throw ConcurrentError when saving event with the same aggregateVersion', async () => {
@@ -63,7 +80,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
   })
 
   const checkCount = 256
-  test('saved events and corresponding cursors must match the subsequent loadEvents result', async () => {
+  test('should save all passed events', async () => {
     for (let i = 1; i < checkCount; ++i) {
       const event = makeTestEvent(i)
       const saveResult = await adapter.saveEvent(event)
@@ -83,12 +100,17 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
       )
     })
 
+    const description = await adapter.describe()
+    expect(description.eventCount).toEqual(checkCount)
+  })
+
+  test('saved events and corresponding cursors must match the subsequent loadEvents result', async () => {
     let currentCursor = null
     let loadedEvents: StoredEvent[] = []
     const step = 100
     for (let i = 0; i < checkCount; i += step) {
       const { events, cursor: nextCursor } = await adapter.loadEvents({
-        limit: 100,
+        limit: step,
         cursor: currentCursor,
       })
       expect(nextCursor).toEqual(

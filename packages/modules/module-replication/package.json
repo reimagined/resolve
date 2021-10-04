@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/module-replication",
-  "version": "0.31.10",
+  "version": "0.32.0",
   "description": "A reSolve module that adds replication commands to an application.",
   "keywords": [
     "cqrs",
