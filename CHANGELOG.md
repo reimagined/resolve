@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.32.0...HEAD)
+
+**Other changes:**
+
+- Cleanup eventstore tests [\#2058](https://github.com/reimagined/resolve/pull/2058)
+
 ## [V0.32.0](https://github.com/reimagined/resolve/tree/V0.32.0) (2021-10-01)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.10...V0.32.0)
