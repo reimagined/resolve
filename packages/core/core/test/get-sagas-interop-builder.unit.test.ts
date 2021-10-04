@@ -5,11 +5,6 @@ import { HttpError } from '../src/errors'
 import { getSagasInteropBuilder } from '../src/saga/get-sagas-interop-builder'
 import { SagaRuntime, SchedulerEventTypes } from '../src/saga/types'
 import { SagaMeta } from '../src/types/runtime'
-import {
-  PerformanceSegment,
-  PerformanceSubsegment,
-  PerformanceTracer,
-} from '../types'
 const dummyEncryption = () => Promise.resolve({})
 
 const makeSagaMeta = (params: any): SagaMeta[] => [

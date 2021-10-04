@@ -26,6 +26,7 @@
   "dependencies": {
     "@babel/runtime": "7.14.0",
     "@resolve-js/core": "0.32.0",
+    "@resolve-js/debug-levels": "0.32.0",
     "@resolve-js/runtime-base": "0.32.0",
     "@resolve-js/eventstore-base": "0.32.0",
     "jsonwebtoken": "8.5.1",

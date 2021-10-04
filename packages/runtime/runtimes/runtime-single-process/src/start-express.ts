@@ -1,6 +1,5 @@
 import {
   createRuntime,
-  bootstrap,
   invokeFilterErrorTypes,
   mainHandler,
   createUserResolve,

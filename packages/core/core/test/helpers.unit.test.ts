@@ -71,4 +71,3 @@ describe('jsonSerializeState', () => {
     expect(jsonSerializeState[IS_BUILT_IN]).toEqual(true)
   })
 })
-
