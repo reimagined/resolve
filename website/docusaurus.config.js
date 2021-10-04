@@ -11,7 +11,7 @@ module.exports={
       async: true
     }    
   ],
-  "favicon": "img/favicon.ico",
+  "favicon": "img/favicon.png",
   "trailingSlash": "true",
   "customFields": {},
   "onBrokenLinks": "log",

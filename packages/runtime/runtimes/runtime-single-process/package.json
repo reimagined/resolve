@@ -1,14 +1,14 @@
 {
-  "name": "@resolve-js/runtime-dev",
+  "name": "@resolve-js/runtime-single-process",
   "version": "0.31.10",
-  "description": "The reSolve framework's development runtime.",
+  "description": "The reSolve framework's single NodeJS process runtime.",
   "keywords": [
     "cqrs",
     "eventsourcing",
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@resolve-js/runtime-dev#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@resolve-js/runtime-single-process#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -19,7 +19,7 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/runtime-dev",
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/runtime-single-process",
     "test": "jest --config=../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../jest.config.js --watchAll"
   },
@@ -47,6 +47,8 @@
     "@types/ws": "7.4.4",
     "@types/mime-types": "2.1.1",
     "@types/content-disposition": "0.5.3",
+    "@types/lodash.escaperegexp": "4.1.6",
+    "lodash.escaperegexp": "4.1.2",
     "jest": "27.0.3",
     "ts-jest": "27.0.2"
   },

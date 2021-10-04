@@ -9,10 +9,10 @@ import { failHandler } from './handlers/fail-handler'
 
 import { builtInApiHandlers } from './builtin-routes'
 
-import type { ApiHandler } from './types'
+import type { ApiHandlerMeta } from '@resolve-js/core'
 
 export const wrapTrie = (
-  apiHandlers: ApiHandler[],
+  apiHandlers: ApiHandlerMeta[],
   staticRoutes: string[] | undefined,
   rootPath: string,
   customStaticHandler?: Function

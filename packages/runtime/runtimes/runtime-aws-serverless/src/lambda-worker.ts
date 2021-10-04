@@ -8,16 +8,23 @@ import { handleWebsocketEvent } from './websocket-event-handler'
 import { handleApiGatewayEvent } from './api-gateway-handler'
 import { handleCloudServiceEvent } from './cloud-service-event-handler'
 import { handleSchedulerEvent } from './scheduler-event-handler'
-import type { EventPointer, Monitoring } from '@resolve-js/core'
-import type { LambdaColdStartContext } from './index'
 import { getDeploymentId } from './utils'
 import partial from 'lodash.partial'
 
+import type { EventPointer, Monitoring } from '@resolve-js/core'
 import type {
   Runtime,
   RuntimeFactoryParameters,
 } from '@resolve-js/runtime-base'
-import type { EventSubscriberInterface } from './types'
+import type {
+  CloudServiceLambdaEvent,
+  EventSubscriberInterface,
+  LambdaColdStartContext,
+  LambdaContext,
+  LambdaEventRecord,
+  LambdaEvent,
+  WorkerResult,
+} from './types'
 
 const log = getLog('lambda-worker')
 
@@ -28,25 +35,6 @@ const getLambdaVacantTime = (lambdaContext: any) =>
 const WORKER_HTTP_REQUEST_DURATION = 25 * 1000
 
 let coldStart = true
-
-type LambdaContextRecord = {
-  eventSource: string | null
-  body: string
-}
-
-type LambdaContext = {
-  invokedFunctionArn: string
-  functionName: string
-  getRemainingTimeInMillis: () => number
-  callbackWaitsForEmptyEventLoop: boolean
-
-  Records: Array<LambdaContextRecord | null>
-}
-
-type LambdaEvent = {
-  resolveSource: string
-  [key: string]: any
-}
 
 const createCloudRuntime = async (
   coldStartContext: LambdaColdStartContext,
@@ -97,9 +85,9 @@ const createCloudRuntime = async (
 
 export const lambdaWorker = async (
   coldStartContext: LambdaColdStartContext,
-  lambdaEvent: LambdaEvent,
+  lambdaEvent: CloudServiceLambdaEvent | LambdaEvent,
   lambdaContext: LambdaContext
-) => {
+): Promise<WorkerResult> => {
   log.debug('executing application lambda')
   log.verbose(JSON.stringify(lambdaEvent, null, 2))
   lambdaContext.callbackWaitsForEmptyEventLoop = false
@@ -164,14 +152,14 @@ export const lambdaWorker = async (
       Array.isArray(lambdaEvent.Records) &&
       [
         ...new Set(
-          lambdaEvent.Records.map((record: LambdaContextRecord) =>
+          lambdaEvent.Records.map((record: LambdaEventRecord) =>
             record != null ? record.eventSource : null
           )
         ),
       ].every((key) => key === 'aws:sqs')
     ) {
       const errors = []
-      const records = lambdaEvent.Records.map((record: LambdaContextRecord) => {
+      const records = lambdaEvent.Records.map((record: LambdaEventRecord) => {
         try {
           return JSON.parse(record.body)
         } catch (err) {
@@ -284,7 +272,7 @@ export const lambdaWorker = async (
         Number.isSafeInteger(lambdaEvent.requestStartTime)
           ? {
               getVacantTimeInMillis: () =>
-                lambdaEvent.requestStartTime +
+                (lambdaEvent.requestStartTime ?? 0) +
                 WORKER_HTTP_REQUEST_DURATION -
                 Date.now(),
             }

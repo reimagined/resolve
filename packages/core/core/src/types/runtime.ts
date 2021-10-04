@@ -1,5 +1,5 @@
 import { IS_BUILT_IN } from '../symbols'
-import {
+import type {
   Event,
   Deserializer,
   ReadModel,
@@ -226,8 +226,6 @@ export type BuildTimeConstants = {
     name: string
     maxAge: number
   }
-  host: string
-  port: string
   rootPath: string
   staticDir: string
   staticPath: string
@@ -374,3 +372,9 @@ export type ReadModelResolverMiddleware<
 export type CommandMiddleware<
   TContext extends CommandContext = CommandContext
 > = Middleware<CommandMiddlewareHandler<TContext>>
+
+export type ApiHandlerMeta = {
+  path: string
+  method: string
+  handler: (req: ResolveRequest, res: ResolveResponse) => Promise<void>
+}

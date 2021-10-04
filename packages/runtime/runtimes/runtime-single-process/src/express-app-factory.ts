@@ -6,10 +6,10 @@ import { getRootBasedUrl } from '@resolve-js/core'
 import { wrapTrie } from '@resolve-js/runtime-base'
 import { Trie } from 'route-trie'
 
-import type { ApiHandler } from '@resolve-js/runtime-base'
+import type { ApiHandlerMeta } from '@resolve-js/core'
 
 type ExpressAppFactoryParameters = {
-  apiHandlers: ApiHandler[]
+  apiHandlers: ApiHandlerMeta[]
   staticRoutes: string[] | undefined
   rootPath: string
   staticPath: string

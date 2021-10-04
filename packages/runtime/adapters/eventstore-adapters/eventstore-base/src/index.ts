@@ -56,12 +56,7 @@ export {
   THREAD_COUNTER_BYTE_LENGTH,
 } from './constants'
 
-export {
-  ConcurrentError,
-  ConnectionError,
-  ServiceBusyError,
-  RequestTimeoutError,
-} from './errors'
+export * from './errors'
 
 const wrappedCreateAdapter = <
   ConnectedProps extends AdapterPoolConnectedProps,

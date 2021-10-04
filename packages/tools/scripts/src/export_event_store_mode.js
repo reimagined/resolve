@@ -17,7 +17,7 @@ const getConfig = async (resolveConfig, options) => {
         path: '/api/export-event-store',
         handler: {
           module: {
-            package: '@resolve-js/runtime-dev',
+            package: '@resolve-js/runtime-single-process',
             import: 'exportEventStoreHandler',
           },
           options,

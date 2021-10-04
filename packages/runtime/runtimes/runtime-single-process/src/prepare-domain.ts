@@ -1,10 +1,10 @@
 import { getLog } from '@resolve-js/runtime-base'
 import { getRootBasedUrl } from '@resolve-js/core'
+import type { ResolveRequest, ResolveResponse } from '@resolve-js/core'
 
 import type {
-  ResolveRequest,
-  ResolveResponse,
   RuntimeFactoryParameters,
+  UserBackendResolve,
 } from '@resolve-js/runtime-base'
 
 export const prepareDomain = (
@@ -22,7 +22,9 @@ export const prepareDomain = (
         )
 
         const eventSubscriber = req.path.substring(baseQueryUrl.length)
-        await req.resolve.eventSubscriber.build({ eventSubscriber })
+        await (req.resolve as UserBackendResolve).eventSubscriber.build({
+          eventSubscriber,
+        })
         await res.end('ok')
       } catch (error) {
         log.error(error)

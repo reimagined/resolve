@@ -94,7 +94,11 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"util\\": \\"util\\",
         \\"vm\\": \\"<MONOREPO_DIR>/node_modules/vm-browserify/index.js\\",
         \\"zlib\\": \\"<MONOREPO_DIR>/node_modules/browserify-zlib/lib/index.js\\"
-      }
+      },
+      \\"extensions\\": [
+        \\".webpack.js\\",
+        \\"...\\"
+      ]
     },
     \\"module\\": {
       \\"rules\\": [
@@ -275,11 +279,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
       ],
       \\"extensions\\": [
         \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".js\\",
-        \\".json\\",
-        \\".wasm\\"
+        \\"...\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
@@ -514,11 +514,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
       ],
       \\"extensions\\": [
         \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".js\\",
-        \\".json\\",
-        \\".wasm\\"
+        \\"...\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
@@ -834,7 +830,11 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"util\\": \\"util\\",
         \\"vm\\": \\"<MONOREPO_DIR>/node_modules/vm-browserify/index.js\\",
         \\"zlib\\": \\"<MONOREPO_DIR>/node_modules/browserify-zlib/lib/index.js\\"
-      }
+      },
+      \\"extensions\\": [
+        \\".webpack.js\\",
+        \\"...\\"
+      ]
     },
     \\"module\\": {
       \\"rules\\": [
@@ -935,7 +935,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
                   \\"runtime\\": {
-                    \\"module\\": \\"@resolve-js/runtime-dev\\"
+                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }
                 },
                 \\"isClient\\": true
@@ -1015,11 +1015,7 @@ exports[`should make webpack configs for local mode 1`] = `
       ],
       \\"extensions\\": [
         \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".js\\",
-        \\".json\\",
-        \\".wasm\\"
+        \\"...\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
@@ -1169,7 +1165,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
                   \\"runtime\\": {
-                    \\"module\\": \\"@resolve-js/runtime-dev\\"
+                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }
                 },
                 \\"isClient\\": false
@@ -1252,11 +1248,7 @@ exports[`should make webpack configs for local mode 1`] = `
       ],
       \\"extensions\\": [
         \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".webpack.js\\",
-        \\".js\\",
-        \\".json\\",
-        \\".wasm\\"
+        \\"...\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
@@ -1407,7 +1399,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
                   \\"runtime\\": {
-                    \\"module\\": \\"@resolve-js/runtime-dev\\"
+                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }
                 },
                 \\"isClient\\": false

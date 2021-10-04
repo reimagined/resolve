@@ -5,6 +5,7 @@ import type {
   AdapterPoolConnected,
   RemoveFirstType,
 } from './types'
+import { AlreadyDisposedError } from './errors'
 
 const connectOnDemandAndCall = async <
   ConnectedProps extends AdapterPoolConnectedProps,
@@ -15,7 +16,7 @@ const connectOnDemandAndCall = async <
   ...args: RemoveFirstType<Parameters<M>>
 ): Promise<PromiseResultType<ReturnType<M>>> => {
   if (pool.disposed) {
-    throw new Error('Adapter has been already disposed')
+    throw new AlreadyDisposedError()
   }
 
   pool.isConnected = true

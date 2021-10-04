@@ -41,7 +41,7 @@ type WorkerArguments = []
 const entry = async (
   options: RuntimeOptions,
   context: RuntimeEntryContext
-): Promise<RuntimeWorker> => {
+): Promise<RuntimeWorker<WorkerArguments, void>> => {
   log.debug(`returning runtime worker (cold start)`)
   return async () => {
     try {
@@ -162,7 +162,7 @@ const entry = async (
   }
 }
 
-const factory: RuntimeModuleFactory<RuntimeOptions, WorkerArguments> = (
+const factory: RuntimeModuleFactory<RuntimeOptions, WorkerArguments, void> = (
   options: RuntimeOptions
 ) => ({
   entry: partial(entry, options),

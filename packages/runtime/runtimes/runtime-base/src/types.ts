@@ -1,14 +1,11 @@
 import type { Adapter as EventStoreAdapter } from '@resolve-js/eventstore-base'
 import type {
-  CommandMiddleware,
   Domain,
   DomainMeta,
   Event,
   EventPointer,
   Monitoring,
   PerformanceTracer,
-  ReadModelProjectionMiddleware,
-  ReadModelResolverMiddleware,
   Uploader as PublicUploader,
   BuildTimeConstants,
   HttpRequest,
@@ -74,23 +71,6 @@ export type QueryExecutor = {
 
 export type SagaExecutor = QueryExecutor & {
   build: (...args: any[]) => Promise<any>
-}
-
-export type ApiHandler = {
-  path: string
-  method: string
-  handler: (req: ResolveRequest, res: ResolveResponse) => Promise<void>
-}
-
-type Middlewares = {
-  command: CommandMiddleware[]
-  resolver: ReadModelResolverMiddleware[]
-  projection: ReadModelProjectionMiddleware[]
-}
-// TODO: include in DomainMeta and move to core!
-export type DomainWithHandlers = DomainMeta & {
-  apiHandlers: ApiHandler[]
-  middlewares?: Middlewares
 }
 
 export type EventListener = {
@@ -193,7 +173,7 @@ export type EventListenersManagerParameters = {
 export type RuntimeFactoryParameters = {
   readonly seedClientEnvs: Assemblies['seedClientEnvs']
   readonly serverImports: Assemblies['serverImports']
-  readonly domain: DomainWithHandlers
+  readonly domain: DomainMeta
   readonly domainInterop: Domain
   readonly performanceTracer: PerformanceTracer
   readonly monitoring: Monitoring
@@ -260,18 +240,21 @@ export type UserBackendResolve = Readonly<
 export type RuntimeEntryContext = {
   assemblies: Assemblies
   constants: BuildTimeConstants
-  domain: DomainWithHandlers
+  domain: DomainMeta
   resolveVersion: string
 }
 
-export type RuntimeWorker<TArgs extends any[] = any[]> = (
+export type RuntimeWorker<TArgs extends any[], TResult = never> = (
   ...args: TArgs
-) => Promise<void>
-export type RuntimeModule<TWorkerArgs extends any[] = any[]> = {
-  entry: (context: RuntimeEntryContext) => Promise<RuntimeWorker<TWorkerArgs>>
+) => Promise<TResult>
+export type RuntimeModule<TWorkerArgs extends any[], TWorkerResult = never> = {
+  entry: (
+    context: RuntimeEntryContext
+  ) => Promise<RuntimeWorker<TWorkerArgs, TWorkerResult>>
   execMode: 'immediate' | 'external'
 }
 export type RuntimeModuleFactory<
   TOptions,
-  TWorkerArgs extends any[] = any[]
-> = (options: TOptions) => RuntimeModule<TWorkerArgs>
+  TWorkerArgs extends any[],
+  TWorkerResult = never
+> = (options: TOptions) => RuntimeModule<TWorkerArgs, TWorkerResult>

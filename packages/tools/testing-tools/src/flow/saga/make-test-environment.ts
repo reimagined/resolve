@@ -176,6 +176,7 @@ export const makeTestEnvironment = (
           encryption: actualEncryption,
         },
       ],
+      apiHandlers: [],
     })
 
     const liveErrors: Array<Error> = []

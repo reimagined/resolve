@@ -8,6 +8,7 @@ import {
 } from 'resolve-cloud-common/postgres'
 
 import type { Adapter as EventStoreAdapter } from '@resolve-js/eventstore-base'
+import type { WorkerResult } from './types'
 
 const log = getLog('resolve:runtime:websocket-event-handler')
 
@@ -48,7 +49,7 @@ export const handleWebsocketEvent = async (
   }: {
     eventStoreAdapter: EventStoreAdapter
   }
-) => {
+): Promise<WorkerResult> => {
   log.debug(`dispatching lambda event to websocket`)
 
   switch (method) {
@@ -156,4 +157,5 @@ export const handleWebsocketEvent = async (
     default:
       throw new Error(`Wrong "${method}" websocket method`)
   }
+  return { statusCode: 200 }
 }

@@ -6,6 +6,7 @@ import {
   wrapTrie,
   getLog,
   gatherEventListeners,
+  RuntimeWorker,
 } from '@resolve-js/runtime-base'
 
 import { performanceTracerFactory } from './performance-tracer-factory'
@@ -15,52 +16,24 @@ import { getReactiveSubscriptionFactory } from './get-reactive-subscription-fact
 import { getDeploymentId } from './utils'
 import { sendReactiveEvent } from './send-reactive-event'
 
-import type { Trie } from 'route-trie'
-import type { PerformanceTracer, Domain } from '@resolve-js/core'
 import type {
-  Assemblies,
-  BuildTimeConstants,
-  ReactiveSubscriptionFactory,
-  Runtime,
-  RuntimeFactoryParameters,
   RuntimeModuleFactory,
   RuntimeEntryContext,
 } from '@resolve-js/runtime-base'
 import type { PerformanceSubsegment } from '@resolve-js/core'
-import type { OmitFirstParameter } from './types'
+import type {
+  RuntimeOptions,
+  WorkerArguments,
+  LambdaColdStartContext,
+  WorkerResult,
+} from './types'
 
 const log = getLog('aws-serverless-entry')
 
-export type LambdaColdStartContext = {
-  readonly performanceTracer: PerformanceTracer
-  readonly seedClientEnvs: RuntimeFactoryParameters['seedClientEnvs']
-  readonly serverImports: RuntimeFactoryParameters['serverImports']
-  readonly constants: BuildTimeConstants
-  // TODO: why we still need domain meta outside core?
-  readonly domain: RuntimeFactoryParameters['domain']
-  readonly domainInterop: Domain
-  readonly eventListeners: RuntimeFactoryParameters['eventListeners']
-  readonly eventSubscriberScope: string
-  readonly upstream: boolean
-  readonly resolveVersion: string
-  readonly routesTrie: Trie
-  readonly uploader: Runtime['uploader']
-  readonly sendReactiveEvent: RuntimeFactoryParameters['sendReactiveEvent']
-  // TODO: rename to getSubscriptionAdapterOptions
-  readonly getReactiveSubscription: ReactiveSubscriptionFactory
-  // TODO: do we really need this somewhere?
-  readonly assemblies: Assemblies
-  // TODO: what is this?
-  readonly publisher: any
-}
-
-type RuntimeOptions = {}
-type WorkerArguments = OmitFirstParameter<Parameters<typeof lambdaWorker>>
-
-export const entry = async (
+const entry = async (
   options: RuntimeOptions,
   context: RuntimeEntryContext
-) => {
+): Promise<RuntimeWorker<WorkerArguments, WorkerResult>> => {
   const { assemblies, constants, domain, resolveVersion } = context
   let subSegment: PerformanceSubsegment | null = null
 
@@ -84,8 +57,6 @@ export const entry = async (
       serverImports: assemblies.serverImports,
       domain,
       ...constants,
-      // TODO: what is this?
-      publisher: {},
       assemblies,
       domainInterop,
       eventListeners: gatherEventListeners(domain, domainInterop),
@@ -120,9 +91,11 @@ export const entry = async (
   }
 }
 
-const factory: RuntimeModuleFactory<RuntimeOptions, WorkerArguments> = (
-  options: RuntimeOptions
-) => ({
+const factory: RuntimeModuleFactory<
+  RuntimeOptions,
+  WorkerArguments,
+  WorkerResult
+> = (options: RuntimeOptions) => ({
   entry: partial(entry, options),
   execMode: 'external',
 })

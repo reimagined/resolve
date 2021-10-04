@@ -65,7 +65,7 @@ const makeTestRuntime = (events: Event[] = []): ViewModelRuntime => {
     saveSnapshot: jest.fn(),
     ensureEventSubscriber: jest.fn().mockResolvedValue(null),
     removeEventSubscriber: jest.fn().mockResolvedValue(null),
-    getEventSubscribers: jest.fn().mockResolvedValue([])
+    getEventSubscribers: jest.fn().mockResolvedValue([]),
   }
 
   monitoring = {
