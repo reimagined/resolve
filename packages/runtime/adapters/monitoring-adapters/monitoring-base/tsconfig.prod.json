@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["test"],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "composite": true
+  },
+  "references": [
+    {
+      "path": "../../../../core/debug-levels/tsconfig.prod.json"
+    }
+  ]
+}
