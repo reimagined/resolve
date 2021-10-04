@@ -321,8 +321,51 @@ describe('publish', () => {
 
     await monitoring.publish()
   })
+})
 
-  test('sends multiple dimensions if metric name is Errors', async () => {
+describe('Errors', () => {
+  test('sends correct metrics base data', async () => {
+    mockGetMetrics.mockReturnValue({
+      metrics: [
+        {
+          metricName: 'Errors',
+          unit: 'count',
+          dimensions: [
+            { name: 'DeploymentId', value: 'test-deployment' },
+            { name: 'test-group-name', value: 'test-group' },
+            { name: 'ErrorName', value: 'test-error' },
+            { name: 'ErrorMessage', value: 'test-message' },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [1],
+        },
+      ],
+    })
+
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    await monitoring.publish()
+
+    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
+      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
+
+    for (const item of metricData) {
+      expect(item).toEqual({
+        MetricName: 'Errors',
+        Unit: 'Count',
+        Values: [1],
+        Counts: [1],
+        Timestamp: expect.any(Date),
+        Dimensions: expect.any(Array),
+      })
+    }
+  })
+
+  test('sends multiple dimensions', async () => {
     mockGetMetrics.mockReturnValue({
       metrics: [
         {
@@ -389,53 +432,30 @@ describe('publish', () => {
       })
     )
   })
-})
 
-describe('error', () => {
-  test.skip('sends correct metrics base data', async () => {
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    }).group({ 'test-group-name': 'test-group' })
+  test('contains default and group dimensions', async () => {
+    mockGetMetrics.mockReturnValue({
+      metrics: [
+        {
+          metricName: 'Errors',
+          unit: 'count',
+          dimensions: [
+            { name: 'DeploymentId', value: 'test-deployment' },
+            { name: 'test-group-name', value: 'test-group' },
+            { name: 'ErrorName', value: 'test-error' },
+            { name: 'ErrorMessage', value: 'test-message' },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [1],
+        },
+      ],
+    })
 
-    class TestError extends Error {
-      name = 'test-error'
-    }
-
-    monitoring.error(new TestError('test-message'))
-
-    await monitoring.publish()
-
-    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
-      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-
-    for (const item of metricData) {
-      expect(item).toEqual({
-        MetricName: 'Errors',
-        Unit: 'Count',
-        Values: [1],
-        Counts: [1],
-        Timestamp: expect.any(Date),
-        Dimensions: expect.any(Array),
-      })
-    }
-  })
-
-  test.skip('contains default and group dimensions', async () => {
     const monitoring = createMonitoring({
       deploymentId: 'test-deployment',
       resolveVersion: '1.0.0-test',
     })
-
-    const groupMonitoring = monitoring.group({
-      'test-group-name': 'test-group',
-    })
-
-    class TestError extends Error {
-      name = 'test-error'
-    }
-
-    groupMonitoring.error(new TestError('test-message'))
 
     await monitoring.publish()
 
@@ -524,25 +544,30 @@ describe('error', () => {
     )
   })
 
-  test.skip('contains default and group dimensions for multiple group calls', async () => {
+  test('contains default and group dimensions for multiple group calls', async () => {
+    mockGetMetrics.mockReturnValue({
+      metrics: [
+        {
+          metricName: 'Errors',
+          unit: 'count',
+          dimensions: [
+            { name: 'DeploymentId', value: 'test-deployment' },
+            { name: 'first-group-name', value: 'first-group' },
+            { name: 'second-group-name', value: 'second-group' },
+            { name: 'ErrorName', value: 'test-error' },
+            { name: 'ErrorMessage', value: 'test-message' },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [1],
+        },
+      ],
+    })
+
     const monitoring = createMonitoring({
       deploymentId: 'test-deployment',
       resolveVersion: '1.0.0-test',
     })
-
-    const groupMonitoring = monitoring
-      .group({
-        'first-group-name': 'first-group',
-      })
-      .group({
-        'second-group-name': 'second-group',
-      })
-
-    class TestError extends Error {
-      name = 'test-error'
-    }
-
-    groupMonitoring.error(new TestError('test-message'))
 
     await monitoring.publish()
 
@@ -676,18 +701,40 @@ describe('error', () => {
     )
   })
 
-  test.skip('contains correct dimensions if multiple errors are passed', async () => {
+  test('contains correct dimensions if multiple errors are passed', async () => {
+    mockGetMetrics.mockReturnValue({
+      metrics: [
+        {
+          metricName: 'Errors',
+          unit: 'count',
+          dimensions: [
+            { name: 'DeploymentId', value: 'test-deployment' },
+            { name: 'ErrorName', value: 'test-error' },
+            { name: 'ErrorMessage', value: 'test-message-1' },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [1],
+        },
+        {
+          metricName: 'Errors',
+          unit: 'count',
+          dimensions: [
+            { name: 'DeploymentId', value: 'test-deployment' },
+            { name: 'ErrorName', value: 'test-error' },
+            { name: 'ErrorMessage', value: 'test-message-2' },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [1],
+        },
+      ],
+    })
+
     const monitoring = createMonitoring({
       deploymentId: 'test-deployment',
       resolveVersion: '1.0.0-test',
     })
-
-    class TestError extends Error {
-      name = 'test-error'
-    }
-
-    monitoring.error(new TestError('test-message-1'))
-    monitoring.error(new TestError('test-message-2'))
 
     await monitoring.publish()
 
@@ -711,17 +758,29 @@ describe('error', () => {
     )
   })
 
-  test.skip('contains global dimensions if Part dimension is specified', async () => {
+  test('contains global dimensions if Part dimension is specified', async () => {
+    mockGetMetrics.mockReturnValue({
+      metrics: [
+        {
+          metricName: 'Errors',
+          unit: 'count',
+          dimensions: [
+            { name: 'DeploymentId', value: 'test-deployment' },
+            { name: 'Part', value: 'test-part' },
+            { name: 'ErrorName', value: 'test-error' },
+            { name: 'ErrorMessage', value: 'test-message' },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [1],
+        },
+      ],
+    })
+
     const monitoring = createMonitoring({
       deploymentId: 'test-deployment',
       resolveVersion: '1.0.0-test',
     })
-
-    class TestError extends Error {
-      name = 'test-error'
-    }
-
-    monitoring.group({ Part: 'test-part' }).error(new TestError('test-message'))
 
     await monitoring.publish()
 

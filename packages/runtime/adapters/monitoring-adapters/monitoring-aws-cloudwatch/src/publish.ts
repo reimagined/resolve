@@ -42,10 +42,54 @@ export const monitoringPublish = async (
     // TODO: any
     const metrics = metricData.metrics.reduce((acc: any, metric: any) => {
       if (metric.metricName === 'Errors') {
-        for (let i = 0; i < metric.dimensions.length; i++) {
+        const {
+          group: groupDimensions,
+          error: errorDimensions,
+          part: partName,
+        } = metric.dimensions.reduce(
+          // TODO: any
+          (acc: any, dimension: any) => {
+            if (['ErrorName', 'ErrorMessage'].includes(dimension.name)) {
+              acc.error.push(dimension)
+            } else {
+              acc.group.push(dimension)
+
+              if (dimension.name === 'Part' && acc.part == null) {
+                acc.part = dimension.value
+              }
+            }
+
+            return acc
+          },
+          {
+            group: [],
+            error: [],
+            part: null,
+          }
+        )
+
+        for (let i = 0; i < groupDimensions.length; i++) {
+          const currentGroupDimensions = metric.dimensions.slice(0, i + 1)
+
           acc.push({
             ...metric,
-            dimensions: metric.dimensions.slice(0, i + 1),
+            dimensions: currentGroupDimensions,
+          })
+
+          for (let j = 0; j < errorDimensions.length; j++) {
+            acc.push({
+              ...metric,
+              dimensions: currentGroupDimensions.concat(
+                errorDimensions.slice(0, j + 1)
+              ),
+            })
+          }
+        }
+
+        if (partName != null) {
+          acc.push({
+            ...metric,
+            dimensions: [{ name: 'Part', value: partName }],
           })
         }
       } else {
