@@ -1,6 +1,6 @@
 # **@resolve-js/runtime-single-process**
 
-[![npm version](https://badge.fury.io/js/%40resolve-js%2Fruntime-single-process.svg)](https://badge.fury.io/js/%40resolve-js%2Fruntime)
+[![npm version](https://badge.fury.io/js/%40resolve-js%2Fruntime-single-process.svg)](https://badge.fury.io/js/%40resolve-js%2Fruntime-single-process)
 
 This package contains a runtime backend server that targets a standalone server or local machine.
 

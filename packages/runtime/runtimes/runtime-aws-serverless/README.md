@@ -1,6 +1,6 @@
 # **@resolve-js/runtime-aws-serverless**
 
-[![npm version](https://badge.fury.io/js/%40resolve-js%2Fruntime.svg)](https://badge.fury.io/js/%40resolve-js%2Fruntime-aws-serverless)
+[![npm version](https://badge.fury.io/js/%40resolve-js%2Fruntime-aws-serverless.svg)](https://badge.fury.io/js/%40resolve-js%2Fruntime-aws-serverless)
 
 This package contains a runtime backend server that targets the AWS serverless environment.
 
