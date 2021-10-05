@@ -69,4 +69,25 @@ export default projection
 ```
 
 </TabItem>
+
+<TabItem value="config" label="App Config">
+
+```js
+// config.app.js
+
+const appConfig = {
+  aggregates: [
+    {
+      name: 'MyAggregate',
+      commands: 'common/aggregates/my-aggregate.commands.js',
+      projection: 'common/aggregates/my-aggregate.projection.js',
+    },
+  ],
+  ...
+}
+export default appConfig
+```
+
+</TabItem>
+
 </Tabs>
