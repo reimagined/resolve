@@ -37,3 +37,34 @@ test('stores error with correct dimensions', () => {
     ],
   })
 })
+
+test('stores error correctly on multiple error method calls', () => {
+  const adapter = createAdapter()
+
+  class TestError extends Error {
+    name = 'TestError'
+
+    constructor() {
+      super('test-message')
+    }
+  }
+
+  adapter.error(new TestError())
+  adapter.error(new TestError())
+
+  expect(adapter.getMetrics()).toEqual({
+    metrics: [
+      {
+        metricName: 'Errors',
+        timestamp: null,
+        unit: 'count',
+        dimensions: [
+          { name: 'ErrorName', value: 'TestError' },
+          { name: 'ErrorMessage', value: 'test-message' },
+        ],
+        values: [1],
+        counts: [2],
+      },
+    ],
+  })
+})
