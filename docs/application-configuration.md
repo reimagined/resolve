@@ -626,7 +626,7 @@ The `options` configuration object has the following structure:
 
 ```js
 {
-  importMode, // Specifiest whether to use *static* or *dinamic* imports between the application's modules.
+  importMode, // Specifies whether to use *static* or *dynamic* imports between the application's modules.
   host, // (single-process only) Specifies the network host on which to listen for connections. Defaults to `'0.0.0.0'`.
   port // (single-process only) Specifies the server application's port.
 }
