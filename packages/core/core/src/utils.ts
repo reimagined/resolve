@@ -1,4 +1,8 @@
-import { Monitoring, PerformanceSegment, PerformanceSubsegment } from './types/runtime'
+import {
+  Monitoring,
+  PerformanceSegment,
+  PerformanceSubsegment,
+} from './types/runtime'
 
 const addSubSegment = (
   segment: PerformanceSegment | undefined,
@@ -47,7 +51,7 @@ export function lateBoundProxy<T>(source: T): T {
   const descriptors = methods.reduce<any>((proxy, method) => {
     proxy[method] = {
       get: () => source[method],
-      enumerable: true
+      enumerable: true,
     }
     return proxy
   }, {})
