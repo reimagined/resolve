@@ -35,11 +35,13 @@ const getWebpackConfigs = async ({
     const extensions = config.resolve.extensions
 
     if (Array.isArray(extensions) && extensions.length > 0) {
+      const index = extensions.findIndex((ext) => ext === '.webpack.js')
+      if (index >= 0) {
+        extensions.splice(index, 1)
+      }
       if (extensions[0] !== '.webpack.js') {
         config.resolve.extensions = ['.webpack.js', ...extensions]
       }
-    } else {
-      config.resolve.extensions = ['.webpack.js', '...']
     }
   }
 

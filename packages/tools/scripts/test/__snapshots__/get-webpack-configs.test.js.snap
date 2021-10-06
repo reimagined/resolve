@@ -94,11 +94,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"util\\": \\"util\\",
         \\"vm\\": \\"<MONOREPO_DIR>/node_modules/vm-browserify/index.js\\",
         \\"zlib\\": \\"<MONOREPO_DIR>/node_modules/browserify-zlib/lib/index.js\\"
-      },
-      \\"extensions\\": [
-        \\".webpack.js\\",
-        \\"...\\"
-      ]
+      }
     },
     \\"module\\": {
       \\"rules\\": [
@@ -279,7 +275,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
       ],
       \\"extensions\\": [
         \\".webpack.js\\",
-        \\"...\\"
+        \\".js\\",
+        \\".json\\",
+        \\".wasm\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
@@ -514,7 +512,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
       ],
       \\"extensions\\": [
         \\".webpack.js\\",
-        \\"...\\"
+        \\".js\\",
+        \\".json\\",
+        \\".wasm\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
@@ -830,11 +830,7 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"util\\": \\"util\\",
         \\"vm\\": \\"<MONOREPO_DIR>/node_modules/vm-browserify/index.js\\",
         \\"zlib\\": \\"<MONOREPO_DIR>/node_modules/browserify-zlib/lib/index.js\\"
-      },
-      \\"extensions\\": [
-        \\".webpack.js\\",
-        \\"...\\"
-      ]
+      }
     },
     \\"module\\": {
       \\"rules\\": [
@@ -1015,7 +1011,9 @@ exports[`should make webpack configs for local mode 1`] = `
       ],
       \\"extensions\\": [
         \\".webpack.js\\",
-        \\"...\\"
+        \\".js\\",
+        \\".json\\",
+        \\".wasm\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
@@ -1248,7 +1246,9 @@ exports[`should make webpack configs for local mode 1`] = `
       ],
       \\"extensions\\": [
         \\".webpack.js\\",
-        \\"...\\"
+        \\".js\\",
+        \\".json\\",
+        \\".wasm\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",

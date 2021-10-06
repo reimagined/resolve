@@ -1,4 +1,3 @@
-import { declareRuntimeEnv } from '@resolve-js/scripts'
 import devCommonConfig from './config.dev.common'
 
 const devConfig = {

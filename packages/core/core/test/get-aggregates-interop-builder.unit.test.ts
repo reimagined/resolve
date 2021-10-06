@@ -4,7 +4,7 @@ import {
   AggregateRuntime,
   CommandHttpResponseMode,
 } from '../src/aggregate/types'
-import { SecretsManager, Event, CommandResult } from '../src/types/core'
+import { SecretsManager, CommandResult } from '../src/types/core'
 import { CommandMiddleware, Eventstore, Monitoring } from '../src/types/runtime'
 import { StoredEvent } from '../types'
 let DateNow: any
