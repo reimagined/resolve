@@ -416,6 +416,7 @@ jobs:
           package_registry_scopes: '@resolve-js'
           deploy_args: --verbosity=debug
           events_file_path: ./test-events.txt
+          skip_remove: true
 
       - name: Test:functional (API)
         env:
