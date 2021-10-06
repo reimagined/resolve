@@ -21,21 +21,21 @@ const getWebpackCommonConfigs = ({
     nodeModulesByAssembly.set(packageJson, new Set())
   }
 
-  const packageJsonWriter = ({ request, context }, callback) => {
-    if (request[0] !== '/' && request[0] !== '.') {
-      const packageName = request
-        .split('/')
-        .slice(0, request[0] === '@' ? 2 : 1)
-        .join('/')
+  // const packageJsonWriter = ({ request, context }, callback) => {
+  //   if (request[0] !== '/' && request[0] !== '.') {
+  //     const packageName = request
+  //       .split('/')
+  //       .slice(0, request[0] === '@' ? 2 : 1)
+  //       .join('/')
 
-      if (packageName === 'express') {
-        console.log(`[${packageName}] ==> ${context}`)
-      }
+  //     if (packageName === 'express') {
+  //       console.log(`[${packageName}] ==> ${context}`)
+  //     }
 
-      //nodeModulesByAssembly.get(packageJson).add(packageName)
-    }
-    callback()
-  }
+  //     //nodeModulesByAssembly.get(packageJson).add(packageName)
+  //   }
+  //   callback()
+  // }
 
   const baseCommonConfig = {
     context: path.resolve(process.cwd()),
@@ -121,7 +121,7 @@ const getWebpackCommonConfigs = ({
       ],
     },
     externals: [
-      packageJsonWriter,
+      // packageJsonWriter,
       ...getModulesDirs().map((modulesDir) =>
         nodeExternals({
           modulesDir,
@@ -131,12 +131,10 @@ const getWebpackCommonConfigs = ({
               .slice(0, moduleName[0] === '@' ? 2 : 1)
               .join('/')
 
-            console.log(`${packageName}`)
-
             nodeModulesByAssembly.get(packageJson).add(packageName)
             return 'commonjs ' + moduleName
           },
-          allowlist: [/^@resolve-js\/.*$/],
+          allowlist: [/^@resolve-js\/.*$/, /^@babel\/runtime/],
         })
       ),
     ],
