@@ -21,14 +21,18 @@ const getWebpackCommonConfigs = ({
     nodeModulesByAssembly.set(packageJson, new Set())
   }
 
-  const packageJsonWriter = ({ request }, callback) => {
+  const packageJsonWriter = ({ request, context }, callback) => {
     if (request[0] !== '/' && request[0] !== '.') {
       const packageName = request
         .split('/')
         .slice(0, request[0] === '@' ? 2 : 1)
         .join('/')
 
-      nodeModulesByAssembly.get(packageJson).add(packageName)
+      if (packageName === 'express') {
+        console.log(`[${packageName}] ==> ${context}`)
+      }
+
+      //nodeModulesByAssembly.get(packageJson).add(packageName)
     }
     callback()
   }
@@ -45,7 +49,7 @@ const getWebpackCommonConfigs = ({
     },
     resolve: {
       modules: getModulesDirs(),
-      extensions: ['...'],
+      extensions: ['.webpack.js', '.js', '.json', '.wasm'],
       alias,
     },
     output: {
@@ -121,27 +125,18 @@ const getWebpackCommonConfigs = ({
       ...getModulesDirs().map((modulesDir) =>
         nodeExternals({
           modulesDir,
-          importType: (moduleName) => `((() => {
-              const path = require('path')
-              const requireDirs = ['', '@resolve-js/runtime-base/node_modules/', '@resolve-js/runtime-single-process/node_modules/', '@resolve-js/runtime-aws-serverless/node_modules/']
-              let modulePath = null
-              const moduleName = ${JSON.stringify(moduleName)}
-              for(const dir of requireDirs) {
-                try {
-                  modulePath = require.resolve(path.join(dir, moduleName))
-                  break
-                } catch(err) {}
-              }
-              if(modulePath == null) {
-                throw new Error(\`Module "\${moduleName}" cannot be resolved\`)
-              }
-              return require(modulePath)
-            })())`,
-          allowlist: [
-            /@resolve-js\/runtime-base/,
-            /@resolve-js\/runtime-dev/,
-            /@resolve-js\/runtime-aws-serverless/,
-          ],
+          importType: (moduleName) => {
+            const packageName = moduleName
+              .split('/')
+              .slice(0, moduleName[0] === '@' ? 2 : 1)
+              .join('/')
+
+            console.log(`${packageName}`)
+
+            nodeModulesByAssembly.get(packageJson).add(packageName)
+            return 'commonjs ' + moduleName
+          },
+          allowlist: [/^@resolve-js\/.*$/],
         })
       ),
     ],

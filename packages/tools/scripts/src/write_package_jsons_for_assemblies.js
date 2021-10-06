@@ -61,18 +61,16 @@ const writePackageJsonsForAssemblies = (
       version: applicationPackageJson.version,
       main: './index.js',
       dependencies: Array.from(resultNodeModules).reduce((acc, val) => {
-        if (applicationPackageJson.dependencies.hasOwnProperty(val)) {
-          acc[val] = applicationPackageJson.dependencies[val]
-        } else if (
-          resolveRuntimePackageJson.dependencies.hasOwnProperty(val) &&
-          nodeModules.has(val)
+        if (
+          applicationPackageJson.dependencies.hasOwnProperty(val) &&
+          !val.startsWith('@resolve-js')
         ) {
-          acc[val] =
-            val.startsWith('@resolve-js/') && frameworkVersion != null
-              ? frameworkVersion
-              : resolveRuntimePackageJson.dependencies[val]
+          acc[val] = applicationPackageJson.dependencies[val]
+        } else if (nodeModules.has(val)) {
+          if (!val.startsWith('@resolve-js') && !val.startsWith('$resolve')) {
+            acc[val] = 'latest'
+          }
         }
-
         return acc
       }, {}),
     }

@@ -74,3 +74,5 @@ cra-tests
 examples/**/yarn.lock
 tutorial/**/yarn.lock
 templates/**/yarn.lock
+
+build-example-zip.js
