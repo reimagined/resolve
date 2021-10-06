@@ -1,12 +1,49 @@
 import fs from 'fs'
+import { execSync } from 'child_process'
 import path from 'path'
 import semver from 'semver'
+
+const getWorkspacePackageJsons = () => {
+  const workspaces = JSON.parse(
+    execSync('yarn workspaces --silent info', { stdio: 'pipe' }).toString()
+  )
+
+  const packageJsons = Object.keys(workspaces).map((key) => {
+    return JSON.parse(
+      fs
+        .readFileSync(
+          path.resolve('../../../', workspaces[key].location, 'package.json') //FIXME: get workspace root correctly
+        )
+        .toString()
+    )
+  })
+
+  return packageJsons
+}
+
+const getDependencyVersions = () => {
+  return getWorkspacePackageJsons()
+    .map((p) => p.dependencies)
+    .filter((d) => !!d)
+    .reduce((result, dependencies) => {
+      for (const [packageName, version] of Object.entries(dependencies)) {
+        if (!result.has(packageName)) {
+          result.set(packageName, new Set([version]))
+        } else {
+          result.get(packageName).add(version)
+        }
+      }
+      return result
+    }, new Map())
+}
 
 const writePackageJsonsForAssemblies = (
   distDir,
   nodeModulesByAssembly,
   peerDependencies
 ) => {
+  const dependencyVersions = getDependencyVersions()
+
   const applicationPackageJson = JSON.parse(
     fs.readFileSync(path.resolve(process.cwd(), 'package.json'))
   )
@@ -66,9 +103,25 @@ const writePackageJsonsForAssemblies = (
           !val.startsWith('@resolve-js')
         ) {
           acc[val] = applicationPackageJson.dependencies[val]
-        } else if (nodeModules.has(val)) {
+        } else if (nodeModules.has(val) && dependencyVersions.has(val)) {
           if (!val.startsWith('@resolve-js') && !val.startsWith('$resolve')) {
-            acc[val] = 'latest'
+            const versionSet = dependencyVersions.get(val)
+            if (!versionSet) {
+              //TODO: decide what to do in this case
+              throw Error(
+                `Cannot determine version for the '${val}' dependency`
+              )
+            }
+            if (versionSet.size > 1) {
+              //TODO: decide what to do in this case
+              // throw Error(
+              //   `Multiple versions found for the '${val}' dependency: ${[
+              //     ...versionSet,
+              //   ].join(', ')}`
+              // )
+            }
+            const [dependencyVersion] = [...versionSet]
+            acc[val] = dependencyVersion
           }
         }
         return acc
