@@ -6,12 +6,15 @@
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://reimagined.github.io/resolve/blog"/>
     <subtitle>reSolve Blog</subtitle>
-    <icon>https://reimagined.github.io/resolve/img/favicon.ico</icon>
+    <icon>https://reimagined.github.io/resolve/img/favicon.png</icon>
     <entry>
         <title type="html"><![CDATA[Welcome to reSolve]]></title>
         <id>Welcome to reSolve</id>
-        <link href="https://reimagined.github.io/resolve/blog/2018/12/05/welcome"/>
+        <link href="https://reimagined.github.io/resolve/blog/2018/12/5/welcome"/>
         <updated>2018-12-05T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Hello, this is going to be a place for reSolve blog posts.]]></summary>
+        <author>
+            <name>Roman Eremin</name>
+        </author>
     </entry>
 </feed>
