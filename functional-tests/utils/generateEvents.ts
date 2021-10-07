@@ -22,7 +22,6 @@ const run = () => {
   if (fs.existsSync(eventsFilePath)) {
     fs.unlinkSync(eventsFilePath)
   }
-
   if (fs.existsSync(secretsFilePath)) {
     fs.unlinkSync(secretsFilePath)
   }
