@@ -20,7 +20,6 @@ import { createHttpError, HttpStatusCodes } from '../errors'
 import { v4 as uuid } from 'uuid'
 import { createEventHandler, createInitHandler } from './create-event-handler'
 import { buildSchedulerProjection } from './build-scheduler-projection'
-import { lateBoundProxy } from '../utils'
 
 const getInterop = (
   saga: {
@@ -161,7 +160,7 @@ export const getSagasInteropBuilder = (
       },
       runtime,
       {
-        ...lateBoundProxy(runtime.scheduler),
+        ...runtime.scheduler,
         scheduleCommand: () => {
           /* no-op */
         },

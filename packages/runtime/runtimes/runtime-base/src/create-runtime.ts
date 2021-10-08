@@ -42,13 +42,13 @@ const buildReadModelConnectors = (
 
 const schedulerGuard: Scheduler = {
   executeEntries: () => {
-    throw Error(`executeEntries: scheduler was not provided by runtime`)
+    throw Error(`Scheduler was not provided by runtime`)
   },
   clearEntries: () => {
-    throw Error(`clearEntries: scheduler was not provided by runtime`)
+    throw Error(`Scheduler was not provided by runtime`)
   },
   addEntries: () => {
-    throw Error(`addEntries: scheduler was not provided by runtime`)
+    throw Error(`Scheduler was not provided by runtime`)
   },
 }
 
