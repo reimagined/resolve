@@ -414,9 +414,10 @@ jobs:
           package_registry: ${{ steps.publish.outputs.registry_url }}
           package_registry_token: ${{ secrets.RESOLVE_BOT_PAT }}
           package_registry_scopes: '@resolve-js'
-          deploy_args: --verbosity=debug
+          deploy_args: --verbosity=debug --env=DEBUG=resolve:* --env=DEBUG_LEVEL=debug
           events_file_path: ./test-events.txt
           skip_remove: false
+          retrieve_logs: true
 
       - name: Test:functional (API)
         env:
