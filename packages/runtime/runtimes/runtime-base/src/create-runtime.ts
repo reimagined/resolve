@@ -191,7 +191,14 @@ export const createRuntime = async (
 
   const { uploader } = params
 
-  const getScheduler = () => params.scheduler ?? schedulerGuard
+  const getScheduler = () => {
+    if (params.scheduler != null) {
+      log.debug(`actual scheduler bound`)
+      return params.scheduler
+    }
+    log.debug(`scheduler guard retrieved`)
+    return schedulerGuard
+  }
 
   const executeSaga = createSagaExecutor({
     invokeBuildAsync,

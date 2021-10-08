@@ -73,6 +73,7 @@ const createCloudRuntime = async (
     coldStartContext.domainInterop.sagaDomain.schedulerName
   )
   // TODO: only remaining late binding, protected by guard
+  log.debug(`scheduler late binding`)
   runtimeParams.scheduler = scheduler
 
   return {
