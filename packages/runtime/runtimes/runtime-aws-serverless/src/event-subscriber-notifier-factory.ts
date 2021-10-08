@@ -96,7 +96,8 @@ export const eventSubscriberNotifierFactory = async (
   const userId = process.env.RESOLVE_USER_ID as string
   const functionArn = `arn:aws:lambda:${region}:${accountId}:function:${functionName}`
   const useSqs = !!process.env.EXPERIMENTAL_SQS_TRANSPORT
-  const getNotifierLog = (scope: string) => getLog(`subscriberNotifier:${scope}`)
+  const getNotifierLog = (scope: string) =>
+    getLog(`subscriberNotifier:${scope}`)
 
   const invokeLambdaAsync = async (
     destination: string,
