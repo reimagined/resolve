@@ -51,14 +51,20 @@ const notifyEventSubscriber: (
   eventSubscriber,
   event?
 ) => {
-  const log = getLog(`notifyEventSubscriber:${eventSubscriber}`)
+  const log = getLog(
+    `notifyEventSubscriber:${eventSubscriber}:${
+      event?.event.type ?? '_NO_EVENT_'
+    }`
+  )
   if (/^arn:aws:sqs:/.test(destination)) {
+    log.debug(`sending SQS message`)
     const queueFullName = destination.split(':')[5]
     await runtime.sendSqsMessage(
       queueFullName,
       createEventSubscriberNotification(eventSubscriber, event, true)
     )
   } else if (/^arn:aws:lambda:/.test(destination)) {
+    log.debug(`invoking lambda directly`)
     const lambdaFullName = destination.split(':')[6]
     await runtime.invokeLambdaAsync(lambdaFullName, {
       resolveSource: 'BuildEventSubscriber',

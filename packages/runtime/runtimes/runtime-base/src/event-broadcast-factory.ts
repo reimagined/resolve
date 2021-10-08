@@ -13,9 +13,11 @@ type NotifierRuntime = {
 }
 
 const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
-  const log = getLog(`notifyEventSubscribers`)
+  const log = getLog(`broadcaster:${event?.event.type ?? '_NO_EVENT_'}`)
   const maxDuration = runtime.getVacantTimeInMillis()
   let timerId = null
+
+  log.debug(`begin event broadcast`)
 
   const timerPromise = new Promise((resolve) => {
     timerId = setTimeout(resolve, maxDuration)
@@ -32,6 +34,7 @@ const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
     }
 
     const eventSubscribers = await runtime.eventStoreAdapter.getEventSubscribers()
+
     await Promise.all(
       eventSubscribers
         .filter(
