@@ -109,6 +109,8 @@ export const lambdaWorker = async (
   let runtime: Runtime | null = null
   let monitoring: Monitoring | null = null
 
+  // TODO: too complex
+
   try {
     if (lambdaEvent.resolveSource === 'DeployService') {
       log.debug('identified event source: deployment service')
@@ -313,6 +315,8 @@ export const lambdaWorker = async (
 
       return executorResult
     } else {
+      const data = await makeRuntime({})
+      monitoring = data.monitoring
       throw new Error(
         `abnormal lambda execution on event ${JSON.stringify(lambdaEvent)}`
       )

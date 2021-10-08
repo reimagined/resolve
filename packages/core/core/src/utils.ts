@@ -1,7 +1,7 @@
 import {
   Monitoring,
-  PerformanceSubsegment,
   PerformanceSegment,
+  PerformanceSubsegment,
 } from './types/runtime'
 
 const addSubSegment = (
@@ -44,4 +44,19 @@ export const getPerformanceTracerSegment = (
       addNewSubsegment: (name: string) => addSubSegment(segment, name),
     }
   )
+}
+
+export function lateBoundProxy<
+  TSource extends { [key: string]: any },
+  TReference extends keyof TSource
+>(source: TSource, ref: TReference): TSource[TReference] {
+  const methods = Object.keys(source[ref]) as Array<keyof TReference>
+  const descriptors = methods.reduce<any>((proxy, method) => {
+    proxy[method] = {
+      get: () => source[ref][method],
+      enumerable: true,
+    }
+    return proxy
+  }, {})
+  return Object.create(Object.prototype, descriptors)
 }
