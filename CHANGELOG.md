@@ -6,6 +6,7 @@
 
 **Other changes:**
 
+- Migrate from "incremental import" to "import" [\#2061](https://github.com/reimagined/resolve/pull/2061)
 - Cleanup eventstore tests [\#2058](https://github.com/reimagined/resolve/pull/2058)
 
 ## [V0.32.0](https://github.com/reimagined/resolve/tree/V0.32.0) (2021-10-01)
