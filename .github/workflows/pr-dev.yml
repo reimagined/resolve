@@ -395,7 +395,7 @@ jobs:
       - name: Build initial events
         env:
           TEST_APP_DIR: ${{ env.test_app_dir }}
-          EVENTS_FILE_PATH: ./test-events.txt
+          EVENT_STORE_PATH: ./test-event-store
         run: |
           yarn ts-node functional-tests/utils/generateEvents.ts
 
@@ -415,7 +415,7 @@ jobs:
           package_registry_token: ${{ secrets.RESOLVE_BOT_PAT }}
           package_registry_scopes: '@resolve-js'
           deploy_args: --verbosity=debug
-          events_file_path: ./test-events.txt
+          event_store_path: ./test-event-store
 
       - name: Test:functional (API)
         env:
