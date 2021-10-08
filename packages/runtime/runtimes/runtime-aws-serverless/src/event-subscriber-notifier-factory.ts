@@ -103,7 +103,7 @@ export const eventSubscriberNotifierFactory = async (
     destination: string,
     parameters: Record<string, any>
   ) => {
-    const log = getNotifierLog(`endSqsMessage`)
+    const log = getNotifierLog(`invokeLambdaAsync`)
     log.debug(`invoking lambda as event subscriber: ${destination}`)
     try {
       await invokeFunction({
@@ -120,7 +120,7 @@ export const eventSubscriberNotifierFactory = async (
     destination: string,
     parameters: Record<string, any>
   ) => {
-    const log = getNotifierLog(`endSqsMessage`)
+    const log = getNotifierLog(`sendSqsMessage`)
     log.debug(`sending SQS message to: ${destination}`)
     const queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${destination}`
     await sendMessage({
