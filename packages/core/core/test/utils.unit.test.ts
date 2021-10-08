@@ -10,7 +10,7 @@ describe('lateBoundProxy', () => {
       },
     }
 
-    const proxy = lateBoundProxy(source, 'lateBound')
+    const proxy = lateBoundProxy({}, source, 'lateBound')
     proxy.hello()
 
     expect(original).toHaveBeenCalled()
@@ -36,10 +36,11 @@ describe('lateBoundProxy', () => {
         get: () => {
           return target
         },
+        enumerable: true,
       },
     })
 
-    const proxy = lateBoundProxy(source, 'lateBound')
+    const proxy = lateBoundProxy({}, source, 'lateBound')
     proxy.hello()
 
     expect(original).toHaveBeenCalled()

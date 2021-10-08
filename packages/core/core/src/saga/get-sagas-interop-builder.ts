@@ -160,12 +160,15 @@ export const getSagasInteropBuilder = (
         handlers: buildSchedulerProjection(schedulerName, schedulerEventTypes),
       },
       runtime,
-      {
-        ...lateBoundProxy(runtime, 'scheduler'),
-        scheduleCommand: () => {
-          /* no-op */
+      lateBoundProxy(
+        {
+          scheduleCommand: () => {
+            /* no-op */
+          },
         },
-      }
+        runtime,
+        'scheduler'
+      )
     )
   )
 

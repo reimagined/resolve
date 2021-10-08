@@ -47,9 +47,14 @@ export const getPerformanceTracerSegment = (
 }
 
 export function lateBoundProxy<
+  TTarget extends object,
   TSource extends { [key: string]: any },
   TReference extends keyof TSource
->(source: TSource, ref: TReference): TSource[TReference] {
+>(
+  target: TTarget,
+  source: TSource,
+  ref: TReference
+): TTarget & TSource[TReference] {
   const methods = Object.keys(source[ref]) as Array<keyof TReference>
   const descriptors = methods.reduce<any>((proxy, method) => {
     proxy[method] = {
@@ -58,5 +63,5 @@ export function lateBoundProxy<
     }
     return proxy
   }, {})
-  return Object.create(Object.prototype, descriptors)
+  return Object.create(target, descriptors)
 }
