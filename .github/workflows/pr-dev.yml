@@ -415,9 +415,9 @@ jobs:
           package_registry_token: ${{ secrets.RESOLVE_BOT_PAT }}
           package_registry_scopes: '@resolve-js'
           deploy_args: --verbosity=debug --env=DEBUG=resolve:* --env=DEBUG_LEVEL=debug
-          events_file_path: ./test-events.txt
+          event_store_path: ./test-event-store
           skip_remove: false
-          retrieve_logs: true
+          retrieve_logs: false
 
       - name: Test:functional (API)
         env:
