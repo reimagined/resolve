@@ -70,6 +70,7 @@ type LambdaEventBase = {
 }
 export type BuildEventSubscriberLambdaEvent = {
   readonly resolveSource: 'BuildEventSubscriber'
+  readonly eventSubscriber: string
 } & LambdaEventBase
 export type SchedulerLambdaEvent = {
   readonly resolveSource: 'Scheduler'

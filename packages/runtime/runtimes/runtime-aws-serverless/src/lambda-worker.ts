@@ -2,7 +2,10 @@ import { getLog, createRuntime } from '@resolve-js/runtime-base'
 
 import { schedulerFactory } from './scheduler-factory'
 import { monitoringFactory } from './monitoring-factory'
-import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
+import {
+  eventSubscriberNotifierFactory,
+  waitForSubscriber,
+} from './event-subscriber-notifier-factory'
 import { putDurationMetrics } from './metrics'
 import { handleWebsocketEvent } from './websocket-event-handler'
 import { handleApiGatewayEvent } from './api-gateway-handler'
@@ -140,15 +143,31 @@ export const lambdaWorker = async (
       log.debug('identified event source: event-subscriber-direct')
       ;({ runtime, monitoring } = await makeRuntime({}))
 
-      const { resolveSource, ...buildParameters } = lambdaEvent
+      const { resolveSource, eventSubscriber, ...buildParameters } = lambdaEvent
       void resolveSource
 
-      const executorResult = await runtime.eventSubscriber.build({
+      const currentEventSubscriber = coldStartContext.eventListeners.get(
+        eventSubscriber
+      ) ?? { isSaga: false }
+
+      let executorResult = await runtime.eventSubscriber.build({
         ...buildParameters,
+        eventSubscriber,
         coldStart,
       })
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
+
+      if (currentEventSubscriber.isSaga) {
+        await waitForSubscriber(true)
+        executorResult = await runtime.eventSubscriber.build({
+          ...buildParameters,
+          eventSubscriber,
+          coldStart,
+        })
+
+        log.verbose(`sagaExecutorResult: ${JSON.stringify(executorResult)}`)
+      }
 
       return executorResult
     } else if (
