@@ -45,12 +45,12 @@ After this, a minimal reSolve application is ready. To run it in development mod
 
 ```sh
 cd shopping-list
-yarn run dev
+yarn dev
 ```
 
 ### Running Tests
 
-A new reSolve application contains a minimalistic end-to-end test located in `test/e2e/index.test.js` that runs on the client and checks that the reSolve server responds normally. You are also free to modify this file to check your application's functionality.
+A new reSolve application contains a minimalistic [TestCafe](https://testcafe.io/) test located in `test/e2e/index.test.js` that runs on the client and checks that the reSolve server responds normally. You are also free to modify this file to check your application's functionality.
 
 Call the project's `test:e2e` script to run the test:
 
@@ -119,8 +119,8 @@ Define types of events that the write side can produce. Create an **eventTypes.j
 **common/eventTypes.js**
 
 ```js
-export const SHOPPING_LIST_CREATED = 'SHOPPING_LIST_CREATED' // Indicates the creation of a shopping list
-export const SHOPPING_ITEM_CREATED = 'SHOPPING_ITEM_CREATED' // Indicates the creation of an item within a shopping list
+export const SHOPPING_LIST_CREATED = 'SHOPPING_LIST_CREATED' // Indicates the creation of a shopping list.
+export const SHOPPING_ITEM_CREATED = 'SHOPPING_ITEM_CREATED' // Indicates the creation of an item within a shopping list.
 ```
 
 Next, define an aggregate that handles commands and produces the defined events as a result.
@@ -174,16 +174,17 @@ The last step is to register the implemented aggregate in the application's conf
 **config.app.js**
 
 ```js
-...
-aggregates: [
-  {
-    // The aggregate name
-    name: 'ShoppingList',
-    // A path to the file that defines the aggregate's command handlers
-    commands: 'common/aggregates/shopping_list.commands.js',
-  }
-],
-...
+const appConfig = {
+  aggregates: [
+    {
+      // The aggregate name
+      name: 'ShoppingList',
+      // A path to the file that defines the aggregate's command handlers
+      commands: 'common/aggregates/shopping_list.commands.js',
+    },
+  ],
+}
+export default appConfig
 ```
 
 ### Sending Commands to an Aggregate
@@ -309,14 +310,23 @@ sqlite> select * from events;
 
 You can write an end-to-end test to check the new functionality. Refer to the [Running Tests](#running-tests) section for the information on how to run tests in your application.
 
-You can manually add the required test cases to your application's tests or use the test included into the lesson's [example project](https://github.com/reimagined/resolve/tree/dev/tutorial/lesson-1):
+You can manually modify your application's test as shown below or use the test included into the lesson's [example project](https://github.com/reimagined/resolve/tree/dev/tutorial/lesson-1):
 
 [test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/e2e/index.test.js)
 
 ```js
-import { expect } from 'chai'
-...
-// Create a shopping list and check the server response.
+import { Selector, t } from 'testcafe'
+import fetch from 'isomorphic-fetch'
+
+const host = process.env.HOST || 'localhost'
+const MAIN_PAGE = `http://${host}:3000`
+// eslint-disable-next-line no-unused-expressions, no-undef
+fixture`reSolve Application`.beforeEach(async (t) => {
+  await t.setNativeDialogHandler(() => true)
+  // Your app does not currently have a frontend, so comment out the line below.
+  // await t.navigateTo(MAIN_PAGE)
+})
+
 test('createShoppingList', async () => {
   const command = {
     aggregateName: 'ShoppingList',
@@ -350,7 +360,6 @@ test('createShoppingList', async () => {
     })
 })
 
-// Create an item and check the server response.
 test('createShoppingItem', async () => {
   const command = {
     aggregateName: 'ShoppingList',
@@ -381,6 +390,84 @@ test('createShoppingItem', async () => {
     })
     .expect(event.payload)
     .contains({ id: '1', text: 'Milk' })
+})
+
+test('createShoppingItems', async () => {
+  const matches = [
+    {
+      command: {
+        aggregateName: 'ShoppingList',
+        aggregateId: 'shopping-list-1',
+        type: 'createShoppingItem',
+        payload: {
+          id: '2',
+          text: 'Eggs',
+        },
+      },
+      event: {
+        type: 'SHOPPING_ITEM_CREATED',
+        payload: { id: '2', text: 'Eggs' },
+        aggregateId: 'shopping-list-1',
+        aggregateVersion: 3,
+      },
+    },
+    {
+      command: {
+        aggregateName: 'ShoppingList',
+        aggregateId: 'shopping-list-1',
+        type: 'createShoppingItem',
+        payload: {
+          id: '3',
+          text: 'Canned beans',
+        },
+      },
+      event: {
+        type: 'SHOPPING_ITEM_CREATED',
+        payload: { id: '3', text: 'Canned beans' },
+        aggregateId: 'shopping-list-1',
+        aggregateVersion: 4,
+      },
+    },
+    {
+      command: {
+        aggregateName: 'ShoppingList',
+        aggregateId: 'shopping-list-1',
+        type: 'createShoppingItem',
+        payload: {
+          id: '4',
+          text: 'Paper towels',
+        },
+      },
+      event: {
+        type: 'SHOPPING_ITEM_CREATED',
+        payload: { id: '4', text: 'Paper towels' },
+        aggregateId: 'shopping-list-1',
+        aggregateVersion: 5,
+      },
+    },
+  ]
+
+  for (const match of matches) {
+    const response = await fetch(`${MAIN_PAGE}/api/commands`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(match.command),
+    })
+
+    const event = await response.json()
+
+    await t
+      .expect(event)
+      .contains({
+        aggregateId: match.event.aggregateId,
+        aggregateVersion: match.event.aggregateVersion,
+        type: match.event.type,
+      })
+      .expect(event.payload)
+      .contains(match.event.payload)
+  }
 })
 ```
 
@@ -516,21 +603,55 @@ Add the following test case to the application's test file.
 [test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/e2e/index.test.js)
 
 ```js
-test('read model query should work correctly', async () => {
-  const response = await fetch(`${MAIN_PAGE}/api/query/ShoppingLists/all`, {
-    headers: {
-      'Content-Type': 'application/json',
+test('validation should work correctly', async () => {
+  const matches = [
+    {
+      command: {
+        aggregateName: 'ShoppingList',
+        aggregateId: 'shopping-list-2',
+        type: 'createShoppingList',
+        payload: {},
+      },
+      error: 'The "name" field is required',
     },
-    method: 'GET',
-  })
+    {
+      command: {
+        aggregateName: 'ShoppingList',
+        aggregateId: 'shopping-list-1',
+        type: 'createShoppingList',
+        payload: {
+          name: 'List 1',
+        },
+      },
+      error: 'Shopping list already exists',
+    },
+    {
+      command: {
+        aggregateName: 'ShoppingList',
+        aggregateId: 'shopping-list-4000',
+        type: 'createShoppingItem',
+        payload: {
+          id: '5',
+          text: 'Bread',
+        },
+      },
+      error: 'Shopping list does not exist',
+    },
+  ]
 
-  const result = await response.json()
+  for (const match of matches) {
+    const response = await fetch(`${MAIN_PAGE}/api/commands`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(match.command),
+    })
 
-  await t.expect(result.data.length).eql(1)
-  await t.expect(result.data[0]).contains({
-    id: 'shopping-list-1',
-    name: 'List 1',
-  })
+    const error = await response.text()
+
+    await t.expect(error).contains(match.error)
+  }
 })
 ```
 
@@ -678,19 +799,18 @@ Register the created Read Model in the application configuration file:
 **config.app.js**
 
 ```js
-...
-readModels: [
-  {
-    // The Read Model's name
-    name: 'ShoppingLists',
-    // A path to the file that defines the Read Model projection
-    projection: 'common/read-models/shopping_lists.projection.js',
-    // A path to the file that defines the resolvers
-    resolvers: 'common/read-models/shopping_lists.resolvers.js',
-    // The name of the connector used to store the state
-    connectorName: 'default'
-  }
-],
+const appConfig = {
+  ...
+  readModels: [
+    {
+      name: 'ShoppingLists',
+      projection: 'common/read-models/shopping_lists.projection.js',
+      resolvers: 'common/read-models/shopping_lists.resolvers.js',
+      connectorName: 'default'
+    }
+  ]
+}
+export default appConfig
 ```
 
 <details>
@@ -766,7 +886,7 @@ test('read model query should work correctly', async () => {
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-3)
 
-This lesson describes how to display a Read Model's data in the client browser. The code in this lesson uses the reSolve framework's **@resolve-js/redux** library to implement a frontend based on React with hooks.
+This lesson describes how to display a Read Model's data in the client browser. The code in this lesson uses the reSolve framework's [@resolve-js/react-hooks](https://www.npmjs.com/package/@resolve-js/react-hooks) library to implement a frontend based on React with hooks.
 
 Refer to the [Frontend](frontend.md) article for information on other tools that you can use to implement a frontend.
 
@@ -794,7 +914,7 @@ You can define a reusable component that generates the document `<head>` section
 
 [client/components/Header.js](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-3/client/components/Header.js)
 
-```js
+```jsx
 import React from 'react'
 // The react-helmet library allows you to manage the document *head* section.
 import { Helmet } from 'react-helmet'
@@ -836,7 +956,7 @@ Now you can configure the `<head>` section within the root component:
 
 **client/components/App.js**
 
-```js
+```jsx
 import Header from './Header'
 
 const App = ({ route, children }) => (
@@ -893,7 +1013,7 @@ Add a new component named **MyLists**. This component obtains shopping list data
 
 **client/components/MyLists.js**
 
-```js
+```jsx
 import React, { useState, useEffect } from 'react'
 
 import { useQuery } from '@resolve-js/react-hooks'
@@ -1053,6 +1173,15 @@ Add the following test case to the application's test file.
 [test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-3/test/e2e/index.test.js)
 
 ```js
+fixture`reSolve Application`.beforeEach(async (t) => {
+  await t.setNativeDialogHandler(() => true)
+  // Add the following line to the fixture so the test
+  // navigates to the main page before each test case
+  await t.navigateTo(MAIN_PAGE)
+})
+
+...
+
 test('shopping list is displayed on page', async (t) => {
   await t.expect(Selector('td').withText('1').exists).eql(true)
   await t.expect(Selector('td').withText('List 1').exists).eql(true)
@@ -1133,48 +1262,6 @@ const appConfig = {
   ]
 }
 export default appConfig
-```
-
-### Query A View Model
-
-You can use the reSolve HTTP API to query a View Model:
-
-```bash
-$  curl -i -g -X GET "http://localhost:3000/api/query/shoppingList/shopping-list-1"
-HTTP/1.1 200 OK
-X-Powered-By: Express
-Content-Type: text/html; charset=utf-8
-Content-Length: 50
-ETag: W/"32-QoPdRfMTxfncCZnYSqRYIDifC/w"
-Date: Fri, 16 Nov 2018 12:10:58 GMT
-Connection: keep-alive
-
-{
-  "id": "shopping-list-1",
-  "name": "List 1",
-  "list": [
-    {
-      "id": "1",
-      "text": "Milk",
-      "checked": false
-    },
-    {
-      "id": "2",
-      "text": "Eggs",
-      "checked": false
-    },
-    {
-      "id": "3",
-      "text": "Canned beans",
-      "checked": false
-    },
-    {
-      "id": "4",
-      "text": "Paper towels",
-      "checked": false
-    }
-  ]
-}
 ```
 
 ### Display View Model Data on the Client
@@ -1274,6 +1361,8 @@ Modify the **ShoppingLists** component's layout as shown below to render links t
 **client/components/ShoppingLists.js:**
 
 ```jsx
+import { Link } from 'react-router-dom'
+...
 const ShoppingLists = ({ lists }) => {
   return (
     <div>
@@ -1295,6 +1384,27 @@ const ShoppingLists = ({ lists }) => {
 ```
 
 ![List Items](assets/tutorial/lesson4-navigation.png)
+
+Add a route for the ShoppingList component to the router config:
+
+**client/routes.js:**
+
+```js
+import ShoppingList from './components/ShoppingList'
+...
+export default [
+  {
+    ...
+    routes: [
+      ...
+      {
+        path: '/:id',
+        component: ShoppingList,
+      },
+    ],
+  },
+]
+```
 
 Run the application and click a shopping list's name view the result. To test the View Model's reactiveness, keep the page opened and use the following console input to add a shopping list item:
 
@@ -1330,6 +1440,27 @@ Add the following test case to the application's test file.
 [test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-4/test/e2e/index.test.js)
 
 ```js
+const waitSelector = async (t, eventSubscriber, selector) => {
+  while (true) {
+    const res = await fetch(`${MAIN_PAGE}/api/event-broker/read-models-list`)
+
+    const readModel = (await res.json()).find(
+      (readModel) => readModel.eventSubscriber === eventSubscriber
+    )
+
+    if (readModel.status !== 'deliver') {
+      throw new Error(`Test failed. Read-model status "${readModel.status}"`)
+    }
+
+    try {
+      await t.expect((await selector).exists).eql(true)
+      break
+    } catch (e) {}
+  }
+}
+
+...
+
 test('shopping list items are displayed on page', async (t) => {
   await t.click(Selector('a').withText('List 1'))
   await waitSelector(t, 'ShoppingLists', Selector('div.list-group-item'))
@@ -1338,6 +1469,36 @@ test('shopping list items are displayed on page', async (t) => {
   await t.expect(Selector('label').withText('Canned beans').exists).eql(true)
   await t.expect(Selector('label').withText('Paper towels').exists).eql(true)
 })
+```
+
+This test case requires API exposed by [@resolve-js/module-admin](https://www.npmjs.com/package/@resolve-js/module-admin) to obtain the list of read models from the server. Follow the steps below to add this module to your application in the testing mode.
+
+To install the module, use the following console input:
+
+```sh
+yarn add @resolve-js/module-admin
+```
+
+To add the module to the application, edit the application's **run.js** file as follows:
+
+```js
+// run.js
+import resolveModuleAdmin from '@resolve-js/module-admin'
+...
+void (async () => {
+  switch (launchMode) {
+    case 'test:e2e': {
+      const moduleAdmin = resolveModuleAdmin() // Initialize the module.
+      const resolveConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        testFunctionalConfig,
+        moduleAdmin // Merge the module's config into the application's config.
+      )
+      ...
+    }
+  })
+  ...
 ```
 
 </details>
