@@ -1,17 +1,21 @@
 import { declareRuntimeEnv } from '@resolve-js/scripts'
 const testFunctionalConfig = {
-  target: 'local',
-  port: declareRuntimeEnv('PORT', '3000'),
-  mode:
-    'development' /*,
-  readModelConnectors: {
-    default: {
-      module: '@resolve-js/readmodel-lite',
-      options: {
-        databaseFile: 'data/read-models-test-functional.db'
+  mode: 'development',
+  runtime: {
+    module: '@resolve-js/runtime-single-process',
+    options: {
+      host: declareRuntimeEnv('HOST', 'localhost'),
+      port: declareRuntimeEnv('PORT', '3000'),
+    },
+  } /*,
+    readModelConnectors: {
+      default: {
+        module: '@resolve-js/readmodel-lite',
+        options: {
+          databaseFile: 'data/read-models-test-functional.db'
+        }
       }
-    }
-  }*/,
+    }*/,
   eventstoreAdapter: {
     module: '@resolve-js/eventstore-lite',
     options: {

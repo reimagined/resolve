@@ -26,6 +26,8 @@
     "@resolve-js/readmodel-base": "0.32.0",
     "@resolve-js/readmodel-lite": "0.32.0",
     "@resolve-js/readmodel-postgresql": "0.32.0",
+    "@resolve-js/runtime-single-process": "0.32.0",
+    "@resolve-js/runtime-aws-serverless": "0.32.0",
     "history": "4.10.1",
     "isomorphic-fetch": "3.0.0",
     "react": "17.0.2",
