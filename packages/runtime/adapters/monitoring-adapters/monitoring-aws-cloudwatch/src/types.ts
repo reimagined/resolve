@@ -1,25 +1,32 @@
+// TODO: move to base
 export interface MonitoringDimension {
-  Name: string
-  Value: string
+  name: string
+  value: string
 }
 
 export type MonitoringDimensions = MonitoringDimension[]
 export type MonitoringDimensionsList = MonitoringDimensions[]
 
-export interface MonitoringMetricDatum {
-  MetricName: string
-  Dimensions: MonitoringDimension[]
-  Timestamp: Date
-  Values: number[]
-  Counts: number[]
-  Unit: string
+// TODO: move to base
+export interface MonitoringMetric {
+  metricName: string
+  dimensions: MonitoringDimension[]
+  timestamp: Date
+  values: number[]
+  counts: number[]
+  unit: string
 }
 
-export interface MonitoringData {
-  // TODO:
+// TODO: any
+export interface MonitoringContext {
   monitoringBase: any
-  metricData: MonitoringMetricDatum[]
-  metricDimensions: MonitoringDimensionsList
+  deploymentId: string
+  resolveVersion: string
+}
+
+// TODO: move to base
+export interface MonitoringData {
+  metrics: MonitoringMetric[]
 }
 
 export interface MonitoringGroupData {
@@ -28,4 +35,16 @@ export interface MonitoringGroupData {
   globalDimensions: MonitoringDimensionsList
   durationMetricDimensionsList: MonitoringDimensionsList
   errorMetricDimensionsList: MonitoringDimensionsList
+}
+
+export interface CloudWatchMetricDatum {
+  MetricName: string
+  Unit: string
+  Dimensions: Array<{
+    Name: string
+    Value: string
+  }>
+  Values: number[]
+  Counts: number[]
+  Timestamp: Date
 }

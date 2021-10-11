@@ -7,10 +7,24 @@ import createMonitoring from '../src'
 
 const mockGetMetrics = jest.fn()
 const mockClearMetrics = jest.fn()
+const mockGroup = jest.fn()
+const mockError = jest.fn()
+const mockExecution = jest.fn()
+const mockDuration = jest.fn()
+const mockTime = jest.fn()
+const mockTimeEnd = jest.fn()
+const mockRate = jest.fn()
 
 jest.mock('@resolve-js/monitoring-base', () => () => ({
   getMetrics: mockGetMetrics,
   clearMetrics: mockClearMetrics,
+  group: mockGroup,
+  error: mockError,
+  execution: mockExecution,
+  duration: mockDuration,
+  time: mockTime,
+  timeEnd: mockTimeEnd,
+  rate: mockRate,
 }))
 
 afterEach(() => {
@@ -35,6 +49,13 @@ afterEach(() => {
 
   mockGetMetrics.mockClear()
   mockClearMetrics.mockClear()
+  mockGroup.mockClear()
+  mockError.mockClear()
+  mockExecution.mockClear()
+  mockDuration.mockClear()
+  mockTime.mockClear()
+  mockTimeEnd.mockClear()
+  mockRate.mockClear()
 })
 
 describe('publish', () => {
@@ -43,7 +64,7 @@ describe('publish', () => {
       metrics: [
         {
           metricName: 'Errors',
-          dimensions: [{ name: 'deploymentId', value: 'test-deployment' }],
+          dimensions: [{ name: 'Part', value: 'Command' }],
           timestamp: 0,
           values: [1],
           counts: [1],
@@ -90,7 +111,7 @@ describe('publish', () => {
           {
             metricName: 'Errors',
             dimensions: [
-              { name: 'DeploymentId', value: 'test-deployment' },
+              { name: 'Part', value: 'Command' },
               { name: 'ErrorName', value: 'Error' },
               { name: 'ErrorMessage', value: 'test-1' },
             ],
@@ -105,7 +126,7 @@ describe('publish', () => {
           {
             metricName: 'Errors',
             dimensions: [
-              { name: 'DeploymentId', value: 'test-deployment' },
+              { name: 'Part', value: 'Command' },
               { name: 'ErrorName', value: 'Error' },
               { name: 'ErrorMessage', value: 'test-2' },
             ],
@@ -121,10 +142,7 @@ describe('publish', () => {
       resolveVersion: '1.0.0-test',
     })
 
-    monitoring.error(new Error('test-1'))
     await monitoring.publish()
-
-    monitoring.error(new Error('test-2'))
     await monitoring.publish()
 
     expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(2)
@@ -136,6 +154,7 @@ describe('publish', () => {
           expect.objectContaining({
             Dimensions: [
               { Name: 'DeploymentId', Value: 'test-deployment' },
+              { Name: 'Part', Value: 'Command' },
               { Name: 'ErrorName', Value: 'Error' },
               { Name: 'ErrorMessage', Value: 'test-1' },
             ],
@@ -151,6 +170,7 @@ describe('publish', () => {
           expect.objectContaining({
             Dimensions: [
               { Name: 'DeploymentId', Value: 'test-deployment' },
+              { Name: 'Part', Value: 'Command' },
               { Name: 'ErrorName', Value: 'Error' },
               { Name: 'ErrorMessage', Value: 'test-2' },
             ],
@@ -166,6 +186,7 @@ describe('publish', () => {
           expect.objectContaining({
             Dimensions: [
               { Name: 'DeploymentId', Value: 'test-deployment' },
+              { Name: 'Part', Value: 'Command' },
               { Name: 'ErrorName', Value: 'Error' },
               { Name: 'ErrorMessage', Value: 'test-2' },
             ],
@@ -181,6 +202,7 @@ describe('publish', () => {
           expect.objectContaining({
             Dimensions: [
               { Name: 'DeploymentId', Value: 'test-deployment' },
+              { Name: 'Part', Value: 'Command' },
               { Name: 'ErrorName', Value: 'Error' },
               { Name: 'ErrorMessage', Value: 'test-1' },
             ],
@@ -197,7 +219,6 @@ describe('publish', () => {
           metricName: 'Errors',
           unit: 'count',
           dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
             { name: 'ErrorName', value: 'Error' },
             { name: 'ErrorMessage', value: 'test-error' },
           ],
@@ -208,10 +229,7 @@ describe('publish', () => {
         {
           metricName: 'Duration',
           unit: 'milliseconds',
-          dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
-            { name: 'Label', value: 'test-label' },
-          ],
+          dimensions: [{ name: 'Label', value: 'test-label' }],
           timestamp: 0,
           values: [300],
           counts: [1],
@@ -259,13 +277,59 @@ describe('publish', () => {
     )
   })
 
+  test('cuts off dimension value if it is greater than 256', async () => {
+    mockGetMetrics.mockReturnValue({
+      metrics: [
+        {
+          metricName: 'Errors',
+          unit: 'count',
+          dimensions: [
+            { name: 'Part', value: 'Command' },
+            { name: 'ErrorName', value: 'Error' },
+            {
+              name: 'ErrorMessage',
+              value: Array.from({ length: 300 }).fill('a').join(''),
+            },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [1],
+        },
+      ],
+    })
+
+    const monitoring = createMonitoring({
+      deploymentId: 'test-deployment',
+      resolveVersion: '1.0.0-test',
+    })
+
+    await monitoring.publish()
+
+    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
+      expect.objectContaining({
+        MetricData: expect.arrayContaining([
+          expect.objectContaining({
+            Dimensions: [
+              { Name: 'DeploymentId', Value: 'test-deployment' },
+              { Name: 'Part', Value: 'Command' },
+              { Name: 'ErrorName', Value: 'Error' },
+              {
+                Name: 'ErrorMessage',
+                Value: `${Array.from({ length: 253 }).fill('a').join('')}...`,
+              },
+            ],
+          }),
+        ]),
+      })
+    )
+  })
+
   test('splits metrics sending if metric data array has length more than 20', async () => {
     mockGetMetrics.mockReturnValue({
       metrics: Array.from({ length: 8 }, () => ({
         metricName: 'Errors',
         unit: 'count',
         dimensions: [
-          { name: 'DeploymentId', value: 'test-deployment' },
           { name: 'ErrorName', value: 'Error' },
           { name: 'ErrorMessage', value: 'test-error' },
         ],
@@ -334,8 +398,6 @@ describe('Errors', () => {
           metricName: 'Errors',
           unit: 'count',
           dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
-            { name: 'test-group-name', value: 'test-group' },
             { name: 'ErrorName', value: 'test-error' },
             { name: 'ErrorMessage', value: 'test-message' },
           ],
@@ -368,14 +430,13 @@ describe('Errors', () => {
     }
   })
 
-  test('sends multiple dimensions', async () => {
+  test('sends multiple dimensions including deploymentId', async () => {
     mockGetMetrics.mockReturnValue({
       metrics: [
         {
           metricName: 'Errors',
           unit: 'count',
           dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
             { name: 'ErrorName', value: 'test-error' },
             { name: 'ErrorMessage', value: 'test-message' },
           ],
@@ -443,7 +504,6 @@ describe('Errors', () => {
           metricName: 'Errors',
           unit: 'count',
           dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
             { name: 'test-group-name', value: 'test-group' },
             { name: 'ErrorName', value: 'test-error' },
             { name: 'ErrorMessage', value: 'test-message' },
@@ -554,7 +614,6 @@ describe('Errors', () => {
           metricName: 'Errors',
           unit: 'count',
           dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
             { name: 'first-group-name', value: 'first-group' },
             { name: 'second-group-name', value: 'second-group' },
             { name: 'ErrorName', value: 'test-error' },
@@ -711,7 +770,6 @@ describe('Errors', () => {
           metricName: 'Errors',
           unit: 'count',
           dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
             { name: 'ErrorName', value: 'test-error' },
             { name: 'ErrorMessage', value: 'test-message-1' },
           ],
@@ -723,7 +781,6 @@ describe('Errors', () => {
           metricName: 'Errors',
           unit: 'count',
           dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
             { name: 'ErrorName', value: 'test-error' },
             { name: 'ErrorMessage', value: 'test-message-2' },
           ],
@@ -768,7 +825,6 @@ describe('Errors', () => {
           metricName: 'Errors',
           unit: 'count',
           dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
             { name: 'Part', value: 'test-part' },
             { name: 'ErrorName', value: 'test-error' },
             { name: 'ErrorMessage', value: 'test-message' },
@@ -827,7 +883,6 @@ describe('Executions', () => {
           metricName: 'Executions',
           unit: 'count',
           dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
             { name: 'test-group-name', value: 'test-group' },
           ],
           timestamp: 0,
@@ -885,7 +940,6 @@ describe('Executions', () => {
           metricName: 'Executions',
           unit: 'count',
           dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
             { name: 'first-group-name', value: 'first-group' },
             { name: 'second-group-name', value: 'second-group' },
           ],
@@ -1257,8 +1311,6 @@ describe('Duration', () => {
           metricName: 'Duration',
           unit: 'milliseconds',
           dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
-            { name: 'ResolveVersion', value: '1.0.0-test' },
             { name: 'Label', value: 'test-label' },
           ],
           timestamp: 0,
@@ -1328,8 +1380,6 @@ describe('Duration', () => {
           metricName: 'Duration',
           unit: 'milliseconds',
           dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
-            { name: 'ResolveVersion', value: '1.0.0-test' },
             { name: 'test-group', value: 'test-group-name' },
             { name: 'Label', value: 'test-label' },
           ],
@@ -1455,124 +1505,6 @@ describe('Duration', () => {
           expect.objectContaining({
             Values: Array.from({ length: 100 }, (_, i) => i + 301),
             Counts: Array.from({ length: 100 }, () => 1),
-          }),
-        ]),
-      })
-    )
-  })
-
-  test.skip('combines different values with same dimensions up to 150 samples considering value', async () => {
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    const mockDate = new Date(1625152712546)
-
-    dateSpy = jest
-      .spyOn(global, 'Date')
-      .mockImplementation(() => (mockDate as unknown) as string)
-
-    for (let i = 0; i < 150; i++) {
-      monitoring.duration('test-label', i)
-    }
-
-    monitoring.duration('test-label', 69)
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(3)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Values: Array.from({ length: 150 }, (_, i) => i),
-            Counts: Array.from({ length: 150 }, (_, i) => (i === 69 ? 2 : 1)),
-          }),
-        ]),
-      })
-    )
-  })
-
-  test.skip('combines same values with same dimensions if metric put in the same second', async () => {
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    const mockDate = new Date(1625152712546)
-
-    dateSpy = jest
-      .spyOn(global, 'Date')
-      .mockImplementation(() => (mockDate as unknown) as string)
-
-    monitoring.duration('test-label', 200, 5)
-    monitoring.duration('test-label', 200, 3)
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(3)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Values: [200],
-            Counts: [8],
-          }),
-        ]),
-      })
-    )
-  })
-
-  test.skip('does not combine different values with same dimensions if metric put in different seconds', async () => {
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    const firstDate = new Date(1625152712546)
-    const secondDate = new Date(1625152713121)
-
-    dateSpy = jest
-      .spyOn(global, 'Date')
-      .mockImplementationOnce(() => (firstDate as unknown) as string)
-      .mockImplementationOnce(() => (secondDate as unknown) as string)
-
-    monitoring.duration('test-label', 200, 5)
-    monitoring.duration('test-label', 300, 3)
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(6)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Values: [200],
-            Counts: [5],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Values: [300],
-            Counts: [3],
           }),
         ]),
       })

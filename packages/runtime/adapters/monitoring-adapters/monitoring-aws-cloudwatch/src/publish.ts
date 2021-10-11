@@ -1,16 +1,43 @@
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
 import { LeveledDebugger } from '@resolve-js/debug-levels'
 import { retry } from 'resolve-cloud-common/utils'
-import { MAX_METRIC_COUNT, MAX_VALUES_PER_METRIC } from './constants'
-import { MonitoringData } from './types'
+import {
+  MAX_DIMENSION_VALUE_LENGTH,
+  MAX_METRIC_COUNT,
+  MAX_VALUES_PER_METRIC,
+} from './constants'
+
+import {
+  MonitoringContext,
+  MonitoringData,
+  MonitoringMetric,
+  MonitoringDimension,
+  CloudWatchMetricDatum,
+} from './types'
 
 const baseUnitToCloudWatchUnit = {
   count: 'Count',
   milliseconds: 'Milliseconds',
 }
 
-// TODO: any
-const baseMetricToCloudWatchMetric = (metric: any) => ({
+const normalizeValue = (value: string) => {
+  let result = value.split(/\n|\r|\r\n/g)[0]
+
+  if (result.length > MAX_DIMENSION_VALUE_LENGTH) {
+    const messageEnd = '...'
+
+    result = `${result.slice(
+      0,
+      MAX_DIMENSION_VALUE_LENGTH - messageEnd.length
+    )}${messageEnd}`
+  }
+
+  return result
+}
+
+const baseMetricToCloudWatchMetric = (
+  metric: MonitoringMetric
+): CloudWatchMetricDatum => ({
   MetricName: metric.metricName,
   Unit:
     baseUnitToCloudWatchUnit[
@@ -18,15 +45,18 @@ const baseMetricToCloudWatchMetric = (metric: any) => ({
     ],
   Dimensions: metric.dimensions.map(({ name, value }: any) => ({
     Name: name,
-    Value: value,
+    Value: normalizeValue(value),
   })),
   Values: metric.values,
   Counts: metric.counts,
   Timestamp: new Date(metric.timestamp),
 })
 
-// TODO: any
-const pushMetric = (metrics: any[], metric: any, dimensions: any) => {
+const pushMetric = (
+  metrics: MonitoringMetric[],
+  metric: MonitoringMetric,
+  dimensions: MonitoringDimension[]
+) => {
   let valuesOffset = 0
 
   let values = metric.values.slice(
@@ -78,9 +108,9 @@ const createDurationDimensionList = ({
 
 export const monitoringPublish = async (
   log: LeveledDebugger,
-  monitoringData: MonitoringData
+  context: MonitoringContext
 ) => {
-  const metricData = monitoringData.monitoringBase.getMetrics()
+  const metricData = context.monitoringBase.getMetrics() as MonitoringData
   log.verbose(`Sending ${metricData.metrics.length} metrics`)
   log.verbose(JSON.stringify(metricData.metrics))
 
@@ -90,12 +120,15 @@ export const monitoringPublish = async (
     const cw = new CloudWatch()
     const putMetricData = retry(cw, cw.putMetricData)
 
-    // TODO: any
-    const metrics = metricData.metrics.reduce((acc: any, metric: any) => {
+    const metrics = metricData.metrics.reduce((acc, metric) => {
       if (
         metric.metricName === 'Errors' ||
         metric.metricName === 'Executions'
       ) {
+        const deploymentDimensions = [
+          { name: 'DeploymentId', value: context.deploymentId },
+        ]
+
         const {
           group: groupDimensions,
           error: errorDimensions,
@@ -125,58 +158,52 @@ export const monitoringPublish = async (
         for (let i = 0; i < groupDimensions.length; i++) {
           const currentGroupDimensions = metric.dimensions.slice(0, i + 1)
 
-          pushMetric(acc, metric, currentGroupDimensions)
+          pushMetric(
+            acc,
+            metric,
+            deploymentDimensions.concat(currentGroupDimensions)
+          )
 
           for (let j = 0; j < errorDimensions.length; j++) {
             pushMetric(
               acc,
               metric,
-              currentGroupDimensions.concat(errorDimensions.slice(0, j + 1))
+              deploymentDimensions.concat(
+                currentGroupDimensions,
+                errorDimensions.slice(0, j + 1)
+              )
             )
           }
         }
+
+        for (let j = 0; j < errorDimensions.length; j++) {
+          pushMetric(
+            acc,
+            metric,
+            deploymentDimensions.concat(errorDimensions.slice(0, j + 1))
+          )
+        }
+
+        pushMetric(acc, metric, deploymentDimensions)
 
         if (partName != null) {
           pushMetric(acc, metric, [{ name: 'Part', value: partName }])
         }
       } else if (metric.metricName === 'Duration') {
-        const {
-          deploymentId,
-          version,
-          other: dimensions,
-        } = metric.dimensions.reduce(
-          // TODO: any
-          (obj: any, dimension: any) => {
-            if (dimension.name === 'DeploymentId' && obj.deployment == null) {
-              obj.deploymentId = dimension.value
-            } else if (
-              dimension.name === 'ResolveVersion' &&
-              obj.version == null
-            ) {
-              obj.version = dimension.value
-            } else {
-              obj.other.push(dimension)
-            }
-
-            return obj
-          },
-          { deploymentId: null, version: null, other: [] }
-        )
-
         const rootDimensionList = createDurationDimensionList({
-          deploymentId,
-          resolveVersion: version,
+          deploymentId: context.deploymentId,
+          resolveVersion: context.resolveVersion,
         })
 
         for (const rootDimensions of rootDimensionList) {
-          pushMetric(acc, metric, rootDimensions.concat(dimensions))
+          pushMetric(acc, metric, rootDimensions.concat(metric.dimensions))
         }
       } else {
         pushMetric(acc, metric, metric.dimensions)
       }
 
       return acc
-    }, [])
+    }, [] as MonitoringMetric[])
 
     for (let i = 0; i < metrics.length; i += MAX_METRIC_COUNT) {
       promises.push(
@@ -189,7 +216,7 @@ export const monitoringPublish = async (
       )
     }
 
-    monitoringData.monitoringBase.clearMetrics()
+    context.monitoringBase.clearMetrics()
 
     await Promise.all(promises)
 
