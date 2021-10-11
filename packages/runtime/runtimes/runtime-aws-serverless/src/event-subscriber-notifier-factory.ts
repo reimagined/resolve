@@ -26,6 +26,9 @@ type NotifierRuntime = {
   invokeLambdaAsync: Function
 }
 
+export const waitForSubscriber = async (isSaga = false) =>
+  await new Promise((resolve) => setTimeout(resolve, isSaga ? 10000 : 1000))
+
 export const checkError = (error: any, value: string) =>
   error != null &&
   ((error.message != null &&
@@ -105,15 +108,13 @@ export const eventSubscriberNotifierFactory = async (
   ) => {
     const log = getNotifierLog(`invokeLambdaAsync`)
     log.debug(`invoking lambda as event subscriber: ${destination}`)
-    try {
-      await invokeFunction({
-        Region: region,
-        FunctionName: destination,
-        Payload: parameters,
-        InvocationType: 'RequestResponse',
-        MaximumExecutionDuration: 500,
-      })
-    } catch (error) {}
+    await invokeFunction({
+      Region: region,
+      FunctionName: destination,
+      Payload: parameters,
+      InvocationType: 'RequestOnly',
+      MaximumExecutionDuration: 200,
+    })
   }
 
   const sendSqsMessage = async (
@@ -205,7 +206,7 @@ export const eventSubscriberNotifierFactory = async (
           ) {
             throw error
           }
-          await new Promise((resolve) => setTimeout(resolve, 1000))
+          await waitForSubscriber()
         }
       }
     } catch (err) {
@@ -230,7 +231,7 @@ export const eventSubscriberNotifierFactory = async (
           if (!isRetryableServiceError(error)) {
             throw error
           }
-          await new Promise((resolve) => setTimeout(resolve, 1000))
+          await waitForSubscriber()
         }
       }
     } catch (err) {
@@ -253,7 +254,7 @@ export const eventSubscriberNotifierFactory = async (
               throw error
             }
           }
-          await new Promise((resolve) => setTimeout(resolve, 1000))
+          await waitForSubscriber()
         }
       } catch (err) {
         errors.push(err)
@@ -322,7 +323,7 @@ export const eventSubscriberNotifierFactory = async (
             ) {
               throw error
             }
-            await new Promise((resolve) => setTimeout(resolve, 1000))
+            await waitForSubscriber()
           }
         }
       } catch (err) {
@@ -349,7 +350,7 @@ export const eventSubscriberNotifierFactory = async (
               throw error
             }
           }
-          await new Promise((resolve) => setTimeout(resolve, 1000))
+          await waitForSubscriber()
         }
       } catch (err) {
         errors.push(err)
@@ -371,7 +372,7 @@ export const eventSubscriberNotifierFactory = async (
             if (!isRetryableServiceError(error)) {
               throw error
             }
-            await new Promise((resolve) => setTimeout(resolve, 1000))
+            await waitForSubscriber()
           }
         }
       } catch (err) {
