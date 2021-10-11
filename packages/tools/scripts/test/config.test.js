@@ -24,16 +24,20 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
       })
     ).toBeTruthy()
   })
 
-  it('no unexpected warnings', async () => {
-    await validateConfig({
+  it('no unexpected warnings', () => {
+    validateConfig({
       ...resolveConfigOrigin,
       mode: 'development',
-      target: 'local',
+      runtime: {
+        module: '@resolve-js/runtime-single-process',
+      },
     })
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -43,7 +47,9 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         eventstoreAdapter: {
           module: '@resolve-js/eventstore-mysql',
           options: {
@@ -59,7 +65,9 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         eventstoreAdapter: {
           module: '@resolve-js/bus-rabbitmq',
           options: {},
@@ -73,7 +81,9 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         rootPath: 'my-app',
       })
     ).toBeTruthy()
@@ -84,7 +94,9 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         staticPath: 'my-cdn',
       })
     ).toBeTruthy()
@@ -95,7 +107,9 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         aggregates: [],
       })
     ).toBeTruthy()
@@ -106,7 +120,9 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         viewModels: [],
       })
     ).toBeTruthy()
@@ -117,7 +133,9 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         readModels: [],
       })
     ).toBeTruthy()
@@ -128,7 +146,9 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         staticDir: 'my-static-dir',
       })
     ).toBeTruthy()
@@ -139,7 +159,9 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         jwtCookie: {
           name: 'authToken',
           maxAge: 1000 * 60 * 60 * 24 * 365,
@@ -155,7 +177,9 @@ describe('validate schema', () => {
         module: '@resolve-js/eventstore-lite',
         options: {},
       },
-      target: 'local',
+      runtime: {
+        module: '@resolve-js/runtime-single-process',
+      },
       mode: 'development',
       middlewares: {
         aggregate: [
@@ -181,7 +205,9 @@ describe('validate schema', () => {
   it('commandHttpResponseMode', () => {
     const resolveConfig = {
       ...resolveConfigOrigin,
-      target: 'local',
+      runtime: {
+        module: '@resolve-js/runtime-single-process',
+      },
       mode: 'development',
       aggregates: [
         {
@@ -209,7 +235,9 @@ describe('validate schema (fail)', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         eventstoreAdapter: {
           module: 123,
           options: {
@@ -225,7 +253,9 @@ describe('validate schema (fail)', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         eventstoreAdapter: {
           module: 123,
           options: {},
@@ -239,7 +269,9 @@ describe('validate schema (fail)', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         subscribeAdapter: {
           module: 123,
           options: {},
@@ -253,7 +285,9 @@ describe('validate schema (fail)', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         rootPath: 123,
       })
     ).toThrow()
@@ -264,7 +298,9 @@ describe('validate schema (fail)', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         staticPath: 123,
       })
     ).toThrow()
@@ -275,7 +311,9 @@ describe('validate schema (fail)', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         aggregates: 123,
       })
     ).toThrow()
@@ -286,7 +324,9 @@ describe('validate schema (fail)', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         viewModels: 123,
       })
     ).toThrow()
@@ -297,7 +337,9 @@ describe('validate schema (fail)', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         readModels: 123,
       })
     ).toThrow()
@@ -308,7 +350,9 @@ describe('validate schema (fail)', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         staticDir: 123,
       })
     ).toThrow()
@@ -319,7 +363,9 @@ describe('validate schema (fail)', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         auth: 123,
       })
     ).toThrow()
@@ -330,7 +376,9 @@ describe('validate schema (fail)', () => {
       validateConfig({
         ...resolveConfigOrigin,
         mode: 'development',
-        target: 'local',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
         jwtCookie: {
           name: 123,
           secret: 'some-secret',

@@ -28,7 +28,7 @@
     "@resolve-js/core": "0.32.0",
     "@resolve-js/eventstore-lite": "0.32.0",
     "@resolve-js/readmodel-lite": "0.32.0",
-    "@resolve-js/runtime": "0.32.0",
+    "@resolve-js/runtime-base": "0.32.0",
     "colors": "1.4.0",
     "diff": "5.0.0",
     "lodash.isequal": "4.5.0",

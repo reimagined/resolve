@@ -1,6 +1,6 @@
 import {
   TimestampFilter,
-  EventsWithCursor,
+  StoredEventBatchPointer,
   throwBadCursor,
 } from '@resolve-js/eventstore-base'
 import createQuery from './create-query'
@@ -9,7 +9,7 @@ import { AdapterPool } from './types'
 const loadEventsByTimestamp = async (
   pool: AdapterPool,
   filter: TimestampFilter
-): Promise<EventsWithCursor> => {
+): Promise<StoredEventBatchPointer> => {
   const { executeStatement, escapeId, eventsTableName, shapeEvent } = pool
 
   const resultQueryCondition = createQuery(pool, filter)

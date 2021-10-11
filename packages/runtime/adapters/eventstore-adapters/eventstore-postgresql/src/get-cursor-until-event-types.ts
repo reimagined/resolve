@@ -2,10 +2,10 @@ import { INT8_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'
 import {
   cursorToThreadArray,
-  SavedEvent,
+  StoredEvent,
   threadArrayToCursor,
   initThreadArray,
-  Cursor,
+  InputCursor,
 } from '@resolve-js/eventstore-base'
 import assert from 'assert'
 
@@ -18,8 +18,8 @@ const getCursorUntilEventTypes = async (
     shapeEvent,
     databaseName,
   }: AdapterPool,
-  cursor: Cursor,
-  untilEventTypes: Array<SavedEvent['type']>
+  cursor: InputCursor,
+  untilEventTypes: Array<StoredEvent['type']>
 ): Promise<string> => {
   if (untilEventTypes.length < 1) {
     throw new Error('Must define at least one event type')
@@ -50,8 +50,8 @@ const getCursorUntilEventTypes = async (
           SELECT "threadId", "threadCounter" FROM ${databaseNameAsId}.${threadsTableAsId}) AS "union_table"
         GROUP BY "threadId"`
   )) as Array<{
-    threadId: SavedEvent['threadId']
-    threadCounter: SavedEvent['threadCounter']
+    threadId: StoredEvent['threadId']
+    threadCounter: StoredEvent['threadCounter']
   }>
 
   const rows = stringRows.map((row) => {

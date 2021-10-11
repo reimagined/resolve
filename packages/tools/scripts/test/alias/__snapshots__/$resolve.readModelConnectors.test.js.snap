@@ -3,7 +3,7 @@
 exports[`base config works correctly with default module and options 1`] = `
 "
 import '$resolve.guardOnlyServer'
-import wrapReadModelConnector from '@resolve-js/runtime/lib/common/wrap-readmodel-connector'
+import { wrapReadModelConnector } from '@resolve-js/runtime-base'
 import factory_s_0_constructor from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testReadmodelConnector.js\\"
 const constructorBindFunction =
     (
@@ -43,7 +43,7 @@ export default readModelConnectors
 exports[`base config works correctly with module and options 1`] = `
 "
 import '$resolve.guardOnlyServer'
-import wrapReadModelConnector from '@resolve-js/runtime/lib/common/wrap-readmodel-connector'
+import { wrapReadModelConnector } from '@resolve-js/runtime-base'
 import factory_s_0_constructor from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testReadmodelConnector.js\\"
 const constructorBindFunction =
     (
@@ -83,8 +83,8 @@ export default readModelConnectors
 exports[`base config works correctly with options and default module 1`] = `
 "
 import '$resolve.guardOnlyServer'
-import wrapReadModelConnector from '@resolve-js/runtime/lib/common/wrap-readmodel-connector'
-import factory_s_0_constructor from \\"@resolve-js/runtime/lib/common/defaults/read-model-connector.js\\"
+import { wrapReadModelConnector } from '@resolve-js/runtime-base'
+import { emptyReadModelConnector as factory_s_0_constructor } from \\"@resolve-js/runtime-base\\"
 const constructorBindFunction =
     (
       constructorFunction,

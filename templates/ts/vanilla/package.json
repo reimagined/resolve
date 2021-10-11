@@ -17,7 +17,7 @@
     "@resolve-js/eventstore-postgresql-serverless": "0.32.0",
     "@resolve-js/readmodel-lite": "0.32.0",
     "@resolve-js/readmodel-postgresql-serverless": "0.32.0",
-    "@resolve-js/runtime": "0.32.0",
+    "@resolve-js/runtime-base": "0.32.0",
     "@resolve-js/scripts": "0.32.0",
     "domready": "1.0.8",
     "unfetch": "4.2.0"

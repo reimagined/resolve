@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
+    "@resolve-js/core": "0.32.0",
     "@resolve-js/eventstore-base": "0.32.0",
     "path-toolkit": "1.2.1",
     "uuid": "8.3.2"

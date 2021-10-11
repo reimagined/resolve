@@ -42,6 +42,8 @@
     "@resolve-js/readmodel-postgresql": "0.32.0",
     "@resolve-js/redux": "0.32.0",
     "@resolve-js/replicator-via-api-handler": "0.32.0",
+    "@resolve-js/runtime-single-process": "0.32.0",
+    "@resolve-js/runtime-aws-serverless": "0.32.0",
     "history": "4.10.1",
     "isomorphic-fetch": "3.0.0",
     "js-cookie": "2.2.1",

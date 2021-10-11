@@ -117,11 +117,10 @@ export type {
   SecretRecord,
   InputEvent,
   VersionlessEvent,
-  SavedEvent,
-  EventThreadData,
+  InputCursor,
   Cursor,
-  EventsWithCursor,
-  EventWithCursor,
+  StoredEventBatchPointer,
+  StoredEventPointer,
   EventFilter,
   LatestEventFilter,
   ReplicationStatus,
@@ -140,6 +139,8 @@ export type {
   AdapterTableNames,
   AdapterTableNamesProps,
 } from './types'
+
+export type { StoredEvent, EventThreadData } from '@resolve-js/core'
 
 export {
   makeSetSecretEvent,

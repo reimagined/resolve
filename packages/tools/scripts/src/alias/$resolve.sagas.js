@@ -5,7 +5,7 @@ import {
   IMPORT_INSTANCE,
   RUNTIME_ENV_NOWHERE,
 } from '../constants'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 
 const importSagas = ({ resolveConfig, isClient }) => {
@@ -76,7 +76,10 @@ const importSagas = ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_NOWHERE,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      instanceFallback: '@resolve-js/runtime/lib/common/defaults/encryption.js',
+      instanceFallback: {
+        package: '@resolve-js/runtime-base',
+        import: 'disabledEncryption',
+      },
       imports,
       constants,
     })

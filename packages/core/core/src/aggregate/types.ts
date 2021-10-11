@@ -1,10 +1,11 @@
-import {
+import type {
   CommandMiddleware,
   Eventstore,
   Monitoring,
   MiddlewareContext,
+  StoredEventPointer,
 } from '../types/runtime'
-import {
+import type {
   Event,
   AggregateEncryptionFactory,
   AggregateProjection,
@@ -53,8 +54,7 @@ export type AggregateRuntimeHooks = {
   postSaveEvent?: (
     aggregate: AggregateInterop,
     command: Command,
-    event: Event,
-    cursorWithEvent?: { event: Event; cursor: string }
+    storedEvent: StoredEventPointer
   ) => Promise<void>
 }
 

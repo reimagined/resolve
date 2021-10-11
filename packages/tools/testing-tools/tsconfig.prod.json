@@ -13,7 +13,7 @@
       "path": "../../core/core/tsconfig.prod.json"
     },
     {
-      "path": "../../runtime/runtime/tsconfig.prod.json"
+      "path": "../../runtime/runtimes/runtime-base/tsconfig.prod.json"
     },
     {
       "path": "../../runtime/adapters/eventstore-adapters/eventstore-lite/tsconfig.prod.json"

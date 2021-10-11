@@ -3,7 +3,7 @@ import { jestTimeout, adapterFactory, adapters } from '../eventstore-test-utils'
 import {
   initThreadArray,
   threadArrayToCursor,
-  SavedEvent,
+  StoredEvent,
 } from '@resolve-js/eventstore-base'
 
 jest.setTimeout(jestTimeout())
@@ -20,7 +20,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
 
   const countEvents = eventTypesCount * aggregateIdCount * eventMultiplier
 
-  const savedEvents: Array<SavedEvent> = []
+  const storedEvents: Array<StoredEvent> = []
 
   test('should save events with different aggregate ids and types', async () => {
     for (let eventIndex = 0; eventIndex < countEvents; eventIndex++) {
@@ -32,7 +32,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
         timestamp: eventIndex + 1,
       }
       const { event: savedEvent } = await adapter.saveEvent(event)
-      savedEvents.push(savedEvent)
+      storedEvents.push(savedEvent)
 
       if (Date.now() === savedEvent.timestamp) {
         await new Promise((resolve) => {
@@ -40,7 +40,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
         })
       }
     }
-    savedEvents.sort((a, b) => {
+    storedEvents.sort((a, b) => {
       return (
         Math.sign(a.timestamp - b.timestamp) * 100 +
         Math.sign(a.threadCounter - b.threadCounter) * 10 +
@@ -276,67 +276,67 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
   test('should load events by timestamp', async () => {
     const { events } = await adapter.loadEvents({
       limit: countEvents,
-      startTime: savedEvents[0].timestamp,
-      finishTime: savedEvents[countEvents / 3 - 1].timestamp,
+      startTime: storedEvents[0].timestamp,
+      finishTime: storedEvents[countEvents / 3 - 1].timestamp,
     })
     expect(events.length).toBeGreaterThanOrEqual(countEvents / 3)
 
     for (let i = 0; i < events.length; ++i) {
-      expect(events[i].type).toEqual(savedEvents[i].type)
-      expect(events[i].aggregateId).toEqual(savedEvents[i].aggregateId)
-      expect(events[i].threadId).toEqual(savedEvents[i].threadId)
-      expect(events[i].threadCounter).toEqual(savedEvents[i].threadCounter)
+      expect(events[i].type).toEqual(storedEvents[i].type)
+      expect(events[i].aggregateId).toEqual(storedEvents[i].aggregateId)
+      expect(events[i].threadId).toEqual(storedEvents[i].threadId)
+      expect(events[i].threadCounter).toEqual(storedEvents[i].threadCounter)
     }
 
-    const middleEventsIndex = savedEvents.findIndex((event) => {
-      return event.timestamp === savedEvents[countEvents / 3].timestamp
+    const middleEventsIndex = storedEvents.findIndex((event) => {
+      return event.timestamp === storedEvents[countEvents / 3].timestamp
     })
     expect(middleEventsIndex).toBeGreaterThan(0)
 
     const { events: otherEvents } = await adapter.loadEvents({
       limit: countEvents,
-      startTime: savedEvents[middleEventsIndex].timestamp,
-      finishTime: savedEvents[(countEvents / 3) * 2 - 1].timestamp,
+      startTime: storedEvents[middleEventsIndex].timestamp,
+      finishTime: storedEvents[(countEvents / 3) * 2 - 1].timestamp,
     })
     expect(otherEvents.length).toBeGreaterThanOrEqual(countEvents / 3)
 
     for (let i = 0; i < otherEvents.length; ++i) {
       expect(otherEvents[i].type).toEqual(
-        savedEvents[i + middleEventsIndex].type
+        storedEvents[i + middleEventsIndex].type
       )
       expect(otherEvents[i].aggregateId).toEqual(
-        savedEvents[i + middleEventsIndex].aggregateId
+        storedEvents[i + middleEventsIndex].aggregateId
       )
       expect(otherEvents[i].threadId).toEqual(
-        savedEvents[i + middleEventsIndex].threadId
+        storedEvents[i + middleEventsIndex].threadId
       )
       expect(otherEvents[i].threadCounter).toEqual(
-        savedEvents[i + middleEventsIndex].threadCounter
+        storedEvents[i + middleEventsIndex].threadCounter
       )
     }
 
-    const lastEventsIndex = savedEvents.findIndex((event) => {
-      return event.timestamp === savedEvents[(countEvents / 3) * 2].timestamp
+    const lastEventsIndex = storedEvents.findIndex((event) => {
+      return event.timestamp === storedEvents[(countEvents / 3) * 2].timestamp
     })
     expect(lastEventsIndex).toBeGreaterThan(0)
 
     const { events: lastEvents } = await adapter.loadEvents({
       limit: countEvents,
-      startTime: savedEvents[lastEventsIndex].timestamp,
-      finishTime: savedEvents[countEvents - 1].timestamp,
+      startTime: storedEvents[lastEventsIndex].timestamp,
+      finishTime: storedEvents[countEvents - 1].timestamp,
     })
     expect(lastEvents.length).toBeGreaterThanOrEqual(countEvents / 3)
 
     for (let i = 0; i < lastEvents.length; ++i) {
-      expect(lastEvents[i].type).toEqual(savedEvents[i + lastEventsIndex].type)
+      expect(lastEvents[i].type).toEqual(storedEvents[i + lastEventsIndex].type)
       expect(lastEvents[i].aggregateId).toEqual(
-        savedEvents[i + lastEventsIndex].aggregateId
+        storedEvents[i + lastEventsIndex].aggregateId
       )
       expect(lastEvents[i].threadId).toEqual(
-        savedEvents[i + lastEventsIndex].threadId
+        storedEvents[i + lastEventsIndex].threadId
       )
       expect(lastEvents[i].threadCounter).toEqual(
-        savedEvents[i + lastEventsIndex].threadCounter
+        storedEvents[i + lastEventsIndex].threadCounter
       )
     }
   })
