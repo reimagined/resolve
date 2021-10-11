@@ -178,7 +178,11 @@ const createAdapter = <
     freeze: wrapMethod(adapterPool, freeze),
     unfreeze: wrapMethod(adapterPool, unfreeze),
     getNextCursor: getNextCursor.bind(null),
-    getSecretsManager: wrapMethod(adapterPool, getSecretsManager),
+    getSecretsManager: async () => {
+      return getSecretsManager(
+        adapterPool as AdapterPoolConnected<ConnectedProps>
+      )
+    },
     loadSnapshot: wrapMethod(adapterPool, loadSnapshot),
     saveSnapshot: wrapMethod(adapterPool, saveSnapshot),
     dropSnapshot: wrapMethod(adapterPool, dropSnapshot),
