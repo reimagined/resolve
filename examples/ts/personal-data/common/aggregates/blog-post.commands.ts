@@ -13,7 +13,7 @@ const aggregate: Aggregate<AuthCommandMiddlewareContext> = {
     const { isExist } = state
 
     if (isExist) {
-      throw Error(`the blog post already exist`)
+      throw Error(`the blog post already exists`)
     }
 
     return {
@@ -29,7 +29,7 @@ const aggregate: Aggregate<AuthCommandMiddlewareContext> = {
     const { isExist, authorId } = state
 
     if (!isExist) {
-      throw Error(`the blog post not exist`)
+      throw Error(`the blog post does not exist`)
     }
     if (user.userId !== authorId) {
       throw Error(`you are not authorized to perform this operation`)
