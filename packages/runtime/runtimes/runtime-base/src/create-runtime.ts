@@ -42,13 +42,13 @@ const buildReadModelConnectors = (
 
 const schedulerGuard: Scheduler = {
   executeEntries: () => {
-    throw Error(`Scheduler was not provided by runtime`)
+    throw Error(`executeEntries: scheduler was not provided by runtime`)
   },
   clearEntries: () => {
-    throw Error(`Scheduler was not provided by runtime`)
+    throw Error(`clearEntries: scheduler was not provided by runtime`)
   },
   addEntries: () => {
-    throw Error(`Scheduler was not provided by runtime`)
+    throw Error(`addEntries: scheduler was not provided by runtime`)
   },
 }
 
@@ -191,7 +191,14 @@ export const createRuntime = async (
 
   const { uploader } = params
 
-  const getScheduler = () => params.scheduler ?? schedulerGuard
+  const getScheduler = () => {
+    if (params.scheduler != null) {
+      log.debug(`actual scheduler bound`)
+      return params.scheduler
+    }
+    log.debug(`scheduler guard retrieved`)
+    return schedulerGuard
+  }
 
   const executeSaga = createSagaExecutor({
     invokeBuildAsync,

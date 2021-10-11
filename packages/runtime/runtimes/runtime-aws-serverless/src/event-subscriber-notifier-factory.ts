@@ -51,14 +51,20 @@ const notifyEventSubscriber: (
   eventSubscriber,
   event?
 ) => {
-  const log = getLog(`notifyEventSubscriber:${eventSubscriber}`)
+  const log = getLog(
+    `notifyEventSubscriber:${eventSubscriber}:${
+      event?.event.type ?? '_NO_EVENT_'
+    }`
+  )
   if (/^arn:aws:sqs:/.test(destination)) {
+    log.debug(`sending SQS message`)
     const queueFullName = destination.split(':')[5]
     await runtime.sendSqsMessage(
       queueFullName,
       createEventSubscriberNotification(eventSubscriber, event, true)
     )
   } else if (/^arn:aws:lambda:/.test(destination)) {
+    log.debug(`invoking lambda directly`)
     const lambdaFullName = destination.split(':')[6]
     await runtime.invokeLambdaAsync(lambdaFullName, {
       resolveSource: 'BuildEventSubscriber',
@@ -90,11 +96,15 @@ export const eventSubscriberNotifierFactory = async (
   const userId = process.env.RESOLVE_USER_ID as string
   const functionArn = `arn:aws:lambda:${region}:${accountId}:function:${functionName}`
   const useSqs = !!process.env.EXPERIMENTAL_SQS_TRANSPORT
+  const getNotifierLog = (scope: string) =>
+    getLog(`subscriberNotifier:${scope}`)
 
   const invokeLambdaAsync = async (
     destination: string,
     parameters: Record<string, any>
   ) => {
+    const log = getNotifierLog(`invokeLambdaAsync`)
+    log.debug(`invoking lambda as event subscriber: ${destination}`)
     try {
       await invokeFunction({
         Region: region,
@@ -110,6 +120,8 @@ export const eventSubscriberNotifierFactory = async (
     destination: string,
     parameters: Record<string, any>
   ) => {
+    const log = getNotifierLog(`sendSqsMessage`)
+    log.debug(`sending SQS message to: ${destination}`)
     const queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${destination}`
     await sendMessage({
       Region: region,

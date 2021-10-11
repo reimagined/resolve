@@ -26,14 +26,14 @@ const userConfirmationSaga: Saga<
           aggregateName: 'User',
           aggregateId,
           payload: {
-            reason: 'user with same name already registered and confirmed',
+            reason: 'user with the same name already registered and confirmed',
           },
         })
       } else {
         await sideEffects.sendEmail(
           'admin@resolve.sh',
           `${name} registration request`,
-          `Please confirm registration or the user will be deleted during 1 hour`
+          `Please confirm your registration or the user will be deleted in 1 hour`
         )
 
         await sideEffects.scheduleCommand(timestamp + 60000, {
@@ -41,7 +41,8 @@ const userConfirmationSaga: Saga<
           aggregateName: 'User',
           aggregateId,
           payload: {
-            reason: 'user registration was not confirmed within allowed period',
+            reason:
+              'user registration was not confirmed within the allowed time period',
           },
         })
       }
