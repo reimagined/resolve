@@ -15,11 +15,6 @@ import {
   CloudWatchMetricDatum,
 } from './types'
 
-const baseUnitToCloudWatchUnit = {
-  count: 'Count',
-  milliseconds: 'Milliseconds',
-}
-
 const normalizeValue = (value: string) => {
   let result = value.split(/\n|\r|\r\n/g)[0]
 
@@ -39,10 +34,7 @@ const baseMetricToCloudWatchMetric = (
   metric: MonitoringMetric
 ): CloudWatchMetricDatum => ({
   MetricName: metric.metricName,
-  Unit:
-    baseUnitToCloudWatchUnit[
-      metric.unit as keyof typeof baseUnitToCloudWatchUnit
-    ],
+  Unit: metric.unit,
   Dimensions: metric.dimensions.map(({ name, value }: any) => ({
     Name: name,
     Value: normalizeValue(value),
@@ -189,7 +181,7 @@ export const monitoringPublish = async (
         if (partName != null) {
           pushMetric(acc, metric, [{ name: 'Part', value: partName }])
         }
-      } else if (metric.metricName === 'Duration') {
+      } else {
         const rootDimensionList = createDurationDimensionList({
           deploymentId: context.deploymentId,
           resolveVersion: context.resolveVersion,
@@ -198,8 +190,6 @@ export const monitoringPublish = async (
         for (const rootDimensions of rootDimensionList) {
           pushMetric(acc, metric, rootDimensions.concat(metric.dimensions))
         }
-      } else {
-        pushMetric(acc, metric, metric.dimensions)
       }
 
       return acc
