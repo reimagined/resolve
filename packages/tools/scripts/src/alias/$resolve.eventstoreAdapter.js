@@ -4,7 +4,7 @@ import {
   RUNTIME_ENV_ANYWHERE,
   IMPORT_CONSTRUCTOR,
 } from '../constants'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
 const importEventstoreAdapter = ({ resolveConfig, isClient }) => {
   if (isClient) {

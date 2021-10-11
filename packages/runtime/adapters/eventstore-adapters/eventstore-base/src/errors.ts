@@ -20,6 +20,18 @@ export class ConcurrentError extends Error {
   }
 }
 
+export class AlreadyDisposedError extends Error {
+  constructor(message?: string) {
+    super(message ?? 'Adapter has been already disposed')
+
+    this.name = 'AlreadyDisposedError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+  static is(err: any): boolean {
+    return isSpecificError(err, 'AlreadyDisposedError')
+  }
+}
+
 function DefineErrorWithStatus(name: string, httpStatus: number) {
   return class extends Error {
     readonly code: number

@@ -1,10 +1,10 @@
 import { AdapterPool } from './types'
 import {
   cursorToThreadArray,
-  SavedEvent,
+  StoredEvent,
   threadArrayToCursor,
   initThreadArray,
-  Cursor,
+  InputCursor,
 } from '@resolve-js/eventstore-base'
 
 const getCursorUntilEventTypes = async (
@@ -15,8 +15,8 @@ const getCursorUntilEventTypes = async (
     eventsTableName,
     shapeEvent,
   }: AdapterPool,
-  cursor: Cursor,
-  untilEventTypes: Array<SavedEvent['type']>
+  cursor: InputCursor,
+  untilEventTypes: Array<StoredEvent['type']>
 ): Promise<string> => {
   if (untilEventTypes.length < 1) {
     throw new Error('Must define at least one event type')
@@ -45,8 +45,8 @@ const getCursorUntilEventTypes = async (
           SELECT "threadId", MAX("threadCounter")+1 AS "threadCounter" FROM ${tableNameAsId} GROUP BY "threadId")
         GROUP BY "threadId"`
   )) as Array<{
-    threadId: SavedEvent['threadId']
-    threadCounter: SavedEvent['threadCounter']
+    threadId: StoredEvent['threadId']
+    threadCounter: StoredEvent['threadCounter']
   }>
 
   const threadCounters = initThreadArray()

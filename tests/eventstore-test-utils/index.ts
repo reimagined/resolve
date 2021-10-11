@@ -2,7 +2,7 @@ import * as AWS from 'aws-sdk'
 import type {
   Adapter,
   InputEvent,
-  SavedEvent,
+  StoredEvent,
 } from '@resolve-js/eventstore-base'
 import {
   EventstoreResourceNotExistError,
@@ -141,14 +141,14 @@ export function makeTestSavedEvent(
   eventIndex: number,
   threadArray: ReturnType<typeof initThreadArray>,
   data?: any
-): SavedEvent {
+): StoredEvent {
   const payload: any = { eventIndex }
   if (data !== undefined) {
     payload.data = data
   }
 
   const threadId = Math.floor(Math.random() * threadArray.length)
-  const event: SavedEvent = {
+  const event: StoredEvent = {
     aggregateId: 'aggregateId',
     aggregateVersion: eventIndex + 1,
     type: 'EVENT',

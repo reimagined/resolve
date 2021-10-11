@@ -1,5 +1,5 @@
 import path from 'path'
-import getLog from './get-log'
+import { getLog } from './get-log'
 
 import { processRegister } from './process_manager'
 
