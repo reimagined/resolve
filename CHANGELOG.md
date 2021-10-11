@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.32.0...HEAD)
 
+**Breaking changes:**
+
+- Refactored runtime libraries [\#2060](https://github.com/reimagined/resolve/pull/2060)
+
 **Other changes:**
 
 - Migrate from "incremental import" to "import" [\#2061](https://github.com/reimagined/resolve/pull/2061)
