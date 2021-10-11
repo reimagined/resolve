@@ -1,8 +1,8 @@
 import type {
   InputEvent,
   EventThreadData,
-  SavedEvent,
-  EventWithCursor,
+  StoredEvent,
+  StoredEventPointer,
 } from '@resolve-js/eventstore-base'
 import {
   ConcurrentError,
@@ -20,7 +20,7 @@ import assert from 'assert'
 const saveEvent = async (
   pool: AdapterPool,
   event: InputEvent
-): Promise<EventWithCursor> => {
+): Promise<StoredEventPointer> => {
   const {
     databaseName,
     eventsTableName,
@@ -115,7 +115,7 @@ const saveEvent = async (
     )) as Array<{
       threadId: EventThreadData['threadId']
       newThreadCounter: EventThreadData['threadCounter']
-      timestamp: SavedEvent['timestamp']
+      timestamp: StoredEvent['timestamp']
     }>
 
     const rows = stringRows.map((row) => {

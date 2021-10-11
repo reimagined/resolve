@@ -1,10 +1,10 @@
 import { RESERVED_EVENT_SIZE } from './constants'
 import { AdapterPool } from './types'
-import { SavedEvent } from '@resolve-js/eventstore-base'
+import { StoredEvent } from '@resolve-js/eventstore-base'
 
 const injectEvent = async function (
   pool: AdapterPool,
-  event: SavedEvent
+  event: StoredEvent
 ): Promise<void> {
   const {
     databaseName,

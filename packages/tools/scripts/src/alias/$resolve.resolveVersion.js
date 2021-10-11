@@ -1,11 +1,11 @@
-import resolveFileOrModule from '../resolve_file_or_module'
+import { resolveResource } from '../resolve-resource'
 
 const importResolveVersion = () => {
   const exports = []
 
-  const runtimePackageJson = require(resolveFileOrModule(
-    '@resolve-js/runtime/package.json'
-  ))
+  const runtimePackageJson = require(resolveResource(
+    '@resolve-js/runtime-base/package.json'
+  ).result)
 
   exports.push(
     `const resolveVersion = ${JSON.stringify(runtimePackageJson.version)}`,

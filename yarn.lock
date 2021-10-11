@@ -2937,6 +2937,46 @@
   resolved "https://registry.yarnpkg.com/@redux-saga/types/-/types-1.1.0.tgz#0e81ce56b4883b4b2a3001ebe1ab298b84237204"
   integrity sha512-afmTuJrylUU/0OtqzaRkbyYFFNgCF73Bvel/sw90pvGrWIZ+vyoIJqA6eMSoA6+nb443kTmulmBtC9NerXboNg==
 
+"@resolve-js/runtime@0.32.0":
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/@resolve-js/runtime/-/runtime-0.32.0.tgz#b3770928ba826f226f73eb009ebda5c2c190a2ac"
+  integrity sha512-Xjrrm6vIKrJpnxG80LWPUf+NDD7Rk+O6P1dmOpJz94objJhmgS7k+PWkw5UzeOevW2gRZP0O0co3I6UpFGnAVg==
+  dependencies:
+    "@babel/runtime" "7.14.0"
+    "@resolve-js/core" "0.32.0"
+    "@resolve-js/debug-levels" "0.32.0"
+    "@resolve-js/eventstore-base" "0.32.0"
+    "@resolve-js/eventstore-lite" "0.32.0"
+    "@resolve-js/readmodel-base" "0.32.0"
+    aws-signature-v4 "1.4.0"
+    binary-case "1.1.4"
+    body-parser "1.19.0"
+    content-disposition "0.5.3"
+    cookie "0.4.1"
+    cors "2.8.5"
+    cron "1.8.2"
+    cuid "2.1.8"
+    express "4.17.1"
+    file-type "16.5.3"
+    http-status-codes "2.1.4"
+    iconv-lite "0.6.2"
+    jsonwebtoken "8.5.1"
+    mime-types "2.1.29"
+    mqtt-connection "4.1.0"
+    multer "1.4.2"
+    proper-lockfile "4.1.2"
+    qs "6.9.6"
+    raw-body "2.4.1"
+    request "2.88.2"
+    resolve-cloud-common "0.0.149"
+    route-trie "3.0.0"
+    socket.io "3.1.2"
+    source-map-support "0.5.19"
+    url "0.11.0"
+    uuid "8.3.2"
+    websocket-stream "5.5.2"
+    ws "7.4.4"
+
 "@restart/context@^2.1.4":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@restart/context/-/context-2.1.4.tgz#a99d87c299a34c28bd85bb489cb07bfd23149c02"
@@ -3314,6 +3354,11 @@
   dependencies:
     browserslist "*"
 
+"@types/caseless@*":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@types/caseless/-/caseless-0.12.2.tgz#f65d3d6389e01eeb458bd54dc8f52b95a9463bc8"
+  integrity sha512-6ckxMjBBD8URvjB6J3NcnuAn5Pkl7t3TizAg+xdlzzQGSPSmBcXf8KoIH0ua/i+tio+ZRUHEXp0HEmvaR4kt0w==
+
 "@types/classnames@^2.2.10":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.3.1.tgz#3c2467aa0f1a93f1f021e3b9bcf938bd5dfdc0dd"
@@ -3345,7 +3390,12 @@
   dependencies:
     "@types/node" "*"
 
-"@types/cookie@^0.4.0":
+"@types/content-disposition@0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@types/content-disposition/-/content-disposition-0.5.3.tgz#0aa116701955c2faa0717fc69cd1596095e49d96"
+  integrity sha512-P1bffQfhD3O4LW0ioENXUhZ9OIa0Zn+P7M+pWgkCKaT53wVLSq0mrKksCID/FGHpFhRSxRGhgrQmfhRuzwtKdg==
+
+"@types/cookie@0.4.1", "@types/cookie@^0.4.0":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.4.1.tgz#bfd02c1f2224567676c1545199f87c3a861d878d"
   integrity sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==
@@ -3575,6 +3625,20 @@
   dependencies:
     "@types/lodash" "*"
 
+"@types/lodash.create@4.2.6":
+  version "4.2.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.create/-/lodash.create-4.2.6.tgz#5fe9601e4a0925b25408cf0bb6a89223c2c8e9fa"
+  integrity sha512-rXPwMan5mW8MiHAXzlLBJ6+ZYuSPEiwwotY6H97Eo8boG7SOONLfK3JtiKXVpz/+GA7zg/Or5j3HZBnONZuyEg==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash.escaperegexp@4.1.6":
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.escaperegexp/-/lodash.escaperegexp-4.1.6.tgz#3e2326aa33e95b2f3801de027f04a4f7aba2af4f"
+  integrity sha512-uENiqxLlqh6RzeE1cC6Z2gHqakToN9vKlTVCFkSVjAfeMeh2fY0916tHwJHeeKs28qB/hGYvKuampGYH5QDVCw==
+  dependencies:
+    "@types/lodash" "*"
+
 "@types/lodash.get@4.4.6":
   version "4.4.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.get/-/lodash.get-4.4.6.tgz#0c7ac56243dae0f9f09ab6f75b29471e2e777240"
@@ -3621,6 +3685,11 @@
   integrity sha512-W864tg/Osz1+9f4lrGTZpCSO5/z4608eUp19tbozkq2HJK6i3z1kT0H9tlADXuYIb1YYOBByU4Jsqkk75q48qA==
   dependencies:
     "@types/unist" "*"
+
+"@types/mime-types@2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@types/mime-types/-/mime-types-2.1.1.tgz#d9ba43490fa3a3df958759adf69396c3532cf2c1"
+  integrity sha512-vXOTGVSLR2jMw440moWTC7H19iUyLtP3Z1YTj7cSsubOICinjMxFeb/V57v9QdyyPGbbWolUFSSmSiRSn94tFw==
 
 "@types/mime@^1":
   version "1.3.2"
@@ -3861,6 +3930,16 @@
   dependencies:
     redux "*"
 
+"@types/request@2.48.7":
+  version "2.48.7"
+  resolved "https://registry.yarnpkg.com/@types/request/-/request-2.48.7.tgz#a962d11a26e0d71d9a9913d96bb806dc4d4c2f19"
+  integrity sha512-GWP9AZW7foLd4YQxyFZDBepl0lPsWLMEXDZUjQ/c1gqVPDPECrRZyEzuhJdnPWioFCq3Tv0qoGpMD6U+ygd4ZA==
+  dependencies:
+    "@types/caseless" "*"
+    "@types/node" "*"
+    "@types/tough-cookie" "*"
+    form-data "^2.5.0"
+
 "@types/sanitizer@0.0.28":
   version "0.0.28"
   resolved "https://registry.yarnpkg.com/@types/sanitizer/-/sanitizer-0.0.28.tgz#dd3d3c1da2789e1810e2b01aeee0218f31d41dd2"
@@ -3919,6 +3998,11 @@
   dependencies:
     "@types/jest" "*"
 
+"@types/tough-cookie@*":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@types/tough-cookie/-/tough-cookie-4.0.1.tgz#8f80dd965ad81f3e1bc26d6f5c727e132721ff40"
+  integrity sha512-Y0K95ThC3esLEYD6ZuqNek29lNX2EM1qxV8y2FTLUB0ff5wWrk7az+mLrnNFUnaXcgKye22+sFBRXOgpPILZNg==
+
 "@types/unist@*", "@types/unist@^2.0.0", "@types/unist@^2.0.2", "@types/unist@^2.0.3":
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/@types/unist/-/unist-2.0.6.tgz#250a7b16c3b91f672a24552ec64678eeb1d3a08d"
@@ -3943,6 +4027,13 @@
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@types/warning/-/warning-3.0.0.tgz#0d2501268ad8f9962b740d387c4654f5f8e23e52"
   integrity sha1-DSUBJorY+ZYrdA04fEZU9fjiPlI=
+
+"@types/ws@7.4.4":
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.4.4.tgz#93e1e00824c1de2608c30e6de4303ab3b4c0c9bc"
+  integrity sha512-d/7W23JAXPodQNbOZNXvl2K+bqAQrCMwlh/nuQsPSQk6Fq0opHoPrUw43aHsvSbIiQPr8Of2hkFbnz1XBFVyZQ==
+  dependencies:
+    "@types/node" "*"
 
 "@types/yargs-parser@*":
   version "20.2.1"
@@ -9039,6 +9130,15 @@ fork-ts-checker-webpack-plugin@4.1.6:
     tapable "^1.0.0"
     worker-rpc "^0.1.0"
 
+form-data@^2.5.0:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-2.5.1.tgz#f2cbec57b5e59e23716e128fe44d4e5dd23895f4"
+  integrity sha512-m21N3WOmEEURgk6B9GLOE4RuWOFf28Lhh9qGYeNlGq4VDXUlJy2th2slBNU8Gp8EzloYZOibZJ7t5ecIrFSjVA==
+  dependencies:
+    asynckit "^0.4.0"
+    combined-stream "^1.0.6"
+    mime-types "^2.1.12"
+
 form-data@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/form-data/-/form-data-3.0.1.tgz#ebd53791b78356a99af9a300d4282c4d5eb9755f"
@@ -11993,6 +12093,11 @@ lodash.clonedeep@4.5.0, lodash.clonedeep@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
+
+lodash.create@4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.create/-/lodash.create-4.2.0.tgz#4be95f69b1c4e38e41b05577542c73c9c1e010b9"
+  integrity sha1-S+lfabHE445BsFV3VCxzycHgELk=
 
 lodash.curry@^4.0.1:
   version "4.1.1"

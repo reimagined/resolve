@@ -3,7 +3,7 @@
 exports[`base config works correctly [client] 1`] = `
 "
 import projection_0_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testProjection.js\\"
-import deserializeState_0_instance from \\"@resolve-js/runtime/lib/common/defaults/json-deserialize-state.js\\"
+import { jsonDeserializeState as deserializeState_0_instance } from \\"@resolve-js/core\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -34,10 +34,10 @@ export default viewModels
 exports[`base config works correctly [server] 1`] = `
 "
 import projection_0_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testProjection.js\\"
-import deserializeState_0_instance from \\"@resolve-js/runtime/lib/common/defaults/json-deserialize-state.js\\"
-import serializeState_0_instance from \\"@resolve-js/runtime/lib/common/defaults/json-serialize-state.js\\"
-import resolver_0_instance from \\"@resolve-js/runtime/lib/common/defaults/view-model-resolver.js\\"
-import encryption_0_instance from \\"@resolve-js/runtime/lib/common/defaults/encryption.js\\"
+import { jsonDeserializeState as deserializeState_0_instance } from \\"@resolve-js/core\\"
+import { jsonSerializeState as serializeState_0_instance } from \\"@resolve-js/core\\"
+import { defaultViewModelResolver as resolver_0_instance } from \\"@resolve-js/runtime-base\\"
+import { disabledEncryption as encryption_0_instance } from \\"@resolve-js/runtime-base\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -119,9 +119,9 @@ export default viewModels
 exports[`base(v2) config works correctly [client] 1`] = `
 "
 import projection_0_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testProjection.js\\"
-import deserializeState_0_instance from \\"@resolve-js/runtime/lib/common/defaults/json-deserialize-state.js\\"
+import { jsonDeserializeState as deserializeState_0_instance } from \\"@resolve-js/core\\"
 import projection_1_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testProjection.js\\"
-import deserializeState_1_instance from \\"@resolve-js/runtime/lib/common/defaults/json-deserialize-state.js\\"
+import { jsonDeserializeState as deserializeState_1_instance } from \\"@resolve-js/core\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -161,15 +161,15 @@ export default viewModels
 exports[`base(v2) config works correctly [server] 1`] = `
 "
 import projection_0_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testProjection.js\\"
-import deserializeState_0_instance from \\"@resolve-js/runtime/lib/common/defaults/json-deserialize-state.js\\"
-import serializeState_0_instance from \\"@resolve-js/runtime/lib/common/defaults/json-serialize-state.js\\"
-import resolver_0_instance from \\"@resolve-js/runtime/lib/common/defaults/view-model-resolver.js\\"
-import encryption_0_instance from \\"@resolve-js/runtime/lib/common/defaults/encryption.js\\"
+import { jsonDeserializeState as deserializeState_0_instance } from \\"@resolve-js/core\\"
+import { jsonSerializeState as serializeState_0_instance } from \\"@resolve-js/core\\"
+import { defaultViewModelResolver as resolver_0_instance } from \\"@resolve-js/runtime-base\\"
+import { disabledEncryption as encryption_0_instance } from \\"@resolve-js/runtime-base\\"
 import projection_1_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testProjection.js\\"
-import deserializeState_1_instance from \\"@resolve-js/runtime/lib/common/defaults/json-deserialize-state.js\\"
-import serializeState_1_instance from \\"@resolve-js/runtime/lib/common/defaults/json-serialize-state.js\\"
-import resolver_1_instance from \\"@resolve-js/runtime/lib/common/defaults/view-model-resolver.js\\"
-import encryption_1_instance from \\"@resolve-js/runtime/lib/common/defaults/encryption.js\\"
+import { jsonDeserializeState as deserializeState_1_instance } from \\"@resolve-js/core\\"
+import { jsonSerializeState as serializeState_1_instance } from \\"@resolve-js/core\\"
+import { defaultViewModelResolver as resolver_1_instance } from \\"@resolve-js/runtime-base\\"
+import { disabledEncryption as encryption_1_instance } from \\"@resolve-js/runtime-base\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -301,8 +301,8 @@ exports[`config with serializeState/deserializeState works correctly [server] 1`
 import projection_0_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testProjection.js\\"
 import deserializeState_0_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testDeserializeState.js\\"
 import serializeState_0_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testSerializeState.js\\"
-import resolver_0_instance from \\"@resolve-js/runtime/lib/common/defaults/view-model-resolver.js\\"
-import encryption_0_instance from \\"@resolve-js/runtime/lib/common/defaults/encryption.js\\"
+import { defaultViewModelResolver as resolver_0_instance } from \\"@resolve-js/runtime-base\\"
+import { disabledEncryption as encryption_0_instance } from \\"@resolve-js/runtime-base\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -384,7 +384,7 @@ export default viewModels
 exports[`config with validator works correctly [client] 1`] = `
 "
 import projection_0_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testProjection.js\\"
-import deserializeState_0_instance from \\"@resolve-js/runtime/lib/common/defaults/json-deserialize-state.js\\"
+import { jsonDeserializeState as deserializeState_0_instance } from \\"@resolve-js/core\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -415,10 +415,10 @@ export default viewModels
 exports[`config with validator works correctly [server] 1`] = `
 "
 import projection_0_instance from \\"<MONOREPO_DIR>/tools/scripts/test/alias/files/testProjection.js\\"
-import deserializeState_0_instance from \\"@resolve-js/runtime/lib/common/defaults/json-deserialize-state.js\\"
-import serializeState_0_instance from \\"@resolve-js/runtime/lib/common/defaults/json-serialize-state.js\\"
-import resolver_0_instance from \\"@resolve-js/runtime/lib/common/defaults/view-model-resolver.js\\"
-import encryption_0_instance from \\"@resolve-js/runtime/lib/common/defaults/encryption.js\\"
+import { jsonDeserializeState as deserializeState_0_instance } from \\"@resolve-js/core\\"
+import { jsonSerializeState as serializeState_0_instance } from \\"@resolve-js/core\\"
+import { defaultViewModelResolver as resolver_0_instance } from \\"@resolve-js/runtime-base\\"
+import { disabledEncryption as encryption_0_instance } from \\"@resolve-js/runtime-base\\"
 const constructorBindFunction =
     (
       constructorFunction,

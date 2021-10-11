@@ -7,7 +7,7 @@ import {
   IMPORT_INSTANCE,
 } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
 const importReadModel = ({ resolveConfig, isClient }, resourceQuery) => {
   if (!/^\?/.test(resourceQuery)) {
@@ -102,7 +102,10 @@ const importReadModel = ({ resolveConfig, isClient }, resourceQuery) => {
       runtimeMode: RUNTIME_ENV_NOWHERE,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      instanceFallback: '@resolve-js/runtime/lib/common/defaults/encryption.js',
+      instanceFallback: {
+        package: '@resolve-js/runtime-base',
+        import: 'disabledEncryption',
+      },
       imports,
       constants,
     })

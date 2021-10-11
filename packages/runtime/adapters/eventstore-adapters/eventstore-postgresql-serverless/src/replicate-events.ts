@@ -1,13 +1,13 @@
 import type { AdapterPool } from './types'
 import { THREAD_COUNT } from '@resolve-js/eventstore-base'
-import type { OldEvent, SavedEvent } from '@resolve-js/eventstore-base'
+import type { OldEvent, StoredEvent } from '@resolve-js/eventstore-base'
 import { str as strCRC32 } from 'crc-32'
 import { RESERVED_EVENT_SIZE } from './constants'
 
 const MAX_EVENTS_BATCH_BYTE_SIZE = 32768
 
 type EventWithSize = {
-  event: SavedEvent
+  event: StoredEvent
   size: number
   serialized: string
 }
@@ -33,16 +33,16 @@ export const replicateEvents = async (
     `SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
     ${databaseNameAsId}.${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`
   )) as Array<{
-    threadId: SavedEvent['threadId']
-    threadCounter: SavedEvent['threadCounter']
+    threadId: StoredEvent['threadId']
+    threadCounter: StoredEvent['threadCounter']
   }>
 
-  const threadCounters = new Array<SavedEvent['threadCounter']>(THREAD_COUNT)
+  const threadCounters = new Array<StoredEvent['threadCounter']>(THREAD_COUNT)
   for (const row of rows) {
     threadCounters[row.threadId] = +row.threadCounter
   }
 
-  const eventsToInsert: SavedEvent[] = []
+  const eventsToInsert: StoredEvent[] = []
 
   for (const event of events) {
     const threadId =
@@ -57,7 +57,7 @@ export const replicateEvents = async (
 
   if (eventsToInsert.length === 0) return
 
-  const calculateEventWithSize = (event: SavedEvent): EventWithSize => {
+  const calculateEventWithSize = (event: StoredEvent): EventWithSize => {
     const serializedEvent = [
       `${escape(event.aggregateId)},`,
       `${+event.aggregateVersion},`,
@@ -142,8 +142,8 @@ export const replicateEvents = async (
   await Promise.all(eventPromises)
 
   type ThreadToUpdate = {
-    threadId: SavedEvent['threadId']
-    threadCounter: SavedEvent['threadCounter']
+    threadId: StoredEvent['threadId']
+    threadCounter: StoredEvent['threadCounter']
   }
   const threadsToUpdate: ThreadToUpdate[] = []
   for (let i = 0; i < threadCounters.length; ++i) {

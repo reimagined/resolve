@@ -1,7 +1,7 @@
 import loaderUtils from 'loader-utils'
 import path from 'path'
 
-import resolveFileOrModule from '../resolve_file_or_module'
+import { resolveResource } from '../resolve-resource'
 import { message, OPTIONAL_ASSET_ERROR } from '../constants'
 
 const importReadModelProcedure = (
@@ -34,9 +34,10 @@ const importReadModelProcedure = (
     ['wrap-procedure'],
   ]) {
     try {
-      wrapProcedureMethodPath = resolveFileOrModule(
+      const { result } = resolveResource(
         path.join(readModelConnector.module, ...pathPostfix)
       )
+      wrapProcedureMethodPath = result
     } catch (e) {}
     if (wrapProcedureMethodPath != null) {
       break

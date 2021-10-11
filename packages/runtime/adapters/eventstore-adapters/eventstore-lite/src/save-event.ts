@@ -1,8 +1,8 @@
 import type {
   InputEvent,
-  SavedEvent,
+  StoredEvent,
   EventThreadData,
-  EventWithCursor,
+  StoredEventPointer,
 } from '@resolve-js/eventstore-base'
 import type { AdapterPool } from './types'
 import {
@@ -17,7 +17,7 @@ import isIntegerOverflowError from './integer-overflow-error'
 const saveEvent = async (
   pool: AdapterPool,
   event: InputEvent
-): Promise<EventWithCursor> => {
+): Promise<StoredEventPointer> => {
   const { eventsTableName, executeStatement, escapeId, escape } = pool
   try {
     const currentThreadId = Math.floor(Math.random() * THREAD_COUNT)
@@ -67,7 +67,7 @@ const saveEvent = async (
     )) as Array<{
       threadId: EventThreadData['threadId']
       threadCounter: EventThreadData['threadCounter']
-      timestamp: SavedEvent['timestamp']
+      timestamp: StoredEvent['timestamp']
     }>
     const insertResult = insertResults[0]
 
@@ -110,7 +110,7 @@ const saveEvent = async (
       })
     }
 
-    const savedEvent: SavedEvent = {
+    const savedEvent: StoredEvent = {
       ...event,
       threadId: currentThreadId,
       threadCounter: savedEventThreadCounter,

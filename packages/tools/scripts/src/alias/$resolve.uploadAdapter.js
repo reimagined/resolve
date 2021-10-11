@@ -4,7 +4,7 @@ import {
   RUNTIME_ENV_ANYWHERE,
   IMPORT_CONSTRUCTOR,
 } from '../constants'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
 const importUploadAdapter = ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -19,8 +19,10 @@ const importUploadAdapter = ({ resolveConfig, isClient }) => {
 
   if (resolveConfig.hasOwnProperty('uploadAdapter')) {
     if (resolveConfig.uploadAdapter.module == null) {
-      resolveConfig.uploadAdapter.module =
-        '@resolve-js/runtime/lib/common/defaults/upload-adapter.js'
+      resolveConfig.uploadAdapter.module = {
+        package: '@resolve-js/runtime-base',
+        import: 'emptyUploadAdapter',
+      }
     }
 
     importResource({

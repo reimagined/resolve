@@ -1,9 +1,7 @@
-import { declareRuntimeEnv } from '@resolve-js/scripts'
 import devCommonConfig from './config.dev.common'
 
 const devConfig = {
   ...devCommonConfig,
-  port: declareRuntimeEnv('PORT', '3000'),
   eventstoreAdapter: {
     module: '@resolve-js/eventstore-lite',
     options: {

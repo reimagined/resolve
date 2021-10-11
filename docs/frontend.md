@@ -167,7 +167,10 @@ To serve SSR markup to the client, you need to register the **live-require-handl
 apiHandlers: [
   {
     handler: {
-      module: '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+      module: { 
+        package: '@resolve-js/runtime-base',
+        import: 'liveRequireHandler', 
+      },
       options: {
         modulePath: './ssr.js',
         moduleFactoryImport: false
