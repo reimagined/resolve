@@ -41,7 +41,8 @@ const userConfirmationSaga: Saga<
           aggregateName: 'User',
           aggregateId,
           payload: {
-            reason: 'user registration was not confirmed within the allowed time period',
+            reason:
+              'user registration was not confirmed within the allowed time period',
           },
         })
       }
