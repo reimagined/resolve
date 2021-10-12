@@ -11,8 +11,32 @@ ReSolve is a full stack JavaScript framework based on the Event Sourcing (ES) an
 
 ReSolve is designed to implement idiomatically pure ES/CQRS on the server side and comes with several client-side libraries that take advantage of the server's architecture.
 
+The interactive chart below illustrates the reSolve framework's architecture. Click nodes within the chart to view more information about the illustrated concepts.
+
 <Chart />
 
+## Create and Explore a reSolve Application
+
+Use the following console input to create a new reSolve application:
+
+```sh
+yarn create resolve-app my-app
+```
+
+This input create an application based on the [react](https://github.com/reimagined/resolve/tree/dev/templates/js/react) template project. This project contains templates for the read and write sides, as well as a demo frontend that demonstrates how reSolve works in a simple use-case scenario:
+
+![new-application](assets/getting-started-new-app.png)
+
+To get familiar with how the application's demo functionality is implemented, view files in the following folders of the created project:
+
+- **common/aggregates** - demonstrates how to handle commands, validate input and produce events from multiple aggregate instances.
+- **common/read-models** - demonstrates how to obtain data generated from multiple aggregate instances.
+- **common/view-models** - demonstrates how to generate data about the items of a specified aggregate instance.
+- **client** - a react application that communicates with the reSolve backend to create aggregate instances (as categories) and items within these instances.
+- **config.&lt;taget&gt;.js** files - the configuration files for different build targets.
+- **run.js** - a script that builds the final config and executes the framework's main loop.
+
+You can use modify the demo code as a template to jump-start your own application.
 
 ## CQRS in reSolve
 
@@ -49,23 +73,6 @@ In Event Sourcing, an application stores its data as a chain of immutable **even
 :::
 
 The reSolve application stores its data in a centralized event store, which can be configured to use different underlying data storages through the mechanism of adapters.
-
-## Create and Explore a reSolve Application
-
-Use the following console input to create a new reSolve application:
-
-```sh
-yarn create resolve-app my-app
-```
-
-this input create an application based on the [react](https://github.com/reimagined/resolve/tree/dev/templates/js/react) template project. This project contains templates for the read and write sides, as well as a demo frontend that demonstrates how reSolve works in a simple use-case scenario.
-
-To get familiar with reSolve's basic functionality, view files in the following folders of the created project:
-
-- **common/aggregates** - demonstrates how to handle commands, validate input and produce events from multiple aggregate instances.
-- **common/read-models** - demonstrates how to obtain data generated from multiple aggregate instances.
-- **common/view-models** - demonstrates how to generate data about the items of a specified aggregate instance.
-- **client** - a react application that communicates with the reSolve backend to create aggregate instances (as categories) and items within these instances.
 
 ## What's Next
 

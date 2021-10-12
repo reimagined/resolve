@@ -1,0 +1,58 @@
+**View Model**
+
+View models are ephemeral Read Models that are queried based on aggregate ID. They have the following properties:
+
+- View models are rebuilt on every request. They do not store persistent state and do not use the Read Model store.
+- View models are queried based on aggregate ID and can maintain a WebSocket connection to push data updates to the client.
+- View model projections are defined in a format that is isomorphic with Redux reducers so their code can also be used on the client side to define reducer logic.
+
+Use view models in the following scenarios:
+
+- To create aggregate-centric views that request relatively small portions of data based on aggregate IDs.
+- To create reactive components, whose state is kept up-to date on the client.
+
+A view model is defined as follows:
+
+<Tabs>
+<TabItem value="projection" label="Projection" default>
+
+```js
+// common/view-models/my-aggregate-items.projection.js
+
+import {
+  MY_AGGREGATE_ITEM_ADDED,
+  MY_AGGREGATE_ITEM_REMOVED,
+} from '../event-types'
+const projection = {
+  Init: () => [],
+  [MY_AGGREGATE_ITEM_ADDED]: (state, { payload: { itemName } }) => [
+    ...state,
+    itemName,
+  ],
+  [MY_AGGREGATE_ITEM_REMOVED]: (state, { payload: { itemName } }) =>
+    state.filter((item) => item !== itemName),
+}
+export default projection
+```
+
+</TabItem>
+<TabItem value="config" label="App Config">
+
+```js
+// config.app.js
+
+const appConfig = {
+  viewModels: [
+    {
+      name: 'MyAggregateItems',
+      projection: 'common/view-models/my-aggregate-items.projection.js',
+    },
+  ],
+  ...
+}
+export default appConfig
+
+```
+
+</TabItem>
+</Tabs>

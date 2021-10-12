@@ -11,7 +11,24 @@ ReSolve comes with several client libraries that you can use on the frontend to 
 A library that contains plain JavaScript functions used to communicate with a reSolve server. The code sample below illustrates the basic functionlity of tis library.
 
 ```js
-
+const sendMessage = (userName, message) =>
+  client.command(
+    {
+      aggregateName: 'Chat',
+      type: 'postMessage',
+      aggregateId: chatRoom,
+      payload: {
+        userName,
+        message,
+      },
+    },
+    (err) => {
+      if (err) {
+        // eslint-disable-next-line no-console
+        console.warn(`Error while sending command: ${err}`)
+      }
+    }
+  )
 ```
 
 </TabItem>
@@ -20,7 +37,21 @@ A library that contains plain JavaScript functions used to communicate with a re
 A library used to connect a React + Redux component to reSolve. The code sample below illustrates the basic functionlity of tis library.
 
 ```js
-
+const { execute: executeCreateShoppingItem } = useReduxCommand((text) => ({
+  type: 'createShoppingItem',
+  aggregateId,
+  aggregateName: 'ShoppingList',
+  payload: {
+    text,
+    id: Date.now().toString(),
+  },
+}))
+...
+const { connect, dispose, selector: thisList } = useReduxViewModel({
+  name: 'shoppingList',
+  aggregateIds: [aggregateId],
+  args: undefined,
+})
 ```
 
 </TabItem>
@@ -29,7 +60,31 @@ A library used to connect a React + Redux component to reSolve. The code sample 
 A hook-based library used to connect React components to reSolve. The code sample below illustrates the basic functionlity of tis library.
 
 ```js
-
+const getMyAggregates = useQuery(
+  { name: 'MyAggregateList', resolver: 'all', args: {} },
+  (error, result) => {
+    setAggregates(result.data)
+  }
+)
+...
+const createAggregate = useCommand(
+  {
+    type: 'create',
+    aggregateId: uuid(),
+    aggregateName: 'MyAggregate',
+    payload: { name: `MyAggregate ${aggregates.length}` },
+  },
+  (error, result, { aggregateId }) => {
+    setAggregates([
+      ...aggregates,
+      {
+        id: aggregateId,
+        name: `MyAggregate ${aggregates.length}`,
+        items: [],
+      },
+    ])
+  }
+)
 ```
 
 </TabItem>

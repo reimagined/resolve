@@ -3,7 +3,10 @@ import TabItem from '@theme/TabItem'
 
 **Read Model**
 
-A read model accumulates state based on incoming events and uses the state data to answer data requests.
+A read model accumulates state based on incoming events and uses the state data to answer data requests. A read model's deffinition consistes of the following parts:
+
+- Projection - a set of event handlers that update the persistent state based on incomming events.
+- Resolvers - receive data requests from the client and build the resulting data samples based on the stored state.
 
 A read model is defined as follows:
 
