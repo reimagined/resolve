@@ -1,9 +1,8 @@
-// Note: this file is used only in tests for automatic schema deletion
-
 import { Client as Postgres } from 'pg'
 import { PostgresResourceConfig } from '../types'
 import escapeId from '../escape-id'
 import { getLog } from '../get-log'
+import { EOL } from 'os'
 
 const destroy = async (options: PostgresResourceConfig) => {
   const log = getLog(`resource: destroy`)
@@ -20,26 +19,42 @@ const destroy = async (options: PostgresResourceConfig) => {
 
   await connection.connect()
 
-  try {
-    await connection.query(
-      `ALTER SCHEMA ${escapeId(databaseName)} OWNER TO SESSION_USER`
-    )
-  } catch (err) {
-    log.error(err.message)
-    log.verbose(err.stack)
-  }
+  let alterSchemaError: any = null
+  let dropSchemaError: any = null
 
   try {
-    await connection.query(
-      `DROP SCHEMA IF EXISTS ${escapeId(databaseName)} CASCADE`
-    )
-  } catch (err) {
-    log.error(err.message)
-    log.verbose(err.stack)
-  }
+    try {
+      await connection.query(
+        `ALTER SCHEMA ${escapeId(databaseName)} OWNER TO SESSION_USER`
+      )
+    } catch (error) {
+      alterSchemaError = error
+    }
 
-  await connection.end()
-  log.debug(`resource destroyed successfully`)
+    try {
+      await connection.query(
+        `DROP SCHEMA IF EXISTS ${escapeId(databaseName)} CASCADE`
+      )
+    } catch (error) {
+      dropSchemaError = error
+    }
+
+    if (alterSchemaError != null || dropSchemaError != null) {
+      const error = new Error()
+      error.message = `${
+        alterSchemaError != null ? `${alterSchemaError.message}${EOL}` : ''
+      }${dropSchemaError != null ? `${dropSchemaError.message}${EOL}` : ''}`
+
+      log.error(error.message)
+      log.verbose(error.stack || error.message)
+
+      throw error
+    }
+
+    log.debug(`resource destroyed successfully`)
+  } finally {
+    await connection.end()
+  }
 }
 
 export default destroy
