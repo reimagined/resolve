@@ -66,7 +66,20 @@ const putMetric = (log, monitoringContext, groupData, metric) => {
     )
 
     if (foundMetric != null) {
-      foundMetric.counts[0] += metric.count
+      let isValueFound = false
+
+      for (let i = 0; i < foundMetric.values.length; i++) {
+        if (foundMetric.values[i] === metric.value) {
+          foundMetric.counts[i] += metric.count
+          isValueFound = true
+          break
+        }
+      }
+
+      if (!isValueFound) {
+        foundMetric.values.push(metric.value)
+        foundMetric.counts.push(metric.count)
+      }
     } else {
       monitoringContext.metrics.push({
         metricName: metric.metricName,
@@ -145,72 +158,14 @@ const monitoringDuration = async (
     return
   }
 
-  const durationDimensions = [{ Name: 'Label', Value: label }]
-  const timestamp = new Date()
-  timestamp.setMilliseconds(0)
-
-  let isDimensionCountLimitReached = false
-
-  for (const groupDimensions of groupData.durationMetricDimensionsList) {
-    const dimensions = [...groupDimensions, ...durationDimensions]
-
-    if (dimensions.length <= MAX_DIMENSION_COUNT) {
-      const metricName = 'Duration'
-      const time = timestamp.getTime()
-      const unit = 'Milliseconds'
-
-      const existingMetricData = monitoringContext.metricData.find(
-        (data: any) =>
-          data.MetricName === metricName &&
-          data.Unit === unit &&
-          data.Timestamp.getTime() === time &&
-          data.Dimensions.length === dimensions.length &&
-          (data.Values.length < MAX_VALUES_PER_METRIC ||
-            data.Values.includes(duration)) &&
-          data.Dimensions.every(
-            (dimension: any, index: any) =>
-              dimension.Name === dimensions[index].Name &&
-              dimension.Value === dimensions[index].Value
-          )
-      )
-
-      if (existingMetricData != null) {
-        let isValueFound = false
-
-        for (let i = 0; i < existingMetricData.Values.length; i++) {
-          if (existingMetricData.Values[i] === duration) {
-            existingMetricData.Counts[i] += count
-            isValueFound = true
-            break
-          }
-        }
-
-        if (!isValueFound) {
-          existingMetricData.Values.push(duration)
-          existingMetricData.Counts.push(count)
-        }
-      } else {
-        monitoringContext.metricData.push({
-          MetricName: metricName,
-          Timestamp: timestamp,
-          Unit: unit,
-          Values: [duration],
-          Counts: [count],
-          Dimensions: dimensions,
-        })
-      }
-    } else {
-      isDimensionCountLimitReached = true
-    }
-  }
-
-  delete groupData.timerMap[label]
-
-  if (isDimensionCountLimitReached) {
-    log.warn(
-      `Duration '${label}' missed some or all metric data because of dimension count limit`
-    )
-  }
+  putMetric(log, monitoringContext, groupData, {
+    metricName: 'Duration',
+    timestamp: null,
+    unit: 'Milliseconds',
+    dimensions: groupData.dimensions.concat({ name: 'Label', value: label }),
+    value: duration,
+    count,
+  })
 }
 
 const monitoringTime = async (
@@ -259,6 +214,7 @@ const monitoringTimeEnd = async (
 
   if (typeof groupData.timerMap[label] === 'number') {
     const duration = timestamp - groupData.timerMap[label]
+    delete groupData.timerMap[label]
     // @ts-ignore
     return monitoringDuration(
       log,
