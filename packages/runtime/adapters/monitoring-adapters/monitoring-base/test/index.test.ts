@@ -219,31 +219,17 @@ test.skip('duplicate values', () => {
   })
 })
 
+
 test('single duration call', () => {
   const adapter = createAdapter()
   const label = 'test-label'
+  const duration = 100
 
-  adapter.duration(label, 100)
-
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
-      {
-        metricName: 'Duration',
-        timestamp: null,
-        unit: 'Milliseconds',
-        dimensions: [{ name: 'Label', value: label }],
-        values: [100],
-        counts: [1],
-      }
-    ]
+  const innerAdapter = adapter.group({
+    'test-group':'test-group-name'
   })
-})
+  innerAdapter.duration(label, duration)
 
-test('multiple duration calls', () => {
-  const adapter = createAdapter()
-  const label = 'test-label'
-
-  adapter.duration(label, 100)
   expect(adapter.getMetrics()).toEqual({
     metrics: [
       {
@@ -251,7 +237,36 @@ test('multiple duration calls', () => {
         timestamp: null,
         unit: 'Milliseconds',
         dimensions: [
-          { name: 'Label', value: 'test-label' }        
+          { Name: 'test-group', Value: 'test-group-name' },
+          { Name: 'Label', Value: label}
+        ],
+        values: [duration],
+        counts: [1],
+      }
+    ]
+  })
+})
+
+test('multiple duration calls with another labels and durations', () => {
+  const adapter = createAdapter()
+  const label = 'test-label'
+  const anotherLabel = 'test-label-1'
+  const duration = 100
+  const anotherDuration = 200
+  const innerAdapter = adapter.group({
+    'test-group':'test-group-name'
+  })
+
+  innerAdapter.duration(label, duration)
+  expect(adapter.getMetrics()).toEqual({
+    metrics: [
+      {
+        metricName: 'Duration',
+        timestamp: null,
+        unit: 'Milliseconds',
+        dimensions: [
+          { Name: 'test-group', Value: 'test-group-name' },
+          { Name: 'Label', Value: 'test-label' }      
         ],
         values: [100],
         counts: [1],
@@ -259,7 +274,7 @@ test('multiple duration calls', () => {
     ]
   })
 
-  adapter.duration(`${label}-1`, 200)
+  innerAdapter.duration(anotherLabel, anotherDuration)
   expect(adapter.getMetrics()).toEqual({
     metrics: [
       {
@@ -267,21 +282,37 @@ test('multiple duration calls', () => {
         timestamp: null,
         unit: 'Milliseconds',
         dimensions: [
-          { name: 'Label', value: 'test-label' },
-          { name: 'Label', value: 'test-label-1' }          
+          { Name: 'test-group', Value: 'test-group-name' },
+          { Name: 'Label', Value: 'test-label' }        
         ],
-        values: [100, 200],
-        counts: [1, 1],
+        values: [100],
+        counts: [1],
+      },
+      {
+        metricName: 'Duration',
+        timestamp: null,
+        unit: 'Milliseconds',
+        dimensions: [
+          { Name: 'test-group', Value: 'test-group-name' },
+          { Name: 'Label', Value: 'test-label-1' }          
+        ],
+        values: [200],
+        counts: [1],
       }
     ]
   })
 })
 
-test('multiple duration calls with same duration value', () => {
+test('multiple duration calls with same duration and another labels value', () => {
   const adapter = createAdapter()
   const label = 'test-label'
-  adapter.duration(label, 100)
-  adapter.duration(`${label}-1`, 100)
+  const anotherLabel = 'test-label-1'
+  const duration = 100
+  const innerAdapter = adapter.group({
+    'test-group':'test-group-name'
+  })
+
+  innerAdapter.duration(label, duration)
 
   expect(adapter.getMetrics()).toEqual({
     metrics: [
@@ -290,8 +321,65 @@ test('multiple duration calls with same duration value', () => {
         timestamp: null,
         unit: 'Milliseconds',
         dimensions: [
-          { name: 'Label', value: label },
-          { name: 'Label', value: `${label}-1` },
+          { Name: 'test-group', Value: 'test-group-name' },
+          { Name: 'Label', Value: 'test-label' },
+        ],
+        values: [100],
+        counts: [1],
+      }
+    ]
+  })
+
+  innerAdapter.duration(anotherLabel, duration)
+
+  expect(adapter.getMetrics()).toEqual({
+    metrics: [
+      {
+        metricName: 'Duration',
+        timestamp: null,
+        unit: 'Milliseconds',
+        dimensions: [
+          { Name: 'test-group', Value: 'test-group-name' },
+          { Name: 'Label', Value: 'test-label' },
+        ],
+        values: [100],
+        counts: [1],
+      },
+      {
+        metricName: 'Duration',
+        timestamp: null,
+        unit: 'Milliseconds',
+        dimensions: [
+          { Name: 'test-group', Value: 'test-group-name' },
+          { Name: 'Label', Value: 'test-label-1' },
+        ],
+        values: [100],
+        counts: [1],
+      }
+    ]
+  })
+})
+
+test('multiple duration calls with same lables and durations', () => {
+  const adapter = createAdapter()
+  const label = 'test-label'
+  const duration = 100
+
+  const innerAdapter = adapter.group({
+    'test-group':'test-group-name'
+  })
+  innerAdapter.duration(label, duration)
+  innerAdapter.duration(label, duration)
+
+  expect(adapter.getMetrics()).toEqual({
+    metrics: [
+      {
+        metricName: 'Duration',
+        timestamp: null,
+        unit: 'Milliseconds',
+        dimensions: [
+          { Name: 'test-group', Value: 'test-group-name' },
+          { Name: 'Label', Value: 'test-label' },
         ],
         values: [100],
         counts: [2],
@@ -299,6 +387,43 @@ test('multiple duration calls with same duration value', () => {
     ]
   })
 })
+
+test.only('multiple duration calls with same lables and another durations', () => {
+  const adapter = createAdapter()
+  const label = 'test-label'
+  const duration = 100
+  const anotherDuration = 200
+
+  const innerAdapter = adapter.group({
+    'test-group':'test-group-name'
+  })
+
+  innerAdapter.duration(label, duration)
+  innerAdapter.duration(label, anotherDuration)
+
+  expect(adapter.getMetrics()).toEqual({
+    metrics: [
+      {
+        metricName: 'Duration',
+        timestamp: null,
+        unit: 'Milliseconds',
+        dimensions: [
+          { Name: 'test-group', Value: 'test-group-name' },
+          { Name: 'Label', Value: 'test-label' },
+        ],
+        values: [100, 200],
+        counts: [1],
+      }
+    ]
+  })
+})
+
+
+
+
+
+
+
 
 test('single execution call', () => {
   const adapter = createAdapter()
@@ -418,7 +543,7 @@ test('multiple group method calls', () => {
 
 test('should be return empty dimensions list on call execution method at base adapter', () => {
   const adapter = createAdapter()
-  const innerAdapter = adapter.group({
+  adapter.group({
     'test-group':'test-group-name'
   })
 

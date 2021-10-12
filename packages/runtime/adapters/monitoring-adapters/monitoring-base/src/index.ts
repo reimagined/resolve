@@ -63,34 +63,53 @@ const monitoringError = (log: any, monitoringData: any, error: Error) => {
 // }
 
 // TODO: any, deduplicate values
-const monitoringDuration = (log: any, monitoringData: any, label: any, duration: any) => {
-  if (monitoringData.metrics.length === 0) {
-    monitoringData.metrics.push({
-      metricName: 'Duration',
-      timestamp: null,
-      unit: 'Milliseconds',
-      values: [duration],
-      counts: [1],
-      dimensions: [{ name: 'Label', value: label}],
-    })
+const monitoringDuration = (log: any, monitoringData: any, groupData: any, label: any, duration: any, count = 1) => {
+  const metricName = 'Duration'
+  const unit = 'Milliseconds'
+  const durationDimension = [{ Name: 'Label', Value: label}]
+  const generalDimensions = groupData.metricDimensions.concat(durationDimension)
+  console.log('monitoringData.metrics', monitoringData.metrics)
+  console.log('monitoringData.metrics.dimensions', monitoringData.metrics[0])
+  const existingMetricData = monitoringData.metrics.find(
+    (data: any) =>
+      data.metricName === metricName &&
+      data.unit === unit &&
+      data.dimensions.length === generalDimensions.length &&
+      data.values.includes(duration) &&
+      data.dimensions.every(
+        (dimension: any, index: any) =>
+          dimension.Name === generalDimensions[index].Name &&
+          dimension.Value === generalDimensions[index].Value
+      )
+  )
+
+  console.log('existingMetricData', existingMetricData)
+
+  if (existingMetricData != null) {
+    let isValueFound = false
+
+    for (let i = 0; i < existingMetricData.values.length; i++) {
+      if (existingMetricData.values[i] === duration) {
+        console.log('existingMetricData.values[i]', existingMetricData.values[i], duration)
+        existingMetricData.counts[i] += count
+        isValueFound = true
+        break
+      }
+    }
+
+    if (!isValueFound) {
+      existingMetricData.values.push(duration)
+      existingMetricData.counts.push(count)
+    }
   } else {
-    for (let i = 0; i < monitoringData.metrics.length; i++){
-      let isFound = false
-
-      monitoringData.metrics[i].dimensions.push({ name: 'Label', value: label})
-      for (let j = 0; j < monitoringData.metrics[i].values.length; j++) {
-        if(monitoringData.metrics[i].values[j] === duration) {
-          monitoringData.metrics[i].counts[j]++
-          isFound = true
-          break
-        }
-      }
-
-      if (!isFound){
-        monitoringData.metrics[i].values.push(duration)
-        monitoringData.metrics[i].counts.push(1)
-      }
-    }  
+    monitoringData.metrics.push({
+      metricName: metricName,
+      timestamp: null,
+      unit: unit,
+      values: [duration],
+      counts: [count],
+      dimensions: generalDimensions,
+    })
   }
 }
 
@@ -141,7 +160,7 @@ const createBaseMonitoringImplementation = (monitoringData: any, groupData: any)
     },
     error: monitoringError.bind(null, {}, monitoringData),
     execution: monitoringExecution.bind(null, {}, monitoringData, groupData),
-    duration: monitoringDuration.bind(null, {}, monitoringData),
+    duration: monitoringDuration.bind(null, {}, monitoringData, groupData),
     time: () => {},
     timeEnd: () => {},
     rate: monitoringRate.bind(null, {}, monitoringData),
