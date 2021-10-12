@@ -1,437 +1,1293 @@
-import createAdapter from '../src'
+import createMonitoring from '../src'
 
-test('returns empty metrics on created', () => {
-  const adapter = createAdapter()
+let originalNow: any
+let dateSpy: any = null
 
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [],
-  })
+beforeEach(() => {
+  originalNow = Date.now
+  Date.now = jest.fn().mockReturnValue(1234)
 })
 
-test('stores error with correct dimensions', () => {
-  const adapter = createAdapter()
+afterEach(() => {
+  Date.now = originalNow
 
-  class TestError extends Error {
-    name = 'TestError'
-
-    constructor() {
-      super('test-message')
-    }
+  if (dateSpy != null) {
+    dateSpy.mockRestore()
+    dateSpy = null
   }
+})
 
-  adapter.error(new TestError())
+// describe('common', () => {
+//   test('sends correct metric data on publish', async () => {
+//     const monitoring = createMonitoring({
+//       deploymentId: 'test-deployment',
+//       resolveVersion: '1.0.0-test',
+//     })
+//
+//     monitoring.error(new Error('test'))
+//
+//     await monitoring.publish()
+//
+//     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+//
+//     expect(CloudWatch.putMetricData).toBeCalledWith({
+//       Namespace: 'ResolveJs',
+//       MetricData: expect.any(Array),
+//     })
+//   })
+//
+//   test('ignores milliseconds in timestamp', async () => {
+//     const monitoring = createMonitoring({
+//       deploymentId: 'test-deployment',
+//       resolveVersion: '1.0.0-test',
+//     }).group({ 'test-group-name': 'test-group' })
+//
+//     const mockDate = new Date(1625152712546)
+//     const expectedDate = new Date(1625152712000)
+//     dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+//
+//     class TestError extends Error {
+//       name = 'test-error'
+//     }
+//
+//     monitoring.error(new TestError('test-message'))
+//
+//     await monitoring.publish()
+//
+//     for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
+//       .MetricData) {
+//       expect(metricData).toEqual(
+//         expect.objectContaining({
+//           Timestamp: expectedDate,
+//         })
+//       )
+//     }
+//   })
+//
+//   test('does nothing with no metric data on publish', async () => {
+//     const monitoring = createMonitoring({
+//       deploymentId: 'test-deployment',
+//       resolveVersion: '1.0.0-test',
+//     })
+//
+//     await monitoring.publish()
+//
+//     expect(CloudWatch.putMetricData).toBeCalledTimes(0)
+//   })
+//
+//   test('sends metric data multiple times on multiple publish call', async () => {
+//     const monitoring = createMonitoring({
+//       deploymentId: 'test-deployment',
+//       resolveVersion: '1.0.0-test',
+//     })
+//
+//     monitoring.error(new Error('test-1'))
+//     await monitoring.publish()
+//
+//     monitoring.error(new Error('test-2'))
+//     await monitoring.publish()
+//
+//     expect(CloudWatch.putMetricData).toBeCalledTimes(2)
+//
+//     expect(CloudWatch.putMetricData).toHaveBeenNthCalledWith(
+//       1,
+//       expect.objectContaining({
+//         MetricData: expect.arrayContaining([
+//           expect.objectContaining({
+//             Dimensions: [
+//               { Name: 'DeploymentId', Value: 'test-deployment' },
+//               { Name: 'ErrorName', Value: 'Error' },
+//               { Name: 'ErrorMessage', Value: 'test-1' },
+//             ],
+//           }),
+//         ]),
+//       })
+//     )
+//
+//     expect(CloudWatch.putMetricData).not.toHaveBeenNthCalledWith(
+//       1,
+//       expect.objectContaining({
+//         MetricData: expect.arrayContaining([
+//           expect.objectContaining({
+//             Dimensions: [
+//               { Name: 'DeploymentId', Value: 'test-deployment' },
+//               { Name: 'ErrorName', Value: 'Error' },
+//               { Name: 'ErrorMessage', Value: 'test-2' },
+//             ],
+//           }),
+//         ]),
+//       })
+//     )
+//
+//     expect(CloudWatch.putMetricData).toHaveBeenNthCalledWith(
+//       2,
+//       expect.objectContaining({
+//         MetricData: expect.arrayContaining([
+//           expect.objectContaining({
+//             Dimensions: [
+//               { Name: 'DeploymentId', Value: 'test-deployment' },
+//               { Name: 'ErrorName', Value: 'Error' },
+//               { Name: 'ErrorMessage', Value: 'test-2' },
+//             ],
+//           }),
+//         ]),
+//       })
+//     )
+//
+//     expect(CloudWatch.putMetricData).not.toHaveBeenNthCalledWith(
+//       2,
+//       expect.objectContaining({
+//         MetricData: expect.arrayContaining([
+//           expect.objectContaining({
+//             Dimensions: [
+//               { Name: 'DeploymentId', Value: 'test-deployment' },
+//               { Name: 'ErrorName', Value: 'Error' },
+//               { Name: 'ErrorMessage', Value: 'test-1' },
+//             ],
+//           }),
+//         ]),
+//       })
+//     )
+//   })
+//
+//   test('combines multiple metric data', async () => {
+//     const monitoring = createMonitoring({
+//       deploymentId: 'test-deployment',
+//       resolveVersion: '1.0.0-test',
+//     })
+//
+//     monitoring.error(new Error('test-error'))
+//     monitoring.time('test', 500)
+//     monitoring.timeEnd('test', 800)
+//
+//     await monitoring.publish()
+//
+//     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+//
+//     expect(CloudWatch.putMetricData).toBeCalledWith(
+//       expect.objectContaining({
+//         MetricData: expect.arrayContaining([
+//           {
+//             MetricName: 'Errors',
+//             Unit: 'Count',
+//             Value: 1,
+//             Timestamp: expect.any(Date),
+//             Dimensions: expect.any(Array),
+//           },
+//         ]),
+//       })
+//     )
+//
+//     expect(CloudWatch.putMetricData).toBeCalledWith(
+//       expect.objectContaining({
+//         MetricData: expect.arrayContaining([
+//           {
+//             MetricName: 'Duration',
+//             Unit: 'Milliseconds',
+//             Values: [300],
+//             Counts: [1],
+//             Timestamp: expect.any(Date),
+//             Dimensions: expect.any(Array),
+//           },
+//         ]),
+//       })
+//     )
+//   })
+//
+//   test('splits metrics sending if metric data array has length more than 20', async () => {
+//     const monitoring = createMonitoring({
+//       deploymentId: 'test-deployment',
+//       resolveVersion: '1.0.0-test',
+//     })
+//
+//     for (let i = 0; i < 8; i++) {
+//       monitoring.error(new Error(`test-${i + 1}`))
+//     }
+//
+//     await monitoring.publish()
+//
+//     expect(CloudWatch.putMetricData).toBeCalledTimes(2)
+//
+//     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(
+//       20
+//     )
+//
+//     expect(CloudWatch.putMetricData.mock.calls[1][0].MetricData).toHaveLength(4)
+//   })
+//
+//   test('does not reject on publish if putMetricData is failed', async () => {
+//     const monitoring = createMonitoring({
+//       deploymentId: 'test-deployment',
+//       resolveVersion: '1.0.0-test',
+//     })
+//
+//     monitoring.error(new Error('test'))
+//
+//     CloudWatch.putMetricData.mockReturnValueOnce({
+//       promise: () => Promise.reject(new Error('Something went wrong')),
+//     })
+//
+//     await monitoring.publish()
+//   })
+// })
 
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
+describe('error', () => {
+  test('contains default dimensions', async () => {
+    const monitoring = createMonitoring()
+
+    class TestError extends Error {
+      name = 'test-error'
+    }
+
+    monitoring.error(new TestError('test-message'))
+
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
       {
         metricName: 'Errors',
-        timestamp: null,
         unit: 'Count',
+        timestamp: null,
         dimensions: [
-          { name: 'ErrorName', value: 'TestError' },
+          { name: 'ErrorName', value: 'test-error' },
           { name: 'ErrorMessage', value: 'test-message' },
         ],
         values: [1],
         counts: [1],
       },
-    ],
+    ])
   })
-})
 
-test('stores error correctly on multiple error method calls', () => {
-  const adapter = createAdapter()
+  test('contains default and group dimensions', async () => {
+    const monitoring = createMonitoring()
 
-  class TestError extends Error {
-    name = 'TestError'
+    const groupMonitoring = monitoring.group({
+      'test-group-name': 'test-group',
+    })
 
-    constructor() {
-      super('test-message')
+    class TestError extends Error {
+      name = 'test-error'
     }
-  }
 
-  adapter.error(new TestError())
-  adapter.error(new TestError())
+    groupMonitoring.error(new TestError('test-message'))
 
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
       {
         metricName: 'Errors',
-        timestamp: null,
         unit: 'Count',
-        dimensions: [
-          { name: 'ErrorName', value: 'TestError' },
-          { name: 'ErrorMessage', value: 'test-message' },
-        ],
-        values: [1],
-        counts: [2],
-      },
-    ],
-  })
-})
-
-test('return empty metrics after clear method call', () => {
-  const adapter = createAdapter()
-
-  class TestError extends Error {
-    name = 'TestError'
-
-    constructor() {
-      super('test-message')
-    }
-  }
-
-  adapter.error(new TestError())
-
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
-      {
-        metricName: 'Errors',
         timestamp: null,
-        unit: 'Count',
         dimensions: [
-          { name: 'ErrorName', value: 'TestError' },
+          { name: 'test-group-name', value: 'test-group' },
+          { name: 'ErrorName', value: 'test-error' },
           { name: 'ErrorMessage', value: 'test-message' },
         ],
         values: [1],
         counts: [1],
       },
-    ],
+    ])
   })
 
-  adapter.clearMetrics()
+  test('contains default and group dimensions for multiple group calls', async () => {
+    const monitoring = createMonitoring()
 
-  expect(adapter.getMetrics()).toEqual({
-    metrics: []
+    const groupMonitoring = monitoring
+      .group({
+        'first-group-name': 'first-group',
+      })
+      .group({
+        'second-group-name': 'second-group',
+      })
+
+    class TestError extends Error {
+      name = 'test-error'
+    }
+
+    groupMonitoring.error(new TestError('test-message'))
+
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
+      {
+        metricName: 'Errors',
+        unit: 'Count',
+        timestamp: null,
+        dimensions: [
+          { name: 'first-group-name', value: 'first-group' },
+          { name: 'second-group-name', value: 'second-group' },
+          { name: 'ErrorName', value: 'test-error' },
+          { name: 'ErrorMessage', value: 'test-message' },
+        ],
+        values: [1],
+        counts: [1],
+      },
+    ])
   })
-})
 
-test('count of rate metrics per second', () => {
-  const adapter = createAdapter()
-  const metricName = 'test-metric'
-  const count = 100
+  test('contains correct metrics if different errors are passed', async () => {
+    const monitoring = createMonitoring()
 
-  adapter.rate(metricName, count)
+    class TestError extends Error {
+      name = 'test-error'
+    }
 
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
+    monitoring.error(new TestError('test-message-1'))
+    monitoring.error(new TestError('test-message-2'))
+
+    await monitoring.publish()
+
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
       {
-        metricName: 'test-metric',
+        metricName: 'Errors',
+        unit: 'Count',
         timestamp: null,
-        unit: 'Count/Second',
-        dimensions: null,
-        values: [100],
+        dimensions: [
+          { name: 'ErrorName', value: 'test-error' },
+          { name: 'ErrorMessage', value: 'test-message-1' },
+        ],
+        values: [1],
         counts: [1],
       },
-    ],
+      {
+        metricName: 'Errors',
+        unit: 'Count',
+        timestamp: null,
+        dimensions: [
+          { name: 'ErrorName', value: 'test-error' },
+          { name: 'ErrorMessage', value: 'test-message-2' },
+        ],
+        values: [1],
+        counts: [1],
+      },
+    ])
   })
-})
 
-test('count of rate metrics per five second', () => {
-  const adapter = createAdapter()
-  const metricName = 'test-metric'
-  const count = 100
+  test('contains correct metrics if same error is passed multiple times', async () => {
+    const monitoring = createMonitoring()
 
-  adapter.rate(metricName, count, 5)
+    class TestError extends Error {
+      name = 'test-error'
+    }
 
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
+    monitoring.error(new TestError('test-message'))
+    monitoring.error(new TestError('test-message'))
+
+    await monitoring.publish()
+
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
       {
-        metricName: 'test-metric',
+        metricName: 'Errors',
+        unit: 'Count',
         timestamp: null,
-        unit: 'Count/Second',
-        dimensions: null,
-        values: [20],
-        counts: [1],
-      },
-    ],
-  })
-})
-
-test('count of rate metrics correctly on multiple rate method calls', () => {
-  const adapter = createAdapter()
-  const metricName = 'test-metric'
-  const count = 100
-
-  adapter.rate(metricName, count, 5)
-  adapter.rate('test-metric1', count)
-  adapter.rate('test-metric2', count)
-
-  // console.log('qweqweq', adapter.getMetrics())
-
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
-      {
-        metricName: 'test-metric',
-        timestamp: null,
-        unit: 'Count/Second',
-        dimensions: null,
-        values: [20],
-        counts: [1],
-      },
-      {
-        metricName: 'test-metric1',
-        timestamp: null,
-        unit: 'Count/Second',
-        dimensions: null,
-        values: [100],
-        counts: [1],
-      },
-      {
-        metricName: 'test-metric2',
-        timestamp: null,
-        unit: 'Count/Second',
-        dimensions: null,
-        values: [100],
-        counts: [1],
-      },
-    ],
-  })
-})
-
-test.skip('duplicate values', () => {
-  const adapter = createAdapter()
-  const metricName = 'test-metric'
-  const count = 100
-
-  adapter.rate(metricName, count, 5)
-  adapter.rate('test-metric1', count)
-  adapter.rate('test-metric1', count)
-
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
-      {
-        metricName: 'test-metric',
-        timestamp: null,
-        unit: 'Count/Second',
-        dimensions: [{ name: 'metric-name', value: 'test-metric' }],
-        values: [20],
-        counts: [1],
-      },
-      {
-        metricName: 'test-metric1',
-        timestamp: null,
-        unit: 'Count/Second',
-        dimensions: [{ name: 'metric-name', value: 'test-metric1' }],
-        values: [100],
+        dimensions: [
+          { name: 'ErrorName', value: 'test-error' },
+          { name: 'ErrorMessage', value: 'test-message' },
+        ],
+        values: [1],
         counts: [2],
       },
-    ],
+    ])
   })
 })
 
-test('single duration call', () => {
-  const adapter = createAdapter()
-  const label = 'test-label'
+describe('executions', () => {
+  test('sends correct metrics without error', async () => {
+    const monitoring = createMonitoring().group({
+      'test-group-name': 'test-group',
+    })
 
-  adapter.duration(label, 100)
+    monitoring.execution()
 
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
       {
-        metricName: 'Duration',
-        timestamp: null,
-        unit: 'Milliseconds',
-        dimensions: [{ name: 'Label', value: label }],
-        values: [100],
-        counts: [1],
-      }
-    ]
-  })
-})
-
-test('multiple duration calls', () => {
-  const adapter = createAdapter()
-  const label = 'test-label'
-
-  adapter.duration(label, 100)
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
-      {
-        metricName: 'Duration',
-        timestamp: null,
-        unit: 'Milliseconds',
-        dimensions: [
-          { name: 'Label', value: 'test-label' }        
-        ],
-        values: [100],
-        counts: [1],
-      }
-    ]
-  })
-
-  adapter.duration(`${label}-1`, 200)
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
-      {
-        metricName: 'Duration',
-        timestamp: null,
-        unit: 'Milliseconds',
-        dimensions: [
-          { name: 'Label', value: 'test-label' },
-          { name: 'Label', value: 'test-label-1' }          
-        ],
-        values: [100, 200],
-        counts: [1, 1],
-      }
-    ]
-  })
-})
-
-test('multiple duration calls with same duration value', () => {
-  const adapter = createAdapter()
-  const label = 'test-label'
-  adapter.duration(label, 100)
-  adapter.duration(`${label}-1`, 100)
-
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
-      {
-        metricName: 'Duration',
-        timestamp: null,
-        unit: 'Milliseconds',
-        dimensions: [
-          { name: 'Label', value: label },
-          { name: 'Label', value: `${label}-1` },
-        ],
-        values: [100],
-        counts: [2],
-      }
-    ]
-  })
-})
-
-test('single execution call', () => {
-  const adapter = createAdapter()
-
-  adapter.execution()
-
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [
-      {
-        metricName: 'Execution',
-        timestamp: null,
+        metricName: 'Executions',
         unit: 'Count',
-        dimensions: [],
+        timestamp: null,
+        dimensions: [{ name: 'test-group-name', value: 'test-group' }],
         values: [1],
         counts: [1],
-      }
-    ]
-  })
-})
-
-test('call group method with one argument', () => {
-  const adapter = createAdapter()
-  const innerAdapter = adapter.group({
-    'test-group': 'test-group-name',
-  })
-  innerAdapter.execution()  
-
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [{
-      metricName: 'Execution',
-      timestamp: null,
-      unit: 'Count',
-      dimensions: [
-        { Name: 'test-group', Value: 'test-group-name'},
-      ],
-      values: [1],
-      counts: [1],
-    }]
-  })
-})
-
-test('call group method with several arguments', () => {
-  const adapter = createAdapter()
-  const innerAdapter = adapter.group({
-    'test-group': 'test-group-name',
-    'test-group1': 'test-group-name1',
-  })
-  innerAdapter.execution()
-
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [{
-      metricName: 'Execution',
-      timestamp: null,
-      unit: 'Count',
-      dimensions: [
-        { Name: 'test-group', Value: 'test-group-name'},
-        { Name: 'test-group1', Value: 'test-group-name1'},
-      ],
-      values: [1],
-      counts: [1],
-    }]
-  })
-})
-
-test('multiple group method calls', () => {
-  const adapter = createAdapter()
-  const innerAdapter = adapter.group({
-    'test-group': 'test-group-name',
-  })
-  innerAdapter.execution()
-
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [{
-      metricName: 'Execution',
-      timestamp: null,
-      unit: 'Count',
-      dimensions: [
-        { Name: 'test-group', Value: 'test-group-name'},
-      ],
-      values: [1],
-      counts: [1],
-    }]
+      },
+    ])
   })
 
-  const secondInnerAdapter = innerAdapter.group({
-    'Part-test': 'Part-test-name',
-    'Part-test1': 'Part-test-name1'
-  })
+  test('sends correct metrics with error', async () => {
+    const monitoring = createMonitoring().group({
+      'test-group-name': 'test-group',
+    })
 
-  secondInnerAdapter.execution()
+    class TestError extends Error {
+      name = 'test-error'
+    }
 
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [{
-        metricName: 'Execution',
-        timestamp: null,
+    monitoring.execution(new TestError('test-message'))
+
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
+      {
+        metricName: 'Executions',
         unit: 'Count',
+        timestamp: null,
+        dimensions: [{ name: 'test-group-name', value: 'test-group' }],
+        values: [1],
+        counts: [1],
+      },
+      {
+        metricName: 'Errors',
+        unit: 'Count',
+        timestamp: null,
         dimensions: [
-          { Name: 'test-group', Value: 'test-group-name'},
+          { name: 'test-group-name', value: 'test-group' },
+          { name: 'ErrorName', value: 'test-error' },
+          { name: 'ErrorMessage', value: 'test-message' },
+        ],
+        values: [1],
+        counts: [1],
+      },
+    ])
+  })
+
+  test('contains group dimensions for multiple group calls with error', async () => {
+    const monitoring = createMonitoring()
+
+    const groupMonitoring = monitoring
+      .group({
+        'first-group-name': 'first-group',
+      })
+      .group({
+        'second-group-name': 'second-group',
+      })
+
+    class TestError extends Error {
+      name = 'test-error'
+    }
+
+    groupMonitoring.execution(new TestError('test-message'))
+
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
+      {
+        metricName: 'Executions',
+        unit: 'Count',
+        timestamp: null,
+        dimensions: [
+          { name: 'first-group-name', value: 'first-group' },
+          { name: 'second-group-name', value: 'second-group' },
         ],
         values: [1],
         counts: [1],
       },
       {
-       metricName: 'Execution',
-        timestamp: null,
+        metricName: 'Errors',
         unit: 'Count',
+        timestamp: null,
         dimensions: [
-          { Name: 'test-group', Value: 'test-group-name'},
-          { Name: 'Part-test', Value: 'Part-test-name'},
-          { Name: 'Part-test1', Value: 'Part-test-name1'},
+          { name: 'first-group-name', value: 'first-group' },
+          { name: 'second-group-name', value: 'second-group' },
+          { name: 'ErrorName', value: 'test-error' },
+          { name: 'ErrorMessage', value: 'test-message' },
         ],
         values: [1],
         counts: [1],
-    }]
+      },
+    ])
   })
 })
 
-test('should be return empty dimensions list on call execution method at base adapter', () => {
-  const adapter = createAdapter()
-  const innerAdapter = adapter.group({
-    'test-group':'test-group-name'
-  })
-
-  adapter.execution()
-
-  expect(adapter.getMetrics()).toEqual({
-    metrics: [{
-      metricName: 'Execution',
-      timestamp: null,
-      unit: 'Count',
-      dimensions: [],
-      values: [1],
-      counts: [1],
-    }]
-  })
+describe('time and timeEnd', () => {
+  //   test('sends correct metrics base data', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     monitoring.time('test-label', 1000)
+  //     monitoring.timeEnd('test-label', 2000)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith({
+  //       Namespace: 'ResolveJs',
+  //       MetricData: expect.any(Array),
+  //     })
+  //
+  //     for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
+  //       .MetricData) {
+  //       expect(metricData).toEqual({
+  //         MetricName: 'Duration',
+  //         Unit: 'Milliseconds',
+  //         Values: [1000],
+  //         Counts: [1],
+  //         Timestamp: expect.any(Date),
+  //         Dimensions: expect.any(Array),
+  //       })
+  //     }
+  //   })
+  //
+  //   test('contains default dimensions', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     monitoring.time('test-label', 1000)
+  //     monitoring.timeEnd('test-label', 2000)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'Label', Value: 'test-label' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'ResolveVersion', Value: '1.0.0-test' },
+  //               { Name: 'Label', Value: 'test-label' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'ResolveVersion', Value: '1.0.0-test' },
+  //               { Name: 'Label', Value: 'test-label' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
+  //
+  //   test('contains default and group dimensions', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     const monitoringGroup = monitoring.group({
+  //       'test-group': 'test-group-name',
+  //     })
+  //
+  //     monitoringGroup.time('test-label', 1000)
+  //     monitoringGroup.timeEnd('test-label', 2000)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'test-group', Value: 'test-group-name' },
+  //               { Name: 'Label', Value: 'test-label' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'ResolveVersion', Value: '1.0.0-test' },
+  //               { Name: 'test-group', Value: 'test-group-name' },
+  //               { Name: 'Label', Value: 'test-label' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'ResolveVersion', Value: '1.0.0-test' },
+  //               { Name: 'test-group', Value: 'test-group-name' },
+  //               { Name: 'Label', Value: 'test-label' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
+  //
+  //   test('sends correct duration metrics with specified timestamps', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     monitoring.time('test-label', 3000)
+  //     monitoring.timeEnd('test-label', 5000)
+  //
+  //     await monitoring.publish()
+  //
+  //     for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
+  //       .MetricData) {
+  //       expect(metricData).toEqual({
+  //         MetricName: 'Duration',
+  //         Unit: 'Milliseconds',
+  //         Values: [2000],
+  //         Counts: [1],
+  //         Timestamp: expect.any(Date),
+  //         Dimensions: expect.any(Array),
+  //       })
+  //     }
+  //   })
+  //
+  //   test('sends correct duration metrics using Date.now', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     Date.now.mockReturnValueOnce(15000).mockReturnValueOnce(19500)
+  //
+  //     monitoring.time('test-label')
+  //     monitoring.timeEnd('test-label')
+  //
+  //     await monitoring.publish()
+  //
+  //     for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
+  //       .MetricData) {
+  //       expect(metricData).toEqual({
+  //         MetricName: 'Duration',
+  //         Unit: 'Milliseconds',
+  //         Values: [4500],
+  //         Counts: [1],
+  //         Timestamp: expect.any(Date),
+  //         Dimensions: expect.any(Array),
+  //       })
+  //     }
+  //   })
+  //
+  //   test('sends correct metrics with multiple labels', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     monitoring.time('test-label-1', 1000)
+  //     monitoring.timeEnd('test-label-1', 2000)
+  //
+  //     monitoring.time('test-label-2', 1000)
+  //     monitoring.timeEnd('test-label-2', 2000)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'Label', Value: 'test-label-1' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'Label', Value: 'test-label-2' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
+  // })
+  //
+  // describe('duration', () => {
+  //   test('sends correct metrics base data', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     monitoring.duration('test-label', 1000)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith({
+  //       Namespace: 'ResolveJs',
+  //       MetricData: expect.any(Array),
+  //     })
+  //
+  //     for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
+  //       .MetricData) {
+  //       expect(metricData).toEqual({
+  //         MetricName: 'Duration',
+  //         Unit: 'Milliseconds',
+  //         Values: [1000],
+  //         Counts: [1],
+  //         Timestamp: expect.any(Date),
+  //         Dimensions: expect.any(Array),
+  //       })
+  //     }
+  //   })
+  //
+  //   test('sends correct metrics with custom count', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     monitoring.duration('test-label', 1000, 5)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith({
+  //       Namespace: 'ResolveJs',
+  //       MetricData: expect.any(Array),
+  //     })
+  //
+  //     for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
+  //       .MetricData) {
+  //       expect(metricData).toEqual({
+  //         MetricName: 'Duration',
+  //         Unit: 'Milliseconds',
+  //         Values: [1000],
+  //         Counts: [5],
+  //         Timestamp: expect.any(Date),
+  //         Dimensions: expect.any(Array),
+  //       })
+  //     }
+  //   })
+  //
+  //   test('contains default dimensions', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     monitoring.duration('test-label', 1000)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'Label', Value: 'test-label' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'ResolveVersion', Value: '1.0.0-test' },
+  //               { Name: 'Label', Value: 'test-label' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'ResolveVersion', Value: '1.0.0-test' },
+  //               { Name: 'Label', Value: 'test-label' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
+  //
+  //   test('contains default and group dimensions', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     const monitoringGroup = monitoring.group({
+  //       'test-group': 'test-group-name',
+  //     })
+  //
+  //     monitoringGroup.duration('test-label', 1000)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'test-group', Value: 'test-group-name' },
+  //               { Name: 'Label', Value: 'test-label' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'ResolveVersion', Value: '1.0.0-test' },
+  //               { Name: 'test-group', Value: 'test-group-name' },
+  //               { Name: 'Label', Value: 'test-label' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'ResolveVersion', Value: '1.0.0-test' },
+  //               { Name: 'test-group', Value: 'test-group-name' },
+  //               { Name: 'Label', Value: 'test-label' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
+  //
+  //   test('sends correct metrics with multiple labels', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     monitoring.duration('test-label-1', 1000)
+  //     monitoring.duration('test-label-2', 1000)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'Label', Value: 'test-label-1' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'Label', Value: 'test-label-2' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
+  //
+  //   test('combines different values with same dimensions if metric put in the same second', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     const mockDate = new Date(1625152712546)
+  //     dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+  //
+  //     monitoring.duration('test-label', 200, 5)
+  //     monitoring.duration('test-label', 300, 3)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Values: [200, 300],
+  //             Counts: [5, 3],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
+  //
+  //   test('combines different values with same dimensions up to 150 samples', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     const mockDate = new Date(1625152712546)
+  //     dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+  //
+  //     for (let i = 0; i < 200; i++) {
+  //       monitoring.duration('test-label', i)
+  //     }
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Values: Array.from({ length: 150 }, (_, i) => i),
+  //             Counts: Array.from({ length: 150 }, () => 1),
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Values: Array.from({ length: 50 }, (_, i) => i + 150),
+  //             Counts: Array.from({ length: 50 }, () => 1),
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
+  //
+  //   test('combines different values with same dimensions up to 150 samples considering value', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     const mockDate = new Date(1625152712546)
+  //     dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+  //
+  //     for (let i = 0; i < 150; i++) {
+  //       monitoring.duration('test-label', i)
+  //     }
+  //
+  //     monitoring.duration('test-label', 69)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Values: Array.from({ length: 150 }, (_, i) => i),
+  //             Counts: Array.from({ length: 150 }, (_, i) => (i === 69 ? 2 : 1)),
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
+  //
+  //   test('combines same values with same dimensions if metric put in the same second', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     const mockDate = new Date(1625152712546)
+  //     dateSpy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+  //
+  //     monitoring.duration('test-label', 200, 5)
+  //     monitoring.duration('test-label', 200, 3)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Values: [200],
+  //             Counts: [8],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
+  //
+  //   test('does not combine different values with same dimensions if metric put in different seconds', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     const firstDate = new Date(1625152712546)
+  //     const secondDate = new Date(1625152713121)
+  //
+  //     dateSpy = jest
+  //       .spyOn(global, 'Date')
+  //       .mockImplementationOnce(() => firstDate)
+  //       .mockImplementationOnce(() => secondDate)
+  //
+  //     monitoring.duration('test-label', 200, 5)
+  //     monitoring.duration('test-label', 300, 3)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(6)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Values: [200],
+  //             Counts: [5],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Values: [300],
+  //             Counts: [3],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
+  // })
+  //
+  // describe('rate', () => {
+  //   test('sends correct metrics base data', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     monitoring.rate('applied-events', 123)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith({
+  //       Namespace: 'ResolveJs',
+  //       MetricData: expect.any(Array),
+  //     })
+  //
+  //     for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
+  //       .MetricData) {
+  //       expect(metricData).toEqual({
+  //         MetricName: 'applied-events',
+  //         Unit: 'Count/Second',
+  //         Value: 123,
+  //         Timestamp: expect.any(Date),
+  //         Dimensions: expect.any(Array),
+  //       })
+  //     }
+  //   })
+  //
+  //   test('sends correct metrics base data if seconds are specified', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     monitoring.rate('applied-events', 15, 0.5)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledTimes(1)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith({
+  //       Namespace: 'ResolveJs',
+  //       MetricData: expect.any(Array),
+  //     })
+  //
+  //     for (const metricData of CloudWatch.putMetricData.mock.calls[0][0]
+  //       .MetricData) {
+  //       expect(metricData).toEqual({
+  //         MetricName: 'applied-events',
+  //         Unit: 'Count/Second',
+  //         Value: 30,
+  //         Timestamp: expect.any(Date),
+  //         Dimensions: expect.any(Array),
+  //       })
+  //     }
+  //   })
+  //
+  //   test('contains default dimensions', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     monitoring.rate('applied-events', 123)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [{ Name: 'DeploymentId', Value: 'test-deployment' }],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [{ Name: 'ResolveVersion', Value: '1.0.0-test' }],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'ResolveVersion', Value: '1.0.0-test' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
+  //
+  //   test('contains default and group dimensions', async () => {
+  //     const monitoring = createMonitoring({
+  //       deploymentId: 'test-deployment',
+  //       resolveVersion: '1.0.0-test',
+  //     })
+  //
+  //     const monitoringGroup = monitoring.group({
+  //       'test-group': 'test-group-name',
+  //     })
+  //
+  //     monitoringGroup.rate('applied-events', 1000)
+  //
+  //     await monitoring.publish()
+  //
+  //     expect(CloudWatch.putMetricData.mock.calls[0][0].MetricData).toHaveLength(3)
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'test-group', Value: 'test-group-name' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'ResolveVersion', Value: '1.0.0-test' },
+  //               { Name: 'test-group', Value: 'test-group-name' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //
+  //     expect(CloudWatch.putMetricData).toBeCalledWith(
+  //       expect.objectContaining({
+  //         MetricData: expect.arrayContaining([
+  //           expect.objectContaining({
+  //             Dimensions: [
+  //               { Name: 'DeploymentId', Value: 'test-deployment' },
+  //               { Name: 'ResolveVersion', Value: '1.0.0-test' },
+  //               { Name: 'test-group', Value: 'test-group-name' },
+  //             ],
+  //           }),
+  //         ]),
+  //       })
+  //     )
+  //   })
 })

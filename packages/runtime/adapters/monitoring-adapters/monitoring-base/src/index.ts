@@ -1,4 +1,43 @@
-// TODO: any
+import CloudWatch from 'aws-sdk/clients/cloudwatch'
+import debugLevels from '@resolve-js/debug-levels'
+import { retry } from 'resolve-cloud-common/utils'
+
+const MAX_DIMENSION_VALUE_LENGTH = 256
+const MAX_METRIC_COUNT = 20
+const MAX_DIMENSION_COUNT = 10
+const MAX_VALUES_PER_METRIC = 150
+
+const getLog = (name: string) => debugLevels(`resolve:cloud:${name}`)
+
+const getErrorMessage = (error: Error) => {
+  let errorMessage = error.message.split(/\n|\r|\r\n/g)[0]
+
+  if (errorMessage.length > MAX_DIMENSION_VALUE_LENGTH) {
+    const messageEnd = '...'
+
+    errorMessage = `${errorMessage.slice(
+      0,
+      MAX_DIMENSION_VALUE_LENGTH - messageEnd.length
+    )}${messageEnd}`
+  }
+
+  return errorMessage
+}
+
+const createErrorDimensions = (error: Error) => [
+  { name: 'ErrorName', value: error.name },
+  { name: 'ErrorMessage', value: getErrorMessage(error) },
+]
+
+const createErrorDimensionsList = (error: Error) => [
+  [
+    { name: 'ErrorName', value: error.name },
+    { name: 'ErrorMessage', value: getErrorMessage(error) },
+  ],
+  [{ name: 'ErrorName', value: error.name }],
+  [],
+]
+
 const areDimensionsEqual = (left: any[], right: any[]) => {
   if (left.length !== right.length) {
     return false
@@ -13,154 +52,433 @@ const areDimensionsEqual = (left: any[], right: any[]) => {
   return true
 }
 
-// TODO: any
-const monitoringError = (log: any, monitoringData: any, error: Error) => {
-  const errorDimensions = [
-    { name: 'ErrorName', value: error.name },
-    { name: 'ErrorMessage', value: error.message },
-  ]
+// @ts-ignore
+const putMetric = (log, monitoringContext, groupData, metric) => {
+  try {
+    log.verbose(`Collecting metric`)
 
-  const sameMetric = monitoringData.metrics.find(
-    // TODO: any
-    (metric: any) =>
-      metric.metricName === 'Errors' &&
-      metric.unit === 'Count' &&
-      metric.timestamp === null &&
-      areDimensionsEqual(metric.dimensions, errorDimensions)
-  )
+    let foundMetric = monitoringContext.metrics.find(
+      (m: any) =>
+        m.metricName === metric.metricName &&
+        m.timestamp === metric.timestamp &&
+        m.unit === metric.unit &&
+        areDimensionsEqual(m.dimensions, metric.dimensions)
+    )
 
-  if (sameMetric == null) {
-    monitoringData.metrics.push({
-      metricName: 'Errors',
-      unit: 'Count',
-      timestamp: null,
-      values: [1],
-      counts: [1],
-      dimensions: errorDimensions,
-    })
-  } else {
-    let isFound = false
-
-    for (let i = 0; i < sameMetric.values.length; i++) {
-      if (sameMetric.values[i] === 1) {
-        sameMetric.counts[i]++
-        isFound = true
-        break
-      }
+    if (foundMetric != null) {
+      foundMetric.counts[0] += metric.count
+    } else {
+      monitoringContext.metrics.push({
+        metricName: metric.metricName,
+        timestamp: metric.timestamp,
+        unit: metric.unit,
+        dimensions: metric.dimensions,
+        values: [metric.value],
+        counts: [metric.count],
+      })
     }
-
-    if (!isFound) {
-      sameMetric.values.push(1)
-      sameMetric.counts.push(1)
-    }
+  } catch (error) {
+    log.verbose(`Failed to collect metric`)
+    log.verbose(error)
   }
 }
 
-// TODO: refactoring implementation method for creating metrics
-// const createMetric = (context: any, label: any, duration: any) => {
-
-
-// }
-
-// TODO: any, deduplicate values
-const monitoringDuration = (log: any, monitoringData: any, label: any, duration: any) => {
-  if (monitoringData.metrics.length === 0) {
-    monitoringData.metrics.push({
-      metricName: 'Duration',
-      timestamp: null,
-      unit: 'Milliseconds',
-      values: [duration],
-      counts: [1],
-      dimensions: [{ name: 'Label', value: label}],
-    })
-  } else {
-    for (let i = 0; i < monitoringData.metrics.length; i++){
-      let isFound = false
-
-      monitoringData.metrics[i].dimensions.push({ name: 'Label', value: label})
-      for (let j = 0; j < monitoringData.metrics[i].values.length; j++) {
-        if(monitoringData.metrics[i].values[j] === duration) {
-          monitoringData.metrics[i].counts[j]++
-          isFound = true
-          break
-        }
-      }
-
-      if (!isFound){
-        monitoringData.metrics[i].values.push(duration)
-        monitoringData.metrics[i].counts.push(1)
-      }
-    }  
-  }
-}
-
-const monitoringExecution = (log: any, monitoringData: any, groupData: any) => {
-  monitoringData.metrics.push({
-    metricName: 'Execution',
+// @ts-ignore
+const monitoringError = async (log, monitoringContext, groupData, error) => {
+  putMetric(log, monitoringContext, groupData, {
+    metricName: 'Errors',
     timestamp: null,
     unit: 'Count',
-    values: [1],
-    counts: [1],
-    dimensions: groupData.metricDimensions,
+    dimensions: groupData.dimensions.concat(createErrorDimensions(error)),
+    value: 1,
+    count: 1,
   })
 }
 
-// TODO: any, deduplicate values
-const monitoringRate = (log: any, monitoringData: any, metricName: string, count: number, seconds = 1) => {
-  monitoringData.metrics.push({
-    metricName: metricName,
+const monitoringExecution = async (
+  log: any,
+  monitoringContext: {
+    metricData: {
+      MetricName: string
+      Timestamp: Date
+      Unit: string
+      Value: number
+      Dimensions: any
+    }[]
+  },
+  groupData: any,
+  error?: Error
+) => {
+  putMetric(log, monitoringContext, groupData, {
+    metricName: 'Executions',
     timestamp: null,
-    unit: 'Count/Second',
-    values: [count / seconds],
-    counts: [1],
-    dimensions: null,
+    unit: 'Count',
+    dimensions: groupData.dimensions,
+    value: 1,
+    count: 1,
   })
+
+  if (error != null) {
+    putMetric(log, monitoringContext, groupData, {
+      metricName: 'Errors',
+      timestamp: null,
+      unit: 'Count',
+      dimensions: groupData.dimensions.concat(createErrorDimensions(error)),
+      value: 1,
+      count: 1,
+    })
+  }
 }
 
-const createGroupDimensions = (config: Record<string, string>) =>
+const monitoringDuration = async (
+  log: { warn: (arg0: string) => void },
+  monitoringContext: any,
+  groupData: any,
+  label: string | number,
+  duration: unknown,
+  count = 1
+) => {
+  if (!Number.isFinite(duration)) {
+    log.warn(
+      `Duration '${label}' is not recorded because duration must be a finite number`
+    )
+    return
+  }
+
+  const durationDimensions = [{ Name: 'Label', Value: label }]
+  const timestamp = new Date()
+  timestamp.setMilliseconds(0)
+
+  let isDimensionCountLimitReached = false
+
+  for (const groupDimensions of groupData.durationMetricDimensionsList) {
+    const dimensions = [...groupDimensions, ...durationDimensions]
+
+    if (dimensions.length <= MAX_DIMENSION_COUNT) {
+      const metricName = 'Duration'
+      const time = timestamp.getTime()
+      const unit = 'Milliseconds'
+
+      const existingMetricData = monitoringContext.metricData.find(
+        (data: any) =>
+          data.MetricName === metricName &&
+          data.Unit === unit &&
+          data.Timestamp.getTime() === time &&
+          data.Dimensions.length === dimensions.length &&
+          (data.Values.length < MAX_VALUES_PER_METRIC ||
+            data.Values.includes(duration)) &&
+          data.Dimensions.every(
+            (dimension: any, index: any) =>
+              dimension.Name === dimensions[index].Name &&
+              dimension.Value === dimensions[index].Value
+          )
+      )
+
+      if (existingMetricData != null) {
+        let isValueFound = false
+
+        for (let i = 0; i < existingMetricData.Values.length; i++) {
+          if (existingMetricData.Values[i] === duration) {
+            existingMetricData.Counts[i] += count
+            isValueFound = true
+            break
+          }
+        }
+
+        if (!isValueFound) {
+          existingMetricData.Values.push(duration)
+          existingMetricData.Counts.push(count)
+        }
+      } else {
+        monitoringContext.metricData.push({
+          MetricName: metricName,
+          Timestamp: timestamp,
+          Unit: unit,
+          Values: [duration],
+          Counts: [count],
+          Dimensions: dimensions,
+        })
+      }
+    } else {
+      isDimensionCountLimitReached = true
+    }
+  }
+
+  delete groupData.timerMap[label]
+
+  if (isDimensionCountLimitReached) {
+    log.warn(
+      `Duration '${label}' missed some or all metric data because of dimension count limit`
+    )
+  }
+}
+
+const monitoringTime = async (
+  log: { warn: (arg0: string) => void },
+  monitoringContext: any,
+  groupData: { timerMap: { [x: string]: number } },
+  label: string | number,
+  timestamp = Date.now()
+) => {
+  if (!Number.isFinite(timestamp)) {
+    log.warn(
+      `Timer '${label}' is not started because timestamp must be a finite number`
+    )
+    return
+  }
+
+  if (typeof groupData.timerMap[label] !== 'number') {
+    groupData.timerMap[label] = timestamp
+  } else {
+    log.warn(`Timer '${label}' already exists`)
+  }
+}
+
+const monitoringTimeEnd = async (
+  log: { warn: any },
+  monitoringContext: {
+    metricData: {
+      MetricName: string
+      Timestamp: Date
+      Unit: string
+      Values: any[]
+      Counts: number[]
+      Dimensions: any[]
+    }[]
+  },
+  groupData: { timerMap: any; durationMetricDimensionsList?: any },
+  label: string | number,
+  timestamp = Date.now()
+) => {
+  if (!Number.isFinite(timestamp)) {
+    log.warn(
+      `Timer '${label}' is not ended because timestamp must be a finite number`
+    )
+    return
+  }
+
+  if (typeof groupData.timerMap[label] === 'number') {
+    const duration = timestamp - groupData.timerMap[label]
+    // @ts-ignore
+    return monitoringDuration(
+      log,
+      monitoringContext,
+      groupData,
+      label,
+      duration
+    )
+  } else {
+    log.warn(`Timer '${label}' does not exist`)
+  }
+}
+
+// @ts-ignore
+const monitoringPublish = async (log, monitoringContext) => {
+  void log
+  void monitoringContext
+  // try {
+  //   log.verbose(`Sending ${monitoringContext.metricData.length} metrics`)
+  //   log.verbose(JSON.stringify(monitoringContext.metricData))
+  //
+  //   const promises = []
+  //
+  //   const cw = new CloudWatch()
+  //   const putMetricData = retry(cw, cw.putMetricData)
+  //
+  //   for (
+  //     let i = 0;
+  //     i < monitoringContext.metricData.length;
+  //     i += MAX_METRIC_COUNT
+  //   ) {
+  //     promises.push(
+  //       putMetricData({
+  //         Namespace: 'ResolveJs',
+  //         MetricData: monitoringContext.metricData.slice(i, i + MAX_METRIC_COUNT),
+  //       })
+  //     )
+  //   }
+  //
+  //   monitoringContext.metricData = []
+  //
+  //   await Promise.all(promises)
+  //
+  //   log.verbose(`Metrics data sent`)
+  // } catch (e) {
+  //   log.warn(`Metrics data sending failed: ${e}`)
+  // }
+}
+
+// @ts-ignore
+const createGroupDimensions = (config) =>
   Object.keys(config).reduce(
     (acc, key) =>
       config[key] != null
         ? acc.concat({
-            Name: key,
-            Value: config[key],
+            name: key,
+            value: config[key],
           })
         : acc,
-    [] as any
+    [] as any[]
   )
 
-const createBaseMonitoringImplementation = (monitoringData: any, groupData: any) => {
-  return {
-    group: (config: Record<string, string>) => {
-      const groupDimensions = createGroupDimensions(config)
-      const nextGroupDimension = {
-        metricDimensions: groupData.metricDimensions.concat(groupDimensions),
+const monitoringRate = async (
+  log: { warn: (arg0: string) => void },
+  monitoringContext: { metricData: string | any[] },
+  groupData: {
+    durationMetricDimensionsList: any[]
+    timerMap: { [x: string]: any }
+  },
+  metricName: string | number,
+  count: unknown,
+  seconds = 1
+) => {
+  if (!Number.isFinite(count)) {
+    log.warn(
+      `Count per second '${metricName}' is not recorded because count must be a finite number`
+    )
+    return
+  }
+
+  const timestamp = new Date()
+  timestamp.setMilliseconds(0)
+
+  let isDimensionCountLimitReached = false
+
+  monitoringContext.metricData = monitoringContext.metricData.concat(
+    groupData.durationMetricDimensionsList.reduce((acc, groupDimensions) => {
+      if (groupDimensions.length <= MAX_DIMENSION_COUNT) {
+        acc.push({
+          MetricName: metricName,
+          Timestamp: timestamp,
+          Unit: 'Count/Second',
+          // @ts-ignore
+          Value: count / seconds,
+          Dimensions: groupDimensions,
+        })
+      } else {
+        isDimensionCountLimitReached = true
       }
-       
-      return createBaseMonitoringImplementation(monitoringData, nextGroupDimension)
-    },
-    error: monitoringError.bind(null, {}, monitoringData),
-    execution: monitoringExecution.bind(null, {}, monitoringData, groupData),
-    duration: monitoringDuration.bind(null, {}, monitoringData),
-    time: () => {},
-    timeEnd: () => {},
-    rate: monitoringRate.bind(null, {}, monitoringData),
-    publish: () => {},
-    getMetrics: () => monitoringData,
-    clearMetrics: () => monitoringData.metrics = [] 
+
+      return acc
+    }, [])
+  )
+
+  delete groupData.timerMap[metricName]
+
+  if (isDimensionCountLimitReached) {
+    log.warn(
+      `Count per second '${metricName}' missed some or all metric data because of dimension count limit`
+    )
   }
 }
 
-const createBaseMonitoring = () => {
-  const monitoringData = {
-    // TODO: any
-    metrics: [] as any[],
+// @ts-ignore
+const getMetrics = (log, monitoringContext) => {
+  void log
+  void monitoringContext
+  return {
+    metrics: monitoringContext.metrics,
+  }
+}
+
+// @ts-ignore
+const clearMetrics = (log, monitoringContext) => {
+  void log
+  void monitoringContext
+  monitoringContext.metrics = []
+}
+
+// @ts-ignore
+const createMonitoringImplementation = (log, monitoringContext, groupData) => {
+  return {
+    // @ts-ignore
+    group: (config) => {
+      const groupDimensions = createGroupDimensions(config)
+
+      const globalDimensions =
+        config.Part != null ? [[{ Name: 'Part', Value: config.Part }]] : []
+
+      const nextGroupData = {
+        timerMap: {},
+        dimensions: groupData.dimensions.concat(createGroupDimensions(config)),
+        globalDimensions: groupData.globalDimensions.concat(globalDimensions),
+        metricDimensions: groupData.metricDimensions.concat(groupDimensions),
+        durationMetricDimensionsList: groupData.durationMetricDimensionsList.map(
+          // @ts-ignore
+          (dimensions) => [...dimensions, ...groupDimensions]
+        ),
+        errorMetricDimensionsList: [
+          ...groupData.errorMetricDimensionsList,
+          groupData.errorMetricDimensionsList[
+            groupData.errorMetricDimensionsList.length - 1
+          ].concat(groupDimensions),
+        ],
+      }
+
+      return createMonitoringImplementation(
+        log,
+        monitoringContext,
+        nextGroupData
+      )
+    },
+    error: monitoringError.bind(null, log, monitoringContext, groupData),
+    execution: monitoringExecution.bind(
+      null,
+      log,
+      monitoringContext,
+      groupData
+    ),
+    duration: monitoringDuration.bind(null, log, monitoringContext, groupData),
+    time: monitoringTime.bind(null, log, monitoringContext, groupData),
+    timeEnd: monitoringTimeEnd.bind(null, log, monitoringContext, groupData),
+    rate: monitoringRate.bind(null, log, monitoringContext, groupData),
+    publish: monitoringPublish.bind(null, log, monitoringContext),
+    getMetrics: getMetrics.bind(null, log, monitoringContext),
+    clearMetrics: clearMetrics.bind(null, log, monitoringContext),
+  }
+}
+
+const createDeploymentDimensions = (deploymentId: any, resolveVersion: any) => [
+  [
+    { Name: 'DeploymentId', Value: deploymentId },
+    { Name: 'ResolveVersion', Value: resolveVersion },
+  ],
+  [{ Name: 'ResolveVersion', Value: resolveVersion }],
+  [{ Name: 'DeploymentId', Value: deploymentId }],
+]
+
+const createMonitoring = () => {
+  const deploymentId = 'temp'
+  const resolveVersion = 'temp'
+
+  const monitoringContext = {
+    metrics: [],
+    metricDimensions: createDeploymentDimensions(deploymentId, resolveVersion),
   }
 
   const monitoringGroupData = {
+    timerMap: {},
+    dimensions: [],
     metricDimensions: [],
+    globalDimensions: [],
+    durationMetricDimensionsList: [
+      [
+        { Name: 'DeploymentId', Value: deploymentId },
+        { Name: 'ResolveVersion', Value: resolveVersion },
+      ],
+      [{ Name: 'ResolveVersion', Value: resolveVersion }],
+      [{ Name: 'DeploymentId', Value: deploymentId }],
+    ],
+    errorMetricDimensionsList: [
+      [{ Name: 'DeploymentId', Value: deploymentId }],
+    ],
   }
-  return createBaseMonitoringImplementation(monitoringData, monitoringGroupData)
+
+  return createMonitoringImplementation(
+    getLog('monitoring'),
+    monitoringContext,
+    monitoringGroupData
+  )
 }
 
-export default createBaseMonitoring
+export default createMonitoring
