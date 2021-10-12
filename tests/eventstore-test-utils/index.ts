@@ -302,6 +302,7 @@ export const adapterFactory = isPostgresServerless()
             port: +process.env.POSTGRES_PORT,
             user: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
+            userLogin: process.env.POSTGRES_USER,
           }
 
           try {
@@ -342,6 +343,7 @@ export const adapterFactory = isPostgresServerless()
             port: +process.env.POSTGRES_PORT,
             user: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
+            userLogin: process.env.POSTGRES_USER,
           }
           await destroyPostgresResource(options)
 
