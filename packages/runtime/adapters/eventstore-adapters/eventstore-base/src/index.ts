@@ -138,6 +138,7 @@ export type {
   AdapterConfig,
   AdapterTableNames,
   AdapterTableNamesProps,
+  GatheredSecrets,
 } from './types'
 
 export type { StoredEvent, EventThreadData } from '@resolve-js/core'
