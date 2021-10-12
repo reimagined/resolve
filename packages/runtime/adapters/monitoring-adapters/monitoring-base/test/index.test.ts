@@ -20,7 +20,7 @@ afterEach(() => {
 })
 
 describe('common', () => {
-  test('gets timestamp from function if it is passed into adapter', async () => {
+  test('gets timestamp from function if it is passed into adapter', () => {
     const monitoring = createMonitoring({
       getTimestamp: () => 123456,
     }).group({ 'test-group-name': 'test-group' })
@@ -41,7 +41,7 @@ describe('common', () => {
     ])
   })
 
-  test('sets timestamp as null if getTimestamp is NOT passed into adapter', async () => {
+  test('sets timestamp as null if getTimestamp is NOT passed into adapter', () => {
     const monitoring = createMonitoring().group({
       'test-group-name': 'test-group',
     })
@@ -62,7 +62,42 @@ describe('common', () => {
     ])
   })
 
-  test('clears metrics correctly', async () => {
+  test('creates new metric with all same fields excluding timestamp', () => {
+    const mockGetTimestamp = jest
+      .fn()
+      .mockReturnValueOnce(123)
+      .mockReturnValueOnce(456)
+
+    const monitoring = createMonitoring({
+      getTimestamp: mockGetTimestamp,
+    })
+
+    monitoring.execution()
+    monitoring.execution()
+
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
+      {
+        metricName: 'Executions',
+        unit: 'Count',
+        timestamp: 123,
+        dimensions: [],
+        values: [1],
+        counts: [1],
+      },
+      {
+        metricName: 'Executions',
+        unit: 'Count',
+        timestamp: 456,
+        dimensions: [],
+        values: [1],
+        counts: [1],
+      },
+    ])
+  })
+
+  test('clears metrics correctly', () => {
     const monitoring = createMonitoring()
 
     monitoring.execution()
@@ -74,7 +109,7 @@ describe('common', () => {
     expect(monitoring.getMetrics().metrics).toHaveLength(0)
   })
 
-  test('combines values in one metric if all params are the same', async () => {
+  test('combines values in one metric if all params are the same', () => {
     const monitoring = createMonitoring()
 
     monitoring.duration('test-label', 1000)
@@ -94,7 +129,7 @@ describe('common', () => {
     ])
   })
 
-  test('combines values in one metric if all params are the same and value already in value list', async () => {
+  test('combines values in one metric if all params are the same and value already in value list', () => {
     const monitoring = createMonitoring()
 
     monitoring.duration('test-label', 1300)
@@ -114,7 +149,7 @@ describe('common', () => {
     ])
   })
 
-  test('combines values in one metric if all params are the same and value already in value list', async () => {
+  test('combines values in one metric if all params are the same and value already in value list', () => {
     const monitoring = createMonitoring()
 
     monitoring.duration('test-label', 1300)
@@ -137,7 +172,7 @@ describe('common', () => {
 })
 
 describe('error', () => {
-  test('contains default dimensions', async () => {
+  test('contains default dimensions', () => {
     const monitoring = createMonitoring()
 
     class TestError extends Error {
@@ -163,7 +198,7 @@ describe('error', () => {
     ])
   })
 
-  test('contains default and group dimensions', async () => {
+  test('contains default and group dimensions', () => {
     const monitoring = createMonitoring()
 
     const groupMonitoring = monitoring.group({
@@ -194,7 +229,7 @@ describe('error', () => {
     ])
   })
 
-  test('contains default and group dimensions for multiple group calls', async () => {
+  test('contains default and group dimensions for multiple group calls', () => {
     const monitoring = createMonitoring()
 
     const groupMonitoring = monitoring
@@ -230,7 +265,7 @@ describe('error', () => {
     ])
   })
 
-  test('contains correct metrics if different errors are passed', async () => {
+  test('contains correct metrics if different errors are passed', () => {
     const monitoring = createMonitoring()
 
     class TestError extends Error {
@@ -239,8 +274,6 @@ describe('error', () => {
 
     monitoring.error(new TestError('test-message-1'))
     monitoring.error(new TestError('test-message-2'))
-
-    await monitoring.publish()
 
     const data = monitoring.getMetrics()
 
@@ -270,7 +303,7 @@ describe('error', () => {
     ])
   })
 
-  test('contains correct metrics if same error is passed multiple times', async () => {
+  test('contains correct metrics if same error is passed multiple times', () => {
     const monitoring = createMonitoring()
 
     class TestError extends Error {
@@ -279,8 +312,6 @@ describe('error', () => {
 
     monitoring.error(new TestError('test-message'))
     monitoring.error(new TestError('test-message'))
-
-    await monitoring.publish()
 
     const data = monitoring.getMetrics()
 
@@ -301,7 +332,7 @@ describe('error', () => {
 })
 
 describe('executions', () => {
-  test('collects correct metrics without error', async () => {
+  test('collects correct metrics without error', () => {
     const monitoring = createMonitoring().group({
       'test-group-name': 'test-group',
     })
@@ -322,7 +353,7 @@ describe('executions', () => {
     ])
   })
 
-  test('sends correct metrics with error', async () => {
+  test('sends correct metrics with error', () => {
     const monitoring = createMonitoring().group({
       'test-group-name': 'test-group',
     })
@@ -359,7 +390,7 @@ describe('executions', () => {
     ])
   })
 
-  test('contains group dimensions for multiple group calls with error', async () => {
+  test('contains group dimensions for multiple group calls with error', () => {
     const monitoring = createMonitoring()
 
     const groupMonitoring = monitoring
@@ -408,7 +439,7 @@ describe('executions', () => {
 })
 
 describe('duration', () => {
-  test('collects correct metrics base data', async () => {
+  test('collects correct metrics base data', () => {
     const monitoring = createMonitoring()
 
     monitoring.duration('test-label', 1000)
@@ -427,7 +458,7 @@ describe('duration', () => {
     ])
   })
 
-  test('collects correct metrics with custom count', async () => {
+  test('collects correct metrics with custom count', () => {
     const monitoring = createMonitoring()
 
     monitoring.duration('test-label', 1000, 5)
@@ -446,7 +477,7 @@ describe('duration', () => {
     ])
   })
 
-  test('contains group dimensions', async () => {
+  test('contains group dimensions', () => {
     const monitoring = createMonitoring()
 
     const monitoringGroup = monitoring.group({
@@ -472,13 +503,11 @@ describe('duration', () => {
     ])
   })
 
-  test('collects correct metrics with multiple labels', async () => {
+  test('collects correct metrics with multiple labels', () => {
     const monitoring = createMonitoring()
 
     monitoring.duration('test-label-1', 1000)
     monitoring.duration('test-label-2', 1000)
-
-    await monitoring.publish()
 
     const data = monitoring.getMetrics()
 
@@ -504,7 +533,7 @@ describe('duration', () => {
 })
 
 describe('time and timeEnd', () => {
-  test('collects correct metrics base data', async () => {
+  test('collects correct metrics base data', () => {
     const monitoring = createMonitoring()
 
     monitoring.time('test-label', 1000)
@@ -524,7 +553,7 @@ describe('time and timeEnd', () => {
     ])
   })
 
-  test('contains group dimensions', async () => {
+  test('contains group dimensions', () => {
     const monitoring = createMonitoring()
 
     const monitoringGroup = monitoring.group({
@@ -554,7 +583,7 @@ describe('time and timeEnd', () => {
     ])
   })
 
-  test('sends correct duration metrics using Date.now', async () => {
+  test('sends correct duration metrics using Date.now', () => {
     const monitoring = createMonitoring()
 
     mocked(Date.now).mockReturnValueOnce(15000).mockReturnValueOnce(19500)
@@ -576,7 +605,7 @@ describe('time and timeEnd', () => {
     ])
   })
 
-  test('collects correct metrics with multiple labels', async () => {
+  test('collects correct metrics with multiple labels', () => {
     const monitoring = createMonitoring()
 
     monitoring.time('test-label-1', 1000)
@@ -607,7 +636,7 @@ describe('time and timeEnd', () => {
     ])
   })
 
-  test('collects correct metrics with same label multiple calls', async () => {
+  test('collects correct metrics with same label multiple calls', () => {
     const monitoring = createMonitoring()
 
     monitoring.time('test-label', 1000)
@@ -632,7 +661,7 @@ describe('time and timeEnd', () => {
 })
 
 describe('rate', () => {
-  test('sends correct metrics base data if seconds are specified', async () => {
+  test('sends correct metrics base data if seconds are specified', () => {
     const monitoring = createMonitoring()
 
     monitoring.rate('applied-events', 15, 0.5)
@@ -651,7 +680,7 @@ describe('rate', () => {
     ])
   })
 
-  test('contains group dimensions', async () => {
+  test('contains group dimensions', () => {
     const monitoring = createMonitoring()
 
     const monitoringGroup = monitoring.group({

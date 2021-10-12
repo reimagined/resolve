@@ -1,4 +1,0 @@
-export const MAX_DIMENSION_VALUE_LENGTH = 256
-export const MAX_METRIC_COUNT = 20
-export const MAX_DIMENSION_COUNT = 10
-export const MAX_VALUES_PER_METRIC = 150

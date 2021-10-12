@@ -1,29 +1,23 @@
 export interface MonitoringDimension {
-  Name: string
-  Value: string
+  name: string
+  value: string
 }
 
-export type MonitoringDimensions = MonitoringDimension[]
-export type MonitoringDimensionsList = MonitoringDimensions[]
-
-export interface MonitoringMetricDatum {
-  MetricName: string
-  Dimensions: MonitoringDimension[]
-  Timestamp: Date
-  Values: number[]
-  Counts: number[]
-  Unit: string
+export interface MonitoringMetric {
+  metricName: string
+  dimensions: MonitoringDimension[]
+  timestamp: number | null
+  values: number[]
+  counts: number[]
+  unit: string
 }
 
-export interface MonitoringData {
-  metricData: MonitoringMetricDatum[]
-  metricDimensions: MonitoringDimensionsList
+export interface MonitoringContext {
+  getTimestamp: () => number | null
+  metrics: MonitoringMetric[]
 }
 
-export interface MonitoringGroupData {
+export interface MonitoringGroupContext {
+  dimensions: MonitoringDimension[]
   timerMap: Record<string, number>
-  metricDimensions: MonitoringDimensions
-  globalDimensions: MonitoringDimensionsList
-  durationMetricDimensionsList: MonitoringDimensionsList
-  errorMetricDimensionsList: MonitoringDimensionsList
 }
