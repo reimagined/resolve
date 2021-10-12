@@ -57,10 +57,12 @@ const putMetric = (log, monitoringContext, groupData, metric) => {
   try {
     log.verbose(`Collecting metric`)
 
+    const timestamp = monitoringContext.getTimestamp()
+
     let foundMetric = monitoringContext.metrics.find(
       (m: any) =>
         m.metricName === metric.metricName &&
-        m.timestamp === metric.timestamp &&
+        m.timestamp === timestamp &&
         m.unit === metric.unit &&
         areDimensionsEqual(m.dimensions, metric.dimensions)
     )
@@ -83,7 +85,7 @@ const putMetric = (log, monitoringContext, groupData, metric) => {
     } else {
       monitoringContext.metrics.push({
         metricName: metric.metricName,
-        timestamp: metric.timestamp,
+        timestamp,
         unit: metric.unit,
         dimensions: metric.dimensions,
         values: [metric.value],
@@ -100,7 +102,6 @@ const putMetric = (log, monitoringContext, groupData, metric) => {
 const monitoringError = async (log, monitoringContext, groupData, error) => {
   putMetric(log, monitoringContext, groupData, {
     metricName: 'Errors',
-    timestamp: null,
     unit: 'Count',
     dimensions: groupData.dimensions.concat(createErrorDimensions(error)),
     value: 1,
@@ -124,7 +125,6 @@ const monitoringExecution = async (
 ) => {
   putMetric(log, monitoringContext, groupData, {
     metricName: 'Executions',
-    timestamp: null,
     unit: 'Count',
     dimensions: groupData.dimensions,
     value: 1,
@@ -134,7 +134,6 @@ const monitoringExecution = async (
   if (error != null) {
     putMetric(log, monitoringContext, groupData, {
       metricName: 'Errors',
-      timestamp: null,
       unit: 'Count',
       dimensions: groupData.dimensions.concat(createErrorDimensions(error)),
       value: 1,
@@ -160,7 +159,6 @@ const monitoringDuration = async (
 
   putMetric(log, monitoringContext, groupData, {
     metricName: 'Duration',
-    timestamp: null,
     unit: 'Milliseconds',
     dimensions: groupData.dimensions.concat({ name: 'Label', value: label }),
     value: duration,
@@ -279,13 +277,10 @@ const createGroupDimensions = (config) =>
 
 const monitoringRate = async (
   log: { warn: (arg0: string) => void },
-  monitoringContext: { metricData: string | any[] },
-  groupData: {
-    durationMetricDimensionsList: any[]
-    timerMap: { [x: string]: any }
-  },
-  metricName: string | number,
-  count: unknown,
+  monitoringContext: any,
+  groupData: any,
+  metricName: string,
+  count: number,
   seconds = 1
 ) => {
   if (!Number.isFinite(count)) {
@@ -295,37 +290,14 @@ const monitoringRate = async (
     return
   }
 
-  const timestamp = new Date()
-  timestamp.setMilliseconds(0)
-
-  let isDimensionCountLimitReached = false
-
-  monitoringContext.metricData = monitoringContext.metricData.concat(
-    groupData.durationMetricDimensionsList.reduce((acc, groupDimensions) => {
-      if (groupDimensions.length <= MAX_DIMENSION_COUNT) {
-        acc.push({
-          MetricName: metricName,
-          Timestamp: timestamp,
-          Unit: 'Count/Second',
-          // @ts-ignore
-          Value: count / seconds,
-          Dimensions: groupDimensions,
-        })
-      } else {
-        isDimensionCountLimitReached = true
-      }
-
-      return acc
-    }, [])
-  )
-
-  delete groupData.timerMap[metricName]
-
-  if (isDimensionCountLimitReached) {
-    log.warn(
-      `Count per second '${metricName}' missed some or all metric data because of dimension count limit`
-    )
-  }
+  putMetric(log, monitoringContext, groupData, {
+    metricName,
+    timestamp: null,
+    unit: 'Count/Second',
+    dimensions: groupData.dimensions,
+    value: count / seconds,
+    count: 1,
+  })
 }
 
 // @ts-ignore
@@ -403,11 +375,14 @@ const createDeploymentDimensions = (deploymentId: any, resolveVersion: any) => [
   [{ Name: 'DeploymentId', Value: deploymentId }],
 ]
 
-const createMonitoring = () => {
+const createMonitoring = ({
+  getTimestamp = () => null,
+}: { getTimestamp?: () => number | null } = {}) => {
   const deploymentId = 'temp'
   const resolveVersion = 'temp'
 
   const monitoringContext = {
+    getTimestamp: getTimestamp,
     metrics: [],
     metricDimensions: createDeploymentDimensions(deploymentId, resolveVersion),
   }
