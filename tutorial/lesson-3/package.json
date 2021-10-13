@@ -15,7 +15,6 @@
     "@types/react": "17.0.5"
   },
   "dependencies": {
-    "@babel/node": "7.14.2",
     "@resolve-js/eventstore-lite": "0.32.0",
     "@resolve-js/eventstore-postgresql-serverless": "0.32.0",
     "@resolve-js/module-admin": "0.32.0",
