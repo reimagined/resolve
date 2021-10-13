@@ -1,4 +1,4 @@
-import { Selector, t } from 'testcafe'
+import { t } from 'testcafe'
 import fetch from 'isomorphic-fetch'
 
 const host = process.env.HOST || 'localhost'
