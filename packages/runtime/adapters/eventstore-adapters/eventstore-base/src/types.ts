@@ -190,6 +190,8 @@ type EventFilterChecked = t.TypeOf<typeof EventFilterSchemaSimple>
 export type EventFilter = UnbrandProps<EventFilterChecked>
 export type LatestEventFilter = Omit<EventFilter, 'limit' | 'eventsSizeLimit'>
 
+export type EventLoaderFilter = Omit<CursorFilter, 'limit' | 'eventsSizeLimit'>
+
 export type SecretFilter = {
   idx?: SecretRecord['idx'] | null
   skip?: number
@@ -301,6 +303,8 @@ export type AdapterPoolPrivateConnectedProps = {
   dropEvents: () => Promise<any[]>
   dropSecrets: () => Promise<any[]>
   dropFinal: () => Promise<any[]>
+
+  getEventLoaderNative?: (filter: EventLoaderFilter) => Promise<EventLoader>
 }
 
 export type AdapterPoolConnectedProps = Adapter &
@@ -379,6 +383,8 @@ export interface CommonAdapterFunctions<
     ConnectedProps,
     Adapter['gatherSecretsFromEvents']
   >
+
+  getEventLoader: PoolMethod<ConnectedProps, Adapter['getEventLoader']>
 }
 
 export interface AdapterFunctions<
@@ -504,6 +510,18 @@ export interface AdapterFunctions<
     ConnectedProps,
     Adapter['establishTimeLimit']
   >
+
+  getEventLoaderNative?: PoolMethod<
+    ConnectedProps,
+    NonNullable<AdapterPoolConnectedProps['getEventLoaderNative']>
+  >
+}
+
+export interface EventLoader {
+  readonly loadEvents: (limit: number) => Promise<StoredEventBatchPointer>
+  readonly close: () => Promise<void>
+  readonly cursor: InputCursor
+  readonly isNative: boolean
 }
 
 export interface Adapter extends CoreEventstore {
@@ -541,4 +559,6 @@ export interface Adapter extends CoreEventstore {
 
   describe: () => Promise<EventStoreDescription>
   establishTimeLimit: (getVacantTimeInMillis: () => number) => void
+
+  getEventLoader: (filter: EventLoaderFilter) => Promise<EventLoader>
 }

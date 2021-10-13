@@ -137,6 +137,19 @@ export function makeTestEvent(eventIndex: number, data?: any): InputEvent {
   }
 }
 
+export function makeTypedTestEvent(
+  eventIndex: number,
+  type: string
+): InputEvent {
+  return {
+    aggregateId: 'aggregateId',
+    aggregateVersion: eventIndex + 1,
+    type: type,
+    payload: { eventIndex },
+    timestamp: eventIndex + 1,
+  }
+}
+
 export function makeTestSavedEvent(
   eventIndex: number,
   threadArray: ReturnType<typeof initThreadArray>,
