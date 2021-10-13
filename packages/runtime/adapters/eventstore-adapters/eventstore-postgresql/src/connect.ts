@@ -6,13 +6,8 @@ import type {
   AdapterPoolPrimal,
   PostgresqlAdapterConfig,
 } from './types'
-import {
-  ConnectionError,
-  ServiceBusyError,
-  RequestTimeoutError,
-} from '@resolve-js/eventstore-base'
-import { isServiceBusyError, isTimeoutError } from './errors'
 import makePostgresClient from './make-postgres-client'
+import makeKnownError from './make-known-error'
 
 const connect = async (
   pool: AdapterPoolPrimal,
@@ -75,21 +70,7 @@ const connect = async (
       connection,
     })
   } catch (error) {
-    if (isServiceBusyError(error)) {
-      const busyError = new ServiceBusyError(error.message)
-      busyError.stack = error.stack ?? busyError.stack
-      throw busyError
-    } else if (isTimeoutError(error)) {
-      const timeoutError = new RequestTimeoutError(error.message)
-      timeoutError.stack = error.stack ?? timeoutError.stack
-      throw timeoutError
-    } else if (error instanceof Error) {
-      const connectionError = new ConnectionError(error.message)
-      connectionError.stack = error.stack ?? connectionError.stack
-      throw connectionError
-    } else {
-      throw error
-    }
+    throw makeKnownError(error)
   }
   log.debug('connection to postgres databases established')
 }

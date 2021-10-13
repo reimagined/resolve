@@ -6,6 +6,9 @@ import PgCursor from 'pg-cursor'
 import type { AdapterPool } from './types'
 import createLoadQuery from './create-load-query'
 import processEventRows from './process-event-rows'
+import checkRequestTimeout from './check-request-timeout'
+import { DEFAULT_QUERY_TIMEOUT, MINIMAL_QUERY_TIMEOUT } from './constants'
+import makeKnownError from './make-known-error'
 
 type QueriedPgCursor = {
   read(limit: number): Promise<any[]>
@@ -26,9 +29,27 @@ const getEventLoaderNative = async (
   if (sqlQuery === null) {
     throw new Error(`Invalid event filter: ${JSON.stringify(filter)}`)
   }
+
+  const vacantTimeInMillis = checkRequestTimeout(pool) ?? DEFAULT_QUERY_TIMEOUT
+
+  const statementTimeout = Math.max(vacantTimeInMillis, MINIMAL_QUERY_TIMEOUT)
+
   let currentCursor = cursor
-  const client = new pool.Postgres({ ...pool.connectionOptions })
-  await client.connect()
+  const client = new pool.Postgres({
+    keepAlive: false,
+    connectionTimeoutMillis: statementTimeout,
+    statement_timeout: statementTimeout,
+    ...pool.connectionOptions,
+  })
+  client.on('error', (error) => {
+    return
+  })
+  try {
+    await client.connect()
+  } catch (error) {
+    throw makeKnownError(error)
+  }
+
   const pgCursor = (client.query(
     new PgCursor(sqlQuery)
   ) as unknown) as QueriedPgCursor
@@ -39,10 +60,14 @@ const getEventLoaderNative = async (
       await client.end()
     },
     async loadEvents(limit: number) {
-      const rows = await pgCursor.read(limit)
-      const result = processEventRows(pool, currentCursor, rows)
-      currentCursor = result.cursor
-      return result
+      try {
+        const rows = await pgCursor.read(limit)
+        const result = processEventRows(pool, currentCursor, rows)
+        currentCursor = result.cursor
+        return result
+      } catch (error) {
+        throw makeKnownError(error)
+      }
     },
     get cursor() {
       return currentCursor
