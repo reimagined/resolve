@@ -108,6 +108,7 @@ describe('runtime', () => {
         .mockImplementation((event) => ({ event, cursor: null })),
       dispose: jest.fn(),
       establishTimeLimit: jest.fn(),
+      getEventLoader: jest.fn(),
     }
 
     uploadAdapter = {}
