@@ -17,7 +17,7 @@ const makePostgresClient = (
     keepAlive: false,
     connectionTimeoutMillis: queryTimeout,
     idle_in_transaction_session_timeout: queryTimeout,
-    //query_timeout: queryTimeout,
+    query_timeout: queryTimeout,
     statement_timeout: statementTimeout,
     ...connectionOptions,
   })
