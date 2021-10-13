@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.32.0...HEAD)
 
+**New features:**
+
+- Add event loader in eventstore adapter inferface and loading events via pg-cursor [\#2067](https://github.com/reimagined/resolve/pull/2067)
+
 **Breaking changes:**
 
 - Refactored runtime libraries [\#2060](https://github.com/reimagined/resolve/pull/2060)
