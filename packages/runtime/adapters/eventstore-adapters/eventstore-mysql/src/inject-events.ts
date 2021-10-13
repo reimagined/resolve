@@ -1,9 +1,9 @@
 import { AdapterPool } from './types'
-import { SavedEvent } from '@resolve-js/eventstore-base'
+import { StoredEvent } from '@resolve-js/eventstore-base'
 
 const injectEvents = async function (
   pool: AdapterPool,
-  events: SavedEvent[]
+  events: StoredEvent[]
 ): Promise<void> {
   return
 }

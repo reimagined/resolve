@@ -3,7 +3,15 @@ import type {
   ReadModelCursor,
   CallReplicateResult,
 } from './types'
-import type { ReplicationState } from '@resolve-js/eventstore-base'
+import type {
+  ReplicationState,
+  StoredEventBatchPointer,
+  GatheredSecrets,
+} from '@resolve-js/eventstore-base'
+import {
+  RequestTimeoutError,
+  ServiceBusyError,
+} from '@resolve-js/eventstore-base'
 import { getLog } from './get-log'
 
 async function sleep(delay: number): Promise<void> {
@@ -55,6 +63,8 @@ const build: ExternalMethods['build'] = async (
 ) => {
   const log = getLog('build')
 
+  await eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
+
   const state = await basePool.getReplicationState(basePool)
   if (state.status === 'error') {
     log.error('Refuse to start or continue replication with error state')
@@ -77,14 +87,27 @@ const build: ExternalMethods['build'] = async (
     const cursor =
       iterator == null ? null : (iterator.cursor as ReadModelCursor)
 
-    const { cursor: nextCursor, events } = await eventstoreAdapter.loadEvents({
-      cursor,
-      limit: 100,
-    })
-    const {
-      existingSecrets,
-      deletedSecrets,
-    } = await eventstoreAdapter.gatherSecretsFromEvents(events)
+    let loadEventsResult: StoredEventBatchPointer
+    let gatheredSecrets: GatheredSecrets
+
+    try {
+      loadEventsResult = await eventstoreAdapter.loadEvents({
+        cursor,
+        limit: 100,
+      })
+      gatheredSecrets = await eventstoreAdapter.gatherSecretsFromEvents(
+        loadEventsResult.events
+      )
+    } catch (err) {
+      if (RequestTimeoutError.is(err) || ServiceBusyError.is(err)) {
+        await next()
+        return
+      } else {
+        throw err
+      }
+    }
+    const { cursor: nextCursor, events } = loadEventsResult
+    const { existingSecrets, deletedSecrets } = gatheredSecrets
 
     let appliedEventsCount = 0
     let wasPaused = false

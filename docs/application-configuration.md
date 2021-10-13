@@ -161,7 +161,10 @@ To serve SSR markup to the client, you need to register the **live-require-handl
 apiHandlers: [
   {
     handler: {
-      module: '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+      module: {
+        package: '@resolve-js/runtime-base',
+        import: 'liveRequireHandler',
+      },
       options: {
         modulePath: './ssr.js',
         moduleFactoryImport: false
@@ -413,10 +416,6 @@ Specifies the application's name.
 
 If this option is omitted, the package name defined in the package.json file is reused as the application's name.
 
-### port
-
-Specifies the server application's port as an integer or string.
-
 ### readModels
 
 An array of the application's Read Models. A Read Model configuration object within this array contains the following fields:
@@ -599,6 +598,58 @@ const prodConfig = {
 }
 ```
 
+### runtime
+
+Specifies the runtime that the application targets and the options for this runtime. A runtime configuration object has the following structure:
+
+<!-- prettier-ignore-start -->
+
+```js
+{
+  runtime, // A string that specifies the runtime package to use.
+  options // An object that contains runtime-specific options.
+}
+```
+
+<!-- prettier-ignore-end -->
+
+ReSolve includes the following runtime packages:
+
+- `"@resolve-js/runtime-single-process"` - A runtime that targets a standalone server or local machine.
+- `"@resolve-js/runtime-aws-serverless"` - A runtime that targets the AWS serverless environment.
+
+#### Options
+
+The `options` configuration object has the following structure:
+
+<!-- prettier-ignore-start -->
+
+```js
+{
+  importMode, // Specifies whether to use *static* or *dynamic* imports between the application's modules.
+  host, // (single-process only) Specifies the network host on which to listen for connections. Defaults to `'0.0.0.0'`.
+  port // (single-process only) Specifies the server application's port.
+}
+```
+
+<!-- prettier-ignore-end -->
+
+##### Example:
+
+```js
+// config.prod.js
+const prodConfig = {
+  runtime: {
+    module: '@resolve-js/runtime-single-process',
+    options: {
+      host: declareRuntimeEnv('HOST', 'localhost'),
+      port: declareRuntimeEnv('PORT', '3000'),
+    },
+  },
+  ...
+}
+```
+
 ### sagas
 
 Specifies an array of the application's Sagas. A Saga configuration object within this array contains the following fields:
@@ -675,15 +726,6 @@ Specifies the project directory that contains static files.
 ### staticPath
 
 Specifies the URL path to static files.
-
-### target
-
-Specifies the environment that the application targets.
-
-Supported values:
-
-- `"local"`
-- `"cloud"`
 
 ### viewModels
 

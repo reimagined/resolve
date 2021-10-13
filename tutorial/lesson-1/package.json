@@ -15,13 +15,16 @@
     "@types/react": "17.0.5"
   },
   "dependencies": {
-    "@resolve-js/core": "0.32.0",
+    "@babel/node": "7.14.2",
     "@resolve-js/eventstore-lite": "0.32.0",
     "@resolve-js/eventstore-postgresql-serverless": "0.32.0",
+    "@resolve-js/module-admin": "0.32.0",
     "@resolve-js/react-hooks": "0.32.0",
-    "@resolve-js/readmodel-base": "0.32.0",
     "@resolve-js/readmodel-lite": "0.32.0",
     "@resolve-js/readmodel-postgresql-serverless": "0.32.0",
+    "@resolve-js/runtime-single-process": "0.32.0",
+    "@resolve-js/runtime-aws-serverless": "0.32.0",
+    "history": "4.10.1",
     "react": "17.0.2",
     "react-bootstrap": "1.6.0",
     "react-dom": "17.0.2",

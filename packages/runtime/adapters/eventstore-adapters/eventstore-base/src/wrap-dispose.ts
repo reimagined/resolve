@@ -6,13 +6,14 @@ import type {
   Adapter,
 } from './types'
 import { getLog } from './get-log'
+import { AlreadyDisposedError } from './errors'
 
 const wrapDispose = <ConnectedProps extends AdapterPoolConnectedProps>(
   pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
   dispose: PoolMethod<ConnectedProps, Adapter['dispose']>
 ) => async (): Promise<void> => {
   if (pool.disposed) {
-    throw new Error('Adapter has been already disposed')
+    throw new AlreadyDisposedError()
   }
   pool.disposed = true
 

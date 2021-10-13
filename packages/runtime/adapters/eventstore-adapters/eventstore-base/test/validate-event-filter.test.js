@@ -23,6 +23,10 @@ describe('validate-event-filter should works correctly with', () => {
 })
 
 describe('validate-event-filter should throw when', () => {
+  test('has no limit provided', () => {
+    expect(() => validateEventFilter({ cursor: null })).toThrow()
+  })
+
   test(`has conflicting fields`, () => {
     expect(() =>
       validateEventFilter({
@@ -82,7 +86,7 @@ describe('validate-event-filter should throw when', () => {
   test(`startTime or finishTime is not integer`, () => {
     expect(() =>
       validateEventFilter({
-        limit: 200.5,
+        limit: 200,
         startTime: 1.5,
         finishTime: 2,
       })
@@ -90,7 +94,7 @@ describe('validate-event-filter should throw when', () => {
 
     expect(() =>
       validateEventFilter({
-        limit: 200.5,
+        limit: 200,
         startTime: 1,
         finishTime: 2.5,
       })

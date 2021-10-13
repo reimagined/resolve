@@ -56,12 +56,7 @@ export {
   THREAD_COUNTER_BYTE_LENGTH,
 } from './constants'
 
-export {
-  ConcurrentError,
-  ConnectionError,
-  ServiceBusyError,
-  RequestTimeoutError,
-} from './errors'
+export * from './errors'
 
 const wrappedCreateAdapter = <
   ConnectedProps extends AdapterPoolConnectedProps,
@@ -122,11 +117,10 @@ export type {
   SecretRecord,
   InputEvent,
   VersionlessEvent,
-  SavedEvent,
-  EventThreadData,
+  InputCursor,
   Cursor,
-  EventsWithCursor,
-  EventWithCursor,
+  StoredEventBatchPointer,
+  StoredEventPointer,
   EventFilter,
   LatestEventFilter,
   ReplicationStatus,
@@ -144,7 +138,10 @@ export type {
   AdapterConfig,
   AdapterTableNames,
   AdapterTableNamesProps,
+  GatheredSecrets,
 } from './types'
+
+export type { StoredEvent, EventThreadData } from '@resolve-js/core'
 
 export {
   makeSetSecretEvent,

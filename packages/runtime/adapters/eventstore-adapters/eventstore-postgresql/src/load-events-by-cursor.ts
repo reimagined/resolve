@@ -2,8 +2,8 @@ import { INT8_SQL_TYPE } from './constants'
 import { AdapterPool } from './types'
 import {
   CursorFilter,
-  SavedEvent,
-  EventsWithCursor,
+  StoredEvent,
+  StoredEventBatchPointer,
   cursorToThreadArray,
   threadArrayToCursor,
   emptyLoadEventsResult,
@@ -19,7 +19,7 @@ const loadEventsByCursor = async (
     shapeEvent,
   }: AdapterPool,
   { eventTypes, aggregateIds, cursor, limit }: CursorFilter
-): Promise<EventsWithCursor> => {
+): Promise<StoredEventBatchPointer> => {
   const injectString = (value: any): string => `${escape(value)}`
   const injectNumber = (value: any): string => `${+value}`
 
@@ -63,7 +63,7 @@ const loadEventsByCursor = async (
   ].join('\n')
 
   const rows: any[] = await executeStatement(sqlQuery)
-  const events: SavedEvent[] = []
+  const events: StoredEvent[] = []
 
   for (const event of rows) {
     const threadId = +event.threadId

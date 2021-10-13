@@ -1,7 +1,7 @@
-import {
+import type {
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
-  SavedEvent,
+  StoredEvent,
   GatheredSecrets,
   SecretRecord,
 } from './types'
@@ -11,7 +11,7 @@ const gatherSecretsFromEvents = async <
   ConnectedProps extends AdapterPoolConnectedProps
 >(
   pool: AdapterPoolConnected<ConnectedProps>,
-  events: SavedEvent[]
+  events: StoredEvent[]
 ): Promise<GatheredSecrets> => {
   if (pool.loadSecrets === undefined)
     throw new Error('loadSecrets is not defined for this adapter')

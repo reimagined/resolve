@@ -1,6 +1,6 @@
 import {
   TimestampFilter,
-  EventsWithCursor,
+  StoredEventBatchPointer,
   throwBadCursor,
 } from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
@@ -8,7 +8,7 @@ import { AdapterPool } from './types'
 const loadEventsByTimestamp = async (
   { connection, eventsTableName, escapeId, escape, shapeEvent }: AdapterPool,
   { eventTypes, aggregateIds, startTime, finishTime, limit }: TimestampFilter
-): Promise<EventsWithCursor> => {
+): Promise<StoredEventBatchPointer> => {
   const injectString = (value: any): string => `${escape(value)}`
   const injectNumber = (value: any): string => `${+value}`
 

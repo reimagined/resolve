@@ -7,7 +7,7 @@ const aggregate = {
   startUpload: (state, command) => {
     const { status } = state
     if (status !== 'none') {
-      throw Error(`the media already uploading or uploaded`)
+      throw Error(`the media is already uploading or has been uploaded`)
     }
     const { mediaId, owner, ownerId } = command.payload
     return {
@@ -22,7 +22,7 @@ const aggregate = {
   finishUpload: (state, command) => {
     const { status } = state
     if (status !== 'started') {
-      throw Error(`the media uploading not started or already completed`)
+      throw Error(`the media uploading has not started or is already completed`)
     }
     const { error } = command.payload
     if (error) {

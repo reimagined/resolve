@@ -10,7 +10,7 @@ const aggregate = {
   register: (state, command, { encrypt }) => {
     const { isRegistered, isDeleted } = state
     if (isRegistered) {
-      throw Error(`the user already registered`)
+      throw Error(`the user is already registered`)
     }
     if (isDeleted) {
       throw Error(`the user was deleted and cannot be registered again`)
@@ -19,7 +19,7 @@ const aggregate = {
       payload: { nickname, firstName, lastName, phoneNumber, address },
     } = command
     if (!firstName || !lastName || !phoneNumber) {
-      throw Error(`some of the user profile data missed`)
+      throw Error(`some of the user profile data is missing`)
     }
     return {
       type: USER_REGISTERED,

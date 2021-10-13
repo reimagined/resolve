@@ -35,7 +35,7 @@ describe('aggregates', () => {
       await givenEvents([])
         .aggregate({ name: 'MyAggregate', commands, projection })
         .command('addItem', { name: 'Test Aggregate' })
-        .shouldThrow(Error('Aggregate not exist'))
+        .shouldThrow(Error('Aggregate does not exist'))
     })
   })
 })

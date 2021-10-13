@@ -65,6 +65,8 @@ module.exports = {
         lang: 'en_US',
         skipWordIfMatch: ['^[^A-Za-z_]'],
         skipWords: [
+          'wasm',
+          'enqueue',
           'redeclare',
           'plusplus',
           'lang',
@@ -363,6 +365,7 @@ module.exports = {
           'reactivity',
           'readdir',
           'readmodel',
+          'readonly',
           'readpolicy',
           'reconnection',
           'resetter',

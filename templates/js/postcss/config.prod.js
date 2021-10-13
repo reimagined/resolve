@@ -1,17 +1,21 @@
 import { declareRuntimeEnv } from '@resolve-js/scripts'
 const prodConfig = {
-  target: 'local',
-  port: declareRuntimeEnv('PORT', '3000'),
-  mode:
-    'production' /*,
-  readModelConnectors: {
-    default: {
-      module: '@resolve-js/readmodel-lite',
-      options: {
-        databaseFile: 'data/read-models.db'
+  mode: 'production',
+  runtime: {
+    module: '@resolve-js/runtime-single-process',
+    options: {
+      host: declareRuntimeEnv('HOST', 'localhost'),
+      port: declareRuntimeEnv('PORT', '3000'),
+    },
+  } /*,
+    readModelConnectors: {
+      default: {
+        module: '@resolve-js/readmodel-lite',
+        options: {
+          databaseFile: 'data/read-models.db'
+        }
       }
-    }
-  }*/,
+    }*/,
   eventstoreAdapter: {
     module: '@resolve-js/eventstore-lite',
     options: {

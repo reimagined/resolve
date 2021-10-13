@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import webpack from 'webpack'
-import getLog from './get-log'
+import { getLog } from './get-log'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
@@ -11,6 +11,7 @@ import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 import detectErrors from './detect_errors'
+import { getDeprecatedTarget } from './get-deprecated-target'
 
 const log = getLog('build')
 
@@ -66,7 +67,7 @@ const buildMode = async (resolveConfig, adjustWebpackConfigs) => {
       path.resolve(
         process.cwd(),
         resolveConfig.distDir,
-        `./common/${resolveConfig.target}-entry/.npmrc`
+        `./common/${getDeprecatedTarget(resolveConfig)}-entry/.npmrc`
       )
     )
   }

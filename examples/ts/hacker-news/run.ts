@@ -122,7 +122,7 @@ void (async () => {
         await reset(
           resolveConfig,
           {
-            dropEventStore: false,
+            dropEventStore: true,
             dropEventSubscriber: true,
             dropReadModels: true,
             dropSagas: true,
@@ -166,6 +166,8 @@ void (async () => {
           moduleAdmin,
           testFunctionalConfig
         )
+
+        /*
         await reset(
           resolveConfig,
           {
@@ -176,6 +178,7 @@ void (async () => {
           },
           adjustWebpackConfigs
         )
+         */
 
         await runTestcafe({
           resolveConfig,
@@ -183,6 +186,13 @@ void (async () => {
           functionalTestsDir: 'test/e2e',
           browser: process.argv[3],
           customArgs: ['--stop-on-first-fail'],
+          resetDomainOptions: {
+            dropEventStore: true,
+            dropEventSubscriber: true,
+            dropReadModels: true,
+            dropSagas: true,
+            bootstrap: true,
+          },
         })
 
         break

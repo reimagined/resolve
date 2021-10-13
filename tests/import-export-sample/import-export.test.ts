@@ -8,9 +8,9 @@ import {
   initThreadArray,
 } from '@resolve-js/eventstore-base'
 import type {
-  EventsWithCursor,
-  SavedEvent,
-  Cursor,
+  StoredEventBatchPointer,
+  StoredEvent,
+  InputCursor,
 } from '@resolve-js/eventstore-base'
 
 import {
@@ -159,7 +159,7 @@ describe('import-export events manual mode', () => {
 
     const exportBuffers = []
 
-    let cursor: Cursor = null
+    let cursor: InputCursor = null
     let steps = 0
 
     while (true) {
@@ -368,13 +368,13 @@ describe('import-export timeouts', () => {
 
     fs.unlinkSync(exportedEventsFileName)
 
-    let allEvents: SavedEvent[] = []
+    let allEvents: StoredEvent[] = []
     let cursor: string | null = null
     while (true) {
       const {
         events,
         cursor: nextCursor,
-      }: EventsWithCursor = await outputEventstoreAdapter.loadEvents({
+      }: StoredEventBatchPointer = await outputEventstoreAdapter.loadEvents({
         cursor: cursor,
         limit: inputCountEvents,
       })

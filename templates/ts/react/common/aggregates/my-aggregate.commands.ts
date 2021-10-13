@@ -19,7 +19,7 @@ const aggregate: Aggregate = {
   },
   delete: (state: MyAggregateState) => {
     if (!state.exists) {
-      throw new Error('Aggregate not exist')
+      throw new Error('Aggregate does not exist')
     }
     return {
       type: MY_AGGREGATE_DELETED,
@@ -27,7 +27,7 @@ const aggregate: Aggregate = {
   },
   addItem: (state: MyAggregateState) => {
     if (!state.exists) {
-      throw new Error('Aggregate not exist')
+      throw new Error('Aggregate does not exist')
     }
     return {
       type: MY_AGGREGATE_ITEM_ADDED,
@@ -36,7 +36,7 @@ const aggregate: Aggregate = {
   },
   removeItem: (state: MyAggregateState, { payload: { itemName } }) => {
     if (!state.exists) {
-      throw new Error('Aggregate not exist')
+      throw new Error('Aggregate does not exist')
     }
     return {
       type: MY_AGGREGATE_ITEM_REMOVED,

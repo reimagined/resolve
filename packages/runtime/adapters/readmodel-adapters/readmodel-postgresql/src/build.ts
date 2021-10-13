@@ -9,6 +9,7 @@ import type {
 } from './types'
 import getLog from './get-log'
 import { LeveledDebugger } from '@resolve-js/debug-levels'
+import { AlreadyDisposedError } from '@resolve-js/eventstore-base'
 
 const serializeError = (error: Error & { code: number }) =>
   error != null
@@ -19,6 +20,9 @@ const serializeError = (error: Error & { code: number }) =>
         stack: String(error.stack),
       }
     : null
+
+const immediatelyStopError = new Error('ImmediatelyStopError')
+const immediatelyStopTimeout = 45 * 1000
 
 const buildInit: (
   currentPool: {
@@ -223,6 +227,13 @@ const buildEvents: (
           cursor,
         })
       )
+      .catch((error) => {
+        if (AlreadyDisposedError.is(error)) {
+          return null
+        } else {
+          return Promise.reject(error)
+        }
+      })
       .then((result) => {
         const loadDuration = Date.now() - initialTimestamp
 
@@ -390,7 +401,7 @@ const buildEvents: (
         }
         if (status === 'OK_ALL' || status === 'OK_PARTIAL') {
           if (nextCursorPromise == null) {
-            nextCursorPromise = nextCursorPromise = getContinuousLatestCursor(
+            nextCursorPromise = getContinuousLatestCursor(
               cursor,
               appliedEventsThreadData,
               eventTypes
@@ -401,6 +412,16 @@ const buildEvents: (
         } else if (status === 'CUSTOM_ERROR') {
           lastFailedEvent = failureEvent
           lastError = failureError
+
+          if (
+            failureError != null &&
+            failureEvent != null &&
+            groupMonitoring != null
+          ) {
+            groupMonitoring
+              .group({ EventType: failureEvent.type })
+              .error(failureError)
+          }
         }
 
         if (getVacantTimeInMillis() < 0) {
@@ -656,12 +677,13 @@ const build: ExternalMethods['build'] = async (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis,
+  inputGetVacantTimeInMillis,
   buildInfo
 ) => {
   const log = getLog('build')
   log.debug(`Start building`)
-
+  const getVacantTimeInMillis = () =>
+    Math.max(inputGetVacantTimeInMillis() - immediatelyStopTimeout, 0)
   eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
   const { eventsWithCursors, ...inputMetricData } = buildInfo
   const metricData = {
@@ -813,17 +835,34 @@ const build: ExternalMethods['build'] = async (
       buildMethod = buildEvents
     }
 
-    await buildMethod(
-      currentPool,
-      basePool,
-      readModelName,
-      store,
-      modelInterop,
-      next,
-      eventstoreAdapter,
-      getVacantTimeInMillis,
-      buildInfo
-    )
+    let barrierTimeout: ReturnType<typeof setTimeout> | null = null
+
+    try {
+      await Promise.race([
+        new Promise((_, reject) => {
+          barrierTimeout = setTimeout(() => {
+            reject(immediatelyStopError)
+            barrierTimeout = null
+          }, inputGetVacantTimeInMillis())
+        }),
+        buildMethod(
+          currentPool,
+          basePool,
+          readModelName,
+          store,
+          modelInterop,
+          next,
+          eventstoreAdapter,
+          getVacantTimeInMillis,
+          buildInfo
+        ),
+      ])
+    } finally {
+      if (barrierTimeout != null) {
+        clearTimeout(barrierTimeout)
+        barrierTimeout = null
+      }
+    }
 
     try {
       await inlineLedgerRunQuery(`
@@ -837,6 +876,14 @@ const build: ExternalMethods['build'] = async (
       }
     }
   } catch (error) {
+    if (error === immediatelyStopError) {
+      try {
+        await basePool.connection.end()
+      } catch (e) {}
+      await next()
+      return
+    }
+
     if (
       error == null ||
       !(
