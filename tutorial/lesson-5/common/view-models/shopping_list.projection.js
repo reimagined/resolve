@@ -1,9 +1,9 @@
-import { 
-  SHOPPING_LIST_CREATED, 
-  SHOPPING_ITEM_CREATED, 
-  SHOPPING_LIST_REMOVED, 
-  SHOPPING_ITEM_TOGGLED, 
-  SHOPPING_ITEM_REMOVED 
+import {
+  SHOPPING_LIST_CREATED,
+  SHOPPING_ITEM_CREATED,
+  SHOPPING_LIST_REMOVED,
+  SHOPPING_ITEM_TOGGLED,
+  SHOPPING_ITEM_REMOVED,
 } from '../eventTypes'
 
 // A View Model's projection is defined in a format that is isomorphic with a Redux reducer format.

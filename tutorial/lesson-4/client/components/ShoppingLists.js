@@ -22,7 +22,7 @@ const ShoppingLists = ({ lists }) => {
               </td>
             </tr>
           ))}
-      </tbody>
+        </tbody>
       </Table>
     </div>
   )

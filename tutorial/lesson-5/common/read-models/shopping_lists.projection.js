@@ -1,5 +1,5 @@
 // A Read Model projection describes logic used to collect data from incoming events.
-import { SHOPPING_LIST_CREATED, SHOPPING_LIST_REMOVED, } from '../eventTypes'
+import { SHOPPING_LIST_CREATED, SHOPPING_LIST_REMOVED } from '../eventTypes'
 
 export default {
   // The 'Init' function initializes the store (defines tables and their fields).
