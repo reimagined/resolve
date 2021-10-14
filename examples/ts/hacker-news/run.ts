@@ -28,7 +28,7 @@ import debug from '@resolve-js/debug-levels'
 import runImport from './import'
 
 const launchMode = process.argv[2]
-const getLog = (scope: string) => debug(`run:${scope}`)
+const getLog = (scope: string) => debug(`hacker-news:${scope}`)
 
 void (async () => {
   try {
