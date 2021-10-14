@@ -22,6 +22,7 @@ import exportSecretsStream from './export-secrets'
 import init from './init'
 import drop from './drop'
 import gatherSecretsFromEvents from './gather-secrets-from-events'
+import getEventLoader from './get-event-loader'
 import * as iots from 'io-ts'
 import * as iotsTypes from 'io-ts-types'
 
@@ -84,6 +85,7 @@ const wrappedCreateAdapter = <
     init,
     drop,
     gatherSecretsFromEvents,
+    getEventLoader,
   }
 
   return createAdapter(
@@ -139,6 +141,8 @@ export type {
   AdapterTableNames,
   AdapterTableNamesProps,
   GatheredSecrets,
+  EventLoaderFilter,
+  EventLoader,
 } from './types'
 
 export type { StoredEvent, EventThreadData } from '@resolve-js/core'

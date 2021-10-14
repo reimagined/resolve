@@ -392,6 +392,7 @@ module.exports = {
           'resolver',
           'resolvers',
           'respawn',
+          'rethrow',
           'Retryable',
           'rgba',
           'rmdir',
