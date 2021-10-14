@@ -27,8 +27,11 @@ const getConfig = async (resolveConfig, options) => {
         method: 'OPTIONS',
         path: '/SKIP_COMMANDS',
         handler: {
-          package: '@resolve-js/runtime-base',
-          entry: 'fail-handler',
+          module: {
+            package: '@resolve-js/runtime-base',
+            import: 'failHandler',
+          },
+          options: {},
         },
       },
     ],
