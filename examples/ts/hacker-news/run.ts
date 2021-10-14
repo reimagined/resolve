@@ -186,13 +186,13 @@ void (async () => {
         break
       }
 
-      case 'test:e2e': {
+      case 'test:e2e:only': {
         await execE2E('test/e2e', true)
 
         break
       }
 
-      case 'test:e2e:import-export': {
+      case 'test:e2e': {
         const directory = './imp-exp-test'
         const log = getLog('e2e:import-export')
 
