@@ -167,19 +167,6 @@ void (async () => {
           testFunctionalConfig
         )
 
-        /*
-        await reset(
-          resolveConfig,
-          {
-            dropEventStore: true,
-            dropEventSubscriber: true,
-            dropReadModels: true,
-            dropSagas: true,
-          },
-          adjustWebpackConfigs
-        )
-         */
-
         await runTestcafe({
           resolveConfig,
           adjustWebpackConfigs,
