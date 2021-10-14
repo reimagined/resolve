@@ -1,5 +1,4 @@
 import { declareRuntimeEnv } from '@resolve-js/scripts'
-
 const testFunctionalConfig = {
   mode: 'development',
   runtime: {
@@ -25,6 +24,7 @@ const testFunctionalConfig = {
     module: '@resolve-js/eventstore-lite',
     options: {
       databaseFile: 'data/event-store-test-functional.db',
+      secretsFile: 'data/secrets-test-functional.db',
     },
   },
   jwtCookie: {
@@ -32,5 +32,4 @@ const testFunctionalConfig = {
     maxAge: 31536000000,
   },
 }
-
 export default testFunctionalConfig

@@ -2,27 +2,29 @@
   "name": "@shopping-list-tutorial/lesson-3",
   "version": "0.32.0",
   "private": true,
+  "description": "used as a template for new reSolve applications",
   "scripts": {
-    "build": "babel-node ./run.js build",
-    "cloud": "babel-node ./run.js cloud",
-    "dev": "babel-node ./run.js dev",
-    "export-event-store": "babel-node ./run.js export-event-store",
-    "import-event-store": "babel-node ./run.js import-event-store",
-    "start": "babel-node ./run.js start",
-    "test": "jest --testMatch=**/test/unit/*.test.js --verbose --passWithNoTests",
-    "test:e2e": "babel-node ./run.js test:e2e"
+    "build": "babel-node run.js build",
+    "cloud": "babel-node run.js cloud",
+    "dev": "babel-node run.js dev",
+    "start": "babel-node run.js start",
+    "test": "jest --verbose",
+    "test:e2e": "babel-node run.js test:e2e"
+  },
+  "resolutions": {
+    "@types/react": "17.0.5"
   },
   "dependencies": {
-    "@babel/node": "7.14.2",
     "@resolve-js/eventstore-lite": "0.32.0",
     "@resolve-js/eventstore-postgresql-serverless": "0.32.0",
     "@resolve-js/module-admin": "0.32.0",
     "@resolve-js/react-hooks": "0.32.0",
     "@resolve-js/readmodel-lite": "0.32.0",
     "@resolve-js/readmodel-postgresql-serverless": "0.32.0",
-    "@resolve-js/runtime-single-process": "0.32.0",
     "@resolve-js/runtime-aws-serverless": "0.32.0",
+    "@resolve-js/runtime-single-process": "0.32.0",
     "history": "4.10.1",
+    "isomorphic-fetch": "^3.0.0",
     "react": "17.0.2",
     "react-bootstrap": "1.6.0",
     "react-dom": "17.0.2",
@@ -30,12 +32,11 @@
     "react-redux": "7.2.4",
     "react-router": "5.2.0",
     "react-router-config": "5.1.1",
-    "react-router-dom": "5.2.0",
-    "redux": "4.1.0",
-    "redux-saga": "1.1.3"
+    "react-router-dom": "5.2.0"
   },
   "devDependencies": {
     "@babel/core": "7.14.3",
+    "@babel/node": "7.14.2",
     "@babel/plugin-proposal-class-properties": "7.13.0",
     "@babel/plugin-proposal-export-default-from": "7.12.13",
     "@babel/plugin-proposal-export-namespace-from": "7.14.2",
@@ -46,9 +47,14 @@
     "aws-sdk": "2.860.0",
     "aws-xray-sdk-core": "3.2.0",
     "babel-jest": "27.0.2",
-    "isomorphic-fetch": "3.0.0",
+    "babel-loader": "8.2.2",
     "jest": "27.0.3",
     "react-test-renderer": "17.0.2",
-    "testcafe": "1.14.2"
+    "resolve-cloud": "^0.32.0",
+    "testcafe": "1.14.2",
+    "ts-jest": "27.0.2"
+  },
+  "resolveJs": {
+    "isAppTemplate": true
   }
 }
