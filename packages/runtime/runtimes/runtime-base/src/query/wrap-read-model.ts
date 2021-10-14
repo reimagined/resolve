@@ -475,7 +475,7 @@ export const customReadModelMethods: Record<
       eventSubscriber: readModelName,
       status: {
         eventSubscriber: readModelName,
-        status: 'skip',
+        status: 'deliver',
         busy: false,
         ...entry.status,
         ...parameters.subscriptionOptions,
