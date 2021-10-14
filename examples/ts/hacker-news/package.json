@@ -15,6 +15,7 @@
     "reset": "ts-node run.ts reset",
     "start": "ts-node run.ts start",
     "test:e2e": "ts-node run.ts test:e2e",
+    "test:e2e:import-export": "ts-node run.ts test:e2e:import-export",
     "test:e2e-cloud": "ts-node run.ts test:e2e-cloud",
     "module-admin": "module-admin",
     "test": "jest",
