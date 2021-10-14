@@ -72,18 +72,21 @@ void (async () => {
       moduleAuth
     )
 
-    const execE2E = async () => {
+    const execE2E = async (
+      functionalTestsDir: string,
+      dropEventStore: boolean
+    ) => {
       const moduleAdmin = resolveModuleAdmin()
       const resolveConfig = merge(baseConfig, moduleAdmin, testFunctionalConfig)
 
       await runTestcafe({
         resolveConfig,
         adjustWebpackConfigs,
-        functionalTestsDir: 'test/e2e',
+        functionalTestsDir,
         browser: process.argv[3],
         customArgs: ['--stop-on-first-fail'],
         resetDomainOptions: {
-          dropEventStore: true,
+          dropEventStore,
           dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
@@ -184,7 +187,7 @@ void (async () => {
       }
 
       case 'test:e2e': {
-        await execE2E()
+        await execE2E('test/e2e', true)
 
         break
       }
@@ -194,7 +197,7 @@ void (async () => {
         const log = getLog('e2e:import-export')
 
         log.debug(`executing E2E tests`)
-        const resolveConfig = await execE2E()
+        const resolveConfig = await execE2E('test/e2e', true)
 
         log.debug(`exporting event store to directory [${directory}]`)
         await exportEventStore(
@@ -221,6 +224,9 @@ void (async () => {
           { directory },
           adjustWebpackConfigs
         )
+
+        log.debug(`executing E2E post-import tests`)
+        await execE2E('test/e2e-post-import', false)
 
         log.debug(`completed`)
 
