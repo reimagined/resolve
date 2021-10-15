@@ -60,4 +60,5 @@ export type PostgresResourceConfig = {
   host: PostgresqlAdapterConfig['host']
   port: PostgresqlAdapterConfig['port']
   password: PostgresqlAdapterConfig['password']
+  userLogin: string
 }

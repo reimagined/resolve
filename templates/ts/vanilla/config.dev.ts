@@ -1,9 +1,14 @@
 import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const devConfig = {
-  target: 'local',
-  port: declareRuntimeEnv('PORT', '3000'),
   mode: 'development',
+  runtime: {
+    module: '@resolve-js/runtime-single-process',
+    options: {
+      host: declareRuntimeEnv('HOST', 'localhost'),
+      port: declareRuntimeEnv('PORT', '3000'),
+    },
+  },
   rootPath: '',
   staticPath: 'static',
   staticDir: 'static',

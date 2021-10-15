@@ -16,7 +16,7 @@ const entryPoint = (resolveContext) => {
 
   let version = ''
   try {
-    const maybeVersion = resolveContext.clientImports['version']().VERSION
+    const maybeVersion = resolveContext.clientImports['appOptions']().VERSION
     if (maybeVersion.constructor === String) {
       version = maybeVersion
     }

@@ -2,7 +2,7 @@ import type {
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
-  SavedEvent,
+  StoredEvent,
 } from '@resolve-js/eventstore-base'
 
 import {
@@ -107,7 +107,7 @@ export type CloudResourcePool = {
   escape: EscapeFunction
   fullJitter: FullJitter
   coercer: Coercer
-  shapeEvent: (event: any, additionalFields?: any) => SavedEvent
+  shapeEvent: (event: any, additionalFields?: any) => StoredEvent
   connect: (
     pool: AdapterPoolPrimal,
     connectionDependencies: ConnectionDependencies,

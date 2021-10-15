@@ -1,5 +1,37 @@
 # Changelog
 
+## [V0.32.0](https://github.com/reimagined/resolve/tree/V0.32.0) (2021-10-01)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.10...V0.32.0)
+
+**New features:**
+
+- Resolve gate [\#2040](https://github.com/reimagined/resolve/pull/2040)
+
+**Enhancements:**
+
+- Add an option to specify hostname for running app in dev mode [\#2024](https://github.com/reimagined/resolve/issues/2024)
+
+**Breaking changes:**
+
+- Update minimal node version to 14 [\#2034](https://github.com/reimagined/resolve/pull/2034)
+
+**Bug fixes:**
+
+- Timestamps from CommandResult and Event are different [\#1994](https://github.com/reimagined/resolve/issues/1994)
+- The Replicator read model takes a lot of resources during replication of big event store \(5kk events\) [\#1949](https://github.com/reimagined/resolve/issues/1949)
+
+**Documentation:**
+
+- Describe the `host` option [\#2043](https://github.com/reimagined/resolve/pull/2043)
+- Describe API for fundamental entities of reSolve [\#2032](https://github.com/reimagined/resolve/pull/2032)
+
+**Other changes:**
+
+- Next step on long builds [\#2056](https://github.com/reimagined/resolve/pull/2056)
+- Bump resolve-cloud-common version [\#2054](https://github.com/reimagined/resolve/pull/2054)
+- Update invocation type for send notifications [\#2053](https://github.com/reimagined/resolve/pull/2053)
+
 ## [V0.31.10](https://github.com/reimagined/resolve/tree/V0.31.10) (2021-09-08)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.9...V0.31.10)

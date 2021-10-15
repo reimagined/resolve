@@ -120,11 +120,13 @@ const status: ExternalMethods['status'] = async <
         }
       }
 
-      const nextCursor = await eventstoreAdapter.getCursorUntilEventTypes?.(
-        ...cursorAndEventTypes
-      )
-      const hasNextEvents =
-        nextCursor != null && nextCursor !== cursorAndEventTypes[0]
+      const [nextCursor, endCursor] = await Promise.all([
+        eventstoreAdapter.getCursorUntilEventTypes?.(...cursorAndEventTypes),
+        eventstoreAdapter.getCursorUntilEventTypes?.(cursorAndEventTypes[0], [
+          '*',
+        ]),
+      ])
+      const hasNextEvents = nextCursor != null && nextCursor !== endCursor
       const isAlive = isActive || !hasNextEvents
 
       result = Object.assign(result, { isAlive })

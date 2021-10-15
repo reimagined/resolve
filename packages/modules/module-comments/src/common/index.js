@@ -57,13 +57,19 @@ const makeConfig = (options, imports) => {
     ],
     clientImports: {
       [options.commentsInstanceName]: {
-        module: '@resolve-js/runtime/lib/common/utils/interop-options.js',
+        module: {
+          package: '@resolve-js/core',
+          import: 'optionsInjector',
+        },
         options,
       },
     },
     serverImports: {
       [options.commentsInstanceName]: {
-        module: '@resolve-js/runtime/lib/common/utils/interop-options.js',
+        module: {
+          package: '@resolve-js/core',
+          import: 'optionsInjector',
+        },
         options,
       },
     },

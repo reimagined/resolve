@@ -1,15 +1,18 @@
 import { initDomain, SecretsManager } from '@resolve-js/core'
-import { CommandExecutor, createCommand } from '@resolve-js/runtime'
+import { createCommandExecutor } from '@resolve-js/runtime-base'
 import { defaultAssertion } from '../../utils/assertions'
-import {
+
+import { getSecretsManager } from '../../runtime/get-secrets-manager'
+import { getEventStore } from '../../runtime/get-event-store'
+
+import type { CommandExecutor } from '@resolve-js/runtime-base'
+import type {
   CommandTestResult,
   TestAggregate,
   TestCommandAssertion,
   TestCommand,
   TestEvent,
 } from '../../types'
-import { getSecretsManager } from '../../runtime/get-secrets-manager'
-import { getEventStore } from '../../runtime/get-event-store'
 
 type AggregateTestContext = {
   aggregate: TestAggregate
@@ -82,12 +85,13 @@ export const makeTestEnvironment = (
         },
       ],
       sagas: [],
+      apiHandlers: [],
     })
 
     let executor: CommandExecutor | null = null
     const actualAssertion = assertion != null ? assertion : defaultAssertion
     try {
-      executor = createCommand({
+      executor = createCommandExecutor({
         performanceTracer: null,
         aggregatesInterop: domain.aggregateDomain.acquireAggregatesInterop({
           eventstore: await getEventStore(events, { aggregateId }),

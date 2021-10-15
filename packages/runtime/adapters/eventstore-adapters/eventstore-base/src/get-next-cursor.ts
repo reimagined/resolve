@@ -1,4 +1,4 @@
-import { EventThreadData } from './types'
+import type { EventThreadData } from './types'
 import { cursorToThreadArray, threadArrayToCursor } from './cursor-operations'
 
 //const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
