@@ -5,7 +5,7 @@ import {
   IMPORT_CONSTRUCTOR,
 } from '../constants'
 import { injectRuntimeEnv } from '../declare_runtime_env'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
 const importMonitoringAdapters = ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -28,7 +28,7 @@ const importMonitoringAdapters = ({ resolveConfig, isClient }) => {
     constants.push(`const name_${index} = ${JSON.stringify(adapterConfig)}`)
 
     importResource({
-      resourceName: `factory_${index}`,
+      resourceName: `factory_s_${index}`,
       resourceValue: adapterConfig,
       runtimeMode: RUNTIME_ENV_ANYWHERE,
       importMode: RESOURCE_ANY,
@@ -44,6 +44,12 @@ const importMonitoringAdapters = ({ resolveConfig, isClient }) => {
     } else {
       constants.push(`const options_s_${index} = null`)
     }
+
+    constants.push(
+      `const factory_${index} = (...args) => {
+        return factory_s_${index}(options_s_${index}, ...args)
+      }`
+    )
 
     exports.push(`monitoringAdapters[${index}] = factory_${index}`)
   }

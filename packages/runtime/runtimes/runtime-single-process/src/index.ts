@@ -17,7 +17,6 @@ import { websocketServerFactory } from './websocket-server-factory'
 import { startExpress } from './start-express'
 import { uploaderFactory } from './uploader-factory'
 import { schedulerFactory } from './scheduler-factory'
-import { monitoringFactory } from './monitoring-factory'
 import { createRuntime } from '@resolve-js/runtime-base'
 
 import type {
@@ -58,7 +57,6 @@ const entry = async (
       const domainInterop = await initDomain(domain)
 
       const performanceTracer = await performanceTracerFactory()
-      const monitoring = await monitoringFactory(performanceTracer)
       const notifyEventSubscriber = await eventSubscriberNotifierFactory()
       const host = options.host ?? '0.0.0.0'
       const port = options.port ?? '3000'
@@ -66,6 +64,7 @@ const entry = async (
       const {
         eventstoreAdapter: eventStoreAdapterFactory,
         readModelConnectors: readModelConnectorsFactories,
+        monitoringAdapters,
       } = assemblies
 
       const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
@@ -107,9 +106,9 @@ const entry = async (
         domain,
         domainInterop,
         performanceTracer,
-        monitoring,
         eventStoreAdapterFactory,
         readModelConnectorsFactories,
+        monitoringAdapters,
         getVacantTimeInMillis,
         eventSubscriberScope: constants.applicationName,
         notifyEventSubscriber,

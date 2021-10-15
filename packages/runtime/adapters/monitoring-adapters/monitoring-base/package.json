@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/monitoring-base",
-  "version": "0.31.10",
+  "version": "0.32.0",
   "description": "This a base package serves as a resolve-runtime adapter for monitoring data",
   "keywords": [
     "cqrs",
@@ -24,15 +24,11 @@
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@resolve-js/debug-levels": "0.31.10",
-    "resolve-cloud-common": "0.0.147"
+    "@resolve-js/debug-levels": "0.32.0"
   },
   "devDependencies": {
     "jest": "27.0.3",
     "ts-jest": "27.0.5"
-  },
-  "peerDependencies": {
-    "aws-sdk": "^2.860.0"
   },
   "engines": {
     "node": ">=14.17"

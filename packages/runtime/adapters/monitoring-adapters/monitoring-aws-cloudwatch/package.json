@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/monitoring-aws-cloudwatch",
-  "version": "0.31.10",
+  "version": "0.32.0",
   "description": "This package serves as a resolve-runtime adapter for storing monitoring data in AWS CloudWatch",
   "keywords": [
     "cqrs",
@@ -24,9 +24,9 @@
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@resolve-js/debug-levels": "0.31.10",
-    "@resolve-js/monitoring-base": "0.31.10",
-    "resolve-cloud-common": "0.0.147"
+    "@resolve-js/debug-levels": "0.32.0",
+    "@resolve-js/monitoring-base": "0.32.0",
+    "resolve-cloud-common": "0.0.149"
   },
   "devDependencies": {
     "jest": "27.0.3",

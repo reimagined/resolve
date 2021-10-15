@@ -84,10 +84,13 @@ export const createRuntime = async (
 
   const {
     performanceTracer,
-    monitoring,
+    monitoringAdapters,
     eventStoreAdapterFactory,
     readModelConnectorsFactories,
   } = params
+
+  // TODO: compose multiple adapters
+  const monitoring = monitoringAdapters[0]()
 
   log.debug(`building event store adapter`)
   const eventStoreAdapter = await eventStoreAdapterFactory()
@@ -262,6 +265,7 @@ export const createRuntime = async (
       await dispose(this)
     },
     broadcastEvent: broadcastEvent,
+    monitoring,
   }
 
   return runtime
