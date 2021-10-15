@@ -67,6 +67,9 @@ const entry = async (
         monitoringAdapters,
       } = assemblies
 
+      // TODO: compose
+      const monitoring = monitoringAdapters[0]()
+
       const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
       const getVacantTimeInMillis = () => endTime - Date.now()
 
@@ -108,7 +111,7 @@ const entry = async (
         performanceTracer,
         eventStoreAdapterFactory,
         readModelConnectorsFactories,
-        monitoringAdapters,
+        monitoring,
         getVacantTimeInMillis,
         eventSubscriberScope: constants.applicationName,
         notifyEventSubscriber,

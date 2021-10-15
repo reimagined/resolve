@@ -43,6 +43,7 @@ const entry = async (
   try {
     log.debug('building lambda cold start context entries')
     const performanceTracer = await performanceTracerFactory()
+    const monitoring = assemblies.monitoringAdapters[0]()
 
     const segment = performanceTracer.getSegment()
     subSegment = segment.addNewSubsegment('initResolve')
@@ -64,6 +65,7 @@ const entry = async (
       upstream: true,
       resolveVersion,
       performanceTracer,
+      monitoring,
       getReactiveSubscription,
       sendReactiveEvent,
       routesTrie: wrapTrie(

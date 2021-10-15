@@ -47,7 +47,6 @@ const createCloudRuntime = async (
   const {
     eventstoreAdapter: eventStoreAdapterFactory,
     readModelConnectors: readModelConnectorsFactories,
-    monitoringAdapters,
   } = coldStartContext.assemblies
 
   const runtimeParams: RuntimeFactoryParameters = {
@@ -55,7 +54,6 @@ const createCloudRuntime = async (
     eventStoreAdapterFactory,
     readModelConnectorsFactories,
     getVacantTimeInMillis,
-    monitoringAdapters,
     notifyEventSubscriber: subscriberInterface.notifyEventSubscriber,
     invokeBuildAsync: subscriberInterface.invokeBuildAsync,
     ensureQueue: subscriberInterface.ensureQueue,
@@ -357,10 +355,6 @@ export const lambdaWorker = async (
     }
 
     coldStart = false
-    log.debug('reSolve framework was disposed. publishing metrics')
-
-    await runtime?.monitoring?.publish()
-
-    log.debug(`metrics published`)
+    log.debug('reSolve framework was disposed')
   }
 }

@@ -174,7 +174,7 @@ export type EventListenersManagerParameters = {
 export type RuntimeFactoryParameters = {
   readonly seedClientEnvs: Assemblies['seedClientEnvs']
   readonly serverImports: Assemblies['serverImports']
-  readonly monitoringAdapters: Assemblies['monitoringAdapters']
+  readonly monitoring: Monitoring
   readonly domain: DomainMeta
   readonly domainInterop: Domain
   readonly performanceTracer: PerformanceTracer
