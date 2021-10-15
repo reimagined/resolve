@@ -68,8 +68,7 @@ const entry = async (
         readModelConnectors: readModelConnectorsFactories,
       } = assemblies
 
-      const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
-      const getVacantTimeInMillis = () => endTime - Date.now()
+      const getVacantTimeInMillis = () => DEFAULT_WORKER_LIFETIME
 
       const uploaderData = await uploaderFactory({
         uploaderAdapterFactory: assemblies.uploadAdapter,
@@ -115,7 +114,13 @@ const entry = async (
         notifyEventSubscriber,
         invokeBuildAsync: backgroundJob(
           async (parameters: EventSubscriberNotification) => {
-            const runtime = await createRuntime(factoryParameters)
+            const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
+            const getVacantTimeInMillis = () => endTime - Date.now()
+
+            const runtime = await createRuntime({
+              ...factoryParameters,
+              getVacantTimeInMillis,
+            })
             try {
               return await runtime.eventSubscriber.build(parameters)
             } finally {
