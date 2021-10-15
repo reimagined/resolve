@@ -12,6 +12,7 @@
 
 .box-solid:hover path {
   fill: rgb(101, 119, 236);
+  transition: fill 100ms ease-in 50ms;
 }
 
 .box-solid[data-selected='true'] path {
@@ -25,7 +26,7 @@
 
 .box-framed:hover path {
   fill: rgb(183, 198, 243);
-  stroke: rgb(57, 73, 171);
+  transition: fill 100ms ease-in 50ms;
 }
 
 .box-framed[data-selected='true'] path {
@@ -43,6 +44,7 @@
 
 .box-child-framed:hover path {
   fill: rgb(183, 198, 243);
+  transition: fill 100ms ease-in 50ms;
 }
 
 .box-child-framed[data-selected='true'] path {
