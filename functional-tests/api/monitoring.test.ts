@@ -469,13 +469,12 @@ const awaitMetricValue = async (
   attempt = 0
 ): Promise<any> => {
   const metric = await getMetricData(metricData)
+  const dimensionString = metricData.Dimensions.map(
+    (dim) => `${dim.Name}=${dim.Value}`
+  ).join(';')
 
   if (!isEqual(metric, value)) {
     if (attempt >= maxAttempts) {
-      const lastDimension =
-        metricData.Dimensions[metricData.Dimensions.length - 1]
-      const dimensionString = `${lastDimension.Name}=${lastDimension.Value}`
-
       throw Error(
         [
           `Metric data mismatch after ${attempt} attempts: `,

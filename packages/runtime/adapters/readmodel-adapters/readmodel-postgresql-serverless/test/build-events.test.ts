@@ -38,15 +38,18 @@ describe('buildEvents', () => {
     const PassthroughError = Error
 
     const projection: Parameters<typeof buildEvents>[4] = {
-      acquireInitHandler: (
-        ...args: Parameters<
+      name: 'test',
+      connectorName: 'test',
+      acquireResolver: async () => async () => void 0,
+      acquireInitHandler: async (
+        store: Parameters<
           Parameters<typeof buildEvents>[4]['acquireInitHandler']
-        >
+        >[0]
       ) => async () => {
-        void args
+        void store
       },
 
-      acquireEventHandler: (
+      acquireEventHandler: async (
         store: Parameters<
           Parameters<typeof buildEvents>[4]['acquireEventHandler']
         >[0],
@@ -176,14 +179,17 @@ describe('buildEvents', () => {
     const PassthroughError = Error
 
     const projection: Parameters<typeof buildEvents>[4] = {
-      acquireInitHandler: (
+      name: 'test',
+      connectorName: 'test',
+      acquireResolver: async () => async () => void 0,
+      acquireInitHandler: async (
         ...args: Parameters<
           Parameters<typeof buildEvents>[4]['acquireInitHandler']
         >
       ) => async () => {
         void args
       },
-      acquireEventHandler: (
+      acquireEventHandler: async (
         ...args: Parameters<
           Parameters<typeof buildEvents>[4]['acquireEventHandler']
         >

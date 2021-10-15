@@ -22,6 +22,7 @@ import exportSecretsStream from './export-secrets'
 import init from './init'
 import drop from './drop'
 import gatherSecretsFromEvents from './gather-secrets-from-events'
+import getEventLoader from './get-event-loader'
 import * as iots from 'io-ts'
 import * as iotsTypes from 'io-ts-types'
 
@@ -56,12 +57,7 @@ export {
   THREAD_COUNTER_BYTE_LENGTH,
 } from './constants'
 
-export {
-  ConcurrentError,
-  ConnectionError,
-  ServiceBusyError,
-  RequestTimeoutError,
-} from './errors'
+export * from './errors'
 
 const wrappedCreateAdapter = <
   ConnectedProps extends AdapterPoolConnectedProps,
@@ -89,6 +85,7 @@ const wrappedCreateAdapter = <
     init,
     drop,
     gatherSecretsFromEvents,
+    getEventLoader,
   }
 
   return createAdapter(
@@ -122,11 +119,10 @@ export type {
   SecretRecord,
   InputEvent,
   VersionlessEvent,
-  SavedEvent,
-  EventThreadData,
+  InputCursor,
   Cursor,
-  EventsWithCursor,
-  EventWithCursor,
+  StoredEventBatchPointer,
+  StoredEventPointer,
   EventFilter,
   LatestEventFilter,
   ReplicationStatus,
@@ -144,7 +140,12 @@ export type {
   AdapterConfig,
   AdapterTableNames,
   AdapterTableNamesProps,
+  GatheredSecrets,
+  EventLoaderFilter,
+  EventLoader,
 } from './types'
+
+export type { StoredEvent, EventThreadData } from '@resolve-js/core'
 
 export {
   makeSetSecretEvent,

@@ -5,7 +5,7 @@ const subscribe: ExternalMethods['subscribe'] = async (
   readModelName,
   eventTypes,
   aggregateIds,
-  readModelSource
+  loadProcedureSource
 ) => {
   const {
     PassthroughError,
@@ -72,13 +72,15 @@ const subscribe: ExternalMethods['subscribe'] = async (
       }
     }
 
-    if (readModelSource != null && readModelSource.constructor === String) {
+    const procedureSource = await loadProcedureSource()
+
+    if (procedureSource != null && procedureSource.constructor === String) {
       const procedureNameAsId = escapeId(`PROC-${readModelName}`)
       while (true) {
         try {
           await inlineLedgerRunQuery(
             `CREATE OR REPLACE FUNCTION ${databaseNameAsId}.${procedureNameAsId}(input JSON) RETURNS JSON AS $$
-              ${readModelSource}
+              ${procedureSource}
               return __READ_MODEL_ENTRY__.default(input, ${JSON.stringify({
                 schemaName,
                 tablePrefix,

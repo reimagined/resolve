@@ -1,3 +1,5 @@
+import type { ResolveRequest, ResolveResponse } from '@resolve-js/core'
+
 const checkInput = (input: any) => {
   if (!Array.isArray(input.events)) {
     throw new Error('Events must be array')
@@ -13,10 +15,10 @@ const checkInput = (input: any) => {
   }
 }
 
-const handler = async (req: any, res: any) => {
+const handler = async (req: ResolveRequest, res: ResolveResponse) => {
   let input
   try {
-    input = JSON.parse(req.body)
+    input = JSON.parse(req.body ?? '')
     checkInput(input)
   } catch (error) {
     res.status(400)
@@ -60,7 +62,7 @@ const handler = async (req: any, res: any) => {
       await req.resolve.eventstoreAdapter.setReplicationStatus('error', error)
     } catch (e) {}
   }
-  await req.resolve.notifyEventSubscribers()
+  await req.resolve.broadcastEvent()
 }
 
 export default handler

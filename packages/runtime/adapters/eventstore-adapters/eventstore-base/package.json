@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/eventstore-base",
-  "version": "0.31.10",
+  "version": "0.32.0",
   "description": "A base for reSolve eventstore adapters",
   "keywords": [
     "cqrs",
@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
-    "@resolve-js/core": "0.31.10",
-    "@resolve-js/debug-levels": "0.31.10",
+    "@resolve-js/core": "0.32.0",
+    "@resolve-js/debug-levels": "0.32.0",
     "fp-ts": "2.9.5",
     "io-ts": "2.2.16",
     "io-ts-types": "0.5.15",
@@ -35,8 +35,7 @@
     "newtype-ts": "0.3.4"
   },
   "devDependencies": {
-    "jest": "27.0.3",
-    "sinon": "9.2.4"
+    "jest": "27.0.3"
   },
   "engines": {
     "node": ">=14.17"

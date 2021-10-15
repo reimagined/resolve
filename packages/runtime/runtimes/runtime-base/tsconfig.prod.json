@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["test"],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "composite": true
+  },
+  "references": [
+    {
+      "path": "../../../core/core/tsconfig.prod.json"
+    },
+    {
+      "path": "../../../core/debug-levels/tsconfig.prod.json"
+    },
+    {
+      "path": "../../../runtime/adapters/eventstore-adapters/eventstore-base/tsconfig.prod.json"
+    },
+    {
+      "path": "../../../runtime/adapters/readmodel-adapters/readmodel-base/tsconfig.prod.json"
+    }
+  ]
+}

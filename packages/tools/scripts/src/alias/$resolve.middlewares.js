@@ -4,7 +4,7 @@ import {
   RUNTIME_ENV_OPTIONS_ONLY,
   IMPORT_INSTANCE,
 } from '../constants'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
 const importMiddlewares = ({ resolveConfig, isClient }) => {
   if (isClient) {

@@ -1,85 +1,29 @@
-import { INT8_SQL_TYPE } from './constants'
-import { AdapterPool } from './types'
+import type { AdapterPool } from './types'
+import createLoadQuery from './create-load-query'
+import processEventRows from './process-event-rows'
 import {
   CursorFilter,
-  SavedEvent,
-  EventsWithCursor,
-  cursorToThreadArray,
-  threadArrayToCursor,
+  StoredEventBatchPointer,
   emptyLoadEventsResult,
 } from '@resolve-js/eventstore-base'
 
 const loadEventsByCursor = async (
-  {
-    executeStatement,
-    escapeId,
-    escape,
-    eventsTableName,
-    databaseName,
-    shapeEvent,
-  }: AdapterPool,
+  pool: AdapterPool,
   { eventTypes, aggregateIds, cursor, limit }: CursorFilter
-): Promise<EventsWithCursor> => {
-  const injectString = (value: any): string => `${escape(value)}`
-  const injectNumber = (value: any): string => `${+value}`
+): Promise<StoredEventBatchPointer> => {
+  const sqlQuery = createLoadQuery(pool, {
+    eventTypes,
+    aggregateIds,
+    cursor,
+    limit,
+  })
 
-  const vectorConditions = cursorToThreadArray(cursor)
-
-  const queryConditions: string[] = []
-  if (eventTypes != null) {
-    if (eventTypes.length === 0) {
-      return emptyLoadEventsResult(cursor)
-    }
-    queryConditions.push(`"type" IN (${eventTypes.map(injectString)})`)
-  }
-  if (aggregateIds != null) {
-    if (aggregateIds.length === 0) {
-      return emptyLoadEventsResult(cursor)
-    }
-    queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
+  if (sqlQuery === null) {
+    return emptyLoadEventsResult(cursor)
   }
 
-  const resultQueryCondition = `WHERE ${
-    queryConditions.length > 0 ? `${queryConditions.join(' AND ')} AND (` : ''
-  }
-    ${vectorConditions
-      .map(
-        (threadCounter, threadId) =>
-          `"threadId" = ${injectNumber(
-            threadId
-          )} AND "threadCounter" >= ${threadCounter}::${INT8_SQL_TYPE} `
-      )
-      .join(' OR ')}
-    ${queryConditions.length > 0 ? ')' : ''}`
-
-  const databaseNameAsId: string = escapeId(databaseName)
-  const eventsTableAsId: string = escapeId(eventsTableName)
-
-  const sqlQuery = [
-    `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
-    `${resultQueryCondition}`,
-    `ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC`,
-    `LIMIT ${+limit}`,
-  ].join('\n')
-
-  const rows: any[] = await executeStatement(sqlQuery)
-  const events: SavedEvent[] = []
-
-  for (const event of rows) {
-    const threadId = +event.threadId
-    const threadCounter = +event.threadCounter
-    const oldThreadCounter = vectorConditions[threadId]
-    vectorConditions[threadId] = Math.max(threadCounter + 1, oldThreadCounter)
-
-    events.push(shapeEvent(event))
-  }
-
-  const nextConditions = threadArrayToCursor(vectorConditions)
-
-  return {
-    cursor: nextConditions,
-    events,
-  }
+  const rows = await pool.executeStatement(sqlQuery)
+  return processEventRows(pool, cursor, rows)
 }
 
 export default loadEventsByCursor

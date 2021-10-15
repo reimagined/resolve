@@ -1,17 +1,17 @@
 import { RESERVED_EVENT_SIZE } from './constants'
 import { AdapterPool } from './types'
-import { SavedEvent } from '@resolve-js/eventstore-base'
+import { StoredEvent } from '@resolve-js/eventstore-base'
 import { THREAD_COUNT } from '@resolve-js/eventstore-base'
 
 const injectEvents = async function (
   pool: AdapterPool,
-  events: SavedEvent[]
+  events: StoredEvent[]
 ): Promise<void> {
   if (events.length === 0) {
     return
   }
 
-  const threadCounters = new Array<SavedEvent['threadCounter']>(THREAD_COUNT)
+  const threadCounters = new Array<StoredEvent['threadCounter']>(THREAD_COUNT)
   threadCounters.fill(0)
 
   for (const event of events) {

@@ -6,7 +6,13 @@ import {
 
 const localConfig = {
   mode: 'development',
-  target: 'local',
+  runtime: {
+    module: '@resolve-js/runtime-single-process',
+    options: {
+      host: 'localhost',
+      port: 3000,
+    },
+  },
 }
 
 // mdis-start app-config

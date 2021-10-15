@@ -25,7 +25,7 @@ describe('readmodel-mysql', () => {
     const readModelName = 'readModelName'
 
     const store = await adapter.connect(readModelName)
-    await adapter.subscribe(store, readModelName, null, null)
+    await adapter.subscribe(store, readModelName, null, null, async () => null)
 
     await store.defineTable('ShoppingLists', {
       indexes: {
@@ -72,7 +72,7 @@ describe('readmodel-mysql', () => {
 
     await store.count('ShoppingLists', {})
 
-    await adapter.unsubscribe(store, readModelName)
+    await adapter.unsubscribe(store, readModelName, async () => null)
     await adapter.disconnect(store)
 
     expect(result).toMatchSnapshot()
@@ -82,7 +82,7 @@ describe('readmodel-mysql', () => {
     const readModelName = 'readModelName'
 
     const store = await adapter.connect(readModelName)
-    await adapter.subscribe(store, readModelName, null, null)
+    await adapter.subscribe(store, readModelName, null, null, async () => null)
 
     await store.defineTable('Entries', {
       indexes: {
@@ -129,7 +129,7 @@ describe('readmodel-mysql', () => {
       ],
     })
 
-    await adapter.unsubscribe(store, readModelName)
+    await adapter.unsubscribe(store, readModelName, async () => null)
     await adapter.disconnect(store)
 
     expect(result).toMatchSnapshot()
@@ -141,8 +141,20 @@ describe('readmodel-mysql', () => {
 
     const store1 = await adapter.connect(readModelName1)
     const store2 = await adapter.connect(readModelName2)
-    await adapter.subscribe(store1, readModelName1, null, null)
-    await adapter.subscribe(store2, readModelName2, null, null)
+    await adapter.subscribe(
+      store1,
+      readModelName1,
+      null,
+      null,
+      async () => null
+    )
+    await adapter.subscribe(
+      store2,
+      readModelName2,
+      null,
+      null,
+      async () => null
+    )
 
     await store1.defineTable('table1', {
       indexes: {
@@ -187,8 +199,8 @@ describe('readmodel-mysql', () => {
 
     await store2.count('table2', {})
 
-    await adapter.unsubscribe(store1, readModelName1)
-    await adapter.unsubscribe(store2, readModelName2)
+    await adapter.unsubscribe(store1, readModelName1, async () => null)
+    await adapter.unsubscribe(store2, readModelName2, async () => null)
 
     await adapter.disconnect(store1)
     await adapter.disconnect(store2)
@@ -200,7 +212,7 @@ describe('readmodel-mysql', () => {
     const readModelName = 'readModelName'
 
     const store = await adapter.connect(readModelName)
-    await adapter.subscribe(store, readModelName, null, null)
+    await adapter.subscribe(store, readModelName, null, null, async () => null)
 
     await store.defineTable('values', {
       indexes: {
@@ -278,7 +290,7 @@ describe('readmodel-mysql', () => {
       }
     )
 
-    await adapter.unsubscribe(store, readModelName)
+    await adapter.unsubscribe(store, readModelName, async () => null)
     await adapter.disconnect(store)
 
     expect(result).toMatchSnapshot()
@@ -288,7 +300,7 @@ describe('readmodel-mysql', () => {
     const readModelName = 'readModelName'
 
     const store = await adapter.connect(readModelName)
-    await adapter.subscribe(store, readModelName, null, null)
+    await adapter.subscribe(store, readModelName, null, null, async () => null)
 
     await store.defineTable('values', {
       indexes: {
@@ -333,7 +345,7 @@ describe('readmodel-mysql', () => {
       }
     )
 
-    await adapter.unsubscribe(store, readModelName)
+    await adapter.unsubscribe(store, readModelName, async () => null)
     await adapter.disconnect(store)
 
     expect(result).toMatchSnapshot()
@@ -343,7 +355,7 @@ describe('readmodel-mysql', () => {
     const readModelName = 'readModelName'
 
     const store = await adapter.connect(readModelName)
-    await adapter.subscribe(store, readModelName, null, null)
+    await adapter.subscribe(store, readModelName, null, null, async () => null)
 
     await store.defineTable('values', {
       indexes: {
@@ -373,7 +385,7 @@ describe('readmodel-mysql', () => {
       }
     )
 
-    await adapter.unsubscribe(store, readModelName)
+    await adapter.unsubscribe(store, readModelName, async () => null)
     await adapter.disconnect(store)
 
     expect(result).toMatchSnapshot()

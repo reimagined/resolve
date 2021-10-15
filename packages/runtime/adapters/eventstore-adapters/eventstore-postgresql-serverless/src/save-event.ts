@@ -3,8 +3,8 @@ import {
   InputEvent,
   EventThreadData,
   EventstoreFrozenError,
-  SavedEvent,
-  EventWithCursor,
+  StoredEvent,
+  StoredEventPointer,
   threadArrayToCursor,
   initThreadArray,
   THREAD_COUNT,
@@ -17,7 +17,7 @@ import assert from 'assert'
 const saveEvent = async (
   pool: AdapterPool,
   event: InputEvent
-): Promise<EventWithCursor> => {
+): Promise<StoredEventPointer> => {
   const {
     databaseName,
     eventsTableName,
@@ -117,7 +117,7 @@ const saveEvent = async (
         )) as Array<{
           threadId: EventThreadData['threadId']
           newThreadCounter: EventThreadData['threadCounter']
-          timestamp: SavedEvent['timestamp']
+          timestamp: StoredEvent['timestamp']
         }>
         assert.strictEqual(
           rows.length - 1,

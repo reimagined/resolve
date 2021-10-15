@@ -6,7 +6,7 @@ import {
   IMPORT_INSTANCE,
 } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
 const importAggregate = ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -47,8 +47,10 @@ const importAggregate = ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      instanceFallback:
-        '@resolve-js/runtime/lib/common/defaults/json-serialize-state.js',
+      instanceFallback: {
+        package: '@resolve-js/core',
+        import: 'jsonSerializeState',
+      },
       imports,
       constants,
     })
@@ -61,8 +63,10 @@ const importAggregate = ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      instanceFallback:
-        '@resolve-js/runtime/lib/common/defaults/json-deserialize-state.js',
+      instanceFallback: {
+        package: '@resolve-js/core',
+        import: 'jsonDeserializeState',
+      },
       imports,
       constants,
     })
@@ -91,7 +95,10 @@ const importAggregate = ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_NOWHERE,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      instanceFallback: '@resolve-js/runtime/lib/common/defaults/encryption.js',
+      instanceFallback: {
+        package: '@resolve-js/runtime-base',
+        import: 'disabledEncryption',
+      },
       imports,
       constants,
     })

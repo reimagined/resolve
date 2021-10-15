@@ -5,7 +5,7 @@ import {
   IMPORT_CONSTRUCTOR,
 } from '../constants'
 import { injectRuntimeEnv } from '../declare_runtime_env'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
 const importReadModelConnectors = ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -16,7 +16,7 @@ const importReadModelConnectors = ({ resolveConfig, isClient }) => {
 
   const imports = [
     `import '$resolve.guardOnlyServer'`,
-    `import wrapReadModelConnector from '@resolve-js/runtime/lib/common/wrap-readmodel-connector'`,
+    `import { wrapReadModelConnector } from '@resolve-js/runtime-base'`,
   ]
   const constants = [``]
   const exports = [`const readModelConnectors = {}`]
@@ -34,8 +34,10 @@ const importReadModelConnectors = ({ resolveConfig, isClient }) => {
     )
 
     if (readModelConnector.module == null) {
-      readModelConnector.module =
-        '@resolve-js/runtime/lib/common/defaults/read-model-connector.js'
+      readModelConnector.module = {
+        package: '@resolve-js/runtime-base',
+        import: 'emptyReadModelConnector',
+      }
     }
 
     importResource({
