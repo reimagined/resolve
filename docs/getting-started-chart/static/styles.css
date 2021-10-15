@@ -10,12 +10,21 @@
   fill: rgb(57, 73, 171);
 }
 
+.box-solid:hover path {
+  fill: rgb(101, 119, 236);
+}
+
 .box-solid[data-selected='true'] path {
   fill: green;
 }
 
 .box-framed path {
   fill: rgb(218, 225, 246);
+  stroke: rgb(57, 73, 171);
+}
+
+.box-framed:hover path {
+  fill: rgb(183, 198, 243);
   stroke: rgb(57, 73, 171);
 }
 
@@ -32,6 +41,10 @@
   fill: rgb(218, 225, 246);
 }
 
+.box-child-framed:hover path {
+  fill: rgb(183, 198, 243);
+}
+
 .box-child-framed[data-selected='true'] path {
   fill: green;
 }
@@ -43,6 +56,10 @@
 .box-framed .box-header {
   fill: rgb(57, 73, 171);
   stroke-width: 0px;
+}
+
+.box-framed:hover .box-header {
+  fill: rgb(57, 73, 171);
 }
 
 .box-framed[data-selected='true'] .box-header {

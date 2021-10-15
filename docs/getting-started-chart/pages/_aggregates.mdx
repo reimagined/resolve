@@ -3,9 +3,9 @@ import TabItem from '@theme/TabItem'
 
 **Aggregate**
 
-An aggregate handles incomming commands and emits events that are then saved to the event store and propagate to the read side.
+An aggregate is a cluster of domain objects. An aggregate should be able to handle its commands without the need to communicate with other aggregates, which also makes it a transaction boundary.
 
-In terms of the event sourcing paradigm, an aggregate is a cluster of domain objects. An aggregate should be able to handle its commands without the need to communicate with other aggregates, which also makes it a transaction boundary.
+In reSolve, an aggregate's deffinition describes logic used to handle incomming commands and emit events that are then saved to the event store and propagate to the read side.
 
 An aggregate is defined as follows:
 
