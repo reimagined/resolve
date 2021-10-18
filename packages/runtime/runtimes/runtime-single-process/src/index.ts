@@ -114,9 +114,6 @@ const entry = async (
         notifyEventSubscriber,
         invokeBuildAsync: backgroundJob(
           async (parameters: EventSubscriberNotification) => {
-            const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
-            const getVacantTimeInMillis = () => endTime - Date.now()
-
             const runtime = await createRuntime({
               ...factoryParameters,
               getVacantTimeInMillis,
