@@ -1,24 +1,22 @@
-import 'source-map-support/register'
+//import 'source-map-support/register'
 import partial from 'lodash.partial'
 import crypto from 'crypto'
 import { initDomain } from '@resolve-js/core'
-
 import {
   getLog,
   backgroundJob,
   gatherEventListeners,
+  createRuntime,
 } from '@resolve-js/runtime-base'
 import { prepareDomain } from './prepare-domain'
 import { performanceTracerFactory } from './performance-tracer-factory'
 import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
-
 import { expressAppFactory } from './express-app-factory'
 import { websocketServerFactory } from './websocket-server-factory'
 import { startExpress } from './start-express'
 import { uploaderFactory } from './uploader-factory'
 import { schedulerFactory } from './scheduler-factory'
 import { monitoringFactory } from './monitoring-factory'
-import { createRuntime } from '@resolve-js/runtime-base'
 
 import type {
   EventSubscriberNotification,
@@ -28,15 +26,25 @@ import type {
   RuntimeWorker,
 } from '@resolve-js/runtime-base'
 
-const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
+const INFINITE_WORKER_LIFETIME = 4 * 60 * 1000 // nothing special, just constant number
 
 const log = getLog('dev-entry')
 
-type RuntimeOptions = {
-  host: string
-  port: string
+export type RuntimeOptions = {
+  host?: string
+  port?: string
+  emulateWorkerLifetimeLimit?: number
 }
 type WorkerArguments = []
+
+const makeVacantTimeEvaluator = (options: RuntimeOptions) => {
+  const lifetimeLimit = options.emulateWorkerLifetimeLimit
+  if (lifetimeLimit != null) {
+    return (getRuntimeCreationTime: () => number) =>
+      getRuntimeCreationTime() + lifetimeLimit - Date.now()
+  }
+  return () => INFINITE_WORKER_LIFETIME
+}
 
 const entry = async (
   options: RuntimeOptions,
@@ -68,8 +76,7 @@ const entry = async (
         readModelConnectors: readModelConnectorsFactories,
       } = assemblies
 
-      const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
-      const getVacantTimeInMillis = () => endTime - Date.now()
+      const getVacantTimeInMillis = makeVacantTimeEvaluator(options)
 
       const uploaderData = await uploaderFactory({
         uploaderAdapterFactory: assemblies.uploadAdapter,
