@@ -1,0 +1,81 @@
+import { mock, mockDeep } from 'jest-mock-extended'
+import { backgroundJob, createRuntime } from '@resolve-js/runtime-base'
+import { mocked } from 'ts-jest/utils'
+import { startExpress } from '../src/start-express'
+import { expressAppFactory } from '../src/express-app-factory'
+import { websocketServerFactory } from '../src/websocket-server-factory'
+
+import factory from '../src/index'
+import type { RuntimeOptions } from '../src/index'
+import type { DomainMeta } from '@resolve-js/core'
+import type { Runtime, RuntimeEntryContext } from '@resolve-js/runtime-base'
+
+jest.mock('../src/prepare-domain', () => ({
+  prepareDomain: jest.fn(() => mockDeep<DomainMeta>()),
+}))
+jest.mock('../src/performance-tracer-factory', () => ({
+  performanceTracerFactory: jest.fn(),
+}))
+jest.mock('../src/event-subscriber-notifier-factory', () => ({
+  eventSubscriberNotifierFactory: jest.fn(),
+}))
+jest.mock('../src/express-app-factory', () => ({
+  expressAppFactory: jest.fn(() =>
+    mockDeep<ReturnType<typeof expressAppFactory>>()
+  ),
+}))
+jest.mock('../src/websocket-server-factory', () => ({
+  websocketServerFactory: jest.fn(() =>
+    mockDeep<ReturnType<typeof websocketServerFactory>>()
+  ),
+}))
+jest.mock('../src/start-express', () => ({
+  startExpress: jest.fn(),
+}))
+jest.mock('../src/uploader-factory', () => ({
+  uploaderFactory: jest.fn(),
+}))
+jest.mock('../src/scheduler-factory', () => ({
+  schedulerFactory: jest.fn(),
+}))
+jest.mock('../src/monitoring-factory', () => ({
+  monitoringFactory: jest.fn(),
+}))
+
+const mStartExpress = mocked(startExpress)
+const mCreateRuntime = mocked(createRuntime)
+
+const getFactoryParameters = () => mStartExpress.mock.calls[0][2]
+const execAsyncBuild = async () => {
+  await getFactoryParameters().invokeBuildAsync({
+    eventSubscriber: 'test',
+    initiator: 'read-model-next',
+    sendTime: Date.now(),
+    notificationId: 'test-id',
+  })
+}
+const startRuntime = async (options: RuntimeOptions) => {
+  const runtime = await factory(options)
+  const worker = await runtime.entry(mock<RuntimeEntryContext>())
+  await worker()
+  expect(mStartExpress).toHaveBeenCalled()
+}
+
+afterEach(() => {
+  jest.clearAllMocks()
+})
+
+test('same getVacantTime for index and async builds job', async () => {
+  await startRuntime({})
+  const primaryGetVacantTime = getFactoryParameters().getVacantTimeInMillis
+
+  mCreateRuntime.mockClear()
+  await execAsyncBuild()
+  expect(mCreateRuntime).toHaveBeenCalled()
+
+  const builderGetVacantTime =
+    mCreateRuntime.mock.calls[0][0].getVacantTimeInMillis
+
+  expect(primaryGetVacantTime).toEqual(builderGetVacantTime)
+})
+

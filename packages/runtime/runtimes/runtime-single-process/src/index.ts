@@ -1,4 +1,4 @@
-import 'source-map-support/register'
+//import 'source-map-support/register'
 import partial from 'lodash.partial'
 import crypto from 'crypto'
 import { initDomain } from '@resolve-js/core'
@@ -30,7 +30,7 @@ const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
 const log = getLog('dev-entry')
 
-type RuntimeOptions = {
+export type RuntimeOptions = {
   host?: string
   port?: string
   emulateWorkerLifetimeLimit?: number

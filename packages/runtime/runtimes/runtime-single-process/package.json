@@ -51,6 +51,7 @@
     "@types/lodash.escaperegexp": "4.1.6",
     "lodash.escaperegexp": "4.1.2",
     "jest": "27.0.3",
+    "jest-mock-extended": "2.0.4",
     "ts-jest": "27.0.2"
   },
   "engines": {
