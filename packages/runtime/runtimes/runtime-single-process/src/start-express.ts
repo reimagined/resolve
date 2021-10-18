@@ -7,7 +7,6 @@ import {
 import { EventstoreResourceAlreadyExistError } from '@resolve-js/eventstore-base'
 import { ExpressAppData } from './express-app-factory'
 import { wrapApiHandler } from './wrap-api-handler'
-import makeGetVacantTime from './make-get-vacant-time'
 
 import type {
   Runtime,
@@ -25,7 +24,7 @@ type StartParameters = {
 export const startExpress = async (
   data: ExpressAppData,
   startParams: StartParameters,
-  runtimeParams: Omit<RuntimeFactoryParameters, 'getVacantTimeInMillis'>
+  runtimeParams: RuntimeFactoryParameters
 ) => {
   const {
     server,
@@ -70,10 +69,7 @@ export const startExpress = async (
 
     let runtime: Runtime | null = null
     try {
-      runtime = await createRuntime({
-        ...runtimeParams,
-        getVacantTimeInMillis: makeGetVacantTime(),
-      })
+      runtime = await createRuntime(runtimeParams)
       const userResolve = createUserResolve(runtime, {
         constants: startParams.buildTimeConstants,
         routesTrie: routesTrie,
@@ -101,10 +97,7 @@ export const startExpress = async (
 
   let runtime: Runtime | null = null
   try {
-    runtime = await createRuntime({
-      ...runtimeParams,
-      getVacantTimeInMillis: makeGetVacantTime(),
-    })
+    runtime = await createRuntime(runtimeParams)
     const { eventStoreAdapter } = runtime
     await invokeFilterErrorTypes(
       eventStoreAdapter.init.bind(eventStoreAdapter),
