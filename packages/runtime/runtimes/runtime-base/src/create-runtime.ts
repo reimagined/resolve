@@ -1,3 +1,4 @@
+import partial from 'lodash.partial'
 import { createCommandExecutor } from './command'
 import { createQueryExecutor } from './query'
 import { createSagaExecutor } from './saga'
@@ -81,6 +82,7 @@ export const createRuntime = async (
   params: RuntimeFactoryParameters
 ): Promise<Runtime> => {
   const log = getLog(`createResolve`)
+  const creationTime = Date.now()
 
   const {
     performanceTracer,
@@ -101,12 +103,15 @@ export const createRuntime = async (
   log.debug(`${Object.keys(readModelConnectors).length} connectors built`)
 
   const {
-    getVacantTimeInMillis,
     eventSubscriberScope,
     eventListeners,
     invokeBuildAsync,
     notifyEventSubscriber,
   } = params
+  const getVacantTimeInMillis = partial(
+    params.getVacantTimeInMillis,
+    () => creationTime
+  )
 
   const broadcastEvent = eventBroadcastFactory({
     eventStoreAdapter,

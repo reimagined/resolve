@@ -2,24 +2,21 @@ import 'source-map-support/register'
 import partial from 'lodash.partial'
 import crypto from 'crypto'
 import { initDomain } from '@resolve-js/core'
-
 import {
   getLog,
   backgroundJob,
   gatherEventListeners,
+  createRuntime,
 } from '@resolve-js/runtime-base'
 import { prepareDomain } from './prepare-domain'
 import { performanceTracerFactory } from './performance-tracer-factory'
 import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
-
 import { expressAppFactory } from './express-app-factory'
 import { websocketServerFactory } from './websocket-server-factory'
 import { startExpress } from './start-express'
 import { uploaderFactory } from './uploader-factory'
 import { schedulerFactory } from './scheduler-factory'
 import { monitoringFactory } from './monitoring-factory'
-import { createRuntime } from '@resolve-js/runtime-base'
-import makeGetVacantTime from './make-get-vacant-time'
 
 import type {
   EventSubscriberNotification,
@@ -29,11 +26,14 @@ import type {
   RuntimeWorker,
 } from '@resolve-js/runtime-base'
 
+const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
+
 const log = getLog('dev-entry')
 
 type RuntimeOptions = {
-  host: string
-  port: string
+  host?: string
+  port?: string
+  emulateWorkerLifetimeLimit?: number
 }
 type WorkerArguments = []
 
@@ -67,6 +67,9 @@ const entry = async (
         readModelConnectors: readModelConnectorsFactories,
       } = assemblies
 
+      const getVacantTimeInMillis = (getRuntimeCreationTime: () => number) =>
+        getRuntimeCreationTime() + DEFAULT_WORKER_LIFETIME - Date.now()
+
       const uploaderData = await uploaderFactory({
         uploaderAdapterFactory: assemblies.uploadAdapter,
         host,
@@ -99,23 +102,24 @@ const entry = async (
             method === 'OPTIONS' && path === '/SKIP_COMMANDS'
         ) < 0
 
-      const factoryParameters: Omit<
-        RuntimeFactoryParameters,
-        'getVacantTimeInMillis'
-      > = {
+      const factoryParameters: RuntimeFactoryParameters = {
         domain,
         domainInterop,
         performanceTracer,
         monitoring,
         eventStoreAdapterFactory,
         readModelConnectorsFactories,
+        getVacantTimeInMillis,
         eventSubscriberScope: constants.applicationName,
         notifyEventSubscriber,
         invokeBuildAsync: backgroundJob(
           async (parameters: EventSubscriberNotification) => {
+            const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
+            const getVacantTimeInMillis = () => endTime - Date.now()
+
             const runtime = await createRuntime({
               ...factoryParameters,
-              getVacantTimeInMillis: makeGetVacantTime(),
+              getVacantTimeInMillis,
             })
             try {
               return await runtime.eventSubscriber.build(parameters)
