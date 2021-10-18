@@ -51,7 +51,7 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
   })
 
   process.env.RESOLVE_SERVER_FIRST_START = 'true'
-  process.env.RESOLVE_SERVER_OPEN_BROWSER = 'true'
+  process.env.RESOLVE_SERVER_OPEN_BROWSER = process.env.RESOLVE_SERVER_OPEN_BROWSER || 'true'
 
   fsExtra.copySync(
     path.resolve(process.cwd(), resolveConfig.staticDir),
