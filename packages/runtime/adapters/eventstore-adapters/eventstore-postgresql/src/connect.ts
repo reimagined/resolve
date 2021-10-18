@@ -1,8 +1,6 @@
 import { getLog } from './get-log'
 import type {
   ConnectionDependencies,
-  PostgresqlAdapterPoolConnectedProps,
-  AdapterPool,
   AdapterPoolPrimal,
   PostgresqlAdapterConfig,
 } from './types'
@@ -11,32 +9,11 @@ import makeKnownError from './make-known-error'
 
 const connect = async (
   pool: AdapterPoolPrimal,
-  {
-    Postgres,
-    escapeId,
-    escape,
-    fullJitter,
-    executeStatement,
-  }: ConnectionDependencies,
+  { Postgres }: ConnectionDependencies,
   config: PostgresqlAdapterConfig
 ): Promise<void> => {
   const log = getLog('connect')
   log.debug('configuring postgres client')
-
-  let {
-    databaseName,
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName,
-    subscribersTableName,
-    // eslint-disable-next-line prefer-const
-    ...connectionOptions
-  } = config
-
-  eventsTableName = eventsTableName ?? 'events'
-  snapshotsTableName = snapshotsTableName ?? 'snapshots'
-  secretsTableName = secretsTableName ?? 'secrets'
-  subscribersTableName = subscribersTableName ?? 'subscribers'
 
   const oldConnection = pool.connection
   if (oldConnection !== undefined) {
@@ -47,28 +24,11 @@ const connect = async (
     })
   }
 
-  const connection = makePostgresClient(pool, Postgres, connectionOptions)
+  const connection = makePostgresClient(pool, Postgres, pool.connectionOptions)
 
   try {
     await connection.connect()
-
-    Object.assign<
-      AdapterPoolPrimal,
-      Partial<PostgresqlAdapterPoolConnectedProps>
-    >(pool, {
-      databaseName,
-      eventsTableName,
-      snapshotsTableName,
-      secretsTableName,
-      connectionOptions,
-      subscribersTableName,
-      Postgres,
-      fullJitter,
-      executeStatement: executeStatement.bind(null, pool as AdapterPool),
-      escapeId,
-      escape,
-      connection,
-    })
+    pool.connection = connection
   } catch (error) {
     throw makeKnownError(error)
   }

@@ -8,6 +8,7 @@ import type {
   PostgresqlAdapterConfig,
 } from '../src/types'
 import connect from '../src/connect'
+import prepare from '../src/prepare'
 import executeStatement from '../src/execute-statement'
 import { DEFAULT_QUERY_TIMEOUT } from '../src/constants'
 import { RequestTimeoutError } from '@resolve-js/eventstore-base'
@@ -50,6 +51,7 @@ beforeEach(() => {
 test('destination passed to postgres client', async () => {
   connectionDependencies.executeStatement = executeStatement
 
+  await prepare(pool, config, connectionDependencies)
   await connect(pool, connectionDependencies, config)
 
   expect(mPostgres).toHaveBeenCalledWith(
@@ -82,6 +84,7 @@ test('getVacantTimeInMillis affects the values passed to postgres connection', a
   connectionDependencies.executeStatement = executeStatement
 
   pool.getVacantTimeInMillis = () => 10000
+  await prepare(pool, config, connectionDependencies)
   await connect(pool, connectionDependencies, {
     ...config,
   })
@@ -102,6 +105,7 @@ test('should throw RequestTimeoutError if getVacantTimeInMillis returns negative
 })
 
 test("utilities were assigned to adapter's pool", async () => {
+  await prepare(pool, config, connectionDependencies)
   await connect(pool, connectionDependencies, config)
 
   expect(pool).toEqual(
@@ -114,12 +118,14 @@ test("utilities were assigned to adapter's pool", async () => {
 })
 
 test("Postgres client assigned to adapter's pool", async () => {
+  await prepare(pool, config, connectionDependencies)
   await connect(pool, connectionDependencies, config)
 
   expect(pool.Postgres).toBe(Postgres)
 })
 
 test("executeStatement bound to adapter's pool", async () => {
+  await prepare(pool, config, connectionDependencies)
   await connect(pool, connectionDependencies, config)
 
   expect(pool.executeStatement).toBeDefined()

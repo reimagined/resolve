@@ -54,6 +54,8 @@ import getEventLoaderNative from './get-event-loader-native'
 import type { Adapter } from '@resolve-js/eventstore-base'
 import type { PostgresqlAdapterConfig, ConnectionDependencies } from './types'
 
+import prepare from './prepare'
+
 import createResource from './resource/create'
 import destroyResource from './resource/destroy'
 
@@ -111,7 +113,8 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       fullJitter,
       executeStatement,
     } as ConnectionDependencies,
-    options
+    options,
+    prepare
   )
 }
 
