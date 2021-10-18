@@ -19,6 +19,7 @@ import { uploaderFactory } from './uploader-factory'
 import { schedulerFactory } from './scheduler-factory'
 import { monitoringFactory } from './monitoring-factory'
 import { createRuntime } from '@resolve-js/runtime-base'
+import makeGetVacantTime from './make-get-vacant-time'
 
 import type {
   EventSubscriberNotification,
@@ -27,8 +28,6 @@ import type {
   RuntimeEntryContext,
   RuntimeWorker,
 } from '@resolve-js/runtime-base'
-
-const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
 
 const log = getLog('dev-entry')
 
@@ -68,8 +67,6 @@ const entry = async (
         readModelConnectors: readModelConnectorsFactories,
       } = assemblies
 
-      const getVacantTimeInMillis = () => DEFAULT_WORKER_LIFETIME
-
       const uploaderData = await uploaderFactory({
         uploaderAdapterFactory: assemblies.uploadAdapter,
         host,
@@ -102,24 +99,23 @@ const entry = async (
             method === 'OPTIONS' && path === '/SKIP_COMMANDS'
         ) < 0
 
-      const factoryParameters: RuntimeFactoryParameters = {
+      const factoryParameters: Omit<
+        RuntimeFactoryParameters,
+        'getVacantTimeInMillis'
+      > = {
         domain,
         domainInterop,
         performanceTracer,
         monitoring,
         eventStoreAdapterFactory,
         readModelConnectorsFactories,
-        getVacantTimeInMillis,
         eventSubscriberScope: constants.applicationName,
         notifyEventSubscriber,
         invokeBuildAsync: backgroundJob(
           async (parameters: EventSubscriberNotification) => {
-            const endTime = Date.now() + DEFAULT_WORKER_LIFETIME
-            const getVacantTimeInMillis = () => endTime - Date.now()
-
             const runtime = await createRuntime({
               ...factoryParameters,
-              getVacantTimeInMillis,
+              getVacantTimeInMillis: makeGetVacantTime(),
             })
             try {
               return await runtime.eventSubscriber.build(parameters)

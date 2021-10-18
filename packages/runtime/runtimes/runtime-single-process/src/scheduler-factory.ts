@@ -5,13 +5,14 @@ import type {
   Runtime,
   RuntimeFactoryParameters,
 } from '@resolve-js/runtime-base'
+import makeGetVacantTime from './make-get-vacant-time'
 
 const errorHandler = async (error: any) => {
   throw error
 }
 
 export const schedulerFactory = async (
-  runtimeParams: RuntimeFactoryParameters,
+  runtimeParams: Omit<RuntimeFactoryParameters, 'getVacantTimeInMillis'>,
   schedulerName: string
 ) => {
   const timeouts = new Set<NodeJS.Timeout>()
@@ -27,7 +28,10 @@ export const schedulerFactory = async (
               timeouts.delete(timeout)
               let runtime: Runtime | null = null
               try {
-                runtime = await createRuntime(runtimeParams)
+                runtime = await createRuntime({
+                  ...runtimeParams,
+                  getVacantTimeInMillis: makeGetVacantTime(),
+                })
                 await runtime.executeSchedulerCommand({
                   aggregateName: schedulerName,
                   aggregateId: entry.taskId,
