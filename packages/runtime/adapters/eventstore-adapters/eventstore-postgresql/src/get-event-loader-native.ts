@@ -44,15 +44,15 @@ const getEventLoaderNative = async (
   client.on('error', (error) => {
     return
   })
+  let pgCursor: QueriedPgCursor
   try {
     await client.connect()
+    pgCursor = (client.query(
+      new PgCursor(sqlQuery)
+    ) as unknown) as QueriedPgCursor
   } catch (error) {
     throw makeKnownError(error)
   }
-
-  const pgCursor = (client.query(
-    new PgCursor(sqlQuery)
-  ) as unknown) as QueriedPgCursor
 
   return {
     async close() {
