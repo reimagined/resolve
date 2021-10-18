@@ -26,7 +26,7 @@ import type {
   RuntimeWorker,
 } from '@resolve-js/runtime-base'
 
-const DEFAULT_WORKER_LIFETIME = 4 * 60 * 1000
+const INFINITE_WORKER_LIFETIME = 4 * 60 * 1000 // nothing special, just constant number
 
 const log = getLog('dev-entry')
 
@@ -36,6 +36,15 @@ export type RuntimeOptions = {
   emulateWorkerLifetimeLimit?: number
 }
 type WorkerArguments = []
+
+const makeVacantTimeEvaluator = (options: RuntimeOptions) => {
+  const lifetimeLimit = options.emulateWorkerLifetimeLimit
+  if (lifetimeLimit != null) {
+    return (getRuntimeCreationTime: () => number) =>
+      getRuntimeCreationTime() + lifetimeLimit - Date.now()
+  }
+  return () => INFINITE_WORKER_LIFETIME
+}
 
 const entry = async (
   options: RuntimeOptions,
@@ -67,8 +76,7 @@ const entry = async (
         readModelConnectors: readModelConnectorsFactories,
       } = assemblies
 
-      const getVacantTimeInMillis = (getRuntimeCreationTime: () => number) =>
-        getRuntimeCreationTime() + DEFAULT_WORKER_LIFETIME - Date.now()
+      const getVacantTimeInMillis = makeVacantTimeEvaluator(options)
 
       const uploaderData = await uploaderFactory({
         uploaderAdapterFactory: assemblies.uploadAdapter,

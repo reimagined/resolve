@@ -79,3 +79,27 @@ test('same getVacantTime for index and async builds job', async () => {
   expect(primaryGetVacantTime).toEqual(builderGetVacantTime)
 })
 
+test('getVacantTime emulates infinity by default', async () => {
+  await startRuntime({})
+  const getVacantTime = getFactoryParameters().getVacantTimeInMillis
+
+  const start = Date.now()
+  const timeA = getVacantTime(() => start)
+  await new Promise((resolve) => setTimeout(resolve, 10))
+  const timeB = getVacantTime(() => start)
+
+  expect(timeA).toEqual(timeB)
+})
+
+test('getVacantTime emulates limited worker lifetime with option', async () => {
+  await startRuntime({
+    emulateWorkerLifetimeLimit: 10,
+  })
+  const getVacantTime = getFactoryParameters().getVacantTimeInMillis
+
+  const start = Date.now()
+  await new Promise((resolve) => setTimeout(resolve, 11))
+  const vacantTime = getVacantTime(() => start)
+
+  expect(vacantTime).toBeLessThan(0)
+})
