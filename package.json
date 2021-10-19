@@ -39,7 +39,6 @@
     "test:e2e:js": "workspaces run-script -i \"examples/ts/**,templates/ts/**,packages/**\" test:e2e",
     "test:integration": "workspaces run-script test:integration",
     "test:integration-postgres": "cd tests && yarn test:postgres --color 2>&1",
-    "test:integration-postgres-serverless": "cd tests && yarn test:postgres-serverless --color 2>&1",
     "test:clean-snapshots": "workspaces all \"yarn test -u --color 2>&1\"",
     "test:cra": "node internal/cra-test/bin/index.js all",
     "test:cra:ts": "node internal/cra-test/bin/index.js ts",
