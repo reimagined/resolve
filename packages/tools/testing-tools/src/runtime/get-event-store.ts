@@ -1,13 +1,23 @@
 import { Eventstore } from '@resolve-js/core'
 import createEventStoreLite from '@resolve-js/eventstore-lite'
 import { TestEvent } from '../types'
-import { prepareEvents } from './prepare-events'
-import { ambiguousEventsTimeErrorMessage } from '../constants'
+import { prepareEvents, stripEvents } from './events-utils'
+import {
+  ambiguousEventsTimeErrorMessage,
+  getReservedFieldUsedErrorMessage,
+  reservedEventOrderField,
+} from '../constants'
 
 export const validateEvents = (events: TestEvent[]) => {
   const stampedCount = events.filter((event) => event.timestamp != null).length
   if (stampedCount !== events.length && stampedCount > 0) {
     throw Error(ambiguousEventsTimeErrorMessage)
+  }
+  const invalidEventIndex = events.findIndex(
+    (event) => event.payload?.[reservedEventOrderField] != null
+  )
+  if (invalidEventIndex >= 0) {
+    throw Error(getReservedFieldUsedErrorMessage(reservedEventOrderField))
   }
 }
 
@@ -29,41 +39,45 @@ export const getEventStore = async (
     }
   }
 
-  const eventStoreAdapter: any = createEventStoreLite({
+  const eventStoreAdapter = createEventStoreLite({
     databaseFile: ':memory:',
   })
 
   await eventStoreAdapter.init()
-  for (const event of preparedEvents) {
-    await eventStoreAdapter.saveEvent(event)
-  }
+
+  // event ordering must be fixed anyway, so store events in parallel for proper testing
+  await Promise.all(
+    preparedEvents.map((event) => eventStoreAdapter.saveEvent(event))
+  )
 
   return {
     ...eventStoreAdapter,
-    loadEvents: async (...args: any) => {
+    loadEvents: async (
+      ...args: Parameters<typeof eventStoreAdapter['loadEvents']>
+    ): ReturnType<typeof eventStoreAdapter['loadEvents']> => {
       const {
-        events: originalEvents,
+        events: storedEvents,
         ...other
       } = await eventStoreAdapter.loadEvents(...args)
 
-      const eventsFromEventStore = JSON.parse(JSON.stringify(originalEvents))
+      const events = stripEvents(JSON.parse(JSON.stringify(storedEvents)))
 
       for (
         let timestampIndex = 0;
-        timestampIndex < eventsFromEventStore.length;
+        timestampIndex < events.length;
         timestampIndex++
       ) {
-        const eventFromEventStore = eventsFromEventStore[timestampIndex]
+        const event = events[timestampIndex]
 
-        eventFromEventStore.timestamp =
+        event.timestamp =
           eventByAggregateIdVersion.get(
-            `${eventFromEventStore.aggregateId}:${eventFromEventStore.aggregateVersion}`
+            `${event.aggregateId}:${event.aggregateVersion}`
           )?.timestamp ?? timestampIndex
       }
 
       return {
         ...other,
-        events: eventsFromEventStore,
+        events,
       }
     },
   }
