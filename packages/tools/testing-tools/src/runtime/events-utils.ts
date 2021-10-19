@@ -48,4 +48,7 @@ export const stripEvents = (events: StoredEvent[]): StoredEvent[] =>
       (a, b) =>
         a.payload[reservedEventOrderField] - b.payload[reservedEventOrderField]
     )
-    .map((event) => omit(event, `payload.${reservedEventOrderField}`))
+    .map((event) => ({
+      ...event,
+      payload: { ...omit(event.payload, reservedEventOrderField) },
+    }))

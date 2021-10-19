@@ -1,7 +1,10 @@
-import { TestSaga } from '../src/types'
 import { stringify } from '../src/utils/format'
 import givenEvents from '../src/index'
-import { ambiguousEventsTimeErrorMessage } from '../src/constants'
+import {
+  ambiguousEventsTimeErrorMessage,
+  reservedEventOrderField,
+} from '../src/constants'
+import type { TestSaga } from '../src/types'
 import type { Event } from '@resolve-js/core'
 
 let warnSpy: jest.SpyInstance
@@ -156,10 +159,8 @@ const saga: TestSaga<{
     },
     PreservedEventOrder: async ({ sideEffects }, event): Promise<void> => {
       if (lastPreservedOrderEvent != null) {
+        expect(event.payload[reservedEventOrderField]).toBeUndefined()
         const {
-          aggregateId,
-          aggregateVersion,
-          timestamp,
           payload: { order },
         } = event
         if (order <= lastPreservedOrderEvent.payload.order) {
