@@ -9,14 +9,12 @@ const ApiHandlers = ({ selected, onClick }) => {
     >
       <a onClick={onClick}>
         <path
-          fill="#3949ab"
           d="M46.718 161.99H61.723000000000006V184.172H46.718z"
           paintOrder="fill markers stroke"
         ></path>
         <text
           x="54.158"
           y="172.397"
-          fill="#fff"
           strokeWidth="0.265"
           fontFamily="sans-serif"
           fontSize="2.559"

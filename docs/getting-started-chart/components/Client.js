@@ -16,7 +16,6 @@ const Client = ({ selected, onClick }) => (
       <text
         x="71.818"
         y="173.186"
-        fill="#3949ab"
         strokeWidth="0.087"
         fontFamily="sans-serif"
         fontSize="3.468"

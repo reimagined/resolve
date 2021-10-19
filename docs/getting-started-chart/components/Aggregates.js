@@ -10,7 +10,6 @@ const Aggregates = ({ selected, onClick }) => (
       <text
         x="38.21"
         y="158.624"
-        fill="#3949ab"
         strokeWidth="0.265"
         fontFamily="sans-serif"
         fontSize="2.056"

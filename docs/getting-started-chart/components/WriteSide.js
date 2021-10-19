@@ -13,7 +13,6 @@ const WriteSide = ({ selected, onClick }) => (
       <text
         x="35.769"
         y="153.491"
-        fill="#fff"
         strokeWidth="0.265"
         fontFamily="sans-serif"
         fontSize="3.257"

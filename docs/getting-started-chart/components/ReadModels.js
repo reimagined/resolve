@@ -4,14 +4,12 @@ const ReadModels = ({ selected, onClick }) => (
   <g className="box-child-framed box-interactive" data-selected={selected}>
     <a onClick={onClick}>
       <path
-        fill="#dae1f6"
         d="M27.095 191.13H37.736V196.995H27.095z"
         paintOrder="fill markers stroke"
       ></path>
       <text
         x="32.366"
         y="193.545"
-        fill="#3949ab"
         strokeWidth="0.265"
         fontFamily="sans-serif"
         fontSize="2.056"

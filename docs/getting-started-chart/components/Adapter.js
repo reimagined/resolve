@@ -8,7 +8,6 @@ const Adapter = ({ selected, onClick }) => (
   >
     <a onClick={onClick}>
       <path
-        fill="#3949ab"
         d="M157.25 109.21H168.38V120.33999999999999H157.25z"
         paintOrder="fill markers stroke"
         transform="scale(1.10538 .88213) rotate(45)"
@@ -16,7 +15,6 @@ const Adapter = ({ selected, onClick }) => (
       <text
         x="37.536"
         y="171.114"
-        fill="#fff"
         strokeWidth="0.265"
         fontFamily="sans-serif"
         fontSize="2.056"

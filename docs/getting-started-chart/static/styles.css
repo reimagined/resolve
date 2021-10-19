@@ -10,6 +10,10 @@
   fill: rgb(57, 73, 171);
 }
 
+.box-solid text {
+  fill: white;
+}
+
 .box-solid:hover path {
   fill: rgb(101, 119, 236);
   transition: fill 100ms ease-in 50ms;
@@ -24,22 +28,31 @@
   stroke: rgb(57, 73, 171);
 }
 
+.box-framed text {
+  fill: rgb(57, 73, 171);
+}
+
 .box-framed:hover path {
   fill: rgb(183, 198, 243);
   transition: fill 100ms ease-in 50ms;
 }
 
 .box-framed[data-selected='true'] path {
-  fill: lightgreen;
-  stroke: green;
+  fill: rgb(230, 246, 230);
+  stroke: rgb(0, 148, 0);
 }
 
 .box-framed[data-selected='true'] text {
-  fill: green;
+  fill: rgb(0, 148, 0);
+  transition: fill 100ms ease-in 50ms;
 }
 
 .box-child-framed path {
   fill: rgb(218, 225, 246);
+}
+
+.box-child-framed text {
+  fill: rgb(57, 73, 171);
 }
 
 .box-child-framed:hover path {
@@ -48,11 +61,12 @@
 }
 
 .box-child-framed[data-selected='true'] path {
-  fill: green;
+  fill: rgb(0, 148, 0);
 }
 
 .box-child-framed[data-selected='true'] text {
   fill: white;
+  transition: fill 100ms ease-in 50ms;
 }
 
 .box-framed .box-header {
@@ -65,7 +79,7 @@
 }
 
 .box-framed[data-selected='true'] .box-header {
-  fill: green;
+  fill: rgb(0, 148, 0);
   stroke-width: 0px;
 }
 
@@ -79,10 +93,4 @@
 
 .box-framed .box-header-text:hover {
   cursor: pointer;
-}
-
-.detail {
-  padding: 20px;
-  background-color: rgb(218, 225, 246);
-  border-radius: 10px;
 }

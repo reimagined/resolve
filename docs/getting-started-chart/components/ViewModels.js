@@ -4,14 +4,12 @@ const ViewModels = ({ selected, onClick }) => (
   <g className="box-child-framed box-interactive" data-selected={selected}>
     <a onClick={onClick}>
       <path
-        fill="#dae1f6"
         d="M38.681 191.13H49.321999999999996V196.995H38.681z"
         paintOrder="fill markers stroke"
       ></path>
       <text
         x="43.951"
         y="193.545"
-        fill="#3949ab"
         strokeWidth="0.265"
         fontFamily="sans-serif"
         fontSize="2.056"

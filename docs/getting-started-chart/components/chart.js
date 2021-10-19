@@ -34,61 +34,61 @@ const Chart = ({ selected, onClick }) => {
   const renderDetail = () => {
     if (selectedTab == 'aggregates') {
       return (
-        <div className="detail">
+        <div className="alert alert--info">
           <AggregatesPage></AggregatesPage>
         </div>
       )
     } else if (selectedTab == 'apiHandlers') {
       return (
-        <div className="detail">
+        <div className="alert alert--info">
           <ApiHandlersPage></ApiHandlersPage>
         </div>
       )
     } else if (selectedTab == 'client') {
       return (
-        <div className="detail">
+        <div className="alert alert--info">
           <ClientPage></ClientPage>
         </div>
       )
     } else if (selectedTab == 'esAdapter') {
       return (
-        <div className="detail">
+        <div className="alert alert--info">
           <EsAdapterPage></EsAdapterPage>
         </div>
       )
     } else if (selectedTab == 'readModels') {
       return (
-        <div className="detail">
+        <div className="alert alert--info">
           <ReadModelsPage></ReadModelsPage>
         </div>
       )
     } else if (selectedTab == 'readSide') {
       return (
-        <div className="detail">
+        <div className="alert alert--info">
           <ReadSidePage></ReadSidePage>
         </div>
       )
     } else if (selectedTab == 'sagas') {
       return (
-        <div className="detail">
+        <div className="alert alert--info">
           <SagasPage></SagasPage>
         </div>
       )
     } else if (selectedTab == 'server') {
       return (
-        <div className="detail">
+        <div className="alert alert--info">
           <ServerPage></ServerPage>
         </div>
       )
     } else if (selectedTab == 'viewModels') {
       return (
-        <div className="detail">
+        <div className="alert alert--info">
           <ViewModelsPage></ViewModelsPage>
         </div>
       )
     } else if (selectedTab == 'writeSide') {
       return (
-        <div className="detail">
+        <div className="alert alert--info">
           <WriteSidePage></WriteSidePage>
         </div>
       )
