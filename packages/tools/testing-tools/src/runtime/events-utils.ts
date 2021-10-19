@@ -1,5 +1,7 @@
-import { Event } from '@resolve-js/core'
-import { TestEvent } from '../types'
+import omit from 'lodash.omit'
+import { reservedEventOrderField } from '../constants'
+import type { Event, StoredEvent } from '@resolve-js/core'
+import type { TestEvent } from '../types'
 
 export const prepareEvents = (
   events: TestEvent[],
@@ -8,6 +10,7 @@ export const prepareEvents = (
   }
 ): Event[] => {
   let timestamp = Date.now() + 60 * 1000
+  let order = 0
   const aggregateVersionsMap = new Map()
 
   return events.map(
@@ -26,6 +29,10 @@ export const prepareEvents = (
         aggregateId,
         aggregateVersion,
         timestamp: timestamp++,
+        payload: {
+          ...testEvent.payload,
+          [reservedEventOrderField]: order++,
+        },
       }
 
       aggregateVersionsMap.set(aggregateId, aggregateVersion)
@@ -34,3 +41,11 @@ export const prepareEvents = (
     }
   )
 }
+
+export const stripEvents = (events: StoredEvent[]): StoredEvent[] =>
+  events
+    .sort(
+      (a, b) =>
+        a.payload[reservedEventOrderField] - b.payload[reservedEventOrderField]
+    )
+    .map((event) => omit(event, `payload.${reservedEventOrderField}`))
