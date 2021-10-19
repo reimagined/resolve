@@ -12,7 +12,7 @@ const projection = {
   STORY_CREATED: async (store, event) => {
     await store.insert('Stories', {
       id: event.aggregateId,
-      text: event.payload,
+      text: event.payload.text,
       active: true,
       version: 0,
     })
@@ -27,7 +27,7 @@ const projection = {
       },
       {
         $set: {
-          text: event.payload,
+          text: event.payload.text,
         },
         $inc: {
           version: 1,
