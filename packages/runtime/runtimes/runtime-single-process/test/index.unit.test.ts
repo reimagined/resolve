@@ -98,7 +98,7 @@ test('getVacantTime emulates limited worker lifetime with option', async () => {
   const getVacantTime = getFactoryParameters().getVacantTimeInMillis
 
   const start = Date.now()
-  await new Promise((resolve) => setTimeout(resolve, 11))
+  await new Promise((resolve) => setTimeout(resolve, 15))
   const vacantTime = getVacantTime(() => start)
 
   expect(vacantTime).toBeLessThan(0)
