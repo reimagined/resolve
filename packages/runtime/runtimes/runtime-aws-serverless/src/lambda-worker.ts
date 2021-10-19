@@ -49,7 +49,11 @@ const createCloudRuntime = async (
     resolveVersion: coldStartContext.resolveVersion,
     deploymentId: getDeploymentId(),
   })
-  const getVacantTimeInMillis = partial(getLambdaVacantTime, lambdaContext)
+  const getVacantTimeInMillis = partial(
+    getLambdaVacantTime,
+    lambdaContext,
+    () => void 0
+  )
   const {
     eventstoreAdapter: eventStoreAdapterFactory,
     readModelConnectors: readModelConnectorsFactories,
@@ -82,7 +86,7 @@ const createCloudRuntime = async (
   return {
     runtime,
     scheduler,
-    getVacantTimeInMillis: runtimeParams.getVacantTimeInMillis,
+    getVacantTimeInMillis,
     monitoring,
   }
 }

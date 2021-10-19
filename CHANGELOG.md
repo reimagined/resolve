@@ -8,6 +8,10 @@
 
 - Add event loader in eventstore adapter inferface and loading events via pg-cursor [\#2067](https://github.com/reimagined/resolve/pull/2067)
 
+**Enhancements:**
+
+- Use event-loader \(via pgcursor for postgres\) in replicator [\#2076](https://github.com/reimagined/resolve/pull/2076)
+
 **Breaking changes:**
 
 - Refactored runtime libraries [\#2060](https://github.com/reimagined/resolve/pull/2060)
