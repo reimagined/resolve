@@ -1,1 +1,2 @@
-export default {}
+const os = {}
+export default os

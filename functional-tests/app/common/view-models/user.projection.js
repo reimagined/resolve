@@ -1,1 +1,2 @@
-export default {}
+const projection = {}
+export default projection

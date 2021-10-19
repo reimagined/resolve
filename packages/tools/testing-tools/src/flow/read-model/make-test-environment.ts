@@ -1,21 +1,23 @@
-import {
+import { initDomain } from '@resolve-js/core'
+import { createQueryExecutor } from '@resolve-js/runtime-base'
+
+import { getSecretsManager } from '../../runtime/get-secrets-manager'
+import { getEventStore } from '../../runtime/get-event-store'
+import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
+import { defaultAssertion } from '../../utils/assertions'
+
+import type {
   EventHandlerEncryptionFactory,
-  initDomain,
   Monitoring,
   SecretsManager,
 } from '@resolve-js/core'
-import { createQuery } from '@resolve-js/runtime'
-import {
+import type {
   TestReadModel,
   QueryTestResult,
   TestEvent,
   TestQuery,
   TestQueryAssertion,
 } from '../../types'
-import { getSecretsManager } from '../../runtime/get-secrets-manager'
-import { getEventStore } from '../../runtime/get-event-store'
-import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
-import { defaultAssertion } from '../../utils/assertions'
 
 type ReadModelTestContext = {
   readModel: TestReadModel
@@ -92,28 +94,36 @@ export const makeTestEnvironment = (
       ],
       aggregates: [],
       sagas: [],
+      apiHandlers: [],
     })
 
     const liveErrors: Array<Error> = []
 
     const makeMonitoring = (
-      error: Monitoring['error'] = () => void 0
+      error: Monitoring['error'] = () => void 0,
+      execution: Monitoring['execution'] = () => void 0
     ): Monitoring => {
       return {
-        group: (config) =>
-          config.Part === 'ReadModelProjection'
-            ? makeMonitoring((error: Error) => {
-                liveErrors.push(error)
-              })
-            : makeMonitoring(error),
+        group: (config) => {
+          const errorHandler = (error?: Error) => {
+            if (error != null) {
+              liveErrors.push(error)
+            }
+          }
+
+          return config.Part === 'ReadModelProjection'
+            ? makeMonitoring(errorHandler, errorHandler)
+            : makeMonitoring(error, execution)
+        },
         time: () => void 0,
         timeEnd: () => void 0,
+        execution,
         error,
         publish: async () => void 0,
+        duration: async () => void 0,
+        rate: async () => void 0,
       }
     }
-
-    const eventstoreAdapter = await getEventStore(events)
 
     const errors = []
     let executor = null
@@ -122,13 +132,15 @@ export const makeTestEnvironment = (
     let isNext = false
 
     try {
-      executor = createQuery({
+      const eventstoreAdapter = await getEventStore(events)
+
+      executor = createQueryExecutor({
         applicationName: 'APP_NAME',
         readModelConnectors: {
           ADAPTER_NAME: actualAdapter,
         },
         getVacantTimeInMillis: () => 0x7fffffff,
-        invokeEventSubscriberAsync: async () => {
+        invokeBuildAsync: async () => {
           isNext = true
         },
         eventstoreAdapter,
@@ -138,6 +150,7 @@ export const makeTestEnvironment = (
         }),
         viewModelsInterop: {},
         performanceTracer: null,
+        loadReadModelProcedure: () => Promise.resolve(null),
       })
 
       try {

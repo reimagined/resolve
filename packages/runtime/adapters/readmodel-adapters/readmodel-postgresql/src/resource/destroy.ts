@@ -39,6 +39,8 @@ const destroy: UnboundResourceMethod = async (pool, options) => {
     dropSchemaError = error
   }
 
+  await disconnect(admin)
+
   if (dropSchemaError != null || alterSchemaError != null) {
     const error = new Error()
     error.message = `${
@@ -47,8 +49,6 @@ const destroy: UnboundResourceMethod = async (pool, options) => {
 
     throw error
   }
-
-  await disconnect(admin)
 }
 
 export default destroy

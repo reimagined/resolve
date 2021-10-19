@@ -1,12 +1,14 @@
-import { AdapterPool } from './types'
-import { OldEvent, SavedEvent } from '@resolve-js/eventstore-base'
+import type { AdapterPool } from './types'
+import { THREAD_COUNT } from '@resolve-js/eventstore-base'
+import type { OldEvent, StoredEvent } from '@resolve-js/eventstore-base'
 import { str as strCRC32 } from 'crc-32'
 import { RESERVED_EVENT_SIZE } from './constants'
+import assert from 'assert'
 
-const MAX_EVENTS_BATCH_BYTE_SIZE = 32768
+const MAX_EVENTS_BATCH_BYTE_SIZE = 1024 * 1024 * 10
 
 type EventWithSize = {
-  event: SavedEvent
+  event: StoredEvent
   size: number
   serialized: string
 }
@@ -28,20 +30,30 @@ export const replicateEvents = async (
   const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
   const databaseNameAsId = escapeId(databaseName)
 
-  const rows = (await executeStatement(
+  const stringRows = (await executeStatement(
     `SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
     ${databaseNameAsId}.${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`
   )) as Array<{
-    threadId: SavedEvent['threadId']
-    threadCounter: SavedEvent['threadCounter']
+    threadId: string
+    threadCounter: string
   }>
+  const rows = stringRows.map((row) => {
+    const result = {
+      threadId: +row.threadId,
+      threadCounter: +row.threadCounter,
+    }
+    assert.strict.ok(!Number.isNaN(result.threadId))
+    assert.strict.ok(!Number.isNaN(result.threadCounter))
 
-  const threadCounters = new Array<SavedEvent['threadCounter']>(256)
+    return result
+  })
+
+  const threadCounters = new Array<StoredEvent['threadCounter']>(THREAD_COUNT)
   for (const row of rows) {
-    threadCounters[row.threadId] = row.threadCounter
+    threadCounters[row.threadId] = +row.threadCounter
   }
 
-  const eventsToInsert: SavedEvent[] = []
+  const eventsToInsert: StoredEvent[] = []
 
   for (const event of events) {
     const threadId =
@@ -56,7 +68,7 @@ export const replicateEvents = async (
 
   if (eventsToInsert.length === 0) return
 
-  const calculateEventWithSize = (event: SavedEvent): EventWithSize => {
+  const calculateEventWithSize = (event: StoredEvent): EventWithSize => {
     const serializedEvent = [
       `${escape(event.aggregateId)},`,
       `${+event.aggregateVersion},`,
@@ -111,8 +123,6 @@ export const replicateEvents = async (
     } while (shouldRetry)
   }
 
-  const eventPromises: Array<Promise<void>> = []
-
   let currentBatchSize = 0
   const currentEventsBatch: EventWithSize[] = []
 
@@ -120,13 +130,13 @@ export const replicateEvents = async (
     const eventWithSize = calculateEventWithSize(event)
 
     if (eventWithSize.size > MAX_EVENTS_BATCH_BYTE_SIZE) {
-      eventPromises.push(insertEventsBatch([eventWithSize]))
+      await insertEventsBatch([eventWithSize])
       continue
     }
 
     const newCurrentBatchSize = currentBatchSize + eventWithSize.size
     if (newCurrentBatchSize > MAX_EVENTS_BATCH_BYTE_SIZE) {
-      eventPromises.push(insertEventsBatch(currentEventsBatch))
+      await insertEventsBatch(currentEventsBatch)
       currentEventsBatch.length = 0
       currentBatchSize = 0
     }
@@ -135,14 +145,12 @@ export const replicateEvents = async (
   }
 
   if (currentEventsBatch.length) {
-    eventPromises.push(insertEventsBatch(currentEventsBatch))
+    await insertEventsBatch(currentEventsBatch)
   }
 
-  await Promise.all(eventPromises)
-
   type ThreadToUpdate = {
-    threadId: SavedEvent['threadId']
-    threadCounter: SavedEvent['threadCounter']
+    threadId: StoredEvent['threadId']
+    threadCounter: StoredEvent['threadCounter']
   }
   const threadsToUpdate: ThreadToUpdate[] = []
   for (let i = 0; i < threadCounters.length; ++i) {

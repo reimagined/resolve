@@ -6,7 +6,8 @@ on:
       - dev
 
 jobs:
-  verify:
+  buildAndTest:
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
       - name: Cancel previous run (if any)
@@ -16,40 +17,277 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            packages/**/node_modules
+            internal/**/node_modules
+            examples/**/node_modules
+            templates/**/node_modules
+            tutorial/**/node_modules
+            functional-tests/**/node_modules
+            tests/**/node_modules
+            website/**/node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
+          restore-keys: ${{ runner.os }}-modules-
+
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/es
+            packages/**/lib
+            packages/**/types
+            packages/**/*.tsbuildinfo
+            !packages/**/node_modules/**
+            !packages/**/src/es
+            !packages/**/src/lib
+            !packages/**/src/types
+            internal/**/es
+            internal/**/lib
+            internal/**/types
+            internal/**/*.tsbuildinfo
+            !internal/**/node_modules/**
+            !internal/**/src/es
+            !internal/**/src/lib
+            !internal/**/src/types
+            .packages/**
+          key: ${{ runner.os }}-build-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-build-
 
       - name: Install
-        run: |
-          yarn install --frozen-lockfile
-          yarn validate-lock-file
+        run: yarn install
 
-      - name: Prettier
+      - name: Check if yarn.lock changed
+        run: echo "git_diff=$(git diff --name-only yarn.lock)" >> $GITHUB_ENV
+
+      - name: Fail job if yarn.lock changed
+        if: env.git_diff
+        run: exit 1
+
+      - name: Validate yarn.lock
+        run: yarn validate-lock-file
+
+      - name: Run Prettier
         run: yarn prettier:check
 
-      - name: ESLint
+      - name: Run ESLint
         run: yarn lint
 
       - name: Test:unit
+        env:
+          DEBUG_LEVEL: error
         run: yarn test
 
-      - name: Test:integration
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+  integrationTest:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: buildAndTest
+    if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+    services:
+      postgres:
+        image: clkao/postgres-plv8:10-2
+        env:
+          POSTGRES_PASSWORD: postgres
+          PGOPTIONS: -c max_connections=300
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            packages/**/node_modules
+            internal/**/node_modules
+            examples/**/node_modules
+            templates/**/node_modules
+            tutorial/**/node_modules
+            functional-tests/**/node_modules
+            tests/**/node_modules
+            website/**/node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
+
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/es
+            packages/**/lib
+            packages/**/types
+            packages/**/*.tsbuildinfo
+            !packages/**/node_modules/**
+            !packages/**/src/es
+            !packages/**/src/lib
+            !packages/**/src/types
+            internal/**/es
+            internal/**/lib
+            internal/**/types
+            internal/**/*.tsbuildinfo
+            !internal/**/node_modules/**
+            !internal/**/src/es
+            !internal/**/src/lib
+            !internal/**/src/types
+            .packages/**
+          key: ${{ runner.os }}-build-${{ github.run_id }}
+
+      - name: Install
+        run: |
+          yarn install --ignore-scripts
+
+      - name: Integration Tests
+        env:
+          DEBUG_LEVEL: error
         run: yarn test:integration
 
+      - name: PostgreSQL Integration Tests
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DATABASE: postgres
+          DEBUG_LEVEL: error
+        run: yarn test:integration-postgres
+
+  e2eTest:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: buildAndTest
+    if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            packages/**/node_modules
+            internal/**/node_modules
+            examples/**/node_modules
+            templates/**/node_modules
+            tutorial/**/node_modules
+            functional-tests/**/node_modules
+            tests/**/node_modules
+            website/**/node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
+          restore-keys: ${{ runner.os }}-modules-
+
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/es
+            packages/**/lib
+            packages/**/types
+            packages/**/*.tsbuildinfo
+            !packages/**/node_modules/**
+            !packages/**/src/es
+            !packages/**/src/lib
+            !packages/**/src/types
+            internal/**/es
+            internal/**/lib
+            internal/**/types
+            internal/**/*.tsbuildinfo
+            !internal/**/node_modules/**
+            !internal/**/src/es
+            !internal/**/src/lib
+            !internal/**/src/types
+            .packages/**
+          key: ${{ runner.os }}-build-${{ github.run_id }}
+
+      - name: Install
+        run: |
+          yarn install --ignore-scripts
+
       - name: Test:e2e (ubuntu:chrome-headless)
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         env:
           RESOLVE_E2E_TESTS_BROWSER: chrome
           RESOLVE_E2E_TESTS_HEADLESS_MODE: true
-          DEBUG: resolve:scripts*
-          DEBUG_LEVEL: debug
+          DEBUG: resolve:*
+          DEBUG_LEVEL: error
         run: |
           yarn test:e2e
 
+  cloudTest:
+    name: Cloud Tests
+    runs-on: ubuntu-latest
+    needs: buildAndTest
+    concurrency: cloud-environment
+    if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            packages/**/node_modules
+            internal/**/node_modules
+            examples/**/node_modules
+            templates/**/node_modules
+            tutorial/**/node_modules
+            functional-tests/**/node_modules
+            tests/**/node_modules
+            website/**/node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
+          restore-keys: ${{ runner.os }}-modules-
+
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/es
+            packages/**/lib
+            packages/**/types
+            packages/**/*.tsbuildinfo
+            !packages/**/node_modules/**
+            !packages/**/src/es
+            !packages/**/src/lib
+            !packages/**/src/types
+            internal/**/es
+            internal/**/lib
+            internal/**/types
+            internal/**/*.tsbuildinfo
+            !internal/**/node_modules/**
+            !internal/**/src/es
+            !internal/**/src/lib
+            !internal/**/src/types
+            .packages/**
+          key: ${{ runner.os }}-build-${{ github.run_id }}
+
+      - name: Install
+        run: |
+          yarn install --ignore-scripts
+
       - name: Publish to private repository
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         id: publish
         uses: reimagined/github-actions/publish@v1
         with:
@@ -62,7 +300,6 @@ jobs:
           github_target_repository: resolve-js/resolve
 
       - name: Checkout cloud environment
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         uses: actions/checkout@v2
         with:
           repository: DevExpress/resolve-cloud
@@ -71,7 +308,6 @@ jobs:
           path: resolve-cloud
 
       - name: Install cloud environment
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         id: install_cloud
         uses: reimagined/github-actions/install-cloud@v1
         with:
@@ -84,17 +320,7 @@ jobs:
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           scopes: '@resolve-js'
 
-      - name: Test:integration Postgres Serverless
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
-          AWS_RDS_CLUSTER_ARN: ${{  steps.install_cloud.outputs.system_cluster_arn }}
-          AWS_RDS_ADMIN_SECRET_ARN: ${{  steps.install_cloud.outputs.postgres_admin_secret_arn }}
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
-        run: yarn test:integration-postgres-serverless
-
       - name: Prepare test application
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         run: |
           test_app_dir=$(mktemp -d -t test-app-XXXXXXXXX)
           echo "test_app_dir=${test_app_dir}" >> $GITHUB_ENV
@@ -103,15 +329,13 @@ jobs:
           rm -rf node_modules
 
       - name: Build initial events
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         env:
           TEST_APP_DIR: ${{ env.test_app_dir }}
-          EVENTS_FILE_PATH: ./test-events.txt
+          EVENT_STORE_PATH: ./test-event-store
         run: |
           yarn ts-node functional-tests/utils/generateEvents.ts
 
       - name: Deploy test app to the cloud
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         id: deploy
         uses: reimagined/github-actions/deploy@v1
         with:
@@ -126,22 +350,28 @@ jobs:
           package_registry: ${{ steps.publish.outputs.registry_url }}
           package_registry_token: ${{ secrets.RESOLVE_BOT_PAT }}
           package_registry_scopes: '@resolve-js'
-          deploy_args: --verbosity=debug
-          events_file_path: ./test-events.txt
+          deploy_args: --verbosity=debug --env=DEBUG=resolve:* --env=DEBUG_LEVEL=debug
+          event_store_path: ./test-event-store
+          skip_remove: false
+          retrieve_logs: false
 
       - name: Test:functional (API)
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-central-1
           RESOLVE_TESTS_TARGET_DEPLOYMENT_ID: ${{ steps.deploy.outputs.id }}
+          RESOLVE_TESTS_TARGET_VERSION: ${{ steps.publish.outputs.version }}
+          RESOLVE_TESTS_TARGET_STAGE: framework-test
+          DEBUG_LEVEL: error
+
         run: |
           cd functional-tests
           yarn run-test api --url=${{ steps.deploy.outputs.url }}
 
       - name: Test:functional (TestCafe)
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        env:
+          DEBUG_LEVEL: error
         run: |
           cd functional-tests
           yarn run-test testcafe --url=${{ steps.deploy.outputs.url }} --testcafe-browser=chrome --ci-mode --testcafe-timeout=10000

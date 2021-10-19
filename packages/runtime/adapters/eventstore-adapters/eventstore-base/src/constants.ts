@@ -6,3 +6,7 @@ export const PARTIAL_SECRET_FLAG = Symbol.for('PARTIAL_SECRET_FLAG')
 
 export const BUFFER_SIZE = 512 * 1024
 export const BATCH_SIZE = 200
+
+export const THREAD_COUNT = 256
+export const THREAD_COUNTER_BYTE_LENGTH = 6
+export const CURSOR_BUFFER_SIZE = THREAD_COUNT * THREAD_COUNTER_BYTE_LENGTH

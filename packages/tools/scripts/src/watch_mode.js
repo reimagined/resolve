@@ -1,7 +1,7 @@
 import fsExtra from 'fs-extra'
 import path from 'path'
 import webpack from 'webpack'
-import getLog from './get-log'
+import { getLog } from './get-log'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
@@ -12,10 +12,11 @@ import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 import openBrowser from './open_browser'
 import { processRegister } from './process_manager'
+import detectErrors from './detect_errors'
 
 const log = getLog('watch')
 
-export default async (resolveConfig, adjustWebpackConfigs) => {
+const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
   log.debug('Starting "watch" mode')
   validateConfig(resolveConfig)
 
@@ -65,6 +66,8 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     }
   })
 
+  const { host: sourceHost, port: sourcePort } = resolveConfig.runtime.options
+
   return await new Promise(() => {
     compiler.watch(
       {
@@ -83,16 +86,18 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
 
         copyEnvToDist(resolveConfig.distDir)
 
-        const hasErrors = stats.reduce(
-          (acc, val) => acc || (val != null && val.hasErrors()),
-          false
-        )
-
+        const hasErrors = detectErrors(stats, true)
         const port = Number(
-          checkRuntimeEnv(resolveConfig.port)
+          checkRuntimeEnv(sourcePort)
             ? // eslint-disable-next-line no-new-func
-              new Function(`return ${injectRuntimeEnv(resolveConfig.port)}`)()
-            : resolveConfig.port
+              new Function(`return ${injectRuntimeEnv(sourcePort)}`)()
+            : sourcePort
+        )
+        const host = String(
+          checkRuntimeEnv(sourceHost)
+            ? // eslint-disable-next-line no-new-func
+              new Function(`return ${injectRuntimeEnv(sourceHost)}`)()
+            : sourceHost ?? '0.0.0.0'
         )
 
         if (hasErrors) {
@@ -111,8 +116,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
               process.env.RESOLVE_SERVER_FIRST_START === 'true'
             if (isOpenBrowser && serverFirstStart) {
               log.debug('Opening browser')
-              openBrowser(port, resolveConfig.rootPath).catch(() => {})
-              log.debug('Browser was opened')
+              openBrowser(host, port, resolveConfig.rootPath).catch(() => {})
             }
           }
         }
@@ -120,3 +124,5 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     )
   })
 }
+
+export default watchMode

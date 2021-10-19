@@ -14,7 +14,7 @@ An example **config.prod.js** file:
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../examples/hacker-news/config.prod.js /^/ /\n$/)
+[embedmd]:# (../examples/js/hacker-news/config.prod.js /^/ /\n$/)
 ```js
 const prodConfig = {
   port: 3000,
@@ -38,7 +38,7 @@ export default prodConfig
 
 ## Configuring Adapters
 
-Before you move your app into production, specify all required [adapters](advanced-techniques.md#adapters) in the production config.
+Before you move your app into production, specify all required [adapters](adapters.md) in the production config.
 
 Depending on your requirements, you may want to specify storage adapters for events, Read Model data and View Model snapshots.
 
@@ -46,7 +46,7 @@ The code below demonstrates how to set up a storage adapter on the example of an
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../examples/hacker-news/config.prod.js /readModelConnectors/ /\},/)
+[embedmd]:# (../examples/js/hacker-news/config.prod.js /readModelConnectors/ /\},/)
 ```js
 readModelConnectors: {
     HackerNews: {

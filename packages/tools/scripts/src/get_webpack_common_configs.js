@@ -5,19 +5,18 @@ import BabelPluginTransformImportInline from 'babel-plugin-transform-import-inli
 
 import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
 import getModulesDirs from './get_modules_dirs'
+import { getDeprecatedTarget } from './get-deprecated-target'
 
 const getWebpackCommonConfigs = ({
   resolveConfig,
   alias,
   nodeModulesByAssembly,
 }) => {
-  const targetMode = resolveConfig.target
+  const targetMode = getDeprecatedTarget(resolveConfig)
   if (!['local', 'cloud'].includes(targetMode)) {
     throw new Error(`Wrong target mode ${targetMode}`)
   }
   const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
-  const isClient = false
-
   const packageJson = `common/${targetMode}-entry/package.json`
   if (!nodeModulesByAssembly.has(packageJson)) {
     nodeModulesByAssembly.set(packageJson, new Set())
@@ -47,6 +46,7 @@ const getWebpackCommonConfigs = ({
     },
     resolve: {
       modules: getModulesDirs(),
+      extensions: ['.webpack.js', '.js', '.json', '.wasm'],
       alias,
     },
     output: {
@@ -70,10 +70,10 @@ const getWebpackCommonConfigs = ({
                   [
                     '@babel/preset-env',
                     {
-                      targets: { node: '8.10.0' },
+                      targets: { node: '14.17.0' },
+                      shippedProposals: true,
                     },
                   ],
-                  '@babel/preset-react',
                 ],
                 plugins: [
                   '@babel/plugin-proposal-class-properties',
@@ -95,7 +95,7 @@ const getWebpackCommonConfigs = ({
               loader: require.resolve('./val_query_loader'),
               options: {
                 resolveConfig,
-                isClient,
+                isClient: false,
               },
             },
           ],
@@ -124,7 +124,7 @@ const getWebpackCommonConfigs = ({
           modulesDir,
           importType: (moduleName) => `((() => {
               const path = require('path')
-              const requireDirs = ['', '@resolve-js/runtime/node_modules/']
+              const requireDirs = ['', '@resolve-js/runtime-base/node_modules/', '@resolve-js/runtime-single-process/node_modules/', '@resolve-js/runtime-aws-serverless/node_modules/']
               let modulePath = null
               const moduleName = ${JSON.stringify(moduleName)}
               for(const dir of requireDirs) {
@@ -138,7 +138,11 @@ const getWebpackCommonConfigs = ({
               }
               return require(modulePath)
             })())`,
-          whitelist: [/@resolve-js\/runtime/],
+          allowlist: [
+            /@resolve-js\/runtime-base/,
+            /@resolve-js\/runtime-dev/,
+            /@resolve-js\/runtime-aws-serverless/,
+          ],
         })
       ),
     ],
@@ -148,13 +152,11 @@ const getWebpackCommonConfigs = ({
   const commonConfigs = [
     {
       ...baseCommonConfig,
-      name: `Server ${targetMode} entry point${
-        targetMode === 'local' ? ', local bus broker, local event store' : ''
-      }`,
+      name: `Server ${targetMode} entry point`,
       entry: {
         [`common/${targetMode}-entry/${targetMode}-entry.js`]: path.resolve(
           __dirname,
-          `./alias/$resolve.${targetMode}Entry.js`
+          `./alias/$resolve.backendEntry.js`
         ),
       },
       output: {

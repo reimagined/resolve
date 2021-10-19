@@ -1,8 +1,21 @@
-import {
+import type {
   Adapter as EventStoreAdapter,
-  Cursor,
-  SavedEvent,
+  InputCursor,
+  StoredEvent,
+  StoredEventPointer as EventStoreEventWithCursor,
+  checkEventsContinuity,
+  EventThreadData as EventStoreEventThreadData,
 } from '@resolve-js/eventstore-base'
+
+import type {
+  PerformanceTracer,
+  Monitoring,
+  ReadModelInterop,
+} from '@resolve-js/core'
+
+export type CheckEventsContinuityMethod = typeof checkEventsContinuity
+export type EventWithCursor = EventStoreEventWithCursor
+export type EventThreadData = EventStoreEventThreadData
 
 export type JsonPrimitive = string | number | boolean | null
 export type JsonMap = {
@@ -123,46 +136,43 @@ export type EncryptionLike = {
   decrypt<Input, Output>(input: Input): Output
 }
 
-export type PerformanceTracerLike = {
-  getSegment(): {
-    addNewSubsegment(
-      arg0: string
-    ): {
-      addAnnotation(arg0: string, arg1: string): void
-      addError(error: Error): void
-      close(): void
-    } | null
-  } | null
-}
+export type PerformanceTracerLike = PerformanceTracer
 
-export type MonitoringLike = {
-  group: (config: Record<string, string>) => MonitoringLike
-  error: (error: Error) => void
-  duration: (label: string, duration: number) => void
-  time: (label: string, timestamp?: number) => void
-  timeEnd: (label: string, timestamp?: number) => void
-  rate: (metricName: string, count: number, seconds?: number) => void
-  publish: () => Promise<void>
-  performance?: PerformanceTracerLike
-}
+export type MonitoringLike = Monitoring
 
-export type ReadModelCursor = Cursor // TODO brand type
-export type ReadModelEvent = SavedEvent
+export type ReadModelCursor = InputCursor // TODO brand type
+export type ReadModelEvent = StoredEvent
 
-export type EventstoreAdapterLike = {
-  loadEvents: EventStoreAdapter['loadEvents']
-  getNextCursor: EventStoreAdapter['getNextCursor']
-  getSecretsManager: EventStoreAdapter['getSecretsManager']
-  loadSecrets?: EventStoreAdapter['loadSecrets']
-  gatherSecretsFromEvents: EventStoreAdapter['gatherSecretsFromEvents']
-}
+export type EventStoreAdapterLike = EventStoreAdapter
 
 export type SplitNestedPathMethod = (input: string) => Array<string>
+
+export type EventStoreAdapterKeys = keyof EventStoreAdapter
+export type EventStoreAdapterIsAsyncFunctionalKey<
+  T extends EventStoreAdapterKeys
+> = EventStoreAdapter[T] extends FunctionLike | undefined
+  ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    Exclude<EventStoreAdapter[T], undefined> extends (
+      ...args: infer _Args
+    ) => infer Result
+    ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      Result extends Promise<infer _R>
+      ? T
+      : never
+    : never
+  : never
+
+export type EventStoreAdapterAsyncFunctionKeysDistribute<
+  T extends EventStoreAdapterKeys
+> = T extends any ? EventStoreAdapterIsAsyncFunctionalKey<T> : never
+
+export type EventStoreAdapterAsyncFunctionKeys = EventStoreAdapterAsyncFunctionKeysDistribute<EventStoreAdapterKeys>
 
 export type CommonAdapterPool = {
   monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
   splitNestedPath: SplitNestedPathMethod
+  checkEventsContinuity: CheckEventsContinuityMethod
 }
 
 export type CommonAdapterOptions = {
@@ -259,6 +269,10 @@ export type ReadModelStatus = {
   status: ReadModelRunStatus
 }
 
+export type RuntimeReadModelStatus = ReadModelStatus & {
+  isAlive: boolean
+}
+
 export type ProjectionMethod<AdapterPool extends CommonAdapterPool> = (
   projectionStore: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
   projectionEvent: ReadModelEvent,
@@ -267,6 +281,14 @@ export type ProjectionMethod<AdapterPool extends CommonAdapterPool> = (
 
 export type OmitObject<T extends object, U extends object> = {
   [K in Exclude<keyof T, keyof U>]: T[K]
+}
+
+export type BuildInfo = {
+  eventsWithCursors?: Array<EventWithCursor>
+  initiator: 'command' | 'read-model-next'
+  notificationId: string
+  sendTime: number
+  coldStart?: boolean
 }
 
 export type AdapterConnection<
@@ -278,21 +300,51 @@ export type AdapterConnection<
   disconnect(pool: AdapterPool): Promise<void>
 }
 
+export type AdapterOperationStatusMethodArguments<
+  T extends [includeRuntimeStatus?: boolean],
+  AdapterPool extends CommonAdapterPool
+> = [
+  pool: AdapterPool,
+  readModelName: string,
+  eventstoreAdapter: EventStoreAdapterLike,
+  ...args: T
+]
+
+export type AdapterOperationStatusMethodReturnType<
+  T extends [includeRuntimeStatus?: boolean]
+> = Promise<IfEquals<
+  T['length'],
+  0,
+  ReadModelStatus,
+  IfEquals<
+    T['length'],
+    1,
+    IfEquals<T[0], true, RuntimeReadModelStatus, ReadModelStatus>,
+    never
+  >
+> | null>
+
 export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
   subscribe(
     pool: AdapterPool,
     readModelName: string,
     eventTypes: Array<ReadModelEvent['type']> | null,
-    aggregateIds: Array<ReadModelEvent['aggregateId']> | null
+    aggregateIds: Array<ReadModelEvent['aggregateId']> | null,
+    loadProcedureSource: () => Promise<string | null>
   ): Promise<void>
 
-  unsubscribe(pool: AdapterPool, readModelName: string): Promise<void>
+  unsubscribe(
+    pool: AdapterPool,
+    readModelName: string,
+    loadProcedureSource: () => Promise<string | null>
+  ): Promise<void>
 
   resubscribe(
     pool: AdapterPool,
     readModelName: string,
     eventTypes: Array<ReadModelEvent['type']> | null,
-    aggregateIds: Array<ReadModelEvent['aggregateId']> | null
+    aggregateIds: Array<ReadModelEvent['aggregateId']> | null,
+    loadProcedureSource: () => Promise<string | null>
   ): Promise<void>
 
   resume(
@@ -305,27 +357,21 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
 
   reset(pool: AdapterPool, readModelName: string): Promise<void>
 
-  status(
-    pool: AdapterPool,
-    readModelName: string
-  ): Promise<ReadModelStatus | null>
+  status<T extends [includeRuntimeStatus?: boolean]>(
+    ...args: AdapterOperationStatusMethodArguments<T, AdapterPool>
+  ): AdapterOperationStatusMethodReturnType<T>
 
   build(
     pool: AdapterPool,
     readModelName: string,
     store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
-    modelInterop: {
-      acquireInitHandler: (
-        store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>
-      ) => () => Promise<void>
-      acquireEventHandler: (
-        store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
-        event: ReadModelEvent
-      ) => () => Promise<void>
-    },
+    modelInterop: ReadModelInterop<
+      ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>
+    >,
     next: MethodNext,
-    eventstoreAdapter: EventstoreAdapterLike,
-    getVacantTimeInMillis: MethodGetRemainingTime
+    eventstoreAdapter: EventStoreAdapterLike,
+    getVacantTimeInMillis: MethodGetRemainingTime,
+    buildInfo: BuildInfo
   ): Promise<void>
 }
 
@@ -353,11 +399,14 @@ export type ConnectMethod<AdapterPool extends CommonAdapterPool> = (
   readModelName: string
 ) => Promise<ReadModelStore<StoreApi<AdapterPool>>>
 
+export type WrapWithCloneArgsMethod = <T extends FunctionLike>(fn: T) => T
+
 export type WrapConnectMethod = <
   AdapterPool extends CommonAdapterPool,
   AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
 >(
   pool: BaseAdapterPool<AdapterPool>,
+  wrapWithCloneArgs: WrapWithCloneArgsMethod,
   connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],
   storeApi: StoreApi<AdapterPool>,
   options: AdapterOptions
@@ -422,13 +471,14 @@ export type PathToolkitLib = {
 }
 
 export type MakeSplitNestedPathMethod = (
-  imports: BaseAdapterImports
+  PathToolkitLib: PathToolkitLib
 ) => SplitNestedPathMethod
 
 export type BaseAdapterImports = {
-  PathToolkit: PathToolkitLib
-  makeSplitNestedPath: MakeSplitNestedPathMethod
+  splitNestedPath: SplitNestedPathMethod
+  checkEventsContinuity: CheckEventsContinuityMethod
   withPerformanceTracer: WithPerformanceTracerMethod
+  wrapWithCloneArgs: WrapWithCloneArgsMethod
   wrapConnect: WrapConnectMethod
   wrapDisconnect: WrapDisconnectMethod
   wrapDispose: WrapDisposeMethod
@@ -489,11 +539,31 @@ export type ObjectKeys<T> = T extends object
   ? string[]
   : never
 
-export type ObjectFixedKeys<T extends object> = {
-  [K in keyof T]: string extends K ? never : number extends K ? never : K
-} extends { [_ in keyof T]: infer U }
+export type PrimitiveOnly<K> = string extends K
+  ? never
+  : number extends K
+  ? never
+  : K
+
+export type ObjectFixedKeysDistribute<T> = T extends any
+  ? T extends [infer U]
+    ? PrimitiveOnly<U>
+    : never
+  : never
+
+export type ObjectFixedKeysReInfer<T extends object> = T extends {
+  [K in keyof T]: infer U
+}
   ? U
   : never
+
+export type ObjectFixedKeysKeysToValues<T extends object> = {
+  [K in keyof T]: [K]
+}
+
+export type ObjectFixedKeys<T extends object> = ObjectFixedKeysDistribute<
+  ObjectFixedKeysReInfer<ObjectFixedKeysKeysToValues<T>>
+>
 
 export type DistributeKeysUnion<U> = U extends string | number | symbol
   ? { [K in U]: any }
@@ -568,6 +638,30 @@ export type IfEquals<T, U, Y = unknown, N = never> = (<G>() => G extends T
 
 export type IsTypeLike<T, B> = IfEquals<Extract<T, B>, T>
 
+export type MatchTypeConditional<
+  M extends any,
+  V extends Array<[any, any]>,
+  D = never
+> = V extends [[infer A, infer B], ...infer T]
+  ? T extends Array<[any, any]>
+    ? IfEquals<M, A, true, false> extends true
+      ? B
+      : MatchTypeConditional<M, T, D>
+    : D
+  : D
+
+export type MatchTypeConditionalLike<
+  M extends any,
+  V extends Array<[any, any]>,
+  D = never
+> = V extends [[infer A, infer B], ...infer T]
+  ? T extends Array<[any, any]>
+    ? IfEquals<Extract<M, A>, M, true, false> extends true
+      ? B
+      : MatchTypeConditionalLike<M, T, D>
+    : D
+  : D
+
 export type ExtractNewable<F extends NewableLike> = F extends new (
   ...args: infer Args
 ) => infer Result
@@ -585,36 +679,17 @@ export type MakeNewableFunction<F extends FunctionLike> = F extends (
   ...args: infer Args
 ) => infer Result
   ? T extends object
-    ? IfEquals<
+    ? MatchTypeConditionalLike<
         Result,
-        T,
-        new (...args: Args) => T,
-        IfEquals<
-          Result,
-          null,
-          new (...args: Args) => T,
-          IfEquals<
-            Result,
-            undefined,
-            new (...args: Args) => T,
-            IfEquals<
-              Result,
-              boolean,
-              new (...args: Args) => T,
-              IfEquals<
-                Result,
-                string,
-                new (...args: Args) => T,
-                IfEquals<
-                  Result,
-                  number,
-                  new (...args: Args) => T,
-                  IfEquals<Result, void, new (...args: Args) => T, never>
-                >
-              >
-            >
-          >
-        >
+        [
+          [T, new (...args: Args) => T],
+          [null, new (...args: Args) => T],
+          [undefined, new (...args: Args) => T],
+          [boolean, new (...args: Args) => T],
+          [number, new (...args: Args) => T],
+          [string, new (...args: Args) => T],
+          [void, new (...args: Args) => T]
+        ]
       >
     : never
   : never

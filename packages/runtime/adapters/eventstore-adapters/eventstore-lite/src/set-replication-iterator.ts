@@ -1,16 +1,16 @@
-import { AdapterPool } from './types'
-import { ReplicationState } from '@resolve-js/eventstore-base'
+import type { AdapterPool } from './types'
+import type { ReplicationState } from '@resolve-js/eventstore-base'
 import initReplicationStateTable from './init-replication-state-table'
 
 const setReplicationIterator = async (
   pool: AdapterPool,
   iterator: ReplicationState['iterator']
 ): Promise<void> => {
-  const { database, escapeId, escape } = pool
+  const { executeQuery, escapeId, escape } = pool
 
   const replicationStateTableName = await initReplicationStateTable(pool)
 
-  await database.exec(
+  await executeQuery(
     `UPDATE ${escapeId(replicationStateTableName)} 
     SET
       "Iterator" = ${escape(

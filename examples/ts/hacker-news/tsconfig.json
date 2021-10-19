@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "jsx": "react",
+    "allowJs": true,
+    "target": "es2018",
+    "lib": ["es2018", "dom"],
+    "types": ["node", "react", "jest"],
+    "noEmit": true,
+    "noImplicitAny": true
+  },
+  "include": [
+    "auth/**/*",
+    "client/**/*",
+    "common/**/*",
+    "import/**/*",
+    "test/unit/**/*",
+    "*.ts"
+  ]
+}

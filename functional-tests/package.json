@@ -1,6 +1,6 @@
 {
   "name": "functional-tests",
-  "version": "0.30.3",
+  "version": "0.32.0",
   "private": true,
   "scripts": {
     "cleanup": "ts-node --files=true scripts/run.ts clean",
@@ -9,27 +9,28 @@
     "test": "echo skipping"
   },
   "dependencies": {
-    "@babel/core": "7.11.6",
-    "@babel/node": "7.10.5",
-    "@babel/preset-env": "7.11.5",
-    "@internal/helpers": "0.30.3",
-    "@resolve-js/client": "0.30.3",
-    "babel-jest": "26.0.1",
+    "@babel/core": "7.14.3",
+    "@babel/node": "7.14.2",
+    "@babel/preset-env": "7.14.4",
+    "@internal/helpers": "0.32.0",
+    "@resolve-js/client": "0.32.0",
+    "babel-jest": "27.0.2",
     "commander": "6.1.0",
-    "consola": "2.15.0",
-    "fs-extra": "9.0.1",
+    "consola": "2.15.3",
+    "fs-extra": "8.1.0",
     "isomorphic-fetch": "3.0.0",
-    "jest": "26.6.3",
+    "jest": "27.0.3",
     "lodash": "4.17.21",
-    "nanoid": "3.1.12",
-    "semver": "7.3.2",
-    "testcafe": "^1.9.1",
-    "testcafe-browser-tools": "^2.0.10",
-    "ts-node": "9.0.0"
+    "nanoid": "3.1.20",
+    "semver": "7.3.4",
+    "testcafe": "1.14.2",
+    "testcafe-browser-tools": "2.0.15",
+    "ts-node": "10.0.0"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.11.0",
-    "@types/fs-extra": "9.0.1",
+    "@aws-sdk/client-lambda": "3.11.0",
+    "@types/fs-extra": "8.1.0",
     "@types/isomorphic-fetch": "0.0.35",
     "@types/nanoid": "2.1.0",
     "@types/semver": "7.3.4"

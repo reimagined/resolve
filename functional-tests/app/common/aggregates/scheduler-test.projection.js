@@ -1,3 +1,5 @@
-export default {
+const projection = {
   Init: () => ({}),
 }
+
+export default projection

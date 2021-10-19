@@ -1,15 +1,16 @@
 import { ReadModelQuery } from '@resolve-js/client'
-import { ReduxState } from '../types'
+import { ReduxState, ResultStatus } from '../types'
 import { getEntry } from './read-model-reducer'
 import { useSelector } from 'react-redux'
+import { getSelectorState } from './initial-state-manager'
 
 function useReduxReadModelSelector(query: ReadModelQuery | string): any {
-  if (typeof query === 'string') {
-    return useSelector((state: ReduxState) => getEntry(state.readModels, query))
-  }
+  const actualSelector = typeof query === 'string' ? query : { query }
+
   return useSelector((state: ReduxState) =>
-    getEntry(state.readModels, {
-      query,
+    getEntry(state.readModels, actualSelector, {
+      status: ResultStatus.Initial,
+      data: getSelectorState(actualSelector),
     })
   )
 }

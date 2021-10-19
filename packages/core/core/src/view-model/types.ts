@@ -13,7 +13,7 @@ export type ViewModelBuildContext = {
 export type ViewModelBuildResult = {
   data: any
   eventCount: number
-  cursor: any
+  cursor: string | null
 }
 
 export type ViewModelRuntime = {

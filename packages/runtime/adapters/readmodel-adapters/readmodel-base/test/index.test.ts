@@ -3,7 +3,6 @@ import createReadModelConnector, {
   CommonAdapterPool,
   CommonAdapterOptions,
 } from '../src'
-import makeSplitNestedPath from '../src/make-split-nested-path'
 
 jest.mock('../src/make-split-nested-path', () => jest.fn())
 
@@ -31,9 +30,8 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
     delete: jest.fn().mockImplementation(async () => void 0),
   }
 
-  const adapterPool = {
-    splitNestedPath: makeSplitNestedPath({} as any),
-  }
+  const loadProcedureSource = async () => null
+
   const eventstoreAdapter = {
     loadEvents: jest.fn().mockResolvedValue({ cursor: 'CURSOR', events: [] }),
     getNextCursor: jest.fn().mockReturnValue('CURSOR'),
@@ -52,21 +50,21 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
       existingSecrets: [],
       deletedSecrets: [],
     }),
-  }
+  } as any
 
   const adapterOptions = {
     parameter: 'content',
-  }
+  } as const
 
-  const adapter = createReadModelConnector(implementation, {
-    ...adapterPool,
-    ...adapterOptions,
-  })
+  const adapter = createReadModelConnector(implementation, adapterOptions)
 
   const getVacantTimeInMillis = jest.fn().mockReturnValue(15000)
 
   const modelInterop: Parameters<typeof adapter.build>[3] = {
-    acquireInitHandler: (
+    name: 'test',
+    connectorName: 'test',
+    acquireResolver: async () => async () => void 0,
+    acquireInitHandler: async (
       store: Parameters<
         Parameters<typeof adapter.build>[3]['acquireInitHandler']
       >[0]
@@ -76,7 +74,7 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
         fields: [],
       })
     },
-    acquireEventHandler: (
+    acquireEventHandler: async (
       store: Parameters<
         Parameters<typeof adapter.build>[3]['acquireEventHandler']
       >[0],
@@ -100,15 +98,24 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
 
   const readModelName = 'ReadModelName'
   const store = await adapter.connect(readModelName)
+  const adapterPool = (implementation.connect as any).mock.calls[0][0]
   expect(implementation.connect).toBeCalledWith(adapterPool, adapterOptions)
 
-  await adapter.subscribe(store, readModelName, null, null)
+  await adapter.subscribe(store, readModelName, null, null, loadProcedureSource)
+
   expect(implementation.subscribe).toBeCalledWith(
     adapterPool,
     readModelName,
     null,
-    null
+    null,
+    loadProcedureSource
   )
+
+  const buildInfo = {
+    initiator: 'read-model-next',
+    notificationId: '0',
+    sendTime: 0,
+  } as const
 
   const buildStep = jest.fn().mockImplementation(async () => {
     await new Promise((resolve) => setImmediate(resolve))
@@ -119,7 +126,8 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
       modelInterop,
       buildStep,
       eventstoreAdapter,
-      getVacantTimeInMillis
+      getVacantTimeInMillis,
+      buildInfo
     )
   })
   await buildStep()
@@ -130,10 +138,15 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
     modelInterop,
     buildStep,
     eventstoreAdapter,
-    getVacantTimeInMillis
+    getVacantTimeInMillis,
+    buildInfo
   )
 
-  await modelInterop.acquireInitHandler(store)()
+  let handler = await modelInterop.acquireInitHandler(store)
+  if (handler == null) {
+    throw Error('no init handler')
+  }
+  await handler()
   expect(implementation.defineTable).toBeCalledWith(
     adapterPool,
     readModelName,
@@ -142,7 +155,11 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
   )
 
   //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  await modelInterop.acquireEventHandler(store, null! as any)()
+  handler = await modelInterop.acquireEventHandler(store, null! as any)
+  if (handler == null) {
+    throw Error('no event handler')
+  }
+  await handler()
   expect(implementation.count).toBeCalledWith(
     adapterPool,
     readModelName,
@@ -181,12 +198,19 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
     { key: 'value' }
   )
 
-  await adapter.resubscribe(store, readModelName, null, null)
+  await adapter.resubscribe(
+    store,
+    readModelName,
+    null,
+    null,
+    loadProcedureSource
+  )
   expect(implementation.resubscribe).toBeCalledWith(
     adapterPool,
     readModelName,
     null,
-    null
+    null,
+    loadProcedureSource
   )
 
   await adapter.resume(store, readModelName, buildStep)
@@ -202,11 +226,20 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
   await adapter.reset(store, readModelName)
   expect(implementation.reset).toBeCalledWith(adapterPool, readModelName)
 
-  await adapter.status(store, readModelName)
-  expect(implementation.status).toBeCalledWith(adapterPool, readModelName)
+  await adapter.status(store, readModelName, eventstoreAdapter)
 
-  await adapter.unsubscribe(store, readModelName)
-  expect(implementation.unsubscribe).toBeCalledWith(adapterPool, readModelName)
+  expect(implementation.status).toBeCalledWith(
+    adapterPool,
+    readModelName,
+    eventstoreAdapter
+  )
+
+  await adapter.unsubscribe(store, readModelName, loadProcedureSource)
+  expect(implementation.unsubscribe).toBeCalledWith(
+    adapterPool,
+    readModelName,
+    loadProcedureSource
+  )
 
   await adapter.disconnect(store)
   expect(implementation.disconnect).toBeCalledWith(adapterPool)

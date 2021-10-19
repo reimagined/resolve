@@ -1,32 +1,41 @@
-import { EventsWithCursor, CursorFilter } from '@resolve-js/eventstore-base'
+import {
+  StoredEventBatchPointer,
+  CursorFilter,
+  StoredEvent,
+  cursorToThreadArray,
+  threadArrayToCursor,
+  emptyLoadEventsResult,
+} from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 
-const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
-
 const loadEventsByCursor = async (
-  { database, escapeId, escape, eventsTableName, shapeEvent }: AdapterPool,
+  {
+    executeStatement,
+    escapeId,
+    escape,
+    eventsTableName,
+    shapeEvent,
+  }: AdapterPool,
   filter: CursorFilter
-): Promise<EventsWithCursor> => {
+): Promise<StoredEventBatchPointer> => {
   const { eventTypes, aggregateIds, cursor, limit } = filter
   const injectString = (value: any): string => `${escape(value)}`
-  const injectNumber = (value: any): string => `${+value}`
 
-  const cursorBuffer: Buffer =
-    cursor != null ? Buffer.from(cursor, 'base64') : Buffer.alloc(1536, 0)
-  const vectorConditions = []
-  for (let i = 0; i < cursorBuffer.length / 6; i++) {
-    vectorConditions.push(
-      `0x${cursorBuffer.slice(i * 6, (i + 1) * 6).toString('hex')}`
-    )
-  }
+  const vectorConditions = cursorToThreadArray(cursor)
 
   const queryConditions = []
   if (eventTypes != null) {
+    if (eventTypes.length === 0) {
+      return emptyLoadEventsResult(cursor)
+    }
     queryConditions.push(
       `${escapeId('type')} IN (${eventTypes.map(injectString).join(', ')})`
     )
   }
   if (aggregateIds != null) {
+    if (aggregateIds.length === 0) {
+      return emptyLoadEventsResult(cursor)
+    }
     queryConditions.push(
       `${escapeId('aggregateId')} IN (${aggregateIds
         .map(injectString)
@@ -40,17 +49,17 @@ const loadEventsByCursor = async (
     ${vectorConditions
       .map(
         (threadCounter, threadId) =>
-          `${escapeId('threadId')} = ${injectNumber(threadId)} AND ${escapeId(
+          `${escapeId('threadId')} = ${+threadId} AND ${escapeId(
             'threadCounter'
-          )} >= ${threadCounter} `
+          )} >= ${+threadCounter} `
       )
       .join(' OR ')}
     ${queryConditions.length > 0 ? ')' : ''}`
 
   const tableNameAsId = escapeId(eventsTableName)
-  const events: any[] = []
+  const events: StoredEvent[] = []
 
-  const rows = await database.all(
+  const rows = await executeStatement(
     `SELECT * FROM ${tableNameAsId}
     ${resultQueryCondition}
     ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
@@ -60,35 +69,16 @@ const loadEventsByCursor = async (
   for (const event of rows) {
     const threadId = +event.threadId
     const threadCounter = +event.threadCounter
-    const oldThreadCounter = parseInt(
-      vectorConditions[threadId].substring(2),
-      16
-    )
-
-    vectorConditions[threadId] = `0x${Math.max(
-      threadCounter + 1,
-      oldThreadCounter
-    )
-      .toString(16)
-      .padStart(12, '0')}`
+    const oldThreadCounter = vectorConditions[threadId]
+    vectorConditions[threadId] = Math.max(threadCounter + 1, oldThreadCounter)
 
     events.push(shapeEvent(event))
   }
 
-  const nextConditionsBuffer = Buffer.alloc(1536)
-  let byteIndex = 0
-
-  for (const threadCounter of vectorConditions) {
-    const threadCounterBytes = threadCounter.substring(2).match(split2RegExp)
-    if (Array.isArray(threadCounterBytes)) {
-      for (const byteHex of threadCounterBytes) {
-        nextConditionsBuffer[byteIndex++] = Buffer.from(byteHex, 'hex')[0]
-      }
-    }
-  }
+  const nextConditions = threadArrayToCursor(vectorConditions)
 
   return {
-    cursor: nextConditionsBuffer.toString('base64'),
+    cursor: nextConditions,
     events,
   }
 }

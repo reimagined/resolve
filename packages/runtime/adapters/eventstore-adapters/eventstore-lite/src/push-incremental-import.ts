@@ -1,9 +1,10 @@
-import { AdapterPool } from './types'
-import { InputEvent } from '@resolve-js/eventstore-base'
+import type { AdapterPool } from './types'
+import { VersionlessEvent, THREAD_COUNT } from '@resolve-js/eventstore-base'
+import isIntegerOverflowError from './integer-overflow-error'
 
 const pushIncrementalImport = async (
-  { database, eventsTableName, escapeId, escape }: AdapterPool,
-  events: InputEvent[],
+  { executeQuery, eventsTableName, escapeId, escape }: AdapterPool,
+  events: VersionlessEvent[],
   importId: string
 ): Promise<void> => {
   try {
@@ -14,7 +15,7 @@ const pushIncrementalImport = async (
       `${eventsTableName}-incremental-import`
     )
 
-    await database.exec(
+    await executeQuery(
       `BEGIN IMMEDIATE;
       SELECT ABS("CTE"."IncrementalImportFailed") FROM (
         SELECT 0 AS "IncrementalImportFailed"
@@ -29,7 +30,7 @@ const pushIncrementalImport = async (
       ) CTE;
       
       INSERT INTO ${incrementalImportTableAsId}(
-        "timestamp", "aggregateId", "type", "payload"
+        "timestamp", "aggregateId", "type", "payload", "threadId"
       ) VALUES ${events
         .map(
           (event) => `(${+event.timestamp}, ${escape(
@@ -39,7 +40,7 @@ const pushIncrementalImport = async (
         event.payload != null
           ? escape(JSON.stringify(event.payload))
           : escape('null')
-      })`
+      }, ${event.timestamp % THREAD_COUNT})`
         )
         .join(',')};
     
@@ -48,12 +49,12 @@ const pushIncrementalImport = async (
     )
   } catch (error) {
     try {
-      await database.exec(`ROLLBACK;`)
+      await executeQuery(`ROLLBACK;`)
     } catch (e) {}
     if (
       error != null &&
-      (error.message === 'SQLITE_ERROR: integer overflow' ||
-        /^SQLITE_ERROR:.*? not exists$/.test(error.message))
+      (isIntegerOverflowError(error.message) ||
+        /^.*? not exists$/.test(error.message))
     ) {
       throw new Error(`Incremental importId=${importId} does not exist`)
     } else {

@@ -11,6 +11,7 @@ import getEventSubscribers from './get-event-subscribers'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
 import injectEvent from './inject-event'
+import injectEvents from './inject-events'
 import freeze from './freeze'
 import unfreeze from './unfreeze'
 import shapeEvent from './shape-event'
@@ -34,6 +35,8 @@ import dropEvents from './drop-events'
 import dropSecrets from './drop-secrets'
 import dropFinal from './drop-final'
 
+import describe from './describe'
+
 import type { Adapter } from '@resolve-js/eventstore-base'
 import type { ConnectionDependencies, MysqlAdapterConfig } from './types'
 
@@ -56,6 +59,7 @@ const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {
       dropFinal,
       dispose,
       injectEvent,
+      injectEvents,
       freeze,
       unfreeze,
       shapeEvent,
@@ -69,6 +73,7 @@ const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {
       deleteSecret,
       getSecret,
       setSecret,
+      describe,
     },
     { MySQL, escapeId, escape } as ConnectionDependencies,
     options

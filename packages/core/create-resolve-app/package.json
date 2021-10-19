@@ -1,6 +1,6 @@
 {
   "name": "create-resolve-app",
-  "version": "0.30.3",
+  "version": "0.32.0",
   "description": "A tool that generates boilerplate web applications based on the reSolve framework",
   "keywords": [
     "cqrs",
@@ -16,31 +16,38 @@
   "license": "MIT",
   "author": "reimagined team",
   "main": "./lib/index.js",
-  "bin": {
-    "create-resolve-app": "./bin/index.js"
-  },
+  "types": "./types/index.d.ts",
+  "bin": "./bin/index.js",
   "scripts": {
     "build": "yarn workspace @internal/babel-compile start --name=create-resolve-app",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.9.6",
-    "@resolve-js/debug-levels": "0.30.3",
-    "adm-zip": "^0.4.11",
-    "boxen": "^4.2.0",
-    "chalk": "^2.4.1",
-    "command-line-args": "^5.0.2",
-    "fs-extra": "^7.0.1",
+    "@babel/runtime": "7.14.0",
+    "@resolve-js/debug-levels": "0.32.0",
+    "adm-zip": "0.5.4",
+    "boxen": "5.0.0",
+    "chalk": "4.1.0",
+    "command-line-args": "5.1.1",
+    "fs-extra": "8.1.0",
+    "glob": "7.1.6",
     "progress": "2.0.3",
-    "source-map-support": "^0.5.9",
-    "validate-npm-package-name": "^3.0.0"
+    "validate-npm-package-name": "3.0.0",
+    "source-map-support": "0.5.19"
   },
   "devDependencies": {
-    "jest": "26.6.3"
+    "@types/adm-zip": "0.4.34",
+    "@types/command-line-args": "5.0.1",
+    "@types/jest": "26.0.23",
+    "@types/node": "14.17.5",
+    "@types/progress": "2.0.4",
+    "@types/validate-npm-package-name": "3.0.3",
+    "jest": "27.0.3",
+    "ts-jest": "^27.0.2"
   },
   "engines": {
-    "node": ">=12.18"
+    "node": ">=14.17"
   },
   "babelCompile": [
     {
@@ -49,5 +56,6 @@
       "inputDir": "./src",
       "outDir": "./lib"
     }
-  ]
+  ],
+  "sourceType": "ts"
 }

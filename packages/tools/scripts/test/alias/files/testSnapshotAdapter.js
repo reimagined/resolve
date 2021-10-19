@@ -1,1 +1,3 @@
-export default () => ({})
+const snapshotAdapter = () => ({})
+
+export default snapshotAdapter

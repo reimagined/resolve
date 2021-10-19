@@ -1,9 +1,9 @@
 import { AdapterPool } from './types'
-import { SavedEvent } from '@resolve-js/eventstore-base'
+import { StoredEvent } from '@resolve-js/eventstore-base'
 
 const injectEvent = async function (
-  { eventsTableName, database, escapeId, escape }: AdapterPool,
-  event: SavedEvent
+  { eventsTableName, executeQuery, escapeId, escape }: AdapterPool,
+  event: StoredEvent
 ): Promise<void> {
   const eventsTableNameAsId = escapeId(eventsTableName)
   const serializedPayload =
@@ -30,7 +30,7 @@ const injectEvent = async function (
   }
 
   // prettier-ignore
-  await database.exec(
+  await executeQuery(
     `INSERT INTO ${eventsTableNameAsId}(
       "threadId",
       "threadCounter",

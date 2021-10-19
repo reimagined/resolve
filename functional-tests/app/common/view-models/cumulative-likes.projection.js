@@ -1,6 +1,6 @@
 import { USER_REGISTERED, USER_LIKED } from '../event-types'
 
-export default {
+const projection = {
   Init: () => ({
     likes: -999,
   }),
@@ -13,3 +13,5 @@ export default {
     likes: state.likes + 1,
   }),
 }
+
+export default projection

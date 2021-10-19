@@ -1,1 +1,3 @@
-export default () => ({})
+const readModelConnector = () => ({})
+
+export default readModelConnector

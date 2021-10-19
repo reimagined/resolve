@@ -1,4 +1,4 @@
-import { AdapterPool } from './types'
+import type { AdapterPool } from './types'
 import initReplicationStateTable from './init-replication-state-table'
 
 const setReplicationPaused = async (

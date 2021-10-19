@@ -1,4 +1,4 @@
-export default {
+const resolvers = {
   all: async (store) => {
     return await store.find('Users', {})
   },
@@ -15,3 +15,5 @@ export default {
     return null
   },
 }
+
+export default resolvers

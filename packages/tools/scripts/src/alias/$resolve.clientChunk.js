@@ -2,7 +2,7 @@ import getClientGlobalEnvObject from '../client_global_object'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 import { message } from '../constants'
 
-export default ({ resolveConfig, isClient }) => {
+const importClientChunk = ({ resolveConfig, isClient }) => {
   if (!isClient) {
     throw new Error(`${message.clientAliasInServerCodeError}.clientAssemblies`)
   }
@@ -76,3 +76,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return exports.join('\r\n')
 }
+
+export default importClientChunk

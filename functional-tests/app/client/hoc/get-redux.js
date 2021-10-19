@@ -1,7 +1,5 @@
 import devTools from './enhancers/redux-devtools'
 
-const getRedux = () => ({
+export const getRedux = () => ({
   enhancers: [devTools],
 })
-
-export default getRedux

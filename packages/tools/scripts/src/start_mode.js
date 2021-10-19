@@ -1,11 +1,11 @@
 import path from 'path'
-import getLog from './get-log'
+import { getLog } from './get-log'
 
 import { processRegister } from './process_manager'
 
 const log = getLog('start')
 
-export default (resolveConfig) =>
+const startMode = (resolveConfig) =>
   new Promise(async (resolve, reject) => {
     log.debug('Starting "start" mode')
     const serverPath = path.resolve(
@@ -31,3 +31,5 @@ export default (resolveConfig) =>
     server.start()
     log.debug(`Server process pid: ${server.pid}`)
   })
+
+export default startMode

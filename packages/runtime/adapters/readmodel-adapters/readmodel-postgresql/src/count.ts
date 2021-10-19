@@ -1,36 +1,21 @@
 import type { CurrentStoreApi } from './types'
 
 const count: CurrentStoreApi['count'] = async (
-  {
-    inlineLedgerRunQuery,
-    escapeId,
-    escapeStr,
-    tablePrefix,
-    searchToWhereExpression,
-    makeNestedPath,
-    schemaName,
-    splitNestedPath,
-  },
+  pool,
   readModelName,
   tableName,
   searchExpression
 ) => {
-  const searchExpr = searchToWhereExpression(
-    searchExpression,
-    escapeId,
-    escapeStr,
-    makeNestedPath,
-    splitNestedPath
+  const sqlQuery = pool.makeSqlQuery(
+    pool,
+    readModelName,
+    'count',
+    tableName,
+    searchExpression
   )
-
-  const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
-
-  const rows = (await inlineLedgerRunQuery(
-    `SELECT Count(*) AS ${escapeId('Count')}
-    FROM ${escapeId(schemaName)}.${escapeId(`${tablePrefix}${tableName}`)}
-    ${inlineSearchExpr};`
-  )) as Array<{ Count: number }>
+  const rows = (await pool.inlineLedgerRunQuery(sqlQuery)) as Array<{
+    Count: number
+  }>
 
   if (
     Array.isArray(rows) &&

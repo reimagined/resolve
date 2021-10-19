@@ -1,4 +1,4 @@
-export default {
+const saga = {
   handlers: {
     UPDATE: async ({ sideEffects }, event) => {
       if (sideEffects.isEnabled) {
@@ -21,3 +21,5 @@ export default {
     },
   },
 }
+
+export default saga

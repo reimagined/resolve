@@ -1,12 +1,7 @@
 import createAdapter from './create-adapter'
 import importEventsStream from './import-events'
 import exportEventsStream from './export-events'
-import wrapMethod from './wrap-method'
-import wrapEventFilter from './wrap-event-filter'
-import wrapDispose from './wrap-dispose'
 import validateEventFilter from './validate-event-filter'
-import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
-import ConcurrentError from './concurrent-error'
 import {
   ResourceAlreadyExistError,
   ResourceNotExistError,
@@ -17,7 +12,6 @@ import {
   AlreadyFrozenError,
   AlreadyUnfrozenError,
 } from './frozen-errors'
-import { ReplicationAlreadyInProgress } from './replication-errors'
 import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
 import throwBadCursor from './throw-bad-cursor'
@@ -28,25 +22,43 @@ import exportSecretsStream from './export-secrets'
 import init from './init'
 import drop from './drop'
 import gatherSecretsFromEvents from './gather-secrets-from-events'
+import getEventLoader from './get-event-loader'
 import * as iots from 'io-ts'
 import * as iotsTypes from 'io-ts-types'
 
-import {
-  validate,
-  UnbrandProps,
-  CursorFilter,
-  TimestampFilter,
-  isTimestampFilter,
-  isCursorFilter,
-  Adapter,
+import type {
   AdapterFunctions,
   AdapterPoolConnectedProps,
   CommonAdapterFunctions,
-  AdapterPoolPossiblyUnconnected,
-  AdapterPoolConnected,
+  Adapter,
   AdapterConfig,
-  AdapterConfigSchema,
 } from './types'
+import { AdapterPoolPossiblyUnconnected } from './types'
+
+export {
+  validate,
+  isTimestampFilter,
+  isCursorFilter,
+  AdapterConfigSchema,
+  AdapterTableNamesSchema,
+  getInitialReplicationState,
+} from './types'
+export {
+  threadArrayToCursor,
+  cursorToThreadArray,
+  initThreadArray,
+  emptyLoadEventsResult,
+  checkEventsContinuity,
+} from './cursor-operations'
+export {
+  MAINTENANCE_MODE_AUTO,
+  MAINTENANCE_MODE_MANUAL,
+  THREAD_COUNT,
+  CURSOR_BUFFER_SIZE,
+  THREAD_COUNTER_BYTE_LENGTH,
+} from './constants'
+
+export * from './errors'
 
 const wrappedCreateAdapter = <
   ConnectedProps extends AdapterPoolConnectedProps,
@@ -59,15 +71,17 @@ const wrappedCreateAdapter = <
     Config
   >,
   connectionDependencies: ConnectionDependencies,
-  options: Config
+  options: Config,
+  prepare?: (
+    props: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+    config: Config,
+    dependencies: ConnectionDependencies
+  ) => void
 ): Adapter => {
   const commonFunctions: CommonAdapterFunctions<ConnectedProps> = {
     maybeThrowResourceError,
     importEventsStream,
     exportEventsStream,
-    wrapMethod,
-    wrapEventFilter,
-    wrapDispose,
     validateEventFilter,
     loadEvents,
     incrementalImport,
@@ -77,65 +91,71 @@ const wrappedCreateAdapter = <
     init,
     drop,
     gatherSecretsFromEvents,
+    getEventLoader,
   }
 
   return createAdapter(
     commonFunctions,
     adapterFunctions,
     connectionDependencies,
-    options
+    options,
+    prepare
   )
 }
 
 export default wrappedCreateAdapter
 
 export {
-  validate,
-  UnbrandProps,
   ResourceAlreadyExistError as EventstoreResourceAlreadyExistError,
   ResourceNotExistError as EventstoreResourceNotExistError,
-  ConcurrentError,
   EventstoreFrozenError,
   AlreadyFrozenError as EventstoreAlreadyFrozenError,
   AlreadyUnfrozenError as EventstoreAlreadyUnfrozenError,
-  ReplicationAlreadyInProgress,
-  MAINTENANCE_MODE_AUTO,
-  MAINTENANCE_MODE_MANUAL,
   throwBadCursor,
   getNextCursor,
   snapshotTrigger,
-  CursorFilter,
-  TimestampFilter,
-  isTimestampFilter,
-  isCursorFilter,
-  Adapter,
-  AdapterPoolConnectedProps,
-  AdapterPoolConnected,
-  AdapterPoolPossiblyUnconnected,
-  AdapterConfig,
-  AdapterConfigSchema,
   iots,
   iotsTypes,
 }
 
-export {
+export type {
   ImportOptions,
   ExportOptions,
   SecretFilter,
   SecretsWithIdx,
   SecretRecord,
   InputEvent,
-  SavedEvent,
-  EventThreadData,
+  VersionlessEvent,
+  InputCursor,
   Cursor,
-  EventsWithCursor,
+  StoredEventBatchPointer,
+  StoredEventPointer,
   EventFilter,
+  LatestEventFilter,
   ReplicationStatus,
   ReplicationState,
   OldEvent,
   OldSecretRecord,
-  getInitialReplicationState,
+  UnbrandProps,
+  CursorFilter,
+  TimestampFilter,
+  Adapter,
+  AdapterPoolPossiblyUnconnected,
+  AdapterPoolConnected,
+  AdapterPoolConnectedProps,
+  AdapterConfig,
+  AdapterTableNames,
+  AdapterTableNamesProps,
+  GatheredSecrets,
+  EventLoaderFilter,
+  EventLoader,
 } from './types'
+
+export type {
+  StoredEvent,
+  EventThreadData,
+  EventStoreDescription,
+} from '@resolve-js/core'
 
 export {
   makeSetSecretEvent,

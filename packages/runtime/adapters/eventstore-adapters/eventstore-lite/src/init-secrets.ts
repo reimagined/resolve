@@ -1,12 +1,12 @@
 import { EventstoreResourceAlreadyExistError } from '@resolve-js/eventstore-base'
 import { AGGREGATE_ID_SQL_TYPE } from './constants'
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { AdapterPool } from './types'
 import executeSequence from './execute-sequence'
 import { isAlreadyExistsError } from './resource-errors'
 
 const initSecrets = async ({
-  database,
+  executeQuery,
   databaseFile,
   secretsTableName,
   escapeId,
@@ -30,7 +30,7 @@ const initSecrets = async ({
   ]
 
   const errors: any[] = await executeSequence(
-    database,
+    executeQuery,
     statements,
     log,
     (error) => {

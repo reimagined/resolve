@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/module-auth",
-  "version": "0.30.3",
+  "version": "0.32.0",
   "description": "A reSolve module that adds authentication to an application.",
   "keywords": [
     "cqrs",
@@ -23,17 +23,17 @@
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.9.6",
-    "iconv-lite": "0.4.24",
+    "@babel/runtime": "7.14.0",
+    "iconv-lite": "0.6.2",
     "isomorphic-fetch": "3.0.0",
-    "uuid": "8.3.1"
+    "uuid": "8.3.2"
   },
   "devDependencies": {
-    "jest": "26.6.3",
-    "sinon": "7.2.2"
+    "jest": "27.0.3",
+    "sinon": "9.2.4"
   },
   "engines": {
-    "node": ">=12.18"
+    "node": ">=14.17"
   },
   "babelCompile": [
     {

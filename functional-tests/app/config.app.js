@@ -101,6 +101,25 @@ const appConfig = {
       projection: 'common/view-models/test-scenario.projection.js',
       resolver: 'common/view-models/test-scenario.resolver.js',
     },
+    {
+      name: 'custom-aggregate-ids',
+      projection: 'common/view-models/custom-aggregate-ids.projection.js',
+      resolver: 'common/view-models/custom-aggregate-ids.resolver.js',
+    },
+    {
+      name: 'monitoring-view-model',
+      projection: 'common/view-models/monitoring.projection.js',
+      resolver: 'common/view-models/monitoring.resolver.js',
+    },
+    {
+      name: 'init-failed-view-model',
+      projection: 'common/view-models/init-failed.projection.js',
+    },
+    {
+      name: 'resolver-failed-view-model',
+      projection: 'common/view-models/resolver-failed.projection.js',
+      resolver: 'common/view-models/resolver-failed.resolver.js',
+    },
   ],
   sagas: [
     {
@@ -115,18 +134,31 @@ const appConfig = {
     },
   ],
   clientImports: {
-    version: '@resolve-js/runtime/lib/common/utils/interop-options.js',
+    appOptions: {
+      package: '@resolve-js/core',
+      import: 'optionsInjector',
+    },
   },
   apiHandlers: [
     {
-      handler: '@resolve-js/runtime/lib/local/query-is-ready-handler.js',
+      handler: 'common/api-handlers/fail-api.js',
+      path: '/api/fail-api',
+      method: 'GET',
+    },
+    {
+      handler: {
+        package: '@resolve-js/runtime-single-process',
+        import: 'queryIsReadyHandler',
+      },
       path: '/api/query-is-ready',
       method: 'GET',
     },
     {
       handler: {
-        module:
-          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+        module: {
+          package: '@resolve-js/runtime-base',
+          import: 'liveRequireHandler',
+        },
         options: {
           modulePath: './ssr-hoc.js',
           moduleFactoryImport: false,
@@ -137,8 +169,10 @@ const appConfig = {
     },
     {
       handler: {
-        module:
-          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+        module: {
+          package: '@resolve-js/runtime-base',
+          import: 'liveRequireHandler',
+        },
         options: {
           modulePath: './ssr-hoc.js',
           moduleFactoryImport: false,
@@ -149,8 +183,10 @@ const appConfig = {
     },
     {
       handler: {
-        module:
-          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+        module: {
+          package: '@resolve-js/runtime-base',
+          import: 'liveRequireHandler',
+        },
         options: {
           modulePath: './ssr-redux-hooks.js',
           moduleFactoryImport: false,
@@ -161,8 +197,10 @@ const appConfig = {
     },
     {
       handler: {
-        module:
-          '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+        module: {
+          package: '@resolve-js/runtime-base',
+          import: 'liveRequireHandler',
+        },
         options: {
           modulePath: './ssr-redux-hooks.js',
           moduleFactoryImport: false,

@@ -1,9 +1,8 @@
-import {
+import type {
   Adapter,
   ReplicationState,
   OldSecretRecord,
   OldEvent,
-  ReplicationAlreadyInProgress,
 } from '@resolve-js/eventstore-base'
 import {
   jestTimeout,
@@ -63,7 +62,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(state.statusData).toEqual(null)
   })
 
-  test('set-replication-status should set lastEvent and not rewrite it if it was not provided', async () => {
+  test('set-replication-status should set successEvent and not rewrite it if it was not provided', async () => {
     const event: OldEvent = {
       aggregateId: 'aggregateId',
       aggregateVersion: 1,
@@ -80,13 +79,6 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     state = await adapter.getReplicationState()
     expect(state.status).toEqual('error')
     expect(state.successEvent).toEqual(event)
-  })
-
-  test('set-replication-status should throw ReplicationAlreadyInProgress if replication is already in progress', async () => {
-    await adapter.setReplicationStatus('batchInProgress')
-    await expect(
-      adapter.setReplicationStatus('batchInProgress')
-    ).rejects.toThrow(ReplicationAlreadyInProgress)
   })
 
   test('set-replication-iterator should change iterator property of the state', async () => {
@@ -204,7 +196,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(loadedSecrets).toEqual(loadedAgainSecrets)
   })
 
-  const eventCount = 128
+  const eventCount = 2560
 
   test('replicate-events should insert events', async () => {
     const events: OldEvent[] = []
@@ -213,34 +205,50 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     }
 
     await adapter.replicateEvents(events)
-    const { events: loadedEvents } = await adapter.loadEvents({
-      limit: eventCount,
-      cursor: null,
-    })
-    expect(loadedEvents).toHaveLength(eventCount)
+
+    let loadedEventCount = 0
+    let currentCursor = null
+    while (loadedEventCount < eventCount) {
+      const { events, cursor: nextCursor } = await adapter.loadEvents({
+        limit: 100,
+        cursor: currentCursor,
+      })
+      loadedEventCount += events.length
+      currentCursor = nextCursor
+    }
+
+    expect(loadedEventCount).toEqual(eventCount)
   })
 
   const eventIndexAfterGap = eventCount + Math.floor(eventCount / 2)
 
   test('replicate-events should ignore duplicates', async () => {
+    const addEventCount = 100
+
     const eventsAfterGap: OldEvent[] = []
-    for (let i = eventIndexAfterGap; i < eventCount * 2; ++i) {
+    for (let i = eventIndexAfterGap; i < eventCount + addEventCount; ++i) {
       eventsAfterGap.push(makeTestEvent(i))
     }
     await adapter.replicateEvents(eventsAfterGap)
 
     const events: OldEvent[] = []
-    for (let i = eventCount; i < eventCount * 2; ++i) {
+    for (let i = eventCount; i < eventCount + addEventCount; ++i) {
       events.push(makeTestEvent(i))
     }
     await adapter.replicateEvents(events)
 
-    const { events: loadedEvents } = await adapter.loadEvents({
-      limit: eventCount * 2,
-      cursor: null,
-    })
+    let loadedEventCount = 0
+    let currentCursor = null
+    while (loadedEventCount < eventCount + addEventCount) {
+      const { events, cursor: nextCursor } = await adapter.loadEvents({
+        limit: 100,
+        cursor: currentCursor,
+      })
+      loadedEventCount += events.length
+      currentCursor = nextCursor
+    }
 
-    expect(loadedEvents).toHaveLength(eventCount * 2)
+    expect(loadedEventCount).toEqual(eventCount + addEventCount)
   })
 
   test('reset-replication should remove all events and secrets and reset state', async () => {
@@ -261,6 +269,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(state.iterator).toBeNull()
   })
 
+  const lessEventCount = 128
   test('should be able to replicate secrets and events after reset', async () => {
     const secretRecords: OldSecretRecord[] = generateSecrets(secretCount)
 
@@ -272,20 +281,20 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(loadedSecrets).toHaveLength(secretCount)
 
     const events: OldEvent[] = []
-    for (let i = 0; i < eventCount; ++i) {
+    for (let i = 0; i < lessEventCount; ++i) {
       events.push(makeTestEvent(i))
     }
 
     await adapter.replicateEvents(events)
     const { events: loadedEvents } = await adapter.loadEvents({
-      limit: eventCount,
+      limit: lessEventCount,
       cursor: null,
     })
-    expect(loadedEvents).toHaveLength(eventCount)
+    expect(loadedEvents).toHaveLength(lessEventCount)
   })
 
   test('should be able to save event and secret after replication', async () => {
-    await adapter.saveEvent(makeTestEvent(eventCount))
+    await adapter.saveEvent(makeTestEvent(lessEventCount))
     const secretManager = await adapter.getSecretsManager()
     await secretManager.setSecret(
       makeIdFromIndex(secretCount),
@@ -293,9 +302,9 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     )
 
     const { events: loadedEvents } = await adapter.loadEvents({
-      limit: eventCount + 1,
+      limit: lessEventCount + 1,
       cursor: null,
     })
-    expect(loadedEvents).toHaveLength(eventCount + 1)
+    expect(loadedEvents).toHaveLength(lessEventCount + 1)
   })
 })

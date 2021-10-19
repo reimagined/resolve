@@ -1,4 +1,4 @@
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { AdapterPool } from './types'
 
 const dispose = async (pool: AdapterPool): Promise<any> => {

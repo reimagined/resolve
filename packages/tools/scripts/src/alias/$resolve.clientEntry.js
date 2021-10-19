@@ -4,9 +4,9 @@ import {
   RESOURCE_INSTANCE_ONLY,
   IMPORT_INSTANCE,
 } from '../constants'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
-export default ({ resolveConfig, isClient }, resourceQuery) => {
+const importClientEntry = ({ resolveConfig, isClient }, resourceQuery) => {
   if (!/^\?/.test(resourceQuery)) {
     throw new Error(
       `Resource $resolve.clientEntry should be retrieved with resource query`
@@ -28,9 +28,7 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
     : 'iife'
 
   const imports = [
-    `import getRootBasedUrl from '@resolve-js/runtime/lib/common/utils/get-root-based-url'`,
-    `import getStaticBasedPath from '@resolve-js/runtime/lib/common/utils/get-static-based-path'`,
-    `import jsonUtfStringify from '@resolve-js/runtime/lib/common/utils/json-utf-stringify'`,
+    `import { getRootBasedUrl, getStaticBasedPath, jsonUtfStringify }  from '@resolve-js/core'`,
   ]
 
   const constants = [
@@ -88,3 +86,5 @@ export default ({ resolveConfig, isClient }, resourceQuery) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importClientEntry

@@ -1,43 +1,55 @@
+import type {
+  InputEvent,
+  EventThreadData,
+  StoredEvent,
+  StoredEventPointer,
+} from '@resolve-js/eventstore-base'
 import {
   ConcurrentError,
-  InputEvent,
   EventstoreFrozenError,
+  threadArrayToCursor,
+  initThreadArray,
+  THREAD_COUNT,
 } from '@resolve-js/eventstore-base'
 
 import { RESERVED_EVENT_SIZE, LONG_NUMBER_SQL_TYPE } from './constants'
-import { AdapterPool } from './types'
+import checkRequestTimeout from './check-request-timeout'
+import type { AdapterPool } from './types'
+import assert from 'assert'
 
 const saveEvent = async (
-  {
+  pool: AdapterPool,
+  event: InputEvent
+): Promise<StoredEventPointer> => {
+  const {
     databaseName,
     eventsTableName,
     executeStatement,
     escapeId,
     escape,
-  }: AdapterPool,
-  event: InputEvent
-): Promise<void> => {
-  while (true) {
-    try {
-      const serializedEvent = [
-        `${escape(event.aggregateId)},`,
-        `${+event.aggregateVersion},`,
-        `${escape(event.type)},`,
-        escape(JSON.stringify(event.payload != null ? event.payload : null)),
-      ].join('')
+    getVacantTimeInMillis,
+  } = pool
+  checkRequestTimeout(pool)
 
-      // TODO: Improve calculation byteLength depend on codepage and wide-characters
-      const byteLength =
-        Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
+  try {
+    const serializedEvent = [
+      `${escape(event.aggregateId)},`,
+      `${+event.aggregateVersion},`,
+      `${escape(event.type)},`,
+      escape(JSON.stringify(event.payload != null ? event.payload : null)),
+    ].join('')
 
-      const databaseNameAsString = escape(databaseName)
-      const databaseNameAsId = escapeId(databaseName)
-      const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
-      const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
-      const eventsTableAsId = escapeId(eventsTableName)
+    // TODO: Improve calculation byteLength depend on codepage and wide-characters
+    const byteLength = Buffer.byteLength(serializedEvent) + RESERVED_EVENT_SIZE
 
-      await executeStatement(
-        `WITH "freeze_check" AS (
+    const databaseNameAsString = escape(databaseName)
+    const databaseNameAsId = escapeId(databaseName)
+    const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
+    const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
+    const eventsTableAsId = escapeId(eventsTableName)
+
+    const stringRows = (await executeStatement(
+      `WITH "freeze_check" AS (
           SELECT 0 AS "freeze_zero" WHERE (
             (SELECT 1 AS "EventStoreIsFrozen")
           UNION ALL
@@ -71,7 +83,7 @@ const saveEvent = async (
             SELECT "threadId" FROM "vector_id" LIMIT 1
           )
           RETURNING *
-        ) INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
+        ), "insert_event" AS (INSERT INTO ${databaseNameAsId}.${eventsTableAsId}(
           "threadId",
           "threadCounter",
           "timestamp",
@@ -90,21 +102,64 @@ const saveEvent = async (
           ),
           ${serializedEvent},
           ${byteLength}
-        )`
-      )
+        ) RETURNING "timestamp") (SELECT "threadId", 0 AS "timestamp",
+        (CASE WHEN (SELECT "threadId" FROM "vector_id" LIMIT 1) = "threadId" THEN (SELECT "threadCounter" FROM "update_vector_id" LIMIT 1)
+          ELSE "threadCounter" END) AS "newThreadCounter"
+        FROM ${databaseNameAsId}.${threadsTableAsId}
+        ORDER BY "threadId" ASC) UNION ALL (SELECT 
+          (SELECT "threadId" FROM "vector_id" LIMIT 1), 
+          (SELECT "timestamp" FROM "insert_event" LIMIT 1),
+          (SELECT "threadCounter" AS "newThreadCounter" FROM "vector_id" LIMIT 1)
+          )`,
+      getVacantTimeInMillis !== undefined
+    )) as Array<{
+      threadId: EventThreadData['threadId']
+      newThreadCounter: EventThreadData['threadCounter']
+      timestamp: StoredEvent['timestamp']
+    }>
 
-      break
-    } catch (error) {
-      const errorMessage =
-        error != null && error.message != null ? error.message : ''
-
-      if (errorMessage.indexOf('subquery used as an expression') > -1) {
-        throw new EventstoreFrozenError()
-      } else if (/aggregateIdAndVersion/i.test(errorMessage)) {
-        throw new ConcurrentError(event.aggregateId)
-      } else {
-        throw error
+    const rows = stringRows.map((row) => {
+      const result = {
+        threadId: +row.threadId,
+        newThreadCounter: +row.newThreadCounter,
+        timestamp: +row.timestamp,
       }
+      assert.strict.ok(!Number.isNaN(result.threadId))
+      assert.strict.ok(!Number.isNaN(result.newThreadCounter))
+      assert.strict.ok(!Number.isNaN(result.timestamp))
+
+      return result
+    })
+
+    assert.strictEqual(
+      rows.length - 1,
+      THREAD_COUNT,
+      'Thread table must have 256 rows'
+    )
+    const threadCounters = initThreadArray()
+    for (let i = 0; i < THREAD_COUNT; ++i) {
+      const row = rows[i]
+      threadCounters[row.threadId] = +row.newThreadCounter
+    }
+    return {
+      cursor: threadArrayToCursor(threadCounters),
+      event: {
+        ...event,
+        threadId: +rows[THREAD_COUNT].threadId,
+        threadCounter: +rows[THREAD_COUNT].newThreadCounter,
+        timestamp: +rows[THREAD_COUNT].timestamp,
+      },
+    }
+  } catch (error) {
+    const errorMessage =
+      error != null && error.message != null ? error.message : ''
+
+    if (errorMessage.indexOf('subquery used as an expression') > -1) {
+      throw new EventstoreFrozenError()
+    } else if (/aggregateIdAndVersion/i.test(errorMessage)) {
+      throw new ConcurrentError(event.aggregateId)
+    } else {
+      throw error
     }
   }
 }

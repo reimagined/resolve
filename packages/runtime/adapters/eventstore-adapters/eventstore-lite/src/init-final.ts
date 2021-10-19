@@ -1,4 +1,4 @@
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { AdapterPool } from './types'
 
 const initFinal = async ({ databaseFile }: AdapterPool): Promise<any[]> => {

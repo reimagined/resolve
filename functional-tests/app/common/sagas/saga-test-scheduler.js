@@ -1,4 +1,4 @@
-export default {
+const saga = {
   handlers: {
     SagaSchedulerRequested: async (
       { sideEffects: { scheduleCommand } },
@@ -15,3 +15,4 @@ export default {
     },
   },
 }
+export default saga

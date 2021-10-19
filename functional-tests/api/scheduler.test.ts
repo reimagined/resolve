@@ -46,25 +46,20 @@ test('executes scheduled command correctly', async () => {
         middleware: {
           response: createWaitForResponseMiddleware({
             validator: async (response, confirm) => {
-              if (response.ok) {
-                const result = await response.json()
-                if (result.data != null) {
-                  confirm(result)
-                }
+              const result = await response.json()
+              if (result != null && result.data?.id === testId) {
+                confirm(result)
               }
             },
             attempts: 5,
             period: 3000,
+            debug: true,
           }),
         },
       }
     )
 
-    if (result == null) {
-      throw new Error('Empty query result')
-    }
-
-    expect(result.data).toEqual({
+    expect(result?.data).toEqual({
       id: testId,
     })
   }

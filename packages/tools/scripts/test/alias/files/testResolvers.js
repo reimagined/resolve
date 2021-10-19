@@ -1,4 +1,4 @@
-export default {
+const resolvers = {
   todos() {
     return [1, 2, 3]
   },
@@ -6,3 +6,5 @@ export default {
     return [3, 4, 5]
   },
 }
+
+export default resolvers

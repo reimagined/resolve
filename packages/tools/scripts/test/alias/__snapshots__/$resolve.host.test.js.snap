@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly [server] 1`] = `
+"
+const host = \\"1.2.3.4\\"
+
+export default host
+"
+`;
+
+exports[`config with process.env works correctly [server] 1`] = `
+"
+const host = (((first, second) => (first != null ? first : second))(process.env[\\"HOST\\"], null))
+
+export default host
+"
+`;

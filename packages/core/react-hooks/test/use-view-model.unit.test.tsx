@@ -1,5 +1,5 @@
 import React from 'react'
-import { Context } from '@resolve-js/client'
+import { Context, QueryResult } from '@resolve-js/client'
 import { renderHook } from '@testing-library/react-hooks'
 import { mocked } from 'ts-jest/utils'
 import { ResolveContext } from '../src/context'
@@ -37,7 +37,7 @@ const mockContext: Context = {
 
 const mockClient = {
   command: jest.fn(),
-  query: jest.fn<any, any>(() =>
+  query: jest.fn<Promise<QueryResult>, any>(() =>
     Promise.resolve({
       data: {
         queried: 'result',
@@ -429,7 +429,7 @@ describe('call', () => {
     expect(initialState).toEqual({ initializedOnClient: true })
   })
 
-  test('#1524 issue: malformed cursor during connect if no events applied to a view model', async () => {
+  test('#1524: malformed cursor during connect if no events applied to a view model', async () => {
     mockClient.query.mockResolvedValueOnce({
       data: {
         queried: 'result',
@@ -485,5 +485,39 @@ describe('call', () => {
     await emulateIncomingEvent(event)
 
     expect(mockEventReceived).toHaveBeenCalledWith(event)
+  })
+
+  test('#1874: connect as promise with aggregateIds returned by resolver', async () => {
+    const {
+      result: {
+        current: { connect },
+      },
+    } = renderWrapped(() =>
+      useViewModel('view-model-name', ['aggregate-id'], mockStateChange)
+    )
+
+    mockClient.query.mockResolvedValueOnce({
+      data: {
+        queried: 'result',
+      },
+      meta: {
+        timestamp: 1,
+        url: 'url',
+        cursor: 'cursor',
+        aggregateIds: ['modified-aggregate-id'],
+      },
+    })
+
+    await connect()
+
+    expect(mockClient.subscribe).toBeCalledWith(
+      expect.anything(),
+      expect.anything(),
+      expect.anything(),
+      ['modified-aggregate-id'],
+      expect.any(Function),
+      undefined,
+      expect.any(Function)
+    )
   })
 })

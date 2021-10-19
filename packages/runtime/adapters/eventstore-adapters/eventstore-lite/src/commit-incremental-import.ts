@@ -1,7 +1,8 @@
-import { AdapterPool } from './types'
+import type { AdapterPool } from './types'
+import isIntegerOverflowError from './integer-overflow-error'
 
 const commitIncrementalImport = async (
-  { database, eventsTableName, escapeId, escape }: AdapterPool,
+  { executeQuery, eventsTableName, escapeId, escape }: AdapterPool,
   importId: string
 ): Promise<void> => {
   const incrementalImportTableAsId = escapeId(
@@ -13,7 +14,7 @@ const commitIncrementalImport = async (
   const eventsTableAsId = escapeId(eventsTableName)
 
   try {
-    await database.exec(`BEGIN IMMEDIATE;
+    await executeQuery(`BEGIN IMMEDIATE;
       SELECT ABS("CTE1"."IncrementalImportFailed") FROM (
         SELECT 0 AS "IncrementalImportFailed"
       UNION ALL
@@ -37,10 +38,10 @@ const commitIncrementalImport = async (
         WHERE "MaybeEqualEvents"."payloadA" = "MaybeEqualEvents"."payloadB"
       );
       
-      SELECT ABS("CTE2"."IncrementalImportFailed") FROM (
-      SELECT 0 AS "IncrementalImportFailed"
+      SELECT json_type("CTE2"."IncrementalImportFailed") FROM (
+      SELECT '{}' AS "IncrementalImportFailed"
       UNION ALL
-        SELECT -9223372036854775808 AS "IncrementalImportFailed"
+        SELECT 'Malformed' AS "IncrementalImportFailed"
         FROM ${eventsTableAsId}
         WHERE ${eventsTableAsId}."timestamp" > (
           SELECT MIN(${incrementalImportTableAsId}."timestamp") FROM ${incrementalImportTableAsId}
@@ -48,29 +49,23 @@ const commitIncrementalImport = async (
         LIMIT 2
       ) "CTE2";
       
+      
       WITH "CTE3" AS (
-        SELECT ROW_NUMBER() OVER (ORDER BY "timestamp", "rowid") - 1 AS "sortedIdx",
+        SELECT ROW_NUMBER() OVER (PARTITION BY "threadId" ORDER BY "timestamp", "rowid") - 1 AS "sortedIdx",
         "rowid" as "rowIdX"
         FROM ${incrementalImportTableAsId}
         ORDER BY "timestamp"
-      )
-      UPDATE ${incrementalImportTableAsId} SET "sortedIdx" = (
-        SELECT "CTE3"."sortedIdx" FROM "CTE3"
-        WHERE "CTE3"."rowIdX" = ${incrementalImportTableAsId}."rowid"
-      );
-      
-      WITH "CTE4" AS (
+      ),
+      "CTE4" AS (
         SELECT "threadId", MAX("threadCounter") AS "threadCounter"  
         FROM ${eventsTableAsId}
         GROUP BY "threadId"
       )
       UPDATE ${incrementalImportTableAsId} 
-      SET "threadId" = "sortedIdx" % 256,
-      "threadCounter" = COALESCE((
+      SET "threadCounter" = COALESCE((
         SELECT "CTE4"."threadCounter" FROM "CTE4"
-        WHERE "CTE4"."threadId" = ${incrementalImportTableAsId}."sortedIdx" % 256
-      ), -1) + 1 + CAST(("sortedIdx" / 256) AS INT) -
-      (("sortedIdx" / 256) < CAST(("sortedIdx" / 256) AS INT));
+        WHERE "CTE4"."threadId" = ${incrementalImportTableAsId}."timestamp" % 256
+      ), -1) + 1 + (SELECT "sortedIdx" FROM "CTE3" WHERE "CTE3"."rowIdX" = ${incrementalImportTableAsId}."rowid");
       
       WITH "CTE5" AS (
         SELECT MAX("aggregateVersion") AS "aggregateVersion", "aggregateId"  
@@ -111,28 +106,25 @@ const commitIncrementalImport = async (
         "aggregateVersion",
         "type",
         "payload"
-      FROM ${incrementalImportTableAsId}
-      ORDER BY "sortedIdx";
+      FROM ${incrementalImportTableAsId};
            
       COMMIT;
       `)
   } catch (error) {
     try {
-      await database.exec(`ROLLBACK;`)
+      await executeQuery(`ROLLBACK;`)
     } catch (e) {}
-    if (
-      error != null &&
-      (error.message === 'SQLITE_ERROR: integer overflow' ||
-        /^SQLITE_ERROR:.*? not exists$/.test(error.message))
-    ) {
-      throw new Error(
-        `Either event batch has timestamps from the past or incremental importId=${importId} does not exist`
-      )
+    if (error != null && isIntegerOverflowError(error.message)) {
+      throw new Error(`Incremental importId=${importId} does not exist`)
+    } else if (error != null && /^.*? not exists$/.test(error.message)) {
+      throw new Error('Incremental import table does not exist')
+    } else if (error != null && error.message.endsWith('malformed JSON')) {
+      throw new Error('Event batch has timestamps from the past')
     } else {
       throw error
     }
   } finally {
-    await database.exec(`DROP TABLE IF EXISTS ${incrementalImportTableAsId};`)
+    await executeQuery(`DROP TABLE IF EXISTS ${incrementalImportTableAsId};`)
   }
 }
 

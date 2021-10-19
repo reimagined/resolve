@@ -1,8 +1,12 @@
 import { getAggregatesInteropBuilder } from '../src/aggregate/get-aggregates-interop-builder'
 import { CommandError } from '../src/errors'
-import { AggregateRuntime } from '../src/aggregate/types'
-import { SecretsManager, Event } from '../src/types/core'
-import { Eventstore, Monitoring } from '../src/types/runtime'
+import {
+  AggregateRuntime,
+  CommandHttpResponseMode,
+} from '../src/aggregate/types'
+import { SecretsManager, CommandResult } from '../src/types/core'
+import { CommandMiddleware, Eventstore, Monitoring } from '../src/types/runtime'
+import { StoredEvent } from '../types'
 let DateNow: any
 let performanceTracer: any
 let snapshots: any
@@ -20,10 +24,16 @@ const makeAggregateMeta = (params: any) => ({
   serializeState: params.serializeState || JSON.stringify,
   deserializeState: params.deserializeState || JSON.parse,
   projection: params.projection || {},
+  commandHttpResponseMode:
+    params.commandHttpResponseMode || CommandHttpResponseMode.event,
 })
 
-const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
-  const generatedEvents: Event[] = []
+let lastSavedEvent: any = null
+
+const makeTestRuntime = (
+  storedEvents: StoredEvent[] = []
+): AggregateRuntime => {
+  const generatedEvents: StoredEvent[] = []
 
   const secretsManager: SecretsManager = {
     getSecret: jest.fn(),
@@ -32,35 +42,61 @@ const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
   }
 
   const eventstore: Eventstore = {
-    saveEvent: jest.fn(async (event) => {
+    getReplicationState: jest.fn(),
+    replicateEvents: jest.fn(),
+    replicateSecrets: jest.fn(),
+    resetReplication: jest.fn(),
+    setReplicationIterator: jest.fn(),
+    setReplicationPaused: jest.fn(),
+    setReplicationStatus: jest.fn(),
+    saveEvent: jest.fn(async (originalEvent) => {
+      const event: StoredEvent = {
+        ...originalEvent,
+        timestamp: Date.now(),
+        threadId: 0,
+        threadCounter: 0,
+      }
       generatedEvents.push(event)
+      lastSavedEvent = event
+      return {
+        cursor: '',
+        event: {
+          ...event,
+        },
+      }
     }),
     getNextCursor: jest.fn(
-      (currentCursor) => (currentCursor && currentCursor + 1) || 1
+      (currentCursor) =>
+        (currentCursor && (Number(currentCursor) + 1).toString()) || '1'
     ),
     loadEvents: jest.fn(({ cursor }) =>
       Promise.resolve({
+        cursor: '',
         events: [...storedEvents, ...generatedEvents].filter(
           (e) => e.aggregateVersion > (cursor || 0)
         ),
       })
     ),
     loadSnapshot: jest.fn((snapshotKey) => snapshots[snapshotKey]),
-    saveSnapshot: jest.fn((snapshotKey, data) => {
+    saveSnapshot: jest.fn(async (snapshotKey, data) => {
       snapshots[snapshotKey] = data
     }),
     ensureEventSubscriber: jest.fn().mockResolvedValue(null),
     removeEventSubscriber: jest.fn().mockResolvedValue(null),
     getEventSubscribers: jest.fn().mockResolvedValue([]),
+    describe: jest.fn(),
   }
 
   const monitoring: Monitoring = {
     error: jest.fn(),
+    execution: jest.fn(),
     group: jest.fn(() => monitoring),
     time: jest.fn(),
     timeEnd: jest.fn(),
     publish: jest.fn(),
     performance: performanceTracer,
+    duration: jest.fn(),
+    rate: jest.fn(),
   }
 
   return {
@@ -68,6 +104,12 @@ const makeTestRuntime = (storedEvents: Event[] = []): AggregateRuntime => {
     secretsManager,
     monitoring,
   }
+}
+
+const makeTestRuntimeWithMiddleware = (
+  ...commandMiddlewares: Array<CommandMiddleware>
+) => {
+  return { ...makeTestRuntime(), commandMiddlewares }
 }
 
 beforeEach(() => {
@@ -119,11 +161,11 @@ describe('Command handlers', () => {
       }),
     ])(makeTestRuntime())
 
-    const event = await executeCommand({
+    const event = (await executeCommand({
       aggregateName: 'empty',
       aggregateId: 'aggregateId',
       type: 'emptyCommand',
-    })
+    })) as CommandResult
 
     expect(event.aggregateVersion).toEqual(1)
 
@@ -246,6 +288,8 @@ describe('Command handlers', () => {
         id: 'userId',
       },
       timestamp: Date.now(),
+      threadId: 0,
+      threadCounter: 0,
     })
 
     try {
@@ -278,12 +322,14 @@ describe('Command handlers', () => {
   })
 
   test('should throw error when the incorrect order of events', async () => {
-    const storedEvents: Event[] = [
+    const storedEvents: StoredEvent[] = [
       {
         aggregateId: 'aggregateId',
         aggregateVersion: 2,
         type: 'SET',
         timestamp: 2,
+        threadId: 0,
+        threadCounter: 0,
         payload: {
           key: 'key',
           value: 'value',
@@ -294,6 +340,8 @@ describe('Command handlers', () => {
         aggregateVersion: 1,
         type: 'SET',
         timestamp: 1,
+        threadId: 0,
+        threadCounter: 0,
         payload: {
           key: 'key',
           value: 'value',
@@ -677,6 +725,58 @@ describe('Command handlers', () => {
       })
     )
   })
+
+  test('should not return event if commandHttpResponseMode set to "empty"', async () => {
+    const { executeCommand } = getAggregatesInteropBuilder([
+      makeAggregateMeta({
+        name: 'test-aggregate',
+        commands: {
+          testCommand: () => {
+            return {
+              type: 'SOME_EVENT',
+              payload: {
+                somePayloadData: 'somePayloadData',
+              },
+            }
+          },
+        },
+        commandHttpResponseMode: CommandHttpResponseMode.empty,
+      }),
+    ])(makeTestRuntime())
+
+    await expect(
+      executeCommand({
+        aggregateName: 'test-aggregate',
+        aggregateId: 'aggregateId',
+        type: 'testCommand',
+      })
+    ).resolves.toEqual({})
+  })
+
+  test('should execute command and return last saved event', async () => {
+    const { executeCommand } = getAggregatesInteropBuilder([
+      makeAggregateMeta({
+        encryption: () => Promise.resolve({}),
+        name: 'empty',
+        commands: {
+          emptyCommand: () => {
+            return {
+              type: 'EmptyEvent',
+              payload: {},
+            }
+          },
+        },
+      }),
+    ])(makeTestRuntime())
+
+    const event = (await executeCommand({
+      aggregateName: 'empty',
+      aggregateId: 'aggregateId',
+      type: 'emptyCommand',
+    })) as CommandResult
+
+    expect(event).toEqual(lastSavedEvent)
+  })
 })
 
 describe('Snapshots', () => {
@@ -939,7 +1039,52 @@ describe('Snapshots', () => {
 })
 
 describe('Monitoring', () => {
-  test('calls monitoring.error when command error is thrown', async () => {
+  test('calls monitoring.execution with no arguments error when command is executed correctly', async () => {
+    const runtime = makeTestRuntime()
+    const { executeCommand } = getAggregatesInteropBuilder([
+      makeAggregateMeta({
+        encryption: () => Promise.resolve({}),
+        name: 'empty',
+        commands: {
+          emptyCommand: () => {
+            return {
+              type: 'myEvent',
+            }
+          },
+        },
+      }),
+    ])(runtime)
+
+    if (runtime.monitoring == null) {
+      throw new Error('Monitoring is required')
+    }
+
+    await executeCommand({
+      aggregateName: 'empty',
+      aggregateId: 'aggregateId',
+      type: 'emptyCommand',
+    })
+
+    expect(runtime.monitoring.group).toBeCalledWith({
+      Part: 'Command',
+    })
+
+    expect(runtime.monitoring.group).toBeCalledWith({
+      AggregateName: 'empty',
+    })
+
+    expect(runtime.monitoring.group).not.toBeCalledWith({
+      AggregateId: 'aggregateId',
+    })
+
+    expect(runtime.monitoring.group).toBeCalledWith({
+      Type: 'emptyCommand',
+    })
+
+    expect(runtime.monitoring.execution).toBeCalledWith()
+  })
+
+  test('calls monitoring.execution with error when command error is thrown', async () => {
     const runtime = makeTestRuntime()
     const { executeCommand } = getAggregatesInteropBuilder([
       makeAggregateMeta({
@@ -952,6 +1097,10 @@ describe('Monitoring', () => {
         },
       }),
     ])(runtime)
+
+    if (runtime.monitoring == null) {
+      throw new Error('Monitoring is required')
+    }
 
     try {
       await executeCommand({
@@ -962,31 +1111,27 @@ describe('Monitoring', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      if (runtime.monitoring != null) {
-        expect(runtime.monitoring.group).toBeCalledWith({
-          Part: 'Command',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        Part: 'Command',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          AggregateName: 'empty',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        AggregateName: 'empty',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          AggregateId: 'aggregateId',
-        })
+      expect(runtime.monitoring.group).not.toBeCalledWith({
+        AggregateId: 'aggregateId',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          Type: 'emptyCommand',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        Type: 'emptyCommand',
+      })
 
-        expect(runtime.monitoring.error).toBeCalledWith(e)
-      } else {
-        throw new Error('Monitoring must exist')
-      }
+      expect(runtime.monitoring.execution).toBeCalledWith(e)
     }
   })
 
-  test('calls monitoring.error if command is absent', async () => {
+  test('calls monitoring.execution with error if command is absent', async () => {
     const runtime = makeTestRuntime()
     const { executeCommand } = getAggregatesInteropBuilder([
       makeAggregateMeta({
@@ -999,6 +1144,10 @@ describe('Monitoring', () => {
         },
       }),
     ])(runtime)
+
+    if (runtime.monitoring == null) {
+      throw new Error('Monitoring is required')
+    }
 
     try {
       await executeCommand({
@@ -1009,31 +1158,27 @@ describe('Monitoring', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      if (runtime.monitoring != null) {
-        expect(runtime.monitoring.group).toBeCalledWith({
-          Part: 'Command',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        Part: 'Command',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          AggregateName: 'empty',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        AggregateName: 'empty',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          AggregateId: 'aggregateId',
-        })
+      expect(runtime.monitoring.group).not.toBeCalledWith({
+        AggregateId: 'aggregateId',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          Type: 'unknownCommand',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        Type: 'unknownCommand',
+      })
 
-        expect(runtime.monitoring.error).toBeCalledWith(e)
-      } else {
-        throw new Error('Monitoring must exist')
-      }
+      expect(runtime.monitoring.execution).toBeCalledWith(e)
     }
   })
 
-  test('calls monitoring.error if aggregate is absent', async () => {
+  test('calls monitoring.execution with error if aggregate is absent', async () => {
     const runtime = makeTestRuntime()
     const { executeCommand } = getAggregatesInteropBuilder([
       makeAggregateMeta({
@@ -1047,6 +1192,10 @@ describe('Monitoring', () => {
       }),
     ])(runtime)
 
+    if (runtime.monitoring == null) {
+      throw new Error('Monitoring is required')
+    }
+
     try {
       await executeCommand({
         aggregateName: 'unknown',
@@ -1056,27 +1205,23 @@ describe('Monitoring', () => {
 
       throw new Error('Test must be failed')
     } catch (e) {
-      if (runtime.monitoring != null) {
-        expect(runtime.monitoring.group).toBeCalledWith({
-          Part: 'Command',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        Part: 'Command',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          AggregateName: 'unknown',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        AggregateName: 'unknown',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          AggregateId: 'aggregateId',
-        })
+      expect(runtime.monitoring.group).not.toBeCalledWith({
+        AggregateId: 'aggregateId',
+      })
 
-        expect(runtime.monitoring.group).toBeCalledWith({
-          Type: 'unknownCommand',
-        })
+      expect(runtime.monitoring.group).toBeCalledWith({
+        Type: 'unknownCommand',
+      })
 
-        expect(runtime.monitoring.error).toBeCalledWith(e)
-      } else {
-        throw new Error('Monitoring must exist')
-      }
+      expect(runtime.monitoring.execution).toBeCalledWith(e)
     }
   })
 
@@ -1109,7 +1254,7 @@ describe('Monitoring', () => {
     }
   })
 
-  test('does not affect command workflow if monitoring.error is absent', async () => {
+  test('does not affect command workflow if monitoring.execution is absent', async () => {
     const runtime = makeTestRuntime()
     const { executeCommand } = getAggregatesInteropBuilder([
       makeAggregateMeta({
@@ -1134,5 +1279,233 @@ describe('Monitoring', () => {
     } catch (e) {
       expect(e.message).toContain('Empty command failed')
     }
+  })
+})
+
+describe('Command middleware', () => {
+  const aggregate = {
+    name: 'dummy',
+    commands: {
+      modify: jest.fn(),
+    },
+    projection: {
+      Init: () => {
+        return { contents: '' }
+      },
+      MODIFIED: (state: any, { payload }: { payload: any }) => {
+        return { ...state, contents: payload.contents }
+      },
+    },
+  }
+  beforeEach(() => {
+    aggregate.commands = {
+      modify: jest.fn((state: any, command: any, context: any) => {
+        const payload = {
+          ...command.payload,
+          ...(context.extra ? { extra: context.extra } : {}),
+        }
+        return {
+          type: 'MODIFIED',
+          payload,
+        }
+      }),
+    }
+  })
+  afterEach(() => jest.resetAllMocks())
+  test('should be executed in command execution flow', async () => {
+    const interopBuilder = getAggregatesInteropBuilder([
+      makeAggregateMeta(aggregate),
+    ])
+
+    const dummyMiddlewareSpy = jest.fn()
+
+    const dummyMiddleware: CommandMiddleware = (next) => async (
+      middlewareContext,
+      state,
+      command,
+      context
+    ) => {
+      dummyMiddlewareSpy(middlewareContext, state, command)
+      return next(middlewareContext, state, command, context)
+    }
+
+    const runtime = makeTestRuntimeWithMiddleware(dummyMiddleware)
+    const { executeCommand } = interopBuilder(runtime)
+
+    const command = {
+      aggregateName: 'dummy',
+      aggregateId: 'aggregateId',
+      type: 'modify',
+      payload: { contents: 'some contents' },
+    }
+
+    await executeCommand(command)
+
+    expect(dummyMiddlewareSpy).toBeCalledWith({}, { contents: '' }, command)
+    expect(aggregate.commands.modify).toBeCalledWith(
+      { contents: '' },
+      command,
+      expect.anything()
+    )
+  })
+  test('should interrupt command execution flow on exception', async () => {
+    const interopBuilder = getAggregatesInteropBuilder([
+      makeAggregateMeta(aggregate),
+    ])
+
+    const dummyMiddleware: CommandMiddleware = (next) => async (
+      state,
+      command,
+      context
+    ) => {
+      throw new Error('Interrupted by middleware')
+    }
+
+    const runtime = makeTestRuntimeWithMiddleware(dummyMiddleware)
+    const { executeCommand } = interopBuilder(runtime)
+
+    const command = {
+      aggregateName: 'dummy',
+      aggregateId: 'aggregateId',
+      type: 'modify',
+      payload: { contents: 'some contents' },
+    }
+
+    try {
+      await executeCommand(command)
+      throw new Error('Error should be thrown')
+    } catch (e) {
+      expect(e.message).toEqual('Interrupted by middleware')
+      expect(aggregate.commands['modify']).not.toBeCalled()
+    }
+  })
+  test('can modify passed context and command', async () => {
+    const interopBuilder = getAggregatesInteropBuilder([
+      makeAggregateMeta(aggregate),
+    ])
+
+    const dummyMiddleware: CommandMiddleware = (next) => async (
+      middlewareContext,
+      state,
+      command,
+      context
+    ) => {
+      return next(
+        middlewareContext,
+        state,
+        {
+          ...command,
+          payload: {
+            ...command.payload,
+            contents: command.payload.contents + ' modified by middleware',
+          },
+        },
+        {
+          ...context,
+          extra: 'data from middleware',
+        } as any
+      )
+    }
+
+    const runtime = makeTestRuntimeWithMiddleware(dummyMiddleware)
+    const { executeCommand } = interopBuilder(runtime)
+    const command = {
+      aggregateName: 'dummy',
+      aggregateId: 'aggregateId',
+      type: 'modify',
+      payload: { contents: 'New content' },
+    }
+    const { payload } = (await executeCommand(command)) as CommandResult
+    expect(payload.contents).toEqual('New content modified by middleware')
+    expect(payload.extra).toEqual('data from middleware')
+  })
+  test('can modify returned event', async () => {
+    const interopBuilder = getAggregatesInteropBuilder([
+      makeAggregateMeta(aggregate),
+    ])
+
+    const dummyMiddleware: CommandMiddleware = (next) => async (
+      middlewareContext,
+      state,
+      command,
+      context
+    ) => {
+      const event = await next(middlewareContext, state, command, context)
+      event.payload.additionalContent = 'Content from middleware'
+      return event
+    }
+
+    const runtime = makeTestRuntimeWithMiddleware(dummyMiddleware)
+    const { executeCommand } = interopBuilder(runtime)
+
+    const command = {
+      aggregateName: 'dummy',
+      aggregateId: 'aggregateId',
+      type: 'modify',
+      payload: { contents: 'New content' },
+    }
+    const { payload } = (await executeCommand(command)) as CommandResult
+    expect(payload.contents).toEqual('New content')
+    expect(payload.additionalContent).toEqual('Content from middleware')
+  })
+
+  test('can be chained and keep order', async () => {
+    const interopBuilder = getAggregatesInteropBuilder([
+      makeAggregateMeta(aggregate),
+    ])
+
+    const middleware1: CommandMiddleware = (next) => async (
+      middlewareContext,
+      state,
+      command,
+      context
+    ) => {
+      const modifiedCommand = { ...command }
+      modifiedCommand.payload.contents = 'Command modified by first middleware'
+      const event = await next(
+        middlewareContext,
+        state,
+        modifiedCommand,
+        context
+      )
+      event.payload.extra += '; Event modified by first middleware'
+      return event
+    }
+
+    const middleware2: CommandMiddleware = (next) => async (
+      middlewareContext,
+      state,
+      command,
+      context
+    ) => {
+      const modifiedCommand = { ...command }
+      modifiedCommand.payload.contents +=
+        '; Command modified by second middleware'
+      const event = await next(
+        middlewareContext,
+        state,
+        modifiedCommand,
+        context
+      )
+      event.payload.extra = 'Event modified by second middleware'
+      return event
+    }
+
+    const runtime = makeTestRuntimeWithMiddleware(middleware1, middleware2)
+    const { executeCommand } = interopBuilder(runtime)
+
+    const command = {
+      aggregateName: 'dummy',
+      aggregateId: 'aggregateId',
+      type: 'modify',
+      payload: { contents: 'New content' },
+    }
+    const { payload } = (await executeCommand(command)) as CommandResult
+    expect(payload.contents).toEqual(
+      'Command modified by first middleware; Command modified by second middleware'
+    )
+    expect(payload.extra).toEqual(
+      'Event modified by second middleware; Event modified by first middleware'
+    )
   })
 })

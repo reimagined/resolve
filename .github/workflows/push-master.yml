@@ -10,9 +10,9 @@ jobs:
     if: startsWith(github.event.head_commit.message, '<auto>') != true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
 
       - name: Build packages
         run: |
@@ -33,6 +33,7 @@ jobs:
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           upcoming: false
           release_tag: ${{ env.git_release_tag }}
+          generator_version: '1.16.2'
 
       - uses: reimagined/github-actions/git-release@v1
         id: git_release

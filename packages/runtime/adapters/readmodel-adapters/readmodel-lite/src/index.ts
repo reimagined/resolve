@@ -1,5 +1,5 @@
 import _createAdapter from '@resolve-js/readmodel-base'
-import SQLite from 'sqlite'
+import SQLite from 'better-sqlite3'
 //eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import tmp from 'tmp'

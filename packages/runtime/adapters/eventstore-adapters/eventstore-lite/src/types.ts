@@ -1,43 +1,41 @@
-import type { open, Database } from 'sqlite'
+import BetterSqlite from 'better-sqlite3'
 import type {
   AdapterPoolConnectedProps,
   AdapterPoolConnected,
   AdapterPoolPossiblyUnconnected,
+  AdapterTableNamesProps,
 } from '@resolve-js/eventstore-base'
 import {
   AdapterConfigSchema,
+  AdapterTableNamesSchema,
   UnbrandProps,
   iots as t,
   iotsTypes,
 } from '@resolve-js/eventstore-base'
-
-export type SqliteOpen = typeof open
 
 export type MemoryStore = {
   name: string
   drop: () => void
 }
 
-export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps & {
-  database: Database
-  databaseFile: string
-  eventsTableName: string
-  snapshotsTableName: string
-  secretsTableName: string
-  subscribersTableName: string
-  escapeId: (source: string) => string
-  escape: (source: string) => string
-  memoryStore?: MemoryStore
-}
+export type BetterSqliteDb = typeof BetterSqlite['prototype']
+
+export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps &
+  AdapterTableNamesProps & {
+    database: BetterSqliteDb
+    databaseFile: string
+    escapeId: (source: string) => string
+    escape: (source: string) => string
+    memoryStore?: MemoryStore
+    executeStatement: (sql: string) => Promise<any[]>
+    executeQuery: (sql: string) => Promise<void>
+  }
 
 export const SqliteAdapterConfigSchema = t.intersection([
   AdapterConfigSchema,
+  AdapterTableNamesSchema,
   t.partial({
     databaseFile: iotsTypes.NonEmptyString,
-    secretsTableName: iotsTypes.NonEmptyString,
-    eventsTableName: iotsTypes.NonEmptyString,
-    snapshotsTableName: iotsTypes.NonEmptyString,
-    subscribersTableName: iotsTypes.NonEmptyString,
   }),
 ])
 
@@ -45,12 +43,10 @@ type SqliteAdapterConfigChecked = t.TypeOf<typeof SqliteAdapterConfigSchema>
 export type SqliteAdapterConfig = UnbrandProps<SqliteAdapterConfigChecked>
 
 export type AdapterPool = AdapterPoolConnected<SqliteAdapterPoolConnectedProps>
-export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<
-  SqliteAdapterPoolConnectedProps
->
+export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<SqliteAdapterPoolConnectedProps>
 
 export type ConnectionDependencies = {
-  sqlite: { open: SqliteOpen }
+  BetterSqlite: typeof BetterSqlite
   tmp: any
   os: any
   fs: any

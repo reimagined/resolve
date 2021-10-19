@@ -1,5 +1,10 @@
 import { StringifyOptions } from 'query-string'
-import { IS_BUILT_IN } from '@resolve-js/core'
+import {
+  IS_BUILT_IN,
+  getRootBasedUrl,
+  isAbsoluteUrl,
+  assertLeadingSlash,
+} from '@resolve-js/core'
 import { Context } from './context'
 import { GenericError } from './errors'
 import { connect, disconnect } from './subscribe'
@@ -9,8 +14,7 @@ import {
   NarrowedResponse,
   VALIDATED_RESULT,
 } from './request'
-import { assertLeadingSlash, assertNonEmptyString } from './assertions'
-import { getRootBasedUrl, isAbsoluteUrl } from './utils'
+import { assertNonEmptyString } from './assertions'
 import determineOrigin from './determine-origin'
 import { ViewModelDeserializer } from './types'
 import { ClientMiddlewareOptions } from './middleware'
@@ -101,8 +105,10 @@ export type QueryResult = {
   data: any
   meta?: {
     url?: string
-    cursor?: string
+    cursor?: string | null
     timestamp?: number
+    aggregateIds?: string[]
+    eventTypes?: string[]
   }
 }
 export type QueryOptions = {

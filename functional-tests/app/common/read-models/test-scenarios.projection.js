@@ -3,7 +3,7 @@ import {
   TEST_SCENARIO_RETRY_ON_ERROR_UNBLOCKED,
 } from '../event-types'
 
-export default {
+const projection = {
   Init: async (store) => {
     await store.defineTable('ExecutedScenarios', {
       indexes: { id: 'string', name: 'string' },
@@ -39,3 +39,5 @@ export default {
     )
   },
 }
+
+export default projection

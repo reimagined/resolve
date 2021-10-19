@@ -1,4 +1,4 @@
-export default ({ resolveConfig }) => {
+const importJwtCookie = ({ resolveConfig }) => {
   const exports = []
 
   exports.push(
@@ -9,3 +9,5 @@ export default ({ resolveConfig }) => {
 
   return exports.join('\r\n')
 }
+
+export default importJwtCookie

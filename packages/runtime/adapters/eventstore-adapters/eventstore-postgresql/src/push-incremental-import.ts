@@ -1,6 +1,6 @@
 import { RESERVED_EVENT_SIZE } from './constants'
-import { AdapterPool } from './types'
-import { InputEvent } from '@resolve-js/eventstore-base'
+import type { AdapterPool } from './types'
+import type { VersionlessEvent } from '@resolve-js/eventstore-base'
 
 const pushIncrementalImport = async (
   {
@@ -10,7 +10,7 @@ const pushIncrementalImport = async (
     escapeId,
     escape,
   }: AdapterPool,
-  events: InputEvent[],
+  events: VersionlessEvent[],
   importId: string
 ): Promise<void> => {
   try {

@@ -1,5 +1,5 @@
 import { snapshotTrigger } from '@resolve-js/eventstore-base'
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { AdapterPool } from './types'
 
 const saveSnapshot = async (
@@ -9,10 +9,10 @@ const saveSnapshot = async (
 ): Promise<void> =>
   snapshotTrigger(pool, snapshotKey, content, async () => {
     const log = getLog(`saveSnapshot:${snapshotKey}`)
-    const { escape, escapeId, database, snapshotsTableName } = pool
+    const { escape, escapeId, executeQuery, snapshotsTableName } = pool
 
     log.debug(`writing the snapshot to database`)
-    await database.exec(
+    await executeQuery(
       `REPLACE INTO ${escapeId(snapshotsTableName)} 
        VALUES (${escape(snapshotKey)}, ${escape(content)})`
     )

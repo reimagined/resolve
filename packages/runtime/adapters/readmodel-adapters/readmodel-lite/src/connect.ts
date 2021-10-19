@@ -33,9 +33,11 @@ const inlineLedgerRunQuery = async <
   passthroughRuntimeErrors: Parameters<InlineLedgerRunQueryMethod>[2] = false
 ): Promise<CommonRunQueryMethodUnpromiseResult<T>> => {
   const PassthroughError = pool.PassthroughError
-  const executor = !multiLine
-    ? pool.connection.all.bind(pool.connection)
-    : pool.connection.exec.bind(pool.connection)
+  const executor = async (sql: string) => {
+    return !multiLine
+      ? pool.connection.prepare(sql).all()
+      : pool.connection.exec(sql)
+  }
   const transformer = !multiLine ? Array.from.bind(Array) : emptyTransformer
   let result = null
 
@@ -149,10 +151,14 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
 
   for (let retry = 0; ; retry++) {
     try {
-      pool.connection = await SQLite.open(pool.connectionUri)
+      pool.connection = await new SQLite(pool.connectionUri)
       break
     } catch (error) {
-      if (error != null && error.code === SQLITE_BUSY) {
+      if (
+        error != null &&
+        typeof error.code === 'string' &&
+        error.code.startWith(SQLITE_BUSY)
+      ) {
         await fullJitter(retry)
       } else {
         throw error
@@ -160,9 +166,9 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     }
   }
 
-  await (pool.connection as any)?.driver?.serialize?.()
+  //await (pool.connection as any)?.driver?.serialize?.()
 
-  await pool.connection.configure('busyTimeout', 0)
+  //await pool.connection.configure('busyTimeout', 0)
 
   const configureSql = `
     PRAGMA busy_timeout=0;

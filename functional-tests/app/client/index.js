@@ -1,11 +1,11 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { ResolveProvider } from '@resolve-js/react-hooks'
-import { Router } from 'react-router'
+import { BrowserRouter as Router } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
+import { renderRoutes } from 'react-router-config'
 
-import Routes from './hooks/components/Routes'
-import routes from './hooks/routes'
+import { routes } from './hooks/routes'
 import UploaderContext from './hooks/context'
 
 const entryPoint = (resolveContext) => {
@@ -16,7 +16,7 @@ const entryPoint = (resolveContext) => {
 
   let version = ''
   try {
-    const maybeVersion = resolveContext.clientImports['version']().VERSION
+    const maybeVersion = resolveContext.clientImports['appOptions']().VERSION
     if (maybeVersion.constructor === String) {
       version = maybeVersion
     }
@@ -25,9 +25,7 @@ const entryPoint = (resolveContext) => {
   render(
     <ResolveProvider context={resolveContext}>
       <UploaderContext.Provider value={{ CDNUrl: resolveContext.cdnUrl }}>
-        <Router history={history}>
-          <Routes routes={routes} version={version} />
-        </Router>
+        <Router history={history}>{renderRoutes(routes, { version })}</Router>
       </UploaderContext.Provider>
     </ResolveProvider>,
     appContainer

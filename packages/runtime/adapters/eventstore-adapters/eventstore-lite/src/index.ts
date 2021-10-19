@@ -1,8 +1,8 @@
 import createAdapter from '@resolve-js/eventstore-base'
-import sqlite from 'sqlite'
 import tmp from 'tmp'
 import os from 'os'
 import fs from 'fs'
+import BetterSqlite from 'better-sqlite3'
 
 import beginIncrementalImport from './begin-incremental-import'
 import commitIncrementalImport from './commit-incremental-import'
@@ -19,6 +19,7 @@ import getLatestEvent from './get-latest-event'
 import getSecret from './get-secret'
 import initEvents from './init-events'
 import injectEvent from './inject-event'
+import injectEvents from './inject-events'
 import loadEventsByCursor from './load-events-by-cursor'
 import loadEventsByTimestamp from './load-events-by-timestamp'
 import loadSnapshot from './load-snapshot'
@@ -42,9 +43,11 @@ import setReplicationIterator from './set-replication-iterator'
 import setReplicationPaused from './set-replication-paused'
 import getReplicationState from './get-replication-state'
 import resetReplication from './reset-replication'
+import getCursorUntilEventTypes from './get-cursor-until-event-types'
+import describe from './describe'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
-import type { ConnectionDependencies, SqliteAdapterConfig } from './types'
+import type { SqliteAdapterConfig } from './types'
 
 const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
   return createAdapter(
@@ -68,6 +71,7 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       initSecrets,
       initFinal,
       injectEvent,
+      injectEvents,
       loadEventsByCursor,
       loadEventsByTimestamp,
       loadSnapshot,
@@ -87,8 +91,10 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       setReplicationPaused,
       getReplicationState,
       resetReplication,
+      getCursorUntilEventTypes,
+      describe,
     },
-    { sqlite, tmp, os, fs } as ConnectionDependencies,
+    { BetterSqlite, tmp, os, fs },
     options
   )
 }

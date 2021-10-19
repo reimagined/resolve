@@ -11,7 +11,7 @@ const makeScenariosQuery = (name, ids) => {
   return query
 }
 
-export default {
+const resolvers = {
   retryOnErrorScenario: async (store, { scenarioId }) => {
     const entry = await store.findOne('ExecutedScenarios', {
       id: scenarioId,
@@ -34,3 +34,5 @@ export default {
     }
   },
 }
+
+export default resolvers

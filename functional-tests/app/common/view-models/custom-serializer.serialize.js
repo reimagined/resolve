@@ -1,1 +1,2 @@
-export default (state) => `>>>${JSON.stringify(state)}`
+const serialize = (state) => `>>>${JSON.stringify(state)}`
+export default serialize

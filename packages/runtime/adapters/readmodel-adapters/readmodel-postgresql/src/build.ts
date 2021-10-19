@@ -1,4 +1,15 @@
-import type { ExternalMethods, ReadModelCursor, ReadModelLedger } from './types'
+import type {
+  PassthroughErrorInstance,
+  ExternalMethods,
+  ReadModelCursor,
+  ReadModelProcedureLedger,
+  ProcedureResult,
+  EventThreadData,
+  ReadModelEvent,
+} from './types'
+import getLog from './get-log'
+import { LeveledDebugger } from '@resolve-js/debug-levels'
+import { AlreadyDisposedError } from '@resolve-js/eventstore-base'
 
 const serializeError = (error: Error & { code: number }) =>
   error != null
@@ -10,14 +21,18 @@ const serializeError = (error: Error & { code: number }) =>
       }
     : null
 
+const immediatelyStopError = new Error('ImmediatelyStopError')
+const immediatelyStopTimeout = 45 * 1000
+
 const buildInit: (
   currentPool: {
     ledgerTableNameAsId: string
     databaseNameAsId: string
     eventTypes: Array<string> | null
     inputCursor: ReadModelCursor
-    readModelLedger: ReadModelLedger
+    readModelLedger: ReadModelProcedureLedger
     xaKey: string
+    log: LeveledDebugger
   },
   ...args: Parameters<ExternalMethods['build']>
 ) => ReturnType<ExternalMethods['build']> = async (
@@ -38,9 +53,12 @@ const buildInit: (
     databaseNameAsId,
     ledgerTableNameAsId,
     xaKey,
+    log,
   } = pool
 
   const rootSavePointId = generateGuid(xaKey, 'ROOT')
+
+  log.debug(`Begin init transaction`)
 
   await inlineLedgerRunQuery(
     `BEGIN TRANSACTION;
@@ -59,12 +77,19 @@ const buildInit: (
     true
   )
 
+  log.debug(`Building of cursor`)
+
   const nextCursor = await eventstoreAdapter.getNextCursor(null, [])
+
   try {
     const handler = await modelInterop.acquireInitHandler(store)
     if (handler != null) {
+      log.debug(`Running of init handler`)
       await handler()
     }
+    // TODO Init via plv8
+
+    log.debug(`Commit transaction with SuccessEvent`)
 
     await inlineLedgerRunQuery(
       `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
@@ -81,6 +106,8 @@ const buildInit: (
     if (error instanceof PassthroughError) {
       throw error
     }
+
+    log.debug(`Init handler execution failed. Commit transaction with error`)
 
     await inlineLedgerRunQuery(
       `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
@@ -105,8 +132,10 @@ const buildEvents: (
     databaseNameAsId: string
     eventTypes: Array<string> | null
     inputCursor: ReadModelCursor
-    readModelLedger: ReadModelLedger
+    readModelLedger: ReadModelProcedureLedger
     xaKey: string
+    metricData: any
+    log: LeveledDebugger
   },
   ...args: Parameters<ExternalMethods['build']>
 ) => ReturnType<ExternalMethods['build']> = async (
@@ -117,20 +146,47 @@ const buildEvents: (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis
+  getVacantTimeInMillis,
+  buildInfo
 ) => {
   const pool = { ...basePool, ...currentPool }
   const {
+    readModelLedger: { IsProcedural: inputIsProcedural },
     PassthroughError,
+    checkEventsContinuity,
     inlineLedgerRunQuery,
     generateGuid,
     escapeStr,
     databaseNameAsId,
     ledgerTableNameAsId,
+    metricData,
+    monitoring,
     inputCursor,
     eventTypes,
+    escapeId,
     xaKey,
+    log,
   } = pool
+  const { eventsWithCursors } = buildInfo
+  let isProcedural = inputIsProcedural
+  const isContinuousMode =
+    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function' &&
+    !!process.env.EXPERIMENTAL_SQS_TRANSPORT
+  const getContinuousLatestCursor = async (
+    cursor: ReadModelCursor,
+    events: Array<EventThreadData>,
+    eventTypes: Array<string> | null
+  ) => {
+    let nextCursor = await eventstoreAdapter.getNextCursor(cursor, events)
+    if (isContinuousMode && eventTypes != null) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      nextCursor = await eventstoreAdapter.getCursorUntilEventTypes!(
+        nextCursor,
+        eventTypes
+      )
+    }
+    return nextCursor
+  }
 
   let lastSuccessEvent = null
   let lastFailedEvent = null
@@ -138,16 +194,119 @@ const buildEvents: (
   let localContinue = true
   let cursor = inputCursor
 
-  let eventsPromise = eventstoreAdapter
-    .loadEvents({
-      eventTypes,
-      eventsSizeLimit: 6553600,
-      limit: 100,
-      cursor,
-    })
-    .then((result) => (result != null ? result.events : []))
+  const groupMonitoring =
+    monitoring != null
+      ? monitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ ReadModel: readModelName })
+      : null
+
+  const firstEventsLoadStartTimestamp = Date.now()
+  let eventsApplyStartTimestamp = Date.now()
+  let eventCount = 0
+  let projectionApplyTime = 0
+
+  const hotEvents: Array<ReadModelEvent> | null =
+    isContinuousMode &&
+    Array.isArray(eventsWithCursors) &&
+    checkEventsContinuity(inputCursor, eventsWithCursors)
+      ? eventsWithCursors.map(({ event }) => event)
+      : null
+
+  const loadEventsWithMonitoring = (
+    cursorPromise: Promise<ReadModelCursor>,
+    limit: number,
+    initialTimestamp: number
+  ) =>
+    Promise.resolve(cursorPromise)
+      .then((cursor) =>
+        eventstoreAdapter.loadEvents({
+          eventTypes,
+          eventsSizeLimit: 65536 * limit,
+          limit,
+          cursor,
+        })
+      )
+      .catch((error) => {
+        if (AlreadyDisposedError.is(error)) {
+          return null
+        } else {
+          return Promise.reject(error)
+        }
+      })
+      .then((result) => {
+        const loadDuration = Date.now() - initialTimestamp
+
+        const events = result != null ? result.events : []
+
+        if (groupMonitoring != null && events.length > 0) {
+          groupMonitoring.duration(
+            'EventLoad',
+            loadDuration / events.length,
+            events.length
+          )
+        }
+
+        return events
+      })
+
+  let eventsPromise: Promise<ReadModelEvent[]> | Promise<null> =
+    hotEvents == null
+      ? loadEventsWithMonitoring(
+          Promise.resolve(cursor),
+          100,
+          firstEventsLoadStartTimestamp
+        )
+      : Promise.resolve(hotEvents)
+
+  const eventstoreLocalResourcePromise = (async () => {
+    let resourceNames = null
+    try {
+      void ({ resourceNames } =
+        hotEvents == null && !!process.env.EXPERIMENTAL_INLINE_DB_EVENT_LOAD
+          ? await eventstoreAdapter.describe()
+          : { resourceNames: null })
+    } catch (err) {}
+
+    if (
+      resourceNames == null ||
+      resourceNames?.eventsTableName == null ||
+      resourceNames?.databaseName == null ||
+      !isProcedural
+    ) {
+      return null
+    }
+
+    const databaseNameAsId = escapeId(resourceNames.databaseName)
+    const eventsTableNameAsId = escapeId(resourceNames.eventsTableName)
+
+    try {
+      const immediateLastEvent = (await eventsPromise).slice(-1)[0]
+      await inlineLedgerRunQuery(`
+          WITH "CTE" AS (
+            SELECT * FROM ${databaseNameAsId}.${eventsTableNameAsId}
+            WHERE "threadId" = ${+immediateLastEvent.threadId}
+            AND "threadCounter" = ${+immediateLastEvent.threadCounter}
+            AND "timestamp" = ${+immediateLastEvent.timestamp}
+            AND "aggregateId" = ${escapeStr(immediateLastEvent.aggregateId)}
+            AND "aggregateVersion" = ${+immediateLastEvent.aggregateVersion}
+            AND "type" = ${escapeStr(immediateLastEvent.type)}
+            AND "payload" = ${escapeStr(
+              JSON.stringify(immediateLastEvent.payload)
+            )}
+          )
+          SELECT 1/Count("CTE".*) AS "NonZero" FROM "CTE"
+        `)
+
+      return resourceNames
+    } catch (err) {
+      return null
+    }
+  })()
 
   let rootSavePointId = generateGuid(xaKey, 'ROOT')
+
+  log.debug(`Begin events apply transaction`)
 
   await inlineLedgerRunQuery(
     `BEGIN TRANSACTION;
@@ -166,91 +325,238 @@ const buildEvents: (
     true
   )
 
-  let events = await eventsPromise
+  const eventstoreLocalResourcesNames = await eventstoreLocalResourcePromise
+  let events =
+    eventstoreLocalResourcesNames == null ? await eventsPromise : null
 
-  while (true) {
-    if (events.length === 0) {
-      throw new PassthroughError()
+  for (metricData.eventLoopCount = 0; true; metricData.eventLoopCount++) {
+    if (events != null && events.length === 0) {
+      throw new PassthroughError(false)
     }
-    let nextCursor: ReadModelCursor = eventstoreAdapter.getNextCursor(
-      cursor,
-      events
-    )
 
-    eventsPromise = eventstoreAdapter
-      .loadEvents({
-        eventTypes,
-        eventsSizeLimit: 65536000,
-        limit: 1000,
-        cursor: nextCursor,
-      })
-      .then((result) => (result != null ? result.events : []))
+    log.debug(`Start optimistic events loading`)
 
+    let nextCursorPromise: Promise<ReadModelCursor> | null =
+      events != null
+        ? getContinuousLatestCursor(cursor, events, eventTypes)
+        : null
     let appliedEventsCount = 0
-    try {
-      for (const event of events) {
-        const savePointId = generateGuid(xaKey, `${appliedEventsCount}`)
-        try {
-          const handler = await modelInterop.acquireEventHandler(store, event)
-          if (handler != null) {
-            await inlineLedgerRunQuery(`SAVEPOINT ${savePointId}`)
-            await handler()
-            await inlineLedgerRunQuery(`RELEASE SAVEPOINT ${savePointId}`)
-            lastSuccessEvent = event
-          }
-          appliedEventsCount++
+    let regularWorkflow = true
 
-          if (getVacantTimeInMillis() < 0) {
-            nextCursor = eventstoreAdapter.getNextCursor(
+    if (isProcedural) {
+      log.debug(`Running procedural events applying`)
+      try {
+        let procedureResult: Array<{ Result: ProcedureResult }> | null = null
+        try {
+          metricData.insideProjection = true
+          procedureResult = (await inlineLedgerRunQuery(
+            `SELECT ${databaseNameAsId}.${escapeId(
+              `PROC-${readModelName}`
+            )}(${escapeStr(
+              JSON.stringify({
+                maxExecutionTime: getVacantTimeInMillis(),
+                ...(eventstoreLocalResourcesNames != null
+                  ? {
+                      localEventsDatabaseName:
+                        eventstoreLocalResourcesNames.databaseName,
+                      localEventsTableName:
+                        eventstoreLocalResourcesNames.eventsTableName,
+                    }
+                  : { events }),
+              })
+            )}) AS "Result"`
+          )) as Array<{ Result: ProcedureResult }>
+        } finally {
+          metricData.insideProjection = false
+        }
+
+        if (procedureResult?.[0]?.Result == null) {
+          throw new Error(`Procedure was not able to be launched`)
+        }
+        const {
+          appliedEventsThreadData,
+          successEvent,
+          failureEvent,
+          failureError,
+          appliedCount,
+          status,
+        } = procedureResult[0].Result
+        if (status === 'DEPENDENCY_ERROR') {
+          if (failureError?.message != null || failureError?.stack != null) {
+            throw failureError
+          } else {
+            throw new Error(`${failureError}`)
+          }
+        }
+
+        appliedEventsCount = appliedCount
+        eventCount += appliedCount
+
+        if (status === 'OK_PARTIAL' || status === 'CUSTOM_ERROR') {
+          nextCursorPromise = getContinuousLatestCursor(
+            cursor,
+            appliedEventsThreadData,
+            eventTypes
+          )
+        }
+        if (status === 'OK_ALL' || status === 'OK_PARTIAL') {
+          if (nextCursorPromise == null) {
+            nextCursorPromise = getContinuousLatestCursor(
               cursor,
-              events.slice(0, appliedEventsCount)
+              appliedEventsThreadData,
+              eventTypes
             )
-            localContinue = false
+          }
+
+          lastSuccessEvent = successEvent
+        } else if (status === 'CUSTOM_ERROR') {
+          lastFailedEvent = failureEvent
+          lastError = failureError
+
+          if (
+            failureError != null &&
+            failureEvent != null &&
+            groupMonitoring != null
+          ) {
+            groupMonitoring
+              .group({ EventType: failureEvent.type })
+              .error(failureError)
+          }
+        }
+
+        if (getVacantTimeInMillis() < 0) {
+          localContinue = false
+        }
+
+        regularWorkflow = false
+      } catch (err) {
+        isProcedural = false
+        if (err instanceof PassthroughError) {
+          throw err
+        }
+
+        // eslint-disable-next-line no-console
+        console.warn(
+          `Inline procedure execution failed for reason: ${JSON.stringify(
+            serializeError(err)
+          )}`
+        )
+
+        await inlineLedgerRunQuery(`ROLLBACK TO SAVEPOINT ${rootSavePointId};`)
+
+        if (events == null) {
+          events = await loadEventsWithMonitoring(
+            Promise.resolve(cursor),
+            100,
+            Date.now()
+          )
+        }
+
+        nextCursorPromise = getContinuousLatestCursor(
+          cursor,
+          events,
+          eventTypes
+        )
+      }
+      log.debug(`Finish running procedural events applying`)
+    }
+
+    const eventsLoadStartTimestamp = Date.now()
+    eventsPromise =
+      regularWorkflow || eventstoreLocalResourcesNames == null
+        ? loadEventsWithMonitoring(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            nextCursorPromise!,
+            1000,
+            eventsLoadStartTimestamp
+          )
+        : Promise.resolve(null)
+
+    if (regularWorkflow) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      events = events!
+      log.debug(`Running regular workflow events applying`)
+      try {
+        for (const event of events) {
+          const savePointId = generateGuid(xaKey, `${appliedEventsCount}`)
+          try {
+            const handler = await modelInterop.acquireEventHandler(store, event)
+            if (handler != null) {
+              await inlineLedgerRunQuery(`SAVEPOINT ${savePointId}`)
+
+              const projectionApplyStartTimestamp = Date.now()
+              try {
+                metricData.insideProjection = true
+                await handler()
+                eventCount++
+              } finally {
+                metricData.insideProjection = false
+              }
+
+              projectionApplyTime += Date.now() - projectionApplyStartTimestamp
+
+              await inlineLedgerRunQuery(`RELEASE SAVEPOINT ${savePointId}`)
+              lastSuccessEvent = event
+            }
+            appliedEventsCount++
+
+            if (getVacantTimeInMillis() < 0) {
+              nextCursorPromise = getContinuousLatestCursor(
+                cursor,
+                events.slice(0, appliedEventsCount),
+                eventTypes
+              )
+              localContinue = false
+              break
+            }
+          } catch (error) {
+            if (error instanceof PassthroughError) {
+              throw error
+            }
+
+            nextCursorPromise = getContinuousLatestCursor(
+              cursor,
+              events.slice(0, appliedEventsCount),
+              eventTypes
+            )
+
+            await inlineLedgerRunQuery(
+              `ROLLBACK TO SAVEPOINT ${savePointId};
+              RELEASE SAVEPOINT ${savePointId}
+            `
+            )
+
+            lastFailedEvent = event
+            lastError = error
             break
           }
-        } catch (error) {
-          if (error instanceof PassthroughError) {
-            throw error
-          }
-
-          nextCursor = eventstoreAdapter.getNextCursor(
-            cursor,
-            events.slice(0, appliedEventsCount)
-          )
-
-          await inlineLedgerRunQuery(
-            `ROLLBACK TO SAVEPOINT ${savePointId};
-             RELEASE SAVEPOINT ${savePointId}
-          `
-          )
-
-          lastFailedEvent = event
-          lastError = error
-          break
         }
-      }
-    } catch (originalError) {
-      if (originalError instanceof PassthroughError) {
-        throw originalError
-      }
+      } catch (originalError) {
+        if (originalError instanceof PassthroughError) {
+          log.debug(`Running failed with PassthroughError`)
+          throw originalError
+        }
 
-      nextCursor = cursor
-      appliedEventsCount = 0
-      const composedError = new Error(
-        `Fatal inline ledger building error: ${originalError.message}`
-      )
-      composedError.stack = `${composedError.stack}${originalError.stack}`
-      lastError = composedError
-      lastSuccessEvent = null
-      lastFailedEvent = null
-      await inlineLedgerRunQuery(
-        `ROLLBACK TO SAVEPOINT ${rootSavePointId};
-         RELEASE SAVEPOINT ${rootSavePointId}
-      `
-      )
+        nextCursorPromise = Promise.resolve(cursor)
+        appliedEventsCount = 0
+        const composedError = new Error(
+          `Fatal inline ledger building error: ${originalError.message}`
+        )
+        composedError.stack = `${composedError.stack}${originalError.stack}`
+        lastError = composedError
+        lastSuccessEvent = null
+        lastFailedEvent = null
+        await inlineLedgerRunQuery(
+          `ROLLBACK TO SAVEPOINT ${rootSavePointId};
+          RELEASE SAVEPOINT ${rootSavePointId}
+        `
+        )
+      }
+      log.debug(`Finish running regular workflow events applying`)
     }
-
+    const nextCursor = await nextCursorPromise
     if (lastError == null) {
+      log.debug(`Saving success event into inline ledger`)
       await inlineLedgerRunQuery(
         `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId} SET 
          ${
@@ -267,6 +573,7 @@ const buildEvents: (
         `
       )
     } else {
+      log.debug(`Saving error and failed event into inline ledger`)
       await inlineLedgerRunQuery(
         `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
          SET "Errors" = jsonb_insert(
@@ -294,6 +601,34 @@ const buildEvents: (
       )
     }
 
+    log.debug(`Inline ledger updated after events applied`)
+
+    if (groupMonitoring != null && eventCount > 0) {
+      const applyDuration = Date.now() - eventsApplyStartTimestamp
+
+      groupMonitoring.rate(
+        'ReadModelFeedingRate',
+        eventCount,
+        applyDuration / 1000
+      )
+
+      groupMonitoring.duration(
+        'EventApply',
+        applyDuration / eventCount,
+        eventCount
+      )
+
+      groupMonitoring.duration(
+        'EventProjectionApply',
+        projectionApplyTime / eventCount,
+        eventCount
+      )
+    }
+
+    eventCount = 0
+    eventsApplyStartTimestamp = Date.now()
+    projectionApplyTime = 0
+
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
     cursor = nextCursor
 
@@ -302,6 +637,7 @@ const buildEvents: (
     }
 
     if (isBuildSuccess && localContinue) {
+      log.debug(`Start transaction for the next step events applying`)
       rootSavePointId = generateGuid(xaKey, 'ROOT')
 
       await inlineLedgerRunQuery(
@@ -324,10 +660,12 @@ const buildEvents: (
       events = await eventsPromise
     } else {
       if (isBuildSuccess) {
+        log.debug(`Going to the next step of building`)
         await next()
       }
 
-      throw new PassthroughError()
+      log.debug(`Exit from events building`)
+      throw new PassthroughError(false)
     }
   }
 }
@@ -339,27 +677,87 @@ const build: ExternalMethods['build'] = async (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis
+  inputGetVacantTimeInMillis,
+  buildInfo
 ) => {
+  const log = getLog('build')
+  log.debug(`Start building`)
+  const getVacantTimeInMillis = () =>
+    Math.max(inputGetVacantTimeInMillis() - immediatelyStopTimeout, 0)
+  eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
+  const { eventsWithCursors, ...inputMetricData } = buildInfo
+  const metricData = {
+    ...inputMetricData,
+    pureLedgerTime: 0,
+    insideProjection: false,
+  }
+  void eventsWithCursors
+
   const {
     PassthroughError,
-    inlineLedgerRunQuery,
+    inlineLedgerRunQuery: ledgerQuery,
     schemaName,
     tablePrefix,
     escapeId,
     escapeStr,
     generateGuid,
+    monitoring,
   } = basePool
+
+  const now = Date.now()
+
+  const hasSendTime =
+    metricData.sendTime != null && metricData.sendTime.constructor === Number
+
+  const groupMonitoring =
+    monitoring != null
+      ? monitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ ReadModel: readModelName })
+      : null
+
+  if (hasSendTime) {
+    for (const innerMonitoring of [monitoring, groupMonitoring]) {
+      if (innerMonitoring != null) {
+        innerMonitoring.duration('EventDelivery', now - metricData.sendTime)
+      }
+    }
+  }
+
+  const inlineLedgerRunQuery: typeof ledgerQuery = Object.assign(
+    async (...args: any[]): Promise<any> => {
+      const inlineLedgerStartTimestamp = Date.now()
+      try {
+        return await (ledgerQuery as any)(...args)
+      } finally {
+        if (!metricData.insideProjection) {
+          metricData.pureLedgerTime += Date.now() - inlineLedgerStartTimestamp
+        }
+      }
+    },
+    ledgerQuery
+  )
 
   try {
     basePool.activePassthrough = true
     const databaseNameAsId = escapeId(schemaName)
+    const databaseNameAsStr = escapeStr(schemaName)
     const ledgerTableNameAsId = escapeId(
       `${tablePrefix}__${schemaName}__LEDGER__`
     )
     const trxTableNameAsId = escapeId(`${tablePrefix}__${schemaName}__TRX__`)
 
-    const xaKey = generateGuid(`${Date.now()}${Math.random()}${process.pid}`)
+    const firstRandom = Math.random()
+    let lastRandom: number | null = null
+    // More entropy via branch misprediction and more context changes
+    for (let index = 0; index < Math.floor(firstRandom * 50) + 1; index++) {
+      lastRandom = Math.random()
+    }
+    const xaKey = generateGuid(
+      `${Date.now()}${firstRandom}${lastRandom}${process.pid}`
+    )
+
+    log.debug(`Running inline ledger query`)
 
     const rows = (await inlineLedgerRunQuery(
       `WITH "MaybeAcquireLock" AS (
@@ -368,11 +766,7 @@ const build: ExternalMethods['build'] = async (
          AND "IsPaused" = FALSE
          AND "Errors" IS NULL
          FOR NO KEY UPDATE NOWAIT
-       ), "CleanTrx" AS (
-        DELETE FROM ${databaseNameAsId}.${trxTableNameAsId}
-        WHERE "Timestamp" < CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) - 86400000
-        RETURNING *
-      ), "InsertTrx" AS (
+       ), "InsertTrx" AS (
         INSERT INTO ${databaseNameAsId}.${trxTableNameAsId}(
           "Timestamp", "XaKey", "XaValue"
         ) VALUES (
@@ -381,22 +775,29 @@ const build: ExternalMethods['build'] = async (
           CAST(pg_backend_pid() AS VARCHAR(190))
         )
         RETURNING *
+      ), "UpdateTrx" AS (
+        UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
+        SET "XaKey" = ${escapeStr(xaKey)}
+        WHERE "EventSubscriber" = ${escapeStr(readModelName)}
+        AND CAST(COALESCE((SELECT LEAST(Count("InsertTrx".*), 0) FROM "InsertTrx"), 0) AS BIGINT) = 0
+        AND (SELECT Count("MaybeAcquireLock".*) FROM "MaybeAcquireLock") = 1
+        AND "IsPaused" = FALSE
+        AND "Errors" IS NULL
+        RETURNING *
       )
-      UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
-      SET "XaKey" = ${escapeStr(xaKey)}
-      WHERE "EventSubscriber" = ${escapeStr(readModelName)}
-      AND CAST(COALESCE((SELECT LEAST(Count("InsertTrx".*), 0) FROM "InsertTrx"), 0) AS BIGINT) = 0
-      AND CAST(COALESCE((SELECT LEAST(Count("CleanTrx".*), 0) FROM "CleanTrx"), 0) AS BIGINT) = 0
-      AND (SELECT Count("MaybeAcquireLock".*) FROM "MaybeAcquireLock") = 1
-      AND "IsPaused" = FALSE
-      AND "Errors" IS NULL
-      RETURNING *
+      SELECT "UpdateTrx".*, (
+        SELECT Count(*) FROM information_schema.routines
+        WHERE routines.specific_schema=${databaseNameAsStr} AND
+        routines.routine_name = ${escapeStr(`PROC-${readModelName}`)}
+      ) > 0 AS "IsProcedural"
+      FROM "UpdateTrx"
       `
-    )) as Array<ReadModelLedger>
+    )) as Array<ReadModelProcedureLedger>
 
     let readModelLedger = rows.length === 1 ? rows[0] : null
     if (readModelLedger == null || readModelLedger.Errors != null) {
-      throw new PassthroughError()
+      log.debug(`Ledger is not locked. Throwing PassthroughError`)
+      throw new PassthroughError(false)
     }
 
     const eventTypes =
@@ -419,34 +820,114 @@ const build: ExternalMethods['build'] = async (
       eventTypes,
       inputCursor: cursor,
       readModelLedger,
+      metricData,
       xaKey,
+      log,
     }
 
-    const buildMethod = cursor == null ? buildInit : buildEvents
-    await buildMethod(
-      currentPool,
-      basePool,
-      readModelName,
-      store,
-      modelInterop,
-      next,
-      eventstoreAdapter,
-      getVacantTimeInMillis
-    )
-  } catch (error) {
-    if (!(error instanceof PassthroughError)) {
-      throw error
+    let buildMethod: typeof buildEvents
+
+    if (cursor == null) {
+      log.debug(`Ledger is locked. Running build init`)
+      buildMethod = buildInit
+    } else {
+      log.debug(`Ledger is locked. Running build events`)
+      buildMethod = buildEvents
+    }
+
+    let barrierTimeout: ReturnType<typeof setTimeout> | null = null
+
+    try {
+      await Promise.race([
+        new Promise((_, reject) => {
+          barrierTimeout = setTimeout(() => {
+            reject(immediatelyStopError)
+            barrierTimeout = null
+          }, inputGetVacantTimeInMillis())
+        }),
+        buildMethod(
+          currentPool,
+          basePool,
+          readModelName,
+          store,
+          modelInterop,
+          next,
+          eventstoreAdapter,
+          getVacantTimeInMillis,
+          buildInfo
+        ),
+      ])
+    } finally {
+      if (barrierTimeout != null) {
+        clearTimeout(barrierTimeout)
+        barrierTimeout = null
+      }
     }
 
     try {
-      await inlineLedgerRunQuery(`ROLLBACK`)
+      await inlineLedgerRunQuery(`
+        DELETE FROM ${databaseNameAsId}.${trxTableNameAsId}
+        WHERE "Timestamp" < CAST(extract(epoch from clock_timestamp()) * 1000 AS BIGINT) - 86400000  
+      `)
     } catch (err) {
       if (!(err instanceof PassthroughError)) {
+        log.debug(`Unknown error is thrown while cleaning TRX journal`)
         throw err
       }
     }
+  } catch (error) {
+    if (error === immediatelyStopError) {
+      try {
+        await basePool.connection.end()
+      } catch (e) {}
+      await next()
+      return
+    }
+
+    if (
+      error == null ||
+      !(
+        error instanceof PassthroughError ||
+        error.name === 'RequestTimeoutError' ||
+        error.name === 'ServiceBusyError'
+      )
+    ) {
+      log.debug(`Unknown error is thrown while building`)
+      throw error
+    }
+
+    log.debug(`PassthroughError is thrown while building`)
+    const passthroughError = error as PassthroughErrorInstance
+
+    try {
+      log.debug(`Running rollback after error`)
+      await inlineLedgerRunQuery(`ROLLBACK`)
+      log.debug(`Transaction is rolled back`)
+    } catch (err) {
+      if (!(err instanceof PassthroughError)) {
+        log.debug(`Unknown error is thrown while rollback`)
+        throw err
+      }
+      log.debug(`PassthroughError is thrown while rollback`)
+    }
+
+    if (
+      passthroughError.isRetryable ||
+      error.name === 'RequestTimeoutError' ||
+      error.name === 'ServiceBusyError'
+    ) {
+      log.debug(`PassthroughError is retryable. Going to the next step`)
+      await next()
+    }
   } finally {
+    log.debug(`Building is finished`)
     basePool.activePassthrough = false
+
+    for (const innerMonitoring of [monitoring, groupMonitoring]) {
+      if (innerMonitoring != null) {
+        innerMonitoring.duration('Ledger', metricData.pureLedgerTime)
+      }
+    }
   }
 }
 

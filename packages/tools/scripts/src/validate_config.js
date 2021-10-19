@@ -4,7 +4,9 @@ import Trie from 'route-trie'
 import { schemaResolveConfig, message } from './constants'
 import { checkRuntimeEnv } from './declare_runtime_env'
 
-const ajv = new Ajv()
+const ajv = new Ajv({
+  allowUnionTypes: true,
+})
 
 const allowedMethods = [
   'HEAD',

@@ -19,13 +19,14 @@ const create: UnboundResourceMethod = async (pool, options) => {
     database: options.database,
   } as OmitObject<AdapterOptions, CommonAdapterOptions>)
 
-  await admin.inlineLedgerRunQuery(
-    [
-      `CREATE SCHEMA ${escapeId(options.databaseName)}`,
+  try {
+    await admin.inlineLedgerRunQuery(
+      [
+        `CREATE SCHEMA ${escapeId(options.databaseName)}`,
 
-      `CREATE TABLE ${escapeId(options.databaseName)}.${escapeId(
-        `__${options.databaseName}__LEDGER__`
-      )}(
+        `CREATE TABLE ${escapeId(options.databaseName)}.${escapeId(
+          `__${options.databaseName}__LEDGER__`
+        )}(
         "EventSubscriber" VARCHAR(190) NOT NULL,
         "IsPaused" BOOLEAN NOT NULL,
         "EventTypes" JSONB NOT NULL,
@@ -39,42 +40,45 @@ const create: UnboundResourceMethod = async (pool, options) => {
         PRIMARY KEY("EventSubscriber")
       )`,
 
-      `CREATE TABLE ${escapeId(options.databaseName)}.${escapeId(
-        `__${options.databaseName}__TRX__`
-      )}(
+        `CREATE TABLE ${escapeId(options.databaseName)}.${escapeId(
+          `__${options.databaseName}__TRX__`
+        )}(
         "XaKey" VARCHAR(190) NOT NULL,
         "XaValue" VARCHAR(190) NOT NULL,
         "Timestamp" BIGINT,
         PRIMARY KEY("XaKey")
       )`,
 
-      `GRANT USAGE ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
-        options.userLogin
-      )}`,
+        `GRANT USAGE ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
+          options.userLogin
+        )}`,
 
-      `GRANT ALL ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
-        options.userLogin
-      )}`,
+        `GRANT ALL ON SCHEMA ${escapeId(options.databaseName)} TO ${escapeId(
+          options.userLogin
+        )}`,
 
-      `GRANT ALL ON ALL TABLES IN SCHEMA ${escapeId(
-        options.databaseName
-      )} TO ${escapeId(options.userLogin)}`,
+        `GRANT ALL ON ALL TABLES IN SCHEMA ${escapeId(
+          options.databaseName
+        )} TO ${escapeId(options.userLogin)}`,
 
-      `GRANT ALL ON ALL SEQUENCES IN SCHEMA ${escapeId(
-        options.databaseName
-      )} TO ${escapeId(options.userLogin)}`,
+        `GRANT ALL ON ALL SEQUENCES IN SCHEMA ${escapeId(
+          options.databaseName
+        )} TO ${escapeId(options.userLogin)}`,
 
-      `GRANT ALL ON ALL FUNCTIONS IN SCHEMA ${escapeId(
-        options.databaseName
-      )} TO ${escapeId(options.userLogin)}`,
+        `GRANT ALL ON ALL FUNCTIONS IN SCHEMA ${escapeId(
+          options.databaseName
+        )} TO ${escapeId(options.userLogin)}`,
 
-      `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO ${escapeId(
-        options.userLogin
-      )}`,
-    ].join('; ')
-  )
-
-  await disconnect(admin)
+        `ALTER SCHEMA ${escapeId(options.databaseName)} OWNER TO ${escapeId(
+          options.userLogin
+        )}`,
+      ].join('; ')
+    )
+  } catch (error) {
+    throw error
+  } finally {
+    await disconnect(admin)
+  }
 }
 
 export default create

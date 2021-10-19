@@ -362,8 +362,10 @@ const build: ExternalMethods['build'] = async (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis
+  getVacantTimeInMillis,
+  buildInfo
 ) => {
+  eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
   const {
     PassthroughError,
     inlineLedgerRunQuery,
@@ -494,10 +496,17 @@ const build: ExternalMethods['build'] = async (
       modelInterop,
       next,
       eventstoreAdapter,
-      getVacantTimeInMillis
+      getVacantTimeInMillis,
+      buildInfo
     )
   } catch (error) {
-    if (!(error instanceof PassthroughError)) {
+    if (
+      error == null ||
+      !(
+        error instanceof PassthroughError ||
+        error.name === 'RequestTimeoutError'
+      )
+    ) {
       throw error
     }
 

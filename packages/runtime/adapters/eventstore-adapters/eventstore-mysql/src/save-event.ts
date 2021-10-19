@@ -1,4 +1,8 @@
-import { ConcurrentError, InputEvent } from '@resolve-js/eventstore-base'
+import {
+  ConcurrentError,
+  InputEvent,
+  StoredEventPointer,
+} from '@resolve-js/eventstore-base'
 
 import {
   ER_DUP_ENTRY,
@@ -10,7 +14,7 @@ import { AdapterPool } from './types'
 const saveEvent = async (
   pool: AdapterPool,
   event: InputEvent
-): Promise<void> => {
+): Promise<StoredEventPointer> => {
   const { eventsTableName, connection, database, escapeId, escape } = pool
   try {
     const eventsTableNameAsId: string = escapeId(eventsTableName)
@@ -69,6 +73,10 @@ const saveEvent = async (
       
       COMMIT;`
     )
+    return {
+      cursor: '',
+      event: { ...event, threadId: 0, threadCounter: 0 },
+    }
   } catch (error) {
     const errno = error != null && error.errno != null ? error.errno : 0
     const message = error != null && error.message != null ? error.message : ''

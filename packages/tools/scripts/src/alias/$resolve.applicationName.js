@@ -1,11 +1,11 @@
-import resolveFile from '../resolve_file'
+import { resolveResource } from '../resolve-resource'
 
-export default ({ resolveConfig }) => {
+const importApplicationName = ({ resolveConfig }) => {
   const exports = []
 
   const applicationName =
     resolveConfig.name == null
-      ? require(resolveFile('package.json')).name
+      ? require(resolveResource('package.json').result).name
       : resolveConfig.name
 
   exports.push(
@@ -16,3 +16,5 @@ export default ({ resolveConfig }) => {
 
   return exports.join('\r\n')
 }
+
+export default importApplicationName

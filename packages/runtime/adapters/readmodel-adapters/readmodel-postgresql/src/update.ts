@@ -8,67 +8,17 @@ const update: CurrentStoreApi['update'] = async (
   updateExpression,
   options
 ) => {
-  const {
-    inlineLedgerRunQuery,
-    tablePrefix,
-    escapeId,
-    escapeStr,
-    count,
-    buildUpsertDocument,
-    insert,
-    searchToWhereExpression,
-    updateToSetExpression,
-    makeNestedPath,
-    schemaName,
-  } = pool
-
-  const isUpsert = options != null ? !!options.upsert : false
-
-  if (isUpsert) {
-    const foundDocumentsCount = await count(
-      pool,
-      readModelName,
-      tableName,
-      searchExpression
-    )
-
-    if (foundDocumentsCount === 0) {
-      const document = buildUpsertDocument(
-        searchExpression,
-        updateExpression,
-        pool.splitNestedPath
-      )
-      await insert(pool, readModelName, tableName, document)
-      return
-    }
-  }
-
-  const searchExpr = searchToWhereExpression(
+  const sqlQuery = pool.makeSqlQuery(
+    pool,
+    readModelName,
+    'update',
+    tableName,
     searchExpression,
-    escapeId,
-    escapeStr,
-    makeNestedPath,
-    pool.splitNestedPath
-  )
-  const updateExpr = updateToSetExpression(
     updateExpression,
-    escapeId,
-    escapeStr,
-    makeNestedPath,
-    pool.splitNestedPath
+    options
   )
 
-  if (updateExpr.trim() === '') {
-    return
-  }
-
-  const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
-
-  await inlineLedgerRunQuery(
-    `UPDATE ${escapeId(schemaName)}.${escapeId(`${tablePrefix}${tableName}`)}
-    SET ${updateExpr} ${inlineSearchExpr};`
-  )
+  await pool.inlineLedgerRunQuery(sqlQuery)
 }
 
 export default update

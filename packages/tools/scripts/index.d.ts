@@ -9,3 +9,4 @@ export function reset(...args: any[]): any
 export function stop(...args: any[]): any
 export function importEventStore(...args: any[]): any
 export function exportEventStore(...args: any[]): any
+export function getModulesDirs(...args: any[]): any

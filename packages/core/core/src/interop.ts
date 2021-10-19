@@ -1,21 +1,25 @@
-import {
+import type {
   AggregateMeta,
   ReadModelMeta,
   ViewModelMeta,
   SagaMeta,
+  CommandMiddleware,
+  ReadModelProjectionMiddleware,
+  ReadModelResolverMiddleware,
+  ApiHandlerMeta,
 } from './types/runtime'
-import { SagaDomain, SagaInterop, SagaInteropMap } from './saga/types'
-import {
+import type { SagaDomain, SagaInterop, SagaInteropMap } from './saga/types'
+import type {
   ReadModelDomain,
   ReadModelInterop,
   ReadModelInteropMap,
 } from './read-model/types'
-import {
+import type {
   AggregateDomain,
   AggregateInterop,
   AggregatesInterop,
 } from './aggregate/types'
-import {
+import type {
   ViewModelDomain,
   ViewModelInterop,
   ViewModelInteropMap,
@@ -32,11 +36,19 @@ export type Domain = {
   viewModelDomain: ViewModelDomain
 }
 
+type Middlewares = {
+  command: CommandMiddleware[]
+  resolver: ReadModelResolverMiddleware[]
+  projection: ReadModelProjectionMiddleware[]
+}
+
 export type DomainMeta = {
   sagas: SagaMeta[]
   readModels: ReadModelMeta[]
   aggregates: AggregateMeta[]
   viewModels: ViewModelMeta[]
+  apiHandlers: ApiHandlerMeta[]
+  middlewares?: Middlewares
 }
 
 const initDomain = (domainMeta: DomainMeta): Domain => ({
@@ -46,8 +58,9 @@ const initDomain = (domainMeta: DomainMeta): Domain => ({
   viewModelDomain: initViewModelDomain(domainMeta.viewModels),
 })
 
-export {
-  initDomain,
+export { initDomain }
+
+export type {
   ReadModelInterop,
   ReadModelInteropMap,
   SagaInterop,

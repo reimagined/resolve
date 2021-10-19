@@ -1,62 +1,36 @@
-import getLog from './get-log'
+import { getLog } from './get-log'
 import type {
   ConnectionDependencies,
-  PostgresqlAdapterPoolConnectedProps,
-  AdapterPool,
   AdapterPoolPrimal,
   PostgresqlAdapterConfig,
 } from './types'
+import makePostgresClient from './make-postgres-client'
+import makeKnownError from './make-known-error'
 
 const connect = async (
   pool: AdapterPoolPrimal,
-  {
-    Postgres,
-    escapeId,
-    escape,
-    fullJitter,
-    executeStatement,
-    coercer,
-  }: ConnectionDependencies,
+  { Postgres }: ConnectionDependencies,
   config: PostgresqlAdapterConfig
 ): Promise<void> => {
   const log = getLog('connect')
   log.debug('configuring postgres client')
 
-  let {
-    databaseName,
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName,
-    subscribersTableName,
-    // eslint-disable-next-line prefer-const
-    ...connectionOptions
-  } = config
+  const oldConnection = pool.connection
+  if (oldConnection !== undefined) {
+    pool.connection = undefined
+    oldConnection.end((err) => {
+      if (err)
+        log.error(`Error during disconnection before reconnection: ${err}`)
+    })
+  }
 
-  eventsTableName = eventsTableName ?? 'events'
-  snapshotsTableName = snapshotsTableName ?? 'snapshots'
-  secretsTableName = secretsTableName ?? 'secrets'
-  subscribersTableName = subscribersTableName ?? 'subscribers'
+  const connection = makePostgresClient(pool, Postgres, pool.connectionOptions)
 
-  Object.assign<
-    AdapterPoolPrimal,
-    Partial<PostgresqlAdapterPoolConnectedProps>
-  >(pool, {
-    databaseName,
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName,
-    connectionOptions,
-    subscribersTableName,
-    Postgres,
-    fullJitter,
-    coercer,
-    executeStatement: executeStatement.bind(null, pool as AdapterPool),
-    escapeId,
-    escape,
-  })
-
-  if (pool.executeStatement != null) {
-    await pool.executeStatement('SELECT 0 AS "defunct"')
+  try {
+    await connection.connect()
+    pool.connection = connection
+  } catch (error) {
+    throw makeKnownError(error)
   }
   log.debug('connection to postgres databases established')
 }

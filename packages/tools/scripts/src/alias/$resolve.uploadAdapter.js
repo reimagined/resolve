@@ -4,9 +4,9 @@ import {
   RUNTIME_ENV_ANYWHERE,
   IMPORT_CONSTRUCTOR,
 } from '../constants'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
-export default ({ resolveConfig, isClient }) => {
+const importUploadAdapter = ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.seedClientEnvs`
@@ -19,8 +19,10 @@ export default ({ resolveConfig, isClient }) => {
 
   if (resolveConfig.hasOwnProperty('uploadAdapter')) {
     if (resolveConfig.uploadAdapter.module == null) {
-      resolveConfig.uploadAdapter.module =
-        '@resolve-js/runtime/lib/common/defaults/upload-adapter.js'
+      resolveConfig.uploadAdapter.module = {
+        package: '@resolve-js/runtime-base',
+        import: 'emptyUploadAdapter',
+      }
     }
 
     importResource({
@@ -38,3 +40,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importUploadAdapter

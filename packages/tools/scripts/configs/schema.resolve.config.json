@@ -42,11 +42,27 @@
     "resourceInstance": {
       "type": "string"
     },
+    "resourcePackage": {
+      "type": "object",
+      "properties": {
+        "package": {
+          "type": "string"
+        },
+        "import": {
+          "type": "string"
+        }
+      },
+      "required": ["package", "import"],
+      "additionalProperties": false
+    },
     "resourceConstructor": {
       "type": "object",
       "properties": {
         "module": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourcePackage" }
+          ]
         },
         "options": {
           "type": "object"
@@ -103,6 +119,10 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
+        },
+        "commandHttpResponseMode": {
+          "enum": ["event", "empty"],
+          "default": "event"
         }
       },
       "dependencies": {
@@ -230,7 +250,8 @@
         "handler": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
-            { "$ref": "#/definitions/resourceConstructor" }
+            { "$ref": "#/definitions/resourceConstructor" },
+            { "$ref": "#/definitions/resourcePackage" }
           ]
         }
       },
@@ -268,6 +289,7 @@
         { "type": "string" },
         { "$ref": "#/definitions/clientFullEntryProperties" }
       ],
+      "minItems": 2,
       "additionalItems": false
     },
     "config": {
@@ -282,15 +304,8 @@
             ]
           }
         },
-        "target": {
-          "type": "string",
-          "enum": ["local", "cloud"]
-        },
         "name": {
           "type": ["string"]
-        },
-        "port": {
-          "type": ["integer", "string"]
         },
         "rootPath": {
           "type": "string"
@@ -349,7 +364,8 @@
           "additionalProperties": {
             "oneOf": [
               { "$ref": "#/definitions/resourceInstance" },
-              { "$ref": "#/definitions/resourceConstructor" }
+              { "$ref": "#/definitions/resourceConstructor" },
+              { "$ref": "#/definitions/resourcePackage" }
             ]
           }
         },
@@ -380,6 +396,56 @@
             { "$ref": "#/definitions/resourceConstructor" },
             { "$ref": "#/definitions/resourceBypass" }
           ]
+        },
+        "middlewares": {
+          "type": "object",
+          "properties": {
+            "aggregate": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "readModel": {
+              "type": "object",
+              "properties": {
+                "resolver": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "projection": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "runtime": {
+          "type": "object",
+          "properties": {
+            "module": {
+              "type": "string"
+            },
+            "options": {
+              "type": "object",
+              "properties": {
+                "importMode": {
+                  "enum": ["static", "dynamic"],
+                  "default": "static"
+                },
+                "additionalProperties": true
+              }
+            }
+          },
+          "required": ["module"],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -387,7 +453,6 @@
         "clientImports",
         "serverImports",
         "apiHandlers",
-        "port",
         "rootPath",
         "distDir",
         "staticDir",
@@ -398,10 +463,10 @@
         "readModelConnectors",
         "eventstoreAdapter",
         "customConstants",
-        "target",
         "jwtCookie",
         "sagas",
-        "mode"
+        "mode",
+        "runtime"
       ],
       "additionalProperties": false
     }

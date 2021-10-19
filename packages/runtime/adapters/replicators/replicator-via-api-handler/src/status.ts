@@ -1,37 +1,22 @@
-import { ExternalMethods } from './types'
+import { ExternalMethods, AdapterPool } from './types'
 import { ReplicationState } from '@resolve-js/eventstore-base'
 import {
+  AdapterOperationStatusMethodArguments,
+  AdapterOperationStatusMethodReturnType,
+  RuntimeReadModelStatus,
   ReadModelRunStatus,
   ReadModelStatus,
   ReadModelEvent,
+  UnPromise,
 } from '@resolve-js/readmodel-base'
-import fetch from 'node-fetch'
 
-const status: ExternalMethods['status'] = async (pool, readModelName) => {
-  const { targetApplicationUrl } = pool
-
-  let state: ReplicationState
-  try {
-    const response = await fetch(
-      `${targetApplicationUrl}/api/replication-state`
-    )
-    state = await response.json()
-  } catch (error) {
-    if (error.name === 'AbortError' || error.name === 'FetchError') {
-      const readModelStatus: ReadModelStatus = {
-        eventSubscriber: '',
-        deliveryStrategy: 'inline-ledger',
-        successEvent: null,
-        failedEvent: { type: error.name } as ReadModelEvent,
-        errors: error ? [error] : null,
-        cursor: null,
-        status: ReadModelRunStatus.ERROR,
-      }
-      return readModelStatus
-    } else {
-      throw error
-    }
-  }
+const status: ExternalMethods['status'] = async <
+  T extends [includeRuntimeStatus?: boolean]
+>(
+  ...args: AdapterOperationStatusMethodArguments<T, AdapterPool>
+): AdapterOperationStatusMethodReturnType<T> => {
+  const [pool, readModelName, eventstoreAdapter, includeRuntimeStatus] = args
+  const state: ReplicationState = await pool.getReplicationState(pool)
 
   let runStatus: ReadModelRunStatus = ReadModelRunStatus.DELIVER
   if (state.status === 'error') {
@@ -39,9 +24,8 @@ const status: ExternalMethods['status'] = async (pool, readModelName) => {
   } else if (state.paused) {
     runStatus = ReadModelRunStatus.SKIP
   }
-
   let error: Error | null = null
-  if (state.status === 'error') {
+  if (state.status === 'error' || state.status === 'serviceError') {
     if (state.statusData == null) {
       error = {
         message: 'Unknown error',
@@ -62,8 +46,8 @@ const status: ExternalMethods['status'] = async (pool, readModelName) => {
     }
   }
 
-  const result: ReadModelStatus = {
-    eventSubscriber: '',
+  let result: ReadModelStatus | RuntimeReadModelStatus | null = {
+    eventSubscriber: readModelName,
     deliveryStrategy: 'inline-ledger',
     successEvent:
       state.successEvent != null
@@ -76,7 +60,12 @@ const status: ExternalMethods['status'] = async (pool, readModelName) => {
     cursor: state.iterator ? (state.iterator.cursor as string) ?? null : null,
     status: runStatus,
   }
-  return result
+  if (includeRuntimeStatus) {
+    void eventstoreAdapter // TODO real replicator status
+    result = Object.assign(result, { isAlive: true })
+  }
+
+  return result as UnPromise<AdapterOperationStatusMethodReturnType<T>>
 }
 
 export default status

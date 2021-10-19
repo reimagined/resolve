@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/%40resolve-js%2Feventstore-base.svg)](https://badge.fury.io/js/%40resolve-js%2Feventstore-base)
 
-This base package is a eventstore adapter for storing events.
+A base package for adapters used to store events.
 
 ## Usage
 

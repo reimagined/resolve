@@ -52,6 +52,7 @@ dist
 lib
 es
 types
+/website/.docusaurus
 /website/node_modules
 /website/build
 /website/i18n
@@ -65,6 +66,11 @@ bus.json
 lcov.info
 packages/core/zeromq/optional
 .npmrc
+base-patch.json
+target-patch.json
 
 cra-tests
 *.tsbuildinfo
+examples/**/yarn.lock
+tutorial/**/yarn.lock
+templates/**/yarn.lock

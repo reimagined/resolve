@@ -1,37 +1,20 @@
 import type { CurrentStoreApi } from './types'
 
 const del: CurrentStoreApi['delete'] = async (
-  {
-    inlineLedgerRunQuery,
-    tablePrefix,
-    escapeId,
-    escapeStr,
-    searchToWhereExpression,
-    makeNestedPath,
-    splitNestedPath,
-    schemaName,
-  },
+  pool,
   readModelName,
   tableName,
   searchExpression
 ) => {
-  const searchExpr = searchToWhereExpression(
-    searchExpression,
-    escapeId,
-    escapeStr,
-    makeNestedPath,
-    splitNestedPath
+  const sqlQuery = pool.makeSqlQuery(
+    pool,
+    readModelName,
+    'delete',
+    tableName,
+    searchExpression
   )
 
-  const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
-
-  await inlineLedgerRunQuery(
-    `DELETE FROM ${escapeId(schemaName)}.${escapeId(
-      `${tablePrefix}${tableName}`
-    )}
-    ${inlineSearchExpr};`
-  )
+  await pool.inlineLedgerRunQuery(sqlQuery)
 }
 
 export default del

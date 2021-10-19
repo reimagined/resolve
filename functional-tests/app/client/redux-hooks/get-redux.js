@@ -1,11 +1,9 @@
 import devTools from './enhancers/redux-devtools'
 import { customCounter } from './reducers/custom-counter'
 
-const getRedux = () => ({
+export const getRedux = () => ({
   reducers: {
     customCounter,
   },
   enhancers: [devTools],
 })
-
-export default getRedux

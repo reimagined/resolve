@@ -19,6 +19,7 @@ type Closure = {
   subscription?: Subscription
   url?: string
   cursor: string | null
+  aggregateIds?: string[]
 }
 
 type ViewModelConnection = {
@@ -112,9 +113,14 @@ function useViewModel(
   const actualArgs: SerializableMap | undefined = isSerializableMap(args)
     ? args
     : undefined
-  const actualQueryOptions: QueryOptions | undefined = firstOfType<
-    QueryOptions
-  >(isOptions, stateChangeCallback, eventReceivedCallback, queryOptions)
+  const actualQueryOptions:
+    | QueryOptions
+    | undefined = firstOfType<QueryOptions>(
+    isOptions,
+    stateChangeCallback,
+    eventReceivedCallback,
+    queryOptions
+  )
   const actualStateChangeCallback:
     | StateChangedCallback
     | undefined = firstOfType<StateChangedCallback>(
@@ -163,10 +169,11 @@ function useViewModel(
       actualQueryOptions
     )
     if (result) {
-      const { data, meta: { url, cursor } = {} } = result
+      const { data, meta: { url, cursor, aggregateIds } = {} } = result
       setState(data, false)
       closure.url = url
       closure.cursor = cursor ?? null
+      closure.aggregateIds = aggregateIds
     }
   }, [])
 
@@ -177,63 +184,67 @@ function useViewModel(
     setState(viewModel.projection[event.type](closure.state, event), false)
   }, [])
 
-  const connect = useCallback((done?: SubscribeCallback): PromiseOrVoid<
-    Subscription
-  > => {
-    const asyncConnect = async (): Promise<Subscription> => {
-      await queryState()
+  const connect = useCallback(
+    (done?: SubscribeCallback): PromiseOrVoid<Subscription> => {
+      const asyncConnect = async (): Promise<Subscription> => {
+        await queryState()
 
-      const subscribe = client.subscribe(
-        closure.url ?? '',
-        closure.cursor,
-        modelName,
-        aggregateIds,
-        (event) => applyEvent(event),
-        undefined,
-        () => queryState()
-      ) as Promise<Subscription>
+        const subscribe = client.subscribe(
+          closure.url ?? '',
+          closure.cursor,
+          modelName,
+          Array.isArray(closure.aggregateIds)
+            ? closure.aggregateIds
+            : aggregateIds,
+          (event) => applyEvent(event),
+          undefined,
+          () => queryState()
+        ) as Promise<Subscription>
 
-      const subscription = await subscribe
+        const subscription = await subscribe
 
-      if (subscription) {
-        closure.subscription = subscription
+        if (subscription) {
+          closure.subscription = subscription
+        }
+
+        return subscription
       }
 
-      return subscription
-    }
+      setState(closure.initialState, true)
 
-    setState(closure.initialState, true)
-
-    if (typeof done !== 'function') {
-      return asyncConnect()
-    }
-
-    asyncConnect()
-      .then((result) => done(null, result))
-      .catch((error) => done(error, null))
-
-    return undefined
-  }, [])
-
-  const dispose = useCallback((done?: (error?: Error) => void): PromiseOrVoid<
-    void
-  > => {
-    const asyncDispose = async (): Promise<void> => {
-      if (closure.subscription) {
-        await client.unsubscribe(closure.subscription)
+      if (typeof done !== 'function') {
+        return asyncConnect()
       }
-    }
 
-    if (typeof done !== 'function') {
-      return asyncDispose()
-    }
+      asyncConnect()
+        .then((result) => done(null, result))
+        .catch((error) => done(error, null))
 
-    asyncDispose()
-      .then(() => done())
-      .catch((error) => done(error))
+      return undefined
+    },
+    []
+  )
 
-    return undefined
-  }, [])
+  const dispose = useCallback(
+    (done?: (error?: Error) => void): PromiseOrVoid<void> => {
+      const asyncDispose = async (): Promise<void> => {
+        if (closure.subscription) {
+          await client.unsubscribe(closure.subscription)
+        }
+      }
+
+      if (typeof done !== 'function') {
+        return asyncDispose()
+      }
+
+      asyncDispose()
+        .then(() => done())
+        .catch((error) => done(error))
+
+      return undefined
+    },
+    []
+  )
 
   return useMemo(
     () => ({

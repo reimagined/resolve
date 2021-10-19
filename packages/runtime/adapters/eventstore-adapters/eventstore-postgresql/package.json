@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/eventstore-postgresql",
-  "version": "0.30.3",
+  "version": "0.32.0",
   "description": "An adapter reSolve uses to store events in PostgreSQL.",
   "keywords": [
     "cqrs",
@@ -24,20 +24,21 @@
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.9.6",
-    "@resolve-js/core": "0.30.3",
-    "@resolve-js/debug-levels": "0.30.3",
-    "@resolve-js/eventstore-base": "0.30.3",
+    "@babel/runtime": "7.14.0",
+    "@resolve-js/core": "0.32.0",
+    "@resolve-js/debug-levels": "0.32.0",
+    "@resolve-js/eventstore-base": "0.32.0",
     "crc-32": "^1.2.0",
-    "pg": "^8.2.1"
+    "pg": "8.5.1",
+    "pg-cursor": "2.7.1"
   },
   "devDependencies": {
-    "@types/pg": "^7.14.3",
-    "jest": "26.6.3",
-    "ts-jest": "26.1.0"
+    "@types/pg": "7.14.11",
+    "jest": "27.0.3",
+    "ts-jest": "27.0.2"
   },
   "engines": {
-    "node": ">=12.18"
+    "node": ">=14.17"
   },
   "babelCompile": [
     {

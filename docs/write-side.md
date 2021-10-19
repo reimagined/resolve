@@ -50,7 +50,7 @@ To configure aggregates in a reSolve app, provide an aggregates array in the app
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list/config.app.js /aggregates: \[/ /\]/)
+[embedmd]:# (../../examples/js/shopping-list/config.app.js /aggregates: \[/ /\]/)
 ```js
 aggregates: [
     {
@@ -72,7 +72,7 @@ You can emit aggregate commands in the following cases:
 
 ### Sending Commands From the Client
 
-The reSolve framework exposes an [HTTP API](api-reference.md#commands-http-api) that you can use to to send commands from the client side. Your application's frontend can use this API directly or through one of the available [client libraries](frontend.md).
+The reSolve framework exposes an [HTTP API](api/client/http-api.md) that you can use to to send commands from the client side. Your application's frontend can use this API directly or through one of the available [client libraries](frontend.md).
 
 You can send a command from the client side as a POST request to the following URL:
 
@@ -125,7 +125,7 @@ $ curl -X POST "http://localhost:3000/api/commands"
 
 ### Emitting Commands on the Server
 
-You can use the **resolve.executeCommand** function to emit a command on the server side from a **[Saga](advanced-techniques.md#process-managers-sagas)** or **[API Handler](api-handlers.md)**:
+You can use the **resolve.executeCommand** function to emit a command on the server side from a **[Saga](sagas.md)** or **[API Handler](api-handlers.md)**:
 
 ```js
 await resolve.executeCommand({
@@ -135,8 +135,6 @@ await resolve.executeCommand({
   aggregateId,
 })
 ```
-
-For the full code sample, refer to the [with-saga](https://github.com/reimagined/resolve/tree/master/examples/with-saga) example project.
 
 ## Aggregate Command Handlers
 
@@ -204,8 +202,8 @@ storageAdapter: {
 
 Adapters for the following storage types are available out of the box:
 
-- [File or memory](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/@resolve-js/eventstore-lite)
-- [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/@resolve-js/eventstore-mysql)
+- [File or memory](https://github.com/reimagined/resolve/tree/master/packages/runtime/adapters/eventstore-adapters/eventstore-lite)
+- [PostgreSQL](https://github.com/reimagined/resolve/tree/master/packages/runtime/adapters/eventstore-adapters/eventstore-postgresql)
 
 You can also add your own storage adapter to store events.
-Refer to the [Adapters](advanced-techniques.md#adapters) section of the reSolve documentation for more information about adapters.
+Refer to the [Adapters](adapters.md) section of the reSolve documentation for more information about adapters.

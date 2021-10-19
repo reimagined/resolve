@@ -4,9 +4,9 @@ import {
   RUNTIME_ENV_OPTIONS_ONLY,
   IMPORT_CONSTRUCTOR,
 } from '../constants'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
-export default ({ resolveConfig, isClient }) => {
+const importClientImports = ({ resolveConfig, isClient }) => {
   if (!isClient) {
     throw new Error(`${message.clientAliasInServerCodeError}.clientImports`)
   }
@@ -42,3 +42,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importClientImports

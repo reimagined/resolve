@@ -4,7 +4,7 @@ import OneViewModelMountedTwice from './containers/OneViewModelMountedTwice'
 import ViewModelIsolation from './containers/ViewModelsolation'
 import Users from './containers/Users'
 
-export default [
+export const routes = [
   {
     component: App,
     routes: [

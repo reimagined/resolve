@@ -1,49 +1,73 @@
-import { EOL } from 'os'
-import { AdapterPool } from './types'
+import type { AdapterPool } from './types'
+import { RequestTimeoutError } from '@resolve-js/eventstore-base'
+import { isTimeoutError, isConnectionTerminatedError } from './errors'
+import { MAX_RECONNECTIONS } from './constants'
+import makePostgresClient from './make-postgres-client'
 
-const executeStatement = async (pool: AdapterPool, sql: any): Promise<any> => {
-  const errors: any[] = []
-  let rows = null
-  const connection = new pool.Postgres({
-    keepAlive: false,
-    connectionTimeoutMillis: 45000,
-    idle_in_transaction_session_timeout: 45000,
-    query_timeout: 45000,
-    statement_timeout: 45000,
-    ...pool.connectionOptions,
-  })
+const executeStatement = async (
+  pool: AdapterPool,
+  sql: string,
+  useDistinctConnection?: boolean
+): Promise<any[]> => {
+  let reconnectionTimes = 0
 
-  try {
-    await connection.connect()
-    const result = await connection.query(sql)
-
-    if (result != null && Array.isArray(result.rows)) {
-      rows = JSON.parse(JSON.stringify(result.rows))
+  while (true) {
+    let connection: typeof pool.connection
+    if (useDistinctConnection) {
+      connection = makePostgresClient(
+        pool,
+        pool.Postgres,
+        pool.connectionOptions
+      )
+    } else {
+      connection = pool.connection
     }
+    try {
+      if (useDistinctConnection) {
+        await connection.connect()
+      }
 
-    return rows
-  } catch (error) {
-    errors.push(error)
-  } finally {
-    await connection.end()
-  }
+      const result = await connection.query(sql)
 
-  if (errors.length > 0) {
-    const error: any = new Error()
-    error.message = errors.map(({ message }) => message).join(EOL)
-    error.stack = errors.map(({ stack }) => stack).join(EOL)
+      if (result != null && Array.isArray(result.rows)) {
+        return result.rows as Array<any>
+      }
 
-    const errorCodes = new Set(
-      errors.map(({ code }) => code).filter((code) => code != null)
-    )
-    if (errorCodes.size === 1) {
-      error.code = [...errorCodes][0]
+      return []
+    } catch (error) {
+      if (isTimeoutError(error)) {
+        throw new RequestTimeoutError(error.message)
+      } else if (isConnectionTerminatedError(error)) {
+        if (!useDistinctConnection) {
+          pool.getConnectPromise = pool.createGetConnectPromise()
+        }
+
+        if (reconnectionTimes > MAX_RECONNECTIONS) {
+          throw error
+        }
+
+        if (!useDistinctConnection) await pool.getConnectPromise()
+        reconnectionTimes++
+      } else if (
+        error != null &&
+        error.message === 'Client was closed and is not queryable'
+      ) {
+        if (reconnectionTimes > MAX_RECONNECTIONS) {
+          throw error
+        }
+        if (!useDistinctConnection) await pool.getConnectPromise()
+        reconnectionTimes++
+      } else {
+        throw error
+      }
+    } finally {
+      if (useDistinctConnection) {
+        connection.end((err) => {
+          return
+        })
+      }
     }
-
-    throw error
   }
-
-  return rows
 }
 
 export default executeStatement

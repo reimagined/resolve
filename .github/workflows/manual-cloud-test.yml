@@ -1,0 +1,115 @@
+name: manual test (cloud)
+
+on:
+  workflow_dispatch:
+    inputs:
+      RESOLVE_REF:
+        description: 'Resolve branch, tag or SHA'
+        required: true
+        default: 'dev'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel previous run (if any)
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v2
+        ref: ${{ github.event.inputs.RESOLVE_REF }}
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install
+        run: |
+          yarn install --frozen-lockfile
+          yarn validate-lock-file
+
+      - name: Publish to private repository
+        id: publish
+        uses: reimagined/github-actions/publish@v1
+        with:
+          registry: github
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          version: auto
+          build: ${{ github.sha }}
+          tag: cloud-test
+          unpublish: ${{ secrets.UNPUBLISH_TEST_PACKAGES }}
+          github_target_repository: resolve-js/resolve
+
+      - name: Checkout cloud environment
+        uses: actions/checkout@v2
+        with:
+          repository: DevExpress/resolve-cloud
+          ref: dev
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          path: resolve-cloud
+
+      - name: Install cloud environment
+        id: install_cloud
+        uses: reimagined/github-actions/install-cloud@v1
+        with:
+          aws_access_key_id: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
+          stage: framework-test
+          version: ${{ steps.publish.outputs.version }}
+          source: ./resolve-cloud
+          registry: ${{ steps.publish.outputs.registry_url }}
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          scopes: '@resolve-js'
+
+      - name: Test:integration Postgres Serverless
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
+          AWS_RDS_CLUSTER_ARN: ${{  steps.install_cloud.outputs.system_cluster_arn }}
+          AWS_RDS_ADMIN_SECRET_ARN: ${{  steps.install_cloud.outputs.postgres_admin_secret_arn }}
+        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
+        run: yarn test:integration-postgres-serverless
+
+      - name: Prepare test application
+        run: |
+          test_app_dir=$(mktemp -d -t test-app-XXXXXXXXX)
+          echo "test_app_dir=${test_app_dir}" >> $GITHUB_ENV
+          cp -rf ./functional-tests/app/. ${test_app_dir}
+          cd ${test_app_dir}
+          rm -rf node_modules
+
+      - name: Build initial events
+        env:
+          TEST_APP_DIR: ${{ env.test_app_dir }}
+          EVENT_STORE_PATH: ./test-event-store
+        run: |
+          yarn ts-node functional-tests/utils/generateEvents.ts
+
+      - name: Deploy test app to the cloud
+        id: deploy
+        uses: reimagined/github-actions/deploy@v1
+        with:
+          source: ${{ env.test_app_dir }}
+          cloud_api_url: ${{ steps.install_cloud.outputs.api_url}}
+          cloud_user: ${{ secrets.RESOLVE_CLOUD_USER }}
+          cloud_token: ${{ secrets.RESOLVE_CLOUD_TOKEN }}
+          cli_sources: resolve-cloud/cli/resolve-cloud
+          framework_version: ${{ steps.publish.outputs.version }}
+          framework_scope: '@resolve-js'
+          randomize_name: true
+          package_registry: ${{ steps.publish.outputs.registry_url }}
+          package_registry_token: ${{ secrets.RESOLVE_BOT_PAT }}
+          package_registry_scopes: '@resolve-js'
+          deploy_args: --verbosity=debug
+          event_store_path: ./test-event-store
+
+      - name: Test:functional (API)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-central-1
+          RESOLVE_TESTS_TARGET_DEPLOYMENT_ID: ${{ steps.deploy.outputs.id }}
+        run: |
+          cd functional-tests
+          yarn run-test api --url=${{ steps.deploy.outputs.url }}

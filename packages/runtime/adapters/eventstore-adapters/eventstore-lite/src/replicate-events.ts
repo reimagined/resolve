@@ -1,5 +1,6 @@
-import { AdapterPool } from './types'
-import { OldEvent, SavedEvent } from '@resolve-js/eventstore-base'
+import type { AdapterPool } from './types'
+import { THREAD_COUNT } from '@resolve-js/eventstore-base'
+import type { OldEvent, StoredEvent } from '@resolve-js/eventstore-base'
 import { str as strCRC32 } from 'crc-32'
 
 export const replicateEvents = async (
@@ -8,23 +9,29 @@ export const replicateEvents = async (
 ): Promise<void> => {
   if (events.length === 0) return
 
-  const { database, eventsTableName, escape, escapeId } = pool
+  const {
+    executeStatement,
+    executeQuery,
+    eventsTableName,
+    escape,
+    escapeId,
+  } = pool
   const eventsTableNameAsId = escapeId(eventsTableName)
 
-  const rows = (await database.all(
+  const rows = (await executeStatement(
     `SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
     ${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`
   )) as Array<{
-    threadId: SavedEvent['threadId']
-    threadCounter: SavedEvent['threadCounter']
+    threadId: StoredEvent['threadId']
+    threadCounter: StoredEvent['threadCounter']
   }>
 
-  const threadCounters = new Array<number>(256)
+  const threadCounters = new Array<StoredEvent['threadCounter']>(THREAD_COUNT)
   for (const row of rows) {
-    threadCounters[row.threadId] = row.threadCounter
+    threadCounters[row.threadId] = +row.threadCounter
   }
 
-  const eventsToInsert: SavedEvent[] = []
+  const eventsToInsert: StoredEvent[] = []
 
   for (const event of events) {
     const threadId =
@@ -37,7 +44,7 @@ export const replicateEvents = async (
     eventsToInsert.push({ ...event, threadId, threadCounter })
   }
 
-  await database.exec(`INSERT OR IGNORE INTO ${eventsTableNameAsId}(
+  await executeQuery(`INSERT OR IGNORE INTO ${eventsTableNameAsId}(
       "threadId",
       "threadCounter",
       "timestamp",

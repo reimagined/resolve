@@ -6,7 +6,7 @@ import declareRuntimeEnv, {
 
 const CLIENT_ENV_KEY = '__CLIENT_ENV__'
 
-export default ({ resolveConfig, isClient }) => {
+const seedClientEnvs = ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.seedClientEnvs`
@@ -98,3 +98,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return exports.join('\r\n')
 }
+
+export default seedClientEnvs

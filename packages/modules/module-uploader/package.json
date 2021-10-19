@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/module-uploader",
-  "version": "0.30.3",
+  "version": "0.32.0",
   "description": "A reSolve module that adds uploader commands to an application.",
   "keywords": [
     "cqrs",
@@ -23,14 +23,14 @@
     "testw": "echo || exit 0"
   },
   "dependencies": {
-    "@babel/runtime": "7.9.6",
-    "jsonwebtoken": "^8.5.1"
+    "@babel/runtime": "7.14.0",
+    "jsonwebtoken": "8.5.1"
   },
   "devDependencies": {
-    "jest": "26.6.3"
+    "jest": "27.0.3"
   },
   "engines": {
-    "node": ">=12.18"
+    "node": ">=14.17"
   },
   "babelCompile": [
     {

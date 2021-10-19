@@ -1,6 +1,6 @@
 import { USER_REGISTERED } from '../event-types'
 
-export default {
+const projection = {
   Init: async (store) => {
     await store.defineTable('PersonalDataPlain', {
       indexes: { id: 'string' },
@@ -27,3 +27,5 @@ export default {
     })
   },
 }
+
+export default projection

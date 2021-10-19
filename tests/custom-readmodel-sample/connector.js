@@ -7,12 +7,12 @@ const safeUnlinkSync = (filename) => {
   }
 }
 
-export default (options) => {
+const connector = (options) => {
   const prefix = String(options.prefix)
   const readModels = new Set()
   // mdis-start connect
   const connect = async (readModelName) => {
-    fs.writeFileSync(`${prefix}${readModelName}.lock`, true, { flag: 'wx' })
+    fs.writeFileSync(`${prefix}${readModelName}.lock`, 'true', { flag: 'wx' })
     readModels.add(readModelName)
     const store = {
       get() {
@@ -53,3 +53,5 @@ export default (options) => {
   }
 }
 // mdis-stop
+
+export default connector

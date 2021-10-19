@@ -1,6 +1,10 @@
 import { InternalMethods, CallReplicateResult } from './types'
 import fetch from 'node-fetch'
 
+//eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { REPLICATE } from '@resolve-js/module-replication'
+
 const callReplicate: InternalMethods['callReplicate'] = async (
   pool,
   events,
@@ -14,20 +18,27 @@ const callReplicate: InternalMethods['callReplicate'] = async (
     secretsToDelete,
     iterator,
   }
-  const response = await fetch(`${pool.targetApplicationUrl}/api/replicate`, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: { 'Content-Type': 'application/json' },
-  })
+  const response = await fetch(
+    `${pool.targetApplicationUrl}${REPLICATE.endpoint}`,
+    {
+      method: REPLICATE.method,
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
+    }
+  )
   let resultType: CallReplicateResult['type'] = 'unknown'
-  if (response.status === 425) {
-    resultType = 'alreadyInProgress'
+  const message = await response.text()
+  if (response.status >= 500) {
+    resultType = 'serverError'
+  } else if (response.status >= 400) {
+    resultType = 'clientError'
   } else if (response.status === 202 || response.status === 200) {
     resultType = 'launched'
   }
   return {
     type: resultType,
     httpStatus: response.status,
+    message: message,
   }
 }
 

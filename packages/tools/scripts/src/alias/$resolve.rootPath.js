@@ -1,8 +1,8 @@
-import validatePath from '@resolve-js/runtime/lib/common/utils/validate-path'
+import { validatePath } from '@resolve-js/core'
 
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
-export default ({ resolveConfig, isClient }) => {
+const importRootPath = ({ resolveConfig, isClient }) => {
   let rootPath = resolveConfig.rootPath
   const exports = []
 
@@ -21,9 +21,7 @@ export default ({ resolveConfig, isClient }) => {
     )
   } else {
     if (!isClient) {
-      exports.push(
-        `import validatePath from '@resolve-js/runtime/lib/common/utils/validate-path'`
-      )
+      exports.push(`import { validatePath } from '@resolve-js/core'`)
     }
 
     exports.push(`let rootPath = ${injectRuntimeEnv(rootPath, isClient)}`)
@@ -48,3 +46,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return exports.join('\r\n')
 }
+
+export default importRootPath

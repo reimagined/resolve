@@ -1,0 +1,69 @@
+.example-wrapper {
+  max-width: 580px;
+  margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.example-list {
+  margin-top: 10px;
+}
+
+.example-close-button {
+  cursor: pointer;
+  float: right;
+}
+
+.example-form {
+  margin-top: 7%;
+}
+
+.example-form-control {
+  width: 100% !important;
+  margin-bottom: 10px;
+}
+
+.example-button {
+  width: 100%;
+}
+
+.example-arrow-button {
+  cursor: pointer;
+}
+
+.example-task-name {
+  font-size: 36px;
+}
+
+.example-back-label {
+  margin-left: 8px;
+  font-size: 16px;
+}
+
+.example-icon {
+  display: inline-block !important;
+  height: 28px;
+  margin-bottom: -14px;
+  margin-top: -14px;
+}
+
+.example-table-action {
+  width: 110px;
+  white-space: nowrap;
+}
+
+.logout {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.link-not-decorated {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.link-not-decorated:focus,
+.link-not-decorated:hover {
+  color: inherit;
+  text-decoration: inherit;
+}

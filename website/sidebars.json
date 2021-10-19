@@ -1,38 +1,94 @@
 {
   "docs": {
     "Docs Index": [
-      "index",
       "introduction",
       "tutorial",
       {
-        "type": "subcategory",
+        "type": "category",
         "label": "Basics",
-        "ids": [
+        "items": [
           "write-side",  
           "read-side", 
-          "sagas", 
+          "sagas",
+          "adapters",
           "api-handlers",
+          "middleware",
           "frontend",
-          "manage-application",
           "app-structure"
         ]
       },
       {
-        "type": "subcategory",
+        "type": "category",
         "label": "Guides",
-        "ids": [
-          "advanced-techniques",
+        "items": [
+          "manage-application",
+          "modules",
           "authentication-and-authorization",
+          "encryption",
+          "custom-read-model-connectors",
+          "file-upload",
+          "export-import",
           "preparing-to-production",
+          "code-splitting",
           "debugging",
           "testing",
-          "api-reference",
-          "application-configuration",
           "contributing"
         ]
-      }
-    ],
-    "FAQ": ["faq"],
-    "Troubleshooting": ["troubleshooting"]
+      },
+      {
+        "type": "category",
+        "label": "API",
+        "items": [
+          {
+            "type": "category",
+            "label": "Aggregate",
+            "items": [
+              "api/aggregate/command-handler",
+              "api/aggregate/projection"
+            ]
+          },
+          {
+            "type": "category",
+            "label": "Read Model",
+            "items": [
+              "api/read-model/projection",
+              "api/read-model/resolver",
+              "api/read-model/store",
+              "api/read-model/connector"
+            ]
+          },
+          {
+            "type": "category",
+            "label": "View Model",
+            "items": [
+              "api/view-model/projection",
+              "api/view-model/resolver"
+            ]
+          },
+          "api/saga",
+          "api/command",
+          "api/event",
+          "api/event-store-adapter",
+          "api/middleware",
+          "api/api-handler",
+          "api/resolve-scripts",
+          {
+            "type": "category",
+            "label": "Client API",
+            "items": [
+              "api/client/http-api",
+              "api/client/entry-point",
+              "api/client/resolve-redux",
+              "api/client/resolve-client",
+              "api/client/resolve-react-hooks",
+              "api/client/request-middleware"
+            ]
+          }
+        ]
+      },
+      "application-configuration",
+      "faq",
+      "troubleshooting"    
+    ]
   }
 }

@@ -1,26 +1,10 @@
 import type {
-  MakeNestedPathMethod,
   CurrentConnectMethod,
   InlineLedgerRunQueryMethod,
   AdapterPool,
   CommonAdapterPool,
   OmitObject,
 } from './types'
-
-const makeNestedPath: MakeNestedPathMethod = (nestedPath) => {
-  const jsonPathParts = []
-  for (const part of nestedPath) {
-    if (part == null || part.constructor !== String) {
-      throw new Error('Invalid JSON path')
-    }
-    if (!isNaN(+part)) {
-      jsonPathParts.push(String(+part))
-    } else {
-      jsonPathParts.push(JSON.stringify(part))
-    }
-  }
-  return `{${jsonPathParts.join(',')}}`
-}
 
 const connect: CurrentConnectMethod = async (imports, pool, options) => {
   let { tablePrefix, databaseName, ...connectionOptions } = options
@@ -35,10 +19,70 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     tablePrefix = ''
   }
 
-  const connection = new imports.Postgres(connectionOptions)
+  const connectionErrorsMap: WeakMap<
+    typeof pool.connection,
+    Array<Error>
+  > = new WeakMap()
+  const connectPromiseMap: WeakMap<
+    typeof pool.connection,
+    Promise<void>
+  > = new WeakMap()
 
-  await connection.connect()
-  await connection.query('SELECT 0 AS "defunct"')
+  const establishConnection = async () => {
+    if (pool.connection != null) {
+      const connection = pool.connection
+      await connectPromiseMap.get(connection)
+      return connection
+    }
+    const connection = new imports.Postgres(connectionOptions)
+    pool.connection = connection
+    connectPromiseMap.set(
+      connection,
+      (async () => {
+        await Promise.resolve()
+        connectionErrorsMap.set(connection, [])
+        try {
+          connection.on('error', (error) => {
+            connectionErrorsMap.get(connection)?.push(error)
+          })
+          await connection.connect()
+          await connection.query('SELECT 0 AS "defunct"')
+        } catch (error) {
+          connectionErrorsMap.get(connection)?.push(error)
+        }
+      })()
+    )
+    await connectPromiseMap.get(connection)
+    return connection
+  }
+
+  const maybeThrowConnectionErrors = async (
+    connection: typeof pool.connection
+  ) => {
+    const connectionErrors = connectionErrorsMap.get(connection) ?? []
+    if (connectionErrors.length > 0) {
+      let summaryError = connectionErrors[0]
+      if (connectionErrors.length > 1) {
+        summaryError = new Error(
+          connectionErrors.map(({ message }) => message).join('\n')
+        )
+        summaryError.stack = connectionErrors
+          .map(({ stack }) => stack)
+          .join('\n')
+      }
+      if (pool.connection === connection) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        pool.connection = null!
+      }
+      try {
+        await connection.end()
+      } catch (err) {}
+      throw summaryError
+    }
+  }
+
+  const initialConnection = await establishConnection()
+  await maybeThrowConnectionErrors(initialConnection)
 
   const inlineLedgerRunQuery: InlineLedgerRunQueryMethod = async (
     sql,
@@ -47,6 +91,8 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     let result = null
     for (;;) {
       try {
+        const connection = await establishConnection()
+        await maybeThrowConnectionErrors(connection)
         result = await connection.query(sql)
         break
       } catch (error) {
@@ -57,7 +103,10 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
               !!passthroughRuntimeErrors
             )
           ) {
-            throw new imports.PassthroughError()
+            imports.PassthroughError.maybeThrowPassthroughError(
+              error,
+              !!passthroughRuntimeErrors
+            )
           } else {
             throw error
           }
@@ -85,9 +134,8 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
   >(pool, {
     schemaName: databaseName,
     tablePrefix,
-    makeNestedPath,
     inlineLedgerRunQuery,
-    connection,
+    connection: initialConnection,
     activePassthrough: false,
     ...imports,
   })

@@ -6,9 +6,9 @@ import {
   IMPORT_INSTANCE,
 } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
-import importResource from '../import_resource'
+import { importResource } from '../import-resource'
 
-export default ({ resolveConfig, isClient }) => {
+const importAggregate = ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.aggregates`
@@ -47,8 +47,10 @@ export default ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      instanceFallback:
-        '@resolve-js/runtime/lib/common/defaults/json-serialize-state.js',
+      instanceFallback: {
+        package: '@resolve-js/core',
+        import: 'jsonSerializeState',
+      },
       imports,
       constants,
     })
@@ -61,8 +63,10 @@ export default ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      instanceFallback:
-        '@resolve-js/runtime/lib/common/defaults/json-deserialize-state.js',
+      instanceFallback: {
+        package: '@resolve-js/core',
+        import: 'jsonDeserializeState',
+      },
       imports,
       constants,
     })
@@ -91,12 +95,20 @@ export default ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_NOWHERE,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      instanceFallback: '@resolve-js/runtime/lib/common/defaults/encryption.js',
+      instanceFallback: {
+        package: '@resolve-js/runtime-base',
+        import: 'disabledEncryption',
+      },
       imports,
       constants,
     })
 
     exports.push(`, encryption: encryption_${index}`)
+    exports.push(
+      `, commandHttpResponseMode: '${
+        aggregate.commandHttpResponseMode ?? 'event'
+      }'`
+    )
 
     exports.push(`})`, ``)
   }
@@ -105,3 +117,5 @@ export default ({ resolveConfig, isClient }) => {
 
   return [...imports, ...constants, ...exports].join('\r\n')
 }
+
+export default importAggregate

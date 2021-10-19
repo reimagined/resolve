@@ -1,13 +1,24 @@
-import { Eventstore, Monitoring } from '../types/runtime'
-import {
+import type {
+  CommandMiddleware,
+  Eventstore,
+  Monitoring,
+  MiddlewareContext,
+  StoredEventPointer,
+} from '../types/runtime'
+import type {
   Event,
   AggregateEncryptionFactory,
   AggregateProjection,
   Command,
   CommandHandler,
-  CommandResult,
   SecretsManager,
+  InteropCommandResult,
 } from '../types/core'
+
+export enum CommandHttpResponseMode {
+  event = 'event',
+  empty = 'empty',
+}
 
 export type AggregateInterop = {
   name: string
@@ -19,6 +30,7 @@ export type AggregateInterop = {
   serializeState: Function
   deserializeState: Function
   invariantHash?: string
+  commandHttpResponseMode: CommandHttpResponseMode
 }
 
 export type AggregateInteropMap = {
@@ -27,7 +39,10 @@ export type AggregateInteropMap = {
 
 export type AggregatesInterop = {
   aggregateMap: AggregateInteropMap
-  executeCommand: (command: Command) => Promise<CommandResult>
+  executeCommand: (
+    command: Command,
+    middlewareContext?: MiddlewareContext
+  ) => Promise<InteropCommandResult>
 }
 
 export type AggregateRuntimeHooks = {
@@ -39,7 +54,7 @@ export type AggregateRuntimeHooks = {
   postSaveEvent?: (
     aggregate: AggregateInterop,
     command: Command,
-    event: Event
+    storedEvent: StoredEventPointer
   ) => Promise<void>
 }
 
@@ -48,6 +63,7 @@ export type AggregateRuntime = {
   secretsManager: SecretsManager
   eventstore: Eventstore
   hooks?: AggregateRuntimeHooks
+  commandMiddlewares?: Array<CommandMiddleware>
 }
 
 export type AggregatesInteropBuilder = (

@@ -1,6 +1,6 @@
 # [<img src="https://user-images.githubusercontent.com/15689049/29659048-ad0d158a-88c5-11e7-9354-dbe4bb105ad7.png" height="60">](https://github.com/reimagined/resolve/)
 
-[![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
+[![Build Status](https://github.com/reimagined/resolve/actions/workflows/push-master.yml/badge.svg?branch=master)](https://github.com/reimagined/resolve/actions/workflows/push-master.yml) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
 
 ![CQRS DDD Event Sourcing React Redux](https://user-images.githubusercontent.com/19663260/41475089-73b9620e-70c6-11e8-9ca9-633f3857626b.png)
 
@@ -16,7 +16,7 @@ reSolve is a full stack functional JavaScript framework.
 
 ### Installation
 
-Make sure you have **NodeJS** version **8.10.0** or higher.
+Make sure you have **NodeJS** version **14.17** or higher.
 
 Use [create-resolve-app](packages/core/create-resolve-app) package to create a new reSolve application. The easiest way is to use [npx](https://www.npmjs.com/package/npx/v/1.1.1)
 
@@ -81,4 +81,3 @@ To get started with reSolve, see the [step-by-step tutorial](./docs/tutorial.md)
 reSolve is developed by [Developer Express Inc.](https://devexpress.com)
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/readme.md?pixel)
-

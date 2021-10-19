@@ -1,6 +1,6 @@
 import { USER_REGISTERED } from '../event-types'
 
-export default {
+const projection = {
   Init: () => ({
     isExist: false,
   }),
@@ -9,3 +9,5 @@ export default {
     isExist: true,
   }),
 }
+
+export default projection

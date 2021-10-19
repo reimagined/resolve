@@ -57,13 +57,19 @@ const makeConfig = (options, imports) => {
     ],
     clientImports: {
       [options.commentsInstanceName]: {
-        module: '@resolve-js/runtime/lib/common/utils/interop-options.js',
+        module: {
+          package: '@resolve-js/core',
+          import: 'optionsInjector',
+        },
         options,
       },
     },
     serverImports: {
       [options.commentsInstanceName]: {
-        module: '@resolve-js/runtime/lib/common/utils/interop-options.js',
+        module: {
+          package: '@resolve-js/core',
+          import: 'optionsInjector',
+        },
         options,
       },
     },
@@ -72,7 +78,7 @@ const makeConfig = (options, imports) => {
   return config
 }
 
-export default ({
+const serverEntry = ({
   aggregateName,
   readModelName,
   readModelConnectorName,
@@ -106,3 +112,5 @@ export default ({
 
   return injectDefaults(makeConfig)(options, imports)
 }
+
+export default serverEntry

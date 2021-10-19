@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app)
 
-This package creates an empty application based on the reSolve framework ([`hello-world` example](https://github.com/reimagined/resolve/tree/master/examples/hello-world)). Use the `--example` option to create another sample application. reSolve applications are built on the CQRS and Event Sourcing principles and use [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client side.
+This package creates an empty reSolve application. Use the `--example` option to create an application based on an example or template project. ReSolve applications comply with the CQRS and Event Sourcing principles and use [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client side by default.
 
 **Create reSolve App** allows you to specify application blocks (aggregates, read models, and UI elements (React components)) in a semi-declarative manner. The `@resolve-js/scripts` package deploys API backend and domain services to interact with the client. The `@resolve-js/redux` package automates the client-server interaction.
 
@@ -13,8 +13,9 @@ Refer to the [React/Redux Links](https://github.com/markerikson/react-redux-link
 
 Available options:
 
-- `--example <folder>` - creates an application from [examples](../../examples). The default example is [`hello-world`](https://github.com/reimagined/resolve/tree/master/examples/hello-world).
+- `--example <folder>` - create an application based on an [example](https://github.com/reimagined/resolve/tree/master/examples) or [project template](https://github.com/reimagined/resolve/tree/master/templates). The default is the [`react`](https://github.com/reimagined/resolve/tree/master/templates/js/react) template project.
 - `--branch <branch>` or `--commit <sha>` - use the example code from the specific branch or commit.
+- `--typescript` or `-t` - create a TypeScript project.
 - `--version` or `-V` - show the version number.
 
 ## **Quick Overview** 🔎

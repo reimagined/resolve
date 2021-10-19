@@ -1,18 +1,18 @@
 import chalk from 'chalk'
 import fetch from 'isomorphic-fetch'
-import opn from 'opn'
+import open from 'open'
 import path from 'path'
 
 import useYarn from './use_yarn'
 import prepareUrls from './prepare_urls'
 
-const openBrowser = async (port, rootPath) => {
+const openBrowser = async (host = '0.0.0.0', port, rootPath) => {
   let applicationName = 'application'
   try {
     applicationName = require(path.join(process.cwd(), 'package.json')).name
   } catch (e) {}
 
-  const urls = prepareUrls('http', '0.0.0.0', port, rootPath)
+  const urls = prepareUrls('http', host, port, rootPath)
   const url = urls.localUrlForBrowser
 
   /* eslint-disable no-console */
@@ -22,12 +22,12 @@ const openBrowser = async (port, rootPath) => {
       await fetch(url)
       break
     } catch (error) {
-      console.log(`Server is still loading - please wait...`)
+      console.log(`Waiting for the server at ${url}`)
     }
   }
 
   Promise.resolve()
-    .then(() => opn(url, { app: process.env.BROWSER }))
+    .then(() => open(url, { app: process.env.BROWSER }))
     .catch(() => {})
 
   console.log()

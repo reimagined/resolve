@@ -1,7 +1,7 @@
 import getClientGlobalEnvObject from '../client_global_object'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 
-export default ({ resolveConfig }) => {
+const importReactNativeChunk = ({ resolveConfig }) => {
   const exports = []
 
   exports.push(
@@ -54,3 +54,5 @@ export default ({ resolveConfig }) => {
 
   return exports.join('\r\n')
 }
+
+export default importReactNativeChunk

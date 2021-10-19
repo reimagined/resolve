@@ -1,1 +1,2 @@
-export default {}
+const fs = {}
+export default fs

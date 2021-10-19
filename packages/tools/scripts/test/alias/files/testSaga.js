@@ -1,1 +1,3 @@
-export default function* () {}
+const saga = function* () {}
+
+export default saga

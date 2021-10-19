@@ -1,11 +1,11 @@
 import { EventstoreResourceNotExistError } from '@resolve-js/eventstore-base'
-import getLog from './get-log'
+import { getLog } from './get-log'
 import { AdapterPool } from './types'
 import executeSequence from './execute-sequence'
 import { isNotExistError } from './resource-errors'
 
 const dropEvents = async ({
-  database,
+  executeQuery,
   databaseFile,
   eventsTableName,
   snapshotsTableName,
@@ -28,7 +28,7 @@ const dropEvents = async ({
   ]
 
   const errors: any[] = await executeSequence(
-    database,
+    executeQuery,
     statements,
     log,
     (error) => {

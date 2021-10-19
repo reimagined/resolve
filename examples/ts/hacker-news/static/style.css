@@ -1,0 +1,22 @@
+body {
+  background-color: #fff;
+  margin: 0;
+}
+form {
+  margin: 0;
+}
+img {
+  vertical-align: text-bottom;
+}
+pre {
+  white-space: pre-wrap;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+input[type='text'],
+textarea {
+  width: 100%;
+  max-width: 400px;
+}

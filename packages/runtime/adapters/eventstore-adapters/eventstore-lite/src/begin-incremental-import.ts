@@ -1,10 +1,10 @@
 import { AdapterPool } from './types'
 
 const beginIncrementalImport = async ({
-  database,
   eventsTableName,
   escapeId,
   escape,
+  executeQuery,
 }: AdapterPool): Promise<string> => {
   try {
     const incrementalImportTableAsId = escapeId(
@@ -13,11 +13,10 @@ const beginIncrementalImport = async ({
     const importId = Buffer.from(`${Date.now()}${Math.random()}`)
       .toString('base64')
       .replace(/\/|\+|=/gi, 'z')
-    await database.exec(
+    await executeQuery(
       `CREATE TABLE ${incrementalImportTableAsId}(
       -- RESOLVE INCREMENTAL-IMPORT ${escape(importId)} OWNED TABLE
-        ${escapeId('sortedIdx')} BIGINT NULL,
-        ${escapeId('threadId')} BIGINT NULL,
+        ${escapeId('threadId')} BIGINT NOT NULL,
         ${escapeId('threadCounter')} BIGINT NULL,
         ${escapeId('timestamp')} BIGINT NOT NULL,
         ${escapeId('aggregateId')} VARCHAR(700) NOT NULL,

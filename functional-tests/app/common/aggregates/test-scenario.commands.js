@@ -11,7 +11,7 @@ const assertNotExecuted = (state) => {
   }
 }
 
-export default {
+const aggregate = {
   blockedRetryOnErrorMiddleware: (state) => {
     if (state.retryOnErrorBlocked) {
       throw HttpError(500, 'Test scenario test error to ignore on client')
@@ -64,3 +64,5 @@ export default {
     }
   },
 }
+
+export default aggregate

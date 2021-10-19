@@ -1,14 +1,14 @@
 import { AdapterPool } from './types'
 
 const rollbackIncrementalImport = async ({
-  database,
+  executeQuery,
   eventsTableName,
   escapeId,
 }: AdapterPool): Promise<void> => {
   const incrementalImportTableAsId = escapeId(
     `${eventsTableName}-incremental-import`
   )
-  await database.exec(`DROP TABLE IF EXISTS ${incrementalImportTableAsId};`)
+  await executeQuery(`DROP TABLE IF EXISTS ${incrementalImportTableAsId};`)
 }
 
 export default rollbackIncrementalImport

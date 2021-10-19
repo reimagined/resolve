@@ -1,13 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`@resolve-js/readmodel-postgresql-serverless method "drop" 1`] = `
+exports[`@resolve-js/readmodel-postgresql method "drop" 1`] = `
 Array [
+  Array [
+    "on",
+    "error",
+    [Function],
+  ],
   Array [
     "connect",
   ],
   Array [
     "query",
     "SELECT 0 AS \\"defunct\\"",
+  ],
+  Array [
+    "on",
+    "error",
+    [Function],
   ],
   Array [
     "connect",
@@ -139,96 +149,96 @@ Array [
   Array [
     "query",
     "
-    CREATE TABLE \\"databaseName\\".\\"tablePrefixtable1\\" (
-      \\"test\\" JSONB, \\"id\\" JSONB
-    );
-
-    
-      ALTER TABLE \\"databaseName\\".\\"tablePrefixtable1\\"
-      ADD CONSTRAINT \\"id-type-validation\\"
-      CHECK (jsonb_typeof(\\"id\\") = 'string');
-
-      CREATE UNIQUE INDEX \\"tablePrefixtable1-id-extracted-field\\"
-      ON \\"databaseName\\".\\"tablePrefixtable1\\" (
-      CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
-     
-      CREATE UNIQUE INDEX \\"tablePrefixtable1-id-full-field\\"
-      ON \\"databaseName\\".\\"tablePrefixtable1\\" (
-        \\"id\\"
+      CREATE TABLE \\"databaseName\\".\\"tablePrefixtable1\\" (
+        \\"test\\" JSONB, \\"id\\" JSONB
       );
-    
-
-    COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixtable1\\"
-    IS 'RESOLVE-readModelName1';
-  ",
-  ],
-  Array [
-    "query",
-    "INSERT INTO \\"databaseName\\".\\"tablePrefixtable1\\"(\\"id\\", \\"test\\")
-      VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('true' AS JSONB));
+  
+      
+        ALTER TABLE \\"databaseName\\".\\"tablePrefixtable1\\"
+        ADD CONSTRAINT \\"id-type-validation\\"
+        CHECK (jsonb_typeof(\\"id\\") = 'string');
+  
+        CREATE UNIQUE INDEX \\"tablePrefixtable1-id-extracted-field\\"
+        ON \\"databaseName\\".\\"tablePrefixtable1\\" (
+        CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
+       
+        CREATE UNIQUE INDEX \\"tablePrefixtable1-id-full-field\\"
+        ON \\"databaseName\\".\\"tablePrefixtable1\\" (
+          \\"id\\"
+        );
+      
+  
+      COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixtable1\\"
+      IS 'RESOLVE-readModelName1';
     ",
   ],
   Array [
     "query",
     "INSERT INTO \\"databaseName\\".\\"tablePrefixtable1\\"(\\"id\\", \\"test\\")
-      VALUES(CAST('\\"id-2\\"' AS JSONB), CAST('true' AS JSONB));
-    ",
+        VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('true' AS JSONB));
+      ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO \\"databaseName\\".\\"tablePrefixtable1\\"(\\"id\\", \\"test\\")
+        VALUES(CAST('\\"id-2\\"' AS JSONB), CAST('true' AS JSONB));
+      ",
   ],
   Array [
     "query",
     "
-    CREATE TABLE \\"databaseName\\".\\"tablePrefixtable2\\" (
-      \\"test\\" JSONB, \\"id\\" JSONB
-    );
-
-    
-      ALTER TABLE \\"databaseName\\".\\"tablePrefixtable2\\"
-      ADD CONSTRAINT \\"id-type-validation\\"
-      CHECK (jsonb_typeof(\\"id\\") = 'string');
-
-      CREATE UNIQUE INDEX \\"tablePrefixtable2-id-extracted-field\\"
-      ON \\"databaseName\\".\\"tablePrefixtable2\\" (
-      CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
-     
-      CREATE UNIQUE INDEX \\"tablePrefixtable2-id-full-field\\"
-      ON \\"databaseName\\".\\"tablePrefixtable2\\" (
-        \\"id\\"
+      CREATE TABLE \\"databaseName\\".\\"tablePrefixtable2\\" (
+        \\"test\\" JSONB, \\"id\\" JSONB
       );
-    
-
-    COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixtable2\\"
-    IS 'RESOLVE-readModelName2';
-  ",
-  ],
-  Array [
-    "query",
-    "INSERT INTO \\"databaseName\\".\\"tablePrefixtable2\\"(\\"id\\", \\"test\\")
-      VALUES(CAST('\\"id-3\\"' AS JSONB), CAST('true' AS JSONB));
+  
+      
+        ALTER TABLE \\"databaseName\\".\\"tablePrefixtable2\\"
+        ADD CONSTRAINT \\"id-type-validation\\"
+        CHECK (jsonb_typeof(\\"id\\") = 'string');
+  
+        CREATE UNIQUE INDEX \\"tablePrefixtable2-id-extracted-field\\"
+        ON \\"databaseName\\".\\"tablePrefixtable2\\" (
+        CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
+       
+        CREATE UNIQUE INDEX \\"tablePrefixtable2-id-full-field\\"
+        ON \\"databaseName\\".\\"tablePrefixtable2\\" (
+          \\"id\\"
+        );
+      
+  
+      COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixtable2\\"
+      IS 'RESOLVE-readModelName2';
     ",
   ],
   Array [
     "query",
     "INSERT INTO \\"databaseName\\".\\"tablePrefixtable2\\"(\\"id\\", \\"test\\")
-      VALUES(CAST('\\"id-4\\"' AS JSONB), CAST('true' AS JSONB));
-    ",
+        VALUES(CAST('\\"id-3\\"' AS JSONB), CAST('true' AS JSONB));
+      ",
   ],
   Array [
     "query",
     "INSERT INTO \\"databaseName\\".\\"tablePrefixtable2\\"(\\"id\\", \\"test\\")
-      VALUES(CAST('\\"id-5\\"' AS JSONB), CAST('true' AS JSONB));
-    ",
+        VALUES(CAST('\\"id-4\\"' AS JSONB), CAST('true' AS JSONB));
+      ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO \\"databaseName\\".\\"tablePrefixtable2\\"(\\"id\\", \\"test\\")
+        VALUES(CAST('\\"id-5\\"' AS JSONB), CAST('true' AS JSONB));
+      ",
   ],
   Array [
     "query",
     "SELECT Count(*) AS \\"Count\\"
-    FROM \\"databaseName\\".\\"tablePrefixtable1\\"
-    ;",
+      FROM \\"databaseName\\".\\"tablePrefixtable1\\"
+      ;",
   ],
   Array [
     "query",
     "SELECT Count(*) AS \\"Count\\"
-    FROM \\"databaseName\\".\\"tablePrefixtable2\\"
-    ;",
+      FROM \\"databaseName\\".\\"tablePrefixtable2\\"
+      ;",
   ],
   Array [
     "query",
@@ -433,8 +443,13 @@ Array [
 ]
 `;
 
-exports[`@resolve-js/readmodel-postgresql-serverless methods "defineTable", "insert", "find", "findOne" 1`] = `
+exports[`@resolve-js/readmodel-postgresql methods "defineTable", "insert", "find", "findOne" 1`] = `
 Array [
+  Array [
+    "on",
+    "error",
+    [Function],
+  ],
   Array [
     "connect",
   ],
@@ -505,88 +520,82 @@ Array [
   Array [
     "query",
     "
-    CREATE TABLE \\"databaseName\\".\\"tablePrefixEntries\\" (
-      \\"name\\" JSONB, \\"id\\" JSONB
-    );
-
-    
-      ALTER TABLE \\"databaseName\\".\\"tablePrefixEntries\\"
-      ADD CONSTRAINT \\"id-type-validation\\"
-      CHECK (jsonb_typeof(\\"id\\") = 'string');
-
-      CREATE UNIQUE INDEX \\"tablePrefixEntries-id-extracted-field\\"
-      ON \\"databaseName\\".\\"tablePrefixEntries\\" (
-      CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
-     
-      CREATE UNIQUE INDEX \\"tablePrefixEntries-id-full-field\\"
-      ON \\"databaseName\\".\\"tablePrefixEntries\\" (
-        \\"id\\"
+      CREATE TABLE \\"databaseName\\".\\"tablePrefixEntries\\" (
+        \\"name\\" JSONB, \\"id\\" JSONB
       );
-    
-
-    COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixEntries\\"
-    IS 'RESOLVE-readModelName';
-  ",
-  ],
-  Array [
-    "query",
-    "INSERT INTO \\"databaseName\\".\\"tablePrefixEntries\\"(\\"id\\", \\"name\\")
-      VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('\\"First entry\\"' AS JSONB));
+  
+      
+        ALTER TABLE \\"databaseName\\".\\"tablePrefixEntries\\"
+        ADD CONSTRAINT \\"id-type-validation\\"
+        CHECK (jsonb_typeof(\\"id\\") = 'string');
+  
+        CREATE UNIQUE INDEX \\"tablePrefixEntries-id-extracted-field\\"
+        ON \\"databaseName\\".\\"tablePrefixEntries\\" (
+        CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
+       
+        CREATE UNIQUE INDEX \\"tablePrefixEntries-id-full-field\\"
+        ON \\"databaseName\\".\\"tablePrefixEntries\\" (
+          \\"id\\"
+        );
+      
+  
+      COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixEntries\\"
+      IS 'RESOLVE-readModelName';
     ",
   ],
   Array [
     "query",
     "INSERT INTO \\"databaseName\\".\\"tablePrefixEntries\\"(\\"id\\", \\"name\\")
-      VALUES(CAST('\\"id-2\\"' AS JSONB), CAST('\\"Second entry\\"' AS JSONB));
-    ",
+        VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('\\"First entry\\"' AS JSONB));
+      ",
   ],
   Array [
     "query",
     "INSERT INTO \\"databaseName\\".\\"tablePrefixEntries\\"(\\"id\\", \\"name\\")
-      VALUES(CAST('\\"id-3\\"' AS JSONB), CAST('\\"Second entry\\"' AS JSONB));
-    ",
+        VALUES(CAST('\\"id-2\\"' AS JSONB), CAST('\\"Second entry\\"' AS JSONB));
+      ",
   ],
   Array [
     "query",
     "INSERT INTO \\"databaseName\\".\\"tablePrefixEntries\\"(\\"id\\", \\"name\\")
-      VALUES(CAST('\\"id-4\\"' AS JSONB), CAST('\\"First entry\\"' AS JSONB));
-    ",
+        VALUES(CAST('\\"id-3\\"' AS JSONB), CAST('\\"Second entry\\"' AS JSONB));
+      ",
   ],
   Array [
     "query",
     "INSERT INTO \\"databaseName\\".\\"tablePrefixEntries\\"(\\"id\\", \\"name\\")
-      VALUES(CAST('\\"id-5\\"' AS JSONB), CAST('\\"Second entry\\"' AS JSONB));
-    ",
+        VALUES(CAST('\\"id-4\\"' AS JSONB), CAST('\\"First entry\\"' AS JSONB));
+      ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO \\"databaseName\\".\\"tablePrefixEntries\\"(\\"id\\", \\"name\\")
+        VALUES(CAST('\\"id-5\\"' AS JSONB), CAST('\\"Second entry\\"' AS JSONB));
+      ",
   ],
   Array [
     "query",
     "SELECT * FROM \\"databaseName\\".\\"tablePrefixEntries\\"
     
     ORDER BY \\"id\\" ASC
-    
-    OFFSET 0
-    LIMIT 268435455
-  ;",
+     OFFSET 0          LIMIT 268435455   ",
   ],
   Array [
     "query",
     "SELECT * FROM \\"databaseName\\".\\"tablePrefixEntries\\"
     
     ORDER BY \\"id\\" DESC
-    
-    OFFSET 0
-    LIMIT 268435455
-  ;",
+     OFFSET 0          LIMIT 268435455   ",
   ],
   Array [
     "query",
     "SELECT * FROM \\"databaseName\\".\\"tablePrefixEntries\\"
-    WHERE 
+        WHERE 
     (((\\"id\\" = CAST('\\"id-3\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-3\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-3\\"' AS JSONB) is null)))
    
-    OFFSET 0
-    LIMIT 1;",
+        OFFSET 0
+        LIMIT 1;",
   ],
   Array [
     "query",
@@ -602,10 +611,7 @@ Array [
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
   )) 
     
-    
-    OFFSET 0
-    LIMIT 268435455
-  ;",
+     OFFSET 0          LIMIT 268435455   ",
   ],
   Array [
     "query",
@@ -710,8 +716,13 @@ Array [
 ]
 `;
 
-exports[`@resolve-js/readmodel-postgresql-serverless methods "defineTable", "insert", "update", "count", "delete" 1`] = `
+exports[`@resolve-js/readmodel-postgresql methods "defineTable", "insert", "update", "count", "delete" 1`] = `
 Array [
+  Array [
+    "on",
+    "error",
+    [Function],
+  ],
   Array [
     "connect",
   ],
@@ -782,92 +793,96 @@ Array [
   Array [
     "query",
     "
-    CREATE TABLE \\"databaseName\\".\\"tablePrefixShoppingLists\\" (
-      \\"createdAt\\" JSONB, \\"name\\" JSONB, \\"id\\" JSONB
-    );
-
-    
-      ALTER TABLE \\"databaseName\\".\\"tablePrefixShoppingLists\\"
-      ADD CONSTRAINT \\"id-type-validation\\"
-      CHECK (jsonb_typeof(\\"id\\") = 'string');
-
-      CREATE UNIQUE INDEX \\"tablePrefixShoppingLists-id-extracted-field\\"
-      ON \\"databaseName\\".\\"tablePrefixShoppingLists\\" (
-      CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
-     
-      CREATE UNIQUE INDEX \\"tablePrefixShoppingLists-id-full-field\\"
-      ON \\"databaseName\\".\\"tablePrefixShoppingLists\\" (
-        \\"id\\"
+      CREATE TABLE \\"databaseName\\".\\"tablePrefixShoppingLists\\" (
+        \\"createdAt\\" JSONB, \\"name\\" JSONB, \\"id\\" JSONB
       );
-    
-
-    COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixShoppingLists\\"
-    IS 'RESOLVE-readModelName';
-  ",
-  ],
-  Array [
-    "query",
-    "INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"(\\"id\\", \\"name\\", \\"createdAt\\")
-      VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('\\"Products\\"' AS JSONB), CAST('1' AS JSONB));
+  
+      
+        ALTER TABLE \\"databaseName\\".\\"tablePrefixShoppingLists\\"
+        ADD CONSTRAINT \\"id-type-validation\\"
+        CHECK (jsonb_typeof(\\"id\\") = 'string');
+  
+        CREATE UNIQUE INDEX \\"tablePrefixShoppingLists-id-extracted-field\\"
+        ON \\"databaseName\\".\\"tablePrefixShoppingLists\\" (
+        CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
+       
+        CREATE UNIQUE INDEX \\"tablePrefixShoppingLists-id-full-field\\"
+        ON \\"databaseName\\".\\"tablePrefixShoppingLists\\" (
+          \\"id\\"
+        );
+      
+  
+      COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixShoppingLists\\"
+      IS 'RESOLVE-readModelName';
     ",
   ],
   Array [
     "query",
     "INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"(\\"id\\", \\"name\\", \\"createdAt\\")
-      VALUES(CAST('\\"id-2\\"' AS JSONB), CAST('\\"Medicines\\"' AS JSONB), CAST('2' AS JSONB));
-    ",
+        VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('\\"Products\\"' AS JSONB), CAST('1' AS JSONB));
+      ",
+  ],
+  Array [
+    "query",
+    "INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"(\\"id\\", \\"name\\", \\"createdAt\\")
+        VALUES(CAST('\\"id-2\\"' AS JSONB), CAST('\\"Medicines\\"' AS JSONB), CAST('2' AS JSONB));
+      ",
   ],
   Array [
     "query",
     "UPDATE \\"databaseName\\".\\"tablePrefixShoppingLists\\"
-    SET \\"name\\" = CAST('\\"Products-NEW\\"' AS JSONB)  WHERE 
+      SET \\"name\\" = CAST('\\"Products-NEW\\"' AS JSONB)  WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
-   ;",
+   ",
   ],
   Array [
     "query",
-    "SELECT Count(*) AS \\"Count\\"
-    FROM \\"databaseName\\".\\"tablePrefixShoppingLists\\"
-    WHERE 
+    "WITH \\"Updating\\" AS (
+          UPDATE \\"databaseName\\".\\"tablePrefixShoppingLists\\"
+      SET \\"name\\" = CAST('\\"Products-NEW\\"' AS JSONB)  WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
-   ;",
-  ],
-  Array [
-    "query",
-    "INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"(\\"id\\", \\"name\\")
-      VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('\\"Products-NEW\\"' AS JSONB));
-    ",
+    RETURNING *
+        ), \\"Inserting\\" AS (
+          SELECT CAST('\\"id-1\\"' AS JSONB) AS \\"id\\", CAST('\\"Products-NEW\\"' AS JSONB) AS \\"name\\"
+          WHERE NOT EXISTS(SELECT * FROM \\"Updating\\")
+        )
+        INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"(\\"id\\", \\"name\\")
+        SELECT * FROM \\"Inserting\\"
+        ON CONFLICT DO NOTHING
+        ;",
   ],
   Array [
     "query",
     "DELETE FROM \\"databaseName\\".\\"tablePrefixShoppingLists\\"
-    WHERE 
+      WHERE 
     (((\\"id\\" = CAST('\\"id-2\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-2\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-2\\"' AS JSONB) is null)))
    ;",
   ],
   Array [
     "query",
-    "SELECT Count(*) AS \\"Count\\"
-    FROM \\"databaseName\\".\\"tablePrefixShoppingLists\\"
-    WHERE 
+    "WITH \\"Updating\\" AS (
+          UPDATE \\"databaseName\\".\\"tablePrefixShoppingLists\\"
+      SET \\"name\\" = CAST('\\"Entries\\"' AS JSONB)  WHERE 
     (((\\"id\\" = CAST('\\"id-3\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-3\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-3\\"' AS JSONB) is null)))
-   ;",
-  ],
-  Array [
-    "query",
-    "INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"(\\"id\\", \\"name\\")
-      VALUES(CAST('\\"id-3\\"' AS JSONB), CAST('\\"Entries\\"' AS JSONB));
-    ",
+    RETURNING *
+        ), \\"Inserting\\" AS (
+          SELECT CAST('\\"id-3\\"' AS JSONB) AS \\"id\\", CAST('\\"Entries\\"' AS JSONB) AS \\"name\\"
+          WHERE NOT EXISTS(SELECT * FROM \\"Updating\\")
+        )
+        INSERT INTO \\"databaseName\\".\\"tablePrefixShoppingLists\\"(\\"id\\", \\"name\\")
+        SELECT * FROM \\"Inserting\\"
+        ON CONFLICT DO NOTHING
+        ;",
   ],
   Array [
     "query",
     "SELECT Count(*) AS \\"Count\\"
-    FROM \\"databaseName\\".\\"tablePrefixShoppingLists\\"
-    ;",
+      FROM \\"databaseName\\".\\"tablePrefixShoppingLists\\"
+      ;",
   ],
   Array [
     "query",
@@ -972,8 +987,13 @@ Array [
 ]
 `;
 
-exports[`@resolve-js/readmodel-postgresql-serverless operator "$inc" 1`] = `
+exports[`@resolve-js/readmodel-postgresql operator "$inc" 1`] = `
 Array [
+  Array [
+    "on",
+    "error",
+    [Function],
+  ],
   Array [
     "connect",
   ],
@@ -1044,39 +1064,39 @@ Array [
   Array [
     "query",
     "
-    CREATE TABLE \\"databaseName\\".\\"tablePrefixvalues\\" (
-      \\"value\\" JSONB, \\"arr\\" JSONB, \\"obj\\" JSONB, \\"id\\" JSONB
-    );
-
-    
-      ALTER TABLE \\"databaseName\\".\\"tablePrefixvalues\\"
-      ADD CONSTRAINT \\"id-type-validation\\"
-      CHECK (jsonb_typeof(\\"id\\") = 'string');
-
-      CREATE UNIQUE INDEX \\"tablePrefixvalues-id-extracted-field\\"
-      ON \\"databaseName\\".\\"tablePrefixvalues\\" (
-      CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
-     
-      CREATE UNIQUE INDEX \\"tablePrefixvalues-id-full-field\\"
-      ON \\"databaseName\\".\\"tablePrefixvalues\\" (
-        \\"id\\"
+      CREATE TABLE \\"databaseName\\".\\"tablePrefixvalues\\" (
+        \\"value\\" JSONB, \\"arr\\" JSONB, \\"obj\\" JSONB, \\"id\\" JSONB
       );
-    
-
-    COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixvalues\\"
-    IS 'RESOLVE-readModelName';
-  ",
-  ],
-  Array [
-    "query",
-    "INSERT INTO \\"databaseName\\".\\"tablePrefixvalues\\"(\\"id\\", \\"value\\", \\"obj\\", \\"arr\\")
-      VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('1' AS JSONB), CAST('{\\"value\\":1}' AS JSONB), CAST('[{\\"value\\":1}]' AS JSONB));
+  
+      
+        ALTER TABLE \\"databaseName\\".\\"tablePrefixvalues\\"
+        ADD CONSTRAINT \\"id-type-validation\\"
+        CHECK (jsonb_typeof(\\"id\\") = 'string');
+  
+        CREATE UNIQUE INDEX \\"tablePrefixvalues-id-extracted-field\\"
+        ON \\"databaseName\\".\\"tablePrefixvalues\\" (
+        CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
+       
+        CREATE UNIQUE INDEX \\"tablePrefixvalues-id-full-field\\"
+        ON \\"databaseName\\".\\"tablePrefixvalues\\" (
+          \\"id\\"
+        );
+      
+  
+      COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixvalues\\"
+      IS 'RESOLVE-readModelName';
     ",
   ],
   Array [
     "query",
+    "INSERT INTO \\"databaseName\\".\\"tablePrefixvalues\\"(\\"id\\", \\"value\\", \\"obj\\", \\"arr\\")
+        VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('1' AS JSONB), CAST('{\\"value\\":1}' AS JSONB), CAST('[{\\"value\\":1}]' AS JSONB));
+      ",
+  ],
+  Array [
+    "query",
     "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
-    SET \\"value\\" = (SELECT CASE 
+      SET \\"value\\" = (SELECT CASE 
           WHEN (jsonb_typeof(\\"inline-table-0\\".\\"val\\") || '-' || 'number' ) = 'string-string' THEN to_jsonb(
             CAST(\\"inline-table-0\\".\\"val\\" #>> '{}' AS VARCHAR) ||
             CAST('1' AS VARCHAR)
@@ -1118,12 +1138,12 @@ Array [
              WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
-   ;",
+   ",
   ],
   Array [
     "query",
     "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
-    SET \\"value\\" = (SELECT CASE 
+      SET \\"value\\" = (SELECT CASE 
           WHEN (jsonb_typeof(\\"inline-table-0\\".\\"val\\") || '-' || 'number' ) = 'string-string' THEN to_jsonb(
             CAST(\\"inline-table-0\\".\\"val\\" #>> '{}' AS VARCHAR) ||
             CAST('-1' AS VARCHAR)
@@ -1165,12 +1185,12 @@ Array [
              WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
-   ;",
+   ",
   ],
   Array [
     "query",
     "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
-    SET \\"value\\" = (SELECT CASE 
+      SET \\"value\\" = (SELECT CASE 
           WHEN (jsonb_typeof(\\"inline-table-0\\".\\"val\\") || '-' || 'number' ) = 'string-string' THEN to_jsonb(
             CAST(\\"inline-table-0\\".\\"val\\" #>> '{}' AS VARCHAR) ||
             CAST('0.42' AS VARCHAR)
@@ -1212,12 +1232,12 @@ Array [
              WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
-   ;",
+   ",
   ],
   Array [
     "query",
     "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
-    SET \\"value\\" = (SELECT CASE 
+      SET \\"value\\" = (SELECT CASE 
           WHEN (jsonb_typeof(\\"inline-table-0\\".\\"val\\") || '-' || 'number' ) = 'string-string' THEN to_jsonb(
             CAST(\\"inline-table-0\\".\\"val\\" #>> '{}' AS VARCHAR) ||
             CAST('-0.42' AS VARCHAR)
@@ -1259,7 +1279,7 @@ Array [
              WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
-   ;",
+   ",
   ],
   Array [
     "query",
@@ -1364,8 +1384,13 @@ Array [
 ]
 `;
 
-exports[`@resolve-js/readmodel-postgresql-serverless operator "$set" 1`] = `
+exports[`@resolve-js/readmodel-postgresql operator "$set" 1`] = `
 Array [
+  Array [
+    "on",
+    "error",
+    [Function],
+  ],
   Array [
     "connect",
   ],
@@ -1436,39 +1461,39 @@ Array [
   Array [
     "query",
     "
-    CREATE TABLE \\"databaseName\\".\\"tablePrefixvalues\\" (
-      \\"value\\" JSONB, \\"arr\\" JSONB, \\"obj\\" JSONB, \\"id\\" JSONB
-    );
-
-    
-      ALTER TABLE \\"databaseName\\".\\"tablePrefixvalues\\"
-      ADD CONSTRAINT \\"id-type-validation\\"
-      CHECK (jsonb_typeof(\\"id\\") = 'string');
-
-      CREATE UNIQUE INDEX \\"tablePrefixvalues-id-extracted-field\\"
-      ON \\"databaseName\\".\\"tablePrefixvalues\\" (
-      CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
-     
-      CREATE UNIQUE INDEX \\"tablePrefixvalues-id-full-field\\"
-      ON \\"databaseName\\".\\"tablePrefixvalues\\" (
-        \\"id\\"
+      CREATE TABLE \\"databaseName\\".\\"tablePrefixvalues\\" (
+        \\"value\\" JSONB, \\"arr\\" JSONB, \\"obj\\" JSONB, \\"id\\" JSONB
       );
-    
-
-    COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixvalues\\"
-    IS 'RESOLVE-readModelName';
-  ",
-  ],
-  Array [
-    "query",
-    "INSERT INTO \\"databaseName\\".\\"tablePrefixvalues\\"(\\"id\\", \\"value\\", \\"arr\\", \\"obj\\")
-      VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('1' AS JSONB), CAST('[{\\"value\\":1}]' AS JSONB), CAST('{\\"value\\":1}' AS JSONB));
+  
+      
+        ALTER TABLE \\"databaseName\\".\\"tablePrefixvalues\\"
+        ADD CONSTRAINT \\"id-type-validation\\"
+        CHECK (jsonb_typeof(\\"id\\") = 'string');
+  
+        CREATE UNIQUE INDEX \\"tablePrefixvalues-id-extracted-field\\"
+        ON \\"databaseName\\".\\"tablePrefixvalues\\" (
+        CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
+       
+        CREATE UNIQUE INDEX \\"tablePrefixvalues-id-full-field\\"
+        ON \\"databaseName\\".\\"tablePrefixvalues\\" (
+          \\"id\\"
+        );
+      
+  
+      COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixvalues\\"
+      IS 'RESOLVE-readModelName';
     ",
   ],
   Array [
     "query",
+    "INSERT INTO \\"databaseName\\".\\"tablePrefixvalues\\"(\\"id\\", \\"value\\", \\"arr\\", \\"obj\\")
+        VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('1' AS JSONB), CAST('[{\\"value\\":1}]' AS JSONB), CAST('{\\"value\\":1}' AS JSONB));
+      ",
+  ],
+  Array [
+    "query",
     "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
-    SET \\"value\\" = CAST('2' AS JSONB) , \\"obj\\" = (SELECT CASE 
+      SET \\"value\\" = CAST('2' AS JSONB) , \\"obj\\" = (SELECT CASE 
             WHEN ((jsonb_typeof(\\"inline-table-0\\".\\"val\\" #> '{}') || '-' || 'string' ) = 'object-string' OR
             (jsonb_typeof(\\"inline-table-0\\".\\"val\\" #> '{}') || '-' || 'string' ) = 'array-number') THEN
             jsonb_set(\\"obj\\", '{\\"value\\"}', CAST('2' AS JSONB))
@@ -1487,12 +1512,12 @@ Array [
              WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
-   ;",
+   ",
   ],
   Array [
     "query",
     "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
-    SET \\"obj\\" = (SELECT CASE 
+      SET \\"obj\\" = (SELECT CASE 
             WHEN ((jsonb_typeof(\\"inline-table-1\\".\\"val\\" #> '{}') || '-' || 'string' ) = 'object-string' OR
             (jsonb_typeof(\\"inline-table-1\\".\\"val\\" #> '{}') || '-' || 'string' ) = 'array-number') THEN
             jsonb_set((SELECT CASE 
@@ -1519,7 +1544,7 @@ Array [
             , \\"a\\" = CAST('null' AS JSONB) , \\"b\\" = CAST('null' AS JSONB)  WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
-   ;",
+   ",
   ],
   Array [
     "query",
@@ -1624,8 +1649,13 @@ Array [
 ]
 `;
 
-exports[`@resolve-js/readmodel-postgresql-serverless operator "$unset" 1`] = `
+exports[`@resolve-js/readmodel-postgresql operator "$unset" 1`] = `
 Array [
+  Array [
+    "on",
+    "error",
+    [Function],
+  ],
   Array [
     "connect",
   ],
@@ -1696,39 +1726,39 @@ Array [
   Array [
     "query",
     "
-    CREATE TABLE \\"databaseName\\".\\"tablePrefixvalues\\" (
-      \\"value\\" JSONB, \\"arr\\" JSONB, \\"obj\\" JSONB, \\"id\\" JSONB
-    );
-
-    
-      ALTER TABLE \\"databaseName\\".\\"tablePrefixvalues\\"
-      ADD CONSTRAINT \\"id-type-validation\\"
-      CHECK (jsonb_typeof(\\"id\\") = 'string');
-
-      CREATE UNIQUE INDEX \\"tablePrefixvalues-id-extracted-field\\"
-      ON \\"databaseName\\".\\"tablePrefixvalues\\" (
-      CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
-     
-      CREATE UNIQUE INDEX \\"tablePrefixvalues-id-full-field\\"
-      ON \\"databaseName\\".\\"tablePrefixvalues\\" (
-        \\"id\\"
+      CREATE TABLE \\"databaseName\\".\\"tablePrefixvalues\\" (
+        \\"value\\" JSONB, \\"arr\\" JSONB, \\"obj\\" JSONB, \\"id\\" JSONB
       );
-    
-
-    COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixvalues\\"
-    IS 'RESOLVE-readModelName';
-  ",
-  ],
-  Array [
-    "query",
-    "INSERT INTO \\"databaseName\\".\\"tablePrefixvalues\\"(\\"id\\", \\"value\\", \\"arr\\", \\"obj\\")
-      VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('1' AS JSONB), CAST('[{\\"value\\":1}]' AS JSONB), CAST('{\\"value\\":1}' AS JSONB));
+  
+      
+        ALTER TABLE \\"databaseName\\".\\"tablePrefixvalues\\"
+        ADD CONSTRAINT \\"id-type-validation\\"
+        CHECK (jsonb_typeof(\\"id\\") = 'string');
+  
+        CREATE UNIQUE INDEX \\"tablePrefixvalues-id-extracted-field\\"
+        ON \\"databaseName\\".\\"tablePrefixvalues\\" (
+        CAST((\\"id\\" ->> '$') AS VARCHAR(190)));
+       
+        CREATE UNIQUE INDEX \\"tablePrefixvalues-id-full-field\\"
+        ON \\"databaseName\\".\\"tablePrefixvalues\\" (
+          \\"id\\"
+        );
+      
+  
+      COMMENT ON TABLE \\"databaseName\\".\\"tablePrefixvalues\\"
+      IS 'RESOLVE-readModelName';
     ",
   ],
   Array [
     "query",
+    "INSERT INTO \\"databaseName\\".\\"tablePrefixvalues\\"(\\"id\\", \\"value\\", \\"arr\\", \\"obj\\")
+        VALUES(CAST('\\"id-1\\"' AS JSONB), CAST('1' AS JSONB), CAST('[{\\"value\\":1}]' AS JSONB), CAST('{\\"value\\":1}' AS JSONB));
+      ",
+  ],
+  Array [
+    "query",
     "UPDATE \\"databaseName\\".\\"tablePrefixvalues\\"
-    SET \\"value\\" = NULL , \\"obj\\" = (SELECT CASE 
+      SET \\"value\\" = NULL , \\"obj\\" = (SELECT CASE 
             WHEN jsonb_typeof(\\"inline-table-0\\".\\"val\\" #> '{\\"value\\"}') IS NOT NULL THEN 
             \\"inline-table-0\\".\\"val\\" #- '{\\"value\\"}'
             ELSE to_jsonb(jsonb_typeof((SELECT 'MalformedUnsetOperation')::jsonb))
@@ -1745,7 +1775,7 @@ Array [
              WHERE 
     (((\\"id\\" = CAST('\\"id-1\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-1\\"' AS JSONB) is null))) or      
     ((\\"id\\" is null) and (CAST('\\"id-1\\"' AS JSONB) is null)))
-   ;",
+   ",
   ],
   Array [
     "query",

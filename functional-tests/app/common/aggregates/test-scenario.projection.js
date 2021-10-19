@@ -3,7 +3,7 @@ import {
   TEST_SCENARIO_EXECUTED,
 } from '../event-types'
 
-export default {
+const projection = {
   Init: () => ({
     isExecuted: false,
     retryOnErrorBlocked: true,
@@ -22,3 +22,5 @@ export default {
     }
   },
 }
+
+export default projection

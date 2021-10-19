@@ -1,14 +1,26 @@
-import { ConcurrentError, InputEvent } from '@resolve-js/eventstore-base'
-import { AdapterPool } from './types'
-import { EventstoreFrozenError } from '@resolve-js/eventstore-base'
+import type {
+  InputEvent,
+  StoredEvent,
+  EventThreadData,
+  StoredEventPointer,
+} from '@resolve-js/eventstore-base'
+import type { AdapterPool } from './types'
+import {
+  ConcurrentError,
+  threadArrayToCursor,
+  THREAD_COUNT,
+  EventstoreFrozenError,
+} from '@resolve-js/eventstore-base'
+import assert from 'assert'
+import isIntegerOverflowError from './integer-overflow-error'
 
 const saveEvent = async (
   pool: AdapterPool,
   event: InputEvent
-): Promise<void> => {
-  const { eventsTableName, database, escapeId, escape } = pool
+): Promise<StoredEventPointer> => {
+  const { eventsTableName, executeStatement, escapeId, escape } = pool
   try {
-    const currentThreadId = Math.floor(Math.random() * 256)
+    const currentThreadId = Math.floor(Math.random() * THREAD_COUNT)
     const eventsTableNameAsId = escapeId(eventsTableName)
     const freezeTableNameAsString = escape(`${eventsTableName}-freeze`)
     const serializedPayload =
@@ -16,18 +28,16 @@ const saveEvent = async (
         ? escape(JSON.stringify(event.payload))
         : escape('null')
 
-    await database.exec(
-      `BEGIN IMMEDIATE;
-
-      SELECT ABS("CTE"."EventStoreIsFrozen") FROM (
+    const insertResults = (await executeStatement(
+      `
+      WITH "freeze_check" AS (SELECT ABS("EventStoreIsFrozen") AS "freeze_zero" FROM (
         SELECT 0 AS "EventStoreIsFrozen"
       UNION ALL
         SELECT -9223372036854775808 AS "EventStoreIsFrozen"
         FROM "sqlite_master"
         WHERE "type" = 'table' AND 
         "name" = ${freezeTableNameAsString}
-      ) CTE;
-
+      ))
       INSERT INTO ${eventsTableNameAsId}(
         "threadId",
         "threadCounter",
@@ -37,7 +47,7 @@ const saveEvent = async (
         "type",
         "payload"
       ) VALUES(
-        ${+currentThreadId},
+        ${+currentThreadId} + COALESCE((SELECT "freeze_zero" FROM "freeze_check" LIMIT 1 OFFSET 1), 0),
         COALESCE(
           (
             SELECT MAX("threadCounter") FROM ${eventsTableNameAsId}
@@ -53,28 +63,90 @@ const saveEvent = async (
         ${+event.aggregateVersion},
         ${escape(event.type)},
         json(CAST(${serializedPayload} AS BLOB))
-      );
+      ) RETURNING "threadId", "threadCounter", "timestamp"`
+    )) as Array<{
+      threadId: EventThreadData['threadId']
+      threadCounter: EventThreadData['threadCounter']
+      timestamp: StoredEvent['timestamp']
+    }>
+    const insertResult = insertResults[0]
 
-      COMMIT;`
-    )
+    const rows = (await executeStatement(
+      `SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
+    ${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`
+    )) as Array<{
+      threadId: EventThreadData['threadId']
+      threadCounter: EventThreadData['threadCounter']
+    }>
+
+    const threadCounters = new Array<number>(THREAD_COUNT)
+    threadCounters.fill(-1)
+
+    let savedEventThreadCounter = +insertResult.threadCounter
+    let savedEventTimestamp = +insertResult.timestamp
+
+    for (const row of rows) {
+      threadCounters[row.threadId] = row.threadCounter
+      if (row.threadId === currentThreadId) {
+        threadCounters[row.threadId] = savedEventThreadCounter
+      }
+    }
+
+    if (savedEventThreadCounter === undefined) {
+      throw new assert.AssertionError({
+        message: 'Could not find threadCounter of saved event',
+        actual: savedEventThreadCounter,
+        expected: undefined,
+        operator: 'notStrictEqual',
+      })
+    }
+
+    if (savedEventTimestamp === undefined) {
+      throw new assert.AssertionError({
+        message: 'Could not find timestamp of saved event',
+        actual: savedEventTimestamp,
+        expected: undefined,
+        operator: 'notStrictEqual',
+      })
+    }
+
+    const savedEvent: StoredEvent = {
+      ...event,
+      threadId: currentThreadId,
+      threadCounter: savedEventThreadCounter,
+      timestamp: savedEventTimestamp,
+    }
+
+    for (let i = 0; i < threadCounters.length; ++i) {
+      threadCounters[i]++
+    }
+
+    const cursor = threadArrayToCursor(threadCounters)
+
+    return {
+      event: savedEvent,
+      cursor,
+    }
   } catch (error) {
     const errorMessage =
       error != null && error.message != null ? error.message : ''
-    const errorCode = error != null && error.code != null ? error.code : ''
 
-    try {
-      await database.exec('ROLLBACK;')
-    } catch (e) {}
+    const errorCode =
+      error != null && error.code != null ? (error.code as string) : ''
 
-    if (errorMessage === 'SQLITE_ERROR: integer overflow') {
+    if (errorMessage.indexOf('transaction within a transaction') > -1) {
+      return await saveEvent(pool, event)
+    }
+
+    if (isIntegerOverflowError(errorMessage)) {
       throw new EventstoreFrozenError()
     } else if (
-      errorCode === 'SQLITE_CONSTRAINT' &&
+      errorCode.startsWith('SQLITE_CONSTRAINT') &&
       errorMessage.indexOf('aggregate') > -1
     ) {
       throw new ConcurrentError(event.aggregateId)
     } else if (
-      errorCode === 'SQLITE_CONSTRAINT' &&
+      errorCode.startsWith('SQLITE_CONSTRAINT') &&
       errorMessage.indexOf('PRIMARY') > -1
     ) {
       return await saveEvent(pool, event)

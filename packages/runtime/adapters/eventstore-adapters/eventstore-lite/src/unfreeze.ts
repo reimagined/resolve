@@ -3,12 +3,12 @@ import { EventstoreAlreadyUnfrozenError } from '@resolve-js/eventstore-base'
 import { isNotExistError } from './resource-errors'
 
 const unfreeze = async ({
-  database,
+  executeQuery,
   eventsTableName,
   escapeId,
 }: AdapterPool): Promise<void> => {
   try {
-    await database.exec(`DROP TABLE ${escapeId(`${eventsTableName}-freeze`)}`)
+    await executeQuery(`DROP TABLE ${escapeId(`${eventsTableName}-freeze`)}`)
   } catch (error) {
     if (isNotExistError(error.message))
       throw new EventstoreAlreadyUnfrozenError()

@@ -1,6 +1,6 @@
 import { message } from '../constants'
 
-export default ({ isClient }) => {
+const importGuardOnlyServer = ({ isClient }) => {
   if (isClient) {
     throw new Error(`${message.serverAliasInClientCodeError}.guardOnlyServer`)
   }
@@ -51,3 +51,5 @@ export default ({ isClient }) => {
     export default null
   `
 }
+
+export default importGuardOnlyServer

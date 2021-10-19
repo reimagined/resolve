@@ -1,4 +1,4 @@
-export default () => ` 
+const importServerAssemblies = () => ` 
   import '$resolve.guardOnlyServer'
   import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"
   import constants from '$resolve.constants'
@@ -67,6 +67,12 @@ export default () => `
         return interopRequireDefault(require('$resolve.sagas')).default
       },
       enumerable: true
+    },
+    middlewares: {
+      get() { 
+        return interopRequireDefault(require('$resolve.middlewares')).default
+      },
+      enumerable: true
     }
   })
   
@@ -77,3 +83,5 @@ export default () => `
     resolveVersion
   } 
 `
+
+export default importServerAssemblies

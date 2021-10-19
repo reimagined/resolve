@@ -35,6 +35,11 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     const { secrets, idx } = await adapter.loadSecrets({ limit: countSecrets })
     expect(secrets).toHaveLength(0)
     expect(idx).toBeNull()
+
+    const description = await adapter.describe()
+    expect(description.secretCount).toEqual(0)
+    expect(description.setSecretCount).toEqual(0)
+    expect(description.deletedSecretCount).toEqual(0)
   })
 
   test('should set secrets', async () => {
@@ -51,6 +56,11 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     for (let secret of secrets) {
       await secretManager.setSecret(secret.id, secret.secret)
     }
+
+    const description = await adapter.describe()
+    expect(description.secretCount).toEqual(countSecrets)
+    expect(description.setSecretCount).toEqual(countSecrets)
+    expect(description.deletedSecretCount).toEqual(0)
   })
 
   test('should generate set secret events', async () => {
@@ -234,6 +244,11 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     const secrets = (await adapter.loadSecrets({ limit: countSecrets + 1 }))
       .secrets
     expect(secrets).toHaveLength(countSecrets - 1)
+
+    const description = await adapter.describe()
+    expect(description.secretCount).toEqual(countSecrets)
+    expect(description.setSecretCount).toEqual(countSecrets - 1)
+    expect(description.deletedSecretCount).toEqual(1)
   })
 
   test('should return old number of secrets after the secret was deleted if includeDeleted flag is used', async () => {
@@ -286,10 +301,8 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
 
 describe(`${adapterFactory.name}. Eventstore adapter import secrets`, () => {
   beforeAll(async () => {
-    await Promise.all([
-      adapterFactory.create('secret_input_testing')(),
-      adapterFactory.create('secret_output_testing')(),
-    ])
+    await adapterFactory.create('secret_input_testing')()
+    await adapterFactory.create('secret_output_testing')()
 
     const outputAdapter = adapters['secret_output_testing']
 
@@ -298,12 +311,10 @@ describe(`${adapterFactory.name}. Eventstore adapter import secrets`, () => {
       await outputAdapter.saveEvent(event)
     }
   })
-  afterAll(() =>
-    Promise.all([
-      adapterFactory.destroy('secret_input_testing')(),
-      adapterFactory.destroy('secret_output_testing')(),
-    ])
-  )
+  afterAll(async () => {
+    await adapterFactory.destroy('secret_input_testing')()
+    await adapterFactory.destroy('secret_output_testing')()
+  })
 
   const inputAdapter = adapters['secret_input_testing']
   const outputAdapter = adapters['secret_output_testing']

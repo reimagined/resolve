@@ -167,7 +167,10 @@ To serve SSR markup to the client, you need to register the **live-require-handl
 apiHandlers: [
   {
     handler: {
-      module: '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+      module: { 
+        package: '@resolve-js/runtime-base',
+        import: 'liveRequireHandler', 
+      },
       options: {
         modulePath: './ssr.js',
         moduleFactoryImport: false
@@ -192,7 +195,7 @@ A reSolve exposes HTTP API that you can use to send aggregate commands and query
 
 #### Example
 
-> To test the provided console inputs on your machine, download and run the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example project.
+> To test the provided console inputs on your machine, download and run the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/js/shopping-list) example project.
 
 1. Create a new shopping list named "List 1":
 
@@ -303,7 +306,7 @@ Below, you can see the newly created list and its items on the Shopping List app
 
 ![List1-items](assets/curl/list1-items.png)
 
-For more information on the HTTP API, refer to the following help topic: [API Reference](api-reference.md#http-api).
+For more information on the HTTP API, refer to the following help topic: [API Reference](api/client/http-api.md).
 
 You can extend a reSolve server's API with API Handlers. Refer to the following help topic for more information: [API Handlers](api-handlers.md).
 
@@ -311,18 +314,18 @@ You can extend a reSolve server's API with API Handlers. Refer to the following 
 
 The **@resolve-js/client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
 
-| Function                                                | Description                                                                 |
-| ------------------------------------------------------- | --------------------------------------------------------------------------- |
-| [command](api-reference.md#command)                     | Sends an aggregate command to the backend.                                  |
-| [query](api-reference.md#query)                         | Queries a Read Model.                                                       |
-| [getStaticAssetUrl](api-reference.md#getstaticasseturl) | Gets a static file's full URL.                                              |
-| [getOriginPath](api-reference.md#getoriginpath)         | Returns an absolute URL within the application for the given relative path. |
-| [subscribe](api-reference.md#subscribe)                 | Subscribes to View Model updates.                                           |
-| [unsubscribe](api-reference.md#unsubscribe)             | Unsubscribes from View Model updates.                                       |
+| Function                                                            | Description                                                                 |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [command](api/client/resolve-client.md#command)                     | Sends an aggregate command to the backend.                                  |
+| [query](api/client/resolve-client.md#query)                         | Queries a Read Model.                                                       |
+| [getStaticAssetUrl](api/client/resolve-client.md#getstaticasseturl) | Gets a static file's full URL.                                              |
+| [getOriginPath](api/client/resolve-client.md#getoriginpath)         | Returns an absolute URL within the application for the given relative path. |
+| [subscribe](api/client/resolve-client.md#subscribe)                 | Subscribes to View Model updates.                                           |
+| [unsubscribe](api/client/resolve-client.md#unsubscribe)             | Unsubscribes from View Model updates.                                       |
 
 #### Example
 
-The [with-vanilajs](https://github.com/reimagined/resolve/tree/master/examples/with-vanillajs) example application demonstrates how to use the **@resolve-js/client** library to implement a frontend for a reSolve application in pure JavaScript.
+The [with-vanilajs](https://github.com/reimagined/resolve/tree/master/templates/js/vanilla) template project demonstrates how to use the **@resolve-js/client** library to implement a frontend for a reSolve application in pure JavaScript.
 
 ## @resolve-js/redux library
 
@@ -332,41 +335,39 @@ Use the following @resolve-js/redux library's hooks and Higher-Order Components 
 
 ##### React Hooks:
 
-| Function Name                                                           | Description                                                                 |
-| ----------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| [useReduxCommand](api-reference.md#usereduxcommand)                     | Creates a hook to execute a command.                                        |
-| [useReduxReadModel](api-reference.md#usereduxreadmodel)                 | Creates a hook to query a Read Model.                                       |
-| [useReduxReadModelSelector](api-reference.md#usereduxreadmodelselector) | Creates a hook to access a Read Model query result.                         |
-| [useReduxViewModel](api-reference.md#usereduxviewmodel)                 | Creates a hook to receive a View Model's state updates and reactive events. |
-| [useReduxViewModelSelector](api-reference.md#usereduxviewmodelselector) | Creates a hook to access a View Model's current state on the client.        |
+| Function Name                                                                      | Description                                                                 |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [useReduxCommand](api/client/resolve-redux.md#usereduxcommand)                     | Creates a hook to execute a command.                                        |
+| [useReduxReadModel](api/client/resolve-redux.md#usereduxreadmodel)                 | Creates a hook to query a Read Model.                                       |
+| [useReduxReadModelSelector](api/client/resolve-redux.md#usereduxreadmodelselector) | Creates a hook to access a Read Model query result.                         |
+| [useReduxViewModel](api/client/resolve-redux.md#usereduxviewmodel)                 | Creates a hook to receive a View Model's state updates and reactive events. |
+| [useReduxViewModelSelector](api/client/resolve-redux.md#usereduxviewmodelselector) | Creates a hook to access a View Model's current state on the client.        |
 
 ##### Higher-Order Components:
 
-| Function Name                                                     | Description                                                                                        |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| [connectViewModel](api-reference.md#connectviewmodel)             | Connects a React component to a reSolve View Model.                                                |
-| [connectReadModel](api-reference.md#connectreadmodel)             | Connects a React component to a reSolve Read Model.                                                |
-| [connectRootBasedUrls](api-reference.md#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they use the correct root folder path.            |
-| [connectStaticBasedUrls](api-reference.md#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they use the correct static resource folder path. |
+| Function Name                                                                | Description                                                                                        |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| [connectViewModel](api/client/resolve-redux.md#connectviewmodel)             | Connects a React component to a reSolve View Model.                                                |
+| [connectReadModel](api/client/resolve-redux.md#connectreadmodel)             | Connects a React component to a reSolve Read Model.                                                |
+| [connectRootBasedUrls](api/client/resolve-redux.md#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they use the correct root folder path.            |
+| [connectStaticBasedUrls](api/client/resolve-redux.md#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they use the correct static resource folder path. |
 
 #### Example
 
-The [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example application demonstrates how to use the **@resolve-js/client** library to implement a react-redux frontend for a reSolve application.
-
-<!-- prettier-ignore-end -->
+The [shopping-list-redux-hoc](https://github.com/reimagined/resolve/tree/master/examples/js/shopping-list-redux-hoc) example application demonstrates how to use the **@resolve-js/redux** library to implement a react-redux frontend for a reSolve application.
 
 ## @resolve-js/react-hooks library
 
 The **@resolve-js/react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
 
-| Hook                                                    | Description                                                              |
-| ------------------------------------------------------- | ------------------------------------------------------------------------ |
-| [useCommand](api-reference.md#usecommand)               | Initializes a command that can be passed to the backend                  |
-| [useCommandBuilder](api-reference.md#usecommandbuilder) | Allows to generate commands based on input parameters                    |
-| [useViewModel](api-reference.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model               |
-| [useQuery](api-reference.md#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model |
-| [useOriginResolver](api-reference.md#useoriginresolver) | Resolves a relative path to an absolute URL within the application.      |
+| Hook                                                                     | Description                                                              |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| [useCommand](api/client/resolve-react-hooks.md#usecommand)               | Initializes a command that can be passed to the backend                  |
+| [useCommandBuilder](api/client/resolve-react-hooks.md#usecommandbuilder) | Allows to generate commands based on input parameters                    |
+| [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model               |
+| [useQuery](api/client/resolve-react-hooks.md#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model |
+| [useOriginResolver](api/client/resolve-react-hooks.md#useoriginresolver) | Resolves a relative path to an absolute URL within the application.      |
 
 #### Example
 
-The [shopping-list-with-hooks](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-with-hooks) example application demonstrates how to use the **@resolve-js/react-hooks** library to communicate with a reSolve backend.
+The [shopping-list-with-hooks](https://github.com/reimagined/resolve/tree/master/examples/js/shopping-list) example application demonstrates how to use the **@resolve-js/react-hooks** library to communicate with a reSolve backend.

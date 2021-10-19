@@ -54,7 +54,7 @@ $ yarn run dev
 
 ## **Lesson 1** - Write side - Add Shopping Lists
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-1)
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-1)
 
 This lesson describes how to implement a write side for a reSolve application. An application's [write side](resolve-app-structure.md#write-and-read-sides) handles commands, validates input data, and emits **events** based on valid commands. The framework then saves the emitted events to the **event store**.
 
@@ -136,7 +136,7 @@ A request's body should have the `application/json` content type and contain a J
   "type": "createShoppingList",
   "aggregateId": "shopping-list-1",
   "payload": {
-    "text": "Item 1"
+    "name": "Item 1"
   }
 }
 ```
@@ -156,12 +156,12 @@ curl -i http://localhost:3000/api/commands/ \
 --header "Content-Type: application/json" \
 --data '
 {
-    "aggregateName": "ShoppingList",
-    "aggregateId": "shopping-list-1",
-    "type": "createShoppingList",
-    "payload": {
-        "name": "List 1"
-    }
+  "aggregateName": "ShoppingList",
+  "aggregateId": "shopping-list-1",
+  "type": "createShoppingList",
+  "payload": {
+    "name": "List 1"
+  }
 }
 '
 
@@ -189,13 +189,13 @@ curl -i http://localhost:3000/api/commands/ \
 --header "Content-Type: application/json" \
 --data '
 {
-    "aggregateName": "ShoppingList",
-    "aggregateId": "shopping-list-1",
-    "type": "createShoppingItem",
-    "payload": {
-        "id": "1",
-        "text": "Milk"
-    }
+  "aggregateName": "ShoppingList",
+  "aggregateId": "shopping-list-1",
+  "type": "createShoppingItem",
+  "payload": {
+    "id": "1",
+    "text": "Milk"
+  }
 }
 '
 
@@ -335,7 +335,7 @@ Command error: name is required
 
 ## **Lesson 2** - Read side - Create a Read Model to Query Shopping Lists
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-2)
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-2)
 
 Currently, your shopping list application has a write side that allows you to create shopping lists and add items to these lists. To obtain this data from the application, you need to implement the application's **[read side](resolve-app-structure.md#write-and-read-sides)**.
 
@@ -382,9 +382,9 @@ export default {
 
 ##### Used API:
 
-- [store](api-reference.md#read-model-store-interface)
-- [store.defineTable](api-reference.md#definetable)
-- [store.insert](api-reference.md#insert)
+- [store](api/read-model/store.md)
+- [store.defineTable](api/read-model/store.md#definetable)
+- [store.insert](api/read-model/store.md#insert)
 
 The type of the physical store used to save data is defined by a Read Model connector:
 
@@ -438,7 +438,7 @@ export default {
 
 ##### Used API:
 
-- [store.find](api-reference.md#find)
+- [store.find](api/read-model/store.md#find)
 
 Register the created Read Model in the application configuration file:
 
@@ -490,7 +490,7 @@ $ curl -X POST \
 
 ## **Lesson 3** - Frontend - Display Read Model Data in the Browser
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-3)
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-3)
 
 This lesson describes how to display a Read Model's data in the client browser. The code in this lesson uses the reSolve framework's **@resolve-js/redux** library to implement a frontend based on React with hooks.
 
@@ -580,7 +580,7 @@ export default MyLists
 
 ##### Used API:
 
-- [useQuery](api-reference.md#usequery)
+- [useQuery](api/client/resolve-react-hooks.md#usequery)
 
 Add the root component that defines the page's HEAD section and renders routes:
 
@@ -685,7 +685,7 @@ Run your application to view the result:
 
 ## **Lesson 4** - Read Side - Create a View Model to Query Shopping List Items
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4)
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-4)
 
 This lesson describes how you can use a View Model to obtain shopping list items and display them as a list within the client browser.
 
@@ -879,7 +879,7 @@ export default ShoppingList
 
 ##### Used API:
 
-- [useViewModel](api-reference.md#useviewmodel)
+- [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)
 
 ![List Items](assets/tutorial/lesson4-list-items.png)
 
@@ -934,7 +934,7 @@ The page is automatically updated to display the new item.
 
 ## **Lesson 5** - Enable Editing
 
-[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-5)
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-5)
 
 This lesson describes how to implement missing data editing functionality on the reSolve backend and enable data editing on the frontend.
 
@@ -1141,7 +1141,7 @@ export default ShoppingListCreator
 
 ##### Used API:
 
-- [useCommand](api-reference.md#usecommand)
+- [useCommand](api/client/resolve-react-hooks.md#usecommand)
 
 ![Shopping List Creator](assets/tutorial/lesson5-list-creator.png)
 
@@ -1200,7 +1200,7 @@ export default ShoppingListRemover
 
 ##### Used API:
 
-- [useCommand](api-reference.md#usecommand)
+- [useCommand](api/client/resolve-react-hooks.md#usecommand)
 
 Add this component to each item in the ShoppingLists component's layout:
 
@@ -1380,8 +1380,8 @@ export default ShoppingList
 
 ##### Used API:
 
-- [useCommandBuilder](api-reference.md#usecommandbuilder)
-- [useViewModel](api-reference.md#useviewmodel)
+- [useCommandBuilder](api/client/resolve-react-hooks.md#usecommandbuilder)
+- [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)
 
 Modify the ShoppingListItem component to support item checking and deletion.
 
@@ -1430,6 +1430,6 @@ export default ShoppingListItem
 
 ##### Used API:
 
-- [useCommand](api-reference.md#usecommand)
+- [useCommand](api/client/resolve-react-hooks.md#usecommand)
 
 ![Check List Item](assets/tutorial/lesson5-check-item.png)

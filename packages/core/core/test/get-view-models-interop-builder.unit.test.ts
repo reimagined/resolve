@@ -9,6 +9,7 @@ import {
   ViewModelBuildResult,
   ViewModelRuntime,
 } from '../src/view-model/types'
+import { StoredEvent } from '../types'
 
 let monitoring: Monitoring
 
@@ -26,22 +27,37 @@ const makeViewModelMeta = (params: any): ViewModelMeta[] => [
   },
 ]
 
-const makeTestRuntime = (storedEvents: Event[] = []): ViewModelRuntime => {
+const makeTestRuntime = (events: Event[] = []): ViewModelRuntime => {
   const secretsManager: SecretsManager = {
     getSecret: jest.fn(),
     setSecret: jest.fn(),
     deleteSecret: jest.fn(),
   }
 
+  const storedEvents = events.map<StoredEvent>((event) => ({
+    ...event,
+    threadId: 0,
+    threadCounter: 0,
+  }))
+
   const eventstore: Eventstore = {
+    getReplicationState: jest.fn(),
+    replicateEvents: jest.fn(),
+    replicateSecrets: jest.fn(),
+    resetReplication: jest.fn(),
+    setReplicationIterator: jest.fn(),
+    setReplicationPaused: jest.fn(),
+    setReplicationStatus: jest.fn(),
     saveEvent: jest.fn(),
     getNextCursor: jest.fn(
-      (currentCursor) => (currentCursor && currentCursor + 1) || 1
+      (currentCursor) =>
+        (currentCursor && (Number(currentCursor) + 1).toString()) || '1'
     ),
     loadEvents: jest.fn(({ cursor, aggregateIds }) =>
       Promise.resolve({
+        cursor: '',
         events: storedEvents.filter((e) =>
-          aggregateIds.includes(e.aggregateId)
+          aggregateIds?.includes(e.aggregateId)
         ),
       })
     ),
@@ -50,14 +66,18 @@ const makeTestRuntime = (storedEvents: Event[] = []): ViewModelRuntime => {
     ensureEventSubscriber: jest.fn().mockResolvedValue(null),
     removeEventSubscriber: jest.fn().mockResolvedValue(null),
     getEventSubscribers: jest.fn().mockResolvedValue([]),
+    describe: jest.fn(),
   }
 
   monitoring = {
-    group: jest.fn(),
     error: jest.fn(),
+    execution: jest.fn(),
+    group: jest.fn(() => monitoring),
     time: jest.fn(),
     timeEnd: jest.fn(),
     publish: jest.fn(),
+    duration: jest.fn(),
+    rate: jest.fn(),
   }
 
   mocked(monitoring.group).mockReturnValue(monitoring)
@@ -131,7 +151,7 @@ describe('View models', () => {
     })
     expect(data).toEqual(['first', 'third'])
     expect(eventCount).toEqual(2)
-    expect(cursor).toEqual(2)
+    expect(cursor).toEqual('2')
   })
 
   test('collects error if event handler is failed', async () => {
@@ -241,6 +261,59 @@ describe('View models', () => {
 
     expect(monitoring.group).toBeCalledWith({ Part: 'ViewModelResolver' })
     expect(monitoring.group).toBeCalledWith({ ViewModel: 'TestViewModel' })
-    expect(monitoring.error).toBeCalledWith(error)
+    expect(monitoring.execution).toBeCalledWith(error)
+  })
+
+  test('collects execution if resolver is not failed', async () => {
+    const resolver = setUpTestViewModelResolver(
+      {
+        name: 'TestViewModel',
+        projection: {
+          Init: () => [],
+          dummyEvent: (state: any, event: any) => {
+            return [...state, event.payload.text]
+          },
+        },
+        resolver: () => {
+          return null
+        },
+      },
+      [
+        {
+          type: 'dummyEvent',
+          payload: { text: 'first' },
+          aggregateId: 'validAggregateId',
+          aggregateVersion: 1,
+          timestamp: 1,
+        },
+        {
+          type: 'dummyEvent',
+          payload: { text: 'second' },
+          aggregateId: 'invalidAggregateId',
+          aggregateVersion: 1,
+          timestamp: 2,
+        },
+        {
+          type: 'dummyEvent',
+          payload: { text: 'third' },
+          aggregateId: 'validAggregateId',
+          aggregateVersion: 2,
+          timestamp: 3,
+        },
+      ]
+    )
+
+    try {
+      await resolver({
+        aggregateIds: ['validAggregateId'],
+        aggregateArgs: null,
+      })
+
+      throw new Error('Building must be failed')
+    } catch (e) {}
+
+    expect(monitoring.group).toBeCalledWith({ Part: 'ViewModelResolver' })
+    expect(monitoring.group).toBeCalledWith({ ViewModel: 'TestViewModel' })
+    expect(monitoring.execution).toBeCalledWith()
   })
 })

@@ -4,7 +4,7 @@ import { SecretsManager } from '../src/types/core'
 import { HttpError } from '../src/errors'
 import { getSagasInteropBuilder } from '../src/saga/get-sagas-interop-builder'
 import { SagaRuntime, SchedulerEventTypes } from '../src/saga/types'
-import { SagaMeta, Monitoring } from '../src/types/runtime'
+import { SagaMeta } from '../src/types/runtime'
 const dummyEncryption = () => Promise.resolve({})
 
 const makeSagaMeta = (params: any): SagaMeta[] => [
@@ -23,23 +23,19 @@ const secretsManager: SecretsManager = {
   deleteSecret: jest.fn(),
 }
 
-let monitoring: {
-  error: jest.MockedFunction<NonNullable<Monitoring['error']>>
-  group: jest.MockedFunction<NonNullable<Monitoring['group']>>
-  time: jest.MockedFunction<NonNullable<Monitoring['time']>>
-  timeEnd: jest.MockedFunction<NonNullable<Monitoring['timeEnd']>>
-  publish: jest.MockedFunction<NonNullable<Monitoring['publish']>>
-}
+let monitoring: any
 
 const makeTestRuntime = (): SagaRuntime => {
   monitoring = {
-    group: jest.fn(),
     error: jest.fn(),
+    execution: jest.fn(),
+    group: jest.fn(() => monitoring),
     time: jest.fn(),
     timeEnd: jest.fn(),
     publish: jest.fn(),
+    duration: jest.fn(),
+    rate: jest.fn(),
   }
-  monitoring.group.mockReturnValue(monitoring)
   const scheduler = {
     addEntries: jest.fn(),
     clearEntries: jest.fn(),

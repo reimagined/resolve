@@ -1,4 +1,4 @@
-import getLog from '../get-log'
+import { getLog } from '../get-log'
 import {
   Command,
   CommandResult,
@@ -20,6 +20,7 @@ import { createHttpError, HttpStatusCodes } from '../errors'
 import { v4 as uuid } from 'uuid'
 import { createEventHandler, createInitHandler } from './create-event-handler'
 import { buildSchedulerProjection } from './build-scheduler-projection'
+import { lateBoundProxy } from '../utils'
 
 const getInterop = (
   saga: {
@@ -159,12 +160,15 @@ export const getSagasInteropBuilder = (
         handlers: buildSchedulerProjection(schedulerName, schedulerEventTypes),
       },
       runtime,
-      {
-        ...runtime.scheduler,
-        scheduleCommand: () => {
-          /* no-op */
+      lateBoundProxy(
+        {
+          scheduleCommand: () => {
+            /* no-op */
+          },
         },
-      }
+        runtime,
+        'scheduler'
+      )
     )
   )
 
