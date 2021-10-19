@@ -7,6 +7,8 @@ import type {
   MonitoringMetric,
 } from './types'
 
+export type { MonitoringDimension, MonitoringMetric }
+
 const createErrorDimensions = (error: Error) => [
   { name: 'ErrorName', value: error.name },
   { name: 'ErrorMessage', value: error.message },
