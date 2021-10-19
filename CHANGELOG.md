@@ -14,6 +14,7 @@
 
 **Breaking changes:**
 
+- Remove RDS data api eventstore and readmodel adapters [\#2078](https://github.com/reimagined/resolve/pull/2078)
 - Refactored runtime libraries [\#2060](https://github.com/reimagined/resolve/pull/2060)
 
 **Other changes:**
