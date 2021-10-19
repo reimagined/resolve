@@ -1,4 +1,6 @@
 import type { MonitoringDimension } from '@resolve-js/monitoring-base'
+import { LeveledDebugger } from '@resolve-js/debug-levels'
+import columnify from 'columnify'
 
 import type { MonitoringContext } from './types'
 
@@ -21,7 +23,10 @@ const getLabelByDimensions = (
   return dimensions.map(({ name, value }) => `${name}="${value}"`).join(', ')
 }
 
-export const monitoringPublish = async (context: MonitoringContext) => {
+export const monitoringPublish = async (
+  log: LeveledDebugger,
+  context: MonitoringContext
+) => {
   const { metrics } = context.baseMonitoring.getMetrics()
 
   // TODO: any
@@ -120,7 +125,7 @@ export const monitoringPublish = async (context: MonitoringContext) => {
   //   })
   // )
 
-  console.log('\n=== PUBLISH METRICS ===')
+  log.verbose('\n=== PUBLISH METRICS ===')
 
   const splittedMetrics = metrics.reduce(
     (acc, { metricName, unit, dimensions, values, counts }) => {
@@ -194,8 +199,8 @@ export const monitoringPublish = async (context: MonitoringContext) => {
       }
     })
 
-    console.log(`- ${item.metricName} (${item.unit}) -`)
-    console.table(metricRows)
+    log.verbose(`- ${item.metricName} (${item.unit}) -`)
+    log.verbose(columnify(metricRows))
   })
 
   // if (executionsRows.length > 0) {

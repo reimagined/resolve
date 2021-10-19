@@ -25,9 +25,11 @@
   },
   "dependencies": {
     "@resolve-js/debug-levels": "0.32.0",
-    "@resolve-js/monitoring-base": "0.32.0"
+    "@resolve-js/monitoring-base": "0.32.0",
+    "columnify": "1.5.4"
   },
   "devDependencies": {
+    "@types/columnify": "1.5.1",
     "jest": "27.0.3",
     "ts-jest": "27.0.5"
   },
