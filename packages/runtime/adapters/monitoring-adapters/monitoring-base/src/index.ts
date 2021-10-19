@@ -99,7 +99,7 @@ const monitoringError = (
   })
 }
 
-const monitoringExecution = async (
+const monitoringExecution = (
   log: LeveledDebugger,
   monitoringContext: MonitoringContext,
   groupContext: MonitoringGroupContext,
@@ -124,7 +124,7 @@ const monitoringExecution = async (
   }
 }
 
-const monitoringDuration = async (
+const monitoringDuration = (
   log: LeveledDebugger,
   monitoringContext: MonitoringContext,
   groupContext: MonitoringGroupContext,
@@ -148,7 +148,7 @@ const monitoringDuration = async (
   })
 }
 
-const monitoringTime = async (
+const monitoringTime = (
   log: LeveledDebugger,
   monitoringContext: MonitoringContext,
   groupContext: MonitoringGroupContext,
@@ -169,7 +169,7 @@ const monitoringTime = async (
   }
 }
 
-const monitoringTimeEnd = async (
+const monitoringTimeEnd = (
   log: LeveledDebugger,
   monitoringContext: MonitoringContext,
   groupContext: MonitoringGroupContext,
@@ -211,7 +211,7 @@ const createGroupDimensions = (config: Record<string, string>) =>
     [] as MonitoringDimension[]
   )
 
-const monitoringRate = async (
+const monitoringRate = (
   log: LeveledDebugger,
   monitoringContext: MonitoringContext,
   groupContext: MonitoringGroupContext,
@@ -239,7 +239,14 @@ const getMetrics = (
   log: LeveledDebugger,
   monitoringContext: MonitoringContext
 ): { metrics: MonitoringMetric[] } => ({
-  metrics: monitoringContext.metrics,
+  metrics: monitoringContext.metrics.map((metric) => ({
+    ...metric,
+    dimensions: metric.dimensions.map((dimension) => ({
+      ...dimension,
+    })),
+    values: metric.values.concat(),
+    counts: metric.counts.concat(),
+  })),
 })
 
 const clearMetrics = (

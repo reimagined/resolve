@@ -169,6 +169,30 @@ describe('common', () => {
       },
     ])
   })
+
+  test('mutation on got data does not lead to mutation in stored metrics', () => {
+    const monitoring = createMonitoring()
+    monitoring.duration('test-label', 500)
+    const data = monitoring.getMetrics()
+
+    data.metrics[0].metricName = 'some'
+    data.metrics[0].unit = 'changes'
+    data.metrics[0].dimensions[0].name = 'made'
+    data.metrics[0].dimensions[0].value = 'outside'
+    data.metrics[0].values[0] = 1234
+    data.metrics[0].counts[0] = 4321
+
+    expect(monitoring.getMetrics().metrics).toEqual([
+      {
+        metricName: 'Duration',
+        unit: 'Milliseconds',
+        timestamp: null,
+        dimensions: [{ name: 'Label', value: 'test-label' }],
+        values: [500],
+        counts: [1],
+      },
+    ])
+  })
 })
 
 describe('error', () => {
