@@ -84,6 +84,7 @@ const makeTestRuntime = (
     ensureEventSubscriber: jest.fn().mockResolvedValue(null),
     removeEventSubscriber: jest.fn().mockResolvedValue(null),
     getEventSubscribers: jest.fn().mockResolvedValue([]),
+    describe: jest.fn(),
   }
 
   const monitoring: Monitoring = {

@@ -136,7 +136,6 @@ export type {
   ReplicationState,
   OldEvent,
   OldSecretRecord,
-  EventStoreDescription,
   UnbrandProps,
   CursorFilter,
   TimestampFilter,
@@ -152,7 +151,11 @@ export type {
   EventLoader,
 } from './types'
 
-export type { StoredEvent, EventThreadData } from '@resolve-js/core'
+export type {
+  StoredEvent,
+  EventThreadData,
+  EventStoreDescription,
+} from '@resolve-js/core'
 
 export {
   makeSetSecretEvent,
