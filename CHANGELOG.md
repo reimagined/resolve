@@ -17,6 +17,10 @@
 - Remove RDS data api eventstore and readmodel adapters [\#2078](https://github.com/reimagined/resolve/pull/2078)
 - Refactored runtime libraries [\#2060](https://github.com/reimagined/resolve/pull/2060)
 
+**Bug fixes:**
+
+- Testing tools - When passing events with timestamps to givenEvents\(\), these events are sometimes lost [\#2075](https://github.com/reimagined/resolve/issues/2075)
+
 **Other changes:**
 
 - Fix subscriber notification [\#2062](https://github.com/reimagined/resolve/pull/2062)
