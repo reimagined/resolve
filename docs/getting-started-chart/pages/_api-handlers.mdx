@@ -1,3 +1,44 @@
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
 **API Handler**
 
 Use API Handlers to provide your reSolve server with the capability to handle arbitrary HTTP requests.
+
+An API handler is defined as follows:
+
+<Tabs>
+<TabItem value="handler" label="API Handler" default>
+
+```js
+// common/api-handlers/my-api-handler.js
+
+export default async (req, res) => {
+  const { username } = JSON.parse(req.body)
+
+  res.json({
+    id: uuid(),
+    username,
+  })
+}
+```
+
+</TabItem>
+<TabItem value="config" label="App Config">
+
+```js
+const appConfig = {
+  ...
+  apiHandlers: [
+    {
+      path: 'my-api-handler',
+      handler: 'common/api-handlers/my-api-handler.js',
+      method: 'GET'
+    }
+  ]
+}
+export default appConfig
+```
+
+</TabItem>
+</Tabs>

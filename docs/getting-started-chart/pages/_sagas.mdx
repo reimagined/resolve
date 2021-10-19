@@ -1,0 +1,61 @@
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+**Saga**
+
+A saga describes a long running process as a sequence of events. You can define a saga as a set of event handler functions. Each function runs in response to a specific event and can do the following:
+
+- Send a command to an aggregate
+- Schedule a command at the specified moment in time
+- Store intermediate data in a persistent storage
+- Trigger a side effect
+
+This functionality allows you to organize branched chains of events and side effects to describe processes of any complexity. A saga is defined as follows.
+
+<Tabs>
+<TabItem value="saga" label="Saga" default>
+
+```js
+// common/sagas/my-saga.js
+export default {
+  handlers: {
+    Init: async ({ store }) => {
+      // Initialization logic
+    },
+    EVENT_NAME: async ({ store, sideEffects }, event) => {
+      // Event handler logic
+      // await sideEffects.executeCommand( ... )
+      // await sideEffects.scheduleComman( ... )
+      // await customSideEffect.scheduleComman( ... )
+    },
+    ...
+  }
+  sideEffects: {
+    customSideEffect: async (args...) => {
+      // Side effect logic
+    },
+    ...
+  }
+}
+```
+
+</TabItem>
+<TabItem value="config" label="App Config">
+
+```js
+// config.app.js
+const appConfig = {
+  sagas: [
+    {
+      name: 'UserConfirmation',
+      source: 'common/sagas/user-confirmation.saga.js',
+      connectorName: 'default',
+    },
+  ]
+  ...
+}
+export default appConfig
+```
+
+</TabItem>
+</Tabs>
