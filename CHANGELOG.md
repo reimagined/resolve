@@ -23,6 +23,7 @@
 
 **Other changes:**
 
+- Remove postgres-serverless adapters mentions from documentation [\#2083](https://github.com/reimagined/resolve/pull/2083)
 - Fix subscriber notification [\#2062](https://github.com/reimagined/resolve/pull/2062)
 - Migrate from "incremental import" to "import" [\#2061](https://github.com/reimagined/resolve/pull/2061)
 - Review strings in templates and examples [\#2059](https://github.com/reimagined/resolve/pull/2059)

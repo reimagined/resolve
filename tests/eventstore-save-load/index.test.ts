@@ -174,6 +174,16 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
     await testEventLoading(checkCount / 2, [eventTypes[0], eventTypes[2]])
   })
 
+  test('preferring regular event loader should return non-native one', async () => {
+    const eventLoader = await adapter.getEventLoader(
+      { cursor: null },
+      { preferRegular: true }
+    )
+    const isNative = eventLoader.isNative
+    await eventLoader.close()
+    expect(isNative).toBe(false)
+  })
+
   test('same cursors are not continuous', async () => {
     expect(
       checkEventsContinuity(

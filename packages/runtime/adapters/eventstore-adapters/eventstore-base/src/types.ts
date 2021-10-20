@@ -513,6 +513,10 @@ export interface EventLoader {
   readonly isNative: boolean
 }
 
+export type EventLoaderOptions = {
+  preferRegular: boolean // prefer regular implementation via loadEvents over native one
+}
+
 export interface Adapter extends CoreEventstore {
   importEvents: (options?: Partial<ImportOptions>) => ImportEventsStream
   exportEvents: (options?: Partial<ExportOptions>) => ExportEventsStream
@@ -548,5 +552,8 @@ export interface Adapter extends CoreEventstore {
 
   establishTimeLimit: (getVacantTimeInMillis: () => number) => void
 
-  getEventLoader: (filter: EventLoaderFilter) => Promise<EventLoader>
+  getEventLoader: (
+    filter: EventLoaderFilter,
+    options?: EventLoaderOptions
+  ) => Promise<EventLoader>
 }

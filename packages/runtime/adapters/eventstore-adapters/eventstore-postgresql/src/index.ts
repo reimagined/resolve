@@ -120,4 +120,5 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
 
 export default createPostgresqlAdapter
 export type { PostgresqlAdapterConfig }
+export type { PostgresResourceConfig } from './types'
 export { createResource as create, destroyResource as destroy }

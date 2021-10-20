@@ -238,10 +238,11 @@ const createAdapter = <
             return
           }
         : establishTimeLimit.bind(null, adapterPool),
-    getEventLoader: async (filter) => {
+    getEventLoader: async (filter, options) => {
       return getEventLoader(
         adapterPool as AdapterPoolConnected<ConnectedProps>,
-        filter
+        filter,
+        options
       )
     },
   }
