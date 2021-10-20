@@ -7,17 +7,14 @@ const configCloud = {
   },
   staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
   eventstoreAdapter: {
-    module: '@resolve-js/eventstore-postgresql-serverless',
+    module: '@resolve-js/eventstore-postgresql',
     options: {
-      awsSecretStoreArn: declareRuntimeEnv('RESOLVE_USER_SECRET_ARN'),
-      dbClusterOrInstanceArn: declareRuntimeEnv(
-        'RESOLVE_EVENT_STORE_CLUSTER_ARN'
-      ),
       databaseName: declareRuntimeEnv('RESOLVE_EVENT_STORE_DATABASE_NAME'),
-      eventsTableName: 'events',
-      secretsTableName: 'secrets',
-      region: declareRuntimeEnv('AWS_REGION'),
-      snapshotBucketSize: 100,
+      host: declareRuntimeEnv('RESOLVE_EVENT_STORE_CLUSTER_HOST'),
+      port: declareRuntimeEnv('RESOLVE_EVENT_STORE_CLUSTER_PORT'),
+      user: declareRuntimeEnv('RESOLVE_USER_ID'),
+      password: declareRuntimeEnv('RESOLVE_USER_PASSWORD'),
+      database: 'postgres',
     },
   },
 }

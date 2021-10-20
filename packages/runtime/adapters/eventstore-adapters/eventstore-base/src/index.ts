@@ -33,6 +33,7 @@ import type {
   Adapter,
   AdapterConfig,
 } from './types'
+import { AdapterPoolPossiblyUnconnected } from './types'
 
 export {
   validate,
@@ -70,7 +71,12 @@ const wrappedCreateAdapter = <
     Config
   >,
   connectionDependencies: ConnectionDependencies,
-  options: Config
+  options: Config,
+  prepare?: (
+    props: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+    config: Config,
+    dependencies: ConnectionDependencies
+  ) => void
 ): Adapter => {
   const commonFunctions: CommonAdapterFunctions<ConnectedProps> = {
     maybeThrowResourceError,
@@ -92,7 +98,8 @@ const wrappedCreateAdapter = <
     commonFunctions,
     adapterFunctions,
     connectionDependencies,
-    options
+    options,
+    prepare
   )
 }
 
@@ -129,7 +136,6 @@ export type {
   ReplicationState,
   OldEvent,
   OldSecretRecord,
-  EventStoreDescription,
   UnbrandProps,
   CursorFilter,
   TimestampFilter,
@@ -145,7 +151,11 @@ export type {
   EventLoader,
 } from './types'
 
-export type { StoredEvent, EventThreadData } from '@resolve-js/core'
+export type {
+  StoredEvent,
+  EventThreadData,
+  EventStoreDescription,
+} from '@resolve-js/core'
 
 export {
   makeSetSecretEvent,

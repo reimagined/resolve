@@ -39,7 +39,9 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
         timestamp: 100,
-        payload: 'test',
+        payload: {
+          content: 'test',
+        },
       },
     ])
       .readModel({
@@ -59,13 +61,17 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
         timestamp: 100,
-        payload: 'test',
+        payload: {
+          content: 'test',
+        },
       },
       {
         aggregateId: 'ID',
         type: 'UPDATE_TEST',
         timestamp: 101,
-        payload: 'test',
+        payload: {
+          content: 'test',
+        },
       },
     ])
       .readModel({
@@ -85,13 +91,17 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
         timestamp: 100,
-        payload: 'test',
+        payload: {
+          content: 'test',
+        },
       },
       {
         aggregateId: 'ID',
         type: 'UPSERT_TEST',
         timestamp: 101,
-        payload: 'test',
+        payload: {
+          content: 'test',
+        },
       },
     ])
       .readModel({
@@ -111,13 +121,17 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
         timestamp: 100,
-        payload: 'test',
+        payload: {
+          content: 'test',
+        },
       },
       {
         aggregateId: 'ID',
         type: 'DELETE_TEST',
         timestamp: 101,
-        payload: 'test',
+        payload: {
+          content: 'test',
+        },
       },
     ])
       .readModel({
@@ -137,13 +151,17 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INSERT_TEST',
         timestamp: 100,
-        payload: 'test',
+        payload: {
+          content: 'test',
+        },
       },
       {
         aggregateId: 'ID',
         type: 'UPDATE_TEST',
         timestamp: 101,
-        payload: 'test',
+        payload: {
+          content: 'test',
+        },
       },
     ])
       .readModel({

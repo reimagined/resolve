@@ -92,17 +92,6 @@ export function getInitialReplicationState(): ReplicationState {
   }
 }
 
-export type EventStoreDescription = {
-  eventCount: number
-  secretCount: number
-  setSecretCount: number
-  deletedSecretCount: number
-  isFrozen: boolean
-  lastEventTimestamp: number
-  cursor?: Cursor
-  resourceNames?: { [key: string]: string }
-}
-
 export type CheckForResourceError = (errors: Error[]) => void
 
 type DeleteSecret = SecretsManager['deleteSecret']
@@ -557,7 +546,6 @@ export interface Adapter extends CoreEventstore {
     untilEventTypes: Array<InputEvent['type']>
   ) => Promise<string>
 
-  describe: () => Promise<EventStoreDescription>
   establishTimeLimit: (getVacantTimeInMillis: () => number) => void
 
   getEventLoader: (filter: EventLoaderFilter) => Promise<EventLoader>
