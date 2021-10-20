@@ -169,12 +169,12 @@ export type Eventstore = {
     existingSecrets: OldSecretRecord[],
     deletedSecrets: Array<OldSecretRecord['id']>
   ) => Promise<void>
-  setReplicationIterator: (iterator: SerializableMap) => Promise<void>
-  setReplicationStatus: (
-    status: ReplicationStatus,
-    info?: ReplicationState['statusData'],
+  setReplicationStatus: (state: {
+    status: ReplicationStatus
+    statusData?: ReplicationState['statusData']
     lastEvent?: OldEvent
-  ) => Promise<void>
+    iterator?: ReplicationState['iterator']
+  }) => Promise<void>
   setReplicationPaused: (pause: boolean) => Promise<void>
   getReplicationState: () => Promise<ReplicationState>
   resetReplication: () => Promise<void>
