@@ -74,18 +74,14 @@ export default {
   },
   readModelsConnectors: {
     HackerNews: {
-      module: '@resolve-js/readmodel-postgresql-serverless',
+      module: '@resolve-js/readmodel-postgresql',
       options: {
-        dbClusterOrInstanceArn: declareRuntimeEnv(
-          'RESOLVE_READMODEL_POSTGRESQL_CLUSTER_ARN'
-        ),
-        awsSecretStoreArn: declareRuntimeEnv(
-          'RESOLVE_READMODEL_POSTGRESQL_SECRET_ARN'
-        ),
-        databaseName: declareRuntimeEnv(
-          'RESOLVE_READMODEL_POSTGRESQL_DATABASE_NAME'
-        ),
-        region: declareRuntimeEnv('AWS_REGION'),
+        databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
+        host: declareRuntimeEnv('RESOLVE_READMODEL_CLUSTER_HOST'),
+        port: declareRuntimeEnv('RESOLVE_READMODEL_CLUSTER_PORT'),
+        user: declareRuntimeEnv('RESOLVE_USER_ID'),
+        password: declareRuntimeEnv('RESOLVE_USER_PASSWORD'),
+        database: 'postgres',
       },
     },
   },
