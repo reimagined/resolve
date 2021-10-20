@@ -5,7 +5,6 @@ import { mocked } from 'ts-jest/utils'
 import { request, RequestOptions, VALIDATED_RESULT } from '../../src/request'
 import { Context } from '../../src/context'
 import determineOrigin from '../../src/determine-origin'
-import { GenericError, HttpError } from '../../src/errors'
 import {
   requestWithMiddleware,
   ClientMiddlewareOptions,

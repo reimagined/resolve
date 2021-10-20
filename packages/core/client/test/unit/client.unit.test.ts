@@ -1,10 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { isEqual } from 'lodash'
 import { mocked } from 'ts-jest/utils'
 /* eslint-enable import/no-extraneous-dependencies */
 import { Client, getClient } from '../../src/client'
 import { Context } from '../../src/context'
-import { NarrowedResponse, request, VALIDATED_RESULT } from '../../src/request'
+import { NarrowedResponse, request } from '../../src/request'
 import { ViewModel, ViewModelDeserializer } from '../../src/types'
 import { IS_BUILT_IN } from '@resolve-js/core'
 
