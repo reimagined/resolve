@@ -17,10 +17,6 @@ export type NarrowedResponse = {
   text: () => Promise<string>
   [VALIDATED_RESULT]?: any
 }
-type ResponseValidator = (
-  response: NarrowedResponse,
-  confirm: (result: any) => void
-) => Promise<void>
 export type FetchFunction = (
   input: RequestInfo,
   init?: RequestInit
@@ -40,16 +36,6 @@ const determineFetch = (context: Context): FetchFunction => {
 
 export type RequestOptions = {
   method?: 'GET' | 'POST'
-  retryOnError?: {
-    errors: number[] | number
-    attempts: number
-    period: number
-  }
-  waitForResponse?: {
-    validator: ResponseValidator
-    attempts: number
-    period: number
-  }
   debug?: boolean
   middleware?: ClientMiddlewareOptions
   queryStringOptions?: StringifyOptions

@@ -55,7 +55,6 @@ export type ReadModelQuery = {
   resolverName: string
   resolverArgs: Serializable
   jwt?: string
-  jwtToken?: string
 }
 
 export type ReadModelQueryResult = Serializable

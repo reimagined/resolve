@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash'
 import { nanoid } from 'nanoid'
-import { Client } from '@resolve-js/client'
+import { Client, createWaitForResponseMiddleware } from '@resolve-js/client'
 import { getClient } from '../../utils/utils'
 
 let client: Client
@@ -31,13 +31,17 @@ const waitForUserProfile = async (userId: string, data: object) => {
         },
       },
       {
-        waitFor: {
-          validator: (result: any) => {
-            lastResult = result
-            return isEqual(result.data, data)
-          },
-          attempts: 5,
-          period: 3000,
+        middleware: {
+          response: createWaitForResponseMiddleware({
+            validator: async (response, confirm) => {
+              const result = await response.json()
+              if (isEqual(result.data, data)) {
+                confirm(result)
+              }
+            },
+            attempts: 5,
+            period: 3000,
+          }),
         },
       }
     )
