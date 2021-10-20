@@ -47,6 +47,11 @@ const appConfig = {
       path: '/:markup*',
       method: 'GET',
     },
+    {
+      handler: 'prometheusHandler.js',        
+      path: '/metrics',
+      method: 'GET',
+    },
   ],
   clientEntries: [
     [
