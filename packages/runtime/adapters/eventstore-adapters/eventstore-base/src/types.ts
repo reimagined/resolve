@@ -476,10 +476,6 @@ export interface AdapterFunctions<
     ConnectedProps,
     Adapter['setReplicationStatus']
   >
-  setReplicationIterator?: PoolMethod<
-    ConnectedProps,
-    Adapter['setReplicationIterator']
-  >
   setReplicationPaused?: PoolMethod<
     ConnectedProps,
     Adapter['setReplicationPaused']

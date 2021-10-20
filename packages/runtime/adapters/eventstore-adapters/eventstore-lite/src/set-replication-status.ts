@@ -8,9 +8,17 @@ import initReplicationStateTable from './init-replication-state-table'
 
 const setReplicationStatus = async (
   pool: AdapterPool,
-  status: ReplicationStatus,
-  statusData?: ReplicationState['statusData'],
-  lastEvent?: OldEvent
+  {
+    status,
+    statusData,
+    lastEvent,
+    iterator,
+  }: {
+    status: ReplicationStatus
+    statusData?: ReplicationState['statusData']
+    lastEvent?: OldEvent
+    iterator?: ReplicationState['iterator']
+  }
 ): Promise<void> => {
   const { executeQuery, escapeId, escape } = pool
 
@@ -19,15 +27,22 @@ const setReplicationStatus = async (
   await executeQuery(
     `UPDATE ${escapeId(replicationStateTableName)} 
     SET
-    "Status" = ${escape(status)},
-    "StatusData" = ${
-      statusData != null ? escape(JSON.stringify(statusData)) : 'NULL'
-    }
-    ${
-      lastEvent != null
-        ? `, "SuccessEvent" = ${escape(JSON.stringify(lastEvent))}`
-        : ``
-    }`
+      "Status" = ${escape(status)},
+      "StatusData" = ${
+        statusData != null ? escape(JSON.stringify(statusData)) : 'NULL'
+      }
+      ${
+        lastEvent != null
+          ? `, "SuccessEvent" = ${escape(JSON.stringify(lastEvent))}`
+          : ``
+      }
+      ${
+        iterator !== undefined
+          ? `, "Iterator" = ${
+              iterator != null ? escape(JSON.stringify(iterator)) : 'NULL'
+            }`
+          : ``
+      }`
   )
 }
 
