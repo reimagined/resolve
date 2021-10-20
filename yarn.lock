@@ -2937,25 +2937,6 @@
   resolved "https://registry.yarnpkg.com/@redux-saga/types/-/types-1.1.0.tgz#0e81ce56b4883b4b2a3001ebe1ab298b84237204"
   integrity sha512-afmTuJrylUU/0OtqzaRkbyYFFNgCF73Bvel/sw90pvGrWIZ+vyoIJqA6eMSoA6+nb443kTmulmBtC9NerXboNg==
 
-"@resolve-js/eventstore-postgresql-serverless@0.32.0":
-  version "0.32.0"
-  resolved "https://registry.yarnpkg.com/@resolve-js/eventstore-postgresql-serverless/-/eventstore-postgresql-serverless-0.32.0.tgz#e26ca57631e2c439464243b015df7dfb78368d70"
-  integrity sha512-rOpg+tfQgQg2DV+UBV3pGqbofmBKB+m5oYHV/s9IQKqljLeaLqhXWWPxDJBrjW8oNamk70sFAg8m51d+7exrWg==
-  dependencies:
-    "@babel/runtime" "7.14.0"
-    "@resolve-js/debug-levels" "0.32.0"
-    "@resolve-js/eventstore-base" "0.32.0"
-    crc-32 "^1.2.0"
-
-"@resolve-js/readmodel-postgresql-serverless@0.32.0":
-  version "0.32.0"
-  resolved "https://registry.yarnpkg.com/@resolve-js/readmodel-postgresql-serverless/-/readmodel-postgresql-serverless-0.32.0.tgz#4e534eed880e114c2245e471fbe35863eeff426a"
-  integrity sha512-HscQpwX9GkAD4ER6PR/yrQ0pP0gd12KbeQKRSqNEsJhI+kNCwqKKnxAQv/OuKSFlhXSuV7yJUrfbKSGiHSnAzA==
-  dependencies:
-    "@babel/runtime" "7.9.6"
-    "@resolve-js/debug-levels" "0.32.0"
-    "@resolve-js/readmodel-base" "0.32.0"
-
 "@restart/context@^2.1.4":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@restart/context/-/context-2.1.4.tgz#a99d87c299a34c28bd85bb489cb07bfd23149c02"

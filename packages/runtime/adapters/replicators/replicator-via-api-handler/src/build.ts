@@ -77,17 +77,23 @@ const build: ExternalMethods['build'] = async (
     return
   }
 
-  log.debug('Starting or continuing replication process')
-
   let iterator = state.iterator
   let localContinue = true
   const sleepAfterServiceErrorMs = 3000
 
   let eventLoader: EventLoader
   try {
-    eventLoader = await eventstoreAdapter.getEventLoader({
-      cursor: iterator == null ? null : (iterator.cursor as ReadModelCursor),
-    })
+    eventLoader = await eventstoreAdapter.getEventLoader(
+      {
+        cursor: iterator == null ? null : (iterator.cursor as ReadModelCursor),
+      },
+      { preferRegular: basePool.preferRegularLoader }
+    )
+    log.debug(
+      eventLoader.isNative
+        ? 'Using native event loader'
+        : 'Using regular event loader'
+    )
   } catch (error) {
     if (RequestTimeoutError.is(error) || ServiceBusyError.is(error)) {
       log.debug(

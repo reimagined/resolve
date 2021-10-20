@@ -4,13 +4,18 @@ import type {
   AdapterPoolConnected,
   StoredEventBatchPointer,
   EventLoader,
+  EventLoaderOptions,
 } from './types'
 
 const getEventLoader = async <ConnectedProps extends AdapterPoolConnectedProps>(
   pool: AdapterPoolConnected<ConnectedProps>,
-  filter: EventLoaderFilter
+  filter: EventLoaderFilter,
+  options?: EventLoaderOptions
 ): Promise<EventLoader> => {
-  if (pool.getEventLoaderNative !== undefined) {
+  if (
+    pool.getEventLoaderNative !== undefined &&
+    (options === undefined || !options.preferRegular)
+  ) {
     return await pool.getEventLoaderNative(filter)
   }
 
