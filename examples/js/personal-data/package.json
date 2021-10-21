@@ -21,6 +21,7 @@
     "@resolve-js/eventstore-postgresql": "0.32.0",
     "@resolve-js/module-auth": "0.32.0",
     "@resolve-js/module-uploader": "0.32.0",
+    "@resolve-js/client": "0.32.0",
     "@resolve-js/react-hooks": "0.32.0",
     "@resolve-js/readmodel-base": "0.32.0",
     "@resolve-js/readmodel-lite": "0.32.0",
