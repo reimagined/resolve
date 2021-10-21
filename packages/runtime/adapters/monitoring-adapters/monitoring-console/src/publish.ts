@@ -1,8 +1,14 @@
-import type { MonitoringDimension } from '@resolve-js/monitoring-base'
+import type {
+  MonitoringDimension,
+  MonitoringMetric,
+} from '@resolve-js/monitoring-base'
 import { LeveledDebugger } from '@resolve-js/debug-levels'
 import columnify from 'columnify'
 
-import type { MonitoringContext } from './types'
+import type { MonitoringContext, MetricsGroup, MetricSummary } from './types'
+
+// eslint-disable-next-line no-console
+const printLogs = (output: string) => console.log(output)
 
 const getLabelByDimensions = (
   dimensions: MonitoringDimension[],
@@ -23,20 +29,51 @@ const getLabelByDimensions = (
   return dimensions.map(({ name, value }) => `${name}="${value}"`).join(', ')
 }
 
+const createInitialSummary = (): MetricSummary => ({
+  sum: 0,
+  count: 0,
+  min: Infinity,
+  max: -Infinity,
+})
+
+const addValuesToMetricSummary = (
+  summary: MetricSummary,
+  { values, counts }: { values: number[]; counts: number[] }
+) => {
+  for (let i = 0; i < values.length; i++) {
+    summary.sum += values[i] * counts[i]
+    summary.count += counts[i]
+    summary.min = Math.min(summary.min, values[i])
+    summary.max = Math.max(summary.max, values[i])
+  }
+}
+
 export const monitoringPublish = async (
   log: LeveledDebugger,
-  context: MonitoringContext
+  context: MonitoringContext,
+  { source = 'resolveDispose' } = {}
 ) => {
+  if (source !== 'processExit') {
+    log.verbose(`Monitoring is not published for ${source} source`)
+    return
+  }
+
   const { metrics } = context.baseMonitoring.getMetrics()
 
-  // TODO: any
-  const executionMetrics: any = {}
-  const durationMetrics: any = {}
-  const readModelsFeedingRate: any = {}
-  const otherMetrics: any = []
+  const executionMetrics: { [key: string]: number } = {}
+
+  const durationMetrics: {
+    [key: string]: MetricSummary
+  } = {}
+
+  const readModelsFeedingRate: {
+    [key: string]: MetricSummary
+  } = {}
+
+  const otherMetrics: MonitoringMetric[] = []
 
   for (const metric of metrics) {
-    const { dimensions, values, counts, unit, metricName } = metric
+    const { dimensions, values, counts, metricName } = metric
 
     if (metricName === 'Executions' && dimensions[0]?.name === 'Part') {
       const part = dimensions[0].value
@@ -45,89 +82,37 @@ export const monitoringPublish = async (
         executionMetrics[part] = 0
       }
 
-      for (let i = 0; i < counts.length; i++) {
-        executionMetrics[part] += counts[i]
+      for (let i = 0; i < values.length; i++) {
+        executionMetrics[part] += values[i] * counts[i]
       }
     } else if (metricName === 'Duration' && dimensions[0]?.name === 'Part') {
       const part = dimensions[0].value
 
       if (durationMetrics[part] == null) {
-        durationMetrics[part] = {
-          sum: 0,
-          count: 0,
-          min: Infinity,
-          max: -Infinity,
-        }
+        durationMetrics[part] = createInitialSummary()
       }
 
-      for (let i = 0; i < values.length; i++) {
-        durationMetrics[part].sum += values[i] * counts[i]
-        durationMetrics[part].count += counts[i]
-        durationMetrics[part].min = Math.min(
-          durationMetrics[part].min,
-          values[i]
-        )
-        durationMetrics[part].max = Math.max(
-          durationMetrics[part].max,
-          values[i]
-        )
-      }
+      addValuesToMetricSummary(durationMetrics[part], metric)
     } else if (metricName === 'ReadModelFeedingRate') {
       let data = readModelsFeedingRate[dimensions[1].value]
 
       if (data == null) {
-        data = {
-          sum: 0,
-          count: 0,
-          min: Infinity,
-          max: -Infinity,
-        }
-
+        data = createInitialSummary()
         readModelsFeedingRate[dimensions[1].value] = data
       }
 
-      for (let i = 0; i < values.length; i++) {
-        data.sum += values[i] * counts[i]
-        data.count += counts[i]
-        data.min = Math.min(data.min, values[i])
-        data.max = Math.max(data.max, values[i])
-      }
+      addValuesToMetricSummary(
+        readModelsFeedingRate[dimensions[1].value],
+        metric
+      )
     } else {
       otherMetrics.push(metric)
     }
   }
 
-  // const executionsRows = Object.keys(executionMetrics).map((part) => ({
-  //   name: `${part} executions`,
-  //   count: executionMetrics[part],
-  // }))
-  //
-  // const durationRows = Object.keys(durationMetrics).map((part) => ({
-  //   name: `${part} duration`,
-  //   average: parseFloat((
-  //     durationMetrics[part].sum / durationMetrics[part].count
-  //   ).toFixed(2)),
-  //   min: durationMetrics[part].min,
-  //   max: durationMetrics[part].max,
-  //   count: durationMetrics[part].count,
-  // }))
+  printLogs('\n=== PUBLISH METRICS ===')
 
-  // const readModelsFeedingRateRows = Object.keys(readModelsFeedingRate).map(
-  //   (readModel) => ({
-  //     name: `"${readModel}" read model`,
-  //     average: roundFloat(
-  //       readModelsFeedingRate[readModel].sum /
-  //       readModelsFeedingRate[readModel].count
-  //     ),
-  //     min: roundFloat(readModelsFeedingRate[readModel].min),
-  //     max: roundFloat(readModelsFeedingRate[readModel].max),
-  //     count: roundFloat(readModelsFeedingRate[readModel].count),
-  //   })
-  // )
-
-  log.verbose('\n=== PUBLISH METRICS ===')
-
-  const splittedMetrics = metrics.reduce(
+  const groupedMetrics = metrics.reduce(
     (acc, { metricName, unit, dimensions, values, counts }) => {
       let name = metricName
 
@@ -147,9 +132,8 @@ export const monitoringPublish = async (
         acc.push(item)
       }
 
-      const label = getLabelByDimensions(dimensions, metricName)
-      // TODO: any
-      let itemMetric = item.metrics.find((i: any) => i.label === label)
+      const label = getLabelByDimensions(dimensions, name)
+      let itemMetric = item.metrics.find((i) => i.label === label)
 
       if (itemMetric == null) {
         item.metrics.push({
@@ -164,13 +148,11 @@ export const monitoringPublish = async (
 
       return acc
     },
-    // TODO: any
-    [] as any[]
+    [] as MetricsGroup[]
   )
 
-  splittedMetrics.forEach((item) => {
-    // TODO: any
-    const metricRows = item.metrics.map(({ label, values, counts }: any) => {
+  groupedMetrics.forEach((item) => {
+    const metricRows = item.metrics.map(({ label, values, counts }) => {
       let sum = 0
       let count = 0
       let min = Infinity
@@ -199,28 +181,17 @@ export const monitoringPublish = async (
       }
     })
 
-    log.verbose(`- ${item.metricName} (${item.unit}) -`)
-    log.verbose(columnify(metricRows))
+    printLogs(`\n- ${item.metricName} (${item.unit}) -\n`)
+
+    printLogs(
+      columnify(metricRows, {
+        columnSplitter: ' | ',
+      })
+    )
+
+    if (otherMetrics.length > 0) {
+      printLogs(`\n- Other metrics -\n`)
+      printLogs(JSON.stringify(otherMetrics, null, 2))
+    }
   })
-
-  // if (executionsRows.length > 0) {
-  //   console.log('- Executions -')
-  //   console.table(executionsRows)
-  // }
-  //
-  // if (durationRows.length > 0) {
-  //   console.log('- Duration -')
-  //   console.table(durationRows)
-  // }
-  //
-  // if (readModelsFeedingRateRows.length > 0) {
-  //   console.log('- Read models feeding rate -')
-  //   console.table(readModelsFeedingRateRows)
-  // }
-  //
-  // if (otherMetrics.length > 0) {
-  //   console.log(JSON.stringify(otherMetrics, null, 2))
-  // }
-
-  // baseMonitoring.clearMetrics()
 }
