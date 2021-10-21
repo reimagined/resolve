@@ -40,6 +40,11 @@ const devCommonConfig = {
       },
     },
   },
+  monitoringAdapters: [
+    {
+      module: 'monitoring.js',
+    },
+  ],
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,
