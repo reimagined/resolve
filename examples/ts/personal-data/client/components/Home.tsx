@@ -1,9 +1,9 @@
 import * as React from 'react'
+import { createWaitForResponseMiddleware } from '@resolve-js/client'
 import { useQuery } from '@resolve-js/react-hooks'
 import { useEffect, useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import { Location } from 'history'
-import { createWaitForResponseMiddleware } from '@resolve-js/client'
 
 import Login from './Login'
 import Loading from './Loading'
