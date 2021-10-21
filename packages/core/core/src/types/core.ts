@@ -55,7 +55,6 @@ export type ReadModelQuery = {
   resolverName: string
   resolverArgs: Serializable
   jwt?: string
-  jwtToken?: string
 }
 
 export type ReadModelQueryResult = Serializable
@@ -74,7 +73,6 @@ export type Command = {
   aggregateName: string
   payload?: any
   jwt?: string
-  jwtToken?: string // deprecated
 }
 
 export type CommandResult = {

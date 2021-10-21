@@ -96,24 +96,6 @@ describe('aggregate', () => {
       expect(e.message).toEqual(expect.stringContaining(`cannot be assigned`))
     }
   })
-
-  test('(deprecated) complete test: user assertion mode with secrets manager', async () => {
-    await givenEvents()
-      .aggregate(aggregate)
-      .command('test')
-      .setSecretsManager(secretsManager)
-  })
-
-  test('(deprecated) init error: setting secrets manager after test execution', async () => {
-    const test = givenEvents().aggregate(aggregate).command('test')
-    await test
-    expect.assertions(1)
-    try {
-      test.setSecretsManager(secretsManager)
-    } catch (e) {
-      expect(e.message).toEqual(expect.stringContaining(`cannot be assigned`))
-    }
-  })
 })
 
 describe('read model', () => {
@@ -127,49 +109,12 @@ describe('read model', () => {
     },
   }
 
-  const makeEncryptionFactory = (): EventHandlerEncryptionFactory => async () => ({
-    decrypt: jest.fn(),
-    encrypt: jest.fn(),
-  })
-
   test('incomplete test: should provide a query', async () => {
     expect.assertions(1)
     try {
       await givenEvents().readModel(readModel)
     } catch (e) {
       expect(e.message).toEqual(expect.stringContaining('provide a query'))
-    }
-  })
-
-  test('(deprecated) support direct resolver binding (should not throw)', async () => {
-    await givenEvents().readModel(readModel).profile()
-  })
-
-  test('(deprecated) adapter set within read model', async () => {
-    expect.assertions(1)
-    try {
-      await givenEvents()
-        .readModel({
-          ...readModel,
-          adapter: 'adapter',
-        })
-        .withAdapter('another-adapter')
-    } catch (e) {
-      expect(e.message).toEqual(expect.stringContaining('already assigned'))
-    }
-  })
-
-  test('(deprecated) encryption set within read model', async () => {
-    expect.assertions(1)
-    try {
-      await givenEvents()
-        .readModel({
-          ...readModel,
-          encryption: makeEncryptionFactory(),
-        })
-        .withEncryption(makeEncryptionFactory())
-    } catch (e) {
-      expect(e.message).toEqual(expect.stringContaining('already assigned'))
     }
   })
 
