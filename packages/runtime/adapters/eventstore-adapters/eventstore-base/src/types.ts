@@ -476,10 +476,6 @@ export interface AdapterFunctions<
     ConnectedProps,
     Adapter['setReplicationStatus']
   >
-  setReplicationIterator?: PoolMethod<
-    ConnectedProps,
-    Adapter['setReplicationIterator']
-  >
   setReplicationPaused?: PoolMethod<
     ConnectedProps,
     Adapter['setReplicationPaused']
@@ -511,6 +507,10 @@ export interface EventLoader {
   readonly close: () => Promise<void>
   readonly cursor: InputCursor
   readonly isNative: boolean
+}
+
+export type EventLoaderOptions = {
+  preferRegular: boolean // prefer regular implementation via loadEvents over native one
 }
 
 export interface Adapter extends CoreEventstore {
@@ -548,5 +548,8 @@ export interface Adapter extends CoreEventstore {
 
   establishTimeLimit: (getVacantTimeInMillis: () => number) => void
 
-  getEventLoader: (filter: EventLoaderFilter) => Promise<EventLoader>
+  getEventLoader: (
+    filter: EventLoaderFilter,
+    options?: EventLoaderOptions
+  ) => Promise<EventLoader>
 }

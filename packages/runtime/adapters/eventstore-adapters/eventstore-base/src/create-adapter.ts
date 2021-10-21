@@ -87,7 +87,6 @@ const createAdapter = <
     injectSecret,
     replicateEvents,
     replicateSecrets,
-    setReplicationIterator,
     setReplicationPaused,
     setReplicationStatus,
     getReplicationState,
@@ -224,7 +223,6 @@ const createAdapter = <
 
     replicateEvents: wrapMethod(adapterPool, replicateEvents),
     replicateSecrets: wrapMethod(adapterPool, replicateSecrets),
-    setReplicationIterator: wrapMethod(adapterPool, setReplicationIterator),
     setReplicationPaused: wrapMethod(adapterPool, setReplicationPaused),
     setReplicationStatus: wrapMethod(adapterPool, setReplicationStatus),
     getReplicationState: wrapMethod(adapterPool, getReplicationState),
@@ -238,10 +236,11 @@ const createAdapter = <
             return
           }
         : establishTimeLimit.bind(null, adapterPool),
-    getEventLoader: async (filter) => {
+    getEventLoader: async (filter, options) => {
       return getEventLoader(
         adapterPool as AdapterPoolConnected<ConnectedProps>,
-        filter
+        filter,
+        options
       )
     },
   }

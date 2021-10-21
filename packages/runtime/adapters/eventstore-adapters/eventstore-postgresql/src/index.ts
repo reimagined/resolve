@@ -42,7 +42,6 @@ import loadSecrets from './load-secrets'
 import replicateEvents from './replicate-events'
 import replicateSecrets from './replicate-secrets'
 import setReplicationStatus from './set-replication-status'
-import setReplicationIterator from './set-replication-iterator'
 import setReplicationPaused from './set-replication-paused'
 import getReplicationState from './get-replication-state'
 import resetReplication from './reset-replication'
@@ -97,7 +96,6 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       replicateEvents,
       replicateSecrets,
       setReplicationStatus,
-      setReplicationIterator,
       setReplicationPaused,
       getReplicationState,
       resetReplication,
@@ -120,4 +118,5 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
 
 export default createPostgresqlAdapter
 export type { PostgresqlAdapterConfig }
+export type { PostgresResourceConfig } from './types'
 export { createResource as create, destroyResource as destroy }
