@@ -16,7 +16,6 @@ import { websocketServerFactory } from './websocket-server-factory'
 import { startExpress } from './start-express'
 import { uploaderFactory } from './uploader-factory'
 import { schedulerFactory } from './scheduler-factory'
-import { monitoringFactory } from './monitoring-factory'
 
 import type {
   EventSubscriberNotification,
