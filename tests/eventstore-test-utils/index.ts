@@ -56,11 +56,6 @@ export function isPostgres(): boolean {
 
 export function jestTimeout(): number {
   if (
-    process.env.TEST_POSTGRES_SERVERLESS !== undefined &&
-    process.env.TEST_POSTGRES_SERVERLESS !== 'false'
-  ) {
-    return 1000 * 60 * 5
-  } else if (
     process.env.TEST_POSTGRES !== undefined &&
     process.env.TEST_POSTGRES !== 'false'
   ) {
@@ -68,13 +63,6 @@ export function jestTimeout(): number {
   } else {
     return 1000 * 60 * 1
   }
-}
-
-export function isServerlessAdapter(): boolean {
-  return (
-    process.env.TEST_POSTGRES_SERVERLESS !== undefined &&
-    process.env.TEST_POSTGRES_SERVERLESS !== 'false'
-  )
 }
 
 export function streamToString(stream: Readable): Promise<string> {

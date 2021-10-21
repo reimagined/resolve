@@ -1,13 +1,13 @@
 import type { ResolveRequest, ResolveResponse } from '@resolve-js/core'
 
 const handler = async (req: ResolveRequest, res: ResolveResponse) => {
-  const result = await req.resolve.eventstoreAdapter.getReplicationState()
-  const description = await req.resolve.eventstoreAdapter.describe()
-  res.json({
-    ...result,
-    totalEventCount: description.eventCount,
-    totalSecretCount: description.secretCount,
-  })
+  const result: any = await req.resolve.eventstoreAdapter.getReplicationState()
+  if (req.query['extra'] !== undefined) {
+    const description = await req.resolve.eventstoreAdapter.describe()
+    result.totalEventCount = description.eventCount
+    result.totalSecretCount = description.secretCount
+  }
+  res.json(result)
 }
 
 export default handler

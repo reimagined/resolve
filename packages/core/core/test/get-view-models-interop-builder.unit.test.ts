@@ -45,7 +45,6 @@ const makeTestRuntime = (events: Event[] = []): ViewModelRuntime => {
     replicateEvents: jest.fn(),
     replicateSecrets: jest.fn(),
     resetReplication: jest.fn(),
-    setReplicationIterator: jest.fn(),
     setReplicationPaused: jest.fn(),
     setReplicationStatus: jest.fn(),
     saveEvent: jest.fn(),

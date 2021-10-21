@@ -49,20 +49,21 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
   })
 
   test('set-replication-status should change status, statusData properties of the state', async () => {
-    await adapter.setReplicationStatus('batchInProgress', {
-      info: 'in progress',
+    await adapter.setReplicationStatus({
+      status: 'batchInProgress',
+      statusData: { info: 'in progress' },
     })
     let state = await adapter.getReplicationState()
     expect(state.status).toEqual('batchInProgress')
     expect(state.statusData).toEqual({ info: 'in progress' })
 
-    await adapter.setReplicationStatus('batchDone')
+    await adapter.setReplicationStatus({ status: 'batchDone' })
     state = await adapter.getReplicationState()
     expect(state.status).toEqual('batchDone')
     expect(state.statusData).toEqual(null)
   })
 
-  test('set-replication-status should set successEvent and not rewrite it if it was not provided', async () => {
+  test('set-replication-status should set successEvent and iterator and not rewrite them if they were not provided', async () => {
     const event: OldEvent = {
       aggregateId: 'aggregateId',
       aggregateVersion: 1,
@@ -70,20 +71,21 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
       type: 'type',
     }
 
-    await adapter.setReplicationStatus('batchDone', null, event)
+    await adapter.setReplicationStatus({
+      status: 'batchDone',
+      statusData: null,
+      lastEvent: event,
+      iterator: { cursor: 'DEAF' },
+    })
     let state = await adapter.getReplicationState()
     expect(state.status).toEqual('batchDone')
     expect(state.successEvent).toEqual(event)
+    expect(state.iterator).toEqual({ cursor: 'DEAF' })
 
-    await adapter.setReplicationStatus('error')
+    await adapter.setReplicationStatus({ status: 'error' })
     state = await adapter.getReplicationState()
     expect(state.status).toEqual('error')
     expect(state.successEvent).toEqual(event)
-  })
-
-  test('set-replication-iterator should change iterator property of the state', async () => {
-    await adapter.setReplicationIterator({ cursor: 'DEAF' })
-    const state = await adapter.getReplicationState()
     expect(state.iterator).toEqual({ cursor: 'DEAF' })
   })
 

@@ -10,6 +10,7 @@
 
 **Enhancements:**
 
+- Make less database queries during replication [\#2084](https://github.com/reimagined/resolve/pull/2084)
 - Use event-loader \(via pgcursor for postgres\) in replicator [\#2076](https://github.com/reimagined/resolve/pull/2076)
 
 **Breaking changes:**
@@ -20,6 +21,10 @@
 **Bug fixes:**
 
 - Testing tools - When passing events with timestamps to givenEvents\(\), these events are sometimes lost [\#2075](https://github.com/reimagined/resolve/issues/2075)
+
+**Documentation:**
+
+- Remove postgres-serverless adapters mentions from documentation [\#2083](https://github.com/reimagined/resolve/pull/2083)
 
 **Other changes:**
 
