@@ -24,6 +24,7 @@
 
 **Documentation:**
 
+- Fix outdated content in the Preparing to Production topic [\#2086](https://github.com/reimagined/resolve/pull/2086)
 - Remove postgres-serverless adapters mentions from documentation [\#2083](https://github.com/reimagined/resolve/pull/2083)
 
 **Other changes:**
