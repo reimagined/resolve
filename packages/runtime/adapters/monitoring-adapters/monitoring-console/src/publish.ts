@@ -1,7 +1,7 @@
 import type {
   MonitoringDimension,
   MonitoringMetric,
-} from '@resolve-js/monitoring-base'
+} from '@resolve-js/core'
 import { LeveledDebugger } from '@resolve-js/debug-levels'
 import columnify from 'columnify'
 

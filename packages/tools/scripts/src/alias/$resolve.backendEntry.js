@@ -83,6 +83,7 @@ const emitDynamicImport = async (runtime) => {
           global.initPromise = entry(serverAssemblies)
         }
         const worker = await initPromise
+        console.log('backendEntry', process.pid);
         return await worker(...args)
       } catch(error) {
         log.error('Fatal error: ', error)

@@ -1,5 +1,6 @@
 import createBaseMonitoring from '@resolve-js/monitoring-base'
 import getLog, { LeveledDebugger } from '@resolve-js/debug-levels'
+import type { MonitoringAdapter } from '@resolve-js/core'
 
 import { monitoringPublish } from './publish'
 import type { MonitoringContext } from './types'
@@ -8,7 +9,7 @@ const createMonitoringImplementation = (
   log: LeveledDebugger,
   context: MonitoringContext,
   { baseMonitoring }: MonitoringContext
-) => ({
+): MonitoringAdapter => ({
   group: (config: Record<string, string>) =>
     createMonitoringImplementation(log, context, {
       baseMonitoring: baseMonitoring.group(config),
@@ -24,7 +25,7 @@ const createMonitoringImplementation = (
   clearMetrics: baseMonitoring.clearMetrics.bind(baseMonitoring),
 })
 
-const createMonitoring = () => {
+const createMonitoring = (): MonitoringAdapter => {
   const baseMonitoring = createBaseMonitoring()
 
   return createMonitoringImplementation(

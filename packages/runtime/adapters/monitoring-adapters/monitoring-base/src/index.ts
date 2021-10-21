@@ -1,13 +1,11 @@
 import debugLevels, { LeveledDebugger } from '@resolve-js/debug-levels'
-
 import type {
-  MonitoringContext,
-  MonitoringGroupContext,
+  MonitoringAdapter,
   MonitoringDimension,
   MonitoringMetric,
-} from './types'
+} from '@resolve-js/core'
 
-export type { MonitoringDimension, MonitoringMetric }
+import type { MonitoringContext, MonitoringGroupContext } from './types'
 
 const createErrorDimensions = (error: Error) => [
   { name: 'ErrorName', value: error.name },
@@ -260,7 +258,7 @@ const createMonitoringImplementation = (
   log: LeveledDebugger,
   monitoringContext: MonitoringContext,
   groupContext: MonitoringGroupContext
-) => {
+): MonitoringAdapter => {
   return {
     group: (config: Record<string, string>) =>
       createMonitoringImplementation(log, monitoringContext, {
@@ -287,14 +285,15 @@ const createMonitoringImplementation = (
     rate: monitoringRate.bind(null, log, monitoringContext, groupContext),
     getMetrics: getMetrics.bind(null, log, monitoringContext),
     clearMetrics: clearMetrics.bind(null, log, monitoringContext),
+    publish: async () => void 0,
   }
 }
 
 const createMonitoring = ({
   getTimestamp = () => null,
-}: { getTimestamp?: () => number | null } = {}) =>
+}: { getTimestamp?: () => number | null } = {}): MonitoringAdapter =>
   createMonitoringImplementation(
-    debugLevels(`resolve-monitoring-base`),
+    debugLevels(`resolve:monitoring-base`),
     {
       getTimestamp: getTimestamp,
       metrics: [],

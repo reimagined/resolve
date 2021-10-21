@@ -24,6 +24,7 @@
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
+    "@resolve-js/core": "0.32.0",
     "@resolve-js/debug-levels": "0.32.0",
     "@resolve-js/monitoring-base": "0.32.0",
     "columnify": "1.5.4"

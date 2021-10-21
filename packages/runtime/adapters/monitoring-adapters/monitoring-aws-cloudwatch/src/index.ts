@@ -5,11 +5,12 @@ import debugLevels from '@resolve-js/debug-levels'
 import type { MonitoringContext } from './types'
 
 import { monitoringPublish } from './publish'
+import { MonitoringAdapter } from '@resolve-js/core'
 
 const createMonitoringImplementation = (
   log: LeveledDebugger,
   monitoringContext: MonitoringContext
-) => {
+): MonitoringAdapter => {
   return {
     group: (config: Record<string, string>) =>
       createMonitoringImplementation(log, {
@@ -22,6 +23,8 @@ const createMonitoringImplementation = (
     time: monitoringContext.monitoringBase.time,
     timeEnd: monitoringContext.monitoringBase.timeEnd,
     rate: monitoringContext.monitoringBase.rate,
+    getMetrics: () => monitoringContext.monitoringBase.getMetrics(),
+    clearMetrics: () => monitoringContext.monitoringBase.clearMetrics(),
     publish: monitoringPublish.bind(null, log, monitoringContext),
   }
 }
@@ -36,8 +39,7 @@ const createMonitoring = ({
   const monitoringContext: MonitoringContext = {
     deploymentId,
     resolveVersion,
-    // TODO: any
-    monitoringBase: (createBaseMonitoring as any)({
+    monitoringBase: createBaseMonitoring({
       getTimestamp: () => {
         const value = Date.now()
         return value - (value % 1000)

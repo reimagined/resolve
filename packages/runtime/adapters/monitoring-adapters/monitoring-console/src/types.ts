@@ -1,7 +1,7 @@
-import createBaseMonitoring from '@resolve-js/monitoring-base'
+import { MonitoringAdapter } from '@resolve-js/core'
 
 export interface MonitoringContext {
-  baseMonitoring: ReturnType<typeof createBaseMonitoring>
+  baseMonitoring: MonitoringAdapter
 }
 
 export interface MetricSummary {

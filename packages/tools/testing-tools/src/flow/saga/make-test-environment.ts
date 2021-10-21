@@ -203,8 +203,10 @@ export const makeTestEnvironment = (
       error: () => void 0,
       execution: () => void 0,
       publish: async () => void 0,
-      duration: async () => void 0,
-      rate: async () => void 0,
+      duration: () => void 0,
+      rate: () => void 0,
+      getMetrics: () => ({ metrics: [] }),
+      clearMetrics: () => void 0,
     }
 
     const errors: Error[] = []

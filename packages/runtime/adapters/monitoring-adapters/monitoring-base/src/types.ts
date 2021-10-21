@@ -1,16 +1,4 @@
-export interface MonitoringDimension {
-  name: string
-  value: string
-}
-
-export interface MonitoringMetric {
-  metricName: string
-  dimensions: MonitoringDimension[]
-  timestamp: number | null
-  values: number[]
-  counts: number[]
-  unit: string
-}
+import type { MonitoringMetric, MonitoringDimension } from '@resolve-js/core'
 
 export interface MonitoringContext {
   getTimestamp: () => number | null

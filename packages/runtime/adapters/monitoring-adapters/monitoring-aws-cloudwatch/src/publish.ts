@@ -1,19 +1,20 @@
 import CloudWatch from 'aws-sdk/clients/cloudwatch'
 import { LeveledDebugger } from '@resolve-js/debug-levels'
 import { retry } from 'resolve-cloud-common/utils'
+
+import type {
+  MonitoringDimension,
+  MonitoringData,
+  MonitoringMetric,
+} from '@resolve-js/core'
+
 import {
   MAX_DIMENSION_VALUE_LENGTH,
   MAX_METRIC_COUNT,
   MAX_VALUES_PER_METRIC,
 } from './constants'
 
-import {
-  MonitoringContext,
-  MonitoringData,
-  MonitoringMetric,
-  MonitoringDimension,
-  CloudWatchMetricDatum,
-} from './types'
+import { MonitoringContext, CloudWatchMetricDatum } from './types'
 
 const normalizeValue = (value: string) => {
   let result = value.split(/\n|\r|\r\n/g)[0]
@@ -35,13 +36,13 @@ const baseMetricToCloudWatchMetric = (
 ): CloudWatchMetricDatum => ({
   MetricName: metric.metricName,
   Unit: metric.unit,
-  Dimensions: metric.dimensions.map(({ name, value }: any) => ({
+  Dimensions: metric.dimensions.map(({ name, value }) => ({
     Name: name,
     Value: normalizeValue(value),
   })),
   Values: metric.values,
   Counts: metric.counts,
-  Timestamp: new Date(metric.timestamp),
+  Timestamp: metric.timestamp != null ? new Date(metric.timestamp) : new Date(),
 })
 
 const pushMetric = (
@@ -126,8 +127,7 @@ export const monitoringPublish = async (
           error: errorDimensions,
           part: partName,
         } = metric.dimensions.reduce(
-          // TODO: any
-          (obj: any, dimension: any) => {
+          (obj, dimension) => {
             if (['ErrorName', 'ErrorMessage'].includes(dimension.name)) {
               obj.error.push(dimension)
             } else {
@@ -144,6 +144,10 @@ export const monitoringPublish = async (
             group: [],
             error: [],
             part: null,
+          } as {
+            group: MonitoringDimension[]
+            error: MonitoringDimension[]
+            part: string | null
           }
         )
 

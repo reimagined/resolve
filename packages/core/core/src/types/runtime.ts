@@ -38,8 +38,25 @@ export type PerformanceTracer = {
   getSegment: () => PerformanceSegment
 }
 
-export type Monitoring = {
-  group: (config: Record<string, any>) => Monitoring
+export interface MonitoringDimension {
+  name: string
+  value: string
+}
+
+export interface MonitoringMetric {
+  metricName: string
+  dimensions: MonitoringDimension[]
+  timestamp: number | null
+  values: number[]
+  counts: number[]
+  unit: string
+}
+
+export interface MonitoringData {
+  metrics: MonitoringMetric[]
+}
+
+interface MonitoringBase {
   error: (error: Error) => void
   execution: (error?: Error) => void
   duration: (label: string, duration: number, count?: number) => void
@@ -48,6 +65,18 @@ export type Monitoring = {
   publish: () => Promise<void>
   rate: (metricName: string, count: number, seconds?: number) => void
   performance?: PerformanceTracer
+}
+
+export interface MonitoringAdapter extends MonitoringBase {
+  group: (config: Record<string, any>) => MonitoringAdapter
+  getMetrics: () => MonitoringData
+  clearMetrics: () => void
+}
+
+export interface Monitoring extends MonitoringBase {
+  group: (config: Record<string, any>) => Monitoring
+  getMetrics: (id: string) => MonitoringData
+  clearMetrics: (id: string) => void
 }
 
 export type EventThreadData = {
