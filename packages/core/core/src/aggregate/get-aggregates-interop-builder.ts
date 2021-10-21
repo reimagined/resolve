@@ -502,6 +502,7 @@ const makeCommandExecutor = (
         aggregateVersion: aggregateVersion + 1,
         timestamp: Math.max(minimalTimestamp + 1, Date.now()),
         type: event.type,
+        payload: undefined,
       }
 
       if (Object.prototype.hasOwnProperty.call(event, 'payload')) {

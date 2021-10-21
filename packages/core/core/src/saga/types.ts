@@ -1,13 +1,15 @@
-import {
+import type {
   SecretsManager,
   Event,
   SagaEventHandlers,
   SagaSideEffects,
   SerializablePrimitive,
+  Command,
+  CommandResult,
 } from '../types/core'
-import { AggregateMeta } from '../types/runtime'
-import { AggregatesInteropBuilder } from '../aggregate/types'
-import { Monitoring } from '../types/runtime'
+import type { AggregateMeta } from '../types/runtime'
+import type { AggregatesInteropBuilder } from '../aggregate/types'
+import type { Monitoring } from '../types/runtime'
 
 export type SchedulerInfo = {
   name: string
@@ -55,7 +57,7 @@ export type SchedulerEventTypes = {
   SCHEDULED_COMMAND_FAILED: string
 }
 
-export type SchedulerAggregateBuilder = () => AggregateMeta
+export type SchedulerAggregateBuilder = () => AggregateMeta<SchedulerState>
 
 export type SchedulerProjectionBuilder = (
   schedulerName: string,
@@ -112,3 +114,53 @@ export type SagaInteropMap = {
 }
 
 export type SagasInteropBuilder = (runtime: SagaRuntime) => SagaInteropMap
+
+export type SchedulerTaskState =
+  | 'scheduled'
+  | 'executed'
+  | 'succeeded'
+  | 'failed'
+
+export type ScheduledCommandCreatedResult = CommandResult<{
+  date: number
+  command: Command
+}>
+
+export type ScheduledCommandExecutedResult = CommandResult<{
+  date: number
+  command: Command
+}>
+
+export type ScheduledCommandSuccessResult = CommandResult<{}>
+
+export type ScheduledCommandFailedResult = CommandResult<{
+  reason: string
+}>
+
+export type SchedulerCreateCommand = Command<{
+  date: number
+  command: Command
+}>
+
+export type SchedulerFailureCommand = Command<{
+  reason: string
+}>
+
+export type SchedulerState = {
+  state: SchedulerTaskState
+  date: number
+  command: Command
+}
+
+export type ScheduledCommandCreatedEvent = Event<{
+  date: number
+  command: Command
+}>
+
+export type ScheduledCommandExecutedEvent = Event<{
+  command: Command
+}>
+
+export type ScheduledCommandSucceededEvent = Event<{}>
+
+export type ScheduledCommandFailedEvent = Event<{}>

@@ -35,7 +35,6 @@ export const initSagaDomain = (rawSagas: any[]): SagaDomain => {
     schedulerEventTypes,
     schedulerInvariantHash,
     getSagasSchedulersInfo,
-    //createSchedulerAggregate,
     acquireSchedulerAggregatesInterop: getAggregatesInteropBuilder([
       createSchedulerAggregate(),
     ]),

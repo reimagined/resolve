@@ -20,6 +20,7 @@ import type {
   SerializableMap,
   Command,
   CommandResult,
+  AggregateState,
 } from './core'
 import { CommandHttpResponseMode } from '../aggregate/types'
 import type { IncomingHttpHeaders } from 'http'
@@ -182,10 +183,13 @@ export type Eventstore = {
   describe: () => Promise<EventStoreDescription>
 }
 
-export type AggregateMeta = {
+export type AggregateMeta<
+  TState extends AggregateState = AggregateState,
+  TContext extends CommandContext = CommandContext
+> = {
   name: string
-  commands: Aggregate
-  projection: AggregateProjection
+  commands: Aggregate<TState, TContext>
+  projection: AggregateProjection<TState, any>
   serializeState: Function
   deserializeState: Function
   encryption: AggregateEncryptionFactory | null

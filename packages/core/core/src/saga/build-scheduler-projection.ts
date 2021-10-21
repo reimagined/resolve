@@ -1,6 +1,10 @@
 import { SagaEventHandlers } from '../types/core'
 import { getLog } from '../get-log'
 import {
+  ScheduledCommandCreatedEvent,
+  ScheduledCommandExecutedEvent,
+  ScheduledCommandFailedEvent,
+  ScheduledCommandSucceededEvent,
   SchedulerEventTypes,
   SchedulerProjectionBuilder,
   SchedulerSideEffects,
@@ -34,7 +38,7 @@ const createSchedulerSagaHandlers = ({
   },
   [SCHEDULED_COMMAND_CREATED]: async (
     { store, sideEffects },
-    { aggregateId, payload: { date, command } }
+    { aggregateId, payload: { date, command } }: ScheduledCommandCreatedEvent
   ) => {
     const log = getLog('scheduled-command-created')
 
@@ -58,7 +62,7 @@ const createSchedulerSagaHandlers = ({
   },
   [SCHEDULED_COMMAND_EXECUTED]: async (
     { sideEffects: { executeCommand } },
-    { aggregateId, payload: { command } }
+    { aggregateId, payload: { command } }: ScheduledCommandExecutedEvent
   ) => {
     const log = getLog('scheduled-command-executed')
     try {
@@ -96,13 +100,19 @@ const createSchedulerSagaHandlers = ({
       }
     }
   },
-  [SCHEDULED_COMMAND_SUCCEEDED]: async ({ store }, { aggregateId }) => {
+  [SCHEDULED_COMMAND_SUCCEEDED]: async (
+    { store },
+    { aggregateId }: ScheduledCommandSucceededEvent
+  ) => {
     const log = getLog('scheduled-command-succeeded')
     log.debug(`removing entry ${aggregateId} from the store`)
     await store.delete(commandsTableName, { taskId: aggregateId })
     log.debug(`completed successfully`)
   },
-  [SCHEDULED_COMMAND_FAILED]: async ({ store }, { aggregateId }) => {
+  [SCHEDULED_COMMAND_FAILED]: async (
+    { store },
+    { aggregateId }: ScheduledCommandFailedEvent
+  ) => {
     const log = getLog('scheduled-command-failed')
     log.debug(`removing entry ${aggregateId} from the store`)
     await store.delete(commandsTableName, { taskId: aggregateId })

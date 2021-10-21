@@ -1,6 +1,6 @@
 // Primitives
 
-export type SerializablePrimitive = string | number | boolean | null
+export type SerializablePrimitive = string | number | boolean | null | undefined
 
 export type SerializableMap = {
   [key: string]: Serializable
@@ -15,12 +15,18 @@ export type Serializable =
 
 // Common
 
-export type Event = {
+// TODO: remove any by default
+export type Event<
+  TPayload extends SerializableMap | null | undefined =
+    | SerializableMap
+    | null
+    | undefined
+> = {
   type: string
   timestamp: number
   aggregateId: string
   aggregateVersion: number
-  payload?: any
+  payload: TPayload
 }
 
 export type Serializer<T> = (data: T) => string
@@ -67,21 +73,22 @@ export type ViewModelQuery = {
 
 export type ViewModelQueryResult = Serializable
 
-export type Command = {
+export type Command<
+  TPayload extends SerializableMap | null | undefined =
+    | SerializableMap
+    | null
+    | undefined
+> = {
   type: string
   aggregateId: string
   aggregateName: string
-  payload?: any
+  payload: TPayload
   jwt?: string
 }
 
-export type CommandResult = {
-  type: string
-  payload?: any
-  timestamp?: number
-  aggregateId?: string
-  aggregateVersion?: number
-}
+export type CommandResult<
+  TPayload extends Event['payload'] = Event['payload']
+> = Omit<Event<TPayload>, 'timestamp' | 'aggregateVersion' | 'aggregateId'>
 
 type EmptyObject = {}
 export type InteropCommandResult = CommandResult | EmptyObject
@@ -90,30 +97,41 @@ export type InteropCommandResult = CommandResult | EmptyObject
 
 export type AggregateState = any
 
-export type AggregateEventHandler = (
-  state: AggregateState,
-  event: Event
-) => AggregateState
+export type AggregateEventHandler<
+  TState extends AggregateState = AggregateState,
+  TEvent extends Event = Event
+> = (state: TState, event: TEvent) => AggregateState
 
 export type CommandContext = {
   jwt?: string
   aggregateVersion: number
 } & Encryption
 
-export type AggregateProjection = {
+export type AggregateProjection<
+  TState extends AggregateState = AggregateState,
+  TEvent extends Event = Event
+> = {
   Init?: () => AggregateState
 } & {
-  [key: string]: AggregateEventHandler
+  [key: string]: AggregateEventHandler<TState, TEvent>
 }
 
-export type CommandHandler<TContext extends CommandContext = CommandContext> = (
-  state: AggregateState,
-  command: Command,
+export type CommandHandler<
+  TState extends AggregateState = AggregateState,
+  TCommand extends Command = Command,
+  TResult extends CommandResult = CommandResult,
+  TContext extends CommandContext = CommandContext
+> = (
+  state: TState,
+  command: TCommand,
   context: TContext
-) => CommandResult | Promise<CommandResult>
+) => TResult | Promise<TResult>
 
-export type Aggregate<TContext extends CommandContext = CommandContext> = {
-  [key: string]: CommandHandler<TContext>
+export type Aggregate<
+  TState extends AggregateState = AggregateState,
+  TContext extends CommandContext = CommandContext
+> = {
+  [key: string]: CommandHandler<TState, Command, CommandResult, TContext>
 }
 
 export type AggregateEncryptionContext = {
@@ -134,8 +152,9 @@ type ReadModelInitHandler<TStore> = (store: TStore) => Promise<void>
 
 export type ReadModelEventHandler<
   TStore,
-  TContext extends ReadModelHandlerContext = ReadModelHandlerContext
-> = (store: TStore, event: Event, context: TContext) => Promise<void>
+  TContext extends ReadModelHandlerContext = ReadModelHandlerContext,
+  TEvent extends Event = Event
+> = (store: TStore, event: TEvent, context: TContext) => Promise<void>
 
 export type ReadModel<
   TStore,
@@ -167,8 +186,8 @@ export type EventHandlerEncryptionContext = {
   secretsManager: SecretsManager
 }
 
-export type EventHandlerEncryptionFactory = (
-  event: Event,
+export type EventHandlerEncryptionFactory<TEvent extends Event = Event> = (
+  event: TEvent,
   context: EventHandlerEncryptionContext
 ) => Promise<Encryption | null>
 
@@ -179,9 +198,9 @@ export type ViewModelHandlerContext = {
 
 export type ViewModelInitHandler<TState> = () => TState
 
-export type ViewModelEventHandler<TState> = (
+export type ViewModelEventHandler<TState, TEvent extends Event = Event> = (
   state: TState,
-  event: Event,
+  event: TEvent,
   args: any,
   context: ViewModelHandlerContext
 ) => TState
@@ -245,13 +264,14 @@ export type SagaInitHandler<TStore, TSideEffect> = (
   context: SagaContext<TStore, TSideEffect>
 ) => Promise<void>
 
-export type SagaEventHandler<TStore, TSideEffects> = (
-  context: SagaContext<TStore, TSideEffects>,
-  event: Event
-) => Promise<void>
+export type SagaEventHandler<
+  TStore,
+  TSideEffects,
+  TEvent extends Event = Event
+> = (context: SagaContext<TStore, TSideEffects>, event: TEvent) => Promise<void>
 
 export type SagaEventHandlers<TStore, TSideEffects> = {
-  [key: string]: SagaEventHandler<TStore, TSideEffects>
+  [key: string]: SagaEventHandler<TStore, TSideEffects, any>
 } & {
   Init?: SagaInitHandler<TStore, TSideEffects>
 }

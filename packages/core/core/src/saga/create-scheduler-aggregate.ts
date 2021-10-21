@@ -1,11 +1,20 @@
-import { SchedulerAggregateBuilder } from './types'
+import {
+  ScheduledCommandCreatedEvent,
+  ScheduledCommandCreatedResult,
+  ScheduledCommandExecutedResult,
+  ScheduledCommandFailedResult,
+  ScheduledCommandSuccessResult,
+  SchedulerCreateCommand,
+  SchedulerFailureCommand,
+  SchedulerState,
+} from './types'
 import {
   schedulerEventTypes,
   schedulerInvariantHash,
   schedulerName,
 } from './constants'
 
-export const createSchedulerAggregate: SchedulerAggregateBuilder = () => {
+export const createSchedulerAggregate = () => {
   const {
     SCHEDULED_COMMAND_CREATED,
     SCHEDULED_COMMAND_EXECUTED,
@@ -16,24 +25,20 @@ export const createSchedulerAggregate: SchedulerAggregateBuilder = () => {
   return {
     name: schedulerName,
     commands: {
-      create: async (
-        state,
+      create: (
+        state: SchedulerState,
         {
           payload: {
             date,
-            command: { aggregateId, aggregateName, type, payload = {} },
-          } = {},
-        }
-      ) => {
+            command: { aggregateId, aggregateName, type, payload },
+          },
+        }: SchedulerCreateCommand
+      ): ScheduledCommandCreatedResult => {
         if (
           date == null ||
-          date.constructor !== Number ||
           aggregateName == null ||
-          aggregateName.constructor !== String ||
           aggregateId == null ||
-          aggregateId.constructor !== String ||
-          type == null ||
-          type.constructor !== String
+          type == null
         ) {
           throw Error(
             `scheduler.create: cannot create a scheduled command - bad parameters`
@@ -53,7 +58,11 @@ export const createSchedulerAggregate: SchedulerAggregateBuilder = () => {
           },
         }
       },
-      execute: async ({ state, date, command }) => {
+      execute: ({
+        state,
+        date,
+        command,
+      }: SchedulerState): ScheduledCommandExecutedResult => {
         if (state !== 'scheduled')
           throw Error(`scheduler.execute: unexpected task state "${state}"`)
 
@@ -65,7 +74,7 @@ export const createSchedulerAggregate: SchedulerAggregateBuilder = () => {
           },
         }
       },
-      success: async ({ state }) => {
+      success: ({ state }: SchedulerState): ScheduledCommandSuccessResult => {
         if (state !== 'executed')
           throw Error(`scheduler.success: unexpected task state "${state}"`)
 
@@ -74,7 +83,10 @@ export const createSchedulerAggregate: SchedulerAggregateBuilder = () => {
           payload: {},
         }
       },
-      failure: async ({ state }, { payload: { reason } }) => {
+      failure: (
+        { state }: SchedulerState,
+        { payload: { reason } }: SchedulerFailureCommand
+      ): ScheduledCommandFailedResult => {
         if (state !== 'executed')
           throw Error(`scheduler.failure: unexpected task state "${state}"`)
 
@@ -87,24 +99,28 @@ export const createSchedulerAggregate: SchedulerAggregateBuilder = () => {
       },
     },
     projection: {
-      Init: () => ({
-        state: 'void',
-      }),
-      [SCHEDULED_COMMAND_CREATED]: (state, { payload: { date, command } }) => ({
+      [SCHEDULED_COMMAND_CREATED]: (
+        state: SchedulerState,
+        { payload: { date, command } }: ScheduledCommandCreatedEvent
+      ): SchedulerState => ({
         ...state,
         state: 'scheduled',
         date,
         command,
       }),
-      [SCHEDULED_COMMAND_EXECUTED]: (state) => ({
+      [SCHEDULED_COMMAND_EXECUTED]: (
+        state: SchedulerState
+      ): SchedulerState => ({
         ...state,
         state: 'executed',
       }),
-      [SCHEDULED_COMMAND_SUCCEEDED]: (state) => ({
+      [SCHEDULED_COMMAND_SUCCEEDED]: (
+        state: SchedulerState
+      ): SchedulerState => ({
         ...state,
         state: 'succeeded',
       }),
-      [SCHEDULED_COMMAND_FAILED]: (state) => ({
+      [SCHEDULED_COMMAND_FAILED]: (state: SchedulerState): SchedulerState => ({
         ...state,
         state: 'failed',
       }),
