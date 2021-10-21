@@ -1,7 +1,7 @@
 {
   "name": "@resolve-js/monitoring-base",
   "version": "0.32.0",
-  "description": "This a base package serves as a resolve-runtime adapter for monitoring data",
+  "description": "This is a base package serves as a monitoring adapter",
   "keywords": [
     "cqrs",
     "eventsourcing",

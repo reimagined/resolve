@@ -1,7 +1,7 @@
 {
   "name": "@resolve-js/monitoring-aws-cloudwatch",
   "version": "0.32.0",
-  "description": "This package serves as a resolve-runtime adapter for storing monitoring data in AWS CloudWatch",
+  "description": "This package serves as a monitoring adapter for storing monitoring data in AWS CloudWatch",
   "keywords": [
     "cqrs",
     "eventsourcing",
