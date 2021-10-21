@@ -7,6 +7,7 @@ import {
   getLog,
   gatherEventListeners,
   RuntimeWorker,
+  createCompositeMonitoringAdapter,
 } from '@resolve-js/runtime-base'
 
 import { performanceTracerFactory } from './performance-tracer-factory'
@@ -43,7 +44,9 @@ const entry = async (
   try {
     log.debug('building lambda cold start context entries')
     const performanceTracer = await performanceTracerFactory()
-    const monitoring = assemblies.monitoringAdapters[0]()
+    const monitoring = createCompositeMonitoringAdapter(
+      assemblies.monitoringAdapters
+    )
 
     const segment = performanceTracer.getSegment()
     subSegment = segment.addNewSubsegment('initResolve')
