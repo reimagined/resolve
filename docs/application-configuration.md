@@ -209,11 +209,11 @@ eventstoreAdapter: {
 
 The following adapters are available:
 
-| Adapter Module                                                                    | Description                                               |
-| --------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| [@resolve-js/eventstore-lite](#eventstore-lite)                                   | Used to store events in an SQLite database.               |
-| [@resolve-js/eventstore-mysql](#eventstore-mysql)                                 | Used to store events in a MySQL database.                 |
-| [@resolve-js/eventstore-postgresql](#eventstore-postgresql)                       | Used to store events in a PostgreSQL database.            |
+| Adapter Module                                              | Description                                    |
+| ----------------------------------------------------------- | ---------------------------------------------- |
+| [@resolve-js/eventstore-lite](#eventstore-lite)             | Used to store events in an SQLite database.    |
+| [@resolve-js/eventstore-mysql](#eventstore-mysql)           | Used to store events in a MySQL database.      |
+| [@resolve-js/eventstore-postgresql](#eventstore-postgresql) | Used to store events in a PostgreSQL database. |
 
 #### eventstore-lite
 
@@ -433,11 +433,11 @@ readModelConnectors: {
 
 The following connectors are available:
 
-| Module Name                                                                     | Description                                                           |
-| ------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| [@resolve-js/readmodel-lite](#readmodel-lite)                                   | Used to store Read Model data in an SQLite database.                  |
-| [@resolve-js/readmodel-mysql](#readmodel-mysql)                                 | Used to store Read Model data in a MySQL database.                    |
-| [@resolve-js/readmodel-postgresql](#readmodel-postgresql)                       | Used to store Read Model data in a PostgreSQL database.               |
+| Module Name                                               | Description                                             |
+| --------------------------------------------------------- | ------------------------------------------------------- |
+| [@resolve-js/readmodel-lite](#readmodel-lite)             | Used to store Read Model data in an SQLite database.    |
+| [@resolve-js/readmodel-mysql](#readmodel-mysql)           | Used to store Read Model data in a MySQL database.      |
+| [@resolve-js/readmodel-postgresql](#readmodel-postgresql) | Used to store Read Model data in a PostgreSQL database. |
 
 #### readmodel-lite
 
@@ -559,7 +559,8 @@ The `options` configuration object has the following structure:
 {
   importMode, // Specifies whether to use *static* or *dynamic* imports between the application's modules.
   host, // (single-process only) Specifies the network host on which to listen for connections. Defaults to `'0.0.0.0'`.
-  port // (single-process only) Specifies the server application's port.
+  port, // (single-process only) Specifies the server application's port.
+  emulateWorkerLifetimeLimit, // (single-process only) Used for framework testing. If assigned a numeric value, emulates the lifetime of an AWS Lambda worker's lifetime on a local machine.
 }
 ```
 
