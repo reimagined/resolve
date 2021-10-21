@@ -16,14 +16,12 @@ const importMonitoringAdapters = ({ resolveConfig, isClient }) => {
 
   const imports = [`import '$resolve.guardOnlyServer'`]
   const constants = [``]
-  const exports = [`const monitoringAdapters = []`]
+  const exports = [`const monitoringAdapters = {}`]
+  const adapterIds = Object.keys(resolveConfig.monitoringAdapters)
 
-  for (
-    let index = 0;
-    index < resolveConfig.monitoringAdapters.length;
-    index++
-  ) {
-    const adapterConfig = resolveConfig.monitoringAdapters[index]
+  for (let index = 0; index < adapterIds.length; index++) {
+    const id = adapterIds[index]
+    const adapterConfig = resolveConfig.monitoringAdapters[id]
 
     constants.push(`const name_${index} = ${JSON.stringify(adapterConfig)}`)
 
@@ -51,7 +49,7 @@ const importMonitoringAdapters = ({ resolveConfig, isClient }) => {
       }`
     )
 
-    exports.push(`monitoringAdapters[${index}] = factory_${index}`)
+    exports.push(`monitoringAdapters['${id}'] = factory_${index}`)
   }
 
   exports.push(`export default monitoringAdapters`)

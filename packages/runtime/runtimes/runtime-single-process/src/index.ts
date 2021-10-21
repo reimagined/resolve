@@ -7,6 +7,7 @@ import {
   backgroundJob,
   gatherEventListeners,
   createRuntime,
+  createCompositeMonitoringAdapter,
 } from '@resolve-js/runtime-base'
 import { prepareDomain } from './prepare-domain'
 import { performanceTracerFactory } from './performance-tracer-factory'
@@ -75,8 +76,7 @@ const entry = async (
         monitoringAdapters,
       } = assemblies
 
-      // TODO: compose
-      const monitoring = monitoringAdapters[0]()
+      const monitoring = createCompositeMonitoringAdapter(monitoringAdapters)
       const getVacantTimeInMillis = makeVacantTimeEvaluator(options)
 
       const uploaderData = await uploaderFactory({

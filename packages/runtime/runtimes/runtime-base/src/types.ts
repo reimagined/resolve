@@ -5,6 +5,7 @@ import type {
   Event,
   EventPointer,
   Monitoring,
+  MonitoringAdapter,
   PerformanceTracer,
   Uploader as PublicUploader,
   BuildTimeConstants,
@@ -111,7 +112,7 @@ export type Assemblies = {
   uploadAdapter: () => UploaderPool
   eventstoreAdapter: () => EventStoreAdapter
   readModelConnectors: Record<string, ReadModelConnectorFactory>
-  monitoringAdapters: Array<() => Monitoring>
+  monitoringAdapters: Record<string, () => MonitoringAdapter>
 
   //TODO: types
   seedClientEnvs: any

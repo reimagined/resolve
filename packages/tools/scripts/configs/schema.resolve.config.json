@@ -45,6 +45,12 @@
         "module": {
           "type": "string"
         },
+        "options": {
+          "type": "object",
+          "properties": {
+            "additionalProperties": true
+          }
+        },
         "imports": {
           "type": "object"
         }
@@ -395,8 +401,8 @@
           "$ref": "#/definitions/eventstoreAdapter"
         },
         "monitoringAdapters": {
-          "type": "array",
-          "items": {
+          "type": "object",
+          "additionalProperties": {
             "$ref": "#/definitions/monitoringAdapter"
           }
         },
