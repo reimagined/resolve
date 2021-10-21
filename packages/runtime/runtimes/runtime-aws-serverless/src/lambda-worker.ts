@@ -1,6 +1,7 @@
 import { getLog, createRuntime } from '@resolve-js/runtime-base'
 
 import { schedulerFactory } from './scheduler-factory'
+import { monitoringFactory } from './monitoring-factory'
 import {
   eventSubscriberNotifierFactory,
   waitForSubscriber,
@@ -10,6 +11,7 @@ import { handleWebsocketEvent } from './websocket-event-handler'
 import { handleApiGatewayEvent } from './api-gateway-handler'
 import { handleCloudServiceEvent } from './cloud-service-event-handler'
 import { handleSchedulerEvent } from './scheduler-event-handler'
+import { getDeploymentId } from './utils'
 import partial from 'lodash.partial'
 
 import type { EventPointer } from '@resolve-js/core'
@@ -43,7 +45,11 @@ const createCloudRuntime = async (
   subscriberInterface: EventSubscriberInterface,
   overrideFactoryParams: Partial<RuntimeFactoryParameters> = {}
 ) => {
-  const getVacantTimeInMillis = partial(getLambdaVacantTime, lambdaContext)
+  const getVacantTimeInMillis = partial(
+    getLambdaVacantTime,
+    lambdaContext,
+    () => void 0
+  )
   const {
     eventstoreAdapter: eventStoreAdapterFactory,
     readModelConnectors: readModelConnectorsFactories,
@@ -75,7 +81,7 @@ const createCloudRuntime = async (
   return {
     runtime,
     scheduler,
-    getVacantTimeInMillis: runtimeParams.getVacantTimeInMillis,
+    getVacantTimeInMillis,
   }
 }
 

@@ -1,4 +1,3 @@
-import * as AWS from 'aws-sdk'
 import type {
   Adapter,
   InputEvent,
@@ -11,12 +10,6 @@ import {
 import createSqliteAdapter, {
   SqliteAdapterConfig,
 } from '@resolve-js/eventstore-lite'
-import createPostgresqlServerlessAdapter, {
-  PostgresqlAdapterConfig as PostgresServerlessAdapterConfig,
-  CloudResourceOptions,
-  create as createResource,
-  destroy as destroyResource,
-} from '@resolve-js/eventstore-postgresql-serverless'
 import createPostgresqlAdapter, {
   create as createPostgresResource,
   destroy as destroyPostgresResource,
@@ -26,35 +19,6 @@ import os from 'os'
 import fs from 'fs'
 
 import { Readable } from 'stream'
-
-export function isPostgresServerless(): boolean {
-  if (
-    process.env.TEST_POSTGRES_SERVERLESS !== undefined &&
-    process.env.TEST_POSTGRES_SERVERLESS !== 'false'
-  ) {
-    if (process.env.AWS_ACCESS_KEY_ID == null) {
-      throw new Error(`Environment variable AWS_ACCESS_KEY_ID is required`)
-    }
-    if (process.env.AWS_SECRET_ACCESS_KEY == null) {
-      throw new Error(`Environment variable AWS_SECRET_ACCESS_KEY is required`)
-    }
-    if (process.env.AWS_RDS_CLUSTER_ARN == null) {
-      throw new Error(`Environment variable AWS_RDS_CLUSTER_ARN is required`)
-    }
-    if (process.env.AWS_RDS_ADMIN_SECRET_ARN == null) {
-      throw new Error(
-        `Environment variable AWS_RDS_ADMIN_SECRET_ARN is required`
-      )
-    }
-    AWS.config.update({
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      },
-    })
-    return true
-  }
-}
 
 async function safeDrop(adapter: Adapter): Promise<void> {
   try {
@@ -92,11 +56,6 @@ export function isPostgres(): boolean {
 
 export function jestTimeout(): number {
   if (
-    process.env.TEST_POSTGRES_SERVERLESS !== undefined &&
-    process.env.TEST_POSTGRES_SERVERLESS !== 'false'
-  ) {
-    return 1000 * 60 * 5
-  } else if (
     process.env.TEST_POSTGRES !== undefined &&
     process.env.TEST_POSTGRES !== 'false'
   ) {
@@ -104,13 +63,6 @@ export function jestTimeout(): number {
   } else {
     return 1000 * 60 * 1
   }
-}
-
-export function isServerlessAdapter(): boolean {
-  return (
-    process.env.TEST_POSTGRES_SERVERLESS !== undefined &&
-    process.env.TEST_POSTGRES_SERVERLESS !== 'false'
-  )
 }
 
 export function streamToString(stream: Readable): Promise<string> {
@@ -174,8 +126,6 @@ export function makeTestSavedEvent(
   return event
 }
 
-const uniquePostfix = `${process.pid}_${Math.round(Math.random() * 1000)}`
-
 let adapters: Record<string, Adapter> = {}
 
 const proxy = new Proxy(
@@ -209,88 +159,7 @@ export const sqliteTempFileName = (uniqueName: string) =>
 
 export { proxy as adapters }
 
-export function getPostgresServerlessOptions(
-  uniqueName: string
-): CloudResourceOptions {
-  return {
-    eventsTableName: 'events',
-    snapshotsTableName: 'snapshots',
-    secretsTableName: 'secrets',
-    subscribersTableName: 'subscribers',
-    databaseName: `${uniqueName}_${uniquePostfix}`,
-    dbClusterOrInstanceArn: process.env.AWS_RDS_CLUSTER_ARN,
-    awsSecretStoreAdminArn: process.env.AWS_RDS_ADMIN_SECRET_ARN,
-    region: process.env.AWS_REGION ?? 'eu-central-1',
-    userLogin: process.env.AWS_RDS_USERNAME ?? 'master',
-  }
-}
-
-export const adapterFactory = isPostgresServerless()
-  ? {
-      name: '@resolve-js/eventstore-postgresql-serverless',
-      create(
-        uniqueName: string,
-        additionalOptions?: Partial<PostgresServerlessAdapterConfig>
-      ) {
-        return async () => {
-          const options = getPostgresServerlessOptions(uniqueName)
-
-          try {
-            await destroyResource(options)
-          } catch {}
-          await createResource(options)
-
-          adapters[uniqueName] = createPostgresqlServerlessAdapter({
-            eventsTableName: options.eventsTableName,
-            snapshotsTableName: options.snapshotsTableName,
-            secretsTableName: options.secretsTableName,
-            subscribersTableName: options.subscribersTableName,
-            databaseName: options.databaseName,
-            dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
-            awsSecretStoreArn: options.awsSecretStoreAdminArn,
-            region: options.region,
-            ...additionalOptions,
-          })
-
-          await adapters[uniqueName].init()
-        }
-      },
-      createNoInit(
-        uniqueName: string,
-        additionalOptions?: Partial<PostgresqlAdapterConfig>
-      ) {
-        return async () => {
-          const options = getPostgresServerlessOptions(uniqueName)
-
-          const adapter = createPostgresqlServerlessAdapter({
-            eventsTableName: options.eventsTableName,
-            snapshotsTableName: options.snapshotsTableName,
-            secretsTableName: options.secretsTableName,
-            subscribersTableName: options.subscribersTableName,
-            databaseName: options.databaseName,
-            dbClusterOrInstanceArn: options.dbClusterOrInstanceArn,
-            awsSecretStoreArn: options.awsSecretStoreAdminArn,
-            region: options.region,
-            ...additionalOptions,
-          })
-          await adapter.describe()
-          return adapter
-        }
-      },
-      destroy(uniqueName: string) {
-        return async () => {
-          const options = getPostgresServerlessOptions(uniqueName)
-
-          await safeDrop(adapters[uniqueName])
-          await adapters[uniqueName].dispose()
-
-          await destroyResource(options)
-
-          delete adapters[uniqueName]
-        }
-      },
-    }
-  : isPostgres()
+export const adapterFactory = isPostgres()
   ? {
       name: '@resolve-js/eventstore-postgresql',
       create(

@@ -214,7 +214,6 @@ The following adapters are available:
 | [@resolve-js/eventstore-lite](#eventstore-lite)                                   | Used to store events in an SQLite database.               |
 | [@resolve-js/eventstore-mysql](#eventstore-mysql)                                 | Used to store events in a MySQL database.                 |
 | [@resolve-js/eventstore-postgresql](#eventstore-postgresql)                       | Used to store events in a PostgreSQL database.            |
-| [@resolve-js/eventstore-postgresql-serverless](#eventstore-postgresql-serverless) | Used to store events in AWS Aurora PostgreSQL Serverless. |
 
 #### eventstore-lite
 
@@ -306,40 +305,6 @@ const prodConfig = {
       port: 5432,
       databaseName: 'public',
       eventsTableName: 'events',
-    }
-  },
-  ...
-}
-```
-
-#### eventstore-postgresql-serverless
-
-Used to store events in AWS Aurora PostgreSQL Serverless.
-
-This adapter supports the following options:
-
-| Option Name            | Description                                                      |
-| ---------------------- | ---------------------------------------------------------------- |
-| awsSecretStoreArn      | An AWS secret store's Amazon Resource Name (ARN)                 |
-| databaseName           | The name of a database.                                          |
-| dbClusterOrInstanceArn | An Amazon Resource Name (ARN) of a database cluster or instance. |
-| eventsTableName        | The name of a database table used to store events.               |
-| region                 | An AWS region.                                                   |
-| secretsTableName       | The name of a database table used to store secrets.              |
-| snapshotBucketSize     | The number of events between aggregate snapshots.                |
-
-##### Example
-
-```js
-const prodConfig = {
-  eventstoreAdapter: {
-    module: '@resolve-js/eventstore-postgresql-serverless',
-    options: {
-      region: 'us-east-1',
-      databaseName: 'databaseName',
-      eventsTableName: 'eventsTableName',
-      awsSecretStoreArn: 'awsSecretStoreArn',
-      dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
     }
   },
   ...
@@ -473,7 +438,6 @@ The following connectors are available:
 | [@resolve-js/readmodel-lite](#readmodel-lite)                                   | Used to store Read Model data in an SQLite database.                  |
 | [@resolve-js/readmodel-mysql](#readmodel-mysql)                                 | Used to store Read Model data in a MySQL database.                    |
 | [@resolve-js/readmodel-postgresql](#readmodel-postgresql)                       | Used to store Read Model data in a PostgreSQL database.               |
-| [@resolve-js/readmodel-postgresql-serverless](#readmodel-postgresql-serverless) | Used to store Read Model data in Amazon Aurora PostgreSQL Serverless. |
 
 #### readmodel-lite
 
@@ -558,39 +522,6 @@ const prodConfig = {
         host: 'localhost',
         port: 5432,
         databaseName: 'public',
-      }
-    }
-  },
-  ...
-}
-```
-
-#### readmodel-postgresql-serverless
-
-Used to store Read Model data in AWS Aurora PostgreSQL Serverless.
-
-This connector supports the following options:
-
-| Option Name            | Description                                                      |
-| ---------------------- | ---------------------------------------------------------------- |
-| awsSecretStoreArn      | An AWS secret store's Amazon Resource Name (ARN).                |
-| databaseName           | The name of a database.                                          |
-| dbClusterOrInstanceArn | An Amazon Resource Name (ARN) of a database cluster or instance. |
-| region                 | An AWS region.                                                   |
-| tablePrefix            | Optional table name prefix.                                      |
-
-#### Example
-
-```js
-const prodConfig = {
-  readModelConnectors: {
-    default: {
-      module: '@resolve-js/readmodel-postgresql-serverless',
-      options: {
-        region: 'us-east-1',
-        databaseName: 'databaseName',
-        awsSecretStoreArn: 'awsSecretStoreArn',
-        dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
       }
     }
   },

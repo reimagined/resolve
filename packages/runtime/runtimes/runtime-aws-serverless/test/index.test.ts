@@ -92,7 +92,6 @@ describe('runtime', () => {
       resetReplication: jest.fn(),
       rollbackIncrementalImport: jest.fn(),
       saveSnapshot: jest.fn(),
-      setReplicationIterator: jest.fn(),
       setReplicationPaused: jest.fn(),
       setReplicationStatus: jest.fn(),
       unfreeze: jest.fn(),

@@ -148,6 +148,17 @@ export type ReplicationState = {
   successEvent: OldEvent | null
 }
 
+export type EventStoreDescription = {
+  eventCount: number
+  secretCount: number
+  setSecretCount: number
+  deletedSecretCount: number
+  isFrozen: boolean
+  lastEventTimestamp: number
+  cursor?: Cursor
+  resourceNames?: { [key: string]: string }
+}
+
 export type Eventstore = {
   saveEvent: (event: Event) => Promise<StoredEventPointer>
   saveSnapshot: (snapshotKey: string, content: string) => Promise<void>
@@ -187,15 +198,17 @@ export type Eventstore = {
     existingSecrets: OldSecretRecord[],
     deletedSecrets: Array<OldSecretRecord['id']>
   ) => Promise<void>
-  setReplicationIterator: (iterator: SerializableMap) => Promise<void>
-  setReplicationStatus: (
-    status: ReplicationStatus,
-    info?: ReplicationState['statusData'],
+  setReplicationStatus: (state: {
+    status: ReplicationStatus
+    statusData?: ReplicationState['statusData']
     lastEvent?: OldEvent
-  ) => Promise<void>
+    iterator?: ReplicationState['iterator']
+  }) => Promise<void>
   setReplicationPaused: (pause: boolean) => Promise<void>
   getReplicationState: () => Promise<ReplicationState>
   resetReplication: () => Promise<void>
+
+  describe: () => Promise<EventStoreDescription>
 }
 
 export type AggregateMeta = {

@@ -7,6 +7,7 @@ const devConfig = {
     options: {
       host: declareRuntimeEnv('HOST', 'localhost'),
       port: declareRuntimeEnv('PORT', '3000'),
+      emulateWorkerLifetimeLimit: 240000,
     },
   },
   rootPath: '',

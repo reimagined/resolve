@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { createWaitForResponseMiddleware } from '@resolve-js/client'
 import { useQuery } from '@resolve-js/react-hooks'
 import { useEffect, useState } from 'react'
 import { Redirect } from 'react-router-dom'
@@ -30,12 +31,17 @@ const Home = ({ location: { hash } }: HomeProps) => {
       args: {},
     },
     {
-      waitFor: {
-        validator: (result) => {
-          return result !== null
-        },
-        period: 1000,
-        attempts: 5,
+      middleware: {
+        response: createWaitForResponseMiddleware({
+          validator: async (response, confirm) => {
+            const result = await response.json()
+            if (result != null) {
+              confirm(result)
+            }
+          },
+          period: 1000,
+          attempts: 5,
+        }),
       },
     },
     (err, result) => {

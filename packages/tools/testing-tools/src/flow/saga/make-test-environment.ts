@@ -132,27 +132,12 @@ export const makeTestEnvironment = (
   const execute = async () => {
     executed = true
 
-    const result: SagaTestResult = Object.defineProperty(
-      {
-        commands: [],
-        scheduledCommands: [],
-        queries: [],
-        sideEffects: [],
-        scheduleCommands: [],
-      },
-      // FIXME: deprecated
-      'scheduleCommands',
-      {
-        enumerable: false,
-        get() {
-          // eslint-disable-next-line no-console
-          console.warn(
-            `'scheduleCommands' property deprecated, use 'scheduledCommands' instead.`
-          )
-          return this.scheduledCommands
-        },
-      }
-    )
+    const result: SagaTestResult = {
+      commands: [],
+      scheduledCommands: [],
+      queries: [],
+      sideEffects: [],
+    }
 
     const { saga, events, adapter, encryption } = context
 

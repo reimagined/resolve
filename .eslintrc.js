@@ -190,6 +190,7 @@ module.exports = {
           'execpath',
           'expr',
           'extname',
+          'evaluator',
           'facebook',
           'fanout',
           'fas',

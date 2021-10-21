@@ -45,6 +45,7 @@ export type SetReplicationPaused = (
 
 export type AdapterOptions = CommonAdapterOptions & {
   targetApplicationUrl: string
+  preferRegularLoader?: boolean
 }
 
 export type InternalMethods = {
@@ -58,6 +59,7 @@ export type ArrayOrSingleOrNull<T> = Array<T> | T | null
 
 export type AdapterPool = CommonAdapterPool & {
   targetApplicationUrl: string
+  preferRegularLoader: boolean
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<AdapterPool>[K]
   } &

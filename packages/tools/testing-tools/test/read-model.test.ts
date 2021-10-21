@@ -26,6 +26,17 @@ const ResolverError = (function (this: Error, message: string): void {
   }
 } as Function) as ErrorConstructor
 
+let errorSpy: jest.SpyInstance
+
+beforeAll(() => {
+  errorSpy = jest.spyOn(console, 'error')
+  errorSpy.mockImplementation(void 0)
+})
+
+afterAll(() => {
+  errorSpy.mockRestore()
+})
+
 describe('basic tests', () => {
   const readModel: TestReadModel = {
     name: 'readModelName',

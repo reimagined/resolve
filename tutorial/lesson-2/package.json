@@ -15,11 +15,11 @@
   "dependencies": {
     "@babel/node": "7.14.2",
     "@resolve-js/eventstore-lite": "0.32.0",
-    "@resolve-js/eventstore-postgresql-serverless": "0.32.0",
+    "@resolve-js/eventstore-postgresql": "0.32.0",
     "@resolve-js/module-admin": "0.32.0",
     "@resolve-js/react-hooks": "0.32.0",
     "@resolve-js/readmodel-lite": "0.32.0",
-    "@resolve-js/readmodel-postgresql-serverless": "0.32.0",
+    "@resolve-js/readmodel-postgresql": "0.32.0",
     "@resolve-js/runtime-single-process": "0.32.0",
     "@resolve-js/runtime-aws-serverless": "0.32.0",
     "history": "4.10.1",

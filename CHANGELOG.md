@@ -8,9 +8,24 @@
 
 - Add event loader in eventstore adapter inferface and loading events via pg-cursor [\#2067](https://github.com/reimagined/resolve/pull/2067)
 
+**Enhancements:**
+
+- Make less database queries during replication [\#2084](https://github.com/reimagined/resolve/pull/2084)
+- Use event-loader \(via pgcursor for postgres\) in replicator [\#2076](https://github.com/reimagined/resolve/pull/2076)
+
 **Breaking changes:**
 
+- Remove RDS data api eventstore and readmodel adapters [\#2078](https://github.com/reimagined/resolve/pull/2078)
 - Refactored runtime libraries [\#2060](https://github.com/reimagined/resolve/pull/2060)
+
+**Bug fixes:**
+
+- Testing tools - When passing events with timestamps to givenEvents\(\), these events are sometimes lost [\#2075](https://github.com/reimagined/resolve/issues/2075)
+
+**Documentation:**
+
+- Fix outdated content in the Preparing to Production topic [\#2086](https://github.com/reimagined/resolve/pull/2086)
+- Remove postgres-serverless adapters mentions from documentation [\#2083](https://github.com/reimagined/resolve/pull/2083)
 
 **Other changes:**
 

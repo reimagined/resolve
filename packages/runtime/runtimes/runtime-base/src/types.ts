@@ -183,7 +183,9 @@ export type RuntimeFactoryParameters = {
     string,
     ReadModelConnectorFactory
   >
-  readonly getVacantTimeInMillis: () => number
+  readonly getVacantTimeInMillis: (
+    getRuntimeCreationTime: () => number
+  ) => number
   readonly eventSubscriberScope: string
   readonly notifyEventSubscriber: EventSubscriberNotifier
   readonly invokeBuildAsync: InvokeBuildAsync

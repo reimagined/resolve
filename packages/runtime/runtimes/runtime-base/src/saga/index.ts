@@ -19,7 +19,7 @@ type CreateSagaOptions = {
   uploader: Runtime['uploader']
   eventstoreAdapter: Runtime['eventStoreAdapter']
   secretsManager: SecretsManager
-  getVacantTimeInMillis: RuntimeFactoryParameters['getVacantTimeInMillis']
+  getVacantTimeInMillis: () => number
   getScheduler: () => Scheduler
   monitoring: Runtime['monitoring']
   domainInterop: RuntimeFactoryParameters['domainInterop']

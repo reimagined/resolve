@@ -7,10 +7,12 @@ import type {
   ReplicationState,
   StoredEventBatchPointer,
   GatheredSecrets,
+  EventLoader,
 } from '@resolve-js/eventstore-base'
 import {
   RequestTimeoutError,
   ServiceBusyError,
+  ConnectionError,
 } from '@resolve-js/eventstore-base'
 import { getLog } from './get-log'
 
@@ -75,11 +77,37 @@ const build: ExternalMethods['build'] = async (
     return
   }
 
-  log.debug('Starting or continuing replication process')
-
   let iterator = state.iterator
   let localContinue = true
   const sleepAfterServiceErrorMs = 3000
+
+  let eventLoader: EventLoader
+  try {
+    eventLoader = await eventstoreAdapter.getEventLoader(
+      {
+        cursor: iterator == null ? null : (iterator.cursor as ReadModelCursor),
+      },
+      { preferRegular: basePool.preferRegularLoader }
+    )
+    log.debug(
+      eventLoader.isNative
+        ? 'Using native event loader'
+        : 'Using regular event loader'
+    )
+  } catch (error) {
+    if (RequestTimeoutError.is(error) || ServiceBusyError.is(error)) {
+      log.debug(
+        `Got non-fatal error, continuing on the next step. ${error.message}`
+      )
+      await next()
+      return
+    } else if (ConnectionError.is(error)) {
+      log.error(error)
+      return
+    } else {
+      throw error
+    }
+  }
 
   while (true) {
     let lastError: Error | null = null
@@ -91,19 +119,20 @@ const build: ExternalMethods['build'] = async (
     let gatheredSecrets: GatheredSecrets
 
     try {
-      loadEventsResult = await eventstoreAdapter.loadEvents({
-        cursor,
-        limit: 100,
-      })
+      loadEventsResult = await eventLoader.loadEvents(100)
       gatheredSecrets = await eventstoreAdapter.gatherSecretsFromEvents(
         loadEventsResult.events
       )
-    } catch (err) {
-      if (RequestTimeoutError.is(err) || ServiceBusyError.is(err)) {
+    } catch (error) {
+      if (RequestTimeoutError.is(error) || ServiceBusyError.is(error)) {
+        log.debug(
+          `Got non-fatal error, continuing on the next step. ${error.message}`
+        )
         await next()
-        return
+        break
       } else {
-        throw err
+        await eventLoader.close()
+        throw error
       }
     }
     const { cursor: nextCursor, events } = loadEventsResult
@@ -113,7 +142,7 @@ const build: ExternalMethods['build'] = async (
     let wasPaused = false
 
     try {
-      log.debug(`Calling replicate on ${events.length} events`)
+      log.verbose(`Calling replicate on ${events.length} events`)
 
       const result: CallReplicateResult = await basePool.callReplicate(
         basePool,
@@ -128,7 +157,6 @@ const build: ExternalMethods['build'] = async (
       } else if (result.type === 'clientError') {
         lastError = { name: 'Error', message: result.message }
       } else if (result.type === 'launched') {
-        await sleep(BATCH_PROCESSING_POLL_MS)
         while (true) {
           const state = await basePool.getReplicationState(basePool)
           if (state.status === 'batchInProgress') {
@@ -166,7 +194,7 @@ const build: ExternalMethods['build'] = async (
     const isBuildSuccess = lastError == null && appliedEventsCount > 0
 
     if (isBuildSuccess) {
-      log.debug(`Replicated batch of ${appliedEventsCount} events`)
+      log.verbose(`Replicated batch of ${appliedEventsCount} events`)
     }
 
     if (lastError) {
@@ -193,15 +221,16 @@ const build: ExternalMethods['build'] = async (
     }
 
     if (isBuildSuccess && localContinue) {
-      log.verbose('Continuing replication in the local build loop')
+      log.debug('Continuing replication in the local build loop')
     } else {
       if (isBuildSuccess) {
-        log.verbose('Calling next in build')
+        log.debug('Calling next in build')
         await next()
       }
       break
     }
   }
+  await eventLoader.close()
 }
 
 export default build

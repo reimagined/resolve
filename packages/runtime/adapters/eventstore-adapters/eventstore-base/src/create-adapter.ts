@@ -87,7 +87,6 @@ const createAdapter = <
     injectSecret,
     replicateEvents,
     replicateSecrets,
-    setReplicationIterator,
     setReplicationPaused,
     setReplicationStatus,
     getReplicationState,
@@ -98,7 +97,12 @@ const createAdapter = <
     getEventLoaderNative,
   }: AdapterFunctions<ConnectedProps, ConnectionDependencies, Config>,
   connectionDependencies: ConnectionDependencies,
-  options: Config
+  options: Config,
+  prepare?: (
+    props: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+    config: Config,
+    dependencies: ConnectionDependencies
+  ) => void
 ): Adapter => {
   const log: LeveledDebugger & debug.Debugger = getLog(`createAdapter`)
   const config: Config = { ...options }
@@ -143,6 +147,9 @@ const createAdapter = <
     ...primalProps,
     ...emptyProps,
   }
+  if (prepare !== undefined) {
+    prepare(adapterPool, config, connectionDependencies)
+  }
 
   const connectedProps: AdapterPoolPrivateConnectedProps = {
     injectEvent: wrapMethod(adapterPool, injectEvent),
@@ -162,7 +169,12 @@ const createAdapter = <
     waitConnect: wrapMethod(adapterPool, emptyFunction),
     shapeEvent,
     getEventLoaderNative: getEventLoaderNative
-      ? wrapMethod(adapterPool, getEventLoaderNative)
+      ? async (filter) => {
+          return getEventLoaderNative(
+            adapterPool as AdapterPoolConnected<ConnectedProps>,
+            filter
+          )
+        }
       : getEventLoaderNative,
   }
 
@@ -211,7 +223,6 @@ const createAdapter = <
 
     replicateEvents: wrapMethod(adapterPool, replicateEvents),
     replicateSecrets: wrapMethod(adapterPool, replicateSecrets),
-    setReplicationIterator: wrapMethod(adapterPool, setReplicationIterator),
     setReplicationPaused: wrapMethod(adapterPool, setReplicationPaused),
     setReplicationStatus: wrapMethod(adapterPool, setReplicationStatus),
     getReplicationState: wrapMethod(adapterPool, getReplicationState),
@@ -225,7 +236,13 @@ const createAdapter = <
             return
           }
         : establishTimeLimit.bind(null, adapterPool),
-    getEventLoader: wrapMethod(adapterPool, getEventLoader),
+    getEventLoader: async (filter, options) => {
+      return getEventLoader(
+        adapterPool as AdapterPoolConnected<ConnectedProps>,
+        filter,
+        options
+      )
+    },
   }
 
   Object.assign<AdapterPoolPossiblyUnconnected<ConnectedProps>, Adapter>(

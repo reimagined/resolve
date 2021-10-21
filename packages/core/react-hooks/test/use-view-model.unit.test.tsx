@@ -181,7 +181,6 @@ describe('call', () => {
   })
 
   test('connect as promise with query options', async () => {
-    const validator = (): boolean => true
     const {
       result: {
         current: { connect },
@@ -189,9 +188,6 @@ describe('call', () => {
     } = renderWrapped(() =>
       useViewModel('view-model-name', ['aggregate-id'], mockStateChange, {
         method: 'POST',
-        waitFor: {
-          validator,
-        },
       })
     )
 
@@ -204,9 +200,6 @@ describe('call', () => {
       },
       {
         method: 'POST',
-        waitFor: {
-          validator,
-        },
       }
     )
     expect(mockClient.subscribe).toBeCalledWith(

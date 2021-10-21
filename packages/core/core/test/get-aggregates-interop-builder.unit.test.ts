@@ -46,7 +46,6 @@ const makeTestRuntime = (
     replicateEvents: jest.fn(),
     replicateSecrets: jest.fn(),
     resetReplication: jest.fn(),
-    setReplicationIterator: jest.fn(),
     setReplicationPaused: jest.fn(),
     setReplicationStatus: jest.fn(),
     saveEvent: jest.fn(async (originalEvent) => {
@@ -84,6 +83,7 @@ const makeTestRuntime = (
     ensureEventSubscriber: jest.fn().mockResolvedValue(null),
     removeEventSubscriber: jest.fn().mockResolvedValue(null),
     getEventSubscribers: jest.fn().mockResolvedValue([]),
+    describe: jest.fn(),
   }
 
   const monitoring: Monitoring = {

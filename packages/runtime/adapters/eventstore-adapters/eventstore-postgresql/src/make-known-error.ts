@@ -1,4 +1,8 @@
-import { isServiceBusyError, isTimeoutError } from './errors'
+import {
+  isServiceBusyError,
+  isTimeoutError,
+  isConnectionTerminatedError,
+} from './errors'
 import {
   ConnectionError,
   RequestTimeoutError,
@@ -6,7 +10,7 @@ import {
 } from '@resolve-js/eventstore-base'
 
 const makeKnownError = (error: any): any => {
-  if (isServiceBusyError(error)) {
+  if (isServiceBusyError(error) || isConnectionTerminatedError(error)) {
     const busyError = new ServiceBusyError(error.message)
     busyError.stack = error.stack ?? busyError.stack
     return busyError
