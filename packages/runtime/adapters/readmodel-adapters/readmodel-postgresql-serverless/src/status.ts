@@ -1,4 +1,4 @@
-import type {
+import {
   AdapterOperationStatusMethodArguments,
   AdapterOperationStatusMethodReturnType,
   RuntimeReadModelStatus,
@@ -76,10 +76,7 @@ const status: ExternalMethods['status'] = async <
       ]
     }
 
-    if (
-      includeRuntimeStatus &&
-      result?.status === ('deliver' as ReadModelRunStatus)
-    ) {
+    if (includeRuntimeStatus && result?.status === ReadModelRunStatus.DELIVER) {
       let isActive = false
       const endTime = Date.now() + 5000
       for (
@@ -131,7 +128,7 @@ const status: ExternalMethods['status'] = async <
 
       result = Object.assign(result, { isAlive })
     } else if (includeRuntimeStatus) {
-      const isAlive = result?.status === ('skip' as ReadModelRunStatus)
+      const isAlive = result?.status === ReadModelRunStatus.SKIP
       result = Object.assign(result, { isAlive })
     }
 
