@@ -1,5 +1,5 @@
 import { AlreadyDisposedError } from '../src'
-import wrapMethod from '../src/wrap-method'
+import bindMethod from '../src/bind-method'
 import type {
   AdapterPoolConnectedProps,
   AdapterPoolPossiblyUnconnected,
@@ -15,7 +15,7 @@ test('wrapMethod should wrap API methods to await connection', async () => {
     getConnectPromise: jest.fn() as AdapterPoolPrimalProps['getConnectPromise'],
   } as AdapterPoolPossiblyUnconnected<AdapterPoolConnectedProps>
 
-  const wrappedApiMethod = wrapMethod(pool, apiMethod)
+  const wrappedApiMethod = bindMethod(pool, apiMethod)
 
   expect(apiMethod).toHaveBeenCalledTimes(0)
 
@@ -37,7 +37,7 @@ test('wrapMethod handle dispose adapter state', async () => {
     disposed: true,
   } as AdapterPoolPossiblyUnconnected<AdapterPoolConnectedProps>
 
-  const wrappedApiMethod = wrapMethod(pool, apiMethod)
+  const wrappedApiMethod = bindMethod(pool, apiMethod)
   expect(apiMethod).toHaveBeenCalledTimes(0)
 
   await expect(wrappedApiMethod()).rejects.toThrow(AlreadyDisposedError)

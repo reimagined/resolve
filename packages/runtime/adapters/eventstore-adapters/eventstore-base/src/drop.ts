@@ -1,11 +1,11 @@
-import { AdapterPoolConnectedProps, AdapterPoolConnected } from './types'
+import { AdapterBoundPool } from './types'
 
-const drop = async <ConnectedProps extends AdapterPoolConnectedProps>({
+const drop = async <ConnectedProps extends {}>({
   dropEvents,
   dropSecrets,
   dropFinal,
   maybeThrowResourceError,
-}: AdapterPoolConnected<ConnectedProps>): Promise<void> => {
+}: AdapterBoundPool<ConnectedProps>): Promise<void> => {
   const errorsArrays = await Promise.all([dropEvents(), dropSecrets()])
   const finalErrors = await dropFinal()
   const errors: any[] = []

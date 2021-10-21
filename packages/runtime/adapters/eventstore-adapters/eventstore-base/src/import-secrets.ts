@@ -10,11 +10,7 @@ import {
 } from './constants'
 
 import { ResourceNotExistError } from './resource-errors'
-import {
-  AdapterPoolConnectedProps,
-  AdapterPoolPossiblyUnconnected,
-  ImportSecretsOptions,
-} from './types'
+import { AdapterBoundPool, ImportSecretsOptions } from './types'
 
 type ImportStreamContext = {
   pool: any
@@ -61,8 +57,6 @@ SecretsStream.prototype._write = async function (
   }
 
   try {
-    await this.pool.waitConnect()
-
     const { dropSecrets, initSecrets, freeze, injectSecret }: any = this.pool
 
     if (
@@ -194,7 +188,6 @@ SecretsStream.prototype._final = async function (callback: any): Promise<void> {
   }
 
   try {
-    await this.pool.waitConnect()
     const { unfreeze, injectSecret } = this.pool
 
     if (this.vacantSize !== BUFFER_SIZE) {
@@ -267,8 +260,8 @@ SecretsStream.prototype._final = async function (callback: any): Promise<void> {
   }
 }
 
-const importSecretsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
-  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+const importSecretsStream = <ConfiguredProps extends {}>(
+  pool: AdapterBoundPool<ConfiguredProps>,
   {
     maintenanceMode = MAINTENANCE_MODE_AUTO,
   }: Partial<ImportSecretsOptions> = {}

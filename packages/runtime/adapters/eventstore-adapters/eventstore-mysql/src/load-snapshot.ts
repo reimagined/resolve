@@ -1,7 +1,7 @@
 import { AdapterPool } from './types'
 
 const loadSnapshot = async (
-  { snapshotsTableName, connection, escapeId, escape }: AdapterPool,
+  { snapshotsTableName, query, escapeId, escape }: AdapterPool,
   snapshotKey: string
 ): Promise<string | null> => {
   if (snapshotKey == null || snapshotKey.constructor !== String) {
@@ -10,7 +10,7 @@ const loadSnapshot = async (
 
   const snapshotsTableNameAsId: string = escapeId(snapshotsTableName)
 
-  const [rows] = await connection.query(
+  const [rows] = await query(
     `SELECT \`SnapshotContent\` FROM ${snapshotsTableNameAsId}
    WHERE \`SnapshotKey\`= ${escape(snapshotKey)} `
   )
