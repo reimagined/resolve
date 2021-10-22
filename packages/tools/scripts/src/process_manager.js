@@ -8,7 +8,6 @@ export const processFail = (error) => {
 }
 
 export const processRegister = (command, opts) => {
-  console.log('register', command)
   const process = respawn(command, opts)
 
   processes.push(process)
@@ -17,7 +16,6 @@ export const processRegister = (command, opts) => {
 }
 
 export const processStopAll = (error) => {
-  console.log('stop all', processes.length)
   if (error != null) {
     errors.push(error)
   }

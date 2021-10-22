@@ -58,7 +58,7 @@ const createCompositeAdapterImplementation = (
         throw new Error(`Monitoring adapter with '${id}' id not found`)
       }
 
-      return adapter.getMetrics()
+      return adapter.clearMetrics()
     },
   }
 }
