@@ -90,6 +90,7 @@ describe('runtime', () => {
       replicateEvents: jest.fn(),
       replicateSecrets: jest.fn(),
       resetReplication: jest.fn(),
+      setReplicationLock: jest.fn(),
       rollbackIncrementalImport: jest.fn(),
       saveSnapshot: jest.fn(),
       setReplicationPaused: jest.fn(),

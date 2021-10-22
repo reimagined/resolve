@@ -15,9 +15,10 @@ const getReplicationState = async (
   const replicationStateTableName = await initReplicationStateTable(pool)
 
   const rows = await executeStatement(
-    `SELECT "Status", "StatusData", "Iterator", "IsPaused", "SuccessEvent" FROM ${escapeId(
-      replicationStateTableName
-    )}`
+    `SELECT "Status", "StatusData", "Iterator", "IsPaused", "SuccessEvent", 
+     ("LockExpirationTime" > CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS INTEGER)) as "Locked" FROM ${escapeId(
+       replicationStateTableName
+     )}`
   )
   if (rows.length > 0) {
     const row = rows[0]
@@ -33,6 +34,7 @@ const getReplicationState = async (
       paused: row.IsPaused !== 0,
       iterator: row.Iterator != null ? JSON.parse(row.Iterator) : null,
       successEvent: lastEvent,
+      locked: !!row.Locked,
     }
   } else {
     return getInitialReplicationState()

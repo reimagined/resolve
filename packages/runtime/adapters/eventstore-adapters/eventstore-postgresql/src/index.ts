@@ -45,6 +45,8 @@ import setReplicationStatus from './set-replication-status'
 import setReplicationPaused from './set-replication-paused'
 import getReplicationState from './get-replication-state'
 import resetReplication from './reset-replication'
+import setReplicationLock from './set-replication-lock'
+
 import getCursorUntilEventTypes from './get-cursor-until-event-types'
 import describe from './describe'
 import establishTimeLimit from './establish-time-limit'
@@ -99,6 +101,7 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       setReplicationPaused,
       getReplicationState,
       resetReplication,
+      setReplicationLock,
       getCursorUntilEventTypes,
       describe,
       establishTimeLimit,
