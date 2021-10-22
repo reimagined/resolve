@@ -58,7 +58,7 @@ const dispose = async (runtime: Runtime) => {
   try {
     log.debug('publishing metrics')
 
-    await runtime?.monitoring?.publish()
+    await runtime?.monitoring?.publish({ source: 'resolveDispose' })
 
     log.debug(`metrics published`)
 

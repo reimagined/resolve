@@ -18,6 +18,7 @@ import { websocketServerFactory } from './websocket-server-factory'
 import { startExpress } from './start-express'
 import { uploaderFactory } from './uploader-factory'
 import { schedulerFactory } from './scheduler-factory'
+import { cleanUpProcess } from './clean-up-process'
 
 import type {
   EventSubscriberNotification,
@@ -166,6 +167,8 @@ const entry = async (
         },
         factoryParameters
       )
+
+      process.on('SIGINT', cleanUpProcess.bind(null, factoryParameters))
     } catch (error) {
       log.error(error)
     }

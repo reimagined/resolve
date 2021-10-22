@@ -58,7 +58,7 @@ afterEach(() => {
   mockRate.mockClear()
 })
 
-describe('base methods', () => {
+describe.skip('base methods', () => {
   test('error', () => {
     const monitoring = createMonitoring({
       deploymentId: 'test-deployment',
