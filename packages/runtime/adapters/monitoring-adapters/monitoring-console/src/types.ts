@@ -1,6 +1,13 @@
 import { MonitoringAdapter } from '@resolve-js/core'
 
+export type PublishMode = 'all' | 'processExit' | 'resolveDispose'
+
 export interface MonitoringContext {
+  baseMonitoring: MonitoringAdapter
+  publishMode: PublishMode
+}
+
+export interface MonitoringGroupContext {
   baseMonitoring: MonitoringAdapter
 }
 

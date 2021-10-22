@@ -28,6 +28,7 @@ import type {
   LambdaColdStartContext,
   WorkerResult,
 } from './types'
+import { prepareAssemblies } from './prepare-assemblies'
 
 const log = getLog('aws-serverless-entry')
 
@@ -35,7 +36,8 @@ const entry = async (
   options: RuntimeOptions,
   context: RuntimeEntryContext
 ): Promise<RuntimeWorker<WorkerArguments, WorkerResult>> => {
-  const { assemblies, constants, domain, resolveVersion } = context
+  const { constants, domain, resolveVersion } = context
+  const assemblies = prepareAssemblies(context.assemblies, context)
   let subSegment: PerformanceSubsegment | null = null
 
   log.debug(`starting lambda 'cold start'`)

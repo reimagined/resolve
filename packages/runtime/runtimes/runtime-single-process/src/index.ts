@@ -10,6 +10,7 @@ import {
   createCompositeMonitoringAdapter,
 } from '@resolve-js/runtime-base'
 import { prepareDomain } from './prepare-domain'
+import { prepareAssemblies } from './prepare-assemblies'
 import { performanceTracerFactory } from './performance-tracer-factory'
 import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
 import { expressAppFactory } from './express-app-factory'
@@ -61,7 +62,8 @@ const entry = async (
         .toString('hex')
         .slice(0, 32)
 
-      const { assemblies, constants } = context
+      const { constants } = context
+      const assemblies = prepareAssemblies(context.assemblies)
       const domain = prepareDomain(context.domain)
       const domainInterop = await initDomain(domain)
 

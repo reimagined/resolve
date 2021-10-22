@@ -3,12 +3,16 @@ import getLog, { LeveledDebugger } from '@resolve-js/debug-levels'
 import type { MonitoringAdapter } from '@resolve-js/core'
 
 import { monitoringPublish } from './publish'
-import type { MonitoringContext } from './types'
+import type {
+  PublishMode,
+  MonitoringContext,
+  MonitoringGroupContext,
+} from './types'
 
 const createMonitoringImplementation = (
   log: LeveledDebugger,
   context: MonitoringContext,
-  { baseMonitoring }: MonitoringContext
+  { baseMonitoring }: MonitoringGroupContext
 ): MonitoringAdapter => ({
   group: (config: Record<string, string>) =>
     createMonitoringImplementation(log, context, {
@@ -25,12 +29,16 @@ const createMonitoringImplementation = (
   clearMetrics: baseMonitoring.clearMetrics.bind(baseMonitoring),
 })
 
-const createMonitoring = (): MonitoringAdapter => {
+const createMonitoring = ({
+  publishMode = 'processExit',
+}: {
+  publishMode: PublishMode
+}): MonitoringAdapter => {
   const baseMonitoring = createBaseMonitoring()
 
   return createMonitoringImplementation(
     getLog('resolve:monitoring-console'),
-    { baseMonitoring },
+    { baseMonitoring, publishMode },
     { baseMonitoring }
   )
 }
