@@ -62,7 +62,7 @@ interface MonitoringBase {
   duration: (label: string, duration: number, count?: number) => void
   time: (name: string, timestamp?: number) => void
   timeEnd: (name: string, timestamp?: number) => void
-  publish: (options: { source: string }) => Promise<void>
+  publish: (options?: { source: string }) => Promise<void>
   rate: (metricName: string, count: number, seconds?: number) => void
   performance?: PerformanceTracer
 }
