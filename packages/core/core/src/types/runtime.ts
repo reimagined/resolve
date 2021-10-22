@@ -117,6 +117,7 @@ export type ReplicationState = {
   paused: boolean
   iterator: SerializableMap | null
   successEvent: OldEvent | null
+  locked: boolean
 }
 
 export type EventStoreDescription = {
@@ -178,6 +179,7 @@ export type Eventstore = {
   setReplicationPaused: (pause: boolean) => Promise<void>
   getReplicationState: () => Promise<ReplicationState>
   resetReplication: () => Promise<void>
+  setReplicationLock: (lockDuration: number) => Promise<boolean>
 
   describe: () => Promise<EventStoreDescription>
 }

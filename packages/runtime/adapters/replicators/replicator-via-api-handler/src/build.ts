@@ -77,11 +77,34 @@ const build: ExternalMethods['build'] = async (
     return
   }
 
+  const timeLeft = getVacantTimeInMillis()
+  const occupationResult = await basePool.occupyReplication(basePool, timeLeft)
+  if (!occupationResult.success) {
+    log.debug(
+      `Could not occupy replication process. ${occupationResult.message ?? ''}`
+    )
+    return
+  }
+
   let iterator = state.iterator
   let localContinue = true
   const sleepAfterServiceErrorMs = 3000
 
   let eventLoader: EventLoader
+
+  const onExit = async () => {
+    try {
+      if (eventLoader !== undefined) await eventLoader.close()
+    } catch (error) {
+      log.error(error)
+    }
+    try {
+      await basePool.releaseReplication(basePool)
+    } catch (error) {
+      log.error(error)
+    }
+  }
+
   try {
     eventLoader = await eventstoreAdapter.getEventLoader(
       {
@@ -95,6 +118,7 @@ const build: ExternalMethods['build'] = async (
         : 'Using regular event loader'
     )
   } catch (error) {
+    await onExit()
     if (RequestTimeoutError.is(error) || ServiceBusyError.is(error)) {
       log.debug(
         `Got non-fatal error, continuing on the next step. ${error.message}`
@@ -108,6 +132,8 @@ const build: ExternalMethods['build'] = async (
       throw error
     }
   }
+
+  log.debug('Starting or continuing replication process')
 
   while (true) {
     let lastError: Error | null = null
@@ -128,10 +154,10 @@ const build: ExternalMethods['build'] = async (
         log.debug(
           `Got non-fatal error, continuing on the next step. ${error.message}`
         )
-        await next()
-        break
+        await onExit()
+        return
       } else {
-        await eventLoader.close()
+        await onExit()
         throw error
       }
     }
@@ -217,20 +243,21 @@ const build: ExternalMethods['build'] = async (
 
     if (isBuildSuccess && wasPaused) {
       log.debug('Pausing replication as requested')
-      break
+      await onExit()
+      return
     }
 
     if (isBuildSuccess && localContinue) {
-      log.debug('Continuing replication in the local build loop')
+      log.verbose('Continuing replication in the local build loop')
     } else {
+      await onExit()
       if (isBuildSuccess) {
         log.debug('Calling next in build')
         await next()
       }
-      break
+      return
     }
   }
-  await eventLoader.close()
 }
 
 export default build

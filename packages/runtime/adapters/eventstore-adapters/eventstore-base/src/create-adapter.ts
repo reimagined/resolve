@@ -91,6 +91,7 @@ const createAdapter = <
     setReplicationStatus,
     getReplicationState,
     resetReplication,
+    setReplicationLock,
     getCursorUntilEventTypes,
     describe,
     establishTimeLimit,
@@ -227,6 +228,7 @@ const createAdapter = <
     setReplicationStatus: wrapMethod(adapterPool, setReplicationStatus),
     getReplicationState: wrapMethod(adapterPool, getReplicationState),
     resetReplication: wrapMethod(adapterPool, resetReplication),
+    setReplicationLock: wrapMethod(adapterPool, setReplicationLock),
 
     getCursorUntilEventTypes: wrapMethod(adapterPool, getCursorUntilEventTypes),
     describe: wrapMethod(adapterPool, describe),
