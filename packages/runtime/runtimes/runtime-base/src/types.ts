@@ -127,7 +127,8 @@ export type EventSubscriberNotification = {
 }
 
 export type InvokeBuildAsync = (
-  parameters: EventSubscriberNotification
+  parameters: EventSubscriberNotification,
+  timeout?: number
 ) => Promise<void>
 
 export type { BuildTimeConstants }
