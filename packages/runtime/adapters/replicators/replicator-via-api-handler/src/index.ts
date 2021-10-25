@@ -25,6 +25,8 @@ import build from './build'
 import getReplicationState from './get-replication-state'
 import callReplicate from './call-replicate'
 import setReplicationPaused from './set-replication-paused'
+import occupyReplication from './occupy-replication'
+import releaseReplication from './release-replication'
 
 const defineTable = (async (...args) => {
   return
@@ -63,6 +65,8 @@ const internalMethods: InternalMethods = {
   getReplicationState,
   callReplicate,
   setReplicationPaused,
+  occupyReplication,
+  releaseReplication,
 }
 
 const subscribe = (async (...args) => {

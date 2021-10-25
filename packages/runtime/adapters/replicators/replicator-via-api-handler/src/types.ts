@@ -53,6 +53,11 @@ export type InternalMethods = {
   getReplicationState: GetReplicationState
   callReplicate: CallReplicate
   setReplicationPaused: SetReplicationPaused
+  occupyReplication: (
+    pool: AdapterPool,
+    duration: number
+  ) => Promise<{ success: boolean; message?: string }>
+  releaseReplication: (pool: AdapterPool) => Promise<void>
 }
 
 export type ArrayOrSingleOrNull<T> = Array<T> | T | null

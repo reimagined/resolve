@@ -12,6 +12,8 @@ import type {
   SecretRecord,
   OldSecretRecord,
   OldEvent,
+  ReplicationStatus,
+  ReplicationState,
 } from '@resolve-js/core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
@@ -68,19 +70,7 @@ export type VersionlessEvent = Omit<InputEvent, 'aggregateVersion'>
 
 export type { SecretRecord, OldSecretRecord, OldEvent }
 
-export type ReplicationStatus =
-  | 'batchInProgress'
-  | 'batchDone'
-  | 'error'
-  | 'notStarted'
-  | 'serviceError'
-export type ReplicationState = {
-  status: ReplicationStatus
-  statusData: SerializableMap | null
-  paused: boolean
-  iterator: SerializableMap | null
-  successEvent: OldEvent | null
-}
+export type { ReplicationState, ReplicationStatus }
 
 export function getInitialReplicationState(): ReplicationState {
   return {
@@ -89,6 +79,7 @@ export function getInitialReplicationState(): ReplicationState {
     iterator: null,
     paused: false,
     successEvent: null,
+    locked: false,
   }
 }
 
@@ -485,6 +476,7 @@ export interface AdapterFunctions<
     Adapter['getReplicationState']
   >
   resetReplication?: PoolMethod<ConnectedProps, Adapter['resetReplication']>
+  setReplicationLock?: PoolMethod<ConnectedProps, Adapter['setReplicationLock']>
 
   getCursorUntilEventTypes?: PoolMethod<
     ConnectedProps,

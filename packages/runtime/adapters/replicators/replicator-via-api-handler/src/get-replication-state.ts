@@ -1,28 +1,16 @@
 import { InternalMethods } from './types'
 import { ReplicationState } from '@resolve-js/eventstore-base'
 import fetch from 'node-fetch'
+import checkTargetUrl from './check-target-url'
 
 import { REPLICATION_STATE } from '@resolve-js/module-replication'
 
 const getReplicationState: InternalMethods['getReplicationState'] = async ({
   targetApplicationUrl,
-}) => {
-  if (
-    targetApplicationUrl == null ||
-    targetApplicationUrl.constructor !== String ||
-    targetApplicationUrl.length === 0
-  ) {
-    return {
-      status: 'error',
-      statusData: {
-        name: 'Error',
-        message:
-          'Invalid target application url: empty or not a string. The replication is no-op',
-      },
-      paused: false,
-      iterator: null,
-      successEvent: null,
-    }
+}): Promise<ReplicationState> => {
+  const checkResult = checkTargetUrl(targetApplicationUrl)
+  if (checkResult != null) {
+    return checkResult
   }
 
   try {
@@ -40,6 +28,7 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
         paused: false,
         iterator: null,
         successEvent: null,
+        locked: false,
       }
     }
     return state
@@ -49,7 +38,7 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
       error.name === 'FetchError' ||
       error.name === 'TypeError'
     ) {
-      const state: ReplicationState = {
+      return {
         status: 'serviceError',
         statusData: {
           name: error.name as string,
@@ -59,8 +48,8 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
         paused: false,
         iterator: null,
         successEvent: null,
+        locked: false,
       }
-      return state
     } else {
       throw error
     }
