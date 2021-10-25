@@ -6,10 +6,12 @@ export const prepareAssemblies = (
   assemblies: Assemblies,
   context: RuntimeEntryContext
 ): Assemblies => {
-  assemblies.monitoringAdapters['aws-cloudwatch'] = () =>
-    createMonitoring({
-      deploymentId: getDeploymentId(),
-      resolveVersion: context.resolveVersion,
-    })
+  if (assemblies.monitoringAdapters.default == null) {
+    assemblies.monitoringAdapters.default = () =>
+      createMonitoring({
+        deploymentId: getDeploymentId(),
+        resolveVersion: context.resolveVersion,
+      })
+  }
   return assemblies
 }

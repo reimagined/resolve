@@ -349,6 +349,35 @@ const appConfig = {
 }
 ```
 
+### monitoringAdapters
+
+Specifies the application's Monitoring adapters as key-value pairs. An adapter configuration object contains the following fields:
+
+| Field   | Description                                                          |
+| ------- | -------------------------------------------------------------------- |
+| module  | The name of a module or the path to a file that defines a connector. |
+| options | An object that defines the connector's options as key-value pairs.   |
+
+##### Example:
+
+```js
+monitoringAdapters: {
+  default: {
+    module: '@resolve-js/monitoring-console',
+    options: {
+      publishMode: 'processExit',
+    },
+  },
+}
+```
+
+The following adapters are available:
+
+| Module Name                                                                     | Description                                                           |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| [@resolve-js/monitoring-console](#monitoring-console)                           | Used to print monitoring adapter metrics into console.                |
+| [@resolve-js/monitoring-aws-cloudwatch](#monitoring-aws-cloudwatch)             | Used to publish metrics into AWS CloudWatch.                          |
+
 ### jwtCookie
 
 Specifies global settings for the application's JWT cookies. The configuration object contains the following fields:
@@ -419,7 +448,7 @@ Specifies the application's Read Model connectors as key-value pairs. A connecto
 ```js
 readModelConnectors: {
   default: {
-    module: 'readmodel-mysql',
+    module: '@resolve-js/readmodel-mysql',
     options: {
       host: 'localhost',
       port: 3306,
