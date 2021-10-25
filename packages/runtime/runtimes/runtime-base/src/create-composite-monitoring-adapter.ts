@@ -8,7 +8,7 @@ const wrapVoidMethod = <
   adapterMap: Record<string, Monitoring>
 ): ((...args: P) => void) => {
   return (...args: Parameters<Monitoring[K]>) => {
-    Object.keys(adapterMap).map((id) => {
+    Object.keys(adapterMap).forEach((id) => {
       void (adapterMap[id][methodName] as any).apply(adapterMap[id], args)
     })
   }
