@@ -20,7 +20,7 @@ import resolveVersion from '$resolve.resolveVersion'
 const prodConfig = {
   monitoringAdapters: {
     default: {
-      module: '@resolve-js/monitoring-console',
+      module: '@resolve-js/monitoring-aws-cloudwatch',
       options: {
         deploymentId: declareRuntimeEnv('RESOLVE_DEPLOYMENT_ID'),
         resolveVersion,
