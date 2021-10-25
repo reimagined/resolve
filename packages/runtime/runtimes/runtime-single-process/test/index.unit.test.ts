@@ -32,14 +32,14 @@ jest.mock('../src/websocket-server-factory', () => ({
 jest.mock('../src/start-express', () => ({
   startExpress: jest.fn(),
 }))
+jest.mock('../src/clean-up-process', () => ({
+  cleanUpProcess: jest.fn(),
+}))
 jest.mock('../src/uploader-factory', () => ({
   uploaderFactory: jest.fn(),
 }))
 jest.mock('../src/scheduler-factory', () => ({
   schedulerFactory: jest.fn(),
-}))
-jest.mock('../src/monitoring-factory', () => ({
-  monitoringFactory: jest.fn(),
 }))
 
 const mStartExpress = mocked(startExpress)
