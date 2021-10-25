@@ -378,6 +378,11 @@ The following adapters are available:
 | [@resolve-js/monitoring-console](#monitoring-console)               | Prints metrics to the text console.  |
 | [@resolve-js/monitoring-aws-cloudwatch](#monitoring-aws-cloudwatch) | Publishes metrics to AWS CloudWatch. |
 
+If the `default` adapter is not explicitly specified, reSolve adds it automatically based on the target environment:
+
+- The `'@resolve-js/monitoring-console'` module is used on a local machine or standalone server.
+- The `'@resolve-js/monitoring-aws-cloudwatch'`module is used in the cloud environment.
+
 ### jwtCookie
 
 Specifies global settings for the application's JWT cookies. The configuration object contains the following fields:
