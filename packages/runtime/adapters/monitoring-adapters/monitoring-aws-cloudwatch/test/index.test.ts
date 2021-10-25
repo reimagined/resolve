@@ -1,4 +1,3 @@
-// TODO: migrate to TS
 import type { Request, AWSError } from 'aws-sdk'
 import CloudWatch, { PutMetricDataInput } from 'aws-sdk/clients/cloudwatch'
 import { mocked } from 'ts-jest/utils'
@@ -58,7 +57,7 @@ afterEach(() => {
   mockRate.mockClear()
 })
 
-describe.skip('base methods', () => {
+describe('base methods', () => {
   test('error', () => {
     const monitoring = createMonitoring({
       deploymentId: 'test-deployment',

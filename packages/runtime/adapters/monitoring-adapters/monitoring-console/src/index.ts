@@ -32,8 +32,8 @@ const createMonitoringImplementation = (
 const createMonitoring = ({
   publishMode = 'processExit',
 }: {
-  publishMode: PublishMode
-}): MonitoringAdapter => {
+  publishMode?: PublishMode
+} = {}): MonitoringAdapter => {
   const baseMonitoring = createBaseMonitoring()
 
   return createMonitoringImplementation(

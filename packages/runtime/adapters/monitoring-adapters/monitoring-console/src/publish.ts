@@ -1,11 +1,8 @@
-import type {
-  MonitoringDimension,
-  MonitoringMetric,
-} from '@resolve-js/core'
+import type { MonitoringDimension } from '@resolve-js/core'
 import { LeveledDebugger } from '@resolve-js/debug-levels'
 import columnify from 'columnify'
 
-import type { MonitoringContext, MetricsGroup, MetricSummary } from './types'
+import type { MonitoringContext, MetricsGroup } from './types'
 
 // eslint-disable-next-line no-console
 const printLogs = (output: string) => console.log(output)
@@ -29,25 +26,6 @@ const getLabelByDimensions = (
   return dimensions.map(({ name, value }) => `${name}="${value}"`).join(', ')
 }
 
-const createInitialSummary = (): MetricSummary => ({
-  sum: 0,
-  count: 0,
-  min: Infinity,
-  max: -Infinity,
-})
-
-const addValuesToMetricSummary = (
-  summary: MetricSummary,
-  { values, counts }: { values: number[]; counts: number[] }
-) => {
-  for (let i = 0; i < values.length; i++) {
-    summary.sum += values[i] * counts[i]
-    summary.count += counts[i]
-    summary.min = Math.min(summary.min, values[i])
-    summary.max = Math.max(summary.max, values[i])
-  }
-}
-
 export const monitoringPublish = async (
   log: LeveledDebugger,
   context: MonitoringContext,
@@ -59,56 +37,6 @@ export const monitoringPublish = async (
   }
 
   const { metrics } = context.baseMonitoring.getMetrics()
-
-  const executionMetrics: { [key: string]: number } = {}
-
-  const durationMetrics: {
-    [key: string]: MetricSummary
-  } = {}
-
-  const readModelsFeedingRate: {
-    [key: string]: MetricSummary
-  } = {}
-
-  const otherMetrics: MonitoringMetric[] = []
-
-  for (const metric of metrics) {
-    const { dimensions, values, counts, metricName } = metric
-
-    if (metricName === 'Executions' && dimensions[0]?.name === 'Part') {
-      const part = dimensions[0].value
-
-      if (executionMetrics[part] == null) {
-        executionMetrics[part] = 0
-      }
-
-      for (let i = 0; i < values.length; i++) {
-        executionMetrics[part] += values[i] * counts[i]
-      }
-    } else if (metricName === 'Duration' && dimensions[0]?.name === 'Part') {
-      const part = dimensions[0].value
-
-      if (durationMetrics[part] == null) {
-        durationMetrics[part] = createInitialSummary()
-      }
-
-      addValuesToMetricSummary(durationMetrics[part], metric)
-    } else if (metricName === 'ReadModelFeedingRate') {
-      let data = readModelsFeedingRate[dimensions[1].value]
-
-      if (data == null) {
-        data = createInitialSummary()
-        readModelsFeedingRate[dimensions[1].value] = data
-      }
-
-      addValuesToMetricSummary(
-        readModelsFeedingRate[dimensions[1].value],
-        metric
-      )
-    } else {
-      otherMetrics.push(metric)
-    }
-  }
 
   printLogs('\n=== PUBLISH METRICS ===')
 
@@ -168,7 +96,7 @@ export const monitoringPublish = async (
       if (item.unit === 'Count') {
         return {
           label,
-          count,
+          count: sum,
         }
       }
 
@@ -188,10 +116,5 @@ export const monitoringPublish = async (
         columnSplitter: ' | ',
       })
     )
-
-    if (otherMetrics.length > 0) {
-      printLogs(`\n- Other metrics -\n`)
-      printLogs(JSON.stringify(otherMetrics, null, 2))
-    }
   })
 }

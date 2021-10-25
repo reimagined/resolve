@@ -1,6 +1,4 @@
-// TODO: migrate to TS
-import type { Request, AWSError } from 'aws-sdk'
-import CloudWatch, { PutMetricDataInput } from 'aws-sdk/clients/cloudwatch'
+import columnify from 'columnify'
 import { mocked } from 'ts-jest/utils'
 
 import createMonitoring from '../src'
@@ -18,7 +16,7 @@ const mockRate = jest.fn()
 jest.mock('@resolve-js/monitoring-base', () => () => ({
   getMetrics: mockGetMetrics,
   clearMetrics: mockClearMetrics,
-  group: mockGroup,
+  group: mockGroup.mockReturnThis(),
   error: mockError,
   execution: mockExecution,
   duration: mockDuration,
@@ -27,19 +25,27 @@ jest.mock('@resolve-js/monitoring-base', () => () => ({
   rate: mockRate,
 }))
 
-afterEach(() => {
-  mocked(CloudWatch.prototype.putMetricData).mockClear()
-})
+jest.mock('columnify', () => jest.fn())
 
 let originalNow: typeof Date.now
 let dateSpy: jest.SpyInstance | null
+let originalLog: typeof console.log
+let mockLog: jest.Mock
 
 beforeEach(() => {
   originalNow = Date.now
   Date.now = jest.fn().mockReturnValue(1234)
+  // eslint-disable-next-line no-console
+  originalLog = console.log
+  mockLog = jest.fn()
+  // eslint-disable-next-line no-console
+  console.log = mockLog
 })
 
 afterEach(() => {
+  mockLog.mockClear()
+  // eslint-disable-next-line no-console
+  console.log = originalLog
   Date.now = originalNow
 
   if (dateSpy != null) {
@@ -56,14 +62,13 @@ afterEach(() => {
   mockTime.mockClear()
   mockTimeEnd.mockClear()
   mockRate.mockClear()
+
+  mocked(columnify).mockClear()
 })
 
 describe('base methods', () => {
   test('error', () => {
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
+    const monitoring = createMonitoring()
 
     const error = new Error()
     monitoring.error(error)
@@ -72,10 +77,7 @@ describe('base methods', () => {
   })
 
   test('execution', () => {
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
+    const monitoring = createMonitoring()
 
     const error = new Error()
     monitoring.execution(error)
@@ -83,22 +85,14 @@ describe('base methods', () => {
     expect(mockExecution).toBeCalledWith(error)
   })
 
-  test('execution', () => {
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
+  test('duration', () => {
+    const monitoring = createMonitoring()
     monitoring.duration('test-label', 123)
-
     expect(mockDuration).toBeCalledWith('test-label', 123)
   })
 
   test('time and timeEnd', () => {
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
+    const monitoring = createMonitoring()
 
     monitoring.time('test-label', 123)
     monitoring.timeEnd('test-label', 321)
@@ -108,24 +102,63 @@ describe('base methods', () => {
   })
 
   test('rate', () => {
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
+    const monitoring = createMonitoring()
     monitoring.rate('feeding', 123, 321)
-
     expect(mockRate).toBeCalledWith('feeding', 123, 321)
+  })
+
+  test('getMetrics', () => {
+    const monitoring = createMonitoring()
+    monitoring.getMetrics()
+    expect(mockGetMetrics).toBeCalledWith()
+  })
+
+  test('clearMetrics', () => {
+    const monitoring = createMonitoring()
+    monitoring.clearMetrics()
+    expect(mockClearMetrics).toBeCalledWith()
+  })
+
+  test('group', () => {
+    const monitoring = createMonitoring()
+    monitoring.group({ Part: 'Command' })
+    expect(mockGroup).toBeCalledWith({ Part: 'Command' })
   })
 })
 
 describe('publish', () => {
-  test('sends metric data on publish and clears it in base adapter', async () => {
+  test('prints correct metrics if metric name is Executions', async () => {
     mockGetMetrics.mockReturnValue({
       metrics: [
         {
-          metricName: 'Errors',
-          dimensions: [{ name: 'Part', value: 'Command' }],
+          metricName: 'Executions',
+          unit: 'Count',
+          dimensions: [
+            { name: 'Part', value: 'Command' },
+            { name: 'Aggregate', value: 'User1' },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [3],
+        },
+        {
+          metricName: 'Executions',
+          unit: 'Count',
+          dimensions: [
+            { name: 'Part', value: 'Command' },
+            { name: 'Aggregate', value: 'User2' },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [2],
+        },
+        {
+          metricName: 'Executions',
+          unit: 'Count',
+          dimensions: [
+            { name: 'Part', value: 'ApiHandler' },
+            { name: 'Path', value: '/metrics' },
+          ],
           timestamp: 0,
           values: [1],
           counts: [1],
@@ -133,21 +166,143 @@ describe('publish', () => {
       ],
     })
 
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
+    const monitoring = createMonitoring()
+
+    await monitoring.publish({ source: 'processExit' })
+
+    expect(mockLog).toBeCalledWith('\n- Executions (Count) -\n')
+
+    expect(columnify).toBeCalledWith(
+      [
+        {
+          label: 'Command',
+          count: 5,
+        },
+        {
+          label: 'ApiHandler',
+          count: 1,
+        },
+      ],
+      expect.any(Object)
+    )
+  })
+
+  test('prints correct metrics if metric name is Duration', async () => {
+    mockGetMetrics.mockReturnValue({
+      metrics: [
+        {
+          metricName: 'Duration',
+          unit: 'Milliseconds',
+          dimensions: [
+            { name: 'Part', value: 'Command' },
+            { name: 'Aggregate', value: 'User1' },
+          ],
+          timestamp: 0,
+          values: [4, 5],
+          counts: [2, 3],
+        },
+        {
+          metricName: 'Duration',
+          unit: 'Milliseconds',
+          dimensions: [
+            { name: 'Part', value: 'Command' },
+            { name: 'Aggregate', value: 'User2' },
+          ],
+          timestamp: 0,
+          values: [6, 2],
+          counts: [6, 1],
+        },
+        {
+          metricName: 'Duration',
+          unit: 'Milliseconds',
+          dimensions: [
+            { name: 'Part', value: 'ApiHandler' },
+            { name: 'Path', value: '/metrics' },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [1],
+        },
+      ],
     })
 
-    await monitoring.publish()
+    const monitoring = createMonitoring()
 
-    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(1)
+    await monitoring.publish({ source: 'processExit' })
 
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith({
-      Namespace: 'ResolveJs',
-      MetricData: expect.any(Array),
+    expect(mockLog).toBeCalledWith('\n- Command Duration (Milliseconds) -\n')
+
+    expect(columnify).toBeCalledWith(
+      [
+        {
+          label: 'User1',
+          count: 5,
+          avg: parseFloat(((4 * 2 + 5 * 3) / 5).toFixed(2)),
+          min: 4,
+          max: 5,
+        },
+        {
+          label: 'User2',
+          count: 7,
+          avg: parseFloat(((6 * 6 + 2) / 7).toFixed(2)),
+          min: 2,
+          max: 6,
+        },
+      ],
+      expect.any(Object)
+    )
+
+    expect(mockLog).toBeCalledWith('\n- ApiHandler Duration (Milliseconds) -\n')
+
+    expect(columnify).toBeCalledWith(
+      [
+        {
+          label: '/metrics',
+          count: 1,
+          avg: 1,
+          min: 1,
+          max: 1,
+        },
+      ],
+      expect.any(Object)
+    )
+  })
+
+  test('prints correct metrics if metric name is some custom value', async () => {
+    mockGetMetrics.mockReturnValue({
+      metrics: [
+        {
+          metricName: 'MyCustomMetric',
+          unit: 'Count/Second',
+          dimensions: [
+            { name: 'Part', value: 'Custom' },
+            { name: 'Some', value: 'Value' },
+          ],
+          timestamp: 0,
+          values: [1],
+          counts: [1],
+        },
+      ],
     })
 
-    expect(mockClearMetrics).toBeCalledTimes(1)
+    const monitoring = createMonitoring()
+
+    await monitoring.publish({ source: 'processExit' })
+
+    expect(mockLog).toBeCalledWith('\n- MyCustomMetric (Count/Second) -\n')
+
+    expect(columnify).toBeCalledWith(
+      [
+        {
+          label: 'Part="Custom", Some="Value"',
+          count: 1,
+          avg: 1,
+          min: 1,
+          max: 1,
+        },
+      ],
+      expect.any(Object)
+    )
   })
 
   test('does nothing with no metric data on publish', async () => {
@@ -155,1335 +310,10 @@ describe('publish', () => {
       metrics: [],
     })
 
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
+    const monitoring = createMonitoring()
 
     await monitoring.publish()
 
-    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(0)
-  })
-
-  test('sends metric data multiple times on multiple publish call', async () => {
-    mockGetMetrics
-      .mockReturnValueOnce({
-        metrics: [
-          {
-            metricName: 'Errors',
-            dimensions: [
-              { name: 'Part', value: 'Command' },
-              { name: 'ErrorName', value: 'Error' },
-              { name: 'ErrorMessage', value: 'test-1' },
-            ],
-            timestamp: 0,
-            values: [1],
-            counts: [1],
-          },
-        ],
-      })
-      .mockReturnValueOnce({
-        metrics: [
-          {
-            metricName: 'Errors',
-            dimensions: [
-              { name: 'Part', value: 'Command' },
-              { name: 'ErrorName', value: 'Error' },
-              { name: 'ErrorMessage', value: 'test-2' },
-            ],
-            timestamp: 0,
-            values: [1],
-            counts: [1],
-          },
-        ],
-      })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-    await monitoring.publish()
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(2)
-
-    expect(CloudWatch.prototype.putMetricData).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'Part', Value: 'Command' },
-              { Name: 'ErrorName', Value: 'Error' },
-              { Name: 'ErrorMessage', Value: 'test-1' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).not.toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'Part', Value: 'Command' },
-              { Name: 'ErrorName', Value: 'Error' },
-              { Name: 'ErrorMessage', Value: 'test-2' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toHaveBeenNthCalledWith(
-      2,
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'Part', Value: 'Command' },
-              { Name: 'ErrorName', Value: 'Error' },
-              { Name: 'ErrorMessage', Value: 'test-2' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).not.toHaveBeenNthCalledWith(
-      2,
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'Part', Value: 'Command' },
-              { Name: 'ErrorName', Value: 'Error' },
-              { Name: 'ErrorMessage', Value: 'test-1' },
-            ],
-          }),
-        ]),
-      })
-    )
-  })
-
-  test('sends multiple metric data in a single request', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Errors',
-          unit: 'Count',
-          dimensions: [
-            { name: 'ErrorName', value: 'Error' },
-            { name: 'ErrorMessage', value: 'test-error' },
-          ],
-          timestamp: 0,
-          values: [1],
-          counts: [1],
-        },
-        {
-          metricName: 'Duration',
-          unit: 'Milliseconds',
-          dimensions: [{ name: 'Label', value: 'test-label' }],
-          timestamp: 0,
-          values: [300],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(1)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          {
-            MetricName: 'Errors',
-            Unit: 'Count',
-            Values: [1],
-            Counts: [1],
-            Timestamp: expect.any(Date),
-            Dimensions: expect.any(Array),
-          },
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          {
-            MetricName: 'Duration',
-            Unit: 'Milliseconds',
-            Values: [300],
-            Counts: [1],
-            Timestamp: expect.any(Date),
-            Dimensions: expect.any(Array),
-          },
-        ]),
-      })
-    )
-  })
-
-  test('cuts off dimension value if it is greater than 256', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Errors',
-          unit: 'Count',
-          dimensions: [
-            { name: 'Part', value: 'Command' },
-            { name: 'ErrorName', value: 'Error' },
-            {
-              name: 'ErrorMessage',
-              value: Array.from({ length: 300 }).fill('a').join(''),
-            },
-          ],
-          timestamp: 0,
-          values: [1],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'Part', Value: 'Command' },
-              { Name: 'ErrorName', Value: 'Error' },
-              {
-                Name: 'ErrorMessage',
-                Value: `${Array.from({ length: 253 }).fill('a').join('')}...`,
-              },
-            ],
-          }),
-        ]),
-      })
-    )
-  })
-
-  test('splits metrics sending if metric data array has length more than 20', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: Array.from({ length: 8 }, () => ({
-        metricName: 'Errors',
-        unit: 'Count',
-        dimensions: [
-          { name: 'ErrorName', value: 'Error' },
-          { name: 'ErrorMessage', value: 'test-error' },
-        ],
-        timestamp: 0,
-        values: [1],
-        counts: [1],
-      })),
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(2)
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(20)
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[1][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(4)
-  })
-
-  test('does not reject on publish if putMetricData is failed', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Errors',
-          unit: 'Count',
-          dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
-            { name: 'ErrorName', value: 'Error' },
-            { name: 'ErrorMessage', value: 'test-error' },
-          ],
-          timestamp: 0,
-          values: [1],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    mocked(CloudWatch.prototype.putMetricData).mockReturnValueOnce({
-      promise: () => Promise.reject(new Error('Something went wrong')),
-    } as Request<PutMetricDataInput, AWSError>)
-
-    await monitoring.publish()
-  })
-})
-
-describe('Errors', () => {
-  test('sends correct metrics base data', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Errors',
-          unit: 'Count',
-          dimensions: [
-            { name: 'ErrorName', value: 'test-error' },
-            { name: 'ErrorMessage', value: 'test-message' },
-          ],
-          timestamp: 0,
-          values: [1],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
-      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-
-    for (const item of metricData) {
-      expect(item).toEqual({
-        MetricName: 'Errors',
-        Unit: 'Count',
-        Values: [1],
-        Counts: [1],
-        Timestamp: expect.any(Date),
-        Dimensions: expect.any(Array),
-      })
-    }
-  })
-
-  test('sends multiple dimensions including deploymentId', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Errors',
-          unit: 'Count',
-          dimensions: [
-            { name: 'ErrorName', value: 'test-error' },
-            { name: 'ErrorMessage', value: 'test-message' },
-          ],
-          timestamp: 0,
-          values: [1],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(3)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'ErrorName', Value: 'test-error' },
-              { Name: 'ErrorMessage', Value: 'test-message' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'ErrorName', Value: 'test-error' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [{ Name: 'DeploymentId', Value: 'test-deployment' }],
-          }),
-        ]),
-      })
-    )
-  })
-
-  test('contains default and group dimensions', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Errors',
-          unit: 'Count',
-          dimensions: [
-            { name: 'test-group-name', value: 'test-group' },
-            { name: 'ErrorName', value: 'test-error' },
-            { name: 'ErrorMessage', value: 'test-message' },
-          ],
-          timestamp: 0,
-          values: [1],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(6)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'test-group-name', Value: 'test-group' },
-              { Name: 'ErrorName', Value: 'test-error' },
-              { Name: 'ErrorMessage', Value: 'test-message' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'test-group-name', Value: 'test-group' },
-              { Name: 'ErrorName', Value: 'test-error' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'test-group-name', Value: 'test-group' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'ErrorName', Value: 'test-error' },
-              { Name: 'ErrorMessage', Value: 'test-message' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'ErrorName', Value: 'test-error' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [{ Name: 'DeploymentId', Value: 'test-deployment' }],
-          }),
-        ]),
-      })
-    )
-  })
-
-  test('contains default and group dimensions for multiple group calls', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Errors',
-          unit: 'Count',
-          dimensions: [
-            { name: 'first-group-name', value: 'first-group' },
-            { name: 'second-group-name', value: 'second-group' },
-            { name: 'ErrorName', value: 'test-error' },
-            { name: 'ErrorMessage', value: 'test-message' },
-          ],
-          timestamp: 0,
-          values: [1],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(9)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'first-group-name', Value: 'first-group' },
-              { Name: 'second-group-name', Value: 'second-group' },
-              { Name: 'ErrorName', Value: 'test-error' },
-              { Name: 'ErrorMessage', Value: 'test-message' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'first-group-name', Value: 'first-group' },
-              { Name: 'second-group-name', Value: 'second-group' },
-              { Name: 'ErrorName', Value: 'test-error' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'first-group-name', Value: 'first-group' },
-              { Name: 'second-group-name', Value: 'second-group' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'first-group-name', Value: 'first-group' },
-              { Name: 'ErrorName', Value: 'test-error' },
-              { Name: 'ErrorMessage', Value: 'test-message' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'first-group-name', Value: 'first-group' },
-              { Name: 'ErrorName', Value: 'test-error' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'first-group-name', Value: 'first-group' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'ErrorName', Value: 'test-error' },
-              { Name: 'ErrorMessage', Value: 'test-message' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'ErrorName', Value: 'test-error' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [{ Name: 'DeploymentId', Value: 'test-deployment' }],
-          }),
-        ]),
-      })
-    )
-  })
-
-  test('contains correct dimensions if multiple errors are passed', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Errors',
-          unit: 'Count',
-          dimensions: [
-            { name: 'ErrorName', value: 'test-error' },
-            { name: 'ErrorMessage', value: 'test-message-1' },
-          ],
-          timestamp: 0,
-          values: [1],
-          counts: [1],
-        },
-        {
-          metricName: 'Errors',
-          unit: 'Count',
-          dimensions: [
-            { name: 'ErrorName', value: 'test-error' },
-            { name: 'ErrorMessage', value: 'test-message-2' },
-          ],
-          timestamp: 0,
-          values: [1],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(6)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'ErrorName', Value: 'test-error' },
-              { Name: 'ErrorMessage', Value: 'test-message-2' },
-            ],
-          }),
-        ]),
-      })
-    )
-  })
-
-  test('contains global dimensions if Part dimension is specified', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Errors',
-          unit: 'Count',
-          dimensions: [
-            { name: 'Part', value: 'test-part' },
-            { name: 'ErrorName', value: 'test-error' },
-            { name: 'ErrorMessage', value: 'test-message' },
-          ],
-          timestamp: 0,
-          values: [1],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(7)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [{ Name: 'Part', Value: 'test-part' }],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'Part', Value: 'test-part' },
-              { Name: 'ErrorName', Value: 'test-error' },
-              { Name: 'ErrorMessage', Value: 'test-message' },
-            ],
-          }),
-        ]),
-      })
-    )
-  })
-})
-
-describe('Executions', () => {
-  test('sends metrics with various dimension combinations', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Executions',
-          unit: 'Count',
-          dimensions: [{ name: 'test-group-name', value: 'test-group' }],
-          timestamp: 0,
-          values: [1],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          {
-            MetricName: 'Executions',
-            Unit: 'Count',
-            Values: [1],
-            Counts: [1],
-            Timestamp: expect.any(Date),
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'test-group-name', Value: 'test-group' },
-            ],
-          },
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          {
-            MetricName: 'Executions',
-            Unit: 'Count',
-            Values: [1],
-            Counts: [1],
-            Timestamp: expect.any(Date),
-            Dimensions: [{ Name: 'DeploymentId', Value: 'test-deployment' }],
-          },
-        ]),
-      })
-    )
-  })
-
-  test('contains default and group dimensions for multiple groups', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Executions',
-          unit: 'Count',
-          dimensions: [
-            { name: 'first-group-name', value: 'first-group' },
-            { name: 'second-group-name', value: 'second-group' },
-          ],
-          timestamp: 0,
-          values: [1],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(3)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'first-group-name', Value: 'first-group' },
-              { Name: 'second-group-name', Value: 'second-group' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'first-group-name', Value: 'first-group' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [{ Name: 'DeploymentId', Value: 'test-deployment' }],
-          }),
-        ]),
-      })
-    )
-  })
-})
-
-describe('Duration', () => {
-  test('sends correct metrics base data', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Duration',
-          unit: 'Milliseconds',
-          dimensions: [
-            { name: 'DeploymentId', value: 'test-deployment' },
-            { name: 'Label', value: 'test-label' },
-          ],
-          timestamp: 0,
-          values: [1000],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(1)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith({
-      Namespace: 'ResolveJs',
-      MetricData: expect.any(Array),
-    })
-
-    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
-      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-
-    for (const item of metricData) {
-      expect(item).toEqual({
-        MetricName: 'Duration',
-        Unit: 'Milliseconds',
-        Values: [1000],
-        Counts: [1],
-        Timestamp: expect.any(Date),
-        Dimensions: expect.any(Array),
-      })
-    }
-  })
-
-  test('contains default dimensions', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Duration',
-          unit: 'Milliseconds',
-          dimensions: [{ name: 'Label', value: 'test-label' }],
-          timestamp: 0,
-          values: [1000],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(3)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'Label', Value: 'test-label' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'ResolveVersion', Value: '1.0.0-test' },
-              { Name: 'Label', Value: 'test-label' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'ResolveVersion', Value: '1.0.0-test' },
-              { Name: 'Label', Value: 'test-label' },
-            ],
-          }),
-        ]),
-      })
-    )
-  })
-
-  test('contains default and group dimensions', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Duration',
-          unit: 'Milliseconds',
-          dimensions: [
-            { name: 'test-group', value: 'test-group-name' },
-            { name: 'Label', value: 'test-label' },
-          ],
-          timestamp: 0,
-          values: [1000],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(3)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'test-group', Value: 'test-group-name' },
-              { Name: 'Label', Value: 'test-label' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'ResolveVersion', Value: '1.0.0-test' },
-              { Name: 'test-group', Value: 'test-group-name' },
-              { Name: 'Label', Value: 'test-label' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'ResolveVersion', Value: '1.0.0-test' },
-              { Name: 'test-group', Value: 'test-group-name' },
-              { Name: 'Label', Value: 'test-label' },
-            ],
-          }),
-        ]),
-      })
-    )
-  })
-
-  test('publishes different values with same dimensions up to 150 samples', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'Duration',
-          unit: 'Milliseconds',
-          dimensions: [
-            { name: 'test-group', value: 'test-group-name' },
-            { name: 'Label', value: 'test-label' },
-          ],
-          timestamp: 0,
-          values: Array.from({ length: 400 }, (_, i) => i + 1),
-          counts: Array.from({ length: 400 }).fill(1),
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(9)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Values: Array.from({ length: 150 }, (_, i) => i + 1),
-            Counts: Array.from({ length: 150 }, () => 1),
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Values: Array.from({ length: 150 }, (_, i) => i + 151),
-            Counts: Array.from({ length: 150 }, () => 1),
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Values: Array.from({ length: 100 }, (_, i) => i + 301),
-            Counts: Array.from({ length: 100 }, () => 1),
-          }),
-        ]),
-      })
-    )
-  })
-})
-
-describe('custom', () => {
-  test('sends correct metrics base data', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'applied-events',
-          unit: 'Count/Second',
-          dimensions: [],
-          timestamp: 0,
-          values: [123],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledTimes(1)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith({
-      Namespace: 'ResolveJs',
-      MetricData: expect.any(Array),
-    })
-
-    const metricData = ((mocked(CloudWatch.prototype.putMetricData).mock
-      .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-
-    for (const item of metricData) {
-      expect(item).toEqual({
-        MetricName: 'applied-events',
-        Unit: 'Count/Second',
-        Values: [123],
-        Counts: [1],
-        Timestamp: expect.any(Date),
-        Dimensions: expect.any(Array),
-      })
-    }
-  })
-
-  test('contains default dimensions', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'applied-events',
-          unit: 'Count/Second',
-          dimensions: [],
-          timestamp: 0,
-          values: [123],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(3)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [{ Name: 'DeploymentId', Value: 'test-deployment' }],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [{ Name: 'ResolveVersion', Value: '1.0.0-test' }],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'ResolveVersion', Value: '1.0.0-test' },
-            ],
-          }),
-        ]),
-      })
-    )
-  })
-
-  test('contains default and group dimensions', async () => {
-    mockGetMetrics.mockReturnValue({
-      metrics: [
-        {
-          metricName: 'applied-events',
-          unit: 'Count/Second',
-          dimensions: [
-            {
-              name: 'test-group',
-              value: 'test-group-name',
-            },
-          ],
-          timestamp: 0,
-          values: [123],
-          counts: [1],
-        },
-      ],
-    })
-
-    const monitoring = createMonitoring({
-      deploymentId: 'test-deployment',
-      resolveVersion: '1.0.0-test',
-    })
-
-    await monitoring.publish()
-
-    expect(
-      ((mocked(CloudWatch.prototype.putMetricData).mock
-        .calls[0][0] as unknown) as PutMetricDataInput).MetricData
-    ).toHaveLength(3)
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'test-group', Value: 'test-group-name' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'ResolveVersion', Value: '1.0.0-test' },
-              { Name: 'test-group', Value: 'test-group-name' },
-            ],
-          }),
-        ]),
-      })
-    )
-
-    expect(CloudWatch.prototype.putMetricData).toBeCalledWith(
-      expect.objectContaining({
-        MetricData: expect.arrayContaining([
-          expect.objectContaining({
-            Dimensions: [
-              { Name: 'DeploymentId', Value: 'test-deployment' },
-              { Name: 'ResolveVersion', Value: '1.0.0-test' },
-              { Name: 'test-group', Value: 'test-group-name' },
-            ],
-          }),
-        ]),
-      })
-    )
+    expect(columnify).toBeCalledTimes(0)
   })
 })
