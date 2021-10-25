@@ -6,6 +6,10 @@ export const prepareAssemblies = (
   assemblies: Assemblies,
   context: RuntimeEntryContext
 ): Assemblies => {
+  if (assemblies.monitoringAdapters == null) {
+    assemblies.monitoringAdapters = {}
+  }
+
   if (assemblies.monitoringAdapters.default == null) {
     assemblies.monitoringAdapters.default = () =>
       createMonitoring({

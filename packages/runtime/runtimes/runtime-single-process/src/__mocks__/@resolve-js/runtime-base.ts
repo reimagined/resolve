@@ -24,3 +24,5 @@ export const gatherEventListeners: typeof oGatherEventListeners = jest.fn(
 export const createRuntime: typeof oCreateRuntime = jest.fn(async () =>
   mockDeep<Runtime>()
 )
+
+export const createCompositeMonitoringAdapter = jest.fn()
