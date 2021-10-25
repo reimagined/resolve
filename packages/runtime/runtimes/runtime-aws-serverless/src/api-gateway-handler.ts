@@ -4,11 +4,7 @@ import { Trie } from 'route-trie'
 import { mainHandler, createUserResolve } from '@resolve-js/runtime-base'
 import { wrapApiHandler } from './wrap-api-handler'
 
-import type {
-  Domain,
-  DomainMeta,
-  PerformanceTracer,
-} from '@resolve-js/core'
+import type { Domain, DomainMeta, PerformanceTracer } from '@resolve-js/core'
 import type {
   Runtime,
   Assemblies,
