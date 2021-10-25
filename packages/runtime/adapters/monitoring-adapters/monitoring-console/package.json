@@ -1,7 +1,7 @@
 {
   "name": "@resolve-js/monitoring-console",
   "version": "0.32.0",
-  "description": "This package serves as a monitoring adapter for printing monitoring metrics into console",
+  "description": "This package serves as a monitoring adapter used to print monitoring metrics to the text console",
   "keywords": [
     "cqrs",
     "eventsourcing",

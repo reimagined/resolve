@@ -2,14 +2,14 @@
 
 [![npm version](https://badge.fury.io/js/%40resolve-js%2Fmonitoring-aws-cloudwatch.svg)](https://badge.fury.io/js/%40resolve-js%2Fmonitoring-aws-cloudwatch)
 
-This package serves as a resolve monitoring adapter for publishing metrics into AWS CloudWatch.
+This package serves as a monitoring adapter for reSolve that publishes metrics to AWS CloudWatch.
 
 ## Available Options
 
 You can specify the following options to configure the monitoring adapter:
 
-- `deploymentId`- Specifies cloud deployment ID
-- `resolveVersion` - Specifies resolve version
+- `deploymentId`- Specifies the cloud deployment ID.
+- `resolveVersion` - Specifies the reSolve version.
 
 ## Usage
 
@@ -20,7 +20,7 @@ import resolveVersion from '$resolve.resolveVersion'
 const prodConfig = {
   monitoringAdapters: {
     default: {
-      module: '@resolve-js/monitoring-console',
+      module: '@resolve-js/monitoring-aws-cloudwatch',
       options: {
         deploymentId: declareRuntimeEnv('RESOLVE_DEPLOYMENT_ID'),
         resolveVersion,

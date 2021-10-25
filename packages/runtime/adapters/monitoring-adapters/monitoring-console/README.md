@@ -2,14 +2,14 @@
 
 [![npm version](https://badge.fury.io/js/%40resolve-js%2Fmonitoring-console.svg)](https://badge.fury.io/js/%40resolve-js%2Fmonitoring-console)
 
-This package serves as a resolve monitoring adapter for printing monitoring metrics into console
+This package serves as a monitoring adapter for reSolve that prints monitoring metrics to the text console.
 
 ## Available Options
 
 You can specify the following options to configure the monitoring adapter:
 
-- `publishMode`- Specifies how often display collected metrics summary in the console.
-Available values: `all`, `resolveDispose` and `processExit`. Default: `processExit`
+- `publishMode`- Specifies when to display a summary on the collected metrics in the console.
+  Available values: `all`, `resolveDispose` and `processExit`. Default: `processExit`.
 
 ## Usage
 

@@ -1,7 +1,7 @@
 {
   "name": "@resolve-js/monitoring-base",
   "version": "0.32.0",
-  "description": "This is a base package serves as a monitoring adapter",
+  "description": "This package is the base for reSolve monitoring adapters",
   "keywords": [
     "cqrs",
     "eventsourcing",
