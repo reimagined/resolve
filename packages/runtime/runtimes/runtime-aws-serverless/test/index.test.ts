@@ -125,6 +125,7 @@ describe('runtime', () => {
       },
       serverImports: null,
       uploadAdapter: jest.fn().mockImplementation(() => uploadAdapter),
+      monitoringAdapters: {},
     }
 
     constants = {

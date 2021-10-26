@@ -14,6 +14,7 @@ import type {
   ResolveRequest,
   ResolveResponse,
 } from '@resolve-js/runtime-base'
+import { Monitoring } from '@resolve-js/core'
 
 const COOKIE_CLEAR_DATE = new Date(0)
 const INTERNAL = Symbol('INTERNAL')
@@ -258,8 +259,13 @@ const createResponse = () => {
 
 export const wrapApiHandler = (
   handler: (req: ResolveRequest, res: ResolveResponse) => Promise<void>,
-  getCustomParameters?: Function
+  getCustomParameters?: Function,
+  monitoring?: Monitoring
 ) => async (expressReq: ExpressRequest, expressRes: ExpressResponse) => {
+  const startTimestamp = Date.now()
+  let apiMonitoring = monitoring?.group({ Part: 'ApiHandler' })
+  let executionError: Error | undefined
+
   try {
     const customParameters =
       typeof getCustomParameters === 'function'
@@ -268,6 +274,14 @@ export const wrapApiHandler = (
 
     const req = await createRequest(expressReq, customParameters)
     const res = createResponse()
+
+    if (apiMonitoring != null) {
+      apiMonitoring = apiMonitoring
+        .group({ Path: req.path })
+        .group({ Method: req.method })
+
+      apiMonitoring.time('Execution', startTimestamp)
+    }
 
     //TODO: explicitly set resolve to req object instead of customParameters? Or write a templated getCustomParameters
     await handler(req as ResolveRequest, res)
@@ -278,6 +292,8 @@ export const wrapApiHandler = (
     expressRes.set(headers)
     expressRes.end(body)
   } catch (error) {
+    executionError = error
+
     const outError =
       error != null && error.stack != null
         ? `${error.stack}`
@@ -287,5 +303,10 @@ export const wrapApiHandler = (
     console.error(outError)
 
     expressRes.status(500).end('')
+  } finally {
+    if (apiMonitoring != null) {
+      apiMonitoring.execution(executionError)
+      apiMonitoring.timeEnd('Execution')
+    }
   }
 }

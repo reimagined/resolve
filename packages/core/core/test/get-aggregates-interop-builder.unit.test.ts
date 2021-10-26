@@ -97,6 +97,8 @@ const makeTestRuntime = (
     performance: performanceTracer,
     duration: jest.fn(),
     rate: jest.fn(),
+    getMetrics: jest.fn(),
+    clearMetrics: jest.fn(),
   }
 
   return {

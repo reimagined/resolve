@@ -4,12 +4,7 @@ import { Trie } from 'route-trie'
 import { mainHandler, createUserResolve } from '@resolve-js/runtime-base'
 import { wrapApiHandler } from './wrap-api-handler'
 
-import type {
-  Domain,
-  DomainMeta,
-  Monitoring,
-  PerformanceTracer,
-} from '@resolve-js/core'
+import type { Domain, DomainMeta, PerformanceTracer } from '@resolve-js/core'
 import type {
   Runtime,
   Assemblies,
@@ -22,7 +17,6 @@ export const handleApiGatewayEvent = async (
   lambdaContext: any,
   runtime: Runtime,
   {
-    monitoring,
     performanceTracer,
     buildTimeConstants,
     routesTrie,
@@ -32,7 +26,6 @@ export const handleApiGatewayEvent = async (
     seedClientEnvs,
     eventListeners,
   }: {
-    monitoring: Monitoring
     performanceTracer: PerformanceTracer
     buildTimeConstants: BuildTimeConstants
     routesTrie: Trie
@@ -59,7 +52,7 @@ export const handleApiGatewayEvent = async (
   const executor = wrapApiHandler(
     mainHandler,
     partial(getCustomParameters, runtime),
-    monitoring.group({ Part: 'ApiHandler' })
+    runtime.monitoring.group({ Part: 'ApiHandler' })
   )
 
   const segment = performanceTracer.getSegment()

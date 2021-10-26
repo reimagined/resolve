@@ -56,6 +56,12 @@ const schedulerGuard: Scheduler = {
 const dispose = async (runtime: Runtime) => {
   const log = getLog(`dispose`)
   try {
+    log.debug('publishing metrics')
+
+    await runtime?.monitoring?.publish({ source: 'resolveDispose' })
+
+    log.debug(`metrics published`)
+
     const disposePromises: Promise<void>[] = [
       runtime.executeCommand.dispose(),
       runtime.executeQuery.dispose(),
@@ -267,6 +273,7 @@ export const createRuntime = async (
       await dispose(this)
     },
     broadcastEvent: broadcastEvent,
+    monitoring,
   }
 
   return runtime
