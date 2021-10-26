@@ -6,6 +6,7 @@
 
 **New features:**
 
+- Implement monitoring adapters [\#2089](https://github.com/reimagined/resolve/pull/2089)
 - Add event loader in eventstore adapter inferface and loading events via pg-cursor [\#2067](https://github.com/reimagined/resolve/pull/2067)
 
 **Enhancements:**
