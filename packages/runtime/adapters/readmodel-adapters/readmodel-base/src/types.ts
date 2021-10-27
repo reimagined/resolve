@@ -292,6 +292,7 @@ export type BuildInfo = {
   notificationId: string
   sendTime: number
   coldStart?: boolean
+  [key: string]: any
 }
 
 export type AdapterConnection<
