@@ -247,7 +247,10 @@ export type ReadModelLedger = {
   IsPaused: boolean
 }
 
-export type MethodNext = () => Promise<void>
+export type MethodNext = (
+  timeout?: number,
+  notificationExtraPayload?: object
+) => Promise<void>
 export type MethodGetRemainingTime = () => number
 export type MethodGetEncryption = () => (
   event: ReadModelEvent
@@ -289,6 +292,7 @@ export type BuildInfo = {
   notificationId: string
   sendTime: number
   coldStart?: boolean
+  [key: string]: any
 }
 
 export type AdapterConnection<

@@ -124,16 +124,25 @@ const entry = async (
         getVacantTimeInMillis,
         eventSubscriberScope: constants.applicationName,
         notifyEventSubscriber,
-        invokeBuildAsync: backgroundJob(
-          async (parameters: EventSubscriberNotification) => {
-            const runtime = await createRuntime(factoryParameters)
-            try {
-              return await runtime.eventSubscriber.build(parameters)
-            } finally {
-              await runtime.dispose()
-            }
+        invokeBuildAsync: async (
+          parameters: EventSubscriberNotification,
+          timeout?: number
+        ) => {
+          if (timeout != null && timeout > 0) {
+            await new Promise((resolve) => setTimeout(resolve, timeout))
           }
-        ),
+          const job = backgroundJob(
+            async (parameters: EventSubscriberNotification) => {
+              const runtime = await createRuntime(factoryParameters)
+              try {
+                return await runtime.eventSubscriber.build(parameters)
+              } finally {
+                await runtime.dispose()
+              }
+            }
+          )
+          return await job(parameters)
+        },
         eventListeners: gatherEventListeners(domain, domainInterop),
         uploader: uploaderData?.uploader ?? null,
         sendReactiveEvent: websocketServerData.sendReactiveEvent,

@@ -13,6 +13,13 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
     return checkResult
   }
 
+  const defaultValues = {
+    paused: false,
+    iterator: null,
+    successEvent: null,
+    locked: false,
+  }
+
   try {
     const response = await fetch(
       `${targetApplicationUrl}${REPLICATION_STATE.endpoint}`
@@ -25,10 +32,7 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
           name: response.statusText,
           message: (state as any).message ?? response.statusText,
         },
-        paused: false,
-        iterator: null,
-        successEvent: null,
-        locked: false,
+        ...defaultValues,
       }
     }
     return state
@@ -45,13 +49,18 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
           message: error.message as string,
           stack: error.stack ? (error.stack as string) : null,
         },
-        paused: false,
-        iterator: null,
-        successEvent: null,
-        locked: false,
+        ...defaultValues,
       }
     } else {
-      throw error
+      return {
+        status: 'error',
+        statusData: {
+          name: error.name as string,
+          message: error.message as string,
+          stack: error.stack ? (error.stack as string) : null,
+        },
+        ...defaultValues,
+      }
     }
   }
 }

@@ -110,17 +110,33 @@ const serializeState = async ({ state }: { state: any }): Promise<string> => {
 const next = async (
   pool: ReadModelPool,
   eventSubscriber: string,
+  timeout?: number,
+  notificationExtraPayload?: object,
   ...args: any[]
 ) => {
   if (args.length > 0) {
     throw new TypeError('Next should be invoked with no arguments')
   }
-  await pool.invokeBuildAsync({
-    eventSubscriber,
-    initiator: 'read-model-next',
-    notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
-    sendTime: Date.now(),
-  })
+  if (timeout != null && (isNaN(+timeout) || +timeout < 0)) {
+    throw new TypeError('Timeout should be non-negative integer')
+  }
+  if (
+    notificationExtraPayload != null &&
+    notificationExtraPayload.constructor !== Object
+  ) {
+    throw new TypeError('Notification extra payload should be plain object')
+  }
+
+  await pool.invokeBuildAsync(
+    {
+      eventSubscriber,
+      initiator: 'read-model-next',
+      notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
+      sendTime: Date.now(),
+      ...notificationExtraPayload,
+    },
+    timeout != null ? Math.floor(+timeout) : timeout
+  )
 }
 
 const updateCustomReadModel = async (
