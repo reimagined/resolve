@@ -8,16 +8,15 @@ import {
   initThreadArray,
 } from '@resolve-js/eventstore-base'
 import type {
-  EventsWithCursor,
-  SavedEvent,
-  Cursor,
+  StoredEventBatchPointer,
+  StoredEvent,
+  InputCursor,
 } from '@resolve-js/eventstore-base'
 
 import {
   adapterFactory,
   adapters,
   jestTimeout,
-  isServerlessAdapter,
   makeTestSavedEvent,
 } from '../eventstore-test-utils'
 
@@ -26,11 +25,11 @@ import createStreamBuffer from './create-stream-buffer'
 jest.setTimeout(jestTimeout())
 
 function getInterruptingTimeout() {
-  return isServerlessAdapter() ? 200 : 100
+  return 100
 }
 
 function getInputEventsCount() {
-  return isServerlessAdapter() ? 500 : 2500
+  return 2500
 }
 
 function* eventsGenerator(inputCountEvents: number) {
@@ -159,7 +158,7 @@ describe('import-export events manual mode', () => {
 
     const exportBuffers = []
 
-    let cursor: Cursor = null
+    let cursor: InputCursor = null
     let steps = 0
 
     while (true) {
@@ -368,13 +367,13 @@ describe('import-export timeouts', () => {
 
     fs.unlinkSync(exportedEventsFileName)
 
-    let allEvents: SavedEvent[] = []
+    let allEvents: StoredEvent[] = []
     let cursor: string | null = null
     while (true) {
       const {
         events,
         cursor: nextCursor,
-      }: EventsWithCursor = await outputEventstoreAdapter.loadEvents({
+      }: StoredEventBatchPointer = await outputEventstoreAdapter.loadEvents({
         cursor: cursor,
         limit: inputCountEvents,
       })

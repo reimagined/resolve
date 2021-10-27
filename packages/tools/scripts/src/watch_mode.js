@@ -1,7 +1,7 @@
 import fsExtra from 'fs-extra'
 import path from 'path'
 import webpack from 'webpack'
-import getLog from './get-log'
+import { getLog } from './get-log'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
@@ -66,6 +66,8 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
     }
   })
 
+  const { host: sourceHost, port: sourcePort } = resolveConfig.runtime.options
+
   return await new Promise(() => {
     compiler.watch(
       {
@@ -86,16 +88,16 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
 
         const hasErrors = detectErrors(stats, true)
         const port = Number(
-          checkRuntimeEnv(resolveConfig.port)
+          checkRuntimeEnv(sourcePort)
             ? // eslint-disable-next-line no-new-func
-              new Function(`return ${injectRuntimeEnv(resolveConfig.port)}`)()
-            : resolveConfig.port
+              new Function(`return ${injectRuntimeEnv(sourcePort)}`)()
+            : sourcePort
         )
         const host = String(
-          checkRuntimeEnv(resolveConfig.host)
+          checkRuntimeEnv(sourceHost)
             ? // eslint-disable-next-line no-new-func
-              new Function(`return ${injectRuntimeEnv(resolveConfig.host)}`)()
-            : resolveConfig.host ?? '0.0.0.0'
+              new Function(`return ${injectRuntimeEnv(sourceHost)}`)()
+            : sourceHost ?? '0.0.0.0'
         )
 
         if (hasErrors) {
@@ -115,7 +117,6 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
             if (isOpenBrowser && serverFirstStart) {
               log.debug('Opening browser')
               openBrowser(host, port, resolveConfig.rootPath).catch(() => {})
-              log.debug('Browser was opened')
             }
           }
         }

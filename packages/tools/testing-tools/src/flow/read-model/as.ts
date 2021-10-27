@@ -1,7 +1,7 @@
 import partial from 'lodash.partial'
 import { QueryContext } from '../../types'
 import { QueryNode } from './query'
-import { withSecretsManager, setSecretsManager } from './with-secrets-manager'
+import { withSecretsManager } from './with-secrets-manager'
 import { shouldReturn } from './should-return'
 import { not } from './not'
 
@@ -20,7 +20,6 @@ export const as = (context: QueryContext, authToken: string): AsNode => {
 
   return Object.assign(environment.promise, {
     withSecretsManager: partial(withSecretsManager, context),
-    setSecretsManager: partial(setSecretsManager, context),
     shouldReturn: partial(shouldReturn, context),
     not: partial(not, context),
   })

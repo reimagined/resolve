@@ -1,11 +1,17 @@
 import type {
   Adapter as EventStoreAdapter,
-  Cursor,
-  SavedEvent,
-  EventWithCursor as EventStoreEventWithCursor,
+  InputCursor,
+  StoredEvent,
+  StoredEventPointer as EventStoreEventWithCursor,
   checkEventsContinuity,
   EventThreadData as EventStoreEventThreadData,
 } from '@resolve-js/eventstore-base'
+
+import type {
+  PerformanceTracer,
+  Monitoring,
+  ReadModelInterop,
+} from '@resolve-js/core'
 
 export type CheckEventsContinuityMethod = typeof checkEventsContinuity
 export type EventWithCursor = EventStoreEventWithCursor
@@ -130,31 +136,12 @@ export type EncryptionLike = {
   decrypt<Input, Output>(input: Input): Output
 }
 
-export type PerformanceTracerLike = {
-  getSegment(): {
-    addNewSubsegment(
-      arg0: string
-    ): {
-      addAnnotation(arg0: string, arg1: string): void
-      addError(error: Error): void
-      close(): void
-    } | null
-  } | null
-}
+export type PerformanceTracerLike = PerformanceTracer
 
-export type MonitoringLike = {
-  group: (config: Record<string, string>) => MonitoringLike
-  error: (error: Error) => void
-  duration: (label: string, duration: number, count?: number) => void
-  time: (label: string, timestamp?: number) => void
-  timeEnd: (label: string, timestamp?: number) => void
-  rate: (metricName: string, count: number, seconds?: number) => void
-  publish: () => Promise<void>
-  performance?: PerformanceTracerLike
-}
+export type MonitoringLike = Monitoring
 
-export type ReadModelCursor = Cursor // TODO brand type
-export type ReadModelEvent = SavedEvent
+export type ReadModelCursor = InputCursor // TODO brand type
+export type ReadModelEvent = StoredEvent
 
 export type EventStoreAdapterLike = EventStoreAdapter
 
@@ -260,7 +247,10 @@ export type ReadModelLedger = {
   IsPaused: boolean
 }
 
-export type MethodNext = () => Promise<void>
+export type MethodNext = (
+  timeout?: number,
+  notificationExtraPayload?: object
+) => Promise<void>
 export type MethodGetRemainingTime = () => number
 export type MethodGetEncryption = () => (
   event: ReadModelEvent
@@ -302,6 +292,7 @@ export type BuildInfo = {
   notificationId: string
   sendTime: number
   coldStart?: boolean
+  [key: string]: any
 }
 
 export type AdapterConnection<
@@ -343,13 +334,13 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     readModelName: string,
     eventTypes: Array<ReadModelEvent['type']> | null,
     aggregateIds: Array<ReadModelEvent['aggregateId']> | null,
-    readModelSource?: string
+    loadProcedureSource: () => Promise<string | null>
   ): Promise<void>
 
   unsubscribe(
     pool: AdapterPool,
     readModelName: string,
-    readModelSource?: string
+    loadProcedureSource: () => Promise<string | null>
   ): Promise<void>
 
   resubscribe(
@@ -357,7 +348,7 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     readModelName: string,
     eventTypes: Array<ReadModelEvent['type']> | null,
     aggregateIds: Array<ReadModelEvent['aggregateId']> | null,
-    readModelSource?: string
+    loadProcedureSource: () => Promise<string | null>
   ): Promise<void>
 
   resume(
@@ -378,15 +369,9 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     pool: AdapterPool,
     readModelName: string,
     store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
-    modelInterop: {
-      acquireInitHandler: (
-        store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>
-      ) => () => Promise<void>
-      acquireEventHandler: (
-        store: ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>,
-        event: ReadModelEvent
-      ) => () => Promise<void>
-    },
+    modelInterop: ReadModelInterop<
+      ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>
+    >,
     next: MethodNext,
     eventstoreAdapter: EventStoreAdapterLike,
     getVacantTimeInMillis: MethodGetRemainingTime,

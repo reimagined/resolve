@@ -1,5 +1,41 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.32.0...HEAD)
+
+**New features:**
+
+- Implement monitoring adapters [\#2089](https://github.com/reimagined/resolve/pull/2089)
+- Add event loader in eventstore adapter inferface and loading events via pg-cursor [\#2067](https://github.com/reimagined/resolve/pull/2067)
+
+**Enhancements:**
+
+- Make less database queries during replication [\#2084](https://github.com/reimagined/resolve/pull/2084)
+- Use event-loader \(via pgcursor for postgres\) in replicator [\#2076](https://github.com/reimagined/resolve/pull/2076)
+
+**Breaking changes:**
+
+- Remove RDS data api eventstore and readmodel adapters [\#2078](https://github.com/reimagined/resolve/pull/2078)
+- Refactored runtime libraries [\#2060](https://github.com/reimagined/resolve/pull/2060)
+
+**Bug fixes:**
+
+- Testing tools - When passing events with timestamps to givenEvents\(\), these events are sometimes lost [\#2075](https://github.com/reimagined/resolve/issues/2075)
+
+**Documentation:**
+
+- Fix outdated content in the Preparing to Production topic [\#2086](https://github.com/reimagined/resolve/pull/2086)
+- Remove postgres-serverless adapters mentions from documentation [\#2083](https://github.com/reimagined/resolve/pull/2083)
+
+**Other changes:**
+
+- Ability to delay next in readmodel build [\#2090](https://github.com/reimagined/resolve/pull/2090)
+- Fix subscriber notification [\#2062](https://github.com/reimagined/resolve/pull/2062)
+- Migrate from "incremental import" to "import" [\#2061](https://github.com/reimagined/resolve/pull/2061)
+- Review strings in templates and examples [\#2059](https://github.com/reimagined/resolve/pull/2059)
+- Cleanup eventstore tests [\#2058](https://github.com/reimagined/resolve/pull/2058)
+
 ## [V0.32.0](https://github.com/reimagined/resolve/tree/V0.32.0) (2021-10-01)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.10...V0.32.0)

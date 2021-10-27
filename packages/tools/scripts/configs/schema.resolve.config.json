@@ -39,14 +39,49 @@
       "required": ["module", "options"],
       "additionalProperties": false
     },
+    "monitoringAdapter": {
+      "type": "object",
+      "properties": {
+        "module": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "additionalProperties": true
+          }
+        },
+        "imports": {
+          "type": "object"
+        }
+      },
+      "required": ["module"],
+      "additionalProperties": false
+    },
     "resourceInstance": {
       "type": "string"
+    },
+    "resourcePackage": {
+      "type": "object",
+      "properties": {
+        "package": {
+          "type": "string"
+        },
+        "import": {
+          "type": "string"
+        }
+      },
+      "required": ["package", "import"],
+      "additionalProperties": false
     },
     "resourceConstructor": {
       "type": "object",
       "properties": {
         "module": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourcePackage" }
+          ]
         },
         "options": {
           "type": "object"
@@ -234,7 +269,8 @@
         "handler": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
-            { "$ref": "#/definitions/resourceConstructor" }
+            { "$ref": "#/definitions/resourceConstructor" },
+            { "$ref": "#/definitions/resourcePackage" }
           ]
         }
       },
@@ -287,18 +323,8 @@
             ]
           }
         },
-        "target": {
-          "type": "string",
-          "enum": ["local", "cloud"]
-        },
         "name": {
           "type": ["string"]
-        },
-        "host": {
-          "type": "string"
-        },
-        "port": {
-          "type": ["integer", "string"]
         },
         "rootPath": {
           "type": "string"
@@ -357,7 +383,8 @@
           "additionalProperties": {
             "oneOf": [
               { "$ref": "#/definitions/resourceInstance" },
-              { "$ref": "#/definitions/resourceConstructor" }
+              { "$ref": "#/definitions/resourceConstructor" },
+              { "$ref": "#/definitions/resourcePackage" }
             ]
           }
         },
@@ -372,6 +399,12 @@
         },
         "eventstoreAdapter": {
           "$ref": "#/definitions/eventstoreAdapter"
+        },
+        "monitoringAdapters": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/monitoringAdapter"
+          }
         },
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"
@@ -418,6 +451,26 @@
             }
           },
           "additionalProperties": false
+        },
+        "runtime": {
+          "type": "object",
+          "properties": {
+            "module": {
+              "type": "string"
+            },
+            "options": {
+              "type": "object",
+              "properties": {
+                "importMode": {
+                  "enum": ["static", "dynamic"],
+                  "default": "static"
+                },
+                "additionalProperties": true
+              }
+            }
+          },
+          "required": ["module"],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -425,7 +478,6 @@
         "clientImports",
         "serverImports",
         "apiHandlers",
-        "port",
         "rootPath",
         "distDir",
         "staticDir",
@@ -436,10 +488,10 @@
         "readModelConnectors",
         "eventstoreAdapter",
         "customConstants",
-        "target",
         "jwtCookie",
         "sagas",
-        "mode"
+        "mode",
+        "runtime"
       ],
       "additionalProperties": false
     }

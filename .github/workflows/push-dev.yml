@@ -45,18 +45,6 @@ jobs:
           unpublish: false
           github_target_repository: resolve-js/resolve
 
-  update-changelog:
-    if: startsWith(github.event.head_commit.message, '<auto>') != true
-    runs-on: ubuntu-latest
-    steps:
-      - name: Generate upcoming changelog
-        uses: reimagined/github-actions/generate-changelog@v1
-        with:
-          push_event: ${{ toJSON(github.event) }}
-          token: ${{ secrets.RESOLVE_BOT_PAT }}
-          ssh_private_key: ${{ secrets.RESOLVE_BOT_SSH_PRIVATE_KEY }}
-          commit_message: <auto> Update changelog
-          generator_version: '1.16.2'
 
   generate-js:
     if: startsWith(github.event.head_commit.message, '<auto>') != true
@@ -70,3 +58,17 @@ jobs:
           ssh_private_key: ${{ secrets.RESOLVE_BOT_SSH_PRIVATE_KEY }}
           entries: '[{"source":"templates/ts/!(angular)*","out":"templates/js"},{"source":"examples/ts/*","out":"examples/js"}]'
           commit_message: <auto> Generate JS
+
+  update-changelog:
+    if: startsWith(github.event.head_commit.message, '<auto>') != true
+    runs-on: ubuntu-latest
+    needs: [generate-js]
+    steps:
+      - name: Generate upcoming changelog
+        uses: reimagined/github-actions/generate-changelog@v1
+        with:
+          push_event: ${{ toJSON(github.event) }}
+          token: ${{ secrets.RESOLVE_BOT_PAT }}
+          ssh_private_key: ${{ secrets.RESOLVE_BOT_SSH_PRIVATE_KEY }}
+          commit_message: <auto> Update changelog
+          generator_version: '1.16.2'

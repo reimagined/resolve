@@ -42,16 +42,20 @@ import loadSecrets from './load-secrets'
 import replicateEvents from './replicate-events'
 import replicateSecrets from './replicate-secrets'
 import setReplicationStatus from './set-replication-status'
-import setReplicationIterator from './set-replication-iterator'
 import setReplicationPaused from './set-replication-paused'
 import getReplicationState from './get-replication-state'
 import resetReplication from './reset-replication'
+import setReplicationLock from './set-replication-lock'
+
 import getCursorUntilEventTypes from './get-cursor-until-event-types'
 import describe from './describe'
 import establishTimeLimit from './establish-time-limit'
+import getEventLoaderNative from './get-event-loader-native'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
 import type { PostgresqlAdapterConfig, ConnectionDependencies } from './types'
+
+import prepare from './prepare'
 
 import createResource from './resource/create'
 import destroyResource from './resource/destroy'
@@ -94,13 +98,14 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       replicateEvents,
       replicateSecrets,
       setReplicationStatus,
-      setReplicationIterator,
       setReplicationPaused,
       getReplicationState,
       resetReplication,
+      setReplicationLock,
       getCursorUntilEventTypes,
       describe,
       establishTimeLimit,
+      getEventLoaderNative,
     },
     {
       Postgres,
@@ -109,10 +114,12 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       fullJitter,
       executeStatement,
     } as ConnectionDependencies,
-    options
+    options,
+    prepare
   )
 }
 
 export default createPostgresqlAdapter
 export type { PostgresqlAdapterConfig }
+export type { PostgresResourceConfig } from './types'
 export { createResource as create, destroyResource as destroy }

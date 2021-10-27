@@ -66,7 +66,9 @@ test('should make webpack configs for local mode', async () => {
   const webpackConfigs = await getWebpackConfigs({
     resolveConfig: {
       ...resolveConfig,
-      target: 'local',
+      runtime: {
+        module: '@resolve-js/runtime-single-process',
+      },
     },
     nodeModulesByAssembly,
   })
@@ -86,7 +88,9 @@ test('should make webpack configs for cloud mode', async () => {
   const webpackConfigs = await getWebpackConfigs({
     resolveConfig: {
       ...resolveConfig,
-      target: 'cloud',
+      runtime: {
+        module: '@resolve-js/runtime-aws-serverless',
+      },
     },
     nodeModulesByAssembly,
   })
@@ -106,7 +110,9 @@ test('should make external package.json resolver', async () => {
   const webpackConfigs = await getWebpackConfigs({
     resolveConfig: {
       ...resolveConfig,
-      target: 'local',
+      runtime: {
+        module: '@resolve-js/runtime-single-process',
+      },
     },
     nodeModulesByAssembly,
   })

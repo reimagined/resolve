@@ -1,11 +1,19 @@
+import partial from 'lodash.partial'
+import { initDomain } from '@resolve-js/core'
+import { createQueryExecutor } from '@resolve-js/runtime-base'
+
+import { getSecretsManager } from '../../runtime/get-secrets-manager'
+import { getEventStore } from '../../runtime/get-event-store'
+import { getSagaRuntime } from '../../runtime/get-saga-runtime'
+import { mockSideEffects } from '../../runtime/mock-side-effects'
+import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
+import { defaultAssertion } from '../../utils/assertions'
 import {
-  EventHandlerEncryptionFactory,
-  initDomain,
-  Monitoring,
-  SecretsManager,
-} from '@resolve-js/core'
-import { createQuery } from '@resolve-js/runtime'
-import {
+  getCommandImplementationKey,
+  getQueryImplementationKey,
+} from '../../runtime/utils'
+
+import type {
   TestSaga,
   SagaTestResult,
   TestEvent,
@@ -13,17 +21,11 @@ import {
   MockedCommandImplementation,
   MockedQueryImplementation,
 } from '../../types'
-import { getSecretsManager } from '../../runtime/get-secrets-manager'
-import { getEventStore } from '../../runtime/get-event-store'
-import { getSagaRuntime } from '../../runtime/get-saga-runtime'
-import { mockSideEffects } from '../../runtime/mock-side-effects'
-import { getReadModelAdapter } from '../../runtime/get-read-model-adapter'
-import partial from 'lodash.partial'
-import { defaultAssertion } from '../../utils/assertions'
-import {
-  getCommandImplementationKey,
-  getQueryImplementationKey,
-} from '../../runtime/utils'
+import type {
+  EventHandlerEncryptionFactory,
+  Monitoring,
+  SecretsManager,
+} from '@resolve-js/core'
 
 type SagaTestContext = {
   saga: TestSaga
@@ -130,27 +132,12 @@ export const makeTestEnvironment = (
   const execute = async () => {
     executed = true
 
-    const result: SagaTestResult = Object.defineProperty(
-      {
-        commands: [],
-        scheduledCommands: [],
-        queries: [],
-        sideEffects: [],
-        scheduleCommands: [],
-      },
-      // FIXME: deprecated
-      'scheduleCommands',
-      {
-        enumerable: false,
-        get() {
-          // eslint-disable-next-line no-console
-          console.warn(
-            `'scheduleCommands' property deprecated, use 'scheduledCommands' instead.`
-          )
-          return this.scheduledCommands
-        },
-      }
-    )
+    const result: SagaTestResult = {
+      commands: [],
+      scheduledCommands: [],
+      queries: [],
+      sideEffects: [],
+    }
 
     const { saga, events, adapter, encryption } = context
 
@@ -174,6 +161,7 @@ export const makeTestEnvironment = (
           encryption: actualEncryption,
         },
       ],
+      apiHandlers: [],
     })
 
     const liveErrors: Array<Error> = []
@@ -200,6 +188,10 @@ export const makeTestEnvironment = (
       error: () => void 0,
       execution: () => void 0,
       publish: async () => void 0,
+      duration: () => void 0,
+      rate: () => void 0,
+      getMetrics: () => ({ metrics: [] }),
+      clearMetrics: () => void 0,
     }
 
     const errors: Error[] = []
@@ -220,7 +212,7 @@ export const makeTestEnvironment = (
         sideEffectsStartTimestamp
       )
 
-      executor = createQuery({
+      executor = createQueryExecutor({
         applicationName: 'APP_NAME',
         readModelConnectors: {
           ADAPTER_NAME: actualAdapter,
@@ -233,6 +225,7 @@ export const makeTestEnvironment = (
         readModelsInterop: domain.sagaDomain.acquireSagasInterop(runtime),
         viewModelsInterop: {},
         performanceTracer: null,
+        loadReadModelProcedure: () => Promise.resolve(null),
       })
 
       try {

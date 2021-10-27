@@ -1,5 +1,10 @@
 import { StringifyOptions } from 'query-string'
-import { IS_BUILT_IN } from '@resolve-js/core'
+import {
+  IS_BUILT_IN,
+  getRootBasedUrl,
+  isAbsoluteUrl,
+  assertLeadingSlash,
+} from '@resolve-js/core'
 import { Context } from './context'
 import { GenericError } from './errors'
 import { connect, disconnect } from './subscribe'
@@ -9,8 +14,7 @@ import {
   NarrowedResponse,
   VALIDATED_RESULT,
 } from './request'
-import { assertLeadingSlash, assertNonEmptyString } from './assertions'
-import { getRootBasedUrl, isAbsoluteUrl } from './utils'
+import { assertNonEmptyString } from './assertions'
 import determineOrigin from './determine-origin'
 import { ViewModelDeserializer } from './types'
 import { ClientMiddlewareOptions } from './middleware'
@@ -109,11 +113,6 @@ export type QueryResult = {
 }
 export type QueryOptions = {
   method?: 'GET' | 'POST'
-  waitFor?: {
-    validator: (result: any) => boolean
-    period?: number
-    attempts?: number
-  }
   middleware?: ClientMiddlewareOptions
   queryStringOptions?: StringifyOptions
 }
@@ -142,28 +141,9 @@ export const query = (
   }
 
   if (isOptions<QueryOptions>(options)) {
-    if (typeof options.waitFor?.validator === 'function') {
-      const { validator, period = 1000, attempts = 5 } = options.waitFor
-
-      requestOptions.waitForResponse = {
-        validator: async (response, confirm): Promise<void> => {
-          const result = await response.json()
-
-          if (viewModelDeserializer != null && result != null && result.data) {
-            result.data = viewModelDeserializer(result.data)
-          }
-
-          if (validator(result)) {
-            confirm(result)
-          }
-        },
-        period,
-        attempts,
-      }
-    }
-    requestOptions.method = options?.method ?? 'GET'
-    requestOptions.middleware = options?.middleware
-    requestOptions.queryStringOptions = options?.queryStringOptions
+    requestOptions.method = options.method ?? 'GET'
+    requestOptions.middleware = options.middleware
+    requestOptions.queryStringOptions = options.queryStringOptions
   }
 
   const actualCallback = determineCallback<QueryCallback<Query>>(

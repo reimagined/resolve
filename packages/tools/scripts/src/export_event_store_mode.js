@@ -16,14 +16,20 @@ const getConfig = async (resolveConfig, options) => {
         method: 'GET',
         path: '/api/export-event-store',
         handler: {
-          module: '@resolve-js/runtime/lib/local/export-event-store-handler.js',
+          module: {
+            package: '@resolve-js/runtime-single-process',
+            import: 'exportEventStoreHandler',
+          },
           options,
         },
       },
       {
         method: 'OPTIONS',
         path: '/SKIP_COMMANDS',
-        handler: '@resolve-js/runtime/lib/common/handlers/fail-handler.js',
+        handler: {
+          package: '@resolve-js/runtime-base',
+          import: 'failHandler',
+        },
       },
     ],
   })

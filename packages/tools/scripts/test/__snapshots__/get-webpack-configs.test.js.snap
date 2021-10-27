@@ -33,19 +33,19 @@ exports[`should make webpack configs for cloud mode 1`] = `
     \\"resolve\\": {
       \\"modules\\": [
         \\"node_modules\\",
-        \\"../../runtime/runtime/node_modules\\",
+        \\"../../runtime/runtimes/runtime-base/node_modules\\",
         \\"../../../node_modules\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
         \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
         \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
         \\"$resolve.clientImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-        \\"$resolve.cloudEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\",
         \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
         \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
         \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
@@ -53,8 +53,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.host\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.middlewares\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+        \\"$resolve.monitoringAdapters\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -79,12 +79,12 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
@@ -92,8 +92,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -171,7 +171,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
-                  \\"target\\": \\"cloud\\"
+                  \\"runtime\\": {
+                    \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
+                  }
                 },
                 \\"isClient\\": true
               }
@@ -243,19 +245,25 @@ exports[`should make webpack configs for cloud mode 1`] = `
     \\"resolve\\": {
       \\"modules\\": [
         \\"node_modules\\",
-        \\"../../runtime/runtime/node_modules\\",
+        \\"../../runtime/runtimes/runtime-base/node_modules\\",
         \\"../../../node_modules\\"
+      ],
+      \\"extensions\\": [
+        \\".webpack.js\\",
+        \\".js\\",
+        \\".json\\",
+        \\".wasm\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
         \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
         \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
         \\"$resolve.clientImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-        \\"$resolve.cloudEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\",
         \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
         \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
         \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
@@ -263,8 +271,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.host\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.middlewares\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+        \\"$resolve.monitoringAdapters\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -296,12 +304,12 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
@@ -309,8 +317,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -395,7 +403,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
-                  \\"target\\": \\"cloud\\"
+                  \\"runtime\\": {
+                    \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
+                  }
                 },
                 \\"isClient\\": false
               }
@@ -427,14 +437,18 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {}
           ]
         }
       ],
       [
         {
-          \\"modulesDir\\": \\"../../runtime/runtime/node_modules\\",
+          \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {}
           ]
         }
@@ -443,6 +457,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {}
           ]
         }
@@ -453,7 +469,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
     ],
     \\"name\\": \\"Server cloud entry point\\",
     \\"entry\\": {
-      \\"common/cloud-entry/cloud-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\"
+      \\"common/cloud-entry/cloud-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\"
     }
   },
   {
@@ -468,19 +484,25 @@ exports[`should make webpack configs for cloud mode 1`] = `
     \\"resolve\\": {
       \\"modules\\": [
         \\"node_modules\\",
-        \\"../../runtime/runtime/node_modules\\",
+        \\"../../runtime/runtimes/runtime-base/node_modules\\",
         \\"../../../node_modules\\"
+      ],
+      \\"extensions\\": [
+        \\".webpack.js\\",
+        \\".js\\",
+        \\".json\\",
+        \\".wasm\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
         \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
         \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
         \\"$resolve.clientImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-        \\"$resolve.cloudEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\",
         \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
         \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
         \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
@@ -488,8 +510,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.host\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.middlewares\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+        \\"$resolve.monitoringAdapters\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -522,12 +544,12 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
@@ -535,8 +557,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -621,7 +643,9 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
-                  \\"target\\": \\"cloud\\"
+                  \\"runtime\\": {
+                    \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
+                  }
                 },
                 \\"isClient\\": false
               }
@@ -653,14 +677,18 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {}
           ]
         }
       ],
       [
         {
-          \\"modulesDir\\": \\"../../runtime/runtime/node_modules\\",
+          \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {}
           ]
         }
@@ -669,6 +697,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {}
           ]
         }
@@ -722,19 +752,19 @@ exports[`should make webpack configs for local mode 1`] = `
     \\"resolve\\": {
       \\"modules\\": [
         \\"node_modules\\",
-        \\"../../runtime/runtime/node_modules\\",
+        \\"../../runtime/runtimes/runtime-base/node_modules\\",
         \\"../../../node_modules\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
         \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
         \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
         \\"$resolve.clientImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-        \\"$resolve.cloudEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\",
         \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
         \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
         \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
@@ -742,8 +772,8 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.host\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.middlewares\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+        \\"$resolve.monitoringAdapters\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -768,12 +798,12 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
@@ -781,8 +811,8 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -860,7 +890,9 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
-                  \\"target\\": \\"local\\"
+                  \\"runtime\\": {
+                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
+                  }
                 },
                 \\"isClient\\": true
               }
@@ -932,19 +964,25 @@ exports[`should make webpack configs for local mode 1`] = `
     \\"resolve\\": {
       \\"modules\\": [
         \\"node_modules\\",
-        \\"../../runtime/runtime/node_modules\\",
+        \\"../../runtime/runtimes/runtime-base/node_modules\\",
         \\"../../../node_modules\\"
+      ],
+      \\"extensions\\": [
+        \\".webpack.js\\",
+        \\".js\\",
+        \\".json\\",
+        \\".wasm\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
         \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
         \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
         \\"$resolve.clientImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-        \\"$resolve.cloudEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\",
         \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
         \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
         \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
@@ -952,8 +990,8 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.host\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.middlewares\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+        \\"$resolve.monitoringAdapters\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -985,12 +1023,12 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
@@ -998,8 +1036,8 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -1084,7 +1122,9 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
-                  \\"target\\": \\"local\\"
+                  \\"runtime\\": {
+                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
+                  }
                 },
                 \\"isClient\\": false
               }
@@ -1116,14 +1156,18 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {}
           ]
         }
       ],
       [
         {
-          \\"modulesDir\\": \\"../../runtime/runtime/node_modules\\",
+          \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {}
           ]
         }
@@ -1132,6 +1176,8 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {}
           ]
         }
@@ -1140,7 +1186,7 @@ exports[`should make webpack configs for local mode 1`] = `
     \\"plugins\\": [],
     \\"name\\": \\"Server local entry point\\",
     \\"entry\\": {
-      \\"common/local-entry/local-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\"
+      \\"common/local-entry/local-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\"
     }
   },
   {
@@ -1155,19 +1201,25 @@ exports[`should make webpack configs for local mode 1`] = `
     \\"resolve\\": {
       \\"modules\\": [
         \\"node_modules\\",
-        \\"../../runtime/runtime/node_modules\\",
+        \\"../../runtime/runtimes/runtime-base/node_modules\\",
         \\"../../../node_modules\\"
+      ],
+      \\"extensions\\": [
+        \\".webpack.js\\",
+        \\".js\\",
+        \\".json\\",
+        \\".wasm\\"
       ],
       \\"alias\\": {
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
         \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
         \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
         \\"$resolve.clientImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-        \\"$resolve.cloudEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\",
         \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
         \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
         \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
@@ -1175,8 +1227,8 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
         \\"$resolve.host\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
         \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.localEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
         \\"$resolve.middlewares\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+        \\"$resolve.monitoringAdapters\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
         \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
         \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
         \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -1209,12 +1261,12 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cloudEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
@@ -1222,8 +1274,8 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.localEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
@@ -1308,7 +1360,9 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
-                  \\"target\\": \\"local\\"
+                  \\"runtime\\": {
+                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
+                  }
                 },
                 \\"isClient\\": false
               }
@@ -1340,14 +1394,18 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {}
           ]
         }
       ],
       [
         {
-          \\"modulesDir\\": \\"../../runtime/runtime/node_modules\\",
+          \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {}
           ]
         }
@@ -1356,6 +1414,8 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {}
           ]
         }

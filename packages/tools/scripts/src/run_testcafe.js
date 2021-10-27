@@ -1,16 +1,23 @@
 import { getInstallations } from 'testcafe-browser-tools'
 import { execSync } from 'child_process'
-import getLog from './get-log'
+import { getLog } from './get-log'
 
 import merge from './merge'
 import generateCustomMode from './generate_custom_mode'
+import { getResetDomainConfig } from './reset_mode'
 
 const getConfig = async (resolveConfig, options) => {
   if (options == null || options.constructor !== Object) {
     throw new Error('Invalid run-testcafe options')
   }
 
-  const { functionalTestsDir, browser, customArgs, timeout } = options
+  const {
+    functionalTestsDir,
+    browser,
+    customArgs,
+    timeout,
+    resetDomainOptions,
+  } = options
   if (functionalTestsDir == null || functionalTestsDir.constructor !== String) {
     throw new Error('Options field "functionalTestsDir" must be a string')
   }
@@ -27,15 +34,21 @@ const getConfig = async (resolveConfig, options) => {
     throw new Error('Options field "customArgs" must be an array of strings')
   }
 
-  const config = merge(resolveConfig, {
+  let config = merge(resolveConfig, {
     apiHandlers: [
       {
-        handler: '@resolve-js/runtime/lib/local/query-is-ready-handler.js',
+        handler: {
+          package: '@resolve-js/runtime-single-process',
+          import: 'queryIsReadyHandler',
+        },
         path: '/api/query-is-ready',
         method: 'GET',
       },
     ],
   })
+  if (resetDomainOptions != null) {
+    config = getResetDomainConfig(config, resetDomainOptions)
+  }
 
   return config
 }
@@ -94,16 +107,23 @@ const runTestcafeMode = async ({
   browser,
   customArgs,
   timeout,
-}) =>
-  generateCustomMode(getConfig, 'query-is-ready', runAfterLaunch)(
+  resetDomainOptions = null,
+}) => {
+  let apiHandlers = [`query-is-ready`]
+  if (resetDomainOptions != null) {
+    apiHandlers = ['reset-domain'].concat(apiHandlers)
+  }
+  return generateCustomMode(getConfig, apiHandlers, runAfterLaunch)(
     resolveConfig,
     {
       functionalTestsDir,
       browser,
       customArgs,
       timeout,
+      resetDomainOptions,
     },
     adjustWebpackConfigs
   )
+}
 
 export default runTestcafeMode

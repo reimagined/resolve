@@ -1,11 +1,11 @@
-import resolveFile from '../resolve_file'
+import { resolveResource } from '../resolve-resource'
 
 const importApplicationName = ({ resolveConfig }) => {
   const exports = []
 
   const applicationName =
     resolveConfig.name == null
-      ? require(resolveFile('package.json')).name
+      ? require(resolveResource('package.json').result).name
       : resolveConfig.name
 
   exports.push(

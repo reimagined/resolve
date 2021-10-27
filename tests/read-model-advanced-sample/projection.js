@@ -18,7 +18,7 @@ const projection = {
   },
 
   INSERT_TEST: async (store, event) => {
-    const testEventContent = event.payload
+    const testEventContent = event.payload.content
 
     // mdis-start read-store-api
     await store.insert('TestTable', {
@@ -60,7 +60,7 @@ const projection = {
   },
 
   UPDATE_TEST: async (store, event) => {
-    const testEventContent = event.payload
+    const testEventContent = event.payload.content
 
     // mdis-start read-store-api
     await store.update(
@@ -109,7 +109,7 @@ const projection = {
   },
 
   UPSERT_TEST: async (store, event) => {
-    const testEventContent = event.payload
+    const testEventContent = event.payload.content
 
     // mdis-start read-store-api
     await store.update(
@@ -128,7 +128,7 @@ const projection = {
   },
 
   DELETE_TEST: async (store, event) => {
-    const testEventContent = event.payload
+    const testEventContent = event.payload.content
 
     // mdis-start read-store-api
     await store.delete('TestTable', {

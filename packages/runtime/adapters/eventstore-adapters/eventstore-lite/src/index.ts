@@ -39,10 +39,10 @@ import dropFinal from './drop-final'
 import replicateEvents from './replicate-events'
 import replicateSecrets from './replicate-secrets'
 import setReplicationStatus from './set-replication-status'
-import setReplicationIterator from './set-replication-iterator'
 import setReplicationPaused from './set-replication-paused'
 import getReplicationState from './get-replication-state'
 import resetReplication from './reset-replication'
+import setReplicationLock from './set-replication-lock'
 import getCursorUntilEventTypes from './get-cursor-until-event-types'
 import describe from './describe'
 
@@ -87,10 +87,10 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       replicateEvents,
       replicateSecrets,
       setReplicationStatus,
-      setReplicationIterator,
       setReplicationPaused,
       getReplicationState,
       resetReplication,
+      setReplicationLock,
       getCursorUntilEventTypes,
       describe,
     },

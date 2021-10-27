@@ -161,7 +161,10 @@ To serve SSR markup to the client, you need to register the **live-require-handl
 apiHandlers: [
   {
     handler: {
-      module: '@resolve-js/runtime/lib/common/handlers/live-require-handler.js',
+      module: {
+        package: '@resolve-js/runtime-base',
+        import: 'liveRequireHandler',
+      },
       options: {
         modulePath: './ssr.js',
         moduleFactoryImport: false
@@ -206,12 +209,11 @@ eventstoreAdapter: {
 
 The following adapters are available:
 
-| Adapter Module                                                                    | Description                                               |
-| --------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| [@resolve-js/eventstore-lite](#eventstore-lite)                                   | Used to store events in an SQLite database.               |
-| [@resolve-js/eventstore-mysql](#eventstore-mysql)                                 | Used to store events in a MySQL database.                 |
-| [@resolve-js/eventstore-postgresql](#eventstore-postgresql)                       | Used to store events in a PostgreSQL database.            |
-| [@resolve-js/eventstore-postgresql-serverless](#eventstore-postgresql-serverless) | Used to store events in AWS Aurora PostgreSQL Serverless. |
+| Adapter Module                                              | Description                                    |
+| ----------------------------------------------------------- | ---------------------------------------------- |
+| [@resolve-js/eventstore-lite](#eventstore-lite)             | Used to store events in an SQLite database.    |
+| [@resolve-js/eventstore-mysql](#eventstore-mysql)           | Used to store events in a MySQL database.      |
+| [@resolve-js/eventstore-postgresql](#eventstore-postgresql) | Used to store events in a PostgreSQL database. |
 
 #### eventstore-lite
 
@@ -309,44 +311,6 @@ const prodConfig = {
 }
 ```
 
-#### eventstore-postgresql-serverless
-
-Used to store events in AWS Aurora PostgreSQL Serverless.
-
-This adapter supports the following options:
-
-| Option Name            | Description                                                      |
-| ---------------------- | ---------------------------------------------------------------- |
-| awsSecretStoreArn      | An AWS secret store's Amazon Resource Name (ARN)                 |
-| databaseName           | The name of a database.                                          |
-| dbClusterOrInstanceArn | An Amazon Resource Name (ARN) of a database cluster or instance. |
-| eventsTableName        | The name of a database table used to store events.               |
-| region                 | An AWS region.                                                   |
-| secretsTableName       | The name of a database table used to store secrets.              |
-| snapshotBucketSize     | The number of events between aggregate snapshots.                |
-
-##### Example
-
-```js
-const prodConfig = {
-  eventstoreAdapter: {
-    module: '@resolve-js/eventstore-postgresql-serverless',
-    options: {
-      region: 'us-east-1',
-      databaseName: 'databaseName',
-      eventsTableName: 'eventsTableName',
-      awsSecretStoreArn: 'awsSecretStoreArn',
-      dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
-    }
-  },
-  ...
-}
-```
-
-### host
-
-Specifies the network host on which to listen for connections. Defaults to `'0.0.0.0'`.
-
 ### middleware
 
 Specifies [middleware](middleware.md) for aggregates and read models. The configuration object can contain the following fields:
@@ -385,6 +349,40 @@ const appConfig = {
 }
 ```
 
+### monitoringAdapters
+
+Specifies the application's Monitoring adapters as key-value pairs. An adapter configuration object contains the following fields:
+
+| Field   | Description                                                          |
+| ------- | -------------------------------------------------------------------- |
+| module  | The name of a module or the path to a file that defines an adapter . |
+| options | An object that defines the adapter's options as key-value pairs.     |
+
+##### Example:
+
+```js
+monitoringAdapters: {
+  default: {
+    module: '@resolve-js/monitoring-console',
+    options: {
+      publishMode: 'processExit',
+    },
+  },
+}
+```
+
+The following adapters are available:
+
+| Module Name                                                         | Description                          |
+| ------------------------------------------------------------------- | ------------------------------------ |
+| [@resolve-js/monitoring-console](#monitoring-console)               | Prints metrics to the text console.  |
+| [@resolve-js/monitoring-aws-cloudwatch](#monitoring-aws-cloudwatch) | Publishes metrics to AWS CloudWatch. |
+
+If the `default` adapter is not explicitly specified, reSolve adds it automatically based on the target environment:
+
+- The `'@resolve-js/monitoring-console'` module is used on a local machine or standalone server.
+- The `'@resolve-js/monitoring-aws-cloudwatch'`module is used in the cloud environment.
+
 ### jwtCookie
 
 Specifies global settings for the application's JWT cookies. The configuration object contains the following fields:
@@ -416,10 +414,6 @@ Supported values:
 Specifies the application's name.
 
 If this option is omitted, the package name defined in the package.json file is reused as the application's name.
-
-### port
-
-Specifies the server application's port as an integer or string.
 
 ### readModels
 
@@ -459,7 +453,7 @@ Specifies the application's Read Model connectors as key-value pairs. A connecto
 ```js
 readModelConnectors: {
   default: {
-    module: 'readmodel-mysql',
+    module: '@resolve-js/readmodel-mysql',
     options: {
       host: 'localhost',
       port: 3306,
@@ -473,12 +467,11 @@ readModelConnectors: {
 
 The following connectors are available:
 
-| Module Name                                                                     | Description                                                           |
-| ------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| [@resolve-js/readmodel-lite](#readmodel-lite)                                   | Used to store Read Model data in an SQLite database.                  |
-| [@resolve-js/readmodel-mysql](#readmodel-mysql)                                 | Used to store Read Model data in a MySQL database.                    |
-| [@resolve-js/readmodel-postgresql](#readmodel-postgresql)                       | Used to store Read Model data in a PostgreSQL database.               |
-| [@resolve-js/readmodel-postgresql-serverless](#readmodel-postgresql-serverless) | Used to store Read Model data in Amazon Aurora PostgreSQL Serverless. |
+| Module Name                                               | Description                                             |
+| --------------------------------------------------------- | ------------------------------------------------------- |
+| [@resolve-js/readmodel-lite](#readmodel-lite)             | Used to store Read Model data in an SQLite database.    |
+| [@resolve-js/readmodel-mysql](#readmodel-mysql)           | Used to store Read Model data in a MySQL database.      |
+| [@resolve-js/readmodel-postgresql](#readmodel-postgresql) | Used to store Read Model data in a PostgreSQL database. |
 
 #### readmodel-lite
 
@@ -570,34 +563,53 @@ const prodConfig = {
 }
 ```
 
-#### readmodel-postgresql-serverless
+### runtime
 
-Used to store Read Model data in AWS Aurora PostgreSQL Serverless.
+Specifies the runtime that the application targets and the options for this runtime. A runtime configuration object has the following structure:
 
-This connector supports the following options:
-
-| Option Name            | Description                                                      |
-| ---------------------- | ---------------------------------------------------------------- |
-| awsSecretStoreArn      | An AWS secret store's Amazon Resource Name (ARN).                |
-| databaseName           | The name of a database.                                          |
-| dbClusterOrInstanceArn | An Amazon Resource Name (ARN) of a database cluster or instance. |
-| region                 | An AWS region.                                                   |
-| tablePrefix            | Optional table name prefix.                                      |
-
-#### Example
+<!-- prettier-ignore-start -->
 
 ```js
+{
+  runtime, // A string that specifies the runtime package to use.
+  options // An object that contains runtime-specific options.
+}
+```
+
+<!-- prettier-ignore-end -->
+
+ReSolve includes the following runtime packages:
+
+- `"@resolve-js/runtime-single-process"` - A runtime that targets a standalone server or local machine.
+- `"@resolve-js/runtime-aws-serverless"` - A runtime that targets the AWS serverless environment.
+
+#### Options
+
+The `options` configuration object has the following structure:
+
+<!-- prettier-ignore-start -->
+
+```js
+{
+  importMode, // Specifies whether to use *static* or *dynamic* imports between the application's modules.
+  host, // (single-process only) Specifies the network host on which to listen for connections. Defaults to `'0.0.0.0'`.
+  port // (single-process only) Specifies the server application's port.
+}
+```
+
+<!-- prettier-ignore-end -->
+
+##### Example:
+
+```js
+// config.prod.js
 const prodConfig = {
-  readModelConnectors: {
-    default: {
-      module: '@resolve-js/readmodel-postgresql-serverless',
-      options: {
-        region: 'us-east-1',
-        databaseName: 'databaseName',
-        awsSecretStoreArn: 'awsSecretStoreArn',
-        dbClusterOrInstanceArn: 'dbClusterOrInstanceArn',
-      }
-    }
+  runtime: {
+    module: '@resolve-js/runtime-single-process',
+    options: {
+      host: declareRuntimeEnv('HOST', 'localhost'),
+      port: declareRuntimeEnv('PORT', '3000'),
+    },
   },
   ...
 }
@@ -679,15 +691,6 @@ Specifies the project directory that contains static files.
 ### staticPath
 
 Specifies the URL path to static files.
-
-### target
-
-Specifies the environment that the application targets.
-
-Supported values:
-
-- `"local"`
-- `"cloud"`
 
 ### viewModels
 

@@ -11,10 +11,34 @@ import fsExtra from 'fs-extra'
 import showBuildInfo from './show_build_info'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
 import copyEnvToDist from './copy_env_to_dist'
-import getLog from './get-log'
+import { getLog } from './get-log'
 import detectErrors from './detect_errors'
 
-const log = getLog('custom')
+const waitForUrl = async (log, host, port, rootPath, apiHandlerUrl) => {
+  const urls = prepareUrls('http', host, port, rootPath)
+  const baseUrl = urls.localUrlForBrowser
+  const url = `${baseUrl}api/${apiHandlerUrl}`
+
+  log.debug(`target API url to fetch ${url}`)
+
+  while (true) {
+    try {
+      const response = await fetch(url)
+
+      const result = await response.text()
+      if (result !== 'ok') {
+        throw [
+          `Error communicating with reSolve HTTP server at port ${port}`,
+          `Multiple instances of reSolve applications may be trying to run on the same port`,
+          `${response.status}: ${response.statusText}`,
+          `${result}`,
+        ].join('\n')
+      }
+      break
+    } catch (e) {}
+    await new Promise((resolve) => setTimeout(resolve, 500))
+  }
+}
 
 const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
   resolveConfig,
@@ -22,11 +46,15 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
   adjustWebpackConfigs
 ) =>
   new Promise(async (resolve, reject) => {
+    const apiHandlerUrls = [].concat(apiHandlerUrl)
+    const log = getLog(`start:${apiHandlerUrls.join('+')}`)
+
     try {
-      log.debug(`Starting "${apiHandlerUrl}" mode`)
+      log.debug(`validating framework config`)
       const config = await getConfig(resolveConfig, options)
       validateConfig(config)
 
+      log.debug(`requesting webpack configs`)
       const nodeModulesByAssembly = new Map()
       const webpackConfigs = await getWebpackConfigs({
         resolveConfig: config,
@@ -36,13 +64,16 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 
       const peerDependencies = getPeerDependencies()
 
+      log.debug(`creating webpack compiler`)
       const compiler = webpack(webpackConfigs)
 
+      log.debug(`injecting static files to distribution`)
       fsExtra.copySync(
         path.resolve(process.cwd(), config.staticDir),
         path.resolve(process.cwd(), config.distDir, './client')
       )
 
+      log.debug(`executing webpack compilation`)
       await new Promise((resolve, reject) => {
         compiler.run((err, { stats }) => {
           console.log(' ') // eslint-disable-line no-console
@@ -61,14 +92,17 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
           void (hasNoErrors ? resolve() : reject(stats.toString('')))
         })
       })
+      log.debug(`webpack compilation succeeded`)
 
       const serverPath = path.resolve(
         process.cwd(),
         path.join(config.distDir, './common/local-entry/local-entry.js')
       )
+      log.debug(`backend entry: ${serverPath}`)
 
       const resolveLaunchId = Math.floor(Math.random() * 1000000000)
 
+      log.debug(`registering backend server node process`)
       const server = processRegister(['node', serverPath], {
         cwd: process.cwd(),
         maxRestarts: 0,
@@ -82,38 +116,37 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 
       server.on('crash', reject)
       server.start()
-      log.debug(`Server process pid: ${server.pid}`)
+      log.debug(`server process started with pid: ${server.pid}`)
 
+      const {
+        runtime: {
+          options: { port: portSource, host: hostSource },
+        },
+      } = config
       const port = Number(
-        checkRuntimeEnv(config.port)
+        checkRuntimeEnv(portSource)
           ? // eslint-disable-next-line no-new-func
-            new Function(`return ${injectRuntimeEnv(config.port)}`)()
+            new Function(`return ${injectRuntimeEnv(portSource)}`)()
           : config.port
       )
+      const host = checkRuntimeEnv(hostSource)
+        ? // eslint-disable-next-line no-new-func
+          new Function(`return ${injectRuntimeEnv(hostSource)}`)()
+        : config.port
 
-      let lastError = null
+      log.debug(`resolve host "${host}", port "${port}"`)
 
-      if (apiHandlerUrl != null) {
-        const urls = prepareUrls('http', '0.0.0.0', port, config.rootPath)
-        const baseUrl = urls.localUrlForBrowser
-        const url = `${baseUrl}api/${apiHandlerUrl}`
+      const fetchUrl = waitForUrl.bind(null, log, host, port, config.rootPath)
+      let lastError
 
-        while (true) {
-          try {
-            const response = await fetch(url)
-
-            const result = await response.text()
-            if (result !== 'ok') {
-              lastError = [
-                `Error communicating with reSolve HTTP server at port ${port}`,
-                `Multiple instances of reSolve applications may be trying to run on the same port`,
-                `${response.status}: ${response.statusText}`,
-                `${result}`,
-              ].join('\n')
-            }
-            break
-          } catch (e) {}
-          await new Promise((resolve) => setTimeout(resolve, 500))
+      for (let handler of apiHandlerUrls) {
+        log.debug(`request to: ${handler}`)
+        try {
+          await fetchUrl(handler)
+          log.debug(`${handler} request completed`)
+        } catch (e) {
+          log.error(`${handler} ${e}`)
+          lastError = e
         }
       }
 
@@ -125,7 +158,7 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
         }
       }
 
-      await Promise.all([new Promise((resolve) => server.stop(resolve))])
+      await new Promise((resolve) => server.stop(resolve))
 
       log.debug('Server was stopped')
 

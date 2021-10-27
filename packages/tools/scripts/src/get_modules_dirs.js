@@ -10,7 +10,7 @@ const getModulesDirs = ({ isAbsolutePath = false } = {}) => {
   const currentDirNodeModules = path.join(currentDir, 'node_modules')
   const resolveRuntimeNodeModules = path.join(
     path.dirname(
-      require.resolve('@resolve-js/runtime/package.json', {
+      require.resolve('@resolve-js/runtime-base/package.json', {
         paths: [currentDirNodeModules, ...monorepoNodeModules],
       })
     ),

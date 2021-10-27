@@ -8,8 +8,6 @@ import createEventStoreLiteAdapter from '@resolve-js/eventstore-lite'
 // eslint-disable-next-line
 import createEventStorePostgreSQLAdapter from '@resolve-js/eventstore-postgresql'
 // eslint-disable-next-line
-import createEventStorePostgreSQLServerlessAdapter from '@resolve-js/eventstore-postgresql-serverless'
-// eslint-disable-next-line
 import createEventStoreMySQLAdapter from '@resolve-js/eventstore-mysql'
 
 const createAdapter = () => {
@@ -22,18 +20,6 @@ const createAdapter = () => {
   //   eventsTableName: 'events' + Date.now(),
   //   snapshotsTableName: 'snapshots' + Date.now(),
   //   secretsTableName: 'secrets' + Date.now()
-  // })
-
-  // return createEventStorePostgreSQLServerlessAdapter({
-  //   databaseName: process.env.EVENT_STORE_DATABASE_NAME,
-  //   dbClusterOrInstanceArn: process.env.EVENT_STORE_CLUSTER_ARN,
-  //   awsSecretStoreArn: process.env.EVENT_STORE_SECRET_ARN,
-  //   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  //   secretAccessKey: process.env.SECRET_ACCESS_KEY,
-  //   eventsTableName: 'events' + Date.now(),
-  //   snapshotsTableName: 'snapshots' + Date.now(),
-  //   secretsTableName: 'secrets' + Date.now(),
-  //   region: 'eu-west-1'
   // })
 
   // return createEventStorePostgreSQLAdapter({

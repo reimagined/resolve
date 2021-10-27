@@ -4,7 +4,7 @@ import {
   jestTimeout,
   sqliteTempFileName,
 } from '../eventstore-test-utils'
-import type { EventWithCursor, Adapter } from '@resolve-js/eventstore-base'
+import type { StoredEventPointer, Adapter } from '@resolve-js/eventstore-base'
 import { SecretsManager } from '@resolve-js/core'
 
 jest.setTimeout(jestTimeout())
@@ -42,7 +42,7 @@ describe(`${adapterFactory.name}. Eventstore adapter parallel save`, () => {
   let lastCursor: string
   let lastIdx: number
   test('should be able to save many events in parallel', async () => {
-    const promises: Promise<EventWithCursor>[] = []
+    const promises: Promise<StoredEventPointer>[] = []
     for (let i = 0; i < parallelWrites; ++i) {
       promises.push(
         getRandomAdapterInstance().saveEvent({
@@ -54,7 +54,7 @@ describe(`${adapterFactory.name}. Eventstore adapter parallel save`, () => {
         })
       )
     }
-    const parallelEventCursorPairs: EventWithCursor[] = await Promise.all(
+    const parallelEventCursorPairs: StoredEventPointer[] = await Promise.all(
       promises
     )
 

@@ -22,6 +22,7 @@ import exportSecretsStream from './export-secrets'
 import init from './init'
 import drop from './drop'
 import gatherSecretsFromEvents from './gather-secrets-from-events'
+import getEventLoader from './get-event-loader'
 import * as iots from 'io-ts'
 import * as iotsTypes from 'io-ts-types'
 
@@ -32,6 +33,7 @@ import type {
   Adapter,
   AdapterConfig,
 } from './types'
+import { AdapterPoolPossiblyUnconnected } from './types'
 
 export {
   validate,
@@ -69,7 +71,12 @@ const wrappedCreateAdapter = <
     Config
   >,
   connectionDependencies: ConnectionDependencies,
-  options: Config
+  options: Config,
+  prepare?: (
+    props: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+    config: Config,
+    dependencies: ConnectionDependencies
+  ) => void
 ): Adapter => {
   const commonFunctions: CommonAdapterFunctions<ConnectedProps> = {
     maybeThrowResourceError,
@@ -84,13 +91,15 @@ const wrappedCreateAdapter = <
     init,
     drop,
     gatherSecretsFromEvents,
+    getEventLoader,
   }
 
   return createAdapter(
     commonFunctions,
     adapterFunctions,
     connectionDependencies,
-    options
+    options,
+    prepare
   )
 }
 
@@ -117,18 +126,16 @@ export type {
   SecretRecord,
   InputEvent,
   VersionlessEvent,
-  SavedEvent,
-  EventThreadData,
+  InputCursor,
   Cursor,
-  EventsWithCursor,
-  EventWithCursor,
+  StoredEventBatchPointer,
+  StoredEventPointer,
   EventFilter,
   LatestEventFilter,
   ReplicationStatus,
   ReplicationState,
   OldEvent,
   OldSecretRecord,
-  EventStoreDescription,
   UnbrandProps,
   CursorFilter,
   TimestampFilter,
@@ -139,7 +146,16 @@ export type {
   AdapterConfig,
   AdapterTableNames,
   AdapterTableNamesProps,
+  GatheredSecrets,
+  EventLoaderFilter,
+  EventLoader,
 } from './types'
+
+export type {
+  StoredEvent,
+  EventThreadData,
+  EventStoreDescription,
+} from '@resolve-js/core'
 
 export {
   makeSetSecretEvent,

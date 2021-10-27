@@ -20,7 +20,7 @@ export type ReadModelRuntime = {
   projectionMiddlewares?: Array<ReadModelProjectionMiddleware>
 }
 
-export type ReadModelInterop = {
+export type ReadModelInterop<TStore = any> = {
   name: string
   connectorName: string
   acquireResolver: (
@@ -32,10 +32,10 @@ export type ReadModelInterop = {
     middlewareContext?: MiddlewareContext
   ) => Promise<ReadModelRuntimeResolver>
   acquireInitHandler: (
-    store: any
+    store: TStore
   ) => Promise<ReadModelRuntimeEventHandler | null>
   acquireEventHandler: (
-    store: any,
+    store: TStore,
     event: Event
   ) => Promise<ReadModelRuntimeEventHandler | null>
 }

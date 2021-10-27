@@ -9,6 +9,7 @@ import {
   ViewModelBuildResult,
   ViewModelRuntime,
 } from '../src/view-model/types'
+import { StoredEvent } from '../types'
 
 let monitoring: Monitoring
 
@@ -26,22 +27,37 @@ const makeViewModelMeta = (params: any): ViewModelMeta[] => [
   },
 ]
 
-const makeTestRuntime = (storedEvents: Event[] = []): ViewModelRuntime => {
+const makeTestRuntime = (events: Event[] = []): ViewModelRuntime => {
   const secretsManager: SecretsManager = {
     getSecret: jest.fn(),
     setSecret: jest.fn(),
     deleteSecret: jest.fn(),
   }
 
+  const storedEvents = events.map<StoredEvent>((event) => ({
+    ...event,
+    threadId: 0,
+    threadCounter: 0,
+  }))
+
   const eventstore: Eventstore = {
+    getReplicationState: jest.fn(),
+    replicateEvents: jest.fn(),
+    replicateSecrets: jest.fn(),
+    resetReplication: jest.fn(),
+    setReplicationLock: jest.fn(),
+    setReplicationPaused: jest.fn(),
+    setReplicationStatus: jest.fn(),
     saveEvent: jest.fn(),
     getNextCursor: jest.fn(
-      (currentCursor) => (currentCursor && currentCursor + 1) || 1
+      (currentCursor) =>
+        (currentCursor && (Number(currentCursor) + 1).toString()) || '1'
     ),
     loadEvents: jest.fn(({ cursor, aggregateIds }) =>
       Promise.resolve({
+        cursor: '',
         events: storedEvents.filter((e) =>
-          aggregateIds.includes(e.aggregateId)
+          aggregateIds?.includes(e.aggregateId)
         ),
       })
     ),
@@ -50,15 +66,20 @@ const makeTestRuntime = (storedEvents: Event[] = []): ViewModelRuntime => {
     ensureEventSubscriber: jest.fn().mockResolvedValue(null),
     removeEventSubscriber: jest.fn().mockResolvedValue(null),
     getEventSubscribers: jest.fn().mockResolvedValue([]),
+    describe: jest.fn(),
   }
 
   monitoring = {
-    group: jest.fn(),
     error: jest.fn(),
     execution: jest.fn(),
+    group: jest.fn(() => monitoring),
     time: jest.fn(),
     timeEnd: jest.fn(),
     publish: jest.fn(),
+    duration: jest.fn(),
+    rate: jest.fn(),
+    getMetrics: jest.fn(),
+    clearMetrics: jest.fn(),
   }
 
   mocked(monitoring.group).mockReturnValue(monitoring)
@@ -132,7 +153,7 @@ describe('View models', () => {
     })
     expect(data).toEqual(['first', 'third'])
     expect(eventCount).toEqual(2)
-    expect(cursor).toEqual(2)
+    expect(cursor).toEqual('2')
   })
 
   test('collects error if event handler is failed', async () => {

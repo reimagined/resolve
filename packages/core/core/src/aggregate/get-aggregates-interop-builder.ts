@@ -1,15 +1,15 @@
-import {
+import type {
   AggregatesInteropBuilder,
   AggregateInteropMap,
   AggregateInterop,
   AggregateRuntime,
-  CommandHttpResponseMode,
 } from './types'
+import { CommandHttpResponseMode } from './types'
 import { CommandError } from '../errors'
 import { AggregateMeta, MiddlewareContext } from '../types/runtime'
 import { getLog } from '../get-log'
 import { getPerformanceTracerSubsegment } from '../utils'
-import {
+import type {
   Event,
   AggregateState,
   Command,
@@ -18,6 +18,7 @@ import {
   CommandResult,
   InteropCommandResult,
 } from '../types/core'
+import type { StoredEvent } from '../types/runtime'
 import { makeMiddlewareApplier } from '../helpers'
 
 type AggregateData = {
@@ -107,13 +108,13 @@ const saveEvent = async (
       : true
 
   if (allowSave) {
-    const eventWithCursor = await eventstore.saveEvent(event)
+    const pointer = await eventstore.saveEvent(event)
 
     if (typeof postSaveEvent === 'function') {
-      await postSaveEvent(aggregate, command, event, eventWithCursor)
+      await postSaveEvent(aggregate, command, pointer)
     }
 
-    return eventWithCursor.event
+    return pointer.event
   }
 
   return event
@@ -124,7 +125,7 @@ const projectionEventHandler = async (
   runtime: AggregateRuntime,
   data: AggregateData,
   processSnapshot: Function | null,
-  event: Event
+  event: StoredEvent
 ): Promise<any> => {
   const { monitoring, eventstore } = runtime
   const subSegment = getPerformanceTracerSubsegment(monitoring, 'applyEvent')
@@ -187,7 +188,8 @@ const takeSnapshot = async (
 
     // FIXME: move snapshot business logic from runtime
     await eventstore.saveSnapshot(
-      data.snapshotKey,
+      //TODO: check for null
+      data.snapshotKey as string,
       JSON.stringify({
         state: aggregate.serializeState(data.aggregateState),
         version: data.aggregateVersion,
@@ -309,7 +311,7 @@ const getAggregateState = async (
         typeof projection.Init === 'function' ? await projection.Init() : null
     }
 
-    const eventHandler = (event: Event) =>
+    const eventHandler = (event: StoredEvent) =>
       projectionEventHandler(
         aggregate,
         runtime,
@@ -413,9 +415,7 @@ const makeCommandExecutor = (
 
     monitoringGroup?.time('Execution')
 
-    const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
-
-    const jwt = actualJwt || deprecatedJwt
+    const { jwt } = command
 
     let executionError
 
