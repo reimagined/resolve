@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/core",
-  "version": "0.32.0",
+  "version": "0.33.0",
   "description": "reSolve core.",
   "keywords": [
     "cqrs",
@@ -25,13 +25,13 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
-    "@resolve-js/debug-levels": "0.32.0",
+    "@resolve-js/debug-levels": "0.33.0",
     "uuid": "8.3.2"
   },
   "devDependencies": {
+    "@types/cookie": "0.4.1",
     "jest": "27.0.3",
-    "ts-jest": "^27.0.2",
-    "@types/cookie": "0.4.1"
+    "ts-jest": "^27.0.2"
   },
   "engines": {
     "node": ">=14.17"
