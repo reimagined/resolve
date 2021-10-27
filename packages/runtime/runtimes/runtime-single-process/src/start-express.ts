@@ -85,7 +85,11 @@ export const startExpress = async (
         resolve: userResolve,
       })
 
-      const executor = wrapApiHandler(mainHandler, getCustomParameters)
+      const executor = wrapApiHandler(
+        mainHandler,
+        getCustomParameters,
+        runtime.monitoring
+      )
 
       await executor(req, res)
     } finally {

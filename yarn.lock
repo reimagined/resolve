@@ -3333,6 +3333,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/columnify@1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@types/columnify/-/columnify-1.5.1.tgz#c6551c5e8614e13a6ccee97c5172637815066d6b"
+  integrity sha512-pXWQTEvwcO7GAwFvSvaMOIktLcJ2ajIAUyMR93KDZZVWN2G7uieEDBPJskEmXb0Qv8JMPHhaRA52azCPfiFmQA==
+
 "@types/command-line-args@5.0.1":
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@types/command-line-args/-/command-line-args-5.0.1.tgz#8c283123bd9411168fa3cbdb6f5799c07d4af0b0"
@@ -17863,7 +17868,7 @@ ts-jest@27.0.2:
     semver "7.x"
     yargs-parser "20.x"
 
-ts-jest@^27.0.2:
+ts-jest@27.0.5, ts-jest@^27.0.2:
   version "27.0.5"
   resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-27.0.5.tgz#0b0604e2271167ec43c12a69770f0bb65ad1b750"
   integrity sha512-lIJApzfTaSSbtlksfFNHkWOzLJuuSm4faFAfo5kvzOiRAuoN4/eKxVJ2zEAho8aecE04qX6K1pAzfH5QHL1/8w==

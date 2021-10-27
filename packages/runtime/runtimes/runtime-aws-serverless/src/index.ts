@@ -7,6 +7,7 @@ import {
   getLog,
   gatherEventListeners,
   RuntimeWorker,
+  createCompositeMonitoringAdapter,
 } from '@resolve-js/runtime-base'
 
 import { performanceTracerFactory } from './performance-tracer-factory'
@@ -27,6 +28,7 @@ import type {
   LambdaColdStartContext,
   WorkerResult,
 } from './types'
+import { prepareAssemblies } from './prepare-assemblies'
 
 const log = getLog('aws-serverless-entry')
 
@@ -34,7 +36,8 @@ const entry = async (
   options: RuntimeOptions,
   context: RuntimeEntryContext
 ): Promise<RuntimeWorker<WorkerArguments, WorkerResult>> => {
-  const { assemblies, constants, domain, resolveVersion } = context
+  const { constants, domain, resolveVersion } = context
+  const assemblies = prepareAssemblies(context.assemblies, context)
   let subSegment: PerformanceSubsegment | null = null
 
   log.debug(`starting lambda 'cold start'`)
@@ -43,6 +46,9 @@ const entry = async (
   try {
     log.debug('building lambda cold start context entries')
     const performanceTracer = await performanceTracerFactory()
+    const monitoring = createCompositeMonitoringAdapter(
+      assemblies.monitoringAdapters
+    )
 
     const segment = performanceTracer.getSegment()
     subSegment = segment.addNewSubsegment('initResolve')
@@ -64,6 +70,7 @@ const entry = async (
       upstream: true,
       resolveVersion,
       performanceTracer,
+      monitoring,
       getReactiveSubscription,
       sendReactiveEvent,
       routesTrie: wrapTrie(

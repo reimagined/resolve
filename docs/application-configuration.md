@@ -209,11 +209,11 @@ eventstoreAdapter: {
 
 The following adapters are available:
 
-| Adapter Module                                                                    | Description                                               |
-| --------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| [@resolve-js/eventstore-lite](#eventstore-lite)                                   | Used to store events in an SQLite database.               |
-| [@resolve-js/eventstore-mysql](#eventstore-mysql)                                 | Used to store events in a MySQL database.                 |
-| [@resolve-js/eventstore-postgresql](#eventstore-postgresql)                       | Used to store events in a PostgreSQL database.            |
+| Adapter Module                                              | Description                                    |
+| ----------------------------------------------------------- | ---------------------------------------------- |
+| [@resolve-js/eventstore-lite](#eventstore-lite)             | Used to store events in an SQLite database.    |
+| [@resolve-js/eventstore-mysql](#eventstore-mysql)           | Used to store events in a MySQL database.      |
+| [@resolve-js/eventstore-postgresql](#eventstore-postgresql) | Used to store events in a PostgreSQL database. |
 
 #### eventstore-lite
 
@@ -349,6 +349,40 @@ const appConfig = {
 }
 ```
 
+### monitoringAdapters
+
+Specifies the application's Monitoring adapters as key-value pairs. An adapter configuration object contains the following fields:
+
+| Field   | Description                                                          |
+| ------- | -------------------------------------------------------------------- |
+| module  | The name of a module or the path to a file that defines an adapter . |
+| options | An object that defines the adapter's options as key-value pairs.     |
+
+##### Example:
+
+```js
+monitoringAdapters: {
+  default: {
+    module: '@resolve-js/monitoring-console',
+    options: {
+      publishMode: 'processExit',
+    },
+  },
+}
+```
+
+The following adapters are available:
+
+| Module Name                                                         | Description                          |
+| ------------------------------------------------------------------- | ------------------------------------ |
+| [@resolve-js/monitoring-console](#monitoring-console)               | Prints metrics to the text console.  |
+| [@resolve-js/monitoring-aws-cloudwatch](#monitoring-aws-cloudwatch) | Publishes metrics to AWS CloudWatch. |
+
+If the `default` adapter is not explicitly specified, reSolve adds it automatically based on the target environment:
+
+- The `'@resolve-js/monitoring-console'` module is used on a local machine or standalone server.
+- The `'@resolve-js/monitoring-aws-cloudwatch'`module is used in the cloud environment.
+
 ### jwtCookie
 
 Specifies global settings for the application's JWT cookies. The configuration object contains the following fields:
@@ -419,7 +453,7 @@ Specifies the application's Read Model connectors as key-value pairs. A connecto
 ```js
 readModelConnectors: {
   default: {
-    module: 'readmodel-mysql',
+    module: '@resolve-js/readmodel-mysql',
     options: {
       host: 'localhost',
       port: 3306,
@@ -433,11 +467,11 @@ readModelConnectors: {
 
 The following connectors are available:
 
-| Module Name                                                                     | Description                                                           |
-| ------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| [@resolve-js/readmodel-lite](#readmodel-lite)                                   | Used to store Read Model data in an SQLite database.                  |
-| [@resolve-js/readmodel-mysql](#readmodel-mysql)                                 | Used to store Read Model data in a MySQL database.                    |
-| [@resolve-js/readmodel-postgresql](#readmodel-postgresql)                       | Used to store Read Model data in a PostgreSQL database.               |
+| Module Name                                               | Description                                             |
+| --------------------------------------------------------- | ------------------------------------------------------- |
+| [@resolve-js/readmodel-lite](#readmodel-lite)             | Used to store Read Model data in an SQLite database.    |
+| [@resolve-js/readmodel-mysql](#readmodel-mysql)           | Used to store Read Model data in a MySQL database.      |
+| [@resolve-js/readmodel-postgresql](#readmodel-postgresql) | Used to store Read Model data in a PostgreSQL database. |
 
 #### readmodel-lite
 

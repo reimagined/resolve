@@ -3,7 +3,6 @@ import type {
   Event,
   StoredEvent,
   EventThreadData,
-  SerializableMap,
   StoredEventPointer,
   StoredEventBatchPointer,
   Eventstore as CoreEventstore,

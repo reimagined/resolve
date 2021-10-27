@@ -1,0 +1,55 @@
+{
+  "name": "@resolve-js/monitoring-console",
+  "version": "0.32.0",
+  "description": "This package serves as a monitoring adapter used to print monitoring metrics to the text console",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/monitoring-adapters/@resolve-js/monitoring-console#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/monitoring-console",
+    "test": "jest --config=../../../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../../../jest.config.js --watchAll"
+  },
+  "dependencies": {
+    "@resolve-js/core": "0.32.0",
+    "@resolve-js/debug-levels": "0.32.0",
+    "@resolve-js/monitoring-base": "0.32.0",
+    "columnify": "1.5.4"
+  },
+  "devDependencies": {
+    "@types/columnify": "1.5.1",
+    "jest": "27.0.3",
+    "ts-jest": "27.0.5"
+  },
+  "engines": {
+    "node": ">=14.17"
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ],
+  "sourceType": "ts"
+}

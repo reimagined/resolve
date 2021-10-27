@@ -7,8 +7,10 @@ import {
   backgroundJob,
   gatherEventListeners,
   createRuntime,
+  createCompositeMonitoringAdapter,
 } from '@resolve-js/runtime-base'
 import { prepareDomain } from './prepare-domain'
+import { prepareAssemblies } from './prepare-assemblies'
 import { performanceTracerFactory } from './performance-tracer-factory'
 import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
 import { expressAppFactory } from './express-app-factory'
@@ -16,7 +18,7 @@ import { websocketServerFactory } from './websocket-server-factory'
 import { startExpress } from './start-express'
 import { uploaderFactory } from './uploader-factory'
 import { schedulerFactory } from './scheduler-factory'
-import { monitoringFactory } from './monitoring-factory'
+import { cleanUpProcess } from './clean-up-process'
 
 import type {
   EventSubscriberNotification,
@@ -61,12 +63,12 @@ const entry = async (
         .toString('hex')
         .slice(0, 32)
 
-      const { assemblies, constants } = context
+      const { constants } = context
+      const assemblies = prepareAssemblies(context.assemblies)
       const domain = prepareDomain(context.domain)
       const domainInterop = await initDomain(domain)
 
       const performanceTracer = await performanceTracerFactory()
-      const monitoring = await monitoringFactory(performanceTracer)
       const notifyEventSubscriber = await eventSubscriberNotifierFactory()
       const host = options.host ?? '0.0.0.0'
       const port = options.port ?? '3000'
@@ -74,8 +76,10 @@ const entry = async (
       const {
         eventstoreAdapter: eventStoreAdapterFactory,
         readModelConnectors: readModelConnectorsFactories,
+        monitoringAdapters,
       } = assemblies
 
+      const monitoring = createCompositeMonitoringAdapter(monitoringAdapters)
       const getVacantTimeInMillis = makeVacantTimeEvaluator(options)
 
       const uploaderData = await uploaderFactory({
@@ -114,9 +118,9 @@ const entry = async (
         domain,
         domainInterop,
         performanceTracer,
-        monitoring,
         eventStoreAdapterFactory,
         readModelConnectorsFactories,
+        monitoring,
         getVacantTimeInMillis,
         eventSubscriberScope: constants.applicationName,
         notifyEventSubscriber,
@@ -172,6 +176,8 @@ const entry = async (
         },
         factoryParameters
       )
+
+      process.on('SIGINT', cleanUpProcess.bind(null, factoryParameters))
     } catch (error) {
       log.error(error)
     }
