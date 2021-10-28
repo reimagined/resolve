@@ -1,5 +1,14 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.0...HEAD)
+
+**Bug fixes:**
+
+- Read-model doesn't handle events newly added to projection [\#2052](https://github.com/reimagined/resolve/issues/2052)
+- Unable to create app using Node v14 due to sqlite3 installation error [\#1998](https://github.com/reimagined/resolve/issues/1998)
+
 ## [V0.33.0](https://github.com/reimagined/resolve/tree/V0.33.0) (2021-10-27)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.32.0...V0.33.0)
