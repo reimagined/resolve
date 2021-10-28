@@ -1,8 +1,8 @@
 # Changelog
 
-## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+## [V0.33.0](https://github.com/reimagined/resolve/tree/V0.33.0) (2021-10-27)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.32.0...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.32.0...V0.33.0)
 
 **New features:**
 
@@ -30,6 +30,7 @@
 
 **Other changes:**
 
+- Ability to delay next in readmodel build [\#2090](https://github.com/reimagined/resolve/pull/2090)
 - Fix subscriber notification [\#2062](https://github.com/reimagined/resolve/pull/2062)
 - Migrate from "incremental import" to "import" [\#2061](https://github.com/reimagined/resolve/pull/2061)
 - Review strings in templates and examples [\#2059](https://github.com/reimagined/resolve/pull/2059)

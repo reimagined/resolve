@@ -52,6 +52,13 @@ function statusDataToError(
   }
 }
 
+const isHTTPServiceError = (name: string) =>
+  name === 'FetchError' || name === 'AbortError' || name === 'ServiceError'
+
+const getBuildDelay = (iterationNumber: number) => {
+  return 30000 * 2 ** iterationNumber
+}
+
 const BATCH_PROCESSING_POLL_MS = 50
 
 const build: ExternalMethods['build'] = async (
@@ -61,15 +68,30 @@ const build: ExternalMethods['build'] = async (
   modelInterop,
   next,
   eventstoreAdapter,
-  getVacantTimeInMillis
+  getVacantTimeInMillis,
+  buildInfo
 ) => {
   const log = getLog('build')
 
-  await eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
+  let iterationNumber = buildInfo.iterationNumber ?? 0
+
+  const delayNext = async (delay: number, error: any) => {
+    log.debug(
+      `Delaying next for ${delay}ms due to service error ${
+        error ? error.name + ': ' + error.message : ''
+      }`
+    )
+    await next(delay, { iterationNumber: iterationNumber + 1 })
+  }
 
   const state = await basePool.getReplicationState(basePool)
   if (state.status === 'error') {
-    log.error('Refuse to start or continue replication with error state')
+    log.error(
+      `Refuse to start or continue replication with error state: ${state.statusData}`
+    )
+    return
+  } else if (state.status === 'serviceError') {
+    await delayNext(getBuildDelay(iterationNumber), state.statusData)
     return
   }
   if (state.paused) {
@@ -78,18 +100,21 @@ const build: ExternalMethods['build'] = async (
   }
 
   const timeLeft = getVacantTimeInMillis()
-  const occupationResult = await basePool.occupyReplication(basePool, timeLeft)
-  if (!occupationResult.success) {
-    log.debug(
-      `Could not occupy replication process. ${occupationResult.message ?? ''}`
-    )
+  try {
+    const result = await basePool.occupyReplication(basePool, timeLeft)
+    if (!result.success) {
+      log.error(`Could not occupy replication process: ${result.message}`)
+      return
+    }
+  } catch (error) {
+    await delayNext(getBuildDelay(iterationNumber), error)
     return
   }
 
   let iterator = state.iterator
   let localContinue = true
-  const sleepAfterServiceErrorMs = 3000
 
+  await eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
   let eventLoader: EventLoader
 
   const onExit = async () => {
@@ -101,7 +126,7 @@ const build: ExternalMethods['build'] = async (
     try {
       await basePool.releaseReplication(basePool)
     } catch (error) {
-      log.error(error)
+      if (!isHTTPServiceError(error.name)) log.error(error)
     }
   }
 
@@ -119,18 +144,14 @@ const build: ExternalMethods['build'] = async (
     )
   } catch (error) {
     await onExit()
-    if (RequestTimeoutError.is(error) || ServiceBusyError.is(error)) {
-      log.debug(
-        `Got non-fatal error, continuing on the next step. ${error.message}`
-      )
+    if (RequestTimeoutError.is(error)) {
       await next()
-      return
-    } else if (ConnectionError.is(error)) {
-      log.error(error)
-      return
+    } else if (ServiceBusyError.is(error)) {
+      await delayNext(getBuildDelay(iterationNumber), error)
     } else {
-      throw error
+      log.error(error)
     }
+    return
   }
 
   log.debug('Starting or continuing replication process')
@@ -150,16 +171,15 @@ const build: ExternalMethods['build'] = async (
         loadEventsResult.events
       )
     } catch (error) {
-      if (RequestTimeoutError.is(error) || ServiceBusyError.is(error)) {
-        log.debug(
-          `Got non-fatal error, continuing on the next step. ${error.message}`
-        )
-        await onExit()
-        return
+      await onExit()
+      if (RequestTimeoutError.is(error)) {
+        await next()
+      } else if (ServiceBusyError.is(error)) {
+        await delayNext(getBuildDelay(iterationNumber), error)
       } else {
-        await onExit()
-        throw error
+        log.error(error)
       }
+      return
     }
     const { cursor: nextCursor, events } = loadEventsResult
     const { existingSecrets, deletedSecrets } = gatheredSecrets
@@ -194,6 +214,7 @@ const build: ExternalMethods['build'] = async (
                 ? (state.statusData.appliedEventsCount as number)
                 : 0
             wasPaused = state.paused
+            iterationNumber = 0
             break
           } else if (state.status === 'serviceError') {
             lastError = statusDataToError(state.statusData, {
@@ -217,23 +238,19 @@ const build: ExternalMethods['build'] = async (
       lastError = error
     }
 
-    const isBuildSuccess = lastError == null && appliedEventsCount > 0
-
-    if (isBuildSuccess) {
+    if (appliedEventsCount > 0) {
       log.verbose(`Replicated batch of ${appliedEventsCount} events`)
     }
 
+    let delay = 0
+    let shouldContinue = appliedEventsCount > 0
     if (lastError) {
-      log.error(lastError)
-      if (
-        lastError.name === 'ServiceError' ||
-        lastError.name === 'AbortError' ||
-        lastError.name === 'FetchError'
-      ) {
-        const vacantTime = getVacantTimeInMillis()
-        if (vacantTime > 0) {
-          await sleep(Math.min(vacantTime, sleepAfterServiceErrorMs))
-        }
+      if (isHTTPServiceError(lastError.name)) {
+        delay = getBuildDelay(iterationNumber)
+        shouldContinue = true
+        localContinue = false
+      } else {
+        shouldContinue = false
       }
     }
 
@@ -241,19 +258,24 @@ const build: ExternalMethods['build'] = async (
       localContinue = false
     }
 
-    if (isBuildSuccess && wasPaused) {
+    if (wasPaused) {
       log.debug('Pausing replication as requested')
       await onExit()
       return
     }
 
-    if (isBuildSuccess && localContinue) {
+    if (shouldContinue && localContinue && delay === 0) {
       log.verbose('Continuing replication in the local build loop')
     } else {
       await onExit()
-      if (isBuildSuccess) {
-        log.debug('Calling next in build')
-        await next()
+      if (lastError)
+        log.error(`Exiting replication loop due to error ${lastError.message}`)
+      if (shouldContinue) {
+        if (delay > 0) {
+          await delayNext(delay, lastError)
+        } else {
+          await next()
+        }
       }
       return
     }

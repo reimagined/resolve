@@ -126,10 +126,12 @@ export type EventSubscriberNotification = {
   sendTime: number
   event?: Event
   cursor?: string
+  [key: string]: any
 }
 
 export type InvokeBuildAsync = (
-  parameters: EventSubscriberNotification
+  parameters: EventSubscriberNotification,
+  timeout?: number
 ) => Promise<void>
 
 export type { BuildTimeConstants }
