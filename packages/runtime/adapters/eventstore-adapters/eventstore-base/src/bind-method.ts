@@ -23,10 +23,10 @@ const bindMethod = <
       (...args: RemoveFirstType<Parameters<M>>) => ReturnType<M>
     >()
   else {
-    if (pool.disposed) {
-      throw new AlreadyDisposedError()
-    }
     return (...args: RemoveFirstType<Parameters<M>>): ReturnType<M> => {
+      if (pool.disposed) {
+        throw new AlreadyDisposedError()
+      }
       return method(pool as AdapterBoundPool<ConfiguredProps>, ...args)
     }
   }
