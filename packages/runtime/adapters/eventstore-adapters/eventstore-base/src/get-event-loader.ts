@@ -1,14 +1,13 @@
 import type {
   EventLoaderFilter,
-  AdapterPoolConnectedProps,
-  AdapterPoolConnected,
   StoredEventBatchPointer,
   EventLoader,
   EventLoaderOptions,
+  AdapterBoundPool,
 } from './types'
 
-const getEventLoader = async <ConnectedProps extends AdapterPoolConnectedProps>(
-  pool: AdapterPoolConnected<ConnectedProps>,
+const getEventLoader = async <ConfiguredProps extends {}>(
+  pool: AdapterBoundPool<ConfiguredProps>,
   filter: EventLoaderFilter,
   options?: EventLoaderOptions
 ): Promise<EventLoader> => {

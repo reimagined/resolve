@@ -11,8 +11,7 @@ import {
 
 import { ResourceNotExistError } from './resource-errors'
 import type {
-  AdapterPoolConnectedProps,
-  AdapterPoolPossiblyUnconnected,
+  AdapterBoundPool,
   ImportOptions,
   ImportEventsStream,
 } from './types'
@@ -113,8 +112,6 @@ EventStream.prototype._write = async function (
   }
 
   try {
-    await this.pool.waitConnect()
-
     const { dropEvents, initEvents, freeze }: any = this.pool
 
     if (
@@ -231,7 +228,6 @@ EventStream.prototype._final = async function (callback: any): Promise<void> {
   }
 
   try {
-    await this.pool.waitConnect()
     const { unfreeze } = this.pool
 
     if (this.vacantSize !== BUFFER_SIZE) {
@@ -286,8 +282,8 @@ EventStream.prototype._final = async function (callback: any): Promise<void> {
   }
 }
 
-const importEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
-  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+const importEventsStream = <ConfiguredProps extends {}>(
+  pool: AdapterBoundPool<ConfiguredProps>,
   {
     byteOffset = 0,
     maintenanceMode = MAINTENANCE_MODE_AUTO,

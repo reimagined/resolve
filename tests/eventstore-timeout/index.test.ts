@@ -47,6 +47,7 @@ maybeRunTest(`${adapterFactory.name}. Eventstore adapter errors`, () => {
     await expect(adapter.saveEvent(makeTestEvent(1))).rejects.toThrow(
       RequestTimeoutError
     )
+    start = Date.now()
   })
 
   test('at some point of time saveEvent should start throwing timeout errors', async () => {
@@ -67,5 +68,6 @@ maybeRunTest(`${adapterFactory.name}. Eventstore adapter errors`, () => {
     }
     expect(i).toBeGreaterThan(1)
     expect(thrown).toBe(true)
+    start = Date.now()
   })
 })

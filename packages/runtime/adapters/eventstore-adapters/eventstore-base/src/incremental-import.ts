@@ -1,13 +1,7 @@
-import type {
-  AdapterPoolConnected,
-  AdapterPoolConnectedProps,
-  VersionlessEvent,
-} from './types'
+import type { AdapterBoundPool, VersionlessEvent } from './types'
 
-const incrementalImport = async <
-  ConnectedProps extends AdapterPoolConnectedProps
->(
-  pool: AdapterPoolConnected<ConnectedProps>,
+const incrementalImport = async <ConfiguredProps extends {}>(
+  pool: AdapterBoundPool<ConfiguredProps>,
   events: VersionlessEvent[]
 ): Promise<void> => {
   try {

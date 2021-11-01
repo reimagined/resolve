@@ -7,13 +7,13 @@ const deleteSecret = async (
 ): Promise<boolean> => {
   const log = getLog('secretsManager:deleteSecret')
   log.debug(`removing secret from the database`)
-  const { secretsTableName, connection, escapeId, escape } = pool
+  const { secretsTableName, escapeId, escape } = pool
 
   log.verbose(`selector: ${selector}`)
   log.verbose(`tableName: ${secretsTableName}`)
 
   log.debug(`executing SQL query`)
-  await connection.execute(
+  await pool.execute(
     `DELETE FROM ${escapeId(secretsTableName)} WHERE \`id\` = ${escape(
       selector
     )}`
