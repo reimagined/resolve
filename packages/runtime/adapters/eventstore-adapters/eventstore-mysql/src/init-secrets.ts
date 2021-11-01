@@ -12,7 +12,7 @@ import executeSequence from './execute-sequence'
 const initSecrets = async (pool: AdapterPool): Promise<any[]> => {
   const log = getLog('initSecrets')
   log.debug('initializing secrets table')
-  const { secretsTableName, escapeId, connection, database } = pool
+  const { secretsTableName, escapeId, database } = pool
 
   const secretsTableNameAsId = escapeId(secretsTableName)
 
@@ -26,7 +26,7 @@ const initSecrets = async (pool: AdapterPool): Promise<any[]> => {
   ]
 
   const errors: any[] = await executeSequence(
-    connection,
+    pool,
     statements,
     log,
     (error) => {

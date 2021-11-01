@@ -1,5 +1,7 @@
+import type { AdapterPool } from './types'
+
 const executeSequence = async (
-  connection: any,
+  pool: AdapterPool,
   statements: string[],
   log: any,
   convertToKnownError: (error: any) => any
@@ -10,7 +12,7 @@ const executeSequence = async (
     try {
       log.debug(`executing query`)
       log.verbose(statement)
-      await connection.execute(statement)
+      await pool.execute(statement)
       log.debug(`query executed successfully`)
     } catch (error) {
       if (error != null) {

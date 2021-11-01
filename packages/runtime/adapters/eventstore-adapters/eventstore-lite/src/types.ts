@@ -1,8 +1,7 @@
 import BetterSqlite from 'better-sqlite3'
 import type {
-  AdapterPoolConnectedProps,
-  AdapterPoolConnected,
-  AdapterPoolPossiblyUnconnected,
+  AdapterBoundPool,
+  AdapterPrimalPool,
   AdapterTableNamesProps,
 } from '@resolve-js/eventstore-base'
 import {
@@ -20,16 +19,16 @@ export type MemoryStore = {
 
 export type BetterSqliteDb = typeof BetterSqlite['prototype']
 
-export type SqliteAdapterPoolConnectedProps = AdapterPoolConnectedProps &
-  AdapterTableNamesProps & {
-    database: BetterSqliteDb
-    databaseFile: string
-    escapeId: (source: string) => string
-    escape: (source: string) => string
-    memoryStore?: MemoryStore
-    executeStatement: (sql: string) => Promise<any[]>
-    executeQuery: (sql: string) => Promise<void>
-  }
+export type ConfiguredProps = AdapterTableNamesProps & {
+  database?: BetterSqliteDb
+  databaseFile: string
+  escapeId: (source: string) => string
+  escape: (source: string) => string
+  memoryStore?: MemoryStore
+  connecting: boolean
+  executeStatement: (sql: string) => Promise<any[]>
+  executeQuery: (sql: string) => Promise<void>
+}
 
 export const SqliteAdapterConfigSchema = t.intersection([
   AdapterConfigSchema,
@@ -42,12 +41,5 @@ export const SqliteAdapterConfigSchema = t.intersection([
 type SqliteAdapterConfigChecked = t.TypeOf<typeof SqliteAdapterConfigSchema>
 export type SqliteAdapterConfig = UnbrandProps<SqliteAdapterConfigChecked>
 
-export type AdapterPool = AdapterPoolConnected<SqliteAdapterPoolConnectedProps>
-export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<SqliteAdapterPoolConnectedProps>
-
-export type ConnectionDependencies = {
-  BetterSqlite: typeof BetterSqlite
-  tmp: any
-  os: any
-  fs: any
-}
+export type AdapterPool = AdapterBoundPool<ConfiguredProps>
+export type AdapterPoolPrimal = AdapterPrimalPool<ConfiguredProps>

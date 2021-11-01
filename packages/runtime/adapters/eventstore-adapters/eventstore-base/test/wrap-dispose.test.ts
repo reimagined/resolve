@@ -1,13 +1,13 @@
 import wrapDispose from '../src/wrap-dispose'
-import type { AdapterPoolConnected, AdapterPoolConnectedProps } from '../src'
+import type { AdapterBoundPool } from '../src'
 
 test('wrap dispose should bypass on correct arguments', async () => {
   const rawDispose = jest.fn(async () => {
     void 0
   })
   const pool = {
-    isConnected: true,
-  } as AdapterPoolConnected<AdapterPoolConnectedProps>
+    disposed: false,
+  } as AdapterBoundPool<{}>
 
   const dispose = wrapDispose(pool, rawDispose)
   await dispose()
