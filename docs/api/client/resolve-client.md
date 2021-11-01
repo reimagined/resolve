@@ -29,7 +29,17 @@ The `getClient` function takes a reSolve context as a parameter and returns an i
 
 Sends an aggregate command to the backend.
 
-##### Example
+#### Arguments
+
+| Argument Name | Description                                                       |
+| ------------- | ----------------------------------------------------------------- |
+| cmd           | An object that describes a command to send to the server.         |
+| options       | An object that contains additional options for command execution. |
+| callback      | A callback to call on the server response or error.               |
+
+The returned value is a promise that resolves to the command result.
+
+#### Example
 
 ```js
 client.command(
@@ -51,7 +61,7 @@ client.command(
 
 Queries a Read Model.
 
-##### Example
+#### Example
 
 ```js
 const { data } = await client.query({
@@ -64,7 +74,7 @@ const { data } = await client.query({
 
 Gets a static file's full URL.
 
-##### Example
+#### Example
 
 ```js
 var imagePath = client.getStaticAssetUrl('/account/image.jpg')
@@ -74,7 +84,7 @@ var imagePath = client.getStaticAssetUrl('/account/image.jpg')
 
 Returns an absolute URL within the application for the given relative path.
 
-##### Example
+#### Example
 
 ```js
 var commandsApiPath = client.getOriginPath('/api/commands')
@@ -84,7 +94,7 @@ var commandsApiPath = client.getOriginPath('/api/commands')
 
 Subscribes to View Model updates. Returns a promise that resolves to a **subscription** object.
 
-##### Example
+#### Example
 
 ```js
 const chatViewModelUpdater = (event) => {
@@ -105,7 +115,7 @@ await client.subscribe('chat', '*', chatViewModelUpdater)
 
 Unsubscribes from View Model updates.
 
-##### Example
+#### Example
 
 ```js
 await client.unsubscribe(subscription)
