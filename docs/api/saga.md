@@ -34,13 +34,13 @@ Sends a command with the specified payload to an aggregate.
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../tests/saga-sample/saga.js#execute)
+[mdis]:# (../../tests/saga-sample/saga.js#execute)
 ```js
 await sideEffects.executeCommand({
   aggregateName: 'User',
   aggregateId: event.aggregateId,
   type: 'requestConfirmUser',
-  payload: event.payload
+  payload: event.payload,
 })
 ```
 
@@ -60,7 +60,7 @@ Similar to `executeCommand` but delays the command's execution until a specified
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../tests/saga-sample/saga.js#schedule)
+[mdis]:# (../../tests/saga-sample/saga.js#schedule)
 ```js
 await sideEffects.scheduleCommand(
   event.timestamp + 1000 * 60 * 60 * 24 * 7,
@@ -68,7 +68,7 @@ await sideEffects.scheduleCommand(
     aggregateName: 'User',
     aggregateId: event.aggregateId,
     type: 'forgetUser',
-    payload: {}
+    payload: {},
   }
 )
 ```

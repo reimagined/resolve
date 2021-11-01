@@ -637,9 +637,9 @@ const appConfig = {
     {
       name: 'UserConfirmation',
       source: 'saga.js',
-      connectorName: 'default'
-    }
-  ]
+      connectorName: 'default',
+    },
+  ],
 }
 ```
 
@@ -663,9 +663,6 @@ A scheduler adapter configuration object has the following fields:
 
 ##### Example:
 
-<!-- prettier-ignore-start -->
-
-[mdis]:# (../tests/saga-sample/config.js#schedulers-config)
 ```js
 schedulers: {
   scheduler: {
@@ -677,8 +674,6 @@ schedulers: {
   }
 },
 ```
-
-<!-- prettier-ignore-end -->
 
 ### serverImports
 
