@@ -1,4 +1,3 @@
-import STS from 'aws-sdk/clients/sts'
 import { getLog as getBaseLog } from '@resolve-js/runtime-base'
 import { invokeFunction } from 'resolve-cloud-common/lambda'
 
@@ -15,6 +14,10 @@ const start = async (entry: SchedulerEntry) => {
   try {
     log.verbose(`entry: ${JSON.stringify(entry)}`)
     log.debug(`starting new execution ${entry.taskId}`)
+    let STS: any
+    try {
+      STS = module['require'].bind(module)('aws-sdk/clients/sts')
+    } catch{}
 
     const { Arn } = await new STS().getCallerIdentity().promise()
 
@@ -50,6 +53,8 @@ const stopAll = async () => {
   const log = getLog(`stop all`)
 
   log.debug('stopping all executions')
+
+  const STS = module['require'].bind(module)('aws-sdk/clients/sts')
 
   const { Arn } = await new STS().getCallerIdentity().promise()
 

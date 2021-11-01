@@ -1,5 +1,3 @@
-import CloudWatch from 'aws-sdk/clients/cloudwatch'
-
 const kindByEvent = (event: { part: string; path?: string }) => {
   const { part, path = '' } = event
   if (part === 'bootstrap') {
@@ -25,6 +23,10 @@ export const putDurationMetrics = async (
     lambdaContext &&
     typeof lambdaContext.getVacantTimeInMillis === 'function'
   ) {
+    let CloudWatch: any
+    try {
+      CloudWatch = module['require'].bind(module)('aws-sdk/clients/cloudwatch')
+    } catch {}
     const cloudWatch = new CloudWatch()
     const coldStartDuration = 15 * 60 * 1000 - lambdaRemainingTimeStart
     const duration =
@@ -77,6 +79,6 @@ export const putDurationMetrics = async (
     console.info(
       ['[REQUEST INFO]', kind, lambdaEvent.path, duration].join('\n')
     )
-    await cloudWatch.putMetricData(params).promise()
+    await cloudWatch?.putMetricData(params).promise()
   }
 }

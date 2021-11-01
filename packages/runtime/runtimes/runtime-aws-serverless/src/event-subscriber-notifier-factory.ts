@@ -1,4 +1,3 @@
-import STS from 'aws-sdk/clients/sts'
 import type { EventSubscriberNotifier } from '@resolve-js/runtime-base'
 import {
   createEventSubscriberNotification,
@@ -160,6 +159,10 @@ export const eventSubscriberNotifierFactory = async (
       await new Promise((resolve) => setTimeout(resolve, timeout))
       await invokeLambdaAsync(functionName, lambdaEvent)
     } else {
+      let STS: any
+      try {
+        STS = module['require'].bind(module)('aws-sdk/clients/sts')
+      } catch {}
       const { Arn } = await new STS().getCallerIdentity().promise()
       await invokeFunction({
         Region: process.env.AWS_REGION as string,

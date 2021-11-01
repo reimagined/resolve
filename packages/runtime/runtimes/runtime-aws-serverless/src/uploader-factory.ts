@@ -1,4 +1,3 @@
-import Lambda from 'aws-sdk/clients/lambda'
 import fs from 'fs'
 import path from 'path'
 import request from 'request'
@@ -26,10 +25,14 @@ const createPreSignedPut = async (
   { uploaderArn, userId, encryptedUserId }: UploaderPoolCloud,
   dir: string
 ) => {
+  let Lambda: any
+  try {
+    Lambda = module['require'].bind(module)('aws-sdk/clients/lambda')
+  } catch {}
   const lambda = new Lambda()
 
   const result = await lambda
-    .invoke({
+    ?.invoke({
       FunctionName: uploaderArn,
       Payload: JSON.stringify({
         type: 'put',
@@ -83,10 +86,14 @@ const createPresignedPost = async (
   { uploaderArn, userId, encryptedUserId }: UploaderPoolCloud,
   dir: string
 ) => {
+  let Lambda: any
+  try {
+    Lambda = module['require'].bind(module)('aws-sdk/clients/lambda')
+  } catch {}
   const lambda = new Lambda()
 
   const { FunctionError, Payload: ResponsePayload } = await lambda
-    .invoke({
+    ?.invoke({
       FunctionName: uploaderArn,
       Payload: JSON.stringify({
         type: 'post',

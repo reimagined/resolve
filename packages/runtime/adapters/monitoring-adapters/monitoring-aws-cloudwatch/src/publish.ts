@@ -1,4 +1,3 @@
-import CloudWatch from 'aws-sdk/clients/cloudwatch'
 import { LeveledDebugger } from '@resolve-js/debug-levels'
 import { retry } from 'resolve-cloud-common/utils'
 
@@ -109,6 +108,10 @@ export const monitoringPublish = async (
 
   try {
     const promises = []
+    let CloudWatch: any
+    try {
+      CloudWatch = module['require'].bind(module)('aws-sdk/clients/cloudwatch')  
+    } catch {}
 
     const cw = new CloudWatch()
     const putMetricData = retry(cw, cw.putMetricData)
