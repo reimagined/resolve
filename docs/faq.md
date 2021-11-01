@@ -51,7 +51,7 @@ await sideEffects.executeCommand({
   aggregateName: 'User',
   aggregateId: event.aggregateId,
   type: 'requestConfirmUser',
-  payload: event.payload
+  payload: event.payload,
 })
 ```
 
