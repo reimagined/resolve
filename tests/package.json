@@ -22,7 +22,8 @@
     "test:save-load": "jest --config=./jest.config.js --testMatch=**/eventstore-save-load/*.test.ts",
     "test:parallel-save": "jest --config=./jest.config.js --testMatch=**/eventstore-parallel-save/*.test.ts",
     "test:init-drop": "jest --config=./jest.config.js --testMatch=**/eventstore-init-drop/*.test.[jt]s",
-    "test:timeout-error": "jest --config=./jest.config.js --testMatch=**/eventstore-timeout/*.test.[jt]s"
+    "test:timeout-error": "jest --config=./jest.config.js --testMatch=**/eventstore-timeout/*.test.[jt]s",
+    "test:node-postgres": "jest --config=./jest.config.js --testMatch=**/node-postgres/*.test.[jt]s"
   },
   "devDependencies": {
     "@babel/runtime": "7.14.0",
@@ -42,6 +43,8 @@
     "mysql2": "1.6.4",
     "seamless-immutable": "7.1.4",
     "sinon": "9.2.4",
-    "uuid": "8.3.2"
+    "uuid": "8.3.2",
+    "pg": "8.5.1",
+    "pg-cursor": "2.7.1"
   }
 }
