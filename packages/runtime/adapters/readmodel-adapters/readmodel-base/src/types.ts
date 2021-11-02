@@ -392,6 +392,7 @@ export type AdapterImplementation<
 export type BaseAdapterPool<AdapterPool extends CommonAdapterPool> = {
   commonAdapterPool: CommonAdapterPool
   adapterPoolMap: Map<ReadModelStore<StoreApi<AdapterPool>>, AdapterPool>
+  AlreadyDisposedError: AlreadyDisposedErrorFactory
   withPerformanceTracer: WithPerformanceTracerMethod
   monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
@@ -478,10 +479,21 @@ export type MakeSplitNestedPathMethod = (
   PathToolkitLib: PathToolkitLib
 ) => SplitNestedPathMethod
 
+export interface AlreadyDisposedErrorInstance extends Error {
+  name: string
+}
+
+export type AlreadyDisposedErrorFactory = {
+  new (): AlreadyDisposedErrorInstance
+} & {
+  is: (error: Error) => boolean
+}
+
 export type BaseAdapterImports = {
   splitNestedPath: SplitNestedPathMethod
   checkEventsContinuity: CheckEventsContinuityMethod
   withPerformanceTracer: WithPerformanceTracerMethod
+  AlreadyDisposedError: AlreadyDisposedErrorFactory
   wrapWithCloneArgs: WrapWithCloneArgsMethod
   wrapConnect: WrapConnectMethod
   wrapDisconnect: WrapDisconnectMethod
