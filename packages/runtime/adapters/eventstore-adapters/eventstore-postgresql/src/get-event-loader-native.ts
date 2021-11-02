@@ -56,7 +56,8 @@ const getEventLoaderNative = async (
 
   return {
     async close() {
-      await pgCursor.close()
+      // await pgCursor.close() // may never resolve due to https://github.com/brianc/node-postgres/issues/2642
+      // client.end is enough anyway since cursor lives as long as the connection
       await client.end()
     },
     async loadEvents(limit: number) {
