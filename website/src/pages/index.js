@@ -32,8 +32,8 @@ const features = [
     imageUrl: 'img/don-t-lose-your-data.png',
     description: (
       <>
-        With Event Sourcing your application will store everything and will remove nothing. 
-        You will not have to anticipate future data requirements and needs.
+        With Event Sourcing, your application will store everything and remove nothing. 
+        You will not have to guess future data requirements and needs.
       </>
     ),
   },
@@ -105,7 +105,7 @@ export default () => {
             <div className="row">
               <div className="col col--6 padding-vert--lg text--center sectionAlt" >
                 <h3>Get started in seconds</h3>
-                <p>reSolve allows you to focus on code, not build tools. To create a project, you simply called my-app and run the following command:</p>     
+                <p>reSolve allows you to focus on code, not build tools. To create a project, you simply run the following command:</p>     
                 <code className="featureCode">yarn create resolve-app my-app</code>
               </div>
               <div className="col col--6 padding-vert--lg">

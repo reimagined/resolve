@@ -2,10 +2,25 @@
 
 ## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.32.0...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.0...HEAD)
+
+**Bug fixes:**
+
+- "Pool is null" error in sagas [\#2101](https://github.com/reimagined/resolve/issues/2101)
+- Read-model doesn't handle events newly added to projection [\#2052](https://github.com/reimagined/resolve/issues/2052)
+- Unable to create app using Node v14 due to sqlite3 installation error [\#1998](https://github.com/reimagined/resolve/issues/1998)
+
+**Other changes:**
+
+- Improve already dispose error handling for all disposable resolve resoures, inclusing read-model adapters [\#2103](https://github.com/reimagined/resolve/pull/2103)
+
+## [V0.33.0](https://github.com/reimagined/resolve/tree/V0.33.0) (2021-10-27)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.32.0...V0.33.0)
 
 **New features:**
 
+- Implement monitoring adapters [\#2089](https://github.com/reimagined/resolve/pull/2089)
 - Add event loader in eventstore adapter inferface and loading events via pg-cursor [\#2067](https://github.com/reimagined/resolve/pull/2067)
 
 **Enhancements:**
@@ -29,6 +44,7 @@
 
 **Other changes:**
 
+- Ability to delay next in readmodel build [\#2090](https://github.com/reimagined/resolve/pull/2090)
 - Fix subscriber notification [\#2062](https://github.com/reimagined/resolve/pull/2062)
 - Migrate from "incremental import" to "import" [\#2061](https://github.com/reimagined/resolve/pull/2061)
 - Review strings in templates and examples [\#2059](https://github.com/reimagined/resolve/pull/2059)

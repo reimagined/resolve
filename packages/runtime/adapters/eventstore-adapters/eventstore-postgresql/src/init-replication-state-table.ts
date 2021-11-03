@@ -1,5 +1,6 @@
 import type { AdapterPool } from './types'
 import type { ReplicationStatus } from '@resolve-js/eventstore-base'
+import { LONG_NUMBER_SQL_TYPE } from './constants'
 import { getLog } from './get-log'
 
 const initReplicationStateTable = async (
@@ -31,7 +32,8 @@ const initReplicationStateTable = async (
         "StatusData" JSONB NULL,
         "Iterator" JSONB NULL,
         "IsPaused" BOOLEAN DEFAULT FALSE NOT NULL,
-        "SuccessEvent" JSON NULL
+        "SuccessEvent" JSON NULL,
+        "LockExpirationTime" ${LONG_NUMBER_SQL_TYPE} DEFAULT 0 NOT NULL
       )
     `)
       break

@@ -1,4 +1,4 @@
-import type { AdapterPool } from './types'
+import type { AdapterPool, PostgresConnection } from './types'
 import { RequestTimeoutError } from '@resolve-js/eventstore-base'
 import { isTimeoutError, isConnectionTerminatedError } from './errors'
 import { MAX_RECONNECTIONS } from './constants'
@@ -12,14 +12,13 @@ const executeStatement = async (
   let reconnectionTimes = 0
 
   while (true) {
-    let connection: typeof pool.connection
+    let connection: PostgresConnection
     if (useDistinctConnection) {
-      connection = makePostgresClient(
-        pool,
-        pool.Postgres,
-        pool.connectionOptions
-      )
+      connection = makePostgresClient(pool)
     } else {
+      await pool.getConnectPromise()
+      if (pool.connection === undefined)
+        throw new Error('Impossible state: connection must not be null')
       connection = pool.connection
     }
     try {
@@ -46,7 +45,6 @@ const executeStatement = async (
           throw error
         }
 
-        if (!useDistinctConnection) await pool.getConnectPromise()
         reconnectionTimes++
       } else if (
         error != null &&
@@ -55,7 +53,6 @@ const executeStatement = async (
         if (reconnectionTimes > MAX_RECONNECTIONS) {
           throw error
         }
-        if (!useDistinctConnection) await pool.getConnectPromise()
         reconnectionTimes++
       } else {
         throw error

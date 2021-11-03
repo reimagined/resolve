@@ -15,7 +15,7 @@ const saveSnapshot = async (
 
     log.debug(`writing the snapshot to database`)
 
-    await connection.query(
+    await pool.query(
       `INSERT INTO ${snapshotsTableNameAsId}(\`SnapshotKey\`, \`SnapshotContent\`)
        VALUES(${escape(snapshotKey)}, ${escape(content)})
        ON DUPLICATE KEY UPDATE \`SnapshotContent\` = ${escape(content)}`

@@ -349,6 +349,40 @@ const appConfig = {
 }
 ```
 
+### monitoringAdapters
+
+Specifies the application's Monitoring adapters as key-value pairs. An adapter configuration object contains the following fields:
+
+| Field   | Description                                                          |
+| ------- | -------------------------------------------------------------------- |
+| module  | The name of a module or the path to a file that defines an adapter . |
+| options | An object that defines the adapter's options as key-value pairs.     |
+
+##### Example:
+
+```js
+monitoringAdapters: {
+  default: {
+    module: '@resolve-js/monitoring-console',
+    options: {
+      publishMode: 'processExit',
+    },
+  },
+}
+```
+
+The following adapters are available:
+
+| Module Name                                                         | Description                          |
+| ------------------------------------------------------------------- | ------------------------------------ |
+| [@resolve-js/monitoring-console](#monitoring-console)               | Prints metrics to the text console.  |
+| [@resolve-js/monitoring-aws-cloudwatch](#monitoring-aws-cloudwatch) | Publishes metrics to AWS CloudWatch. |
+
+If the `default` adapter is not explicitly specified, reSolve adds it automatically based on the target environment:
+
+- The `'@resolve-js/monitoring-console'` module is used on a local machine or standalone server.
+- The `'@resolve-js/monitoring-aws-cloudwatch'`module is used in the cloud environment.
+
 ### jwtCookie
 
 Specifies global settings for the application's JWT cookies. The configuration object contains the following fields:
@@ -419,7 +453,7 @@ Specifies the application's Read Model connectors as key-value pairs. A connecto
 ```js
 readModelConnectors: {
   default: {
-    module: 'readmodel-mysql',
+    module: '@resolve-js/readmodel-mysql',
     options: {
       host: 'localhost',
       port: 3306,
@@ -604,9 +638,9 @@ const appConfig = {
     {
       name: 'UserConfirmation',
       source: 'saga.js',
-      connectorName: 'default'
-    }
-  ]
+      connectorName: 'default',
+    },
+  ],
 }
 ```
 
@@ -630,9 +664,6 @@ A scheduler adapter configuration object has the following fields:
 
 ##### Example:
 
-<!-- prettier-ignore-start -->
-
-[mdis]:# (../tests/saga-sample/config.js#schedulers-config)
 ```js
 schedulers: {
   scheduler: {
@@ -644,8 +675,6 @@ schedulers: {
   }
 },
 ```
-
-<!-- prettier-ignore-end -->
 
 ### serverImports
 

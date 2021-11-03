@@ -247,7 +247,10 @@ export type ReadModelLedger = {
   IsPaused: boolean
 }
 
-export type MethodNext = () => Promise<void>
+export type MethodNext = (
+  timeout?: number,
+  notificationExtraPayload?: object
+) => Promise<void>
 export type MethodGetRemainingTime = () => number
 export type MethodGetEncryption = () => (
   event: ReadModelEvent
@@ -289,6 +292,7 @@ export type BuildInfo = {
   notificationId: string
   sendTime: number
   coldStart?: boolean
+  [key: string]: any
 }
 
 export type AdapterConnection<
@@ -388,6 +392,7 @@ export type AdapterImplementation<
 export type BaseAdapterPool<AdapterPool extends CommonAdapterPool> = {
   commonAdapterPool: CommonAdapterPool
   adapterPoolMap: Map<ReadModelStore<StoreApi<AdapterPool>>, AdapterPool>
+  AlreadyDisposedError: AlreadyDisposedErrorFactory
   withPerformanceTracer: WithPerformanceTracerMethod
   monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
@@ -474,10 +479,21 @@ export type MakeSplitNestedPathMethod = (
   PathToolkitLib: PathToolkitLib
 ) => SplitNestedPathMethod
 
+export interface AlreadyDisposedErrorInstance extends Error {
+  name: string
+}
+
+export type AlreadyDisposedErrorFactory = {
+  new (): AlreadyDisposedErrorInstance
+} & {
+  is: (error: Error) => boolean
+}
+
 export type BaseAdapterImports = {
   splitNestedPath: SplitNestedPathMethod
   checkEventsContinuity: CheckEventsContinuityMethod
   withPerformanceTracer: WithPerformanceTracerMethod
+  AlreadyDisposedError: AlreadyDisposedErrorFactory
   wrapWithCloneArgs: WrapWithCloneArgsMethod
   wrapConnect: WrapConnectMethod
   wrapDisconnect: WrapDisconnectMethod

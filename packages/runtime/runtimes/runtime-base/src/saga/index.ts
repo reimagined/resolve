@@ -21,7 +21,7 @@ type CreateSagaOptions = {
   secretsManager: SecretsManager
   getVacantTimeInMillis: () => number
   getScheduler: () => Scheduler
-  monitoring: RuntimeFactoryParameters['monitoring']
+  monitoring: Runtime['monitoring']
   domainInterop: RuntimeFactoryParameters['domainInterop']
   executeSchedulerCommand: Runtime['executeSchedulerCommand']
 }

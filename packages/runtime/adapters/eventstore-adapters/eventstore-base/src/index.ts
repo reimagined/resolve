@@ -28,12 +28,11 @@ import * as iotsTypes from 'io-ts-types'
 
 import type {
   AdapterFunctions,
-  AdapterPoolConnectedProps,
   CommonAdapterFunctions,
   Adapter,
   AdapterConfig,
+  AdapterPrimalPool,
 } from './types'
-import { AdapterPoolPossiblyUnconnected } from './types'
 
 export {
   validate,
@@ -61,24 +60,14 @@ export {
 export * from './errors'
 
 const wrappedCreateAdapter = <
-  ConnectedProps extends AdapterPoolConnectedProps,
-  ConnectionDependencies extends any,
+  ConfiguredProps extends {},
   Config extends AdapterConfig
 >(
-  adapterFunctions: AdapterFunctions<
-    ConnectedProps,
-    ConnectionDependencies,
-    Config
-  >,
-  connectionDependencies: ConnectionDependencies,
+  adapterFunctions: AdapterFunctions<ConfiguredProps>,
   options: Config,
-  prepare?: (
-    props: AdapterPoolPossiblyUnconnected<ConnectedProps>,
-    config: Config,
-    dependencies: ConnectionDependencies
-  ) => void
+  configure: (props: AdapterPrimalPool<ConfiguredProps>, config: Config) => void
 ): Adapter => {
-  const commonFunctions: CommonAdapterFunctions<ConnectedProps> = {
+  const commonFunctions: CommonAdapterFunctions<ConfiguredProps> = {
     maybeThrowResourceError,
     importEventsStream,
     exportEventsStream,
@@ -94,13 +83,7 @@ const wrappedCreateAdapter = <
     getEventLoader,
   }
 
-  return createAdapter(
-    commonFunctions,
-    adapterFunctions,
-    connectionDependencies,
-    options,
-    prepare
-  )
+  return createAdapter(commonFunctions, adapterFunctions, options, configure)
 }
 
 export default wrappedCreateAdapter
@@ -140,9 +123,8 @@ export type {
   CursorFilter,
   TimestampFilter,
   Adapter,
-  AdapterPoolPossiblyUnconnected,
-  AdapterPoolConnected,
-  AdapterPoolConnectedProps,
+  AdapterPrimalPool,
+  AdapterBoundPool,
   AdapterConfig,
   AdapterTableNames,
   AdapterTableNamesProps,

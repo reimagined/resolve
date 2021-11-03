@@ -37,14 +37,14 @@ const setSecret = async (
 
   try {
     log.debug(`executing SQL query`)
-    await connection.query(query)
+    await pool.query(query)
     log.debug(`query executed successfully`)
   } catch (error) {
     log.error(error.message)
     log.verbose(error.stack)
     try {
       log.debug(`rolling back`)
-      await connection.query('ROLLBACK;')
+      await pool.query('ROLLBACK;')
     } catch (e) {
       log.error(e.message)
       log.verbose(e.stack)

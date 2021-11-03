@@ -21,24 +21,26 @@ This functionality allows you to organize branched chains of events and side eff
 
 [mdis]:# (../tests/saga-sample/saga.js)
 ```js
+/* eslint-disable import/no-anonymous-default-export*/
+...
 export default {
   handlers: {
     Init: async ({ store }) => {
       await store.defineTable('users', {
         indexes: { id: 'string' },
-        fields: ['mail']
+        fields: ['mail'],
       })
     },
     USER_CREATED: async ({ store, sideEffects }, event) => {
       await store.insert('users', {
         id: event.aggregateId,
-        mail: event.payload.mail
+        mail: event.payload.mail,
       })
       await sideEffects.executeCommand({
         aggregateName: 'User',
         aggregateId: event.aggregateId,
         type: 'requestConfirmUser',
-        payload: event.payload
+        payload: event.payload,
       })
     },
     USER_CONFIRM_REQUESTED: async ({ sideEffects }, event) => {
@@ -49,21 +51,21 @@ export default {
           aggregateName: 'User',
           aggregateId: event.aggregateId,
           type: 'forgetUser',
-          payload: {}
+          payload: {},
         }
       )
     },
     USER_FORGOTTEN: async ({ store }, event) => {
       await store.delete('users', {
-        id: event.aggregateId
+        id: event.aggregateId,
       })
-    }
+    },
   },
   sideEffects: {
     sendEmail: async (mail, content) => {
       ...
-    }
-  }
+    },
+  },
 }
 ```
 
@@ -121,7 +123,7 @@ Every saga should define an `Init` function that initializes the saga's persiste
 Init: async ({ store }) => {
   await store.defineTable('users', {
     indexes: { id: 'string' },
-    fields: ['mail']
+    fields: ['mail'],
   })
 },
 ```
@@ -154,8 +156,8 @@ You should define all functions that have side effects in the `sideEffects` obje
 sideEffects: {
   sendEmail: async (mail, content) => {
     ...
-  }
-}
+  },
+},
 ```
 
 <!-- prettier-ignore-end -->
@@ -206,7 +208,7 @@ await sideEffects.executeCommand({
   aggregateName: 'User',
   aggregateId: event.aggregateId,
   type: 'requestConfirmUser',
-  payload: event.payload
+  payload: event.payload,
 })
 ```
 
@@ -226,7 +228,7 @@ await sideEffects.scheduleCommand(
     aggregateName: 'User',
     aggregateId: event.aggregateId,
     type: 'forgetUser',
-    payload: {}
+    payload: {},
   }
 )
 ```

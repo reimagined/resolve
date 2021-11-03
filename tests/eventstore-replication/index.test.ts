@@ -46,6 +46,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(state.statusData).toBeNull()
     expect(state.iterator).toBeNull()
     expect(state.paused).toEqual(false)
+    expect(state.locked).toEqual(false)
   })
 
   test('set-replication-status should change status, statusData properties of the state', async () => {
@@ -97,6 +98,24 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     await adapter.setReplicationPaused(false)
     state = await adapter.getReplicationState()
     expect(state.paused).toEqual(false)
+  })
+
+  test('set-replication-lock should work as expected', async () => {
+    const lockDuration = 4000
+    expect(await adapter.setReplicationLock(lockDuration)).toEqual(true)
+    let state = await adapter.getReplicationState()
+    expect(state.locked).toEqual(true)
+
+    expect(await adapter.setReplicationLock(lockDuration)).toEqual(false)
+    await new Promise((resolve) => setTimeout(resolve, lockDuration))
+
+    state = await adapter.getReplicationState()
+    expect(state.locked).toBe(false)
+
+    expect(await adapter.setReplicationLock(lockDuration * 2)).toBe(true)
+    expect(await adapter.setReplicationLock(0)).toBe(true)
+    state = await adapter.getReplicationState()
+    expect(state.locked).toBe(false)
   })
 
   const secretCount = 36
@@ -269,6 +288,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(state.status).toEqual('notStarted')
     expect(state.statusData).toBeNull()
     expect(state.iterator).toBeNull()
+    expect(state.locked).toBe(false)
   })
 
   const lessEventCount = 128

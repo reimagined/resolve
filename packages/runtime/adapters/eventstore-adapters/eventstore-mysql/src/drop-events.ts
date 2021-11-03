@@ -11,7 +11,6 @@ const dropEvents = async (pool: AdapterPool): Promise<any[]> => {
     eventsTableName,
     snapshotsTableName,
     subscribersTableName,
-    connection,
     database,
     escapeId,
   } = pool
@@ -38,7 +37,7 @@ const dropEvents = async (pool: AdapterPool): Promise<any[]> => {
   ]
 
   const errors: any[] = await executeSequence(
-    connection,
+    pool,
     statements,
     log,
     (error) => {

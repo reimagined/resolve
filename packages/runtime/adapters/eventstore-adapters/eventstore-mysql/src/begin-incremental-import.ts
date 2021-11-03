@@ -3,9 +3,9 @@ import { AdapterPool } from './types'
 
 const beginIncrementalImport = async ({
   eventsTableName,
-  connection,
   escapeId,
   escape,
+  query,
 }: AdapterPool): Promise<string> => {
   try {
     const incrementalImportTableAsId = escapeId(
@@ -14,7 +14,7 @@ const beginIncrementalImport = async ({
     const importId: string = Buffer.from(`${Date.now()}${Math.random()}`)
       .toString('base64')
       .replace(/\/|\+|=/gi, 'z')
-    await connection.query(
+    await query(
       `CREATE TABLE ${incrementalImportTableAsId}(
         ${escapeId('rowid')} VARCHAR(100) NOT NULL,
         ${escapeId('sortedIdx')} BIGINT NULL,

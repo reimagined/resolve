@@ -46,6 +46,7 @@ const makeTestRuntime = (
     replicateEvents: jest.fn(),
     replicateSecrets: jest.fn(),
     resetReplication: jest.fn(),
+    setReplicationLock: jest.fn(),
     setReplicationPaused: jest.fn(),
     setReplicationStatus: jest.fn(),
     saveEvent: jest.fn(async (originalEvent) => {
@@ -96,6 +97,8 @@ const makeTestRuntime = (
     performance: performanceTracer,
     duration: jest.fn(),
     rate: jest.fn(),
+    getMetrics: jest.fn(),
+    clearMetrics: jest.fn(),
   }
 
   return {
