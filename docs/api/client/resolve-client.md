@@ -61,6 +61,16 @@ client.command(
 
 Queries a Read Model.
 
+#### Arguments
+
+| Argument Name | Description |
+| ------------- | ----------- |
+| qr            |             |
+| options       |             |
+| callback      |             |
+
+The returned value is a promise that resolves to the query result.
+
 #### Example
 
 ```js
@@ -74,6 +84,12 @@ const { data } = await client.query({
 
 Gets a static file's full URL.
 
+#### Arguments
+
+| Argument Name | Description |
+| ------------- | ----------- |
+| assetPath     |             |
+
 #### Example
 
 ```js
@@ -84,6 +100,12 @@ var imagePath = client.getStaticAssetUrl('/account/image.jpg')
 
 Returns an absolute URL within the application for the given relative path.
 
+#### Arguments
+
+| Argument Name | Description |
+| ------------- | ----------- |
+| path          |             |
+
 #### Example
 
 ```js
@@ -93,6 +115,18 @@ var commandsApiPath = client.getOriginPath('/api/commands')
 ### subscribe
 
 Subscribes to View Model updates. Returns a promise that resolves to a **subscription** object.
+
+#### Arguments
+
+| Argument Name       | Description |
+| ------------------- | ----------- |
+| url                 |             |
+| cursor              |             |
+| viewModelName       |             |
+| aggregateIds        |             |
+| aggregateIds        |             |
+| subscribeCallback   |             |
+| resubscribeCallback |             |
 
 #### Example
 
@@ -114,6 +148,12 @@ await client.subscribe('chat', '*', chatViewModelUpdater)
 ### unsubscribe
 
 Unsubscribes from View Model updates.
+
+#### Arguments
+
+| Argument Name | Description |
+| ------------- | ----------- |
+| subscription  |             |
 
 #### Example
 
