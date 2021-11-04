@@ -7,8 +7,13 @@
 **Bug fixes:**
 
 - "Pool is null" error in sagas [\#2101](https://github.com/reimagined/resolve/issues/2101)
+- The IsAlive flag for read models is false although read model is live \(no any errors\) [\#2092](https://github.com/reimagined/resolve/issues/2092)
 - Read-model doesn't handle events newly added to projection [\#2052](https://github.com/reimagined/resolve/issues/2052)
 - Unable to create app using Node v14 due to sqlite3 installation error [\#1998](https://github.com/reimagined/resolve/issues/1998)
+
+**Documentation:**
+
+- Describe the emulateWorkerLifetimeLimit option [\#2100](https://github.com/reimagined/resolve/pull/2100)
 
 **Other changes:**
 
