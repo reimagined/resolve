@@ -63,11 +63,11 @@ Queries a Read Model.
 
 #### Arguments
 
-| Argument Name | Description |
-| ------------- | ----------- |
-| qr            |             |
-| options       |             |
-| callback      |             |
+| Argument Name | Description                                               |
+| ------------- | --------------------------------------------------------- |
+| qr            | A n object that describes a query.                        |
+| options       | An object that contains additional options for the query. |
+| callback      | A callback to call on the server response or error.       |
 
 The returned value is a promise that resolves to the query result.
 
@@ -86,9 +86,11 @@ Gets a static file's full URL.
 
 #### Arguments
 
-| Argument Name | Description |
-| ------------- | ----------- |
-| assetPath     |             |
+| Argument Name | Description                                  |
+| ------------- | -------------------------------------------- |
+| assetPath     | A string that specifies a relative URL path. |
+
+The returned value is a string that contains a full URL.
 
 #### Example
 
@@ -102,9 +104,11 @@ Returns an absolute URL within the application for the given relative path.
 
 #### Arguments
 
-| Argument Name | Description |
-| ------------- | ----------- |
-| path          |             |
+| Argument Name | Description                                  |
+| ------------- | -------------------------------------------- |
+| path          | A string that specifies a relative URL path. |
+
+The returned value is a string that contains a full URL.
 
 #### Example
 
@@ -118,15 +122,17 @@ Subscribes to View Model updates. Returns a promise that resolves to a **subscri
 
 #### Arguments
 
-| Argument Name       | Description |
-| ------------------- | ----------- |
-| url                 |             |
-| cursor              |             |
-| viewModelName       |             |
-| aggregateIds        |             |
-| aggregateIds        |             |
-| subscribeCallback   |             |
-| resubscribeCallback |             |
+| Argument Name       | Description                                                                     |
+| ------------------- | ------------------------------------------------------------------------------- |
+| url                 |                                                                                 |
+| cursor              | The data cursor used to traverse the events included into the query result set. |
+| viewModelName       | A string that specifies the name of a view model.                               |
+| aggregateIds        | A list of aggregate IDs for which to receive events.                            |
+| handler             | A function that handles incoming events.                                        |
+| subscribeCallback   | A callback called on successful subscription or error.                          |
+| resubscribeCallback | A callback called on successful resubscription or error.                        |
+
+The returned value is a promise that resolves to a subscription object.
 
 #### Example
 
@@ -151,9 +157,9 @@ Unsubscribes from View Model updates.
 
 #### Arguments
 
-| Argument Name | Description |
-| ------------- | ----------- |
-| subscription  |             |
+| Argument Name | Description            |
+| ------------- | ---------------------- |
+| subscription  | A subscription object. |
 
 #### Example
 
