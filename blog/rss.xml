@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>reSolve Blog</title>
         <link>https://reimagined.github.io/resolve/blog</link>
@@ -13,6 +13,7 @@
             <guid>Welcome to reSolve</guid>
             <pubDate>Wed, 05 Dec 2018 00:00:00 GMT</pubDate>
             <description><![CDATA[Hello, this is going to be a place for reSolve blog posts.]]></description>
+            <content:encoded><![CDATA[<p>Hello, this is going to be a place for reSolve blog posts.</p><p>Can&#x27;t wait to see you here</p>]]></content:encoded>
         </item>
     </channel>
 </rss>
