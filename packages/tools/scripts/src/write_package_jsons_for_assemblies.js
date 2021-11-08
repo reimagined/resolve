@@ -2,17 +2,22 @@ import fs from 'fs'
 import { execSync } from 'child_process'
 import path from 'path'
 import semver from 'semver'
+import findWorkspaceRoot from 'find-yarn-workspace-root'
 
 const getWorkspacePackageJsons = () => {
   const workspaces = JSON.parse(
     execSync('yarn workspaces --silent info', { stdio: 'pipe' }).toString()
   )
+  const workspaceRoot = findWorkspaceRoot(__dirname)
+  if (!workspaceRoot) {
+    return []
+  }
 
   const packageJsons = Object.keys(workspaces).map((key) => {
     return JSON.parse(
       fs
         .readFileSync(
-          path.resolve('../../../', workspaces[key].location, 'package.json') //FIXME: get workspace root correctly
+          path.resolve(workspaceRoot, workspaces[key].location, 'package.json')
         )
         .toString()
     )
@@ -42,13 +47,9 @@ const writePackageJsonsForAssemblies = (
   nodeModulesByAssembly,
   peerDependencies
 ) => {
-  const dependencyVersions = getDependencyVersions()
-
   const applicationPackageJson = JSON.parse(
     fs.readFileSync(path.resolve(process.cwd(), 'package.json'))
   )
-
-  const resolveRuntimePackageJson = require('@resolve-js/runtime-base/package.json')
 
   for (const [
     packageJsonPath,
@@ -90,42 +91,52 @@ const writePackageJsonsForAssemblies = (
       )
     }
 
-    const frameworkVersion = frameworkVersions[0]
+    const dependencyVersions = getDependencyVersions()
 
     const assemblyPackageJson = {
       name: `${applicationPackageJson.name}-${syntheticName}`,
       private: true,
       version: applicationPackageJson.version,
       main: './index.js',
-      dependencies: Array.from(resultNodeModules).reduce((acc, val) => {
-        if (
-          applicationPackageJson.dependencies.hasOwnProperty(val) &&
-          !val.startsWith('@resolve-js')
-        ) {
-          acc[val] = applicationPackageJson.dependencies[val]
-        } else if (nodeModules.has(val) && dependencyVersions.has(val)) {
-          if (!val.startsWith('@resolve-js') && !val.startsWith('$resolve')) {
-            const versionSet = dependencyVersions.get(val)
-            if (!versionSet) {
-              //TODO: decide what to do in this case
-              throw Error(
-                `Cannot determine version for the '${val}' dependency`
-              )
+      dependencies: Array.from(resultNodeModules).reduce(
+        (result, dependencyName) => {
+          if (
+            applicationPackageJson.dependencies.hasOwnProperty(
+              dependencyName
+            ) &&
+            !dependencyName.startsWith('@resolve-js')
+          ) {
+            result[dependencyName] =
+              applicationPackageJson.dependencies[dependencyName]
+          } else if (
+            nodeModules.has(dependencyName) &&
+            dependencyVersions.has(dependencyName)
+          ) {
+            if (
+              !dependencyName.startsWith('@resolve-js') &&
+              !dependencyName.startsWith('$resolve')
+            ) {
+              const versionSet = dependencyVersions.get(dependencyName)
+              if (!versionSet) {
+                throw Error(
+                  `Cannot determine version for the '${dependencyName}' dependency`
+                )
+              }
+              if (versionSet.size > 1) {
+                throw Error(
+                  `Multiple versions found for the '${dependencyName}' dependency: ${[
+                    ...versionSet,
+                  ].join(', ')}`
+                )
+              }
+              const [dependencyVersion] = [...versionSet]
+              result[dependencyName] = dependencyVersion
             }
-            if (versionSet.size > 1) {
-              //TODO: decide what to do in this case
-              // throw Error(
-              //   `Multiple versions found for the '${val}' dependency: ${[
-              //     ...versionSet,
-              //   ].join(', ')}`
-              // )
-            }
-            const [dependencyVersion] = [...versionSet]
-            acc[val] = dependencyVersion
           }
-        }
-        return acc
-      }, {}),
+          return result
+        },
+        {}
+      ),
     }
 
     fs.writeFileSync(
