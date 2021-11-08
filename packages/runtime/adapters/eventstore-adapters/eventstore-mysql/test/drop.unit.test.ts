@@ -12,13 +12,9 @@ beforeEach(() => {
     snapshotsTableName: 'snapshots-table-name',
     secretsDatabase: 'secrets-database',
     secretsTableName: 'secrets-table-name',
-    connection: {
-      execute: jest
-        .fn()
-        .mockImplementation((sql: string) => Promise.resolve(sql)),
-      query: jest.fn().mockImplementation((sql: any) => Promise.resolve(sql)),
-      end: jest.fn().mockImplementation(() => Promise.resolve()),
-    },
+    execute: jest
+      .fn()
+      .mockImplementation((sql: string) => Promise.resolve(sql)),
     escapeId: (e: any) => `ESCAPEID[${e}]`,
     maybeThrowResourceError: jest.fn((e: Error[]) => e),
   } as any
@@ -26,7 +22,7 @@ beforeEach(() => {
 
 test('executed statements', async () => {
   await dropEvents(pool)
-  const execute = mocked(pool.connection.execute)
+  const execute = mocked(pool.execute)
 
   expect(execute).toHaveBeenCalledWith(
     expect.stringMatching(/table-name-incremental-import/g)

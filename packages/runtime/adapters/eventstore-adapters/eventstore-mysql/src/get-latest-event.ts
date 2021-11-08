@@ -7,7 +7,14 @@ import { isTimestampFilter } from '@resolve-js/eventstore-base'
 import type { AdapterPool } from './types'
 
 const getLatestEvent = async (
-  { connection, eventsTableName, escapeId, escape, shapeEvent }: AdapterPool,
+  {
+    connection,
+    eventsTableName,
+    escapeId,
+    escape,
+    shapeEvent,
+    query,
+  }: AdapterPool,
   filter: LatestEventFilter
 ): Promise<StoredEvent | null> => {
   const { eventTypes, aggregateIds } = filter
@@ -39,7 +46,7 @@ const getLatestEvent = async (
 
   const eventsTableNameAsId: string = escapeId(eventsTableName)
 
-  const [rows] = await connection.query(
+  const [rows] = await query(
     `SELECT * FROM ${eventsTableNameAsId} ${resultQueryCondition}
     ORDER BY \`timestamp\` DESC, \`aggregateVersion\` DESC`
   )

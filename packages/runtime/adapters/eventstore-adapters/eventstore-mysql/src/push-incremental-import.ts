@@ -3,7 +3,7 @@ import type { AdapterPool } from './types'
 import type { VersionlessEvent } from '@resolve-js/eventstore-base'
 
 const pushIncrementalImport = async (
-  { eventsTableName, connection, database, escapeId, escape }: AdapterPool,
+  { eventsTableName, query, database, escapeId, escape }: AdapterPool,
   events: VersionlessEvent[],
   importId: string
 ): Promise<void> => {
@@ -16,7 +16,7 @@ const pushIncrementalImport = async (
     )
     const databaseNameAsString = escape(database)
 
-    await connection.query(
+    await query(
       `START TRANSACTION;
       
       SELECT 1 FROM \`information_schema\`.\`tables\`
@@ -55,7 +55,7 @@ const pushIncrementalImport = async (
   } catch (error) {
     const errno = error != null && error.errno != null ? error.errno : 0
     try {
-      await connection.query(`ROLLBACK;`)
+      await query(`ROLLBACK;`)
     } catch (e) {}
     if (errno === ER_NO_SUCH_TABLE || errno === ER_SUBQUERY_NO_1_ROW) {
       throw new Error(`Incremental importId=${importId} does not exist`)

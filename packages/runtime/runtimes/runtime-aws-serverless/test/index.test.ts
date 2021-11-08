@@ -90,9 +90,9 @@ describe('runtime', () => {
       replicateEvents: jest.fn(),
       replicateSecrets: jest.fn(),
       resetReplication: jest.fn(),
+      setReplicationLock: jest.fn(),
       rollbackIncrementalImport: jest.fn(),
       saveSnapshot: jest.fn(),
-      setReplicationIterator: jest.fn(),
       setReplicationPaused: jest.fn(),
       setReplicationStatus: jest.fn(),
       unfreeze: jest.fn(),
@@ -108,6 +108,7 @@ describe('runtime', () => {
         .mockImplementation((event) => ({ event, cursor: null })),
       dispose: jest.fn(),
       establishTimeLimit: jest.fn(),
+      getEventLoader: jest.fn(),
     }
 
     uploadAdapter = {}
@@ -124,6 +125,7 @@ describe('runtime', () => {
       },
       serverImports: null,
       uploadAdapter: jest.fn().mockImplementation(() => uploadAdapter),
+      monitoringAdapters: {},
     }
 
     constants = {

@@ -347,12 +347,7 @@ export const wrapApiHandler = (
   monitoring?: Monitoring
 ) => async (lambdaEvent: any, lambdaContext: any, lambdaCallback?: any) => {
   const startTimestamp = Date.now()
-
-  if (monitoring != null) {
-    monitoring.time('Execution', startTimestamp)
-  }
-
-  let pathMonitoring
+  let apiMonitoring = monitoring
   let result
   let isLambdaEdgeRequest
   let req
@@ -365,12 +360,12 @@ export const wrapApiHandler = (
 
     req = await createRequest(lambdaEvent, customParameters)
 
-    if (monitoring != null) {
-      pathMonitoring = monitoring
+    if (apiMonitoring != null) {
+      apiMonitoring = apiMonitoring
         .group({ Path: req.path })
         .group({ Method: req.method })
 
-      pathMonitoring.time('Execution', startTimestamp)
+      apiMonitoring.time('Execution', startTimestamp)
     }
 
     const res = createResponse()
@@ -430,14 +425,10 @@ export const wrapApiHandler = (
       }
     }
   } finally {
-    const endTimestamp = Date.now()
-
-    if (pathMonitoring != null) {
-      pathMonitoring.execution(executionError)
-      pathMonitoring.timeEnd('Execution', endTimestamp)
+    if (apiMonitoring != null) {
+      apiMonitoring.execution(executionError)
+      apiMonitoring.timeEnd('Execution')
     }
-
-    monitoring?.timeEnd('Execution', endTimestamp)
   }
 
   if (typeof lambdaCallback === 'function') {

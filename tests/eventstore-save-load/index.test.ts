@@ -2,13 +2,13 @@ import {
   adapterFactory,
   adapters,
   jestTimeout,
-  makeTestEvent,
+  makeTypedTestEvent,
+  isPostgres,
 } from '../eventstore-test-utils'
 
 import {
   threadArrayToCursor,
   checkEventsContinuity,
-  THREAD_COUNT,
   StoredEventPointer,
   ConcurrentError,
   initThreadArray,
@@ -41,50 +41,21 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
     expect(lastEvent).toBeNull()
   })
 
-  const firstEvent = {
-    aggregateVersion: 1,
-    aggregateId: 'ID_1',
-    type: 'TYPE_1',
-    payload: { message: 'hello' },
-    timestamp: 1,
-  }
+  const eventTypes = ['EVENT_1', 'EVENT_2', 'EVENT_3', 'EVENT_4'] as const
+  const checkCount = eventTypes.length * 128
 
-  test('should be able to save and load an event', async () => {
-    const saveResult = await adapter.saveEvent(firstEvent)
-
-    const { cursor: returnedCursor, event: savedEvent } = saveResult
-    eventCursorPairs.push(saveResult)
-
-    expect(checkEventsContinuity(null, [saveResult])).toBe(true)
-
-    const { events, cursor } = await adapter.loadEvents({
-      limit: 1,
-      cursor: null,
-    })
-    expect(events).toHaveLength(1)
-
-    const loadedEvent = events[0]
-    expect(loadedEvent.type).toEqual('TYPE_1')
-    expect(loadedEvent.payload).toEqual({ message: 'hello' })
-    expect(loadedEvent.timestamp).toBeGreaterThan(0)
-    expect(loadedEvent).toEqual(savedEvent)
-    expect(typeof cursor).toBe('string')
-    expect(returnedCursor).toEqual(cursor)
-
-    const lastEvent = await adapter.getLatestEvent({})
-    expect(lastEvent).toEqual(events[0])
-  })
-
-  test('should throw ConcurrentError when saving event with the same aggregateVersion', async () => {
-    await expect(adapter.saveEvent(firstEvent)).rejects.toThrow(ConcurrentError)
-  })
-
-  const checkCount = 256
   test('should save all passed events', async () => {
-    for (let i = 1; i < checkCount; ++i) {
-      const event = makeTestEvent(i)
+    for (let i = 0; i < checkCount; ++i) {
+      const event = makeTypedTestEvent(i, eventTypes[i % 4])
       const saveResult = await adapter.saveEvent(event)
+
+      expect(saveResult.event.type).toEqual(event.type)
+      expect(saveResult.event.aggregateId).toEqual(event.aggregateId)
+      expect(saveResult.event.payload).toEqual(event.payload)
+      expect(saveResult.event.timestamp).toBeGreaterThan(0)
+
       eventCursorPairs.push(saveResult)
+      // hack for sqlite - it might save events too fast, but we want to ensure different timestamps
       if (Date.now() === saveResult.event.timestamp) {
         await new Promise((resolve) => {
           setTimeout(resolve, 1)
@@ -102,6 +73,12 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
 
     const description = await adapter.describe()
     expect(description.eventCount).toEqual(checkCount)
+  })
+
+  test('should throw ConcurrentError when saving event with the same aggregateVersion', async () => {
+    await expect(
+      adapter.saveEvent(makeTypedTestEvent(0, eventTypes[0]))
+    ).rejects.toThrow(ConcurrentError)
   })
 
   test('saved events and corresponding cursors must match the subsequent loadEvents result', async () => {
@@ -123,6 +100,88 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
     for (let i = 0; i < checkCount; ++i) {
       expect(eventCursorPairs[i].event).toEqual(loadedEvents[i])
     }
+  })
+
+  async function testEventLoading(
+    startingPosition = 0,
+    eventTypes: Array<string> | null = null
+  ) {
+    let initialCursor: string | null = null
+    if (startingPosition > 0) {
+      const { cursor } = await adapter.loadEvents({
+        cursor: null,
+        limit: startingPosition,
+      })
+      initialCursor = cursor
+    }
+
+    const expectedCount = (checkCount - startingPosition) / eventTypes.length
+
+    let currentCursor = initialCursor
+    const step = 100
+
+    const eventLoader = await adapter.getEventLoader({
+      eventTypes,
+      cursor: currentCursor,
+    })
+
+    let loadedEventCount = 0
+    let readEventCount = 0
+    for (let i = 0; i < expectedCount; i += step) {
+      const {
+        events: loadedEvents,
+        cursor: nextCursor,
+      } = await adapter.loadEvents({
+        limit: step,
+        cursor: currentCursor,
+        eventTypes,
+      })
+
+      const {
+        events: readEvents,
+        cursor: nextReadCursor,
+      } = await eventLoader.loadEvents(step)
+
+      loadedEventCount += loadedEvents.length
+      readEventCount += readEvents.length
+      expect(readEventCount).toEqual(loadedEventCount)
+      expect(nextReadCursor).toEqual(nextCursor)
+      expect(eventLoader.cursor).toEqual(nextReadCursor)
+
+      for (let i = 0; i < loadedEventCount; ++i) {
+        expect(readEvents[i]).toEqual(loadedEvents[i])
+      }
+
+      currentCursor = nextCursor
+    }
+
+    const isNative = eventLoader.isNative
+    await eventLoader.close()
+
+    expect(loadedEventCount).toEqual(expectedCount)
+    expect(readEventCount).toEqual(expectedCount)
+
+    if (isPostgres()) {
+      expect(isNative).toBe(true)
+    }
+  }
+
+  test('should load events consequentially from the beginning', async () => {
+    await testEventLoading(0, [eventTypes[1], eventTypes[3]])
+  })
+
+  test('should load events consequentially from the middle', async () => {
+    await testEventLoading(checkCount / 2, [eventTypes[0], eventTypes[2]])
+  })
+
+  test('preferring regular event loader should return non-native one', async () => {
+    const eventLoader = await adapter.getEventLoader(
+      { cursor: null },
+      { preferRegular: true }
+    )
+    const isNative = eventLoader.isNative
+    await eventLoader.close()
+    expect(isNative).toBe(false)
   })
 
   test('same cursors are not continuous', async () => {
@@ -231,8 +290,7 @@ describe(`${adapterFactory.name}. Eventstore adapter getCursorUntilEventTypes`, 
 
   test('should return initial cursor if event-store is empty', async () => {
     const cursor = await adapter.getCursorUntilEventTypes(null, ['TYPE_1'])
-    const arr = new Array<number>(THREAD_COUNT)
-    arr.fill(0)
+    const arr = initThreadArray()
     expect(cursor).toEqual(threadArrayToCursor(arr))
   })
 

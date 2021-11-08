@@ -7,7 +7,7 @@ const aggregate = {
     }
     const { isExist } = state
     if (isExist) {
-      throw Error(`the blog post already exist`)
+      throw Error(`the blog post already exists`)
     }
     return {
       type: BLOG_POST_CREATED,
@@ -21,7 +21,7 @@ const aggregate = {
   delete: (state, command, { user }) => {
     const { isExist, authorId } = state
     if (!isExist) {
-      throw Error(`the blog post not exist`)
+      throw Error(`the blog post does not exist`)
     }
     if (user.userId !== authorId) {
       throw Error(`you are not authorized to perform this operation`)

@@ -2,14 +2,55 @@
 
 ## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.32.0...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.0...HEAD)
 
-**Breaking changes:**
+**Bug fixes:**
 
-- Refactored runtime libraries [\#2060](https://github.com/reimagined/resolve/pull/2060)
+- "Pool is null" error in sagas [\#2101](https://github.com/reimagined/resolve/issues/2101)
+- The IsAlive flag for read models is false although read model is live \(no any errors\) [\#2092](https://github.com/reimagined/resolve/issues/2092)
+- Read-model doesn't handle events newly added to projection [\#2052](https://github.com/reimagined/resolve/issues/2052)
+- Unable to create app using Node v14 due to sqlite3 installation error [\#1998](https://github.com/reimagined/resolve/issues/1998)
+
+**Documentation:**
+
+- Describe the emulateWorkerLifetimeLimit option [\#2100](https://github.com/reimagined/resolve/pull/2100)
 
 **Other changes:**
 
+- Improve already dispose error handling for all disposable resolve resoures, inclusing read-model adapters [\#2103](https://github.com/reimagined/resolve/pull/2103)
+
+## [V0.33.0](https://github.com/reimagined/resolve/tree/V0.33.0) (2021-10-27)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.32.0...V0.33.0)
+
+**New features:**
+
+- Implement monitoring adapters [\#2089](https://github.com/reimagined/resolve/pull/2089)
+- Add event loader in eventstore adapter inferface and loading events via pg-cursor [\#2067](https://github.com/reimagined/resolve/pull/2067)
+
+**Enhancements:**
+
+- Make less database queries during replication [\#2084](https://github.com/reimagined/resolve/pull/2084)
+- Use event-loader \(via pgcursor for postgres\) in replicator [\#2076](https://github.com/reimagined/resolve/pull/2076)
+
+**Breaking changes:**
+
+- Remove RDS data api eventstore and readmodel adapters [\#2078](https://github.com/reimagined/resolve/pull/2078)
+- Refactored runtime libraries [\#2060](https://github.com/reimagined/resolve/pull/2060)
+
+**Bug fixes:**
+
+- Testing tools - When passing events with timestamps to givenEvents\(\), these events are sometimes lost [\#2075](https://github.com/reimagined/resolve/issues/2075)
+
+**Documentation:**
+
+- Fix outdated content in the Preparing to Production topic [\#2086](https://github.com/reimagined/resolve/pull/2086)
+- Remove postgres-serverless adapters mentions from documentation [\#2083](https://github.com/reimagined/resolve/pull/2083)
+
+**Other changes:**
+
+- Ability to delay next in readmodel build [\#2090](https://github.com/reimagined/resolve/pull/2090)
+- Fix subscriber notification [\#2062](https://github.com/reimagined/resolve/pull/2062)
 - Migrate from "incremental import" to "import" [\#2061](https://github.com/reimagined/resolve/pull/2061)
 - Review strings in templates and examples [\#2059](https://github.com/reimagined/resolve/pull/2059)
 - Cleanup eventstore tests [\#2058](https://github.com/reimagined/resolve/pull/2058)

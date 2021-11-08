@@ -1,10 +1,8 @@
 import { getLog } from './get-log'
-import { AdapterPoolConnectedProps, AdapterPoolConnected } from './types'
+import { AdapterBoundPool } from './types'
 
-const snapshotTrigger = async <
-  ConnectedProps extends AdapterPoolConnectedProps
->(
-  state: AdapterPoolConnected<ConnectedProps>,
+const snapshotTrigger = async <ConfiguredProps extends {}>(
+  state: AdapterBoundPool<ConfiguredProps>,
   snapshotKey: string,
   content: string,
   updateCallback: any

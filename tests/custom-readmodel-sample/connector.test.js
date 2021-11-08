@@ -50,19 +50,25 @@ describe('Read-model generic adapter API', () => {
         aggregateId: 'ID',
         type: 'INCREMENT',
         timestamp: 1,
-        payload: 100,
+        payload: {
+          count: 100,
+        },
       },
       {
         aggregateId: 'ID',
         type: 'DECREMENT',
         timestamp: 2,
-        payload: 200,
+        payload: {
+          count: 200,
+        },
       },
       {
         aggregateId: 'ID',
         type: 'INCREMENT',
         timestamp: 3,
-        payload: 300,
+        payload: {
+          count: 300,
+        },
       },
     ])
       .readModel({

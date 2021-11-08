@@ -12,29 +12,25 @@ An application is built for production using the **build** script, and run in th
 
 An example **config.prod.js** file:
 
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/js/hacker-news/config.prod.js /^/ /\n$/)
 ```js
+// config.prod.js
 const prodConfig = {
   port: 3000,
   mode: 'production',
   readModelConnectors: {
     HackerNews: {
       module: '@resolve-js/readmodel-lite',
-      options: {}
-    }
+      options: {},
+    },
   },
   jwtCookie: {
     name: 'jwt',
-    maxAge: 31536000000
-  }
+    maxAge: 31536000000,
+  },
 }
 
 export default prodConfig
 ```
-
-<!-- prettier-ignore-end -->
 
 ## Configuring Adapters
 
@@ -44,52 +40,43 @@ Depending on your requirements, you may want to specify storage adapters for eve
 
 The code below demonstrates how to set up a storage adapter on the example of an in-memory Read Model storage:
 
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/js/hacker-news/config.prod.js /readModelConnectors/ /\},/)
 ```js
-readModelConnectors: {
+// config.prod.js
+const prodConfig = {
+  readModelConnectors: {
     HackerNews: {
       module: '@resolve-js/readmodel-lite',
-      options: {}
-    }
+      options: {},
+    },
   },
+  ...
+}
 ```
-
-<!-- prettier-ignore-end -->
-
-In addition to storage adapters, you can specify adapters that define how your application communicates with underlying APIs. For example, use the API handler adapters, to define how your application handles API requests.
-You can also provide a bus adapter and subscribe adapter to define how your application sends events and subscribes to events.
 
 ## Using Environment Variables
 
 Use the **declareRuntimeEnv** function from the **@resolve-js/scripts** library to bind a configuration setting value to an environment variable:
 
 ```js
+// config.prod.js
 import { declareRuntimeEnv } from '@resolve-js/scripts'
 export default {
-  subscribeAdapter: {
-    module: '@resolve-js/subscribe-mqtt',
-    options: {},
-  },
   readModelsConnectors: {
     HackerNews: {
-      module: '@resolve-js/readmodel-postgresql-serverless',
+      module: '@resolve-js/readmodel-postgresql',
       options: {
-        dbClusterOrInstanceArn: declareRuntimeEnv(
-          'RESOLVE_READMODEL_POSTGRESQL_CLUSTER_ARN'
-        ),
-        awsSecretStoreArn: declareRuntimeEnv(
-          'RESOLVE_READMODEL_POSTGRESQL_SECRET_ARN'
-        ),
-        databaseName: declareRuntimeEnv(
-          'RESOLVE_READMODEL_POSTGRESQL_DATABASE_NAME'
-        ),
-        region: declareRuntimeEnv('AWS_REGION'),
+        databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
+        host: declareRuntimeEnv('RESOLVE_READMODEL_CLUSTER_HOST'),
+        port: declareRuntimeEnv('RESOLVE_READMODEL_CLUSTER_PORT'),
+        user: declareRuntimeEnv('RESOLVE_USER_ID'),
+        password: declareRuntimeEnv('RESOLVE_USER_PASSWORD'),
+        database: 'postgres',
       },
     },
   },
+  ...
 }
+export default prodConfig
 ```
 
 This approach is useful when you need to assign settings that should not be included in application sources (e.g., authentication credentials or secret keys) or settings that should be defined by a server instance.

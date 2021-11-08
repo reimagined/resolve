@@ -2,13 +2,9 @@
 import { Client as Postgres } from 'pg'
 import { mocked } from 'ts-jest/utils'
 /* eslint-disable import/no-extraneous-dependencies */
-import type {
-  AdapterPool,
-  ConnectionDependencies,
-  PostgresqlAdapterConfig,
-} from '../src/types'
+import type { AdapterPool, PostgresqlAdapterConfig } from '../src/types'
 import connect from '../src/connect'
-import executeStatement from '../src/execute-statement'
+import configure from '../src/configure'
 import { DEFAULT_QUERY_TIMEOUT } from '../src/constants'
 import { RequestTimeoutError } from '@resolve-js/eventstore-base'
 
@@ -20,20 +16,16 @@ Object.assign(mPostgres.prototype, {
 })
 
 let pool: AdapterPool
-let connectionDependencies: ConnectionDependencies
 let config: PostgresqlAdapterConfig
 
 beforeEach(() => {
   pool = {
-    connectionErrors: [],
-  } as any
-  connectionDependencies = {
     Postgres,
     escape: jest.fn(),
     escapeId: jest.fn(),
     executeStatement: jest.fn(),
     fullJitter: jest.fn(),
-  }
+  } as any
   config = {
     user: 'user',
     database: 'database',
@@ -48,9 +40,8 @@ beforeEach(() => {
 })
 
 test('destination passed to postgres client', async () => {
-  connectionDependencies.executeStatement = executeStatement
-
-  await connect(pool, connectionDependencies, config)
+  configure(pool, config)
+  await connect(pool)
 
   expect(mPostgres).toHaveBeenCalledWith(
     expect.objectContaining({
@@ -79,12 +70,9 @@ test('destination passed to postgres client', async () => {
 })
 
 test('getVacantTimeInMillis affects the values passed to postgres connection', async () => {
-  connectionDependencies.executeStatement = executeStatement
-
   pool.getVacantTimeInMillis = () => 10000
-  await connect(pool, connectionDependencies, {
-    ...config,
-  })
+  configure(pool, config)
+  await connect(pool)
 
   const pConfig = mPostgres.mock.calls[1][0]
   const definedConfig = pConfig as Exclude<typeof pConfig, string | undefined>
@@ -93,41 +81,6 @@ test('getVacantTimeInMillis affects the values passed to postgres connection', a
 })
 
 test('should throw RequestTimeoutError if getVacantTimeInMillis returns negative number', async () => {
-  connectionDependencies.executeStatement = executeStatement
-
   pool.getVacantTimeInMillis = () => -1
-  await expect(connect(pool, connectionDependencies, config)).rejects.toThrow(
-    RequestTimeoutError
-  )
-})
-
-test("utilities were assigned to adapter's pool", async () => {
-  await connect(pool, connectionDependencies, config)
-
-  expect(pool).toEqual(
-    expect.objectContaining({
-      fullJitter: connectionDependencies.fullJitter,
-      escape: connectionDependencies.escape,
-      escapeId: connectionDependencies.escapeId,
-    })
-  )
-})
-
-test("Postgres client assigned to adapter's pool", async () => {
-  await connect(pool, connectionDependencies, config)
-
-  expect(pool.Postgres).toBe(Postgres)
-})
-
-test("executeStatement bound to adapter's pool", async () => {
-  await connect(pool, connectionDependencies, config)
-
-  expect(pool.executeStatement).toBeDefined()
-  if (pool.executeStatement) {
-    await pool.executeStatement('test')
-    expect(connectionDependencies.executeStatement).toHaveBeenCalledWith(
-      pool,
-      'test'
-    )
-  }
+  await expect(connect(pool)).rejects.toThrow(RequestTimeoutError)
 })

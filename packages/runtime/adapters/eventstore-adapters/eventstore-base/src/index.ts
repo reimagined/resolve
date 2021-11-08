@@ -22,15 +22,16 @@ import exportSecretsStream from './export-secrets'
 import init from './init'
 import drop from './drop'
 import gatherSecretsFromEvents from './gather-secrets-from-events'
+import getEventLoader from './get-event-loader'
 import * as iots from 'io-ts'
 import * as iotsTypes from 'io-ts-types'
 
 import type {
   AdapterFunctions,
-  AdapterPoolConnectedProps,
   CommonAdapterFunctions,
   Adapter,
   AdapterConfig,
+  AdapterPrimalPool,
 } from './types'
 
 export {
@@ -59,19 +60,14 @@ export {
 export * from './errors'
 
 const wrappedCreateAdapter = <
-  ConnectedProps extends AdapterPoolConnectedProps,
-  ConnectionDependencies extends any,
+  ConfiguredProps extends {},
   Config extends AdapterConfig
 >(
-  adapterFunctions: AdapterFunctions<
-    ConnectedProps,
-    ConnectionDependencies,
-    Config
-  >,
-  connectionDependencies: ConnectionDependencies,
-  options: Config
+  adapterFunctions: AdapterFunctions<ConfiguredProps>,
+  options: Config,
+  configure: (props: AdapterPrimalPool<ConfiguredProps>, config: Config) => void
 ): Adapter => {
-  const commonFunctions: CommonAdapterFunctions<ConnectedProps> = {
+  const commonFunctions: CommonAdapterFunctions<ConfiguredProps> = {
     maybeThrowResourceError,
     importEventsStream,
     exportEventsStream,
@@ -84,14 +80,10 @@ const wrappedCreateAdapter = <
     init,
     drop,
     gatherSecretsFromEvents,
+    getEventLoader,
   }
 
-  return createAdapter(
-    commonFunctions,
-    adapterFunctions,
-    connectionDependencies,
-    options
-  )
+  return createAdapter(commonFunctions, adapterFunctions, options, configure)
 }
 
 export default wrappedCreateAdapter
@@ -127,20 +119,25 @@ export type {
   ReplicationState,
   OldEvent,
   OldSecretRecord,
-  EventStoreDescription,
   UnbrandProps,
   CursorFilter,
   TimestampFilter,
   Adapter,
-  AdapterPoolPossiblyUnconnected,
-  AdapterPoolConnected,
-  AdapterPoolConnectedProps,
+  AdapterPrimalPool,
+  AdapterBoundPool,
   AdapterConfig,
   AdapterTableNames,
   AdapterTableNamesProps,
+  GatheredSecrets,
+  EventLoaderFilter,
+  EventLoader,
 } from './types'
 
-export type { StoredEvent, EventThreadData } from '@resolve-js/core'
+export type {
+  StoredEvent,
+  EventThreadData,
+  EventStoreDescription,
+} from '@resolve-js/core'
 
 export {
   makeSetSecretEvent,

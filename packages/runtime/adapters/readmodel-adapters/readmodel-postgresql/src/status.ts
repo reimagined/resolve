@@ -11,6 +11,8 @@ import type {
   UnPromise,
 } from './types'
 
+const IS_ALIVE_TIMEOUT = 20000
+
 const status: ExternalMethods['status'] = async <
   T extends [includeRuntimeStatus?: boolean]
 >(
@@ -20,10 +22,6 @@ const status: ExternalMethods['status'] = async <
   try {
     pool.activePassthrough = true
     let result: ReadModelStatus | RuntimeReadModelStatus | null = null
-    let cursorAndEventTypes: [
-      ReadModelLedger['Cursor'],
-      Exclude<ReadModelLedger['EventTypes'], null>
-    ] = [null, ['*']]
 
     const {
       PassthroughError,
@@ -65,43 +63,58 @@ const status: ExternalMethods['status'] = async <
       } else if (rows[0].IsPaused) {
         result.status = 'skip' as ReadModelRunStatus
       }
-
-      cursorAndEventTypes = [
-        result.cursor,
-        rows[0].EventTypes != null ? rows[0].EventTypes : ['*'],
-      ]
     }
 
     if (
       includeRuntimeStatus &&
       result?.status === ('deliver' as ReadModelRunStatus)
     ) {
-      let isActive = false
-      const endTime = Date.now() + 5000
-      for (
-        let currentTime = 0;
-        currentTime < endTime;
-        currentTime = Date.now()
-      ) {
-        try {
-          const rows = (await inlineLedgerRunQuery(
-            `SELECT Count(*) AS "ActiveLocksCount" FROM pg_locks
-            WHERE database = (SELECT oid FROM pg_database WHERE datname = current_database())
-            AND relation = (SELECT oid FROM pg_class WHERE relname = ${ledgerTableNameAsStr}
-            AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = ${databaseNameAsStr}))
-            AND pid = (
-              SELECT CASE WHEN "T"."XaValue" IS NOT NULL THEN CAST("T"."XaValue" AS INT)
-              ELSE NULL END FROM ${databaseNameAsId}.${ledgerTableNameAsId} "L"
-              LEFT JOIN ${databaseNameAsId}.${trxTableNameAsId} "T" ON "L"."XaKey" = "T"."XaKey"
-              WHERE "L"."EventSubscriber" = ${escapeStr(readModelName)}
-              AND "L"."IsPaused" = FALSE
-              AND "L"."Errors" IS NULL
-              LIMIT 1
-            );`
-          )) as Array<{ ActiveLocksCount: number }>
+      let isAlive = false
+      const endTime = Date.now() + IS_ALIVE_TIMEOUT
+      let currentTime = 0
 
-          if (rows?.[0]?.ActiveLocksCount > 0) {
-            isActive = true
+      do {
+        try {
+          const [lockRows, subscriberRows] = await Promise.all([
+            inlineLedgerRunQuery(
+              `SELECT Count(*) AS "ActiveLocksCount" FROM pg_locks
+              WHERE database = (SELECT oid FROM pg_database WHERE datname = current_database())
+              AND relation = (SELECT oid FROM pg_class WHERE relname = ${ledgerTableNameAsStr}
+              AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = ${databaseNameAsStr}))
+              AND pid = (
+                SELECT CASE WHEN "T"."XaValue" IS NOT NULL THEN CAST("T"."XaValue" AS INT)
+                ELSE NULL END FROM ${databaseNameAsId}.${ledgerTableNameAsId} "L"
+                LEFT JOIN ${databaseNameAsId}.${trxTableNameAsId} "T" ON "L"."XaKey" = "T"."XaKey"
+                WHERE "L"."EventSubscriber" = ${escapeStr(readModelName)}
+                AND "L"."IsPaused" = FALSE
+                AND "L"."Errors" IS NULL
+                LIMIT 1
+              );`
+            ) as Promise<Array<{ ActiveLocksCount: number }>>,
+            inlineLedgerRunQuery(
+              `SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
+               WHERE "EventSubscriber" = ${escapeStr(readModelName)}
+              `
+            ) as Promise<Array<ReadModelLedger>>,
+          ])
+
+          if (lockRows?.[0]?.ActiveLocksCount > 0) {
+            isAlive = true
+          }
+
+          if (!isAlive && subscriberRows.length === 1) {
+            let [{ Cursor, EventTypes }] = subscriberRows
+
+            if (EventTypes == null) {
+              EventTypes = ['*']
+            }
+
+            const [nextCursor, endCursor] = await Promise.all([
+              eventstoreAdapter.getCursorUntilEventTypes?.(Cursor, EventTypes),
+              eventstoreAdapter.getCursorUntilEventTypes?.(Cursor, ['*']),
+            ])
+
+            isAlive = nextCursor == null || nextCursor === endCursor
           }
         } catch (error) {
           if (
@@ -111,17 +124,9 @@ const status: ExternalMethods['status'] = async <
             throw error
           }
         }
-      }
 
-      const [nextCursor, endCursor] = await Promise.all([
-        eventstoreAdapter.getCursorUntilEventTypes?.(...cursorAndEventTypes),
-        eventstoreAdapter.getCursorUntilEventTypes?.(cursorAndEventTypes[0], [
-          '*',
-        ]),
-      ])
-
-      const hasNextEvents = nextCursor != null && nextCursor !== endCursor
-      const isAlive = isActive || !hasNextEvents
+        currentTime = Date.now()
+      } while (currentTime < endTime && !isAlive)
 
       result = Object.assign(result, { isAlive })
     } else if (includeRuntimeStatus) {

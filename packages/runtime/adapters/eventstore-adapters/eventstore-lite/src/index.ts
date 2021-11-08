@@ -1,15 +1,10 @@
 import createAdapter from '@resolve-js/eventstore-base'
-import tmp from 'tmp'
-import os from 'os'
-import fs from 'fs'
-import BetterSqlite from 'better-sqlite3'
 
 import beginIncrementalImport from './begin-incremental-import'
 import commitIncrementalImport from './commit-incremental-import'
 import ensureEventSubscriber from './ensure-event-subscriber'
 import removeEventSubscriber from './remove-event-subscriber'
 import getEventSubscribers from './get-event-subscribers'
-import connect from './connect'
 import deleteSecret from './delete-secret'
 import dispose from './dispose'
 import dropSnapshot from './drop-snapshot'
@@ -39,12 +34,14 @@ import dropFinal from './drop-final'
 import replicateEvents from './replicate-events'
 import replicateSecrets from './replicate-secrets'
 import setReplicationStatus from './set-replication-status'
-import setReplicationIterator from './set-replication-iterator'
 import setReplicationPaused from './set-replication-paused'
 import getReplicationState from './get-replication-state'
 import resetReplication from './reset-replication'
+import setReplicationLock from './set-replication-lock'
 import getCursorUntilEventTypes from './get-cursor-until-event-types'
 import describe from './describe'
+
+import configure from './configure'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
 import type { SqliteAdapterConfig } from './types'
@@ -57,7 +54,6 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       ensureEventSubscriber,
       removeEventSubscriber,
       getEventSubscribers,
-      connect,
       deleteSecret,
       dispose,
       dropSnapshot,
@@ -87,15 +83,15 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       replicateEvents,
       replicateSecrets,
       setReplicationStatus,
-      setReplicationIterator,
       setReplicationPaused,
       getReplicationState,
       resetReplication,
+      setReplicationLock,
       getCursorUntilEventTypes,
       describe,
     },
-    { BetterSqlite, tmp, os, fs },
-    options
+    options,
+    configure
   )
 }
 

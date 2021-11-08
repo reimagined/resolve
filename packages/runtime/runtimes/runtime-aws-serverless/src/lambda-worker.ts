@@ -1,17 +1,18 @@
 import { getLog, createRuntime } from '@resolve-js/runtime-base'
 
 import { schedulerFactory } from './scheduler-factory'
-import { monitoringFactory } from './monitoring-factory'
-import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
+import {
+  eventSubscriberNotifierFactory,
+  waitForSubscriber,
+} from './event-subscriber-notifier-factory'
 import { putDurationMetrics } from './metrics'
 import { handleWebsocketEvent } from './websocket-event-handler'
 import { handleApiGatewayEvent } from './api-gateway-handler'
 import { handleCloudServiceEvent } from './cloud-service-event-handler'
 import { handleSchedulerEvent } from './scheduler-event-handler'
-import { getDeploymentId } from './utils'
 import partial from 'lodash.partial'
 
-import type { EventPointer, Monitoring } from '@resolve-js/core'
+import type { EventPointer } from '@resolve-js/core'
 import type {
   Runtime,
   RuntimeFactoryParameters,
@@ -42,11 +43,11 @@ const createCloudRuntime = async (
   subscriberInterface: EventSubscriberInterface,
   overrideFactoryParams: Partial<RuntimeFactoryParameters> = {}
 ) => {
-  const monitoring = monitoringFactory({
-    resolveVersion: coldStartContext.resolveVersion,
-    deploymentId: getDeploymentId(),
-  })
-  const getVacantTimeInMillis = partial(getLambdaVacantTime, lambdaContext)
+  const getVacantTimeInMillis = partial(
+    getLambdaVacantTime,
+    lambdaContext,
+    () => void 0
+  )
   const {
     eventstoreAdapter: eventStoreAdapterFactory,
     readModelConnectors: readModelConnectorsFactories,
@@ -56,7 +57,6 @@ const createCloudRuntime = async (
     ...coldStartContext,
     eventStoreAdapterFactory,
     readModelConnectorsFactories,
-    monitoring,
     getVacantTimeInMillis,
     notifyEventSubscriber: subscriberInterface.notifyEventSubscriber,
     invokeBuildAsync: subscriberInterface.invokeBuildAsync,
@@ -79,8 +79,7 @@ const createCloudRuntime = async (
   return {
     runtime,
     scheduler,
-    getVacantTimeInMillis: runtimeParams.getVacantTimeInMillis,
-    monitoring,
+    getVacantTimeInMillis,
   }
 }
 
@@ -107,14 +106,13 @@ export const lambdaWorker = async (
   )
 
   let runtime: Runtime | null = null
-  let monitoring: Monitoring | null = null
 
   // TODO: too complex
 
   try {
     if (lambdaEvent.resolveSource === 'DeployService') {
       log.debug('identified event source: deployment service')
-      ;({ runtime, monitoring } = await makeRuntime({}))
+      void ({ runtime } = await makeRuntime({}))
 
       const executorResult = await handleCloudServiceEvent(
         lambdaEvent,
@@ -138,17 +136,33 @@ export const lambdaWorker = async (
       return executorResult
     } else if (lambdaEvent.resolveSource === 'BuildEventSubscriber') {
       log.debug('identified event source: event-subscriber-direct')
-      ;({ runtime, monitoring } = await makeRuntime({}))
+      void ({ runtime } = await makeRuntime({}))
 
-      const { resolveSource, ...buildParameters } = lambdaEvent
+      const { resolveSource, eventSubscriber, ...buildParameters } = lambdaEvent
       void resolveSource
 
-      const executorResult = await runtime.eventSubscriber.build({
+      const currentEventSubscriber = coldStartContext.eventListeners.get(
+        eventSubscriber
+      ) ?? { isSaga: false }
+
+      let executorResult = await runtime.eventSubscriber.build({
         ...buildParameters,
+        eventSubscriber,
         coldStart,
       })
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
+
+      if (currentEventSubscriber.isSaga) {
+        await waitForSubscriber(true)
+        executorResult = await runtime.eventSubscriber.build({
+          ...buildParameters,
+          eventSubscriber,
+          coldStart,
+        })
+
+        log.verbose(`sagaExecutorResult: ${JSON.stringify(executorResult)}`)
+      }
 
       return executorResult
     } else if (
@@ -177,7 +191,7 @@ export const lambdaWorker = async (
         }
       })
 
-      ;({ runtime, monitoring } = await makeRuntime({}))
+      void ({ runtime } = await makeRuntime({}))
 
       type BuildParameters = {
         coldStart: boolean
@@ -247,7 +261,6 @@ export const lambdaWorker = async (
       log.debug('identified event source: cloud scheduler')
 
       const data = await makeRuntime({})
-      monitoring = data.monitoring
 
       const executorResult = await handleSchedulerEvent(
         lambdaEvent,
@@ -259,7 +272,7 @@ export const lambdaWorker = async (
       return executorResult
     } else if (lambdaEvent.resolveSource === 'Websocket') {
       log.debug('identified event source: websocket')
-      ;({ runtime, monitoring } = await makeRuntime({}))
+      void ({ runtime } = await makeRuntime({}))
 
       const executorResult = await handleWebsocketEvent(
         lambdaEvent as any,
@@ -284,7 +297,6 @@ export const lambdaWorker = async (
       const data = await makeRuntime(overrideParams)
 
       runtime = data.runtime
-      monitoring = data.monitoring
 
       runtime.eventStoreAdapter.establishTimeLimit(data.getVacantTimeInMillis)
 
@@ -299,7 +311,6 @@ export const lambdaWorker = async (
         lambdaContext,
         runtime,
         {
-          monitoring: data.monitoring,
           performanceTracer: coldStartContext.performanceTracer,
           buildTimeConstants: coldStartContext.constants,
           routesTrie: coldStartContext.routesTrie,
@@ -315,8 +326,7 @@ export const lambdaWorker = async (
 
       return executorResult
     } else {
-      const data = await makeRuntime({})
-      monitoring = data.monitoring
+      void ({ runtime } = await makeRuntime({}))
       throw new Error(
         `abnormal lambda execution on event ${JSON.stringify(lambdaEvent)}`
       )
@@ -324,7 +334,7 @@ export const lambdaWorker = async (
   } catch (error) {
     log.error('top-level event handler execution error!')
 
-    monitoring?.group({ Part: 'Internal' }).error(error)
+    runtime?.monitoring?.group({ Part: 'Internal' }).error(error)
 
     if (error instanceof Error) {
       log.error('error', error.message)
@@ -349,10 +359,6 @@ export const lambdaWorker = async (
     }
 
     coldStart = false
-    log.debug('reSolve framework was disposed. publishing metrics')
-
-    await monitoring?.publish()
-
-    log.debug(`metrics published`)
+    log.debug('reSolve framework was disposed')
   }
 }

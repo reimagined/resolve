@@ -19,6 +19,7 @@ const createAdapter = <
   options: AdapterOptions
 ): AdapterApi<AdapterPool> => {
   const {
+    AlreadyDisposedError,
     splitNestedPath,
     checkEventsContinuity,
     withPerformanceTracer,
@@ -105,6 +106,7 @@ const createAdapter = <
       monitoring,
     },
     adapterPoolMap: new Map(),
+    AlreadyDisposedError,
     withPerformanceTracer,
     performanceTracer,
     monitoring,

@@ -4,7 +4,7 @@ import type {
   EventSubscriberNotifier,
 } from '@resolve-js/runtime-base'
 import type { Trie } from 'route-trie'
-import type { PerformanceTracer, Domain } from '@resolve-js/core'
+import type { PerformanceTracer, Domain, Monitoring } from '@resolve-js/core'
 import type {
   Assemblies,
   BuildTimeConstants,
@@ -30,6 +30,7 @@ export type EventSubscriberInterface = {
 
 export type LambdaColdStartContext = {
   readonly performanceTracer: PerformanceTracer
+  readonly monitoring: Monitoring
   readonly seedClientEnvs: RuntimeFactoryParameters['seedClientEnvs']
   readonly serverImports: RuntimeFactoryParameters['serverImports']
   readonly constants: BuildTimeConstants
@@ -70,6 +71,7 @@ type LambdaEventBase = {
 }
 export type BuildEventSubscriberLambdaEvent = {
   readonly resolveSource: 'BuildEventSubscriber'
+  readonly eventSubscriber: string
 } & LambdaEventBase
 export type SchedulerLambdaEvent = {
   readonly resolveSource: 'Scheduler'

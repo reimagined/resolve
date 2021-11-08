@@ -1,8 +1,15 @@
 import devCommonConfig from './config.dev.common'
+import { declareRuntimeEnv } from '@resolve-js/scripts'
 const devReplicaConfig = {
   ...devCommonConfig,
   name: 'hacker-news-replica',
-  port: '3001',
+  runtime: {
+    module: '@resolve-js/runtime-single-process',
+    options: {
+      host: declareRuntimeEnv('REPLICA_HOST', 'localhost'),
+      port: declareRuntimeEnv('REPLICA_PORT', '4001'),
+    },
+  },
   distDir: 'dist-replica',
   eventstoreAdapter: {
     module: '@resolve-js/eventstore-lite',

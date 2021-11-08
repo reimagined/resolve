@@ -9,7 +9,6 @@ const initSecrets = async ({
   databaseName,
   secretsTableName,
   eventsTableName,
-  snapshotsTableName,
   executeStatement,
   escapeId,
 }: AdapterPool): Promise<any[]> => {

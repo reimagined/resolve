@@ -1,8 +1,13 @@
 import { declareRuntimeEnv } from '@resolve-js/scripts'
 const testFunctionalConfig = {
-  target: 'local',
-  port: declareRuntimeEnv('PORT', '3000'),
   mode: 'development',
+  runtime: {
+    module: '@resolve-js/runtime-single-process',
+    options: {
+      host: declareRuntimeEnv('HOST', 'localhost'),
+      port: declareRuntimeEnv('PORT', '3000'),
+    },
+  },
   readModelConnectors: {
     default: {
       module: '@resolve-js/readmodel-lite',

@@ -1,7 +1,11 @@
-import { TestSaga } from '../src/types'
 import { stringify } from '../src/utils/format'
 import givenEvents from '../src/index'
-import { ambiguousEventsTimeErrorMessage } from '../src/constants'
+import {
+  ambiguousEventsTimeErrorMessage,
+  reservedEventOrderField,
+} from '../src/constants'
+import type { TestSaga } from '../src/types'
+import type { Event } from '@resolve-js/core'
 
 let warnSpy: jest.SpyInstance
 let errorSpy: jest.SpyInstance
@@ -20,6 +24,8 @@ afterAll(() => {
   warnSpy.mockRestore()
   errorSpy.mockRestore()
 })
+
+let lastPreservedOrderEvent: Event
 
 const saga: TestSaga<{
   failure: (error: string) => Promise<void>
@@ -150,6 +156,30 @@ const saga: TestSaga<{
     MultipleSideEffects: async ({ sideEffects }): Promise<any> => {
       await sideEffects.email('test', 'email')
       await sideEffects.failure('side effect error')
+    },
+    PreservedEventOrder: async ({ sideEffects }, event): Promise<void> => {
+      if (lastPreservedOrderEvent != null) {
+        expect(event.payload[reservedEventOrderField]).toBeUndefined()
+        const {
+          payload: { order },
+        } = event
+        if (order <= lastPreservedOrderEvent.payload.order) {
+          throw Error(
+            `Broken event order!\n${JSON.stringify(
+              lastPreservedOrderEvent
+            )}\n${JSON.stringify(event)}`
+          )
+        }
+        await sideEffects.executeCommand({
+          type: 'success',
+          aggregateId: 'aggregate-id',
+          aggregateName: 'aggregate-name',
+          payload: {
+            order,
+          },
+        })
+      }
+      lastPreservedOrderEvent = event
     },
   },
   sideEffects: {
@@ -562,4 +592,36 @@ test('using mockQueryImplementation should throw unhandled exceptions', async ()
   ).rejects.toThrow(error)
 
   expect(mockedQuery).toHaveBeenCalledWith(expectedQuery)
+})
+
+test('#2075: sometimes input events order broken with mocked Date.now', async () => {
+  const dateMock = jest
+    .spyOn(Date, 'now')
+    .mockImplementation(() => Date.UTC(2016, 1, 1, 0, 0, 3, 0))
+
+  try {
+    const generateEvents = (order: number[]) =>
+      order.map((index) => ({
+        type: 'PreservedEventOrder',
+        aggregateId: index.toString(),
+        timestamp: index,
+        payload: {
+          order: index,
+        },
+      }))
+
+    await givenEvents(generateEvents([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
+      .saga(saga)
+      .shouldExecuteCommand({
+        type: 'success',
+        aggregateName: 'aggregate-name',
+        aggregateId: 'aggregate-id',
+        payload: {
+          order: 9,
+        },
+      })
+  } catch (error) {
+    dateMock.mockRestore()
+    throw error
+  }
 })

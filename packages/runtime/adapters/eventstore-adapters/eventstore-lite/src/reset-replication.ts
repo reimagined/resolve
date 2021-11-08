@@ -25,7 +25,8 @@ const resetReplication = async (pool: AdapterPool): Promise<void> => {
       "Status" = ${escape(notStarted)},
       "StatusData" = NULL,
       "Iterator" = NULL,
-      "SuccessEvent" = NULL;
+      "SuccessEvent" = NULL,
+      "LockExpirationTime" = 0;
     COMMIT;`)
 }
 

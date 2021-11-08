@@ -37,67 +37,93 @@ describe('Read-model sample', () => {
     {
       aggregateId: 'story-id-1',
       type: 'STORY_CREATED',
-      payload: 'Text 1.0',
+      payload: {
+        text: 'Text 1.0',
+      },
     },
     {
       aggregateId: 'story-id-2',
       type: 'STORY_CREATED',
-      payload: 'Text 2.0',
+      payload: {
+        text: 'Text 2.0',
+      },
     },
     {
       aggregateId: 'story-id-3',
       type: 'STORY_CREATED',
-      payload: 'Text 3.0',
+      payload: {
+        text: 'Text 3.0',
+      },
     },
     {
       aggregateId: 'story-id-4',
       type: 'STORY_CREATED',
-      payload: 'Text 4.0',
+      payload: {
+        text: 'Text 4.0',
+      },
     },
     {
       aggregateId: 'story-id-5',
       type: 'STORY_CREATED',
-      payload: 'Text 5.0',
+      payload: {
+        text: 'Text 5.0',
+      },
     },
     {
       aggregateId: 'story-id-1',
       type: 'STORY_UPDATED',
-      payload: 'Text 1.1',
+      payload: {
+        text: 'Text 1.1',
+      },
     },
     {
       aggregateId: 'story-id-2',
       type: 'STORY_UPDATED',
-      payload: 'Text 2.1',
+      payload: {
+        text: 'Text 2.1',
+      },
     },
     {
       aggregateId: 'story-id-2',
       type: 'STORY_UPDATED',
-      payload: 'Text 2.2',
+      payload: {
+        text: 'Text 2.2',
+      },
     },
     {
       aggregateId: 'story-id-3',
       type: 'STORY_UPDATED',
-      payload: 'Text 3.1',
+      payload: {
+        text: 'Text 3.1',
+      },
     },
     {
       aggregateId: 'story-id-3',
       type: 'STORY_UPDATED',
-      payload: 'Text 3.2',
+      payload: {
+        text: 'Text 3.2',
+      },
     },
     {
       aggregateId: 'story-id-3',
       type: 'STORY_UPDATED',
-      payload: 'Text 3.3',
+      payload: {
+        text: 'Text 3.3',
+      },
     },
     {
       aggregateId: 'story-id-5',
       type: 'STORY_UPDATED',
-      payload: 'Text 5.1',
+      payload: {
+        text: 'Text 5.1',
+      },
     },
     {
       aggregateId: 'story-id-5',
       type: 'STORY_UPDATED',
-      payload: 'Text 5.2',
+      payload: {
+        text: 'Text 5.2',
+      },
     },
     {
       aggregateId: 'story-id-2',

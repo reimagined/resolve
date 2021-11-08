@@ -4,7 +4,7 @@ import type { Runtime, RuntimeFactoryParameters } from './types'
 import { createEventSubscriberNotification, getLog } from './utils'
 
 type NotifierRuntime = {
-  getVacantTimeInMillis: RuntimeFactoryParameters['getVacantTimeInMillis']
+  getVacantTimeInMillis: () => number
   eventStoreAdapter: Runtime['eventStoreAdapter']
   eventListeners: RuntimeFactoryParameters['eventListeners']
   invokeBuildAsync: RuntimeFactoryParameters['invokeBuildAsync']

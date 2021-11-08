@@ -36,7 +36,7 @@ Builds an application.
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../tests/resolve-scripts-sample/run.js#build)
+[mdis]:# (../../tests/resolve-scripts-sample/run.js#build)
 ```js
 import {
   build,
@@ -64,7 +64,7 @@ Runs a built application.
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../tests/resolve-scripts-sample/run.js#start)
+[mdis]:# (../../tests/resolve-scripts-sample/run.js#start)
 ```js
 import {
   ...
@@ -92,7 +92,7 @@ Runs an application in **watch** mode. (Watch application files for changes.)
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../tests/resolve-scripts-sample/run.js#watch)
+[mdis]:# (../../tests/resolve-scripts-sample/run.js#watch)
 ```js
 import {
   ...
@@ -121,7 +121,7 @@ Runs TestCafe tests.
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../tests/resolve-scripts-sample/run.js#runTestcafe)
+[mdis]:# (../../tests/resolve-scripts-sample/run.js#runTestcafe)
 ```js
 import {
   ...
@@ -131,12 +131,12 @@ import {
     ...
     switch (launchMode) {
       ...
-      case 'test:functional': {
+      case 'test:e2e': {
         const resolveConfig = merge(baseConfig, testFunctionalConfig)
         await runTestcafe({
           resolveConfig,
           functionalTestsDir: 'test/functional',
-          browser: process.argv[3]
+          browser: process.argv[3],
         })
         break
       }
@@ -154,7 +154,7 @@ Merges modules and application configs into a single object.
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../tests/resolve-scripts-sample/run.js#merge)
+[mdis]:# (../../tests/resolve-scripts-sample/run.js#merge)
 ```js
 import {
   ...
@@ -175,7 +175,7 @@ Resets an application's persistent storages and snapshots.
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../tests/resolve-scripts-sample/run.js#reset)
+[mdis]:# (../../tests/resolve-scripts-sample/run.js#reset)
 ```js
 import {
   ...
@@ -191,7 +191,7 @@ import {
           dropEventStore: true,
           dropEventSubscriber: true,
           dropReadModels: true,
-          dropSagas: true
+          dropSagas: true,
         })
         break
       }
@@ -209,7 +209,7 @@ Imports events from a file to an application's event store.
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../tests/resolve-scripts-sample/run.js#importEventStore)
+[mdis]:# (../../tests/resolve-scripts-sample/run.js#importEventStore)
 ```js
 import {
   ...
@@ -240,7 +240,7 @@ Exports events from an application's event store to a file.
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../tests/resolve-scripts-sample/run.js#exportEventStore)
+[mdis]:# (../../tests/resolve-scripts-sample/run.js#exportEventStore)
 ```js
 import {
   ...
@@ -271,7 +271,7 @@ Validates a configuration object.
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../tests/resolve-scripts-sample/run.js#validateConfig)
+[mdis]:# (../../tests/resolve-scripts-sample/run.js#validateConfig)
 ```js
 import {
   ...

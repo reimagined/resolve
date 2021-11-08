@@ -17,7 +17,7 @@ const buildInit: (
     ledgerTableNameAsId: string
     xaKey: string
     eventTypes: Array<string> | null
-    cursor: ReadModelCursor
+    inputCursor: ReadModelCursor
     readModelLedger: ReadModelLedger
   },
   ...args: Parameters<ExternalMethods['build']>
@@ -140,8 +140,9 @@ const buildEvents: (
     ledgerTableNameAsId: string
     xaKey: string
     eventTypes: Array<string> | null
-    cursor: ReadModelCursor
+    inputCursor: ReadModelCursor
     readModelLedger: ReadModelLedger
+    metricData: any
   },
   ...args: Parameters<ExternalMethods['build']>
 ) => ReturnType<ExternalMethods['build']> = async (
@@ -162,22 +163,64 @@ const buildEvents: (
     escapeStr,
     ledgerTableNameAsId,
     eventTypes,
-    cursor,
+    monitoring,
+    metricData,
+    inputCursor,
     xaKey,
   } = pool
 
   let lastSuccessEvent = null
   let lastFailedEvent = null
   let lastError = null
+  let cursor = inputCursor
 
-  const events = await eventstoreAdapter
-    .loadEvents({
-      eventTypes,
-      eventsSizeLimit: 6553600,
-      limit: 100,
-      cursor,
-    })
-    .then((result) => (result != null ? result.events : []))
+  const groupMonitoring =
+    monitoring != null
+      ? monitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ ReadModel: readModelName })
+      : null
+
+  const firstEventsLoadStartTimestamp = Date.now()
+  let eventsApplyStartTimestamp = Date.now()
+  let eventCount = 0
+  let projectionApplyTime = 0
+
+  const loadEventsWithMonitoring = (
+    cursorPromise: Promise<ReadModelCursor>,
+    limit: number,
+    initialTimestamp: number
+  ) =>
+    Promise.resolve(cursorPromise)
+      .then((cursor) =>
+        eventstoreAdapter.loadEvents({
+          eventTypes,
+          eventsSizeLimit: 65536 * limit,
+          limit,
+          cursor,
+        })
+      )
+      .then((result) => {
+        const loadDuration = Date.now() - initialTimestamp
+
+        const events = result != null ? result.events : []
+
+        if (groupMonitoring != null && events.length > 0) {
+          groupMonitoring.duration(
+            'EventLoad',
+            loadDuration / events.length,
+            events.length
+          )
+        }
+
+        return events
+      })
+
+  const events = await loadEventsWithMonitoring(
+    Promise.resolve(cursor),
+    100,
+    firstEventsLoadStartTimestamp
+  )
 
   if (events.length === 0) {
     throw new PassthroughError(false)
@@ -235,7 +278,18 @@ const buildEvents: (
         const handler = await modelInterop.acquireEventHandler(store, event)
         if (handler != null) {
           await inlineLedgerRunQuery(`SAVEPOINT E${appliedEventsCount}`, true)
-          await handler()
+
+          const projectionApplyStartTimestamp = Date.now()
+          try {
+            metricData.insideProjection = true
+            await handler()
+            eventCount++
+          } finally {
+            metricData.insideProjection = false
+          }
+
+          projectionApplyTime += Date.now() - projectionApplyStartTimestamp
+
           await inlineLedgerRunQuery(
             `RELEASE SAVEPOINT E${appliedEventsCount}`,
             true
@@ -349,6 +403,28 @@ const buildEvents: (
     }
   }
 
+  if (groupMonitoring != null && eventCount > 0) {
+    const applyDuration = Date.now() - eventsApplyStartTimestamp
+
+    groupMonitoring.rate(
+      'ReadModelFeedingRate',
+      eventCount,
+      applyDuration / 1000
+    )
+
+    groupMonitoring.duration(
+      'EventApply',
+      applyDuration / eventCount,
+      eventCount
+    )
+
+    groupMonitoring.duration(
+      'EventProjectionApply',
+      projectionApplyTime / eventCount,
+      eventCount
+    )
+  }
+
   const isBuildSuccess = lastError == null && appliedEventsCount > 0
   if (isBuildSuccess) {
     await next()
@@ -366,15 +442,60 @@ const build: ExternalMethods['build'] = async (
   buildInfo
 ) => {
   eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
+  const { ...inputMetricData } = buildInfo
+  const metricData = {
+    ...inputMetricData,
+    pureLedgerTime: 0,
+    insideProjection: false,
+  }
+
   const {
     PassthroughError,
-    inlineLedgerRunQuery,
+    inlineLedgerRunQuery: ledgerQuery,
     generateGuid,
     fullJitter,
     tablePrefix,
     escapeId,
     escapeStr,
+    monitoring,
   } = basePool
+
+  const now = Date.now()
+
+  const hasSendTime =
+    metricData.sendTime != null && metricData.sendTime.constructor === Number
+
+  const groupMonitoring =
+    monitoring != null
+      ? monitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ ReadModel: readModelName })
+      : null
+
+  if (hasSendTime) {
+    for (const innerMonitoring of [monitoring, groupMonitoring]) {
+      if (innerMonitoring != null) {
+        innerMonitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ Readmodel: readModelName })
+          .duration('EventDelivery', now - metricData.sendTime)
+      }
+    }
+  }
+
+  const inlineLedgerRunQuery: typeof ledgerQuery = Object.assign(
+    async (...args: any[]): Promise<any> => {
+      const inlineLedgerStartTimestamp = Date.now()
+      try {
+        return await (ledgerQuery as any)(...args)
+      } finally {
+        if (!metricData.insideProjection) {
+          metricData.pureLedgerTime += Date.now() - inlineLedgerStartTimestamp
+        }
+      }
+    },
+    ledgerQuery
+  )
 
   try {
     basePool.activePassthrough = true
@@ -482,8 +603,9 @@ const build: ExternalMethods['build'] = async (
     const currentPool = {
       ledgerTableNameAsId,
       readModelLedger,
+      metricData,
       eventTypes,
-      cursor,
+      inputCursor: cursor,
       xaKey,
     }
 
@@ -519,6 +641,15 @@ const build: ExternalMethods['build'] = async (
     }
   } finally {
     basePool.activePassthrough = false
+
+    for (const innerMonitoring of [monitoring, groupMonitoring]) {
+      if (innerMonitoring != null) {
+        innerMonitoring
+          .group({ Part: 'ReadModelProjection' })
+          .group({ Readmodel: readModelName })
+          .duration('Ledger', metricData.pureLedgerTime)
+      }
+    }
   }
 }
 
