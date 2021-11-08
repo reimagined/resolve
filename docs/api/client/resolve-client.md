@@ -124,7 +124,7 @@ Subscribes to View Model updates. Returns a promise that resolves to a **subscri
 
 | Argument Name       | Description                                                                     |
 | ------------------- | ------------------------------------------------------------------------------- |
-| url                 |                                                                                 |
+| url                 | A URL used to establish a WebSocket connection to a view model.                 |
 | cursor              | The data cursor used to traverse the events included into the query result set. |
 | viewModelName       | A string that specifies the name of a view model.                               |
 | aggregateIds        | A list of aggregate IDs for which to receive events.                            |
