@@ -103,27 +103,3 @@ test('should make webpack configs for cloud mode', async () => {
     normalizePaths(JSON.stringify(Array.from(nodeModulesByAssembly), null, 2))
   ).toMatchSnapshot()
 })
-
-test('should make external package.json resolver', async () => {
-  const nodeModulesByAssembly = new Map()
-
-  const webpackConfigs = await getWebpackConfigs({
-    resolveConfig: {
-      ...resolveConfig,
-      runtime: {
-        module: '@resolve-js/runtime-single-process',
-      },
-    },
-    nodeModulesByAssembly,
-  })
-
-  const externalResolver = webpackConfigs[1].externals[0]
-  externalResolver({ request: './resource' }, () => {})
-  externalResolver({ request: '/resource' }, () => {})
-  externalResolver({ request: '@org/package' }, () => {})
-  externalResolver({ request: 'package' }, () => {})
-
-  expect(
-    normalizePaths(JSON.stringify(Array.from(nodeModulesByAssembly), null, 2))
-  ).toMatchSnapshot()
-})

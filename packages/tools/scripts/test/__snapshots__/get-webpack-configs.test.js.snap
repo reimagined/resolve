@@ -1,14 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should make external package.json resolver 1`] = `
-"[
-  [
-    \\"common/local-entry/package.json\\",
-    {}
-  ]
-]"
-`;
-
 exports[`should make webpack configs for cloud mode 1`] = `
 "[
   {
@@ -459,12 +450,10 @@ exports[`should make webpack configs for cloud mode 1`] = `
       ]
     },
     \\"externals\\": [
-      null,
       [
         {
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
-            {},
             {},
             {}
           ]
@@ -475,7 +464,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
           \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
             {},
-            {},
             {}
           ]
         }
@@ -484,7 +472,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
-            {},
             {},
             {}
           ]
@@ -699,12 +686,10 @@ exports[`should make webpack configs for cloud mode 1`] = `
       ]
     },
     \\"externals\\": [
-      null,
       [
         {
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
-            {},
             {},
             {}
           ]
@@ -715,7 +700,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
           \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
             {},
-            {},
             {}
           ]
         }
@@ -724,7 +708,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
-            {},
             {},
             {}
           ]
@@ -1201,12 +1184,10 @@ exports[`should make webpack configs for local mode 1`] = `
       ]
     },
     \\"externals\\": [
-      null,
       [
         {
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
-            {},
             {},
             {}
           ]
@@ -1217,7 +1198,6 @@ exports[`should make webpack configs for local mode 1`] = `
           \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
             {},
-            {},
             {}
           ]
         }
@@ -1226,7 +1206,6 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
-            {},
             {},
             {}
           ]
@@ -1439,12 +1418,10 @@ exports[`should make webpack configs for local mode 1`] = `
       ]
     },
     \\"externals\\": [
-      null,
       [
         {
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
-            {},
             {},
             {}
           ]
@@ -1455,7 +1432,6 @@ exports[`should make webpack configs for local mode 1`] = `
           \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
             {},
-            {},
             {}
           ]
         }
@@ -1464,7 +1440,6 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
-            {},
             {},
             {}
           ]
