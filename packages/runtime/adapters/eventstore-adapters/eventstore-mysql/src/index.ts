@@ -1,6 +1,3 @@
-import MySQL from 'mysql2/promise'
-import { escape, escapeId } from 'mysql2'
-
 import createAdapter from '@resolve-js/eventstore-base'
 
 import loadEventsByCursor from './load-events-by-cursor'
@@ -26,7 +23,6 @@ import deleteSecret from './delete-secret'
 import getSecret from './get-secret'
 import setSecret from './set-secret'
 
-import connect from './connect'
 import initEvents from './init-events'
 import initSecrets from './init-secrets'
 import initFinal from './init-final'
@@ -38,12 +34,13 @@ import dropFinal from './drop-final'
 import describe from './describe'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
-import type { ConnectionDependencies, MysqlAdapterConfig } from './types'
+import type { MysqlAdapterConfig } from './types'
+
+import configure from './configure'
 
 const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {
   return createAdapter(
     {
-      connect,
       loadEventsByCursor,
       loadEventsByTimestamp,
       ensureEventSubscriber,
@@ -75,8 +72,8 @@ const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {
       setSecret,
       describe,
     },
-    { MySQL, escapeId, escape } as ConnectionDependencies,
-    options
+    options,
+    configure
   )
 }
 

@@ -15,7 +15,7 @@ const saveEvent = async (
   pool: AdapterPool,
   event: InputEvent
 ): Promise<StoredEventPointer> => {
-  const { eventsTableName, connection, database, escapeId, escape } = pool
+  const { eventsTableName, database, escapeId, escape } = pool
   try {
     const eventsTableNameAsId: string = escapeId(eventsTableName)
     const freezeTableNameAsString: string = escape(`${eventsTableName}-freeze`)
@@ -27,7 +27,7 @@ const saveEvent = async (
         : escape('null')
 
     // prettier-ignore
-    await connection.query(
+    await pool.query(
       `START TRANSACTION;
       SELECT 1 FROM \`information_schema\`.\`tables\`
       WHERE (
@@ -82,7 +82,7 @@ const saveEvent = async (
     const message = error != null && error.message != null ? error.message : ''
 
     try {
-      await connection.query('ROLLBACK;')
+      await pool.query('ROLLBACK;')
     } catch (e) {}
 
     if (errno === ER_SUBQUERY_NO_1_ROW) {

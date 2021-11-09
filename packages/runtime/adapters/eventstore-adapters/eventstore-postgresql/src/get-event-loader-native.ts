@@ -9,6 +9,7 @@ import processEventRows from './process-event-rows'
 import checkRequestTimeout from './check-request-timeout'
 import { DEFAULT_QUERY_TIMEOUT, MINIMAL_QUERY_TIMEOUT } from './constants'
 import makeKnownError from './make-known-error'
+import { isConnectionTerminatedError } from './errors'
 
 type QueriedPgCursor = {
   read(limit: number): Promise<any[]>
@@ -41,7 +42,11 @@ const getEventLoaderNative = async (
     statement_timeout: statementTimeout,
     ...pool.connectionOptions,
   })
+  let connectionTerminated = false
   client.on('error', (error) => {
+    if (isConnectionTerminatedError(error)) {
+      connectionTerminated = true
+    }
     return
   })
   let pgCursor: QueriedPgCursor
@@ -56,8 +61,12 @@ const getEventLoaderNative = async (
 
   return {
     async close() {
-      await pgCursor.close()
-      await client.end()
+      // await pgCursor.close() // may never resolve due to https://github.com/brianc/node-postgres/issues/2642
+      // client.end is enough anyway since cursor lives as long as the connection
+      // client end may still hang if connection terminated and pgcursor exists
+      if (!connectionTerminated) {
+        await client.end()
+      }
     },
     async loadEvents(limit: number) {
       try {
@@ -66,6 +75,9 @@ const getEventLoaderNative = async (
         currentCursor = result.cursor
         return result
       } catch (error) {
+        if (isConnectionTerminatedError(error)) {
+          connectionTerminated = true
+        }
         throw makeKnownError(error)
       }
     },

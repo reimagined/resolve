@@ -2,7 +2,7 @@ import { ER_NO_SUCH_TABLE, ER_SUBQUERY_NO_1_ROW } from './constants'
 import { AdapterPool } from './types'
 
 const commitIncrementalImport = async (
-  { eventsTableName, connection, database, escapeId, escape }: AdapterPool,
+  { eventsTableName, database, escapeId, escape, query }: AdapterPool,
   importId: string,
   validateAfterCommit: any
 ): Promise<void> => {
@@ -18,7 +18,7 @@ const commitIncrementalImport = async (
   const databaseNameAsString: string = escape(database)
 
   try {
-    await connection.query(`START TRANSACTION;
+    await query(`START TRANSACTION;
       SELECT 1 FROM \`information_schema\`.\`tables\`
       WHERE (
         SELECT 0 AS \`Defunct\`
@@ -134,7 +134,7 @@ const commitIncrementalImport = async (
 
     if (validateAfterCommit != null && validateAfterCommit === true) {
       const realThreadIdCounters: any = (
-        await connection.query(
+        await query(
           `SELECT \`threadId\`, MAX(\`threadCounter\`) AS \`threadCounter\`
         FROM ${eventsTableAsId}
         GROUP BY \`threadId\`
@@ -148,7 +148,7 @@ const commitIncrementalImport = async (
       }))
 
       const predictedThreadIdCounters: any = (
-        await connection.query(
+        await query(
           `SELECT \`threadId\`, \`threadCounter\` FROM ${threadsTableAsId}`
         )
       )[0].map(({ threadId, threadCounter }: any) => ({
@@ -212,7 +212,7 @@ const commitIncrementalImport = async (
     const errno = error != null && error.errno != null ? error.errno : 0
 
     try {
-      await connection.query('ROLLBACK;')
+      await query('ROLLBACK;')
     } catch (e) {}
 
     if (errno === ER_SUBQUERY_NO_1_ROW || errno === ER_NO_SUCH_TABLE) {
@@ -223,9 +223,7 @@ const commitIncrementalImport = async (
       throw error
     }
   } finally {
-    await connection.query(
-      `DROP TABLE IF EXISTS ${incrementalImportTableAsId};`
-    )
+    await query(`DROP TABLE IF EXISTS ${incrementalImportTableAsId};`)
   }
 }
 

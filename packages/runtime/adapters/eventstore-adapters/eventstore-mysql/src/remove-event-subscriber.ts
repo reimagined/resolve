@@ -7,11 +7,11 @@ const removeEventSubscriber = async (
     eventSubscriber: string
   }
 ): Promise<void> => {
-  const { subscribersTableName, connection, escapeId, escape } = pool
+  const { subscribersTableName, query, escapeId, escape } = pool
   const { applicationName, eventSubscriber } = params
   const subscribersTableNameAsId = escapeId(subscribersTableName)
 
-  await connection.query(`
+  await query(`
     DELETE FROM ${subscribersTableNameAsId}
     WHERE \`applicationName\` = ${escape(applicationName)}
     AND \`eventSubscriber\` = ${escape(eventSubscriber)}

@@ -1,16 +1,13 @@
 import type {
-  AdapterPoolConnectedProps,
-  AdapterPoolConnected,
+  AdapterBoundPool,
   StoredEvent,
   GatheredSecrets,
   SecretRecord,
 } from './types'
 import { DELETE_SECRET_EVENT_TYPE, SET_SECRET_EVENT_TYPE } from './secret-event'
 
-const gatherSecretsFromEvents = async <
-  ConnectedProps extends AdapterPoolConnectedProps
->(
-  pool: AdapterPoolConnected<ConnectedProps>,
+const gatherSecretsFromEvents = async <ConfiguredProps extends {}>(
+  pool: AdapterBoundPool<ConfiguredProps>,
   events: StoredEvent[]
 ): Promise<GatheredSecrets> => {
   if (pool.loadSecrets === undefined)
