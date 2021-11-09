@@ -369,6 +369,8 @@ module.exports = {
           'readonly',
           'readpolicy',
           'reconnection',
+          'regclass',
+          'reltuples',
           'resetter',
           'rerender',
           'realtime',

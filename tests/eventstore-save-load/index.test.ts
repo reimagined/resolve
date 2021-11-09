@@ -4,7 +4,10 @@ import {
   jestTimeout,
   makeTypedTestEvent,
   isPostgres,
+  collectPostgresStatistics,
 } from '../eventstore-test-utils'
+
+import { Client } from 'pg'
 
 import {
   threadArrayToCursor,
@@ -70,6 +73,10 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
           Math.sign(a.event.threadId - b.event.threadId)
       )
     })
+
+    if (isPostgres()) {
+      await collectPostgresStatistics('save_and_load_testing')
+    }
 
     const description = await adapter.describe()
     expect(description.eventCount).toEqual(checkCount)
