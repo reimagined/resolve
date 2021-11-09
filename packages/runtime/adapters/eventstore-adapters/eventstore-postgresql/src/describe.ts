@@ -34,12 +34,12 @@ const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
   })
 
   const rows = await executeStatement(`SELECT
-    (SELECT reltuples::bigint AS "eventCount" FROM pg_class WHERE oid = ${escape(
+    (SELECT reltuples::bigint FROM pg_class WHERE oid = ${escape(
       databaseNameAsId + '.' + eventsTableNameAsId
-    )}::regclass,
-    (SELECT reltuples::bigint AS "secretCount" FROM pg_class WHERE oid = ${escape(
+    )}::regclass) AS "eventCount",
+    (SELECT reltuples::bigint FROM pg_class WHERE oid = ${escape(
       databaseNameAsId + '.' + secretsTableNameAsId
-    )}::regclass,
+    )}::regclass) AS "secretCount",
     (SELECT COUNT(*) FROM ${databaseNameAsId}.${secretsTableNameAsId} WHERE "secret" IS NOT NULL) AS "setSecretCount",
     (SELECT COUNT(*) FROM ${databaseNameAsId}.${secretsTableNameAsId} WHERE "secret" IS NULL) AS "deletedSecretCount", 
     (SELECT "timestamp" FROM ${databaseNameAsId}.${eventsTableNameAsId} ORDER BY "timestamp" DESC LIMIT 1) AS "lastEventTimestamp",
