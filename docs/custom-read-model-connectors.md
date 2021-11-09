@@ -20,17 +20,17 @@ The code sample below demonstrates how to implement a connector that provides a 
 ```js
 import fs from 'fs'
 
-const safeUnlinkSync = filename => {
+const safeUnlinkSync = (filename) => {
   if (fs.existsSync(filename)) {
     fs.unlinkSync(filename)
   }
 }
 
-export default options => {
+const connector = (options) => {
   const prefix = String(options.prefix)
   const readModels = new Set()
-  const connect = async readModelName => {
-    fs.writeFileSync(`${prefix}${readModelName}.lock`, true, { flag: 'wx' })
+  const connect = async (readModelName) => {
+    fs.writeFileSync(`${prefix}${readModelName}.lock`, 'true', { flag: 'wx' })
     readModels.add(readModelName)
     const store = {
       get() {
@@ -38,7 +38,7 @@ export default options => {
       },
       set(value) {
         fs.writeFileSync(`${prefix}${readModelName}`, JSON.stringify(value))
-      }
+      },
     }
     return store
   }
@@ -60,7 +60,7 @@ export default options => {
     connect,
     disconnect,
     drop,
-    dispose
+    dispose,
   }
 }
 ```
@@ -109,15 +109,15 @@ The code sample below demonstrates how you can use the custom store's API in the
 [mdis]:# (../tests/custom-readmodel-sample/projection.js)
 ```js
 const projection = {
-  Init: async store => {
+  Init: async (store) => {
     await store.set(0)
   },
   INCREMENT: async (store, event) => {
-    await store.set((await store.get()) + event.payload)
+    await store.set((await store.get()) + event.payload.count)
   },
   DECREMENT: async (store, event) => {
-    await store.set((await store.get()) - event.payload)
-  }
+    await store.set((await store.get()) - event.payload.count)
+  },
 }
 
 export default projection
@@ -132,9 +132,9 @@ export default projection
 [mdis]:# (../tests/custom-readmodel-sample/resolvers.js)
 ```js
 const resolvers = {
-  read: async store => {
+  read: async (store) => {
     return await store.get()
-  }
+  },
 }
 
 export default resolvers

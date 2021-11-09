@@ -1,13 +1,12 @@
 import type {
   EventFilter,
-  AdapterPoolConnectedProps,
-  AdapterPoolConnected,
+  AdapterBoundPool,
   StoredEventBatchPointer,
 } from './types'
 import { isTimestampFilter } from './types'
 
-const loadEvents = async <ConnectedProps extends AdapterPoolConnectedProps>(
-  pool: AdapterPoolConnected<ConnectedProps>,
+const loadEvents = async <ConfiguredProps extends {}>(
+  pool: AdapterBoundPool<ConfiguredProps>,
   filter: EventFilter
 ): Promise<StoredEventBatchPointer> => {
   return isTimestampFilter(filter)

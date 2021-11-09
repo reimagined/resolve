@@ -1,10 +1,10 @@
-import type { EventThreadData } from './types'
+import type { EventThreadData, InputCursor } from './types'
 import { cursorToThreadArray, threadArrayToCursor } from './cursor-operations'
 
 //const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const getNextCursor = (
-  prevCursor: string | null,
+  prevCursor: InputCursor,
   events: EventThreadData[]
 ): string => {
   const vectorConditions = cursorToThreadArray(prevCursor)

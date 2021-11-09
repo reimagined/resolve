@@ -593,7 +593,8 @@ The `options` configuration object has the following structure:
 {
   importMode, // Specifies whether to use *static* or *dynamic* imports between the application's modules.
   host, // (single-process only) Specifies the network host on which to listen for connections. Defaults to `'0.0.0.0'`.
-  port // (single-process only) Specifies the server application's port.
+  port, // (single-process only) Specifies the server application's port.
+  emulateWorkerLifetimeLimit, // (single-process only) Used for framework testing. If assigned a numeric value, emulates an AWS Lambda worker's lifetime on a local machine.
 }
 ```
 
@@ -637,9 +638,9 @@ const appConfig = {
     {
       name: 'UserConfirmation',
       source: 'saga.js',
-      connectorName: 'default'
-    }
-  ]
+      connectorName: 'default',
+    },
+  ],
 }
 ```
 
@@ -663,9 +664,6 @@ A scheduler adapter configuration object has the following fields:
 
 ##### Example:
 
-<!-- prettier-ignore-start -->
-
-[mdis]:# (../tests/saga-sample/config.js#schedulers-config)
 ```js
 schedulers: {
   scheduler: {
@@ -677,8 +675,6 @@ schedulers: {
   }
 },
 ```
-
-<!-- prettier-ignore-end -->
 
 ### serverImports
 

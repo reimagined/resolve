@@ -1097,3 +1097,15 @@ describe('Internal metrics', () => {
     )
   })
 })
+
+describe('Health Check', () => {
+  test('returns isAlive true for all read models', async () => {
+    const failedReadModels = ['init-failed', 'monitoring']
+    const response = await fetch(`${getTargetURL()}/api/health-check`)
+
+    for (const item of await response.json()) {
+      const expectedIsAlive = !failedReadModels.includes(item.readModelName)
+      expect(item.isAlive).toEqual(expectedIsAlive)
+    }
+  })
+})
