@@ -1,4 +1,4 @@
-import STS from 'aws-sdk/clients/sts'
+import pureRequire from '../common/utils/pure-require'
 import debugLevels from '@resolve-js/debug-levels'
 import { invokeFunction } from 'resolve-cloud-common/lambda'
 
@@ -9,7 +9,12 @@ const start = async (entry) => {
   try {
     log.verbose(`entry: ${JSON.stringify(entry)}`)
     log.debug(`starting new execution ${entry.taskId}`)
-
+    let STS
+    try {
+      STS = pureRequire('aws-sdk/clients/sts')
+    } catch (error) {
+      console.log('IMPORT ERROR', error)
+    }
     const { Arn } = await new STS().getCallerIdentity().promise()
 
     await invokeFunction({
@@ -44,6 +49,12 @@ const stopAll = async () => {
   const log = getLog(`stop all`)
 
   log.debug('stopping all executions')
+  let STS
+  try {
+    STS = pureRequire('aws-sdk/clients/sts')
+  } catch (error) {
+    console.log('IMPORT ERROR', error)
+  }
 
   const { Arn } = await new STS().getCallerIdentity().promise()
 

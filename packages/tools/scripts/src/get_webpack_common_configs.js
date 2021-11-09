@@ -2,9 +2,12 @@ import path from 'path'
 import EsmWebpackPlugin from '@purtuga/esm-webpack-plugin'
 import nodeExternals from 'webpack-node-externals'
 import BabelPluginTransformImportInline from 'babel-plugin-transform-import-inline'
+import escapeRegExp from 'lodash.escaperegexp'
 
 import attachWebpackConfigsClientEntries from './attach_webpack_configs_client_entries'
 import getModulesDirs from './get_modules_dirs'
+
+const resolvePackages = JSON.parse(process.env.__RESOLVE_PACKAGES__ ?? '')
 
 const getWebpackCommonConfigs = ({
   resolveConfig,
@@ -27,8 +30,9 @@ const getWebpackCommonConfigs = ({
         .split('/')
         .slice(0, request[0] === '@' ? 2 : 1)
         .join('/')
-
-      nodeModulesByAssembly.get(packageJson).add(packageName)
+      if(resolvePackages.indexOf(packageName) < 0) {
+        nodeModulesByAssembly.get(packageJson).add(packageName)
+      }
     }
     callback()
   }
@@ -45,6 +49,7 @@ const getWebpackCommonConfigs = ({
     },
     resolve: {
       modules: getModulesDirs(),
+      mainFields: ['main', 'module'],
       alias,
     },
     output: {
@@ -121,8 +126,9 @@ const getWebpackCommonConfigs = ({
         nodeExternals({
           modulesDir,
           importType: (moduleName) => `((() => {
+              const resolvePackages = ${JSON.stringify(resolvePackages)}
               const path = require('path')
-              const requireDirs = ['', '@resolve-js/runtime/node_modules/']
+              const requireDirs = ['', ...resolvePackages.map(pkg => \`\${pkg}/node_modules/\`)]
               let modulePath = null
               const moduleName = ${JSON.stringify(moduleName)}
               for(const dir of requireDirs) {
@@ -136,7 +142,7 @@ const getWebpackCommonConfigs = ({
               }
               return require(modulePath)
             })())`,
-          allowlist: [/@resolve-js\/runtime/],
+          allowlist: resolvePackages.map(pkg => new RegExp(escapeRegExp(pkg))),
         })
       ),
     ],

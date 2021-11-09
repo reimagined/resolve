@@ -1,4 +1,4 @@
-import CloudWatch from 'aws-sdk/clients/cloudwatch'
+import pureRequire from '../common/utils/pure-require'
 import debugLevels from '@resolve-js/debug-levels'
 import { retry } from 'resolve-cloud-common/utils'
 
@@ -286,6 +286,12 @@ const monitoringPublish = async (log, monitoringData) => {
     log.verbose(JSON.stringify(monitoringData.metricData))
 
     const promises = []
+    let CloudWatch
+    try {
+      CloudWatch = pureRequire('aws-sdk/clients/cloudwatch')
+    } catch (error) {
+      console.log('IMPORT ERROR', error)
+    }
 
     const cw = new CloudWatch()
     const putMetricData = retry(cw, cw.putMetricData)

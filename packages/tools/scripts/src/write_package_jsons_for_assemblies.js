@@ -2,6 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import semver from 'semver'
 
+const resolvePackages = JSON.parse(process.env.__RESOLVE_PACKAGES__ ?? '')
+
 const writePackageJsonsForAssemblies = (
   distDir,
   nodeModulesByAssembly,
@@ -11,7 +13,7 @@ const writePackageJsonsForAssemblies = (
     fs.readFileSync(path.resolve(process.cwd(), 'package.json'))
   )
 
-  const resolveRuntimePackageJson = require('@resolve-js/runtime/package.json')
+  const resolvePackagesOwnPackageJsons = resolvePackages.map(pkg => require(`${pkg}/package.json`))
 
   for (const [
     packageJsonPath,
@@ -63,18 +65,22 @@ const writePackageJsonsForAssemblies = (
       dependencies: Array.from(resultNodeModules).reduce((acc, val) => {
         if (applicationPackageJson.dependencies.hasOwnProperty(val)) {
           acc[val] = applicationPackageJson.dependencies[val]
-        } else if (
-          resolveRuntimePackageJson.dependencies.hasOwnProperty(val) &&
-          nodeModules.has(val)
-        ) {
-          acc[val] =
-            val.startsWith('@resolve-js/') && frameworkVersion != null
-              ? frameworkVersion
-              : resolveRuntimePackageJson.dependencies[val]
+        } else if (nodeModules.has(val)) {
+          for(const ownPackageJson of resolvePackagesOwnPackageJsons) {
+            if(ownPackageJson.dependencies?.hasOwnProperty(val)) {
+              acc[val] =
+              val.startsWith('@resolve-js/') && frameworkVersion != null
+                ? frameworkVersion
+                : ownPackageJson.dependencies[val]
+              break
+            }
+          }
         }
 
         return acc
-      }, {}),
+      }, {
+        "@resolve-js/runtime": frameworkVersion
+      }),
     }
 
     fs.writeFileSync(

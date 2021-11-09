@@ -1,14 +1,20 @@
-import Lambda from 'aws-sdk/clients/lambda'
 import fs from 'fs'
 import path from 'path'
 import request from 'request'
 import crypto from 'crypto'
 import mime from 'mime-types'
+import pureRequire from '../common/utils/pure-require'
 
 const createPresignedPut = async (
   { uploaderArn, userId, encryptedUserId },
   dir
 ) => {
+  let Lambda
+  try {
+    Lambda = pureRequire('aws-sdk/clients/lambda')
+  } catch (error) {
+    console.log('IMPORT ERROR', error)
+  }
   const lambda = new Lambda()
 
   const result = await lambda
@@ -62,6 +68,12 @@ const createPresignedPost = async (
   { uploaderArn, userId, encryptedUserId },
   dir
 ) => {
+  let Lambda
+  try {
+    Lambda = pureRequire('aws-sdk/clients/lambda')
+  } catch (error) {
+    console.log('IMPORT ERROR', error)
+  }
   const lambda = new Lambda()
 
   const { FunctionError, Payload: ResponsePayload } = await lambda

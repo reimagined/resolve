@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 
 import getMonorepoNodeModules from './get_monorepo_node_modules'
+const resolvePackages = JSON.parse(process.env.__RESOLVE_PACKAGES__ ?? '')
 
 const getPeerDependencies = () => {
   const peerDependencies = new Set()
@@ -28,7 +29,9 @@ const getPeerDependencies = () => {
         for (const peerDependency of Object.keys(
           packageJson.peerDependencies
         )) {
-          peerDependencies.add(peerDependency)
+          if(resolvePackages.indexOf(peerDependency) < 0) {
+            peerDependencies.add(peerDependency)
+          }
         }
       }
     } catch (error) {}

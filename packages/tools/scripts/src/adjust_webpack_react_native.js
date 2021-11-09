@@ -4,6 +4,7 @@ import nodeExternals from 'webpack-node-externals'
 import getModulesDirs from './get_modules_dirs'
 
 const isString = (val) => val != null && val.constructor === String
+const resolvePackages = JSON.parse(process.env.__RESOLVE_PACKAGES__ ?? '')
 
 const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
   webpackConfigs,
@@ -92,8 +93,9 @@ const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
       nodeExternals({
         modulesDir,
         importType: (moduleName) => `((() => {
+        const resolvePackages = ${JSON.stringify(resolvePackages)}
         const path = require('path')
-        const requireDirs = ['', '@resolve-js/runtime/node_modules/']
+        const requireDirs = ['', ...resolvePackages.map(pkg => \`\${pkg}/node_modules/\`)]
         let modulePath = null
         const moduleName = ${JSON.stringify(moduleName)}
         for(const dir of requireDirs) {

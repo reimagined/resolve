@@ -1,4 +1,4 @@
-import CloudWatch from 'aws-sdk/clients/cloudwatch'
+import pureRequire from '../common/utils/pure-require'
 
 const kindByEvent = (event) => {
   const { part, path = '' } = event
@@ -25,6 +25,12 @@ export const putDurationMetrics = async (
     lambdaContext &&
     typeof lambdaContext.getVacantTimeInMillis === 'function'
   ) {
+    let CloudWatch
+    try {
+      CloudWatch = pureRequire('aws-sdk/clients/cloudwatch')
+    } catch (error) {
+      console.log('IMPORT ERROR', error)
+    }
     const cloudWatch = new CloudWatch()
     const coldStartDuration = 15 * 60 * 1000 - lambdaRemainingTimeStart
     const duration =
