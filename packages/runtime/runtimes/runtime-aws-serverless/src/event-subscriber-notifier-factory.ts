@@ -2,9 +2,9 @@ import type { EventSubscriberNotifier } from '@resolve-js/runtime-base'
 import {
   createEventSubscriberNotification,
   getLog,
+  pureRequire,
 } from '@resolve-js/runtime-base'
 import { EventSubscriberInterface } from './types'
-import pureRequire from './pure-require'
 
 type NotifierRuntime = {
   //TODO: types
@@ -263,7 +263,9 @@ export const eventSubscriberNotifierFactory = async (
         try {
           let createEventSourceMapping: any
           try {
-            createEventSourceMapping = pureRequire('resolve-cloud-common/lambda')
+            createEventSourceMapping = pureRequire(
+              'resolve-cloud-common/lambda'
+            )
           } catch {}
 
           void ({ UUID } = await createEventSourceMapping({
@@ -292,10 +294,10 @@ export const eventSubscriberNotifierFactory = async (
       try {
         while (true) {
           try {
-          let getEventSourceMapping: any
-          try {
-            getEventSourceMapping = pureRequire('resolve-cloud-common/lambda')
-          } catch {}
+            let getEventSourceMapping: any
+            try {
+              getEventSourceMapping = pureRequire('resolve-cloud-common/lambda')
+            } catch {}
 
             const { State } = await getEventSourceMapping({
               Region: region,
@@ -371,7 +373,9 @@ export const eventSubscriberNotifierFactory = async (
           try {
             let deleteEventSourceMapping: any
             try {
-              deleteEventSourceMapping = pureRequire('resolve-cloud-common/lambda')
+              deleteEventSourceMapping = pureRequire(
+                'resolve-cloud-common/lambda'
+              )
             } catch {}
 
             await deleteEventSourceMapping({
@@ -401,10 +405,10 @@ export const eventSubscriberNotifierFactory = async (
       try {
         while (true) {
           try {
-          let getEventSourceMapping: any
-          try {
-            getEventSourceMapping = pureRequire('resolve-cloud-common/lambda')
-          } catch {}
+            let getEventSourceMapping: any
+            try {
+              getEventSourceMapping = pureRequire('resolve-cloud-common/lambda')
+            } catch {}
             await getEventSourceMapping({ Region: region, UUID })
             const error = new Error('ResourceAlreadyExists')
             ;(error as any).code = 'ResourceAlreadyExists'
@@ -431,10 +435,10 @@ export const eventSubscriberNotifierFactory = async (
       try {
         while (true) {
           try {
-          let deleteSqsQueue: any
-          try {
-            deleteSqsQueue = pureRequire('resolve-cloud-common/sqs')
-          } catch {}
+            let deleteSqsQueue: any
+            try {
+              deleteSqsQueue = pureRequire('resolve-cloud-common/sqs')
+            } catch {}
             await deleteSqsQueue({
               Region: region,
               QueueName: `${userId}-${eventSubscriberScope}-${name}`,

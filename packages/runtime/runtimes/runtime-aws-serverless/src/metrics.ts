@@ -1,4 +1,4 @@
-import pureRequire from './pure-require'
+import { pureRequire } from '@resolve-js/runtime-base'
 
 const kindByEvent = (event: { part: string; path?: string }) => {
   const { part, path = '' } = event

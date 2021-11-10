@@ -1,6 +1,4 @@
-import { getLog } from '@resolve-js/runtime-base'
-import pureRequire from './pure-require'
-
+import { getLog, pureRequire } from '@resolve-js/runtime-base'
 import type { ReactiveEventDispatcher } from '@resolve-js/runtime-base'
 
 export const sendReactiveEvent: ReactiveEventDispatcher = async (event) => {

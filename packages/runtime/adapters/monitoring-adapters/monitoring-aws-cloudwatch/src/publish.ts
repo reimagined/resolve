@@ -1,5 +1,5 @@
 import { LeveledDebugger } from '@resolve-js/debug-levels'
-import pureRequire from './pure-require'
+import { pureRequire } from '@resolve-js/runtime-base'
 
 import type {
   MonitoringDimension,

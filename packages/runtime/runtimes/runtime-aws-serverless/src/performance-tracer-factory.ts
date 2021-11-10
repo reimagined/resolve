@@ -1,5 +1,5 @@
 import type { PerformanceTracer } from '@resolve-js/core'
-import pureRequire from './pure-require'
+import { pureRequire } from '@resolve-js/runtime-base'
 
 export const performanceTracerFactory = (): PerformanceTracer => {
   let AWSXray: any
@@ -7,20 +7,20 @@ export const performanceTracerFactory = (): PerformanceTracer => {
     AWSXray = pureRequire('aws-xray-sdk-core')
   } catch {}
 
-  let segment: any = process.env.TRACE ? (AWSXray?.getSegment() ?? null) : null
+  let segment: any = process.env.TRACE ? AWSXray?.getSegment() ?? null : null
   let traceId = process.env._X_AMZN_TRACE_ID
 
   return {
     getSegment: () => {
       if (traceId !== process.env._X_AMZN_TRACE_ID) {
         traceId = process.env._X_AMZN_TRACE_ID
-        segment = process.env.TRACE ? (AWSXray?.getSegment() ?? null) : null
+        segment = process.env.TRACE ? AWSXray?.getSegment() ?? null : null
       }
 
       return {
         addNewSubsegment: (subsegmentName: string) => {
           const subsegment = process.env.TRACE
-            ? (segment?.addNewSubsegment(subsegmentName) ?? null)
+            ? segment?.addNewSubsegment(subsegmentName) ?? null
             : null
           const prevSegment = segment
           segment = subsegment

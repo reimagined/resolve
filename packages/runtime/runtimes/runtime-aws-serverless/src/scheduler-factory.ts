@@ -1,5 +1,4 @@
-import { getLog as getBaseLog } from '@resolve-js/runtime-base'
-import pureRequire from './pure-require'
+import { getLog as getBaseLog, pureRequire } from '@resolve-js/runtime-base'
 
 import type {
   SchedulerEntry,
@@ -19,7 +18,7 @@ const start = async (entry: SchedulerEntry) => {
     try {
       STS = pureRequire('aws-sdk/clients/sts')
       invokeFunction = pureRequire('resolve-cloud-common/lambda')
-    } catch{}
+    } catch {}
 
     const { Arn } = await new STS().getCallerIdentity().promise()
 
@@ -61,7 +60,7 @@ const stopAll = async () => {
   try {
     STS = pureRequire('aws-sdk/clients/sts')
     invokeFunction = pureRequire('resolve-cloud-common/lambda')
-  } catch{}
+  } catch {}
 
   const { Arn } = await new STS().getCallerIdentity().promise()
 

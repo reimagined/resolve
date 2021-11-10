@@ -5,7 +5,7 @@ import crypto from 'crypto'
 import mime from 'mime-types'
 
 import type { Uploader, UploaderPool } from '@resolve-js/runtime-base'
-import pureRequire from './pure-require'
+import { pureRequire } from '@resolve-js/runtime-base'
 
 export type UploaderPoolCloud = UploaderPool & {
   uploaderArn: string

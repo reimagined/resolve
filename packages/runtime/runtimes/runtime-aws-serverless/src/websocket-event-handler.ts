@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { getLog } from '@resolve-js/runtime-base'
-import pureRequire from './pure-require'
+import { getLog, pureRequire } from '@resolve-js/runtime-base'
 
 import type { Adapter as EventStoreAdapter } from '@resolve-js/eventstore-base'
 import type { WorkerResult } from './types'
