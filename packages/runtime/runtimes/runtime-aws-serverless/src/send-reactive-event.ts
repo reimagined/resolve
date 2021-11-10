@@ -1,17 +1,23 @@
 import { getLog } from '@resolve-js/runtime-base'
-import {
-  escapeId,
-  escapeStr,
-  executeStatement,
-} from 'resolve-cloud-common/postgres'
-import { invokeFunction } from 'resolve-cloud-common/lambda'
-import { errorBoundary } from 'resolve-cloud-common/utils'
+import pureRequire from './pure-require'
 
 import type { ReactiveEventDispatcher } from '@resolve-js/runtime-base'
 
 export const sendReactiveEvent: ReactiveEventDispatcher = async (event) => {
   const { aggregateId, type } = event
   const log = getLog(`sendReactiveEvent:${event.type}`)
+  let escapeId: any
+  let escapeStr: any
+  let executeStatement: any
+  let errorBoundary: any
+  let invokeFunction: any
+  try {
+    escapeId = pureRequire('resolve-cloud-common/postgres')
+    escapeStr = pureRequire('resolve-cloud-common/postgres')
+    executeStatement = pureRequire('resolve-cloud-common/postgres')
+    errorBoundary = pureRequire('resolve-cloud-common/utils')
+    invokeFunction = pureRequire('resolve-cloud-common/lambda')
+  } catch {}
   const databaseNameAsId = escapeId(
     process.env.RESOLVE_EVENT_STORE_DATABASE_NAME as string
   )
@@ -44,7 +50,7 @@ export const sendReactiveEvent: ReactiveEventDispatcher = async (event) => {
   const errors: any[] = []
 
   await Promise.all(
-    connectionIdsResult.map(({ connectionId }) =>
+    connectionIdsResult.map(({ connectionId }: { connectionId: string }) =>
       invokeFunction({
         Region: process.env.AWS_REGION as string,
         FunctionName: process.env.RESOLVE_WEBSOCKET_LAMBDA_ARN as string,

@@ -1,9 +1,10 @@
 import type { PerformanceTracer } from '@resolve-js/core'
+import pureRequire from './pure-require'
 
 export const performanceTracerFactory = (): PerformanceTracer => {
   let AWSXray: any
   try {
-    AWSXray = module['require'].bind(module)('aws-xray-sdk-core')
+    AWSXray = pureRequire('aws-xray-sdk-core')
   } catch {}
 
   let segment: any = process.env.TRACE ? (AWSXray?.getSegment() ?? null) : null

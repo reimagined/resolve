@@ -1,5 +1,5 @@
 import { LeveledDebugger } from '@resolve-js/debug-levels'
-import { retry } from 'resolve-cloud-common/utils'
+import pureRequire from './pure-require'
 
 import type {
   MonitoringDimension,
@@ -109,8 +109,10 @@ export const monitoringPublish = async (
   try {
     const promises = []
     let CloudWatch: any
+    let retry: any
     try {
-      CloudWatch = module['require'].bind(module)('aws-sdk/clients/cloudwatch')  
+      CloudWatch = pureRequire('aws-sdk/clients/cloudwatch')
+      retry = pureRequire('resolve-cloud-common/utils')
     } catch {}
 
     const cw = new CloudWatch()

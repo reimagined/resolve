@@ -1,3 +1,5 @@
+import pureRequire from './pure-require'
+
 const kindByEvent = (event: { part: string; path?: string }) => {
   const { part, path = '' } = event
   if (part === 'bootstrap') {
@@ -25,7 +27,7 @@ export const putDurationMetrics = async (
   ) {
     let CloudWatch: any
     try {
-      CloudWatch = module['require'].bind(module)('aws-sdk/clients/cloudwatch')
+      CloudWatch = pureRequire('aws-sdk/clients/cloudwatch')
     } catch {}
     const cloudWatch = new CloudWatch()
     const coldStartDuration = 15 * 60 * 1000 - lambdaRemainingTimeStart

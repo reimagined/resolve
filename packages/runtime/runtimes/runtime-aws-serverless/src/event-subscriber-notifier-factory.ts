@@ -3,22 +3,8 @@ import {
   createEventSubscriberNotification,
   getLog,
 } from '@resolve-js/runtime-base'
-import { getAccountIdFromLambdaContext } from 'resolve-cloud-common/utils'
-import {
-  createEventSourceMapping,
-  deleteEventSourceMapping,
-  getEventSourceMapping,
-  getFunctionTags,
-  invokeFunction,
-  setFunctionTags,
-} from 'resolve-cloud-common/lambda'
-import {
-  deleteSqsQueue,
-  ensureSqsQueue,
-  sendMessage,
-} from 'resolve-cloud-common/sqs'
-import { getCallerIdentity } from 'resolve-cloud-common/sts'
 import { EventSubscriberInterface } from './types'
+import pureRequire from './pure-require'
 
 type NotifierRuntime = {
   //TODO: types
@@ -94,6 +80,10 @@ export const eventSubscriberNotifierFactory = async (
   params: EventSubscriberNotifierFactoryParameters
 ): Promise<EventSubscriberInterface> => {
   const { lambdaContext, eventSubscriberScope } = params
+  let getAccountIdFromLambdaContext: any
+  try {
+    getAccountIdFromLambdaContext = pureRequire('resolve-cloud-common/utils')
+  } catch {}
 
   const accountId = getAccountIdFromLambdaContext(lambdaContext)
   const { functionName } = lambdaContext
@@ -110,6 +100,10 @@ export const eventSubscriberNotifierFactory = async (
   ) => {
     const log = getNotifierLog(`invokeLambdaAsync`)
     log.debug(`invoking lambda as event subscriber: ${destination}`)
+    let invokeFunction: any
+    try {
+      invokeFunction = pureRequire('resolve-cloud-common/lambda')
+    } catch {}
     await invokeFunction({
       Region: region,
       FunctionName: destination,
@@ -126,6 +120,10 @@ export const eventSubscriberNotifierFactory = async (
     const log = getNotifierLog(`sendSqsMessage`)
     log.debug(`sending SQS message to: ${destination}`)
     const queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${destination}`
+    let sendMessage: any
+    try {
+      sendMessage = pureRequire('resolve-cloud-common/sqs')
+    } catch {}
     await sendMessage({
       Region: region,
       QueueUrl: queueUrl,
@@ -161,9 +159,13 @@ export const eventSubscriberNotifierFactory = async (
     } else {
       let STS: any
       try {
-        STS = module['require'].bind(module)('aws-sdk/clients/sts')
+        STS = pureRequire('aws-sdk/clients/sts')
       } catch {}
       const { Arn } = await new STS().getCallerIdentity().promise()
+      let invokeFunction: any
+      try {
+        invokeFunction = pureRequire('resolve-cloud-common/lambda')
+      } catch {}
       await invokeFunction({
         Region: process.env.AWS_REGION as string,
         FunctionName: process.env.RESOLVE_SCHEDULER_LAMBDA_ARN as string,
@@ -199,6 +201,10 @@ export const eventSubscriberNotifierFactory = async (
     let roleArn: string | null | undefined = null
     let UUID = null
     try {
+      let getCallerIdentity: any
+      try {
+        getCallerIdentity = pureRequire('resolve-cloud-common/sts')
+      } catch {}
       roleArn = (await getCallerIdentity({ Region: region })).Arn
     } catch (err) {
       errors.push(err)
@@ -207,6 +213,10 @@ export const eventSubscriberNotifierFactory = async (
     try {
       while (true) {
         try {
+          let ensureSqsQueue: any
+          try {
+            ensureSqsQueue = pureRequire('resolve-cloud-common/sqs')
+          } catch {}
           await ensureSqsQueue({
             QueueName: `${userId}-${eventSubscriberScope}-${name}`,
             Region: region,
@@ -251,6 +261,11 @@ export const eventSubscriberNotifierFactory = async (
     try {
       while (true) {
         try {
+          let createEventSourceMapping: any
+          try {
+            createEventSourceMapping = pureRequire('resolve-cloud-common/lambda')
+          } catch {}
+
           void ({ UUID } = await createEventSourceMapping({
             Region: region,
             QueueName: `${userId}-${eventSubscriberScope}-${name}`,
@@ -277,6 +292,11 @@ export const eventSubscriberNotifierFactory = async (
       try {
         while (true) {
           try {
+          let getEventSourceMapping: any
+          try {
+            getEventSourceMapping = pureRequire('resolve-cloud-common/lambda')
+          } catch {}
+
             const { State } = await getEventSourceMapping({
               Region: region,
               UUID,
@@ -296,6 +316,10 @@ export const eventSubscriberNotifierFactory = async (
       }
 
       try {
+        let setFunctionTags: any
+        try {
+          setFunctionTags = pureRequire('resolve-cloud-common/lambda')
+        } catch {}
         await setFunctionTags({
           Region: region,
           FunctionName: functionArn,
@@ -327,6 +351,10 @@ export const eventSubscriberNotifierFactory = async (
     let queueUrl: string | null = null
 
     try {
+      let getFunctionTags: any
+      try {
+        getFunctionTags = pureRequire('resolve-cloud-common/lambda')
+      } catch {}
       functionTags = await getFunctionTags({
         Region: region,
         FunctionName: functionArn,
@@ -341,6 +369,11 @@ export const eventSubscriberNotifierFactory = async (
       try {
         while (true) {
           try {
+            let deleteEventSourceMapping: any
+            try {
+              deleteEventSourceMapping = pureRequire('resolve-cloud-common/lambda')
+            } catch {}
+
             await deleteEventSourceMapping({
               Region: region,
               UUID,
@@ -368,6 +401,10 @@ export const eventSubscriberNotifierFactory = async (
       try {
         while (true) {
           try {
+          let getEventSourceMapping: any
+          try {
+            getEventSourceMapping = pureRequire('resolve-cloud-common/lambda')
+          } catch {}
             await getEventSourceMapping({ Region: region, UUID })
             const error = new Error('ResourceAlreadyExists')
             ;(error as any).code = 'ResourceAlreadyExists'
@@ -394,6 +431,10 @@ export const eventSubscriberNotifierFactory = async (
       try {
         while (true) {
           try {
+          let deleteSqsQueue: any
+          try {
+            deleteSqsQueue = pureRequire('resolve-cloud-common/sqs')
+          } catch {}
             await deleteSqsQueue({
               Region: region,
               QueueName: `${userId}-${eventSubscriberScope}-${name}`,

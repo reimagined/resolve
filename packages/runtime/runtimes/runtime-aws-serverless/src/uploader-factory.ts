@@ -5,6 +5,7 @@ import crypto from 'crypto'
 import mime from 'mime-types'
 
 import type { Uploader, UploaderPool } from '@resolve-js/runtime-base'
+import pureRequire from './pure-require'
 
 export type UploaderPoolCloud = UploaderPool & {
   uploaderArn: string
@@ -27,7 +28,7 @@ const createPreSignedPut = async (
 ) => {
   let Lambda: any
   try {
-    Lambda = module['require'].bind(module)('aws-sdk/clients/lambda')
+    Lambda = pureRequire('aws-sdk/clients/lambda')
   } catch {}
   const lambda = new Lambda()
 
@@ -88,7 +89,7 @@ const createPresignedPost = async (
 ) => {
   let Lambda: any
   try {
-    Lambda = module['require'].bind(module)('aws-sdk/clients/lambda')
+    Lambda = pureRequire('aws-sdk/clients/lambda')
   } catch {}
   const lambda = new Lambda()
 

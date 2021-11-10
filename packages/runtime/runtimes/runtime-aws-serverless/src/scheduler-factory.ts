@@ -1,5 +1,5 @@
 import { getLog as getBaseLog } from '@resolve-js/runtime-base'
-import { invokeFunction } from 'resolve-cloud-common/lambda'
+import pureRequire from './pure-require'
 
 import type {
   SchedulerEntry,
@@ -15,8 +15,10 @@ const start = async (entry: SchedulerEntry) => {
     log.verbose(`entry: ${JSON.stringify(entry)}`)
     log.debug(`starting new execution ${entry.taskId}`)
     let STS: any
+    let invokeFunction: any
     try {
-      STS = module['require'].bind(module)('aws-sdk/clients/sts')
+      STS = pureRequire('aws-sdk/clients/sts')
+      invokeFunction = pureRequire('resolve-cloud-common/lambda')
     } catch{}
 
     const { Arn } = await new STS().getCallerIdentity().promise()
@@ -54,7 +56,12 @@ const stopAll = async () => {
 
   log.debug('stopping all executions')
 
-  const STS = module['require'].bind(module)('aws-sdk/clients/sts')
+  let STS: any
+  let invokeFunction: any
+  try {
+    STS = pureRequire('aws-sdk/clients/sts')
+    invokeFunction = pureRequire('resolve-cloud-common/lambda')
+  } catch{}
 
   const { Arn } = await new STS().getCallerIdentity().promise()
 
