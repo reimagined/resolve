@@ -23,6 +23,7 @@ const createAdapter = <
     splitNestedPath,
     checkEventsContinuity,
     withPerformanceTracer,
+    wrapIsConditionUnsupportedFormat,
     wrapWithCloneArgs,
     wrapConnect,
     wrapDisconnect,
@@ -115,6 +116,7 @@ const createAdapter = <
   const adapter: AdapterApi<AdapterPool> = {
     connect: wrapConnect(
       pool,
+      wrapIsConditionUnsupportedFormat,
       wrapWithCloneArgs,
       connect,
       storeApi,
