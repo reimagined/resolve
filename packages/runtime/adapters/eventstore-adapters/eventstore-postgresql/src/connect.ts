@@ -1,9 +1,10 @@
 import { getLog } from './get-log'
 import type { AdapterPool } from './types'
 import makePostgresClient from './make-postgres-client'
-import makeKnownError from './make-known-error'
 
-const connect = async (pool: AdapterPool): Promise<void> => {
+const connect = async (
+  pool: AdapterPool
+): Promise<ReturnType<typeof makePostgresClient>> => {
   const log = getLog('connect')
   log.debug('configuring postgres client')
 
@@ -18,13 +19,10 @@ const connect = async (pool: AdapterPool): Promise<void> => {
 
   const connection = makePostgresClient(pool)
 
-  try {
-    await connection.connect()
-    pool.connection = connection
-  } catch (error) {
-    throw makeKnownError(error)
-  }
+  await connection.connect()
+  pool.connection = connection
   log.debug('connection to postgres database established')
+  return pool.connection
 }
 
 export default connect

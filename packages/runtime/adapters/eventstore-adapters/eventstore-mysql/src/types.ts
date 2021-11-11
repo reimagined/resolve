@@ -11,9 +11,6 @@ export type MySQLConnection = {
   query: (sql: string) => Promise<Array<Array<any>>>
   end: () => Promise<never>
 }
-type MySQLLib = {
-  createConnection: (options: any) => MySQLConnection
-}
 
 export type ConfiguredProps = AdapterTableNamesProps & {
   database: string
