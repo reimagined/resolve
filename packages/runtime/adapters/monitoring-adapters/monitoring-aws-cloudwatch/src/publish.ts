@@ -111,7 +111,7 @@ export const monitoringPublish = async (
     let CloudWatch: any
     let retry: any
     try {
-      void ({ CloudWatch } = pureRequire('aws-sdk/clients/cloudwatch'))
+      void ({ default: CloudWatch } = pureRequire('aws-sdk/clients/cloudwatch'))
       void ({ retry } = pureRequire('resolve-cloud-common/utils'))
     } catch {}
 

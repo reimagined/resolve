@@ -76,7 +76,9 @@ export const handleWebsocketEvent = async (
         void ({ executeStatement } = pureRequire(
           'resolve-cloud-common/postgres'
         ))
-        void ({ escapeStr } = pureRequire('resolve-cloud-common/postgres'))
+        void ({ escapeStr } = pureRequire(
+          'resolve-cloud-common/postgres'
+        ))
       } catch {}
       await executeStatement({
         Region: region,
@@ -106,7 +108,9 @@ export const handleWebsocketEvent = async (
             void ({ executeStatement } = pureRequire(
               'resolve-cloud-common/postgres'
             ))
-            void ({ escapeStr } = pureRequire('resolve-cloud-common/postgres'))
+            void ({ escapeStr } = pureRequire(
+              'resolve-cloud-common/postgres'
+            ))
           } catch {}
           const connectionIdResult = await executeStatement({
             Region: region,
@@ -169,7 +173,9 @@ export const handleWebsocketEvent = async (
         void ({ executeStatement } = pureRequire(
           'resolve-cloud-common/postgres'
         ))
-        void ({ escapeStr } = pureRequire('resolve-cloud-common/postgres'))
+        void ({ escapeStr } = pureRequire(
+          'resolve-cloud-common/postgres'
+        ))
       } catch {}
       await executeStatement({
         Region: region,
