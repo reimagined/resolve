@@ -1,44 +1,16 @@
 import { getLog } from './get-log'
-import type {
-  ConnectionDependencies,
-  MysqlAdapterPoolConnectedProps,
-  AdapterPoolPrimal,
-  MysqlAdapterConfig,
-} from './types'
+import type { AdapterPool } from './types'
+import MySQL from 'mysql2/promise'
 
-const connect = async (
-  pool: AdapterPoolPrimal,
-  { MySQL, escapeId, escape }: ConnectionDependencies,
-  config: MysqlAdapterConfig
-): Promise<void> => {
+const connect = async (pool: AdapterPool): Promise<void> => {
   const log = getLog('connect')
   log.debug('connecting to mysql databases')
-
-  Object.assign(pool, {
-    escapeId,
-    escape,
-  })
-
-  let {
-    eventsTableName,
-    snapshotsTableName,
-    secretsTableName,
-    subscribersTableName,
-    database,
-    // eslint-disable-next-line prefer-const
-    ...connectionOptions
-  } = config
-
-  eventsTableName = eventsTableName ?? 'events'
-  snapshotsTableName = snapshotsTableName ?? 'snapshots'
-  secretsTableName = secretsTableName ?? 'secrets'
-  subscribersTableName = subscribersTableName ?? 'subscribers'
 
   log.debug(`establishing connection`)
 
   const connection: any = await MySQL.createConnection({
-    ...connectionOptions,
-    database,
+    ...pool.connectionOptions,
+    database: pool.database,
     multipleStatements: true,
   })
 
@@ -52,19 +24,9 @@ const connect = async (
 
   log.debug(`connected successfully`)
 
-  Object.assign<AdapterPoolPrimal, Partial<MysqlAdapterPoolConnectedProps>>(
-    pool,
-    {
-      connection,
-      eventsTableName,
-      snapshotsTableName,
-      secretsTableName,
-      subscribersTableName,
-      database,
-    }
-  )
+  pool.connection = connection
 
-  log.debug('mysql databases are connected')
+  log.debug('connection to mysql database established')
 }
 
 export default connect

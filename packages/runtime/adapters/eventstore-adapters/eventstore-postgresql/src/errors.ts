@@ -1,3 +1,9 @@
+import {
+  ConnectionError,
+  RequestTimeoutError,
+  ServiceBusyError,
+} from '@resolve-js/eventstore-base'
+
 const checkFormalError = (error: any, value: string): boolean =>
   error.name === value || error.code === value
 const checkFuzzyError = (error: any, value: RegExp): boolean =>
@@ -41,4 +47,39 @@ export const isServiceBusyError = (error: any): boolean => {
   return (
     error != null && checkFuzzyError(error, /sorry, too many clients already/i)
   )
+}
+
+function extendErrorStack(mainError: Error, origError: any) {
+  if (origError.stack) {
+    if (mainError.stack) {
+      mainError.stack += origError.stack
+    } else {
+      mainError.stack = origError.stack
+    }
+  }
+}
+
+export const makeKnownError = (error: any): Error | null => {
+  if (isServiceBusyError(error) || isConnectionTerminatedError(error)) {
+    const busyError = new ServiceBusyError(error.message)
+    extendErrorStack(busyError, error)
+    return busyError
+  } else if (isTimeoutError(error)) {
+    const timeoutError = new RequestTimeoutError(error.message)
+    extendErrorStack(timeoutError, error)
+    return timeoutError
+  } else {
+    return null
+  }
+}
+
+export const makeConnectionError = (error: any): Error => {
+  const knownError = makeKnownError(error)
+  if (knownError !== null) {
+    return knownError
+  } else {
+    const connectionError = new ConnectionError(error.message)
+    extendErrorStack(connectionError, error)
+    return connectionError
+  }
 }

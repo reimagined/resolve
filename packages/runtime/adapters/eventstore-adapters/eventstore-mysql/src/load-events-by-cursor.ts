@@ -4,7 +4,7 @@ import { CursorFilter } from '@resolve-js/eventstore-base/src/types'
 const split2RegExp = /.{1,2}(?=(.{2})+(?!.))|.{1,2}$/g
 
 const loadEventsByCursor = async (
-  { connection, eventsTableName, escapeId, escape, shapeEvent }: AdapterPool,
+  { query, eventsTableName, escapeId, escape, shapeEvent }: AdapterPool,
   { eventTypes, aggregateIds, cursor, limit }: CursorFilter
 ): Promise<{ cursor: string; events: any[] }> => {
   const injectString = (value: any): string => `${escape(value)}`
@@ -44,7 +44,7 @@ const loadEventsByCursor = async (
 
   const eventsTableNameAsId: string = escapeId(eventsTableName)
 
-  const [rows] = await connection.query(
+  const [rows] = await query(
     `SELECT * FROM ${eventsTableNameAsId}
     ${resultQueryCondition}
     ORDER BY \`timestamp\` ASC,

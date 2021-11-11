@@ -1,7 +1,7 @@
-import type { AdapterPoolPrimal } from './types'
+import type { AdapterPool } from './types'
 import { RequestTimeoutError } from '@resolve-js/eventstore-base'
 
-const checkRequestTimeout = (pool: AdapterPoolPrimal): number | undefined => {
+const checkRequestTimeout = (pool: AdapterPool): number | undefined => {
   if (typeof pool.getVacantTimeInMillis === 'function') {
     const vacantTimeInMillis = pool.getVacantTimeInMillis()
     if (Number.isNaN(vacantTimeInMillis)) {

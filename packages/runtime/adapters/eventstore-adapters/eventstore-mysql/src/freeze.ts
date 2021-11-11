@@ -1,11 +1,11 @@
 import { AdapterPool } from './types'
 
 const freeze = async ({
-  connection,
+  execute,
   eventsTableName,
   escapeId,
 }: AdapterPool): Promise<void> => {
-  await connection.execute(
+  await execute(
     `CREATE TABLE ${escapeId(`${eventsTableName}-freeze`)}(
       ${escapeId('surrogate')} BIGINT NOT NULL,
       PRIMARY KEY(${escapeId('surrogate')})

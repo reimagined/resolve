@@ -58,10 +58,13 @@ describe('createCustomAdapter', () => {
       dispose,
     })
 
-    const customAdapter = createCustomAdapter({
-      a: 'a',
-      b: 'b',
-    })
+    const customAdapter = createCustomAdapter(
+      {
+        a: 'a',
+        b: 'b',
+      },
+      () => {}
+    )
 
     await customAdapter.loadEvents({
       aggregateIds: ['id1'],

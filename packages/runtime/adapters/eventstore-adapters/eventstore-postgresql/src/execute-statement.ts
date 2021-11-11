@@ -1,6 +1,14 @@
-import type { AdapterPool } from './types'
-import { RequestTimeoutError } from '@resolve-js/eventstore-base'
-import { isTimeoutError, isConnectionTerminatedError } from './errors'
+import type { AdapterPool, PostgresConnection } from './types'
+import {
+  RequestTimeoutError,
+  ServiceBusyError,
+} from '@resolve-js/eventstore-base'
+import {
+  isTimeoutError,
+  isConnectionTerminatedError,
+  isServiceBusyError,
+  makeConnectionError,
+} from './errors'
 import { MAX_RECONNECTIONS } from './constants'
 import makePostgresClient from './make-postgres-client'
 
@@ -12,21 +20,23 @@ const executeStatement = async (
   let reconnectionTimes = 0
 
   while (true) {
-    let connection: typeof pool.connection
-    if (useDistinctConnection) {
-      connection = makePostgresClient(
-        pool,
-        pool.Postgres,
-        pool.connectionOptions
-      )
-    } else {
-      connection = pool.connection
-    }
+    let connection: PostgresConnection
+
     try {
       if (useDistinctConnection) {
+        connection = makePostgresClient(pool)
         await connection.connect()
+      } else {
+        connection = await pool.getConnectPromise()
       }
+    } catch (error) {
+      if (!useDistinctConnection) {
+        pool.getConnectPromise = pool.createGetConnectPromise()
+      }
+      throw makeConnectionError(error)
+    }
 
+    try {
       const result = await connection.query(sql)
 
       if (result != null && Array.isArray(result.rows)) {
@@ -35,7 +45,9 @@ const executeStatement = async (
 
       return []
     } catch (error) {
-      if (isTimeoutError(error)) {
+      if (isServiceBusyError(error)) {
+        throw new ServiceBusyError(error.message)
+      } else if (isTimeoutError(error)) {
         throw new RequestTimeoutError(error.message)
       } else if (isConnectionTerminatedError(error)) {
         if (!useDistinctConnection) {
@@ -43,19 +55,17 @@ const executeStatement = async (
         }
 
         if (reconnectionTimes > MAX_RECONNECTIONS) {
-          throw error
+          throw new ServiceBusyError(error.message)
         }
 
-        if (!useDistinctConnection) await pool.getConnectPromise()
         reconnectionTimes++
       } else if (
         error != null &&
         error.message === 'Client was closed and is not queryable'
       ) {
         if (reconnectionTimes > MAX_RECONNECTIONS) {
-          throw error
+          throw new ServiceBusyError(error.message)
         }
-        if (!useDistinctConnection) await pool.getConnectPromise()
         reconnectionTimes++
       } else {
         throw error

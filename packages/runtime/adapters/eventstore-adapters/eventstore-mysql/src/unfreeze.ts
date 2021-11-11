@@ -1,13 +1,11 @@
 import { AdapterPool } from './types'
 
 const unfreeze = async ({
-  connection,
+  execute,
   eventsTableName,
   escapeId,
 }: AdapterPool): Promise<void> => {
-  await connection.execute(
-    `DROP TABLE ${escapeId(`${eventsTableName}-freeze`)}`
-  )
+  await execute(`DROP TABLE ${escapeId(`${eventsTableName}-freeze`)}`)
 }
 
 export default unfreeze

@@ -8,7 +8,7 @@ const getSecret = async (
   const log = getLog('secretsManager:getSecret')
   log.debug(`retrieving secret value from the database`)
 
-  const { connection, secretsTableName, escape, escapeId } = pool
+  const { secretsTableName, escape, escapeId } = pool
 
   log.verbose(`selector: ${selector}`)
   log.verbose(`tableName: ${secretsTableName}`)
@@ -20,7 +20,7 @@ const getSecret = async (
   log.verbose(sql)
 
   log.debug(`executing SQL query`)
-  const [rows] = await connection.query(sql)
+  const [rows] = await pool.query(sql)
 
   log.debug(`query executed, returning result`)
 
