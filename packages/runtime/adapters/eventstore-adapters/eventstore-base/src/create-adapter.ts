@@ -5,7 +5,6 @@ import type {
   AdapterFunctions,
   CommonAdapterFunctions,
   AdapterConfig,
-  AdapterPoolPrimalProps,
   AdapterPoolPrivateBoundProps,
   AdapterPoolBoundProps,
   AdapterPrimalPool,

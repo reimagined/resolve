@@ -30,8 +30,8 @@ export type ConfiguredProps = AdapterTableNamesProps & {
   escapeId: EscapeFunction
   escape: EscapeFunction
   getVacantTimeInMillis?: () => number
-  createGetConnectPromise: () => () => Promise<void>
-  getConnectPromise: () => Promise<void>
+  createGetConnectPromise: () => () => Promise<Client>
+  getConnectPromise: () => Promise<Client>
   connection?: Client
 }
 

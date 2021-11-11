@@ -7,17 +7,17 @@ import {
   collectPostgresStatistics,
 } from '../eventstore-test-utils'
 
-import { Client } from 'pg'
-
 import {
+  ConcurrentError,
   threadArrayToCursor,
   checkEventsContinuity,
-  StoredEventPointer,
-  ConcurrentError,
   initThreadArray,
 } from '@resolve-js/eventstore-base'
 
-import type { StoredEvent } from '@resolve-js/eventstore-base'
+import type {
+  StoredEventPointer,
+  StoredEvent,
+} from '@resolve-js/eventstore-base'
 
 jest.setTimeout(jestTimeout())
 

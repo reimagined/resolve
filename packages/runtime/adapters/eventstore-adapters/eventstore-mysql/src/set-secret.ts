@@ -8,7 +8,7 @@ const setSecret = async (
 ): Promise<void> => {
   const log = getLog('secretsManager:setSecret')
   log.debug(`setting secret value within database`)
-  const { secretsTableName, connection, escape, escapeId } = pool
+  const { secretsTableName, escape, escapeId } = pool
 
   log.verbose(`selector: ${selector}`)
   log.verbose(`tableName: ${secretsTableName}`)
