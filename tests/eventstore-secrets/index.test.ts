@@ -11,6 +11,8 @@ import {
   makeTestEvent,
   adapterFactory,
   adapters,
+  isPostgres,
+  collectPostgresStatistics,
 } from '../eventstore-test-utils'
 
 jest.setTimeout(jestTimeout())
@@ -55,6 +57,10 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     const secretManager: SecretsManager = await adapter.getSecretsManager()
     for (let secret of secrets) {
       await secretManager.setSecret(secret.id, secret.secret)
+    }
+
+    if (isPostgres()) {
+      await collectPostgresStatistics('secret_testing')
     }
 
     const description = await adapter.describe()
@@ -244,6 +250,10 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     const secrets = (await adapter.loadSecrets({ limit: countSecrets + 1 }))
       .secrets
     expect(secrets).toHaveLength(countSecrets - 1)
+
+    if (isPostgres()) {
+      await collectPostgresStatistics('secret_testing')
+    }
 
     const description = await adapter.describe()
     expect(description.secretCount).toEqual(countSecrets)

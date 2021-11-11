@@ -2,7 +2,17 @@
 
 ## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.0...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.1...HEAD)
+
+**Bug fixes:**
+
+- Some format options does not work in cli, for example domainName [\#2110](https://github.com/reimagined/resolve/issues/2110)
+- Custom read-model does not start [\#2095](https://github.com/reimagined/resolve/issues/2095)
+- Babel "loose mode" warnings  [\#2011](https://github.com/reimagined/resolve/issues/2011)
+
+## [V0.33.1](https://github.com/reimagined/resolve/tree/V0.33.1) (2021-11-09)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.0...V0.33.1)
 
 **Bug fixes:**
 

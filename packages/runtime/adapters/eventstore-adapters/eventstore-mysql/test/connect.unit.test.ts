@@ -1,7 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import MySQL from 'mysql2/promise'
-import { escape, escapeId } from 'mysql2'
-/* eslint-enable import/no-extraneous-dependencies */
 import { AdapterPool, MySQLConnection, MysqlAdapterConfig } from '../src/types'
 import configure from '../src/configure'
 

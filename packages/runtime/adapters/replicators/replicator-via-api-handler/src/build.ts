@@ -12,7 +12,6 @@ import type {
 import {
   RequestTimeoutError,
   ServiceBusyError,
-  ConnectionError,
 } from '@resolve-js/eventstore-base'
 import { getLog } from './get-log'
 
