@@ -28,7 +28,7 @@ const createPreSignedPut = async (
 ) => {
   let Lambda: any
   try {
-    Lambda = pureRequire('aws-sdk/clients/lambda')
+    void ({ Lambda } = pureRequire('aws-sdk/clients/lambda'))
   } catch {}
   const lambda = new Lambda()
 
@@ -89,7 +89,7 @@ const createPresignedPost = async (
 ) => {
   let Lambda: any
   try {
-    Lambda = pureRequire('aws-sdk/clients/lambda')
+    void ({ Lambda } = pureRequire('aws-sdk/clients/lambda'))
   } catch {}
   const lambda = new Lambda()
 

@@ -10,11 +10,11 @@ export const sendReactiveEvent: ReactiveEventDispatcher = async (event) => {
   let errorBoundary: any
   let invokeFunction: any
   try {
-    escapeId = pureRequire('resolve-cloud-common/postgres')
-    escapeStr = pureRequire('resolve-cloud-common/postgres')
-    executeStatement = pureRequire('resolve-cloud-common/postgres')
-    errorBoundary = pureRequire('resolve-cloud-common/utils')
-    invokeFunction = pureRequire('resolve-cloud-common/lambda')
+    void ({ escapeId } = pureRequire('resolve-cloud-common/postgres'))
+    void ({ escapeStr } = pureRequire('resolve-cloud-common/postgres'))
+    void ({ executeStatement } = pureRequire('resolve-cloud-common/postgres'))
+    void ({ errorBoundary } = pureRequire('resolve-cloud-common/utils'))
+    void ({ invokeFunction } = pureRequire('resolve-cloud-common/lambda'))
   } catch {}
   const databaseNameAsId = escapeId(
     process.env.RESOLVE_EVENT_STORE_DATABASE_NAME as string

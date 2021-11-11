@@ -82,7 +82,9 @@ export const eventSubscriberNotifierFactory = async (
   const { lambdaContext, eventSubscriberScope } = params
   let getAccountIdFromLambdaContext: any
   try {
-    getAccountIdFromLambdaContext = pureRequire('resolve-cloud-common/utils')
+    void ({ getAccountIdFromLambdaContext } = pureRequire(
+      'resolve-cloud-common/utils'
+    ))
   } catch {}
 
   const accountId = getAccountIdFromLambdaContext(lambdaContext)
@@ -102,7 +104,7 @@ export const eventSubscriberNotifierFactory = async (
     log.debug(`invoking lambda as event subscriber: ${destination}`)
     let invokeFunction: any
     try {
-      invokeFunction = pureRequire('resolve-cloud-common/lambda')
+      void ({ invokeFunction } = pureRequire('resolve-cloud-common/lambda'))
     } catch {}
     await invokeFunction({
       Region: region,
@@ -122,7 +124,7 @@ export const eventSubscriberNotifierFactory = async (
     const queueUrl = `https://sqs.${region}.amazonaws.com/${accountId}/${destination}`
     let sendMessage: any
     try {
-      sendMessage = pureRequire('resolve-cloud-common/sqs')
+      void ({ sendMessage } = pureRequire('resolve-cloud-common/sqs'))
     } catch {}
     await sendMessage({
       Region: region,
@@ -159,12 +161,12 @@ export const eventSubscriberNotifierFactory = async (
     } else {
       let STS: any
       try {
-        STS = pureRequire('aws-sdk/clients/sts')
+        void ({ STS } = pureRequire('aws-sdk/clients/sts'))
       } catch {}
       const { Arn } = await new STS().getCallerIdentity().promise()
       let invokeFunction: any
       try {
-        invokeFunction = pureRequire('resolve-cloud-common/lambda')
+        void ({ invokeFunction } = pureRequire('resolve-cloud-common/lambda'))
       } catch {}
       await invokeFunction({
         Region: process.env.AWS_REGION as string,
@@ -203,7 +205,7 @@ export const eventSubscriberNotifierFactory = async (
     try {
       let getCallerIdentity: any
       try {
-        getCallerIdentity = pureRequire('resolve-cloud-common/sts')
+        void ({ getCallerIdentity } = pureRequire('resolve-cloud-common/sts'))
       } catch {}
       roleArn = (await getCallerIdentity({ Region: region })).Arn
     } catch (err) {
@@ -215,7 +217,7 @@ export const eventSubscriberNotifierFactory = async (
         try {
           let ensureSqsQueue: any
           try {
-            ensureSqsQueue = pureRequire('resolve-cloud-common/sqs')
+            void ({ ensureSqsQueue } = pureRequire('resolve-cloud-common/sqs'))
           } catch {}
           await ensureSqsQueue({
             QueueName: `${userId}-${eventSubscriberScope}-${name}`,
@@ -263,9 +265,9 @@ export const eventSubscriberNotifierFactory = async (
         try {
           let createEventSourceMapping: any
           try {
-            createEventSourceMapping = pureRequire(
+            void ({ createEventSourceMapping } = pureRequire(
               'resolve-cloud-common/lambda'
-            )
+            ))
           } catch {}
 
           void ({ UUID } = await createEventSourceMapping({
@@ -296,7 +298,9 @@ export const eventSubscriberNotifierFactory = async (
           try {
             let getEventSourceMapping: any
             try {
-              getEventSourceMapping = pureRequire('resolve-cloud-common/lambda')
+              void ({ getEventSourceMapping } = pureRequire(
+                'resolve-cloud-common/lambda'
+              ))
             } catch {}
 
             const { State } = await getEventSourceMapping({
@@ -320,7 +324,9 @@ export const eventSubscriberNotifierFactory = async (
       try {
         let setFunctionTags: any
         try {
-          setFunctionTags = pureRequire('resolve-cloud-common/lambda')
+          void ({ setFunctionTags } = pureRequire(
+            'resolve-cloud-common/lambda'
+          ))
         } catch {}
         await setFunctionTags({
           Region: region,
@@ -355,7 +361,7 @@ export const eventSubscriberNotifierFactory = async (
     try {
       let getFunctionTags: any
       try {
-        getFunctionTags = pureRequire('resolve-cloud-common/lambda')
+        void ({ getFunctionTags } = pureRequire('resolve-cloud-common/lambda'))
       } catch {}
       functionTags = await getFunctionTags({
         Region: region,
@@ -373,9 +379,9 @@ export const eventSubscriberNotifierFactory = async (
           try {
             let deleteEventSourceMapping: any
             try {
-              deleteEventSourceMapping = pureRequire(
+              void ({ deleteEventSourceMapping } = pureRequire(
                 'resolve-cloud-common/lambda'
-              )
+              ))
             } catch {}
 
             await deleteEventSourceMapping({
@@ -407,7 +413,9 @@ export const eventSubscriberNotifierFactory = async (
           try {
             let getEventSourceMapping: any
             try {
-              getEventSourceMapping = pureRequire('resolve-cloud-common/lambda')
+              void ({ getEventSourceMapping } = pureRequire(
+                'resolve-cloud-common/lambda'
+              ))
             } catch {}
             await getEventSourceMapping({ Region: region, UUID })
             const error = new Error('ResourceAlreadyExists')
@@ -437,7 +445,9 @@ export const eventSubscriberNotifierFactory = async (
           try {
             let deleteSqsQueue: any
             try {
-              deleteSqsQueue = pureRequire('resolve-cloud-common/sqs')
+              void ({ deleteSqsQueue } = pureRequire(
+                'resolve-cloud-common/sqs'
+              ))
             } catch {}
             await deleteSqsQueue({
               Region: region,

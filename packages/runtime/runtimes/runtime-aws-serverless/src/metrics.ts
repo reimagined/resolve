@@ -27,7 +27,7 @@ export const putDurationMetrics = async (
   ) {
     let CloudWatch: any
     try {
-      CloudWatch = pureRequire('aws-sdk/clients/cloudwatch')
+      void ({ CloudWatch } = pureRequire('aws-sdk/clients/cloudwatch'))
     } catch {}
     const cloudWatch = new CloudWatch()
     const coldStartDuration = 15 * 60 * 1000 - lambdaRemainingTimeStart

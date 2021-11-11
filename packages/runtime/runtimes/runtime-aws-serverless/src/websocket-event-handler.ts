@@ -24,7 +24,7 @@ const LOAD_EVENTS_COUNT_LIMIT = 1000000
 const LOAD_EVENTS_SIZE_LIMIT = 124 * 1024
 let escapeId: any
 try {
-  escapeId = pureRequire('resolve-cloud-common/postgres')
+  void ({ escapeId } = pureRequire('resolve-cloud-common/postgres'))
 } catch {}
 const databaseNameAsId = escapeId(eventStoreDatabaseName)
 const subscriptionsTableNameAsId = escapeId(subscriptionsTableName)
@@ -73,8 +73,10 @@ export const handleWebsocketEvent = async (
       let executeStatement: any
       let escapeStr: any
       try {
-        executeStatement = pureRequire('resolve-cloud-common/postgres')
-        escapeStr = pureRequire('resolve-cloud-common/postgres')
+        void ({ executeStatement } = pureRequire(
+          'resolve-cloud-common/postgres'
+        ))
+        void ({ escapeStr } = pureRequire('resolve-cloud-common/postgres'))
       } catch {}
       await executeStatement({
         Region: region,
@@ -101,8 +103,10 @@ export const handleWebsocketEvent = async (
           let executeStatement: any
           let escapeStr: any
           try {
-            executeStatement = pureRequire('resolve-cloud-common/postgres')
-            escapeStr = pureRequire('resolve-cloud-common/postgres')
+            void ({ executeStatement } = pureRequire(
+              'resolve-cloud-common/postgres'
+            ))
+            void ({ escapeStr } = pureRequire('resolve-cloud-common/postgres'))
           } catch {}
           const connectionIdResult = await executeStatement({
             Region: region,
@@ -131,7 +135,9 @@ export const handleWebsocketEvent = async (
 
             let invokeFunction: any
             try {
-              invokeFunction = pureRequire('resolve-cloud-common/lambda')
+              void ({ invokeFunction } = pureRequire(
+                'resolve-cloud-common/lambda'
+              ))
             } catch {}
             await invokeFunction({
               Region: region,
@@ -160,8 +166,10 @@ export const handleWebsocketEvent = async (
       let executeStatement: any
       let escapeStr: any
       try {
-        executeStatement = pureRequire('resolve-cloud-common/postgres')
-        escapeStr = pureRequire('resolve-cloud-common/postgres')
+        void ({ executeStatement } = pureRequire(
+          'resolve-cloud-common/postgres'
+        ))
+        void ({ escapeStr } = pureRequire('resolve-cloud-common/postgres'))
       } catch {}
       await executeStatement({
         Region: region,
