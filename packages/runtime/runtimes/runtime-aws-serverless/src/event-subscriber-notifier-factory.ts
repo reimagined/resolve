@@ -104,9 +104,7 @@ export const eventSubscriberNotifierFactory = async (
     log.debug(`invoking lambda as event subscriber: ${destination}`)
     let invokeFunction: any
     try {
-      void ({ invokeFunction } = pureRequire(
-        'resolve-cloud-common/lambda'
-      ))
+      void ({ invokeFunction } = pureRequire('resolve-cloud-common/lambda'))
     } catch {}
     await invokeFunction({
       Region: region,
@@ -168,9 +166,7 @@ export const eventSubscriberNotifierFactory = async (
       const { Arn } = await new STS().getCallerIdentity().promise()
       let invokeFunction: any
       try {
-        void ({ invokeFunction } = pureRequire(
-          'resolve-cloud-common/lambda'
-        ))
+        void ({ invokeFunction } = pureRequire('resolve-cloud-common/lambda'))
       } catch {}
       await invokeFunction({
         Region: process.env.AWS_REGION as string,
@@ -209,9 +205,7 @@ export const eventSubscriberNotifierFactory = async (
     try {
       let getCallerIdentity: any
       try {
-        void ({ getCallerIdentity } = pureRequire(
-          'resolve-cloud-common/sts'
-        ))
+        void ({ getCallerIdentity } = pureRequire('resolve-cloud-common/sts'))
       } catch {}
       roleArn = (await getCallerIdentity({ Region: region })).Arn
     } catch (err) {
@@ -223,9 +217,7 @@ export const eventSubscriberNotifierFactory = async (
         try {
           let ensureSqsQueue: any
           try {
-            void ({ ensureSqsQueue } = pureRequire(
-              'resolve-cloud-common/sqs'
-            ))
+            void ({ ensureSqsQueue } = pureRequire('resolve-cloud-common/sqs'))
           } catch {}
           await ensureSqsQueue({
             QueueName: `${userId}-${eventSubscriberScope}-${name}`,
@@ -369,9 +361,7 @@ export const eventSubscriberNotifierFactory = async (
     try {
       let getFunctionTags: any
       try {
-        void ({ getFunctionTags } = pureRequire(
-          'resolve-cloud-common/lambda'
-        ))
+        void ({ getFunctionTags } = pureRequire('resolve-cloud-common/lambda'))
       } catch {}
       functionTags = await getFunctionTags({
         Region: region,

@@ -17,9 +17,7 @@ const start = async (entry: SchedulerEntry) => {
     let invokeFunction: any
     try {
       void ({ default: STS } = pureRequire('aws-sdk/clients/sts'))
-      void ({ invokeFunction } = pureRequire(
-        'resolve-cloud-common/lambda'
-      ))
+      void ({ invokeFunction } = pureRequire('resolve-cloud-common/lambda'))
     } catch {}
 
     const { Arn } = await new STS().getCallerIdentity().promise()
@@ -61,9 +59,7 @@ const stopAll = async () => {
   let invokeFunction: any
   try {
     void ({ default: STS } = pureRequire('aws-sdk/clients/sts'))
-    void ({ invokeFunction } = pureRequire(
-      'resolve-cloud-common/lambda'
-    ))
+    void ({ invokeFunction } = pureRequire('resolve-cloud-common/lambda'))
   } catch {}
 
   const { Arn } = await new STS().getCallerIdentity().promise()
