@@ -8,8 +8,11 @@ import createLoadQuery from './create-load-query'
 import processEventRows from './process-event-rows'
 import checkRequestTimeout from './check-request-timeout'
 import { DEFAULT_QUERY_TIMEOUT, MINIMAL_QUERY_TIMEOUT } from './constants'
-import makeKnownError from './make-known-error'
-import { isConnectionTerminatedError } from './errors'
+import {
+  isConnectionTerminatedError,
+  makeConnectionError,
+  makeKnownError,
+} from './errors'
 
 type QueriedPgCursor = {
   read(limit: number): Promise<any[]>
@@ -52,11 +55,15 @@ const getEventLoaderNative = async (
   let pgCursor: QueriedPgCursor
   try {
     await client.connect()
+  } catch (error) {
+    throw makeConnectionError(error)
+  }
+  try {
     pgCursor = (client.query(
       new PgCursor(sqlQuery)
     ) as unknown) as QueriedPgCursor
   } catch (error) {
-    throw makeKnownError(error)
+    throw makeKnownError(error) ?? error
   }
 
   return {
@@ -78,7 +85,7 @@ const getEventLoaderNative = async (
         if (isConnectionTerminatedError(error)) {
           connectionTerminated = true
         }
-        throw makeKnownError(error)
+        throw makeKnownError(error) ?? error
       }
     },
     get cursor() {
