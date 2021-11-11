@@ -50,47 +50,22 @@ const main = async resolveContext => {
 ##### @resolve-js/redux:
 
 ```js
-import { AppContainer, createStore, getOrigin } from '@resolve-js/redux'
+import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
 
-const entryPoint = ({
-  clientImports,
-  rootPath,
-  staticPath,
-  viewModels,
-  subscriber,
-}) => {
-  const origin = getOrigin(window.location)
-  const history = createBrowserHistory({ basename: rootPath })
-  const routes = getRoutes(clientImports)
-  const redux = getRedux(clientImports, history)
-
-  const store = createStore({
+const entryPoint = (clientContext) => {
+  const store = createResolveStore(clientContext, {
     serializedState: window.__INITIAL_STATE__,
-    redux,
-    viewModels,
-    subscriber,
-    history,
-    origin,
-    rootPath,
-    staticPath,
-    isClient: true,
+    redux: getRedux(),
   })
-
+  const routes = getRoutes()
   render(
-    <AppContainer
-      origin={origin}
-      rootPath={rootPath}
-      staticPath={staticPath}
-      store={store}
-      history={history}
-    >
-      <Router history={history}>
-        <Routes routes={routes} />
-      </Router>
-    </AppContainer>,
+    <ResolveReduxProvider context={clientContext} store={store}>
+      <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
+    </ResolveReduxProvider>,
     document.getElementById('app-container')
   )
 }
+export default entryPoint
 ```
 
 ##### @resolve-js/react-hooks:
@@ -167,9 +142,9 @@ To serve SSR markup to the client, you need to register the **live-require-handl
 apiHandlers: [
   {
     handler: {
-      module: { 
+      module: {
         package: '@resolve-js/runtime-base',
-        import: 'liveRequireHandler', 
+        import: 'liveRequireHandler',
       },
       options: {
         modulePath: './ssr.js',

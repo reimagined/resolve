@@ -17,4 +17,4 @@ export default main
 
 The `resolveContext` object contains data used internally by reSolve client libraries to communicate with the backend.
 
-See the [Client Application Entry Point](frontend.md#client-application-entry-point) section of the [Frontend](frontend.md) article for more information.
+See the [Client Application Entry Point](../../frontend.md#client-application-entry-point) section of the [Frontend](frontend.md) article for more information.
