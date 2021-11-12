@@ -15,9 +15,11 @@ import makePostgresClient from './make-postgres-client'
 const executeStatement = async (
   pool: AdapterPool,
   sql: string,
-  useDistinctConnection?: boolean
+  distinctConnection?: boolean
 ): Promise<any[]> => {
   let reconnectionTimes = 0
+  let useDistinctConnection = distinctConnection
+  let distinctConnectionMade = false
 
   while (true) {
     let connection: PostgresConnection
@@ -26,6 +28,7 @@ const executeStatement = async (
       if (useDistinctConnection) {
         connection = makePostgresClient(pool)
         await connection.connect()
+        distinctConnectionMade = true
       } else {
         connection = await pool.getConnectPromise()
       }
@@ -53,11 +56,10 @@ const executeStatement = async (
         if (!useDistinctConnection) {
           pool.getConnectPromise = pool.createGetConnectPromise()
         }
-
         if (reconnectionTimes > MAX_RECONNECTIONS) {
           throw new ServiceBusyError(error.message)
         }
-
+        useDistinctConnection = true
         reconnectionTimes++
       } else if (
         error != null &&
@@ -66,12 +68,13 @@ const executeStatement = async (
         if (reconnectionTimes > MAX_RECONNECTIONS) {
           throw new ServiceBusyError(error.message)
         }
+        useDistinctConnection = true
         reconnectionTimes++
       } else {
         throw error
       }
     } finally {
-      if (useDistinctConnection) {
+      if (distinctConnectionMade) {
         connection.end((err) => {
           return
         })
