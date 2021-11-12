@@ -11,10 +11,14 @@ const connect = async (
   const oldConnection = pool.connection
   if (oldConnection !== undefined) {
     pool.connection = undefined
-    oldConnection.end((err) => {
-      if (err)
-        log.error(`Error during disconnection before reconnection: ${err}`)
-    })
+    try {
+      oldConnection.end((err) => {
+        if (err)
+          log.error(`Error during disconnection before reconnection: ${err}`)
+      })
+    } catch (err) {
+      log.error(`Unexpected exception from client.end with callback! ${err}`)
+    }
   }
 
   const connection = makePostgresClient(pool)

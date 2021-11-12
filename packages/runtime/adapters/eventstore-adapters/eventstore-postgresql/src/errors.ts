@@ -52,6 +52,7 @@ export const isServiceBusyError = (error: any): boolean => {
 function extendErrorStack(mainError: Error, origError: any) {
   if (origError.stack) {
     if (mainError.stack) {
+      mainError.stack += '\n'
       mainError.stack += origError.stack
     } else {
       mainError.stack = origError.stack
