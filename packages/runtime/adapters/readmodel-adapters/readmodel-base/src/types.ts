@@ -389,9 +389,14 @@ export type AdapterImplementation<
   AdapterOperations<AdapterPool> &
   StoreApi<AdapterPool>
 
+export type WrapIsConditionUnsupportedFormatMethod = <T extends FunctionLike>(
+  fn: T
+) => T
+
 export type BaseAdapterPool<AdapterPool extends CommonAdapterPool> = {
   commonAdapterPool: CommonAdapterPool
   adapterPoolMap: Map<ReadModelStore<StoreApi<AdapterPool>>, AdapterPool>
+  AlreadyDisposedError: AlreadyDisposedErrorFactory
   withPerformanceTracer: WithPerformanceTracerMethod
   monitoring?: MonitoringLike
   performanceTracer?: PerformanceTracerLike
@@ -410,6 +415,7 @@ export type WrapConnectMethod = <
   AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
 >(
   pool: BaseAdapterPool<AdapterPool>,
+  wrapIsConditionUnsupportedFormat: WrapIsConditionUnsupportedFormatMethod,
   wrapWithCloneArgs: WrapWithCloneArgsMethod,
   connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],
   storeApi: StoreApi<AdapterPool>,
@@ -478,10 +484,22 @@ export type MakeSplitNestedPathMethod = (
   PathToolkitLib: PathToolkitLib
 ) => SplitNestedPathMethod
 
+export interface AlreadyDisposedErrorInstance extends Error {
+  name: string
+}
+
+export type AlreadyDisposedErrorFactory = {
+  new (): AlreadyDisposedErrorInstance
+} & {
+  is: (error: Error) => boolean
+}
+
 export type BaseAdapterImports = {
   splitNestedPath: SplitNestedPathMethod
   checkEventsContinuity: CheckEventsContinuityMethod
   withPerformanceTracer: WithPerformanceTracerMethod
+  AlreadyDisposedError: AlreadyDisposedErrorFactory
+  wrapIsConditionUnsupportedFormat: WrapIsConditionUnsupportedFormatMethod
   wrapWithCloneArgs: WrapWithCloneArgsMethod
   wrapConnect: WrapConnectMethod
   wrapDisconnect: WrapDisconnectMethod

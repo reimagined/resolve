@@ -32,7 +32,7 @@ maybeRunTest('testing node-postgres behavior', () => {
 
     const terminatingClient = new Client(config)
 
-    let wasInCatch = false
+    let expectedError: any
     try {
       await client.connect()
       await terminatingClient.connect()
@@ -43,24 +43,23 @@ maybeRunTest('testing node-postgres behavior', () => {
       )
       await pgCursor.read(1)
     } catch (err) {
-      wasInCatch = true
-      expect(err.message).toEqual(
-        'terminating connection due to administrator command'
-      )
+      expectedError = err
     } finally {
       await client.end()
       await terminatingClient.end()
     }
 
-    expect(wasInCatch).toBe(true)
+    expect(expectedError).toBeDefined()
+    expect(expectedError.message).toEqual(
+      'terminating connection due to administrator command'
+    )
   })
 
   test('pg cursor expects to hang on close when connection is terminated', async () => {
     const client = new Client(config)
-    let wasInHandler = false
+    let expectedError: any = undefined
     client.on('error', function (err: Error) {
-      wasInHandler = true
-      expect(err.message).toEqual('Connection terminated unexpectedly')
+      expectedError = err
     })
 
     const terminatingClient = new Client(config)
@@ -97,7 +96,8 @@ maybeRunTest('testing node-postgres behavior', () => {
       await terminatingClient.end()
     }
 
-    expect(wasInHandler).toBe(true)
+    expect(expectedError).toBeDefined()
+    expect(expectedError.message).toEqual('Connection terminated unexpectedly')
   })
 
   test('pg cursor should not hang if not used when connection is terminated', async () => {
@@ -124,5 +124,35 @@ maybeRunTest('testing node-postgres behavior', () => {
       await terminatingClient.end()
     }
     expect(true).toBe(true)
+  })
+
+  test('client should not hang event loop if connection is terminated and .end is not called', async () => {
+    const client = new Client(config)
+    client.on('error', function (err: Error) {
+      //pass
+    })
+
+    const terminatingClient = new Client(config)
+
+    let expectedError: any
+    try {
+      await client.connect()
+      await terminatingClient.connect()
+
+      const pgCursor = client.query(new PgCursor(`SELECT NOW()`))
+      await terminatingClient.query(
+        terminatingQuery(+(client as any).processID)
+      )
+      await pgCursor.read(1)
+    } catch (err) {
+      expectedError = err
+    } finally {
+      await terminatingClient.end()
+    }
+
+    expect(expectedError).toBeDefined()
+    expect(expectedError.message).toEqual(
+      'terminating connection due to administrator command'
+    )
   })
 })

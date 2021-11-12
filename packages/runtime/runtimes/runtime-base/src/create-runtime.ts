@@ -62,20 +62,43 @@ const dispose = async (runtime: Runtime) => {
 
     log.debug(`metrics published`)
 
-    const disposePromises: Promise<void>[] = [
-      runtime.executeCommand.dispose(),
-      runtime.executeQuery.dispose(),
-      runtime.executeSaga.dispose(),
-      runtime.eventStoreAdapter.dispose(),
+    const disposeMethods: Array<() => Promise<void>> = [
+      runtime.executeCommand.dispose.bind(runtime.executeCommand),
+      runtime.executeQuery.dispose.bind(runtime.executeQuery),
+      runtime.executeSaga.dispose.bind(runtime.executeSaga),
+      runtime.eventStoreAdapter.dispose.bind(runtime.eventStoreAdapter),
     ]
 
     for (const name of Object.keys(runtime.readModelConnectors)) {
-      disposePromises.push(runtime.readModelConnectors[name].dispose())
+      disposeMethods.push(
+        runtime.readModelConnectors[name].dispose.bind(
+          runtime.readModelConnectors[name]
+        )
+      )
     }
+
+    let disposeErrors: Array<Error> = []
+    const disposePromises: Promise<void>[] = disposeMethods.map((method) =>
+      Promise.resolve()
+        .then(method)
+        .catch((error) => void disposeErrors.push(error))
+    )
 
     log.debug(`awaiting ${disposePromises.length} entries to dispose`)
 
     await Promise.all(disposePromises)
+
+    disposeErrors = disposeErrors.filter(
+      (error) => error?.name !== 'AlreadyDisposedError'
+    )
+
+    if (disposeErrors.length > 0) {
+      const summaryError = new Error(
+        disposeErrors.map((error) => error?.message).join('\n')
+      )
+      summaryError.stack = disposeErrors.map((error) => error?.stack).join('\n')
+      throw summaryError
+    }
 
     log.info('resolve entries are disposed')
   } catch (error) {

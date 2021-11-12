@@ -22,7 +22,7 @@ const operationImpl = async <
 ): Promise<UnPromise<ReturnType<MethodImpl>>> => {
   const adapterPool = pool.adapterPoolMap.get(store)
   if (adapterPool == null) {
-    throw new Error(`Read model adapter pool is null`)
+    throw new pool.AlreadyDisposedError()
   }
   const result = await operationFunc(adapterPool, readModelName, ...args)
   return result

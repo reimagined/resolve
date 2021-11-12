@@ -9,7 +9,7 @@ const saveSnapshot = async (
 ): Promise<void> =>
   snapshotTrigger(pool, snapshotKey, content, async () => {
     const log = getLog(`saveSnapshot:${snapshotKey}`)
-    const { snapshotsTableName, connection, escapeId, escape } = pool
+    const { snapshotsTableName, escapeId, escape } = pool
 
     const snapshotsTableNameAsId: string = escapeId(snapshotsTableName)
 

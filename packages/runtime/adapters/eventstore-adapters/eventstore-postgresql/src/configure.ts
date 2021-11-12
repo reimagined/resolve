@@ -17,7 +17,7 @@ const configure = (
   config: PostgresqlAdapterConfig
 ): void => {
   const createGetConnectPromise = () => {
-    let p: Promise<void>
+    let p: ReturnType<typeof connect>
     return () => {
       if (p === undefined) {
         p = connect(pool as AdapterPool)
