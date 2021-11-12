@@ -10,6 +10,10 @@
 - Custom read-model does not start [\#2095](https://github.com/reimagined/resolve/issues/2095)
 - Babel "loose mode" warnings  [\#2011](https://github.com/reimagined/resolve/issues/2011)
 
+**Other changes:**
+
+- Improve readmodel postgresql lightweight optimistic [\#2118](https://github.com/reimagined/resolve/pull/2118)
+
 ## [V0.33.1](https://github.com/reimagined/resolve/tree/V0.33.1) (2021-11-09)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.0...V0.33.1)
