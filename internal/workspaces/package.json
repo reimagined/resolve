@@ -10,6 +10,7 @@
   "dependencies": {
     "@internal/helpers": "0.33.1",
     "chalk": "4.0.0",
+    "micromatch": "4.0.4",
     "minimist": "1.2.5",
     "rimraf": "3.0.2"
   }
