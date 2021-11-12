@@ -6,13 +6,22 @@ description: The @resolve-js/react-hooks library provides React hooks that you c
 
 The **@resolve-js/react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
 
-| Hook                                    | Description                                                               |
-| --------------------------------------- | ------------------------------------------------------------------------- |
-| [useCommand](#usecommand)               | Initializes a command that can be passed to the backend.                  |
-| [useCommandBuilder](#usecommandbuilder) | Allows a component to generate commands based on input parameters.        |
-| [useViewModel](#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model.               |
-| [useQuery](#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model. |
-| [useOriginResolver](#useoriginresolver) | Resolves a relative path to an absolute URL within the application.       |
+| Hook                                    | Description                                                                    |
+| --------------------------------------- | ------------------------------------------------------------------------------ |
+| [useClient](#useclient)                 | Returns the [@resolve-js/client](resolve-client.md) library's `client` object. |
+| [useCommand](#usecommand)               | Initializes a command that can be passed to the backend.                       |
+| [useCommandBuilder](#usecommandbuilder) | Allows a component to generate commands based on input parameters.             |
+| [useViewModel](#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model.                    |
+| [useQuery](#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model.      |
+| [useQueryBuilder](#usequerybuilder)     | Allows a component to generate queries based on input parameters.              |
+| [useOriginResolver](#useoriginresolver) | Resolves a relative path to an absolute URL within the application.            |
+| [useStaticResolver](#usestaticresolver) | Resolves a relative path to a static resource's full URL.                      |
+
+### useClient
+
+Returns the [@resolve-js/client](resolve-client.md) library's `client` object.
+
+##### Example
 
 ### useCommand
 
@@ -161,6 +170,12 @@ const MyLists = () => {
 }
 ```
 
+### useQueryBuilder
+
+Allows a component to generate queries based on input parameters.
+
+##### Example
+
 ### useOriginResolver
 
 Resolves a relative path to an absolute URL within the application.
@@ -171,3 +186,7 @@ Resolves a relative path to an absolute URL within the application.
 var resolver = useOriginResolver()
 var commandApiPath = resolver('/api/commands')
 ```
+
+### useStaticResolver
+
+Resolves a relative path to a static resource's full URL.
