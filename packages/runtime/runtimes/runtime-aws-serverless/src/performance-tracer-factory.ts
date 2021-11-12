@@ -1,10 +1,15 @@
 import type { PerformanceTracer } from '@resolve-js/core'
 import { pureRequire } from '@resolve-js/runtime-base'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 
 export const performanceTracerFactory = (): PerformanceTracer => {
   let AWSXray: any
   try {
-    void ({ default: AWSXray } = pureRequire('aws-xray-sdk-core'))
+    void ({ default: AWSXray } = interopRequireDefault(
+      pureRequire('aws-xray-sdk-core')
+    ))
   } catch {}
 
   let segment: any = process.env.TRACE ? AWSXray?.getSegment() ?? null : null

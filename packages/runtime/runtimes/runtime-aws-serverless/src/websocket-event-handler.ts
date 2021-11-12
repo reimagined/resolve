@@ -1,5 +1,8 @@
 import jwt from 'jsonwebtoken'
 import { getLog, pureRequire } from '@resolve-js/runtime-base'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 
 import type { Adapter as EventStoreAdapter } from '@resolve-js/eventstore-base'
 import type { WorkerResult } from './types'
@@ -24,7 +27,9 @@ const LOAD_EVENTS_COUNT_LIMIT = 1000000
 const LOAD_EVENTS_SIZE_LIMIT = 124 * 1024
 let escapeId: any
 try {
-  void ({ escapeId } = pureRequire('resolve-cloud-common/postgres'))
+  void ({ escapeId } = interopRequireDefault(
+    pureRequire('resolve-cloud-common/postgres')
+  ))
 } catch {}
 const databaseNameAsId = escapeId(eventStoreDatabaseName)
 const subscriptionsTableNameAsId = escapeId(subscriptionsTableName)
@@ -76,7 +81,9 @@ export const handleWebsocketEvent = async (
         void ({ executeStatement } = pureRequire(
           'resolve-cloud-common/postgres'
         ))
-        void ({ escapeStr } = pureRequire('resolve-cloud-common/postgres'))
+        void ({ escapeStr } = interopRequireDefault(
+          pureRequire('resolve-cloud-common/postgres')
+        ))
       } catch {}
       await executeStatement({
         Region: region,
@@ -106,7 +113,9 @@ export const handleWebsocketEvent = async (
             void ({ executeStatement } = pureRequire(
               'resolve-cloud-common/postgres'
             ))
-            void ({ escapeStr } = pureRequire('resolve-cloud-common/postgres'))
+            void ({ escapeStr } = interopRequireDefault(
+              pureRequire('resolve-cloud-common/postgres')
+            ))
           } catch {}
           const connectionIdResult = await executeStatement({
             Region: region,
@@ -169,7 +178,9 @@ export const handleWebsocketEvent = async (
         void ({ executeStatement } = pureRequire(
           'resolve-cloud-common/postgres'
         ))
-        void ({ escapeStr } = pureRequire('resolve-cloud-common/postgres'))
+        void ({ escapeStr } = interopRequireDefault(
+          pureRequire('resolve-cloud-common/postgres')
+        ))
       } catch {}
       await executeStatement({
         Region: region,

@@ -1,4 +1,7 @@
 import { pureRequire } from '@resolve-js/runtime-base'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 
 const kindByEvent = (event: { part: string; path?: string }) => {
   const { part, path = '' } = event
@@ -27,7 +30,9 @@ export const putDurationMetrics = async (
   ) {
     let CloudWatch: any
     try {
-      void ({ default: CloudWatch } = pureRequire('aws-sdk/clients/cloudwatch'))
+      void ({ default: CloudWatch } = interopRequireDefault(
+        pureRequire('aws-sdk/clients/cloudwatch')
+      ))
     } catch {}
     const cloudWatch = new CloudWatch()
     const coldStartDuration = 15 * 60 * 1000 - lambdaRemainingTimeStart

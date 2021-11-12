@@ -1,10 +1,12 @@
 import { getLog as getBaseLog, pureRequire } from '@resolve-js/runtime-base'
-
 import type {
   SchedulerEntry,
   Scheduler,
   Runtime,
 } from '@resolve-js/runtime-base'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 
 const getLog = (name: string) => getBaseLog(`scheduler:${name}`)
 
@@ -16,8 +18,12 @@ const start = async (entry: SchedulerEntry) => {
     let STS: any
     let invokeFunction: any
     try {
-      void ({ default: STS } = pureRequire('aws-sdk/clients/sts'))
-      void ({ invokeFunction } = pureRequire('resolve-cloud-common/lambda'))
+      void ({ default: STS } = interopRequireDefault(
+        pureRequire('aws-sdk/clients/sts')
+      ))
+      void ({ invokeFunction } = interopRequireDefault(
+        pureRequire('resolve-cloud-common/lambda')
+      ))
     } catch {}
 
     const { Arn } = await new STS().getCallerIdentity().promise()
@@ -58,8 +64,12 @@ const stopAll = async () => {
   let STS: any
   let invokeFunction: any
   try {
-    void ({ default: STS } = pureRequire('aws-sdk/clients/sts'))
-    void ({ invokeFunction } = pureRequire('resolve-cloud-common/lambda'))
+    void ({ default: STS } = interopRequireDefault(
+      pureRequire('aws-sdk/clients/sts')
+    ))
+    void ({ invokeFunction } = interopRequireDefault(
+      pureRequire('resolve-cloud-common/lambda')
+    ))
   } catch {}
 
   const { Arn } = await new STS().getCallerIdentity().promise()

@@ -6,6 +6,9 @@ import mime from 'mime-types'
 
 import type { Uploader, UploaderPool } from '@resolve-js/runtime-base'
 import { pureRequire } from '@resolve-js/runtime-base'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 
 export type UploaderPoolCloud = UploaderPool & {
   uploaderArn: string
@@ -28,7 +31,9 @@ const createPreSignedPut = async (
 ) => {
   let Lambda: any
   try {
-    void ({ default: Lambda } = pureRequire('aws-sdk/clients/lambda'))
+    void ({ default: Lambda } = interopRequireDefault(
+      pureRequire('aws-sdk/clients/lambda')
+    ))
   } catch {}
   const lambda = new Lambda()
 
@@ -89,7 +94,9 @@ const createPresignedPost = async (
 ) => {
   let Lambda: any
   try {
-    void ({ default: Lambda } = pureRequire('aws-sdk/clients/lambda'))
+    void ({ default: Lambda } = interopRequireDefault(
+      pureRequire('aws-sdk/clients/lambda')
+    ))
   } catch {}
   const lambda = new Lambda()
 

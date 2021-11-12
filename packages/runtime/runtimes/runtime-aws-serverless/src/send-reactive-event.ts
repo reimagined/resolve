@@ -1,5 +1,9 @@
 import { getLog, pureRequire } from '@resolve-js/runtime-base'
 import type { ReactiveEventDispatcher } from '@resolve-js/runtime-base'
+import { errorBoundary } from 'resolve-cloud-common/utils/errorBoundary'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 
 export const sendReactiveEvent: ReactiveEventDispatcher = async (event) => {
   const { aggregateId, type } = event
@@ -7,14 +11,20 @@ export const sendReactiveEvent: ReactiveEventDispatcher = async (event) => {
   let escapeId: any
   let escapeStr: any
   let executeStatement: any
-  let errorBoundary: any
   let invokeFunction: any
   try {
-    void ({ escapeId } = pureRequire('resolve-cloud-common/postgres'))
-    void ({ escapeStr } = pureRequire('resolve-cloud-common/postgres'))
-    void ({ executeStatement } = pureRequire('resolve-cloud-common/postgres'))
-    void ({ errorBoundary } = pureRequire('resolve-cloud-common/utils'))
-    void ({ invokeFunction } = pureRequire('resolve-cloud-common/lambda'))
+    void ({ escapeId } = interopRequireDefault(
+      pureRequire('resolve-cloud-common/postgres')
+    ))
+    void ({ escapeStr } = interopRequireDefault(
+      pureRequire('resolve-cloud-common/postgres')
+    ))
+    void ({ executeStatement } = interopRequireDefault(
+      pureRequire('resolve-cloud-common/postgres')
+    ))
+    void ({ invokeFunction } = interopRequireDefault(
+      pureRequire('resolve-cloud-common/lambda')
+    ))
   } catch {}
   const databaseNameAsId = escapeId(
     process.env.RESOLVE_EVENT_STORE_DATABASE_NAME as string
