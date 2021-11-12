@@ -332,7 +332,11 @@ export const lambdaWorker = async (
       )
     }
   } catch (error) {
-    log.error('top-level event handler execution error!')
+    log.error(
+      `top-level event handler execution error! Event: ${JSON.stringify(
+        lambdaEvent
+      )}`
+    )
 
     runtime?.monitoring?.group({ Part: 'Internal' }).error(error)
 
