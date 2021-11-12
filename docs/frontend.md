@@ -71,18 +71,19 @@ export default entryPoint
 ##### @resolve-js/react-hooks:
 
 ```js
-import { ResolveContext } from '@resolve-js/react-hooks'
+import { ResolveProvider } from '@resolve-js/react-hooks'
 ...
-const entryPoint = context => {
+const entryPoint = (clientContext) => {
   const appContainer = document.createElement('div')
   document.body.appendChild(appContainer)
   render(
-    <ResolveContext.Provider value={context}>
+    <ResolveProvider context={clientContext}>
       <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
-    </ResolveContext.Provider>,
+    </ResolveProvider>,
     appContainer
   )
 }
+export default
 ```
 
 ### SSR Handlers
