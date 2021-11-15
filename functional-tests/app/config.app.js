@@ -146,6 +146,11 @@ const appConfig = {
       method: 'GET',
     },
     {
+      handler: 'common/api-handlers/health-check.js',
+      path: '/api/health-check',
+      method: 'GET',
+    },
+    {
       handler: {
         package: '@resolve-js/runtime-single-process',
         import: 'queryIsReadyHandler',

@@ -4,17 +4,20 @@ import {
   jestTimeout,
   makeTypedTestEvent,
   isPostgres,
+  collectPostgresStatistics,
 } from '../eventstore-test-utils'
 
 import {
+  ConcurrentError,
   threadArrayToCursor,
   checkEventsContinuity,
-  StoredEventPointer,
-  ConcurrentError,
   initThreadArray,
 } from '@resolve-js/eventstore-base'
 
-import type { StoredEvent } from '@resolve-js/eventstore-base'
+import type {
+  StoredEventPointer,
+  StoredEvent,
+} from '@resolve-js/eventstore-base'
 
 jest.setTimeout(jestTimeout())
 
@@ -70,6 +73,10 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
           Math.sign(a.event.threadId - b.event.threadId)
       )
     })
+
+    if (isPostgres()) {
+      await collectPostgresStatistics('save_and_load_testing')
+    }
 
     const description = await adapter.describe()
     expect(description.eventCount).toEqual(checkCount)
@@ -172,6 +179,16 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
 
   test('should load events consequentially from the middle', async () => {
     await testEventLoading(checkCount / 2, [eventTypes[0], eventTypes[2]])
+  })
+
+  test('preferring regular event loader should return non-native one', async () => {
+    const eventLoader = await adapter.getEventLoader(
+      { cursor: null },
+      { preferRegular: true }
+    )
+    const isNative = eventLoader.isNative
+    await eventLoader.close()
+    expect(isNative).toBe(false)
   })
 
   test('same cursors are not continuous', async () => {

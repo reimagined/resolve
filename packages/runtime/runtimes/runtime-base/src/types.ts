@@ -5,6 +5,7 @@ import type {
   Event,
   EventPointer,
   Monitoring,
+  MonitoringAdapter,
   PerformanceTracer,
   Uploader as PublicUploader,
   BuildTimeConstants,
@@ -111,6 +112,7 @@ export type Assemblies = {
   uploadAdapter: () => UploaderPool
   eventstoreAdapter: () => EventStoreAdapter
   readModelConnectors: Record<string, ReadModelConnectorFactory>
+  monitoringAdapters: Record<string, () => MonitoringAdapter>
 
   //TODO: types
   seedClientEnvs: any
@@ -124,10 +126,12 @@ export type EventSubscriberNotification = {
   sendTime: number
   event?: Event
   cursor?: string
+  [key: string]: any
 }
 
 export type InvokeBuildAsync = (
-  parameters: EventSubscriberNotification
+  parameters: EventSubscriberNotification,
+  timeout?: number
 ) => Promise<void>
 
 export type { BuildTimeConstants }
@@ -173,10 +177,10 @@ export type EventListenersManagerParameters = {
 export type RuntimeFactoryParameters = {
   readonly seedClientEnvs: Assemblies['seedClientEnvs']
   readonly serverImports: Assemblies['serverImports']
+  readonly monitoring: Monitoring
   readonly domain: DomainMeta
   readonly domainInterop: Domain
   readonly performanceTracer: PerformanceTracer
-  readonly monitoring: Monitoring
   readonly eventStoreAdapterFactory: EventStoreAdapterFactory
   readonly readModelConnectorsFactories: Record<
     string,
@@ -213,6 +217,7 @@ export type Runtime = {
   readonly eventListenersManager: EventListenersManager
   readonly dispose: () => Promise<void>
   readonly broadcastEvent: (event?: EventPointer) => Promise<void>
+  readonly monitoring: Monitoring
 }
 
 export type PublicRuntime = Omit<Runtime, 'dispose' | 'readModelConnectors'>

@@ -1,28 +1,15 @@
-import BetterSqlite from 'better-sqlite3'
-import {
-  AdapterPool,
-  ConnectionDependencies,
-  SqliteAdapterConfig,
-} from '../src/types'
-import connect from '../src/connect'
-import fs from 'fs'
+import { AdapterPool, SqliteAdapterConfig } from '../src/types'
+import configure from '../src/configure'
 
 jest.mock('../src/get-log')
 
 let pool: AdapterPool
-let connectionDependencies: ConnectionDependencies
 let config: SqliteAdapterConfig
 
 beforeEach(() => {
   pool = {
     shapeEvent: ((e: any) => e) as any,
   } as any
-  connectionDependencies = {
-    BetterSqlite,
-    tmp: jest.fn(),
-    os: jest.fn(),
-    fs: jest.fn(),
-  }
   config = {
     databaseFile: 'database-file',
     secretsTableName: 'secrets-table',
@@ -32,26 +19,22 @@ beforeEach(() => {
 })
 
 test("config assigned to adapter's pool", async () => {
-  await connect(pool, connectionDependencies, config)
+  configure(pool, config)
 
   expect(pool.databaseFile).toEqual('database-file')
   expect(pool.secretsTableName).toEqual('secrets-table')
-
-  if (fs.existsSync('database-file')) {
-    fs.unlinkSync('database-file')
-  }
 })
 
-test('connect should throw on wrong parameters', async () => {
-  await expect(
-    connect(pool, connectionDependencies, ({
+test('configure should throw on wrong parameters', async () => {
+  expect(() =>
+    configure(pool, ({
       databaseFile: 42,
     } as any) as SqliteAdapterConfig)
-  ).rejects.toThrow()
+  ).toThrow()
 
-  await expect(
-    connect(pool, connectionDependencies, {
+  expect(() =>
+    configure(pool, {
       databaseFile: '',
     })
-  ).rejects.toThrow()
+  ).toThrow()
 })

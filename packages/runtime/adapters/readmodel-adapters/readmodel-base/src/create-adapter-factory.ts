@@ -19,9 +19,11 @@ const createAdapter = <
   options: AdapterOptions
 ): AdapterApi<AdapterPool> => {
   const {
+    AlreadyDisposedError,
     splitNestedPath,
     checkEventsContinuity,
     withPerformanceTracer,
+    wrapIsConditionUnsupportedFormat,
     wrapWithCloneArgs,
     wrapConnect,
     wrapDisconnect,
@@ -105,6 +107,7 @@ const createAdapter = <
       monitoring,
     },
     adapterPoolMap: new Map(),
+    AlreadyDisposedError,
     withPerformanceTracer,
     performanceTracer,
     monitoring,
@@ -113,6 +116,7 @@ const createAdapter = <
   const adapter: AdapterApi<AdapterPool> = {
     connect: wrapConnect(
       pool,
+      wrapIsConditionUnsupportedFormat,
       wrapWithCloneArgs,
       connect,
       storeApi,

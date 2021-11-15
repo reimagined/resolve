@@ -16,8 +16,9 @@ import type {
 import {
   adapterFactory,
   adapters,
+  collectPostgresStatistics,
+  isPostgres,
   jestTimeout,
-  isServerlessAdapter,
   makeTestSavedEvent,
 } from '../eventstore-test-utils'
 
@@ -26,11 +27,11 @@ import createStreamBuffer from './create-stream-buffer'
 jest.setTimeout(jestTimeout())
 
 function getInterruptingTimeout() {
-  return isServerlessAdapter() ? 200 : 100
+  return 100
 }
 
 function getInputEventsCount() {
-  return isServerlessAdapter() ? 500 : 2500
+  return 2500
 }
 
 function* eventsGenerator(inputCountEvents: number) {
@@ -92,6 +93,9 @@ describe('import-export events auto-mode', () => {
       inputEventstoreAdapter.importEvents()
     )
 
+    if (isPostgres()) {
+      await collectPostgresStatistics('input-auto')
+    }
     expect((await inputEventstoreAdapter.describe()).eventCount).toEqual(
       inputCountEvents
     )
@@ -153,6 +157,9 @@ describe('import-export events manual mode', () => {
       inputEventstoreAdapter.importEvents()
     )
 
+    if (isPostgres()) {
+      await collectPostgresStatistics('input-manual')
+    }
     expect((await inputEventstoreAdapter.describe()).eventCount).toEqual(
       inputCountEvents
     )

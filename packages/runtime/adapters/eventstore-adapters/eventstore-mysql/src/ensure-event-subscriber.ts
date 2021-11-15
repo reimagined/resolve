@@ -18,7 +18,7 @@ const ensureEventSubscriber = async (
     status,
     updateOnly,
   } = params
-  const { subscribersTableName, connection, escapeId, escape } = pool
+  const { subscribersTableName, query, escapeId, escape } = pool
   const subscribersTableNameAsId = escapeId(subscribersTableName)
   if (
     (!!updateOnly && destination != null) ||
@@ -30,7 +30,7 @@ const ensureEventSubscriber = async (
   }
 
   try {
-    await connection.query(`
+    await query(`
       START TRANSACTION;
       ${
         updateOnly
@@ -79,7 +79,7 @@ const ensureEventSubscriber = async (
     `)
   } catch (error) {
     try {
-      await connection.query('ROLLBACK')
+      await query('ROLLBACK')
     } catch (err) {}
 
     const errno = error != null && error.errno != null ? error.errno : 0

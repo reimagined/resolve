@@ -1,5 +1,5 @@
 import { mock, mockDeep } from 'jest-mock-extended'
-import { backgroundJob, createRuntime } from '@resolve-js/runtime-base'
+import { createRuntime } from '@resolve-js/runtime-base'
 import { mocked } from 'ts-jest/utils'
 import { startExpress } from '../src/start-express'
 import { expressAppFactory } from '../src/express-app-factory'
@@ -8,7 +8,7 @@ import { websocketServerFactory } from '../src/websocket-server-factory'
 import factory from '../src/index'
 import type { RuntimeOptions } from '../src/index'
 import type { DomainMeta } from '@resolve-js/core'
-import type { Runtime, RuntimeEntryContext } from '@resolve-js/runtime-base'
+import type { RuntimeEntryContext } from '@resolve-js/runtime-base'
 
 jest.mock('../src/prepare-domain', () => ({
   prepareDomain: jest.fn(() => mockDeep<DomainMeta>()),
@@ -32,14 +32,14 @@ jest.mock('../src/websocket-server-factory', () => ({
 jest.mock('../src/start-express', () => ({
   startExpress: jest.fn(),
 }))
+jest.mock('../src/clean-up-process', () => ({
+  cleanUpProcess: jest.fn(),
+}))
 jest.mock('../src/uploader-factory', () => ({
   uploaderFactory: jest.fn(),
 }))
 jest.mock('../src/scheduler-factory', () => ({
   schedulerFactory: jest.fn(),
-}))
-jest.mock('../src/monitoring-factory', () => ({
-  monitoringFactory: jest.fn(),
 }))
 
 const mStartExpress = mocked(startExpress)

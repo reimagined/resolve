@@ -1,5 +1,3 @@
-import AppContainer from './app-container'
-import createStore from './create-store'
 import { createResolveStore } from './create-resolve-store'
 
 import { connectStaticBasedUrls } from './urls/connect-static-based-urls'
@@ -17,7 +15,6 @@ import { useReduxViewModelSelector } from './view-model/use-redux-view-model-sel
 import getOrigin from './internal/get-origin'
 import * as actionTypes from './internal/action-types'
 import deserializeInitialState from './internal/deserialize-initial-state'
-import connectResolveAdvanced from './internal/connect-resolve-advanced'
 
 import { ResultStatus } from './types'
 import { ResolveReduxProvider } from './resolve-redux-provider'
@@ -43,10 +40,4 @@ export {
   useReduxViewModelSelector,
   ResultStatus,
   internal,
-  // deprecated, encapsulation breach
-  AppContainer,
-  createStore,
-  getOrigin,
-  deserializeInitialState,
-  connectResolveAdvanced,
 }

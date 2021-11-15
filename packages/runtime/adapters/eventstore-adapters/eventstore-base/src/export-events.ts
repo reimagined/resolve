@@ -9,18 +9,29 @@ import getNextCursor from './get-next-cursor'
 import { AlreadyFrozenError, AlreadyUnfrozenError } from './frozen-errors'
 
 import type {
-  AdapterPoolConnectedProps,
-  AdapterPoolPossiblyUnconnected,
+  AdapterBoundPool,
   ExportOptions,
   ExportEventsStream,
+  InputCursor,
+  StoredEvent,
 } from './types'
+
+type Context<ConfiguredProps extends {}> = {
+  pool: AdapterBoundPool<ConfiguredProps>
+  maintenanceMode: ExportOptions['maintenanceMode']
+  cursor: InputCursor
+  bufferSize: number
+  isBufferOverflow: boolean
+  isEnd: boolean
+  externalTimeout: boolean
+}
 
 const FLUSH_CHUNK_SIZE = 64 * 1024 * 1024
 
-async function startProcessEvents({
+async function startProcessEvents<ConfiguredProps extends {}>({
   pool,
   maintenanceMode,
-}: any): Promise<void> {
+}: Context<ConfiguredProps>): Promise<void> {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
     try {
       await pool.freeze()
@@ -32,7 +43,10 @@ async function startProcessEvents({
   }
 }
 
-async function endProcessEvents({ pool, maintenanceMode }: any): Promise<void> {
+async function endProcessEvents<ConfiguredProps extends {}>({
+  pool,
+  maintenanceMode,
+}: Context<ConfiguredProps>): Promise<void> {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
     try {
       await pool.unfreeze()
@@ -46,20 +60,20 @@ async function endProcessEvents({ pool, maintenanceMode }: any): Promise<void> {
 
 type EventRecord = {
   buffer: Buffer
-  event: any
+  event: StoredEvent
 }
 
-async function* generator(context: any): AsyncGenerator<Buffer, void> {
-  const { pool, bufferSize }: any = context
-
-  await pool.waitConnect()
+async function* generator<ConfiguredProps extends {}>(
+  context: Context<ConfiguredProps>
+): AsyncGenerator<Buffer, void> {
+  const { pool, bufferSize } = context
 
   await startProcessEvents(context)
 
   let eventsByteSize = 0
 
   while (true) {
-    const { events }: any = await pool.loadEventsByCursor({
+    const { events } = await pool.loadEventsByCursor({
       cursor: context.cursor,
       limit: BATCH_SIZE,
     })
@@ -119,8 +133,8 @@ async function* generator(context: any): AsyncGenerator<Buffer, void> {
   }
 }
 
-const exportEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
-  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+const exportEventsStream = <ConfiguredProps extends {}>(
+  pool: AdapterBoundPool<ConfiguredProps>,
   {
     cursor = null,
     maintenanceMode = MAINTENANCE_MODE_AUTO,
@@ -133,7 +147,7 @@ const exportEventsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
     throw new Error(`Wrong maintenance mode ${String(maintenanceMode)}`)
   }
 
-  const context: any = {
+  const context: Context<ConfiguredProps> = {
     pool,
     maintenanceMode,
     cursor,

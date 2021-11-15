@@ -46,23 +46,25 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(state.statusData).toBeNull()
     expect(state.iterator).toBeNull()
     expect(state.paused).toEqual(false)
+    expect(state.locked).toEqual(false)
   })
 
   test('set-replication-status should change status, statusData properties of the state', async () => {
-    await adapter.setReplicationStatus('batchInProgress', {
-      info: 'in progress',
+    await adapter.setReplicationStatus({
+      status: 'batchInProgress',
+      statusData: { info: 'in progress' },
     })
     let state = await adapter.getReplicationState()
     expect(state.status).toEqual('batchInProgress')
     expect(state.statusData).toEqual({ info: 'in progress' })
 
-    await adapter.setReplicationStatus('batchDone')
+    await adapter.setReplicationStatus({ status: 'batchDone' })
     state = await adapter.getReplicationState()
     expect(state.status).toEqual('batchDone')
     expect(state.statusData).toEqual(null)
   })
 
-  test('set-replication-status should set successEvent and not rewrite it if it was not provided', async () => {
+  test('set-replication-status should set successEvent and iterator and not rewrite them if they were not provided', async () => {
     const event: OldEvent = {
       aggregateId: 'aggregateId',
       aggregateVersion: 1,
@@ -70,20 +72,21 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
       type: 'type',
     }
 
-    await adapter.setReplicationStatus('batchDone', null, event)
+    await adapter.setReplicationStatus({
+      status: 'batchDone',
+      statusData: null,
+      lastEvent: event,
+      iterator: { cursor: 'DEAF' },
+    })
     let state = await adapter.getReplicationState()
     expect(state.status).toEqual('batchDone')
     expect(state.successEvent).toEqual(event)
+    expect(state.iterator).toEqual({ cursor: 'DEAF' })
 
-    await adapter.setReplicationStatus('error')
+    await adapter.setReplicationStatus({ status: 'error' })
     state = await adapter.getReplicationState()
     expect(state.status).toEqual('error')
     expect(state.successEvent).toEqual(event)
-  })
-
-  test('set-replication-iterator should change iterator property of the state', async () => {
-    await adapter.setReplicationIterator({ cursor: 'DEAF' })
-    const state = await adapter.getReplicationState()
     expect(state.iterator).toEqual({ cursor: 'DEAF' })
   })
 
@@ -95,6 +98,24 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     await adapter.setReplicationPaused(false)
     state = await adapter.getReplicationState()
     expect(state.paused).toEqual(false)
+  })
+
+  test('set-replication-lock should work as expected', async () => {
+    const lockDuration = 4000
+    expect(await adapter.setReplicationLock(lockDuration)).toEqual(true)
+    let state = await adapter.getReplicationState()
+    expect(state.locked).toEqual(true)
+
+    expect(await adapter.setReplicationLock(lockDuration)).toEqual(false)
+    await new Promise((resolve) => setTimeout(resolve, lockDuration))
+
+    state = await adapter.getReplicationState()
+    expect(state.locked).toBe(false)
+
+    expect(await adapter.setReplicationLock(lockDuration * 2)).toBe(true)
+    expect(await adapter.setReplicationLock(0)).toBe(true)
+    state = await adapter.getReplicationState()
+    expect(state.locked).toBe(false)
   })
 
   const secretCount = 36
@@ -267,6 +288,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(state.status).toEqual('notStarted')
     expect(state.statusData).toBeNull()
     expect(state.iterator).toBeNull()
+    expect(state.locked).toBe(false)
   })
 
   const lessEventCount = 128

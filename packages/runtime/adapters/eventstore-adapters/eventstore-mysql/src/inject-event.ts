@@ -2,7 +2,7 @@ import { AdapterPool } from './types'
 import { StoredEvent } from '@resolve-js/eventstore-base'
 
 const injectEvent = async function (
-  { eventsTableName, connection, escapeId, escape }: AdapterPool,
+  { eventsTableName, connection, escapeId, escape, query }: AdapterPool,
   event: StoredEvent
 ): Promise<void> {
   const eventsTableNameAsId: string = escapeId(eventsTableName)
@@ -31,7 +31,7 @@ const injectEvent = async function (
   }
 
   try {
-    await connection.query(
+    await query(
       `START TRANSACTION;
       
       INSERT INTO ${eventsTableNameAsId}(
@@ -60,7 +60,7 @@ const injectEvent = async function (
     )
   } catch (error) {
     try {
-      await connection.query(`ROLLBACK;`)
+      await query(`ROLLBACK;`)
     } catch (e) {}
 
     throw error

@@ -19,6 +19,7 @@ import os from 'os'
 import fs from 'fs'
 
 import { Readable } from 'stream'
+import { Client } from 'pg'
 
 async function safeDrop(adapter: Adapter): Promise<void> {
   try {
@@ -28,6 +29,21 @@ async function safeDrop(adapter: Adapter): Promise<void> {
       throw error
     }
   }
+}
+
+export async function collectPostgresStatistics(schemaName: string) {
+  const client = new Client({
+    user: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    host: process.env.POSTGRES_HOST,
+    port: +process.env.POSTGRES_PORT,
+    database: process.env.POSTGRES_DATABASE,
+  })
+  await client.connect()
+
+  await client.query(`ANALYZE "${schemaName}".events`)
+  await client.query(`ANALYZE "${schemaName}".secrets`)
+  await client.end()
 }
 
 export function isPostgres(): boolean {
@@ -56,11 +72,6 @@ export function isPostgres(): boolean {
 
 export function jestTimeout(): number {
   if (
-    process.env.TEST_POSTGRES_SERVERLESS !== undefined &&
-    process.env.TEST_POSTGRES_SERVERLESS !== 'false'
-  ) {
-    return 1000 * 60 * 5
-  } else if (
     process.env.TEST_POSTGRES !== undefined &&
     process.env.TEST_POSTGRES !== 'false'
   ) {
@@ -68,13 +79,6 @@ export function jestTimeout(): number {
   } else {
     return 1000 * 60 * 1
   }
-}
-
-export function isServerlessAdapter(): boolean {
-  return (
-    process.env.TEST_POSTGRES_SERVERLESS !== undefined &&
-    process.env.TEST_POSTGRES_SERVERLESS !== 'false'
-  )
 }
 
 export function streamToString(stream: Readable): Promise<string> {
@@ -221,7 +225,6 @@ export const adapterFactory = isPostgres()
             password: process.env.POSTGRES_PASSWORD,
             ...additionalOptions,
           })
-          await adapter.describe()
           return adapter
         }
       },
@@ -268,7 +271,6 @@ export const adapterFactory = isPostgres()
           const adapter = createSqliteAdapter({
             ...additionalOptions,
           })
-          await adapter.describe()
           return adapter
         }
       },

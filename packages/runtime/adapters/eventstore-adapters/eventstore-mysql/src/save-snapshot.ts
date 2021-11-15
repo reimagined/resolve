@@ -9,13 +9,13 @@ const saveSnapshot = async (
 ): Promise<void> =>
   snapshotTrigger(pool, snapshotKey, content, async () => {
     const log = getLog(`saveSnapshot:${snapshotKey}`)
-    const { snapshotsTableName, connection, escapeId, escape } = pool
+    const { snapshotsTableName, escapeId, escape } = pool
 
     const snapshotsTableNameAsId: string = escapeId(snapshotsTableName)
 
     log.debug(`writing the snapshot to database`)
 
-    await connection.query(
+    await pool.query(
       `INSERT INTO ${snapshotsTableNameAsId}(\`SnapshotKey\`, \`SnapshotContent\`)
        VALUES(${escape(snapshotKey)}, ${escape(content)})
        ON DUPLICATE KEY UPDATE \`SnapshotContent\` = ${escape(content)}`

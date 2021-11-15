@@ -1,5 +1,6 @@
 import type { AdapterPool } from './types'
 import type { ReplicationStatus } from '@resolve-js/eventstore-base'
+import { LONG_NUMBER_SQL_TYPE } from './constants'
 import { getLog } from './get-log'
 
 const initReplicationStateTable = async (
@@ -21,28 +22,16 @@ const initReplicationStateTable = async (
 
   const notStarted: ReplicationStatus = 'notStarted'
 
-  let tries = 0
-  const maxTries = 5
-  while (tries < maxTries) {
-    try {
-      await executeStatement(`CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${replicationStateTableNameAsId}(
+  await executeStatement(`CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${replicationStateTableNameAsId}(
         "id" SMALLINT DEFAULT 0 PRIMARY KEY CONSTRAINT singleton_row CHECK (id = 0),
         "Status" VARCHAR(50) DEFAULT ${escape(notStarted)},
         "StatusData" JSONB NULL,
         "Iterator" JSONB NULL,
         "IsPaused" BOOLEAN DEFAULT FALSE NOT NULL,
-        "SuccessEvent" JSON NULL
+        "SuccessEvent" JSON NULL,
+        "LockExpirationTime" ${LONG_NUMBER_SQL_TYPE} DEFAULT 0 NOT NULL
       )
     `)
-      break
-    } catch (error) {
-      tries++
-      log.error(error)
-      if (tries >= maxTries) {
-        throw error
-      }
-    }
-  }
 
   await executeStatement(
     `INSERT INTO ${databaseNameAsId}.${replicationStateTableNameAsId} DEFAULT VALUES ON CONFLICT ("id") DO NOTHING`

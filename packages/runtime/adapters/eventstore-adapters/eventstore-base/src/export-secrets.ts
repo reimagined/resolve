@@ -3,22 +3,18 @@ import { Readable } from 'stream'
 import { BATCH_SIZE, MAINTENANCE_MODE_AUTO } from './constants'
 import { AlreadyFrozenError, AlreadyUnfrozenError } from './frozen-errors'
 
-import {
-  AdapterPoolConnectedProps,
-  AdapterPoolPossiblyUnconnected,
-  ExportSecretsOptions,
-} from './types'
+import { AdapterBoundPool, ExportSecretsOptions } from './types'
 
-type ExportStreamContext = {
-  pool: any
+type Context<ConfiguredProps extends {}> = {
+  pool: AdapterBoundPool<ConfiguredProps>
   idx: ExportSecretsOptions['idx']
   maintenanceMode: ExportSecretsOptions['maintenanceMode']
 }
 
-async function startProcessSecrets({
+async function startProcessSecrets<ConfiguredProps extends {}>({
   pool,
   maintenanceMode,
-}: any): Promise<void> {
+}: Context<ConfiguredProps>): Promise<void> {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
     try {
       await pool.freeze()
@@ -30,10 +26,10 @@ async function startProcessSecrets({
   }
 }
 
-async function endProcessSecrets({
+async function endProcessSecrets<ConfiguredProps extends {}>({
   pool,
   maintenanceMode,
-}: any): Promise<void> {
+}: Context<ConfiguredProps>): Promise<void> {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
     try {
       await pool.unfreeze()
@@ -45,12 +41,10 @@ async function endProcessSecrets({
   }
 }
 
-async function* generator(
-  context: ExportStreamContext
+async function* generator<ConfiguredProps extends {}>(
+  context: Context<ConfiguredProps>
 ): AsyncGenerator<Buffer, void> {
   const { pool }: any = context
-
-  await pool.waitConnect()
 
   await startProcessSecrets(context)
 
@@ -73,8 +67,8 @@ async function* generator(
   }
 }
 
-const exportSecretsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
-  pool: AdapterPoolPossiblyUnconnected<ConnectedProps>,
+const exportSecretsStream = <ConfiguredProps extends {}>(
+  pool: AdapterBoundPool<ConfiguredProps>,
   {
     idx = null,
     maintenanceMode = MAINTENANCE_MODE_AUTO,
@@ -83,7 +77,7 @@ const exportSecretsStream = <ConnectedProps extends AdapterPoolConnectedProps>(
   if (pool.loadSecrets === undefined)
     throw new Error('loadSecrets is not defined for this adapter')
 
-  const context: ExportStreamContext = {
+  const context: Context<ConfiguredProps> = {
     pool,
     idx,
     maintenanceMode,

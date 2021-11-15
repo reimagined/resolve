@@ -45,7 +45,7 @@ const makeTestRuntime = (events: Event[] = []): ViewModelRuntime => {
     replicateEvents: jest.fn(),
     replicateSecrets: jest.fn(),
     resetReplication: jest.fn(),
-    setReplicationIterator: jest.fn(),
+    setReplicationLock: jest.fn(),
     setReplicationPaused: jest.fn(),
     setReplicationStatus: jest.fn(),
     saveEvent: jest.fn(),
@@ -78,6 +78,8 @@ const makeTestRuntime = (events: Event[] = []): ViewModelRuntime => {
     publish: jest.fn(),
     duration: jest.fn(),
     rate: jest.fn(),
+    getMetrics: jest.fn(),
+    clearMetrics: jest.fn(),
   }
 
   mocked(monitoring.group).mockReturnValue(monitoring)

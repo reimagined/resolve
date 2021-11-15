@@ -1,6 +1,5 @@
 import type {
-  AdapterPoolConnectedProps,
-  AdapterPoolConnected,
+  AdapterBoundPool,
   EventFilter,
   StoredEventBatchPointer,
   PoolMethod,
@@ -9,10 +8,10 @@ import type {
 
 import { isCursorFilter } from './types'
 
-const wrapEventFilter = <ConnectedProps extends AdapterPoolConnectedProps>(
-  loadEvents: PoolMethod<ConnectedProps, Adapter['loadEvents']>
-): PoolMethod<ConnectedProps, Adapter['loadEvents']> => async (
-  pool: AdapterPoolConnected<ConnectedProps>,
+const wrapEventFilter = <ConfiguredProps extends {}>(
+  loadEvents: PoolMethod<ConfiguredProps, Adapter['loadEvents']>
+): PoolMethod<ConfiguredProps, Adapter['loadEvents']> => async (
+  pool: AdapterBoundPool<ConfiguredProps>,
   filter: EventFilter
 ): Promise<StoredEventBatchPointer> => {
   pool.validateEventFilter(filter)

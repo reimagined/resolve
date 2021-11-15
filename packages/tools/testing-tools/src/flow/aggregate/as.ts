@@ -3,7 +3,7 @@ import { CommandContext } from '../../types'
 import { CommandNode } from './command'
 import { shouldProduceEvent } from './should-produce-event'
 import { shouldThrow } from './should-throw'
-import { withSecretsManager, setSecretsManager } from './with-secrets-manager'
+import { withSecretsManager } from './with-secrets-manager'
 
 export type AsNode = Omit<CommandNode, 'as'>
 
@@ -22,6 +22,5 @@ export const as = (context: CommandContext, authToken: string): AsNode => {
     shouldProduceEvent: partial(shouldProduceEvent, context),
     shouldThrow: partial(shouldThrow, context),
     withSecretsManager: partial(withSecretsManager, context),
-    setSecretsManager: partial(setSecretsManager, context),
   })
 }

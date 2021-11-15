@@ -29,15 +29,3 @@ export const withSecretsManager = (
     as: partial(as, context),
   })
 }
-
-// FIXME: deprecated
-export const setSecretsManager = (
-  context: CommandContext,
-  manager: SecretsManager
-) => {
-  // eslint-disable-next-line no-console
-  console.warn(
-    `'setSecretsManager' selector deprecated, you should use 'withSecretsManager' selector instead.`
-  )
-  return withSecretsManager(context, manager)
-}
