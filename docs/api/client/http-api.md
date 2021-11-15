@@ -88,22 +88,47 @@ The request body should have the `application/json` content type and contain the
 | **commandType**   | string | The command type that the aggregate can handle        |
 | **payload**       | object | Parameters the command accepts                        |
 
-##### Example
+## Authorization
 
-Use the following command to add an item to the **shopping-list** example:
+To authorize your request on a reSolve server, specify a Bearer Token in your request's Authorization header:
 
-```sh
-$ curl -X POST "http://localhost:3000/api/commands"
---header "Content-Type: application/json" \
---data '
-{
-  "aggregateName":"Todo",
-  "type":"createItem",
-  "aggregateId":"root-id",
-  "payload": {
-    "id":`date +%s`,
-    "text":"Learn reSolve API"
-  }
+```js
+await fetch(Url, {
+  ...
+  headers: {
+    Authorization: `Bearer ${jwt}`,
+    ...
+  },
+  ...
+})
+```
+
+See the [Authentication and Authorization](../../authentication-and-authorization.md) topic for information on how authorization is handled on server.
+
+## Example
+
+The code sample bellow demonstrates how to implement a JavaScript function that sends the specified command to a reSolve server with authorization.
+
+```js
+const sendCommand = async ({
+  aggregateName,
+  aggregateId,
+  type,
+  payload,
+  jwt,
+}) => {
+  await fetch(apiCommandsUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({
+      aggregateName,
+      aggregateId,
+      type,
+      payload,
+    }),
+  })
 }
-'
 ```
