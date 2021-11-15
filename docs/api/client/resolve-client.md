@@ -46,12 +46,27 @@ client.command(
   {
     aggregateName: 'Chat',
     type: 'postMessage',
-    aggregateId: userName,
-    payload: message,
+    aggregateId: chatRoom,
+    payload: {
+      userName,
+      message,
+    },
+  },
+  {
+    middleware: {
+      error: [
+        createRetryOnErrorMiddleware({
+          attempts: 3,
+          errors: [500],
+          debug: true,
+          period: 500,
+        }),
+      ],
+    },
   },
   (err) => {
     if (err) {
-      console.warn(`Error while sending command: ${err}`)
+      console.warn(`Error sending a command: ${err}`)
     }
   }
 )

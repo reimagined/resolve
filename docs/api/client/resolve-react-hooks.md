@@ -23,6 +23,24 @@ Returns the [@resolve-js/client](resolve-client.md) library's `client` object.
 
 ##### Example
 
+```js
+const client = useClient()
+
+client.command(
+  {
+    aggregateName: 'Chat',
+    type: 'postMessage',
+    aggregateId: userName,
+    payload: message,
+  },
+  (err) => {
+    if (err) {
+      console.warn(`Error while sending command: ${err}`)
+    }
+  }
+)
+```
+
 ### useCommand
 
 Initializes a command that can be passed to the backend.
@@ -174,8 +192,6 @@ const MyLists = () => {
 
 Allows a component to generate queries based on input parameters.
 
-##### Example
-
 ### useOriginResolver
 
 Resolves a relative path to an absolute URL within the application.
@@ -190,3 +206,8 @@ var commandApiPath = resolver('/api/commands')
 ### useStaticResolver
 
 Resolves a relative path to a static resource's full URL.
+
+```js
+var staticResolver = useStaticResolver()
+var imagePath = staticResolver('/account/image.jpg')
+```
