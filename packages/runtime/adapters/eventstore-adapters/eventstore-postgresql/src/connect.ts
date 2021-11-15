@@ -2,6 +2,8 @@ import { getLog } from './get-log'
 import type { AdapterPool } from './types'
 import makePostgresClient from './make-postgres-client'
 
+let connectionIndex = 0
+
 const connect = async (
   pool: AdapterPool
 ): Promise<ReturnType<typeof makePostgresClient>> => {
@@ -26,6 +28,7 @@ const connect = async (
   await connection.connect()
   pool.connection = connection
   log.debug('connection to postgres database established')
+  log.debug(`connection index: ${connectionIndex++}`)
   return pool.connection
 }
 

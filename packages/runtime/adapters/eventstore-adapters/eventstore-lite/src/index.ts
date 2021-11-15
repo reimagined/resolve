@@ -42,11 +42,18 @@ import getCursorUntilEventTypes from './get-cursor-until-event-types'
 import describe from './describe'
 
 import configure from './configure'
+import { getLog } from './get-log'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
 import type { SqliteAdapterConfig } from './types'
 
+let instanceIndex = 0
+
 const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
+  const log = getLog('createAdapter')
+  log.debug(new Error().stack)
+  log.debug(`Creating eventstore adapter. instanceIndex: ${instanceIndex++}`)
+
   return createAdapter(
     {
       beginIncrementalImport,

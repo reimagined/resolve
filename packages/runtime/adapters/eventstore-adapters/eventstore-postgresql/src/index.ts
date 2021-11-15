@@ -53,8 +53,15 @@ import configure from './configure'
 
 import createResource from './resource/create'
 import destroyResource from './resource/destroy'
+import { getLog } from './get-log'
+
+let instanceIndex = 0
 
 const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
+  const log = getLog('createAdapter')
+  log.debug(new Error().stack)
+  log.debug(`Creating eventstore adapter. instanceIndex: ${instanceIndex++}`)
+
   return createAdapter(
     {
       loadEventsByCursor,

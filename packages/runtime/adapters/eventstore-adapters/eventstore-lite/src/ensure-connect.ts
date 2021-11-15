@@ -14,10 +14,15 @@ const randRange = (min: number, max: number): number =>
 const fullJitter = (retries: number): number =>
   randRange(0, Math.min(100, 2 * 2 ** retries))
 
+let connectionIndex = 0
+
 const ensureConnect = async (pool: AdapterPool): Promise<BetterSqliteDb> => {
   const log = getLog('connect')
 
-  if (pool.database !== undefined) return pool.database
+  if (pool.database !== undefined) {
+    log.debug('already connected')
+    return pool.database
+  }
 
   if (pool.connecting) {
     for (let retry = 0; ; retry++) {
@@ -115,6 +120,8 @@ const ensureConnect = async (pool: AdapterPool): Promise<BetterSqliteDb> => {
 
   pool.database = database
   log.debug('connection to sqlite databases established')
+  log.debug(`connection index: ${connectionIndex++}`)
+  log.debug(new Error().stack)
   return pool.database
 }
 
