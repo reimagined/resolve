@@ -221,93 +221,6 @@ Expand this section for an example, on how to test this functionality in your ap
 
 </summary>
 
-<Tabs>
-<TabItem value="curl" label="Check manually" default>
-
-You can use any REST client or **curl** to send a request:
-
-```sh
-curl -i http://localhost:3000/api/commands/ \
---header "Content-Type: application/json" \
---data '
-{
-  "aggregateName": "ShoppingList",
-  "aggregateId": "shopping-list-1",
-  "type": "createShoppingList",
-  "payload": {
-    "name": "List 1"
-  }
-}
-'
-
-X-Powered-By: Express
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 21 Oct 2020 09:53:03 GMT
-Connection: keep-alive
-Content-Length: 169
-
-{
-  "aggregateId": "shopping-list-1",
-  "aggregateVersion": 1,
-  "timestamp": 1603273983423,
-  "type": "SHOPPING_LIST_CREATED",
-  "payload": {
-    "name": "List 1"
-  }
-}
-```
-
-Use the console input shown below to add an item to the created shopping list:
-
-```sh
-curl -i http://localhost:3000/api/commands/ \
---header "Content-Type: application/json" \
---data '
-{
-  "aggregateName": "ShoppingList",
-  "aggregateId": "shopping-list-1",
-  "type": "createShoppingItem",
-  "payload": {
-    "id": "1",
-    "text": "Milk"
-  }
-}
-'
-
-X-Powered-By: Express
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 21 Oct 2020 09:53:57 GMT
-Connection: keep-alive
-Content-Length: 182
-
-{
-  "aggregateId": "shopping-list-1",
-  "aggregateVersion": 2,
-  "timestamp": 1603274037307,
-  "type": "SHOPPING_ITEM_CREATED",
-  "payload": {
-    "id": "1",
-    "text": "Milk"
-  }
-}
-```
-
-You can now check the event store database to see the newly created events. To do this, use the [Command Line Shell For SQLite](https://sqlite.org/cli.html) or any database management tool compatible with SQLite:
-
-<!-- prettier-ignore-start -->
-
-```sh
-sqlite3 data/event-store.db
-sqlite> select * from events;
-40|0|1603273983433|shopping-list-1|1|SHOPPING_LIST_CREATED|{"name":"List 1"}
-147|0|1603274037313|shopping-list-1|2|SHOPPING_ITEM_CREATED|{"id":"1","text":"Milk"}
-```
-
-<!-- prettier-ignore-end -->
-
-</TabItem>
-<TabItem value="test" label="Write a test">
-
 You can write an end-to-end test to check the new functionality. Refer to the [Running Tests](#running-tests) section for the information on how to run tests in your application.
 
 You can manually modify your application's test as shown below or use the test included into the lesson's [example project](https://github.com/reimagined/resolve/tree/dev/tutorial/lesson-1):
@@ -477,9 +390,6 @@ Call the project's `test:e2e` script to run the test:
 yarn test:e2e
 ```
 
-</TabItem>
-</Tabs>
-
 </details>
 
 ### Input Validation
@@ -567,37 +477,6 @@ Expand this section for an example, on how to test the validation.
 
 </summary>
 
-<Tabs>
-<TabItem value="curl" label="Check manually" default>
-
-You can send faulty commands to your aggregate to check whether the validation works as intended:
-
-```sh
-# Trying to create a shopping list without specifying the name
-$ curl -i http://localhost:3000/api/commands/ \
-> --header "Content-Type: application/json" \
-> --data '
-> {
->     "aggregateName": "ShoppingList",
->     "aggregateId": "shopping-list-2",
->     "type": "createShoppingList",
->     "payload": { }
-> }
-> '
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   164  100    31  100   133    142    610 --:--:-- --:--:-- --:--:--   655HTTP/1.1 500 Internal Server Error
-X-Powered-By: Express
-Date: Thu, 22 Nov 2018 11:14:10 GMT
-Connection: keep-alive
-Content-Length: 31
-
-Command error: name is required
-```
-
-</TabItem>
-<TabItem value="test" label="Write a test">
-
 Add the following test case to the application's test file.
 
 [test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/e2e/index.test.js)
@@ -654,9 +533,6 @@ test('validation should work correctly', async () => {
   }
 })
 ```
-
-</TabItem>
-</Tabs>
 
 </details>
 
@@ -822,36 +698,6 @@ Expand this section for an example, on how to test the ShoppingLists Read Model.
 
 </summary>
 
-<Tabs>
-<TabItem value="curl" label="Check manually" default>
-
-Use the reSolve [HTTP API](api/client/http-api.md) to query the ShoppingLists Read Model:
-
-```sh
-$ curl -X POST \
--H "Content-Type: application/json" \
--d "{}" \
-"http://localhost:3000/api/query/ShoppingLists/all"
-
-% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   186  100   184  100     2    844      9 --:--:-- --:--:-- --:--:--   906[
-  {
-    "id": "shopping-list-1",
-    "name": "List 1",
-    "createdAt": 1543325125945
-  },
-  {
-    "id": "shopping-list-2",
-    "name": "List 2",
-    "createdAt": 1543325129138
-  }
-]
-```
-
-</TabItem>
-<TabItem value="test" label="Write a test">
-
 Add the following test case to the application's test file.
 
 [test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/e2e/index.test.js)
@@ -874,9 +720,6 @@ test('read model query should work correctly', async () => {
   })
 })
 ```
-
-</TabItem>
-</Tabs>
 
 </details>
 
