@@ -42,7 +42,7 @@
     "route-trie": "3.0.0",
     "source-map-support": "0.5.19",
     "uuid": "8.3.2",
-    "ws": "7.4.4"
+    "ws": "7.5.5"
   },
   "devDependencies": {
     "@types/content-disposition": "0.5.3",

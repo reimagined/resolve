@@ -12,6 +12,7 @@
 
 **Other changes:**
 
+- Fix security issues [\#2122](https://github.com/reimagined/resolve/pull/2122)
 - Improve readmodel postgresql lightweight optimistic [\#2118](https://github.com/reimagined/resolve/pull/2118)
 
 ## [V0.33.1](https://github.com/reimagined/resolve/tree/V0.33.1) (2021-11-09)
