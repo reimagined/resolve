@@ -15,9 +15,9 @@ Throughout this tutorial, you will iteratively develop a ShoppingList applicatio
 :::tip ES, CQRS
 The reSolve framework implements the Event Sourcing (ES) and Command and Query Responsibility Segregation (CQRS) paradigms.
 
-- With **ES**, instead of storing a mutable state, your application stores a chain of events that lead to this state. With this approach, no information is ever lost by the application and the state can always be rebuilt from the beginning of the history.
+- With **ES**, your application stores not a mutable state, but a chain of events that lead to this state. With this approach, no information is ever lost by the application and the state can always be rebuilt from the beginning of the history.
 
-- The **CQRS** paradigm requires an application to implement the write side solely responsible for handling incoming commands, and the read side that can only answer data requests.
+- The **CQRS** paradigm requires an application to implement the write side that can only handle commands, and the read side that answers data requests.
 
 We recommend that your familiarize yourself with basics of event sourcing and CQRS before you start this tutorial. You can find a curated list of learning resources in the [FAQ](faq.md).
 :::
