@@ -6,6 +6,7 @@
 
 **Bug fixes:**
 
+- The Node process stays active after resolve applications are stopped. [\#2126](https://github.com/reimagined/resolve/issues/2126)
 - Some format options does not work in cli, for example domainName [\#2110](https://github.com/reimagined/resolve/issues/2110)
 - Custom read-model does not start [\#2095](https://github.com/reimagined/resolve/issues/2095)
 - Babel "loose mode" warnings  [\#2011](https://github.com/reimagined/resolve/issues/2011)
