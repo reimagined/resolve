@@ -4,13 +4,13 @@
 
 This is an empty app used as a default template for new **reSolve** applications.
 
-To create aa new TypeScript project based on this example, type:
+To create a new TypeScript project based on this example, type the following:
 
 ```sh
 npx create-resolve-app hello-world-react -e react -t
 ```
 
-To create a JavaScript project, type:
+To create a JavaScript project, type the following:
 
 ```sh
 npx create-resolve-app hello-world-react -e react

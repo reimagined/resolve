@@ -6,7 +6,7 @@ import ShoppingLists from './ShoppingLists'
 const MyLists = () => {
   const [lists, setLists] = useState({})
 
-  // The 'useQuery' hook is used to querry the 'ShoppingLists' Read Model's 'all' resolver.
+  // The 'useQuery' hook is used to query the 'ShoppingLists' Read Model's 'all' resolver.
   // The obtained data is stored in the component's state.
   const getLists = useQuery(
     { name: 'ShoppingLists', resolver: 'all', args: {} },

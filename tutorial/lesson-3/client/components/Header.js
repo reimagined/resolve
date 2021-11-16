@@ -14,7 +14,7 @@ const Header = ({ title, css }) => {
     href: resolveStatic(href),
   }))
 
-  // You can use the same approach to generate links for other resource types.
+  // You can use the same technique to generate links for other resource types.
   // const faviconLink = {
   //   rel: 'icon',
   //   type: 'image/png',
