@@ -42,6 +42,7 @@
     "source-map-support": "0.5.19"
   },
   "devDependencies": {
+    "aws-sdk": "2.952.0",
     "@types/content-disposition": "0.5.3",
     "@types/lodash.escaperegexp": "4.1.6",
     "@types/lodash.partial": "4.2.6",
@@ -50,10 +51,6 @@
     "jest": "27.0.3",
     "lodash.escaperegexp": "4.1.2",
     "ts-jest": "27.0.2"
-  },
-  "peerDependencies": {
-    "aws-sdk": "^2.860.0",
-    "aws-xray-sdk-core": "^3.2.0"
   },
   "engines": {
     "node": ">=14.17"
