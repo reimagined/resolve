@@ -22,7 +22,7 @@ export default {
       name,
       createdAt: timestamp,
     }
-    // Save the data item to the store's table 'ShoppingLists' table.
+    // Save the data item to the store's 'ShoppingLists' table.
     await store.insert('ShoppingLists', shoppingList)
   },
 }
