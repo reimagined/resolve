@@ -15,11 +15,11 @@ Throughout this tutorial, you will iteratively develop a ShoppingList applicatio
 :::tip ES, CQRS
 The reSolve framework implements the Event Sourcing (ES) and Command and Query Responsibility Segregation (CQRS) paradigms.
 
-- With **ES**, your application stores not a mutable state, but a chain of events that lead to this state. With this approach, no information is ever lost by the application and the state can always be rebuilt from the beginning of the history.
+- With **ES**, your application stores not a mutable state, but a chain of events that lead to this state. With this technique, no information is ever lost by the application and the state can always be rebuilt from the beginning.
 
 - The **CQRS** paradigm requires an application to implement the write side that can only handle commands, and the read side that answers data requests.
 
-We recommend that your familiarize yourself with basics of event sourcing and CQRS before you start this tutorial. You can find a curated list of learning resources in the [FAQ](faq.md).
+We recommend that you review the basics of event sourcing and CQRS before you start this tutorial. You can find a curated list of learning resources in the [FAQ](faq.md).
 :::
 
 ## Table of Contents
@@ -58,13 +58,13 @@ Call the project's `test:e2e` script to run the test:
 yarn test:e2e
 ```
 
-Each consequent lesson in this tutorial will offer you new tests as you develop your application. Copy these tests to your application and run them to ensure that you are ready to move to the next lesson.
+Each subsequent lesson in this tutorial will offer you new tests as you develop your application. Copy these tests to your application and run them to ensure that you are ready to move to the next lesson.
 
 ### Remove Demo Code
 
 A new application contains demo code that demonstrates reSolve's core features. Follow the steps below to remove this code so you can start your application from scratch:
 
-- Delete all the contents from the project's **client** and **common** folders.
+- Delete all content from the project's **client** and **common** folders.
 - Open the **config.app.js** file and remove all options specified within the `appConfig` configuration object:
   ```js
   // config.app.js
@@ -106,7 +106,7 @@ A new application contains demo code that demonstrates reSolve's core features. 
   // })
   ```
 
-## **Lesson 1** - Write side - Add Shopping Lists
+## **Lesson 1** - Write Side - Add Shopping Lists
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-1)
 
@@ -179,7 +179,7 @@ const appConfig = {
     {
       // The aggregate name
       name: 'ShoppingList',
-      // A path to the file that defines the aggregate's command handlers
+      // A path to the file that defines the aggregate's command handlers.
       commands: 'common/aggregates/shopping_list.commands.js',
     },
   ],
@@ -204,7 +204,7 @@ A request's body should have the `application/json` content type and contain a J
 }
 ```
 
-In addition to the aggregate name, command type and payload, this object specifies the aggregate's ID.
+In addition to the aggregate name, command type, and payload, this object specifies the aggregate's ID.
 
 To send a command to the aggregate, run the application and send a POST request to the following URL:
 
@@ -217,13 +217,13 @@ http://127.0.0.1:3000/api/commands
 
 **Test Your Application**
 
-Expand this section for an example, on how to test this functionality in your application.
+Expand this section for an example on how to test this functionality in your application.
 
 </summary>
 
-You can write an end-to-end test to check the new functionality. Refer to the [Running Tests](#running-tests) section for the information on how to run tests in your application.
+You can write an end-to-end test to check the new functionality. Refer to the [Running Tests](#running-tests) section for information on how to run tests in your application.
 
-You can manually modify your application's test as shown below or use the test included into the lesson's [example project](https://github.com/reimagined/resolve/tree/dev/tutorial/lesson-1):
+You can manually modify your application's test as shown below or use the test included in the lesson's [example project](https://github.com/reimagined/resolve/tree/dev/tutorial/lesson-1):
 
 [test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/e2e/index.test.js)
 
@@ -473,7 +473,7 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 
 **Test Your Application**
 
-Expand this section for an example, on how to test the validation.
+Expand this section for an example on how to test the validation.
 
 </summary>
 
@@ -538,7 +538,7 @@ test('validation should work correctly', async () => {
 
 ---
 
-## **Lesson 2** - Read side - Create a Read Model to Query Shopping Lists
+## **Lesson 2** - Read Side - Create a Read Model to Query Shopping Lists
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-2)
 
@@ -597,7 +597,7 @@ export default {
 - [store.defineTable](api/read-model/store.md#definetable)
 - [store.insert](api/read-model/store.md#insert)
 
-The type of the physical store used to save data is defined by a Read Model connector. Add the following code to the **config.dev.js** file.
+The type of the physical store used to save data is defined by a Read Model connector. Add the following code to the **config.dev.js** file:
 
 **config.dev.js**
 
@@ -630,7 +630,7 @@ const devConfig = {
 }
 ```
 
-Specify the same option within the **config.test-functional.js** file so that e2e tests could work with read models:
+Specify the same option within the **config.test-functional.js** file so that e2e tests work with read models:
 
 **config.test-functional.js**
 
@@ -694,7 +694,7 @@ export default appConfig
 
 **Test Your Application**
 
-Expand this section for an example, on how to test the ShoppingLists Read Model.
+Expand this section for an example on how to test the ShoppingLists Read Model.
 
 </summary>
 
@@ -772,7 +772,7 @@ const Header = ({ title, css }) => {
     rel: 'stylesheet',
     href: resolveStatic(href),
   }))
-  // You can use the same approach to generate links for other resource types.
+  // You can use the same technique to generate links for other resource types.
   // const faviconLink = {
   //   rel: 'icon',
   //   type: 'image/png',
@@ -795,7 +795,7 @@ const Header = ({ title, css }) => {
 export default Header
 ```
 
-Now you can configure the `<head>` section within the root component:
+You can now configure the `<head>` section within the root component:
 
 **client/components/App.js**
 
@@ -1007,7 +1007,7 @@ Run your application to view the result:
 
 **Test Your Application**
 
-Expand this section for an example, on how to test the client application.
+Expand this section for an example on how to test the client application.
 
 </summary>
 
@@ -1018,8 +1018,8 @@ Add the following test case to the application's test file.
 ```js
 fixture`reSolve Application`.beforeEach(async (t) => {
   await t.setNativeDialogHandler(() => true)
-  // Add the following line to the fixture so the test
-  // navigates to the main page before each test case
+  // Add the following line to the fixture so that the test
+  // navigates to the main page before each test case:
   await t.navigateTo(MAIN_PAGE)
 })
 
@@ -1043,9 +1043,9 @@ This lesson describes how you can use a View Model to obtain shopping list items
 
 :::tip View Model
 
-A View Model is a reactive Read Model that is built on the fly for one or several aggregate IDs. A client can maintain a WebSocket connection with a resolve server to receive View Model data updates in real time.
+A View Model is a reactive Read Model that is built on the fly for one or more aggregate IDs. A client can maintain a WebSocket connection with a resolve server to receive View Model data updates in real time.
 
-The downside is that View Models do not have persistent state and should be rebuilt on every query, so they are better suited for small data samples.
+The downside is that View Models do not have a persistent state and should be rebuilt on every query, so they are better suited for small data samples.
 
 :::
 
@@ -1249,7 +1249,7 @@ export default [
 ]
 ```
 
-Run the application and click a shopping list's name view the result. To test the View Model's reactiveness, keep the page opened and use the following console input to add a shopping list item:
+Run the application and click a shopping list's name to view the result. To test the View Model's reactiveness, keep the page opened and use the following console input to add a shopping list item:
 
 ```bash
 curl -i http://localhost:3000/api/commands/ \
@@ -1274,7 +1274,7 @@ The page is automatically updated to display the new item.
 
 **Test Your Application**
 
-Expand this section for an example, on how to test the new functionality in your application.
+Expand this section for an example on how to test the new functionality in your application.
 
 </summary>
 
@@ -1314,7 +1314,7 @@ test('shopping list items are displayed on page', async (t) => {
 })
 ```
 
-This test case requires API exposed by [@resolve-js/module-admin](https://www.npmjs.com/package/@resolve-js/module-admin) to obtain the list of read models from the server. Follow the steps below to add this module to your application in the testing mode.
+This test case requires API exposed by [@resolve-js/module-admin](https://www.npmjs.com/package/@resolve-js/module-admin) to obtain the list of read models from the server. Follow the steps below to add this module to your application in testing mode.
 
 To install the module, use the following console input:
 
@@ -1857,7 +1857,7 @@ export default ShoppingListItem
 
 **Test Your Application**
 
-Expand this section for an example, on how to test data editing in your application.
+Expand this section for an example on how to test data editing in your application.
 
 </summary>
 
