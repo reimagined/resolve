@@ -1,7 +1,7 @@
 ---
 id: tutorial
 title: Step-by-Step Tutorial
-description: This document provides a step-by-step tutorial for the reSolve framework. Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
+description: Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
 ---
 
 ```mdx-code-block
@@ -9,7 +9,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 ```
 
-This document provides a step-by-step tutorial for the reSolve framework.
+This document is a step-by-step tutorial for the reSolve framework.
 Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
 
 :::tip ES, CQRS
@@ -50,7 +50,7 @@ yarn dev
 
 ### Running Tests
 
-A new reSolve application contains a minimalistic [TestCafe](https://testcafe.io/) test located in `test/e2e/index.test.js` that runs on the client and checks that the reSolve server responds normally. You are also free to modify this file to check your application's functionality.
+A new reSolve application contains a basic [TestCafe](https://testcafe.io/) test located in `test/e2e/index.test.js` that runs on the client and checks that the reSolve server responds normally. You are also free to modify this file to check your application's functionality.
 
 Call the project's `test:e2e` script to run the test:
 
@@ -550,7 +550,7 @@ Add a **ShoppingLists** Read Model to your application.
 
 :::tip Read Model
 
-A Read Model is entity at the application's read side that answers data requests. A Read Model receives events and populates a persistent store based on event data. It then uses the collected data to build the requested data samples.
+A Read Model is a data model at the application's read side that answers data requests. A Read Model receives events and populates a persistent store based on event data. It then uses the collected data to build the requested data samples.
 
 :::
 
@@ -602,7 +602,7 @@ The type of the physical store used to save data is defined by a Read Model conn
 **config.dev.js**
 
 ```js
-// The 'config.dev.js' file defines setting used only in the development environment.
+// The 'config.dev.js' file defines settings used only in the development environment.
 const devConfig = {
   readModelConnectors: {
     // This is the 'default' Read Model connector.
@@ -865,7 +865,7 @@ import ShoppingLists from './ShoppingLists'
 const MyLists = () => {
   const [lists, setLists] = useState({})
 
-  // The 'useQuery' hook is used to querry the 'ShoppingLists' Read Model's 'all' resolver.
+  // The 'useQuery' hook is used to query the 'ShoppingLists' Read Model's 'all' resolver.
   // The obtained data is stored in the component's state.
   const getLists = useQuery(
     { name: 'ShoppingLists', resolver: 'all', args: {} },
@@ -1354,7 +1354,7 @@ This lesson describes how to implement missing data editing functionality on the
 
 ### Modify the Backend
 
-Currently your reSolve application can create shopping lists and their items. The application also requires the capability to toggle shopping list items as well as remove and items and entire lists.
+Currently, your reSolve application can create shopping lists and their items. The application also requires the capability to toggle shopping list items as well as remove items and entire lists.
 
 To implement the missing functionality, you need to add data editing events, modify the ShoppingList aggregate to produce these events, and update read and view models to take these events into account.
 
@@ -1500,7 +1500,7 @@ import { v4 as uuid } from 'uuid'
 const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
   const [shoppingListName, setShoppingListName] = useState('')
 
-  // The useCommandHook allows you send commands to reSolve.
+  // The useCommandHook allows you to send commands to reSolve.
   const createShoppingListCommand = useCommand(
     {
       type: 'createShoppingList',
@@ -1512,7 +1512,7 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
     },
     (err, result) => {
       setShoppingListName('')
-      // A callback user to pass info about a newly created shopping list to the parrent component.
+      // A callback user to pass info about a newly created shopping list to the parent component.
       onCreateSuccess(err, result)
     }
   )
