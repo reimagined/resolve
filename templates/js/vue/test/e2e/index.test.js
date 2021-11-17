@@ -25,7 +25,3 @@ test('static assets are resolved', async (t) => {
     .expect(Selector('head > link[href="/static/bootstrap-vue.css"]').exists)
     .ok()
 })
-test('vue element', async (t) => {
-  await t.expect(Selector('label').withText('Search').visible).ok()
-  await t.expect(Selector('input[value="Vue"]').visible).ok()
-})
