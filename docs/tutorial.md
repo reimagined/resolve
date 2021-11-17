@@ -10,7 +10,7 @@ import TabItem from '@theme/TabItem';
 ```
 
 This document is a step-by-step tutorial for the reSolve framework.
-Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
+In this tutorial, you will develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
 
 :::tip ES, CQRS
 The reSolve framework implements the Event Sourcing (ES) and Command and Query Responsibility Segregation (CQRS) paradigms.
