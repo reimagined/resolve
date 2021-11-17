@@ -1,7 +1,7 @@
 ---
 id: tutorial
 title: Step-by-Step Tutorial
-description: Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
+description: In this tutorial, you will develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
 ---
 
 ```mdx-code-block
