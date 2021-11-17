@@ -6,7 +6,7 @@
         <b-navbar-nav>
           <b-nav-text>
             <b-nav-item href="/">
-              <b-img :src="staticUrls.resolveLogo" /> ReSolve Vue Example
+              <b-img :src="staticUrls.resolveLogo" /> {{ text }}
             </b-nav-item>
           </b-nav-text>
           <b-nav-text>
@@ -27,35 +27,14 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <b-jumbotron lead="ReSolve Vue Example">
-      <p v-highlight="{ word: word, live: live, style: style }" >{{ text }}</p>
-      <fieldset style="border: none;">
-        <label for="word">Search</label>
-        <input
-          v-model="word"
-          :disabled="!live"
-          type="text"
-          name="word"
-          placeholder="Your word here"
-        />
-      </fieldset>
-    </b-jumbotron>
   </div>
 </template>
 
 <script>
-import highlight from './highlighter'
-
 export default {
-  directives: {
-    highlight
-  },
   data: ({ $parent: { client } }) => {
     return {
       text: 'Resolve Vue Example',
-      word: 'Vue',
-      live: true,
-      style: {},
       staticUrls: {
         resolveLogo: client.getStaticAssetUrl('/resolve-logo.png'),
         fbLogo: client.getStaticAssetUrl('/fb-logo.png'),
