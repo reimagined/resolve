@@ -1,5 +1,21 @@
 # Changelog
 
+## [V0.33.2](https://github.com/reimagined/resolve/tree/V0.33.2) (2021-11-17)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.1...V0.33.2)
+
+**Bug fixes:**
+
+- The Node process stays active after resolve applications are stopped. [\#2126](https://github.com/reimagined/resolve/issues/2126)
+- Some format options does not work in cli, for example domainName [\#2110](https://github.com/reimagined/resolve/issues/2110)
+- Custom read-model does not start [\#2095](https://github.com/reimagined/resolve/issues/2095)
+- Babel "loose mode" warnings  [\#2011](https://github.com/reimagined/resolve/issues/2011)
+
+**Other changes:**
+
+- Fix security issues [\#2122](https://github.com/reimagined/resolve/pull/2122)
+- Improve readmodel postgresql lightweight optimistic [\#2118](https://github.com/reimagined/resolve/pull/2118)
+
 ## [V0.33.1](https://github.com/reimagined/resolve/tree/V0.33.1) (2021-11-09)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.0...V0.33.1)
