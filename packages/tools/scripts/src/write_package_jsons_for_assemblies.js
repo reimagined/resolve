@@ -5,13 +5,14 @@ import semver from 'semver'
 import findWorkspaceRoot from 'find-yarn-workspace-root'
 
 const getWorkspacePackageJsons = () => {
-  const workspaces = JSON.parse(
-    execSync('yarn workspaces --silent info', { stdio: 'pipe' }).toString()
-  )
   const workspaceRoot = findWorkspaceRoot(__dirname)
   if (!workspaceRoot) {
     return []
   }
+
+  const workspaces = JSON.parse(
+    execSync('yarn workspaces --silent info', { stdio: 'pipe' }).toString()
+  )
 
   const packageJsons = Object.keys(workspaces).map((key) => {
     return JSON.parse(
