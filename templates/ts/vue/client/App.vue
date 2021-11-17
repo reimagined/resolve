@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { highlight } from 'vue-highlighter'
+import highlight from './highlighter'
 
 export default {
   directives: {
