@@ -54,10 +54,6 @@ const emitDynamicImport = async (runtime) => {
   const { result, imported, isPackage } = resolveResource(runtime.module)
   const moduleImport = isPackage ? imported : 'default'
 
-  // eslint-disable-next-line no-undef
-  const runtimeModule = await import(result)
-  const { execMode } = await runtimeModule[moduleImport]()
-
   return `
     import '$resolve.guardOnlyServer'
     import { getLog, entryPointMarker } from '@resolve-js/runtime-base'
@@ -74,7 +70,7 @@ const emitDynamicImport = async (runtime) => {
           ).default
           
           const entryFactory = interopRequireDefault(
-            require('${result}')
+            require(${JSON.stringify(result)})
           ).${moduleImport} 
           
           const { entry } = entryFactory(runtimeOptions)
@@ -89,14 +85,21 @@ const emitDynamicImport = async (runtime) => {
         throw error
       }
     }
-    ${
-      execMode === 'immediate'
-        ? `
+
+    (async () => {
+      try {
+        await Promise.resolve()
+        const runtimeModule = await import(${JSON.stringify(result)})
+        const { execMode } = await runtimeModule[moduleImport]()
+        if(execMode === 'immediate') {
           log.debug('"execMode" set to "immediate", executing worker') 
           handler().catch((error) => log.error(error))
-          `
-        : ''
-    }
+        }
+      } catch(error) {
+        log.error('Fatal error: ', error)
+      }
+    })()
+
     export { entryPointMarker }
     export default handler
   `

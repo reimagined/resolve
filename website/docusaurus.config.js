@@ -1,4 +1,6 @@
-module.exports={
+const path = require('path')
+
+module.exports = {
   "title": "reSolve",
   "tagline": "Full stack CQRS, DDD, Event Sourcing framework for Node.js",
   "url": "https://reimagined.github.io",
@@ -9,7 +11,7 @@ module.exports={
     {
       src: "https://buttons.github.io/buttons.js",
       async: true
-    }    
+    }
   ],
   "favicon": "img/favicon.png",
   "trailingSlash": "true",
@@ -23,14 +25,14 @@ module.exports={
         "docs": {
           "showLastUpdateAuthor": false,
           "showLastUpdateTime": false,
-          "path": "..\\docs",
-          "sidebarPath": ".\\sidebars.json"
+          "path": path.join(__dirname, "../docs"),
+          "sidebarPath": path.join(__dirname, "./sidebars.json")
         },
         "blog": {
           "path": "blog"
         },
         "theme": {
-          "customCss": "..\\src\\css\\customTheme.css"
+          "customCss": path.join(__dirname, "./src/css/customTheme.css")
         }
       }
     ]
