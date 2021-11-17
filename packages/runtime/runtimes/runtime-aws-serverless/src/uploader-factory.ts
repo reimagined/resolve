@@ -1,4 +1,3 @@
-import Lambda from 'aws-sdk/clients/lambda'
 import fs from 'fs'
 import path from 'path'
 import request from 'request'
@@ -6,6 +5,10 @@ import crypto from 'crypto'
 import mime from 'mime-types'
 
 import type { Uploader, UploaderPool } from '@resolve-js/runtime-base'
+import { pureRequire } from '@resolve-js/runtime-base'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 
 export type UploaderPoolCloud = UploaderPool & {
   uploaderArn: string
@@ -26,10 +29,16 @@ const createPreSignedPut = async (
   { uploaderArn, userId, encryptedUserId }: UploaderPoolCloud,
   dir: string
 ) => {
+  let Lambda: any
+  try {
+    void ({ default: Lambda } = interopRequireDefault(
+      pureRequire('aws-sdk/clients/lambda')
+    ))
+  } catch {}
   const lambda = new Lambda()
 
   const result = await lambda
-    .invoke({
+    ?.invoke({
       FunctionName: uploaderArn,
       Payload: JSON.stringify({
         type: 'put',
@@ -83,10 +92,16 @@ const createPresignedPost = async (
   { uploaderArn, userId, encryptedUserId }: UploaderPoolCloud,
   dir: string
 ) => {
+  let Lambda: any
+  try {
+    void ({ default: Lambda } = interopRequireDefault(
+      pureRequire('aws-sdk/clients/lambda')
+    ))
+  } catch {}
   const lambda = new Lambda()
 
   const { FunctionError, Payload: ResponsePayload } = await lambda
-    .invoke({
+    ?.invoke({
       FunctionName: uploaderArn,
       Payload: JSON.stringify({
         type: 'post',

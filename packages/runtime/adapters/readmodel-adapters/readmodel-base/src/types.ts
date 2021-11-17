@@ -389,6 +389,10 @@ export type AdapterImplementation<
   AdapterOperations<AdapterPool> &
   StoreApi<AdapterPool>
 
+export type WrapIsConditionUnsupportedFormatMethod = <T extends FunctionLike>(
+  fn: T
+) => T
+
 export type BaseAdapterPool<AdapterPool extends CommonAdapterPool> = {
   commonAdapterPool: CommonAdapterPool
   adapterPoolMap: Map<ReadModelStore<StoreApi<AdapterPool>>, AdapterPool>
@@ -411,6 +415,7 @@ export type WrapConnectMethod = <
   AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
 >(
   pool: BaseAdapterPool<AdapterPool>,
+  wrapIsConditionUnsupportedFormat: WrapIsConditionUnsupportedFormatMethod,
   wrapWithCloneArgs: WrapWithCloneArgsMethod,
   connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],
   storeApi: StoreApi<AdapterPool>,
@@ -494,6 +499,7 @@ export type BaseAdapterImports = {
   checkEventsContinuity: CheckEventsContinuityMethod
   withPerformanceTracer: WithPerformanceTracerMethod
   AlreadyDisposedError: AlreadyDisposedErrorFactory
+  wrapIsConditionUnsupportedFormat: WrapIsConditionUnsupportedFormatMethod
   wrapWithCloneArgs: WrapWithCloneArgsMethod
   wrapConnect: WrapConnectMethod
   wrapDisconnect: WrapDisconnectMethod
