@@ -455,6 +455,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
             {},
+            {},
+            {},
             {}
           ]
         }
@@ -464,6 +466,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
           \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
             {},
+            {},
+            {},
             {}
           ]
         }
@@ -472,6 +476,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {},
             {}
           ]
@@ -691,6 +697,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
             {},
+            {},
+            {},
             {}
           ]
         }
@@ -700,6 +708,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
           \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
             {},
+            {},
+            {},
             {}
           ]
         }
@@ -708,6 +718,8 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {},
             {}
           ]
@@ -1189,6 +1201,8 @@ exports[`should make webpack configs for local mode 1`] = `
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
             {},
+            {},
+            {},
             {}
           ]
         }
@@ -1198,6 +1212,8 @@ exports[`should make webpack configs for local mode 1`] = `
           \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
             {},
+            {},
+            {},
             {}
           ]
         }
@@ -1206,6 +1222,8 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {},
             {}
           ]
@@ -1423,6 +1441,8 @@ exports[`should make webpack configs for local mode 1`] = `
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
             {},
+            {},
+            {},
             {}
           ]
         }
@@ -1432,6 +1452,8 @@ exports[`should make webpack configs for local mode 1`] = `
           \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
             {},
+            {},
+            {},
             {}
           ]
         }
@@ -1440,6 +1462,8 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
+            {},
+            {},
             {},
             {}
           ]

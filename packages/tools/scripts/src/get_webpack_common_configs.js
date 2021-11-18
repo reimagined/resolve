@@ -134,7 +134,12 @@ const getWebpackCommonConfigs = ({
             nodeModulesByAssembly.get(packageJson).add(packageName)
             return 'commonjs ' + moduleName
           },
-          allowlist: [/^@resolve-js\/.*$/, /^@babel\/runtime/],
+          allowlist: [
+            /@resolve-js\/runtime-base/,
+            /@resolve-js\/runtime-single-process/,
+            /@resolve-js\/runtime-aws-serverless/,
+            /^@babel\/runtime/,
+          ],
         })
       ),
     ],
