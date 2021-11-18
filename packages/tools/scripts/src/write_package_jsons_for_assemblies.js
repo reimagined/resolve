@@ -1,47 +1,6 @@
 import fs from 'fs'
-import { execSync } from 'child_process'
 import path from 'path'
 import semver from 'semver'
-import findWorkspaceRoot from 'find-yarn-workspace-root'
-
-const getWorkspacePackageJsons = () => {
-  const workspaceRoot = findWorkspaceRoot(__dirname)
-  if (!workspaceRoot) {
-    return []
-  }
-
-  const workspaces = JSON.parse(
-    execSync('yarn workspaces --silent info', { stdio: 'pipe' }).toString()
-  )
-
-  const packageJsons = Object.keys(workspaces).map((key) => {
-    return JSON.parse(
-      fs
-        .readFileSync(
-          path.resolve(workspaceRoot, workspaces[key].location, 'package.json')
-        )
-        .toString()
-    )
-  })
-
-  return packageJsons
-}
-
-const getDependencyVersions = () => {
-  return getWorkspacePackageJsons()
-    .map((p) => p.dependencies)
-    .filter((d) => !!d)
-    .reduce((result, dependencies) => {
-      for (const [packageName, version] of Object.entries(dependencies)) {
-        if (!result.has(packageName)) {
-          result.set(packageName, new Set([version]))
-        } else {
-          result.get(packageName).add(version)
-        }
-      }
-      return result
-    }, new Map())
-}
 
 const writePackageJsonsForAssemblies = (
   distDir,
@@ -51,6 +10,8 @@ const writePackageJsonsForAssemblies = (
   const applicationPackageJson = JSON.parse(
     fs.readFileSync(path.resolve(process.cwd(), 'package.json'))
   )
+
+  const resolveRuntimePackageJson = require('@resolve-js/runtime-base/package.json')
 
   for (const [
     packageJsonPath,
@@ -92,52 +53,28 @@ const writePackageJsonsForAssemblies = (
       )
     }
 
-    const dependencyVersions = getDependencyVersions()
+    const frameworkVersion = frameworkVersions[0]
 
     const assemblyPackageJson = {
       name: `${applicationPackageJson.name}-${syntheticName}`,
       private: true,
       version: applicationPackageJson.version,
       main: './index.js',
-      dependencies: Array.from(resultNodeModules).reduce(
-        (result, dependencyName) => {
-          if (
-            applicationPackageJson.dependencies.hasOwnProperty(
-              dependencyName
-            ) &&
-            !dependencyName.startsWith('@resolve-js')
-          ) {
-            result[dependencyName] =
-              applicationPackageJson.dependencies[dependencyName]
-          } else if (
-            nodeModules.has(dependencyName) &&
-            dependencyVersions.has(dependencyName)
-          ) {
-            if (
-              !dependencyName.startsWith('@resolve-js') &&
-              !dependencyName.startsWith('$resolve')
-            ) {
-              const versionSet = dependencyVersions.get(dependencyName)
-              if (!versionSet) {
-                throw Error(
-                  `Cannot determine version for the '${dependencyName}' dependency`
-                )
-              }
-              if (versionSet.size > 1) {
-                throw Error(
-                  `Multiple versions found for the '${dependencyName}' dependency: ${[
-                    ...versionSet,
-                  ].join(', ')}`
-                )
-              }
-              const [dependencyVersion] = [...versionSet]
-              result[dependencyName] = dependencyVersion
-            }
-          }
-          return result
-        },
-        {}
-      ),
+      dependencies: Array.from(resultNodeModules).reduce((acc, val) => {
+        if (applicationPackageJson.dependencies.hasOwnProperty(val)) {
+          acc[val] = applicationPackageJson.dependencies[val]
+        } else if (
+          resolveRuntimePackageJson.dependencies.hasOwnProperty(val) &&
+          nodeModules.has(val)
+        ) {
+          acc[val] =
+            val.startsWith('@resolve-js/') && frameworkVersion != null
+              ? frameworkVersion
+              : resolveRuntimePackageJson.dependencies[val]
+        }
+
+        return acc
+      }, {}),
     }
 
     fs.writeFileSync(
