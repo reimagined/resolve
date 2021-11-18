@@ -63,15 +63,6 @@ jobs:
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           scopes: '@resolve-js'
 
-      - name: Test:integration Postgres Serverless
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
-          AWS_RDS_CLUSTER_ARN: ${{  steps.install_cloud.outputs.system_cluster_arn }}
-          AWS_RDS_ADMIN_SECRET_ARN: ${{  steps.install_cloud.outputs.postgres_admin_secret_arn }}
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
-        run: yarn test:integration-postgres-serverless
-
       - name: Prepare test application
         run: |
           test_app_dir=$(mktemp -d -t test-app-XXXXXXXXX)
