@@ -74,53 +74,22 @@ You can emit aggregate commands in the following cases:
 
 The reSolve framework exposes an [HTTP API](api/client/http-api.md) that you can use to to send commands from the client side. Your application's frontend can use this API directly or through one of the available [client libraries](frontend.md).
 
-You can send a command from the client side as a POST request to the following URL:
+The code sample below demonstrates how to use the [@resolve-js/client](api/client/resolve-client.md) library to send a command:
 
-```
-http://{host}:{port}/api/commands
-```
-
-The request body should have the `application/json` content type and contain a JSON representation of the command:
-
-```
-{
-  "aggregateName": aggregateName,
-  "type": commandType,
-  "aggregateId": aggregateID,
-  "payload": {
-    "param1": value1,
-    "param2": value2,
-    ...
-    "paramN": valueN
+```js
+client.command(
+  {
+    aggregateName: 'Chat',
+    type: 'postMessage',
+    aggregateId: userName,
+    payload: message,
+  },
+  (err) => {
+    if (err) {
+      console.warn(`Error while sending command: ${err}`)
+    }
   }
-}
-```
-
-| Name              | Type   | Description                                           |
-| ----------------- | ------ | ----------------------------------------------------- |
-| **aggregateId**   | string | The ID of an aggregate that should handle the command |
-| **aggregateName** | string | The aggregate's name as defined in **config.app.js**  |
-| **commandType**   | string | The command type that the aggregate can handle        |
-| **payload**       | object | The parameters that the command accepts               |
-
-##### Example
-
-Use the following command to add an item to the **shopping-list** example:
-
-```sh
-$ curl -X POST "http://localhost:3000/api/commands"
---header "Content-Type: application/json" \
---data '
-{
-  "aggregateName":"Todo",
-  "type":"createItem",
-  "aggregateId":"root-id",
-  "payload": {
-    "id":`date +%s`,
-    "text":"Learn reSolve API"
-  }
-}
-'
+)
 ```
 
 ### Emitting Commands on the Server
