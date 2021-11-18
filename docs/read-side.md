@@ -277,55 +277,22 @@ const appConfig = {
 
 See the [Configuring View Models](#configuring-view-models) section for more information.
 
-## Performing Queries Using HTTP API
+## Performing Queries
 
-### Query a Read Model
+To send queries to an application's read side, you can use the reSolve [HTTP API](api/client/http-api.md) or one of the available [client libraries](frontend.md).
 
-To query a Read Model from the client side, send a POST request to the following URL:
+#### Example
 
-```
-http://{host}:{port}/api/query/{readModel}/{resolver}
-```
-
-##### URL Parameters:
-
-| Name          | Description                                                            |
-| ------------- | ---------------------------------------------------------------------- |
-| **readModel** | The Read Model name as defined in the application's configuration file |
-| **resolver**  | The name of a [resolver defined in the Read Model](#resolvers)         |
-
-The request body should have the `application/json` content type and the following structure:
+The code sample below demonstrates how to use the [@resolve-js/client](api/client/resolve-client.md) library to query a View Model:
 
 ```js
-{
-  param1: value1,
-  param2: value2,
-  // ...
-  paramN: valueN
-}
-```
-
-The object contains the parameters that the resolver accepts.
-
-### Query a View Model
-
-To query a View Model from the client side, send a GET request to the following URL:
-
-```
-http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
-```
-
-##### URL Parameters
-
-| Name         | Description                                                                                               |
-| ------------ | --------------------------------------------------------------------------------------------------------- |
-| viewModel    | The View Model name as defined in the application's configuration file.                                   |
-| aggregateIds | The comma-separated list of Aggregate IDs to include in the View Model. Use `*` to include all Aggregates |
-
-##### Example
-
-Use the following command to get the current [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/js/shopping-list) example application's state.
-
-```sh
-curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
+const queryResult = await client.query({
+  name: 'chat',
+  aggregateIds: [chatRoom],
+  args: undefined,
+})
+const {
+  data,
+  meta: { url, cursor },
+} = queryResult
 ```
