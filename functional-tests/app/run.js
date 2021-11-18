@@ -30,7 +30,7 @@ void (async () => {
         const resolveConfig = merge(baseConfig, devConfig)
 
         await reset(resolveConfig, {
-          dropEventStore: false,
+          dropEventStore: true,
           dropEventSubscriber: true,
           dropReadModels: true,
           dropSagas: true,
@@ -52,6 +52,7 @@ void (async () => {
     }
     await stop()
   } catch (error) {
+    console.log(error)
     await stop(error)
   }
 })()
