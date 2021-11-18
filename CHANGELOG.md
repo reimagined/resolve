@@ -1,5 +1,17 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.2...HEAD)
+
+**Breaking changes:**
+
+- Runtime code is erroneously executed at compile-time [\#2114](https://github.com/reimagined/resolve/issues/2114)
+
+**Bug fixes:**
+
+- "Module "source-map-support/register" cannot be resolved" thrown in the deployment [\#2119](https://github.com/reimagined/resolve/issues/2119)
+
 ## [V0.33.2](https://github.com/reimagined/resolve/tree/V0.33.2) (2021-11-17)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.1...V0.33.2)
