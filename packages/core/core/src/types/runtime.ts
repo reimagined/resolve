@@ -160,6 +160,11 @@ export type EventStoreDescription = {
   resourceNames?: { [key: string]: string }
 }
 
+export type EventStoreDescribeOptions = {
+  estimateCounts?: boolean
+  calculateCursor?: boolean
+}
+
 export type Eventstore = {
   saveEvent: (event: Event) => Promise<StoredEventPointer>
   saveSnapshot: (snapshotKey: string, content: string) => Promise<void>
@@ -210,7 +215,9 @@ export type Eventstore = {
   resetReplication: () => Promise<void>
   setReplicationLock: (lockDuration: number) => Promise<boolean>
 
-  describe: () => Promise<EventStoreDescription>
+  describe: (
+    options?: EventStoreDescribeOptions
+  ) => Promise<EventStoreDescription>
 }
 
 export type AggregateMeta = {
