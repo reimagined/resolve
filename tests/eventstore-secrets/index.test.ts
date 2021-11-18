@@ -59,14 +59,17 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
       await secretManager.setSecret(secret.id, secret.secret)
     }
 
-    if (isPostgres()) {
-      await collectPostgresStatistics('secret_testing')
-    }
-
     const description = await adapter.describe()
     expect(description.secretCount).toEqual(countSecrets)
     expect(description.setSecretCount).toEqual(countSecrets)
     expect(description.deletedSecretCount).toEqual(0)
+
+    if (isPostgres()) {
+      await collectPostgresStatistics('secret_testing')
+      expect(
+        (await adapter.describe({ estimateCounts: true })).secretCount
+      ).toEqual(countSecrets)
+    }
   })
 
   test('should generate set secret events', async () => {
@@ -250,10 +253,6 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     const secrets = (await adapter.loadSecrets({ limit: countSecrets + 1 }))
       .secrets
     expect(secrets).toHaveLength(countSecrets - 1)
-
-    if (isPostgres()) {
-      await collectPostgresStatistics('secret_testing')
-    }
 
     const description = await adapter.describe()
     expect(description.secretCount).toEqual(countSecrets)
