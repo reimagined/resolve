@@ -30,12 +30,12 @@ The request body should have the `application/json` content type and contain the
 }
 ```
 
-| Name              | Type   | Description                                           |
-| ----------------- | ------ | ----------------------------------------------------- |
-| **aggregateId**   | string | The ID of an aggregate that should handle the command |
-| **aggregateName** | string | The aggregate's name as defined in **config.app.js**  |
-| **commandType**   | string | The command type that the aggregate can handle        |
-| **payload**       | object | Parameters the command accepts                        |
+| Name              | Type   | Description                                            |
+| ----------------- | ------ | ------------------------------------------------------ |
+| **aggregateId**   | string | The ID of an aggregate that should handle the command. |
+| **aggregateName** | string | The aggregate's name as defined in **config.app.js**.  |
+| **commandType**   | string | The command type that the aggregate can handle.        |
+| **payload**       | object | Parameters the command accepts.                        |
 
 #### Example
 
@@ -78,7 +78,7 @@ http://{host}:{port}/api/query/{readModel}/{resolver}
 | Name          | Description                                                             |
 | ------------- | ----------------------------------------------------------------------- |
 | **readModel** | The Read Model name as defined in the application's configuration file. |
-| **resolver**  | The name of a [resolver defined in the Read Model](#resolvers)          |
+| **resolver**  | The name of a [resolver defined in the Read Model](#resolvers).         |
 
 The request body should have the `application/json` content type and the following structure:
 
@@ -122,10 +122,10 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 
 #### URL Parameters
 
-| Name         | Description                                                                                               |
-| ------------ | --------------------------------------------------------------------------------------------------------- |
-| viewModel    | The View Model name as defined in the application's configuration file                                    |
-| aggregateIds | The comma-separated list of Aggregate IDs to include in the View Model. Use `*` to include all Aggregates |
+| Name         | Description                                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------------- |
+| viewModel    | The View Model name as defined in the application's configuration file.                                    |
+| aggregateIds | The comma-separated list of Aggregate IDs to include in the View Model. Use `*` to include all Aggregates. |
 
 #### Example
 

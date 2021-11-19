@@ -6,10 +6,10 @@ description: This document describes approaches that you can use to implement a 
 
 This document describes approaches that you can use to implement a frontend for a reSolve application. The following approaches are available:
 
-- [HTTP API](#http-api) - An HTTP API exposed by a reSolve server
-- [@resolve-js/client library](#resolve-jsclient-library) - A higher-level JavaScript library used to communicate with a reSolve server
-- [@resolve-js/redux library](#resolve-jsredux-library) - A library used to connect a React + Redux component to reSolve
-- [@resolve-js/react-hooks library](#resolve-jsreact-hooks-library) - A hook-based library used to connect React components to reSolve
+- [HTTP API](#http-api) - An HTTP API exposed by a reSolve server.
+- [@resolve-js/client library](#resolve-jsclient-library) - A higher-level JavaScript library used to communicate with a reSolve server.
+- [@resolve-js/redux library](#resolve-jsredux-library) - A library used to connect a React + Redux component to reSolve.
+- [@resolve-js/react-hooks library](#resolve-jsreact-hooks-library) - A hook-based library used to connect React components to reSolve.
 
 ## Client Application Entry Point
 
@@ -302,13 +302,13 @@ The [shopping-list-redux-hoc](https://github.com/reimagined/resolve/tree/master/
 
 The **@resolve-js/react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
 
-| Hook                                                                     | Description                                                              |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| [useCommand](api/client/resolve-react-hooks.md#usecommand)               | Initializes a command that can be passed to the backend                  |
-| [useCommandBuilder](api/client/resolve-react-hooks.md#usecommandbuilder) | Allows to generate commands based on input parameters                    |
-| [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model               |
-| [useQuery](api/client/resolve-react-hooks.md#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model |
-| [useOriginResolver](api/client/resolve-react-hooks.md#useoriginresolver) | Resolves a relative path to an absolute URL within the application.      |
+| Hook                                                                     | Description                                                               |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| [useCommand](api/client/resolve-react-hooks.md#usecommand)               | Initializes a command that can be passed to the backend.                  |
+| [useCommandBuilder](api/client/resolve-react-hooks.md#usecommandbuilder) | Allows to generate commands based on input parameters.                    |
+| [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model.               |
+| [useQuery](api/client/resolve-react-hooks.md#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model. |
+| [useOriginResolver](api/client/resolve-react-hooks.md#useoriginresolver) | Resolves a relative path to an absolute URL within the application.       |
 
 #### Example
 
