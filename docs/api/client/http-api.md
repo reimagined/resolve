@@ -133,10 +133,7 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 const apiQueryUrl = '/api/query'
 
 const queryViewModel = async (viewModelName, aggregateIds, jwt) => {
-  const requestUrl = ` 
-    ${apiQueryUrl}/
-    ${viewModelName}/
-    ${aggregateIds.join(',')}`
+  const requestUrl = `${apiQueryUrl}/${viewModelName}/${aggregateIds.join(',')}`
   const res = await fetch(requestUrl, {
     method: 'GET',
     headers: {
