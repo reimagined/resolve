@@ -345,7 +345,6 @@ const getAggregateState = async (
         subSegment.addAnnotation('eventCount', events.length)
         subSegment.addAnnotation('origin', 'resolve:loadEvents')
       } catch (error) {
-        log.error(error.message)
         subSegment.addError(error)
         throw error
       } finally {
