@@ -36,7 +36,7 @@
     "aws-xray-sdk-core": "3.2.0",
     "babel-jest": "27.0.2",
     "jest": "27.0.3",
-    "testcafe": "1.14.2",
+    "testcafe": "1.17.1",
     "ts-jest": "27.0.2",
     "ts-node": "10.0.0",
     "typescript": "4.3.2"

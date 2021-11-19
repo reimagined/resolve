@@ -71,7 +71,7 @@ const emitDynamicImport = async (runtime) => {
           
           const entryFactory = interopRequireDefault(
             require(${JSON.stringify(result)})
-          ).${moduleImport} 
+          )[${JSON.stringify(moduleImport)}] 
           
           const { entry } = entryFactory(runtimeOptions)
           
@@ -90,7 +90,9 @@ const emitDynamicImport = async (runtime) => {
       try {
         await Promise.resolve()
         const runtimeModule = await import(${JSON.stringify(result)})
-        const { execMode } = await runtimeModule[moduleImport]()
+        const { execMode } = await runtimeModule[${JSON.stringify(
+          moduleImport
+        )}]()
         if(execMode === 'immediate') {
           log.debug('"execMode" set to "immediate", executing worker') 
           handler().catch((error) => log.error(error))
