@@ -45,7 +45,9 @@ export const isTimeoutError = (error: any): boolean => {
 
 export const isServiceBusyError = (error: any): boolean => {
   return (
-    error != null && checkFuzzyError(error, /sorry, too many clients already/i)
+    error != null &&
+    (checkFuzzyError(error, /too many clients already/i) ||
+      checkFuzzyError(error, /remaining connection slots are reserved/i))
   )
 }
 
