@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/replicator-via-api-handler",
-  "version": "0.33.2",
+  "version": "0.33.3",
   "description": "A base package for reSolve read model adapters",
   "keywords": [
     "cqrs",
@@ -25,10 +25,10 @@
   },
   "dependencies": {
     "@babel/runtime": "7.9.6",
-    "@resolve-js/debug-levels": "0.33.2",
-    "@resolve-js/eventstore-base": "0.33.2",
-    "@resolve-js/module-replication": "0.33.2",
-    "@resolve-js/readmodel-base": "0.33.2"
+    "@resolve-js/debug-levels": "0.33.3",
+    "@resolve-js/eventstore-base": "0.33.3",
+    "@resolve-js/module-replication": "0.33.3",
+    "@resolve-js/readmodel-base": "0.33.3"
   },
   "devDependencies": {
     "jest": "27.0.3",
