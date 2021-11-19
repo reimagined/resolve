@@ -137,6 +137,7 @@ export type {
   StoredEvent,
   EventThreadData,
   EventStoreDescription,
+  EventStoreDescribeOptions as DescribeOptions,
 } from '@resolve-js/core'
 
 export {
