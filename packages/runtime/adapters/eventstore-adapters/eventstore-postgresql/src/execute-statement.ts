@@ -8,9 +8,12 @@ import {
   isConnectionTerminatedError,
   isServiceBusyError,
   makeConnectionError,
+  makeUnrecognizedError,
 } from './errors'
 import { MAX_RECONNECTIONS } from './constants'
 import makePostgresClient from './make-postgres-client'
+
+const SERVICE_WAIT_TIME = 1000
 
 const executeStatement = async (
   pool: AdapterPool,
@@ -22,7 +25,7 @@ const executeStatement = async (
   let distinctConnectionMade = false
 
   while (true) {
-    let connection: PostgresConnection
+    let connection: PostgresConnection | undefined
 
     try {
       if (useDistinctConnection) {
@@ -36,8 +39,19 @@ const executeStatement = async (
       if (!useDistinctConnection) {
         pool.getConnectPromise = pool.createGetConnectPromise()
       }
-      throw makeConnectionError(error)
+      if (isConnectionTerminatedError(error) || isServiceBusyError(error)) {
+        if (reconnectionTimes >= MAX_RECONNECTIONS) {
+          throw new ServiceBusyError(error.message)
+        }
+        reconnectionTimes++
+        await new Promise((resolve) => setTimeout(resolve, SERVICE_WAIT_TIME))
+        continue
+      } else {
+        throw makeConnectionError(error)
+      }
     }
+
+    let shouldWaitForServiceFree = false
 
     try {
       const result = await connection.query(sql)
@@ -56,28 +70,33 @@ const executeStatement = async (
         if (!useDistinctConnection) {
           pool.getConnectPromise = pool.createGetConnectPromise()
         }
-        if (reconnectionTimes > MAX_RECONNECTIONS) {
+        if (reconnectionTimes >= MAX_RECONNECTIONS) {
           throw new ServiceBusyError(error.message)
         }
         useDistinctConnection = true
+        shouldWaitForServiceFree = true
         reconnectionTimes++
       } else if (
         error != null &&
         error.message === 'Client was closed and is not queryable'
       ) {
-        if (reconnectionTimes > MAX_RECONNECTIONS) {
+        if (reconnectionTimes >= MAX_RECONNECTIONS) {
           throw new ServiceBusyError(error.message)
         }
         useDistinctConnection = true
+        shouldWaitForServiceFree = true
         reconnectionTimes++
       } else {
-        throw error
+        throw makeUnrecognizedError(error)
       }
     } finally {
       if (distinctConnectionMade) {
         connection.end((err) => {
           return
         })
+      }
+      if (shouldWaitForServiceFree) {
+        await new Promise((resolve) => setTimeout(resolve, SERVICE_WAIT_TIME))
       }
     }
   }

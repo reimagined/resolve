@@ -2,6 +2,7 @@ import {
   ConnectionError,
   RequestTimeoutError,
   ServiceBusyError,
+  UnrecognizedError,
 } from '@resolve-js/eventstore-base'
 
 const checkFormalError = (error: any, value: string): boolean =>
@@ -84,5 +85,15 @@ export const makeConnectionError = (error: any): Error => {
     const connectionError = new ConnectionError(error.message)
     extendErrorStack(connectionError, error)
     return connectionError
+  }
+}
+
+export const makeUnrecognizedError = (error: any): Error => {
+  if (error) {
+    const unrecognizedError = new UnrecognizedError(error.message)
+    extendErrorStack(unrecognizedError, error)
+    return unrecognizedError
+  } else {
+    return new UnrecognizedError('unrecognized error')
   }
 }
