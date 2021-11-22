@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.3...HEAD)
 
+**Bug fixes:**
+
+- Application silently fails to run if config is invalid, no errors are shown [\#2141](https://github.com/reimagined/resolve/issues/2141)
+
 **Other changes:**
 
 - Build-mode flag for postgresql readmodel adapter [\#2140](https://github.com/reimagined/resolve/pull/2140)
