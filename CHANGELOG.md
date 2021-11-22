@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.3...HEAD)
+
+**Other changes:**
+
+- Build-mode flag for postgresql readmodel adapter [\#2140](https://github.com/reimagined/resolve/pull/2140)
+
 ## [V0.33.3](https://github.com/reimagined/resolve/tree/V0.33.3) (2021-11-19)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.2...V0.33.3)
