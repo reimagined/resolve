@@ -1,10 +1,10 @@
 ---
 id: frontend
 title: Frontend
-description: This document describes approaches that you can use to implement a frontend for a reSolve application.
+description: This document describes techniques that you can use to implement a frontend for a reSolve application.
 ---
 
-This document describes techniques that you can use to implement a frontend for a reSolve application. The following approaches are available:
+This document describes techniques that you can use to implement a frontend for a reSolve application. The following techniques are available:
 
 - [HTTP API](#http-api) - An HTTP API exposed by a reSolve server.
 - [@resolve-js/client library](#resolve-jsclient-library) - A higher-level JavaScript library used to communicate with a reSolve server.

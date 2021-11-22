@@ -72,7 +72,7 @@ You can emit aggregate commands in the following cases:
 
 ### Sending Commands From the Client
 
-The reSolve framework exposes an [HTTP API](api/client/http-api.md) that you can use to to send commands from the client side. Your application's frontend can use this API directly or through one of the available [client libraries](frontend.md).
+The reSolve framework exposes an [HTTP API](api/client/http-api.md) that you can use to send commands from the client side. Your application's frontend can use this API directly or through one of the available [client libraries](frontend.md).
 
 The code sample below demonstrates how to use the [@resolve-js/client](api/client/resolve-client.md) library to send a command:
 
