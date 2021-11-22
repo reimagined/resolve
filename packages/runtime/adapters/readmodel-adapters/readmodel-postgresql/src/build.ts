@@ -158,19 +158,24 @@ const buildEvents: (
     escapeStr,
     databaseNameAsId,
     ledgerTableNameAsId,
+    buildMode,
     metricData,
     monitoring,
     inputCursor,
     eventTypes,
     escapeId,
+    useSqs,
     xaKey,
     log,
   } = pool
   const { eventsWithCursors } = buildInfo
   let isProcedural = inputIsProcedural
+  if (buildMode === 'nodejs') {
+    isProcedural = false
+  }
+
   const isContinuousMode =
-    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function' &&
-    !!process.env.EXPERIMENTAL_SQS_TRANSPORT
+    typeof eventstoreAdapter.getCursorUntilEventTypes === 'function' && useSqs
   const getContinuousLatestCursor = async (
     cursor: ReadModelCursor,
     events: Array<EventThreadData>,
@@ -255,7 +260,7 @@ const buildEvents: (
     let resourceNames = null
     try {
       void ({ resourceNames } =
-        hotEvents == null && !!process.env.EXPERIMENTAL_INLINE_DB_EVENT_LOAD
+        hotEvents == null && ['plv8', 'plv8-internal'].includes(buildMode)
           ? await eventstoreAdapter.describe()
           : { resourceNames: null })
     } catch (err) {}
@@ -327,6 +332,11 @@ const buildEvents: (
   const currentEventsResult = await eventsPromise
   if (currentEventsResult != null && currentEventsResult[0] === 'error') {
     throw currentEventsResult[1]
+  }
+  if (eventstoreLocalResourcesNames == null && buildMode === 'plv8-internal') {
+    throw new Error(
+      `Event subscriber ${readModelName} forced to be built only in PLV8-internal mode, but cannot do it`
+    )
   }
 
   let events =
@@ -484,6 +494,14 @@ const buildEvents: (
     >
 
     eventsPromise = getEventsPromise()
+    if (
+      regularWorkflow &&
+      ['plv8-internal', 'plv8-external', 'plv8'].includes(buildMode)
+    ) {
+      throw new Error(
+        `Event subscriber ${readModelName} forced to be built only in PLV8 mode, but cannot do it`
+      )
+    }
 
     if (regularWorkflow && isEffectiveEventLoop) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
