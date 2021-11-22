@@ -340,4 +340,30 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
       )
     }
   })
+
+  test('should cast result loaded by timestamp to JSON without errors', async () => {
+    const result = await adapter.loadEvents({
+      limit: 1,
+      startTime: storedEvents[0].timestamp,
+      finishTime: storedEvents[countEvents / 3 - 1].timestamp,
+    })
+    expect(() => JSON.stringify(result)).not.toThrow()
+  })
+
+  test('should throw when passing both cursor and times', async () => {
+    await expect(
+      adapter.loadEvents({
+        limit: 1,
+        startTime: 0,
+        cursor: null,
+      })
+    ).rejects.toThrow()
+    await expect(
+      adapter.loadEvents({
+        limit: 1,
+        finishTime: 0,
+        cursor: null,
+      })
+    ).rejects.toThrow()
+  })
 })
