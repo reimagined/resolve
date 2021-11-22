@@ -23,12 +23,12 @@ View Models are a Redux-specific extension to these mechanisms. View models are 
 **Q**: How to implement a Read Model with direct access to the underlying store?<br/>
 **A**: Implement a [custom Read Model](read-side.md#custom-read-models). Custom Read Models allow you to use custom logic to communicate with a Read Model store.
 
-**Q**: How to send an aggregate command?<br/>
+**Q**: How do I send an aggregate command?<br/>
 **A**: To send a command from a client browser, use the reSolve HTTP API or one of the available client libraries. Refer to the [Frontend](frontend.md) article for more information.
 
 On the server side, you can [send a command](api/saga.md#executecommand) from an API Handler or Saga:
 
-**Q**: How to perform validation to ensure input values are unique?<br/>
+**Q**: How do I perform validation to ensure input values are unique?<br/>
 **A**: In a distributed application, it is not possible to perform reliable checks. You should detect value duplicates in a Read Model or Saga projection code and mark duplicated values as incorrect.
 
 **Q**: How to implement a frontend?<br/>
