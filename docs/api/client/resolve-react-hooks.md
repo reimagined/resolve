@@ -21,7 +21,7 @@ The **@resolve-js/react-hooks** library provides React hooks that you can use to
 
 Returns the [@resolve-js/client](resolve-client.md) library's `client` object.
 
-##### Example
+#### Example
 
 ```js
 const client = useClient()
@@ -45,7 +45,7 @@ client.command(
 
 Initializes a command that can be passed to the backend.
 
-##### Example
+#### Example
 
 ```js
 const ShoppingList = ({
@@ -77,7 +77,7 @@ const ShoppingList = ({
 
 Allows a component to generate commands based on input parameters.
 
-##### Example
+#### Example
 
 ```js
 const ShoppingList = ({
@@ -116,7 +116,7 @@ const ShoppingList = ({
 
 Establishes a WebSocket connection to a reSolve View Model.
 
-##### Example
+#### Example
 
 ```js
 const ShoppingList = ({
@@ -157,7 +157,7 @@ const ShoppingList = ({
 
 Allows a component to send queries to a reSolve Read Model or View Model.
 
-##### Example
+#### Example
 
 ```js
 const MyLists = () => {
@@ -173,18 +173,6 @@ const MyLists = () => {
   }, [])
 
   ...
-
-  onCreateSuccess={(err, result) => {
-    const nextLists = { ...lists }
-    nextLists.data.push({
-      name: result.payload.name,
-      createdAt: result.timestamp,
-      id: result.aggregateId
-    })
-    setLists(nextLists)
-  }}
-
-  ...
 }
 ```
 
@@ -192,11 +180,30 @@ const MyLists = () => {
 
 Allows a component to generate queries based on input parameters.
 
+#### Example
+
+```js
+const getPage = useQueryBuilder(
+  (page) => ({
+    name: 'MessageList',
+    resolver: 'paginated',
+    args: { page },
+  }),
+  (error, result) => {
+    setMessages(result.data)
+  }
+)
+
+useEffect(() => {
+  getPage(page)
+}, [])
+```
+
 ### useOriginResolver
 
 Resolves a relative path to an absolute URL within the application.
 
-##### Example
+#### Example
 
 ```js
 var resolver = useOriginResolver()
