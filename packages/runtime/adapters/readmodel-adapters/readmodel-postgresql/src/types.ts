@@ -101,12 +101,18 @@ export type DropReadModelMethod = (
   readModelName: string
 ) => Promise<void>
 
-export type BuildMode = 'auto' | 'plv8' | 'nodejs'
+export type BuildMode =
+  | 'plv8-internal'
+  | 'plv8-external'
+  | 'plv8'
+  | 'nodejs'
+  | 'auto'
 
 export type AdapterOptions = CommonAdapterOptions & {
-  buildMode?: BuildMode
-  tablePrefix?: string
   databaseName: string
+  tablePrefix?: string
+  buildMode?: BuildMode
+  useSqs?: boolean
 } & PGLib.ConnectionConfig
 
 export type MaybeInitMethod = (pool: AdapterPool) => Promise<void>
@@ -168,6 +174,7 @@ export type AdapterPool = CommonAdapterPool & {
   activePassthrough: boolean
   connection: InstanceType<LibDependencies['Postgres']>
   buildMode: BuildMode
+  useSqs: boolean
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<AdapterPool>[K]
   } &
