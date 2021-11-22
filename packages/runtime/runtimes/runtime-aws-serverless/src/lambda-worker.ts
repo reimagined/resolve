@@ -341,10 +341,10 @@ export const lambdaWorker = async (
     runtime?.monitoring?.group({ Part: 'Internal' }).error(error)
 
     if (error instanceof Error) {
-      log.error('error', error.message)
-      log.error('error', error.stack)
+      log.error('Lambda top-level error message:', error.message)
+      log.error('Lambda top-level error stack:', error.stack)
     } else {
-      log.error(JSON.stringify(error))
+      log.error('Lambda unknown top-level error:', JSON.stringify(error))
     }
 
     throw error
