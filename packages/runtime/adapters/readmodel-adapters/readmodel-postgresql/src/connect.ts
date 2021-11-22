@@ -7,7 +7,7 @@ import type {
 } from './types'
 
 const connect: CurrentConnectMethod = async (imports, pool, options) => {
-  let { tablePrefix, databaseName, ...connectionOptions } = options
+  let { tablePrefix, databaseName, buildMode, ...connectionOptions } = options
 
   if (databaseName == null || databaseName.constructor !== String) {
     throw new Error(`Wrong database name: ${databaseName}`)
@@ -17,6 +17,12 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     throw new Error(`Wrong table prefix: ${tablePrefix}`)
   } else if (tablePrefix == null) {
     tablePrefix = ''
+  }
+
+  if (buildMode != null && !['auto', 'plv8', 'nodejs'].includes(buildMode)) {
+    throw new Error(`Wrong build mode: ${buildMode}`)
+  } else if (buildMode == null) {
+    buildMode = 'auto'
   }
 
   const connectionErrorsMap: WeakMap<
@@ -137,6 +143,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     inlineLedgerRunQuery,
     connection: initialConnection,
     activePassthrough: false,
+    buildMode,
     ...imports,
   })
 }

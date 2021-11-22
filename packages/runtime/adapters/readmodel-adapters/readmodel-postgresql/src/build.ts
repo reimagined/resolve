@@ -158,6 +158,7 @@ const buildEvents: (
     escapeStr,
     databaseNameAsId,
     ledgerTableNameAsId,
+    buildMode,
     metricData,
     monitoring,
     inputCursor,
@@ -168,6 +169,10 @@ const buildEvents: (
   } = pool
   const { eventsWithCursors } = buildInfo
   let isProcedural = inputIsProcedural
+  if (buildMode === 'nodejs') {
+    isProcedural = false
+  }
+
   const isContinuousMode =
     typeof eventstoreAdapter.getCursorUntilEventTypes === 'function' &&
     !!process.env.EXPERIMENTAL_SQS_TRANSPORT
@@ -484,6 +489,11 @@ const buildEvents: (
     >
 
     eventsPromise = getEventsPromise()
+    if (regularWorkflow && buildMode === 'plv8') {
+      throw new Error(
+        `Event subscriber ${readModelName} forced to be built only in PLV8 mode, but cannot do it`
+      )
+    }
 
     if (regularWorkflow && isEffectiveEventLoop) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -101,7 +101,10 @@ export type DropReadModelMethod = (
   readModelName: string
 ) => Promise<void>
 
+export type BuildMode = 'auto' | 'plv8' | 'nodejs'
+
 export type AdapterOptions = CommonAdapterOptions & {
+  buildMode?: BuildMode
   tablePrefix?: string
   databaseName: string
 } & PGLib.ConnectionConfig
@@ -164,6 +167,7 @@ export type AdapterPool = CommonAdapterPool & {
   makeNestedPath: MakeNestedPathMethod
   activePassthrough: boolean
   connection: InstanceType<LibDependencies['Postgres']>
+  buildMode: BuildMode
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<AdapterPool>[K]
   } &
