@@ -15,6 +15,15 @@ const checkInput = (input: any) => {
   }
 }
 
+function canIgnoreError(error: any) {
+  return (
+    error != null &&
+    (error.name === 'ServiceBusyError' ||
+      error.name === 'RequestTimeoutError' ||
+      error.name === 'AlreadyDisposedError')
+  )
+}
+
 const handler = async (req: ResolveRequest, res: ResolveResponse) => {
   let input
   try {
@@ -35,13 +44,16 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
     res.status(202)
     res.end('Replication has been started')
   } catch (error) {
-    try {
-      await req.resolve.eventstoreAdapter.setReplicationStatus({
-        status: 'error',
-        statusData: error,
-      })
-    } catch (e) {
-      error.message += e.message
+    if (!canIgnoreError(error)) {
+      try {
+        await req.resolve.eventstoreAdapter.setReplicationStatus({
+          status: 'error',
+          statusData: error,
+        })
+      } catch (e) {
+        error.message += '\n'
+        error.message += e.message
+      }
     }
 
     res.status(500)
@@ -63,12 +75,13 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
       lastEvent: input.events[input.events.length - 1],
     })
   } catch (error) {
-    try {
-      await req.resolve.eventstoreAdapter.setReplicationStatus({
-        status: 'error',
-        statusData: error,
-      })
-    } catch (e) {}
+    if (!canIgnoreError(error))
+      try {
+        await req.resolve.eventstoreAdapter.setReplicationStatus({
+          status: 'error',
+          statusData: error,
+        })
+      } catch (e) {}
   }
   await req.resolve.broadcastEvent()
 }
