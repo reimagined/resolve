@@ -9,9 +9,9 @@ description: An application's write side handles commands, validates input data,
 Commands are executed by objects that encapsulate domain logic. These objects are called Domain Objects.
 Domain Objects are grouped into Aggregates. In a CQRS/ES app, an aggregate is a transaction boundary. This means that any given aggregate should be able to execute its commands without communicating with other aggregates.
 
-Since the write side is used only to perform commands, your aggregate can be compact, and only keep state required for command execution.
+Since the write side is used only to perform commands, your aggregate can be compact, and only keep the state required for command execution.
 
-See Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html)
+See Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html).
 
 In reSolve, an aggregate is a static object that contains a set of functions of the following two kinds:
 
@@ -46,7 +46,7 @@ An Aggregate ID should stay unique across all aggregates in the given event stor
 
 ## Configuring Aggregates
 
-To configure aggregates in a reSolve app, provide an aggregates array in the application configuration file:
+To configure aggregates in a reSolve app, specify an aggregates array in the application configuration file:
 
 <!-- prettier-ignore-start -->
 
@@ -107,7 +107,7 @@ await resolve.executeCommand({
 
 ## Aggregate Command Handlers
 
-Aggregate command handlers are grouped into a static object. A command handler receives a command and a state object built by the aggregate [Projection](#aggregate-projection-function). The command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type. Here you can also add arbitrary validation logic that throws an error if the validation fails.
+Aggregate command handlers are grouped into a static object. A command handler receives a command and a state object built by the aggregate [Projection](#aggregate-projection-function). The command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type. A command handler can also validate command data and throw an error if the validation fails.
 
 A typical **Commands** object structure:
 
