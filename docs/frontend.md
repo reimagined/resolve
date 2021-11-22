@@ -4,7 +4,7 @@ title: Frontend
 description: This document describes approaches that you can use to implement a frontend for a reSolve application.
 ---
 
-This document describes approaches that you can use to implement a frontend for a reSolve application. The following approaches are available:
+This document describes techniques that you can use to implement a frontend for a reSolve application. The following approaches are available:
 
 - [HTTP API](#http-api) - An HTTP API exposed by a reSolve server.
 - [@resolve-js/client library](#resolve-jsclient-library) - A higher-level JavaScript library used to communicate with a reSolve server.
@@ -112,7 +112,7 @@ const entryPoint = context => {
 
 ### SSR Handlers
 
-To use Server Side Rendering (SSR) in your application, you need to implement one or several handlers that pre-render the client application's markup on the server.
+To use Server-Side Rendering (SSR) in your application, you need to implement one or more handlers that pre-render the client application's markup on the server.
 
 An SSR handler is an asynchronous function that receives the `resolveContext` along with a request and response objects. As the result of its execution, an SSR handler should send a response that contains the rendered markup:
 
@@ -132,7 +132,7 @@ const ssrHandler = async (
 }
 ```
 
-To enable server side rendering, specify an array of server side rendering scripts that target different environments in the `clientEntries` configuration section:
+To enable server-side rendering, specify an array of server-side rendering scripts that target different environments in the `clientEntries` configuration section:
 
 ```js
 clientEntries: [
@@ -300,12 +300,12 @@ The [shopping-list-redux-hoc](https://github.com/reimagined/resolve/tree/master/
 
 ## @resolve-js/react-hooks library
 
-The **@resolve-js/react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
+The **@resolve-js/react-hooks** library includes React hooks that you can use to connect React components to a reSolve backend. The following hooks are included:
 
 | Hook                                                                     | Description                                                               |
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
 | [useCommand](api/client/resolve-react-hooks.md#usecommand)               | Initializes a command that can be passed to the backend.                  |
-| [useCommandBuilder](api/client/resolve-react-hooks.md#usecommandbuilder) | Allows to generate commands based on input parameters.                    |
+| [useCommandBuilder](api/client/resolve-react-hooks.md#usecommandbuilder) | Allows you to generate commands based on input parameters.                |
 | [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model.               |
 | [useQuery](api/client/resolve-react-hooks.md#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model. |
 | [useOriginResolver](api/client/resolve-react-hooks.md#useoriginresolver) | Resolves a relative path to an absolute URL within the application.       |

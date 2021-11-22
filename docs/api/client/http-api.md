@@ -1,10 +1,10 @@
 ---
 id: http-api
 title: HTTP API
-description: ReSolve provides a standard HTTP API that allows you to send aggregate commands, and query Read and View Models.
+description: ReSolve exposes an HTTP API that allows you to send aggregate commands, and query Read and View Models.
 ---
 
-ReSolve provides a standard HTTP API that allows you to send aggregate commands, and query Read and View Models.
+ReSolve exposes an HTTP API that allows you to send aggregate commands, and query Read and View Models.
 
 ## Command API
 
