@@ -14,7 +14,7 @@ import {
 } from './frozen-errors'
 import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
-import throwBadCursor from './throw-bad-cursor'
+import loadEventsByTimestampResult from './load-events-by-timestamp-result'
 import snapshotTrigger from './snapshot-trigger'
 import incrementalImport from './incremental-import'
 import importSecretsStream from './import-secrets'
@@ -94,7 +94,7 @@ export {
   EventstoreFrozenError,
   AlreadyFrozenError as EventstoreAlreadyFrozenError,
   AlreadyUnfrozenError as EventstoreAlreadyUnfrozenError,
-  throwBadCursor,
+  loadEventsByTimestampResult,
   getNextCursor,
   snapshotTrigger,
   iots,
