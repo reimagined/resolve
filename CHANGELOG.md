@@ -12,7 +12,9 @@
 
 **Documentation:**
 
+- "Step-by-Step Tutorial" is unfriendly for steps reproducing. [\#2093](https://github.com/reimagined/resolve/issues/2093)
 - Replace CURL inputs with JS code samples [\#2138](https://github.com/reimagined/resolve/pull/2138)
+- Update tutorial [\#2068](https://github.com/reimagined/resolve/pull/2068)
 
 **Other changes:**
 
