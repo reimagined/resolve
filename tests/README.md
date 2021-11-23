@@ -1219,4 +1219,100 @@ import {
     }
 ```
 
+#### eventstore-filter-events
+
+###### initial-events
+
+[mdis]:# (./eventstore-filter-events/docs-gen.test.js#initial-events)
+```js
+const initialEvents = [
+  {
+    type: 'LIST_CREATED',
+    payload: { name: 'list-1' },
+    aggregateId: 'list-1',
+    aggregateVersion: 1,
+  },
+  {
+    type: 'LIST_CREATED',
+    payload: { name: 'list-2' },
+    aggregateId: 'list-2',
+    aggregateVersion: 1,
+  },
+  {
+    type: 'ITEM_CREATED',
+    payload: { name: 'item-1-1' },
+    aggregateId: 'list-1',
+    aggregateVersion: 2,
+  },
+  {
+    type: 'ITEM_CREATED',
+    payload: { name: 'item-1-2' },
+    aggregateId: 'list-1',
+    aggregateVersion: 3,
+  },
+  {
+    type: 'ITEM_CREATED',
+    payload: { name: 'item-2-1' },
+    aggregateId: 'list-2',
+    aggregateVersion: 2,
+  },
+]
+```
+
+###### load-events-1000
+
+[mdis]:# (./eventstore-filter-events/docs-gen.test.js#load-events-1000)
+```js
+const { events } = await adapter.loadEvents({
+  limit: 1000,
+  cursor: null,
+})
+```
+
+###### load-events-one-by-one
+
+[mdis]:# (./eventstore-filter-events/docs-gen.test.js#load-events-one-by-one)
+```js
+let nextCursor = null
+do {
+  void ({ events, cursor: nextCursor } = await adapter.loadEvents({
+    limit: 1,
+    cursor: nextCursor,
+  }))
+} while (events.length > 0)
+```
+
+###### load-events-between-time
+
+[mdis]:# (./eventstore-filter-events/docs-gen.test.js#load-events-between-time)
+```js
+const { events } = await adapter.loadEvents({
+  limit: Number.MAX_SAFE_INTEGER,
+  startTime: Date.now() - 1000,
+  endTime: Date.now(),
+})
+```
+
+###### load-events-by-types
+
+[mdis]:# (./eventstore-filter-events/docs-gen.test.js#load-events-by-types)
+```js
+const { events } = await adapter.loadEvents({
+  limit: 1000,
+  eventTypes: ['ITEM_CREATED'],
+  cursor: null,
+})
+```
+
+###### load-events-by-aggregate-ids
+
+[mdis]:# (./eventstore-filter-events/docs-gen.test.js#load-events-by-aggregate-ids)
+```js
+const { events } = await adapter.loadEvents({
+  limit: 1000,
+  aggregateIds: ['list-1'],
+  cursor: null,
+})
+```
+
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/tests-readme?pixel)

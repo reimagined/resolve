@@ -13,3 +13,4 @@ website/**
 functional-tests/app/**/dist
 tutorial/**/dist
 templates/**/dist
+**/*.md
