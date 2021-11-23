@@ -10,6 +10,7 @@ import {
   makeConnectionError,
   makeUnrecognizedError,
 } from './errors'
+import { isAlreadyExistsError, isNotExistError } from './resource-errors'
 import { MAX_RECONNECTIONS } from './constants'
 import makePostgresClient from './make-postgres-client'
 
@@ -62,7 +63,9 @@ const executeStatement = async (
 
       return []
     } catch (error) {
-      if (isServiceBusyError(error)) {
+      if (isAlreadyExistsError(error) || isNotExistError(error)) {
+        throw error
+      } else if (isServiceBusyError(error)) {
         throw new ServiceBusyError(error.message)
       } else if (isTimeoutError(error)) {
         throw new RequestTimeoutError(error.message)

@@ -64,4 +64,5 @@ export class UnrecognizedError extends Error {
     this.name = 'UnrecognizedError'
     Object.setPrototypeOf(this, new.target.prototype)
   }
+  code?: any
 }

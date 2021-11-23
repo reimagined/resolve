@@ -91,6 +91,7 @@ export const makeConnectionError = (error: any): Error => {
 export const makeUnrecognizedError = (error: any): Error => {
   if (error) {
     const unrecognizedError = new UnrecognizedError(error.message)
+    unrecognizedError.code = error.code
     extendErrorStack(unrecognizedError, error)
     return unrecognizedError
   } else {
