@@ -7,6 +7,12 @@
 **Bug fixes:**
 
 - Application silently fails to run if config is invalid, no errors are shown [\#2141](https://github.com/reimagined/resolve/issues/2141)
+- shopping-list has a description from shopping-list-with-hooks [\#2106](https://github.com/reimagined/resolve/issues/2106)
+- Error: Lambda worker was not created due to cold start failure [\#2105](https://github.com/reimagined/resolve/issues/2105)
+
+**Documentation:**
+
+- Replace CURL inputs with JS code samples [\#2138](https://github.com/reimagined/resolve/pull/2138)
 
 **Other changes:**
 
