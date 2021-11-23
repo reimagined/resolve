@@ -1,6 +1,9 @@
-import CloudWatch from 'aws-sdk/clients/cloudwatch'
 import { LeveledDebugger } from '@resolve-js/debug-levels'
+import { pureRequire } from '@resolve-js/runtime-base'
 import { retry } from 'resolve-cloud-common/utils'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 
 import type {
   MonitoringDimension,
@@ -109,6 +112,12 @@ export const monitoringPublish = async (
 
   try {
     const promises = []
+    let CloudWatch: any
+    try {
+      void ({ default: CloudWatch } = interopRequireDefault(
+        pureRequire('aws-sdk/clients/cloudwatch')
+      ))
+    } catch {}
 
     const cw = new CloudWatch()
     const putMetricData = retry(cw, cw.putMetricData)

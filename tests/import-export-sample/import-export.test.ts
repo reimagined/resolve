@@ -16,8 +16,6 @@ import type {
 import {
   adapterFactory,
   adapters,
-  collectPostgresStatistics,
-  isPostgres,
   jestTimeout,
   makeTestSavedEvent,
 } from '../eventstore-test-utils'
@@ -93,9 +91,6 @@ describe('import-export events auto-mode', () => {
       inputEventstoreAdapter.importEvents()
     )
 
-    if (isPostgres()) {
-      await collectPostgresStatistics('input-auto')
-    }
     expect((await inputEventstoreAdapter.describe()).eventCount).toEqual(
       inputCountEvents
     )
@@ -157,9 +152,6 @@ describe('import-export events manual mode', () => {
       inputEventstoreAdapter.importEvents()
     )
 
-    if (isPostgres()) {
-      await collectPostgresStatistics('input-manual')
-    }
     expect((await inputEventstoreAdapter.describe()).eventCount).toEqual(
       inputCountEvents
     )

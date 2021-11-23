@@ -36,7 +36,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
     })
     expect(events).toHaveLength(0)
 
-    const description = await adapter.describe()
+    const description = await adapter.describe({ calculateCursor: true })
     expect(description.eventCount).toEqual(0)
     expect(description.cursor).toEqual(threadArrayToCursor(initThreadArray()))
 
@@ -74,12 +74,15 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
       )
     })
 
-    if (isPostgres()) {
-      await collectPostgresStatistics('save_and_load_testing')
-    }
-
     const description = await adapter.describe()
     expect(description.eventCount).toEqual(checkCount)
+
+    if (isPostgres()) {
+      await collectPostgresStatistics('save_and_load_testing')
+      expect(
+        (await adapter.describe({ estimateCounts: true })).eventCount
+      ).toEqual(checkCount)
+    }
   })
 
   test('should throw ConcurrentError when saving event with the same aggregateVersion', async () => {
