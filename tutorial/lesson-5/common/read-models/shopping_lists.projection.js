@@ -1,6 +1,8 @@
+// A Read Model projection describes logic used to collect data from incoming events.
 import { SHOPPING_LIST_CREATED, SHOPPING_LIST_REMOVED } from '../eventTypes'
 
-export const projection = {
+export default {
+  // The 'Init' function initializes the store (defines tables and their fields).
   Init: async (store) => {
     await store.defineTable('ShoppingLists', {
       indexes: {
@@ -9,23 +11,21 @@ export const projection = {
       fields: ['createdAt', 'name'],
     })
   },
-
+  // A projection function runs once for every event of the specified type.
   [SHOPPING_LIST_CREATED]: async (
     store,
     { aggregateId, timestamp, payload: { name } }
   ) => {
+    // Build a data item based on the event data.
     const shoppingList = {
       id: aggregateId,
       name,
       createdAt: timestamp,
     }
-
+    // Save the data item to the store's table 'ShoppingLists' table.
     await store.insert('ShoppingLists', shoppingList)
   },
-
   [SHOPPING_LIST_REMOVED]: async (store, { aggregateId }) => {
     await store.delete('ShoppingLists', { id: aggregateId })
   },
 }
-
-export default projection
