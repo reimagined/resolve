@@ -1,11 +1,6 @@
 import respawn from 'respawn'
 
-const errors = []
 const processes = []
-
-export const processFail = (error) => {
-  errors.push(error)
-}
 
 export const processRegister = (command, opts) => {
   const process = respawn(command, opts)
@@ -16,9 +11,6 @@ export const processRegister = (command, opts) => {
 }
 
 export const processStopAll = (error) => {
-  if (error != null) {
-    errors.push(error)
-  }
   const promises = []
   for (const process of processes) {
     promises.push(
@@ -33,15 +25,11 @@ export const processStopAll = (error) => {
   }
   processes.length = 0
 
-  return Promise.all(promises).then(() => {
-    let code = 0
-    for (const error of errors) {
-      code = 1
-      // eslint-disable-next-line no-console
-      console.error(error)
-    }
-    process.exit(code)
-  })
+  if (error) {
+    // eslint-disable-next-line no-console
+    console.error(error)
+  }
+  return Promise.all(promises)
 }
 
-process.on('SIGINT', processStopAll)
+process.on('exit', processStopAll)

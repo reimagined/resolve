@@ -4,4 +4,5 @@ export const cleanUpProcess = async ({
   monitoring,
 }: RuntimeFactoryParameters) => {
   await monitoring.publish({ source: 'processExit' })
+  process.exit()
 }

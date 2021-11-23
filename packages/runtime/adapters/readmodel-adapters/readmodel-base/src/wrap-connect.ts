@@ -1,4 +1,5 @@
 import type {
+  WrapIsConditionUnsupportedFormatMethod,
   WrapConnectMethod,
   CommonAdapterPool,
   CommonAdapterOptions,
@@ -16,9 +17,11 @@ const connectImpl = async <
 >(
   {
     pool,
+    wrapIsConditionUnsupportedFormat,
     wrapWithCloneArgs,
   }: {
     pool: BaseAdapterPool<AdapterPool>
+    wrapIsConditionUnsupportedFormat: WrapIsConditionUnsupportedFormatMethod
     wrapWithCloneArgs: WrapWithCloneArgsMethod
   },
   connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],
@@ -42,12 +45,22 @@ const connectImpl = async <
     defineTable: wrapWithCloneArgs(
       defineTable.bind(null, adapterPool, readModelName)
     ),
-    findOne: wrapWithCloneArgs(findOne.bind(null, adapterPool, readModelName)),
-    find: wrapWithCloneArgs(find.bind(null, adapterPool, readModelName)),
-    count: wrapWithCloneArgs(count.bind(null, adapterPool, readModelName)),
+    findOne: wrapIsConditionUnsupportedFormat(
+      wrapWithCloneArgs(findOne.bind(null, adapterPool, readModelName))
+    ),
+    find: wrapIsConditionUnsupportedFormat(
+      wrapWithCloneArgs(find.bind(null, adapterPool, readModelName))
+    ),
+    count: wrapIsConditionUnsupportedFormat(
+      wrapWithCloneArgs(count.bind(null, adapterPool, readModelName))
+    ),
     insert: wrapWithCloneArgs(insert.bind(null, adapterPool, readModelName)),
-    update: wrapWithCloneArgs(update.bind(null, adapterPool, readModelName)),
-    delete: wrapWithCloneArgs(del.bind(null, adapterPool, readModelName)),
+    update: wrapIsConditionUnsupportedFormat(
+      wrapWithCloneArgs(update.bind(null, adapterPool, readModelName))
+    ),
+    delete: wrapIsConditionUnsupportedFormat(
+      wrapWithCloneArgs(del.bind(null, adapterPool, readModelName))
+    ),
     performanceTracer: pool.performanceTracer,
     monitoring: pool.monitoring,
   }
@@ -63,6 +76,7 @@ const wrapConnect: WrapConnectMethod = <
   AdapterOptions extends OmitObject<AdapterOptions, CommonAdapterOptions>
 >(
   pool: BaseAdapterPool<AdapterPool>,
+  wrapIsConditionUnsupportedFormat: WrapIsConditionUnsupportedFormatMethod,
   wrapWithCloneArgs: WrapWithCloneArgsMethod,
   connect: AdapterConnection<AdapterPool, AdapterOptions>['connect'],
   storeApi: StoreApi<AdapterPool>,
@@ -77,6 +91,7 @@ const wrapConnect: WrapConnectMethod = <
       null,
       {
         pool: BaseAdapterPool<AdapterPool>
+        wrapIsConditionUnsupportedFormat: WrapIsConditionUnsupportedFormatMethod
         wrapWithCloneArgs: WrapWithCloneArgsMethod
       },
       AdapterConnection<AdapterPool, AdapterOptions>['connect'],
@@ -84,7 +99,13 @@ const wrapConnect: WrapConnectMethod = <
       AdapterOptions,
       [string],
       Promise<ReadModelStore<StoreApi<AdapterPool>>>
-    >(null, { pool, wrapWithCloneArgs }, connect, storeApi, options)
+    >(
+      null,
+      { pool, wrapIsConditionUnsupportedFormat, wrapWithCloneArgs },
+      connect,
+      storeApi,
+      options
+    )
   )
 
 export default wrapConnect

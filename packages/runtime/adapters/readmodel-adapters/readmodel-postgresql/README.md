@@ -8,6 +8,8 @@ The adapter provides a query API for projection and resolvers. This API is stand
 ## Available Parameters
 
 - `databaseName` - The name of the PostgreSQL [schema](https://www.postgresql.org/docs/10/ddl-schemas.html).
+- `buildMode` - An optional build mode: "auto" (default), "nodejs", "plv8", "plv8-internal", "plv8-external". 
+- `useSqs` - An optional flag determining possibility of usage SQS transport (only in AWS cloud).
 - `tablePrefix` - An optional table prefix for read-models server by current adapter instance.
 - `user` - The name of a user.
 - `password` - The user's password.

@@ -590,4 +590,96 @@ describe(`${adapterFactory.name}. Read-model Store API. FindOne`, () => {
       ])
     }
   )
+
+  test(
+    [
+      `Projection`,
+      `  store.defineTable({ /* ... */ fields: ['a', 'b', 'c'] })`,
+      `  a: true, '$or': [ { b: true }, { c: true } ] and`,
+      `  a: false, '$or': [ { b: false }, { c: false } ] should throw error`,
+      `Unsupported search condition format`,
+    ].join('\n'),
+    async () => {
+      const projection = {
+        Init: async (store) => {
+          await store.defineTable('test', {
+            indexes: { testId: 'string' },
+            fields: ['a', 'b', 'c'],
+          })
+        },
+
+        TEST: async (store) => {
+          await store.insert('test', {
+            testId: 'test-id-1',
+            a: false,
+            b: false,
+            c: false,
+          })
+          await store.insert('test', {
+            testId: 'test-id-2',
+            a: false,
+            b: false,
+            c: true,
+          })
+          await store.insert('test', {
+            testId: 'test-id-3',
+            a: false,
+            b: true,
+            c: false,
+          })
+          await store.insert('test', {
+            testId: 'test-id-4',
+            a: false,
+            b: true,
+            c: true,
+          })
+          await store.insert('test', {
+            testId: 'test-id-5',
+            a: true,
+            b: false,
+            c: false,
+          })
+          await store.insert('test', {
+            testId: 'test-id-6',
+            a: true,
+            b: false,
+            c: true,
+          })
+          await store.insert('test', {
+            testId: 'test-id-7',
+            a: true,
+            b: true,
+            c: false,
+          })
+          await store.insert('test', {
+            testId: 'test-id-8',
+            a: true,
+            b: true,
+            c: true,
+          })
+        },
+      }
+
+      const domain = givenEvents(events)
+        .readModel({
+          name: 'StoreApi',
+          projection,
+          resolvers,
+        })
+        .withAdapter(adapter)
+
+      await expect(
+        domain.query('find', {
+          a: true,
+          $or: [{ b: true }, { c: true }],
+        })
+      ).rejects.toThrow(/Unsupported search condition format/)
+      await expect(
+        domain.query('find', {
+          a: false,
+          $or: [{ b: false }, { c: false }],
+        })
+      ).rejects.toThrow(/Unsupported search condition format/)
+    }
+  )
 })

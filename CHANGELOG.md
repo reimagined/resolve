@@ -2,13 +2,49 @@
 
 ## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.1...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.3...HEAD)
 
 **Bug fixes:**
 
+- Application silently fails to run if config is invalid, no errors are shown [\#2141](https://github.com/reimagined/resolve/issues/2141)
+- shopping-list has a description from shopping-list-with-hooks [\#2106](https://github.com/reimagined/resolve/issues/2106)
+- Error: Lambda worker was not created due to cold start failure [\#2105](https://github.com/reimagined/resolve/issues/2105)
+
+**Documentation:**
+
+- Replace CURL inputs with JS code samples [\#2138](https://github.com/reimagined/resolve/pull/2138)
+
+**Other changes:**
+
+- Build-mode flag for postgresql readmodel adapter [\#2140](https://github.com/reimagined/resolve/pull/2140)
+
+## [V0.33.3](https://github.com/reimagined/resolve/tree/V0.33.3) (2021-11-19)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.2...V0.33.3)
+
+**Breaking changes:**
+
+- Runtime code is erroneously executed at compile-time [\#2114](https://github.com/reimagined/resolve/issues/2114)
+
+**Bug fixes:**
+
+- "Module "source-map-support/register" cannot be resolved" thrown in the deployment [\#2119](https://github.com/reimagined/resolve/issues/2119)
+
+## [V0.33.2](https://github.com/reimagined/resolve/tree/V0.33.2) (2021-11-17)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.1...V0.33.2)
+
+**Bug fixes:**
+
+- The Node process stays active after resolve applications are stopped. [\#2126](https://github.com/reimagined/resolve/issues/2126)
 - Some format options does not work in cli, for example domainName [\#2110](https://github.com/reimagined/resolve/issues/2110)
 - Custom read-model does not start [\#2095](https://github.com/reimagined/resolve/issues/2095)
 - Babel "loose mode" warnings  [\#2011](https://github.com/reimagined/resolve/issues/2011)
+
+**Other changes:**
+
+- Fix security issues [\#2122](https://github.com/reimagined/resolve/pull/2122)
+- Improve readmodel postgresql lightweight optimistic [\#2118](https://github.com/reimagined/resolve/pull/2118)
 
 ## [V0.33.1](https://github.com/reimagined/resolve/tree/V0.33.1) (2021-11-09)
 
