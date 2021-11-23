@@ -1,6 +1,6 @@
 import { declareRuntimeEnv } from '@resolve-js/scripts'
 
-const configCloud = {
+const cloudConfig = {
   mode: 'production',
   runtime: {
     module: '@resolve-js/runtime-aws-serverless',
@@ -32,5 +32,4 @@ const configCloud = {
     },
   },
 }
-
-export default configCloud
+export default cloudConfig

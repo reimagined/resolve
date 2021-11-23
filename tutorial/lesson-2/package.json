@@ -2,6 +2,7 @@
   "name": "@shopping-list-tutorial/lesson-2",
   "version": "0.33.3",
   "private": true,
+  "description": "used as a template for new reSolve applications",
   "scripts": {
     "build": "babel-node ./run.js build",
     "cloud": "babel-node ./run.js cloud",

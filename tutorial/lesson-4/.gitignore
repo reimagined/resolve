@@ -61,12 +61,12 @@ typings/
 
 dist
 
-*.db
-*.db-journal
-*.db-shm
-*.db-wal
-
+event-storage.db
 package-lock.json
 code.zip
 static.zip
 
+build
+*.db
+*.db-journal
+.idea

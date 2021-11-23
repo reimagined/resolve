@@ -5,6 +5,7 @@ import { ListGroup, FormControl, FormGroup, FormLabel } from 'react-bootstrap'
 
 import ShoppingListItem from './ShoppingListItem'
 
+// The shopping list populated with items obtained from the ShoppingList View Model.
 const ShoppingList = ({
   match: {
     params: { id: aggregateId },
@@ -15,13 +16,17 @@ const ShoppingList = ({
     id: null,
     list: [],
   })
+  // The UseViewModel hook connects the component to a View Model
+  // and reactively updates the component's state when the View Model's
+  // data is updated.
   const { connect, dispose } = useViewModel(
-    'shoppingList',
-    [aggregateId],
-    setShoppingList
+    'shoppingList', // The View Model's name.
+    [aggregateId], // The aggregate ID for which to query data.
+    setShoppingList // A callback to call when new data is recieved.
   )
 
   useEffect(() => {
+    // Connect to a View Model on component mount and disconnect on unmount.
     connect()
     return () => {
       dispose()
