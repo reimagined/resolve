@@ -120,7 +120,7 @@ You can use the **defineTable** method to add tables to the storage:
   }
 ```
 
-ReSolve exposes a unified API to manage data in storage (this code works with any supported storage type). **Read Model Adapters** implements the internal logic a Read Model uses to communicate with DBMSs.
+ReSolve exposes a unified API to manage data in storage (this code works with any supported storage type). **Read Model Adapters** implement the internal logic a Read Model uses to communicate with DBMSs.
 
 We recommend that you store Read Model data in a denormalized form so that your Read Models are optimized for query performance.
 
