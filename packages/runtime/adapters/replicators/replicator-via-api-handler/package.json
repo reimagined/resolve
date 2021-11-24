@@ -28,12 +28,11 @@
     "@resolve-js/debug-levels": "0.33.3",
     "@resolve-js/eventstore-base": "0.33.3",
     "@resolve-js/module-replication": "0.33.3",
-    "@resolve-js/readmodel-base": "0.33.3"
+    "@resolve-js/readmodel-base": "0.33.3",
+    "node-fetch": "2.6.1"
   },
   "devDependencies": {
-    "jest": "27.0.3",
-    "node-fetch": "^2.6.1",
-    "sinon": "7.2.2"
+    "jest": "27.0.3"
   },
   "engines": {
     "node": ">=14.17"
