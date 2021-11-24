@@ -230,7 +230,7 @@ You can extend a reSolve server's API with API Handlers. Refer to the following 
 
 ## @resolve-js/client library
 
-The **@resolve-js/client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
+The **@resolve-js/client** library exposes an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
 
 | Function                                                            | Description                                                                 |
 | ------------------------------------------------------------------- | --------------------------------------------------------------------------- |

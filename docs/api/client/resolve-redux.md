@@ -8,17 +8,17 @@ The reSolve framework includes the client **@resolve-js/redux** library used to 
 
 ## React Hooks
 
-| Function Name                                           | Description                                                                 |
-| ------------------------------------------------------- | --------------------------------------------------------------------------- |
-| [useReduxCommand](#usereduxcommand)                     | Creates a hook to execute a command.                                        |
-| [useReduxReadModel](#usereduxreadmodel)                 | Creates a hook to query a Read Model.                                       |
-| [useReduxReadModelSelector](#usereduxreadmodelselector) | Creates a hook to access a Read Model query result.                         |
-| [useReduxViewModel](#usereduxviewmodel)                 | Creates a hook to receive a View Model's state updates and reactive events. |
-| [useReduxViewModelSelector](#usereduxviewmodelselector) | Creates a hook to access a View Model's current state on the client.        |
+| Function Name                                           | Description                                             |
+| ------------------------------------------------------- | ------------------------------------------------------- |
+| [useReduxCommand](#usereduxcommand)                     | Creates a hook that execute a command.                  |
+| [useReduxReadModel](#usereduxreadmodel)                 | Creates a hook that queries a Read Model.               |
+| [useReduxReadModelSelector](#usereduxreadmodelselector) | Creates a hook used access a Read Model query result.   |
+| [useReduxViewModel](#usereduxviewmodel)                 | Creates a hook used to subscribe to View Model updates. |
+| [useReduxViewModelSelector](#usereduxviewmodelselector) | Creates a hook used to access a View Model's state.     |
 
 ### useReduxCommand
 
-Creates a hook to execute a reSolve command.
+Creates a hook that executes a reSolve command.
 
 ##### Example
 
@@ -35,7 +35,7 @@ const { execute: toggleItem } = useReduxCommand({
 
 ### useReduxReadModel
 
-Creates a hook to query a reSolve Read Model
+Creates a hook that queries a Read Model,
 
 ##### Example
 
@@ -56,7 +56,7 @@ const { status, data } = useSelector(allLists)
 
 ### useReduxReadModelSelector
 
-Creates a hook to access the result of a Read Model query. Note that this hook provides access to data obtained through `useReduxReadModel` and does not send any requests to the server.
+Creates a hook used to access the result of a Read Model query. This hook allows you to access data queried by `useReduxReadModel` and does not send any requests to the server.
 
 ```js
 const { request: getLists, selector: allLists } = useReduxReadModel(
@@ -78,7 +78,7 @@ const { status, data } = useReduxReadModelSelector('all-user-lists')
 
 ### useReduxViewModel
 
-Creates a hook to receive a View Model's state updates and reactive events.
+Creates a hook used to subscribe to View Model updates.
 
 ```js
 const { connect, dispose, selector: thisList } = useReduxViewModel({
@@ -98,7 +98,7 @@ useEffect(() => {
 
 ### useReduxViewModelSelector
 
-Creates a hook to access a view model's local state. This hook queries the View Model's current state on the client and does not send any requests to the server.
+Creates a hook used to access a View Model's state. This hook queries the View Model's state on the client and does not send any requests to the server.
 
 ```js
 const { connect, dispose, selector: thisList } = useReduxViewModel(

@@ -1,10 +1,10 @@
 ---
 id: resolve-client
 title: '@resolve-js/client'
-description: The @resolve-js/client library provides an interface that you can use to communicate with the reSolve backend from JavaScript code.
+description: The @resolve-js/client library exposes an interface that you can use to communicate with the reSolve backend from JavaScript code.
 ---
 
-The **@resolve-js/client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
+The **@resolve-js/client** library exposes an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
 
 ```js
 import { getClient } from '@resolve-js/client'
@@ -37,7 +37,7 @@ Sends an aggregate command to the backend.
 | options       | An object that contains additional options for command execution. |
 | callback      | A callback to call on the server response or error.               |
 
-The returned value is a promise that resolves to the command result.
+The returned value is a promise that resolves to the command execution result.
 
 #### Example
 
@@ -78,11 +78,11 @@ Queries a Read Model.
 
 #### Arguments
 
-| Argument Name | Description                                               |
-| ------------- | --------------------------------------------------------- |
-| qr            | A n object that describes a query.                        |
-| options       | An object that contains additional options for the query. |
-| callback      | A callback to call on the server response or error.       |
+| Argument Name | Description                                         |
+| ------------- | --------------------------------------------------- |
+| qr            | An object that describes a query.                   |
+| options       | An object that contains additional query options.   |
+| callback      | A callback to call on the server response or error. |
 
 The returned value is a promise that resolves to the query result.
 
@@ -133,7 +133,7 @@ var commandsApiPath = client.getOriginPath('/api/commands')
 
 ### subscribe
 
-Subscribes to View Model updates. Returns a promise that resolves to a **subscription** object.
+Subscribes to View Model updates.
 
 #### Arguments
 
@@ -172,9 +172,9 @@ Unsubscribes from View Model updates.
 
 #### Arguments
 
-| Argument Name | Description            |
-| ------------- | ---------------------- |
-| subscription  | A subscription object. |
+| Argument Name | Description                                                 |
+| ------------- | ----------------------------------------------------------- |
+| subscription  | An object returned by the [subscribe](#subscribe) function. |
 
 #### Example
 

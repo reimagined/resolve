@@ -1,10 +1,10 @@
 ---
 id: resolve-react-hooks
 title: '@resolve-js/react-hooks'
-description: The @resolve-js/react-hooks library provides React hooks that you can use to connect React components to a reSolve backend.
+description: The @resolve-js/react-hooks library exposes React hooks that you can use to connect React components to a reSolve backend.
 ---
 
-The **@resolve-js/react-hooks** library provides React hooks that you can use to connect React components to a reSolve backend. The following hooks are provided.
+The **@resolve-js/react-hooks** library exposes React hooks that you can use to connect React components to a reSolve backend. The following hooks are included:
 
 | Hook                                    | Description                                                                    |
 | --------------------------------------- | ------------------------------------------------------------------------------ |
