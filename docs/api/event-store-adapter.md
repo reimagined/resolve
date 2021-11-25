@@ -89,9 +89,9 @@ Gets an array of events and the next cursor from the store based on the specifie
 
 ##### Arguments
 
-| Argument Name | Description                                                                                                                                                                                                                                                                                                  |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| eventFilter   | { cursor: string or null, limit: number, eventsSizeLimit: number, eventTypes: Array&lt;string&gt;, aggregateIds: Array&lt;string&gt; } <br /> or <br /> { startTime?: number, endTime?: number, limit: number, eventsSizeLimit: number, eventTypes: Array&lt;string&gt;, aggregateIds: Array&lt;string&gt; } |
+| Argument Name | Description                                                                                                                                                                                                                                                                                                     |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| eventFilter   | { cursor: string or null, limit: number, eventsSizeLimit: number, eventTypes: Array&lt;string&gt;, aggregateIds: Array&lt;string&gt; } <br /> or <br /> { startTime?: number, finishTime?: number, limit: number, eventsSizeLimit: number, eventTypes: Array&lt;string&gt;, aggregateIds: Array&lt;string&gt; } |
 
 ##### Result
 
@@ -113,9 +113,35 @@ Promise<{
 #### Example
 
 ```js
-const { events, cursor: nextCursor } = await eventStoreAdapter.loadEvents(
-  eventFilter
-)
+// Iterate through events.
+let nextCursor = null
+do {
+  void ({ events, cursor: nextCursor } = await adapter.loadEvents({
+    limit: 1,
+    cursor: nextCursor,
+  }))
+} while (events.length > 0)
+
+// Load evets from the specified timespan.
+const { events } = await adapter.loadEvents({
+  limit: Number.MAX_SAFE_INTEGER,
+  startTime: Date.now() - 1000,
+  endTime: Date.now(),
+})
+
+// Load events of the specified type.
+const { events } = await adapter.loadEvents({
+  limit: 1000,
+  eventTypes: ['ITEM_CREATED'],
+  cursor: null,
+})
+
+// Load events with the specified aggregate ID.
+const { events } = await adapter.loadEvents({
+  limit: 1000,
+  aggregateIds: ['list-1'],
+  cursor: null,
+})
 ```
 
 ### getLatestEvent
