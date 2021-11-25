@@ -159,4 +159,4 @@ await fetch(Url, {
 })
 ```
 
-See the [Authentication and Authorization](../../authentication-and-authorization.md) topic for information on how authorization is handled on server.
+See the [Authentication and Authorization](../../authentication-and-authorization.md) topic for information on how authorization is handled on the server.
