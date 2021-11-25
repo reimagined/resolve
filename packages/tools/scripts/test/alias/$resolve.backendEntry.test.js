@@ -17,5 +17,4 @@ test('works correctly', async () => {
       '\r\n'
   )
   expect(code).not.toContain('moduleImport')
-  expect(code).toMatchSnapshot()
 })
