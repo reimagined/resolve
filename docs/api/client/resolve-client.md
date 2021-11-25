@@ -144,7 +144,7 @@ Subscribes to View Model updates.
 | viewModelName       | A string that specifies the name of a view model.                               |
 | aggregateIds        | A list of aggregate IDs for which to receive events.                            |
 | handler             | A function that handles incoming events.                                        |
-| subscribeCallback   | A callback called on successful subscription or error.                          |
+| subscribeCallback   | A callback called on a successful subscription or an error.                          |
 | resubscribeCallback | A callback called on a successful resubscription or an error.                        |
 
 The returned value is a promise that resolves to a subscription object.
