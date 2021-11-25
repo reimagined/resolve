@@ -63,6 +63,7 @@ const emitDynamicImport = async (runtime) => {
 
     const handler = async (...args) => {
       try {
+        await immediatePromise
         if(!global.initPromise) {
           const interopRequireDefault = require('@babel/runtime/helpers/interopRequireDefault')
           global.serverAssemblies = interopRequireDefault(
@@ -86,10 +87,10 @@ const emitDynamicImport = async (runtime) => {
       }
     }
 
-    (async () => {
+    const immediatePromise = (async () => {
       try {
         await Promise.resolve()
-        const runtimeModule = await import(${JSON.stringify(result)})
+        const runtimeModule = require(${JSON.stringify(result)})
         const { execMode } = await runtimeModule[${JSON.stringify(
           moduleImport
         )}]()
