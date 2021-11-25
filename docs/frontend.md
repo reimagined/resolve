@@ -282,7 +282,7 @@ The **@resolve-js/react-hooks** library includes React hooks that you can use to
 | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
 | [useСlient](api/client/resolve-react-hooks.md#useclient)                 | Returns the [@resolve-js/client](api/client/resolve-client.md) library's `client` object. |
 | [useCommand](api/client/resolve-react-hooks.md#usecommand)               | Initializes a command that can be passed to the backend.                                  |
-| [useCommandBuilder](api/client/resolve-react-hooks.md#usecommandbuilder) | Allows to generate commands based on input parameters.                                    |
+| [useCommandBuilder](api/client/resolve-react-hooks.md#usecommandbuilder) | Allows a component to generate commands based on input parameters.                        |
 | [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model.                               |
 | [useQuery](api/client/resolve-react-hooks.md#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model.                 |
 | [useQueryBuilder](api/client/resolve-react-hooks.md#usequerybuilder)     | Allows a component to generate queries based on input parameters.                         |
