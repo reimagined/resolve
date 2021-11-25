@@ -38,6 +38,7 @@
     "@resolve-js/scripts": "0.33.3",
     "@resolve-js/testing-tools": "0.33.3",
     "jest": "27.0.3",
+    "jsonwebtoken": "8.5.1",
     "pg": "8.5.1",
     "pg-cursor": "2.7.1"
   }
