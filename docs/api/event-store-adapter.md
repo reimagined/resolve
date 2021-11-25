@@ -10,6 +10,7 @@ An event store adapter defines how the reSolve framework stores events in the un
 | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | [init](#init)                                           | Initializes a database.                                                                            |
 | [drop](#drop)                                           | Drops a database.                                                                                  |
+| [describe](#describe)                                   | Obtain information about the event store.                                                          |
 | [dispose](#dispose)                                     | Disconnects from a database and disposes unmanaged resources.                                      |
 | [saveEvent](#saveevent)                                 | Saves an event to the database.                                                                    |
 | [loadEvents](#loadEvents)                               | Gets an array of events and the next cursor from the store based on the specified filter criteria. |
@@ -49,6 +50,37 @@ Drops the database.
 
 ```js
 await eventStoreAdapter.drop()
+```
+
+### describe
+
+Obtain information about the event store.
+
+##### Arguments
+
+| Argument Name | Description                                             |
+| ------------- | ------------------------------------------------------- |
+| options       | { estimateCounts?: boolean, calculateCursor?: boolean } |
+
+##### Result
+
+```ts
+Promise<{
+  eventCount: number
+  secretCount: number
+  setSecretCount: number
+  deletedSecretCount: number
+  isFrozen: boolean
+  lastEventTimestamp: number
+  cursor?: string | null
+  resourceNames?: { [key: string]: string }
+}>
+```
+
+#### Example
+
+```js
+const eventCount = await eventStoreAdapter.describe({ estimateCounts: true })).eventCount
 ```
 
 ### dispose
