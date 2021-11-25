@@ -12,6 +12,10 @@ exports[`works correctly 1`] = `
 }
 
     const handler = async (...args) => {
+      const immediatePromiseResult = await immediatePromise
+      if (immediatePromiseResult != null) {
+        throw immediatePromiseResult
+      }
       try {
         if(!global.initPromise) {
           const interopRequireDefault = require('@babel/runtime/helpers/interopRequireDefault')
@@ -31,22 +35,24 @@ exports[`works correctly 1`] = `
         const worker = await initPromise
         return await worker(...args)
       } catch(error) {
-        log.error('Fatal error: ', error)
+        log.error('Lambda handler fatal error: ', error)
         throw error
       }
     }
 
-    (async () => {
+    const immediatePromise = (async () => {
       try {
         await Promise.resolve()
-        const runtimeModule = await import(\\"@resolve-js/runtime-aws-serverless\\")
+        const runtimeModule = require(\\"@resolve-js/runtime-aws-serverless\\")
         const { execMode } = await runtimeModule[\\"default\\"]()
         if(execMode === 'immediate') {
           log.debug('\\"execMode\\" set to \\"immediate\\", executing worker') 
-          handler().catch((error) => log.error(error))
+          handler().catch((error) => log.error('Immediate handler execution error: ', error))
         }
+        return null
       } catch(error) {
-        log.error('Fatal error: ', error)
+        log.error('Immediate require error: ', error)
+        return error
       }
     })()
 
