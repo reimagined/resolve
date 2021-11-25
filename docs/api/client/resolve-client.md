@@ -145,7 +145,7 @@ Subscribes to View Model updates.
 | aggregateIds        | A list of aggregate IDs for which to receive events.                            |
 | handler             | A function that handles incoming events.                                        |
 | subscribeCallback   | A callback called on successful subscription or error.                          |
-| resubscribeCallback | A callback called on successful resubscription or error.                        |
+| resubscribeCallback | A callback called on a successful resubscription or an error.                        |
 
 The returned value is a promise that resolves to a subscription object.
 

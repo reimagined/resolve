@@ -10,9 +10,9 @@ The reSolve framework includes the client **@resolve-js/redux** library used to 
 
 | Function Name                                           | Description                                             |
 | ------------------------------------------------------- | ------------------------------------------------------- |
-| [useReduxCommand](#usereduxcommand)                     | Creates a hook that execute a command.                  |
+| [useReduxCommand](#usereduxcommand)                     | Creates a hook that executes a command.                  |
 | [useReduxReadModel](#usereduxreadmodel)                 | Creates a hook that queries a Read Model.               |
-| [useReduxReadModelSelector](#usereduxreadmodelselector) | Creates a hook used access a Read Model query result.   |
+| [useReduxReadModelSelector](#usereduxreadmodelselector) | Creates a hook used to access a Read Model query result.   |
 | [useReduxViewModel](#usereduxviewmodel)                 | Creates a hook used to subscribe to View Model updates. |
 | [useReduxViewModelSelector](#usereduxviewmodelselector) | Creates a hook used to access a View Model's state.     |
 
@@ -35,7 +35,7 @@ const { execute: toggleItem } = useReduxCommand({
 
 ### useReduxReadModel
 
-Creates a hook that queries a Read Model,
+Creates a hook that queries a Read Model.
 
 ##### Example
 
