@@ -18,13 +18,9 @@ An event store adapter defines how the reSolve framework stores events in the un
 | [export](#export)                                       | Gets a readable stream used to load events.                                                        |
 | [freeze](#freeze)                                       | Freezes the database.                                                                              |
 | [unfreeze](#unfreeze)                                   | Unfreezes the database.                                                                            |
-| [isFrozen](#isfrozen)                                   | Gets a Boolean value that indicates whether the database is frozen.                                |
 | [loadSnapshot](#loadsnapshot)                           | Loads a snapshot.                                                                                  |
 | [saveSnapshot](#savesnapshot)                           | Creates or updates a snapshot.                                                                     |
 | [dropSnapshot](#dropsnapshot)                           | Deletes a snapshot.                                                                                |
-| [getSecret](#getsecret)                                 | Gets a secret.                                                                                     |
-| [setSecret](#setsecret)                                 | Creates or updates a secret.                                                                       |
-| [deleteSecret](#deletesecret)                           | Deletes a secret.                                                                                  |
 | [incrementalImport](#incrementalimport)                 | Incrementally imports events.                                                                      |
 | [beginIncrementalImport](#beginincrementalimport)       | Starts to build a batch of events to import.                                                       |
 | [pushIncrementalImport](#pushincrementalimport)         | Adds events to an incremental import batch.                                                        |
@@ -197,24 +193,6 @@ Unfreezes the database.
 await eventStoreAdapter.unfreeze()
 ```
 
-### isFrozen
-
-Gets a Boolean value that indicates whether the database is frozen.
-
-##### Arguments
-
-`void`
-
-##### Result
-
-`Promise<boolean>`
-
-#### Example
-
-```js
-const frozen = await eventStoreAdapter.isFrozen()
-```
-
 ### loadSnapshot
 
 Loads a snapshot.
@@ -277,70 +255,6 @@ Deletes a snapshot.
 
 ```js
 await eventStoreAdapter.dropSnapshot(snapshotKey)
-```
-
-### getSecret
-
-Gets a secret.
-
-##### Arguments
-
-| Argument Name | Description                          |
-| ------------- | ------------------------------------ |
-| selector      | A unique key in the table of secrets |
-
-##### Result
-
-secret: `Promise<string | null>`
-
-#### Example
-
-```js
-const secret = await eventStoreAdapter.getSecret(selector)
-if (secret == null) {
-  throw new Error('SecretNotFoundException')
-}
-```
-
-### setSecret
-
-Creates or updates a secret.
-
-##### Arguments
-
-| Argument Name | Description                                           |
-| ------------- | ----------------------------------------------------- |
-| selector      | A unique key in the table of secrets.                 |
-| secret        | A new encrypted secret value in the specified secret. |
-
-##### Result
-
-`Promise<void>`
-
-#### Example
-
-```js
-await eventStoreAdapter.setSecret(selector, secret)
-```
-
-### deleteSecret
-
-Deletes a secret.
-
-##### Arguments
-
-| Argument Name | Description                           |
-| ------------- | ------------------------------------- |
-| selector      | A unique key in the table of secrets. |
-
-##### Result
-
-`Promise<void>`
-
-#### Example
-
-```js
-await eventStoreAdapter.deleteSecret(selector)
 ```
 
 ### incrementalImport
