@@ -57,3 +57,12 @@ export const RequestTimeoutError = DefineErrorWithStatus(
 export const ConnectionError = DefineErrorWithStatus('ConnectionError', 503)
 
 export const ServiceBusyError = DefineErrorWithStatus('ServiceBusyError', 503)
+
+export class UnrecognizedError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'UnrecognizedError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+  code?: any
+}
