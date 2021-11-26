@@ -1,11 +1,8 @@
-import CloudWatch, {
-  Dimensions as DimensionsType,
-} from 'aws-sdk/clients/cloudwatch'
-import { Options, retry } from 'resolve-cloud-common/utils'
+import { CloudWatch, Dimension } from '@aws-sdk/client-cloudwatch'
 import fetch from 'isomorphic-fetch'
 import { getTargetURL } from '../utils/utils'
 
-jest.setTimeout(10 * 60 * 1000)
+jest.setTimeout(5 * 60 * 1000)
 
 const BENCH_EVENTS_COUNT = 3000
 const MAX_FAILED_ATTEMPTS = 5
@@ -18,7 +15,7 @@ const getOneMetricSummaryData = async (params: {
   Region: string
   StartTime: number
   EndTime: number
-  Dimensions: DimensionsType
+  Dimensions: Dimension[]
   MetricName: string
   Namespace: string
   Period: number
@@ -35,11 +32,6 @@ const getOneMetricSummaryData = async (params: {
   const cw = new CloudWatch({ region: Region })
 
   try {
-    const getMetrics = retry(
-      cw,
-      cw.getMetricData,
-      Options.Defaults.override({})
-    )
     let NextToken: string | undefined
     const result = new Map<number, number>()
 
@@ -47,7 +39,7 @@ const getOneMetricSummaryData = async (params: {
       const {
         MetricDataResults,
         NextToken: CurrentNextToken,
-      } = await getMetrics({
+      } = await cw.getMetricData({
         ScanBy: 'TimestampAscending',
         StartTime: new Date(StartTime),
         EndTime: new Date(EndTime),
@@ -90,6 +82,7 @@ const getOneMetricSummaryData = async (params: {
       return null
     }
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error(e)
     throw e
   }
@@ -143,8 +136,9 @@ const performApiPost = async <T extends unknown, Args extends [string, T?]>(
       return response
     } catch (error) {
       if (!isHighloadError(error)) {
+        // eslint-disable-next-line no-console
         console.error(error)
-        if (args.length == 1) {
+        if (args.length === 1) {
           throw error
         } else {
           return args[1]
@@ -164,7 +158,7 @@ const getEventCount = async (benchType: 'lite' | 'heavy') => {
 
 const pauseReadModels = async (dropBenchEventstore: boolean): Promise<null> => {
   const result = await performApiPost(
-    `/bench-readmodels-pause${
+    `/bench-read-models-pause${
       dropBenchEventstore ? '?dropBenchEventstore=true' : ''
     }`,
     null
@@ -183,7 +177,7 @@ const generateEvents = async () => {
 }
 
 const resumeReadModels = async (): Promise<null> => {
-  const result = await performApiPost(`/bench-readmodels-resume`, null)
+  const result = await performApiPost(`/bench-read-models-resume`, null)
   if (result === 'error') {
     return await resumeReadModels()
   } else if (result !== 'ok') {
@@ -279,7 +273,9 @@ test('benchmark', async () => {
       .map(([_, rate]) => rate)
       .reduce((acc, val) => acc + val, 0) / benchHeavyFeedingRate.size
 
+  // eslint-disable-next-line no-console
   console.log('resultLite', resultLite)
+  // eslint-disable-next-line no-console
   console.log('resultHeavy', resultHeavy)
 
   // Minimum 400 events/sec for lite read-model projection with cold restart

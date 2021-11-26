@@ -233,12 +233,12 @@ const appConfig = {
     },
     {
       handler: 'common/api-handlers/benchmark-resume-read-models.js',
-      path: '/api/bench-readmodels-resume',
+      path: '/api/bench-read-models-resume',
       method: 'POST',
     },
     {
       handler: 'common/api-handlers/benchmark-pause-read-models.js',
-      path: '/api/bench-readmodels-pause',
+      path: '/api/bench-read-models-pause',
       method: 'POST',
     },
   ],

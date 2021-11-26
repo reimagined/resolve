@@ -52,7 +52,6 @@ void (async () => {
     }
     await stop()
   } catch (error) {
-    console.log(error)
     await stop(error)
   }
 })()
