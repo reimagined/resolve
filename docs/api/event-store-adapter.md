@@ -6,33 +6,33 @@ description: This document describes the interface that an event store adapter s
 
 An event store adapter defines how the reSolve framework stores events in the underlying event store. An event store adapter object must expose the following functions:
 
-| Function Name                                           | Description                                                                                         |
-| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| [init](#init)                                           | Initializes a database.                                                                             |
-| [drop](#drop)                                           | Drops a database.                                                                                   |
-| [describe](#describe)                                   | Obtain information about the event store.                                                           |
-| [dispose](#dispose)                                     | Disconnects from a database and disposes unmanaged resources.                                       |
-| [saveEvent](#saveevent)                                 | Saves an event to the database.                                                                     |
-| [loadEvents](#loadEvents)                               | Gets an array of events and the next cursor from the store based on the specified filter criteria.  |
-| [getLatestEvent](#getlatestevent)                       | Gets the latest saved event.                                                                        |
-| [freeze](#freeze)                                       | Freezes the database.                                                                               |
-| [unfreeze](#unfreeze)                                   | Unfreezes the database.                                                                             |
-| [loadSnapshot](#loadsnapshot)                           | Loads a snapshot.                                                                                   |
-| [saveSnapshot](#savesnapshot)                           | Creates or updates a snapshot.                                                                      |
-| [dropSnapshot](#dropsnapshot)                           | Deletes a snapshot.                                                                                 |
-| [incrementalImport](#incrementalimport)                 | Incrementally imports events.                                                                       |
-| [beginIncrementalImport](#beginincrementalimport)       | Starts to build a batch of events to import.                                                        |
-| [pushIncrementalImport](#pushincrementalimport)         | Adds events to an incremental import batch.                                                         |
-| [commitIncrementalImport](#commitincrementalimport)     | Commits an incremental import batch to the event store.                                             |
-| [rollbackIncrementalImport](#rollbackincrementalimport) | Drops an incremental import batch.                                                                  |
-| [getNextCursor](#getnextcursor)                         | Gets the next database cursor used to traverse the data sample returned by the underlying database. |
-| [importEvents](#importevents)                           | Gets a writable stream used to save events.                                                         |
-| [exportEvents](#exportevents)                           | Gets a readable stream used to load events.                                                         |
-| [loadSecrets](#loadsecrets)                             | Gets a list of secrets stored in the event store.                                                   |
-| [importSecrets](#importsecrets)                         | Gets a writable stream used to save secrets.                                                        |
-| [exportSecrets](exportsecrets)                          | Gets a writable stream used to load secrets.                                                        |
+| Function Name                                             | Description                                                                                         |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| [`init`](#init)                                           | Initializes a database.                                                                             |
+| [`drop`](#drop)                                           | Drops a database.                                                                                   |
+| [`describe`](#describe)                                   | Obtain information about the event store.                                                           |
+| [`dispose`](#dispose)                                     | Disconnects from a database and disposes unmanaged resources.                                       |
+| [`saveEvent`](#saveevent)                                 | Saves an event to the database.                                                                     |
+| [`loadEvents`](#loadEvents)                               | Gets an array of events and the next cursor from the store based on the specified filter criteria.  |
+| [`getLatestEvent`](#getlatestevent)                       | Gets the latest saved event.                                                                        |
+| [`freeze`](#freeze)                                       | Freezes the database.                                                                               |
+| [`unfreeze`](#unfreeze)                                   | Unfreezes the database.                                                                             |
+| [`loadSnapshot`](#loadsnapshot)                           | Loads a snapshot.                                                                                   |
+| [`saveSnapshot`](#savesnapshot)                           | Creates or updates a snapshot.                                                                      |
+| [`dropSnapshot`](#dropsnapshot)                           | Deletes a snapshot.                                                                                 |
+| [`incrementalImport`](#incrementalimport)                 | Incrementally imports events.                                                                       |
+| [`beginIncrementalImport`](#beginincrementalimport)       | Starts to build a batch of events to import.                                                        |
+| [`pushIncrementalImport`](#pushincrementalimport)         | Adds events to an incremental import batch.                                                         |
+| [`commitIncrementalImport`](#commitincrementalimport)     | Commits an incremental import batch to the event store.                                             |
+| [`rollbackIncrementalImport`](#rollbackincrementalimport) | Drops an incremental import batch.                                                                  |
+| [`getNextCursor`](#getnextcursor)                         | Gets the next database cursor used to traverse the data sample returned by the underlying database. |
+| [`importEvents`](#importevents)                           | Gets a writable stream used to save events.                                                         |
+| [`exportEvents`](#exportevents)                           | Gets a readable stream used to load events.                                                         |
+| [`loadSecrets`](#loadsecrets)                             | Gets a list of secrets stored in the event store.                                                   |
+| [`importSecrets`](#importsecrets)                         | Gets a writable stream used to save secrets.                                                        |
+| [`exportSecrets`](exportsecrets)                          | Gets a writable stream used to load secrets.                                                        |
 
-### init
+### `init`
 
 Initializes the database.
 
@@ -46,7 +46,7 @@ const eventStoreAdapter = createEventStoreAdapter(options)
 await eventStoreAdapter.init()
 ```
 
-### drop
+### `drop`
 
 Drops the database.
 
@@ -56,7 +56,7 @@ Drops the database.
 await eventStoreAdapter.drop()
 ```
 
-### describe
+### `describe`
 
 Obtain information about the event store.
 
@@ -68,11 +68,11 @@ const eventCount = await eventStoreAdapter.describe({ estimateCounts: true })).e
 
 #### Arguments
 
-| Argument Name                | Type   | Description                                                            |
-| ---------------------------- | ------ | ---------------------------------------------------------------------- |
-| [options](#describe-options) | object | Contains options that specifies what calculations should be performed. |
+| Argument Name                  | Type   | Description                                                            |
+| ------------------------------ | ------ | ---------------------------------------------------------------------- |
+| [`options`](#describe-options) | object | Contains options that specifies what calculations should be performed. |
 
-##### options {#describe-options}
+#### `options` {#describe-options}
 
 Contains options that specifies what calculations should be performed. The options object has the following structure:
 
@@ -100,7 +100,7 @@ A promise that resolves to an object of the following structure:
 >
 ```
 
-### dispose
+### `dispose`
 
 Disconnects from the database and disposes unmanaged resources.
 
@@ -110,7 +110,7 @@ Disconnects from the database and disposes unmanaged resources.
 await eventStoreAdapter.dispose()
 ```
 
-### saveEvent
+### `saveEvent`
 
 Saves an event to the database.
 
@@ -134,7 +134,7 @@ await eventStoreAdapter.saveEvent({
 })
 ```
 
-### loadEvents
+### `loadEvents`
 
 Gets an array of events and the next cursor from the store based on the specified filter criteria.
 
@@ -195,11 +195,11 @@ const { events } = await adapter.loadEvents({
 })
 ```
 
-### getLatestEvent
+### `getLatestEvent`
 
 Gets the latest saved event.
 
-### freeze
+### `freeze`
 
 Freezes the database.
 
@@ -217,7 +217,7 @@ Freezes the database.
 await eventStoreAdapter.freeze()
 ```
 
-### unfreeze
+### `unfreeze`
 
 Unfreezes the database.
 
@@ -235,7 +235,7 @@ Unfreezes the database.
 await eventStoreAdapter.unfreeze()
 ```
 
-### loadSnapshot
+### `loadSnapshot`
 
 Loads a snapshot.
 
@@ -258,7 +258,7 @@ if (content == null) {
 }
 ```
 
-### saveSnapshot
+### `saveSnapshot`
 
 Creates or updates a snapshot.
 
@@ -279,7 +279,7 @@ Creates or updates a snapshot.
 await eventStoreAdapter.saveSnapshot(snapshotKey, content)
 ```
 
-### dropSnapshot
+### `dropSnapshot`
 
 Deletes a snapshot.
 
@@ -299,7 +299,7 @@ Deletes a snapshot.
 await eventStoreAdapter.dropSnapshot(snapshotKey)
 ```
 
-### incrementalImport
+### `incrementalImport`
 
 Incrementally imports events.
 
@@ -319,7 +319,7 @@ Incrementally imports events.
 await eventStoreAdapter.incrementalImport(events)
 ```
 
-### beginIncrementalImport
+### `beginIncrementalImport`
 
 Starts to build a batch of events to import.
 
@@ -331,7 +331,7 @@ Starts to build a batch of events to import.
 
 importId: `Promise<string>`
 
-### pushIncrementalImport
+### `pushIncrementalImport`
 
 Adds events to an incremental import batch.
 
@@ -346,7 +346,7 @@ Adds events to an incremental import batch.
 
 `Promise<void>`
 
-### commitIncrementalImport
+### `commitIncrementalImport`
 
 Commits an incremental import batch to the event store.
 
@@ -360,7 +360,7 @@ Commits an incremental import batch to the event store.
 
 `Promise<void>`
 
-### rollbackIncrementalImport
+### `rollbackIncrementalImport`
 
 Drops an incremental import batch.
 
@@ -372,7 +372,7 @@ Drops an incremental import batch.
 
 `Promise<void>`
 
-### getNextCursor
+### `getNextCursor`
 
 Gets an array of events and the next cursor from the store based on the specified filter criteria.
 
@@ -393,7 +393,7 @@ Gets an array of events and the next cursor from the store based on the specifie
 
 ```
 
-### importEvents
+### `importEvents`
 
 Gets a writable stream used to save events.
 
@@ -413,7 +413,7 @@ Gets a writable stream used to save events.
 
 ```
 
-### exportEvents
+### `exportEvents`
 
 Gets a readable stream used to load events.
 
@@ -433,7 +433,7 @@ Gets a readable stream used to load events.
 
 ```
 
-### loadSecrets
+### `loadSecrets`
 
 Gets a list of secrets stored in the event store.
 
@@ -461,7 +461,7 @@ Promise<{
 
 ```
 
-### importSecrets
+### `importSecrets`
 
 Gets a writable stream used to save secrets.
 
@@ -483,7 +483,7 @@ stream.Writable
 
 ```
 
-### exportSecrets
+### `exportSecrets`
 
 Gets a writable stream used to load secrets.
 
