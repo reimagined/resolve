@@ -9,9 +9,9 @@ description: An application's write side handles commands, validates input data,
 Commands are executed by objects that encapsulate domain logic. These objects are called Domain Objects.
 Domain Objects are grouped into Aggregates. In a CQRS/ES app, an aggregate is a transaction boundary. This means that any given aggregate should be able to execute its commands without communicating with other aggregates.
 
-Since the write side is used only to perform commands, your aggregate can be compact, and only keep state required for command execution.
+Since the write side is used only to perform commands, your aggregate can be compact, and only keep the state required for command execution.
 
-See Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html)
+See Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html).
 
 In reSolve, an aggregate is a static object that contains a set of functions of the following two kinds:
 
@@ -46,7 +46,7 @@ An Aggregate ID should stay unique across all aggregates in the given event stor
 
 ## Configuring Aggregates
 
-To configure aggregates in a reSolve app, provide an aggregates array in the application configuration file:
+To configure aggregates in a reSolve app, specify an aggregates array in the application configuration file:
 
 <!-- prettier-ignore-start -->
 
@@ -72,55 +72,24 @@ You can emit aggregate commands in the following cases:
 
 ### Sending Commands From the Client
 
-The reSolve framework exposes an [HTTP API](api/client/http-api.md) that you can use to to send commands from the client side. Your application's frontend can use this API directly or through one of the available [client libraries](frontend.md).
+The reSolve framework exposes an [HTTP API](api/client/http-api.md) that you can use to send commands from the client side. Your application's frontend can use this API directly or through one of the available [client libraries](frontend.md).
 
-You can send a command from the client side as a POST request to the following URL:
+The code sample below demonstrates how to use the [@resolve-js/client](api/client/resolve-client.md) library to send a command:
 
-```
-http://{host}:{port}/api/commands
-```
-
-The request body should have the `application/json` content type and contain a JSON representation of the command:
-
-```
-{
-  "aggregateName": aggregateName,
-  "type": commandType,
-  "aggregateId": aggregateID,
-  "payload": {
-    "param1": value1,
-    "param2": value2,
-    ...
-    "paramN": valueN
+```js
+client.command(
+  {
+    aggregateName: 'Chat',
+    type: 'postMessage',
+    aggregateId: userName,
+    payload: message,
+  },
+  (err) => {
+    if (err) {
+      console.warn(`Error while sending command: ${err}`)
+    }
   }
-}
-```
-
-| Name              | Type   | Description                                           |
-| ----------------- | ------ | ----------------------------------------------------- |
-| **aggregateId**   | string | The ID of an aggregate that should handle the command |
-| **aggregateName** | string | The aggregate's name as defined in **config.app.js**  |
-| **commandType**   | string | The command type that the aggregate can handle        |
-| **payload**       | object | The parameters that the command accepts               |
-
-##### Example
-
-Use the following command to add an item to the **shopping-list** example:
-
-```sh
-$ curl -X POST "http://localhost:3000/api/commands"
---header "Content-Type: application/json" \
---data '
-{
-  "aggregateName":"Todo",
-  "type":"createItem",
-  "aggregateId":"root-id",
-  "payload": {
-    "id":`date +%s`,
-    "text":"Learn reSolve API"
-  }
-}
-'
+)
 ```
 
 ### Emitting Commands on the Server
@@ -138,7 +107,7 @@ await resolve.executeCommand({
 
 ## Aggregate Command Handlers
 
-Aggregate command handlers are grouped into a static object. A command handler receives a command and a state object built by the aggregate [Projection](#aggregate-projection-function). The command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type. Here you can also add arbitrary validation logic that throws an error if the validation fails.
+Aggregate command handlers are grouped into a static object. A command handler receives a command and a state object built by the aggregate [Projection](#aggregate-projection-function). The command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type. A command handler can also validate command data and throw an error if the validation fails.
 
 A typical **Commands** object structure:
 

@@ -389,4 +389,23 @@ describe('validate schema (fail)', () => {
       })
     ).toThrow()
   })
+
+  it('should throw error if leading slash is missing in an api handler', () => {
+    expect(() =>
+      validateConfig({
+        ...resolveConfigOrigin,
+        mode: 'development',
+        runtime: {
+          module: '@resolve-js/runtime-single-process',
+        },
+        apiHandlers: [
+          {
+            path: 'api/path/without/leading/slash',
+            handler: 'common/api-handlers/api-handler.js',
+            method: 'GET',
+          },
+        ],
+      })
+    ).toThrow('apiHandlers[0].path must have leading "/"')
+  })
 })

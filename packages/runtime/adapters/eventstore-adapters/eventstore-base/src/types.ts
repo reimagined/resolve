@@ -167,7 +167,7 @@ export const EventFilterSchema = new t.Type<EventFilter, EventFilter>(
 )
 type EventFilterChecked = t.TypeOf<typeof EventFilterSchemaSimple>
 export type EventFilter = UnbrandProps<EventFilterChecked>
-export type LatestEventFilter = Omit<EventFilter, 'limit' | 'eventsSizeLimit'>
+export type LatestEventFilter = Pick<EventFilter, 'aggregateIds' | 'eventTypes'>
 
 export type EventLoaderFilter = Omit<CursorFilter, 'limit' | 'eventsSizeLimit'>
 

@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/module-uploader",
-  "version": "0.33.2",
+  "version": "0.33.4",
   "description": "A reSolve module that adds uploader commands to an application.",
   "keywords": [
     "cqrs",

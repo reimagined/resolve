@@ -1,5 +1,4 @@
 import { declareRuntimeEnv } from '@resolve-js/scripts'
-
 const prodConfig = {
   mode: 'production',
   runtime: {
@@ -21,17 +20,17 @@ const prodConfig = {
       },
     },
     /*
-      default: {
-        module: '@resolve-js/readmodel-mysql',
-        options: {
-          host: 'localhost',
-          port: 3306,
-          user: 'customUser',
-          password: 'customPassword',
-          database: 'customDatabaseName'
-        }
-      }
-    */
+          default: {
+            module: '@resolve-js/readmodel-mysql',
+            options: {
+              host: 'localhost',
+              port: 3306,
+              user: 'customUser',
+              password: 'customPassword',
+              database: 'customDatabaseName'
+            }
+          }
+        */
   },
   eventstoreAdapter: {
     module: '@resolve-js/eventstore-lite',
@@ -42,21 +41,22 @@ const prodConfig = {
     },
   },
   /*
-    {
-      module: '@resolve-js/eventstore-mysql',
-      options: {
-        host: 'localhost',
-        port: 3306,
-        user: 'customUser',
-        password: 'customPassword',
-        database: 'customDatabaseName',
-        eventsTableName: 'customTableName'
+      {
+        module: '@resolve-js/eventstore-mysql',
+        options: {
+          host: 'localhost',
+          port: 3306,
+          user: 'customUser',
+          password: 'customPassword',
+          database: 'customDatabaseName',
+          eventsTableName: 'customTableName',
+          secretsDatabase: 'customSecretsDatabaseName',
+          secretsTableName: 'customSecretsTableName'
+        }
       }
-    }
-  */ jwtCookie: {
+    */ jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000,
   },
 }
-
 export default prodConfig

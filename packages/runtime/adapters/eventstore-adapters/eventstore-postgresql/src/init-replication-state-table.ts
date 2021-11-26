@@ -1,13 +1,10 @@
 import type { AdapterPool } from './types'
 import type { ReplicationStatus } from '@resolve-js/eventstore-base'
 import { LONG_NUMBER_SQL_TYPE } from './constants'
-import { getLog } from './get-log'
 
 const initReplicationStateTable = async (
   pool: AdapterPool
 ): Promise<string> => {
-  const log = getLog('initReplicationStateTable')
-
   const {
     eventsTableName,
     escapeId,

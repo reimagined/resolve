@@ -10,7 +10,7 @@ export const processRegister = (command, opts) => {
   return process
 }
 
-export const processStopAll = () => {
+export const processStopAll = (error) => {
   const promises = []
   for (const process of processes) {
     promises.push(
@@ -25,6 +25,10 @@ export const processStopAll = () => {
   }
   processes.length = 0
 
+  if (error) {
+    // eslint-disable-next-line no-console
+    console.error(error)
+  }
   return Promise.all(promises)
 }
 

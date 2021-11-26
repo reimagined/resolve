@@ -86,7 +86,9 @@ const build: ExternalMethods['build'] = async (
   const state = await basePool.getReplicationState(basePool)
   if (state.status === 'error') {
     log.error(
-      `Refuse to start or continue replication with error state: ${state.statusData}`
+      `Refuse to start or continue replication with error state: ${JSON.stringify(
+        state.statusData
+      )}`
     )
     return
   } else if (state.status === 'serviceError') {
