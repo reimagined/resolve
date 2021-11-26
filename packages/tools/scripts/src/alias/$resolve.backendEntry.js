@@ -62,6 +62,10 @@ const emitDynamicImport = async (runtime) => {
     const runtimeOptions = ${injectRuntimeEnv(runtime.options)}
 
     const handler = async (...args) => {
+      const immediatePromiseResult = await immediatePromise
+      if (immediatePromiseResult != null) {
+        throw immediatePromiseResult
+      }
       try {
         if(!global.initPromise) {
           const interopRequireDefault = require('@babel/runtime/helpers/interopRequireDefault')
@@ -81,24 +85,26 @@ const emitDynamicImport = async (runtime) => {
         const worker = await initPromise
         return await worker(...args)
       } catch(error) {
-        log.error('Fatal error: ', error)
+        log.error('Lambda handler fatal error: ', error)
         throw error
       }
     }
 
-    (async () => {
+    const immediatePromise = (async () => {
       try {
         await Promise.resolve()
-        const runtimeModule = await import(${JSON.stringify(result)})
+        const runtimeModule = require(${JSON.stringify(result)})
         const { execMode } = await runtimeModule[${JSON.stringify(
           moduleImport
         )}]()
         if(execMode === 'immediate') {
           log.debug('"execMode" set to "immediate", executing worker') 
-          handler().catch((error) => log.error(error))
+          handler().catch((error) => log.error('Immediate handler execution error: ', error))
         }
+        return null
       } catch(error) {
-        log.error('Fatal error: ', error)
+        log.error('Immediate require error: ', error)
+        return error
       }
     })()
 

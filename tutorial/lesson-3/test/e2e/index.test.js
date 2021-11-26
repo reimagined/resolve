@@ -2,11 +2,9 @@ import { Selector, t } from 'testcafe'
 import fetch from 'isomorphic-fetch'
 
 const host = process.env.HOST || 'localhost'
-const port = process.env.PORT || '3000'
-const MAIN_PAGE = `http://${host}:${port}`
-
+const MAIN_PAGE = `http://${host}:3000`
 // eslint-disable-next-line no-unused-expressions, no-undef
-fixture`Shopping List`.beforeEach(async (t) => {
+fixture`reSolve Application`.beforeEach(async (t) => {
   await t.setNativeDialogHandler(() => true)
   await t.navigateTo(MAIN_PAGE)
 })

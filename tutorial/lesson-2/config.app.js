@@ -14,8 +14,5 @@ const appConfig = {
       connectorName: 'default',
     },
   ],
-  viewModels: [],
-  clientEntries: ['client/index.js'],
 }
-
 export default appConfig

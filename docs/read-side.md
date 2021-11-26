@@ -1,19 +1,19 @@
 ---
 id: read-side
 title: Read Side
-description: The reSolve framework's read side listens to events that the write side produces. Based on these events, the read side updates the read models that provide data to the queries.
+description: The reSolve framework's read side listens to events that the write side produces. Based on these events, the read side updates the read models that supply data to the queries.
 ---
 
 ## Read Models
 
-The reSolve framework's read side listens to events that the write side produces. Based on **these** events, the read side updates the **Read Models**, and these models provide data to the queries.
+The reSolve framework's read side listens to events that the write side produces. Based on these events, the read side updates the **Read Models**, and these models supply data to the queries.
 
 A Read Model is defined by a set of projection functions and query resolver functions.
 
-- **[Projection functions](#updating-a-read-model-via-projection-functions)** build a Read Models state based on incoming events.
+- **[Projection functions](#updating-a-read-model-with-projection-functions)** build a Read Model's state based on incoming events.
 - **[Query resolvers](#resolvers)** use data from the accumulated state to answer queries.
 
-ReSolve also supports **View Models**. A View Model is a Read Model that can be built on the fly, sent to the client and kept there up-to-date. Refer to the [View Model Specifics](#view-model-specifics) section for more information.
+ReSolve also supports **View Models**. A View Model is a Read Model that is built on the fly. A View Model can maintain a WebSocket connection to push data updates to the client. Refer to the [View Model Specifics](#view-model-specifics) section for more information.
 
 ## Configuring Read Models and View Models
 
@@ -120,11 +120,11 @@ You can use the **defineTable** method to add tables to the storage:
   }
 ```
 
-ReSolve provides a unified API to manage data in storage (this code works with any supported storage type). **Read Model Adapters** provide the internal logic a Read Model uses to communicate with DBMSs.
+ReSolve exposes a unified API to manage data in storage (this code works with any supported storage type). **Read Model Adapters** implement the internal logic a Read Model uses to communicate with DBMSs.
 
 We recommend that you store Read Model data in a denormalized form so that your Read Models are optimized for query performance.
 
-## Updating a Read Model via Projection Functions
+## Updating a Read Model with Projection Functions
 
 A projection function is used to accumulate the event data in a **Read Model storage**. Each projection function receives the storage object and event information. The event information includes the aggregateID, timestamp, and payload.
 
@@ -189,7 +189,7 @@ Refer to the [Query a Read Model](#query-a-read-model) section for information o
 Use View Models in the following scenarios:
 
 - To create aggregate-centric views that request relatively small portions of data based on aggregate IDs.
-- To create reactive components, whose state is kept up-to date on the client.
+- To create reactive components, whose state is kept up-to-date on the client.
 
 A View Model's projection function receives a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it is important to keep View Models small. You can also store snapshots of the View Model state to optimize system resource consumption.
 
@@ -277,55 +277,22 @@ const appConfig = {
 
 See the [Configuring View Models](#configuring-view-models) section for more information.
 
-## Performing Queries Using HTTP API
+## Performing Queries
 
-### Query a Read Model
+To send queries to an application's read side, you can use the reSolve [HTTP API](api/client/http-api.md) or one of the available [client libraries](frontend.md).
 
-To query a Read Model from the client side, send a POST request to the following URL:
+#### Example
 
-```
-http://{host}:{port}/api/query/{readModel}/{resolver}
-```
-
-##### URL Parameters:
-
-| Name          | Description                                                            |
-| ------------- | ---------------------------------------------------------------------- |
-| **readModel** | The Read Model name as defined in the application's configuration file |
-| **resolver**  | The name of a [resolver defined in the Read Model](#resolvers)         |
-
-The request body should have the `application/json` content type and the following structure:
+The code sample below demonstrates how to use the [@resolve-js/client](api/client/resolve-client.md) library to query a View Model:
 
 ```js
-{
-  param1: value1,
-  param2: value2,
-  // ...
-  paramN: valueN
-}
-```
-
-The object contains the parameters that the resolver accepts.
-
-### Query a View Model
-
-To query a View Model from the client side, send a GET request to the following URL:
-
-```
-http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
-```
-
-##### URL Parameters
-
-| Name         | Description                                                                                               |
-| ------------ | --------------------------------------------------------------------------------------------------------- |
-| viewModel    | The View Model name as defined in the application's configuration file.                                   |
-| aggregateIds | The comma-separated list of Aggregate IDs to include in the View Model. Use `*` to include all Aggregates |
-
-##### Example
-
-Use the following command to get the current [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/js/shopping-list) example application's state.
-
-```sh
-curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
+const queryResult = await client.query({
+  name: 'chat',
+  aggregateIds: [chatRoom],
+  args: undefined,
+})
+const {
+  data,
+  meta: { url, cursor },
+} = queryResult
 ```

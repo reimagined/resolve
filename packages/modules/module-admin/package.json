@@ -32,8 +32,7 @@
     "yargs": "16.2.0"
   },
   "devDependencies": {
-    "jest": "27.0.3",
-    "sinon": "9.2.4"
+    "jest": "27.0.3"
   },
   "engines": {
     "node": ">=14.17"
