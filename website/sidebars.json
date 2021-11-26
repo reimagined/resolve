@@ -32,6 +32,7 @@
           "code-splitting",
           "debugging",
           "testing",
+          "monitoring",
           "contributing"
         ]
       },
@@ -69,6 +70,7 @@
           "api/command",
           "api/event",
           "api/event-store-adapter",
+          "api/monitoring-adapter",
           "api/middleware",
           "api/api-handler",
           "api/resolve-scripts",
