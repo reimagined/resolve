@@ -1,29 +1,195 @@
+import CloudWatch, {
+  Dimensions as DimensionsType,
+} from 'aws-sdk/clients/cloudwatch'
+import { Options, retry } from 'resolve-cloud-common/utils'
 import fetch from 'isomorphic-fetch'
 import { getTargetURL } from '../utils/utils'
 
-const BENCH_EVENTS_COUNT = 100000
-const MAX_FAILED_ATTEMPTS = 5
+jest.setTimeout(10 * 60 * 1000)
 
-const getEventCount = async (benchType: 'lite' | 'heavy') => {
+const BENCH_EVENTS_COUNT = 3000
+const MAX_FAILED_ATTEMPTS = 5
+const PERIOD = 60 //seconds
+let testLaunchTimestamp = Number.NaN
+
+const CURRENT_METRIC_ID = 'current_metric_id'
+
+const getOneMetricSummaryData = async (params: {
+  Region: string
+  StartTime: number
+  EndTime: number
+  Dimensions: DimensionsType
+  MetricName: string
+  Namespace: string
+  Period: number
+}): Promise<Map<number, number> | null> => {
+  const {
+    Region,
+    StartTime,
+    EndTime,
+    Dimensions,
+    MetricName,
+    Namespace,
+    Period,
+  } = params
+  const cw = new CloudWatch({ region: Region })
+
   try {
-    const request = await fetch(
-      `${getTargetURL()}/api/query/benchmark-${benchType}/countBenchEvents`
+    const getMetrics = retry(
+      cw,
+      cw.getMetricData,
+      Options.Defaults.override({})
     )
-    const response = await request.json()
-    return +response.data
+    let NextToken: string | undefined
+    const result = new Map<number, number>()
+
+    do {
+      const {
+        MetricDataResults,
+        NextToken: CurrentNextToken,
+      } = await getMetrics({
+        ScanBy: 'TimestampAscending',
+        StartTime: new Date(StartTime),
+        EndTime: new Date(EndTime),
+        MetricDataQueries: [
+          {
+            Id: CURRENT_METRIC_ID,
+            MetricStat: {
+              Metric: {
+                Dimensions,
+                MetricName,
+                Namespace,
+              },
+              Stat: 'Average',
+              Period,
+            },
+            ReturnData: true,
+          },
+        ],
+        NextToken,
+      })
+
+      const { Timestamps = [], Values = [] } = (MetricDataResults ?? []).find(
+        (e) => e.Id === CURRENT_METRIC_ID
+      ) ?? { Timestamps: [], Values: [] }
+
+      if (Timestamps.length === 0) {
+        break
+      }
+
+      for (let index = 0; index < Timestamps.length; index++) {
+        result.set(Timestamps[index].valueOf(), Values[index])
+      }
+
+      NextToken = CurrentNextToken
+    } while (NextToken != null)
+
+    if (result.size > 0) {
+      return result
+    } else {
+      return null
+    }
   } catch (e) {
-    return -1
+    console.error(e)
+    throw e
   }
 }
-const generateEvents = async () => {
-  try {
-    const request = await fetch(`${getTargetURL()}/api/generate-bench-events`, {
-      method: 'POST',
+
+const CHECK_NOT_NULLISH = <T extends unknown>(e: T) => {
+  expect(e).not.toBeUndefined()
+  expect(e).not.toBeNull()
+  return e as Exclude<Exclude<T, null>, undefined>
+}
+
+const getReadModelFeedingRateMetric = async (readModelName: string) => {
+  const result = await getOneMetricSummaryData({
+    Region: CHECK_NOT_NULLISH(process.env.AWS_REGION),
+    StartTime: testLaunchTimestamp - 60000, // launch test time minus one minute
+    EndTime: Date.now() + 60000, // next minute
+    MetricName: 'ReadModelFeedingRate',
+    Namespace: 'ResolveJs',
+    Period: PERIOD,
+    Dimensions: [
+      {
+        Name: 'DeploymentId',
+        Value: CHECK_NOT_NULLISH(
+          process.env.RESOLVE_TESTS_TARGET_DEPLOYMENT_ID
+        ),
+      },
+      { Name: 'Part', Value: 'ReadModelProjection' },
+      { Name: 'ReadModel', Value: readModelName },
+    ],
+  })
+
+  return result
+}
+
+const isHighloadError = (error: Error) =>
+  error != null &&
+  /(?:HTTP ERROR 503)|(?:ETIMEDOUT)|(?:ECONNRESET)/.test(error.message)
+
+const performApiPost = async <T extends unknown, Args extends [string, T?]>(
+  ...args: Args
+) => {
+  while (true) {
+    try {
+      const request = await fetch(`${getTargetURL()}/api${args[0]}`, {
+        method: 'POST',
+      })
+      if (request.status === 503) {
+        throw new Error('HTTP ERROR 503')
+      }
+      const response = await request.json()
+      return response
+    } catch (error) {
+      if (!isHighloadError(error)) {
+        console.error(error)
+        if (args.length == 1) {
+          throw error
+        } else {
+          return args[1]
+        }
+      }
+    }
+  }
+}
+
+const getEventCount = async (benchType: 'lite' | 'heavy') => {
+  return +(
+    await performApiPost(`/query/benchmark-${benchType}/countBenchEvents`, {
+      data: -1,
     })
-    const response = await request.json()
-    return +response
-  } catch (e) {
-    return 0
+  ).data
+}
+
+const pauseReadModels = async (dropBenchEventstore: boolean): Promise<null> => {
+  const result = await performApiPost(
+    `/bench-readmodels-pause${
+      dropBenchEventstore ? '?dropBenchEventstore=true' : ''
+    }`,
+    null
+  )
+  if (result === 'error') {
+    return await pauseReadModels(dropBenchEventstore)
+  } else if (result !== 'ok') {
+    throw new Error(`Failed pause read models: ${result}`)
+  } else {
+    return null
+  }
+}
+
+const generateEvents = async () => {
+  return +(await performApiPost(`/generate-bench-events`, 0))
+}
+
+const resumeReadModels = async (): Promise<null> => {
+  const result = await performApiPost(`/bench-readmodels-resume`, null)
+  if (result === 'error') {
+    return await resumeReadModels()
+  } else if (result !== 'ok') {
+    throw new Error(`Failed resume read models: ${result}`)
+  } else {
+    return null
   }
 }
 
@@ -36,6 +202,9 @@ const jitterDelay = (attempt: number) =>
   )
 
 test('benchmark', async () => {
+  testLaunchTimestamp = Date.now()
+  await pauseReadModels(!!process.env.DROP_BENCH_EVENT_STORE)
+
   let [liteEventsCount, heavyEventsCount] = await Promise.all([
     getEventCount('lite'),
     getEventCount('heavy'),
@@ -47,7 +216,7 @@ test('benchmark', async () => {
   let failedAttempts = 0
   while (generatedBenchEventsCount < BENCH_EVENTS_COUNT) {
     const currentGeneratedEvents = (
-      await Promise.all(Array.from({ length: 20 }).map(generateEvents))
+      await Promise.all(Array.from({ length: 30 }).map(generateEvents))
     ).reduce((acc, val) => acc + val, 0)
     generatedBenchEventsCount += currentGeneratedEvents
     if (currentGeneratedEvents === 0) {
@@ -60,30 +229,62 @@ test('benchmark', async () => {
     expect(failedAttempts).toBeLessThan(MAX_FAILED_ATTEMPTS)
   }
 
-  while (
-    liteEventsCount < generatedBenchEventsCount ||
-    heavyEventsCount < generatedBenchEventsCount
-  ) {
-    const [
-      currentLiteEventsCount,
-      currentHeavyEventsCount,
-    ] = await Promise.all([getEventCount('lite'), getEventCount('heavy')])
-    if (
-      currentLiteEventsCount <= liteEventsCount &&
-      currentHeavyEventsCount <= heavyEventsCount
+  await resumeReadModels()
+
+  try {
+    while (
+      liteEventsCount < generatedBenchEventsCount ||
+      heavyEventsCount < generatedBenchEventsCount
     ) {
-      await jitterDelay(failedAttempts)
-      failedAttempts++
-    } else {
-      failedAttempts = 0
+      const [
+        currentLiteEventsCount,
+        currentHeavyEventsCount,
+      ] = await Promise.all([getEventCount('lite'), getEventCount('heavy')])
+      if (
+        currentLiteEventsCount <= liteEventsCount &&
+        currentHeavyEventsCount <= heavyEventsCount
+      ) {
+        await jitterDelay(failedAttempts)
+        failedAttempts++
+      } else {
+        failedAttempts = 0
+      }
+
+      liteEventsCount = currentLiteEventsCount
+      heavyEventsCount = currentHeavyEventsCount
+
+      expect(failedAttempts).toBeLessThan(MAX_FAILED_ATTEMPTS)
     }
-
-    liteEventsCount = currentLiteEventsCount
-    heavyEventsCount = currentHeavyEventsCount
-
-    expect(failedAttempts).toBeLessThan(MAX_FAILED_ATTEMPTS)
+  } finally {
+    await pauseReadModels(false)
   }
 
   expect(liteEventsCount).toBeGreaterThanOrEqual(generatedBenchEventsCount)
   expect(heavyEventsCount).toBeGreaterThanOrEqual(generatedBenchEventsCount)
+
+  const benchLiteFeedingRate = CHECK_NOT_NULLISH(
+    await getReadModelFeedingRateMetric('benchmark-lite')
+  )
+
+  const benchHeavyFeedingRate = CHECK_NOT_NULLISH(
+    await getReadModelFeedingRateMetric('benchmark-heavy')
+  )
+
+  const resultLite =
+    [...benchLiteFeedingRate.entries()]
+      .map(([_, rate]) => rate)
+      .reduce((acc, val) => acc + val, 0) / benchLiteFeedingRate.size
+  const resultHeavy =
+    [...benchHeavyFeedingRate.entries()]
+      .map(([_, rate]) => rate)
+      .reduce((acc, val) => acc + val, 0) / benchHeavyFeedingRate.size
+
+  console.log('resultLite', resultLite)
+  console.log('resultHeavy', resultHeavy)
+
+  // Minimum 400 events/sec for lite read-model projection with cold restart
+  expect(resultLite).toBeGreaterThan(400)
+
+  // Minimum 160 events/sec for heavy read-model projection with cold restart
+  expect(resultHeavy).toBeGreaterThan(160)
 })

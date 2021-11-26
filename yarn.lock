@@ -15993,6 +15993,17 @@ resolve-cloud-common@0.0.149:
     node-rsa "1.1.1"
     uuid "^8.3.1"
 
+resolve-cloud-common@0.0.157:
+  version "0.0.157"
+  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.157.tgz#02e67e4563e638878ce77c033028af19dd469098"
+  integrity sha512-X8Hjroe8pb8HkE9jztnzh2ZwbuN2DPk+MWF7MmNWWtGYVPx0pyZXpufGJ8FzyA4ufELukEaHIOTZVJ1tyIzRmw==
+  dependencies:
+    chalk "^4.0.0"
+    debug "^4.1.1"
+    netmask "2.0.2"
+    node-rsa "1.1.1"
+    uuid "^8.3.1"
+
 resolve-cwd@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-1.0.0.tgz#4eaeea41ed040d1702457df64a42b2b07d246f9f"

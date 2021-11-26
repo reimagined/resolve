@@ -231,6 +231,16 @@ const appConfig = {
       path: '/api/generate-bench-events',
       method: 'POST',
     },
+    {
+      handler: 'common/api-handlers/benchmark-resume-read-models.js',
+      path: '/api/bench-readmodels-resume',
+      method: 'POST',
+    },
+    {
+      handler: 'common/api-handlers/benchmark-pause-read-models.js',
+      path: '/api/bench-readmodels-pause',
+      method: 'POST',
+    },
   ],
   clientEntries: [
     'client/index.js',

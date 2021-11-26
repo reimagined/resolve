@@ -37,8 +37,6 @@ const benchmarkApiHandler = async (req, res) => {
     await new Promise(setImmediate)
   }
 
-  executeAsyncNoEmitError(req.resolve.broadcastEvent)
-
   await res.json(savedEventsCount)
 }
 
