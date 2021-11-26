@@ -28,9 +28,9 @@ An event store adapter defines how the reSolve framework stores events in the un
 | [getNextCursor](#getnextcursor)                         | Gets the next database cursor used to traverse the data sample returned by the underlying database. |
 | [importEvents](#importevents)                           | Gets a writable stream used to save events.                                                         |
 | [exportEvents](#exportevents)                           | Gets a readable stream used to load events.                                                         |
-| [loadSecrets]()                                         |                                                                                                     |
-| [importSecrets]()                                       |                                                                                                     |
-| [exportSecrets]()                                       |                                                                                                     |
+| [loadSecrets](#loadsecrets)                             | Gets a list of secrets stored in the event store.                                                   |
+| [importSecrets](#importsecrets)                         | Gets a writable stream used to save secrets.                                                        |
+| [exportSecrets](exportsecrets)                          | Gets a writable stream used to load secrets.                                                        |
 
 ### init
 
@@ -60,31 +60,44 @@ await eventStoreAdapter.drop()
 
 Obtain information about the event store.
 
-##### Arguments
-
-| Argument Name | Description                                             |
-| ------------- | ------------------------------------------------------- |
-| options       | { estimateCounts?: boolean, calculateCursor?: boolean } |
-
-##### Result
-
-```ts
-Promise<{
-  eventCount: number
-  secretCount: number
-  setSecretCount: number
-  deletedSecretCount: number
-  isFrozen: boolean
-  lastEventTimestamp: number
-  cursor?: string | null
-  resourceNames?: { [key: string]: string }
-}>
-```
-
 #### Example
 
 ```js
 const eventCount = await eventStoreAdapter.describe({ estimateCounts: true })).eventCount
+```
+
+#### Arguments
+
+| Argument Name                | Type   | Description                                                            |
+| ---------------------------- | ------ | ---------------------------------------------------------------------- |
+| [options](#describe-options) | object | Contains options that specifies what calculations should be performed. |
+
+##### options {#describe-options}
+
+Contains options that specifies what calculations should be performed. The options object has the following structure:
+
+```js
+{
+  estimateCounts, // (boolean, optional) Specifies whether or not to calculate counts for events and secrets.
+  calculateCursor, // (boolean, optional) Specifies whether or not to get database coursor used to traverse events.
+}
+```
+
+#### Result
+
+A promise that resolves to an object of the following structure:
+
+```js
+{
+  eventCount,  // (number)
+  secretCount, // (number)
+  setSecretCount, // (number)
+  deletedSecretCount,  // (number)
+  isFrozen,  // (boolean)
+  lastEventTimestamp,  // (number)
+  cursor, // (string or null, optional)
+  resourceNames, // (object)
+>
 ```
 
 ### dispose
@@ -422,6 +435,8 @@ Gets a readable stream used to load events.
 
 ### loadSecrets
 
+Gets a list of secrets stored in the event store.
+
 ##### Arguments
 
 | Argument Name | Description                                                                               |
@@ -448,6 +463,8 @@ Promise<{
 
 ### importSecrets
 
+Gets a writable stream used to save secrets.
+
 ##### Arguments
 
 | Argument Name | Description                           |
@@ -467,6 +484,8 @@ stream.Writable
 ```
 
 ### exportSecrets
+
+Gets a writable stream used to load secrets.
 
 ##### Arguments
 
