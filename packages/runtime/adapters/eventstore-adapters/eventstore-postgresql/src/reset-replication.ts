@@ -1,5 +1,5 @@
 import type { AdapterPool } from './types'
-import type { ReplicationStatus } from '@resolve-js/eventstore-base'
+import type { ReplicationState } from '@resolve-js/eventstore-base'
 
 const resetReplication = async (pool: AdapterPool): Promise<void> => {
   const {
@@ -17,7 +17,7 @@ const resetReplication = async (pool: AdapterPool): Promise<void> => {
   const replicationStateTableNameAsId = escapeId(replicationStateTableName)
   const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
 
-  const notStarted: ReplicationStatus = 'notStarted'
+  const notStarted: ReplicationState['statusAndData']['status'] = 'notStarted'
 
   const statements = [
     `TRUNCATE ${databaseNameAsId}.${eventsTableNameAsId}`,
