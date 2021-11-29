@@ -1,4 +1,3 @@
-import { Client as Postgres } from 'pg'
 import createAdapter from '@resolve-js/eventstore-base'
 
 import loadEventsByCursor from './load-events-by-cursor'
@@ -10,12 +9,8 @@ import freeze from './freeze'
 import unfreeze from './unfreeze'
 import getLatestEvent from './get-latest-event'
 import saveEvent from './save-event'
-import fullJitter from './full-jitter'
-import executeStatement from './execute-statement'
 import injectEvent from './inject-event'
 import injectEvents from './inject-events'
-import escapeId from './escape-id'
-import escape from './escape'
 import shapeEvent from './shape-event'
 import loadSnapshot from './load-snapshot'
 import saveSnapshot from './save-snapshot'
@@ -28,7 +23,6 @@ import deleteSecret from './delete-secret'
 import getSecret from './get-secret'
 import setSecret from './set-secret'
 
-import connect from './connect'
 import initEvents from './init-events'
 import initSecrets from './init-secrets'
 import initFinal from './init-final'
@@ -42,17 +36,20 @@ import loadSecrets from './load-secrets'
 import replicateEvents from './replicate-events'
 import replicateSecrets from './replicate-secrets'
 import setReplicationStatus from './set-replication-status'
-import setReplicationIterator from './set-replication-iterator'
 import setReplicationPaused from './set-replication-paused'
 import getReplicationState from './get-replication-state'
 import resetReplication from './reset-replication'
+import setReplicationLock from './set-replication-lock'
+
 import getCursorUntilEventTypes from './get-cursor-until-event-types'
 import describe from './describe'
 import establishTimeLimit from './establish-time-limit'
 import getEventLoaderNative from './get-event-loader-native'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
-import type { PostgresqlAdapterConfig, ConnectionDependencies } from './types'
+import type { PostgresqlAdapterConfig } from './types'
+
+import configure from './configure'
 
 import createResource from './resource/create'
 import destroyResource from './resource/destroy'
@@ -60,7 +57,6 @@ import destroyResource from './resource/destroy'
 const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
   return createAdapter(
     {
-      connect,
       loadEventsByCursor,
       loadEventsByTimestamp,
       ensureEventSubscriber,
@@ -95,26 +91,21 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       replicateEvents,
       replicateSecrets,
       setReplicationStatus,
-      setReplicationIterator,
       setReplicationPaused,
       getReplicationState,
       resetReplication,
+      setReplicationLock,
       getCursorUntilEventTypes,
       describe,
       establishTimeLimit,
       getEventLoaderNative,
     },
-    {
-      Postgres,
-      escapeId,
-      escape,
-      fullJitter,
-      executeStatement,
-    } as ConnectionDependencies,
-    options
+    options,
+    configure
   )
 }
 
 export default createPostgresqlAdapter
 export type { PostgresqlAdapterConfig }
+export type { PostgresResourceConfig } from './types'
 export { createResource as create, destroyResource as destroy }

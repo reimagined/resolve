@@ -1,7 +1,7 @@
 import {
   TimestampFilter,
   StoredEventBatchPointer,
-  throwBadCursor,
+  loadEventsByTimestampResult,
 } from '@resolve-js/eventstore-base'
 import createQuery from './create-query'
 import { AdapterPool } from './types'
@@ -28,12 +28,7 @@ const loadEventsByTimestamp = async (
     events.push(shapeEvent(event))
   }
 
-  return {
-    get cursor() {
-      return throwBadCursor() as any
-    },
-    events,
-  }
+  return loadEventsByTimestampResult(events)
 }
 
 export default loadEventsByTimestamp

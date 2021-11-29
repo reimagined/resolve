@@ -1,17 +1,19 @@
 # Hello World Example
 
-![hello-world](https://user-images.githubusercontent.com/19663260/41165078-617d223c-6b45-11e8-8f9f-ffdc02e068ae.png)
+![hello-world-typescript](https://user-images.githubusercontent.com/19663260/41165078-617d223c-6b45-11e8-8f9f-ffdc02e068ae.png)
 
-This is an empty app used as a template for new **reSolve** applications. The `create-resolve-app` script started without arguments creates this app:
+This is an empty app used as a default template for new **reSolve** applications.
+
+To create a new TypeScript project based on this example, type the following:
 
 ```sh
-npx create-resolve-app my-app
+npx create-resolve-app hello-world-react -t
 ```
 
-You can also create it using the example-creation syntax:
+To create a JavaScript project, type the following:
 
 ```sh
-npx create-resolve-app resolve-hello-world-example -e hello-world
+npx create-resolve-app hello-world-react
 ```
 
 ## What's next?

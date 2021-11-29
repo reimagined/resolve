@@ -1,13 +1,26 @@
 ---
 id: tutorial
 title: Step-by-Step Tutorial
-description: This document provides a step-by-step tutorial for the reSolve framework. Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
+description: In this tutorial, you will develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
 ---
 
-This document provides a step-by-step tutorial for the reSolve framework.
-Throughout this tutorial, you will iteratively develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
+```mdx-code-block
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+```
 
-We recommend that your familiarize yourself with basics of event sourcing and CQRS before you start this tutorial. You can find a curated list of resources in the [FAQ](faq.md).
+This document is a step-by-step tutorial for the reSolve framework.
+In this tutorial, you will develop a ShoppingList application and learn fundamental concepts of the reSolve framework.
+
+:::tip ES, CQRS
+The reSolve framework implements the Event Sourcing (ES) and Command and Query Responsibility Segregation (CQRS) paradigms.
+
+- With **ES**, your application stores not a mutable state, but a chain of events that lead to this state. With this technique, no information is ever lost by the application and the state can always be rebuilt from the beginning.
+
+- The **CQRS** paradigm requires an application to implement the write side that can only handle commands, and the read side that answers data requests.
+
+We recommend that you review the basics of event sourcing and CQRS before you start this tutorial. You can find a curated list of learning resources in the [FAQ](faq.md).
+:::
 
 ## Table of Contents
 
@@ -24,35 +37,76 @@ We recommend that your familiarize yourself with basics of event sourcing and CQ
 
 Use the **create-resolve-app** tool to create a new reSolve application:
 
-##### npm:
-
 ```sh
-$ npm i -g create-resolve-app
-$ create-resolve-app shopping-list
-```
-
-##### npx:
-
-```sh
-$ npx create-resolve-app shopping-list
-```
-
-##### yarn:
-
-```sh
-$ yarn create resolve-app shopping-list
+yarn create resolve-app shopping-list
 ```
 
 After this, a minimal reSolve application is ready. To run it in development mode, type:
 
 ```sh
-$ cd shopping-list
-$ yarn run dev
+cd shopping-list
+yarn dev
 ```
 
----
+### Running Tests
 
-## **Lesson 1** - Write side - Add Shopping Lists
+A new reSolve application contains a basic [TestCafe](https://testcafe.io/) test located in `test/e2e/index.test.js` that runs on the client and checks that the reSolve server responds normally. You are also free to modify this file to check your application's functionality.
+
+Call the project's `test:e2e` script to run the test:
+
+```sh
+yarn test:e2e
+```
+
+Each subsequent lesson in this tutorial will offer you new tests as you develop your application. Copy these tests to your application and run them to ensure that you are ready to move to the next lesson.
+
+### Remove Demo Code
+
+A new application contains demo code that demonstrates reSolve's core features. Follow the steps below to remove this code so you can start your application from scratch:
+
+- Delete all content from the project's **client** and **common** folders.
+- Open the **config.app.js** file and remove all options specified within the `appConfig` configuration object:
+  ```js
+  // config.app.js
+  const appConfig = {
+    // This object should be empty.
+  }
+  export default appConfig
+  ```
+- Open the **config.dev.js** and **config.test-functional.js** files and, in both files, remove or comment out the `readModelConnectors` option:
+
+  ```js
+  // config.dev.js, config.test-functional.js
+  const devConfig = {
+  ...
+    // Remove or comment out the option below.
+
+    // readModelConnectors: {
+    //   default: {
+    //     module: '@resolve-js/readmodel-lite',
+    //     options: {
+    //       databaseFile: 'data/read-models.db',
+    //     },
+    //   },
+    // }
+    ...
+  }
+  export default devConfig
+  ```
+
+- Open the **test/e2e/index.test.js** file and remove or comment out the following test case:
+
+  ```js
+  // Remove or comment out the test case below.
+
+  // test('home page', async (t) => {
+  // await t
+  //    .expect(await Selector('span').withText('reSolve React Template').exists)
+  //    .eql(true)
+  // })
+  ```
+
+## **Lesson 1** - Write Side - Add Shopping Lists
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-1)
 
@@ -65,11 +119,19 @@ Define types of events that the write side can produce. Create an **eventTypes.j
 **common/eventTypes.js**
 
 ```js
-export const SHOPPING_LIST_CREATED = 'SHOPPING_LIST_CREATED' // Indicates the creation of a shopping list
-export const SHOPPING_ITEM_CREATED = 'SHOPPING_ITEM_CREATED' // Indicates the creation of an item within a shopping list
+export const SHOPPING_LIST_CREATED = 'SHOPPING_LIST_CREATED' // Indicates the creation of a shopping list.
+export const SHOPPING_ITEM_CREATED = 'SHOPPING_ITEM_CREATED' // Indicates the creation of an item within a shopping list.
 ```
 
-Next, define an aggregate that handles commands and produces the defined events as a result. Create a **shopping_list.commands.js** file in the **common/aggregates** folder and add the following code to it:
+Next, define an aggregate that handles commands and produces the defined events as a result.
+
+:::tip Aggregate
+
+In terms of the event sourcing paradigm, an aggregate is a cluster of domain objects. An aggregate should be able to handle its commands without the need to communicate with other aggregates, which also makes it a transaction boundary.
+
+:::
+
+Create a **shopping_list.commands.js** file in the **common/aggregates** folder and add the following code to it:
 
 **common/aggregates/shopping_list.commands.js**
 
@@ -112,16 +174,17 @@ The last step is to register the implemented aggregate in the application's conf
 **config.app.js**
 
 ```js
-...
-aggregates: [
-  {
-    // The aggregate name
-    name: 'ShoppingList',
-    // A path to the file that defines the aggregate's command handlers
-    commands: 'common/aggregates/shopping_list.commands.js',
-  }
-],
-...
+const appConfig = {
+  aggregates: [
+    {
+      // The aggregate name
+      name: 'ShoppingList',
+      // A path to the file that defines the aggregate's command handlers.
+      commands: 'common/aggregates/shopping_list.commands.js',
+    },
+  ],
+}
+export default appConfig
 ```
 
 ### Sending Commands to an Aggregate
@@ -141,94 +204,193 @@ A request's body should have the `application/json` content type and contain a J
 }
 ```
 
-In addition to the aggregate name, command type and payload, this object specifies the aggregate's ID.
+In addition to the aggregate name, command type, and payload, this object specifies the aggregate's ID.
 
-Run your application and send a POST request to the following URL:
+To send a command to the aggregate, run the application and send a POST request to the following URL:
 
 ```
 http://127.0.0.1:3000/api/commands
 ```
 
-You can use any REST client or **curl** to do this. For example, use the following console input to create a shopping list:
+<details>
+<summary>
 
-```sh
-curl -i http://localhost:3000/api/commands/ \
---header "Content-Type: application/json" \
---data '
-{
-  "aggregateName": "ShoppingList",
-  "aggregateId": "shopping-list-1",
-  "type": "createShoppingList",
-  "payload": {
-    "name": "List 1"
+**Test Your Application**
+
+Expand this section for an example on how to test this functionality in your application.
+
+</summary>
+
+You can write an end-to-end test to check the new functionality. Refer to the [Running Tests](#running-tests) section for information on how to run tests in your application.
+
+You can manually modify your application's test as shown below or use the test included in the lesson's [example project](https://github.com/reimagined/resolve/tree/dev/tutorial/lesson-1):
+
+[test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/e2e/index.test.js)
+
+```js
+import { Selector, t } from 'testcafe'
+import fetch from 'isomorphic-fetch'
+
+const host = process.env.HOST || 'localhost'
+const MAIN_PAGE = `http://${host}:3000`
+// eslint-disable-next-line no-unused-expressions, no-undef
+fixture`reSolve Application`.beforeEach(async (t) => {
+  await t.setNativeDialogHandler(() => true)
+  // Your app does not currently have a frontend, so comment out the line below.
+  // await t.navigateTo(MAIN_PAGE)
+})
+
+test('createShoppingList', async () => {
+  const command = {
+    aggregateName: 'ShoppingList',
+    aggregateId: 'shopping-list-1',
+    type: 'createShoppingList',
+    payload: {
+      name: 'List 1',
+    },
   }
-}
-'
 
-X-Powered-By: Express
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 21 Oct 2020 09:53:03 GMT
-Connection: keep-alive
-Content-Length: 169
+  const response = await fetch(`${MAIN_PAGE}/api/commands`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(command),
+  })
 
-{
-  "aggregateId": "shopping-list-1",
-  "aggregateVersion": 1,
-  "timestamp": 1603273983423,
-  "type": "SHOPPING_LIST_CREATED",
-  "payload": {
-    "name": "List 1"
+  const event = await response.json()
+
+  await t
+    .expect(event)
+    .contains({
+      type: 'SHOPPING_LIST_CREATED',
+      aggregateId: 'shopping-list-1',
+      aggregateVersion: 1,
+    })
+    .expect(event.payload)
+    .contains({
+      name: 'List 1',
+    })
+})
+
+test('createShoppingItem', async () => {
+  const command = {
+    aggregateName: 'ShoppingList',
+    aggregateId: 'shopping-list-1',
+    type: 'createShoppingItem',
+    payload: {
+      id: '1',
+      text: 'Milk',
+    },
   }
-}
+
+  const response = await fetch(`${MAIN_PAGE}/api/commands`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(command),
+  })
+
+  const event = await response.json()
+
+  await t
+    .expect(event)
+    .contains({
+      type: 'SHOPPING_ITEM_CREATED',
+      aggregateId: 'shopping-list-1',
+      aggregateVersion: 2,
+    })
+    .expect(event.payload)
+    .contains({ id: '1', text: 'Milk' })
+})
+
+test('createShoppingItems', async () => {
+  const matches = [
+    {
+      command: {
+        aggregateName: 'ShoppingList',
+        aggregateId: 'shopping-list-1',
+        type: 'createShoppingItem',
+        payload: {
+          id: '2',
+          text: 'Eggs',
+        },
+      },
+      event: {
+        type: 'SHOPPING_ITEM_CREATED',
+        payload: { id: '2', text: 'Eggs' },
+        aggregateId: 'shopping-list-1',
+        aggregateVersion: 3,
+      },
+    },
+    {
+      command: {
+        aggregateName: 'ShoppingList',
+        aggregateId: 'shopping-list-1',
+        type: 'createShoppingItem',
+        payload: {
+          id: '3',
+          text: 'Canned beans',
+        },
+      },
+      event: {
+        type: 'SHOPPING_ITEM_CREATED',
+        payload: { id: '3', text: 'Canned beans' },
+        aggregateId: 'shopping-list-1',
+        aggregateVersion: 4,
+      },
+    },
+    {
+      command: {
+        aggregateName: 'ShoppingList',
+        aggregateId: 'shopping-list-1',
+        type: 'createShoppingItem',
+        payload: {
+          id: '4',
+          text: 'Paper towels',
+        },
+      },
+      event: {
+        type: 'SHOPPING_ITEM_CREATED',
+        payload: { id: '4', text: 'Paper towels' },
+        aggregateId: 'shopping-list-1',
+        aggregateVersion: 5,
+      },
+    },
+  ]
+
+  for (const match of matches) {
+    const response = await fetch(`${MAIN_PAGE}/api/commands`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(match.command),
+    })
+
+    const event = await response.json()
+
+    await t
+      .expect(event)
+      .contains({
+        aggregateId: match.event.aggregateId,
+        aggregateVersion: match.event.aggregateVersion,
+        type: match.event.type,
+      })
+      .expect(event.payload)
+      .contains(match.event.payload)
+  }
+})
 ```
 
-Use the console input shown below to add an item to the created shopping list:
+Call the project's `test:e2e` script to run the test:
 
 ```sh
-curl -i http://localhost:3000/api/commands/ \
---header "Content-Type: application/json" \
---data '
-{
-  "aggregateName": "ShoppingList",
-  "aggregateId": "shopping-list-1",
-  "type": "createShoppingItem",
-  "payload": {
-    "id": "1",
-    "text": "Milk"
-  }
-}
-'
-
-X-Powered-By: Express
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 21 Oct 2020 09:53:57 GMT
-Connection: keep-alive
-Content-Length: 182
-
-{
-  "aggregateId": "shopping-list-1",
-  "aggregateVersion": 2,
-  "timestamp": 1603274037307,
-  "type": "SHOPPING_ITEM_CREATED",
-  "payload": {
-    "id": "1",
-    "text": "Milk"
-  }
-}
+yarn test:e2e
 ```
 
-You can now check the event store database to see the newly created events. To do this, use the [Command Line Shell For SQLite](https://sqlite.org/cli.html) or any database management tool compatible with SQLite:
-
-<!-- prettier-ignore-start -->
-
-```sh
-sqlite3 data/event-store.db
-sqlite> select * from events;
-40|0|1603273983433|shopping-list-1|1|SHOPPING_LIST_CREATED|{"name":"List 1"}
-147|0|1603274037313|shopping-list-1|2|SHOPPING_ITEM_CREATED|{"id":"1","text":"Milk"}
-```
-
-<!-- prettier-ignore-end -->
+</details>
 
 ### Input Validation
 
@@ -306,34 +468,77 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 }
 ```
 
-You can send faulty commands to your aggregate to check whether the validation works as intended:
+<details>
+<summary>
 
-```sh
-# Trying to create a shopping list without specifying the name
-$ curl -i http://localhost:3000/api/commands/ \
-> --header "Content-Type: application/json" \
-> --data '
-> {
->     "aggregateName": "ShoppingList",
->     "aggregateId": "shopping-list-2",
->     "type": "createShoppingList",
->     "payload": { }
-> }
-> '
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   164  100    31  100   133    142    610 --:--:-- --:--:-- --:--:--   655HTTP/1.1 500 Internal Server Error
-X-Powered-By: Express
-Date: Thu, 22 Nov 2018 11:14:10 GMT
-Connection: keep-alive
-Content-Length: 31
+**Test Your Application**
 
-Command error: name is required
+Expand this section for an example on how to test the validation.
+
+</summary>
+
+Add the following test case to the application's test file.
+
+[test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/e2e/index.test.js)
+
+```js
+test('validation should work correctly', async () => {
+  const matches = [
+    {
+      command: {
+        aggregateName: 'ShoppingList',
+        aggregateId: 'shopping-list-2',
+        type: 'createShoppingList',
+        payload: {},
+      },
+      error: 'The "name" field is required',
+    },
+    {
+      command: {
+        aggregateName: 'ShoppingList',
+        aggregateId: 'shopping-list-1',
+        type: 'createShoppingList',
+        payload: {
+          name: 'List 1',
+        },
+      },
+      error: 'Shopping list already exists',
+    },
+    {
+      command: {
+        aggregateName: 'ShoppingList',
+        aggregateId: 'shopping-list-4000',
+        type: 'createShoppingItem',
+        payload: {
+          id: '5',
+          text: 'Bread',
+        },
+      },
+      error: 'Shopping list does not exist',
+    },
+  ]
+
+  for (const match of matches) {
+    const response = await fetch(`${MAIN_PAGE}/api/commands`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(match.command),
+    })
+
+    const error = await response.text()
+
+    await t.expect(error).contains(match.error)
+  }
+})
 ```
+
+</details>
 
 ---
 
-## **Lesson 2** - Read side - Create a Read Model to Query Shopping Lists
+## **Lesson 2** - Read Side - Create a Read Model to Query Shopping Lists
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-2)
 
@@ -341,7 +546,13 @@ Currently, your shopping list application has a write side that allows you to cr
 
 ### Add a Read Model
 
-Add a **ShoppingLists** **[Read Model](read-side.md#read-models)** to your application. A Read Model receives events and populates a persistent store based on event data. It uses the collected data to answer data queries.
+Add a **ShoppingLists** Read Model to your application.
+
+:::tip Read Model
+
+A Read Model is a data model at the application's read side that answers data requests. A Read Model receives events and populates a persistent store based on event data. It then uses the collected data to build the requested data samples.
+
+:::
 
 Follow the steps below to implement a **ShoppingLists** Read Model.
 
@@ -386,16 +597,16 @@ export default {
 - [store.defineTable](api/read-model/store.md#definetable)
 - [store.insert](api/read-model/store.md#insert)
 
-The type of the physical store used to save data is defined by a Read Model connector:
+The type of the physical store used to save data is defined by a Read Model connector. Add the following code to the **config.dev.js** file:
 
 **config.dev.js**
 
 ```js
-// The 'config.dev.js' file defines setting used only in the development environment.
+// The 'config.dev.js' file defines settings used only in the development environment.
 const devConfig = {
   readModelConnectors: {
     // This is the 'default' Read Model connector.
-    // It connects a Read Model to a SQLite data.
+    // It connects a Read Model to a SQLite database.
     default: {
       module: '@resolve-js/readmodel-lite',
       options: {
@@ -415,6 +626,25 @@ const devConfig = {
         }
       }
     */
+  },
+}
+```
+
+Specify the same option within the **config.test-functional.js** file so that e2e tests work with read models:
+
+**config.test-functional.js**
+
+```js
+const testFunctionalConfig = {
+  ...
+  readModelConnectors: {
+    default: {
+      module: '@resolve-js/readmodel-lite',
+      options: {
+        // Use a separate database file for testing.
+        databaseFile: 'data/read-models-test-functional.db',
+      },
+    },
   },
 }
 ```
@@ -445,46 +675,53 @@ Register the created Read Model in the application configuration file:
 **config.app.js**
 
 ```js
-...
-readModels: [
-  {
-    // The Read Model's name
-    name: 'ShoppingLists',
-    // A path to the file that defines the Read Model projection
-    projection: 'common/read-models/shopping_lists.projection.js',
-    // A path to the file that defines the resolvers
-    resolvers: 'common/read-models/shopping_lists.resolvers.js',
-    // The name of the connector used to store the state
-    connectorName: 'default'
-  }
-],
+const appConfig = {
+  ...
+  readModels: [
+    {
+      name: 'ShoppingLists',
+      projection: 'common/read-models/shopping_lists.projection.js',
+      resolvers: 'common/read-models/shopping_lists.resolvers.js',
+      connectorName: 'default'
+    }
+  ]
+}
+export default appConfig
 ```
 
-### Query a Read Model
+<details>
+<summary>
 
-Use the reSolve HTTP API to query the ShoppingLists Read Model:
+**Test Your Application**
 
-```sh
-$ curl -X POST \
--H "Content-Type: application/json" \
--d "{}" \
-"http://localhost:3000/api/query/ShoppingLists/all"
+Expand this section for an example on how to test the ShoppingLists Read Model.
 
-% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   186  100   184  100     2    844      9 --:--:-- --:--:-- --:--:--   906[
-  {
-    "id": "shopping-list-1",
-    "name": "List 1",
-    "createdAt": 1543325125945
-  },
-  {
-    "id": "shopping-list-2",
-    "name": "List 2",
-    "createdAt": 1543325129138
-  }
-]
+</summary>
+
+Add the following test case to the application's test file.
+
+[test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-1/test/e2e/index.test.js)
+
+```js
+test('read model query should work correctly', async () => {
+  const response = await fetch(`${MAIN_PAGE}/api/query/ShoppingLists/all`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  })
+
+  const result = await response.json()
+
+  await t.expect(result.data.length).eql(1)
+  await t.expect(result.data[0]).contains({
+    id: 'shopping-list-1',
+    name: 'List 1',
+  })
+})
 ```
+
+</details>
 
 ---
 
@@ -492,13 +729,93 @@ $ curl -X POST \
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-3)
 
-This lesson describes how to display a Read Model's data in the client browser. The code in this lesson uses the reSolve framework's **@resolve-js/redux** library to implement a frontend based on React with hooks.
+This lesson describes how to display a Read Model's data in the client browser. The code in this lesson uses the reSolve framework's [@resolve-js/react-hooks](https://www.npmjs.com/package/@resolve-js/react-hooks) library to implement a frontend based on React with hooks.
 
 Refer to the [Frontend](frontend.md) article for information on other tools that you can use to implement a frontend.
 
+### Install Dependencies
+
+Use the following console input to install NPM packages required for this lesson:
+
+```sh
+yarn add react react-bootstrap react-dom react-router react-router-config react-router-dom react-helmet
+```
+
 ### Implement the Client Application
 
-> The example project uses **react-bootstrap** to reduce the size of the markup To use this library, you should link the Bootstrap stylesheet file to the application's page. The example project's **client/components/Header.js** file demonstrates how to link static resources.
+<details>
+<summary>
+
+**Link Static Resources**
+
+The example project uses [react-bootstrap](https://react-bootstrap.github.io) to reduce the size of the markup. To use this library, you should link the Bootstrap stylesheet file to the application's page. Expand this section to view details on how to link static resources.
+
+</summary>
+<div>
+
+You can define a reusable component that generates the document `<head>` section based on the specified parameters. In this component, you can generate static resource links as well as document metadata. The code sample below demonstrates how this component is defined in the example application:
+
+[client/components/Header.js](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-3/client/components/Header.js)
+
+```jsx
+import React from 'react'
+// The react-helmet library allows you to manage the document *head* section.
+import { Helmet } from 'react-helmet'
+import { useStaticResolver } from '@resolve-js/react-hooks'
+
+const Header = ({ title, css }) => {
+  // Use the *useStaticResolver* hook to obtain the full path to a static resource
+  // from a relative path.
+  const resolveStatic = useStaticResolver()
+  // Generate a list of links for stylesheets.
+  const stylesheetLinks = css.map((href) => ({
+    rel: 'stylesheet',
+    href: resolveStatic(href),
+  }))
+  // You can use the same technique to generate links for other resource types.
+  // const faviconLink = {
+  //   rel: 'icon',
+  //   type: 'image/png',
+  //   href: resolveStatic(favicon),
+  // }
+  // Merge all links together in one list.
+  const links = [...stylesheetLinks] // [...stylesheetLinks, faviconLink]
+  const meta = {
+    name: 'viewport',
+    content: 'width=device-width, initial-scale=1',
+  }
+  // Use react-helmet to render the *head* section with your settings.
+  return (
+    <div>
+      <Helmet title={title} link={links} meta={[meta]} />
+    </div>
+  )
+}
+
+export default Header
+```
+
+You can now configure the `<head>` section within the root component:
+
+**client/components/App.js**
+
+```jsx
+import Header from './Header'
+
+const App = ({ route, children }) => (
+  <div>
+    <Header
+      title="ReSolve Shopping List Example"
+      css={['/bootstrap.min.css']}
+    />
+    {renderRoutes(route.routes)}
+    {children}
+  </div>
+)
+```
+
+</div>
+</details>
 
 First, implement a React component that renders a list of shopping list names. To do this, create a **ShoppingLists.js** file in the **client/components** subfolder and add the following code to this file:
 
@@ -539,7 +856,7 @@ Add a new component named **MyLists**. This component obtains shopping list data
 
 **client/components/MyLists.js**
 
-```js
+```jsx
 import React, { useState, useEffect } from 'react'
 
 import { useQuery } from '@resolve-js/react-hooks'
@@ -548,7 +865,7 @@ import ShoppingLists from './ShoppingLists'
 const MyLists = () => {
   const [lists, setLists] = useState({})
 
-  // The 'useQuery' hook is used to querry the 'ShoppingLists' Read Model's 'all' resolver.
+  // The 'useQuery' hook is used to query the 'ShoppingLists' Read Model's 'all' resolver.
   // The obtained data is stored in the component's state.
   const getLists = useQuery(
     { name: 'ShoppingLists', resolver: 'all', args: {} },
@@ -662,6 +979,10 @@ const entryPoint = (context) => {
 export default entryPoint
 ```
 
+:::tip SSR
+In addition to a client entry point, you can add SSR handlers to your application to implement server side rendering functionality. Refer to the [SSR Handlers](frontend.md/#ssr-handlers) section of the [Fronted](frontend.md) topic for more information.
+:::
+
 ### Register the Entry Point
 
 Register the client entry point in the application's configuration file as shown below:
@@ -681,6 +1002,37 @@ Run your application to view the result:
 
 ![result](assets/tutorial/lesson3-result.png)
 
+<details>
+<summary>
+
+**Test Your Application**
+
+Expand this section for an example on how to test the client application.
+
+</summary>
+
+Add the following test case to the application's test file.
+
+[test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-3/test/e2e/index.test.js)
+
+```js
+fixture`reSolve Application`.beforeEach(async (t) => {
+  await t.setNativeDialogHandler(() => true)
+  // Add the following line to the fixture so that the test
+  // navigates to the main page before each test case:
+  await t.navigateTo(MAIN_PAGE)
+})
+
+...
+
+test('shopping list is displayed on page', async (t) => {
+  await t.expect(Selector('td').withText('1').exists).eql(true)
+  await t.expect(Selector('td').withText('List 1').exists).eql(true)
+})
+```
+
+</details>
+
 ---
 
 ## **Lesson 4** - Read Side - Create a View Model to Query Shopping List Items
@@ -689,9 +1041,13 @@ Run your application to view the result:
 
 This lesson describes how you can use a View Model to obtain shopping list items and display them as a list within the client browser.
 
-A View Model is a reactive Read Model that is built on the fly for one or several aggregate IDs. A client can maintain a WebSocket connection with a resolve server to receive View Model data updates in real time.
+:::tip View Model
 
-The downside is that View Models do not have persistent state and should be rebuilt on every query, so they are better suited for small data samples.
+A View Model is a reactive Read Model that is built on the fly for one or more aggregate IDs. A client can maintain a WebSocket connection with a resolve server to receive View Model data updates in real time.
+
+The downside is that View Models do not have a persistent state and should be rebuilt on every query, so they are better suited for small data samples.
+
+:::
 
 ### Create a Shopping List View Model
 
@@ -749,48 +1105,6 @@ const appConfig = {
   ]
 }
 export default appConfig
-```
-
-### Query A View Model
-
-You can use the reSolve HTTP API to query a View Model:
-
-```bash
-$  curl -i -g -X GET "http://localhost:3000/api/query/shoppingList/shopping-list-1"
-HTTP/1.1 200 OK
-X-Powered-By: Express
-Content-Type: text/html; charset=utf-8
-Content-Length: 50
-ETag: W/"32-QoPdRfMTxfncCZnYSqRYIDifC/w"
-Date: Fri, 16 Nov 2018 12:10:58 GMT
-Connection: keep-alive
-
-{
-  "id": "shopping-list-1",
-  "name": "List 1",
-  "list": [
-    {
-      "id": "1",
-      "text": "Milk",
-      "checked": false
-    },
-    {
-      "id": "2",
-      "text": "Eggs",
-      "checked": false
-    },
-    {
-      "id": "3",
-      "text": "Canned beans",
-      "checked": false
-    },
-    {
-      "id": "4",
-      "text": "Paper towels",
-      "checked": false
-    }
-  ]
-}
 ```
 
 ### Display View Model Data on the Client
@@ -890,6 +1204,8 @@ Modify the **ShoppingLists** component's layout as shown below to render links t
 **client/components/ShoppingLists.js:**
 
 ```jsx
+import { Link } from 'react-router-dom'
+...
 const ShoppingLists = ({ lists }) => {
   return (
     <div>
@@ -912,7 +1228,28 @@ const ShoppingLists = ({ lists }) => {
 
 ![List Items](assets/tutorial/lesson4-navigation.png)
 
-Run the application and click a shopping list's name view the result. To test the View Model's reactiveness, keep the page opened and use the following console input to add a shopping list item:
+Add a route for the ShoppingList component to the router config:
+
+**client/routes.js:**
+
+```js
+import ShoppingList from './components/ShoppingList'
+...
+export default [
+  {
+    ...
+    routes: [
+      ...
+      {
+        path: '/:id',
+        component: ShoppingList,
+      },
+    ],
+  },
+]
+```
+
+Run the application and click a shopping list's name to view the result. To test the View Model's reactiveness, keep the page opened and use the following console input to add a shopping list item:
 
 ```bash
 curl -i http://localhost:3000/api/commands/ \
@@ -932,6 +1269,83 @@ curl -i http://localhost:3000/api/commands/ \
 
 The page is automatically updated to display the new item.
 
+<details>
+<summary>
+
+**Test Your Application**
+
+Expand this section for an example on how to test the new functionality in your application.
+
+</summary>
+
+Add the following test case to the application's test file.
+
+[test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-4/test/e2e/index.test.js)
+
+```js
+const waitSelector = async (t, eventSubscriber, selector) => {
+  while (true) {
+    const res = await fetch(`${MAIN_PAGE}/api/event-broker/read-models-list`)
+
+    const readModel = (await res.json()).find(
+      (readModel) => readModel.eventSubscriber === eventSubscriber
+    )
+
+    if (readModel.status !== 'deliver') {
+      throw new Error(`Test failed. Read-model status "${readModel.status}"`)
+    }
+
+    try {
+      await t.expect((await selector).exists).eql(true)
+      break
+    } catch (e) {}
+  }
+}
+
+...
+
+test('shopping list items are displayed on page', async (t) => {
+  await t.click(Selector('a').withText('List 1'))
+  await waitSelector(t, 'ShoppingLists', Selector('div.list-group-item'))
+  await t.expect(Selector('label').withText('Milk').exists).eql(true)
+  await t.expect(Selector('label').withText('Eggs').exists).eql(true)
+  await t.expect(Selector('label').withText('Canned beans').exists).eql(true)
+  await t.expect(Selector('label').withText('Paper towels').exists).eql(true)
+})
+```
+
+This test case requires API exposed by [@resolve-js/module-admin](https://www.npmjs.com/package/@resolve-js/module-admin) to obtain the list of read models from the server. Follow the steps below to add this module to your application in testing mode.
+
+To install the module, use the following console input:
+
+```sh
+yarn add @resolve-js/module-admin
+```
+
+To add the module to the application, edit the application's **run.js** file as follows:
+
+```js
+// run.js
+import resolveModuleAdmin from '@resolve-js/module-admin'
+...
+void (async () => {
+  switch (launchMode) {
+    case 'test:e2e': {
+      const moduleAdmin = resolveModuleAdmin() // Initialize the module.
+      const resolveConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        testFunctionalConfig,
+        moduleAdmin // Merge the module's config into the application's config.
+      )
+      ...
+    }
+  })
+  ...
+```
+
+</details>
+
 ## **Lesson 5** - Enable Editing
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/tutorial/lesson-5)
@@ -940,7 +1354,7 @@ This lesson describes how to implement missing data editing functionality on the
 
 ### Modify the Backend
 
-Currently your reSolve application can create shopping lists and their items. The application also requires the capability to toggle shopping list items as well as remove and items and entire lists.
+Currently, your reSolve application can create shopping lists and their items. The application also requires the capability to toggle shopping list items as well as remove items and entire lists.
 
 To implement the missing functionality, you need to add data editing events, modify the ShoppingList aggregate to produce these events, and update read and view models to take these events into account.
 
@@ -1086,7 +1500,7 @@ import { v4 as uuid } from 'uuid'
 const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
   const [shoppingListName, setShoppingListName] = useState('')
 
-  // The useCommandHook allows you send commands to reSolve.
+  // The useCommandHook allows you to send commands to reSolve.
   const createShoppingListCommand = useCommand(
     {
       type: 'createShoppingList',
@@ -1098,7 +1512,7 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
     },
     (err, result) => {
       setShoppingListName('')
-      // A callback user to pass info about a newly created shopping list to the parrent component.
+      // A callback user to pass info about a newly created shopping list to the parent component.
       onCreateSuccess(err, result)
     }
   )
@@ -1150,6 +1564,8 @@ You can render this component within 'MyLists' as shown below:
 **client/components/MyLists.js**
 
 ```jsx
+import ShoppingListCreator from './ShoppingListCreator'
+...
 const MyLists = () => {
   ...
   return (
@@ -1207,6 +1623,8 @@ Add this component to each item in the ShoppingLists component's layout:
 **client/components/ShoppingLists.js**
 
 ```jsx
+import ShoppingListRemover from './ShoppingListRemover'
+...
 const ShoppingLists = ({ lists, onRemoveSuccess }) => {
   return (
     <div>
@@ -1433,3 +1851,162 @@ export default ShoppingListItem
 - [useCommand](api/client/resolve-react-hooks.md#usecommand)
 
 ![Check List Item](assets/tutorial/lesson5-check-item.png)
+
+<details>
+<summary>
+
+**Test Your Application**
+
+Expand this section for an example on how to test data editing in your application.
+
+</summary>
+
+Add the following test cases to the application's test file.
+
+[test/e2e/index.test.js:](https://github.com/reimagined/resolve/blob/dev/tutorial/lesson-5/test/e2e/index.test.js)
+
+```js
+test('create first shopping list', async (t) => {
+  await t.typeText(Selector('input[type=text]'), 'First Shopping List', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Shopping List'))
+
+  await refreshAndWait(t, () => Selector('td > a').count, 2)
+})
+
+test('create second shopping list', async (t) => {
+  await t.typeText(Selector('input[type=text]'), 'Second Shopping List', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Shopping List'))
+
+  await refreshAndWait(t, () => Selector('td > a').count, 3)
+})
+
+test('create items in first shopping list', async (t) => {
+  await t.click(Selector('a').withText('First Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('input[type=text]').nth(1))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 1', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 2', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 3', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.expect(Selector('label').withText('Item 1').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 2').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 3').exists).eql(true)
+})
+
+test('toggle items in first shopping list', async (t) => {
+  await t.click(Selector('a').withText('First Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('label').withText('Item 1'))
+
+  await t.click(Selector('label').withText('Item 1').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 1').sibling(-1).checked)
+    .eql(true)
+
+  await t.click(Selector('label').withText('Item 2').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 2').sibling(-1).checked)
+    .eql(true)
+
+  await t.click(Selector('label').withText('Item 3').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 3').sibling(-1).checked)
+    .eql(true)
+})
+
+test('remove items in first shopping list', async (t) => {
+  await t.click(Selector('a').withText('First Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('button').withText('Delete'))
+
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+
+  await t.expect(await Selector('td > a').count).eql(0)
+})
+
+test('create items in second shopping list', async (t) => {
+  await t.click(Selector('a').withText('Second Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('input[type=text]').nth(1))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 1', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 2', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.typeText(Selector('input[type=text]').nth(1), 'Item 3', {
+    paste: true,
+  })
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.expect(Selector('label').withText('Item 1').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 2').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 3').exists).eql(true)
+})
+
+test('toggle items in second shopping list', async (t) => {
+  await t.click(Selector('a').withText('Second Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('label').withText('Item 1'))
+
+  await t.click(Selector('label').withText('Item 1').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 1').sibling(-1).checked)
+    .eql(true)
+
+  await t.click(Selector('label').withText('Item 2').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 2').sibling(-1).checked)
+    .eql(true)
+
+  await t.click(Selector('label').withText('Item 3').sibling(-1))
+  await t
+    .expect(Selector('label').withText('Item 3').sibling(-1).checked)
+    .eql(true)
+})
+
+test('remove items in second shopping list', async (t) => {
+  await t.click(Selector('a').withText('Second Shopping List'))
+
+  await waitSelector(t, 'ShoppingLists', Selector('button').withText('Delete'))
+
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+
+  await t.expect(await Selector('td > a').count).eql(0)
+})
+
+test('remove shopping lists', async (t) => {
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+  await t.click(Selector('Button').withText('Delete'))
+
+  await t.expect(await Selector('td > a').count).eql(0)
+})
+```
+
+</details>

@@ -2,11 +2,16 @@ import type { AdapterPool } from './types'
 import type {
   EventStoreDescription,
   EventThreadData,
+  DescribeOptions,
+  Cursor,
 } from '@resolve-js/eventstore-base'
 import assert from 'assert'
 import { threadArrayToCursor } from '@resolve-js/eventstore-base'
 
-const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
+const describe = async (
+  pool: AdapterPool,
+  options?: DescribeOptions
+): Promise<EventStoreDescription> => {
   const {
     executeStatement,
     secretsTableName,
@@ -22,20 +27,39 @@ const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
   const freezeTableName = `${eventsTableName}-freeze`
   const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
 
-  const threads = (await executeStatement(
-    `SELECT "threadId", "threadCounter" FROM ${databaseNameAsId}.${threadsTableAsId} ORDER BY "threadId" ASC`
-  )) as Array<{
-    threadId: EventThreadData['threadId']
-    threadCounter: EventThreadData['threadCounter']
-  }>
+  let cursor: Cursor | undefined = undefined
 
-  const threadArray = threads.map((row) => {
-    return +row.threadCounter
-  })
+  if (options && options.calculateCursor) {
+    const threads = (await executeStatement(
+      `SELECT "threadId", "threadCounter" FROM ${databaseNameAsId}.${threadsTableAsId} ORDER BY "threadId" ASC`
+    )) as Array<{
+      threadId: EventThreadData['threadId']
+      threadCounter: EventThreadData['threadCounter']
+    }>
+
+    const threadArray = threads.map((row) => {
+      return +row.threadCounter
+    })
+    cursor = threadArrayToCursor(threadArray)
+  }
+
+  const estimateCounts = options?.estimateCounts ?? false
 
   const rows = await executeStatement(`SELECT
-    (SELECT COUNT(*) FROM ${databaseNameAsId}.${eventsTableNameAsId}) AS "eventCount",
-    (SELECT COUNT(*) FROM ${databaseNameAsId}.${secretsTableNameAsId}) AS "secretCount",
+    ${
+      estimateCounts
+        ? `(SELECT reltuples::bigint FROM pg_class WHERE oid = ${escape(
+            databaseNameAsId + '.' + eventsTableNameAsId
+          )}::regclass)`
+        : `(SELECT COUNT(*) FROM ${databaseNameAsId}.${eventsTableNameAsId})`
+    } AS "eventCount",
+    ${
+      estimateCounts
+        ? `(SELECT reltuples::bigint FROM pg_class WHERE oid = ${escape(
+            databaseNameAsId + '.' + secretsTableNameAsId
+          )}::regclass)`
+        : `(SELECT COUNT(*) FROM ${databaseNameAsId}.${secretsTableNameAsId})`
+    } AS "secretCount",
     (SELECT COUNT(*) FROM ${databaseNameAsId}.${secretsTableNameAsId} WHERE "secret" IS NOT NULL) AS "setSecretCount",
     (SELECT COUNT(*) FROM ${databaseNameAsId}.${secretsTableNameAsId} WHERE "secret" IS NULL) AS "deletedSecretCount", 
     (SELECT "timestamp" FROM ${databaseNameAsId}.${eventsTableNameAsId} ORDER BY "timestamp" DESC LIMIT 1) AS "lastEventTimestamp",
@@ -53,7 +77,7 @@ const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
     deletedSecretCount: +row.deletedSecretCount,
     lastEventTimestamp: +row.lastEventTimestamp,
     isFrozen: !!row.isFrozen,
-    cursor: threadArrayToCursor(threadArray),
+    cursor: cursor,
     resourceNames: {
       eventsTableName,
       databaseName,

@@ -1,10 +1,10 @@
-import type { AdapterPoolPrimal } from './types'
+import type { AdapterPool } from './types'
 
 const establishTimeLimit = (
-  pool: AdapterPoolPrimal,
+  pool: AdapterPool,
   getVacantTimeInMillis: () => number
 ) => {
-  if (pool.isConnected) {
+  if (pool.connection !== undefined) {
     pool.getConnectPromise = pool.createGetConnectPromise()
   }
   pool.getVacantTimeInMillis = getVacantTimeInMillis

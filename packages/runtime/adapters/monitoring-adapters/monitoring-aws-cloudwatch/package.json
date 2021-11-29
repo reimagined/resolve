@@ -1,0 +1,59 @@
+{
+  "name": "@resolve-js/monitoring-aws-cloudwatch",
+  "version": "0.33.4",
+  "description": "This package serves as a monitoring adapter used to store monitoring data in AWS CloudWatch",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/monitoring-adapters/@resolve-js/monitoring-aws-cloudwatch#readme",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "license": "MIT",
+  "author": "reimagined team",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/monitoring-aws-cloudwatch",
+    "test": "jest --config=../../../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../../../jest.config.js --watchAll"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.14.0",
+    "@resolve-js/core": "0.33.4",
+    "@resolve-js/debug-levels": "0.33.4",
+    "@resolve-js/monitoring-base": "0.33.4",
+    "@resolve-js/runtime-base": "0.33.4",
+    "resolve-cloud-common": "0.0.149"
+  },
+  "devDependencies": {
+    "jest": "27.0.3",
+    "ts-jest": "27.0.5"
+  },
+  "peerDependencies": {
+    "aws-sdk": "^2.860.0"
+  },
+  "engines": {
+    "node": ">=14.17"
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ],
+  "sourceType": "ts"
+}

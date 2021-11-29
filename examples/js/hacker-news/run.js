@@ -22,8 +22,10 @@ import devReplicaConfig from './config.dev.replica'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test-functional'
 import adjustWebpackConfigs from './config.adjust-webpack'
+import debug from '@resolve-js/debug-levels'
 import runImport from './import'
 const launchMode = process.argv[2]
+const getLog = (scope) => debug(`hacker-news:${scope}`)
 void (async () => {
   try {
     const moduleComments = resolveModuleComments({
@@ -62,6 +64,25 @@ void (async () => {
       moduleComments,
       moduleAuth
     )
+    const execE2E = async (functionalTestsDir, dropEventStore) => {
+      const moduleAdmin = resolveModuleAdmin()
+      const resolveConfig = merge(baseConfig, moduleAdmin, testFunctionalConfig)
+      await runTestcafe({
+        resolveConfig,
+        adjustWebpackConfigs,
+        functionalTestsDir,
+        browser: process.argv[3],
+        customArgs: ['--stop-on-first-fail'],
+        resetDomainOptions: {
+          dropEventStore,
+          dropEventSubscriber: true,
+          dropReadModels: true,
+          dropSagas: true,
+          bootstrap: true,
+        },
+      })
+      return resolveConfig
+    }
     switch (launchMode) {
       case 'dev': {
         const moduleAdmin = resolveModuleAdmin()
@@ -137,39 +158,41 @@ void (async () => {
         )
         break
       }
+      case 'test:e2e:only': {
+        await execE2E('test/e2e', true)
+        break
+      }
       case 'test:e2e': {
-        const moduleAdmin = resolveModuleAdmin()
-        const resolveConfig = merge(
-          baseConfig,
-          moduleAdmin,
-          testFunctionalConfig
-        )
-        /*
-                await reset(
-                  resolveConfig,
-                  {
-                    dropEventStore: true,
-                    dropEventSubscriber: true,
-                    dropReadModels: true,
-                    dropSagas: true,
-                  },
-                  adjustWebpackConfigs
-                )
-                 */
-        await runTestcafe({
+        const directory = './imp-exp-test'
+        const log = getLog('e2e:import-export')
+        log.debug(`executing E2E tests`)
+        const resolveConfig = await execE2E('test/e2e', true)
+        log.debug(`exporting event store to directory [${directory}]`)
+        await exportEventStore(
           resolveConfig,
-          adjustWebpackConfigs,
-          functionalTestsDir: 'test/e2e',
-          browser: process.argv[3],
-          customArgs: ['--stop-on-first-fail'],
-          resetDomainOptions: {
+          { directory },
+          adjustWebpackConfigs
+        )
+        log.debug(`resetting application domain`)
+        await reset(
+          resolveConfig,
+          {
             dropEventStore: true,
             dropEventSubscriber: true,
             dropReadModels: true,
             dropSagas: true,
-            bootstrap: true,
           },
-        })
+          adjustWebpackConfigs
+        )
+        log.debug(`importing event store from directory [${directory}]`)
+        await importEventStore(
+          resolveConfig,
+          { directory },
+          adjustWebpackConfigs
+        )
+        log.debug(`executing E2E post-import tests`)
+        await execE2E('test/e2e-post-import', false)
+        log.debug(`completed`)
         break
       }
       case 'test:e2e-cloud': {

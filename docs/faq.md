@@ -1,7 +1,7 @@
 ---
 id: faq
 title: FAQ
-description: This article provides answers to frequently asked questions about the reSolve framework.
+description: This article answers frequently asked questions about the reSolve framework.
 ---
 
 **Q**: Where can I find information about CQRS and Event Sourcing?<br/>
@@ -20,48 +20,19 @@ description: This article provides answers to frequently asked questions about t
 **A**: Read Models implement the standard event sourcing mechanisms.
 View Models are a Redux-specific extension to these mechanisms. View models are reactive and use websockets to synchronize their state with the redux state on the client.
 
-**Q**: How to implement a Read Model with direct access to the underlying store?<br/>
+**Q**: How do I implement a Read Model with direct access to the underlying store?<br/>
 **A**: Implement a [custom Read Model](read-side.md#custom-read-models). Custom Read Models allow you to use custom logic to communicate with a Read Model store.
 
-**Q**: How to send an aggregate command?<br/>
-**A**: To send a command from a client browser, use the [standard HTTP API](frontend.md#http-api): <br/>
-
-```
-$ curl -X POST "http://localhost:3000/api/commands"
---header "Content-Type: application/json" \
---data '
-{
-  "aggregateName":"Todo",
-  "type":"createItem",
-  "aggregateId":"root-id",
-  "payload": {
-    "id":`date +%s`,
-    "text":"Learn reSolve API"
-  }
-}
-```
+**Q**: How do I send an aggregate command?<br/>
+**A**: To send a command from a client browser, use the reSolve HTTP API or one of the available client libraries. Refer to the [Frontend](frontend.md) article for more information.
 
 On the server side, you can [send a command](api/saga.md#executecommand) from an API Handler or Saga:
 
-<!-- prettier-ignore-start -->
-
-[mdis]:# (../tests/saga-sample/saga.js#execute)
-```js
-await sideEffects.executeCommand({
-  aggregateName: 'User',
-  aggregateId: event.aggregateId,
-  type: 'requestConfirmUser',
-  payload: event.payload
-})
-```
-
-<!-- prettier-ignore-end -->
-
-**Q**: How to perform validation to ensure input values are unique?<br/>
+**Q**: How do I perform validation to ensure input values are unique?<br/>
 **A**: In a distributed application, it is not possible to perform reliable checks. You should detect value duplicates in a Read Model or Saga projection code and mark duplicated values as incorrect.
 
-**Q**: How to implement a frontend?<br/>
-**A**: There are three main approaches to frontend development in reSolve:
+**Q**: How do I implement a frontend?<br/>
+**A**: There are three main techniques to frontend development in reSolve:
 
 - Use one of the available client libraries. Refer to the [Frontend](frontend.md) article for more information.
 - Use the [HTTP API](frontend.md#http-api) exposed by a reSolve application.

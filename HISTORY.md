@@ -1,5 +1,108 @@
 # Changelog
 
+## [V0.33.4](https://github.com/reimagined/resolve/tree/V0.33.4) (2021-11-26)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.3...V0.33.4)
+
+**Bug fixes:**
+
+- Application silently fails to run if config is invalid, no errors are shown [\#2141](https://github.com/reimagined/resolve/issues/2141)
+- shopping-list has a description from shopping-list-with-hooks [\#2106](https://github.com/reimagined/resolve/issues/2106)
+- Error: Lambda worker was not created due to cold start failure [\#2105](https://github.com/reimagined/resolve/issues/2105)
+
+**Documentation:**
+
+- "Step-by-Step Tutorial" is unfriendly for steps reproducing. [\#2093](https://github.com/reimagined/resolve/issues/2093)
+- Replace CURL inputs with JS code samples [\#2138](https://github.com/reimagined/resolve/pull/2138)
+- Update tutorial [\#2068](https://github.com/reimagined/resolve/pull/2068)
+
+**Other changes:**
+
+- Build-mode flag for postgresql readmodel adapter [\#2140](https://github.com/reimagined/resolve/pull/2140)
+
+## [V0.33.3](https://github.com/reimagined/resolve/tree/V0.33.3) (2021-11-19)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.2...V0.33.3)
+
+**Breaking changes:**
+
+- Runtime code is erroneously executed at compile-time [\#2114](https://github.com/reimagined/resolve/issues/2114)
+
+**Bug fixes:**
+
+- "Module "source-map-support/register" cannot be resolved" thrown in the deployment [\#2119](https://github.com/reimagined/resolve/issues/2119)
+
+## [V0.33.2](https://github.com/reimagined/resolve/tree/V0.33.2) (2021-11-17)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.1...V0.33.2)
+
+**Bug fixes:**
+
+- The Node process stays active after resolve applications are stopped. [\#2126](https://github.com/reimagined/resolve/issues/2126)
+- Some format options does not work in cli, for example domainName [\#2110](https://github.com/reimagined/resolve/issues/2110)
+- Custom read-model does not start [\#2095](https://github.com/reimagined/resolve/issues/2095)
+- Babel "loose mode" warnings  [\#2011](https://github.com/reimagined/resolve/issues/2011)
+
+**Other changes:**
+
+- Fix security issues [\#2122](https://github.com/reimagined/resolve/pull/2122)
+- Improve readmodel postgresql lightweight optimistic [\#2118](https://github.com/reimagined/resolve/pull/2118)
+
+## [V0.33.1](https://github.com/reimagined/resolve/tree/V0.33.1) (2021-11-09)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.0...V0.33.1)
+
+**Bug fixes:**
+
+- "Pool is null" error in sagas [\#2101](https://github.com/reimagined/resolve/issues/2101)
+- The IsAlive flag for read models is false although read model is live \(no any errors\) [\#2092](https://github.com/reimagined/resolve/issues/2092)
+- Read-model doesn't handle events newly added to projection [\#2052](https://github.com/reimagined/resolve/issues/2052)
+- Unable to create app using Node v14 due to sqlite3 installation error [\#1998](https://github.com/reimagined/resolve/issues/1998)
+
+**Documentation:**
+
+- Describe the emulateWorkerLifetimeLimit option [\#2100](https://github.com/reimagined/resolve/pull/2100)
+
+**Other changes:**
+
+- Improve already dispose error handling for all disposable resolve resoures, inclusing read-model adapters [\#2103](https://github.com/reimagined/resolve/pull/2103)
+
+## [V0.33.0](https://github.com/reimagined/resolve/tree/V0.33.0) (2021-10-27)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.32.0...V0.33.0)
+
+**New features:**
+
+- Implement monitoring adapters [\#2089](https://github.com/reimagined/resolve/pull/2089)
+- Add event loader in eventstore adapter inferface and loading events via pg-cursor [\#2067](https://github.com/reimagined/resolve/pull/2067)
+
+**Enhancements:**
+
+- Make less database queries during replication [\#2084](https://github.com/reimagined/resolve/pull/2084)
+- Use event-loader \(via pgcursor for postgres\) in replicator [\#2076](https://github.com/reimagined/resolve/pull/2076)
+
+**Breaking changes:**
+
+- Remove RDS data api eventstore and readmodel adapters [\#2078](https://github.com/reimagined/resolve/pull/2078)
+- Refactored runtime libraries [\#2060](https://github.com/reimagined/resolve/pull/2060)
+
+**Bug fixes:**
+
+- Testing tools - When passing events with timestamps to givenEvents\(\), these events are sometimes lost [\#2075](https://github.com/reimagined/resolve/issues/2075)
+
+**Documentation:**
+
+- Fix outdated content in the Preparing to Production topic [\#2086](https://github.com/reimagined/resolve/pull/2086)
+- Remove postgres-serverless adapters mentions from documentation [\#2083](https://github.com/reimagined/resolve/pull/2083)
+
+**Other changes:**
+
+- Ability to delay next in readmodel build [\#2090](https://github.com/reimagined/resolve/pull/2090)
+- Fix subscriber notification [\#2062](https://github.com/reimagined/resolve/pull/2062)
+- Migrate from "incremental import" to "import" [\#2061](https://github.com/reimagined/resolve/pull/2061)
+- Review strings in templates and examples [\#2059](https://github.com/reimagined/resolve/pull/2059)
+- Cleanup eventstore tests [\#2058](https://github.com/reimagined/resolve/pull/2058)
+
 ## [V0.32.0](https://github.com/reimagined/resolve/tree/V0.32.0) (2021-10-01)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.31.10...V0.32.0)

@@ -11,6 +11,8 @@ import {
   makeTestEvent,
   adapterFactory,
   adapters,
+  isPostgres,
+  collectPostgresStatistics,
 } from '../eventstore-test-utils'
 
 jest.setTimeout(jestTimeout())
@@ -61,6 +63,13 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
     expect(description.secretCount).toEqual(countSecrets)
     expect(description.setSecretCount).toEqual(countSecrets)
     expect(description.deletedSecretCount).toEqual(0)
+
+    if (isPostgres()) {
+      await collectPostgresStatistics('secret_testing')
+      expect(
+        (await adapter.describe({ estimateCounts: true })).secretCount
+      ).toEqual(countSecrets)
+    }
   })
 
   test('should generate set secret events', async () => {

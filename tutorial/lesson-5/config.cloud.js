@@ -1,6 +1,6 @@
 import { declareRuntimeEnv } from '@resolve-js/scripts'
 
-const configCloud = {
+const cloudConfig = {
   mode: 'production',
   runtime: {
     module: '@resolve-js/runtime-aws-serverless',
@@ -8,30 +8,28 @@ const configCloud = {
   },
   staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
   eventstoreAdapter: {
-    module: '@resolve-js/eventstore-postgresql-serverless',
+    module: '@resolve-js/eventstore-postgresql',
     options: {
-      awsSecretStoreArn: declareRuntimeEnv('RESOLVE_ES_SECRET_ARN'),
-      dbClusterOrInstanceArn: declareRuntimeEnv('RESOLVE_ES_CLUSTER_ARN'),
-      databaseName: declareRuntimeEnv('RESOLVE_ES_DATABASE'),
-      eventsTableName: declareRuntimeEnv('RESOLVE_ES_EVENTS_TABLE'),
-      secretsTableName: declareRuntimeEnv('RESOLVE_ES_SECRETS_TABLE'),
-      region: declareRuntimeEnv('AWS_REGION'),
-      snapshotBucketSize: 100,
+      databaseName: declareRuntimeEnv('RESOLVE_EVENT_STORE_DATABASE_NAME'),
+      host: declareRuntimeEnv('RESOLVE_EVENT_STORE_CLUSTER_HOST'),
+      port: declareRuntimeEnv('RESOLVE_EVENT_STORE_CLUSTER_PORT'),
+      user: declareRuntimeEnv('RESOLVE_USER_ID'),
+      password: declareRuntimeEnv('RESOLVE_USER_PASSWORD'),
+      database: 'postgres',
     },
   },
   readModelConnectors: {
     default: {
-      module: '@resolve-js/readmodel-postgresql-serverless',
+      module: '@resolve-js/readmodel-postgresql',
       options: {
-        dbClusterOrInstanceArn: declareRuntimeEnv(
-          'RESOLVE_READMODEL_CLUSTER_ARN'
-        ),
-        awsSecretStoreArn: declareRuntimeEnv('RESOLVE_READMODEL_SECRET_ARN'),
         databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
-        region: declareRuntimeEnv('AWS_REGION'),
+        host: declareRuntimeEnv('RESOLVE_READMODEL_CLUSTER_HOST'),
+        port: declareRuntimeEnv('RESOLVE_READMODEL_CLUSTER_PORT'),
+        user: declareRuntimeEnv('RESOLVE_USER_ID'),
+        password: declareRuntimeEnv('RESOLVE_USER_PASSWORD'),
+        database: 'postgres',
       },
     },
   },
 }
-
-export default configCloud
+export default cloudConfig

@@ -14,7 +14,7 @@ import {
 } from './frozen-errors'
 import loadEvents from './load-events'
 import getNextCursor from './get-next-cursor'
-import throwBadCursor from './throw-bad-cursor'
+import loadEventsByTimestampResult from './load-events-by-timestamp-result'
 import snapshotTrigger from './snapshot-trigger'
 import incrementalImport from './incremental-import'
 import importSecretsStream from './import-secrets'
@@ -28,10 +28,10 @@ import * as iotsTypes from 'io-ts-types'
 
 import type {
   AdapterFunctions,
-  AdapterPoolConnectedProps,
   CommonAdapterFunctions,
   Adapter,
   AdapterConfig,
+  AdapterPrimalPool,
 } from './types'
 
 export {
@@ -60,19 +60,14 @@ export {
 export * from './errors'
 
 const wrappedCreateAdapter = <
-  ConnectedProps extends AdapterPoolConnectedProps,
-  ConnectionDependencies extends any,
+  ConfiguredProps extends {},
   Config extends AdapterConfig
 >(
-  adapterFunctions: AdapterFunctions<
-    ConnectedProps,
-    ConnectionDependencies,
-    Config
-  >,
-  connectionDependencies: ConnectionDependencies,
-  options: Config
+  adapterFunctions: AdapterFunctions<ConfiguredProps>,
+  options: Config,
+  configure: (props: AdapterPrimalPool<ConfiguredProps>, config: Config) => void
 ): Adapter => {
-  const commonFunctions: CommonAdapterFunctions<ConnectedProps> = {
+  const commonFunctions: CommonAdapterFunctions<ConfiguredProps> = {
     maybeThrowResourceError,
     importEventsStream,
     exportEventsStream,
@@ -88,12 +83,7 @@ const wrappedCreateAdapter = <
     getEventLoader,
   }
 
-  return createAdapter(
-    commonFunctions,
-    adapterFunctions,
-    connectionDependencies,
-    options
-  )
+  return createAdapter(commonFunctions, adapterFunctions, options, configure)
 }
 
 export default wrappedCreateAdapter
@@ -104,7 +94,7 @@ export {
   EventstoreFrozenError,
   AlreadyFrozenError as EventstoreAlreadyFrozenError,
   AlreadyUnfrozenError as EventstoreAlreadyUnfrozenError,
-  throwBadCursor,
+  loadEventsByTimestampResult,
   getNextCursor,
   snapshotTrigger,
   iots,
@@ -129,14 +119,12 @@ export type {
   ReplicationState,
   OldEvent,
   OldSecretRecord,
-  EventStoreDescription,
   UnbrandProps,
   CursorFilter,
   TimestampFilter,
   Adapter,
-  AdapterPoolPossiblyUnconnected,
-  AdapterPoolConnected,
-  AdapterPoolConnectedProps,
+  AdapterPrimalPool,
+  AdapterBoundPool,
   AdapterConfig,
   AdapterTableNames,
   AdapterTableNamesProps,
@@ -145,7 +133,12 @@ export type {
   EventLoader,
 } from './types'
 
-export type { StoredEvent, EventThreadData } from '@resolve-js/core'
+export type {
+  StoredEvent,
+  EventThreadData,
+  EventStoreDescription,
+  EventStoreDescribeOptions as DescribeOptions,
+} from '@resolve-js/core'
 
 export {
   makeSetSecretEvent,

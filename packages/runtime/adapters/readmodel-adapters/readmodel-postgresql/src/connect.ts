@@ -7,7 +7,13 @@ import type {
 } from './types'
 
 const connect: CurrentConnectMethod = async (imports, pool, options) => {
-  let { tablePrefix, databaseName, ...connectionOptions } = options
+  let {
+    tablePrefix,
+    databaseName,
+    buildMode,
+    useSqs,
+    ...connectionOptions
+  } = options
 
   if (databaseName == null || databaseName.constructor !== String) {
     throw new Error(`Wrong database name: ${databaseName}`)
@@ -17,6 +23,23 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     throw new Error(`Wrong table prefix: ${tablePrefix}`)
   } else if (tablePrefix == null) {
     tablePrefix = ''
+  }
+
+  if (
+    buildMode != null &&
+    !['plv8-internal', 'plv8-external', 'plv8', 'nodejs', 'auto'].includes(
+      buildMode
+    )
+  ) {
+    throw new Error(`Wrong build mode: ${buildMode}`)
+  } else if (buildMode == null) {
+    buildMode = 'auto'
+  }
+
+  if (useSqs != null && useSqs.constructor !== Boolean) {
+    throw new Error(`Wrong sqs usage flag: ${useSqs}`)
+  } else if (useSqs == null) {
+    useSqs = false
   }
 
   const connectionErrorsMap: WeakMap<
@@ -137,6 +160,8 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     inlineLedgerRunQuery,
     connection: initialConnection,
     activePassthrough: false,
+    buildMode,
+    useSqs,
     ...imports,
   })
 }

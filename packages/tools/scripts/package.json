@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/scripts",
-  "version": "0.32.0",
+  "version": "0.33.4",
   "description": "Contains scripts used to initialize a reSolve server.",
   "keywords": [
     "cqrs",
@@ -33,11 +33,11 @@
     "@babel/register": "7.13.16",
     "@babel/runtime": "7.14.0",
     "@purtuga/esm-webpack-plugin": "1.5.0",
-    "@resolve-js/debug-levels": "0.32.0",
-    "@resolve-js/core": "0.32.0",
-    "@resolve-js/runtime-base": "0.32.0",
-    "@resolve-js/runtime-single-process": "0.32.0",
-    "@resolve-js/runtime-aws-serverless": "0.32.0",
+    "@resolve-js/core": "0.33.4",
+    "@resolve-js/debug-levels": "0.33.4",
+    "@resolve-js/runtime-aws-serverless": "0.33.4",
+    "@resolve-js/runtime-base": "0.33.4",
+    "@resolve-js/runtime-single-process": "0.33.4",
     "address": "1.1.2",
     "ajv": "7.2.1",
     "babel-loader": "8.2.2",
@@ -56,16 +56,15 @@
     "semver": "7.3.5",
     "socket.io-client": "4.0.0",
     "synchronous-promise": "2.0.15",
-    "testcafe": "1.14.2",
+    "testcafe": "1.17.1",
     "testcafe-browser-tools": "2.0.15",
     "uuid": "8.3.2",
-    "webpack": "4.42.0",
+    "webpack": "4.46.0",
     "webpack-node-externals": "2.5.2"
   },
   "devDependencies": {
     "jest": "27.0.3",
-    "lodash.escaperegexp": "4.1.2",
-    "sinon": "9.2.4"
+    "lodash.escaperegexp": "4.1.2"
   },
   "engines": {
     "node": ">=14.17"

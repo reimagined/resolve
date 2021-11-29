@@ -4,17 +4,20 @@ import {
   jestTimeout,
   makeTypedTestEvent,
   isPostgres,
+  collectPostgresStatistics,
 } from '../eventstore-test-utils'
 
 import {
+  ConcurrentError,
   threadArrayToCursor,
   checkEventsContinuity,
-  StoredEventPointer,
-  ConcurrentError,
   initThreadArray,
 } from '@resolve-js/eventstore-base'
 
-import type { StoredEvent } from '@resolve-js/eventstore-base'
+import type {
+  StoredEventPointer,
+  StoredEvent,
+} from '@resolve-js/eventstore-base'
 
 jest.setTimeout(jestTimeout())
 
@@ -33,7 +36,7 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
     })
     expect(events).toHaveLength(0)
 
-    const description = await adapter.describe()
+    const description = await adapter.describe({ calculateCursor: true })
     expect(description.eventCount).toEqual(0)
     expect(description.cursor).toEqual(threadArrayToCursor(initThreadArray()))
 
@@ -73,6 +76,13 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
 
     const description = await adapter.describe()
     expect(description.eventCount).toEqual(checkCount)
+
+    if (isPostgres()) {
+      await collectPostgresStatistics('save_and_load_testing')
+      expect(
+        (await adapter.describe({ estimateCounts: true })).eventCount
+      ).toEqual(checkCount)
+    }
   })
 
   test('should throw ConcurrentError when saving event with the same aggregateVersion', async () => {
@@ -172,6 +182,16 @@ describe(`${adapterFactory.name}. Eventstore adapter events saving and loading`,
 
   test('should load events consequentially from the middle', async () => {
     await testEventLoading(checkCount / 2, [eventTypes[0], eventTypes[2]])
+  })
+
+  test('preferring regular event loader should return non-native one', async () => {
+    const eventLoader = await adapter.getEventLoader(
+      { cursor: null },
+      { preferRegular: true }
+    )
+    const isNative = eventLoader.isNative
+    await eventLoader.close()
+    expect(isNative).toBe(false)
   })
 
   test('same cursors are not continuous', async () => {

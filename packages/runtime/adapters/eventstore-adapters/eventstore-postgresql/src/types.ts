@@ -1,8 +1,7 @@
-import { Client as Postgres } from 'pg'
+import { Client } from 'pg'
 import type {
-  AdapterPoolConnectedProps,
-  AdapterPoolConnected,
-  AdapterPoolPossiblyUnconnected,
+  AdapterBoundPool,
+  AdapterPrimalPool,
   AdapterConfig,
   AdapterTableNames,
   AdapterTableNamesProps,
@@ -11,47 +10,40 @@ import type {
 type EscapeFunction = (source: string) => string
 type FullJitter = (retries: number) => number
 
-export type PostgresqlAdapterPoolConnectedProps = AdapterPoolConnectedProps &
-  AdapterTableNamesProps & {
-    Postgres: typeof Postgres
-    connectionOptions: any
-    databaseName: string
-    fullJitter: FullJitter
-    executeStatement: (
-      sql: string,
-      useDistinctConnection?: boolean
-    ) => Promise<any[]>
-    escapeId: EscapeFunction
-    escape: EscapeFunction
-    connection: Postgres
-  }
+type ConnectionOptions = {
+  user: string
+  database: string
+  port: number
+  host: string
+  password: string
+}
 
-export type PostgresqlAdapterConfig = AdapterConfig &
-  AdapterTableNames & {
-    user?: string
-    database: string
-    port?: number
-    host?: string
-    password?: string
-    databaseName?: string
-    [key: string]: any
-  }
-
-export type AdapterPool = AdapterPoolConnected<PostgresqlAdapterPoolConnectedProps>
-
-export type AdapterPoolPrimal = AdapterPoolPossiblyUnconnected<PostgresqlAdapterPoolConnectedProps>
-
-export type ConnectionDependencies = {
-  Postgres: typeof Postgres
+export type ConfiguredProps = AdapterTableNamesProps & {
+  Postgres: typeof Client
+  connectionOptions: ConnectionOptions
+  databaseName: string
   fullJitter: FullJitter
-  escapeId: EscapeFunction
-  escape: EscapeFunction
   executeStatement: (
-    pool: AdapterPool,
     sql: string,
     useDistinctConnection?: boolean
   ) => Promise<any[]>
+  escapeId: EscapeFunction
+  escape: EscapeFunction
+  getVacantTimeInMillis?: () => number
+  createGetConnectPromise: () => () => Promise<Client>
+  getConnectPromise: () => Promise<Client>
+  connection?: Client
 }
+
+export type PostgresqlAdapterConfig = AdapterConfig &
+  AdapterTableNames &
+  ConnectionOptions & {
+    databaseName: string
+  }
+
+export type AdapterPool = AdapterBoundPool<ConfiguredProps>
+
+export type AdapterPoolPrimal = AdapterPrimalPool<ConfiguredProps>
 
 export type PostgresResourceConfig = {
   user: PostgresqlAdapterConfig['user']
@@ -62,3 +54,5 @@ export type PostgresResourceConfig = {
   password: PostgresqlAdapterConfig['password']
   userLogin: string
 }
+
+export { Client as PostgresConnection }

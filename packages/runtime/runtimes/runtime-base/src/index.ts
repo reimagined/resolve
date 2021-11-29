@@ -16,3 +16,6 @@ export { entryPointMarker } from './dynamic-require/entry-point-marker'
 export { createQueryExecutor } from './query'
 export { createCommandExecutor } from './command'
 export type { CommandExecutor } from './command'
+export { createCompositeMonitoringAdapter } from './create-composite-monitoring-adapter'
+
+export { pureRequire } from './dynamic-require/pure-require'

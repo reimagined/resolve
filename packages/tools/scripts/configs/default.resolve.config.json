@@ -16,5 +16,6 @@
   "customConstants": {},
   "clientImports": {},
   "serverImports": {},
-  "clientEntries": []
+  "clientEntries": [],
+  "monitoringAdapters": {}
 }

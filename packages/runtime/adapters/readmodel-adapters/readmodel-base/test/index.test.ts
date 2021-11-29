@@ -2,6 +2,7 @@ import createReadModelConnector, {
   AdapterImplementation,
   CommonAdapterPool,
   CommonAdapterOptions,
+  AlreadyDisposedError,
 } from '../src'
 
 jest.mock('../src/make-split-nested-path', () => jest.fn())
@@ -243,4 +244,11 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
 
   await adapter.disconnect(store)
   expect(implementation.disconnect).toBeCalledWith(adapterPool)
+
+  try {
+    await adapter.disconnect(store)
+  } catch (error) {
+    expect(error).toBeInstanceOf(AlreadyDisposedError)
+    expect(AlreadyDisposedError.is(error)).toEqual(true)
+  }
 })

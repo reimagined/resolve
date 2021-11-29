@@ -8,7 +8,7 @@ const setSecret = async (
 ): Promise<void> => {
   const log = getLog('secretsManager:setSecret')
   log.debug(`setting secret value within database`)
-  const { secretsTableName, connection, escape, escapeId } = pool
+  const { secretsTableName, escape, escapeId } = pool
 
   log.verbose(`selector: ${selector}`)
   log.verbose(`tableName: ${secretsTableName}`)
@@ -37,14 +37,14 @@ const setSecret = async (
 
   try {
     log.debug(`executing SQL query`)
-    await connection.query(query)
+    await pool.query(query)
     log.debug(`query executed successfully`)
   } catch (error) {
     log.error(error.message)
     log.verbose(error.stack)
     try {
       log.debug(`rolling back`)
-      await connection.query('ROLLBACK;')
+      await pool.query('ROLLBACK;')
     } catch (e) {
       log.error(e.message)
       log.verbose(e.stack)

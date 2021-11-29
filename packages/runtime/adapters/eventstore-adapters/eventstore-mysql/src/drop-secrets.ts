@@ -7,7 +7,7 @@ import executeSequence from './execute-sequence'
 const dropSecrets = async (pool: AdapterPool): Promise<any[]> => {
   const log = getLog('dropSecrets')
 
-  const { secretsTableName, connection, database, escapeId } = pool
+  const { secretsTableName, database, escapeId } = pool
 
   log.debug(`dropping secrets`)
   log.verbose(`secretsTableName: ${secretsTableName}`)
@@ -17,7 +17,7 @@ const dropSecrets = async (pool: AdapterPool): Promise<any[]> => {
   const statements: string[] = [`DROP TABLE ${secretsTableNameAsId}`]
 
   const errors: any[] = await executeSequence(
-    connection,
+    pool,
     statements,
     log,
     (error) => {

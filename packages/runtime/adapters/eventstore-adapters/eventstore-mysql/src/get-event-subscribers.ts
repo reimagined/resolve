@@ -19,11 +19,11 @@ const getEventSubscribers = async (
     status: any
   }>
 > => {
-  const { subscribersTableName, connection, escapeId, escape } = pool
+  const { subscribersTableName, escapeId, escape } = pool
   const subscribersTableNameAsId = escapeId(subscribersTableName)
 
   const rows = (
-    await connection.query(`
+    await pool.query(`
     SELECT * FROM ${subscribersTableNameAsId}
     ${
       applicationName != null || eventSubscriber != null

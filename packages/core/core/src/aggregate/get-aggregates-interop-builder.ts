@@ -345,7 +345,6 @@ const getAggregateState = async (
         subSegment.addAnnotation('eventCount', events.length)
         subSegment.addAnnotation('origin', 'resolve:loadEvents')
       } catch (error) {
-        log.error(error.message)
         subSegment.addError(error)
         throw error
       } finally {
@@ -415,9 +414,7 @@ const makeCommandExecutor = (
 
     monitoringGroup?.time('Execution')
 
-    const { jwt: actualJwt, jwtToken: deprecatedJwt } = command
-
-    const jwt = actualJwt || deprecatedJwt
+    const { jwt } = command
 
     let executionError
 

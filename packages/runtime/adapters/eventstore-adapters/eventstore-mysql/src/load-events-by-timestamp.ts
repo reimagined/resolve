@@ -1,12 +1,12 @@
 import {
   TimestampFilter,
   StoredEventBatchPointer,
-  throwBadCursor,
+  loadEventsByTimestampResult,
 } from '@resolve-js/eventstore-base'
 import { AdapterPool } from './types'
 
 const loadEventsByTimestamp = async (
-  { connection, eventsTableName, escapeId, escape, shapeEvent }: AdapterPool,
+  { query, eventsTableName, escapeId, escape, shapeEvent }: AdapterPool,
   { eventTypes, aggregateIds, startTime, finishTime, limit }: TimestampFilter
 ): Promise<StoredEventBatchPointer> => {
   const injectString = (value: any): string => `${escape(value)}`
@@ -34,7 +34,7 @@ const loadEventsByTimestamp = async (
 
   const eventsTableNameAsId: string = escapeId(eventsTableName)
 
-  const [rows] = await connection.query(
+  const [rows] = await query(
     `SELECT * FROM ${eventsTableNameAsId}
     ${resultQueryCondition}
     ORDER BY \`timestamp\` ASC,
@@ -47,12 +47,7 @@ const loadEventsByTimestamp = async (
     events.push(shapeEvent(event))
   }
 
-  return {
-    get cursor() {
-      return throwBadCursor() as any
-    },
-    events,
-  }
+  return loadEventsByTimestampResult(events)
 }
 
 export default loadEventsByTimestamp

@@ -1,28 +1,23 @@
 import { InternalMethods } from './types'
 import { ReplicationState } from '@resolve-js/eventstore-base'
 import fetch from 'node-fetch'
+import checkTargetUrl from './check-target-url'
 
 import { REPLICATION_STATE } from '@resolve-js/module-replication'
 
 const getReplicationState: InternalMethods['getReplicationState'] = async ({
   targetApplicationUrl,
-}) => {
-  if (
-    targetApplicationUrl == null ||
-    targetApplicationUrl.constructor !== String ||
-    targetApplicationUrl.length === 0
-  ) {
-    return {
-      status: 'error',
-      statusData: {
-        name: 'Error',
-        message:
-          'Invalid target application url: empty or not a string. The replication is no-op',
-      },
-      paused: false,
-      iterator: null,
-      successEvent: null,
-    }
+}): Promise<ReplicationState> => {
+  const checkResult = checkTargetUrl(targetApplicationUrl)
+  if (checkResult != null) {
+    return checkResult
+  }
+
+  const defaultValues = {
+    paused: false,
+    iterator: null,
+    successEvent: null,
+    locked: false,
   }
 
   try {
@@ -37,9 +32,7 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
           name: response.statusText,
           message: (state as any).message ?? response.statusText,
         },
-        paused: false,
-        iterator: null,
-        successEvent: null,
+        ...defaultValues,
       }
     }
     return state
@@ -49,20 +42,25 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
       error.name === 'FetchError' ||
       error.name === 'TypeError'
     ) {
-      const state: ReplicationState = {
+      return {
         status: 'serviceError',
         statusData: {
           name: error.name as string,
           message: error.message as string,
           stack: error.stack ? (error.stack as string) : null,
         },
-        paused: false,
-        iterator: null,
-        successEvent: null,
+        ...defaultValues,
       }
-      return state
     } else {
-      throw error
+      return {
+        status: 'error',
+        statusData: {
+          name: error.name as string,
+          message: error.message as string,
+          stack: error.stack ? (error.stack as string) : null,
+        },
+        ...defaultValues,
+      }
     }
   }
 }
