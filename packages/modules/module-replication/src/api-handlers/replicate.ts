@@ -1,4 +1,5 @@
 import type { ResolveRequest, ResolveResponse } from '@resolve-js/core'
+import { getLog } from './get-log'
 
 const checkInput = (input: any) => {
   if (!Array.isArray(input.events)) {
@@ -15,12 +16,12 @@ const checkInput = (input: any) => {
   }
 }
 
-function canIgnoreError(error: any) {
+function shouldSaveError(error: any) {
   return (
     error != null &&
-    (error.name === 'ServiceBusyError' ||
-      error.name === 'RequestTimeoutError' ||
-      error.name === 'AlreadyDisposedError')
+    error.name !== 'ServiceBusyError' &&
+    error.name !== 'RequestTimeoutError' &&
+    error.name !== 'AlreadyDisposedError'
   )
 }
 
@@ -35,25 +36,38 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
     return
   }
 
+  const log = getLog('replicate')
   try {
     await req.resolve.eventstoreAdapter.setReplicationStatus({
-      status: 'batchInProgress',
+      statusAndData: {
+        status: 'batchInProgress',
+        data: {
+          startedAt: Date.now(),
+        },
+      },
       iterator: input.iterator,
     })
 
     res.status(202)
     res.end('Replication has been started')
   } catch (error) {
-    if (!canIgnoreError(error)) {
+    if (shouldSaveError(error)) {
       try {
         await req.resolve.eventstoreAdapter.setReplicationStatus({
-          status: 'error',
-          statusData: error,
+          statusAndData: {
+            status: 'criticalError',
+            data: {
+              name: error.name ?? 'Error',
+              message: error.message ?? 'Unknown error',
+            },
+          },
         })
       } catch (e) {
         error.message += '\n'
         error.message += e.message
       }
+    } else {
+      log.debug(error)
     }
 
     res.status(500)
@@ -68,22 +82,34 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
     )
     await req.resolve.eventstoreAdapter.replicateEvents(input.events)
     await req.resolve.eventstoreAdapter.setReplicationStatus({
-      status: 'batchDone',
-      statusData: {
-        appliedEventsCount: input.events.length,
+      statusAndData: {
+        status: 'batchDone',
+        data: {
+          appliedEventsCount: input.events.length,
+        },
       },
       lastEvent: input.events[input.events.length - 1],
     })
+    await req.resolve.broadcastEvent()
   } catch (error) {
-    if (!canIgnoreError(error))
+    if (shouldSaveError(error)) {
       try {
         await req.resolve.eventstoreAdapter.setReplicationStatus({
-          status: 'error',
-          statusData: error,
+          statusAndData: {
+            status: 'criticalError',
+            data: {
+              name: error.name ?? 'Error',
+              message: error.message ?? 'Unknown error',
+            },
+          },
         })
-      } catch (e) {}
+      } catch (e) {
+        log.error(e)
+      }
+    } else {
+      log.debug(error)
+    }
   }
-  await req.resolve.broadcastEvent()
 }
 
 export default handler

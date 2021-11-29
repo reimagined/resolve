@@ -24,18 +24,19 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
     const response = await fetch(
       `${targetApplicationUrl}${REPLICATION_STATE.endpoint}`
     )
-    const state: ReplicationState = await response.json()
     if (response.status >= 400) {
       return {
-        status: 'serviceError',
-        statusData: {
-          name: response.statusText,
-          message: (state as any).message ?? response.statusText,
+        statusAndData: {
+          status: 'serviceError',
+          data: {
+            name: response.statusText,
+            message: await response.text(),
+          },
         },
         ...defaultValues,
       }
     }
-    return state
+    return (await response.json()) as ReplicationState
   } catch (error) {
     if (
       error.name === 'AbortError' ||
@@ -43,21 +44,23 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
       error.name === 'TypeError'
     ) {
       return {
-        status: 'serviceError',
-        statusData: {
-          name: error.name as string,
-          message: error.message as string,
-          stack: error.stack ? (error.stack as string) : null,
+        statusAndData: {
+          status: 'serviceError',
+          data: {
+            name: error.name as string,
+            message: error.message as string,
+          },
         },
         ...defaultValues,
       }
     } else {
       return {
-        status: 'error',
-        statusData: {
-          name: error.name as string,
-          message: error.message as string,
-          stack: error.stack ? (error.stack as string) : null,
+        statusAndData: {
+          status: 'criticalError',
+          data: {
+            name: error.name as string,
+            message: error.message as string,
+          },
         },
         ...defaultValues,
       }
