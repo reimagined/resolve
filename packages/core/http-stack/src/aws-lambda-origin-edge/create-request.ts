@@ -40,7 +40,7 @@ const createRequest = async <
   const query = parseQuery(querystring, { arrayFormat: 'bracket' })
 
   const body =
-    rawBody == null ? null : Buffer.from(rawBody, 'base64').toString()
+    rawBody == null ? Buffer.from('') : Buffer.from(rawBody, 'base64')
 
   const clientIp = headers['X-Forwarded-For']
 

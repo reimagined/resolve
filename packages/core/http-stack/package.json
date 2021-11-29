@@ -1,7 +1,7 @@
 {
-  "name": "@resolve-js/entry-point",
+  "name": "@resolve-js/http-stack",
   "version": "0.33.4",
-  "description": "The reSolve framework's entry point constructor.",
+  "description": "This package provides the HTTP stack for reSolve runtimes.",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -31,7 +31,6 @@
     "cookie": "0.4.1",
     "query-string": "7.0.1",
     "raw-body": "2.4.2",
-    "mime-types": "2.1.34",
     "route-trie": "3.0.0"
   },
   "devDependencies": {

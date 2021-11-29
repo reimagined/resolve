@@ -22,7 +22,7 @@ export type HttpRequest<
   readonly path: string
   readonly headers: IncomingHttpHeaders
   readonly cookies: Record<string, string>
-  readonly body: string | null
+  readonly body: Buffer
   readonly clientIp?: string
 }
 
