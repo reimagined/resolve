@@ -2,7 +2,7 @@ import { CloudWatch, Dimension } from '@aws-sdk/client-cloudwatch'
 import fetch from 'isomorphic-fetch'
 import { getTargetURL } from '../utils/utils'
 
-jest.setTimeout(5 * 60 * 1000)
+jest.setTimeout(10 * 60 * 1000)
 
 const BENCH_EVENTS_COUNT = 7000
 const MAX_FAILED_ATTEMPTS = 5

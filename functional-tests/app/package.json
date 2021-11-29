@@ -4,7 +4,7 @@
   "private": true,
   "description": "used to perform various functional test",
   "scripts": {
-    "build": "echo building",
+    "build": "babel-node ./run.js build",
     "cloud": "babel-node ./run.js cloud",
     "dev": "babel-node ./run.js dev",
     "test": "echo skipping"
