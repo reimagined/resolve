@@ -20,6 +20,8 @@ A monitoring adapter implementation should expose the following interface:
 | [`getMetrics`](#getmetrics)     |             |
 | [`clearMetrics`](#clearmetrics) |             |
 
+All of the listed functions except for `publish` have a default implementation in the base package.
+
 ## `error`
 
 ## `execution`
