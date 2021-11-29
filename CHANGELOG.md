@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.4...HEAD)
+
+**Other changes:**
+
+- Detect more passthrough errors [\#2155](https://github.com/reimagined/resolve/pull/2155)
+
 ## [V0.33.4](https://github.com/reimagined/resolve/tree/V0.33.4) (2021-11-26)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.3...V0.33.4)
