@@ -1,5 +1,6 @@
 import Ajv from 'ajv'
 import Trie from 'route-trie'
+import { assertLeadingSlash } from '@resolve-js/core'
 
 import { schemaResolveConfig, message } from './constants'
 import { checkRuntimeEnv } from './declare_runtime_env'
@@ -51,6 +52,11 @@ export const validateApiHandlers = (resolveConfig) => {
   const trie = new Trie()
 
   for (const [idx, apiHandler] of resolveConfig.apiHandlers.entries()) {
+    try {
+      assertLeadingSlash(apiHandler.path, `apiHandlers[${idx}].path`)
+    } catch (error) {
+      throw new Error(`Resolve config validation failed: ${error.message}`)
+    }
     if (checkRuntimeEnv(apiHandler.path)) {
       throw new Error(`${message.clientEnvError}.apiHandlers[${idx}].path`)
     }

@@ -2,8 +2,7 @@ import { Selector, t } from 'testcafe'
 import fetch from 'isomorphic-fetch'
 
 const host = process.env.HOST || 'localhost'
-const port = process.env.PORT || '3000'
-const MAIN_PAGE = `http://${host}:${port}`
+const MAIN_PAGE = `http://${host}:3000`
 
 const waitSelector = async (t, eventSubscriber, selector) => {
   while (true) {
