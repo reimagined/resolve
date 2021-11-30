@@ -1,4 +1,5 @@
 import { CloudWatch, Dimension } from '@aws-sdk/client-cloudwatch'
+import { modifyDBClusterMinMaxCapacity } from 'resolve-cloud-common/postgres'
 import fetch from 'isomorphic-fetch'
 import { getTargetURL } from '../utils/utils'
 
@@ -196,6 +197,15 @@ const jitterDelay = (attempt: number) =>
   )
 
 test('benchmark', async () => {
+  await modifyDBClusterMinMaxCapacity({
+    Region: CHECK_NOT_NULLISH(process.env.AWS_REGION),
+    DBClusterIdentifier: `resolve-${CHECK_NOT_NULLISH(
+      process.env.RESOLVE_TESTS_TARGET_STAGE
+    )}-system`,
+    MinCapacity: 2,
+    MaxCapacity: 64,
+  })
+
   testLaunchTimestamp = Date.now()
   await pauseReadModels(!!process.env.DROP_BENCH_EVENT_STORE)
 

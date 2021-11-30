@@ -15252,21 +15252,10 @@ reselect@^4.0.0:
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.1.4.tgz#66df0aff41b6ee0f51e2cc17cfaf2c1995916f32"
   integrity sha512-i1LgXw8DKSU5qz1EV0ZIKz4yIUHJ7L3bODh+Da6HmVSm9vdL/hG7IpbgzQ3k2XSirzf8/eI7OMEs81gb1VV2fQ==
 
-resolve-cloud-common@0.0.149:
-  version "0.0.149"
-  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.149.tgz#c0f1ad5af66bcf55b0cffa1f9c221fd1a4d5f9b8"
-  integrity sha512-o311I8QRdUJGJpBKV53GP3uMb+3+IEQ4TNi5tlMT50n3xW9nAxq7p21BKyasoBNg6D96Hx2f9ASz7A9sdIO/JQ==
-  dependencies:
-    chalk "^4.0.0"
-    debug "^4.1.1"
-    netmask "2.0.2"
-    node-rsa "1.1.1"
-    uuid "^8.3.1"
-
-resolve-cloud-common@0.0.157:
-  version "0.0.157"
-  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.157.tgz#02e67e4563e638878ce77c033028af19dd469098"
-  integrity sha512-X8Hjroe8pb8HkE9jztnzh2ZwbuN2DPk+MWF7MmNWWtGYVPx0pyZXpufGJ8FzyA4ufELukEaHIOTZVJ1tyIzRmw==
+resolve-cloud-common@0.0.163:
+  version "0.0.163"
+  resolved "https://registry.yarnpkg.com/resolve-cloud-common/-/resolve-cloud-common-0.0.163.tgz#4608c806f5733dce1d9e78729fdc1d1503bb0748"
+  integrity sha512-9XWMSBPRnHHXm8wbQ5Ym0DBwVCRwynJW3vwFPRPVOtWTaP6GFU4hExcPTmxrd9Krjjc/6Q40LXJwqWQoFNcKiQ==
   dependencies:
     chalk "^4.0.0"
     debug "^4.1.1"

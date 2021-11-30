@@ -37,7 +37,7 @@
     "mime-types": "2.1.29",
     "qs": "6.9.6",
     "request": "2.88.2",
-    "resolve-cloud-common": "0.0.149",
+    "resolve-cloud-common": "0.0.163",
     "route-trie": "3.0.0",
     "source-map-support": "0.5.19"
   },

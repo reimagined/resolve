@@ -34,6 +34,6 @@
     "@types/isomorphic-fetch": "0.0.35",
     "@types/nanoid": "2.1.0",
     "@types/semver": "7.3.4",
-    "resolve-cloud-common": "0.0.157"
+    "resolve-cloud-common": "0.0.163"
   }
 }
