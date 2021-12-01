@@ -1,8 +1,8 @@
+import type { IncomingMessage } from 'http'
 import cookie from 'cookie'
 import { parse as parseQuery } from 'query-string'
 import { URL } from 'url'
 import getRawBody from 'raw-body'
-import type { IncomingMessage } from 'http'
 
 import type { HttpMethods, HttpRequest } from '../types'
 import wrapHeadersCaseInsensitive from '../wrap-headers-case-insensitive'

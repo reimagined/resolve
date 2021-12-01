@@ -1,12 +1,13 @@
-import http from 'http'
 import type { Server } from 'http'
-
 import type { Response as FetchResponse } from 'node-fetch'
+import http from 'http'
 import fetch from 'node-fetch'
+import { URL } from 'url'
 import { stringify as stringifyQuery } from 'query-string'
+import { format as prettify } from 'prettier'
+
 import { HttpRequest, HttpResponse, HttpMethods } from '../src/types'
 import wrapApiHandler from '../src/http-server/wrap-api-handler'
-import { URL } from 'url'
 
 const customApi = {
   resolve: {
@@ -311,7 +312,11 @@ for (const {
 
   test(`Request ${path} ${JSON.stringify(
     request
-  )} should work correctly\n${runTest.toString()}`, async () => {
+  )} should work correctly\n${prettify(runTest.toString(), {
+    parser: 'typescript',
+    semi: true,
+    trailingComma: 'none',
+  })}`, async () => {
     const response = await fetch(`${baseUrl}${path}`, {
       method,
       body,

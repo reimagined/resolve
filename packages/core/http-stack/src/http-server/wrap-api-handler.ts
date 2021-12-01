@@ -1,6 +1,8 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 
 import type { HttpRequest, HttpResponse } from '../types'
+import getSafeErrorMessage from '../get-safe-error-message'
+import getDebugErrorMessage from '../get-debug-error-message'
 import { INTERNAL } from '../constants'
 import createResponse from '../create-response'
 import createRequest from './create-request'
@@ -41,16 +43,11 @@ const wrapApiHandler = <
 
     onFinish(Date.now())
   } catch (error) {
-    const outError =
-      error != null && error.stack != null
-        ? `${error.stack}`
-        : `Unknown error ${error}`
-
     // eslint-disable-next-line no-console
-    console.error(outError)
+    console.error(getDebugErrorMessage(error))
 
     res.statusCode = 500
-    res.end(`${error.name ?? 'Error'}: ${error.message}`)
+    res.end(getSafeErrorMessage(error))
 
     onFinish(Date.now(), error)
   }

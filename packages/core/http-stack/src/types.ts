@@ -1,7 +1,6 @@
 import type { IncomingHttpHeaders } from 'http'
 import type { CookieSerializeOptions } from 'cookie'
 import type { INTERNAL } from './constants'
-import getHttpStatusText from './get-http-status-text'
 
 export type HttpMethods =
   | 'GET'

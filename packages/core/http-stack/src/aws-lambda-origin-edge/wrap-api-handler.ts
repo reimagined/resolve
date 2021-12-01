@@ -1,14 +1,16 @@
-import { INTERNAL } from '../constants'
-import getHttpStatusText from '../get-http-status-text'
-import createResponse from '../create-response'
-import normalizeKey from '../normalize-key'
-import createRequest from './create-request'
 import type {
   LambdaOriginEdgeRequest,
   HttpRequest,
   HttpResponse,
   LambdaOriginEdgeResponse,
 } from '../types'
+import { INTERNAL } from '../constants'
+import normalizeKey from '../normalize-key'
+import createRequest from './create-request'
+import createResponse from '../create-response'
+import getHttpStatusText from '../get-http-status-text'
+import getSafeErrorMessage from '../get-safe-error-message'
+import getDebugErrorMessage from '../get-debug-error-message'
 
 const wrapApiHandler = <
   CustomParameters extends { lambdaOriginEdgeStartTime: number } & Record<
@@ -24,7 +26,9 @@ const wrapApiHandler = <
     lambdaEvent: LambdaOriginEdgeRequest,
     lambdaContext: any
   ) => Promise<CustomParameters>,
+  // eslint-disable-next-line no-new-func
   onStart: (timestamp: number) => void = Function() as any,
+  // eslint-disable-next-line no-new-func
   onFinish: (timestamp: number, error?: any) => void = Function() as any
 ) => async (
   lambdaEvent: LambdaOriginEdgeRequest,
@@ -75,19 +79,14 @@ const wrapApiHandler = <
 
     onFinish(Date.now())
   } catch (error) {
-    const outError =
-      error != null && error.stack != null
-        ? `${error.stack}`
-        : `Unknown error ${error}`
-
     // eslint-disable-next-line no-console
-    console.error(outError)
+    console.error(getDebugErrorMessage(error))
 
     result = {
       httpStatus: 500,
       httpStatusText: getHttpStatusText(500),
       headers: [],
-      body: '',
+      body: getSafeErrorMessage(error),
     }
 
     onFinish(Date.now(), error)

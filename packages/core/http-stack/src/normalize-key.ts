@@ -1,4 +1,7 @@
-const normalizeKey = (key: string, mode: string) => {
+const normalizeKey = (
+  key: string,
+  mode: 'upper-dash-case' | 'dash-case' | 'lower-case'
+) => {
   switch (mode) {
     case 'upper-dash-case':
       return key

@@ -1,4 +1,4 @@
-import { InternalResponse } from './types'
+import type { InternalResponse } from './types'
 
 const validateResponseOpened = (internalRes: InternalResponse) => {
   if (internalRes.closed) {
