@@ -120,7 +120,9 @@ const getReadModelFeedingRateMetric = async (readModelName: string) => {
 
 const isHighloadError = (error: Error) =>
   error != null &&
-  /(?:HTTP ERROR 503)|(?:ETIMEDOUT)|(?:ECONNRESET)/.test(error.message)
+  /(?:HTTP ERROR 503)|(?:ETIMEDOUT)|(?:ECONNRESET)|(?:sorry, too many clients already)|(?:remaining connection slots are reserved for non-replication superuser and rds_superuser connections)/.test(
+    error.message
+  )
 
 const performApiPost = async <T extends unknown, Args extends [string, T?]>(
   ...args: Args
