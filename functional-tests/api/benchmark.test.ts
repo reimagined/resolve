@@ -199,9 +199,9 @@ const jitterDelay = (attempt: number) =>
 test('benchmark', async () => {
   await modifyDBClusterMinMaxCapacity({
     Region: CHECK_NOT_NULLISH(process.env.AWS_REGION),
-    DBClusterIdentifier: `resolve-${CHECK_NOT_NULLISH(
+    DBClusterIdentifier: `${CHECK_NOT_NULLISH(
       process.env.RESOLVE_TESTS_TARGET_STAGE
-    )}-system`,
+    )}`,
     MinCapacity: 2,
     MaxCapacity: 64,
   })
