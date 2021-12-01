@@ -133,7 +133,7 @@ const tests: Array<{
         await req.resolve.executeCommand()
         res.json({
           aggregateVersion: 1,
-          payload: JSON.parse(req.body ?? '{}'),
+          payload: req.body == null ? {} : JSON.parse(req.body.toString()),
         })
       },
     },
@@ -174,7 +174,10 @@ const tests: Array<{
       path: '/sum',
       method: 'POST',
       handler: async (req, res) => {
-        const { a, b } = JSON.parse(req.body ?? '{}')
+        const { a, b } =
+          req.body == null
+            ? { a: 0, b: 0 }
+            : JSON.parse(req.body.toString() ?? '{}')
         res.json({
           a,
           b,
@@ -298,21 +301,23 @@ beforeEach(() => {
   customApi.resolve.bootstrap.mockClear()
 })
 
-test('', async () => {
-  for (const {
-    route: { path, method },
-    request: { query, headers, body },
-    test: runTest,
-  } of tests) {
-    const response = await fetch(
-      `${baseUrl}${path}${query != null ? `?${query}` : ''}`,
-      {
-        method,
-        body,
-        headers,
-        redirect: 'manual',
-      }
-    )
+for (const {
+  route: { path: pathname, method },
+  request,
+  test: runTest,
+} of tests) {
+  const { query, headers, body } = request
+  const path = `${pathname}${query != null ? `?${query}` : ''}`
+
+  test(`Request ${path} ${JSON.stringify(
+    request
+  )} should work correctly\n${runTest.toString()}`, async () => {
+    const response = await fetch(`${baseUrl}${path}`, {
+      method,
+      body,
+      headers,
+      redirect: 'manual',
+    })
     await runTest(response)
-  }
-})
+  })
+}

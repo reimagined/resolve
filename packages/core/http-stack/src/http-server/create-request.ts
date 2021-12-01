@@ -31,7 +31,7 @@ const createRequest = async <
     ? await getRawBody(req, {
         length: headers['Content-Length'],
       })
-    : Buffer.from('')
+    : null
 
   const clientIp = headers['X-Forwarded-For']
 
