@@ -136,7 +136,7 @@ const performApiPost = async <T extends unknown, Args extends [string, T?]>(
       let response = await request.text()
       try {
         response = JSON.parse(response)
-      } catch(e) {
+      } catch (e) {
         throw new Error(`Invalid JSON: ${response}`)
       }
       return response
@@ -155,11 +155,12 @@ const performApiPost = async <T extends unknown, Args extends [string, T?]>(
 }
 
 const getEventCount = async (benchType: 'lite' | 'heavy') => {
-  return +((
-    await performApiPost(`/query/benchmark-${benchType}/countBenchEvents`, {
+  return +((await performApiPost(
+    `/query/benchmark-${benchType}/countBenchEvents`,
+    {
       data: -1,
-    })
-  ) as any).data
+    }
+  )) as any).data
 }
 
 const pauseReadModels = async (dropBenchEventstore: boolean): Promise<null> => {
@@ -179,7 +180,7 @@ const pauseReadModels = async (dropBenchEventstore: boolean): Promise<null> => {
 }
 
 const generateEvents = async () => {
-  return +(await performApiPost(`/generate-bench-events`, 0) as any)
+  return +((await performApiPost(`/generate-bench-events`, 0)) as any)
 }
 
 const resumeReadModels = async (): Promise<null> => {
