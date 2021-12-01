@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.4...HEAD)
 
+**Bug fixes:**
+
+- Commands scheduled in sagas are triggered way too late [\#2157](https://github.com/reimagined/resolve/issues/2157)
+
 **Documentation:**
 
 - Revisit client API docs [\#2145](https://github.com/reimagined/resolve/pull/2145)

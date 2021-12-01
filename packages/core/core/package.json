@@ -15,6 +15,7 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
   "author": "reimagined team",
+  "browser": "./lib/browser.js",
   "main": "./lib/index.js",
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
