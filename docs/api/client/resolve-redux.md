@@ -8,15 +8,15 @@ The reSolve framework includes the client **@resolve-js/redux** library used to 
 
 ## React Hooks
 
-| Function Name                                           | Description                                             |
-| ------------------------------------------------------- | ------------------------------------------------------- |
-| [useReduxCommand](#usereduxcommand)                     | Creates a hook that executes a command.                  |
-| [useReduxReadModel](#usereduxreadmodel)                 | Creates a hook that queries a Read Model.               |
-| [useReduxReadModelSelector](#usereduxreadmodelselector) | Creates a hook used to access a Read Model query result.   |
-| [useReduxViewModel](#usereduxviewmodel)                 | Creates a hook used to subscribe to View Model updates. |
-| [useReduxViewModelSelector](#usereduxviewmodelselector) | Creates a hook used to access a View Model's state.     |
+| Function Name                                             | Description                                              |
+| --------------------------------------------------------- | -------------------------------------------------------- |
+| [`useReduxCommand`](#usereduxcommand)                     | Creates a hook that executes a command.                  |
+| [`useReduxReadModel`](#usereduxreadmodel)                 | Creates a hook that queries a Read Model.                |
+| [`useReduxReadModelSelector`](#usereduxreadmodelselector) | Creates a hook used to access a Read Model query result. |
+| [`useReduxViewModel`](#usereduxviewmodel)                 | Creates a hook used to subscribe to View Model updates.  |
+| [`useReduxViewModelSelector`](#usereduxviewmodelselector) | Creates a hook used to access a View Model's state.      |
 
-### useReduxCommand
+### `useReduxCommand`
 
 Creates a hook that executes a reSolve command.
 
@@ -33,7 +33,7 @@ const { execute: toggleItem } = useReduxCommand({
 })
 ```
 
-### useReduxReadModel
+### `useReduxReadModel`
 
 Creates a hook that queries a Read Model.
 
@@ -54,7 +54,7 @@ const { request: getLists, selector: allLists } = useReduxReadModel(
 const { status, data } = useSelector(allLists)
 ```
 
-### useReduxReadModelSelector
+### `useReduxReadModelSelector`
 
 Creates a hook used to access the result of a Read Model query. This hook allows you to access data queried by `useReduxReadModel` and does not send any requests to the server.
 
@@ -76,7 +76,7 @@ const { request: getLists, selector: allLists } = useReduxReadModel(
 const { status, data } = useReduxReadModelSelector('all-user-lists')
 ```
 
-### useReduxViewModel
+### `useReduxViewModel`
 
 Creates a hook used to subscribe to View Model updates.
 
@@ -96,7 +96,7 @@ useEffect(() => {
 }, [])
 ```
 
-### useReduxViewModelSelector
+### `useReduxViewModelSelector`
 
 Creates a hook used to access a View Model's state. This hook queries the View Model's state on the client and does not send any requests to the server.
 
@@ -116,14 +116,14 @@ const { data, status } = useReduxViewModelSelector('this-list')
 
 ## Higher-Order Components
 
-| Function Name                                     | Description                                                                                        |
-| ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| [connectViewModel](#connectviewmodel)             | Connects a React component to a reSolve View Model.                                                |
-| [connectReadModel](#connectreadmodel)             | Connects a React component to a reSolve Read Model.                                                |
-| [connectRootBasedUrls](#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they use the correct root folder path.            |
-| [connectStaticBasedUrls](#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they use the correct static resource folder path. |
+| Function Name                                       | Description                                                                                        |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| [`connectViewModel`](#connectviewmodel)             | Connects a React component to a reSolve View Model.                                                |
+| [`connectReadModel`](#connectreadmodel)             | Connects a React component to a reSolve Read Model.                                                |
+| [`connectRootBasedUrls`](#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they use the correct root folder path.            |
+| [`connectStaticBasedUrls`](#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they use the correct static resource folder path. |
 
-### connectViewModel
+### `connectViewModel`
 
 Connects a React component to a reSolve View Model.
 
@@ -160,7 +160,7 @@ export default connectViewModel(mapStateToOptions)(
 )
 ```
 
-### connectReadModel
+### `connectReadModel`
 
 Connects a React component to a reSolve Read Model.
 
@@ -193,7 +193,7 @@ export default connectReadModel(mapStateToOptions)(
 )
 ```
 
-### connectRootBasedUrls
+### `connectRootBasedUrls`
 
 Fixes URLs passed to the specified props and ensures they use the correct root folder path.
 
@@ -203,7 +203,7 @@ Fixes URLs passed to the specified props and ensures they use the correct root f
 export default connectRootBasedUrls(['href'])(Link)
 ```
 
-### connectStaticBasedUrls
+### `connectStaticBasedUrls`
 
 Fixes URLs passed to the specified props to correct the static resource folder path.
 

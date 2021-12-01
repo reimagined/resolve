@@ -16,16 +16,16 @@ const main = async resolveContext => {
 
 The `getClient` function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
 
-| Function Name                           | Description                                                                 |
-| --------------------------------------- | --------------------------------------------------------------------------- |
-| [command](#command)                     | Sends an aggregate command to the backend.                                  |
-| [query](#query)                         | Queries a Read Model.                                                       |
-| [getStaticAssetUrl](#getstaticasseturl) | Gets a static file's full URL.                                              |
-| [getOriginPath](#getoriginpath)         | Returns an absolute URL within the application for the given relative path. |
-| [subscribe](#subscribe)                 | Subscribes to View Model updates.                                           |
-| [unsubscribe](#unsubscribe)             | Unsubscribes from View Model updates.                                       |
+| Function Name                             | Description                                                                 |
+| ----------------------------------------- | --------------------------------------------------------------------------- |
+| [`command`](#command)                     | Sends an aggregate command to the backend.                                  |
+| [`query`](#query)                         | Queries a Read Model.                                                       |
+| [`getStaticAssetUrl`](#getstaticasseturl) | Gets a static file's full URL.                                              |
+| [`getOriginPath`](#getoriginpath)         | Returns an absolute URL within the application for the given relative path. |
+| [`subscribe`](#subscribe)                 | Subscribes to View Model updates.                                           |
+| [`unsubscribe`](#unsubscribe)             | Unsubscribes from View Model updates.                                       |
 
-### command
+### `command`
 
 Sends an aggregate command to the backend.
 
@@ -33,9 +33,9 @@ Sends an aggregate command to the backend.
 
 | Argument Name | Description                                                       |
 | ------------- | ----------------------------------------------------------------- |
-| cmd           | An object that describes a command to send to the server.         |
-| options       | An object that contains additional options for command execution. |
-| callback      | A callback to call on the server response or error.               |
+| `cmd`         | An object that describes a command to send to the server.         |
+| `options`     | An object that contains additional options for command execution. |
+| `callback`    | A callback to call on the server response or error.               |
 
 The returned value is a promise that resolves to the command execution result.
 
@@ -72,7 +72,7 @@ client.command(
 )
 ```
 
-### query
+### `query`
 
 Queries a Read Model.
 
@@ -80,9 +80,9 @@ Queries a Read Model.
 
 | Argument Name | Description                                         |
 | ------------- | --------------------------------------------------- |
-| qr            | An object that describes a query.                   |
-| options       | An object that contains additional query options.   |
-| callback      | A callback to call on the server response or error. |
+| `qr`          | An object that describes a query.                   |
+| `options`     | An object that contains additional query options.   |
+| `callback`    | A callback to call on the server response or error. |
 
 The returned value is a promise that resolves to the query result.
 
@@ -95,7 +95,7 @@ const { data } = await client.query({
 })
 ```
 
-### getStaticAssetUrl
+### `getStaticAssetUrl`
 
 Gets a static file's full URL.
 
@@ -103,7 +103,7 @@ Gets a static file's full URL.
 
 | Argument Name | Description                                  |
 | ------------- | -------------------------------------------- |
-| assetPath     | A string that specifies a relative URL path. |
+| `assetPath`   | A string that specifies a relative URL path. |
 
 The returned value is a string that contains a full URL.
 
@@ -113,7 +113,7 @@ The returned value is a string that contains a full URL.
 var imagePath = client.getStaticAssetUrl('/account/image.jpg')
 ```
 
-### getOriginPath
+### `getOriginPath`
 
 Returns an absolute URL within the application for the given relative path.
 
@@ -121,7 +121,7 @@ Returns an absolute URL within the application for the given relative path.
 
 | Argument Name | Description                                  |
 | ------------- | -------------------------------------------- |
-| path          | A string that specifies a relative URL path. |
+| `path`        | A string that specifies a relative URL path. |
 
 The returned value is a string that contains a full URL.
 
@@ -131,21 +131,21 @@ The returned value is a string that contains a full URL.
 var commandsApiPath = client.getOriginPath('/api/commands')
 ```
 
-### subscribe
+### `subscribe`
 
 Subscribes to View Model updates.
 
 #### Arguments
 
-| Argument Name       | Description                                                                     |
-| ------------------- | ------------------------------------------------------------------------------- |
-| url                 | A URL used to establish a WebSocket connection to a view model.                 |
-| cursor              | The data cursor used to traverse the events included into the query result set. |
-| viewModelName       | A string that specifies the name of a view model.                               |
-| aggregateIds        | A list of aggregate IDs for which to receive events.                            |
-| handler             | A function that handles incoming events.                                        |
-| subscribeCallback   | A callback called on a successful subscription or an error.                          |
-| resubscribeCallback | A callback called on a successful resubscription or an error.                        |
+| Argument Name         | Description                                                                     |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `url`                 | A URL used to establish a WebSocket connection to a view model.                 |
+| `cursor`              | The data cursor used to traverse the events included into the query result set. |
+| `viewModelName`       | A string that specifies the name of a view model.                               |
+| `aggregateIds`        | A list of aggregate IDs for which to receive events.                            |
+| `handler`             | A function that handles incoming events.                                        |
+| `subscribeCallback`   | A callback called on a successful subscription or an error.                     |
+| `resubscribeCallback` | A callback called on a successful resubscription or an error.                   |
 
 The returned value is a promise that resolves to a subscription object.
 
@@ -166,15 +166,15 @@ const chatViewModelUpdater = (event) => {
 await client.subscribe('chat', '*', chatViewModelUpdater)
 ```
 
-### unsubscribe
+### `unsubscribe`
 
 Unsubscribes from View Model updates.
 
 #### Arguments
 
-| Argument Name | Description                                                 |
-| ------------- | ----------------------------------------------------------- |
-| subscription  | An object returned by the [subscribe](#subscribe) function. |
+| Argument Name  | Description                                                 |
+| -------------- | ----------------------------------------------------------- |
+| `subscription` | An object returned by the [subscribe](#subscribe) function. |
 
 #### Example
 
