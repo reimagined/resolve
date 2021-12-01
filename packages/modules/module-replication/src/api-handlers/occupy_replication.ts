@@ -1,4 +1,5 @@
 import type { ResolveRequest, ResolveResponse } from '@resolve-js/core'
+import respondWithError from './respond-with-error'
 
 const handler = async (req: ResolveRequest, res: ResolveResponse) => {
   const duration = +req.query.duration
@@ -7,15 +8,19 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
     res.end('Invalid duration provided')
     return
   }
-  const success = await req.resolve.eventstoreAdapter.setReplicationLock(
-    duration
-  )
-  if (success) {
-    res.status(200)
-    res.end()
-  } else {
-    res.status(409)
-    res.end('Replicator already occupied')
+  try {
+    const success = await req.resolve.eventstoreAdapter.setReplicationLock(
+      duration
+    )
+    if (success) {
+      res.status(200)
+      res.end()
+    } else {
+      res.status(409)
+      res.end('Replicator already occupied')
+    }
+  } catch (error) {
+    respondWithError('occupy', res, error)
   }
 }
 

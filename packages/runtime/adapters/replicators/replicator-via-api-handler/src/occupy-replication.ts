@@ -13,14 +13,15 @@ const occupyReplication: InternalMethods['occupyReplication'] = async (
       method: OCCUPY_REPLICATION.method,
     }
   )
-  if (response.status === 200) {
-    return { success: true }
-  } else {
-    const text = await response.text()
-    return {
-      success: false,
-      message: text,
-    }
+  switch (response.status) {
+    case 200:
+      return { status: 'success' }
+    case 409:
+      return { status: 'alreadyLocked' }
+    case 503:
+      return { status: 'serviceError', message: await response.text() }
+    default:
+      return { status: 'error', message: await response.text() }
   }
 }
 

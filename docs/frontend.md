@@ -50,64 +50,40 @@ const main = async resolveContext => {
 ##### @resolve-js/redux:
 
 ```js
-import { AppContainer, createStore, getOrigin } from '@resolve-js/redux'
+import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
 
-const entryPoint = ({
-  clientImports,
-  rootPath,
-  staticPath,
-  viewModels,
-  subscriber,
-}) => {
-  const origin = getOrigin(window.location)
-  const history = createBrowserHistory({ basename: rootPath })
-  const routes = getRoutes(clientImports)
-  const redux = getRedux(clientImports, history)
-
-  const store = createStore({
+const entryPoint = (clientContext) => {
+  const store = createResolveStore(clientContext, {
     serializedState: window.__INITIAL_STATE__,
-    redux,
-    viewModels,
-    subscriber,
-    history,
-    origin,
-    rootPath,
-    staticPath,
-    isClient: true,
+    redux: getRedux(),
   })
-
+  const routes = getRoutes()
   render(
-    <AppContainer
-      origin={origin}
-      rootPath={rootPath}
-      staticPath={staticPath}
-      store={store}
-      history={history}
-    >
-      <Router history={history}>
-        <Routes routes={routes} />
-      </Router>
-    </AppContainer>,
+    <ResolveReduxProvider context={clientContext} store={store}>
+      <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
+    </ResolveReduxProvider>,
     document.getElementById('app-container')
   )
 }
+export default entryPoint
 ```
 
 ##### @resolve-js/react-hooks:
 
 ```js
-import { ResolveContext } from '@resolve-js/react-hooks'
+import { ResolveProvider } from '@resolve-js/react-hooks'
 ...
-const entryPoint = context => {
+const entryPoint = (clientContext) => {
   const appContainer = document.createElement('div')
   document.body.appendChild(appContainer)
   render(
-    <ResolveContext.Provider value={context}>
+    <ResolveProvider context={clientContext}>
       <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
-    </ResolveContext.Provider>,
+    </ResolveProvider>,
     appContainer
   )
 }
+export default
 ```
 
 ### SSR Handlers
@@ -254,7 +230,7 @@ You can extend a reSolve server's API with API Handlers. Refer to the following 
 
 ## @resolve-js/client library
 
-The **@resolve-js/client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
+The **@resolve-js/client** library exposes an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function. This function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
 
 | Function                                                            | Description                                                                 |
 | ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
@@ -302,13 +278,16 @@ The [shopping-list-redux-hoc](https://github.com/reimagined/resolve/tree/master/
 
 The **@resolve-js/react-hooks** library includes React hooks that you can use to connect React components to a reSolve backend. The following hooks are included:
 
-| Hook                                                                     | Description                                                               |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
-| [useCommand](api/client/resolve-react-hooks.md#usecommand)               | Initializes a command that can be passed to the backend.                  |
-| [useCommandBuilder](api/client/resolve-react-hooks.md#usecommandbuilder) | Allows you to generate commands based on input parameters.                |
-| [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model.               |
-| [useQuery](api/client/resolve-react-hooks.md#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model. |
-| [useOriginResolver](api/client/resolve-react-hooks.md#useoriginresolver) | Resolves a relative path to an absolute URL within the application.       |
+| Hook                                                                     | Description                                                                               |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| [useСlient](api/client/resolve-react-hooks.md#useclient)                 | Returns the [@resolve-js/client](api/client/resolve-client.md) library's `client` object. |
+| [useCommand](api/client/resolve-react-hooks.md#usecommand)               | Initializes a command that can be passed to the backend.                                  |
+| [useCommandBuilder](api/client/resolve-react-hooks.md#usecommandbuilder) | Allows a component to generate commands based on input parameters.                        |
+| [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)           | Establishes a WebSocket connection to a reSolve View Model.                               |
+| [useQuery](api/client/resolve-react-hooks.md#usequery)                   | Allows a component to send queries to a reSolve Read Model or View Model.                 |
+| [useQueryBuilder](api/client/resolve-react-hooks.md#usequerybuilder)     | Allows a component to generate queries based on input parameters.                         |
+| [useOriginResolver](api/client/resolve-react-hooks.md#useoriginresolver) | Resolves a relative path to an absolute URL within the application.                       |
+| [useStaticResolver](api/client/resolve-react-hooks.md#usestaticresolver) | Resolves a relative path to a static resource's full URL.                                 |
 
 #### Example
 

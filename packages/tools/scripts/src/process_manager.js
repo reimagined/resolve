@@ -10,7 +10,8 @@ export const processRegister = (command, opts) => {
   return process
 }
 
-export const processStopAll = (error) => {
+const processStopAllListener = (code) => {
+  void code
   const promises = []
   for (const process of processes) {
     promises.push(
@@ -25,11 +26,19 @@ export const processStopAll = (error) => {
   }
   processes.length = 0
 
-  if (error) {
-    // eslint-disable-next-line no-console
-    console.error(error)
-  }
   return Promise.all(promises)
 }
 
-process.on('exit', processStopAll)
+export const processStopAll = (error) => {
+  process.removeListener('exit', processStopAllListener)
+
+  if (error != null) {
+    // eslint-disable-next-line no-console
+    console.error(error)
+    if (process.exitCode === undefined || process.exitCode === 0)
+      process.exitCode = 1
+  }
+  return processStopAllListener()
+}
+
+process.on('exit', processStopAllListener)

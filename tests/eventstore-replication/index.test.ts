@@ -42,26 +42,33 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
   test('get-replication-state should return default state', async () => {
     const state: ReplicationState = await adapter.getReplicationState()
 
-    expect(state.status).toEqual('notStarted')
-    expect(state.statusData).toBeNull()
+    expect(state.statusAndData.status).toEqual('notStarted')
+    expect(state.statusAndData.data).toBeNull()
     expect(state.iterator).toBeNull()
     expect(state.paused).toEqual(false)
     expect(state.locked).toEqual(false)
   })
 
   test('set-replication-status should change status, statusData properties of the state', async () => {
+    const startedAt = Date.now()
     await adapter.setReplicationStatus({
-      status: 'batchInProgress',
-      statusData: { info: 'in progress' },
+      statusAndData: {
+        status: 'batchInProgress',
+        data: {
+          startedAt,
+        },
+      },
     })
     let state = await adapter.getReplicationState()
-    expect(state.status).toEqual('batchInProgress')
-    expect(state.statusData).toEqual({ info: 'in progress' })
+    expect(state.statusAndData.status).toEqual('batchInProgress')
+    expect(state.statusAndData.data).toEqual({ startedAt })
 
-    await adapter.setReplicationStatus({ status: 'batchDone' })
+    await adapter.setReplicationStatus({
+      statusAndData: { status: 'batchDone', data: { appliedEventsCount: 10 } },
+    })
     state = await adapter.getReplicationState()
-    expect(state.status).toEqual('batchDone')
-    expect(state.statusData).toEqual(null)
+    expect(state.statusAndData.status).toEqual('batchDone')
+    expect(state.statusAndData.data).toEqual({ appliedEventsCount: 10 })
   })
 
   test('set-replication-status should set successEvent and iterator and not rewrite them if they were not provided', async () => {
@@ -73,19 +80,24 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     }
 
     await adapter.setReplicationStatus({
-      status: 'batchDone',
-      statusData: null,
+      statusAndData: { status: 'batchDone', data: { appliedEventsCount: 10 } },
       lastEvent: event,
       iterator: { cursor: 'DEAF' },
     })
     let state = await adapter.getReplicationState()
-    expect(state.status).toEqual('batchDone')
+    expect(state.statusAndData.status).toEqual('batchDone')
     expect(state.successEvent).toEqual(event)
     expect(state.iterator).toEqual({ cursor: 'DEAF' })
 
-    await adapter.setReplicationStatus({ status: 'error' })
+    await adapter.setReplicationStatus({
+      statusAndData: {
+        status: 'criticalError',
+        data: { name: 'Error', message: '' },
+      },
+    })
     state = await adapter.getReplicationState()
-    expect(state.status).toEqual('error')
+    expect(state.statusAndData.status).toEqual('criticalError')
+    expect(state.statusAndData.data).toEqual({ name: 'Error', message: '' })
     expect(state.successEvent).toEqual(event)
     expect(state.iterator).toEqual({ cursor: 'DEAF' })
   })
@@ -285,8 +297,8 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(secrets).toHaveLength(0)
 
     const state = await adapter.getReplicationState()
-    expect(state.status).toEqual('notStarted')
-    expect(state.statusData).toBeNull()
+    expect(state.statusAndData.status).toEqual('notStarted')
+    expect(state.statusAndData.data).toBeNull()
     expect(state.iterator).toBeNull()
     expect(state.locked).toBe(false)
   })
