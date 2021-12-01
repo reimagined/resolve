@@ -11,7 +11,6 @@ import type {
   SecretRecord,
   OldSecretRecord,
   OldEvent,
-  ReplicationStatus,
   ReplicationState,
 } from '@resolve-js/core'
 import stream from 'stream'
@@ -69,12 +68,14 @@ export type VersionlessEvent = Omit<InputEvent, 'aggregateVersion'>
 
 export type { SecretRecord, OldSecretRecord, OldEvent }
 
-export type { ReplicationState, ReplicationStatus }
+export type { ReplicationState }
 
 export function getInitialReplicationState(): ReplicationState {
   return {
-    status: 'notStarted',
-    statusData: null,
+    statusAndData: {
+      status: 'notStarted',
+      data: null,
+    },
     iterator: null,
     paused: false,
     successEvent: null,
@@ -167,7 +168,7 @@ export const EventFilterSchema = new t.Type<EventFilter, EventFilter>(
 )
 type EventFilterChecked = t.TypeOf<typeof EventFilterSchemaSimple>
 export type EventFilter = UnbrandProps<EventFilterChecked>
-export type LatestEventFilter = Omit<EventFilter, 'limit' | 'eventsSizeLimit'>
+export type LatestEventFilter = Pick<EventFilter, 'aggregateIds' | 'eventTypes'>
 
 export type EventLoaderFilter = Omit<CursorFilter, 'limit' | 'eventsSizeLimit'>
 

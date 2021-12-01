@@ -15,34 +15,24 @@ const status: ExternalMethods['status'] = async <
 >(
   ...args: AdapterOperationStatusMethodArguments<T, AdapterPool>
 ): AdapterOperationStatusMethodReturnType<T> => {
-  const [pool, readModelName, eventstoreAdapter, includeRuntimeStatus] = args
+  const [pool, readModelName, includeRuntimeStatus] = args
   const state: ReplicationState = await pool.getReplicationState(pool)
 
   let runStatus: ReadModelRunStatus = ReadModelRunStatus.DELIVER
-  if (state.status === 'error') {
+  if (state.statusAndData.status === 'criticalError') {
     runStatus = ReadModelRunStatus.ERROR
   } else if (state.paused) {
     runStatus = ReadModelRunStatus.SKIP
   }
   let error: Error | null = null
-  if (state.status === 'error' || state.status === 'serviceError') {
-    if (state.statusData == null) {
-      error = {
-        message: 'Unknown error',
-        name: 'Error',
-      }
-    } else {
-      error = {
-        name:
-          state.statusData.name === undefined
-            ? 'Error'
-            : (state.statusData.name as string),
-        message: state.statusData.message as string,
-        stack:
-          state.statusData.stack === undefined
-            ? (state.statusData.message as string)
-            : (state.statusData.stack as string),
-      }
+
+  if (
+    state.statusAndData.status === 'criticalError' ||
+    state.statusAndData.status === 'serviceError'
+  ) {
+    error = {
+      name: state.statusAndData.data.name ?? 'Error',
+      message: state.statusAndData.data.message ?? 'Unknown error',
     }
   }
 
@@ -61,8 +51,9 @@ const status: ExternalMethods['status'] = async <
     status: runStatus,
   }
   if (includeRuntimeStatus) {
-    void eventstoreAdapter // TODO real replicator status
-    result = Object.assign(result, { isAlive: true })
+    result = Object.assign(result, {
+      isAlive: state.statusAndData.status !== 'criticalError',
+    })
   }
 
   return result as UnPromise<AdapterOperationStatusMethodReturnType<T>>

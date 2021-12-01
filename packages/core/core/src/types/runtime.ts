@@ -134,15 +134,40 @@ export type SecretRecord = {
 export type OldSecretRecord = SecretRecord
 export type OldEvent = Event
 
-export type ReplicationStatus =
-  | 'batchInProgress'
-  | 'batchDone'
-  | 'error'
-  | 'notStarted'
-  | 'serviceError'
+export type ReplicationStatusAndData =
+  | {
+      status: 'notStarted'
+      data: null
+    }
+  | {
+      status: 'batchInProgress'
+      data: {
+        startedAt: number
+      }
+    }
+  | {
+      status: 'batchDone'
+      data: {
+        appliedEventsCount: number
+      }
+    }
+  | {
+      status: 'criticalError'
+      data: {
+        name: string
+        message: string
+      }
+    }
+  | {
+      status: 'serviceError'
+      data: {
+        name: string
+        message: string
+      }
+    }
+
 export type ReplicationState = {
-  status: ReplicationStatus
-  statusData: SerializableMap | null
+  statusAndData: ReplicationStatusAndData
   paused: boolean
   iterator: SerializableMap | null
   successEvent: OldEvent | null
@@ -205,8 +230,7 @@ export type Eventstore = {
     deletedSecrets: Array<OldSecretRecord['id']>
   ) => Promise<void>
   setReplicationStatus: (state: {
-    status: ReplicationStatus
-    statusData?: ReplicationState['statusData']
+    statusAndData: ReplicationStatusAndData
     lastEvent?: OldEvent
     iterator?: ReplicationState['iterator']
   }) => Promise<void>

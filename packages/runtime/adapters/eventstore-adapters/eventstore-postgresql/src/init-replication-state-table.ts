@@ -1,13 +1,10 @@
 import type { AdapterPool } from './types'
-import type { ReplicationStatus } from '@resolve-js/eventstore-base'
+import type { ReplicationState } from '@resolve-js/eventstore-base'
 import { LONG_NUMBER_SQL_TYPE } from './constants'
-import { getLog } from './get-log'
 
 const initReplicationStateTable = async (
   pool: AdapterPool
 ): Promise<string> => {
-  const log = getLog('initReplicationStateTable')
-
   const {
     eventsTableName,
     escapeId,
@@ -20,7 +17,7 @@ const initReplicationStateTable = async (
   const replicationStateTableName = `${eventsTableName}-replication-state`
   const replicationStateTableNameAsId = escapeId(replicationStateTableName)
 
-  const notStarted: ReplicationStatus = 'notStarted'
+  const notStarted: ReplicationState['statusAndData']['status'] = 'notStarted'
 
   await executeStatement(`CREATE TABLE IF NOT EXISTS ${databaseNameAsId}.${replicationStateTableNameAsId}(
         "id" SMALLINT DEFAULT 0 PRIMARY KEY CONSTRAINT singleton_row CHECK (id = 0),

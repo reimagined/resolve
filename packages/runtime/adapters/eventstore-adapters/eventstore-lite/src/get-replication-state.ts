@@ -1,9 +1,5 @@
 import type { AdapterPool } from './types'
-import type {
-  ReplicationState,
-  ReplicationStatus,
-  OldEvent,
-} from '@resolve-js/eventstore-base'
+import type { ReplicationState, OldEvent } from '@resolve-js/eventstore-base'
 import { getInitialReplicationState } from '@resolve-js/eventstore-base'
 import initReplicationStateTable from './init-replication-state-table'
 
@@ -29,8 +25,10 @@ const getReplicationState = async (
     }
 
     return {
-      status: row.Status as ReplicationStatus,
-      statusData: row.StatusData != null ? JSON.parse(row.StatusData) : null,
+      statusAndData: {
+        status: row.Status,
+        data: row.StatusData != null ? JSON.parse(row.StatusData) : null,
+      } as ReplicationState['statusAndData'],
       paused: row.IsPaused !== 0,
       iterator: row.Iterator != null ? JSON.parse(row.Iterator) : null,
       successEvent: lastEvent,
