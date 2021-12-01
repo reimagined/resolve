@@ -133,7 +133,12 @@ const performApiPost = async <T extends unknown, Args extends [string, T?]>(
       if (request.status === 503) {
         throw new Error('HTTP ERROR 503')
       }
-      const response = await request.json()
+      let response = await request.text()
+      try {
+        response = JSON.parse(response)
+      } catch (e) {
+        throw new Error(`Invalid JSON: ${response}`)
+      }
       return response
     } catch (error) {
       if (!isHighloadError(error)) {
