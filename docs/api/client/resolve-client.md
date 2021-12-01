@@ -1,10 +1,10 @@
 ---
 id: resolve-client
 title: '@resolve-js/client'
-description: The @resolve-js/client library provides an interface that you can use to communicate with the reSolve backend from JavaScript code.
+description: The @resolve-js/client library exposes an interface that you can use to communicate with the reSolve backend from JavaScript code.
 ---
 
-The **@resolve-js/client** library provides an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
+The **@resolve-js/client** library exposes an interface that you can use to communicate with the reSolve backend from JavaScript code. To initialize the client, call the library's `getClient` function:
 
 ```js
 import { getClient } from '@resolve-js/client'
@@ -16,42 +16,77 @@ const main = async resolveContext => {
 
 The `getClient` function takes a reSolve context as a parameter and returns an initialized client object. This object exposes the following functions:
 
-| Function Name                           | Description                                                                 |
-| --------------------------------------- | --------------------------------------------------------------------------- |
-| [command](#command)                     | Sends an aggregate command to the backend.                                  |
-| [query](#query)                         | Queries a Read Model.                                                       |
-| [getStaticAssetUrl](#getstaticasseturl) | Gets a static file's full URL.                                              |
-| [getOriginPath](#getoriginpath)         | Returns an absolute URL within the application for the given relative path. |
-| [subscribe](#subscribe)                 | Subscribes to View Model updates.                                           |
-| [unsubscribe](#unsubscribe)             | Unsubscribes from View Model updates.                                       |
+| Function Name                             | Description                                                                 |
+| ----------------------------------------- | --------------------------------------------------------------------------- |
+| [`command`](#command)                     | Sends an aggregate command to the backend.                                  |
+| [`query`](#query)                         | Queries a Read Model.                                                       |
+| [`getStaticAssetUrl`](#getstaticasseturl) | Gets a static file's full URL.                                              |
+| [`getOriginPath`](#getoriginpath)         | Returns an absolute URL within the application for the given relative path. |
+| [`subscribe`](#subscribe)                 | Subscribes to View Model updates.                                           |
+| [`unsubscribe`](#unsubscribe)             | Unsubscribes from View Model updates.                                       |
 
-### command
+### `command`
 
 Sends an aggregate command to the backend.
 
-##### Example
+#### Arguments
+
+| Argument Name | Description                                                       |
+| ------------- | ----------------------------------------------------------------- |
+| `cmd`         | An object that describes a command to send to the server.         |
+| `options`     | An object that contains additional options for command execution. |
+| `callback`    | A callback to call on the server response or error.               |
+
+The returned value is a promise that resolves to the command execution result.
+
+#### Example
 
 ```js
 client.command(
   {
     aggregateName: 'Chat',
     type: 'postMessage',
-    aggregateId: userName,
-    payload: message,
+    aggregateId: chatRoom,
+    payload: {
+      userName,
+      message,
+    },
+  },
+  {
+    middleware: {
+      error: [
+        createRetryOnErrorMiddleware({
+          attempts: 3,
+          errors: [500],
+          debug: true,
+          period: 500,
+        }),
+      ],
+    },
   },
   (err) => {
     if (err) {
-      console.warn(`Error while sending command: ${err}`)
+      console.warn(`Error sending a command: ${err}`)
     }
   }
 )
 ```
 
-### query
+### `query`
 
 Queries a Read Model.
 
-##### Example
+#### Arguments
+
+| Argument Name | Description                                         |
+| ------------- | --------------------------------------------------- |
+| `qr`          | An object that describes a query.                   |
+| `options`     | An object that contains additional query options.   |
+| `callback`    | A callback to call on the server response or error. |
+
+The returned value is a promise that resolves to the query result.
+
+#### Example
 
 ```js
 const { data } = await client.query({
@@ -60,31 +95,61 @@ const { data } = await client.query({
 })
 ```
 
-### getStaticAssetUrl
+### `getStaticAssetUrl`
 
 Gets a static file's full URL.
 
-##### Example
+#### Arguments
+
+| Argument Name | Description                                  |
+| ------------- | -------------------------------------------- |
+| `assetPath`   | A string that specifies a relative URL path. |
+
+The returned value is a string that contains a full URL.
+
+#### Example
 
 ```js
 var imagePath = client.getStaticAssetUrl('/account/image.jpg')
 ```
 
-### getOriginPath
+### `getOriginPath`
 
 Returns an absolute URL within the application for the given relative path.
 
-##### Example
+#### Arguments
+
+| Argument Name | Description                                  |
+| ------------- | -------------------------------------------- |
+| `path`        | A string that specifies a relative URL path. |
+
+The returned value is a string that contains a full URL.
+
+#### Example
 
 ```js
 var commandsApiPath = client.getOriginPath('/api/commands')
 ```
 
-### subscribe
+### `subscribe`
 
-Subscribes to View Model updates. Returns a promise that resolves to a **subscription** object.
+Subscribes to View Model updates.
 
-##### Example
+#### Arguments
+
+| Argument Name         | Description                                                                     |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `url`                 | A URL used to establish a WebSocket connection to a view model.                 |
+| `cursor`              | The data cursor used to traverse the events included into the query result set. |
+| `viewModelName`       | A string that specifies the name of a view model.                               |
+| `aggregateIds`        | A list of aggregate IDs for which to receive events.                            |
+| `handler`             | A function that handles incoming events.                                        |
+| `subscribeCallback`   | A callback called on a successful subscription or an error.                     |
+| `resubscribeCallback` | A callback called on a successful resubscription or an error.                   |
+
+The returned value is a promise that resolves to a subscription object.
+
+#### Example
 
 ```js
 const chatViewModelUpdater = (event) => {
@@ -101,11 +166,17 @@ const chatViewModelUpdater = (event) => {
 await client.subscribe('chat', '*', chatViewModelUpdater)
 ```
 
-### unsubscribe
+### `unsubscribe`
 
 Unsubscribes from View Model updates.
 
-##### Example
+#### Arguments
+
+| Argument Name  | Description                                                 |
+| -------------- | ----------------------------------------------------------- |
+| `subscription` | An object returned by the [subscribe](#subscribe) function. |
+
+#### Example
 
 ```js
 await client.unsubscribe(subscription)

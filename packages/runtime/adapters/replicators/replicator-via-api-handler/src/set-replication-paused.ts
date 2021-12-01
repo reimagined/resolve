@@ -1,5 +1,6 @@
 import { InternalMethods } from './types'
 import fetch from 'node-fetch'
+import HttpError from './http-error'
 
 import {
   PAUSE_REPLICATION,
@@ -10,14 +11,15 @@ const setReplicationPaused: InternalMethods['setReplicationPaused'] = async (
   pool,
   paused
 ) => {
-  if (paused) {
-    await fetch(`${pool.targetApplicationUrl}${PAUSE_REPLICATION.endpoint}`, {
-      method: PAUSE_REPLICATION.method,
-    })
-  } else {
-    await fetch(`${pool.targetApplicationUrl}${RESUME_REPLICATION.endpoint}`, {
-      method: RESUME_REPLICATION.method,
-    })
+  const endpoint = paused ? PAUSE_REPLICATION : RESUME_REPLICATION
+  const response = await fetch(
+    `${pool.targetApplicationUrl}${endpoint.endpoint}`,
+    {
+      method: endpoint.method,
+    }
+  )
+  if (!response.ok) {
+    throw new HttpError(await response.text(), response.status)
   }
 }
 

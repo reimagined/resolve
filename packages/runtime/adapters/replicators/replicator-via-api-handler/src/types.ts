@@ -56,7 +56,10 @@ export type InternalMethods = {
   occupyReplication: (
     pool: AdapterPool,
     duration: number
-  ) => Promise<{ success: boolean; message?: string }>
+  ) => Promise<{
+    status: 'success' | 'alreadyLocked' | 'serviceError' | 'error'
+    message?: string
+  }>
   releaseReplication: (pool: AdapterPool) => Promise<void>
 }
 

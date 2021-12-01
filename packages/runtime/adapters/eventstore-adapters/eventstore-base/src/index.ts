@@ -115,7 +115,6 @@ export type {
   StoredEventPointer,
   EventFilter,
   LatestEventFilter,
-  ReplicationStatus,
   ReplicationState,
   OldEvent,
   OldSecretRecord,

@@ -9,11 +9,13 @@ const checkTargetUrl = (
     targetApplicationUrl.length === 0
   ) {
     return {
-      status: 'error',
-      statusData: {
-        name: 'Error',
-        message:
-          'Invalid target application url: empty or not a string. The replication is no-op',
+      statusAndData: {
+        status: 'criticalError',
+        data: {
+          name: 'Error',
+          message:
+            'Invalid target application url: empty or not a string. The replication is no-op',
+        },
       },
       paused: false,
       iterator: null,

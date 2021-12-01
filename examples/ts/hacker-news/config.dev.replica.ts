@@ -19,6 +19,18 @@ const devReplicaConfig = {
       snapshotBucketSize: 100,
     },
   },
+  /*eventstoreAdapter: {
+    module: '@resolve-js/eventstore-postgresql',
+    options: {
+      database: declareRuntimeEnv('POSTGRES_DATABASE'),
+      host: declareRuntimeEnv('POSTGRES_HOST'),
+      port: declareRuntimeEnv('POSTGRES_PORT'),
+      user: declareRuntimeEnv('POSTGRES_USER'),
+      password: declareRuntimeEnv('POSTGRES_PASSWORD'),
+      databaseName: 'replica',
+      snapshotBucketSize: 100,
+    },
+  },*/
   readModelConnectors: {
     default: {
       module: '@resolve-js/readmodel-lite',

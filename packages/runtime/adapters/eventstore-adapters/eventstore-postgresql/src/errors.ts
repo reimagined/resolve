@@ -48,6 +48,12 @@ export const isServiceBusyError = (error: any): boolean => {
   return (
     error != null &&
     (checkFuzzyError(error, /too many clients already/i) ||
+      checkFuzzyError(
+        error,
+        /Connection rate is too high, please reduce connection rate/i
+      ) ||
+      checkFuzzyError(error, /getaddrinfo/) ||
+      checkFuzzyError(error, /SQLState: 08001/) ||
       checkFuzzyError(error, /remaining connection slots are reserved/i))
   )
 }
