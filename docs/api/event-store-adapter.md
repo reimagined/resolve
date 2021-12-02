@@ -76,7 +76,7 @@ const eventCount = await eventStoreAdapter.describe({ estimateCounts: true })).e
 | ------------------------------ | ------ | ---------------------------------------------------------------------- |
 | [`options`](#describe-options) | object | Contains options that specifies what calculations should be performed. |
 
-### `options` {#describe-options}
+#### `options` {#describe-options}
 
 Contains options that specifies what calculations should be performed. The options object has the following structure:
 
@@ -93,15 +93,15 @@ A promise that resolves to an object of the following structure:
 
 ```js
 {
-  eventCount,  // (number)
-  secretCount, // (number)
-  setSecretCount, // (number)
-  deletedSecretCount,  // (number)
-  isFrozen,  // (boolean)
-  lastEventTimestamp,  // (number)
-  cursor, // (string or null, optional)
+  eventCount,  // (number) The number of events in the store.
+  secretCount, // (number) The number of secrets in the store.
+  setSecretCount, // (number) The number of saved secrets.
+  deletedSecretCount,  // (number) The number of deleted secrets.
+  isFrozen,  // (boolean) Indicates if the event store is frozen.
+  lastEventTimestamp,  // (number) The timestamp of the last saved event.
+  cursor, // (string or null, optional) The database used to traverse the events.
   resourceNames, // (object)
->
+}
 ```
 
 ### `dispose`
@@ -118,12 +118,6 @@ await eventStoreAdapter.dispose()
 
 Saves an event to the database.
 
-#### Arguments
-
-| Argument Name | Description                                                                                      |
-| ------------- | ------------------------------------------------------------------------------------------------ |
-| event         | { aggregateId: string, aggregateVersion: number, type: string, timestamp: number, payload: any } |
-
 #### Example
 
 ```js
@@ -137,6 +131,12 @@ await eventStoreAdapter.saveEvent({
   },
 })
 ```
+
+#### Arguments
+
+| Argument Name | Description                                                                                      |
+| ------------- | ------------------------------------------------------------------------------------------------ |
+| event         | { aggregateId: string, aggregateVersion: number, type: string, timestamp: number, payload: any } |
 
 ### `loadEvents`
 
@@ -200,31 +200,19 @@ Gets the latest saved event.
 
 Freezes the database.
 
-#### Arguments
-
-`void`
-
-#### Result
-
-`Promise<void>`
-
 #### Example
 
 ```js
 await eventStoreAdapter.freeze()
 ```
 
+#### Result
+
+A `promise` that resolves after the event store has been successfully frozen.
+
 ### `unfreeze`
 
 Unfreezes the database.
-
-#### Arguments
-
-`void`
-
-#### Result
-
-`Promise<void>`
 
 #### Example
 
@@ -232,9 +220,22 @@ Unfreezes the database.
 await eventStoreAdapter.unfreeze()
 ```
 
+#### Result
+
+A `promise` that resolves after the event store has been successfully unfrozen.
+
 ### `loadSnapshot`
 
 Loads a snapshot.
+
+#### Example
+
+```js
+const content = await eventStoreAdapter.loadSnapshot(snapshotKey)
+if (content == null) {
+  throw new Error('SnapshotNotFoundException')
+}
+```
 
 #### Arguments
 
@@ -246,18 +247,15 @@ Loads a snapshot.
 
 content: `Promise<string | null>`
 
-#### Example
-
-```js
-const content = await eventStoreAdapter.loadSnapshot(snapshotKey)
-if (content == null) {
-  throw new Error('SnapshotNotFoundException')
-}
-```
-
 ### `saveSnapshot`
 
 Creates or updates a snapshot.
+
+#### Example
+
+```js
+await eventStoreAdapter.saveSnapshot(snapshotKey, content)
+```
 
 #### Arguments
 
@@ -268,17 +266,15 @@ Creates or updates a snapshot.
 
 #### Result
 
-`Promise<void>`
-
-#### Example
-
-```js
-await eventStoreAdapter.saveSnapshot(snapshotKey, content)
-```
+A `promise` that resolves after the snapshot has been successfully saved.
 
 ### `dropSnapshot`
 
 Deletes a snapshot.
+
+```js
+await eventStoreAdapter.dropSnapshot(snapshotKey)
+```
 
 #### Arguments
 
@@ -288,17 +284,19 @@ Deletes a snapshot.
 
 #### Result
 
-`Promise<void>`
+A `promise` that resolves after the event store has been successfully deleted.
 
 #### Example
-
-```js
-await eventStoreAdapter.dropSnapshot(snapshotKey)
-```
 
 ### `incrementalImport`
 
 Incrementally imports events.
+
+#### Example
+
+```js
+await eventStoreAdapter.incrementalImport(events)
+```
 
 #### Arguments
 
@@ -308,21 +306,11 @@ Incrementally imports events.
 
 #### Result
 
-`Promise<void>`
-
-#### Example
-
-```js
-await eventStoreAdapter.incrementalImport(events)
-```
+A `promise` that resolves on the successful import.
 
 ### `beginIncrementalImport`
 
 Starts to build a batch of events to import.
-
-#### Arguments
-
-`void`
 
 #### Result
 
@@ -341,7 +329,7 @@ Adds events to an incremental import batch.
 
 #### Result
 
-`Promise<void>`
+A `promise` that resolves on successful import.
 
 ### `commitIncrementalImport`
 
@@ -355,19 +343,15 @@ Commits an incremental import batch to the event store.
 
 #### Result
 
-`Promise<void>`
+A `promise` that resolves on successful commit.
 
 ### `rollbackIncrementalImport`
 
 Drops an incremental import batch.
 
-#### Arguments
-
-`void`
-
 #### Result
 
-`Promise<void>`
+A `promise` that resolves on successful rollback.
 
 ### `getNextCursor`
 
@@ -384,15 +368,15 @@ Gets an array of events and the next cursor from the store based on the specifie
 
 `string`
 
+### `importEvents`
+
+Gets a writable stream used to save events.
+
 #### Example
 
 ```js
 
 ```
-
-### `importEvents`
-
-Gets a writable stream used to save events.
 
 #### Arguments
 
@@ -404,15 +388,15 @@ Gets a writable stream used to save events.
 
 `ImportEventsStream`
 
+### `exportEvents`
+
+Gets a readable stream used to load events.
+
 #### Example
 
 ```js
 
 ```
-
-### `exportEvents`
-
-Gets a readable stream used to load events.
 
 #### Arguments
 
@@ -424,15 +408,15 @@ Gets a readable stream used to load events.
 
 `ExportEventsStream`
 
+### `loadSecrets`
+
+Gets a list of secrets stored in the event store.
+
 #### Example
 
 ```js
 
 ```
-
-### `loadSecrets`
-
-Gets a list of secrets stored in the event store.
 
 #### Arguments
 
@@ -452,15 +436,15 @@ Promise<{
   }>
 ```
 
+### `importSecrets`
+
+Gets a writable stream used to save secrets.
+
 #### Example
 
 ```js
 
 ```
-
-### `importSecrets`
-
-Gets a writable stream used to save secrets.
 
 #### Arguments
 
@@ -474,15 +458,15 @@ Gets a writable stream used to save secrets.
 stream.Writable
 ```
 
+### `exportSecrets`
+
+Gets a writable stream used to load secrets.
+
 #### Example
 
 ```js
 
 ```
-
-### `exportSecrets`
-
-Gets a writable stream used to load secrets.
 
 #### Arguments
 
@@ -493,12 +477,6 @@ Gets a writable stream used to load secrets.
 #### Result
 
 `stream.Readable`
-
-#### Example
-
-```js
-
-```
 
 ## Related API
 
