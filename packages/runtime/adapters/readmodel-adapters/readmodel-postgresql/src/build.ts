@@ -808,6 +808,7 @@ const build: ExternalMethods['build'] = async (
     )
 
     log.debug(`Running inline ledger query`)
+    await basePool.ensureAffectedOperation('build', readModelName)
 
     const rows = (await inlineLedgerRunQuery(
       `WITH "MaybeAcquireLock" AS (
