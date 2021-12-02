@@ -5,7 +5,7 @@ import { getTargetURL } from '../utils/utils'
 
 jest.setTimeout(10 * 60 * 1000)
 
-const BENCH_EVENTS_COUNT = 3000
+const BENCH_EVENTS_COUNT = 1500
 const MAX_FAILED_ATTEMPTS = 5
 const PERIOD = 60 //seconds
 let testLaunchTimestamp = Number.NaN
@@ -228,7 +228,7 @@ test('benchmark', async () => {
   let failedAttempts = 0
   while (generatedBenchEventsCount < BENCH_EVENTS_COUNT) {
     const currentGeneratedEvents = (
-      await Promise.all(Array.from({ length: 15 }).map(generateEvents))
+      await Promise.all(Array.from({ length: 8 }).map(generateEvents))
     ).reduce((acc, val) => acc + val, 0)
     generatedBenchEventsCount += currentGeneratedEvents
     if (currentGeneratedEvents === 0) {
