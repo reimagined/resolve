@@ -2,6 +2,21 @@ import type { IncomingHttpHeaders } from 'http'
 import type { CookieSerializeOptions } from 'cookie'
 import type { INTERNAL } from './constants'
 
+export type CORS = {
+  origin?:
+    | boolean
+    | string
+    | RegExp
+    | Array<string>
+    | ((item: string) => boolean)
+  methods?: '*' | Array<HttpMethods>
+  allowedHeaders?: string | Array<string>
+  exposedHeaders?: string | Array<string>
+  credentials?: boolean
+  maxAge?: number
+  optionsSuccessStatus?: number
+}
+
 export type HttpMethods =
   | 'GET'
   | 'HEAD'
