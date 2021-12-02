@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/module-admin",
-  "version": "0.33.3",
+  "version": "0.33.5",
   "description": "A reSolve module that adds admin commands to an application.",
   "keywords": [
     "cqrs",
@@ -25,15 +25,14 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
-    "@resolve-js/eventstore-base": "0.33.3",
+    "@resolve-js/eventstore-base": "0.33.5",
     "columnify": "1.5.4",
     "dateformat": "4.5.1",
     "isomorphic-fetch": "3.0.0",
     "yargs": "16.2.0"
   },
   "devDependencies": {
-    "jest": "27.0.3",
-    "sinon": "9.2.4"
+    "jest": "27.0.3"
   },
   "engines": {
     "node": ">=14.17"

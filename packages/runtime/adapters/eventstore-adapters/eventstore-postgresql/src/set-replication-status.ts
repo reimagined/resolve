@@ -1,21 +1,15 @@
 import type { AdapterPool } from './types'
-import type {
-  ReplicationStatus,
-  ReplicationState,
-  OldEvent,
-} from '@resolve-js/eventstore-base'
+import type { ReplicationState, OldEvent } from '@resolve-js/eventstore-base'
 import initReplicationStateTable from './init-replication-state-table'
 
 const setReplicationStatus = async (
   pool: AdapterPool,
   {
-    status,
-    statusData,
+    statusAndData,
     lastEvent,
     iterator,
   }: {
-    status: ReplicationStatus
-    statusData?: ReplicationState['statusData']
+    statusAndData: ReplicationState['statusAndData']
     lastEvent?: OldEvent
     iterator?: ReplicationState['iterator']
   }
@@ -28,9 +22,11 @@ const setReplicationStatus = async (
   await executeStatement(
     `UPDATE ${databaseNameAsId}.${escapeId(replicationStateTableName)} 
     SET
-      "Status" = ${escape(status)},
+      "Status" = ${escape(statusAndData.status)},
       "StatusData" = ${
-        statusData != null ? escape(JSON.stringify(statusData)) : 'NULL'
+        statusAndData.data != null
+          ? escape(JSON.stringify(statusAndData.data))
+          : 'NULL'
       }
       ${
         lastEvent != null

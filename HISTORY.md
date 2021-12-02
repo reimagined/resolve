@@ -1,5 +1,37 @@
 # Changelog
 
+## [V0.33.5](https://github.com/reimagined/resolve/tree/V0.33.5) (2021-12-02)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.4...V0.33.5)
+
+**Bug fixes:**
+
+- Commands scheduled in sagas are triggered way too late [\#2157](https://github.com/reimagined/resolve/issues/2157)
+
+**Documentation:**
+
+- Revisit client API docs [\#2145](https://github.com/reimagined/resolve/pull/2145)
+
+## [V0.33.4](https://github.com/reimagined/resolve/tree/V0.33.4) (2021-11-26)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.3...V0.33.4)
+
+**Bug fixes:**
+
+- Application silently fails to run if config is invalid, no errors are shown [\#2141](https://github.com/reimagined/resolve/issues/2141)
+- shopping-list has a description from shopping-list-with-hooks [\#2106](https://github.com/reimagined/resolve/issues/2106)
+- Error: Lambda worker was not created due to cold start failure [\#2105](https://github.com/reimagined/resolve/issues/2105)
+
+**Documentation:**
+
+- "Step-by-Step Tutorial" is unfriendly for steps reproducing. [\#2093](https://github.com/reimagined/resolve/issues/2093)
+- Replace CURL inputs with JS code samples [\#2138](https://github.com/reimagined/resolve/pull/2138)
+- Update tutorial [\#2068](https://github.com/reimagined/resolve/pull/2068)
+
+**Other changes:**
+
+- Build-mode flag for postgresql readmodel adapter [\#2140](https://github.com/reimagined/resolve/pull/2140)
+
 ## [V0.33.3](https://github.com/reimagined/resolve/tree/V0.33.3) (2021-11-19)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.2...V0.33.3)

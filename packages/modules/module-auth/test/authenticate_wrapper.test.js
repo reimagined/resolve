@@ -1,4 +1,3 @@
-import sinon from 'sinon'
 import authenticateWrapper from '../src/authenticate_wrapper'
 
 describe('method "fail"', () => {
@@ -18,12 +17,12 @@ describe('method "fail"', () => {
         name: 'jwt',
       },
       internalRes: {
-        clearCookie: sinon.stub(),
-        redirect: sinon.stub(),
-        resolveAuth: sinon.stub(),
+        clearCookie: jest.fn(),
+        redirect: jest.fn(),
+        resolveAuth: jest.fn(),
       },
       originalOptions: {},
-      resolveAuth: sinon.stub(),
+      resolveAuth: jest.fn(),
     }
     const error = new Error('test')
     const status = undefined
@@ -40,12 +39,12 @@ describe('method "fail"', () => {
         name: 'jwt',
       },
       internalRes: {
-        clearCookie: sinon.stub(),
-        redirect: sinon.stub(),
-        resolveAuth: sinon.stub(),
+        clearCookie: jest.fn(),
+        redirect: jest.fn(),
+        resolveAuth: jest.fn(),
       },
       originalOptions: {},
-      resolveAuth: sinon.stub(),
+      resolveAuth: jest.fn(),
     }
     const error = 'test'
     const status = undefined
@@ -62,12 +61,12 @@ describe('method "fail"', () => {
         name: 'jwt',
       },
       internalRes: {
-        clearCookie: sinon.stub(),
-        redirect: sinon.stub(),
-        resolveAuth: sinon.stub(),
+        clearCookie: jest.fn(),
+        redirect: jest.fn(),
+        resolveAuth: jest.fn(),
       },
       originalOptions: {},
-      resolveAuth: sinon.stub(),
+      resolveAuth: jest.fn(),
     }
     const error = 42
     const status = undefined
@@ -84,12 +83,12 @@ describe('method "fail"', () => {
         name: 'jwt',
       },
       internalRes: {
-        clearCookie: sinon.stub(),
-        redirect: sinon.stub(),
-        resolveAuth: sinon.stub(),
+        clearCookie: jest.fn(),
+        redirect: jest.fn(),
+        resolveAuth: jest.fn(),
       },
       originalOptions: {},
-      resolveAuth: sinon.stub(),
+      resolveAuth: jest.fn(),
     }
     const error = false
     const status = undefined
@@ -106,12 +105,12 @@ describe('method "fail"', () => {
         name: 'jwt',
       },
       internalRes: {
-        clearCookie: sinon.stub(),
-        redirect: sinon.stub(),
-        resolveAuth: sinon.stub(),
+        clearCookie: jest.fn(),
+        redirect: jest.fn(),
+        resolveAuth: jest.fn(),
       },
       originalOptions: {},
-      resolveAuth: sinon.stub(),
+      resolveAuth: jest.fn(),
     }
     const error = true
     const status = undefined
@@ -128,12 +127,12 @@ describe('method "fail"', () => {
         name: 'jwt',
       },
       internalRes: {
-        clearCookie: sinon.stub(),
-        redirect: sinon.stub(),
-        resolveAuth: sinon.stub(),
+        clearCookie: jest.fn(),
+        redirect: jest.fn(),
+        resolveAuth: jest.fn(),
       },
       originalOptions: {},
-      resolveAuth: sinon.stub(),
+      resolveAuth: jest.fn(),
     }
     const error = undefined
     const status = undefined
@@ -150,12 +149,12 @@ describe('method "fail"', () => {
         name: 'jwt',
       },
       internalRes: {
-        clearCookie: sinon.stub(),
-        redirect: sinon.stub(),
-        resolveAuth: sinon.stub(),
+        clearCookie: jest.fn(),
+        redirect: jest.fn(),
+        resolveAuth: jest.fn(),
       },
       originalOptions: {},
-      resolveAuth: sinon.stub(),
+      resolveAuth: jest.fn(),
     }
     const error = null
     const status = undefined
@@ -172,12 +171,12 @@ describe('method "fail"', () => {
         name: 'jwt',
       },
       internalRes: {
-        clearCookie: sinon.stub(),
-        redirect: sinon.stub(),
-        resolveAuth: sinon.stub(),
+        clearCookie: jest.fn(),
+        redirect: jest.fn(),
+        resolveAuth: jest.fn(),
       },
       originalOptions: {},
-      resolveAuth: sinon.stub(),
+      resolveAuth: jest.fn(),
     }
     const error = new Error('test')
     const status = 518
@@ -194,12 +193,12 @@ describe('method "fail"', () => {
         name: 'jwt',
       },
       internalRes: {
-        clearCookie: sinon.stub(),
-        redirect: sinon.stub(),
-        resolveAuth: sinon.stub(),
+        clearCookie: jest.fn(),
+        redirect: jest.fn(),
+        resolveAuth: jest.fn(),
       },
       originalOptions: {},
-      resolveAuth: sinon.stub(),
+      resolveAuth: jest.fn(),
     }
     const error = new Error('test')
     error.status = 518

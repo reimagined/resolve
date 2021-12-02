@@ -2,6 +2,7 @@ import {
   ConnectionError,
   RequestTimeoutError,
   ServiceBusyError,
+  UnrecognizedError,
 } from '@resolve-js/eventstore-base'
 
 const checkFormalError = (error: any, value: string): boolean =>
@@ -47,6 +48,12 @@ export const isServiceBusyError = (error: any): boolean => {
   return (
     error != null &&
     (checkFuzzyError(error, /too many clients already/i) ||
+      checkFuzzyError(
+        error,
+        /Connection rate is too high, please reduce connection rate/i
+      ) ||
+      checkFuzzyError(error, /getaddrinfo/) ||
+      checkFuzzyError(error, /SQLState: 08001/) ||
       checkFuzzyError(error, /remaining connection slots are reserved/i))
   )
 }
@@ -84,5 +91,16 @@ export const makeConnectionError = (error: any): Error => {
     const connectionError = new ConnectionError(error.message)
     extendErrorStack(connectionError, error)
     return connectionError
+  }
+}
+
+export const makeUnrecognizedError = (error: any): Error => {
+  if (error) {
+    const unrecognizedError = new UnrecognizedError(error.message)
+    unrecognizedError.code = error.code
+    extendErrorStack(unrecognizedError, error)
+    return unrecognizedError
+  } else {
+    return new UnrecognizedError('unrecognized error')
   }
 }

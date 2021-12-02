@@ -5,7 +5,10 @@ const injectString = (pool: AdapterPool, value: string): string =>
   `${pool.escape(value)}`
 const injectNumber = (pool: AdapterPool, value: number): string => `${+value}`
 
-const createQuery = (pool: AdapterPool, filter: EventFilter): string => {
+const createQuery = (
+  pool: AdapterPool,
+  filter: Omit<EventFilter, 'limit' | 'eventsSizeLimit' | 'cursor'>
+): string => {
   const { escapeId } = pool
   const { eventTypes, aggregateIds } = filter
 
@@ -25,7 +28,7 @@ const createQuery = (pool: AdapterPool, filter: EventFilter): string => {
     )
   }
 
-  if (isTimestampFilter(filter)) {
+  if (isTimestampFilter(filter as EventFilter)) {
     const { startTime, finishTime } = filter
 
     if (startTime != null) {
