@@ -1,9 +1,5 @@
 import type { AdapterPool } from './types'
-import type {
-  ReplicationState,
-  ReplicationStatus,
-  OldEvent,
-} from '@resolve-js/eventstore-base'
+import type { ReplicationState, OldEvent } from '@resolve-js/eventstore-base'
 import { LONG_NUMBER_SQL_TYPE } from './constants'
 import { getInitialReplicationState } from '@resolve-js/eventstore-base'
 import initReplicationStateTable from './init-replication-state-table'
@@ -21,11 +17,11 @@ const getReplicationState = async (
     ("LockExpirationTime" > (CAST(extract(epoch from clock_timestamp()) * 1000 AS ${LONG_NUMBER_SQL_TYPE}))) as "Locked"
      FROM ${databaseNameAsId}.${escapeId(replicationStateTableName)}`
   )) as Array<{
-    Status: string
-    StatusData: ReplicationState['statusData']
-    Iterator: ReplicationState['statusData']
+    Status: ReplicationState['statusAndData']['status']
+    StatusData: ReplicationState['statusAndData']['data']
+    Iterator: ReplicationState['iterator']
     IsPaused: boolean
-    SuccessEvent: ReplicationState['statusData']
+    SuccessEvent: ReplicationState['successEvent']
     Locked: boolean
   }>
   if (rows.length > 0) {
@@ -37,8 +33,10 @@ const getReplicationState = async (
     }
 
     return {
-      status: row.Status as ReplicationStatus,
-      statusData: row.StatusData,
+      statusAndData: {
+        status: row.Status,
+        data: row.StatusData,
+      } as ReplicationState['statusAndData'],
       paused: row.IsPaused,
       iterator: row.Iterator,
       successEvent: lastEvent,
