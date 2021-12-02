@@ -5,9 +5,18 @@ import fetch from 'node-fetch'
 import { URL } from 'url'
 import { stringify as stringifyQuery } from 'query-string'
 import { format as prettify } from 'prettier'
+import getRawBody from 'raw-body'
 
-import { HttpRequest, HttpResponse, HttpMethods } from '../src/types'
-import wrapApiHandler from '../src/http-server/wrap-api-handler'
+import type {
+  HttpRequest,
+  HttpResponse,
+  HttpMethods,
+  LambdaOriginEdgeRequest,
+} from '../src/types'
+import wrapHttpServerApiHandler from '../src/http-server/wrap-api-handler'
+import wrapLambdaServerApiHandler from '../src/aws-lambda-origin-edge/wrap-api-handler'
+
+jest.setTimeout(1000 * 60)
 
 const customApi = {
   resolve: {
@@ -250,57 +259,130 @@ const tests: Array<{
   },
 ]
 
-let server: Server
-let baseUrl: string
+let localHttpServer: Server
+let localHttpServerBaseUrl: string
+let lambdaServer: Server
+let lambdaServerBaseUrl: string
 beforeAll(async () => {
-  server = await new Promise((resolve) => {
-    const refServer = http
-      .createServer(async (req, res) => {
-        // eslint-disable-next-line no-console
-        console.log(req.url, req.method)
-        for (const {
-          route: { path, method, handler },
-        } of tests) {
-          const url = new URL(req.url ?? '', 'https://example.com')
-          if (url.pathname === path && req.method === method) {
-            await wrapApiHandler(handler, () => customApi)(req, res)
-            return
+  {
+    localHttpServer = await new Promise((resolve) => {
+      const refServer = http
+        .createServer(async (req, res) => {
+          for (const {
+            route: { path, method, handler },
+          } of tests) {
+            const url = new URL(req.url ?? '', 'https://example.com')
+            if (url.pathname === path && req.method === method) {
+              await wrapHttpServerApiHandler(handler, () => customApi)(req, res)
+              return
+            }
           }
-        }
-        res.statusCode = 500
-        res.end()
-      })
-      .listen(0, () => {
-        resolve(refServer)
-      })
-  })
+          res.statusCode = 500
+          res.end()
+        })
+        .listen(0, () => {
+          resolve(refServer)
+        })
+    })
 
-  const address = server.address()
-  if (address == null || typeof address === 'string') {
-    throw new TypeError()
+    const localHttpServerAddress = localHttpServer.address()
+    if (
+      localHttpServerAddress == null ||
+      typeof localHttpServerAddress === 'string'
+    ) {
+      throw new TypeError()
+    }
+
+    localHttpServerBaseUrl = `http://localhost:${localHttpServerAddress.port}`
   }
-  const { port } = address
+  {
+    lambdaServer = await new Promise((resolve) => {
+      const refServer = http
+        .createServer(async (req, res) => {
+          for (const {
+            route: { path, method, handler },
+          } of tests) {
+            const url = new URL(req.url ?? '', 'https://example.com')
+            if (url.pathname === path && req.method === method) {
+              const contentLength =
+                req.headers['Content-Length'] == null
+                  ? null
+                  : +req.headers['Content-Length']
+              const lambdaEvent: LambdaOriginEdgeRequest = {
+                requestStartTime: Date.now(),
+                headers: Object.entries(req.headers).map(([key, value]) => ({
+                  key,
+                  value,
+                })),
+                body:
+                  contentLength == null
+                    ? null
+                    : (
+                        await getRawBody(req, {
+                          length: contentLength,
+                        })
+                      ).toString('base64'),
+                uri: url.pathname,
+                httpMethod: req.method,
+                querystring: url.search.replace(/^?/, ''),
+              }
+              const lambdaOriginEdgeResponse = await wrapLambdaServerApiHandler(
+                handler,
+                () => customApi
+              )(lambdaEvent, {})
+              res.statusCode = lambdaOriginEdgeResponse.httpStatus
+              for (const { key, value } of lambdaOriginEdgeResponse.headers) {
+                // TODO check Many Set-cookie:
+                res.setHeader(key, value)
+              }
+              res.end(
+                Buffer.from(lambdaOriginEdgeResponse.body).toString('base64')
+              )
+              return
+            }
+          }
+          res.statusCode = 500
+          res.end()
+        })
+        .listen(0, () => {
+          resolve(refServer)
+        })
+    })
 
-  baseUrl = `http://localhost:${port}`
+    const lambdaServerAddress = localHttpServer.address()
+    if (
+      lambdaServerAddress == null ||
+      typeof lambdaServerAddress === 'string'
+    ) {
+      throw new TypeError()
+    }
+
+    lambdaServerBaseUrl = `http://localhost:${lambdaServerAddress.port}`
+  }
 })
 
 afterAll(async () => {
-  await new Promise<void>((resolve, reject) => {
-    server.close((error) => {
-      if (error != null) {
-        reject(error)
-      } else {
-        resolve()
-      }
-    })
-  })
+  await Promise.all(
+    [localHttpServer, lambdaServer].map(
+      (server) =>
+        new Promise<void>((resolve, reject) => {
+          server.close((error) => {
+            if (error != null) {
+              reject(error)
+            } else {
+              resolve()
+            }
+          })
+        })
+    )
+  )
 })
 
-beforeEach(() => {
+const clearMocks = () => {
   customApi.resolve.executeCommand.mockClear()
   customApi.resolve.executeQuery.mockClear()
   customApi.resolve.bootstrap.mockClear()
-})
+}
 
 for (const {
   route: { path: pathname, method },
@@ -317,12 +399,31 @@ for (const {
     semi: true,
     trailingComma: 'none',
   })}`, async () => {
-    const response = await fetch(`${baseUrl}${path}`, {
-      method,
-      body,
-      headers,
-      redirect: 'manual',
-    })
-    await runTest(response)
+    {
+      clearMocks()
+      const localHttpServerResponse = await fetch(
+        `${localHttpServerBaseUrl}${path}`,
+        {
+          method,
+          body,
+          headers,
+          redirect: 'manual',
+        }
+      )
+      await runTest(localHttpServerResponse)
+    }
+    {
+      clearMocks()
+      const lambdaServerResponse = await fetch(
+        `${lambdaServerBaseUrl}${path}`,
+        {
+          method,
+          body,
+          headers,
+          redirect: 'manual',
+        }
+      )
+      await runTest(lambdaServerResponse)
+    }
   })
 }

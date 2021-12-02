@@ -13,44 +13,40 @@ import getSafeErrorMessage from '../get-safe-error-message'
 import getDebugErrorMessage from '../get-debug-error-message'
 
 const wrapApiHandler = <
-  CustomParameters extends { lambdaOriginEdgeStartTime: number } & Record<
-    string | symbol,
-    any
-  > = { lambdaOriginEdgeStartTime: number }
+  CustomParameters extends Record<string | symbol, any> = {
+    lambdaOriginEdgeStartTime: number
+  }
 >(
   handler: (
-    req: HttpRequest<CustomParameters>,
+    req: HttpRequest<CustomParameters & { lambdaOriginEdgeStartTime: number }>,
     res: HttpResponse
   ) => Promise<void>,
-  getCustomParameters?: (
+  getCustomParameters: (
     lambdaEvent: LambdaOriginEdgeRequest,
     lambdaContext: any
-  ) => Promise<CustomParameters>,
+  ) => CustomParameters | Promise<CustomParameters> = () => ({} as any),
   // eslint-disable-next-line no-new-func
   onStart: (timestamp: number) => void = Function() as any,
   // eslint-disable-next-line no-new-func
   onFinish: (timestamp: number, error?: any) => void = Function() as any
 ) => async (
   lambdaEvent: LambdaOriginEdgeRequest,
-  lambdaContext: any,
-  lambdaCallback?: any
-) => {
+  lambdaContext: any
+): Promise<LambdaOriginEdgeResponse> => {
   onStart(Date.now())
 
-  let result: LambdaOriginEdgeResponse
-
   try {
-    const customParameters =
-      getCustomParameters == null
-        ? ({
-            lambdaOriginEdgeStartTime: lambdaEvent.requestStartTime,
-          } as CustomParameters)
-        : await getCustomParameters(lambdaEvent, lambdaContext)
-
-    const req = await createRequest<CustomParameters>(
+    const customParameters = await getCustomParameters(
       lambdaEvent,
-      customParameters
+      lambdaContext
     )
+
+    const req = await createRequest<
+      CustomParameters & { lambdaOriginEdgeStartTime: number }
+    >(lambdaEvent, {
+      ...customParameters,
+      lambdaOriginEdgeStartTime: lambdaEvent.requestStartTime,
+    })
     const res = createResponse()
 
     await handler(req, res)
@@ -67,7 +63,7 @@ const wrapApiHandler = <
       ])
     }
 
-    result = {
+    const result: LambdaOriginEdgeResponse = {
       httpStatus: statusCode,
       httpStatusText: getHttpStatusText(statusCode),
       headers: headers.map(([key, value]) => ({
@@ -78,11 +74,13 @@ const wrapApiHandler = <
     }
 
     onFinish(Date.now())
+
+    return result
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(getDebugErrorMessage(error))
 
-    result = {
+    const result: LambdaOriginEdgeResponse = {
       httpStatus: 500,
       httpStatusText: getHttpStatusText(500),
       headers: [],
@@ -90,11 +88,7 @@ const wrapApiHandler = <
     }
 
     onFinish(Date.now(), error)
-  }
 
-  if (typeof lambdaCallback === 'function') {
-    return lambdaCallback(null, result)
-  } else {
     return result
   }
 }
