@@ -120,7 +120,7 @@ const getReadModelFeedingRateMetric = async (readModelName: string) => {
 
 const isHighloadError = (error: Error) =>
   error != null &&
-  /(?:HTTP ERROR 503)|(?:ETIMEDOUT)|(?:ECONNRESET)|(?:EMFILE)|(?:sorry, too many clients already)|(?:remaining connection slots are reserved for non-replication superuser and rds_superuser connections)/.test(
+  /(?:HTTP ERROR 503)|(?:ETIMEDOUT)|(?:ECONNRESET)|(?:EMFILE)|(?:sorry, too many clients already)|(?:remaining connection slots are reserved for non-replication superuser and rds_superuser connections)|(?:Connection terminated unexpectedly)/.test(
     error.message
   )
 
