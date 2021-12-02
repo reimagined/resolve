@@ -4,7 +4,11 @@ title: Event Store Adapter
 description: This document describes the interface that an event store adapter should expose.
 ---
 
-An event store adapter defines how the reSolve framework stores events in the underlying event store. An event store adapter object must expose the following functions:
+An event store adapter defines how the reSolve framework stores events in the underlying event store.
+
+## Event Store Adapter Interface
+
+An event store adapter object must expose the following functions:
 
 | Function Name                                             | Description                                                                                         |
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
@@ -32,7 +36,7 @@ An event store adapter defines how the reSolve framework stores events in the un
 | [`importSecrets`](#importsecrets)                         | Gets a writable stream used to save secrets.                                                        |
 | [`exportSecrets`](exportsecrets)                          | Gets a writable stream used to load secrets.                                                        |
 
-## `init`
+### `init`
 
 Initializes the database.
 
@@ -46,7 +50,7 @@ const eventStoreAdapter = createEventStoreAdapter(options)
 await eventStoreAdapter.init()
 ```
 
-## `drop`
+### `drop`
 
 Drops the database.
 
@@ -56,7 +60,7 @@ Drops the database.
 await eventStoreAdapter.drop()
 ```
 
-## `describe`
+### `describe`
 
 Obtain information about the event store.
 
@@ -72,7 +76,7 @@ const eventCount = await eventStoreAdapter.describe({ estimateCounts: true })).e
 | ------------------------------ | ------ | ---------------------------------------------------------------------- |
 | [`options`](#describe-options) | object | Contains options that specifies what calculations should be performed. |
 
-## `options` {#describe-options}
+### `options` {#describe-options}
 
 Contains options that specifies what calculations should be performed. The options object has the following structure:
 
@@ -100,7 +104,7 @@ A promise that resolves to an object of the following structure:
 >
 ```
 
-## `dispose`
+### `dispose`
 
 Disconnects from the database and disposes unmanaged resources.
 
@@ -110,7 +114,7 @@ Disconnects from the database and disposes unmanaged resources.
 await eventStoreAdapter.dispose()
 ```
 
-## `saveEvent`
+### `saveEvent`
 
 Saves an event to the database.
 
@@ -134,32 +138,9 @@ await eventStoreAdapter.saveEvent({
 })
 ```
 
-## `loadEvents`
+### `loadEvents`
 
 Gets an array of events and the next cursor from the store based on the specified filter criteria.
-
-#### Arguments
-
-| Argument Name | Description                                                                                                                                                                                                                                                                                                     |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| eventFilter   | { cursor: string or null, limit: number, eventsSizeLimit: number, eventTypes: Array&lt;string&gt;, aggregateIds: Array&lt;string&gt; } <br /> or <br /> { startTime?: number, finishTime?: number, limit: number, eventsSizeLimit: number, eventTypes: Array&lt;string&gt;, aggregateIds: Array&lt;string&gt; } |
-
-#### Result
-
-```ts
-Promise<{
-  events: Array<{
-    threadId: number,
-    threadCounter: number,
-    aggregateId: string,
-    aggregateVersion: number,
-    type: string,
-    timestamp: number,
-    payload: any
-  }>,
-  cursor: string
-}>
-```
 
 #### Example
 
@@ -195,11 +176,27 @@ const { events } = await adapter.loadEvents({
 })
 ```
 
-## `getLatestEvent`
+#### Arguments
+
+| Argument Name | Type                                     | Description                                          |
+| ------------- | ---------------------------------------- | ---------------------------------------------------- |
+| eventFilter   | An [event filter](#event-filter) object. | Describes criteria used to filter the loaded events. |
+
+#### Result
+
+A `promise` that resolves to an object of the following structure:
+
+```ts
+{
+  events, cursors
+}
+```
+
+### `getLatestEvent`
 
 Gets the latest saved event.
 
-## `freeze`
+### `freeze`
 
 Freezes the database.
 
@@ -217,7 +214,7 @@ Freezes the database.
 await eventStoreAdapter.freeze()
 ```
 
-## `unfreeze`
+### `unfreeze`
 
 Unfreezes the database.
 
@@ -235,7 +232,7 @@ Unfreezes the database.
 await eventStoreAdapter.unfreeze()
 ```
 
-## `loadSnapshot`
+### `loadSnapshot`
 
 Loads a snapshot.
 
@@ -258,7 +255,7 @@ if (content == null) {
 }
 ```
 
-## `saveSnapshot`
+### `saveSnapshot`
 
 Creates or updates a snapshot.
 
@@ -279,7 +276,7 @@ Creates or updates a snapshot.
 await eventStoreAdapter.saveSnapshot(snapshotKey, content)
 ```
 
-## `dropSnapshot`
+### `dropSnapshot`
 
 Deletes a snapshot.
 
@@ -299,7 +296,7 @@ Deletes a snapshot.
 await eventStoreAdapter.dropSnapshot(snapshotKey)
 ```
 
-## `incrementalImport`
+### `incrementalImport`
 
 Incrementally imports events.
 
@@ -319,7 +316,7 @@ Incrementally imports events.
 await eventStoreAdapter.incrementalImport(events)
 ```
 
-## `beginIncrementalImport`
+### `beginIncrementalImport`
 
 Starts to build a batch of events to import.
 
@@ -331,7 +328,7 @@ Starts to build a batch of events to import.
 
 importId: `Promise<string>`
 
-## `pushIncrementalImport`
+### `pushIncrementalImport`
 
 Adds events to an incremental import batch.
 
@@ -346,7 +343,7 @@ Adds events to an incremental import batch.
 
 `Promise<void>`
 
-## `commitIncrementalImport`
+### `commitIncrementalImport`
 
 Commits an incremental import batch to the event store.
 
@@ -360,7 +357,7 @@ Commits an incremental import batch to the event store.
 
 `Promise<void>`
 
-## `rollbackIncrementalImport`
+### `rollbackIncrementalImport`
 
 Drops an incremental import batch.
 
@@ -372,7 +369,7 @@ Drops an incremental import batch.
 
 `Promise<void>`
 
-## `getNextCursor`
+### `getNextCursor`
 
 Gets an array of events and the next cursor from the store based on the specified filter criteria.
 
@@ -393,7 +390,7 @@ Gets an array of events and the next cursor from the store based on the specifie
 
 ```
 
-## `importEvents`
+### `importEvents`
 
 Gets a writable stream used to save events.
 
@@ -413,7 +410,7 @@ Gets a writable stream used to save events.
 
 ```
 
-## `exportEvents`
+### `exportEvents`
 
 Gets a readable stream used to load events.
 
@@ -433,7 +430,7 @@ Gets a readable stream used to load events.
 
 ```
 
-## `loadSecrets`
+### `loadSecrets`
 
 Gets a list of secrets stored in the event store.
 
@@ -461,7 +458,7 @@ Promise<{
 
 ```
 
-## `importSecrets`
+### `importSecrets`
 
 Gets a writable stream used to save secrets.
 
@@ -483,7 +480,7 @@ stream.Writable
 
 ```
 
-## `exportSecrets`
+### `exportSecrets`
 
 Gets a writable stream used to load secrets.
 
@@ -502,3 +499,33 @@ Gets a writable stream used to load secrets.
 ```js
 
 ```
+
+## Related API
+
+### Event Filter
+
+An event filter object is a parameter for the [`loadEvents`](#loadEvents) function that describes criteria used to filter the loaded events.. It can contain the following fields:
+
+#### `limit (required)`
+
+Maximum number of events to retrieve in one call.
+
+#### `cursor`
+
+The value that represents internal position in event-store. `loadEvents` will return events starting with this cursor. Cursors can be obtained from the previous [`loadEvents`](#loadevents) or [`saveEvent`](#saveevent) calls. `null` means the initial cursor. Cursor must be passed explicitly even if it's null.
+
+#### `startTime` and `finishTime`
+
+Specify the inclusive start and end of the time interval for which to load events. Specified in milliseconds elapsed since January 1, 1970 00:00:00 UTC. Bot values can be omitted to specify no lower or upper bound for the interval.
+
+:::caution
+The `startTime` and `finishTime` specified in conjunction with [`cursor`](#cursor) produces an error.
+:::
+
+#### `aggregateIds`
+
+Array of included aggregate IDs.
+
+#### `eventTypes`
+
+Array of included event types.
