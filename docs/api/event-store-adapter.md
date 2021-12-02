@@ -32,7 +32,7 @@ An event store adapter defines how the reSolve framework stores events in the un
 | [`importSecrets`](#importsecrets)                         | Gets a writable stream used to save secrets.                                                        |
 | [`exportSecrets`](exportsecrets)                          | Gets a writable stream used to load secrets.                                                        |
 
-### `init`
+## `init`
 
 Initializes the database.
 
@@ -46,7 +46,7 @@ const eventStoreAdapter = createEventStoreAdapter(options)
 await eventStoreAdapter.init()
 ```
 
-### `drop`
+## `drop`
 
 Drops the database.
 
@@ -56,7 +56,7 @@ Drops the database.
 await eventStoreAdapter.drop()
 ```
 
-### `describe`
+## `describe`
 
 Obtain information about the event store.
 
@@ -72,7 +72,7 @@ const eventCount = await eventStoreAdapter.describe({ estimateCounts: true })).e
 | ------------------------------ | ------ | ---------------------------------------------------------------------- |
 | [`options`](#describe-options) | object | Contains options that specifies what calculations should be performed. |
 
-#### `options` {#describe-options}
+## `options` {#describe-options}
 
 Contains options that specifies what calculations should be performed. The options object has the following structure:
 
@@ -100,7 +100,7 @@ A promise that resolves to an object of the following structure:
 >
 ```
 
-### `dispose`
+## `dispose`
 
 Disconnects from the database and disposes unmanaged resources.
 
@@ -110,11 +110,11 @@ Disconnects from the database and disposes unmanaged resources.
 await eventStoreAdapter.dispose()
 ```
 
-### `saveEvent`
+## `saveEvent`
 
 Saves an event to the database.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                                                                                      |
 | ------------- | ------------------------------------------------------------------------------------------------ |
@@ -134,17 +134,17 @@ await eventStoreAdapter.saveEvent({
 })
 ```
 
-### `loadEvents`
+## `loadEvents`
 
 Gets an array of events and the next cursor from the store based on the specified filter criteria.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                                                                                                                                                                                                                                                                                                     |
 | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | eventFilter   | { cursor: string or null, limit: number, eventsSizeLimit: number, eventTypes: Array&lt;string&gt;, aggregateIds: Array&lt;string&gt; } <br /> or <br /> { startTime?: number, finishTime?: number, limit: number, eventsSizeLimit: number, eventTypes: Array&lt;string&gt;, aggregateIds: Array&lt;string&gt; } |
 
-##### Result
+#### Result
 
 ```ts
 Promise<{
@@ -195,19 +195,19 @@ const { events } = await adapter.loadEvents({
 })
 ```
 
-### `getLatestEvent`
+## `getLatestEvent`
 
 Gets the latest saved event.
 
-### `freeze`
+## `freeze`
 
 Freezes the database.
 
-##### Arguments
+#### Arguments
 
 `void`
 
-##### Result
+#### Result
 
 `Promise<void>`
 
@@ -217,15 +217,15 @@ Freezes the database.
 await eventStoreAdapter.freeze()
 ```
 
-### `unfreeze`
+## `unfreeze`
 
 Unfreezes the database.
 
-##### Arguments
+#### Arguments
 
 `void`
 
-##### Result
+#### Result
 
 `Promise<void>`
 
@@ -235,17 +235,17 @@ Unfreezes the database.
 await eventStoreAdapter.unfreeze()
 ```
 
-### `loadSnapshot`
+## `loadSnapshot`
 
 Loads a snapshot.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                             |
 | ------------- | --------------------------------------- |
 | snapshotKey   | A unique key in the table of snapshots. |
 
-##### Result
+#### Result
 
 content: `Promise<string | null>`
 
@@ -258,18 +258,18 @@ if (content == null) {
 }
 ```
 
-### `saveSnapshot`
+## `saveSnapshot`
 
 Creates or updates a snapshot.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                             |
 | ------------- | --------------------------------------- |
 | snapshotKey   | A unique key in the table of snapshots. |
 | content       | A snapshot in text format.              |
 
-##### Result
+#### Result
 
 `Promise<void>`
 
@@ -279,17 +279,17 @@ Creates or updates a snapshot.
 await eventStoreAdapter.saveSnapshot(snapshotKey, content)
 ```
 
-### `dropSnapshot`
+## `dropSnapshot`
 
 Deletes a snapshot.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                            |
 | ------------- | -------------------------------------- |
 | snapshotKey   | A unique key in the table of snapshots |
 
-##### Result
+#### Result
 
 `Promise<void>`
 
@@ -299,17 +299,17 @@ Deletes a snapshot.
 await eventStoreAdapter.dropSnapshot(snapshotKey)
 ```
 
-### `incrementalImport`
+## `incrementalImport`
 
 Incrementally imports events.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                                                                           |
 | ------------- | ------------------------------------------------------------------------------------- |
 | events        | An array of `{ aggregateId: string, type: string, timestamp: number, payload: any }`. |
 
-##### Result
+#### Result
 
 `Promise<void>`
 
@@ -319,71 +319,71 @@ Incrementally imports events.
 await eventStoreAdapter.incrementalImport(events)
 ```
 
-### `beginIncrementalImport`
+## `beginIncrementalImport`
 
 Starts to build a batch of events to import.
 
-##### Arguments
+#### Arguments
 
 `void`
 
-##### Result
+#### Result
 
 importId: `Promise<string>`
 
-### `pushIncrementalImport`
+## `pushIncrementalImport`
 
 Adds events to an incremental import batch.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                                                                           |
 | ------------- | ------------------------------------------------------------------------------------- |
 | events        | An array of `{ aggregateId: string, type: string, timestamp: number, payload: any }`. |
 | importId      | A unique key of an import batch.                                                      |
 
-##### Result
+#### Result
 
 `Promise<void>`
 
-### `commitIncrementalImport`
+## `commitIncrementalImport`
 
 Commits an incremental import batch to the event store.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                      |
 | ------------- | -------------------------------- |
 | importId      | A unique key of an import batch. |
 
-##### Result
+#### Result
 
 `Promise<void>`
 
-### `rollbackIncrementalImport`
+## `rollbackIncrementalImport`
 
 Drops an incremental import batch.
 
-##### Arguments
+#### Arguments
 
 `void`
 
-##### Result
+#### Result
 
 `Promise<void>`
 
-### `getNextCursor`
+## `getNextCursor`
 
 Gets an array of events and the next cursor from the store based on the specified filter criteria.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                                                |
 | ------------- | ---------------------------------------------------------- |
 | cursor        | string or null                                             |
 | events        | events: Array<{ threadCounter: number, threadId: number }> |
 
-##### Result
+#### Result
 
 `string`
 
@@ -393,17 +393,17 @@ Gets an array of events and the next cursor from the store based on the specifie
 
 ```
 
-### `importEvents`
+## `importEvents`
 
 Gets a writable stream used to save events.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                                               |
 | ------------- | --------------------------------------------------------- |
 | options?      | { byteOffset: number, maintenanceMode: MAINTENANCE_MODE } |
 
-##### Result
+#### Result
 
 `ImportEventsStream`
 
@@ -413,17 +413,17 @@ Gets a writable stream used to save events.
 
 ```
 
-### `exportEvents`
+## `exportEvents`
 
 Gets a readable stream used to load events.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                                                                      |
 | ------------- | -------------------------------------------------------------------------------- |
 | options?      | { cursor: string or null, maintenanceMode: MAINTENANCE_MODE, bufferSize: number} |
 
-##### Result
+#### Result
 
 `ExportEventsStream`
 
@@ -433,17 +433,17 @@ Gets a readable stream used to load events.
 
 ```
 
-### `loadSecrets`
+## `loadSecrets`
 
 Gets a list of secrets stored in the event store.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                                                                               |
 | ------------- | ----------------------------------------------------------------------------------------- |
 | filter        | { idx?: number or null, skip?: number, limit: number, ids?: Array&lt;string&gt; or null } |
 
-##### Result
+#### Result
 
 ```ts
 Promise<{
@@ -461,17 +461,17 @@ Promise<{
 
 ```
 
-### `importSecrets`
+## `importSecrets`
 
 Gets a writable stream used to save secrets.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                           |
 | ------------- | ------------------------------------- |
 | options?      | { maintenanceMode: MAINTENANCE_MODE } |
 
-##### Result
+#### Result
 
 ```ts
 stream.Writable
@@ -483,17 +483,17 @@ stream.Writable
 
 ```
 
-### `exportSecrets`
+## `exportSecrets`
 
 Gets a writable stream used to load secrets.
 
-##### Arguments
+#### Arguments
 
 | Argument Name | Description                                                |
 | ------------- | ---------------------------------------------------------- |
 | options?      | { idx: number or null, maintenanceMode: MAINTENANCE_MODE } |
 
-##### Result
+#### Result
 
 `stream.Readable`
 
