@@ -134,9 +134,9 @@ await eventStoreAdapter.saveEvent({
 
 #### Arguments
 
-| Argument Name | Description                                                                                      |
-| ------------- | ------------------------------------------------------------------------------------------------ |
-| event         | { aggregateId: string, aggregateVersion: number, type: string, timestamp: number, payload: any } |
+| Argument Name | Type                         | Description      |
+| ------------- | ---------------------------- | ---------------- |
+| `event`       | An [event](event.md) object. | A event to save. |
 
 ### `loadEvents`
 
@@ -180,7 +180,7 @@ const { events } = await adapter.loadEvents({
 
 | Argument Name | Type                                     | Description                                          |
 | ------------- | ---------------------------------------- | ---------------------------------------------------- |
-| eventFilter   | An [event filter](#event-filter) object. | Describes criteria used to filter the loaded events. |
+| `eventFilter` | An [event filter](#event-filter) object. | Describes criteria used to filter the loaded events. |
 
 #### Result
 
@@ -239,13 +239,13 @@ if (content == null) {
 
 #### Arguments
 
-| Argument Name | Description                             |
-| ------------- | --------------------------------------- |
-| snapshotKey   | A unique key in the table of snapshots. |
+| Argument Name | Type     | Description                             |
+| ------------- | -------- | --------------------------------------- |
+| `snapshotKey` | `string` | A unique key in the table of snapshots. |
 
 #### Result
 
-content: `Promise<string | null>`
+A `promise` that resolves to a `string` that is a snapshot in text format or `null` if the snapshot was not found.
 
 ### `saveSnapshot`
 
@@ -259,10 +259,10 @@ await eventStoreAdapter.saveSnapshot(snapshotKey, content)
 
 #### Arguments
 
-| Argument Name | Description                             |
-| ------------- | --------------------------------------- |
-| snapshotKey   | A unique key in the table of snapshots. |
-| content       | A snapshot in text format.              |
+| Argument Name | Type     | Description                             |
+| ------------- | -------- | --------------------------------------- |
+| `snapshotKey` | `string` | A unique key in the table of snapshots. |
+| `content`     | `string` | A snapshot in text format.              |
 
 #### Result
 
@@ -278,13 +278,13 @@ await eventStoreAdapter.dropSnapshot(snapshotKey)
 
 #### Arguments
 
-| Argument Name | Description                            |
-| ------------- | -------------------------------------- |
-| snapshotKey   | A unique key in the table of snapshots |
+| Argument Name | Type     | Description                            |
+| ------------- | -------- | -------------------------------------- |
+| `snapshotKey` | `string` | A unique key in the table of snapshots |
 
 #### Result
 
-A `promise` that resolves after the event store has been successfully deleted.
+A `promise` that resolves after the snapshot has been successfully deleted.
 
 #### Example
 
@@ -300,9 +300,9 @@ await eventStoreAdapter.incrementalImport(events)
 
 #### Arguments
 
-| Argument Name | Description                                                                           |
-| ------------- | ------------------------------------------------------------------------------------- |
-| events        | An array of `{ aggregateId: string, type: string, timestamp: number, payload: any }`. |
+| Argument Name | Type                                   | Description           |
+| ------------- | -------------------------------------- | --------------------- |
+| `events`      | An array of [event](event.md) objects. | The events to import. |
 
 #### Result
 
@@ -314,7 +314,7 @@ Starts to build a batch of events to import.
 
 #### Result
 
-importId: `Promise<string>`
+A `promise` that resolves to a `string` that is the ID of the created import batch.
 
 ### `pushIncrementalImport`
 
@@ -322,10 +322,10 @@ Adds events to an incremental import batch.
 
 #### Arguments
 
-| Argument Name | Description                                                                           |
-| ------------- | ------------------------------------------------------------------------------------- |
-| events        | An array of `{ aggregateId: string, type: string, timestamp: number, payload: any }`. |
-| importId      | A unique key of an import batch.                                                      |
+| Argument Name | Type                                   | Description                      |
+| ------------- | -------------------------------------- | -------------------------------- |
+| `events`      | An array of [event](event.md) objects. | The events to add to the batch.  |
+| `importId`    | `string`                               | A unique key of an import batch. |
 
 #### Result
 
@@ -337,9 +337,9 @@ Commits an incremental import batch to the event store.
 
 #### Arguments
 
-| Argument Name | Description                      |
-| ------------- | -------------------------------- |
-| importId      | A unique key of an import batch. |
+| Argument Name | Type     | Description                      |
+| ------------- | -------- | -------------------------------- |
+| `importId`    | `string` | A unique key of an import batch. |
 
 #### Result
 
@@ -355,18 +355,18 @@ A `promise` that resolves on successful rollback.
 
 ### `getNextCursor`
 
-Gets an array of events and the next cursor from the store based on the specified filter criteria.
+Gets an the next cursor from the store based.
 
 #### Arguments
 
-| Argument Name | Description                                                |
-| ------------- | ---------------------------------------------------------- |
-| cursor        | string or null                                             |
-| events        | events: Array<{ threadCounter: number, threadId: number }> |
+| Argument Name | Type               | Description |
+| ------------- | ------------------ | ----------- |
+| cursor        | `string` or `null` |             |
+| events        |                    |             |
 
 #### Result
 
-`string`
+A `string` that is a new database cursor.
 
 ### `importEvents`
 
