@@ -22,24 +22,24 @@ A monitoring adapter implementation should expose the following interface:
 
 All of the listed functions except for `publish` have a default implementation in the base package.
 
-## `error`
+### `error`
 
-## `execution`
+### `execution`
 
-## `duration`
+### `duration`
 
-## `time`
+### `time`
 
-## `timeEnd`
+### `timeEnd`
 
-## `publish`
+### `publish`
 
-## `rate`
+### `rate`
 
-## `performance`
+### `performance`
 
-## `group`
+### `group`
 
-## `getMetrics`
+### `getMetrics`
 
-## `clearMetrics`
+### `clearMetrics`
