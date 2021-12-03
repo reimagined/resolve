@@ -6,7 +6,7 @@ import { getTargetURL } from '../utils/utils'
 jest.setTimeout(10 * 60 * 1000)
 
 const BENCH_EVENTS_COUNT = 1500
-const MAX_FAILED_ATTEMPTS = 5
+const MAX_FAILED_ATTEMPTS = 20
 const PERIOD = 60 //seconds
 let testLaunchTimestamp = Number.NaN
 
