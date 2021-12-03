@@ -478,7 +478,7 @@ Gets a writable stream used to load secrets.
 
 `stream.Readable`
 
-## Related API
+## Types
 
 ### Event Filter
 
@@ -494,7 +494,7 @@ The value that represents internal position in event-store. `loadEvents` will re
 
 #### `startTime` and `finishTime`
 
-Specify the inclusive start and end of the time interval for which to load events. Specified in milliseconds elapsed since January 1, 1970 00:00:00 UTC. Bot values can be omitted to specify no lower or upper bound for the interval.
+Specify the inclusive start and end of the time interval for which to load events. Specified in milliseconds elapsed since January 1, 1970 00:00:00 UTC. Both values can be omitted so that there is no lower and/or upper bound.
 
 :::caution
 The `startTime` and `finishTime` specified in conjunction with [`cursor`](#cursor) produces an error.
