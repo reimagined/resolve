@@ -375,7 +375,12 @@ Gets a writable stream used to save events.
 #### Example
 
 ```js
+import { pipeline as pipelineC } from 'stream'
+import { promisify } from 'util'
 
+const pipeline = promisify(pipelineC)
+
+await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 ```
 
 #### Arguments
@@ -395,7 +400,12 @@ Gets a readable stream used to load events.
 #### Example
 
 ```js
+import { pipeline as pipelineC } from 'stream'
+import { promisify } from 'util'
 
+const pipeline = promisify(pipelineC)
+
+await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 ```
 
 #### Arguments
