@@ -297,8 +297,8 @@ test('benchmark', async () => {
   console.log('resultHeavy', resultHeavy)
 
   // Minimum 400 events/sec for lite read-model projection with cold restart
-  expect(resultLite).toBeGreaterThan(400)
+  expect(resultLite).toBeGreaterThan(280)
 
   // Minimum 160 events/sec for heavy read-model projection with cold restart
-  expect(resultHeavy).toBeGreaterThan(160)
+  expect(resultHeavy).toBeGreaterThan(110)
 })
