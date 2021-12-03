@@ -6,6 +6,7 @@ const count: CurrentStoreApi['count'] = async (
   tableName,
   searchExpression
 ) => {
+  await pool.ensureAffectedOperation('resolver', readModelName)
   const sqlQuery = pool.makeSqlQuery(
     pool,
     readModelName,

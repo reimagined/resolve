@@ -20,6 +20,7 @@ const resume: ExternalMethods['resume'] = async (pool, readModelName, next) => {
     while (true) {
       try {
         await inlineLedgerForceStop(pool, readModelName)
+        await pool.ensureAffectedOperation('resume', readModelName)
         await inlineLedgerRunQuery(
           `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
