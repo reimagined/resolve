@@ -1,8 +1,9 @@
 import fs from 'fs'
-import request from 'request'
 import { v4 as uuid } from 'uuid'
 import crypto from 'crypto'
 import type { Uploader, UploaderPool } from '@resolve-js/runtime-base'
+import fetch from 'node-fetch'
+import FormData from 'form-data'
 
 export type UploaderPoolLocal = UploaderPool & {
   directory: string
@@ -32,20 +33,23 @@ const createPreSignedPut = async (pool: Pool, dir: string) => {
 export const upload = (uploadUrl: string, filePath: string) => {
   const fileSizeInBytes = fs.statSync(filePath).size
   const fileStream = fs.createReadStream(filePath)
-  return new Promise<void>((resolve, reject) =>
-    request.put(
-      {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      const res = await fetch(uploadUrl, {
+        method: 'PUT',
         headers: {
-          'Content-Length': fileSizeInBytes,
+          'Content-Length': fileSizeInBytes.toString(),
         },
-        uri: uploadUrl,
         body: fileStream,
-      },
-      (error, _, body) => {
-        error ? reject(error) : body ? reject(body) : resolve()
+      })
+
+      if (!res.ok) {
+        throw new Error(await res.text())
       }
-    )
-  )
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 const createPresignedPost = async (pool: Pool, dir: string) => {
@@ -64,19 +68,24 @@ const createPresignedPost = async (pool: Pool, dir: string) => {
 export const uploadFormData = (form: { url: string }, filePath: string) => {
   const fileStream = fs.createReadStream(filePath)
 
-  return new Promise<void>((resolve, reject) =>
-    request.post(
-      {
-        url: form.url,
-        formData: {
-          file: fileStream,
-        },
-      },
-      (error) => {
-        error ? reject(error) : resolve()
+  const formData = new FormData()
+
+  formData.append('file', fileStream)
+
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      const res = await fetch(form.url, {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!res.ok) {
+        throw new Error(await res.text())
       }
-    )
-  )
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 const createToken = (
