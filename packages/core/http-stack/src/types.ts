@@ -1,6 +1,7 @@
 import type { IncomingHttpHeaders } from 'http'
 import type { CookieSerializeOptions } from 'cookie'
 import type { INTERNAL } from './constants'
+import type { TrieOptions } from 'route-trie'
 
 export type CORS = {
   origin?:
@@ -17,6 +18,36 @@ export type CORS = {
   optionsSuccessStatus?: number
 }
 
+export type Route<
+  CustomParameters extends Record<string | symbol, any> = {}
+> = {
+  pattern: string
+  method: HttpMethods
+  middlewares: Array<
+    (
+      req: HttpRequest<CustomParameters>,
+      res: HttpResponse,
+      next: () => void
+    ) => Promise<void> | void
+  >
+  handler: (
+    req: HttpRequest<CustomParameters>,
+    res: HttpResponse
+  ) => Promise<void> | void
+}
+
+export type RouterOptions<
+  CustomParameters extends Record<string | symbol, any> = {}
+> = {
+  cors: CORS
+  options: TrieOptions
+  routes: Array<Route<CustomParameters>>
+  notFoundHandler: (
+    req: HttpRequest<CustomParameters>,
+    res: HttpResponse
+  ) => Promise<void> | void
+}
+
 export type HttpMethods =
   | 'GET'
   | 'HEAD'
@@ -30,15 +61,16 @@ export type HttpMethods =
 
 export type HttpRequest<
   CustomParameters extends Record<string | symbol, any> = {}
-> = CustomParameters & {
+> = {
   readonly method: HttpMethods
   readonly query: Record<string, any>
   readonly path: string
   readonly headers: IncomingHttpHeaders
+  readonly params: Record<string, string>
   readonly cookies: Record<string, string>
   readonly body: Buffer | null
   readonly clientIp?: string
-}
+} & CustomParameters
 
 export type HttpResponse = {
   [INTERNAL]: InternalResponse
@@ -54,8 +86,9 @@ export type HttpResponse = {
   ) => HttpResponse
   readonly status: (code: number) => HttpResponse
   readonly redirect: (path: string, code?: number) => HttpResponse
-  readonly getHeader: (searchKey: string) => any
+  readonly getHeader: (key: string) => any
   readonly setHeader: (key: string, value: string) => HttpResponse
+  readonly addVaryHeader: (key: string) => HttpResponse
   readonly text: (content: string, encoding?: BufferEncoding) => HttpResponse
   readonly json: (content: any) => HttpResponse
   readonly end: (
@@ -73,6 +106,7 @@ export type InternalResponse = {
   status: number
   headers: Array<[string, string]>
   cookies: Array<string>
+  varyHeaderKeys: Set<string>
   body: string | Buffer
   closed: boolean
 }

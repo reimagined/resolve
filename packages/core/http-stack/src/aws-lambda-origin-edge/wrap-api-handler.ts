@@ -4,10 +4,9 @@ import type {
   HttpResponse,
   LambdaOriginEdgeResponse,
 } from '../types'
-import { INTERNAL } from '../constants'
-import normalizeKey from '../normalize-key'
 import createRequest from './create-request'
 import createResponse from '../create-response'
+import finalizeResponse from '../finalize-response'
 import getHttpStatusText from '../get-http-status-text'
 import getSafeErrorMessage from '../get-safe-error-message'
 import getDebugErrorMessage from '../get-debug-error-message'
@@ -26,14 +25,23 @@ const wrapApiHandler = <
     lambdaContext: any
   ) => CustomParameters | Promise<CustomParameters> = () => ({} as any),
   // eslint-disable-next-line no-new-func
-  onStart: (timestamp: number) => void = Function() as any,
+  onStart: (
+    timestamp: number,
+    req: HttpRequest<CustomParameters>,
+    res: HttpResponse
+  ) => void = Function() as any,
   // eslint-disable-next-line no-new-func
-  onFinish: (timestamp: number, error?: any) => void = Function() as any
+  onFinish: (
+    timestamp: number,
+    req: HttpRequest<CustomParameters>,
+    res: HttpResponse,
+    error?: any
+  ) => void = Function() as any
 ) => async (
   lambdaEvent: LambdaOriginEdgeRequest,
   lambdaContext: any
 ): Promise<LambdaOriginEdgeResponse> => {
-  onStart(Date.now())
+  const startTime = Date.now()
 
   try {
     const customParameters = await getCustomParameters(
@@ -49,47 +57,51 @@ const wrapApiHandler = <
     })
     const res = createResponse()
 
-    await handler(req, res)
+    onStart(startTime, req, res)
 
-    const { status: statusCode, headers, cookies, body: bodyBuffer } = res[
-      INTERNAL
-    ]
-    const body = Buffer.from(bodyBuffer).toString('base64')
+    try {
+      await handler(req, res)
 
-    for (const cookieHeader of cookies) {
-      headers.push([
-        normalizeKey('Set-Cookie', 'upper-dash-case'),
-        cookieHeader,
-      ])
+      const { status, headers, body } = await finalizeResponse(res)
+
+      const result: LambdaOriginEdgeResponse = {
+        httpStatus: status,
+        httpStatusText: getHttpStatusText(status),
+        headers: headers.map(([key, value]) => ({
+          key,
+          value,
+        })),
+        body: Buffer.from(body).toString('base64'),
+      }
+
+      onFinish(Date.now(), req, res)
+
+      return result
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(getDebugErrorMessage(error))
+
+      const result: LambdaOriginEdgeResponse = {
+        httpStatus: 500,
+        httpStatusText: getHttpStatusText(500),
+        headers: [],
+        body: getSafeErrorMessage(error),
+      }
+
+      onFinish(Date.now(), req, res, error)
+
+      return result
     }
-
-    const result: LambdaOriginEdgeResponse = {
-      httpStatus: statusCode,
-      httpStatusText: getHttpStatusText(statusCode),
-      headers: headers.map(([key, value]) => ({
-        key,
-        value,
-      })),
-      body,
-    }
-
-    onFinish(Date.now())
-
-    return result
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(getDebugErrorMessage(error))
 
-    const result: LambdaOriginEdgeResponse = {
+    return {
       httpStatus: 500,
       httpStatusText: getHttpStatusText(500),
       headers: [],
       body: getSafeErrorMessage(error),
     }
-
-    onFinish(Date.now(), error)
-
-    return result
   }
 }
 

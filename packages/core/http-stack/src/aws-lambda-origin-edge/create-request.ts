@@ -52,6 +52,7 @@ const createRequest = async <
     cookies,
     body,
     clientIp,
+    params: {},
     lambdaOriginEdgeStartTime,
   }
 }

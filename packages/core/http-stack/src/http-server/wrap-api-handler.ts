@@ -1,11 +1,11 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 
 import type { HttpRequest, HttpResponse } from '../types'
-import getSafeErrorMessage from '../get-safe-error-message'
-import getDebugErrorMessage from '../get-debug-error-message'
-import { INTERNAL } from '../constants'
 import createResponse from '../create-response'
 import createRequest from './create-request'
+import finalizeResponse from '../finalize-response'
+import getSafeErrorMessage from '../get-safe-error-message'
+import getDebugErrorMessage from '../get-debug-error-message'
 
 const wrapApiHandler = <
   CustomParameters extends Record<string | symbol, any> = {}
@@ -15,41 +15,57 @@ const wrapApiHandler = <
     res: HttpResponse
   ) => Promise<void>,
   getCustomParameters: (
-    req: IncomingMessage,
-    res: ServerResponse
+    externalReq: IncomingMessage,
+    externalRes: ServerResponse
   ) => CustomParameters | Promise<CustomParameters> = () => ({} as any),
-  onStart: (timestamp: number) => void = Function() as any,
-  onFinish: (timestamp: number, error?: any) => void = Function() as any
-) => async (req: IncomingMessage, res: ServerResponse) => {
-  if (onStart != null) {
-    onStart(Date.now())
-  }
+  onStart: (
+    timestamp: number,
+    req: HttpRequest<CustomParameters>,
+    res: HttpResponse
+  ) => void = Function() as any,
+  onFinish: (
+    timestamp: number,
+    req: HttpRequest<CustomParameters>,
+    res: HttpResponse,
+    error?: any
+  ) => void = Function() as any
+) => async (externalReq: IncomingMessage, externalRes: ServerResponse) => {
+  const startTime = Date.now()
 
   try {
-    const customParameters = await getCustomParameters(req, res)
+    const customParameters = await getCustomParameters(externalReq, externalRes)
+    const req = await createRequest<CustomParameters>(
+      externalReq,
+      customParameters
+    )
+    const res = createResponse()
 
-    const httpReq = await createRequest<CustomParameters>(req, customParameters)
-    const httpRes = createResponse()
+    onStart(startTime, req, res)
 
-    await handler(httpReq, httpRes)
+    try {
+      await handler(req, res)
 
-    const { status, headers, cookies, body } = httpRes[INTERNAL]
-    for (const cookieHeader of cookies) {
-      headers.push(['Set-Cookie', cookieHeader])
+      const { status, headers, body } = await finalizeResponse(res)
+
+      externalRes.writeHead(status, headers)
+      externalRes.end(body)
+
+      onFinish(Date.now(), req, res)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(getDebugErrorMessage(error))
+
+      externalRes.statusCode = 500
+      externalRes.end(getSafeErrorMessage(error))
+
+      onFinish(Date.now(), req, res, error)
     }
-
-    res.writeHead(status, headers)
-    res.end(body)
-
-    onFinish(Date.now())
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(getDebugErrorMessage(error))
 
-    res.statusCode = 500
-    res.end(getSafeErrorMessage(error))
-
-    onFinish(Date.now(), error)
+    externalRes.statusCode = 500
+    externalRes.end(getSafeErrorMessage(error))
   }
 }
 

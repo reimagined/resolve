@@ -13,6 +13,7 @@ const createResponse = (): HttpResponse => {
     status: 200,
     headers: [],
     cookies: [],
+    varyHeaderKeys: new Set<string>(),
     body: '',
     closed: false,
   }
@@ -69,6 +70,12 @@ const createResponse = (): HttpResponse => {
       validateOptionShape('Header value', value, [String])
 
       putHeader(internalRes.headers, key, value)
+
+      return res
+    },
+    addVaryHeader: (key) => {
+      const normalizedKey = normalizeKey(key, 'upper-dash-case')
+      internalRes.varyHeaderKeys.add(normalizedKey)
 
       return res
     },

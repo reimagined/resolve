@@ -1,107 +1,73 @@
-import type { Trie as ITrie, TrieOptions } from 'route-trie'
 import Trie from 'route-trie'
 
-import type { HttpRequest, HttpResponse, HttpMethods, CORS } from './types'
+import type { HttpRequest, HttpResponse, RouterOptions } from './types'
+import defaultNotFoundHandler from './default-not-found-handler'
+import createCorsMiddleware from './create-cors-middleware'
+import corsHandler from './cors-handler'
+import createRouteMatcher from './create-route-matcher'
 
-class Router<CustomParameters extends Record<string | symbol, any> = {}> {
-  #cors: CORS
-  #enableCors: boolean
-  #trie: ITrie
-  #failHandler: (
-    req: HttpRequest<CustomParameters>,
-    res: HttpResponse
-  ) => Promise<void>
-  #corsMiddleware(req: HttpRequest<{}>, res: HttpResponse) {
-    const { origin } = this.#cors
+const createRouter = <
+  CustomParameters extends Record<string | symbol, any> = {}
+>({
+  cors = {},
+  options = {
+    ignoreCase: true,
+    fixedPathRedirect: true,
+    trailingSlashRedirect: true,
+  },
+  routes,
+  notFoundHandler = defaultNotFoundHandler,
+}: RouterOptions<CustomParameters>) => {
+  const trie = new Trie(options)
 
-    if (typeof origin === 'string') {
-      res.setHeader('Access-Control-Allow-Origin', origin)
-    } else if (
-      origin === true ||
-      (Array.isArray(origin) &&
-        origin.every((item) => item != null && item.constructor === String) &&
-        req.headers.origin != null &&
-        origin.includes(req.headers.origin)) ||
-      (origin != null &&
-        origin.constructor === RegExp &&
-        origin.test(req.headers.origin))
-    ) {
-      res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
-      res.setHeader('Vary', 'Origin') // TODO res.vary(header: string)
-    } else {
-      return
+  const corsMiddleware = createCorsMiddleware(cors)
+  for (const route of routes) {
+    if (corsMiddleware != null) {
+      route.middlewares = [corsMiddleware, ...route.middlewares]
     }
+  }
 
-    res.setHeader('Access-Control-Allow-Methods', '*')
-    res.setHeader(
-      'Access-Control-Allow-Headers',
-      'Origin, Content-Type, Accept, x-resolve-execution-mode'
+  for (const { method, pattern, middlewares, handler } of routes) {
+    trie.define(pattern).handle(
+      method,
+      async (
+        req: HttpRequest<CustomParameters>,
+        res: HttpResponse
+      ): Promise<void> => {
+        let isNext = false
+        const next = () => {
+          isNext = true
+        }
+
+        for (const middleware of middlewares) {
+          isNext = false
+          await middleware(req, res, next)
+          if (!isNext) {
+            return
+          }
+        }
+        await handler(req, res)
+      }
     )
   }
-  constructor(
-    cors: CORS = {},
-    options: TrieOptions = {
-      ignoreCase: true,
-      fixedPathRedirect: true,
-      trailingSlashRedirect: true,
-    }
-  ) {
-    this.#cors = cors
-    this.#enableCors = Object.keys(cors).length > 0
-
-    this.#trie = new Trie(options)
-  }
-  on(
-    pattern: string,
-    method: HttpMethods,
-    handler: (
-      req: HttpRequest<CustomParameters>,
-      res: HttpResponse
-    ) => Promise<void>
-  ) {
-    this.#trie.define(pattern).handle(method, handler)
+  for (const { pattern } of routes) {
     try {
-      this.#trie.define(pattern).handle('OPTIONS', this.#corsHandler)
+      if (corsMiddleware != null) {
+        trie.define(pattern).handle(
+          'OPTIONS',
+          async (
+            req: HttpRequest<CustomParameters>,
+            res: HttpResponse
+          ): Promise<void> => {
+            await corsMiddleware(req, res, Function() as any)
+            await corsHandler(req, res)
+          }
+        )
+      }
     } catch {}
   }
-  fail(
-    handler: (
-      req: HttpRequest<CustomParameters>,
-      res: HttpResponse
-    ) => Promise<void>
-  ) {}
+
+  return createRouteMatcher(trie, notFoundHandler)
 }
 
-const createRouter = () => new Router()
-
-const clientApiHandler = async (
-  req: InternalRequest<Context>,
-  res: InternalResponse
-): Promise<void> => {
-  const { node, params, fpr, tsr } = trie.match(req.path)
-
-  if (fpr != null && fpr !== '') {
-    return void (await res.redirect(fpr))
-  } else if (tsr != null && tsr !== '') {
-    return void (await res.redirect(tsr))
-  } else if (node == null) {
-    return void (await failHandler(req, res))
-  }
-
-  req.params = () => params
-
-  const handler = node.getHandler(req.method.toUpperCase())
-
-  if (typeof handler !== 'function') {
-    return void (await failHandler(req, res))
-  }
-
-  try {
-    await handler(req, res)
-  } catch (error) {
-    res.status(Number.isInteger(error.code) ? error.code : 500)
-    res.end(`${error.message}`)
-  }
-}
-
-export default clientApiHandler
+export default createRouter

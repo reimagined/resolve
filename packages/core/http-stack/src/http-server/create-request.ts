@@ -36,6 +36,7 @@ const createRequest = async <
   const clientIp = headers['X-Forwarded-For']
 
   return {
+    ...customParameters,
     method: req.method as HttpMethods,
     query,
     path: pathname,
@@ -43,7 +44,7 @@ const createRequest = async <
     cookies,
     body,
     clientIp,
-    ...customParameters,
+    params: {},
   }
 }
 
