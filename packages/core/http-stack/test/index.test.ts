@@ -11,10 +11,14 @@ import type {
   HttpRequest,
   HttpResponse,
   HttpMethods,
+  Route,
   LambdaOriginEdgeRequest,
-} from '../src/types'
+} from '../src'
+import { createAwsLambdaOriginEdgeRouter, createHttpServerRouter } from '../src'
+/*
 import wrapHttpServerApiHandler from '../src/http-server/wrap-api-handler'
 import wrapLambdaServerApiHandler from '../src/aws-lambda-origin-edge/wrap-api-handler'
+*/
 
 jest.setTimeout(1000 * 60)
 
@@ -27,14 +31,7 @@ const customApi = {
 }
 
 const tests: Array<{
-  route: {
-    path: string
-    method: HttpMethods
-    handler: (
-      req: HttpRequest<typeof customApi>,
-      res: HttpResponse
-    ) => Promise<void>
-  }
+  route: Route<typeof customApi>
   request: {
     query?: string
     body?: string
@@ -44,7 +41,7 @@ const tests: Array<{
 }> = [
   {
     route: {
-      path: '/json-handler',
+      pattern: '/json-handler',
       method: 'GET',
       handler: async (req, res) => {
         res.json({ a: 42, b: 'アニメの女の子' })
@@ -59,7 +56,7 @@ const tests: Array<{
   },
   {
     route: {
-      path: '/text-handler',
+      pattern: '/text-handler',
       method: 'GET',
       handler: async (req, res) => {
         res.end('アニメの女の子')
@@ -74,7 +71,7 @@ const tests: Array<{
   },
   {
     route: {
-      path: '/redirect-302-handler',
+      pattern: '/redirect-302-handler',
       method: 'GET',
       handler: async (req, res) => {
         res.redirect('/redirected')
@@ -88,7 +85,7 @@ const tests: Array<{
   },
   {
     route: {
-      path: '/redirect-301-handler',
+      pattern: '/redirect-301-handler',
       method: 'GET',
       handler: async (req, res) => {
         res.redirect('/redirected', 301)
@@ -102,7 +99,7 @@ const tests: Array<{
   },
   {
     route: {
-      path: '/access-denied',
+      pattern: '/access-denied',
       method: 'GET',
       handler: async (req, res) => {
         res.status(401)
@@ -118,7 +115,7 @@ const tests: Array<{
   },
   {
     route: {
-      path: '/unhandled-error-handler',
+      pattern: '/unhandled-error-handler',
       method: 'GET',
       handler: async (req, res) => {
         class CustomError extends Error {
@@ -136,7 +133,7 @@ const tests: Array<{
   },
   {
     route: {
-      path: '/commands',
+      pattern: '/commands',
       method: 'POST',
       handler: async (req, res) => {
         await req.resolve.executeQuery()
@@ -164,7 +161,7 @@ const tests: Array<{
 
   {
     route: {
-      path: '/bootstrap',
+      pattern: '/bootstrap',
       method: 'PATCH',
       handler: async (req, res) => {
         await req.resolve.bootstrap()
@@ -181,7 +178,7 @@ const tests: Array<{
   },
   {
     route: {
-      path: '/sum',
+      pattern: '/sum',
       method: 'POST',
       handler: async (req, res) => {
         const { a, b } =
@@ -210,7 +207,7 @@ const tests: Array<{
   },
   {
     route: {
-      path: '/sum',
+      pattern: '/sum',
       method: 'GET',
       handler: async (req, res) => {
         const { a, b } = req.query
@@ -236,7 +233,7 @@ const tests: Array<{
   },
   {
     route: {
-      path: '/avg',
+      pattern: '/avg',
       method: 'GET',
       handler: async (req, res) => {
         const { arr } = req.query
@@ -267,19 +264,11 @@ beforeAll(async () => {
   {
     localHttpServer = await new Promise((resolve) => {
       const refServer = http
-        .createServer(async (req, res) => {
-          for (const {
-            route: { path, method, handler },
-          } of tests) {
-            const url = new URL(req.url ?? '', 'https://example.com')
-            if (url.pathname === path && req.method === method) {
-              await wrapHttpServerApiHandler(handler, () => customApi)(req, res)
-              return
-            }
-          }
-          res.statusCode = 500
-          res.end()
-        })
+        .createServer(
+          createHttpServerRouter({
+            routes,
+          })
+        )
         .listen(0, () => {
           resolve(refServer)
         })
