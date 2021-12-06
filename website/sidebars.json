@@ -70,6 +70,8 @@
             "type": "category",
             "label": "Monitoring",
             "items": [
+              "api/monitoring/monitoring",
+              "api/monitoring/metric",
               "api/monitoring/monitoring-adapter"
             ]
           },

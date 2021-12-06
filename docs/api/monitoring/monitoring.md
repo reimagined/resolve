@@ -1,16 +1,17 @@
 ---
-id: monitoring-adapter
-title: Monitoring Adapter
-description: This document describes the interface that a monitoring adapter should expose.
+id: monitoring
+title: Monitoring Interface
 ---
 
-A monitoring adapter implementation should expose the following interface:
+A monitoring object's interface doubles the interface of a monitoring adapter except for the `getMetrics` and `clearMetrics` methods that require a monitoring adapted ID as an argument.
+
+A monitoring object exposes the following API:
 
 | Member Name                     | Description                                                                                |
 | ------------------------------- | ------------------------------------------------------------------------------------------ |
-| [`error`](#error)               | Registers an occurred error.                                                               |
-| [`execution`](#execution)       | Registers execution of an operation.                                                       |
-| [`duration`](#duration)         | Registers duration of an operation.                                                        |
+| [`error`](#error)               | Registers an occurred error                                                                |
+| [`execution`](#execution)       | Registers an execution of an operation.                                                    |
+| [`duration`](#duration)         | Registers the duration of an operation.                                                    |
 | [`time`](#time)                 | Starts execution time measurement.                                                         |
 | [`timeEnd`](#timeend)           | Ends execution time measurement and registers the resulting duration.                      |
 | [`publish`](#publish)           | Defined by an implementation, publishes the collected metrics to the intended destination. |
@@ -19,19 +20,11 @@ A monitoring adapter implementation should expose the following interface:
 | [`getMetrics`](#getmetrics)     | Get a list of collected metrics.                                                           |
 | [`clearMetrics`](#clearmetrics) | Clear the list of collected metrics.                                                       |
 
-All of the listed functions except for `publish` have a default implementation in the base package.
-
 ### `error`
-
-Registers an occurred error. The default implementation increments the count of the `"Errors"` metric.
 
 ### `execution`
 
-Registers an execution of an operation. The default implementation increments the count of the `"Executions"` metric.
-
 ### `duration`
-
-Registers the duration of an operation. The default implementation ads the specified value in milliseconds to the `"Duration"` metric.
 
 ### `time`
 
