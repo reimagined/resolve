@@ -21,6 +21,7 @@ import cloudReplicaConfig from './config.cloud.replica'
 import devConfig from './config.dev'
 import devReplicaConfig from './config.dev.replica'
 import prodConfig from './config.prod'
+import dockerConfig from './config.docker'
 import testFunctionalConfig from './config.test-functional'
 import adjustWebpackConfigs from './config.adjust-webpack'
 import debug from '@resolve-js/debug-levels'
@@ -119,6 +120,12 @@ void (async () => {
 
       case 'build': {
         const resolveConfig = merge(baseConfig, prodConfig)
+        await build(resolveConfig, adjustWebpackConfigs)
+        break
+      }
+
+      case 'build:docker': {
+        const resolveConfig = merge(baseConfig, dockerConfig)
         await build(resolveConfig, adjustWebpackConfigs)
         break
       }
@@ -237,6 +244,11 @@ void (async () => {
         const moduleAdmin = resolveModuleAdmin()
         const resolveConfig = merge(baseConfig, moduleAdmin, cloudConfig)
         await build(resolveConfig, adjustWebpackConfigs)
+        break
+      }
+
+      case 'test:e2e-docker': {
+        await execE2E('test/e2e-docker', true)
         break
       }
 
