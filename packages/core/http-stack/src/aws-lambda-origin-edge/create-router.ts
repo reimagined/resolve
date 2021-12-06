@@ -1,7 +1,7 @@
-import type { RouterOptions, OnFinishCallback, OnStartCallback } from '../types'
+import type { RouterOptions, OnStartCallback, OnFinishCallback } from '../types'
 import type { GetCustomParameters } from './wrap-api-handler'
 
-import createBaseRouter from '../create-router'
+import createTrieRouter from '../create-trie-router'
 import wrapApiHandler from './wrap-api-handler'
 
 const createRouter = <
@@ -16,6 +16,11 @@ const createRouter = <
   onStart?: OnStartCallback<CustomParameters>
   onFinish?: OnFinishCallback<CustomParameters>
 } & RouterOptions<CustomParameters>) =>
-  wrapApiHandler(createBaseRouter(options))
+  wrapApiHandler(
+    createTrieRouter(options),
+    getCustomParameters,
+    onStart,
+    onFinish
+  )
 
 export default createRouter

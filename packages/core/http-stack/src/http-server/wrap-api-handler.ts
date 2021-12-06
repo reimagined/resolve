@@ -26,8 +26,11 @@ const wrapApiHandler = <
     req: HttpRequest<CustomParameters>,
     res: HttpResponse
   ) => Promise<void>,
-  getCustomParameters: GetCustomParameters<CustomParameters> = () => ({} as any),
+  getCustomParameters: GetCustomParameters<CustomParameters> = () =>
+    ({} as any),
+  // eslint-disable-next-line no-new-func
   onStart: OnStartCallback<CustomParameters> = Function() as any,
+  // eslint-disable-next-line no-new-func
   onFinish: OnFinishCallback<CustomParameters> = Function() as any
 ) => async (externalReq: IncomingMessage, externalRes: ServerResponse) => {
   const startTime = Date.now()

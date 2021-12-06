@@ -35,6 +35,7 @@ const createCorsMiddleware = <
       res.setHeader('Access-Control-Allow-Origin', headerOrigin)
       res.addVaryHeader('Origin')
     } else {
+      next()
       return
     }
 

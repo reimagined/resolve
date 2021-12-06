@@ -4,9 +4,9 @@ import type { HttpRequest, HttpResponse, RouterOptions } from './types'
 import defaultNotFoundHandler from './default-not-found-handler'
 import createCorsMiddleware from './create-cors-middleware'
 import corsHandler from './cors-handler'
-import createRouteMatcher from './create-route-matcher'
+import createTrieRouteMatcher from './create-trie-route-matcher'
 
-const createRouter = <
+const createTrieRouter = <
   CustomParameters extends Record<string | symbol, any> = {}
 >({
   cors = {},
@@ -59,6 +59,7 @@ const createRouter = <
             req: HttpRequest<CustomParameters>,
             res: HttpResponse
           ): Promise<void> => {
+            // eslint-disable-next-line no-new-func
             await corsMiddleware(req, res, Function() as any)
             await corsHandler(req, res)
           }
@@ -67,7 +68,7 @@ const createRouter = <
     } catch {}
   }
 
-  return createRouteMatcher(trie, notFoundHandler)
+  return createTrieRouteMatcher(trie, notFoundHandler)
 }
 
-export default createRouter
+export default createTrieRouter

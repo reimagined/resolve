@@ -2,7 +2,7 @@ import type { Trie } from 'route-trie'
 
 import type { HttpRequest, HttpResponse } from './types'
 
-const createRouteMatcher = <
+const createTrieRouteMatcher = <
   CustomParameters extends Record<string | symbol, any> = {}
 >(
   trie: Trie,
@@ -35,4 +35,4 @@ const createRouteMatcher = <
   }
 }
 
-export default createRouteMatcher
+export default createTrieRouteMatcher

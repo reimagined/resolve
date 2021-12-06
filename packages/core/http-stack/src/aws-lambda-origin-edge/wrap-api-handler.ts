@@ -3,6 +3,8 @@ import type {
   HttpRequest,
   HttpResponse,
   LambdaOriginEdgeResponse,
+  OnStartCallback,
+  OnFinishCallback,
 } from '../types'
 import createRequest from './create-request'
 import createResponse from '../create-response'
@@ -28,18 +30,9 @@ const wrapApiHandler = <
   getCustomParameters: GetCustomParameters<CustomParameters> = () =>
     ({} as CustomParameters),
   // eslint-disable-next-line no-new-func
-  onStart: (
-    timestamp: number,
-    req: HttpRequest<CustomParameters>,
-    res: HttpResponse
-  ) => void = Function() as any,
+  onStart: OnStartCallback<CustomParameters> = Function() as any,
   // eslint-disable-next-line no-new-func
-  onFinish: (
-    timestamp: number,
-    req: HttpRequest<CustomParameters>,
-    res: HttpResponse,
-    error?: any
-  ) => void = Function() as any
+  onFinish: OnFinishCallback<CustomParameters> = Function() as any
 ) => async (
   lambdaEvent: LambdaOriginEdgeRequest,
   lambdaContext: any
