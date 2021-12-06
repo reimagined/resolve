@@ -5,7 +5,7 @@ const createCorsMiddleware = <
 >(
   cors: CORS
 ) => {
-  if (Object.keys(cors).length === 0) {
+  if (cors.origin === false || Object.keys(cors).length === 0) {
     return null
   }
   return (

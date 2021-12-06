@@ -25,7 +25,7 @@ const createRequest = async <
 
   const query = parseQuery(rawQuery, {
     arrayFormat: 'bracket',
-  })
+  }) as Record<string, string | Array<string>>
 
   const body = headers.hasOwnProperty('Content-Length')
     ? await getRawBody(req, {

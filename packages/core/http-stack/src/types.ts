@@ -80,7 +80,7 @@ export type HttpRequest<
   CustomParameters extends Record<string | symbol, any> = {}
 > = {
   readonly method: HttpMethods
-  readonly query: Record<string, any>
+  readonly query: Record<string, string | Array<string>>
   readonly path: string
   readonly headers: IncomingHttpHeaders
   readonly params: Record<string, string>

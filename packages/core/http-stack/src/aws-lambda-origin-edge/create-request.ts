@@ -37,7 +37,10 @@ const createRequest = async <
       ? cookie.parse(headers.cookie)
       : {}
 
-  const query = parseQuery(querystring, { arrayFormat: 'bracket' })
+  const query = parseQuery(querystring, { arrayFormat: 'bracket' }) as Record<
+    string,
+    string | Array<string>
+  >
 
   const body = rawBody == null ? null : Buffer.from(rawBody, 'base64')
 

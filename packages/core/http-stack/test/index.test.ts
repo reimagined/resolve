@@ -238,7 +238,7 @@ const tests: Array<{
       pattern: '/sum',
       method: 'GET',
       handler: async (req, res) => {
-        const { a, b } = req.query
+        const { a = 0, b = 0 } = req.query
         res.json({
           a: +a,
           b: +b,
@@ -270,7 +270,10 @@ const tests: Array<{
       handler: async (req, res) => {
         const { arr } = req.query
         res.json(
-          arr.reduce((acc: number, val: string) => acc + +val, 0) / arr.length
+          Array.isArray(arr)
+            ? arr.reduce((acc: number, val: string) => acc + +val, 0) /
+                arr.length
+            : []
         )
       },
     },
