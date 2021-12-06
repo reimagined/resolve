@@ -1,5 +1,5 @@
 import { CloudWatch, Dimension } from '@aws-sdk/client-cloudwatch'
-import { modifyDBClusterMinMaxCapacity } from 'resolve-cloud-common/postgres'
+import { modifyDBClusterMinMaxCapacity, modifyCurrentDBClusterCapacity } from 'resolve-cloud-common/postgres'
 import fetch from 'isomorphic-fetch'
 import { getTargetURL } from '../utils/utils'
 
@@ -212,6 +212,14 @@ test('benchmark', async () => {
     )}-system`,
     MinCapacity: 2,
     MaxCapacity: 64,
+  })
+
+  await modifyCurrentDBClusterCapacity({
+    Region: CHECK_NOT_NULLISH(process.env.AWS_REGION),
+    DBClusterIdentifier: `resolve-${CHECK_NOT_NULLISH(
+      process.env.RESOLVE_TESTS_TARGET_STAGE
+    )}-system`,
+    Capacity: 64
   })
 
   testLaunchTimestamp = Date.now()

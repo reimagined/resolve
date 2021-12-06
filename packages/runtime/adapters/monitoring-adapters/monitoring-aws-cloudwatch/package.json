@@ -29,7 +29,7 @@
     "@resolve-js/debug-levels": "0.33.6",
     "@resolve-js/monitoring-base": "0.33.6",
     "@resolve-js/runtime-base": "0.33.6",
-    "resolve-cloud-common": "0.0.163"
+    "resolve-cloud-common": "0.0.164"
   },
   "devDependencies": {
     "jest": "27.0.3",
