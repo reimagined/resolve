@@ -510,4 +510,4 @@ jobs:
           DEBUG: resolve:*
           DEBUG_LEVEL: error
         run: |
-          yarn workspaces hacker-news-ts test:e2e-docker
+          yarn workspace hacker-news-ts test:e2e-docker
