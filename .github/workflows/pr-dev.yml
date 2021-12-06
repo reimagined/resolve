@@ -474,7 +474,7 @@ jobs:
 
       - name: Run postgres container for the first start intialization
         run: |
-          examples/ts/hacker-news
+          cd examples/ts/hacker-news
           docker-compose up -d postgres
 
       - name: Build and run all containers
