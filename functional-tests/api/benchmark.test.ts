@@ -219,8 +219,7 @@ test('benchmark', async () => {
   })
 
   let failedAttempts = 0
-
-  while (true) {
+  while (failedAttempts < MAX_FAILED_ATTEMPTS) {
     try {
       await modifyCurrentDBClusterCapacity({
         Region: CHECK_NOT_NULLISH(process.env.AWS_REGION),
@@ -229,21 +228,18 @@ test('benchmark', async () => {
         )}-system`,
         Capacity: 64,
       })
-      expect(failedAttempts).toBeLessThan(MAX_FAILED_ATTEMPTS)
       break
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log('QQQQQ', error.message)
       if (
-        error.message ===
-        'DBCluster resolve-framework-test-system cannot currently be modified'
+        error?.message?.match(/DBCluster .*? cannot currently be modified/i)
       ) {
         await jitterDelay(failedAttempts)
         failedAttempts++
+        continue
       }
-      failedAttempts++
     }
   }
+  expect(failedAttempts).toBeLessThan(MAX_FAILED_ATTEMPTS)
 
   testLaunchTimestamp = Date.now()
   await pauseReadModels(!!process.env.DROP_BENCH_EVENT_STORE)
