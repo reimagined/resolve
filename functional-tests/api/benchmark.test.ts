@@ -2,6 +2,7 @@ import { CloudWatch, Dimension } from '@aws-sdk/client-cloudwatch'
 import {
   modifyDBClusterMinMaxCapacity,
   modifyCurrentDBClusterCapacity,
+  describeDBClusters,
 } from 'resolve-cloud-common/postgres'
 import fetch from 'isomorphic-fetch'
 import { getTargetURL } from '../utils/utils'
@@ -217,13 +218,32 @@ test('benchmark', async () => {
     MaxCapacity: 64,
   })
 
-  await modifyCurrentDBClusterCapacity({
-    Region: CHECK_NOT_NULLISH(process.env.AWS_REGION),
-    DBClusterIdentifier: `resolve-${CHECK_NOT_NULLISH(
-      process.env.RESOLVE_TESTS_TARGET_STAGE
-    )}-system`,
-    Capacity: 64,
-  })
+  let failedAttempts = 0
+
+  while (true) {
+    try {
+      await modifyCurrentDBClusterCapacity({
+        Region: CHECK_NOT_NULLISH(process.env.AWS_REGION),
+        DBClusterIdentifier: `resolve-${CHECK_NOT_NULLISH(
+          process.env.RESOLVE_TESTS_TARGET_STAGE
+        )}-system`,
+        Capacity: 64,
+      })
+      expect(failedAttempts).toBeLessThan(MAX_FAILED_ATTEMPTS)
+      break
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('QQQQQ', error.message)
+      if (
+        error.message ===
+        'DBCluster resolve-framework-test-system cannot currently be modified'
+      ) {
+        await jitterDelay(failedAttempts)
+        failedAttempts++
+      }
+      failedAttempts++
+    }
+  }
 
   testLaunchTimestamp = Date.now()
   await pauseReadModels(!!process.env.DROP_BENCH_EVENT_STORE)
@@ -236,7 +256,7 @@ test('benchmark', async () => {
   expect(heavyEventsCount).toEqual(0)
 
   let generatedBenchEventsCount = 0
-  let failedAttempts = 0
+  failedAttempts = 0
   while (generatedBenchEventsCount < BENCH_EVENTS_COUNT) {
     const currentGeneratedEvents = (
       await Promise.all(Array.from({ length: 256 }).map(generateEvents))
