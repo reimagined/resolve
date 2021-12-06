@@ -4,7 +4,6 @@ import type {
   CallReplicateResult,
 } from './types'
 import type {
-  ReplicationState,
   StoredEventBatchPointer,
   GatheredSecrets,
   EventLoader,
@@ -33,6 +32,7 @@ const getBuildDelay = (iterationNumber: number) => {
 }
 
 const BATCH_PROCESSING_POLL_MS = 50
+const PATCH_PROCESSING_TIME_LIMIT = 60 * 1000
 
 const build: ExternalMethods['build'] = async (
   basePool,
@@ -195,11 +195,14 @@ const build: ExternalMethods['build'] = async (
           name: 'Error',
           message: result.message,
         }
-      } else if (result.type === 'launched') {
+      } else if (result.type === 'launched' || result.type === 'processed') {
         while (true) {
           const state = await basePool.getReplicationState(basePool)
           if (state.statusAndData.status === 'batchInProgress') {
-            if (state.statusAndData.data.startedAt + 60 * 1000 < Date.now()) {
+            if (
+              state.statusAndData.data.startedAt + PATCH_PROCESSING_TIME_LIMIT <
+              Date.now()
+            ) {
               lastError = {
                 recoverable: true,
                 name: 'Error',

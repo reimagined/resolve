@@ -25,7 +25,7 @@ export type GetReplicationState = (
 ) => Promise<ReplicationState>
 
 export type CallReplicateResult = {
-  type: 'launched' | 'unknown' | 'serverError' | 'clientError'
+  type: 'launched' | 'processed' | 'unknown' | 'serverError' | 'clientError'
   httpStatus: number
   message: string
 }
