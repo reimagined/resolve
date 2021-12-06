@@ -11,19 +11,22 @@ import getHttpStatusText from '../get-http-status-text'
 import getSafeErrorMessage from '../get-safe-error-message'
 import getDebugErrorMessage from '../get-debug-error-message'
 
+export type GetCustomParameters<
+  CustomParameters extends Record<string | symbol, any> = {}
+> = (
+  lambdaEvent: LambdaOriginEdgeRequest,
+  lambdaContext: any
+) => CustomParameters | Promise<CustomParameters>
+
 const wrapApiHandler = <
-  CustomParameters extends Record<string | symbol, any> = {
-    lambdaOriginEdgeStartTime: number
-  }
+  CustomParameters extends Record<string | symbol, any> = {}
 >(
   handler: (
     req: HttpRequest<CustomParameters & { lambdaOriginEdgeStartTime: number }>,
     res: HttpResponse
   ) => Promise<void>,
-  getCustomParameters: (
-    lambdaEvent: LambdaOriginEdgeRequest,
-    lambdaContext: any
-  ) => CustomParameters | Promise<CustomParameters> = () => ({} as any),
+  getCustomParameters: GetCustomParameters<CustomParameters> = () =>
+    ({} as CustomParameters),
   // eslint-disable-next-line no-new-func
   onStart: (
     timestamp: number,

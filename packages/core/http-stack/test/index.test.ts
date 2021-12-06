@@ -7,18 +7,8 @@ import { stringify as stringifyQuery } from 'query-string'
 import { format as prettify } from 'prettier'
 import getRawBody from 'raw-body'
 
-import type {
-  HttpRequest,
-  HttpResponse,
-  HttpMethods,
-  Route,
-  LambdaOriginEdgeRequest,
-} from '../src'
+import type { HttpMethods, Route, LambdaOriginEdgeRequest } from '../src'
 import { createAwsLambdaOriginEdgeRouter, createHttpServerRouter } from '../src'
-/*
-import wrapHttpServerApiHandler from '../src/http-server/wrap-api-handler'
-import wrapLambdaServerApiHandler from '../src/aws-lambda-origin-edge/wrap-api-handler'
-*/
 
 jest.setTimeout(1000 * 60)
 
@@ -117,7 +107,7 @@ const tests: Array<{
     route: {
       pattern: '/unhandled-error-handler',
       method: 'GET',
-      handler: async (req, res) => {
+      handler: async () => {
         class CustomError extends Error {
           name = 'CustomError'
         }
@@ -266,7 +256,8 @@ beforeAll(async () => {
       const refServer = http
         .createServer(
           createHttpServerRouter({
-            routes,
+            routes: tests.map(({ route }) => route),
+            getCustomParameters: () => customApi,
           })
         )
         .listen(0, () => {
@@ -288,50 +279,42 @@ beforeAll(async () => {
     lambdaServer = await new Promise((resolve) => {
       const refServer = http
         .createServer(async (req, res) => {
-          for (const {
-            route: { path, method, handler },
-          } of tests) {
-            const url = new URL(req.url ?? '', 'https://example.com')
-            if (url.pathname === path && req.method === method) {
-              const contentLength =
-                req.headers['Content-Length'] == null
-                  ? null
-                  : +req.headers['Content-Length']
-              const lambdaEvent: LambdaOriginEdgeRequest = {
-                requestStartTime: Date.now(),
-                headers: Object.entries(req.headers).map(([key, value]) => ({
-                  key,
-                  value,
-                })),
-                body:
-                  contentLength == null
-                    ? null
-                    : (
-                        await getRawBody(req, {
-                          length: contentLength,
-                        })
-                      ).toString('base64'),
-                uri: url.pathname,
-                httpMethod: req.method,
-                querystring: url.search.replace(/^?/, ''),
-              }
-              const lambdaOriginEdgeResponse = await wrapLambdaServerApiHandler(
-                handler,
-                () => customApi
-              )(lambdaEvent, {})
-              res.statusCode = lambdaOriginEdgeResponse.httpStatus
-              for (const { key, value } of lambdaOriginEdgeResponse.headers) {
-                // TODO check Many Set-cookie:
-                res.setHeader(key, value)
-              }
-              res.end(
-                Buffer.from(lambdaOriginEdgeResponse.body).toString('base64')
-              )
-              return
-            }
+          const url = new URL(req.url ?? '', 'https://example.com')
+
+          const contentLength =
+            req.headers['Content-Length'] == null
+              ? null
+              : +req.headers['Content-Length']
+
+          const lambdaEvent: LambdaOriginEdgeRequest = {
+            requestStartTime: Date.now(),
+            headers: Object.entries(req.headers).map(([key, value]) => ({
+              key,
+              value,
+            })),
+            body:
+              contentLength == null
+                ? null
+                : (
+                    await getRawBody(req, {
+                      length: contentLength,
+                    })
+                  ).toString('base64'),
+            uri: url.pathname,
+            httpMethod: req.method as HttpMethods,
+            querystring: url.search.replace(/^?/, ''),
           }
-          res.statusCode = 500
-          res.end()
+
+          const lambdaHandler = createAwsLambdaOriginEdgeRouter({
+            routes: tests.map(({ route }) => route),
+            getCustomParameters: () => customApi,
+          })
+
+          const lambdaOriginEdgeResponse = await lambdaHandler(lambdaEvent, {})
+
+          res.statusCode = lambdaOriginEdgeResponse.httpStatus
+
+          res.end(Buffer.from(lambdaOriginEdgeResponse.body).toString('base64'))
         })
         .listen(0, () => {
           resolve(refServer)
@@ -374,7 +357,7 @@ const clearMocks = () => {
 }
 
 for (const {
-  route: { path: pathname, method },
+  route: { pattern: pathname, method },
   request,
   test: runTest,
 } of tests) {
@@ -387,6 +370,7 @@ for (const {
     parser: 'typescript',
     semi: true,
     trailingComma: 'none',
+    // eslint-disable-next-line no-loop-func
   })}`, async () => {
     {
       clearMocks()

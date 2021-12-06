@@ -23,11 +23,11 @@ const createRouter = <
   const corsMiddleware = createCorsMiddleware(cors)
   for (const route of routes) {
     if (corsMiddleware != null) {
-      route.middlewares = [corsMiddleware, ...route.middlewares]
+      route.middlewares = [corsMiddleware, ...(route.middlewares ?? [])]
     }
   }
 
-  for (const { method, pattern, middlewares, handler } of routes) {
+  for (const { method, pattern, middlewares = [], handler } of routes) {
     trie.define(pattern).handle(
       method,
       async (

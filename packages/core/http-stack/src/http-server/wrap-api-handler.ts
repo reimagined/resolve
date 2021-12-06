@@ -1,11 +1,23 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 
-import type { HttpRequest, HttpResponse } from '../types'
+import type {
+  HttpRequest,
+  HttpResponse,
+  OnStartCallback,
+  OnFinishCallback,
+} from '../types'
 import createResponse from '../create-response'
 import createRequest from './create-request'
 import finalizeResponse from '../finalize-response'
 import getSafeErrorMessage from '../get-safe-error-message'
 import getDebugErrorMessage from '../get-debug-error-message'
+
+export type GetCustomParameters<
+  CustomParameters extends Record<string | symbol, any> = {}
+> = (
+  externalReq: IncomingMessage,
+  externalRes: ServerResponse
+) => CustomParameters | Promise<CustomParameters>
 
 const wrapApiHandler = <
   CustomParameters extends Record<string | symbol, any> = {}
@@ -14,21 +26,9 @@ const wrapApiHandler = <
     req: HttpRequest<CustomParameters>,
     res: HttpResponse
   ) => Promise<void>,
-  getCustomParameters: (
-    externalReq: IncomingMessage,
-    externalRes: ServerResponse
-  ) => CustomParameters | Promise<CustomParameters> = () => ({} as any),
-  onStart: (
-    timestamp: number,
-    req: HttpRequest<CustomParameters>,
-    res: HttpResponse
-  ) => void = Function() as any,
-  onFinish: (
-    timestamp: number,
-    req: HttpRequest<CustomParameters>,
-    res: HttpResponse,
-    error?: any
-  ) => void = Function() as any
+  getCustomParameters: GetCustomParameters<CustomParameters> = () => ({} as any),
+  onStart: OnStartCallback<CustomParameters> = Function() as any,
+  onFinish: OnFinishCallback<CustomParameters> = Function() as any
 ) => async (externalReq: IncomingMessage, externalRes: ServerResponse) => {
   const startTime = Date.now()
 

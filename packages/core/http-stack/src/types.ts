@@ -3,6 +3,23 @@ import type { CookieSerializeOptions } from 'cookie'
 import type { INTERNAL } from './constants'
 import type { TrieOptions } from 'route-trie'
 
+export type OnStartCallback<
+  CustomParameters extends Record<string | symbol, any> = {}
+> = (
+  timestamp: number,
+  req: HttpRequest<CustomParameters>,
+  res: HttpResponse
+) => void
+
+export type OnFinishCallback<
+  CustomParameters extends Record<string | symbol, any> = {}
+> = (
+  timestamp: number,
+  req: HttpRequest<CustomParameters>,
+  res: HttpResponse,
+  error?: any
+) => void
+
 export type CORS = {
   origin?:
     | boolean
@@ -23,7 +40,7 @@ export type Route<
 > = {
   pattern: string
   method: HttpMethods
-  middlewares: Array<
+  middlewares?: Array<
     (
       req: HttpRequest<CustomParameters>,
       res: HttpResponse,
@@ -39,10 +56,10 @@ export type Route<
 export type RouterOptions<
   CustomParameters extends Record<string | symbol, any> = {}
 > = {
-  cors: CORS
-  options: TrieOptions
   routes: Array<Route<CustomParameters>>
-  notFoundHandler: (
+  cors?: CORS
+  options?: TrieOptions
+  notFoundHandler?: (
     req: HttpRequest<CustomParameters>,
     res: HttpResponse
   ) => Promise<void> | void
