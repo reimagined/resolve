@@ -94,7 +94,6 @@ jobs:
 #      || startsWith(github.head_ref, 'hotfix/')
 #      || startsWith(github.head_ref, 'fix/')
 #      || startsWith(github.head_ref, 'bugfix/')
-#      || 1 == 0
 #    services:
 #      postgres:
 #        image: clkao/postgres-plv8:10-2
@@ -181,7 +180,6 @@ jobs:
 #      || startsWith(github.head_ref, 'hotfix/')
 #      || startsWith(github.head_ref, 'fix/')
 #      || startsWith(github.head_ref, 'bugfix/')
-#      || 1 == 0
 #    steps:
 #      - uses: actions/checkout@v2
 #
@@ -251,7 +249,6 @@ jobs:
 #      || startsWith(github.head_ref, 'hotfix/')
 #      || startsWith(github.head_ref, 'fix/')
 #      || startsWith(github.head_ref, 'bugfix/')
-#      || 1 == 0
 #    steps:
 #      - uses: actions/checkout@v2
 #
@@ -513,5 +510,5 @@ jobs:
           DEBUG: resolve:*
           DEBUG_LEVEL: error
         run: |
-          cd examples/ts/hacker-news
-          yarn test:e2e-docker
+#          cd examples/ts/hacker-news
+          yarn workspaces hacker-news-ts test:e2e-docker
