@@ -2,7 +2,6 @@ import { CloudWatch, Dimension } from '@aws-sdk/client-cloudwatch'
 import {
   modifyDBClusterMinMaxCapacity,
   modifyCurrentDBClusterCapacity,
-  describeDBClusters,
 } from 'resolve-cloud-common/postgres'
 import fetch from 'isomorphic-fetch'
 import { getTargetURL } from '../utils/utils'
