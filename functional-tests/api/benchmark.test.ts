@@ -285,9 +285,15 @@ test('benchmark', async () => {
         currentLiteEventsCount,
         currentHeavyEventsCount,
       ] = await Promise.all([getEventCount('lite'), getEventCount('heavy')])
+      // eslint-disable-next-line no-console
       console.log('currentLiteEventsCount', currentLiteEventsCount)
+      // eslint-disable-next-line no-console
       console.log('currentHeavyEventsCount', currentHeavyEventsCount)
+      // eslint-disable-next-line no-console
+      console.log('generatedBenchEventsCount', generatedBenchEventsCount)
+      // eslint-disable-next-line no-console
       console.log('liteEventsCount', liteEventsCount)
+      // eslint-disable-next-line no-console
       console.log('heavyEventsCount', heavyEventsCount)
       if (
         currentLiteEventsCount <= liteEventsCount &&
