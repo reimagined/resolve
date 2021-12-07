@@ -216,7 +216,7 @@ test('benchmark', async () => {
     MinCapacity: 2,
     MaxCapacity: 64,
   })
-
+  console.log('111')
   let failedAttempts = 0
   while (failedAttempts < MAX_FAILED_ATTEMPTS) {
     try {
@@ -238,18 +238,19 @@ test('benchmark', async () => {
       }
     }
   }
+  console.log('222')
   expect(failedAttempts).toBeLessThan(MAX_FAILED_ATTEMPTS)
 
   testLaunchTimestamp = Date.now()
   await pauseReadModels(!!process.env.DROP_BENCH_EVENT_STORE)
-
+  console.log('333')
   let [liteEventsCount, heavyEventsCount] = await Promise.all([
     getEventCount('lite'),
     getEventCount('heavy'),
   ])
   expect(liteEventsCount).toEqual(0)
   expect(heavyEventsCount).toEqual(0)
-
+  console.log('444')
   let generatedBenchEventsCount = 0
   failedAttempts = 0
   while (generatedBenchEventsCount < BENCH_EVENTS_COUNT) {
@@ -266,9 +267,9 @@ test('benchmark', async () => {
 
     expect(failedAttempts).toBeLessThan(MAX_FAILED_ATTEMPTS)
   }
-
+  console.log('555')
   await resumeReadModels()
-
+  console.log('666')
   try {
     while (
       liteEventsCount < generatedBenchEventsCount ||
@@ -293,8 +294,10 @@ test('benchmark', async () => {
 
       expect(failedAttempts).toBeLessThan(MAX_FAILED_ATTEMPTS)
     }
+    console.log('666')
   } finally {
     await pauseReadModels(false)
+    console.log('777')
   }
 
   expect(liteEventsCount).toBeGreaterThanOrEqual(generatedBenchEventsCount)
@@ -307,7 +310,7 @@ test('benchmark', async () => {
   const benchHeavyFeedingRate = CHECK_NOT_NULLISH(
     await getReadModelFeedingRateMetric('benchmark-heavy')
   )
-
+  console.log('888')
   const resultLite =
     [...benchLiteFeedingRate.entries()]
       .map(([_, rate]) => rate)
@@ -321,7 +324,7 @@ test('benchmark', async () => {
   console.log('resultLite', resultLite)
   // eslint-disable-next-line no-console
   console.log('resultHeavy', resultHeavy)
-
+  console.log('999')
   // Minimum 400 events/sec for lite read-model projection with cold restart
   expect(resultLite).toBeGreaterThan(280)
 
