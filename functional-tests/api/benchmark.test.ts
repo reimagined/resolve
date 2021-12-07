@@ -216,6 +216,7 @@ test('benchmark', async () => {
     MinCapacity: 2,
     MaxCapacity: 64,
   })
+  // eslint-disable-next-line no-console
   console.log('111')
   let failedAttempts = 0
   while (failedAttempts < MAX_FAILED_ATTEMPTS) {
@@ -238,11 +239,13 @@ test('benchmark', async () => {
       }
     }
   }
+  // eslint-disable-next-line no-console
   console.log('222')
   expect(failedAttempts).toBeLessThan(MAX_FAILED_ATTEMPTS)
 
   testLaunchTimestamp = Date.now()
   await pauseReadModels(!!process.env.DROP_BENCH_EVENT_STORE)
+  // eslint-disable-next-line no-console
   console.log('333')
   let [liteEventsCount, heavyEventsCount] = await Promise.all([
     getEventCount('lite'),
@@ -250,6 +253,7 @@ test('benchmark', async () => {
   ])
   expect(liteEventsCount).toEqual(0)
   expect(heavyEventsCount).toEqual(0)
+  // eslint-disable-next-line no-console
   console.log('444')
   let generatedBenchEventsCount = 0
   failedAttempts = 0
@@ -267,8 +271,10 @@ test('benchmark', async () => {
 
     expect(failedAttempts).toBeLessThan(MAX_FAILED_ATTEMPTS)
   }
+  // eslint-disable-next-line no-console
   console.log('555')
   await resumeReadModels()
+  // eslint-disable-next-line no-console
   console.log('666')
   try {
     while (
@@ -294,10 +300,12 @@ test('benchmark', async () => {
 
       expect(failedAttempts).toBeLessThan(MAX_FAILED_ATTEMPTS)
     }
-    console.log('666')
+    // eslint-disable-next-line no-console
+    console.log('777')
   } finally {
     await pauseReadModels(false)
-    console.log('777')
+    // eslint-disable-next-line no-console
+    console.log('888')
   }
 
   expect(liteEventsCount).toBeGreaterThanOrEqual(generatedBenchEventsCount)
@@ -310,7 +318,8 @@ test('benchmark', async () => {
   const benchHeavyFeedingRate = CHECK_NOT_NULLISH(
     await getReadModelFeedingRateMetric('benchmark-heavy')
   )
-  console.log('888')
+  // eslint-disable-next-line no-console
+  console.log('999')
   const resultLite =
     [...benchLiteFeedingRate.entries()]
       .map(([_, rate]) => rate)
@@ -324,7 +333,8 @@ test('benchmark', async () => {
   console.log('resultLite', resultLite)
   // eslint-disable-next-line no-console
   console.log('resultHeavy', resultHeavy)
-  console.log('999')
+  // eslint-disable-next-line no-console
+  console.log('9119')
   // Minimum 400 events/sec for lite read-model projection with cold restart
   expect(resultLite).toBeGreaterThan(280)
 
