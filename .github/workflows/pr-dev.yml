@@ -398,7 +398,6 @@ jobs:
       || startsWith(github.head_ref, 'fix/')
       || startsWith(github.head_ref, 'bugfix/')
       || startsWith(github.head_ref, 'docs/')
-      || 1 == 0
     steps:
       - uses: actions/checkout@v2
 
