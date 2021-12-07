@@ -499,6 +499,30 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
           restore-keys: ${{ runner.os }}-modules-
 
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/es
+            packages/**/lib
+            packages/**/types
+            packages/**/*.tsbuildinfo
+            !packages/**/node_modules/**
+            !packages/**/src/es
+            !packages/**/src/lib
+            !packages/**/src/types
+            internal/**/es
+            internal/**/lib
+            internal/**/types
+            internal/**/*.tsbuildinfo
+            !internal/**/node_modules/**
+            !internal/**/src/es
+            !internal/**/src/lib
+            !internal/**/src/types
+            .packages/**
+          key: ${{ runner.os }}-build-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-build-
+
       - name: Install
         run: |
           yarn install --ignore-scripts
@@ -511,5 +535,4 @@ jobs:
           DEBUG_LEVEL: error
         run: |
           cd examples/ts/hacker-news
-          pwd
           yarn test:e2e-docker

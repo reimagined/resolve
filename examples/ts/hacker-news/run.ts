@@ -14,6 +14,7 @@ import resolveModuleComments from '@resolve-js/module-comments'
 import resolveModuleAuth from '@resolve-js/module-auth'
 import resolveModuleAdmin from '@resolve-js/module-admin'
 import resolveModuleReplication from '@resolve-js/module-replication'
+import debug from '@resolve-js/debug-levels'
 
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
@@ -24,7 +25,6 @@ import prodConfig from './config.prod'
 import dockerConfig from './config.docker'
 import testFunctionalConfig from './config.test-functional'
 import adjustWebpackConfigs from './config.adjust-webpack'
-import debug from '@resolve-js/debug-levels'
 
 import runImport from './import'
 
