@@ -285,6 +285,10 @@ test('benchmark', async () => {
         currentLiteEventsCount,
         currentHeavyEventsCount,
       ] = await Promise.all([getEventCount('lite'), getEventCount('heavy')])
+      console.log('currentLiteEventsCount', currentLiteEventsCount)
+      console.log('currentHeavyEventsCount', currentHeavyEventsCount)
+      console.log('liteEventsCount', liteEventsCount)
+      console.log('heavyEventsCount', heavyEventsCount)
       if (
         currentLiteEventsCount <= liteEventsCount &&
         currentHeavyEventsCount <= heavyEventsCount
