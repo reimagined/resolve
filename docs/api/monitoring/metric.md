@@ -12,12 +12,12 @@ const metrics = monitoring.getMetrics('default')
 A metric object has the following structure:
 
 ```js
-export interface MonitoringMetric {
-  metricName: string
-  dimensions: MonitoringDimension[]
-  timestamp: number | null
-  values: number[]
-  counts: number[]
-  unit: string
+{
+  metricName, // The name of a metric.
+  dimensions, // An array of monitoring dimensions.
+  timestamp,  // The time at which the metric was last updated.
+  values,     // An array of the metric's values.
+  counts,     // An array of the metric's counts.
+  unit,       // The name of the measurment unit.
 }
 ```
