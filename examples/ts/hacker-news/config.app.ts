@@ -16,7 +16,7 @@ const appConfig = {
       name: 'HackerNews',
       projection: 'common/read-models/hacker-news.projection.ts',
       resolvers: 'common/read-models/hacker-news.resolvers.ts',
-      connectorName: 'hackerNews',
+      connectorName: 'default',
     },
     {
       name: 'Search',

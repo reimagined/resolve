@@ -12,11 +12,67 @@ import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 import detectErrors from './detect_errors'
 import { getDeprecatedTarget } from './get-deprecated-target'
+import declareRuntimeEnv from './declare_runtime_env'
 
 const log = getLog('build')
 
+const warningAboutValue = (valueName) =>
+  `The ${valueName} config parameter ignored. This parameter is not customizable for AWS serverless runtime.`
+
+const messageAboutDefaultValue = (valueName) =>
+  `Setting default ${valueName} for aws serverless runtime`
+
 const buildMode = async (resolveConfig, adjustWebpackConfigs) => {
   log.debug('Starting "build" mode')
+
+  if (resolveConfig.runtime?.module === '@resolve-js/runtime-aws-serverless') {
+    if (resolveConfig.eventstoreAdapter != null) {
+      log.warn(warningAboutValue('eventstoreAdapter'))
+    }
+    log.debug(messageAboutDefaultValue('eventstoreAdapter'))
+    resolveConfig.eventstoreAdapter = {
+      module: '@resolve-js/eventstore-postgresql',
+      options: {
+        databaseName: declareRuntimeEnv('RESOLVE_EVENT_STORE_DATABASE_NAME'),
+        host: declareRuntimeEnv('RESOLVE_EVENT_STORE_CLUSTER_HOST'),
+        port: declareRuntimeEnv('RESOLVE_EVENT_STORE_CLUSTER_PORT'),
+        user: declareRuntimeEnv('RESOLVE_USER_ID'),
+        password: declareRuntimeEnv('RESOLVE_USER_PASSWORD'),
+        database: 'postgres',
+      },
+    }
+
+    if (resolveConfig.staticPath !== 'static') {
+      log.warn(warningAboutValue('staticPath'))
+    }
+    messageAboutDefaultValue('staticPath')
+    resolveConfig.staticPath = declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL')
+
+    if (
+      resolveConfig.readModelConnectors &&
+      resolveConfig.readModelConnectors.default != null
+    ) {
+      log.warn(warningAboutValue('readModelConnectors.default'))
+    }
+
+    if (resolveConfig.readModelConnectors == null) {
+      resolveConfig.readModelConnectors = {}
+    }
+
+    log.debug(messageAboutDefaultValue('readModelConnectors.default'))
+    resolveConfig.readModelConnectors.default = {
+      module: '@resolve-js/readmodel-postgresql',
+      options: {
+        databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
+        host: declareRuntimeEnv('RESOLVE_READMODEL_CLUSTER_HOST'),
+        port: declareRuntimeEnv('RESOLVE_READMODEL_CLUSTER_PORT'),
+        user: declareRuntimeEnv('RESOLVE_USER_ID'),
+        password: declareRuntimeEnv('RESOLVE_USER_PASSWORD'),
+        database: 'postgres',
+      },
+    }
+  }
+
   validateConfig(resolveConfig)
 
   const nodeModulesByAssembly = new Map()

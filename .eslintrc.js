@@ -139,6 +139,7 @@ module.exports = {
           'cuid',
           'cumulate',
           'cumulated',
+          'customizable',
           'cwd',
           'cryptr',
           'darwin',
