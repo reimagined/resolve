@@ -1,28 +1,15 @@
-import type { IncomingHttpHeaders } from 'http'
+const handler: ProxyHandler<Record<string, string>> = {
+  get: function (headers, key) {
+    return headers[(key as string).toLowerCase()]
+  },
+}
 
-import normalizeKey from './normalize-key'
-
-const wrapHeadersCaseInsensitive = (
-  headersMap: IncomingHttpHeaders
-): Record<string, any> =>
-  Object.create(
-    Object.prototype,
-    Object.keys(headersMap).reduce((acc: Record<string, any>, key) => {
-      const value = headersMap[key]
-      const [upperDashKey, dashKey, lowerKey] = [
-        normalizeKey(key, 'upper-dash-case'),
-        normalizeKey(key, 'dash-case'),
-        normalizeKey(key, 'lower-case'),
-      ]
-
-      acc[upperDashKey] = { value, enumerable: true }
-      if (upperDashKey !== dashKey) {
-        acc[dashKey] = { value, enumerable: false }
-      }
-      acc[lowerKey] = { value, enumerable: false }
-
-      return acc
-    }, {})
+const wrapHeadersCaseInsensitive = (headers: Record<string, string>): Record<string, string> =>
+  new Proxy(
+    Object.fromEntries(
+      Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value])
+    ),
+    handler
   )
 
 export default wrapHeadersCaseInsensitive

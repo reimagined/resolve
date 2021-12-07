@@ -16,12 +16,14 @@ const createRequest = async <
   const { search: rawQuery = '', pathname = '' } =
     req.url == null ? {} : new URL(req.url, 'https://example.com')
 
-  const headers = wrapHeadersCaseInsensitive(req.headers)
+  const headers = wrapHeadersCaseInsensitive(
+    req.headers as Record<string, string>
+  )
+
+  const cookieHeader = headers.cookie
 
   const cookies =
-    headers.cookie != null && typeof headers.cookie === 'string'
-      ? cookie.parse(headers.cookie)
-      : {}
+    cookieHeader?.constructor === String ? cookie.parse(cookieHeader) : {}
 
   const query = parseQuery(rawQuery, {
     arrayFormat: 'bracket',
@@ -40,7 +42,7 @@ const createRequest = async <
     method: req.method as HttpMethods,
     query,
     path: pathname,
-    headers: req.headers,
+    headers,
     cookies,
     body,
     clientIp,

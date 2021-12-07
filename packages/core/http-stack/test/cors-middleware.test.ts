@@ -3,20 +3,41 @@ import createCorsMiddleware from '../src/create-cors-middleware'
 import createResponse from '../src/create-response'
 import finalizeResponse from '../src/finalize-response'
 
-describe('', () => {
-  const req: HttpRequest = {
-    headers: {},
-    body: Buffer.from(''),
-    method: 'GET',
-    cookies: {},
-    path: '/',
-    query: {},
-    params: {},
-    clientIp: undefined,
-  }
-  const res: HttpResponse = createResponse()
+describe('method "createCorsMiddleware"', () => {
+  let req: HttpRequest
+  let res: HttpResponse
 
-  test('', async () => {
+  beforeEach(() => {
+    req = {
+      headers: {
+        Origin: 'example.com',
+      },
+      body: Buffer.from(''),
+      method: 'GET',
+      cookies: {},
+      path: '/',
+      query: {},
+      params: {},
+      clientIp: undefined,
+    }
+    res = createResponse()
+  })
+
+  test('should return null when empty options', async () => {
+    const corsMiddleware = createCorsMiddleware({})
+
+    expect(corsMiddleware).toEqual(null)
+  })
+
+  test('should return null when origin=false', async () => {
+    const corsMiddleware = createCorsMiddleware({
+      origin: false,
+    })
+
+    expect(corsMiddleware).toEqual(null)
+  })
+
+  test('should reflect the request origin', async () => {
     const corsMiddleware = createCorsMiddleware({
       origin: true,
     })
@@ -28,6 +49,8 @@ describe('', () => {
     // eslint-disable-next-line no-new-func
     corsMiddleware(req, res, Function() as any)
 
-    expect(finalizeResponse(res).headers).toEqual([])
+    expect(finalizeResponse(res).headers).toEqual([
+      {key: 'Access-Control-Allow-Origin', value: req.headers.origin}
+    ])
   })
 })

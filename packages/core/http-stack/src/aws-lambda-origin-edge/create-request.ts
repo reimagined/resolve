@@ -32,10 +32,10 @@ const createRequest = async <
 
   const headers = wrapHeadersCaseInsensitive(originalHeaders)
 
+  const cookieHeader = headers.cookie
+
   const cookies =
-    headers.cookie != null && typeof headers.cookie === 'string'
-      ? cookie.parse(headers.cookie)
-      : {}
+    cookieHeader?.constructor === String ? cookie.parse(cookieHeader) : {}
 
   const query = parseQuery(querystring, { arrayFormat: 'bracket' }) as Record<
     string,
