@@ -38,7 +38,7 @@
     "qs": "6.9.6",
     "node-fetch": "2.6.5",
     "form-data": "4.0.0",
-    "resolve-cloud-common": "0.0.149",
+    "resolve-cloud-common": "0.0.164",
     "route-trie": "3.0.0",
     "source-map-support": "0.5.19"
   },
