@@ -345,19 +345,22 @@ export interface CommonAdapterFunctions<ConfiguredProps extends {}> {
 }
 
 export interface AdapterFunctions<ConfiguredProps extends {}> {
-  beginIncrementalImport: PoolMethod<
+  beginIncrementalImport?: PoolMethod<
     ConfiguredProps,
     Adapter['beginIncrementalImport']
   >
-  commitIncrementalImport: PoolMethod<
+  commitIncrementalImport?: PoolMethod<
     ConfiguredProps,
     Adapter['commitIncrementalImport']
   >
   dispose: PoolMethod<ConfiguredProps, Adapter['dispose']>
-  dropSnapshot: PoolMethod<ConfiguredProps, Adapter['dropSnapshot']>
+  dropSnapshot?: PoolMethod<ConfiguredProps, Adapter['dropSnapshot']>
   freeze: PoolMethod<ConfiguredProps, Adapter['freeze']>
-  getLatestEvent: PoolMethod<ConfiguredProps, Adapter['getLatestEvent']>
-  injectEvent: PoolMethod<ConfiguredProps, AdapterPoolBoundProps['injectEvent']>
+  getLatestEvent?: PoolMethod<ConfiguredProps, Adapter['getLatestEvent']>
+  injectEvent?: PoolMethod<
+    ConfiguredProps,
+    AdapterPoolBoundProps['injectEvent']
+  >
   injectEvents: PoolMethod<
     ConfiguredProps,
     AdapterPoolBoundProps['injectEvents']
@@ -370,17 +373,17 @@ export interface AdapterFunctions<ConfiguredProps extends {}> {
     ConfiguredProps,
     AdapterPoolBoundProps['loadEventsByTimestamp']
   >
-  loadSnapshot: PoolMethod<ConfiguredProps, Adapter['loadSnapshot']>
-  pushIncrementalImport: PoolMethod<
+  loadSnapshot?: PoolMethod<ConfiguredProps, Adapter['loadSnapshot']>
+  pushIncrementalImport?: PoolMethod<
     ConfiguredProps,
     Adapter['pushIncrementalImport']
   >
-  rollbackIncrementalImport: PoolMethod<
+  rollbackIncrementalImport?: PoolMethod<
     ConfiguredProps,
     Adapter['rollbackIncrementalImport']
   >
   saveEvent: PoolMethod<ConfiguredProps, Adapter['saveEvent']>
-  saveSnapshot: PoolMethod<ConfiguredProps, Adapter['saveSnapshot']>
+  saveSnapshot?: PoolMethod<ConfiguredProps, Adapter['saveSnapshot']>
   shapeEvent: ShapeEvent
   unfreeze: PoolMethod<ConfiguredProps, Adapter['unfreeze']>
   getSecret: PoolMethod<ConfiguredProps, GetSecret>
