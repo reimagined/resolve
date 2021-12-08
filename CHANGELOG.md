@@ -7,6 +7,7 @@
 **Other changes:**
 
 - Improve PLV8 warning message [\#2171](https://github.com/reimagined/resolve/pull/2171)
+- Migrate from 'request' package to 'node-fetch' in runtime [\#2169](https://github.com/reimagined/resolve/pull/2169)
 
 ## [V0.33.5](https://github.com/reimagined/resolve/tree/V0.33.5) (2021-12-02)
 
