@@ -86,6 +86,8 @@ export const upload = (
       if (!res.ok) {
         throw new Error(await res.text())
       }
+
+      resolve()
     } catch (error) {
       reject(error)
     }
@@ -158,6 +160,8 @@ export const uploadFormData = (
       if (!res.ok) {
         throw new Error(await res.text())
       }
+
+      resolve()
     } catch (error) {
       reject(error)
     }

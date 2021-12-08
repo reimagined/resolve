@@ -46,6 +46,8 @@ export const upload = (uploadUrl: string, filePath: string) => {
       if (!res.ok) {
         throw new Error(await res.text())
       }
+
+      resolve()
     } catch (error) {
       reject(error)
     }
@@ -82,6 +84,8 @@ export const uploadFormData = (form: { url: string }, filePath: string) => {
       if (!res.ok) {
         throw new Error(await res.text())
       }
+
+      resolve()
     } catch (error) {
       reject(error)
     }
