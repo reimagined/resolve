@@ -2,7 +2,7 @@ export const EVENT_COUNTER_ROW_ID = 'EVENT-COUNTER-ROW-ID'
 export const HEAVY_READ_MODEL_TABLES_COUNT = 10
 export const LITE_READ_MODEL_TABLES_COUNT = 10
 export const getReadModelTableName = (prefix, count, index) =>
-  `${prefix}${~~Math.floor(index) % count}`
+  `${prefix}${Math.floor(index) % count}`
 export const getHeavyReadModelTableName = getReadModelTableName.bind(
   null,
   'HeavyReadModelTable',
