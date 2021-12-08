@@ -13,10 +13,14 @@ const createCorsMiddleware = <
     res: HttpResponse,
     next: () => void
   ): void => {
+    const accessControlRequestHeaders =
+      req.headers['Access-Control-Request-Headers']
     const {
       origin: corsOrigin,
       methods = '*',
-      allowedHeaders = req.headers['Access-Control-Request-Headers'],
+      allowedHeaders = accessControlRequestHeaders == null
+        ? undefined
+        : accessControlRequestHeaders.split(',').map((key) => key.trim()),
       exposedHeaders,
       optionsSuccessStatus = 204,
       maxAge,

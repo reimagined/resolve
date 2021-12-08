@@ -77,7 +77,7 @@ export type HttpRequest<
   readonly method: HttpMethods
   readonly query: Record<string, string | Array<string>>
   readonly path: string
-  readonly headers: IncomingHttpHeaders
+  readonly headers: Record<string, string>
   readonly params: Record<string, string>
   readonly cookies: Record<string, string>
   readonly body: Buffer | null
