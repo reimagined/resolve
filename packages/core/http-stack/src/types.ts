@@ -21,15 +21,10 @@ export type OnFinishCallback<
 ) => void
 
 export type CORS = {
-  origin?:
-    | boolean
-    | string
-    | RegExp
-    | Array<string>
-    | ((item: string) => boolean)
+  origin?: boolean | string | RegExp | Array<string>
   methods?: '*' | Array<HttpMethods>
-  allowedHeaders?: string | Array<string>
-  exposedHeaders?: string | Array<string>
+  allowedHeaders?: Array<string>
+  exposedHeaders?: Array<string>
   credentials?: boolean
   maxAge?: number
   optionsSuccessStatus?: number

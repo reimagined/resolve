@@ -13,8 +13,16 @@ const createCorsMiddleware = <
     res: HttpResponse,
     next: () => void
   ): void => {
-    const { origin: corsOrigin } = cors
-    const { origin: headerOrigin } = req.headers
+    const {
+      origin: corsOrigin,
+      methods = '*',
+      allowedHeaders = req.headers['Access-Control-Request-Headers'],
+      exposedHeaders,
+      optionsSuccessStatus = 204,
+      maxAge,
+      credentials,
+    } = cors
+    const headerOrigin = req.headers['Origin']
 
     if (
       corsOrigin === '*' ||
@@ -23,12 +31,11 @@ const createCorsMiddleware = <
       res.setHeader('Access-Control-Allow-Origin', corsOrigin)
     } else if (
       (headerOrigin != null && corsOrigin === true) ||
-      (Array.isArray(corsOrigin) &&
+      (headerOrigin != null &&
+        Array.isArray(corsOrigin) &&
         corsOrigin.every((item) => item?.constructor === String) &&
-        headerOrigin != null &&
         corsOrigin.includes(headerOrigin)) ||
-      (corsOrigin != null &&
-        corsOrigin.constructor === RegExp &&
+      (corsOrigin?.constructor === RegExp &&
         headerOrigin != null &&
         corsOrigin.test(headerOrigin))
     ) {
@@ -39,11 +46,24 @@ const createCorsMiddleware = <
       return
     }
 
-    res.setHeader('Access-Control-Allow-Methods', '*')
     res.setHeader(
-      'Access-Control-Allow-Headers',
-      'Origin, Content-Type, Accept, x-resolve-execution-mode'
+      'Access-Control-Allow-Methods',
+      Array.isArray(methods) ? methods.join(',') : methods
     )
+
+    if (allowedHeaders != null) {
+      res.setHeader('Access-Control-Allow-Headers', allowedHeaders.join(','))
+    }
+    if (exposedHeaders != null) {
+      res.setHeader('Access-Control-Expose-Headers', exposedHeaders.join(','))
+    }
+    if (maxAge != null) {
+      res.setHeader('Access-Control-Max-Age', `${maxAge}`)
+    }
+    if (credentials === true) {
+      res.setHeader('Access-Control-Allow-Credentials', 'true')
+    }
+    res.status(optionsSuccessStatus)
     next()
   }
 }
