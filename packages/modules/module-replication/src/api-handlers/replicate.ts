@@ -1,7 +1,14 @@
-import type { ResolveRequest, ResolveResponse } from '@resolve-js/core'
+import type {
+  ReplicationState,
+  ResolveRequest,
+  ResolveResponse,
+} from '@resolve-js/core'
 import { getLog } from './get-log'
 
 const checkInput = (input: any) => {
+  if (typeof input.lockId !== 'string') {
+    throw new Error('LockId must be provided and be string')
+  }
   if (!Array.isArray(input.events)) {
     throw new Error('Events must be array')
   }
@@ -36,9 +43,10 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
     return
   }
 
+  const lockId: string = input.lockId
   const log = getLog('replicate')
   try {
-    await req.resolve.eventstoreAdapter.setReplicationStatus({
+    await req.resolve.eventstoreAdapter.setReplicationStatus(lockId, {
       statusAndData: {
         status: 'batchInProgress',
         data: {
@@ -51,6 +59,7 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
     type ReplicationOperationResult = {
       status: 'timeout' | 'success' | 'error'
       message: string
+      state?: ReplicationState
     }
 
     const replicateData = async (): Promise<ReplicationOperationResult> => {
@@ -59,29 +68,53 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
         message: 'Uninitialized error',
       }
       try {
-        await req.resolve.eventstoreAdapter.replicateSecrets(
-          input.secretsToSet,
-          input.secretsToDelete
-        )
-        await req.resolve.eventstoreAdapter.replicateEvents(input.events)
-        await req.resolve.eventstoreAdapter.setReplicationStatus({
-          statusAndData: {
-            status: 'batchDone',
-            data: {
-              appliedEventsCount: input.events.length,
-            },
-          },
-          lastEvent: input.events[input.events.length - 1],
-        })
-        result = {
-          status: 'success',
-          message: `Completed replication of ${input.events.length} events`,
+        const myLock =
+          (await req.resolve.eventstoreAdapter.replicateSecrets(
+            lockId,
+            input.secretsToSet,
+            input.secretsToDelete
+          )) &&
+          (await req.resolve.eventstoreAdapter.replicateEvents(
+            lockId,
+            input.events
+          ))
+        if (!myLock) {
+          result = {
+            status: 'error',
+            message: `Can't replicate using lock id "${lockId}": someone else occupied the replication lock or database is locked due to reset`,
+          }
+        } else {
+          const state = await req.resolve.eventstoreAdapter.setReplicationStatus(
+            lockId,
+            {
+              statusAndData: {
+                status: 'batchDone',
+                data: {
+                  appliedEventsCount: input.events.length,
+                },
+              },
+              lastEvent: input.events[input.events.length - 1],
+            }
+          )
+
+          if (state) {
+            result = {
+              status: 'success',
+              message: `Completed replication of ${input.events.length} events`,
+              state,
+            }
+          } else {
+            result = {
+              status: 'error',
+              message: `Can't set batchDone status using lock id "${lockId}": someone else occupied the replication lock`,
+            }
+          }
         }
       } catch (error) {
         result.message = error.message
         if (shouldSaveError(error)) {
           try {
-            await req.resolve.eventstoreAdapter.setReplicationStatus({
+            await req.resolve.eventstoreAdapter.setReplicationStatus(lockId, {
               statusAndData: {
                 status: 'criticalError',
                 data: {
@@ -159,11 +192,11 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
     } else if (result.status === 'error') {
       res.status(500)
     }
-    res.end(result.message)
+    res.json(result)
   } catch (error) {
     if (shouldSaveError(error)) {
       try {
-        await req.resolve.eventstoreAdapter.setReplicationStatus({
+        await req.resolve.eventstoreAdapter.setReplicationStatus(lockId, {
           statusAndData: {
             status: 'criticalError',
             data: {
@@ -181,7 +214,10 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
     }
 
     res.status(500)
-    res.end(error.message)
+    res.json({
+      status: 'error',
+      message: error.message,
+    })
     return
   }
 }

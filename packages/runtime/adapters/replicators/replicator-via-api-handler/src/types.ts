@@ -28,10 +28,12 @@ export type CallReplicateResult = {
   type: 'launched' | 'processed' | 'unknown' | 'serverError' | 'clientError'
   httpStatus: number
   message: string
+  state: ReplicationState | null
 }
 
 export type CallReplicate = (
   pool: AdapterPool,
+  lockId: string,
   events: OldEvent[],
   secretsToSet: OldSecretRecord[],
   secretsToDelete: Array<OldSecretRecord['id']>,
@@ -55,12 +57,13 @@ export type InternalMethods = {
   setReplicationPaused: SetReplicationPaused
   occupyReplication: (
     pool: AdapterPool,
+    lockId: string,
     duration: number
   ) => Promise<{
     status: 'success' | 'alreadyLocked' | 'serviceError' | 'error'
     message?: string
   }>
-  releaseReplication: (pool: AdapterPool) => Promise<void>
+  releaseReplication: (pool: AdapterPool, lockId: string) => Promise<void>
 }
 
 export type ArrayOrSingleOrNull<T> = Array<T> | T | null

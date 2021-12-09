@@ -14,7 +14,7 @@ const getReplicationState = async (
 
   const rows = (await executeStatement(
     `SELECT "Status", "StatusData", "Iterator", "IsPaused", "SuccessEvent", 
-    ("LockExpirationTime" > (CAST(extract(epoch from clock_timestamp()) * 1000 AS ${LONG_NUMBER_SQL_TYPE}))) as "Locked"
+    ("LockExpirationTime" > (CAST(extract(epoch from clock_timestamp()) * 1000 AS ${LONG_NUMBER_SQL_TYPE}))) as "Locked", "LockId"
      FROM ${databaseNameAsId}.${escapeId(replicationStateTableName)}`
   )) as Array<{
     Status: ReplicationState['statusAndData']['status']
@@ -23,6 +23,7 @@ const getReplicationState = async (
     IsPaused: boolean
     SuccessEvent: ReplicationState['successEvent']
     Locked: boolean
+    LockId: string | null
   }>
   if (rows.length > 0) {
     const row = rows[0]
@@ -41,6 +42,7 @@ const getReplicationState = async (
       iterator: row.Iterator,
       successEvent: lastEvent,
       locked: row.Locked,
+      lockId: row.LockId,
     }
   } else {
     return getInitialReplicationState()

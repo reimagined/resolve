@@ -5,12 +5,14 @@ import { REPLICATE } from '@resolve-js/module-replication'
 
 const callReplicate: InternalMethods['callReplicate'] = async (
   pool,
+  lockId,
   events,
   secretsToSet,
   secretsToDelete,
   iterator
 ) => {
   const data = {
+    lockId,
     events,
     secretsToSet,
     secretsToDelete,
@@ -25,7 +27,7 @@ const callReplicate: InternalMethods['callReplicate'] = async (
     }
   )
   let resultType: CallReplicateResult['type'] = 'unknown'
-  const message = await response.text()
+  const result = await response.json()
   if (response.status >= 500) {
     resultType = 'serverError'
   } else if (response.status >= 400) {
@@ -38,7 +40,8 @@ const callReplicate: InternalMethods['callReplicate'] = async (
   return {
     type: resultType,
     httpStatus: response.status,
-    message: message,
+    message: result.message ?? result,
+    state: result.state ?? null,
   }
 }
 

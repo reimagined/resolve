@@ -40,7 +40,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
   const adapter: Adapter = adapters['test_replication']
 
   test('get-replication-state should return default state', async () => {
-    const state: ReplicationState = await adapter.getReplicationState()
+    const state = await adapter.getReplicationState()
 
     expect(state.statusAndData.status).toEqual('notStarted')
     expect(state.statusAndData.data).toBeNull()
@@ -49,9 +49,9 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(state.locked).toEqual(false)
   })
 
-  test('set-replication-status should change status, statusData properties of the state', async () => {
+  test('set-replication-status should do nothing if not locked', async () => {
     const startedAt = Date.now()
-    await adapter.setReplicationStatus({
+    const result = await adapter.setReplicationStatus('lockId', {
       statusAndData: {
         status: 'batchInProgress',
         data: {
@@ -59,13 +59,78 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
         },
       },
     })
+    expect(result).toBe(null)
+    const state = await adapter.getReplicationState()
+    expect(state.statusAndData.status).toEqual('notStarted')
+    expect(state.locked).toEqual(false)
+  })
+
+  test('set-replication-lock should work as expected', async () => {
+    const lockDuration = 4000
+    expect(await adapter.setReplicationLock('shortLock', lockDuration)).toEqual(
+      true
+    )
+    let state = await adapter.getReplicationState()
+    expect(state.locked).toEqual(true)
+
+    expect(await adapter.setReplicationLock('shortLock', lockDuration)).toEqual(
+      false
+    )
+    await new Promise((resolve) => setTimeout(resolve, lockDuration))
+
+    state = await adapter.getReplicationState()
+    expect(state.locked).toBe(false)
+
+    expect(
+      await adapter.setReplicationLock('toRelease', lockDuration * 2)
+    ).toBe(true)
+    expect(await adapter.setReplicationLock('wrongId', lockDuration * 2)).toBe(
+      false
+    )
+    expect(await adapter.setReplicationLock('wrongId', 0)).toBe(false)
+    expect(await adapter.setReplicationLock('toRelease', 0)).toBe(true)
+    state = await adapter.getReplicationState()
+    expect(state.locked).toBe(false)
+  })
+
+  test('set-replication-status should change status, statusData properties of the state', async () => {
+    await adapter.setReplicationLock('lockId', jestTimeout())
+
+    const startedAt = Date.now()
+
+    expect(
+      await adapter.setReplicationStatus('wrongId', {
+        statusAndData: {
+          status: 'batchInProgress',
+          data: {
+            startedAt,
+          },
+        },
+      })
+    ).toBe(null)
+
+    let setResult = await adapter.setReplicationStatus('lockId', {
+      statusAndData: {
+        status: 'batchInProgress',
+        data: {
+          startedAt,
+        },
+      },
+    })
+    expect(setResult).not.toBe(null)
+    expect(setResult.statusAndData.status).toEqual('batchInProgress')
+    expect(setResult.statusAndData.data).toEqual({ startedAt })
+
     let state = await adapter.getReplicationState()
     expect(state.statusAndData.status).toEqual('batchInProgress')
     expect(state.statusAndData.data).toEqual({ startedAt })
 
-    await adapter.setReplicationStatus({
+    setResult = await adapter.setReplicationStatus('lockId', {
       statusAndData: { status: 'batchDone', data: { appliedEventsCount: 10 } },
     })
+    expect(setResult.statusAndData.status).toEqual('batchDone')
+    expect(setResult.statusAndData.data).toEqual({ appliedEventsCount: 10 })
+
     state = await adapter.getReplicationState()
     expect(state.statusAndData.status).toEqual('batchDone')
     expect(state.statusAndData.data).toEqual({ appliedEventsCount: 10 })
@@ -79,7 +144,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
       type: 'type',
     }
 
-    await adapter.setReplicationStatus({
+    await adapter.setReplicationStatus('lockId', {
       statusAndData: { status: 'batchDone', data: { appliedEventsCount: 10 } },
       lastEvent: event,
       iterator: { cursor: 'DEAF' },
@@ -89,7 +154,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(state.successEvent).toEqual(event)
     expect(state.iterator).toEqual({ cursor: 'DEAF' })
 
-    await adapter.setReplicationStatus({
+    await adapter.setReplicationStatus('lockId', {
       statusAndData: {
         status: 'criticalError',
         data: { name: 'Error', message: '' },
@@ -112,30 +177,27 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     expect(state.paused).toEqual(false)
   })
 
-  test('set-replication-lock should work as expected', async () => {
-    const lockDuration = 4000
-    expect(await adapter.setReplicationLock(lockDuration)).toEqual(true)
-    let state = await adapter.getReplicationState()
-    expect(state.locked).toEqual(true)
-
-    expect(await adapter.setReplicationLock(lockDuration)).toEqual(false)
-    await new Promise((resolve) => setTimeout(resolve, lockDuration))
-
-    state = await adapter.getReplicationState()
-    expect(state.locked).toBe(false)
-
-    expect(await adapter.setReplicationLock(lockDuration * 2)).toBe(true)
-    expect(await adapter.setReplicationLock(0)).toBe(true)
-    state = await adapter.getReplicationState()
-    expect(state.locked).toBe(false)
-  })
-
   const secretCount = 36
+
+  test('replicate-secrets should return false when using wrong lockId', async () => {
+    const secretRecords: OldSecretRecord[] = generateSecrets(10)
+    expect(await adapter.replicateSecrets('wrongId', secretRecords, [])).toBe(
+      false
+    )
+    expect(
+      await adapter.replicateSecrets('wrongId', [], [makeIdFromIndex(0)])
+    ).toBe(false)
+    expect(
+      await adapter.replicateSecrets('wrongId', secretRecords, [
+        makeIdFromIndex(0),
+      ])
+    ).toBe(false)
+  })
 
   test('replicate-secrets should be able to set secrets', async () => {
     const secretRecords: OldSecretRecord[] = generateSecrets(secretCount)
 
-    await adapter.replicateSecrets(secretRecords, [])
+    await adapter.replicateSecrets('lockId', secretRecords, [])
     const { secrets: loadedSecrets } = await adapter.loadSecrets({
       limit: secretCount,
     })
@@ -154,7 +216,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     ) {
       secretsToDelete.push(makeIdFromIndex(i))
     }
-    await adapter.replicateSecrets([], secretsToDelete)
+    await adapter.replicateSecrets('lockId', [], secretsToDelete)
     const { secrets: loadedSecrets } = await adapter.loadSecrets({
       limit: secretCount,
     })
@@ -188,7 +250,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
       secretsToDelete.push(makeIdFromIndex(i))
     }
 
-    await adapter.replicateSecrets(secretsToSet, secretsToDelete)
+    await adapter.replicateSecrets('lockId', secretsToSet, secretsToDelete)
     const { secrets: loadedSecrets } = await adapter.loadSecrets({
       limit: secretCount * 2,
     })
@@ -208,7 +270,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
       })
     }
 
-    await adapter.replicateSecrets(secretsToSet, [])
+    await adapter.replicateSecrets('lockId', secretsToSet, [])
     const { secrets: loadedSecrets } = await adapter.loadSecrets({
       limit: secretCount * 2,
     })
@@ -222,7 +284,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     const { secrets: loadedSecrets } = await adapter.loadSecrets({
       limit: secretCount * 2,
     })
-    await adapter.replicateSecrets([], [])
+    await adapter.replicateSecrets('lockId', [], [])
     const { secrets: loadedAgainSecrets } = await adapter.loadSecrets({
       limit: secretCount * 2,
     })
@@ -231,13 +293,21 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
 
   const eventCount = 2560
 
+  test('replicate-events should return false when using wrong lockId', async () => {
+    const events: OldEvent[] = []
+    for (let i = 0; i < 10; ++i) {
+      events.push(makeTestEvent(i))
+    }
+    expect(await adapter.replicateEvents('wrongId', events)).toBe(false)
+  })
+
   test('replicate-events should insert events', async () => {
     const events: OldEvent[] = []
     for (let i = 0; i < eventCount; ++i) {
       events.push(makeTestEvent(i))
     }
 
-    await adapter.replicateEvents(events)
+    await adapter.replicateEvents('lockId', events)
 
     let loadedEventCount = 0
     let currentCursor = null
@@ -262,13 +332,13 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
     for (let i = eventIndexAfterGap; i < eventCount + addEventCount; ++i) {
       eventsAfterGap.push(makeTestEvent(i))
     }
-    await adapter.replicateEvents(eventsAfterGap)
+    await adapter.replicateEvents('lockId', eventsAfterGap)
 
     const events: OldEvent[] = []
     for (let i = eventCount; i < eventCount + addEventCount; ++i) {
       events.push(makeTestEvent(i))
     }
-    await adapter.replicateEvents(events)
+    await adapter.replicateEvents('lockId', events)
 
     let loadedEventCount = 0
     let currentCursor = null
@@ -307,7 +377,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
   test('should be able to replicate secrets and events after reset', async () => {
     const secretRecords: OldSecretRecord[] = generateSecrets(secretCount)
 
-    await adapter.replicateSecrets(secretRecords, [])
+    await adapter.replicateSecrets('lockId', secretRecords, [])
     const { secrets: loadedSecrets } = await adapter.loadSecrets({
       limit: secretCount,
     })
@@ -319,7 +389,7 @@ describe(`${adapterFactory.name}. eventstore adapter replication state`, () => {
       events.push(makeTestEvent(i))
     }
 
-    await adapter.replicateEvents(events)
+    await adapter.replicateEvents('lockId', events)
     const { events: loadedEvents } = await adapter.loadEvents({
       limit: lessEventCount,
       cursor: null,
