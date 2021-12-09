@@ -9,7 +9,7 @@ Follow the steps below to run a reSolve application in a Docker container:
 
 Add a separate application configuration file used to build the application as a part of a Docker image:
 
-```js
+```js t
 import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const dockerConfig = {
