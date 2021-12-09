@@ -1,5 +1,28 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.6...HEAD)
+
+**Other changes:**
+
+- Rework replicaiton to correctly handle locks [\#2174](https://github.com/reimagined/resolve/pull/2174)
+- Improve PLV8 warning message [\#2171](https://github.com/reimagined/resolve/pull/2171)
+- Migrate from 'request' package to 'node-fetch' in runtime [\#2169](https://github.com/reimagined/resolve/pull/2169)
+- Mini benchmarks initial [\#2134](https://github.com/reimagined/resolve/pull/2134)
+
+## [V0.33.5](https://github.com/reimagined/resolve/tree/V0.33.5) (2021-12-02)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.4...V0.33.5)
+
+**Bug fixes:**
+
+- Commands scheduled in sagas are triggered way too late [\#2157](https://github.com/reimagined/resolve/issues/2157)
+
+**Documentation:**
+
+- Revisit client API docs [\#2145](https://github.com/reimagined/resolve/pull/2145)
+
 ## [V0.33.4](https://github.com/reimagined/resolve/tree/V0.33.4) (2021-11-26)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.3...V0.33.4)

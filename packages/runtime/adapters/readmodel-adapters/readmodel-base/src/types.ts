@@ -660,6 +660,10 @@ export type IfEquals<T, U, Y = unknown, N = never> = (<G>() => G extends T
 
 export type IsTypeLike<T, B> = IfEquals<Extract<T, B>, T>
 
+export type EnsureExclude<T, U> = [IsTypeLike<U, T>] extends [never]
+  ? never
+  : Exclude<T, U>
+
 export type MatchTypeConditional<
   M extends any,
   V extends Array<[any, any]>,

@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
-import request from 'request'
+import fetch from 'node-fetch'
+import FormData from 'form-data'
 import crypto from 'crypto'
 import mime from 'mime-types'
 
@@ -71,21 +72,26 @@ export const upload = (
   const fileStream = fs.createReadStream(filePath)
   const contentType =
     mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8'
-  return new Promise<void>((resolve, reject) =>
-    request.put(
-      {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      const res = await fetch(uploadUrl, {
+        method: 'PUT',
         headers: {
-          'Content-Length': fileSizeInBytes,
+          'Content-Length': fileSizeInBytes.toString(),
           'Content-Type': contentType,
         },
-        uri: uploadUrl,
         body: fileStream,
-      },
-      (error, _, body) => {
-        error ? reject(error) : body ? reject(body) : resolve()
+      })
+
+      if (!res.ok) {
+        throw new Error(await res.text())
       }
-    )
-  )
+
+      resolve()
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 const createPresignedPost = async (
@@ -133,21 +139,33 @@ export const uploadFormData = (
     mime.contentType(path.extname(filePath)) || 'text/plain; charset=utf-8'
   form.fields.key = form.fields.Key
   delete form.fields.Key
-  return new Promise<void>((resolve, reject) =>
-    request.post(
-      {
-        url: form.url,
-        formData: {
-          ...form.fields,
+  const formData = new FormData()
+
+  for (const [key, value] of Object.entries(form)) {
+    formData.append(key, value)
+  }
+
+  formData.append('file', fileStream)
+
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      const res = await fetch(form.url, {
+        method: 'POST',
+        headers: {
           'Content-Type': contentType,
-          file: fileStream,
         },
-      },
-      (error) => {
-        error ? reject(error) : resolve()
+        body: formData,
+      })
+
+      if (!res.ok) {
+        throw new Error(await res.text())
       }
-    )
-  )
+
+      resolve()
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 export const createToken = (

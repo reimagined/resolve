@@ -8,8 +8,8 @@ import type {
 import type { MonitoringContext, MonitoringGroupContext } from './types'
 
 const createErrorDimensions = (error: Error) => [
-  { name: 'ErrorName', value: error.name },
-  { name: 'ErrorMessage', value: error.message },
+  { name: 'ErrorName', value: error.name ?? 'Unknown' },
+  { name: 'ErrorMessage', value: error.message ?? 'Unknown' },
 ]
 
 const areDimensionsEqual = (
