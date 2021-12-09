@@ -1,4 +1,3 @@
-import type { IncomingHttpHeaders } from 'http'
 import type { CookieSerializeOptions } from 'cookie'
 import type { INTERNAL } from './constants'
 import type { TrieOptions } from 'route-trie'

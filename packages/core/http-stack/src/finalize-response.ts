@@ -1,14 +1,13 @@
 import type { HttpResponse, InternalResponse } from './types'
-import { INTERNAL } from './constants'
-import normalizeKey from './normalize-key'
+import { INTERNAL, SET_COOKIE, VARY } from './constants'
 
 const finalizeResponse = (res: HttpResponse): InternalResponse => {
   const { headers, cookies, varyHeaderKeys } = res[INTERNAL]
   for (const cookieHeader of cookies) {
-    headers.push([normalizeKey('Set-Cookie', 'upper-dash-case'), cookieHeader])
+    headers.push([SET_COOKIE, cookieHeader])
   }
   if (varyHeaderKeys.size > 0) {
-    headers.push(['Vary', Array.from(varyHeaderKeys).join(',')])
+    headers.push([VARY, Array.from(varyHeaderKeys).join(',')])
   }
 
   return res[INTERNAL]

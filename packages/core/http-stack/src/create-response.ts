@@ -1,7 +1,13 @@
 import cookie from 'cookie'
 
 import type { InternalResponse, HttpResponse } from './types'
-import { COOKIE_CLEAR_DATE, INTERNAL } from './constants'
+import {
+  INTERNAL,
+  CONTENT_DISPOSITION,
+  CONTENT_TYPE,
+  COOKIE_CLEAR_DATE,
+  LOCATION,
+} from './constants'
 import validateResponseOpened from './validate-response-opened'
 import validateOptionShape from './validate-option-shape'
 import putHeader from './put-header'
@@ -49,7 +55,7 @@ const createResponse = (): HttpResponse => {
       validateOptionShape('Status code', code, [Number], true)
       validateOptionShape('Location path', path, [String])
 
-      putHeader(internalRes.headers, 'Location', path)
+      putHeader(internalRes.headers, LOCATION, path)
 
       internalRes.status = code != null ? code : 302
       internalRes.closed = true
@@ -91,7 +97,7 @@ const createResponse = (): HttpResponse => {
     json: (content) => {
       validateResponseOpened(internalRes)
 
-      putHeader(internalRes.headers, 'Content-Type', 'application/json')
+      putHeader(internalRes.headers, CONTENT_TYPE, 'application/json')
 
       internalRes.body = JSON.stringify(content)
       internalRes.closed = true
@@ -121,7 +127,7 @@ const createResponse = (): HttpResponse => {
 
       putHeader(
         internalRes.headers,
-        'Content-Disposition',
+        CONTENT_DISPOSITION,
         contentDisposition(filename)
       )
 

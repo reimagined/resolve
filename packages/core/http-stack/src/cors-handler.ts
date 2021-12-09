@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponse } from './types'
+import type { HttpRequest, HttpResponse } from './types'
 
 const corsHandler = <
   CustomParameters extends Record<string | symbol, any> = {}
@@ -6,7 +6,6 @@ const corsHandler = <
   req: HttpRequest<CustomParameters>,
   res: HttpResponse
 ): void => {
-  res.status(200)
   res.end()
 }
 

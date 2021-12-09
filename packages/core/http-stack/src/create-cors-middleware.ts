@@ -1,4 +1,14 @@
 import type { HttpRequest, HttpResponse, CORS } from './types'
+import {
+  ORIGIN,
+  ACCESS_CONTROL_REQUEST_HEADERS,
+  ACCESS_CONTROL_ALLOW_ORIGIN,
+  ACCESS_CONTROL_ALLOW_METHODS,
+  ACCESS_CONTROL_ALLOW_HEADERS,
+  ACCESS_CONTROL_EXPOSE_HEADERS,
+  ACCESS_CONTROL_MAX_AGE,
+  ACCESS_CONTROL_ALLOW_CREDENTIALS,
+} from './constants'
 
 const createCorsMiddleware = <
   CustomParameters extends Record<string | symbol, any> = {}
@@ -14,7 +24,7 @@ const createCorsMiddleware = <
     next: () => void
   ): void => {
     const accessControlRequestHeaders =
-      req.headers['Access-Control-Request-Headers']
+      req.headers[ACCESS_CONTROL_REQUEST_HEADERS]
     const {
       origin: corsOrigin,
       methods = '*',
@@ -22,17 +32,20 @@ const createCorsMiddleware = <
         ? undefined
         : accessControlRequestHeaders.split(',').map((key) => key.trim()),
       exposedHeaders,
-      optionsSuccessStatus = 204,
+      optionsSuccessStatus = 200,
       maxAge,
       credentials,
     } = cors
-    const headerOrigin = req.headers['Origin']
+    const headerOrigin = req.headers[ORIGIN]
 
-    if (
-      corsOrigin === '*' ||
-      (corsOrigin?.constructor === String && corsOrigin === headerOrigin)
+    if (corsOrigin === '*') {
+      res.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, '*')
+    } else if (
+      corsOrigin?.constructor === String &&
+      corsOrigin === headerOrigin
     ) {
-      res.setHeader('Access-Control-Allow-Origin', corsOrigin)
+      res.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, corsOrigin)
+      res.addVaryHeader(ORIGIN)
     } else if (
       (headerOrigin != null && corsOrigin === true) ||
       (headerOrigin != null &&
@@ -43,31 +56,34 @@ const createCorsMiddleware = <
         headerOrigin != null &&
         corsOrigin.test(headerOrigin))
     ) {
-      res.setHeader('Access-Control-Allow-Origin', headerOrigin)
-      res.addVaryHeader('Origin')
+      res.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, headerOrigin)
+      res.addVaryHeader(ORIGIN)
     } else {
       next()
       return
     }
 
     res.setHeader(
-      'Access-Control-Allow-Methods',
+      ACCESS_CONTROL_ALLOW_METHODS,
       Array.isArray(methods) ? methods.join(',') : methods
     )
 
     if (allowedHeaders != null) {
-      res.setHeader('Access-Control-Allow-Headers', allowedHeaders.join(','))
+      res.setHeader(ACCESS_CONTROL_ALLOW_HEADERS, allowedHeaders.join(','))
     }
     if (exposedHeaders != null) {
-      res.setHeader('Access-Control-Expose-Headers', exposedHeaders.join(','))
+      res.setHeader(ACCESS_CONTROL_EXPOSE_HEADERS, exposedHeaders.join(','))
     }
     if (maxAge != null) {
-      res.setHeader('Access-Control-Max-Age', `${maxAge}`)
+      res.setHeader(ACCESS_CONTROL_MAX_AGE, `${maxAge}`)
     }
     if (credentials === true) {
-      res.setHeader('Access-Control-Allow-Credentials', 'true')
+      res.setHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, 'true')
     }
-    res.status(optionsSuccessStatus)
+
+    if (req.method === 'OPTIONS') {
+      res.status(optionsSuccessStatus)
+    }
     next()
   }
 }
