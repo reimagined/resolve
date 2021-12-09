@@ -45,6 +45,7 @@ export type Route<
     req: HttpRequest<CustomParameters>,
     res: HttpResponse
   ) => Promise<void> | void
+  optional?: boolean
 }
 
 export type RouterOptions<

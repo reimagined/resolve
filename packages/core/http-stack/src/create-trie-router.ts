@@ -18,6 +18,8 @@ const createTrieRouter = <
   routes,
   notFoundHandler = defaultNotFoundHandler,
 }: RouterOptions<CustomParameters>) => {
+  const isAlreadyDefined = /already defined/i
+
   const trie = new Trie(options)
 
   const corsMiddleware = createCorsMiddleware(cors)
@@ -27,28 +29,48 @@ const createTrieRouter = <
     }
   }
 
-  for (const { method, pattern, middlewares = [], handler } of routes) {
-    trie.define(pattern).handle(
-      method,
-      async (
-        req: HttpRequest<CustomParameters>,
-        res: HttpResponse
-      ): Promise<void> => {
-        let isNext = false
-        const next = () => {
-          isNext = true
-        }
-
-        for (const middleware of middlewares) {
-          isNext = false
-          await middleware(req, res, next)
-          if (!isNext) {
-            return
+  for (const {
+    method,
+    pattern,
+    middlewares = [],
+    handler,
+    optional,
+  } of routes) {
+    try {
+      trie.define(pattern).handle(
+        method,
+        async (
+          req: HttpRequest<CustomParameters>,
+          res: HttpResponse
+        ): Promise<void> => {
+          let isNext = false
+          const next = () => {
+            isNext = true
           }
+
+          for (const middleware of middlewares) {
+            isNext = false
+            await middleware(req, res, next)
+            if (!isNext) {
+              return
+            }
+          }
+          await handler(req, res)
         }
-        await handler(req, res)
+      )
+    } catch (error) {
+      if (isAlreadyDefined.test(`${error?.message}`)) {
+        if (!optional) {
+          error.message = `"Route ${JSON.stringify({
+            method,
+            pattern,
+          })}" already defined`
+          throw error
+        }
+      } else {
+        throw error
       }
-    )
+    }
   }
   for (const { pattern } of routes) {
     try {
@@ -65,7 +87,11 @@ const createTrieRouter = <
           }
         )
       }
-    } catch {}
+    } catch (error) {
+      if (!isAlreadyDefined.test(`${error?.message}`)) {
+        throw error
+      }
+    }
   }
 
   return createTrieRouteMatcher(trie, notFoundHandler)
