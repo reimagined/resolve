@@ -5,12 +5,18 @@ import { OCCUPY_REPLICATION } from '@resolve-js/module-replication'
 
 const occupyReplication: InternalMethods['occupyReplication'] = async (
   pool,
+  lockId: string,
   duration: number
 ) => {
   const response = await fetch(
-    `${pool.targetApplicationUrl}${OCCUPY_REPLICATION.endpoint}?duration=${duration}`,
+    `${pool.targetApplicationUrl}${OCCUPY_REPLICATION.endpoint}`,
     {
       method: OCCUPY_REPLICATION.method,
+      body: JSON.stringify({
+        duration,
+        lockId,
+      }),
+      headers: { 'Content-Type': 'application/json' },
     }
   )
   switch (response.status) {

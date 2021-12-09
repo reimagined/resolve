@@ -15,10 +15,9 @@ type EventWithSize = {
 
 export const replicateEvents = async (
   pool: AdapterPool,
+  lockId: string,
   events: OldEvent[]
-): Promise<void> => {
-  if (events.length === 0) return
-
+): Promise<boolean> => {
   const {
     executeStatement,
     eventsTableName,
@@ -29,6 +28,9 @@ export const replicateEvents = async (
   const eventsTableNameAsId = escapeId(eventsTableName)
   const threadsTableAsId = escapeId(`${eventsTableName}-threads`)
   const databaseNameAsId = escapeId(databaseName)
+  const replicationStateTableNameAsId = escapeId(
+    `${eventsTableName}-replication-state`
+  )
 
   const stringRows = (await executeStatement(
     `SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
@@ -66,8 +68,6 @@ export const replicateEvents = async (
     eventsToInsert.push({ ...event, threadId, threadCounter })
   }
 
-  if (eventsToInsert.length === 0) return
-
   const calculateEventWithSize = (event: StoredEvent): EventWithSize => {
     const serializedEvent = [
       `${escape(event.aggregateId)},`,
@@ -92,7 +92,18 @@ export const replicateEvents = async (
     do {
       shouldRetry = false
       try {
-        await executeStatement(`INSERT INTO ${databaseNameAsId}.${eventsTableNameAsId}(
+        await executeStatement(`BEGIN WORK;
+        LOCK TABLE ${databaseNameAsId}.${replicationStateTableNameAsId} IN EXCLUSIVE MODE NOWAIT;
+        WITH "lock_check" AS (
+          SELECT 0 AS "lock_zero" WHERE (
+            (SELECT 1 AS "ReplicationIsLocked")
+          UNION ALL
+            (SELECT 1 AS "ReplicationIsLocked"
+            FROM ${databaseNameAsId}.${replicationStateTableNameAsId}
+            WHERE "LockId" != ${escape(lockId)})
+          ) = 1
+        )
+        INSERT INTO ${databaseNameAsId}.${eventsTableNameAsId}(
     "threadId",
     "threadCounter",
     "timestamp",
@@ -105,13 +116,14 @@ export const replicateEvents = async (
     .map(
       (eventWithSize) =>
         `(${eventWithSize.event.threadId},
-          ${eventWithSize.event.threadCounter},
+          ${eventWithSize.event.threadCounter} + (SELECT "lock_zero" FROM "lock_check" LIMIT 1),
           ${eventWithSize.event.timestamp},
           ${eventWithSize.serialized},
           ${eventWithSize.size})`
     )
     .join(',')}
-    ON CONFLICT DO NOTHING`)
+    ON CONFLICT DO NOTHING;
+    COMMIT WORK;`)
       } catch (error) {
         const errorMessage: string = error.message
         if (/deadlock detected/.test(errorMessage)) {
@@ -126,51 +138,83 @@ export const replicateEvents = async (
   let currentBatchSize = 0
   const currentEventsBatch: EventWithSize[] = []
 
-  for (const event of eventsToInsert) {
-    const eventWithSize = calculateEventWithSize(event)
+  try {
+    for (const event of eventsToInsert) {
+      const eventWithSize = calculateEventWithSize(event)
 
-    if (eventWithSize.size > MAX_EVENTS_BATCH_BYTE_SIZE) {
-      await insertEventsBatch([eventWithSize])
-      continue
+      if (eventWithSize.size > MAX_EVENTS_BATCH_BYTE_SIZE) {
+        await insertEventsBatch([eventWithSize])
+        continue
+      }
+
+      const newCurrentBatchSize = currentBatchSize + eventWithSize.size
+      if (newCurrentBatchSize > MAX_EVENTS_BATCH_BYTE_SIZE) {
+        await insertEventsBatch(currentEventsBatch)
+        currentEventsBatch.length = 0
+        currentBatchSize = 0
+      }
+      currentBatchSize += eventWithSize.size
+      currentEventsBatch.push(eventWithSize)
     }
 
-    const newCurrentBatchSize = currentBatchSize + eventWithSize.size
-    if (newCurrentBatchSize > MAX_EVENTS_BATCH_BYTE_SIZE) {
+    if (currentEventsBatch.length) {
       await insertEventsBatch(currentEventsBatch)
-      currentEventsBatch.length = 0
-      currentBatchSize = 0
     }
-    currentBatchSize += eventWithSize.size
-    currentEventsBatch.push(eventWithSize)
-  }
 
-  if (currentEventsBatch.length) {
-    await insertEventsBatch(currentEventsBatch)
-  }
-
-  type ThreadToUpdate = {
-    threadId: StoredEvent['threadId']
-    threadCounter: StoredEvent['threadCounter']
-  }
-  const threadsToUpdate: ThreadToUpdate[] = []
-  for (let i = 0; i < threadCounters.length; ++i) {
-    if (threadCounters[i] !== undefined) {
-      threadsToUpdate.push({
-        threadId: i,
-        threadCounter: threadCounters[i] + 1,
-      })
+    type ThreadToUpdate = {
+      threadId: StoredEvent['threadId']
+      threadCounter: StoredEvent['threadCounter']
     }
-  }
-  if (threadsToUpdate.length > 0) {
-    await executeStatement(`INSERT INTO ${databaseNameAsId}.${threadsTableAsId} ("threadId","threadCounter") 
+    const threadsToUpdate: ThreadToUpdate[] = []
+    for (let i = 0; i < threadCounters.length; ++i) {
+      if (threadCounters[i] !== undefined) {
+        threadsToUpdate.push({
+          threadId: i,
+          threadCounter: threadCounters[i] + 1,
+        })
+      }
+    }
+    if (threadsToUpdate.length > 0) {
+      await executeStatement(`BEGIN WORK;
+        LOCK TABLE ${databaseNameAsId}.${replicationStateTableNameAsId} IN EXCLUSIVE MODE NOWAIT;
+        WITH "lock_check" AS (
+          SELECT 0 AS "lock_zero" WHERE (
+            (SELECT 1 AS "ReplicationIsLocked")
+          UNION ALL
+            (SELECT 1 AS "ReplicationIsLocked"
+            FROM ${databaseNameAsId}.${replicationStateTableNameAsId}
+            WHERE "LockId" != ${escape(lockId)})
+          ) = 1
+        )
+        INSERT INTO ${databaseNameAsId}.${threadsTableAsId} ("threadId","threadCounter") 
     VALUES ${threadsToUpdate
       .map(
         (threadToUpdate) =>
-          `(${threadToUpdate.threadId},${threadToUpdate.threadCounter})`
+          `(${threadToUpdate.threadId},${threadToUpdate.threadCounter} + (SELECT "lock_zero" FROM "lock_check" LIMIT 1))`
       )
       .join(
         ','
-      )} ON CONFLICT ("threadId") DO UPDATE SET "threadCounter" = EXCLUDED."threadCounter"`)
+      )} ON CONFLICT ("threadId") DO UPDATE SET "threadCounter" = EXCLUDED."threadCounter";
+      COMMIT;`)
+    }
+
+    return true
+  } catch (error) {
+    try {
+      await executeStatement('ROLLBACK;')
+    } catch (rollbackError) {
+      // ignore
+    }
+
+    const errorMessage =
+      error != null && error.message != null ? error.message : ''
+    if (errorMessage.indexOf('subquery used as an expression') > -1) {
+      return false
+    } else if (errorMessage.indexOf('could not obtain lock on relation') > -1) {
+      return false
+    } else {
+      throw error
+    }
   }
 }
 

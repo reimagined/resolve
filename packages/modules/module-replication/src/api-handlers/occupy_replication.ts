@@ -2,7 +2,14 @@ import type { ResolveRequest, ResolveResponse } from '@resolve-js/core'
 import respondWithError from './respond-with-error'
 
 const handler = async (req: ResolveRequest, res: ResolveResponse) => {
-  const duration = +req.query.duration
+  const occupyInfo = JSON.parse(req.body ?? '')
+  if (occupyInfo == null || typeof occupyInfo.lockId !== 'string') {
+    res.status(400)
+    res.end('Expected lockId')
+    return
+  }
+
+  const duration = +occupyInfo.duration
   if (isNaN(duration) || duration <= 0) {
     res.status(400)
     res.end('Invalid duration provided')
@@ -10,6 +17,7 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
   }
   try {
     const success = await req.resolve.eventstoreAdapter.setReplicationLock(
+      occupyInfo.lockId,
       duration
     )
     if (success) {

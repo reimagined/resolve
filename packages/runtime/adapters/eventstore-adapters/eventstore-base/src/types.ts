@@ -80,6 +80,7 @@ export function getInitialReplicationState(): ReplicationState {
     paused: false,
     successEvent: null,
     locked: false,
+    lockId: null,
   }
 }
 

@@ -18,6 +18,7 @@ const getReplicationState: InternalMethods['getReplicationState'] = async ({
     iterator: null,
     successEvent: null,
     locked: false,
+    lockId: null,
   }
 
   try {

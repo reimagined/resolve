@@ -29,6 +29,7 @@ const handler = async (req: ResolveRequest, res: ResolveResponse) => {
       successEvent: null,
       paused: false,
       locked: false,
+      lockId: null,
     }
     res.json(result)
   }

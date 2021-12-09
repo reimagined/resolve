@@ -26,7 +26,8 @@ const initReplicationStateTable = async (
         "Iterator" JSONB NULL,
         "IsPaused" BOOLEAN DEFAULT FALSE NOT NULL,
         "SuccessEvent" JSON NULL,
-        "LockExpirationTime" ${LONG_NUMBER_SQL_TYPE} DEFAULT 0 NOT NULL
+        "LockExpirationTime" ${LONG_NUMBER_SQL_TYPE} DEFAULT 0 NOT NULL,
+        "LockId" VARCHAR(50) DEFAULT NULL
       )
     `)
 
