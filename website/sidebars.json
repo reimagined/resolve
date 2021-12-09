@@ -29,6 +29,7 @@
           "file-upload",
           "export-import",
           "preparing-to-production",
+          "running-in-containers",
           "code-splitting",
           "debugging",
           "testing",
