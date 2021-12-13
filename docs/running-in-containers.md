@@ -5,11 +5,11 @@ title: Running in Containers
 
 Follow the steps below to run a reSolve application in a Docker container:
 
-### 1. Configure the reSolve Application
+## 1. Configure the reSolve Application
 
 Add a separate application configuration file used to build the application as a part of a Docker image:
 
-```js t
+```js title="/config.docker.js"
 import { declareRuntimeEnv } from '@resolve-js/scripts'
 
 const dockerConfig = {
@@ -86,7 +86,7 @@ export default dockerConfig
 
 Register the added configuration file in `run.js`:
 
-```js
+```js title="/run.js"
 import dockerConfig from './config.docker'
 ...
 void (async () => {
@@ -108,7 +108,7 @@ void (async () => {
 
 Register a `"build:docker"` script in the application's `package.json` file:
 
-```json
+```json title="/package.json"
 ...
 "scripts": {
     ...
@@ -118,13 +118,13 @@ Register a `"build:docker"` script in the application's `package.json` file:
 ...
 ```
 
-### 2. Configure PostgreSQL
+## 2. Configure PostgreSQL
 
 The official [PostgreSQL](https://hub.docker.com/_/postgres/) docker image runs SQL scripts found in the `/docker-entrypoint-initdb.d/` folder to initialize the hosted databases.
 
 To initialize the database credentials and schemas required to run reSolve, create a directory to mount as the `/docker-entrypoint-initdb.d/` volume and add the following script to this directory:
 
-```sql
+```sql title="/docker/volumes/postgres/docker-entrypoint-initdb.d/init-schemas.sql"
 \c postgres;
 -- Add user credetials for your reSolve applciation.
 CREATE USER "hn-user";
@@ -148,12 +148,132 @@ GRANT ALL ON ALL FUNCTIONS IN SCHEMA "read-store" TO "hn-user";
 ALTER SCHEMA "read-store" OWNER TO "hn-user";
 ```
 
-### 3. Configure Nginx
+## 3. Configure Nginx
 
-### 4. Prepare the Dockerfile
+To configure an Nginx image, create a directory to be mounted as a `/etc/nginx/conf.d` volume. In this directory, create a `default.conf` file with the reverse proxy server configuration that suite your requirements. For example:
 
-### 5. Configure Docker Compose
+```txt title="/docker/volumes/nginx/conf.d/default.conf"
+server {
+  listen 80;
 
-### 6. Build the Image and Run the Container
+  location / {
+    proxy_pass http://server:3000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+}
+```
+
+## 4. Prepare the Dockerfile
+
+The example Dockerfile below demonstrates how to build a Docker image for a reSolve application based on official `node` image.
+The image is built in stages to optimize for the image size.
+
+```txt title="/Dockerfile"
+# Build stage: install all dependencies and build app
+FROM node:14.17-alpine as build
+
+WORKDIR /src
+
+COPY package.json package.json
+
+COPY .babelrc .babelrc
+COPY tsconfig.json tsconfig.json
+
+RUN yarn install --ignore-scripts
+
+COPY run.ts run.ts
+COPY config.adjust-webpack.ts config.adjust-webpack.ts
+COPY config.app.ts config.app.ts
+COPY config.cloud.common.ts config.cloud.common.ts
+COPY config.cloud.replica.ts config.cloud.replica.ts
+COPY config.cloud.ts config.cloud.ts
+COPY config.dev.common.ts config.dev.common.ts
+COPY config.dev.replica.ts config.dev.replica.ts
+COPY config.dev.ts config.dev.ts
+COPY config.prod.ts config.prod.ts
+COPY config.docker.ts config.docker.ts
+COPY config.test-functional.ts config.test-functional.ts
+COPY types.ts types.ts
+COPY auth auth
+COPY client client
+COPY common common
+COPY import import
+COPY static static
+
+RUN yarn build:docker
+
+# Dependencies stage: install production dependencies
+FROM node:14.17-alpine as dependencies
+
+WORKDIR /src
+
+COPY package.json package.json
+
+RUN yarn install --ignore-scripts --production
+
+# Main stage: copy production dependencies, build and static files
+FROM node:14.17-alpine
+
+COPY static static
+COPY --from=dependencies /src .
+COPY --from=build /src/dist dist
+
+EXPOSE 3000
+
+CMD ["node", "dist/common/local-entry/local-entry.js"]
+```
+
+## 5. Configure Docker Compose
+
+```yaml title="/docker-compose.yml"
+version: '3'
+services:
+  postgres:
+    image: postgres:14.1
+    environment:
+      POSTGRES_USER: 'hn-admin'
+      POSTGRES_PASSWORD: 'pRWGAqCEq4'
+    volumes:
+      - ./docker/volumes/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+
+  server:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    environment:
+      HOST: '0.0.0.0'
+      RESOLVE_EVENT_STORE_DATABASE_NAME: 'event-store'
+      RESOLVE_EVENT_STORE_CLUSTER_HOST: 'postgres'
+      RESOLVE_EVENT_STORE_CLUSTER_PORT: '5432'
+      RESOLVE_READMODEL_DATABASE_NAME: 'read-store'
+      RESOLVE_READMODEL_CLUSTER_HOST: 'postgres'
+      RESOLVE_READMODEL_CLUSTER_PORT: '5432'
+      RESOLVE_USER: 'hn-user'
+      RESOLVE_USER_PASSWORD: 'QweZxc123'
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx:1.17
+    ports:
+      - '3000:80'
+    depends_on:
+      - server
+    volumes:
+      - ./docker/volumes/nginx/conf.d:/etc/nginx/conf.d:ro
+
+networks:
+  default:
+    driver: bridge
+```
+
+## 6. Build the Image and Run the Container
+
+## See the Example
 
 The [Hacker News](https://github.com/reimagined/resolve/tree/dev/examples/js/hacker-news) example project contains all configuration files required to build a docker image and run it with Docker Compose.
