@@ -8,7 +8,7 @@ An event store adapter defines how the reSolve framework stores events in the un
 
 ## Event Store Adapter Interface
 
-An event store adapter object must expose the following functions:
+An event store adapter object exposes the following API:
 
 | Function Name                                             | Description                                                                                         |
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
@@ -145,33 +145,10 @@ Gets an array of events and the next cursor from the store based on the specifie
 #### Example
 
 ```js
-// Iterate through events.
-let nextCursor = null
-do {
-  void ({ events, cursor: nextCursor } = await adapter.loadEvents({
-    limit: 1,
-    cursor: nextCursor,
-  }))
-} while (events.length > 0)
-
-// Load evets from the specified timespan.
-const { events } = await adapter.loadEvents({
-  limit: Number.MAX_SAFE_INTEGER,
-  startTime: Date.now() - 1000,
-  endTime: Date.now(),
-})
-
-// Load events of the specified type.
-const { events } = await adapter.loadEvents({
-  limit: 1000,
-  eventTypes: ['ITEM_CREATED'],
-  cursor: null,
-})
-
-// Load events with the specified aggregate ID.
-const { events } = await adapter.loadEvents({
-  limit: 1000,
-  aggregateIds: ['list-1'],
+const { events, cursor } = await adapter.loadEvents({
+  limit: 100,
+  eventTypes: ['COMMENT_CREATED', 'COMMENT_REMOVED'],
+  aggregateIds: ['9f81a98a', '063c1ed5'],
   cursor: null,
 })
 ```
@@ -189,6 +166,89 @@ A `promise` that resolves to an object of the following structure:
 ```ts
 {
   events, cursors
+}
+```
+
+The result object contains the following fields:
+
+| Field Name | Type                                     | Description                                              |
+| ---------- | ---------------------------------------- | -------------------------------------------------------- |
+| events     | An array of [`event`](event.md) objects. | The resulting filtered set of events.                    |
+| cursors    | `string`                                 | A database cursor used to load the next batch of events. |
+
+The returned `cursor` points to the position within the resulting dataset past the loaded batch of events. You can use this cursor to chain together `loadEvents` calls.
+
+:::caution
+If the `startTime` and/or `finishTime` filtering criteria are specified, the returned `cursor` object is invalid and should not be used in subsequent `loadEvents` calls.
+:::
+
+#### Usage
+
+Filter by event types:
+
+```js
+const { events, cursor } = await adapter.loadEvents({
+  limit: 100,
+  eventTypes: ['COMMENT_CREATED', 'COMMENT_REMOVED'],
+  cursor: null,
+})
+```
+
+Filter by aggregate IDs:
+
+```js
+const { events, cursor } = await adapter.loadEvents({
+  limit: 100,
+  aggregateIds: ['9f81a98a', '063c1ed5'],
+  cursor: null,
+})
+```
+
+Combine filtering criteria:
+
+```js
+const { events, cursor } = await adapter.loadEvents({
+  limit: 100,
+  eventTypes: ['COMMENT_CREATED', 'COMMENT_REMOVED'],
+  aggregateIds: ['9f81a98a', '063c1ed5'],
+  cursor: null,
+})
+```
+
+Load events from the specified time range:
+
+```js
+const startTime = new Date('2021-10-15T09:00:00').getTime()
+const finishTime = new Date('2021-11-20T09:30:00').getTime()
+
+const { events } = await adapter.loadEvents({
+  limit: 100,
+  startTime: startTime,
+  finishTime: finishTime,
+})
+
+expect(events[0].timestamp).toBeGreaterThanOrEqual(startTime)
+expect(events[events.length - 1].timestamp).toBeLessThanOrEqual(finishTime)
+```
+
+Use a cursor to chain `loadEvents` calls:
+
+```js
+const result = await adapter.loadEvents({
+  limit: 100,
+  cursor: null,
+})
+
+expect(result.events.length).toBeGreaterThan(0)
+
+// Use the returned cursor to load the next batch of events.
+const nextResult = await adapter.loadEvents({
+  limit: 100,
+  cursor: result.cursor,
+})
+
+if (nextResult.events.length === 0) {
+  console.log('No more events found by this filter')
 }
 ```
 
@@ -312,6 +372,12 @@ A `promise` that resolves on the successful import.
 
 Starts to build a batch of events to import.
 
+#### Example
+
+```js
+const importId = await eventStoreAdapter.beginIncrementalImport()
+```
+
 #### Result
 
 A `promise` that resolves to a `string` that is the ID of the created import batch.
@@ -319,6 +385,12 @@ A `promise` that resolves to a `string` that is the ID of the created import bat
 ### `pushIncrementalImport`
 
 Adds events to an incremental import batch.
+
+#### Example
+
+```js
+await eventStoreAdapter.pushIncrementalImport(events, importId)
+```
 
 #### Arguments
 
@@ -335,6 +407,12 @@ A `promise` that resolves on successful import.
 
 Commits an incremental import batch to the event store.
 
+#### Example
+
+```js
+await eventStoreAdapter.commitIncrementalImport(importId)
+```
+
 #### Arguments
 
 | Argument Name | Type     | Description                      |
@@ -349,20 +427,24 @@ A `promise` that resolves on successful commit.
 
 Drops an incremental import batch.
 
+```js
+await eventStoreAdapter.rollbackIncrementalImport()
+```
+
 #### Result
 
 A `promise` that resolves on successful rollback.
 
 ### `getNextCursor`
 
-Gets an the next cursor from the store based.
+Gets an the next cursor in the event store database based on the previous cursor and an array of events obtained from it.
 
 #### Arguments
 
-| Argument Name | Type               | Description |
-| ------------- | ------------------ | ----------- |
-| cursor        | `string` or `null` |             |
-| events        |                    |             |
+| Argument Name | Type                                  | Description                                           |
+| ------------- | ------------------------------------- | ----------------------------------------------------- |
+| prevCursor    | `string` or `null`                    | The previous cursor.                                  |
+| events        | Array of [`event`](event.md) objects. | An array of events obtained from the previous cursor. |
 
 #### Result
 
@@ -391,7 +473,7 @@ await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 
 #### Result
 
-`ImportEventsStream`
+A writable stream object.
 
 ### `exportEvents`
 
@@ -416,7 +498,7 @@ await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 
 #### Result
 
-`ExportEventsStream`
+A readable stream object.
 
 ### `loadSecrets`
 
@@ -504,7 +586,7 @@ The value that represents internal position in event-store. `loadEvents` will re
 
 #### `startTime` and `finishTime`
 
-Specify the inclusive start and end of the time interval for which to load events. Specified in milliseconds elapsed since January 1, 1970 00:00:00 UTC. Both values can be omitted so that there is no lower and/or upper bound.
+Specify the inclusive start and end of the time range for which to load events. Specified in milliseconds elapsed since January 1, 1970 00:00:00 UTC. Both values can be omitted so that there is no lower and/or upper bound.
 
 :::caution
 The `startTime` and `finishTime` specified in conjunction with [`cursor`](#cursor) produces an error.
