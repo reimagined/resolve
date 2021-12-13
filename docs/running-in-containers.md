@@ -230,6 +230,8 @@ CMD ["node", "dist/common/local-entry/local-entry.js"]
 
 ## 5. Configure Docker Compose
 
+Add a Docker Compose configuration file used to run your reSolve application's image along with PostgreSQL and Nginx images:
+
 ```yaml title="/docker-compose.yml"
 version: '3'
 services:
@@ -272,7 +274,35 @@ networks:
     driver: bridge
 ```
 
+You can define an additional configuration file to use in the production environment. For example, the sample config below demonstrates how to define a volume for PostgreSQL data in production:
+
+```yaml title="/docker-compose-production.yml"
+version: '3'
+services:
+  postgres:
+    volumes:
+      - ./docker/volumes/postgres/data:/var/lib/postgresql/data
+```
+
 ## 6. Build the Image and Run the Container
+
+Use the following input to download the official PostgreSQL image and run it in Docker Compose so it runs the initialization script:
+
+```sh
+docker-compose up -d postgres
+```
+
+To build and run your application, type:
+
+```sh
+docker-compose up -d
+```
+
+To use the production config, type:
+
+```sh
+docker-compose -f docker-compose.yml -f docker-compose-production.yml up -d
+```
 
 ## See the Example
 
