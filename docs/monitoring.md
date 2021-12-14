@@ -3,4 +3,49 @@ id: monitoring
 title: Monitoring
 ---
 
-TODO
+ReSolve is shipped with an inbuilt monitoring feature that allows a reSolve application to collect and publish various metrics during its execution and publish.
+
+## Monitoring Adapters
+
+Resolve defines the base monitoring mechanism used to collect metrics and incudes a set of monitoring adapters that define how the collected metrics are published. The following adapters are included:
+
+| Module Name                                                                                       | Description                                              |
+| ------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| [`@resolve-js/monitoring-console`](application-configuration.md#monitoring-console)               | Prints the collected metrics to the text console output. |
+| [`@resolve-js/monitoring-aws-cloudwatch`](application-configuration.md#monitoring-aws-cloudwatch) | Publishes the collected metrics to AWS CloudWatch.       |
+
+An application's monitoring adapters are specified in the application's configuration files:
+
+```js title="/app-config.js"
+monitoringAdapters: {
+  console: {
+    module: '@resolve-js/monitoring-console',
+    options: {
+      publishMode: 'processExit',
+    },
+  },
+  ...
+}
+```
+
+Refer to the [monitoringAdapters](application-configuration.md#monitoringadapters) section of the [Application Configuration](application-configuration.md) topic for more information about related options.
+
+On a local machine or a standalone server, you need to explicitly specify the monitoring adapter to enable monitoring.
+
+In the reSolve Cloud environment, the `default` monitoring adapter is defined. If it is not explicitly specified in the application's configuration files, it defaults to `@resolve-js/monitoring-aws-cloudwatch`.
+
+You can define your own monitoring adapter based on the `@resolve-js/monitoring-base` package. Refer to the [Monitoring Adapter](api/monitoring/monitoring-adapter.md) API reference topic for information on how to achieve this,
+
+## Monitoring API
+
+You can access the monitoring API through the reSolve context object. For example, in an API handler:
+
+```js
+const myHandler = async (req, res) => {
+  const {resolve: { monitoring } } = req
+  const metrics = monitoring.getMetrics('default')
+  ...
+}
+```
+
+To learn about the API exposed by this object, see the [Monitoring Interface](api/monitoring/monitoring.md) article.

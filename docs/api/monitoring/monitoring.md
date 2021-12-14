@@ -132,16 +132,16 @@ await monitoring.publish()
 
 The returned value is a `promise` that resolves when the monitoring information is successfully published.
 
-The monitoring adapter shipped with reSolve implement the `publish` function as follows:
+The monitoring adapters shipped with reSolve implement the `publish` function as follows:
 
-| Module Name                                                         | Description                          |
-| ------------------------------------------------------------------- | ------------------------------------ |
-| [@resolve-js/monitoring-console](#monitoring-console)               | Prints metrics to the text console.  |
-| [@resolve-js/monitoring-aws-cloudwatch](#monitoring-aws-cloudwatch) | Publishes metrics to AWS CloudWatch. |
+| Module Name                             | Description                          |
+| --------------------------------------- | ------------------------------------ |
+| `@resolve-js/monitoring-console`        | Prints metrics to the text console.  |
+| `@resolve-js/monitoring-aws-cloudwatch` | Publishes metrics to AWS CloudWatch. |
 
 ### `rate`
 
-Registers operation execution rate during the specified time interval in seconds. The default implementation adds a in times per N seconds to the specified metric.
+Registers operation execution rate during the specified time interval in seconds. The default implementation adds a value in times per N seconds to the specified metric.
 
 #### Example
 
