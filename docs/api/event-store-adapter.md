@@ -467,9 +467,9 @@ await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 
 #### Arguments
 
-| Argument Name | Description                                               |
-| ------------- | --------------------------------------------------------- |
-| options?      | { byteOffset: number, maintenanceMode: MAINTENANCE_MODE } |
+| Argument Name | Type     | Description                                               |
+| ------------- | -------- | --------------------------------------------------------- |
+| `options?`    | `object` | { byteOffset: number, maintenanceMode: MAINTENANCE_MODE } |
 
 #### Result
 
@@ -492,9 +492,9 @@ await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 
 #### Arguments
 
-| Argument Name | Description                                                                      |
-| ------------- | -------------------------------------------------------------------------------- |
-| options?      | { cursor: string or null, maintenanceMode: MAINTENANCE_MODE, bufferSize: number} |
+| Argument Name | Type     | Description                                                                      |
+| ------------- | -------- | -------------------------------------------------------------------------------- |
+| `options?`    | `object` | { cursor: string or null, maintenanceMode: MAINTENANCE_MODE, bufferSize: number} |
 
 #### Result
 
@@ -512,9 +512,9 @@ Gets a list of secrets stored in the event store.
 
 #### Arguments
 
-| Argument Name | Description                                                                               |
-| ------------- | ----------------------------------------------------------------------------------------- |
-| filter        | { idx?: number or null, skip?: number, limit: number, ids?: Array&lt;string&gt; or null } |
+| Argument Name | Type     | Description                                                                               |
+| ------------- | -------- | ----------------------------------------------------------------------------------------- |
+| `filter`      | `object` | { idx?: number or null, skip?: number, limit: number, ids?: Array&lt;string&gt; or null } |
 
 #### Result
 
@@ -540,9 +540,9 @@ Gets a writable stream used to save secrets.
 
 #### Arguments
 
-| Argument Name | Description                           |
-| ------------- | ------------------------------------- |
-| options?      | { maintenanceMode: MAINTENANCE_MODE } |
+| Argument Name | Type     | Description                           |
+| ------------- | -------- | ------------------------------------- |
+| `options?`    | `object` | { maintenanceMode: MAINTENANCE_MODE } |
 
 #### Result
 
@@ -562,9 +562,9 @@ Gets a writable stream used to load secrets.
 
 #### Arguments
 
-| Argument Name | Description                                                |
-| ------------- | ---------------------------------------------------------- |
-| options?      | { idx: number or null, maintenanceMode: MAINTENANCE_MODE } |
+| Argument Name | Type     | Description                                                |
+| ------------- | -------- | ---------------------------------------------------------- |
+| `options?`    | `object` | { idx: number or null, maintenanceMode: MAINTENANCE_MODE } |
 
 #### Result
 
