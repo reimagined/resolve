@@ -23,9 +23,9 @@ test('should work with provided DEBUG and DEBUG_LEVEL envs', () => {
 
   expect(debugProvider).toBeCalledWith('namespace')
 
-  expect(debugPrinter).toBeCalledWith('Log message')
   expect(debugPrinter).toBeCalledWith('Error message')
   expect(debugPrinter).toBeCalledWith('Warn message')
+  expect(debugPrinter).not.toBeCalledWith('Log message')
   expect(debugPrinter).not.toBeCalledWith('Debug message')
   expect(debugPrinter).not.toBeCalledWith('Info message')
   expect(debugPrinter).not.toBeCalledWith('Verbose message')
