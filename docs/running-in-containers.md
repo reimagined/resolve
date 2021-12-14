@@ -3,7 +3,12 @@ id: running-in-containers
 title: Running in Containers
 ---
 
-Follow the steps below to run a reSolve application in a Docker container:
+It is possible to run a reSolve in a docker container. This article describes how to prepare an application and run in as a part of a Docker Compose setup along with additional containers that serve the following purposes:
+
+- The `postgres` is used to store the application's data.
+- The `nginx` container is used as a reserve proxy server to answer http requests.
+
+Follow the steps below to run a reSolve application in a Docker container.
 
 ## 1. Configure the reSolve Application
 
