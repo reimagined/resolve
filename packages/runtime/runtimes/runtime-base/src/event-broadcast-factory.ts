@@ -22,15 +22,25 @@ const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
   const timerPromise = new Promise((resolve) => {
     timerId = setTimeout(resolve, maxDuration)
   })
+  const eventType = event?.event?.type
 
   const inlineLedgerPromise = (async () => {
     const promises = []
-    for (const { name: eventSubscriber } of runtime.eventListeners.values()) {
-      promises.push(
-        runtime.invokeBuildAsync(
-          createEventSubscriberNotification(eventSubscriber, event)
+    for (const {
+      name: eventSubscriber,
+      eventTypes,
+    } of runtime.eventListeners.values()) {
+      if (
+        eventTypes == null ||
+        eventType == null ||
+        eventTypes.includes(eventType)
+      ) {
+        promises.push(
+          runtime.invokeBuildAsync(
+            createEventSubscriberNotification(eventSubscriber, event)
+          )
         )
-      )
+      }
     }
 
     const eventSubscribers = await runtime.eventStoreAdapter.getEventSubscribers()
@@ -42,19 +52,30 @@ const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
             runtime.eventSubscriberScope !== applicationName ||
             !runtime.eventListeners.has(eventSubscriber)
         )
-        .map(async ({ applicationName, eventSubscriber, destination }) => {
-          try {
-            await runtime.notifyEventSubscriber(
-              destination,
-              eventSubscriber,
-              event
-            )
-          } catch (error) {
-            log.warn(
-              `Notify application "${applicationName}" event subscriber "${eventSubscriber}" failed with error: ${error}`
-            )
+        .map(
+          async ({ applicationName, eventSubscriber, destination, status }) => {
+            try {
+              const eventTypes = Array.isArray(status?.eventTypes)
+                ? (status?.eventTypes as Array<string>)
+                : null
+              if (
+                eventTypes == null ||
+                eventType == null ||
+                eventTypes.includes(eventType)
+              ) {
+                await runtime.notifyEventSubscriber(
+                  destination,
+                  eventSubscriber,
+                  event
+                )
+              }
+            } catch (error) {
+              log.warn(
+                `Notify application "${applicationName}" event subscriber "${eventSubscriber}" failed with error: ${error}`
+              )
+            }
           }
-        })
+        )
     )
 
     if (timerId != null) {
