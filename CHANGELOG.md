@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.6...HEAD)
 
+**Bug fixes:**
+
+- Resetting saga in hacker-news example generates redundant events [\#2163](https://github.com/reimagined/resolve/issues/2163)
+
 **Other changes:**
 
 - Rework replicaiton to correctly handle locks [\#2174](https://github.com/reimagined/resolve/pull/2174)
