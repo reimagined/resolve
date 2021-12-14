@@ -4,12 +4,9 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.6...HEAD)
 
-**Bug fixes:**
-
-- Resetting saga in hacker-news example generates redundant events [\#2163](https://github.com/reimagined/resolve/issues/2163)
-
 **Other changes:**
 
+- Add lambda runtime execution info logging [\#2177](https://github.com/reimagined/resolve/pull/2177)
 - Rework replicaiton to correctly handle locks [\#2174](https://github.com/reimagined/resolve/pull/2174)
 - Improve PLV8 warning message [\#2171](https://github.com/reimagined/resolve/pull/2171)
 - Migrate from 'request' package to 'node-fetch' in runtime [\#2169](https://github.com/reimagined/resolve/pull/2169)
