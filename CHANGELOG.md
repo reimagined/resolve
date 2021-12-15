@@ -6,6 +6,7 @@
 
 **Other changes:**
 
+- Add eventstore adapter runtimeInfo and setReconnectionMode. Add connection tests [\#2179](https://github.com/reimagined/resolve/pull/2179)
 - Add lambda runtime execution info logging [\#2177](https://github.com/reimagined/resolve/pull/2177)
 - Rework replicaiton to correctly handle locks [\#2174](https://github.com/reimagined/resolve/pull/2174)
 - Improve PLV8 warning message [\#2171](https://github.com/reimagined/resolve/pull/2171)
