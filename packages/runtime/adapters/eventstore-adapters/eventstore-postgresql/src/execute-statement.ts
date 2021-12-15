@@ -2,6 +2,7 @@ import type { AdapterPool, PostgresConnection } from './types'
 import {
   RequestTimeoutError,
   ServiceBusyError,
+  AlreadyDisposedError,
 } from '@resolve-js/eventstore-base'
 import {
   isTimeoutError,
@@ -11,10 +12,10 @@ import {
   makeUnrecognizedError,
 } from './errors'
 import { isAlreadyExistsError, isNotExistError } from './resource-errors'
-import { MAX_RECONNECTIONS } from './constants'
+import { MAX_RECONNECTIONS, SERVICE_WAIT_TIME } from './constants'
 import makePostgresClient from './make-postgres-client'
 
-const SERVICE_WAIT_TIME = 1000
+const DISPOSED_WHILE_RUNNING_MSG = 'Adapter disposed while operation is running'
 
 const executeStatement = async (
   pool: AdapterPool,
@@ -25,13 +26,22 @@ const executeStatement = async (
   let useDistinctConnection = distinctConnection
   let distinctConnectionMade = false
 
+  const maxReconnectionTimes = pool.maxReconnectionTimes ?? MAX_RECONNECTIONS
+  const delayBeforeReconnection =
+    pool.delayBeforeReconnection ?? SERVICE_WAIT_TIME
+
   while (true) {
+    if (pool.disposed) {
+      throw new AlreadyDisposedError(DISPOSED_WHILE_RUNNING_MSG)
+    }
+
     let connection: PostgresConnection | undefined
 
     try {
       if (useDistinctConnection) {
         connection = makePostgresClient(pool)
         await connection.connect()
+        pool.extraConnections.add(connection)
         distinctConnectionMade = true
       } else {
         connection = await pool.getConnectPromise()
@@ -41,7 +51,7 @@ const executeStatement = async (
         pool.getConnectPromise = pool.createGetConnectPromise()
       }
       if (isConnectionTerminatedError(error) || isServiceBusyError(error)) {
-        if (reconnectionTimes >= MAX_RECONNECTIONS) {
+        if (reconnectionTimes >= maxReconnectionTimes) {
           throw new ServiceBusyError(error.message)
         }
         reconnectionTimes++
@@ -55,6 +65,10 @@ const executeStatement = async (
     let shouldWaitForServiceFree = false
 
     try {
+      if (pool.disposed) {
+        throw new AlreadyDisposedError(DISPOSED_WHILE_RUNNING_MSG)
+      }
+
       const result = await connection.query(sql)
 
       if (result != null && Array.isArray(result.rows)) {
@@ -63,7 +77,11 @@ const executeStatement = async (
 
       return []
     } catch (error) {
-      if (isAlreadyExistsError(error) || isNotExistError(error)) {
+      if (
+        isAlreadyExistsError(error) ||
+        isNotExistError(error) ||
+        AlreadyDisposedError.is(error)
+      ) {
         throw error
       } else if (isServiceBusyError(error)) {
         throw new ServiceBusyError(error.message)
@@ -73,8 +91,8 @@ const executeStatement = async (
         if (!useDistinctConnection) {
           pool.getConnectPromise = pool.createGetConnectPromise()
         }
-        if (reconnectionTimes >= MAX_RECONNECTIONS) {
-          throw new ServiceBusyError(error.message)
+        if (reconnectionTimes >= maxReconnectionTimes) {
+          throw new ServiceBusyError(error.message + `${useDistinctConnection}`)
         }
         useDistinctConnection = true
         shouldWaitForServiceFree = true
@@ -83,7 +101,10 @@ const executeStatement = async (
         error != null &&
         error.message === 'Client was closed and is not queryable'
       ) {
-        if (reconnectionTimes >= MAX_RECONNECTIONS) {
+        if (pool.disposed) {
+          throw new AlreadyDisposedError(DISPOSED_WHILE_RUNNING_MSG)
+        }
+        if (reconnectionTimes >= maxReconnectionTimes) {
           throw new ServiceBusyError(error.message)
         }
         useDistinctConnection = true
@@ -94,12 +115,13 @@ const executeStatement = async (
       }
     } finally {
       if (distinctConnectionMade) {
-        connection.end((err) => {
-          return
-        })
+        pool.extraConnections.delete(connection)
+        await connection.end()
       }
       if (shouldWaitForServiceFree) {
-        await new Promise((resolve) => setTimeout(resolve, SERVICE_WAIT_TIME))
+        await new Promise((resolve) =>
+          setTimeout(resolve, delayBeforeReconnection)
+        )
       }
     }
   }

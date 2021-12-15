@@ -452,6 +452,12 @@ export interface AdapterFunctions<ConfiguredProps extends {}> {
     ConfiguredProps,
     NonNullable<AdapterPoolBoundProps['getEventLoaderNative']>
   >
+
+  runtimeInfo: PoolMethod<ConfiguredProps, Adapter['runtimeInfo']>
+  setReconnectionMode?: PoolMethod<
+    ConfiguredProps,
+    Adapter['setReconnectionMode']
+  >
 }
 
 export interface EventLoader {
@@ -463,6 +469,17 @@ export interface EventLoader {
 
 export type EventLoaderOptions = {
   preferRegular: boolean // prefer regular implementation via loadEvents over native one
+}
+
+export type AdapterRuntimeInfo = {
+  connectionCount: number
+  disposed: boolean
+  [key: string]: any
+}
+
+export type ReconnectionMode = {
+  maxReconnectionTimes?: number
+  delayBeforeReconnection?: number
 }
 
 export interface Adapter extends CoreEventstore {
@@ -504,4 +521,7 @@ export interface Adapter extends CoreEventstore {
     filter: EventLoaderFilter,
     options?: EventLoaderOptions
   ) => Promise<EventLoader>
+
+  runtimeInfo: () => AdapterRuntimeInfo
+  setReconnectionMode: (mode: ReconnectionMode) => void
 }

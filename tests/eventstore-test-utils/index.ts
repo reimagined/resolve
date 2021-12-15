@@ -5,6 +5,7 @@ import type {
 } from '@resolve-js/eventstore-base'
 import {
   EventstoreResourceNotExistError,
+  AlreadyDisposedError,
   initThreadArray,
 } from '@resolve-js/eventstore-base'
 import createSqliteAdapter, {
@@ -25,7 +26,17 @@ async function safeDrop(adapter: Adapter): Promise<void> {
   try {
     await adapter.drop()
   } catch (error) {
-    if (!(error instanceof EventstoreResourceNotExistError)) {
+    if (!EventstoreResourceNotExistError.is(error)) {
+      throw error
+    }
+  }
+}
+
+async function safeDispose(adapter: Adapter): Promise<void> {
+  try {
+    await adapter.dispose()
+  } catch (error) {
+    if (!AlreadyDisposedError.is(error)) {
       throw error
     }
   }
@@ -231,7 +242,7 @@ export const adapterFactory = isPostgres()
       destroy(uniqueName: string) {
         return async () => {
           await safeDrop(adapters[uniqueName])
-          await adapters[uniqueName].dispose()
+          await safeDispose(adapters[uniqueName])
 
           const options = {
             databaseName: uniqueName,
@@ -277,7 +288,7 @@ export const adapterFactory = isPostgres()
       destroy(uniqueName: string) {
         return async () => {
           await safeDrop(adapters[uniqueName])
-          await adapters[uniqueName].dispose()
+          await safeDispose(adapters[uniqueName])
 
           delete adapters[uniqueName]
 
