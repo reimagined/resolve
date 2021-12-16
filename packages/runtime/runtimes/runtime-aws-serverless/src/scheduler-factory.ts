@@ -1,4 +1,3 @@
-import { getLog as getBaseLog, pureRequire } from '@resolve-js/runtime-base'
 import type {
   SchedulerEntry,
   Scheduler,
@@ -7,89 +6,11 @@ import type {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
+import { maybeThrowErrors, errorBoundary } from 'resolve-cloud-common/utils'
 
-const getLog = (name: string) => getBaseLog(`scheduler:${name}`)
-
-const start = async (entry: SchedulerEntry) => {
-  const log = getLog(`start`)
-  try {
-    log.verbose(`entry: ${JSON.stringify(entry)}`)
-    log.debug(`starting new execution ${entry.taskId}`)
-    let STS: any
-    let invokeFunction: any
-    try {
-      void ({ default: STS } = interopRequireDefault(
-        pureRequire('aws-sdk/clients/sts')
-      ))
-      void ({ invokeFunction } = interopRequireDefault(
-        pureRequire('resolve-cloud-common/lambda')
-      ))
-    } catch {}
-
-    const { Arn } = await new STS().getCallerIdentity().promise()
-
-    await invokeFunction({
-      Region: process.env.AWS_REGION as string,
-      FunctionName: process.env.RESOLVE_SCHEDULER_LAMBDA_ARN as string,
-      Payload: {
-        functionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
-        event: {
-          resolveSource: 'Scheduler',
-          entry,
-        },
-        date: new Date(entry.date).toISOString(),
-        validationRoleArn: Arn,
-        principial: {
-          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-          sessionToken: process.env.AWS_SESSION_TOKEN,
-        },
-      },
-    })
-
-    log.debug('new execution started successfully')
-  } catch (error) {
-    if (error.code !== 'ExecutionAlreadyExists') {
-      log.error(error.message)
-      throw error
-    }
-  }
-}
-
-const stopAll = async () => {
-  const log = getLog(`stop all`)
-
-  log.debug('stopping all executions')
-
-  let STS: any
-  let invokeFunction: any
-  try {
-    void ({ default: STS } = interopRequireDefault(
-      pureRequire('aws-sdk/clients/sts')
-    ))
-    void ({ invokeFunction } = interopRequireDefault(
-      pureRequire('resolve-cloud-common/lambda')
-    ))
-  } catch {}
-
-  const { Arn } = await new STS().getCallerIdentity().promise()
-
-  await invokeFunction({
-    Region: process.env.AWS_REGION as string,
-    FunctionName: process.env.RESOLVE_SCHEDULER_LAMBDA_ARN as string,
-    Payload: {
-      functionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
-      validationRoleArn: Arn,
-      principial: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        sessionToken: process.env.AWS_SESSION_TOKEN,
-      },
-    },
-  })
-
-  log.debug('all executions stopped successfully')
-}
+import { getLog } from './scheduler-logger'
+import { start } from './scheduler-start'
+import { stopAll } from './scheduler-stop-all'
 
 const errorHandler = async (error: any) => {
   throw error
@@ -125,13 +46,16 @@ export const schedulerFactory = (
       const entries = ([] as SchedulerEntry[]).concat(data)
       try {
         log.debug(`starting step function executions`)
+        const errors: Array<Error> = []
         await Promise.all(
           entries.map((entry) =>
-            validateEntry(entry)
+            (validateEntry(entry)
               ? start(entry)
               : errorHandler(Error(`invalid entry ${JSON.stringify(entry)}`))
+            ).catch(errorBoundary(errors))
           )
         )
+        maybeThrowErrors(errors)
         log.debug(`entries were successfully added`)
       } catch (e) {
         log.error(e.message)
@@ -151,19 +75,24 @@ export const schedulerFactory = (
       log.debug(`executing scheduled entries`)
       log.verbose(`data: ${JSON.stringify(data)}`)
 
-      const entries = [].concat(data)
+      const entries = ([] as SchedulerEntry[]).concat(data)
+
       try {
         log.debug(`executing tasks`)
+        const errors: Array<Error> = []
         await Promise.all(
           entries.map(({ taskId, date, command }) =>
-            runtime.executeSchedulerCommand({
-              aggregateName: schedulerName,
-              aggregateId: taskId,
-              type: 'execute',
-              payload: { date, command },
-            })
+            runtime
+              .executeSchedulerCommand({
+                aggregateName: schedulerName,
+                aggregateId: taskId,
+                type: 'execute',
+                payload: { date, command },
+              })
+              .catch(errorBoundary(errors))
           )
         )
+        maybeThrowErrors(errors)
         log.debug(`tasks were successfully executed`)
       } catch (e) {
         log.error(e.message)

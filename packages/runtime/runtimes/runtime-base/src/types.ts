@@ -91,7 +91,7 @@ export type SchedulerEntry = {
 export type Scheduler = {
   addEntries: (array: SchedulerEntry[]) => Promise<void>
   clearEntries: () => Promise<void>
-  executeEntries?: (entry: any) => any
+  executeEntries?: (entry: any) => Promise<void>
 }
 
 export type UploaderPool = {
