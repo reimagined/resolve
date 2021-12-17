@@ -20,6 +20,7 @@ const pause: ExternalMethods['pause'] = async (pool, readModelName) => {
     while (true) {
       try {
         await inlineLedgerForceStop(pool, readModelName)
+        await pool.ensureAffectedOperation('pause', readModelName)
 
         await inlineLedgerRunQuery(
           `WITH "CTE" AS (

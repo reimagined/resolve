@@ -4,7 +4,6 @@ import type {
   CallReplicateResult,
 } from './types'
 import type {
-  ReplicationState,
   StoredEventBatchPointer,
   GatheredSecrets,
   EventLoader,
@@ -33,6 +32,7 @@ const getBuildDelay = (iterationNumber: number) => {
 }
 
 const BATCH_PROCESSING_POLL_MS = 50
+const PATCH_PROCESSING_TIME_LIMIT = 60 * 1000
 
 const build: ExternalMethods['build'] = async (
   basePool,
@@ -74,14 +74,16 @@ const build: ExternalMethods['build'] = async (
     return
   }
 
+  let lockId = `${Date.now()}`
   const timeLeft = getVacantTimeInMillis()
   try {
-    const result = await basePool.occupyReplication(basePool, timeLeft)
+    const result = await basePool.occupyReplication(basePool, lockId, timeLeft)
     if (result.status === 'alreadyLocked') {
       await delayNext(getBuildDelay(iterationNumber), {
         name: 'Error',
         message: 'Replication process is already locked',
       })
+      return
     } else if (result.status === 'serviceError') {
       await delayNext(getBuildDelay(iterationNumber), {
         name: 'Error',
@@ -109,7 +111,7 @@ const build: ExternalMethods['build'] = async (
       log.error(error)
     }
     try {
-      await basePool.releaseReplication(basePool)
+      await basePool.releaseReplication(basePool, lockId)
     } catch (error) {
       if (!isHTTPServiceError(error)) log.error(error)
     }
@@ -177,6 +179,7 @@ const build: ExternalMethods['build'] = async (
 
       const result: CallReplicateResult = await basePool.callReplicate(
         basePool,
+        lockId,
         events,
         existingSecrets,
         deletedSecrets,
@@ -195,11 +198,31 @@ const build: ExternalMethods['build'] = async (
           name: 'Error',
           message: result.message,
         }
+      } else if (result.type === 'processed') {
+        if (
+          result.state === null ||
+          result.state.statusAndData.status !== 'batchDone'
+        ) {
+          lastError = {
+            recoverable: false,
+            name: 'Error',
+            message: 'Reported processed, but status is not batchDone',
+          }
+        } else {
+          iterator = { cursor: nextCursor }
+          appliedEventsCount =
+            result.state.statusAndData.data.appliedEventsCount
+          wasPaused = state.paused
+          iterationNumber = 0
+        }
       } else if (result.type === 'launched') {
         while (true) {
           const state = await basePool.getReplicationState(basePool)
           if (state.statusAndData.status === 'batchInProgress') {
-            if (state.statusAndData.data.startedAt + 60 * 1000 < Date.now()) {
+            if (
+              state.statusAndData.data.startedAt + PATCH_PROCESSING_TIME_LIMIT <
+              Date.now()
+            ) {
               lastError = {
                 recoverable: true,
                 name: 'Error',

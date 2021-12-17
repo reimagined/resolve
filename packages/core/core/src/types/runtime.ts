@@ -172,6 +172,7 @@ export type ReplicationState = {
   iterator: SerializableMap | null
   successEvent: OldEvent | null
   locked: boolean
+  lockId: string | null
 }
 
 export type EventStoreDescription = {
@@ -224,20 +225,24 @@ export type Eventstore = {
     }>
   >
 
-  replicateEvents: (events: OldEvent[]) => Promise<void>
+  replicateEvents: (lockId: string, events: OldEvent[]) => Promise<boolean>
   replicateSecrets: (
+    lockId: string,
     existingSecrets: OldSecretRecord[],
     deletedSecrets: Array<OldSecretRecord['id']>
-  ) => Promise<void>
-  setReplicationStatus: (state: {
-    statusAndData: ReplicationStatusAndData
-    lastEvent?: OldEvent
-    iterator?: ReplicationState['iterator']
-  }) => Promise<void>
+  ) => Promise<boolean>
+  setReplicationStatus: (
+    lockId: string,
+    state: {
+      statusAndData: ReplicationStatusAndData
+      lastEvent?: OldEvent
+      iterator?: ReplicationState['iterator']
+    }
+  ) => Promise<ReplicationState | null>
   setReplicationPaused: (pause: boolean) => Promise<void>
   getReplicationState: () => Promise<ReplicationState>
   resetReplication: () => Promise<void>
-  setReplicationLock: (lockDuration: number) => Promise<boolean>
+  setReplicationLock: (lockId: string, lockDuration: number) => Promise<boolean>
 
   describe: (
     options?: EventStoreDescribeOptions

@@ -27,6 +27,8 @@ const unsubscribe: ExternalMethods['unsubscribe'] = async (
     while (true) {
       try {
         await inlineLedgerForceStop(pool, readModelName)
+        await pool.ensureAffectedOperation('unsubscribe', readModelName)
+
         await inlineLedgerRunQuery(
           `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}

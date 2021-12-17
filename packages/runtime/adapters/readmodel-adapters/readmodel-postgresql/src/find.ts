@@ -10,6 +10,7 @@ const find: CurrentStoreApi['find'] = async (
   skip,
   limit
 ) => {
+  await pool.ensureAffectedOperation('resolver', readModelName)
   const sqlQuery = pool.makeSqlQuery(
     pool,
     readModelName,

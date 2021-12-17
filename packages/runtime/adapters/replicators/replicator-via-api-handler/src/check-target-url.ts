@@ -21,6 +21,7 @@ const checkTargetUrl = (
       iterator: null,
       successEvent: null,
       locked: false,
+      lockId: null,
     }
   }
   return null

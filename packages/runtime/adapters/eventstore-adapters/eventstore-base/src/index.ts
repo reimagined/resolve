@@ -130,6 +130,8 @@ export type {
   GatheredSecrets,
   EventLoaderFilter,
   EventLoader,
+  AdapterRuntimeInfo,
+  ReconnectionMode,
 } from './types'
 
 export type {

@@ -28,6 +28,7 @@ const subscribe: ExternalMethods['subscribe'] = async (
     while (true) {
       try {
         await inlineLedgerForceStop(pool, readModelName)
+        await pool.ensureAffectedOperation('subscribe', readModelName)
 
         await inlineLedgerRunQuery(
           `WITH "CTE" AS (
