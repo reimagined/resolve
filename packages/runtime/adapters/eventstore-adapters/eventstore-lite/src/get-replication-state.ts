@@ -12,9 +12,8 @@ const getReplicationState = async (
 
   const rows = await executeStatement(
     `SELECT "Status", "StatusData", "Iterator", "IsPaused", "SuccessEvent", 
-     ("LockExpirationTime" > CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS INTEGER)) as "Locked" FROM ${escapeId(
-       replicationStateTableName
-     )}`
+     ("LockExpirationTime" > CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS INTEGER)) as "Locked", "LockId"
+     FROM ${escapeId(replicationStateTableName)}`
   )
   if (rows.length > 0) {
     const row = rows[0]
@@ -33,6 +32,7 @@ const getReplicationState = async (
       iterator: row.Iterator != null ? JSON.parse(row.Iterator) : null,
       successEvent: lastEvent,
       locked: !!row.Locked,
+      lockId: row.lockId,
     }
   } else {
     return getInitialReplicationState()

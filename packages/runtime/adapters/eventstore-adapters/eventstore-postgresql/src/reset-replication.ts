@@ -19,20 +19,20 @@ const resetReplication = async (pool: AdapterPool): Promise<void> => {
 
   const notStarted: ReplicationState['statusAndData']['status'] = 'notStarted'
 
-  const statements = [
-    `TRUNCATE ${databaseNameAsId}.${eventsTableNameAsId}`,
-    `TRUNCATE ${databaseNameAsId}.${secretsTableNameAsId}`,
-    `UPDATE ${databaseNameAsId}.${threadsTableAsId} SET "threadCounter" = 0`,
-    `UPDATE ${databaseNameAsId}.${replicationStateTableNameAsId} SET
+  await executeStatement(`
+  BEGIN WORK;
+  LOCK ${databaseNameAsId}.${replicationStateTableNameAsId} IN ACCESS EXCLUSIVE MODE;
+  TRUNCATE ${databaseNameAsId}.${eventsTableNameAsId};
+  TRUNCATE ${databaseNameAsId}.${secretsTableNameAsId};
+  UPDATE ${databaseNameAsId}.${threadsTableAsId} SET "threadCounter" = 0;
+  UPDATE ${databaseNameAsId}.${replicationStateTableNameAsId} SET
       "Status" = ${escape(notStarted)},
       "StatusData" = NULL,
       "Iterator" = NULL,
       "SuccessEvent" = NULL,
-      "LockExpirationTime" = 0`,
-  ]
-  for (const statement of statements) {
-    await executeStatement(statement)
-  }
+      "LockExpirationTime" = 0,
+      "LockId" = NULL;
+  COMMIT WORK;`)
 }
 
 export default resetReplication

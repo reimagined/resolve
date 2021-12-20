@@ -5,6 +5,7 @@ import type {
   AdapterConfig,
   AdapterTableNames,
   AdapterTableNamesProps,
+  EventLoader,
 } from '@resolve-js/eventstore-base'
 
 type EscapeFunction = (source: string) => string
@@ -33,6 +34,10 @@ export type ConfiguredProps = AdapterTableNamesProps & {
   createGetConnectPromise: () => () => Promise<Client>
   getConnectPromise: () => Promise<Client>
   connection?: Client
+  extraConnections: Set<Client>
+  eventLoaders: Set<EventLoader>
+  maxReconnectionTimes?: number
+  delayBeforeReconnection?: number
 }
 
 export type PostgresqlAdapterConfig = AdapterConfig &

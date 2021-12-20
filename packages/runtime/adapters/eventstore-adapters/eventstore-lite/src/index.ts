@@ -40,6 +40,7 @@ import resetReplication from './reset-replication'
 import setReplicationLock from './set-replication-lock'
 import getCursorUntilEventTypes from './get-cursor-until-event-types'
 import describe from './describe'
+import runtimeInfo from './runtime-info'
 
 import configure from './configure'
 
@@ -89,6 +90,7 @@ const createSqliteAdapter = (options: SqliteAdapterConfig): Adapter => {
       setReplicationLock,
       getCursorUntilEventTypes,
       describe,
+      runtimeInfo,
     },
     options,
     configure
