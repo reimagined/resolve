@@ -32,7 +32,6 @@ An event store adapter object exposes the following API:
 | [`getNextCursor`](#getnextcursor)                         | Gets the next database cursor used to traverse the data sample returned by the underlying database. |
 | [`importEvents`](#importevents)                           | Gets a writable stream used to save events.                                                         |
 | [`exportEvents`](#exportevents)                           | Gets a readable stream used to load events.                                                         |
-| [`loadSecrets`](#loadsecrets)                             | Gets a list of secrets stored in the event store.                                                   |
 | [`importSecrets`](#importsecrets)                         | Gets a writable stream used to save secrets.                                                        |
 | [`exportSecrets`](exportsecrets)                          | Gets a writable stream used to load secrets.                                                        |
 
@@ -499,34 +498,6 @@ await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 #### Result
 
 A readable stream object.
-
-### `loadSecrets`
-
-Gets a list of secrets stored in the event store.
-
-#### Example
-
-```js
-
-```
-
-#### Arguments
-
-| Argument Name | Type     | Description                                                                               |
-| ------------- | -------- | ----------------------------------------------------------------------------------------- |
-| `filter`      | `object` | { idx?: number or null, skip?: number, limit: number, ids?: Array&lt;string&gt; or null } |
-
-#### Result
-
-```ts
-Promise<{
-  idx: number | null
-  secrets: Array<{
-    idx: number
-    id: string
-    secret: string | null
-  }>
-```
 
 ### `importSecrets`
 
