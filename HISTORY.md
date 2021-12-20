@@ -1,5 +1,18 @@
 # Changelog
 
+## [V0.33.7](https://github.com/reimagined/resolve/tree/V0.33.7) (2021-12-20)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.6...V0.33.7)
+
+**Other changes:**
+
+- Add eventstore adapter runtimeInfo and setReconnectionMode. Add connection tests [\#2179](https://github.com/reimagined/resolve/pull/2179)
+- Add lambda runtime execution info logging [\#2177](https://github.com/reimagined/resolve/pull/2177)
+- Rework replicaiton to correctly handle locks [\#2174](https://github.com/reimagined/resolve/pull/2174)
+- Improve PLV8 warning message [\#2171](https://github.com/reimagined/resolve/pull/2171)
+- Migrate from 'request' package to 'node-fetch' in runtime [\#2169](https://github.com/reimagined/resolve/pull/2169)
+- Mini benchmarks initial [\#2134](https://github.com/reimagined/resolve/pull/2134)
+
 ## [V0.33.5](https://github.com/reimagined/resolve/tree/V0.33.5) (2021-12-02)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.4...V0.33.5)

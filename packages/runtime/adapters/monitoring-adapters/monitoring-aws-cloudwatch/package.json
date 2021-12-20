@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/monitoring-aws-cloudwatch",
-  "version": "0.33.6",
+  "version": "0.33.7",
   "description": "This package serves as a monitoring adapter used to store monitoring data in AWS CloudWatch",
   "keywords": [
     "cqrs",
@@ -25,10 +25,10 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
-    "@resolve-js/core": "0.33.6",
-    "@resolve-js/debug-levels": "0.33.6",
-    "@resolve-js/monitoring-base": "0.33.6",
-    "@resolve-js/runtime-base": "0.33.6",
+    "@resolve-js/core": "0.33.7",
+    "@resolve-js/debug-levels": "0.33.7",
+    "@resolve-js/monitoring-base": "0.33.7",
+    "@resolve-js/runtime-base": "0.33.7",
     "resolve-cloud-common": "0.0.164"
   },
   "devDependencies": {
