@@ -6,7 +6,7 @@ title: Running in Containers
 It is possible to run a reSolve in a docker container. This article describes how to prepare an application and run in as a part of a Docker Compose setup along with additional containers that serve the following purposes:
 
 - A `postgres` container is used to store the application's data.
-- An `nginx` container is used as a reserve proxy server to answer http requests.
+- An `nginx` container is used as a reserve proxy server to answer HTTP requests.
 
 Follow the steps below to run a reSolve application in a Docker container.
 
@@ -129,6 +129,10 @@ The official [PostgreSQL](https://hub.docker.com/_/postgres/) docker image runs 
 
 To initialize the database credentials and schemas required to run reSolve, create a directory to mount as the `/docker-entrypoint-initdb.d/` volume and add the following script to this directory:
 
+:::caution
+The code sample below contains example PostgreSQL user credentials. Make sure to replace these credentials in your application.
+:::
+
 ```sql title="/docker/volumes/postgres/docker-entrypoint-initdb.d/init-schemas.sql"
 \c postgres;
 -- Add user credetials for your reSolve applciation.
@@ -236,6 +240,10 @@ CMD ["node", "dist/common/local-entry/local-entry.js"]
 ## 5. Configure Docker Compose
 
 Add a Docker Compose configuration file used to run your reSolve application's container along with PostgreSQL and Nginx containers:
+
+:::caution
+The code sample below contains example PostgreSQL user and admin credentials. Make sure to replace these credentials in your application.
+:::
 
 ```yaml title="/docker-compose.yml"
 version: '3'
