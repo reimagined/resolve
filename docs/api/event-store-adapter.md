@@ -440,10 +440,10 @@ Gets an the next cursor in the event store database based on the previous cursor
 
 #### Arguments
 
-| Argument Name | Type                                  | Description                                           |
-| ------------- | ------------------------------------- | ----------------------------------------------------- |
-| prevCursor    | `string` or `null`                    | The previous cursor.                                  |
-| events        | Array of [`event`](event.md) objects. | An array of events obtained from the previous cursor. |
+| Argument Name | Type                                     | Description                                           |
+| ------------- | ---------------------------------------- | ----------------------------------------------------- |
+| prevCursor    | `string` or `null`                       | The previous cursor.                                  |
+| events        | An array of [`event`](event.md) objects. | An array of events obtained from the previous cursor. |
 
 #### Result
 
@@ -466,9 +466,11 @@ await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 
 #### Arguments
 
-| Argument Name | Type     | Description                                               |
-| ------------- | -------- | --------------------------------------------------------- |
-| `options?`    | `object` | { byteOffset: number, maintenanceMode: MAINTENANCE_MODE } |
+| Argument Name                        | Type     | Description                                               |
+| ------------------------------------ | -------- | --------------------------------------------------------- |
+| [`options?`](#import-events-options) | `object` | { byteOffset: number, maintenanceMode: MAINTENANCE_MODE } |
+
+#### `options` {#import-events-options}
 
 #### Result
 
@@ -491,9 +493,11 @@ await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 
 #### Arguments
 
-| Argument Name | Type     | Description                                                                      |
-| ------------- | -------- | -------------------------------------------------------------------------------- |
-| `options?`    | `object` | { cursor: string or null, maintenanceMode: MAINTENANCE_MODE, bufferSize: number} |
+| Argument Name                        | Type     | Description                                                                      |
+| ------------------------------------ | -------- | -------------------------------------------------------------------------------- |
+| [`options?`](#export-events-options) | `object` | { cursor: string or null, maintenanceMode: MAINTENANCE_MODE, bufferSize: number} |
+
+#### `options` {#export-events-options}
 
 #### Result
 
@@ -511,9 +515,11 @@ Gets a writable stream used to save secrets.
 
 #### Arguments
 
-| Argument Name | Type     | Description                           |
-| ------------- | -------- | ------------------------------------- |
-| `options?`    | `object` | { maintenanceMode: MAINTENANCE_MODE } |
+| Argument Name                         | Type     | Description                           |
+| ------------------------------------- | -------- | ------------------------------------- |
+| [`options?`](#import-secrets-options) | `object` | { maintenanceMode: MAINTENANCE_MODE } |
+
+#### `options` {#import-secrets-options}
 
 #### Result
 
@@ -533,15 +539,21 @@ Gets a writable stream used to load secrets.
 
 #### Arguments
 
-| Argument Name | Type     | Description                                                |
-| ------------- | -------- | ---------------------------------------------------------- |
-| `options?`    | `object` | { idx: number or null, maintenanceMode: MAINTENANCE_MODE } |
+| Argument Name                         | Type     | Description                                                |
+| ------------------------------------- | -------- | ---------------------------------------------------------- |
+| [`options?`](#export-secrets-options) | `object` | { idx: number or null, maintenanceMode: MAINTENANCE_MODE } |
+
+#### `options` {#export-secrets-options}
 
 #### Result
 
 `stream.Readable`
 
 ## Types
+
+### Maintenance Mode
+
+Specifies how to treat the maintenance status of the event store during an operation.
 
 ### Event Filter
 
