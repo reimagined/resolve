@@ -20,6 +20,8 @@ const dispose = async (pool: AdapterPool): Promise<void> => {
     }
 
     const loaders = Array.from(pool.eventLoaders.values())
+    pool.eventLoaders.clear()
+
     const closeResults = await Promise.allSettled(
       loaders.map((loader) => loader.close())
     )
