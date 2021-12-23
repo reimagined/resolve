@@ -553,7 +553,16 @@ Gets a writable stream used to load secrets.
 
 ### Maintenance Mode
 
-Specifies how to treat the maintenance status of the event store during an operation.
+The maintenance mode specifies how to treat the maintenance status of the event store during an operation.
+
+The `@resolve-js/eventstore-base` package exports constants that specify the maintenance mode.
+
+```js
+import {
+  MAINTENANCE_MODE_MANUAL,
+  MAINTENANCE_MODE_AUTO,
+} from '@resolve-js/eventstore-base'
+```
 
 ### Event Filter
 
