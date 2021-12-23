@@ -3,10 +3,10 @@ id: running-in-containers
 title: Running in Containers
 ---
 
-This article describes run a reSolve application in a Docker container as a part of a Docker Compose setup. In addition to the reSolve application, this setup includes:
+This article describes how to run a reSolve application in a container as a part of a Docker Compose setup. In addition to the reSolve application, this setup uses the following Docker images available on [Docker Hub](https://hub.docker.com/):
 
-- A `postgres` container is used to store the application's data.
-- An `nginx` container is used as a reverse proxy server to answer HTTP requests.
+- [`postgres`](https://hub.docker.com/_/postgres) is used to store the application's data.
+- [`nginx`](https://hub.docker.com/_/nginx) is used as a reverse proxy server to answer HTTP requests.
 
 Follow the steps below to run a reSolve application in a Docker container.
 
@@ -89,7 +89,7 @@ const dockerConfig = {
 export default dockerConfig
 ```
 
-Register the added configuration file in `run.js`:
+Add a `'build:docker'` launch mode to the application's `run.js`:
 
 ```js title="/run.js"
 import dockerConfig from './config.docker'
@@ -111,7 +111,7 @@ void (async () => {
 })()
 ```
 
-Register a `"build:docker"` script in the application's `package.json` file:
+Finally, register a `"build:docker"` script in the application's `package.json` file:
 
 ```json title="/package.json"
 ...
@@ -179,8 +179,8 @@ server {
 
 ## 4. Prepare the Dockerfile
 
-The example Dockerfile below demonstrates how to build a Docker image for a reSolve application based on official `node` image.
-The image is built in stages to optimize for the image size.
+The example Dockerfile below demonstrates how to build a Docker image for a reSolve application based on official [`node`](https://hub.docker.com/_/node) image.
+The image is built in stages to optimize for the image size. See the comments in the code for more information on each particular stage.
 
 ```txt title="/Dockerfile"
 # Build stage: install all dependencies and build app
@@ -287,7 +287,7 @@ networks:
     driver: bridge
 ```
 
-You can define an additional configuration file to use in the production environment. For example, the sample config below demonstrates how to define a volume for PostgreSQL data in production:
+You can define an additional configuration file to use in the production environment. For example, the sample configuration below demonstrates how to specify a volume to store PostgreSQL data in production:
 
 ```yaml title="/docker-compose-production.yml"
 version: '3'
@@ -299,7 +299,7 @@ services:
 
 ## 6. Build the Image and Run the Container
 
-Use the following console input to download the official PostgreSQL image and run it in Docker Compose so it runs the initialization script:
+Use the following console input to download the official PostgreSQL image and run it in Docker Compose so it executes the initialization script:
 
 ```sh
 docker-compose up -d postgres
