@@ -3,10 +3,10 @@ id: running-in-containers
 title: Running in Containers
 ---
 
-It is possible to run a reSolve in a docker container. This article describes how to prepare an application and run in as a part of a Docker Compose setup along with additional containers that serve the following purposes:
+This article describes run a reSolve application in a Docker container as a part of a Docker Compose setup. In addition to the reSolve application, this setup includes:
 
 - A `postgres` container is used to store the application's data.
-- An `nginx` container is used as a reserve proxy server to answer HTTP requests.
+- An `nginx` container is used as a reverse proxy server to answer HTTP requests.
 
 Follow the steps below to run a reSolve application in a Docker container.
 
@@ -127,10 +127,10 @@ Register a `"build:docker"` script in the application's `package.json` file:
 
 The official [PostgreSQL](https://hub.docker.com/_/postgres/) docker image runs SQL scripts found in the `/docker-entrypoint-initdb.d/` folder to initialize the hosted databases.
 
-To initialize the database credentials and schemas required to run reSolve, create a directory to mount as the `/docker-entrypoint-initdb.d/` volume and add the following script to this directory:
+To define the database credentials and schemas required to run reSolve, create a directory to mount as the `/docker-entrypoint-initdb.d/` volume and add the following script to this directory:
 
 :::caution
-The code sample below contains example PostgreSQL user credentials. Make sure to replace these credentials in your application.
+The code sample below contains example PostgreSQL user credentials. Make sure you replace these credentials in your application.
 :::
 
 ```sql title="/docker/volumes/postgres/docker-entrypoint-initdb.d/init-schemas.sql"
@@ -159,7 +159,7 @@ ALTER SCHEMA "read-store" OWNER TO "hn-user";
 
 ## 3. Configure Nginx
 
-To configure an Nginx image, create a directory to be mounted as a `/etc/nginx/conf.d` volume. In this directory, create a `default.conf` file with the reverse proxy server configuration that suite your requirements. For example:
+To configure the Nginx container, create a directory to mount as a `/etc/nginx/conf.d` volume. In this directory, create a `default.conf` file with the reverse proxy server configuration that suite your requirements. For example:
 
 ```txt title="/docker/volumes/nginx/conf.d/default.conf"
 server {
@@ -239,10 +239,10 @@ CMD ["node", "dist/common/local-entry/local-entry.js"]
 
 ## 5. Configure Docker Compose
 
-Add a Docker Compose configuration file used to run your reSolve application's container along with PostgreSQL and Nginx containers:
+Add a Docker Compose configuration file used to run your reSolve application's container along with the PostgreSQL and Nginx containers:
 
 :::caution
-The code sample below contains example PostgreSQL user and admin credentials. Make sure to replace these credentials in your application.
+The code sample below contains example PostgreSQL user and admin credentials. Make sure you replace these credentials in your application.
 :::
 
 ```yaml title="/docker-compose.yml"
@@ -319,4 +319,4 @@ docker-compose -f docker-compose.yml -f docker-compose-production.yml up -d
 
 ## See the Example
 
-The [Hacker News](https://github.com/reimagined/resolve/tree/dev/examples/js/hacker-news) example project contains all configuration files required to build a docker image and run it with Docker Compose.
+The [Hacker News](https://github.com/reimagined/resolve/tree/dev/examples/js/hacker-news) example project contains all configuration files required to build a docker image and run it with Docker Compose as described in this article.
