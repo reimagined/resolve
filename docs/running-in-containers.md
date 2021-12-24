@@ -89,7 +89,7 @@ const dockerConfig = {
 export default dockerConfig
 ```
 
-Add a `'build:docker'` launch mode to the application's `run.js`:
+Add a `'build:docker'` launch mode to the application's `run.js` file:
 
 ```js title="/run.js"
 import dockerConfig from './config.docker'
@@ -135,7 +135,7 @@ The code sample below contains example PostgreSQL user credentials. Make sure yo
 
 ```sql title="/docker/volumes/postgres/docker-entrypoint-initdb.d/init-schemas.sql"
 \c postgres;
--- Add user credetials for your reSolve applciation.
+-- Add user credentials for your reSolve application.
 CREATE USER "hn-user";
 ALTER USER "hn-user" PASSWORD 'QweZxc123';
 
@@ -159,7 +159,7 @@ ALTER SCHEMA "read-store" OWNER TO "hn-user";
 
 ## 3. Configure Nginx
 
-To configure the Nginx container, create a directory to mount as a `/etc/nginx/conf.d` volume. In this directory, create a `default.conf` file with the reverse proxy server configuration that suite your requirements. For example:
+To configure the Nginx container, create a directory to mount as an `/etc/nginx/conf.d` volume. In this directory, create a `default.conf` file with the reverse proxy server configuration that meets your requirements. For example:
 
 ```txt title="/docker/volumes/nginx/conf.d/default.conf"
 server {
@@ -179,8 +179,8 @@ server {
 
 ## 4. Prepare the Dockerfile
 
-The example Dockerfile below demonstrates how to build a Docker image for a reSolve application based on official [`node`](https://hub.docker.com/_/node) image.
-The image is built in stages to optimize for the image size. See the comments in the code for more information on each particular stage.
+The example Dockerfile below demonstrates how to build a Docker image for a reSolve application based on an official [`node`](https://hub.docker.com/_/node) image.
+The image is built in stages to optimize the image size. See the comments in the code for more information on each stage.
 
 ```txt title="/Dockerfile"
 # Build stage: install all dependencies and build app
@@ -305,13 +305,13 @@ Use the following console input to download the official PostgreSQL image and ru
 docker-compose up -d postgres
 ```
 
-To build and run your application, type:
+Type the following to build and run your application:
 
 ```sh
 docker-compose up -d
 ```
 
-To use the production configuration, type:
+Type the following to use the production configuration:
 
 ```sh
 docker-compose -f docker-compose.yml -f docker-compose-production.yml up -d
