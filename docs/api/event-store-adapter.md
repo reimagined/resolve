@@ -33,7 +33,7 @@ An event store adapter object exposes the following API:
 | [`importEvents`](#importevents)                           | Gets a writable stream used to save events.                                                         |
 | [`exportEvents`](#exportevents)                           | Gets a readable stream used to load events.                                                         |
 | [`importSecrets`](#importsecrets)                         | Gets a writable stream used to save secrets.                                                        |
-| [`exportSecrets`](exportsecrets)                          | Gets a writable stream used to load secrets.                                                        |
+| [`exportSecrets`](#exportsecrets)                         | Gets a writable stream used to load secrets.                                                        |
 
 ### `init`
 
@@ -553,9 +553,14 @@ Gets a writable stream used to load secrets.
 
 ### Maintenance Mode
 
-The maintenance mode specifies how to treat the maintenance status of the event store during an operation.
+A maintenance mode option value defines whether or not to automatically switch the event store to maintenance mode during an import and/or export operation. You can specify this option for the following operations:
 
-The `@resolve-js/eventstore-base` package exports constants that specify the maintenance mode.
+- [`importEvents`](#importevents)
+- [`exportEvents`](#exportevents)
+- [`importSecrets`](#importsecrets)
+- [`exportSecrets`](#exportsecrets)
+
+The `@resolve-js/eventstore-base` package exports constants that define the possible values for the maintenance mode option:
 
 ```js
 import {
