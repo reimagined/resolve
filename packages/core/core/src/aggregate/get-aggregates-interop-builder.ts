@@ -102,16 +102,34 @@ const saveEvent = async (
 
   const { eventstore, hooks: { preSaveEvent, postSaveEvent } = {} } = runtime
 
+  const monitoringGroup =
+    runtime.monitoring != null
+      ? runtime.monitoring
+          .group({ Part: 'Command' })
+          .group({ AggregateName: command.aggregateName })
+          .group({ Type: command.type })
+      : null
+
   const allowSave =
     typeof preSaveEvent === 'function'
       ? await preSaveEvent(aggregate, command, event)
       : true
 
   if (allowSave) {
+    const startTime = Date.now()
     const pointer = await eventstore.saveEvent(event)
+    if (monitoringGroup != null) {
+      const saveDuration = Date.now() - startTime
+      monitoringGroup.duration('SaveEvent', saveDuration)
+    }
 
     if (typeof postSaveEvent === 'function') {
+      const startTime = Date.now()
       await postSaveEvent(aggregate, command, pointer)
+      if (monitoringGroup != null) {
+        const postSaveDuration = Date.now() - startTime
+        monitoringGroup.duration('PostSaveEvent', postSaveDuration)
+      }
     }
 
     return pointer.event
@@ -171,7 +189,7 @@ const takeSnapshot = async (
   aggregate: AggregateInterop,
   runtime: AggregateRuntime,
   data: AggregateData
-): Promise<any> => {
+): Promise<void> => {
   const { name: aggregateName } = aggregate
   const { monitoring, eventstore } = runtime
   const log = getLog(`takeSnapshot:${aggregateName}:${data.aggregateId}`)
@@ -221,6 +239,13 @@ const getAggregateState = async (
     invariantHash = null,
   } = aggregate
   const log = getLog(`getAggregateState:${aggregateName}:${aggregateId}`)
+
+  const groupMonitoring =
+    monitoring != null
+      ? monitoring
+          .group({ Part: 'AggregateState' })
+          .group({ AggregateName: aggregateName })
+      : null
 
   const subSegment = getPerformanceTracerSubsegment(
     monitoring,
@@ -276,7 +301,12 @@ const getAggregateState = async (
 
         try {
           log.debug(`loading snapshot`)
+          const startTime = Date.now()
           const snapshot = await eventstore.loadSnapshot(snapshotKey)
+          if (groupMonitoring != null && snapshot != null) {
+            const loadDuration = Date.now() - startTime
+            groupMonitoring.duration('LoadSnapshot', loadDuration)
+          }
 
           if (snapshot != null && snapshot.constructor === String) {
             return JSON.parse(snapshot)
@@ -317,7 +347,14 @@ const getAggregateState = async (
         runtime,
         aggregateData,
         snapshotKey != null
-          ? (data: AggregateData) => takeSnapshot(aggregate, runtime, data)
+          ? async (data: AggregateData) => {
+              const startTime = Date.now()
+              await takeSnapshot(aggregate, runtime, data)
+              if (groupMonitoring != null) {
+                const saveDuration = Date.now() - startTime
+                groupMonitoring.duration('SaveSnapshot', saveDuration)
+              }
+            }
           : null,
         event
       )
@@ -329,11 +366,23 @@ const getAggregateState = async (
       )
 
       try {
+        const startTime = Date.now()
         const { events } = await eventstore.loadEvents({
           aggregateIds: [aggregateId],
           cursor: aggregateData.cursor,
           limit: Number.MAX_SAFE_INTEGER,
         })
+        if (groupMonitoring != null) {
+          const loadDuration = Date.now() - startTime
+          if (events.length > 0) {
+            groupMonitoring.duration(
+              'EventLoad',
+              loadDuration / events.length,
+              events.length
+            )
+          }
+          groupMonitoring.duration('BatchLoad', loadDuration)
+        }
 
         log.debug(
           `loaded ${events.length} events starting from the last snapshot`
