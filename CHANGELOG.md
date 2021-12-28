@@ -6,6 +6,7 @@
 
 **Enhancements:**
 
+- More detailed command execution monitoring [\#2186](https://github.com/reimagined/resolve/pull/2186)
 - Use Promise.allSettled in postgres eventstore adapter dispose [\#2184](https://github.com/reimagined/resolve/pull/2184)
 - Export events via event loader. Improved export tests [\#2183](https://github.com/reimagined/resolve/pull/2183)
 
