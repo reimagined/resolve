@@ -233,12 +233,15 @@ const buildEvents: (
       })
       const loadDuration = Date.now() - initialTimestamp
 
-      if (groupMonitoring != null && events.length > 0) {
-        groupMonitoring.duration(
-          'EventLoad',
-          loadDuration / events.length,
-          events.length
-        )
+      if (groupMonitoring != null) {
+        if (events.length > 0) {
+          groupMonitoring.duration(
+            'EventLoad',
+            loadDuration / events.length,
+            events.length
+          )
+        }
+        groupMonitoring.duration('BatchLoad', loadDuration)
       }
 
       return ['ok', events]
