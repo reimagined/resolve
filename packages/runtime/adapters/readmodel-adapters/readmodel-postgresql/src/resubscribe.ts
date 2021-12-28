@@ -29,6 +29,8 @@ const resubscribe: ExternalMethods['resubscribe'] = async (
     while (true) {
       try {
         await inlineLedgerForceStop(pool, readModelName)
+        await pool.ensureAffectedOperation('resubscribe', readModelName)
+
         await inlineLedgerRunQuery(`
         WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}

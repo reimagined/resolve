@@ -16,8 +16,6 @@ import type {
 import {
   adapterFactory,
   adapters,
-  collectPostgresStatistics,
-  isPostgres,
   jestTimeout,
   makeTestSavedEvent,
 } from '../eventstore-test-utils'
@@ -27,7 +25,7 @@ import createStreamBuffer from './create-stream-buffer'
 jest.setTimeout(jestTimeout())
 
 function getInterruptingTimeout() {
-  return 100
+  return 50
 }
 
 function getInputEventsCount() {
@@ -62,9 +60,7 @@ function* randomEventsGenerator(inputCountEvents: number) {
   const threadArray = initThreadArray()
 
   for (let eventIndex = 0; eventIndex < inputCountEvents; eventIndex++) {
-    const data = Array.from({ length: 64 })
-      .map(() => Math.round(Math.random()))
-      .join('')
+    const data = `${Math.round(Math.random() * 10)}`.repeat(128)
     yield Buffer.from(
       JSON.stringify(makeTestSavedEvent(eventIndex, threadArray, data)) + '\n',
       'utf-8'
@@ -86,19 +82,39 @@ describe('import-export events auto-mode', () => {
     const inputEventstoreAdapter = adapters['input-auto']
     const outputEventstoreAdapter = adapters['output-auto']
 
-    const inputCountEvents = 200
+    const inputCountEvents = 10000
 
     await promisify(pipeline)(
       Readable.from(eventsGenerator(inputCountEvents)),
       inputEventstoreAdapter.importEvents()
     )
 
-    if (isPostgres()) {
-      await collectPostgresStatistics('input-auto')
-    }
     expect((await inputEventstoreAdapter.describe()).eventCount).toEqual(
       inputCountEvents
     )
+
+    const exportFilePath = 'exported-events.txt'
+    const fileStream = fs.createWriteStream(exportFilePath)
+    await promisify(pipeline)(inputEventstoreAdapter.exportEvents(), fileStream)
+    await fileStream.close()
+
+    const lineCount = await new Promise<number>((resolve, reject) => {
+      let lineCount = 0
+      fs.createReadStream(exportFilePath)
+        .on('data', (buffer) => {
+          let idx = -1
+          while ((idx = buffer.indexOf('\n', idx + 1)) !== -1) {
+            lineCount++
+          }
+        })
+        .on('end', () => {
+          resolve(lineCount)
+        })
+        .on('error', reject)
+    })
+    expect(lineCount).toEqual(inputCountEvents)
+
+    fs.unlinkSync(exportFilePath)
 
     await promisify(pipeline)(
       inputEventstoreAdapter.exportEvents(),
@@ -146,20 +162,17 @@ describe('import-export events manual mode', () => {
     await adapterFactory.destroy('output-manual')()
   })
 
-  test(`${adapterFactory.name}. should work correctly with maintenanceMode = manual`, async () => {
+  test(`${adapterFactory.name}. Should work correctly with maintenanceMode = manual`, async () => {
     const inputEventstoreAdapter = adapters['input-manual']
     const outputEventstoreAdapter = adapters['output-manual']
 
-    const inputCountEvents = 50
+    const inputCountEvents = 500
 
     await promisify(pipeline)(
       Readable.from(randomEventsGenerator(inputCountEvents)),
       inputEventstoreAdapter.importEvents()
     )
 
-    if (isPostgres()) {
-      await collectPostgresStatistics('input-manual')
-    }
     expect((await inputEventstoreAdapter.describe()).eventCount).toEqual(
       inputCountEvents
     )
@@ -181,7 +194,7 @@ describe('import-export events manual mode', () => {
 
       const exportStream = eventEventstoreAdapter.exportEvents({
         maintenanceMode: MAINTENANCE_MODE_MANUAL,
-        bufferSize: 512,
+        bufferSize: 2048,
         cursor,
       })
 
@@ -200,14 +213,12 @@ describe('import-export events manual mode', () => {
       }
     }
 
-    const exportBuffer = Buffer.from(exportBuffers.join(''))
-
+    let exportBufferIndex = 0
     const exportBufferStream = new Readable()
     exportBufferStream._read = function () {
-      this.push(exportBuffer)
-      this.push(null)
+      this.push(exportBuffers[exportBufferIndex++])
+      if (exportBufferIndex === exportBuffers.length) this.push(null)
     }
-
     await promisify(pipeline)(
       exportBufferStream,
       outputEventstoreAdapter.importEvents()
@@ -253,7 +264,9 @@ describe('import-export timeouts', () => {
       steps++
 
       try {
-        const exportStream = inputEventstoreAdapter.exportEvents({ cursor })
+        const exportStream = inputEventstoreAdapter.exportEvents({
+          cursor,
+        })
         const tempStream = createStreamBuffer()
         const pipelinePromise = promisify(pipeline)(
           exportStream,

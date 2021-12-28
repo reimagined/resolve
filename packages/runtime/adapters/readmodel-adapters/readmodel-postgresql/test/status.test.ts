@@ -21,6 +21,7 @@ beforeEach(() => {
     inlineLedgerRunQuery: jest
       .fn()
       .mockReturnValue([]) as InlineLedgerRunQueryMethod,
+    ensureAffectedOperation: Promise.resolve.bind(Promise) as Function,
     schemaName: 'test-schema',
     tablePrefix: 'test-table-prefix',
     escapeId: (str: string) => str,

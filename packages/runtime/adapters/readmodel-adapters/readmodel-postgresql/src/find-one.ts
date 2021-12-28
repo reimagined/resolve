@@ -7,6 +7,7 @@ const findOne: CurrentStoreApi['findOne'] = async (
   searchExpression,
   fieldList
 ) => {
+  await pool.ensureAffectedOperation('resolver', readModelName)
   const sqlQuery = pool.makeSqlQuery(
     pool,
     readModelName,

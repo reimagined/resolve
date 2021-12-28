@@ -1,5 +1,5 @@
 import type { AdapterPool } from './types'
-import type { ReplicationStatus } from '@resolve-js/eventstore-base'
+import type { ReplicationState } from '@resolve-js/eventstore-base'
 import initReplicationStateTable from './init-replication-state-table'
 
 const resetReplication = async (pool: AdapterPool): Promise<void> => {
@@ -15,7 +15,7 @@ const resetReplication = async (pool: AdapterPool): Promise<void> => {
   const replicationStateTableName = await initReplicationStateTable(pool)
   const replicationStateTableNameAsId = escapeId(replicationStateTableName)
 
-  const notStarted: ReplicationStatus = 'notStarted'
+  const notStarted: ReplicationState['statusAndData']['status'] = 'notStarted'
 
   await executeQuery(`
     BEGIN IMMEDIATE;
@@ -26,7 +26,8 @@ const resetReplication = async (pool: AdapterPool): Promise<void> => {
       "StatusData" = NULL,
       "Iterator" = NULL,
       "SuccessEvent" = NULL,
-      "LockExpirationTime" = 0;
+      "LockExpirationTime" = 0,
+      "LockId" = NULL;
     COMMIT;`)
 }
 

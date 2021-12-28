@@ -1,5 +1,4 @@
 import { declareRuntimeEnv } from '@resolve-js/scripts'
-
 const cloudConfig = {
   mode: 'production',
   runtime: {
@@ -32,5 +31,4 @@ const cloudConfig = {
     },
   },
 }
-
 export default cloudConfig

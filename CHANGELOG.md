@@ -1,5 +1,72 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.7...HEAD)
+
+**Enhancements:**
+
+- More detailed command execution monitoring [\#2186](https://github.com/reimagined/resolve/pull/2186)
+- Use Promise.allSettled in postgres eventstore adapter dispose [\#2184](https://github.com/reimagined/resolve/pull/2184)
+- Export events via event loader. Improved export tests [\#2183](https://github.com/reimagined/resolve/pull/2183)
+
+## [V0.33.7](https://github.com/reimagined/resolve/tree/V0.33.7) (2021-12-20)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.6...V0.33.7)
+
+**Other changes:**
+
+- Add eventstore adapter runtimeInfo and setReconnectionMode. Add connection tests [\#2179](https://github.com/reimagined/resolve/pull/2179)
+- Add lambda runtime execution info logging [\#2177](https://github.com/reimagined/resolve/pull/2177)
+- Rework replicaiton to correctly handle locks [\#2174](https://github.com/reimagined/resolve/pull/2174)
+- Improve PLV8 warning message [\#2171](https://github.com/reimagined/resolve/pull/2171)
+- Migrate from 'request' package to 'node-fetch' in runtime [\#2169](https://github.com/reimagined/resolve/pull/2169)
+- Mini benchmarks initial [\#2134](https://github.com/reimagined/resolve/pull/2134)
+
+## [V0.33.5](https://github.com/reimagined/resolve/tree/V0.33.5) (2021-12-02)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.4...V0.33.5)
+
+**Bug fixes:**
+
+- Commands scheduled in sagas are triggered way too late [\#2157](https://github.com/reimagined/resolve/issues/2157)
+
+**Documentation:**
+
+- Revisit client API docs [\#2145](https://github.com/reimagined/resolve/pull/2145)
+
+## [V0.33.4](https://github.com/reimagined/resolve/tree/V0.33.4) (2021-11-26)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.3...V0.33.4)
+
+**Bug fixes:**
+
+- Application silently fails to run if config is invalid, no errors are shown [\#2141](https://github.com/reimagined/resolve/issues/2141)
+- shopping-list has a description from shopping-list-with-hooks [\#2106](https://github.com/reimagined/resolve/issues/2106)
+- Error: Lambda worker was not created due to cold start failure [\#2105](https://github.com/reimagined/resolve/issues/2105)
+
+**Documentation:**
+
+- "Step-by-Step Tutorial" is unfriendly for steps reproducing. [\#2093](https://github.com/reimagined/resolve/issues/2093)
+- Replace CURL inputs with JS code samples [\#2138](https://github.com/reimagined/resolve/pull/2138)
+- Update tutorial [\#2068](https://github.com/reimagined/resolve/pull/2068)
+
+**Other changes:**
+
+- Build-mode flag for postgresql readmodel adapter [\#2140](https://github.com/reimagined/resolve/pull/2140)
+
+## [V0.33.3](https://github.com/reimagined/resolve/tree/V0.33.3) (2021-11-19)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.2...V0.33.3)
+
+**Breaking changes:**
+
+- Runtime code is erroneously executed at compile-time [\#2114](https://github.com/reimagined/resolve/issues/2114)
+
+**Bug fixes:**
+
+- "Module "source-map-support/register" cannot be resolved" thrown in the deployment [\#2119](https://github.com/reimagined/resolve/issues/2119)
+
 ## [V0.33.2](https://github.com/reimagined/resolve/tree/V0.33.2) (2021-11-17)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.1...V0.33.2)

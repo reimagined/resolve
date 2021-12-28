@@ -2,11 +2,16 @@ import type { AdapterPool } from './types'
 import type {
   EventStoreDescription,
   EventThreadData,
+  DescribeOptions,
+  Cursor,
 } from '@resolve-js/eventstore-base'
 import assert from 'assert'
 import { THREAD_COUNT, threadArrayToCursor } from '@resolve-js/eventstore-base'
 
-const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
+const describe = async (
+  pool: AdapterPool,
+  options?: DescribeOptions
+): Promise<EventStoreDescription> => {
   const {
     executeStatement,
     secretsTableName,
@@ -19,21 +24,27 @@ const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
   const secretsTableNameAsId = escapeId(secretsTableName)
   const freezeTableName = `${eventsTableName}-freeze`
 
-  const existingThreads = (await executeStatement(`
+  let cursor: Cursor | undefined = undefined
+
+  if (options && options.calculateCursor) {
+    const existingThreads = (await executeStatement(`
     SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
     ${eventsTableNameAsId} GROUP BY "threadId" ORDER BY "threadId" ASC`)) as Array<{
-    threadId: EventThreadData['threadId']
-    threadCounter: EventThreadData['threadCounter']
-  }>
+      threadId: EventThreadData['threadId']
+      threadCounter: EventThreadData['threadCounter']
+    }>
 
-  const threadCounters = new Array<number>(THREAD_COUNT)
-  threadCounters.fill(-1)
+    const threadCounters = new Array<number>(THREAD_COUNT)
+    threadCounters.fill(-1)
 
-  for (const existingThread of existingThreads) {
-    threadCounters[existingThread.threadId] = existingThread.threadCounter
-  }
-  for (let i = 0; i < threadCounters.length; ++i) {
-    threadCounters[i]++
+    for (const existingThread of existingThreads) {
+      threadCounters[existingThread.threadId] = existingThread.threadCounter
+    }
+    for (let i = 0; i < threadCounters.length; ++i) {
+      threadCounters[i]++
+    }
+
+    cursor = threadArrayToCursor(threadCounters)
   }
 
   const rows = await executeStatement(`SELECT
@@ -56,7 +67,7 @@ const describe = async (pool: AdapterPool): Promise<EventStoreDescription> => {
     deletedSecretCount: +row.deletedSecretCount,
     lastEventTimestamp: +row.lastEventTimestamp,
     isFrozen: !!row.isFrozen,
-    cursor: threadArrayToCursor(threadCounters),
+    cursor: cursor,
   }
 }
 

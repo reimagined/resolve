@@ -15,6 +15,7 @@ import type {
   ObjectFixedKeys,
   OmitObject,
   EventThreadData,
+  EnsureExclude,
 } from '@resolve-js/readmodel-base'
 
 import type PGLib from 'pg'
@@ -101,9 +102,18 @@ export type DropReadModelMethod = (
   readModelName: string
 ) => Promise<void>
 
+export type BuildMode =
+  | 'plv8-internal'
+  | 'plv8-external'
+  | 'plv8'
+  | 'nodejs'
+  | 'auto'
+
 export type AdapterOptions = CommonAdapterOptions & {
-  tablePrefix?: string
   databaseName: string
+  tablePrefix?: string
+  buildMode?: BuildMode
+  useSqs?: boolean
 } & PGLib.ConnectionConfig
 
 export type MaybeInitMethod = (pool: AdapterPool) => Promise<void>
@@ -156,7 +166,16 @@ export type UpdateFieldDescriptor = {
   }>
 }
 
+export type EnsureAffectedOperationMethod = (
+  operation: EnsureExclude<
+    keyof AdapterOperations<CommonAdapterPool> | 'resolver',
+    never
+  >,
+  readModelName: string
+) => Promise<void>
+
 export type AdapterPool = CommonAdapterPool & {
+  ensureAffectedOperation: EnsureAffectedOperationMethod
   inlineLedgerRunQuery: InlineLedgerRunQueryMethod
   performanceTracer: PerformanceTracerLike
   tablePrefix: string
@@ -164,6 +183,8 @@ export type AdapterPool = CommonAdapterPool & {
   makeNestedPath: MakeNestedPathMethod
   activePassthrough: boolean
   connection: InstanceType<LibDependencies['Postgres']>
+  buildMode: BuildMode
+  useSqs: boolean
 } & {
     [K in keyof AdapterOperations<CommonAdapterPool>]: AdapterOperations<AdapterPool>[K]
   } &

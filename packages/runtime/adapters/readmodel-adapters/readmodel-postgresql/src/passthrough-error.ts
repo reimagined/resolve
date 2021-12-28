@@ -58,9 +58,15 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
           checkFuzzyError(error, /Too many clients already/i) ||
           checkFuzzyError(error, /Connection terminated unexpectedly/i) ||
           checkFuzzyError(error, /timeout expired/i) ||
+          checkFuzzyError(error, /getaddrinfo/) ||
+          checkFuzzyError(error, /SQLState: 08001/) ||
           checkFuzzyError(
             error,
             /canceling statement due to statement timeout/i
+          ) ||
+          checkFuzzyError(
+            error,
+            /Connection rate is too high, please reduce connection rate/i
           ) ||
           checkFormalError(error, 'ECONNRESET') ||
           checkFormalError(error, 'ETIMEDOUT') ||

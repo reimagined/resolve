@@ -1,7 +1,10 @@
 import type { AdapterPool } from './types'
 
-const dispose = async ({ database }: AdapterPool): Promise<void> => {
-  if (database) await database.close()
+const dispose = async (pool: AdapterPool): Promise<void> => {
+  if (pool.database) {
+    await pool.database.close()
+    pool.database = undefined
+  }
 }
 
 export default dispose

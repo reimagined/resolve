@@ -1,5 +1,4 @@
 import type {
-  EventFilter,
   LatestEventFilter,
   StoredEvent,
 } from '@resolve-js/eventstore-base'
@@ -12,7 +11,7 @@ const getLatestEvent = async (
 ): Promise<StoredEvent | null> => {
   const { executeStatement, eventsTableName, escapeId, shapeEvent } = pool
 
-  const resultQueryCondition = createQuery(pool, filter as EventFilter)
+  const resultQueryCondition = createQuery(pool, filter)
 
   const rows = await executeStatement(
     `SELECT * FROM ${escapeId(eventsTableName)} ${resultQueryCondition}

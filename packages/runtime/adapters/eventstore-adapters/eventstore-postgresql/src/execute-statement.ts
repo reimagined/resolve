@@ -2,15 +2,20 @@ import type { AdapterPool, PostgresConnection } from './types'
 import {
   RequestTimeoutError,
   ServiceBusyError,
+  AlreadyDisposedError,
 } from '@resolve-js/eventstore-base'
 import {
   isTimeoutError,
   isConnectionTerminatedError,
   isServiceBusyError,
   makeConnectionError,
+  makeUnrecognizedError,
 } from './errors'
-import { MAX_RECONNECTIONS } from './constants'
+import { isAlreadyExistsError, isNotExistError } from './resource-errors'
+import { MAX_RECONNECTIONS, SERVICE_WAIT_TIME } from './constants'
 import makePostgresClient from './make-postgres-client'
+
+const DISPOSED_WHILE_RUNNING_MSG = 'Adapter disposed while operation is running'
 
 const executeStatement = async (
   pool: AdapterPool,
@@ -21,13 +26,22 @@ const executeStatement = async (
   let useDistinctConnection = distinctConnection
   let distinctConnectionMade = false
 
+  const maxReconnectionTimes = pool.maxReconnectionTimes ?? MAX_RECONNECTIONS
+  const delayBeforeReconnection =
+    pool.delayBeforeReconnection ?? SERVICE_WAIT_TIME
+
   while (true) {
-    let connection: PostgresConnection
+    if (pool.disposed) {
+      throw new AlreadyDisposedError(DISPOSED_WHILE_RUNNING_MSG)
+    }
+
+    let connection: PostgresConnection | undefined
 
     try {
       if (useDistinctConnection) {
         connection = makePostgresClient(pool)
         await connection.connect()
+        pool.extraConnections.add(connection)
         distinctConnectionMade = true
       } else {
         connection = await pool.getConnectPromise()
@@ -36,10 +50,27 @@ const executeStatement = async (
       if (!useDistinctConnection) {
         pool.getConnectPromise = pool.createGetConnectPromise()
       }
-      throw makeConnectionError(error)
+      if (isConnectionTerminatedError(error) || isServiceBusyError(error)) {
+        if (reconnectionTimes >= maxReconnectionTimes) {
+          throw new ServiceBusyError(error.message)
+        }
+        reconnectionTimes++
+        await new Promise((resolve) =>
+          setTimeout(resolve, delayBeforeReconnection)
+        )
+        continue
+      } else {
+        throw makeConnectionError(error)
+      }
     }
 
+    let shouldWaitForServiceFree = false
+
     try {
+      if (pool.disposed) {
+        throw new AlreadyDisposedError(DISPOSED_WHILE_RUNNING_MSG)
+      }
+
       const result = await connection.query(sql)
 
       if (result != null && Array.isArray(result.rows)) {
@@ -48,7 +79,13 @@ const executeStatement = async (
 
       return []
     } catch (error) {
-      if (isServiceBusyError(error)) {
+      if (
+        isAlreadyExistsError(error) ||
+        isNotExistError(error) ||
+        AlreadyDisposedError.is(error)
+      ) {
+        throw error
+      } else if (isServiceBusyError(error)) {
         throw new ServiceBusyError(error.message)
       } else if (isTimeoutError(error)) {
         throw new RequestTimeoutError(error.message)
@@ -56,28 +93,37 @@ const executeStatement = async (
         if (!useDistinctConnection) {
           pool.getConnectPromise = pool.createGetConnectPromise()
         }
-        if (reconnectionTimes > MAX_RECONNECTIONS) {
-          throw new ServiceBusyError(error.message)
+        if (reconnectionTimes >= maxReconnectionTimes) {
+          throw new ServiceBusyError(error.message + `${useDistinctConnection}`)
         }
         useDistinctConnection = true
+        shouldWaitForServiceFree = true
         reconnectionTimes++
       } else if (
         error != null &&
         error.message === 'Client was closed and is not queryable'
       ) {
-        if (reconnectionTimes > MAX_RECONNECTIONS) {
+        if (pool.disposed) {
+          throw new AlreadyDisposedError(DISPOSED_WHILE_RUNNING_MSG)
+        }
+        if (reconnectionTimes >= maxReconnectionTimes) {
           throw new ServiceBusyError(error.message)
         }
         useDistinctConnection = true
+        shouldWaitForServiceFree = true
         reconnectionTimes++
       } else {
-        throw error
+        throw makeUnrecognizedError(error)
       }
     } finally {
       if (distinctConnectionMade) {
-        connection.end((err) => {
-          return
-        })
+        pool.extraConnections.delete(connection)
+        await connection.end()
+      }
+      if (shouldWaitForServiceFree) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, delayBeforeReconnection)
+        )
       }
     }
   }

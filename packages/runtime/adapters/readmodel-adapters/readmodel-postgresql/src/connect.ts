@@ -1,4 +1,5 @@
 import type {
+  EnsureAffectedOperationMethod,
   CurrentConnectMethod,
   InlineLedgerRunQueryMethod,
   AdapterPool,
@@ -7,7 +8,13 @@ import type {
 } from './types'
 
 const connect: CurrentConnectMethod = async (imports, pool, options) => {
-  let { tablePrefix, databaseName, ...connectionOptions } = options
+  let {
+    tablePrefix,
+    databaseName,
+    buildMode,
+    useSqs,
+    ...connectionOptions
+  } = options
 
   if (databaseName == null || databaseName.constructor !== String) {
     throw new Error(`Wrong database name: ${databaseName}`)
@@ -17,6 +24,23 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     throw new Error(`Wrong table prefix: ${tablePrefix}`)
   } else if (tablePrefix == null) {
     tablePrefix = ''
+  }
+
+  if (
+    buildMode != null &&
+    !['plv8-internal', 'plv8-external', 'plv8', 'nodejs', 'auto'].includes(
+      buildMode
+    )
+  ) {
+    throw new Error(`Wrong build mode: ${buildMode}`)
+  } else if (buildMode == null) {
+    buildMode = 'auto'
+  }
+
+  if (useSqs != null && useSqs.constructor !== Boolean) {
+    throw new Error(`Wrong sqs usage flag: ${useSqs}`)
+  } else if (useSqs == null) {
+    useSqs = false
   }
 
   const connectionErrorsMap: WeakMap<
@@ -56,6 +80,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     return connection
   }
 
+  const affectedReadModelOperationsSet = new Set<`${Parameters<EnsureAffectedOperationMethod>[0]}-${Parameters<EnsureAffectedOperationMethod>[1]}`>()
   const maybeThrowConnectionErrors = async (
     connection: typeof pool.connection
   ) => {
@@ -75,6 +100,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
         pool.connection = null!
       }
       try {
+        affectedReadModelOperationsSet.clear()
         await connection.end()
       } catch (err) {}
       throw summaryError
@@ -128,15 +154,40 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     return rows
   }
 
+  const ensureAffectedOperation: EnsureAffectedOperationMethod = async (
+    operation,
+    readModelName
+  ) => {
+    if (operation === 'resolver' && pool.activePassthrough) {
+      return
+    }
+    if (!affectedReadModelOperationsSet.has(`${operation}-${readModelName}`)) {
+      await inlineLedgerRunQuery(
+        `DO $$ BEGIN RAISE WARNING ${imports.escapeStr(
+          `RESOLVE-READMODEL-POSTGRESQL-MARKER ${JSON.stringify({
+            operation,
+            schemaName: databaseName,
+            readModelName,
+          })}`
+        )}; END $$ LANGUAGE 'plpgsql';`
+      )
+
+      affectedReadModelOperationsSet.add(`build-${readModelName}`)
+    }
+  }
+
   Object.assign<
     OmitObject<AdapterPool, CommonAdapterPool>,
     OmitObject<AdapterPool, CommonAdapterPool>
   >(pool, {
+    ensureAffectedOperation,
     schemaName: databaseName,
     tablePrefix,
     inlineLedgerRunQuery,
     connection: initialConnection,
     activePassthrough: false,
+    buildMode,
+    useSqs,
     ...imports,
   })
 }

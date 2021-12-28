@@ -1,6 +1,6 @@
 {
   "name": "create-resolve-app",
-  "version": "0.33.2",
+  "version": "0.33.7",
   "description": "A tool that generates boilerplate web applications based on the reSolve framework",
   "keywords": [
     "cqrs",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
-    "@resolve-js/debug-levels": "0.33.2",
+    "@resolve-js/debug-levels": "0.33.7",
     "adm-zip": "0.5.4",
     "boxen": "5.0.0",
     "chalk": "4.1.0",

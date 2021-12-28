@@ -7,6 +7,7 @@ import {
 } from './constants'
 import getNextCursor from './get-next-cursor'
 import { AlreadyFrozenError, AlreadyUnfrozenError } from './frozen-errors'
+import type { EventLoader } from './types'
 
 import type {
   AdapterBoundPool,
@@ -24,6 +25,7 @@ type Context<ConfiguredProps extends {}> = {
   isBufferOverflow: boolean
   isEnd: boolean
   externalTimeout: boolean
+  preferRegularEventLoader: boolean
 }
 
 const FLUSH_CHUNK_SIZE = 64 * 1024 * 1024
@@ -31,7 +33,9 @@ const FLUSH_CHUNK_SIZE = 64 * 1024 * 1024
 async function startProcessEvents<ConfiguredProps extends {}>({
   pool,
   maintenanceMode,
-}: Context<ConfiguredProps>): Promise<void> {
+  cursor,
+  preferRegularEventLoader,
+}: Context<ConfiguredProps>): Promise<EventLoader> {
   if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
     try {
       await pool.freeze()
@@ -41,20 +45,28 @@ async function startProcessEvents<ConfiguredProps extends {}>({
       }
     }
   }
+  return await pool.getEventLoader(
+    { cursor },
+    { preferRegular: preferRegularEventLoader }
+  )
 }
 
-async function endProcessEvents<ConfiguredProps extends {}>({
-  pool,
-  maintenanceMode,
-}: Context<ConfiguredProps>): Promise<void> {
-  if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
-    try {
-      await pool.unfreeze()
-    } catch (error) {
-      if (!AlreadyUnfrozenError.is(error)) {
-        throw error
+async function endProcessEvents<ConfiguredProps extends {}>(
+  { pool, maintenanceMode }: Context<ConfiguredProps>,
+  eventLoader: EventLoader
+): Promise<void> {
+  try {
+    if (maintenanceMode === MAINTENANCE_MODE_AUTO) {
+      try {
+        await pool.unfreeze()
+      } catch (error) {
+        if (!AlreadyUnfrozenError.is(error)) {
+          throw error
+        }
       }
     }
+  } finally {
+    await eventLoader.close()
   }
 }
 
@@ -66,17 +78,14 @@ type EventRecord = {
 async function* generator<ConfiguredProps extends {}>(
   context: Context<ConfiguredProps>
 ): AsyncGenerator<Buffer, void> {
-  const { pool, bufferSize } = context
-
-  await startProcessEvents(context)
+  const { bufferSize } = context
 
   let eventsByteSize = 0
 
+  const eventLoader = await startProcessEvents(context)
+
   while (true) {
-    const { events } = await pool.loadEventsByCursor({
-      cursor: context.cursor,
-      limit: BATCH_SIZE,
-    })
+    const { events } = await eventLoader.loadEvents(BATCH_SIZE)
 
     let currentTotalChunkSize = 0
     let eventRecords: EventRecord[] = []
@@ -103,7 +112,7 @@ async function* generator<ConfiguredProps extends {}>(
         yield* flushEvents()
 
         context.isBufferOverflow = true
-        await endProcessEvents(context)
+        await endProcessEvents(context, eventLoader)
         return
       }
       eventsByteSize += byteLength
@@ -112,7 +121,7 @@ async function* generator<ConfiguredProps extends {}>(
         yield* flushEvents()
 
         if (context.externalTimeout) {
-          await endProcessEvents(context)
+          await endProcessEvents(context, eventLoader)
           return
         }
       }
@@ -124,10 +133,10 @@ async function* generator<ConfiguredProps extends {}>(
 
     if (events.length < BATCH_SIZE) {
       context.isEnd = true
-      await endProcessEvents(context)
+      await endProcessEvents(context, eventLoader)
       return
     } else if (context.externalTimeout) {
-      await endProcessEvents(context)
+      await endProcessEvents(context, eventLoader)
       return
     }
   }
@@ -139,6 +148,7 @@ const exportEventsStream = <ConfiguredProps extends {}>(
     cursor = null,
     maintenanceMode = MAINTENANCE_MODE_AUTO,
     bufferSize = Number.POSITIVE_INFINITY,
+    preferRegularEventLoader = false,
   }: Partial<ExportOptions> = {}
 ): ExportEventsStream => {
   if (
@@ -155,6 +165,7 @@ const exportEventsStream = <ConfiguredProps extends {}>(
     isBufferOverflow: false,
     isEnd: false,
     externalTimeout: false,
+    preferRegularEventLoader: preferRegularEventLoader,
   }
 
   const stream: ExportEventsStream = Readable.from(
@@ -176,6 +187,11 @@ const exportEventsStream = <ConfiguredProps extends {}>(
   Object.defineProperty(stream, 'isEnd', {
     get() {
       return context.isEnd
+    },
+  })
+  Object.defineProperty(stream, 'preferRegularEventLoader', {
+    get() {
+      return context.preferRegularEventLoader
     },
   })
 
