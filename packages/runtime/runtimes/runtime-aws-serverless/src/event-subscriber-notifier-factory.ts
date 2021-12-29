@@ -18,8 +18,8 @@ type NotifierRuntime = {
 
 export const LAMBDA_TO_STEP_FUNCTION_COST_EXPENSE_THRESHOLD_MS = 3000
 
-export const waitForSubscriber = async (isSaga = false) =>
-  await new Promise((resolve) => setTimeout(resolve, isSaga ? 10000 : 1000))
+export const waitForSubscriber = async () =>
+  await new Promise((resolve) => setTimeout(resolve, 1000))
 
 export const checkError = (error: any, value: string) =>
   error != null &&

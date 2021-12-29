@@ -3,23 +3,31 @@ import initReplicationStateTable from './init-replication-state-table'
 
 const setReplicationLock = async (
   pool: AdapterPool,
+  lockId: string,
   lockDuration: number
 ): Promise<boolean> => {
-  const { executeStatement, executeQuery, escapeId } = pool
+  const { executeStatement, escapeId } = pool
 
   const replicationStateTableName = await initReplicationStateTable(pool)
 
   if (lockDuration <= 0) {
-    await executeQuery(
+    const rows = await executeStatement(
       `UPDATE ${escapeId(replicationStateTableName)} 
-    SET "LockExpirationTime" = 0`
+    SET
+      "LockExpirationTime" = 0,
+      "LockId" = NULL
+    WHERE "LockId" = ${pool.escape(lockId)}
+    RETURNING "LockExpirationTime", "LockId"`
     )
-    return true
+    return rows.length !== 0
   } else {
     const rows = await executeStatement(
       `UPDATE ${escapeId(replicationStateTableName)} 
-    SET "LockExpirationTime" = CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS INTEGER) + ${+lockDuration}
-    WHERE "LockExpirationTime" < CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS INTEGER) RETURNING "LockExpirationTime"`
+    SET
+      "LockExpirationTime" = CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS INTEGER) + ${+lockDuration},
+      "LockId" = ${pool.escape(lockId)}
+    WHERE "LockExpirationTime" < CAST(strftime('%s','now') || substr(strftime('%f','now'),4) AS INTEGER)
+    RETURNING "LockExpirationTime"`
     )
     return rows.length !== 0
   }

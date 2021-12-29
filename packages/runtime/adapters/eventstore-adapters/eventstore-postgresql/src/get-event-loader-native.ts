@@ -63,11 +63,13 @@ const getEventLoaderNative = async (
       new PgCursor(sqlQuery)
     ) as unknown) as QueriedPgCursor
   } catch (error) {
+    await client.end()
     throw makeKnownError(error) ?? error
   }
 
-  return {
+  const eventLoader: EventLoader = {
     async close() {
+      pool.eventLoaders.delete(eventLoader)
       // await pgCursor.close() // may never resolve due to https://github.com/brianc/node-postgres/issues/2642
       // client.end is enough anyway since cursor lives as long as the connection
       // client end may still hang if connection terminated and pgcursor exists
@@ -93,6 +95,10 @@ const getEventLoaderNative = async (
     },
     isNative: true,
   }
+
+  pool.eventLoaders.add(eventLoader)
+
+  return eventLoader
 }
 
 export default getEventLoaderNative

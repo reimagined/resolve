@@ -18,7 +18,8 @@ jobs:
           access_token: ${{ github.token }}
 
       - uses: actions/checkout@v2
-        ref: ${{ github.event.inputs.RESOLVE_REF }}
+        with:
+          ref: ${{ github.event.inputs.RESOLVE_REF }}
 
       - uses: actions/setup-node@v2
         with:
@@ -62,15 +63,6 @@ jobs:
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           scopes: '@resolve-js'
 
-      - name: Test:integration Postgres Serverless
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_CLOUD_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
-          AWS_RDS_CLUSTER_ARN: ${{  steps.install_cloud.outputs.system_cluster_arn }}
-          AWS_RDS_ADMIN_SECRET_ARN: ${{  steps.install_cloud.outputs.postgres_admin_secret_arn }}
-        if: startsWith(github.head_ref, 'feature/') || startsWith(github.head_ref, 'hotfix/') || startsWith(github.head_ref, 'fix/')
-        run: yarn test:integration-postgres-serverless
-
       - name: Prepare test application
         run: |
           test_app_dir=$(mktemp -d -t test-app-XXXXXXXXX)
@@ -101,7 +93,7 @@ jobs:
           package_registry: ${{ steps.publish.outputs.registry_url }}
           package_registry_token: ${{ secrets.RESOLVE_BOT_PAT }}
           package_registry_scopes: '@resolve-js'
-          deploy_args: --verbosity=debug
+          deploy_args: --verbosity=debug --env=DEBUG=resolve:* --env=DEBUG_LEVEL=debug
           event_store_path: ./test-event-store
 
       - name: Test:functional (API)
@@ -110,6 +102,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_CLOUD_AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-central-1
           RESOLVE_TESTS_TARGET_DEPLOYMENT_ID: ${{ steps.deploy.outputs.id }}
+          RESOLVE_TESTS_TARGET_VERSION: ${{ steps.publish.outputs.version }}
+          RESOLVE_TESTS_TARGET_STAGE: framework-test
+          DEBUG_LEVEL: error
         run: |
           cd functional-tests
           yarn run-test api --url=${{ steps.deploy.outputs.url }}

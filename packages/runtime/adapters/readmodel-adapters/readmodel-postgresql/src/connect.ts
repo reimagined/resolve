@@ -80,6 +80,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     return connection
   }
 
+  const affectedReadModelOperationsSet = new Set<`${Parameters<EnsureAffectedOperationMethod>[0]}-${Parameters<EnsureAffectedOperationMethod>[1]}`>()
   const maybeThrowConnectionErrors = async (
     connection: typeof pool.connection
   ) => {
@@ -99,6 +100,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
         pool.connection = null!
       }
       try {
+        affectedReadModelOperationsSet.clear()
         await connection.end()
       } catch (err) {}
       throw summaryError
@@ -152,7 +154,6 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     return rows
   }
 
-  const affectedReadModelOperationsSet = new Set<`${Parameters<EnsureAffectedOperationMethod>[0]}-${Parameters<EnsureAffectedOperationMethod>[1]}`>()
   const ensureAffectedOperation: EnsureAffectedOperationMethod = async (
     operation,
     readModelName

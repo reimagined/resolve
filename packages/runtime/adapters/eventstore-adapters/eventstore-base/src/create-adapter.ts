@@ -9,6 +9,7 @@ import type {
   AdapterPoolBoundProps,
   AdapterPrimalPool,
   AdapterBoundPool,
+  ReconnectionMode,
 } from './types'
 import type { LeveledDebugger } from '@resolve-js/debug-levels'
 import bindMethod from './bind-method'
@@ -87,6 +88,8 @@ const createAdapter = <
     describe,
     establishTimeLimit,
     getEventLoaderNative,
+    runtimeInfo,
+    setReconnectionMode,
   }: AdapterFunctions<ConfiguredProps>,
   options: Config,
   configure: (props: AdapterPrimalPool<ConfiguredProps>, config: Config) => void
@@ -204,6 +207,22 @@ const createAdapter = <
             adapterPool as AdapterBoundPool<ConfiguredProps>
           ),
     getEventLoader: bindMethod(adapterPool, getEventLoader),
+
+    runtimeInfo:
+      runtimeInfo === undefined
+        ? () => {
+            return { connectionCount: 0, disposed: adapterPool.disposed }
+          }
+        : runtimeInfo.bind(
+            null,
+            adapterPool as AdapterBoundPool<ConfiguredProps>
+          ),
+    setReconnectionMode:
+      setReconnectionMode === undefined
+        ? (mode: ReconnectionMode) => {
+            return
+          }
+        : bindMethod(adapterPool, setReconnectionMode),
   }
 
   Object.assign<AdapterPrimalPool<ConfiguredProps>, Adapter>(
