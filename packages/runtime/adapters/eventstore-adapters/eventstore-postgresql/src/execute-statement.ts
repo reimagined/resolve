@@ -55,7 +55,9 @@ const executeStatement = async (
           throw new ServiceBusyError(error.message)
         }
         reconnectionTimes++
-        await new Promise((resolve) => setTimeout(resolve, SERVICE_WAIT_TIME))
+        await new Promise((resolve) =>
+          setTimeout(resolve, delayBeforeReconnection)
+        )
         continue
       } else {
         throw makeConnectionError(error)
