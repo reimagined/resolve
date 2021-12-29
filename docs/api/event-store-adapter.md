@@ -474,7 +474,7 @@ await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 
 #### Result
 
-A writable stream object.
+An [Import Events Stream](#import-events-stream) object.
 
 ### `exportEvents`
 
@@ -501,7 +501,7 @@ await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 
 #### Result
 
-A readable stream object.
+An [Export Events Stream](#export-events-stream) object.
 
 ### `importSecrets`
 
@@ -510,7 +510,13 @@ Gets a writable stream used to save secrets.
 #### Example
 
 ```js
-
+import { promisify } from 'util'
+import { pipeline } from 'stream'
+...
+await promisify(pipeline)(
+  inputEventstoreAdapter.exportSecrets(),
+  outputEventstoreAdapter.importSecrets()
+)
 ```
 
 #### Arguments
@@ -523,9 +529,7 @@ Gets a writable stream used to save secrets.
 
 #### Result
 
-```ts
-stream.Writable
-```
+A writable stream object.
 
 ### `exportSecrets`
 
@@ -534,7 +538,14 @@ Gets a writable stream used to load secrets.
 #### Example
 
 ```js
-
+import fs from 'fs'
+import { promisify } from 'util'
+import { pipeline } from 'stream'
+...
+const exportFilePath = 'exported-secrets.txt'
+const fileStream = fs.createWriteStream(exportFilePath)
+await promisify(pipeline)(eventstoreAdapter.exportSecrets(), fileStream)
+await fileStream.close()
 ```
 
 #### Arguments
@@ -547,7 +558,7 @@ Gets a writable stream used to load secrets.
 
 #### Result
 
-`stream.Readable`
+A readable stream object.
 
 ## Types
 
@@ -591,7 +602,7 @@ The value that represents internal position in event-store. `loadEvents` will re
 Specify the inclusive start and end of the time range for which to load events. Specified in milliseconds elapsed since January 1, 1970 00:00:00 UTC. Both values can be omitted so that there is no lower and/or upper bound.
 
 :::caution
-The `startTime` and `finishTime` specified in conjunction with [`cursor`](#cursor) produces an error.
+The `startTime` and `finishTime` options specified in conjunction with [`cursor`](#cursor) produce an error.
 :::
 
 #### `aggregateIds`
@@ -601,3 +612,25 @@ Array of included aggregate IDs.
 #### `eventTypes`
 
 Array of included event types.
+
+### Import Events Stream
+
+A writable stream object that the [`importEvents`](#importevents) function returns. This object extends the Node.js `fs.ReadStream` with the following properties:
+
+| Property Name      | Description                                                                                                                           |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `byteOffset`       | A byte offset within the source of event data from which to start reading. Use this property to resume an interrupted import process. |
+| `savedEventsCount` | The number of saved events. This property is incremented as you write events to the stream.                                           |
+
+The events are written as single-row JSON data structures separate with the newline character (`'\n'`).
+
+### Export Events Stream
+
+A readable stream object that the [`exportEvents`](#exportevents) function returns. This object extends the Node.js `fs.ReadStream` with the following properties:
+
+| Property Name | Description                                                                                                                   |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `cursor`      | A database cursor that indicates the current position within the dataset. The `cursor` is incremented as you read the stream. |
+| `isEnd`       | Indicates that all events have been read from the stream.                                                                     |
+
+The events are read as single-row JSON data structures separate with the newline character (`'\n'`).
