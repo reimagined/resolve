@@ -436,7 +436,7 @@ A `promise` that resolves on successful rollback.
 
 ### `getNextCursor`
 
-Gets an the next cursor in the event store database based on the previous cursor and an array of events obtained from it.
+Gets the next cursor in the event store database based on the previous cursor and an array of events obtained from it.
 
 #### Arguments
 
@@ -466,11 +466,25 @@ await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 
 #### Arguments
 
-| Argument Name                        | Type     | Description                                               |
-| ------------------------------------ | -------- | --------------------------------------------------------- |
-| [`options?`](#import-events-options) | `object` | { byteOffset: number, maintenanceMode: MAINTENANCE_MODE } |
+| Argument Name                        | Type     | Description                     |
+| ------------------------------------ | -------- | ------------------------------- |
+| [`options?`](#import-events-options) | `object` | Specifies event import options. |
 
 #### `options` {#import-events-options}
+
+Specifies event import options.
+
+```js title="Object Structure"
+{
+  byteOffset: number,
+  maintenanceMode: MAINTENANCE_MODE
+}
+```
+
+| Field Name      | Type                                             | Description                                                                             |
+| --------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| byteOffset      | `number`                                         | A byte offset within the source of event data from which to start reading.              |
+| maintenanceMode | A [`Maintenance Mode`](#maintenance-mode) value. | Defines whether or not to switch the event store to maintenance mode during the import. |
 
 #### Result
 
@@ -493,11 +507,25 @@ await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
 
 #### Arguments
 
-| Argument Name                        | Type     | Description                                                                      |
-| ------------------------------------ | -------- | -------------------------------------------------------------------------------- |
-| [`options?`](#export-events-options) | `object` | { cursor: string or null, maintenanceMode: MAINTENANCE_MODE, bufferSize: number} |
+| Argument Name                        | Type     | Description                     |
+| ------------------------------------ | -------- | ------------------------------- |
+| [`options?`](#export-events-options) | `object` | Specifies event export options. |
 
 #### `options` {#export-events-options}
+
+Specifies event export options.
+
+```js title="Object Structure"
+{
+  cursor: string or null,
+  maintenanceMode: MAINTENANCE_MODE
+}
+```
+
+| Field Name      | Type                                             | Description                                                                                                                                                    |
+| --------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cursor          | `string` or `null`                               | A cursor that specifies the position within the dataset from which to start reading events. If set to `null`, the events are read starting from the beginning. |
+| maintenanceMode | A [`Maintenance Mode`](#maintenance-mode) value. | Defines whether or not to switch the event store to maintenance mode during the export.                                                                        |
 
 #### Result
 
@@ -521,15 +549,33 @@ await promisify(pipeline)(
 
 #### Arguments
 
-| Argument Name                         | Type     | Description                           |
-| ------------------------------------- | -------- | ------------------------------------- |
-| [`options?`](#import-secrets-options) | `object` | { maintenanceMode: MAINTENANCE_MODE } |
+| Argument Name                         | Type     | Description                      |
+| ------------------------------------- | -------- | -------------------------------- |
+| [`options?`](#import-secrets-options) | `object` | Specifies secret import options. |
 
 #### `options` {#import-secrets-options}
 
+Specifies secret import options.
+
+```js title="Object Structure"
+{
+  maintenanceMode: MAINTENANCE_MODE
+}
+```
+
+| Field Name      | Type                                             | Description                                                                             |
+| --------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| maintenanceMode | A [`Maintenance Mode`](#maintenance-mode) value. | Defines whether or not to switch the event store to maintenance mode during the import. |
+
 #### Result
 
-A writable stream object.
+A writable stream object. Secrets are written as single-row JSON data structures separate with the newline character (`'\n'`). The JSON structures include the following fields:
+
+| Field Name | Description                                                                 |
+| ---------- | --------------------------------------------------------------------------- |
+| `secret`   | The secret value.                                                           |
+| `id`       | The secret's unique identifier.                                             |
+| `idx`      | An index value that is incremented for each subsequent secret in the store. |
 
 ### `exportSecrets`
 
@@ -550,15 +596,35 @@ await fileStream.close()
 
 #### Arguments
 
-| Argument Name                         | Type     | Description                                                |
-| ------------------------------------- | -------- | ---------------------------------------------------------- |
-| [`options?`](#export-secrets-options) | `object` | { idx: number or null, maintenanceMode: MAINTENANCE_MODE } |
+| Argument Name                         | Type     | Description                      |
+| ------------------------------------- | -------- | -------------------------------- |
+| [`options?`](#export-secrets-options) | `object` | Specifies secret export options. |
 
 #### `options` {#export-secrets-options}
 
+Specifies secret export options.
+
+```js title="Object Structure"
+{
+  idx: number or null,
+  maintenanceMode: MAINTENANCE_MODE
+}
+```
+
+| Field Name      | Type                                             | Description                                                                                                                     |
+| --------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| idx             | `number` or `null`                               | The index from which to start exporting secrets. If set to `null` or `0`, the secrets are exported starting from the beginning. |
+| maintenanceMode | A [`Maintenance Mode`](#maintenance-mode) value. | Defines whether or not to switch the event store to maintenance mode during the export.                                         |
+
 #### Result
 
-A readable stream object.
+A readable stream object. Secrets are read as single-row JSON data structures separate with the newline character (`'\n'`). The JSON structures include the following fields:
+
+| Field Name | Description                                                                 |
+| ---------- | --------------------------------------------------------------------------- |
+| `secret`   | The secret value.                                                           |
+| `id`       | The secret's unique identifier.                                             |
+| `idx`      | An index value that is incremented for each subsequent secret in the store. |
 
 ## Types
 
@@ -617,12 +683,12 @@ Array of included event types.
 
 A writable stream object that the [`importEvents`](#importevents) function returns. This object extends the Node.js `fs.ReadStream` with the following properties:
 
-| Property Name      | Description                                                                                                                           |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `byteOffset`       | A byte offset within the source of event data from which to start reading. Use this property to resume an interrupted import process. |
-| `savedEventsCount` | The number of saved events. This property is incremented as you write events to the stream.                                           |
+| Property Name      | Description                                                                                                                                                                                                |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `byteOffset`       | A byte offset within the source of event data from which to start reading. The new offset is assigned to the property with each imported event. Use this property to resume an interrupted import process. |
+| `savedEventsCount` | The number of saved events. This property is incremented as you write events to the stream.                                                                                                                |
 
-The events are written as single-row JSON data structures separate with the newline character (`'\n'`).
+Events are written as single-row JSON data structures separate with the newline character (`'\n'`).
 
 ### Export Events Stream
 
@@ -633,4 +699,4 @@ A readable stream object that the [`exportEvents`](#exportevents) function retur
 | `cursor`      | A database cursor that indicates the current position within the dataset. The `cursor` is incremented as you read the stream. |
 | `isEnd`       | Indicates that all events have been read from the stream.                                                                     |
 
-The events are read as single-row JSON data structures separate with the newline character (`'\n'`).
+Events are read as single-row JSON data structures separate with the newline character (`'\n'`).
