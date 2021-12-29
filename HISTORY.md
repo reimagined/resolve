@@ -1,5 +1,19 @@
 # Changelog
 
+## [V0.33.8](https://github.com/reimagined/resolve/tree/V0.33.8) (2021-12-29)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.7...V0.33.8)
+
+**Enhancements:**
+
+- More detailed command execution monitoring [\#2186](https://github.com/reimagined/resolve/pull/2186)
+- Use Promise.allSettled in postgres eventstore adapter dispose [\#2184](https://github.com/reimagined/resolve/pull/2184)
+- Export events via event loader. Improved export tests [\#2183](https://github.com/reimagined/resolve/pull/2183)
+
+**Other changes:**
+
+- Fix manual cloud test workflow [\#2132](https://github.com/reimagined/resolve/pull/2132)
+
 ## [V0.33.7](https://github.com/reimagined/resolve/tree/V0.33.7) (2021-12-20)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.6...V0.33.7)
