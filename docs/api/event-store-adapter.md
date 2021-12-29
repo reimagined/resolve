@@ -553,14 +553,14 @@ Gets a writable stream used to load secrets.
 
 ### Maintenance Mode
 
-A maintenance mode option value defines whether or not to automatically switch the event store to maintenance mode during an import and/or export operation. You can specify this option for the following operations:
+A maintenance mode option value defines whether or not to switch the event store to maintenance mode during an import and/or export operation. You can specify this option for the following operations:
 
 - [`importEvents`](#importevents)
 - [`exportEvents`](#exportevents)
 - [`importSecrets`](#importsecrets)
 - [`exportSecrets`](#exportsecrets)
 
-The `@resolve-js/eventstore-base` package exports constants that define the possible values for the maintenance mode option:
+The `@resolve-js/eventstore-base` package exports constants that are the allowed values for the maintenance mode option:
 
 ```js
 import {
@@ -568,6 +568,11 @@ import {
   MAINTENANCE_MODE_AUTO,
 } from '@resolve-js/eventstore-base'
 ```
+
+These values define the following behavior:
+
+- `MAINTENANCE_MODE_AUTO` specifies that the operation should [`freeze`](#freeze) the event store at the start and [`unfreeze`](#unfreeze) it at the end of the import or export.
+- `MAINTENANCE_MODE_MANUAL` specifies that the operation should not do any implicit actions.
 
 ### Event Filter
 
