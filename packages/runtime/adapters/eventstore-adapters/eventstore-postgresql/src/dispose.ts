@@ -7,22 +7,28 @@ const dispose = async (pool: AdapterPool): Promise<void> => {
   if (pool.connection != null) {
     const log = getLog('dispose')
 
-    const extraClient = pool.extraConnections.values()
+    const extraClients = Array.from(pool.extraConnections.values())
     pool.extraConnections.clear()
 
-    //TODO: Promise.allSettled
-    for (const client of extraClient) {
-      try {
-        await client.end()
-      } catch (error) {
-        log.error(`Could not end extra client connection: ${error}`)
+    const endResults = await Promise.allSettled(
+      extraClients.map((client) => client.end())
+    )
+    for (const result of endResults) {
+      if (result.status === 'rejected') {
+        log.error(`Could not end extra client connection: ${result.reason}`)
       }
     }
 
-    //TODO: Promise.allSettled
-    const loaders = pool.eventLoaders.values()
-    for (const loader of loaders) {
-      await loader.close()
+    const loaders = Array.from(pool.eventLoaders.values())
+    pool.eventLoaders.clear()
+
+    const closeResults = await Promise.allSettled(
+      loaders.map((loader) => loader.close())
+    )
+    for (const result of closeResults) {
+      if (result.status === 'rejected') {
+        log.error(`Could not close event loader connection: ${result.reason}`)
+      }
     }
 
     const connection = pool.connection
