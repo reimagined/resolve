@@ -1,20 +1,18 @@
 ---
 id: event-store-adapter
 title: Event Store Adapter
-description: This document describes the interface that an event store adapter should expose.
+description: Event Store adapters expose the following API that allows you to communicate with the underlying event store.
 ---
 
-An event store adapter defines how the reSolve framework stores events in the underlying event store.
+## Event Store Adapter API
 
-## Event Store Adapter Interface
-
-An event store adapter object exposes the following API:
+Event Store adapters expose the following API that allows you to communicate with the underlying event store.
 
 | Function Name                                             | Description                                                                                         |
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | [`init`](#init)                                           | Initializes a database.                                                                             |
 | [`drop`](#drop)                                           | Drops a database.                                                                                   |
-| [`describe`](#describe)                                   | Obtain information about the event store.                                                           |
+| [`describe`](#describe)                                   | Returns information about the event store.                                                          |
 | [`dispose`](#dispose)                                     | Disconnects from a database and disposes unmanaged resources.                                       |
 | [`saveEvent`](#saveevent)                                 | Saves an event to the database.                                                                     |
 | [`loadEvents`](#loadEvents)                               | Gets an array of events and the next cursor from the store based on the specified filter criteria.  |
@@ -164,7 +162,7 @@ A `promise` that resolves to an object of the following structure:
 
 ```ts
 {
-  events, cursors
+  events, cursor
 }
 ```
 
@@ -173,7 +171,7 @@ The result object contains the following fields:
 | Field Name | Type                                     | Description                                              |
 | ---------- | ---------------------------------------- | -------------------------------------------------------- |
 | events     | An array of [`event`](event.md) objects. | The resulting filtered set of events.                    |
-| cursors    | `string`                                 | A database cursor used to load the next batch of events. |
+| cursor     | `string` or `null`                       | A database cursor used to load the next batch of events. |
 
 The returned `cursor` points to the position within the resulting dataset past the loaded batch of events. You can use this cursor to chain together `loadEvents` calls.
 
@@ -203,7 +201,7 @@ const { events, cursor } = await adapter.loadEvents({
 })
 ```
 
-Combine filtering criteria:
+Combine filter criteria:
 
 ```js
 const { events, cursor } = await adapter.loadEvents({
@@ -400,7 +398,7 @@ await eventStoreAdapter.pushIncrementalImport(events, importId)
 
 #### Result
 
-A `promise` that resolves on successful import.
+A `promise` that resolves on the successful import.
 
 ### `commitIncrementalImport`
 
@@ -420,7 +418,7 @@ await eventStoreAdapter.commitIncrementalImport(importId)
 
 #### Result
 
-A `promise` that resolves on successful commit.
+A `promise` that resolves on the successful commit.
 
 ### `rollbackIncrementalImport`
 
@@ -432,7 +430,7 @@ await eventStoreAdapter.rollbackIncrementalImport()
 
 #### Result
 
-A `promise` that resolves on successful rollback.
+A `promise` that resolves on the successful rollback.
 
 ### `getNextCursor`
 
@@ -456,12 +454,13 @@ Gets a writable stream used to save events.
 #### Example
 
 ```js
-import { pipeline as pipelineC } from 'stream'
 import { promisify } from 'util'
+import fs from 'fs'
 
-const pipeline = promisify(pipelineC)
-
-await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
+await promisify(pipeline)(
+  fs.createReadStream('path/to/events.txt'),
+  eventstoreAdapter.importEvents()
+)
 ```
 
 #### Arguments
@@ -490,6 +489,68 @@ Specifies event import options.
 
 An [Import Events Stream](#import-events-stream) object.
 
+#### Usage
+
+Basic import from a file:
+
+```js
+import { promisify } from 'util'
+import fs from 'fs'
+
+await promisify(pipeline)(
+  fs.createReadStream('path/to/events.txt'),
+  eventstoreAdapter.importEvents()
+)
+```
+
+Import with a timeout:
+
+```js
+import { promisify } from 'util'
+import fs from 'fs'
+
+const exportedEventsFileName = 'path/to/events.txt'
+const exportedEventsFileSize = fs.statSync(exportedEventsFileName).size
+
+let byteOffset = 0 // Initially set to zero (the file start).
+let savedEventsCount = 0
+
+while (true) {
+  const importStream = eventstoreAdapter.importEvents({
+    byteOffset,
+    maintenanceMode: MAINTENANCE_MODE_MANUAL,
+  })
+
+  const pipelinePromise = promisify(pipeline)(
+    fs.createReadStream(exportedEventsFileName, { start: byteOffset }), // Start reading from the beginning or continue from the offset.
+    importStream
+  ).then(() => false)
+
+  const timeoutPromise =
+    new Promise() <
+    boolean >
+    ((resolve) =>
+      setTimeout(() => {
+        resolve(true)
+      }, getInterruptingTimeout()))
+
+  const isTimedOut = await Promise.race([timeoutPromise, pipelinePromise])
+
+  if (isTimedOut) {
+    importStream.emit('timeout') // Notify that the time is over.
+    await pipelinePromise // Still need to make sure all async operations are completed.
+  }
+
+  byteOffset = importStream.byteOffset // Save byteOffset for future invocations so it can be passed to fs.createReadStream.
+  savedEventsCount += importStream.savedEventsCount
+
+  if (byteOffset >= exportedEventsFileSize) {
+    break
+  }
+}
+console.log(`Imported ${savedEventsCount} events`)
+```
+
 ### `exportEvents`
 
 Gets a readable stream used to load events.
@@ -497,12 +558,13 @@ Gets a readable stream used to load events.
 #### Example
 
 ```js
-import { pipeline as pipelineC } from 'stream'
 import { promisify } from 'util'
+import { pipeline } from 'stream'
 
-const pipeline = promisify(pipelineC)
-
-await pipeline(eventStoreAdapter1.import(), eventStoreAdapter2.export())
+await promisify(pipeline)(
+  inputEventstoreAdapter.exportEvents(),
+  outputEventstoreAdapter.importEvents()
+)
 ```
 
 #### Arguments
@@ -530,6 +592,71 @@ Specifies event export options.
 #### Result
 
 An [Export Events Stream](#export-events-stream) object.
+
+#### Usage
+
+Basic export to a file:
+
+```js
+import fs from 'fs'
+import { promisify } from 'util'
+import { pipeline } from 'stream'
+
+const exportFilePath = 'exported-events.txt'
+const fileStream = fs.createWriteStream(exportFilePath)
+await promisify(pipeline)(eventstoreAdapter.exportEvents(), fileStream)
+await fileStream.close()
+```
+
+Export with a timeout:
+
+```js
+import { promisify } from 'util'
+
+let cursor = null
+const exportBuffers = []
+while (true) {
+  const exportStream = eventstoreAdapter.exportEvents({ cursor })
+  const tempStream = createStreamBuffer() // Some writable stream.
+  const pipelinePromise = promisify(pipeline)(exportStream, tempStream).then(
+    () => false
+  )
+
+  const timeoutPromise =
+    new Promise() <
+    boolean >
+    ((resolve) =>
+      setTimeout(() => {
+        resolve(true)
+      }, getInterruptingTimeout()))
+
+  const isJsonStreamTimedOut = await Promise.race([
+    timeoutPromise,
+    pipelinePromise,
+  ])
+
+  if (isJsonStreamTimedOut) {
+    exportStream.emit('timeout') // Notify that time is over.
+    await pipelinePromise // Still need to make sure all async operations are completed.
+  }
+
+  cursor = exportStream.cursor // Save cursor in so it can be used on the next loop iteration if required.
+
+  const buffer = tempStream.getBuffer().toString('utf8')
+
+  exportBuffers.push(buffer) // Save that could be read before the timeout.
+  if (exportStream.isEnd) {
+    break
+  }
+}
+
+// join and parse the obtained event data.
+const outputEvents = exportBuffers
+  .join('')
+  .trim()
+  .split('\n')
+  .map((eventAsString) => JSON.parse(eventAsString.trim()))
+```
 
 ### `importSecrets`
 
@@ -626,7 +753,7 @@ A readable stream object. Secrets are read as single-row JSON data structures se
 | `id`       | The secret's unique identifier.                                             |
 | `idx`      | An index value that is incremented for each subsequent secret in the store. |
 
-## Types
+## Related Types
 
 ### Maintenance Mode
 
@@ -646,14 +773,21 @@ import {
 } from '@resolve-js/eventstore-base'
 ```
 
-These values define the following behavior:
+These values define the following behavior.
 
-- `MAINTENANCE_MODE_AUTO` specifies that the operation should [`freeze`](#freeze) the event store at the start and [`unfreeze`](#unfreeze) it at the end of the import or export.
+**On Export:**
+
+- `MAINTENANCE_MODE_AUTO` specifies that the operation should [`freeze`](#freeze) the event store at the start and [`unfreeze`](#unfreeze) it at the end of the export process.
+- `MAINTENANCE_MODE_MANUAL` specifies that the operation should not do any implicit actions.
+
+**On Import:**
+
+- `MAINTENANCE_MODE_AUTO` - the same as on export, but also specifies that the events/secrets database table should be re-created from scratch.
 - `MAINTENANCE_MODE_MANUAL` specifies that the operation should not do any implicit actions.
 
 ### Event Filter
 
-An event filter object is a parameter for the [`loadEvents`](#loadEvents) function that describes criteria used to filter the loaded events.. It can contain the following fields:
+An event filter object is a parameter for the [`loadEvents`](#loadEvents) function that describes criteria used to filter the loaded events. It can contain the following fields:
 
 #### `limit (required)`
 
@@ -661,14 +795,16 @@ Maximum number of events to retrieve in one call.
 
 #### `cursor`
 
-The value that represents internal position in event-store. `loadEvents` will return events starting with this cursor. Cursors can be obtained from the previous [`loadEvents`](#loadevents) or [`saveEvent`](#saveevent) calls. `null` means the initial cursor. Cursor must be passed explicitly even if it's null.
+The value that specifies an internal position within the event store. `loadEvents` returns events starting with this position. Cursors can be obtained from the previous [`loadEvents`](#loadevents) or [`saveEvent`](#saveevent) calls.
+
+If this option is set to `null`, the cursor in the initial position is used. Even if the cursor is `null`, it should be be passed explicitly.
 
 #### `startTime` and `finishTime`
 
 Specify the inclusive start and end of the time range for which to load events. Specified in milliseconds elapsed since January 1, 1970 00:00:00 UTC. Both values can be omitted so that there is no lower and/or upper bound.
 
 :::caution
-The `startTime` and `finishTime` options specified in conjunction with [`cursor`](#cursor) produce an error.
+If the `startTime` and/or `finishTime` options are specified, the [`cursor`](#cursor) should be omitted, otherwise an error will occur.
 :::
 
 #### `aggregateIds`
