@@ -12,6 +12,11 @@ type NotifierRuntime = {
   notifyEventSubscriber: RuntimeFactoryParameters['notifyEventSubscriber']
 }
 
+export const isMatchEventType = (
+  eventTypes: Array<string> | null,
+  eventType: string | null | undefined
+) => eventTypes == null || eventType == null || eventTypes.includes(eventType)
+
 const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
   const log = getLog(`broadcaster:${event?.event.type ?? '_NO_EVENT_'}`)
   const maxDuration = runtime.getVacantTimeInMillis()
@@ -30,17 +35,14 @@ const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
       name: eventSubscriber,
       eventTypes,
     } of runtime.eventListeners.values()) {
-      if (
-        eventTypes == null ||
-        eventType == null ||
-        eventTypes.includes(eventType)
-      ) {
-        promises.push(
-          runtime.invokeBuildAsync(
-            createEventSubscriberNotification(eventSubscriber, event)
-          )
-        )
+      if (!isMatchEventType(eventTypes, eventType)) {
+        continue
       }
+      promises.push(
+        runtime.invokeBuildAsync(
+          createEventSubscriberNotification(eventSubscriber, event)
+        )
+      )
     }
 
     const eventSubscribers = await runtime.eventStoreAdapter.getEventSubscribers()
@@ -54,21 +56,18 @@ const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
         )
         .map(
           async ({ applicationName, eventSubscriber, destination, status }) => {
+            const eventTypes = Array.isArray(status?.eventTypes)
+              ? (status?.eventTypes as Array<string>)
+              : null
+            if (!isMatchEventType(eventTypes, eventType)) {
+              return
+            }
             try {
-              const eventTypes = Array.isArray(status?.eventTypes)
-                ? (status?.eventTypes as Array<string>)
-                : null
-              if (
-                eventTypes == null ||
-                eventType == null ||
-                eventTypes.includes(eventType)
-              ) {
-                await runtime.notifyEventSubscriber(
-                  destination,
-                  eventSubscriber,
-                  event
-                )
-              }
+              await runtime.notifyEventSubscriber(
+                destination,
+                eventSubscriber,
+                event
+              )
             } catch (error) {
               log.warn(
                 `Notify application "${applicationName}" event subscriber "${eventSubscriber}" failed with error: ${error}`

@@ -170,7 +170,7 @@ const updateCustomReadModel = async (
   })
 }
 
-const subscribeImpl = async (
+export const subscribeImpl = async (
   pool: ReadModelPool,
   readModelName: string,
   parameters: {
@@ -203,7 +203,7 @@ const subscribeImpl = async (
   })
 }
 
-const resubscribeImpl = async (
+export const resubscribeImpl = async (
   pool: ReadModelPool,
   readModelName: string,
   parameters: {
@@ -226,7 +226,7 @@ const resubscribeImpl = async (
   })
 }
 
-const unsubscribeImpl = async (
+export const unsubscribeImpl = async (
   pool: ReadModelPool,
   readModelName: string,
   parameters: {}
