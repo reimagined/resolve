@@ -308,12 +308,14 @@ export type ExportOptions = {
   cursor: InputCursor
   maintenanceMode: MAINTENANCE_MODE
   bufferSize: number
+  preferRegularEventLoader: boolean
 }
 
 export type ExportEventsStream = stream.Readable & {
   readonly cursor: InputCursor
   readonly isBufferOverflow: boolean
   readonly isEnd: boolean
+  readonly preferRegularEventLoader: boolean
 }
 
 export type ImportSecretsOptions = {
