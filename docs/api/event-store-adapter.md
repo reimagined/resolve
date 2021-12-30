@@ -829,7 +829,7 @@ Array of included event types.
 
 ### Import Events Stream
 
-A writable stream object that the [`importEvents`](#importevents) function returns. This object extends the Node.js `fs.ReadStream` with the following properties:
+A writable stream object that the [`importEvents`](#importevents) function returns. This object extends the Node.js `fs.WriteStream` with the following properties:
 
 | Property Name      | Description                                                                                                                                                                                                |
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
