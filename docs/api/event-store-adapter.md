@@ -77,12 +77,24 @@ const eventCount = await eventStoreAdapter.describe({ estimateCounts: true })).e
 
 Contains options that specifies what calculations should be performed. The options object has the following structure:
 
-```js
+```js title="Object Structure"
 {
-  estimateCounts, // (boolean, optional) Specifies whether or not to calculate counts for events and secrets.
-  calculateCursor, // (boolean, optional) Specifies whether or not to get database coursor used to traverse events.
+  estimateCounts,
+  calculateCursor,
 }
 ```
+
+| Field Name         | Type      | Description                                                                                       |
+| ------------------ | --------- | ------------------------------------------------------------------------------------------------- |
+| `estimateCounts?`  | `boolean` | Specifies whether or not to use estimated values for the returned `eventCount` and `secretCount`. |
+| `calculateCursor?` | `boolean` | Specifies whether or not to get database cursor used to traverse events.                          |
+
+:::info
+The `estimateCounts` option is implemented for the `@resolve-js/eventstore-postgresql` adapter to optimize performance on large event stores.
+If set to `true`, this option specifies that the returned `eventCount` and `secretCount` should be estimated based on metadata stored in service tables.
+
+The default `false` value specifies that the exact number of event entries in the database is calculated at the cost of performance.
+:::
 
 #### Result
 
