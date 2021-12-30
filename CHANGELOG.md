@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.8...HEAD)
+
+**Documentation:**
+
+- Update ES Adapter API Reference [\#2181](https://github.com/reimagined/resolve/pull/2181)
+
 ## [V0.33.8](https://github.com/reimagined/resolve/tree/V0.33.8) (2021-12-29)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.7...V0.33.8)
