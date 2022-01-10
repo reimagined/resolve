@@ -26,6 +26,16 @@ const executeStatement = async (
   let useDistinctConnection = distinctConnection
   let distinctConnectionMade = false
 
+  const incrementReconnectionTimes = () => {
+    reconnectionTimes++
+    if (pool.monitoring) {
+      pool.monitoring.custom({
+        metricName: 'EventstorePostgresqlReconnectionTimes',
+        unit: 'Count',
+      })
+    }
+  }
+
   const maxReconnectionTimes = pool.maxReconnectionTimes ?? MAX_RECONNECTIONS
   const delayBeforeReconnection =
     pool.delayBeforeReconnection ?? SERVICE_WAIT_TIME
@@ -54,7 +64,7 @@ const executeStatement = async (
         if (reconnectionTimes >= maxReconnectionTimes) {
           throw new ServiceBusyError(error.message)
         }
-        reconnectionTimes++
+        incrementReconnectionTimes()
         await new Promise((resolve) =>
           setTimeout(resolve, delayBeforeReconnection)
         )
@@ -98,7 +108,7 @@ const executeStatement = async (
         }
         useDistinctConnection = true
         shouldWaitForServiceFree = true
-        reconnectionTimes++
+        incrementReconnectionTimes()
       } else if (
         error != null &&
         error.message === 'Client was closed and is not queryable'
@@ -111,7 +121,7 @@ const executeStatement = async (
         }
         useDistinctConnection = true
         shouldWaitForServiceFree = true
-        reconnectionTimes++
+        incrementReconnectionTimes()
       } else {
         throw makeUnrecognizedError(error)
       }
