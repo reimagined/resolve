@@ -1,4 +1,5 @@
 import type {
+  EnsureAffectedOperationMethod,
   CurrentConnectMethod,
   InlineLedgerRunQueryMethod,
   AdapterPool,
@@ -79,6 +80,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     return connection
   }
 
+  const affectedReadModelOperationsSet = new Set<`${Parameters<EnsureAffectedOperationMethod>[0]}-${Parameters<EnsureAffectedOperationMethod>[1]}`>()
   const maybeThrowConnectionErrors = async (
     connection: typeof pool.connection
   ) => {
@@ -98,6 +100,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
         pool.connection = null!
       }
       try {
+        affectedReadModelOperationsSet.clear()
         await connection.end()
       } catch (err) {}
       throw summaryError
@@ -151,10 +154,33 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     return rows
   }
 
+  const ensureAffectedOperation: EnsureAffectedOperationMethod = async (
+    operation,
+    readModelName
+  ) => {
+    if (operation === 'resolver' && pool.activePassthrough) {
+      return
+    }
+    if (!affectedReadModelOperationsSet.has(`${operation}-${readModelName}`)) {
+      await inlineLedgerRunQuery(
+        `DO $$ BEGIN RAISE WARNING ${imports.escapeStr(
+          `RESOLVE-READMODEL-POSTGRESQL-MARKER ${JSON.stringify({
+            operation,
+            schemaName: databaseName,
+            readModelName,
+          })}`
+        )}; END $$ LANGUAGE 'plpgsql';`
+      )
+
+      affectedReadModelOperationsSet.add(`build-${readModelName}`)
+    }
+  }
+
   Object.assign<
     OmitObject<AdapterPool, CommonAdapterPool>,
     OmitObject<AdapterPool, CommonAdapterPool>
   >(pool, {
+    ensureAffectedOperation,
     schemaName: databaseName,
     tablePrefix,
     inlineLedgerRunQuery,

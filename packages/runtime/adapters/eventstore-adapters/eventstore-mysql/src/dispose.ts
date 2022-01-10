@@ -6,7 +6,10 @@ const dispose = async (pool: AdapterPool): Promise<any> => {
 
   log.debug(`disposing the event store`)
 
-  if (pool.connection) await pool.connection.end()
+  if (pool.connection) {
+    await pool.connection.end()
+    pool.connection = undefined
+  }
 
   log.debug(`the event store disposed`)
 }

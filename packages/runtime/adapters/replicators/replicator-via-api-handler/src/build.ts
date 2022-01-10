@@ -4,7 +4,6 @@ import type {
   CallReplicateResult,
 } from './types'
 import type {
-  ReplicationState,
   StoredEventBatchPointer,
   GatheredSecrets,
   EventLoader,
@@ -12,6 +11,7 @@ import type {
 import {
   RequestTimeoutError,
   ServiceBusyError,
+  AlreadyDisposedError,
 } from '@resolve-js/eventstore-base'
 import { getLog } from './get-log'
 
@@ -21,44 +21,18 @@ async function sleep(delay: number): Promise<void> {
   })
 }
 
-function statusDataToError(
-  statusData: ReplicationState['statusData'],
-  defaults: { message: string; name: string }
-): Error {
-  const errorMessage =
-    statusData != null && statusData.message != null
-      ? (statusData.message as string)
-      : defaults.message
-  const errorName =
-    statusData != null && statusData.name != null
-      ? (statusData.name as string)
-      : defaults.name
-  const errorStack =
-    statusData != null && statusData.stack != null
-      ? (statusData.stack as string)
-      : undefined
-  if (errorStack) {
-    return {
-      message: errorMessage,
-      name: errorName,
-      stack: errorStack,
-    }
-  } else {
-    return {
-      message: errorMessage,
-      name: errorName,
-    }
-  }
-}
-
-const isHTTPServiceError = (name: string) =>
-  name === 'FetchError' || name === 'AbortError' || name === 'ServiceError'
+const isHTTPServiceError = (error: any) =>
+  error != null &&
+  (error.name === 'FetchError' ||
+    error.name === 'AbortError' ||
+    error.name === 'HttpError')
 
 const getBuildDelay = (iterationNumber: number) => {
   return 30000 * 2 ** iterationNumber
 }
 
 const BATCH_PROCESSING_POLL_MS = 50
+const PATCH_PROCESSING_TIME_LIMIT = 60 * 1000
 
 const build: ExternalMethods['build'] = async (
   basePool,
@@ -84,15 +58,15 @@ const build: ExternalMethods['build'] = async (
   }
 
   const state = await basePool.getReplicationState(basePool)
-  if (state.status === 'error') {
+  if (state.statusAndData.status === 'criticalError') {
     log.error(
       `Refuse to start or continue replication with error state: ${JSON.stringify(
-        state.statusData
+        state.statusAndData.data
       )}`
     )
     return
-  } else if (state.status === 'serviceError') {
-    await delayNext(getBuildDelay(iterationNumber), state.statusData)
+  } else if (state.statusAndData.status === 'serviceError') {
+    await delayNext(getBuildDelay(iterationNumber), state.statusAndData.data)
     return
   }
   if (state.paused) {
@@ -100,10 +74,23 @@ const build: ExternalMethods['build'] = async (
     return
   }
 
+  let lockId = `${Date.now()}`
   const timeLeft = getVacantTimeInMillis()
   try {
-    const result = await basePool.occupyReplication(basePool, timeLeft)
-    if (!result.success) {
+    const result = await basePool.occupyReplication(basePool, lockId, timeLeft)
+    if (result.status === 'alreadyLocked') {
+      await delayNext(getBuildDelay(iterationNumber), {
+        name: 'Error',
+        message: 'Replication process is already locked',
+      })
+      return
+    } else if (result.status === 'serviceError') {
+      await delayNext(getBuildDelay(iterationNumber), {
+        name: 'Error',
+        message: result.message,
+      })
+      return
+    } else if (result.status === 'error') {
       log.error(`Could not occupy replication process: ${result.message}`)
       return
     }
@@ -113,7 +100,6 @@ const build: ExternalMethods['build'] = async (
   }
 
   let iterator = state.iterator
-  let localContinue = true
 
   await eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
   let eventLoader: EventLoader
@@ -125,9 +111,9 @@ const build: ExternalMethods['build'] = async (
       log.error(error)
     }
     try {
-      await basePool.releaseReplication(basePool)
+      await basePool.releaseReplication(basePool, lockId)
     } catch (error) {
-      if (!isHTTPServiceError(error.name)) log.error(error)
+      if (!isHTTPServiceError(error)) log.error(error)
     }
   }
 
@@ -145,7 +131,7 @@ const build: ExternalMethods['build'] = async (
     )
   } catch (error) {
     await onExit()
-    if (RequestTimeoutError.is(error)) {
+    if (RequestTimeoutError.is(error) || AlreadyDisposedError.is(error)) {
       await next()
     } else if (ServiceBusyError.is(error)) {
       await delayNext(getBuildDelay(iterationNumber), error)
@@ -158,7 +144,7 @@ const build: ExternalMethods['build'] = async (
   log.debug('Starting or continuing replication process')
 
   while (true) {
-    let lastError: Error | null = null
+    let lastError: (Error & { recoverable: boolean }) | null = null
 
     const cursor =
       iterator == null ? null : (iterator.cursor as ReadModelCursor)
@@ -173,7 +159,7 @@ const build: ExternalMethods['build'] = async (
       )
     } catch (error) {
       await onExit()
-      if (RequestTimeoutError.is(error)) {
+      if (RequestTimeoutError.is(error) || AlreadyDisposedError.is(error)) {
         await next()
       } else if (ServiceBusyError.is(error)) {
         await delayNext(getBuildDelay(iterationNumber), error)
@@ -193,6 +179,7 @@ const build: ExternalMethods['build'] = async (
 
       const result: CallReplicateResult = await basePool.callReplicate(
         basePool,
+        lockId,
         events,
         existingSecrets,
         deletedSecrets,
@@ -200,43 +187,86 @@ const build: ExternalMethods['build'] = async (
       )
 
       if (result.type === 'serverError') {
-        lastError = { name: 'ServiceError', message: result.message }
+        lastError = {
+          recoverable: true,
+          name: 'ServiceError',
+          message: result.message,
+        }
       } else if (result.type === 'clientError') {
-        lastError = { name: 'Error', message: result.message }
+        lastError = {
+          recoverable: false,
+          name: 'Error',
+          message: result.message,
+        }
+      } else if (result.type === 'processed') {
+        if (
+          result.state === null ||
+          result.state.statusAndData.status !== 'batchDone'
+        ) {
+          lastError = {
+            recoverable: false,
+            name: 'Error',
+            message: 'Reported processed, but status is not batchDone',
+          }
+        } else {
+          iterator = { cursor: nextCursor }
+          appliedEventsCount =
+            result.state.statusAndData.data.appliedEventsCount
+          wasPaused = state.paused
+          iterationNumber = 0
+        }
       } else if (result.type === 'launched') {
         while (true) {
           const state = await basePool.getReplicationState(basePool)
-          if (state.status === 'batchInProgress') {
+          if (state.statusAndData.status === 'batchInProgress') {
+            if (
+              state.statusAndData.data.startedAt + PATCH_PROCESSING_TIME_LIMIT <
+              Date.now()
+            ) {
+              lastError = {
+                recoverable: true,
+                name: 'Error',
+                message: 'Batch took too long to process',
+              }
+              break
+            }
             await sleep(BATCH_PROCESSING_POLL_MS)
-          } else if (state.status === 'batchDone') {
+          } else if (state.statusAndData.status === 'batchDone') {
             iterator = { cursor: nextCursor }
-            appliedEventsCount =
-              state.statusData != null
-                ? (state.statusData.appliedEventsCount as number)
-                : 0
+            appliedEventsCount = state.statusAndData.data.appliedEventsCount
             wasPaused = state.paused
             iterationNumber = 0
             break
-          } else if (state.status === 'serviceError') {
-            lastError = statusDataToError(state.statusData, {
-              message: 'Unknown service error',
+          } else if (state.statusAndData.status === 'serviceError') {
+            lastError = {
+              recoverable: true,
               name: 'ServiceError',
-            })
+              message: state.statusAndData.data.message,
+            }
             break
-          } else if (state.status === 'error') {
-            lastError = statusDataToError(state.statusData, {
-              message: 'Unknown error',
+          } else if (state.statusAndData.status === 'criticalError') {
+            lastError = {
+              recoverable: false,
               name: 'Error',
-            })
+              message: state.statusAndData.data.message,
+            }
             break
           }
         }
       } else {
         const errorMessage = `Unhandled replicate result. HTTP status code: ${result.httpStatus}. Message: ${result.message}`
-        lastError = { name: 'Error', message: errorMessage }
+        lastError = {
+          recoverable: false,
+          name: 'Error',
+          message: errorMessage,
+        }
       }
     } catch (error) {
-      lastError = error
+      lastError = {
+        recoverable: isHTTPServiceError(error),
+        name: error.name,
+        message: error.message,
+      }
     }
 
     if (appliedEventsCount > 0) {
@@ -244,9 +274,10 @@ const build: ExternalMethods['build'] = async (
     }
 
     let delay = 0
+    let localContinue = true
     let shouldContinue = appliedEventsCount > 0
     if (lastError) {
-      if (isHTTPServiceError(lastError.name)) {
+      if (lastError.recoverable) {
         delay = getBuildDelay(iterationNumber)
         shouldContinue = true
         localContinue = false
@@ -270,7 +301,9 @@ const build: ExternalMethods['build'] = async (
     } else {
       await onExit()
       if (lastError)
-        log.error(`Exiting replication loop due to error ${lastError.message}`)
+        log.error(
+          `Exiting replication loop due to error: ${lastError.name}: ${lastError.message}`
+        )
       if (shouldContinue) {
         if (delay > 0) {
           await delayNext(delay, lastError)

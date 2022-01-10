@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/core",
-  "version": "0.33.4",
+  "version": "0.33.8",
   "description": "reSolve core.",
   "keywords": [
     "cqrs",
@@ -17,6 +17,7 @@
   "author": "reimagined team",
   "main": "./lib/index.js",
   "module": "./es/index.js",
+  "browser": "./lib/browser.js",
   "types": "./types/index.d.ts",
   "scripts": {
     "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/core",
@@ -25,7 +26,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
-    "@resolve-js/debug-levels": "0.33.4",
+    "@resolve-js/debug-levels": "0.33.8",
     "uuid": "8.3.2"
   },
   "devDependencies": {

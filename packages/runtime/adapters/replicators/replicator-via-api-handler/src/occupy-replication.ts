@@ -5,22 +5,29 @@ import { OCCUPY_REPLICATION } from '@resolve-js/module-replication'
 
 const occupyReplication: InternalMethods['occupyReplication'] = async (
   pool,
+  lockId: string,
   duration: number
 ) => {
   const response = await fetch(
-    `${pool.targetApplicationUrl}${OCCUPY_REPLICATION.endpoint}?duration=${duration}`,
+    `${pool.targetApplicationUrl}${OCCUPY_REPLICATION.endpoint}`,
     {
       method: OCCUPY_REPLICATION.method,
+      body: JSON.stringify({
+        duration,
+        lockId,
+      }),
+      headers: { 'Content-Type': 'application/json' },
     }
   )
-  if (response.status === 200) {
-    return { success: true }
-  } else {
-    const text = await response.text()
-    return {
-      success: false,
-      message: text,
-    }
+  switch (response.status) {
+    case 200:
+      return { status: 'success' }
+    case 409:
+      return { status: 'alreadyLocked' }
+    case 503:
+      return { status: 'serviceError', message: await response.text() }
+    default:
+      return { status: 'error', message: await response.text() }
   }
 }
 

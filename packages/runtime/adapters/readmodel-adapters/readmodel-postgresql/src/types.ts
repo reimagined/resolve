@@ -15,6 +15,7 @@ import type {
   ObjectFixedKeys,
   OmitObject,
   EventThreadData,
+  EnsureExclude,
 } from '@resolve-js/readmodel-base'
 
 import type PGLib from 'pg'
@@ -165,7 +166,16 @@ export type UpdateFieldDescriptor = {
   }>
 }
 
+export type EnsureAffectedOperationMethod = (
+  operation: EnsureExclude<
+    keyof AdapterOperations<CommonAdapterPool> | 'resolver',
+    never
+  >,
+  readModelName: string
+) => Promise<void>
+
 export type AdapterPool = CommonAdapterPool & {
+  ensureAffectedOperation: EnsureAffectedOperationMethod
   inlineLedgerRunQuery: InlineLedgerRunQueryMethod
   performanceTracer: PerformanceTracerLike
   tablePrefix: string

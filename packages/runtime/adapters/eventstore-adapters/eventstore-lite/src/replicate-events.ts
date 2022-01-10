@@ -2,12 +2,14 @@ import type { AdapterPool } from './types'
 import { THREAD_COUNT } from '@resolve-js/eventstore-base'
 import type { OldEvent, StoredEvent } from '@resolve-js/eventstore-base'
 import { str as strCRC32 } from 'crc-32'
+import isIntegerOverflowError from './integer-overflow-error'
 
 export const replicateEvents = async (
   pool: AdapterPool,
+  lockId: string,
   events: OldEvent[]
-): Promise<void> => {
-  if (events.length === 0) return
+): Promise<boolean> => {
+  if (events.length === 0) return true
 
   const {
     executeStatement,
@@ -17,6 +19,9 @@ export const replicateEvents = async (
     escapeId,
   } = pool
   const eventsTableNameAsId = escapeId(eventsTableName)
+  const replicationStateTableNameAsId = escapeId(
+    `${eventsTableName}-replication-state`
+  )
 
   const rows = (await executeStatement(
     `SELECT "threadId", MAX("threadCounter") AS "threadCounter" FROM 
@@ -44,7 +49,17 @@ export const replicateEvents = async (
     eventsToInsert.push({ ...event, threadId, threadCounter })
   }
 
-  await executeQuery(`INSERT OR IGNORE INTO ${eventsTableNameAsId}(
+  try {
+    await executeQuery(`
+    BEGIN IMMEDIATE;
+    SELECT ABS("ReplicationIsLocked") AS "lock_zero" FROM (
+        SELECT 0 AS "ReplicationIsLocked"
+    UNION ALL
+      SELECT -9223372036854775808 AS "ReplicationIsLocked"
+      FROM ${replicationStateTableNameAsId}
+      WHERE "LockId" != ${escape(lockId)} 
+    );
+    INSERT OR IGNORE INTO ${eventsTableNameAsId}(
       "threadId",
       "threadCounter",
       "timestamp",
@@ -68,7 +83,30 @@ export const replicateEvents = async (
       } AS BLOB))
     )`
       )
-      .join(',')}`)
+      .join(',')};
+     COMMIT;`)
+    return true
+  } catch (error) {
+    try {
+      await executeQuery('ROLLBACK;')
+    } catch (rollbackError) {
+      // ignore
+    }
+
+    const errorMessage =
+      error != null && error.message != null ? error.message : ''
+
+    const errorCode =
+      error != null && error.code != null ? (error.code as string) : ''
+
+    if (errorCode === 'SQLITE_BUSY') {
+      return false
+    } else if (isIntegerOverflowError(errorMessage)) {
+      return false
+    } else {
+      throw error
+    }
+  }
 }
 
 export default replicateEvents
