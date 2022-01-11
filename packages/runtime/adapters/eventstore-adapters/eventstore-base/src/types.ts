@@ -12,6 +12,7 @@ import type {
   OldSecretRecord,
   OldEvent,
   ReplicationState,
+  Monitoring,
 } from '@resolve-js/core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
@@ -246,6 +247,8 @@ export type AdapterPoolPrimalProps = {
   counters: Map<string, number>
 
   getNextCursor: CoreEventstore['getNextCursor']
+
+  monitoring: Monitoring | null
 }
 
 export type AdapterPoolBoundProps = Adapter & AdapterPoolPrivateBoundProps
@@ -526,4 +529,5 @@ export interface Adapter extends CoreEventstore {
 
   runtimeInfo: () => AdapterRuntimeInfo
   setReconnectionMode: (mode: ReconnectionMode) => void
+  setMonitoring: (monitoring: Monitoring | null) => void
 }

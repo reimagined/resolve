@@ -3,6 +3,7 @@ import type {
   MonitoringAdapter,
   MonitoringDimension,
   MonitoringMetric,
+  MonitoringCustomMetric,
 } from '@resolve-js/core'
 
 import type { MonitoringContext, MonitoringGroupContext } from './types'
@@ -146,6 +147,40 @@ const monitoringDuration = (
   })
 }
 
+const monitoringCustom = (
+  log: LeveledDebugger,
+  monitoringContext: MonitoringContext,
+  groupContext: MonitoringGroupContext,
+  {
+    metricName,
+    unit,
+    value = 1,
+    count = 1,
+    dimensions = [],
+  }: MonitoringCustomMetric
+) => {
+  if (!Number.isSafeInteger(count)) {
+    log.warn(
+      `Count for metric '${metricName}' is not recorded because it's not an integer`
+    )
+    return
+  }
+  if (!Number.isSafeInteger(value)) {
+    log.warn(
+      `Value for metric '${metricName}' is not recorded because it's not an integer`
+    )
+    return
+  }
+
+  putMetric(log, monitoringContext, groupContext, {
+    metricName: metricName,
+    unit: unit,
+    dimensions: groupContext.dimensions.concat(dimensions),
+    value,
+    count,
+  })
+}
+
 const monitoringTime = (
   log: LeveledDebugger,
   monitoringContext: MonitoringContext,
@@ -283,6 +318,7 @@ const createMonitoringImplementation = (
     time: monitoringTime.bind(null, log, monitoringContext, groupContext),
     timeEnd: monitoringTimeEnd.bind(null, log, monitoringContext, groupContext),
     rate: monitoringRate.bind(null, log, monitoringContext, groupContext),
+    custom: monitoringCustom.bind(null, log, monitoringContext, groupContext),
     getMetrics: getMetrics.bind(null, log, monitoringContext),
     clearMetrics: clearMetrics.bind(null, log, monitoringContext),
     publish: async () => void 0,

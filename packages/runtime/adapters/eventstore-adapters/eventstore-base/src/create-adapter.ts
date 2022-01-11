@@ -1,5 +1,5 @@
 import { getLog } from './get-log'
-import type { SecretsManager } from '@resolve-js/core'
+import type { SecretsManager, Monitoring } from '@resolve-js/core'
 import type {
   Adapter,
   AdapterFunctions,
@@ -116,11 +116,11 @@ const createAdapter = <
   const adapterPool: AdapterPrimalPool<ConfiguredProps> = {
     disposed: false,
     validateEventFilter,
-    isConnected: false,
     maybeThrowResourceError,
     bucketSize,
     getNextCursor: getNextCursor.bind(null),
     counters: new Map(),
+    monitoring: null,
     ...emptyProps,
   }
 
@@ -223,6 +223,9 @@ const createAdapter = <
             return
           }
         : bindMethod(adapterPool, setReconnectionMode),
+    setMonitoring: (monitoring: Monitoring | null) => {
+      adapterPool.monitoring = monitoring
+    },
   }
 
   Object.assign<AdapterPrimalPool<ConfiguredProps>, Adapter>(

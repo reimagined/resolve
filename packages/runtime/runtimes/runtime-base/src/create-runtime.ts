@@ -122,6 +122,7 @@ export const createRuntime = async (
 
   log.debug(`building event store adapter`)
   const eventStoreAdapter = await eventStoreAdapterFactory()
+  eventStoreAdapter.setMonitoring(monitoring)
 
   log.debug(`building read models connectors`)
   const readModelConnectors = buildReadModelConnectors(
