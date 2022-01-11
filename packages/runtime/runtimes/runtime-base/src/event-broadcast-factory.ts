@@ -3,7 +3,7 @@ import type { EventPointer } from '@resolve-js/core'
 import type { Runtime, RuntimeFactoryParameters } from './types'
 import { createEventSubscriberNotification, getLog } from './utils'
 
-type NotifierRuntime = {
+export type NotifierRuntime = {
   getVacantTimeInMillis: () => number
   eventStoreAdapter: Runtime['eventStoreAdapter']
   eventListeners: RuntimeFactoryParameters['eventListeners']
@@ -17,7 +17,10 @@ export const isMatchEventType = (
   eventType: string | null | undefined
 ) => eventTypes == null || eventType == null || eventTypes.includes(eventType)
 
-const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
+export const broadcaster = async (
+  runtime: NotifierRuntime,
+  event?: EventPointer
+) => {
   const log = getLog(`broadcaster:${event?.event.type ?? '_NO_EVENT_'}`)
   const maxDuration = runtime.getVacantTimeInMillis()
   let timerId = null
@@ -47,8 +50,8 @@ const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
 
     const eventSubscribers = await runtime.eventStoreAdapter.getEventSubscribers()
 
-    await Promise.all(
-      eventSubscribers
+    promises.push(
+      ...eventSubscribers
         .filter(
           ({ applicationName, eventSubscriber }) =>
             runtime.eventSubscriberScope !== applicationName ||
@@ -76,6 +79,8 @@ const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
           }
         )
     )
+
+    await Promise.allSettled(promises)
 
     if (timerId != null) {
       clearTimeout(timerId)
