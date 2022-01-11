@@ -2,14 +2,34 @@
 
 ## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.6...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.8...HEAD)
 
-**Bug fixes:**
+**Documentation:**
 
-- Resetting saga in hacker-news example generates redundant events [\#2163](https://github.com/reimagined/resolve/issues/2163)
+- Update ES Adapter API Reference [\#2181](https://github.com/reimagined/resolve/pull/2181)
+
+## [V0.33.8](https://github.com/reimagined/resolve/tree/V0.33.8) (2021-12-29)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.7...V0.33.8)
+
+**Enhancements:**
+
+- More detailed command execution monitoring [\#2186](https://github.com/reimagined/resolve/pull/2186)
+- Use Promise.allSettled in postgres eventstore adapter dispose [\#2184](https://github.com/reimagined/resolve/pull/2184)
+- Export events via event loader. Improved export tests [\#2183](https://github.com/reimagined/resolve/pull/2183)
 
 **Other changes:**
 
+- Fix manual cloud test workflow [\#2132](https://github.com/reimagined/resolve/pull/2132)
+
+## [V0.33.7](https://github.com/reimagined/resolve/tree/V0.33.7) (2021-12-20)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.6...V0.33.7)
+
+**Other changes:**
+
+- Add eventstore adapter runtimeInfo and setReconnectionMode. Add connection tests [\#2179](https://github.com/reimagined/resolve/pull/2179)
+- Add lambda runtime execution info logging [\#2177](https://github.com/reimagined/resolve/pull/2177)
 - Rework replicaiton to correctly handle locks [\#2174](https://github.com/reimagined/resolve/pull/2174)
 - Improve PLV8 warning message [\#2171](https://github.com/reimagined/resolve/pull/2171)
 - Migrate from 'request' package to 'node-fetch' in runtime [\#2169](https://github.com/reimagined/resolve/pull/2169)

@@ -26,6 +26,9 @@ import type {
 
 const log = getLog('lambda-worker')
 
+const logRuntimeCase = (caseName: string) =>
+  log.log(`Runtime execution: ${caseName}`)
+
 const GRACEFUL_WORKER_SHUTDOWN_TIME = 30 * 1000
 const getLambdaVacantTime = (lambdaContext: any) =>
   lambdaContext.getRemainingTimeInMillis() - GRACEFUL_WORKER_SHUTDOWN_TIME
@@ -108,7 +111,7 @@ export const lambdaWorker = async (
 
   try {
     if (lambdaEvent.resolveSource === 'DeployService') {
-      log.debug('identified event source: deployment service')
+      logRuntimeCase('DeployService')
       void ({ runtime } = await makeRuntime({}))
 
       const executorResult = await handleCloudServiceEvent(
@@ -132,7 +135,7 @@ export const lambdaWorker = async (
 
       return executorResult
     } else if (lambdaEvent.resolveSource === 'BuildEventSubscriber') {
-      log.debug('identified event source: event-subscriber-direct')
+      logRuntimeCase('BuildEventSubscriber')
       void ({ runtime } = await makeRuntime({}))
 
       const { resolveSource, eventSubscriber, ...buildParameters } = lambdaEvent
@@ -157,6 +160,7 @@ export const lambdaWorker = async (
         ),
       ].every((key) => key === 'aws:sqs')
     ) {
+      logRuntimeCase('SQS')
       const errors = []
       const records = lambdaEvent.Records.map((record: LambdaEventRecord) => {
         try {
@@ -240,7 +244,7 @@ export const lambdaWorker = async (
 
       return executorResult
     } else if (lambdaEvent.resolveSource === 'Scheduler') {
-      log.debug('identified event source: cloud scheduler')
+      logRuntimeCase('Scheduler')
 
       const data = await makeRuntime({})
 
@@ -253,7 +257,8 @@ export const lambdaWorker = async (
 
       return executorResult
     } else if (lambdaEvent.resolveSource === 'Websocket') {
-      log.debug('identified event source: websocket')
+      logRuntimeCase('Websocket')
+
       void ({ runtime } = await makeRuntime({}))
 
       const executorResult = await handleWebsocketEvent(
@@ -265,6 +270,8 @@ export const lambdaWorker = async (
 
       return executorResult
     } else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
+      logRuntimeCase('API')
+
       const overrideParams =
         lambdaEvent.requestStartTime !== undefined &&
         Number.isSafeInteger(lambdaEvent.requestStartTime)
@@ -282,7 +289,6 @@ export const lambdaWorker = async (
 
       runtime.eventStoreAdapter.establishTimeLimit(data.getVacantTimeInMillis)
 
-      log.debug('identified event source: API gateway')
       log.verbose(
         JSON.stringify(lambdaEvent.httpMethod, null, 2),
         JSON.stringify(lambdaEvent.headers, null, 2)

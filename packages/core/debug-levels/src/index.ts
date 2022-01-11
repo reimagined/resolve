@@ -1,6 +1,6 @@
 import debug, { Debug, Debugger } from 'debug'
 
-const logLevels = ['log', 'error', 'warn', 'debug', 'info', 'verbose']
+const logLevels = ['error', 'warn', 'log', 'debug', 'info', 'verbose']
 const defaultLogLevel = logLevels[3]
 
 type Logger = (...args: any[]) => void

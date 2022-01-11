@@ -46,6 +46,8 @@ const configure = (
     executeStatement: executeStatement.bind(null, pool as AdapterPool),
     createGetConnectPromise,
     getConnectPromise: createGetConnectPromise(),
+    extraConnections: new Set(),
+    eventLoaders: new Set(),
   }
 
   Object.assign<AdapterPoolPrimal, ConfiguredProps>(pool, props)
