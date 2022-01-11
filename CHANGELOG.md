@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.8...HEAD)
 
+**Enhancements:**
+
+- Add custom monitoring method. Add metric for reconnection times in postgresql eventstore adapter [\#2191](https://github.com/reimagined/resolve/pull/2191)
+
 **Bug fixes:**
 
 - Debug log masks don't match some package names [\#2124](https://github.com/reimagined/resolve/issues/2124)
