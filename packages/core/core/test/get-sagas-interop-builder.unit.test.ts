@@ -35,6 +35,7 @@ const makeTestRuntime = (): SagaRuntime => {
     publish: jest.fn(),
     duration: jest.fn(),
     rate: jest.fn(),
+    custom: jest.fn(),
   }
   const scheduler = {
     addEntries: jest.fn(),
