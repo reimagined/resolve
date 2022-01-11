@@ -151,32 +151,31 @@ const monitoringCustom = (
   log: LeveledDebugger,
   monitoringContext: MonitoringContext,
   groupContext: MonitoringGroupContext,
-  data: MonitoringCustomMetric
+  {
+    metricName,
+    unit,
+    value = 1,
+    count = 1,
+    dimensions = [],
+  }: MonitoringCustomMetric
 ) => {
-  const value = data.value === undefined ? 1 : data.value
-  const count = data.count === undefined ? 1 : data.count
-  const dimensions = data.dimensions === undefined ? [] : data.dimensions
-
   if (!Number.isSafeInteger(count)) {
     log.warn(
-      `Count for metric '${data.metricName}' is not recorded because it's not an integer`
+      `Count for metric '${metricName}' is not recorded because it's not an integer`
     )
     return
   }
   if (!Number.isSafeInteger(value)) {
     log.warn(
-      `Value for metric '${data.metricName}' is not recorded because it's not an integer`
+      `Value for metric '${metricName}' is not recorded because it's not an integer`
     )
     return
   }
 
   putMetric(log, monitoringContext, groupContext, {
-    metricName: data.metricName,
-    unit: data.unit,
-    dimensions:
-      dimensions.length > 0
-        ? groupContext.dimensions.concat(dimensions)
-        : groupContext.dimensions,
+    metricName: metricName,
+    unit: unit,
+    dimensions: groupContext.dimensions.concat(dimensions),
     value,
     count,
   })
