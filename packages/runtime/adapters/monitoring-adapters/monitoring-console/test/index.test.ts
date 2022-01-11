@@ -12,6 +12,7 @@ const mockDuration = jest.fn()
 const mockTime = jest.fn()
 const mockTimeEnd = jest.fn()
 const mockRate = jest.fn()
+const mockCustom = jest.fn()
 
 jest.mock('@resolve-js/monitoring-base', () => () => ({
   getMetrics: mockGetMetrics,
@@ -23,6 +24,7 @@ jest.mock('@resolve-js/monitoring-base', () => () => ({
   time: mockTime,
   timeEnd: mockTimeEnd,
   rate: mockRate,
+  custom: mockCustom,
 }))
 
 jest.mock('columnify', () => jest.fn())
@@ -62,6 +64,7 @@ afterEach(() => {
   mockTime.mockClear()
   mockTimeEnd.mockClear()
   mockRate.mockClear()
+  mockCustom.mockClear()
 
   mocked(columnify).mockClear()
 })

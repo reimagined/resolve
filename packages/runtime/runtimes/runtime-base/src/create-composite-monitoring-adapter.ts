@@ -33,6 +33,7 @@ const createCompositeAdapterImplementation = (
     rate: wrapVoidMethod('rate', adapterMap),
     error: wrapVoidMethod('error', adapterMap),
     duration: wrapVoidMethod('duration', adapterMap),
+    custom: wrapVoidMethod('custom', adapterMap),
     time: wrapVoidMethod('time', adapterMap),
     timeEnd: wrapVoidMethod('timeEnd', adapterMap),
     publish: async (...args) => {

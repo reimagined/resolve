@@ -27,6 +27,7 @@ const createMonitoringImplementation = (
   rate: baseMonitoring.rate.bind(baseMonitoring),
   getMetrics: baseMonitoring.getMetrics.bind(baseMonitoring),
   clearMetrics: baseMonitoring.clearMetrics.bind(baseMonitoring),
+  custom: baseMonitoring.custom.bind(baseMonitoring),
 })
 
 const createMonitoring = ({

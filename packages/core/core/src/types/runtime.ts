@@ -56,6 +56,14 @@ export interface MonitoringData {
   metrics: MonitoringMetric[]
 }
 
+export interface MonitoringCustomMetric {
+  metricName: string
+  unit: string
+  dimensions?: MonitoringDimension[]
+  value?: number
+  count?: number
+}
+
 interface MonitoringBase {
   error: (error: Error) => void
   execution: (error?: Error) => void
@@ -64,6 +72,7 @@ interface MonitoringBase {
   timeEnd: (name: string, timestamp?: number) => void
   publish: (options?: { source: string }) => Promise<void>
   rate: (metricName: string, count: number, seconds?: number) => void
+  custom: (metricData: MonitoringCustomMetric) => void
   performance?: PerformanceTracer
 }
 
