@@ -4,9 +4,17 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.8...HEAD)
 
+**Bug fixes:**
+
+- Debug log masks don't match some package names [\#2124](https://github.com/reimagined/resolve/issues/2124)
+
 **Documentation:**
 
 - Update ES Adapter API Reference [\#2181](https://github.com/reimagined/resolve/pull/2181)
+
+**Other changes:**
+
+- Bump "mdis" to 0.0.8 [\#2189](https://github.com/reimagined/resolve/pull/2189)
 
 ## [V0.33.8](https://github.com/reimagined/resolve/tree/V0.33.8) (2021-12-29)
 
