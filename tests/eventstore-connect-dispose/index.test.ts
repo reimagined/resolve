@@ -236,7 +236,7 @@ maybeDescribe(`${adapterFactory.name}. Eventstore adapter reconnection`, () => {
       const metricData = monitoring.getMetrics()
       expect(metricData.metrics.length).toEqual(1)
       expect(metricData.metrics[0].metricName).toEqual(
-        'EventstorePostgresqlReconnectionTimes'
+        'EventstorePostgresqlReconnections'
       )
     } finally {
       await terminatingClient.end()

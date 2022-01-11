@@ -30,7 +30,7 @@ const executeStatement = async (
     reconnectionTimes++
     if (pool.monitoring) {
       pool.monitoring.custom({
-        metricName: 'EventstorePostgresqlReconnectionTimes',
+        metricName: 'EventstorePostgresqlReconnections',
         unit: 'Count',
       })
     }
