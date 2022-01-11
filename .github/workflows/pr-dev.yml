@@ -91,6 +91,7 @@ jobs:
     needs: buildAndTest
     if: |
       startsWith(github.head_ref, 'feature/')
+      || startsWith(github.head_ref, 'maintenance/')
       || startsWith(github.head_ref, 'hotfix/')
       || startsWith(github.head_ref, 'fix/')
       || startsWith(github.head_ref, 'bugfix/')
