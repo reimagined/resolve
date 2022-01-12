@@ -29,25 +29,37 @@ const createLoadQuery = (
     queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
 
-  const resultQueryCondition = `WHERE ${
-    queryConditions.length > 0 ? `${queryConditions.join(' AND ')} AND (` : ''
-  }
-    ${vectorConditions
-      .map(
-        (threadCounter, threadId) =>
-          `"threadId" = ${injectNumber(
-            threadId
-          )} AND "threadCounter" >= ${threadCounter}::${INT8_SQL_TYPE} `
-      )
-      .join(' OR ')}
-    ${queryConditions.length > 0 ? ')' : ''}`
+  const resultQueryCondition = queryConditions.join(' AND ')
+  const resultVectorConditions = `${vectorConditions
+    .map(
+      (threadCounter, threadId) =>
+        `"threadId" = ${injectNumber(
+          threadId
+        )} AND "threadCounter" >= ${threadCounter}::${INT8_SQL_TYPE} `
+    )
+    .join(' OR ')}`
+
+  const resultTimestampConditions = vectorConditions
+    .map(
+      (threadCounter, threadId) =>
+        `"threadId" = ${injectNumber(
+          threadId
+        )} AND "threadCounter" = ${threadCounter}::${INT8_SQL_TYPE}`
+    )
+    .join(' OR ')
 
   const databaseNameAsId: string = escapeId(databaseName)
   const eventsTableAsId: string = escapeId(eventsTableName)
 
   return [
+    `WITH "minimalTimestamp" AS (
+        SELECT MIN("timestamp") AS "value" FROM ${databaseNameAsId}.${eventsTableAsId}
+        WHERE ${resultTimestampConditions}
+      )`,
     `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
-    `${resultQueryCondition}`,
+    `WHERE "timestamp" >= (SELECT "minimalTimestamp"."value" FROM "minimalTimestamp") AND (${resultVectorConditions}) ${
+      resultQueryCondition.length > 0 ? `AND (${resultQueryCondition})` : ''
+    }`,
     `ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC`,
     limit !== undefined ? `LIMIT ${+limit}` : '',
   ].join('\n')
