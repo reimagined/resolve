@@ -99,6 +99,7 @@ const makeTestRuntime = (
     rate: jest.fn(),
     getMetrics: jest.fn(),
     clearMetrics: jest.fn(),
+    custom: jest.fn(),
   }
 
   return {

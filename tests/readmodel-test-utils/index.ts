@@ -147,7 +147,7 @@ export const adapterFactory = isPostgres()
     }
   : isMySQL()
   ? {
-      name: '@resolve-js/readmodel-postgresql',
+      name: '@resolve-js/readmodel-mysql',
       create(uniqueName: string) {
         return async () => {
           const options = getMySQLOptions(uniqueName)
