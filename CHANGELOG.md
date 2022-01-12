@@ -6,6 +6,7 @@
 
 **Enhancements:**
 
+- Improve jitter in readmodel-postgres adapter [\#2194](https://github.com/reimagined/resolve/pull/2194)
 - Add custom monitoring method. Add metric for reconnection times in postgresql eventstore adapter [\#2191](https://github.com/reimagined/resolve/pull/2191)
 
 **Bug fixes:**
