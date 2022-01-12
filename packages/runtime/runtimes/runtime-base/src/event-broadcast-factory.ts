@@ -3,7 +3,7 @@ import type { EventPointer } from '@resolve-js/core'
 import type { Runtime, RuntimeFactoryParameters } from './types'
 import { createEventSubscriberNotification, getLog } from './utils'
 
-type NotifierRuntime = {
+export type NotifierRuntime = {
   getVacantTimeInMillis: () => number
   eventStoreAdapter: Runtime['eventStoreAdapter']
   eventListeners: RuntimeFactoryParameters['eventListeners']
@@ -12,7 +12,15 @@ type NotifierRuntime = {
   notifyEventSubscriber: RuntimeFactoryParameters['notifyEventSubscriber']
 }
 
-const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
+export const isMatchEventType = (
+  eventTypes: Array<string> | null,
+  eventType: string | null | undefined
+) => eventTypes == null || eventType == null || eventTypes.includes(eventType)
+
+export const broadcaster = async (
+  runtime: NotifierRuntime,
+  event?: EventPointer
+) => {
   const log = getLog(`broadcaster:${event?.event.type ?? '_NO_EVENT_'}`)
   const maxDuration = runtime.getVacantTimeInMillis()
   let timerId = null
@@ -22,10 +30,17 @@ const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
   const timerPromise = new Promise((resolve) => {
     timerId = setTimeout(resolve, maxDuration)
   })
+  const eventType = event?.event?.type
 
   const inlineLedgerPromise = (async () => {
     const promises = []
-    for (const { name: eventSubscriber } of runtime.eventListeners.values()) {
+    for (const {
+      name: eventSubscriber,
+      eventTypes,
+    } of runtime.eventListeners.values()) {
+      if (!isMatchEventType(eventTypes, eventType)) {
+        continue
+      }
       promises.push(
         runtime.invokeBuildAsync(
           createEventSubscriberNotification(eventSubscriber, event)
@@ -35,27 +50,37 @@ const broadcaster = async (runtime: NotifierRuntime, event?: EventPointer) => {
 
     const eventSubscribers = await runtime.eventStoreAdapter.getEventSubscribers()
 
-    await Promise.all(
-      eventSubscribers
+    promises.push(
+      ...eventSubscribers
         .filter(
           ({ applicationName, eventSubscriber }) =>
             runtime.eventSubscriberScope !== applicationName ||
             !runtime.eventListeners.has(eventSubscriber)
         )
-        .map(async ({ applicationName, eventSubscriber, destination }) => {
-          try {
-            await runtime.notifyEventSubscriber(
-              destination,
-              eventSubscriber,
-              event
-            )
-          } catch (error) {
-            log.warn(
-              `Notify application "${applicationName}" event subscriber "${eventSubscriber}" failed with error: ${error}`
-            )
+        .map(
+          async ({ applicationName, eventSubscriber, destination, status }) => {
+            const eventTypes = Array.isArray(status?.eventTypes)
+              ? (status?.eventTypes as Array<string>)
+              : null
+            if (!isMatchEventType(eventTypes, eventType)) {
+              return
+            }
+            try {
+              await runtime.notifyEventSubscriber(
+                destination,
+                eventSubscriber,
+                event
+              )
+            } catch (error) {
+              log.warn(
+                `Notify application "${applicationName}" event subscriber "${eventSubscriber}" failed with error: ${error}`
+              )
+            }
           }
-        })
+        )
     )
+
+    await Promise.allSettled(promises)
 
     if (timerId != null) {
       clearTimeout(timerId)

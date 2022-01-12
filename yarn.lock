@@ -11977,10 +11977,10 @@ mdast-util-to-string@^2.0.0:
   resolved "https://registry.yarnpkg.com/mdast-util-to-string/-/mdast-util-to-string-2.0.0.tgz#b8cfe6a713e1091cb5b728fc48885a4767f8b97b"
   integrity sha512-AW4DRS3QbBayY/jJmD8437V1Gombjf8RSOUCMFBuo5iHi58AGEgVCKQ+ezHkZZDpAQS75hcBMpLqjpJTjtUL7w==
 
-mdis@0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/mdis/-/mdis-0.0.6.tgz#e8a8793d37a7e08d20f7205be73e31fd4136696b"
-  integrity sha512-xJAVK+T1+SXMip26dF1LNfTTWNo9UXDzy/P5lorlbBKFQTXRjY7oVwJclAT+heBrkWcb202w6jUfnTxmK15KdQ==
+mdis@0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/mdis/-/mdis-0.0.8.tgz#45f8d5a863e9f909782db81997d57865e7329d26"
+  integrity sha512-PRW8zp6sHsiugPHZTXT+BOjQSDas2MDL5nc5dTBkJYc54pqnff35Wybn0fl/VbTeUQR47ulMG/GNL3+DBGS4Cg==
   dependencies:
     glob "7.2.0"
     minimist "1.2.5"
