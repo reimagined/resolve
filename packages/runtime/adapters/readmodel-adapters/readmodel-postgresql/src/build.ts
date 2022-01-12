@@ -758,7 +758,7 @@ const build: ExternalMethods['build'] = async (
   const getVacantTimeInMillis = () =>
     Math.max(inputGetVacantTimeInMillis() - immediatelyStopTimeout, 0)
   eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
-  const { eventsWithCursors, ...inputMetricData } = buildInfo
+  const { eventsWithCursors, retryAttempt, ...inputMetricData } = buildInfo
   const metricData = {
     ...inputMetricData,
     pureLedgerTime: 0,
@@ -950,11 +950,17 @@ const build: ExternalMethods['build'] = async (
       }
     }
   } catch (error) {
+    const nextArgs: Parameters<typeof next> = [
+      Math.min(Math.pow(2, ~~retryAttempt) * 100, 10000),
+      { retryAttempt: ~~retryAttempt + 1 },
+    ]
+
     if (error === immediatelyStopError) {
       try {
         await basePool.connection.end()
       } catch (e) {}
-      await next()
+
+      await next(...nextArgs)
       return
     }
 
@@ -993,7 +999,7 @@ const build: ExternalMethods['build'] = async (
       error.name === 'ServiceBusyError'
     ) {
       log.debug(`PassthroughError is retryable. Going to the next step`)
-      await next()
+      await next(...nextArgs)
     }
   } finally {
     log.debug(`Building is finished`)
