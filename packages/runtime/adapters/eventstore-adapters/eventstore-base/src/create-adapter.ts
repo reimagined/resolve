@@ -1,5 +1,5 @@
 import { getLog } from './get-log'
-import type { SecretsManager } from '@resolve-js/core'
+import type { SecretsManager, Monitoring } from '@resolve-js/core'
 import type {
   Adapter,
   AdapterFunctions,
@@ -9,6 +9,7 @@ import type {
   AdapterPoolBoundProps,
   AdapterPrimalPool,
   AdapterBoundPool,
+  ReconnectionMode,
 } from './types'
 import type { LeveledDebugger } from '@resolve-js/debug-levels'
 import bindMethod from './bind-method'
@@ -87,6 +88,8 @@ const createAdapter = <
     describe,
     establishTimeLimit,
     getEventLoaderNative,
+    runtimeInfo,
+    setReconnectionMode,
   }: AdapterFunctions<ConfiguredProps>,
   options: Config,
   configure: (props: AdapterPrimalPool<ConfiguredProps>, config: Config) => void
@@ -113,11 +116,11 @@ const createAdapter = <
   const adapterPool: AdapterPrimalPool<ConfiguredProps> = {
     disposed: false,
     validateEventFilter,
-    isConnected: false,
     maybeThrowResourceError,
     bucketSize,
     getNextCursor: getNextCursor.bind(null),
     counters: new Map(),
+    monitoring: null,
     ...emptyProps,
   }
 
@@ -204,6 +207,25 @@ const createAdapter = <
             adapterPool as AdapterBoundPool<ConfiguredProps>
           ),
     getEventLoader: bindMethod(adapterPool, getEventLoader),
+
+    runtimeInfo:
+      runtimeInfo === undefined
+        ? () => {
+            return { connectionCount: 0, disposed: adapterPool.disposed }
+          }
+        : runtimeInfo.bind(
+            null,
+            adapterPool as AdapterBoundPool<ConfiguredProps>
+          ),
+    setReconnectionMode:
+      setReconnectionMode === undefined
+        ? (mode: ReconnectionMode) => {
+            return
+          }
+        : bindMethod(adapterPool, setReconnectionMode),
+    setMonitoring: (monitoring: Monitoring | null) => {
+      adapterPool.monitoring = monitoring
+    },
   }
 
   Object.assign<AdapterPrimalPool<ConfiguredProps>, Adapter>(

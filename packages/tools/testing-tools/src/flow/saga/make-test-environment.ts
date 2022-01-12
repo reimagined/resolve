@@ -189,6 +189,7 @@ export const makeTestEnvironment = (
       execution: () => void 0,
       publish: async () => void 0,
       duration: () => void 0,
+      custom: () => void 0,
       rate: () => void 0,
       getMetrics: () => ({ metrics: [] }),
       clearMetrics: () => void 0,

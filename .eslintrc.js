@@ -371,6 +371,7 @@ module.exports = {
           'readonly',
           'readpolicy',
           'reconnection',
+          'reconnections',
           'regclass',
           'reltuples',
           'resetter',

@@ -12,6 +12,7 @@ import type {
   OldSecretRecord,
   OldEvent,
   ReplicationState,
+  Monitoring,
 } from '@resolve-js/core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
@@ -246,6 +247,8 @@ export type AdapterPoolPrimalProps = {
   counters: Map<string, number>
 
   getNextCursor: CoreEventstore['getNextCursor']
+
+  monitoring: Monitoring | null
 }
 
 export type AdapterPoolBoundProps = Adapter & AdapterPoolPrivateBoundProps
@@ -308,12 +311,14 @@ export type ExportOptions = {
   cursor: InputCursor
   maintenanceMode: MAINTENANCE_MODE
   bufferSize: number
+  preferRegularEventLoader: boolean
 }
 
 export type ExportEventsStream = stream.Readable & {
   readonly cursor: InputCursor
   readonly isBufferOverflow: boolean
   readonly isEnd: boolean
+  readonly preferRegularEventLoader: boolean
 }
 
 export type ImportSecretsOptions = {
@@ -452,6 +457,12 @@ export interface AdapterFunctions<ConfiguredProps extends {}> {
     ConfiguredProps,
     NonNullable<AdapterPoolBoundProps['getEventLoaderNative']>
   >
+
+  runtimeInfo: PoolMethod<ConfiguredProps, Adapter['runtimeInfo']>
+  setReconnectionMode?: PoolMethod<
+    ConfiguredProps,
+    Adapter['setReconnectionMode']
+  >
 }
 
 export interface EventLoader {
@@ -463,6 +474,17 @@ export interface EventLoader {
 
 export type EventLoaderOptions = {
   preferRegular: boolean // prefer regular implementation via loadEvents over native one
+}
+
+export type AdapterRuntimeInfo = {
+  connectionCount: number
+  disposed: boolean
+  [key: string]: any
+}
+
+export type ReconnectionMode = {
+  maxReconnectionTimes?: number
+  delayBeforeReconnection?: number
 }
 
 export interface Adapter extends CoreEventstore {
@@ -504,4 +526,8 @@ export interface Adapter extends CoreEventstore {
     filter: EventLoaderFilter,
     options?: EventLoaderOptions
   ) => Promise<EventLoader>
+
+  runtimeInfo: () => AdapterRuntimeInfo
+  setReconnectionMode: (mode: ReconnectionMode) => void
+  setMonitoring: (monitoring: Monitoring | null) => void
 }

@@ -1,6 +1,6 @@
 import { Client } from 'pg'
 import PgCursor from 'pg-cursor'
-import { isPostgres } from '../readmodel-test-utils'
+import { isPostgres } from '../eventstore-test-utils'
 
 const maybeRunTest = isPostgres() ? describe : describe.skip
 

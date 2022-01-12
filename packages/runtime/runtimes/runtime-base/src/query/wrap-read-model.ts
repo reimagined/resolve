@@ -170,6 +170,75 @@ const updateCustomReadModel = async (
   })
 }
 
+export const subscribeImpl = async (
+  pool: ReadModelPool,
+  readModelName: string,
+  parameters: {
+    subscriptionOptions: {
+      eventTypes: Array<string> | null
+      aggregateIds: Array<string> | null
+    }
+  }
+) => {
+  const entry = (
+    await pool.eventstoreAdapter.getEventSubscribers({
+      applicationName: pool.applicationName,
+      eventSubscriber: readModelName,
+    })
+  )[0]
+  if (entry == null) {
+    return
+  }
+  await pool.eventstoreAdapter.ensureEventSubscriber({
+    applicationName: pool.applicationName,
+    eventSubscriber: readModelName,
+    status: {
+      eventSubscriber: readModelName,
+      status: 'deliver',
+      busy: false,
+      ...entry.status,
+      ...parameters.subscriptionOptions,
+    },
+    updateOnly: true,
+  })
+}
+
+export const resubscribeImpl = async (
+  pool: ReadModelPool,
+  readModelName: string,
+  parameters: {
+    subscriptionOptions: {
+      eventTypes: Array<string> | null
+      aggregateIds: Array<string> | null
+    }
+  }
+) => {
+  await pool.eventstoreAdapter.ensureEventSubscriber({
+    applicationName: pool.applicationName,
+    eventSubscriber: readModelName,
+    status: {
+      ...parameters.subscriptionOptions,
+      eventSubscriber: readModelName,
+      status: 'skip',
+      busy: false,
+    },
+    updateOnly: true,
+  })
+}
+
+export const unsubscribeImpl = async (
+  pool: ReadModelPool,
+  readModelName: string,
+  parameters: {}
+) => {
+  await pool.eventstoreAdapter.ensureEventSubscriber({
+    applicationName: pool.applicationName,
+    eventSubscriber: readModelName,
+    status: null,
+    updateOnly: true,
+  })
+}
+
 export const customReadModelMethods: Record<
   ReadModelMethodName,
   CustomReadModelMethod
@@ -476,28 +545,7 @@ export const customReadModelMethods: Record<
       }
     }
   ) => {
-    const entry = (
-      await pool.eventstoreAdapter.getEventSubscribers({
-        applicationName: pool.applicationName,
-        eventSubscriber: readModelName,
-      })
-    )[0]
-    if (entry == null) {
-      return
-    }
-
-    await pool.eventstoreAdapter.ensureEventSubscriber({
-      applicationName: pool.applicationName,
-      eventSubscriber: readModelName,
-      status: {
-        eventSubscriber: readModelName,
-        status: 'deliver',
-        busy: false,
-        ...entry.status,
-        ...parameters.subscriptionOptions,
-      },
-      updateOnly: true,
-    })
+    await subscribeImpl(pool, readModelName, parameters)
   },
 
   resubscribe: async (
@@ -512,18 +560,7 @@ export const customReadModelMethods: Record<
       }
     }
   ) => {
-    await pool.eventstoreAdapter.ensureEventSubscriber({
-      applicationName: pool.applicationName,
-      eventSubscriber: readModelName,
-      status: {
-        ...parameters.subscriptionOptions,
-        eventSubscriber: readModelName,
-        status: 'skip',
-        busy: false,
-      },
-      updateOnly: true,
-    })
-
+    await resubscribeImpl(pool, readModelName, parameters)
     await pool.connector.drop(connection, readModelName)
   },
 
@@ -534,13 +571,7 @@ export const customReadModelMethods: Record<
     readModelName: string,
     parameters: {}
   ) => {
-    await pool.eventstoreAdapter.ensureEventSubscriber({
-      applicationName: pool.applicationName,
-      eventSubscriber: readModelName,
-      status: null,
-      updateOnly: true,
-    })
-
+    await unsubscribeImpl(pool, readModelName, parameters)
     await pool.connector.drop(connection, readModelName)
   },
 
@@ -611,29 +642,41 @@ const doOperation = async (
               return await realConnector.pause(connection, readModelName)
             }
             case 'subscribe': {
-              return await realConnector.subscribe(
-                connection,
-                readModelName,
-                parameters.subscriptionOptions.eventTypes,
-                parameters.subscriptionOptions.aggregateIds,
-                pool.loadProcedureSource
-              )
+              try {
+                return await realConnector.subscribe(
+                  connection,
+                  readModelName,
+                  parameters.subscriptionOptions.eventTypes,
+                  parameters.subscriptionOptions.aggregateIds,
+                  pool.loadProcedureSource
+                )
+              } finally {
+                await subscribeImpl(pool, readModelName, parameters)
+              }
             }
             case 'resubscribe': {
-              return await realConnector.subscribe(
-                connection,
-                readModelName,
-                parameters.subscriptionOptions.eventTypes,
-                parameters.subscriptionOptions.aggregateIds,
-                pool.loadProcedureSource
-              )
+              try {
+                return await realConnector.subscribe(
+                  connection,
+                  readModelName,
+                  parameters.subscriptionOptions.eventTypes,
+                  parameters.subscriptionOptions.aggregateIds,
+                  pool.loadProcedureSource
+                )
+              } finally {
+                await resubscribeImpl(pool, readModelName, parameters)
+              }
             }
             case 'unsubscribe': {
-              return await realConnector.unsubscribe(
-                connection,
-                readModelName,
-                pool.loadProcedureSource
-              )
+              try {
+                return await realConnector.unsubscribe(
+                  connection,
+                  readModelName,
+                  pool.loadProcedureSource
+                )
+              } finally {
+                await unsubscribeImpl(pool, readModelName, parameters)
+              }
             }
             case 'status': {
               return await realConnector.status(
