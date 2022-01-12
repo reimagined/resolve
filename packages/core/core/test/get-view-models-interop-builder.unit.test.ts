@@ -80,6 +80,7 @@ const makeTestRuntime = (events: Event[] = []): ViewModelRuntime => {
     rate: jest.fn(),
     getMetrics: jest.fn(),
     clearMetrics: jest.fn(),
+    custom: jest.fn(),
   }
 
   mocked(monitoring.group).mockReturnValue(monitoring)
