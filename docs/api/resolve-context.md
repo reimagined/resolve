@@ -12,7 +12,7 @@ The `resolve` context object is available to an API handler through the request 
 | `uploader`          |             |
 | `eventstoreAdapter` |             |
 | `performanceTracer` |             |
-
+| `monitoring`        |             |
 
 **Methods:**
 
