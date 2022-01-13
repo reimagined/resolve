@@ -7,7 +7,7 @@ ReSolve is shipped with an inbuilt monitoring feature that allows a reSolve appl
 
 ## Monitoring Adapters
 
-Resolve defines the base monitoring mechanism used to collect metrics and incudes a set of monitoring adapters that define how the collected metrics are published. The following adapters are included:
+Resolve incudes a set of monitoring adapters that define how the metrics are collected are published. The following adapters are included:
 
 | Module Name                                                                                       | Description                                              |
 | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
@@ -28,7 +28,7 @@ monitoringAdapters: {
 }
 ```
 
-Refer to the [monitoringAdapters](application-configuration.md#monitoringadapters) section of the [Application Configuration](application-configuration.md) topic for more information about related options.
+Refer to the [monitoringAdapters](application-configuration.md#monitoringadapters) section of the [Application Configuration](application-configuration.md) topic for more information on monitoring adapter option.
 
 On a local machine or a standalone server, you need to explicitly specify the monitoring adapter to enable monitoring.
 
