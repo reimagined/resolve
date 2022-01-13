@@ -19,3 +19,4 @@ export const DEFAULT_QUERY_TIMEOUT = 45000
 export const MINIMAL_QUERY_TIMEOUT = 1000
 
 export const MAX_RECONNECTIONS = 5
+export const SERVICE_WAIT_TIME = 1000

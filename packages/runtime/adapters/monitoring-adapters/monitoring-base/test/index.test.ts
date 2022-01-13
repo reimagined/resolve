@@ -727,3 +727,108 @@ describe('rate', () => {
     ])
   })
 })
+
+describe('custom', () => {
+  test('collects correct metrics base data', () => {
+    const monitoring = createMonitoring()
+
+    monitoring.custom({
+      metricName: 'test-name',
+      unit: 'test-unit',
+    })
+
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
+      {
+        metricName: 'test-name',
+        unit: 'test-unit',
+        timestamp: null,
+        dimensions: [],
+        values: [1],
+        counts: [1],
+      },
+    ])
+  })
+
+  test('collects correct metrics base custom data', () => {
+    const monitoring = createMonitoring()
+
+    monitoring.custom({
+      metricName: 'test-name',
+      unit: 'test-unit',
+      dimensions: [{ name: 'Label', value: 'test-value' }],
+      count: 5,
+      value: 4,
+    })
+
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
+      {
+        metricName: 'test-name',
+        unit: 'test-unit',
+        timestamp: null,
+        dimensions: [{ name: 'Label', value: 'test-value' }],
+        values: [4],
+        counts: [5],
+      },
+    ])
+  })
+
+  test('contains group dimensions', () => {
+    const monitoring = createMonitoring()
+
+    const monitoringGroup = monitoring.group({
+      'test-group': 'test-group-name',
+    })
+
+    monitoringGroup.custom({
+      metricName: 'test-name',
+      unit: 'test-unit',
+    })
+
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
+      {
+        metricName: 'test-name',
+        unit: 'test-unit',
+        timestamp: null,
+        dimensions: [{ name: 'test-group', value: 'test-group-name' }],
+        values: [1],
+        counts: [1],
+      },
+    ])
+  })
+
+  test('contains group dimensions and provided ones', () => {
+    const monitoring = createMonitoring()
+
+    const monitoringGroup = monitoring.group({
+      'test-group': 'test-group-name',
+    })
+
+    monitoringGroup.custom({
+      metricName: 'test-name',
+      unit: 'test-unit',
+      dimensions: [{ name: 'Label', value: 'test-value' }],
+    })
+
+    const data = monitoring.getMetrics()
+
+    expect(data.metrics).toEqual([
+      {
+        metricName: 'test-name',
+        unit: 'test-unit',
+        timestamp: null,
+        dimensions: [
+          { name: 'test-group', value: 'test-group-name' },
+          { name: 'Label', value: 'test-value' },
+        ],
+        values: [1],
+        counts: [1],
+      },
+    ])
+  })
+})

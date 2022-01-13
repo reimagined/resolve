@@ -56,6 +56,14 @@ export interface MonitoringData {
   metrics: MonitoringMetric[]
 }
 
+export interface MonitoringCustomMetric {
+  metricName: string
+  unit: string
+  dimensions?: MonitoringDimension[]
+  value?: number
+  count?: number
+}
+
 interface MonitoringBase {
   error: (error: Error) => void
   execution: (error?: Error) => void
@@ -64,6 +72,7 @@ interface MonitoringBase {
   timeEnd: (name: string, timestamp?: number) => void
   publish: (options?: { source: string }) => Promise<void>
   rate: (metricName: string, count: number, seconds?: number) => void
+  custom: (metricData: MonitoringCustomMetric) => void
   performance?: PerformanceTracer
 }
 
@@ -134,19 +143,45 @@ export type SecretRecord = {
 export type OldSecretRecord = SecretRecord
 export type OldEvent = Event
 
-export type ReplicationStatus =
-  | 'batchInProgress'
-  | 'batchDone'
-  | 'error'
-  | 'notStarted'
-  | 'serviceError'
+export type ReplicationStatusAndData =
+  | {
+      status: 'notStarted'
+      data: null
+    }
+  | {
+      status: 'batchInProgress'
+      data: {
+        startedAt: number
+      }
+    }
+  | {
+      status: 'batchDone'
+      data: {
+        appliedEventsCount: number
+      }
+    }
+  | {
+      status: 'criticalError'
+      data: {
+        name: string
+        message: string
+      }
+    }
+  | {
+      status: 'serviceError'
+      data: {
+        name: string
+        message: string
+      }
+    }
+
 export type ReplicationState = {
-  status: ReplicationStatus
-  statusData: SerializableMap | null
+  statusAndData: ReplicationStatusAndData
   paused: boolean
   iterator: SerializableMap | null
   successEvent: OldEvent | null
   locked: boolean
+  lockId: string | null
 }
 
 export type EventStoreDescription = {
@@ -199,21 +234,24 @@ export type Eventstore = {
     }>
   >
 
-  replicateEvents: (events: OldEvent[]) => Promise<void>
+  replicateEvents: (lockId: string, events: OldEvent[]) => Promise<boolean>
   replicateSecrets: (
+    lockId: string,
     existingSecrets: OldSecretRecord[],
     deletedSecrets: Array<OldSecretRecord['id']>
-  ) => Promise<void>
-  setReplicationStatus: (state: {
-    status: ReplicationStatus
-    statusData?: ReplicationState['statusData']
-    lastEvent?: OldEvent
-    iterator?: ReplicationState['iterator']
-  }) => Promise<void>
+  ) => Promise<boolean>
+  setReplicationStatus: (
+    lockId: string,
+    state: {
+      statusAndData: ReplicationStatusAndData
+      lastEvent?: OldEvent
+      iterator?: ReplicationState['iterator']
+    }
+  ) => Promise<ReplicationState | null>
   setReplicationPaused: (pause: boolean) => Promise<void>
   getReplicationState: () => Promise<ReplicationState>
   resetReplication: () => Promise<void>
-  setReplicationLock: (lockDuration: number) => Promise<boolean>
+  setReplicationLock: (lockId: string, lockDuration: number) => Promise<boolean>
 
   describe: (
     options?: EventStoreDescribeOptions

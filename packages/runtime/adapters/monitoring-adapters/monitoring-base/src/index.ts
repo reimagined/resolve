@@ -3,13 +3,14 @@ import type {
   MonitoringAdapter,
   MonitoringDimension,
   MonitoringMetric,
+  MonitoringCustomMetric,
 } from '@resolve-js/core'
 
 import type { MonitoringContext, MonitoringGroupContext } from './types'
 
 const createErrorDimensions = (error: Error) => [
-  { name: 'ErrorName', value: error.name },
-  { name: 'ErrorMessage', value: error.message },
+  { name: 'ErrorName', value: error.name ?? 'Unknown' },
+  { name: 'ErrorMessage', value: error.message ?? 'Unknown' },
 ]
 
 const areDimensionsEqual = (
@@ -142,6 +143,40 @@ const monitoringDuration = (
     unit: 'Milliseconds',
     dimensions: groupContext.dimensions.concat({ name: 'Label', value: label }),
     value: duration,
+    count,
+  })
+}
+
+const monitoringCustom = (
+  log: LeveledDebugger,
+  monitoringContext: MonitoringContext,
+  groupContext: MonitoringGroupContext,
+  {
+    metricName,
+    unit,
+    value = 1,
+    count = 1,
+    dimensions = [],
+  }: MonitoringCustomMetric
+) => {
+  if (!Number.isSafeInteger(count)) {
+    log.warn(
+      `Count for metric '${metricName}' is not recorded because it's not an integer`
+    )
+    return
+  }
+  if (!Number.isSafeInteger(value)) {
+    log.warn(
+      `Value for metric '${metricName}' is not recorded because it's not an integer`
+    )
+    return
+  }
+
+  putMetric(log, monitoringContext, groupContext, {
+    metricName: metricName,
+    unit: unit,
+    dimensions: groupContext.dimensions.concat(dimensions),
+    value,
     count,
   })
 }
@@ -283,6 +318,7 @@ const createMonitoringImplementation = (
     time: monitoringTime.bind(null, log, monitoringContext, groupContext),
     timeEnd: monitoringTimeEnd.bind(null, log, monitoringContext, groupContext),
     rate: monitoringRate.bind(null, log, monitoringContext, groupContext),
+    custom: monitoringCustom.bind(null, log, monitoringContext, groupContext),
     getMetrics: getMetrics.bind(null, log, monitoringContext),
     clearMetrics: clearMetrics.bind(null, log, monitoringContext),
     publish: async () => void 0,

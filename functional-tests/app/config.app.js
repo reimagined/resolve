@@ -75,6 +75,18 @@ const appConfig = {
       resolvers: 'common/read-models/monitoring.resolvers.js',
       connectorName: 'default',
     },
+    {
+      name: 'benchmark-lite',
+      projection: 'common/read-models/benchmark-lite.projection.js',
+      resolvers: 'common/read-models/benchmark-lite.resolvers.js',
+      connectorName: 'default',
+    },
+    {
+      name: 'benchmark-heavy',
+      projection: 'common/read-models/benchmark-heavy.projection.js',
+      resolvers: 'common/read-models/benchmark-heavy.resolvers.js',
+      connectorName: 'default',
+    },
   ],
   viewModels: [
     {
@@ -213,6 +225,21 @@ const appConfig = {
       },
       path: '/redux-hooks',
       method: 'GET',
+    },
+    {
+      handler: 'common/api-handlers/benchmark-event-generator.js',
+      path: '/api/generate-bench-events',
+      method: 'POST',
+    },
+    {
+      handler: 'common/api-handlers/benchmark-resume-read-models.js',
+      path: '/api/bench-read-models-resume',
+      method: 'POST',
+    },
+    {
+      handler: 'common/api-handlers/benchmark-pause-read-models.js',
+      path: '/api/bench-read-models-pause',
+      method: 'POST',
     },
   ],
   clientEntries: [

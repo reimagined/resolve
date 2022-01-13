@@ -70,7 +70,7 @@ export const createEventHandler = (
     const sideEffectsTimestamp = await runtime.getSideEffectsTimestamp()
 
     const isEnabled = !isNaN(+sideEffectsTimestamp)
-      ? +sideEffectsTimestamp <= +event.timestamp
+      ? +sideEffectsTimestamp < +event.timestamp
       : true
 
     if (

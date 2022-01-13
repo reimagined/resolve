@@ -77,13 +77,13 @@ Multiple middleware functions are run in the order they are specified in the opt
 
 This section lists request middleware included into the @resolve-js/client package. The following middleware is available:
 
-| Name                                | Description                                               |
-| ----------------------------------- | --------------------------------------------------------- |
-| [parseResponse](#parseresponse)     | Deserializes the response data if it contains valid JSON. |
-| [retryOnError](#retryonerror)       | Retries the request if the server responds with an error. |
-| [waitForResponse](#waitforresponse) | Validates the response and retries if validation fails.   |
+| Name                                  | Description                                               |
+| ------------------------------------- | --------------------------------------------------------- |
+| [`parseResponse`](#parseresponse)     | Deserializes the response data if it contains valid JSON. |
+| [`retryOnError`](#retryonerror)       | Retries the request if the server responds with an error. |
+| [`waitForResponse`](#waitforresponse) | Validates the response and retries if validation fails.   |
 
-### parseResponse
+### `parseResponse`
 
 Deserializes the response data if it contains valid JSON. If the data is not JSON, the original string is kept. Initialized by the `createParseResponseMiddleware` factory function.
 
@@ -106,7 +106,7 @@ const { data } = await client.query(
 )
 ```
 
-### retryOnError
+### `retryOnError`
 
 Retries the request if the server responds with an error. Initialized by the `createRetryOnErrorMiddleware` factory function.
 
@@ -114,10 +114,10 @@ The `retryOnError` middleware has the following options:
 
 | Option Name | Description                                                          |
 | ----------- | -------------------------------------------------------------------- |
-| attempts    | The number of retries if the server responds with an error.          |
-| errors      | An array of error codes that are allowed to trigger a retry.         |
-| debug       | If set to `true`, the middleware logs errors in the browser console. |
-| period      | The time between retries specified in milliseconds.                  |
+| `attempts`  | The number of retries if the server responds with an error.          |
+| `errors`    | An array of error codes that are allowed to trigger a retry.         |
+| `debug`     | If set to `true`, the middleware logs errors in the browser console. |
+| `period`    | The time between retries specified in milliseconds.                  |
 
 You can add the `retryOnError` middleware to a request as shown below:
 
@@ -152,7 +152,7 @@ client.command(
 )
 ```
 
-### waitForResponse
+### `waitForResponse`
 
 Validates the response and retries if validation fails. This allows you to check whether the response contains the latest data or wait for the Read Model to update.
 
@@ -162,10 +162,10 @@ The `waitForResponse` middleware has the following options:
 
 | Option Name | Description                                                          |
 | ----------- | -------------------------------------------------------------------- |
-| attempts    | The number of retries if validation fails.                           |
-| debug       | If set to `true`, the middleware logs errors in the browser console. |
-| period      | The time between retries specified in milliseconds.                  |
-| validator   | An async function that validates the response.                       |
+| `attempts`  | The number of retries if validation fails.                           |
+| `debug`     | If set to `true`, the middleware logs errors in the browser console. |
+| `period`    | The time between retries specified in milliseconds.                  |
+| `validator` | An async function that validates the response.                       |
 
 You can add the `retryOnError` middleware to a request as shown below:
 
@@ -223,13 +223,13 @@ export const createMyMiddleware = (options) =>
 
 The `params` object exposes the following API:
 
-| Field Name   | Description                                                                 |
-| ------------ | --------------------------------------------------------------------------- |
-| fetch        | A JavaScript fetch function you can use to perform arbitrary HTTP requests. |
-| info         | An object that describes the current request.                               |
-| init         | An object that is the fetch function's `init` parameter.                    |
-| repeat       | A function you can call to repeat the current request.                      |
-| end          | Call this function to commit the middleware execution result or error.      |
-| state        | A state object passed between middleware functions.                         |
-| deserializer | Returns a deserealized object from a string.                                |
-| jwtProvider  | Used to get and set the JSON Web Token.                                     |
+| Field Name     | Description                                                                 |
+| -------------- | --------------------------------------------------------------------------- |
+| `fetch`        | A JavaScript fetch function you can use to perform arbitrary HTTP requests. |
+| `info`         | An object that describes the current request.                               |
+| `init`         | An object that is the fetch function's `init` parameter.                    |
+| `repeat`       | A function you can call to repeat the current request.                      |
+| `end`          | Call this function to commit the middleware execution result or error.      |
+| `state`        | A state object passed between middleware functions.                         |
+| `deserializer` | Returns a deserealized object from a string.                                |
+| `jwtProvider`  | Used to get and set the JSON Web Token.                                     |

@@ -32,6 +32,7 @@ import dropSecrets from './drop-secrets'
 import dropFinal from './drop-final'
 
 import describe from './describe'
+import runtimeInfo from './runtime-info'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
 import type { MysqlAdapterConfig } from './types'
@@ -71,6 +72,7 @@ const createMysqlAdapter = (options: MysqlAdapterConfig): Adapter => {
       getSecret,
       setSecret,
       describe,
+      runtimeInfo,
     },
     options,
     configure

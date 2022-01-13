@@ -17,6 +17,8 @@ function isCommandError(error: any) {
   return error.name === 'CommandError'
 }
 
+const DEFAULT_RETRY_COUNT = 3
+
 const executeCommandWithRetryConflicts = async (
   {
     executeCommand,
@@ -25,7 +27,8 @@ const executeCommandWithRetryConflicts = async (
   }: { executeCommand: CommandExecutor; commandArgs: any; jwt?: string },
   middlewareContext: MiddlewareContext
 ) => {
-  const retryCount = commandArgs.immediateConflict != null ? 0 : 10
+  const retryCount =
+    commandArgs.immediateConflict != null ? 0 : DEFAULT_RETRY_COUNT
   let lastError = null
   let result = null
 

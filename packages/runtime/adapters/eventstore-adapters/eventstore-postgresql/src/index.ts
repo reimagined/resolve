@@ -45,6 +45,8 @@ import getCursorUntilEventTypes from './get-cursor-until-event-types'
 import describe from './describe'
 import establishTimeLimit from './establish-time-limit'
 import getEventLoaderNative from './get-event-loader-native'
+import runtimeInfo from './runtime-info'
+import setReconnectionMode from './set-reconnection-mode'
 
 import type { Adapter } from '@resolve-js/eventstore-base'
 import type { PostgresqlAdapterConfig } from './types'
@@ -99,6 +101,8 @@ const createPostgresqlAdapter = (options: PostgresqlAdapterConfig): Adapter => {
       describe,
       establishTimeLimit,
       getEventLoaderNative,
+      runtimeInfo,
+      setReconnectionMode,
     },
     options,
     configure

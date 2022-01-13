@@ -12,22 +12,6 @@ Array [
   ],
   Array [
     "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "on",
-    "error",
-    [Function],
-  ],
-  Array [
-    "connect",
-  ],
-  Array [
-    "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "query",
     "
       CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"(
         \\"EventSubscriber\\" VARCHAR(190) NOT NULL,
@@ -68,6 +52,10 @@ Array [
   ],
   Array [
     "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"subscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName1\\"}'; END $$ LANGUAGE 'plpgsql';",
+  ],
+  Array [
+    "query",
     "WITH \\"CTE\\" AS (
          SELECT * FROM \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"
          WHERE \\"EventSubscriber\\" = 'readModelName1'
@@ -85,6 +73,14 @@ Array [
          \\"EventTypes\\" = 'null',
          \\"AggregateIds\\" = 'null'
       ",
+  ],
+  Array [
+    "on",
+    "error",
+    [Function],
+  ],
+  Array [
+    "connect",
   ],
   Array [
     "query",
@@ -125,6 +121,10 @@ Array [
         WHERE \\"A\\".\\"EventSubscriber\\" = 'readModelName2'
         AND COALESCE((SELECT LEAST(Count(\\"CleanTrx\\".*), 0) FROM \\"CleanTrx\\"), 0) = 0
         ",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"subscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName2\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",
@@ -230,9 +230,17 @@ Array [
   ],
   Array [
     "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"resolver\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName1\\"}'; END $$ LANGUAGE 'plpgsql';",
+  ],
+  Array [
+    "query",
     "SELECT Count(*) AS \\"Count\\"
       FROM \\"databaseName\\".\\"tablePrefixtable1\\"
       ;",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"resolver\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName2\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",
@@ -279,6 +287,10 @@ Array [
         WHERE \\"A\\".\\"EventSubscriber\\" = 'readModelName1'
         AND COALESCE((SELECT LEAST(Count(\\"CleanTrx\\".*), 0) FROM \\"CleanTrx\\"), 0) = 0
         ",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"unsubscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName1\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",
@@ -379,6 +391,10 @@ Array [
   ],
   Array [
     "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"unsubscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName2\\"}'; END $$ LANGUAGE 'plpgsql';",
+  ],
+  Array [
+    "query",
     "WITH \\"CTE\\" AS (
          SELECT * FROM \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"
          WHERE \\"EventSubscriber\\" = 'readModelName2'
@@ -455,10 +471,6 @@ Array [
   ],
   Array [
     "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "query",
     "
       CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"(
         \\"EventSubscriber\\" VARCHAR(190) NOT NULL,
@@ -496,6 +508,10 @@ Array [
         WHERE \\"A\\".\\"EventSubscriber\\" = 'readModelName'
         AND COALESCE((SELECT LEAST(Count(\\"CleanTrx\\".*), 0) FROM \\"CleanTrx\\"), 0) = 0
         ",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"subscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",
@@ -575,10 +591,18 @@ Array [
   ],
   Array [
     "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"resolver\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
+  ],
+  Array [
+    "query",
     "SELECT * FROM \\"databaseName\\".\\"tablePrefixEntries\\"
     
     ORDER BY \\"id\\" ASC
      OFFSET 0          LIMIT 268435455   ",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"resolver\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",
@@ -589,6 +613,10 @@ Array [
   ],
   Array [
     "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"resolver\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
+  ],
+  Array [
+    "query",
     "SELECT * FROM \\"databaseName\\".\\"tablePrefixEntries\\"
         WHERE 
     (((\\"id\\" = CAST('\\"id-3\\"' AS JSONB)) and (not (\\"id\\" is null)) and (not (CAST('\\"id-3\\"' AS JSONB) is null))) or      
@@ -596,6 +624,10 @@ Array [
    
         OFFSET 0
         LIMIT 1;",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"resolver\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",
@@ -652,6 +684,10 @@ Array [
         WHERE \\"A\\".\\"EventSubscriber\\" = 'readModelName'
         AND COALESCE((SELECT LEAST(Count(\\"CleanTrx\\".*), 0) FROM \\"CleanTrx\\"), 0) = 0
         ",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"unsubscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",
@@ -728,10 +764,6 @@ Array [
   ],
   Array [
     "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "query",
     "
       CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"(
         \\"EventSubscriber\\" VARCHAR(190) NOT NULL,
@@ -769,6 +801,10 @@ Array [
         WHERE \\"A\\".\\"EventSubscriber\\" = 'readModelName'
         AND COALESCE((SELECT LEAST(Count(\\"CleanTrx\\".*), 0) FROM \\"CleanTrx\\"), 0) = 0
         ",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"subscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",
@@ -880,6 +916,10 @@ Array [
   ],
   Array [
     "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"resolver\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
+  ],
+  Array [
+    "query",
     "SELECT Count(*) AS \\"Count\\"
       FROM \\"databaseName\\".\\"tablePrefixShoppingLists\\"
       ;",
@@ -923,6 +963,10 @@ Array [
         WHERE \\"A\\".\\"EventSubscriber\\" = 'readModelName'
         AND COALESCE((SELECT LEAST(Count(\\"CleanTrx\\".*), 0) FROM \\"CleanTrx\\"), 0) = 0
         ",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"unsubscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",
@@ -999,10 +1043,6 @@ Array [
   ],
   Array [
     "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "query",
     "
       CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"(
         \\"EventSubscriber\\" VARCHAR(190) NOT NULL,
@@ -1040,6 +1080,10 @@ Array [
         WHERE \\"A\\".\\"EventSubscriber\\" = 'readModelName'
         AND COALESCE((SELECT LEAST(Count(\\"CleanTrx\\".*), 0) FROM \\"CleanTrx\\"), 0) = 0
         ",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"subscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",
@@ -1323,6 +1367,10 @@ Array [
   ],
   Array [
     "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"unsubscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
+  ],
+  Array [
+    "query",
     "WITH \\"CTE\\" AS (
          SELECT * FROM \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"
          WHERE \\"EventSubscriber\\" = 'readModelName'
@@ -1396,10 +1444,6 @@ Array [
   ],
   Array [
     "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "query",
     "
       CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"(
         \\"EventSubscriber\\" VARCHAR(190) NOT NULL,
@@ -1437,6 +1481,10 @@ Array [
         WHERE \\"A\\".\\"EventSubscriber\\" = 'readModelName'
         AND COALESCE((SELECT LEAST(Count(\\"CleanTrx\\".*), 0) FROM \\"CleanTrx\\"), 0) = 0
         ",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"subscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",
@@ -1588,6 +1636,10 @@ Array [
   ],
   Array [
     "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"unsubscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
+  ],
+  Array [
+    "query",
     "WITH \\"CTE\\" AS (
          SELECT * FROM \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"
          WHERE \\"EventSubscriber\\" = 'readModelName'
@@ -1661,10 +1713,6 @@ Array [
   ],
   Array [
     "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "query",
     "
       CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"(
         \\"EventSubscriber\\" VARCHAR(190) NOT NULL,
@@ -1702,6 +1750,10 @@ Array [
         WHERE \\"A\\".\\"EventSubscriber\\" = 'readModelName'
         AND COALESCE((SELECT LEAST(Count(\\"CleanTrx\\".*), 0) FROM \\"CleanTrx\\"), 0) = 0
         ",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"subscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",
@@ -1816,6 +1868,10 @@ Array [
         WHERE \\"A\\".\\"EventSubscriber\\" = 'readModelName'
         AND COALESCE((SELECT LEAST(Count(\\"CleanTrx\\".*), 0) FROM \\"CleanTrx\\"), 0) = 0
         ",
+  ],
+  Array [
+    "query",
+    "DO $$ BEGIN RAISE WARNING 'RESOLVE-READMODEL-POSTGRESQL-MARKER {\\"operation\\":\\"unsubscribe\\",\\"schemaName\\":\\"databaseName\\",\\"readModelName\\":\\"readModelName\\"}'; END $$ LANGUAGE 'plpgsql';",
   ],
   Array [
     "query",

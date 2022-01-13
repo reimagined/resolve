@@ -233,12 +233,15 @@ const buildEvents: (
       })
       const loadDuration = Date.now() - initialTimestamp
 
-      if (groupMonitoring != null && events.length > 0) {
-        groupMonitoring.duration(
-          'EventLoad',
-          loadDuration / events.length,
-          events.length
-        )
+      if (groupMonitoring != null) {
+        if (events.length > 0) {
+          groupMonitoring.duration(
+            'EventLoad',
+            loadDuration / events.length,
+            events.length
+          )
+        }
+        groupMonitoring.duration('BatchLoad', loadDuration)
       }
 
       return ['ok', events]
@@ -395,11 +398,24 @@ const buildEvents: (
           status,
         } = procedureResult[0].Result
         if (status === 'DEPENDENCY_ERROR') {
-          if (failureError?.message != null || failureError?.stack != null) {
-            throw failureError
-          } else {
-            throw new Error(`${failureError}`)
+          const currentDependencyError = new Error(
+            `${failureError}`
+          ) as Error & { code?: number | string }
+          currentDependencyError.name = 'DependencyError'
+          if (failureError?.message != null) {
+            currentDependencyError.message = failureError.message
           }
+          if (failureError?.stack != null) {
+            currentDependencyError.stack = failureError.stack
+          }
+          if (
+            (failureError as Error & { code?: number | string })?.code != null
+          ) {
+            currentDependencyError.code = (failureError as Error & {
+              code?: number | string
+            }).code
+          }
+          throw currentDependencyError
         }
 
         appliedEventsCount = appliedCount
@@ -448,10 +464,17 @@ const buildEvents: (
           throw err
         }
 
+        // https://github.com/plv8/plv8/issues/160
+        const inlineProcedureError =
+          err?.code === 'XX000' &&
+          err?.message?.match(/ReferenceError: require is not defined/i)
+            ? 'Native and runtime require dependencies are prohibited in PLV8'
+            : serializeError(err)
+
         // eslint-disable-next-line no-console
         console.warn(
-          `Inline procedure execution failed for reason: ${JSON.stringify(
-            serializeError(err)
+          `PLV8 procedure execution for the "${readModelName}" read model's projection failed. Trying to degrade to non-plv8 mode. Reason: ${JSON.stringify(
+            inlineProcedureError
           )}`
         )
 
@@ -735,7 +758,7 @@ const build: ExternalMethods['build'] = async (
   const getVacantTimeInMillis = () =>
     Math.max(inputGetVacantTimeInMillis() - immediatelyStopTimeout, 0)
   eventstoreAdapter.establishTimeLimit(getVacantTimeInMillis)
-  const { eventsWithCursors, ...inputMetricData } = buildInfo
+  const { eventsWithCursors, retryAttempt, ...inputMetricData } = buildInfo
   const metricData = {
     ...inputMetricData,
     pureLedgerTime: 0,
@@ -808,6 +831,7 @@ const build: ExternalMethods['build'] = async (
     )
 
     log.debug(`Running inline ledger query`)
+    await basePool.ensureAffectedOperation('build', readModelName)
 
     const rows = (await inlineLedgerRunQuery(
       `WITH "MaybeAcquireLock" AS (
@@ -926,11 +950,17 @@ const build: ExternalMethods['build'] = async (
       }
     }
   } catch (error) {
+    const nextArgs: Parameters<typeof next> = [
+      Math.min(Math.pow(2, ~~retryAttempt) * 100, 10000),
+      { retryAttempt: ~~retryAttempt + 1 },
+    ]
+
     if (error === immediatelyStopError) {
       try {
         await basePool.connection.end()
       } catch (e) {}
-      await next()
+
+      await next(...nextArgs)
       return
     }
 
@@ -969,7 +999,7 @@ const build: ExternalMethods['build'] = async (
       error.name === 'ServiceBusyError'
     ) {
       log.debug(`PassthroughError is retryable. Going to the next step`)
-      await next()
+      await next(...nextArgs)
     }
   } finally {
     log.debug(`Building is finished`)

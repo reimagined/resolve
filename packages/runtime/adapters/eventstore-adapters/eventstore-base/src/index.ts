@@ -115,7 +115,6 @@ export type {
   StoredEventPointer,
   EventFilter,
   LatestEventFilter,
-  ReplicationStatus,
   ReplicationState,
   OldEvent,
   OldSecretRecord,
@@ -131,6 +130,8 @@ export type {
   GatheredSecrets,
   EventLoaderFilter,
   EventLoader,
+  AdapterRuntimeInfo,
+  ReconnectionMode,
 } from './types'
 
 export type {

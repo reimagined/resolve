@@ -21,6 +21,7 @@ const reset: ExternalMethods['reset'] = async (pool, readModelName) => {
     while (true) {
       try {
         await inlineLedgerForceStop(pool, readModelName)
+        await pool.ensureAffectedOperation('reset', readModelName)
         await inlineLedgerRunQuery(
           `WITH "CTE" AS (
          SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}

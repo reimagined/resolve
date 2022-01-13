@@ -1,4 +1,5 @@
 import type {
+  EnsureAffectedOperationMethod,
   CurrentConnectMethod,
   InlineLedgerRunQueryMethod,
   AdapterPool,
@@ -6,6 +7,7 @@ import type {
   OmitObject,
 } from './types'
 
+const MAX_DISCONNECT_TIME = 3000
 const connect: CurrentConnectMethod = async (imports, pool, options) => {
   let {
     tablePrefix,
@@ -69,7 +71,6 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
             connectionErrorsMap.get(connection)?.push(error)
           })
           await connection.connect()
-          await connection.query('SELECT 0 AS "defunct"')
         } catch (error) {
           connectionErrorsMap.get(connection)?.push(error)
         }
@@ -79,6 +80,7 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     return connection
   }
 
+  const affectedReadModelOperationsSet = new Set<`${Parameters<EnsureAffectedOperationMethod>[0]}-${Parameters<EnsureAffectedOperationMethod>[1]}`>()
   const maybeThrowConnectionErrors = async (
     connection: typeof pool.connection
   ) => {
@@ -97,15 +99,26 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         pool.connection = null!
       }
+
+      affectedReadModelOperationsSet.clear()
+      let timeout: NodeJS.Timeout | null = null
       try {
-        await connection.end()
-      } catch (err) {}
+        await Promise.race([
+          new Promise((resolve) => {
+            timeout = setTimeout(resolve, MAX_DISCONNECT_TIME)
+          }),
+          connection.end(),
+        ])
+      } catch (err) {
+      } finally {
+        if (timeout != null) {
+          clearTimeout(timeout)
+        }
+      }
+
       throw summaryError
     }
   }
-
-  const initialConnection = await establishConnection()
-  await maybeThrowConnectionErrors(initialConnection)
 
   const inlineLedgerRunQuery: InlineLedgerRunQueryMethod = async (
     sql,
@@ -151,14 +164,38 @@ const connect: CurrentConnectMethod = async (imports, pool, options) => {
     return rows
   }
 
+  const ensureAffectedOperation: EnsureAffectedOperationMethod = async (
+    operation,
+    readModelName
+  ) => {
+    if (operation === 'resolver' && pool.activePassthrough) {
+      return
+    }
+    if (!affectedReadModelOperationsSet.has(`${operation}-${readModelName}`)) {
+      await inlineLedgerRunQuery(
+        `DO $$ BEGIN RAISE WARNING ${imports.escapeStr(
+          `RESOLVE-READMODEL-POSTGRESQL-MARKER ${JSON.stringify({
+            operation,
+            schemaName: databaseName,
+            readModelName,
+          })}`
+        )}; END $$ LANGUAGE 'plpgsql';`
+      )
+
+      affectedReadModelOperationsSet.add(`build-${readModelName}`)
+    }
+  }
+
   Object.assign<
     OmitObject<AdapterPool, CommonAdapterPool>,
     OmitObject<AdapterPool, CommonAdapterPool>
   >(pool, {
+    ensureAffectedOperation,
     schemaName: databaseName,
     tablePrefix,
     inlineLedgerRunQuery,
-    connection: initialConnection,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    connection: null!,
     activePassthrough: false,
     buildMode,
     useSqs,

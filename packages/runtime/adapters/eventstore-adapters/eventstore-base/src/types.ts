@@ -11,8 +11,8 @@ import type {
   SecretRecord,
   OldSecretRecord,
   OldEvent,
-  ReplicationStatus,
   ReplicationState,
+  Monitoring,
 } from '@resolve-js/core'
 import stream from 'stream'
 import { MAINTENANCE_MODE_AUTO, MAINTENANCE_MODE_MANUAL } from './constants'
@@ -69,16 +69,19 @@ export type VersionlessEvent = Omit<InputEvent, 'aggregateVersion'>
 
 export type { SecretRecord, OldSecretRecord, OldEvent }
 
-export type { ReplicationState, ReplicationStatus }
+export type { ReplicationState }
 
 export function getInitialReplicationState(): ReplicationState {
   return {
-    status: 'notStarted',
-    statusData: null,
+    statusAndData: {
+      status: 'notStarted',
+      data: null,
+    },
     iterator: null,
     paused: false,
     successEvent: null,
     locked: false,
+    lockId: null,
   }
 }
 
@@ -244,6 +247,8 @@ export type AdapterPoolPrimalProps = {
   counters: Map<string, number>
 
   getNextCursor: CoreEventstore['getNextCursor']
+
+  monitoring: Monitoring | null
 }
 
 export type AdapterPoolBoundProps = Adapter & AdapterPoolPrivateBoundProps
@@ -306,12 +311,14 @@ export type ExportOptions = {
   cursor: InputCursor
   maintenanceMode: MAINTENANCE_MODE
   bufferSize: number
+  preferRegularEventLoader: boolean
 }
 
 export type ExportEventsStream = stream.Readable & {
   readonly cursor: InputCursor
   readonly isBufferOverflow: boolean
   readonly isEnd: boolean
+  readonly preferRegularEventLoader: boolean
 }
 
 export type ImportSecretsOptions = {
@@ -344,19 +351,22 @@ export interface CommonAdapterFunctions<ConfiguredProps extends {}> {
 }
 
 export interface AdapterFunctions<ConfiguredProps extends {}> {
-  beginIncrementalImport: PoolMethod<
+  beginIncrementalImport?: PoolMethod<
     ConfiguredProps,
     Adapter['beginIncrementalImport']
   >
-  commitIncrementalImport: PoolMethod<
+  commitIncrementalImport?: PoolMethod<
     ConfiguredProps,
     Adapter['commitIncrementalImport']
   >
   dispose: PoolMethod<ConfiguredProps, Adapter['dispose']>
-  dropSnapshot: PoolMethod<ConfiguredProps, Adapter['dropSnapshot']>
+  dropSnapshot?: PoolMethod<ConfiguredProps, Adapter['dropSnapshot']>
   freeze: PoolMethod<ConfiguredProps, Adapter['freeze']>
-  getLatestEvent: PoolMethod<ConfiguredProps, Adapter['getLatestEvent']>
-  injectEvent: PoolMethod<ConfiguredProps, AdapterPoolBoundProps['injectEvent']>
+  getLatestEvent?: PoolMethod<ConfiguredProps, Adapter['getLatestEvent']>
+  injectEvent?: PoolMethod<
+    ConfiguredProps,
+    AdapterPoolBoundProps['injectEvent']
+  >
   injectEvents: PoolMethod<
     ConfiguredProps,
     AdapterPoolBoundProps['injectEvents']
@@ -369,17 +379,17 @@ export interface AdapterFunctions<ConfiguredProps extends {}> {
     ConfiguredProps,
     AdapterPoolBoundProps['loadEventsByTimestamp']
   >
-  loadSnapshot: PoolMethod<ConfiguredProps, Adapter['loadSnapshot']>
-  pushIncrementalImport: PoolMethod<
+  loadSnapshot?: PoolMethod<ConfiguredProps, Adapter['loadSnapshot']>
+  pushIncrementalImport?: PoolMethod<
     ConfiguredProps,
     Adapter['pushIncrementalImport']
   >
-  rollbackIncrementalImport: PoolMethod<
+  rollbackIncrementalImport?: PoolMethod<
     ConfiguredProps,
     Adapter['rollbackIncrementalImport']
   >
   saveEvent: PoolMethod<ConfiguredProps, Adapter['saveEvent']>
-  saveSnapshot: PoolMethod<ConfiguredProps, Adapter['saveSnapshot']>
+  saveSnapshot?: PoolMethod<ConfiguredProps, Adapter['saveSnapshot']>
   shapeEvent: ShapeEvent
   unfreeze: PoolMethod<ConfiguredProps, Adapter['unfreeze']>
   getSecret: PoolMethod<ConfiguredProps, GetSecret>
@@ -447,6 +457,12 @@ export interface AdapterFunctions<ConfiguredProps extends {}> {
     ConfiguredProps,
     NonNullable<AdapterPoolBoundProps['getEventLoaderNative']>
   >
+
+  runtimeInfo: PoolMethod<ConfiguredProps, Adapter['runtimeInfo']>
+  setReconnectionMode?: PoolMethod<
+    ConfiguredProps,
+    Adapter['setReconnectionMode']
+  >
 }
 
 export interface EventLoader {
@@ -458,6 +474,17 @@ export interface EventLoader {
 
 export type EventLoaderOptions = {
   preferRegular: boolean // prefer regular implementation via loadEvents over native one
+}
+
+export type AdapterRuntimeInfo = {
+  connectionCount: number
+  disposed: boolean
+  [key: string]: any
+}
+
+export type ReconnectionMode = {
+  maxReconnectionTimes?: number
+  delayBeforeReconnection?: number
 }
 
 export interface Adapter extends CoreEventstore {
@@ -499,4 +526,8 @@ export interface Adapter extends CoreEventstore {
     filter: EventLoaderFilter,
     options?: EventLoaderOptions
   ) => Promise<EventLoader>
+
+  runtimeInfo: () => AdapterRuntimeInfo
+  setReconnectionMode: (mode: ReconnectionMode) => void
+  setMonitoring: (monitoring: Monitoring | null) => void
 }

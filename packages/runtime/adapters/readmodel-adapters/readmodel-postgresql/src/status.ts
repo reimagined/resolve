@@ -42,6 +42,7 @@ const status: ExternalMethods['status'] = async <
       `${tablePrefix}__${schemaName}__LEDGER__`
     )
 
+    await pool.ensureAffectedOperation('status', readModelName)
     const rows = (await inlineLedgerRunQuery(
       `SELECT * FROM ${databaseNameAsId}.${ledgerTableNameAsId}
      WHERE "EventSubscriber" = ${escapeStr(readModelName)}

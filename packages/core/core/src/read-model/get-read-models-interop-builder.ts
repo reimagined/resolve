@@ -176,7 +176,7 @@ const makeReadModelInteropCreator = (runtime: ReadModelRuntime) => {
       try {
         return await handler()
       } catch (error) {
-        if (monitoring != null) {
+        if (monitoring != null && error.name !== 'PassthroughError') {
           const monitoringGroup = monitoring
             .group({ Part: 'ReadModelProjection' })
             .group({ ReadModel: readModel.name })

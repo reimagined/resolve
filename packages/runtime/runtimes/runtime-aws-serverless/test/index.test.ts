@@ -109,6 +109,9 @@ describe('runtime', () => {
       dispose: jest.fn(),
       establishTimeLimit: jest.fn(),
       getEventLoader: jest.fn(),
+      runtimeInfo: jest.fn(),
+      setReconnectionMode: jest.fn(),
+      setMonitoring: jest.fn(),
     }
 
     uploadAdapter = {}

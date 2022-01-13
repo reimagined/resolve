@@ -288,7 +288,7 @@ export type OmitObject<T extends object, U extends object> = {
 
 export type BuildInfo = {
   eventsWithCursors?: Array<EventWithCursor>
-  initiator: 'command' | 'read-model-next'
+  initiator: 'command' | 'command-foreign' | 'read-model-next'
   notificationId: string
   sendTime: number
   coldStart?: boolean
@@ -659,6 +659,10 @@ export type IfEquals<T, U, Y = unknown, N = never> = (<G>() => G extends T
   : N
 
 export type IsTypeLike<T, B> = IfEquals<Extract<T, B>, T>
+
+export type EnsureExclude<T, U> = [IsTypeLike<U, T>] extends [never]
+  ? never
+  : Exclude<T, U>
 
 export type MatchTypeConditional<
   M extends any,
