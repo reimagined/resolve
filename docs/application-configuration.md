@@ -373,13 +373,30 @@ monitoringAdapters: {
 
 The following adapters are available:
 
-| Module Name                                                         | Description                          |
-| ------------------------------------------------------------------- | ------------------------------------ |
-| [@resolve-js/monitoring-console](#monitoring-console)               | Prints metrics to the text console.  |
-| [@resolve-js/monitoring-aws-cloudwatch](#monitoring-aws-cloudwatch) | Publishes metrics to AWS CloudWatch. |
+| Module Name                                                                     | Description                          |
+| ------------------------------------------------------------------------------- | ------------------------------------ |
+| [`@resolve-js/monitoring-console`](#resolve-jsmonitoring-console)               | Prints metrics to the text console.  |
+| [`@resolve-js/monitoring-aws-cloudwatch`](#resolve-jsmonitoring-aws-cloudwatch) | Publishes metrics to AWS CloudWatch. |
 
 In the cloud environment, if the `default` adapter is not explicitly specified, it is added automatically.
 In this case, the `'@resolve-js/monitoring-aws-cloudwatch'` adapter is used.
+
+#### `@resolve-js/monitoring-console`
+
+The `@resolve-js/monitoring-console` adapter accepts the following option:
+
+| Option Name   | Description                                                                                                                                                          |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `publishMode` | Specifies when to display a summary on the collected metrics in the console. <br/> Available values: `all`, `resolveDispose`, `processExit`. Default: `processExit`. |
+
+#### `@resolve-js/monitoring-aws-cloudwatch`
+
+The `@resolve-js/monitoring-aws-cloudwatch` adapter accepts the following options:
+
+| Option Name      | Description                                |
+| ---------------- | ------------------------------------------ |
+| `deploymentId`   | Specifies the reSolve Cloud deployment ID. |
+| `resolveVersion` | Specifies the reSolve version.             |
 
 ### jwtCookie
 

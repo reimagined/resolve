@@ -9,10 +9,10 @@ ReSolve is shipped with an inbuilt monitoring feature that allows a reSolve appl
 
 Resolve incudes a set of monitoring adapters that define how the metrics are collected are published. The following adapters are included:
 
-| Module Name                                                                                       | Description                                              |
-| ------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| [`@resolve-js/monitoring-console`](application-configuration.md#monitoring-console)               | Prints the collected metrics to the text console output. |
-| [`@resolve-js/monitoring-aws-cloudwatch`](application-configuration.md#monitoring-aws-cloudwatch) | Publishes the collected metrics to AWS CloudWatch.       |
+| Module Name                                                                                                 | Description                                              |
+| ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| [`@resolve-js/monitoring-console`](application-configuration.md#resolve-jsmonitoring-console)               | Prints the collected metrics to the text console output. |
+| [`@resolve-js/monitoring-aws-cloudwatch`](application-configuration.md#resolve-jsmonitoring-aws-cloudwatch) | Publishes the collected metrics to AWS CloudWatch.       |
 
 An application's monitoring adapters are specified in the application's configuration files:
 
