@@ -65,6 +65,7 @@
               "api/view-model/resolver"
             ]
           },
+          "api/resolve-context",
           "api/saga",
           "api/command",
           "api/event",
