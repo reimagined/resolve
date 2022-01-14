@@ -70,9 +70,9 @@ export const getEventStore = async (
         const event = events[timestampIndex]
 
         event.timestamp =
-          (eventByAggregateIdVersion.get(
+          eventByAggregateIdVersion.get(
             `${event.aggregateId}:${event.aggregateVersion}`
-          )?.timestamp ?? timestampIndex) + 1
+          )?.timestamp ?? timestampIndex + 1
       }
 
       return {
