@@ -9,6 +9,7 @@ import getRawBody from 'raw-body'
 
 import type { HttpMethods, Route, LambdaOriginEdgeRequest, CORS } from '../src'
 import { createAwsLambdaOriginEdgeRouter, createHttpServerRouter } from '../src'
+import RouterConfigBuilder from '../src/router-config-builder'
 
 jest.setTimeout(1000 * 60)
 
@@ -359,16 +360,17 @@ for (const { describe: corsDescribe, cors } of corsMods) {
     let lambdaServer: Server
     let lambdaServerBaseUrl: string
     beforeAll(async () => {
+      const routerConfigBuilder = new RouterConfigBuilder(() => customApi)
+      routerConfigBuilder.setupCORS(cors)
+      for (const { route } of tests) {
+        routerConfigBuilder.addRoute(route)
+      }
+      const routerConfig = routerConfigBuilder.instantiate()
+
       {
         localHttpServer = await new Promise((resolve) => {
           const refServer = http
-            .createServer(
-              createHttpServerRouter({
-                cors,
-                routes: tests.map(({ route }) => route),
-                getCustomParameters: () => customApi,
-              })
-            )
+            .createServer(createHttpServerRouter(routerConfig))
             .listen(0, () => {
               resolve(refServer)
             })
@@ -414,11 +416,9 @@ for (const { describe: corsDescribe, cors } of corsMods) {
                 querystring: url.search.replace(/^?/, ''),
               }
 
-              const lambdaHandler = createAwsLambdaOriginEdgeRouter({
-                cors,
-                routes: tests.map(({ route }) => route),
-                getCustomParameters: () => customApi,
-              })
+              const lambdaHandler = createAwsLambdaOriginEdgeRouter(
+                routerConfig
+              )
 
               const lambdaOriginEdgeResponse = await lambdaHandler(
                 lambdaEvent,

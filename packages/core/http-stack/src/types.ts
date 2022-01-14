@@ -141,3 +141,105 @@ export type LambdaOriginEdgeResponse = {
   }>
   body: string
 }
+
+export type LambdaApiGatewayV2RequestCloudFrontEvent = {
+  context: {
+    distributionId: string
+    eventType: 'viewer-request'
+    requestId: string
+  }
+  viewer: {
+    ip: string
+  }
+  request: {
+    method: HttpMethods
+    uri: string
+    headers: {
+      'user-agent'?: {
+        value: string
+      }
+      'sec-ch-ua-mobile'?: {
+        value: string
+      }
+      host?: {
+        value: string
+      }
+      accept?: {
+        value: string
+      }
+      'upgrade-insecure-requests'?: {
+        value: string
+      }
+      'sec-fetch-site'?: {
+        value: string
+      }
+      'sec-fetch-dest'?: {
+        value: string
+      }
+      'accept-language'?: {
+        value: string
+      }
+      'accept-encoding'?: {
+        value: string
+      }
+      'sec-ch-ua-platform'?: {
+        value: string
+      }
+      'sec-fetch-user'?: {
+        value: string
+      }
+      'sec-ch-ua'?: {
+        value: string
+      }
+      'sec-fetch-mode'?: {
+        value: string
+      }
+    } & Record<string, { value: string }>
+    cookies: Record<string, { value: string } & Record<string, string>>
+  }
+}
+
+export type LambdaApiGatewayV2Request = {
+  version: '2.0'
+  routeKey: string
+  rawPath: string
+  rawQueryString: ''
+  headers: {
+    accept?: string
+    'accept-encoding'?: string
+    'content-length'?: string
+    host?: string
+    'user-agent'?: string
+    via?: string
+    // eslint-disable-next-line spellcheck/spell-checker
+    'x-amz-cf-id'?: string
+    // eslint-disable-next-line spellcheck/spell-checker
+    'x-amzn-trace-id'?: string
+    'x-cloudfront-event'?: string
+    'x-forwarded-for'?: string
+    'x-forwarded-port'?: string
+    'x-forwarded-proto'?: string
+  } & Record<string, string>
+  requestContext: {
+    accountId: string
+    apiId: string
+    domainName: string
+    domainPrefix: string
+    http: {
+      method: HttpMethods
+      path: string
+      protocol: string
+      sourceIp: string
+      userAgent: string
+    }
+    requestId: string
+    routeKey: string
+    stage: string
+    time: string
+    timeEpoch: number
+  }
+  pathParameters: { wildcard: string }
+  isBase64Encoded: boolean
+}
+
+export type LambdaApiGatewayV2Response = {}
