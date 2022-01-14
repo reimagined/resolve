@@ -12,6 +12,10 @@
 
 - Resetting saga in hacker-news example generates redundant events [\#2163](https://github.com/reimagined/resolve/issues/2163)
 
+**Other changes:**
+
+- Fix issue with event.timestamp and +/-1 in @resolve-js/testing-tools [\#2198](https://github.com/reimagined/resolve/pull/2198)
+
 ## [V0.33.9](https://github.com/reimagined/resolve/tree/V0.33.9) (2022-01-12)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.8...V0.33.9)
