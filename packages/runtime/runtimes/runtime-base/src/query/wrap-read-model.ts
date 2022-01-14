@@ -177,7 +177,8 @@ export const subscribeImpl = async (
     subscriptionOptions: {
       eventTypes: Array<string> | null
       aggregateIds: Array<string> | null
-    }
+    },
+    destination: string,
   }
 ) => {
   const entry = (
@@ -187,20 +188,31 @@ export const subscribeImpl = async (
     })
   )[0]
   if (entry == null) {
-    return
-  }
-  await pool.eventstoreAdapter.ensureEventSubscriber({
-    applicationName: pool.applicationName,
-    eventSubscriber: readModelName,
-    status: {
+    await pool.eventstoreAdapter.ensureEventSubscriber({
+      applicationName: pool.applicationName,
       eventSubscriber: readModelName,
-      status: 'deliver',
-      busy: false,
-      ...entry.status,
-      ...parameters.subscriptionOptions,
-    },
-    updateOnly: true,
-  })
+      destination: parameters.destination,
+      status: {
+        eventSubscriber: readModelName,
+        status: 'deliver',
+        busy: false,
+        ...parameters.subscriptionOptions,
+      },
+    })
+  } else {
+    await pool.eventstoreAdapter.ensureEventSubscriber({
+      applicationName: pool.applicationName,
+      eventSubscriber: readModelName,
+      status: {
+        eventSubscriber: readModelName,
+        status: 'deliver',
+        busy: false,
+        ...entry.status,
+        ...parameters.subscriptionOptions,
+      },
+      updateOnly: true,
+    })
+  }  
 }
 
 export const resubscribeImpl = async (
@@ -210,19 +222,20 @@ export const resubscribeImpl = async (
     subscriptionOptions: {
       eventTypes: Array<string> | null
       aggregateIds: Array<string> | null
-    }
+    },
+    destination: string,
   }
 ) => {
   await pool.eventstoreAdapter.ensureEventSubscriber({
     applicationName: pool.applicationName,
     eventSubscriber: readModelName,
+    destination: parameters.destination,
     status: {
-      ...parameters.subscriptionOptions,
       eventSubscriber: readModelName,
-      status: 'skip',
+      status: 'deliver',
       busy: false,
+      ...parameters.subscriptionOptions,
     },
-    updateOnly: true,
   })
 }
 
@@ -231,12 +244,19 @@ export const unsubscribeImpl = async (
   readModelName: string,
   parameters: {}
 ) => {
-  await pool.eventstoreAdapter.ensureEventSubscriber({
-    applicationName: pool.applicationName,
-    eventSubscriber: readModelName,
-    status: null,
-    updateOnly: true,
-  })
+  const entry = (
+    await pool.eventstoreAdapter.getEventSubscribers({
+      applicationName: pool.applicationName,
+      eventSubscriber: readModelName,
+    })
+  )[0]
+
+  if (entry != null) {
+    await pool.eventstoreAdapter.removeEventSubscriber({
+      applicationName: pool.applicationName,
+      eventSubscriber: readModelName,
+    })
+  }
 }
 
 export const customReadModelMethods: Record<
@@ -542,7 +562,8 @@ export const customReadModelMethods: Record<
       subscriptionOptions: {
         eventTypes: Array<string> | null
         aggregateIds: Array<string> | null
-      }
+      },
+      destination: string,
     }
   ) => {
     await subscribeImpl(pool, readModelName, parameters)
@@ -557,7 +578,8 @@ export const customReadModelMethods: Record<
       subscriptionOptions: {
         eventTypes: Array<string> | null
         aggregateIds: Array<string> | null
-      }
+      },
+      destination: string,
     }
   ) => {
     await resubscribeImpl(pool, readModelName, parameters)

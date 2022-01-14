@@ -29,20 +29,7 @@ export const bootstrapOne = async ({
       await ensureQueue(name)
     } catch (err) {
       errors.push(err)
-    }
-
-    try {
-      log.debug(`ensuring event subscriber`)
-      await eventstoreAdapter.ensureEventSubscriber({
-        applicationName,
-        eventSubscriber: name,
-        status: null,
-        destination,
-      })
-    } catch (err) {
-      log.error(err)
-      errors.push(err)
-    }
+    }    
 
     try {
       log.debug(`subscribing`)
