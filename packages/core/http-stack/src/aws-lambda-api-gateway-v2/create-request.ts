@@ -1,26 +1,33 @@
 import cookie from 'cookie'
 import { parse as parseQuery } from 'query-string'
 
-import type { HttpRequest, LambdaOriginEdgeRequest } from '../types'
+import type {
+  HttpRequest,
+  LambdaApiGatewayV2Request,
+  LambdaApiGatewayV2RequestCloudFrontEvent,
+} from '../types'
 import wrapHeadersCaseInsensitive from '../wrap-headers-case-insensitive'
 
 const createRequest = async <
   CustomParameters extends Record<string | symbol, any> = {}
 >(
-  lambdaEvent: LambdaOriginEdgeRequest,
+  lambdaEvent: LambdaApiGatewayV2Request,
   customParameters: CustomParameters
 ): Promise<HttpRequest<CustomParameters>> => {
   const {
-    uri: path,
-    httpMethod,
+    rawPath: path,
     headers: rawHeaders,
-    querystring,
+    rawQueryString: querystring = '',
+    requestContext: {
+      timeEpoch: requestStartTime,
+      http: { sourceIp: clientIp, method: httpMethod },
+    },
     body: rawBody,
-    requestStartTime,
+    isBase64Encoded,
   } = lambdaEvent
 
   const originalHeaders: Record<string, string | Array<string>> = {}
-  for (const { key, value } of rawHeaders) {
+  for (const [key, value] of Object.entries(rawHeaders)) {
     originalHeaders[key] = value
   }
 
@@ -36,13 +43,12 @@ const createRequest = async <
     string | Array<string>
   >
 
-  const body = rawBody == null ? null : Buffer.from(rawBody, 'base64')
-
-  const forwardedForHeader = headers['x-forwarded-for']
-
-  const clientIp = Array.isArray(forwardedForHeader)
-    ? forwardedForHeader.join(',')
-    : forwardedForHeader
+  const body =
+    rawBody == null
+      ? null
+      : isBase64Encoded
+      ? Buffer.from(rawBody, 'base64')
+      : Buffer.from(rawBody)
 
   return {
     ...customParameters,

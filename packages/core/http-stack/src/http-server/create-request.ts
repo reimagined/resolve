@@ -13,6 +13,8 @@ const createRequest = async <
   req: IncomingMessage,
   customParameters: CustomParameters
 ): Promise<HttpRequest<CustomParameters>> => {
+  const requestStartTime = Date.now()
+
   const { search: rawQuery = '', pathname = '' } =
     req.url == null ? {} : new URL(req.url, 'https://example.com')
 
@@ -51,6 +53,7 @@ const createRequest = async <
     cookies,
     body,
     clientIp,
+    requestStartTime,
     params: {},
   }
 }

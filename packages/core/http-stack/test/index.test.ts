@@ -8,7 +8,7 @@ import { format as prettify } from 'prettier'
 import getRawBody from 'raw-body'
 
 import type { HttpMethods, Route, LambdaOriginEdgeRequest, CORS } from '../src'
-import { createAwsLambdaOriginEdgeRouter, createHttpServerRouter } from '../src'
+import { createRouterAwsLambdaOriginEdge, createRouterHttpServer } from '../src'
 import RouterConfigBuilder from '../src/router-config-builder'
 
 jest.setTimeout(1000 * 60)
@@ -370,7 +370,7 @@ for (const { describe: corsDescribe, cors } of corsMods) {
       {
         localHttpServer = await new Promise((resolve) => {
           const refServer = http
-            .createServer(createHttpServerRouter(routerConfig))
+            .createServer(createRouterHttpServer(routerConfig))
             .listen(0, () => {
               resolve(refServer)
             })
@@ -416,7 +416,7 @@ for (const { describe: corsDescribe, cors } of corsMods) {
                 querystring: url.search.replace(/^?/, ''),
               }
 
-              const lambdaHandler = createAwsLambdaOriginEdgeRouter(
+              const lambdaHandler = createRouterAwsLambdaOriginEdge(
                 routerConfig
               )
 

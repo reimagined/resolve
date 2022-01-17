@@ -83,6 +83,7 @@ export type HttpRequest<
   readonly cookies: Record<string, string>
   readonly body: Buffer | null
   readonly clientIp?: string
+  readonly requestStartTime: number
 } & CustomParameters
 
 export type HttpResponse = {
@@ -204,7 +205,7 @@ export type LambdaApiGatewayV2Request = {
   version: '2.0'
   routeKey: string
   rawPath: string
-  rawQueryString: ''
+  rawQueryString?: string
   headers: {
     accept?: string
     'accept-encoding'?: string
@@ -240,6 +241,7 @@ export type LambdaApiGatewayV2Request = {
     timeEpoch: number
   }
   pathParameters: { wildcard: string }
+  body: string | undefined
   isBase64Encoded: boolean
 }
 

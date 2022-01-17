@@ -115,6 +115,7 @@ export const POST_REQUEST = {
     timeEpoch: 1642080887686,
   },
   pathParameters: { wildcard: 'some-path' },
+  body: 'HELLO',
   isBase64Encoded: false,
 }
 
