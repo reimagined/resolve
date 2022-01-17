@@ -20,15 +20,15 @@ Array [
 exports[`givenEvents tests should match snapshot with specified timestamp 1`] = `
 Array [
   Object {
-    "timestamp": 11,
+    "timestamp": 10,
     "value": "test-1",
   },
   Object {
-    "timestamp": 21,
+    "timestamp": 20,
     "value": "test-2",
   },
   Object {
-    "timestamp": 31,
+    "timestamp": 30,
     "value": "test-3",
   },
 ]

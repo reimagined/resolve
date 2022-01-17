@@ -15,7 +15,7 @@ const createLoadQuery = (
   const injectString = (value: any): string => `${escape(value)}`
   const injectNumber = (value: any): string => `${+value}`
 
-  const queryConditions: string[] = []
+  const queryConditions: string[] = ['1 = 1']
   if (eventTypes != null) {
     if (eventTypes.length === 0) {
       return null
@@ -29,28 +29,44 @@ const createLoadQuery = (
     queryConditions.push(`"aggregateId" IN (${aggregateIds.map(injectString)})`)
   }
 
-  const resultQueryCondition = `WHERE ${
-    queryConditions.length > 0 ? `${queryConditions.join(' AND ')} AND (` : ''
-  }
-    ${vectorConditions
+  const resultQueryCondition = queryConditions.join(' AND ')
+
+  const databaseNameAsId: string = escapeId(databaseName)
+  const eventsTableAsId: string = escapeId(eventsTableName)
+
+  if (limit !== undefined) {
+    return [
+      `SELECT "unitedEvents".* FROM (
+        ${vectorConditions
+          .map(
+            (threadCounter, threadId) =>
+              `(${[
+                `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
+                `WHERE (${resultQueryCondition}) AND "threadId" = ${threadId} AND "threadCounter" >= ${threadCounter}::${INT8_SQL_TYPE}`,
+                `LIMIT ${limit}`,
+              ].join(' ')})`
+          )
+          .join(' UNION ALL \n')}
+        ) "unitedEvents"`,
+      `ORDER BY "unitedEvents"."timestamp" ASC, "unitedEvents"."threadCounter" ASC, "unitedEvents"."threadId" ASC`,
+      `LIMIT ${+limit}`,
+    ].join('\n')
+  } else {
+    const resultVectorConditions = `${vectorConditions
       .map(
         (threadCounter, threadId) =>
           `"threadId" = ${injectNumber(
             threadId
           )} AND "threadCounter" >= ${threadCounter}::${INT8_SQL_TYPE} `
       )
-      .join(' OR ')}
-    ${queryConditions.length > 0 ? ')' : ''}`
+      .join(' OR ')}`
 
-  const databaseNameAsId: string = escapeId(databaseName)
-  const eventsTableAsId: string = escapeId(eventsTableName)
-
-  return [
-    `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
-    `${resultQueryCondition}`,
-    `ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC`,
-    limit !== undefined ? `LIMIT ${+limit}` : '',
-  ].join('\n')
+    return [
+      `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
+      `WHERE (${resultVectorConditions}) AND (${resultQueryCondition})`,
+      `ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC`,
+    ].join('\n')
+  }
 }
 
 export default createLoadQuery
