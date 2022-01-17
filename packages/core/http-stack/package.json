@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/http-stack",
-  "version": "0.33.4",
+  "version": "0.33.8",
   "description": "This package provides the HTTP stack for reSolve runtimes.",
   "keywords": [
     "cqrs",

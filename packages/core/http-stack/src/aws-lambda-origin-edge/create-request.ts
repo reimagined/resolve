@@ -22,13 +22,10 @@ const createRequest = async <
     requestStartTime: lambdaOriginEdgeStartTime,
   } = lambdaEvent
 
-  const originalHeaders = rawHeaders.reduce(
-    (acc: Record<string, any>, { key, value }: { key: string; value: any }) => {
-      acc[key] = value
-      return acc
-    },
-    {}
-  )
+  const originalHeaders: Record<string, string | Array<string>> = {}
+  for (const { key, value } of rawHeaders) {
+    originalHeaders[key] = value
+  }
 
   const headers = wrapHeadersCaseInsensitive(originalHeaders)
 
@@ -44,7 +41,11 @@ const createRequest = async <
 
   const body = rawBody == null ? null : Buffer.from(rawBody, 'base64')
 
-  const clientIp = headers['X-Forwarded-For']
+  const forwardedForHeader = headers['x-forwarded-for']
+
+  const clientIp = Array.isArray(forwardedForHeader)
+    ? forwardedForHeader.join(',')
+    : forwardedForHeader
 
   return {
     ...customParameters,

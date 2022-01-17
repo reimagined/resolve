@@ -16,9 +16,7 @@ const createRequest = async <
   const { search: rawQuery = '', pathname = '' } =
     req.url == null ? {} : new URL(req.url, 'https://example.com')
 
-  const headers = wrapHeadersCaseInsensitive(
-    req.headers as Record<string, string>
-  )
+  const headers = wrapHeadersCaseInsensitive(req.headers)
 
   const cookieHeader = headers.cookie
 
@@ -29,13 +27,20 @@ const createRequest = async <
     arrayFormat: 'bracket',
   }) as Record<string, string | Array<string>>
 
-  const body = headers.hasOwnProperty('Content-Length')
-    ? await getRawBody(req, {
-        length: headers['Content-Length'],
-      })
-    : null
+  const contentLength = headers['content-length']
 
-  const clientIp = headers['X-Forwarded-For']
+  const body =
+    contentLength == null
+      ? null
+      : await getRawBody(req, {
+          length: contentLength,
+        })
+
+  const forwardedForHeader = headers['x-forwarded-for']
+
+  const clientIp = Array.isArray(forwardedForHeader)
+    ? forwardedForHeader.join(',')
+    : forwardedForHeader
 
   return {
     ...customParameters,

@@ -1,4 +1,6 @@
-const handler: ProxyHandler<Record<string, string>> = {
+import type { IncomingHttpHeaders } from 'http'
+
+const handler: ProxyHandler<Record<string, string | Array<string>>> = {
   get(headers, key) {
     const normalizedKey = (key as string).toLowerCase()
     return normalizedKey in headers
@@ -26,8 +28,8 @@ const handler: ProxyHandler<Record<string, string>> = {
 }
 
 const wrapHeadersCaseInsensitive = (
-  headers: Record<string, string>
-): Record<string, string> =>
+  headers: IncomingHttpHeaders
+): IncomingHttpHeaders =>
   new Proxy(
     Object.fromEntries(
       Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value])

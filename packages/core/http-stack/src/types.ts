@@ -1,3 +1,4 @@
+import type { IncomingHttpHeaders } from 'http'
 import type { CookieSerializeOptions } from 'cookie'
 import type { INTERNAL } from './constants'
 import type { TrieOptions } from 'route-trie'
@@ -77,7 +78,7 @@ export type HttpRequest<
   readonly method: HttpMethods
   readonly query: Record<string, string | Array<string>>
   readonly path: string
-  readonly headers: Record<string, string>
+  readonly headers: IncomingHttpHeaders
   readonly params: Record<string, string>
   readonly cookies: Record<string, string>
   readonly body: Buffer | null
