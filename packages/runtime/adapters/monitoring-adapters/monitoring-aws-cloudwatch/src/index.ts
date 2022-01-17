@@ -26,6 +26,7 @@ const createMonitoringImplementation = (
     getMetrics: () => monitoringContext.monitoringBase.getMetrics(),
     clearMetrics: () => monitoringContext.monitoringBase.clearMetrics(),
     publish: monitoringPublish.bind(null, log, monitoringContext),
+    custom: monitoringContext.monitoringBase.custom,
   }
 }
 

@@ -288,7 +288,7 @@ export type OmitObject<T extends object, U extends object> = {
 
 export type BuildInfo = {
   eventsWithCursors?: Array<EventWithCursor>
-  initiator: 'command' | 'read-model-next'
+  initiator: 'command' | 'command-foreign' | 'read-model-next'
   notificationId: string
   sendTime: number
   coldStart?: boolean

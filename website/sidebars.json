@@ -29,7 +29,7 @@
           "custom-read-model-connectors",
           "file-upload",
           "export-import",
-          "preparing-to-production",
+          "preparing-for-production",
           "code-splitting",
           "debugging",
           "testing",

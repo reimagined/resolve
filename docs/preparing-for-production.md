@@ -1,6 +1,6 @@
 ---
-id: preparing-to-production
-title: Preparing to Production
+id: preparing-for-production
+title: Preparing for Production
 description: This document describes how to prepare a reSolve application for deployment to a production server environment.
 ---
 

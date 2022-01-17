@@ -2,7 +2,32 @@
 
 ## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.8...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.9...HEAD)
+
+**Enhancements:**
+
+- Optimize loadevents for postgresql eventstore adapter [\#2196](https://github.com/reimagined/resolve/pull/2196)
+
+**Bug fixes:**
+
+- Resetting saga in hacker-news example generates redundant events [\#2163](https://github.com/reimagined/resolve/issues/2163)
+
+**Other changes:**
+
+- Fix issue with event.timestamp and +/-1 in @resolve-js/testing-tools [\#2198](https://github.com/reimagined/resolve/pull/2198)
+
+## [V0.33.9](https://github.com/reimagined/resolve/tree/V0.33.9) (2022-01-12)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.8...V0.33.9)
+
+**Enhancements:**
+
+- Improve jitter in readmodel-postgres adapter [\#2194](https://github.com/reimagined/resolve/pull/2194)
+- Add custom monitoring method. Add metric for reconnection times in postgresql eventstore adapter [\#2191](https://github.com/reimagined/resolve/pull/2191)
+
+**Bug fixes:**
+
+- Debug log masks don't match some package names [\#2124](https://github.com/reimagined/resolve/issues/2124)
 
 **Documentation:**
 
