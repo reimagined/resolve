@@ -35,7 +35,7 @@ Registers an occurred error. The default implementation increments the count of 
 
 ### `execution`
 
-Registers an execution of an operation. The default implementation increments the count of the `"Executions"` metric. The `execution` method can also be passed an optional `error` parameter. If this parameter is not `null`, the function registers the error in metrics.
+Registers an operation's execution. The default implementation increments the count of the `"Executions"` metric. The `execution` method can also be passed an optional `error` parameter. If this parameter is not `null`, the function registers the error in metrics.
 
 #### Arguments
 

@@ -28,13 +28,13 @@ monitoringAdapters: {
 }
 ```
 
-Refer to the [monitoringAdapters](application-configuration.md#monitoringadapters) section of the [Application Configuration](application-configuration.md) topic for more information on monitoring adapter option.
+Refer to the [monitoringAdapters](application-configuration.md#monitoringadapters) section of the [Application Configuration](application-configuration.md) topic for more information on monitoring adapter options.
 
 On a local machine or a standalone server, you need to explicitly specify the monitoring adapter to enable monitoring.
 
-In the reSolve Cloud environment, the `default` monitoring adapter is defined. If this adapter is not explicitly specified in the application's configuration files, it defaults to `@resolve-js/monitoring-aws-cloudwatch`.
+In the reSolve Cloud environment, the `default` monitoring adapter always exists. If this adapter is not explicitly specified in the application's configuration files, it defaults to `@resolve-js/monitoring-aws-cloudwatch`.
 
-You can define your own monitoring adapter based on the `@resolve-js/monitoring-base` package. Refer to the [Monitoring Adapter](api/monitoring/monitoring-adapter.md) API reference topic for information on how to achieve this,
+You can implement your own monitoring adapter based on the `@resolve-js/monitoring-base` package. Refer to the [Monitoring Adapter](api/monitoring/monitoring-adapter.md) API reference topic for information on how to achieve this.
 
 ## Monitoring API
 
