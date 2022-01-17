@@ -29,13 +29,14 @@ export const bootstrapOne = async ({
       await ensureQueue(name)
     } catch (err) {
       errors.push(err)
-    }    
+    }
 
     try {
       log.debug(`subscribing`)
       await eventSubscriber.subscribe({
         eventSubscriber: name,
         subscriptionOptions: { eventTypes },
+        destination,
       })
 
       if (upstream || forceResume) {

@@ -177,8 +177,8 @@ export const subscribeImpl = async (
     subscriptionOptions: {
       eventTypes: Array<string> | null
       aggregateIds: Array<string> | null
-    },
-    destination: string,
+    }
+    destination: string
   }
 ) => {
   const entry = (
@@ -212,7 +212,7 @@ export const subscribeImpl = async (
       },
       updateOnly: true,
     })
-  }  
+  }
 }
 
 export const resubscribeImpl = async (
@@ -222,8 +222,8 @@ export const resubscribeImpl = async (
     subscriptionOptions: {
       eventTypes: Array<string> | null
       aggregateIds: Array<string> | null
-    },
-    destination: string,
+    }
+    destination: string
   }
 ) => {
   await pool.eventstoreAdapter.ensureEventSubscriber({
@@ -562,8 +562,8 @@ export const customReadModelMethods: Record<
       subscriptionOptions: {
         eventTypes: Array<string> | null
         aggregateIds: Array<string> | null
-      },
-      destination: string,
+      }
+      destination: string
     }
   ) => {
     await subscribeImpl(pool, readModelName, parameters)
@@ -578,8 +578,8 @@ export const customReadModelMethods: Record<
       subscriptionOptions: {
         eventTypes: Array<string> | null
         aggregateIds: Array<string> | null
-      },
-      destination: string,
+      }
+      destination: string
     }
   ) => {
     await resubscribeImpl(pool, readModelName, parameters)
