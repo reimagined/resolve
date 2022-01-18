@@ -8,6 +8,10 @@
 
 - Implement sort index hints for postgres eventstore [\#2204](https://github.com/reimagined/resolve/pull/2204)
 
+**Other changes:**
+
+- Update branch prefix conditions in PR github action [\#2206](https://github.com/reimagined/resolve/pull/2206)
+
 ## [V0.33.10](https://github.com/reimagined/resolve/tree/V0.33.10) (2022-01-17)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.9...V0.33.10)
