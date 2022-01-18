@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.10...HEAD)
+
+**Enhancements:**
+
+- Implement sort index hints for postgres eventstore [\#2204](https://github.com/reimagined/resolve/pull/2204)
+
 ## [V0.33.10](https://github.com/reimagined/resolve/tree/V0.33.10) (2022-01-17)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.9...V0.33.10)
