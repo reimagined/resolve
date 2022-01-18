@@ -243,6 +243,20 @@ describe('givenEvents tests', () => {
       .readModel(readModel)
       .query('all', {})
 
+    expect(result?.items).toEqual([
+      {
+        value: 'test-1',
+        timestamp: 10,
+      },
+      {
+        value: 'test-2',
+        timestamp: 20,
+      },
+      {
+        value: 'test-3',
+        timestamp: 30,
+      },
+    ])
     expect(result?.items).toMatchSnapshot()
   })
 
