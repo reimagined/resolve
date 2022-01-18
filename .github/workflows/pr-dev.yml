@@ -90,11 +90,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: buildAndTest
     if: |
-      startsWith(github.head_ref, 'feature/')
-      || startsWith(github.head_ref, 'maintenance/')
-      || startsWith(github.head_ref, 'hotfix/')
-      || startsWith(github.head_ref, 'fix/')
-      || startsWith(github.head_ref, 'bugfix/')
+      !startsWith(github.head_ref, 'docs/') &&
+      !startsWith(github.head_ref, 'maintenance/')
     services:
       postgres:
         image: clkao/postgres-plv8:10-2
@@ -177,10 +174,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: buildAndTest
     if: |
-      startsWith(github.head_ref, 'feature/')
-      || startsWith(github.head_ref, 'hotfix/')
-      || startsWith(github.head_ref, 'fix/')
-      || startsWith(github.head_ref, 'bugfix/')
+      !startsWith(github.head_ref, 'docs/') &&
+      !startsWith(github.head_ref, 'maintenance/')
     steps:
       - uses: actions/checkout@v2
 
@@ -246,10 +241,8 @@ jobs:
     needs: buildAndTest
     concurrency: cloud-environment
     if: |
-      startsWith(github.head_ref, 'feature/')
-      || startsWith(github.head_ref, 'hotfix/')
-      || startsWith(github.head_ref, 'fix/')
-      || startsWith(github.head_ref, 'bugfix/')
+      !startsWith(github.head_ref, 'docs/') &&
+      !startsWith(github.head_ref, 'maintenance/')
     steps:
       - uses: actions/checkout@v2
 
@@ -394,11 +387,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: buildAndTest
     if: |
-      startsWith(github.head_ref, 'feature/')
-      || startsWith(github.head_ref, 'hotfix/')
-      || startsWith(github.head_ref, 'fix/')
-      || startsWith(github.head_ref, 'bugfix/')
-      || startsWith(github.head_ref, 'docs/')
+      !startsWith(github.head_ref, 'maintenance/')
     steps:
       - uses: actions/checkout@v2
 
