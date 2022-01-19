@@ -42,9 +42,20 @@ export const broadcaster = async (
         continue
       }
       promises.push(
-        runtime.invokeBuildAsync(
-          createEventSubscriberNotification(eventSubscriber, event)
-        )
+        (async () => {
+          let isAlreadyBuilding = false
+          try {
+            isAlreadyBuilding = !!(runtime as any).eventSubscriber.status({
+              eventSubscriber,
+              includeRuntimeStatus: true,
+            }).isAlive
+          } catch (e) {}
+          if (!isAlreadyBuilding) {
+            await runtime.invokeBuildAsync(
+              createEventSubscriberNotification(eventSubscriber, event)
+            )
+          }
+        })()
       )
     }
 
