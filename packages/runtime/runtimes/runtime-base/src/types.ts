@@ -169,7 +169,6 @@ export type ResolveRequest = Omit<PublicResolveRequest, 'resolve'> & {
 export type EventListenersManagerParameters = {
   upstream: boolean
   eventSubscriberScope: string
-  getEventSubscriberDestination: (name: string) => string
   ensureQueue: (name?: string) => Promise<void>
   deleteQueue: (name?: string) => Promise<void>
 }
@@ -182,6 +181,7 @@ export type RuntimeFactoryParameters = {
   readonly domainInterop: Domain
   readonly performanceTracer: PerformanceTracer
   readonly eventStoreAdapterFactory: EventStoreAdapterFactory
+  readonly getEventSubscriberDestination: (name: string) => string
   readonly readModelConnectorsFactories: Record<
     string,
     ReadModelConnectorFactory
