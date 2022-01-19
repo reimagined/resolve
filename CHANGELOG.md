@@ -9,6 +9,10 @@
 - Prechecked notifications [\#2209](https://github.com/reimagined/resolve/pull/2209)
 - Implement sort index hints for postgres eventstore [\#2204](https://github.com/reimagined/resolve/pull/2204)
 
+**Bug fixes:**
+
+- Too many connections created during the startup of hacker-news example with custom read-models enabled [\#2123](https://github.com/reimagined/resolve/issues/2123)
+
 ## [V0.33.10](https://github.com/reimagined/resolve/tree/V0.33.10) (2022-01-17)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.9...V0.33.10)
