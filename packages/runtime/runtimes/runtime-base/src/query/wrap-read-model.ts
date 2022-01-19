@@ -178,7 +178,6 @@ export const subscribeImpl = async (
       eventTypes: Array<string> | null
       aggregateIds: Array<string> | null
     }
-    destination: string
   }
 ) => {
   const entry = (
@@ -191,7 +190,7 @@ export const subscribeImpl = async (
     await pool.eventstoreAdapter.ensureEventSubscriber({
       applicationName: pool.applicationName,
       eventSubscriber: readModelName,
-      destination: parameters.destination,
+      destination: pool.getEventSubscriberDestination(readModelName),
       status: {
         eventSubscriber: readModelName,
         status: 'deliver',
@@ -223,13 +222,12 @@ export const resubscribeImpl = async (
       eventTypes: Array<string> | null
       aggregateIds: Array<string> | null
     }
-    destination: string
   }
 ) => {
   await pool.eventstoreAdapter.ensureEventSubscriber({
     applicationName: pool.applicationName,
     eventSubscriber: readModelName,
-    destination: parameters.destination,
+    destination: pool.getEventSubscriberDestination(readModelName),
     status: {
       eventSubscriber: readModelName,
       status: 'deliver',
@@ -563,7 +561,6 @@ export const customReadModelMethods: Record<
         eventTypes: Array<string> | null
         aggregateIds: Array<string> | null
       }
-      destination: string
     }
   ) => {
     await subscribeImpl(pool, readModelName, parameters)
@@ -579,7 +576,6 @@ export const customReadModelMethods: Record<
         eventTypes: Array<string> | null
         aggregateIds: Array<string> | null
       }
-      destination: string
     }
   ) => {
     await resubscribeImpl(pool, readModelName, parameters)
@@ -777,6 +773,7 @@ const wrapReadModel = ({
   applicationName,
   interop,
   readModelConnectors,
+  getEventSubscriberDestination,
   invokeBuildAsync,
   loadReadModelProcedure,
   performanceTracer,
@@ -801,6 +798,7 @@ const wrapReadModel = ({
     await loadReadModelProcedure(interop.name)
 
   const pool: ReadModelPool = {
+    getEventSubscriberDestination,
     invokeBuildAsync,
     applicationName,
     connections: new Set(),

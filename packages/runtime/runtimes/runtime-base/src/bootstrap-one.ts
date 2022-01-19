@@ -7,7 +7,6 @@ export const bootstrapOne = async ({
   eventstoreAdapter,
   eventSubscriber,
   eventTypes,
-  destination,
   upstream,
   ensureQueue,
   forceResume,
@@ -17,7 +16,6 @@ export const bootstrapOne = async ({
   eventstoreAdapter: Runtime['eventStoreAdapter']
   eventSubscriber: Runtime['eventSubscriber']
   eventTypes: string[]
-  destination?: string
   upstream: EventListenersManagerParameters['upstream']
   ensureQueue: EventListenersManagerParameters['ensureQueue']
   forceResume: boolean
@@ -36,7 +34,6 @@ export const bootstrapOne = async ({
       await eventSubscriber.subscribe({
         eventSubscriber: name,
         subscriptionOptions: { eventTypes },
-        destination,
       })
 
       if (upstream || forceResume) {
