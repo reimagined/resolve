@@ -97,14 +97,13 @@ const Chart = ({ selected, onClick }) => {
   return (
     <div>
       <svg
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="true"
-        height="400"
         width="550"
-        viewBox="10 0 60 60"
-        className="chart"
+        height="445"
+        viewBox="0 0 550 445"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <g transform="translate(-10.143 -142)">
+        <g>
           <Server
             selected={getSelected('server')}
             onClick={() => setSelectedTab('server')}
