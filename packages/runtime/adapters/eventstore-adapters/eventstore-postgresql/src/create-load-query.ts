@@ -36,20 +36,26 @@ const createLoadQuery = (
 
   if (limit !== undefined) {
     return [
-      `SELECT "unitedEvents".* FROM (
-        ${vectorConditions
-          .map(
-            (threadCounter, threadId) =>
-              `(${[
-                `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
-                `WHERE (${resultQueryCondition}) AND "threadId" = ${threadId} AND "threadCounter" >= ${threadCounter}::${INT8_SQL_TYPE}`,
-                `LIMIT ${limit}`,
-              ].join(' ')})`
-          )
-          .join(' UNION ALL \n')}
-        ) "unitedEvents"`,
-      `ORDER BY "unitedEvents"."timestamp" ASC, "unitedEvents"."threadCounter" ASC, "unitedEvents"."threadId" ASC`,
-      `LIMIT ${+limit}`,
+      `SELECT "sortedEvents".* FROM (`,
+      `  SELECT "unitedEvents".* FROM (`,
+      vectorConditions
+        .map(
+          (threadCounter, threadId) =>
+            `(${[
+              `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
+              `WHERE (${resultQueryCondition}) AND "threadId" = ${threadId} AND "threadCounter" >= ${threadCounter}::${INT8_SQL_TYPE}`,
+              `ORDER BY "threadCounter" ASC`,
+              `LIMIT ${limit}`,
+            ].join(' ')})`
+        )
+        .join(' UNION ALL \n'),
+      `  ) "unitedEvents"`,
+      `  ORDER BY "unitedEvents"."timestamp" ASC`,
+      `  LIMIT ${+limit}`,
+      `) "sortedEvents"`,
+      `ORDER BY "sortedEvents"."timestamp" ASC,`,
+      `"sortedEvents"."threadCounter" ASC,`,
+      `"sortedEvents"."threadId" ASC`,
     ].join('\n')
   } else {
     const resultVectorConditions = `${vectorConditions

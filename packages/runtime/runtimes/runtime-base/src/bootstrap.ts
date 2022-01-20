@@ -23,13 +23,7 @@ export const bootstrap = async (
   waitForReady: boolean
 ) => {
   log.debug('bootstrap started')
-  const {
-    upstream,
-    eventSubscriberScope,
-    getEventSubscriberDestination,
-    ensureQueue,
-    deleteQueue,
-  } = params
+  const { upstream, eventSubscriberScope, ensureQueue, deleteQueue } = params
   const { eventSubscriber, eventStoreAdapter, eventListeners } = runtime
 
   const promises = []
@@ -43,7 +37,6 @@ export const bootstrap = async (
         eventSubscriber,
         name,
         eventTypes,
-        destination: getEventSubscriberDestination(name),
         upstream,
         ensureQueue,
         forceResume: waitForReady,
