@@ -2,9 +2,9 @@
 
 This directory contains benchmark sets for some parts of the reSolve framework.
 
-## Benchmarks for postgresql eventstore adapter
+## Benchmarks for postgresql event store adapter
 
-Postgresql related benchmarks use the following environment variables in order to connect to the database:
+PostgreSQL related benchmarks use the following environment variables in order to connect to the database:
 
 ```sh
 export POSTGRES_DATABASE=dbname
@@ -16,8 +16,8 @@ export POSTGRES_PASSWORD=password
 
 ### Preparing the database
 
-Before running any benchmarks you must create eventstore schema in your database and fill it with events.
-For that you can import previously exported (e.g. from cloud) eventstore.
+Before running any benchmarks, you must create an event store schema in your database and fill it with events.
+To do this, you can import a previously exported (e.g. from cloud) event store.
 
 ```
 yarn import-eventstore --create=true myeventstore path/to/eventstore-directory
@@ -25,7 +25,7 @@ yarn import-eventstore --create=true myeventstore path/to/eventstore-directory
 
 ### *loadEvents* benchmark
 
-In this benchmark events are consequentially loaded by batches from the database from the beginning of the eventstore and until the end.
+In this benchmark, events are loaded from the database in sequential batches starting at the beginning of the event store and until the end.
 The total and average times of batch loading are measured.
 
 Example of running the benchmark:
@@ -33,24 +33,24 @@ Example of running the benchmark:
 yarn benchmark:load-events --db=myeventstore --eventTypes=EVENT_TYPE1,EVENT_TYPE2
 ```
 
-The `db` parameter is the name of the postgresql schema in your database.
+The `db` parameter is the name of the PostgreSQL schema in your database.
 
 ### *saveEvent* benchmark
 
-In this benchmark events are consequentially saved to the database.
+In this benchmark, events are sequentially saved to the database.
 The total and average times of event saving are measured.
 
-The event types and aggregate distribution, the event size and the total number of events are configured via specification file.
-It may be used to fill eventstore with specific events, e.g. events that belong to the same aggregate.
+The event types and aggregate distribution as well as the event size and the total number of events are configured via a specification file.
+It may be used to fill an event store with specific events, e.g. events that belong to the same aggregate.
 
-The benchmark can be run on empty eventstore or on the eventstore that already contains some events 
-(including events from the previous benchmark runs).
+The benchmark can be run on an empty event store or on an event store that already contains some events 
+(including events from previous benchmark runs).
 
 Example of running the benchmark:
 ```
 yarn benchmark:save-event --db=myeventstore --clear=true --spec=./eventstore/event-spec.example.json
 ```
 
-The `--clear=true` option is used to clear the eventstore before running the benchmark.
+The `--clear=true` option is used to clear the event store before running the benchmark.
 
-The `--create=true` option is used to create a new eventstore.
+The `--create=true` option is used to create a new event store.
