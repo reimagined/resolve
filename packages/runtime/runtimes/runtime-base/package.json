@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/runtime-base",
-  "version": "0.33.10",
+  "version": "0.33.11",
   "description": "The reSolve framework's runtimes base interfaces.",
   "keywords": [
     "cqrs",
@@ -25,10 +25,10 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
-    "@resolve-js/core": "0.33.10",
-    "@resolve-js/debug-levels": "0.33.10",
-    "@resolve-js/eventstore-base": "0.33.10",
-    "@resolve-js/readmodel-base": "0.33.10",
+    "@resolve-js/core": "0.33.11",
+    "@resolve-js/debug-levels": "0.33.11",
+    "@resolve-js/eventstore-base": "0.33.11",
+    "@resolve-js/readmodel-base": "0.33.11",
     "content-disposition": "0.5.3",
     "file-type": "16.5.3",
     "http-status-codes": "2.1.4",
