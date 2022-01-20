@@ -79,7 +79,7 @@ void (async () => {
   try {
     const description = await adapter.describe()
     console.log(
-      `Running benchmark on eventstore of ${description.eventCount} events`
+      `Running benchmark on event store of ${description.eventCount} events`
     )
 
     let loadedEventCount = 0

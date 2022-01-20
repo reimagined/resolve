@@ -147,7 +147,7 @@ if (parsed['help']) {
     --help
     --db=<name>       Schema name in the database [required]
     --clear=true      Clear events table before running the benchmark
-    --create=true     Create a new eventstore
+    --create=true     Create a new event store
     --spec=<path>     Path to the spec JSON file describing the distribution of events to save`)
   process.exit(0)
 }
@@ -178,7 +178,7 @@ type Epoch = {
 
 void (async () => {
   if (shouldCreate) {
-    console.log(`Creating a new eventstore "${dbName}"`)
+    console.log(`Creating a new event store "${dbName}"`)
     await createEventstore(dbName)
   }
 
