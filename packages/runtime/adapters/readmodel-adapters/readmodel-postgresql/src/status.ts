@@ -86,6 +86,7 @@ const status: ExternalMethods['status'] = async <
           ? +retryTimeoutForRuntimeStatus
           : IS_ALIVE_TIMEOUT)
       let currentTime = 0
+      let previousCursor = null
 
       do {
         try {
@@ -129,6 +130,11 @@ const status: ExternalMethods['status'] = async <
             ])
 
             isAlive = nextCursor == null || nextCursor === endCursor
+
+            if (previousCursor != null && Cursor !== previousCursor) {
+              isAlive = true
+            }
+            previousCursor = Cursor
           }
         } catch (error) {
           if (
