@@ -8,6 +8,10 @@
 
 - Benchmarks for postgresql eventstore loadEvents and saveEvent [\#2212](https://github.com/reimagined/resolve/pull/2212)
 
+**Bug fixes:**
+
+- The IsAlive flag still works incorrectly [\#2200](https://github.com/reimagined/resolve/issues/2200)
+
 ## [V0.33.11](https://github.com/reimagined/resolve/tree/V0.33.11) (2022-01-20)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.10...V0.33.11)
