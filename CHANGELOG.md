@@ -8,6 +8,10 @@
 
 - Benchmarks for postgresql eventstore loadEvents and saveEvent [\#2212](https://github.com/reimagined/resolve/pull/2212)
 
+**Enhancements:**
+
+- Optimize event loading by single aggregateId \(special case\) [\#2216](https://github.com/reimagined/resolve/pull/2216)
+
 **Bug fixes:**
 
 - The IsAlive flag still works incorrectly [\#2200](https://github.com/reimagined/resolve/issues/2200)
