@@ -28,6 +28,14 @@ html[data-theme='dark'] {
   --box-dotted-selected-color: #00800133;
 }
 
+.box {
+  transition: fill 50ms ease-in 20ms;
+}
+
+.outline {
+  transition: fill 50ms ease-in 20ms;
+}
+
 .box-dotted .outline {
   fill: var(--box-secondary-color);
 }
