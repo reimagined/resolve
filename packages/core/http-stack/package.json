@@ -8,7 +8,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/@resolve-js/entry-point#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/http-stack#readme",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -19,7 +19,7 @@
   "module": "./es/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/entry-point",
+    "build": "yarn workspace @internal/babel-compile start --name=@resolve-js/http-stack",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
@@ -39,6 +39,7 @@
     "jest": "27.0.3",
     "uuid": "8.3.2",
     "node-fetch": "2.6.6",
+    "form-data": "4.0.0",
     "prettier": "2.2.1"
   },
   "engines": {

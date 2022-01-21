@@ -6,9 +6,10 @@ import { URL } from 'url'
 import { stringify as stringifyQuery } from 'query-string'
 import { format as prettify } from 'prettier'
 import getRawBody from 'raw-body'
+import FormData from 'form-data'
 
 import type { HttpMethods, Route, LambdaOriginEdgeRequest, CORS } from '../src'
-import { createRouterAwsLambdaOriginEdge, createRouterHttpServer } from '../src'
+import { HttpServer, AWSLambdaOriginEdge } from '../src'
 import RouterConfigBuilder from '../src/router-config-builder'
 
 jest.setTimeout(1000 * 60)
@@ -26,7 +27,7 @@ const tests: Array<{
   tests: Array<{
     request: {
       query?: string
-      body?: string
+      body?: string | Buffer
       headers?: Record<string, string>
     }
     accept: (response: FetchResponse) => Promise<void>
@@ -335,6 +336,39 @@ const tests: Array<{
       },
     ],
   },
+  {
+    route: {
+      pattern: '/send-form-data',
+      method: 'GET',
+      handler: (req, res) => {
+        console.log(req.headers)
+        res.json({})
+        //res.json(parseMultipartData(req))
+      },
+    },
+    tests: [
+      {
+        request: (() => {
+          const form = new FormData()
+          form.append('login', 'login')
+          form.append('password', 'password')
+          form.append('value', 42)
+          return {
+            body: form.getBuffer(),
+            headers: form.getHeaders(),
+          }
+        })(),
+        accept: async (response) => {
+          expect(response.status).toEqual(200)
+          expect(response.json()).toEqual({
+            login: 'login',
+            password: 'password',
+            value: 42,
+          })
+        },
+      },
+    ],
+  },
 ]
 
 const corsMods: Array<{
@@ -370,7 +404,7 @@ for (const { describe: corsDescribe, cors } of corsMods) {
       {
         localHttpServer = await new Promise((resolve) => {
           const refServer = http
-            .createServer(createRouterHttpServer(routerConfig))
+            .createServer(HttpServer.createRouter(routerConfig))
             .listen(0, () => {
               resolve(refServer)
             })
@@ -416,7 +450,7 @@ for (const { describe: corsDescribe, cors } of corsMods) {
                 querystring: url.search.replace(/^?/, ''),
               }
 
-              const lambdaHandler = createRouterAwsLambdaOriginEdge(
+              const lambdaHandler = AWSLambdaOriginEdge.createRouter(
                 routerConfig
               )
 

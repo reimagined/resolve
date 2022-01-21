@@ -10,6 +10,7 @@ import createCorsMiddleware from '../src/create-cors-middleware'
 import createResponse from '../src/create-response'
 import finalizeResponse from '../src/finalize-response'
 import wrapHeadersCaseInsensitive from '../src/wrap-headers-case-insensitive'
+import normalizeKey from '../src/normalize-key'
 
 describe('method "createCorsMiddleware"', () => {
   let req: HttpRequest
@@ -30,6 +31,7 @@ describe('method "createCorsMiddleware"', () => {
       query: {},
       params: {},
       clientIp: undefined,
+      requestStartTime: Date.now(),
     }
     res = createResponse()
   }
@@ -63,9 +65,12 @@ describe('method "createCorsMiddleware"', () => {
     corsMiddleware(req, res, Function() as any)
 
     expect(Object.fromEntries(finalizeResponse(res).headers)).toEqual({
-      [ACCESS_CONTROL_ALLOW_ORIGIN]: 'example.com',
-      [ACCESS_CONTROL_ALLOW_METHODS]: '*',
-      [VARY]: 'Origin',
+      [normalizeKey(
+        ACCESS_CONTROL_ALLOW_ORIGIN,
+        'upper-dash-case'
+      )]: 'example.com',
+      [normalizeKey(ACCESS_CONTROL_ALLOW_METHODS, 'upper-dash-case')]: '*',
+      [normalizeKey(VARY, 'upper-dash-case')]: 'Origin',
     })
     expect(res[INTERNAL].status).toEqual(200)
   })
@@ -105,9 +110,12 @@ describe('method "createCorsMiddleware"', () => {
     corsMiddleware(req, res, Function() as any)
 
     expect(Object.fromEntries(finalizeResponse(res).headers)).toEqual({
-      [ACCESS_CONTROL_ALLOW_ORIGIN]: 'specified.example.com',
-      [ACCESS_CONTROL_ALLOW_METHODS]: '*',
-      [VARY]: 'Origin',
+      [normalizeKey(
+        ACCESS_CONTROL_ALLOW_ORIGIN,
+        'upper-dash-case'
+      )]: 'specified.example.com',
+      [normalizeKey(ACCESS_CONTROL_ALLOW_METHODS, 'upper-dash-case')]: '*',
+      [normalizeKey(VARY, 'upper-dash-case')]: 'Origin',
     })
     expect(res[INTERNAL].status).toEqual(200)
   })
@@ -133,9 +141,12 @@ describe('method "createCorsMiddleware"', () => {
     corsMiddleware(req, res, Function() as any)
 
     expect(Object.fromEntries(finalizeResponse(res).headers)).toEqual({
-      [ACCESS_CONTROL_ALLOW_ORIGIN]: 'a.example.com',
-      [ACCESS_CONTROL_ALLOW_METHODS]: '*',
-      [VARY]: 'Origin',
+      [normalizeKey(
+        ACCESS_CONTROL_ALLOW_ORIGIN,
+        'upper-dash-case'
+      )]: 'a.example.com',
+      [normalizeKey(ACCESS_CONTROL_ALLOW_METHODS, 'upper-dash-case')]: '*',
+      [normalizeKey(VARY, 'upper-dash-case')]: 'Origin',
     })
     expect(res[INTERNAL].status).toEqual(200)
 
@@ -151,9 +162,12 @@ describe('method "createCorsMiddleware"', () => {
     corsMiddleware(req, res, Function() as any)
 
     expect(Object.fromEntries(finalizeResponse(res).headers)).toEqual({
-      [ACCESS_CONTROL_ALLOW_ORIGIN]: 'b.example.com',
-      [ACCESS_CONTROL_ALLOW_METHODS]: '*',
-      [VARY]: 'Origin',
+      [normalizeKey(
+        ACCESS_CONTROL_ALLOW_ORIGIN,
+        'upper-dash-case'
+      )]: 'b.example.com',
+      [normalizeKey(ACCESS_CONTROL_ALLOW_METHODS, 'upper-dash-case')]: '*',
+      [normalizeKey(VARY, 'upper-dash-case')]: 'Origin',
     })
     expect(res[INTERNAL].status).toEqual(200)
 
@@ -192,9 +206,12 @@ describe('method "createCorsMiddleware"', () => {
     corsMiddleware(req, res, Function() as any)
 
     expect(Object.fromEntries(finalizeResponse(res).headers)).toEqual({
-      [ACCESS_CONTROL_ALLOW_ORIGIN]: 'example.com',
-      [ACCESS_CONTROL_ALLOW_METHODS]: '*',
-      [VARY]: 'Origin',
+      [normalizeKey(
+        ACCESS_CONTROL_ALLOW_ORIGIN,
+        'upper-dash-case'
+      )]: 'example.com',
+      [normalizeKey(ACCESS_CONTROL_ALLOW_METHODS, 'upper-dash-case')]: '*',
+      [normalizeKey(VARY, 'upper-dash-case')]: 'Origin',
     })
     expect(res[INTERNAL].status).toEqual(204)
 
@@ -208,9 +225,12 @@ describe('method "createCorsMiddleware"', () => {
     corsMiddleware(req, res, Function() as any)
 
     expect(Object.fromEntries(finalizeResponse(res).headers)).toEqual({
-      [ACCESS_CONTROL_ALLOW_ORIGIN]: 'example.com',
-      [ACCESS_CONTROL_ALLOW_METHODS]: '*',
-      [VARY]: 'Origin',
+      [normalizeKey(
+        ACCESS_CONTROL_ALLOW_ORIGIN,
+        'upper-dash-case'
+      )]: 'example.com',
+      [normalizeKey(ACCESS_CONTROL_ALLOW_METHODS, 'upper-dash-case')]: '*',
+      [normalizeKey(VARY, 'upper-dash-case')]: 'Origin',
     })
     expect(res[INTERNAL].status).toEqual(200)
   })

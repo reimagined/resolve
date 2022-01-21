@@ -72,6 +72,12 @@ export type HttpMethods =
   | 'TRACE'
   | 'PATCH'
 
+export type ContentType = {
+  mediaType?: string
+  charset?: string
+  boundary?: string
+}
+
 export type HttpRequest<
   CustomParameters extends Record<string | symbol, any> = {}
 > = {
