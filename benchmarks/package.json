@@ -1,6 +1,6 @@
 {
   "name": "benchmarks",
-  "version": "0.33.9",
+  "version": "0.33.12",
   "private": true,
   "description": "API benchmarks for resolve",
   "scripts": {
@@ -9,14 +9,14 @@
     "benchmark:save-event": "ts-node eventstore/save-event.ts"
   },
   "devDependencies": {
-    "@resolve-js/core": "0.33.11",
-    "@resolve-js/debug-levels": "0.33.11",
-    "@resolve-js/eventstore-base": "0.33.11",
-    "@resolve-js/eventstore-lite": "0.33.11",
-    "@resolve-js/eventstore-postgresql": "0.33.11",
-    "@resolve-js/monitoring-base": "0.33.11",
-    "@resolve-js/readmodel-lite": "0.33.11",
-    "@resolve-js/readmodel-postgresql": "0.33.11",
+    "@resolve-js/core": "0.33.12",
+    "@resolve-js/debug-levels": "0.33.12",
+    "@resolve-js/eventstore-base": "0.33.12",
+    "@resolve-js/eventstore-lite": "0.33.12",
+    "@resolve-js/eventstore-postgresql": "0.33.12",
+    "@resolve-js/monitoring-base": "0.33.12",
+    "@resolve-js/readmodel-lite": "0.33.12",
+    "@resolve-js/readmodel-postgresql": "0.33.12",
     "@types/minimist": "1.2.2",
     "minimist": "1.2.5",
     "pg": "8.5.1",
