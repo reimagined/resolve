@@ -13,6 +13,7 @@
       "templates/js/*",
       "templates/ts/*",
       "internal/*",
+      "benchmarks",
       "tests",
       "website",
       "functional-tests",
