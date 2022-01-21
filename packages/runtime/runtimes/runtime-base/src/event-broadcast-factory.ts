@@ -10,6 +10,7 @@ export type NotifierRuntime = {
   invokeBuildAsync: RuntimeFactoryParameters['invokeBuildAsync']
   eventSubscriberScope: RuntimeFactoryParameters['eventSubscriberScope']
   notifyEventSubscriber: RuntimeFactoryParameters['notifyEventSubscriber']
+  eventSubscriber: Runtime['eventSubscriber']
 }
 
 export const isMatchEventType = (
@@ -46,9 +47,10 @@ export const broadcaster = async (
           let isAlreadyBuilding = false
           try {
             isAlreadyBuilding = !!(
-              await (runtime as any).eventSubscriber.status({
+              await runtime.eventSubscriber.status({
                 eventSubscriber,
                 includeRuntimeStatus: true,
+                retryTimeoutForRuntimeStatus: 0,
               })
             ).isAlive
           } catch (e) {}
