@@ -379,7 +379,12 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
 
   reset(pool: AdapterPool, readModelName: string): Promise<void>
 
-  status<T extends [includeRuntimeStatus?: boolean]>(
+  status<
+    T extends [
+      includeRuntimeStatus?: boolean,
+      retryTimeoutForRuntimeStatus?: number
+    ]
+  >(
     ...args: AdapterOperationStatusMethodArguments<T, AdapterPool>
   ): AdapterOperationStatusMethodReturnType<T>
 

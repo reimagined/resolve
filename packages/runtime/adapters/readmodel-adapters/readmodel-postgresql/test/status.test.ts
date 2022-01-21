@@ -362,12 +362,6 @@ describe('isAlive', () => {
           Cursor: 'test-cursor-2',
         }),
       ])
-      .mockResolvedValueOnce([{ ActiveLocksCount: 0 }])
-      .mockResolvedValueOnce([
-        createTestReadModelLedgerRow({
-          Cursor: 'test-cursor-3',
-        }),
-      ])
 
     expect(
       await status(pool, 'test-read-model', eventstoreAdapter, true)
@@ -392,13 +386,5 @@ describe('isAlive', () => {
     expect(
       eventstoreAdapter.getCursorUntilEventTypes
     ).toBeCalledWith('test-cursor-2', ['*'])
-
-    expect(
-      eventstoreAdapter.getCursorUntilEventTypes
-    ).toBeCalledWith('test-cursor-3', ['test-event'])
-
-    expect(
-      eventstoreAdapter.getCursorUntilEventTypes
-    ).toBeCalledWith('test-cursor-3', ['*'])
   })
 })
