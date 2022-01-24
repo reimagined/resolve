@@ -65,12 +65,19 @@
               "api/view-model/resolver"
             ]
           },
+          {
+            "type": "category",
+            "label": "API Handler",
+            "items": [
+              "api/api-handler/api-handler",
+              "api/api-handler/resolve-context"
+            ]
+          },
           "api/saga",
           "api/command",
           "api/event",
           "api/event-store-adapter",
           "api/middleware",
-          "api/api-handler",
           "api/resolve-scripts",
           {
             "type": "category",
