@@ -28,7 +28,7 @@ type EventSetSpecification = {
 }
 
 function autoAggregateId(i: number) {
-  return `AUTO_AGGREGATE_${i}}`
+  return `AUTO_AGGREGATE_${i}`
 }
 
 async function measureSaveEvent(

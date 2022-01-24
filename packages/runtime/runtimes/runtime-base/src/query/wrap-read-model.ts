@@ -701,7 +701,8 @@ const doOperation = async (
                 connection,
                 readModelName,
                 pool.eventstoreAdapter as EventstoreAdapter,
-                parameters.includeRuntimeStatus
+                parameters.includeRuntimeStatus,
+                parameters.retryTimeoutForRuntimeStatus
               )
             }
             default: {

@@ -1,12 +1,20 @@
 # Changelog
 
-## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+## [V0.33.12](https://github.com/reimagined/resolve/tree/V0.33.12) (2022-01-21)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.11...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.11...V0.33.12)
 
 **New features:**
 
 - Benchmarks for postgresql eventstore loadEvents and saveEvent [\#2212](https://github.com/reimagined/resolve/pull/2212)
+
+**Enhancements:**
+
+- Optimize event loading by single aggregateId \(special case\) [\#2216](https://github.com/reimagined/resolve/pull/2216)
+
+**Bug fixes:**
+
+- The IsAlive flag still works incorrectly [\#2200](https://github.com/reimagined/resolve/issues/2200)
 
 ## [V0.33.11](https://github.com/reimagined/resolve/tree/V0.33.11) (2022-01-20)
 

@@ -143,21 +143,6 @@ export const createRuntime = async (
     () => creationTime
   )
 
-  const broadcastEvent = eventBroadcastFactory({
-    eventStoreAdapter,
-    getVacantTimeInMillis,
-    eventSubscriberScope,
-    notifyEventSubscriber,
-    invokeBuildAsync,
-    eventListeners,
-  })
-
-  const { sendReactiveEvent } = params
-  const onCommandExecuted = commandExecutedHookFactory({
-    sendReactiveEvent,
-    broadcastEvent,
-  })
-
   const secretsManager = await eventStoreAdapter.getSecretsManager()
 
   const { domain, domainInterop } = params
@@ -282,6 +267,22 @@ export const createRuntime = async (
 
   const { getReactiveSubscription } = params
 
+  const broadcastEvent = eventBroadcastFactory({
+    eventStoreAdapter,
+    getVacantTimeInMillis,
+    eventSubscriberScope,
+    notifyEventSubscriber,
+    invokeBuildAsync,
+    eventSubscriber,
+    eventListeners,
+  })
+
+  const { sendReactiveEvent } = params
+  const onCommandExecuted = commandExecutedHookFactory({
+    sendReactiveEvent,
+    broadcastEvent,
+  })
+
   const runtime: Runtime = {
     eventStoreAdapter,
     uploader,
@@ -296,7 +297,7 @@ export const createRuntime = async (
     dispose: async function () {
       await dispose(this)
     },
-    broadcastEvent: broadcastEvent,
+    broadcastEvent,
     monitoring,
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/monitoring-base",
-  "version": "0.33.11",
+  "version": "0.33.12",
   "description": "This package is the base for reSolve monitoring adapters",
   "keywords": [
     "cqrs",
@@ -24,8 +24,8 @@
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@resolve-js/core": "0.33.11",
-    "@resolve-js/debug-levels": "0.33.11"
+    "@resolve-js/core": "0.33.12",
+    "@resolve-js/debug-levels": "0.33.12"
   },
   "devDependencies": {
     "jest": "27.0.3",
