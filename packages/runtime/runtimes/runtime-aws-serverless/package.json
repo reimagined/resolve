@@ -36,7 +36,7 @@
     "jsonwebtoken": "8.5.1",
     "lodash.partial": "4.2.1",
     "mime-types": "2.1.29",
-    "node-fetch": "2.6.5",
+    "node-fetch": "2.6.7",
     "qs": "6.9.6",
     "resolve-cloud-common": "0.0.164",
     "route-trie": "3.0.0",
