@@ -143,21 +143,6 @@ export const createRuntime = async (
     () => creationTime
   )
 
-  const broadcastEvent = eventBroadcastFactory({
-    eventStoreAdapter,
-    getVacantTimeInMillis,
-    eventSubscriberScope,
-    notifyEventSubscriber,
-    invokeBuildAsync,
-    eventListeners,
-  })
-
-  const { sendReactiveEvent } = params
-  const onCommandExecuted = commandExecutedHookFactory({
-    sendReactiveEvent,
-    broadcastEvent,
-  })
-
   const secretsManager = await eventStoreAdapter.getSecretsManager()
 
   const { domain, domainInterop } = params
@@ -202,10 +187,19 @@ export const createRuntime = async (
     readModels: domain.readModels,
   })
 
+  const {
+    getEventSubscriberDestination,
+    deleteQueue,
+    ensureQueue,
+    upstream,
+    uploader,
+  } = params
+
   const executeQuery = createQueryExecutor({
     invokeBuildAsync,
     applicationName: eventSubscriberScope,
     eventstoreAdapter: eventStoreAdapter,
+    getEventSubscriberDestination,
     readModelConnectors,
     loadReadModelProcedure,
     performanceTracer,
@@ -224,8 +218,6 @@ export const createRuntime = async (
     }),
   })
 
-  const { uploader } = params
-
   const getScheduler = () => {
     if (params.scheduler != null) {
       log.debug(`actual scheduler bound`)
@@ -241,6 +233,7 @@ export const createRuntime = async (
     executeCommand,
     executeQuery,
     eventstoreAdapter: eventStoreAdapter,
+    getEventSubscriberDestination,
     secretsManager,
     readModelConnectors,
     performanceTracer,
@@ -258,13 +251,6 @@ export const createRuntime = async (
     eventListeners,
   })
 
-  const {
-    deleteQueue,
-    ensureQueue,
-    getEventSubscriberDestination,
-    upstream,
-  } = params
-
   const eventListenersManager = eventListenersManagerFactory(
     {
       eventSubscriber,
@@ -276,11 +262,26 @@ export const createRuntime = async (
       eventSubscriberScope,
       deleteQueue,
       ensureQueue,
-      getEventSubscriberDestination,
     }
   )
 
   const { getReactiveSubscription } = params
+
+  const broadcastEvent = eventBroadcastFactory({
+    eventStoreAdapter,
+    getVacantTimeInMillis,
+    eventSubscriberScope,
+    notifyEventSubscriber,
+    invokeBuildAsync,
+    eventSubscriber,
+    eventListeners,
+  })
+
+  const { sendReactiveEvent } = params
+  const onCommandExecuted = commandExecutedHookFactory({
+    sendReactiveEvent,
+    broadcastEvent,
+  })
 
   const runtime: Runtime = {
     eventStoreAdapter,
@@ -296,7 +297,7 @@ export const createRuntime = async (
     dispose: async function () {
       await dispose(this)
     },
-    broadcastEvent: broadcastEvent,
+    broadcastEvent,
     monitoring,
   }
 

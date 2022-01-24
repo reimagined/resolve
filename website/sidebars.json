@@ -28,7 +28,7 @@
           "custom-read-model-connectors",
           "file-upload",
           "export-import",
-          "preparing-to-production",
+          "preparing-for-production",
           "code-splitting",
           "debugging",
           "testing",
@@ -65,13 +65,19 @@
               "api/view-model/resolver"
             ]
           },
-          "api/resolve-context",
+          {
+            "type": "category",
+            "label": "API Handler",
+            "items": [
+              "api/api-handler/api-handler",
+              "api/api-handler/resolve-context"
+            ]
+          },
           "api/saga",
           "api/command",
           "api/event",
           "api/event-store-adapter",
           "api/middleware",
-          "api/api-handler",
           "api/resolve-scripts",
           {
             "type": "category",

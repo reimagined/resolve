@@ -305,7 +305,10 @@ export type AdapterConnection<
 }
 
 export type AdapterOperationStatusMethodArguments<
-  T extends [includeRuntimeStatus?: boolean],
+  T extends [
+    includeRuntimeStatus?: boolean,
+    retryTimeoutForRuntimeStatus?: number
+  ],
   AdapterPool extends CommonAdapterPool
 > = [
   pool: AdapterPool,
@@ -315,7 +318,10 @@ export type AdapterOperationStatusMethodArguments<
 ]
 
 export type AdapterOperationStatusMethodReturnType<
-  T extends [includeRuntimeStatus?: boolean]
+  T extends [
+    includeRuntimeStatus?: boolean,
+    retryTimeoutForRuntimeStatus?: number
+  ]
 > = Promise<IfEquals<
   T['length'],
   0,
@@ -324,7 +330,19 @@ export type AdapterOperationStatusMethodReturnType<
     T['length'],
     1,
     IfEquals<T[0], true, RuntimeReadModelStatus, ReadModelStatus>,
-    never
+    IfEquals<
+      T['length'],
+      2,
+      IfEquals<
+        T[0],
+        true,
+        [IsTypeLike<T[1], number>] extends [never]
+          ? ReadModelStatus
+          : RuntimeReadModelStatus,
+        ReadModelStatus
+      >,
+      never
+    >
   >
 > | null>
 
@@ -361,7 +379,12 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
 
   reset(pool: AdapterPool, readModelName: string): Promise<void>
 
-  status<T extends [includeRuntimeStatus?: boolean]>(
+  status<
+    T extends [
+      includeRuntimeStatus?: boolean,
+      retryTimeoutForRuntimeStatus?: number
+    ]
+  >(
     ...args: AdapterOperationStatusMethodArguments<T, AdapterPool>
   ): AdapterOperationStatusMethodReturnType<T>
 

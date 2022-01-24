@@ -10,7 +10,10 @@ import type {
 } from './types'
 
 const status: ExternalMethods['status'] = async <
-  T extends [includeRuntimeStatus?: boolean]
+  T extends [
+    includeRuntimeStatus?: boolean,
+    retryTimeoutForRuntimeStatus?: number
+  ]
 >(
   ...args: AdapterOperationStatusMethodArguments<T, AdapterPool>
 ): AdapterOperationStatusMethodReturnType<T> => {
