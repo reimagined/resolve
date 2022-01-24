@@ -31,7 +31,7 @@
     "io-ts": "2.2.16",
     "io-ts-types": "0.5.15",
     "monocle-ts": "2.3.9",
-    "nanoid": "3.1.12",
+    "nanoid": "3.2.0",
     "newtype-ts": "0.3.4"
   },
   "devDependencies": {

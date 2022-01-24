@@ -42,7 +42,7 @@
     "@resolve-js/core": "0.33.12",
     "global": "4.4.0",
     "isomorphic-fetch": "3.0.0",
-    "node-fetch": "2.6.1",
+    "node-fetch": "2.6.7",
     "query-string": "6.14.1",
     "uuid": "8.3.2"
   },

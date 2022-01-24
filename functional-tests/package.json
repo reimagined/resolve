@@ -21,7 +21,7 @@
     "isomorphic-fetch": "3.0.0",
     "jest": "27.0.3",
     "lodash": "4.17.21",
-    "nanoid": "3.1.20",
+    "nanoid": "3.2.0",
     "semver": "7.3.4",
     "testcafe": "1.17.1",
     "testcafe-browser-tools": "2.0.15",
