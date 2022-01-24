@@ -11,7 +11,10 @@ import {
 } from '@resolve-js/readmodel-base'
 
 const status: ExternalMethods['status'] = async <
-  T extends [includeRuntimeStatus?: boolean]
+  T extends [
+    includeRuntimeStatus?: boolean,
+    retryTimeoutForRuntimeStatus?: number
+  ]
 >(
   ...args: AdapterOperationStatusMethodArguments<T, AdapterPool>
 ): AdapterOperationStatusMethodReturnType<T> => {

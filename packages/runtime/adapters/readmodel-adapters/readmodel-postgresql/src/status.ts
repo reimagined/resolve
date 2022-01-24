@@ -14,11 +14,20 @@ import type {
 const IS_ALIVE_TIMEOUT = 20000
 
 const status: ExternalMethods['status'] = async <
-  T extends [includeRuntimeStatus?: boolean]
+  T extends [
+    includeRuntimeStatus?: boolean,
+    retryTimeoutForRuntimeStatus?: number
+  ]
 >(
   ...args: AdapterOperationStatusMethodArguments<T, AdapterPool>
 ): AdapterOperationStatusMethodReturnType<T> => {
-  const [pool, readModelName, eventstoreAdapter, includeRuntimeStatus] = args
+  const [
+    pool,
+    readModelName,
+    eventstoreAdapter,
+    includeRuntimeStatus,
+    retryTimeoutForRuntimeStatus,
+  ] = args
   try {
     pool.activePassthrough = true
     let result: ReadModelStatus | RuntimeReadModelStatus | null = null
@@ -71,8 +80,13 @@ const status: ExternalMethods['status'] = async <
       result?.status === ('deliver' as ReadModelRunStatus)
     ) {
       let isAlive = false
-      const endTime = Date.now() + IS_ALIVE_TIMEOUT
+      const endTime =
+        Date.now() +
+        (retryTimeoutForRuntimeStatus != null
+          ? +retryTimeoutForRuntimeStatus
+          : IS_ALIVE_TIMEOUT)
       let currentTime = 0
+      let previousCursor = null
 
       do {
         try {
@@ -116,6 +130,11 @@ const status: ExternalMethods['status'] = async <
             ])
 
             isAlive = nextCursor == null || nextCursor === endCursor
+
+            if (previousCursor != null && Cursor !== previousCursor) {
+              isAlive = true
+            }
+            previousCursor = Cursor
           }
         } catch (error) {
           if (

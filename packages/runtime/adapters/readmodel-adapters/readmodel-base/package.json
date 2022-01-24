@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/readmodel-base",
-  "version": "0.33.11",
+  "version": "0.33.12",
   "description": "A base package for reSolve read model adapters",
   "keywords": [
     "cqrs",
@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "@babel/runtime": "7.14.0",
-    "@resolve-js/core": "0.33.11",
-    "@resolve-js/eventstore-base": "0.33.11",
+    "@resolve-js/core": "0.33.12",
+    "@resolve-js/eventstore-base": "0.33.12",
     "path-toolkit": "1.2.1",
     "uuid": "8.3.2"
   },
