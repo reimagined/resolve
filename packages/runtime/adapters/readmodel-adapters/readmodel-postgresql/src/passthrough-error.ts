@@ -50,6 +50,10 @@ const PassthroughError: PassthroughErrorFactory = Object.assign(
         ) ||
           checkFuzzyError(
             error,
+            /terminating connection because backend initialization completed past serverless scale point/i
+          ) ||
+          checkFuzzyError(
+            error,
             /terminating connection due to administrator command/i
           ) ||
           checkFuzzyError(error, /Connection terminated/i) ||
