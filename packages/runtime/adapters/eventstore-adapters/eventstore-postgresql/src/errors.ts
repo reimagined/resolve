@@ -27,6 +27,7 @@ export const isConnectionTerminatedError = (error: any): boolean => {
         error,
         /Client has encountered a connection error and is not queryable/i
       ) ||
+      checkFuzzyError(error, /in a read-only transaction/i) ||
       checkFormalError(error, 'ECONNRESET') ||
       checkFormalError(error, '08000') ||
       checkFormalError(error, '08003') ||
