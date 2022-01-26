@@ -77,13 +77,13 @@ const myApiHandler = async (req, res) => {
 
 #### Arguments
 
-| Argument Name | Type                                           | Description                   |
-| ------------- | ---------------------------------------------- | ----------------------------- |
-| `query `      | A read model query or view model query object. | Describes a query to execute. |
+| Argument Name | Type                                                                                                                         | Description                   |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `query `      | A [read model query](../read-model/query.md#query-object) or [view model query](../view-model/query.md#query-object) object. | Describes a query to execute. |
 
 #### Result
 
-A `promise` that resolves to a read model query result or view model query result depending on the query object's type.
+A `promise` that resolves to a [read model query result](../read-model/query.md#result-object) or [view model query result](../view-model/query.md#result-object) depending on the query object's type.
 
 ## Constants
 
