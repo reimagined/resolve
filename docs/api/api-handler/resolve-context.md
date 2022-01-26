@@ -18,20 +18,80 @@ The `resolve` context object exposes the following API:
 
 ## Methods
 
-| Function Name    | Description           |
-| ---------------- | --------------------- |
-| `executeCommand` | Emits a command.      |
-| `executeQuery`   | Queries a read model. |
-| `executeSaga`    |                       |
+| Function Name                       | Description                         |
+| ----------------------------------- | ----------------------------------- |
+| [`executeCommand`](#executecommand) | Emits a command.                    |
+| [`executeQuery`](#executequery)     | Queries a read model or view model. |
+
+### `executeCommand`
+
+Emits a command on the server side.
+
+#### Example
+
+```js
+const myApiHandler = async (req, res) => {
+  const { resolve } = req
+  try {
+    const result = await resolve.executeCommand({
+      type: 'addItem',
+      aggregateName: 'MyItems',
+      aggregateId: uuid(),
+      payload: { name: itemName },
+    })
+  } catch (e) {
+    ...
+  }
+  ...
+}
+```
+
+#### Arguments
+
+| Argument Name | Type                                              | Description                  |
+| ------------- | ------------------------------------------------- | ---------------------------- |
+| `command`     | A [command](../command.md#command-object) object. | Describes a command to emit. |
+
+#### Result
+
+A `promise` that resolves to a [command result](../command.md#command-result-object) object.
+
+### `executeQuery`
+
+#### Example
+
+```js
+const myApiHandler = async (req, res) => {
+  const { resolve } = req
+  try {
+    const result = await resolve.executeQuery({
+      modelName: 'MyList',
+      resolverName: 'all',
+    })
+  } catch (e) {
+    ...
+  }
+  ...
+}
+```
+
+#### Arguments
+
+| Argument Name | Type                                           | Description                   |
+| ------------- | ---------------------------------------------- | ----------------------------- |
+| `query `      | A read model query or view model query object. | Describes a query to execute. |
+
+#### Result
+
+A `promise` that resolves to a read model query result or view model query result depending on the query object's type.
 
 ## Constants
 
-| Constant Name     | Type                 | Description                                                                                                                                                                      |
-| ----------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `applicationName` | `string`             | The reSolve application's name as specified in `package.json`.                                                                                                                   |
-| `distDir`         | `string`             | The path to the WebPack `dist` directory within the application.                                                                                                                 |
-| `jwtCookie`       | `object`             | An object that contain [JWT cookie settings](../../application-configuration.md#jwtcookie)) as specified in the [application configuration](../../application-configuration.md). |
-| `rootPath`        | `string`             | The application's root URL path.                                                                                                                                                 |
-| `staticDir`       | `string`             | The path to a directory that contains static files.                                                                                                                              |
-| `staticPath`      | `string`             | The base URL path for static file URLs.                                                                                                                                          |
-| `staticRoutes?`   | `string[]` or `null` |                                                                                                                                                                                  |
+| Constant Name     | Type     | Description                                                                                                                                                                     |
+| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `applicationName` | `string` | The reSolve application's name as specified in `package.json`.                                                                                                                  |
+| `distDir`         | `string` | The path to the WebPack `dist` directory within the application.                                                                                                                |
+| `jwtCookie`       | `object` | An object that contain [JWT cookie settings](../../application-configuration.md#jwtcookie) as specified in the [application configuration](../../application-configuration.md). |
+| `rootPath`        | `string` | The application's root URL path.                                                                                                                                                |
+| `staticDir`       | `string` | The path to a directory that contains static files.                                                                                                                             |
+| `staticPath`      | `string` | The base URL path for static file URLs.                                                                                                                                         |

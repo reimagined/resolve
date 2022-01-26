@@ -21,7 +21,6 @@ The request objects exposes the following fields:
 | Field     | Description                                                                                        |
 | --------- | -------------------------------------------------------------------------------------------------- |
 | `resolve` | The [reSolve context](resolve-context.md) object that provides access to reSolve API and metadata. |
-| `adapter` | The name of the adapter used to handle the request (`"express"` or `"awslambda"`).                 |
 | `method`  | The request's HTTP method.                                                                         |
 | `path`    | The request URL's path part.                                                                       |
 | `body`    | The request body.                                                                                  |
