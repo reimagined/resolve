@@ -112,7 +112,7 @@ describe('common', () => {
   test('combines values in one metric if all params are the same', () => {
     const monitoring = createMonitoring()
 
-    tion('test-label', 1000)
+    monitoring.duration('test-label', 1000)
     monitoring.duration('test-label', 1500)
 
     const data = monitoring.getMetrics()
