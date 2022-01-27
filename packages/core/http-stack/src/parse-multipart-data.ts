@@ -1,106 +1,92 @@
-import type { HttpRequest, ContentType } from './types'
-import { parse as parseContentDisposition } from 'content-disposition'
-import { IncomingHttpHeaders } from 'http'
-import getContentType from './get-content-type'
+import type { IncomingHttpHeaders } from 'http'
+import type { Readable } from 'stream'
+import type { FileInfo } from 'busboy'
+import Busboy from 'busboy'
 
-const getBoundaryRegexp = (boundary: string) => {
-  return
-}
+import type { MultipartData } from './types'
+import parseContentType from './parse-content-type'
+import getLog from './get-log'
 
 const parseMultipartData = (
   body: Buffer | null,
-  headers: IncomingHttpHeaders,
-  contentType: ContentType = getContentType(headers)
-): Record<string, any> | null => {
-  if (
-    body == null ||
-    contentType.mediaType !== 'multipart/form-data' ||
-    contentType.boundary == null
-  ) {
-    return null
+  headers: IncomingHttpHeaders
+): Promise<MultipartData | null> => {
+  const contentType = headers['content-type']
+  if (body == null || contentType == null) {
+    return Promise.resolve(null)
   }
 
-  const multipart: Record<
-    string,
-    {
-      contentType: ContentType
-      body: string // TODO Buffer|null
-    }
-  > = {}
+  const {
+    type: mediaType,
+    subType: mediaSubType,
+    params: { boundary },
+  } = parseContentType(contentType)
 
-  const boundaryRegexp = new RegExp(
-    `\r?\n--${String(boundary).replace(
-      // eslint-disable-next-line no-useless-escape
-      /[-\/\\^$*+?.()|[\]{}]/g,
-      '\\$&'
-    )}(?:(?:\r?\n)|--)`,
-    'ig'
-  )
+  if (
+    mediaType !== 'multipart' ||
+    mediaSubType !== 'form-data' ||
+    boundary?.constructor !== String
+  ) {
+    return Promise.resolve(null)
+  }
 
-  // TODO encode/decode problems. Rework
-  const contentArray = `\n${body}\n`.split(boundaryRegexp).slice(1, -1)
+  return new Promise((resolve) => {
+    const busboy = Busboy({
+      headers: {
+        'content-type': headers['content-type'],
+      },
+    })
+    const result: MultipartData = {
+      files: [],
+      fields: {},
+    }
 
-  for (let index = 0; index < contentArray.length; index++) {
-    const contentArrayItem = contentArray[index]
-    if (contentArrayItem == null) {
-      continue
-    }
-    const separatorMatch = contentArrayItem.match(/\r?\n\r?\n/)
-    if (separatorMatch == null) {
-      continue
-    }
-    const separatorIndex = separatorMatch.index
-    if (separatorIndex == null) {
-      continue
-    }
-    const separatorLength = separatorMatch[0]?.length ?? 0
-    const inlineHeadersString = contentArrayItem.substring(0, separatorIndex)
-    const inlineBodyString = contentArrayItem.substring(
-      separatorIndex + separatorLength
+    busboy.on(
+      'file',
+      (
+        fieldName: string,
+        file: Readable,
+        { filename: fileName, mimeType, encoding }: FileInfo
+      ) => {
+        let content: Buffer
+
+        file.on('data', (data: Buffer) => {
+          content = data
+        })
+
+        file.on('end', () => {
+          if (content != null) {
+            result.files.push({
+              content,
+              fieldName,
+              fileName,
+              mimeType,
+              encoding,
+            })
+          }
+        })
+      }
     )
 
-    const inlineHeaders = inlineHeadersString
-      .split(/\r?\n/g)
-      .reduce<Record<string, string>>((acc, content) => {
-        const [inlineHeaderName, ...inlineHeaderContent] = content.split(
-          // eslint-disable-next-line no-useless-escape
-          /\: /g
-        )
-        if (inlineHeaderName != null) {
-          acc[inlineHeaderName.toLowerCase()] = inlineHeaderContent.join(': ')
-        }
-        return acc
-      }, {})
+    busboy.on('field', (fieldName: string, value: string) => {
+      result.fields[fieldName] = value
+    })
 
-    // const [inlineContentType, inlineCharset] = String(
-    //   inlineHeaders['content-type']
-    // )
-    //   .split(';')
-    //   .map((value) => value.trim().toLowerCase())
-    const inlineContentType = getContentType(inlineHeaders)
+    busboy.on('error', (error: Error) => {
+      const log = getLog('parse-multipart-data')
+      log.warn(error)
+      resolve(null)
+    })
 
-    const inlineHeaderContentDisposition = inlineHeaders['content-disposition']
+    busboy.on('finish', () => {
+      resolve(result)
+    })
 
-    if (inlineHeaderContentDisposition == null || inlineContentType == null) {
-      continue
-    }
+    busboy.write(body)
+    busboy.end()
 
-    const {
-      type: dispositionType,
-      parameters: { name },
-    } = parseContentDisposition(inlineHeaderContentDisposition)
-
-    if (dispositionType !== 'form-data' || name?.constructor !== String) {
-      continue
-    }
-
-    multipart[name as string] = {
-      contentType: inlineContentType,
-      body: inlineBodyString,
-    }
-  }
-
-  return multipart
+    return result
+  })
 }
 
 export default parseMultipartData

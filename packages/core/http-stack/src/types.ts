@@ -1,7 +1,8 @@
 import type { IncomingHttpHeaders } from 'http'
 import type { CookieSerializeOptions } from 'cookie'
-import type { INTERNAL } from './constants'
 import type { TrieOptions } from 'route-trie'
+
+import type { INTERNAL } from './constants'
 
 export type OnStartCallback<
   CustomParameters extends Record<string | symbol, any> = {}
@@ -76,6 +77,23 @@ export type ContentType = {
   mediaType?: string
   charset?: string
   boundary?: string
+}
+
+export type MultipartDataFile = {
+  content: Buffer
+  fieldName: string
+  encoding: string
+  mimeType: string
+  fileName?: string
+}
+
+export type MultipartDataFiles = Array<MultipartDataFile>
+
+export type MultipartDataFields = Record<string, string>
+
+export type MultipartData = {
+  files: MultipartDataFiles
+  fields: MultipartDataFields
 }
 
 export type HttpRequest<
