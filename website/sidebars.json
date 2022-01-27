@@ -7,8 +7,8 @@
         "type": "category",
         "label": "Basics",
         "items": [
-          "write-side",  
-          "read-side", 
+          "write-side",
+          "read-side",
           "sagas",
           "adapters",
           "api-handlers",
@@ -28,7 +28,7 @@
           "custom-read-model-connectors",
           "file-upload",
           "export-import",
-          "preparing-to-production",
+          "preparing-for-production",
           "running-in-containers",
           "code-splitting",
           "debugging",
@@ -89,7 +89,7 @@
       },
       "application-configuration",
       "faq",
-      "troubleshooting"    
+      "troubleshooting"
     ]
   }
 }

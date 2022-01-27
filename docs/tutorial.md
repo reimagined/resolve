@@ -166,8 +166,8 @@ A command handler returns an **event** object. This object should contain the fo
 
 The reSolve framework saves produced events to a persistent **[event store](write-side.md#event-store)**. A newly created application is configured to use a SQLite event store. We suggest that you keep this configuration throughout the tutorial. For information on how to use other storage types, see the following documentation topics:
 
-- [Adapters](https://github.com/reimagined/resolve/blob/master/docs/advanced-techniques.md#adapters)
-- [Configuring Adapters](https://github.com/reimagined/resolve/blob/master/docs/preparing-to-production.md#configuring-adapters)
+- [Adapters](adapters.md)
+- [Configuring Adapters](preparing-for-production.md#configuring-adapters)
 
 The last step is to register the implemented aggregate in the application's configuration file. To do this, open the **config.app.js** file and specify the following settings in the **aggregates** configuration section:
 

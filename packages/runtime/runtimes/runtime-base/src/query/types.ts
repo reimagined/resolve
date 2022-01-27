@@ -18,6 +18,7 @@ import type {
 } from '../types'
 
 export type CreateQueryOptions = {
+  getEventSubscriberDestination: (name: string) => string
   invokeBuildAsync: InvokeBuildAsync
   readModelConnectors: Record<string, ReadModelConnector>
   performanceTracer: PerformanceTracer | null
@@ -51,6 +52,7 @@ export type SerializedError = {
 
 export type ReadModelPool = {
   performanceTracer: CreateQueryOptions['performanceTracer']
+  getEventSubscriberDestination: (name: string) => string
   isDisposed: boolean
   connector: ReadModelConnector
   connections: Set<any>

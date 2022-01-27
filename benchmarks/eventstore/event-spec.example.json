@@ -1,0 +1,21 @@
+{
+  "auto": {
+    "typeCount": 0,
+    "aggregateCount": 20,
+    "payloadSize": 30,
+    "weight": 0.5
+  },
+  "extraEventSpecifications": [
+    {
+      "type": "BIG_EVENT",
+      "weight": 0.1,
+      "payloadSize": 2000
+    },
+    {
+      "aggregateId": "DENSE_AGGREGATE",
+      "weight": 0.4,
+      "payloadSize": 0
+    }
+  ],
+  "eventCount": 5000
+}

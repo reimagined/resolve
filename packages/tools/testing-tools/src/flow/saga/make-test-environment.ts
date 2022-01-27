@@ -189,6 +189,7 @@ export const makeTestEnvironment = (
       execution: () => void 0,
       publish: async () => void 0,
       duration: () => void 0,
+      custom: () => void 0,
       rate: () => void 0,
       getMetrics: () => ({ metrics: [] }),
       clearMetrics: () => void 0,
@@ -213,6 +214,7 @@ export const makeTestEnvironment = (
       )
 
       executor = createQueryExecutor({
+        getEventSubscriberDestination: () => 'LOCAL',
         applicationName: 'APP_NAME',
         readModelConnectors: {
           ADAPTER_NAME: actualAdapter,
@@ -229,13 +231,6 @@ export const makeTestEnvironment = (
       })
 
       try {
-        await eventstoreAdapter.ensureEventSubscriber({
-          applicationName: 'APP_NAME',
-          eventSubscriber: saga.name,
-          status: null,
-          destination: 'LOCAL',
-        })
-
         await executor.subscribe({
           modelName: saga.name,
           subscriptionOptions: {
@@ -285,15 +280,6 @@ export const makeTestEnvironment = (
       try {
         await executor.unsubscribe({
           modelName: saga.name,
-        })
-      } catch (err) {
-        errors.push(err)
-      }
-
-      try {
-        await eventstoreAdapter.removeEventSubscriber({
-          applicationName: 'APP_NAME',
-          eventSubscriber: saga.name,
         })
       } catch (err) {
         errors.push(err)

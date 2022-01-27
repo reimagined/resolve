@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2018",
+    "target": "es2020",
     "module": "commonjs",
     "moduleResolution": "node",
     "allowJs": true,
@@ -14,17 +14,11 @@
     "jsx": "react",
     "outDir": "lib",
     "declarationDir": "types",
-    "composite": true,
     "typeRoots": [
       "./typings",
       "./node_modules/@types",
       "../../../../../node_modules/@types"
     ]
   },
-  "include": ["src", "typings", "test"],
-  "references": [
-    {
-      "path": "../readmodel-base"
-    }
-  ]
+  "include": ["src", "typings", "test"]
 }

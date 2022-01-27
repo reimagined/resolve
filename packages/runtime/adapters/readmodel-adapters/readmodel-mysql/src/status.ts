@@ -11,11 +11,20 @@ import type {
 } from './types'
 
 const status: ExternalMethods['status'] = async <
-  T extends [includeRuntimeStatus?: boolean]
+  T extends [
+    includeRuntimeStatus?: boolean,
+    retryTimeoutForRuntimeStatus?: number
+  ]
 >(
   ...args: AdapterOperationStatusMethodArguments<T, AdapterPool>
 ): AdapterOperationStatusMethodReturnType<T> => {
-  const [pool, readModelName, eventstoreAdapter, includeRuntimeStatus] = args
+  const [
+    pool,
+    readModelName,
+    eventstoreAdapter,
+    includeRuntimeStatus,
+    retryTimeoutForRuntimeStatus,
+  ] = args
   try {
     pool.activePassthrough = true
     const {
@@ -68,7 +77,11 @@ const status: ExternalMethods['status'] = async <
       result?.status === ('deliver' as ReadModelRunStatus)
     ) {
       let isActive = false
-      const endTime = Date.now() + 5000
+      const endTime =
+        Date.now() +
+        (retryTimeoutForRuntimeStatus != null
+          ? +retryTimeoutForRuntimeStatus
+          : 5000)
       for (
         let currentTime = 0;
         currentTime < endTime;

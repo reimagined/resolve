@@ -37,6 +37,7 @@ let monitoring: {
   rate: jest.MockedFunction<NonNullable<Monitoring['rate']>>
   getMetrics: jest.MockedFunction<NonNullable<Monitoring['getMetrics']>>
   clearMetrics: jest.MockedFunction<NonNullable<Monitoring['clearMetrics']>>
+  custom: jest.MockedFunction<NonNullable<Monitoring['custom']>>
 }
 
 const makeTestRuntime = (): ReadModelRuntime => {
@@ -51,6 +52,7 @@ const makeTestRuntime = (): ReadModelRuntime => {
     rate: jest.fn(),
     getMetrics: jest.fn(),
     clearMetrics: jest.fn(),
+    custom: jest.fn(),
   }
 
   monitoring.group.mockReturnValue(monitoring)

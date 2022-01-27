@@ -4,6 +4,8 @@ import {
   StoredEventPointer,
 } from '@resolve-js/eventstore-base'
 
+import createMonitoring from '@resolve-js/monitoring-base'
+
 import {
   adapterFactory,
   jestTimeout,
@@ -204,6 +206,9 @@ maybeDescribe(`${adapterFactory.name}. Eventstore adapter reconnection`, () => {
   test('Terminating the connection should not interrupt eventstore operations by default', async () => {
     const terminatingClient = new Client(terminatorConfig)
     try {
+      const monitoring = createMonitoring()
+      adapter.setMonitoring(monitoring)
+
       await terminatingClient.connect()
       await adapter.loadEvents({ limit: 1, cursor: null })
       let runtimeInfo = adapter.runtimeInfo()
@@ -227,6 +232,12 @@ maybeDescribe(`${adapterFactory.name}. Eventstore adapter reconnection`, () => {
 
       const describeInfo = await adapter.describe()
       expect(describeInfo.eventCount).toEqual(stableEventCount)
+
+      const metricData = monitoring.getMetrics()
+      expect(metricData.metrics.length).toEqual(1)
+      expect(metricData.metrics[0].metricName).toEqual(
+        'EventstorePostgresqlReconnections'
+      )
     } finally {
       await terminatingClient.end()
     }

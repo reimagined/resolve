@@ -111,6 +111,7 @@ describe('runtime', () => {
       getEventLoader: jest.fn(),
       runtimeInfo: jest.fn(),
       setReconnectionMode: jest.fn(),
+      setMonitoring: jest.fn(),
     }
 
     uploadAdapter = {}
