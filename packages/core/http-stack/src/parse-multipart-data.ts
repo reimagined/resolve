@@ -7,10 +7,13 @@ import type { MultipartData } from './types'
 import parseContentType from './parse-content-type'
 import getLog from './get-log'
 
-const parseMultipartData = (
-  body: Buffer | null,
+const parseMultipartData = ({
+  body,
+  headers,
+}: {
+  body: Buffer | null
   headers: IncomingHttpHeaders
-): Promise<MultipartData | null> => {
+}): Promise<MultipartData | null> => {
   const contentType = headers['content-type']
   if (body == null || contentType == null) {
     return Promise.resolve(null)

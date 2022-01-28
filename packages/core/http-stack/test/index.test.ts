@@ -343,7 +343,7 @@ const tests: Array<{
       pattern: '/send-form-data',
       method: 'POST',
       handler: async (req, res) => {
-        const multipartData = await parseMultipartData(req.body, req.headers)
+        const multipartData = await parseMultipartData(req)
         res.json(multipartData)
       },
     },
@@ -372,37 +372,36 @@ const tests: Array<{
   },
   {
     route: {
-      pattern:'/parse-urlencoded',
-      method: 'GET',
+      pattern: '/parse-urlencoded',
+      method: 'POST',
       handler: async (req, res) => {
-        const urlencoded = await parseUrlencoded(req.body)
+        const urlencoded = await parseUrlencoded(req)
         res.json(urlencoded)
       },
     },
-    // key1=value1&key2=value21&key2=value22&key3=value3
     tests: [
       {
-        request: (() => {
-          const form = new FormData()
-          form.append('login', 'login')
-          form.append('password', 'password')
-          form.append('value', 42)
-          return {
-            body: form.getBuffer(),
-            headers: form.getHeaders(),
-          }
-        })(),
+        request: {
+          body: Buffer.from(
+            stringifyQuery(
+              { a: 'test', b: ['one', 'two'] },
+              { arrayFormat: 'bracket' }
+            )
+          ),
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          },
+        },
         accept: async (response) => {
           expect(response.status).toEqual(200)
-          expect((await response.json()).fields).toEqual({
-            login: 'login',
-            password: 'password',
-            value: '42',
+          expect(await response.json()).toEqual({
+            a: 'test',
+            b: ['one', 'two'],
           })
         },
-      }
-    ]
-  }
+      },
+    ],
+  },
 ]
 
 const corsMods: Array<{

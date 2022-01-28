@@ -19,10 +19,10 @@ test('method "parseMultipartData" should work correctly', async () => {
     contentType: 'text/plain',
   })
 
-  const multipartData = await parseMultipartData(
-    form.getBuffer(),
-    form.getHeaders()
-  )
+  const multipartData = await parseMultipartData({
+    body: form.getBuffer(),
+    headers: form.getHeaders(),
+  })
 
   if (multipartData == null) {
     expect(multipartData).not.toEqual(null)
