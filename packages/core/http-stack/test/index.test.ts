@@ -12,6 +12,7 @@ import type { HttpMethods, Route, LambdaOriginEdgeRequest, CORS } from '../src'
 import { HttpServer, AWSLambdaOriginEdge } from '../src'
 import RouterConfigBuilder from '../src/router-config-builder'
 import parseMultipartData from '../src/parse-multipart-data'
+import parseUrlencoded from '../src/parse-urlencoded'
 
 jest.setTimeout(1000 * 60)
 
@@ -369,6 +370,39 @@ const tests: Array<{
       },
     ],
   },
+  {
+    route: {
+      pattern:'/parse-urlencoded',
+      method: 'GET',
+      handler: async (req, res) => {
+        const urlencoded = await parseUrlencoded(req.body)
+        res.json(urlencoded)
+      },
+    },
+    // key1=value1&key2=value21&key2=value22&key3=value3
+    tests: [
+      {
+        request: (() => {
+          const form = new FormData()
+          form.append('login', 'login')
+          form.append('password', 'password')
+          form.append('value', 42)
+          return {
+            body: form.getBuffer(),
+            headers: form.getHeaders(),
+          }
+        })(),
+        accept: async (response) => {
+          expect(response.status).toEqual(200)
+          expect((await response.json()).fields).toEqual({
+            login: 'login',
+            password: 'password',
+            value: '42',
+          })
+        },
+      }
+    ]
+  }
 ]
 
 const corsMods: Array<{
