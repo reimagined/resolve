@@ -36,7 +36,7 @@
     "ts-jest": "27.0.5"
   },
   "peerDependencies": {
-    "aws-sdk": "^2.860.0"
+    "aws-sdk": "^2.1001.0"
   },
   "engines": {
     "node": ">=14.17"
