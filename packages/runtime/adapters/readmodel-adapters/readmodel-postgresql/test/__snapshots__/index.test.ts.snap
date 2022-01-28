@@ -12,22 +12,6 @@ Array [
   ],
   Array [
     "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "on",
-    "error",
-    [Function],
-  ],
-  Array [
-    "connect",
-  ],
-  Array [
-    "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "query",
     "
       CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"(
         \\"EventSubscriber\\" VARCHAR(190) NOT NULL,
@@ -89,6 +73,14 @@ Array [
          \\"EventTypes\\" = 'null',
          \\"AggregateIds\\" = 'null'
       ",
+  ],
+  Array [
+    "on",
+    "error",
+    [Function],
+  ],
+  Array [
+    "connect",
   ],
   Array [
     "query",
@@ -479,10 +471,6 @@ Array [
   ],
   Array [
     "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "query",
     "
       CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"(
         \\"EventSubscriber\\" VARCHAR(190) NOT NULL,
@@ -776,10 +764,6 @@ Array [
   ],
   Array [
     "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "query",
     "
       CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"(
         \\"EventSubscriber\\" VARCHAR(190) NOT NULL,
@@ -1056,10 +1040,6 @@ Array [
   ],
   Array [
     "connect",
-  ],
-  Array [
-    "query",
-    "SELECT 0 AS \\"defunct\\"",
   ],
   Array [
     "query",
@@ -1464,10 +1444,6 @@ Array [
   ],
   Array [
     "query",
-    "SELECT 0 AS \\"defunct\\"",
-  ],
-  Array [
-    "query",
     "
       CREATE TABLE IF NOT EXISTS \\"databaseName\\".\\"tablePrefix__databaseName__LEDGER__\\"(
         \\"EventSubscriber\\" VARCHAR(190) NOT NULL,
@@ -1734,10 +1710,6 @@ Array [
   ],
   Array [
     "connect",
-  ],
-  Array [
-    "query",
-    "SELECT 0 AS \\"defunct\\"",
   ],
   Array [
     "query",

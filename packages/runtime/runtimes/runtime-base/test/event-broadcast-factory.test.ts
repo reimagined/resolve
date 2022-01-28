@@ -73,6 +73,8 @@ describe('broadcaster', () => {
     getVacantTimeInMillis: () => Number.MAX_SAFE_INTEGER,
     invokeBuildAsync,
     notifyEventSubscriber,
+    //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    eventSubscriber: null! as any,
   }
 
   const eventPointer: EventPointer = {
