@@ -31,15 +31,6 @@ export const shutdownOne = async ({
     }
 
     try {
-      await eventStoreAdapter.removeEventSubscriber({
-        applicationName: eventSubscriberScope,
-        eventSubscriber: name,
-      })
-    } catch (err) {
-      errors.push(err)
-    }
-
-    try {
       await deleteQueue(name)
     } catch (err) {
       errors.push(err)

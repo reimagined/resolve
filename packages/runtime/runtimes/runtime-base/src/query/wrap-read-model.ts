@@ -187,20 +187,31 @@ export const subscribeImpl = async (
     })
   )[0]
   if (entry == null) {
-    return
-  }
-  await pool.eventstoreAdapter.ensureEventSubscriber({
-    applicationName: pool.applicationName,
-    eventSubscriber: readModelName,
-    status: {
+    await pool.eventstoreAdapter.ensureEventSubscriber({
+      applicationName: pool.applicationName,
       eventSubscriber: readModelName,
-      status: 'deliver',
-      busy: false,
-      ...entry.status,
-      ...parameters.subscriptionOptions,
-    },
-    updateOnly: true,
-  })
+      destination: pool.getEventSubscriberDestination(readModelName),
+      status: {
+        eventSubscriber: readModelName,
+        status: 'deliver',
+        busy: false,
+        ...parameters.subscriptionOptions,
+      },
+    })
+  } else {
+    await pool.eventstoreAdapter.ensureEventSubscriber({
+      applicationName: pool.applicationName,
+      eventSubscriber: readModelName,
+      status: {
+        eventSubscriber: readModelName,
+        status: 'deliver',
+        busy: false,
+        ...entry.status,
+        ...parameters.subscriptionOptions,
+      },
+      updateOnly: true,
+    })
+  }
 }
 
 export const resubscribeImpl = async (
@@ -216,13 +227,13 @@ export const resubscribeImpl = async (
   await pool.eventstoreAdapter.ensureEventSubscriber({
     applicationName: pool.applicationName,
     eventSubscriber: readModelName,
+    destination: pool.getEventSubscriberDestination(readModelName),
     status: {
-      ...parameters.subscriptionOptions,
       eventSubscriber: readModelName,
-      status: 'skip',
+      status: 'deliver',
       busy: false,
+      ...parameters.subscriptionOptions,
     },
-    updateOnly: true,
   })
 }
 
@@ -231,12 +242,19 @@ export const unsubscribeImpl = async (
   readModelName: string,
   parameters: {}
 ) => {
-  await pool.eventstoreAdapter.ensureEventSubscriber({
-    applicationName: pool.applicationName,
-    eventSubscriber: readModelName,
-    status: null,
-    updateOnly: true,
-  })
+  const entry = (
+    await pool.eventstoreAdapter.getEventSubscribers({
+      applicationName: pool.applicationName,
+      eventSubscriber: readModelName,
+    })
+  )[0]
+
+  if (entry != null) {
+    await pool.eventstoreAdapter.removeEventSubscriber({
+      applicationName: pool.applicationName,
+      eventSubscriber: readModelName,
+    })
+  }
 }
 
 export const customReadModelMethods: Record<
@@ -683,7 +701,8 @@ const doOperation = async (
                 connection,
                 readModelName,
                 pool.eventstoreAdapter as EventstoreAdapter,
-                parameters.includeRuntimeStatus
+                parameters.includeRuntimeStatus,
+                parameters.retryTimeoutForRuntimeStatus
               )
             }
             default: {
@@ -755,6 +774,7 @@ const wrapReadModel = ({
   applicationName,
   interop,
   readModelConnectors,
+  getEventSubscriberDestination,
   invokeBuildAsync,
   loadReadModelProcedure,
   performanceTracer,
@@ -779,6 +799,7 @@ const wrapReadModel = ({
     await loadReadModelProcedure(interop.name)
 
   const pool: ReadModelPool = {
+    getEventSubscriberDestination,
     invokeBuildAsync,
     applicationName,
     connections: new Set(),
