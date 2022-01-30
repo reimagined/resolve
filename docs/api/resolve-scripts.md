@@ -32,8 +32,6 @@ Builds an application.
 
 #### Example
 
-#### build
-
 <!-- prettier-ignore-start -->
 
 [mdis]:# (../../tests/resolve-scripts-sample/run.js#build)

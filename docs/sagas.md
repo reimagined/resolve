@@ -81,7 +81,7 @@ You can define a saga in one of the following ways:
 
 - In one source file as an object that contains the `handlers` and `sideEffects` objects.
 
-  ##### common/sagas/user-confirmation.saga.js:
+  **common/sagas/user-confirmation.saga.js:**
 
   ```js
   export default {
@@ -96,7 +96,7 @@ You can define a saga in one of the following ways:
 
 - In two separate files.
 
-  ##### common/sagas/user-confirmation.handlers.js:
+  **common/sagas/user-confirmation.handlers.js:**
 
   ```js
   export default {
@@ -104,7 +104,7 @@ You can define a saga in one of the following ways:
   }
   ```
 
-  ##### common/sagas/user-confirmation.side-effects.js:
+  **common/sagas/user-confirmation.side-effects.js:**
 
   ```js
   export default {

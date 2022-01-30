@@ -64,20 +64,20 @@ The reSolve repository contains example and template projects. You can use them 
 
 You can install any of these projects on your machine using the `create-resolve-app` tool with the `-e` flag followed by an example or template name.
 
-##### npm
+**npm**
 
 ```sh
 npm install -g create-resolve-app
 create-resolve-app resolve-example -e <example name>
 ```
 
-##### npx
+**npx**
 
 ```sh
 npx create-resolve-app resolve-example -e <example name>
 ```
 
-##### yarn
+**yarn**
 
 ```sh
 yarn create resolve-app resolve-example -e <example name>

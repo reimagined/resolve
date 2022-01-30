@@ -59,6 +59,6 @@ const appConfig = {
 }
 ```
 
-### Example
+## Example
 
 The [Personal Data](https://github.com/reimagined/resolve/tree/dev/examples/ts/personal-data) example application uses middleware to implement user authorization.
