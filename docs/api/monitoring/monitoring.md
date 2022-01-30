@@ -19,6 +19,7 @@ A monitoring object exposes the following API:
 | [`group`](#group)               | Create a monitoring group.                                                                 |
 | [`getMetrics`](#getmetrics)     | Get a list of collected metrics.                                                           |
 | [`clearMetrics`](#clearmetrics) | Clear the list of collected metrics.                                                       |
+| [`custom`](#custom)             | Registers a custom metric.                                                                 |
 
 ### `error`
 

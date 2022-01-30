@@ -20,6 +20,7 @@ A monitoring adapter implementation should expose the following interface:
 | [`group`](#group)               | Create a monitoring group.                                                                 |
 | [`getMetrics`](#getmetrics)     | Get a list of collected metrics.                                                           |
 | [`clearMetrics`](#clearmetrics) | Clear the list of collected metrics.                                                       |
+| [`custom`](#custom)             | Registers a custom metric.                                                                 |
 
 All of the listed functions except for `publish` have a default implementation in the base package.
 
