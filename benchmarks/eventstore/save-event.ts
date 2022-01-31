@@ -5,7 +5,7 @@ import type {
 } from '@resolve-js/eventstore-base'
 import { performance } from 'perf_hooks'
 import minimist from 'minimist'
-import { createAdapter, createEventstore } from './utils'
+import { createAdapter, createEventstore, clearEventstore } from './utils'
 import fs from 'fs'
 
 type EventSpecification = {
@@ -168,8 +168,8 @@ const spec: EventSetSpecification = JSON.parse(
   fs.readFileSync(specPath).toString()
 )
 
-let shouldCreate = parsed['create'] === 'true'
-let shouldClear = parsed['clear'] === 'true'
+const shouldCreate = parsed['create'] === 'true'
+const shouldClear = parsed['clear'] === 'true'
 
 type Epoch = {
   eventCount: number
@@ -181,16 +181,14 @@ void (async () => {
     console.log(`Creating a new event store "${dbName}"`)
     await createEventstore(dbName)
   }
+  if (shouldClear) {
+    console.log(`Clearing the eventstore "${dbName}"`)
+    await clearEventstore(dbName)
+  }
 
   const adapter = createAdapter(dbName)
   adapter.establishTimeLimit(() => 25000)
   try {
-    if (shouldClear) {
-      console.log(`Clearing the eventstore "${dbName}"`)
-      await adapter.drop()
-      await adapter.init()
-    }
-
     const description = await adapter.describe()
     console.log('Event count before benchmark: ', description.eventCount)
     console.log('Saving new events using specification: ', spec)
