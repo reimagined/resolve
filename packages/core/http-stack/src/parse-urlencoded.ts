@@ -1,6 +1,7 @@
-import parseContentType from './parse-content-type'
 import { IncomingHttpHeaders } from 'http'
 import { parse as parseQuery } from 'query-string'
+
+import parseContentType from './parse-content-type'
 
 const parseUrlencoded = async ({
   body,
