@@ -1,21 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://reimagined.github.io/resolve/blog</id>
+    <id>https://www.resolve.sh/blog</id>
     <title>reSolve Blog</title>
-    <updated>2018-12-05T00:00:00.000Z</updated>
+    <updated>2019-05-30T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://reimagined.github.io/resolve/blog"/>
+    <link rel="alternate" href="https://www.resolve.sh/blog"/>
     <subtitle>reSolve Blog</subtitle>
-    <icon>https://reimagined.github.io/resolve/img/favicon.png</icon>
+    <icon>https://www.resolve.sh/img/favicon.png</icon>
     <entry>
-        <title type="html"><![CDATA[Welcome to reSolve]]></title>
-        <id>Welcome to reSolve</id>
-        <link href="https://reimagined.github.io/resolve/blog/2018/12/5/welcome"/>
-        <updated>2018-12-05T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Hello, this is going to be a place for reSolve blog posts.]]></summary>
-        <content type="html"><![CDATA[<p>Hello, this is going to be a place for reSolve blog posts.</p><p>Can&#x27;t wait to see you here</p>]]></content>
+        <title type="html"><![CDATA[Welcome]]></title>
+        <id>welcome</id>
+        <link href="https://www.resolve.sh/blog/welcome"/>
+        <updated>2019-05-30T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Blog features are powered by the blog plugin. Simply add files to the blog directory. It supports tags as well!]]></summary>
         <author>
-            <name>Roman Eremin</name>
+            <name>Yangshun Tay</name>
+            <uri>https://github.com/yangshun</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Hello]]></title>
+        <id>hello-world</id>
+        <link href="https://www.resolve.sh/blog/hello-world"/>
+        <updated>2019-05-29T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Welcome to this blog. This blog is created with Docusaurus 2 alpha.]]></summary>
+        <author>
+            <name>Endilie Yacop Sucipto</name>
+            <uri>https://github.com/endiliey</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Hola]]></title>
+        <id>hola</id>
+        <link href="https://www.resolve.sh/blog/hola"/>
+        <updated>2019-05-28T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet]]></summary>
+        <author>
+            <name>Gao Wei</name>
+            <uri>https://github.com/wgao19</uri>
         </author>
     </entry>
 </feed>
