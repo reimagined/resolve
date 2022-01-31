@@ -1,32 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>reSolve Blog</title>
-        <link>https://www.resolve.sh/blog</link>
+        <link>https://reimagined.github.io/resolve/blog</link>
         <description>reSolve Blog</description>
-        <lastBuildDate>Thu, 30 May 2019 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 05 Dec 2018 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
-            <title><![CDATA[Welcome]]></title>
-            <link>https://www.resolve.sh/blog/welcome</link>
-            <guid>welcome</guid>
-            <pubDate>Thu, 30 May 2019 00:00:00 GMT</pubDate>
-            <description><![CDATA[Blog features are powered by the blog plugin. Simply add files to the blog directory. It supports tags as well!]]></description>
-        </item>
-        <item>
-            <title><![CDATA[Hello]]></title>
-            <link>https://www.resolve.sh/blog/hello-world</link>
-            <guid>hello-world</guid>
-            <pubDate>Wed, 29 May 2019 00:00:00 GMT</pubDate>
-            <description><![CDATA[Welcome to this blog. This blog is created with Docusaurus 2 alpha.]]></description>
-        </item>
-        <item>
-            <title><![CDATA[Hola]]></title>
-            <link>https://www.resolve.sh/blog/hola</link>
-            <guid>hola</guid>
-            <pubDate>Tue, 28 May 2019 00:00:00 GMT</pubDate>
-            <description><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet]]></description>
+            <title><![CDATA[Welcome to reSolve]]></title>
+            <link>https://reimagined.github.io/resolve/blog/2018/12/5/welcome</link>
+            <guid>Welcome to reSolve</guid>
+            <pubDate>Wed, 05 Dec 2018 00:00:00 GMT</pubDate>
+            <description><![CDATA[Hello, this is going to be a place for reSolve blog posts.]]></description>
+            <content:encoded><![CDATA[<p>Hello, this is going to be a place for reSolve blog posts.</p><p>Can&#x27;t wait to see you here</p>]]></content:encoded>
         </item>
     </channel>
 </rss>
