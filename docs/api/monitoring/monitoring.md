@@ -14,12 +14,12 @@ A monitoring object exposes the following API:
 | [`duration`](#duration)         | Registers the duration of an operation.                                                    |
 | [`time`](#time)                 | Starts execution time measurement.                                                         |
 | [`timeEnd`](#timeend)           | Ends execution time measurement and registers the resulting duration.                      |
+| [`custom`](#custom)             | Registers a custom metric.                                                                 |
 | [`publish`](#publish)           | Defined by an implementation, publishes the collected metrics to the intended destination. |
 | [`rate`](#rate)                 | Registers operation execution rate during the specified time interval in seconds.          |
 | [`group`](#group)               | Create a monitoring group.                                                                 |
 | [`getMetrics`](#getmetrics)     | Get a list of collected metrics.                                                           |
 | [`clearMetrics`](#clearmetrics) | Clear the list of collected metrics.                                                       |
-| [`custom`](#custom)             | Registers a custom metric.                                                                 |
 
 ### `error`
 
@@ -113,6 +113,22 @@ monitoring.timeEnd('Execution')
 | `name`        | `string` | The ID of the timer to stop.                                          |
 | `timestamp?`  | `number` | A moment in time at which to stop counting. Defaults to `Date.now()`. |
 
+### `custom`
+
+Registers the specified custom metric. If the metric object's `value` and/or `count` fields are not specified, the default implementation sets them to `1`.
+
+#### Example
+
+```js
+monitoring.custom(myMetric)
+```
+
+#### Arguments
+
+| Argument Name | Type                                                      | Descriptions                      |
+| ------------- | --------------------------------------------------------- | --------------------------------- |
+| `metricData`  | A [custom metric object](metric.md#custom-metric-object). | Specifies a custom metric's data. |
+
 ### `publish`
 
 Defined by an implementation, publishes the collected metrics to the intended destination.
@@ -150,6 +166,8 @@ Registers operation execution rate during the specified time interval in seconds
 monitoring.rate('ReadModelFeedingRate', eventCount, applyDuration / 1000)
 ```
 
+#### Arguments
+
 | Argument Name | Type     | Descriptions                                                        |
 | ------------- | -------- | ------------------------------------------------------------------- |
 | `metricName`  | `string` | The name of the metric to add.                                      |
@@ -166,9 +184,15 @@ Creates a monitoring group and returns a monitoring adapter instance for this gr
 const groupMonitoring = monitoring.group({ Part: 'ReadModel' })
 ```
 
+#### Arguments
+
 | Argument Name | Type                       | Descriptions                                |
 | ------------- | -------------------------- | ------------------------------------------- |
 | `config`      | A key-value pair `object`. | A key-value pair that identifies the group. |
+
+#### Result
+
+A monitoring object instance that operates on the created group.
 
 ### `getMetrics`
 
@@ -180,6 +204,10 @@ Gets a list of collected metrics.
 const metrics = getMetrics('default')
 ```
 
+| Argument Name | Type     | Descriptions                                                          |
+| ------------- | -------- | --------------------------------------------------------------------- |
+| `id`          | `string` | The metrics adapter ID as specified in the application configuration. |
+
 #### Result
 
 The returned value is an array of [`metric`](metric.md) objects.
@@ -189,7 +217,11 @@ The returned value is an array of [`metric`](metric.md) objects.
 #### Example
 
 ```js
-const metrics = clearMetrics('default')
+monitoring.clearMetrics('default')
 ```
 
 Clear the list of collected metrics.
+
+| Argument Name | Type     | Descriptions                                                          |
+| ------------- | -------- | --------------------------------------------------------------------- |
+| `id`          | `string` | The metrics adapter ID as specified in the application configuration. |

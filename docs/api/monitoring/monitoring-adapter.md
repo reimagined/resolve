@@ -15,12 +15,12 @@ A monitoring adapter implementation should expose the following interface:
 | [`duration`](#duration)         | Registers duration of an operation.                                                        |
 | [`time`](#time)                 | Starts execution time measurement.                                                         |
 | [`timeEnd`](#timeend)           | Ends execution time measurement and registers the resulting duration.                      |
+| [`custom`](#custom)             | Registers a custom metric.                                                                 |
 | [`publish`](#publish)           | Defined by an implementation, publishes the collected metrics to the intended destination. |
 | [`rate`](#rate)                 | Registers operation execution rate during the specified time interval in seconds.          |
 | [`group`](#group)               | Create a monitoring group.                                                                 |
 | [`getMetrics`](#getmetrics)     | Get a list of collected metrics.                                                           |
 | [`clearMetrics`](#clearmetrics) | Clear the list of collected metrics.                                                       |
-| [`custom`](#custom)             | Registers a custom metric.                                                                 |
 
 All of the listed functions except for `publish` have a default implementation in the base package.
 
@@ -78,6 +78,16 @@ Ends time measurement and registers the resulting duration. The default implemen
 | `name`        | `string` | The ID of the timer to stop.                                          |
 | `timestamp?`  | `number` | A moment in time at which to stop counting. Defaults to `Date.now()`. |
 
+### `custom`
+
+Registers the specified custom metric. If the metric object's `value` and/or `count` fields are not specified, the default implementation sets them to `1`.
+
+#### Arguments
+
+| Argument Name | Type                                                      | Descriptions                      |
+| ------------- | --------------------------------------------------------- | --------------------------------- |
+| `metricData`  | A [custom metric object](metric.md#custom-metric-object). | Specifies a custom metric's data. |
+
 ### `publish`
 
 Defined by an implementation, publishes the collected metrics to the intended destination.
@@ -103,6 +113,8 @@ The monitoring adapters shipped with reSolve implement the `publish` function as
 
 Registers operation execution rate during the specified time interval in seconds. The default implementation adds a value in times per N seconds to the specified metric.
 
+#### Arguments
+
 | Argument Name | Type     | Descriptions                                                        |
 | ------------- | -------- | ------------------------------------------------------------------- |
 | `metricName`  | `string` | The name of the metric to add.                                      |
@@ -113,13 +125,21 @@ Registers operation execution rate during the specified time interval in seconds
 
 Creates a monitoring group and returns a monitoring adapter instance for this group.
 
+#### Arguments
+
 | Argument Name | Type                       | Descriptions                                |
 | ------------- | -------------------------- | ------------------------------------------- |
 | `config`      | A key-value pair `object`. | A key-value pair that identifies the group. |
 
+#### Result
+
+A monitoring adapter instance that operates on the created group.
+
 ### `getMetrics`
 
 Gets a list of collected metrics.
+
+#### Result
 
 The returned value is an array of [`metric`](metric.md) objects.
 
