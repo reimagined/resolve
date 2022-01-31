@@ -6,7 +6,7 @@ import { storyCreateSaga } from './sagas/story-create-saga'
 import { devTools } from './enhancers/redux-devtools'
 import { History } from 'history'
 
-const getRedux = (
+export const getRedux = (
   { 'comments-hn': getCommentsOptions }: { 'comments-hn': () => any },
   history: History
 ) => {
@@ -24,5 +24,3 @@ const getRedux = (
     enhancers: [devTools],
   }
 }
-
-export default getRedux

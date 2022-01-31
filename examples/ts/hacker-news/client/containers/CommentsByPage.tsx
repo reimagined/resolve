@@ -1,22 +1,16 @@
 import React from 'react'
-import { Redirect } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
+import { CommentsPaginateRenderless } from '@resolve-js/module-comments'
 
 import { Comment } from '../components/Comment'
 import { Pagination } from '../components/Pagination'
-import { CommentsPaginateRenderless } from '@resolve-js/module-comments'
-
 import { ITEMS_PER_PAGE } from '../constants'
-import { RouteComponentProps } from 'react-router'
 
-type MatchParams = { page?: string }
+const CommentsByPage = () => {
+  let { page } = useParams<'page'>()
 
-const CommentsByPage = ({
-  match: {
-    params: { page },
-  },
-}: RouteComponentProps<MatchParams>) => {
   return page && !Number.isInteger(Number(page)) ? (
-    <Redirect push to={`/error?text=No such page`} />
+    <Navigate to={`/error?text=No such page`} />
   ) : (
     <CommentsPaginateRenderless
       itemsOnPage={ITEMS_PER_PAGE}

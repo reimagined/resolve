@@ -7,36 +7,23 @@ const getStories = async (
   store: ResolveStore,
   { first, offset }: { first: number; offset: number }
 ) => {
-  const search = type && type.constructor === String ? { type } : {}
   const skip = first || 0
-  const stories = await store.find(
-    'Stories',
-    search,
-    null,
-    { createdAt: -1 },
-    skip,
-    offset
-  )
 
-  return Array.isArray(stories) ? stories : []
+  const stories =
+    (await store.find(
+      'Stories',
+      { type },
+      null,
+      { createdAt: -1 },
+      skip,
+      offset
+    )) ?? []
+
+  return stories
 }
 
 const getStory = async (store: ResolveStore, { id }: { id: string }) => {
-  const story = await store.findOne('Stories', { id })
-
-  if (!story) {
-    return null
-  }
-
-  const type = !story.link
-    ? 'ask'
-    : /^(Show HN)/.test(story.title)
-    ? 'show'
-    : 'story'
-
-  Object.assign(story, { type })
-
-  return story
+  return await store.findOne('Stories', { id })
 }
 
 const getUser = async (
@@ -62,9 +49,9 @@ const getUser = async (
 const hackerNewsResolvers: ReadModelResolvers<ResolveStore> = {
   story: getStory,
   allStories: (store, params: GetStoriesParams) =>
-    getStories(null, store, params),
+    getStories(undefined, store, params),
   askStories: (store, params: GetStoriesParams) =>
-    getStories.bind('ask', store, params),
+    getStories('ask', store, params),
   showStories: (store, params: GetStoriesParams) =>
     getStories('show', store, params),
   user: getUser,

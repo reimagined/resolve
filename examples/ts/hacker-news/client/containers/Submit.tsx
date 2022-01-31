@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react'
+import styled from 'styled-components'
 import { v4 as uuid } from 'uuid'
 import { useSelector } from 'react-redux'
-import { Redirect } from 'react-router'
-import styled from 'styled-components'
-
+import { Navigate } from 'react-router-dom'
 import { useReduxCommand } from '@resolve-js/redux'
+
 import { StoreState, UserState } from '../../types'
 
 const FormLabel = styled.div`
@@ -47,8 +47,8 @@ const Submit = () => {
 
   const me = useSelector<StoreState, UserState>((state) => state.jwt)
 
-  if (!me?.id) {
-    return <Redirect to="/login?redirect=/submit" />
+  if (!me?.id && typeof window !== 'undefined') {
+    return <Navigate to="/login?redirect=/submit" />
   }
 
   return (

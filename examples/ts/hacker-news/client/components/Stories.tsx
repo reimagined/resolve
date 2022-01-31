@@ -1,5 +1,5 @@
 import React from 'react'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 
 import { Story } from '../containers/Story'
 import { Pagination } from './Pagination'
@@ -9,7 +9,7 @@ type StoriesProps = { items: any[]; page?: string; type: string }
 
 const Stories = ({ items = [], page, type }: StoriesProps) => {
   if (items === null || (page && !Number.isInteger(Number(page)))) {
-    return <Redirect push to="/error?text=No such page" />
+    return <Navigate to="/error?text=No such page" />
   }
 
   const start = +(ITEMS_PER_PAGE * (page ? Number(page) - 1 : 0)) + 1

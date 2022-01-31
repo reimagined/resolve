@@ -1,13 +1,13 @@
 import React from 'react'
-import { NavLink, Link as NormalLink } from 'react-router-dom'
 import styled from 'styled-components'
-import { renderRoutes, RouteConfigComponentProps } from 'react-router-config'
+import { NavLink, Link as NormalLink, useRoutes } from 'react-router-dom'
 
 import { Splitter } from '../components/Splitter'
 import { Header } from './Header'
 import { LoginInfo } from './LoginInfo'
 import { StaticImage } from './StaticImage'
 import { Search } from './Search'
+import { RouteObject } from 'react-router'
 
 const ContentRoot = styled.div`
   width: 90%;
@@ -72,7 +72,7 @@ const FooterLink = styled.a`
   text-decoration: underline;
 `
 
-const App = ({ route }: RouteConfigComponentProps) => (
+const App = ({ routes }: { routes: Array<RouteObject> }) => (
   <div>
     <Header
       title="reSolve Hacker News"
@@ -100,7 +100,7 @@ const App = ({ route }: RouteConfigComponentProps) => (
         <Search />
       </PageHeader>
 
-      <Content>{renderRoutes(route.routes)}</Content>
+      <Content>{useRoutes(routes)}</Content>
 
       <Footer>
         <FooterLink href="https://github.com/reimagined/resolve">

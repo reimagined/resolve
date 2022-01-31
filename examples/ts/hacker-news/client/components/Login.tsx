@@ -1,13 +1,16 @@
 import React from 'react'
-import { Location } from 'history'
+import { useSearchParams } from 'react-router-dom'
+
 import { AuthForm } from './AuthForm'
 
-const Login = (props: { location: Location }) => {
+const Login = () => {
+  let [searchParams] = useSearchParams()
+
   return (
     <div>
       <AuthForm
         buttonText="login"
-        action={`/api/login${props.location.search}`}
+        action={`/api/login?${searchParams.toString()}`}
         title="Login"
       />
       <AuthForm

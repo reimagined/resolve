@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useReduxReadModel } from '@resolve-js/redux'
 import { useSelector } from 'react-redux'
+
 import { SearchResults } from './SearchResults'
 import { Splitter } from '../components/Splitter'
 

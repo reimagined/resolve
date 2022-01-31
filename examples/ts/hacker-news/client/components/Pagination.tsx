@@ -1,6 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { NavLink } from 'react-router-dom'
+
 import { Splitter } from './Splitter'
 
 export const PaginationRoot = styled.div`

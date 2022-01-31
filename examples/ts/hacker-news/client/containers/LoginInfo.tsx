@@ -1,6 +1,6 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import styled from 'styled-components'
+import { useSelector } from 'react-redux'
 import { Link as NormalLink } from 'react-router-dom'
 
 import { Splitter } from '../components/Splitter'

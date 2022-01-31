@@ -13,7 +13,7 @@ export function* storyCreateSaga(
     (action: CommandAction) =>
       action.type === SEND_COMMAND_SUCCESS &&
       action.command.type === 'createStory',
-    function* (action) {
+    function* (action: CommandAction) {
       while (true) {
         try {
           const { data } = yield client.query({
@@ -27,9 +27,7 @@ export function* storyCreateSaga(
             continue
           }
 
-          yield history.push(
-            `/storyDetails/${(action as any).command.aggregateId}`
-          )
+          yield history.push(`/storyDetails/${action.command.aggregateId}`)
           break
         } catch (error) {
           // eslint-disable-next-line no-console

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import sanitizer from 'sanitizer'
 import styled from 'styled-components'
+import sanitizer from 'sanitizer'
 
 import { Splitter } from './Splitter'
 import { TimeAgo } from './TimeAgo'

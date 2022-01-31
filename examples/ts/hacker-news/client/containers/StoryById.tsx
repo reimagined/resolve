@@ -1,21 +1,16 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import { RefreshHelperRenderless } from '@resolve-js/module-comments'
 
+import type { StoreState } from '../../types'
 import { ConnectedStory } from './ConnectedStory'
 import { ConnectedComments } from './ConnectedComments'
 import { CommentsNotification } from '../components/CommentsNotification'
-import { StoreState } from '../../types'
 
-import { RouteComponentProps } from 'react-router'
+const StoryById = () => {
+  let { storyId } = useParams<'storyId'>()
 
-type MatchParams = { storyId: string }
-
-const StoryById = ({
-  match: {
-    params: { storyId },
-  },
-}: RouteComponentProps<MatchParams>) => {
   if (!storyId) {
     return null
   }
