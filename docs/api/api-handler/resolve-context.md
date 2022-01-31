@@ -39,10 +39,10 @@ const myApiHandler = async (req, res) => {
       aggregateId: uuid(),
       payload: { name: itemName },
     })
+    ...
   } catch (e) {
     ...
   }
-  ...
 }
 ```
 
@@ -68,10 +68,10 @@ const myApiHandler = async (req, res) => {
       modelName: 'MyList',
       resolverName: 'all',
     })
+    ...
   } catch (e) {
     ...
   }
-  ...
 }
 ```
 
