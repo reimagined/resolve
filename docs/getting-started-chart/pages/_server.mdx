@@ -1,19 +1,8 @@
 **Server**
 
-The reSolve framework's server side is a Node.js application. It is started by triggering the **run.js** script with the specified build target. Based on the targed, the script assembles the centralized application config from the configuration files located in the project's root and starts the application's main loop. The application configuration files include the following:
+The reSolve framework's server side is a Node.js application. It is started by triggering the **run.js** script with the specified run target. Based on the target, the script assembles the centralized configuration object from the configuration files located in the project's root and starts the application's main loop.
 
-- **config.app.js** - Contains general app configuration settings. In this file, you should register the application's aggregates, Read Models and View Models.
-- **config.cloud.js** - Contains configuration settings that target the reSolve Cloud environment.
-- **config.dev.js** - Contains configuration settings that target the development server.
-- **config.prod.js** - Contains configuration settings that target the production server.
-- **config.test_functional.js** - Contains configuration settings that target the test environment.
+**See Also:**
 
-The **common** folder contains sources for the reSolve application. This folder typically contains the following subfolders:
-
-- **aggregates** - Contains source files for aggregate projections and command handlers.
-- **read-models** - Contains source files for read model projections and resolvers.
-- **view-models** - Contains source files for view model projections.
-- **sagas** - Contains source files for sagas.
-- **api-handlers** - Contains source files for API handlers.
-
-Note, that this is the default and recommended folder structure. You are free to rearrange files as you like, provided that you adjust the app configurations accordingly.
+- [ReSolve App Structure](../../resolve-app-structure.md)
+- [Application Configuration](../../application-configuration.md)
