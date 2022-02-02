@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/react-hooks",
-  "version": "0.33.13",
+  "version": "0.33.14",
   "description": "reSolve client wrapper for using in React hooks projects.",
   "keywords": [
     "cqrs",
@@ -38,8 +38,8 @@
     "verbose": true
   },
   "dependencies": {
-    "@resolve-js/client": "0.33.13",
-    "@resolve-js/core": "0.33.13"
+    "@resolve-js/client": "0.33.14",
+    "@resolve-js/core": "0.33.14"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "5.11.9",
