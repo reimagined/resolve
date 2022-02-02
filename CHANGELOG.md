@@ -1,5 +1,17 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.14...HEAD)
+
+**Bug fixes:**
+
+- Can't build a monorepo, yarn install dependencies gives random errors [\#2230](https://github.com/reimagined/resolve/issues/2230)
+
+**Other changes:**
+
+- Fix \#2230 [\#2232](https://github.com/reimagined/resolve/pull/2232)
+
 ## [V0.33.14](https://github.com/reimagined/resolve/tree/V0.33.14) (2022-01-27)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.13...V0.33.14)
