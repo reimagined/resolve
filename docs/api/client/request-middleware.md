@@ -4,11 +4,13 @@ title: Request Middleware
 description: Middleware implements intermediate logic that can modify the response object or handle errors before they are passed to the callback function.
 ---
 
+## Overview
+
 The [@resolve-js/client](#resolve-client-library) and [@resolve-js/react-hooks](#resolve-react-hooks-library) libraries allow you to use request middleware to extend the client's functionality. Middleware implements intermediate logic that can modify the response object or handle errors before they are passed to the callback function.
 
 Use a command's or query's `middleware` option to specify middleware:
 
-#### @resolve-js/client:
+**@resolve-js/client:**
 
 ```js
 client.query(
@@ -40,7 +42,7 @@ client.query(
 })
 ```
 
-#### @resolve-js/react-hooks:
+**@resolve-js/react-hooks:**
 
 ```js
 const myQuery = useQuery(

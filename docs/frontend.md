@@ -32,7 +32,7 @@ clientEntries: ['client/index.js']
 
 Use the `resolveContext` object to initialize a client library. The code samples below demonstrate how to configure the entry point for different client libraries.
 
-##### @resolve-js/client:
+**@resolve-js/client:**
 
 ```js
 import { getClient } from '@resolve-js/client'
@@ -47,7 +47,7 @@ const main = async resolveContext => {
 }
 ```
 
-##### @resolve-js/redux:
+**@resolve-js/redux:**
 
 ```js
 import { createResolveStore, ResolveReduxProvider } from '@resolve-js/redux'
@@ -68,7 +68,7 @@ const entryPoint = (clientContext) => {
 export default entryPoint
 ```
 
-##### @resolve-js/react-hooks:
+**@resolve-js/react-hooks:**
 
 ```js
 import { ResolveProvider } from '@resolve-js/react-hooks'
@@ -136,7 +136,7 @@ For more information on these settings, refer to the [Application Configuration]
 
 To serve SSR markup to the client, you need to register the **live-require-handler.js** API handler in the **apiHandlers** configuration section:
 
-##### config.app.js:
+**config.app.js:**
 
 ```js
 ...
@@ -169,7 +169,7 @@ A reSolve exposes HTTP API that you can use to send aggregate commands and query
 | Query a Read Model | `http://{host}:{port}/api/query/{readModel}/{resolver}`     | POST   |
 | Query a View Model | `http://{host}:{port}/api/query/{viewModel}/{aggregateIds}` | GET    |
 
-#### Example
+### Example
 
 The code sample below demonstrates how you can implement JavaScript functions used to communicate with a reSolve server through its HTTP API:
 
@@ -241,7 +241,7 @@ The **@resolve-js/client** library exposes an interface that you can use to comm
 | [subscribe](api/client/resolve-client.md#subscribe)                 | Subscribes to View Model updates.                                           |
 | [unsubscribe](api/client/resolve-client.md#unsubscribe)             | Unsubscribes from View Model updates.                                       |
 
-#### Example
+### Example
 
 The [with-vanilajs](https://github.com/reimagined/resolve/tree/master/templates/js/vanilla) template project demonstrates how to use the **@resolve-js/client** library to implement a frontend for a reSolve application in pure JavaScript.
 
@@ -251,7 +251,7 @@ The reSolve framework includes the client **@resolve-js/redux** library used to 
 
 Use the following @resolve-js/redux library's hooks and Higher-Order Components (HOCs) to connect react components to the backend.
 
-##### React Hooks:
+### React Hooks
 
 | Function Name                                                                      | Description                                                                 |
 | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
@@ -261,7 +261,7 @@ Use the following @resolve-js/redux library's hooks and Higher-Order Components 
 | [useReduxViewModel](api/client/resolve-redux.md#usereduxviewmodel)                 | Creates a hook to receive a View Model's state updates and reactive events. |
 | [useReduxViewModelSelector](api/client/resolve-redux.md#usereduxviewmodelselector) | Creates a hook to access a View Model's current state on the client.        |
 
-##### Higher-Order Components:
+### Higher-Order Components
 
 | Function Name                                                                | Description                                                                                        |
 | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
@@ -270,7 +270,7 @@ Use the following @resolve-js/redux library's hooks and Higher-Order Components 
 | [connectRootBasedUrls](api/client/resolve-redux.md#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they use the correct root folder path.            |
 | [connectStaticBasedUrls](api/client/resolve-redux.md#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they use the correct static resource folder path. |
 
-#### Example
+### Example
 
 The [shopping-list-redux-hoc](https://github.com/reimagined/resolve/tree/master/examples/js/shopping-list-redux-hoc) example application demonstrates how to use the **@resolve-js/redux** library to implement a react-redux frontend for a reSolve application.
 
@@ -289,6 +289,6 @@ The **@resolve-js/react-hooks** library includes React hooks that you can use to
 | [useOriginResolver](api/client/resolve-react-hooks.md#useoriginresolver) | Resolves a relative path to an absolute URL within the application.                       |
 | [useStaticResolver](api/client/resolve-react-hooks.md#usestaticresolver) | Resolves a relative path to a static resource's full URL.                                 |
 
-#### Example
+### Example
 
 The [shopping-list-with-hooks](https://github.com/reimagined/resolve/tree/master/examples/js/shopping-list) example application demonstrates how to use the **@resolve-js/react-hooks** library to communicate with a reSolve backend.

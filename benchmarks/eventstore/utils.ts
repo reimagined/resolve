@@ -49,6 +49,16 @@ export async function createEventstore(uniqueName: string) {
   }
 }
 
+export async function clearEventstore(uniqueName: string) {
+  const adapter = createAdapter(uniqueName)
+  try {
+    await adapter.drop()
+    await adapter.init()
+  } finally {
+    await adapter.dispose()
+  }
+}
+
 export async function importEventstore(adapter: Adapter, esDirectory: string) {
   const eventsPath = path.join(esDirectory, 'events.db')
   const secretsPath = path.join(esDirectory, 'secrets.db')
