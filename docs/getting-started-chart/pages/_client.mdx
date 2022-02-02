@@ -8,7 +8,7 @@ ReSolve comes with several client libraries that you can use on the frontend to 
 <Tabs>
 <TabItem value="client" label="@resolve-js/client" default>
 
-A library that contains plain JavaScript functions used to communicate with a reSolve server. The code sample below illustrates the basic functionlity of tis library.
+A library that contains plain JavaScript functions used to communicate with a reSolve server. The code sample below illustrates the basic functionality of tis library.
 
 ```js
 const sendMessage = (userName, message) =>
@@ -33,7 +33,7 @@ const sendMessage = (userName, message) =>
 </TabItem>
 <TabItem value="redux" label="@resolve-js/redux">
 
-A library used to connect a React + Redux component to reSolve. The code sample below illustrates the basic functionlity of tis library.
+A library used to connect a React + Redux component to reSolve. The code sample below illustrates the basic functionality of tis library.
 
 ```js
 const { execute: executeCreateShoppingItem } = useReduxCommand((text) => ({
@@ -56,7 +56,7 @@ const { connect, dispose, selector: thisList } = useReduxViewModel({
 </TabItem>
 <TabItem value="reactHooks" label="@resolve-js/react-hooks">
 
-A hook-based library used to connect React components to reSolve. The code sample below illustrates the basic functionlity of tis library.
+A hook-based library used to connect React components to reSolve. The code sample below illustrates the basic functionality of tis library.
 
 ```js
 const getMyAggregates = useQuery(
@@ -89,7 +89,7 @@ const createAggregate = useCommand(
 </TabItem>
 </Tabs>
 
-You can also dirrectly use the HTTP expose by a reSolve server:
+You can also directly use the HTTP expose by a reSolve server:
 
 ```js
 const response = await fetch(`/api/query/ShoppingLists/all`, {
