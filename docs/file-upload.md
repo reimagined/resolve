@@ -5,7 +5,7 @@ title: File Upload
 
 The **@resolve-js/module-uploader** module implements the file upload functionality. You can enable this module as shown below:
 
-##### run.js:
+**run.js:**
 
 ```js
 import resolveModuleUploader from '@resolve-js/module-uploader'
