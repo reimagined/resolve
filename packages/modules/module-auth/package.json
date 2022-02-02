@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/module-auth",
-  "version": "0.33.9",
+  "version": "0.33.14",
   "description": "A reSolve module that adds authentication to an application.",
   "keywords": [
     "cqrs",

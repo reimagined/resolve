@@ -367,3 +367,75 @@ describe(`${adapterFactory.name}. Eventstore adapter events filtering`, () => {
     ).rejects.toThrow()
   })
 })
+
+describe(`${adapterFactory.name}. Eventstore adapter big aggregate`, () => {
+  beforeAll(adapterFactory.create('events_big_aggregate'))
+  afterAll(adapterFactory.destroy('events_big_aggregate'))
+
+  const adapter = adapters['events_big_aggregate']
+
+  const aggregateCount = 3
+  const eventsPerAggregate = 120
+  const loadStep = 50
+
+  test('should save many events with different aggregate ids', async () => {
+    const waitForMillisecond = async (event: StoredEvent) => {
+      if (Date.now() === event.timestamp) {
+        await new Promise((resolve) => {
+          setTimeout(resolve, 1)
+        })
+      }
+    }
+
+    for (let eventIndex = 0; eventIndex < eventsPerAggregate; eventIndex++) {
+      const event = {
+        aggregateId: `aggregateId`,
+        aggregateVersion: eventIndex + 1,
+        type: `EVENT`,
+        payload: null,
+        timestamp: 1,
+      }
+
+      for (
+        let aggregateIndex = 1;
+        aggregateIndex <= aggregateCount;
+        ++aggregateIndex
+      ) {
+        event.aggregateId = `aggregateId_${aggregateIndex}`
+        const saveResult = await adapter.saveEvent(event)
+        await waitForMillisecond(saveResult.event)
+      }
+    }
+
+    const { eventCount } = await adapter.describe()
+    expect(eventCount).toEqual(eventsPerAggregate * aggregateCount)
+  })
+
+  test('should consequentially load events by each aggregateId', async () => {
+    for (
+      let aggregateIndex = 1;
+      aggregateIndex <= aggregateCount;
+      ++aggregateIndex
+    ) {
+      const aggregateId = `aggregateId_${aggregateIndex}`
+      let currentCursor = null
+      let loadedEventCount = 0
+
+      for (let i = 0; i < eventsPerAggregate; i += loadStep) {
+        const {
+          events: loadedEvents,
+          cursor: nextCursor,
+        } = await adapter.loadEvents({
+          limit: loadStep,
+          cursor: currentCursor,
+          aggregateIds: [aggregateId],
+        })
+
+        loadedEventCount += loadedEvents.length
+        currentCursor = nextCursor
+      }
+
+      expect(loadedEventCount).toEqual(eventsPerAggregate)
+    }
+  })
+})

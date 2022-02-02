@@ -7,13 +7,21 @@ type LoadFilter = Omit<CursorFilter, 'limit'> & {
   limit?: CursorFilter['limit']
 }
 
+const makeThreadArrayQuery = (vectorConditions: number[]) => {
+  return `${vectorConditions
+    .map(
+      (threadCounter, threadId) =>
+        `"threadId" = ${threadId} AND "threadCounter" >= ${threadCounter}::${INT8_SQL_TYPE} `
+    )
+    .join(' OR ')}`
+}
+
 const createLoadQuery = (
   { escapeId, escape, eventsTableName, databaseName }: AdapterPool,
   { eventTypes, aggregateIds, cursor, limit }: LoadFilter
 ) => {
   const vectorConditions = cursorToThreadArray(cursor)
   const injectString = (value: any): string => `${escape(value)}`
-  const injectNumber = (value: any): string => `${+value}`
 
   const queryConditions: string[] = ['1 = 1']
   if (eventTypes != null) {
@@ -35,31 +43,40 @@ const createLoadQuery = (
   const eventsTableAsId: string = escapeId(eventsTableName)
 
   if (limit !== undefined) {
+    if (aggregateIds != null && aggregateIds.length === 1) {
+      const resultVectorConditions = makeThreadArrayQuery(vectorConditions)
+      return [
+        `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
+        `WHERE (${resultVectorConditions}) AND (${resultQueryCondition})`,
+        `ORDER BY "aggregateVersion" ASC`,
+        `LIMIT ${+limit}`,
+      ].join('\n')
+    }
+
     return [
-      `SELECT "unitedEvents".* FROM (
-        ${vectorConditions
-          .map(
-            (threadCounter, threadId) =>
-              `(${[
-                `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
-                `WHERE (${resultQueryCondition}) AND "threadId" = ${threadId} AND "threadCounter" >= ${threadCounter}::${INT8_SQL_TYPE}`,
-                `LIMIT ${limit}`,
-              ].join(' ')})`
-          )
-          .join(' UNION ALL \n')}
-        ) "unitedEvents"`,
-      `ORDER BY "unitedEvents"."timestamp" ASC, "unitedEvents"."threadCounter" ASC, "unitedEvents"."threadId" ASC`,
-      `LIMIT ${+limit}`,
+      `SELECT "sortedEvents".* FROM (`,
+      `  SELECT "unitedEvents".* FROM (`,
+      vectorConditions
+        .map(
+          (threadCounter, threadId) =>
+            `(${[
+              `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,
+              `WHERE (${resultQueryCondition}) AND "threadId" = ${threadId} AND "threadCounter" >= ${threadCounter}::${INT8_SQL_TYPE}`,
+              `ORDER BY "threadCounter" ASC`,
+              `LIMIT ${+limit}`,
+            ].join(' ')})`
+        )
+        .join(' UNION ALL \n'),
+      `  ) "unitedEvents"`,
+      `  ORDER BY "unitedEvents"."timestamp" ASC`,
+      `  LIMIT ${+limit}`,
+      `) "sortedEvents"`,
+      `ORDER BY "sortedEvents"."timestamp" ASC,`,
+      `"sortedEvents"."threadCounter" ASC,`,
+      `"sortedEvents"."threadId" ASC`,
     ].join('\n')
   } else {
-    const resultVectorConditions = `${vectorConditions
-      .map(
-        (threadCounter, threadId) =>
-          `"threadId" = ${injectNumber(
-            threadId
-          )} AND "threadCounter" >= ${threadCounter}::${INT8_SQL_TYPE} `
-      )
-      .join(' OR ')}`
+    const resultVectorConditions = makeThreadArrayQuery(vectorConditions)
 
     return [
       `SELECT * FROM ${databaseNameAsId}.${eventsTableAsId}`,

@@ -1,8 +1,45 @@
 # Changelog
 
-## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+## [V0.33.14](https://github.com/reimagined/resolve/tree/V0.33.14) (2022-01-27)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.9...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.13...V0.33.14)
+
+**Enhancements:**
+
+- Implement better SQL for loading events [\#2222](https://github.com/reimagined/resolve/pull/2222)
+
+## [V0.33.12](https://github.com/reimagined/resolve/tree/V0.33.12) (2022-01-21)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.11...V0.33.12)
+
+**New features:**
+
+- Benchmarks for postgresql eventstore loadEvents and saveEvent [\#2212](https://github.com/reimagined/resolve/pull/2212)
+
+**Enhancements:**
+
+- Optimize event loading by single aggregateId \(special case\) [\#2216](https://github.com/reimagined/resolve/pull/2216)
+
+**Bug fixes:**
+
+- The IsAlive flag still works incorrectly [\#2200](https://github.com/reimagined/resolve/issues/2200)
+
+## [V0.33.11](https://github.com/reimagined/resolve/tree/V0.33.11) (2022-01-20)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.10...V0.33.11)
+
+**Enhancements:**
+
+- Prechecked notifications [\#2209](https://github.com/reimagined/resolve/pull/2209)
+- Implement sort index hints for postgres eventstore [\#2204](https://github.com/reimagined/resolve/pull/2204)
+
+**Bug fixes:**
+
+- Too many connections created during the startup of hacker-news example with custom read-models enabled [\#2123](https://github.com/reimagined/resolve/issues/2123)
+
+## [V0.33.10](https://github.com/reimagined/resolve/tree/V0.33.10) (2022-01-17)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.9...V0.33.10)
 
 **Enhancements:**
 

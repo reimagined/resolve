@@ -12,6 +12,7 @@ import type { SecretsManager } from '@resolve-js/core'
 type CreateSagaOptions = {
   applicationName: string
   invokeBuildAsync: InvokeBuildAsync
+  getEventSubscriberDestination: (name: string) => string
   readModelConnectors: Runtime['readModelConnectors']
   executeCommand: Runtime['executeCommand']
   executeQuery: Runtime['executeQuery']
@@ -35,6 +36,7 @@ export const createSagaExecutor = ({
   performanceTracer,
   uploader,
   eventstoreAdapter,
+  getEventSubscriberDestination,
   secretsManager,
   getVacantTimeInMillis,
   getScheduler,
@@ -100,6 +102,7 @@ export const createSagaExecutor = ({
     performanceTracer,
     getVacantTimeInMillis,
     eventstoreAdapter,
+    getEventSubscriberDestination,
     monitoring,
     loadReadModelProcedure: () => Promise.resolve(null),
     readModelsInterop: domainInterop.sagaDomain.acquireSagasInterop(runtime),
