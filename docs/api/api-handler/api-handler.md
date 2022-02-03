@@ -18,15 +18,15 @@ The handler receives a request and response objects. See the sections below for 
 
 The request object exposes the following fields:
 
-| Field     | Description                                                                                        |
-| --------- | -------------------------------------------------------------------------------------------------- |
-| `resolve` | The [reSolve context](resolve-context.md) object that provides access to reSolve API and metadata. |
-| `method`  | The request's HTTP method.                                                                         |
-| `path`    | The request URL path.                                                                              |
-| `body`    | The request body.                                                                                  |
-| `cookies` | An object that contains the attached cookies as key-value pairs.                                   |
-| `headers` | An object that contains the request's HTTP headers as key-value pairs.                             |
-| `query`   | An object that contains the request's query string parameters as key-value pairs.                  |
+| Field     | Description                                                                              |
+| --------- | ---------------------------------------------------------------------------------------- |
+| `resolve` | The [reSolve context](resolve-context.md) object that contains reSolve API and metadata. |
+| `method`  | The request's HTTP method.                                                               |
+| `path`    | The request URL path.                                                                    |
+| `body`    | The request body.                                                                        |
+| `cookies` | An object that contains the attached cookies as key-value pairs.                         |
+| `headers` | An object that contains the request's HTTP headers as key-value pairs.                   |
+| `query`   | An object that contains the request's query string parameters as key-value pairs.        |
 
 ### Response
 
