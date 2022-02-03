@@ -32,8 +32,8 @@ A custom metric object is used to bass metric data to the `metrics.custom()` met
 {
   metricName, // The name of a metric.
   dimensions, // An array of monitoring dimensions.
-  values,     // An array of the metric's values.
-  counts,     // An array of the metric's counts.
+  value,      // The metric's values.
+  count,      // The metric's count.
   unit,       // The name of the measurment unit.
 }
 ```
