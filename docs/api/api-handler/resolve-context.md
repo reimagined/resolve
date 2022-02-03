@@ -1,9 +1,10 @@
 ---
 id: resolve-context
 title: ReSolve Context
+description: The resolve context object is available to an API handler function through its request (req) argument. This object implements a communication layer between an API handler and the reSolve framework.
 ---
 
-The `resolve` context object is available to an [API handler](api-handler.md) function through the [request (`req`)](api-handler.md#request) object. This object implements a communication layer between an API handler and the reSolve framework.
+The `resolve` context object is available to an [API handler](api-handler.md) function through its [request (`req`)](api-handler.md#request) argument. This object implements a communication layer between an API handler and the reSolve framework.
 
 The `resolve` context object exposes the following API:
 
