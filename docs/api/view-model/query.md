@@ -20,4 +20,4 @@ A view model query object has the following structure:
 
 ## Result Object
 
-A view model query result is a serializable value, whose type and/or internal structure depends on the [view model projection](projection.md)'s implementation.
+A view model query result is a serializable value, whose type and internal structure depends on the [view model projection](projection.md)'s implementation.

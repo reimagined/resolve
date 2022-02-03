@@ -21,7 +21,7 @@ The `resolve` context object exposes the following API:
 
 | Function Name                       | Description                         |
 | ----------------------------------- | ----------------------------------- |
-| [`executeCommand`](#executecommand) | Emits a command.                    |
+| [`executeCommand`](#executecommand) | Emits a command on the server side. |
 | [`executeQuery`](#executequery)     | Queries a read model or view model. |
 
 ### `executeCommand`

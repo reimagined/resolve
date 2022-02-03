@@ -16,21 +16,21 @@ The handler receives a request and response objects. See the sections below for 
 
 ### Request
 
-The request objects exposes the following fields:
+The request object exposes the following fields:
 
 | Field     | Description                                                                                        |
 | --------- | -------------------------------------------------------------------------------------------------- |
 | `resolve` | The [reSolve context](resolve-context.md) object that provides access to reSolve API and metadata. |
 | `method`  | The request's HTTP method.                                                                         |
-| `path`    | The request URL's path part.                                                                       |
+| `path`    | The request URL path.                                                                              |
 | `body`    | The request body.                                                                                  |
-| `cookies` | An object that contains cookies as key-value pairs.                                                |
+| `cookies` | An object that contains the attached cookies as key-value pairs.                                   |
 | `headers` | An object that contains the request's HTTP headers as key-value pairs.                             |
 | `query`   | An object that contains the request's query string parameters as key-value pairs.                  |
 
 ### Response
 
-The request objects exposes the following functions:
+The request object exposes the following functions:
 
 | Function                               | Description                                 |
 | -------------------------------------- | ------------------------------------------- |
