@@ -26,7 +26,7 @@ A metric object has the following structure:
 
 ## Custom Metric Object
 
-A custom metric object is used to bass metric data to the `metrics.custom()` method. This object has the following structure:
+A custom metric object is used to pass metric data to the `metrics.custom()` method. This object has the following structure:
 
 ```js
 {
