@@ -1,7 +1,7 @@
 ---
 id: resolve-context
 title: ReSolve Context
-description: The resolve context object is available to an API handler function through its request (req) argument. This object implements a communication layer between an API handler and the reSolve framework.
+description: The 'resolve' context object is available to an API handler function through its request (req) argument. This object implements a communication layer between an API handler and the reSolve framework.
 ---
 
 The `resolve` context object is available to an [API handler](api-handler.md) function through its [request (`req`)](api-handler.md#request) argument. This object implements a communication layer between an API handler and the reSolve framework.
@@ -19,14 +19,14 @@ The `resolve` context object exposes the following API:
 
 ## Methods
 
-| Function Name                       | Description                         |
-| ----------------------------------- | ----------------------------------- |
-| [`executeCommand`](#executecommand) | Emits a command on the server side. |
-| [`executeQuery`](#executequery)     | Queries a read model or view model. |
+| Function Name                       | Description                            |
+| ----------------------------------- | -------------------------------------- |
+| [`executeCommand`](#executecommand) | Executes a command on the server side. |
+| [`executeQuery`](#executequery)     | Queries a read model or view model.    |
 
 ### `executeCommand`
 
-Emits a command on the server side.
+Executes a command on the server side.
 
 #### Example
 
@@ -49,9 +49,9 @@ const myApiHandler = async (req, res) => {
 
 #### Arguments
 
-| Argument Name | Type                                              | Description                  |
-| ------------- | ------------------------------------------------- | ---------------------------- |
-| `command`     | A [command](../command.md#command-object) object. | Describes a command to emit. |
+| Argument Name | Type                                              | Description                     |
+| ------------- | ------------------------------------------------- | ------------------------------- |
+| `command`     | A [command](../command.md#command-object) object. | Describes a command to execute. |
 
 #### Result
 
@@ -88,11 +88,11 @@ A `promise` that resolves to a [read model query result](../read-model/query.md#
 
 ## Constants
 
-| Constant Name     | Type     | Description                                                                                                                                                                     |
-| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `applicationName` | `string` | The reSolve application's name as specified in `package.json`.                                                                                                                  |
-| `distDir`         | `string` | The path to the WebPack `dist` directory within the application.                                                                                                                |
+| Constant Name     | Type     | Description                                                                                                                                                                      |
+| ----------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `applicationName` | `string` | The reSolve application's name as specified in `package.json`.                                                                                                                   |
+| `distDir`         | `string` | The path to the WebPack `dist` directory within the application.                                                                                                                 |
 | `jwtCookie`       | `object` | An object that contains [JWT cookie settings](../../application-configuration.md#jwtcookie) as specified in the [application configuration](../../application-configuration.md). |
-| `rootPath`        | `string` | The application's root URL path.                                                                                                                                                |
-| `staticDir`       | `string` | The path to a directory that contains static files.                                                                                                                             |
-| `staticPath`      | `string` | The base URL path for static file URLs.                                                                                                                                         |
+| `rootPath`        | `string` | The application's root URL path.                                                                                                                                                 |
+| `staticDir`       | `string` | The path to a directory that contains static files.                                                                                                                              |
+| `staticPath`      | `string` | The base URL path for static file URLs.                                                                                                                                          |

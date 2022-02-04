@@ -34,13 +34,13 @@ The request object exposes the following functions:
 
 | Function                               | Description                                 |
 | -------------------------------------- | ------------------------------------------- |
-| `status(code)`                         | Specifies the response status code.        |
-| `getHeader(key)`                       | Gets a response header by key.               |
+| `status(code)`                         | Specifies the response status code.         |
+| `getHeader(key)`                       | Gets a response header by key.              |
 | `setHeader(key, value)`                | Sets a response header.                     |
-| `text([content] [, encoding])`         | Specifies content for a text-type response.  |
+| `text([content] [, encoding])`         | Specifies content for a text-type response. |
 | `json([content])`                      | Specifies content for a JSON-type response. |
 | `end([content] [, encoding])`          | Ends the response process.                  |
-| `file(content, filename [, encoding])` | Specifies a file to write to response.      |
+| `file(content, filename [, encoding])` | Specifies a file to send as a response.     |
 | `redirect([status,] path)`             | Specifies the redirect path.                |
 | `cookie(name, value [, options])`      | Specifies cookies to send to the client.    |
 | `clearCookie(name [, options])`        | Clears a cookie from the response.          |
