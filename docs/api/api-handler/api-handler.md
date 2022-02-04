@@ -12,7 +12,7 @@ export default async (req, res) => {
 }
 ```
 
-The handler receives a request and response objects. See the sections below for the information on the API exposed through these objects.
+The handler receives a request and response objects. See the sections below for information on the API exposed through these objects.
 
 ### Request
 
@@ -34,10 +34,10 @@ The request object exposes the following functions:
 
 | Function                               | Description                                 |
 | -------------------------------------- | ------------------------------------------- |
-| `status(code)`                         | Specifiers the response status code.        |
-| `getHeader(key)`                       | Get a response header by key.               |
+| `status(code)`                         | Specifies the response status code.        |
+| `getHeader(key)`                       | Gets a response header by key.               |
 | `setHeader(key, value)`                | Sets a response header.                     |
-| `text([content] [, encoding])`         | Specifies content for a text-type response  |
+| `text([content] [, encoding])`         | Specifies content for a text-type response.  |
 | `json([content])`                      | Specifies content for a JSON-type response. |
 | `end([content] [, encoding])`          | Ends the response process.                  |
 | `file(content, filename [, encoding])` | Specifies a file to write to response.      |

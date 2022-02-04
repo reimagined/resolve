@@ -11,7 +11,7 @@ A view model query object has the following structure:
 
 ```js
 {
-  modelName, // (string) The name of a view model.
+  modelName, // (string) The name of the view model.
   aggregateIds, // (string[] or '*') A list of aggregate IDs for which to process events.
 }
 ```
@@ -20,4 +20,4 @@ A view model query object has the following structure:
 
 ## Result Object
 
-A view model query result is a serializable value, whose type and internal structure depends on the [view model projection](projection.md)'s implementation.
+A view model query result is a serializable value, whose type and internal structure depend on the [view model projection](projection.md)'s implementation.
