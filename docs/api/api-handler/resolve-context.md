@@ -92,7 +92,7 @@ A `promise` that resolves to a [read model query result](../read-model/query.md#
 | ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `applicationName` | `string` | The reSolve application's name as specified in `package.json`.                                                                                                                  |
 | `distDir`         | `string` | The path to the WebPack `dist` directory within the application.                                                                                                                |
-| `jwtCookie`       | `object` | An object that contain [JWT cookie settings](../../application-configuration.md#jwtcookie) as specified in the [application configuration](../../application-configuration.md). |
+| `jwtCookie`       | `object` | An object that contains [JWT cookie settings](../../application-configuration.md#jwtcookie) as specified in the [application configuration](../../application-configuration.md). |
 | `rootPath`        | `string` | The application's root URL path.                                                                                                                                                |
 | `staticDir`       | `string` | The path to a directory that contains static files.                                                                                                                             |
 | `staticPath`      | `string` | The base URL path for static file URLs.                                                                                                                                         |
