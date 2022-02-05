@@ -8,6 +8,10 @@
 
 - Can't build a monorepo, yarn install dependencies gives random errors [\#2230](https://github.com/reimagined/resolve/issues/2230)
 
+**Documentation:**
+
+- Describe the reSolve context object and related API [\#2229](https://github.com/reimagined/resolve/pull/2229)
+
 **Other changes:**
 
 - Fix \#2230 [\#2232](https://github.com/reimagined/resolve/pull/2232)
