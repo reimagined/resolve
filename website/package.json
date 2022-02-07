@@ -9,7 +9,8 @@
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
-    "serve": "docusaurus serve"    
+    "serve": "docusaurus serve",
+    "test": "echo Test || exit 0",
   },
   "dependencies": {
     "@docusaurus/core": "^2.0.0-beta.15",
