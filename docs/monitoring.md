@@ -38,7 +38,7 @@ You can implement your own monitoring adapter based on the `@resolve-js/monitori
 
 ## Monitoring API
 
-You can access the monitoring API through the [reSolve context] object. For example, the following code sample demonstrates how to access the monitoring API in an [API handler](api/api-handler/api-handler.md) function:
+You can access the monitoring API through the [reSolve context](api/api-handler/resolve-context.md) object. For example, the following code sample demonstrates how to access the monitoring API in an [API handler](api/api-handler/api-handler.md) function:
 
 ```js
 const myHandler = async (req, res) => {
