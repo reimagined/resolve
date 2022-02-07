@@ -219,20 +219,30 @@ const wrapProcedure = (readModel) => (input, options) => {
     `)
 
       events = Array.from(
-        plv8.execute(`SELECT * FROM ${eventsDatabaseNameAsId}.${eventsTableAsId}
-      WHERE 1=1 ${
-        EventTypes != null && EventTypes.length > 0
-          ? `AND "type" IN (${EventTypes.map(escapeStr)})`
-          : ''
-      } AND (${cursorStrToHex(Cursor)
-          .map(
-            (threadCounter, threadId) =>
-              `"threadId" = ${+threadId} AND "threadCounter" >= x'${threadCounter}'::INT8 `
-          )
-          .join(' OR ')})
-      ORDER BY "timestamp" ASC, "threadCounter" ASC, "threadId" ASC
-      LIMIT 1000
-    `)
+        plv8.execute(`
+        SELECT "sortedEvents".* FROM (
+          SELECT "unitedEvents".* FROM (
+          ${cursorStrToHex(Cursor)
+            .map(
+              (threadCounter, threadId) => `
+            SELECT * FROM ${eventsDatabaseNameAsId}.${eventsTableAsId} WHERE ${
+                EventTypes != null && EventTypes.length > 0
+                  ? `"type" IN (${EventTypes.map(escapeStr)}) AND `
+                  : ''
+              } "threadId" = ${+threadId} AND "threadCounter" >= x'${threadCounter}'::INT8 
+            ORDER BY "threadCounter" ASC
+            LIMIT 1000
+          `
+            )
+            .join(' UNION ALL ')}
+          ) "unitedEvents"
+          ORDER BY "unitedEvents"."timestamp" ASC
+          LIMIT 1000
+        ) "sortedEvents"
+        ORDER BY "sortedEvents"."timestamp" ASC,
+        "sortedEvents"."threadCounter" ASC,
+        "sortedEvents"."threadId" ASC
+      `)
       )
     } catch (err) {
       throw new Error('Local events reading failed')

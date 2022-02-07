@@ -90,7 +90,7 @@ Use the following steps to implement a user registry:
 
 For example, you can write the following if you want to grant permissions to a user:
 
-#### Write side - The "user" aggregate
+### Write side - The "user" aggregate
 
 ```js
 // user.commands.js
@@ -121,7 +121,7 @@ grantPermission: (state, command) => {
 ...
 ```
 
-#### Read side - The "users" read model
+### Read side - The "users" read model
 
 ```js
 // users.projection.js

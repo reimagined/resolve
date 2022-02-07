@@ -7,7 +7,7 @@ In reSolve, a module encapsulates a fragment of functionality that can be includ
 
 A module is a standalone configuration object that can reference client code, read-side and write-side code, sagas and HTTP handlers. To include a module into your application, you need to initialize this object with any required additional settings and merge it into your application's centralized config:
 
-##### run.js:
+**run.js:**
 
 <!-- prettier-ignore-start -->
 
