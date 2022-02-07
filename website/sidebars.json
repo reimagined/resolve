@@ -81,8 +81,8 @@
             "label": "Monitoring",
             "items": [
               "api/monitoring/monitoring",
-              "api/monitoring/metric",
-              "api/monitoring/monitoring-adapter"
+              "api/monitoring/monitoring-adapter",
+              "api/monitoring/metric"
             ]
           },
           "api/saga",
