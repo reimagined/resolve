@@ -3,7 +3,7 @@ id: monitoring
 title: Monitoring Interface
 ---
 
-A monitoring object's interface doubles the interface of a monitoring adapter except for the `getMetrics` and `clearMetrics` methods that require a monitoring adapted ID as an argument.
+A monitoring object's interface doubles the interface of a monitoring adapter except for the [`getMetrics`](#getmetrics) and [`clearMetrics`](#clearmetrics) methods that require a monitoring adapted ID as an argument.
 
 A monitoring object exposes the following API:
 
