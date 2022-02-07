@@ -3,11 +3,11 @@ id: monitoring
 title: Monitoring
 ---
 
-ReSolve is shipped with an inbuilt monitoring feature that allows a reSolve application to collect and publish various metrics during its execution.
+ReSolve includes an inbuilt monitoring mechanism that allows a reSolve application to collect and publish various metrics during its execution.
 
 ## Monitoring Adapters
 
-Resolve incudes a set of monitoring adapters that define how the metrics are collected are published. The following adapters are included:
+Monitoring adapters define how the metrics are collected are published. The following adapters are included:
 
 | Module Name                                                                                                 | Description                                              |
 | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
