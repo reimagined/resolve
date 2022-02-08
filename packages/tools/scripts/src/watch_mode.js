@@ -12,12 +12,16 @@ import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 import openBrowser from './open_browser'
 import { processRegister } from './process_manager'
+import adjustResolveConfig from './adjust-resolve-config'
 import detectErrors from './detect_errors'
 
 const log = getLog('watch')
 
 const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
   log.debug('Starting "watch" mode')
+
+  await adjustResolveConfig(resolveConfig)
+
   validateConfig(resolveConfig)
 
   const nodeModulesByAssembly = new Map()

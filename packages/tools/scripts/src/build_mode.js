@@ -11,13 +11,22 @@ import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 import detectErrors from './detect_errors'
+import adjustResolveConfig from './adjust-resolve-config'
 import { getDeprecatedTarget } from './get-deprecated-target'
 
 const log = getLog('build')
 
 const buildMode = async (resolveConfig, adjustWebpackConfigs) => {
   log.debug('Starting "build" mode')
+
+  await adjustResolveConfig(resolveConfig)
+
   validateConfig(resolveConfig)
+
+  fsExtra.copySync(
+    path.resolve(process.cwd(), resolveConfig.staticDir),
+    path.resolve(process.cwd(), resolveConfig.distDir, './client')
+  )
 
   const nodeModulesByAssembly = new Map()
 
@@ -30,11 +39,6 @@ const buildMode = async (resolveConfig, adjustWebpackConfigs) => {
   const peerDependencies = getPeerDependencies()
 
   const compiler = webpack(webpackConfigs)
-
-  fsExtra.copySync(
-    path.resolve(process.cwd(), resolveConfig.staticDir),
-    path.resolve(process.cwd(), resolveConfig.distDir, './client')
-  )
 
   await new Promise((resolve, reject) => {
     compiler.run((err, { stats }) => {
