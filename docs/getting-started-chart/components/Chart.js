@@ -48,17 +48,18 @@ const getPartial = (tab) => {
       return <ViewModelsPage></ViewModelsPage>
     case 'writeSide':
       return <WriteSidePage></WriteSidePage>
+    default:
+      return null
   }
 }
 
-const renderDetail = (tab) => (
-  <div className="alert alert--info">{getPartial(tab)}</div>
-)
+const renderDetail = (tab) =>
+  tab ? <div className="alert alert--info">{getPartial(tab)}</div> : null
 
 const Chart = ({ selected, onClick }) => {
   const [selectedTab, setSelectedTab] = useState(null)
 
-  const getSelected = (tabName) => tabName == selectedTab
+  const isSelected = (tabName) => tabName == selectedTab
 
   return (
     <div>
@@ -71,45 +72,45 @@ const Chart = ({ selected, onClick }) => {
       >
         <g>
           <Server
-            selected={getSelected('server')}
+            selected={isSelected('server')}
             onClick={() => setSelectedTab('server')}
           />
           <WriteSide
-            selected={getSelected('writeSide')}
+            selected={isSelected('writeSide')}
             onClick={() => setSelectedTab('writeSide')}
           />
           <Aggregates
-            selected={getSelected('aggregates')}
+            selected={isSelected('aggregates')}
             onClick={() => setSelectedTab('aggregates')}
           />
           <DataBase />
           <ApiHandlers
-            selected={getSelected('apiHandlers')}
+            selected={isSelected('apiHandlers')}
             onClick={() => setSelectedTab('apiHandlers')}
           />
           <Adapter
-            selected={getSelected('esAdapter')}
+            selected={isSelected('esAdapter')}
             onClick={() => setSelectedTab('esAdapter')}
           />
           <ReadSide
-            selected={getSelected('readSide')}
+            selected={isSelected('readSide')}
             onClick={() => setSelectedTab('readSide')}
           />
           <ReadModels
-            selected={getSelected('readModels')}
+            selected={isSelected('readModels')}
             onClick={() => setSelectedTab('readModels')}
           />
           <Sagas
-            selected={getSelected('sagas')}
+            selected={isSelected('sagas')}
             onClick={() => setSelectedTab('sagas')}
           />
           <ViewModels
-            selected={getSelected('viewModels')}
+            selected={isSelected('viewModels')}
             onClick={() => setSelectedTab('viewModels')}
           />
 
           <Client
-            selected={getSelected('client')}
+            selected={isSelected('client')}
             onClick={() => setSelectedTab('client')}
           />
           <Arrows />
