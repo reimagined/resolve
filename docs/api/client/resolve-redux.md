@@ -20,7 +20,7 @@ The reSolve framework includes the client **@resolve-js/redux** library used to 
 
 Creates a hook that executes a reSolve command.
 
-##### Example
+#### Example
 
 ```js
 const { execute: toggleItem } = useReduxCommand({
@@ -37,7 +37,7 @@ const { execute: toggleItem } = useReduxCommand({
 
 Creates a hook that queries a Read Model.
 
-##### Example
+#### Example
 
 ```js
 const { request: getLists, selector: allLists } = useReduxReadModel(
@@ -127,7 +127,7 @@ const { data, status } = useReduxViewModelSelector('this-list')
 
 Connects a React component to a reSolve View Model.
 
-##### Example
+#### Example
 
 ```js
 export const mapStateToOptions = (state, ownProps) => {
@@ -164,7 +164,7 @@ export default connectViewModel(mapStateToOptions)(
 
 Connects a React component to a reSolve Read Model.
 
-##### Example
+#### Example
 
 ```js
 import { sendAggregateAction } from '@resolve-js/redux'
@@ -197,7 +197,7 @@ export default connectReadModel(mapStateToOptions)(
 
 Fixes URLs passed to the specified props and ensures they use the correct root folder path.
 
-##### Example
+#### Example
 
 ```js
 export default connectRootBasedUrls(['href'])(Link)
@@ -207,7 +207,7 @@ export default connectRootBasedUrls(['href'])(Link)
 
 Fixes URLs passed to the specified props to correct the static resource folder path.
 
-##### Example
+#### Example
 
 ```js
 export default connectStaticBasedUrls(['css', 'favicon'])(Header)

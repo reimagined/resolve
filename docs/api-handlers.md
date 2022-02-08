@@ -6,7 +6,7 @@ description: Use API Handlers to provide your reSolve server with the capability
 
 Use API Handlers to provide your reSolve server with the capability to handle arbitrary HTTP requests. ReSolve API handlers have the following general structure:
 
-##### common/api-handlers/my-api-handler.js:
+**common/api-handlers/my-api-handler.js:**
 
 ```js
 export default async (req, res) => {
@@ -73,7 +73,7 @@ The response object provides the following interface:
 
 An API handler should be registered in the `apiHandlers` section of the application's configuration file.
 
-##### config.app.js:
+**config.app.js:**
 
 ```js
 const appConfig = {
@@ -101,7 +101,7 @@ Refer to the [Application Configuration](application-configuration.md) topic for
 
 ## Implementation Examples
 
-##### Send Text
+### Send Text
 
 ```js
 export default async (req, res) => {
@@ -111,7 +111,7 @@ export default async (req, res) => {
 }
 ```
 
-##### Send JSON
+### Send JSON
 
 ```js
 export default async (req, res) => {
@@ -124,7 +124,7 @@ export default async (req, res) => {
 }
 ```
 
-##### Send File
+### Send File
 
 ```js
 export default async (req, res) => {
@@ -136,7 +136,7 @@ export default async (req, res) => {
 }
 ```
 
-##### Set Cookies
+### Set Cookies
 
 ```js
 export default async (req, res) => {
@@ -146,7 +146,7 @@ export default async (req, res) => {
 }
 ```
 
-##### Redirect
+### Redirect
 
 ```js
 export default async (req, res) => {
@@ -154,7 +154,7 @@ export default async (req, res) => {
 }
 ```
 
-##### Custom status
+### Custom Status
 
 ```js
 export default async (req, res) => {
