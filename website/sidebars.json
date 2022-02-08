@@ -55,7 +55,8 @@
               "api/read-model/projection",
               "api/read-model/resolver",
               "api/read-model/store",
-              "api/read-model/connector"
+              "api/read-model/connector",
+              "api/read-model/query"
             ]
           },
           {
@@ -63,7 +64,16 @@
             "label": "View Model",
             "items": [
               "api/view-model/projection",
-              "api/view-model/resolver"
+              "api/view-model/resolver",
+              "api/view-model/query"
+            ]
+          },
+          {
+            "type": "category",
+            "label": "API Handler",
+            "items": [
+              "api/api-handler/api-handler",
+              "api/api-handler/resolve-context"
             ]
           },
           "api/saga",
@@ -71,7 +81,6 @@
           "api/event",
           "api/event-store-adapter",
           "api/middleware",
-          "api/api-handler",
           "api/resolve-scripts",
           {
             "type": "category",

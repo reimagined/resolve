@@ -22,6 +22,9 @@ module.exports = {
     [
       "@docusaurus/preset-classic",
       {
+        "gtag": {
+          "trackingID": "UA-118635726-3"
+        },
         "docs": {
           "showLastUpdateAuthor": false,
           "showLastUpdateTime": false,
@@ -130,9 +133,6 @@ module.exports = {
     "algolia": {
       "indexName": "reimagined_resolve",
       "apiKey": process.env.ALGOLIA_RESOLVE_API_KEY
-    },
-    "gtag": {
-      "trackingID": "UA-118635726-3"
     }
   }
 }
