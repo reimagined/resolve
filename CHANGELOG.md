@@ -11,6 +11,7 @@
 **Documentation:**
 
 - Describe the reSolve context object and related API [\#2229](https://github.com/reimagined/resolve/pull/2229)
+- Descibe monitoring in the documentation [\#2201](https://github.com/reimagined/resolve/pull/2201)
 
 **Other changes:**
 

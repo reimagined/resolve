@@ -33,6 +33,7 @@
           "code-splitting",
           "debugging",
           "testing",
+          "monitoring",
           "contributing"
         ]
       },
@@ -74,6 +75,15 @@
             "items": [
               "api/api-handler/api-handler",
               "api/api-handler/resolve-context"
+            ]
+          },
+          {
+            "type": "category",
+            "label": "Monitoring",
+            "items": [
+              "api/monitoring/monitoring",
+              "api/monitoring/monitoring-adapter",
+              "api/monitoring/metric"
             ]
           },
           "api/saga",
