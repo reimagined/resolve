@@ -26,74 +26,40 @@ import WriteSidePage from '../pages/_write-side.mdx'
 
 import '../static/styles.css'
 
+const getPartial = (tab) => {
+  switch (tab) {
+    case 'aggregates':
+      return <AggregatesPage></AggregatesPage>
+    case 'apiHandlers':
+      return <ApiHandlersPage></ApiHandlersPage>
+    case 'client':
+      return <ClientPage></ClientPage>
+    case 'esAdapter':
+      return <EsAdapterPage></EsAdapterPage>
+    case 'readModels':
+      return <ReadModelsPage></ReadModelsPage>
+    case 'readSide':
+      return <ReadSidePage></ReadSidePage>
+    case 'sagas':
+      return <SagasPage></SagasPage>
+    case 'server':
+      return <ServerPage></ServerPage>
+    case 'viewModels':
+      return <ViewModelsPage></ViewModelsPage>
+    case 'writeSide':
+      return <WriteSidePage></WriteSidePage>
+  }
+}
+
+const renderDetail = (tab) => (
+  <div className="alert alert--info">{getPartial(tab)}</div>
+)
+
 const Chart = ({ selected, onClick }) => {
   const [selectedTab, setSelectedTab] = useState(null)
 
   const getSelected = (tabName) => tabName == selectedTab
 
-  const renderDetail = () => {
-    if (selectedTab == 'aggregates') {
-      return (
-        <div className="alert alert--info">
-          <AggregatesPage></AggregatesPage>
-        </div>
-      )
-    } else if (selectedTab == 'apiHandlers') {
-      return (
-        <div className="alert alert--info">
-          <ApiHandlersPage></ApiHandlersPage>
-        </div>
-      )
-    } else if (selectedTab == 'client') {
-      return (
-        <div className="alert alert--info">
-          <ClientPage></ClientPage>
-        </div>
-      )
-    } else if (selectedTab == 'esAdapter') {
-      return (
-        <div className="alert alert--info">
-          <EsAdapterPage></EsAdapterPage>
-        </div>
-      )
-    } else if (selectedTab == 'readModels') {
-      return (
-        <div className="alert alert--info">
-          <ReadModelsPage></ReadModelsPage>
-        </div>
-      )
-    } else if (selectedTab == 'readSide') {
-      return (
-        <div className="alert alert--info">
-          <ReadSidePage></ReadSidePage>
-        </div>
-      )
-    } else if (selectedTab == 'sagas') {
-      return (
-        <div className="alert alert--info">
-          <SagasPage></SagasPage>
-        </div>
-      )
-    } else if (selectedTab == 'server') {
-      return (
-        <div className="alert alert--info">
-          <ServerPage></ServerPage>
-        </div>
-      )
-    } else if (selectedTab == 'viewModels') {
-      return (
-        <div className="alert alert--info">
-          <ViewModelsPage></ViewModelsPage>
-        </div>
-      )
-    } else if (selectedTab == 'writeSide') {
-      return (
-        <div className="alert alert--info">
-          <WriteSidePage></WriteSidePage>
-        </div>
-      )
-    } else return null
-  }
   return (
     <div>
       <svg
@@ -149,7 +115,7 @@ const Chart = ({ selected, onClick }) => {
           <Arrows />
         </g>
       </svg>
-      <div>{renderDetail()}</div>
+      <div>{renderDetail(selectedTab)}</div>
     </div>
   )
 }
