@@ -8,21 +8,17 @@ import type {
   CustomReadModelConnector,
   OmitRegularReadModelArgs,
   EventSubscriberRuntime,
-  ReadModelInteropMap,
   UnionMethodToUnionArgsMethod,
   ExtractTupleUnion,
-  SagaInteropMap,
-  EventSubscriber,
-  EventListener,
-  CallMethodParams,
-  Eventstore,
-  FunctionLike,
+  ReadModelInterop,
+  SagaInterop,
   UnPromise,
 } from './types'
 
+import parseEventSubscriberParameters from './parse-event-subscriber-parameters'
 import eventSubscribersLifecycle from './event-subscribers-lifecycle'
 import eventSubscribersProperties from './event-subscribers-properties'
-import parseEventSubscriberParameters from './parse-event-subscriber-parameters'
+import customReadModelMethods from './custom-read-model'
 
 export const checkAllMethodsExist = <T extends object, K extends readonly string[]>(
   obj: T,
@@ -36,37 +32,43 @@ export const checkAllMethodsExist = <T extends object, K extends readonly string
 
 export const isRegularConnector = (connector: UnknownReadModelConnector): connector is RegularReadModelConnector => 
   checkAllMethodsExist(
-    connector as ObjectFixedIntersectionToObject<UnknownReadModelConnector>,
-    ['connect', 'disconnect', 'dispose',   'build',
+    connector as ObjectFixedIntersectionToObject<UnknownReadModelConnector>, [
+    'connect',
+    'disconnect',
+    'dispose',
+    'build',
     'reset',
     'resume',
     'pause',
     'subscribe',
     'resubscribe',
     'unsubscribe',
-    'status']
-  )
+    'status'
+  ])
 
 export const isCustomConnector = (connector: UnknownReadModelConnector): connector is CustomReadModelConnector => 
   checkAllMethodsExist(
-    connector as ObjectFixedIntersectionToObject<UnknownReadModelConnector>,
-    ['connect', 'disconnect', 'dispose', 'drop']
-  )
+    connector as ObjectFixedIntersectionToObject<UnknownReadModelConnector>, [
+    'connect',
+    'disconnect',
+    'dispose',
+    'drop'
+  ])
 
 
-const getConnector = (runtime: EventSubscriberRuntime, eventSubscriber: string): [string, UnknownReadModelConnector] => {
+const getConnectorAndInterop = (runtime: EventSubscriberRuntime, eventSubscriber: string): [UnknownReadModelConnector, ReadModelInterop | SagaInterop] => {
   const listenerInfo = runtime.eventListeners.get(eventSubscriber)
   if (listenerInfo == null) {
     throw new Error(`Listener ${eventSubscriber} does not exist`)
   }
-  let connectorName: string
+  let interop: ReadModelInterop | SagaInterop
   if(listenerInfo.isSaga) {
-    connectorName = runtime.sagasInterop[eventSubscriber].connectorName
+    interop = runtime.sagasInterop[eventSubscriber]
   } else {
-    connectorName = runtime.readModelsInterop[eventSubscriber].connectorName
+    interop = runtime.readModelsInterop[eventSubscriber]
   }
-  const connector = runtime.readModelConnectors[connectorName]
-  return [connectorName, connector]
+  const connector = runtime.readModelConnectors[interop.connectorName]
+  return [connector, interop]
 }
 
 const throwNoConnectorError = (connectorName: string) => {
@@ -98,15 +100,16 @@ const executeRegularConnectorMethod = async <K extends keyof RegularReadModelCon
 const subscribeImpl = async (
   runtime: EventSubscriberRuntime,
   params: {  
-  eventSubscriber?: string | null | undefined,
-  modelName?: string | null | undefined,
-  subscriptionOptions: {
-    eventTypes: Array<string> | null
-    aggregateIds: Array<string> | null
+    eventSubscriber?: string | null | undefined,
+    modelName?: string | null | undefined,
+    subscriptionOptions: {
+      eventTypes: Array<string> | null
+      aggregateIds: Array<string> | null
+    }
   }
-}) => {
+) => {
   const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
-  const [connectorName, connector] = getConnector(runtime, eventSubscriber)
+  const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
   if(isRegularConnector(connector) || isCustomConnector(connector)) {
     try {
       if(isRegularConnector(connector)) {
@@ -129,55 +132,266 @@ const subscribeImpl = async (
       )
     }
   } else {
-    throwNoConnectorError(connectorName)
+    throwNoConnectorError(interop.connectorName)
   }
 }
 
-const resubscribeImpl = async () => {}
-
-const unsubscribeImpl = async () => {}
-
-const buildImpl = async () => {}
-
-const resumeImpl = async () => {}
-
-const pauseImpl = async () => {}
-
-const resetImpl = async () => {}
-
-const statusImpl = async () => {}
-
-
-const next = async (
-  eventSubscriber: string,
-  timeout?: number,
-  notificationExtraPayload?: object,
-  ...args: any[]
+const resubscribeImpl = async (
+  runtime: EventSubscriberRuntime,
+  params: {  
+    eventSubscriber?: string | null | undefined,
+    modelName?: string | null | undefined,
+    subscriptionOptions: {
+      eventTypes: Array<string> | null
+      aggregateIds: Array<string> | null
+    }
+  }
 ) => {
-  if (args.length > 0) {
-    throw new TypeError('Next should be invoked with no arguments')
+  const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
+  const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
+  if(isRegularConnector(connector) || isCustomConnector(connector)) {
+    try {
+      if(isRegularConnector(connector)) {
+        await executeRegularConnectorMethod(
+          connector,
+          'resubscribe',
+          eventSubscriber,
+          parameters.subscriptionOptions.eventTypes,
+          parameters.subscriptionOptions.aggregateIds,
+          runtime.loadReadModelProcedure.bind(runtime, eventSubscriber)
+        )
+      } else {
+        const store = await connector.connect(eventSubscriber)
+        await connector.drop(store, eventSubscriber)
+        await connector.disconnect(store, eventSubscriber)
+      }
+    } finally {
+      await eventSubscribersLifecycle.resubscribe(
+        runtime.eventstoreAdapter,
+        runtime.applicationName,
+        runtime.getEventSubscriberDestination,
+        eventSubscriber,
+        parameters
+      )
+    }
+  } else {
+    throwNoConnectorError(interop.connectorName)
   }
-  if (timeout != null && (isNaN(+timeout) || +timeout < 0)) {
-    throw new TypeError('Timeout should be non-negative integer')
-  }
-  if (
-    notificationExtraPayload != null &&
-    notificationExtraPayload.constructor !== Object
-  ) {
-    throw new TypeError('Notification extra payload should be plain object')
-  }
-
-  await pool.invokeBuildAsync(
-    {
-      eventSubscriber,
-      initiator: 'read-model-next',
-      notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
-      sendTime: Date.now(),
-      ...notificationExtraPayload,
-    },
-    timeout != null ? Math.floor(+timeout) : timeout
-  )
 }
+
+const unsubscribeImpl = async (
+  runtime: EventSubscriberRuntime,
+  params: {  
+    eventSubscriber?: string | null | undefined,
+    modelName?: string | null | undefined,
+  }
+) => {
+  const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
+  const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
+  if(isRegularConnector(connector) || isCustomConnector(connector)) {
+    try {
+      if(isRegularConnector(connector)) {
+        await executeRegularConnectorMethod(
+          connector,
+          'unsubscribe',
+          eventSubscriber,
+          runtime.loadReadModelProcedure.bind(runtime, eventSubscriber)
+        )
+      } else {
+        const store = await connector.connect(eventSubscriber)
+        await connector.drop(store, eventSubscriber)
+        await connector.disconnect(store, eventSubscriber)
+      }
+    } finally {
+      await eventSubscribersLifecycle.unsubscribe(
+        runtime.eventstoreAdapter,
+        runtime.applicationName,
+        runtime.getEventSubscriberDestination,
+        eventSubscriber,
+        parameters
+      )
+    }
+  } else {
+    throwNoConnectorError(interop.connectorName)
+  }
+}
+
+const buildImpl = async (
+  runtime: EventSubscriberRuntime,
+  params: {  
+    eventSubscriber?: string | null | undefined,
+    modelName?: string | null | undefined,
+    initiator: any
+    notificationId: any
+    sendTime: any
+  }
+) => {
+  const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
+  const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
+  if(isRegularConnector(connector)) {
+    let store: RegularReadModelConnection | undefined = undefined
+    try {
+      store = await connector.connect(eventSubscriber)
+      return await connector.build(store, eventSubscriber, store, interop, runtime.eventstoreAdapter as any, runtime.getVacantTimeInMillis, parameters)
+    } finally {
+      if(store != null) {
+        await connector.disconnect(store)
+      }
+    }
+  } else if(isCustomConnector(connector)) {
+    let store: CustomReadModelConnection | undefined = undefined
+    try {
+      store = await connector.connect(eventSubscriber)
+      return await customReadModelMethods.build(runtime.eventstoreAdapter, runtime.applicationName, interop, store, eventSubscriber, runtime.getVacantTimeInMillis, parameters)
+    } finally {
+      if(store != null) {
+        await connector.disconnect(store, eventSubscriber)
+      }
+    }
+  } else {
+    throwNoConnectorError(interop.connectorName)
+  }
+}
+
+const resumeImpl = async (
+  runtime: EventSubscriberRuntime,
+  params: {  
+    eventSubscriber?: string | null | undefined,
+    modelName?: string | null | undefined,
+  }
+) => {
+  const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
+  const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
+  if(isRegularConnector(connector)) {
+    return await executeRegularConnectorMethod(connector, 'resume', eventSubscriber)
+  } else if(isCustomConnector(connector)) {
+    let store: CustomReadModelConnection | undefined = undefined
+    try {
+      store = await connector.connect(eventSubscriber)
+      return await customReadModelMethods.resume(runtime.eventstoreAdapter, runtime.applicationName, interop, store, eventSubscriber, parameters)
+    } finally {
+      if(store != null) {
+        await connector.disconnect(store, eventSubscriber)
+      }
+    }
+  } else {
+    throwNoConnectorError(interop.connectorName)
+  }
+}
+
+const pauseImpl = async (
+  runtime: EventSubscriberRuntime,
+  params: {  
+    eventSubscriber?: string | null | undefined,
+    modelName?: string | null | undefined,
+  }
+) => {
+  const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
+  const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
+  if(isRegularConnector(connector)) {
+    return await executeRegularConnectorMethod(connector, 'pause', eventSubscriber)
+  } else if(isCustomConnector(connector)) {
+    let store: CustomReadModelConnection | undefined = undefined
+    try {
+      store = await connector.connect(eventSubscriber)
+      return await customReadModelMethods.pause(runtime.eventstoreAdapter, runtime.applicationName, interop, store, eventSubscriber, parameters)
+    } finally {
+      if(store != null) {
+        await connector.disconnect(store, eventSubscriber)
+      }
+    }
+  } else {
+    throwNoConnectorError(interop.connectorName)
+  }
+}
+
+const resetImpl = async (
+  runtime: EventSubscriberRuntime,
+  params: {  
+    eventSubscriber?: string | null | undefined,
+    modelName?: string | null | undefined,
+  }
+) => {
+  const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
+  const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
+  if(isRegularConnector(connector)) {
+    return await executeRegularConnectorMethod(connector, 'reset', eventSubscriber)
+  } else if(isCustomConnector(connector)) {
+    let store: CustomReadModelConnection | undefined = undefined
+    try {
+      store = await connector.connect(eventSubscriber)
+      return await customReadModelMethods.reset(runtime.eventstoreAdapter, runtime.applicationName, interop, store, eventSubscriber, 
+         connector.drop.bind(connector, store, eventSubscriber),  
+      parameters)
+    } finally {
+      if(store != null) {
+        await connector.disconnect(store, eventSubscriber)
+      }
+    }
+  } else {
+    throwNoConnectorError(interop.connectorName)
+  }
+}
+
+const statusImpl = async (
+  runtime: EventSubscriberRuntime,
+  params: {  
+    eventSubscriber?: string | null | undefined,
+    modelName?: string | null | undefined,
+    includeRuntimeStatus?: boolean | undefined,
+    retryTimeoutForRuntimeStatus?: number | undefined
+  }
+) => {
+  const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
+  const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
+  if(isRegularConnector(connector)) {
+    return await executeRegularConnectorMethod(connector, 'status', eventSubscriber, runtime.eventstoreAdapter as any, parameters.includeRuntimeStatus, parameters.retryTimeoutForRuntimeStatus)
+  } else if(isCustomConnector(connector)) {
+    let store: CustomReadModelConnection | undefined = undefined
+    try {
+      store = await connector.connect(eventSubscriber)
+      return await customReadModelMethods.status(runtime.eventstoreAdapter, runtime.applicationName, interop, store, eventSubscriber, parameters)
+    } finally {
+      if(store != null) {
+        await connector.disconnect(store, eventSubscriber)
+      }
+    }
+  } else {
+    throwNoConnectorError(interop.connectorName)
+  }
+}
+
+
+// const next = async (
+//   eventSubscriber: string,
+//   timeout?: number,
+//   notificationExtraPayload?: object,
+//   ...args: any[]
+// ) => {
+//   if (args.length > 0) {
+//     throw new TypeError('Next should be invoked with no arguments')
+//   }
+//   if (timeout != null && (isNaN(+timeout) || +timeout < 0)) {
+//     throw new TypeError('Timeout should be non-negative integer')
+//   }
+//   if (
+//     notificationExtraPayload != null &&
+//     notificationExtraPayload.constructor !== Object
+//   ) {
+//     throw new TypeError('Notification extra payload should be plain object')
+//   }
+
+//   await pool.invokeBuildAsync(
+//     {
+//       eventSubscriber,
+//       initiator: 'read-model-next',
+//       notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
+//       sendTime: Date.now(),
+//       ...notificationExtraPayload,
+//     },
+//     timeout != null ? Math.floor(+timeout) : timeout
+//   )
+// }
 
 const eventSubscriberFactory = (runtime: EventSubscriberRuntime) => {
   const eventSubscriber = Object.freeze({

@@ -39,7 +39,7 @@ const updateCustomReadModel = async (
 export const OMIT_BATCH = Symbol('OMIT_BATCH')
 export const STOP_BATCH = Symbol('STOP_BATCH')
 
-export const customReadModelMethods = {
+const customReadModelMethods = {
   build: async (
     eventstoreAdapter: Eventstore,
     applicationName: string,
@@ -356,5 +356,6 @@ export const customReadModelMethods = {
   },
 } as const
 
+export default customReadModelMethods
 
 
