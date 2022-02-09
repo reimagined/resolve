@@ -37,7 +37,7 @@ The request body should have the `application/json` content type and contain the
 | `commandType`   | string | The command type that the aggregate can handle.        |
 | `payload`       | object | Parameters the command accepts.                        |
 
-#### Example
+### Example
 
 ```js
 const apiCommandsUrl = '/api/commands'
@@ -73,7 +73,7 @@ To query a Read Model from the client side, send a POST request to the following
 http://{host}:{port}/api/query/{readModel}/{resolver}
 ```
 
-#### URL Parameters:
+### URL Parameters:
 
 | Name        | Description                                                             |
 | ----------- | ----------------------------------------------------------------------- |
@@ -93,7 +93,7 @@ The request body should have the `application/json` content type and the followi
 
 The object contains parameters that the resolver accepts.
 
-#### Example
+### Example
 
 ```js
 const apiQueryUrl = '/api/query'
@@ -120,14 +120,14 @@ To query a View Model from the client side, send a GET request to the following 
 http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 ```
 
-#### URL Parameters
+### URL Parameters
 
 | Name           | Description                                                                                                |
 | -------------- | ---------------------------------------------------------------------------------------------------------- |
 | `viewModel`    | The View Model name as defined in the application's configuration file.                                    |
 | `aggregateIds` | The comma-separated list of Aggregate IDs to include in the View Model. Use `*` to include all Aggregates. |
 
-#### Example
+### Example
 
 ```js
 const apiQueryUrl = '/api/query'

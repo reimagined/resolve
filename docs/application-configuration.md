@@ -78,7 +78,7 @@ Specifies an array of the application's API Handlers. An API handler configurati
 | handler | The path to the file that contains the handler's definition.                                                                                        |
 | method  | The HTTP method to handle.                                                                                                                          |
 
-##### Example:
+#### Example:
 
 ```js
 apiHandlers: [
@@ -94,7 +94,7 @@ apiHandlers: [
 
 Specifies an array of the client application script's entry points. The entry point is specified as a path to a JavaScript file. The file should export a function that takes a `resolveContext` as a parameter.
 
-##### client/index.js:
+#### client/index.js:
 
 ```js
 const main = async resolveContext => {
@@ -103,7 +103,7 @@ const main = async resolveContext => {
 export default main
 ```
 
-##### config.app.js:
+#### config.app.js:
 
 ```js
 clientEntries: ['client/index.js']
@@ -154,7 +154,7 @@ The following target options are available:
 
 To serve SSR markup to the client, you need to register the **live-require-handler.js** API handler in the **apiHandlers** configuration section:
 
-##### config.app.js:
+#### config.app.js:
 
 ```js
 ...
@@ -196,7 +196,7 @@ Specifies an adapter used to connect to to the application's event store. An ada
 | module  | The name of a module or the path to a file that defines an adapter. |
 | options | An object that defines the adapter's options as key-value pairs.    |
 
-##### Example:
+#### Example:
 
 ```js
 eventstoreAdapter: {
@@ -358,7 +358,7 @@ Specifies the application's Monitoring adapters as key-value pairs. An adapter c
 | module  | The name of a module or the path to a file that defines an adapter . |
 | options | An object that defines the adapter's options as key-value pairs.     |
 
-##### Example:
+#### Example:
 
 ```js
 monitoringAdapters: {
@@ -373,13 +373,30 @@ monitoringAdapters: {
 
 The following adapters are available:
 
-| Module Name                                                         | Description                          |
-| ------------------------------------------------------------------- | ------------------------------------ |
-| [@resolve-js/monitoring-console](#monitoring-console)               | Prints metrics to the text console.  |
-| [@resolve-js/monitoring-aws-cloudwatch](#monitoring-aws-cloudwatch) | Publishes metrics to AWS CloudWatch. |
+| Module Name                                                                     | Description                          |
+| ------------------------------------------------------------------------------- | ------------------------------------ |
+| [`@resolve-js/monitoring-console`](#resolve-jsmonitoring-console)               | Prints metrics to the text console.  |
+| [`@resolve-js/monitoring-aws-cloudwatch`](#resolve-jsmonitoring-aws-cloudwatch) | Publishes metrics to AWS CloudWatch. |
 
 In the cloud environment, if the `default` adapter is not explicitly specified, it is added automatically.
 In this case, the `'@resolve-js/monitoring-aws-cloudwatch'` adapter is used.
+
+#### `@resolve-js/monitoring-console`
+
+The `@resolve-js/monitoring-console` adapter accepts the following option:
+
+| Option Name   | Description                                                                                                                                                          |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `publishMode` | Specifies when to display a summary on the collected metrics in the console. <br/> Available values: `all`, `resolveDispose`, `processExit`. Default: `processExit`. |
+
+#### `@resolve-js/monitoring-aws-cloudwatch`
+
+The `@resolve-js/monitoring-aws-cloudwatch` adapter accepts the following options:
+
+| Option Name      | Description                                |
+| ---------------- | ------------------------------------------ |
+| `deploymentId`   | Specifies the reSolve Cloud deployment ID. |
+| `resolveVersion` | Specifies the reSolve version.             |
 
 ### jwtCookie
 
@@ -424,7 +441,7 @@ An array of the application's Read Models. A Read Model configuration object wit
 | resolvers     | A path to a file that defines a Read Model resolver.                 |
 | connectorName | The name of a connector used to connect the Read Model to its store. |
 
-##### Example:
+#### Example:
 
 ```js
 readModels: [
@@ -446,7 +463,7 @@ Specifies the application's Read Model connectors as key-value pairs. A connecto
 | module  | The name of a module or the path to a file that defines a connector. |
 | options | An object that defines the connector's options as key-value pairs.   |
 
-##### Example:
+#### Example:
 
 ```js
 readModelConnectors: {
@@ -625,7 +642,7 @@ Specifies an array of the application's Sagas. A Saga configuration object withi
 | connectorName | Defines a Read Model storage used to store the saga's persistent data.               |
 | encryption    | A path to a file that defines data encryption and decryption logic.                  |
 
-##### Example:
+#### Example:
 
 <!-- prettier-ignore-start -->
 
@@ -660,7 +677,7 @@ A scheduler adapter configuration object has the following fields:
 | module  | The name of a module or the path to a file that defines an adapter. |
 | options | An object that defines the adapter's options as key-value pairs.    |
 
-##### Example:
+#### Example:
 
 ```js
 schedulers: {

@@ -3,6 +3,8 @@ id: export-import
 title: Event Export and Import
 ---
 
+## Export/Import API
+
 Each event store adapter exposes the following API used for event export and import:
 
 | Method | Description                                                           |
@@ -12,7 +14,7 @@ Each event store adapter exposes the following API used for event export and imp
 
 In the code sample below, a readable stream returned by an event store's `export` method is pipelined directly into a writable stream returned by a recipient event store's `import` method.
 
-##### Example
+### Example
 
 ```js
 import { Readable, pipeline as pipelineC } from 'stream'
@@ -42,7 +44,7 @@ To import events incrementally, pass an array of events to an event store adapte
 
 The code sample below implements an API endpoint that incrementally imports events into the application's event store.
 
-##### Example API handler
+#### Example API handler
 
 ```js
 import iconv from 'iconv-lite'
@@ -78,7 +80,7 @@ The following methods give you additional control over the incremental import pr
 
 The code sample below demonstrates how to use advanced incremental import in a try-catch block to roll back in case of errors.
 
-##### Example
+#### Example
 
 ```js
 try {
