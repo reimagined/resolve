@@ -1,11 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 const DataBase = () => (
-  <g
-    id="interactscm-database"
-    className="db-icon"
-    paintOrder="fill markers stroke"
-  >
+  <g className="db-icon" paintOrder="fill markers stroke">
     <path
       fillRule="evenodd"
       clipRule="evenodd"

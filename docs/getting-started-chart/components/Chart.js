@@ -56,10 +56,10 @@ const getPartial = (tab) => {
 const renderDetail = (tab) =>
   tab ? <div className="alert alert--info">{getPartial(tab)}</div> : null
 
-const Chart = ({ selected, onClick }) => {
+const Chart = () => {
   const [selectedTab, setSelectedTab] = useState(null)
 
-  const isSelected = (tabName) => tabName == selectedTab
+  const isSelected = (tabName) => tabName === selectedTab
 
   return (
     <div>
@@ -108,7 +108,6 @@ const Chart = ({ selected, onClick }) => {
             selected={isSelected('viewModels')}
             onClick={() => setSelectedTab('viewModels')}
           />
-
           <Client
             selected={isSelected('client')}
             onClick={() => setSelectedTab('client')}
