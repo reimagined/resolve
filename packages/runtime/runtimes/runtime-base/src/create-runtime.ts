@@ -19,7 +19,7 @@ import type {
 import { getLog } from './utils/get-log'
 import { eventBroadcastFactory } from './event-broadcast-factory'
 import { commandExecutedHookFactory } from './command-executed-hook-factory'
-import { eventSubscriberFactory } from './event-subscriber'
+import eventSubscriberFactory from './event-subscriber'
 import { readModelProcedureLoaderFactory } from './load-read-model-procedure'
 import { eventListenersManagerFactory } from './event-listeners-manager-factory'
 
@@ -63,10 +63,7 @@ const dispose = async (runtime: Runtime) => {
     log.debug(`metrics published`)
 
     const disposeMethods: Array<() => Promise<void>> = [
-      runtime.executeCommand.dispose.bind(runtime.executeCommand),
-      runtime.executeQuery.dispose.bind(runtime.executeQuery),
-      runtime.executeSaga.dispose.bind(runtime.executeSaga),
-      runtime.eventStoreAdapter.dispose.bind(runtime.eventStoreAdapter),
+      runtime.eventStoreAdapter.dispose.bind(runtime.eventStoreAdapter)
     ]
 
     for (const name of Object.keys(runtime.readModelConnectors)) {
@@ -195,27 +192,48 @@ export const createRuntime = async (
     uploader,
   } = params
 
-  const executeQuery = createQueryExecutor({
-    invokeBuildAsync,
-    applicationName: eventSubscriberScope,
-    eventstoreAdapter: eventStoreAdapter,
-    getEventSubscriberDestination,
-    readModelConnectors,
-    loadReadModelProcedure,
-    performanceTracer,
-    getVacantTimeInMillis,
+  const readModelsInterop = domainInterop.readModelDomain.acquireReadModelsInterop({
     monitoring,
-    readModelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
-      monitoring,
-      secretsManager,
-      resolverMiddlewares,
-      projectionMiddlewares,
-    }),
-    viewModelsInterop: domainInterop.viewModelDomain.acquireViewModelsInterop({
-      monitoring,
-      eventstore: eventStoreAdapter,
-      secretsManager,
-    }),
+    secretsManager,
+    resolverMiddlewares,
+    projectionMiddlewares,
+  })
+
+  const viewModelsInterop = domainInterop.viewModelDomain.acquireViewModelsInterop({
+    monitoring,
+    eventstore: eventStoreAdapter,
+    secretsManager,
+  })
+
+  const sagasInterop = domainInterop.sagaDomain.acquireSagasInterop({
+    executeCommand,
+    executeQuery,
+    secretsManager,
+    monitoring,
+  })
+
+  const eventSubscriber = eventSubscriberFactory({
+    applicationName: eventSubscriberScope,
+    getEventSubscriberDestination,
+    loadReadModelProcedure,
+    invokeBuildAsync,
+    readModelConnectors,
+    getVacantTimeInMillis,
+    eventstoreAdapter: eventStoreAdapter,
+    readModelsInterop,
+    sagasInterop,
+    eventListeners,
+    performanceTracer,
+    monitoring,
+  })
+
+  const executeQuery = createQueryExecutor({
+    readModelConnectors,
+    readModelsInterop,
+    viewModelsInterop,
+    eventSubscriber,
+    performanceTracer,
+    monitoring,
   })
 
   const getScheduler = () => {
@@ -243,12 +261,6 @@ export const createRuntime = async (
     monitoring,
     domainInterop,
     executeSchedulerCommand,
-  })
-
-  const eventSubscriber = eventSubscriberFactory({
-    executeQuery,
-    executeSaga,
-    eventListeners,
   })
 
   const eventListenersManager = eventListenersManagerFactory(

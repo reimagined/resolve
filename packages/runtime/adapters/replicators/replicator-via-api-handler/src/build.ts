@@ -39,7 +39,6 @@ const build: ExternalMethods['build'] = async (
   readModelName,
   store,
   modelInterop,
-  next,
   eventstoreAdapter,
   getVacantTimeInMillis,
   buildInfo
@@ -48,13 +47,27 @@ const build: ExternalMethods['build'] = async (
 
   let iterationNumber = buildInfo.iterationNumber ?? 0
 
-  const delayNext = async (delay: number, error: any) => {
+  const makeDelayNext = <Args extends [delay: number, error: any] | []>(...args: Args) => {
+    if(args.length === 0) {
+      return {
+        type: 'build-direct-invoke',
+        payload: {}
+      } as const
+    }
+
+    const [delay, error] = args
     log.debug(
       `Delaying next for ${delay}ms due to service error ${
         error ? error.name + ': ' + error.message : ''
       }`
     )
-    await next(delay, { iterationNumber: iterationNumber + 1 })
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        timeout: delay,
+        notificationExtraPayload: { iterationNumber: iterationNumber + 1 }
+      }
+    } as const
   }
 
   const state = await basePool.getReplicationState(basePool)
@@ -64,14 +77,13 @@ const build: ExternalMethods['build'] = async (
         state.statusAndData.data
       )}`
     )
-    return
+    return null
   } else if (state.statusAndData.status === 'serviceError') {
-    await delayNext(getBuildDelay(iterationNumber), state.statusAndData.data)
-    return
+    return makeDelayNext(getBuildDelay(iterationNumber), state.statusAndData.data)
   }
   if (state.paused) {
     log.warn('Refuse to start or continue replication because it is paused')
-    return
+    return null
   }
 
   let lockId = `${Date.now()}`
@@ -79,24 +91,21 @@ const build: ExternalMethods['build'] = async (
   try {
     const result = await basePool.occupyReplication(basePool, lockId, timeLeft)
     if (result.status === 'alreadyLocked') {
-      await delayNext(getBuildDelay(iterationNumber), {
+      return makeDelayNext(getBuildDelay(iterationNumber), {
         name: 'Error',
         message: 'Replication process is already locked',
       })
-      return
     } else if (result.status === 'serviceError') {
-      await delayNext(getBuildDelay(iterationNumber), {
+      return makeDelayNext(getBuildDelay(iterationNumber), {
         name: 'Error',
         message: result.message,
       })
-      return
     } else if (result.status === 'error') {
       log.error(`Could not occupy replication process: ${result.message}`)
-      return
+      return null
     }
   } catch (error) {
-    await delayNext(getBuildDelay(iterationNumber), error)
-    return
+    return makeDelayNext(getBuildDelay(iterationNumber), error)
   }
 
   let iterator = state.iterator
@@ -132,13 +141,13 @@ const build: ExternalMethods['build'] = async (
   } catch (error) {
     await onExit()
     if (RequestTimeoutError.is(error) || AlreadyDisposedError.is(error)) {
-      await next()
+      return makeDelayNext()
     } else if (ServiceBusyError.is(error)) {
-      await delayNext(getBuildDelay(iterationNumber), error)
+      return makeDelayNext(getBuildDelay(iterationNumber), error)
     } else {
       log.error(error)
     }
-    return
+    return null
   }
 
   log.debug('Starting or continuing replication process')
@@ -160,13 +169,13 @@ const build: ExternalMethods['build'] = async (
     } catch (error) {
       await onExit()
       if (RequestTimeoutError.is(error) || AlreadyDisposedError.is(error)) {
-        await next()
+        await makeDelayNext()
       } else if (ServiceBusyError.is(error)) {
-        await delayNext(getBuildDelay(iterationNumber), error)
+        return makeDelayNext(getBuildDelay(iterationNumber), error)
       } else {
         log.error(error)
       }
-      return
+      return null
     }
     const { cursor: nextCursor, events } = loadEventsResult
     const { existingSecrets, deletedSecrets } = gatheredSecrets
@@ -293,7 +302,7 @@ const build: ExternalMethods['build'] = async (
     if (wasPaused) {
       log.debug('Pausing replication as requested')
       await onExit()
-      return
+      return null
     }
 
     if (shouldContinue && localContinue && delay === 0) {
@@ -306,12 +315,12 @@ const build: ExternalMethods['build'] = async (
         )
       if (shouldContinue) {
         if (delay > 0) {
-          await delayNext(delay, lastError)
+          return makeDelayNext(delay, lastError)
         } else {
-          await next()
+          return makeDelayNext()
         }
       }
-      return
+      return null
     }
   }
 }

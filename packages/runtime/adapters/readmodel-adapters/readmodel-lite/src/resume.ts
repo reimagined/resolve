@@ -1,6 +1,6 @@
 import type { ExternalMethods } from './types'
 
-const resume: ExternalMethods['resume'] = async (pool, readModelName, next) => {
+const resume: ExternalMethods['resume'] = async (pool, readModelName) => {
   const {
     PassthroughError,
     inlineLedgerRunQuery,
@@ -44,7 +44,10 @@ const resume: ExternalMethods['resume'] = async (pool, readModelName, next) => {
       }
     }
 
-    await next()
+    return {
+      type: 'build-direct-invoke',
+      payload: {}
+    }
   } finally {
     pool.activePassthrough = false
   }
