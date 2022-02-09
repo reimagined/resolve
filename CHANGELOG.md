@@ -7,6 +7,7 @@
 **Bug fixes:**
 
 - Can't build a monorepo, yarn install dependencies gives random errors [\#2230](https://github.com/reimagined/resolve/issues/2230)
+- Performance tracing commands do not work [\#2202](https://github.com/reimagined/resolve/issues/2202)
 
 **Documentation:**
 

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "outDir": "lib",
+    "declarationDir": "types",
+    "typeRoots": ["./node_modules/@types", "../../../node_modules/@types"]
+  },
+  "include": ["src", "test"]
+}

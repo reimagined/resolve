@@ -273,6 +273,7 @@ module.exports = {
           'lstat',
           'lte',
           'Marshalled',
+          'Matcher',
           'md5',
           'Mergeable',
           'metadata',
