@@ -1,4 +1,4 @@
-import { Eventstore, ReadModelInterop, SagaInterop } from "@resolve-js/core"
+import { Eventstore, ReadModelInterop, SagaInterop } from '@resolve-js/core'
 import logScope from '@resolve-js/debug-levels'
 
 import { BuildDirectContinuation, CustomReadModelConnection } from './types'
@@ -65,10 +65,10 @@ const customReadModelMethods = {
       )[0] ?? { status: null })
       if (status == null || status.status !== 'deliver' || !!status.busy) {
         return {
-          type: "build-direct-invoke",
+          type: 'build-direct-invoke',
           payload: {
-            continue: false
-          }
+            continue: false,
+          },
         }
       }
 
@@ -141,10 +141,10 @@ const customReadModelMethods = {
         }
       } else if (events.length === 0) {
         return {
-          type: "build-direct-invoke",
+          type: 'build-direct-invoke',
           payload: {
-            continue: false
-          }
+            continue: false,
+          },
         }
       } else if (events.length > 0) {
         for (const event of events) {
@@ -219,10 +219,10 @@ const customReadModelMethods = {
     } catch (error) {
       if (error === OMIT_BATCH) {
         return {
-          type: "build-direct-invoke",
+          type: 'build-direct-invoke',
           payload: {
-            continue: false
-          }
+            continue: false,
+          },
         }
       }
 
@@ -259,12 +259,12 @@ const customReadModelMethods = {
     })
 
     const result: BuildDirectContinuation = {
-      type: "build-direct-invoke",
+      type: 'build-direct-invoke',
       payload: {
-        continue: isSuccess
-      }
+        continue: isSuccess,
+      },
     }
-    
+
     return result
   },
 
@@ -313,7 +313,7 @@ const customReadModelMethods = {
     connection: CustomReadModelConnection,
     eventSubscriber: string,
     parameters: {}
-  ) : Promise<BuildDirectContinuation> => {
+  ): Promise<BuildDirectContinuation> => {
     let isSuccess = false
     await updateCustomReadModel(
       eventstoreAdapter,
@@ -329,8 +329,8 @@ const customReadModelMethods = {
     const result: BuildDirectContinuation = {
       type: 'build-direct-invoke',
       payload: {
-        continue: isSuccess
-      }
+        continue: isSuccess,
+      },
     }
 
     return result
@@ -376,5 +376,3 @@ const customReadModelMethods = {
 } as const
 
 export default customReadModelMethods
-
-

@@ -47,13 +47,15 @@ const build: ExternalMethods['build'] = async (
 
   let iterationNumber = buildInfo.iterationNumber ?? 0
 
-  const makeDelayNext = <Args extends [delay: number, error: any] | []>(...args: Args) => {
-    if(args.length === 0) {
+  const makeDelayNext = <Args extends [delay: number, error: any] | []>(
+    ...args: Args
+  ) => {
+    if (args.length === 0) {
       return {
         type: 'build-direct-invoke',
         payload: {
-          continue: true
-        }
+          continue: true,
+        },
       } as const
     }
 
@@ -68,8 +70,8 @@ const build: ExternalMethods['build'] = async (
       payload: {
         continue: true,
         timeout: delay,
-        notificationExtraPayload: { iterationNumber: iterationNumber + 1 }
-      }
+        notificationExtraPayload: { iterationNumber: iterationNumber + 1 },
+      },
     } as const
   }
 
@@ -83,19 +85,22 @@ const build: ExternalMethods['build'] = async (
     return {
       type: 'build-direct-invoke',
       payload: {
-        continue: false
-      }
+        continue: false,
+      },
     } as const
   } else if (state.statusAndData.status === 'serviceError') {
-    return makeDelayNext(getBuildDelay(iterationNumber), state.statusAndData.data)
+    return makeDelayNext(
+      getBuildDelay(iterationNumber),
+      state.statusAndData.data
+    )
   }
   if (state.paused) {
     log.warn('Refuse to start or continue replication because it is paused')
     return {
       type: 'build-direct-invoke',
       payload: {
-        continue: false
-      }
+        continue: false,
+      },
     } as const
   }
 
@@ -118,8 +123,8 @@ const build: ExternalMethods['build'] = async (
       return {
         type: 'build-direct-invoke',
         payload: {
-          continue: false
-        }
+          continue: false,
+        },
       } as const
     }
   } catch (error) {
@@ -168,8 +173,8 @@ const build: ExternalMethods['build'] = async (
     return {
       type: 'build-direct-invoke',
       payload: {
-        continue: false
-      }
+        continue: false,
+      },
     } as const
   }
 
@@ -201,8 +206,8 @@ const build: ExternalMethods['build'] = async (
       return {
         type: 'build-direct-invoke',
         payload: {
-          continue: false
-        }
+          continue: false,
+        },
       } as const
     }
     const { cursor: nextCursor, events } = loadEventsResult
@@ -333,8 +338,8 @@ const build: ExternalMethods['build'] = async (
       return {
         type: 'build-direct-invoke',
         payload: {
-          continue: false
-        }
+          continue: false,
+        },
       } as const
     }
 
@@ -356,8 +361,8 @@ const build: ExternalMethods['build'] = async (
       return {
         type: 'build-direct-invoke',
         payload: {
-          continue: false
-        }
+          continue: false,
+        },
       } as const
     }
   }

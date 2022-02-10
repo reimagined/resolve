@@ -6,11 +6,11 @@ const eventSubscribersProperties = {
     eventstoreAdapter: Eventstore,
     applicationName: string,
     params: {
-      eventSubscriber?: string | null | undefined,
-      modelName?: string | null | undefined,
+      eventSubscriber?: string | null | undefined
+      modelName?: string | null | undefined
       key: string
     }
-    ) => {
+  ) => {
     const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
     const entry = (
       await eventstoreAdapter.getEventSubscribers({
@@ -39,11 +39,11 @@ const eventSubscribersProperties = {
     eventstoreAdapter: Eventstore,
     applicationName: string,
     params: {
-      eventSubscriber?: string | null | undefined,
-      modelName?: string | null | undefined,
+      eventSubscriber?: string | null | undefined
+      modelName?: string | null | undefined
       key: string
     }
-    ) => {
+  ) => {
     const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
     const { status } = (
       await eventstoreAdapter.getEventSubscribers({
@@ -59,10 +59,10 @@ const eventSubscribersProperties = {
     eventstoreAdapter: Eventstore,
     applicationName: string,
     params: {
-      eventSubscriber?: string | null | undefined,
-      modelName?: string | null | undefined,
+      eventSubscriber?: string | null | undefined
+      modelName?: string | null | undefined
     }
-      ) => {
+  ) => {
     const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
     const { status } = (
       await eventstoreAdapter.getEventSubscribers({
@@ -78,12 +78,12 @@ const eventSubscribersProperties = {
     eventstoreAdapter: Eventstore,
     applicationName: string,
     params: {
-      eventSubscriber?: string | null | undefined,
-      modelName?: string | null | undefined,
-      key: string,
-      value: any,
+      eventSubscriber?: string | null | undefined
+      modelName?: string | null | undefined
+      key: string
+      value: any
     }
-    ) => {
+  ) => {
     const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
     const entry = (
       await eventstoreAdapter.getEventSubscribers({
@@ -108,7 +108,7 @@ const eventSubscribersProperties = {
       },
       updateOnly: true,
     })
-  }
+  },
 } as const
 
 export default eventSubscribersProperties

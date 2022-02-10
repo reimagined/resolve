@@ -248,10 +248,10 @@ export type ReadModelLedger = {
 }
 
 export type BuildDirectContinuation = {
-  type: 'build-direct-invoke',
+  type: 'build-direct-invoke'
   payload: {
-    continue: boolean,
-    timeout?: number,
+    continue: boolean
+    timeout?: number
     notificationExtraPayload?: object
   }
 }
@@ -376,7 +376,7 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
 
   resume(
     pool: AdapterPool,
-    readModelName: string,
+    readModelName: string
   ): Promise<BuildDirectContinuation>
 
   pause(pool: AdapterPool, readModelName: string): Promise<void>
@@ -604,18 +604,16 @@ export type ObjectFixedKeysImpl<
     [K in keyof U]: infer E
   }
     ? E
-    : never,
+    : never
 > = T extends any
-? Q extends [infer U]
-  ? (
-    string extends U
-  ? never
-  : number extends U
-  ? never
-  : U
-  )
+  ? Q extends [infer U]
+    ? string extends U
+      ? never
+      : number extends U
+      ? never
+      : U
+    : never
   : never
-: never
 
 export type ObjectFixedKeys<T extends object> = ObjectFixedKeysImpl<T>
 
@@ -629,25 +627,24 @@ export type ObjectDictionaryKeys<T extends object> = Exclude<
 >
 
 export type DistributeFixedFieldsUnionLikeObject<
-   U extends object,
-   KS extends keyof any
+  U extends object,
+  KS extends keyof any
 > = U extends any
-  ? ([IsTypeLike<U, { [K in KS]: any  }>] extends [never] 
-      ? never
-      : U
-    )
+  ? [IsTypeLike<U, { [K in KS]: any }>] extends [never]
+    ? never
+    : U
   : never
 
 export type ExtractExactUnionLikeKeyType<
   U extends object,
   K extends keyof any,
-  Q extends object = DistributeFixedFieldsUnionLikeObject<U, K>,
+  Q extends object = DistributeFixedFieldsUnionLikeObject<U, K>
 > = K extends keyof Q ? Q[K] : never
 
 export type DistributeUnionLikeObject<
   U extends object,
   KS = ObjectFixedKeys<U>
-> = KS extends keyof any ? ExtractExactUnionLikeKeyType<U, KS>  : never
+> = KS extends keyof any ? ExtractExactUnionLikeKeyType<U, KS> : never
 
 export type ObjectFixedUnionToIntersection<
   U extends object,

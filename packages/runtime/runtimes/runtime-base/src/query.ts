@@ -1,43 +1,56 @@
 import logScope from '@resolve-js/debug-levels'
-import type { EventSubscriberModelNamePart, ViewModelInterop, ReadModelInterop, SagaInterop, ExecuteQueryPool, QueryExecutor, MiddlewareContext, UnknownReadModelConnector, UnknownReadModelConnection, UnionMethodToUnionArgsMethod } from './types'
+import type {
+  EventSubscriberModelNamePart,
+  ViewModelInterop,
+  ReadModelInterop,
+  SagaInterop,
+  ExecuteQueryPool,
+  QueryExecutor,
+  MiddlewareContext,
+  UnknownReadModelConnector,
+  UnknownReadModelConnection,
+  UnionMethodToUnionArgsMethod,
+} from './types'
 import parseEventSubscriberParameters from './parse-event-subscriber-parameters'
 
 const getLog = (scope: string) => logScope(`resolve:runtime:query:${scope}`)
 
-const parseReadOptions = <A,B>(options: {
-  modelOptions?: A,
-    modelArgs?: B,
-    resolverName?: A,
-    resolverArgs?: B,
-    aggregateIds?: A,
-    aggregateArgs?: B,
+const parseReadOptions = <A, B>(options: {
+  modelOptions?: A
+  modelArgs?: B
+  resolverName?: A
+  resolverArgs?: B
+  aggregateIds?: A
+  aggregateArgs?: B
 }): [A, B] => {
   let result: [A, B] | undefined = undefined
-  if(options.modelOptions != null && options.modelArgs != null) {
-      result = [options.modelOptions, options.modelArgs]
-  } else if(options.resolverName != null && options.aggregateArgs != null) {
-      result = [options.resolverName, options.aggregateArgs]
-  } else if(options.aggregateIds != null && options.aggregateArgs != null) {
-      result = [options.aggregateIds, options.aggregateArgs]
-    }
+  if (options.modelOptions != null && options.modelArgs != null) {
+    result = [options.modelOptions, options.modelArgs]
+  } else if (options.resolverName != null && options.aggregateArgs != null) {
+    result = [options.resolverName, options.aggregateArgs]
+  } else if (options.aggregateIds != null && options.aggregateArgs != null) {
+    result = [options.aggregateIds, options.aggregateArgs]
+  }
 
-  if(Object.keys(options).length !== 2) {
+  if (Object.keys(options).length !== 2) {
     result = undefined
-  } 
+  }
 
-  if(result == null) {
-    throw new Error('Wrong options for read invocation') 
+  if (result == null) {
+    throw new Error('Wrong options for read invocation')
   }
 
   return result
 }
 
-
 const viewModelReadImpl = async (
   interop: ViewModelInterop,
   { jwt, ...params }: { jwt?: string } & Record<string, any>
 ): Promise<any> => {
-  const [originalAggregateIds, aggregateArgs] = parseReadOptions<Array<string> | string, any>(params)
+  const [originalAggregateIds, aggregateArgs] = parseReadOptions<
+    Array<string> | string,
+    any
+  >(params)
   let aggregateIds: any = null // TODO any
   try {
     if (Array.isArray(originalAggregateIds)) {
@@ -74,7 +87,10 @@ const readModelReadImpl = async (
   const readModelName = interop.name
   const log = getLog(`read:${readModelName}`)
 
-  const [resolverName, resolverArgs] = parseReadOptions<string, Record<string, any>>(params)
+  const [resolverName, resolverArgs] = parseReadOptions<
+    string,
+    Record<string, any>
+  >(params)
 
   const segment = performanceTracer ? performanceTracer.getSegment() : null
   const subSegment = segment ? segment.addNewSubsegment('read') : null
@@ -95,7 +111,7 @@ const readModelReadImpl = async (
       middlewareContext
     )
     log.debug(`invoking resolver`)
-  
+
     let result = null
     let connector: UnknownReadModelConnector | null = null
     let connection: UnknownReadModelConnection | null = null
@@ -110,8 +126,10 @@ const readModelReadImpl = async (
       log.verbose(result)
     } finally {
       log.debug(`disconnecting`)
-      if(connector != null && connection != null) {
-        const disconnect = connector.disconnect.bind(connector) as UnionMethodToUnionArgsMethod<typeof connector.disconnect>
+      if (connector != null && connection != null) {
+        const disconnect = connector.disconnect.bind(
+          connector
+        ) as UnionMethodToUnionArgsMethod<typeof connector.disconnect>
         await disconnect(connection, readModelName)
       }
       log.debug(`disconnected`)
@@ -125,10 +143,8 @@ const readModelReadImpl = async (
   }
 }
 
-const throwNoEventSubcriberError = (name: string) => {
-  const error = new Error(
-    `Read/view model "${name}" does not exist`
-  ) as any
+const throwNoEventSubscriberError = (name: string) => {
+  const error = new Error(`Read/view model "${name}" does not exist`) as any
   error.code = 422
   throw error
 }
@@ -139,39 +155,46 @@ const readImpl = async (
   middlewareContext?: MiddlewareContext
 ) => {
   const [name, parameters] = parseEventSubscriberParameters(params)
-  const { readModelsInterop, viewModelsInterop } = pool  
-  if(readModelsInterop[name] != null) {
-    return await readModelReadImpl(readModelsInterop[name], pool.readModelConnectors, pool.performanceTracer, pool.monitoring, parameters, middlewareContext)
-  } else if(viewModelsInterop[name] != null) {
+  const { readModelsInterop, viewModelsInterop } = pool
+  if (readModelsInterop[name] != null) {
+    return await readModelReadImpl(
+      readModelsInterop[name],
+      pool.readModelConnectors,
+      pool.performanceTracer,
+      pool.monitoring,
+      parameters,
+      middlewareContext
+    )
+  } else if (viewModelsInterop[name] != null) {
     return await viewModelReadImpl(viewModelsInterop[name], parameters)
   } else {
-    throwNoEventSubcriberError(name)
+    throwNoEventSubscriberError(name)
   }
 }
 
 const serializeStateImpl = async (
   pool: ExecuteQueryPool,
-  params: EventSubscriberModelNamePart & Record<string, any>,
+  params: EventSubscriberModelNamePart & Record<string, any>
 ) => {
   const [name, parameters] = parseEventSubscriberParameters(params)
-  const { readModelsInterop, viewModelsInterop } = pool  
-  if(readModelsInterop[name] != null) {
+  const { readModelsInterop, viewModelsInterop } = pool
+  if (readModelsInterop[name] != null) {
     return JSON.stringify(parameters.state, null, 2)
-  } else if(viewModelsInterop[name] != null) {
+  } else if (viewModelsInterop[name] != null) {
     return viewModelsInterop[name].serialize(parameters.state, parameters.jwt)
   } else {
-    throwNoEventSubcriberError(name)
+    throwNoEventSubscriberError(name)
   }
 }
 
-export const createQueryExecutor = (
-  pool: ExecuteQueryPool
-): QueryExecutor => {  
-  const api = Object.freeze(Object.assign(readImpl.bind(null, pool), {
-     read: readImpl.bind(null, pool),
-     serializeState: serializeStateImpl.bind(null, pool),
-     ...pool.eventSubscriber
-  }))
+export const createQueryExecutor = (pool: ExecuteQueryPool): QueryExecutor => {
+  const api = Object.freeze(
+    Object.assign(readImpl.bind(null, pool), {
+      read: readImpl.bind(null, pool),
+      serializeState: serializeStateImpl.bind(null, pool),
+      ...pool.eventSubscriber,
+    })
+  )
 
   return api
 }

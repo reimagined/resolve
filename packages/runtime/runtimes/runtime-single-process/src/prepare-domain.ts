@@ -23,7 +23,7 @@ export const prepareDomain = (
 
         const eventSubscriber = req.path.substring(baseQueryUrl.length)
         // TODO ???
-        await (req.resolve as any as UserBackendResolve).performBuild({
+        await ((req.resolve as any) as UserBackendResolve).performBuild({
           eventSubscriber,
         } as any)
         await res.end('ok')

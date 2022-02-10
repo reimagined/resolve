@@ -1,5 +1,8 @@
 import { initDomain } from '@resolve-js/core'
-import { createQueryExecutor, eventSubscriberFactory } from '@resolve-js/runtime-base'
+import {
+  createQueryExecutor,
+  eventSubscriberFactory,
+} from '@resolve-js/runtime-base'
 
 import { getSecretsManager } from '../../runtime/get-secrets-manager'
 import { getEventStore } from '../../runtime/get-event-store'
@@ -151,7 +154,7 @@ export const makeTestEnvironment = (
         }),
         performanceTracer: null,
         loadReadModelProcedure: () => Promise.resolve(null),
-        setCurrentEventSubscriber: () => {},
+        setCurrentEventSubscriber: () => void 0,
         sagasInterop: {},
         monitoring: null,
       })
@@ -167,7 +170,7 @@ export const makeTestEnvironment = (
         viewModelsInterop: {},
         performanceTracer: null,
         monitoring: null,
-        eventSubscriber
+        eventSubscriber,
       })
 
       try {

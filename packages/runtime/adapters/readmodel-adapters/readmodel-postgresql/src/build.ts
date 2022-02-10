@@ -103,8 +103,8 @@ const buildInit: (
     return {
       type: 'build-direct-invoke',
       payload: {
-        continue: true
-      }
+        continue: true,
+      },
     }
   } catch (error) {
     if (error instanceof PassthroughError) {
@@ -131,8 +131,8 @@ const buildInit: (
     return {
       type: 'build-direct-invoke',
       payload: {
-        continue: false
-      }
+        continue: false,
+      },
     }
   }
 }
@@ -748,8 +748,8 @@ const buildEvents: (
         return {
           type: 'build-direct-invoke',
           payload: {
-            continue: true
-          }
+            continue: true,
+          },
         }
       }
 
@@ -928,8 +928,8 @@ const build: ExternalMethods['build'] = async (
     let buildResult: BuildDirectContinuation = {
       type: 'build-direct-invoke',
       payload: {
-        continue: false
-      }
+        continue: false,
+      },
     }
 
     try {
@@ -987,8 +987,8 @@ const build: ExternalMethods['build'] = async (
         payload: {
           continue: true,
           timeout: nextArgs[0],
-          notificationExtraPayload: nextArgs[1]
-        }
+          notificationExtraPayload: nextArgs[1],
+        },
       }
     }
 
@@ -1032,16 +1032,16 @@ const build: ExternalMethods['build'] = async (
         payload: {
           continue: true,
           timeout: nextArgs[0],
-          notificationExtraPayload: nextArgs[1]
-        }
+          notificationExtraPayload: nextArgs[1],
+        },
       }
     }
 
     return {
       type: 'build-direct-invoke',
       payload: {
-        continue: false
-      }
+        continue: false,
+      },
     }
   } finally {
     log.debug(`Building is finished`)

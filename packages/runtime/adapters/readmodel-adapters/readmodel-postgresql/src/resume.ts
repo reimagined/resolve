@@ -44,8 +44,8 @@ const resume: ExternalMethods['resume'] = async (pool, readModelName) => {
     return {
       type: 'build-direct-invoke',
       payload: {
-        continue: true
-      }
+        continue: true,
+      },
     }
   } finally {
     pool.activePassthrough = false

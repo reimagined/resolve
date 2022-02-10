@@ -1,6 +1,9 @@
 import partial from 'lodash.partial'
 import { initDomain } from '@resolve-js/core'
-import { createQueryExecutor, eventSubscriberFactory } from '@resolve-js/runtime-base'
+import {
+  createQueryExecutor,
+  eventSubscriberFactory,
+} from '@resolve-js/runtime-base'
 
 import { getSecretsManager } from '../../runtime/get-secrets-manager'
 import { getEventStore } from '../../runtime/get-event-store'
@@ -225,7 +228,7 @@ export const makeTestEnvironment = (
         readModelsInterop: {},
         performanceTracer: null,
         loadReadModelProcedure: () => Promise.resolve(null),
-        setCurrentEventSubscriber: () => {},
+        setCurrentEventSubscriber: () => void 0,
         sagasInterop: domain.sagaDomain.acquireSagasInterop(runtime),
         monitoring: null,
       })
@@ -238,7 +241,7 @@ export const makeTestEnvironment = (
         viewModelsInterop: {},
         performanceTracer: null,
         monitoring: null,
-        eventSubscriber
+        eventSubscriber,
       })
 
       try {

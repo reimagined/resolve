@@ -1,24 +1,29 @@
 import type { EventSubscriber } from './types'
 
-const sifeEffectTimestampProviderFactory = ({ eventSubscriber}:  { eventSubscriber: EventSubscriber }) => {
-    const sifeEffectTimestampProvider = {
+const sideEffectTimestampProviderFactory = ({
+  eventSubscriber,
+}: {
+  eventSubscriber: EventSubscriber
+}) => {
+  const sideEffectTimestampProvider = {
     currentEventSubscriber: '',
-    getSideEffectsTimestamp: () => eventSubscriber.getProperty({
-      eventSubscriber: sifeEffectTimestampProvider.currentEventSubscriber,
-      key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
-    }),
-    setSideEffectsTimestamp: (sideEffectTimestamp: number) => eventSubscriber.setProperty({
-      eventSubscriber: sifeEffectTimestampProvider.currentEventSubscriber,
-      key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
-      value: sideEffectTimestamp,
-    }),
+    getSideEffectsTimestamp: () =>
+      eventSubscriber.getProperty({
+        eventSubscriber: sideEffectTimestampProvider.currentEventSubscriber,
+        key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
+      }),
+    setSideEffectsTimestamp: (sideEffectTimestamp: number) =>
+      eventSubscriber.setProperty({
+        eventSubscriber: sideEffectTimestampProvider.currentEventSubscriber,
+        key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
+        value: sideEffectTimestamp,
+      }),
     setCurrentEventSubscriber: (eventSubscriber: string) => {
-      sifeEffectTimestampProvider.currentEventSubscriber = eventSubscriber
-    }
-  } 
+      sideEffectTimestampProvider.currentEventSubscriber = eventSubscriber
+    },
+  }
 
-  return sifeEffectTimestampProvider
+  return sideEffectTimestampProvider
 }
 
-export default sifeEffectTimestampProviderFactory
-
+export default sideEffectTimestampProviderFactory

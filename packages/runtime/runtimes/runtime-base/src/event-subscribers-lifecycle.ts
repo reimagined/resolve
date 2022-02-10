@@ -1,7 +1,7 @@
 import { Eventstore } from './types'
 
 const eventSubscribersLifecycle = {
- subscribe: async (
+  subscribe: async (
     eventstoreAdapter: Eventstore,
     applicationName: string,
     getEventSubscriberDestination: Function,
@@ -46,7 +46,7 @@ const eventSubscribersLifecycle = {
       })
     }
   },
-  
+
   resubscribe: async (
     eventstoreAdapter: Eventstore,
     applicationName: string,
@@ -71,7 +71,7 @@ const eventSubscribersLifecycle = {
       },
     })
   },
-  
+
   unsubscribe: async (
     eventstoreAdapter: Eventstore,
     applicationName: string,
@@ -85,14 +85,14 @@ const eventSubscribersLifecycle = {
         eventSubscriber,
       })
     )[0]
-  
+
     if (entry != null) {
       await eventstoreAdapter.removeEventSubscriber({
         applicationName,
         eventSubscriber,
       })
     }
-  }
+  },
 } as const
 
 export default eventSubscribersLifecycle

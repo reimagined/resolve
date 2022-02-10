@@ -133,15 +133,15 @@ const buildInit: (
     return {
       type: 'build-direct-invoke',
       payload: {
-        continue: true
-      }
+        continue: true,
+      },
     }
   } else {
     return {
       type: 'build-direct-invoke',
       payload: {
-        continue: false
-      }
+        continue: false,
+      },
     }
   }
 }
@@ -443,15 +443,15 @@ const buildEvents: (
     return {
       type: 'build-direct-invoke',
       payload: {
-        continue: true
-      }
+        continue: true,
+      },
     }
   } else {
     return {
       type: 'build-direct-invoke',
       payload: {
-        continue: false
-      }
+        continue: false,
+      },
     }
   }
 }
@@ -666,8 +666,8 @@ const build: ExternalMethods['build'] = async (
     return {
       type: 'build-direct-invoke',
       payload: {
-        continue: false
-      }
+        continue: false,
+      },
     }
   } finally {
     basePool.activePassthrough = false

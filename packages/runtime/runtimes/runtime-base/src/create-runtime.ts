@@ -23,7 +23,7 @@ import { commandExecutedHookFactory } from './command-executed-hook-factory'
 import eventSubscriberFactory from './event-subscriber'
 import { readModelProcedureLoaderFactory } from './load-read-model-procedure'
 import { eventListenersManagerFactory } from './event-listeners-manager-factory'
-import sifeEffectTimestampProviderFactory from './side-effect-timestamp-provider'
+import sideEffectTimestampProviderFactory from './side-effect-timestamp-provider'
 
 export type EventStoreAdapterFactory = () => Adapter
 
@@ -65,7 +65,7 @@ const dispose = async (runtime: Runtime) => {
     log.debug(`metrics published`)
 
     const disposeMethods: Array<() => Promise<void>> = [
-      runtime.eventStoreAdapter.dispose.bind(runtime.eventStoreAdapter)
+      runtime.eventStoreAdapter.dispose.bind(runtime.eventStoreAdapter),
     ]
 
     for (const name of Object.keys(runtime.readModelConnectors)) {
@@ -194,21 +194,27 @@ export const createRuntime = async (
     uploader,
   } = params
 
-  const readModelsInterop = domainInterop.readModelDomain.acquireReadModelsInterop({
-    monitoring,
-    secretsManager,
-    resolverMiddlewares,
-    projectionMiddlewares,
-  })
+  const readModelsInterop = domainInterop.readModelDomain.acquireReadModelsInterop(
+    {
+      monitoring,
+      secretsManager,
+      resolverMiddlewares,
+      projectionMiddlewares,
+    }
+  )
 
-  const viewModelsInterop = domainInterop.viewModelDomain.acquireViewModelsInterop({
-    monitoring,
-    eventstore: eventStoreAdapter,
-    secretsManager,
-  })
+  const viewModelsInterop = domainInterop.viewModelDomain.acquireViewModelsInterop(
+    {
+      monitoring,
+      eventstore: eventStoreAdapter,
+      secretsManager,
+    }
+  )
 
   const executeQuery = createQueryExecutor({
-    get eventSubscriber() { return eventSubscriber },
+    get eventSubscriber() {
+      return eventSubscriber
+    },
     readModelConnectors,
     readModelsInterop,
     viewModelsInterop,
@@ -235,14 +241,22 @@ export const createRuntime = async (
     }
   }
 
-  const sifeEffectTimestampProvider = sifeEffectTimestampProviderFactory({
-    get eventSubscriber() { return eventSubscriber }
+  const sideEffectTimestampProvider = sideEffectTimestampProviderFactory({
+    get eventSubscriber() {
+      return eventSubscriber
+    },
   })
   const sagasInterop = domainInterop.sagaDomain.acquireSagasInterop({
     // TODO ????
-    get scheduler() { return getScheduler() },
-    get getSideEffectsTimestamp() { return sifeEffectTimestampProvider.getSideEffectsTimestamp },
-    get setSideEffectsTimestamp() { return sifeEffectTimestampProvider.setSideEffectsTimestamp },
+    get scheduler() {
+      return getScheduler()
+    },
+    get getSideEffectsTimestamp() {
+      return sideEffectTimestampProvider.getSideEffectsTimestamp
+    },
+    get setSideEffectsTimestamp() {
+      return sideEffectTimestampProvider.setSideEffectsTimestamp
+    },
     // TODO ????
     executeCommand: executeCommandForSaga,
     executeQuery,
@@ -253,7 +267,8 @@ export const createRuntime = async (
 
   const eventSubscriber = eventSubscriberFactory({
     applicationName: eventSubscriberScope,
-    setCurrentEventSubscriber: sifeEffectTimestampProvider.setCurrentEventSubscriber,
+    setCurrentEventSubscriber:
+      sideEffectTimestampProvider.setCurrentEventSubscriber,
     getEventSubscriberDestination,
     loadReadModelProcedure,
     readModelConnectors,
@@ -306,7 +321,6 @@ export const createRuntime = async (
     broadcastEvent,
   })
 
-
   const next = async (
     eventSubscriber: string,
     timeout?: number,
@@ -330,7 +344,9 @@ export const createRuntime = async (
       {
         eventSubscriber,
         initiator: 'read-model-next',
-        notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
+        notificationId: `NT-${Date.now()}${Math.floor(
+          Math.random() * 1000000
+        )}`,
         sendTime: Date.now(),
         ...notificationExtraPayload,
       },
@@ -338,18 +354,24 @@ export const createRuntime = async (
     )
   }
 
-  const performBuild = async (...args: Parameters<EventSubscriber["build"]>): Promise<void> => {
+  const performBuild = async (
+    ...args: Parameters<EventSubscriber['build']>
+  ): Promise<void> => {
     const result = await eventSubscriber.build(...args)
-    if(result.type === 'build-direct-invoke') {
-      const eventSubscriberName = args[0].eventSubscriber ?? args[0].modelName ?? null
-      if(result.payload.continue && eventSubscriberName != null) {
-        await next(eventSubscriberName, result.payload.timeout, result.payload.notificationExtraPayload)
+    if (result.type === 'build-direct-invoke') {
+      const eventSubscriberName =
+        args[0].eventSubscriber ?? args[0].modelName ?? null
+      if (result.payload.continue && eventSubscriberName != null) {
+        await next(
+          eventSubscriberName,
+          result.payload.timeout,
+          result.payload.notificationExtraPayload
+        )
       }
     } else {
       // TODO ???
     }
   }
-
 
   const runtime: Runtime = {
     eventStoreAdapter,
