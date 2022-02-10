@@ -319,6 +319,7 @@ export type Runtime = {
   readonly eventListenersManager: EventListenersManager
   readonly dispose: () => Promise<void>
   readonly broadcastEvent: (event?: EventPointer) => Promise<void>
+  readonly performBuild: (...args: Parameters<EventSubscriber["build"]>) => Promise<void>
   readonly monitoring: Monitoring
 }
 

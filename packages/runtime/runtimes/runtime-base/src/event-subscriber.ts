@@ -351,38 +351,6 @@ const statusImpl = async (
   }
 }
 
-
-// const next = async (
-//   eventSubscriber: string,
-//   timeout?: number,
-//   notificationExtraPayload?: object,
-//   ...args: any[]
-// ) => {
-//   if (args.length > 0) {
-//     throw new TypeError('Next should be invoked with no arguments')
-//   }
-//   if (timeout != null && (isNaN(+timeout) || +timeout < 0)) {
-//     throw new TypeError('Timeout should be non-negative integer')
-//   }
-//   if (
-//     notificationExtraPayload != null &&
-//     notificationExtraPayload.constructor !== Object
-//   ) {
-//     throw new TypeError('Notification extra payload should be plain object')
-//   }
-
-//   await pool.invokeBuildAsync(
-//     {
-//       eventSubscriber,
-//       initiator: 'read-model-next',
-//       notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
-//       sendTime: Date.now(),
-//       ...notificationExtraPayload,
-//     },
-//     timeout != null ? Math.floor(+timeout) : timeout
-//   )
-// }
-
 const eventSubscriberFactory = (runtime: EventSubscriberRuntime): EventSubscriber => {
   const eventSubscriber = Object.freeze({
     deleteProperty: eventSubscribersProperties.deleteProperty.bind(null, runtime.eventstoreAdapter, runtime.applicationName),

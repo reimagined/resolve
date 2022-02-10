@@ -1,7 +1,6 @@
 import partial from 'lodash.partial'
 import { createCommandExecutor } from './command'
 import { createQueryExecutor } from './query'
-import { createSagaExecutor } from './saga'
 import type {
   AggregateInterop,
   Command,
@@ -15,6 +14,8 @@ import type {
   Runtime,
   RuntimeFactoryParameters,
   Scheduler,
+  EventSubscriber,
+  UnPromise,
 } from './types'
 import { getLog } from './utils/get-log'
 import { eventBroadcastFactory } from './event-broadcast-factory'
@@ -214,7 +215,8 @@ export const createRuntime = async (
     monitoring,
   })
 
-  const getScheduler = () => {
+  // TODO ????
+  const getScheduler = (): any => {
     if (params.scheduler != null) {
       log.debug(`actual scheduler bound`)
       return params.scheduler
@@ -223,10 +225,23 @@ export const createRuntime = async (
     return schedulerGuard
   }
 
+  let currentEventSubscriber: string | null = null
+  const sideEffectPropertyName = 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'
   const sagaRuntime = {
+    // TODO ????
     get scheduler() { return getScheduler() },
-    getSideEffectsTimestamp,
-    setSideEffectsTimestamp,
+    // TODO ????
+    getSideEffectsTimestamp: () => eventSubscriber.getProperty({
+      eventSubscriber: currentEventSubscriber,
+      key: sideEffectPropertyName,
+    }),
+    // TODO ????
+    setSideEffectsTimestamp: (sideEffectTimestamp: number) => eventSubscriber.setProperty({
+      eventSubscriber: currentEventSubscriber,
+      key: sideEffectPropertyName,
+      value: sideEffectTimestamp,
+    }),
+    // TODO ????
     executeCommand: async (options: any) => {
       const aggregateName = options.aggregateName
       if (aggregateName === domainInterop.sagaDomain.schedulerName) {
@@ -243,8 +258,7 @@ export const createRuntime = async (
 
   const sagasInterop = domainInterop.sagaDomain.acquireSagasInterop(sagaRuntime)
 
-
-  const eventSubscriber = eventSubscriberFactory({
+  const eventSubscriberImpl = eventSubscriberFactory({
     applicationName: eventSubscriberScope,
     getEventSubscriberDestination,
     loadReadModelProcedure,
@@ -259,13 +273,26 @@ export const createRuntime = async (
     monitoring,
   })
 
+  const eventSubscriber = {
+    ...eventSubscriberImpl, 
+    // TODO ????
+    build: async (...args: Parameters<EventSubscriber["build"]>): Promise<UnPromise<ReturnType<EventSubscriber["build"]>>> => {
+      try {
+        currentEventSubscriber = args[0].eventSubscriber ?? args[0].modelName ?? null
+        return await eventSubscriber.build(...args)
+      } finally {
+        currentEventSubscriber = null
+      }
+    }
+  }
+
   const sagaReadGuard = async () => {
     throw new Error('Read from saga is prohibited')
   }
   const executeSaga = Object.assign(sagaReadGuard, {
     read: sagaReadGuard,
     serializeState: sagaReadGuard,
-    ...eventSubscriber
+    ...eventSubscriber,
   })
 
   const eventListenersManager = eventListenersManagerFactory(
@@ -300,6 +327,51 @@ export const createRuntime = async (
     broadcastEvent,
   })
 
+
+  const next = async (
+    eventSubscriber: string,
+    timeout?: number,
+    notificationExtraPayload?: object,
+    ...args: any[]
+  ) => {
+    if (args.length > 0) {
+      throw new TypeError('Next should be invoked with no arguments')
+    }
+    if (timeout != null && (isNaN(+timeout) || +timeout < 0)) {
+      throw new TypeError('Timeout should be non-negative integer')
+    }
+    if (
+      notificationExtraPayload != null &&
+      notificationExtraPayload.constructor !== Object
+    ) {
+      throw new TypeError('Notification extra payload should be plain object')
+    }
+
+    await invokeBuildAsync(
+      {
+        eventSubscriber,
+        initiator: 'read-model-next',
+        notificationId: `NT-${Date.now()}${Math.floor(Math.random() * 1000000)}`,
+        sendTime: Date.now(),
+        ...notificationExtraPayload,
+      },
+      timeout != null ? Math.floor(+timeout) : timeout
+    )
+  }
+
+  const performBuild = async (...args: Parameters<EventSubscriber["build"]>): Promise<void> => {
+    const result = await eventSubscriber.build(...args)
+    if(result.type === 'build-direct-invoke') {
+      const eventSubscriberName = args[0].eventSubscriber ?? args[0].modelName ?? null
+      if(result.payload.continue && eventSubscriberName != null) {
+        await next(eventSubscriberName, result.payload.timeout, result.payload.notificationExtraPayload)
+      }
+    } else {
+      // TODO ???
+    }
+  }
+
+
   const runtime: Runtime = {
     eventStoreAdapter,
     uploader,
@@ -314,6 +386,7 @@ export const createRuntime = async (
     dispose: async function () {
       await dispose(this)
     },
+    performBuild,
     broadcastEvent,
     monitoring,
   }
