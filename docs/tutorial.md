@@ -591,7 +591,7 @@ export default {
 }
 ```
 
-##### Used API:
+**Used API:**
 
 - [store](api/read-model/store.md)
 - [store.defineTable](api/read-model/store.md#definetable)
@@ -649,7 +649,7 @@ const testFunctionalConfig = {
 }
 ```
 
-##### Used configuration options:
+**Used configuration options:**
 
 - [readModelConnectors](application-configuration.md#readmodelconnectors)
 
@@ -666,7 +666,7 @@ export default {
 }
 ```
 
-##### Used API:
+**Used API:**
 
 - [store.find](api/read-model/store.md#find)
 
@@ -895,7 +895,7 @@ const MyLists = () => {
 export default MyLists
 ```
 
-##### Used API:
+**Used API:**
 
 - [useQuery](api/client/resolve-react-hooks.md#usequery)
 
@@ -1191,7 +1191,7 @@ const ShoppingList = ({
 export default ShoppingList
 ```
 
-##### Used API:
+**Used API:**
 
 - [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)
 
@@ -1553,7 +1553,7 @@ const ShoppingListCreator = ({ lists, onCreateSuccess }) => {
 export default ShoppingListCreator
 ```
 
-##### Used API:
+**Used API:**
 
 - [useCommand](api/client/resolve-react-hooks.md#usecommand)
 
@@ -1614,7 +1614,7 @@ const ShoppingListRemover = ({ shoppingListId, onRemoveSuccess }) => {
 export default ShoppingListRemover
 ```
 
-##### Used API:
+**Used API:**
 
 - [useCommand](api/client/resolve-react-hooks.md#usecommand)
 
@@ -1796,7 +1796,7 @@ const ShoppingList = ({
 export default ShoppingList
 ```
 
-##### Used API:
+**Used API:**
 
 - [useCommandBuilder](api/client/resolve-react-hooks.md#usecommandbuilder)
 - [useViewModel](api/client/resolve-react-hooks.md#useviewmodel)
@@ -1846,7 +1846,7 @@ const ShoppingListItem = ({ shoppingListId, item: { id, checked, text } }) => {
 export default ShoppingListItem
 ```
 
-##### Used API:
+**Used API:**
 
 - [useCommand](api/client/resolve-react-hooks.md#usecommand)
 

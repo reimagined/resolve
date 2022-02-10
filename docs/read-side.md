@@ -39,7 +39,7 @@ In the configuration object, specify the Read Model's name and the paths to the 
 
 A Read Model connector defines how a Read Model's data should be stored. You can define the available connectors in the **readModelConnectors** section:
 
-##### config.dev.js:
+**config.dev.js:**
 
 ```js
 const devConfig = {
@@ -53,7 +53,7 @@ const devConfig = {
 }
 ```
 
-##### config.cloud.js:
+**config.cloud.js:**
 
 ```js
 import { declareRuntimeEnv } from '@resolve-js/scripts'
@@ -281,7 +281,7 @@ See the [Configuring View Models](#configuring-view-models) section for more inf
 
 To send queries to an application's read side, you can use the reSolve [HTTP API](api/client/http-api.md) or one of the available [client libraries](frontend.md).
 
-#### Example
+### Example
 
 The code sample below demonstrates how to use the [@resolve-js/client](api/client/resolve-client.md) library to query a View Model:
 
