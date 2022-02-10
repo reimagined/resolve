@@ -1,5 +1,5 @@
 import logScope from '@resolve-js/debug-levels'
-import type { ViewModelInterop, ReadModelInterop, SagaInterop, ExecuteQueryPool, QueryExecutor, CallMethodParams, MiddlewareContext, UnknownReadModelConnector, UnknownReadModelConnection, UnionMethodToUnionArgsMethod } from './types'
+import type { EventSubscriberModelNamePart, ViewModelInterop, ReadModelInterop, SagaInterop, ExecuteQueryPool, QueryExecutor, MiddlewareContext, UnknownReadModelConnector, UnknownReadModelConnection, UnionMethodToUnionArgsMethod } from './types'
 import parseEventSubscriberParameters from './parse-event-subscriber-parameters'
 
 const getLog = (scope: string) => logScope(`resolve:runtime:query:${scope}`)
@@ -135,7 +135,7 @@ const throwNoEventSubcriberError = (name: string) => {
 
 const readImpl = async (
   pool: ExecuteQueryPool,
-  params: CallMethodParams,
+  params: EventSubscriberModelNamePart & Record<string, any>,
   middlewareContext?: MiddlewareContext
 ) => {
   const [name, parameters] = parseEventSubscriberParameters(params)
@@ -151,7 +151,7 @@ const readImpl = async (
 
 const serializeStateImpl = async (
   pool: ExecuteQueryPool,
-  params: CallMethodParams,
+  params: EventSubscriberModelNamePart & Record<string, any>,
 ) => {
   const [name, parameters] = parseEventSubscriberParameters(params)
   const { readModelsInterop, viewModelsInterop } = pool  

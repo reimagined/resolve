@@ -74,7 +74,7 @@ export type ExecuteQueryPool = {
   readModelConnectors: Record<string, UnknownReadModelConnector>
   readModelsInterop: ReadModelInteropMap | SagaInteropMap
   viewModelsInterop: ViewModelInteropMap
-  eventSubscriber: any
+  eventSubscriber: EventSubscriber
   performanceTracer: any
   monitoring: any
 }
@@ -169,14 +169,12 @@ export type ReadModelConnectorFactory = (
 ) => UnknownReadModelConnector
 
 export type QueryExecutor = {
-  (...args: any[]): Promise<any>
-  dispose: () => Promise<void>
-  [key: string]: (...args: any[]) => Promise<any>
-}
+  (params: EventSubscriberModelNamePart & Record<string, any>, middlewareContext?: MiddlewareContext | undefined) : Promise<any>
+  read: (params: EventSubscriberModelNamePart & Record<string, any>, middlewareContext?: MiddlewareContext | undefined) => Promise<any>
+  serializeState: (params: EventSubscriberModelNamePart & Record<string, any>) => Promise<string | undefined>
+} & EventSubscriber
 
-export type SagaExecutor = QueryExecutor & {
-  build: (...args: any[]) => Promise<any>
-}
+export type SagaExecutor = QueryExecutor
 
 export type EventListener = {
   name: string

@@ -214,15 +214,35 @@ export const createRuntime = async (
     monitoring,
   })
 
-  const sagasInterop = domainInterop.sagaDomain.acquireSagasInterop({
-    executeCommand,
+  const getScheduler = () => {
+    if (params.scheduler != null) {
+      log.debug(`actual scheduler bound`)
+      return params.scheduler
+    }
+    log.debug(`scheduler guard retrieved`)
+    return schedulerGuard
+  }
+
+  const sagaRuntime = {
+    get scheduler() { return getScheduler() },
+    getSideEffectsTimestamp,
+    setSideEffectsTimestamp,
+    executeCommand: async (options: any) => {
+      const aggregateName = options.aggregateName
+      if (aggregateName === domainInterop.sagaDomain.schedulerName) {
+        return await executeSchedulerCommand(options)
+      } else {
+        return await executeCommand(options)
+      }
+    },
     executeQuery,
     secretsManager,
     monitoring,
-    scheduler,
     uploader,
+  } as const
 
-  })
+  const sagasInterop = domainInterop.sagaDomain.acquireSagasInterop(sagaRuntime)
+
 
   const eventSubscriber = eventSubscriberFactory({
     applicationName: eventSubscriberScope,
@@ -239,31 +259,13 @@ export const createRuntime = async (
     monitoring,
   })
 
-  const getScheduler = () => {
-    if (params.scheduler != null) {
-      log.debug(`actual scheduler bound`)
-      return params.scheduler
-    }
-    log.debug(`scheduler guard retrieved`)
-    return schedulerGuard
+  const sagaReadGuard = async () => {
+    throw new Error('Read from saga is prohibited')
   }
-
-  const executeSaga = createSagaExecutor({
-    invokeBuildAsync,
-    applicationName: eventSubscriberScope,
-    executeCommand,
-    executeQuery,
-    eventstoreAdapter: eventStoreAdapter,
-    getEventSubscriberDestination,
-    secretsManager,
-    readModelConnectors,
-    performanceTracer,
-    getVacantTimeInMillis,
-    uploader,
-    getScheduler,
-    monitoring,
-    domainInterop,
-    executeSchedulerCommand,
+  const executeSaga = Object.assign(sagaReadGuard, {
+    read: sagaReadGuard,
+    serializeState: sagaReadGuard,
+    ...eventSubscriber
   })
 
   const eventListenersManager = eventListenersManagerFactory(
