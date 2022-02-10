@@ -56,12 +56,11 @@ export type {
 }
 
 export type EventSubscriberRuntime = {
+  setCurrentEventSubscriber: (readModelName: string) => void,
+  loadReadModelProcedure: (readModelName: string) => Promise<string | null>,
+  readModelConnectors: Record<string, UnknownReadModelConnector>,
   getEventSubscriberDestination: Function,
   applicationName: string,
-  invokeBuildAsync: InvokeBuildAsync,
-  eventListeners: Map<string, EventListener>,
-  readModelConnectors: Record<string, UnknownReadModelConnector>,
-  loadReadModelProcedure: (readModelName: string) => Promise<string | null>,
   getVacantTimeInMillis: () => number,
   eventstoreAdapter: Eventstore,
   readModelsInterop: ReadModelInteropMap,
@@ -124,9 +123,7 @@ export type EventSubscriber = {
   deleteProperty: (params: EventSubscriberModelNamePart & {
     key: string;
 }) => Promise<void>,
-listProperties: (params: EventSubscriberModelNamePart & {
-  key: string;
-}) => Promise<any>,
+listProperties: (params: EventSubscriberModelNamePart) => Promise<any>,
 getProperty: (params: EventSubscriberModelNamePart & {
   key: string;
 }) => Promise<any>,

@@ -51,7 +51,9 @@ const build: ExternalMethods['build'] = async (
     if(args.length === 0) {
       return {
         type: 'build-direct-invoke',
-        payload: {}
+        payload: {
+          continue: true
+        }
       } as const
     }
 
@@ -64,6 +66,7 @@ const build: ExternalMethods['build'] = async (
     return {
       type: 'build-direct-invoke',
       payload: {
+        continue: true,
         timeout: delay,
         notificationExtraPayload: { iterationNumber: iterationNumber + 1 }
       }
@@ -77,13 +80,23 @@ const build: ExternalMethods['build'] = async (
         state.statusAndData.data
       )}`
     )
-    return null
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false
+      }
+    } as const
   } else if (state.statusAndData.status === 'serviceError') {
     return makeDelayNext(getBuildDelay(iterationNumber), state.statusAndData.data)
   }
   if (state.paused) {
     log.warn('Refuse to start or continue replication because it is paused')
-    return null
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false
+      }
+    } as const
   }
 
   let lockId = `${Date.now()}`
@@ -102,7 +115,12 @@ const build: ExternalMethods['build'] = async (
       })
     } else if (result.status === 'error') {
       log.error(`Could not occupy replication process: ${result.message}`)
-      return null
+      return {
+        type: 'build-direct-invoke',
+        payload: {
+          continue: false
+        }
+      } as const
     }
   } catch (error) {
     return makeDelayNext(getBuildDelay(iterationNumber), error)
@@ -147,7 +165,12 @@ const build: ExternalMethods['build'] = async (
     } else {
       log.error(error)
     }
-    return null
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false
+      }
+    } as const
   }
 
   log.debug('Starting or continuing replication process')
@@ -175,7 +198,12 @@ const build: ExternalMethods['build'] = async (
       } else {
         log.error(error)
       }
-      return null
+      return {
+        type: 'build-direct-invoke',
+        payload: {
+          continue: false
+        }
+      } as const
     }
     const { cursor: nextCursor, events } = loadEventsResult
     const { existingSecrets, deletedSecrets } = gatheredSecrets
@@ -302,7 +330,12 @@ const build: ExternalMethods['build'] = async (
     if (wasPaused) {
       log.debug('Pausing replication as requested')
       await onExit()
-      return null
+      return {
+        type: 'build-direct-invoke',
+        payload: {
+          continue: false
+        }
+      } as const
     }
 
     if (shouldContinue && localContinue && delay === 0) {
@@ -320,7 +353,12 @@ const build: ExternalMethods['build'] = async (
           return makeDelayNext()
         }
       }
-      return null
+      return {
+        type: 'build-direct-invoke',
+        payload: {
+          continue: false
+        }
+      } as const
     }
   }
 }

@@ -61,7 +61,6 @@ const eventSubscribersProperties = {
     params: {
       eventSubscriber?: string | null | undefined,
       modelName?: string | null | undefined,
-      key: string
     }
       ) => {
     const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)

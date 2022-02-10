@@ -23,6 +23,7 @@ import { commandExecutedHookFactory } from './command-executed-hook-factory'
 import eventSubscriberFactory from './event-subscriber'
 import { readModelProcedureLoaderFactory } from './load-read-model-procedure'
 import { eventListenersManagerFactory } from './event-listeners-manager-factory'
+import sifeEffectTimestampProviderFactory from './side-effect-timestamp-provider'
 
 export type EventStoreAdapterFactory = () => Adapter
 
@@ -225,66 +226,44 @@ export const createRuntime = async (
     return schedulerGuard
   }
 
-  let currentEventSubscriber: string | null = null
-  const sideEffectPropertyName = 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP'
-  const sagaRuntime = {
+  const executeCommandForSaga = async (options: any) => {
+    const aggregateName = options.aggregateName
+    if (aggregateName === domainInterop.sagaDomain.schedulerName) {
+      return await executeSchedulerCommand(options)
+    } else {
+      return await executeCommand(options)
+    }
+  }
+
+  const sifeEffectTimestampProvider = sifeEffectTimestampProviderFactory({
+    get eventSubscriber() { return eventSubscriber }
+  })
+  const sagasInterop = domainInterop.sagaDomain.acquireSagasInterop({
     // TODO ????
     get scheduler() { return getScheduler() },
+    get getSideEffectsTimestamp() { return sifeEffectTimestampProvider.getSideEffectsTimestamp },
+    get setSideEffectsTimestamp() { return sifeEffectTimestampProvider.setSideEffectsTimestamp },
     // TODO ????
-    getSideEffectsTimestamp: () => eventSubscriber.getProperty({
-      eventSubscriber: currentEventSubscriber,
-      key: sideEffectPropertyName,
-    }),
-    // TODO ????
-    setSideEffectsTimestamp: (sideEffectTimestamp: number) => eventSubscriber.setProperty({
-      eventSubscriber: currentEventSubscriber,
-      key: sideEffectPropertyName,
-      value: sideEffectTimestamp,
-    }),
-    // TODO ????
-    executeCommand: async (options: any) => {
-      const aggregateName = options.aggregateName
-      if (aggregateName === domainInterop.sagaDomain.schedulerName) {
-        return await executeSchedulerCommand(options)
-      } else {
-        return await executeCommand(options)
-      }
-    },
+    executeCommand: executeCommandForSaga,
     executeQuery,
     secretsManager,
     monitoring,
     uploader,
-  } as const
+  })
 
-  const sagasInterop = domainInterop.sagaDomain.acquireSagasInterop(sagaRuntime)
-
-  const eventSubscriberImpl = eventSubscriberFactory({
+  const eventSubscriber = eventSubscriberFactory({
     applicationName: eventSubscriberScope,
+    setCurrentEventSubscriber: sifeEffectTimestampProvider.setCurrentEventSubscriber,
     getEventSubscriberDestination,
     loadReadModelProcedure,
-    invokeBuildAsync,
     readModelConnectors,
     getVacantTimeInMillis,
     eventstoreAdapter: eventStoreAdapter,
     readModelsInterop,
     sagasInterop,
-    eventListeners,
     performanceTracer,
     monitoring,
   })
-
-  const eventSubscriber = {
-    ...eventSubscriberImpl, 
-    // TODO ????
-    build: async (...args: Parameters<EventSubscriber["build"]>): Promise<UnPromise<ReturnType<EventSubscriber["build"]>>> => {
-      try {
-        currentEventSubscriber = args[0].eventSubscriber ?? args[0].modelName ?? null
-        return await eventSubscriber.build(...args)
-      } finally {
-        currentEventSubscriber = null
-      }
-    }
-  }
 
   const sagaReadGuard = async () => {
     throw new Error('Read from saga is prohibited')

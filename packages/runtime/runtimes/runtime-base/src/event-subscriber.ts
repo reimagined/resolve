@@ -59,15 +59,13 @@ export const isCustomConnector = (connector: UnknownReadModelConnector): connect
 
 
 const getConnectorAndInterop = (runtime: EventSubscriberRuntime, eventSubscriber: string): [UnknownReadModelConnector, ReadModelInterop | SagaInterop] => {
-  const listenerInfo = runtime.eventListeners.get(eventSubscriber)
-  if (listenerInfo == null) {
-    throw new Error(`Listener ${eventSubscriber} does not exist`)
-  }
   let interop: ReadModelInterop | SagaInterop
-  if(listenerInfo.isSaga) {
+  if(runtime.readModelsInterop[eventSubscriber] != null) {
+    interop = runtime.readModelsInterop[eventSubscriber]
+  } else if(runtime.sagasInterop[eventSubscriber] != null) {
     interop = runtime.sagasInterop[eventSubscriber]
   } else {
-    interop = runtime.readModelsInterop[eventSubscriber]
+    throw new Error(`Listener ${eventSubscriber} does not exist`)
   }
   const connector = runtime.readModelConnectors[interop.connectorName]
   return [connector, interop]
@@ -233,21 +231,25 @@ const buildImpl = async (
     let store: RegularReadModelConnection | undefined = undefined
     try {
       store = await connector.connect(eventSubscriber)
+      runtime.setCurrentEventSubscriber(eventSubscriber)
       return await connector.build(store, eventSubscriber, store, interop, runtime.eventstoreAdapter as any, runtime.getVacantTimeInMillis, parameters)
     } finally {
       if(store != null) {
         await connector.disconnect(store)
       }
+      runtime.setCurrentEventSubscriber('')
     }
   } else if(isCustomConnector(connector)) {
     let store: CustomReadModelConnection | undefined = undefined
     try {
       store = await connector.connect(eventSubscriber)
+      runtime.setCurrentEventSubscriber(eventSubscriber)
       return await customReadModelMethods.build(runtime.eventstoreAdapter, runtime.applicationName, interop, store, eventSubscriber, runtime.getVacantTimeInMillis, parameters)
     } finally {
       if(store != null) {
         await connector.disconnect(store, eventSubscriber)
       }
+      runtime.setCurrentEventSubscriber('')
     }
   } else {
     throw makeNoConnectorError(interop)
