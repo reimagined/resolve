@@ -7,7 +7,7 @@ import {
 } from '../eventTypes'
 
 // This file exports an object that contains two command handlers.
-export default {
+const aggregate = {
   // A command handler receives the aggregate state and a command payload.
   // A payload can contain arbitrary data related to the command.
   // For example, the "createShoppingList" command's payload contains the shopping list's name.
@@ -69,3 +69,5 @@ export default {
     }
   },
 }
+
+export default aggregate
