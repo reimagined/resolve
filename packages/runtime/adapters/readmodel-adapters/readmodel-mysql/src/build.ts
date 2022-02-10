@@ -81,7 +81,9 @@ const buildInit: (
 
     return {
       type: 'build-direct-invoke',
-      payload: {}
+      payload: {
+        continue: true
+      }
     }
   } catch (error) {
     if (error instanceof PassthroughError) {
@@ -100,7 +102,12 @@ const buildInit: (
       `
     )
 
-    return null
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false
+      }
+    }
   }
 }
 
@@ -327,7 +334,9 @@ const buildEvents: (
       if (isBuildSuccess) {
         return {
           type: 'build-direct-invoke',
-          payload: {}
+          payload: {
+            continue: true
+          }
         }
       }
 
@@ -457,7 +466,12 @@ const build: ExternalMethods['build'] = async (
       }
     }
 
-    return null
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false
+      }
+    }
   } finally {
     basePool.activePassthrough = false
   }

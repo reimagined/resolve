@@ -48,7 +48,7 @@ const customReadModelMethods = {
     eventSubscriber: string,
     getVacantTimeInMillis: Function,
     parameters: {}
-  ) => {
+  ): Promise<BuildDirectContinuation> => {
     const log = getLog(`build:${eventSubscriber}`)
     let lastSuccessEvent = null
     let lastFailedEvent = null
@@ -64,7 +64,12 @@ const customReadModelMethods = {
         })
       )[0] ?? { status: null })
       if (status == null || status.status !== 'deliver' || !!status.busy) {
-        return
+        return {
+          type: "build-direct-invoke",
+          payload: {
+            continue: false
+          }
+        }
       }
 
       // This intentionally left as non-atomic operation since custom read model
@@ -135,7 +140,12 @@ const customReadModelMethods = {
           throw summaryError
         }
       } else if (events.length === 0) {
-        return
+        return {
+          type: "build-direct-invoke",
+          payload: {
+            continue: false
+          }
+        }
       } else if (events.length > 0) {
         for (const event of events) {
           if (event == null) {
@@ -208,7 +218,12 @@ const customReadModelMethods = {
       }
     } catch (error) {
       if (error === OMIT_BATCH) {
-        return
+        return {
+          type: "build-direct-invoke",
+          payload: {
+            continue: false
+          }
+        }
       }
 
       log.error(error.message)
@@ -243,11 +258,13 @@ const customReadModelMethods = {
       updateOnly: true,
     })
 
-    const result: BuildDirectContinuation = isSuccess ? {
-      type: 'build-direct-invoke',
-      payload: {}
-    } : null
-
+    const result: BuildDirectContinuation = {
+      type: "build-direct-invoke",
+      payload: {
+        continue: isSuccess
+      }
+    }
+    
     return result
   },
 
@@ -296,7 +313,7 @@ const customReadModelMethods = {
     connection: CustomReadModelConnection,
     eventSubscriber: string,
     parameters: {}
-  ) => {
+  ) : Promise<BuildDirectContinuation> => {
     let isSuccess = false
     await updateCustomReadModel(
       eventstoreAdapter,
@@ -309,10 +326,12 @@ const customReadModelMethods = {
       }
     )
 
-    const result: BuildDirectContinuation = isSuccess ? {
+    const result: BuildDirectContinuation = {
       type: 'build-direct-invoke',
-      payload: {}
-    } : null
+      payload: {
+        continue: isSuccess
+      }
+    }
 
     return result
   },

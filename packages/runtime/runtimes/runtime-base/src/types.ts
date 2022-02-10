@@ -79,16 +79,6 @@ export type ExecuteQueryPool = {
   monitoring: any
 }
 
-export type CallMethodParams = {
-  modelName?: string | null
-  eventSubscriber?: string | null
-  [key: string]: any
-}
-
-export type EventSubscriber = {
-  [key: string]: (params: CallMethodParams, ...args: any[]) => Promise<any>
-}
-
 export type RegularReadModelConnector = AdapterApi<CommonAdapterPool>
 
 export enum CustomReadModelConnectionBrand { _ = "" };
@@ -123,6 +113,56 @@ export type UnionMethodToUnionArgsMethodImpl<T extends [FunctionLike]> = (
 export type UnionMethodToUnionArgsMethod<T extends FunctionLike> = UnionMethodToUnionArgsMethodImpl<[T]>
 
 export type RegularReadModelConnectorOperations = Omit<RegularReadModelConnector, 'connect' | 'disconnect' | 'dispose'>
+
+
+export type EventSubscriberModelNamePart = {
+  eventSubscriber?: string | null | undefined,
+  modelName?: string | null | undefined,
+}
+
+export type EventSubscriber = {
+  deleteProperty: (params: EventSubscriberModelNamePart & {
+    key: string;
+}) => Promise<void>,
+listProperties: (params: EventSubscriberModelNamePart & {
+  key: string;
+}) => Promise<any>,
+getProperty: (params: EventSubscriberModelNamePart & {
+  key: string;
+}) => Promise<any>,
+setProperty: (params: EventSubscriberModelNamePart & {
+  key: string;
+  value: any;
+}) => Promise<void>,
+subscribe: (params: EventSubscriberModelNamePart & {
+  subscriptionOptions: {
+      eventTypes: Array<string> | null;
+      aggregateIds: Array<string> | null;
+  };
+}) => Promise<void>,
+resubscribe: (params: EventSubscriberModelNamePart & {
+  subscriptionOptions: {
+      eventTypes: Array<string> | null;
+      aggregateIds: Array<string> | null;
+  };
+}) => Promise<void>,
+unsubscribe: (params: EventSubscriberModelNamePart) => Promise<void>,
+build: (params: EventSubscriberModelNamePart & {
+  initiator: any;
+  notificationId: any;
+  sendTime: any;
+}) => Promise<BuildDirectContinuation>,
+resume: (params: EventSubscriberModelNamePart
+  ) => Promise<BuildDirectContinuation>,
+pause: (params: EventSubscriberModelNamePart
+  ) => Promise<void>,
+reset: (params: EventSubscriberModelNamePart
+  ) => Promise<void>,
+status: (params: EventSubscriberModelNamePart & {
+  includeRuntimeStatus?: boolean | undefined;
+  retryTimeoutForRuntimeStatus?: number | undefined;
+}) => Promise<any>
+}
 
 export type ReadModelConnectorFactory = (
   options: CommonAdapterOptions

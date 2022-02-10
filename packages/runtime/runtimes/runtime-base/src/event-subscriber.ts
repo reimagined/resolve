@@ -4,11 +4,14 @@ import type {
   RegularReadModelConnectorOperations,
   RegularReadModelConnector,
   RegularReadModelConnection,
+  BuildDirectContinuation,
   CustomReadModelConnection,
   CustomReadModelConnector,
   OmitRegularReadModelArgs,
   EventSubscriberRuntime,
   UnionMethodToUnionArgsMethod,
+  EventSubscriberModelNamePart,
+  EventSubscriber,
   ExtractTupleUnion,
   ReadModelInterop,
   SagaInterop,
@@ -28,7 +31,6 @@ export const checkAllMethodsExist = <T extends object, K extends readonly string
     (acc, key) => acc && typeof (obj as any)[key] === 'function',
     true
   ) as (K extends Array<keyof T> ? true : false)
-
 
 export const isRegularConnector = (connector: UnknownReadModelConnector): connector is RegularReadModelConnector => 
   checkAllMethodsExist(
@@ -71,9 +73,7 @@ const getConnectorAndInterop = (runtime: EventSubscriberRuntime, eventSubscriber
   return [connector, interop]
 }
 
-const throwNoConnectorError = (connectorName: string) => {
-  throw new Error(`Invalid adapter ${connectorName}`)
-}
+const makeNoConnectorError = (interop: ReadModelInterop | SagaInterop) => new Error(`Invalid adapter ${interop.connectorName}`)
 
 const executeRegularConnectorMethod = async <K extends keyof RegularReadModelConnectorOperations>(
   connector: RegularReadModelConnector,
@@ -96,12 +96,24 @@ const executeRegularConnectorMethod = async <K extends keyof RegularReadModelCon
     }
 }
 
+const dropCustomReadModel = async (
+  connector: CustomReadModelConnector,
+  eventSubscriber: string
+) => {
+  let store : CustomReadModelConnection | undefined = undefined
+  try {
+    store = await connector.connect(eventSubscriber)
+    await connector.drop(store, eventSubscriber)
+  } finally {
+    if(store != null) {
+      await connector.disconnect(store, eventSubscriber)
+    }
+  }
+}
 
 const subscribeImpl = async (
   runtime: EventSubscriberRuntime,
-  params: {  
-    eventSubscriber?: string | null | undefined,
-    modelName?: string | null | undefined,
+  params: EventSubscriberModelNamePart & {  
     subscriptionOptions: {
       eventTypes: Array<string> | null
       aggregateIds: Array<string> | null
@@ -132,15 +144,13 @@ const subscribeImpl = async (
       )
     }
   } else {
-    throwNoConnectorError(interop.connectorName)
+    throw makeNoConnectorError(interop)
   }
 }
 
 const resubscribeImpl = async (
   runtime: EventSubscriberRuntime,
-  params: {  
-    eventSubscriber?: string | null | undefined,
-    modelName?: string | null | undefined,
+  params: EventSubscriberModelNamePart & {  
     subscriptionOptions: {
       eventTypes: Array<string> | null
       aggregateIds: Array<string> | null
@@ -161,9 +171,7 @@ const resubscribeImpl = async (
           runtime.loadReadModelProcedure.bind(runtime, eventSubscriber)
         )
       } else {
-        const store = await connector.connect(eventSubscriber)
-        await connector.drop(store, eventSubscriber)
-        await connector.disconnect(store, eventSubscriber)
+        await dropCustomReadModel(connector, eventSubscriber)
       }
     } finally {
       await eventSubscribersLifecycle.resubscribe(
@@ -175,16 +183,13 @@ const resubscribeImpl = async (
       )
     }
   } else {
-    throwNoConnectorError(interop.connectorName)
+    throw makeNoConnectorError(interop)
   }
 }
 
 const unsubscribeImpl = async (
   runtime: EventSubscriberRuntime,
-  params: {  
-    eventSubscriber?: string | null | undefined,
-    modelName?: string | null | undefined,
-  }
+  params: EventSubscriberModelNamePart
 ) => {
   const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
   const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
@@ -198,9 +203,7 @@ const unsubscribeImpl = async (
           runtime.loadReadModelProcedure.bind(runtime, eventSubscriber)
         )
       } else {
-        const store = await connector.connect(eventSubscriber)
-        await connector.drop(store, eventSubscriber)
-        await connector.disconnect(store, eventSubscriber)
+        await dropCustomReadModel(connector, eventSubscriber)
       }
     } finally {
       await eventSubscribersLifecycle.unsubscribe(
@@ -212,20 +215,18 @@ const unsubscribeImpl = async (
       )
     }
   } else {
-    throwNoConnectorError(interop.connectorName)
+    throw makeNoConnectorError(interop)
   }
 }
 
 const buildImpl = async (
   runtime: EventSubscriberRuntime,
-  params: {  
-    eventSubscriber?: string | null | undefined,
-    modelName?: string | null | undefined,
+  params: EventSubscriberModelNamePart & {  
     initiator: any
     notificationId: any
     sendTime: any
   }
-) => {
+): Promise<BuildDirectContinuation> => {
   const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
   const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
   if(isRegularConnector(connector)) {
@@ -249,17 +250,14 @@ const buildImpl = async (
       }
     }
   } else {
-    throwNoConnectorError(interop.connectorName)
+    throw makeNoConnectorError(interop)
   }
 }
 
 const resumeImpl = async (
   runtime: EventSubscriberRuntime,
-  params: {  
-    eventSubscriber?: string | null | undefined,
-    modelName?: string | null | undefined,
-  }
-) => {
+  params: EventSubscriberModelNamePart
+): Promise<BuildDirectContinuation> => {
   const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
   const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
   if(isRegularConnector(connector)) {
@@ -275,16 +273,13 @@ const resumeImpl = async (
       }
     }
   } else {
-    throwNoConnectorError(interop.connectorName)
+    throw makeNoConnectorError(interop)
   }
 }
 
 const pauseImpl = async (
   runtime: EventSubscriberRuntime,
-  params: {  
-    eventSubscriber?: string | null | undefined,
-    modelName?: string | null | undefined,
-  }
+  params: EventSubscriberModelNamePart
 ) => {
   const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
   const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
@@ -301,16 +296,13 @@ const pauseImpl = async (
       }
     }
   } else {
-    throwNoConnectorError(interop.connectorName)
+    throw makeNoConnectorError(interop)
   }
 }
 
 const resetImpl = async (
   runtime: EventSubscriberRuntime,
-  params: {  
-    eventSubscriber?: string | null | undefined,
-    modelName?: string | null | undefined,
-  }
+  params: EventSubscriberModelNamePart
 ) => {
   const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
   const [connector, interop] = getConnectorAndInterop(runtime, eventSubscriber)
@@ -329,15 +321,13 @@ const resetImpl = async (
       }
     }
   } else {
-    throwNoConnectorError(interop.connectorName)
+    throw makeNoConnectorError(interop)
   }
 }
 
 const statusImpl = async (
   runtime: EventSubscriberRuntime,
-  params: {  
-    eventSubscriber?: string | null | undefined,
-    modelName?: string | null | undefined,
+  params: EventSubscriberModelNamePart & {  
     includeRuntimeStatus?: boolean | undefined,
     retryTimeoutForRuntimeStatus?: number | undefined
   }
@@ -357,7 +347,7 @@ const statusImpl = async (
       }
     }
   } else {
-    throwNoConnectorError(interop.connectorName)
+    throw makeNoConnectorError(interop)
   }
 }
 
@@ -393,7 +383,7 @@ const statusImpl = async (
 //   )
 // }
 
-const eventSubscriberFactory = (runtime: EventSubscriberRuntime) => {
+const eventSubscriberFactory = (runtime: EventSubscriberRuntime): EventSubscriber => {
   const eventSubscriber = Object.freeze({
     deleteProperty: eventSubscribersProperties.deleteProperty.bind(null, runtime.eventstoreAdapter, runtime.applicationName),
     listProperties: eventSubscribersProperties.listProperties.bind(null, runtime.eventstoreAdapter, runtime.applicationName),
@@ -411,6 +401,8 @@ const eventSubscriberFactory = (runtime: EventSubscriberRuntime) => {
 
   return eventSubscriber
 }
+
+
 
 export default eventSubscriberFactory
 

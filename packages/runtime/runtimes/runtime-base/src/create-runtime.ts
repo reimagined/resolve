@@ -205,11 +205,23 @@ export const createRuntime = async (
     secretsManager,
   })
 
+  const executeQuery = createQueryExecutor({
+    get eventSubscriber() { return eventSubscriber },
+    readModelConnectors,
+    readModelsInterop,
+    viewModelsInterop,
+    performanceTracer,
+    monitoring,
+  })
+
   const sagasInterop = domainInterop.sagaDomain.acquireSagasInterop({
     executeCommand,
     executeQuery,
     secretsManager,
     monitoring,
+    scheduler,
+    uploader,
+
   })
 
   const eventSubscriber = eventSubscriberFactory({
@@ -223,15 +235,6 @@ export const createRuntime = async (
     readModelsInterop,
     sagasInterop,
     eventListeners,
-    performanceTracer,
-    monitoring,
-  })
-
-  const executeQuery = createQueryExecutor({
-    readModelConnectors,
-    readModelsInterop,
-    viewModelsInterop,
-    eventSubscriber,
     performanceTracer,
     monitoring,
   })

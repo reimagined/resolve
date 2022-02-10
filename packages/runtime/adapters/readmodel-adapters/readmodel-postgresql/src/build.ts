@@ -102,7 +102,9 @@ const buildInit: (
 
     return {
       type: 'build-direct-invoke',
-      payload: {}
+      payload: {
+        continue: true
+      }
     }
   } catch (error) {
     if (error instanceof PassthroughError) {
@@ -126,7 +128,12 @@ const buildInit: (
       `
     )
 
-    return null
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false
+      }
+    }
   }
 }
 
@@ -740,7 +747,9 @@ const buildEvents: (
         log.debug(`Going to the next step of building`)
         return {
           type: 'build-direct-invoke',
-          payload: {}
+          payload: {
+            continue: true
+          }
         }
       }
 
@@ -916,7 +925,12 @@ const build: ExternalMethods['build'] = async (
     }
 
     let barrierTimeout: ReturnType<typeof setTimeout> | null = null
-    let buildResult: BuildDirectContinuation = null
+    let buildResult: BuildDirectContinuation = {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false
+      }
+    }
 
     try {
       buildResult = (await Promise.race([
@@ -971,6 +985,7 @@ const build: ExternalMethods['build'] = async (
       return {
         type: 'build-direct-invoke',
         payload: {
+          continue: true,
           timeout: nextArgs[0],
           notificationExtraPayload: nextArgs[1]
         }
@@ -1015,13 +1030,19 @@ const build: ExternalMethods['build'] = async (
       return {
         type: 'build-direct-invoke',
         payload: {
+          continue: true,
           timeout: nextArgs[0],
           notificationExtraPayload: nextArgs[1]
         }
       }
     }
 
-    return null
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false
+      }
+    }
   } finally {
     log.debug(`Building is finished`)
     basePool.activePassthrough = false
