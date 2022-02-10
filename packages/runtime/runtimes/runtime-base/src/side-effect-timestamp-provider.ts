@@ -1,23 +1,31 @@
-import type { EventSubscriber } from './types'
+import type { Eventstore } from './types'
+import eventSubscriberProperties from './event-subscribers-properties'
 
-const sideEffectTimestampProviderFactory = ({
-  eventSubscriber,
-}: {
-  eventSubscriber: EventSubscriber
-}) => {
+const sideEffectTimestampProviderFactory = (
+  eventstoreAdapter: Eventstore,
+  applicationName: string
+) => {
   const sideEffectTimestampProvider = {
     currentEventSubscriber: '',
     getSideEffectsTimestamp: () =>
-      eventSubscriber.getProperty({
-        eventSubscriber: sideEffectTimestampProvider.currentEventSubscriber,
-        key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
-      }),
+      eventSubscriberProperties.getProperty(
+        eventstoreAdapter,
+        applicationName,
+        {
+          eventSubscriber: sideEffectTimestampProvider.currentEventSubscriber,
+          key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
+        }
+      ),
     setSideEffectsTimestamp: (sideEffectTimestamp: number) =>
-      eventSubscriber.setProperty({
-        eventSubscriber: sideEffectTimestampProvider.currentEventSubscriber,
-        key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
-        value: sideEffectTimestamp,
-      }),
+      eventSubscriberProperties.setProperty(
+        eventstoreAdapter,
+        applicationName,
+        {
+          eventSubscriber: sideEffectTimestampProvider.currentEventSubscriber,
+          key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
+          value: sideEffectTimestamp,
+        }
+      ),
     setCurrentEventSubscriber: (eventSubscriber: string) => {
       sideEffectTimestampProvider.currentEventSubscriber = eventSubscriber
     },

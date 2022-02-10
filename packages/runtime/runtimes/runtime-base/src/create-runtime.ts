@@ -211,17 +211,6 @@ export const createRuntime = async (
     }
   )
 
-  const executeQuery = createQueryExecutor({
-    get eventSubscriber() {
-      return eventSubscriber
-    },
-    readModelConnectors,
-    readModelsInterop,
-    viewModelsInterop,
-    performanceTracer,
-    monitoring,
-  })
-
   // TODO ????
   const getScheduler = (): any => {
     if (params.scheduler != null) {
@@ -241,11 +230,10 @@ export const createRuntime = async (
     }
   }
 
-  const sideEffectTimestampProvider = sideEffectTimestampProviderFactory({
-    get eventSubscriber() {
-      return eventSubscriber
-    },
-  })
+  const sideEffectTimestampProvider = sideEffectTimestampProviderFactory(
+    eventStoreAdapter,
+    eventSubscriberScope
+  )
   const sagasInterop = domainInterop.sagaDomain.acquireSagasInterop({
     // TODO ????
     get scheduler() {
@@ -259,7 +247,9 @@ export const createRuntime = async (
     },
     // TODO ????
     executeCommand: executeCommandForSaga,
-    executeQuery,
+    get executeQuery() {
+      return executeQuery
+    },
     secretsManager,
     monitoring,
     uploader,
@@ -276,6 +266,17 @@ export const createRuntime = async (
     eventstoreAdapter: eventStoreAdapter,
     readModelsInterop,
     sagasInterop,
+    performanceTracer,
+    monitoring,
+  })
+
+  const executeQuery = createQueryExecutor({
+    get eventSubscriber() {
+      return eventSubscriber
+    },
+    readModelConnectors,
+    readModelsInterop,
+    viewModelsInterop,
     performanceTracer,
     monitoring,
   })
