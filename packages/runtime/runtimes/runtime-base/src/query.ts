@@ -26,8 +26,8 @@ const parseReadOptions = <A, B>(options: {
   let result: [A, B] | undefined = undefined
   if (options.modelOptions != null && options.modelArgs != null) {
     result = [options.modelOptions, options.modelArgs]
-  } else if (options.resolverName != null && options.aggregateArgs != null) {
-    result = [options.resolverName, options.aggregateArgs]
+  } else if (options.resolverName != null && options.resolverArgs != null) {
+    result = [options.resolverName, options.resolverArgs]
   } else if (options.aggregateIds != null && options.aggregateArgs != null) {
     result = [options.aggregateIds, options.aggregateArgs]
   }
