@@ -12,7 +12,6 @@ import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 import detectErrors from './detect_errors'
 import adjustResolveConfig from './adjust-resolve-config'
-import { getDeprecatedTarget } from './get-deprecated-target'
 
 const log = getLog('build')
 
@@ -71,7 +70,7 @@ const buildMode = async (resolveConfig, adjustWebpackConfigs) => {
       path.resolve(
         process.cwd(),
         resolveConfig.distDir,
-        `./common/${getDeprecatedTarget(resolveConfig)}-entry/.npmrc`
+        `./common/${resolveConfig.target}-entry/.npmrc`
       )
     )
   }
