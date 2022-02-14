@@ -328,7 +328,7 @@ describe('isAlive', () => {
     ).toBeCalledWith('test-cursor-3', ['*'])
   })
 
-  test('returns true if eventstore end cursor is changed while execution (new events are added) (#2092)', async () => {
+  test('returns true if eventstore end cursor is changed while execution (new events are added) (#2200)', async () => {
     mocked(Date.now)
       .mockReturnValueOnce(0)
       .mockReturnValueOnce(1000)
@@ -386,5 +386,38 @@ describe('isAlive', () => {
     expect(
       eventstoreAdapter.getCursorUntilEventTypes
     ).toBeCalledWith('test-cursor-2', ['*'])
+  })
+
+  test('returns null if cannot get current read model ledger state because of PassthroughError (#2200)', async () => {
+    mocked(Date.now)
+      .mockReturnValueOnce(0)
+      .mockReturnValueOnce(1000)
+      .mockReturnValueOnce(2000)
+      .mockReturnValueOnce(3000)
+      .mockReturnValueOnce(30000)
+
+    mocked(eventstoreAdapter.getCursorUntilEventTypes)
+      .mockResolvedValueOnce('test-cursor-1')
+      .mockResolvedValueOnce('test-cursor-2')
+      .mockResolvedValueOnce('test-cursor-2')
+      .mockResolvedValueOnce('test-cursor-3')
+      .mockResolvedValueOnce('test-cursor-3')
+      .mockResolvedValueOnce('test-cursor-3')
+
+    mocked(pool.inlineLedgerRunQuery)
+      .mockResolvedValueOnce([
+        createTestReadModelLedgerRow({
+          Cursor: 'test-cursor-1',
+        }),
+      ])
+      .mockRejectedValue(new PassthroughError(true))
+
+    expect(
+      await status(pool, 'test-read-model', eventstoreAdapter, true)
+    ).toEqual(
+      expect.objectContaining({
+        isAlive: null,
+      })
+    )
   })
 })

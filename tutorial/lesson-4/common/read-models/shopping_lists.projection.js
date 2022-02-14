@@ -1,7 +1,7 @@
 // A Read Model projection describes logic used to collect data from incoming events.
 import { SHOPPING_LIST_CREATED } from '../eventTypes'
 
-export default {
+const projection = {
   // The 'Init' function initializes the store (defines tables and their fields).
   Init: async (store) => {
     await store.defineTable('ShoppingLists', {
@@ -26,3 +26,5 @@ export default {
     await store.insert('ShoppingLists', shoppingList)
   },
 }
+
+export default projection

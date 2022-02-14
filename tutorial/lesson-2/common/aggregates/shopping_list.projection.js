@@ -1,6 +1,6 @@
 import { SHOPPING_LIST_CREATED } from '../eventTypes'
 
-export default {
+const projection = {
   // The Init function initializes a state object.
   Init: () => ({}),
   // A projection function updates the state based on events.
@@ -11,3 +11,5 @@ export default {
     createdAt: timestamp, // Add an event's timestamp to the state.
   }),
 }
+
+export default projection
