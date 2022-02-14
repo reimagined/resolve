@@ -4,8 +4,8 @@ import { parse as parseQuery } from 'query-string'
 import { URL } from 'url'
 import getRawBody from 'raw-body'
 
-import type { HttpMethods, HttpRequest } from '../types'
-import wrapHeadersCaseInsensitive from '../wrap-headers-case-insensitive'
+import type { HttpMethods, HttpRequest } from '../../types'
+import wrapHeadersCaseInsensitive from '../../wrap-headers-case-insensitive'
 
 const createRequest = async <
   CustomParameters extends Record<string | symbol, any> = {}

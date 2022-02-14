@@ -1,15 +1,24 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+import type { ContentType } from './types'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const imports = require('busboy/lib/utils.js')
 
-const parseContentType = (
-  contentType: string
-  // eslint-disable-next-line spellcheck/spell-checker
-): { type: string; subType: string; params: Record<string, string> } => {
-  // eslint-disable-next-line spellcheck/spell-checker
-  const { type, subtype: subType, params } = imports.parseContentType(
-    contentType
-  )
-  return { type, subType, params }
+const parseContentType = (contentType: string): ContentType => {
+  const {
+    type,
+    // eslint-disable-next-line spellcheck/spell-checker
+    subtype: subType,
+    params: { charset = 'utf-8', ...params },
+  } = imports.parseContentType(contentType)
+  return {
+    type,
+    subType,
+    params: {
+      ...params,
+      charset: charset === undefined ? undefined : charset.toLocaleLowerCase(),
+    },
+  }
 }
 
 export default parseContentType

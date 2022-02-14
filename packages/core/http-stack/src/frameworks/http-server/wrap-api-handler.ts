@@ -1,25 +1,22 @@
+import type { IncomingMessage, ServerResponse } from 'http'
+
 import type {
-  LambdaApiGatewayV2Request,
-  LambdaApiGatewayV2RequestCloudFrontEvent,
   HttpRequest,
   HttpResponse,
-  LambdaOriginEdgeResponse,
   OnStartCallback,
   OnFinishCallback,
-} from '../types'
-
+} from '../../types'
+import createResponse from '../../create-response'
 import createRequest from './create-request'
-import createResponse from '../create-response'
-import finalizeResponse from '../finalize-response'
-import getHttpStatusText from '../get-http-status-text'
-import getSafeErrorMessage from '../get-safe-error-message'
-import getDebugErrorMessage from '../get-debug-error-message'
+import finalizeResponse from '../../finalize-response'
+import getSafeErrorMessage from '../../get-safe-error-message'
+import getDebugErrorMessage from '../../get-debug-error-message'
 
 export type GetCustomParameters<
   CustomParameters extends Record<string | symbol, any> = {}
 > = (
-  lambdaEvent: LambdaApiGatewayV2Request,
-  lambdaContext: any
+  externalReq: IncomingMessage,
+  externalRes: ServerResponse
 ) => CustomParameters | Promise<CustomParameters>
 
 const wrapApiHandler = <
@@ -30,25 +27,19 @@ const wrapApiHandler = <
     res: HttpResponse
   ) => Promise<void>,
   getCustomParameters: GetCustomParameters<CustomParameters> = () =>
-    ({} as CustomParameters),
+    ({} as any),
   // eslint-disable-next-line no-new-func
   onStart: OnStartCallback<CustomParameters> = Function() as any,
   // eslint-disable-next-line no-new-func
   onFinish: OnFinishCallback<CustomParameters> = Function() as any
-) => async (
-  lambdaEvent: LambdaApiGatewayV2Request,
-  lambdaContext: any
-): Promise<LambdaOriginEdgeResponse> => {
+) => async (externalReq: IncomingMessage, externalRes: ServerResponse) => {
   const startTime = Date.now()
 
   try {
-    const customParameters = await getCustomParameters(
-      lambdaEvent,
-      lambdaContext
-    )
+    const customParameters = await getCustomParameters(externalReq, externalRes)
 
     const req = await createRequest<CustomParameters>(
-      lambdaEvent,
+      externalReq,
       customParameters
     )
     const res = createResponse()
@@ -60,44 +51,25 @@ const wrapApiHandler = <
 
       const { status, headers, body } = await finalizeResponse(res)
 
-      const result: LambdaOriginEdgeResponse = {
-        httpStatus: status,
-        httpStatusText: getHttpStatusText(status),
-        headers: headers.map(([key, value]) => ({
-          key,
-          value,
-        })),
-        body: Buffer.from(body).toString('base64'),
-      }
+      externalRes.writeHead(status, headers)
+      externalRes.end(body)
 
       onFinish(Date.now(), req, res)
-
-      return result
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(getDebugErrorMessage(error))
 
-      const result: LambdaOriginEdgeResponse = {
-        httpStatus: 500,
-        httpStatusText: getHttpStatusText(500),
-        headers: [],
-        body: getSafeErrorMessage(error),
-      }
+      externalRes.statusCode = 500
+      externalRes.end(getSafeErrorMessage(error))
 
       onFinish(Date.now(), req, res, error)
-
-      return result
     }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(getDebugErrorMessage(error))
 
-    return {
-      httpStatus: 500,
-      httpStatusText: getHttpStatusText(500),
-      headers: [],
-      body: getSafeErrorMessage(error),
-    }
+    externalRes.statusCode = 500
+    externalRes.end(getSafeErrorMessage(error))
   }
 }
 

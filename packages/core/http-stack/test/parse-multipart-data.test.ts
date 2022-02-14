@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs'
 import FormData from 'form-data'
 
-import parseMultipartData from '../src/parse-multipart-data'
+import parseMultipartData from '../src/body-parser/parse-multipart-data'
 
 test('method "parseMultipartData" should work correctly', async () => {
   const customBuffer = Buffer.from('アニメの女の子')

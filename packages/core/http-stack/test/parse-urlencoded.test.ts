@@ -1,6 +1,6 @@
 import { stringify as stringifyQuery } from 'query-string'
 
-import parseUrlencoded from '../src/parse-urlencoded'
+import parseUrlencoded from '../src/body-parser/parse-urlencoded'
 
 test('should work correctly', async () => {
   const body: Buffer = Buffer.from(

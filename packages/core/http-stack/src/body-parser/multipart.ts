@@ -1,42 +1,18 @@
-import type { IncomingHttpHeaders } from 'http'
 import type { Readable } from 'stream'
 import type { FileInfo } from 'busboy'
 import Busboy from 'busboy'
 
-import type { MultipartData } from './types'
-import parseContentType from './parse-content-type'
-import getLog from './get-log'
+import type { ContentType, MultipartData } from '../types'
+import getLog from '../get-log'
 
-const parseMultipartData = ({
-  body,
-  headers,
-}: {
-  body: Buffer | null
-  headers: IncomingHttpHeaders
-}): Promise<MultipartData | null> => {
-  const contentType = headers['content-type']
-  if (body == null || contentType == null) {
-    return Promise.resolve(null)
-  }
-
-  const {
-    type: mediaType,
-    subType: mediaSubType,
-    params: { boundary },
-  } = parseContentType(contentType)
-
-  if (
-    mediaType !== 'multipart' ||
-    mediaSubType !== 'form-data' ||
-    boundary?.constructor !== String
-  ) {
-    return Promise.resolve(null)
-  }
-
-  return new Promise((resolve) => {
+export const parser = (
+  body: Buffer,
+  contentType: string
+): Promise<MultipartData | undefined> => {
+  return new Promise<MultipartData | undefined>((resolve) => {
     const busboy = Busboy({
       headers: {
-        'content-type': headers['content-type'],
+        'content-type': contentType,
       },
     })
     const result: MultipartData = {
@@ -78,7 +54,7 @@ const parseMultipartData = ({
     busboy.on('error', (error: Error) => {
       const log = getLog('parse-multipart-data')
       log.warn(error)
-      resolve(null)
+      resolve(undefined)
     })
 
     busboy.on('finish', () => {
@@ -92,4 +68,11 @@ const parseMultipartData = ({
   })
 }
 
-export default parseMultipartData
+export const predicate = ({
+  type,
+  subType,
+  params: { boundary },
+}: ContentType): boolean =>
+  type === 'multipart' &&
+  subType === 'form-data' &&
+  boundary?.constructor === String

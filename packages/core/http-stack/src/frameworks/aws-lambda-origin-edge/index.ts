@@ -1,5 +1,5 @@
 import createRequest from './create-request'
-import createResponse from '../create-response'
+import createResponse from '../../create-response'
 import createRouter from './create-router'
 import wrapApiHandler, {
   GetCustomParameters as GetCustomParametersAWSLambdaOriginEdge,

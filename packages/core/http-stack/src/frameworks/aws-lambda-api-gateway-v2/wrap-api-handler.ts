@@ -1,22 +1,24 @@
 import type {
-  LambdaOriginEdgeRequest,
+  LambdaApiGatewayV2Request,
+  LambdaApiGatewayV2RequestCloudFrontEvent,
   HttpRequest,
   HttpResponse,
   LambdaOriginEdgeResponse,
   OnStartCallback,
   OnFinishCallback,
-} from '../types'
+} from '../../types'
+
 import createRequest from './create-request'
-import createResponse from '../create-response'
-import finalizeResponse from '../finalize-response'
-import getHttpStatusText from '../get-http-status-text'
-import getSafeErrorMessage from '../get-safe-error-message'
-import getDebugErrorMessage from '../get-debug-error-message'
+import createResponse from '../../create-response'
+import finalizeResponse from '../../finalize-response'
+import getHttpStatusText from '../../get-http-status-text'
+import getSafeErrorMessage from '../../get-safe-error-message'
+import getDebugErrorMessage from '../../get-debug-error-message'
 
 export type GetCustomParameters<
   CustomParameters extends Record<string | symbol, any> = {}
 > = (
-  lambdaEvent: LambdaOriginEdgeRequest,
+  lambdaEvent: LambdaApiGatewayV2Request,
   lambdaContext: any
 ) => CustomParameters | Promise<CustomParameters>
 
@@ -24,7 +26,7 @@ const wrapApiHandler = <
   CustomParameters extends Record<string | symbol, any> = {}
 >(
   handler: (
-    req: HttpRequest<CustomParameters & { requestStartTime: number }>,
+    req: HttpRequest<CustomParameters>,
     res: HttpResponse
   ) => Promise<void>,
   getCustomParameters: GetCustomParameters<CustomParameters> = () =>
@@ -34,7 +36,7 @@ const wrapApiHandler = <
   // eslint-disable-next-line no-new-func
   onFinish: OnFinishCallback<CustomParameters> = Function() as any
 ) => async (
-  lambdaEvent: LambdaOriginEdgeRequest,
+  lambdaEvent: LambdaApiGatewayV2Request,
   lambdaContext: any
 ): Promise<LambdaOriginEdgeResponse> => {
   const startTime = Date.now()
@@ -45,12 +47,10 @@ const wrapApiHandler = <
       lambdaContext
     )
 
-    const req = await createRequest<
-      CustomParameters & { requestStartTime: number }
-    >(lambdaEvent, {
-      ...customParameters,
-      requestStartTime: lambdaEvent.requestStartTime,
-    })
+    const req = await createRequest<CustomParameters>(
+      lambdaEvent,
+      customParameters
+    )
     const res = createResponse()
 
     onStart(startTime, req, res)

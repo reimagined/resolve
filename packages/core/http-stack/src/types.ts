@@ -74,9 +74,9 @@ export type HttpMethods =
   | 'PATCH'
 
 export type ContentType = {
-  mediaType?: string
-  charset?: string
-  boundary?: string
+  type: string
+  subType: string
+  params: Record<string, string>
 }
 
 export type MultipartDataFile = {
