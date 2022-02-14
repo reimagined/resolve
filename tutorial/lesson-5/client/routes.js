@@ -2,7 +2,7 @@ import App from './components/App'
 import MyLists from './components/MyLists'
 import ShoppingList from './components/ShoppingList'
 
-export const routes = [
+const routes = [
   {
     component: App,
     routes: [
@@ -18,3 +18,5 @@ export const routes = [
     ],
   },
 ]
+
+export default routes
