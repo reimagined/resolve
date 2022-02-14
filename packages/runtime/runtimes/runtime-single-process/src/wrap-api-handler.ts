@@ -3,15 +3,9 @@ import type {
   Response as ExpressResponse,
 } from 'express'
 
-import type {
-  ResolveRequest,
-  ResolveResponse,
-} from '@resolve-js/runtime-base'
+import type { ResolveRequest, ResolveResponse } from '@resolve-js/runtime-base'
 import { Monitoring } from '@resolve-js/core'
-import {
-  createResponse,
-  INTERNAL,
-} from '@resolve-js/http-stack'
+import { createResponse, INTERNAL } from '@resolve-js/http-stack'
 
 export const wrapApiHandler = (
   handler: (req: ResolveRequest, res: ResolveResponse) => Promise<void>,

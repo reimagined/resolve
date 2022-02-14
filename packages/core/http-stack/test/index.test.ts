@@ -159,13 +159,14 @@ const tests: Array<{
         await req.resolve.executeCommand()
         res.json({
           aggregateVersion: 1,
-          payload: req.body == null ? {} : JSON.parse(req.body.toString()),
+          payload: req.body,
         })
       },
     },
     tests: [
       {
         request: {
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: 'Test' }),
         },
         accept: async (response) => {
@@ -208,10 +209,7 @@ const tests: Array<{
       pattern: '/sum',
       method: 'POST',
       handler: async (req, res) => {
-        const { a, b } =
-          req.body == null
-            ? { a: 0, b: 0 }
-            : JSON.parse(req.body.toString() ?? '{}')
+        const { a, b } = req.body
         res.json({
           a,
           b,
@@ -222,6 +220,7 @@ const tests: Array<{
     tests: [
       {
         request: {
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ a: 5, b: 10 }),
         },
         accept: async (response) => {
@@ -241,7 +240,7 @@ const tests: Array<{
       pattern: '/sum',
       method: 'GET',
       handler: async (req, res) => {
-        const { a = 0, b = 0 } = req.query
+        const { a = '0', b = '0' } = req.query
         res.json({
           a: +a,
           b: +b,
@@ -342,8 +341,7 @@ const tests: Array<{
       pattern: '/send-form-data',
       method: 'POST',
       handler: async (req, res) => {
-        const multipartData = await bodyParser.multipart(req)
-        res.json(multipartData)
+        res.json(req.body)
       },
     },
     tests: [
@@ -374,8 +372,7 @@ const tests: Array<{
       pattern: '/parse-urlencoded',
       method: 'POST',
       handler: async (req, res) => {
-        const urlencoded = await bodyParser.urlencoded(req)
-        res.json(urlencoded)
+        res.json(req.body)
       },
     },
     tests: [

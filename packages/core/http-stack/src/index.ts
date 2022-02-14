@@ -17,5 +17,5 @@ export {
   bodyParser,
   parseDisposition,
   parseContentType,
-  convertToUTF8
+  convertToUTF8,
 }

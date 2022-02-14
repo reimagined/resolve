@@ -24,10 +24,12 @@ describe('method "createCorsMiddleware"', () => {
   }: { headers?: Record<string, string>; method?: HttpMethods } = {}) => {
     req = {
       headers: wrapHeadersCaseInsensitive(headers),
-      body: Buffer.from(''),
+      rawBody: Buffer.from(''),
+      body: {},
       method,
       cookies: {},
       path: '/',
+      rawQuery: undefined,
       query: {},
       params: {},
       clientIp: undefined,

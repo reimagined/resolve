@@ -21,11 +21,11 @@ test('method "bodyParser.multipart" should work correctly', async () => {
   })
 
   const bodyParserResult: MultipartData = await bodyParser({
-    body: form.getBuffer(),
+    rawBody: form.getBuffer(),
     headers: form.getHeaders(),
   })
   const multipartParserResult = await bodyParser.multipart({
-    body: form.getBuffer(),
+    rawBody: form.getBuffer(),
     headers: form.getHeaders(),
   })
 
@@ -55,14 +55,20 @@ test('method "bodyParser.multipart" should work correctly', async () => {
 })
 
 test('method "bodyParser.urlencoded" should work correctly', async () => {
-  const body: Buffer = Buffer.from(
+  const rawBody: Buffer = Buffer.from(
     stringifyQuery({ a: 'test', b: ['one', 'two'] }, { arrayFormat: 'bracket' })
   )
   const headers = {
     'content-type': 'application/x-www-form-urlencoded',
   }
-  const bodyParserResult: UrlencodedData = await bodyParser({ body, headers })
-  const urlencodedParserResult = await bodyParser.urlencoded({ body, headers })
+  const bodyParserResult: UrlencodedData = await bodyParser({
+    rawBody,
+    headers,
+  })
+  const urlencodedParserResult = await bodyParser.urlencoded({
+    rawBody,
+    headers,
+  })
 
   for (const parsedBody of [bodyParserResult, urlencodedParserResult]) {
     expect(parsedBody).toEqual({ a: 'test', b: ['one', 'two'] })
@@ -70,23 +76,25 @@ test('method "bodyParser.urlencoded" should work correctly', async () => {
 })
 
 test('method "bodyParser" should return {} if body has not been parsed', async () => {
-  expect(await bodyParser({ body: null, headers: {} })).toEqual({})
-  expect(await bodyParser({ body: Buffer.from(``), headers: {} })).toEqual({})
+  expect(await bodyParser({ rawBody: undefined, headers: {} })).toEqual({})
+  expect(await bodyParser({ rawBody: Buffer.from(``), headers: {} })).toEqual(
+    {}
+  )
   expect(
     await bodyParser({
-      body: Buffer.from(``),
+      rawBody: Buffer.from(``),
       headers: { 'content-type': 'application/json' },
     })
   ).toEqual({})
   expect(
     await bodyParser({
-      body: Buffer.from(``),
+      rawBody: Buffer.from(``),
       headers: { 'content-type': 'multipart/form-data' },
     })
   ).toEqual({})
   expect(
     await bodyParser({
-      body: Buffer.from(``),
+      rawBody: Buffer.from(``),
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
     })
   ).toEqual({})

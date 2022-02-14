@@ -7,6 +7,7 @@ import type {
   LambdaApiGatewayV2RequestCloudFrontEvent,
 } from '../../types'
 import wrapHeadersCaseInsensitive from '../../wrap-headers-case-insensitive'
+import bodyParser from '../../body-parser'
 
 const createRequest = async <
   CustomParameters extends Record<string | symbol, any> = {}
@@ -17,12 +18,12 @@ const createRequest = async <
   const {
     rawPath: path,
     headers: rawHeaders,
-    rawQueryString: querystring = '',
+    rawQueryString: rawQuery,
     requestContext: {
       timeEpoch: requestStartTime,
       http: { sourceIp: clientIp, method: httpMethod },
     },
-    body: rawBody,
+    body: encodedBody,
     isBase64Encoded,
   } = lambdaEvent
 
@@ -38,25 +39,27 @@ const createRequest = async <
   const cookies =
     cookieHeader?.constructor === String ? cookie.parse(cookieHeader) : {}
 
-  const query = parseQuery(querystring, { arrayFormat: 'bracket' }) as Record<
-    string,
-    string | Array<string>
-  >
+  const query = parseQuery(rawQuery ?? '', {
+    arrayFormat: 'bracket',
+  }) as Record<string, string | Array<string>>
 
-  const body =
-    rawBody == null
-      ? null
+  const rawBody =
+    encodedBody == null
+      ? undefined
       : isBase64Encoded
-      ? Buffer.from(rawBody, 'base64')
-      : Buffer.from(rawBody)
+      ? Buffer.from(encodedBody, 'base64')
+      : Buffer.from(encodedBody)
+  const body = await bodyParser({ rawBody, headers })
 
   return {
     ...customParameters,
     method: httpMethod,
+    rawQuery,
     query,
     path,
     headers,
     cookies,
+    rawBody,
     body,
     clientIp,
     requestStartTime,
