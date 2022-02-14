@@ -113,6 +113,14 @@
           }
         ]
       },
+      {
+        "type": "category",
+        "label": "Modules",
+        "items": [
+          "modules/overview",
+          "modules/uploader"
+        ]
+      },
       "application-configuration",
       "faq",
       "troubleshooting"    
