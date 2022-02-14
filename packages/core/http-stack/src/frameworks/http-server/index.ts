@@ -2,14 +2,14 @@ import createRequest from './create-request'
 import createResponse from '../../create-response'
 import createRouter from './create-router'
 import wrapApiHandler, {
-  GetCustomParameters as GetCustomParametersHttpServer,
+  GetCustomParameters as FrameworkHttpServerGetCustomParameters,
 } from './wrap-api-handler'
 
-export const HttpServer = {
+export const FrameworkHttpServer = {
   createRequest,
   createResponse,
   createRouter,
   wrapApiHandler,
 }
 
-export type { GetCustomParametersHttpServer }
+export type { FrameworkHttpServerGetCustomParameters }

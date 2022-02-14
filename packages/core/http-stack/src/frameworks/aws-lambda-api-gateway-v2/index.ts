@@ -2,14 +2,14 @@ import createRequest from './create-request'
 import createResponse from '../../create-response'
 import createRouter from './create-router'
 import wrapApiHandler, {
-  GetCustomParameters as GetCustomParametersAWSLambdaApiGatewayV2,
+  GetCustomParameters as FrameworkAWSLambdaApiGatewayV2GetCustomParameters,
 } from './wrap-api-handler'
 
-export const AWSLambdaApiGatewayV2 = {
+export const FrameworkAWSLambdaApiGatewayV2 = {
   createRequest,
   createResponse,
   createRouter,
   wrapApiHandler,
 }
 
-export type { GetCustomParametersAWSLambdaApiGatewayV2 }
+export type { FrameworkAWSLambdaApiGatewayV2GetCustomParameters }

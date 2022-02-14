@@ -12,6 +12,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "declarationDir": "types",
+    "useUnknownInCatchVariables": false,
     "strict": true,
     "jsx": "react",
     "outDir": "lib",

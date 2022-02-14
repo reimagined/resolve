@@ -12,6 +12,7 @@
     "resolveJsonModule": true,
     "declaration": true,
     "emitDeclarationOnly": true,
+    "useUnknownInCatchVariables": false,
     "strict": true,
     "jsx": "react",
     "outDir": "lib",
