@@ -5,6 +5,7 @@
   "description": "Hacker News application clone with CQRS and EventSourcing",
   "scripts": {
     "build": "ts-node run.ts build",
+    "build:docker": "ts-node run.ts build:docker",
     "cloud": "ts-node run.ts cloud",
     "cloud:replica": "ts-node run.ts cloud:replica",
     "dev": "ts-node run.ts dev",
@@ -16,6 +17,7 @@
     "start": "ts-node run.ts start",
     "test:e2e:only": "ts-node run.ts test:e2e:only",
     "test:e2e": "ts-node run.ts test:e2e",
+    "test:e2e-docker": "ts-node run-e2e-docker.ts",
     "module-admin": "module-admin",
     "test": "jest",
     "test:coverage": "jest --coverage",
