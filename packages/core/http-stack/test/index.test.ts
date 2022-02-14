@@ -9,7 +9,7 @@ import getRawBody from 'raw-body'
 import FormData from 'form-data'
 
 import type { HttpMethods, Route, LambdaOriginEdgeRequest, CORS } from '../src'
-import { HttpServer, AWSLambdaOriginEdge } from '../src'
+import { FrameworkHttpServer, FrameworkAWSLambdaOriginEdge } from '../src'
 import RouterConfigBuilder from '../src/router-config-builder'
 import bodyParser from '../src/body-parser'
 
@@ -436,7 +436,7 @@ for (const { describe: corsDescribe, cors } of corsMods) {
       {
         localHttpServer = await new Promise((resolve) => {
           const refServer = http
-            .createServer(HttpServer.createRouter(routerConfig))
+            .createServer(FrameworkHttpServer.createRouter(routerConfig))
             .listen(0, () => {
               resolve(refServer)
             })
@@ -482,7 +482,7 @@ for (const { describe: corsDescribe, cors } of corsMods) {
                 querystring: url.search.replace(/^?/, ''),
               }
 
-              const lambdaHandler = AWSLambdaOriginEdge.createRouter(
+              const lambdaHandler = FrameworkAWSLambdaOriginEdge.createRouter(
                 routerConfig
               )
 
