@@ -102,12 +102,14 @@ export type HttpRequest<
   CustomParameters extends Record<string | symbol, any> = {}
 > = {
   readonly method: HttpMethods
+  readonly rawQuery: string | undefined
   readonly query: Record<string, string | Array<string>>
   readonly path: string
   readonly headers: IncomingHttpHeaders
   readonly params: Record<string, string>
   readonly cookies: Record<string, string>
-  readonly body: Buffer | null
+  readonly rawBody: Buffer | undefined
+  readonly body: any
   readonly clientIp?: string
   readonly requestStartTime: number
 } & CustomParameters
@@ -154,7 +156,7 @@ export type InternalResponse = {
 export type LambdaOriginEdgeRequest = {
   httpMethod: HttpMethods
   headers: Array<{ key: string; value: any }>
-  querystring: string
+  querystring?: string
   uri: string
   body: string | null
   requestStartTime: number

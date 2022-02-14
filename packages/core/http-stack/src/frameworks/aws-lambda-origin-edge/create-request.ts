@@ -3,6 +3,7 @@ import { parse as parseQuery } from 'query-string'
 
 import type { HttpRequest, LambdaOriginEdgeRequest } from '../../types'
 import wrapHeadersCaseInsensitive from '../../wrap-headers-case-insensitive'
+import bodyParser from '../../body-parser'
 
 const createRequest = async <
   CustomParameters extends Record<string | symbol, any> = {}
@@ -14,8 +15,8 @@ const createRequest = async <
     uri: path,
     httpMethod,
     headers: rawHeaders,
-    querystring,
-    body: rawBody,
+    querystring: rawQuery,
+    body: encodedBody,
     requestStartTime,
   } = lambdaEvent
 
@@ -31,12 +32,13 @@ const createRequest = async <
   const cookies =
     cookieHeader?.constructor === String ? cookie.parse(cookieHeader) : {}
 
-  const query = parseQuery(querystring, { arrayFormat: 'bracket' }) as Record<
-    string,
-    string | Array<string>
-  >
+  const query = parseQuery(rawQuery ?? '', {
+    arrayFormat: 'bracket',
+  }) as Record<string, string | Array<string>>
 
-  const body = rawBody == null ? null : Buffer.from(rawBody, 'base64')
+  const rawBody =
+    encodedBody == null ? undefined : Buffer.from(encodedBody, 'base64')
+  const body = await bodyParser({ rawBody, headers })
 
   const forwardedForHeader = headers['x-forwarded-for']
 
@@ -47,11 +49,13 @@ const createRequest = async <
   return {
     ...customParameters,
     method: httpMethod,
+    rawQuery,
     query,
     path,
     headers,
     cookies,
     body,
+    rawBody,
     clientIp,
     requestStartTime,
     params: {},

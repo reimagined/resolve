@@ -30,21 +30,21 @@ const parserFactory = <T, Default = undefined>(
   }: {
     predicate: ((contentType: ContentType) => boolean) | null
     parser: (
-      body: Buffer,
+      rawBody: Buffer,
       contentType: string,
       parsedContentType: ContentType
     ) => Promise<T>
   },
   defaultValue: Default = (undefined as any) as Default
 ) => ({
-  body,
+  rawBody,
   headers,
 }: {
-  body: Buffer | null
+  rawBody: Buffer | undefined
   headers: IncomingHttpHeaders
 }): Promise<T | Default> => {
   const contentType = headers['content-type']
-  if (body == null || contentType == null) {
+  if (rawBody == null || contentType == null) {
     return Promise.resolve(defaultValue)
   }
 
@@ -54,7 +54,7 @@ const parserFactory = <T, Default = undefined>(
     return Promise.resolve(defaultValue)
   }
 
-  return parser(body, contentType, parsedContentType)
+  return parser(rawBody, contentType, parsedContentType)
 }
 
 export default parserFactory
