@@ -1,10 +1,9 @@
 import wrapHeadersCaseInsensitive from './wrap-headers-case-insensitive'
 import createResponse from './create-response'
 import normalizeKey from './normalize-key'
-import parseMultipartData from './body-parser/parse-multipart-data'
+import bodyParser from './body-parser'
 import parseDisposition from './parse-disposition'
 import parseContentType from './parse-content-type'
-import parseUrlencoded from './body-parser/parse-urlencoded'
 import convertToUTF8 from './convert-to-utf8'
 
 export * from './constants'
@@ -17,9 +16,8 @@ export {
   wrapHeadersCaseInsensitive,
   createResponse,
   normalizeKey,
-  parseMultipartData,
+  bodyParser,
   parseDisposition,
   parseContentType,
-  parseUrlencoded,
   convertToUTF8,
 }

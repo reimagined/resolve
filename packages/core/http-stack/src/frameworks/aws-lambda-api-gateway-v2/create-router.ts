@@ -1,4 +1,8 @@
-import type { RouterOptions, OnStartCallback, OnFinishCallback } from '../../types'
+import type {
+  RouterOptions,
+  OnStartCallback,
+  OnFinishCallback,
+} from '../../types'
 import type { GetCustomParameters } from './wrap-api-handler'
 
 import createTrieRouter from '../../create-trie-router'

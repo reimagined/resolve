@@ -12,6 +12,7 @@
     "emitDeclarationOnly": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
+    "useUnknownInCatchVariables": false,
     "outDir": "lib",
     "declarationDir": "types",
     "typeRoots": ["./node_modules/@types", "../../../node_modules/@types"]

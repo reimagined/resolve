@@ -96,6 +96,8 @@ export type MultipartData = {
   fields: MultipartDataFields
 }
 
+export type UrlencodedData = Record<string, string | Array<string>>
+
 export type HttpRequest<
   CustomParameters extends Record<string | symbol, any> = {}
 > = {

@@ -1,13 +1,11 @@
 import { parse as parseQuery } from 'query-string'
 
-import type { ContentType } from '../types'
+import type { ContentType, UrlencodedData } from '../types'
 
-export const parser = async (
-  body: Buffer
-): Promise<Record<string, string | Array<string>>> =>
+export const parser = async (body: Buffer): Promise<UrlencodedData> =>
   parseQuery(body.toString(), {
     arrayFormat: 'bracket',
-  }) as Record<string, string | Array<string>>
+  }) as UrlencodedData
 
 export const predicate = ({
   type,

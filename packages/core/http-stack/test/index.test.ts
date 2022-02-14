@@ -11,8 +11,7 @@ import FormData from 'form-data'
 import type { HttpMethods, Route, LambdaOriginEdgeRequest, CORS } from '../src'
 import { HttpServer, AWSLambdaOriginEdge } from '../src'
 import RouterConfigBuilder from '../src/router-config-builder'
-import parseMultipartData from '../src/body-parser/parse-multipart-data'
-import parseUrlencoded from '../src/body-parser/parse-urlencoded'
+import bodyParser from '../src/body-parser'
 
 jest.setTimeout(1000 * 60)
 
@@ -343,7 +342,7 @@ const tests: Array<{
       pattern: '/send-form-data',
       method: 'POST',
       handler: async (req, res) => {
-        const multipartData = await parseMultipartData(req)
+        const multipartData = await bodyParser.multipart(req)
         res.json(multipartData)
       },
     },
@@ -375,7 +374,7 @@ const tests: Array<{
       pattern: '/parse-urlencoded',
       method: 'POST',
       handler: async (req, res) => {
-        const urlencoded = await parseUrlencoded(req)
+        const urlencoded = await bodyParser.urlencoded(req)
         res.json(urlencoded)
       },
     },
