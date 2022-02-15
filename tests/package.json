@@ -28,7 +28,7 @@
     "test:node-postgres": "jest --config=./jest.config.js --testMatch=**/node-postgres/*.test.[jt]s"
   },
   "devDependencies": {
-    "@babel/runtime": "7.14.0",
+    "@babel/runtime": "7.17.2",
     "@resolve-js/core": "0.33.14",
     "@resolve-js/debug-levels": "0.33.14",
     "@resolve-js/eventstore-base": "0.33.14",
@@ -40,7 +40,7 @@
     "@resolve-js/readmodel-postgresql": "0.33.14",
     "@resolve-js/scripts": "0.33.14",
     "@resolve-js/testing-tools": "0.33.14",
-    "jest": "27.0.3",
+    "jest": "27.5.1",
     "jsonwebtoken": "8.5.1",
     "pg": "8.5.1",
     "pg-cursor": "2.7.1"

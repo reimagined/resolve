@@ -23,7 +23,7 @@
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/core": "7.14.3",
+    "@babel/core": "7.17.2",
     "@babel/plugin-proposal-class-properties": "7.13.0",
     "@babel/plugin-proposal-export-default-from": "7.12.13",
     "@babel/plugin-proposal-export-namespace-from": "7.14.2",
@@ -63,7 +63,7 @@
     "webpack-node-externals": "2.5.2"
   },
   "devDependencies": {
-    "jest": "27.0.3",
+    "jest": "27.5.1",
     "lodash.escaperegexp": "4.1.2"
   },
   "engines": {

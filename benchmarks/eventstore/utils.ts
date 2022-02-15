@@ -1,7 +1,5 @@
 import type {
   Adapter,
-  InputEvent,
-  StoredEvent,
 } from '@resolve-js/eventstore-base'
 
 import path from 'path'
