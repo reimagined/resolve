@@ -49,12 +49,12 @@ export function validate<T extends t.Type<any>>(
   return params
 }
 
-type DefinedType<T extends any> = undefined extends Extract<T, undefined>
+type DefinedType<T> = undefined extends Extract<T, undefined>
   ? Exclude<T, undefined>
   : T
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-export type UnbrandProps<T extends any> = {
+export type UnbrandProps<T> = {
   [Property in keyof T]: DefinedType<T[Property]> extends string &
     t.Brand<infer B>
     ? string | Extract<T[Property], undefined>
@@ -210,9 +210,7 @@ export type RemoveFirstType<T extends any[]> = T extends [infer _, ...infer R]
   ? R
   : never
 
-export type PromiseResultType<T extends any> = T extends Promise<infer R>
-  ? R
-  : T
+export type PromiseResultType<T> = T extends Promise<infer R> ? R : T
 
 export type PoolMethod<
   ConfiguredProps extends {},

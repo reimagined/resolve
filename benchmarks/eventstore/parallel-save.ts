@@ -1,7 +1,6 @@
 import type {
   Adapter,
   InputEvent,
-  StoredEventPointer,
   EventFilter,
 } from '@resolve-js/eventstore-base'
 import { performance } from 'perf_hooks'
