@@ -1,6 +1,4 @@
-import type {
-  Adapter,
-} from '@resolve-js/eventstore-base'
+import type { Adapter } from '@resolve-js/eventstore-base'
 
 import path from 'path'
 import fs from 'fs'

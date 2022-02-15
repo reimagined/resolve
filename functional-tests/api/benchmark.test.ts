@@ -127,9 +127,7 @@ const isHighloadError = (error: Error) =>
     error.message
   )
 
-const performApiPost = async <T, Args extends [string, T?]>(
-  ...args: Args
-) => {
+const performApiPost = async <T, Args extends [string, T?]>(...args: Args) => {
   while (true) {
     try {
       const request = await fetch(`${getTargetURL()}/api${args[0]}`, {

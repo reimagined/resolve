@@ -210,9 +210,7 @@ export type RemoveFirstType<T extends any[]> = T extends [infer _, ...infer R]
   ? R
   : never
 
-export type PromiseResultType<T> = T extends Promise<infer R>
-  ? R
-  : T
+export type PromiseResultType<T> = T extends Promise<infer R> ? R : T
 
 export type PoolMethod<
   ConfiguredProps extends {},
