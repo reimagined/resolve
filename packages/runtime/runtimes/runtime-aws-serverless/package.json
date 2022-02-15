@@ -47,7 +47,7 @@
     "@types/lodash.escaperegexp": "4.1.6",
     "@types/lodash.partial": "4.2.6",
     "@types/mime-types": "2.1.1",
-    "aws-sdk": "2.952.0",
+    "aws-sdk": "2.1001.0",
     "jest": "27.5.1",
     "lodash.escaperegexp": "4.1.2",
     "ts-jest": "27.1.3"

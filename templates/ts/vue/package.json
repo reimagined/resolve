@@ -39,7 +39,7 @@
     "@babel/preset-typescript": "7.14.5",
     "@types/copy-webpack-plugin": "8.0.1",
     "autoprefixer": "10.2.6",
-    "aws-sdk": "2.860.0",
+    "aws-sdk": "2.1001.0",
     "aws-xray-sdk-core": "3.2.0",
     "babel-jest": "27.5.1",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
