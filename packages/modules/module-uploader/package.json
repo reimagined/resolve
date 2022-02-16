@@ -23,7 +23,7 @@
     "testw": "echo || exit 0"
   },
   "dependencies": {
-    "@babel/runtime": "7.14.0",
+    "@babel/runtime": "7.17.2",
     "jsonwebtoken": "8.5.1"
   },
   "devDependencies": {

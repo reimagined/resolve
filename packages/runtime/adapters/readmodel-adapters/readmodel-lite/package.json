@@ -24,7 +24,7 @@
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.14.0",
+    "@babel/runtime": "7.17.2",
     "@resolve-js/readmodel-base": "0.33.14",
     "@types/better-sqlite3": "7.4.0",
     "better-sqlite3": "7.4.3",

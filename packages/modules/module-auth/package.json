@@ -23,7 +23,7 @@
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.14.0",
+    "@babel/runtime": "7.17.2",
     "iconv-lite": "0.6.2",
     "isomorphic-fetch": "3.0.0",
     "uuid": "8.3.2"
