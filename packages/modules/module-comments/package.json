@@ -23,7 +23,7 @@
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.14.0"
+    "@babel/runtime": "7.17.2"
   },
   "devDependencies": {
     "@resolve-js/redux": "0.33.14",
