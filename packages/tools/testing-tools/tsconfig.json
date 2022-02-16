@@ -11,6 +11,7 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "declaration": true,
+    "useUnknownInCatchVariables": false,
     "emitDeclarationOnly": true,
     "useUnknownInCatchVariables": false,
     "strict": true,

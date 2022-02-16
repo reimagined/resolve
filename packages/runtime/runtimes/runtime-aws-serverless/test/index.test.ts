@@ -549,6 +549,7 @@ describe('runtime', () => {
         name: 'BadAggregate',
         commands: {
           fail: () => {
+            // eslint-disable-next-line spellcheck/spell-checker
             const error = new Error('I’m a teapot') as any
             error.code = 418
             throw error
@@ -584,6 +585,7 @@ describe('runtime', () => {
 
       expect(result.statusCode).toEqual(418)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
+      // eslint-disable-next-line spellcheck/spell-checker
       expect(result.body).toEqual('Command error: I’m a teapot')
     })
 

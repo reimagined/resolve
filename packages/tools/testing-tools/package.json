@@ -41,7 +41,7 @@
     "@types/lodash.isequal": "4.5.5",
     "@types/lodash.omit": "4.5.6",
     "@types/lodash.partial": "4.2.6",
-    "jest": "27.0.3"
+    "jest": "27.5.1"
   },
   "engines": {
     "node": ">=14.17"

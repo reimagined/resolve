@@ -11,6 +11,7 @@
     "resolveJsonModule": true,
     "useUnknownInCatchVariables": false,
     "declaration": true,
+    "useUnknownInCatchVariables": false,
     "strict": true,
     "jsx": "react",
     "outDir": "lib",
