@@ -4,6 +4,15 @@ title: Store
 description: This document describes functions that you can use to communicate with a Read Model store through a `store` object.
 ---
 
+:::info TypeScript Support
+
+A read model store has an associated TypeScript type:
+
+- Type Name - `ResolveStore`
+- Containing Package - `@resolve-js/readmodel-base`
+
+:::
+
 The table below lists functions that you can use to communicate with a read model store through a `store` object.
 
 | Function Name               | Description                                        |
@@ -143,10 +152,10 @@ Returns the number of items that meet the specified condition.
 
 #### Arguments
 
-| Argument Name   | Description                                   |
-| --------------- | --------------------------------------------- |
-| tableName       | A table name.                                 |
-| searchCondition | An object that defines a search expression.   |
+| Argument Name   | Description                                 |
+| --------------- | ------------------------------------------- |
+| tableName       | A table name.                               |
+| searchCondition | An object that defines a search expression. |
 
 #### Example
 

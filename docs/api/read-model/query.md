@@ -5,6 +5,15 @@ title: Query
 
 ## Query Object
 
+:::info TypeScript Support
+
+A read model query has an associated TypeScript type:
+
+- Type Name - `ReadModelQuery`
+- Containing Package - `@resolve-js/core`
+
+:::
+
 A read model query object has the following structure:
 
 <!-- prettier-ignore-start -->
@@ -21,6 +30,15 @@ A read model query object has the following structure:
 <!-- prettier-ignore-end -->
 
 ## Result Object
+
+:::info TypeScript Support
+
+A read model query result has an associated TypeScript type:
+
+- Type Name - `ReadModelQueryResult`
+- Containing Package - `@resolve-js/core`
+
+:::
 
 A read model query result can be a value of any serializable type depending on the implementation of the queried read model resolver:
 

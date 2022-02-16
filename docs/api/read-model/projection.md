@@ -3,6 +3,15 @@ id: projection
 title: Projection
 ---
 
+:::info TypeScript Support
+
+A read model projection has an associated TypeScript type:
+
+- Type Name - `ReadModel`
+- Containing Package - `@resolve-js/core`
+
+:::
+
 A read model projection is an object of the following structure:
 
 ```js
