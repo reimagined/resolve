@@ -14,7 +14,6 @@
     "useUnknownInCatchVariables": false,
     "strict": true,
     "jsx": "react",
-    "useUnknownInCatchVariables": false,
     "outDir": "lib",
     "declarationDir": "types",
     "typeRoots": ["./node_modules/@types", "../../../../node_modules/@types"],

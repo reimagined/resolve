@@ -9,7 +9,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "useUnknownInCatchVariables": false,
     "declaration": true,
     "useUnknownInCatchVariables": false,
     "strict": true,

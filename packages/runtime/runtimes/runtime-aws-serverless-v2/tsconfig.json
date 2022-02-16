@@ -11,7 +11,6 @@
     "resolveJsonModule": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "useUnknownInCatchVariables": false,
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "useUnknownInCatchVariables": false,
