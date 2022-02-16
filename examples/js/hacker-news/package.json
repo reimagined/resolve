@@ -5,6 +5,7 @@
   "description": "Hacker News application clone with CQRS and EventSourcing",
   "scripts": {
     "build": "babel-node run.js build",
+    "build:docker": "babel-node run.js build:docker",
     "cloud": "babel-node run.js cloud",
     "cloud:replica": "babel-node run.js cloud:replica",
     "dev": "babel-node run.js dev",
@@ -16,6 +17,7 @@
     "start": "babel-node run.js start",
     "test:e2e:only": "babel-node run.js test:e2e:only",
     "test:e2e": "babel-node run.js test:e2e",
+    "test:e2e-docker": "babel-node run-e2e-docker.ts",
     "module-admin": "module-admin",
     "test": "jest",
     "test:coverage": "jest --coverage",
@@ -83,7 +85,7 @@
     "babel-loader": "8.2.2",
     "jest": "27.0.3",
     "sinon": "9.2.4",
-    "testcafe": "1.17.1",
+    "testcafe": "1.18.3",
     "ts-jest": "27.0.2"
   },
   "resolveJs": {

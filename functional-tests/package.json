@@ -23,8 +23,8 @@
     "lodash": "4.17.21",
     "nanoid": "3.2.0",
     "semver": "7.3.4",
-    "testcafe": "1.17.1",
-    "testcafe-browser-tools": "2.0.15",
+    "testcafe": "1.18.3",
+    "testcafe-browser-tools": "2.0.22",
     "ts-node": "10.0.0"
   },
   "devDependencies": {
