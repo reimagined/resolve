@@ -126,7 +126,7 @@ describe('runtime', () => {
       readModelConnectors: {
         // default: jest.fn().mockReturnValue(defaultReadModelConnector)
       },
-      serverImports: null,
+      serverImports: {},
       uploadAdapter: jest.fn().mockImplementation(() => uploadAdapter),
       monitoringAdapters: {},
     }
