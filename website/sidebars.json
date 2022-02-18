@@ -22,11 +22,9 @@
         "label": "Guides",
         "items": [
           "manage-application",
-          "modules",
           "authentication-and-authorization",
           "encryption",
           "custom-read-model-connectors",
-          "file-upload",
           "export-import",
           "preparing-for-production",
           "running-in-containers",
