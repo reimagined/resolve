@@ -16,6 +16,7 @@
 
 **Other changes:**
 
+- Fix eslint warnings in the tutorial example projects [\#2238](https://github.com/reimagined/resolve/pull/2238)
 - Fix \#2230 [\#2232](https://github.com/reimagined/resolve/pull/2232)
 
 ## [V0.33.14](https://github.com/reimagined/resolve/tree/V0.33.14) (2022-01-27)

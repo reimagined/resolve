@@ -688,7 +688,7 @@ export type EnsureExclude<T, U> = [IsTypeLike<U, T>] extends [never]
   : Exclude<T, U>
 
 export type MatchTypeConditional<
-  M extends any,
+  M,
   V extends Array<[any, any]>,
   D = never
 > = V extends [[infer A, infer B], ...infer T]
@@ -700,7 +700,7 @@ export type MatchTypeConditional<
   : D
 
 export type MatchTypeConditionalLike<
-  M extends any,
+  M,
   V extends Array<[any, any]>,
   D = never
 > = V extends [[infer A, infer B], ...infer T]

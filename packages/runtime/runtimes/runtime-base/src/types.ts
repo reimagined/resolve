@@ -113,10 +113,10 @@ export type Assemblies = {
   eventstoreAdapter: () => EventStoreAdapter
   readModelConnectors: Record<string, ReadModelConnectorFactory>
   monitoringAdapters: Record<string, () => MonitoringAdapter>
+  serverImports: { [key: string]: any }
 
   //TODO: types
   seedClientEnvs: any
-  serverImports: any
 }
 
 export type EventSubscriberNotification = {
@@ -218,6 +218,7 @@ export type Runtime = {
   readonly dispose: () => Promise<void>
   readonly broadcastEvent: (event?: EventPointer) => Promise<void>
   readonly monitoring: Monitoring
+  readonly serverImports: Assemblies['serverImports']
 }
 
 export type PublicRuntime = Omit<Runtime, 'dispose' | 'readModelConnectors'>

@@ -241,6 +241,11 @@ const appConfig = {
       path: '/api/bench-read-models-pause',
       method: 'POST',
     },
+    {
+      handler: 'common/api-handlers/exec-custom-server-code.js',
+      path: '/api/exec-custom-server-code',
+      method: 'GET',
+    },
   ],
   clientEntries: [
     'client/index.js',
@@ -279,6 +284,14 @@ const appConfig = {
       },
     ],
   ],
+  serverImports: {
+    customServerCode: {
+      module: 'common/custom-server-code.js',
+      options: {
+        option: 'test-value',
+      },
+    },
+  },
 }
 
 export default appConfig
