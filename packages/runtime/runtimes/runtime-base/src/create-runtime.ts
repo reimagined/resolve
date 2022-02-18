@@ -24,6 +24,7 @@ import eventSubscriberFactory from './event-subscriber'
 import { readModelProcedureLoaderFactory } from './load-read-model-procedure'
 import { eventListenersManagerFactory } from './event-listeners-manager-factory'
 import sideEffectTimestampProviderFactory from './side-effect-timestamp-provider'
+import nextNotification from './notification-next'
 
 export type EventStoreAdapterFactory = () => Adapter
 
@@ -255,7 +256,7 @@ export const createRuntime = async (
     uploader,
   })
 
-  const eventSubscriber = eventSubscriberFactory({
+  const eventSubscriberImpl = eventSubscriberFactory({
     applicationName: eventSubscriberScope,
     setCurrentEventSubscriber:
       sideEffectTimestampProvider.setCurrentEventSubscriber,
@@ -269,6 +270,44 @@ export const createRuntime = async (
     performanceTracer,
     monitoring,
   })
+
+  // TODO ???
+  const eventSubscriber = {
+    ...eventSubscriberImpl,
+    resume: async (
+      ...args: Parameters<EventSubscriber['resume']>
+    ): Promise<UnPromise<ReturnType<EventSubscriber['resume']>>> => {
+      const notification = await eventSubscriberImpl.resume(...args)
+      // TODO ???
+      const eventSubscriberName =
+        args[0].eventSubscriber ?? args[0].modelName ?? null
+      await nextNotification(
+        invokeBuildAsync,
+        notification,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        eventSubscriberName!
+      )
+      //
+      return notification
+    },
+    build: async (
+      ...args: Parameters<EventSubscriber['build']>
+    ): Promise<UnPromise<ReturnType<EventSubscriber['build']>>> => {
+      const notification = await eventSubscriberImpl.build(...args)
+      // TODO ???
+      const eventSubscriberName =
+        args[0].eventSubscriber ?? args[0].modelName ?? null
+      await nextNotification(
+        invokeBuildAsync,
+        notification,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        eventSubscriberName!
+      )
+      //
+      return notification
+    },
+  }
+  //
 
   const executeQuery = createQueryExecutor({
     get eventSubscriber() {
@@ -322,58 +361,6 @@ export const createRuntime = async (
     broadcastEvent,
   })
 
-  const next = async (
-    eventSubscriber: string,
-    timeout?: number,
-    notificationExtraPayload?: object,
-    ...args: any[]
-  ) => {
-    if (args.length > 0) {
-      throw new TypeError('Next should be invoked with no arguments')
-    }
-    if (timeout != null && (isNaN(+timeout) || +timeout < 0)) {
-      throw new TypeError('Timeout should be non-negative integer')
-    }
-    if (
-      notificationExtraPayload != null &&
-      notificationExtraPayload.constructor !== Object
-    ) {
-      throw new TypeError('Notification extra payload should be plain object')
-    }
-
-    await invokeBuildAsync(
-      {
-        eventSubscriber,
-        initiator: 'read-model-next',
-        notificationId: `NT-${Date.now()}${Math.floor(
-          Math.random() * 1000000
-        )}`,
-        sendTime: Date.now(),
-        ...notificationExtraPayload,
-      },
-      timeout != null ? Math.floor(+timeout) : timeout
-    )
-  }
-
-  const performBuild = async (
-    ...args: Parameters<EventSubscriber['build']>
-  ): Promise<void> => {
-    const result = await eventSubscriber.build(...args)
-    if (result.type === 'build-direct-invoke') {
-      const eventSubscriberName =
-        args[0].eventSubscriber ?? args[0].modelName ?? null
-      if (result.payload.continue && eventSubscriberName != null) {
-        await next(
-          eventSubscriberName,
-          result.payload.timeout,
-          result.payload.notificationExtraPayload
-        )
-      }
-    } else {
-      // TODO ???
-    }
-  }
-
   const runtime: Runtime = {
     eventStoreAdapter,
     uploader,
@@ -388,7 +375,6 @@ export const createRuntime = async (
     dispose: async function () {
       await dispose(this)
     },
-    performBuild,
     broadcastEvent,
     monitoring,
   }

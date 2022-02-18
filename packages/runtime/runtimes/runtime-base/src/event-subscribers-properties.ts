@@ -63,7 +63,7 @@ const eventSubscribersProperties = {
       modelName?: string | null | undefined
     }
   ) => {
-    const [eventSubscriber, parameters] = parseEventSubscriberParameters(params)
+    const [eventSubscriber] = parseEventSubscriberParameters(params)
     const { status } = (
       await eventstoreAdapter.getEventSubscribers({
         applicationName,

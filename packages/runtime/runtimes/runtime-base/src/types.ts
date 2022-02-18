@@ -110,9 +110,9 @@ export type UnknownReadModelConnection =
   | RegularReadModelConnection
   | CustomReadModelConnection
 
-export type OmitRegularReadModelArgs<
-  T extends [any, any, ...any[]]
-> = T extends [infer _, infer __, ...infer U] ? U : never
+export type OmitRegularReadModelArgs<T extends [any, any, ...any[]]> =
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  T extends [infer _, infer __, ...infer U] ? U : never
 
 export type ExtractTupleUnionImplDistribute<
   T extends any[],
@@ -379,9 +379,6 @@ export type Runtime = {
   readonly eventListenersManager: EventListenersManager
   readonly dispose: () => Promise<void>
   readonly broadcastEvent: (event?: EventPointer) => Promise<void>
-  readonly performBuild: (
-    ...args: Parameters<EventSubscriber['build']>
-  ) => Promise<void>
   readonly monitoring: Monitoring
 }
 

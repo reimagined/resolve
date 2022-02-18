@@ -142,7 +142,7 @@ export const lambdaWorker = async (
       void resolveSource
 
       // TODO ???
-      const executorResult = await runtime.performBuild({
+      const executorResult = await runtime.eventSubscriber.build({
         ...buildParameters,
         eventSubscriber,
         coldStart,
