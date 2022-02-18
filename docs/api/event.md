@@ -3,6 +3,15 @@ id: event
 title: Event
 ---
 
+:::info TypeScript Support
+
+An event object has an associated TypeScript type:
+
+- Type Name - `Event`
+- Containing Package - `@resolve-js/core`
+
+:::
+
 An event is an object of the following structure:
 
 <!-- prettier-ignore-start -->
