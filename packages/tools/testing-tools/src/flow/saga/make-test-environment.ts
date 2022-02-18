@@ -260,9 +260,12 @@ export const makeTestEnvironment = (
         do {
           isNext = false
           // TODO ???
-          await executor.build({
+          const res = await executor.build({
             modelName: saga.name,
           } as any)
+          if (res.payload.continue) {
+            isNext = true
+          }
         } while (isNext)
 
         const status = await executor.status({

@@ -26,8 +26,11 @@ const parseReadOptions = <A, B>(options: {
   let result: [A, B] | undefined = undefined
   if (options.modelOptions != null && options.modelArgs != null) {
     result = [options.modelOptions, options.modelArgs]
-  } else if (options.resolverName != null && options.resolverArgs != null) {
-    result = [options.resolverName, options.resolverArgs]
+  } else if (
+    options.resolverName != null &&
+    (options.resolverArgs != null || options.resolverArgs == undefined)
+  ) {
+    result = [options.resolverName, options.resolverArgs!]
   } else if (options.aggregateIds != null && options.aggregateArgs != null) {
     result = [options.aggregateIds, options.aggregateArgs]
   }
@@ -126,11 +129,14 @@ const readModelReadImpl = async (
       log.verbose(result)
     } finally {
       log.debug(`disconnecting`)
-      if (connector != null && connection != null) {
+      if (connector != null) {
         const disconnect = connector.disconnect.bind(
           connector
         ) as UnionMethodToUnionArgsMethod<typeof connector.disconnect>
-        await disconnect(connection, readModelName)
+        await disconnect(
+          connection as Exclude<UnknownReadModelConnection, null>,
+          readModelName
+        )
       }
       log.debug(`disconnected`)
     }
