@@ -40,6 +40,7 @@ const writePackageJsonsForAssemblies = (
             const parsedVersion = semver.parse(version)
             return parsedVersion != null ? version : null
           })
+          .filter((version) => version != null)
       )
     )
 
