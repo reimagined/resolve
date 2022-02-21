@@ -84,18 +84,11 @@
               "api/monitoring/metric"
             ]
           },
-          {
-            "type": "category",
-            "label": "Uploader",
-            "items": [
-              "api/uploader/uploader-adapter",
-              "api/uploader/uploader-module"
-            ]
-          },
           "api/saga",
           "api/command",
           "api/event",
           "api/event-store-adapter",
+          "api/uploader",
           "api/middleware",
           "api/resolve-scripts",
           {
