@@ -15,6 +15,16 @@ export const adjustResolveConfig = async (resolveConfig: ResolveConfig) => {
   const log = getLog('adjust-resolve-config')
 
   resolveConfig.target = 'cloud'
+  resolveConfig.externalDependencies = [
+    '@resolve-js/debug-levels',
+    '@resolve-js/core',
+    '@resolve-js/http-stack',
+    '@resolve-js/runtime-base',
+    '@resolve-js/runtime-aws-serverless',
+    '@resolve-js/runtime-aws-serverless-v2',
+    '@resolve-js/eventstore-postgresql',
+    '@resolve-js/readmodel-postgresql',
+  ]
   if (resolveConfig.eventstoreAdapter != null) {
     log.warn(warningAboutValue('eventstoreAdapter'))
   }

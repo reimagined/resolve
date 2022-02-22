@@ -475,6 +475,10 @@
         "target": {
           "type": "string",
           "enum": ["local", "cloud"]
+        },
+        "externalDependencies": {
+          "type": "array",
+          "items": [{ "type": "string" }]
         }
       },
       "required": [
@@ -496,7 +500,8 @@
         "sagas",
         "mode",
         "runtime",
-        "target"
+        "target",
+        "externalDependencies"
       ],
       "additionalProperties": false
     }

@@ -11,10 +11,8 @@ const getWebpackCommonConfigs = ({
   alias,
   nodeModulesByAssembly,
 }) => {
-  const targetMode = resolveConfig.target
-  if (!['local', 'cloud'].includes(targetMode)) {
-    throw new Error(`Wrong target mode ${targetMode}`)
-  }
+  const { target: targetMode, externalDependencies = [] } = resolveConfig
+
   const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
   const packageJson = `common/${targetMode}-entry/package.json`
   if (!nodeModulesByAssembly.has(packageJson)) {
@@ -28,7 +26,17 @@ const getWebpackCommonConfigs = ({
         .slice(0, request[0] === '@' ? 2 : 1)
         .join('/')
 
-      nodeModulesByAssembly.get(packageJson).add(packageName)
+      let isExternalDependency = false
+      for (const externalDependency of externalDependencies) {
+        isExternalDependency =
+          isExternalDependency || packageName.includes(externalDependency)
+        if (isExternalDependency) {
+          break
+        }
+      }
+      if (!isExternalDependency) {
+        nodeModulesByAssembly.get(packageJson).add(packageName)
+      }
     }
     callback()
   }
@@ -121,27 +129,6 @@ const getWebpackCommonConfigs = ({
       ...getModulesDirs().map((modulesDir) =>
         nodeExternals({
           modulesDir,
-          importType: (moduleName) => `((() => {
-              const path = require('path')
-              const requireDirs = ['', '@resolve-js/runtime-base/node_modules/', '@resolve-js/runtime-single-process/node_modules/', '@resolve-js/runtime-aws-serverless/node_modules/']
-              let modulePath = null
-              const moduleName = ${JSON.stringify(moduleName)}
-              for(const dir of requireDirs) {
-                try {
-                  modulePath = require.resolve(path.join(dir, moduleName))
-                  break
-                } catch(err) {}
-              }
-              if(modulePath == null) {
-                throw new Error(\`Module "\${moduleName}" cannot be resolved\`)
-              }
-              return require(modulePath)
-            })())`,
-          allowlist: [
-            /@resolve-js\/runtime-base/,
-            /@resolve-js\/runtime-dev/,
-            /@resolve-js\/runtime-aws-serverless/,
-          ],
         })
       ),
     ],
