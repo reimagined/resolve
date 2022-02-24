@@ -1,6 +1,5 @@
 import type {
   LambdaApiGatewayV2Request,
-  LambdaApiGatewayV2RequestCloudFrontEvent,
   HttpRequest,
   HttpResponse,
   LambdaOriginEdgeResponse,

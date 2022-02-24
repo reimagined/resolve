@@ -11,7 +11,6 @@ import FormData from 'form-data'
 import type { HttpMethods, Route, LambdaOriginEdgeRequest, CORS } from '../src'
 import { FrameworkHttpServer, FrameworkAWSLambdaOriginEdge } from '../src'
 import RouterConfigBuilder from '../src/router-config-builder'
-import bodyParser from '../src/body-parser'
 
 jest.setTimeout(1000 * 60)
 

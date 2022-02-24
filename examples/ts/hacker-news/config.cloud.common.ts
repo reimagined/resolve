@@ -1,7 +1,7 @@
 const cloudCommonConfig = {
-  mode: 'production',
+  mode: 'development',
   runtime: {
-    module: '@resolve-js/runtime-aws-serverless',
+    module: '@resolve-js/runtime-aws-serverless-v2',
     options: { importMode: 'dynamic' },
   },
   readModelConnectors: {

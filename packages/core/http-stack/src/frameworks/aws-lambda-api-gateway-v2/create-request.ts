@@ -4,7 +4,7 @@ import { parse as parseQuery } from 'query-string'
 import type {
   HttpRequest,
   LambdaApiGatewayV2Request,
-  LambdaApiGatewayV2RequestCloudFrontEvent,
+  /* LambdaApiGatewayV2RequestCloudFrontEvent */
 } from '../../types'
 import wrapHeadersCaseInsensitive from '../../wrap-headers-case-insensitive'
 import bodyParser from '../../body-parser'

@@ -22,6 +22,7 @@ export const lambdaHandler = async (
     lambdaContext
   )
 
+  // eslint-disable-next-line no-console
   console.log(context.deploymentId)
 
   // if(isHttpRequest)

@@ -11,8 +11,6 @@ const writePackageJsonsForAssemblies = (
     fs.readFileSync(path.resolve(process.cwd(), 'package.json'))
   )
 
-  const resolveRuntimePackageJson = require('@resolve-js/runtime-base/package.json')
-
   for (const [
     packageJsonPath,
     nodeModules,
@@ -54,8 +52,6 @@ const writePackageJsonsForAssemblies = (
       )
     }
 
-    const frameworkVersion = frameworkVersions[0]
-
     const assemblyPackageJson = {
       name: `${applicationPackageJson.name}-${syntheticName}`,
       private: true,
@@ -64,14 +60,6 @@ const writePackageJsonsForAssemblies = (
       dependencies: Array.from(resultNodeModules).reduce((acc, val) => {
         if (applicationPackageJson.dependencies.hasOwnProperty(val)) {
           acc[val] = applicationPackageJson.dependencies[val]
-        } else if (
-          resolveRuntimePackageJson.dependencies.hasOwnProperty(val) &&
-          nodeModules.has(val)
-        ) {
-          acc[val] =
-            val.startsWith('@resolve-js/') && frameworkVersion != null
-              ? frameworkVersion
-              : resolveRuntimePackageJson.dependencies[val]
         }
 
         return acc

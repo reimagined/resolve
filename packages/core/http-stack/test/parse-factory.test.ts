@@ -1,5 +1,3 @@
-import { stringify as stringifyQuery } from 'query-string'
-
 import parserFactory from '../src/body-parser/parser-factory'
 
 const parseCustom = parserFactory({

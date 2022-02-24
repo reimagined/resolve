@@ -2085,13 +2085,6 @@
     core-js-pure "^3.20.2"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@7.14.0":
-  version "7.14.0"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.14.0.tgz#46794bc20b612c5f75e62dd071e24dfd95f1cbe6"
-  integrity sha512-JELkvo/DlpNdJ7dlyw/eY7E0suy5i5GQH+Vlxaq1nsNJ+H7f4Vtv3jMeCEgRhZZQFXTjldYfQgv2qmM6M1v5wA==
-  dependencies:
-    regenerator-runtime "^0.13.4"
-
 "@babel/runtime@7.17.2", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.3", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.13.8", "@babel/runtime@^7.16.3", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
   version "7.17.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.2.tgz#66f68591605e59da47523c631416b18508779941"
@@ -2970,31 +2963,6 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@redux-saga/types/-/types-1.1.0.tgz#0e81ce56b4883b4b2a3001ebe1ab298b84237204"
   integrity sha512-afmTuJrylUU/0OtqzaRkbyYFFNgCF73Bvel/sw90pvGrWIZ+vyoIJqA6eMSoA6+nb443kTmulmBtC9NerXboNg==
-
-"@resolve-js/runtime-single-process@0.33.14":
-  version "0.33.14"
-  resolved "https://registry.yarnpkg.com/@resolve-js/runtime-single-process/-/runtime-single-process-0.33.14.tgz#1ecece3ea45c3f2589f5e6eaee5f3c485827c25d"
-  integrity sha512-uF9tIZoX8DgXjXltrPSnsYVxUbBKbH9UaCt84eah4G9i7X+rE+Dx1VgZu/GrB9kKL0FbKbsfzoTRNqICTbJSbg==
-  dependencies:
-    "@babel/runtime" "7.14.0"
-    "@resolve-js/core" "0.33.14"
-    "@resolve-js/debug-levels" "0.33.14"
-    "@resolve-js/eventstore-base" "0.33.14"
-    "@resolve-js/runtime-base" "0.33.14"
-    content-disposition "0.5.3"
-    cookie "0.4.1"
-    express "4.17.1"
-    form-data "4.0.0"
-    jsonwebtoken "8.5.1"
-    lodash.partial "4.2.1"
-    mime-types "2.1.29"
-    node-fetch "2.6.7"
-    qs "6.9.6"
-    raw-body "2.4.1"
-    route-trie "3.0.0"
-    source-map-support "0.5.19"
-    uuid "8.3.2"
-    ws "7.5.5"
 
 "@restart/context@^2.1.4":
   version "2.1.4"
@@ -4091,6 +4059,13 @@
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@types/warning/-/warning-3.0.0.tgz#0d2501268ad8f9962b740d387c4654f5f8e23e52"
   integrity sha1-DSUBJorY+ZYrdA04fEZU9fjiPlI=
+
+"@types/ws@7.4.4":
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.4.4.tgz#93e1e00824c1de2608c30e6de4303ab3b4c0c9bc"
+  integrity sha512-d/7W23JAXPodQNbOZNXvl2K+bqAQrCMwlh/nuQsPSQk6Fq0opHoPrUw43aHsvSbIiQPr8Of2hkFbnz1XBFVyZQ==
+  dependencies:
+    "@types/node" "*"
 
 "@types/ws@^8.2.2":
   version "8.2.2"
@@ -10982,6 +10957,13 @@ jest-message-util@^27.5.1:
     slash "^3.0.0"
     stack-utils "^2.0.3"
 
+jest-mock-extended@2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/jest-mock-extended/-/jest-mock-extended-2.0.4.tgz#2bb430ba0adb9e10ea6a68d08731f2129330c8fe"
+  integrity sha512-MgL3B3GjURQFjjPGqbCANydA5BFNPygv0mYp4Tjfxohh9MWwxxX8Eq2p6ncCt/Vt+RAnaLlDaI7gwrDRD7Pt9A==
+  dependencies:
+    ts-essentials "^7.0.3"
+
 jest-mock@^27.5.1:
   version "27.5.1"
   resolved "https://registry.yarnpkg.com/jest-mock/-/jest-mock-27.5.1.tgz#19948336d49ef4d9c52021d34ac7b5f36ff967d6"
@@ -17025,6 +17007,11 @@ truncate-utf8-bytes@^1.0.0:
   integrity sha1-QFkjkJWS1W94pYGENLC3hInKXys=
   dependencies:
     utf8-byte-length "^1.0.1"
+
+ts-essentials@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/ts-essentials/-/ts-essentials-7.0.3.tgz#686fd155a02133eedcc5362dc8b5056cde3e5a38"
+  integrity sha512-8+gr5+lqO3G84KdiTSMRLtuyJ+nTBVRKuCrK4lidMPdVeEp0uqC875uE5NMcaA7YYMN7XsNiFQuMvasF8HT/xQ==
 
 ts-jest@27.1.3:
   version "27.1.3"
