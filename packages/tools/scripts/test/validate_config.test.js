@@ -4,6 +4,8 @@ describe('validateReadModelConnectors', () => {
   test('should works correctly', () => {
     const resolveConfig = {
       mode: 'development',
+      target: 'local',
+      externalDependencies: [],
       readModels: [
         {
           name: 'first-read-model',
@@ -44,6 +46,8 @@ describe('validateReadModelConnectors', () => {
   test('should throw error `The "${adapterName}" read model connector is required but not specified`', () => {
     const resolveConfig = {
       mode: 'development',
+      target: 'local',
+      externalDependencies: [],
       readModels: [
         {
           name: 'read-model',

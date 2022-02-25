@@ -11,6 +11,8 @@ jest.mock(
 jest.mock('webpack-node-externals', () => (...args) => args)
 
 const resolveConfig = {
+  target: 'local',
+  externalDependencies: [],
   port: 3000,
   rootPath: '',
   staticPath: 'static',
@@ -43,22 +45,6 @@ const resolveConfig = {
   serverImports: {},
   clientEntries: [],
 }
-
-test('should throw on wrong target', async () => {
-  try {
-    await getWebpackConfigs({
-      resolveConfig: {
-        ...resolveConfig,
-        target: 'wrong',
-      },
-      nodeModulesByAssembly: new Map(),
-    })
-
-    return Promise.reject('Test failed')
-  } catch (error) {
-    expect(error).toBeInstanceOf(Error)
-  }
-})
 
 test('should make webpack configs for local mode', async () => {
   const nodeModulesByAssembly = new Map()

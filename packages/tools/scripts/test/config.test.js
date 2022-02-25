@@ -3,6 +3,8 @@ import validateConfig from '../src/validate_config'
 
 const resolveConfigOrigin = {
   ...defaultResolveConfig,
+  target: 'local',
+  externalDependencies: [],
   eventstoreAdapter: {
     module: '@resolve-js/eventstore-lite',
     options: {},
@@ -172,7 +174,7 @@ describe('validate schema', () => {
 
   it('middlewares', () => {
     const resolveConfig = {
-      ...defaultResolveConfig,
+      ...resolveConfigOrigin,
       eventstoreAdapter: {
         module: '@resolve-js/eventstore-lite',
         options: {},

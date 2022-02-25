@@ -36,7 +36,7 @@
     "@resolve-js/core": "0.33.14",
     "@resolve-js/debug-levels": "0.33.14",
     "address": "1.1.2",
-    "ajv": "7.2.1",
+    "ajv": "8.10.0",
     "babel-loader": "8.2.2",
     "babel-plugin-module-resolver": "4.1.0",
     "babel-plugin-transform-import-inline": "^0.0.4",
