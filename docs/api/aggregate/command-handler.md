@@ -3,6 +3,15 @@ id: command-handler
 title: Command Handler
 ---
 
+:::info TypeScript Support
+
+A commands container object has an associated TypeScript type:
+
+- Type Name - `Aggregate`
+- Containing Package - `@resolve-js/core`
+
+:::
+
 A command handler function has the following structure:
 
 ```js

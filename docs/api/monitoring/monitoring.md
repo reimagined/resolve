@@ -3,6 +3,15 @@ id: monitoring
 title: Monitoring Interface
 ---
 
+:::info TypeScript Support
+
+A monitoring object has an associated TypeScript type:
+
+- Type Name - `Monitoring`
+- Containing Package - `@resolve-js/core`
+
+:::
+
 A monitoring object's interface doubles the interface of a monitoring adapter except for the [`getMetrics`](#getmetrics) and [`clearMetrics`](#clearmetrics) methods that require a monitoring adapted ID as an argument.
 
 A monitoring object exposes the following API:

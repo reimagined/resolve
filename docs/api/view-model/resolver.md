@@ -3,6 +3,15 @@ id: resolver
 title: Resolver
 ---
 
+:::info TypeScript Support
+
+A view model resolver object has an associated TypeScript type:
+
+- Type Name - `ViewModelResolver`
+- Containing Package - `@resolve-js/core`
+
+:::
+
 A view model resolver function has the following structure:
 
 ```js

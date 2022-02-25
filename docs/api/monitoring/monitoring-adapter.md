@@ -6,6 +6,15 @@ description: This document describes the interface that a monitoring adapter sho
 
 ## Monitoring Adapter API
 
+:::info TypeScript Support
+
+A monitoring adapter object has an associated TypeScript type:
+
+- Type Name - `MonitoringAdapter`
+- Containing Package - `@resolve-js/core`
+
+:::
+
 A monitoring adapter implementation should expose the following interface:
 
 | Member Name                     | Description                                                                                |

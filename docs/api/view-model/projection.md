@@ -3,6 +3,15 @@ id: projection
 title: Projection
 ---
 
+:::info TypeScript Support
+
+A view model projection object has an associated TypeScript type:
+
+- Type Name - `ViewModelProjection`
+- Containing Package - `@resolve-js/core`
+
+:::
+
 A view model projection is an object of the following structure:
 
 ```js

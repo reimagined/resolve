@@ -4,6 +4,15 @@ title: ReSolve Context
 description: The 'resolve' context object is available to an API handler function through its request (req) argument. This object implements a communication layer between an API handler and the reSolve framework.
 ---
 
+:::info TypeScript Support
+
+A reSolve context object has an associated TypeScript type:
+
+- Type Name - `UserBackendResolve`
+- Containing Package - `@resolve-js/runtime-base`
+
+:::
+
 The `resolve` context object is available to an [API handler](api-handler.md) function through its [request (`req`)](api-handler.md#request) argument. This object implements a communication layer between an API handler and the reSolve framework.
 
 The `resolve` context object exposes the following API:

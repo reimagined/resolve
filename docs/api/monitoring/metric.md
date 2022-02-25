@@ -5,6 +5,15 @@ title: Monitoring Metric
 
 ## Metric Object
 
+:::info TypeScript Support
+
+A monitoring metric object has an associated TypeScript type:
+
+- Type Name - `MonitoringMetric`
+- Containing Package - `@resolve-js/core`
+
+:::
+
 A monitoring metric object contains information about a particular metric collected during application execution. Metrics are stored and processed internally by monitoring adapters and can be accessed through a monitoring object's [`getMetrics`](monitoring.md#getmetrics) method:
 
 ```js
@@ -25,6 +34,15 @@ A metric object has the following structure:
 ```
 
 ## Custom Metric Object
+
+:::info TypeScript Support
+
+A custom metric object has an associated TypeScript type:
+
+- Type Name - `MonitoringCustomMetric`
+- Containing Package - `@resolve-js/core`
+
+:::
 
 A custom metric object is used to pass metric data to the `metrics.custom()` method. This object has the following structure:
 
