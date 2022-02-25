@@ -62,53 +62,59 @@ const Chart = () => {
   const isSelected = (tabName) => tabName === selectedTab
 
   return (
-    <div className="chart-container">
-      <svg viewBox="0 0 550 445" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g>
-          <Server
-            selected={isSelected('server')}
-            onClick={() => setSelectedTab('server')}
-          />
-          <WriteSide
-            selected={isSelected('writeSide')}
-            onClick={() => setSelectedTab('writeSide')}
-          />
-          <Aggregates
-            selected={isSelected('aggregates')}
-            onClick={() => setSelectedTab('aggregates')}
-          />
-          <DataBase />
-          <ApiHandlers
-            selected={isSelected('apiHandlers')}
-            onClick={() => setSelectedTab('apiHandlers')}
-          />
-          <Adapter
-            selected={isSelected('esAdapter')}
-            onClick={() => setSelectedTab('esAdapter')}
-          />
-          <ReadSide
-            selected={isSelected('readSide')}
-            onClick={() => setSelectedTab('readSide')}
-          />
-          <ReadModels
-            selected={isSelected('readModels')}
-            onClick={() => setSelectedTab('readModels')}
-          />
-          <Sagas
-            selected={isSelected('sagas')}
-            onClick={() => setSelectedTab('sagas')}
-          />
-          <ViewModels
-            selected={isSelected('viewModels')}
-            onClick={() => setSelectedTab('viewModels')}
-          />
-          <Client
-            selected={isSelected('client')}
-            onClick={() => setSelectedTab('client')}
-          />
-          <Arrows />
-        </g>
-      </svg>
+    <div>
+      <div className="chart-container">
+        <svg
+          viewBox="0 0 550 445"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g>
+            <Server
+              selected={isSelected('server')}
+              onClick={() => setSelectedTab('server')}
+            />
+            <WriteSide
+              selected={isSelected('writeSide')}
+              onClick={() => setSelectedTab('writeSide')}
+            />
+            <Aggregates
+              selected={isSelected('aggregates')}
+              onClick={() => setSelectedTab('aggregates')}
+            />
+            <DataBase />
+            <ApiHandlers
+              selected={isSelected('apiHandlers')}
+              onClick={() => setSelectedTab('apiHandlers')}
+            />
+            <Adapter
+              selected={isSelected('esAdapter')}
+              onClick={() => setSelectedTab('esAdapter')}
+            />
+            <ReadSide
+              selected={isSelected('readSide')}
+              onClick={() => setSelectedTab('readSide')}
+            />
+            <ReadModels
+              selected={isSelected('readModels')}
+              onClick={() => setSelectedTab('readModels')}
+            />
+            <Sagas
+              selected={isSelected('sagas')}
+              onClick={() => setSelectedTab('sagas')}
+            />
+            <ViewModels
+              selected={isSelected('viewModels')}
+              onClick={() => setSelectedTab('viewModels')}
+            />
+            <Client
+              selected={isSelected('client')}
+              onClick={() => setSelectedTab('client')}
+            />
+            <Arrows />
+          </g>
+        </svg>
+      </div>
       <div>{renderDetail(selectedTab)}</div>
     </div>
   )
