@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Aggregates = ({ selected, onClick }) => (
-  <g className="box-inner" data-selected={selected} nClick={onClick}>
+  <g className="box-inner" data-selected={selected} onClick={onClick}>
     <path className="box" d="M140 89H400V122H140V89Z" />
     <path
       className="caption"
