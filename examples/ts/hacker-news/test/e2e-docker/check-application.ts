@@ -1,3 +1,4 @@
+import 'testcafe'
 import { ROOT_URL, login } from '../e2e/utils'
 
 // eslint-disable-next-line
