@@ -28,6 +28,10 @@ html[data-theme='dark'] {
   --box-dotted-selected-color: #00800133;
 }
 
+.chart-container {
+  max-width: 550px;
+}
+
 .box {
   transition: fill 50ms ease-in 20ms;
 }

@@ -62,14 +62,8 @@ const Chart = () => {
   const isSelected = (tabName) => tabName === selectedTab
 
   return (
-    <div>
-      <svg
-        width="550"
-        height="445"
-        viewBox="0 0 550 445"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+    <div className="chart-container">
+      <svg viewBox="0 0 550 445" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g>
           <Server
             selected={isSelected('server')}
