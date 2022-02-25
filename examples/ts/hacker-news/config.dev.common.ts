@@ -16,6 +16,18 @@ const devCommonConfig = {
         databaseFile: 'data/read-model-default.db',
       },
     },
+    hackerNews: {
+      module: '@resolve-js/readmodel-lite',
+      options: {
+        databaseFile: 'data/read-model-hackerNews.db',
+      },
+    },
+    comments: {
+      module: '@resolve-js/readmodel-lite',
+      options: {
+        databaseFile: 'data/read-model-comments.db',
+      },
+    },
     elasticSearch: {
       module: 'common/read-models/elastic-search-connector.ts',
       options: {

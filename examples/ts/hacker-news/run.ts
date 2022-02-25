@@ -37,7 +37,7 @@ void (async () => {
       commentsInstanceName: 'comments-hn',
       aggregateName: 'Comment',
       readModelName: 'Comments',
-      readModelConnectorName: 'default',
+      readModelConnectorName: 'comments',
       reducerName: 'comments',
     })
 
