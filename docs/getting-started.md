@@ -93,8 +93,8 @@ Throughout the [step-by-step tutorial](tutorial.md), you will iteratively develo
 
 ### Examples and Templates
 
-Explore the [examples](https://github.com/reimagined/resolve/tree/dev/examples) and [project templates](https://github.com/reimagined/resolve/tree/dev/templates) that come with reSolve to learn about various use-case scenarios supported by reSolve.
+Explore the [examples](https://github.com/reimagined/resolve/tree/dev/examples) and [project templates](https://github.com/reimagined/resolve/tree/dev/templates) to familiarize yourself various use-case scenarios supported by reSolve.
 
 ### FAQ
 
-The [FAQ](faq.md) article answers popular questions that may arise as you are learning reSolve.
+The [FAQ](faq.md) article answers popular questions that may arise as you explore reSolve.
