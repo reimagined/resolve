@@ -68,6 +68,10 @@ html[data-theme='dark'] {
   fill: var(--box-dotted-selected-color);
 }
 
+.box-dotted:hover[data-selected='true'] .box {
+  fill: var(--box-dotted-selected-color);
+}
+
 .box-outer .caption {
   fill: var(--text-primary-color);
 }
@@ -88,6 +92,10 @@ html[data-theme='dark'] {
   fill: var(--box-primary-selected-color);
 }
 
+.box-outer:hover[data-selected='true'] .box {
+  fill: var(--box-primary-selected-color);
+}
+
 .box-inner .caption {
   fill: var(--text-secondary-color);
 }
@@ -105,6 +113,10 @@ html[data-theme='dark'] {
 }
 
 .box-inner[data-selected='true'] .box {
+  fill: var(--box-secondary-selected-color);
+}
+
+.box-inner:hover[data-selected='true'] .box {
   fill: var(--box-secondary-selected-color);
 }
 
