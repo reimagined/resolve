@@ -34,7 +34,7 @@ To get familiar with how the application's demo functionality is implemented, vi
 - `config.<taget>.js` files - the configuration files for different build targets.
 - `run.js` - a script that builds the final config object and starts the application's main loop.
 
-You can use modify the demo code as a template to jump start your own application.
+You can use the demo code as a starting point for developing your own application.
 
 ## CQRS in reSolve
 
