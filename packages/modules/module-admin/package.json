@@ -24,7 +24,7 @@
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.14.0",
+    "@babel/runtime": "7.17.2",
     "@resolve-js/eventstore-base": "0.33.14",
     "columnify": "1.5.4",
     "dateformat": "4.5.1",
@@ -32,7 +32,7 @@
     "yargs": "16.2.0"
   },
   "devDependencies": {
-    "jest": "27.0.3"
+    "jest": "27.5.1"
   },
   "engines": {
     "node": ">=14.17"

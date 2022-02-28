@@ -10,6 +10,7 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "declaration": true,
+    "useUnknownInCatchVariables": false,
     "strict": true,
     "outDir": "lib",
     "declarationDir": "types",

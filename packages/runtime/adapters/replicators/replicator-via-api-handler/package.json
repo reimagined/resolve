@@ -24,7 +24,7 @@
     "testw": "node_modules/.bin/jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.9.6",
+    "@babel/runtime": "7.17.2",
     "@resolve-js/debug-levels": "0.33.14",
     "@resolve-js/eventstore-base": "0.33.14",
     "@resolve-js/module-replication": "0.33.14",
@@ -32,7 +32,7 @@
     "node-fetch": "2.6.7"
   },
   "devDependencies": {
-    "jest": "27.0.3"
+    "jest": "27.5.1"
   },
   "engines": {
     "node": ">=14.17"

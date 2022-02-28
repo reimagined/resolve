@@ -96,9 +96,10 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
   test('should get secret by id', async () => {
     const secretManager: SecretsManager = await adapter.getSecretsManager()
     const randomIndex: number = Math.floor(Math.random() * countSecrets)
-    const secret: string = await secretManager.getSecret(
-      makeIdFromIndex(randomIndex)
-    )
+    const id = makeIdFromIndex(randomIndex)
+    // mdis-start get-secret
+    const secret = await secretManager.getSecret(id)
+    // mdis-stop get-secret
     expect(secret).toEqual(makeSecretFromIndex(randomIndex))
   })
 
@@ -213,11 +214,13 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
 
   test('should delete secret by id, return null for this id and generate delete secret event', async () => {
     const secretManager: SecretsManager = await adapter.getSecretsManager()
-    const secretId = makeIdFromIndex(secretToDeleteIndex)
-    const result = await secretManager.deleteSecret(secretId)
-    expect(result).toBe(true)
+    const id = makeIdFromIndex(secretToDeleteIndex)
+    // mdis-start delete-secret
+    const isDeleted = await secretManager.deleteSecret(id)
+    // mdis-stop delete-secret
+    expect(isDeleted).toBe(true)
 
-    const secret: string | null = await secretManager.getSecret(secretId)
+    const secret: string | null = await secretManager.getSecret(id)
     expect(secret).toBeNull()
 
     const { events } = await adapter.loadEvents({
@@ -226,7 +229,7 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
       eventTypes: [DELETE_SECRET_EVENT_TYPE],
     })
     expect(events).toHaveLength(1)
-    expect(events[0].payload.id).toEqual(secretId)
+    expect(events[0].payload.id).toEqual(id)
   })
 
   test('deleteSecret should return false when asked to delete non-existing or already deleted secret', async () => {
@@ -273,11 +276,15 @@ describe(`${adapterFactory.name}. Eventstore adapter secrets`, () => {
   test('should throw when setting secret with id that belonged to previously deleted secret', async () => {
     const secretManager: SecretsManager = await adapter.getSecretsManager()
 
+    const id = makeIdFromIndex(secretToDeleteIndex)
+    const secret = makeSecretFromIndex(secretToDeleteIndex)
+
     await expect(
-      secretManager.setSecret(
-        makeIdFromIndex(secretToDeleteIndex),
-        makeSecretFromIndex(secretToDeleteIndex)
-      )
+      (async () => {
+        // mdis-start set-secret
+        await secretManager.setSecret(id, secret)
+        // mdis-stop set-secret
+      })()
     ).rejects.toThrow()
   })
 

@@ -4,7 +4,7 @@ import { ResolveProvider } from '@resolve-js/react-hooks'
 import { BrowserRouter } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 
-import { routes } from './routes'
+import routes from './routes'
 
 const entryPoint = (clientContext) => {
   const appContainer = document.createElement('div')

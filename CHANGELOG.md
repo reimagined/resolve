@@ -7,6 +7,7 @@
 **Bug fixes:**
 
 - Can't build a monorepo, yarn install dependencies gives random errors [\#2230](https://github.com/reimagined/resolve/issues/2230)
+- Performance tracing commands do not work [\#2202](https://github.com/reimagined/resolve/issues/2202)
 
 **Documentation:**
 
@@ -15,6 +16,7 @@
 
 **Other changes:**
 
+- Fix eslint warnings in the tutorial example projects [\#2238](https://github.com/reimagined/resolve/pull/2238)
 - Fix \#2230 [\#2232](https://github.com/reimagined/resolve/pull/2232)
 
 ## [V0.33.14](https://github.com/reimagined/resolve/tree/V0.33.14) (2022-01-27)
