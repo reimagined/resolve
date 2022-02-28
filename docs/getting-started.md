@@ -27,12 +27,12 @@ This input create an application based on the [react](https://github.com/reimagi
 
 To get familiar with how the application's demo functionality is implemented, view files in the following folders of the created project:
 
-- **common/aggregates** - demonstrates how to handle commands, validate input and produce events from multiple aggregate instances.
-- **common/read-models** - demonstrates how to obtain data generated from multiple aggregate instances.
-- **common/view-models** - demonstrates how to generate data about the items of a specified aggregate instance.
-- **client** - a react application that communicates with the reSolve backend to create aggregate instances and items within them.
-- **config.&lt;taget&gt;.js** files - the configuration files for different build targets.
-- **run.js** - a script that builds the final config object and starts the application's main loop.
+- `common/aggregates` - demonstrates how to handle commands, validate input and produce events from multiple aggregate instances.
+- `common/read-models` - demonstrates how to obtain data generated from multiple aggregate instances.
+- `common/view-models` - demonstrates how to generate data about the items of a specified aggregate instance.
+- `client` - a react application that communicates with the reSolve backend to create aggregate instances and items within them.
+- `config.<taget>.js` files - the configuration files for different build targets.
+- `run.js` - a script that builds the final config object and starts the application's main loop.
 
 You can use modify the demo code as a template to jump start your own application.
 
