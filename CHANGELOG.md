@@ -11,6 +11,7 @@
 
 **Documentation:**
 
+- Add a Getting Started article [\#2234](https://github.com/reimagined/resolve/pull/2234)
 - Describe the reSolve context object and related API [\#2229](https://github.com/reimagined/resolve/pull/2229)
 - Descibe monitoring in the documentation [\#2201](https://github.com/reimagined/resolve/pull/2201)
 
