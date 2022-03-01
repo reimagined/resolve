@@ -2,6 +2,7 @@
   "docs": {
     "Docs Index": [
       "introduction",
+      "getting-started",
       "tutorial",
       {
         "type": "category",
