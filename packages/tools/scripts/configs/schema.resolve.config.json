@@ -499,9 +499,7 @@
         "jwtCookie",
         "sagas",
         "mode",
-        "runtime",
-        "target",
-        "externalDependencies"
+        "runtime"
       ],
       "additionalProperties": false
     }

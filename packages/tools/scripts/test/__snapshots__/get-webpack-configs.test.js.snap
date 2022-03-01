@@ -140,8 +140,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
               \\"loader\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/val_query_loader.js\\",
               \\"options\\": {
                 \\"resolveConfig\\": {
-                  \\"target\\": \\"local\\",
-                  \\"externalDependencies\\": [],
                   \\"port\\": 3000,
                   \\"rootPath\\": \\"\\",
                   \\"staticPath\\": \\"static\\",
@@ -173,6 +171,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
                   }
@@ -374,8 +373,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
               \\"loader\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/val_query_loader.js\\",
               \\"options\\": {
                 \\"resolveConfig\\": {
-                  \\"target\\": \\"local\\",
-                  \\"externalDependencies\\": [],
                   \\"port\\": 3000,
                   \\"rootPath\\": \\"\\",
                   \\"staticPath\\": \\"static\\",
@@ -407,6 +404,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
                   }
@@ -599,8 +597,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
               \\"loader\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/val_query_loader.js\\",
               \\"options\\": {
                 \\"resolveConfig\\": {
-                  \\"target\\": \\"local\\",
-                  \\"externalDependencies\\": [],
                   \\"port\\": 3000,
                   \\"rootPath\\": \\"\\",
                   \\"staticPath\\": \\"static\\",
@@ -632,6 +628,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
                   }
@@ -833,8 +830,6 @@ exports[`should make webpack configs for local mode 1`] = `
               \\"loader\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/val_query_loader.js\\",
               \\"options\\": {
                 \\"resolveConfig\\": {
-                  \\"target\\": \\"local\\",
-                  \\"externalDependencies\\": [],
                   \\"port\\": 3000,
                   \\"rootPath\\": \\"\\",
                   \\"staticPath\\": \\"static\\",
@@ -866,6 +861,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }
@@ -1067,8 +1063,6 @@ exports[`should make webpack configs for local mode 1`] = `
               \\"loader\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/val_query_loader.js\\",
               \\"options\\": {
                 \\"resolveConfig\\": {
-                  \\"target\\": \\"local\\",
-                  \\"externalDependencies\\": [],
                   \\"port\\": 3000,
                   \\"rootPath\\": \\"\\",
                   \\"staticPath\\": \\"static\\",
@@ -1100,6 +1094,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }
@@ -1292,8 +1287,6 @@ exports[`should make webpack configs for local mode 1`] = `
               \\"loader\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/val_query_loader.js\\",
               \\"options\\": {
                 \\"resolveConfig\\": {
-                  \\"target\\": \\"local\\",
-                  \\"externalDependencies\\": [],
                   \\"port\\": 3000,
                   \\"rootPath\\": \\"\\",
                   \\"staticPath\\": \\"static\\",
@@ -1325,6 +1318,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }

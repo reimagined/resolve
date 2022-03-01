@@ -13,6 +13,10 @@ const getWebpackCommonConfigs = ({
 }) => {
   const { target: targetMode, externalDependencies = [] } = resolveConfig
 
+  if (targetMode == null) {
+    throw new TypeError(`Unknown "target"`)
+  }
+
   const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
   const packageJson = `common/${targetMode}-entry/package.json`
   if (!nodeModulesByAssembly.has(packageJson)) {
