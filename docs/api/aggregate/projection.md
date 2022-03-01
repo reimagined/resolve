@@ -5,7 +5,7 @@ title: Projection
 
 :::info TypeScript Support
 
-A commands container object has an associated TypeScript type:
+An aggregate projection object has an associated TypeScript type:
 
 - Type Name - `AggregateProjection`
 - Containing Package - `@resolve-js/core`

@@ -5,7 +5,7 @@ title: Command Handler
 
 :::info TypeScript Support
 
-A commands container object has an associated TypeScript type:
+Command handlers are grouped into an Aggregate container object that has an associated TypeScript type:
 
 - Type Name - `Aggregate`
 - Containing Package - `@resolve-js/core`

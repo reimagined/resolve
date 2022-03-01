@@ -91,26 +91,64 @@ For more information on the used types and their definitions, refer to the API r
 
 You can use the table below as a quick reference for the provided TypeScript types and the packages where they reside.
 
-### Aggregates
+### Write Side
 
 | Block Name                 | TypeScript Type Name  | Package            |
 | -------------------------- | --------------------- | ------------------ |
 | Aggregate Command Handlers | `Aggregate`           | `@resolve-js/core` |
 | Aggregate Projection       | `AggregateProjection` | `@resolve-js/core` |
 | Command                    | `Command`             | `@resolve-js/core` |
+| Event                      | `Event`               | `@resolve-js/core` |
 
-### Read Models
+### Read Side
 
-| Block Name            | TypeScript Type Name | Package                      |
-| --------------------- | -------------------- | ---------------------------- |
-| Read Model Projection | `ReadModel`          | `@resolve-js/core`           |
-| Read Model Resolvers  | `ReadModelResolvers` | `@resolve-js/core`           |
-| A Read Model Resolver | `ReadModelResolver`  | `@resolve-js/core`           |
-| Read Model Store      | `ResolveStore`       | `@resolve-js/readmodel-base` |
+#### Read Models
 
-### View Models
+| Block Name   | TypeScript Type Name   | Package                      |
+| ------------ | ---------------------- | ---------------------------- |
+| Projection   | `ReadModel`            | `@resolve-js/core`           |
+| Resolvers    | `ReadModelResolvers`   | `@resolve-js/core`           |
+| Resolver     | `ReadModelResolver`    | `@resolve-js/core`           |
+| Store        | `ResolveStore`         | `@resolve-js/readmodel-base` |
+| Query        | `ReadModelQuery`       | `@resolve-js/core`           |
+| Query Result | `ReadModelQueryResult` | `@resolve-js/core`           |
 
-| Block Name            | TypeScript Type Name  | Package            |
-| --------------------- | --------------------- | ------------------ |
-| View Model Projection | `ViewModelProjection` | `@resolve-js/core` |
-| Read Model Resolvers  | `ViewModelResolver`   | `@resolve-js/core` |
+#### View Models
+
+| Block Name            | TypeScript Type Name   | Package            |
+| --------------------- | ---------------------- | ------------------ |
+| View Model Projection | `ViewModelProjection`  | `@resolve-js/core` |
+| Read Model Resolvers  | `ViewModelResolver`    | `@resolve-js/core` |
+| Query                 | `ViewModelQuery`       | `@resolve-js/core` |
+| Query Result          | `ViewModelQueryResult` | `@resolve-js/core` |
+
+#### Saga
+
+| Block Name  | TypeScript Type Name | Package            |
+| ----------- | -------------------- | ------------------ |
+| Saga Object | `Saga`               | `@resolve-js/core` |
+
+### Middleware
+
+| Block Name                       | TypeScript Type Name            | Package            |
+| -------------------------------- | ------------------------------- | ------------------ |
+| Command Middleware               | `CommandMiddleware`             | `@resolve-js/core` |
+| Read Model Projection Middleware | `ReadModelProjectionMiddleware` | `@resolve-js/core` |
+| Read Model Resolver Middleware   | `ReadModelResolverMiddleware`   | `@resolve-js/core` |
+
+### API Handlers
+
+| Block Name | TypeScript Type Name | Package                    |
+| ---------- | -------------------- | -------------------------- |
+| Request    | `ResolveRequest`     | `@resolve-js/runtime-base` |
+| Response   | `ResolveResponse`    | `@resolve-js/runtime-base` |
+| Context    | `UserBackendResolve` | `@resolve-js/runtime-base` |
+
+### Monitoring
+
+| Block Name        | TypeScript Type Name     | Package            |
+| ----------------- | ------------------------ | ------------------ |
+| Metric            | `MonitoringMetric`       | `@resolve-js/core` |
+| Custom Metric     | `MonitoringCustomMetric` | `@resolve-js/core` |
+| Adapter           | `MonitoringAdapter`      | `@resolve-js/core` |
+| Monitoring Object | `Monitoring`             | `@resolve-js/core` |
