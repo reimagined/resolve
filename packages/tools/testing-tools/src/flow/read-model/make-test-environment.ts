@@ -228,7 +228,7 @@ export const makeTestEnvironment = (
         void ({ data: result } = await executor.read({
           modelName: readModel.name,
           resolverName: query.resolver,
-          resolverArgs: query.args,
+          resolverArgs: query.args ?? {},
           jwt: authToken,
         }))
       } catch (err) {
