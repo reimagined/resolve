@@ -79,7 +79,8 @@ const status: ExternalMethods['status'] = async <
       includeRuntimeStatus &&
       result?.status === ('deliver' as ReadModelRunStatus)
     ) {
-      let isAlive = false
+      let isAlive: boolean | null = false
+
       const endTime =
         Date.now() +
         (retryTimeoutForRuntimeStatus != null
@@ -143,10 +144,12 @@ const status: ExternalMethods['status'] = async <
           ) {
             throw error
           }
+
+          isAlive = null
         }
 
         currentTime = Date.now()
-      } while (currentTime < endTime && !isAlive)
+      } while (!isAlive && currentTime < endTime)
 
       result = Object.assign(result, { isAlive })
     } else if (includeRuntimeStatus) {

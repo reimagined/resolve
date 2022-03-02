@@ -3,11 +3,13 @@ id: encryption
 title: Encryption
 ---
 
+## Overview
+
 The reSolve framework includes a mechanism that allows you to use an arbitrary encryption algorithm to encrypt the stored events and Read Model state data. You can use this functionality to store user data in compliance with General Data Protection Regulation (GDPR).
 
 Encryption is defined in a file that exports a factory function of the following format:
 
-##### Aggregate Encryption:
+**Aggregate Encryption:**
 
 ```js
 // common/aggregates/encryption.js
@@ -22,7 +24,7 @@ const createEncryption = (aggregateId, context) => {
 export default createEncryption
 ```
 
-##### Read Model Encryption:
+**Read Model Encryption:**
 
 ```js
 // common/read-models/encryption.js
@@ -64,7 +66,7 @@ const appConfig = {
 }
 ```
 
-### Storing Secrets
+## Storing Secrets
 
 The reSolve framework implements a **secrets manager** that you can use to get, set or delete secrets based on their unique IDs. In an encryption factory function, you can access the secrets manager through the reSolve context object:
 
@@ -111,6 +113,6 @@ const prodConfig = {
 }
 ```
 
-#### Example
+## Example
 
 The **personal-data** example demonstrates how to store encrypted user data. In this example, the encryption logic is implemented in a separate `common/encryption-factory.js` file and reused on both the read and write sides.

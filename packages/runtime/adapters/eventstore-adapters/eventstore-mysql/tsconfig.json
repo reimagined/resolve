@@ -10,6 +10,7 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "declaration": true,
+    "useUnknownInCatchVariables": false,
     "strict": true,
     "jsx": "react",
     "outDir": "lib",

@@ -92,7 +92,7 @@ const getOneMetricSummaryData = async (params: {
   }
 }
 
-const CHECK_NOT_NULLISH = <T extends unknown>(e: T) => {
+const CHECK_NOT_NULLISH = <T>(e: T) => {
   expect(e).not.toBeUndefined()
   expect(e).not.toBeNull()
   return e as Exclude<Exclude<T, null>, undefined>
@@ -127,9 +127,7 @@ const isHighloadError = (error: Error) =>
     error.message
   )
 
-const performApiPost = async <T extends unknown, Args extends [string, T?]>(
-  ...args: Args
-) => {
+const performApiPost = async <T, Args extends [string, T?]>(...args: Args) => {
   while (true) {
     try {
       const request = await fetch(`${getTargetURL()}/api${args[0]}`, {

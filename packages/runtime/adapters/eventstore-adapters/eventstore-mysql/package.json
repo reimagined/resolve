@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/eventstore-mysql",
-  "version": "0.33.13",
+  "version": "0.33.14",
   "description": "An adapter reSolve uses to store events in MySQL.",
   "keywords": [
     "cqrs",
@@ -24,15 +24,15 @@
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.14.0",
-    "@resolve-js/core": "0.33.13",
-    "@resolve-js/debug-levels": "0.33.13",
-    "@resolve-js/eventstore-base": "0.33.13",
+    "@babel/runtime": "7.17.2",
+    "@resolve-js/core": "0.33.14",
+    "@resolve-js/debug-levels": "0.33.14",
+    "@resolve-js/eventstore-base": "0.33.14",
     "mysql2": "2.1.0"
   },
   "devDependencies": {
-    "jest": "27.0.3",
-    "ts-jest": "27.0.2"
+    "jest": "27.5.1",
+    "ts-jest": "27.1.3"
   },
   "engines": {
     "node": ">=14.17"

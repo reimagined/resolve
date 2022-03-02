@@ -361,6 +361,8 @@ export const createRuntime = async (
     broadcastEvent,
   })
 
+  const { serverImports } = params
+
   const runtime: Runtime = {
     eventStoreAdapter,
     uploader,
@@ -377,6 +379,7 @@ export const createRuntime = async (
     },
     broadcastEvent,
     monitoring,
+    serverImports,
   }
 
   return runtime

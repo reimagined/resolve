@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/eventstore-base",
-  "version": "0.33.13",
+  "version": "0.33.14",
   "description": "A base for reSolve eventstore adapters",
   "keywords": [
     "cqrs",
@@ -24,9 +24,9 @@
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.14.0",
-    "@resolve-js/core": "0.33.13",
-    "@resolve-js/debug-levels": "0.33.13",
+    "@babel/runtime": "7.17.2",
+    "@resolve-js/core": "0.33.14",
+    "@resolve-js/debug-levels": "0.33.14",
     "fp-ts": "2.9.5",
     "io-ts": "2.2.16",
     "io-ts-types": "0.5.15",
@@ -35,7 +35,7 @@
     "newtype-ts": "0.3.4"
   },
   "devDependencies": {
-    "jest": "27.0.3"
+    "jest": "27.5.1"
   },
   "engines": {
     "node": ">=14.17"

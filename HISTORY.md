@@ -1,5 +1,13 @@
 # Changelog
 
+## [V0.33.14](https://github.com/reimagined/resolve/tree/V0.33.14) (2022-01-27)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.13...V0.33.14)
+
+**Enhancements:**
+
+- Implement better SQL for loading events [\#2222](https://github.com/reimagined/resolve/pull/2222)
+
 ## [V0.33.12](https://github.com/reimagined/resolve/tree/V0.33.12) (2022-01-21)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.11...V0.33.12)

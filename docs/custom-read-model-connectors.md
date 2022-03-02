@@ -12,7 +12,7 @@ You can implement a custom Read Model connector to define how a Read Model's dat
 
 The code sample below demonstrates how to implement a connector that provides a file-based storage for Read Models.
 
-##### common/read-models/custom-read-model-connector.js:
+**common/read-models/custom-read-model-connector.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -71,7 +71,7 @@ A connector is defined as a function that receives an `options` argument. This a
 
 Register the connector in the application's configuration file.
 
-##### config.app.js:
+**config.app.js:**
 
 ```js
 readModelConnectors: {
@@ -86,7 +86,7 @@ readModelConnectors: {
 
 Now you can assign the custom connector to a Read Model by name as shown below.
 
-##### config.app.js:
+**config.app.js:**
 
 ```js
   readModels: [
@@ -102,7 +102,7 @@ Now you can assign the custom connector to a Read Model by name as shown below.
 
 The code sample below demonstrates how you can use the custom store's API in the Read Model's code.
 
-##### common/read-models/custom-read-model.projection.js:
+**common/read-models/custom-read-model.projection.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -125,7 +125,7 @@ export default projection
 
 <!-- prettier-ignore-end -->
 
-##### common/read-models/custom-read-model.resolvers.js:
+**common/read-models/custom-read-model.resolvers.js:**
 
 <!-- prettier-ignore-start -->
 

@@ -51,6 +51,26 @@ Example of running the benchmark:
 yarn benchmark:save-event --db=myeventstore --clear=true --spec=./eventstore/event-spec.example.json
 ```
 
-The `--clear=true` option is used to clear the event store before running the benchmark.
+#### Options:
 
-The `--create=true` option is used to create a new event store.
+* `--clear=true` - clear the event store before running the benchmark.
+* `--create=true` - create a new event store.
+
+### Parallel *saveEvent* benchmark
+
+In this benchmark events are saved in parallel by groups, while also having a load operations running in parallel.
+
+```
+yarn benchmark:parallel-save --db=myeventstore --clear=true --saveParallel=10 --loadParallel=2
+```
+
+#### Options
+
+* `--clear=true` - clear the event store before running the benchmark.
+* `--create=true` - create a new event store.
+* `--stepCount=<number>` - the number of sequential steps.
+* `--saveParallel=<number>` - the number of parallel save operations in one step.
+* `--loadParallel=<number>` - the number of parallel load operations in one step.
+
+
+
