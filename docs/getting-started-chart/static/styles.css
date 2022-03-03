@@ -1,0 +1,129 @@
+html {
+  --text-primary-color: #27303f;
+  --text-secondary-color: white;
+  --arrow-color: #27303f;
+  --box-primary-color: #d3e0f3;
+  --box-primary-hover-color: #bcd3f5;
+  --box-primary-selected-color: #cce6cc;
+  --box-secondary-color: #2464c4;
+  --box-secondary-hover-color: #3780ef;
+  --box-secondary-selected-color: #008001;
+  --box-dotted-color: transparent;
+  --box-dotted-hover-color: #2464c412;
+  --box-dotted-selected-color: #0067011a;
+}
+
+html[data-theme='dark'] {
+  --text-primary-color: white;
+  --text-secondary-color: white;
+  --arrow-color: white;
+  --box-primary-color: #1f4680;
+  --box-primary-hover-color: #174fa4;
+  --box-primary-selected-color: #0a570b;
+  --box-secondary-color: #2464c4;
+  --box-secondary-hover-color: #2c76e4;
+  --box-secondary-selected-color: #008001;
+  --box-dotted-color: transparent;
+  --box-dotted-hover-color: #2464c433;
+  --box-dotted-selected-color: #00800133;
+}
+
+.chart-container {
+  max-width: 550px;
+}
+
+.box {
+  transition: fill 50ms ease-in 20ms;
+}
+
+.outline {
+  transition: fill 50ms ease-in 20ms;
+}
+
+.box-dotted .outline {
+  fill: var(--box-secondary-color);
+}
+
+.box-dotted[data-selected='true'] .outline {
+  fill: var(--box-secondary-selected-color);
+}
+
+.box-dotted .caption {
+  fill: var(--text-primary-color);
+}
+
+.box-dotted .box {
+  fill: var(--box-dotted-color);
+}
+
+.box-dotted:hover {
+  cursor: pointer;
+}
+
+.box-dotted:hover .box {
+  fill: var(--box-dotted-hover-color);
+}
+
+.box-dotted[data-selected='true'] .box {
+  fill: var(--box-dotted-selected-color);
+}
+
+.box-dotted:hover[data-selected='true'] .box {
+  fill: var(--box-dotted-selected-color);
+}
+
+.box-outer .caption {
+  fill: var(--text-primary-color);
+}
+
+.box-outer .box {
+  fill: var(--box-primary-color);
+}
+
+.box-outer:hover {
+  cursor: pointer;
+}
+
+.box-outer:hover .box {
+  fill: var(--box-primary-hover-color);
+}
+
+.box-outer[data-selected='true'] .box {
+  fill: var(--box-primary-selected-color);
+}
+
+.box-outer:hover[data-selected='true'] .box {
+  fill: var(--box-primary-selected-color);
+}
+
+.box-inner .caption {
+  fill: var(--text-secondary-color);
+}
+
+.box-inner .box {
+  fill: var(--box-secondary-color);
+}
+
+.box-inner:hover {
+  cursor: pointer;
+}
+
+.box-inner:hover .box {
+  fill: var(--box-secondary-hover-color);
+}
+
+.box-inner[data-selected='true'] .box {
+  fill: var(--box-secondary-selected-color);
+}
+
+.box-inner:hover[data-selected='true'] .box {
+  fill: var(--box-secondary-selected-color);
+}
+
+.arrows {
+  fill: var(--arrow-color);
+}
+
+.db-icon {
+  fill: var(--box-secondary-color);
+}

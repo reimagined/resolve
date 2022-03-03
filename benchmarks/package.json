@@ -6,7 +6,8 @@
   "scripts": {
     "import-eventstore": "ts-node eventstore/import-eventstore.ts",
     "benchmark:load-events": "ts-node eventstore/load-events.ts",
-    "benchmark:save-event": "ts-node eventstore/save-event.ts"
+    "benchmark:save-event": "ts-node eventstore/save-event.ts",
+    "benchmark:parallel-save": "ts-node eventstore/parallel-save.ts"
   },
   "devDependencies": {
     "@resolve-js/core": "0.33.14",

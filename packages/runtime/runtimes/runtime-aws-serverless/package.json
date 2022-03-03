@@ -24,7 +24,7 @@
     "testw": "jest --config=../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/runtime": "7.14.0",
+    "@babel/runtime": "7.17.2",
     "@resolve-js/core": "0.33.14",
     "@resolve-js/eventstore-base": "0.33.14",
     "@resolve-js/monitoring-aws-cloudwatch": "0.33.14",
@@ -47,10 +47,10 @@
     "@types/lodash.escaperegexp": "4.1.6",
     "@types/lodash.partial": "4.2.6",
     "@types/mime-types": "2.1.1",
-    "aws-sdk": "2.952.0",
-    "jest": "27.0.3",
+    "aws-sdk": "2.1001.0",
+    "jest": "27.5.1",
     "lodash.escaperegexp": "4.1.2",
-    "ts-jest": "27.0.2"
+    "ts-jest": "27.1.3"
   },
   "engines": {
     "node": ">=14.17"

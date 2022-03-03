@@ -445,3 +445,81 @@ jobs:
 
       - name: Test website
         run: yarn workspace website test
+
+  dockerE2eTest:
+    name: Docker E2E Tests
+    runs-on: ubuntu-latest
+    needs: buildAndTest
+    if: |
+      !startsWith(github.head_ref, 'docs/') &&
+      !startsWith(github.head_ref, 'service/')
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run postgres container for the first start intialization
+        run: |
+          cd examples/ts/hacker-news
+          docker-compose up -d postgres
+
+      - name: Build and run all containers
+        run: |
+          cd examples/ts/hacker-news
+          docker-compose up -d
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            packages/**/node_modules
+            internal/**/node_modules
+            examples/**/node_modules
+            templates/**/node_modules
+            tutorial/**/node_modules
+            functional-tests/**/node_modules
+            tests/**/node_modules
+            website/**/node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', '!**/node_modules/**') }}
+          restore-keys: ${{ runner.os }}-modules-
+
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: |
+            packages/**/es
+            packages/**/lib
+            packages/**/types
+            packages/**/*.tsbuildinfo
+            !packages/**/node_modules/**
+            !packages/**/src/es
+            !packages/**/src/lib
+            !packages/**/src/types
+            internal/**/es
+            internal/**/lib
+            internal/**/types
+            internal/**/*.tsbuildinfo
+            !internal/**/node_modules/**
+            !internal/**/src/es
+            !internal/**/src/lib
+            !internal/**/src/types
+            .packages/**
+          key: ${{ runner.os }}-build-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-build-
+
+      - name: Install
+        run: |
+          yarn install --ignore-scripts
+
+      - name: Test:e2e (ubuntu:chrome-headless)
+        env:
+          RESOLVE_E2E_TESTS_BROWSER: chrome
+          RESOLVE_E2E_TESTS_HEADLESS_MODE: true
+          DEBUG: resolve:*
+          DEBUG_LEVEL: error
+        run: |
+          cd examples/ts/hacker-news
+          yarn test:e2e-docker

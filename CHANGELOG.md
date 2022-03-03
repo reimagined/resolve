@@ -1,5 +1,25 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.14...HEAD)
+
+**Bug fixes:**
+
+- Can't build a monorepo, yarn install dependencies gives random errors [\#2230](https://github.com/reimagined/resolve/issues/2230)
+- Performance tracing commands do not work [\#2202](https://github.com/reimagined/resolve/issues/2202)
+
+**Documentation:**
+
+- Add a Getting Started article [\#2234](https://github.com/reimagined/resolve/pull/2234)
+- Describe the reSolve context object and related API [\#2229](https://github.com/reimagined/resolve/pull/2229)
+- Descibe monitoring in the documentation [\#2201](https://github.com/reimagined/resolve/pull/2201)
+
+**Other changes:**
+
+- Fix eslint warnings in the tutorial example projects [\#2238](https://github.com/reimagined/resolve/pull/2238)
+- Fix \#2230 [\#2232](https://github.com/reimagined/resolve/pull/2232)
+
 ## [V0.33.14](https://github.com/reimagined/resolve/tree/V0.33.14) (2022-01-27)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.13...V0.33.14)

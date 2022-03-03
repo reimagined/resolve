@@ -1,7 +1,7 @@
 import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
 
 // A View Model's projection is defined in a format that is isomorphic with a Redux reducer format.
-export default {
+const projection = {
   // The 'Init' function initializes the View Model's state object.
   Init: () => ({
     id: 'id',
@@ -30,3 +30,5 @@ export default {
     ],
   }),
 }
+
+export default projection

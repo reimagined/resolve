@@ -1,8 +1,4 @@
-import type {
-  Adapter,
-  InputEvent,
-  StoredEvent,
-} from '@resolve-js/eventstore-base'
+import type { Adapter } from '@resolve-js/eventstore-base'
 
 import path from 'path'
 import fs from 'fs'
@@ -43,6 +39,16 @@ export async function createEventstore(uniqueName: string) {
 
   const adapter = createAdapter(uniqueName)
   try {
+    await adapter.init()
+  } finally {
+    await adapter.dispose()
+  }
+}
+
+export async function clearEventstore(uniqueName: string) {
+  const adapter = createAdapter(uniqueName)
+  try {
+    await adapter.drop()
     await adapter.init()
   } finally {
     await adapter.dispose()

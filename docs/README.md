@@ -2,6 +2,7 @@
 id: index
 title: reSolve Documentation
 description: Full stack CQRS, DDD, Event Sourcing framework for Node.js
+slug: /index
 ---
 
 [Introduction](introduction.md)
@@ -13,7 +14,7 @@ description: Full stack CQRS, DDD, Event Sourcing framework for Node.js
 
 [Step-by-Step Tutorial](tutorial.md)
 
-#### Basics
+## Basics
 
 - [Write Side](write-side.md)
   - [Aggregates](write-side.md#aggregates)
@@ -49,7 +50,7 @@ description: Full stack CQRS, DDD, Event Sourcing framework for Node.js
   - [Write and Read Sides](resolve-app-structure.md#write-and-read-sides)
   - [Folder Structure](resolve-app-structure.md#folder-structure)
 
-#### Guides
+## Guides
 
 - [Modules](modules.md)
 - [Authentication and Authorization](authentication-and-authorization.md)
