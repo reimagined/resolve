@@ -186,6 +186,7 @@ module.exports = {
           'decrypter',
           'eslint',
           'esm',
+          'evenodd',
           'eventstore',
           'execpath',
           'expr',
