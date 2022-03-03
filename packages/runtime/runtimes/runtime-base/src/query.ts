@@ -116,7 +116,6 @@ const readModelReadImpl = async (
     let connector: UnknownReadModelConnector | null = null
     let connection: UnknownReadModelConnection | null = null
     try {
-      const log = getLog(`wrapConnection:${readModelName}`)
       log.debug(`establishing connection`)
       connector = readModelConnectors[interop.connectorName]
       connection = await connector?.connect(readModelName)
