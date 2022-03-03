@@ -202,7 +202,10 @@ describe('API handler wrapper for AWS Lambda', () => {
   }
 
   it('should work with primitive JSON handler with GET client request', async () => {
-    const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
+    const wrappedHandler = wrapApiHandler(
+      apiJsonHandler as any,
+      getCustomParams
+    )
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
@@ -238,7 +241,10 @@ Object {
   })
 
   it('should work with primitive JSON handler with POST client request', async () => {
-    const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
+    const wrappedHandler = wrapApiHandler(
+      apiJsonHandler as any,
+      getCustomParams
+    )
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
@@ -274,7 +280,10 @@ Object {
   })
 
   it('should work with text handler with any client request', async () => {
-    const wrappedHandler = wrapApiHandler(apiTextHandler, getCustomParams)
+    const wrappedHandler = wrapApiHandler(
+      apiTextHandler as any,
+      getCustomParams
+    )
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
@@ -310,7 +319,10 @@ Object {
   })
 
   it('should work with custom handler with any client request', async () => {
-    const wrappedHandler = wrapApiHandler(apiCustomHandler, getCustomParams)
+    const wrappedHandler = wrapApiHandler(
+      apiCustomHandler as any,
+      getCustomParams
+    )
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
@@ -346,7 +358,10 @@ Object {
   })
 
   it('should work with file handler with any client request', async () => {
-    const wrappedHandler = wrapApiHandler(apiFileHandler, getCustomParams)
+    const wrappedHandler = wrapApiHandler(
+      apiFileHandler as any,
+      getCustomParams
+    )
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
@@ -382,7 +397,10 @@ Object {
   })
 
   it('should work with redirect handler with any client request', async () => {
-    const wrappedHandler = wrapApiHandler(apiRedirectHandler, getCustomParams)
+    const wrappedHandler = wrapApiHandler(
+      apiRedirectHandler as any,
+      getCustomParams
+    )
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
@@ -454,7 +472,10 @@ Object {
   })
 
   it('should work with empty end', async () => {
-    const wrappedHandler = wrapApiHandler(apiEmptyEndHandler, getCustomParams)
+    const wrappedHandler = wrapApiHandler(
+      apiEmptyEndHandler as any,
+      getCustomParams
+    )
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchInlineSnapshot(`
@@ -491,7 +512,7 @@ Object {
 
   it('should work with empty end using chaining', async () => {
     const wrappedHandler = wrapApiHandler(
-      apiEmptyEndChainingHandler,
+      apiEmptyEndChainingHandler as any,
       getCustomParams
     )
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
@@ -530,7 +551,7 @@ Object {
 
   it('should correctly parsing query with array params', async () => {
     const wrappedHandler = wrapApiHandler(
-      apiReturnRequestHandler,
+      apiReturnRequestHandler as any,
       getCustomParams
     )
     const customEvent = {
@@ -559,7 +580,7 @@ Object {
 
   it('should correctly parsing "param=1&param=2&param=3" query from lambda edge', async () => {
     const wrappedHandler = wrapApiHandler(
-      apiReturnRequestHandler,
+      apiReturnRequestHandler as any,
       getCustomParams
     )
     const customEvent = {
@@ -575,7 +596,7 @@ Object {
 
   it('should correctly parsing "param[]=1&param[]=2&param[]=3" query from lambda edge', async () => {
     const wrappedHandler = wrapApiHandler(
-      apiReturnRequestHandler,
+      apiReturnRequestHandler as any,
       getCustomParams
     )
     const customEvent = {
@@ -591,7 +612,7 @@ Object {
 
   it('should correctly parsing "param[0]=1&param[1]=2&param[2]=3" query from lambda edge', async () => {
     const wrappedHandler = wrapApiHandler(
-      apiReturnRequestHandler,
+      apiReturnRequestHandler as any,
       getCustomParams
     )
     const customEvent = {

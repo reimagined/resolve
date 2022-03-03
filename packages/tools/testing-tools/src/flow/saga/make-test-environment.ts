@@ -1,6 +1,9 @@
 import partial from 'lodash.partial'
 import { initDomain } from '@resolve-js/core'
-import { createQueryExecutor } from '@resolve-js/runtime-base'
+import {
+  createQueryExecutor,
+  eventSubscriberFactory,
+} from '@resolve-js/runtime-base'
 
 import { getSecretsManager } from '../../runtime/get-secrets-manager'
 import { getEventStore } from '../../runtime/get-event-store'
@@ -196,6 +199,7 @@ export const makeTestEnvironment = (
     }
 
     const errors: Error[] = []
+    let eventSubscriber = null
     let executor = null
 
     try {
@@ -213,21 +217,31 @@ export const makeTestEnvironment = (
         sideEffectsStartTimestamp
       )
 
-      executor = createQueryExecutor({
+      eventSubscriber = eventSubscriberFactory({
         getEventSubscriberDestination: () => 'LOCAL',
         applicationName: 'APP_NAME',
         readModelConnectors: {
           ADAPTER_NAME: actualAdapter,
         },
         getVacantTimeInMillis: () => 0x7fffffff,
-        invokeBuildAsync: async () => {
-          isNext = true
-        },
         eventstoreAdapter,
+        readModelsInterop: {},
+        performanceTracer: null,
+        loadReadModelProcedure: () => Promise.resolve(null),
+        setCurrentEventSubscriber: () => void 0,
+        sagasInterop: domain.sagaDomain.acquireSagasInterop(runtime),
+        monitoring: null,
+      })
+
+      executor = createQueryExecutor({
+        readModelConnectors: {
+          ADAPTER_NAME: actualAdapter,
+        },
         readModelsInterop: domain.sagaDomain.acquireSagasInterop(runtime),
         viewModelsInterop: {},
         performanceTracer: null,
-        loadReadModelProcedure: () => Promise.resolve(null),
+        monitoring: null,
+        eventSubscriber,
       })
 
       try {
@@ -245,9 +259,13 @@ export const makeTestEnvironment = (
 
         do {
           isNext = false
-          await executor.build({
+          // TODO ???
+          const res = await executor.build({
             modelName: saga.name,
-          })
+          } as any)
+          if (res.payload.continue) {
+            isNext = true
+          }
         } while (isNext)
 
         const status = await executor.status({
@@ -286,14 +304,6 @@ export const makeTestEnvironment = (
       }
     } catch (error) {
       errors.push(error)
-    } finally {
-      if (executor != null) {
-        try {
-          await executor.dispose()
-        } catch (err) {
-          errors.push(err)
-        }
-      }
     }
 
     if (errors.length === 0) {
