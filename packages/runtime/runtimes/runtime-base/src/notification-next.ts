@@ -37,7 +37,10 @@ const nextNotification = async (
   notification: BuildDirectContinuation,
   eventSubscriberName: string
 ): Promise<void> => {
-  if (notification.type === 'build-direct-invoke') {
+  if (
+    notification.type === 'build-direct-invoke' &&
+    notification.payload.continue
+  ) {
     await nextBuildDirectInvoke(
       invokeBuildAsync,
       eventSubscriberName,
