@@ -52,7 +52,6 @@ slug: /index
 
 ## Guides
 
-- [Modules](modules.md)
 - [Authentication and Authorization](authentication-and-authorization.md)
   - [Setting up Authentication](authentication-and-authorization.md#setting-up-authentication)
   - [Using 3rd-Party Auth Services](authentication-and-authorization.md#using-3rd-party-auth-services)
@@ -60,7 +59,6 @@ slug: /index
   - [Using JWT for Command and Query Authorization](authentication-and-authorization.md#using-jwt-for-command-and-query-authorization)
 - [Encryption](encryption.md)
 - [Custom Read Model Connectors](custom-read-model-connectors.md)
-- [File Upload](file-upload.md)
 - [Event Export and Import](export-import.md)
 - [Preparing for Production](preparing-for-production.md)
   - [Configuration Options](preparing-for-production.md#configuration-options)
@@ -76,6 +74,11 @@ slug: /index
   - [Testing Read Models](testing.md#testing-read-models)
   - [Testing Sagas](testing.md#testing-sagas)
 - [Application Configuration](application-configuration.md)
+
+## Modules
+
+- [Overview](modules/overview.md)
+- [Uploader](modules/uploader.md)
 
 [FAQ](faq.md)
 
