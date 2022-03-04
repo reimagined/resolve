@@ -1,5 +1,8 @@
 import { initDomain } from '@resolve-js/core'
-import { createQueryExecutor } from '@resolve-js/runtime-base'
+import {
+  createQueryExecutor,
+  eventSubscriberFactory,
+} from '@resolve-js/runtime-base'
 
 import { getSecretsManager } from '../../runtime/get-secrets-manager'
 import { getEventStore } from '../../runtime/get-event-store'
@@ -129,6 +132,7 @@ export const makeTestEnvironment = (
     }
 
     const errors = []
+    let eventSubscriber = null
     let executor = null
     let result: QueryTestResult | null = null
     const actualAssertion = assertion != null ? assertion : defaultAssertion
@@ -136,25 +140,37 @@ export const makeTestEnvironment = (
 
     try {
       const eventstoreAdapter = await getEventStore(events)
-
-      executor = createQueryExecutor({
+      eventSubscriber = eventSubscriberFactory({
         getEventSubscriberDestination: () => 'LOCAL',
         applicationName: 'APP_NAME',
         readModelConnectors: {
           ADAPTER_NAME: actualAdapter,
         },
         getVacantTimeInMillis: () => 0x7fffffff,
-        invokeBuildAsync: async () => {
-          isNext = true
-        },
         eventstoreAdapter,
+        readModelsInterop: domain.readModelDomain.acquireReadModelsInterop({
+          secretsManager,
+          monitoring: makeMonitoring(),
+        }),
+        performanceTracer: null,
+        loadReadModelProcedure: () => Promise.resolve(null),
+        setCurrentEventSubscriber: () => void 0,
+        sagasInterop: {},
+        monitoring: null,
+      })
+
+      executor = createQueryExecutor({
+        readModelConnectors: {
+          ADAPTER_NAME: actualAdapter,
+        },
         readModelsInterop: domain.readModelDomain.acquireReadModelsInterop({
           secretsManager,
           monitoring: makeMonitoring(),
         }),
         viewModelsInterop: {},
         performanceTracer: null,
-        loadReadModelProcedure: () => Promise.resolve(null),
+        monitoring: null,
+        eventSubscriber,
       })
 
       try {
@@ -172,9 +188,13 @@ export const makeTestEnvironment = (
 
         do {
           isNext = false
-          await executor.build({
+          // TODO ???
+          const res = await executor.build({
             modelName: readModel.name,
-          })
+          } as any)
+          if (res.payload.continue) {
+            isNext = true
+          }
         } while (isNext)
 
         const status = await executor.status({
@@ -208,7 +228,7 @@ export const makeTestEnvironment = (
         void ({ data: result } = await executor.read({
           modelName: readModel.name,
           resolverName: query.resolver,
-          resolverArgs: query.args,
+          resolverArgs: query.args ?? {},
           jwt: authToken,
         }))
       } catch (err) {
@@ -224,14 +244,6 @@ export const makeTestEnvironment = (
       }
     } catch (error) {
       errors.push(error)
-    } finally {
-      if (executor != null) {
-        try {
-          await executor.dispose()
-        } catch (err) {
-          errors.push(err)
-        }
-      }
     }
 
     if (errors.length === 0) {

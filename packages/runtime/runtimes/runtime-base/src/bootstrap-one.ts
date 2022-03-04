@@ -33,7 +33,7 @@ export const bootstrapOne = async ({
       log.debug(`subscribing`)
       await eventSubscriber.subscribe({
         eventSubscriber: name,
-        subscriptionOptions: { eventTypes },
+        subscriptionOptions: { eventTypes, aggregateIds: null },
       })
 
       if (upstream || forceResume) {

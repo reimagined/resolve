@@ -125,7 +125,6 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
       readModelName,
       store,
       modelInterop,
-      buildStep,
       eventstoreAdapter,
       getVacantTimeInMillis,
       buildInfo
@@ -137,7 +136,6 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
     readModelName,
     store,
     modelInterop,
-    buildStep,
     eventstoreAdapter,
     getVacantTimeInMillis,
     buildInfo
@@ -214,12 +212,8 @@ test('@resolve-js/readmodel-base should wrap descendant adapter', async () => {
     loadProcedureSource
   )
 
-  await adapter.resume(store, readModelName, buildStep)
-  expect(implementation.resume).toBeCalledWith(
-    adapterPool,
-    readModelName,
-    buildStep
-  )
+  await adapter.resume(store, readModelName)
+  expect(implementation.resume).toBeCalledWith(adapterPool, readModelName)
 
   await adapter.pause(store, readModelName)
   expect(implementation.pause).toBeCalledWith(adapterPool, readModelName)

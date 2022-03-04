@@ -32,7 +32,8 @@ export const queryHandler = async (
         modelArgs,
         jwt: req.jwt,
       },
-      { req, res }
+      // TODO ????
+      { req: req as any, res }
     )
 
     subSegment.addAnnotation('modelName', modelName)
