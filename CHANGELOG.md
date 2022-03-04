@@ -8,6 +8,10 @@
 
 - Implement support for PLV8 ver 3.1 [\#2249](https://github.com/reimagined/resolve/pull/2249)
 
+**Bug fixes:**
+
+- Fix eliminated error message in Init projection handler [\#2250](https://github.com/reimagined/resolve/pull/2250)
+
 ## [V0.33.15](https://github.com/reimagined/resolve/tree/V0.33.15) (2022-03-03)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.14...V0.33.15)
