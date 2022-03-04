@@ -82,8 +82,12 @@ export const getSagaRuntime = (
     executeQuery: partial(executeQuery, buffer, mockedImplementations.queries),
     scheduler: makeScheduler(),
     uploader,
-    getSideEffectsTimestamp: async () => sideEffectsTimestamp,
-    setSideEffectsTimestamp: async (value: number) => {
+    getSideEffectsTimestamp: async (sagaName: string) => {
+      void sagaName
+      return sideEffectsTimestamp
+    },
+    setSideEffectsTimestamp: async (sagaName: string, value: number) => {
+      void sagaName
       sideEffectsTimestamp = value
     },
   }

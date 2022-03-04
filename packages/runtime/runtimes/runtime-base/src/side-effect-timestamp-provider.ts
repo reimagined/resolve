@@ -6,29 +6,28 @@ const sideEffectTimestampProviderFactory = (
   applicationName: string
 ) => {
   const sideEffectTimestampProvider = {
-    currentEventSubscriber: '',
-    getSideEffectsTimestamp: () =>
-      eventSubscriberProperties.getProperty(
+    getSideEffectsTimestamp: async (eventSubscriber: string) =>
+      +(await eventSubscriberProperties.getProperty(
         eventstoreAdapter,
         applicationName,
         {
-          eventSubscriber: sideEffectTimestampProvider.currentEventSubscriber,
+          eventSubscriber,
           key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
         }
-      ),
-    setSideEffectsTimestamp: (sideEffectTimestamp: number) =>
-      eventSubscriberProperties.setProperty(
+      )),
+    setSideEffectsTimestamp: async (
+      eventSubscriber: string,
+      sideEffectTimestamp: number
+    ) =>
+      await eventSubscriberProperties.setProperty(
         eventstoreAdapter,
         applicationName,
         {
-          eventSubscriber: sideEffectTimestampProvider.currentEventSubscriber,
+          eventSubscriber,
           key: 'RESOLVE_SIDE_EFFECTS_START_TIMESTAMP',
           value: sideEffectTimestamp,
         }
       ),
-    setCurrentEventSubscriber: (eventSubscriber: string) => {
-      sideEffectTimestampProvider.currentEventSubscriber = eventSubscriber
-    },
   }
 
   return sideEffectTimestampProvider

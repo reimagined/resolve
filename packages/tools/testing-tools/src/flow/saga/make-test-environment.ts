@@ -228,7 +228,6 @@ export const makeTestEnvironment = (
         readModelsInterop: {},
         performanceTracer: null,
         loadReadModelProcedure: () => Promise.resolve(null),
-        setCurrentEventSubscriber: () => void 0,
         sagasInterop: domain.sagaDomain.acquireSagasInterop(runtime),
         monitoring: null,
       })

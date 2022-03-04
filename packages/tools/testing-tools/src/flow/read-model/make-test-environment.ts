@@ -154,7 +154,6 @@ export const makeTestEnvironment = (
         }),
         performanceTracer: null,
         loadReadModelProcedure: () => Promise.resolve(null),
-        setCurrentEventSubscriber: () => void 0,
         sagasInterop: {},
         monitoring: null,
       })

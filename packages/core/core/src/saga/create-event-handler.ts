@@ -39,6 +39,7 @@ const buildSideEffects = (
 }
 
 export const createInitHandler = (
+  sagaName: string,
   runtime: SagaRuntime,
   eventType: string,
   handler: SagaInitHandler<any, any>,
@@ -57,6 +58,7 @@ export const createInitHandler = (
 }
 
 export const createEventHandler = (
+  sagaName: string,
   runtime: SagaRuntime,
   eventType: string,
   handler: SagaEventHandler<any, any>,
@@ -67,7 +69,7 @@ export const createEventHandler = (
 
   log.debug(`preparing saga event [${eventType}] handler`)
   try {
-    const sideEffectsTimestamp = await runtime.getSideEffectsTimestamp()
+    const sideEffectsTimestamp = await runtime.getSideEffectsTimestamp(sagaName)
 
     const isEnabled = !isNaN(+sideEffectsTimestamp)
       ? +sideEffectsTimestamp < +event.timestamp
@@ -77,7 +79,7 @@ export const createEventHandler = (
       !isNaN(+sideEffectsTimestamp) &&
       +event.timestamp > +sideEffectsTimestamp
     ) {
-      await runtime.setSideEffectsTimestamp(+event.timestamp)
+      await runtime.setSideEffectsTimestamp(sagaName, +event.timestamp)
     }
 
     log.verbose(

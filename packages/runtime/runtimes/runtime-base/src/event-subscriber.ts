@@ -254,7 +254,6 @@ const buildImpl = async (
     let store: RegularReadModelConnection | undefined = undefined
     try {
       store = await connector.connect(eventSubscriber)
-      runtime.setCurrentEventSubscriber(eventSubscriber)
       return await connector.build(
         store,
         eventSubscriber,
@@ -268,13 +267,11 @@ const buildImpl = async (
       if (store != null) {
         await connector.disconnect(store)
       }
-      runtime.setCurrentEventSubscriber('')
     }
   } else if (isCustomConnector(connector)) {
     let store: CustomReadModelConnection | undefined = undefined
     try {
       store = await connector.connect(eventSubscriber)
-      runtime.setCurrentEventSubscriber(eventSubscriber)
       return await customReadModelMethods.build(
         runtime.eventstoreAdapter,
         runtime.applicationName,
@@ -288,7 +285,6 @@ const buildImpl = async (
       if (store != null) {
         await connector.disconnect(store, eventSubscriber)
       }
-      runtime.setCurrentEventSubscriber('')
     }
   } else {
     throw makeNoConnectorError(interop)

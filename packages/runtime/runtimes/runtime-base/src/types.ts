@@ -56,7 +56,6 @@ export type {
 }
 
 export type EventSubscriberRuntime = {
-  setCurrentEventSubscriber: (readModelName: string) => void
   loadReadModelProcedure: (readModelName: string) => Promise<string | null>
   readModelConnectors: Record<string, UnknownReadModelConnector>
   getEventSubscriberDestination: Function

@@ -75,6 +75,7 @@ const getInterop = (
   ): Promise<SagaRuntimeEventHandler | null> => {
     if (typeof handlers.Init === 'function') {
       const handler = createInitHandler(
+        name,
         runtime,
         'Init',
         handlers.Init,
@@ -96,6 +97,7 @@ const getInterop = (
 
       try {
         const handler = createEventHandler(
+          name,
           runtime,
           event.type,
           handlers[event.type],

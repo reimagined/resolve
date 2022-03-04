@@ -323,7 +323,6 @@ export type BuildTimeConstants = {
 
 export type QueryExecutor = {
   (...args: any[]): Promise<any>
-  dispose: () => Promise<void>
   [key: string]: (...args: any[]) => Promise<any>
 }
 
@@ -333,7 +332,6 @@ export type SagaExecutor = QueryExecutor & {
 
 export type CommandExecutor = {
   (command: Command, context?: MiddlewareContext): Promise<CommandResult>
-  dispose: () => Promise<void>
 }
 
 export type UserBackendResolve = Readonly<

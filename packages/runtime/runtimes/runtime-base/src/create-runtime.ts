@@ -212,16 +212,6 @@ export const createRuntime = async (
     }
   )
 
-  // TODO ????
-  const getScheduler = (): any => {
-    if (params.scheduler != null) {
-      log.debug(`actual scheduler bound`)
-      return params.scheduler
-    }
-    log.debug(`scheduler guard retrieved`)
-    return schedulerGuard
-  }
-
   const executeCommandForSaga = async (options: any) => {
     const aggregateName = options.aggregateName
     if (aggregateName === domainInterop.sagaDomain.schedulerName) {
@@ -235,18 +225,18 @@ export const createRuntime = async (
     eventStoreAdapter,
     eventSubscriberScope
   )
+
+  let scheduler = schedulerGuard
+  if (params.scheduler != null) {
+    log.debug(`actual scheduler bound`)
+    scheduler = params.scheduler
+  } else {
+    log.debug(`scheduler guard retrieved`)
+  }
+
   const sagasInterop = domainInterop.sagaDomain.acquireSagasInterop({
     // TODO ????
-    get scheduler() {
-      return getScheduler()
-    },
-    get getSideEffectsTimestamp() {
-      return sideEffectTimestampProvider.getSideEffectsTimestamp
-    },
-    get setSideEffectsTimestamp() {
-      return sideEffectTimestampProvider.setSideEffectsTimestamp
-    },
-    // TODO ????
+    ...sideEffectTimestampProvider,
     executeCommand: executeCommandForSaga,
     get executeQuery() {
       return executeQuery
@@ -254,12 +244,11 @@ export const createRuntime = async (
     secretsManager,
     monitoring,
     uploader,
+    scheduler,
   })
 
   const eventSubscriberImpl = eventSubscriberFactory({
     applicationName: eventSubscriberScope,
-    setCurrentEventSubscriber:
-      sideEffectTimestampProvider.setCurrentEventSubscriber,
     getEventSubscriberDestination,
     loadReadModelProcedure,
     readModelConnectors,
