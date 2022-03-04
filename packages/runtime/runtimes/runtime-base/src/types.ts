@@ -13,66 +13,228 @@ import type {
   ResolveRequest as PublicResolveRequest,
   HttpResponse,
   ResolveResponse,
+  ReadModelInteropMap,
+  ViewModelInteropMap,
+  SagaInteropMap,
+  ReadModelInterop,
+  ViewModelInterop,
+  SagaInterop,
+  MiddlewareContext,
+  Eventstore,
 } from '@resolve-js/core'
 import type { CommandExecutor } from './command'
 import type { Params as MatchedParams } from 'route-trie'
 import type { EventStoreAdapterFactory } from './create-runtime'
 import type { Trie } from 'route-trie'
 import type {
+  ObjectFixedIntersectionToObject,
+  BuildDirectContinuation,
   CommonAdapterPool,
-  AdapterOperations as ReadModelAdapterOperationsGeneric,
+  CommonAdapterOptions,
+  ReadModelStoreImpl,
+  AdapterApi,
+  UnPromise,
+  FunctionLike,
+  IfEquals,
 } from '@resolve-js/readmodel-base'
+export type {
+  ObjectFixedIntersectionToObject,
+  BuildDirectContinuation,
+  ReadModelInteropMap,
+  SagaInteropMap,
+  ViewModelInteropMap,
+  ReadModelStoreImpl,
+  CommonAdapterPool,
+  ReadModelInterop,
+  ViewModelInterop,
+  SagaInterop,
+  MiddlewareContext,
+  Eventstore,
+  FunctionLike,
+  UnPromise,
+  IfEquals,
+}
 
-export type CallMethodParams = {
-  modelName?: string | null
-  eventSubscriber?: string | null
-  [key: string]: any
+export type EventSubscriberRuntime = {
+  setCurrentEventSubscriber: (readModelName: string) => void
+  loadReadModelProcedure: (readModelName: string) => Promise<string | null>
+  readModelConnectors: Record<string, UnknownReadModelConnector>
+  getEventSubscriberDestination: Function
+  applicationName: string
+  getVacantTimeInMillis: () => number
+  eventstoreAdapter: Eventstore
+  readModelsInterop: ReadModelInteropMap
+  sagasInterop: SagaInteropMap
+  performanceTracer: any
+  monitoring: any
+}
+
+export type ExecuteQueryPool = {
+  readModelConnectors: Record<string, UnknownReadModelConnector>
+  readModelsInterop: ReadModelInteropMap | SagaInteropMap
+  viewModelsInterop: ViewModelInteropMap
+  eventSubscriber: EventSubscriber
+  performanceTracer: any
+  monitoring: any
+}
+
+export type RegularReadModelConnector = AdapterApi<CommonAdapterPool>
+
+export enum CustomReadModelConnectionBrand {
+  _ = '',
+}
+export type CustomReadModelConnection = {} & CustomReadModelConnectionBrand
+export type IsCustomReadModelConnection<
+  T
+> = T extends CustomReadModelConnectionBrand ? unknown : never
+
+export type CustomReadModelConnector = {
+  connect: (name: string) => Promise<CustomReadModelConnection>
+  disconnect: (
+    connection: CustomReadModelConnection,
+    name: string
+  ) => Promise<void>
+  dispose: () => Promise<void>
+  drop: (connection: CustomReadModelConnection, name: string) => Promise<void>
+}
+
+export type UnknownReadModelConnector =
+  | RegularReadModelConnector
+  | CustomReadModelConnector
+
+export type RegularReadModelConnection = UnPromise<
+  ReturnType<RegularReadModelConnector['connect']>
+>
+
+export type UnknownReadModelConnection =
+  | RegularReadModelConnection
+  | CustomReadModelConnection
+
+export type OmitRegularReadModelArgs<T extends [any, any, ...any[]]> =
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  T extends [infer _, infer __, ...infer U] ? U : never
+
+export type ExtractTupleUnionImplDistribute<
+  T extends any[],
+  N extends never[]
+> = T extends any ? T[N['length']] : never
+export type ExtractTupleUnionImpl<
+  T extends any[],
+  N extends never[],
+  R extends any[],
+  E = ExtractTupleUnionImplDistribute<T, N>
+> = [E] extends [never]
+  ? never
+  : [E] extends [undefined]
+  ? R
+  : ExtractTupleUnionImpl<
+      T,
+      [...N, never],
+      [Extract<E, undefined>] extends [never] ? [...R, E] : [...R, E?]
+    >
+export type ExtractTupleUnion<T extends any[]> = ExtractTupleUnionImpl<
+  T,
+  [],
+  []
+>
+
+export type UnionMethodToUnionArgsMethodArgs<
+  T extends FunctionLike
+> = ExtractTupleUnion<T extends any ? Parameters<T> : never>
+export type UnionMethodToUnionArgsMethodResult<
+  T extends FunctionLike
+> = T extends any ? ReturnType<T> : never
+export type UnionMethodToUnionArgsMethodImpl<T extends [FunctionLike]> = (
+  ...args: UnionMethodToUnionArgsMethodArgs<T[0]>
+) => UnionMethodToUnionArgsMethodResult<T[0]>
+export type UnionMethodToUnionArgsMethod<
+  T extends FunctionLike
+> = UnionMethodToUnionArgsMethodImpl<[T]>
+
+export type RegularReadModelConnectorOperations = Omit<
+  RegularReadModelConnector,
+  'connect' | 'disconnect' | 'dispose'
+>
+
+export type EventSubscriberModelNamePart = {
+  eventSubscriber?: string | null | undefined
+  modelName?: string | null | undefined
 }
 
 export type EventSubscriber = {
-  [key: string]: (params: CallMethodParams, ...args: any[]) => Promise<any>
+  deleteProperty: (
+    params: EventSubscriberModelNamePart & {
+      key: string
+    }
+  ) => Promise<void>
+  listProperties: (params: EventSubscriberModelNamePart) => Promise<any>
+  getProperty: (
+    params: EventSubscriberModelNamePart & {
+      key: string
+    }
+  ) => Promise<any>
+  setProperty: (
+    params: EventSubscriberModelNamePart & {
+      key: string
+      value: any
+    }
+  ) => Promise<void>
+  subscribe: (
+    params: EventSubscriberModelNamePart & {
+      subscriptionOptions: {
+        eventTypes: Array<string> | null
+        aggregateIds: Array<string> | null
+      }
+    }
+  ) => Promise<void>
+  resubscribe: (
+    params: EventSubscriberModelNamePart & {
+      subscriptionOptions: {
+        eventTypes: Array<string> | null
+        aggregateIds: Array<string> | null
+      }
+    }
+  ) => Promise<void>
+  unsubscribe: (params: EventSubscriberModelNamePart) => Promise<void>
+  build: (
+    params: EventSubscriberModelNamePart & {
+      initiator: any
+      notificationId: any
+      sendTime: any
+    }
+  ) => Promise<BuildDirectContinuation>
+  resume: (
+    params: EventSubscriberModelNamePart
+  ) => Promise<BuildDirectContinuation>
+  pause: (params: EventSubscriberModelNamePart) => Promise<void>
+  reset: (params: EventSubscriberModelNamePart) => Promise<void>
+  status: (
+    params: EventSubscriberModelNamePart & {
+      includeRuntimeStatus?: boolean | undefined
+      retryTimeoutForRuntimeStatus?: number | undefined
+    }
+  ) => Promise<any>
 }
 
-export const readModelMethodNames = [
-  'build',
-  'reset',
-  'resume',
-  'pause',
-  'subscribe',
-  'resubscribe',
-  'unsubscribe',
-  'status',
-] as const
-
-export type ReadModelMethodName = typeof readModelMethodNames[number]
-
-export type ReadModelAdapterOperations = ReadModelAdapterOperationsGeneric<CommonAdapterPool>
-
-export type ReadModelConnector = {
-  connect: (name: string) => Promise<any>
-  disconnect: (connection: any, name: string) => Promise<void>
-  dispose: () => Promise<void>
-
-  drop: (connection: any, name: string) => Promise<void>
-}
-
-export type RealModelConnectorReal = ReadModelConnector &
-  ReadModelAdapterOperations
-
-export type ReadModelConnectorFactory = (options: {
-  performanceTracer: PerformanceTracer
-  monitoring?: Monitoring
-}) => ReadModelConnector
+export type ReadModelConnectorFactory = (
+  options: CommonAdapterOptions
+) => UnknownReadModelConnector
 
 export type QueryExecutor = {
-  (...args: any[]): Promise<any>
-  dispose: () => Promise<void>
-  [key: string]: (...args: any[]) => Promise<any>
-}
+  (
+    params: EventSubscriberModelNamePart & Record<string, any>,
+    middlewareContext?: MiddlewareContext | undefined
+  ): Promise<any>
+  read: (
+    params: EventSubscriberModelNamePart & Record<string, any>,
+    middlewareContext?: MiddlewareContext | undefined
+  ) => Promise<any>
+  serializeState: (
+    params: EventSubscriberModelNamePart & Record<string, any>
+  ) => Promise<string | undefined>
+} & EventSubscriber
 
-export type SagaExecutor = QueryExecutor & {
-  build: (...args: any[]) => Promise<any>
-}
+export type SagaExecutor = QueryExecutor
 
 export type EventListener = {
   name: string
@@ -212,7 +374,7 @@ export type Runtime = {
   readonly executeSaga: SagaExecutor
   readonly eventSubscriber: EventSubscriber
   readonly executeSchedulerCommand: CommandExecutor
-  readonly readModelConnectors: Record<string, ReadModelConnector>
+  readonly readModelConnectors: Record<string, UnknownReadModelConnector>
   readonly getReactiveSubscription: ReactiveSubscriptionFactory
   readonly eventListenersManager: EventListenersManager
   readonly dispose: () => Promise<void>

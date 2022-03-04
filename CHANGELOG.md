@@ -2,7 +2,15 @@
 
 ## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.14...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.15...HEAD)
+
+**Enhancements:**
+
+- Implement support for PLV8 ver 3.1 [\#2249](https://github.com/reimagined/resolve/pull/2249)
+
+## [V0.33.15](https://github.com/reimagined/resolve/tree/V0.33.15) (2022-03-03)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.14...V0.33.15)
 
 **Bug fixes:**
 

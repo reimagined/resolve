@@ -27,7 +27,6 @@ const buildInit: (
   readModelName,
   store,
   modelInterop,
-  next,
   eventstoreAdapter
 ) => {
   const pool = { ...basePool, ...currentPool }
@@ -131,7 +130,19 @@ const buildInit: (
   }
 
   if (lastError == null) {
-    await next()
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: true,
+      },
+    }
+  } else {
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false,
+      },
+    }
   }
 }
 
@@ -151,7 +162,6 @@ const buildEvents: (
   readModelName,
   store,
   modelInterop,
-  next,
   eventstoreAdapter,
   getVacantTimeInMillis
 ) => {
@@ -430,7 +440,19 @@ const buildEvents: (
 
   const isBuildSuccess = lastError == null && appliedEventsCount > 0
   if (isBuildSuccess) {
-    await next()
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: true,
+      },
+    }
+  } else {
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false,
+      },
+    }
   }
 }
 
@@ -439,7 +461,6 @@ const build: ExternalMethods['build'] = async (
   readModelName,
   store,
   modelInterop,
-  next,
   eventstoreAdapter,
   getVacantTimeInMillis,
   buildInfo
@@ -613,13 +634,12 @@ const build: ExternalMethods['build'] = async (
     }
 
     const buildMethod = cursor == null ? buildInit : buildEvents
-    await buildMethod(
+    return await buildMethod(
       currentPool,
       basePool,
       readModelName,
       store,
       modelInterop,
-      next,
       eventstoreAdapter,
       getVacantTimeInMillis,
       buildInfo
@@ -641,6 +661,13 @@ const build: ExternalMethods['build'] = async (
       if (!(err instanceof PassthroughError)) {
         throw err
       }
+    }
+
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false,
+      },
     }
   } finally {
     basePool.activePassthrough = false

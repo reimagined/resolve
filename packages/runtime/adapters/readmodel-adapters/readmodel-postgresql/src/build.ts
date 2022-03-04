@@ -1,4 +1,5 @@
 import type {
+  BuildDirectContinuation,
   PassthroughErrorInstance,
   ExternalMethods,
   ReadModelCursor,
@@ -40,7 +41,6 @@ const buildInit: (
   readModelName,
   store,
   modelInterop,
-  next,
   eventstoreAdapter
 ) => {
   const pool = { ...basePool, ...currentPool }
@@ -100,7 +100,12 @@ const buildInit: (
       `
     )
 
-    await next()
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: true,
+      },
+    }
   } catch (error) {
     if (error instanceof PassthroughError) {
       throw error
@@ -122,6 +127,13 @@ const buildInit: (
        COMMIT;
       `
     )
+
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false,
+      },
+    }
   }
 }
 
@@ -143,7 +155,6 @@ const buildEvents: (
   readModelName,
   store,
   modelInterop,
-  next,
   eventstoreAdapter,
   getVacantTimeInMillis,
   buildInfo
@@ -734,7 +745,12 @@ const buildEvents: (
     } else {
       if (isBuildSuccess) {
         log.debug(`Going to the next step of building`)
-        await next()
+        return {
+          type: 'build-direct-invoke',
+          payload: {
+            continue: true,
+          },
+        }
       }
 
       log.debug(`Exit from events building`)
@@ -748,7 +764,6 @@ const build: ExternalMethods['build'] = async (
   readModelName,
   store,
   modelInterop,
-  next,
   eventstoreAdapter,
   inputGetVacantTimeInMillis,
   buildInfo
@@ -910,9 +925,15 @@ const build: ExternalMethods['build'] = async (
     }
 
     let barrierTimeout: ReturnType<typeof setTimeout> | null = null
+    let buildResult: BuildDirectContinuation = {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false,
+      },
+    }
 
     try {
-      await Promise.race([
+      buildResult = (await Promise.race([
         new Promise((_, reject) => {
           barrierTimeout = setTimeout(() => {
             reject(immediatelyStopError)
@@ -925,12 +946,11 @@ const build: ExternalMethods['build'] = async (
           readModelName,
           store,
           modelInterop,
-          next,
           eventstoreAdapter,
           getVacantTimeInMillis,
           buildInfo
         ),
-      ])
+      ])) as BuildDirectContinuation
     } finally {
       if (barrierTimeout != null) {
         clearTimeout(barrierTimeout)
@@ -949,19 +969,27 @@ const build: ExternalMethods['build'] = async (
         throw err
       }
     }
+
+    return buildResult
   } catch (error) {
-    const nextArgs: Parameters<typeof next> = [
+    const nextArgs = [
       Math.min(Math.pow(2, ~~retryAttempt) * 100, 10000),
       { retryAttempt: ~~retryAttempt + 1 },
-    ]
+    ] as const
 
     if (error === immediatelyStopError) {
       try {
         await basePool.connection.end()
       } catch (e) {}
 
-      await next(...nextArgs)
-      return
+      return {
+        type: 'build-direct-invoke',
+        payload: {
+          continue: true,
+          timeout: nextArgs[0],
+          notificationExtraPayload: nextArgs[1],
+        },
+      }
     }
 
     if (
@@ -999,7 +1027,21 @@ const build: ExternalMethods['build'] = async (
       error.name === 'ServiceBusyError'
     ) {
       log.debug(`PassthroughError is retryable. Going to the next step`)
-      await next(...nextArgs)
+      return {
+        type: 'build-direct-invoke',
+        payload: {
+          continue: true,
+          timeout: nextArgs[0],
+          notificationExtraPayload: nextArgs[1],
+        },
+      }
+    }
+
+    return {
+      type: 'build-direct-invoke',
+      payload: {
+        continue: false,
+      },
     }
   } finally {
     log.debug(`Building is finished`)

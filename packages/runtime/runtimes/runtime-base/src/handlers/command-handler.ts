@@ -74,7 +74,8 @@ export const commandHandler = async (
         commandArgs,
         jwt: req.jwt,
       },
-      { req, res }
+      // TODO ????
+      { req: req as any, res }
     )
 
     subSegment.addAnnotation('aggregateName', commandArgs.aggregateName)

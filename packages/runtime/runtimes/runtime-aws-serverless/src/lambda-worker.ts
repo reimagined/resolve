@@ -141,15 +141,17 @@ export const lambdaWorker = async (
       const { resolveSource, eventSubscriber, ...buildParameters } = lambdaEvent
       void resolveSource
 
+      // TODO ???
       const executorResult = await runtime.eventSubscriber.build({
         ...buildParameters,
         eventSubscriber,
         coldStart,
-      })
+      } as any)
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
-      return executorResult
+      // TODO ???
+      return executorResult as any
     } else if (
       Array.isArray(lambdaEvent.Records) &&
       [
@@ -236,13 +238,15 @@ export const lambdaWorker = async (
         throw summaryError
       }
 
+      // TODO ???
       const executorResult = await runtime.eventSubscriber.build(
-        buildParameters
+        buildParameters as any
       )
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
-      return executorResult
+      // TODO ???
+      return executorResult as any
     } else if (lambdaEvent.resolveSource === 'Scheduler') {
       logRuntimeCase('Scheduler')
 
