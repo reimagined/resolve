@@ -60,12 +60,6 @@
   },
   "babelCompile": [
     {
-      "moduleType": "es",
-      "moduleTarget": "server",
-      "inputDir": "./src",
-      "outDir": "./es"
-    },
-    {
       "moduleType": "cjs",
       "moduleTarget": "server",
       "inputDir": "./src",

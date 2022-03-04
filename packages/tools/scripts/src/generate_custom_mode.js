@@ -13,6 +13,7 @@ import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies
 import copyEnvToDist from './copy_env_to_dist'
 import { getLog } from './get-log'
 import detectErrors from './detect_errors'
+import adjustResolveConfig from './adjust-resolve-config'
 
 const waitForUrl = async (log, host, port, rootPath, apiHandlerUrl) => {
   const urls = prepareUrls('http', host, port, rootPath)
@@ -51,6 +52,9 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 
     try {
       log.debug(`validating framework config`)
+
+      await adjustResolveConfig(resolveConfig)
+
       const config = await getConfig(resolveConfig, options)
       validateConfig(config)
 
