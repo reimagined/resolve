@@ -92,6 +92,7 @@
           "api/event",
           "api/event-store-adapter",
           "api/middleware",
+          "api/secrets-manager",
           "api/resolve-scripts",
           {
             "type": "category",
