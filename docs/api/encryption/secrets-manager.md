@@ -3,7 +3,7 @@ id: secrets-manager
 title: Secrets Manager
 ---
 
-A Secrets Manager object exposes API used to save and load cryptographic secrets to/from the event store database. An encryption factory function can access this object through it's `context` parameter:
+A Secrets Manager object exposes API used to save and load cryptographic secrets to/from the event store database. An  [encryption factory function](en) can access this object through it's `context` parameter:
 
 ```js
 // common/aggregates/encryption.js
@@ -37,7 +37,7 @@ The `secretsManager` object contains the following functions:
 
 Takes a unique ID as an argument and returns a promise that resolves to a string if a secret was found or `null` if a secret was not found.
 
-### Example
+**Example**
 
 <!-- prettier-ignore-start -->
 
@@ -51,7 +51,7 @@ const secret = await secretManager.getSecret(id)
 
 Takes a unique ID and a secret string as arguments and returns a promise that resolves if the secret was successfully saved.
 
-### Example
+**Example**
 
 <!-- prettier-ignore-start -->
 
@@ -65,7 +65,7 @@ await secretManager.setSecret(id, secret)
 
 Takes a unique ID as an argument and returns a promise that resolves if the secret was successfully deleted.
 
-### Example
+**Example**
 
 <!-- prettier-ignore-start -->
 
@@ -77,4 +77,4 @@ const isDeleted = await secretManager.deleteSecret(id)
 
 ## See Also
 
-- [Encryption](../encryption.md)
+- [Encryption](../../encryption.md)

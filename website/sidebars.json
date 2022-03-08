@@ -80,6 +80,14 @@
           },
           {
             "type": "category",
+            "label": "Encryption",
+            "items": [
+              "api/encryption/factory-function",
+              "api/encryption/secrets-manager"
+            ]
+          },
+          {
+            "type": "category",
             "label": "Monitoring",
             "items": [
               "api/monitoring/monitoring",
@@ -92,7 +100,6 @@
           "api/event",
           "api/event-store-adapter",
           "api/middleware",
-          "api/secrets-manager",
           "api/resolve-scripts",
           {
             "type": "category",
