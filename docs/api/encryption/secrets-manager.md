@@ -3,7 +3,7 @@ id: secrets-manager
 title: Secrets Manager
 ---
 
-A Secrets Manager object exposes API used to save and load cryptographic secrets to/from the event store database. An  [encryption factory function](en) can access this object through it's `context` parameter:
+A Secrets Manager object exposes API used to save and load cryptographic secrets to/from the event store database. An [encryption factory function](factory-function.md) can access this object through it's `context` parameter:
 
 ```js
 // common/aggregates/encryption.js
@@ -31,11 +31,13 @@ The `secretsManager` object contains the following functions:
 | [`setSecret`](#setsecret)       | Takes a unique ID and a secret string as arguments and returns a promise that resolves if the secret was successfully saved.                |
 | [`deleteSecret`](#deletesecret) | Takes a unique ID as an argument and returns a promise that resolves if the secret was successfully deleted.                                |
 
-> **NOTE:** The unique ID of an existing or deleted secret cannot be reused. If you pass a previously used ID to the `setSecret` function, an exception is raised.
+:::caution
+The unique ID of an existing or deleted secret cannot be reused. If you pass a previously used ID to the [`setSecret`](#setsecret) function, an exception is raised.
+:::
 
 ## `getSecret`
 
-Takes a unique ID as an argument and returns a promise that resolves to a string if a secret was found or `null` if a secret was not found.
+Get a stored secret from the event store.
 
 **Example**
 
@@ -47,9 +49,19 @@ const secret = await secretManager.getSecret(id)
 ```
 <!-- prettier-ignore-end -->
 
+**Arguments**
+
+| Argument Name | Type     | Description                                            |
+| ------------- | -------- | ------------------------------------------------------ |
+| `id`          | `string` | The secret's unique identifier within the event store. |
+
+**Result**
+
+A promise that resolves to either the loaded secret or `null` if the secret with the specified `id` was not found.
+
 ## `setSecret`
 
-Takes a unique ID and a secret string as arguments and returns a promise that resolves if the secret was successfully saved.
+Saves the specified secrete to the event store.
 
 **Example**
 
@@ -61,9 +73,20 @@ await secretManager.setSecret(id, secret)
 ```
 <!-- prettier-ignore-end -->
 
+**Arguments**
+
+| Argument Name | Type     | Description                                            |
+| ------------- | -------- | ------------------------------------------------------ |
+| `id`          | `string` | The secret's unique identifier within the event store. |
+| `secret`      | `string` | The secret to save.                                    |
+
+**Result**
+
+A `promise` that resolves when the secret has been successfully saved to the event store.
+
 ## `deleteSecret`
 
-Takes a unique ID as an argument and returns a promise that resolves if the secret was successfully deleted.
+Deletes a secret from the event store.
 
 **Example**
 
@@ -75,6 +98,17 @@ const isDeleted = await secretManager.deleteSecret(id)
 ```
 <!-- prettier-ignore-end -->
 
+**Arguments**
+
+| Argument Name | Type     | Description                                            |
+| ------------- | -------- | ------------------------------------------------------ |
+| `id`          | `string` | The secret's unique identifier within the event store. |
+
+**Result**
+
+A promise that resolves to a `booolean` value. The value indicates whether or not a secret with the specified `id` has been found and successfully deleted.
+
 ## See Also
 
 - [Encryption](../../encryption.md)
+- [Encryption Factory Function](factory-function.md)
