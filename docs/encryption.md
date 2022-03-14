@@ -90,13 +90,15 @@ const createEncryption = (aggregateId, context) => {
 
 The `secretsManager` object contains the following functions:
 
-| Function Name  | Description                                                                                                                               |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `getSecret`    | Takes a unique ID as an argument and returns a promise that resolves to a string if a secret was found or null if a secret was not found. |
-| `setSecret`    | Takes a unique ID and a secret string as arguments and returns a promise that resolves if the secret was successfully saved.              |
-| `deleteSecret` | Takes a unique ID as an argument and returns a promise that resolves if the secret was successfully deleted.                              |
+| Function Name                                                    | Description                                                                                                                               |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| [`getSecret`](api/encryption/secrets-manager.md#getsecret)       | Takes a unique ID as an argument and returns a promise that resolves to a string if a secret was found or null if a secret was not found. |
+| [`setSecret`](api/encryption/secrets-manager.md#setsecret)       | Takes a unique ID and a secret string as arguments and returns a promise that resolves if the secret was successfully saved.              |
+| [`deleteSecret`](api/encryption/secrets-manager.md#deletesecret) | Takes a unique ID as an argument and returns a promise that resolves if the secret was successfully deleted.                              |
 
-> **NOTE:** The unique ID of an existing or deleted secret cannot be reused. If you pass a previously used ID to the `setSecret` function, an exception is raised.
+:::caution
+The unique ID of an existing or deleted secret cannot be reused. If you pass a previously used ID to the [`setSecret`](#setsecret) function, an exception is raised.
+:::
 
 The secrets manager stores secrets in the 'secrets' table within the event store. To change the table name, use the event store adapter's `secretsTableName` option:
 
@@ -115,4 +117,4 @@ const prodConfig = {
 
 ## Example
 
-The **personal-data** example demonstrates how to store encrypted user data. In this example, the encryption logic is implemented in a separate `common/encryption-factory.js` file and reused on both the read and write sides.
+The [personal-data](https://github.com/reimagined/resolve/tree/dev/examples/js/personal-data) example demonstrates how to store encrypted user data. In this example, the encryption logic is implemented in a separate `common/encryption-factory.js` file and reused on both the read and write sides.
