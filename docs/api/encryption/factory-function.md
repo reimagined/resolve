@@ -26,14 +26,14 @@ const createEncryption = (aggregateId, context) => {
 export default createEncryption
 ```
 
-### Arguments
+**Arguments**
 
 | Name          | Type                                                                    | Description                                             |
 | ------------- | ----------------------------------------------------------------------- | ------------------------------------------------------- |
 | `aggregateId` | `string`                                                                | The aggregate ID associated with the current operation. |
 | `context`     | An [aggregate encryption context](#aggregate-encryption-context) object | Contains data and API related to the current operation. |
 
-### Result
+**Result**
 
 The returned value should be an object of the following structure:
 
@@ -61,14 +61,16 @@ const createEncryption = (event, context) => {
 export default createEncryption
 ```
 
-### Arguments
+**Arguments**
 
 | Name      | Type                                                                            | Description                                             |
 | --------- | ------------------------------------------------------------------------------- | ------------------------------------------------------- |
 | `event`   | [event](../event.md)                                                            | The currently processed event.                          |
 | `context` | An [event handler encryption context](#event-handler-encryption-context) object | Contains data and API related to the current operation. |
 
-### Result
+**Result**
+
+The returned value should be an object of the following structure:
 
 ```js
 {
@@ -95,3 +97,8 @@ The event handler encryption context object has the following fields:
 | Name             | Type                                           | Description                                                         |
 | ---------------- | ---------------------------------------------- | ------------------------------------------------------------------- |
 | `secretsManager` | A [secrets manager](secrets-manager.md) object | Exposes API used to store cryptographic secrets in the event store. |
+
+## See Also
+
+- [Encryption](../../encryption.md)
+- [Secrets Manager](secrets-manager.md)
