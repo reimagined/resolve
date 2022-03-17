@@ -114,7 +114,9 @@ const buildInit: (
     log.debug(`Init handler execution failed. Commit transaction with error`)
 
     await inlineLedgerRunQuery(
-      `UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
+      `ROLLBACK TO SAVEPOINT ${rootSavePointId};
+      
+      UPDATE ${databaseNameAsId}.${ledgerTableNameAsId}
        SET "Errors" = jsonb_insert(
          COALESCE("Errors", jsonb('[]')),
          CAST(('{' || jsonb_array_length(COALESCE("Errors", jsonb('[]'))) || '}') AS TEXT[]),
