@@ -1,38 +1,17 @@
-import path from 'path'
 import { getLog } from './get-log'
-
 import { processRegister } from './process_manager'
-import { resolveResource } from './resolve-resource'
-import { checkRuntimeEnv } from './declare_runtime_env'
+import getEntryOptions from './get_entry_options'
 
 const log = getLog('start')
 
 const startMode = (resolveConfig) =>
   new Promise(async (resolve, reject) => {
     log.debug('Starting "start" mode')
-    const activeRuntimeModule = (
-      resolveResource(
-        path.join(resolveConfig.runtime.module, 'lib', 'index.js'),
-        { returnResolved: true }
-      ) ?? { result: null }
-    ).result
-
-    const activeRuntimeOptions = JSON.stringify(
-      resolveConfig.runtime.options,
-      (key, value) => {
-        if (checkRuntimeEnv(value)) {
-          return process.env[String(value)] ?? value.defaultValue
-        }
-        return value
-      },
-      2
-    )
-
-    const runtimeEntry = path.resolve(
-      process.cwd(),
-      path.join(resolveConfig.distDir, './common/local-entry/local-entry.js')
-    )
-
+    const {
+      activeRuntimeModule,
+      runtimeEntry,
+      activeRuntimeOptions,
+    } = getEntryOptions(resolveConfig)
     const resolveLaunchId = Math.floor(Math.random() * 1000000000)
 
     const server = processRegister(

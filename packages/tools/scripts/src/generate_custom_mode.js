@@ -1,8 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import prepareUrls from './prepare_urls'
 import path from 'path'
-import { checkRuntimeEnv } from './declare_runtime_env'
-import { resolveResource } from './resolve-resource'
 import { processRegister } from './process_manager'
 import validateConfig from './validate_config'
 import getWebpackConfigs from './get_webpack_configs'
@@ -15,6 +13,7 @@ import copyEnvToDist from './copy_env_to_dist'
 import { getLog } from './get-log'
 import detectErrors from './detect_errors'
 import adjustResolveConfig from './adjust-resolve-config'
+import getEntryOptions from './get_entry_options'
 
 const waitForUrl = async (log, host, port, rootPath, apiHandlerUrl) => {
   const urls = prepareUrls('http', host, port, rootPath)
@@ -98,32 +97,12 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
         })
       })
       log.debug(`webpack compilation succeeded`)
-
-      const activeRuntimeModule = (
-        resolveResource(
-          path.join(resolveConfig.runtime.module, 'lib', 'index.js'),
-          { returnResolved: true }
-        ) ?? { result: null }
-      ).result
-
-      const activeRuntimeOptions = JSON.stringify(
-        resolveConfig.runtime.options,
-        (key, value) => {
-          if (checkRuntimeEnv(value)) {
-            return process.env[String(value)] ?? value.defaultValue
-          }
-          return value
-        },
-        2
-      )
-
-      const runtimeEntry = path.resolve(
-        process.cwd(),
-        path.join(resolveConfig.distDir, './common/local-entry/local-entry.js')
-      )
-
+      const {
+        activeRuntimeModule,
+        runtimeEntry,
+        activeRuntimeOptions,
+      } = getEntryOptions(resolveConfig)
       log.debug(`backend entry: ${runtimeEntry}`)
-
       const resolveLaunchId = Math.floor(Math.random() * 1000000000)
 
       log.debug(`registering backend server node process`)

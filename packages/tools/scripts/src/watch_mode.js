@@ -5,8 +5,6 @@ import { getLog } from './get-log'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
-import { checkRuntimeEnv } from './declare_runtime_env'
-import { resolveResource } from './resolve-resource'
 import getPeerDependencies from './get_peer_dependencies'
 import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
@@ -15,6 +13,7 @@ import openBrowser from './open_browser'
 import { processRegister } from './process_manager'
 import adjustResolveConfig from './adjust-resolve-config'
 import detectErrors from './detect_errors'
+import getEntryOptions from './get_entry_options'
 
 const log = getLog('watch')
 
@@ -34,32 +33,12 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
   })
 
   const peerDependencies = getPeerDependencies()
-
   const compiler = webpack(webpackConfigs)
-
-  const activeRuntimeModule = (
-    resolveResource(
-      path.join(resolveConfig.runtime.module, 'lib', 'index.js'),
-      { returnResolved: true }
-    ) ?? { result: null }
-  ).result
-
-  const activeRuntimeOptions = JSON.stringify(
-    resolveConfig.runtime.options,
-    (key, value) => {
-      if (checkRuntimeEnv(value)) {
-        return process.env[String(value)] ?? value.defaultValue
-      }
-      return value
-    },
-    2
-  )
-
-  const runtimeEntry = path.resolve(
-    process.cwd(),
-    path.join(resolveConfig.distDir, './common/local-entry/local-entry.js')
-  )
-
+  const {
+    activeRuntimeModule,
+    runtimeEntry,
+    activeRuntimeOptions,
+  } = getEntryOptions(resolveConfig)
   const resolveLaunchId = Math.floor(Math.random() * 1000000000)
 
   const server = processRegister(
