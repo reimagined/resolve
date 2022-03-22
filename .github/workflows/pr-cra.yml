@@ -1,9 +1,6 @@
 name: Create-resolve-app testing (PR master)
 
 on:
-  pull_request:
-    branches:
-      - master*
   push:
     branches:
       - '*'
