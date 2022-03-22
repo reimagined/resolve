@@ -4,7 +4,6 @@ import { getLog, pureRequire } from '@resolve-js/runtime-base'
 // @ts-ignore
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 
-import type { Adapter as EventStoreAdapter } from '@resolve-js/eventstore-base'
 import type { WorkerResult } from './types'
 
 const log = getLog('resolve:runtime:websocket-event-handler')
@@ -36,20 +35,17 @@ const subscriptionsTableNameAsId = escapeId(subscriptionsTableName)
 
 export const handleWebsocketEvent = async (
   {
+    runtimeEntry,
     method,
     payload,
   }: {
+    runtimeEntry: any,
     method: string
     payload: {
       queryString: { token: string }
       connectionId: string
       data: string
     }
-  },
-  {
-    eventStoreAdapter,
-  }: {
-    eventStoreAdapter: EventStoreAdapter
   }
 ): Promise<WorkerResult> => {
   log.debug(`dispatching lambda event to websocket`)
@@ -128,7 +124,7 @@ export const handleWebsocketEvent = async (
           if (connectionIdResult[0] != null) {
             const { eventTypes, aggregateIds } = connectionIdResult[0]
 
-            const { events, cursor } = await eventStoreAdapter.loadEvents({
+            const { events, cursor } = await runtimeEntry.loadEvents({
               eventTypes:
                 eventTypes === JSON.stringify(null)
                   ? null

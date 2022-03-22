@@ -157,6 +157,21 @@ const getWebpackCommonConfigs = ({
     },
     {
       ...baseCommonConfig,
+      name: `Server ${targetMode} runtime point`,
+      entry: {
+        [`common/${targetMode}-entry/${targetMode}-runtime.js`]: path.resolve(
+          __dirname,
+          `./alias/$resolve.runtimeEntry.js`
+        ),
+      },
+      output: {
+        ...baseCommonConfig.output,
+        libraryTarget: 'commonjs-module',
+      },
+      plugins: targetMode === 'cloud' ? [BabelPluginTransformImportInline] : [],
+    },
+    {
+      ...baseCommonConfig,
       name: `Shared server ESM chunks`,
       entry: {
         'common/shared/server-imports.js': path.resolve(

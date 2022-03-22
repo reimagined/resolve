@@ -20,3 +20,5 @@ export { createCompositeMonitoringAdapter } from './create-composite-monitoring-
 export { default as eventSubscriberFactory } from './event-subscriber'
 
 export { pureRequire } from './dynamic-require/pure-require'
+
+export { default as entry } from './entry'
