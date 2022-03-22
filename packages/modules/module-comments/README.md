@@ -142,7 +142,7 @@ export const CommentsNotification = (props) => (
       if (count === 0) return null
       return (
         <div onClick={onClick}>
-          Comments had been updated - refresh page to see them
+          Comments have been updated - refresh page to see them
         </div>
       )
     }}
