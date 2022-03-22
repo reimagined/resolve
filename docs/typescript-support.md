@@ -10,12 +10,12 @@ import TabItem from '@theme/TabItem';
 
 ## Overview
 
-ReSolve is written TypeScript and provides type definitions for most of the framework's functional blocks.
-This article describes various aspects of using TypeScript when developing a reSolve application.
+ReSolve is written in TypeScript and provides type definitions for most of the framework's functional blocks.
+This article describes how to develop a reSolve application with TypeScript and contains a quick reference for the available types.
 
 ## Creating a TypeScript Application
 
-All [template and example projects](introduction.md#examples-and-template-projects) shipped with reSolve come in a TypeScript flavor. When using the `create-resolve-app` tool, add the `-t` flag to the input to specify that a TypeScript application should be created:
+All [template and example projects](introduction.md#examples-and-template-projects) shipped with reSolve are available in a JavaScript and TypeScript variations. When you use the `create-resolve-app` tool, add the `-t` flag to the input to specify that a TypeScript application should be created:
 
 ```sh
 yarn create resolve-app hello-world-react -e react -t
