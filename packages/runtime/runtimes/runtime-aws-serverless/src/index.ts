@@ -102,7 +102,7 @@ let maybeLambdaWorkerPromise: Promise<Function> | null = null
 const main = async (...args: any[]) => {
   try {
     if (maybeLambdaWorkerPromise == null) {
-      const handlerPath = process.env._HANDLER
+      const handlerPath = `${process.env.LAMBDA_TASK_ROOT}/cloud-entry.js`
       if (handlerPath == null || !fs.existsSync(handlerPath)) {
         throw new Error(`Entry "${handlerPath}" is not provided`)
       }
