@@ -24,6 +24,8 @@ import { uploaderFactory } from './uploader-factory'
 import { schedulerFactory } from './scheduler-factory'
 import { cleanUpProcess } from './clean-up-process'
 
+export * from './api-handlers'
+
 import type {
   EventSubscriberNotification,
   RuntimeFactoryParameters,
