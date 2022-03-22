@@ -8,7 +8,7 @@ import { websocketServerFactory } from '../src/websocket-server-factory'
 import factory from '../src/index'
 import type { RuntimeOptions } from '../src/index'
 import type { DomainMeta } from '@resolve-js/core'
-import type { RuntimeEntryContext } from '@resolve-js/runtime-base'
+import type { RuntimeAssemblies } from '@resolve-js/runtime-base'
 
 jest.mock('../src/prepare-domain', () => ({
   prepareDomain: jest.fn(() => mockDeep<DomainMeta>()),
@@ -56,7 +56,7 @@ const execAsyncBuild = async () => {
 }
 const startRuntime = async (options: RuntimeOptions) => {
   const runtime = await factory(options)
-  const worker = await runtime.entry(mock<RuntimeEntryContext>())
+  const worker = await runtime.entry(mock<RuntimeAssemblies>())
   await worker()
   expect(mStartExpress).toHaveBeenCalled()
 }

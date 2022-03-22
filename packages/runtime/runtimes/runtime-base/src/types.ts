@@ -407,7 +407,7 @@ export type UserBackendResolve = Readonly<
     }
 >
 
-export type RuntimeEntryContext = {
+export type RuntimeAssemblies = {
   assemblies: Assemblies
   constants: BuildTimeConstants
   domain: DomainMeta
@@ -419,7 +419,7 @@ export type RuntimeWorker<TArgs extends any[], TResult = never> = (
 ) => Promise<TResult>
 export type RuntimeModule<TWorkerArgs extends any[], TWorkerResult = never> = {
   entry: (
-    context: RuntimeEntryContext
+    context: RuntimeAssemblies
   ) => Promise<RuntimeWorker<TWorkerArgs, TWorkerResult>>
   execMode: 'immediate' | 'external'
 }

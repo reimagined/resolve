@@ -1,14 +1,19 @@
 //import 'source-map-support/register'
-import partial from 'lodash.partial'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
+import fs from 'fs'
+
 import crypto from 'crypto'
 import { initDomain } from '@resolve-js/core'
 import {
-  getLog,
-  backgroundJob,
-  gatherEventListeners,
-  createRuntime,
   createCompositeMonitoringAdapter,
+  gatherEventListeners,
+  backgroundJob,
+  createRuntime,
+  getLog,
 } from '@resolve-js/runtime-base'
+
 import { prepareDomain } from './prepare-domain'
 import { performanceTracerFactory } from './performance-tracer-factory'
 import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
@@ -22,8 +27,7 @@ import { cleanUpProcess } from './clean-up-process'
 import type {
   EventSubscriberNotification,
   RuntimeFactoryParameters,
-  RuntimeModuleFactory,
-  RuntimeEntryContext,
+  RuntimeAssemblies,
   RuntimeWorker,
 } from '@resolve-js/runtime-base'
 
@@ -47,9 +51,9 @@ const makeVacantTimeEvaluator = (options: RuntimeOptions) => {
   return () => INFINITE_WORKER_LIFETIME
 }
 
-const entry = async (
-  options: RuntimeOptions,
-  context: RuntimeEntryContext
+const initExecutor = async (
+  serverAssemblies: RuntimeAssemblies,
+  options: Record<string, any>
 ): Promise<RuntimeWorker<WorkerArguments, void>> => {
   log.debug(`returning runtime worker (cold start)`)
   return async () => {
@@ -62,8 +66,8 @@ const entry = async (
         .toString('hex')
         .slice(0, 32)
 
-      const { constants, assemblies } = context
-      const domain = prepareDomain(context.domain)
+      const { constants, assemblies } = serverAssemblies
+      const domain = prepareDomain(serverAssemblies.domain)
       const domainInterop = await initDomain(domain)
 
       const performanceTracer = await performanceTracerFactory()
@@ -182,12 +186,32 @@ const entry = async (
   }
 }
 
-const factory: RuntimeModuleFactory<RuntimeOptions, WorkerArguments, void> = (
-  options: RuntimeOptions
-) => ({
-  entry: partial(entry, options),
-  execMode: 'immediate',
-})
+let maybeExecutorPromise: Promise<Function> | null = null
+const main = async () => {
+  try {
+    if (maybeExecutorPromise == null) {
+      const handlerPath = process.argv[2]
+      if (handlerPath == null || !fs.existsSync(handlerPath)) {
+        throw new Error(`Entry "${handlerPath}" is not provided`)
+      }
+      process.env.__RUNTIME_ENTRY_PATH = handlerPath
 
-export * from './api-handlers'
-export default factory
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const serverAssemblies = interopRequireDefault(require(handlerPath))
+        .default
+
+      const serializedOptions = process.argv[3] ?? '{}'
+      const options = JSON.parse(serializedOptions)
+
+      maybeExecutorPromise = initExecutor(serverAssemblies, options)
+    }
+    const executor = await maybeExecutorPromise
+
+    await executor()
+  } catch (error) {
+    log.error('Local executor fatal error: ', error)
+    throw error
+  }
+}
+
+main()

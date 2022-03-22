@@ -5,7 +5,8 @@ import { getLog } from './get-log'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
-import { checkRuntimeEnv, injectRuntimeEnv } from './declare_runtime_env'
+import { checkRuntimeEnv } from './declare_runtime_env'
+import { resolveResource } from './resolve-resource'
 import getPeerDependencies from './get_peer_dependencies'
 import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
@@ -36,23 +37,44 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
 
   const compiler = webpack(webpackConfigs)
 
-  const serverPath = path.resolve(
+  const activeRuntimeModule = (
+    resolveResource(
+      path.join(resolveConfig.runtime.module, 'lib', 'index.js'),
+      { returnResolved: true }
+    ) ?? { result: null }
+  ).result
+
+  const activeRuntimeOptions = JSON.stringify(
+    resolveConfig.runtime.options,
+    (key, value) => {
+      if (checkRuntimeEnv(value)) {
+        return process.env[String(value)] ?? value.defaultValue
+      }
+      return value
+    },
+    2
+  )
+
+  const runtimeEntry = path.resolve(
     process.cwd(),
     path.join(resolveConfig.distDir, './common/local-entry/local-entry.js')
   )
 
   const resolveLaunchId = Math.floor(Math.random() * 1000000000)
 
-  const server = processRegister(['node', serverPath], {
-    cwd: process.cwd(),
-    maxRestarts: 0,
-    kill: 5000,
-    stdio: 'inherit',
-    env: {
-      ...process.env,
-      RESOLVE_LAUNCH_ID: resolveLaunchId,
-    },
-  })
+  const server = processRegister(
+    ['node', activeRuntimeModule, runtimeEntry, activeRuntimeOptions],
+    {
+      cwd: process.cwd(),
+      maxRestarts: 0,
+      kill: 5000,
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        RESOLVE_LAUNCH_ID: resolveLaunchId,
+      },
+    }
+  )
 
   process.env.RESOLVE_SERVER_FIRST_START = 'true'
   process.env.RESOLVE_SERVER_OPEN_BROWSER = 'true'
@@ -69,8 +91,6 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
       server.stop(() => server.start())
     }
   })
-
-  const { host: sourceHost, port: sourcePort } = resolveConfig.runtime.options
 
   return await new Promise(() => {
     compiler.watch(
@@ -91,18 +111,7 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
         copyEnvToDist(resolveConfig.distDir)
 
         const hasErrors = detectErrors(stats, true)
-        const port = Number(
-          checkRuntimeEnv(sourcePort)
-            ? // eslint-disable-next-line no-new-func
-              new Function(`return ${injectRuntimeEnv(sourcePort)}`)()
-            : sourcePort
-        )
-        const host = String(
-          checkRuntimeEnv(sourceHost)
-            ? // eslint-disable-next-line no-new-func
-              new Function(`return ${injectRuntimeEnv(sourceHost)}`)()
-            : sourceHost ?? '0.0.0.0'
-        )
+        const { host, port } = JSON.parse(activeRuntimeOptions)
 
         if (hasErrors) {
           server.stop()

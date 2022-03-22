@@ -142,11 +142,11 @@ const getWebpackCommonConfigs = ({
   const commonConfigs = [
     {
       ...baseCommonConfig,
-      name: `Server ${targetMode} entry point`,
+      name: `Server ${targetMode} assemblies`,
       entry: {
         [`common/${targetMode}-entry/${targetMode}-entry.js`]: path.resolve(
           __dirname,
-          `./alias/$resolve.backendEntry.js`
+          `./alias/$resolve.serverAssemblies.js`
         ),
       },
       output: {
