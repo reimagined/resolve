@@ -14,6 +14,7 @@
 
 **Other changes:**
 
+- Fix create-resolve-app tests [\#2258](https://github.com/reimagined/resolve/pull/2258)
 - Refactor resolve-scripts and runtimes [\#2245](https://github.com/reimagined/resolve/pull/2245)
 
 ## [V0.33.15](https://github.com/reimagined/resolve/tree/V0.33.15) (2022-03-03)
