@@ -171,6 +171,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
                   }
@@ -403,6 +404,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
                   }
@@ -435,751 +437,17 @@ exports[`should make webpack configs for cloud mode 1`] = `
       null,
       [
         {
-          \\"modulesDir\\": \\"node_modules\\",
-          \\"allowlist\\": [
-            {},
-            {},
-            {}
-          ]
+          \\"modulesDir\\": \\"node_modules\\"
         }
       ],
       [
         {
-          \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
-          \\"allowlist\\": [
-            {},
-            {},
-            {}
-          ]
+          \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\"
         }
       ],
       [
         {
-          \\"modulesDir\\": \\"../../../node_modules\\",
-          \\"allowlist\\": [
-            {},
-            {},
-            {}
-          ]
-        }
-      ]
-    ],
-    \\"plugins\\": [
-      null
-    ],
-    \\"name\\": \\"Server cloud entry point\\",
-    \\"entry\\": {
-      \\"common/cloud-entry/cloud-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\"
-    }
-  },
-  {
-    \\"context\\": \\"<MONOREPO_DIR>/packages/tools/scripts\\",
-    \\"performance\\": false,
-    \\"devtool\\": \\"source-map\\",
-    \\"target\\": \\"node\\",
-    \\"node\\": {
-      \\"__dirname\\": true,
-      \\"__filename\\": true
-    },
-    \\"resolve\\": {
-      \\"modules\\": [
-        \\"node_modules\\",
-        \\"../../runtime/runtimes/runtime-base/node_modules\\",
-        \\"../../../node_modules\\"
-      ],
-      \\"extensions\\": [
-        \\".webpack.js\\",
-        \\".js\\",
-        \\".json\\",
-        \\".wasm\\"
-      ],
-      \\"alias\\": {
-        \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
-        \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
-        \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
-        \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
-        \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
-        \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
-        \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
-        \\"$resolve.clientImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-        \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
-        \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
-        \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
-        \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
-        \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
-        \\"$resolve.host\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
-        \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.middlewares\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
-        \\"$resolve.monitoringAdapters\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
-        \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
-        \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
-        \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
-        \\"$resolve.readModelProcedure\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
-        \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
-        \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
-        \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
-        \\"$resolve.sagas\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
-        \\"$resolve.seedClientEnvs\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
-        \\"$resolve.serverAssemblies\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\",
-        \\"$resolve.serverImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
-        \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticDir.js\\",
-        \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
-        \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
-      }
-    },
-    \\"output\\": {
-      \\"path\\": \\"<MONOREPO_DIR>/packages/tools/scripts/dist\\",
-      \\"filename\\": \\"[name]\\",
-      \\"devtoolModuleFilenameTemplate\\": \\"[namespace][resource-path]\\",
-      \\"devtoolFallbackModuleFilenameTemplate\\": \\"[namespace][resource-path]?[hash]\\",
-      \\"libraryTarget\\": \\"var\\",
-      \\"library\\": \\"__RESOLVE_ENTRY__\\"
-    },
-    \\"module\\": {
-      \\"rules\\": [
-        {
-          \\"test\\": [
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticDir.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
-          ],
-          \\"use\\": [
-            {
-              \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
-              \\"options\\": {
-                \\"cacheDirectory\\": true,
-                \\"babelrc\\": false,
-                \\"presets\\": [
-                  [
-                    \\"@babel/preset-env\\",
-                    {
-                      \\"targets\\": {
-                        \\"node\\": \\"14.17.0\\"
-                      },
-                      \\"shippedProposals\\": true
-                    }
-                  ]
-                ],
-                \\"plugins\\": [
-                  \\"@babel/plugin-proposal-class-properties\\",
-                  \\"@babel/plugin-proposal-export-default-from\\",
-                  \\"@babel/plugin-proposal-export-namespace-from\\",
-                  [
-                    \\"@babel/plugin-transform-runtime\\",
-                    {
-                      \\"corejs\\": false,
-                      \\"helpers\\": false,
-                      \\"regenerator\\": false,
-                      \\"useESModules\\": false
-                    }
-                  ]
-                ]
-              }
-            },
-            {
-              \\"loader\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/val_query_loader.js\\",
-              \\"options\\": {
-                \\"resolveConfig\\": {
-                  \\"port\\": 3000,
-                  \\"rootPath\\": \\"\\",
-                  \\"staticPath\\": \\"static\\",
-                  \\"staticDir\\": \\"static\\",
-                  \\"distDir\\": \\"dist\\",
-                  \\"aggregates\\": [],
-                  \\"readModels\\": [],
-                  \\"viewModels\\": [],
-                  \\"sagas\\": [],
-                  \\"apiHandlers\\": [],
-                  \\"index\\": \\"client/index.js\\",
-                  \\"eventstoreAdapter\\": {
-                    \\"module\\": \\"@resolve-js/eventstore-lite\\",
-                    \\"options\\": {
-                      \\"databaseFile\\": \\"data/event-store.db\\"
-                    }
-                  },
-                  \\"snapshotAdapter\\": {
-                    \\"module\\": \\"@resolve-js/snapshot-lite\\",
-                    \\"options\\": {}
-                  },
-                  \\"readModelConnectors\\": {},
-                  \\"schedulers\\": {},
-                  \\"jwtCookie\\": {
-                    \\"name\\": \\"jwt\\",
-                    \\"maxAge\\": 31536000000
-                  },
-                  \\"customConstants\\": {},
-                  \\"clientImports\\": {},
-                  \\"serverImports\\": {},
-                  \\"clientEntries\\": [],
-                  \\"runtime\\": {
-                    \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
-                  }
-                },
-                \\"isClient\\": false
-              }
-            }
-          ]
-        },
-        {
-          \\"test\\": {},
-          \\"use\\": {
-            \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
-            \\"options\\": {
-              \\"cacheDirectory\\": true
-            }
-          },
-          \\"exclude\\": [
-            {},
-            \\"<MONOREPO_DIR>/node_modules\\",
-            \\"<MONOREPO_DIR>/node_modules\\",
-            \\"<MONOREPO_DIR>/node_modules\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/lib\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/es\\"
-          ]
-        }
-      ]
-    },
-    \\"externals\\": [
-      null,
-      [
-        {
-          \\"modulesDir\\": \\"node_modules\\",
-          \\"allowlist\\": [
-            {},
-            {},
-            {}
-          ]
-        }
-      ],
-      [
-        {
-          \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
-          \\"allowlist\\": [
-            {},
-            {},
-            {}
-          ]
-        }
-      ],
-      [
-        {
-          \\"modulesDir\\": \\"../../../node_modules\\",
-          \\"allowlist\\": [
-            {},
-            {},
-            {}
-          ]
-        }
-      ]
-    ],
-    \\"plugins\\": [
-      {
-        \\"MODULE\\": \\"esm-webpack-plugin\\"
-      }
-    ],
-    \\"name\\": \\"Shared server ESM chunks\\",
-    \\"entry\\": {
-      \\"common/shared/server-imports.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
-      \\"common/shared/server-constants.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
-      \\"common/shared/server-seed-client-envs.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\"
-    }
-  }
-]"
-`;
-
-exports[`should make webpack configs for cloud mode 2`] = `
-"[
-  [
-    \\"common/cloud-entry/package.json\\",
-    {}
-  ]
-]"
-`;
-
-exports[`should make webpack configs for local mode 1`] = `
-"[
-  {
-    \\"name\\": \\"Shared client ESM chunks\\",
-    \\"entry\\": {
-      \\"common/shared/client-chunk.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
-      \\"common/shared/client-imports.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-      \\"common/shared/view-models.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
-    },
-    \\"context\\": \\"<MONOREPO_DIR>/packages/tools/scripts\\",
-    \\"performance\\": false,
-    \\"devtool\\": \\"source-map\\",
-    \\"target\\": \\"web\\",
-    \\"output\\": {
-      \\"path\\": \\"<MONOREPO_DIR>/packages/tools/scripts/dist\\",
-      \\"filename\\": \\"[name]\\",
-      \\"devtoolModuleFilenameTemplate\\": \\"[namespace][resource-path]\\",
-      \\"devtoolFallbackModuleFilenameTemplate\\": \\"[namespace][resource-path]?[hash]\\",
-      \\"libraryTarget\\": \\"var\\",
-      \\"library\\": \\"__RESOLVE_ENTRY__\\"
-    },
-    \\"resolve\\": {
-      \\"modules\\": [
-        \\"node_modules\\",
-        \\"../../runtime/runtimes/runtime-base/node_modules\\",
-        \\"../../../node_modules\\"
-      ],
-      \\"alias\\": {
-        \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
-        \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
-        \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
-        \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
-        \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
-        \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
-        \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
-        \\"$resolve.clientImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-        \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
-        \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
-        \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
-        \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
-        \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
-        \\"$resolve.host\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
-        \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.middlewares\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
-        \\"$resolve.monitoringAdapters\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
-        \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
-        \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
-        \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
-        \\"$resolve.readModelProcedure\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
-        \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
-        \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
-        \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
-        \\"$resolve.sagas\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
-        \\"$resolve.seedClientEnvs\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
-        \\"$resolve.serverAssemblies\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\",
-        \\"$resolve.serverImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
-        \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticDir.js\\",
-        \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
-        \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
-      }
-    },
-    \\"module\\": {
-      \\"rules\\": [
-        {
-          \\"test\\": [
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticDir.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
-          ],
-          \\"use\\": [
-            {
-              \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
-              \\"options\\": {
-                \\"cacheDirectory\\": true,
-                \\"babelrc\\": false,
-                \\"presets\\": [
-                  \\"@babel/preset-env\\",
-                  \\"@babel/preset-react\\"
-                ],
-                \\"plugins\\": [
-                  \\"@babel/plugin-proposal-class-properties\\",
-                  \\"@babel/plugin-proposal-export-default-from\\",
-                  \\"@babel/plugin-proposal-export-namespace-from\\",
-                  [
-                    \\"@babel/plugin-transform-runtime\\",
-                    {
-                      \\"corejs\\": false,
-                      \\"helpers\\": true,
-                      \\"regenerator\\": true,
-                      \\"useESModules\\": false
-                    }
-                  ]
-                ]
-              }
-            },
-            {
-              \\"loader\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/val_query_loader.js\\",
-              \\"options\\": {
-                \\"resolveConfig\\": {
-                  \\"port\\": 3000,
-                  \\"rootPath\\": \\"\\",
-                  \\"staticPath\\": \\"static\\",
-                  \\"staticDir\\": \\"static\\",
-                  \\"distDir\\": \\"dist\\",
-                  \\"aggregates\\": [],
-                  \\"readModels\\": [],
-                  \\"viewModels\\": [],
-                  \\"sagas\\": [],
-                  \\"apiHandlers\\": [],
-                  \\"index\\": \\"client/index.js\\",
-                  \\"eventstoreAdapter\\": {
-                    \\"module\\": \\"@resolve-js/eventstore-lite\\",
-                    \\"options\\": {
-                      \\"databaseFile\\": \\"data/event-store.db\\"
-                    }
-                  },
-                  \\"snapshotAdapter\\": {
-                    \\"module\\": \\"@resolve-js/snapshot-lite\\",
-                    \\"options\\": {}
-                  },
-                  \\"readModelConnectors\\": {},
-                  \\"schedulers\\": {},
-                  \\"jwtCookie\\": {
-                    \\"name\\": \\"jwt\\",
-                    \\"maxAge\\": 31536000000
-                  },
-                  \\"customConstants\\": {},
-                  \\"clientImports\\": {},
-                  \\"serverImports\\": {},
-                  \\"clientEntries\\": [],
-                  \\"runtime\\": {
-                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
-                  }
-                },
-                \\"isClient\\": true
-              }
-            }
-          ]
-        },
-        {
-          \\"test\\": {},
-          \\"use\\": {
-            \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
-            \\"options\\": {
-              \\"cacheDirectory\\": true
-            }
-          },
-          \\"exclude\\": [
-            {},
-            \\"<MONOREPO_DIR>/node_modules\\",
-            \\"<MONOREPO_DIR>/node_modules\\",
-            \\"<MONOREPO_DIR>/node_modules\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/lib\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/es\\"
-          ]
-        },
-        {
-          \\"test\\": {},
-          \\"use\\": {
-            \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
-            \\"options\\": {
-              \\"cacheDirectory\\": true,
-              \\"babelrc\\": false,
-              \\"presets\\": [
-                \\"@babel/preset-env\\",
-                \\"@babel/preset-react\\"
-              ],
-              \\"plugins\\": [
-                \\"@babel/plugin-proposal-class-properties\\",
-                \\"@babel/plugin-proposal-export-default-from\\",
-                \\"@babel/plugin-proposal-export-namespace-from\\",
-                [
-                  \\"@babel/plugin-transform-runtime\\",
-                  {
-                    \\"corejs\\": false,
-                    \\"helpers\\": true,
-                    \\"regenerator\\": true,
-                    \\"useESModules\\": false
-                  }
-                ]
-              ]
-            }
-          }
-        }
-      ]
-    },
-    \\"plugins\\": [
-      {
-        \\"MODULE\\": \\"esm-webpack-plugin\\"
-      }
-    ]
-  },
-  {
-    \\"context\\": \\"<MONOREPO_DIR>/packages/tools/scripts\\",
-    \\"performance\\": false,
-    \\"devtool\\": \\"source-map\\",
-    \\"target\\": \\"node\\",
-    \\"node\\": {
-      \\"__dirname\\": true,
-      \\"__filename\\": true
-    },
-    \\"resolve\\": {
-      \\"modules\\": [
-        \\"node_modules\\",
-        \\"../../runtime/runtimes/runtime-base/node_modules\\",
-        \\"../../../node_modules\\"
-      ],
-      \\"extensions\\": [
-        \\".webpack.js\\",
-        \\".js\\",
-        \\".json\\",
-        \\".wasm\\"
-      ],
-      \\"alias\\": {
-        \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
-        \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
-        \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
-        \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
-        \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
-        \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
-        \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
-        \\"$resolve.clientImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-        \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
-        \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
-        \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
-        \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
-        \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
-        \\"$resolve.host\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
-        \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-        \\"$resolve.middlewares\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
-        \\"$resolve.monitoringAdapters\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
-        \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
-        \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
-        \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
-        \\"$resolve.readModelProcedure\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
-        \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
-        \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
-        \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
-        \\"$resolve.sagas\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
-        \\"$resolve.seedClientEnvs\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
-        \\"$resolve.serverAssemblies\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\",
-        \\"$resolve.serverImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
-        \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticDir.js\\",
-        \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
-        \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
-        \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
-      }
-    },
-    \\"output\\": {
-      \\"path\\": \\"<MONOREPO_DIR>/packages/tools/scripts/dist\\",
-      \\"filename\\": \\"[name]\\",
-      \\"devtoolModuleFilenameTemplate\\": \\"[namespace][resource-path]\\",
-      \\"devtoolFallbackModuleFilenameTemplate\\": \\"[namespace][resource-path]?[hash]\\",
-      \\"libraryTarget\\": \\"commonjs-module\\"
-    },
-    \\"module\\": {
-      \\"rules\\": [
-        {
-          \\"test\\": [
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticDir.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
-          ],
-          \\"use\\": [
-            {
-              \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
-              \\"options\\": {
-                \\"cacheDirectory\\": true,
-                \\"babelrc\\": false,
-                \\"presets\\": [
-                  [
-                    \\"@babel/preset-env\\",
-                    {
-                      \\"targets\\": {
-                        \\"node\\": \\"14.17.0\\"
-                      },
-                      \\"shippedProposals\\": true
-                    }
-                  ]
-                ],
-                \\"plugins\\": [
-                  \\"@babel/plugin-proposal-class-properties\\",
-                  \\"@babel/plugin-proposal-export-default-from\\",
-                  \\"@babel/plugin-proposal-export-namespace-from\\",
-                  [
-                    \\"@babel/plugin-transform-runtime\\",
-                    {
-                      \\"corejs\\": false,
-                      \\"helpers\\": false,
-                      \\"regenerator\\": false,
-                      \\"useESModules\\": false
-                    }
-                  ]
-                ]
-              }
-            },
-            {
-              \\"loader\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/val_query_loader.js\\",
-              \\"options\\": {
-                \\"resolveConfig\\": {
-                  \\"port\\": 3000,
-                  \\"rootPath\\": \\"\\",
-                  \\"staticPath\\": \\"static\\",
-                  \\"staticDir\\": \\"static\\",
-                  \\"distDir\\": \\"dist\\",
-                  \\"aggregates\\": [],
-                  \\"readModels\\": [],
-                  \\"viewModels\\": [],
-                  \\"sagas\\": [],
-                  \\"apiHandlers\\": [],
-                  \\"index\\": \\"client/index.js\\",
-                  \\"eventstoreAdapter\\": {
-                    \\"module\\": \\"@resolve-js/eventstore-lite\\",
-                    \\"options\\": {
-                      \\"databaseFile\\": \\"data/event-store.db\\"
-                    }
-                  },
-                  \\"snapshotAdapter\\": {
-                    \\"module\\": \\"@resolve-js/snapshot-lite\\",
-                    \\"options\\": {}
-                  },
-                  \\"readModelConnectors\\": {},
-                  \\"schedulers\\": {},
-                  \\"jwtCookie\\": {
-                    \\"name\\": \\"jwt\\",
-                    \\"maxAge\\": 31536000000
-                  },
-                  \\"customConstants\\": {},
-                  \\"clientImports\\": {},
-                  \\"serverImports\\": {},
-                  \\"clientEntries\\": [],
-                  \\"runtime\\": {
-                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
-                  }
-                },
-                \\"isClient\\": false
-              }
-            }
-          ]
-        },
-        {
-          \\"test\\": {},
-          \\"use\\": {
-            \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
-            \\"options\\": {
-              \\"cacheDirectory\\": true
-            }
-          },
-          \\"exclude\\": [
-            {},
-            \\"<MONOREPO_DIR>/node_modules\\",
-            \\"<MONOREPO_DIR>/node_modules\\",
-            \\"<MONOREPO_DIR>/node_modules\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/lib\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/es\\"
-          ]
-        }
-      ]
-    },
-    \\"externals\\": [
-      null,
-      [
-        {
-          \\"modulesDir\\": \\"node_modules\\",
-          \\"allowlist\\": [
-            {},
-            {},
-            {}
-          ]
-        }
-      ],
-      [
-        {
-          \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
-          \\"allowlist\\": [
-            {},
-            {},
-            {}
-          ]
-        }
-      ],
-      [
-        {
-          \\"modulesDir\\": \\"../../../node_modules\\",
-          \\"allowlist\\": [
-            {},
-            {},
-            {}
-          ]
+          \\"modulesDir\\": \\"../../../node_modules\\"
         }
       ]
     ],
@@ -1360,6 +628,473 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
+                  \\"runtime\\": {
+                    \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
+                  }
+                },
+                \\"isClient\\": false
+              }
+            }
+          ]
+        },
+        {
+          \\"test\\": {},
+          \\"use\\": {
+            \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
+            \\"options\\": {
+              \\"cacheDirectory\\": true
+            }
+          },
+          \\"exclude\\": [
+            {},
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/lib\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/es\\"
+          ]
+        }
+      ]
+    },
+    \\"externals\\": [
+      null,
+      [
+        {
+          \\"modulesDir\\": \\"node_modules\\"
+        }
+      ],
+      [
+        {
+          \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\"
+        }
+      ],
+      [
+        {
+          \\"modulesDir\\": \\"../../../node_modules\\"
+        }
+      ]
+    ],
+    \\"plugins\\": [
+      {
+        \\"MODULE\\": \\"esm-webpack-plugin\\"
+      }
+    ],
+    \\"name\\": \\"Shared server ESM chunks\\",
+    \\"entry\\": {
+      \\"common/shared/server-imports.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
+      \\"common/shared/server-constants.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
+      \\"common/shared/server-seed-client-envs.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\"
+    }
+  }
+]"
+`;
+
+exports[`should make webpack configs for cloud mode 2`] = `
+"[
+  [
+    \\"common/local-entry/package.json\\",
+    {}
+  ]
+]"
+`;
+
+exports[`should make webpack configs for local mode 1`] = `
+"[
+  {
+    \\"name\\": \\"Shared client ESM chunks\\",
+    \\"entry\\": {
+      \\"common/shared/client-chunk.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
+      \\"common/shared/client-imports.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
+      \\"common/shared/view-models.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
+    },
+    \\"context\\": \\"<MONOREPO_DIR>/packages/tools/scripts\\",
+    \\"performance\\": false,
+    \\"devtool\\": \\"source-map\\",
+    \\"target\\": \\"web\\",
+    \\"output\\": {
+      \\"path\\": \\"<MONOREPO_DIR>/packages/tools/scripts/dist\\",
+      \\"filename\\": \\"[name]\\",
+      \\"devtoolModuleFilenameTemplate\\": \\"[namespace][resource-path]\\",
+      \\"devtoolFallbackModuleFilenameTemplate\\": \\"[namespace][resource-path]?[hash]\\",
+      \\"libraryTarget\\": \\"var\\",
+      \\"library\\": \\"__RESOLVE_ENTRY__\\"
+    },
+    \\"resolve\\": {
+      \\"modules\\": [
+        \\"node_modules\\",
+        \\"../../runtime/runtimes/runtime-base/node_modules\\",
+        \\"../../../node_modules\\"
+      ],
+      \\"alias\\": {
+        \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
+        \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
+        \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
+        \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
+        \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
+        \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
+        \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
+        \\"$resolve.clientImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
+        \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
+        \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
+        \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
+        \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
+        \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
+        \\"$resolve.host\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
+        \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
+        \\"$resolve.middlewares\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+        \\"$resolve.monitoringAdapters\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
+        \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+        \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
+        \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+        \\"$resolve.readModelProcedure\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
+        \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+        \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
+        \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
+        \\"$resolve.sagas\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
+        \\"$resolve.seedClientEnvs\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
+        \\"$resolve.serverAssemblies\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\",
+        \\"$resolve.serverImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
+        \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticDir.js\\",
+        \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
+        \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
+        \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
+      }
+    },
+    \\"module\\": {
+      \\"rules\\": [
+        {
+          \\"test\\": [
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticDir.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
+          ],
+          \\"use\\": [
+            {
+              \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
+              \\"options\\": {
+                \\"cacheDirectory\\": true,
+                \\"babelrc\\": false,
+                \\"presets\\": [
+                  \\"@babel/preset-env\\",
+                  \\"@babel/preset-react\\"
+                ],
+                \\"plugins\\": [
+                  \\"@babel/plugin-proposal-class-properties\\",
+                  \\"@babel/plugin-proposal-export-default-from\\",
+                  \\"@babel/plugin-proposal-export-namespace-from\\",
+                  [
+                    \\"@babel/plugin-transform-runtime\\",
+                    {
+                      \\"corejs\\": false,
+                      \\"helpers\\": true,
+                      \\"regenerator\\": true,
+                      \\"useESModules\\": false
+                    }
+                  ]
+                ]
+              }
+            },
+            {
+              \\"loader\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/val_query_loader.js\\",
+              \\"options\\": {
+                \\"resolveConfig\\": {
+                  \\"port\\": 3000,
+                  \\"rootPath\\": \\"\\",
+                  \\"staticPath\\": \\"static\\",
+                  \\"staticDir\\": \\"static\\",
+                  \\"distDir\\": \\"dist\\",
+                  \\"aggregates\\": [],
+                  \\"readModels\\": [],
+                  \\"viewModels\\": [],
+                  \\"sagas\\": [],
+                  \\"apiHandlers\\": [],
+                  \\"index\\": \\"client/index.js\\",
+                  \\"eventstoreAdapter\\": {
+                    \\"module\\": \\"@resolve-js/eventstore-lite\\",
+                    \\"options\\": {
+                      \\"databaseFile\\": \\"data/event-store.db\\"
+                    }
+                  },
+                  \\"snapshotAdapter\\": {
+                    \\"module\\": \\"@resolve-js/snapshot-lite\\",
+                    \\"options\\": {}
+                  },
+                  \\"readModelConnectors\\": {},
+                  \\"schedulers\\": {},
+                  \\"jwtCookie\\": {
+                    \\"name\\": \\"jwt\\",
+                    \\"maxAge\\": 31536000000
+                  },
+                  \\"customConstants\\": {},
+                  \\"clientImports\\": {},
+                  \\"serverImports\\": {},
+                  \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
+                  \\"runtime\\": {
+                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
+                  }
+                },
+                \\"isClient\\": true
+              }
+            }
+          ]
+        },
+        {
+          \\"test\\": {},
+          \\"use\\": {
+            \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
+            \\"options\\": {
+              \\"cacheDirectory\\": true
+            }
+          },
+          \\"exclude\\": [
+            {},
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/lib\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/es\\"
+          ]
+        },
+        {
+          \\"test\\": {},
+          \\"use\\": {
+            \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
+            \\"options\\": {
+              \\"cacheDirectory\\": true,
+              \\"babelrc\\": false,
+              \\"presets\\": [
+                \\"@babel/preset-env\\",
+                \\"@babel/preset-react\\"
+              ],
+              \\"plugins\\": [
+                \\"@babel/plugin-proposal-class-properties\\",
+                \\"@babel/plugin-proposal-export-default-from\\",
+                \\"@babel/plugin-proposal-export-namespace-from\\",
+                [
+                  \\"@babel/plugin-transform-runtime\\",
+                  {
+                    \\"corejs\\": false,
+                    \\"helpers\\": true,
+                    \\"regenerator\\": true,
+                    \\"useESModules\\": false
+                  }
+                ]
+              ]
+            }
+          }
+        }
+      ]
+    },
+    \\"plugins\\": [
+      {
+        \\"MODULE\\": \\"esm-webpack-plugin\\"
+      }
+    ]
+  },
+  {
+    \\"context\\": \\"<MONOREPO_DIR>/packages/tools/scripts\\",
+    \\"performance\\": false,
+    \\"devtool\\": \\"source-map\\",
+    \\"target\\": \\"node\\",
+    \\"node\\": {
+      \\"__dirname\\": true,
+      \\"__filename\\": true
+    },
+    \\"resolve\\": {
+      \\"modules\\": [
+        \\"node_modules\\",
+        \\"../../runtime/runtimes/runtime-base/node_modules\\",
+        \\"../../../node_modules\\"
+      ],
+      \\"extensions\\": [
+        \\".webpack.js\\",
+        \\".js\\",
+        \\".json\\",
+        \\".wasm\\"
+      ],
+      \\"alias\\": {
+        \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
+        \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
+        \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
+        \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
+        \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
+        \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
+        \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
+        \\"$resolve.clientImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
+        \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
+        \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
+        \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
+        \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
+        \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
+        \\"$resolve.host\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
+        \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
+        \\"$resolve.middlewares\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+        \\"$resolve.monitoringAdapters\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
+        \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+        \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
+        \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+        \\"$resolve.readModelProcedure\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
+        \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+        \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
+        \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
+        \\"$resolve.sagas\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
+        \\"$resolve.seedClientEnvs\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
+        \\"$resolve.serverAssemblies\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\",
+        \\"$resolve.serverImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
+        \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticDir.js\\",
+        \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
+        \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
+        \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
+      }
+    },
+    \\"output\\": {
+      \\"path\\": \\"<MONOREPO_DIR>/packages/tools/scripts/dist\\",
+      \\"filename\\": \\"[name]\\",
+      \\"devtoolModuleFilenameTemplate\\": \\"[namespace][resource-path]\\",
+      \\"devtoolFallbackModuleFilenameTemplate\\": \\"[namespace][resource-path]?[hash]\\",
+      \\"libraryTarget\\": \\"commonjs-module\\"
+    },
+    \\"module\\": {
+      \\"rules\\": [
+        {
+          \\"test\\": [
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticDir.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
+          ],
+          \\"use\\": [
+            {
+              \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
+              \\"options\\": {
+                \\"cacheDirectory\\": true,
+                \\"babelrc\\": false,
+                \\"presets\\": [
+                  [
+                    \\"@babel/preset-env\\",
+                    {
+                      \\"targets\\": {
+                        \\"node\\": \\"14.17.0\\"
+                      },
+                      \\"shippedProposals\\": true
+                    }
+                  ]
+                ],
+                \\"plugins\\": [
+                  \\"@babel/plugin-proposal-class-properties\\",
+                  \\"@babel/plugin-proposal-export-default-from\\",
+                  \\"@babel/plugin-proposal-export-namespace-from\\",
+                  [
+                    \\"@babel/plugin-transform-runtime\\",
+                    {
+                      \\"corejs\\": false,
+                      \\"helpers\\": false,
+                      \\"regenerator\\": false,
+                      \\"useESModules\\": false
+                    }
+                  ]
+                ]
+              }
+            },
+            {
+              \\"loader\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/val_query_loader.js\\",
+              \\"options\\": {
+                \\"resolveConfig\\": {
+                  \\"port\\": 3000,
+                  \\"rootPath\\": \\"\\",
+                  \\"staticPath\\": \\"static\\",
+                  \\"staticDir\\": \\"static\\",
+                  \\"distDir\\": \\"dist\\",
+                  \\"aggregates\\": [],
+                  \\"readModels\\": [],
+                  \\"viewModels\\": [],
+                  \\"sagas\\": [],
+                  \\"apiHandlers\\": [],
+                  \\"index\\": \\"client/index.js\\",
+                  \\"eventstoreAdapter\\": {
+                    \\"module\\": \\"@resolve-js/eventstore-lite\\",
+                    \\"options\\": {
+                      \\"databaseFile\\": \\"data/event-store.db\\"
+                    }
+                  },
+                  \\"snapshotAdapter\\": {
+                    \\"module\\": \\"@resolve-js/snapshot-lite\\",
+                    \\"options\\": {}
+                  },
+                  \\"readModelConnectors\\": {},
+                  \\"schedulers\\": {},
+                  \\"jwtCookie\\": {
+                    \\"name\\": \\"jwt\\",
+                    \\"maxAge\\": 31536000000
+                  },
+                  \\"customConstants\\": {},
+                  \\"clientImports\\": {},
+                  \\"serverImports\\": {},
+                  \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }
@@ -1392,32 +1127,241 @@ exports[`should make webpack configs for local mode 1`] = `
       null,
       [
         {
-          \\"modulesDir\\": \\"node_modules\\",
-          \\"allowlist\\": [
-            {},
-            {},
-            {}
-          ]
+          \\"modulesDir\\": \\"node_modules\\"
         }
       ],
       [
         {
-          \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
-          \\"allowlist\\": [
-            {},
-            {},
-            {}
-          ]
+          \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\"
         }
       ],
       [
         {
-          \\"modulesDir\\": \\"../../../node_modules\\",
-          \\"allowlist\\": [
-            {},
-            {},
-            {}
+          \\"modulesDir\\": \\"../../../node_modules\\"
+        }
+      ]
+    ],
+    \\"plugins\\": [],
+    \\"name\\": \\"Server local entry point\\",
+    \\"entry\\": {
+      \\"common/local-entry/local-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\"
+    }
+  },
+  {
+    \\"context\\": \\"<MONOREPO_DIR>/packages/tools/scripts\\",
+    \\"performance\\": false,
+    \\"devtool\\": \\"source-map\\",
+    \\"target\\": \\"node\\",
+    \\"node\\": {
+      \\"__dirname\\": true,
+      \\"__filename\\": true
+    },
+    \\"resolve\\": {
+      \\"modules\\": [
+        \\"node_modules\\",
+        \\"../../runtime/runtimes/runtime-base/node_modules\\",
+        \\"../../../node_modules\\"
+      ],
+      \\"extensions\\": [
+        \\".webpack.js\\",
+        \\".js\\",
+        \\".json\\",
+        \\".wasm\\"
+      ],
+      \\"alias\\": {
+        \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
+        \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
+        \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
+        \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
+        \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
+        \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
+        \\"$resolve.clientEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
+        \\"$resolve.clientImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
+        \\"$resolve.constants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
+        \\"$resolve.customConstants\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
+        \\"$resolve.distDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
+        \\"$resolve.eventstoreAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
+        \\"$resolve.guardOnlyServer\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
+        \\"$resolve.host\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
+        \\"$resolve.jwtCookie\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
+        \\"$resolve.middlewares\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+        \\"$resolve.monitoringAdapters\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
+        \\"$resolve.port\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+        \\"$resolve.readModel\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
+        \\"$resolve.readModelConnectors\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+        \\"$resolve.readModelProcedure\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
+        \\"$resolve.readModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+        \\"$resolve.resolveVersion\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
+        \\"$resolve.rootPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
+        \\"$resolve.sagas\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
+        \\"$resolve.seedClientEnvs\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
+        \\"$resolve.serverAssemblies\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\",
+        \\"$resolve.serverImports\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
+        \\"$resolve.staticDir\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticDir.js\\",
+        \\"$resolve.staticPath\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
+        \\"$resolve.uploadAdapter\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
+        \\"$resolve.viewModels\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
+      }
+    },
+    \\"output\\": {
+      \\"path\\": \\"<MONOREPO_DIR>/packages/tools/scripts/dist\\",
+      \\"filename\\": \\"[name]\\",
+      \\"devtoolModuleFilenameTemplate\\": \\"[namespace][resource-path]\\",
+      \\"devtoolFallbackModuleFilenameTemplate\\": \\"[namespace][resource-path]?[hash]\\",
+      \\"libraryTarget\\": \\"var\\",
+      \\"library\\": \\"__RESOLVE_ENTRY__\\"
+    },
+    \\"module\\": {
+      \\"rules\\": [
+        {
+          \\"test\\": [
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientEntry.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientImports.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.constants.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.customConstants.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.distDir.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.eventstoreAdapter.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.guardOnlyServer.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.host.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.jwtCookie.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.middlewares.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.monitoringAdapters.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.port.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModel.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelConnectors.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModelProcedure.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.readModels.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.resolveVersion.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.rootPath.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.sagas.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.seedClientEnvs.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverImports.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticDir.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.staticPath.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.uploadAdapter.js\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.viewModels.js\\"
+          ],
+          \\"use\\": [
+            {
+              \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
+              \\"options\\": {
+                \\"cacheDirectory\\": true,
+                \\"babelrc\\": false,
+                \\"presets\\": [
+                  [
+                    \\"@babel/preset-env\\",
+                    {
+                      \\"targets\\": {
+                        \\"node\\": \\"14.17.0\\"
+                      },
+                      \\"shippedProposals\\": true
+                    }
+                  ]
+                ],
+                \\"plugins\\": [
+                  \\"@babel/plugin-proposal-class-properties\\",
+                  \\"@babel/plugin-proposal-export-default-from\\",
+                  \\"@babel/plugin-proposal-export-namespace-from\\",
+                  [
+                    \\"@babel/plugin-transform-runtime\\",
+                    {
+                      \\"corejs\\": false,
+                      \\"helpers\\": false,
+                      \\"regenerator\\": false,
+                      \\"useESModules\\": false
+                    }
+                  ]
+                ]
+              }
+            },
+            {
+              \\"loader\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/val_query_loader.js\\",
+              \\"options\\": {
+                \\"resolveConfig\\": {
+                  \\"port\\": 3000,
+                  \\"rootPath\\": \\"\\",
+                  \\"staticPath\\": \\"static\\",
+                  \\"staticDir\\": \\"static\\",
+                  \\"distDir\\": \\"dist\\",
+                  \\"aggregates\\": [],
+                  \\"readModels\\": [],
+                  \\"viewModels\\": [],
+                  \\"sagas\\": [],
+                  \\"apiHandlers\\": [],
+                  \\"index\\": \\"client/index.js\\",
+                  \\"eventstoreAdapter\\": {
+                    \\"module\\": \\"@resolve-js/eventstore-lite\\",
+                    \\"options\\": {
+                      \\"databaseFile\\": \\"data/event-store.db\\"
+                    }
+                  },
+                  \\"snapshotAdapter\\": {
+                    \\"module\\": \\"@resolve-js/snapshot-lite\\",
+                    \\"options\\": {}
+                  },
+                  \\"readModelConnectors\\": {},
+                  \\"schedulers\\": {},
+                  \\"jwtCookie\\": {
+                    \\"name\\": \\"jwt\\",
+                    \\"maxAge\\": 31536000000
+                  },
+                  \\"customConstants\\": {},
+                  \\"clientImports\\": {},
+                  \\"serverImports\\": {},
+                  \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
+                  \\"runtime\\": {
+                    \\"module\\": \\"@resolve-js/runtime-single-process\\"
+                  }
+                },
+                \\"isClient\\": false
+              }
+            }
           ]
+        },
+        {
+          \\"test\\": {},
+          \\"use\\": {
+            \\"loader\\": \\"<MONOREPO_DIR>/node_modules/babel-loader/lib/index.js\\",
+            \\"options\\": {
+              \\"cacheDirectory\\": true
+            }
+          },
+          \\"exclude\\": [
+            {},
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/node_modules\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/lib\\",
+            \\"<MONOREPO_DIR>/packages/tools/scripts/es\\"
+          ]
+        }
+      ]
+    },
+    \\"externals\\": [
+      null,
+      [
+        {
+          \\"modulesDir\\": \\"node_modules\\"
+        }
+      ],
+      [
+        {
+          \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\"
+        }
+      ],
+      [
+        {
+          \\"modulesDir\\": \\"../../../node_modules\\"
         }
       ]
     ],
