@@ -11,42 +11,37 @@ A module is a standalone configuration object that can reference client code, re
 
 **run.js:**
 
-<!-- prettier-ignore-start -->
-
-[embedmd]:# (../examples/js/hacker-news/run.js /^[[:blank:]]+const moduleAuth/ /^[[:blank:]]+\)/)
 ```js
-  const moduleAuth = resolveModuleAuth([
-    {
-      name: 'local-strategy',
-      createStrategy: 'auth/create_strategy.js',
-      logoutRoute: {
-        path: 'logout',
-        method: 'POST'
+const moduleAuth = resolveModuleAuth([
+  {
+    name: 'local-strategy',
+    createStrategy: 'auth/create_strategy.js',
+    logoutRoute: {
+      path: 'logout',
+      method: 'POST',
+    },
+    routes: [
+      {
+        path: 'register',
+        method: 'POST',
+        callback: 'auth/route_register_callback.js',
       },
-      routes: [
-        {
-          path: 'register',
-          method: 'POST',
-          callback: 'auth/route_register_callback.js'
-        },
-        {
-          path: 'login',
-          method: 'POST',
-          callback: 'auth/route_login_callback.js'
-        }
-      ]
-    }
-  ])
+      {
+        path: 'login',
+        method: 'POST',
+        callback: 'auth/route_login_callback.js',
+      },
+    ],
+  },
+])
 
-  const baseConfig = merge(
-    defaultResolveConfig,
-    appConfig,
-    moduleComments,
-    moduleAuth
-  )
+const baseConfig = merge(
+  defaultResolveConfig,
+  appConfig,
+  moduleComments,
+  moduleAuth
+)
 ```
-
-<!-- prettier-ignore-end -->
 
 A merged module's code is included in the resulting application's bundles.
 
