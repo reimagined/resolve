@@ -106,7 +106,7 @@ const isDeleted = await secretManager.deleteSecret(id)
 
 **Result**
 
-A promise that resolves to a `booolean` value. The value indicates whether or not a secret with the specified `id` has been found and successfully deleted.
+A promise that resolves to a `boolean` value. The value indicates whether or not a secret with the specified `id` has been found and successfully deleted.
 
 ## See Also
 
