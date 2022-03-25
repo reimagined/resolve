@@ -19,7 +19,7 @@ type SubscriptionArgs = {
 }
 
 const eventListenerSaga = function* (
-  { viewModels, sagaKey, sagaManager, client, store }: EventListenerSagaArgs,
+  { client, store }: EventListenerSagaArgs,
   { cursor, url, query, state, viewModel }: SubscriptionArgs
 ): any {
   const { name, aggregateIds, args } = query

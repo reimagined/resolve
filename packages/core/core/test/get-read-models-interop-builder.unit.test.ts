@@ -604,9 +604,7 @@ describe('Read model middleware: ', () => {
       )
     })
     test('can interrupt event handling flow', async () => {
-      const dummyProjectionMiddleware: ReadModelProjectionMiddleware = (
-        next
-      ) => async (middlewareContext, store, event, context) => {
+      const dummyProjectionMiddleware: ReadModelProjectionMiddleware = () => async () => {
         throw new Error('Interrupted by middleware')
       }
 
