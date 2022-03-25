@@ -80,6 +80,14 @@
           },
           {
             "type": "category",
+            "label": "Encryption",
+            "items": [
+              "api/encryption/factory-function",
+              "api/encryption/secrets-manager"
+            ]
+          },
+          {
+            "type": "category",
             "label": "Monitoring",
             "items": [
               "api/monitoring/monitoring",
