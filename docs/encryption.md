@@ -92,7 +92,7 @@ The `secretsManager` object contains the following functions:
 
 | Function Name                                                    | Description                                                                                                                               |
 | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| [`getSecret`](api/encryption/secrets-manager.md#getsecret)       | Takes a unique ID as an argument and returns a promise that resolves to a string if a secret was found or null if a secret was not found. |
+| [`getSecret`](api/encryption/secrets-manager.md#getsecret)       | Takes a unique ID as an argument and returns a promise that resolves to a string if a secret was found or `null` if a secret was not found. |
 | [`setSecret`](api/encryption/secrets-manager.md#setsecret)       | Takes a unique ID and a secret string as arguments and returns a promise that resolves if the secret was successfully saved.              |
 | [`deleteSecret`](api/encryption/secrets-manager.md#deletesecret) | Takes a unique ID as an argument and returns a promise that resolves if the secret was successfully deleted.                              |
 
