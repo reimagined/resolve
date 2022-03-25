@@ -133,6 +133,7 @@ const getWebpackCommonConfigs = ({
       ...getModulesDirs().map((modulesDir) =>
         nodeExternals({
           modulesDir,
+          allowlist: [/@resolve-js\/runtime-base/],
         })
       ),
     ],
