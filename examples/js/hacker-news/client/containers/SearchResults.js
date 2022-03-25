@@ -25,8 +25,8 @@ const SearchResults = ({ onNavigate, query }) => {
     search()
   }, [search])
   return results.length ? (
-    results.map((item) => (
-      <SearchResultItem data={item} onNavigate={onNavigate} />
+    results.map((item, index) => (
+      <SearchResultItem key={index} data={item} onNavigate={onNavigate} />
     ))
   ) : (
     <NothingFound>Nothing found</NothingFound>

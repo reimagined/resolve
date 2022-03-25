@@ -471,6 +471,14 @@
           },
           "required": ["module"],
           "additionalProperties": false
+        },
+        "target": {
+          "type": "string",
+          "enum": ["local", "cloud"]
+        },
+        "externalDependencies": {
+          "type": "array",
+          "items": { "type": "string" }
         }
       },
       "required": [

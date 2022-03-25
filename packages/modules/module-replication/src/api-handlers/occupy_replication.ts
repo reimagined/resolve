@@ -2,7 +2,7 @@ import type { ResolveRequest, ResolveResponse } from '@resolve-js/core'
 import respondWithError from './respond-with-error'
 
 const handler = async (req: ResolveRequest, res: ResolveResponse) => {
-  const occupyInfo = JSON.parse(req.body ?? '')
+  const occupyInfo = req.body == null ? null : JSON.parse(req.body.toString())
   if (occupyInfo == null || typeof occupyInfo.lockId !== 'string') {
     res.status(400)
     res.end('Expected lockId')
