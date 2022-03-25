@@ -7,7 +7,7 @@ title: Factory Function
 
 ## Overview
 
-To implement aggregate or read model encryption, you need to define an encryption factory function. This function receives data about the currently processed operation and returns an object that contains your implementation of an `encrypt` and `decrypt` functions.
+To implement aggregate or read model encryption, you need to define an encryption factory function. This function receives data about the currently processed operation and returns an object that contains your implementation of `encrypt` and `decrypt` functions.
 
 ## Aggregate Encryption
 

@@ -61,7 +61,7 @@ A promise that resolves to either the loaded secret or `null` if the secret with
 
 ## `setSecret`
 
-Saves the specified secrete to the event store.
+Saves the specified secret to the event store.
 
 **Example**
 
