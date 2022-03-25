@@ -1,12 +1,15 @@
 import { getLog } from './get-log'
 import { processRegister } from './process_manager'
 import getEntryOptions from './get_entry_options'
+import adjustResolveConfig from './adjust-resolve-config'
 
 const log = getLog('start')
 
 const startMode = (resolveConfig) =>
   new Promise(async (resolve, reject) => {
     log.debug('Starting "start" mode')
+    await adjustResolveConfig(resolveConfig)
+
     const {
       activeRuntimeModule,
       runtimeEntry,

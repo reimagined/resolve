@@ -11,18 +11,11 @@ const warningAboutValue = (valueName: string) =>
 const messageAboutDefaultValue = (valueName: string) =>
   `Setting default ${valueName} for aws serverless runtime`
 
-const EXPERIMENTAL_FEATURE_OVERRIDE_SOME_RUNTIME_OPTIONS =
-  process.env.EXPERIMENTAL_FEATURE_OVERRIDE_SOME_RUNTIME_OPTIONS ?? 'false'
-
 export const adjustResolveConfig = async (resolveConfig: ResolveConfig) => {
   const log = getLog('adjust-resolve-config')
 
   resolveConfig.target = 'cloud'
   resolveConfig.externalDependencies = []
-
-  if (EXPERIMENTAL_FEATURE_OVERRIDE_SOME_RUNTIME_OPTIONS !== 'true') {
-    return
-  }
 
   if (resolveConfig.eventstoreAdapter != null) {
     log.warn(warningAboutValue('eventstoreAdapter'))
