@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/module-replication",
-  "version": "0.33.14",
+  "version": "0.33.15",
   "description": "A reSolve module that adds replication commands to an application.",
   "keywords": [
     "cqrs",
@@ -23,13 +23,13 @@
     "testw": "echo || exit 0"
   },
   "dependencies": {
-    "@babel/runtime": "7.14.0",
-    "@resolve-js/core": "0.33.14",
-    "@resolve-js/debug-levels": "0.33.14",
+    "@babel/runtime": "7.17.2",
+    "@resolve-js/core": "0.33.15",
+    "@resolve-js/debug-levels": "0.33.15",
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
-    "jest": "27.0.3"
+    "jest": "27.5.1"
   },
   "engines": {
     "node": ">=14.17"

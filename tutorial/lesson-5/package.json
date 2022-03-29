@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-tutorial/lesson-5",
-  "version": "0.33.14",
+  "version": "0.33.15",
   "private": true,
   "description": "used as a template for new reSolve applications",
   "scripts": {
@@ -14,15 +14,15 @@
     "test:e2e": "babel-node ./run.js test:e2e"
   },
   "dependencies": {
-    "@babel/node": "7.14.2",
-    "@resolve-js/eventstore-lite": "0.33.14",
-    "@resolve-js/eventstore-postgresql": "0.33.14",
-    "@resolve-js/module-admin": "0.33.14",
-    "@resolve-js/react-hooks": "0.33.14",
-    "@resolve-js/readmodel-lite": "0.33.14",
-    "@resolve-js/readmodel-postgresql": "0.33.14",
-    "@resolve-js/runtime-aws-serverless": "0.33.14",
-    "@resolve-js/runtime-single-process": "0.33.14",
+    "@babel/node": "7.16.8",
+    "@resolve-js/eventstore-lite": "0.33.15",
+    "@resolve-js/eventstore-postgresql": "0.33.15",
+    "@resolve-js/module-admin": "0.33.15",
+    "@resolve-js/react-hooks": "0.33.15",
+    "@resolve-js/readmodel-lite": "0.33.15",
+    "@resolve-js/readmodel-postgresql": "0.33.15",
+    "@resolve-js/runtime-aws-serverless": "0.33.15",
+    "@resolve-js/runtime-single-process": "0.33.15",
     "history": "4.10.1",
     "react": "17.0.2",
     "react-bootstrap": "1.6.0",
@@ -37,20 +37,20 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
-    "@babel/core": "7.14.3",
+    "@babel/core": "7.17.2",
     "@babel/plugin-proposal-class-properties": "7.13.0",
     "@babel/plugin-proposal-export-default-from": "7.12.13",
     "@babel/plugin-proposal-export-namespace-from": "7.14.2",
     "@babel/plugin-transform-runtime": "7.14.3",
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
-    "@resolve-js/scripts": "0.33.14",
-    "aws-sdk": "2.860.0",
+    "@resolve-js/scripts": "0.33.15",
+    "aws-sdk": "2.1001.0",
     "aws-xray-sdk-core": "3.2.0",
-    "babel-jest": "27.0.2",
+    "babel-jest": "27.5.1",
     "isomorphic-fetch": "3.0.0",
-    "jest": "27.0.3",
+    "jest": "27.5.1",
     "react-test-renderer": "17.0.2",
-    "testcafe": "1.17.1"
+    "testcafe": "1.18.3"
   }
 }

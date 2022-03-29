@@ -1,6 +1,6 @@
 {
   "name": "website",
-  "version": "0.33.14",
+  "version": "0.33.15",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
@@ -13,8 +13,8 @@
     "test": "echo Test || exit 0"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-beta.15",
-    "@docusaurus/preset-classic": "^2.0.0-beta.15",
+    "@docusaurus/core": "2.0.0-beta.15",
+    "@docusaurus/preset-classic": "2.0.0-beta.15",
     "clsx": "^1.1.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"

@@ -2,19 +2,42 @@
 
 ## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.14...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.15...HEAD)
+
+**Enhancements:**
+
+- Implement support for PLV8 ver 3.1 [\#2249](https://github.com/reimagined/resolve/pull/2249)
+
+**Bug fixes:**
+
+- Fix eliminated error message in Init projection handler [\#2250](https://github.com/reimagined/resolve/pull/2250)
+
+**Documentation:**
+
+- Add encryption API reference [\#2254](https://github.com/reimagined/resolve/pull/2254)
+
+**Other changes:**
+
+- Refactor resolve-scripts and runtimes [\#2245](https://github.com/reimagined/resolve/pull/2245)
+
+## [V0.33.15](https://github.com/reimagined/resolve/tree/V0.33.15) (2022-03-03)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.14...V0.33.15)
 
 **Bug fixes:**
 
 - Can't build a monorepo, yarn install dependencies gives random errors [\#2230](https://github.com/reimagined/resolve/issues/2230)
+- Performance tracing commands do not work [\#2202](https://github.com/reimagined/resolve/issues/2202)
 
 **Documentation:**
 
+- Add a Getting Started article [\#2234](https://github.com/reimagined/resolve/pull/2234)
 - Describe the reSolve context object and related API [\#2229](https://github.com/reimagined/resolve/pull/2229)
 - Descibe monitoring in the documentation [\#2201](https://github.com/reimagined/resolve/pull/2201)
 
 **Other changes:**
 
+- Fix eslint warnings in the tutorial example projects [\#2238](https://github.com/reimagined/resolve/pull/2238)
 - Fix \#2230 [\#2232](https://github.com/reimagined/resolve/pull/2232)
 
 ## [V0.33.14](https://github.com/reimagined/resolve/tree/V0.33.14) (2022-01-27)

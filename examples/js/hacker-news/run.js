@@ -14,15 +14,16 @@ import resolveModuleComments from '@resolve-js/module-comments'
 import resolveModuleAuth from '@resolve-js/module-auth'
 import resolveModuleAdmin from '@resolve-js/module-admin'
 import resolveModuleReplication from '@resolve-js/module-replication'
+import debug from '@resolve-js/debug-levels'
 import appConfig from './config.app'
 import cloudConfig from './config.cloud'
 import cloudReplicaConfig from './config.cloud.replica'
 import devConfig from './config.dev'
 import devReplicaConfig from './config.dev.replica'
 import prodConfig from './config.prod'
+import dockerConfig from './config.docker'
 import testFunctionalConfig from './config.test-functional'
 import adjustWebpackConfigs from './config.adjust-webpack'
-import debug from '@resolve-js/debug-levels'
 import runImport from './import'
 const launchMode = process.argv[2]
 const getLog = (scope) => debug(`hacker-news:${scope}`)
@@ -103,6 +104,11 @@ void (async () => {
       }
       case 'build': {
         const resolveConfig = merge(baseConfig, prodConfig)
+        await build(resolveConfig, adjustWebpackConfigs)
+        break
+      }
+      case 'build:docker': {
+        const resolveConfig = merge(baseConfig, dockerConfig)
         await build(resolveConfig, adjustWebpackConfigs)
         break
       }

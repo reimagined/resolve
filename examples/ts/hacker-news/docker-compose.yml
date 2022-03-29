@@ -1,0 +1,39 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:14.1
+    environment:
+      POSTGRES_USER: 'hn-admin'
+      POSTGRES_PASSWORD: 'pRWGAqCEq4'
+    volumes:
+      - ./docker/volumes/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+
+  server:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    environment:
+      HOST: '0.0.0.0'
+      RESOLVE_EVENT_STORE_DATABASE_NAME: 'event-store'
+      RESOLVE_EVENT_STORE_CLUSTER_HOST: 'postgres'
+      RESOLVE_EVENT_STORE_CLUSTER_PORT: '5432'
+      RESOLVE_READMODEL_DATABASE_NAME: 'read-store'
+      RESOLVE_READMODEL_CLUSTER_HOST: 'postgres'
+      RESOLVE_READMODEL_CLUSTER_PORT: '5432'
+      RESOLVE_USER: 'hn-user'
+      RESOLVE_USER_PASSWORD: 'QweZxc123'
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx:1.17
+    ports:
+      - '3000:80'
+    depends_on:
+      - server
+    volumes:
+      - ./docker/volumes/nginx/conf.d:/etc/nginx/conf.d:ro
+
+networks:
+  default:
+    driver: bridge

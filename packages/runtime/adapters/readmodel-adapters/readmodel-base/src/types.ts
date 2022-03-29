@@ -247,10 +247,15 @@ export type ReadModelLedger = {
   IsPaused: boolean
 }
 
-export type MethodNext = (
-  timeout?: number,
-  notificationExtraPayload?: object
-) => Promise<void>
+export type BuildDirectContinuation = {
+  type: 'build-direct-invoke'
+  payload: {
+    continue: boolean
+    timeout?: number
+    notificationExtraPayload?: object
+  }
+}
+
 export type MethodGetRemainingTime = () => number
 export type MethodGetEncryption = () => (
   event: ReadModelEvent
@@ -371,9 +376,8 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
 
   resume(
     pool: AdapterPool,
-    readModelName: string,
-    next: MethodNext
-  ): Promise<void>
+    readModelName: string
+  ): Promise<BuildDirectContinuation>
 
   pause(pool: AdapterPool, readModelName: string): Promise<void>
 
@@ -395,11 +399,10 @@ export type AdapterOperations<AdapterPool extends CommonAdapterPool> = {
     modelInterop: ReadModelInterop<
       ReadModelStoreImpl<AdapterPool, StoreApi<AdapterPool>>
     >,
-    next: MethodNext,
     eventstoreAdapter: EventStoreAdapterLike,
     getVacantTimeInMillis: MethodGetRemainingTime,
     buildInfo: BuildInfo
-  ): Promise<void>
+  ): Promise<BuildDirectContinuation>
 }
 
 export type AdapterImplementation<
@@ -575,6 +578,14 @@ export type CreateAdapterMethod = <
   options: AdapterOptions
 ) => AdapterApi<AdapterPool>
 
+export type IfEquals<T, U, Y = unknown, N = never> = (<G>() => G extends T
+  ? 1
+  : 2) extends <G>() => G extends U ? 1 : 2
+  ? Y
+  : N
+
+export type IsTypeLike<T, B> = IfEquals<Extract<T, B>, T>
+
 export type ObjectKeys<T> = T extends object
   ? (keyof T)[]
   : T extends number
@@ -584,31 +595,27 @@ export type ObjectKeys<T> = T extends object
   ? string[]
   : never
 
-export type PrimitiveOnly<K> = string extends K
-  ? never
-  : number extends K
-  ? never
-  : K
-
-export type ObjectFixedKeysDistribute<T> = T extends any
-  ? T extends [infer U]
-    ? PrimitiveOnly<U>
+export type ObjectFixedKeysImpl<
+  T extends object,
+  U = {
+    [K in keyof T]: [K]
+  },
+  Q = U extends {
+    [K in keyof U]: infer E
+  }
+    ? E
+    : never
+> = T extends any
+  ? Q extends [infer U]
+    ? string extends U
+      ? never
+      : number extends U
+      ? never
+      : U
     : never
   : never
 
-export type ObjectFixedKeysReInfer<T extends object> = T extends {
-  [K in keyof T]: infer U
-}
-  ? U
-  : never
-
-export type ObjectFixedKeysKeysToValues<T extends object> = {
-  [K in keyof T]: [K]
-}
-
-export type ObjectFixedKeys<T extends object> = ObjectFixedKeysDistribute<
-  ObjectFixedKeysReInfer<ObjectFixedKeysKeysToValues<T>>
->
+export type ObjectFixedKeys<T extends object> = ObjectFixedKeysImpl<T>
 
 export type DistributeKeysUnion<U> = U extends string | number | symbol
   ? { [K in U]: any }
@@ -621,19 +628,18 @@ export type ObjectDictionaryKeys<T extends object> = Exclude<
 
 export type DistributeFixedFieldsUnionLikeObject<
   U extends object,
-  K extends keyof any,
-  KS = Exclude<ObjectFixedKeys<U>, K>
-> = KS extends keyof any ? { [K in KS]: any } : never
+  KS extends keyof any
+> = U extends any
+  ? [IsTypeLike<U, { [K in KS]: any }>] extends [never]
+    ? never
+    : U
+  : never
 
 export type ExtractExactUnionLikeKeyType<
   U extends object,
   K extends keyof any,
-  Q extends object = Exclude<U, DistributeFixedFieldsUnionLikeObject<U, K>>,
-  KS = ObjectFixedKeys<Q>
-> = Extract<Q, KS extends keyof Q ? { [K in KS]: Q[K] } : never>[keyof Extract<
-  Q,
-  KS extends keyof Q ? { [K in KS]: Q[K] } : never
->]
+  Q extends object = DistributeFixedFieldsUnionLikeObject<U, K>
+> = K extends keyof Q ? Q[K] : never
 
 export type DistributeUnionLikeObject<
   U extends object,
@@ -675,20 +681,12 @@ export type ObjectFunctionLikeKeys<
 
 export type JsonLike = JsonPrimitive | JsonArray | JsonMap
 
-export type IfEquals<T, U, Y = unknown, N = never> = (<G>() => G extends T
-  ? 1
-  : 2) extends <G>() => G extends U ? 1 : 2
-  ? Y
-  : N
-
-export type IsTypeLike<T, B> = IfEquals<Extract<T, B>, T>
-
 export type EnsureExclude<T, U> = [IsTypeLike<U, T>] extends [never]
   ? never
   : Exclude<T, U>
 
 export type MatchTypeConditional<
-  M extends any,
+  M,
   V extends Array<[any, any]>,
   D = never
 > = V extends [[infer A, infer B], ...infer T]
@@ -700,7 +698,7 @@ export type MatchTypeConditional<
   : D
 
 export type MatchTypeConditionalLike<
-  M extends any,
+  M,
   V extends Array<[any, any]>,
   D = never
 > = V extends [[infer A, infer B], ...infer T]

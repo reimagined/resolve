@@ -1,32 +1,16 @@
 import crypto from 'crypto'
+import {
+  runtimeEnvSymbol,
+  declareRuntimeEnv,
+  checkRuntimeEnv,
+} from '@resolve-js/core'
 import getClientGlobalObject from './client_global_object'
-
-const runtimeEnvSymbol = Symbol('@@resolve/runtime_env')
 
 const createDigestHash = (prefix, content) => {
   const hmac = crypto.createHmac('sha512', prefix)
   hmac.update(content)
   return hmac.digest('hex')
 }
-
-const declareRuntimeEnv = (envName, defaultValue) => {
-  if (envName == null || envName.constructor !== String) {
-    throw new Error('Runtime environment variable must be a string')
-  }
-  if (defaultValue != null && defaultValue.constructor !== String) {
-    throw new Error('Default value must be a string or be absent')
-  }
-
-  // eslint-disable-next-line no-new-wrappers
-  const envContainer = new String(envName)
-  envContainer.type = runtimeEnvSymbol
-  envContainer.defaultValue = defaultValue != null ? defaultValue : null
-
-  return envContainer
-}
-
-export const checkRuntimeEnv = (value) =>
-  !(value == null || value.type !== runtimeEnvSymbol)
 
 export const injectRuntimeEnv = (json, isClient = false) => {
   const seedPrefix = JSON.stringify(json)
@@ -69,5 +53,7 @@ export const injectRuntimeEnv = (json, isClient = false) => {
 
   return result
 }
+
+export { runtimeEnvSymbol, declareRuntimeEnv, checkRuntimeEnv }
 
 export default declareRuntimeEnv

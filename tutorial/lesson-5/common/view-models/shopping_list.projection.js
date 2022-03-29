@@ -7,7 +7,7 @@ import {
 } from '../eventTypes'
 
 // A View Model's projection is defined in a format that is isomorphic with a Redux reducer format.
-export default {
+const projection = {
   // The 'Init' function initializes the View Model's state object.
   Init: () => ({
     id: 'id',
@@ -54,3 +54,5 @@ export default {
     list: state.list.filter((item) => item.id !== id),
   }),
 }
+
+export default projection

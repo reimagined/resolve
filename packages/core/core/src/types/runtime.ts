@@ -346,6 +346,7 @@ export type UserBackendResolve = Readonly<
     executeSaga: SagaExecutor
     seedClientEnvs: any
     broadcastEvent: (event?: EventPointer) => Promise<void>
+    serverImports: { [key: string]: any }
   } & BuildTimeConstants
 >
 

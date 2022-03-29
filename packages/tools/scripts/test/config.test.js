@@ -172,7 +172,7 @@ describe('validate schema', () => {
 
   it('middlewares', () => {
     const resolveConfig = {
-      ...defaultResolveConfig,
+      ...resolveConfigOrigin,
       eventstoreAdapter: {
         module: '@resolve-js/eventstore-lite',
         options: {},

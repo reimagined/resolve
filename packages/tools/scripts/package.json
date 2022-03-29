@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/scripts",
-  "version": "0.33.14",
+  "version": "0.33.15",
   "description": "Contains scripts used to initialize a reSolve server.",
   "keywords": [
     "cqrs",
@@ -23,7 +23,7 @@
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@babel/core": "7.14.3",
+    "@babel/core": "7.17.2",
     "@babel/plugin-proposal-class-properties": "7.13.0",
     "@babel/plugin-proposal-export-default-from": "7.12.13",
     "@babel/plugin-proposal-export-namespace-from": "7.14.2",
@@ -31,15 +31,15 @@
     "@babel/preset-env": "7.14.4",
     "@babel/preset-react": "7.13.13",
     "@babel/register": "7.13.16",
-    "@babel/runtime": "7.14.0",
+    "@babel/runtime": "7.17.2",
     "@purtuga/esm-webpack-plugin": "1.5.0",
-    "@resolve-js/core": "0.33.14",
-    "@resolve-js/debug-levels": "0.33.14",
-    "@resolve-js/runtime-aws-serverless": "0.33.14",
-    "@resolve-js/runtime-base": "0.33.14",
-    "@resolve-js/runtime-single-process": "0.33.14",
+    "@resolve-js/core": "0.33.15",
+    "@resolve-js/debug-levels": "0.33.15",
+    "@resolve-js/runtime-aws-serverless": "0.33.15",
+    "@resolve-js/runtime-base": "0.33.15",
+    "@resolve-js/runtime-single-process": "0.33.15",
     "address": "1.1.2",
-    "ajv": "7.2.1",
+    "ajv": "8.10.0",
     "babel-loader": "8.2.2",
     "babel-plugin-module-resolver": "4.1.0",
     "babel-plugin-transform-import-inline": "^0.0.4",
@@ -56,14 +56,15 @@
     "semver": "7.3.5",
     "socket.io-client": "4.0.0",
     "synchronous-promise": "2.0.15",
-    "testcafe": "1.17.1",
-    "testcafe-browser-tools": "2.0.15",
+    "testcafe": "1.18.3",
+    "testcafe-browser-tools": "2.0.22",
     "uuid": "8.3.2",
     "webpack": "4.46.0",
-    "webpack-node-externals": "2.5.2"
+    "webpack-node-externals": "2.5.2",
+    "source-map-support": "0.5.21"
   },
   "devDependencies": {
-    "jest": "27.0.3",
+    "jest": "27.5.1",
     "lodash.escaperegexp": "4.1.2"
   },
   "engines": {

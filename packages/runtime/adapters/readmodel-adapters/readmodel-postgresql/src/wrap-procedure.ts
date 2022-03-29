@@ -76,32 +76,56 @@ const serializeError = (error) =>
       }
     : null
 
-const filterFields = (fieldList, inputRow) => {
+const isBigInt = (value) => {
+  try {
+    if (BigInt.constructor === Function && value.constructor === BigInt) {
+      return true
+    }
+  } catch (e) {}
+  return false
+}
+
+const maybeCoerceFieldInPlace = (field) => {
+  if (isBigInt(field)) {
+    return Number(field)
+  }
+
+  if (Array.isArray(field)) {
+    for (let index = 0; index < field.length; index++) {
+      field[index] = maybeCoerceFieldInPlace(field[index])
+    }
+  } else if (field != null && field.constructor === Object) {
+    for (const key of Object.keys(field)) {
+      field[key] = maybeCoerceFieldInPlace(field[key])
+    }
+  }
+
+  return field
+}
+
+const filterFields = (fieldList, row) => {
   if (fieldList != null && fieldList.constructor !== Object) {
     throw new Error(
       'Field list should be an object with enumerated selected fields'
     )
   }
-  const row = { ...inputRow }
-
   const fieldNames = fieldList != null ? Object.keys(fieldList) : []
-  if (fieldList == null || fieldNames.length === 0) {
-    return row
-  }
-
-  const inclusiveMode = fieldList[fieldNames[0]] === 1
-  const resultRow = {}
+  const inclusiveMode = !(fieldList == null || fieldNames.length === 0)
+    ? fieldList[fieldNames[0]] === 1
+    : false
 
   for (const key of Object.keys(row)) {
     if (
       (inclusiveMode && fieldList.hasOwnProperty(key)) ||
       (!inclusiveMode && !fieldList.hasOwnProperty(key))
     ) {
-      resultRow[key] = row[key]
+      row[key] = maybeCoerceFieldInPlace(row[key])
+    } else {
+      delete row[key]
     }
   }
 
-  return resultRow
+  return row
 }
 
 const executeProjection = async (
@@ -188,13 +212,13 @@ const getStoreAndProjection = (readModel, options) => {
 
 const wrapProcedure = (readModel) => (input, options) => {
   checkEnvironment()
-
   const {
     events: inputEvents,
     localEventsDatabaseName,
     localEventsTableName,
     maxExecutionTime,
   } = input
+
   if (
     inputEvents != null &&
     (localEventsDatabaseName != null || localEventsTableName != null)
@@ -218,8 +242,9 @@ const wrapProcedure = (readModel) => (input, options) => {
       WHERE "EventSubscriber" = ${escapeStr(readModel.name)}
     `)
 
-      events = Array.from(
-        plv8.execute(`
+      events = maybeCoerceFieldInPlace(
+        Array.from(
+          plv8.execute(`
         SELECT "sortedEvents".* FROM (
           SELECT "unitedEvents".* FROM (
           ${cursorStrToHex(Cursor)
@@ -243,6 +268,7 @@ const wrapProcedure = (readModel) => (input, options) => {
         "sortedEvents"."threadCounter" ASC,
         "sortedEvents"."threadId" ASC
       `)
+        )
       )
     } catch (err) {
       throw new Error('Local events reading failed')

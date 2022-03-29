@@ -1,7 +1,6 @@
 import partial from 'lodash.partial'
 import { createCommandExecutor } from './command'
 import { createQueryExecutor } from './query'
-import { createSagaExecutor } from './saga'
 import type {
   AggregateInterop,
   Command,
@@ -15,13 +14,17 @@ import type {
   Runtime,
   RuntimeFactoryParameters,
   Scheduler,
+  EventSubscriber,
+  UnPromise,
 } from './types'
 import { getLog } from './utils/get-log'
 import { eventBroadcastFactory } from './event-broadcast-factory'
 import { commandExecutedHookFactory } from './command-executed-hook-factory'
-import { eventSubscriberFactory } from './event-subscriber'
+import eventSubscriberFactory from './event-subscriber'
 import { readModelProcedureLoaderFactory } from './load-read-model-procedure'
 import { eventListenersManagerFactory } from './event-listeners-manager-factory'
+import sideEffectTimestampProviderFactory from './side-effect-timestamp-provider'
+import nextNotification from './notification-next'
 
 export type EventStoreAdapterFactory = () => Adapter
 
@@ -63,9 +66,6 @@ const dispose = async (runtime: Runtime) => {
     log.debug(`metrics published`)
 
     const disposeMethods: Array<() => Promise<void>> = [
-      runtime.executeCommand.dispose.bind(runtime.executeCommand),
-      runtime.executeQuery.dispose.bind(runtime.executeQuery),
-      runtime.executeSaga.dispose.bind(runtime.executeSaga),
       runtime.eventStoreAdapter.dispose.bind(runtime.eventStoreAdapter),
     ]
 
@@ -195,30 +195,25 @@ export const createRuntime = async (
     uploader,
   } = params
 
-  const executeQuery = createQueryExecutor({
-    invokeBuildAsync,
-    applicationName: eventSubscriberScope,
-    eventstoreAdapter: eventStoreAdapter,
-    getEventSubscriberDestination,
-    readModelConnectors,
-    loadReadModelProcedure,
-    performanceTracer,
-    getVacantTimeInMillis,
-    monitoring,
-    readModelsInterop: domainInterop.readModelDomain.acquireReadModelsInterop({
+  const readModelsInterop = domainInterop.readModelDomain.acquireReadModelsInterop(
+    {
       monitoring,
       secretsManager,
       resolverMiddlewares,
       projectionMiddlewares,
-    }),
-    viewModelsInterop: domainInterop.viewModelDomain.acquireViewModelsInterop({
+    }
+  )
+
+  const viewModelsInterop = domainInterop.viewModelDomain.acquireViewModelsInterop(
+    {
       monitoring,
       eventstore: eventStoreAdapter,
       secretsManager,
-    }),
-  })
+    }
+  )
 
-  const getScheduler = () => {
+  // TODO ????
+  const getScheduler = (): any => {
     if (params.scheduler != null) {
       log.debug(`actual scheduler bound`)
       return params.scheduler
@@ -227,28 +222,111 @@ export const createRuntime = async (
     return schedulerGuard
   }
 
-  const executeSaga = createSagaExecutor({
-    invokeBuildAsync,
-    applicationName: eventSubscriberScope,
-    executeCommand,
-    executeQuery,
-    eventstoreAdapter: eventStoreAdapter,
-    getEventSubscriberDestination,
+  const executeCommandForSaga = async (options: any) => {
+    const aggregateName = options.aggregateName
+    if (aggregateName === domainInterop.sagaDomain.schedulerName) {
+      return await executeSchedulerCommand(options)
+    } else {
+      return await executeCommand(options)
+    }
+  }
+
+  const sideEffectTimestampProvider = sideEffectTimestampProviderFactory(
+    eventStoreAdapter,
+    eventSubscriberScope
+  )
+  const sagasInterop = domainInterop.sagaDomain.acquireSagasInterop({
+    // TODO ????
+    get scheduler() {
+      return getScheduler()
+    },
+    get getSideEffectsTimestamp() {
+      return sideEffectTimestampProvider.getSideEffectsTimestamp
+    },
+    get setSideEffectsTimestamp() {
+      return sideEffectTimestampProvider.setSideEffectsTimestamp
+    },
+    // TODO ????
+    executeCommand: executeCommandForSaga,
+    get executeQuery() {
+      return executeQuery
+    },
     secretsManager,
-    readModelConnectors,
-    performanceTracer,
-    getVacantTimeInMillis,
-    uploader,
-    getScheduler,
     monitoring,
-    domainInterop,
-    executeSchedulerCommand,
+    uploader,
   })
 
-  const eventSubscriber = eventSubscriberFactory({
-    executeQuery,
-    executeSaga,
-    eventListeners,
+  const eventSubscriberImpl = eventSubscriberFactory({
+    applicationName: eventSubscriberScope,
+    setCurrentEventSubscriber:
+      sideEffectTimestampProvider.setCurrentEventSubscriber,
+    getEventSubscriberDestination,
+    loadReadModelProcedure,
+    readModelConnectors,
+    getVacantTimeInMillis,
+    eventstoreAdapter: eventStoreAdapter,
+    readModelsInterop,
+    sagasInterop,
+    performanceTracer,
+    monitoring,
+  })
+
+  // TODO ???
+  const eventSubscriber = {
+    ...eventSubscriberImpl,
+    resume: async (
+      ...args: Parameters<EventSubscriber['resume']>
+    ): Promise<UnPromise<ReturnType<EventSubscriber['resume']>>> => {
+      const notification = await eventSubscriberImpl.resume(...args)
+      // TODO ???
+      const eventSubscriberName =
+        args[0].eventSubscriber ?? args[0].modelName ?? null
+      await nextNotification(
+        invokeBuildAsync,
+        notification,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        eventSubscriberName!
+      )
+      //
+      return notification
+    },
+    build: async (
+      ...args: Parameters<EventSubscriber['build']>
+    ): Promise<UnPromise<ReturnType<EventSubscriber['build']>>> => {
+      const notification = await eventSubscriberImpl.build(...args)
+      // TODO ???
+      const eventSubscriberName =
+        args[0].eventSubscriber ?? args[0].modelName ?? null
+      await nextNotification(
+        invokeBuildAsync,
+        notification,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        eventSubscriberName!
+      )
+      //
+      return notification
+    },
+  }
+  //
+
+  const executeQuery = createQueryExecutor({
+    get eventSubscriber() {
+      return eventSubscriber
+    },
+    readModelConnectors,
+    readModelsInterop,
+    viewModelsInterop,
+    performanceTracer,
+    monitoring,
+  })
+
+  const sagaReadGuard = async () => {
+    throw new Error('Read from saga is prohibited')
+  }
+  const executeSaga = Object.assign(sagaReadGuard, {
+    read: sagaReadGuard,
+    serializeState: sagaReadGuard,
+    ...eventSubscriber,
   })
 
   const eventListenersManager = eventListenersManagerFactory(
@@ -283,6 +361,8 @@ export const createRuntime = async (
     broadcastEvent,
   })
 
+  const { serverImports } = params
+
   const runtime: Runtime = {
     eventStoreAdapter,
     uploader,
@@ -299,6 +379,7 @@ export const createRuntime = async (
     },
     broadcastEvent,
     monitoring,
+    serverImports,
   }
 
   return runtime

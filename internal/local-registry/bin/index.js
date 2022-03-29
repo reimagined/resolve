@@ -13,12 +13,9 @@ const localRegistry = getLocalRegistryConfig()
 
 http
   .createServer((req, res) => {
-    const fileName = req.url.slice(1)
+    const fileName = req.url.slice(1).replace(/\?.*$/, '')
 
-    const filePath = path.join(
-      localRegistry.directory,
-      fileName.replace(/\?.*$/, '')
-    )
+    const filePath = path.join(localRegistry.directory, fileName)
 
     const resolvePackagesFiles = getResolvePackages().map(safeName)
 

@@ -2,13 +2,14 @@
   "docs": {
     "Docs Index": [
       "introduction",
+      "getting-started",
       "tutorial",
       {
         "type": "category",
         "label": "Basics",
         "items": [
-          "write-side",  
-          "read-side", 
+          "write-side",
+          "read-side",
           "sagas",
           "adapters",
           "api-handlers",
@@ -30,6 +31,7 @@
           "file-upload",
           "export-import",
           "preparing-for-production",
+          "running-in-containers",
           "code-splitting",
           "debugging",
           "testing",
@@ -79,6 +81,14 @@
           },
           {
             "type": "category",
+            "label": "Encryption",
+            "items": [
+              "api/encryption/factory-function",
+              "api/encryption/secrets-manager"
+            ]
+          },
+          {
+            "type": "category",
             "label": "Monitoring",
             "items": [
               "api/monitoring/monitoring",
@@ -108,7 +118,7 @@
       },
       "application-configuration",
       "faq",
-      "troubleshooting"    
+      "troubleshooting"
     ]
   }
 }

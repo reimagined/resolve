@@ -1,6 +1,5 @@
 import type {
   Adapter,
-  ReplicationState,
   OldSecretRecord,
   OldEvent,
 } from '@resolve-js/eventstore-base'
