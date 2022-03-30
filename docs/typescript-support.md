@@ -89,11 +89,11 @@ For more information on the used types used in the above code sample, refer to t
 
 ## Type Correspondence Table
 
-You can use the table below as a quick reference for the provided TypeScript types and the packages where they reside.
+The tables below list the available TypeScript types and the packages that export these types.
 
 ### Write Side
 
-| Block Name                 | TypeScript Type Name  | Package            |
+| Object                     | Type                  | Package            |
 | -------------------------- | --------------------- | ------------------ |
 | Aggregate Command Handlers | `Aggregate`           | `@resolve-js/core` |
 | Aggregate Projection       | `AggregateProjection` | `@resolve-js/core` |
@@ -104,7 +104,7 @@ You can use the table below as a quick reference for the provided TypeScript typ
 
 #### Read Models
 
-| Block Name   | TypeScript Type Name   | Package                      |
+| Object       | Type                   | Package                      |
 | ------------ | ---------------------- | ---------------------------- |
 | Projection   | `ReadModel`            | `@resolve-js/core`           |
 | Resolvers    | `ReadModelResolvers`   | `@resolve-js/core`           |
@@ -115,7 +115,7 @@ You can use the table below as a quick reference for the provided TypeScript typ
 
 #### View Models
 
-| Block Name            | TypeScript Type Name   | Package            |
+| Object                | Type                   | Package            |
 | --------------------- | ---------------------- | ------------------ |
 | View Model Projection | `ViewModelProjection`  | `@resolve-js/core` |
 | Read Model Resolvers  | `ViewModelResolver`    | `@resolve-js/core` |
@@ -124,13 +124,13 @@ You can use the table below as a quick reference for the provided TypeScript typ
 
 #### Saga
 
-| Block Name  | TypeScript Type Name | Package            |
-| ----------- | -------------------- | ------------------ |
-| Saga Object | `Saga`               | `@resolve-js/core` |
+| Object | Type   | Package            |
+| ------ | ------ | ------------------ |
+| Saga   | `Saga` | `@resolve-js/core` |
 
 ### Middleware
 
-| Block Name                       | TypeScript Type Name            | Package            |
+| Object                           | Type                            | Package            |
 | -------------------------------- | ------------------------------- | ------------------ |
 | Command Middleware               | `CommandMiddleware`             | `@resolve-js/core` |
 | Read Model Projection Middleware | `ReadModelProjectionMiddleware` | `@resolve-js/core` |
@@ -138,7 +138,7 @@ You can use the table below as a quick reference for the provided TypeScript typ
 
 ### API Handlers
 
-| Block Name | TypeScript Type Name | Package                    |
+| Block Name | Type                 | Package                    |
 | ---------- | -------------------- | -------------------------- |
 | Request    | `ResolveRequest`     | `@resolve-js/runtime-base` |
 | Response   | `ResolveResponse`    | `@resolve-js/runtime-base` |
@@ -146,7 +146,7 @@ You can use the table below as a quick reference for the provided TypeScript typ
 
 ### Monitoring
 
-| Block Name        | TypeScript Type Name     | Package            |
+| Block Name        | Type                     | Package            |
 | ----------------- | ------------------------ | ------------------ |
 | Metric            | `MonitoringMetric`       | `@resolve-js/core` |
 | Custom Metric     | `MonitoringCustomMetric` | `@resolve-js/core` |
