@@ -21,7 +21,7 @@ The handler receives a request and response objects. See the sections below for 
 A request object has an associated TypeScript type:
 
 - Type Name - `ResolveRequest`
-- Containing Package - `@resolve-js/runtime-base`
+- Package - `@resolve-js/runtime-base`
 
 :::
 
@@ -44,7 +44,7 @@ The request object exposes the following fields:
 A response object has an associated TypeScript type:
 
 - Type Name - `ResolveResponse`
-- Containing Package - `@resolve-js/runtime-base`
+- Package - `@resolve-js/runtime-base`
 
 :::
 

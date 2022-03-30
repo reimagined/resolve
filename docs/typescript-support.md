@@ -25,7 +25,7 @@ yarn create resolve-app hello-world-react -e react -t
 
 You can refer the API reference and the [example projects](introduction.md#examples-and-template-projects) for the information on the type scheme that you should follow when implementing various building block of a reSolve application.
 
-In general, most of the blocks require one ore more type imports from a containing package. For example the code below demonstrates a correctly typed read model implementation:
+In general, most of the blocks require one ore more type imports from a reSolve packages. For example the code below demonstrates a correctly typed read model implementation:
 
 <Tabs>
 <TabItem value="projection" label="Projection" default>

@@ -8,7 +8,7 @@ title: Monitoring Interface
 A monitoring object has an associated TypeScript type:
 
 - Type Name - `Monitoring`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 

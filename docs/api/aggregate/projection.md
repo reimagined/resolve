@@ -8,7 +8,7 @@ title: Projection
 An aggregate projection object has an associated TypeScript type:
 
 - Type Name - `AggregateProjection`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 

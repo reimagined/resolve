@@ -10,7 +10,7 @@ title: Query
 A view model query has an associated TypeScript type:
 
 - Type Name - `ViewModelQuery`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 
@@ -34,7 +34,7 @@ A view model query object has the following structure:
 A view model query result has an associated TypeScript type:
 
 - Type Name - `ViewModelQueryResult`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 

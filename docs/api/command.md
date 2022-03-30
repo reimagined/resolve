@@ -10,7 +10,7 @@ title: Command
 An command object has an associated TypeScript type:
 
 - Type Name - `Command`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 
@@ -37,7 +37,7 @@ A command is an object of the following structure:
 An command result object has an associated TypeScript type:
 
 - Type Name - `CommandResult`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 

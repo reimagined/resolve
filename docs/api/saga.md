@@ -9,7 +9,7 @@ description: This document describes API used by sagas.
 A saga object has an associated TypeScript type:
 
 - Type Name - `Saga`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 

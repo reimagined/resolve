@@ -9,7 +9,7 @@ description: The 'resolve' context object is available to an API handler functio
 A reSolve context object has an associated TypeScript type:
 
 - Type Name - `UserBackendResolve`
-- Containing Package - `@resolve-js/runtime-base`
+- Package - `@resolve-js/runtime-base`
 
 :::
 

@@ -9,7 +9,7 @@ description: This document describes functions that you can use to communicate w
 A read model store has an associated TypeScript type:
 
 - Type Name - `ResolveStore`
-- Containing Package - `@resolve-js/readmodel-base`
+- Package - `@resolve-js/readmodel-base`
 
 :::
 

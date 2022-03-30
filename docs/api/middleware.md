@@ -11,7 +11,7 @@ description: This document describes API used by Aggregate and Read Model middle
 A command middleware function has an associated TypeScript type:
 
 - Type Name - `CommandMiddleware`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 
@@ -57,7 +57,7 @@ Both `req` and `res` fields are included only if the client sends the command. I
 A read model projection middleware function has an associated TypeScript type:
 
 - Type Name - `ReadModelProjectionMiddleware`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 
@@ -101,7 +101,7 @@ A projection middleware handler's `middlewareContext` argument is an object with
 A read model resolver middleware function has an associated TypeScript type:
 
 - Type Name - `ReadModelResolverMiddleware`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 

@@ -10,7 +10,7 @@ title: Monitoring Metric
 A monitoring metric object has an associated TypeScript type:
 
 - Type Name - `MonitoringMetric`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 
@@ -40,7 +40,7 @@ A metric object has the following structure:
 A custom metric object has an associated TypeScript type:
 
 - Type Name - `MonitoringCustomMetric`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 

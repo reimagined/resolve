@@ -8,7 +8,7 @@ title: Projection
 A read model projection has an associated TypeScript type:
 
 - Type Name - `ReadModel`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 

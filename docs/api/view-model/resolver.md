@@ -8,7 +8,7 @@ title: Resolver
 A view model resolver object has an associated TypeScript type:
 
 - Type Name - `ViewModelResolver`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 

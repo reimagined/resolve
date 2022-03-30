@@ -10,7 +10,7 @@ title: Query
 A read model query has an associated TypeScript type:
 
 - Type Name - `ReadModelQuery`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 
@@ -36,7 +36,7 @@ A read model query object has the following structure:
 A read model query result has an associated TypeScript type:
 
 - Type Name - `ReadModelQueryResult`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 

@@ -8,7 +8,7 @@ title: Event
 An event object has an associated TypeScript type:
 
 - Type Name - `Event`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 

@@ -8,7 +8,7 @@ title: Command Handler
 Command handlers are grouped into an Aggregate container object that has an associated TypeScript type:
 
 - Type Name - `Aggregate`
-- Containing Package - `@resolve-js/core`
+- Package - `@resolve-js/core`
 
 :::
 
