@@ -26,7 +26,7 @@ yarn create resolve-app hello-world-react -e react -t
 When you develop a reSolve application with TypeScript, you need to assign correct types to all of the application's building blocks ([aggregates](write-side.md), [read model projections and resolvers](read-side.md), [sagas](sagas.md), and so on). Refer to the resources listed bellow for the information on the type scheme that you should follow:
 
 - The [Type Correspondence Tables](#type-correspondence-tables) list the available types in a single document section.
-- All TypeScript [example](https://github.com/reimagined/resolve/tree/master/examples) and [template](https://github.com/reimagined/resolve/tree/dev/templates) projects are correctly typed and can be used as reference material.
+- All TypeScript [example](https://github.com/reimagined/resolve/tree/master/examples) and [template](https://github.com/reimagined/resolve/tree/dev/templates) projects are correctly typed and can be used for reference.
 - The API Reference articles contain information on the types associated with the described API members.
 
 ### Example
