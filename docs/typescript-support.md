@@ -99,62 +99,62 @@ The tables below list the available TypeScript types and the packages that expor
 
 ### Write Side
 
-| Object                     | Type                  | Package            |
-| -------------------------- | --------------------- | ------------------ |
-| Aggregate Command Handlers | `Aggregate`           | `@resolve-js/core` |
-| Aggregate Projection       | `AggregateProjection` | `@resolve-js/core` |
-| Command                    | `Command`             | `@resolve-js/core` |
-| Event                      | `Event`               | `@resolve-js/core` |
+| Object                                                         | Type                  | Package            |
+| -------------------------------------------------------------- | --------------------- | ------------------ |
+| [Aggregate Command Handlers](api/aggregate/command-handler.md) | `Aggregate`           | `@resolve-js/core` |
+| [Aggregate Projection](api/aggregate/projection.md)            | `AggregateProjection` | `@resolve-js/core` |
+| [Command](api/command.md)                                      | `Command`             | `@resolve-js/core` |
+| [Event](api/event.md)                                          | `Event`               | `@resolve-js/core` |
 
 ### Read Side
 
 #### Read Models
 
-| Object       | Type                   | Package                      |
-| ------------ | ---------------------- | ---------------------------- |
-| Projection   | `ReadModel`            | `@resolve-js/core`           |
-| Resolvers    | `ReadModelResolvers`   | `@resolve-js/core`           |
-| Resolver     | `ReadModelResolver`    | `@resolve-js/core`           |
-| Store        | `ResolveStore`         | `@resolve-js/readmodel-base` |
-| Query        | `ReadModelQuery`       | `@resolve-js/core`           |
-| Query Result | `ReadModelQueryResult` | `@resolve-js/core`           |
+| Object                                               | Type                   | Package                      |
+| ---------------------------------------------------- | ---------------------- | ---------------------------- |
+| [Projection](api/read-model/projection.md)           | `ReadModel`            | `@resolve-js/core`           |
+| [Resolvers](api/read-model/resolver.md)              | `ReadModelResolvers`   | `@resolve-js/core`           |
+| [Resolver](api/read-model/resolver.md)               | `ReadModelResolver`    | `@resolve-js/core`           |
+| [Store](api/read-model/store.md)                     | `ResolveStore`         | `@resolve-js/readmodel-base` |
+| [Query](api/read-model/query.md#query-object)        | `ReadModelQuery`       | `@resolve-js/core`           |
+| [Query Result](api/read-model/query.md#query-result) | `ReadModelQueryResult` | `@resolve-js/core`           |
 
 #### View Models
 
-| Object                | Type                   | Package            |
-| --------------------- | ---------------------- | ------------------ |
-| View Model Projection | `ViewModelProjection`  | `@resolve-js/core` |
-| Read Model Resolvers  | `ViewModelResolver`    | `@resolve-js/core` |
-| Query                 | `ViewModelQuery`       | `@resolve-js/core` |
-| Query Result          | `ViewModelQueryResult` | `@resolve-js/core` |
+| Object                                                | Type                   | Package            |
+| ----------------------------------------------------- | ---------------------- | ------------------ |
+| [View Model Projection](api/view-model/projection.md) | `ViewModelProjection`  | `@resolve-js/core` |
+| [Read Model Resolvers](api/view-model//resolver.md)   | `ViewModelResolver`    | `@resolve-js/core` |
+| [Query](api/view-model//query.md#query-object)        | `ViewModelQuery`       | `@resolve-js/core` |
+| [Query Result](api/view-model/query.md#result-object) | `ViewModelQueryResult` | `@resolve-js/core` |
 
 #### Saga
 
-| Object | Type   | Package            |
-| ------ | ------ | ------------------ |
-| Saga   | `Saga` | `@resolve-js/core` |
+| Object              | Type   | Package            |
+| ------------------- | ------ | ------------------ |
+| [Saga](api/saga.md) | `Saga` | `@resolve-js/core` |
 
 ### Middleware
 
-| Object                           | Type                            | Package            |
-| -------------------------------- | ------------------------------- | ------------------ |
-| Command Middleware               | `CommandMiddleware`             | `@resolve-js/core` |
-| Read Model Projection Middleware | `ReadModelProjectionMiddleware` | `@resolve-js/core` |
-| Read Model Resolver Middleware   | `ReadModelResolverMiddleware`   | `@resolve-js/core` |
+| Object                                                                                 | Type                            | Package            |
+| -------------------------------------------------------------------------------------- | ------------------------------- | ------------------ |
+| [Command Middleware](api/middleware.md#command-middleware)                             | `CommandMiddleware`             | `@resolve-js/core` |
+| [Read Model Projection Middleware](api/middleware.md#read-model-projection-middleware) | `ReadModelProjectionMiddleware` | `@resolve-js/core` |
+| [Read Model Resolver Middleware](api/middleware.md#read-model-projection-middleware)   | `ReadModelResolverMiddleware`   | `@resolve-js/core` |
 
 ### API Handlers
 
-| Block Name | Type                 | Package                    |
-| ---------- | -------------------- | -------------------------- |
-| Request    | `ResolveRequest`     | `@resolve-js/runtime-base` |
-| Response   | `ResolveResponse`    | `@resolve-js/runtime-base` |
-| Context    | `UserBackendResolve` | `@resolve-js/runtime-base` |
+| Block Name                                          | Type                 | Package                    |
+| --------------------------------------------------- | -------------------- | -------------------------- |
+| [Request](api/api-handler/api-handler.md#request)   | `ResolveRequest`     | `@resolve-js/runtime-base` |
+| [Response](api/api-handler/api-handler.md#response) | `ResolveResponse`    | `@resolve-js/runtime-base` |
+| [Context](api/api-handler/resolve-context.md)       | `UserBackendResolve` | `@resolve-js/runtime-base` |
 
 ### Monitoring
 
-| Block Name        | Type                     | Package            |
-| ----------------- | ------------------------ | ------------------ |
-| Metric            | `MonitoringMetric`       | `@resolve-js/core` |
-| Custom Metric     | `MonitoringCustomMetric` | `@resolve-js/core` |
-| Adapter           | `MonitoringAdapter`      | `@resolve-js/core` |
-| Monitoring Object | `Monitoring`             | `@resolve-js/core` |
+| Block Name                                                     | Type                     | Package            |
+| -------------------------------------------------------------- | ------------------------ | ------------------ |
+| [Metric](api/monitoring/metric.md#metric-object)               | `MonitoringMetric`       | `@resolve-js/core` |
+| [Custom Metric](api/monitoring/metric.md#custom-metric-object) | `MonitoringCustomMetric` | `@resolve-js/core` |
+| [Adapter](api/monitoring/monitoring-adapter.md)                | `MonitoringAdapter`      | `@resolve-js/core` |
+| [Monitoring Object](api/monitoring/monitoring.md)              | `Monitoring`             | `@resolve-js/core` |
