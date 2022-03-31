@@ -10,12 +10,12 @@ import TabItem from '@theme/TabItem';
 
 ## Overview
 
-ReSolve is written in TypeScript and its packages export type definitions for most of the framework's functional blocks.
+ReSolve is written in TypeScript and its packages export type declarations for all building blocks of a reSolve application.
 This article describes how to develop a reSolve application with TypeScript and lists types that you need to use in the application code.
 
 ## Creating a TypeScript Application
 
-All [template and example projects](introduction.md#examples-and-template-projects) are available in a JavaScript and TypeScript variations. When you use the `create-resolve-app` tool, add the `-t` flag to the input to specify that a TypeScript application should be created:
+All [template and example projects](introduction.md#examples-and-template-projects) are available both in JavaScript and TypeScript variations. When you use the `create-resolve-app` tool, add the `-t` flag to the command input to specify that a TypeScript application should be created:
 
 ```sh
 yarn create resolve-app hello-world-react -e react -t
@@ -23,9 +23,11 @@ yarn create resolve-app hello-world-react -e react -t
 
 ## Developing With reSolve Types
 
-You can refer the API reference and the [example projects](introduction.md#examples-and-template-projects) for the information on the type scheme that you should follow when implementing various building block of a reSolve application.
+Refer the API reference and the [example projects](introduction.md#examples-and-template-projects) for the information on the type scheme that you should follow when you implement various building blocks of a reSolve application.
 
-In general, most of the blocks require one ore more type imports from a reSolve packages. For example the code below demonstrates a correctly typed read model implementation:
+### Example
+
+The code below demonstrates a correctly typed read model implementation:
 
 <Tabs>
 <TabItem value="projection" label="Projection" default>
@@ -81,7 +83,7 @@ export default resolvers
 </TabItem>
 </Tabs>
 
-For more information on the used types used in the above code sample, refer to the following API reference articles:
+For more information on the types used in the above code sample, refer to the following API reference articles:
 
 - [`ReadModel`](api/read-model/projection.md)
 - [`ReadModelResolvers`](api/read-model/resolver.md)
