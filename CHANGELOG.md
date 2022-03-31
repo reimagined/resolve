@@ -12,6 +12,10 @@
 
 - Fix eliminated error message in Init projection handler [\#2250](https://github.com/reimagined/resolve/pull/2250)
 
+**Documentation:**
+
+- Add encryption API reference [\#2254](https://github.com/reimagined/resolve/pull/2254)
+
 **Other changes:**
 
 - Refactor resolve-scripts and runtimes [\#2245](https://github.com/reimagined/resolve/pull/2245)

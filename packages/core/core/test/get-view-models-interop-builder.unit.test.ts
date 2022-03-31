@@ -53,7 +53,7 @@ const makeTestRuntime = (events: Event[] = []): ViewModelRuntime => {
       (currentCursor) =>
         (currentCursor && (Number(currentCursor) + 1).toString()) || '1'
     ),
-    loadEvents: jest.fn(({ cursor, aggregateIds }) =>
+    loadEvents: jest.fn(({ aggregateIds }) =>
       Promise.resolve({
         cursor: '',
         events: storedEvents.filter((e) =>

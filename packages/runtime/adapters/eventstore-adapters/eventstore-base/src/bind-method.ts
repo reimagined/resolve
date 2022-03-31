@@ -7,6 +7,7 @@ import { AlreadyDisposedError } from './errors'
 
 function generateAssertTrap<F extends (...args: any[]) => any>() {
   return (...args: Parameters<F>): ReturnType<F> => {
+    void args
     throw new Error('Adapter method is not implemented')
   }
 }

@@ -1,9 +1,9 @@
 # **@resolve-js/module-auth**
 
-Resolve authentication module provides out-of-box support for Passport compatible strategies (https://github.com/jaredhanson/passport-strategy).
-When using `@resolve-js/module-auth` in resolve application, developer should only provide authentication strategy and supply API routes for login, register and other actions.
+The reSolve authentication module provides out-of-the-box support for Passport compatible authentication strategies (https://github.com/jaredhanson/passport-strategy).
+When you use `@resolve-js/module-auth` in a resolve application, you only need to specify an authentication strategy and API routes for login, registration and other actions.
 
-Use `@resolve-js/module-auth` in application in following manner.
+Use `@resolve-js/module-auth` in application in the following manner.
 
 Entry point (run.js):
 
@@ -12,7 +12,7 @@ import { defaultResolveConfig, build, start, watch, runTestcafe, merge, injectRu
 import createAuthModule from '@resolve-js/module-auth' // Import authentication module
 
 import appConfig from './config.app' // Main application config with defined domain logic
-import devConfig from './config.dev' // Development config. Prod and other configs ommited here for simplify example
+import devConfig from './config.dev' // Development config. Prod and other configs ommited here for simplicity
 const launchMode = process.argv[2]
 
 void (async () => {
@@ -44,7 +44,7 @@ void (async () => {
 
   switch (launchMode) {
     case 'dev': {
-      await watch( // Merge developer-defined and module-generated configs by merge tool
+      await watch( // Merge developer-defined and module-generated configs using the merge tool
         merge([defaultResolveConfig, appConfig, devConfig, authModule])
       )
       break
@@ -64,7 +64,7 @@ Strategy constructor (auth/create_strategy.js):
 import { Strategy as StrategyFactory } from 'passport-local' // Import passport strategy
 
 const createStrategy = (options) => ({
-  // Export function which will accept runtime vary options from application config
+  // Export function that will accept runtime vary options from application config
   factory: StrategyFactory, // Re-export passport strategy factory
   options: {
     // Custom compile-time options ...
@@ -83,7 +83,7 @@ const createStrategy = (options) => ({
 export default createStrategy
 ```
 
-Register API handler (auth/route_register_callback.js) - other handlers are omitted:
+The "Register" API handler (`auth/route_register_callback.js`), other handlers are omitted:
 
 ```js
 import jwt from 'jsonwebtoken'
