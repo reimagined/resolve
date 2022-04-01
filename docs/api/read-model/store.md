@@ -110,7 +110,7 @@ const findResult = await store.find(
   'TestTable',
   searchCondition,
   { field1: 1, field2: 1, field3: 1 }, // Return the specified fields
-  //{ field1: 0, field2: 0, field3: 0 }, // Return all but the specified fields
+  //{ field1: 0, field2: 0, field3: 0 }, // Return all fields except for the specified fields
   { id: sortOrder },
   skip,
   limit
@@ -254,7 +254,7 @@ Deletes data items based on the specified search expression.
 
 ### Search Expression Operators
 
-Search expression use operators to compare values and group expression clauses.
+Search expressions use operators to compare values and group expression clauses.
 
 The following operators are supported:
 
@@ -264,10 +264,10 @@ The following operators are supported:
 | -------- | --------------------------------------------------------------------- |
 | \$eq     | Matches values that are equal to the specified value.                 |
 | \$ne     | Matches values that are not equal to the specified value.             |
-| \$lt     | Matches values that are less then the specified value.                |
-| \$lte    | Matches values that are less then or equal to the specified values.   |
-| \$gt     | Matches values that are greater then the specified value.             |
-| \$gte    | Matches values that are greater then or equal to the specified value. |
+| \$lt     | Matches values that are less than the specified value.                |
+| \$lte    | Matches values that are less than or equal to the specified values.   |
+| \$gt     | Matches values that are greater than the specified value.             |
+| \$gte    | Matches values that are greater than or equal to the specified value. |
 
 **Logical Operators:**
 

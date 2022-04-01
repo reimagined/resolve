@@ -20,7 +20,7 @@ const projection = {
   Init: async (store) => { ... }
   // An event handler function is associated with an event type.
   // It receives the read model store and an incoming event
-  // and updates the store based on the event's data
+  // and updates the store based on the event's data.
   [EVENT_TYPE1]: async (store, event, context) -> { ... }
   [EVENT_TYPE2]: async (store, event, context) -> { ... }
 }

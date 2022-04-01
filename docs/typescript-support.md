@@ -144,7 +144,7 @@ The tables below list the available TypeScript types and the packages that expor
 
 ### API Handlers
 
-| Block Name                                          | Type                 | Package                    |
+| Object                                              | Type                 | Package                    |
 | --------------------------------------------------- | -------------------- | -------------------------- |
 | [Request](api/api-handler/api-handler.md#request)   | `ResolveRequest`     | `@resolve-js/runtime-base` |
 | [Response](api/api-handler/api-handler.md#response) | `ResolveResponse`    | `@resolve-js/runtime-base` |
@@ -152,7 +152,7 @@ The tables below list the available TypeScript types and the packages that expor
 
 ### Monitoring
 
-| Block Name                                                     | Type                     | Package            |
+| Object                                                         | Type                     | Package            |
 | -------------------------------------------------------------- | ------------------------ | ------------------ |
 | [Metric](api/monitoring/metric.md#metric-object)               | `MonitoringMetric`       | `@resolve-js/core` |
 | [Custom Metric](api/monitoring/metric.md#custom-metric-object) | `MonitoringCustomMetric` | `@resolve-js/core` |
