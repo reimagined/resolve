@@ -431,9 +431,7 @@ describe('Read model middleware: ', () => {
     })
     test('can interrupt resolver flow on error', async () => {
       dummyResolver = jest.fn().mockReturnValue({ dummy: 'dummy' })
-      const dummyResolverMiddleware: ReadModelResolverMiddleware = (
-        next
-      ) => async (middlewareContext, store, params, context) => {
+      const dummyResolverMiddleware: ReadModelResolverMiddleware = () => async () => {
         throw new Error('Interrupted by middleware')
       }
 
@@ -469,7 +467,7 @@ describe('Read model middleware: ', () => {
       expect(data).toEqual({ dummy: 'dummy', extraResult })
     })
     test('can be chained and keep order', async () => {
-      dummyResolver = jest.fn((store, params, context) => ({
+      dummyResolver = jest.fn((store, params) => ({
         in: params.in,
         out: 'Result value.',
       }))
@@ -606,9 +604,7 @@ describe('Read model middleware: ', () => {
       )
     })
     test('can interrupt event handling flow', async () => {
-      const dummyProjectionMiddleware: ReadModelProjectionMiddleware = (
-        next
-      ) => async (middlewareContext, store, event, context) => {
+      const dummyProjectionMiddleware: ReadModelProjectionMiddleware = () => async () => {
         throw new Error('Interrupted by middleware')
       }
 
