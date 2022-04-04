@@ -522,9 +522,11 @@ describe('runtime', () => {
 
       const result = await main(apiGatewayEvent, lambdaContext)
 
-      expect(result.statusCode).toEqual(400)
+      expect(result.statusCode).toEqual(409)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
-      expect(result.body).toEqual('Command error: Event "type" is required')
+      expect(result.body).toEqual(
+        "Command error: Cannot save the event because the aggregate 'aggregate-id' is currently out of date. Please retry later."
+      )
     })
 
     test('should fail command via POST /"rootPath"/api/commands/ with CustomerError', async () => {
@@ -550,6 +552,7 @@ describe('runtime', () => {
         serializeState: (state: any) => JSON.stringify(state),
         deserializeState: (serializedState: string) =>
           JSON.parse(serializedState),
+        invariantHash: 'aggregate-hash',
       }
 
       domain.aggregates.push(aggregate)
