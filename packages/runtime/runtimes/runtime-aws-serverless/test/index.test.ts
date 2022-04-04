@@ -1,23 +1,18 @@
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import STS from 'aws-sdk/clients/sts'
 import {
   ConcurrentError,
   Adapter as EventStoreAdapter,
 } from '@resolve-js/eventstore-base'
-import runtimeFactory from '../src/index'
+import { getServerAssemblies } from '../src/utils'
+import main, { resetLambdaWorker } from '../src/index'
 
 import type {
   Assemblies,
   BuildTimeConstants,
-  RuntimeWorker,
   UploaderPool,
 } from '@resolve-js/runtime-base'
-import type {
-  ApiGatewayLambdaEvent,
-  LambdaContext,
-  WorkerArguments,
-  WorkerResult,
-} from '../src/types'
+import type { ApiGatewayLambdaEvent, LambdaContext } from '../src/types'
 import type {
   Command,
   ReadModelMeta,
@@ -26,11 +21,21 @@ import type {
   DomainMeta,
 } from '@resolve-js/core'
 
+jest.mock('../src/utils', () => ({
+  getServerAssemblies: jest.fn(),
+  getDeploymentId: jest.fn(() => 'RESOLVE_DEPLOYMENT_ID'),
+}))
+
+jest.mock('fs', () => ({
+  existsSync: jest.fn(() => true),
+}))
+
 const originalMathRandom = Math.random.bind(Math)
 const originalDateNow = Date.now.bind(Date)
 const originalProcessEnv = process.env
 
 const mAssumeRole = mocked(STS.prototype.assumeRole)
+const mGetServerAssemblies = mocked(getServerAssemblies)
 
 describe('runtime', () => {
   let constants: BuildTimeConstants
@@ -39,9 +44,6 @@ describe('runtime', () => {
   let uploadAdapter: UploaderPool
   let eventStoreAdapter: EventStoreAdapter
   let lambdaContext: LambdaContext
-  let getCloudEntryWorker: () => Promise<
-    RuntimeWorker<WorkerArguments, WorkerResult>
-  >
 
   const defaultRequestHttpHeaders = {
     Accept: '*/*',
@@ -66,6 +68,7 @@ describe('runtime', () => {
       RESOLVE_DEPLOYMENT_ID: 'RESOLVE_DEPLOYMENT_ID',
       RESOLVE_WS_ENDPOINT: 'RESOLVE_WS_ENDPOINT',
       RESOLVE_IOT_ROLE_ARN: 'RESOLVE_IOT_ROLE_ARN',
+      LAMBDA_TASK_ROOT: 'LAMBDA_TASK_ROOT',
     }
 
     eventStoreAdapter = {
@@ -165,16 +168,12 @@ describe('runtime', () => {
       Records: [],
     }
 
-    const { entry } = runtimeFactory({})
-
-    getCloudEntryWorker = async () => {
-      return await entry({
-        assemblies,
-        constants,
-        domain,
-        resolveVersion: '0.0.1',
-      })
-    }
+    mGetServerAssemblies.mockReturnValue({
+      assemblies,
+      constants,
+      domain,
+      resolveVersion: '0.0.1',
+    })
   })
 
   afterEach(async () => {
@@ -182,6 +181,9 @@ describe('runtime', () => {
     Date.now = originalDateNow
     process.env = originalProcessEnv
     mAssumeRole.mockClear()
+    mGetServerAssemblies.mockClear()
+
+    resetLambdaWorker()
   })
 
   describe('API gateway event', () => {
@@ -195,9 +197,7 @@ describe('runtime', () => {
         body: null,
       }
 
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await main(apiGatewayEvent, lambdaContext)
 
       expect(result).toEqual({
         statusCode: 405,
@@ -243,9 +243,7 @@ describe('runtime', () => {
         body: null,
       }
 
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await main(apiGatewayEvent, lambdaContext)
 
       expect(result.statusCode).toEqual(200)
       expect(result.headers).toEqual({ 'Content-Type': 'application/json' })
@@ -303,9 +301,7 @@ describe('runtime', () => {
         body: null,
       }
 
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await main(apiGatewayEvent, lambdaContext)
 
       expect(result.statusCode).toEqual(422)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
@@ -330,9 +326,7 @@ describe('runtime', () => {
         body: null,
       }
 
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await main(apiGatewayEvent, lambdaContext)
 
       expect(result.statusCode).toEqual(422)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
@@ -351,9 +345,7 @@ describe('runtime', () => {
         body: null,
       }
 
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await main(apiGatewayEvent, lambdaContext)
 
       expect(result.statusCode).toEqual(400)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
@@ -362,7 +354,7 @@ describe('runtime', () => {
       )
     })
 
-    test.skip('should invoke command via POST /"rootPath"/api/commands/', async () => {
+    test.only('should invoke command via POST /"rootPath"/api/commands/', async () => {
       const aggregate: AggregateMeta = {
         encryption: async () => ({
           encrypt: () => '',
@@ -416,9 +408,7 @@ describe('runtime', () => {
         }),
       }
 
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await main(apiGatewayEvent, lambdaContext)
       expect(result.statusCode).toEqual(200)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
       expect(JSON.parse(result.body ?? '')).toEqual({
@@ -474,16 +464,14 @@ describe('runtime', () => {
         }),
       }
 
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await main(apiGatewayEvent, lambdaContext)
 
       expect(result.statusCode).toEqual(409)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
       expect(result.body).toContain('is currently out of date')
     })
 
-    test.skip('should fail command via POST /"rootPath"/api/commands/ with CommandError', async () => {
+    test('should fail command via POST /"rootPath"/api/commands/ with CommandError', async () => {
       eventStoreAdapter.saveEvent = jest.fn().mockImplementation(async () => {
         throw new ConcurrentError('aggregate-id')
       })
@@ -527,16 +515,14 @@ describe('runtime', () => {
         }),
       }
 
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await main(apiGatewayEvent, lambdaContext)
 
       expect(result.statusCode).toEqual(400)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
       expect(result.body).toEqual('Command error: Event "type" is required')
     })
 
-    test.skip('should fail command via POST /"rootPath"/api/commands/ with CustomerError', async () => {
+    test('should fail command via POST /"rootPath"/api/commands/ with CustomerError', async () => {
       eventStoreAdapter.saveEvent = jest.fn().mockImplementation(async () => {
         throw new ConcurrentError('aggregate-id')
       })
@@ -579,9 +565,7 @@ describe('runtime', () => {
         }),
       }
 
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await main(apiGatewayEvent, lambdaContext)
 
       expect(result.statusCode).toEqual(418)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
@@ -621,9 +605,7 @@ describe('runtime', () => {
         body: null,
       }
 
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await main(apiGatewayEvent, lambdaContext)
 
       expect(result.statusCode).toEqual(200)
       expect(result.headers).toEqual({ 'Content-Type': 'text/plain' })
@@ -650,9 +632,7 @@ describe('runtime', () => {
         body: null,
       }
 
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await main(apiGatewayEvent, lambdaContext)
 
       expect(result.statusCode).toEqual(302)
       expect(result.headers).toEqual({ Location: '/root-path/' })
@@ -680,9 +660,7 @@ describe('runtime', () => {
         body: null,
       }
 
-      const cloudEntryWorker = await getCloudEntryWorker()
-
-      const result = await cloudEntryWorker(apiGatewayEvent, lambdaContext)
+      const result = await main(apiGatewayEvent, lambdaContext)
 
       expect(result.statusCode).toEqual(302)
       expect(result.headers).toEqual({
