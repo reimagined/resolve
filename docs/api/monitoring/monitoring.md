@@ -12,7 +12,7 @@ A monitoring object has an associated TypeScript type:
 
 :::
 
-A monitoring object's interface is the same as the interface of a monitoring adapter except for the [`getMetrics`](#getmetrics) and [`clearMetrics`](#clearmetrics) methods that require a monitoring adapted ID as an argument.
+A monitoring object's interface is the same as the interface of a monitoring adapter except for the [`getMetrics`](#getmetrics) and [`clearMetrics`](#clearmetrics) methods that require a monitoring adapter ID as an argument.
 
 A monitoring object exposes the following API:
 
