@@ -19,9 +19,6 @@ const main = async (...args: any[]) => {
       process.env.__RUNTIME_ENTRY_PATH = handlerPath
 
       const serverAssemblies = getServerAssemblies(handlerPath)
-
-      // console.log(serverAssemblies)
-
       maybeLambdaWorkerPromise = initLambdaWorker(serverAssemblies)
     }
     const worker = await maybeLambdaWorkerPromise

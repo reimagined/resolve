@@ -4,6 +4,7 @@ import {
   ConcurrentError,
   Adapter as EventStoreAdapter,
 } from '@resolve-js/eventstore-base'
+import { executeStatement } from 'resolve-cloud-common/postgres'
 import { getServerAssemblies } from '../src/utils'
 import main, { resetLambdaWorker } from '../src/index'
 
@@ -61,9 +62,9 @@ describe('runtime', () => {
   const rootPath = 'root-path'
 
   beforeEach(async () => {
-    let nowTickCounter = 0
     Math.random = () => 0.123456789
-    Date.now = () => nowTickCounter++
+    jest.useFakeTimers().setSystemTime(new Date('2020-01-01').getTime())
+
     process.env = {
       RESOLVE_DEPLOYMENT_ID: 'RESOLVE_DEPLOYMENT_ID',
       RESOLVE_WS_ENDPOINT: 'RESOLVE_WS_ENDPOINT',
@@ -182,8 +183,10 @@ describe('runtime', () => {
     process.env = originalProcessEnv
     mAssumeRole.mockClear()
     mGetServerAssemblies.mockClear()
+    mocked(executeStatement).mockClear()
 
     resetLambdaWorker()
+    jest.useRealTimers()
   })
 
   describe('API gateway event', () => {
@@ -354,7 +357,9 @@ describe('runtime', () => {
       )
     })
 
-    test.only('should invoke command via POST /"rootPath"/api/commands/', async () => {
+    test('should invoke command via POST /"rootPath"/api/commands/', async () => {
+      mocked(executeStatement).mockResolvedValueOnce([])
+
       const aggregate: AggregateMeta = {
         encryption: async () => ({
           encrypt: () => '',
@@ -414,7 +419,7 @@ describe('runtime', () => {
       expect(JSON.parse(result.body ?? '')).toEqual({
         aggregateId: 'aggregateId',
         aggregateVersion: 1,
-        timestamp: 2,
+        timestamp: new Date('2020-01-01').getTime(),
         type: 'SET',
         payload: {
           key: 'key1',
