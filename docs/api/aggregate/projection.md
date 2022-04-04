@@ -3,6 +3,15 @@ id: projection
 title: Projection
 ---
 
+:::info TypeScript Support
+
+An aggregate projection object has an associated TypeScript type:
+
+- Type Name - `AggregateProjection`
+- Package - `@resolve-js/core`
+
+:::
+
 An aggregate projection is an object of the following structure:
 
 ```js

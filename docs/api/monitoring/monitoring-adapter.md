@@ -6,6 +6,15 @@ description: This document describes the interface that a monitoring adapter sho
 
 ## Monitoring Adapter API
 
+:::info TypeScript Support
+
+A monitoring adapter object has an associated TypeScript type:
+
+- Type Name - `MonitoringAdapter`
+- Package - `@resolve-js/core`
+
+:::
+
 A monitoring adapter implementation should expose the following interface:
 
 | Member Name                     | Description                                                                                |
@@ -18,9 +27,9 @@ A monitoring adapter implementation should expose the following interface:
 | [`custom`](#custom)             | Registers a custom metric.                                                                 |
 | [`publish`](#publish)           | Defined by an implementation, publishes the collected metrics to the intended destination. |
 | [`rate`](#rate)                 | Registers operation execution rate during the specified time interval in seconds.          |
-| [`group`](#group)               | Create a monitoring group.                                                                 |
-| [`getMetrics`](#getmetrics)     | Get a list of collected metrics.                                                           |
-| [`clearMetrics`](#clearmetrics) | Clear the list of collected metrics.                                                       |
+| [`group`](#group)               | Creates a monitoring group.                                                                |
+| [`getMetrics`](#getmetrics)     | Gets a list of collected metrics.                                                          |
+| [`clearMetrics`](#clearmetrics) | Clears the list of collected metrics.                                                      |
 
 All of the listed functions except for `publish` have a default implementation in the base package.
 
@@ -30,7 +39,7 @@ Registers an occurred error. The default implementation increments the count of 
 
 #### Arguments
 
-| Argument Name | Type               | Descriptions                           |
+| Argument Name | Type               | Description                            |
 | ------------- | ------------------ | -------------------------------------- |
 | `error`       | An `error` object. | An error to add to monitoring metrics. |
 
@@ -40,7 +49,7 @@ Registers an operation's execution. The default implementation increments the co
 
 #### Arguments
 
-| Argument Name | Type                        | Descriptions                           |
+| Argument Name | Type                        | Description                            |
 | ------------- | --------------------------- | -------------------------------------- |
 | `error?`      | An `error` object or `null` | An error to add to monitoring metrics. |
 
@@ -50,7 +59,7 @@ Registers the duration of an operation. The default implementation adds the spec
 
 #### Arguments
 
-| Argument Name | Type     | Descriptions                                            |
+| Argument Name | Type     | Description                                             |
 | ------------- | -------- | ------------------------------------------------------- |
 | `label`       | `string` | A text label to add to the 'Label' dimension.           |
 | `duration`    | `number` | An operation duration in milliseconds.                  |
@@ -62,7 +71,7 @@ Starts a timer to measure execution time.
 
 #### Arguments
 
-| Argument Name | Type     | Descriptions                                                             |
+| Argument Name | Type     | Description                                                              |
 | ------------- | -------- | ------------------------------------------------------------------------ |
 | `name`        | `string` | The ID of the started timer.                                             |
 | `timestamp?`  | `number` | A moment in time from which to start counting. Defaults to `Date.now()`. |
@@ -73,7 +82,7 @@ Ends time measurement and registers the resulting duration. The default implemen
 
 #### Arguments
 
-| Argument Name | Type     | Descriptions                                                          |
+| Argument Name | Type     | Description                                                           |
 | ------------- | -------- | --------------------------------------------------------------------- |
 | `name`        | `string` | The ID of the timer to stop.                                          |
 | `timestamp?`  | `number` | A moment in time at which to stop counting. Defaults to `Date.now()`. |
@@ -84,7 +93,7 @@ Registers the specified custom metric. If the metric object's `value` and/or `co
 
 #### Arguments
 
-| Argument Name | Type                                                      | Descriptions                      |
+| Argument Name | Type                                                      | Description                       |
 | ------------- | --------------------------------------------------------- | --------------------------------- |
 | `metricData`  | A [custom metric object](metric.md#custom-metric-object). | Specifies a custom metric's data. |
 
@@ -94,7 +103,7 @@ Defined by an implementation, publishes the collected metrics to the intended de
 
 #### Arguments
 
-| Argument Name | Type     | Descriptions                                            |
+| Argument Name | Type     | Description                                             |
 | ------------- | -------- | ------------------------------------------------------- |
 | `options?`    | `object` | Specifies additional options for the publish operation. |
 
@@ -115,7 +124,7 @@ Registers operation execution rate during the specified time interval in seconds
 
 #### Arguments
 
-| Argument Name | Type     | Descriptions                                                        |
+| Argument Name | Type     | Description                                                         |
 | ------------- | -------- | ------------------------------------------------------------------- |
 | `metricName`  | `string` | The name of the metric to add.                                      |
 | `count`       | `number` | A number to add to the metric's count.                              |
@@ -127,7 +136,7 @@ Creates a monitoring group and returns a monitoring adapter instance for this gr
 
 #### Arguments
 
-| Argument Name | Type                       | Descriptions                                |
+| Argument Name | Type                       | Description                                 |
 | ------------- | -------------------------- | ------------------------------------------- |
 | `config`      | A key-value pair `object`. | A key-value pair that identifies the group. |
 
@@ -149,7 +158,7 @@ Clear the list of collected metrics.
 
 ## Custom Monitoring Adapter Example
 
-The code below demonstrates how to implement a monitoring that uses [Prometheus](https://prometheus.io/) to publish metrics.
+The code below demonstrates how to implement a monitoring adapter that uses [Prometheus](https://prometheus.io/) to publish metrics.
 
 The adapter implementation redefines the base adapter's `publish` function and reuses the default implementation for other API functions.
 

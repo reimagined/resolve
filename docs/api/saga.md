@@ -4,6 +4,15 @@ title: Saga
 description: This document describes API used by sagas.
 ---
 
+:::info TypeScript Support
+
+A saga object has an associated TypeScript type:
+
+- Type Name - `Saga`
+- Package - `@resolve-js/core`
+
+:::
+
 A saga's event handler receives an object that provides access to the saga-related API. This API includes the following objects:
 
 | Object Name | Description                                                                       |

@@ -6,6 +6,15 @@ description: This document describes API used by Aggregate and Read Model middle
 
 ## Command Middleware
 
+:::info TypeScript Support
+
+A command middleware function has an associated TypeScript type:
+
+- Type Name - `CommandMiddleware`
+- Package - `@resolve-js/core`
+
+:::
+
 A command middleware function has the following structure:
 
 ```js
@@ -43,6 +52,15 @@ Both `req` and `res` fields are included only if the client sends the command. I
 
 ## Read Model Projection Middleware
 
+:::info TypeScript Support
+
+A read model projection middleware function has an associated TypeScript type:
+
+- Type Name - `ReadModelProjectionMiddleware`
+- Package - `@resolve-js/core`
+
+:::
+
 A read model projection middleware function has the following structure:
 
 ```js
@@ -77,6 +95,15 @@ A projection middleware handler's `middlewareContext` argument is an object with
 | readModelName | The name of the processed read model.                            |
 
 ## Read Model Resolver Middleware
+
+:::info TypeScript Support
+
+A read model resolver middleware function has an associated TypeScript type:
+
+- Type Name - `ReadModelResolverMiddleware`
+- Package - `@resolve-js/core`
+
+:::
 
 A read model resolver middleware function has the following structure:
 
