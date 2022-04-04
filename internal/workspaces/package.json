@@ -11,7 +11,7 @@
     "@internal/helpers": "0.33.15",
     "chalk": "4.0.0",
     "micromatch": "4.0.4",
-    "minimist": "1.2.5",
+    "minimist": "1.2.6",
     "rimraf": "3.0.2"
   }
 }
