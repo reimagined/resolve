@@ -22,10 +22,92 @@ The [Uploader module](../modules/uploader.md) implements handlers based on this 
 
 An uploader object exposes the following API:
 
-| Function Name   | Description                                                     |
-| --------------- | --------------------------------------------------------------- |
-| `getSignedPut`  | Get a URL used to upload files through `PUT` requests.          |
-| `getSignedPost` | Get a URL used to upload files through `POST` requests.         |
-| `uploadPut`     | Send a `PUT` request to upload a file from server code.         |
-| `uploadPost`    | Send a `POST` request to upload a file from server code.        |
-| `createToken`   | Create a JSON Web Token used to authorize the upload operation. |
+| Function Name                     | Description                                                     |
+| --------------------------------- | --------------------------------------------------------------- |
+| [`getSignedPut`](#getsignedput)   | Get a URL used to upload files through `PUT` requests.          |
+| [`getSignedPost`](#getsignedpost) | Get a URL used to upload files through `POST` requests.         |
+| [`uploadPut`](#uploadput)         | Send a `PUT` request to upload a file from server code.         |
+| [`uploadPost`](#uploadpost)       | Send a `POST` request to upload a file from server code.        |
+| [`createToken`](#createtoken)     | Create a JSON Web Token used to authorize the upload operation. |
+
+## `getSignedPut`
+
+Get a URL used to upload files through `PUT` requests.
+
+**Example**
+
+**Arguments**
+
+| Argument Name | Type   | Description |
+| ------------- | ------ | ----------- |
+| dir           | string |             |
+
+**Result**
+
+`Promise<{ uploadUrl: string; uploadId: string }>`
+
+## `getSignedPost`
+
+Get a URL used to upload files through `POST` requests.
+
+**Example**
+
+**Arguments**
+
+| Argument Name | Type   | Description |
+| ------------- | ------ | ----------- |
+| dir           | string |             |
+
+**Result**
+
+`Promise<{ form: any; uploadId: string }>`
+
+## `uploadPut`
+
+Send a `PUT` request to upload a file from server code.
+
+**Example**
+
+**Arguments**
+
+| Argument Name | Type   | Description |
+| ------------- | ------ | ----------- |
+| uploadUrl     | string |             |
+| filePath      | string |             |
+
+**Result**
+
+`Promise<void>`
+
+## `uploadPost`
+
+Send a `POST` request to upload a file from server code.
+
+**Example**
+
+**Arguments**
+
+| Argument Name           | Type     | Description |
+| ----------------------- | -------- | ----------- |
+| `form: { url: string }` | `object` |             |
+|                         |          |             |
+
+**Result**
+
+`Promise<void>`
+
+## `createToken`
+
+Create a JSON Web Token used to authorize the upload operation.
+
+**Example**
+
+**Arguments**
+
+| Argument Name                                  | Type     | Description |
+| ---------------------------------------------- | -------- | ----------- |
+| `options: { dir: string; expireTime: number }` | `object` |             |
+
+**Result**
+
+`string`
