@@ -3,6 +3,15 @@ id: resolver
 title: Resolver
 ---
 
+:::info TypeScript Support
+
+A view model resolver object has an associated TypeScript type:
+
+- Type Name - `ViewModelResolver`
+- Package - `@resolve-js/core`
+
+:::
+
 A view model resolver function has the following structure:
 
 ```js
@@ -24,9 +33,9 @@ async(api, query, context) => {
 
 The `API` argument is an object that contains the following API:
 
-| Function Name  | Description                        |
-| -------------- | ---------------------------------- |
-| buildViewModel | Runs projection for the view model |
+| Function Name  | Description                          |
+| -------------- | ------------------------------------ |
+| buildViewModel | Runs a projection for the view model |
 
 ## Query
 
@@ -43,7 +52,7 @@ The `context` argument is an object of the following structure:
 
 ```js
 {
-  jwt, // The JSON web token attached to the request (Optional).
+  jwt, // Optional. The JSON web token attached to the request.
   viewModel: {
     name, // The name of the view model.
     eventTypes // The event types available to the view model.

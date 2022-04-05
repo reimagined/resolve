@@ -310,11 +310,11 @@ test('benchmark', async () => {
 
   const resultLite =
     [...benchLiteFeedingRate.entries()]
-      .map(([_, rate]) => rate)
+      .map(([, rate]) => rate)
       .reduce((acc, val) => acc + val, 0) / benchLiteFeedingRate.size
   const resultHeavy =
     [...benchHeavyFeedingRate.entries()]
-      .map(([_, rate]) => rate)
+      .map(([, rate]) => rate)
       .reduce((acc, val) => acc + val, 0) / benchHeavyFeedingRate.size
 
   // Minimum 400 events/sec for lite read-model projection with cold restart

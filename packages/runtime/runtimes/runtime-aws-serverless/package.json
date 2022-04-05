@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/runtime-aws-serverless",
-  "version": "0.33.14",
+  "version": "0.33.15",
   "description": "The reSolve framework's AWS runtime based on serverless services.",
   "keywords": [
     "cqrs",
@@ -25,10 +25,11 @@
   },
   "dependencies": {
     "@babel/runtime": "7.17.2",
-    "@resolve-js/core": "0.33.14",
-    "@resolve-js/eventstore-base": "0.33.14",
-    "@resolve-js/monitoring-aws-cloudwatch": "0.33.14",
-    "@resolve-js/runtime-base": "0.33.14",
+    "@resolve-js/core": "0.33.15",
+    "@resolve-js/eventstore-base": "0.33.15",
+    "@resolve-js/monitoring-aws-cloudwatch": "0.33.15",
+    "@resolve-js/runtime-base": "0.33.15",
+    "@resolve-js/debug-levels": "0.33.15",
     "binary-case": "1.1.4",
     "content-disposition": "0.5.3",
     "cookie": "0.4.1",
@@ -56,12 +57,6 @@
     "node": ">=14.17"
   },
   "babelCompile": [
-    {
-      "moduleType": "es",
-      "moduleTarget": "server",
-      "inputDir": "./src",
-      "outDir": "./es"
-    },
     {
       "moduleType": "cjs",
       "moduleTarget": "server",

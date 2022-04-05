@@ -14,6 +14,9 @@ Follow the steps below to run a reSolve application in a Docker container.
 
 Add a separate application configuration file used to build the application as a part of a Docker image:
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../examples/ts/hacker-news/config.docker.ts)
 ```js title="/config.docker.js"
 import { declareRuntimeEnv } from '@resolve-js/scripts'
 
@@ -89,6 +92,8 @@ const dockerConfig = {
 export default dockerConfig
 ```
 
+<!-- prettier-ignore-end -->
+
 Add a `'build:docker'` launch mode to the application's `run.js` file:
 
 ```js title="/run.js"
@@ -133,13 +138,15 @@ To define the database credentials and schemas required to run reSolve, create a
 The code sample below contains example PostgreSQL user credentials. Make sure you replace these credentials in your application.
 :::
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../examples/ts/hacker-news/docker/volumes/postgres/docker-entrypoint-initdb.d/init-schemas.sql)
 ```sql title="/docker/volumes/postgres/docker-entrypoint-initdb.d/init-schemas.sql"
 \c postgres;
--- Add user credentials for your reSolve application.
+
 CREATE USER "hn-user";
 ALTER USER "hn-user" PASSWORD 'QweZxc123';
 
--- Grant the created user the required rights.
 CREATE SCHEMA "event-store";
 GRANT USAGE ON SCHEMA "event-store" TO "hn-user";
 GRANT ALL ON SCHEMA "event-store" TO "hn-user";
@@ -157,10 +164,15 @@ GRANT ALL ON ALL FUNCTIONS IN SCHEMA "read-store" TO "hn-user";
 ALTER SCHEMA "read-store" OWNER TO "hn-user";
 ```
 
+<!-- prettier-ignore-end -->
+
 ## 3. Configure Nginx
 
 To configure the Nginx container, create a directory to mount as an `/etc/nginx/conf.d` volume. In this directory, create a `default.conf` file with the reverse proxy server configuration that meets your requirements. For example:
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../examples/ts/hacker-news/docker/volumes/nginx/conf.d/default.conf)
 ```txt title="/docker/volumes/nginx/conf.d/default.conf"
 server {
   listen 80;
@@ -177,12 +189,17 @@ server {
 }
 ```
 
+<!-- prettier-ignore-end -->
+
 ## 4. Prepare the Dockerfile
 
 The example Dockerfile below demonstrates how to build a Docker image for a reSolve application based on an official [`node`](https://hub.docker.com/_/node) image.
 The image is built in stages to optimize the image size. See the comments in the code for more information on each stage.
 
-```txt title="/Dockerfile"
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../examples/ts/hacker-news/Dockerfile)
+```dockerfile title="/Dockerfile"
 # Build stage: install all dependencies and build app
 FROM node:14.17-alpine as build
 
@@ -237,6 +254,8 @@ EXPOSE 3000
 CMD ["node", "dist/common/local-entry/local-entry.js"]
 ```
 
+<!-- prettier-ignore-end -->
+
 ## 5. Configure Docker Compose
 
 Add a Docker Compose configuration file used to run your reSolve application's container along with the PostgreSQL and Nginx containers:
@@ -245,6 +264,9 @@ Add a Docker Compose configuration file used to run your reSolve application's c
 The code sample below contains example PostgreSQL user and admin credentials. Make sure you replace these credentials in your application.
 :::
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../examples/ts/hacker-news/docker-compose.yml)
 ```yaml title="/docker-compose.yml"
 version: '3'
 services:
@@ -287,8 +309,13 @@ networks:
     driver: bridge
 ```
 
+<!-- prettier-ignore-end -->
+
 You can define an additional configuration file to use in the production environment. For example, the sample configuration below demonstrates how to specify a volume to store PostgreSQL data in production:
 
+<!-- prettier-ignore-start -->
+
+[mdis]:# (../examples/ts/hacker-news/docker-compose-production.yml)
 ```yaml title="/docker-compose-production.yml"
 version: '3'
 services:
@@ -296,6 +323,8 @@ services:
     volumes:
       - ./docker/volumes/postgres/data:/var/lib/postgresql/data
 ```
+
+<!-- prettier-ignore-end -->
 
 ## 6. Build the Image and Run the Container
 

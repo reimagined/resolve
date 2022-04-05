@@ -9,15 +9,21 @@ module.exports = {
     es6: true,
     browser: true,
   },
-  extends: ['react-app', 'plugin:prettier/recommended'],
+  extends: ['plugin:prettier/recommended', 'plugin:react/recommended'],
   parserOptions: {
     sourceType: 'module',
-    ecmaVersion: 2020,
+    ecmaVersion: 'latest',
     ecmaFeature: {
       jsx: true,
+      experimentalObjectRestSpread: true,
     },
   },
   plugins: ['react', 'jsx-a11y', 'import', 'spellcheck'],
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
   overrides: [
     {
       files: ['*.ts', '*.tsx'],
@@ -35,6 +41,8 @@ module.exports = {
     },
   ],
   rules: {
+    'react/display-name': 'off',
+    'react/prop-types': 'off',
     'react-hooks/exhaustive-deps': 'off',
     'react-hooks/rules-of-hooks': 'off',
     'func-names': 'off',
@@ -139,6 +147,7 @@ module.exports = {
           'cuid',
           'cumulate',
           'cumulated',
+          'customizable',
           'cwd',
           'cryptr',
           'darwin',
@@ -273,6 +282,7 @@ module.exports = {
           'lstat',
           'lte',
           'Marshalled',
+          'Matcher',
           'md5',
           'Mergeable',
           'metadata',

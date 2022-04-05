@@ -16,6 +16,15 @@ The handler receives a request and response objects. See the sections below for 
 
 ### Request
 
+:::info TypeScript Support
+
+A request object has an associated TypeScript type:
+
+- Type Name - `ResolveRequest`
+- Package - `@resolve-js/runtime-base`
+
+:::
+
 The request object exposes the following fields:
 
 | Field     | Description                                                                              |
@@ -29,6 +38,15 @@ The request object exposes the following fields:
 | `query`   | An object that contains the request's query string parameters as key-value pairs.        |
 
 ### Response
+
+:::info TypeScript Support
+
+A response object has an associated TypeScript type:
+
+- Type Name - `ResolveResponse`
+- Package - `@resolve-js/runtime-base`
+
+:::
 
 The request object exposes the following functions:
 
