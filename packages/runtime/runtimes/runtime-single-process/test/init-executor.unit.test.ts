@@ -1,12 +1,12 @@
 import { mock, mockDeep } from 'jest-mock-extended'
 import { createRuntime } from '@resolve-js/runtime-base'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { startExpress } from '../src/start-express'
 import { expressAppFactory } from '../src/express-app-factory'
 import { websocketServerFactory } from '../src/websocket-server-factory'
 
-import factory from '../src/index'
-import type { RuntimeOptions } from '../src/index'
+import { initExecutor } from '../src/init-executor'
+import type { RuntimeOptions } from '../src/init-executor'
 import type { DomainMeta } from '@resolve-js/core'
 import type { RuntimeAssemblies } from '@resolve-js/runtime-base'
 
@@ -55,9 +55,8 @@ const execAsyncBuild = async () => {
   })
 }
 const startRuntime = async (options: RuntimeOptions) => {
-  const runtime = await factory(options)
-  const worker = await runtime.entry(mock<RuntimeAssemblies>())
-  await worker()
+  const runtime = await initExecutor(mock<RuntimeAssemblies>(), options)
+  await runtime()
   expect(mStartExpress).toHaveBeenCalled()
 }
 
