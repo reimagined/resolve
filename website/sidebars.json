@@ -15,7 +15,8 @@
           "api-handlers",
           "middleware",
           "frontend",
-          "app-structure"
+          "app-structure",
+          "typescript-support"
         ]
       },
       {
