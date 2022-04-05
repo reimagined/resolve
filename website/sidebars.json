@@ -75,7 +75,7 @@
             "items": [
               "api/api-handler/api-handler",
               "api/api-handler/resolve-context",
-              "api/uploader"
+              "api/api-handler/uploader"
             ]
           },
           {
