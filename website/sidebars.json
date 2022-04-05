@@ -74,7 +74,8 @@
             "label": "API Handler",
             "items": [
               "api/api-handler/api-handler",
-              "api/api-handler/resolve-context"
+              "api/api-handler/resolve-context",
+              "api/uploader"
             ]
           },
           {
@@ -98,7 +99,6 @@
           "api/command",
           "api/event",
           "api/event-store-adapter",
-          "api/uploader",
           "api/middleware",
           "api/resolve-scripts",
           {
