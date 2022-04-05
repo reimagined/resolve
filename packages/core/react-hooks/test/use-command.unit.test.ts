@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { Command, CommandCallback, CommandOptions } from '@resolve-js/client'
 import { useClient } from '../src/use-client'
 import { useCommand } from '../src/use-command'

@@ -1,7 +1,7 @@
 import downloadResolveRepo from '../src/download-resolve-repo'
 import fs from 'fs-extra'
 import https from 'https'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { resolveVersion } from '../src/constants'
 
 import { Writable } from 'stream'

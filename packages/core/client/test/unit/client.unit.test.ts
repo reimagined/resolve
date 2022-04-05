@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 /* eslint-enable import/no-extraneous-dependencies */
 import { Client, getClient } from '../../src/client'
 import { Context } from '../../src/context'

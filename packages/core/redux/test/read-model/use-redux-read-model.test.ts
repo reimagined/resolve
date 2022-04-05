@@ -1,5 +1,5 @@
 import { QueryCallback, ReadModelQuery } from '@resolve-js/client'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { useDispatch } from 'react-redux'
 import { renderHook, act } from '@testing-library/react-hooks'
 import { useQueryBuilder } from '@resolve-js/react-hooks'

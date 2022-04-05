@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { getEntry } from '../../src/read-model/read-model-reducer'
 import { useReduxReadModelSelector } from '../../src/read-model/use-redux-read-model-selector'
 import { getSelectorState } from '../../src/read-model/initial-state-manager'

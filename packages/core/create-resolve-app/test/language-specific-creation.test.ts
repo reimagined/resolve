@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import moveExample from '../src/move-example'
 import { moveSync } from 'fs-extra'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 
 jest.mock('fs-extra', () => ({
   moveSync: jest.fn(),
