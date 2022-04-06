@@ -175,7 +175,7 @@ exports[`@resolve-js/module-admin read-models list: console.log 1`] = `
 Array [
   Array [
     "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR          
-read-model           status               3/18/05 04:58:31 type N\\\\A                  N\\\\A                 ",
+read-model           status               3/18/05 01:58:31 type N\\\\A                  N\\\\A                 ",
   ],
 ]
 `;
@@ -262,7 +262,7 @@ exports[`@resolve-js/module-admin sagas list: console.log 1`] = `
 Array [
   Array [
     "NAME                 STATUS               SUCCESS EVENT         FAILED EVENT         LAST ERROR          
-saga                 status               3/18/05 04:58:31 type N\\\\A                  N\\\\A                 ",
+saga                 status               3/18/05 01:58:31 type N\\\\A                  N\\\\A                 ",
   ],
 ]
 `;

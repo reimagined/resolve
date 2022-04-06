@@ -1,7 +1,5 @@
 import type { Config } from '@jest/types'
 
-process.env.TZ = 'Europe/Moscow'
-
 const config: Config.InitialOptions = {
   testEnvironment: 'node',
   coveragePathIgnorePatterns: ['node_modules/', 'dist/', 'coverage/'],
