@@ -164,14 +164,6 @@ const appConfig = {
     },
     {
       handler: {
-        package: '@resolve-js/runtime-single-process',
-        import: 'queryIsReadyHandler',
-      },
-      path: '/api/query-is-ready',
-      method: 'GET',
-    },
-    {
-      handler: {
         module: {
           package: '@resolve-js/runtime-base',
           import: 'liveRequireHandler',
