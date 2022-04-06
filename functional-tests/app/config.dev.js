@@ -14,14 +14,16 @@ const devConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
-  apiHandlers: [{
-    handler: {
-      package: '@resolve-js/runtime-single-process',
-      import: 'queryIsReadyHandler',
+  apiHandlers: [
+    {
+      handler: {
+        package: '@resolve-js/runtime-single-process',
+        import: 'queryIsReadyHandler',
+      },
+      path: '/api/query-is-ready',
+      method: 'GET',
     },
-    path: '/api/query-is-ready',
-    method: 'GET',
-  }],
+  ],
   readModelConnectors: {
     default: {
       module: '@resolve-js/readmodel-lite',
