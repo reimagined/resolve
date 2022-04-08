@@ -5,22 +5,22 @@ on:
     branches:
       - dev
 jobs:
-  e2e-mac:
-    if: startsWith(github.event.head_commit.message, '<auto>') != true
-    runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Install
-        run: yarn install --frozen-lockfile
-
-      - name: Test:e2e (mac:safari)
-        env:
-          RESOLVE_E2E_TESTS_BROWSER: safari
-          RESOLVE_E2E_TESTS_HEADLESS_MODE: false
-          DEBUG: resolve:scripts*
-          DEBUG_LEVEL: debug
-        run: yarn test:e2e
+#  e2e-mac:
+#    if: startsWith(github.event.head_commit.message, '<auto>') != true
+#    runs-on: [self-hosted, macOS, X64, resolve-mac-mini]
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Install
+#        run: yarn install --frozen-lockfile
+#
+#      - name: Test:e2e (mac:safari)
+#        env:
+#          RESOLVE_E2E_TESTS_BROWSER: safari
+#          RESOLVE_E2E_TESTS_HEADLESS_MODE: false
+#          DEBUG: resolve:scripts*
+#          DEBUG_LEVEL: debug
+#        run: yarn test:e2e
 
   publish-dev:
     if: startsWith(github.event.head_commit.message, '<auto>') != true
