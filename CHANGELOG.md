@@ -6,6 +6,7 @@
 
 **Enhancements:**
 
+- Independent runtime [\#2261](https://github.com/reimagined/resolve/pull/2261)
 - Implement support for PLV8 ver 3.1 [\#2249](https://github.com/reimagined/resolve/pull/2249)
 
 **Bug fixes:**
