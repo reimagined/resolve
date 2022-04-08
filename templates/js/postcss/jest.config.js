@@ -1,6 +1,5 @@
 'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
-process.env.TZ = 'Europe/Moscow'
 const config = {
   testEnvironment: 'node',
   coveragePathIgnorePatterns: ['node_modules/', 'dist/', 'coverage/'],

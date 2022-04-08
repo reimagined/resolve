@@ -1,5 +1,5 @@
 import { Command } from '@resolve-js/core'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { useDispatch } from 'react-redux'
 import { renderHook, act } from '@testing-library/react-hooks'
 import { useCommandBuilder } from '@resolve-js/react-hooks'

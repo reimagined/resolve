@@ -14,7 +14,6 @@ import {
   getPerformanceTracerSegment,
   getPerformanceTracerSubsegment,
 } from '../utils'
-import { IS_BUILT_IN } from '../symbols'
 
 const getKey = (aggregateIds: string[]): string => aggregateIds.sort().join(',')
 
@@ -254,20 +253,15 @@ const getViewModelInterop = (
     }
   }
 
-  const serialize = (result: { data: any }, jwt?: string): string => {
-    const serializer = viewModel.serializeState
-    if (serializer[IS_BUILT_IN]) {
-      return JSON.stringify(result, null, 2)
-    }
-    return JSON.stringify(
+  const serialize = (result: { data: any }, jwt?: string): string =>
+    JSON.stringify(
       {
         ...result,
-        data: serializer(result.data, jwt),
+        data: viewModel.serializeState(result.data, jwt),
       },
       null,
       2
     )
-  }
 
   return {
     name,

@@ -1,3 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
+
 const varName = 'RESOLVE_DEPLOYMENT_ID'
 
 export const getDeploymentId = (): string => {
@@ -9,3 +13,7 @@ export const getDeploymentId = (): string => {
   }
   return deploymentId
 }
+
+export const getServerAssemblies = (handlerPath: string) =>
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  interopRequireDefault(require(handlerPath)).default

@@ -1,4 +1,4 @@
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { getAvailableExamples } from '../src/get-available-examples'
 import { loadPackageJson } from '../src/utils'
 import { sync } from 'glob'

@@ -16,18 +16,6 @@ const testFunctionalConfig = {
         databaseFile: 'data/read-model-default-test-functional.db',
       },
     },
-    hackerNews: {
-      module: '@resolve-js/readmodel-lite',
-      options: {
-        databaseFile: 'data/read-model-hackerNews-test-functional.db',
-      },
-    },
-    comments: {
-      module: '@resolve-js/readmodel-lite',
-      options: {
-        databaseFile: 'data/read-model-comments-test-functional.db',
-      },
-    },
     elasticSearch: {
       module: 'common/read-models/elastic-search-connector.ts',
       options: {

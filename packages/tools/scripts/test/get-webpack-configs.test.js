@@ -32,7 +32,6 @@ const resolveConfig = {
     module: '@resolve-js/snapshot-lite',
     options: {},
   },
-  readModelConnectors: {},
   schedulers: {},
   jwtCookie: {
     name: 'jwt',

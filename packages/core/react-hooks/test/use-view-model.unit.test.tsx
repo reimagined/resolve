@@ -1,7 +1,7 @@
 import React from 'react'
 import { Context, QueryResult } from '@resolve-js/client'
 import { renderHook } from '@testing-library/react-hooks'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { ResolveContext } from '../src/context'
 import { useClient } from '../src/use-client'
 import { useViewModel } from '../src/use-view-model'
