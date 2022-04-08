@@ -1,4 +1,4 @@
-process.env.TZ = 'Europe/Moscow'
+process.env.TZ = 'UTC'
 
 const path = require('path')
 
@@ -12,7 +12,7 @@ module.exports = {
     '^.*/test/functional/.*$',
     '^.*/test/.*\\.func\\.test\\.[jt]sx?$',
   ],
-  collectCoverageFrom: ['src/**/*.js'],
+  collectCoverageFrom: ['src/**/*.[jt]s?(x)'],
   transform: {
     '^.+\\.js$': path.resolve(__dirname, 'jest.transform.js'),
     '^.+\\.tsx?$': 'ts-jest',

@@ -15,6 +15,7 @@
 **Documentation:**
 
 - Add encryption API reference [\#2254](https://github.com/reimagined/resolve/pull/2254)
+- Add info about TypeScript support [\#2247](https://github.com/reimagined/resolve/pull/2247)
 
 **Other changes:**
 

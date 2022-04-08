@@ -33,7 +33,7 @@ void (async () => {
       commentsInstanceName: 'comments-hn',
       aggregateName: 'Comment',
       readModelName: 'Comments',
-      readModelConnectorName: 'comments',
+      readModelConnectorName: 'default',
       reducerName: 'comments',
     })
     const moduleAuth = resolveModuleAuth([

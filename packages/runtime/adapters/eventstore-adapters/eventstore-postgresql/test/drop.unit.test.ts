@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 /* eslint-disable import/no-extraneous-dependencies */
 import { EventstoreResourceNotExistError } from '@resolve-js/eventstore-base'
 import { AdapterPool } from '../src/types'

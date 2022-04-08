@@ -164,7 +164,7 @@ const appConfig = {
     },
     {
       handler: {
-        package: '@resolve-js/runtime-single-process',
+        package: '@resolve-js/runtime-base',
         import: 'queryIsReadyHandler',
       },
       path: '/api/query-is-ready',

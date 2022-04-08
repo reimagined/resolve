@@ -1,4 +1,4 @@
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { QueryCallback, QueryOptions } from '@resolve-js/client'
 import { useQuery } from '../src/use-query'
 import { useQueryBuilder } from '../src/use-query-builder'

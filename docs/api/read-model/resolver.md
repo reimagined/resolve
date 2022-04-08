@@ -4,6 +4,15 @@ title: Resolver
 description: A resolver is the part of a Read Model that handles data requests.
 ---
 
+:::info TypeScript Support
+
+Read model resolvers are grouped into a Resolvers container object that has an associated TypeScript type:
+
+- Type Name - `ReadModelResolvers`
+- Package - `@resolve-js/core`
+
+:::
+
 A read model resolver function has the following structure:
 
 ```js

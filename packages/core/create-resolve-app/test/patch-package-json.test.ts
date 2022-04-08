@@ -1,7 +1,7 @@
 import { resolveVersion } from '../src/constants'
 import patchPackageJson from '../src/patch-package-json'
 import { readdirSync, writeFileSync } from 'fs-extra'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 
 jest.mock(
   'package.json',

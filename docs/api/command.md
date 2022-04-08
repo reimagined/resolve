@@ -5,6 +5,15 @@ title: Command
 
 ## Command Object
 
+:::info TypeScript Support
+
+A command object has an associated TypeScript type:
+
+- Type Name - `Command`
+- Package - `@resolve-js/core`
+
+:::
+
 A command is an object of the following structure:
 
 <!-- prettier-ignore-start -->
@@ -22,6 +31,15 @@ A command is an object of the following structure:
 <!-- prettier-ignore-end -->
 
 ## Command Result Object
+
+:::info TypeScript Support
+
+A command result object has an associated TypeScript type:
+
+- Type Name - `CommandResult`
+- Package - `@resolve-js/core`
+
+:::
 
 A command result object has the following structure:
 

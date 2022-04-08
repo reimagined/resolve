@@ -1,5 +1,5 @@
 import { execSync } from 'child_process'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import install from '../src/install'
 import { isYarnAvailable } from '../src/utils'
 

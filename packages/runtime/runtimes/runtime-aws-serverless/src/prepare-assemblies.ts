@@ -1,10 +1,10 @@
 import createMonitoring from '@resolve-js/monitoring-aws-cloudwatch'
-import { Assemblies, RuntimeEntryContext } from '@resolve-js/runtime-base'
+import { Assemblies, RuntimeAssemblies } from '@resolve-js/runtime-base'
 import { getDeploymentId } from './utils'
 
 export const prepareAssemblies = (
   assemblies: Assemblies,
-  context: RuntimeEntryContext
+  context: RuntimeAssemblies
 ): Assemblies => {
   if (assemblies.monitoringAdapters == null) {
     assemblies.monitoringAdapters = {}

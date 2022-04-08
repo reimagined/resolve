@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { useClient } from '../src/use-client'
 import { useStaticResolver } from '../src/use-static-resolver'
 

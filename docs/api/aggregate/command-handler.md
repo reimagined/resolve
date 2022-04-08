@@ -3,6 +3,15 @@ id: command-handler
 title: Command Handler
 ---
 
+:::info TypeScript Support
+
+Command handlers are grouped into an Aggregate container object that has an associated TypeScript type:
+
+- Type Name - `Aggregate`
+- Package - `@resolve-js/core`
+
+:::
+
 A command handler function has the following structure:
 
 ```js
@@ -30,7 +39,7 @@ The `context` argument is an object with the following fields:
 | Field Name       | Description                                                                                                |
 | ---------------- | ---------------------------------------------------------------------------------------------------------- |
 | jwt              | The JSON Web Token attached to the request.                                                                |
-| aggregateVersion | The aggregate version that is a number incremented for each consequent event with the current aggregateId. |
+| aggregateVersion | The aggregate version that is a number incremented for each subsequent event with the current aggregateId. |
 | encrypt          | The user-defined [encrypt](../../encryption.md) function.                                                  |
 | decrypt          | The user-defined [decrypt](../../encryption.md) function.                                                  |
 
