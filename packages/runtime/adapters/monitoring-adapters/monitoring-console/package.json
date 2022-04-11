@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/monitoring-console",
-  "version": "0.33.15",
+  "version": "0.34.0",
   "description": "This package serves as a monitoring adapter used to print monitoring metrics to the text console",
   "keywords": [
     "cqrs",
@@ -24,16 +24,16 @@
     "testw": "jest --config=../../../../../jest.config.js --watchAll"
   },
   "dependencies": {
-    "@resolve-js/core": "0.33.15",
-    "@resolve-js/debug-levels": "0.33.15",
-    "@resolve-js/monitoring-base": "0.33.15",
+    "@resolve-js/core": "0.34.0",
+    "@resolve-js/debug-levels": "0.34.0",
+    "@resolve-js/monitoring-base": "0.34.0",
     "columnify": "1.5.4"
   },
   "devDependencies": {
     "@types/columnify": "1.5.1",
     "jest": "27.5.1",
-    "ts-jest": "27.1.3",
-    "jest-mock": "27.5.1"
+    "jest-mock": "27.5.1",
+    "ts-jest": "27.1.3"
   },
   "engines": {
     "node": ">=14.17"

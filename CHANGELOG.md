@@ -1,13 +1,16 @@
 # Changelog
 
-## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+## [V0.34.0](https://github.com/reimagined/resolve/tree/V0.34.0) (2022-04-11)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.15...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.15...V0.34.0)
 
 **Enhancements:**
 
-- Independent runtime [\#2261](https://github.com/reimagined/resolve/pull/2261)
 - Implement support for PLV8 ver 3.1 [\#2249](https://github.com/reimagined/resolve/pull/2249)
+
+**Breaking changes:**
+
+- Independent runtime [\#2261](https://github.com/reimagined/resolve/pull/2261)
 
 **Bug fixes:**
 
