@@ -1356,11 +1356,7 @@ describe('Command middleware', () => {
       makeAggregateMeta(aggregate),
     ])
 
-    const dummyMiddleware: CommandMiddleware = (next) => async (
-      state,
-      command,
-      context
-    ) => {
+    const dummyMiddleware: CommandMiddleware = () => async () => {
       throw new Error('Interrupted by middleware')
     }
 

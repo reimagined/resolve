@@ -15,7 +15,8 @@
           "api-handlers",
           "middleware",
           "frontend",
-          "app-structure"
+          "app-structure",
+          "typescript-support"
         ]
       },
       {
@@ -76,6 +77,14 @@
             "items": [
               "api/api-handler/api-handler",
               "api/api-handler/resolve-context"
+            ]
+          },
+          {
+            "type": "category",
+            "label": "Encryption",
+            "items": [
+              "api/encryption/factory-function",
+              "api/encryption/secrets-manager"
             ]
           },
           {

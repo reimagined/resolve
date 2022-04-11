@@ -40,7 +40,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
         \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
@@ -79,7 +78,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
@@ -161,7 +159,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
                     \\"options\\": {}
                   },
-                  \\"readModelConnectors\\": {},
                   \\"schedulers\\": {},
                   \\"jwtCookie\\": {
                     \\"name\\": \\"jwt\\",
@@ -171,6 +168,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
                   }
@@ -258,7 +256,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
         \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
@@ -304,7 +301,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
@@ -393,7 +389,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
                     \\"options\\": {}
                   },
-                  \\"readModelConnectors\\": {},
                   \\"schedulers\\": {},
                   \\"jwtCookie\\": {
                     \\"name\\": \\"jwt\\",
@@ -403,6 +398,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
                   }
@@ -437,8 +433,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
-            {},
-            {},
             {}
           ]
         }
@@ -447,8 +441,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
-            {},
-            {},
             {}
           ]
         }
@@ -457,19 +449,15 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
-            {},
-            {},
             {}
           ]
         }
       ]
     ],
-    \\"plugins\\": [
-      null
-    ],
-    \\"name\\": \\"Server cloud entry point\\",
+    \\"plugins\\": [],
+    \\"name\\": \\"Server local assemblies\\",
     \\"entry\\": {
-      \\"common/cloud-entry/cloud-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\"
+      \\"common/local-entry/local-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\"
     }
   },
   {
@@ -497,7 +485,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
         \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
@@ -544,7 +531,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
@@ -633,7 +619,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
                     \\"options\\": {}
                   },
-                  \\"readModelConnectors\\": {},
                   \\"schedulers\\": {},
                   \\"jwtCookie\\": {
                     \\"name\\": \\"jwt\\",
@@ -643,6 +628,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-aws-serverless\\"
                   }
@@ -677,8 +663,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
-            {},
-            {},
             {}
           ]
         }
@@ -687,8 +671,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
-            {},
-            {},
             {}
           ]
         }
@@ -697,8 +679,6 @@ exports[`should make webpack configs for cloud mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
-            {},
-            {},
             {}
           ]
         }
@@ -722,7 +702,7 @@ exports[`should make webpack configs for cloud mode 1`] = `
 exports[`should make webpack configs for cloud mode 2`] = `
 "[
   [
-    \\"common/cloud-entry/package.json\\",
+    \\"common/local-entry/package.json\\",
     {}
   ]
 ]"
@@ -759,7 +739,6 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
         \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
@@ -798,7 +777,6 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
@@ -880,7 +858,6 @@ exports[`should make webpack configs for local mode 1`] = `
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
                     \\"options\\": {}
                   },
-                  \\"readModelConnectors\\": {},
                   \\"schedulers\\": {},
                   \\"jwtCookie\\": {
                     \\"name\\": \\"jwt\\",
@@ -890,6 +867,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }
@@ -977,7 +955,6 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
         \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
@@ -1023,7 +1000,6 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
@@ -1112,7 +1088,6 @@ exports[`should make webpack configs for local mode 1`] = `
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
                     \\"options\\": {}
                   },
-                  \\"readModelConnectors\\": {},
                   \\"schedulers\\": {},
                   \\"jwtCookie\\": {
                     \\"name\\": \\"jwt\\",
@@ -1122,6 +1097,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }
@@ -1156,8 +1132,6 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
-            {},
-            {},
             {}
           ]
         }
@@ -1166,8 +1140,6 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
-            {},
-            {},
             {}
           ]
         }
@@ -1176,17 +1148,15 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
-            {},
-            {},
             {}
           ]
         }
       ]
     ],
     \\"plugins\\": [],
-    \\"name\\": \\"Server local entry point\\",
+    \\"name\\": \\"Server local assemblies\\",
     \\"entry\\": {
-      \\"common/local-entry/local-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\"
+      \\"common/local-entry/local-entry.js\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.serverAssemblies.js\\"
     }
   },
   {
@@ -1214,7 +1184,6 @@ exports[`should make webpack configs for local mode 1`] = `
         \\"$resolve.aggregates\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
         \\"$resolve.apiHandlers\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
         \\"$resolve.applicationName\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-        \\"$resolve.backendEntry\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
         \\"$resolve.cdnUrl\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
         \\"$resolve.chunkReactNative\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
         \\"$resolve.clientChunk\\": \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
@@ -1261,7 +1230,6 @@ exports[`should make webpack configs for local mode 1`] = `
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.aggregates.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.apiHandlers.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.applicationName.js\\",
-            \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.backendEntry.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.cdnUrl.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.chunkReactNative.js\\",
             \\"<MONOREPO_DIR>/packages/tools/scripts/src/alias/$resolve.clientChunk.js\\",
@@ -1350,7 +1318,6 @@ exports[`should make webpack configs for local mode 1`] = `
                     \\"module\\": \\"@resolve-js/snapshot-lite\\",
                     \\"options\\": {}
                   },
-                  \\"readModelConnectors\\": {},
                   \\"schedulers\\": {},
                   \\"jwtCookie\\": {
                     \\"name\\": \\"jwt\\",
@@ -1360,6 +1327,7 @@ exports[`should make webpack configs for local mode 1`] = `
                   \\"clientImports\\": {},
                   \\"serverImports\\": {},
                   \\"clientEntries\\": [],
+                  \\"target\\": \\"local\\",
                   \\"runtime\\": {
                     \\"module\\": \\"@resolve-js/runtime-single-process\\"
                   }
@@ -1394,8 +1362,6 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"node_modules\\",
           \\"allowlist\\": [
-            {},
-            {},
             {}
           ]
         }
@@ -1404,8 +1370,6 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"../../runtime/runtimes/runtime-base/node_modules\\",
           \\"allowlist\\": [
-            {},
-            {},
             {}
           ]
         }
@@ -1414,8 +1378,6 @@ exports[`should make webpack configs for local mode 1`] = `
         {
           \\"modulesDir\\": \\"../../../node_modules\\",
           \\"allowlist\\": [
-            {},
-            {},
             {}
           ]
         }

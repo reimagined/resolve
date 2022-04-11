@@ -177,6 +177,13 @@ export function jsonSerializeState(state: string) {
 }
 jsonSerializeState[IS_BUILT_IN] = true
 
+export function viewModelDeserializeState(state: any) {
+  return state
+}
+export function viewModelSerializeState(state: any) {
+  return state
+}
+
 // Used in clientImports to map options to context
 export const optionsInjector = (options: object, imports: object) => {
   void imports

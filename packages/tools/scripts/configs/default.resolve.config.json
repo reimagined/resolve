@@ -17,5 +17,6 @@
   "clientImports": {},
   "serverImports": {},
   "clientEntries": [],
-  "monitoringAdapters": {}
+  "monitoringAdapters": {},
+  "externalDependencies": []
 }

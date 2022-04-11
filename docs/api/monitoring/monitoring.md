@@ -3,13 +3,22 @@ id: monitoring
 title: Monitoring Interface
 ---
 
-A monitoring object's interface doubles the interface of a monitoring adapter except for the [`getMetrics`](#getmetrics) and [`clearMetrics`](#clearmetrics) methods that require a monitoring adapted ID as an argument.
+:::info TypeScript Support
+
+A monitoring object has an associated TypeScript type:
+
+- Type Name - `Monitoring`
+- Package - `@resolve-js/core`
+
+:::
+
+A monitoring object's interface is the same as the interface of a monitoring adapter except for the [`getMetrics`](#getmetrics) and [`clearMetrics`](#clearmetrics) methods that require a monitoring adapter ID as an argument.
 
 A monitoring object exposes the following API:
 
 | Member Name                     | Description                                                                                |
 | ------------------------------- | ------------------------------------------------------------------------------------------ |
-| [`error`](#error)               | Registers an occurred error                                                                |
+| [`error`](#error)               | Registers an occurred error.                                                               |
 | [`execution`](#execution)       | Registers an execution of an operation.                                                    |
 | [`duration`](#duration)         | Registers the duration of an operation.                                                    |
 | [`time`](#time)                 | Starts execution time measurement.                                                         |
@@ -17,9 +26,9 @@ A monitoring object exposes the following API:
 | [`custom`](#custom)             | Registers a custom metric.                                                                 |
 | [`publish`](#publish)           | Defined by an implementation, publishes the collected metrics to the intended destination. |
 | [`rate`](#rate)                 | Registers operation execution rate during the specified time interval in seconds.          |
-| [`group`](#group)               | Create a monitoring group.                                                                 |
-| [`getMetrics`](#getmetrics)     | Get a list of collected metrics.                                                           |
-| [`clearMetrics`](#clearmetrics) | Clear the list of collected metrics.                                                       |
+| [`group`](#group)               | Creates a monitoring group.                                                                |
+| [`getMetrics`](#getmetrics)     | Gets a list of collected metrics.                                                          |
+| [`clearMetrics`](#clearmetrics) | Clears the list of collected metrics.                                                      |
 
 ### `error`
 
@@ -37,7 +46,7 @@ try {
 
 #### Arguments
 
-| Argument Name | Type               | Descriptions                           |
+| Argument Name | Type               | Description                            |
 | ------------- | ------------------ | -------------------------------------- |
 | `error`       | An `error` object. | An error to add to monitoring metrics. |
 
@@ -53,7 +62,7 @@ monitoring.execution()
 
 #### Arguments
 
-| Argument Name | Type                        | Descriptions                           |
+| Argument Name | Type                        | Description                            |
 | ------------- | --------------------------- | -------------------------------------- |
 | `error?`      | An `error` object or `null` | An error to add to monitoring metrics. |
 
@@ -73,7 +82,7 @@ monitoring.duration(
 
 #### Arguments
 
-| Argument Name | Type     | Descriptions                                            |
+| Argument Name | Type     | Description                                             |
 | ------------- | -------- | ------------------------------------------------------- |
 | `label`       | `string` | A text label to add to the 'Label' dimension.           |
 | `duration`    | `number` | An operation duration in milliseconds.                  |
@@ -91,7 +100,7 @@ monitoring.time('Execution', startTimestamp)
 
 #### Arguments
 
-| Argument Name | Type     | Descriptions                                                             |
+| Argument Name | Type     | Description                                                              |
 | ------------- | -------- | ------------------------------------------------------------------------ |
 | `name`        | `string` | The ID of the started timer.                                             |
 | `timestamp?`  | `number` | A moment in time from which to start counting. Defaults to `Date.now()`. |
@@ -108,7 +117,7 @@ monitoring.timeEnd('Execution')
 
 #### Arguments
 
-| Argument Name | Type     | Descriptions                                                          |
+| Argument Name | Type     | Description                                                           |
 | ------------- | -------- | --------------------------------------------------------------------- |
 | `name`        | `string` | The ID of the timer to stop.                                          |
 | `timestamp?`  | `number` | A moment in time at which to stop counting. Defaults to `Date.now()`. |
@@ -125,7 +134,7 @@ monitoring.custom(myMetric)
 
 #### Arguments
 
-| Argument Name | Type                                                      | Descriptions                      |
+| Argument Name | Type                                                      | Description                       |
 | ------------- | --------------------------------------------------------- | --------------------------------- |
 | `metricData`  | A [custom metric object](metric.md#custom-metric-object). | Specifies a custom metric's data. |
 
@@ -141,7 +150,7 @@ await monitoring.publish()
 
 #### Arguments
 
-| Argument Name | Type     | Descriptions                                            |
+| Argument Name | Type     | Description                                             |
 | ------------- | -------- | ------------------------------------------------------- |
 | `options?`    | `object` | Specifies additional options for the publish operation. |
 
@@ -168,7 +177,7 @@ monitoring.rate('ReadModelFeedingRate', eventCount, applyDuration / 1000)
 
 #### Arguments
 
-| Argument Name | Type     | Descriptions                                                        |
+| Argument Name | Type     | Description                                                         |
 | ------------- | -------- | ------------------------------------------------------------------- |
 | `metricName`  | `string` | The name of the metric to add.                                      |
 | `count`       | `number` | A number to add to the metric's count.                              |
@@ -186,7 +195,7 @@ const groupMonitoring = monitoring.group({ Part: 'ReadModel' })
 
 #### Arguments
 
-| Argument Name | Type                       | Descriptions                                |
+| Argument Name | Type                       | Description                                 |
 | ------------- | -------------------------- | ------------------------------------------- |
 | `config`      | A key-value pair `object`. | A key-value pair that identifies the group. |
 
@@ -204,7 +213,7 @@ Gets a list of collected metrics.
 const metrics = getMetrics('default')
 ```
 
-| Argument Name | Type     | Descriptions                                                          |
+| Argument Name | Type     | Description                                                           |
 | ------------- | -------- | --------------------------------------------------------------------- |
 | `id`          | `string` | The metrics adapter ID as specified in the application configuration. |
 
@@ -222,6 +231,6 @@ monitoring.clearMetrics('default')
 
 Clear the list of collected metrics.
 
-| Argument Name | Type     | Descriptions                                                          |
+| Argument Name | Type     | Description                                                           |
 | ------------- | -------- | --------------------------------------------------------------------- |
 | `id`          | `string` | The metrics adapter ID as specified in the application configuration. |

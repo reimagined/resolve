@@ -11,6 +11,6 @@
   "dependencies": {
     "@internal/helpers": "0.33.15",
     "@internal/local-registry": "0.33.15",
-    "minimist": "1.2.5"
+    "minimist": "1.2.6"
   }
 }

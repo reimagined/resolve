@@ -32,7 +32,6 @@ const resolveConfig = {
     module: '@resolve-js/snapshot-lite',
     options: {},
   },
-  readModelConnectors: {},
   schedulers: {},
   jwtCookie: {
     name: 'jwt',
@@ -42,23 +41,8 @@ const resolveConfig = {
   clientImports: {},
   serverImports: {},
   clientEntries: [],
+  target: 'local',
 }
-
-test('should throw on wrong target', async () => {
-  try {
-    await getWebpackConfigs({
-      resolveConfig: {
-        ...resolveConfig,
-        target: 'wrong',
-      },
-      nodeModulesByAssembly: new Map(),
-    })
-
-    return Promise.reject('Test failed')
-  } catch (error) {
-    expect(error).toBeInstanceOf(Error)
-  }
-})
 
 test('should make webpack configs for local mode', async () => {
   const nodeModulesByAssembly = new Map()

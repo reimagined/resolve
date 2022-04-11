@@ -1,4 +1,4 @@
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { v4 as uuid } from 'uuid'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { Context } from '@resolve-js/client'

@@ -308,7 +308,7 @@ jobs:
       - name: Checkout cloud environment
         uses: actions/checkout@v2
         with:
-          repository: DevExpress/resolve-cloud
+          repository: reimagined/resolve-cloud
           ref: dev
           token: ${{ secrets.RESOLVE_BOT_PAT }}
           path: resolve-cloud

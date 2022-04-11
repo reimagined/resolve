@@ -1,5 +1,5 @@
 import type { StoredEvent } from '@resolve-js/core'
-import type { ResolveRequest, ResolveResponse } from '@resolve-js/runtime-base'
+import type { ResolveRequest, ResolveResponse } from '../types'
 
 export const queryIsReadyHandler = async (
   req: ResolveRequest,

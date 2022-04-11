@@ -19,7 +19,7 @@
     "@resolve-js/readmodel-lite": "0.33.15",
     "@resolve-js/readmodel-postgresql": "0.33.15",
     "@types/minimist": "1.2.2",
-    "minimist": "1.2.5",
+    "minimist": "1.2.6",
     "pg": "8.5.1",
     "pg-cursor": "2.7.1"
   }

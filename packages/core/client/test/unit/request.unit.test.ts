@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import qs from 'query-string'
 import { getRootBasedUrl } from '@resolve-js/core'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { request, RequestOptions, VALIDATED_RESULT } from '../../src/request'
 import { Context } from '../../src/context'
 import determineOrigin from '../../src/determine-origin'

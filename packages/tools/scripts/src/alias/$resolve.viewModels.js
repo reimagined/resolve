@@ -41,7 +41,7 @@ const importViewModels = ({ resolveConfig, isClient }) => {
       instanceMode: IMPORT_INSTANCE,
       instanceFallback: {
         package: '@resolve-js/core',
-        import: 'jsonDeserializeState',
+        import: 'viewModelDeserializeState',
       },
       injectRuntimeOptions: isClient ? true : null,
       imports,
@@ -66,7 +66,7 @@ const importViewModels = ({ resolveConfig, isClient }) => {
         instanceMode: IMPORT_INSTANCE,
         instanceFallback: {
           package: '@resolve-js/core',
-          import: 'jsonSerializeState',
+          import: 'viewModelSerializeState',
         },
         imports,
         constants,

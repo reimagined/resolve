@@ -8,5 +8,7 @@ export {
   optionsInjector,
   jsonSerializeState,
   jsonDeserializeState,
+  viewModelSerializeState,
+  viewModelDeserializeState,
 } from './helpers'
 export { IS_BUILT_IN } from './symbols'

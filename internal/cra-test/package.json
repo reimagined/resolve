@@ -10,7 +10,7 @@
   "dependencies": {
     "@internal/helpers": "0.33.15",
     "consola": "^2.15.3",
-    "minimist": "1.2.5",
+    "minimist": "1.2.6",
     "rimraf": "3.0.2"
   }
 }

@@ -10,7 +10,6 @@ reSolve is a full stack functional JavaScript framework.
 - [DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html) support.
 - [Event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) - using events as a source of truth and calculating read models from them.
 - Integrates with [React](https://reactjs.org) and [Redux](https://redux.js.org) for seamless development experience.
-- [React Native](https://facebook.github.io/react-native/) support.
 
 ## :rocket: Getting Started
 
@@ -76,8 +75,5 @@ To get started with reSolve, see the [step-by-step tutorial](./docs/tutorial.md)
 - Ask questions on Stackoverlow with [resolvejs tag](https://stackoverflow.com/questions/ask?tags=resolvejs)
 - Use [GitHub Issues](https://github.com/reimagined/resolve/issues) to report bugs and suggest features
 - Follow [@resolvejs on Twitter](https://twitter.com/resolvejs) or join [our Facebook page](https://www.facebook.com/resolvejs/) for product news and updates
-- Email the team reimagined@devexpress.com
-
-reSolve is developed by [Developer Express Inc.](https://devexpress.com)
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/readme.md?pixel)

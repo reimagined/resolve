@@ -5,19 +5,23 @@ import { getLog } from './get-log'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
-import { checkRuntimeEnv, injectRuntimeEnv } from './declare_runtime_env'
 import getPeerDependencies from './get_peer_dependencies'
 import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 import openBrowser from './open_browser'
 import { processRegister } from './process_manager'
+import adjustResolveConfig from './adjust-resolve-config'
 import detectErrors from './detect_errors'
+import getEntryOptions from './get_entry_options'
 
 const log = getLog('watch')
 
 const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
   log.debug('Starting "watch" mode')
+
+  await adjustResolveConfig(resolveConfig)
+
   validateConfig(resolveConfig)
 
   const nodeModulesByAssembly = new Map()
@@ -29,26 +33,27 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
   })
 
   const peerDependencies = getPeerDependencies()
-
   const compiler = webpack(webpackConfigs)
-
-  const serverPath = path.resolve(
-    process.cwd(),
-    path.join(resolveConfig.distDir, './common/local-entry/local-entry.js')
-  )
-
+  const {
+    activeRuntimeModule,
+    runtimeEntry,
+    activeRuntimeOptions,
+  } = getEntryOptions(resolveConfig)
   const resolveLaunchId = Math.floor(Math.random() * 1000000000)
 
-  const server = processRegister(['node', serverPath], {
-    cwd: process.cwd(),
-    maxRestarts: 0,
-    kill: 5000,
-    stdio: 'inherit',
-    env: {
-      ...process.env,
-      RESOLVE_LAUNCH_ID: resolveLaunchId,
-    },
-  })
+  const server = processRegister(
+    ['node', activeRuntimeModule, runtimeEntry, activeRuntimeOptions],
+    {
+      cwd: process.cwd(),
+      maxRestarts: 0,
+      kill: 5000,
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        RESOLVE_LAUNCH_ID: resolveLaunchId,
+      },
+    }
+  )
 
   process.env.RESOLVE_SERVER_FIRST_START = 'true'
   process.env.RESOLVE_SERVER_OPEN_BROWSER = 'true'
@@ -65,8 +70,6 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
       server.stop(() => server.start())
     }
   })
-
-  const { host: sourceHost, port: sourcePort } = resolveConfig.runtime.options
 
   return await new Promise(() => {
     compiler.watch(
@@ -87,18 +90,7 @@ const watchMode = async (resolveConfig, adjustWebpackConfigs) => {
         copyEnvToDist(resolveConfig.distDir)
 
         const hasErrors = detectErrors(stats, true)
-        const port = Number(
-          checkRuntimeEnv(sourcePort)
-            ? // eslint-disable-next-line no-new-func
-              new Function(`return ${injectRuntimeEnv(sourcePort)}`)()
-            : sourcePort
-        )
-        const host = String(
-          checkRuntimeEnv(sourceHost)
-            ? // eslint-disable-next-line no-new-func
-              new Function(`return ${injectRuntimeEnv(sourceHost)}`)()
-            : sourceHost ?? '0.0.0.0'
-        )
+        const { host, port } = JSON.parse(activeRuntimeOptions)
 
         if (hasErrors) {
           server.stop()

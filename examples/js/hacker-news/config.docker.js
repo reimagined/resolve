@@ -31,28 +31,6 @@ const dockerConfig = {
         database: 'postgres',
       },
     },
-    hackerNews: {
-      module: '@resolve-js/readmodel-postgresql',
-      options: {
-        databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
-        host: declareRuntimeEnv('RESOLVE_READMODEL_CLUSTER_HOST'),
-        port: declareRuntimeEnv('RESOLVE_READMODEL_CLUSTER_PORT'),
-        user: declareRuntimeEnv('RESOLVE_USER'),
-        password: declareRuntimeEnv('RESOLVE_USER_PASSWORD'),
-        database: 'postgres',
-      },
-    },
-    comments: {
-      module: '@resolve-js/readmodel-postgresql',
-      options: {
-        databaseName: declareRuntimeEnv('RESOLVE_READMODEL_DATABASE_NAME'),
-        host: declareRuntimeEnv('RESOLVE_READMODEL_CLUSTER_HOST'),
-        port: declareRuntimeEnv('RESOLVE_READMODEL_CLUSTER_PORT'),
-        user: declareRuntimeEnv('RESOLVE_USER'),
-        password: declareRuntimeEnv('RESOLVE_USER_PASSWORD'),
-        database: 'postgres',
-      },
-    },
     elasticSearch: {
       module: 'common/read-models/elastic-search-connector.js',
       options: {

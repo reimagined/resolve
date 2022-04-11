@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { getEntry } from '../../src/view-model/view-model-reducer'
 import { useReduxViewModelSelector } from '../../src/view-model/use-redux-view-model-selector'
 

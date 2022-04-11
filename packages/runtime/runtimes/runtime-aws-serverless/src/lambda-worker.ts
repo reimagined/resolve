@@ -1,4 +1,12 @@
-import { getLog, createRuntime } from '@resolve-js/runtime-base'
+import {
+  getLog,
+  createRuntime,
+  RuntimeAssemblies,
+  RuntimeWorker,
+  createCompositeMonitoringAdapter,
+  gatherEventListeners,
+  wrapTrie,
+} from '@resolve-js/runtime-base'
 
 import { schedulerFactory } from './scheduler-factory'
 import { eventSubscriberNotifierFactory } from './event-subscriber-notifier-factory'
@@ -23,6 +31,14 @@ import type {
   LambdaEvent,
   WorkerResult,
 } from './types'
+import { WorkerArguments } from './types'
+import { prepareAssemblies } from './prepare-assemblies'
+import { initDomain, PerformanceSubsegment } from '@resolve-js/core'
+import { performanceTracerFactory } from './performance-tracer-factory'
+import { uploaderFactory } from './uploader-factory'
+import { getReactiveSubscriptionFactory } from './get-reactive-subscription-factory'
+import { getDeploymentId } from './utils'
+import { sendReactiveEvent } from './send-reactive-event'
 
 const log = getLog('lambda-worker')
 
@@ -141,15 +157,17 @@ export const lambdaWorker = async (
       const { resolveSource, eventSubscriber, ...buildParameters } = lambdaEvent
       void resolveSource
 
+      // TODO ???
       const executorResult = await runtime.eventSubscriber.build({
         ...buildParameters,
         eventSubscriber,
         coldStart,
-      })
+      } as any)
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
-      return executorResult
+      // TODO ???
+      return executorResult as any
     } else if (
       Array.isArray(lambdaEvent.Records) &&
       [
@@ -236,13 +254,15 @@ export const lambdaWorker = async (
         throw summaryError
       }
 
+      // TODO ???
       const executorResult = await runtime.eventSubscriber.build(
-        buildParameters
+        buildParameters as any
       )
 
       log.verbose(`executorResult: ${JSON.stringify(executorResult)}`)
 
-      return executorResult
+      // TODO ???
+      return executorResult as any
     } else if (lambdaEvent.resolveSource === 'Scheduler') {
       logRuntimeCase('Scheduler')
 
@@ -352,5 +372,73 @@ export const lambdaWorker = async (
 
     coldStart = false
     log.debug('reSolve framework was disposed')
+  }
+}
+
+export const initLambdaWorker = async (
+  serverAssemblies: RuntimeAssemblies
+): Promise<RuntimeWorker<WorkerArguments, WorkerResult>> => {
+  const { constants, domain, resolveVersion } = serverAssemblies
+  const assemblies = prepareAssemblies(
+    serverAssemblies.assemblies,
+    serverAssemblies
+  )
+  let subSegment: PerformanceSubsegment | null = null
+
+  log.debug(`starting lambda 'cold start'`)
+  const domainInterop = initDomain(domain)
+
+  try {
+    log.debug('building lambda cold start context entries')
+    const performanceTracer = await performanceTracerFactory()
+    const monitoring = createCompositeMonitoringAdapter(
+      assemblies.monitoringAdapters
+    )
+
+    const segment = performanceTracer.getSegment()
+    subSegment = segment.addNewSubsegment('initResolve')
+
+    const uploader = await uploaderFactory({
+      uploaderAdapterFactory: assemblies.uploadAdapter,
+    })
+    const getReactiveSubscription = getReactiveSubscriptionFactory()
+
+    const coldStartContext: LambdaColdStartContext = {
+      seedClientEnvs: assemblies.seedClientEnvs,
+      serverImports: assemblies.serverImports,
+      domain,
+      ...constants,
+      assemblies,
+      domainInterop,
+      eventListeners: gatherEventListeners(domain, domainInterop),
+      eventSubscriberScope: getDeploymentId(),
+      upstream: true,
+      resolveVersion,
+      performanceTracer,
+      monitoring,
+      getReactiveSubscription,
+      sendReactiveEvent,
+      routesTrie: wrapTrie(
+        domain.apiHandlers,
+        constants.staticRoutes,
+        constants.rootPath
+      ),
+      uploader,
+      constants,
+    }
+
+    log.debug(`lambda 'cold start' succeeded`)
+
+    return lambdaWorker.bind(null, coldStartContext)
+  } catch (error) {
+    log.error(`lambda 'cold start' failure`, error)
+    if (subSegment != null) subSegment.addError(error)
+  } finally {
+    if (subSegment != null) {
+      subSegment.close()
+    }
+  }
+  return async () => {
+    throw Error(`Lambda worker was not created due to cold start failure`)
   }
 }

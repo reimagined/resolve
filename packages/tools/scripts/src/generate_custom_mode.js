@@ -1,7 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import prepareUrls from './prepare_urls'
 import path from 'path'
-import { checkRuntimeEnv, injectRuntimeEnv } from './declare_runtime_env'
 import { processRegister } from './process_manager'
 import validateConfig from './validate_config'
 import getWebpackConfigs from './get_webpack_configs'
@@ -13,6 +12,8 @@ import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies
 import copyEnvToDist from './copy_env_to_dist'
 import { getLog } from './get-log'
 import detectErrors from './detect_errors'
+import adjustResolveConfig from './adjust-resolve-config'
+import getEntryOptions from './get_entry_options'
 
 const waitForUrl = async (log, host, port, rootPath, apiHandlerUrl) => {
   const urls = prepareUrls('http', host, port, rootPath)
@@ -51,6 +52,9 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
 
     try {
       log.debug(`validating framework config`)
+
+      await adjustResolveConfig(resolveConfig)
+
       const config = await getConfig(resolveConfig, options)
       validateConfig(config)
 
@@ -93,47 +97,34 @@ const generateCustomMode = (getConfig, apiHandlerUrl, runAfterLaunch) => (
         })
       })
       log.debug(`webpack compilation succeeded`)
-
-      const serverPath = path.resolve(
-        process.cwd(),
-        path.join(config.distDir, './common/local-entry/local-entry.js')
-      )
-      log.debug(`backend entry: ${serverPath}`)
-
+      const {
+        activeRuntimeModule,
+        runtimeEntry,
+        activeRuntimeOptions,
+      } = getEntryOptions(resolveConfig)
+      log.debug(`backend entry: ${runtimeEntry}`)
       const resolveLaunchId = Math.floor(Math.random() * 1000000000)
 
       log.debug(`registering backend server node process`)
-      const server = processRegister(['node', serverPath], {
-        cwd: process.cwd(),
-        maxRestarts: 0,
-        kill: 5000,
-        stdio: 'inherit',
-        env: {
-          ...process.env,
-          RESOLVE_LAUNCH_ID: resolveLaunchId,
-        },
-      })
+      const server = processRegister(
+        ['node', activeRuntimeModule, runtimeEntry, activeRuntimeOptions],
+        {
+          cwd: process.cwd(),
+          maxRestarts: 0,
+          kill: 5000,
+          stdio: 'inherit',
+          env: {
+            ...process.env,
+            RESOLVE_LAUNCH_ID: resolveLaunchId,
+          },
+        }
+      )
 
       server.on('crash', reject)
       server.start()
       log.debug(`server process started with pid: ${server.pid}`)
 
-      const {
-        runtime: {
-          options: { port: portSource, host: hostSource },
-        },
-      } = config
-      const port = Number(
-        checkRuntimeEnv(portSource)
-          ? // eslint-disable-next-line no-new-func
-            new Function(`return ${injectRuntimeEnv(portSource)}`)()
-          : config.port
-      )
-      const host = checkRuntimeEnv(hostSource)
-        ? // eslint-disable-next-line no-new-func
-          new Function(`return ${injectRuntimeEnv(hostSource)}`)()
-        : config.port
-
+      const { host, port } = JSON.parse(activeRuntimeOptions)
       log.debug(`resolve host "${host}", port "${port}"`)
 
       const fetchUrl = waitForUrl.bind(null, log, host, port, config.rootPath)
