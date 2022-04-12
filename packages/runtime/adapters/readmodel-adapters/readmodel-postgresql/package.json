@@ -26,7 +26,6 @@
   "dependencies": {
     "@babel/runtime": "7.17.2",
     "@resolve-js/debug-levels": "0.34.0",
-    "@resolve-js/eventstore-base": "0.34.0",
     "@resolve-js/readmodel-base": "0.34.0",
     "pg": "8.5.1"
   },
