@@ -1,7 +1,7 @@
 import sendAnalytics from '../src/send-analytics'
 import { analyticsUrlBase, resolveVersion } from '../src/constants'
 import { get } from 'https'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 jest.mock('https')
 
 const mockedGet = mocked(get)

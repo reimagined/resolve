@@ -25,5 +25,5 @@ test('like user', async (t) => {
 test('unmount one view model', async (t) => {
   await t.click(Selector('button').withText('Unmount'))
   await t.expect(Selector('#likes-1').innerText).eql('1')
-  await t.expect(Selector('#likes-2').visible).notOk()
+  await t.expect(Selector('#likes-2').exists).notOk()
 })

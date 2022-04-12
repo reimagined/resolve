@@ -1,4 +1,4 @@
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 
 import { SecretsManager } from '../src/types/core'
 import { HttpError } from '../src/errors'

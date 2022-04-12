@@ -1,4 +1,4 @@
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 
 import { SecretsManager, Event } from '../src/types/core'
 import { ViewModelMeta, Eventstore, Monitoring } from '../src/types/runtime'

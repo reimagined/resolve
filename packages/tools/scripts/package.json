@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/scripts",
-  "version": "0.33.15",
+  "version": "0.34.0",
   "description": "Contains scripts used to initialize a reSolve server.",
   "keywords": [
     "cqrs",
@@ -33,11 +33,11 @@
     "@babel/register": "7.13.16",
     "@babel/runtime": "7.17.2",
     "@purtuga/esm-webpack-plugin": "1.5.0",
-    "@resolve-js/core": "0.33.15",
-    "@resolve-js/debug-levels": "0.33.15",
-    "@resolve-js/runtime-aws-serverless": "0.33.15",
-    "@resolve-js/runtime-base": "0.33.15",
-    "@resolve-js/runtime-single-process": "0.33.15",
+    "@resolve-js/core": "0.34.0",
+    "@resolve-js/debug-levels": "0.34.0",
+    "@resolve-js/runtime-aws-serverless": "0.34.0",
+    "@resolve-js/runtime-base": "0.34.0",
+    "@resolve-js/runtime-single-process": "0.34.0",
     "address": "1.1.2",
     "ajv": "8.10.0",
     "babel-loader": "8.2.2",
@@ -55,13 +55,13 @@
     "route-trie": "3.0.0",
     "semver": "7.3.5",
     "socket.io-client": "4.0.0",
+    "source-map-support": "0.5.21",
     "synchronous-promise": "2.0.15",
     "testcafe": "1.18.3",
     "testcafe-browser-tools": "2.0.22",
     "uuid": "8.3.2",
     "webpack": "4.46.0",
-    "webpack-node-externals": "2.5.2",
-    "source-map-support": "0.5.21"
+    "webpack-node-externals": "2.5.2"
   },
   "devDependencies": {
     "jest": "27.5.1",

@@ -1,6 +1,6 @@
 import type { Request, AWSError } from 'aws-sdk'
 import CloudWatch, { PutMetricDataInput } from 'aws-sdk/clients/cloudwatch'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 
 import createMonitoring from '../src'
 

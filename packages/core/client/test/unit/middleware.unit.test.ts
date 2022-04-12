@@ -1,4 +1,4 @@
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 import { createParseResponseMiddleware } from '../../src/middleware/parse-response'
 import { ClientMiddleware, requestWithMiddleware } from '../../src/middleware'
 import { JSONWebTokenProvider } from '../../src/jwt-provider'

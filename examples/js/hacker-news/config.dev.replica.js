@@ -37,18 +37,6 @@ const devReplicaConfig = {
         databaseFile: 'data-replica/read-model-default.db',
       },
     },
-    hackerNews: {
-      module: '@resolve-js/readmodel-lite',
-      options: {
-        databaseFile: 'data-replica/read-model-hackerNews.db',
-      },
-    },
-    comments: {
-      module: '@resolve-js/readmodel-lite',
-      options: {
-        databaseFile: 'data-replica/read-model-comments.db',
-      },
-    },
     elasticSearch: {
       module: 'common/read-models/elastic-search-connector.js',
       options: {

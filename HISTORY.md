@@ -1,5 +1,30 @@
 # Changelog
 
+## [V0.34.0](https://github.com/reimagined/resolve/tree/V0.34.0) (2022-04-11)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.15...V0.34.0)
+
+**Enhancements:**
+
+- Implement support for PLV8 ver 3.1 [\#2249](https://github.com/reimagined/resolve/pull/2249)
+
+**Breaking changes:**
+
+- Independent runtime [\#2261](https://github.com/reimagined/resolve/pull/2261)
+
+**Bug fixes:**
+
+- Fix eliminated error message in Init projection handler [\#2250](https://github.com/reimagined/resolve/pull/2250)
+
+**Documentation:**
+
+- Add encryption API reference [\#2254](https://github.com/reimagined/resolve/pull/2254)
+- Add info about TypeScript support [\#2247](https://github.com/reimagined/resolve/pull/2247)
+
+**Other changes:**
+
+- Refactor resolve-scripts and runtimes [\#2245](https://github.com/reimagined/resolve/pull/2245)
+
 ## [V0.33.15](https://github.com/reimagined/resolve/tree/V0.33.15) (2022-03-03)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.14...V0.33.15)

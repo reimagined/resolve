@@ -1,6 +1,6 @@
 {
   "name": "@internal/helpers",
-  "version": "0.33.15",
+  "version": "0.34.0",
   "private": true,
   "main": "index.js",
   "bin": "./bin/index.js",
@@ -13,7 +13,7 @@
     "lodash.difference": "4.5.0",
     "lodash.intersection": "4.4.0",
     "lodash.uniq": "4.5.0",
-    "minimist": "1.2.5",
+    "minimist": "1.2.6",
     "performance-now": "2.1.0",
     "semver": "7.3.4"
   }

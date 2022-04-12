@@ -1,5 +1,5 @@
 import { v4 as uuidV4 } from 'uuid'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 
 import adapterFactory, {
   SubscriptionAdapter,

@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/resolve",
-  "version": "0.33.15",
+  "version": "0.34.0",
   "private": true,
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
@@ -63,7 +63,7 @@
     "@babel/preset-react": "7.16.7",
     "@babel/preset-typescript": "7.16.7",
     "@babel/runtime": "7.17.2",
-    "@internal/helpers": "0.33.15",
+    "@internal/helpers": "0.34.0",
     "@testing-library/dom": "7.30.0",
     "@typescript-eslint/eslint-plugin": "5.12.0",
     "@typescript-eslint/parser": "5.12.0",

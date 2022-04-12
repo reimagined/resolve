@@ -1,6 +1,6 @@
 import { AdapterPool } from '../src/types'
 import dropEvents from '../src/drop-events'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 
 jest.mock('../src/get-log')
 let pool: AdapterPool

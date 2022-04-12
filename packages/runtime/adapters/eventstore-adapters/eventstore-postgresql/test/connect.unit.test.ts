@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { Client as Postgres } from 'pg'
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'jest-mock'
 /* eslint-disable import/no-extraneous-dependencies */
 import type { AdapterPool, PostgresqlAdapterConfig } from '../src/types'
 import connect from '../src/connect'
