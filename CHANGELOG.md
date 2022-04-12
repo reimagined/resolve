@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.34.0...HEAD)
+
+**Other changes:**
+
+- Remove redundant dependency [\#2264](https://github.com/reimagined/resolve/pull/2264)
+
 ## [V0.34.0](https://github.com/reimagined/resolve/tree/V0.34.0) (2022-04-11)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.33.15...V0.34.0)
