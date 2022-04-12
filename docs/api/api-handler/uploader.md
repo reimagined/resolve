@@ -16,7 +16,7 @@ Use this API to implement custom file upload functionality.
 
 :::tip
 
-The [Uploader module](../modules/uploader.md) implements handlers based on this API as well as client-side wrapper functions that you can use to communicate with these handlers. Consider using this module if your application does not need any custom file upload handling logic.
+The [Uploader module](../modules/uploader.md) implements handlers based on this API as well as client-side wrapper functions that you can use to communicate with these handlers. Consider using this module if your application does not need any custom logic to handle file uploads.
 
 :::
 
@@ -38,9 +38,9 @@ Get a URL used to upload files through `PUT` requests.
 
 **Arguments**
 
-| Argument Name | Type   | Description |
-| ------------- | ------ | ----------- |
-| dir           | string |             |
+| Argument Name | Type     | Description                                                |
+| ------------- | -------- | ---------------------------------------------------------- |
+| `dir`         | `string` | The name of a dirrectory where to store the uploaded file. |
 
 **Result**
 
@@ -54,9 +54,9 @@ Get a URL used to upload files through `POST` requests.
 
 **Arguments**
 
-| Argument Name | Type   | Description |
-| ------------- | ------ | ----------- |
-| dir           | string |             |
+| Argument Name | Type     | Description                                                |
+| ------------- | -------- | ---------------------------------------------------------- |
+| `dir`         | `string` | The name of a dirrectory where to store the uploaded file. |
 
 **Result**
 
@@ -70,10 +70,10 @@ Send a `PUT` request to upload a file from server code.
 
 **Arguments**
 
-| Argument Name | Type   | Description |
-| ------------- | ------ | ----------- |
-| uploadUrl     | string |             |
-| filePath      | string |             |
+| Argument Name | Type     | Description                            |
+| ------------- | -------- | -------------------------------------- |
+| `uploadUrl`   | `string` | The target URL for the upload request. |
+| `filePath`    | `string` | The path to the uploaded file.         |
 
 **Result**
 
@@ -87,10 +87,10 @@ Send a `POST` request to upload a file from server code.
 
 **Arguments**
 
-| Argument Name           | Type     | Description |
-| ----------------------- | -------- | ----------- |
-| `form: { url: string }` | `object` |             |
-|                         |          |             |
+| Argument Name           | Type     | Description                    |
+| ----------------------- | -------- | ------------------------------ |
+| `form: { url: string }` | `object` | The file upload form settings. |
+| `filePath`              | `string` | The path to the uploaded file. |
 
 **Result**
 
@@ -104,10 +104,10 @@ Create a JSON Web Token used to authorize the upload operation.
 
 **Arguments**
 
-| Argument Name                                  | Type     | Description |
-| ---------------------------------------------- | -------- | ----------- |
-| `options: { dir: string; expireTime: number }` | `object` |             |
+| Argument Name                                  | Type     | Description                                      |
+| ---------------------------------------------- | -------- | ------------------------------------------------ |
+| `options: { dir: string; expireTime: number }` | `object` | Tbe options used to configure the created token. |
 
 **Result**
 
-`string`
+A `string` value that is the created JSON Web Token.
