@@ -22,6 +22,7 @@ A view model query object has the following structure:
 {
   modelName, // (string) The name of the view model.
   aggregateIds, // (string[] or '*') A list of aggregate IDs for which to process events.
+  aggregateArgs, // (object) An object that contains arguments attached to the query.
 }
 ```
 
