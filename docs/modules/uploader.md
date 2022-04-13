@@ -23,17 +23,17 @@ const baseConfig = merge(
 
 The **@resolve-js/module-uploader** module adds the following API endpoints to an application:
 
-- `/api/uploader/getFormUpload` - Returns an upload path to use in HTTP forms.
-- `/api/uploader/getUploadUrl` - Returns a path used to upload files.
-- `/api/uploader/getToken` - Takes user credentials and returns the user's authorization token.
+- `/api/uploader/getFormUpload` - Gets settings required to submit a file upload form.
+- `/api/uploader/getUploadUrl` - Gets a URL used to send file upload PUT requests.
+- `/api/uploader/getToken` - Get a JSON Web Token used to authorise a file upload request.
 
 ## Client API
 
 On the client side you can use the following functions exported by the **@resolve-js/module-uploader** to communicate with the uploader's [HTTP API endpoints](#http-api):
 
-- `getFormUpload`
-- `getUploadUrl`
-- `getToken`
+- `getFormUpload` - Gets settings required to submit a file upload form.
+- `getUploadUrl`- Gets a URL used to send file upload PUT requests.
+- `getToken` - Get a JSON Web Token used to authorise a file upload request.
 
 ## Example
 
