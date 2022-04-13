@@ -44,7 +44,14 @@ Get a URL used to upload files through `PUT` requests.
 
 **Result**
 
-`Promise<{ uploadUrl: string; uploadId: string }>`
+A promise that resolve to an object of the following structure:
+
+```js
+{
+  uploadUrl, // (string) The target URL for the upload request.
+  uploadId,  // (string) The unique idetifier of the initiated uploadd process.
+}
+```
 
 ## `getSignedPost`
 
@@ -60,7 +67,14 @@ Get a URL used to upload files through `POST` requests.
 
 **Result**
 
-`Promise<{ form: any; uploadId: string }>`
+A promise that resolve to an object of the following structure:
+
+```js
+{
+  form,     // (object) An object that contains the upload form settings.
+  uploadId, // (string) The unique idetifier of the initiated uploadd process.
+}
+```
 
 ## `uploadPut`
 
@@ -77,7 +91,7 @@ Send a `PUT` request to upload a file from server code.
 
 **Result**
 
-`Promise<void>`
+A promise that resolves when the upload succeeds.
 
 ## `uploadPost`
 
@@ -94,7 +108,7 @@ Send a `POST` request to upload a file from server code.
 
 **Result**
 
-`Promise<void>`
+A promise that resolves when the upload succeeds.
 
 ## `createToken`
 
