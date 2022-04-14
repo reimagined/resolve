@@ -153,7 +153,7 @@ export const handleWebsocketEvent = async (
               FunctionName: websocketLambdaArn,
               Payload: {
                 type: 'send',
-                connectionId,
+                connectionIds: [connectionId],
                 data: {
                   type: 'pullEvents',
                   requestId,
