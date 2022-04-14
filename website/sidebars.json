@@ -30,6 +30,7 @@
           "custom-read-model-connectors",
           "file-upload",
           "export-import",
+          "split-client-and-server",
           "preparing-for-production",
           "running-in-containers",
           "code-splitting",
