@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.34.0...HEAD)
 
+**Enhancements:**
+
+- Improve post save event notification performance [\#2266](https://github.com/reimagined/resolve/pull/2266)
+
 **Other changes:**
 
 - Remove redundant dependency [\#2264](https://github.com/reimagined/resolve/pull/2264)
