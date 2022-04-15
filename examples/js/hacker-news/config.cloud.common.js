@@ -5,7 +5,6 @@ const cloudCommonConfig = {
     module: '@resolve-js/runtime-aws-serverless',
     options: { importMode: 'dynamic' },
   },
-  staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
   readModelConnectors: {
     elasticSearch: {
       module: 'common/read-models/elastic-search-connector.js',

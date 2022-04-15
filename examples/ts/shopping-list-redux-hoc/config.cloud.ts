@@ -8,7 +8,6 @@ const cloudConfig = {
       importMode: 'dynamic',
     },
   },
-  staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
 }
 
 export default cloudConfig
