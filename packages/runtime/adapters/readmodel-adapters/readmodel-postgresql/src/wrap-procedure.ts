@@ -109,13 +109,10 @@ const filterFields = (fieldList, row) => {
       'Field list should be an object with enumerated selected fields'
     )
   }
-
-  if (fieldList == null) {
-    return row
-  }
-
-  const fieldNames = Object.keys(fieldList)
-  const inclusiveMode = fieldList[fieldNames[0]] === 1
+  const fieldNames = fieldList != null ? Object.keys(fieldList) : []
+  const inclusiveMode = !(fieldList == null || fieldNames.length === 0)
+    ? fieldList[fieldNames[0]] === 1
+    : false
 
   for (const key of Object.keys(row)) {
     if (
