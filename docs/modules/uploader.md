@@ -107,13 +107,57 @@ On the client side you can use the following functions exported by the **@resolv
 
 Gets settings required to submit a file upload form.
 
+#### Arguments
+
+| Argument Name | Type     | Description                                                   |
+| ------------- | -------- | ------------------------------------------------------------- |
+| `{ dir }`     | `string` | The name of a public dirrectory where to save uploaded files. |
+
+#### Result
+
+The result is an objecto of the following structure:
+
+```js
+{
+  form,     // (object) An object that contains the upload form settings.
+  uploadId, // (string) The unique idetifier of the initiated uploadd process.
+}
+```
+
 ### `getUploadUrl`
 
 Gets a URL used to send file upload PUT requests.
 
+#### Arguments
+
+| Argument Name | Type     | Description                                                   |
+| ------------- | -------- | ------------------------------------------------------------- |
+| `{ dir }`     | `string` | The name of a public dirrectory where to save uploaded files. |
+
+#### Result
+
+The result is an objecto of the following structure:
+
+```js
+{
+  uploadUrl, // (string) The target URL for the upload request.
+  uploadId,  // (string) The unique idetifier of the initiated uploadd process.
+}
+```
+
 ### `getToken`
 
 Get a JSON Web Token used to authorise a file upload request.
+
+#### Arguments
+
+| Argument Name | Type     | Description                                                   |
+| ------------- | -------- | ------------------------------------------------------------- |
+| `{ dir }`     | `string` | The name of a public dirrectory where to save uploaded files. |
+
+#### Result
+
+The response object is a `string` value that is the created JSON Web Token.
 
 ## Example
 
