@@ -26,15 +26,6 @@ const projection = {
     store,
     { aggregateId, payload: { scenarioName } }
   ) => {
-    const scenario = await store.findOne('ExecutedScenarios', {
-      id: aggregateId,
-      name: scenarioName,
-    })
-
-    if (scenario == null) {
-      throw new Error('Scenario not found')
-    }
-
     await store.update(
       'ExecutedScenarios',
       { id: aggregateId, name: scenarioName },
