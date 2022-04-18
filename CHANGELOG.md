@@ -1,8 +1,8 @@
 # Changelog
 
-## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+## [V0.34.1](https://github.com/reimagined/resolve/tree/V0.34.1) (2022-04-18)
 
-[Full Changelog](https://github.com/reimagined/resolve/compare/V0.34.0...HEAD)
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.34.0...V0.34.1)
 
 **Enhancements:**
 
@@ -10,7 +10,6 @@
 
 **Other changes:**
 
-- Fix PLV8 field filter [\#2268](https://github.com/reimagined/resolve/pull/2268)
 - Remove redundant dependency [\#2264](https://github.com/reimagined/resolve/pull/2264)
 
 ## [V0.34.0](https://github.com/reimagined/resolve/tree/V0.34.0) (2022-04-11)
