@@ -7,7 +7,6 @@ const cloudConfig = {
       importMode: 'dynamic',
     },
   },
-  staticPath: declareRuntimeEnv('RESOLVE_CLOUD_STATIC_URL'),
   uploadAdapter: {
     options: {
       CDN: declareRuntimeEnv('RESOLVE_UPLOADER_URL'),
