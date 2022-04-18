@@ -10,6 +10,7 @@
 
 **Other changes:**
 
+- Fix PLV8 field filter [\#2268](https://github.com/reimagined/resolve/pull/2268)
 - Remove redundant dependency [\#2264](https://github.com/reimagined/resolve/pull/2264)
 
 ## [V0.34.0](https://github.com/reimagined/resolve/tree/V0.34.0) (2022-04-11)
