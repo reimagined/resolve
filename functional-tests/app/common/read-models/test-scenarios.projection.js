@@ -32,7 +32,7 @@ const projection = {
     })
 
     if (scenario == null) {
-      // disable-eslint-next-line no-console
+      // eslint-disable-next-line no-console
       console.warn(
         `Test scenario ${scenarioName} is not found for "${aggregateId}" aggregate id. Update will be skipped`
       )
