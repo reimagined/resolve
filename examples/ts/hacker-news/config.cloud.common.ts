@@ -1,5 +1,3 @@
-import { declareRuntimeEnv } from '@resolve-js/scripts'
-
 const cloudCommonConfig = {
   mode: 'production',
   runtime: {
