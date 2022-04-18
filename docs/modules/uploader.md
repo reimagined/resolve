@@ -5,7 +5,7 @@ title: Uploader
 
 The **@resolve-js/module-uploader** module implements the file upload functionality.
 
-## Instalation
+## Installation
 
 Use the following console input to install the uploader module:
 
@@ -41,13 +41,57 @@ The **@resolve-js/module-uploader** module adds the following API endpoints to a
 
 Gets settings required to submit a file upload form.
 
+**Query Parameters**
+
+| Parameter Name | Description                                                   |
+| -------------- | ------------------------------------------------------------- |
+| `dir`          | The name of a public dirrectory where to save uploaded files. |
+
+**Response**
+
+The response contains a JSON object of the following structure:
+
+```js
+{
+  form,     // (object) An object that contains the upload form settings.
+  uploadId, // (string) The unique idetifier of the initiated uploadd process.
+}
+```
+
 ### `/api/uploader/getUploadUrl` {#get-upload-url}
 
 Gets a URL used to send file upload PUT requests.
 
+**Query Parameters**
+
+| Parameter Name | Description                                                   |
+| -------------- | ------------------------------------------------------------- |
+| `dir`          | The name of a public dirrectory where to save uploaded files. |
+
+**Response**
+
+The response contains a JSON object of the following structure:
+
+```js
+{
+  uploadUrl, // (string) The target URL for the upload request.
+  uploadId,  // (string) The unique idetifier of the initiated uploadd process.
+}
+```
+
 ### `/api/uploader/getToken` {#get-token}
 
 Get a JSON Web Token used to authorise a file upload request.
+
+**Query Parameters**
+
+| Parameter Name | Description                                                   |
+| -------------- | ------------------------------------------------------------- |
+| `dir`          | The name of a public dirrectory where to save uploaded files. |
+
+**Response**
+
+The response object is a `string` value that is the created JSON Web Token.
 
 ## Client API
 
