@@ -9,9 +9,7 @@ In reSolve, a module encapsulates a fragment of functionality that can be includ
 
 A module is a standalone configuration object that can reference client code, read-side and write-side code, sagas and HTTP handlers. To include a module into your application, you need to initialize this object with any required additional settings and merge it into your application's centralized config:
 
-**run.js:**
-
-```js
+```js title="run.js"
 const moduleAuth = resolveModuleAuth([
   {
     name: 'local-strategy',
@@ -44,5 +42,7 @@ const baseConfig = merge(
 ```
 
 A merged module's code is included in the resulting application's bundles.
+
+A module's package can also contain executable scripts ([@resolve-js/module-admin](https://github.com/reimagined/resolve/tree/dev/packages/modules/module-admin)) and/or export functions, objects, and TypeScript types ([@resolve-js/module-uploader](https://github.com/reimagined/resolve/tree/dev/packages/modules/module-uploader)).
 
 For an example on how to use modules, see the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/js/hacker-news) sample application. This application uses the authentication and comments modules from reSolve.
