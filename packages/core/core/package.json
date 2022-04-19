@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/core",
-  "version": "0.34.1",
+  "version": "0.34.2",
   "description": "reSolve core.",
   "keywords": [
     "cqrs",
@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.17.2",
-    "@resolve-js/debug-levels": "0.34.1",
+    "@resolve-js/debug-levels": "0.34.2",
     "uuid": "8.3.2"
   },
   "devDependencies": {
