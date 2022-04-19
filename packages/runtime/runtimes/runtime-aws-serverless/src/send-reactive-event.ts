@@ -61,24 +61,25 @@ export const sendReactiveEvent: ReactiveEventDispatcher = async (event) => {
     ({ connectionId }: { connectionId: string }) => connectionId
   )
 
-  await invokeFunction({
-    Region: process.env.AWS_REGION as string,
-    FunctionName: process.env.RESOLVE_WEBSOCKET_LAMBDA_ARN as string,
-    InvocationType: 'RequestOnly',
-    MaximumExecutionDuration: 200,
-    Payload: {
-      type: 'send',
-      connectionIds,
-      data: {
-        type: 'events',
-        payload: {
-          events: [event],
+  if (connectionIds.length > 0) {
+    await invokeFunction({
+      Region: process.env.AWS_REGION as string,
+      FunctionName: process.env.RESOLVE_WEBSOCKET_LAMBDA_ARN as string,
+      InvocationType: 'Event',
+      Payload: {
+        type: 'send',
+        connectionIds,
+        data: {
+          type: 'events',
+          payload: {
+            events: [event],
+          },
         },
       },
-    },
-  }).catch(errorBoundary(errors))
+    }).catch(errorBoundary(errors))
 
-  if (errors.length > 0) {
-    log.warn(`Failed push event to websocket. ${errors}`)
+    if (errors.length > 0) {
+      log.warn(`Failed push event to websocket. ${errors}`)
+    }
   }
 }
