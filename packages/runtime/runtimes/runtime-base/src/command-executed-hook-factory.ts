@@ -16,8 +16,10 @@ const commandExecutedHook = async (
   command: Command,
   storedEventPointer: StoredEventPointer
 ) => {
-  await runtime.broadcastEvent(storedEventPointer)
-  await runtime.sendReactiveEvent(storedEventPointer.event)
+  await Promise.all([
+    runtime.broadcastEvent(storedEventPointer),
+    runtime.sendReactiveEvent(storedEventPointer.event),
+  ])
 }
 
 export const commandExecutedHookFactory = (
