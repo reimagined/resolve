@@ -205,7 +205,7 @@ describe('runtime', () => {
       expect(result).toEqual({
         statusCode: 405,
         headers: {},
-        body: 'GET "/": handler not exist',
+        body: 'GET "/": handler does not exist',
       })
     })
 
