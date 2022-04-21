@@ -125,7 +125,7 @@ module.exports = {
           ]
         }
       ],
-      "copyright": "Copyright © 2021 Developer Express, Inc",
+      "copyright": "Copyright © 2021 Devsoft Baltic OÜ",
       "logo": {
         "src": "img/resolve.svg"
       }
