@@ -1,6 +1,6 @@
 {
   "name": "benchmarks",
-  "version": "0.34.0",
+  "version": "0.34.2",
   "private": true,
   "description": "API benchmarks for resolve",
   "scripts": {
@@ -10,14 +10,14 @@
     "benchmark:parallel-save": "ts-node eventstore/parallel-save.ts"
   },
   "devDependencies": {
-    "@resolve-js/core": "0.34.0",
-    "@resolve-js/debug-levels": "0.34.0",
-    "@resolve-js/eventstore-base": "0.34.0",
-    "@resolve-js/eventstore-lite": "0.34.0",
-    "@resolve-js/eventstore-postgresql": "0.34.0",
-    "@resolve-js/monitoring-base": "0.34.0",
-    "@resolve-js/readmodel-lite": "0.34.0",
-    "@resolve-js/readmodel-postgresql": "0.34.0",
+    "@resolve-js/core": "0.34.2",
+    "@resolve-js/debug-levels": "0.34.2",
+    "@resolve-js/eventstore-base": "0.34.2",
+    "@resolve-js/eventstore-lite": "0.34.2",
+    "@resolve-js/eventstore-postgresql": "0.34.2",
+    "@resolve-js/monitoring-base": "0.34.2",
+    "@resolve-js/readmodel-lite": "0.34.2",
+    "@resolve-js/readmodel-postgresql": "0.34.2",
     "@types/minimist": "1.2.2",
     "minimist": "1.2.6",
     "pg": "8.5.1",

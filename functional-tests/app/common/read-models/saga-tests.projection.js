@@ -10,13 +10,15 @@ const projection = {
       payload: { testId, counterId },
     } = event
 
-    try {
+    const sagaTest = await store.findOne('SagaTestRecords', { id: testId })
+
+    if (sagaTest == null) {
       await store.insert('SagaTestRecords', {
         id: testId,
         counterId,
         count: 1,
       })
-    } catch (e) {
+    } else {
       await store.update(
         'SagaTestRecords',
         {
