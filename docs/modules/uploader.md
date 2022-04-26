@@ -3,7 +3,7 @@ id: uploader
 title: Uploader
 ---
 
-The **@resolve-js/module-uploader** module implements the file upload functionality.
+The **@resolve-js/module-uploader** module implements the file upload functionality. This module is a higher level wrapper to the [uploader API](../api/api-handler/uploader.md).
 
 ## Installation
 
@@ -25,6 +25,18 @@ const baseConfig = merge(
   moduleAuth,
   moduleUploader
 )
+```
+
+Specify the the required uploader adapter settings in the application's configuration files:
+
+```js title="config.dev.js"
+uploadAdapter: {
+  options: {
+    directory: 'data',
+    bucket: 'files',
+    secretKey: 'key',
+  },
+},
 ```
 
 ## HTTP API
