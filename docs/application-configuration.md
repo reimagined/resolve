@@ -4,6 +4,11 @@ title: Configuration
 description: This document lists configuration options available for a reSolve application.
 ---
 
+```mdx-code-block
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+```
+
 ## Overview
 
 This document describes configuration options available for a reSolve application.
@@ -711,9 +716,61 @@ Specifies settings used by the [uploader API](api/api-handler/uploader.md) and [
 | ------------------------------ | ---------------------------------------------------------- |
 | [`options`](#uploader-options) | Specifies runtime-dependent options for the upload adapter |
 
-#### options {#uploader-options}
+#### `options` {#uploader-options}
 
 Depending on the [runtime](#runtime), the `options` object specifies one of the following sets of settings:
+
+<Tabs>
+<TabItem value="single-process" label="Single Process" default>
+
+| Field       | Description                                                                              |
+| ----------- | ---------------------------------------------------------------------------------------- |
+| `directory` | The name of a file upload directory.                                                     |
+| `bucket`    | The name of a subdirectory within the upload directory used to store the uploaded files. |
+| `secretKey` | The secret key used to encrypt the uploaded files.                                       |
+
+</TabItem>
+<TabItem value="aws-serverless" label="AWS Serverless">
+
+| Field             | Description                                                |
+| ----------------- | ---------------------------------------------------------- |
+| `CDN`             | The URL of the CDN used to store the uploaded data.        |
+| `uploaderArn`     | The uploader lambda's Amazon Resource Name.                |
+| `userId`          | The AWS user's account identifier.                         |
+| `encryptedUserId` | The AWS user's account identifier in the encrypted format. |
+
+</TabItem>
+</Tabs>
+
+#### Example
+
+<Tabs>
+<TabItem value="single-process" label="Single Process" default>
+
+```js
+uploadAdapter: {
+  options: {
+    directory: 'data',
+    bucket: 'files',
+    secretKey: 'key',
+  },
+},
+```
+
+</TabItem>
+<TabItem value="aws-serverless" label="AWS Serverless">
+
+```js
+uploadAdapter: {
+  options: {
+    CDN: declareRuntimeEnv('RESOLVE_UPLOADER_URL'),
+    uploaderArn: declareRuntimeEnv('RESOLVE_UPLOADER_LAMBDA_ARN'),
+  },
+},
+```
+
+</TabItem>
+</Tabs>
 
 ### viewModels
 
