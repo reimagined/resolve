@@ -703,6 +703,18 @@ Specifies the project directory that contains static files.
 
 Specifies the URL path to static files.
 
+### uploadAdapter
+
+Specifies settings used by the [uploader API](api/api-handler/uploader.md) and [`@resolve-js/module-uploader`](modules/uploader.md). The `uploadAdapter` configuration object has the following structure:
+
+| Field                          | Description                                                |
+| ------------------------------ | ---------------------------------------------------------- |
+| [`options`](#uploader-options) | Specifies runtime-dependent options for the upload adapter |
+
+#### options {#uploader-options}
+
+Depending on the [runtime](#runtime), the `options` object specifies one of the following sets of settings:
+
 ### viewModels
 
 Specifies an array of the application's View Models. A View Model configuration object within this array contains the following fields:
