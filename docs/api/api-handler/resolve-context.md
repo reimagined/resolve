@@ -21,7 +21,8 @@ The `resolve` context object exposes the following API:
 
 | Field Name          | Description                                                       |
 | ------------------- | ----------------------------------------------------------------- |
-| `uploader`          | Exposes the file upload API.                                      |
+| `uploader`          | Exposes the [file upload API](uploader.md                         |
+| ).                  |
 | `eventstoreAdapter` | Exposes the [event store adapter API](../event-store-adapter.md). |
 | `performanceTracer` | Exposes the performance tracer API.                               |
 | `monitoring`        | Exposes the [monitoring API](../monitoring/monitoring.md).        |
