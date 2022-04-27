@@ -3,7 +3,7 @@ id: uploader
 title: Uploader
 ---
 
-Uploader API is available to an [API Handler](api-handler/api-handler.md) through the [reSolve context](api-handler/resolve-context.md) object.
+Uploader API is available to an [API Handler](api-handler.md) through the [reSolve context](resolve-context.md) object.
 
 ```js
 const myHandler = async (req, res) => {
@@ -16,7 +16,7 @@ Use this API to implement custom file upload functionality.
 
 :::tip
 
-The [Uploader module](../modules/uploader.md) implements handlers based on this API as well as client-side wrapper functions that you can use to communicate with these handlers. Consider using this module if your application does not need any custom logic to handle file uploads.
+The [Uploader module](../../modules/uploader.md) implements handlers based on this API as well as client-side wrapper functions that you can use to communicate with these handlers. Consider using this module if your application does not need any custom logic to handle file uploads.
 
 :::
 
@@ -38,9 +38,9 @@ Get a URL used to upload files through `PUT` requests.
 
 **Arguments**
 
-| Argument Name | Type     | Description                                                |
-| ------------- | -------- | ---------------------------------------------------------- |
-| `dir`         | `string` | The name of a dirrectory where to store the uploaded file. |
+| Argument Name | Type     | Description                                               |
+| ------------- | -------- | --------------------------------------------------------- |
+| `dir`         | `string` | The name of a directory where to store the uploaded file. |
 
 **Result**
 
@@ -61,9 +61,9 @@ Get a URL used to upload files through `POST` requests.
 
 **Arguments**
 
-| Argument Name | Type     | Description                                                |
-| ------------- | -------- | ---------------------------------------------------------- |
-| `dir`         | `string` | The name of a dirrectory where to store the uploaded file. |
+| Argument Name | Type     | Description                                               |
+| ------------- | -------- | --------------------------------------------------------- |
+| `dir`         | `string` | The name of a directory where to store the uploaded file. |
 
 **Result**
 
@@ -120,7 +120,7 @@ Create a JSON Web Token used to authorize the upload operation.
 
 | Argument Name                                  | Type     | Description                                      |
 | ---------------------------------------------- | -------- | ------------------------------------------------ |
-| `options: { dir: string; expireTime: number }` | `object` | Tbe options used to configure the created token. |
+| `options: { dir: string; expireTime: number }` | `object` | The options used to configure the created token. |
 
 **Result**
 

@@ -47,7 +47,7 @@ The **@resolve-js/module-uploader** module adds the following API endpoints to a
 | ------------------------------------------------- | ------------------------------------------------------------- |
 | [`/api/uploader/getFormUpload`](#get-form-upload) | Gets settings required to submit a file upload form.          |
 | [`/api/uploader/getUploadUrl`](#get-upload-url)   | Gets a URL used to send file upload PUT requests.             |
-| [`/api/uploader/getToken`](#get-token)            | Get a JSON Web Token used to authorise a file upload request. |
+| [`/api/uploader/getToken`](#get-token)            | Get a JSON Web Token used to authorize a file upload request. |
 
 ### `/api/uploader/getFormUpload` {#get-form-upload}
 
@@ -55,9 +55,9 @@ Gets settings required to submit a file upload form.
 
 **Query Parameters**
 
-| Parameter Name | Description                                                   |
-| -------------- | ------------------------------------------------------------- |
-| `dir`          | The name of a public dirrectory where to save uploaded files. |
+| Parameter Name | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| `dir`          | The name of a public directory where to save uploaded files. |
 
 **Response**
 
@@ -76,9 +76,9 @@ Gets a URL used to send file upload PUT requests.
 
 **Query Parameters**
 
-| Parameter Name | Description                                                   |
-| -------------- | ------------------------------------------------------------- |
-| `dir`          | The name of a public dirrectory where to save uploaded files. |
+| Parameter Name | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| `dir`          | The name of a public directory where to save uploaded files. |
 
 **Response**
 
@@ -93,13 +93,13 @@ The response contains a JSON object of the following structure:
 
 ### `/api/uploader/getToken` {#get-token}
 
-Get a JSON Web Token used to authorise a file upload request.
+Get a JSON Web Token used to authorize a file upload request.
 
 **Query Parameters**
 
-| Parameter Name | Description                                                   |
-| -------------- | ------------------------------------------------------------- |
-| `dir`          | The name of a public dirrectory where to save uploaded files. |
+| Parameter Name | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| `dir`          | The name of a public directory where to save uploaded files. |
 
 **Response**
 
@@ -113,7 +113,7 @@ On the client side you can use the following functions exported by the **@resolv
 | --------------------------------- | ------------------------------------------------------------- |
 | [`getFormUpload`](#getformupload) | Gets settings required to submit a file upload form.          |
 | [`getUploadUrl`](#getuploadurl)   | Gets a URL used to send file upload PUT requests.             |
-| [`getToken`](#gettoken)           | Get a JSON Web Token used to authorise a file upload request. |
+| [`getToken`](#gettoken)           | Get a JSON Web Token used to authorize a file upload request. |
 
 ### `getFormUpload`
 
@@ -121,13 +121,13 @@ Gets settings required to submit a file upload form.
 
 #### Arguments
 
-| Argument Name | Type     | Description                                                   |
-| ------------- | -------- | ------------------------------------------------------------- |
-| `{ dir }`     | `string` | The name of a public dirrectory where to save uploaded files. |
+| Argument Name | Type     | Description                                                  |
+| ------------- | -------- | ------------------------------------------------------------ |
+| `{ dir }`     | `string` | The name of a public directory where to save uploaded files. |
 
 #### Result
 
-The result is an objecto of the following structure:
+The result is an objector of the following structure:
 
 ```js
 {
@@ -142,13 +142,13 @@ Gets a URL used to send file upload PUT requests.
 
 #### Arguments
 
-| Argument Name | Type     | Description                                                   |
-| ------------- | -------- | ------------------------------------------------------------- |
-| `{ dir }`     | `string` | The name of a public dirrectory where to save uploaded files. |
+| Argument Name | Type     | Description                                                  |
+| ------------- | -------- | ------------------------------------------------------------ |
+| `{ dir }`     | `string` | The name of a public directory where to save uploaded files. |
 
 #### Result
 
-The result is an objecto of the following structure:
+The result is an object of the following structure:
 
 ```js
 {
@@ -159,13 +159,13 @@ The result is an objecto of the following structure:
 
 ### `getToken`
 
-Get a JSON Web Token used to authorise a file upload request.
+Get a JSON Web Token used to authorize a file upload request.
 
 #### Arguments
 
-| Argument Name | Type     | Description                                                   |
-| ------------- | -------- | ------------------------------------------------------------- |
-| `{ dir }`     | `string` | The name of a public dirrectory where to save uploaded files. |
+| Argument Name | Type     | Description                                                  |
+| ------------- | -------- | ------------------------------------------------------------ |
+| `{ dir }`     | `string` | The name of a public directory where to save uploaded files. |
 
 #### Result
 
