@@ -139,3 +139,7 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
 
 export default routeRegisterCallback
 ```
+
+## Example
+
+The [Hacker News](https://github.com/reimagined/resolve/tree/dev/examples/js/hacker-news) example project uses **@resolve-js/module-auth** to implement user authentication.
