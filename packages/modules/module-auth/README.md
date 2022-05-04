@@ -110,7 +110,7 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
     password: bcrypt.hashSync(password),
     id: uuid.v4()
   }
-  // Try to create user in the domain.
+  // Try to create a user in the domain.
   await resolve.executeCommand({
     type: 'create-user',
     aggregateId: user.id,
