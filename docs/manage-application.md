@@ -72,7 +72,7 @@ The default URL that **module-admin** uses to access an application's API is `ht
 yarn module-admin --api-url "https://127.0.0.1:2000/api" read-models reset ShoppingList
 ```
 
-For the full list of supported commands, refer to the [NPM package's description](https://github.com/reimagined/resolve/tree/master/packages/modules/module-admin/README.md) or use the built-in help command:
+For the full list of supported commands, refer to the [admin module](modules/admin.md) article or use the built-in help command:
 
 ```bash
 yarn module-admin --help

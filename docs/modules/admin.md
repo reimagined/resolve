@@ -22,7 +22,7 @@ yarn add @resolve-js/module-admin
 
 ## Register and Configure the Module
 
-Register the installed module in the project's `run.js` file. The code sample below demonstrates how to enable the admin module for the development and testing environments:
+Register the installed module in the project's `run.js` file. The code sample below demonstrates how to enable the admin module for the development and testing run modes:
 
 ```js title="run.js"
 import resolveModuleAdmin from '@resolve-js/module-admin'
@@ -60,3 +60,153 @@ Register a script that runs the admin module's CLI tool in the application's **p
 ```
 
 ## CLI Tool
+
+### Usage
+
+To use the admin module's CLI tool, you need to start your application and execute the `module-admin` script with the required command:
+
+```bash
+yarn module-admin read-models reset ShoppingList
+```
+
+The default URL that **module-admin** uses to access an application's API is `http://localhost:3000/api`. Use the `--api-url` option to specify another URL:
+
+```bash
+yarn module-admin --api-url "https://127.0.0.1:2000/api" read-models reset ShoppingList
+```
+
+You can use the built-in `help` command to view information on the available CLI commands:
+
+```bash
+yarn module-admin --help
+```
+
+### Manage Application
+
+The `system` command manages the application's system.
+
+#### Show the system's status
+
+```
+npx @resolve-js/module-admin system status
+```
+
+#### Wait for an application to finish launching
+
+```
+npx @resolve-js/module-admin system status --wait-ready
+```
+
+### Manage Event Store
+
+The `event-store` command manages the application's event store.
+
+#### Import an event store from the specified directory
+
+```
+npx @resolve-js/module-admin event-store import <directory>
+```
+
+#### Export an event store to the specified directory
+
+```
+npx @resolve-js/module-admin event-store import <directory>
+```
+
+#### Incrementally import an event store from the file
+
+```
+npx @resolve-js/module-admin event-store incremental-import <file>
+```
+
+#### Freeze an event store
+
+```
+npx @resolve-js/module-admin event-store freeze
+```
+
+#### Unfreeze an event store
+
+```
+npx @resolve-js/module-admin event-store unfreeze
+```
+
+### Manage Read Models
+
+The `read-models` command manages the application's read models.
+
+##### View a deployed application's read models:
+
+```
+npx @resolve-js/module-admin read-models list
+```
+
+##### Pause and resume read model updates:
+
+```
+npx @resolve-js/module-admin read-models pause <readModelName>
+```
+
+```
+npx @resolve-js/module-admin read-models resume <readModelName>
+```
+
+##### Reset a read model's persistent state:
+
+```
+npx @resolve-js/module-admin read-models reset <readModelName>
+```
+
+### Manage Sagas
+
+The `sagas` command manages the application's sagas.
+
+##### View a list of available sagas:
+
+```
+npx @resolve-js/module-admin sagas list
+```
+
+##### Pause and resume a saga:
+
+```
+npx @resolve-js/module-admin sagas pause <sagaName>
+```
+
+```
+npx @resolve-js/module-admin sagas resume <sagaName>
+```
+
+##### Reset a saga's persistent state:
+
+```
+npx @resolve-js/module-admin sagas reset <sagaName> [--side-effects-start-timestamp YYYY-MM-DDTHH:mm:ss.sssZ]
+```
+
+### Manage Saga Properties
+
+Use the `sagas properties` command to manage a saga's properties.
+
+##### Set a property:
+
+```
+npx @resolve-js/module-admin sagas properties set <sagaName> <propertyName> <value>
+```
+
+##### Get a property:
+
+```
+npx @resolve-js/module-admin sagas properties get <sagaName> <propertyName>
+```
+
+##### View all saga's properties:
+
+```
+npx @resolve-js/module-admin sagas properties list <sagaName>
+```
+
+##### Remove a property:
+
+```
+npx @resolve-js/module-admin sagas properties remove <sagaName> <propertyName>
+```
