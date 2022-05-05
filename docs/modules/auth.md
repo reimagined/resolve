@@ -9,10 +9,10 @@ The reSolve authentication module ([@resolve-js/module-auth](https://www.npmjs.c
 
 ## Installation
 
-Use the following console input to install the uploader module:
+Use the following console input to install the authentication module:
 
 ```sh
-yarn add @resolve-js/module-uploader
+yarn add @resolve-js/module-auth
 ```
 
 ## Register and Configure the Module
