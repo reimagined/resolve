@@ -101,4 +101,50 @@ verifyCommand(state, command, jwt) {
 }
 ```
 
+## Server API
+
+The comments module's read model (named `"Comments"` by default) has the following resolver's:
+
+| Default Name           | Description                                         |
+| ---------------------- | --------------------------------------------------- |
+| `commentsTree`         | Returns a hierarchical tree of comments.            |
+| `foreignCommentsCount` | Returns the number of comments left by other users. |
+| `allCommentsPaginate`  | Returns comments with pagination.                   |
+
+### `commentsTree`
+
+Returns a hierarchical tree of comments.
+
+**Arguments:**
+
+| Argument Name     | Description                                                     |
+| ----------------- | --------------------------------------------------------------- |
+| `treeId`          | The unique identifier of a comment tree.                        |
+| `parentCommentId` | The identifier of a comment for which to obtain child comments. |
+| `authorId`        | The identifier of user whose comments to obtain.                |
+| `maxLevel`        | The maximum nesting level of the comments to load.              |
+
+### `foreignCommentsCount`
+
+Returns the number of comments left by other users.
+
+**Arguments:**
+
+| Argument Name     | Description                                                     |
+| ----------------- | --------------------------------------------------------------- |
+| `treeId`          | The unique identifier of a comment tree.                        |
+| `parentCommentId` | The identifier of a comment for which to obtain child comments. |
+| `maxLevel`        | The maximum nesting level of the comments to load.              |
+
+### `allCommentsPaginate`
+
+Returns comments with pagination.
+
+**Arguments:**
+
+| Argument Name | Description                       |
+| ------------- | --------------------------------- |
+| `itemsOnPage` | The number of comments on a page. |
+| `pageNumber`  | The number of the page to load.   |
+
 ## Client API
