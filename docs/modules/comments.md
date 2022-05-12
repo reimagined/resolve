@@ -59,34 +59,46 @@ The `resolveModuleComments` function takes an `options` object that can contain 
 
 ### `eventTypes`
 
+The `eventTypes` option is an object whose fields specify custom names for the comments module's events. This object can contain all or some of the following fields:
+
+```js
+{
+  COMMENT_CREATED,
+  COMMENT_UPDATED,
+  COMMENT_REMOVED,
+}
+```
+
 ### `commandTypes`
+
+The `commandTypes` option is an object whose fields specify custom names for the comments module's commands. This object can contain all or some of the following fields:
+
+```js
+{
+  createComment,
+  updateComment,
+  removeComment,
+}
+```
 
 ### `resolverNames`
 
+The `resolverNames` option is an object whose fields specify custom names for the comments read model's resolvers. This object can contain all or some of the following fields:
+
+```js
+  commentsTree,          // Returns a hierarchical tree of comments.
+  foreignCommentsCount,  // Returns the number of comments left by other users.
+  allCommentsPaginate,   // Returns comments with pagination.
+```
+
 ### `verifyCommand`
+
+The `verifyCommand` option accepts a function of the following signature:
 
 ```js
 verifyCommand(state, command, jwt) {
   // Throw and error if verification fails.
 }
-```
-
-```js
-    eventTypes: {
-      COMMENT_CREATED = defaults.COMMENT_CREATED,
-      COMMENT_UPDATED = defaults.COMMENT_UPDATED,
-      COMMENT_REMOVED = defaults.COMMENT_REMOVED,
-    } = {},
-    commandTypes: {
-      createComment = defaults.createComment,
-      updateComment = defaults.updateComment,
-      removeComment = defaults.removeComment,
-    } = {},
-    resolverNames: {
-      commentsTree = defaults.commentsTree,
-      foreignCommentsCount = defaults.foreignCommentsCount,
-      allCommentsPaginate = defaults.allCommentsPaginate,
-    } = {},
 ```
 
 ## Client API
