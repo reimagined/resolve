@@ -87,7 +87,7 @@ const status: ExternalMethods['status'] = async <
           ? +retryTimeoutForRuntimeStatus
           : IS_ALIVE_TIMEOUT)
       let currentTime = 0
-      let previousCursor = null
+      let previousCursor = result?.cursor ?? null
 
       do {
         try {
@@ -116,9 +116,7 @@ const status: ExternalMethods['status'] = async <
 
           if (lockRows?.[0]?.ActiveLocksCount > 0) {
             isAlive = true
-          }
-
-          if (!isAlive && subscriberRows.length === 1) {
+          } else if (subscriberRows.length === 1) {
             let [{ Cursor, EventTypes }] = subscriberRows
 
             if (EventTypes == null) {
@@ -135,6 +133,7 @@ const status: ExternalMethods['status'] = async <
             if (previousCursor != null && Cursor !== previousCursor) {
               isAlive = true
             }
+
             previousCursor = Cursor
           }
         } catch (error) {
