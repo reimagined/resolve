@@ -3,7 +3,7 @@ id: comments
 title: Comments
 ---
 
-# Authentication Module
+# Comments Module
 
 The reSolve comments module ([@resolve-js/module-comments](https://www.npmjs.com/package/@resolve-js/module-comments)) adds support for user comments in a reSolve application. In addition to aggregates and read models that describe the comments logic on the server side, the module exports renderless client components based on React + Redux and the [@resolve-js/redux](https://www.npmjs.com/package/@resolve-js/@resolve-js/redux) library that you can use to display comments on a page.
 
