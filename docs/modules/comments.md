@@ -103,6 +103,66 @@ verifyCommand(state, command, jwt) {
 
 ## Server API
 
+### Commands
+
+The following command types are handled by the comments module's aggregate:
+
+| Default Name                      | Description                  |
+| --------------------------------- | ---------------------------- |
+| [`createComment`](#createcomment) | Creates a new comment.       |
+| [`updateComment`](#updatecomment) | Updates an existing comment. |
+| [`removeComment`](#removecomment) | Removes an existing comment. |
+
+#### `createComment`
+
+Creates a new comment.
+
+**Payload**
+
+The `createComment` command requires a payload object of the following structure:
+
+```js
+{
+  authorId,        // The comment author's unique ID.
+  commentId,       // The new comment's unique ID.
+  parentCommentId, // (optional) The ID of the parrent comment.
+  content,         // The text of the comment.
+}
+```
+
+#### `updateComment`
+
+Updates an existing comment.
+
+**Payload**
+
+The `updateComment` command requires a payload object of the following structure:
+
+```js
+{
+  authorId,  // The comment author's unique ID.
+  commentId, // The new comment's unique ID.
+  content,   // The text of the comment.
+}
+```
+
+#### `removeComment`
+
+Removes an existing comment.
+
+**Payload**
+
+The `removeComment` command requires a payload object of the following structure:
+
+```js
+{
+  authorId,  // The comment author's unique ID.
+  commentId, // The new comment's unique ID.
+}
+```
+
+### Resolvers
+
 The comments module's read model (named `"Comments"` by default) has the following resolver's:
 
 | Default Name                                    | Description                                         |
@@ -111,11 +171,11 @@ The comments module's read model (named `"Comments"` by default) has the followi
 | [`foreignCommentsCount`](#foreigncommentscount) | Returns the number of comments left by other users. |
 | [`allCommentsPaginate`](#allcommentspaginate)   | Returns comments with pagination.                   |
 
-### `commentsTree`
+#### `commentsTree`
 
 Returns a hierarchical tree of comments.
 
-**Arguments:**
+**Arguments**
 
 | Argument Name     | Description                                                     |
 | ----------------- | --------------------------------------------------------------- |
@@ -124,11 +184,11 @@ Returns a hierarchical tree of comments.
 | `authorId`        | The identifier of user whose comments to obtain.                |
 | `maxLevel`        | The maximum nesting level of the comments to load.              |
 
-### `foreignCommentsCount`
+#### `foreignCommentsCount`
 
 Returns the number of comments left by other users.
 
-**Arguments:**
+**Arguments**
 
 | Argument Name     | Description                                                     |
 | ----------------- | --------------------------------------------------------------- |
@@ -136,11 +196,11 @@ Returns the number of comments left by other users.
 | `parentCommentId` | The identifier of a comment for which to obtain child comments. |
 | `maxLevel`        | The maximum nesting level of the comments to load.              |
 
-### `allCommentsPaginate`
+#### `allCommentsPaginate`
 
 Returns comments with pagination.
 
-**Arguments:**
+**Arguments**
 
 | Argument Name | Description                       |
 | ------------- | --------------------------------- |
