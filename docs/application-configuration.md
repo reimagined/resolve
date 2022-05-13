@@ -693,7 +693,7 @@ schedulers: {
 
 ### serverImports
 
-Same as [clientImports](#clientImports) but affects the client script invoked on the server by the Server Side Rendering (SSR) script.
+Same as [clientImports](#clientimports) but affects the client script invoked on the server by the Server Side Rendering (SSR) script.
 
 ### staticDir
 
