@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.34.2...HEAD)
 
+**Documentation:**
+
+- Describe passing config options to API Handlers [\#2273](https://github.com/reimagined/resolve/pull/2273)
+
 **Other changes:**
 
 - Hotfix paths and names in the examples readme page [\#2274](https://github.com/reimagined/resolve/pull/2274)
