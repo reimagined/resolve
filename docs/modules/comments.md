@@ -105,11 +105,11 @@ verifyCommand(state, command, jwt) {
 
 The comments module's read model (named `"Comments"` by default) has the following resolver's:
 
-| Default Name           | Description                                         |
-| ---------------------- | --------------------------------------------------- |
-| `commentsTree`         | Returns a hierarchical tree of comments.            |
-| `foreignCommentsCount` | Returns the number of comments left by other users. |
-| `allCommentsPaginate`  | Returns comments with pagination.                   |
+| Default Name                                    | Description                                         |
+| ----------------------------------------------- | --------------------------------------------------- |
+| [`commentsTree`](#commentstree)                 | Returns a hierarchical tree of comments.            |
+| [`foreignCommentsCount`](#foreigncommentscount) | Returns the number of comments left by other users. |
+| [`allCommentsPaginate`](#allcommentspaginate)   | Returns comments with pagination.                   |
 
 ### `commentsTree`
 
