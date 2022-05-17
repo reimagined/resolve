@@ -18,6 +18,8 @@ export const isMatchEventType = (
   eventType: string | null | undefined
 ) => eventTypes == null || eventType == null || eventTypes.includes(eventType)
 
+const GET_READ_MODEL_STATUS_TIMEOUT = 300
+
 export const broadcaster = async (
   runtime: NotifierRuntime,
   event?: EventPointer
@@ -45,15 +47,28 @@ export const broadcaster = async (
       promises.push(
         (async () => {
           let isAlreadyBuilding = false
+
           try {
-            isAlreadyBuilding = !!(
-              await runtime.eventSubscriber.status({
-                eventSubscriber,
-                includeRuntimeStatus: true,
-                retryTimeoutForRuntimeStatus: 0,
-              })
-            ).isAlive
-          } catch (e) {}
+            isAlreadyBuilding = Boolean(
+              await Promise.race([
+                (async () => {
+                  const status = await runtime.eventSubscriber.status({
+                    eventSubscriber,
+                    includeRuntimeStatus: true,
+                    retryTimeoutForRuntimeStatus: 0,
+                  })
+
+                  return status.isAlive
+                })(),
+                new Promise((resolve) =>
+                  setTimeout(resolve, GET_READ_MODEL_STATUS_TIMEOUT)
+                ),
+              ])
+            )
+          } catch (e) {
+            // empty
+          }
+
           if (!isAlreadyBuilding) {
             await runtime.invokeBuildAsync(
               createEventSubscriberNotification(eventSubscriber, event)
