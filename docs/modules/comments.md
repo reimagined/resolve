@@ -21,7 +21,7 @@ Register the installed module in the project's `run.js` file:
 
 ```js
 import { merge } from '@resolve-js/scripts'
-import createModuleComments from '@resolve-js/module-comments'
+import resolveModuleComments from '@resolve-js/module-comments'
 
 // All of the options specified below are optional.
 const moduleComments = resolveModuleComments({
@@ -118,8 +118,8 @@ The `verifyCommand` option accepts a function of the following signature:
 
 ```js
 verifyCommand(state, command, jwt) {
-  // Place your custom ligic here.
-  // Throw and error if verification fails.
+  // Place your custom logic here.
+  // Throw an error if verification fails.
 }
 ```
 
@@ -203,7 +203,7 @@ Returns a hierarchical tree of comments.
 | ----------------- | --------------------------------------------------------------- |
 | `treeId`          | The unique identifier of a comment tree.                        |
 | `parentCommentId` | The identifier of a comment for which to obtain child comments. |
-| `authorId`        | The identifier of user whose comments to obtain.                |
+| `authorId`        | The identifier of a user whose comments to obtain.              |
 | `maxLevel`        | The maximum nesting level of the comments to load.              |
 
 #### `foreignCommentsCount`
@@ -291,7 +291,7 @@ The child component also receives the following additional props:
 
 | Prop Name | Description                                                                                                               |
 | --------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `onClick` | Resets the notification and calls the `CommentsNotificationRenderless` component's `onClink` callback if it is specified. |
+| `onClick` | Resets the notification and calls the `CommentsNotificationRenderless` component's `onClick` callback if it is specified. |
 | `count`   | The number of available new comments.                                                                                     |
 
 ### `RefreshHelperRenderless`
