@@ -5,7 +5,7 @@ title: Comments
 
 # Comments Module
 
-The reSolve comments module ([@resolve-js/module-comments](https://www.npmjs.com/package/@resolve-js/module-comments)) adds support for herarchical user comments in a reSolve application. In addition to aggregates and read models that describe the comments logic on the server side, the module exports renderless client components based on React + Redux and the [@resolve-js/redux](https://www.npmjs.com/package/@resolve-js/@resolve-js/redux) library that you can use to allow your application's users to post comments and to display these comments on a page.
+The reSolve comments module ([@resolve-js/module-comments](https://www.npmjs.com/package/@resolve-js/module-comments)) adds support for hierarchical user comments in a reSolve application. In addition to aggregates and read models that describe the comments logic on the server side, the module exports renderless client components based on React + Redux and the [@resolve-js/redux](https://www.npmjs.com/package/@resolve-js/@resolve-js/redux) library that you can use to allow your application's users to post comments and to display these comments on a page.
 
 ## Installation
 
@@ -23,7 +23,7 @@ Register the installed module in the project's `run.js` file:
 import { merge } from '@resolve-js/scripts'
 import createModuleComments from '@resolve-js/module-comments'
 
-// See the `options` section below for the full list of available options.
+// All of the options specified below are optional.
 const moduleComments = resolveModuleComments({
     aggregateName: 'CustomCommentsAggregateName', // default = 'Comments'
     readModelName: 'CustomCommentsReadModelName', // default = 'Comments'
@@ -50,7 +50,6 @@ const moduleComments = resolveModuleComments({
     },
     maxNestedLevel: 2, // default = undefined
     verifyCommand: path.join(__dirname, 'customVerifyCommand.js'), // default = '@resolve-js/module-comments/lib/aggregates/verify-command.js'
-  })
 })
 const baseConfig = merge(
   defaultResolveConfig,
@@ -119,6 +118,7 @@ The `verifyCommand` option accepts a function of the following signature:
 
 ```js
 verifyCommand(state, command, jwt) {
+  // Place your custom ligic here.
   // Throw and error if verification fails.
 }
 ```
@@ -461,4 +461,4 @@ removeComment(treeId, {
 
 ### Example
 
-The [Hacker News](https://github.com/reimagined/resolve/tree/dev/examples/js/hacker-news) example application makes extensive use of the comment module's client components to publish and display user comments for stories.
+The [Hacker News](https://github.com/reimagined/resolve/tree/dev/examples/js/hacker-news) example application makes extensive use of the comment module's client components to publish and display user comments to stories.
