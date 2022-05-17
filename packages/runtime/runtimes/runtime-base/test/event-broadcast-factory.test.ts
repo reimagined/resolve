@@ -1,3 +1,4 @@
+import { mocked } from 'jest-mock'
 import type { EventPointer } from '@resolve-js/core'
 
 import type { EventListener } from '../src/types'
@@ -64,17 +65,31 @@ describe('broadcaster', () => {
   const invokeBuildAsync = jest.fn()
   const notifyEventSubscriber = jest.fn()
 
+  const eventSubscriber: NotifierRuntime['eventSubscriber'] = {
+    deleteProperty: jest.fn(),
+    listProperties: jest.fn(),
+    getProperty: jest.fn(),
+    setProperty: jest.fn(),
+    subscribe: jest.fn(),
+    resubscribe: jest.fn(),
+    unsubscribe: jest.fn(),
+    build: jest.fn(),
+    resume: jest.fn(),
+    pause: jest.fn(),
+    reset: jest.fn(),
+    status: jest.fn().mockResolvedValue({ isAlive: false }),
+  }
+
   const runtime: NotifierRuntime = {
     eventSubscriberScope: applicationName,
     eventListeners,
     eventStoreAdapter: {
       getEventSubscribers,
     } as any,
-    getVacantTimeInMillis: () => Number.MAX_SAFE_INTEGER,
+    getVacantTimeInMillis: () => 1000 * 60 * 60,
     invokeBuildAsync,
     notifyEventSubscriber,
-    //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    eventSubscriber: null! as any,
+    eventSubscriber,
   }
 
   const eventPointer: EventPointer = {
@@ -88,11 +103,58 @@ describe('broadcaster', () => {
     cursor: '<some-cursor>',
   }
 
+  afterEach(() => {
+    invokeBuildAsync.mockReset()
+    notifyEventSubscriber.mockReset()
+  })
+
   test('should call runtime.invokeBuildAsync for a matched event types only', async () => {
     await broadcaster(runtime, eventPointer)
 
     expect(invokeBuildAsync).toHaveBeenCalledTimes(2)
     expect(invokeBuildAsync).toHaveBeenCalledWith({
+      eventPointer,
+      eventSubscriber: 'ItemList',
+    })
+    expect(invokeBuildAsync).toHaveBeenCalledWith({
+      eventPointer,
+      eventSubscriber: 'ItemValues',
+    })
+
+    expect(notifyEventSubscriber).toHaveBeenCalledTimes(0)
+  })
+
+  test('should not call runtime.invokeBuildAsync if subscriber status isAlive', async () => {
+    mocked(runtime.eventSubscriber).status.mockResolvedValueOnce({
+      isAlive: true,
+    })
+
+    await broadcaster(runtime, eventPointer)
+
+    expect(invokeBuildAsync).toHaveBeenCalledTimes(1)
+    expect(invokeBuildAsync).not.toHaveBeenCalledWith({
+      eventPointer,
+      eventSubscriber: 'ItemList',
+    })
+    expect(invokeBuildAsync).toHaveBeenCalledWith({
+      eventPointer,
+      eventSubscriber: 'ItemValues',
+    })
+
+    expect(notifyEventSubscriber).toHaveBeenCalledTimes(0)
+  })
+
+  test('should not wait for runtime.eventSubscriber.status for more than 300 ms', async () => {
+    mocked(runtime.eventSubscriber).status.mockReturnValue(
+      new Promise((resolve) => {
+        void resolve
+      })
+    )
+
+    await broadcaster(runtime, eventPointer)
+
+    expect(invokeBuildAsync).toHaveBeenCalledTimes(1)
+    expect(invokeBuildAsync).not.toHaveBeenCalledWith({
       eventPointer,
       eventSubscriber: 'ItemList',
     })
