@@ -153,8 +153,8 @@ describe('broadcaster', () => {
 
     await broadcaster(runtime, eventPointer)
 
-    expect(invokeBuildAsync).toHaveBeenCalledTimes(1)
-    expect(invokeBuildAsync).not.toHaveBeenCalledWith({
+    expect(invokeBuildAsync).toHaveBeenCalledTimes(2)
+    expect(invokeBuildAsync).toHaveBeenCalledWith({
       eventPointer,
       eventSubscriber: 'ItemList',
     })
