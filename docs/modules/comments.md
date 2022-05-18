@@ -3,13 +3,20 @@ id: comments
 title: Comments
 ---
 
+```mdx-code-block
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+```
+
 # Comments Module
 
-The reSolve comments module ([@resolve-js/module-comments](https://www.npmjs.com/package/@resolve-js/module-comments)) adds support for hierarchical user comments in a reSolve application. In addition to aggregates and read models that describe the comments logic on the server side, the module exports renderless client components based on React + Redux and the [@resolve-js/redux](https://www.npmjs.com/package/@resolve-js/@resolve-js/redux) library that you can use to allow your application's users to post comments and to display these comments on a page.
+The reSolve comments module ([@resolve-js/module-comments](https://www.npmjs.com/package/@resolve-js/module-comments)) adds support for user comments to a reSolve application. It implements an aggregate and a read model that together describe the logic used to process hierarchical trees of comments and serve them to a client.
+
+The comments module also exports renderless [client components](#client-api) based on React + Redux and the [@resolve-js/redux](https://www.npmjs.com/package/@resolve-js/@resolve-js/redux) library that you can use to implement a user interface required to post and navigate comments on your web application's page.
 
 ## Installation
 
-Use the following console input to install the uploader module:
+Use the following console input to install the comments module:
 
 ```sh
 yarn add @resolve-js/module-comments
@@ -25,31 +32,31 @@ import resolveModuleComments from '@resolve-js/module-comments'
 
 // All of the options specified below are optional.
 const moduleComments = resolveModuleComments({
-    aggregateName: 'CustomCommentsAggregateName', // default = 'Comments'
-    readModelName: 'CustomCommentsReadModelName', // default = 'Comments'
-    readModelConnector: {
-      module: 'CustomreadModelConnector', // default = @resolve-js/readmodel-lite'
-      options: {}, // default = {}
-    },
-    commentsTableName: 'CustomCommentsTableName', // default = 'Comments'
-    reducerName: 'CustomReducerName', // default = 'comments'
-    eventTypes: {
-      COMMENT_CREATED: 'CUSTOM_COMMENT_CREATED', // default = 'COMMENT_CREATED'
-      COMMENT_UPDATED: 'CUSTOM_COMMENT_UPDATED', // default = 'COMMENT_UPDATED'
-      COMMENT_REMOVED: 'CUSTOM_COMMENT_REMOVED', // default = 'COMMENT_REMOVED'
-    },
-    commandTypes: {
-      createComment: 'customCreateComment', // default = 'createComment'
-      updateComment: 'customUpdateComment', // default = 'updateComment'
-      removeComment: 'customRemoveComment', // default = 'removeComment'
-    },
-    resolverNames: {
-      commentsTree: 'customCommentsTree', // default = 'commentsTree',
-      foreignCommentsCount: 'customForeignCommentsCount', // default = 'foreignCommentsCount',
-      allCommentsPaginate: 'customAllCommentsPaginate', // default = 'allCommentsPaginate'
-    },
-    maxNestedLevel: 2, // default = undefined
-    verifyCommand: path.join(__dirname, 'customVerifyCommand.js'), // default = '@resolve-js/module-comments/lib/aggregates/verify-command.js'
+  aggregateName: 'CustomCommentsAggregateName', // default = 'Comments'
+  readModelName: 'CustomCommentsReadModelName', // default = 'Comments'
+  readModelConnector: {
+    module: 'CustomreadModelConnector', // default = @resolve-js/readmodel-lite'
+    options: {}, // default = {}
+  },
+  commentsTableName: 'CustomCommentsTableName', // default = 'Comments'
+  reducerName: 'CustomReducerName', // default = 'comments'
+  eventTypes: {
+    COMMENT_CREATED: 'CUSTOM_COMMENT_CREATED', // default = 'COMMENT_CREATED'
+    COMMENT_UPDATED: 'CUSTOM_COMMENT_UPDATED', // default = 'COMMENT_UPDATED'
+    COMMENT_REMOVED: 'CUSTOM_COMMENT_REMOVED', // default = 'COMMENT_REMOVED'
+  },
+  commandTypes: {
+    createComment: 'customCreateComment', // default = 'createComment'
+    updateComment: 'customUpdateComment', // default = 'updateComment'
+    removeComment: 'customRemoveComment', // default = 'removeComment'
+  },
+  resolverNames: {
+    commentsTree: 'customCommentsTree', // default = 'commentsTree',
+    foreignCommentsCount: 'customForeignCommentsCount', // default = 'foreignCommentsCount',
+    allCommentsPaginate: 'customAllCommentsPaginate', // default = 'allCommentsPaginate'
+  },
+  maxNestedLevel: 2, // default = undefined
+  verifyCommand: path.join(__dirname, 'customVerifyCommand.js'), // default = '@resolve-js/module-comments/lib/aggregates/verify-command.js'
 })
 const baseConfig = merge(
   defaultResolveConfig,
@@ -80,7 +87,7 @@ The `resolveModuleComments` function that initializes the comments module takes 
 
 ### `eventTypes`
 
-The `eventTypes` option is an object whose fields specify custom names for the comments module's events. This object can contain all or some of the following fields:
+The `eventTypes` option is an object whose fields specify custom names for the comments module's events. This object can contain any of the following fields:
 
 ```js
 {
@@ -92,7 +99,7 @@ The `eventTypes` option is an object whose fields specify custom names for the c
 
 ### `commandTypes`
 
-The `commandTypes` option is an object whose fields specify custom names for the comments module's commands. This object can contain all or some of the following fields:
+The `commandTypes` option is an object whose fields specify custom names for the comments module's commands. This object can contain any of the following fields:
 
 ```js
 {
@@ -104,7 +111,7 @@ The `commandTypes` option is an object whose fields specify custom names for the
 
 ### `resolverNames`
 
-The `resolverNames` option is an object whose fields specify custom names for the comments read model's resolvers. This object can contain all or some of the following fields:
+The `resolverNames` option is an object whose fields specify custom names for the comments read model's resolvers. This object can contain any of the following fields:
 
 ```js
   commentsTree,          // Returns a hierarchical tree of comments.
@@ -114,14 +121,18 @@ The `resolverNames` option is an object whose fields specify custom names for th
 
 ### `verifyCommand`
 
-The `verifyCommand` option accepts a function of the following signature:
+The `verifyCommand` option accepts a callback function of the following signature:
+
+<!-- prettier-ignore-start -->
 
 ```js
-verifyCommand(state, command, jwt) {
+(state, command, jwt) => {
   // Place your custom logic here.
   // Throw an error if verification fails.
 }
 ```
+
+<!-- prettier-ignore-end -->
 
 ## Server API
 
@@ -163,7 +174,7 @@ The `updateComment` command requires a payload object of the following structure
 ```js
 {
   authorId,  // The comment author's unique ID.
-  commentId, // The new comment's unique ID.
+  commentId, // The comment's unique ID.
   content,   // An object that contains data associated with the comment (text, timestamp, title, and so on).
 }
 ```
@@ -179,7 +190,7 @@ The `removeComment` command requires a payload object of the following structure
 ```js
 {
   authorId,  // The comment author's unique ID.
-  commentId, // The new comment's unique ID.
+  commentId, // The comment's unique ID.
 }
 ```
 
@@ -231,14 +242,14 @@ Returns comments with pagination.
 
 ## Client API
 
-The comments ([@resolve-js/module-comments](https://www.npmjs.com/package/@resolve-js/module-comments)) package exports renderless React+Redux components that you can use implement your own UI for user comments.
+The comments ([@resolve-js/module-comments](https://www.npmjs.com/package/@resolve-js/module-comments)) package exports renderless React+Redux components that you can use implement your own UI for user comments. The following components are available:
 
-| Component Name                                                      | Description                                                                          |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [`CommentsNotificationRenderless`](#commentsnotificationrenderless) | A component used to display a notification about a new comment.                      |
-| [`RefreshHelperRenderless`](#refreshhelperrenderless)               | A component that allows the application to refresh comments without the page reload. |
-| [`CommentsPaginateRenderless`](#commentspaginaterenderless)         | A container used to render comments in a paginated view.                             |
-| [`CommentsTreeRenderless`](#resolvernames)                          | A container used to render comments in a hierarchical view.                          |
+| Component Name                                                      | Description                                                                      |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| [`CommentsNotificationRenderless`](#commentsnotificationrenderless) | A component used to display a notification about a new comment.                  |
+| [`RefreshHelperRenderless`](#refreshhelperrenderless)               | A component that allows the application to refresh comments without page reload. |
+| [`CommentsPaginateRenderless`](#commentspaginaterenderless)         | A container used to render comments in a paginated view.                         |
+| [`CommentsTreeRenderless`](#resolvernames)                          | A container used to render comments in a hierarchical view.                      |
 
 ### `CommentsNotificationRenderless`
 
@@ -434,7 +445,10 @@ A comment object has the following structure:
 }
 ```
 
-Use the `createComment`, `updateComment`, and `removeComment` to implement data editing operations on comments as code sample below demonstrates.
+Use the `createComment`, `updateComment`, and `removeComment` functions to implement data editing operations on comments as the code samples below demonstrate:
+
+<Tabs>
+<TabItem value="createcomment" label="createComment" default>
 
 ```js
 createComment(treeId, {
@@ -448,17 +462,33 @@ createComment(treeId, {
     createdAt: Date.now(),
   },
 })
+```
 
+</TabItem>
+
+<TabItem value="updatecomment" label="updateComment" default>
+
+```js
 updateComment(treeId, {
   commentId: id,
   content: updatedContent,
 })
+```
 
+</TabItem>
+
+<TabItem value="removecomment" label="removeComment" default>
+
+```js
 removeComment(treeId, {
   commentId: id,
 })
 ```
 
+</TabItem>
+
+</Tabs>
+
 ### Example
 
-The [Hacker News](https://github.com/reimagined/resolve/tree/dev/examples/js/hacker-news) example application makes extensive use of the comment module's client components to publish and display user comments to stories.
+The [Hacker News](https://github.com/reimagined/resolve/tree/dev/examples/js/hacker-news) example application makes extensive use of the comment module's client components.
