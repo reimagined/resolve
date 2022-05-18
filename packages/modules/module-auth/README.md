@@ -3,7 +3,7 @@
 The reSolve authentication module provides out-of-the-box support for Passport compatible authentication strategies (https://github.com/jaredhanson/passport-strategy).
 When you use `@resolve-js/module-auth` in a resolve application, you only need to specify an authentication strategy and API routes for login, registration and other actions.
 
-Use `@resolve-js/module-auth` in application as demonstrated by the code samples below. 
+Use `@resolve-js/module-auth` in application as demonstrated by the code samples below.
 
 Entry point (run.js):
 
@@ -12,7 +12,7 @@ import { defaultResolveConfig, build, start, watch, runTestcafe, merge, injectRu
 import createAuthModule from '@resolve-js/module-auth' // Import the authentication module.
 
 import appConfig from './config.app' // Main application configuration file that defines the domain logic.
-import devConfig from './config.dev' // The development environment configuration. 
+import devConfig from './config.dev' // The development environment configuration.
 // Other configs are ommited for simplicity.
 
 const launchMode = process.argv[2]
@@ -29,11 +29,11 @@ void (async () => {
           path: 'logout',
           method: 'POST'
       }
-      routes: [ // A list of HTTP API handlers required for for the current strategy. 
+      routes: [ // A list of HTTP API handlers required for for the current strategy.
         {
-          path: 'register', // The HTTP path segment after http://app-domain.tld/rootPath/api/.
+          path: 'register', // The HTTP path segment after `http://app-domain.tld/rootPath/api/`.
           method: 'POST', // The HTTP method.
-          callback: 'auth/route_register_callback.js' // The path to an API handler deffinition.
+          callback: 'auth/route_register_callback.js' // The path to the API handler's deffinition.
         },
         {
           path: 'login',
@@ -46,7 +46,7 @@ void (async () => {
 
   switch (launchMode) {
     case 'dev': {
-      await watch( // Merge the developer-defined and module-generated configuration objects.
+      await watch( // Merge the configuration objects.
         merge([defaultResolveConfig, appConfig, devConfig, authModule])
       )
       break
@@ -93,18 +93,18 @@ import jwtSecret from './jwt_secret' // Store your JWT secret in a secure locati
 import bcrypt from 'bcrypt'
 
 // A route handler accepts `req` as the first argument. The rest of the arguments depend on the used strategy.
-// The Local strategy adds two arguments - `username` and `password`.
+// The `Local` strategy adds two arguments - `username` and `password`.
 const routeRegisterCallback = async ({ resolve }, username, password) => {
   const { data: existingUser } = await resolve.executeQuery({ // Query a read model to check if the user already exists.
     modelName: 'read-model-name',
     resolverName: 'resolver-name',
     resolverArgs: { name: username.trim())  }
   })
-  // If the user exists, throw an error. 
+  // If the user exists, throw an error.
   if (existingUser) {
     throw new Error('Cannot create user')
   }
-  // Define a user structure to pass to the aggregate as a command payload and save to the JWT.
+  // Define a `user` structure to pass to the aggregate as a command payload and save to the JWT.
   const user = {
     name: username.trim(),
     password: bcrypt.hashSync(password),
@@ -117,7 +117,7 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
     aggregateName: 'user',
     payload: user
   })
-  // An authentication API handler should always return a signed JWT that encodes the user structure. 
+  // An authentication API handler should always return a signed JWT that encodes the user structure.
   // The JWT can include additional data such as user roles.
   // To drop the JWT, sign an empty object. Non-object arguments are not allowed.
   return jwt.sign(user, jwtSecret)
