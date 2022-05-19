@@ -12,7 +12,7 @@ import TabItem from '@theme/TabItem';
 
 The reSolve comments module ([@resolve-js/module-comments](https://www.npmjs.com/package/@resolve-js/module-comments)) adds support for user comments to a reSolve application. It implements an aggregate and a read model that together describe the logic used to process hierarchical trees of comments and serve them to a client.
 
-The comments module also exports renderless [client components](#client-api) based on React + Redux and the [@resolve-js/redux](https://www.npmjs.com/package/@resolve-js/@resolve-js/redux) library that you can use to implement a user interface required to post and navigate comments on your web application's page.
+The comments module also exports renderless [client components](#client-api) based on React+Redux and the [@resolve-js/redux](https://www.npmjs.com/package/@resolve-js/@resolve-js/redux) library that you can use to implement a user interface required to post and navigate comments on your web application's page.
 
 ## Installation
 
@@ -158,7 +158,7 @@ The `createComment` command requires a payload object of the following structure
 {
   authorId,        // The comment author's unique ID.
   commentId,       // The new comment's unique ID.
-  parentCommentId, // (optional) The ID of the parrent comment.
+  parentCommentId, // Optional. The ID of the parent comment.
   content,         // An object that contains data associated with the comment (text, timestamp, title, and so on).
 }
 ```
@@ -214,7 +214,7 @@ Returns a hierarchical tree of comments.
 | ----------------- | --------------------------------------------------------------- |
 | `treeId`          | The unique identifier of a comment tree.                        |
 | `parentCommentId` | The identifier of a comment for which to obtain child comments. |
-| `authorId`        | The identifier of a user whose comments to obtain.              |
+| `authorId`        | The identifier of a user whose comments are obtained.              |
 | `maxLevel`        | The maximum nesting level of the comments to load.              |
 
 #### `foreignCommentsCount`
@@ -242,7 +242,7 @@ Returns comments with pagination.
 
 ## Client API
 
-The comments ([@resolve-js/module-comments](https://www.npmjs.com/package/@resolve-js/module-comments)) package exports renderless React+Redux components that you can use implement your own UI for user comments. The following components are available:
+The comments ([@resolve-js/module-comments](https://www.npmjs.com/package/@resolve-js/module-comments)) package exports renderless React+Redux components that you can use to implement your own UI for user comments. The following components are available:
 
 | Component Name                                                      | Description                                                                      |
 | ------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
@@ -307,7 +307,7 @@ The child component also receives the following additional props:
 
 ### `RefreshHelperRenderless`
 
-A component that allows the application to refresh comment without the page reload.
+A component that allows the application to refresh a comment without page reload.
 
 **Usage**
 
@@ -374,7 +374,7 @@ The child component also receives the following additional props:
 | Prop Name        | Description                                                            |
 | ---------------- | ---------------------------------------------------------------------- |
 | `comments`       | A list of comment data objects.                                        |
-| `paginationDone` | A `boolean` value that indicates if there is no more pages to display. |
+| `paginationDone` | A `boolean` value that indicates if there are no more pages to display. |
 
 A comment object has the following structure:
 
@@ -419,7 +419,7 @@ The `CommentsTreeRenderless` component takes the following props:
 | ----------------- | ----------------------------------------------------------------------- |
 | `treeId`          | The unique identifier of a comment tree to display.                     |
 | `parentCommentId` | The unique identifier of a comment for which to display child comments. |
-| `authorId`        | The unique identifier of an author whose comments to display.           |
+| `authorId`        | The unique identifier of an author whose comments are displayed.           |
 | `readModelName`   | The name of the comments read model.                                    |
 | `resolverName`    | The name of the comments read model's resolver.                         |
 
