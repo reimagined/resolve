@@ -3,37 +3,35 @@
 The reSolve authentication module provides out-of-the-box support for Passport compatible authentication strategies (https://github.com/jaredhanson/passport-strategy).
 When you use `@resolve-js/module-auth` in a resolve application, you only need to specify an authentication strategy and API routes for login, registration and other actions.
 
-Use `@resolve-js/module-auth` in application as demonstrated by the code samples below.
+Use `@resolve-js/module-auth` in application in the following manner.
 
 Entry point (run.js):
 
 ```js
 import { defaultResolveConfig, build, start, watch, runTestcafe, merge, injectRuntimeEnv } from '@resolve-js/scripts'
-import createAuthModule from '@resolve-js/module-auth' // Import the authentication module.
+import createAuthModule from '@resolve-js/module-auth' // Import authentication module
 
-import appConfig from './config.app' // Main application configuration file that defines the domain logic.
-import devConfig from './config.dev' // The development environment configuration.
-// Other configs are ommited for simplicity.
-
+import appConfig from './config.app' // Main application config with defined domain logic
+import devConfig from './config.dev' // Development config. Prod and other configs ommited here for simplicity
 const launchMode = process.argv[2]
 
 void (async () => {
-  const authModule = createAuthModule([ // Initialize the authentication module with settings specified below.
+  const authModule = createAuthModule([ // Create authentication module to merge in config
     {
-      name: 'local-strategy', // The name of a Passport authentication strategy to use.
-      createStrategy: 'auth/create_strategy.js', // A path to the strategy constructor file within the project.
-      options: { // An object that contains custom options passed to the strategy constructor.
+      name: 'local-strategy', // Strategy name
+      createStrategy: 'auth/create_strategy.js', // Path to strategy construction file in project
+      options: { // Passed vary compile-time/runtime options
         strategySecretKey: injectRuntimeEnv('STRATEGY_SECRET_KEY_ENV_VARIABLE_NAME')
       },
-      logoutRoute: { // An HTTP route for user logout.
+      logoutRoute: { // HTTP route for logout
           path: 'logout',
           method: 'POST'
       }
-      routes: [ // A list of HTTP API handlers required for for the current strategy.
+      routes: [ // HTTP API handlers for current strategy
         {
-          path: 'register', // The HTTP path segment after `http://app-domain.tld/rootPath/api/`.
-          method: 'POST', // The HTTP method.
-          callback: 'auth/route_register_callback.js' // The path to the API handler's deffinition.
+          path: 'register', // HTTP path part after http://app-domain.tld/rootPath/api/
+          method: 'POST', // HTTP invocation method
+          callback: 'auth/route_register_callback.js' // Path to API handler
         },
         {
           path: 'login',
@@ -46,13 +44,13 @@ void (async () => {
 
   switch (launchMode) {
     case 'dev': {
-      await watch( // Merge the configuration objects.
+      await watch( // Merge developer-defined and module-generated configs using the merge tool
         merge([defaultResolveConfig, appConfig, devConfig, authModule])
       )
       break
     }
 
-    // Handle the `prod`, `cloud`, and `test:functional` run modes based on your requirements.
+    // Handle prod, cloud, test:functional modes in some manner
   }
 })().catch(error => {
   // eslint-disable-next-line no-console
@@ -63,11 +61,11 @@ void (async () => {
 Strategy constructor (auth/create_strategy.js):
 
 ```js
-import { Strategy as StrategyFactory } from 'passport-local' // Import the passport strategy.
+import { Strategy as StrategyFactory } from 'passport-local' // Import passport strategy
 
 const createStrategy = (options) => ({
-  // Export a function that accepts runtime options specified in the application config.
-  factory: StrategyFactory, // The passport strategy factory.
+  // Export function that will accept runtime vary options from application config
+  factory: StrategyFactory, // Re-export passport strategy factory
   options: {
     // Custom compile-time options ...
     failureRedirect: (error) =>
@@ -77,7 +75,7 @@ const createStrategy = (options) => ({
     usernameField: 'username',
     passwordField: 'username',
     successRedirect: null,
-    // ... runtime options (for example, secret keys)
+    // ... plus runtime options, like secret keys
     ...options,
   },
 })
@@ -89,37 +87,37 @@ The "Register" API handler (`auth/route_register_callback.js`), other handlers a
 
 ```js
 import jwt from 'jsonwebtoken'
-import jwtSecret from './jwt_secret' // Store your JWT secret in a secure location, for example an environment variable
+import jwtSecret from './jwt_secret' // Store JWT secret in secret place, like environment variable
 import bcrypt from 'bcrypt'
 
-// A route handler accepts `req` as the first argument. The rest of the arguments depend on the used strategy.
-// The `Local` strategy adds two arguments - `username` and `password`.
+// Route handler accepts req as first argument, and second and following arguments is strategy result
+// Local strategy returns two arguments - username and password. It's strictly strategy-dependent
 const routeRegisterCallback = async ({ resolve }, username, password) => {
-  const { data: existingUser } = await resolve.executeQuery({ // Query a read model to check if the user already exists.
+  const { data: existingUser } = await resolve.executeQuery({ // Request read model to check user is exists
     modelName: 'read-model-name',
     resolverName: 'resolver-name',
     resolverArgs: { name: username.trim())  }
   })
-  // If the user exists, throw an error.
+  // Throw if user is already exists
   if (existingUser) {
-    throw new Error('Cannot create user')
+    throw new Error('User can not be created')
   }
-  // Define a `user` structure to pass to the aggregate as a command payload and save to the JWT.
+  // Describe user struct to pass in aggregate and jwt token
   const user = {
     name: username.trim(),
     password: bcrypt.hashSync(password),
     id: uuid.v4()
   }
-  // Try to create a user in the domain.
+  // Try to create user in domain
   await resolve.executeCommand({
     type: 'create-user',
     aggregateId: user.id,
     aggregateName: 'user',
     payload: user
   })
-  // An authentication API handler should always return a signed JWT that encodes the user structure.
-  // The JWT can include additional data such as user roles.
-  // To drop the JWT, sign an empty object. Non-object arguments are not allowed.
+  // Return signed JWT with user struct, potentially includes user role and so on.
+  // It's most important step - authentication API handler always should return signed JWT value.
+  // To drop JWT - just sign empty object. Non-object argument is not allowed.
   return jwt.sign(user, jwtSecret)
 }
 
