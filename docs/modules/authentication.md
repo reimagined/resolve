@@ -87,7 +87,7 @@ const createStrategy = (options) => ({
     errorRedirect: (error) =>
       `/error?text=${encodeURIComponent(error.message)}`,
     usernameField: 'username',
-    passwordField: 'username',
+    passwordField: 'password',
     successRedirect: null,
     // ... runtime options (for example, secret keys)
     ...options,
@@ -110,8 +110,8 @@ import bcrypt from 'bcrypt'
 // The `Local` strategy adds two arguments - `username` and `password`.
 const routeRegisterCallback = async ({ resolve }, username, password) => {
   const { data: existingUser } = await resolve.executeQuery({ // Query a read model to check if the user already exists.
-    modelName: 'read-model-name',
-    resolverName: 'resolver-name',
+    modelName: 'user',
+    resolverName: 'find-user',
     resolverArgs: { name: username.trim())  }
   })
   // If the user exists, throw an error.
