@@ -110,7 +110,7 @@ import bcrypt from 'bcrypt'
 // The `Local` strategy adds two arguments - `username` and `password`.
 const routeRegisterCallback = async ({ resolve }, username, password) => {
   const { data: existingUser } = await resolve.executeQuery({ // Query a read model to check if the user already exists.
-    modelName: 'user',
+    modelName: 'users',
     resolverName: 'find-user',
     resolverArgs: { name: username.trim())  }
   })
