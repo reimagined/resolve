@@ -109,10 +109,11 @@ import bcrypt from 'bcrypt'
 // A route handler accepts `req` as the first argument. The rest of the arguments depend on the used strategy.
 // The `Local` strategy adds two arguments - `username` and `password`.
 const routeRegisterCallback = async ({ resolve }, username, password) => {
-  const { data: existingUser } = await resolve.executeQuery({ // Query a read model to check if the user already exists.
+  const { data: existingUser } = await resolve.executeQuery({
+    // Query a read model to check if the user already exists.
     modelName: 'users',
     resolverName: 'find-user',
-    resolverArgs: { name: username.trim())  }
+    resolverArgs: { name: username.trim() },
   })
   // If the user exists, throw an error.
   if (existingUser) {
@@ -122,14 +123,14 @@ const routeRegisterCallback = async ({ resolve }, username, password) => {
   const user = {
     name: username.trim(),
     password: bcrypt.hashSync(password),
-    id: uuid.v4()
+    id: uuid.v4(),
   }
   // Try to create a user in the domain.
   await resolve.executeCommand({
     type: 'create-user',
     aggregateId: user.id,
     aggregateName: 'user',
-    payload: user
+    payload: user,
   })
   // An authentication API handler should always return a signed JWT that encodes the user structure.
   // The JWT can include additional data such as user roles.
