@@ -214,7 +214,7 @@ Returns a hierarchical tree of comments.
 | ----------------- | --------------------------------------------------------------- |
 | `treeId`          | The unique identifier of a comment tree.                        |
 | `parentCommentId` | The identifier of a comment for which to obtain child comments. |
-| `authorId`        | The identifier of a user whose comments are obtained.              |
+| `authorId`        | The identifier of a user whose comments are obtained.           |
 | `maxLevel`        | The maximum nesting level of the comments to load.              |
 
 #### `foreignCommentsCount`
@@ -276,7 +276,7 @@ export const CommentsNotification = (props) => (
       if (count === 0) return null
       return (
         <div onClick={onClick}>
-          Comments have been updated, refresh the page to see the new comments.
+          Comments have been updated. Refresh the page to see the new comments.
         </div>
       )
     }}
@@ -303,7 +303,7 @@ The child component also receives the following additional props:
 | Prop Name | Description                                                                                                               |
 | --------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `onClick` | Resets the notification and calls the `CommentsNotificationRenderless` component's `onClick` callback if it is specified. |
-| `count`   | The number of available new comments.                                                                                     |
+| `count`   | The number of new comments.                                                                                               |
 
 ### `RefreshHelperRenderless`
 
@@ -371,9 +371,9 @@ This component passes all its props to its direct child.
 
 The child component also receives the following additional props:
 
-| Prop Name        | Description                                                            |
-| ---------------- | ---------------------------------------------------------------------- |
-| `comments`       | A list of comment data objects.                                        |
+| Prop Name        | Description                                                             |
+| ---------------- | ----------------------------------------------------------------------- |
+| `comments`       | A list of comment data objects.                                         |
 | `paginationDone` | A `boolean` value that indicates if there are no more pages to display. |
 
 A comment object has the following structure:
@@ -419,7 +419,7 @@ The `CommentsTreeRenderless` component takes the following props:
 | ----------------- | ----------------------------------------------------------------------- |
 | `treeId`          | The unique identifier of a comment tree to display.                     |
 | `parentCommentId` | The unique identifier of a comment for which to display child comments. |
-| `authorId`        | The unique identifier of an author whose comments are displayed.           |
+| `authorId`        | The unique identifier of an author whose comments are displayed.        |
 | `readModelName`   | The name of the comments read model.                                    |
 | `resolverName`    | The name of the comments read model's resolver.                         |
 
