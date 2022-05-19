@@ -17,7 +17,7 @@ yarn add @resolve-js/module-auth
 
 ## Register and Configure the Module
 
-Register the installed module in the project's `run.js` file. The code sample below demonstrates how to initialize the authentication module configured for the local authentication strategy and merge it into the application's centralized config:
+Register the installed module in the project's `run.js` file. The code sample below demonstrates how to initialize the authentication module configured for the [`Local`](https://www.passportjs.org/packages/passport-local/) authentication strategy and merge it into the application's centralized configuration object:
 
 ```js title="run.js"
 import { defaultResolveConfig, build, start, watch, runTestcafe, merge, injectRuntimeEnv } from '@resolve-js/scripts'
@@ -25,7 +25,7 @@ import createAuthModule from '@resolve-js/module-auth' // Import the authenticat
 
 import appConfig from './config.app' // Main application configuration file that defines the domain logic.
 import devConfig from './config.dev' // The development environment configuration.
-// Other configs are ommited for simplicity.
+// Other configs are omitted for simplicity.
 
 const launchMode = process.argv[2]
 
@@ -45,7 +45,7 @@ void (async () => {
         {
           path: 'register', // The HTTP path segment after `http://app-domain.tld/rootPath/api/`.
           method: 'POST', // The HTTP method.
-          callback: 'auth/route_register_callback.js' // The path to the API handler's deffinition.
+          callback: 'auth/route_register_callback.js' // The path to the API handler's definition.
         },
         {
           path: 'login',
@@ -99,7 +99,7 @@ export default createStrategy
 
 ## Add the Required API Handlers
 
-In your application, you need to manually implement [API handlers](../api-handlers.md) for user registration, login, and other authentication-related actions. For example, the code sample below demonstrates a user registration handler.
+In your application, you need to implement [API handlers](../api-handlers.md) for user registration, login, and other authentication-related actions. For example, the code sample below demonstrates a user registration handler.
 
 ```js title="auth/route_register_callback.js"
 import jwt from 'jsonwebtoken'
@@ -142,4 +142,4 @@ export default routeRegisterCallback
 
 ## Example
 
-The [Hacker News](https://github.com/reimagined/resolve/tree/dev/examples/js/hacker-news) example project uses **@resolve-js/module-auth** to implement user authentication.
+The [Hacker News](https://github.com/reimagined/resolve/tree/dev/examples/js/hacker-news) example project uses [@resolve-js/module-auth](https://www.npmjs.com/package/@resolve-js/module-auth) to implement user authentication.
