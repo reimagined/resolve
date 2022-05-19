@@ -70,7 +70,7 @@ export default createStrategy
 
 This code sample implements a strategy constructor for a **local** authentication strategy. The **createStrategy** constructor takes a set of options defined at runtime and returns modified options.
 
-See the [Hacker News](https://github.com/reimagined/resolve/tree/dev/examples/js/hacker-news) example project for the full code.
+See the **Hacker News** example project for the full code.
 
 ## Using 3rd-Party Auth Services
 
