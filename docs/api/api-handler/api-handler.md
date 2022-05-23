@@ -4,13 +4,37 @@ title: API Handler
 description: This article describes the structure of an API handler function and its arguments.
 ---
 
-An API handler function has the following structure:
+```mdx-code-block
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+```
+
+An API handler is defined as follows:
+
+<Tabs>
+<TabItem value="withoutoptions" label="With Options" default>
 
 ```js
-export default async (req, res) => {
+const myApiHandler = async (req, res) => {
   // ...
 }
+
+export default myApiHandler
 ```
+
+</TabItem>
+<TabItem value="withoptions" label="Without Options">
+
+```js
+const myApiHandler = (options) => async (req, res) => {
+  // ...
+}
+
+export default myApiHandler
+```
+
+</TabItem>
+</Tabs>
 
 The handler receives a request and response objects. See the sections below for information on the API exposed through these objects.
 
