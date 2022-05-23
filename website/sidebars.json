@@ -41,6 +41,13 @@
       },
       {
         "type": "category",
+        "label": "Modules",
+        "items": [
+          "modules/comments"
+        ]
+      },
+      {
+        "type": "category",
         "label": "API",
         "items": [
           {
