@@ -43,7 +43,8 @@
         "type": "category",
         "label": "Modules",
         "items": [
-          "modules/comments"
+          "modules/admin",
+          "modules/comments"      
         ]
       },
       {
