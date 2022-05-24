@@ -83,7 +83,7 @@ yarn module-admin --help
 
 ### Manage Application
 
-The `system` command manages the application's system.
+The `system` command manages the application's running status.
 
 #### Show the system's status
 
@@ -91,7 +91,7 @@ The `system` command manages the application's system.
 npx @resolve-js/module-admin system status
 ```
 
-#### Wait for an application to finish launching
+#### Wait until the application startup is finished
 
 ```
 npx @resolve-js/module-admin system status --wait-ready
