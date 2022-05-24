@@ -43,6 +43,7 @@
         "type": "category",
         "label": "Modules",
         "items": [
+          "modules/authentication",
           "modules/comments"
         ]
       },
