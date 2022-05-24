@@ -69,7 +69,7 @@ To use the admin module's CLI tool, you need to start your application and execu
 yarn module-admin read-models reset ShoppingList
 ```
 
-The default URL that **module-admin** uses to access an application's API is `http://localhost:3000/api`. Use the `--api-url` option to specify another URL:
+The default URL that the CLI tool uses to access an application's API is `http://localhost:3000/api`. Use the `--api-url` option to specify other URL:
 
 ```bash
 yarn module-admin --api-url "https://127.0.0.1:2000/api" read-models reset ShoppingList
