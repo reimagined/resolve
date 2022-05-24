@@ -103,7 +103,7 @@ In your application, you need to implement [API handlers](../api-handlers.md) fo
 
 ```js title="auth/route_register_callback.js"
 import jwt from 'jsonwebtoken'
-import jwtSecret from './jwt_secret' // Store your JWT secret in a secure location, for example an environment variable
+import jwtSecret from './jwt_secret' // Store your JWT secret in a secure location (for example, an environment variable).
 import bcrypt from 'bcrypt'
 
 // A route handler accepts `req` as the first argument. The rest of the arguments depend on the used strategy.
