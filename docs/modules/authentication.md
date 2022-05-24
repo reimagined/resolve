@@ -41,7 +41,7 @@ void (async () => {
           path: 'logout',
           method: 'POST'
       }
-      routes: [ // A list of HTTP API handlers required for for the current strategy.
+      routes: [ // A list of HTTP API handlers required for the current strategy.
         {
           path: 'register', // The HTTP path segment after `http://app-domain.tld/rootPath/api/`.
           method: 'POST', // The HTTP method.
