@@ -41,6 +41,15 @@
       },
       {
         "type": "category",
+        "label": "Modules",
+        "items": [
+          "modules/admin",
+          "modules/authentication",
+          "modules/comments"
+        ]
+      },
+      {
+        "type": "category",
         "label": "API",
         "items": [
           {
