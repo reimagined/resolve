@@ -3,12 +3,12 @@ id: comments
 title: Comments
 ---
 
+# Comments Module
+
 ```mdx-code-block
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 ```
-
-# Comments Module
 
 The reSolve comments module ([@resolve-js/module-comments](https://www.npmjs.com/package/@resolve-js/module-comments)) adds support for user comments to a reSolve application. It implements an aggregate and a read model that together describe the logic used to process hierarchical trees of comments and serve them to a client.
 
