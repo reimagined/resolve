@@ -45,7 +45,8 @@
         "items": [
           "modules/admin",
           "modules/authentication",
-          "modules/comments"
+          "modules/comments",
+          "modules/replication"
         ]
       },
       {
