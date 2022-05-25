@@ -80,10 +80,24 @@ Specifies an array of the application's API Handlers. An API handler configurati
 | Field   | Description                                                                                                                                         |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | path    | The URL path for which the handler is invoked. The path is specified in the [route-trie](https://www.npmjs.com/package/route-trie) router's format. |
-| handler | The path to the file that contains the handler's definition.                                                                                        |
+| handler | The path to the file that contains the handler's definition. Or a [`handler`](#handler-configuration-object) configuration object.                  |
 | method  | The HTTP method to handle.                                                                                                                          |
 
+#### Handler Configuration Object
+
+The handler configuration object has the following structure:
+
+```js
+{
+  module,  // (string) The path to the file that contains the handler's definition.
+  options, // (object) An object that contains options passed to the API Handler factory function.
+}
+```
+
 #### Example:
+
+<Tabs>
+<TabItem value="withoutoptions" label="With Options" default>
 
 ```js
 apiHandlers: [
@@ -94,6 +108,25 @@ apiHandlers: [
   },
 ]
 ```
+
+</TabItem>
+<TabItem value="withoptions" label="Without Options">
+
+```js
+apiHandlers: [
+  {
+    path: '/api/uploader/getUploadUrl',
+    handler: {
+      module: 'common/api-handlers/getFileUrl.js',
+      options: apiHandlerOptions,
+    },
+    method: 'GET',
+  },
+]
+```
+
+</TabItem>
+</Tabs>
 
 ### clientEntries
 
@@ -698,7 +731,7 @@ schedulers: {
 
 ### serverImports
 
-Same as [clientImports](#clientImports) but affects the client script invoked on the server by the Server Side Rendering (SSR) script.
+Same as [clientImports](#clientimports) but affects the client script invoked on the server by the Server Side Rendering (SSR) script.
 
 ### staticDir
 

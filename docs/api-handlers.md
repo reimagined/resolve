@@ -99,7 +99,37 @@ The configuration object specifies the following options:
 
 Refer to the [Application Configuration](application-configuration.md) topic for more information.
 
-## Implementation Examples
+## Custom Config Options
+
+The code below demonstrates how to pass custom options from the application's config file to an API handler:
+
+```js title="config.app.js"
+apiHandlers: [
+  {
+    path: '/api/myapihandler',
+    handler: {
+      module: 'common/api-handlers/myApiHandler.js',
+      options: {
+        option1: 'value1',
+        option2: 'vlaue2',
+      },
+    },
+    method: 'GET',
+  },
+]
+```
+
+When this config format is used, the file that defines the API handler should export a factory function that takes `options` as an argument and returns the handler function:
+
+```js title="common/api-handlers/myApiHandler.js"
+const myApiHandler = ({ option1, option2 }) => async (req, res) => {
+  // ...
+}
+
+export default myApiHandler
+```
+
+## Usage
 
 ### Send Text
 
