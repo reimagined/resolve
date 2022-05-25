@@ -96,13 +96,13 @@ The `system` command manages the application's running status.
 #### Show the system's status
 
 ```
-npx @resolve-js/module-admin system status
+yarn module-admin system status
 ```
 
 #### Wait until the application startup is finished
 
 ```
-npx @resolve-js/module-admin system status --wait-ready
+yarn module-admin system status --wait-ready
 ```
 
 ### Manage Event Store
@@ -112,31 +112,31 @@ The `event-store` command manages the application's event store.
 #### Import an event store from the specified directory
 
 ```
-npx @resolve-js/module-admin event-store import <directory>
+yarn module-admin event-store import <directory>
 ```
 
 #### Export an event store to the specified directory
 
 ```
-npx @resolve-js/module-admin event-store import <directory>
+yarn module-admin event-store import <directory>
 ```
 
 #### Incrementally import an event store from the file
 
 ```
-npx @resolve-js/module-admin event-store incremental-import <file>
+yarn module-admin event-store incremental-import <file>
 ```
 
 #### Freeze an event store
 
 ```
-npx @resolve-js/module-admin event-store freeze
+yarn module-admin event-store freeze
 ```
 
 #### Unfreeze an event store
 
 ```
-npx @resolve-js/module-admin event-store unfreeze
+yarn module-admin event-store unfreeze
 ```
 
 ### Manage Read Models
@@ -146,23 +146,23 @@ The `read-models` command manages the application's read models.
 ##### View a deployed application's read models:
 
 ```
-npx @resolve-js/module-admin read-models list
+yarn module-admin read-models list
 ```
 
 ##### Pause and resume read model updates:
 
 ```
-npx @resolve-js/module-admin read-models pause <readModelName>
+yarn module-admin read-models pause <readModelName>
 ```
 
 ```
-npx @resolve-js/module-admin read-models resume <readModelName>
+yarn module-admin read-models resume <readModelName>
 ```
 
 ##### Reset a read model's persistent state:
 
 ```
-npx @resolve-js/module-admin read-models reset <readModelName>
+yarn module-admin read-models reset <readModelName>
 ```
 
 ### Manage Sagas
@@ -172,23 +172,23 @@ The `sagas` command manages the application's sagas.
 ##### View a list of available sagas:
 
 ```
-npx @resolve-js/module-admin sagas list
+yarn module-admin sagas list
 ```
 
 ##### Pause and resume a saga:
 
 ```
-npx @resolve-js/module-admin sagas pause <sagaName>
+yarn module-admin sagas pause <sagaName>
 ```
 
 ```
-npx @resolve-js/module-admin sagas resume <sagaName>
+yarn module-admin sagas resume <sagaName>
 ```
 
 ##### Reset a saga's persistent state:
 
 ```
-npx @resolve-js/module-admin sagas reset <sagaName> [--side-effects-start-timestamp YYYY-MM-DDTHH:mm:ss.sssZ]
+yarn module-admin sagas reset <sagaName> [--side-effects-start-timestamp YYYY-MM-DDTHH:mm:ss.sssZ]
 ```
 
 ### Manage Saga Properties
@@ -198,23 +198,23 @@ Use the `sagas properties` command to manage a saga's properties.
 ##### Set a property:
 
 ```
-npx @resolve-js/module-admin sagas properties set <sagaName> <propertyName> <value>
+yarn module-admin sagas properties set <sagaName> <propertyName> <value>
 ```
 
 ##### Get a property:
 
 ```
-npx @resolve-js/module-admin sagas properties get <sagaName> <propertyName>
+yarn module-admin sagas properties get <sagaName> <propertyName>
 ```
 
 ##### View all saga properties:
 
 ```
-npx @resolve-js/module-admin sagas properties list <sagaName>
+yarn module-admin sagas properties list <sagaName>
 ```
 
 ##### Remove a property:
 
 ```
-npx @resolve-js/module-admin sagas properties remove <sagaName> <propertyName>
+yarn module-admin sagas properties remove <sagaName> <propertyName>
 ```
