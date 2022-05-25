@@ -199,7 +199,7 @@ npx @resolve-js/module-admin sagas properties set <sagaName> <propertyName> <val
 npx @resolve-js/module-admin sagas properties get <sagaName> <propertyName>
 ```
 
-##### View all saga's properties:
+##### View all saga properties:
 
 ```
 npx @resolve-js/module-admin sagas properties list <sagaName>
