@@ -43,6 +43,7 @@
         "type": "category",
         "label": "Modules",
         "items": [
+          "modules/overview",
           "modules/admin",
           "modules/authentication",
           "modules/comments"
