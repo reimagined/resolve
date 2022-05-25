@@ -5,7 +5,7 @@ title: Uploader
 
 # Uploader Module
 
-The **@resolve-js/module-uploader** module implements the file upload functionality. This module is a higher level wrapper to the [uploader API](../api/api-handler/uploader.md).
+The reSolve uploader module [@resolve-js/module-uploader](https://www.npmjs.com/package/@resolve-js/module-uploader) implements the file upload functionality. This module is a higher level wrapper to the [uploader API](../api/api-handler/uploader.md).
 
 ## Installation
 
