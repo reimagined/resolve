@@ -5,7 +5,15 @@ title: Admin
 
 # Admin Module
 
-The reSolve admin module ([@resolve-js/module-admin](https://www.npmjs.com/package/@resolve-js/module-admin)) adds [API handlers](../api-handlers.md) that allow you to manage an application's read models and sagas. The module package also contains a CLI tool that allows you to query these handlers through a console interface. The admin module includes the following functionality:
+The reSolve admin module ([@resolve-js/module-admin](https://www.npmjs.com/package/@resolve-js/module-admin)) adds [API handlers](../api-handlers.md) that allow you to manage an application's read models and sagas. The module package also contains a CLI tool that allows you to query these handlers through a console interface.
+
+:::caution
+
+The admin module is intended for use in development and test environments only.
+
+:::
+
+The admin module includes the following functionality:
 
 - List application read models and sagas.
 - Pause and resume updates for read models and sagas.
