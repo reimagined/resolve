@@ -57,4 +57,4 @@ readModelConnectors: {
 
 ## Example
 
-The Hacker New example application contains run scripts for both the master and replica instances.
+The Hacker News example application contains run scripts for both the master and replica instances.
