@@ -43,7 +43,7 @@ Get a stored secret from the event store.
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../../tests/eventstore-secrets/index.test.ts#get-secret)
+[mdis]:# (../../../tests/eventstore-secrets/index.test.ts#get-secret)
 ```js
 const secret = await secretManager.getSecret(id)
 ```
@@ -67,7 +67,7 @@ Saves the specified secret to the event store.
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../../tests/eventstore-secrets/index.test.ts#set-secret)
+[mdis]:# (../../../tests/eventstore-secrets/index.test.ts#set-secret)
 ```js
 await secretManager.setSecret(id, secret)
 ```
@@ -92,7 +92,7 @@ Deletes a secret from the event store.
 
 <!-- prettier-ignore-start -->
 
-[mdis]:# (../../tests/eventstore-secrets/index.test.ts#delete-secret)
+[mdis]:# (../../../tests/eventstore-secrets/index.test.ts#delete-secret)
 ```js
 const isDeleted = await secretManager.deleteSecret(id)
 ```
