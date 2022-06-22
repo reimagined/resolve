@@ -5,7 +5,7 @@ title: Replication
 
 # Replication Module
 
-The reSolve replication module [@resolve-js/module-replication](https://www.npmjs.com/package/@resolve-js/module-replication) adds API handlers required to create the application's replica by cloning its events.
+The reSolve replication module [@resolve-js/module-replication](https://www.npmjs.com/package/@resolve-js/module-replication) adds API handlers required to create an application instance's replica by cloning its events to another instance.
 
 ## Installation
 
