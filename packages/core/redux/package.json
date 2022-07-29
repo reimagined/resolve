@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/redux",
-  "version": "0.34.2",
+  "version": "0.34.3",
   "description": "Provides tools that you can use to connect a React/Redux frontend to reSolve.",
   "keywords": [
     "cqrs",
@@ -38,9 +38,9 @@
   },
   "dependencies": {
     "@babel/runtime": "7.17.2",
-    "@resolve-js/client": "0.34.2",
-    "@resolve-js/core": "0.34.2",
-    "@resolve-js/react-hooks": "0.34.2",
+    "@resolve-js/client": "0.34.3",
+    "@resolve-js/core": "0.34.3",
+    "@resolve-js/react-hooks": "0.34.3",
     "hoist-non-react-statics": "3.3.2",
     "json-stable-stringify": "1.0.1",
     "jwt-decode": "3.1.2",

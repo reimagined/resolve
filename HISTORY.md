@@ -1,5 +1,17 @@
 # Changelog
 
+## [V0.34.3](https://github.com/reimagined/resolve/tree/V0.34.3) (2022-07-29)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.34.2...V0.34.3)
+
+**Documentation:**
+
+- Describe passing config options to API Handlers [\#2273](https://github.com/reimagined/resolve/pull/2273)
+
+**Other changes:**
+
+- Hotfix paths and names in the examples readme page [\#2274](https://github.com/reimagined/resolve/pull/2274)
+
 ## [V0.34.1](https://github.com/reimagined/resolve/tree/V0.34.1) (2022-04-18)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.34.0...V0.34.1)

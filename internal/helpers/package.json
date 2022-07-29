@@ -1,6 +1,6 @@
 {
   "name": "@internal/helpers",
-  "version": "0.34.2",
+  "version": "0.34.3",
   "private": true,
   "main": "index.js",
   "bin": "./bin/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@resolve-js/runtime-single-process",
-  "version": "0.34.2",
+  "version": "0.34.3",
   "description": "The reSolve framework's single NodeJS process runtime.",
   "keywords": [
     "cqrs",
@@ -25,10 +25,10 @@
   },
   "dependencies": {
     "@babel/runtime": "7.17.2",
-    "@resolve-js/core": "0.34.2",
-    "@resolve-js/debug-levels": "0.34.2",
-    "@resolve-js/eventstore-base": "0.34.2",
-    "@resolve-js/runtime-base": "0.34.2",
+    "@resolve-js/core": "0.34.3",
+    "@resolve-js/debug-levels": "0.34.3",
+    "@resolve-js/eventstore-base": "0.34.3",
+    "@resolve-js/runtime-base": "0.34.3",
     "content-disposition": "0.5.3",
     "cookie": "0.4.1",
     "express": "4.17.1",
