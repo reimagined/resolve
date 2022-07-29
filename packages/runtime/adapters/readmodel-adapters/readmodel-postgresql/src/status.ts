@@ -135,6 +135,7 @@ const status: ExternalMethods['status'] = async <
             if (previousCursor != null && Cursor !== previousCursor) {
               isAlive = true
             }
+
             previousCursor = Cursor
           }
         } catch (error) {
