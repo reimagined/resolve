@@ -132,6 +132,7 @@ module.exports = {
     },
     "algolia": {
       "indexName": "reimagined_resolve",
+      "appId": "ESKL6CU534",
       "apiKey": process.env.ALGOLIA_RESOLVE_API_KEY
     }
   }
