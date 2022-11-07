@@ -1,5 +1,13 @@
 # Changelog
 
+## [Upcoming](https://github.com/reimagined/resolve/tree/HEAD)
+
+[Full Changelog](https://github.com/reimagined/resolve/compare/V0.34.3...HEAD)
+
+**Other changes:**
+
+- Run package publish test [\#2289](https://github.com/reimagined/resolve/pull/2289)
+
 ## [V0.34.3](https://github.com/reimagined/resolve/tree/V0.34.3) (2022-07-29)
 
 [Full Changelog](https://github.com/reimagined/resolve/compare/V0.34.2...V0.34.3)
