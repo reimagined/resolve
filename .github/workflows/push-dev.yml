@@ -35,7 +35,7 @@ jobs:
           yarn install --frozen-lockfile
 
       - name: Publish to private repository
-        uses: reimagined/github-actions/publish@v1
+        uses: reimagined/github-actions/publish@fixLogs
         with:
           registry: github
           token: ${{ secrets.RESOLVE_BOT_PAT }}
