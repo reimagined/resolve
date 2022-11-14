@@ -68,5 +68,16 @@
       "outDir": "./lib"
     }
   ],
+  "files": [
+    "/lib/**/*.js",
+    "types",
+    "configs",
+    "es",
+    "typings",
+    "index.d.ts",
+    "bin",
+    "compile-time.js",
+    "external.d.ts"
+  ],
   "sourceType": "ts"
 }

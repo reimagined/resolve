@@ -44,8 +44,6 @@
     "/lib/**/*.js",
     "types",
     "es",
-    "jest.func-config.js",
-    "tsconfig.prod.tsbuildinfo",
     "typings",
     "index.d.ts",
     "bin"

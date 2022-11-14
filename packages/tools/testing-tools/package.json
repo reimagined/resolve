@@ -60,5 +60,13 @@
       "outDir": "./es"
     }
   ],
+  "files": [
+    "/lib/**/*.js",
+    "types",
+    "es",
+    "typings",
+    "index.d.ts",
+    "bin"
+  ],
   "sourceType": "ts"
 }
