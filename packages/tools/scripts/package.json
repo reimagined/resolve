@@ -70,6 +70,15 @@
   "engines": {
     "node": ">=14.17"
   },
+  "files": [
+    "/lib/**/*.js",
+    "types",
+    "configs",
+    "es",
+    "typings",
+    "index.d.ts",
+    "bin"
+  ],
   "babelCompile": [
     {
       "moduleType": "es",
