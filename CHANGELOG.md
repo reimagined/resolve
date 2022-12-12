@@ -6,6 +6,7 @@
 
 **Other changes:**
 
+- hotfix/whitelisting packages [\#2291](https://github.com/reimagined/resolve/pull/2291)
 - Run package publish test [\#2289](https://github.com/reimagined/resolve/pull/2289)
 
 ## [V0.34.3](https://github.com/reimagined/resolve/tree/V0.34.3) (2022-07-29)
