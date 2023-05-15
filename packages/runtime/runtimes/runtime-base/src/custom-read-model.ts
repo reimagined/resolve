@@ -140,6 +140,17 @@ const customReadModelMethods = {
           throw summaryError
         }
       } else if (events.length === 0) {
+        // Update event subscriber status to "not busy",
+        // otherwise no events will pass the busy check above
+        await eventstoreAdapter.ensureEventSubscriber({
+          applicationName,
+          eventSubscriber,
+          status: { ...status,
+            busy: false
+          },
+          updateOnly: true
+        });
+
         return {
           type: 'build-direct-invoke',
           payload: {
