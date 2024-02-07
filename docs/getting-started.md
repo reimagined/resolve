@@ -31,7 +31,7 @@ To get familiar with how the application's demo functionality is implemented, vi
 - `common/read-models` - demonstrates how to obtain data generated from multiple aggregate instances.
 - `common/view-models` - demonstrates how to generate data about the items of a specified aggregate instance.
 - `client` - a react application that communicates with the reSolve backend to create aggregate instances and items within them.
-- `config.<taget>.js` files - the configuration files for different build targets.
+- `config.<target>.js` files - the configuration files for different build targets.
 - `run.js` - a script that builds the final config object and starts the application's main loop.
 
 You can use the demo code as a starting point for developing your own application.
